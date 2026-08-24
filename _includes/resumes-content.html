@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="description"
+        content="Resumes for Alexander Ferrari Miller."
+    >
+
+    <title>Alexander Ferrari Miller | Resumes</title>
+
+    <style>
+        :root {
+            --background: #f5f5f2;
+            --surface: #ffffff;
+            --text: #1f2529;
+            --muted: #5f686f;
+            --accent: #2f536b;
+            --accent-dark: #213d50;
+            --border: #d9dde0;
+            --shadow: rgba(0, 0, 0, 0.08);
+            --max-width: 1100px;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+
+            font-family:
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                Roboto,
+                Helvetica,
+                Arial,
+                sans-serif;
+
+            background: var(--background);
+            color: var(--text);
+        }
+
+        .container {
+            width: min(92%, var(--max-width));
+            margin: 0 auto;
+        }
+
+        .site-header {
+            padding: 2rem 0 1rem;
+        }
+
+        .site-name {
+            color: var(--accent-dark);
+            font-size: 1.4rem;
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        main {
+            flex: 1;
+            padding: 2rem 0 4rem;
+        }
+
+        .intro {
+            max-width: 760px;
+            margin-bottom: 2.5rem;
+        }
+
+        h1 {
+            margin: 0 0 1rem;
+            font-size: clamp(2rem, 6vw, 3.5rem);
+            line-height: 1.1;
+            color: var(--accent-dark);
+        }
+
+        .intro p {
+            margin: 0;
+            color: var(--muted);
+            font-size: 1.1rem;
+            line-height: 1.7;
+        }
+
+        .resume-grid {
+            display: grid;
+            grid-template-columns:
+                repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.25rem;
+        }
+
+        .resume-card {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+
+            min-height: 210px;
+            padding: 1.5rem;
+
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+
+            box-shadow:
+                0 4px 14px var(--shadow);
+        }
+
+        .resume-card h2 {
+            margin: 0 0 0.75rem;
+            color: var(--accent-dark);
+            font-size: 1.35rem;
+        }
+
+        .resume-card p {
+            margin: 0 0 1.5rem;
+            color: var(--muted);
+            line-height: 1.6;
+        }
+
+        .resume-link {
+            align-self: flex-start;
+
+            display: inline-block;
+            padding: 0.7rem 1rem;
+
+            color: #ffffff;
+            background: var(--accent);
+
+            border-radius: 7px;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .resume-link:hover,
+        .resume-link:focus {
+            background: var(--accent-dark);
+        }
+
+        .site-footer {
+            border-top: 1px solid var(--border);
+            padding: 1.5rem 0;
+        }
+
+        .site-nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem 1.5rem;
+        }
+
+        .site-nav a {
+            color: var(--accent-dark);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .site-nav a:hover,
+        .site-nav a:focus {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 600px) {
+            .site-header {
+                padding-top: 1.5rem;
+            }
+
+            main {
+                padding-top: 1rem;
+            }
+
+            .resume-card {
+                min-height: auto;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header class="site-header">
+        <div class="container">
+            <a class="site-name" href="index.html">
+                Alexander Ferrari Miller
+            </a>
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+
+            <section class="intro">
+                <h1>Resumes</h1>
+
+                <p>
+                    My professional background spans several distinct
+                    fields. These targeted resumes emphasize the
+                    experience most relevant to each area.
+                </p>
+            </section>
+
+            <section
+                class="resume-grid"
+                aria-label="Resume selections"
+            >
+
+                <article class="resume-card">
+                    <div>
+                        <h2>Insurance / Sales</h2>
+
+                        <p>
+                            Insurance licensing, sales, fundraising,
+                            presentation, customer communication,
+                            and relationship-focused experience.
+                        </p>
+                    </div>
+
+                    <a
+                        class="resume-link"
+                        href="insurance-sales-resume.html"
+                    >
+                        View Resume
+                    </a>
+                </article>
+
+                <article class="resume-card">
+                    <div>
+                        <h2>
+                            Customer Service / Retail / Hospitality
+                        </h2>
+
+                        <p>
+                            Customer service, retail, hospitality,
+                            transportation, POS systems, payments,
+                            and high-volume public interaction.
+                        </p>
+                    </div>
+
+                    <a
+                        class="resume-link"
+                        href="customer-service-resume.html"
+                    >
+                        View Resume
+                    </a>
+                </article>
+
+                <article class="resume-card">
+                    <div>
+                        <h2>Technical / QA / Software</h2>
+
+                        <p>
+                            Software quality assurance, testing,
+                            development, troubleshooting, research,
+                            web technology, and independent
+                            technical projects.
+                        </p>
+                    </div>
+
+                    <a
+                        class="resume-link"
+                        href="technical-resume.html"
+                    >
+                        View Resume
+                    </a>
+                </article>
+
+                <article class="resume-card">
+                    <div>
+                        <h2>Performance</h2>
+
+                        <p>
+                            Professional character performance,
+                            musical theater, opera, choral singing,
+                            acting, dance, and live audience
+                            interaction.
+                        </p>
+                    </div>
+
+                    <a
+                        class="resume-link"
+                        href="performance-resume.html"
+                    >
+                        View Resume
+                    </a>
+                </article>
+
+            </section>
+
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+
+            <nav
+                class="site-nav"
+                aria-label="Main navigation"
+            >
+                <a href="index.html">Professional</a>
+                <a href="performance.html">Performance</a>
+                <a href="projects.html">Projects</a>
+                <a href="social-media.html">Social Media</a>
+                <a href="resumes.html">Resumes</a>
+            </nav>
+
+        </div>
+    </footer>
+
+</body>
+</html>
