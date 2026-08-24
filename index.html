@@ -26,33 +26,43 @@
 
     <style>
 
+        :root {
+
+            --background: #f5f5f2;
+
+            --surface: #ffffff;
+
+            --text: #1f2529;
+
+            --muted: #5f686f;
+
+            --accent: #2f536b;
+
+            --accent-dark: #213d50;
+
+            --border: #d9dde0;
+
+            --shadow: rgba(0, 0, 0, 0.08);
+
+            --max-width: 1100px;
+
+        }
+
         * {
 
             box-sizing: border-box;
 
         }
 
-        html,
+        html {
 
-        body {
-
-            margin: 0;
-
-            min-height: 100%;
+            scroll-behavior: smooth;
 
         }
 
         body {
 
-            min-height: 100vh;
-
-            display: flex;
-
-            flex-direction: column;
-
-            background: #f5f5f2;
-
-            color: #1f2529;
+            margin: 0;
 
             font-family:
 
@@ -62,135 +72,393 @@
 
                 "Segoe UI",
 
+                Roboto,
+
+                Helvetica,
+
+                Arial,
+
                 sans-serif;
 
-        }
+            background: var(--background);
 
-        .container {
+            color: var(--text);
 
-            width: 100%;
-
-            max-width: 1100px;
-
-            margin: 0 auto;
-
-            padding-left: 20px;
-
-            padding-right: 20px;
+            line-height: 1.6;
 
         }
 
-        .site-header {
+        a {
 
-            padding-top: 28px;
-
-        }
-
-        .site-name {
-
-            color: #1f2529;
+            color: var(--accent);
 
             text-decoration: none;
 
-            font-family: Georgia, "Times New Roman", serif;
-
-            font-size: 1.5rem;
-
         }
 
-        .site-name:hover,
+        a:hover,
 
-        .site-name:focus {
+        a:focus {
 
             text-decoration: underline;
 
         }
 
-        main {
+        .container {
 
-            flex: 1;
+            width: min(calc(100% - 40px), var(--max-width));
+
+            margin: 0 auto;
+
+        }
+
+        .site-header {
+
+            background: var(--surface);
+
+            border-bottom: 1px solid var(--border);
+
+        }
+
+        .site-header .container {
+
+            min-height: 72px;
 
             display: flex;
 
             align-items: center;
 
-            padding-top: 48px;
+        }
 
-            padding-bottom: 48px;
+        .site-name {
+
+            font-size: 1.1rem;
+
+            font-weight: 700;
+
+            letter-spacing: 0.02em;
+
+            color: var(--text);
+
+        }
+
+        main {
+
+            min-height: calc(100vh - 145px);
 
         }
 
         .hero {
 
+            padding: 72px 0 64px;
+
+        }
+
+        .hero-grid {
+
             display: grid;
 
-            grid-template-columns: minmax(260px, 380px) 1fr;
+            grid-template-columns:
 
-            gap: 56px;
+                minmax(0, 1.35fr)
+
+                minmax(280px, 0.65fr);
+
+            gap: 64px;
 
             align-items: center;
 
         }
 
-        .portrait {
+        .eyebrow {
 
-            width: 100%;
+            margin: 0 0 12px;
 
-            display: block;
+            color: var(--accent);
 
-            border-radius: 4px;
+            font-size: 0.9rem;
 
-            box-shadow: 0 8px 28px rgba(0, 0, 0, 0.10);
+            font-weight: 700;
 
-        }
+            letter-spacing: 0.12em;
 
-        .hero-copy h1 {
-
-            margin: 0 0 10px 0;
-
-            font-family: Georgia, "Times New Roman", serif;
-
-            font-size: clamp(2.4rem, 6vw, 4.6rem);
-
-            line-height: 1;
-
-            font-weight: 500;
-
-            letter-spacing: -0.03em;
+            text-transform: uppercase;
 
         }
 
-        .tagline {
+        h1 {
 
-            margin: 0 0 24px 0;
+            margin: 0 0 18px;
 
-            color: #2f536b;
+            font-size: clamp(2.5rem, 6vw, 4.8rem);
 
-            font-family: Georgia, "Times New Roman", serif;
+            line-height: 1.02;
 
-            font-size: clamp(1.15rem, 2.5vw, 1.5rem);
+            letter-spacing: -0.035em;
 
         }
 
-        .intro {
-
-            max-width: 640px;
+        .lead {
 
             margin: 0;
 
-            color: #5f686f;
+            max-width: 720px;
+
+            font-size: clamp(1.15rem, 2vw, 1.35rem);
+
+            color: var(--muted);
+
+        }
+
+        .hero-actions {
+
+            display: flex;
+
+            flex-wrap: wrap;
+
+            gap: 14px;
+
+            margin-top: 30px;
+
+        }
+
+        .button {
+
+            display: inline-block;
+
+            padding: 12px 18px;
+
+            border-radius: 7px;
+
+            font-weight: 600;
+
+            transition:
+
+                background 0.15s ease,
+
+                color 0.15s ease,
+
+                border-color 0.15s ease;
+
+        }
+
+        .button-primary {
+
+            background: var(--accent);
+
+            color: #ffffff;
+
+            border: 1px solid var(--accent);
+
+        }
+
+        .button-primary:hover,
+
+        .button-primary:focus {
+
+            background: var(--accent-dark);
+
+            border-color: var(--accent-dark);
+
+            text-decoration: none;
+
+        }
+
+        .button-secondary {
+
+            background: transparent;
+
+            color: var(--accent);
+
+            border: 1px solid var(--accent);
+
+        }
+
+        .button-secondary:hover,
+
+        .button-secondary:focus {
+
+            background: var(--surface);
+
+            text-decoration: none;
+
+        }
+
+        .portrait-card {
+
+            background: var(--surface);
+
+            padding: 14px;
+
+            border: 1px solid var(--border);
+
+            border-radius: 16px;
+
+            box-shadow: 0 16px 40px var(--shadow);
+
+        }
+
+        .portrait-card img {
+
+            display: block;
+
+            width: 100%;
+
+            height: auto;
+
+            border-radius: 10px;
+
+        }
+
+        .section {
+
+            padding: 72px 0;
+
+        }
+
+        .section-white {
+
+            background: var(--surface);
+
+            border-top: 1px solid var(--border);
+
+            border-bottom: 1px solid var(--border);
+
+        }
+
+        .section-heading {
+
+            margin: 0 0 12px;
+
+            font-size: 2rem;
+
+            line-height: 1.2;
+
+        }
+
+        .section-intro {
+
+            max-width: 760px;
+
+            margin: 0 0 36px;
+
+            color: var(--muted);
 
             font-size: 1.08rem;
 
-            line-height: 1.7;
+        }
+
+        .cards {
+
+            display: grid;
+
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+
+            gap: 22px;
+
+        }
+
+        .card {
+
+            background: var(--surface);
+
+            padding: 26px;
+
+            border: 1px solid var(--border);
+
+            border-radius: 12px;
+
+        }
+
+        .section-white .card {
+
+            background: var(--background);
+
+        }
+
+        .card h3 {
+
+            margin-top: 0;
+
+            margin-bottom: 10px;
+
+            font-size: 1.2rem;
+
+        }
+
+        .card p {
+
+            margin: 0;
+
+            color: var(--muted);
+
+        }
+
+        .professional-summary {
+
+            display: grid;
+
+            grid-template-columns:
+
+                minmax(0, 1fr)
+
+                minmax(260px, 0.45fr);
+
+            gap: 50px;
+
+        }
+
+        .professional-summary p {
+
+            margin-top: 0;
+
+            font-size: 1.06rem;
+
+        }
+
+        .facts {
+
+            margin: 0;
+
+            padding: 0;
+
+            list-style: none;
+
+        }
+
+        .facts li {
+
+            padding: 14px 0;
+
+            border-bottom: 1px solid var(--border);
+
+        }
+
+        .facts li:first-child {
+
+            border-top: 1px solid var(--border);
+
+        }
+
+        .facts strong {
+
+            display: block;
+
+            margin-bottom: 3px;
 
         }
 
         .site-footer {
 
-            padding-top: 24px;
+            background: var(--surface);
 
-            padding-bottom: 24px;
+            padding: 28px 0;
+
+            border-top: 1px solid var(--border);
+
+            color: var(--muted);
+
+            font-size: 0.92rem;
 
         }
 
@@ -200,71 +468,83 @@
 
             flex-wrap: wrap;
 
-            gap: 16px;
+            gap: 24px;
 
         }
 
         .site-nav a {
 
-            color: #1f2529;
-
-            text-decoration: underline;
-
-            font-family: "Times New Roman", Times, serif;
-
-            font-size: 1rem;
+            color: var(--text);
 
         }
 
-        .site-nav a:hover,
+        @media (max-width: 820px) {
 
-        .site-nav a:focus {
+            .hero {
 
-            text-decoration-thickness: 2px;
-
-        }
-
-        @media (max-width: 760px) {
-
-            .site-header {
-
-                padding-top: 20px;
+                padding-top: 48px;
 
             }
 
-            main {
+            .hero-grid,
 
-                align-items: flex-start;
+            .professional-summary {
 
-                padding-top: 36px;
+                grid-template-columns: 1fr;
 
-                padding-bottom: 40px;
+            }
+
+            .portrait-card {
+
+                max-width: 440px;
+
+            }
+
+            .cards {
+
+                grid-template-columns: 1fr;
+
+            }
+
+        }
+
+        @media (max-width: 520px) {
+
+            .container {
+
+                width: min(calc(100% - 28px), var(--max-width));
 
             }
 
             .hero {
 
-                grid-template-columns: 1fr;
-
-                gap: 30px;
+                padding: 38px 0 50px;
 
             }
 
-            .portrait {
+            .section {
 
-                max-width: 420px;
+                padding: 54px 0;
 
             }
 
-            .site-footer {
+            .hero-actions {
 
-                padding-bottom: 18px;
+                flex-direction: column;
+
+                align-items: stretch;
+
+            }
+
+            .button {
+
+                text-align: center;
 
             }
 
             .site-nav {
 
-                gap: 10px 14px;
+                gap: 14px 20px;
 
             }
 
@@ -292,53 +572,427 @@
 
     <main>
 
-        <div class="container">
+        <section class="hero">
 
-            <section class="hero">
+            <div class="container hero-grid">
 
                 <div>
 
-                    <img
+                    <p class="eyebrow">
 
-                        class="portrait"
+                        Professional
+
+                    </p>
+
+                    <h1>
+
+                        Alexander Ferrari Miller
+
+                    </h1>
+
+                    <p class="lead">
+
+                        Scientist, technologist, educator,
+
+                        quality-assurance professional, and
+
+                        licensed insurance professional with
+
+                        a career spanning analytical,
+
+                        technical, educational, and
+
+                        client-facing work.
+
+                    </p>
+
+                    <div class="hero-actions">
+
+                        <a
+
+                            class="button button-primary"
+
+                            href="#about"
+
+                        >
+
+                            Professional Profile
+
+                        </a>
+
+                        <a
+
+                            class="button button-secondary"
+
+                            href="projects.html"
+
+                        >
+
+                            View Projects
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+                <div class="portrait-card">
+
+                    <img
 
                         src="images/Alexander-Ferrari-Miller.JPEG"
 
-                        alt="Alexander Ferrari Miller"
+                        alt="Portrait of Alexander Ferrari Miller"
 
                     >
 
                 </div>
 
-                <div class="hero-copy">
+            </div>
 
-                    <h1>Alexander Ferrari Miller</h1>
+        </section>
 
-                    <p class="tagline">
+        <section
 
-                        Professional of Many Hats
+            class="section section-white"
+
+            id="about"
+
+        >
+
+            <div class="container professional-summary">
+
+                <div>
+
+                    <h2 class="section-heading">
+
+                        Professional Profile
+
+                    </h2>
+
+                    <p>
+
+                        My professional life has crossed
+
+                        several disciplines, but a common
+
+                        thread runs through all of them:
+
+                        understanding complex systems,
+
+                        identifying problems, explaining
+
+                        them clearly, and finding practical
+
+                        solutions.
 
                     </p>
 
-                    <p class="intro">
+                    <p>
 
-                        A multidisciplinary professional with experience across
+                        My background includes software
 
-                        science, technology, education, insurance, performance,
+                        quality assurance and testing,
 
-                        and independent projects. This site brings together my
+                        scientific and technical work,
 
-                        professional work, creative pursuits, projects, and
+                        education, transportation, and
 
-                        public presence.
+                        financial-services work. I approach
+
+                        each field with the same combination
+
+                        of curiosity, analytical discipline,
+
+                        and attention to detail.
+
+                    </p>
+
+                    <p>
+
+                        I am particularly interested in work
+
+                        where technology, science, testing,
+
+                        communication, and real-world
+
+                        problem solving intersect.
 
                     </p>
 
                 </div>
 
-            </section>
+                <div>
 
-        </div>
+                    <ul class="facts">
+
+                        <li>
+
+                            <strong>
+
+                                Quality Assurance
+
+                            </strong>
+
+                            Software testing, verification,
+
+                            debugging, and analytical
+
+                            problem solving.
+
+                        </li>
+
+                        <li>
+
+                            <strong>
+
+                                Science & Education
+
+                            </strong>
+
+                            Scientific inquiry and biology
+
+                            education.
+
+                        </li>
+
+                        <li>
+
+                            <strong>
+
+                                Insurance
+
+                            </strong>
+
+                            California-licensed insurance
+
+                            professional.
+
+                        </li>
+
+                        <li>
+
+                            <strong>
+
+                                Technology
+
+                            </strong>
+
+                            Programming, web development,
+
+                            automation, and technical
+
+                            projects.
+
+                        </li>
+
+                    </ul>
+
+                </div>
+
+            </div>
+
+        </section>
+
+        <section class="section">
+
+            <div class="container">
+
+                <h2 class="section-heading">
+
+                    Areas of Experience
+
+                </h2>
+
+                <p class="section-intro">
+
+                    A multidisciplinary career has given me
+
+                    experience in both technical systems and
+
+                    the human environments in which those
+
+                    systems operate.
+
+                </p>
+
+                <div class="cards">
+
+                    <article class="card">
+
+                        <h3>
+
+                            Software Quality Assurance
+
+                        </h3>
+
+                        <p>
+
+                            Experience testing software,
+
+                            investigating defects, verifying
+
+                            behavior, and approaching
+
+                            technical problems systematically.
+
+                        </p>
+
+                    </article>
+
+                    <article class="card">
+
+                        <h3>
+
+                            Science & Astronomy
+
+                        </h3>
+
+                        <p>
+
+                            Independent scientific work,
+
+                            numerical investigation, and
+
+                            development of astronomy tools
+
+                            and reference material.
+
+                        </p>
+
+                    </article>
+
+                    <article class="card">
+
+                        <h3>
+
+                            Education
+
+                        </h3>
+
+                        <p>
+
+                            Classroom experience including
+
+                            biology instruction and
+
+                            communicating scientific ideas
+
+                            clearly to students.
+
+                        </p>
+
+                    </article>
+
+                    <article class="card">
+
+                        <h3>
+
+                            Insurance & Financial Services
+
+                        </h3>
+
+                        <p>
+
+                            Licensed insurance work with an
+
+                            emphasis on understanding client
+
+                            needs, explaining options, and
+
+                            professional service.
+
+                        </p>
+
+                    </article>
+
+                    <article class="card">
+
+                        <h3>
+
+                            Programming & Technology
+
+                        </h3>
+
+                        <p>
+
+                            Software development, debugging,
+
+                            automation, web technologies, and
+
+                            practical experimentation with
+
+                            modern computing tools.
+
+                        </p>
+
+                    </article>
+
+                    <article class="card">
+
+                        <h3>
+
+                            Analysis & Problem Solving
+
+                        </h3>
+
+                        <p>
+
+                            A systems-oriented approach to
+
+                            complex problems: gather
+
+                            evidence, isolate variables,
+
+                            test assumptions, and follow the
+
+                            evidence.
+
+                        </p>
+
+                    </article>
+
+                </div>
+
+            </div>
+
+        </section>
+
+        <section class="section section-white">
+
+            <div class="container">
+
+                <h2 class="section-heading">
+
+                    Current Projects
+
+                </h2>
+
+                <p class="section-intro">
+
+                    My independent work includes projects in
+
+                    astronomy, software, scientific
+
+                    computing, and personal technology.
+
+                </p>
+
+                <a
+
+                    class="button button-primary"
+
+                    href="projects.html"
+
+                >
+
+                    Explore My Projects
+
+                </a>
+
+            </div>
+
+        </section>
 
     </main>
 
@@ -346,15 +1000,37 @@
 
         <div class="container">
 
-            <nav class="site-nav" aria-label="Main navigation">
+            <nav
 
-                <a href="index.html">Professional</a>
+                class="site-nav"
 
-                <a href="performance.html">Performance</a>
+                aria-label="Main navigation"
 
-                <a href="projects.html">Projects</a>
+            >
 
-                <a href="social-media.html">Social Media</a>
+                <a href="index.html">
+
+                    Professional
+
+                </a>
+
+                <a href="performance.html">
+
+                    Performance
+
+                </a>
+
+                <a href="projects.html">
+
+                    Projects
+
+                </a>
+
+                <a href="social-media.html">
+
+                    Social Media
+
+                </a>
 
             </nav>
 
