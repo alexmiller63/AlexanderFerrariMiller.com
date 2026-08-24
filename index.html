@@ -50,11 +50,19 @@
 
             flex-direction: column;
 
-            background: #ffffff;
+            background: #f5f5f2;
 
-            color: #000000;
+            color: #1f2529;
 
-            font-family: "Times New Roman", Times, serif;
+            font-family:
+
+                -apple-system,
+
+                BlinkMacSystemFont,
+
+                "Segoe UI",
+
+                sans-serif;
 
         }
 
@@ -66,9 +74,9 @@
 
             margin: 0 auto;
 
-            padding-left: 18px;
+            padding-left: 20px;
 
-            padding-right: 18px;
+            padding-right: 20px;
 
         }
 
@@ -80,9 +88,11 @@
 
         .site-name {
 
-            color: #000000;
+            color: #1f2529;
 
             text-decoration: none;
+
+            font-family: Georgia, "Times New Roman", serif;
 
             font-size: 1.5rem;
 
@@ -99,6 +109,80 @@
         main {
 
             flex: 1;
+
+            display: flex;
+
+            align-items: center;
+
+            padding-top: 48px;
+
+            padding-bottom: 48px;
+
+        }
+
+        .hero {
+
+            display: grid;
+
+            grid-template-columns: minmax(260px, 380px) 1fr;
+
+            gap: 56px;
+
+            align-items: center;
+
+        }
+
+        .portrait {
+
+            width: 100%;
+
+            display: block;
+
+            border-radius: 4px;
+
+            box-shadow: 0 8px 28px rgba(0, 0, 0, 0.10);
+
+        }
+
+        .hero-copy h1 {
+
+            margin: 0 0 10px 0;
+
+            font-family: Georgia, "Times New Roman", serif;
+
+            font-size: clamp(2.4rem, 6vw, 4.6rem);
+
+            line-height: 1;
+
+            font-weight: 500;
+
+            letter-spacing: -0.03em;
+
+        }
+
+        .tagline {
+
+            margin: 0 0 24px 0;
+
+            color: #2f536b;
+
+            font-family: Georgia, "Times New Roman", serif;
+
+            font-size: clamp(1.15rem, 2.5vw, 1.5rem);
+
+        }
+
+        .intro {
+
+            max-width: 640px;
+
+            margin: 0;
+
+            color: #5f686f;
+
+            font-size: 1.08rem;
+
+            line-height: 1.7;
 
         }
 
@@ -122,9 +206,11 @@
 
         .site-nav a {
 
-            color: #000000;
+            color: #1f2529;
 
             text-decoration: underline;
+
+            font-family: "Times New Roman", Times, serif;
 
             font-size: 1rem;
 
@@ -138,7 +224,7 @@
 
         }
 
-        @media (max-width: 600px) {
+        @media (max-width: 760px) {
 
             .site-header {
 
@@ -146,9 +232,27 @@
 
             }
 
-            .site-name {
+            main {
 
-                font-size: 1.35rem;
+                align-items: flex-start;
+
+                padding-top: 36px;
+
+                padding-bottom: 40px;
+
+            }
+
+            .hero {
+
+                grid-template-columns: 1fr;
+
+                gap: 30px;
+
+            }
+
+            .portrait {
+
+                max-width: 420px;
 
             }
 
@@ -161,12 +265,6 @@
             .site-nav {
 
                 gap: 10px 14px;
-
-            }
-
-            .site-nav a {
-
-                font-size: 0.98rem;
 
             }
 
@@ -194,7 +292,53 @@
 
     <main>
 
-        <!-- Professional page content goes here -->
+        <div class="container">
+
+            <section class="hero">
+
+                <div>
+
+                    <img
+
+                        class="portrait"
+
+                        src="Alexander-Ferrari-Miller.JPEG"
+
+                        alt="Alexander Ferrari Miller"
+
+                    >
+
+                </div>
+
+                <div class="hero-copy">
+
+                    <h1>Alexander Ferrari Miller</h1>
+
+                    <p class="tagline">
+
+                        Professional of Many Hats
+
+                    </p>
+
+                    <p class="intro">
+
+                        A multidisciplinary professional with experience across
+
+                        science, technology, education, insurance, performance,
+
+                        and independent projects. This site brings together my
+
+                        professional work, creative pursuits, projects, and
+
+                        public presence.
+
+                    </p>
+
+                </div>
+
+            </section>
+
+        </div>
 
     </main>
 
