@@ -22,7 +22,7 @@
 
     >
 
-    <title>Alexander Ferrari Miller</title>
+    <title>Alexander Ferrari Miller | Professional</title>
 
     <style>
 
@@ -32,7 +32,11 @@
 
         }
 
-        html {
+        html,
+
+        body {
+
+            margin: 0;
 
             min-height: 100%;
 
@@ -42,13 +46,15 @@
 
             min-height: 100vh;
 
-            min-height: 100dvh;
-
-            margin: 0;
-
             display: flex;
 
             flex-direction: column;
+
+            background: #ffffff;
+
+            color: #000000;
+
+            font-family: "Times New Roman", Times, serif;
 
         }
 
@@ -56,19 +62,37 @@
 
             width: 100%;
 
-            padding: 8px;
+            max-width: 1100px;
+
+            margin: 0 auto;
+
+            padding-left: 18px;
+
+            padding-right: 18px;
 
         }
 
         .site-header {
 
-            flex-shrink: 0;
+            padding-top: 28px;
 
         }
 
         .site-name {
 
-            display: inline-block;
+            color: #000000;
+
+            text-decoration: none;
+
+            font-size: 1.5rem;
+
+        }
+
+        .site-name:hover,
+
+        .site-name:focus {
+
+            text-decoration: underline;
 
         }
 
@@ -80,7 +104,9 @@
 
         .site-footer {
 
-            flex-shrink: 0;
+            padding-top: 24px;
+
+            padding-bottom: 24px;
 
         }
 
@@ -90,13 +116,59 @@
 
             flex-wrap: wrap;
 
-            gap: 0;
+            gap: 16px;
 
         }
 
         .site-nav a {
 
-            margin-right: 4px;
+            color: #000000;
+
+            text-decoration: underline;
+
+            font-size: 1rem;
+
+        }
+
+        .site-nav a:hover,
+
+        .site-nav a:focus {
+
+            text-decoration-thickness: 2px;
+
+        }
+
+        @media (max-width: 600px) {
+
+            .site-header {
+
+                padding-top: 20px;
+
+            }
+
+            .site-name {
+
+                font-size: 1.35rem;
+
+            }
+
+            .site-footer {
+
+                padding-bottom: 18px;
+
+            }
+
+            .site-nav {
+
+                gap: 10px 14px;
+
+            }
+
+            .site-nav a {
+
+                font-size: 0.98rem;
+
+            }
 
         }
 
@@ -122,7 +194,7 @@
 
     <main>
 
-        <!-- Professional page content stays here -->
+        <!-- Professional page content goes here -->
 
     </main>
 
