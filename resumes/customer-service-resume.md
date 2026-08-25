@@ -1,101 +1,108 @@
-# Alexander Ferrari Miller
+Alexander Ferrari Miller
 
-**Customer Service | Retail | Hospitality | Client Communication**
+Customer Service | Retail | Hospitality | Client Communication
 
-## PROFESSIONAL SUMMARY
+PROFESSIONAL SUMMARY
 
 Experienced customer-service professional with a background spanning transportation, hospitality, retail, entertainment, education, and live public-facing work.
 
 Skilled at building rapport quickly, handling payments and POS systems, responding to changing customer needs, resolving problems independently, and maintaining professional service in high-volume and time-sensitive environments.
 
-## CORE QUALIFICATIONS
+CORE QUALIFICATIONS
 
-- Customer service and guest relations
-- Retail and hospitality operations
-- POS systems and cash registers
-- Cash, credit-card, and electronic payment processing
-- Customer communication and rapport building
-- Problem resolution
-- High-volume public interaction
-- Independent decision-making
-- Data entry and web-based systems
-- Microsoft Office, Excel, and Outlook
-- Public speaking and presentation
-- Reliable independent work
+* Customer service and guest relations
+* Retail and hospitality operations
+* POS systems and cash registers
+* Cash, credit-card, and electronic payment processing
+* Customer communication and rapport building
+* Problem resolution
+* High-volume public interaction
+* Independent decision-making
+* Data entry and web-based systems
+* Microsoft Office, Excel, and Outlook
+* Public speaking and presentation
+* Reliable independent work
 
-## RELEVANT EXPERIENCE
+RELEVANT EXPERIENCE
 
-### Taxi Driver — Yellow Cab | Torrance, CA
-**November 2024 – February 2026**
+Santa Claus — Mall Santa | Culver City, CA
 
-- Provided professional passenger service throughout the Los Angeles area.
-- Built rapport quickly with customers from varied backgrounds.
-- Handled fares, payments, passenger requests, and changing destinations.
-- Worked independently while maintaining professionalism in time-sensitive situations.
+Christmas 2025 Season
 
-### Bartender — Patina Restaurant | Los Angeles, CA
-**January 2023 – February 2024**
+* Interacted directly with children and families in a high-volume public setting.
+* Built rapport quickly with guests across a wide range of ages and backgrounds.
+* Maintained a professional character and positive guest experience throughout extended shifts.
+* Coordinated with photographers, managers, families, and other Santa-team members.
 
-- Worked in a professional hospitality environment serving guests and supporting restaurant operations.
-- Handled customer orders and payments.
-- Used POS and cash-register systems.
-- Set up and broke down the bar for service.
-- Responded to multiple guest and operational needs in a fast-paced environment.
+Taxi Driver — Yellow Cab | Torrance, CA
 
-### Rideshare Driver — Lyft and Uber | Los Angeles, CA
-**January 2014 – October 2024**
+November 2024 – February 2026
 
-- Completed thousands of independent customer-service interactions.
-- Communicated with passengers regarding pickups, drop-offs, destinations, and changing needs.
-- Used smartphone-based navigation and electronic payment systems.
-- Resolved customer and transportation issues independently while maintaining professional service.
+* Provided professional passenger service throughout the Los Angeles area.
+* Built rapport quickly with customers from varied backgrounds.
+* Handled fares, payments, passenger requests, and changing destinations.
+* Worked independently while maintaining professionalism in time-sensitive situations.
 
-### Santa Claus — Mall Santa | Culver City, CA
-**Christmas 2025 Season**
+Rideshare Driver — Lyft and Uber | Los Angeles, CA
 
-- Interacted directly with children and families in a high-volume public setting.
-- Built rapport quickly with guests across a wide range of ages and backgrounds.
-- Maintained a professional character and positive guest experience throughout extended shifts.
-- Coordinated with photographers, managers, families, and other Santa-team members.
+January 2014 – October 2024
 
-### Crew Member — ArcLight Cinema | Los Angeles, CA
-**June 2007 – June 2014**
+* Completed thousands of independent customer-service interactions.
+* Communicated with passengers regarding pickups, drop-offs, destinations, and changing needs.
+* Used smartphone-based navigation and electronic payment systems.
+* Resolved customer and transportation issues independently while maintaining professional service.
 
-- Provided customer service in a fast-paced retail entertainment environment.
-- Sold concessions and movie tickets and accurately operated POS systems.
-- Handled customer transactions and assisted guests throughout theater operations.
-- Greeted audiences and introduced films.
+Bartender — Patina Restaurant | Los Angeles, CA
 
-### Bagger / Customer Service — Star Market | Newton, MA
-**1980**
+January 2023 – February 2024
 
-- Bagged groceries and assisted customers with purchases.
-- Loaded groceries into customers' vehicles.
-- Provided direct customer service in a retail grocery environment.
+* Worked in a professional hospitality environment serving guests and supporting restaurant operations.
+* Handled customer orders and payments.
+* Used POS and cash-register systems.
+* Set up and broke down the bar for service.
+* Responded to multiple guest and operational needs in a fast-paced environment.
 
-### Newspaper Carrier — The Boston Globe | Newton, MA
-**Approximately 1979**
+Crew Member — ArcLight Cinema | Los Angeles, CA
 
-- Managed an assigned newspaper delivery route.
-- Interacted directly with subscribers.
-- Collected subscription payments and handled cash.
-- Reconciled customer payments associated with the route.
-- Worked independently and maintained reliable delivery service.
+June 2007 – June 2014
 
-## EDUCATION
+* Provided customer service in a fast-paced retail entertainment environment.
+* Sold concessions and movie tickets and accurately operated POS systems.
+* Handled customer transactions and assisted guests throughout theater operations.
+* Greeted audiences and introduced films.
 
-**Oberlin College**  
+Bagger / Customer Service — Star Market | Newton, MA
+
+1980
+
+* Bagged groceries and assisted customers with purchases.
+* Loaded groceries into customers’ vehicles.
+* Provided direct customer service in a retail grocery environment.
+
+Newspaper Carrier — The Boston Globe | Newton, MA
+
+Approximately 1979
+
+* Managed an assigned newspaper delivery route.
+* Interacted directly with subscribers.
+* Collected subscription payments and handled cash.
+* Reconciled customer payments associated with the route.
+* Worked independently and maintained reliable delivery service.
+
+EDUCATION
+
+Oberlin College
 Bachelor of Arts — Russian/Soviet Studies
 
-**University of Massachusetts Lowell**  
+University of Massachusetts Lowell
 Undergraduate studies — Mathematics
 
-**Los Angeles City College**  
-Associate's degree studies — Computer Science; nearly complete
+Los Angeles City College
+Associate’s degree studies — Computer Science; nearly complete
 
-## ACTIVE CREDENTIALS
+ACTIVE CREDENTIALS
 
-- California Resident Insurance Producer License
-- California Class C Driver's License
-- California 30-Day Substitute Teaching Permit
-- California Security Guard Card
+* California Resident Insurance Producer License
+* California Class C Driver’s License
+* California 30-Day Substitute Teaching Permit
+* California Security Guard Card
