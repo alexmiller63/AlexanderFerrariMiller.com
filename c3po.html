@@ -325,21 +325,39 @@
                         { type: blob.type || "application/octet-stream" }
                     );
 
+                    let filesToShare = [sharedFile];
+
+                    if (type === "html") {
+                        const textUrl = fileUrl.replace(/\.html$/i, ".txt");
+                        const textResponse = await fetch(textUrl);
+
+                        if (textResponse.ok) {
+                            const textBlob = await textResponse.blob();
+                            const textFilename = filename.replace(/\.html$/i, ".txt");
+
+                            const textFile = new File(
+                                [textBlob],
+                                textFilename,
+                                { type: "text/plain;charset=utf-8" }
+                            );
+
+                            filesToShare.push(textFile);
+                        }
+                    }
+
                     if (
                         navigator.share &&
                         navigator.canShare &&
-                        navigator.canShare({ files: [sharedFile] })
+                        navigator.canShare({ files: filesToShare })
                     ) {
                         await navigator.share({
-                            title: title,
-                            files: [sharedFile]
+                            files: filesToShare
                         });
                         return;
                     }
 
                     if (navigator.share) {
                         await navigator.share({
-                            title: title,
                             url: fileUrl
                         });
                         return;
