@@ -115,6 +115,12 @@
             overflow: hidden;
         }
 
+        .html-viewer {
+            width: 100%;
+            min-height: 78vh;
+            border: 0;
+        }
+
         .pdf-viewer {
             width: 100%;
             height: 78vh;
@@ -135,6 +141,28 @@
         .document-viewer p,
         .document-viewer li {
             line-height: 1.6;
+        }
+
+        .source-viewer {
+            margin: 0;
+            padding: 1.5rem;
+            min-height: 70vh;
+            overflow: auto;
+            white-space: pre-wrap;
+            word-break: break-word;
+            font-family:
+                ui-monospace,
+                SFMono-Regular,
+                Menlo,
+                Monaco,
+                Consolas,
+                "Liberation Mono",
+                "Courier New",
+                monospace;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            background: #ffffff;
+            color: #1f2529;
         }
 
         .fallback {
@@ -181,7 +209,9 @@
                 padding: 1.25rem;
             }
 
+            .html-viewer,
             .pdf-viewer {
+                min-height: 72vh;
                 height: 72vh;
             }
         }
@@ -215,9 +245,13 @@
                         Share
                     </button>
 
-                    <a class="button secondary" id="open-button" href="#">
-                        Open file
-                    </a>
+                    <button
+                        class="button secondary"
+                        id="source-button"
+                        type="button"
+                    >
+                        View Source
+                    </button>
 
                     <a class="button secondary" href="resumes.html">
                         Back to Resumes
@@ -256,7 +290,9 @@
         const viewer = document.getElementById("viewer");
         const titleElement = document.getElementById("viewer-title");
         const shareButton = document.getElementById("share-button");
-        const openButton = document.getElementById("open-button");
+        const sourceButton = document.getElementById("source-button");
+
+        let showingSource = false;
 
         titleElement.textContent = title;
 
@@ -268,11 +304,9 @@
             `;
 
             shareButton.disabled = true;
-            openButton.style.display = "none";
+            sourceButton.disabled = true;
         } else {
             const fileUrl = new URL(file, window.location.href).href;
-
-            openButton.href = fileUrl;
 
             async function shareFile() {
                 try {
@@ -320,6 +354,45 @@
             }
 
             shareButton.addEventListener("click", shareFile);
+
+            async function displayHtml() {
+                showingSource = false;
+                sourceButton.textContent = "View Source";
+
+                viewer.innerHTML = "";
+
+                const frame = document.createElement("iframe");
+                frame.className = "html-viewer";
+                frame.src = fileUrl;
+                frame.title = title;
+
+                viewer.appendChild(frame);
+            }
+
+            async function displayHtmlSource() {
+                try {
+                    const response = await fetch(fileUrl);
+
+                    if (!response.ok) {
+                        throw new Error("Unable to load HTML source.");
+                    }
+
+                    const text = await response.text();
+
+                    viewer.innerHTML = "";
+
+                    const pre = document.createElement("pre");
+                    pre.className = "source-viewer";
+                    pre.textContent = text;
+
+                    viewer.appendChild(pre);
+
+                    showingSource = true;
+                    sourceButton.textContent = "View Resume";
+                } catch (error) {
+                    showFallback();
+                }
+            }
 
             async function displayMarkdown() {
                 try {
@@ -390,24 +463,38 @@
                     <div class="fallback">
                         <p>
                             This file format cannot be reliably previewed
-                            in this browser. You can still open or share
+                            in this browser. You can still share
                             the original file.
                         </p>
-
-                        <a class="button" href="${fileUrl}">
-                            Open file
-                        </a>
                     </div>
                 `;
             }
 
-            if (type === "pdf") {
+            sourceButton.addEventListener("click", () => {
+                if (type !== "html") {
+                    return;
+                }
+
+                if (showingSource) {
+                    displayHtml();
+                } else {
+                    displayHtmlSource();
+                }
+            });
+
+            if (type === "html") {
+                displayHtml();
+            } else if (type === "pdf") {
+                sourceButton.style.display = "none";
                 displayPdf();
             } else if (type === "docx") {
+                sourceButton.style.display = "none";
                 displayDocx();
             } else if (type === "md" || type === "markdown") {
+                sourceButton.style.display = "none";
                 displayMarkdown();
             } else {
+                sourceButton.style.display = "none";
                 showFallback();
             }
         }
