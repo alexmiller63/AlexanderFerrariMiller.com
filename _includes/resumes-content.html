@@ -131,8 +131,6 @@
         }
 
         .resume-link {
-            align-self: flex-start;
-
             display: inline-block;
             padding: 0.7rem 1rem;
 
@@ -147,6 +145,27 @@
         .resume-link:hover,
         .resume-link:focus {
             background: var(--accent-dark);
+        }
+
+        .resume-actions {
+            margin-top: auto;
+        }
+
+        .download-links {
+            margin-top: 1rem;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .download-links a,
+        .source-link a {
+            color: var(--accent-dark);
+        }
+
+        .source-link {
+            margin-top: 0.35rem;
+            font-size: 0.82rem;
+            color: var(--muted);
         }
 
         .site-footer {
@@ -226,12 +245,37 @@
                         </p>
                     </div>
 
-                    <a
-                        class="resume-link"
-                        href="resumes/insurance-sales-resume.html"
-                    >
-                        View Resume
-                    </a>
+                    <div class="resume-actions">
+                        <a
+                            class="resume-link"
+                            href="resumes/insurance-sales-resume.html"
+                        >
+                            View Resume
+                        </a>
+
+                        <div class="download-links">
+                            <strong>Download:</strong>
+                            <a
+                                href="resumes/insurance-sales-resume.pdf"
+                            >PDF</a>
+                            ·
+                            <a
+                                href="resumes/insurance-sales-resume.docx"
+                            >DOCX</a>
+                            ·
+                            <a
+                                href="resumes/insurance-sales-resume.odt"
+                            >ODT</a>
+                        </div>
+
+                        <div class="source-link">
+                            <a
+                                href="resumes/insurance-sales-resume.md"
+                            >
+                                View source (Markdown)
+                            </a>
+                        </div>
+                    </div>
                 </article>
 
                 <article class="resume-card">
@@ -247,12 +291,14 @@
                         </p>
                     </div>
 
-                    <a
-                        class="resume-link"
-                        href="resumes/customer-service-resume.html"
-                    >
-                        View Resume
-                    </a>
+                    <div class="resume-actions">
+                        <a
+                            class="resume-link"
+                            href="resumes/customer-service-resume.html"
+                        >
+                            View Resume
+                        </a>
+                    </div>
                 </article>
 
                 <article class="resume-card">
@@ -267,6 +313,59 @@
                         </p>
                     </div>
 
-                    <a
-                        class="resume-link"
-                        href="resumes/
+                    <div class="resume-actions">
+                        <a
+                            class="resume-link"
+                            href="resumes/technical-resume.html"
+                        >
+                            View Resume
+                        </a>
+                    </div>
+                </article>
+
+                <article class="resume-card">
+                    <div>
+                        <h2>Performance</h2>
+
+                        <p>
+                            Professional character performance,
+                            musical theater, opera, choral singing,
+                            acting, dance, and live audience
+                            interaction.
+                        </p>
+                    </div>
+
+                    <div class="resume-actions">
+                        <a
+                            class="resume-link"
+                            href="resumes/performance-resume.html"
+                        >
+                            View Resume
+                        </a>
+                    </div>
+                </article>
+
+            </section>
+
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+
+            <nav
+                class="site-nav"
+                aria-label="Main navigation"
+            >
+                <a href="index.html">Professional</a>
+                <a href="performance.html">Performance</a>
+                <a href="projects.html">Projects</a>
+                <a href="social-media.html">Social Media</a>
+                <a href="resumes.html">Resumes</a>
+            </nav>
+
+        </div>
+    </footer>
+
+</body>
+</html>
