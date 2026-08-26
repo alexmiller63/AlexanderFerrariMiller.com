@@ -1,79 +1,89 @@
+#!/usr/bin/env python3
+
+from pathlib import Path
+
 from docx import Document
-from docx.shared import Inches
+from docx.enum.table import WD_CELL_VERTICAL_ALIGNMENT
 from docx.enum.text import WD_ALIGN_PARAGRAPH
-from docx.enum.table import WD_TABLE_ALIGNMENT, WD_CELL_VERTICAL_ALIGNMENT
-from docx.oxml import OxmlElement
-from docx.oxml.ns import qn
+from docx.shared import Inches, Pt
 
 
-OUTPUT = "test-docx-table.docx"
-SANTA_IMAGE = "images/santa.jpeg"
+ROOT = Path(__file__).resolve().parents[1]
+
+OUTPUT_FILE = ROOT / "test-docx-table.docx"
+IMAGE_FILE = ROOT / "images" / "Alexander-Ferrari-Miller-Santa.jpeg"
 
 
-doc = Document()
+def remove_table_borders(table):
+    tbl = table._tbl
+    tblPr = tbl.tblPr
 
-section = doc.sections[0]
+    borders = tblPr.first_child_found_in("w:tblBorders")
 
-usable_width = (
-    section.page_width
-    - section.left_margin
-    - section.right_margin
-)
-
-table = doc.add_table(rows=1, cols=2)
-table.autofit = False
-table.alignment = WD_TABLE_ALIGNMENT.LEFT
-
-left_cell = table.cell(0, 0)
-right_cell = table.cell(0, 1)
-
-left_width = Inches(5.0)
-right_width = usable_width - left_width
-
-left_cell.width = left_width
-right_cell.width = right_width
+    if borders is not None:
+        tblPr.remove(borders)
 
 
-def set_cell_width(cell, width):
-    tc_pr = cell._tc.get_or_add_tcPr()
+def main():
+    document = Document()
 
-    tc_w = tc_pr.first_child_found_in("w:tcW")
-    if tc_w is None:
-        tc_w = OxmlElement("w:tcW")
-        tc_pr.append(tc_w)
+    section = document.sections[0]
 
-    tc_w.set(qn("w:w"), str(int(width / 635)))
-    tc_w.set(qn("w:type"), "dxa")
+    section.top_margin = Inches(0.75)
+    section.bottom_margin = Inches(0.75)
+    section.left_margin = Inches(0.75)
+    section.right_margin = Inches(0.75)
+
+    usable_width = (
+        section.page_width
+        - section.left_margin
+        - section.right_margin
+    )
+
+    table = document.add_table(rows=1, cols=2)
+
+    table.autofit = False
+    table.allow_autofit = False
+
+    remove_table_borders(table)
+
+    left_cell = table.cell(0, 0)
+    right_cell = table.cell(0, 1)
+
+    left_width = Inches(4.75)
+    right_width = usable_width - left_width
+
+    left_cell.width = left_width
+    right_cell.width = right_width
+
+    left_cell.vertical_alignment = WD_CELL_VERTICAL_ALIGNMENT.TOP
+    right_cell.vertical_alignment = WD_CELL_VERTICAL_ALIGNMENT.TOP
+
+    left_paragraph = left_cell.paragraphs[0]
+    left_paragraph.alignment = WD_ALIGN_PARAGRAPH.LEFT
+
+    name_run = left_paragraph.add_run("Alexander Ferrari Miller")
+    name_run.bold = True
+    name_run.font.size = Pt(18)
+
+    left_paragraph.add_run("\n")
+
+    profile_run = left_paragraph.add_run("Performance Profile")
+    profile_run.bold = True
+    profile_run.font.size = Pt(14)
+
+    right_paragraph = right_cell.paragraphs[0]
+    right_paragraph.alignment = WD_ALIGN_PARAGRAPH.RIGHT
+
+    right_paragraph.add_run().add_picture(
+        str(IMAGE_FILE),
+        width=Inches(1.5),
+    )
+
+    document.save(OUTPUT_FILE)
+
+    print(f"Created: {OUTPUT_FILE}")
 
 
-set_cell_width(left_cell, left_width)
-set_cell_width(right_cell, right_width)
-
-# Contact information — left cell
-p = left_cell.paragraphs[0]
-p.add_run("Alexander Ferrari Miller")
-
-for line in [
-    "3549 North D Street",
-    "San Bernardino, CA 92405-2103",
-    "+1 (323) 681-7588",
-    "Alexander.Ferrari.Miller@gmail.com",
-    "https://AlexanderFerrariMiller.com",
-]:
-    p = left_cell.add_paragraph(line)
-
-# Santa — right cell
-right_cell.vertical_alignment = WD_CELL_VERTICAL_ALIGNMENT.TOP
-
-p = right_cell.paragraphs[0]
-p.alignment = WD_ALIGN_PARAGRAPH.RIGHT
-
-run = p.add_run()
-run.add_picture(SANTA_IMAGE, width=Inches(1.5))
-
-# Test marker below the complete table
-doc.add_paragraph("TABLE TEST END")
-
-doc.save(OUTPUT)
-
-print(f"Created {OUTPUT}")
+if __name__ == "__main__":
+    main()
