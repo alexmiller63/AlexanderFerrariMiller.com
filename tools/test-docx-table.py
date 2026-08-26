@@ -4,6 +4,7 @@ from pathlib import Path
 
 from docx import Document
 from docx.enum.text import WD_ALIGN_PARAGRAPH
+from docx.shared import Inches
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -12,6 +13,12 @@ OUTPUT_FILE = ROOT / "test-docx-table.docx"
 
 def main():
     document = Document()
+
+    section = document.sections[0]
+    section.top_margin = Inches(0.75)
+    section.bottom_margin = Inches(0.75)
+    section.left_margin = Inches(0.75)
+    section.right_margin = Inches(0.75)
 
     table = document.add_table(rows=1, cols=2)
     table.style = "Table Grid"
