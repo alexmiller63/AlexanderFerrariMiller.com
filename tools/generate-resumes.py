@@ -1,3 +1,4 @@
+
 #!/usr/bin/env python3
 """
 Generate resume output from:
@@ -288,7 +289,7 @@ def build_office_html(
         )
         portrait = f"""
 <td style="width:32%; vertical-align:top; text-align:right;">
-    <img src="{image_path}" alt="{image_alt}" style="width:2in; height:auto;">
+    <img src="{image_path}" alt="{image_alt}" style="width:1.5in; height:1.9in;">
 </td>"""
 
     return f"""<!DOCTYPE html>
