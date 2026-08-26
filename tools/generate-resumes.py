@@ -1,20 +1,37 @@
 #!/usr/bin/env python3
 """
-Generate HTML resumes from:
+Generate resume output from:
+
   resumes/header.txt
   resumes/<name>.md
+
+Supported output formats:
+  - HTML
+  - PDF
+  - DOCX
+  - ODT
+  - TXT
 
 Source of truth:
 - header.txt = shared contact/header information
 - <name>.md = resume-specific content, including image references
 - this script = rendering/presentation only
+
+External tools:
+- Python package: markdown
+- Pandoc: used for DOCX and ODT
+- LibreOffice: used to convert DOCX to PDF
 """
 
 from __future__ import annotations
 
 import argparse
 import html
+import os
 import re
+import shutil
+import subprocess
+import tempfile
 from pathlib import Path
 
 try:
@@ -25,7 +42,6 @@ except ImportError as exc:
         "Install it with: python -m pip install markdown"
     ) from exc
 
-
 ROOT = Path(__file__).resolve().parents[1]
 RESUMES_DIR = ROOT / "resumes"
 HEADER_FILE = RESUMES_DIR / "header.txt"
@@ -33,13 +49,11 @@ HEADER_FILE = RESUMES_DIR / "header.txt"
 
 def read_header(path: Path) -> dict[str, str]:
     lines = [line.strip() for line in path.read_text(encoding="utf-8").splitlines() if line.strip()]
-
     if len(lines) != 6:
         raise ValueError(
             f"{path} must contain exactly 6 nonblank lines:\n"
             "name, street, city/state/ZIP, phone, email, website"
         )
-
     return {
         "name": lines[0],
         "street": lines[1],
@@ -48,6 +62,15 @@ def read_header(path: Path) -> dict[str, str]:
         "email": lines[4],
         "website": lines[5],
     }
+
+
+def validate_markdown_source(md_path: Path, md_text: str) -> None:
+    if md_text.startswith("# "):
+        raise ValueError(
+            f"{md_path} still contains a top-level header/contact block.\n"
+            "Move shared contact information to resumes/header.txt and let the "
+            "Markdown begin with resume-specific content."
+        )
 
 
 def render_markdown(md_text: str) -> str:
@@ -217,27 +240,250 @@ main {{
 """
 
 
-def generate(stem: str) -> Path:
-    md_path = RESUMES_DIR / f"{stem}.md"
-    out_path = RESUMES_DIR / f"{stem}.html"
+def build_pandoc_markdown(header: dict[str, str], md_text: str) -> str:
+    """Build one continuous Pandoc document without synthetic Heading-1 blocks.
 
+    ODT/DOCX styles can assign page-break-before behavior to heading styles.
+    Keeping the shared contact header as ordinary paragraphs prevents the
+    contact block, resume title, image, and body from being forced onto
+    separate pages.
+    """
+    contact = "  \n".join(
+        [
+            header["name"],
+            header["street"],
+            header["city"],
+            header["phone"],
+            header["email"],
+            header["website"],
+        ]
+    )
+    return f"{contact}\n\n{md_text.strip()}\n"
+
+
+def strip_images_from_markdown(md_text: str) -> str:
+    text = re.sub(r"!\[[^\]]*\]\([^)]+\)", "", md_text)
+    text = re.sub(r"!\[[^\]]*\]\[[^\]]*\]", "", text)
+    text = re.sub(r"<img\b[^>]*>", "", text, flags=re.IGNORECASE)
+    return re.sub(r"\n{3,}", "\n\n", text).strip()
+
+
+def markdown_to_plain_text(md_text: str) -> str:
+    text = strip_images_from_markdown(md_text)
+    text = re.sub(r"\[([^\]]+)\]\([^)]+\)", r"\1", text)
+    text = re.sub(r"(\*\*|__)(.*?)\1", r"\2", text)
+    text = re.sub(r"(?<!\*)\*([^*\n]+)\*(?!\*)", r"\1", text)
+    text = re.sub(r"(?<!_)_([^_\n]+)_(?!_)", r"\1", text)
+    text = re.sub(r"(?m)^\s{0,3}#{1,6}\s*", "", text)
+    text = re.sub(r"(?m)^\s*([-*_])(?:\s*\1){2,}\s*$", "", text)
+    text = re.sub(r"(?m)^\s*[-*+]\s+", "• ", text)
+    text = re.sub(r"(?m)^\s*(\d+)\.\s+", r"\1. ", text)
+    text = re.sub(r"`([^`]+)`", r"\1", text)
+    text = re.sub(r"<[^>]+>", "", text)
+    text = html.unescape(text)
+    return re.sub(r"\n{3,}", "\n\n", text).strip()
+
+
+def build_txt(header: dict[str, str], md_text: str) -> str:
+    body = markdown_to_plain_text(md_text)
+    return (
+        f'{header["name"]}\n'
+        f'{header["street"]}\n'
+        f'{header["city"]}\n'
+        f'{header["phone"]}\n'
+        f'{header["email"]}\n'
+        f'{header["website"]}\n'
+        f"\n{body}\n"
+    )
+
+
+def require_program(name: str) -> str:
+    path = shutil.which(name)
+    if not path:
+        raise SystemExit(
+            f"Required program not found: {name}\n"
+            f"Install {name} and make sure it is on PATH."
+        )
+    return path
+
+
+def run_checked(command: list[str], *, cwd: Path | None = None) -> None:
+    try:
+        subprocess.run(command, cwd=cwd, check=True)
+    except subprocess.CalledProcessError as exc:
+        raise SystemExit(
+            "Command failed:\n" + " ".join(str(part) for part in command)
+        ) from exc
+
+
+def generate_html(stem: str, header: dict[str, str], md_text: str) -> Path:
+    out_path = RESUMES_DIR / f"{stem}.html"
+    body_html = add_resume_image_class(render_markdown(md_text))
+    title = f'{header["name"]} | {stem.replace("-", " ").title()}'
+    out_path.write_text(build_html(header, body_html, title), encoding="utf-8")
+    return out_path
+
+
+def generate_txt(stem: str, header: dict[str, str], md_text: str) -> Path:
+    out_path = RESUMES_DIR / f"{stem}.txt"
+    out_path.write_text(build_txt(header, md_text), encoding="utf-8")
+    return out_path
+
+
+def generate_docx(stem: str, header: dict[str, str], md_text: str) -> Path:
+    pandoc = require_program("pandoc")
+    docx_path = RESUMES_DIR / f"{stem}.docx"
+
+    with tempfile.TemporaryDirectory(prefix="resume-build-") as tmp:
+        tmp_dir = Path(tmp)
+        combined_md = tmp_dir / f"{stem}.md"
+        combined_md.write_text(build_pandoc_markdown(header, md_text), encoding="utf-8")
+
+        resource_path = os.pathsep.join(
+            [str(ROOT), str(RESUMES_DIR), str(ROOT / "images")]
+        )
+
+        run_checked(
+            [
+                pandoc,
+                str(combined_md),
+                "--from=markdown",
+                "--to=docx",
+                "--resource-path",
+                resource_path,
+                "-o",
+                str(docx_path),
+            ],
+            cwd=ROOT,
+        )
+
+    return docx_path
+
+
+def generate_odt(stem: str, header: dict[str, str], md_text: str) -> Path:
+    pandoc = require_program("pandoc")
+    odt_path = RESUMES_DIR / f"{stem}.odt"
+
+    with tempfile.TemporaryDirectory(prefix="resume-build-") as tmp:
+        tmp_dir = Path(tmp)
+        combined_md = tmp_dir / f"{stem}.md"
+        combined_md.write_text(build_pandoc_markdown(header, md_text), encoding="utf-8")
+
+        resource_path = os.pathsep.join(
+            [str(ROOT), str(RESUMES_DIR), str(ROOT / "images")]
+        )
+
+        run_checked(
+            [
+                pandoc,
+                str(combined_md),
+                "--from=markdown",
+                "--to=odt",
+                "--resource-path",
+                resource_path,
+                "-o",
+                str(odt_path),
+            ],
+            cwd=ROOT,
+        )
+
+    return odt_path
+
+
+def generate_pdf_from_docx(stem: str, docx_path: Path) -> Path:
+    soffice = shutil.which("libreoffice") or shutil.which("soffice")
+    if not soffice:
+        raise SystemExit(
+            "Required program not found: LibreOffice\n"
+            "Install LibreOffice and make sure libreoffice or soffice is on PATH."
+        )
+
+    pdf_path = RESUMES_DIR / f"{stem}.pdf"
+
+    with tempfile.TemporaryDirectory(prefix="resume-pdf-") as tmp:
+        tmp_dir = Path(tmp)
+
+        run_checked(
+            [
+                soffice,
+                "--headless",
+                "--convert-to",
+                "pdf",
+                "--outdir",
+                str(tmp_dir),
+                str(docx_path),
+            ]
+        )
+
+        converted = tmp_dir / f"{stem}.pdf"
+        if not converted.exists():
+            raise SystemExit(
+                f"LibreOffice did not create the expected PDF: {converted}"
+            )
+
+        shutil.copy2(converted, pdf_path)
+
+    return pdf_path
+
+
+def generate(stem: str, formats: list[str]) -> list[Path]:
+    md_path = RESUMES_DIR / f"{stem}.md"
     if not md_path.exists():
         raise FileNotFoundError(md_path)
 
     header = read_header(HEADER_FILE)
     md_text = md_path.read_text(encoding="utf-8").strip()
+    validate_markdown_source(md_path, md_text)
 
-    if md_text.startswith("# "):
-        raise ValueError(
-            f"{md_path} still contains a top-level header/contact block.\n"
-            "Move shared contact information to resumes/header.txt and let the "
-            "Markdown begin with resume-specific content."
+    outputs: list[Path] = []
+    docx_path: Path | None = None
+
+    if "html" in formats:
+        outputs.append(generate_html(stem, header, md_text))
+
+    if "txt" in formats:
+        outputs.append(generate_txt(stem, header, md_text))
+
+    if "docx" in formats or "pdf" in formats:
+        docx_path = generate_docx(stem, header, md_text)
+        if "docx" in formats:
+            outputs.append(docx_path)
+
+    if "odt" in formats:
+        outputs.append(generate_odt(stem, header, md_text))
+
+    if "pdf" in formats:
+        if docx_path is None:
+            docx_path = generate_docx(stem, header, md_text)
+        outputs.append(generate_pdf_from_docx(stem, docx_path))
+
+        if "docx" not in formats and docx_path.exists():
+            docx_path.unlink()
+
+    return outputs
+
+
+def parse_formats(value: str) -> list[str]:
+    supported = ["html", "pdf", "docx", "odt", "txt"]
+
+    if value.lower() == "all":
+        return supported
+
+    requested = [part.strip().lower() for part in value.split(",") if part.strip()]
+    unknown = [fmt for fmt in requested if fmt not in supported]
+
+    if unknown:
+        raise argparse.ArgumentTypeError(
+            "Unknown format(s): "
+            + ", ".join(unknown)
+            + ". Supported: "
+            + ", ".join(supported)
         )
 
-    body_html = add_resume_image_class(render_markdown(md_text))
-    title = f'{header["name"]} | {stem.replace("-", " ").title()}'
-    out_path.write_text(build_html(header, body_html, title), encoding="utf-8")
-    return out_path
+    if not requested:
+        raise argparse.ArgumentTypeError("At least one output format is required.")
+
+    return [fmt for fmt in supported if fmt in requested]
 
 
 def main() -> None:
@@ -248,9 +494,18 @@ def main() -> None:
         default="performance-resume",
         help="Resume stem, e.g. performance-resume",
     )
+    parser.add_argument(
+        "--formats",
+        type=parse_formats,
+        default=parse_formats("all"),
+        help="Comma-separated formats or 'all'. Default: all",
+    )
+
     args = parser.parse_args()
-    output = generate(args.resume)
-    print(output.relative_to(ROOT))
+    outputs = generate(args.resume, args.formats)
+
+    for output in outputs:
+        print(output.relative_to(ROOT))
 
 
 if __name__ == "__main__":
