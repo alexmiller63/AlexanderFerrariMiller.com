@@ -1,1 +1,46 @@
-hello
+name: Generate Resumes
+
+on:
+  workflow_dispatch:
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y pandoc libreoffice
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install markdown
+
+      - name: Generate performance resume
+        run: |
+          python tools/generate-resumes.py performance-resume
+
+      - name: Package generated resumes
+        run: |
+          mkdir -p resume-output
+          cp resumes/performance-resume.html resume-output/
+          cp resumes/performance-resume.pdf resume-output/
+          cp resumes/performance-resume.docx resume-output/
+          cp resumes/performance-resume.odt resume-output/
+          cp resumes/performance-resume.txt resume-output/
+
+      - name: Upload resume files
+        uses: actions/upload-artifact@v4
+        with:
+          name: performance-resume
+          path: resume-output/
