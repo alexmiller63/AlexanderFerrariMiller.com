@@ -11,7 +11,7 @@ from docx.shared import Inches, Pt
 ROOT = Path(__file__).resolve().parents[1]
 
 OUTPUT_FILE = ROOT / "test-docx-table.docx"
-IMAGE_FILE = ROOT / "images" / "santa.jpeg"
+IMAGE_FILE = ROOT / "images" / "Alexander-Ferrari-Miller-Santa.jpeg"
 
 
 def remove_table_borders(table):
