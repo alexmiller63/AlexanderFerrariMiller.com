@@ -1,9 +1,3 @@
-# Alexander Ferrari Miller
-
-San Bernardino, CA  
-(323) 681-7588  
-alex.miller.boston@gmail.com
-
 ## TECHNICAL / QA / SOFTWARE
 
 ### Professional Summary

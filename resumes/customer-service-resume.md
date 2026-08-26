@@ -1,14 +1,14 @@
-# Alexander Ferrari Miller
+## CUSTOMER SERVICE / RETAIL / HOSPITALITY
 
 **Customer Service | Retail | Hospitality | Client Communication**
 
-## PROFESSIONAL SUMMARY
+### PROFESSIONAL SUMMARY
 
 Experienced customer-service professional with a background spanning transportation, hospitality, retail, entertainment, education, and live public-facing work.
 
 Skilled at building rapport quickly, handling payments and POS systems, responding to changing customer needs, resolving problems independently, and maintaining professional service in high-volume and time-sensitive environments.
 
-## CORE QUALIFICATIONS
+### CORE QUALIFICATIONS
 
 - Customer service and guest relations
 - Retail and hospitality operations
@@ -23,9 +23,9 @@ Skilled at building rapport quickly, handling payments and POS systems, respondi
 - Public speaking and presentation
 - Reliable independent work
 
-## RELEVANT EXPERIENCE
+### RELEVANT EXPERIENCE
 
-### Santa Claus — Mall Santa | Culver City, CA
+#### Santa Claus — Mall Santa | Culver City, CA
 **Christmas 2025 Season**
 
 - Interacted directly with children and families in a high-volume public setting.
@@ -33,7 +33,7 @@ Skilled at building rapport quickly, handling payments and POS systems, respondi
 - Maintained a professional character and positive guest experience throughout extended shifts.
 - Coordinated with photographers, managers, families, and other Santa-team members.
 
-### Taxi Driver — Yellow Cab | Torrance, CA
+#### Taxi Driver — Yellow Cab | Torrance, CA
 **November 2024 – February 2026**
 
 - Provided professional passenger service throughout the Los Angeles area.
@@ -41,7 +41,7 @@ Skilled at building rapport quickly, handling payments and POS systems, respondi
 - Handled fares, payments, passenger requests, and changing destinations.
 - Worked independently while maintaining professionalism in time-sensitive situations.
 
-### Rideshare Driver — Lyft and Uber | Los Angeles, CA
+#### Rideshare Driver — Lyft and Uber | Los Angeles, CA
 **January 2014 – October 2024**
 
 - Completed thousands of independent customer-service interactions.
@@ -49,7 +49,7 @@ Skilled at building rapport quickly, handling payments and POS systems, respondi
 - Used smartphone-based navigation and electronic payment systems.
 - Resolved customer and transportation issues independently while maintaining professional service.
 
-### Bartender — Patina Restaurant | Los Angeles, CA
+#### Bartender — Patina Restaurant | Los Angeles, CA
 **January 2023 – February 2024**
 
 - Worked in a professional hospitality environment serving guests and supporting restaurant operations.
@@ -58,7 +58,7 @@ Skilled at building rapport quickly, handling payments and POS systems, respondi
 - Set up and broke down the bar for service.
 - Responded to multiple guest and operational needs in a fast-paced environment.
 
-### Crew Member — ArcLight Cinema | Los Angeles, CA
+#### Crew Member — ArcLight Cinema | Los Angeles, CA
 **June 2007 – June 2014**
 
 - Provided customer service in a fast-paced retail entertainment environment.
@@ -66,14 +66,14 @@ Skilled at building rapport quickly, handling payments and POS systems, respondi
 - Handled customer transactions and assisted guests throughout theater operations.
 - Greeted audiences and introduced films.
 
-### Bagger / Customer Service — Star Market | Newton, MA
+#### Bagger / Customer Service — Star Market | Newton, MA
 **1980**
 
 - Bagged groceries and assisted customers with purchases.
 - Loaded groceries into customers' vehicles.
 - Provided direct customer service in a retail grocery environment.
 
-### Newspaper Carrier — The Boston Globe | Newton, MA
+#### Newspaper Carrier — The Boston Globe | Newton, MA
 **Approximately 1979**
 
 - Managed an assigned newspaper delivery route.
@@ -82,7 +82,7 @@ Skilled at building rapport quickly, handling payments and POS systems, respondi
 - Reconciled customer payments associated with the route.
 - Worked independently and maintained reliable delivery service.
 
-## EDUCATION
+### EDUCATION
 
 **Oberlin College**  
 Bachelor of Arts — Russian/Soviet Studies
@@ -93,7 +93,7 @@ Undergraduate studies — Mathematics
 **Los Angeles City College**  
 Associate's degree studies — Computer Science; nearly complete
 
-## ACTIVE CREDENTIALS
+### ACTIVE CREDENTIALS
 
 - California Resident Insurance Producer License
 - California Class C Driver's License

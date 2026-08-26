@@ -1,6 +1,6 @@
 ## PERFORMANCE
 
-![Alexander Ferrari Miller performing as Santa Claus](../images/Alexander-Ferrari-Miller-Santa.jpeg)
+![Alexander Ferrari Miller performing as Santa Claus](../images/Alexander-Ferrari-Miller-Santa.jpeg){width=2in}
 
 ### Performance Summary
 

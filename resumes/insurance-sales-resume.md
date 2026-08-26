@@ -1,6 +1,4 @@
-# Alexander Ferrari Miller
-
-## Insurance / Sales Resume
+## INSURANCE / SALES
 
 ### Professional Summary
 
