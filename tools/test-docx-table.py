@@ -8,12 +8,15 @@ from docx.enum.text import WD_ALIGN_PARAGRAPH
 from docx.shared import Inches, Pt
 
 
-ROOT = Path(__file__).resolve().parent
+ROOT = Path(__file__).resolve().parents[1]
 
-OUTPUT_FILE = ROOT / "test-docx-table.docx"
+OUTPUT_FILE = ROOT / "tools" / "test-docx-table.docx"
 
-# Change this only if the Santa image has a different filename/path.
-IMAGE_FILE = ROOT / "images" / "santa.jpeg"
+IMAGE_FILE = (
+    ROOT
+    / "images"
+    / "Alexander-Ferrari-Miller-Santa.jpeg"
+)
 
 
 def remove_table_borders(table):
@@ -83,13 +86,12 @@ def main():
 
     image_paragraph = right_cell.paragraphs[0]
 
-    # This is the important part:
-    # align the contents of the entire right cell to the RIGHT.
     image_paragraph.alignment = WD_ALIGN_PARAGRAPH.RIGHT
     image_paragraph.paragraph_format.space_after = Pt(0)
 
     if IMAGE_FILE.exists():
         image_run = image_paragraph.add_run()
+
         image_run.add_picture(
             str(IMAGE_FILE),
             width=Inches(1.15),
@@ -104,6 +106,7 @@ def main():
     # ----- TEST MARKER BELOW THE TABLE -----
 
     paragraph = document.add_paragraph()
+
     paragraph.paragraph_format.space_before = Pt(8)
 
     run = paragraph.add_run("TABLE TEST END")
@@ -112,6 +115,8 @@ def main():
     document.save(OUTPUT_FILE)
 
     print(f"Created: {OUTPUT_FILE}")
+    print(f"Image: {IMAGE_FILE}")
+    print(f"Image exists: {IMAGE_FILE.exists()}")
 
 
 if __name__ == "__main__":
