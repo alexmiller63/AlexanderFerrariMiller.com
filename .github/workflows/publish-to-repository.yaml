@@ -3,8 +3,11 @@ name: Publish to Repository
 on:
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
-  test-bridge-read:
+  publish:
     runs-on: ubuntu-latest
 
     steps:
@@ -24,24 +27,19 @@ jobs:
             "https://docs.google.com/document/d/${DOC_ID}/export?format=txt" \
             --output /tmp/publish-bridge.txt
 
-      - name: Validate bridge JSON
+      - name: Write files from bridge
         run: |
           python3 - <<'PY'
           import json
           from pathlib import Path
 
-          text = Path(
-              "/tmp/publish-bridge.txt"
-          ).read_text(
-              encoding="utf-8-sig"
-          ).strip()
-
-          request = json.loads(text)
+          bridge = Path("/tmp/publish-bridge.txt")
+          request = json.loads(
+              bridge.read_text(encoding="utf-8-sig").strip()
+          )
 
           if not isinstance(request, dict):
-              raise SystemExit(
-                  "Bridge must contain a JSON object"
-              )
+              raise SystemExit("Bridge must contain a JSON object")
 
           files = request.get("files")
 
@@ -50,21 +48,72 @@ jobs:
                   "Bridge must contain a non-empty files array"
               )
 
-          commit_message = str(
-              request.get("commit_message", "")
-          ).strip()
-
-          print(
-              f"Bridge read succeeded: {len(files)} file(s)"
-          )
-          print(
-              f"Commit message: "
-              f"{commit_message or '(automatic)'}"
-          )
+          root = Path.cwd().resolve()
 
           for item in files:
-              print(
-                  f"File: "
-                  f"{item.get('path', '(missing path)')}"
+              if not isinstance(item, dict):
+                  raise SystemExit("Invalid file entry")
+
+              path = item.get("path")
+              content = item.get("content")
+
+              if not isinstance(path, str) or not path.strip():
+                  raise SystemExit("File entry is missing path")
+
+              if not isinstance(content, str):
+                  raise SystemExit(
+                      f"File {path} is missing string content"
+                  )
+
+              target = (root / path).resolve()
+
+              try:
+                  target.relative_to(root)
+              except ValueError:
+                  raise SystemExit(
+                      f"Refusing path outside repository: {path}"
+                  )
+
+              target.parent.mkdir(
+                  parents=True,
+                  exist_ok=True
               )
+
+              target.write_text(
+                  content,
+                  encoding="utf-8"
+              )
+
+              print(f"Wrote {path}")
+
+          commit_message = str(
+              request.get(
+                  "commit_message",
+                  "Publish repository changes"
+              )
+          ).strip()
+
+          if not commit_message:
+              commit_message = "Publish repository changes"
+
+          Path("/tmp/commit-message.txt").write_text(
+              commit_message,
+              encoding="utf-8"
+          )
           PY
+
+      - name: Commit and push
+        run: |
+          if git diff --quiet && \
+             [ -z "$(git status --porcelain)" ]; then
+            echo "No repository changes to commit."
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email \
+            "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add --all
+          git commit -F /tmp/commit-message.txt
+          git push
