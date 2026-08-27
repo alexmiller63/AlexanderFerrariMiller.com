@@ -24,6 +24,13 @@ Image policy:
 - TXT omits images.
 - The image is removed from the body so it does not appear twice.
 
+TXT policy:
+- TXT output is deliberately ASCII-only for maximum compatibility.
+- Markdown bullets become ordinary ASCII hyphens.
+- Markdown headings are separated with blank lines for readability.
+- Common Unicode punctuation is converted to ASCII equivalents.
+- Generation fails if non-ASCII characters remain after conversion.
+
 External tools:
 - Python package: markdown
 - Pandoc: used for DOCX and ODT
@@ -39,6 +46,7 @@ import re
 import shutil
 import subprocess
 import tempfile
+import unicodedata
 from pathlib import Path
 
 try:
@@ -48,6 +56,7 @@ except ImportError as exc:
         "Missing dependency: markdown\n"
         "Install it with: python -m pip install markdown"
     ) from exc
+
 
 ROOT = Path(__file__).resolve().parents[1]
 RESUMES_DIR = ROOT / "resumes"
@@ -61,11 +70,13 @@ def read_header(path: Path) -> dict[str, str]:
         for line in path.read_text(encoding="utf-8").splitlines()
         if line.strip()
     ]
+
     if len(lines) != 6:
         raise ValueError(
             f"{path} must contain exactly 6 nonblank lines:\n"
             "name, street, city/state/ZIP, phone, email, website"
         )
+
     return {
         "name": lines[0],
         "street": lines[1],
@@ -76,7 +87,10 @@ def read_header(path: Path) -> dict[str, str]:
     }
 
 
-def validate_markdown_source(md_path: Path, md_text: str) -> None:
+def validate_markdown_source(
+    md_path: Path,
+    md_text: str,
+) -> None:
     if md_text.startswith("# "):
         raise ValueError(
             f"{md_path} still contains a top-level header/contact block.\n"
@@ -85,13 +99,17 @@ def validate_markdown_source(md_path: Path, md_text: str) -> None:
         )
 
 
-def extract_first_image(md_text: str) -> tuple[dict[str, str] | None, str]:
+def extract_first_image(
+    md_text: str,
+) -> tuple[dict[str, str] | None, str]:
     pattern = re.compile(
         r"!\[([^\]]*)\]\(([^)]+)\)"
         r"(\{[^}]*\})?",
         flags=re.MULTILINE,
     )
+
     match = pattern.search(md_text)
+
     if not match:
         return None, md_text
 
@@ -100,15 +118,28 @@ def extract_first_image(md_text: str) -> tuple[dict[str, str] | None, str]:
         "path": match.group(2).strip(),
         "attributes": (match.group(3) or "").strip(),
     }
-    body = md_text[: match.start()] + md_text[match.end() :]
-    body = re.sub(r"\n{3,}", "\n\n", body).strip()
+
+    body = (
+        md_text[: match.start()]
+        + md_text[match.end() :]
+    )
+
+    body = re.sub(
+        r"\n{3,}",
+        "\n\n",
+        body,
+    ).strip()
+
     return image, body
 
 
 def render_markdown(md_text: str) -> str:
     return markdown.markdown(
         md_text,
-        extensions=["extra", "sane_lists"],
+        extensions=[
+            "extra",
+            "sane_lists",
+        ],
         output_format="html5",
     )
 
@@ -131,9 +162,14 @@ def build_html(
     header_class = "resume-header"
 
     if image:
-        image_path = html.escape(image["path"], quote=True)
+        image_path = html.escape(
+            image["path"],
+            quote=True,
+        )
+
         image_alt = html.escape(
-            image["alt"] or f"{header['name']} portrait",
+            image["alt"]
+            or f"{header['name']} portrait",
             quote=True,
         )
 
@@ -150,6 +186,7 @@ def build_html(
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>{page_title}</title>
+
 <style>
 :root {{
     --background: #f5f5f2;
@@ -402,10 +439,14 @@ def build_office_html(
         left_width = "80%"
         right_width = "20%"
 
-        image_path = html.escape(image["path"], quote=True)
+        image_path = html.escape(
+            image["path"],
+            quote=True,
+        )
 
         image_alt = html.escape(
-            image["alt"] or f"{header['name']} portrait",
+            image["alt"]
+            or f"{header['name']} portrait",
             quote=True,
         )
 
@@ -507,7 +548,9 @@ h3 {{
 """
 
 
-def strip_images_from_markdown(md_text: str) -> str:
+def strip_images_from_markdown(
+    md_text: str,
+) -> str:
     text = re.sub(
         r"!\[[^\]]*\]\([^)]+\)(?:\{[^}]*\})?",
         "",
@@ -534,63 +577,128 @@ def strip_images_from_markdown(md_text: str) -> str:
     ).strip()
 
 
-def markdown_to_plain_text(md_text: str) -> str:
-    text = strip_images_from_markdown(md_text)
+def ascii_normalize(text: str) -> str:
+    """
+    Convert common Unicode typography to ASCII equivalents, then
+    transliterate remaining Unicode characters where possible.
+    """
+    replacements = {
+        "\u2018": "'",
+        "\u2019": "'",
+        "\u201a": "'",
+        "\u201b": "'",
+        "\u201c": '"',
+        "\u201d": '"',
+        "\u201e": '"',
+        "\u201f": '"',
+        "\u2013": "-",
+        "\u2014": "--",
+        "\u2212": "-",
+        "\u2026": "...",
+        "\u2022": "-",
+        "\u00a0": " ",
+        "\u00b7": "-",
+    }
 
+    for unicode_character, ascii_replacement in replacements.items():
+        text = text.replace(
+            unicode_character,
+            ascii_replacement,
+        )
+
+    text = unicodedata.normalize(
+        "NFKD",
+        text,
+    )
+
+    text = (
+        text
+        .encode(
+            "ascii",
+            errors="ignore",
+        )
+        .decode("ascii")
+    )
+
+    return text
+
+
+def markdown_to_plain_text(
+    md_text: str,
+) -> str:
+    text = strip_images_from_markdown(
+        md_text
+    )
+
+    # Preserve visible section separation before removing Markdown
+    # heading syntax.
+    text = re.sub(
+        r"(?m)^\s{0,3}#{1,6}\s+(.+?)\s*#*\s*$",
+        lambda match: (
+            "\n\n"
+            + match.group(1).strip()
+            + "\n\n"
+        ),
+        text,
+    )
+
+    # Markdown links become their visible text.
     text = re.sub(
         r"\[([^\]]+)\]\([^)]+\)",
         r"\1",
         text,
     )
 
+    # Bold Markdown.
     text = re.sub(
         r"(\*\*|__)(.*?)\1",
         r"\2",
         text,
     )
 
+    # Italic Markdown using asterisks.
     text = re.sub(
         r"(?<!\*)\*([^*\n]+)\*(?!\*)",
         r"\1",
         text,
     )
 
+    # Italic Markdown using underscores.
     text = re.sub(
         r"(?<!_)_([^_\n]+)_(?!_)",
         r"\1",
         text,
     )
 
-    text = re.sub(
-        r"(?m)^\s{0,3}#{1,6}\s*",
-        "",
-        text,
-    )
-
+    # Horizontal rules.
     text = re.sub(
         r"(?m)^\s*([-*_])(?:\s*\1){2,}\s*$",
         "",
         text,
     )
 
+    # Unordered lists use ASCII hyphens.
     text = re.sub(
         r"(?m)^\s*[-*+]\s+",
-        "• ",
+        "- ",
         text,
     )
 
+    # Preserve numbered lists.
     text = re.sub(
         r"(?m)^\s*(\d+)\.\s+",
         r"\1. ",
         text,
     )
 
+    # Inline code.
     text = re.sub(
         r"`([^`]+)`",
         r"\1",
         text,
     )
 
+    # Remove any remaining HTML tags.
     text = re.sub(
         r"<[^>]+>",
         "",
@@ -599,20 +707,34 @@ def markdown_to_plain_text(md_text: str) -> str:
 
     text = html.unescape(text)
 
-    return re.sub(
+    # Convert typography and any remaining Unicode to ASCII.
+    text = ascii_normalize(text)
+
+    # Remove trailing spaces from lines without destroying blank lines.
+    text = "\n".join(
+        line.rstrip()
+        for line in text.splitlines()
+    )
+
+    # Never allow more than one blank line between sections.
+    text = re.sub(
         r"\n{3,}",
         "\n\n",
         text,
-    ).strip()
+    )
+
+    return text.strip()
 
 
 def build_txt(
     header: dict[str, str],
     md_text: str,
 ) -> str:
-    body = markdown_to_plain_text(md_text)
+    body = markdown_to_plain_text(
+        md_text
+    )
 
-    return (
+    text = (
         f'{header["name"]}\n'
         f'{header["street"]}\n'
         f'{header["city"]}\n'
@@ -621,6 +743,16 @@ def build_txt(
         f'{header["website"]}\n'
         f"\n{body}\n"
     )
+
+    text = ascii_normalize(text)
+
+    if not text.isascii():
+        raise ValueError(
+            "ASCII TXT generation failed: "
+            "non-ASCII characters remain."
+        )
+
+    return text
 
 
 def require_program(name: str) -> str:
@@ -650,7 +782,10 @@ def run_checked(
     except subprocess.CalledProcessError as exc:
         raise SystemExit(
             "Command failed:\n"
-            + " ".join(str(part) for part in command)
+            + " ".join(
+                str(part)
+                for part in command
+            )
         ) from exc
 
 
@@ -660,9 +795,14 @@ def generate_html(
     md_text: str,
     image: dict[str, str] | None,
 ) -> Path:
-    out_path = RESUMES_DIR / f"{stem}.html"
+    out_path = (
+        RESUMES_DIR
+        / f"{stem}.html"
+    )
 
-    body_html = render_markdown(md_text)
+    body_html = render_markdown(
+        md_text
+    )
 
     title = (
         f'{header["name"]} | '
@@ -687,14 +827,25 @@ def generate_txt(
     header: dict[str, str],
     md_text: str,
 ) -> Path:
-    out_path = RESUMES_DIR / f"{stem}.txt"
+    out_path = (
+        RESUMES_DIR
+        / f"{stem}.txt"
+    )
+
+    text = build_txt(
+        header,
+        md_text,
+    )
+
+    if not text.isascii():
+        raise ValueError(
+            f"{out_path} is not ASCII-only."
+        )
 
     out_path.write_text(
-        build_txt(
-            header,
-            md_text,
-        ),
-        encoding="utf-8",
+        text,
+        encoding="ascii",
+        newline="\n",
     )
 
     return out_path
@@ -707,9 +858,14 @@ def generate_office(
     image: dict[str, str] | None,
     fmt: str,
 ) -> Path:
-    pandoc = require_program("pandoc")
+    pandoc = require_program(
+        "pandoc"
+    )
 
-    out_path = RESUMES_DIR / f"{stem}.{fmt}"
+    out_path = (
+        RESUMES_DIR
+        / f"{stem}.{fmt}"
+    )
 
     with tempfile.TemporaryDirectory(
         prefix="resume-build-"
@@ -717,7 +873,10 @@ def generate_office(
 
         tmp_dir = Path(tmp)
 
-        source_path = tmp_dir / f"{stem}.html"
+        source_path = (
+            tmp_dir
+            / f"{stem}.html"
+        )
 
         source_path.write_text(
             build_office_html(
@@ -799,7 +958,10 @@ def generate_pdf_from_docx(
             "libreoffice or soffice is on PATH."
         )
 
-    pdf_path = RESUMES_DIR / f"{stem}.pdf"
+    pdf_path = (
+        RESUMES_DIR
+        / f"{stem}.pdf"
+    )
 
     with tempfile.TemporaryDirectory(
         prefix="resume-pdf-"
@@ -819,7 +981,10 @@ def generate_pdf_from_docx(
             ]
         )
 
-        converted = tmp_dir / f"{stem}.pdf"
+        converted = (
+            tmp_dir
+            / f"{stem}.pdf"
+        )
 
         if not converted.exists():
             raise SystemExit(
@@ -839,16 +1004,25 @@ def generate(
     stem: str,
     formats: list[str],
 ) -> list[Path]:
-    md_path = RESUMES_DIR / f"{stem}.md"
+    md_path = (
+        RESUMES_DIR
+        / f"{stem}.md"
+    )
 
     if not md_path.exists():
-        raise FileNotFoundError(md_path)
+        raise FileNotFoundError(
+            md_path
+        )
 
-    header = read_header(HEADER_FILE)
+    header = read_header(
+        HEADER_FILE
+    )
 
     original_md = (
         md_path
-        .read_text(encoding="utf-8")
+        .read_text(
+            encoding="utf-8"
+        )
         .strip()
     )
 
@@ -884,7 +1058,10 @@ def generate(
             )
         )
 
-    if "docx" in formats or "pdf" in formats:
+    if (
+        "docx" in formats
+        or "pdf" in formats
+    ):
         docx_path = generate_docx(
             stem,
             header,
@@ -932,9 +1109,13 @@ def generate(
     return outputs
 
 
-def parse_formats(value: str) -> list[str]:
+def parse_formats(
+    value: str,
+) -> list[str]:
     if value.lower() == "all":
-        return list(FORMATS)
+        return list(
+            FORMATS
+        )
 
     requested = [
         part.strip().lower()
