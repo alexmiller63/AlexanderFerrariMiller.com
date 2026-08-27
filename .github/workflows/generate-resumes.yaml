@@ -49,7 +49,6 @@ jobs:
           do
               stem="$(basename "$source" .md)"
 
-              cp "resumes/$stem.md" resume-output/
               cp "resumes/$stem.html" resume-output/
               cp "resumes/$stem.pdf" resume-output/
               cp "resumes/$stem.docx" resume-output/
