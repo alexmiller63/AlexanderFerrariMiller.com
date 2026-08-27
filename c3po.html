@@ -2,12 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Alexander Ferrari Miller | Resume Viewer</title>
 
     <style>
@@ -23,9 +18,7 @@
             --max-width: 1100px;
         }
 
-        * {
-            box-sizing: border-box;
-        }
+        * { box-sizing: border-box; }
 
         body {
             margin: 0;
@@ -46,9 +39,7 @@
             margin: 0 auto;
         }
 
-        .site-header {
-            padding: 1.5rem 0;
-        }
+        .site-header { padding: 1.5rem 0; }
 
         .site-name {
             color: var(--accent-dark);
@@ -57,9 +48,7 @@
             text-decoration: none;
         }
 
-        main {
-            padding-bottom: 3rem;
-        }
+        main { padding-bottom: 3rem; }
 
         .viewer-header {
             display: flex;
@@ -205,9 +194,7 @@
         }
 
         @media (max-width: 600px) {
-            .document-viewer {
-                padding: 1.25rem;
-            }
+            .document-viewer { padding: 1.25rem; }
 
             .html-viewer,
             .pdf-viewer {
@@ -236,9 +223,7 @@
         <div class="container">
 
             <div class="viewer-header">
-                <h1 class="viewer-title" id="viewer-title">
-                    Resume
-                </h1>
+                <h1 class="viewer-title" id="viewer-title">Resume</h1>
 
                 <div class="actions">
                     <button class="button" id="share-button" type="button">
@@ -260,9 +245,7 @@
             </div>
 
             <section class="viewer" id="viewer" aria-live="polite">
-                <div class="status">
-                    Loading document…
-                </div>
+                <div class="status">Loading document…</div>
             </section>
 
         </div>
@@ -293,6 +276,7 @@
         const sourceButton = document.getElementById("source-button");
 
         let showingSource = false;
+        let htmlText = null;
 
         titleElement.textContent = title;
 
@@ -350,16 +334,12 @@
                         navigator.canShare &&
                         navigator.canShare({ files: filesToShare })
                     ) {
-                        await navigator.share({
-                            files: filesToShare
-                        });
+                        await navigator.share({ files: filesToShare });
                         return;
                     }
 
                     if (navigator.share) {
-                        await navigator.share({
-                            url: fileUrl
-                        });
+                        await navigator.share({ url: fileUrl });
                         return;
                     }
 
@@ -373,29 +353,51 @@
 
             shareButton.addEventListener("click", shareFile);
 
+            async function loadHtmlText() {
+                if (htmlText !== null) {
+                    return htmlText;
+                }
+
+                const response = await fetch(fileUrl);
+
+                if (!response.ok) {
+                    throw new Error("Unable to load HTML.");
+                }
+
+                htmlText = await response.text();
+                return htmlText;
+            }
+
             async function displayHtml() {
-                showingSource = false;
-                sourceButton.textContent = "View Source";
+                try {
+                    showingSource = false;
+                    sourceButton.textContent = "View Source";
 
-                viewer.innerHTML = "";
+                    const text = await loadHtmlText();
 
-                const frame = document.createElement("iframe");
-                frame.className = "html-viewer";
-                frame.src = fileUrl;
-                frame.title = title;
+                    viewer.innerHTML = "";
 
-                viewer.appendChild(frame);
+                    const frame = document.createElement("iframe");
+                    frame.className = "html-viewer";
+                    frame.title = title;
+
+                    viewer.appendChild(frame);
+
+                    const baseTag =
+                        `<base href="${new URL(".", fileUrl).href}">`;
+
+                    frame.srcdoc = text.replace(
+                        /<head([^>]*)>/i,
+                        `<head$1>${baseTag}`
+                    );
+                } catch (error) {
+                    showFallback();
+                }
             }
 
             async function displayHtmlSource() {
                 try {
-                    const response = await fetch(fileUrl);
-
-                    if (!response.ok) {
-                        throw new Error("Unable to load HTML source.");
-                    }
-
-                    const text = await response.text();
+                    const text = await loadHtmlText();
 
                     viewer.innerHTML = "";
 
