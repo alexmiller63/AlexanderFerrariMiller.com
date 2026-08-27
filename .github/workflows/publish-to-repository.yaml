@@ -1,0 +1,60 @@
+name: Publish to Repository
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test-bridge-read:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Fetch publish bridge
+        run: |
+          curl --fail --location --silent --show-error \
+            "https://docs.google.com/document/d/13PMJsJhazIM60UMaxvb2-i5D3YcaCDsNGKoEP0XHUPc/export?format=txt" \
+            --output /tmp/publish-bridge.txt
+
+      - name: Validate bridge JSON
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+
+          text = Path(
+              "/tmp/publish-bridge.txt"
+          ).read_text(
+              encoding="utf-8-sig"
+          ).strip()
+
+          request = json.loads(text)
+
+          if not isinstance(request, dict):
+              raise SystemExit(
+                  "Bridge must contain a JSON object"
+              )
+
+          files = request.get("files")
+
+          if not isinstance(files, list) or not files:
+              raise SystemExit(
+                  "Bridge must contain a non-empty files array"
+              )
+
+          commit_message = str(
+              request.get("commit_message", "")
+          ).strip()
+
+          print(
+              f"Bridge read succeeded: {len(files)} file(s)"
+          )
+          print(
+              f"Commit message: "
+              f"{commit_message or '(automatic)'}"
+          )
+
+          for item in files:
+              print(
+                  f"File: "
+                  f"{item.get('path', '(missing path)')}"
+              )
+          PY
