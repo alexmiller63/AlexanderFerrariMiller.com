@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       files:
-        description: "JSON array of files: [{\"path\":\"...\",\"content\":\"...\"}]"
+        description: 'JSON array of files: [{"path":"...","content":"..."}]'
         required: true
         type: string
       commit_message:
@@ -57,7 +57,9 @@ jobs:
                   raise SystemExit(f"Absolute paths are not allowed: {path}")
 
               if ".." in target.parts:
-                  raise SystemExit(f"Parent-directory paths are not allowed: {path}")
+                  raise SystemExit(
+                      f"Parent-directory paths are not allowed: {path}"
+                  )
 
               target.parent.mkdir(parents=True, exist_ok=True)
               target.write_text(content, encoding="utf-8")
@@ -67,7 +69,23 @@ jobs:
 
       - name: Commit generated files
         env:
+          FILES_JSON: ${{ inputs.files }}
           COMMIT_MESSAGE: ${{ inputs.commit_message }}
         run: |
+          mapfile -t FILE_PATHS < <(
+            python3 - <<'PY'
+          import json
+          import os
+
+          files = json.loads(os.environ["FILES_JSON"])
+
+          for item in files:
+              print(item["path"])
+          PY
+          )
+
           chmod +x tools/commit-generated-files.sh
-          tools/commit-generated-files.sh "$COMMIT_MESSAGE"
+
+          tools/commit-generated-files.sh \
+            "$COMMIT_MESSAGE" \
+            "${FILE_PATHS[@]}"
