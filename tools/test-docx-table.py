@@ -45,6 +45,34 @@ def set_fixed_table_width(table):
         cell_width.set(qn("w:w"), str(CELL_WIDTH_DXA))
 
 
+def set_explicit_table_borders(table):
+    table_properties = table._tbl.tblPr
+
+    borders = table_properties.first_child_found_in("w:tblBorders")
+    if borders is None:
+        borders = OxmlElement("w:tblBorders")
+        table_properties.append(borders)
+
+    for border_name in (
+        "top",
+        "left",
+        "bottom",
+        "right",
+        "insideH",
+        "insideV",
+    ):
+        border = borders.find(qn(f"w:{border_name}"))
+
+        if border is None:
+            border = OxmlElement(f"w:{border_name}")
+            borders.append(border)
+
+        border.set(qn("w:val"), "single")
+        border.set(qn("w:sz"), "12")
+        border.set(qn("w:space"), "0")
+        border.set(qn("w:color"), "000000")
+
+
 def main():
     document = Document()
 
@@ -55,7 +83,6 @@ def main():
     section.right_margin = Inches(0.75)
 
     table = document.add_table(rows=1, cols=2)
-    table.style = "Table Grid"
 
     left_cell = table.cell(0, 0)
     right_cell = table.cell(0, 1)
@@ -66,6 +93,7 @@ def main():
     right_cell.paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
 
     set_fixed_table_width(table)
+    set_explicit_table_borders(table)
 
     document.save(OUTPUT_FILE)
 
