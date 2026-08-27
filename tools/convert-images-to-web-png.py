@@ -24,6 +24,13 @@ Behavior:
       AFM-1.HEIC -> AFM-1-web.png
 - Never modifies the original file.
 - Never overwrites an existing web PNG.
+- Existing web PNG files are skipped normally, not treated as errors.
+- When multiple source formats have the same base filename, prefers the
+  original HEIC/HEIF source.
+- Example:
+      AFM-4.HEIC
+      AFM-4.png
+  Only AFM-4.HEIC is used to generate AFM-4-web.png.
 - Preserves EXIF metadata when the source and PNG format permit it.
 - Preserves ICC color profiles when available.
 - Applies EXIF orientation to the actual pixels.
@@ -64,6 +71,20 @@ SUPPORTED_EXTENSIONS = {
     ".bmp",
     ".gif",
     ".png",
+}
+
+# Lower number means preferred source format.
+SOURCE_PREFERENCE = {
+    ".heic": 0,
+    ".heif": 1,
+    ".jpg": 2,
+    ".jpeg": 3,
+    ".tif": 4,
+    ".tiff": 5,
+    ".webp": 6,
+    ".bmp": 7,
+    ".gif": 8,
+    ".png": 9,
 }
 
 
@@ -145,14 +166,64 @@ def convert_image(source: Path, destination: Path) -> None:
         )
 
 
+def source_preference(path: Path) -> int:
+    """
+    Return the preference ranking for a source image.
+
+    HEIC/HEIF originals are preferred over converted PNG copies.
+    """
+    return SOURCE_PREFERENCE.get(
+        path.suffix.lower(),
+        999,
+    )
+
+
+def deduplicate_sources(
+    sources: list[Path],
+) -> list[Path]:
+    """
+    Keep only one source for each base filename.
+
+    When multiple formats share the same base filename, prefer HEIC/HEIF.
+
+    Example:
+        AFM-4.HEIC
+        AFM-4.png
+
+    becomes:
+        AFM-4.HEIC
+    """
+    selected: dict[str, Path] = {}
+
+    for source in sources:
+        key = source.stem.lower()
+
+        existing = selected.get(key)
+
+        if existing is None:
+            selected[key] = source
+            continue
+
+        if source_preference(source) < source_preference(existing):
+            selected[key] = source
+
+    return sorted(
+        selected.values(),
+        key=lambda path: path.name.lower(),
+    )
+
+
 def convert_sources(
     sources: list[Path],
     output_dir: Path,
-) -> int:
+) -> tuple[int, int, int]:
     """
     Convert all supplied source files.
 
-    Returns the number of successfully converted files.
+    Returns:
+        converted_count
+        skipped_count
+        failed_count
     """
     output_dir.mkdir(
         parents=True,
@@ -160,6 +231,8 @@ def convert_sources(
     )
 
     converted = 0
+    skipped = 0
+    failed = 0
 
     for source in sources:
         if not source.is_file():
@@ -167,6 +240,7 @@ def convert_sources(
                 f"ERROR: source file does not exist: {source}",
                 file=sys.stderr,
             )
+            failed += 1
             continue
 
         if source.suffix.lower() not in SUPPORTED_EXTENSIONS:
@@ -174,6 +248,7 @@ def convert_sources(
                 f"ERROR: unsupported image type: {source}",
                 file=sys.stderr,
             )
+            failed += 1
             continue
 
         destination = output_path_for(
@@ -182,11 +257,8 @@ def convert_sources(
         )
 
         if destination.exists():
-            print(
-                f"ERROR: refusing to overwrite existing file: "
-                f"{destination}",
-                file=sys.stderr,
-            )
+            print(f"Skipping existing: {destination}")
+            skipped += 1
             continue
 
         try:
@@ -207,11 +279,12 @@ def convert_sources(
             if destination.exists():
                 destination.unlink()
 
+            failed += 1
             continue
 
         converted += 1
 
-    return converted
+    return converted, skipped, failed
 
 
 def collect_directory_sources(
@@ -221,21 +294,26 @@ def collect_directory_sources(
     Collect supported source images from one directory.
 
     Existing "-web.png" files are excluded.
+
+    If more than one supported file has the same base filename,
+    the preferred source is selected, with HEIC/HEIF taking priority.
     """
     if not input_dir.is_dir():
         raise SystemExit(
             f"Input directory does not exist: {input_dir}"
         )
 
-    return sorted(
+    candidates = [
         path
         for path in input_dir.iterdir()
         if (
             path.is_file()
             and path.suffix.lower() in SUPPORTED_EXTENSIONS
-            and not path.stem.endswith("-web")
+            and not path.stem.lower().endswith("-web")
         )
-    )
+    ]
+
+    return deduplicate_sources(candidates)
 
 
 def parse_arguments() -> argparse.Namespace:
@@ -303,7 +381,7 @@ def main() -> int:
         )
 
     else:
-        sources = args.images
+        sources = deduplicate_sources(args.images)
 
         if args.output_dir:
             output_dir = args.output_dir
@@ -327,7 +405,7 @@ def main() -> int:
         f"Found {len(sources)} source image(s)."
     )
 
-    converted = convert_sources(
+    converted, skipped, failed = convert_sources(
         sources,
         output_dir,
     )
@@ -336,9 +414,14 @@ def main() -> int:
         f"Successfully converted {converted} image(s)."
     )
 
-    if converted != len(sources):
+    if skipped:
         print(
-            "One or more images were not converted.",
+            f"Skipped {skipped} existing web PNG image(s)."
+        )
+
+    if failed:
+        print(
+            f"Failed to convert {failed} image(s).",
             file=sys.stderr,
         )
         return 1
