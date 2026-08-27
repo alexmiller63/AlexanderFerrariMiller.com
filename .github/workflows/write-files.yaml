@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       files:
-        description: 'JSON array of files: [{"path":"...","content":"..."}]'
+        description: 'JSON array of files: [{"path":"...","content":"...","encoding":"utf-8|base64"}]'
         required: true
         type: string
       commit_message:
@@ -29,6 +29,7 @@ jobs:
           FILES_JSON: ${{ inputs.files }}
         run: |
           python3 - <<'PY'
+          import base64
           import json
           import os
           from pathlib import Path
@@ -44,6 +45,7 @@ jobs:
 
               path = item.get("path")
               content = item.get("content")
+              encoding = item.get("encoding", "utf-8")
 
               if not isinstance(path, str) or not path:
                   raise SystemExit("Each file needs a non-empty path")
@@ -51,10 +53,17 @@ jobs:
               if not isinstance(content, str):
                   raise SystemExit(f"Missing string content for {path}")
 
+              if encoding not in ("utf-8", "base64"):
+                  raise SystemExit(
+                      f"Unsupported encoding for {path}: {encoding}"
+                  )
+
               target = Path(path)
 
               if target.is_absolute():
-                  raise SystemExit(f"Absolute paths are not allowed: {path}")
+                  raise SystemExit(
+                      f"Absolute paths are not allowed: {path}"
+                  )
 
               if ".." in target.parts:
                   raise SystemExit(
@@ -62,9 +71,23 @@ jobs:
                   )
 
               target.parent.mkdir(parents=True, exist_ok=True)
-              target.write_text(content, encoding="utf-8")
 
-              print(f"Wrote {path}")
+              if encoding == "base64":
+                  try:
+                      data = base64.b64decode(
+                          content,
+                          validate=True
+                      )
+                  except Exception as exc:
+                      raise SystemExit(
+                          f"Invalid base64 content for {path}: {exc}"
+                      )
+
+                  target.write_bytes(data)
+              else:
+                  target.write_text(content, encoding="utf-8")
+
+              print(f"Wrote {path} ({encoding})")
           PY
 
       - name: Commit generated files
