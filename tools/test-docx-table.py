@@ -16,25 +16,40 @@ TABLE_WIDTH_DXA = 10080
 CELL_WIDTH_DXA = 5040
 
 
-def set_fixed_table_width(table):
-    table.autofit = False
+def get_or_add_child(parent, tag):
+    child = parent.find(qn(tag))
 
+    if child is None:
+        child = OxmlElement(tag)
+        parent.append(child)
+
+    return child
+
+
+def set_fixed_table_geometry(table):
+    table.autofit = False
     table_properties = table._tbl.tblPr
 
-    table_width = table_properties.first_child_found_in("w:tblW")
-    if table_width is None:
-        table_width = OxmlElement("w:tblW")
-        table_properties.append(table_width)
-
+    table_width = get_or_add_child(table_properties, "w:tblW")
     table_width.set(qn("w:type"), "dxa")
     table_width.set(qn("w:w"), str(TABLE_WIDTH_DXA))
 
-    table_layout = table_properties.first_child_found_in("w:tblLayout")
-    if table_layout is None:
-        table_layout = OxmlElement("w:tblLayout")
-        table_properties.append(table_layout)
-
+    table_layout = get_or_add_child(table_properties, "w:tblLayout")
     table_layout.set(qn("w:type"), "fixed")
+
+    table_indent = get_or_add_child(table_properties, "w:tblInd")
+    table_indent.set(qn("w:type"), "dxa")
+    table_indent.set(qn("w:w"), "0")
+
+    table_alignment = get_or_add_child(table_properties, "w:jc")
+    table_alignment.set(qn("w:val"), "left")
+
+    cell_margins = get_or_add_child(table_properties, "w:tblCellMar")
+
+    for margin_name in ("top", "left", "bottom", "right"):
+        margin = get_or_add_child(cell_margins, f"w:{margin_name}")
+        margin.set(qn("w:type"), "dxa")
+        margin.set(qn("w:w"), "0")
 
     for grid_column in table._tbl.tblGrid.gridCol_lst:
         grid_column.set(qn("w:w"), str(CELL_WIDTH_DXA))
@@ -47,11 +62,7 @@ def set_fixed_table_width(table):
 
 def set_explicit_table_borders(table):
     table_properties = table._tbl.tblPr
-
-    borders = table_properties.first_child_found_in("w:tblBorders")
-    if borders is None:
-        borders = OxmlElement("w:tblBorders")
-        table_properties.append(borders)
+    borders = get_or_add_child(table_properties, "w:tblBorders")
 
     for border_name in (
         "top",
@@ -61,12 +72,7 @@ def set_explicit_table_borders(table):
         "insideH",
         "insideV",
     ):
-        border = borders.find(qn(f"w:{border_name}"))
-
-        if border is None:
-            border = OxmlElement(f"w:{border_name}")
-            borders.append(border)
-
+        border = get_or_add_child(borders, f"w:{border_name}")
         border.set(qn("w:val"), "single")
         border.set(qn("w:sz"), "12")
         border.set(qn("w:space"), "0")
@@ -92,7 +98,7 @@ def main():
 
     right_cell.paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
 
-    set_fixed_table_width(table)
+    set_fixed_table_geometry(table)
     set_explicit_table_borders(table)
 
     document.save(OUTPUT_FILE)
