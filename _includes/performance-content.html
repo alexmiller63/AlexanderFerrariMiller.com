@@ -206,6 +206,10 @@
             margin-bottom: 3px;
         }
 
+        .resume-section .resume-card {
+            max-width: 560px;
+        }
+
         .site-footer {
             background: var(--surface);
             padding: 28px 0;
@@ -261,6 +265,8 @@
             }
         }
     </style>
+
+    {% include resume-card-styles.html %}
 </head>
 
 <body>
@@ -413,7 +419,24 @@
             </div>
         </section>
 
-        <section class="section section-white">
+        <section class="section section-white resume-section">
+            <div class="container">
+
+                <h2 class="section-heading">
+                    Performance Resume
+                </h2>
+
+                <p class="section-intro">
+                    View the current performance resume or download it in
+                    the format that works best for you.
+                </p>
+
+                {% include resume-card.html resume="performance" %}
+
+            </div>
+        </section>
+
+        <section class="section">
             <div class="container">
 
                 <h2 class="section-heading">
