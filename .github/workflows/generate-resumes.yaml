@@ -26,21 +26,39 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install markdown
 
-      - name: Generate performance resume
+      - name: Generate all resumes
         run: |
-          python tools/generate-resumes.py performance-resume
+          set -e
 
-      - name: Package generated resumes
+          for source in resumes/*-resume.md
+          do
+              stem="$(basename "$source" .md)"
+
+              echo "Generating $stem"
+
+              python tools/generate-resumes.py "$stem"
+          done
+
+      - name: Package all resume files
         run: |
+          set -e
+
           mkdir -p resume-output
-          cp resumes/performance-resume.html resume-output/
-          cp resumes/performance-resume.pdf resume-output/
-          cp resumes/performance-resume.docx resume-output/
-          cp resumes/performance-resume.odt resume-output/
-          cp resumes/performance-resume.txt resume-output/
+
+          for source in resumes/*-resume.md
+          do
+              stem="$(basename "$source" .md)"
+
+              cp "resumes/$stem.md" resume-output/
+              cp "resumes/$stem.html" resume-output/
+              cp "resumes/$stem.pdf" resume-output/
+              cp "resumes/$stem.docx" resume-output/
+              cp "resumes/$stem.odt" resume-output/
+              cp "resumes/$stem.txt" resume-output/
+          done
 
       - name: Upload resume files
         uses: actions/upload-artifact@v4
         with:
-          name: performance-resume
+          name: all-resumes
           path: resume-output/
