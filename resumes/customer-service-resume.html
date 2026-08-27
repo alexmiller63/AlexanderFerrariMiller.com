@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Alexander Ferrari Miller | Customer Service Resume</title>
+
 <style>
 :root {
     --background: #f5f5f2;
@@ -15,31 +16,89 @@
     --border: #d9dde0;
     --max-width: 900px;
 }
-* { box-sizing: border-box; }
+
+* {
+    box-sizing: border-box;
+}
+
 body {
     margin: 0;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+    font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        Roboto,
+        Arial,
+        sans-serif;
     background: var(--background);
     color: var(--text);
     line-height: 1.55;
 }
+
 .container {
     width: min(92%, var(--max-width));
     margin: 0 auto;
 }
-.site-header { padding: 2rem 0 1rem; }
-.site-name { color: var(--accent-dark); text-decoration: none; font-weight: 700; }
-main { padding: 1rem 0 3rem; }
+
+.site-header {
+    padding: 2rem 0 1rem;
+}
+
+.site-name {
+    color: var(--accent-dark);
+    text-decoration: none;
+    font-weight: 700;
+}
+
+main {
+    padding: 1rem 0 3rem;
+}
+
 .resume {
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: 12px;
     padding: clamp(1.25rem, 4vw, 2.5rem);
 }
-.resume-header { margin-bottom: 1.5rem; }
-.resume-header h1 { margin: 0; color: var(--accent-dark); font-size: clamp(2rem, 6vw, 3rem); }
-.contact { color: var(--muted); margin: .35rem 0 0; }
-.contact a { color: inherit; }
+
+.resume-header {
+    margin-bottom: 1.5rem;
+}
+
+.resume-header-with-image {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 2rem;
+    align-items: start;
+}
+
+.resume-header h1 {
+    margin: 0;
+    color: var(--accent-dark);
+    font-size: clamp(2rem, 6vw, 3rem);
+}
+
+.contact {
+    color: var(--muted);
+    margin: .35rem 0 0;
+}
+
+.contact a {
+    color: inherit;
+}
+
+.resume-portrait {
+    width: 180px;
+}
+
+.resume-portrait img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+}
+
 .resume-body h2 {
     color: var(--accent-dark);
     margin-top: 2rem;
@@ -49,57 +108,105 @@ main { padding: 1rem 0 3rem; }
     letter-spacing: .04em;
     font-size: 1rem;
 }
-.resume-body h3 { color: var(--accent-dark); font-size: 1.15rem; margin: 1.4rem 0 .25rem; }
-.resume-body h4 { color: var(--accent-dark); font-size: 1rem; margin: 1.1rem 0 .2rem; }
-.resume-body p { margin: .45rem 0; }
-.resume-body ul { margin: .35rem 0 .75rem 1.2rem; padding: 0; }
-.resume-body li { margin: .25rem 0; }
-.resume-image {
-    display: block;
-    width: min(100%, 230px);
-    height: auto;
-    border-radius: 10px;
-    border: 1px solid var(--border);
-    margin: 1rem 0 1.5rem;
+
+.resume-body h3 {
+    color: var(--accent-dark);
+    font-size: 1.15rem;
+    margin: 1.4rem 0 .25rem;
 }
-.site-footer { border-top: 1px solid var(--border); padding: 1.5rem 0; color: var(--muted); }
+
+.resume-body p {
+    margin: .45rem 0;
+}
+
+.resume-body ul {
+    margin: .35rem 0 .75rem 1.2rem;
+    padding: 0;
+}
+
+.resume-body li {
+    margin: .25rem 0;
+}
+
+.site-footer {
+    border-top: 1px solid var(--border);
+    padding: 1.5rem 0;
+    color: var(--muted);
+}
+
+@media (max-width: 620px) {
+    .resume-header-with-image {
+        grid-template-columns: 1fr;
+    }
+
+    .resume-portrait {
+        width: min(180px, 100%);
+    }
+}
+
 @media print {
-    body { background: #fff; }
-    .site-header, .site-footer { display: none; }
-    .resume { border: 0; padding: 0; }
-    .resume-image { width: 150px; }
+    body {
+        background: #fff;
+    }
+
+    .site-header,
+    .site-footer {
+        display: none;
+    }
+
+    .resume {
+        border: 0;
+        padding: 0;
+    }
+
+    .resume-header-with-image {
+        grid-template-columns: minmax(0, 1fr) 150px;
+        gap: 1.5rem;
+    }
+
+    .resume-portrait {
+        width: 150px;
+    }
 }
 </style>
 </head>
+
 <body>
+
 <header class="site-header">
-    <div class="container"><a class="site-name" href="../index.html">Alexander Ferrari Miller</a></div>
+    <div class="container">
+        <a class="site-name" href="../index.html">Alexander Ferrari Miller</a>
+    </div>
 </header>
+
 <main>
     <div class="container">
         <article class="resume">
+
             <div class="resume-header">
-                <h1>Alexander Ferrari Miller</h1>
-                <p class="contact">
-                    3549 North D Street<br>
-                    San Bernardino, CA 92405-2103<br>
-                    +1 (323) 681-7588<br>
-                    <a href="mailto:Alexander.Ferrari.Miller@gmail.com">Alexander.Ferrari.Miller@gmail.com</a><br>
-                    <a href="https://AlexanderFerrariMiller.com">https://AlexanderFerrariMiller.com</a>
-                </p>
+                <div class="resume-contact-block">
+                    <h1>Alexander Ferrari Miller</h1>
+
+                    <p class="contact">
+                        3549 North D Street<br>
+                        San Bernardino, CA 92405-2103<br>
+                        +1 (323) 681-7588<br>
+                        <a href="mailto:Alexander.Ferrari.Miller@gmail.com">Alexander.Ferrari.Miller@gmail.com</a><br>
+                        <a href="https://AlexanderFerrariMiller.com">https://AlexanderFerrariMiller.com</a>
+                    </p>
+                </div>
+
+
+
             </div>
+
             <div class="resume-body">
-<p><strong>Customer Service | Retail | Hospitality | Client
-Communication</strong></p>
-<h3 id="professional-summary">PROFESSIONAL SUMMARY</h3>
-<p>Experienced customer-service professional with a background spanning
-transportation, hospitality, retail, entertainment, education, and live
-public-facing work.</p>
-<p>Skilled at building rapport quickly, handling payments and POS
-systems, responding to changing customer needs, resolving problems
-independently, and maintaining professional service in high-volume and
-time-sensitive environments.</p>
-<h3 id="core-qualifications">CORE QUALIFICATIONS</h3>
+<h2>CUSTOMER SERVICE / RETAIL / HOSPITALITY</h2>
+<p><strong>Customer Service | Retail | Hospitality | Client Communication</strong></p>
+<h3>PROFESSIONAL SUMMARY</h3>
+<p>Experienced customer-service professional with a background spanning transportation, hospitality, retail, entertainment, education, and live public-facing work.</p>
+<p>Skilled at building rapport quickly, handling payments and POS systems, responding to changing customer needs, resolving problems independently, and maintaining professional service in high-volume and time-sensitive environments.</p>
+<h3>CORE QUALIFICATIONS</h3>
 <ul>
 <li>Customer service and guest relations</li>
 <li>Retail and hospitality operations</li>
@@ -114,80 +221,56 @@ time-sensitive environments.</p>
 <li>Public speaking and presentation</li>
 <li>Reliable independent work</li>
 </ul>
-<h3 id="relevant-experience">RELEVANT EXPERIENCE</h3>
-<h4 id="santa-claus-mall-santa-culver-city-ca">Santa Claus — Mall Santa
-| Culver City, CA</h4>
+<h3>RELEVANT EXPERIENCE</h3>
+<h4>Santa Claus — Mall Santa | Culver City, CA</h4>
 <p><strong>Christmas 2025 Season</strong></p>
 <ul>
-<li>Interacted directly with children and families in a high-volume
-public setting.</li>
-<li>Built rapport quickly with guests across a wide range of ages and
-backgrounds.</li>
-<li>Maintained a professional character and positive guest experience
-throughout extended shifts.</li>
-<li>Coordinated with photographers, managers, families, and other
-Santa-team members.</li>
+<li>Interacted directly with children and families in a high-volume public setting.</li>
+<li>Built rapport quickly with guests across a wide range of ages and backgrounds.</li>
+<li>Maintained a professional character and positive guest experience throughout extended shifts.</li>
+<li>Coordinated with photographers, managers, families, and other Santa-team members.</li>
 </ul>
-<h4 id="taxi-driver-yellow-cab-torrance-ca">Taxi Driver — Yellow Cab |
-Torrance, CA</h4>
+<h4>Taxi Driver — Yellow Cab | Torrance, CA</h4>
 <p><strong>November 2024 – February 2026</strong></p>
 <ul>
-<li>Provided professional passenger service throughout the Los Angeles
-area.</li>
+<li>Provided professional passenger service throughout the Los Angeles area.</li>
 <li>Built rapport quickly with customers from varied backgrounds.</li>
-<li>Handled fares, payments, passenger requests, and changing
-destinations.</li>
-<li>Worked independently while maintaining professionalism in
-time-sensitive situations.</li>
+<li>Handled fares, payments, passenger requests, and changing destinations.</li>
+<li>Worked independently while maintaining professionalism in time-sensitive situations.</li>
 </ul>
-<h4 id="rideshare-driver-lyft-and-uber-los-angeles-ca">Rideshare Driver
-— Lyft and Uber | Los Angeles, CA</h4>
+<h4>Rideshare Driver — Lyft and Uber | Los Angeles, CA</h4>
 <p><strong>January 2014 – October 2024</strong></p>
 <ul>
-<li>Completed thousands of independent customer-service
-interactions.</li>
-<li>Communicated with passengers regarding pickups, drop-offs,
-destinations, and changing needs.</li>
-<li>Used smartphone-based navigation and electronic payment
-systems.</li>
-<li>Resolved customer and transportation issues independently while
-maintaining professional service.</li>
+<li>Completed thousands of independent customer-service interactions.</li>
+<li>Communicated with passengers regarding pickups, drop-offs, destinations, and changing needs.</li>
+<li>Used smartphone-based navigation and electronic payment systems.</li>
+<li>Resolved customer and transportation issues independently while maintaining professional service.</li>
 </ul>
-<h4 id="bartender-patina-restaurant-los-angeles-ca">Bartender — Patina
-Restaurant | Los Angeles, CA</h4>
+<h4>Bartender — Patina Restaurant | Los Angeles, CA</h4>
 <p><strong>January 2023 – February 2024</strong></p>
 <ul>
-<li>Worked in a professional hospitality environment serving guests and
-supporting restaurant operations.</li>
+<li>Worked in a professional hospitality environment serving guests and supporting restaurant operations.</li>
 <li>Handled customer orders and payments.</li>
 <li>Used POS and cash-register systems.</li>
 <li>Set up and broke down the bar for service.</li>
-<li>Responded to multiple guest and operational needs in a fast-paced
-environment.</li>
+<li>Responded to multiple guest and operational needs in a fast-paced environment.</li>
 </ul>
-<h4 id="crew-member-arclight-cinema-los-angeles-ca">Crew Member —
-ArcLight Cinema | Los Angeles, CA</h4>
+<h4>Crew Member — ArcLight Cinema | Los Angeles, CA</h4>
 <p><strong>June 2007 – June 2014</strong></p>
 <ul>
-<li>Provided customer service in a fast-paced retail entertainment
-environment.</li>
-<li>Sold concessions and movie tickets and accurately operated POS
-systems.</li>
-<li>Handled customer transactions and assisted guests throughout theater
-operations.</li>
+<li>Provided customer service in a fast-paced retail entertainment environment.</li>
+<li>Sold concessions and movie tickets and accurately operated POS systems.</li>
+<li>Handled customer transactions and assisted guests throughout theater operations.</li>
 <li>Greeted audiences and introduced films.</li>
 </ul>
-<h4 id="bagger-customer-service-star-market-newton-ma">Bagger / Customer
-Service — Star Market | Newton, MA</h4>
+<h4>Bagger / Customer Service — Star Market | Newton, MA</h4>
 <p><strong>1980</strong></p>
 <ul>
 <li>Bagged groceries and assisted customers with purchases.</li>
-<li>Loaded groceries into customers’ vehicles.</li>
-<li>Provided direct customer service in a retail grocery
-environment.</li>
+<li>Loaded groceries into customers' vehicles.</li>
+<li>Provided direct customer service in a retail grocery environment.</li>
 </ul>
-<h4 id="newspaper-carrier-the-boston-globe-newton-ma">Newspaper Carrier
-— The Boston Globe | Newton, MA</h4>
+<h4>Newspaper Carrier — The Boston Globe | Newton, MA</h4>
 <p><strong>Approximately 1979</strong></p>
 <ul>
 <li>Managed an assigned newspaper delivery route.</li>
@@ -196,25 +279,29 @@ environment.</li>
 <li>Reconciled customer payments associated with the route.</li>
 <li>Worked independently and maintained reliable delivery service.</li>
 </ul>
-<h3 id="education">EDUCATION</h3>
-<p><strong>Oberlin College</strong><br />
+<h3>EDUCATION</h3>
+<p><strong>Oberlin College</strong><br>
 Bachelor of Arts — Russian/Soviet Studies</p>
-<p><strong>University of Massachusetts Lowell</strong><br />
+<p><strong>University of Massachusetts Lowell</strong><br>
 Undergraduate studies — Mathematics</p>
-<p><strong>Los Angeles City College</strong><br />
-Associate’s degree studies — Computer Science; nearly complete</p>
-<h3 id="active-credentials">ACTIVE CREDENTIALS</h3>
+<p><strong>Los Angeles City College</strong><br>
+Associate's degree studies — Computer Science; nearly complete</p>
+<h3>ACTIVE CREDENTIALS</h3>
 <ul>
 <li>California Resident Insurance Producer License</li>
-<li>California Class C Driver’s License</li>
+<li>California Class C Driver's License</li>
 <li>California 30-Day Substitute Teaching Permit</li>
 <li>California Security Guard Card</li>
 </ul>
-
             </div>
+
         </article>
     </div>
 </main>
-<footer class="site-footer"><div class="container">Alexander Ferrari Miller</div></footer>
+
+<footer class="site-footer">
+    <div class="container">Alexander Ferrari Miller</div>
+</footer>
+
 </body>
 </html>
