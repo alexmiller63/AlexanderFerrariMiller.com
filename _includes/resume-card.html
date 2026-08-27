@@ -1,0 +1,64 @@
+{% assign resume = site.data.resumes[include.resume] %}
+
+<article class="resume-card">
+    <div>
+        <h2>
+            {{ resume.title }}
+        </h2>
+
+        <p>
+            {{ resume.description }}
+        </p>
+    </div>
+
+    <div class="resume-actions">
+        <a
+            class="resume-link"
+            href="c3po.html?file=resumes/{{ resume.basename }}.html&amp;type=html&amp;title={{ resume.viewer_title | url_encode }}"
+        >
+            View Resume
+        </a>
+
+        <div class="download-links">
+            <strong>Formats:</strong>
+
+            <a
+                href="resumes/{{ resume.basename }}.pdf"
+            >
+                PDF
+            </a>
+
+            ·
+
+            <a
+                href="resumes/{{ resume.basename }}.docx"
+            >
+                DOCX
+            </a>
+
+            ·
+
+            <a
+                href="resumes/{{ resume.basename }}.txt"
+            >
+                TXT
+            </a>
+
+            ·
+
+            <a
+                href="resumes/{{ resume.basename }}.odt"
+            >
+                ODT
+            </a>
+        </div>
+
+        <div class="source-link">
+            <a
+                href="resumes/{{ resume.basename }}.md"
+            >
+                View source (Markdown)
+            </a>
+        </div>
+    </div>
+</article>
