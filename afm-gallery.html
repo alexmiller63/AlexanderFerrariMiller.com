@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>AFM Photo Gallery</title>
+
+    <style>
+        body {
+            margin: 0;
+            padding: 24px;
+            font-family:
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                Roboto,
+                Helvetica,
+                Arial,
+                sans-serif;
+            background: #f5f5f2;
+            color: #1f2529;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 8px;
+        }
+
+        .instructions {
+            text-align: center;
+            margin-bottom: 32px;
+            color: #5f686f;
+        }
+
+        .gallery {
+            display: grid;
+            grid-template-columns:
+                repeat(auto-fit, minmax(250px, 1fr));
+            gap: 24px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        figure {
+            margin: 0;
+            padding: 12px;
+            background: white;
+            border: 1px solid #d9dde0;
+            border-radius: 8px;
+        }
+
+        img {
+            display: block;
+            width: 100%;
+            height: 320px;
+            object-fit: contain;
+            background: #eeeeee;
+        }
+
+        figcaption {
+            margin-top: 10px;
+            text-align: center;
+            font-weight: 600;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>AFM Photo Gallery</h1>
+
+    <p class="instructions">
+        Bartending page photo selection
+    </p>
+
+    <main class="gallery" id="gallery"></main>
+
+    <script>
+        const gallery = document.getElementById("gallery");
+
+        /*
+         * Try AFM-1-web.png through AFM-30-web.png.
+         *
+         * Files that do not exist are automatically removed
+         * from the gallery.
+         */
+        for (let number = 1; number <= 30; number += 1) {
+            const filename = `AFM-${number}-web.png`;
+
+            const figure = document.createElement("figure");
+            const image = document.createElement("img");
+            const caption = document.createElement("figcaption");
+
+            image.src = `images/${filename}`;
+            image.alt = `AFM ${number}`;
+            image.loading = "lazy";
+
+            caption.textContent = filename;
+
+            image.addEventListener("error", () => {
+                figure.remove();
+            });
+
+            figure.appendChild(image);
+            figure.appendChild(caption);
+            gallery.appendChild(figure);
+        }
+    </script>
+
+</body>
+
+</html>
