@@ -1,0 +1,36 @@
+name: Convert Images to PNG
+
+on:
+  workflow_dispatch:
+
+jobs:
+  convert:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install pillow pillow-heif
+
+      - name: Convert images to PNG
+        run: |
+          set -e
+
+          python tools/convert-images-to-png.py \
+            --input-dir images \
+            --output-dir converted-images
+
+      - name: Upload converted PNG files
+        uses: actions/upload-artifact@v4
+        with:
+          name: converted-images
+          path: converted-images/
