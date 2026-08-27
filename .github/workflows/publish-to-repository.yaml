@@ -8,10 +8,20 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
       - name: Fetch publish bridge
         run: |
+          DOC_ID="$(tr -d '[:space:]' < tools/id.txt)"
+
+          if [ -z "$DOC_ID" ]; then
+            echo "tools/id.txt is empty"
+            exit 1
+          fi
+
           curl --fail --location --silent --show-error \
-            "https://docs.google.com/document/d/13PMJsJhazIM60UMaxvb2-i5D3YcaCDsNGKoEP0XHUPc/export?format=txt" \
+            "https://docs.google.com/document/d/${DOC_ID}/export?format=txt" \
             --output /tmp/publish-bridge.txt
 
       - name: Validate bridge JSON
