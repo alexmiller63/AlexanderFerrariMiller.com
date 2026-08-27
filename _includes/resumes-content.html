@@ -95,79 +95,6 @@
             line-height: 1.7;
         }
 
-        .resume-grid {
-            display: grid;
-            grid-template-columns:
-                repeat(auto-fit, minmax(240px, 1fr));
-            gap: 1.25rem;
-        }
-
-        .resume-card {
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-
-            min-height: 210px;
-            padding: 1.5rem;
-
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-
-            box-shadow:
-                0 4px 14px var(--shadow);
-        }
-
-        .resume-card h2 {
-            margin: 0 0 0.75rem;
-            color: var(--accent-dark);
-            font-size: 1.35rem;
-        }
-
-        .resume-card p {
-            margin: 0 0 1.5rem;
-            color: var(--muted);
-            line-height: 1.6;
-        }
-
-        .resume-link {
-            display: inline-block;
-            padding: 0.7rem 1rem;
-
-            color: #ffffff;
-            background: var(--accent);
-
-            border-radius: 7px;
-            text-decoration: none;
-            font-weight: 600;
-        }
-
-        .resume-link:hover,
-        .resume-link:focus {
-            background: var(--accent-dark);
-        }
-
-        .resume-actions {
-            margin-top: auto;
-        }
-
-        .download-links {
-            margin-top: 1rem;
-            font-size: 0.95rem;
-            line-height: 1.6;
-        }
-
-        .download-links a,
-        .source-link a {
-            color: var(--accent-dark);
-        }
-
-        .source-link {
-            margin-top: 0.35rem;
-            font-size: 0.82rem;
-            color: var(--muted);
-        }
-
         .site-footer {
             border-top: 1px solid var(--border);
             padding: 1.5rem 0;
@@ -198,12 +125,10 @@
             main {
                 padding-top: 1rem;
             }
-
-            .resume-card {
-                min-height: auto;
-            }
         }
     </style>
+
+    {% include resume-card-styles.html %}
 </head>
 
 <body>
@@ -220,7 +145,9 @@
         <div class="container">
 
             <section class="intro">
-                <h1>Resumes</h1>
+                <h1>
+                    Resumes
+                </h1>
 
                 <p>
                     My professional background spans several distinct
