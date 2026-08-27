@@ -1,0 +1,73 @@
+name: Write Files
+
+on:
+  workflow_dispatch:
+    inputs:
+      files:
+        description: "JSON array of files: [{\"path\":\"...\",\"content\":\"...\"}]"
+        required: true
+        type: string
+      commit_message:
+        description: "Commit message"
+        required: true
+        default: "Write generated files"
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  write:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Write files
+        env:
+          FILES_JSON: ${{ inputs.files }}
+        run: |
+          python3 - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          files = json.loads(os.environ["FILES_JSON"])
+
+          if not isinstance(files, list):
+              raise SystemExit("files must be a JSON array")
+
+          for item in files:
+              if not isinstance(item, dict):
+                  raise SystemExit("Each file entry must be an object")
+
+              path = item.get("path")
+              content = item.get("content")
+
+              if not isinstance(path, str) or not path:
+                  raise SystemExit("Each file needs a non-empty path")
+
+              if not isinstance(content, str):
+                  raise SystemExit(f"Missing string content for {path}")
+
+              target = Path(path)
+
+              if target.is_absolute():
+                  raise SystemExit(f"Absolute paths are not allowed: {path}")
+
+              if ".." in target.parts:
+                  raise SystemExit(f"Parent-directory paths are not allowed: {path}")
+
+              target.parent.mkdir(parents=True, exist_ok=True)
+              target.write_text(content, encoding="utf-8")
+
+              print(f"Wrote {path}")
+          PY
+
+      - name: Commit generated files
+        env:
+          COMMIT_MESSAGE: ${{ inputs.commit_message }}
+        run: |
+          chmod +x tools/commit-generated-files.sh
+          tools/commit-generated-files.sh "$COMMIT_MESSAGE"
