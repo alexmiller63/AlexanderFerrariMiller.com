@@ -9,24 +9,44 @@ on:
         type: string
       commit_message:
         description: "Commit message"
-        required: true
-        default: "Write generated files"
+        required: false
+        default: ""
         type: string
+
+  issues:
+    types:
+      - opened
 
 permissions:
   contents: write
+  issues: write
 
 jobs:
   write:
+    if: >
+      github.event_name == 'workflow_dispatch' ||
+      (
+        github.event_name == 'issues' &&
+        github.event.issue.user.login == 'alexmiller63' &&
+        startsWith(github.event.issue.title, 'Write files:')
+      )
+
     runs-on: ubuntu-latest
 
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
 
-      - name: Write files
+      - name: Prepare and write files
         env:
-          FILES_JSON: ${{ inputs.files }}
+          EVENT_NAME: ${{ github.event_name }}
+
+          MANUAL_FILES: ${{ inputs.files }}
+          MANUAL_COMMIT_MESSAGE: ${{ inputs.commit_message }}
+
+          ISSUE_BODY: ${{ github.event.issue.body }}
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+
         run: |
           python3 - <<'PY'
           import base64
@@ -34,43 +54,128 @@ jobs:
           import os
           from pathlib import Path
 
-          files = json.loads(os.environ["FILES_JSON"])
+
+          event_name = os.environ["EVENT_NAME"]
+
+
+          if event_name == "workflow_dispatch":
+              raw_files = os.environ.get("MANUAL_FILES", "")
+              commit_message = os.environ.get(
+                  "MANUAL_COMMIT_MESSAGE",
+                  ""
+              ).strip()
+
+              try:
+                  files = json.loads(raw_files)
+              except Exception as exc:
+                  raise SystemExit(
+                      f"Invalid workflow files JSON: {exc}"
+                  )
+
+          elif event_name == "issues":
+              body = os.environ.get("ISSUE_BODY", "").strip()
+
+              try:
+                  request = json.loads(body)
+              except Exception as exc:
+                  raise SystemExit(
+                      f"Issue body must be valid JSON: {exc}"
+                  )
+
+              if not isinstance(request, dict):
+                  raise SystemExit(
+                      "Issue body must contain a JSON object"
+                  )
+
+              files = request.get("files")
+              commit_message = str(
+                  request.get("commit_message", "")
+              ).strip()
+
+          else:
+              raise SystemExit(
+                  f"Unsupported event: {event_name}"
+              )
+
 
           if not isinstance(files, list):
-              raise SystemExit("files must be a JSON array")
+              raise SystemExit(
+                  "files must be a JSON array"
+              )
+
+          if not files:
+              raise SystemExit(
+                  "files array must not be empty"
+              )
+
+
+          paths = []
+
 
           for item in files:
               if not isinstance(item, dict):
-                  raise SystemExit("Each file entry must be an object")
+                  raise SystemExit(
+                      "Each file entry must be an object"
+                  )
 
               path = item.get("path")
               content = item.get("content")
-              encoding = item.get("encoding", "utf-8")
+              encoding = item.get(
+                  "encoding",
+                  "utf-8"
+              )
+
 
               if not isinstance(path, str) or not path:
-                  raise SystemExit("Each file needs a non-empty path")
+                  raise SystemExit(
+                      "Each file needs a non-empty path"
+                  )
+
+
+              if "\n" in path or "\r" in path:
+                  raise SystemExit(
+                      f"Invalid newline in path: {path!r}"
+                  )
+
 
               if not isinstance(content, str):
-                  raise SystemExit(f"Missing string content for {path}")
-
-              if encoding not in ("utf-8", "base64"):
                   raise SystemExit(
-                      f"Unsupported encoding for {path}: {encoding}"
+                      f"Missing string content for {path}"
                   )
+
+
+              if encoding not in (
+                  "utf-8",
+                  "base64",
+              ):
+                  raise SystemExit(
+                      f"Unsupported encoding for {path}: "
+                      f"{encoding}"
+                  )
+
 
               target = Path(path)
 
+
               if target.is_absolute():
                   raise SystemExit(
-                      f"Absolute paths are not allowed: {path}"
+                      f"Absolute paths are not allowed: "
+                      f"{path}"
                   )
+
 
               if ".." in target.parts:
                   raise SystemExit(
-                      f"Parent-directory paths are not allowed: {path}"
+                      f"Parent-directory paths are not "
+                      f"allowed: {path}"
                   )
 
-              target.parent.mkdir(parents=True, exist_ok=True)
+
+              target.parent.mkdir(
+                  parents=True,
+                  exist_ok=True
+              )
+
 
               if encoding == "base64":
                   try:
@@ -80,35 +185,87 @@ jobs:
                       )
                   except Exception as exc:
                       raise SystemExit(
-                          f"Invalid base64 content for {path}: {exc}"
+                          f"Invalid base64 content for "
+                          f"{path}: {exc}"
                       )
 
                   target.write_bytes(data)
+
               else:
-                  target.write_text(content, encoding="utf-8")
+                  target.write_text(
+                      content,
+                      encoding="utf-8"
+                  )
 
-              print(f"Wrote {path} ({encoding})")
-          PY
 
-      - name: Commit generated files
-        env:
-          FILES_JSON: ${{ inputs.files }}
-          COMMIT_MESSAGE: ${{ inputs.commit_message }}
-        run: |
-          mapfile -t FILE_PATHS < <(
-            python3 - <<'PY'
-          import json
-          import os
+              paths.append(path)
 
-          files = json.loads(os.environ["FILES_JSON"])
+              print(
+                  f"Wrote {path} ({encoding})"
+              )
 
-          for item in files:
-              print(item["path"])
-          PY
+
+          if not commit_message:
+              if len(paths) == 1:
+                  commit_message = (
+                      f"Update {paths[0]}"
+                  )
+              else:
+                  commit_message = (
+                      f"Update {len(paths)} files"
+                  )
+
+
+          Path(
+              "/tmp/write-files-paths.txt"
+          ).write_text(
+              "\n".join(paths) + "\n",
+              encoding="utf-8"
           )
 
-          chmod +x tools/commit-generated-files.sh
+
+          Path(
+              "/tmp/write-files-commit-message.txt"
+          ).write_text(
+              commit_message,
+              encoding="utf-8"
+          )
+
+
+          print(
+              f"Commit message: {commit_message}"
+          )
+          PY
+
+      - name: Commit files
+        run: |
+          mapfile -t FILE_PATHS \
+            < /tmp/write-files-paths.txt
+
+          COMMIT_MESSAGE="$(
+            cat /tmp/write-files-commit-message.txt
+          )"
+
+          chmod +x \
+            tools/commit-generated-files.sh
 
           tools/commit-generated-files.sh \
             "$COMMIT_MESSAGE" \
             "${FILE_PATHS[@]}"
+
+      - name: Close automatic write request
+        if: >
+          github.event_name == 'issues' &&
+          success()
+
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+
+        run: |
+          COMMIT_SHA="$(git rev-parse HEAD)"
+
+          gh issue close \
+            "$ISSUE_NUMBER" \
+            --comment \
+            "Write completed successfully. Commit: $COMMIT_SHA"
