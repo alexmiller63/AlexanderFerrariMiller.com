@@ -15,31 +15,89 @@
     --border: #d9dde0;
     --max-width: 900px;
 }
-* { box-sizing: border-box; }
+
+* {
+    box-sizing: border-box;
+}
+
 body {
     margin: 0;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+    font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        Roboto,
+        Arial,
+        sans-serif;
     background: var(--background);
     color: var(--text);
     line-height: 1.55;
 }
+
 .container {
     width: min(92%, var(--max-width));
     margin: 0 auto;
 }
-.site-header { padding: 2rem 0 1rem; }
-.site-name { color: var(--accent-dark); text-decoration: none; font-weight: 700; }
-main { padding: 1rem 0 3rem; }
+
+.site-header {
+    padding: 2rem 0 1rem;
+}
+
+.site-name {
+    color: var(--accent-dark);
+    text-decoration: none;
+    font-weight: 700;
+}
+
+main {
+    padding: 1rem 0 3rem;
+}
+
 .resume {
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: 12px;
     padding: clamp(1.25rem, 4vw, 2.5rem);
 }
-.resume-header { margin-bottom: 1.5rem; }
-.resume-header h1 { margin: 0; color: var(--accent-dark); font-size: clamp(2rem, 6vw, 3rem); }
-.contact { color: var(--muted); margin: .35rem 0 0; }
-.contact a { color: inherit; }
+
+.resume-header {
+    margin-bottom: 1.5rem;
+}
+
+.resume-header-with-image {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 2rem;
+    align-items: start;
+}
+
+.resume-header h1 {
+    margin: 0;
+    color: var(--accent-dark);
+    font-size: clamp(2rem, 6vw, 3rem);
+}
+
+.contact {
+    color: var(--muted);
+    margin: .35rem 0 0;
+}
+
+.contact a {
+    color: inherit;
+}
+
+.resume-portrait {
+    width: 180px;
+}
+
+.resume-portrait img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+}
+
 .resume-body h2 {
     color: var(--accent-dark);
     margin-top: 2rem;
@@ -49,101 +107,134 @@ main { padding: 1rem 0 3rem; }
     letter-spacing: .04em;
     font-size: 1rem;
 }
-.resume-body h3 { color: var(--accent-dark); font-size: 1.15rem; margin: 1.4rem 0 .25rem; }
-.resume-body h4 { color: var(--accent-dark); font-size: 1rem; margin: 1.1rem 0 .2rem; }
-.resume-body p { margin: .45rem 0; }
-.resume-body ul { margin: .35rem 0 .75rem 1.2rem; padding: 0; }
-.resume-body li { margin: .25rem 0; }
-.resume-image {
-    display: block;
-    width: min(100%, 230px);
-    height: auto;
-    border-radius: 10px;
-    border: 1px solid var(--border);
-    margin: 1rem 0 1.5rem;
+
+.resume-body h3 {
+    color: var(--accent-dark);
+    font-size: 1.15rem;
+    margin: 1.4rem 0 .25rem;
 }
-.site-footer { border-top: 1px solid var(--border); padding: 1.5rem 0; color: var(--muted); }
+
+.resume-body p {
+    margin: .45rem 0;
+}
+
+.resume-body ul {
+    margin: .35rem 0 .75rem 1.2rem;
+    padding: 0;
+}
+
+.resume-body li {
+    margin: .25rem 0;
+}
+
+.site-footer {
+    border-top: 1px solid var(--border);
+    padding: 1.5rem 0;
+    color: var(--muted);
+}
+
+@media (max-width: 620px) {
+    .resume-header-with-image {
+        grid-template-columns: 1fr;
+    }
+
+    .resume-portrait {
+        width: min(180px, 100%);
+    }
+}
+
 @media print {
-    body { background: #fff; }
-    .site-header, .site-footer { display: none; }
-    .resume { border: 0; padding: 0; }
-    .resume-image { width: 150px; }
+    body {
+        background: #fff;
+    }
+
+    .site-header,
+    .site-footer {
+        display: none;
+    }
+
+    .resume {
+        border: 0;
+        padding: 0;
+    }
+
+    .resume-header-with-image {
+        grid-template-columns: minmax(0, 1fr) 150px;
+        gap: 1.5rem;
+    }
+
+    .resume-portrait {
+        width: 150px;
+    }
 }
 </style>
 </head>
+
 <body>
+
 <header class="site-header">
-    <div class="container"><a class="site-name" href="../index.html">Alexander Ferrari Miller</a></div>
+    <div class="container">
+        <a class="site-name" href="../index.html">Alexander Ferrari Miller</a>
+    </div>
 </header>
+
 <main>
     <div class="container">
         <article class="resume">
-            <div class="resume-header">
-                <h1>Alexander Ferrari Miller</h1>
-                <p class="contact">
-                    3549 North D Street<br>
-                    San Bernardino, CA 92405-2103<br>
-                    +1 (323) 681-7588<br>
-                    <a href="mailto:Alexander.Ferrari.Miller@gmail.com">Alexander.Ferrari.Miller@gmail.com</a><br>
-                    <a href="https://AlexanderFerrariMiller.com">https://AlexanderFerrariMiller.com</a>
-                </p>
+
+            <div class="resume-header resume-header-with-image">
+                <div class="resume-contact-block">
+                    <h1>Alexander Ferrari Miller</h1>
+
+                    <p class="contact">
+                        3549 North D Street<br>
+                        San Bernardino, CA 92405-2103<br>
+                        +1 (323) 681-7588<br>
+                        <a href="mailto:Alexander.Ferrari.Miller@gmail.com">Alexander.Ferrari.Miller@gmail.com</a><br>
+                        <a href="https://AlexanderFerrariMiller.com">https://AlexanderFerrariMiller.com</a>
+                    </p>
+                </div>
+
+
+                <div class="resume-portrait">
+                    <img src="../images/Alexander-Ferrari-Miller-Santa.jpeg" alt="Alexander Ferrari Miller performing as Santa Claus">
+                </div>
+
             </div>
+
             <div class="resume-body">
-<p><img class="resume-image" src="../images/Alexander-Ferrari-Miller-Santa.jpeg"
-style="width:2in" /></p>
-<h3 id="performance-summary">Performance Summary</h3>
-<p>Character actor, singer, and live performer with experience spanning
-professional seasonal character work, interactive comedy, musical
-theater, opera, choral singing, historical character performance, and
-dance. Experienced in maintaining character during extended audience
-interaction, working with accents and comic roles, performing as part of
-ensembles, and engaging directly with audiences in both scripted and
-improvisational settings.</p>
-<h2 id="professional-character-performance">Professional Character
-Performance</h2>
-<h3 id="mall-santa-seasonal">Mall Santa — Seasonal</h3>
+<h2>PERFORMANCE</h2>
+<h3>Performance Summary</h3>
+<p>Character actor, singer, and live performer with experience spanning professional seasonal character work, interactive comedy, musical theater, opera, choral singing, historical character performance, and dance. Experienced in maintaining character during extended audience interaction, working with accents and comic roles, performing as part of ensembles, and engaging directly with audiences in both scripted and improvisational settings.</p>
+<h2>Professional Character Performance</h2>
+<h3>Mall Santa — Seasonal</h3>
 <p><strong>Culver City, CA — Christmas 2025</strong></p>
 <ul>
-<li>Portrayed Santa Claus in a professional retail holiday
-environment.</li>
-<li>Interacted directly with children, families, photographers,
-managers, and other members of the Santa team.</li>
-<li>Maintained character throughout long, high-volume shifts and
-repeated audience interactions.</li>
-<li>Adapted individual interactions to children and families while
-helping create positive and memorable experiences.</li>
-<li>Completed professional Santa training at Northern Lights Santa
-Academy before obtaining seasonal Santa work.</li>
+<li>Portrayed Santa Claus in a professional retail holiday environment.</li>
+<li>Interacted directly with children, families, photographers, managers, and other members of the Santa team.</li>
+<li>Maintained character throughout long, high-volume shifts and repeated audience interactions.</li>
+<li>Adapted individual interactions to children and families while helping create positive and memorable experiences.</li>
+<li>Completed professional Santa training at Northern Lights Santa Academy before obtaining seasonal Santa work.</li>
 </ul>
-<h3 id="pasta-al-dente-tony-and-marias-italian-comedy-wedding">Pasta Al
-Dente — <em>Tony and Maria’s Italian Comedy Wedding</em></h3>
-<p><strong>Greater Boston and Cape Cod, MA — Approximately 2
-years</strong></p>
+<h3>Pasta Al Dente — <em>Tony and Maria's Italian Comedy Wedding</em></h3>
+<p><strong>Greater Boston and Cape Cod, MA — Approximately 2 years</strong></p>
 <ul>
-<li>Performed a recurring scripted role in the interactive comedy
-production.</li>
-<li>Portrayed an Italian priest using an exaggerated Italian accent as
-part of the character.</li>
-<li>Performed approximately 12 shows per year, primarily on Cape
-Cod.</li>
-<li>Worked directly with live audiences in an interactive theatrical
-environment.</li>
+<li>Performed a recurring scripted role in the interactive comedy production.</li>
+<li>Portrayed an Italian priest using an exaggerated Italian accent as part of the character.</li>
+<li>Performed approximately 12 shows per year, primarily on Cape Cod.</li>
+<li>Worked directly with live audiences in an interactive theatrical environment.</li>
 <li>Delivered the role with strong comedic response.</li>
 </ul>
-<h3 id="renaissance-pleasure-faire">Renaissance Pleasure Faire</h3>
+<h3>Renaissance Pleasure Faire</h3>
 <p><strong>Massachusetts</strong></p>
 <ul>
-<li>Portrayed Dr. Thomas Campion, the English physician, poet, and
-composer.</li>
-<li>Remained in character while interacting directly with Faire
-patrons.</li>
-<li>Serenaded patrons with Thomas Campion’s original works.</li>
-<li>Combined historical characterization, singing, and improvisational
-audience interaction.</li>
+<li>Portrayed Dr. Thomas Campion, the English physician, poet, and composer.</li>
+<li>Remained in character while interacting directly with Faire patrons.</li>
+<li>Serenaded patrons with Thomas Campion's original works.</li>
+<li>Combined historical characterization, singing, and improvisational audience interaction.</li>
 </ul>
-<h2 id="opera">Opera</h2>
-<h3 id="principal-supporting-ensemble-roles">Principal, Supporting &amp;
-Ensemble Roles</h3>
+<h2>Opera</h2>
+<h3>Principal, Supporting &amp; Ensemble Roles</h3>
 <ul>
 <li><strong>Masetto</strong> — <em>Don Giovanni</em></li>
 <li><strong>Leporello</strong> — <em>Don Giovanni</em></li>
@@ -152,74 +243,55 @@ Ensemble Roles</h3>
 <li><strong>Figaro</strong> — <em>The Barber of Seville</em></li>
 <li><strong>Figaro</strong> — <em>The Marriage of Figaro</em></li>
 <li><strong>Chorus</strong> — <em>Dido and Aeneas</em></li>
-<li><strong>Calavera / Diego Rivera Understudy</strong> —
-<em>Frida</em>, San Francisco City College, Summer 1994
-<ul>
-<li>Performed as one of the Calaveras, appearing on stage through most
-of the opera and manipulating elements of the set.</li>
+<li><strong>Calavera / Diego Rivera Understudy</strong> — <em>Frida</em>, San Francisco City College, Summer 1994</li>
+<li>Performed as one of the Calaveras, appearing on stage through most of the opera and manipulating elements of the set.</li>
 <li>Understudied the role of Diego Rivera.</li>
-</ul></li>
 </ul>
-<h2 id="musical-theater-stage">Musical Theater &amp; Stage</h2>
+<h2>Musical Theater &amp; Stage</h2>
 <ul>
-<li><strong>Scientist</strong> — <em>Li’l Abner</em></li>
+<li><strong>Scientist</strong> — <em>Li'l Abner</em></li>
 <li><strong>Hines</strong> — <em>The Pajama Game</em></li>
 <li><strong>Dancer</strong> — <em>My Fair Lady</em></li>
-<li><strong>Apostle / Ensemble</strong> — <em>Jesus Christ
-Superstar</em>, Turtle Lane Playhouse, Newton, MA</li>
-<li><strong>Franz</strong> — <em>The Sound of Music</em>, Turtle Lane
-Playhouse, Newton, MA
-<ul>
+<li><strong>Apostle / Ensemble</strong> — <em>Jesus Christ Superstar</em>, Turtle Lane Playhouse, Newton, MA</li>
+<li><strong>Franz</strong> — <em>The Sound of Music</em>, Turtle Lane Playhouse, Newton, MA</li>
 <li>Portrayed Franz, the butler, using a German accent.</li>
 <li>Received strong comedic responses from audiences.</li>
-</ul></li>
-<li><strong>Ebenezer</strong> — <em>Scrooge</em>, Turtle Lane Playhouse,
-Newton, MA
-<ul>
+<li><strong>Ebenezer</strong> — <em>Scrooge</em>, Turtle Lane Playhouse, Newton, MA</li>
 <li>Portrayed Ebenezer, Scrooge as a young man.</li>
-</ul></li>
-<li><strong>Officer Krupke</strong> — <em>West Side Story</em>, Greater
-Boston area</li>
-<li><strong>Fat Prince</strong> — <em>The Caucasian Chalk Circle</em>,
-University of Massachusetts Lowell</li>
+<li><strong>Officer Krupke</strong> — <em>West Side Story</em>, Greater Boston area</li>
+<li><strong>Fat Prince</strong> — <em>The Caucasian Chalk Circle</em>, University of Massachusetts Lowell</li>
 </ul>
-<h2 id="choral-vocal-experience">Choral &amp; Vocal Experience</h2>
+<h2>Choral &amp; Vocal Experience</h2>
 <ul>
-<li>Ensemble Singer / Soloist — Westwind International Folk Ensemble,
-Oakland, CA</li>
+<li>Ensemble Singer / Soloist — Westwind International Folk Ensemble, Oakland, CA</li>
 <li>Oberlin College Choir</li>
 <li>Oberlin College Musical Union</li>
 <li>Troubadors</li>
 <li>Newton North High School Choir</li>
-<li>Informal vocal performances at piano bars, notably The Alley in
-Oakland, CA</li>
+<li>Informal vocal performances at piano bars, notably The Alley in Oakland, CA</li>
 <li>Informal performances at various karaoke venues</li>
 </ul>
-<h2 id="dance-experience">Dance Experience</h2>
+<h2>Dance Experience</h2>
 <ul>
 <li>Céilí dancing — The Starry Plough, Berkeley, CA</li>
 <li>Irish set dancing — The Burren, Somerville, MA</li>
 <li>Contra dancing — Massachusetts and California</li>
 </ul>
-<h2 id="training-education">Training &amp; Education</h2>
-<p><strong>Northern Lights Santa Academy</strong> — Professional Santa
-Training, Summer 2025</p>
-<p><strong>Oberlin College</strong> — Bachelor of Arts, Russian/Soviet
-Studies</p>
-<p><strong>University of Massachusetts Lowell</strong> — Approximately 1
-year of undergraduate mathematics study</p>
-<h2 id="additional-performance-strengths">Additional Performance
-Strengths</h2>
-<p>Character performance, live audience interaction, comic timing,
-accents, improvisational interaction, singing, choral singing, opera,
-musical theater, historical characterization, ensemble performance,
-dance, public speaking, extended in-character performance, and
-high-volume public interaction.</p>
-
+<h2>Training &amp; Education</h2>
+<p><strong>Northern Lights Santa Academy</strong> — Professional Santa Training, Summer 2025</p>
+<p><strong>Oberlin College</strong> — Bachelor of Arts, Russian/Soviet Studies</p>
+<p><strong>University of Massachusetts Lowell</strong> — Approximately 1 year of undergraduate mathematics study</p>
+<h2>Additional Performance Strengths</h2>
+<p>Character performance, live audience interaction, comic timing, accents, improvisational interaction, singing, choral singing, opera, musical theater, historical characterization, ensemble performance, dance, public speaking, extended in-character performance, and high-volume public interaction.</p>
             </div>
+
         </article>
     </div>
 </main>
-<footer class="site-footer"><div class="container">Alexander Ferrari Miller</div></footer>
+
+<footer class="site-footer">
+    <div class="container">Alexander Ferrari Miller</div>
+</footer>
+
 </body>
 </html>
