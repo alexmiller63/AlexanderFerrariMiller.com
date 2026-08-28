@@ -217,7 +217,7 @@
                 class="social-list"
                 aria-label="Social media links"
             >
-                {% for social in site.data.social-media %}
+                {% for social in site.data["social-media"] %}
                     {% include social-card.html social=social %}
                 {% endfor %}
             </section>
