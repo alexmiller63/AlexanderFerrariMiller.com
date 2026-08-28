@@ -12,7 +12,11 @@
 
     {% if include.social.value %}
     <div class="social-value">
-        {{ include.social.value }}
+        {% if include.social.name == "WhatsApp" %}
+            {{ include.social.value | replace: "-", "&#8209;" }}
+        {% else %}
+            {{ include.social.value }}
+        {% endif %}
     </div>
     {% endif %}
 
