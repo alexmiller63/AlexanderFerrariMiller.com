@@ -41,5 +41,3 @@ Full bar setup, bar breakdown, high-volume service, intermission service, guest 
 ## Education
 
 **Oberlin College** — Bachelor of Arts, Russian/Soviet Studies
-
-*This is a placeholder bartender resume. Additional employment dates, duties, certifications, and relevant experience will be added as the full work chronology is completed.*
