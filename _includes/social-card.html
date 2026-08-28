@@ -1,0 +1,27 @@
+<article class="social-card">
+    <h2>{{ include.social.name }}</h2>
+
+    <svg
+        class="social-icon"
+        viewBox="0 0 24 24"
+        role="img"
+        aria-label="{{ include.social.name }}"
+    >
+        <path d="{{ include.social.icon_path }}"/>
+    </svg>
+
+    {% if include.social.value %}
+    <div class="social-value">
+        {{ include.social.value }}
+    </div>
+    {% endif %}
+
+    <a
+        class="social-link"
+        href="{{ include.social.url }}"
+        target="_blank"
+        rel="noopener noreferrer"
+    >
+        {{ include.social.url }}
+    </a>
+</article>
