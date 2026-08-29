@@ -21,12 +21,19 @@
     </div>
     {% endif %}
 
+    {% assign display_url = include.social.url | remove_first: 'https://' | remove_first: 'http://' %}
+    {% assign url_parts = display_url | split: '/' %}
     <a
         class="social-link"
         href="{{ include.social.url }}"
         target="_blank"
         rel="noopener noreferrer"
+        aria-label="{{ include.social.url }}"
     >
-        {{ include.social.url }}
+        <span class="url-desktop">{{ include.social.url }}</span>
+        <span class="url-mobile">
+            <span>https://</span><br>
+            <span>{{ url_parts[0] }}/</span>{% if url_parts.size > 1 %}<br><span>{{ url_parts | slice: 1, 99 | join: '/' }}</span>{% endif %}
+        </span>
     </a>
 </article>
