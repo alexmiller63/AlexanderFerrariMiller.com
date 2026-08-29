@@ -1,1 +1,19 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" role="img" aria-label="Instagram"><path fill="#2f536b" d="M7 2h10a5 5 0 0 1 5 5v10a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5V7a5 5 0 0 1 5-5zm0 2a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V7a3 3 0 0 0-3-3H7zm10.5 1.5a1.25 1.25 0 1 1 0 2.5 1.25 1.25 0 0 1 0-2.5zM12 7a5 5 0 1 1 0 10 5 5 0 0 1 0-10zm0 2a3 3 0 1 0 0 6 3 3 0 0 0 0-6z"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" role="img" aria-label="Instagram">
+  <defs>
+    <radialGradient id="ig-a" cx="30%" cy="100%" r="120%">
+      <stop offset="0" stop-color="#FFD600"/>
+      <stop offset="0.32" stop-color="#FF7A00"/>
+      <stop offset="0.62" stop-color="#FF0169"/>
+      <stop offset="1" stop-color="#D300C5"/>
+    </radialGradient>
+    <radialGradient id="ig-b" cx="100%" cy="0%" r="90%">
+      <stop offset="0" stop-color="#7638FA" stop-opacity=".95"/>
+      <stop offset="1" stop-color="#7638FA" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect x="2" y="2" width="20" height="20" rx="5.2" fill="url(#ig-a)"/>
+  <rect x="2" y="2" width="20" height="20" rx="5.2" fill="url(#ig-b)"/>
+  <rect x="6.15" y="6.15" width="11.7" height="11.7" rx="3.55" fill="none" stroke="#fff" stroke-width="1.85"/>
+  <circle cx="12" cy="12" r="3.05" fill="none" stroke="#fff" stroke-width="1.85"/>
+  <circle cx="17.45" cy="6.55" r="1.1" fill="#fff"/>
+</svg>
