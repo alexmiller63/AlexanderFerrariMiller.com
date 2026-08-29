@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256" role="img" aria-labelledby="title desc">
+  <title id="title">PearlSom</title>
+  <desc id="desc">PearlSom social-media icon derived from the Navy Pearl Wave P identity.</desc>
+  <defs>
+    <linearGradient id="navy" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#001b43"/>
+      <stop offset="0.5" stop-color="#0a3569"/>
+      <stop offset="1" stop-color="#001d49"/>
+    </linearGradient>
+    <radialGradient id="pearl" cx="42%" cy="36%" r="70%">
+      <stop offset="0" stop-color="#f3e4d1"/>
+      <stop offset="0.62" stop-color="#e5cfb3"/>
+      <stop offset="1" stop-color="#d4b995"/>
+    </radialGradient>
+    <linearGradient id="wave" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#7899bc"/>
+      <stop offset="0.55" stop-color="#5e84ad"/>
+      <stop offset="1" stop-color="#4e739c"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="256" height="256" rx="52" fill="#fff"/>
+
+  <!-- Simplified PearlSom P for small-icon legibility. -->
+  <path fill="url(#navy)" fill-rule="evenodd" d="M55 42h79c42 0 69 24 69 61 0 35-25 60-65 60-15 0-27-3-39-7v30c0 16 5 22 20 24v4H55v-4c15-2 20-8 20-24V70c0-16-5-22-20-24v-4zm44 22v70c11 5 23 8 36 8 27 0 43-15 43-39 0-25-17-39-45-39H99z"/>
+
+  <!-- Pearl: retained as the identifying jewel of the mark. -->
+  <circle cx="139" cy="103" r="23" fill="url(#pearl)"/>
+  <path d="M145 85c-7-3-14-1-19 4-5 5-7 12-5 17 2-4 4-7 7-10 4-5 10-9 17-11z" fill="#fff"/>
+
+  <!-- Wave: simplified to one strong sweep that survives at icon scale. -->
+  <path d="M75 158c18-12 36-12 55-5 15 6 29 14 45 14 11 0 21-4 31-11-6 18-20 29-39 31-18 2-34-6-49-13-16-8-29-12-43-5z" fill="url(#wave)"/>
+</svg>
