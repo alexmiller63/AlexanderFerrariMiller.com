@@ -1,12 +1,15 @@
 <article class="social-card">
     <h2>{{ include.social.name }}</h2>
 
-    <span
+    <img
         class="social-icon"
-        role="img"
-        aria-label="{{ include.social.name }}"
-        style="--social-icon-url: url('{{ '/images/source-svg/' | append: include.social.icon_file | relative_url }}');"
-    ></span>
+        src="{{ '/images/source-svg/' | append: include.social.icon_file | relative_url }}"
+        alt="{{ include.social.name }}"
+        width="38"
+        height="38"
+        loading="lazy"
+        decoding="async"
+    >
 
     {% if include.social.value %}
     <div class="social-value">
