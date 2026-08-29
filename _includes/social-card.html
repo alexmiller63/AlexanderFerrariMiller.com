@@ -33,7 +33,15 @@
         <span class="url-desktop">{{ include.social.url }}</span>
         <span class="url-mobile">
             <span>https://</span><br>
-            <span>{{ url_parts[0] }}/</span>{% if url_parts.size > 1 %}<br><span>{{ url_parts | slice: 1, 99 | join: '/' }}</span>{% endif %}
+            {% if include.social.name == "LinkedIn" %}
+                <span>{{ url_parts[0] }}/in/</span><br>
+                <span>{{ url_parts | slice: 2, 99 | join: '/' }}</span>
+            {% elsif include.social.name == "Snapchat" %}
+                <span>{{ url_parts[0] }}/add/</span><br>
+                <span>{{ url_parts | slice: 2, 99 | join: '/' }}</span>
+            {% else %}
+                <span>{{ url_parts[0] }}/</span>{% if url_parts.size > 1 %}<br><span>{{ url_parts | slice: 1, 99 | join: '/' }}</span>{% endif %}
+            {% endif %}
         </span>
     </a>
 </article>
