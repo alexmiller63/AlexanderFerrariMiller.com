@@ -6,9 +6,16 @@
 
 <script>
 (function () {
-    if (document.querySelector('.site-header')) return;
     var footerNav = document.querySelector('.site-footer .site-nav');
     if (!footerNav) return;
+
+    var existingHeader = document.querySelector('.site-header');
+    if (existingHeader) {
+        if (existingHeader.querySelector('.site-nav')) return;
+        var existingContainer = existingHeader.querySelector('.container') || existingHeader;
+        existingContainer.appendChild(footerNav.cloneNode(true));
+        return;
+    }
 
     var header = document.createElement('header');
     header.className = 'site-header';
