@@ -30,6 +30,7 @@ jobs:
           python -m pip install markdown
 
       - name: Generate selected resumes
+        id: generate
         run: |
           set -euo pipefail
 
@@ -62,11 +63,20 @@ jobs:
           done < "$list_file"
 
           if [ "$generated" -eq 0 ]; then
-              echo "No resumes listed in $list_file"
-              exit 1
+              echo "has_resumes=false" >> "$GITHUB_OUTPUT"
+              echo "::warning title=No resumes queued::Add one or more resume stems to resumes/generate-list.txt, commit the change, then run Generate Resumes again."
+              {
+                  echo "## No resumes queued"
+                  echo
+                  echo "Add one or more resume stems to \`resumes/generate-list.txt\`, commit the change, then run **Generate Resumes** again."
+              } >> "$GITHUB_STEP_SUMMARY"
+              exit 0
           fi
 
+          echo "has_resumes=true" >> "$GITHUB_OUTPUT"
+
       - name: Package selected resume files
+        if: steps.generate.outputs.has_resumes == 'true'
         run: |
           set -euo pipefail
 
@@ -87,12 +97,14 @@ jobs:
           done < "$list_file"
 
       - name: Upload resume files
+        if: steps.generate.outputs.has_resumes == 'true'
         uses: actions/upload-artifact@v4
         with:
           name: selected-resumes
           path: resume-output/
 
       - name: Reset resume generation list
+        if: steps.generate.outputs.has_resumes == 'true'
         run: |
           set -euo pipefail
 
