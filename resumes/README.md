@@ -37,7 +37,7 @@ Blank lines and lines beginning with `#` are ignored. Inline comments after `#` 
 
 For every listed stem, the workflow verifies that `resumes/<stem>.md` exists. If a listed source does not exist, the workflow fails rather than silently generating the wrong set of files.
 
-An empty generation list is intentional: it means that no résumés are currently queued for generation.
+An empty generation list is intentional: it means that no résumés are currently queued for generation. If **Generate Resumes** is run while the list is empty, the workflow completes without generating or uploading an artifact and displays a warning reminding the user to add one or more résumé stems to `resumes/generate-list.txt`, commit the change, and run the workflow again.
 
 ## Running the workflow
 
