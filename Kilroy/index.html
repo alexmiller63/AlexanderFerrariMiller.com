@@ -1,0 +1,46 @@
+---
+layout: null
+---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Kilroy</title>
+  <link rel="stylesheet" href="css/kilroy.css">
+</head>
+<body>
+  {% include_relative includes/nav.html %}
+
+  <main class="page-shell">
+    <section class="hero">
+      <p class="eyebrow">Alexander Ferrari Miller presents</p>
+      <h1>Kilroy</h1>
+      <p class="tagline">A WWII-flavored retooling of the website, complete with sailor resumes, an animated Kilroy, and occasional evidence that somebody has been here.</p>
+      <p class="kilroy-text" aria-label="Kilroy was here">KILROY WAS HERE</p>
+    </section>
+
+    <section class="cards" aria-label="Kilroy sections">
+      <article class="card">
+        <h2>Background</h2>
+        <p>The best-known history of the Kilroy phenomenon, what is documented, what remains folklore, and its parallels around the world.</p>
+        <a class="button" href="background.html">Read the Background</a>
+      </article>
+
+      <article class="card">
+        <h2>WWII Sailor Resumes</h2>
+        <p>Resumes retooled for the sort of jobs a sailor might have been looking for during the WWII era.</p>
+        <span class="coming-soon">Coming soon</span>
+      </article>
+
+      <article class="card">
+        <h2>Kilroy Sightings</h2>
+        <p>Animated and static Kilroys will turn up where they have no particular business being.</p>
+        <span class="coming-soon">More sightings soon</span>
+      </article>
+    </section>
+  </main>
+
+  {% include_relative includes/footer.html %}
+</body>
+</html>
