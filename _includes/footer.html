@@ -3,31 +3,3 @@
         {% include nav.html %}
     </div>
 </footer>
-
-<script>
-(function () {
-    var footerNav = document.querySelector('.site-footer .site-nav');
-    if (!footerNav) return;
-
-    var existingHeader = document.querySelector('.site-header');
-    if (existingHeader) {
-        if (existingHeader.querySelector('.site-nav')) return;
-        var existingContainer = existingHeader.querySelector('.container') || existingHeader;
-        existingContainer.appendChild(footerNav.cloneNode(true));
-        return;
-    }
-
-    var header = document.createElement('header');
-    header.className = 'site-header';
-    header.style.background = 'var(--surface, #ffffff)';
-    header.style.padding = '28px 0';
-    header.style.borderBottom = '1px solid var(--border, #d9dde0)';
-
-    var container = document.createElement('div');
-    container.className = 'container';
-    container.appendChild(footerNav.cloneNode(true));
-    header.appendChild(container);
-
-    document.body.insertBefore(header, document.body.firstChild);
-}());
-</script>
