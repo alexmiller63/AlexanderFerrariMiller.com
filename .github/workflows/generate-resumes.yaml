@@ -26,38 +26,65 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install markdown
 
-      - name: Generate all resumes
+      - name: Generate selected resumes
         run: |
-          set -e
+          set -euo pipefail
 
-          for source in resumes/*-resume.md
+          list_file="resumes/generate-list.txt"
+
+          if [ ! -f "$list_file" ]; then
+              echo "Missing $list_file"
+              exit 1
+          fi
+
+          generated=0
+
+          while IFS= read -r stem || [ -n "$stem" ]
           do
-              stem="$(basename "$source" .md)"
+              stem="${stem%%#*}"
+              stem="$(printf '%s' "$stem" | xargs)"
+
+              [ -z "$stem" ] && continue
+
+              source="resumes/$stem.md"
+
+              if [ ! -f "$source" ]; then
+                  echo "Resume source not found: $source"
+                  exit 1
+              fi
 
               echo "Generating $stem"
-
               python tools/generate-resumes.py "$stem"
-          done
+              generated=$((generated + 1))
+          done < "$list_file"
 
-      - name: Package all resume files
+          if [ "$generated" -eq 0 ]; then
+              echo "No resumes listed in $list_file"
+              exit 1
+          fi
+
+      - name: Package selected resume files
         run: |
-          set -e
+          set -euo pipefail
 
+          list_file="resumes/generate-list.txt"
           mkdir -p resume-output
 
-          for source in resumes/*-resume.md
+          while IFS= read -r stem || [ -n "$stem" ]
           do
-              stem="$(basename "$source" .md)"
+              stem="${stem%%#*}"
+              stem="$(printf '%s' "$stem" | xargs)"
 
-              cp "resumes/$stem.html" resume-output/
-              cp "resumes/$stem.pdf" resume-output/
-              cp "resumes/$stem.docx" resume-output/
-              cp "resumes/$stem.odt" resume-output/
-              cp "resumes/$stem.txt" resume-output/
-          done
+              [ -z "$stem" ] && continue
+
+              for extension in html pdf docx odt txt
+              do
+                  cp "resumes/$stem.$extension" resume-output/
+              done
+          done < "$list_file"
 
       - name: Upload resume files
         uses: actions/upload-artifact@v4
         with:
-          name: all-resumes
+          name: selected-resumes
           path: resume-output/
