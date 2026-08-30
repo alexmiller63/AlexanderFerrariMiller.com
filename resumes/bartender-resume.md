@@ -44,3 +44,5 @@ Full bar setup, bar breakdown, high-volume service, intermission service, guest 
 Bartender Training Program — Certificate
 
 **Oberlin College** — Bachelor of Arts, Russian/Soviet Studies
+
+<!-- selective-generation workflow test -->
