@@ -1,0 +1,141 @@
+* { box-sizing: border-box; }
+
+:root {
+  font-family: Georgia, "Times New Roman", serif;
+  color: #171717;
+  background: #e7dfc8;
+}
+
+body {
+  margin: 0;
+  background:
+    radial-gradient(circle at 20% 10%, rgba(255,255,255,.28), transparent 22rem),
+    #e7dfc8;
+}
+
+a { color: inherit; }
+
+.kilroy-nav,
+.kilroy-footer {
+  border-color: #171717;
+  border-style: solid;
+  background: rgba(255,255,255,.16);
+}
+
+.kilroy-nav {
+  border-width: 0 0 2px;
+  padding: .8rem 1rem;
+  text-align: center;
+}
+
+.kilroy-nav a {
+  margin: 0 .65rem;
+  font-weight: 700;
+}
+
+.page-shell {
+  width: min(960px, calc(100% - 2rem));
+  margin: 0 auto;
+  padding: 3rem 0;
+}
+
+.hero {
+  text-align: center;
+  padding: 3rem 1rem 2rem;
+}
+
+.eyebrow {
+  margin: 0 0 .5rem;
+  text-transform: uppercase;
+  letter-spacing: .12em;
+  font-size: .82rem;
+}
+
+h1 {
+  margin: 0;
+  font-size: clamp(3.5rem, 12vw, 7.5rem);
+  line-height: .9;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+}
+
+.prose-page h1 {
+  font-size: clamp(2.8rem, 8vw, 5.5rem);
+}
+
+.tagline {
+  max-width: 680px;
+  margin: 1.5rem auto;
+  font-size: 1.15rem;
+  line-height: 1.55;
+}
+
+.kilroy-text {
+  display: inline-block;
+  margin: 1rem 0 0;
+  padding: .35rem .55rem;
+  border: 3px solid #171717;
+  transform: rotate(-2deg);
+  font-family: "Courier New", monospace;
+  font-weight: 900;
+  letter-spacing: .12em;
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 1rem;
+}
+
+.card {
+  border: 2px solid #171717;
+  padding: 1.25rem;
+  background: rgba(255,255,255,.18);
+}
+
+.card h2,
+.prose-page h2 {
+  margin-top: 0;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+}
+
+.button,
+.coming-soon {
+  display: inline-block;
+  margin-top: .5rem;
+  padding: .55rem .75rem;
+  border: 2px solid #171717;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.coming-soon { border-style: dashed; }
+
+.prose-page {
+  max-width: 780px;
+  line-height: 1.65;
+}
+
+.note {
+  margin-top: 2rem;
+  padding: 1rem;
+  border-left: 5px solid #171717;
+  font-style: italic;
+}
+
+.kilroy-footer {
+  border-width: 2px 0 0;
+  padding: 1rem;
+  text-align: center;
+  font-size: .9rem;
+}
+
+@media (max-width: 520px) {
+  .kilroy-nav a {
+    display: inline-block;
+    margin: .25rem .45rem;
+  }
+
+  .page-shell { padding-top: 2rem; }
+}
