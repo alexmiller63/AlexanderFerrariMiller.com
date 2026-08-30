@@ -58,7 +58,8 @@ Biology-certified educator with classroom experience in California and Massachus
 
 - **Oberlin College** — Bachelor of Arts, Russian/Soviet Studies
 - **California 30-Day Substitute Teaching Permit**
-- **Massachusetts Institute for New Teachers science credential — exact formal title and dates to be recovered**
+- **Massachusetts credential in Middle School Science — inactive**
+- **California credential in Biology — inactive**
 
 ## Additional Strengths
 
