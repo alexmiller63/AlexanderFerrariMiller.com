@@ -1,0 +1,94 @@
+<style>
+    :root {
+        --background: #f5f5f2;
+        --surface: #ffffff;
+        --text: #1f2529;
+        --muted: #5f686f;
+        --accent: #2f536b;
+        --accent-dark: #213d50;
+        --border: #d9dde0;
+        --shadow: rgba(0, 0, 0, 0.08);
+        --max-width: 1100px;
+    }
+
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        margin: 0;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        background: var(--background);
+        color: var(--text);
+        line-height: 1.6;
+    }
+
+    a {
+        color: var(--accent);
+        text-decoration: none;
+    }
+
+    a:hover,
+    a:focus {
+        text-decoration: underline;
+    }
+
+    .container {
+        width: min(calc(100% - 40px), var(--max-width));
+        margin: 0 auto;
+    }
+
+    .site-header,
+    .site-footer {
+        background: var(--surface);
+        padding: 28px 0;
+    }
+
+    .site-header {
+        border-bottom: 1px solid var(--border);
+    }
+
+    .site-footer {
+        border-top: 1px solid var(--border);
+        border-bottom: 0;
+        color: var(--muted);
+        font-size: 0.92rem;
+    }
+
+    .site-nav {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 24px;
+        padding: 0;
+    }
+
+    .site-nav a {
+        color: var(--text);
+        font-size: inherit;
+        font-weight: inherit;
+        text-decoration: none;
+    }
+
+    .site-nav a:hover,
+    .site-nav a:focus,
+    .site-nav a[aria-current="page"] {
+        color: var(--accent);
+        text-decoration: underline;
+        text-underline-offset: 3px;
+    }
+
+    @media (max-width: 520px) {
+        .container {
+            width: min(calc(100% - 28px), var(--max-width));
+        }
+
+        .site-header,
+        .site-footer {
+            padding: 28px 0;
+        }
+
+        .site-nav {
+            gap: 14px 20px;
+        }
+    }
+</style>
