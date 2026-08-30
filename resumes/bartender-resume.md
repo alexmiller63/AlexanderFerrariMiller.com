@@ -38,6 +38,9 @@ Bartender and hospitality professional with experience in high-volume performing
 
 Full bar setup, bar breakdown, high-volume service, intermission service, guest interaction, classic cocktails, martinis, Manhattans, White Russians, beverage service, workstation organization, hospitality, customer service, entertainment-venue service, teamwork, and communication.
 
-## Education
+## Education & Training
+
+**Bartenders Training Institute — 2018**  
+Bartender Training Program — Certificate
 
 **Oberlin College** — Bachelor of Arts, Russian/Soviet Studies
