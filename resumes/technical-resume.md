@@ -100,9 +100,6 @@ Designed a rule-based contrarian handicapping strategy and historical-testing me
 ### Pearlsom
 Developing a centralized personal web platform integrating media, mailing lists, email identity, social-media linking, chat, and video communication while preserving users' existing investment in outside social networks.
 
-### Fusslor
-Developing a related social-web platform with working capabilities for profiles, media publishing, messaging, mailing lists, digital content, and connections to external social identities.
-
 ### Elephant
 Designed a preservation-oriented AI architecture intended to retain significant conversational information with provenance while orchestrating external tools and services. Related Elephant Book work explores AI-assisted notebook organization and retrieval.
 
