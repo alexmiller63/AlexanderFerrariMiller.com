@@ -26,7 +26,7 @@ layout: null
         <h2>Kilroy Technical</h2>
         <p>Communications equipment, cipher machinery, tabulating and plotting systems, inspection, fault isolation, testing methods, and technical records.</p>
 
-        <a class="button" href="../c3po.html?file=kilroy/resumes/technical.html&amp;type=html&amp;title=Kilroy%20Technical%20Resume">View Resume</a>
+        {% include_relative includes/kilroy-button.html label="View Resume" href="../c3po.html?file=kilroy/resumes/technical.html&type=html&title=Kilroy%20Technical%20Resume" %}
 
         <div class="resume-format-links">
           <strong>Formats:</strong>
@@ -38,8 +38,8 @@ layout: null
           <a href="../c3po.html?file=kilroy/resumes/technical-resume.odt&amp;type=odt&amp;title=Kilroy%20Technical%20Resume">ODT</a>
         </div>
 
-        <a class="button" href="resumes/technical-resume.md">View Markdown Source</a>
-        <button class="button" id="share-docx" type="button">Share DOCX</button>
+        {% include_relative includes/kilroy-button.html label="View Markdown Source" href="resumes/technical-resume.md" %}
+        {% include_relative includes/kilroy-button.html label="Share DOCX" type="button" id="share-docx" %}
       </article>
     </section>
   </main>
