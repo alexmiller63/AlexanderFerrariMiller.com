@@ -630,6 +630,7 @@
             } else if (type === "pdf") {
                 sourceButton.style.display = "none";
                 viewerHeader.classList.add("pdf-header");
+                viewerHeader.insertBefore(shareButton, titleElement);
                 displayPdf();
             } else if (type === "docx") {
                 actions.style.display = "none";
