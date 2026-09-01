@@ -523,6 +523,51 @@
                             breakPages: true
                         }
                     );
+
+                    const docxWrapper =
+                        docxContainer.querySelector(".docx-wrapper");
+
+                    function fitDocxPages() {
+                        if (!docxWrapper) {
+                            return;
+                        }
+
+                        const pages = Array.from(
+                            docxWrapper.querySelectorAll("section.docx")
+                        );
+
+                        if (!pages.length) {
+                            return;
+                        }
+
+                        pages.forEach((page) => {
+                            page.style.zoom = "1";
+                        });
+
+                        const wrapperStyle =
+                            window.getComputedStyle(docxWrapper);
+
+                        const availableWidth =
+                            docxWrapper.clientWidth -
+                            parseFloat(wrapperStyle.paddingLeft) -
+                            parseFloat(wrapperStyle.paddingRight);
+
+                        const widestPage = Math.max(
+                            ...pages.map((page) => page.offsetWidth)
+                        );
+
+                        const scale = Math.min(
+                            1,
+                            availableWidth / widestPage
+                        );
+
+                        pages.forEach((page) => {
+                            page.style.zoom = String(scale);
+                        });
+                    }
+
+                    requestAnimationFrame(fitDocxPages);
+                    window.addEventListener("resize", fitDocxPages);
                 } catch (error) {
                     showFallback();
                 }
