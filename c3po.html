@@ -344,7 +344,6 @@
                         navigator.canShare({ files: [sharedFile] })
                     ) {
                         await navigator.share({
-                            title,
                             files: [sharedFile]
                         });
                     } else if (navigator.share) {
