@@ -27,7 +27,7 @@ Licensed California insurance producer with current experience at World Financia
 - Hold an active California Resident Insurance Producer License.
 - Current status is hired but not yet appointed.
 - Developing prospecting, presentation, relationship-building, and client-communication activities.
-- Current résumé language does not imply carrier appointment or completed insurance transactions.
+- Current resume language does not imply carrier appointment or completed insurance transactions.
 
 #### Telephone Fundraiser — Ruffalo Cody
 
