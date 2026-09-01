@@ -1,5 +1,5 @@
 {% if include.type == "button" %}
-<button class="kilroy-button"{% if include.id %} id="{{ include.id }}"{% endif %} type="button">{{ include.label }}</button>
+<a class="button kilroy-button" href="#" role="button"{% if include.id %} id="{{ include.id }}"{% endif %}>{{ include.label }}</a>
 {% else %}
-<a class="kilroy-button" href="{{ include.href }}">{{ include.label }}</a>
+<a class="button kilroy-button" href="{{ include.href }}">{{ include.label }}</a>
 {% endif %}
