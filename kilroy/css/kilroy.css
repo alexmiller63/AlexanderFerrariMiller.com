@@ -296,6 +296,39 @@ h1 {
   font-style: italic;
 }
 
+.resume-index-intro {
+  max-width: 720px;
+  margin: 0 auto 2rem;
+  text-align: center;
+}
+
+.resume-card {
+  display: flex;
+  flex-direction: column;
+  min-height: 260px;
+  border: 2px solid #171717;
+  padding: 1.25rem;
+  background: rgba(255,255,255,.22);
+}
+
+.resume-card h2 {
+  margin: 0 0 .6rem;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+}
+
+.resume-card > p { flex: 1; }
+
+.resume-format-links {
+  margin-top: .85rem;
+  padding-top: .75rem;
+  border-top: 1px solid #171717;
+  font-family: "Courier New", Courier, monospace;
+  line-height: 1.8;
+}
+
+.resume-source-link { margin-top: .45rem; }
+
 .kilroy-footer {
   border-width: 2px 0 0;
   padding: 1rem;
