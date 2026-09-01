@@ -121,15 +121,6 @@
             overflow-x: auto;
         }
 
-        .document-viewer.docx-viewer {
-            padding: 0;
-            overflow: hidden;
-        }
-
-        .docx-viewer .docx-wrapper {
-            transform-origin: top left;
-        }
-
         .document-viewer h1,
         .document-viewer h2,
         .document-viewer h3 {
@@ -517,7 +508,7 @@
                     viewer.innerHTML = "";
 
                     const docxContainer = document.createElement("div");
-                    docxContainer.className = "document-viewer docx-viewer";
+                    docxContainer.className = "document-viewer";
                     viewer.appendChild(docxContainer);
 
                     await docx.renderAsync(
@@ -533,38 +524,6 @@
                             breakPages: true
                         }
                     );
-
-                    const docxWrapper =
-                        docxContainer.querySelector(".docx-wrapper");
-
-                    if (docxWrapper) {
-                        const naturalWidth = Math.max(
-                            docxWrapper.scrollWidth,
-                            docxWrapper.offsetWidth
-                        );
-                        const naturalHeight = docxWrapper.scrollHeight;
-
-                        docxWrapper.style.width = `${naturalWidth}px`;
-
-                        const fitDocxToViewer = () => {
-                            const availableWidth = docxContainer.clientWidth;
-                            const scale = naturalWidth > 0
-                                ? Math.min(1, availableWidth / naturalWidth)
-                                : 1;
-
-                            docxWrapper.style.transform =
-                                `scale(${scale})`;
-                            docxContainer.style.height =
-                                `${naturalHeight * scale}px`;
-                        };
-
-                        fitDocxToViewer();
-                        window.addEventListener(
-                            "resize",
-                            fitDocxToViewer,
-                            { passive: true }
-                        );
-                    }
 
                 } catch (error) {
                     showFallback();
