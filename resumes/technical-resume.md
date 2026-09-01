@@ -125,7 +125,7 @@ Developing a software project whose architecture, purpose, implementation status
 A prose project preserving and organizing extended discussions about artificial intelligence, its behavior, implications, and the human experience of working with it.
 
 ### AlexanderFerrariMiller.com — Reusable Professional Website Architecture
-Designed and built a working professional website architecture using independently testable content pages, thin Jekyll wrappers, reusable includes, responsive presentation, shared navigation, C-3PO document viewing, source viewing, sharing, and synchronized résumé publishing across HTML, PDF, DOCX, TXT, ODT, and Markdown. The architecture is intended to be reusable for other personal and professional websites.
+Designed and built a working professional website architecture using independently testable content pages, thin Jekyll wrappers, reusable includes, responsive presentation, shared navigation, C-3PO document viewing, source viewing, sharing, and synchronized resume publishing across HTML, PDF, DOCX, TXT, ODT, and Markdown. The architecture is intended to be reusable for other personal and professional websites.
 
 ## Education
 
