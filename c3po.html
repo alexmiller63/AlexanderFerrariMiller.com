@@ -235,7 +235,7 @@
                         id="source-button"
                         type="button"
                     >
-                        View HTML Source
+                        View Raw HTML
                     </button>
 
                     <a class="button secondary" id="back-to-resumes" href="resumes.html">
@@ -378,7 +378,7 @@
             async function displayHtml() {
                 try {
                     showingSource = false;
-                    sourceButton.textContent = "View HTML Source";
+                    sourceButton.textContent = "View Raw HTML";
 
                     const text = await loadHtmlText();
 
@@ -415,7 +415,7 @@
                     viewer.appendChild(pre);
 
                     showingSource = true;
-                    sourceButton.textContent = "View Resume";
+                    sourceButton.textContent = "View Rendered HTML";
                 } catch (error) {
                     showFallback();
                 }
