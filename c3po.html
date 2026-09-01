@@ -278,6 +278,7 @@
 
         let showingSource = false;
         let htmlText = null;
+        let markdownText = null;
 
         titleElement.textContent = title;
 
@@ -420,21 +421,52 @@
                 }
             }
 
+            async function loadMarkdownText() {
+                if (markdownText !== null) {
+                    return markdownText;
+                }
+
+                const response = await fetch(fileUrl);
+
+                if (!response.ok) {
+                    throw new Error("Unable to load Markdown.");
+                }
+
+                markdownText = await response.text();
+                return markdownText;
+            }
+
             async function displayMarkdown() {
                 try {
-                    const response = await fetch(fileUrl);
+                    showingSource = false;
+                    sourceButton.textContent = "View Source";
 
-                    if (!response.ok) {
-                        throw new Error("Unable to load Markdown.");
-                    }
-
-                    const text = await response.text();
+                    const text = await loadMarkdownText();
 
                     viewer.innerHTML = `
                         <article class="document-viewer">
                             ${marked.parse(text)}
                         </article>
                     `;
+                } catch (error) {
+                    showFallback();
+                }
+            }
+
+            async function displayMarkdownSource() {
+                try {
+                    const text = await loadMarkdownText();
+
+                    viewer.innerHTML = "";
+
+                    const pre = document.createElement("pre");
+                    pre.className = "source-viewer";
+                    pre.textContent = text;
+
+                    viewer.appendChild(pre);
+
+                    showingSource = true;
+                    sourceButton.textContent = "View Markdown";
                 } catch (error) {
                     showFallback();
                 }
@@ -497,14 +529,18 @@
             }
 
             sourceButton.addEventListener("click", () => {
-                if (type !== "html") {
-                    return;
-                }
-
-                if (showingSource) {
-                    displayHtml();
-                } else {
-                    displayHtmlSource();
+                if (type === "html") {
+                    if (showingSource) {
+                        displayHtml();
+                    } else {
+                        displayHtmlSource();
+                    }
+                } else if (type === "md" || type === "markdown") {
+                    if (showingSource) {
+                        displayMarkdown();
+                    } else {
+                        displayMarkdownSource();
+                    }
                 }
             });
 
@@ -517,7 +553,6 @@
                 sourceButton.style.display = "none";
                 displayDocx();
             } else if (type === "md" || type === "markdown") {
-                sourceButton.style.display = "none";
                 displayMarkdown();
             } else {
                 sourceButton.style.display = "none";
