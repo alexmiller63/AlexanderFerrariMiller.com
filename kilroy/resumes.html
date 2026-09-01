@@ -47,7 +47,8 @@ layout: null
   {% include_relative includes/footer.html %}
 
   <script>
-    document.getElementById("share-docx").addEventListener("click", async () => {
+    document.getElementById("share-docx").addEventListener("click", async (event) => {
+      event.preventDefault();
       const fileUrl = new URL("resumes/technical-resume.docx", window.location.href).href;
 
       try {
