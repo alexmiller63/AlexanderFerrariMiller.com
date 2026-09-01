@@ -91,7 +91,7 @@
             margin-bottom: 1rem;
         }
 
-        .viewer-header.pdf-header {
+        .viewer-header.share-left-header {
             justify-content: flex-start;
         }
 
@@ -609,6 +609,11 @@
                 `;
             }
 
+            function useLeftShareHeader() {
+                viewerHeader.classList.add("share-left-header");
+                viewerHeader.insertBefore(shareButton, titleElement);
+            }
+
             sourceButton.addEventListener("click", () => {
                 if (type === "html") {
                     if (showingSource) {
@@ -629,17 +634,21 @@
                 displayHtml();
             } else if (type === "pdf") {
                 sourceButton.style.display = "none";
-                viewerHeader.classList.add("pdf-header");
-                viewerHeader.insertBefore(shareButton, titleElement);
+                useLeftShareHeader();
                 displayPdf();
             } else if (type === "docx") {
                 actions.style.display = "none";
                 displayDocx();
             } else if (type === "txt" || type === "text") {
                 sourceButton.style.display = "none";
+                useLeftShareHeader();
                 displayText();
             } else if (type === "md" || type === "markdown") {
                 displayMarkdown();
+            } else if (type === "odt") {
+                sourceButton.style.display = "none";
+                useLeftShareHeader();
+                showFallback();
             } else {
                 sourceButton.style.display = "none";
                 showFallback();
