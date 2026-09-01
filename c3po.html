@@ -538,19 +538,24 @@
                         docxContainer.querySelector(".docx-wrapper");
 
                     if (docxWrapper) {
-                        const fitDocxToViewer = () => {
-                            docxWrapper.style.zoom = "1";
+                        const naturalWidth = Math.max(
+                            docxWrapper.scrollWidth,
+                            docxWrapper.offsetWidth
+                        );
+                        const naturalHeight = docxWrapper.scrollHeight;
 
-                            const naturalWidth = Math.max(
-                                docxWrapper.scrollWidth,
-                                docxWrapper.offsetWidth
-                            );
+                        docxWrapper.style.width = `${naturalWidth}px`;
+
+                        const fitDocxToViewer = () => {
                             const availableWidth = docxContainer.clientWidth;
                             const scale = naturalWidth > 0
                                 ? Math.min(1, availableWidth / naturalWidth)
                                 : 1;
 
-                            docxWrapper.style.zoom = String(scale);
+                            docxWrapper.style.transform =
+                                `scale(${scale})`;
+                            docxContainer.style.height =
+                                `${naturalHeight * scale}px`;
                         };
 
                         fitDocxToViewer();
