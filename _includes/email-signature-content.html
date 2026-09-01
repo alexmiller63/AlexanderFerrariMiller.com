@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Cross-Platform Email Signature, a responsive design and compatibility QA project by Alexander Ferrari Miller.">
+    <title>Alexander Ferrari Miller | Cross-Platform Email Signature</title>
+
+    <style>
+        :root {
+            --background: #f5f5f2;
+            --surface: #ffffff;
+            --text: #1f2529;
+            --muted: #5f686f;
+            --accent: #2f536b;
+            --accent-dark: #213d50;
+            --border: #d9dde0;
+            --shadow: rgba(0, 0, 0, 0.08);
+            --max-width: 1100px;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            color: var(--text);
+            background: var(--background);
+            line-height: 1.6;
+        }
+
+        a { color: var(--accent); }
+        a:hover, a:focus { color: var(--accent-dark); }
+
+        .container {
+            width: min(calc(100% - 40px), var(--max-width));
+            margin: 0 auto;
+        }
+
+        main { flex: 1; }
+        .hero { padding: 64px 0 30px; }
+        .hero h1 {
+            margin: 0 0 14px;
+            max-width: 900px;
+            font-size: clamp(2.2rem, 7vw, 4.8rem);
+            line-height: 1;
+            font-weight: 650;
+            letter-spacing: -0.04em;
+        }
+        .hero p {
+            max-width: 790px;
+            margin: 0;
+            color: var(--muted);
+            font-size: clamp(1rem, 2.2vw, 1.2rem);
+        }
+
+        .project-body {
+            display: grid;
+            gap: 24px;
+            padding: 18px 0 72px;
+        }
+
+        .panel {
+            padding: 28px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            box-shadow: 0 6px 20px var(--shadow);
+        }
+
+        .panel h2 { margin: 0 0 12px; font-size: 1.55rem; line-height: 1.2; }
+        .panel p { margin: 0 0 14px; color: var(--muted); }
+        .panel p:last-child { margin-bottom: 0; }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 18px;
+        }
+
+        .feature {
+            padding: 22px;
+            background: #fbfbf9;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+        }
+
+        .feature h3 { margin: 0 0 8px; font-size: 1.1rem; }
+        .feature p { margin: 0; color: var(--muted); }
+
+        .status {
+            display: inline-block;
+            margin-bottom: 14px;
+            padding: 5px 10px;
+            color: #214f35;
+            background: #e8f4ec;
+            border: 1px solid #bdd9c6;
+            border-radius: 999px;
+            font-size: 0.88rem;
+            font-weight: 700;
+        }
+
+        .project-link {
+            display: inline-block;
+            padding: 10px 16px;
+            color: #ffffff;
+            background: var(--accent);
+            border-radius: 8px;
+            font-weight: 600;
+            line-height: 1.2;
+            text-decoration: none;
+        }
+
+        .project-link:hover, .project-link:focus {
+            color: #ffffff;
+            background: var(--accent-dark);
+            text-decoration: none;
+        }
+
+        @media (max-width: 720px) {
+            .container { width: min(calc(100% - 28px), var(--max-width)); }
+            .hero { padding: 44px 0 24px; }
+            .project-body { padding-bottom: 52px; }
+            .panel { padding: 22px; }
+            .feature-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    {% include header.html %}
+
+    <main>
+        <section class="hero">
+            <div class="container">
+                <h1>Cross-Platform Email Signature</h1>
+                <p>
+                    A compact identity system engineered to remain readable,
+                    attractive, and functional across Gmail, desktop browsers,
+                    mobile devices, dark mode, and varied recipient email clients.
+                </p>
+            </div>
+        </section>
+
+        <div class="container project-body">
+            <section class="panel">
+                <span class="status">Validated working baseline</span>
+                <h2>Design meets software quality assurance</h2>
+                <p>
+                    What began as an email-signature redesign became a practical
+                    compatibility investigation. The signature combines portrait,
+                    contact information, identity, social-media destinations, and
+                    a restrained visual hierarchy inside the unusually limited
+                    HTML and CSS environment supported by email clients.
+                </p>
+                <p>
+                    Each revision was tested in Gmail Compose and in received
+                    messages, with special attention to link preservation,
+                    image loading, mobile wrapping, font-size overrides, and
+                    the different behavior of social and contact links.
+                </p>
+            </section>
+
+            <section class="panel" aria-labelledby="work-title">
+                <h2 id="work-title">The work</h2>
+                <div class="feature-grid">
+                    <article class="feature">
+                        <h3>Responsive layout</h3>
+                        <p>A narrow, table-based structure designed for the realities of HTML email and small phone screens.</p>
+                    </article>
+                    <article class="feature">
+                        <h3>Client compatibility</h3>
+                        <p>Iterative testing of Gmail Compose, Sent mail, Android rendering, dark mode, and recipient behavior.</p>
+                    </article>
+                    <article class="feature">
+                        <h3>Link verification</h3>
+                        <p>Systematic isolation of when contact and social links survive composition, sending, and delivery.</p>
+                    </article>
+                    <article class="feature">
+                        <h3>Visual identity</h3>
+                        <p>Portrait, typography, contact icons, social icons, spacing, and hierarchy unified in a compact format.</p>
+                    </article>
+                </div>
+            </section>
+
+            <section class="panel">
+                <h2>Engineering constraints</h2>
+                <p>
+                    Email HTML is not ordinary web HTML. Modern layout techniques
+                    cannot be assumed, CSS may be rewritten or ignored, links can
+                    behave differently before and after sending, and mobile
+                    clients may override small type. The final design therefore
+                    uses conservative markup, inline styles, explicit dimensions,
+                    and repeated end-to-end tests.
+                </p>
+            </section>
+
+            <section class="panel">
+                <h2>Result</h2>
+                <p>
+                    The project produced a committed, reusable signature and a
+                    documented known-good baseline. It also uncovered reproducible
+                    Gmail link-handling and rendering behaviors that informed the
+                    final layout.
+                </p>
+                <p>
+                    <a class="project-link" href="https://github.com/alexmiller63/start/blob/main/signature.md">View the signature source</a>
+                </p>
+            </section>
+        </div>
+    </main>
+
+    {% include footer.html %}
+</body>
+</html>
