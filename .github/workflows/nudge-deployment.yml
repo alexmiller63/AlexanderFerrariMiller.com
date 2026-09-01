@@ -16,3 +16,31 @@ jobs:
           key: ${{ secrets.AWS_SSH_KEY }}
           script: |
             ~/build-alex.sh
+
+            echo
+            echo '=== Deployment diagnostics ==='
+            echo '--- Git HEAD ---'
+            cd /var/www/AlexanderFerrariMiller
+            git rev-parse HEAD || true
+
+            echo '--- Jekyll destination ---'
+            realpath /var/www/AlexanderFerrariMiller/_site || true
+            ls -ld /var/www/AlexanderFerrariMiller/_site || true
+
+            echo '--- Apache virtual hosts ---'
+            apache2ctl -S 2>&1 || true
+
+            echo '--- Apache DocumentRoot directives ---'
+            grep -RHiE '^[[:space:]]*DocumentRoot[[:space:]]+' /etc/apache2/sites-enabled /etc/apache2/sites-available 2>/dev/null || true
+
+            echo '--- Candidate web roots ---'
+            for d in /var/www/html /var/www/AlexanderFerrariMiller /var/www/AlexanderFerrariMiller/_site; do
+              if [ -e "$d" ]; then
+                echo "$d -> $(realpath "$d" 2>/dev/null || echo '?')"
+                ls -ld "$d" || true
+              fi
+            done
+
+            echo '--- Local HTTP response ---'
+            curl -sS -I -H 'Host: alexanderferrarimiller.com' http://127.0.0.1/ || true
+            echo '=== End diagnostics ==='
