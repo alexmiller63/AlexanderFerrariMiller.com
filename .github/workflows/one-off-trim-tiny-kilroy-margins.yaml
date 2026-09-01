@@ -1,0 +1,174 @@
+name: One-off Trim Tiny Kilroy Margins
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  trim:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Pillow
+        run: python -m pip install pillow
+
+      - name: Back up and trim white side margins
+        env:
+          TZ: America/Los_Angeles
+        run: |
+          python - <<'PY'
+          from hashlib import sha256
+          from pathlib import Path
+          from shutil import copy2
+          from datetime import datetime
+          import re
+
+          from PIL import Image, ImageSequence
+
+          image_dir = Path("kilroy/images")
+          target = image_dir / "tiny-kilroy.gif"
+          backup = image_dir / "tiny-kilroy-before-margin-trim.gif"
+
+          if not target.is_file():
+              raise SystemExit(f"Missing required file: {target}")
+          if backup.exists():
+              raise SystemExit(
+                  f"Backup already exists: {backup}. "
+                  "This one-off workflow will not overwrite it."
+              )
+
+          original_hash = sha256(target.read_bytes()).hexdigest()
+          copy2(target, backup)
+
+          with Image.open(target) as source:
+              source_frames = [
+                  frame.convert("RGBA")
+                  for frame in ImageSequence.Iterator(source)
+              ]
+              source_size = source.size
+              frame_count = source.n_frames
+              durations = [
+                  frame.info.get("duration", source.info.get("duration", 100))
+                  for frame in ImageSequence.Iterator(source)
+              ]
+              loop = source.info.get("loop", 0)
+
+          width, height = source_size
+
+          def column_is_white(x):
+              return all(
+                  frame.getpixel((x, y)) == (255, 255, 255, 255)
+                  for frame in source_frames
+                  for y in range(height)
+              )
+
+          left = 0
+          while left < width and column_is_white(left):
+              left += 1
+
+          right = width
+          while right > left and column_is_white(right - 1):
+              right -= 1
+
+          if left == 0 and right == width:
+              raise SystemExit("No fully white left or right margins were found")
+          if left == right:
+              raise SystemExit("Refusing to crop the entire image")
+
+          cropped_frames = [
+              frame.crop((left, 0, right, height))
+              for frame in source_frames
+          ]
+          gif_frames = [
+              frame.convert("RGB").convert(
+                  "P",
+                  palette=Image.Palette.ADAPTIVE,
+                  colors=256,
+              )
+              for frame in cropped_frames
+          ]
+
+          save_args = {
+              "format": "GIF",
+              "optimize": True,
+          }
+          if frame_count > 1:
+              save_args.update(
+                  save_all=True,
+                  append_images=gif_frames[1:],
+                  duration=durations,
+                  loop=loop,
+                  disposal=2,
+              )
+
+          gif_frames[0].save(target, **save_args)
+
+          if sha256(backup.read_bytes()).hexdigest() != original_hash:
+              raise SystemExit("Backup verification failed")
+
+          with Image.open(target) as result:
+              expected_size = (right - left, height)
+              if result.format != "GIF":
+                  raise SystemExit("Trimmed image is not a GIF")
+              if result.size != expected_size:
+                  raise SystemExit(
+                      f"Trimmed size {result.size} does not match {expected_size}"
+                  )
+              if result.n_frames != frame_count:
+                  raise SystemExit(
+                      f"Frame count changed from {frame_count} to {result.n_frames}"
+                  )
+
+          version = datetime.now().strftime("%Y%m%d-%H%M")
+          pattern = re.compile(
+              r"tiny-kilroy\.gif(?:\?v=[^\"'<> ]+)?"
+          )
+          updated = []
+          for path in Path(".").rglob("*.html"):
+              text = path.read_text(encoding="utf-8")
+              replacement = f"tiny-kilroy.gif?v={version}"
+              revised = pattern.sub(replacement, text)
+              if revised != text:
+                  path.write_text(revised, encoding="utf-8")
+                  updated.append(str(path))
+
+          print(f"Backed up original to {backup}")
+          print(
+              f"Trimmed {left} white column(s) from the left and "
+              f"{width - right} from the right"
+          )
+          print(
+              f"Changed {target} from {width}x{height} "
+              f"to {right - left}x{height}"
+          )
+          print(f"Preserved {frame_count} frame(s)")
+          print(f"Updated cache version to {version} in {len(updated)} HTML file(s)")
+          PY
+
+      - name: Commit the backup, trimmed GIF, and timestamps
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -u
+          git add kilroy/images/tiny-kilroy-before-margin-trim.gif
+          git commit -m "Trim white side margins from tiny Kilroy"
+          git push
+
+      - name: Deploy to AWS
+        uses: appleboy/ssh-action@v1.2.2
+        with:
+          host: ${{ secrets.AWS_HOST }}
+          username: ${{ secrets.AWS_USER }}
+          key: ${{ secrets.AWS_SSH_KEY }}
+          script: |
+            ~/build-alex.sh
