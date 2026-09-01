@@ -23,6 +23,7 @@ layout: null
   </nav>
 
   <main class="page-shell">
+    <!-- The directly opened HTML resume intentionally has no viewer controls. -->
     <article class="resume-sheet">
       {% capture resume_markdown %}{% include_relative technical-resume.md %}{% endcapture %}
       {{ resume_markdown | markdownify }}
