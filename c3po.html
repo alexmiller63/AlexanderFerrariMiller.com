@@ -41,6 +41,33 @@
 
         .site-header { padding: 1.5rem 0; }
 
+        .kilroy-viewer-nav {
+            border-bottom: 2px solid #171717;
+            padding: 0.8rem 1rem;
+            text-align: center;
+            background: #e7dfc8;
+            color: #171717;
+            font-family: Georgia, "Times New Roman", serif;
+        }
+
+        .kilroy-viewer-nav a {
+            display: inline-block;
+            margin: 0.25rem 0.65rem;
+            color: inherit;
+            font-weight: 700;
+        }
+
+        .kilroy-viewer-nav .kilroy-site-mark {
+            display: block;
+            width: fit-content;
+            margin: 0 auto 0.55rem;
+            font-family: "Courier New", Courier, monospace;
+            font-size: 1.05rem;
+            font-weight: 900;
+            letter-spacing: 0.12em;
+            text-decoration: none;
+        }
+
         .site-name {
             color: var(--accent-dark);
             font-size: 1.25rem;
@@ -211,7 +238,7 @@
 
 <body>
 
-    <header class="site-header">
+    <header class="site-header" id="site-header">
         <div class="container">
             <a class="site-name" href="index.html">
                 Alexander Ferrari Miller
@@ -276,6 +303,25 @@
         const sourceButton = document.getElementById("source-button");
         const backToResumes = document.getElementById("back-to-resumes");
         const actions = document.querySelector(".actions");
+        const siteHeader = document.getElementById("site-header");
+
+        const normalizedFile = (file || "").replace(/^\/+/, "");
+        const isKilroyResume = /^kilroy\//i.test(normalizedFile);
+        const showKilroyMenu = isKilroyResume && type !== "docx";
+
+        if (showKilroyMenu) {
+            siteHeader.className = "";
+            siteHeader.innerHTML = `
+                <nav class="kilroy-viewer-nav" aria-label="Kilroy navigation">
+                    <a class="kilroy-site-mark" href="kilroy/index.html">KILROY WAS HERE · MINISITE</a>
+                    <a href="kilroy/index.html">Kilroy Home</a>
+                    <a href="kilroy/background.html">Background</a>
+                    <a href="kilroy/resumes.html">Kilroy Resumes</a>
+                    <a href="projects.html">All Projects</a>
+                    <a href="index.html">Main Site</a>
+                </nav>
+            `;
+        }
 
         let showingSource = false;
         let htmlText = null;
@@ -283,7 +329,7 @@
 
         titleElement.textContent = title;
 
-        if (file && /^kilroy\//i.test(file.replace(/^\/+/, ""))) {
+        if (isKilroyResume) {
             backToResumes.href = "kilroy/resumes.html";
             backToResumes.textContent = "Back to Kilroy Resumes";
         }
@@ -362,6 +408,21 @@
                     sourceButton.textContent = "View Raw HTML";
 
                     const text = await loadHtmlText();
+                    let renderedText = text;
+
+                    if (isKilroyResume) {
+                        const documentCopy = new DOMParser().parseFromString(
+                            text,
+                            "text/html"
+                        );
+
+                        documentCopy.querySelectorAll(
+                            "body > .kilroy-nav, body > .kilroy-footer"
+                        ).forEach((element) => element.remove());
+
+                        renderedText = "<!doctype html>\n" +
+                            documentCopy.documentElement.outerHTML;
+                    }
 
                     viewer.innerHTML = "";
 
@@ -374,7 +435,7 @@
                     const baseTag =
                         `<base href="${new URL(".", fileUrl).href}">`;
 
-                    frame.srcdoc = text.replace(
+                    frame.srcdoc = renderedText.replace(
                         /<head([^>]*)>/i,
                         `<head$1>${baseTag}`
                     );
