@@ -226,9 +226,6 @@
                 <h1 class="viewer-title" id="viewer-title">Resume</h1>
 
                 <div class="actions">
-                    <button class="button" id="share-button" type="button">
-                        Share
-                    </button>
 
                     <button
                         class="button secondary"
@@ -272,10 +269,8 @@
 
         const viewer = document.getElementById("viewer");
         const titleElement = document.getElementById("viewer-title");
-        const shareButton = document.getElementById("share-button");
         const sourceButton = document.getElementById("source-button");
         const backToResumes = document.getElementById("back-to-resumes");
-        const actions = document.querySelector(".actions");
 
         let showingSource = false;
         let htmlText = null;
@@ -294,72 +289,9 @@
                     <p>No document was specified.</p>
                 </div>
             `;
-
-            shareButton.disabled = true;
             sourceButton.disabled = true;
         } else {
             const fileUrl = new URL(file, window.location.href).href;
-
-            async function shareFile() {
-                try {
-                    const response = await fetch(fileUrl);
-
-                    if (!response.ok) {
-                        throw new Error("Could not load file.");
-                    }
-
-                    const blob = await response.blob();
-                    const filename = file.split("/").pop() || "resume";
-
-                    const sharedFile = new File(
-                        [blob],
-                        filename,
-                        { type: blob.type || "application/octet-stream" }
-                    );
-
-                    let filesToShare = [sharedFile];
-
-                    if (type === "html") {
-                        const textUrl = fileUrl.replace(/\.html$/i, ".txt");
-                        const textResponse = await fetch(textUrl);
-
-                        if (textResponse.ok) {
-                            const textBlob = await textResponse.blob();
-                            const textFilename = filename.replace(/\.html$/i, ".txt");
-
-                            const textFile = new File(
-                                [textBlob],
-                                textFilename,
-                                { type: "text/plain;charset=utf-8" }
-                            );
-
-                            filesToShare.push(textFile);
-                        }
-                    }
-
-                    if (
-                        navigator.share &&
-                        navigator.canShare &&
-                        navigator.canShare({ files: filesToShare })
-                    ) {
-                        await navigator.share({ files: filesToShare });
-                        return;
-                    }
-
-                    if (navigator.share) {
-                        await navigator.share({ url: fileUrl });
-                        return;
-                    }
-
-                    window.open(fileUrl, "_blank");
-                } catch (error) {
-                    if (error.name !== "AbortError") {
-                        window.open(fileUrl, "_blank");
-                    }
-                }
-            }
-
-            shareButton.addEventListener("click", shareFile);
 
             async function loadHtmlText() {
                 if (htmlText !== null) {
@@ -545,8 +477,8 @@
                     <div class="fallback">
                         <p>
                             This file format cannot be reliably previewed
-                            in this browser. You can still share
-                            the original file.
+                            in this browser. Return to Resumes to
+                            open the original file directly.
                         </p>
                     </div>
                 `;
@@ -574,7 +506,7 @@
                 sourceButton.style.display = "none";
                 displayPdf();
             } else if (type === "docx") {
-                actions.style.display = "none";
+                sourceButton.style.display = "none";
                 displayDocx();
             } else if (type === "txt" || type === "text") {
                 sourceButton.style.display = "none";
