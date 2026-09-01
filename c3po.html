@@ -238,7 +238,7 @@
                         View Source
                     </button>
 
-                    <a class="button secondary" href="resumes.html">
+                    <a class="button secondary" id="back-to-resumes" href="resumes.html">
                         Back to Resumes
                     </a>
                 </div>
@@ -274,11 +274,17 @@
         const titleElement = document.getElementById("viewer-title");
         const shareButton = document.getElementById("share-button");
         const sourceButton = document.getElementById("source-button");
+        const backToResumes = document.getElementById("back-to-resumes");
 
         let showingSource = false;
         let htmlText = null;
 
         titleElement.textContent = title;
+
+        if (file && /^kilroy\//i.test(file.replace(/^\/+/, ""))) {
+            backToResumes.href = "kilroy/resumes.html";
+            backToResumes.textContent = "Back to Kilroy Resumes";
+        }
 
         if (!file) {
             viewer.innerHTML = `
