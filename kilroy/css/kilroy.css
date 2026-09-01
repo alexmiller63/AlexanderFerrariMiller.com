@@ -217,6 +217,74 @@ h1 {
   font-style: italic;
 }
 
+.resume-actions {
+  max-width: 820px;
+  margin: 0 auto 1rem;
+  text-align: right;
+}
+
+.resume-sheet {
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 2.25rem;
+  border: 2px solid #171717;
+  background: rgba(255,255,255,.34);
+  box-shadow: 8px 8px 0 rgba(23,23,23,.14);
+  font-family: "Courier New", Courier, monospace;
+  line-height: 1.45;
+}
+
+.resume-sheet h1 {
+  margin: 0;
+  font-size: clamp(2.15rem, 7vw, 4.25rem);
+  line-height: 1;
+  letter-spacing: .06em;
+}
+
+.resume-sheet > p:first-of-type {
+  margin: .65rem 0 1.4rem;
+  padding-bottom: .75rem;
+  border-bottom: 2px solid #171717;
+  text-align: center;
+  font-weight: 700;
+}
+
+.resume-sheet > p:nth-of-type(2) {
+  margin: 0 0 1.5rem;
+  padding: .75rem 0;
+  border-top: 1px solid #171717;
+  border-bottom: 1px solid #171717;
+  text-align: center;
+}
+
+.resume-sheet h2 {
+  margin: 1.65rem 0 .55rem;
+  padding-bottom: .2rem;
+  border-bottom: 1px solid #171717;
+  font-size: 1.1rem;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+}
+
+.resume-sheet h3 {
+  margin: 1.15rem 0 0;
+  font-size: 1rem;
+  text-transform: uppercase;
+}
+
+.resume-sheet h3 + p { margin: .15rem 0 .4rem; }
+.resume-sheet ul { margin-top: .35rem; padding-left: 1.35rem; }
+.resume-sheet li { margin-bottom: .3rem; }
+
+.resume-editorial-note {
+  max-width: 820px;
+  margin: 1.5rem auto 0;
+  padding-top: .8rem;
+  border-top: 2px dashed #171717;
+  font-size: .9rem;
+  font-style: italic;
+}
+
 .kilroy-footer {
   border-width: 2px 0 0;
   padding: 1rem;
@@ -231,6 +299,13 @@ h1 {
   }
 
   .page-shell { padding-top: 2rem; }
+
+  .resume-sheet {
+    padding: 1.25rem;
+    box-shadow: 5px 5px 0 rgba(23,23,23,.14);
+  }
+
+  .resume-actions { text-align: left; }
 
   .chapter-nav {
     grid-template-columns: 1fr 1fr;

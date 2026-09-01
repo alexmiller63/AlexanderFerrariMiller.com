@@ -72,7 +72,3 @@ Shop mathematics, radio servicing, office machinery, mechanical drawing, and pun
 ## References
 
 Naval and civilian references furnished upon request, subject to wartime security regulations.
-
----
-
-*An imaginative WWII-era adaptation of Alexander Ferrari Miller's technical career. This is not an archival resume or the actual employment history of James J. Kilroy.*

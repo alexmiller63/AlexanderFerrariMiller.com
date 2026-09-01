@@ -1,0 +1,44 @@
+---
+layout: null
+---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="A fictional 1945 technical resume for James J. Kilroy, adapted from Alexander Ferrari Miller's real technical career.">
+  <title>James J. Kilroy — Technical Resume</title>
+  <link rel="stylesheet" href="../css/kilroy.css">
+</head>
+<body>
+  <nav class="kilroy-nav" aria-label="Kilroy navigation">
+    <a href="../index.html">Kilroy Home</a>
+    <a href="../background.html">Background</a>
+    <a href="../../projects.html">All Projects</a>
+    <a href="../../index.html">Main Site</a>
+  </nav>
+
+  <main class="page-shell">
+    <div class="resume-actions">
+      <a class="button" href="technical-resume.md">View Markdown Source</a>
+    </div>
+
+    <article class="resume-sheet">
+      {% capture resume_markdown %}{% include_relative technical-resume.md %}{% endcapture %}
+      {{ resume_markdown | markdownify }}
+    </article>
+
+    <p class="resume-editorial-note">An imaginative WWII-era adaptation of Alexander Ferrari Miller's technical career. This is not an archival resume or the actual employment history of James J. Kilroy.</p>
+  </main>
+
+  <footer class="kilroy-footer">
+    <nav class="kilroy-nav" aria-label="Kilroy footer navigation">
+      <a href="../index.html">Kilroy Home</a>
+      <a href="../background.html">Background</a>
+      <a href="../../projects.html">All Projects</a>
+      <a href="../../index.html">Main Site</a>
+    </nav>
+    <p>Alexander Ferrari Miller · Kilroy</p>
+  </footer>
+</body>
+</html>
