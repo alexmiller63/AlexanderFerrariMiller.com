@@ -23,10 +23,6 @@ layout: null
   </nav>
 
   <main class="page-shell">
-    <div class="resume-actions">
-      <a class="button" href="technical-resume.md">View Markdown Source</a>
-    </div>
-
     <article class="resume-sheet">
       {% capture resume_markdown %}{% include_relative technical-resume.md %}{% endcapture %}
       {{ resume_markdown | markdownify }}
