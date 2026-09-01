@@ -81,6 +81,27 @@ h1 {
   letter-spacing: .12em;
 }
 
+.tiny-kilroy {
+  clear: both;
+  margin: .75rem 0 1.25rem;
+  line-height: 0;
+}
+
+.tiny-kilroy img {
+  display: block;
+  width: 120px;
+  max-width: 100%;
+  height: auto;
+}
+
+.tiny-kilroy-left img {
+  margin-right: auto;
+}
+
+.tiny-kilroy-right img {
+  margin-left: auto;
+}
+
 .cards {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
