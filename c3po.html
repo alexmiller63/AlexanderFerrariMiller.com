@@ -228,6 +228,15 @@
                 <div class="actions">
 
                     <button
+                        class="button"
+                        id="share-button"
+                        type="button"
+                        style="display: none"
+                    >
+                        Share
+                    </button>
+
+                    <button
                         class="button secondary"
                         id="source-button"
                         type="button"
@@ -270,7 +279,14 @@
         const viewer = document.getElementById("viewer");
         const titleElement = document.getElementById("viewer-title");
         const sourceButton = document.getElementById("source-button");
+        const shareButton = document.getElementById("share-button");
         const backToResumes = document.getElementById("back-to-resumes");
+
+        const normalizedFile = file ? file.replace(/^\/+/, "") : "";
+        const isKilroyResume = /^kilroy\/resumes\//i.test(normalizedFile);
+        const kilroyShareTypes = new Set([
+            "html", "pdf", "odt", "txt", "text", "md", "markdown"
+        ]);
 
         let showingSource = false;
         let htmlText = null;
@@ -278,9 +294,12 @@
 
         titleElement.textContent = title;
 
-        if (file && /^kilroy\//i.test(file.replace(/^\/+/, ""))) {
+        if (isKilroyResume && kilroyShareTypes.has(type)) {
             backToResumes.href = "kilroy/resumes.html";
             backToResumes.textContent = "Back to Kilroy Resumes";
+            shareButton.style.display = "";
+        } else if (isKilroyResume) {
+            backToResumes.style.display = "none";
         }
 
         if (!file) {
@@ -292,6 +311,61 @@
             sourceButton.disabled = true;
         } else {
             const fileUrl = new URL(file, window.location.href).href;
+
+            shareButton.addEventListener("click", async () => {
+                const mimeTypes = {
+                    html: "text/html",
+                    pdf: "application/pdf",
+                    odt: "application/vnd.oasis.opendocument.text",
+                    txt: "text/plain",
+                    text: "text/plain",
+                    md: "text/markdown",
+                    markdown: "text/markdown"
+                };
+
+                try {
+                    const response = await fetch(fileUrl);
+
+                    if (!response.ok) {
+                        throw new Error("Unable to load file for sharing.");
+                    }
+
+                    const blob = await response.blob();
+                    const filename =
+                        new URL(fileUrl).pathname.split("/").pop() || "resume";
+                    const sharedFile = new File(
+                        [blob],
+                        filename,
+                        { type: mimeTypes[type] || blob.type }
+                    );
+
+                    if (
+                        navigator.canShare &&
+                        navigator.canShare({ files: [sharedFile] })
+                    ) {
+                        await navigator.share({
+                            title,
+                            files: [sharedFile]
+                        });
+                    } else if (navigator.share) {
+                        await navigator.share({
+                            title,
+                            url: fileUrl
+                        });
+                    } else {
+                        await navigator.clipboard.writeText(fileUrl);
+                        const originalText = shareButton.textContent;
+                        shareButton.textContent = "Link Copied";
+                        setTimeout(() => {
+                            shareButton.textContent = originalText;
+                        }, 1800);
+                    }
+                } catch (error) {
+                    if (error.name !== "AbortError") {
+                        window.location.href = fileUrl;
+                    }
+                }
+            });
 
             async function loadHtmlText() {
                 if (htmlText !== null) {
