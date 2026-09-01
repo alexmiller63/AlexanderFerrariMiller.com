@@ -50,6 +50,11 @@
             font-family: Georgia, "Times New Roman", serif;
         }
 
+        footer .kilroy-viewer-nav {
+            border-top: 2px solid #171717;
+            border-bottom: 0;
+        }
+
         .kilroy-viewer-nav a {
             display: inline-block;
             margin: 0.25rem 0.65rem;
@@ -278,7 +283,7 @@
         </div>
     </main>
 
-    <footer class="site-footer">
+    <footer class="site-footer" id="site-footer">
         <div class="container">
             <nav class="site-nav" aria-label="Main navigation">
                 <a href="index.html">Professional</a>
@@ -304,23 +309,32 @@
         const backToResumes = document.getElementById("back-to-resumes");
         const actions = document.querySelector(".actions");
         const siteHeader = document.getElementById("site-header");
+        const siteFooter = document.getElementById("site-footer");
 
         const normalizedFile = (file || "").replace(/^\/+/, "");
         const isKilroyResume = /^kilroy\//i.test(normalizedFile);
         const showKilroyMenu = isKilroyResume && type !== "docx";
 
+        const kilroyNav = `
+            <nav class="kilroy-viewer-nav" aria-label="Kilroy navigation">
+                <a class="kilroy-site-mark" href="kilroy/index.html">KILROY WAS HERE · MINISITE</a>
+                <a href="kilroy/index.html">Kilroy Home</a>
+                <a href="kilroy/background.html">Background</a>
+                <a href="kilroy/resumes.html">Kilroy Resumes</a>
+                <a href="projects.html">All Projects</a>
+                <a href="index.html">Main Site</a>
+            </nav>
+        `;
+
         if (showKilroyMenu) {
             siteHeader.className = "";
-            siteHeader.innerHTML = `
-                <nav class="kilroy-viewer-nav" aria-label="Kilroy navigation">
-                    <a class="kilroy-site-mark" href="kilroy/index.html">KILROY WAS HERE · MINISITE</a>
-                    <a href="kilroy/index.html">Kilroy Home</a>
-                    <a href="kilroy/background.html">Background</a>
-                    <a href="kilroy/resumes.html">Kilroy Resumes</a>
-                    <a href="projects.html">All Projects</a>
-                    <a href="index.html">Main Site</a>
-                </nav>
-            `;
+            siteHeader.innerHTML = kilroyNav;
+        }
+
+        if (isKilroyResume && type === "html") {
+            backToResumes.style.display = "none";
+            siteFooter.className = "";
+            siteFooter.innerHTML = kilroyNav;
         }
 
         let showingSource = false;
