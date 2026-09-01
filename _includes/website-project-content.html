@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="AlexanderFerrariMiller.com, a reusable professional website architecture designed and built by Alexander Ferrari Miller.">
+    <title>Alexander Ferrari Miller | AlexanderFerrariMiller.com</title>
+
+    <style>
+        :root {
+            --background: #f5f5f2;
+            --surface: #ffffff;
+            --text: #1f2529;
+            --muted: #5f686f;
+            --accent: #2f536b;
+            --accent-dark: #213d50;
+            --border: #d9dde0;
+            --shadow: rgba(0, 0, 0, 0.08);
+            --max-width: 1100px;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            color: var(--text);
+            background: var(--background);
+            line-height: 1.6;
+        }
+
+        a { color: var(--accent); }
+        a:hover, a:focus { color: var(--accent-dark); }
+
+        .container {
+            width: min(calc(100% - 40px), var(--max-width));
+            margin: 0 auto;
+        }
+
+        main { flex: 1; }
+
+        .hero { padding: 64px 0 30px; }
+        .hero h1 {
+            margin: 0 0 14px;
+            max-width: 900px;
+            font-size: clamp(2.2rem, 7vw, 4.8rem);
+            line-height: 1;
+            font-weight: 650;
+            letter-spacing: -0.04em;
+            overflow-wrap: anywhere;
+        }
+        .hero p {
+            max-width: 790px;
+            margin: 0;
+            color: var(--muted);
+            font-size: clamp(1rem, 2.2vw, 1.2rem);
+        }
+
+        .project-body {
+            display: grid;
+            gap: 24px;
+            padding: 18px 0 72px;
+        }
+
+        .panel {
+            padding: 28px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            box-shadow: 0 6px 20px var(--shadow);
+        }
+
+        .panel h2 { margin: 0 0 12px; font-size: 1.55rem; line-height: 1.2; }
+        .panel p { margin: 0 0 14px; color: var(--muted); }
+        .panel p:last-child { margin-bottom: 0; }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 18px;
+        }
+
+        .feature {
+            padding: 22px;
+            background: #fbfbf9;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+        }
+
+        .feature h3 { margin: 0 0 8px; font-size: 1.1rem; }
+        .feature p { margin: 0; color: var(--muted); }
+
+        .project-link {
+            display: inline-block;
+            padding: 10px 16px;
+            color: #ffffff;
+            background: var(--accent);
+            border-radius: 8px;
+            font-weight: 600;
+            line-height: 1.2;
+            text-decoration: none;
+        }
+
+        .project-link:hover, .project-link:focus {
+            color: #ffffff;
+            background: var(--accent-dark);
+            text-decoration: none;
+        }
+
+        @media (max-width: 720px) {
+            .container { width: min(calc(100% - 28px), var(--max-width)); }
+            .hero { padding: 44px 0 24px; }
+            .project-body { padding-bottom: 52px; }
+            .panel { padding: 22px; }
+            .feature-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    {% include header.html %}
+
+    <main>
+        <section class="hero">
+            <div class="container">
+                <h1>AlexanderFerrariMiller.com</h1>
+                <p>
+                    A working professional website and reusable publishing
+                    architecture built to present a many-sided career without
+                    sacrificing clarity, maintainability, or mobile usability.
+                </p>
+            </div>
+        </section>
+
+        <div class="container project-body">
+            <section class="panel">
+                <h2>The project</h2>
+                <p>
+                    AlexanderFerrariMiller.com brings professional work,
+                    performance, teaching, projects, social media, history, and
+                    multiple targeted résumés into one coherent site. The site is
+                    also an engineering project: its structure is designed to be
+                    understandable, testable, reusable, and easy to extend.
+                </p>
+            </section>
+
+            <section class="panel" aria-labelledby="architecture-title">
+                <h2 id="architecture-title">Architecture</h2>
+                <div class="feature-grid">
+                    <article class="feature">
+                        <h3>Content and wrappers</h3>
+                        <p>Substantial page content is separated from thin Jekyll wrappers, keeping each layer focused and independently inspectable.</p>
+                    </article>
+                    <article class="feature">
+                        <h3>Reusable includes</h3>
+                        <p>Shared headers, navigation, footers, cards, and styles provide consistency while avoiding duplicated page structure.</p>
+                    </article>
+                    <article class="feature">
+                        <h3>Mobile-first presentation</h3>
+                        <p>Responsive grids, flexible type, compact navigation, and carefully sized media keep the site useful on phones and larger screens.</p>
+                    </article>
+                    <article class="feature">
+                        <h3>Progressive expansion</h3>
+                        <p>New professional roles, project pages, résumé cards, formats, and mini-sites can be added without rebuilding the whole site.</p>
+                    </article>
+                </div>
+            </section>
+
+            <section class="panel">
+                <h2>Résumé publishing</h2>
+                <p>
+                    A custom generator turns structured résumé source material
+                    into synchronized HTML, PDF, DOCX, and ODT editions. The
+                    résumé page presents each professional emphasis as its own
+                    card, with clear viewing, downloading, and source options.
+                </p>
+            </section>
+
+            <section class="panel">
+                <h2>C-3PO document viewer</h2>
+                <p>
+                    The site includes a browser-based document-viewing system
+                    designed to make résumé PDFs readable without forcing an
+                    immediate download. It supports direct viewing while
+                    preserving access to downloadable office-document formats.
+                </p>
+            </section>
+
+            <section class="panel">
+                <h2>A site within a site</h2>
+                <p>
+                    The Kilroy mini-site demonstrates that the architecture can
+                    support a distinct visual identity and subject while
+                    remaining connected to the main website. It uses period
+                    styling, historical material, original imagery, and its own
+                    navigation hierarchy.
+                </p>
+            </section>
+
+            <section class="panel">
+                <h2>Result</h2>
+                <p>
+                    The project is both a live professional home and a reusable
+                    model for personal websites that need to organize varied
+                    identities, projects, documents, and media without becoming
+                    overwhelming.
+                </p>
+                <p>
+                    <a class="project-link" href="https://AlexanderFerrariMiller.com/">Visit AlexanderFerrariMiller.com</a>
+                </p>
+            </section>
+        </div>
+    </main>
+
+    {% include footer.html %}
+</body>
+</html>
