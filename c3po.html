@@ -275,6 +275,7 @@
         const shareButton = document.getElementById("share-button");
         const sourceButton = document.getElementById("source-button");
         const backToResumes = document.getElementById("back-to-resumes");
+        const actions = document.querySelector(".actions");
 
         let showingSource = false;
         let htmlText = null;
@@ -617,8 +618,7 @@
                 sourceButton.style.display = "none";
                 displayPdf();
             } else if (type === "docx") {
-                shareButton.style.display = "none";
-                sourceButton.style.display = "none";
+                actions.style.display = "none";
                 displayDocx();
             } else if (type === "txt" || type === "text") {
                 sourceButton.style.display = "none";
