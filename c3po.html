@@ -472,6 +472,28 @@
                 }
             }
 
+            async function displayText() {
+                try {
+                    const response = await fetch(fileUrl);
+
+                    if (!response.ok) {
+                        throw new Error("Unable to load text.");
+                    }
+
+                    const text = await response.text();
+
+                    viewer.innerHTML = "";
+
+                    const pre = document.createElement("pre");
+                    pre.className = "source-viewer";
+                    pre.textContent = text;
+
+                    viewer.appendChild(pre);
+                } catch (error) {
+                    showFallback();
+                }
+            }
+
             async function displayDocx() {
                 try {
                     const response = await fetch(fileUrl);
@@ -552,6 +574,9 @@
             } else if (type === "docx") {
                 sourceButton.style.display = "none";
                 displayDocx();
+            } else if (type === "txt" || type === "text") {
+                sourceButton.style.display = "none";
+                displayText();
             } else if (type === "md" || type === "markdown") {
                 displayMarkdown();
             } else {
