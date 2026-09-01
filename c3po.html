@@ -284,7 +284,8 @@
 
         const normalizedFile = file ? file.replace(/^\/+/, "") : "";
         const isKilroyResume = /^kilroy\/resumes\//i.test(normalizedFile);
-        const kilroyShareTypes = new Set([
+        const isMainSiteResume = /^resumes\//i.test(normalizedFile);
+        const shareTypes = new Set([
             "html", "pdf", "odt", "txt", "text", "md", "markdown"
         ]);
 
@@ -294,12 +295,13 @@
 
         titleElement.textContent = title;
 
-        if (isKilroyResume && kilroyShareTypes.has(type)) {
+        if ((isKilroyResume || isMainSiteResume) && shareTypes.has(type)) {
+            shareButton.style.display = "";
+        }
+
+        if (isKilroyResume) {
             backToResumes.href = "kilroy/resumes.html";
             backToResumes.textContent = "Return to Kilroy Resumes";
-            shareButton.style.display = "";
-        } else if (isKilroyResume) {
-            backToResumes.style.display = "none";
         }
 
         if (!file) {
