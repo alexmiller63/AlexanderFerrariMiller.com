@@ -75,6 +75,18 @@
         .panel p { margin: 0 0 14px; color: var(--muted); }
         .panel p:last-child { margin-bottom: 0; }
 
+        .signature-preview {
+            overflow-x: auto;
+            padding: 24px;
+            background: #ffffff;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+        }
+
+        .signature-preview > table {
+            margin: 0 auto;
+        }
+
         .feature-grid {
             display: grid;
             grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -145,6 +157,14 @@
         </section>
 
         <div class="container project-body">
+            <section class="panel" aria-labelledby="signature-preview-title">
+                <span class="status">Current committed signature</span>
+                <h2 id="signature-preview-title">The signature</h2>
+                <div class="signature-preview">
+                    {% include signature-preview.html %}
+                </div>
+            </section>
+
             <section class="panel">
                 <span class="status">Validated working baseline</span>
                 <h2>Design meets software quality assurance</h2>
