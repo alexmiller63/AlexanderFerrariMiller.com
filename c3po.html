@@ -544,13 +544,13 @@
                             page.style.zoom = "1";
                         });
 
-                        const wrapperStyle =
-                            window.getComputedStyle(docxWrapper);
+                        const containerStyle =
+                            window.getComputedStyle(docxContainer);
 
                         const availableWidth =
-                            docxWrapper.clientWidth -
-                            parseFloat(wrapperStyle.paddingLeft) -
-                            parseFloat(wrapperStyle.paddingRight);
+                            docxContainer.clientWidth -
+                            parseFloat(containerStyle.paddingLeft) -
+                            parseFloat(containerStyle.paddingRight);
 
                         const widestPage = Math.max(
                             ...pages.map((page) => page.offsetWidth)
