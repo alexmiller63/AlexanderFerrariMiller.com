@@ -83,7 +83,15 @@
             border-radius: 10px;
         }
 
-        .signature-preview > table {
+        .signature-preview-inner {
+            width: 600px;
+            min-width: 600px;
+            margin: 0 auto;
+        }
+
+        .signature-preview-inner > table {
+            width: 600px !important;
+            min-width: 600px;
             margin: 0 auto;
         }
 
@@ -161,7 +169,9 @@
                 <span class="status">Current committed signature</span>
                 <h2 id="signature-preview-title">The signature</h2>
                 <div class="signature-preview">
-                    {% include signature-preview.html %}
+                    <div class="signature-preview-inner">
+                        {% include signature-preview.html %}
+                    </div>
                 </div>
             </section>
 
