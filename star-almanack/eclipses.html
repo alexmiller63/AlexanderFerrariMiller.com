@@ -1,0 +1,36 @@
+---
+layout: null
+---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Star Almanack Eclipses</title>
+  <link rel="stylesheet" href="css/star-almanack.css">
+</head>
+<body>
+  {% include_relative includes/nav.html %}
+
+  <main class="page-shell">
+    <section class="hero">
+      <p class="eyebrow">Star Almanack</p>
+      <h1>Eclipses</h1>
+      <p class="tagline">The eclipse engine is now accurate enough to become part of the Almanack while validation and precision work continue separately.</p>
+    </section>
+
+    <section class="prose">
+      <h2>What the Almanack will show</h2>
+      <p>Each published eclipse entry can present the date, eclipse type, greatest-eclipse time in UTC, and concise observing or visibility information.</p>
+
+      <h2>Publication and research remain separate</h2>
+      <p>The Almanack can publish useful eclipse predictions without declaring the underlying numerical work finished. Improvements to ephemerides, time scales, geometry, and validation can continue behind the published interface.</p>
+
+      <h2>Next</h2>
+      <p>The next implementation step is to connect this page to generated eclipse data from the Star Almanack calculation repository.</p>
+    </section>
+  </main>
+
+  {% include_relative includes/footer.html %}
+</body>
+</html>
