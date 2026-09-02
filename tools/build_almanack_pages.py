@@ -25,8 +25,15 @@ for part in parts:
     civil_dates = civil.group(1).strip() if civil else ''
     weeks.append((week, label, civil_dates, part))
 
-if len(weeks) != 53:
-    raise SystemExit(f'Expected 53 ISO weeks, found {len(weeks)}')
+if not weeks:
+    raise SystemExit('No ISO 2026 week sections found')
+
+week_numbers = [week for week, _, _, _ in weeks]
+expected_weeks = list(range(1, week_numbers[-1] + 1))
+if week_numbers != expected_weeks:
+    raise SystemExit(
+        f'Expected contiguous ISO weeks 01-W{week_numbers[-1]:02d}, found {week_numbers}'
+    )
 
 nav = '''<nav class="almanack-nav" aria-label="Almanack navigation">
   <a class="almanack-site-mark" href="../index.html">STAR ALMANACK · MINISITE</a>
