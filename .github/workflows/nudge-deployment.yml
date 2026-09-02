@@ -50,17 +50,22 @@ jobs:
               fi
             done
 
-            echo '--- Local rendered HTTP response ---'
-            LIVE=/tmp/kilroy-sightings-live.html
-            curl -sS -H 'Host: alexanderferrarimiller.com' http://127.0.0.1/kilroy/kilroy-sightings.html -o "$LIVE" || true
+            echo '--- Local HTTP response headers ---'
+            curl -sSI -H 'Host: alexanderferrarimiller.com' http://127.0.0.1/kilroy/kilroy-sightings.html || true
+
+            echo '--- Local HTTPS rendered response ---'
+            LIVE=/tmp/kilroy-sightings-live-https.html
+            curl -ksS --resolve alexanderferrarimiller.com:443:127.0.0.1 \
+              https://alexanderferrarimiller.com/kilroy/kilroy-sightings.html \
+              -o "$LIVE" || true
             if [ -f "$LIVE" ]; then
               sha256sum "$LIVE" || true
               grep -nE 'Wartime Kilroy|Kilroy Remembered|Kilroy Lives On|Legends of Kilroy|The Trail Continues' "$LIVE" || true
             fi
 
-            echo '--- Rendered-vs-served comparison ---'
+            echo '--- Rendered-vs-local-HTTPS comparison ---'
             if [ -f "$RENDERED" ] && [ -f "$LIVE" ]; then
-              cmp -s "$RENDERED" "$LIVE" && echo 'MATCH: Apache serves the Jekyll-rendered file byte-for-byte.' || echo 'MISMATCH: Apache is not serving the Jekyll-rendered file.'
+              cmp -s "$RENDERED" "$LIVE" && echo 'MATCH: Apache HTTPS serves the Jekyll-rendered file byte-for-byte.' || echo 'MISMATCH: Apache HTTPS is not serving the Jekyll-rendered file.'
             fi
 
             echo '=== End diagnostics ==='
