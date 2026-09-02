@@ -1,0 +1,6 @@
+{% assign button_class = include.class | default: "site-button" %}
+{% if include.type == "button" %}
+<button class="{{ button_class }}"{% if include.id %} id="{{ include.id }}"{% endif %} type="button">{{ include.label }}</button>
+{% else %}
+<a class="{{ button_class }}" href="{{ include.href }}">{{ include.label }}</a>
+{% endif %}
