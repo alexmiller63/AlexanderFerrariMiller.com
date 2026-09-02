@@ -1,0 +1,37 @@
+---
+layout: null
+---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Star Almanack Method</title>
+  <link rel="stylesheet" href="css/star-almanack.css">
+</head>
+<body>
+  {% include_relative includes/nav.html %}
+
+  <main class="page-shell">
+    <section class="hero">
+      <p class="eyebrow">Star Almanack</p>
+      <h1>Observer-First Method</h1>
+      <p class="tagline">The mathematics may be precise even when the reader’s interface to the sky is deliberately simple.</p>
+    </section>
+
+    <section class="prose">
+      <h2>Start with the observer</h2>
+      <p>For an object in the night sky, the practical questions come first: what is it, when is it best visible, where should I look, and what familiar objects can help me find it?</p>
+
+      <h2>Best visibility</h2>
+      <p>For stars and other objects with essentially fixed celestial coordinates, Star Almanack defines best visibility as the annual moment when the object transits the local meridian at 9:00 PM local apparent solar time.</p>
+      <p>This leads to the working relation α☉ = αobject − 9h. The Almanack finds the instant when the apparent Sun reaches that right ascension and rounds to the nearest calendar date.</p>
+
+      <h2>Calendar</h2>
+      <p>Ordinary calendar dates can be accompanied by ISO 8601 week dates, giving the Almanack a continuous week-by-week structure useful for observing plans.</p>
+    </section>
+  </main>
+
+  {% include_relative includes/footer.html %}
+</body>
+</html>
