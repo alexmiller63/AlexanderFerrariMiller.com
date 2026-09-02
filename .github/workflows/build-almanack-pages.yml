@@ -1,10 +1,11 @@
 name: Build Almanack Pages
 
-on:
+"on":
   workflow_dispatch:
   push:
     paths:
-      - '.github/workflows/build-almanack-pages.yml'
+      - .github/workflows/build-almanack-pages.yml
+      - tools/build_almanack_pages.py
 
 permissions:
   contents: write
@@ -12,120 +13,19 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v4
+      - name: Check out website
+        uses: actions/checkout@v4
 
       - name: Install Markdown renderer
         run: python -m pip install markdown
 
       - name: Fetch authoritative Almanack source
-        run: |
-          curl -fsSL \
-            https://raw.githubusercontent.com/alexmiller63/star-almanack/main/almanack.md \
-            -o /tmp/almanack.md
+        run: curl -fsSL https://raw.githubusercontent.com/alexmiller63/star-almanack/main/almanack.md -o /tmp/almanack.md
 
-      - name: Build ISO-week web pages
-        run: |
-          python - <<'PY'
-          from pathlib import Path
-          import html
-          import re
-          import markdown
-
-          source = Path('/tmp/almanack.md').read_text()
-          out = Path('almanack/weeks')
-          out.mkdir(parents=True, exist_ok=True)
-
-          parts = re.split(r'(?=^## ISO 2026-W\d{2}\s*$)', source, flags=re.M)
-          weeks = []
-
-          nav = '''<nav class="almanack-nav" aria-label="Almanack navigation">
-  <a class="almanack-site-mark" href="../index.html">STAR ALMANACK · MINISITE</a>
-  <a href="../index.html">Almanack Home</a>
-  <a href="index.html">2026 Almanack</a>
-  <a href="../../projects.html">All Projects</a>
-</nav>'''
-
-          footer = '''<footer class="almanack-footer">
-<nav class="almanack-nav" aria-label="Almanack footer navigation">
-  <a class="almanack-site-mark" href="../index.html">STAR ALMANACK · MINISITE</a>
-  <a href="../index.html">Almanack Home</a>
-  <a href="index.html">2026 Almanack</a>
-  <a href="../../projects.html">All Projects</a>
-</nav>
-</footer>'''
-
-          for part in parts:
-              m = re.match(r'^## ISO 2026-W(\d{2})\s*$', part.splitlines()[0]) if part.strip() else None
-              if not m:
-                  continue
-              week = int(m.group(1))
-              label = f'ISO 2026-W{week:02d}'
-              civil = re.search(r'\*\*Civil dates:\*\*\s*(.+)', part)
-              civil_dates = civil.group(1).strip() if civil else ''
-              weeks.append((week, label, civil_dates, part))
-
-          if len(weeks) != 53:
-              raise SystemExit(f'Expected 53 ISO weeks, found {len(weeks)}')
-
-          for i, (week, label, civil_dates, part) in enumerate(weeks):
-              body = markdown.markdown(part, extensions=['tables'])
-              prev_link = f'<a class="button" href="W{weeks[i-1][0]:02d}.html">← Previous week</a>' if i else ''
-              next_link = f'<a class="button" href="W{weeks[i+1][0]:02d}.html">Next week →</a>' if i + 1 < len(weeks) else ''
-              page = f'''<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{html.escape(label)} · Star Almanack</title>
-  <link rel="stylesheet" href="../css/almanack.css">
-</head>
-<body>
-{nav}
-<main class="page-shell week-content">
-  <div class="week-nav">{prev_link}<a class="button" href="index.html">All weeks</a>{next_link}</div>
-  {body}
-  <div class="week-nav">{prev_link}<a class="button" href="index.html">All weeks</a>{next_link}</div>
-</main>
-{footer}
-</body>
-</html>
-'''
-              (out / f'W{week:02d}.html').write_text(page)
-
-          cards = []
-          for week, label, civil_dates, _ in weeks:
-              cards.append(f'''<article class="card">
-  <h2><a href="W{week:02d}.html">{html.escape(label)}</a></h2>
-  <p>{html.escape(civil_dates)}</p>
-</article>''')
-
-          index = f'''<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Star Almanack · ISO 2026</title>
-  <link rel="stylesheet" href="../css/almanack.css">
-</head>
-<body>
-{nav}
-<main class="page-shell">
-  <section class="hero">
-    <p class="eyebrow">Star Almanack · 2026</p>
-    <h1>ISO Weeks</h1>
-    <p class="tagline">A Natural Philosopher’s Guide to the Night Sky</p>
-  </section>
-  <section class="cards week-grid" aria-label="ISO 2026 weeks">
-    {''.join(cards)}
-  </section>
-</main>
-{footer}
-</body>
-</html>
-'''
-          (out / 'index.html').write_text(index)
-          PY
+      - name: Build ISO week pages
+        run: python tools/build_almanack_pages.py
 
       - name: Commit generated pages
         run: |
