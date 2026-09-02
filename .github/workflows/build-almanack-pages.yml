@@ -1,40 +1,64 @@
-name: Build Almanack Pages
+name: Publish 2026 Star Almanack Pages
 
 "on":
   workflow_dispatch:
   push:
     paths:
       - .github/workflows/build-almanack-pages.yml
-      - tools/build_almanack_pages.py
 
 permissions:
   contents: write
 
 jobs:
-  build:
+  publish:
     runs-on: ubuntu-latest
 
     steps:
       - name: Check out website
         uses: actions/checkout@v4
 
-      - name: Install Markdown renderer
-        run: python -m pip install markdown
+      - name: Fetch generated 2026 Star Almanack pages
+        run: |
+          set -euo pipefail
+          rm -rf almanack/2026
+          mkdir -p almanack/2026
 
-      - name: Fetch authoritative Almanack source
-        run: curl -fsSL https://raw.githubusercontent.com/alexmiller63/star-almanack/main/almanack.md -o /tmp/almanack.md
+          curl -fsSL \
+            https://raw.githubusercontent.com/alexmiller63/star-almanack/main/site/2026/index.html \
+            -o almanack/2026/index.html
 
-      - name: Build ISO week pages
-        run: python tools/build_almanack_pages.py
+          for n in $(seq -w 1 53); do
+            mkdir -p "almanack/2026/W${n}"
+            curl -fsSL \
+              "https://raw.githubusercontent.com/alexmiller63/star-almanack/main/site/2026/W${n}/index.html" \
+              -o "almanack/2026/W${n}/index.html"
+          done
 
-      - name: Commit generated pages
+      - name: Validate complete 53-page publication
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          root = Path('almanack/2026')
+          assert (root / 'index.html').is_file(), 'Missing 2026 Almanack index'
+          pages = [root / f'W{i:02d}' / 'index.html' for i in range(1, 54)]
+          missing = [str(p) for p in pages if not p.is_file()]
+          assert not missing, f'Missing weekly pages: {missing}'
+          assert len(pages) == 53
+          for i, p in enumerate(pages, 1):
+              text = p.read_text(encoding='utf-8')
+              assert f'W{i:02d}' in text, f'Week identity missing in {p}'
+          print('Validated index + 53 weekly Star Almanack pages')
+          PY
+
+      - name: Commit published pages
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add almanack/weeks
+          git add almanack/2026
           if git diff --cached --quiet; then
-            echo "No Almanack page changes."
+            echo "No published Almanack changes."
             exit 0
           fi
-          git commit -m "Build Almanack ISO week pages"
+          git commit -m "Publish 2026 Star Almanack weekly pages"
           git push
