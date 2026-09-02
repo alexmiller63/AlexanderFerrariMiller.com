@@ -1,0 +1,36 @@
+---
+layout: null
+---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Star Almanack Validation</title>
+  <link rel="stylesheet" href="css/star-almanack.css">
+</head>
+<body>
+  {% include_relative includes/nav.html %}
+
+  <main class="page-shell">
+    <section class="hero">
+      <p class="eyebrow">Star Almanack</p>
+      <h1>Validation</h1>
+      <p class="tagline">Astronomical calculations are preserved with regression cases and diagnostics so later improvements can be tested against known behavior.</p>
+    </section>
+
+    <section class="prose">
+      <h2>Best-visibility regression</h2>
+      <p>The reconstructed best-visibility calculation reproduces all 15 preserved reference dates.</p>
+
+      <h2>Eclipse validation</h2>
+      <p>The eclipse engine is now suitable for Almanack use under the project’s current tolerance. Precision work continues independently so published functionality does not block further scientific improvement.</p>
+
+      <h2>Principle</h2>
+      <p>Source data, computational assumptions, rounding conventions, algorithms, and preserved test cases belong with the project. A replacement implementation should demonstrate that it still reproduces accepted results.</p>
+    </section>
+  </main>
+
+  {% include_relative includes/footer.html %}
+</body>
+</html>
