@@ -12,12 +12,8 @@
     </div>
 
     <div class="resume-actions">
-        <a
-            class="resume-link"
-            href="c3po.html?file=resumes/{{ resume.basename }}.html&amp;type=html&amp;title={{ resume.viewer_title | url_encode }}"
-        >
-            View Resume
-        </a>
+        {% capture resume_view_href %}c3po.html?file=resumes/{{ resume.basename }}.html&amp;type=html&amp;title={{ resume.viewer_title | url_encode }}{% endcapture %}
+        {% include site-button.html class="resume-link" label="View Resume" href=resume_view_href %}
 
         <div class="download-links">
             <strong>Formats:</strong>
