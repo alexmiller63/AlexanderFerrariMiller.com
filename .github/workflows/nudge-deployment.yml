@@ -27,6 +27,15 @@ jobs:
             realpath /var/www/AlexanderFerrariMiller/_site || true
             ls -ld /var/www/AlexanderFerrariMiller/_site || true
 
+            echo '--- Rendered Kilroy Sightings ---'
+            RENDERED=/var/www/AlexanderFerrariMiller/_site/kilroy/kilroy-sightings.html
+            if [ -f "$RENDERED" ]; then
+              sha256sum "$RENDERED" || true
+              grep -nE 'Wartime Kilroy|Kilroy Remembered|Kilroy Lives On|Legends of Kilroy|The Trail Continues' "$RENDERED" || true
+            else
+              echo "MISSING: $RENDERED"
+            fi
+
             echo '--- Apache virtual hosts ---'
             apache2ctl -S 2>&1 || true
 
@@ -41,6 +50,17 @@ jobs:
               fi
             done
 
-            echo '--- Local HTTP response ---'
-            curl -sS -I -H 'Host: alexanderferrarimiller.com' http://127.0.0.1/ || true
+            echo '--- Local rendered HTTP response ---'
+            LIVE=/tmp/kilroy-sightings-live.html
+            curl -sS -H 'Host: alexanderferrarimiller.com' http://127.0.0.1/kilroy/kilroy-sightings.html -o "$LIVE" || true
+            if [ -f "$LIVE" ]; then
+              sha256sum "$LIVE" || true
+              grep -nE 'Wartime Kilroy|Kilroy Remembered|Kilroy Lives On|Legends of Kilroy|The Trail Continues' "$LIVE" || true
+            fi
+
+            echo '--- Rendered-vs-served comparison ---'
+            if [ -f "$RENDERED" ] && [ -f "$LIVE" ]; then
+              cmp -s "$RENDERED" "$LIVE" && echo 'MATCH: Apache serves the Jekyll-rendered file byte-for-byte.' || echo 'MISMATCH: Apache is not serving the Jekyll-rendered file.'
+            fi
+
             echo '=== End diagnostics ==='
