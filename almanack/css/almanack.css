@@ -130,3 +130,52 @@ a { color: var(--accent); }
   .almanack-site-mark { width: 100%; }
   .hero { padding-top: 48px; }
 }
+
+
+/* Almanack weekly pages */
+.week-cards {
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+.almanack-week {
+  padding-top: 36px;
+  padding-bottom: 48px;
+}
+
+.almanack-week table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 18px 0 28px;
+}
+
+.almanack-week th,
+.almanack-week td {
+  padding: 9px 10px;
+  border: 1px solid var(--border);
+  text-align: left;
+  vertical-align: top;
+}
+
+.almanack-week code {
+  color: var(--accent);
+}
+
+.week-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 20px;
+  margin: 0 0 28px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.week-nav:last-child {
+  margin: 32px 0 0;
+  border-top: 1px solid var(--border);
+  border-bottom: 0;
+}
+
+.week-nav a {
+  color: var(--accent);
+  text-decoration: none;
+}
