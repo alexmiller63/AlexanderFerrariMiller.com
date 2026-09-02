@@ -1,0 +1,132 @@
+:root {
+  --background: #0d1520;
+  --surface: #152235;
+  --text: #f3f6f9;
+  --muted: #b6c2cf;
+  --accent: #d9b75f;
+  --border: #31445b;
+  --max-width: 1100px;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  font-family: Georgia, "Times New Roman", serif;
+  color: var(--text);
+  background: var(--background);
+  line-height: 1.6;
+}
+
+a { color: var(--accent); }
+
+.almanack-nav,
+.almanack-footer {
+  background: #09111b;
+}
+
+.almanack-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 22px;
+  align-items: center;
+  padding: 18px max(20px, calc((100vw - var(--max-width)) / 2));
+  border-bottom: 1px solid var(--border);
+}
+
+.almanack-footer .almanack-nav {
+  border-top: 1px solid var(--border);
+  border-bottom: 0;
+}
+
+.almanack-nav a {
+  color: var(--text);
+  text-decoration: none;
+}
+
+.almanack-site-mark {
+  margin-right: auto;
+  font-weight: 700;
+  letter-spacing: .08em;
+  color: var(--accent) !important;
+}
+
+.page-shell {
+  width: min(calc(100% - 40px), var(--max-width));
+  margin: 0 auto;
+  flex: 1;
+}
+
+.hero {
+  padding: 72px 0 40px;
+}
+
+.eyebrow {
+  margin: 0 0 10px;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: .12em;
+  font-size: .82rem;
+}
+
+.hero h1 {
+  margin: 0 0 16px;
+  font-size: clamp(2.7rem, 8vw, 5.8rem);
+  line-height: .95;
+  font-weight: 500;
+}
+
+.tagline {
+  max-width: 760px;
+  margin: 0;
+  color: var(--muted);
+  font-size: clamp(1.05rem, 2.3vw, 1.3rem);
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 22px;
+  padding: 16px 0 72px;
+}
+
+.card {
+  padding: 26px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+
+.card h2 {
+  margin: 0 0 10px;
+  font-size: 1.45rem;
+}
+
+.card p {
+  margin: 0 0 18px;
+  color: var(--muted);
+}
+
+.button {
+  display: inline-block;
+  padding: 9px 14px;
+  border: 1px solid var(--accent);
+  border-radius: 7px;
+  color: var(--background);
+  background: var(--accent);
+  text-decoration: none;
+  font-weight: 700;
+}
+
+.button-muted {
+  opacity: .7;
+}
+
+@media (max-width: 760px) {
+  .cards { grid-template-columns: 1fr; }
+  .almanack-site-mark { width: 100%; }
+  .hero { padding-top: 48px; }
+}
