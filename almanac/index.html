@@ -1,0 +1,46 @@
+---
+layout: null
+---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Star Almanack, an observer-first guide to the night sky by Alexander Ferrari Miller.">
+  <title>Star Almanack</title>
+  <link rel="stylesheet" href="css/almanac.css">
+</head>
+<body>
+  {% include_relative includes/nav.html %}
+
+  <main class="page-shell">
+    <section class="hero">
+      <p class="eyebrow">Alexander Ferrari Miller presents</p>
+      <h1>Star Almanack</h1>
+      <p class="tagline">An observer-first field guide to the night sky, built from precise astronomical calculations and translated into practical guidance for looking up.</p>
+    </section>
+
+    <section class="cards" aria-label="Star Almanack sections">
+      <article class="card" id="sky">
+        <h2>Night Sky</h2>
+        <p>Weekly and seasonal guidance centered on what an observer can actually see, when to look, and where objects are best placed in the sky.</p>
+        <a class="button" href="#sky">Explore the Night Sky</a>
+      </article>
+
+      <article class="card" id="eclipses">
+        <h2>Eclipses</h2>
+        <p>Solar eclipse predictions from the Star Almanack calculation engine, including eclipse type and the time of greatest eclipse.</p>
+        <a class="button" href="#eclipses">View Eclipses</a>
+      </article>
+
+      <article class="card" id="about">
+        <h2>About the Almanack</h2>
+        <p>The methods, validation work, astronomical models, and observer-first philosophy behind the Star Almanack.</p>
+        <a class="button" href="#about">About the Project</a>
+      </article>
+    </section>
+  </main>
+
+  {% include_relative includes/footer.html %}
+</body>
+</html>
