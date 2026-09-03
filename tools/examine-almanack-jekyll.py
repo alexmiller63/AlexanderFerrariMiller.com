@@ -14,6 +14,11 @@ INGRESS = re.compile(r"[A-Za-z]+ ingress \(")
 WRAPPED_INGRESS = re.compile(
     r'<span class="zodiac-glyph">.*?</span>\s+[A-Za-z]+ ingress \('
 )
+CSS_REQUIREMENTS = {
+    "Apple Symbols font": re.compile(r"font-family\s*:\s*['\"]Apple Symbols['\"]"),
+    "text emoji variant": re.compile(r"font-variant-emoji\s*:\s*text"),
+    "current-color WebKit fill": re.compile(r"-webkit-text-fill-color\s*:\s*currentColor"),
+}
 
 
 def main() -> None:
@@ -47,14 +52,9 @@ def main() -> None:
             f"({wrapped_ingress_count}/{ingress_count} wrapped)"
         )
 
-    required_css = (
-        "font-family: 'Apple Symbols'",
-        "font-variant-emoji: text",
-        "-webkit-text-fill-color: currentColor",
-    )
-    missing_css = [rule for rule in required_css if rule not in rendered]
+    missing_css = [name for name, pattern in CSS_REQUIREMENTS.items() if not pattern.search(rendered)]
     if missing_css:
-        raise SystemExit(f"Missing monochrome zodiac CSS: {missing_css}")
+        raise SystemExit(f"Missing monochrome zodiac CSS semantics: {missing_css}")
 
     print("PASS: Jekyll rendered the canonical 2026 index and all 53 weekly pages")
     print("PASS: no legacy ISO2026-Wxx or almanack/weeks output remains")
