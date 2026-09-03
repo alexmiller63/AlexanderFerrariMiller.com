@@ -20,6 +20,12 @@ jobs:
       - name: Check out website
         uses: actions/checkout@v4
 
+      - name: Remove legacy Almanack weekly pages
+        run: |
+          set -euo pipefail
+          rm -f almanack/ISO2026-W*.html
+          rm -rf almanack/weeks
+
       - name: Fetch generated 2026 Star Almanack pages
         run: |
           set -euo pipefail
@@ -51,7 +57,11 @@ jobs:
           for i, p in enumerate(pages, 1):
               text = p.read_text(encoding='utf-8')
               assert f'W{i:02d}' in text, f'Week identity missing in {p}'
-          print('Validated index + 53 weekly Star Almanack pages')
+
+          legacy_files = list(Path('almanack').glob('ISO2026-W*.html'))
+          assert not legacy_files, f'Legacy ISO weekly pages remain: {legacy_files}'
+          assert not Path('almanack/weeks').exists(), 'Legacy almanack/weeks tree remains'
+          print('Validated canonical index + 53 weekly Star Almanack pages; no legacy weekly tree remains')
           PY
 
       - name: Set up Ruby
@@ -76,13 +86,13 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add almanack/2026
+          git add -A almanack
           if git diff --cached --quiet; then
             echo "No published Almanack changes."
             echo "changed=false" >> "$GITHUB_OUTPUT"
             exit 0
           fi
-          git commit -m "Publish 2026 Star Almanack weekly pages"
+          git commit -m "Publish canonical 2026 Star Almanack pages"
           git push
           echo "changed=true" >> "$GITHUB_OUTPUT"
 
