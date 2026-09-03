@@ -2,6 +2,8 @@ name: Publish 2026 Star Almanack Pages
 
 "on":
   workflow_dispatch:
+  schedule:
+    - cron: '17 * * * *'
   push:
     paths:
       - .github/workflows/build-almanack-pages.yml
