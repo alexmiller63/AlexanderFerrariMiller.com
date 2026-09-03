@@ -53,6 +53,23 @@ jobs:
           print('Validated index + 53 weekly Star Almanack pages')
           PY
 
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.3"
+
+      - name: Install Jekyll
+        run: gem install jekyll --no-document
+
+      - name: Examine Jekyll configuration
+        run: jekyll doctor
+
+      - name: Build Jekyll with full diagnostics
+        run: jekyll build --trace
+
+      - name: Examine rendered Star Almanack
+        run: python tools/examine-almanack-jekyll.py
+
       - name: Commit published pages
         id: publish
         run: |
