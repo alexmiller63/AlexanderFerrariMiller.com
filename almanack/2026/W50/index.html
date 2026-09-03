@@ -4,34 +4,164 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>ISO 2026-W50 · Star Almanack</title>
-<style>:root { color-scheme: light dark; }
+<style>:root {
+  color-scheme: light dark;
+  --ink: #202833;
+  --muted: #66717d;
+  --navy: #102a43;
+  --navy-2: #173f5f;
+  --link: #245c86;
+  --paper: #fffdf8;
+  --page: #eee9df;
+  --rule: #d8d2c8;
+  --soft: #f4f1ea;
+  --soft-blue: #edf4f8;
+}
 * { box-sizing: border-box; }
-body { margin: 0; font-family: Georgia, 'Times New Roman', serif; line-height: 1.55; background: #f7f4ec; color: #1f2833; }
-a { color: #244d74; }
-header, footer { background: #0f2740; color: #fff; }
-header a, footer a { color: #dcecff; }
-.wrap { max-width: 980px; margin: 0 auto; padding: 1.1rem 1.25rem; }
-main.wrap { background: #fff; min-height: 75vh; padding-top: 2rem; padding-bottom: 3rem; }
-.brand { font-size: 1.2rem; font-weight: 700; }
-.subtitle { opacity: .85; }
-nav.weeknav { display: flex; justify-content: space-between; align-items: center; gap: 1rem; margin: 1.4rem 0; }
-nav.weeknav a, nav.weeknav span { display: inline-block; padding: .5rem .7rem; border: 1px solid #c5ced7; border-radius: .35rem; text-decoration: none; }
-h1, h2, h3 { line-height: 1.2; color: #15324e; }
-table { width: 100%; border-collapse: collapse; margin: 1rem 0 1.6rem; font-size: .94rem; }
-th, td { border: 1px solid #cfd6dd; padding: .55rem .65rem; vertical-align: top; }
-th { background: #edf2f6; text-align: left; }
-code { background: #eef1f3; padding: .08rem .25rem; border-radius: .2rem; }
-.weekgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px,1fr)); gap: .65rem; padding: 0; list-style: none; }
-.weekgrid a { display: block; padding: .75rem; border: 1px solid #cbd3da; border-radius: .4rem; text-decoration: none; background: #fafcfd; }
+html { font-size: 17px; }
+body {
+  margin: 0;
+  font-family: Georgia, 'Times New Roman', serif;
+  line-height: 1.65;
+  background: var(--page);
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+}
+a, a:visited { color: var(--link); text-underline-offset: .15em; }
+a:hover { text-decoration-thickness: 2px; }
+header, footer { background: var(--navy); color: #fff; }
+header { border-bottom: 4px solid #c5a45c; }
+header a, header a:visited, footer a, footer a:visited { color: #eef7ff; }
+.wrap { max-width: 1080px; margin: 0 auto; padding: 1.15rem 1.5rem; }
+main.wrap {
+  background: var(--paper);
+  min-height: 76vh;
+  padding: 2rem 2.4rem 3.25rem;
+  box-shadow: 0 0 28px rgba(25, 35, 45, .08);
+}
+.brand { font-size: 1.35rem; font-weight: 700; letter-spacing: .015em; }
+.brand a { text-decoration: none; }
+.subtitle { margin-top: .1rem; opacity: .86; font-size: .94rem; letter-spacing: .02em; }
+nav.weeknav {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: .8rem;
+  margin: .4rem 0 2rem;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: .9rem;
+}
+nav.weeknav > :last-child { justify-self: end; }
+nav.weeknav a, nav.weeknav a:visited, nav.weeknav span {
+  display: inline-block;
+  min-width: 5.5rem;
+  padding: .58rem .8rem;
+  border: 1px solid #c8d3dc;
+  border-radius: .45rem;
+  text-decoration: none;
+  text-align: center;
+  color: var(--link);
+  background: #fff;
+}
+nav.weeknav a:hover { background: var(--soft-blue); border-color: #9fb7c8; }
+nav.weeknav span { color: #89929b; background: #f5f5f3; }
+h1, h2, h3 { line-height: 1.2; color: #17344d; }
+h1 { margin: .3rem 0 1rem; font-size: clamp(2rem, 5vw, 2.75rem); letter-spacing: -.02em; }
+h2 { margin: 2.25rem 0 .8rem; padding-bottom: .35rem; border-bottom: 1px solid var(--rule); font-size: 1.42rem; }
+h3 { margin-top: 1.7rem; }
+p { max-width: 72ch; margin: .7rem 0 1rem; }
+strong { color: #162d42; }
+table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin: 1rem 0 2rem;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: .93rem;
+  line-height: 1.45;
+  border: 1px solid #cbd3da;
+  border-radius: .5rem;
+  overflow: hidden;
+}
+th, td { padding: .7rem .8rem; vertical-align: top; border-right: 1px solid #d6dde3; border-bottom: 1px solid #d6dde3; }
+th:last-child, td:last-child { border-right: 0; }
+tbody tr:last-child td { border-bottom: 0; }
+th { background: #e8f0f5; text-align: left; color: #17344d; font-weight: 700; }
+tbody tr:nth-child(even) td { background: #fbfaf7; }
+table.calendar { display: table; table-layout: fixed; }
+table.calendar td:first-child { width: 25%; white-space: nowrap; font-weight: 600; }
+table.calendar td:nth-child(2) { width: 13%; white-space: nowrap; text-align: center; }
+table.calendar td:nth-child(3) { line-height: 1.6; }
+table.ephemeris { font-size: .9rem; }
+table.ephemeris th, table.ephemeris td { text-align: center; }
+table.ephemeris td { white-space: nowrap; padding-top: .8rem; padding-bottom: .8rem; }
+.zodiac-glyph {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-variant-emoji: text;
+  color: currentColor;
+}
+.zodiac-name { display: block; font-family: Georgia, 'Times New Roman', serif; font-size: .78rem; color: var(--muted); margin-top: .12rem; }
+code { background: #eef1f3; padding: .1rem .3rem; border-radius: .25rem; font-size: .9em; }
+.weekgrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(145px, 1fr));
+  gap: .7rem;
+  padding: 0;
+  margin: 1.5rem 0 0;
+  list-style: none;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+.weekgrid a, .weekgrid a:visited {
+  display: block;
+  padding: .85rem .9rem;
+  border: 1px solid #cbd3da;
+  border-radius: .5rem;
+  text-decoration: none;
+  text-align: center;
+  background: #fff;
+  color: var(--link);
+  font-weight: 650;
+}
+.weekgrid a:hover { background: var(--soft-blue); border-color: #9fb7c8; transform: translateY(-1px); }
+footer { font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: .88rem; }
+footer .wrap { padding-top: 1.3rem; padding-bottom: 1.3rem; opacity: .9; }
+@media (max-width: 760px) {
+  html { font-size: 16px; }
+  .wrap { padding-left: 1rem; padding-right: 1rem; }
+  main.wrap { padding: 1.35rem 1rem 2.5rem; box-shadow: none; }
+  nav.weeknav { gap: .4rem; margin-bottom: 1.5rem; }
+  nav.weeknav a, nav.weeknav a:visited, nav.weeknav span { min-width: 0; padding: .6rem .45rem; }
+  table { font-size: .9rem; }
+  table.calendar { display: table; width: 100%; table-layout: fixed; overflow: hidden; }
+  table.calendar th, table.calendar td { padding: .6rem .55rem; }
+  table.calendar td:first-child { width: 30%; min-width: 0; white-space: normal; }
+  table.calendar td:nth-child(2) { width: 18%; min-width: 0; white-space: nowrap; }
+  table.calendar td:nth-child(3) { width: 52%; min-width: 0; overflow-wrap: anywhere; }
+  table.ephemeris { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; font-size: .86rem; }
+  .weekgrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
 @media (prefers-color-scheme: dark) {
- body { background: #111821; color: #dbe5ee; }
- main.wrap { background: #17202b; }
- h1,h2,h3 { color: #eef7ff; }
- th { background: #233142; }
- th,td { border-color: #425166; }
- code { background: #233142; }
- .weekgrid a { background: #1d2937; border-color: #435268; }
- nav.weeknav a, nav.weeknav span { border-color: #435268; }
+  :root {
+    --ink: #dce6ef;
+    --muted: #a7b4c0;
+    --link: #9fd0ff;
+    --paper: #17212b;
+    --page: #10171f;
+    --rule: #394957;
+    --soft-blue: #203549;
+  }
+  body { background: var(--page); color: var(--ink); }
+  main.wrap { background: var(--paper); box-shadow: none; }
+  h1, h2, h3, strong { color: #f1f7fb; }
+  th { background: #223444; color: #eef7ff; }
+  th, td { border-color: #40505e; }
+  table { border-color: #40505e; }
+  tbody tr:nth-child(even) td { background: #1b2732; }
+  code { background: #263643; }
+  .weekgrid a, .weekgrid a:visited,
+  nav.weeknav a, nav.weeknav a:visited { background: #1c2a36; border-color: #405567; color: #b6dcff; }
+  .weekgrid a:hover, nav.weeknav a:hover { background: #253b4e; }
+  nav.weeknav span { background: #1a242d; border-color: #384956; color: #7f909f; }
 }</style>
 </head>
 <body>
@@ -40,20 +170,10 @@ code { background: #eef1f3; padding: .08rem .25rem; border-radius: .2rem; }
 <p><strong>ISO dates:</strong> 2026-W50-1 through 2026-W50-7</p>
 <p><strong>Civil dates:</strong> Dec 07, 2026 – Dec 13, 2026</p>
 <h2>Calendar</h2>
-<table><thead><tr><th>Date</th><th>Zodiac day</th><th>Events</th></tr></thead><tbody></tbody></table>
-
-<table><thead><tr><th>Mon, Dec 07, 2026</th><th>♐ 16</th><th>Best visibility: Sheratan (β Ari)<br>Best visibility: Mothallah (α Tri)</th></tr></thead><tbody></tbody></table>
-<table><thead><tr><th>Tue, Dec 08, 2026</th><th>♐ 17</th><th>Best visibility: α Hyi</th></tr></thead><tbody></tbody></table>
-<table><thead><tr><th>Wed, Dec 09, 2026</th><th>♐ 18</th><th>🌑 New Moon — 00:51:51 UTC<br>Best visibility: Alrescha (α Psc)<br>Best visibility: Almach — V2</th></tr></thead><tbody></tbody></table>
-<table><thead><tr><th>Thu, Dec 10, 2026</th><th>♐ 19</th><th>Best visibility: Hamal (α Ari)<br>Best visibility: β Tri</th></tr></thead><tbody></tbody></table>
-<table><thead><tr><th>Fri, Dec 11, 2026</th><th>♐ 20</th><th>—</th></tr></thead><tbody></tbody></table>
-<table><thead><tr><th>Sat, Dec 12, 2026</th><th>♐ 21</th><th>—</th></tr></thead><tbody></tbody></table>
-<table><thead><tr><th>Sun, Dec 13, 2026</th><th>♐ 22</th><th>—</th></tr></thead><tbody></tbody></table>
+<table class="calendar"><thead><tr><th>Date</th><th>Zodiac day</th><th>Events</th></tr></thead><tbody><tr><td>Mon, Dec 07, 2026</td><td><span class="zodiac-glyph">♐&#xfe0e;</span> 16</td><td>Best visibility: Sheratan (β Ari)<br>Best visibility: Mothallah (α Tri)</td></tr><tr><td>Tue, Dec 08, 2026</td><td><span class="zodiac-glyph">♐&#xfe0e;</span> 17</td><td>Best visibility: α Hyi</td></tr><tr><td>Wed, Dec 09, 2026</td><td><span class="zodiac-glyph">♐&#xfe0e;</span> 18</td><td>🌑 New Moon — 00:51:51 UTC<br>Best visibility: Alrescha (α Psc)<br>Best visibility: Almach — V2</td></tr><tr><td>Thu, Dec 10, 2026</td><td><span class="zodiac-glyph">♐&#xfe0e;</span> 19</td><td>Best visibility: Hamal (α Ari)<br>Best visibility: β Tri</td></tr><tr><td>Fri, Dec 11, 2026</td><td><span class="zodiac-glyph">♐&#xfe0e;</span> 20</td><td>—</td></tr><tr><td>Sat, Dec 12, 2026</td><td><span class="zodiac-glyph">♐&#xfe0e;</span> 21</td><td>—</td></tr><tr><td>Sun, Dec 13, 2026</td><td><span class="zodiac-glyph">♐&#xfe0e;</span> 22</td><td>—</td></tr></tbody></table>
 <h2>Weekly Classical-Planet Ephemeris</h2>
 <p><strong>Snapshot:</strong> December 7, 2026 · 00:00 UTC</p>
-<table><thead><tr><th>☉ Sun</th><th>☽ Moon</th><th>☿ Mercury</th><th>♀ Venus</th><th>♂ Mars</th><th>♃ Jupiter</th><th>♄ Saturn</th></tr></thead><tbody></tbody></table>
-
-<table><thead><tr><th>♐ 14°53′</th><th>♏ 22°20′</th><th>♐ 0°58′</th><th>♏ 1°46′</th><th>♍ 4°03′</th><th>♌ 26°58′</th><th>♈ 7°57′</th></tr></thead><tbody></tbody></table>
+<table class="ephemeris"><thead><tr><th>☉ Sun</th><th>☽ Moon</th><th>☿ Mercury</th><th>♀ Venus</th><th>♂ Mars</th><th>♃ Jupiter</th><th>♄ Saturn</th></tr></thead><tbody><tr><td><span class="zodiac-glyph">♐&#xfe0e;</span> 14°53′<span class="zodiac-name">Sagittarius</span></td><td><span class="zodiac-glyph">♏&#xfe0e;</span> 22°20′<span class="zodiac-name">Scorpio</span></td><td><span class="zodiac-glyph">♐&#xfe0e;</span> 0°58′<span class="zodiac-name">Sagittarius</span></td><td><span class="zodiac-glyph">♏&#xfe0e;</span> 1°46′<span class="zodiac-name">Scorpio</span></td><td><span class="zodiac-glyph">♍&#xfe0e;</span> 4°03′<span class="zodiac-name">Virgo</span></td><td><span class="zodiac-glyph">♌&#xfe0e;</span> 26°58′<span class="zodiac-name">Leo</span></td><td><span class="zodiac-glyph">♈&#xfe0e;</span> 7°57′<span class="zodiac-name">Aries</span></td></tr></tbody></table>
 <h2>Sky Note</h2>
 <p>Weekly geocentric tropical planetary positions, sampled Monday at 00:00 UTC.</p>
 <h2>Chart</h2>
