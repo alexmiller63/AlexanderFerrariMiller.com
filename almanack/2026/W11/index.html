@@ -89,8 +89,11 @@ tbody tr:last-child td { border-bottom: 0; }
 th { background: #e8f0f5; text-align: left; color: #17344d; font-weight: 700; }
 tbody tr:nth-child(even) td { background: #fbfaf7; }
 table.calendar { display: table; table-layout: fixed; }
-table.calendar td:first-child { width: 16%; white-space: nowrap; font-weight: 600; }
-table.calendar td:nth-child(2) { width: 8%; white-space: nowrap; text-align: center; }
+table.calendar th:first-child, table.calendar td:first-child { width: 30%; }
+table.calendar th:nth-child(2), table.calendar td:nth-child(2) { width: 15%; }
+table.calendar th:nth-child(3), table.calendar td:nth-child(3) { width: 55%; }
+table.calendar td:first-child { white-space: nowrap; font-weight: 600; }
+table.calendar td:nth-child(2) { white-space: nowrap; text-align: center; }
 table.calendar td:nth-child(3) { line-height: 1.6; }
 table.ephemeris { font-size: .9rem; }
 table.ephemeris th, table.ephemeris td { text-align: center; }
@@ -135,9 +138,12 @@ footer .wrap { padding-top: 1.3rem; padding-bottom: 1.3rem; opacity: .9; }
   table { font-size: .9rem; }
   table.calendar { display: table; width: 100%; table-layout: fixed; overflow: hidden; }
   table.calendar th, table.calendar td { padding: .6rem .55rem; }
-  table.calendar td:first-child { width: 20%; min-width: 0; white-space: normal; }
-  table.calendar td:nth-child(2) { width: 11%; min-width: 0; white-space: nowrap; }
-  table.calendar td:nth-child(3) { width: 69%; min-width: 0; overflow-wrap: anywhere; }
+  table.calendar th:first-child, table.calendar td:first-child { width: 30%; min-width: 0; }
+  table.calendar th:nth-child(2), table.calendar td:nth-child(2) { width: 15%; min-width: 0; }
+  table.calendar th:nth-child(3), table.calendar td:nth-child(3) { width: 55%; min-width: 0; }
+  table.calendar td:first-child { white-space: normal; }
+  table.calendar td:nth-child(2) { white-space: nowrap; }
+  table.calendar td:nth-child(3) { overflow-wrap: anywhere; }
   table.ephemeris { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; font-size: .86rem; }
   .weekgrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
