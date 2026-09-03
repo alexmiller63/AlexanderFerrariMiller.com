@@ -43,7 +43,7 @@ jobs:
               -o "almanack/2026/W${n}/index.html"
           done
 
-      - name: Validate complete 53-page publication
+      - name: Validate complete canonical publication
         run: |
           python - <<'PY'
           from pathlib import Path
@@ -57,11 +57,17 @@ jobs:
           for i, p in enumerate(pages, 1):
               text = p.read_text(encoding='utf-8')
               assert f'W{i:02d}' in text, f'Week identity missing in {p}'
+              assert '<table class="calendar">' in text, f'Calendar table missing in {p}'
+              assert 'Best visibility:' not in text, f'Obsolete Best visibility label in {p}'
+              assert 'width:16%' in text, f'Narrow desktop date width missing in {p}'
+              assert 'width:8%' in text, f'Narrow desktop zodiac width missing in {p}'
+              assert 'width:20%' in text, f'Narrow mobile date width missing in {p}'
+              assert 'width:11%' in text, f'Narrow mobile zodiac width missing in {p}'
 
           legacy_files = list(Path('almanack').glob('ISO2026-W*.html'))
           assert not legacy_files, f'Legacy ISO weekly pages remain: {legacy_files}'
           assert not Path('almanack/weeks').exists(), 'Legacy almanack/weeks tree remains'
-          print('Validated canonical index + 53 weekly Star Almanack pages; no legacy weekly tree remains')
+          print('Validated canonical index + 53 weekly pages, narrow columns, and no legacy weekly tree')
           PY
 
       - name: Set up Ruby
