@@ -5,7 +5,8 @@ from pathlib import Path
 import re
 
 
-ROOT = Path("_site/almanack/2026")
+ALMANACK_ROOT = Path("_site/almanack")
+ROOT = ALMANACK_ROOT / "2026"
 DAY_ONE_NAME = re.compile(
     r'class="zodiac-glyph">[^<]+</span>\s+\([A-Za-z]+\)\s+1</td>'
 )
@@ -22,10 +23,21 @@ def main() -> None:
     if missing:
         raise SystemExit(f"Missing rendered Almanack pages: {missing}")
 
+    legacy_files = sorted(ALMANACK_ROOT.glob("ISO2026-W*.html"))
+    legacy_tree = ALMANACK_ROOT / "weeks"
+    if legacy_files or legacy_tree.exists():
+        raise SystemExit(
+            "Legacy Almanack weekly output survived Jekyll build: "
+            f"files={legacy_files}, weeks_tree={legacy_tree.exists()}"
+        )
+
     rendered = "\n".join(path.read_text(encoding="utf-8") for path in pages)
 
     if DAY_ONE_NAME.search(rendered):
         raise SystemExit("A zodiac day-1 cell still contains a redundant sign name")
+
+    if "Best visibility:" in rendered:
+        raise SystemExit("Rendered Almanack still contains obsolete 'Best visibility:' labels")
 
     ingress_count = len(INGRESS.findall(rendered))
     wrapped_ingress_count = len(WRAPPED_INGRESS.findall(rendered))
@@ -44,8 +56,10 @@ def main() -> None:
     if missing_css:
         raise SystemExit(f"Missing monochrome zodiac CSS: {missing_css}")
 
-    print("PASS: Jekyll rendered the 2026 index and all 53 weekly pages")
+    print("PASS: Jekyll rendered the canonical 2026 index and all 53 weekly pages")
+    print("PASS: no legacy ISO2026-Wxx or almanack/weeks output remains")
     print("PASS: zodiac day 1 contains no redundant sign name")
+    print("PASS: obsolete Best visibility labels are absent")
     print(f"PASS: all {ingress_count} ingress glyphs are monochrome text symbols")
 
 
