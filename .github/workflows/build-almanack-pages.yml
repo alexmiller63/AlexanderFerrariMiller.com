@@ -70,17 +70,26 @@ jobs:
               assert 'data-bayer-mode="greek"' in text, f'Greek notation missing in {p}'
               assert 'data-bayer-mode="latin"' in text, f'Latin notation missing in {p}'
               assert 'data-bayer-mode="mixed"' in text, f'Mixed learner notation missing in {p}'
-              assert 'Mixed · Learner' in text, f'Mixed learner label missing in {p}'
+              assert 'Greek/Symbols' in text, f'Greek/Symbols label missing in {p}'
+              assert 'Mixed Learner' in text, f'Mixed Learner label missing in {p}'
+              assert 'width:21%' in text, f'Mobile date width missing in {p}'
+              assert 'width:13%' in text, f'Mobile zodiac width missing in {p}'
+              assert 'width:66%' in text, f'Mobile events width missing in {p}'
+              assert 'flex-direction:row' in text, f'Inline mobile zodiac layout missing in {p}'
               assert "Tuc:'Tucanae'" in text, f'Full Bayer genitive mapping missing in {p}'
               assert "Lac:'Lacertae'" in text, f'Full Bayer genitive mapping missing in {p}'
               assert "PsA:'Piscis Austrini'" in text, f'Full Bayer genitive mapping missing in {p}'
               assert '</main><aside class="notation-legend"' in text, f'Legend is not below main content in {p}'
               assert '© 2026 Alexander Ferrari Miller. All rights reserved.' in text, f'Copyright footer missing in {p}'
 
+          w33 = (root / 'W33' / 'index.html').read_text(encoding='utf-8')
+          assert 'Summer Triangle' in w33, 'Summer Triangle asterism note missing from W33'
+          assert 'Perseids' in w33 and 'August 13' in w33, 'Perseid meteor-shower note missing from W33'
+
           legacy_files = list(Path('almanack').glob('ISO2026-W*.html'))
           assert not legacy_files, f'Legacy ISO weekly pages remain: {legacy_files}'
           assert not Path('almanack/weeks').exists(), 'Legacy almanack/weeks tree remains'
-          print('Validated one-source-snapshot publication: 53 weeks, Greek/Latin/Mixed, full Bayer genitives, bottom legend, copyright, and source revision marker')
+          print('Validated one-source-snapshot publication: 53 weeks, Greek/Symbols/Latin/Mixed Learner, mobile calendar layout, asterisms, meteor showers, full Bayer genitives, bottom legend, copyright, and source revision marker')
           PY
 
       - name: Set up Ruby
@@ -123,6 +132,7 @@ jobs:
           fi
           SOURCE_SHA=$(cat almanack/2026/.source-commit)
           git commit -m "Publish Star Almanack source ${SOURCE_SHA:0:12}"
+          git pull --rebase origin main
           git push
           echo "changed=true" >> "$GITHUB_OUTPUT"
 
