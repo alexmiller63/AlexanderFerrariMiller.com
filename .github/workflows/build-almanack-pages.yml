@@ -3,7 +3,7 @@ name: Publish 2026 Star Almanack Pages
 "on":
   workflow_dispatch:
   schedule:
-    # Fallback synchronization. Normal source changes are picked up on the next pass.
+    # Fallback synchronization; this file change also forces an immediate source-to-site handoff.
     - cron: '2-59/5 * * * *'
   push:
     paths:
