@@ -3,7 +3,8 @@ name: Publish 2026 Star Almanack Pages
 "on":
   workflow_dispatch:
   schedule:
-    - cron: '*/5 * * * *'
+    # Stagger away from the top-of-hour congestion window while retaining a 5-minute cadence.
+    - cron: '2-59/5 * * * *'
   push:
     paths:
       - .github/workflows/build-almanack-pages.yml
