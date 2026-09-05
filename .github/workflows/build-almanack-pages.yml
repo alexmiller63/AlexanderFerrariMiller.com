@@ -72,8 +72,10 @@ jobs:
               assert 'data-bayer-mode="mixed"' in text, f'Mixed learner notation missing in {p}'
               assert 'Greek/Symbols' in text, f'Greek/Symbols label missing in {p}'
               assert 'Mixed Learner' in text, f'Mixed Learner label missing in {p}'
-              assert 'width:22%' in text, f'Mobile date/zodiac width missing in {p}'
-              assert 'width:56%' in text, f'Mobile events width missing in {p}'
+              assert 'width:27%' in text, f'Mobile date width missing in {p}'
+              assert 'width:23%' in text, f'Mobile zodiac width missing in {p}'
+              assert 'width:50%' in text, f'Mobile events width missing in {p}'
+              assert 'font-size:.82rem;line-height:1.3' in text, f'Mobile date typography missing in {p}'
               assert 'flex-direction:column' in text, f'Stacked mobile zodiac layout missing in {p}'
               assert 'white-space:normal;text-align:center;font-size:.86rem' in text, f'Mobile zodiac wrapping rule missing in {p}'
               assert "Tuc:'Tucanae'" in text, f'Full Bayer genitive mapping missing in {p}'
@@ -89,7 +91,7 @@ jobs:
           legacy_files = list(Path('almanack').glob('ISO2026-W*.html'))
           assert not legacy_files, f'Legacy ISO weekly pages remain: {legacy_files}'
           assert not Path('almanack/weeks').exists(), 'Legacy almanack/weeks tree remains'
-          print('Validated one-source-snapshot publication: 53 weeks, Greek/Symbols/Latin/Mixed Learner, refined mobile calendar layout, asterisms, meteor showers, full Bayer genitives, bottom legend, copyright, and source revision marker')
+          print('Validated one-source-snapshot publication with refined mobile calendar layout and existing Almanack checks')
           PY
 
       - name: Set up Ruby
