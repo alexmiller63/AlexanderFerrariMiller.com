@@ -91,6 +91,37 @@
     });
   }
 
+  document.querySelectorAll('table.calendar tbody td:nth-child(3)').forEach(function (cell) {
+    const visibilityPattern = /(?:👁|B|🔭)\s+V\s+\d+(?:\.\d+)?/g;
+    const nodes = [];
+    const walker = document.createTreeWalker(cell, NodeFilter.SHOW_TEXT);
+
+    while (walker.nextNode()) {
+      if (visibilityPattern.test(walker.currentNode.nodeValue)) nodes.push(walker.currentNode);
+      visibilityPattern.lastIndex = 0;
+    }
+
+    nodes.forEach(function (node) {
+      const text = node.nodeValue;
+      const fragment = document.createDocumentFragment();
+      let last = 0;
+      let match;
+      visibilityPattern.lastIndex = 0;
+
+      while ((match = visibilityPattern.exec(text))) {
+        fragment.append(document.createTextNode(text.slice(last, match.index)));
+        const span = document.createElement('span');
+        span.className = 'visibility-magnitude';
+        span.textContent = match[0];
+        fragment.append(span);
+        last = match.index + match[0].length;
+      }
+
+      fragment.append(document.createTextNode(text.slice(last)));
+      node.replaceWith(fragment);
+    });
+  });
+
   document.querySelectorAll('table.calendar tbody td:nth-child(2)').forEach(function (cell) {
     const text = cell.textContent.trim();
     const match = text.match(/^([^\d]*?)(\d+)$/);
