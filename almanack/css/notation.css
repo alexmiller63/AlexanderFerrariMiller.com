@@ -10,13 +10,14 @@
   align-items: center;
   justify-content: flex-end;
   gap: .35rem;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   font-size: .86rem;
 }
 
 .bayer-toggle-label {
   margin-right: .2rem;
   color: var(--muted);
+  white-space: nowrap;
 }
 
 .bayer-toggle button {
@@ -28,6 +29,7 @@
   border-radius: .4rem;
   font: inherit;
   cursor: pointer;
+  white-space: nowrap;
 }
 
 .bayer-toggle button[aria-pressed='true'] {
@@ -36,28 +38,49 @@
   border-color: var(--navy);
 }
 
+.notation-legend {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 1rem 1.5rem 1.15rem;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: .78rem;
+  line-height: 1.55;
+  color: var(--muted);
+  border-top: 1px solid var(--rule);
+}
+
+.notation-legend p { max-width: none; margin: .35rem 0; }
+.notation-legend strong { color: inherit; }
+.legend-line { display: flex; flex-wrap: wrap; gap: .12rem .5rem; }
+.legend-item { white-space: nowrap; }
+.text-symbol {
+  font-family: 'Apple Symbols','Arial Unicode MS','Segoe UI Symbol','Noto Sans Symbols 2',serif;
+  font-variant-emoji: text;
+  color: currentColor;
+  -webkit-text-fill-color: currentColor;
+}
+
+.zodiac-day { text-align: center; line-height: 1.2; }
+.zodiac-day .notation-item { display: block; white-space: pre-line; }
+.zodiac-day .zodiac-day-number { display: block; margin: 0; }
+
 @media (max-width: 760px) and (orientation: portrait) {
-  .bayer-toggle-wrap {
-    padding-left: .4rem;
-    padding-right: .4rem;
+  .bayer-toggle-wrap,
+  .notation-legend {
+    padding-left: .5rem;
+    padding-right: .5rem;
   }
 
   .bayer-toggle {
     justify-content: center;
     flex-wrap: nowrap;
-    gap: .18rem;
-    font-size: .72rem;
+    gap: .22rem;
+    font-size: .76rem;
     white-space: nowrap;
   }
 
-  .bayer-toggle-label {
-    margin-right: 0;
-  }
-
-  .bayer-toggle button {
-    padding: .32rem .36rem;
-    white-space: nowrap;
-  }
+  .bayer-toggle-label { margin-right: .05rem; }
+  .bayer-toggle button { padding: .32rem .44rem; }
 }
 
 @media (prefers-color-scheme: dark) {
