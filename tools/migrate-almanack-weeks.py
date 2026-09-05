@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# One-time source-to-Jekyll migration helper; not part of the publishing runtime.
 from pathlib import Path
 import re
 
