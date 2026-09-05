@@ -3,7 +3,7 @@ name: Publish 2026 Star Almanack Pages
 "on":
   workflow_dispatch:
   schedule:
-    # Stagger away from the top-of-hour congestion window while retaining a 5-minute cadence.
+    # Fallback synchronization. Normal source changes are picked up on the next pass.
     - cron: '2-59/5 * * * *'
   push:
     paths:
@@ -14,6 +14,10 @@ name: Publish 2026 Star Almanack Pages
 permissions:
   contents: write
 
+concurrency:
+  group: publish-2026-star-almanack
+  cancel-in-progress: true
+
 jobs:
   publish:
     runs-on: ubuntu-latest
@@ -21,55 +25,62 @@ jobs:
     steps:
       - name: Check out website
         uses: actions/checkout@v4
+        with:
+          path: website
 
-      - name: Remove legacy Almanack weekly pages
+      - name: Check out canonical Star Almanack source
+        uses: actions/checkout@v4
+        with:
+          repository: alexmiller63/star-almanack
+          ref: main
+          path: star-source
+
+      - name: Replace Almanack with one atomic source snapshot
         run: |
           set -euo pipefail
+          cd website
           rm -f almanack/ISO2026-W*.html
-          rm -rf almanack/weeks
+          rm -rf almanack/weeks almanack/2026
+          mkdir -p almanack/2026
+          cp -a ../star-source/site/2026/. almanack/2026/
+          git -C ../star-source rev-parse HEAD > almanack/2026/.source-commit
 
-      - name: Fetch generated 2026 Star Almanack pages
+      - name: Validate complete fresh canonical publication
         run: |
           set -euo pipefail
-          rm -rf almanack/2026
-          mkdir -p almanack/2026
-
-          curl -fsSL \
-            https://raw.githubusercontent.com/alexmiller63/star-almanack/main/site/2026/index.html \
-            -o almanack/2026/index.html
-
-          for n in $(seq -w 1 53); do
-            mkdir -p "almanack/2026/W${n}"
-            curl -fsSL \
-              "https://raw.githubusercontent.com/alexmiller63/star-almanack/main/site/2026/W${n}/index.html" \
-              -o "almanack/2026/W${n}/index.html"
-          done
-
-      - name: Validate complete canonical publication
-        run: |
+          cd website
           python - <<'PY'
           from pathlib import Path
 
           root = Path('almanack/2026')
           assert (root / 'index.html').is_file(), 'Missing 2026 Almanack index'
+          marker = (root / '.source-commit')
+          assert marker.is_file() and len(marker.read_text().strip()) == 40, 'Missing Star Almanack source revision marker'
+
           pages = [root / f'W{i:02d}' / 'index.html' for i in range(1, 54)]
           missing = [str(p) for p in pages if not p.is_file()]
           assert not missing, f'Missing weekly pages: {missing}'
           assert len(pages) == 53
+
           for i, p in enumerate(pages, 1):
               text = p.read_text(encoding='utf-8')
               assert f'W{i:02d}' in text, f'Week identity missing in {p}'
               assert '<table class="calendar">' in text, f'Calendar table missing in {p}'
               assert 'Best visibility:' not in text, f'Obsolete Best visibility label in {p}'
-              assert 'width:16%' in text, f'Narrow desktop date width missing in {p}'
-              assert 'width:8%' in text, f'Narrow desktop zodiac width missing in {p}'
-              assert 'width:20%' in text, f'Narrow mobile date width missing in {p}'
-              assert 'width:11%' in text, f'Narrow mobile zodiac width missing in {p}'
+              assert 'data-bayer-mode="greek"' in text, f'Greek notation missing in {p}'
+              assert 'data-bayer-mode="latin"' in text, f'Latin notation missing in {p}'
+              assert 'data-bayer-mode="mixed"' in text, f'Mixed learner notation missing in {p}'
+              assert 'Mixed · Learner' in text, f'Mixed learner label missing in {p}'
+              assert "Tuc:'Tucanae'" in text, f'Full Bayer genitive mapping missing in {p}'
+              assert "Lac:'Lacertae'" in text, f'Full Bayer genitive mapping missing in {p}'
+              assert "PsA:'Piscis Austrini'" in text, f'Full Bayer genitive mapping missing in {p}'
+              assert '</main><aside class="notation-legend"' in text, f'Legend is not below main content in {p}'
+              assert '© 2026 Alexander Ferrari Miller. All rights reserved.' in text, f'Copyright footer missing in {p}'
 
           legacy_files = list(Path('almanack').glob('ISO2026-W*.html'))
           assert not legacy_files, f'Legacy ISO weekly pages remain: {legacy_files}'
           assert not Path('almanack/weeks').exists(), 'Legacy almanack/weeks tree remains'
-          print('Validated canonical index + 53 weekly pages, narrow columns, and no legacy weekly tree')
+          print('Validated one-source-snapshot publication: 53 weeks, Greek/Latin/Mixed, full Bayer genitives, bottom legend, copyright, and source revision marker')
           PY
 
       - name: Set up Ruby
@@ -78,20 +89,30 @@ jobs:
           ruby-version: "3.3"
 
       - name: Install Jekyll
-        run: gem install jekyll --no-document
+        run: |
+          cd website
+          gem install jekyll --no-document
 
       - name: Examine Jekyll configuration
-        run: jekyll doctor
+        run: |
+          cd website
+          jekyll doctor
 
       - name: Build Jekyll with full diagnostics
-        run: jekyll build --trace
+        run: |
+          cd website
+          jekyll build --trace
 
       - name: Examine rendered Star Almanack
-        run: python tools/examine-almanack-jekyll.py
+        run: |
+          cd website
+          python tools/examine-almanack-jekyll.py
 
       - name: Commit published pages
         id: publish
         run: |
+          set -euo pipefail
+          cd website
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A almanack
@@ -100,7 +121,8 @@ jobs:
             echo "changed=false" >> "$GITHUB_OUTPUT"
             exit 0
           fi
-          git commit -m "Publish canonical 2026 Star Almanack pages"
+          SOURCE_SHA=$(cat almanack/2026/.source-commit)
+          git commit -m "Publish Star Almanack source ${SOURCE_SHA:0:12}"
           git push
           echo "changed=true" >> "$GITHUB_OUTPUT"
 
