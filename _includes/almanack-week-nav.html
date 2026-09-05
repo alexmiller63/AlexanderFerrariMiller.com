@@ -1,0 +1,15 @@
+<nav class="weeknav" aria-label="Week navigation">
+  {% if page.previous_week %}
+    <a href="{{ page.previous_week | relative_url }}">← {{ page.previous_label | default: 'Previous' }}</a>
+  {% else %}
+    <span aria-disabled="true">← Previous</span>
+  {% endif %}
+
+  <a href="{{ '/almanack/2026/' | relative_url }}">All weeks</a>
+
+  {% if page.next_week %}
+    <a href="{{ page.next_week | relative_url }}">{{ page.next_label | default: 'Next' }} →</a>
+  {% else %}
+    <span aria-disabled="true">Next →</span>
+  {% endif %}
+</nav>
