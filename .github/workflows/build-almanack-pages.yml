@@ -104,7 +104,6 @@ jobs:
           echo "changed=true" >> "$GITHUB_OUTPUT"
 
       - name: Deploy synchronized pages to AWS
-        if: steps.publish.outputs.changed == 'true'
         uses: appleboy/ssh-action@v1.2.2
         with:
           host: ${{ secrets.AWS_HOST }}
