@@ -48,7 +48,7 @@ footer .wrap { padding-top:1.3rem; padding-bottom:1.3rem; opacity:.9; }
 .bayer-toggle button[aria-pressed="true"] { background:var(--navy); color:#fff; border-color:var(--navy); }
 @media (max-width:760px) { .bayer-toggle-wrap { padding-left:1rem; padding-right:1rem; } }
 @media (prefers-color-scheme:dark) { .bayer-toggle button { background:#1c2a36; border-color:#405567; color:#b6dcff; } .bayer-toggle button[aria-pressed="true"] { background:#eef7ff; color:#102a43; border-color:#eef7ff; } }
-</style></head><body><header><div class="wrap"><div class="brand"><a href="/almanack/2026/">Star Almanack</a></div><div class="subtitle">Alexander Ferrari Miller</div></div></header><div class="bayer-toggle-wrap"><div class="bayer-toggle" role="group" aria-label="Bayer designation notation"><span class="bayer-toggle-label">Bayer:</span><button type="button" data-bayer-mode="greek" aria-pressed="true">Greek</button><button type="button" data-bayer-mode="latin" aria-pressed="false">Latin</button></div></div><main class="wrap"><nav class="weeknav"><a href="../W51/">← W51</a><a href="../">All weeks</a><a href="../W53/">W53 →</a></nav><h2>ISO 2026-W52</h2>
+</style></head><body><header><div class="wrap"><div class="brand"><a href="/almanack/2026/">Star Almanack</a></div><div class="subtitle">Alexander Ferrari Miller</div></div></header><div class="bayer-toggle-wrap"><div class="bayer-toggle" role="group" aria-label="Astronomical notation"><span class="bayer-toggle-label">Notation:</span><button type="button" data-bayer-mode="greek" aria-pressed="true">Greek</button><button type="button" data-bayer-mode="latin" aria-pressed="false">Latin</button></div></div><main class="wrap"><nav class="weeknav"><a href="../W51/">← W51</a><a href="../">All weeks</a><a href="../W53/">W53 →</a></nav><h2>ISO 2026-W52</h2>
 <p><strong>ISO dates:</strong> 2026-W52-1 through 2026-W52-7</p>
 <p><strong>Civil dates:</strong> Dec 21, 2026 – Dec 27, 2026</p>
 <h3>Calendar</h3>
@@ -61,43 +61,88 @@ footer .wrap { padding-top:1.3rem; padding-bottom:1.3rem; opacity:.9; }
 <h3>Chart</h3>
 <p><code>ISO2026-W52-chart.png</code> — chart slot.</p><nav class="weeknav"><a href="../W51/">← W51</a><a href="../">All weeks</a><a href="../W53/">W53 →</a></nav></main><footer><div class="wrap">© 2026 Alexander Ferrari Miller. All rights reserved.</div></footer><script>
 (function () {
-  const latin = {
-    'α':'Alp','β':'Bet','γ':'Gam','δ':'Del','ε':'Eps','ζ':'Zet','η':'Eta','θ':'The',
-    'ι':'Iot','κ':'Kap','λ':'Lam','μ':'Mu','ν':'Nu','ξ':'Xi','ο':'Omi','π':'Pi',
-    'ρ':'Rho','σ':'Sig','τ':'Tau','υ':'Ups','φ':'Phi','χ':'Chi','ψ':'Psi','ω':'Ome'
+  const greekNames = {
+    'α':'Alpha','β':'Beta','γ':'Gamma','δ':'Delta','ε':'Epsilon','ζ':'Zeta','η':'Eta','θ':'Theta',
+    'ι':'Iota','κ':'Kappa','λ':'Lambda','μ':'Mu','ν':'Nu','ξ':'Xi','ο':'Omicron','π':'Pi',
+    'ρ':'Rho','σ':'Sigma','τ':'Tau','υ':'Upsilon','φ':'Phi','χ':'Chi','ψ':'Psi','ω':'Omega'
   };
+  const constellations = {
+    And:'Andromedae',Ant:'Antliae',Aps:'Apodis',Aqr:'Aquarii',Aql:'Aquilae',Ara:'Arae',Ari:'Arietis',Aur:'Aurigae',
+    Boo:'Bootis',Cae:'Caeli',Cam:'Camelopardalis',Cnc:'Cancri',CVn:'Canum Venaticorum',CMa:'Canis Majoris',CMi:'Canis Minoris',
+    Cap:'Capricorni',Car:'Carinae',Cas:'Cassiopeiae',Cen:'Centauri',Cep:'Cephei',Cet:'Ceti',Cha:'Chamaeleontis',Cir:'Circini',
+    Col:'Columbae',Com:'Comae Berenices',CrA:'Coronae Australis',CrB:'Coronae Borealis',Crv:'Corvi',Crt:'Crateris',Cru:'Crucis',
+    Cyg:'Cygni',Del:'Delphini',Dor:'Doradus',Dra:'Draconis',Equ:'Equulei',Eri:'Eridani',For:'Fornacis',Gem:'Geminorum',Gru:'Gruis',
+    Her:'Herculis',Hor:'Horologii',Hya:'Hydrae',Hyi:'Hydri',Ind:'Indi',Lac:'Lacertae',Leo:'Leonis',LMi:'Leonis Minoris',Lep:'Leporis',
+    Lib:'Librae',Lup:'Lupi',Lyn:'Lyncis',Lyr:'Lyrae',Men:'Mensae',Mic:'Microscopii',Mon:'Monocerotis',Mus:'Muscae',Nor:'Normae',
+    Oct:'Octantis',Oph:'Ophiuchi',Ori:'Orionis',Pav:'Pavonis',Peg:'Pegasi',Per:'Persei',Phe:'Phoenicis',Pic:'Pictoris',Psc:'Piscium',
+    PsA:'Piscis Austrini',Pup:'Puppis',Pyx:'Pyxidis',Ret:'Reticuli',Sge:'Sagittae',Sgr:'Sagittarii',Sco:'Scorpii',Scl:'Sculptoris',
+    Sct:'Scuti',Ser:'Serpentis',Sex:'Sextantis',Tau:'Tauri',Tel:'Telescopii',Tri:'Trianguli',TrA:'Trianguli Australis',Tuc:'Tucanae',
+    UMa:'Ursae Majoris',UMi:'Ursae Minoris',Vel:'Velorum',Vir:'Virginis',Vol:'Volantis',Vul:'Vulpeculae'
+  };
+  const zodiac = {'♈':'Aries','♉':'Taurus','♊':'Gemini','♋':'Cancer','♌':'Leo','♍':'Virgo','♎':'Libra','♏':'Scorpio','♐':'Sagittarius','♑':'Capricorn','♒':'Aquarius','♓':'Pisces'};
+  const bodies = {'☉':'Sun','☽':'Moon','☿':'Mercury','♀':'Venus','♂':'Mars','♃':'Jupiter','♄':'Saturn'};
   const main = document.querySelector('main');
   if (!main) return;
 
-  const re = /([αβγδεζηθικλμνξοπρστυφχψω])(\d+)?/g;
+  function makeSpan(greek, latin) {
+    const span = document.createElement('span');
+    span.className = 'notation-item';
+    span.dataset.greek = greek;
+    span.dataset.latin = latin;
+    span.textContent = greek;
+    return span;
+  }
+
+  document.querySelectorAll('.zodiac-glyph').forEach(function (span) {
+    const glyph = span.textContent.charAt(0);
+    if (!zodiac[glyph]) return;
+    span.classList.add('notation-item');
+    span.dataset.greek = glyph;
+    span.dataset.latin = zodiac[glyph];
+  });
+
+  const bayerRe = /([αβγδεζηθικλμνξοπρστυφχψω])(\d+)?\s+([A-Z][A-Za-z]{2})\b/g;
+  const symbolRe = /[☉☽☿♀♂♃♄]/g;
+  const greekRe = /([αβγδεζηθικλμνξοπρστυφχψω])(\d+)?/g;
   const walker = document.createTreeWalker(main, NodeFilter.SHOW_TEXT);
   const nodes = [];
   while (walker.nextNode()) {
-    if (re.test(walker.currentNode.nodeValue)) nodes.push(walker.currentNode);
-    re.lastIndex = 0;
+    const node = walker.currentNode;
+    if (node.parentElement && node.parentElement.closest('.notation-item')) continue;
+    if (bayerRe.test(node.nodeValue) || symbolRe.test(node.nodeValue) || greekRe.test(node.nodeValue)) nodes.push(node);
+    bayerRe.lastIndex = symbolRe.lastIndex = greekRe.lastIndex = 0;
   }
 
-  for (const node of nodes) {
+  function replaceNode(node) {
+    const text = node.nodeValue;
+    const combined = new RegExp(bayerRe.source + '|' + symbolRe.source + '|' + greekRe.source, 'g');
     const frag = document.createDocumentFragment();
     let last = 0;
-    node.nodeValue.replace(re, function (match, letter, number, offset) {
-      frag.append(document.createTextNode(node.nodeValue.slice(last, offset)));
-      const span = document.createElement('span');
-      span.className = 'bayer-letter';
-      span.dataset.greek = match;
-      span.dataset.latin = latin[letter] + (number ? '-' + number : '');
-      span.textContent = match;
-      frag.append(span);
-      last = offset + match.length;
-      return match;
-    });
-    frag.append(document.createTextNode(node.nodeValue.slice(last)));
+    let match;
+    while ((match = combined.exec(text)) !== null) {
+      frag.append(document.createTextNode(text.slice(last, match.index)));
+      const token = match[0];
+      let latin = token;
+      const bm = token.match(/^([αβγδεζηθικλμνξοπρστυφχψω])(\d+)?\s+([A-Z][A-Za-z]{2})$/);
+      if (bm) {
+        latin = greekNames[bm[1]] + (bm[2] || '') + ' ' + (constellations[bm[3]] || bm[3]);
+      } else if (bodies[token]) {
+        latin = bodies[token];
+      } else {
+        const gm = token.match(/^([αβγδεζηθικλμνξοπρστυφχψω])(\d+)?$/);
+        if (gm) latin = greekNames[gm[1]] + (gm[2] || '');
+      }
+      frag.append(makeSpan(token, latin));
+      last = match.index + token.length;
+    }
+    frag.append(document.createTextNode(text.slice(last)));
     node.replaceWith(frag);
   }
+  nodes.forEach(replaceNode);
 
   const buttons = document.querySelectorAll('[data-bayer-mode]');
   function setMode(mode) {
-    document.querySelectorAll('.bayer-letter').forEach(function (span) {
+    document.querySelectorAll('.notation-item').forEach(function (span) {
       span.textContent = mode === 'latin' ? span.dataset.latin : span.dataset.greek;
     });
     buttons.forEach(function (button) {
