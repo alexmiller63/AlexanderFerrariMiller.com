@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ page.title | default: page.iso_week | escape }} · Star Almanack</title>
+  <link rel="stylesheet" href="{{ '/almanack/css/week.css' | relative_url }}">
+  <link rel="stylesheet" href="{{ '/almanack/css/notation.css' | relative_url }}">
+</head>
+<body>
+  {% include almanack-header.html %}
+  {% include almanack-notation-toggle.html %}
+
+  <main class="wrap">
+    {% include almanack-week-nav.html %}
+    {{ content }}
+    {% include almanack-week-nav.html %}
+  </main>
+
+  {% include almanack-notation-legend.html %}
+  {% include almanack-footer.html %}
+  <script src="{{ '/almanack/js/notation.js' | relative_url }}"></script>
+</body>
+</html>
