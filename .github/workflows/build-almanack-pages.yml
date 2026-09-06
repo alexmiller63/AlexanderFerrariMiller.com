@@ -2,11 +2,10 @@ name: Publish 2026 Star Almanack Pages
 
 "on":
   workflow_dispatch:
-  schedule:
-    # Fallback synchronization; this file change also forces an immediate source-to-site handoff.
-    - cron: '2-59/5 * * * *'
   push:
     paths:
+      - Star-Almanack-Repo/site/2026/**
+      - Star-Almanack-Repo/COPY-PROVENANCE.txt
       - .github/workflows/build-almanack-pages.yml
       - tools/examine-almanack-jekyll.py
       - _config.yml
@@ -23,27 +22,40 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Check out website
+      - name: Check out website repository
         uses: actions/checkout@v4
         with:
           path: website
 
-      - name: Check out canonical Star Almanack source
-        uses: actions/checkout@v4
-        with:
-          repository: alexmiller63/star-almanack
-          ref: main
-          path: star-source
-
-      - name: Replace Almanack with one atomic source snapshot
+      - name: Replace Almanack with one atomic in-repository source snapshot
         run: |
           set -euo pipefail
           cd website
+
+          SOURCE_ROOT="Star-Almanack-Repo"
+          SOURCE_SITE="$SOURCE_ROOT/site/2026"
+          PROVENANCE="$SOURCE_ROOT/COPY-PROVENANCE.txt"
+
+          test -d "$SOURCE_SITE" || {
+            echo "ERROR: Missing in-repository Star Almanack source: $SOURCE_SITE"
+            exit 1
+          }
+          test -f "$PROVENANCE" || {
+            echo "ERROR: Missing copy provenance: $PROVENANCE"
+            exit 1
+          }
+
+          SOURCE_SHA="$(sed -n 's/^Source commit: //p' "$PROVENANCE")"
+          [[ "$SOURCE_SHA" =~ ^[0-9a-f]{40}$ ]] || {
+            echo "ERROR: Invalid Source commit in $PROVENANCE: $SOURCE_SHA"
+            exit 1
+          }
+
           rm -f almanack/ISO2026-W*.html
           rm -rf almanack/weeks almanack/2026
           mkdir -p almanack/2026
-          cp -a ../star-source/site/2026/. almanack/2026/
-          git -C ../star-source rev-parse HEAD > almanack/2026/.source-commit
+          cp -a "$SOURCE_SITE"/. almanack/2026/
+          printf '%s\n' "$SOURCE_SHA" > almanack/2026/.source-commit
 
       - name: Validate complete fresh canonical publication
         run: |
@@ -96,7 +108,7 @@ jobs:
           legacy_files = list(Path('almanack').glob('ISO2026-W*.html'))
           assert not legacy_files, f'Legacy ISO weekly pages remain: {legacy_files}'
           assert not Path('almanack/weeks').exists(), 'Legacy almanack/weeks tree remains'
-          print('Validated one-source-snapshot publication with three-row zodiac layout and fresh Kilroy marker')
+          print('Validated one-source-snapshot publication from Star-Almanack-Repo')
           PY
 
       - name: Set up Ruby
