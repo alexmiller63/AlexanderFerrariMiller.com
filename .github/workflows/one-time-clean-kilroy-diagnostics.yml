@@ -1,0 +1,47 @@
+name: One-time cleanup of Kilroy deployment diagnostics
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/one-time-clean-kilroy-diagnostics.yml
+
+permissions:
+  contents: write
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Remove obsolete deployment diagnostics
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          needle = 'KILROY WAS HERE — BUILD 2026-09-05 02:12 PDT'
+          removed = []
+          for root in (Path('almanack'), Path('Star-Almanack-Repo/site')):
+              if not root.exists():
+                  continue
+              for page in root.glob('2026/W??/index.html'):
+                  text = page.read_text(encoding='utf-8')
+                  if needle not in text:
+                      continue
+                  lines = text.splitlines(keepends=True)
+                  new_lines = [line for line in lines if needle not in line]
+                  page.write_text(''.join(new_lines), encoding='utf-8')
+                  removed.append(str(page))
+          print('Removed diagnostics from:', *removed, sep='\n  ')
+          if not removed:
+              raise SystemExit('No deployment diagnostic found')
+          PY
+
+      - name: Commit cleanup
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add almanack/2026 Star-Almanack-Repo/site/2026
+          git commit -m "Remove obsolete Kilroy deployment diagnostics"
+          git push
