@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import datetime as dt
 import html
+import math
 import shutil
 from pathlib import Path
 
@@ -122,12 +123,31 @@ def week_nav(year: int, week: int) -> str:
 def empty_finder_svg() -> str:
     symbols = ["♈︎","♉︎","♊︎","♋︎","♌︎","♍︎","♎︎","♏︎","♐︎","♑︎","♒︎","♓︎"]
     latin = ["Aries","Taurus","Gemini","Cancer","Leo","Virgo","Libra","Scorpio","Sagittarius","Capricorn","Aquarius","Pisces"]
-    positions = [(22,100),(32,60),(58,32),(100,22),(142,32),(168,60),(178,100),(168,140),(142,168),(100,178),(58,168),(32,140)]
-    greek_labels = ''.join(f'<text x="{x}" y="{y}" text-anchor="middle" dominant-baseline="middle" font-family="Georgia,Times New Roman,serif" font-size="12" fill="#111">{s}</text>' for s,(x,y) in zip(symbols,positions))
-    latin_labels = ''.join(f'<text x="{x}" y="{y}" text-anchor="middle" dominant-baseline="middle" font-family="Arial,Helvetica,sans-serif" font-size="5.2" fill="#111">{s}</text>' for s,(x,y) in zip(latin,positions))
-    mixed_labels = ''.join(f'<text x="{x}" y="{y-2}" text-anchor="middle" dominant-baseline="middle" font-family="Georgia,Times New Roman,serif" font-size="10" fill="#111">{sym}</text><text x="{x}" y="{y+6}" text-anchor="middle" dominant-baseline="middle" font-family="Arial,Helvetica,sans-serif" font-size="4.2" fill="#111">{name}</text>' for sym,name,(x,y) in zip(symbols,latin,positions))
-    spokes=''.join(f'<line x1="100" y1="100" x2="{x}" y2="{y}" stroke="#111" stroke-opacity=".28" stroke-width="1"/>' for x,y in positions)
-    return f'''<svg viewBox="0 0 200 200" role="img" aria-label="Empty planet finder"><rect width="200" height="200" fill="white"/><circle cx="100" cy="100" r="78" fill="none" stroke="#111" stroke-width="1.5"/>{spokes}<g data-mode="greek">{greek_labels}</g><g data-mode="latin">{latin_labels}</g><g data-mode="mixed">{mixed_labels}</g><circle cx="100" cy="100" r="3" fill="none" stroke="#111"/><text x="100" y="96" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="7" fill="#111">Tropical ecliptic longitude</text><text x="100" y="105" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="5.5" fill="#555">planet positions pending</text></svg>'''
+    ro, ri, rl = 80.0, 61.4, 70.7
+
+    def xy(lon: float, r: float) -> tuple[float, float]:
+        t = math.radians(180 + lon)
+        return 100 + r * math.cos(t), 100 - r * math.sin(t)
+
+    positions = [xy(i * 30 + 15, rl) for i in range(12)]
+    greek_labels = ''.join(
+        f'<text x="{x:.2f}" y="{y:.2f}" text-anchor="middle" dominant-baseline="middle" font-family="Georgia,Times New Roman,serif" font-size="6.6" fill="#111">{s}</text>'
+        for s, (x, y) in zip(symbols, positions)
+    )
+    latin_labels = ''.join(
+        f'<text x="{x:.2f}" y="{y:.2f}" text-anchor="middle" dominant-baseline="middle" font-family="Arial,Helvetica,sans-serif" font-size="3.4" fill="#111">{name}</text>'
+        for name, (x, y) in zip(latin, positions)
+    )
+    mixed_labels = ''.join(
+        f'<text x="{x:.2f}" y="{y:.2f}" text-anchor="middle" dominant-baseline="middle" font-family="Arial,Helvetica,sans-serif" font-size="3.15" fill="#111">{sym} {name}</text>'
+        for sym, name, (x, y) in zip(symbols, latin, positions)
+    )
+    spokes = ''.join(
+        f'<line x1="{x1:.2f}" y1="{y1:.2f}" x2="{x2:.2f}" y2="{y2:.2f}" stroke="#111" stroke-opacity=".28" stroke-width=".55"/>'
+        for i in range(12)
+        for (x1, y1), (x2, y2) in [(xy(i * 30, ri), xy(i * 30, ro))]
+    )
+    return f'''<svg viewBox="0 0 200 200" role="img" aria-label="Empty planet finder"><rect width="200" height="200" fill="white"/><circle cx="100" cy="100" r="{ro}" fill="none" stroke="#111" stroke-width="1.15"/><circle cx="100" cy="100" r="{ri}" fill="none" stroke="#111" stroke-width=".55"/>{spokes}<g data-mode="greek">{greek_labels}</g><g data-mode="latin">{latin_labels}</g><g data-mode="mixed">{mixed_labels}</g><circle cx="100" cy="100" r="3" fill="none" stroke="#111"/><text x="100" y="96" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="4" fill="#111">Tropical ecliptic longitude</text><text x="100" y="105" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="3.15" fill="#555">planet positions pending</text></svg>'''
 
 
 def weekly_placeholder(year: int, week: int, monday: dt.date) -> str:
