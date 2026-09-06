@@ -25,9 +25,12 @@ header a,header a:visited,footer a,footer a:visited { color:#eef7ff; }
 main.wrap { background:var(--paper); min-height:76vh; padding:2rem 2.4rem 3.25rem; box-shadow:0 0 28px rgba(25,35,45,.08); }
 .brand { font-size:1.35rem; font-weight:700; }
 .subtitle { margin-top:.1rem; opacity:.86; font-size:.94rem; }
-.yearnav { display:flex; justify-content:center; gap:.6rem; flex-wrap:wrap; margin:.3rem 0 1.8rem; font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; font-size:.9rem; }
+.yearnav { display:grid; grid-template-columns:1fr auto 1fr; align-items:center; gap:.6rem; margin:.3rem 0 1.8rem; font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; font-size:.9rem; }
+.yearnav > :first-child { justify-self:start; }
+.yearnav > :last-child { justify-self:end; }
 .yearnav a,.yearnav span { padding:.5rem .75rem; border:1px solid #c8d3dc; border-radius:.45rem; text-decoration:none; background:#fff; }
-.yearnav span { font-weight:700; }
+.yearnav span.current { font-weight:700; }
+.yearnav span.blank { visibility:hidden; }
 h1,h2 { line-height:1.2; color:#17344d; }
 h1 { margin:.3rem 0 1rem; font-size:clamp(2rem,5vw,2.75rem); }
 h2.month { margin:2rem 0 .65rem; padding-bottom:.35rem; border-bottom:1px solid var(--rule); font-size:1.28rem; }
@@ -41,20 +44,24 @@ h2.month .date { font-size:.82em; font-weight:400; color:var(--muted); margin-le
 .placeholder-note { color:var(--muted); }
 footer { font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; font-size:.88rem; }
 footer .wrap { padding-top:1.3rem; padding-bottom:1.3rem; opacity:.9; }
-@media (max-width:760px) { html{font-size:16px} .wrap{padding-left:1rem;padding-right:1rem} main.wrap{padding:1.35rem 1rem 2.5rem;box-shadow:none} .weekgrid{grid-template-columns:repeat(2,minmax(0,1fr));gap:.55rem} .weekgrid a{padding:.72rem .55rem;font-size:.92rem} h2.month .date{display:block;margin-left:0;margin-top:.15rem} }
+@media (max-width:760px) { html{font-size:16px} .wrap{padding-left:1rem;padding-right:1rem} main.wrap{padding:1.35rem 1rem 2.5rem;box-shadow:none} .weekgrid{grid-template-columns:repeat(2,minmax(0,1fr));gap:.55rem} .weekgrid a{padding:.72rem .55rem;font-size:.92rem} h2.month .date{display:block;margin-left:0;margin-top:.15rem} .yearnav a,.yearnav span{padding:.55rem .5rem} }
 @media (prefers-color-scheme:dark) { :root{--ink:#dce6ef;--muted:#a7b4c0;--link:#9fd0ff;--paper:#17212b;--page:#10171f;--rule:#394957} body{background:var(--page);color:var(--ink)} main.wrap{background:var(--paper);box-shadow:none} h1,h2{color:#f1f7fb} .yearnav a,.yearnav span,.weekgrid a{background:#1c2a36;border-color:#405567;color:#b6dcff} }
 """.strip()
 
 
-def shell(title: str, body: str) -> str:
-    return f'''<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>{html.escape(title)} · Star Almanack</title><style>{CSS}</style></head><body><header><div class="wrap"><div class="brand"><a href="/almanack/2026/">Star Almanack</a></div><div class="subtitle">Alexander Ferrari Miller</div></div></header><main class="wrap">{body}</main><footer><div class="wrap">© 2026 Alexander Ferrari Miller. All rights reserved.</div></footer></body></html>'''
+def shell(title: str, body: str, prefix: str) -> str:
+    return f'''<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>{html.escape(title)} · Star Almanack</title><style>{CSS}</style></head><body><header><div class="wrap"><div class="brand"><a href="{prefix}2026/">Star Almanack</a></div><div class="subtitle">Alexander Ferrari Miller</div></div></header><main class="wrap">{body}</main><footer><div class="wrap">© 2026 Alexander Ferrari Miller. All rights reserved.</div></footer></body></html>'''
 
 
-def year_nav(year: int) -> str:
-    items=[]
-    for y in (2025, 2026, 2027):
-        items.append(f'<span>ISO {y}</span>' if y == year else f'<a href="/almanack/{y}/">ISO {y}</a>')
-    return '<nav class="yearnav">' + ''.join(items) + '</nav>'
+def year_nav(year: int, prefix: str) -> str:
+    current=f'<span class="current">ISO {year}</span>'
+    if year == 2025:
+        left='<span class="blank" aria-hidden="true">Previous</span>'
+        right=f'<a href="{prefix}2026/">2026 →</a>'
+    else:
+        left=f'<a href="{prefix}2026/">← 2026</a>'
+        right='<span class="blank" aria-hidden="true">Next</span>'
+    return f'<nav class="yearnav">{left}{current}{right}</nav>'
 
 
 def week_count(year: int) -> int:
@@ -73,13 +80,13 @@ def build_year(year: int) -> None:
         page=out / f'W{week:02d}'
         page.mkdir()
         title=f'ISO week {week:02d} {year}'
-        body=(year_nav(year)
+        body=(year_nav(year, '../../')
               + '<section class="placeholder">'
               + f'<h1>{title}</h1>'
               + '<p class="placeholder-note">This week is currently in preparation and will be published as part of the Star Almanack.</p>'
               + f'<p><strong>Week begins:</strong> {monday.strftime("Monday, %B %-d, %Y")}</p>'
               + '</section>')
-        (page/'index.html').write_text(shell(title,body),encoding='utf-8')
+        (page/'index.html').write_text(shell(title,body,'../../'),encoding='utf-8')
 
     groups=[]
     current_key=None
@@ -107,11 +114,11 @@ def build_year(year: int) -> None:
             f'<ul class="weekgrid">{links}</ul>'
         )
 
-    body=(year_nav(year)
+    body=(year_nav(year, '../')
           + f'<h1>{year} Weekly Almanack</h1>'
           + f'<p class="intro">The {year} edition is in preparation. The calendar below shows the complete ISO week-year, grouped by the civil month containing each week’s Monday. Each week will be replaced by the completed Almanack entry as it is published.</p>'
           + ''.join(rendered))
-    (out/'index.html').write_text(shell(f'{year} Weekly Almanack',body),encoding='utf-8')
+    (out/'index.html').write_text(shell(f'{year} Weekly Almanack',body,'../'),encoding='utf-8')
 
 
 def main() -> None:
