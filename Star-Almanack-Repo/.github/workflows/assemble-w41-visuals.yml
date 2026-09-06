@@ -1,0 +1,110 @@
+name: Assemble W41 Visuals
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: star-almanack-w41-visuals
+  cancel-in-progress: false
+
+jobs:
+  assemble:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Generate frozen Planet Finder SVGs
+        run: python make_w41_planet_finders.py
+
+      - name: Copy W41 finder artwork into published assets
+        run: |
+          mkdir -p site/2026/W41/assets
+          cp observer-views/W41/enif-finder.svg site/2026/W41/assets/enif-m15-finder.svg
+          cp observer-views/W41/sadalmelik-finder.svg site/2026/W41/assets/aquarius-finder.svg
+          cp observer-views/W41/planet-finder-greek-symbols.svg site/2026/W41/assets/planet-finder-greek-symbols.svg
+          cp observer-views/W41/planet-finder-latin.svg site/2026/W41/assets/planet-finder-latin.svg
+          cp observer-views/W41/planet-finder-mixed.svg site/2026/W41/assets/planet-finder-mixed.svg
+
+      - name: Compose W41 visual layout
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+          page = Path('site/2026/W41/index.html')
+          text = page.read_text(encoding='utf-8')
+          if 'id="w41-visual-assembly"' in text:
+              raise SystemExit('W41 visual assembly already present')
+
+          css = '''<style id="w41-visual-css">
+          .w41-planet-finders{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem;margin:1.2rem 0 2.2rem}
+          .w41-planet-finder{margin:0;text-align:center}
+          .w41-planet-finder img,.w41-star-finder img{display:block;width:100%;height:auto;border:1px solid #cbd3da;border-radius:.5rem;background:#fff}
+          .w41-planet-finder figcaption,.w41-star-finder figcaption{margin-top:.4rem;font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:.82rem;color:var(--muted)}
+          .w41-star-finder{max-width:760px;margin:1.2rem auto 1.5rem}
+          @media(max-width:760px){.w41-planet-finders{grid-template-columns:1fr;gap:1.2rem}.w41-star-finder{max-width:none}}
+          </style>'''
+          text = text.replace('</style></head>', css + '</style></head>', 1)
+
+          planet_block = '''<section id="w41-visual-assembly" aria-label="W41 Planet Finders">
+          <div class="w41-planet-finders">
+          <figure class="w41-planet-finder"><img src="assets/planet-finder-greek-symbols.svg" alt="W41 Planet Finder — Greek and Symbols notation"><figcaption>Greek / Symbols</figcaption></figure>
+          <figure class="w41-planet-finder"><img src="assets/planet-finder-latin.svg" alt="W41 Planet Finder — Latin notation"><figcaption>Latin</figcaption></figure>
+          <figure class="w41-planet-finder"><img src="assets/planet-finder-mixed.svg" alt="W41 Planet Finder — Mixed Learner notation"><figcaption>Mixed / Learner</figcaption></figure>
+          </div></section>'''
+
+          # Put the Planet Finders directly below the extended ephemeris table.
+          marker = '<h3>Sky Note</h3>'
+          if marker not in text:
+              raise SystemExit('Sky Note heading not found')
+          text = text.replace(marker, planet_block + marker, 1)
+
+          # Embed Enif/M15 and Aquarius finders in the relevant Sky Note prose.
+          enif = '''<figure class="w41-star-finder"><img src="assets/enif-m15-finder.svg" alt="Enif and M15 finder"><figcaption>Enif and M15 finder</figcaption></figure>'''
+          aquarius = '''<figure class="w41-star-finder"><img src="assets/aquarius-finder.svg" alt="Aquarius and Sadalmelik finder"><figcaption>Aquarius / Sadalmelik finder</figcaption></figure>'''
+
+          # The W41 note's first paragraph is the Enif/M15 orientation passage.
+          pat = re.compile(r'(<p>The New Moon on Saturday, October 10.*?</p>)')
+          text, n = pat.subn(r'\1' + enif, text, count=1)
+          if n != 1:
+              raise SystemExit('Enif/M15 Sky Note paragraph not found')
+
+          # Sadalmelik is a calendar event in W41; place the Aquarius finder at the end of Sky Note,
+          # after the observing prose, so it reads as an embedded orientation plate rather than a new section.
+          sky_end = text.find('<h3>Chart</h3>')
+          if sky_end == -1:
+              sky_end = text.find('<footer')
+          if sky_end == -1:
+              raise SystemExit('Could not locate end of W41 Sky Note')
+          text = text[:sky_end] + aquarius + text[sky_end:]
+
+          page.write_text(text,encoding='utf-8')
+          print('Assembled W41 Planet Finders under ephemerides and embedded stellar finders in Sky Note')
+          PY
+
+      - name: Validate W41 visual assembly
+        run: |
+          test -f site/2026/W41/assets/enif-m15-finder.svg
+          test -f site/2026/W41/assets/aquarius-finder.svg
+          test -f site/2026/W41/assets/planet-finder-greek-symbols.svg
+          test -f site/2026/W41/assets/planet-finder-latin.svg
+          test -f site/2026/W41/assets/planet-finder-mixed.svg
+          grep -q 'id="w41-visual-assembly"' site/2026/W41/index.html
+          grep -q 'assets/planet-finder-greek-symbols.svg' site/2026/W41/index.html
+          grep -q 'assets/planet-finder-latin.svg' site/2026/W41/index.html
+          grep -q 'assets/planet-finder-mixed.svg' site/2026/W41/index.html
+          grep -q 'assets/enif-m15-finder.svg' site/2026/W41/index.html
+          grep -q 'assets/aquarius-finder.svg' site/2026/W41/index.html
+          echo 'W41 visual assembly validated'
+
+      - name: Commit W41 visual assembly
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add Star-Almanack-Repo/observer-views/W41 site/2026/W41 .github/workflows/assemble-w41-visuals.yml
+          git commit -m "Assemble W41 Planet Finders and stellar finders" || exit 0
+          git pull --rebase origin main
+          git push
