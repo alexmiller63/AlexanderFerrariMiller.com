@@ -33,7 +33,8 @@ jobs:
               root = Path('Star-Almanack-Repo/site') / str(year)
               for path in root.rglob('index.html'):
                   text = path.read_text(encoding='utf-8')
-                  text = text.replace('href="../2026/"', 'href="/almanack/2026/"')
+                  if path.parent.name.startswith('W'):
+                      text = text.replace('href="../2026/"', 'href="../../2026/"')
                   path.write_text(text, encoding='utf-8')
           PY
           rm -rf almanack/2025 almanack/2027
