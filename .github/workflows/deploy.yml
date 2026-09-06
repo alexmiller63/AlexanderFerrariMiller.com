@@ -10,102 +10,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Diagnose and deploy to AWS
+      - name: Deploy to AWS
         uses: appleboy/ssh-action@v1.2.2
         with:
           host: ${{ secrets.AWS_HOST }}
           username: ${{ secrets.AWS_USER }}
           key: ${{ secrets.AWS_SSH_KEY }}
           script: |
-            set +e
-            PROJECT_DIR=/var/www/AlexanderFerrariMiller
-            W41=almanack/2026/W41
-            FINDERS="$W41/finders"
-
-            echo '=== build-alex.sh deployment diagnostics ==='
-            echo 'Script metadata:'
-            ls -l ~/build-alex.sh || true
-            echo 'Relevant build/deploy commands:'
-            grep -nE 'jekyll|bundle|github-pages|git[[:space:]]|rsync|cp[[:space:]]|mv[[:space:]]|_site|destination|source' ~/build-alex.sh || true
-            echo 'Jekyll/Ruby versions if installed:'
-            jekyll --version 2>/dev/null || true
-            bundle --version 2>/dev/null || true
-            ruby --version 2>/dev/null || true
-
-            echo '=== AWS state BEFORE deploy ==='
-            cd "$PROJECT_DIR" || exit 1
-            echo 'pwd:'
-            pwd
-            echo 'HEAD:'
-            git rev-parse HEAD || true
-            echo 'branch:'
-            git branch --show-current || true
-            echo 'origin/main:'
-            git rev-parse origin/main 2>/dev/null || true
-            echo 'git status:'
-            git status --short --branch || true
-            echo 'remote:'
-            git remote -v || true
-
-            echo 'Source checksums BEFORE deploy:'
-            sha256sum _config.yml 2>/dev/null || true
-            sha256sum "$W41/index.html" 2>/dev/null || true
-            sha256sum "$FINDERS"/*.svg 2>/dev/null || true
-
-            echo 'Built checksums BEFORE deploy:'
-            sha256sum "_site/$W41/index.html" 2>/dev/null || true
-            sha256sum "_site/$FINDERS"/*.svg 2>/dev/null || true
-
-            echo '=== running normal deployment ==='
             ~/build-alex.sh
-            DEPLOY_STATUS=$?
-            echo "build-alex.sh exit status: $DEPLOY_STATUS"
-
-            echo '=== AWS state AFTER deploy ==='
-            cd "$PROJECT_DIR" || exit 1
-            echo 'HEAD:'
-            git rev-parse HEAD || true
-            echo 'branch:'
-            git branch --show-current || true
-            echo 'origin/main:'
-            git rev-parse origin/main 2>/dev/null || true
-            echo 'git status:'
-            git status --short --branch || true
-
-            echo 'Source checksums AFTER deploy:'
-            sha256sum _config.yml 2>/dev/null || true
-            sha256sum "$W41/index.html" 2>/dev/null || true
-            sha256sum "$FINDERS"/*.svg 2>/dev/null || true
-
-            echo 'Built checksums AFTER deploy:'
-            sha256sum "_site/$W41/index.html" 2>/dev/null || true
-            sha256sum "_site/$FINDERS"/*.svg 2>/dev/null || true
-
-            echo 'Source vs built checksum comparison:'
-            if [ -f "$W41/index.html" ] && [ -f "_site/$W41/index.html" ]; then
-              SRC=$(sha256sum "$W41/index.html" | awk '{print $1}')
-              OUT=$(sha256sum "_site/$W41/index.html" | awk '{print $1}')
-              if [ "$SRC" = "$OUT" ]; then
-                echo "MATCH index.html $SRC"
-              else
-                echo "DIFF  index.html source=$SRC built=$OUT"
-              fi
-            fi
-            for src in "$FINDERS"/*.svg; do
-              [ -f "$src" ] || continue
-              f=$(basename "$src")
-              out="_site/$FINDERS/$f"
-              if [ ! -f "$out" ]; then
-                echo "MISSING built finder $f"
-                continue
-              fi
-              SRC=$(sha256sum "$src" | awk '{print $1}')
-              OUT=$(sha256sum "$out" | awk '{print $1}')
-              if [ "$SRC" = "$OUT" ]; then
-                echo "MATCH $f $SRC"
-              else
-                echo "DIFF  $f source=$SRC built=$OUT"
-              fi
-            done
-
-            exit $DEPLOY_STATUS
