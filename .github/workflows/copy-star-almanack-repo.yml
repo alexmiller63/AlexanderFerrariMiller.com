@@ -2,12 +2,6 @@ name: Copy Star Almanack Repository
 
 on:
   workflow_dispatch:
-    inputs:
-      source_ref:
-        description: 'Star Almanack branch, tag, or commit to copy'
-        required: true
-        default: 'main'
-        type: string
 
 permissions:
   contents: write
@@ -19,72 +13,53 @@ jobs:
     steps:
       - name: Check out website repository
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 1
 
-      - name: Check that destination does not already exist
+      - name: Refuse to overwrite an existing copy
         shell: bash
         run: |
           set -euo pipefail
-          if [[ -e Star-Almanack-Repo ]]; then
-            echo 'ERROR: Star-Almanack-Repo already exists. Refusing to overwrite or merge.'
+          if [ -e Star-Almanack-Repo ]; then
+            echo "ERROR: Star-Almanack-Repo already exists. Refusing to overwrite or merge."
             exit 1
           fi
 
-      - name: Clone Star Almanack source
-        shell: bash
-        env:
-          SOURCE_REF: ${{ inputs.source_ref }}
-        run: |
-          set -euo pipefail
-          git clone --no-hardlinks --depth 1 --branch "$SOURCE_REF" \
-            https://github.com/alexmiller63/star-almanack.git /tmp/star-almanack-source
-
-          cd /tmp/star-almanack-source
-          SOURCE_COMMIT="$(git rev-parse HEAD)"
-          printf '%s\n' "$SOURCE_COMMIT" > /tmp/star-almanack-commit.txt
-          git status --short
-          echo "Source commit: $SOURCE_COMMIT"
-
-      - name: Copy complete working tree
+      - name: Clone Star Almanack
         shell: bash
         run: |
           set -euo pipefail
-          mkdir -p Star-Almanack-Repo
+          git clone --depth 1 --branch main https://github.com/alexmiller63/star-almanack.git /tmp/star-almanack-source
+          git -C /tmp/star-almanack-source rev-parse HEAD > /tmp/star-almanack-commit.txt
+
+      - name: Copy repository working tree
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir Star-Almanack-Repo
           rsync -a --exclude='.git/' /tmp/star-almanack-source/ Star-Almanack-Repo/
 
-      - name: Verify copy byte-for-byte
+      - name: Verify copy
         shell: bash
         run: |
           set -euo pipefail
-          if ! diff -qr --exclude='.git' /tmp/star-almanack-source Star-Almanack-Repo; then
-            echo 'ERROR: Copy verification failed.'
-            rm -rf Star-Almanack-Repo
-            exit 1
-          fi
-
-          SOURCE_COUNT="$(find /tmp/star-almanack-source -type f ! -path '*/.git/*' | wc -l)"
-          TARGET_COUNT="$(find Star-Almanack-Repo -type f ! -path '*/.git/*' | wc -l)"
-          [[ "$SOURCE_COUNT" -eq "$TARGET_COUNT" ]] || {
-            echo "ERROR: File counts differ: source=$SOURCE_COUNT target=$TARGET_COUNT"
-            rm -rf Star-Almanack-Repo
-            exit 1
-          }
+          diff -qr --exclude='.git' /tmp/star-almanack-source Star-Almanack-Repo
+          SOURCE_COUNT=$(find /tmp/star-almanack-source -type f ! -path '*/.git/*' | wc -l)
+          TARGET_COUNT=$(find Star-Almanack-Repo -type f | wc -l)
+          test "$SOURCE_COUNT" -eq "$TARGET_COUNT"
           echo "Verified $TARGET_COUNT files."
 
-      - name: Write copy provenance
+      - name: Write provenance
         shell: bash
         run: |
           set -euo pipefail
-          SOURCE_COMMIT="$(cat /tmp/star-almanack-commit.txt)"
+          SOURCE_COMMIT=$(cat /tmp/star-almanack-commit.txt)
           cat > Star-Almanack-Repo/COPY-PROVENANCE.txt <<EOF
-This directory is a file-level copy of the public Star Almanack repository.
-Source repository: https://github.com/alexmiller63/star-almanack
-Source ref: ${{ inputs.source_ref }}
-Source commit: $SOURCE_COMMIT
-The source repository's .git directory was intentionally not copied.
-The source repository was not modified by this workflow.
-EOF
+          This directory is a file-level copy of the Star Almanack repository.
+          Source repository: https://github.com/alexmiller63/star-almanack
+          Source ref: main
+          Source commit: $SOURCE_COMMIT
+          The source repository's .git directory was intentionally not copied.
+          The source repository was not modified by this workflow.
+          EOF
 
       - name: Commit copy
         shell: bash
@@ -93,5 +68,5 @@ EOF
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add Star-Almanack-Repo
-          git commit -m "Copy Star Almanack repository"
+          git commit -m 'Copy Star Almanack repository'
           git push origin HEAD:main
