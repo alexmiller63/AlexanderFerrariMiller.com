@@ -6,6 +6,10 @@ on:
 permissions:
   contents: write
 
+defaults:
+  run:
+    working-directory: Star-Almanack-Repo
+
 concurrency:
   group: star-almanack-w41-visuals
   cancel-in-progress: false
@@ -56,24 +60,19 @@ jobs:
           <figure class="w41-planet-finder"><img src="assets/planet-finder-mixed.svg" alt="W41 Planet Finder — Mixed Learner notation"><figcaption>Mixed / Learner</figcaption></figure>
           </div></section>'''
 
-          # Put the Planet Finders directly below the extended ephemeris table.
           marker = '<h3>Sky Note</h3>'
           if marker not in text:
               raise SystemExit('Sky Note heading not found')
           text = text.replace(marker, planet_block + marker, 1)
 
-          # Embed Enif/M15 and Aquarius finders in the relevant Sky Note prose.
           enif = '''<figure class="w41-star-finder"><img src="assets/enif-m15-finder.svg" alt="Enif and M15 finder"><figcaption>Enif and M15 finder</figcaption></figure>'''
           aquarius = '''<figure class="w41-star-finder"><img src="assets/aquarius-finder.svg" alt="Aquarius and Sadalmelik finder"><figcaption>Aquarius / Sadalmelik finder</figcaption></figure>'''
 
-          # The W41 note's first paragraph is the Enif/M15 orientation passage.
           pat = re.compile(r'(<p>The New Moon on Saturday, October 10.*?</p>)')
           text, n = pat.subn(r'\1' + enif, text, count=1)
           if n != 1:
               raise SystemExit('Enif/M15 Sky Note paragraph not found')
 
-          # Sadalmelik is a calendar event in W41; place the Aquarius finder at the end of Sky Note,
-          # after the observing prose, so it reads as an embedded orientation plate rather than a new section.
           sky_end = text.find('<h3>Chart</h3>')
           if sky_end == -1:
               sky_end = text.find('<footer')
@@ -104,7 +103,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add Star-Almanack-Repo/observer-views/W41 site/2026/W41 .github/workflows/assemble-w41-visuals.yml
+          git add observer-views/W41 site/2026/W41 .github/workflows/assemble-w41-visuals.yml make_w41_planet_finders.py
           git commit -m "Assemble W41 Planet Finders and stellar finders" || exit 0
           git pull --rebase origin main
           git push
