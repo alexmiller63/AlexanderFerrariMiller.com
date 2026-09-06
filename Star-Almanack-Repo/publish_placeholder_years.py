@@ -13,7 +13,7 @@ OUT_ROOT = ROOT / "site"
 YEARS = (2025, 2027)
 
 CSS = """
-:root { color-scheme: light dark; --ink:#202833; --muted:#66717d; --navy:#102a43; --link:#245c86; --paper:#fffdf8; --page:#eee9df; --rule:#d8d2c8; }
+:root { color-scheme: light dark; --ink:#202833; --muted:#66717d; --navy:#102a43; --link:#245c86; --paper:#fffdf8; --page:#eee9df; --rule:#d8d2c8; --soft-blue:#edf4f8; }
 * { box-sizing:border-box; }
 html { font-size:17px; }
 body { margin:0; font-family:Georgia,'Times New Roman',serif; line-height:1.65; background:var(--page); color:var(--ink); -webkit-font-smoothing:antialiased; }
@@ -25,16 +25,17 @@ header a,header a:visited,footer a,footer a:visited { color:#eef7ff; }
 main.wrap { background:var(--paper); min-height:76vh; padding:2rem 2.4rem 3.25rem; box-shadow:0 0 28px rgba(25,35,45,.08); }
 .brand { font-size:1.35rem; font-weight:700; }
 .subtitle { margin-top:.1rem; opacity:.86; font-size:.94rem; }
-.yearnav { display:grid; grid-template-columns:1fr auto 1fr; align-items:center; gap:.6rem; margin:.3rem 0 1.8rem; font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; font-size:.9rem; }
-.yearnav > :first-child { justify-self:start; }
+.yearnav { display:grid; grid-template-columns:1fr auto 1fr; align-items:center; gap:.8rem; margin:.3rem 0 1.8rem; font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; font-size:.9rem; }
 .yearnav > :last-child { justify-self:end; }
-.yearnav a,.yearnav span { padding:.5rem .75rem; border:1px solid #c8d3dc; border-radius:.45rem; text-decoration:none; background:#fff; }
-.yearnav span.current { font-weight:700; }
-.yearnav span.blank { visibility:hidden; }
-h1,h2 { line-height:1.2; color:#17344d; }
+.yearnav a,.yearnav span { display:inline-block; padding:.5rem .75rem; border:1px solid #c8d3dc; border-radius:.45rem; text-decoration:none; background:#fff; color:var(--link); text-align:center; }
+.yearnav span { font-weight:700; }
+h1,h2,h3 { line-height:1.2; color:#17344d; }
 h1 { margin:.3rem 0 1rem; font-size:clamp(2rem,5vw,2.75rem); }
-h2.month { margin:2rem 0 .65rem; padding-bottom:.35rem; border-bottom:1px solid var(--rule); font-size:1.28rem; }
+h2 { margin:2.25rem 0 .8rem; padding-bottom:.35rem; border-bottom:1px solid var(--rule); font-size:1.42rem; }
+h3 { margin:1.5rem 0 .55rem; }
+h2.month { margin:2rem 0 .65rem; font-size:1.28rem; }
 h2.month .date { font-size:.82em; font-weight:400; color:var(--muted); margin-left:.4rem; }
+p { max-width:72ch; margin:.7rem 0 1rem; }
 .intro { max-width:72ch; }
 .weekgrid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:.7rem; padding:0; margin:.7rem 0 1.5rem; list-style:none; font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; }
 .weekgrid a { display:block; padding:.85rem .9rem; border:1px solid #cbd3da; border-radius:.5rem; text-decoration:none; background:#fff; color:var(--link); }
@@ -42,30 +43,64 @@ h2.month .date { font-size:.82em; font-weight:400; color:var(--muted); margin-le
 .coming { display:block; margin-top:.25rem; color:var(--muted); font-size:.88rem; }
 .placeholder { border:1px solid var(--rule); border-radius:.6rem; padding:1.5rem; background:var(--paper); }
 .placeholder-note { color:var(--muted); }
+table { width:100%; border-collapse:separate; border-spacing:0; margin:1rem 0 2rem; font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; font-size:.93rem; line-height:1.45; border:1px solid #cbd3da; border-radius:.5rem; overflow:hidden; }
+th,td { padding:.7rem .8rem; vertical-align:top; border-right:1px solid #d6dde3; border-bottom:1px solid #d6dde3; }
+th:last-child,td:last-child { border-right:0; }
+tbody tr:last-child td { border-bottom:0; }
+th { background:#e8f0f5; text-align:left; color:#17344d; font-weight:700; }
+tbody tr:nth-child(even) td { background:#fbfaf7; }
+table.calendar { table-layout:fixed; }
+table.calendar th:first-child,table.calendar td:first-child { width:28%; }
+table.calendar th:nth-child(2),table.calendar td:nth-child(2) { width:20%; text-align:center; }
+table.calendar th:nth-child(3),table.calendar td:nth-child(3) { width:52%; }
+table.ephemeris th,table.ephemeris td { text-align:center; white-space:nowrap; }
+.finder-strip { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:1rem; margin:1.2rem 0 2rem; }
+.finder { margin:0; border:1px solid var(--rule); border-radius:.55rem; padding:.8rem; background:var(--paper); }
+.finder svg { display:block; width:100%; height:auto; }
+.finder figcaption { text-align:center; font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; font-size:.82rem; color:var(--muted); margin-top:.35rem; }
+.sky-note { border-left:3px solid #c8d3dc; padding-left:1rem; }
 footer { font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; font-size:.88rem; }
 footer .wrap { padding-top:1.3rem; padding-bottom:1.3rem; opacity:.9; }
-@media (max-width:760px) { html{font-size:16px} .wrap{padding-left:1rem;padding-right:1rem} main.wrap{padding:1.35rem 1rem 2.5rem;box-shadow:none} .weekgrid{grid-template-columns:repeat(2,minmax(0,1fr));gap:.55rem} .weekgrid a{padding:.72rem .55rem;font-size:.92rem} h2.month .date{display:block;margin-left:0;margin-top:.15rem} .yearnav a,.yearnav span{padding:.55rem .5rem} }
-@media (prefers-color-scheme:dark) { :root{--ink:#dce6ef;--muted:#a7b4c0;--link:#9fd0ff;--paper:#17212b;--page:#10171f;--rule:#394957} body{background:var(--page);color:var(--ink)} main.wrap{background:var(--paper);box-shadow:none} h1,h2{color:#f1f7fb} .yearnav a,.yearnav span,.weekgrid a{background:#1c2a36;border-color:#405567;color:#b6dcff} }
+@media (max-width:760px) { html{font-size:16px}.wrap{padding-left:1rem;padding-right:1rem}main.wrap{padding:1.35rem 1rem 2.5rem;box-shadow:none}.weekgrid{grid-template-columns:repeat(2,minmax(0,1fr));gap:.55rem}.weekgrid a{padding:.72rem .55rem;font-size:.92rem}h2.month .date{display:block;margin-left:0;margin-top:.15rem}.finder-strip{grid-template-columns:1fr}table.ephemeris{display:block;overflow-x:auto;-webkit-overflow-scrolling:touch}.yearnav{gap:.4rem}.yearnav a,.yearnav span{padding:.5rem .45rem} }
+@media (prefers-color-scheme:dark) { :root{--ink:#dce6ef;--muted:#a7b4c0;--link:#9fd0ff;--paper:#17212b;--page:#10171f;--rule:#394957} body{background:var(--page);color:var(--ink)} main.wrap{background:var(--paper);box-shadow:none} h1,h2,h3{color:#f1f7fb} .yearnav a,.yearnav span,.weekgrid a{background:#1c2a36;border-color:#405567;color:#b6dcff} th{background:#223444;color:#eef7ff}th,td,table{border-color:#40505e}tbody tr:nth-child(even) td{background:#1b2732} }
 """.strip()
 
 
-def shell(title: str, body: str, prefix: str) -> str:
-    return f'''<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>{html.escape(title)} · Star Almanack</title><style>{CSS}</style></head><body><header><div class="wrap"><div class="brand"><a href="{prefix}2026/">Star Almanack</a></div><div class="subtitle">Alexander Ferrari Miller</div></div></header><main class="wrap">{body}</main><footer><div class="wrap">© 2026 Alexander Ferrari Miller. All rights reserved.</div></footer></body></html>'''
+def shell(title: str, body: str) -> str:
+    return f'''<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>{html.escape(title)} · Star Almanack</title><style>{CSS}</style></head><body><header><div class="wrap"><div class="brand"><a href="../2026/">Star Almanack</a></div><div class="subtitle">Alexander Ferrari Miller</div></div></header><main class="wrap">{body}</main><footer><div class="wrap">© 2026 Alexander Ferrari Miller. All rights reserved.</div></footer></body></html>'''
 
 
-def year_nav(year: int, prefix: str) -> str:
-    current=f'<span class="current">ISO {year}</span>'
+def year_nav(year: int) -> str:
     if year == 2025:
-        left='<span class="blank" aria-hidden="true">Previous</span>'
-        right=f'<a href="{prefix}2026/">2026 →</a>'
-    else:
-        left=f'<a href="{prefix}2026/">← 2026</a>'
-        right='<span class="blank" aria-hidden="true">Next</span>'
-    return f'<nav class="yearnav">{left}{current}{right}</nav>'
+        return '<nav class="yearnav"><span></span><span>ISO 2025</span><a href="../2026/">2026 →</a></nav>'
+    return '<nav class="yearnav"><a href="../2026/">← 2026</a><span>ISO 2027</span><span></span></nav>'
 
 
 def week_count(year: int) -> int:
     return dt.date(year, 12, 28).isocalendar().week
+
+
+def empty_finder_svg(label: str) -> str:
+    signs = ["♈","♉","♊","♋","♌","♍","♎","♏","♐","♑","♒","♓"]
+    positions = [(22,100),(32,60),(58,32),(100,22),(142,32),(168,60),(178,100),(168,140),(142,168),(100,178),(58,168),(32,140)]
+    labels = ''.join(f'<text x="{x}" y="{y}" text-anchor="middle" dominant-baseline="middle" font-size="12">{s}</text>' for s,(x,y) in zip(signs,positions))
+    spokes=''.join(f'<line x1="100" y1="100" x2="{x}" y2="{y}" stroke="currentColor" stroke-opacity=".28" stroke-width="1"/>' for x,y in positions)
+    return f'''<svg viewBox="0 0 200 200" role="img" aria-label="{html.escape(label)} empty planet finder"><circle cx="100" cy="100" r="78" fill="none" stroke="currentColor" stroke-width="1.5"/>{spokes}{labels}<circle cx="100" cy="100" r="3" fill="none" stroke="currentColor"/><text x="100" y="100" text-anchor="middle" dy="24" font-family="system-ui,sans-serif" font-size="7" opacity=".55">planet positions pending</text></svg>'''
+
+
+def weekly_placeholder(year: int, week: int, monday: dt.date) -> str:
+    dates=[monday+dt.timedelta(days=i) for i in range(7)]
+    rows=''.join(f'<tr><td>{d.strftime("%a, %b %-d, %Y")}</td><td>—</td><td>—</td></tr>' for d in dates)
+    calendar=f'''<h3>Calendar</h3><table class="calendar"><thead><tr><th>Date</th><th>Zodiac day</th><th>Events</th></tr></thead><tbody>{rows}</tbody></table>'''
+    ephemeris='''<h3>Weekly Solar-System Ephemeris</h3><p><strong>Snapshot:</strong> pending</p><table class="ephemeris"><thead><tr><th>☉ Sun</th><th>☽ Moon</th><th>☿ Mercury</th><th>♀ Venus</th><th>♂ Mars</th><th>♃ Jupiter</th><th>♄ Saturn</th></tr></thead><tbody><tr><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr></tbody></table><p><strong>Extended targets:</strong></p><table class="ephemeris"><thead><tr><th>♅ Uranus</th><th>♆ Neptune</th><th>⚳ Ceres</th></tr></thead><tbody><tr><td>—</td><td>—</td><td>—</td></tr></tbody></table>'''
+    finders='''<h3>Planet Finders</h3><div class="finder-strip">''' + ''.join([
+        f'<figure class="finder">{empty_finder_svg("Greek / Symbols")}<figcaption>Greek / Symbols</figcaption></figure>',
+        f'<figure class="finder">{empty_finder_svg("Latin")}<figcaption>Latin</figcaption></figure>',
+        f'<figure class="finder">{empty_finder_svg("Mixed Learner")}<figcaption>Mixed Learner</figcaption></figure>',
+    ]) + '</div>'
+    lorem='Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
+    sky=f'''<h3>Sky Notes</h3><div class="sky-note"><h4>Naked eye</h4><p>{lorem}</p><h4>Binoculars</h4><p>{lorem}</p><h4>Telescope</h4><p>{lorem}</p></div>'''
+    return calendar+ephemeris+finders+sky
 
 
 def build_year(year: int) -> None:
@@ -80,13 +115,15 @@ def build_year(year: int) -> None:
         page=out / f'W{week:02d}'
         page.mkdir()
         title=f'ISO week {week:02d} {year}'
-        body=(year_nav(year, '../../')
+        body=(year_nav(year)
               + '<section class="placeholder">'
               + f'<h1>{title}</h1>'
               + '<p class="placeholder-note">This week is currently in preparation and will be published as part of the Star Almanack.</p>'
               + f'<p><strong>Week begins:</strong> {monday.strftime("Monday, %B %-d, %Y")}</p>'
-              + '</section>')
-        (page/'index.html').write_text(shell(title,body,'../../'),encoding='utf-8')
+              + '</section>'
+              + weekly_placeholder(year,week,monday)
+              + year_nav(year))
+        (page/'index.html').write_text(shell(title,body),encoding='utf-8')
 
     groups=[]
     current_key=None
@@ -114,17 +151,18 @@ def build_year(year: int) -> None:
             f'<ul class="weekgrid">{links}</ul>'
         )
 
-    body=(year_nav(year, '../')
+    body=(year_nav(year)
           + f'<h1>{year} Weekly Almanack</h1>'
           + f'<p class="intro">The {year} edition is in preparation. The calendar below shows the complete ISO week-year, grouped by the civil month containing each week’s Monday. Each week will be replaced by the completed Almanack entry as it is published.</p>'
-          + ''.join(rendered))
-    (out/'index.html').write_text(shell(f'{year} Weekly Almanack',body,'../'),encoding='utf-8')
+          + ''.join(rendered)
+          + year_nav(year))
+    (out/'index.html').write_text(shell(f'{year} Weekly Almanack',body),encoding='utf-8')
 
 
 def main() -> None:
     for year in YEARS:
         build_year(year)
-    print('Published polished placeholder ISO-week calendars for 2025 and 2027')
+    print('Published enriched placeholder ISO-week calendars for 2025 and 2027')
 
 
 if __name__ == '__main__':
