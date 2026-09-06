@@ -7,6 +7,7 @@ on:
     paths:
       - almanack-expanded.md
       - publish_weekly_pages.py
+      - publish_placeholder_years.py
       - add_greek_latin_toggle.py
       - add_w41_visuals.py
       - .github/workflows/publish-2026-weekly-pages.yml
@@ -27,6 +28,9 @@ jobs:
 
       - name: Generate 53 weekly HTML pages
         run: python publish_weekly_pages.py
+
+      - name: Generate 2025 and 2027 placeholder weeks
+        run: python publish_placeholder_years.py
 
       - name: Add Greek Latin Bayer toggle
         run: python add_greek_latin_toggle.py
@@ -138,18 +142,30 @@ jobs:
           index = (root / 'index.html').read_text(encoding='utf-8')
           links = re.findall(r'href="W\d{2}/"', index)
           assert len(links) == 53, f'Expected 53 week links on index, found {len(links)}'
-          print('Verified 53 weekly pages with W41 visual finders and extended ephemeris')
+
+          for year, expected_count in ((2025, 52), (2027, 52)):
+              yroot = Path('site') / str(year)
+              ypages = sorted(yroot.glob('W??/index.html'))
+              assert len(ypages) == expected_count, f'Expected {expected_count} placeholder weeks for {year}, found {len(ypages)}'
+              for page in ypages:
+                  week = int(page.parent.name[1:])
+                  text = page.read_text(encoding='utf-8')
+                  assert f'ISO week {week} {year}' in text, page
+                  assert f'{year}-W{week:02d} coming soon' in text, page
+              assert (yroot / 'index.html').exists(), f'Missing {year} placeholder index'
+
+          print('Verified 2026 Almanack plus 2025 and 2027 ISO-week placeholder layers')
           PY
 
       - name: Commit published pages
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add site/2026
+          git add site/2025 site/2026 site/2027
           if git diff --cached --quiet; then
             echo "No publishing changes."
             exit 0
           fi
-          git commit -m "Publish 53 weekly Star Almanack pages"
+          git commit -m "Publish ISO week placeholders for 2025 and 2027"
           git pull --rebase origin main
           git push
