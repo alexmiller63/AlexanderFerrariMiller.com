@@ -41,7 +41,7 @@ def chart(mode):
         if name=='Ceres': r=230; shift=-125
         else: r=345; shift=0
         x0,y0=xy(L,r)
-        if not shift: 
+        if not shift:
             # move crowded labels through radial slots
             for rr in (345,290,235,180,400,150):
                 xx,yy=xy(L,rr); w=112 if len(name)<8 else 130; cand=(xx,yy,w,48)
@@ -78,3 +78,5 @@ def main():
     print('Assembled W41 artwork:', FINDERS)
 
 if __name__=='__main__': main()
+
+# 2026-09-06: trigger canonical W41 artwork assembly after restoring finder assets.
