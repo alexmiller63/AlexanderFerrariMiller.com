@@ -192,3 +192,41 @@ Finder charts use a night-sky presentation. The visual convention is:
 When an asterism overlaps a constellation figure, retain the conceptual distinction by drawing the green asterism over the blue constellation figure rather than treating them as the same object. Constellation boundaries remain subordinate orientation aids and should not compete visually with the recognizable figure or highlighted asterism.
 
 Finder-chart titles should be simple target titles such as **Sadalmelik Finder**. Target arrows should have a clearly visible shaft long enough to function as navigation rather than appearing as a stubby marker. The charts should remain reproducible, source-driven diagrams rather than generated artwork.
+
+## 2026-09-06 — AWS/Jekyll deployment diagnostic method
+
+Preserve this method for future cases where GitHub Pages and the custom AWS site appear to disagree. Do not assume cache, DNS, Safari, AWS, or Jekyll is at fault until the pipeline is measured directly.
+
+The production AWS deployment path is:
+
+**GitHub `main` → root `.github/workflows/deploy.yml` → SSH to AWS → `/home/<deploy-user>/build-alex.sh` → `git pull origin main` in `/var/www/AlexanderFerrariMiller` → system `jekyll build` → `/var/www/AlexanderFerrariMiller/_site` → permissions → Apache reload.**
+
+The production server observed on 2026-09-06 used Jekyll 4.4.1, Ruby 3.2.3, and Bundler 4.0.19. `build-alex.sh` runs bare `jekyll build`, not `bundle exec jekyll`.
+
+When diagnosing a deployment discrepancy, temporarily extend the SSH deploy step so the AWS machine itself prints the following before and after the normal deployment:
+
+1. `pwd`
+2. `git rev-parse HEAD`
+3. `git branch --show-current`
+4. `git rev-parse origin/main`
+5. `git status --short --branch`
+6. `git remote -v`
+7. `jekyll --version`, `ruby --version`, and `bundle --version`
+8. SHA256 checksums of the relevant repository source files
+9. SHA256 checksums of the corresponding files under `_site`
+10. explicit source-vs-built comparisons that print `MATCH`, `DIFF`, or `MISSING`.
+
+For W41, the useful paths were:
+
+- `almanack/2026/W41/index.html`
+- `almanack/2026/W41/finders/enif-finder.svg`
+- `almanack/2026/W41/finders/planet-finder-greek-symbols.svg`
+- `almanack/2026/W41/finders/planet-finder-latin.svg`
+- `almanack/2026/W41/finders/planet-finder-mixed-learner.svg`
+- `almanack/2026/W41/finders/sadalmelik-finder.svg`
+
+The diagnostic proved that AWS pulled the expected `main` commit, had no tracked local modifications, built successfully under Jekyll 4.4.1, and produced byte-for-byte identical W41 HTML and all five finder SVGs in `_site`. The only untracked item was the generated `_site/` directory. A fresh deployment then produced a correct live custom-domain page.
+
+Interpretation rule: if source and `_site` checksums match but the live custom-domain site still differs, the fault is downstream of the Jekyll build and should be investigated in the serving layer, such as Apache document-root/path configuration, caching/CDN behavior, or another post-build serving state. If source and `_site` differ, inspect Jekyll/build behavior. If AWS `HEAD` and `origin/main` differ, investigate the pull/deploy state before looking at rendering.
+
+For a local/CI reproduction of AWS Jekyll behavior, run `jekyll doctor` and `jekyll build --trace` with Jekyll 4.4.1. In the 2026-09-06 diagnostic, both passed cleanly and the Star Almanack validation script confirmed all 53 weekly pages rendered. This ruled out a reproducible repository-level Jekyll syntax/build error in that incident.
