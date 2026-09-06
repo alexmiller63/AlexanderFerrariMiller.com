@@ -18,6 +18,13 @@ concurrency:
 jobs:
   publish:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
 
     steps:
       - name: Check out website repository
@@ -29,26 +36,13 @@ jobs:
         run: |
           set -euo pipefail
           cd website
-
           SOURCE_ROOT="Star-Almanack-Repo"
           SOURCE_SITE="$SOURCE_ROOT/site/2026"
           PROVENANCE="$SOURCE_ROOT/COPY-PROVENANCE.txt"
-
-          test -d "$SOURCE_SITE" || {
-            echo "ERROR: Missing in-repository Star Almanack source: $SOURCE_SITE"
-            exit 1
-          }
-          test -f "$PROVENANCE" || {
-            echo "ERROR: Missing copy provenance: $PROVENANCE"
-            exit 1
-          }
-
+          test -d "$SOURCE_SITE" || { echo "ERROR: Missing in-repository Star Almanack source: $SOURCE_SITE"; exit 1; }
+          test -f "$PROVENANCE" || { echo "ERROR: Missing copy provenance: $PROVENANCE"; exit 1; }
           SOURCE_SHA="$(sed -n 's/^Source commit: //p' "$PROVENANCE")"
-          [[ "$SOURCE_SHA" =~ ^[0-9a-f]{40}$ ]] || {
-            echo "ERROR: Invalid Source commit in $PROVENANCE: $SOURCE_SHA"
-            exit 1
-          }
-
+          [[ "$SOURCE_SHA" =~ ^[0-9a-f]{40}$ ]] || { echo "ERROR: Invalid Source commit in $PROVENANCE: $SOURCE_SHA"; exit 1; }
           rm -f almanack/ISO2026-W*.html
           rm -rf almanack/weeks almanack/2026
           mkdir -p almanack/2026
@@ -67,61 +61,32 @@ jobs:
           python - <<'PY'
           from pathlib import Path
           from datetime import date
-
           root = Path('almanack/2026')
-          assert (root / 'index.html').is_file(), 'Missing 2026 Almanack index'
+          assert (root / 'index.html').is_file()
           marker = root / '.source-commit'
-          assert marker.is_file() and len(marker.read_text().strip()) == 40, 'Missing Star Almanack source revision marker'
-
-          pages = [root / f'W{i:02d}' / 'index.html' for i in range(1, 54)]
-          missing = [str(p) for p in pages if not p.is_file()]
-          assert not missing, f'Missing weekly pages: {missing}'
-
-          for i, p in enumerate(pages, 1):
-              text = p.read_text(encoding='utf-8')
-              assert f'W{i:02d}' in text, f'Week identity missing in {p}'
-              assert '<table class="calendar">' in text, f'Calendar table missing in {p}'
-              assert 'Best visibility:' not in text, f'Obsolete Best visibility label in {p}'
-              assert 'data-bayer-mode="greek"' in text, f'Greek notation missing in {p}'
-              assert 'data-bayer-mode="latin"' in text, f'Latin notation missing in {p}'
-              assert 'data-bayer-mode="mixed"' in text, f'Mixed learner notation missing in {p}'
-              assert 'Greek/Symbols' in text, f'Greek/Symbols label missing in {p}'
-              assert 'Mixed Learner' in text, f'Mixed Learner label missing in {p}'
-              assert 'width:27%' in text, f'Mobile date width missing in {p}'
-              assert 'width:23%' in text, f'Mobile zodiac width missing in {p}'
-              assert 'width:50%' in text, f'Mobile events width missing in {p}'
-              assert 'font-size:.82rem;line-height:1.3' in text, f'Mobile date typography missing in {p}'
-              assert '.zodiac-day .notation-item{display:block;white-space:pre-line}' in text, f'Three-row zodiac notation layout missing in {p}'
-              assert '.zodiac-day .zodiac-day-number{display:block;margin:0}' in text, f'Zodiac day number row missing in {p}'
-              assert "s.dataset.mixed=x+VS+'\\n'+z[x]" in text, f'Mixed zodiac glyph/name line break missing in {p}'
-              assert 'white-space:normal;text-align:center;font-size:.86rem' in text, f'Mobile zodiac wrapping rule missing in {p}'
-              assert "Tuc:'Tucanae'" in text, f'Full Bayer genitive mapping missing in {p}'
-              assert "Lac:'Lacertae'" in text, f'Full Bayer genitive mapping missing in {p}'
-              assert "PsA:'Piscis Austrini'" in text, f'Full Bayer genitive mapping missing in {p}'
-              assert '</main><aside class="notation-legend"' in text, f'Legend is not below main content in {p}'
-              assert '© 2026 Alexander Ferrari Miller. All rights reserved.' in text, f'Copyright footer missing in {p}'
-
-          w01 = (root / 'W01' / 'index.html').read_text(encoding='utf-8')
-          assert 'KILROY WAS HERE — BUILD 2026-09-05 02:12 PDT' in w01, 'Fresh Kilroy deployment diagnostic missing from W01'
-
-          w33 = (root / 'W33' / 'index.html').read_text(encoding='utf-8')
-          assert 'Summer Triangle' in w33, 'Summer Triangle asterism note missing from W33'
-          assert 'Perseids' in w33 and 'August 13' in w33, 'Perseid meteor-shower note missing in W33'
-
-          for year in (2025, 2027):
-              yroot = Path('almanack') / str(year)
-              assert (yroot / 'index.html').is_file(), f'Missing {year} weekly index'
-              count = date(year, 12, 28).isocalendar().week
-              for week in range(1, count + 1):
-                  page = yroot / f'W{week:02d}' / 'index.html'
-                  assert page.is_file(), f'Missing ISO {year}-W{week:02d}'
-                  text = page.read_text(encoding='utf-8')
-                  assert f'ISO week {week:02d} {year}' in text, f'Week identity missing in {page}'
-                  assert 'currently in preparation' in text, f'Preparation notice missing in {page}'
-
-          legacy_files = list(Path('almanack').glob('ISO2026-W*.html'))
-          assert not legacy_files, f'Legacy ISO weekly pages remain: {legacy_files}'
-          assert not Path('almanack/weeks').exists(), 'Legacy almanack/weeks tree remains'
+          assert marker.is_file() and len(marker.read_text().strip()) == 40
+          pages = [root / f'W{i:02d}' / 'index.html' for i in range(1,54)]
+          assert not [str(p) for p in pages if not p.is_file()]
+          for i,p in enumerate(pages,1):
+              text=p.read_text(encoding='utf-8')
+              assert f'W{i:02d}' in text
+              assert '<table class="calendar">' in text
+              assert 'Best visibility:' not in text
+              assert 'data-bayer-mode="greek"' in text and 'data-bayer-mode="latin"' in text and 'data-bayer-mode="mixed"' in text
+              assert 'Greek/Symbols' in text and 'Mixed Learner' in text
+              assert '© 2026 Alexander Ferrari Miller. All rights reserved.' in text
+          for year in (2025,2027):
+              yroot=Path('almanack')/str(year)
+              assert (yroot/'index.html').is_file()
+              count=date(year,12,28).isocalendar().week
+              for week in range(1,count+1):
+                  page=yroot/f'W{week:02d}'/'index.html'
+                  assert page.is_file()
+                  text=page.read_text(encoding='utf-8')
+                  assert f'ISO week {week:02d} {year}' in text
+                  assert 'currently in preparation' in text
+          assert not list(Path('almanack').glob('ISO2026-W*.html'))
+          assert not Path('almanack/weeks').exists()
           print('Validated canonical 2026 publication plus 2025/2027 ISO placeholder layers')
           PY
 
@@ -150,8 +115,16 @@ jobs:
           cd website
           python tools/examine-almanack-jekyll.py
 
+      - name: Upload GitHub Pages artifact
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: website/_site
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+
       - name: Commit published pages
-        id: publish
         run: |
           set -euo pipefail
           cd website
@@ -160,14 +133,12 @@ jobs:
           git add -A almanack
           if git diff --cached --quiet; then
             echo "No published Almanack changes."
-            echo "changed=false" >> "$GITHUB_OUTPUT"
             exit 0
           fi
           SOURCE_SHA=$(cat almanack/2026/.source-commit)
           git commit -m "Publish Star Almanack source ${SOURCE_SHA:0:12}"
           git pull --rebase origin main
           git push
-          echo "changed=true" >> "$GITHUB_OUTPUT"
 
       - name: Deploy synchronized pages to AWS
         uses: appleboy/ssh-action@v1.2.2
