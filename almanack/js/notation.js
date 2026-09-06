@@ -146,6 +146,17 @@
     buttons.forEach(function (button) {
       button.setAttribute('aria-pressed', button.dataset.bayerMode === mode ? 'true' : 'false');
     });
+
+    // W41 has three pre-rendered Planet Finders. Show only the finder that
+    // matches the active notation mode, using the same page-level toggle.
+    const finderIndex = { greek: 0, latin: 1, mixed: 2 }[mode];
+    document.querySelectorAll('.w41-finder-strip').forEach(function (strip) {
+      strip.style.gridTemplateColumns = 'minmax(0, 1fr)';
+      strip.querySelectorAll('figure').forEach(function (figure, index) {
+        figure.hidden = index !== finderIndex;
+      });
+    });
+
     try { localStorage.setItem('star-almanack-bayer-mode', mode); } catch (_) {}
   }
 
