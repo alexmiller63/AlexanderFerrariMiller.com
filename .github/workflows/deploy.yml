@@ -20,6 +20,7 @@ jobs:
             set +e
             PROJECT_DIR=/var/www/AlexanderFerrariMiller
             W41=almanack/2026/W41
+            FINDERS="$W41/finders"
 
             echo '=== build-alex.sh deployment diagnostics ==='
             echo 'Script metadata:'
@@ -49,11 +50,11 @@ jobs:
             echo 'Source checksums BEFORE deploy:'
             sha256sum _config.yml 2>/dev/null || true
             sha256sum "$W41/index.html" 2>/dev/null || true
-            sha256sum "$W41"/*.svg 2>/dev/null || true
+            sha256sum "$FINDERS"/*.svg 2>/dev/null || true
 
             echo 'Built checksums BEFORE deploy:'
             sha256sum "_site/$W41/index.html" 2>/dev/null || true
-            sha256sum "_site/$W41"/*.svg 2>/dev/null || true
+            sha256sum "_site/$FINDERS"/*.svg 2>/dev/null || true
 
             echo '=== running normal deployment ==='
             ~/build-alex.sh
@@ -74,22 +75,36 @@ jobs:
             echo 'Source checksums AFTER deploy:'
             sha256sum _config.yml 2>/dev/null || true
             sha256sum "$W41/index.html" 2>/dev/null || true
-            sha256sum "$W41"/*.svg 2>/dev/null || true
+            sha256sum "$FINDERS"/*.svg 2>/dev/null || true
 
             echo 'Built checksums AFTER deploy:'
             sha256sum "_site/$W41/index.html" 2>/dev/null || true
-            sha256sum "_site/$W41"/*.svg 2>/dev/null || true
+            sha256sum "_site/$FINDERS"/*.svg 2>/dev/null || true
 
             echo 'Source vs built checksum comparison:'
-            for f in index.html *.svg; do
-              if [ -f "$W41/$f" ] && [ -f "_site/$W41/$f" ]; then
-                SRC=$(sha256sum "$W41/$f" | awk '{print $1}')
-                OUT=$(sha256sum "_site/$W41/$f" | awk '{print $1}')
-                if [ "$SRC" = "$OUT" ]; then
-                  echo "MATCH $f $SRC"
-                else
-                  echo "DIFF  $f source=$SRC built=$OUT"
-                fi
+            if [ -f "$W41/index.html" ] && [ -f "_site/$W41/index.html" ]; then
+              SRC=$(sha256sum "$W41/index.html" | awk '{print $1}')
+              OUT=$(sha256sum "_site/$W41/index.html" | awk '{print $1}')
+              if [ "$SRC" = "$OUT" ]; then
+                echo "MATCH index.html $SRC"
+              else
+                echo "DIFF  index.html source=$SRC built=$OUT"
+              fi
+            fi
+            for src in "$FINDERS"/*.svg; do
+              [ -f "$src" ] || continue
+              f=$(basename "$src")
+              out="_site/$FINDERS/$f"
+              if [ ! -f "$out" ]; then
+                echo "MISSING built finder $f"
+                continue
+              fi
+              SRC=$(sha256sum "$src" | awk '{print $1}')
+              OUT=$(sha256sum "$out" | awk '{print $1}')
+              if [ "$SRC" = "$OUT" ]; then
+                echo "MATCH $f $SRC"
+              else
+                echo "DIFF  $f source=$SRC built=$OUT"
               fi
             done
 
