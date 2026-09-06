@@ -32,7 +32,7 @@ def chart(mode):
         x1,y1=xy(i*30,RI); x2,y2=xy(i*30,RO); s.append(f'<line x1="{x1:.1f}" y1="{y1:.1f}" x2="{x2:.1f}" y2="{y2:.1f}" stroke="#111" stroke-width="2"/>')
     for i,(sym,name) in enumerate(SIGNS):
         x,y=xy(i*30+15,495)
-        text=sym if mode=='Greek / Symbols' else name if mode=='Latin' else f'{sym} {name}'
+        text=(sym+'\ufe0e') if mode=='Greek / Symbols' else name if mode=='Latin' else f'{sym}\ufe0e {name}'
         fs=46 if mode=='Greek / Symbols' else 24 if mode=='Latin' else 22
         s.append(f'<text class="z" x="{x:.1f}" y="{y+8:.1f}" text-anchor="middle" font-size="{fs}">{text}</text>')
     used=[]
