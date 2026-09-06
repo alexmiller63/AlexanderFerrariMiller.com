@@ -69,7 +69,7 @@
         if (bayer) {
           const suffix = bayer[2] || '';
           const constellation = constellationNames[bayer[3]] || bayer[3];
-          greek = bayer[1] + suffix + ' ' + constellation;
+          greek = bayer[1] + suffix + ' ' + bayer[3];
           latin = greekNames[bayer[1]] + suffix + ' ' + constellation;
           mixed = bayer[1] + suffix + ' ' + greekNames[bayer[1]] + suffix + ' ' + constellation;
         } else if (bodyNames[token]) {
