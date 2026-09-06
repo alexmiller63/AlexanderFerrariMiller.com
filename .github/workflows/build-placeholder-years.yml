@@ -1,0 +1,45 @@
+name: Build 2025 and 2027 Placeholder Years
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - Star-Almanack-Repo/publish_placeholder_years.py
+      - .github/workflows/build-placeholder-years.yml
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Build placeholder years
+        run: |
+          python Star-Almanack-Repo/publish_placeholder_years.py
+          rm -rf almanack/2025 almanack/2027
+          cp -a Star-Almanack-Repo/site/2025 almanack/2025
+          cp -a Star-Almanack-Repo/site/2027 almanack/2027
+
+      - name: Commit generated placeholder years
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add Star-Almanack-Repo/site/2025 Star-Almanack-Repo/site/2027 almanack/2025 almanack/2027
+          if git diff --cached --quiet; then
+            echo 'Placeholder years already current.'
+            exit 0
+          fi
+          git commit -m 'Publish polished 2025 and 2027 placeholder calendars'
+          git push
