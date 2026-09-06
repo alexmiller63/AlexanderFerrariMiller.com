@@ -1,0 +1,161 @@
+name: Build 2026 Expanded Almanack
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - ISO2026.md
+      - almanack.md
+      - expanded-bayer-visibility-2026.csv
+      - expanded-bayer-stars.csv
+      - bayer-supplement.csv
+      - bright-star-visibility-2026.csv
+      - bright-stars-2mag.csv
+      - bright-variable-reconciliation.csv
+      - messier-visibility-2026.csv
+      - weekly-ephemeris-2026.csv
+      - sky-notes-2026.json
+      - 'sky-notes-2026/**'
+      - image-provenance-2026.json
+      - build_bayer_catalog.py
+      - compute_bayer_visibility_2026.py
+      - compute_bright_star_visibility_2026.py
+      - build_expanded_almanack.py
+      - enrich_stellar_entries.py
+      - apply_sky_notes.py
+      - audit_stellar_entries.py
+      - audit_bayer_duplicate_designations.py
+      - .github/workflows/build-2026-expanded-almanack.yml
+
+permissions:
+  contents: write
+
+concurrency:
+  group: star-almanack-2026-source-build
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out Star Almanack
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Build expanded Almanack
+        run: python build_expanded_almanack.py
+
+      - name: Enrich stellar entries
+        run: python enrich_stellar_entries.py
+
+      - name: Apply curated Sky Notes
+        run: python apply_sky_notes.py
+
+      - name: Audit duplicate Bayer designations
+        run: python audit_bayer_duplicate_designations.py
+
+      - name: Audit every catalog-backed stellar entry
+        run: python audit_stellar_entries.py
+
+      - name: Verify expanded Almanack structure and stellar metadata
+        run: |
+          test -f almanack-expanded.md
+          python - <<'PY'
+          import csv
+          import re
+          from datetime import date, datetime
+          from decimal import Decimal, ROUND_HALF_UP
+          from pathlib import Path
+
+          text = Path('almanack-expanded.md').read_text(encoding='utf-8')
+          calendar_text = text.split('\n## Expanded α and β Star Catalog\n', 1)[0]
+          weeks = re.findall(r'(?m)^## (ISO 2026-W\d{2})\s*$', text)
+          expected = [f'ISO 2026-W{i:02d}' for i in range(1, 54)]
+          assert weeks == expected, f'Expected W01-W53, found {len(weeks)} sections'
+
+          rows = re.findall(r'(?m)^\| (?:Mon|Tue|Wed|Thu|Fri|Sat|Sun), [A-Z][a-z]{2} \d{2}, (?:2025|2026|2027) \|', text)
+          assert len(rows) == 53 * 7, f'Expected 371 day rows, found {len(rows)}'
+          split_table_rows = re.findall(r'(?m)^\|[^\n]*\|\n\n(?=\|)', calendar_text)
+          assert not split_table_rows, f'Found {len(split_table_rows)} blank lines splitting Markdown table rows; Jekyll would render them as separate tables'
+
+          sky_notes = re.findall(r'(?ms)^### Sky Note\s*\n\n(.*?)(?=^### Chart\s*$)', calendar_text)
+          assert len(sky_notes) == 53, f'Expected 53 Sky Notes, found {len(sky_notes)}'
+          placeholder = 'Weekly geocentric tropical planetary positions, sampled Monday at 00:00 UTC.'
+          assert all(note.strip() and note.strip() != placeholder for note in sky_notes), 'Missing or placeholder Sky Note survived'
+          assert '**Asterism:**' in calendar_text, 'Asterism emphasis missing from Sky Notes'
+          assert '**Meteor shower:**' in calendar_text or '**Meteor showers:**' in calendar_text, 'Meteor-shower highlights missing from Sky Notes'
+
+          calendar_events = {}
+          row_re = re.compile(r'(?m)^\| (?:Mon|Tue|Wed|Thu|Fri|Sat|Sun), ([A-Z][a-z]{2}) (\d{2}), (2025|2026|2027) \| [^|]+ \| ([^|]*) \|$')
+          for m in row_re.finditer(calendar_text):
+              d = datetime.strptime(f'{m.group(1)} {m.group(2)} {m.group(3)}', '%b %d %Y').date().isoformat()
+              calendar_events[d] = m.group(4).strip()
+
+          with open('messier-visibility-2026.csv', newline='', encoding='utf-8') as f:
+              messier = list(csv.DictReader(f))
+          assert len(messier) == 110, f'Expected 110 Messier objects, found {len(messier)}'
+          for r in messier:
+              name = r['messier']
+              events = calendar_events.get(r['best_date'], '')
+              token = re.compile(rf'(?<![A-Za-z0-9]){re.escape(name)}(?!\d)', re.IGNORECASE)
+              assert token.search(events), f'No Messier calendar representation found for {name} on {r["best_date"]}'
+              occurrences = sum(len(token.findall(cell)) for cell in calendar_events.values())
+              assert occurrences == 1, f'Expected exactly one Messier calendar occurrence for {name}, found {occurrences}'
+
+          def whole_mag(value):
+              return str(int(Decimal(value).quantize(Decimal('1'), rounding=ROUND_HALF_UP)))
+
+          with open('bright-star-visibility-2026.csv', newline='', encoding='utf-8') as f:
+              bright = list(csv.DictReader(f))
+          new = [r for r in bright if r['new_non_alpha_beta'] == 'yes']
+          assert len(bright) == 92, f'Expected 92 bright-star systems, found {len(bright)}'
+          assert len(new) == 41, f'Expected 41 new non-alpha/beta systems, found {len(new)}'
+          for r in new:
+              d = date.fromisoformat(r['best_date'])
+              assert d.isocalendar().year == 2026, (r.get('proper'), r['best_date'])
+              proper = (r.get('proper') or '').strip()
+              if proper:
+                  events = calendar_events.get(r['best_date'], '')
+                  assert proper in events, f'No calendar representation found for {proper} on {r["best_date"]}'
+                  entry = next((part for part in events.split('<br>') if proper in part), '')
+                  assert entry, f'Could not isolate calendar entry for {proper} on {r["best_date"]}'
+                  mag = (r.get('representative_vmax') or r.get('catalog_v') or '').strip()
+                  assert mag, f'Star {proper} has no source magnitude'
+                  expected_mag = f"V {whole_mag(mag)}"
+                  assert expected_mag in entry, f'Expected {expected_mag} for {proper} on {r["best_date"]}; entry={entry}'
+                  assert not re.search(r'\bV\s+[+-]?\d+\.\d+', entry), f'Decimal Almanack magnitude survived for {proper}: {entry}'
+
+          enif = calendar_events.get('2026-10-05', '')
+          assert 'Enif (ε Peg) — 👁 V 2 — Tropical Autumn' in enif, enif
+          assert 'V 2.38' not in enif, enif
+          assert 'V2.38' not in enif, enif
+          assert ' — variable — ' not in enif, enif
+
+          shaula = calendar_events.get('2026-07-29', '')
+          assert 'Shaula (λ Sco) — 👁 V 2 — Southern Summer' in shaula, shaula
+          assert 'V 1.62' not in shaula, shaula
+
+          diadem = calendar_events.get('2026-05-26', '')
+          assert 'Diadem (α Com) — B V 4 — Tropical Spring' in diadem, diadem
+          assert 'V 4.32' not in diadem, diadem
+
+          assert 'The New Moon on Saturday, October 10' in text, 'Curated W41 Sky Note missing'
+          assert '**Binoculars:**' in text and 'M15' in text and 'misty glow near Enif' in text, 'W41 binocular guidance missing'
+          assert 'Beta Reticuli' in text or 'β Ret' in text, 'β Reticuli missing from expanded Almanack'
+          assert '2027-01-01' in Path('expanded-bayer-visibility-2026.csv').read_text(encoding='utf-8'), 'Expected a Bayer visibility date on 2027-01-01'
+          print('Verified 53 weeks, 371 day rows, 110 Messier objects, 53 curated Sky Notes, asterisms, meteor showers, observing aid beside whole-number stellar magnitudes, Enif, Shaula, and Diadem')
+          PY
+
+      - name: Commit expanded Almanack source
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add almanack-expanded.md
+          if git diff --cached --quiet; then
+            echo "No source changes."
+            exit 0
+          fi
+          git commit -m "Build expanded 2026 Almanack source"
+          git pull --rebase origin main
+          git push

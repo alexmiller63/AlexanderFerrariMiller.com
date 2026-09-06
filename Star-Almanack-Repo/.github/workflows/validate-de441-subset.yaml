@@ -1,0 +1,427 @@
+name: Validate DE441 Eclipse Subset
+
+on:
+
+  workflow_dispatch:
+
+jobs:
+
+  validate-de441-subset:
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Check out Star Almanack
+
+        uses: actions/checkout@v6
+
+      - name: Download DE441 source kernels
+
+        run: |
+
+          wget -q --show-progress "https://naif.jpl.nasa.gov/pub/naif/generic_kernels/spk/planets/de441_part-1.bsp"
+
+          wget -q --show-progress "https://naif.jpl.nasa.gov/pub/naif/generic_kernels/spk/planets/de441_part-2.bsp"
+
+      - name: Download NAIF leap-seconds kernel
+
+        run: |
+
+          wget -q --show-progress "https://naif.jpl.nasa.gov/pub/naif/generic_kernels/lsk/naif0012.tls"
+
+      - name: Download and install NAIF SPICE Toolkit
+
+        run: |
+
+          wget -q --show-progress "https://naif.jpl.nasa.gov/pub/naif/toolkit/C/PC_Linux_GCC_64bit/packages/cspice.tar.Z"
+
+          tar xzf cspice.tar.Z
+
+          echo "$GITHUB_WORKSPACE/cspice/exe" >> "$GITHUB_PATH"
+
+      - name: Verify source checksums
+
+        run: |
+
+          echo "DE441 source kernels:"
+
+          sha256sum de441_part-1.bsp
+
+          sha256sum de441_part-2.bsp
+
+          echo
+
+          echo "Leap-seconds kernel:"
+
+          sha256sum naif0012.tls
+
+      - name: Rebuild Star Almanack DE441 eclipse subset
+
+        run: |
+
+          rm -f star-almanack-de441-eclipse-subset.bsp
+
+          rm -f de441_subset_setup.txt
+
+          cat > de441_subset_setup.txt <<'EOF'
+
+          LEAPSECONDS_KERNEL = naif0012.tls
+
+          SPK_KERNEL = star-almanack-de441-eclipse-subset.bsp
+
+          BODIES = 10, 399, 301, 3
+
+          BEGIN_TIME = 1 JAN 1900 00:00:00.000
+
+          END_TIME = 1 JAN 2100 00:00:00.000
+
+          SOURCE_SPK_KERNEL = de441_part-1.bsp
+
+          SOURCE_SPK_KERNEL = de441_part-2.bsp
+
+          EOF
+
+          echo "SPKMERGE command file:"
+
+          cat de441_subset_setup.txt
+
+          echo
+
+          spkmerge de441_subset_setup.txt
+
+      - name: Verify rebuilt subset checksum and size
+
+        run: |
+
+          ls -lh star-almanack-de441-eclipse-subset.bsp
+
+          sha256sum star-almanack-de441-eclipse-subset.bsp
+
+      - name: Compare DE441 states with subset
+
+        run: |
+
+          cat > compare_states.c <<'EOF'
+
+          #include <stdio.h>
+
+          #include <math.h>
+
+          #include "SpiceUsr.h"
+
+          static double max_abs_diff(const SpiceDouble a[6],
+
+                                     const SpiceDouble b[6])
+
+          {
+
+              double m = 0.0;
+
+              int i;
+
+              for (i = 0; i < 6; ++i) {
+
+                  double d = fabs(a[i] - b[i]);
+
+                  if (d > m) {
+
+                      m = d;
+
+                  }
+
+              }
+
+              return m;
+
+          }
+
+          int main(void)
+
+          {
+
+              const char *epochs[] = {
+
+                  "1919 MAY 29 12:00:00 UTC",
+
+                  "1991 JUL 11 19:00:00 UTC",
+
+                  "2024 APR 08 18:00:00 UTC",
+
+                  "2026 AUG 12 18:00:00 UTC"
+
+              };
+
+              const int nepochs =
+
+                  (int)(sizeof(epochs) / sizeof(epochs[0]));
+
+              SpiceDouble et;
+
+              SpiceDouble source[6];
+
+              SpiceDouble subset[6];
+
+              SpiceDouble lt;
+
+              int i;
+
+              furnsh_c("naif0012.tls");
+
+              for (i = 0; i < nepochs; ++i) {
+
+                  str2et_c(epochs[i], &et);
+
+                  furnsh_c("de441_part-1.bsp");
+
+                  furnsh_c("de441_part-2.bsp");
+
+                  spkezr_c(
+
+                      "SUN",
+
+                      et,
+
+                      "J2000",
+
+                      "NONE",
+
+                      "EARTH",
+
+                      source,
+
+                      &lt
+
+                  );
+
+                  kclear_c();
+
+                  furnsh_c("naif0012.tls");
+
+                  furnsh_c(
+
+                      "star-almanack-de441-eclipse-subset.bsp"
+
+                  );
+
+                  spkezr_c(
+
+                      "SUN",
+
+                      et,
+
+                      "J2000",
+
+                      "NONE",
+
+                      "EARTH",
+
+                      subset,
+
+                      &lt
+
+                  );
+
+                  printf(
+
+                      "%s  Sun/Earth max difference: %.17g\n",
+
+                      epochs[i],
+
+                      max_abs_diff(source, subset)
+
+                  );
+
+                  kclear_c();
+
+                  furnsh_c("naif0012.tls");
+
+              }
+
+              kclear_c();
+
+              return 0;
+
+          }
+
+          EOF
+
+          gcc -I"$GITHUB_WORKSPACE/cspice/include" compare_states.c "$GITHUB_WORKSPACE/cspice/lib/cspice.a" -lm -o compare_states
+
+          ./compare_states
+
+      - name: Check eclipse-critical relative geometry
+
+        run: |
+
+          cat > eclipse_geometry.c <<'EOF'
+
+          #include <stdio.h>
+
+          #include <math.h>
+
+          #include "SpiceUsr.h"
+
+          static double norm3(const SpiceDouble v[3])
+
+          {
+
+              return sqrt(
+
+                  v[0] * v[0] +
+
+                  v[1] * v[1] +
+
+                  v[2] * v[2]
+
+              );
+
+          }
+
+          static double angle_between(
+
+              const SpiceDouble a[3],
+
+              const SpiceDouble b[3])
+
+          {
+
+              double dot =
+
+                  a[0] * b[0] +
+
+                  a[1] * b[1] +
+
+                  a[2] * b[2];
+
+              double denom = norm3(a) * norm3(b);
+
+              double c = dot / denom;
+
+              if (c > 1.0) {
+
+                  c = 1.0;
+
+              }
+
+              if (c < -1.0) {
+
+                  c = -1.0;
+
+              }
+
+              return acos(c);
+
+          }
+
+          int main(void)
+
+          {
+
+              const char *epochs[] = {
+
+                  "1919 MAY 29 12:00:00 UTC",
+
+                  "1991 JUL 11 19:00:00 UTC",
+
+                  "2024 APR 08 18:00:00 UTC",
+
+                  "2026 AUG 12 18:00:00 UTC"
+
+              };
+
+              const int nepochs =
+
+                  (int)(sizeof(epochs) / sizeof(epochs[0]));
+
+              SpiceDouble et;
+
+              SpiceDouble sun[6];
+
+              SpiceDouble moon[6];
+
+              SpiceDouble lt;
+
+              int i;
+
+              furnsh_c("naif0012.tls");
+
+              furnsh_c(
+
+                  "star-almanack-de441-eclipse-subset.bsp"
+
+              );
+
+              for (i = 0; i < nepochs; ++i) {
+
+                  str2et_c(epochs[i], &et);
+
+                  spkezr_c(
+
+                      "SUN",
+
+                      et,
+
+                      "J2000",
+
+                      "NONE",
+
+                      "EARTH",
+
+                      sun,
+
+                      &lt
+
+                  );
+
+                  spkezr_c(
+
+                      "MOON",
+
+                      et,
+
+                      "J2000",
+
+                      "NONE",
+
+                      "EARTH",
+
+                      moon,
+
+                      &lt
+
+                  );
+
+                  printf(
+
+                      "%s\n"
+
+                      "  Earth-Sun distance:  %.9f km\n"
+
+                      "  Earth-Moon distance: %.9f km\n"
+
+                      "  Sun-Moon angle:       %.12f deg\n",
+
+                      epochs[i],
+
+                      norm3(sun),
+
+                      norm3(moon),
+
+                      angle_between(sun, moon) * dpr_c()
+
+                  );
+
+              }
+
+              kclear_c();
+
+              return 0;
+
+          }
+
+          EOF
+
+          gcc -I"$GITHUB_WORKSPACE/cspice/include" eclipse_geometry.c "$GITHUB_WORKSPACE/cspice/lib/cspice.a" -lm -o eclipse_geometry
+
+          ./eclipse_geometry

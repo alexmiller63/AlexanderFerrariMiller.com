@@ -1,0 +1,57 @@
+name: Fix Eclipse Diagnostic Precession
+
+on:
+  push:
+    paths:
+      - '.github/workflows/fix-eclipse-diagnostic-precession.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  repair:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out Star Almanack
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Repair stale diagnostic precession signs
+        run: |
+          python3 <<'PY'
+          from pathlib import Path
+
+          path = Path('validate_star_almanack.py')
+          text = path.read_text(encoding='utf-8')
+          old = '''    w = eclipse_engine._rot_z(\n\n        v,\n\n        -zeta,\n\n    )\n\n    w = _rot_y(\n\n        w,\n\n        theta,\n\n    )\n\n    w = eclipse_engine._rot_z(\n\n        w,\n\n        -z,\n\n    )'''
+          new = '''    w = eclipse_engine._rot_z(\n\n        v,\n\n        zeta,\n\n    )\n\n    w = _rot_y(\n\n        w,\n\n        -theta,\n\n    )\n\n    w = eclipse_engine._rot_z(\n\n        w,\n\n        z,\n\n    )'''
+          if text.count(old) != 1:
+              raise SystemExit(f'validate_star_almanack.py: expected 1 stale inverse, found {text.count(old)}')
+          path.write_text(text.replace(old, new, 1), encoding='utf-8')
+
+          path = Path('sun-frame-step-diagnostic.py')
+          text = path.read_text(encoding='utf-8')
+          old = '''    after_z = ee._rot_z(\n\n        eq_date,\n\n        z,\n\n    )\n\n    after_y = rot_y(\n\n        after_z,\n\n        -theta,\n\n    )\n\n    after_zeta = ee._rot_z(\n\n        after_y,\n\n        zeta,\n\n    )'''
+          new = '''    after_z = ee._rot_z(\n\n        eq_date,\n\n        -z,\n\n    )\n\n    after_y = rot_y(\n\n        after_z,\n\n        theta,\n\n    )\n\n    after_zeta = ee._rot_z(\n\n        after_y,\n\n        -zeta,\n\n    )'''
+          if text.count(old) != 1:
+              raise SystemExit(f'sun-frame-step-diagnostic.py: expected 1 stale reconstruction, found {text.count(old)}')
+          text = text.replace(old, new, 1)
+          text = text.replace('"after Rz(z)"', '"after Rz(-z)"', 1)
+          text = text.replace('"after Ry(-theta)"', '"after Ry(theta)"', 1)
+          text = text.replace('"after Rz(zeta)"', '"after Rz(-zeta)"', 1)
+          path.write_text(text, encoding='utf-8')
+          PY
+
+      - name: Verify engine was not changed
+        run: |
+          git diff --exit-code -- eclipse_engine.py
+
+      - name: Commit diagnostic-only repair
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add validate_star_almanack.py sun-frame-step-diagnostic.py
+          git diff --cached --check
+          git commit -m 'Fix eclipse diagnostic precession signs'
+          git push

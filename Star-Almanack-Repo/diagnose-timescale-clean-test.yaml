@@ -1,0 +1,187 @@
+name: Diagnose Timescale Clean Test
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  clean-timescale-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out Star Almanack
+        uses: actions/checkout@v6
+
+      - name: Verify validated DE441 microkernel
+        run: |
+          test -s star-almanack-microkernel.bsp
+          ls -lh star-almanack-microkernel.bsp
+
+      - name: Install Python dependencies
+        run: |
+          python3 -m pip install --disable-pip-version-check spiceypy pyyaml
+
+      - name: Download NAIF leap-seconds kernel
+        run: |
+          curl -L https://naif.jpl.nasa.gov/pub/naif/generic_kernels/lsk/naif0012.tls \
+            -o naif0012.tls
+          test -s naif0012.tls
+
+      - name: Bootstrap ELP2000-82B archive
+        working-directory: star-almanack-elp82b
+        run: |
+          python lunar_elp.py bootstrap data/elp82b
+          python lunar_elp.py verify data/elp82b
+          python normalize_elp82b.py data/elp82b elp82b-manifest.json
+
+      - name: Run controlled UTC-to-TDB clean test
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          python3 <<'PY' 2>&1 | tee debug.txt
+          from __future__ import annotations
+
+          from datetime import datetime, timedelta, timezone
+          import warnings
+
+          import spiceypy as spice
+          import yaml
+          import eclipse_engine
+
+          LSK = "naif0012.tls"
+          J2000_JD = 2451545.0
+          UNIX_EPOCH_JD = 2440587.5
+          SECONDS_PER_DAY = 86400.0
+
+          def signed_seconds(calculated: str, reference: str) -> float:
+              a = datetime.fromisoformat(calculated.replace("Z", "+00:00"))
+              b = datetime.fromisoformat(reference.replace("Z", "+00:00"))
+              return (a - b).total_seconds()
+
+          def jd_utc_to_iso_precise(jd_utc: float) -> str:
+              # Test cases are in the datetime-supported Gregorian era.
+              epoch = datetime(1970, 1, 1, tzinfo=timezone.utc)
+              dt = epoch + timedelta(days=(jd_utc - UNIX_EPOCH_JD))
+              return dt.strftime("%Y-%m-%dT%H:%M:%S.%f")
+
+          def spice_utc_to_tdb(jd_utc: float) -> float:
+              utc_text = jd_utc_to_iso_precise(jd_utc)
+              et = spice.str2et(utc_text)
+              return J2000_JD + et / SECONDS_PER_DAY
+
+          spice.furnsh(LSK)
+
+          with open("eclipse-validation-cases.yaml", "r", encoding="utf-8") as handle:
+              spec = yaml.safe_load(handle)
+
+          cases = []
+          for case in spec["historical"]:
+              if case.get("expected_greatest_utc"):
+                  cases.append(
+                      {
+                          "label": case["label"],
+                          "date": case["date_utc"],
+                          "reference": case["expected_greatest_utc"],
+                          "group": "historical",
+                      }
+                  )
+
+          for case in spec["future_jello"]["cases"]:
+              if case.get("nasa_greatest_utc"):
+                  cases.append(
+                      {
+                          "label": case["label"],
+                          "date": case["date_utc"],
+                          "reference": case["nasa_greatest_utc"],
+                          "group": "future_jello",
+                      }
+                  )
+
+          engine = eclipse_engine.EclipseEngine()
+          original_converter = eclipse_engine.utc_to_tdb_approx
+
+          print("=" * 100)
+          print("STAR ALMANACK — CONTROLLED UTC→TDB CLEAN TEST")
+          print("=" * 100)
+          print()
+          print("Only one thing changes between A and B:")
+          print("A = current eclipse_engine.utc_to_tdb_approx()")
+          print("B = SPICE UTC→ET/TDB conversion via naif0012.tls")
+          print()
+          print("DE441 kernel, ELP2000-82B Moon, eclipse geometry, and search algorithm are unchanged.")
+          print()
+
+          try:
+              for case in cases:
+                  print("-" * 100)
+                  print(f"{case['label']}  [{case['group']}]")
+                  print(f"Date:      {case['date']}")
+                  print(f"Reference: {case['reference']}")
+
+                  eclipse_engine.utc_to_tdb_approx = original_converter
+                  baseline = engine.find_solar_eclipse(case["date"])
+                  baseline_residual = signed_seconds(
+                      baseline.greatest_utc, case["reference"]
+                  )
+
+                  eclipse_engine.utc_to_tdb_approx = spice_utc_to_tdb
+                  corrected = engine.find_solar_eclipse(case["date"])
+                  corrected_residual = signed_seconds(
+                      corrected.greatest_utc, case["reference"]
+                  )
+
+                  shift = signed_seconds(
+                      corrected.greatest_utc, baseline.greatest_utc
+                  )
+
+                  # Also compare the two time conversions at the reference instant.
+                  ref_dt = datetime.fromisoformat(
+                      case["reference"].replace("Z", "+00:00")
+                  )
+                  unix_epoch = datetime(1970, 1, 1, tzinfo=timezone.utc)
+                  ref_jd_utc = UNIX_EPOCH_JD + (
+                      ref_dt - unix_epoch
+                  ).total_seconds() / SECONDS_PER_DAY
+
+                  engine_tdb = original_converter(ref_jd_utc)
+                  spice_tdb = spice_utc_to_tdb(ref_jd_utc)
+                  converter_difference = (
+                      engine_tdb - spice_tdb
+                  ) * SECONDS_PER_DAY
+
+                  print()
+                  print(f"A current engine greatest: {baseline.greatest_utc}")
+                  print(f"A residual:                {baseline_residual:+.3f} s")
+                  print(f"B SPICE-time greatest:     {corrected.greatest_utc}")
+                  print(f"B residual:                {corrected_residual:+.3f} s")
+                  print(f"B - A event shift:         {shift:+.3f} s")
+                  print(
+                      "converter A - B at reference: "
+                      f"{converter_difference:+.6f} s"
+                  )
+                  print()
+
+          finally:
+              eclipse_engine.utc_to_tdb_approx = original_converter
+              spice.kclear()
+
+          print("=" * 100)
+          print("CLEAN TEST COMPLETE")
+          print("=" * 100)
+          PY
+
+      - name: Show clean-test output
+        if: always()
+        run: cat debug.txt || true
+
+      - name: Upload debug.txt
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: timescale-clean-test
+          path: debug.txt
+          if-no-files-found: error
+          retention-days: 7

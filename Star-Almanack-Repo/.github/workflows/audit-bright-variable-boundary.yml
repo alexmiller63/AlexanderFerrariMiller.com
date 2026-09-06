@@ -1,0 +1,39 @@
+name: Audit Bright Variable Boundary
+
+"on":
+  workflow_dispatch:
+  push:
+    paths:
+      - audit_gcvs_bright_boundary.py
+      - bright-star-variable-audit.csv
+      - bright-stars-2mag-spec.md
+      - .github/workflows/audit-bright-variable-boundary.yml
+
+permissions:
+  contents: write
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out Star Almanack
+        uses: actions/checkout@v4
+
+      - name: Fetch HEASARC GCVS VOTable
+        run: |
+          curl -fL 'https://heasarc.gsfc.nasa.gov/cgi-bin/W3Browse/getvotable.pl?name=gcvs' -o /tmp/gcvs.xml
+
+      - name: Audit variables reaching second magnitude
+        run: python audit_gcvs_bright_boundary.py /tmp/gcvs.xml gcvs-bright-boundary-audit.csv
+
+      - name: Commit generated GCVS audit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add gcvs-bright-boundary-audit.csv
+          if git diff --cached --quiet; then
+            echo "No GCVS audit changes."
+            exit 0
+          fi
+          git commit -m "Audit GCVS second-magnitude variables"
+          git push

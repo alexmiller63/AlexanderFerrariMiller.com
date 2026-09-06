@@ -1,0 +1,35 @@
+name: Reconcile Bright Variables
+
+"on":
+  workflow_dispatch:
+  push:
+    paths:
+      - reconcile_bright_variables.py
+      - gcvs-bright-boundary-audit.csv
+      - bright-stars-2mag.csv
+      - .github/workflows/reconcile-bright-variables.yml
+
+permissions:
+  contents: write
+
+jobs:
+  reconcile:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out Star Almanack
+        uses: actions/checkout@v4
+
+      - name: Reconcile GCVS V-system candidates
+        run: python reconcile_bright_variables.py gcvs-bright-boundary-audit.csv bright-stars-2mag.csv bright-variable-reconciliation.csv
+
+      - name: Commit reconciliation
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add bright-variable-reconciliation.csv
+          if git diff --cached --quiet; then
+            echo "No reconciliation changes."
+            exit 0
+          fi
+          git commit -m "Reconcile bright variable-star candidates"
+          git push

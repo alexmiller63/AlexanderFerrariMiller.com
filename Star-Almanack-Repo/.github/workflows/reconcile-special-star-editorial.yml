@@ -1,0 +1,50 @@
+name: Reconcile Special-Star Editorial Dates 2026
+
+"on":
+  workflow_dispatch:
+  push:
+    paths:
+      - special-star-visibility-2026.csv
+      - reconcile_special_star_editorial_dates_2026.py
+      - .github/workflows/reconcile-special-star-editorial.yml
+
+permissions:
+  contents: write
+
+jobs:
+  reconcile:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out Star Almanack
+        uses: actions/checkout@v4
+
+      - name: Reconcile Special Star heading dates
+        run: python reconcile_special_star_editorial_dates_2026.py special-stars.md special-star-visibility-2026.csv
+
+      - name: Verify editorial dates now match precise catalog
+        run: |
+          python audit_special_star_visibility_2026.py special-stars.md special-star-visibility-2026.csv special-star-visibility-audit-2026.csv
+          python - <<'PY'
+          import csv
+          with open('special-star-visibility-audit-2026.csv', newline='', encoding='utf-8') as f:
+              rows = list(csv.DictReader(f))
+          stale = [r for r in rows if r['status'] != 'PASS']
+          if stale:
+              raise SystemExit(f'Special Star editorial dates still stale: {[(r["name"], r["stated_date"], r["computed_date"]) for r in stale]}')
+          if len(rows) != 22:
+              raise SystemExit(f'Expected 22 audited Special Stars, got {len(rows)}')
+          print('All 22 Special Star editorial dates match precise 2026 visibility dates')
+          PY
+
+      - name: Commit reconciled editorial source and audit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add special-stars.md special-star-visibility-audit-2026.csv
+          if git diff --cached --quiet; then
+            echo "No Special Star editorial changes."
+            exit 0
+          fi
+          git commit -m "Reconcile Special Star dates to precise visibility catalog"
+          git push

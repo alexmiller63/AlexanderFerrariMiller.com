@@ -1,0 +1,108 @@
+name: Diagnose DE441 Eclipse Timescale
+
+on:
+  workflow_dispatch:
+
+jobs:
+  diagnose-eclipse-timescale:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out Star Almanack
+        uses: actions/checkout@v6
+
+      - name: Install Python dependencies
+        run: |
+          python3 -m pip install --disable-pip-version-check spiceypy pyyaml
+
+      - name: Initialize debug file
+        if: always()
+        run: |
+          {
+            echo "DE441 ECLIPSE TIMESCALE DIAGNOSTIC"
+            echo "============================================================"
+            echo "workflow started: $(date -u +'%Y-%m-%dT%H:%M:%SZ')"
+            echo
+          } > debug.txt
+
+      - name: Download NAIF leap-seconds kernel
+        run: |
+          {
+            echo "===== Download NAIF leap-seconds kernel ====="
+            curl -fL \
+              https://naif.jpl.nasa.gov/pub/naif/generic_kernels/lsk/naif0012.tls \
+              -o naif0012.tls
+            status=$?
+            echo "curl exit status: $status"
+            if [ "$status" -ne 0 ]; then
+              echo "ERROR: failed to download naif0012.tls"
+              exit "$status"
+            fi
+            test -s naif0012.tls
+            ls -lh naif0012.tls
+            echo
+          } 2>&1 | tee -a debug.txt
+
+      - name: Run narrow eclipse timescale diagnostic
+        if: always()
+        run: |
+          python3 <<'PY' 2>&1 | tee -a debug.txt
+          import os
+          import spiceypy as spice
+          import yaml
+          import eclipse_engine
+
+          LSK = "naif0012.tls"
+
+          print("===== Narrow eclipse timescale diagnostic =====")
+
+          if not os.path.exists(LSK):
+              print(f"ERROR: {LSK} is missing; previous download step failed.")
+              raise SystemExit(1)
+
+          spice.furnsh(LSK)
+
+          with open("eclipse-validation-cases.yaml", "r") as f:
+              data = yaml.safe_load(f)
+
+          def walk(obj):
+              if isinstance(obj, dict):
+                  if "utc" in obj:
+                      utc = obj["utc"]
+                      try:
+                          approx = eclipse_engine.utc_to_tdb_approx(utc)
+                          spice_et = spice.str2et(utc)
+                          print()
+                          print("UTC:", utc)
+                          print("engine TDB:", approx)
+                          print("SPICE ET/TDB:", spice_et)
+                          print("difference:", approx - spice_et)
+                      except Exception as exc:
+                          print()
+                          print("UTC:", utc)
+                          print("ERROR:", repr(exc))
+                  for value in obj.values():
+                      walk(value)
+              elif isinstance(obj, list):
+                  for value in obj:
+                      walk(value)
+
+          walk(data)
+          spice.kclear()
+          PY
+
+      - name: Show debug file
+        if: always()
+        run: |
+          echo "===== debug.txt ====="
+          cat debug.txt || true
+          echo "====================="
+
+      - name: Upload debug.txt
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eclipse-timescale-debug
+          path: debug.txt
+          if-no-files-found: error
+          retention-days: 7

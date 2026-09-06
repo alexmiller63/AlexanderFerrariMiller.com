@@ -1,0 +1,83 @@
+name: Build Second-Magnitude Bright-Star Catalog
+
+"on":
+  workflow_dispatch:
+  push:
+    paths:
+      - build_bright_star_catalog.py
+      - bright-stars-2mag-spec.md
+      - bright-system-reconciliation.csv
+      - expanded-bayer-stars.csv
+      - .github/workflows/build-bright-star-catalog.yml
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out Star Almanack
+        uses: actions/checkout@v4
+
+      - name: Fetch pinned HYG v4.1 catalog
+        run: |
+          curl -fL \
+            https://raw.githubusercontent.com/astronexus/HYG-Database/3bf37f4b2d5460e1278286320d1d62fab9b493c1/hyg/CURRENT/hygdata_v41.csv \
+            -o /tmp/hygdata_v41.csv
+
+      - name: Build second-magnitude system catalog
+        run: |
+          python build_bright_star_catalog.py \
+            /tmp/hygdata_v41.csv \
+            bright-stars-2mag.csv \
+            --bayer expanded-bayer-stars.csv \
+            --reconciliation bright-system-reconciliation.csv
+
+      - name: Validate reconciled systems
+        run: |
+          python - <<'PY'
+          import csv
+
+          with open('bright-stars-2mag.csv', newline='', encoding='utf-8') as f:
+              rows = list(csv.DictReader(f))
+          if not rows:
+              raise SystemExit('Bright-star catalog is empty')
+
+          bad = [r for r in rows if float(r['representative_vmax']) > 2.50]
+          if bad:
+              raise SystemExit(f'{len(bad)} rows exceed +2.50 threshold')
+
+          names = {(r['proper'] or '').strip().lower() for r in rows}
+          if 'sol' in names or 'sun' in names:
+              raise SystemExit('Sun must not appear in the bright-star layer')
+
+          hyg_ids = [r['hyg_id'] for r in rows]
+          if any(x == '118360' for x in hyg_ids):
+              raise SystemExit('Duplicate Capella component survived reconciliation')
+
+          alpha_cen = [r for r in rows if (r['proper'] or '').strip() == 'Alpha Centauri']
+          if len(alpha_cen) != 1:
+              raise SystemExit(f'Expected exactly one Alpha Centauri system row, got {len(alpha_cen)}')
+          if alpha_cen[0]['hyg_id'] != '71456;71453':
+              raise SystemExit('Alpha Centauri system does not preserve both HYG component ids')
+
+          ab = sum(r['in_alpha_beta_layer'] == 'yes' for r in rows)
+          non_ab = len(rows) - ab
+          print(f'Reconciled systems: {len(rows)}')
+          print(f'Already alpha/beta: {ab}')
+          print(f'New non-alpha/beta systems: {non_ab}')
+          PY
+
+      - name: Commit generated bright-star catalog
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add bright-stars-2mag.csv
+          if git diff --cached --quiet; then
+            echo "No bright-star catalog changes."
+            exit 0
+          fi
+          git commit -m "Build reconciled second-magnitude bright-star catalog"
+          git push

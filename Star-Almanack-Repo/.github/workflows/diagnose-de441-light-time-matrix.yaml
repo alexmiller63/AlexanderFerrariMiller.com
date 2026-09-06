@@ -1,0 +1,253 @@
+name: Diagnose DE441 Light-Time Matrix
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  diagnose-light-time-matrix:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out Star Almanack
+        uses: actions/checkout@v6
+
+      - name: Verify validated DE441 microkernel
+        run: |
+          test -s star-almanack-microkernel.bsp
+          ls -lh star-almanack-microkernel.bsp
+
+      - name: Install Python dependencies
+        run: |
+          python3 -m pip install --disable-pip-version-check spiceypy pyyaml
+
+      - name: Bootstrap ELP2000-82B archive
+        working-directory: star-almanack-elp82b
+        run: |
+          python lunar_elp.py bootstrap data/elp82b
+          python lunar_elp.py verify data/elp82b
+          python normalize_elp82b.py data/elp82b elp82b-manifest.json
+
+      - name: Run four-way Sun-Moon light-time diagnostic
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          python3 <<'PY' | tee de441-light-time-matrix.txt
+          from __future__ import annotations
+
+          from datetime import datetime
+          import math
+
+          import spiceypy as spice
+          import yaml
+
+          import eclipse_engine
+
+
+          KERNEL = "star-almanack-microkernel.bsp"
+          C_KM_S = 299_792.458
+
+
+          def signed_seconds(calculated: str, reference: str) -> float:
+              a = datetime.fromisoformat(calculated.replace("Z", "+00:00"))
+              b = datetime.fromisoformat(reference.replace("Z", "+00:00"))
+              return (a - b).total_seconds()
+
+
+          def format_seconds(value: float) -> str:
+              sign = "+" if value >= 0 else "-"
+              whole = int(round(abs(value)))
+              hours, rem = divmod(whole, 3600)
+              minutes, seconds = divmod(rem, 60)
+              direction = "LATE" if value > 0 else "EARLY" if value < 0 else "EXACT"
+              return f"{sign}{hours:02d}:{minutes:02d}:{seconds:02d} ({direction})"
+
+
+          spice.furnsh(KERNEL)
+
+
+          def de441_sun(jd_tdb: float, abcorr: str) -> eclipse_engine.Vec3:
+              et = (jd_tdb - 2451545.0) * 86400.0
+              position, _ = spice.spkpos(
+                  "SUN",
+                  et,
+                  "ECLIPJ2000",
+                  abcorr,
+                  "EARTH",
+              )
+              return eclipse_engine.Vec3(
+                  float(position[0]),
+                  float(position[1]),
+                  float(position[2]),
+              )
+
+
+          def geometric_sun(jd_tdb: float) -> eclipse_engine.Vec3:
+              return de441_sun(jd_tdb, "NONE")
+
+
+          def light_time_sun(jd_tdb: float) -> eclipse_engine.Vec3:
+              # CN = converged Newtonian one-way light-time correction.
+              # Stellar aberration is deliberately not included.
+              return de441_sun(jd_tdb, "CN")
+
+
+          with open("eclipse-validation-cases.yaml", "r", encoding="utf-8") as handle:
+              spec = yaml.safe_load(handle)
+
+
+          cases = []
+          for case in spec["historical"]:
+              cases.append(
+                  {
+                      "label": case["label"],
+                      "date": case["date_utc"],
+                      "reference": case["expected_greatest_utc"],
+                  }
+              )
+
+          for case in spec["future_jello"]["cases"]:
+              cases.append(
+                  {
+                      "label": case["label"],
+                      "date": case["date_utc"],
+                      "reference": case["nasa_greatest_utc"],
+                  }
+              )
+
+
+          engine = eclipse_engine.EclipseEngine()
+          original_sun_function = eclipse_engine.sun_vector_j2000
+          geometric_moon = engine.moon_vector_j2000
+
+
+          def light_time_moon(jd_tdb: float) -> eclipse_engine.Vec3:
+              """
+              Diagnostic Earth-center lunar one-way light-time correction.
+
+              Iterate the ELP2000-82B geocentric Moon to the retarded emission
+              time. This is intentionally an experimental comparison, not yet
+              a statement that this is the final eclipse-shadow convention.
+              """
+              retarded_jd = jd_tdb
+              moon = geometric_moon(retarded_jd)
+
+              for _ in range(5):
+                  light_time_seconds = moon.norm() / C_KM_S
+                  next_jd = jd_tdb - light_time_seconds / 86400.0
+                  if abs(next_jd - retarded_jd) * 86400.0 < 1.0e-9:
+                      retarded_jd = next_jd
+                      break
+                  retarded_jd = next_jd
+                  moon = geometric_moon(retarded_jd)
+
+              return geometric_moon(retarded_jd)
+
+
+          variants = [
+              ("GG", "geometric Sun + geometric Moon", geometric_sun, geometric_moon),
+              ("LG", "light-time Sun + geometric Moon", light_time_sun, geometric_moon),
+              ("GL", "geometric Sun + light-time Moon", geometric_sun, light_time_moon),
+              ("LL", "light-time Sun + light-time Moon", light_time_sun, light_time_moon),
+          ]
+
+
+          print("=" * 92)
+          print("STAR ALMANACK — DE441 / ELP2000-82B FOUR-WAY LIGHT-TIME MATRIX")
+          print("=" * 92)
+          print()
+          print("GG = geometric DE441 Sun + geometric ELP2000-82B Moon")
+          print("LG = CN light-time DE441 Sun + geometric ELP2000-82B Moon")
+          print("GL = geometric DE441 Sun + retarded-time ELP2000-82B Moon")
+          print("LL = CN light-time DE441 Sun + retarded-time ELP2000-82B Moon")
+          print()
+          print("No stellar aberration is applied.")
+          print("The lunar correction is diagnostic only; the purpose is to measure its effect")
+          print("before choosing the final physical convention for eclipse-shadow geometry.")
+          print()
+
+          try:
+              for case in cases:
+                  print("-" * 92)
+                  print(case["label"])
+                  print(f"Date:      {case['date']}")
+                  print(f"Reference: {case['reference']}")
+                  print()
+
+                  results = {}
+
+                  for code, description, sun_function, moon_function in variants:
+                      eclipse_engine.sun_vector_j2000 = sun_function
+                      engine.moon_vector_j2000 = moon_function
+
+                      event = engine.find_solar_eclipse(case["date"])
+                      residual = signed_seconds(event.greatest_utc, case["reference"])
+
+                      results[code] = {
+                          "event": event,
+                          "residual": residual,
+                          "description": description,
+                      }
+
+                  baseline_time = results["GG"]["event"].greatest_utc
+
+                  print(
+                      f"{'Code':<5} {'Greatest UTC':<22} "
+                      f"{'Residual':<24} {'Shift from GG':>14}"
+                  )
+                  print("-" * 70)
+
+                  for code, _, _, _ in variants:
+                      event = results[code]["event"]
+                      residual = results[code]["residual"]
+                      shift = signed_seconds(event.greatest_utc, baseline_time)
+                      print(
+                          f"{code:<5} {event.greatest_utc:<22} "
+                          f"{format_seconds(residual):<24} {shift:>+13.3f} s"
+                      )
+
+                  best_code = min(results, key=lambda c: abs(results[c]["residual"]))
+                  best = results[best_code]
+
+                  corrected_event = results["LL"]["event"]
+                  jd = corrected_event.geometry.jd_tdb_approx
+
+                  sun_et = (jd - 2451545.0) * 86400.0
+                  _, sun_lt = spice.spkpos(
+                      "SUN", sun_et, "ECLIPJ2000", "CN", "EARTH"
+                  )
+
+                  moon_geo = geometric_moon(jd)
+                  moon_lt = moon_geo.norm() / C_KM_S
+
+                  print()
+                  print(
+                      f"Best absolute residual: {best_code} "
+                      f"({best['description']}) = "
+                      f"{format_seconds(best['residual'])}"
+                  )
+                  print(f"Sun one-way light time near event:  {float(sun_lt):.6f} s")
+                  print(f"Moon one-way light time near event: {moon_lt:.6f} s")
+                  print()
+
+          finally:
+              eclipse_engine.sun_vector_j2000 = original_sun_function
+              engine.moon_vector_j2000 = geometric_moon
+              spice.kclear()
+
+          print("=" * 92)
+          print("DIAGNOSTIC COMPLETE")
+          print("=" * 92)
+          PY
+
+      - name: Upload diagnostic
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: de441-light-time-matrix
+          path: de441-light-time-matrix.txt
+          if-no-files-found: warn
+          retention-days: 7

@@ -1,0 +1,148 @@
+# Extended ephemeris publish: Uranus, Neptune, and Ceres
+name: Publish 2026 Weekly Pages
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - almanack-expanded.md
+      - publish_weekly_pages.py
+      - add_greek_latin_toggle.py
+      - .github/workflows/publish-2026-weekly-pages.yml
+
+permissions:
+  contents: write
+
+concurrency:
+  group: star-almanack-2026-publish
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out Star Almanack
+        uses: actions/checkout@v4
+
+      - name: Generate 53 weekly HTML pages
+        run: python publish_weekly_pages.py
+
+      - name: Add Greek Latin Bayer toggle
+        run: python add_greek_latin_toggle.py
+
+      - name: Refine portrait calendar columns
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          old = "table.calendar th:first-child,table.calendar td:first-child{width:22%}table.calendar th:nth-child(2),table.calendar td:nth-child(2){width:22%}table.calendar th:nth-child(3),table.calendar td:nth-child(3){width:56%}"
+          new = "table.calendar th:first-child,table.calendar td:first-child{width:27%}table.calendar th:nth-child(2),table.calendar td:nth-child(2){width:23%}table.calendar th:nth-child(3),table.calendar td:nth-child(3){width:50%}table.calendar td:first-child{font-size:.82rem;line-height:1.3}"
+          pages = sorted(Path('site/2026').glob('W??/index.html'))
+          for page in pages:
+              text = page.read_text(encoding='utf-8')
+              if old not in text:
+                  raise SystemExit(f'Expected portrait calendar CSS not found in {page}')
+              page.write_text(text.replace(old, new, 1), encoding='utf-8')
+          print('Refined portrait calendar to 27% date, 23% zodiac, 50% events')
+          PY
+
+      - name: Add Kilroy deployment diagnostic to W01
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          page = Path('site/2026/W01/index.html')
+          text = page.read_text(encoding='utf-8')
+          marker = '<p id="kilroy-deployment-diagnostic" style="text-align:center;font-family:system-ui,sans-serif;font-weight:700;border:2px solid currentColor;padding:.5rem;margin:1rem 0">KILROY WAS HERE — BUILD 2026-09-05 02:12 PDT</p>'
+          text = text.replace('<main class="wrap">', '<main class="wrap">' + marker, 1)
+          page.write_text(text, encoding='utf-8')
+          PY
+
+      - name: Add Kilroy deployment diagnostic to W41
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          page = Path('site/2026/W41/index.html')
+          text = page.read_text(encoding='utf-8')
+          marker = '<p id="kilroy-w41-deployment-diagnostic" style="text-align:center;font-family:system-ui,sans-serif;font-weight:700;border:2px solid currentColor;padding:.5rem;margin:1rem 0">KILROY WAS HERE — W41 EXTENDED EPHEMERIS</p>'
+          text = text.replace('<main class="wrap">', '<main class="wrap">' + marker, 1)
+          page.write_text(text, encoding='utf-8')
+          PY
+
+      - name: Validate publishing output
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+
+          root = Path('site/2026')
+          pages = sorted(root.glob('W??/index.html'))
+          assert len(pages) == 53, f'Expected 53 weekly pages, found {len(pages)}'
+          expected = [f'W{i:02d}' for i in range(1, 54)]
+          actual = [p.parent.name for p in pages]
+          assert actual == expected, (actual[:3], actual[-3:])
+          assert (root / 'index.html').exists(), 'Missing 2026 index page'
+
+          for i, page in enumerate(pages, 1):
+              text = page.read_text(encoding='utf-8')
+              assert f'ISO 2026-W{i:02d}' in text, page
+              assert '<table class="calendar">' in text, f'Weekly calendar table missing in {page}'
+              assert 'All weeks' in text, f'Index navigation missing in {page}'
+              if i > 1:
+                  assert f'../W{i-1:02d}/' in text, f'Previous-week navigation missing in {page}'
+              if i < 53:
+                  assert f'../W{i+1:02d}/' in text, f'Next-week navigation missing in {page}'
+
+              assert 'Best visibility:' not in text, f'Obsolete Best visibility label in {page}'
+              assert 'width:16%' in text, f'Narrow desktop date width missing in {page}'
+              assert 'width:8%' in text, f'Narrow desktop zodiac width missing in {page}'
+              assert 'width:27%' in text, f'Refined portrait date width missing in {page}'
+              assert 'width:23%' in text, f'Refined portrait zodiac width missing in {page}'
+              assert 'width:50%' in text, f'Refined portrait events width missing in {page}'
+              assert 'font-size:.82rem;line-height:1.3' in text, f'Compact portrait date typography missing in {page}'
+              assert '.zodiac-day .notation-item{display:block;white-space:pre-line}' in text, f'Three-row zodiac notation layout missing in {page}'
+              assert '.zodiac-day .zodiac-day-number{display:block;margin:0}' in text, f'Zodiac day number row missing in {page}'
+              assert "s.dataset.mixed=x+VS+'\\n'+z[x]" in text, f'Mixed zodiac glyph/name line break missing in {page}'
+              assert 'white-space:normal;text-align:center;font-size:.86rem' in text, f'Portrait zodiac wrapping rule missing in {page}'
+              assert 'data-bayer-mode="greek"' in text, f'Greek notation toggle missing in {page}'
+              assert 'data-bayer-mode="latin"' in text, f'Latin notation toggle missing in {page}'
+              assert 'data-bayer-mode="mixed"' in text, f'Mixed learner notation toggle missing in {page}'
+              assert 'Greek/Symbols' in text, f'Greek/Symbols label missing in {page}'
+              assert 'Mixed Learner' in text, f'Mixed Learner label missing in {page}'
+              assert "'β':'Beta'" in text, f'Full Greek-letter-name mapping missing in {page}'
+              assert "Cen:'Centauri'" in text, f'Full constellation genitive mapping missing in {page}'
+              assert "'♒':'Aquarius'" in text, f'Full zodiac-name mapping missing in {page}'
+              assert "'☉':'Sun'" in text and "'♄':'Saturn'" in text, f'Full ephemeris-body mapping missing in {page}'
+              assert '© 2026 Alexander Ferrari Miller. All rights reserved.' in text, f'Copyright footer missing in {page}'
+
+          w01 = (root / 'W01' / 'index.html').read_text(encoding='utf-8')
+          assert 'KILROY WAS HERE — BUILD 2026-09-05 02:12 PDT' in w01, 'Kilroy deployment diagnostic missing from W01'
+
+          w41 = (root / 'W41' / 'index.html').read_text(encoding='utf-8')
+          assert 'KILROY WAS HERE — W41 EXTENDED EPHEMERIS' in w41, 'Kilroy deployment diagnostic missing from W41'
+          assert '♅ Uranus' in w41 and '♆ Neptune' in w41 and '⚳ Ceres' in w41, 'Extended targets missing from W41'
+
+          w33 = (root / 'W33' / 'index.html').read_text(encoding='utf-8')
+          assert 'Summer Triangle' in w33, 'Summer Triangle asterism note missing from W33'
+          assert 'Perseids' in w33 and 'August 13' in w33, 'Perseid meteor-shower note missing from W33'
+
+          w53 = (root / 'W53' / 'index.html').read_text(encoding='utf-8')
+          assert 'Expanded α and β Star Catalog' not in w53, 'Catalog leaked into W53'
+
+          index = (root / 'index.html').read_text(encoding='utf-8')
+          links = re.findall(r'href="W\d{2}/"', index)
+          assert len(links) == 53, f'Expected 53 week links on index, found {len(links)}'
+          print('Verified 53 weekly pages with W41 Kilroy and extended ephemeris')
+          PY
+
+      - name: Commit published pages
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add site/2026
+          if git diff --cached --quiet; then
+            echo "No publishing changes."
+            exit 0
+          fi
+          git commit -m "Publish 53 weekly Star Almanack pages"
+          git pull --rebase origin main
+          git push

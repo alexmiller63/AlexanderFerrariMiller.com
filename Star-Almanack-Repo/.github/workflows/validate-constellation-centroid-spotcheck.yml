@@ -1,0 +1,49 @@
+name: Validate Constellation Centroid Spotcheck
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'validate_constellation_centroid_spotcheck.py'
+      - 'compute_constellation_observance_2026.py'
+      - 'compute_bayer_visibility_2026.py'
+      - '.github/workflows/validate-constellation-centroid-spotcheck.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Run high-resolution centroid spot-check
+        run: python validate_constellation_centroid_spotcheck.py
+
+      - name: Verify result shape
+        run: |
+          python - <<'PY'
+          import csv
+          with open('constellation-centroid-spotcheck-2026.csv', newline='', encoding='utf-8') as f:
+              rows = list(csv.DictReader(f))
+          assert len(rows) == 15, len(rows)
+          assert len({r['abbr'] for r in rows}) == 15
+          print('Centroid high-resolution spot-check shape: 15/15 PASS')
+          PY
+
+      - name: Commit spot-check table
+        run: |
+          if [ -z "$(git status --porcelain -- constellation-centroid-spotcheck-2026.csv)" ]; then
+            echo 'No generated changes.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add constellation-centroid-spotcheck-2026.csv
+          git commit -m 'Build constellation centroid spot-check table'
+          git push

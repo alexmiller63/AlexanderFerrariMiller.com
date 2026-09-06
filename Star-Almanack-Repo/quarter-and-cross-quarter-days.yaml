@@ -1,0 +1,107 @@
+edition: 2026
+
+title: "Quarter and Cross-Quarter Days — 2026"
+
+definition:
+  frame: geocentric
+  zodiac: tropical
+  longitude: apparent_solar_ecliptic_longitude
+  description: >
+    Star Almanack treats the seasonal year as eight equally spaced solar stations.
+    The four quarter points are the equinoxes and solstices at 0°, 90°, 180°, and
+    270° apparent geocentric solar longitude. The four cross-quarter points fall
+    halfway between them at 45°, 135°, 225°, and 315°.
+
+naming_note: >
+  The festival names below are traditional or modern traditional associations
+  with the eightfold seasonal "Wheel of the Year." Usage and historical origin
+  vary by culture and period. In particular, the exact astronomical instants do
+  not necessarily coincide with historical or modern civil festival dates.
+
+seasonal_stations:
+
+  - longitude: 315°
+    kind: cross-quarter
+    astronomical_name: "Winter–Spring midpoint"
+    traditional_name: "Imbolc"
+    related_names:
+      - "St. Brigid's Day"
+      - "Candlemas"
+    utc: "2026-02-03T20:02:08Z"
+    iso: "2026-W06-2"
+
+  - longitude: 0°
+    kind: quarter
+    astronomical_name: "March equinox"
+    traditional_name: "Ostara"
+    related_names:
+      - "Spring equinox"
+      - "Vernal equinox"
+    utc: "2026-03-20T14:45:58Z"
+    iso: "2026-W12-5"
+
+  - longitude: 45°
+    kind: cross-quarter
+    astronomical_name: "Spring–Summer midpoint"
+    traditional_name: "Beltane"
+    related_names:
+      - "May Day"
+    utc: "2026-05-05T11:48:44Z"
+    iso: "2026-W19-2"
+
+  - longitude: 90°
+    kind: quarter
+    astronomical_name: "June solstice"
+    traditional_name: "Litha"
+    related_names:
+      - "Midsummer"
+      - "Summer solstice"
+    utc: "2026-06-21T08:24:31Z"
+    iso: "2026-W25-7"
+
+  - longitude: 135°
+    kind: cross-quarter
+    astronomical_name: "Summer–Autumn midpoint"
+    traditional_name: "Lughnasadh"
+    related_names:
+      - "Lughnasa"
+      - "Lammas"
+    utc: "2026-08-07T11:42:45Z"
+    iso: "2026-W32-5"
+
+  - longitude: 180°
+    kind: quarter
+    astronomical_name: "September equinox"
+    traditional_name: "Mabon"
+    related_names:
+      - "Autumn equinox"
+      - "Autumnal equinox"
+    utc: "2026-09-23T00:05:13Z"
+    iso: "2026-W39-3"
+
+  - longitude: 225°
+    kind: cross-quarter
+    astronomical_name: "Autumn–Winter midpoint"
+    traditional_name: "Samhain"
+    related_names:
+      - "All Hallows season"
+    utc: "2026-11-07T09:52:05Z"
+    iso: "2026-W45-6"
+
+  - longitude: 270°
+    kind: quarter
+    astronomical_name: "December solstice"
+    traditional_name: "Yule"
+    related_names:
+      - "Midwinter"
+      - "Winter solstice"
+    utc: "2026-12-21T20:50:15Z"
+    iso: "2026-W52-1"
+
+validation:
+  quarter_points: >
+    The 0°, 90°, 180°, and 270° times are the Star Almanack 2026 solar-ingress
+    calculations already preserved in ISO2026.md.
+  cross_quarter_points: >
+    The 45°, 135°, 225°, and 315° values use the same apparent-geocentric
+    solar-longitude convention as the zodiac ingresses.

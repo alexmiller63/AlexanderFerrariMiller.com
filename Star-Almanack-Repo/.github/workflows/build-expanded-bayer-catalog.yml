@@ -1,0 +1,74 @@
+name: Build Expanded Bayer Catalog
+
+"on":
+  workflow_dispatch:
+  push:
+    paths:
+      - build_bayer_catalog.py
+      - compute_bayer_visibility_2026.py
+      - bayer-supplement.csv
+      - .github/workflows/build-expanded-bayer-catalog.yml
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out Star Almanack
+        uses: actions/checkout@v4
+
+      - name: Fetch pinned HYG v4.1 catalog
+        run: |
+          curl -fL \
+            https://raw.githubusercontent.com/astronexus/HYG-Database/3bf37f4b2d5460e1278286320d1d62fab9b493c1/hyg/CURRENT/hygdata_v41.csv \
+            -o /tmp/hygdata_v41.csv
+
+      - name: Build alpha beta catalog
+        run: python build_bayer_catalog.py /tmp/hygdata_v41.csv expanded-bayer-stars.csv --supplement bayer-supplement.csv
+
+      - name: Validate catalog coverage
+        run: |
+          python - <<'PY'
+          import csv
+          from collections import Counter
+
+          with open('expanded-bayer-stars.csv', newline='', encoding='utf-8') as f:
+              rows = list(csv.DictReader(f))
+
+          if not rows:
+              raise SystemExit('Catalog is empty')
+
+          counts = Counter(r['greek'] for r in rows)
+          if counts['α'] == 0 or counts['β'] == 0:
+              raise SystemExit(f'Missing alpha or beta stars: {counts}')
+
+          systems = {(r['greek'], r['con']) for r in rows}
+          designations = {(r['bayer_code'], r['con']) for r in rows}
+          if len(rows) != 177:
+              raise SystemExit(f'Expected 177 audited Bayer rows, found {len(rows)}')
+          if len(designations) != 175:
+              raise SystemExit(f'Expected 175 distinct Bayer designations, found {len(designations)}')
+          print(f"Rows: {len(rows)}")
+          print(f"Alpha rows: {counts['α']}")
+          print(f"Beta rows: {counts['β']}")
+          print(f"Constellation-letter systems: {len(systems)}")
+          print(f"Distinct Bayer designations: {len(designations)}")
+          PY
+
+      - name: Compute 2026 best visibility
+        run: python compute_bayer_visibility_2026.py expanded-bayer-stars.csv expanded-bayer-visibility-2026.csv
+
+      - name: Commit generated Bayer catalog
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add expanded-bayer-stars.csv expanded-bayer-visibility-2026.csv
+          if git diff --cached --quiet; then
+            echo "No Bayer catalog changes."
+            exit 0
+          fi
+          git commit -m "Build complete alpha beta Bayer catalog"
+          git push

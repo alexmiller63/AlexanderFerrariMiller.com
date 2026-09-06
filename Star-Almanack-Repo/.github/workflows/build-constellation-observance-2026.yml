@@ -1,0 +1,65 @@
+name: Build Constellation Observance 2026
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'compute_constellation_observance_2026.py'
+      - 'compute_bayer_visibility_2026.py'
+      - 'validate_constellation_centroid_convergence.py'
+      - '.github/workflows/build-constellation-observance-2026.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Compute 88 constellation Nights of Observance
+        run: python compute_constellation_observance_2026.py
+
+      - name: Run centroid convergence validation through 0.025 degrees
+        run: python validate_constellation_centroid_convergence.py
+
+      - name: Verify results
+        run: |
+          python - <<'PY'
+          import csv
+          import datetime as dt
+
+          with open('constellation-observance-2026.csv', newline='', encoding='utf-8') as f:
+              rows = list(csv.DictReader(f))
+
+          assert len(rows) == 88, len(rows)
+          assert len({r['abbr'] for r in rows}) == 88
+          for row in rows:
+              d = dt.date.fromisoformat(row['best_date'])
+              assert d.isocalendar().year == 2026, (row['abbr'], d)
+
+          with open('constellation-centroid-convergence-2026.csv', newline='', encoding='utf-8') as f:
+              convergence = list(csv.DictReader(f))
+          assert len(convergence) == 88, len(convergence)
+          assert 'ra_h_0.025' in convergence[0]
+          assert 'centroid_shift_deg_0.05_to_0.025' in convergence[0]
+          assert 'date_shift_days_0.05_to_0.025' in convergence[0]
+          print('Constellation observance and centroid convergence verification: 88/88 PASS')
+          PY
+
+      - name: Commit generated tables
+        run: |
+          if [ -z "$(git status --porcelain -- constellation-observance-2026.csv constellation-centroid-convergence-2026.csv)" ]; then
+            echo 'No generated changes.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add constellation-observance-2026.csv constellation-centroid-convergence-2026.csv
+          git commit -m 'Refresh 2026 constellation observance validation'
+          git push

@@ -1,0 +1,61 @@
+name: Render Observer Views
+
+"on":
+  workflow_dispatch:
+  push:
+    paths:
+      - render_observer_views.py
+      - fixed-objects.yaml
+      - .github/workflows/render-observer-views.yml
+
+permissions:
+  contents: write
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out Star Almanack
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install renderer dependency
+        run: python -m pip install matplotlib
+
+      - name: Fetch pinned HYG v4.1 catalog
+        run: |
+          curl -fL \
+            https://raw.githubusercontent.com/astronexus/HYG-Database/3bf37f4b2d5460e1278286320d1d62fab9b493c1/hyg/CURRENT/hygdata_v41.csv \
+            -o /tmp/hygdata_v41.csv
+
+      - name: Render M35 prototype views
+        run: |
+          python render_observer_views.py M35 /tmp/hygdata_v41.csv \
+            --view all \
+            --out-dir observer-views/M35 \
+            --format svg
+
+      - name: Validate outputs
+        run: |
+          test -s observer-views/M35/M35-finder.svg
+          test -s observer-views/M35/M35-binoculars.svg
+          test -s observer-views/M35/M35-telescope.svg
+
+      - name: Commit generated SVG views
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add observer-views/M35/*.svg
+          if git diff --cached --quiet; then
+            echo "No observer-view changes."
+            exit 0
+          fi
+          git commit -m "Render M35 finder binocular and telescope views"
+          git push
+
+# Trigger regeneration after finder framing refinement.

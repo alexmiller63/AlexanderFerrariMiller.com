@@ -1,0 +1,73 @@
+name: Build Bright-Star Visibility 2026
+
+"on":
+  workflow_dispatch:
+  push:
+    paths:
+      - compute_bright_star_visibility_2026.py
+      - compute_bayer_visibility_2026.py
+      - bright-stars-2mag.csv
+      - .github/workflows/build-bright-star-visibility.yml
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out Star Almanack
+        uses: actions/checkout@v4
+
+      - name: Compute bright-star best-visibility dates
+        run: python compute_bright_star_visibility_2026.py bright-stars-2mag.csv bright-star-visibility-2026.csv
+
+      - name: Validate dated bright-star systems
+        run: |
+          python - <<'PY'
+          import csv
+          import datetime as dt
+
+          with open('bright-star-visibility-2026.csv', newline='', encoding='utf-8') as f:
+              rows = list(csv.DictReader(f))
+
+          if len(rows) != 92:
+              raise SystemExit(f'Expected 92 reconciled stellar systems, got {len(rows)}')
+          new_rows = [r for r in rows if r['new_non_alpha_beta'] == 'yes']
+          if len(new_rows) != 41:
+              raise SystemExit(f'Expected 41 new non-alpha/beta systems, got {len(new_rows)}')
+
+          bad_iso = []
+          for row in rows:
+              d = dt.date.fromisoformat(row['best_date'])
+              iso = d.isocalendar()
+              if iso.year != 2026:
+                  bad_iso.append((row.get('proper') or row.get('bayer'), row['best_date'], row['iso']))
+          if bad_iso:
+              raise SystemExit(f'Rows outside ISO 2026: {bad_iso}')
+
+          names = {(r.get('proper') or '').strip() for r in rows}
+          for required in ('Polaris', 'Alioth', 'Alpha Centauri'):
+              if required not in names:
+                  raise SystemExit(f'Missing required bright-star system: {required}')
+
+          if any('.' in r['mag_class'] for r in rows):
+              raise SystemExit('Almanack magnitude class must be whole-number display notation')
+
+          print('Bright-star system count: 92')
+          print('New non-alpha/beta dated systems: 41')
+          print('All best dates fall inside ISO 2026')
+          PY
+
+      - name: Commit generated bright-star visibility catalog
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add bright-star-visibility-2026.csv
+          if git diff --cached --quiet; then
+            echo "No bright-star visibility changes."
+            exit 0
+          fi
+          git commit -m "Build 2026 bright-star visibility catalog"
+          git push

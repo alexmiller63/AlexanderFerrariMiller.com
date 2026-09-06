@@ -1,0 +1,138 @@
+name: Diagnose DE441 Eclipse Timescale
+
+on:
+  workflow_dispatch:
+
+jobs:
+  diagnose-eclipse-timescale:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out Star Almanack
+        uses: actions/checkout@v6
+
+      - name: Create debug file
+        run: |
+          echo "DE441 ECLIPSE TIMESCALE DIAGNOSTIC" > debug.txt
+          echo "Workflow started." >> debug.txt
+
+      - name: Install Python dependencies
+        run: python3 -m pip install --disable-pip-version-check spiceypy pyyaml
+
+      - name: Download NAIF leap-seconds kernel
+        run: |
+          {
+            echo
+            echo "===== NAIF leap-seconds kernel download ====="
+            curl -L https://naif.jpl.nasa.gov/pub/naif/generic_kernels/lsk/naif0012.tls -o naif0012.tls
+            test -s naif0012.tls
+            ls -lh naif0012.tls
+          } 2>&1 | tee -a debug.txt
+
+      - name: Run narrow eclipse timescale diagnostic
+        if: always()
+        run: |
+          python3 <<'PY' 2>&1 | tee -a debug.txt
+          import spiceypy as spice
+          import yaml
+          import eclipse_engine
+
+          LSK = "naif0012.tls"
+          J2000_JD = 2451545.0
+          SECONDS_PER_DAY = 86400.0
+          TARGET_KEYS = {"expected_greatest_utc", "nasa_greatest_utc"}
+
+          print("===== TIMESCALE DIAGNOSTIC =====")
+
+          try:
+              spice.furnsh(LSK)
+
+              with open("eclipse-validation-cases.yaml", "r") as f:
+                  data = yaml.safe_load(f)
+
+              found = 0
+
+              def compare_utc(label, utc):
+                  global found
+                  found += 1
+
+                  try:
+                      # The engine function expects a Julian Date, not a UTC string.
+                      year = int(utc[0:4])
+                      month = int(utc[5:7])
+                      day = int(utc[8:10])
+                      hour = int(utc[11:13])
+                      minute = int(utc[14:16])
+                      second = float(utc[17:19])
+                      fractional_hour = hour + minute / 60.0 + second / 3600.0
+
+                      jd_utc = eclipse_engine.gregorian_to_jd(
+                          year, month, day, fractional_hour
+                      )
+                      engine_jd_tdb = eclipse_engine.utc_to_tdb_approx(jd_utc)
+
+                      # SPICE str2et() returns TDB seconds past J2000.
+                      spice_et = spice.str2et(utc)
+                      spice_jd_tdb = J2000_JD + spice_et / SECONDS_PER_DAY
+
+                      difference_seconds = (
+                          engine_jd_tdb - spice_jd_tdb
+                      ) * SECONDS_PER_DAY
+
+                      print()
+                      print("field:", label)
+                      print("UTC:", utc)
+                      print("engine JD UTC:", f"{jd_utc:.12f}")
+                      print("engine JD TDB:", f"{engine_jd_tdb:.12f}")
+                      print("SPICE ET/TDB seconds past J2000:", f"{spice_et:.6f}")
+                      print("SPICE JD TDB:", f"{spice_jd_tdb:.12f}")
+                      print("engine - SPICE (seconds):", f"{difference_seconds:.6f}")
+
+                  except Exception as exc:
+                      print()
+                      print("field:", label)
+                      print("UTC:", utc)
+                      print("ERROR:", repr(exc))
+
+              def walk(obj):
+                  if isinstance(obj, dict):
+                      for key, value in obj.items():
+                          if key in TARGET_KEYS and isinstance(value, str):
+                              compare_utc(key, value)
+                          else:
+                              walk(value)
+
+                  elif isinstance(obj, list):
+                      for value in obj:
+                          walk(value)
+
+              walk(data)
+
+              print()
+              print("timestamps compared:", found)
+
+              if found == 0:
+                  raise RuntimeError(
+                      "No expected_greatest_utc or nasa_greatest_utc fields found"
+                  )
+
+          except Exception as exc:
+              print("DIAGNOSTIC SETUP ERROR:", repr(exc))
+              raise
+
+          finally:
+              spice.kclear()
+          PY
+
+      - name: Show debug file
+        if: always()
+        run: cat debug.txt || true
+
+      - name: Upload debug.txt
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eclipse-timescale-debug
+          path: debug.txt
+          if-no-files-found: error
+          retention-days: 7

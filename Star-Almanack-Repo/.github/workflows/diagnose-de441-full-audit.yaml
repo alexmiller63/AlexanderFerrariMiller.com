@@ -1,0 +1,630 @@
+name: Diagnose DE441 Full Eclipse Audit
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  diagnose-full-audit:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out Star Almanack
+        uses: actions/checkout@v6
+
+      - name: Verify validated DE441 microkernel
+        run: |
+          test -s star-almanack-microkernel.bsp
+          ls -lh star-almanack-microkernel.bsp
+
+      - name: Install Python dependencies
+        run: |
+          python3 -m pip install --disable-pip-version-check spiceypy pyyaml
+
+      - name: Download NAIF leap-seconds kernel
+        run: |
+          wget -q \
+            "https://naif.jpl.nasa.gov/pub/naif/generic_kernels/lsk/naif0012.tls" \
+            -O naif0012.tls
+          test -s naif0012.tls
+          ls -lh naif0012.tls
+
+      - name: Bootstrap ELP2000-82B archive
+        working-directory: star-almanack-elp82b
+        run: |
+          python lunar_elp.py bootstrap data/elp82b
+          python lunar_elp.py verify data/elp82b
+          python normalize_elp82b.py data/elp82b elp82b-manifest.json
+
+      - name: Run comprehensive eclipse audit
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          python3 <<'PY' | tee de441-eclipse-full-audit.txt
+          from __future__ import annotations
+
+          from datetime import datetime, timezone
+          import math
+
+          import spiceypy as spice
+          import yaml
+
+          import eclipse_engine
+
+
+          BSP = "star-almanack-microkernel.bsp"
+          LSK = "naif0012.tls"
+          DAY_S = 86400.0
+          RAD_TO_DEG = 180.0 / math.pi
+          RAD_TO_ARCSEC = RAD_TO_DEG * 3600.0
+
+
+          def iso_to_datetime(text: str) -> datetime:
+              return datetime.fromisoformat(text.replace("Z", "+00:00"))
+
+
+          def signed_seconds(a: str, b: str) -> float:
+              return (iso_to_datetime(a) - iso_to_datetime(b)).total_seconds()
+
+
+          def iso_to_jd(text: str) -> float:
+              dt = iso_to_datetime(text).astimezone(timezone.utc)
+              hour = (
+                  dt.hour
+                  + dt.minute / 60.0
+                  + dt.second / 3600.0
+                  + dt.microsecond / 3_600_000_000.0
+              )
+              return eclipse_engine.gregorian_to_jd(
+                  dt.year,
+                  dt.month,
+                  dt.day,
+                  hour,
+              )
+
+
+          def vec_norm(v):
+              return math.sqrt(v.x * v.x + v.y * v.y + v.z * v.z)
+
+
+          def longitude_latitude(v):
+              r = vec_norm(v)
+              lon = math.atan2(v.y, v.x) * RAD_TO_DEG
+              if lon < 0.0:
+                  lon += 360.0
+              lat = math.asin(v.z / r) * RAD_TO_DEG
+              return lon, lat, r
+
+
+          def angular_separation(a, b):
+              dot = a.x * b.x + a.y * b.y + a.z * b.z
+              na = vec_norm(a)
+              nb = vec_norm(b)
+              c = dot / (na * nb)
+              c = max(-1.0, min(1.0, c))
+              return math.acos(c)
+
+
+          def delta_angle_deg(a, b):
+              d = a - b
+              while d > 180.0:
+                  d -= 360.0
+              while d < -180.0:
+                  d += 360.0
+              return d
+
+
+          def decimal_year(text):
+              dt = iso_to_datetime(text)
+              start = datetime(dt.year, 1, 1, tzinfo=timezone.utc)
+              end = datetime(dt.year + 1, 1, 1, tzinfo=timezone.utc)
+              return dt.year + (dt - start).total_seconds() / (
+                  end - start
+              ).total_seconds()
+
+
+          spice.furnsh(LSK)
+          spice.furnsh(BSP)
+
+
+          def de441_sun(jd_tdb):
+              et = (jd_tdb - 2451545.0) * DAY_S
+              p, _ = spice.spkpos(
+                  "SUN",
+                  et,
+                  "ECLIPJ2000",
+                  "NONE",
+                  "EARTH",
+              )
+
+              return eclipse_engine.Vec3(
+                  float(p[0]),
+                  float(p[1]),
+                  float(p[2]),
+              )
+
+
+          with open(
+              "eclipse-validation-cases.yaml",
+              "r",
+              encoding="utf-8",
+          ) as handle:
+              spec = yaml.safe_load(handle)
+
+
+          cases = []
+
+          for case in spec["historical"]:
+              cases.append(
+                  {
+                      "group": "historical",
+                      "label": case["label"],
+                      "date": case["date_utc"],
+                      "reference": case["expected_greatest_utc"],
+                  }
+              )
+
+          for case in spec["future_jello"]["cases"]:
+              cases.append(
+                  {
+                      "group": "future",
+                      "label": case["label"],
+                      "date": case["date_utc"],
+                      "reference": case["nasa_greatest_utc"],
+                  }
+              )
+
+
+          engine = eclipse_engine.EclipseEngine()
+
+          original_sun = eclipse_engine.sun_vector_j2000
+          eclipse_engine.sun_vector_j2000 = de441_sun
+
+
+          def audit_instant(label, jd_utc):
+              g = engine.geometry_at_utc_jd(jd_utc)
+
+              sun_lon, sun_lat, sun_r = longitude_latitude(g.sun)
+              moon_lon, moon_lat, moon_r = longitude_latitude(g.moon)
+
+              sep = angular_separation(g.sun, g.moon)
+
+              dt = 1.0 / DAY_S
+
+              gm = engine.geometry_at_utc_jd(jd_utc - dt)
+              gp = engine.geometry_at_utc_jd(jd_utc + dt)
+
+              axis_rate = (
+                  gp.axis_distance_km - gm.axis_distance_km
+              ) / 2.0
+
+              q_rate = (
+                  gp.q_min_km - gm.q_min_km
+              ) / 2.0
+
+              sm_lon_m, _, _ = longitude_latitude(gm.sun)
+              sm_lon_p, _, _ = longitude_latitude(gp.sun)
+
+              mm_lon_m, _, _ = longitude_latitude(gm.moon)
+              mm_lon_p, _, _ = longitude_latitude(gp.moon)
+
+              sun_lon_rate = delta_angle_deg(sm_lon_p, sm_lon_m) / 2.0
+              moon_lon_rate = delta_angle_deg(mm_lon_p, mm_lon_m) / 2.0
+              relative_lon_rate = moon_lon_rate - sun_lon_rate
+
+              engine_jd_tdb = eclipse_engine.utc_to_tdb_approx(jd_utc)
+
+              utc_string = eclipse_engine.jd_to_iso_utc(jd_utc)
+              spice_et = spice.str2et(utc_string)
+              spice_jd_tdb = 2451545.0 + spice_et / DAY_S
+
+              tdb_difference_seconds = (
+                  engine_jd_tdb - spice_jd_tdb
+              ) * DAY_S
+
+              return {
+                  "label": label,
+                  "jd_utc": jd_utc,
+                  "utc": utc_string,
+
+                  "engine_jd_tdb": engine_jd_tdb,
+                  "spice_jd_tdb": spice_jd_tdb,
+                  "tdb_difference_seconds": tdb_difference_seconds,
+
+                  "sun": g.sun,
+                  "moon": g.moon,
+
+                  "sun_lon": sun_lon,
+                  "sun_lat": sun_lat,
+                  "sun_r": sun_r,
+
+                  "moon_lon": moon_lon,
+                  "moon_lat": moon_lat,
+                  "moon_r": moon_r,
+
+                  "separation_arcsec": sep * RAD_TO_ARCSEC,
+
+                  "sun_moon_distance_km": g.sun_moon_distance_km,
+                  "q_min_km": g.q_min_km,
+                  "axis_distance_km": g.axis_distance_km,
+                  "core_radius_km": g.core_radius_km,
+                  "penumbra_radius_km": g.penumbra_radius_km,
+                  "eclipse_margin_km": g.eclipse_margin_km,
+                  "central_margin_km": g.central_margin_km,
+
+                  "axis_rate_km_s": axis_rate,
+                  "q_rate_km_s": q_rate,
+                  "sun_lon_rate_deg_s": sun_lon_rate,
+                  "moon_lon_rate_deg_s": moon_lon_rate,
+                  "relative_lon_rate_deg_s": relative_lon_rate,
+
+                  "eclipse_exists": g.eclipse_exists,
+                  "eclipse_type": g.eclipse_type,
+              }
+
+
+          def print_vec(name, v):
+              print(
+                  f"{name:<22}"
+                  f" x={v.x:+17.6f}"
+                  f" y={v.y:+17.6f}"
+                  f" z={v.z:+17.6f}"
+                  f" km"
+              )
+
+
+          def print_instant(a):
+              print(f"  UTC                         {a['utc']}")
+              print(f"  JD UTC                      {a['jd_utc']:.12f}")
+              print(
+                  f"  Engine JD TDB approx        "
+                  f"{a['engine_jd_tdb']:.12f}"
+              )
+              print(
+                  f"  SPICE JD TDB                "
+                  f"{a['spice_jd_tdb']:.12f}"
+              )
+              print(
+                  f"  Engine-minus-SPICE TDB      "
+                  f"{a['tdb_difference_seconds']:+.6f} s"
+              )
+
+              print_vec("  Sun J2000", a["sun"])
+              print_vec("  Moon J2000", a["moon"])
+
+              print(
+                  f"  Sun longitude               "
+                  f"{a['sun_lon']:.12f} deg"
+              )
+              print(
+                  f"  Sun latitude                "
+                  f"{a['sun_lat']:+.12f} deg"
+              )
+              print(
+                  f"  Sun distance                "
+                  f"{a['sun_r']:.6f} km"
+              )
+
+              print(
+                  f"  Moon longitude              "
+                  f"{a['moon_lon']:.12f} deg"
+              )
+              print(
+                  f"  Moon latitude               "
+                  f"{a['moon_lat']:+.12f} deg"
+              )
+              print(
+                  f"  Moon distance               "
+                  f"{a['moon_r']:.6f} km"
+              )
+
+              print(
+                  f"  Sun-Moon angular separation "
+                  f"{a['separation_arcsec']:.6f} arcsec"
+              )
+
+              print(
+                  f"  Sun-Moon vector distance    "
+                  f"{a['sun_moon_distance_km']:.6f} km"
+              )
+              print(
+                  f"  q_min                       "
+                  f"{a['q_min_km']:.6f} km"
+              )
+              print(
+                  f"  Axis distance               "
+                  f"{a['axis_distance_km']:.6f} km"
+              )
+              print(
+                  f"  Core radius                 "
+                  f"{a['core_radius_km']:.6f} km"
+              )
+              print(
+                  f"  Penumbra radius             "
+                  f"{a['penumbra_radius_km']:.6f} km"
+              )
+              print(
+                  f"  Eclipse margin              "
+                  f"{a['eclipse_margin_km']:+.6f} km"
+              )
+              print(
+                  f"  Central margin              "
+                  f"{a['central_margin_km']:+.6f} km"
+              )
+
+              print(
+                  f"  d(axis distance)/dt         "
+                  f"{a['axis_rate_km_s']:+.9f} km/s"
+              )
+              print(
+                  f"  d(q_min)/dt                 "
+                  f"{a['q_rate_km_s']:+.9f} km/s"
+              )
+              print(
+                  f"  Sun longitude rate          "
+                  f"{a['sun_lon_rate_deg_s']:+.12f} deg/s"
+              )
+              print(
+                  f"  Moon longitude rate         "
+                  f"{a['moon_lon_rate_deg_s']:+.12f} deg/s"
+              )
+              print(
+                  f"  Relative longitude rate     "
+                  f"{a['relative_lon_rate_deg_s']:+.12f} deg/s"
+              )
+
+              print(
+                  f"  Eclipse exists              "
+                  f"{a['eclipse_exists']}"
+              )
+              print(
+                  f"  Eclipse type                "
+                  f"{a['eclipse_type']}"
+              )
+
+
+          def print_difference(ref, calc, timing_error):
+              print("  REFERENCE -> CALCULATED DIFFERENCES")
+              print(
+                  f"  Timing                       "
+                  f"{timing_error:+.3f} s"
+              )
+              print(
+                  f"  Axis distance               "
+                  f"{calc['axis_distance_km'] - ref['axis_distance_km']:+.6f} km"
+              )
+              print(
+                  f"  q_min                       "
+                  f"{calc['q_min_km'] - ref['q_min_km']:+.6f} km"
+              )
+              print(
+                  f"  Sun longitude               "
+                  f"{delta_angle_deg(calc['sun_lon'], ref['sun_lon']):+.9f} deg"
+              )
+              print(
+                  f"  Moon longitude              "
+                  f"{delta_angle_deg(calc['moon_lon'], ref['moon_lon']):+.9f} deg"
+              )
+              print(
+                  f"  Sun latitude                "
+                  f"{calc['sun_lat'] - ref['sun_lat']:+.9f} deg"
+              )
+              print(
+                  f"  Moon latitude               "
+                  f"{calc['moon_lat'] - ref['moon_lat']:+.9f} deg"
+              )
+              print(
+                  f"  Angular separation          "
+                  f"{calc['separation_arcsec'] - ref['separation_arcsec']:+.6f} arcsec"
+              )
+              print(
+                  f"  Moon distance               "
+                  f"{calc['moon_r'] - ref['moon_r']:+.6f} km"
+              )
+              print(
+                  f"  Sun distance                "
+                  f"{calc['sun_r'] - ref['sun_r']:+.6f} km"
+              )
+              print(
+                  f"  Engine-SPICE TDB difference "
+                  f"{calc['tdb_difference_seconds']:+.6f} s"
+              )
+
+
+          print("=" * 104)
+          print("STAR ALMANACK — DE441 / ELP2000-82B FULL ECLIPSE AUDIT")
+          print("=" * 104)
+          print()
+          print("Purpose:")
+          print("  Locate the first measurable divergence associated with the")
+          print("  remaining greatest-eclipse timing residual.")
+          print()
+          print("This diagnostic makes NO corrections to the engine.")
+          print("It compares the current computed minimum with the frozen")
+          print("reference instant for every validation eclipse.")
+          print()
+          print("Solar ephemeris:")
+          print("  DE441 geometric Sun, ECLIPJ2000, Earth-centered")
+          print()
+          print("Lunar ephemeris:")
+          print("  Existing Star Almanack ELP2000-82B evaluator")
+          print()
+
+          summary = []
+
+          try:
+              for case in cases:
+                  event = engine.find_solar_eclipse(case["date"])
+
+                  timing_error = signed_seconds(
+                      event.greatest_utc,
+                      case["reference"],
+                  )
+
+                  reference_jd = iso_to_jd(case["reference"])
+                  calculated_jd = event.greatest_jd_utc
+
+                  ref = audit_instant("REFERENCE", reference_jd)
+                  calc = audit_instant("CALCULATED", calculated_jd)
+
+                  year = decimal_year(case["reference"])
+                  delta_t = eclipse_engine.delta_t_seconds(year)
+
+                  print("-" * 104)
+                  print(case["label"])
+                  print("-" * 104)
+                  print(f"Group:                       {case['group']}")
+                  print(f"Search date:                 {case['date']}")
+                  print(f"Reference greatest UTC:      {case['reference']}")
+                  print(f"Calculated greatest UTC:     {event.greatest_utc}")
+                  print(f"Timing residual:             {timing_error:+.3f} s")
+                  print(f"Engine Delta-T model:        {delta_t:.6f} s")
+                  print()
+
+                  print("REFERENCE INSTANT")
+                  print_instant(ref)
+                  print()
+
+                  print("CALCULATED INSTANT")
+                  print_instant(calc)
+                  print()
+
+                  print_difference(ref, calc, timing_error)
+                  print()
+
+                  print("  OBJECTIVE SCAN")
+                  print(
+                      "  Offset(s)       "
+                      "axis@reference(km)       "
+                      "axis@calculated(km)"
+                  )
+
+                  for offset_s in (
+                      -120,
+                      -60,
+                      -45,
+                      -30,
+                      -15,
+                      -5,
+                      0,
+                      5,
+                      15,
+                      30,
+                      45,
+                      60,
+                      120,
+                  ):
+                      delta_jd = offset_s / DAY_S
+
+                      gr = engine.geometry_at_utc_jd(
+                          reference_jd + delta_jd
+                      )
+                      gc = engine.geometry_at_utc_jd(
+                          calculated_jd + delta_jd
+                      )
+
+                      print(
+                          f"  {offset_s:+8d}       "
+                          f"{gr.axis_distance_km:18.6f}       "
+                          f"{gc.axis_distance_km:18.6f}"
+                      )
+
+                  print()
+
+                  summary.append(
+                      {
+                          "label": case["label"],
+                          "group": case["group"],
+                          "reference": case["reference"],
+                          "calculated": event.greatest_utc,
+                          "residual": timing_error,
+                          "type": event.eclipse_type,
+                          "ref_axis": ref["axis_distance_km"],
+                          "calc_axis": calc["axis_distance_km"],
+                          "tdb_delta": calc["tdb_difference_seconds"],
+                      }
+                  )
+
+              print("=" * 104)
+              print("CROSS-CASE SUMMARY")
+              print("=" * 104)
+              print()
+              print(
+                  f"{'Case':<36}"
+                  f"{'Type':<10}"
+                  f"{'Residual':>12}"
+                  f"{'Ref axis km':>15}"
+                  f"{'Calc axis km':>15}"
+                  f"{'TDB diff s':>13}"
+              )
+              print("-" * 104)
+
+              for row in summary:
+                  print(
+                      f"{row['label'][:35]:<36}"
+                      f"{row['type']:<10}"
+                      f"{row['residual']:>+11.3f}s"
+                      f"{row['ref_axis']:>15.3f}"
+                      f"{row['calc_axis']:>15.3f}"
+                      f"{row['tdb_delta']:>+13.6f}"
+                  )
+
+              print()
+              print("SIGN GROUPS")
+              print("-" * 104)
+
+              positive = [
+                  r for r in summary if r["residual"] > 0
+              ]
+
+              negative = [
+                  r for r in summary if r["residual"] < 0
+              ]
+
+              print(
+                  "Positive residuals: "
+                  + ", ".join(
+                      f"{r['label']} ({r['residual']:+.0f}s)"
+                      for r in positive
+                  )
+              )
+
+              print(
+                  "Negative residuals: "
+                  + ", ".join(
+                      f"{r['label']} ({r['residual']:+.0f}s)"
+                      for r in negative
+                  )
+              )
+
+              print()
+              print("AUDIT QUESTIONS")
+              print("-" * 104)
+              print("1. Is the reference instant on the same smooth minimum?")
+              print("2. Is d(axis distance)/dt ~0 only at our calculated instant?")
+              print("3. Does the engine UTC->TDB approximation differ systematically from SPICE?")
+              print("4. Does the lunar longitude/latitude difference track the residual sign?")
+              print("5. Do the ~32 s and ~43 s groups have distinct geometry or rates?")
+              print("6. Does the objective scan expose an asymmetry or wrong minimized quantity?")
+              print()
+              print("=" * 104)
+              print("FULL AUDIT COMPLETE")
+              print("=" * 104)
+
+          finally:
+              eclipse_engine.sun_vector_j2000 = original_sun
+              spice.kclear()
+
+          PY
+
+      - name: Upload full audit diagnostic
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: de441-eclipse-full-audit
+          path: de441-eclipse-full-audit.txt
+          if-no-files-found: warn
+          retention-days: 7

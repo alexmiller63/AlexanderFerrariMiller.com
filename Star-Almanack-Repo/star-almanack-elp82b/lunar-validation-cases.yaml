@@ -1,0 +1,18 @@
+schema_version: 1
+suite: lunar_reference
+description: >
+  Star Almanack ELP2000-82B regression cases. Reference coordinates are
+  produced by the original ELP2000-82B Fortran implementation. NASA eclipse
+  predictions are never inputs to these lunar-coordinate tests.
+
+tolerance_km: 0.01
+
+cases:
+  - id: elp82b_fortran_2451555_5
+    name: Fortran reference JD 2451555.5
+    jd_tdb: 2451555.5
+    expected:
+      x_km: 382979.7604730463
+      y_km: -68204.20174530084
+      z_km: -25987.71602589964
+    source_note: Original ELP2000-82B Fortran reference result.

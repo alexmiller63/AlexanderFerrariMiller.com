@@ -1,0 +1,89 @@
+# Star Almanack — 2026 eclipses
+#
+# These entries are calculated from Sun–Earth–Moon geometry, not copied from
+# a published eclipse table. Times are UTC. Contact times are a first-pass
+# geometric solution and should be regression-tested before publication.
+
+year: 2026
+method:
+  phase_condition: "new Moon for solar eclipses; full Moon for lunar eclipses"
+  candidate_test: "Moon must be sufficiently near an orbital node"
+  solar_geometry: "trace the Sun–Moon shadow axis and test its umbral/antumbral/penumbral cones against Earth"
+  lunar_geometry: "compare Moon-center separation from Earth's anti-solar shadow axis with the angular radii of the Moon, umbra, and penumbra"
+  time_standard: UTC
+  status: independently_calculated_first_pass
+
+eclipses:
+  - id: 2026-02-17-solar
+    kind: solar
+    type: annular
+    date: 2026-02-17
+    new_moon_utc: "12:01:10"
+    maximum_geometry_utc: "12:14:49"
+    contacts_utc:
+      partial_begin: "09:56:07"
+      annular_begin_global: "11:41:39"
+      annular_end_global: "12:42:13"
+      partial_end: "14:27:42"
+    geometry:
+      lunar_ecliptic_latitude_deg_at_new_moon: -0.92818
+      shadow_axis_distance_from_earth_center_km_at_max: 6216.1
+      core_radius_km_at_axis_closest_approach: -71.8
+      penumbral_radius_km_at_axis_closest_approach: 3555.7
+      interpretation: "negative core radius means the umbral cone ends before reaching the relevant Earth plane, so the antumbra reaches Earth: annular eclipse"
+
+  - id: 2026-03-03-lunar
+    kind: lunar
+    type: total
+    date: 2026-03-03
+    full_moon_utc: "11:37:56"
+    maximum_geometry_utc: "11:31:48"
+    contacts_utc:
+      penumbral_begin: "08:46:15"
+      partial_begin: "09:51:20"
+      total_begin: "11:06:33"
+      total_end: "12:00:54"
+      partial_end: "13:16:05"
+      penumbral_end: "14:21:20"
+    geometry:
+      moon_shadow_axis_separation_deg_at_max: 0.36009
+      umbra_angular_radius_deg_at_max: 0.68881
+      penumbra_angular_radius_deg_at_max: 1.22130
+      moon_angular_radius_deg_at_max: 0.26019
+      interpretation: "Moon center plus lunar radius remains inside the umbral radius at maximum: total lunar eclipse"
+
+  - id: 2026-08-12-solar
+    kind: solar
+    type: total
+    date: 2026-08-12
+    new_moon_utc: "17:36:44"
+    maximum_geometry_utc: "17:48:45"
+    contacts_utc:
+      partial_begin: "15:33:56"
+      total_begin_global: "16:57:19"
+      total_end_global: "18:34:29"
+      partial_end: "19:57:58"
+    geometry:
+      lunar_ecliptic_latitude_deg_at_new_moon: 0.89603
+      shadow_axis_distance_from_earth_center_km_at_max: 5727.7
+      core_radius_km_at_axis_closest_approach: 53.5
+      penumbral_radius_km_at_axis_closest_approach: 3429.7
+      interpretation: "positive umbral-core radius reaches Earth: total solar eclipse"
+
+  - id: 2026-08-28-lunar
+    kind: lunar
+    type: partial
+    date: 2026-08-28
+    full_moon_utc: "04:18:33"
+    maximum_geometry_utc: "04:10:20"
+    contacts_utc:
+      penumbral_begin: "01:25:52"
+      partial_begin: "02:35:13"
+      partial_end: "05:50:43"
+      penumbral_end: "06:59:56"
+    geometry:
+      moon_shadow_axis_separation_deg_at_max: 0.46513
+      umbra_angular_radius_deg_at_max: 0.67464
+      penumbra_angular_radius_deg_at_max: 1.19720
+      moon_angular_radius_deg_at_max: 0.25497
+      interpretation: "Moon intersects the umbra but is not completely contained within it: partial lunar eclipse"

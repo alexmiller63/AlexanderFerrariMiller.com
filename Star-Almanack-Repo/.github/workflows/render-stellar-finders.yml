@@ -1,0 +1,71 @@
+name: Render Stellar Finders
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'render_stellar_finders.py'
+      - 'render_enif_bounded.py'
+      - 'render_aquarius_highlight.py'
+      - 'constellation-figures.json'
+      - 'tests/test_finder_golden_refs.py'
+      - 'docs/finder-standard.md'
+      - '.github/workflows/render-stellar-finders.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install renderer dependency
+        run: pip install matplotlib==3.10.6 pytest
+
+      - name: Fetch pinned HYG v4.1 catalog
+        run: |
+          curl -fL \
+            https://raw.githubusercontent.com/astronexus/HYG-Database/3bf37f4b2d5460e1278286320d1d62fab9b493c1/hyg/CURRENT/hygdata_v41.csv \
+            -o /tmp/hygdata_v41.csv
+
+      - name: Render W41 finders
+        run: |
+          rm -rf observer-views/W41
+          python render_stellar_finders.py /tmp/hygdata_v41.csv --figure all --out-dir observer-views/W41
+          python render_aquarius_highlight.py /tmp/hygdata_v41.csv --out-dir observer-views/W41
+          python render_enif_bounded.py /tmp/hygdata_v41.csv --out-dir observer-views/W41
+
+      - name: Validate generated SVGs
+        run: |
+          test -s observer-views/W41/enif-finder.svg
+          test -s observer-views/W41/sadalmelik-finder.svg
+          grep -q '<svg' observer-views/W41/enif-finder.svg
+          grep -q '<svg' observer-views/W41/sadalmelik-finder.svg
+          grep -q 'stroke: #c4ccd8; stroke-width: 0.9' observer-views/W41/enif-finder.svg
+          test "$(find observer-views/W41 -maxdepth 1 -name '*-finder.svg' | wc -l)" -eq 2
+
+      - name: Run golden-reference regression tests
+        run: pytest -q tests/test_finder_golden_refs.py
+
+      - name: Commit generated finder charts
+        run: |
+          if git diff --quiet -- observer-views/W41 && [ -n "$(git status --porcelain -- observer-views/W41)" ]; then
+            :
+          fi
+          git add observer-views/W41
+          if git diff --cached --quiet; then
+            echo 'No generated changes to commit.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'Generate W41 stellar finder charts'
+          git push

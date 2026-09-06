@@ -1,0 +1,82 @@
+name: Audit Special-Star Visibility 2026
+
+"on":
+  workflow_dispatch:
+  push:
+    paths:
+      - special-stars.md
+      - special-star-catalog.csv
+      - audit_special_star_visibility_2026.py
+      - compute_special_star_visibility_2026.py
+      - compute_bayer_visibility_2026.py
+      - compute_bright_star_visibility_2026.py
+      - .github/workflows/audit-special-star-visibility.yml
+
+permissions:
+  contents: write
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out Star Almanack
+        uses: actions/checkout@v4
+
+      - name: Compute precise Special Star best-visibility dates
+        run: python compute_special_star_visibility_2026.py special-star-catalog.csv special-star-visibility-2026.csv
+
+      - name: Audit editorial dates against precise coordinates
+        run: python audit_special_star_visibility_2026.py special-stars.md special-star-catalog.csv special-star-visibility-audit-2026.csv
+
+      - name: Validate precise Special Star outputs
+        run: |
+          python - <<'PY'
+          import csv
+          import datetime as dt
+
+          with open('special-star-visibility-2026.csv', newline='', encoding='utf-8') as f:
+              precise = list(csv.DictReader(f))
+          with open('special-star-visibility-audit-2026.csv', newline='', encoding='utf-8') as f:
+              audit = list(csv.DictReader(f))
+
+          if len(precise) != 22:
+              raise SystemExit(f'Expected 22 precise Special Stars, got {len(precise)}')
+          if len(audit) != 22:
+              raise SystemExit(f'Expected 22 audited Special Stars, got {len(audit)}')
+
+          bad_iso = []
+          bad_status = []
+          for row in audit:
+              d = dt.date.fromisoformat(row['computed_date'])
+              if d.isocalendar().year != 2026:
+                  bad_iso.append((row['name'], row['computed_date'], row['iso']))
+              if row['status'] not in {'PASS', 'STALE_DATE'}:
+                  bad_status.append((row['name'], row['status']))
+
+          if bad_iso:
+              raise SystemExit(f'Computed Special Star dates outside ISO 2026: {bad_iso}')
+          if bad_status:
+              raise SystemExit(f'Unexpected Special Star audit statuses: {bad_status}')
+
+          by_name = {r['name']: r for r in precise}
+          for row in audit:
+              if row['computed_date'] != by_name[row['name']]['best_date']:
+                  raise SystemExit(f"Audit/precise mismatch for {row['name']}")
+
+          stale = sum(r['status'] == 'STALE_DATE' for r in audit)
+          print('Precise Special Star coordinate rows: 22')
+          print(f'Stale editorial dates reported, not hidden: {stale}')
+          PY
+
+      - name: Commit generated Special Star visibility files
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add special-star-visibility-2026.csv special-star-visibility-audit-2026.csv
+          if git diff --cached --quiet; then
+            echo "No Special Star visibility changes."
+            exit 0
+          fi
+          git commit -m "Build precise 2026 Special Star visibility"
+          git push

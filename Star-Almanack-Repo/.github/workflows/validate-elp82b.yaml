@@ -1,0 +1,62 @@
+name: Validate ELP2000-82B
+
+on:
+
+  workflow_dispatch:
+
+permissions:
+
+  contents: read
+
+jobs:
+
+  validate-elp82b:
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Check out Star Almanack
+
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+
+        uses: actions/setup-python@v6
+
+        with:
+
+          python-version: "3.12"
+
+      - name: Bootstrap ELP2000-82B archive
+
+        working-directory: star-almanack-elp82b
+
+        run: |
+
+          python lunar_elp.py bootstrap data/elp82b
+
+      - name: Verify ELP2000-82B archive
+
+        working-directory: star-almanack-elp82b
+
+        run: |
+
+          python lunar_elp.py verify data/elp82b
+
+      - name: Normalize ELP2000-82B coefficients
+
+        working-directory: star-almanack-elp82b
+
+        run: |
+
+          python normalize_elp82b.py data/elp82b elp82b-manifest.json
+
+      - name: Validate lunar positions against ELP2000-82B reference
+
+        working-directory: star-almanack-elp82b
+
+        run: |
+
+          python validate_elp82b.py elp82b-manifest.json
+

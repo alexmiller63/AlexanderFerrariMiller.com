@@ -1,0 +1,79 @@
+name: Extend Weekly Ephemeris
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - extend_weekly_ephemeris.py
+      - sync_weekly_ephemeris_tables.py
+      - patch_ephemeris_builder.py
+      - .github/workflows/extend-weekly-ephemeris.yml
+
+permissions:
+  contents: write
+
+concurrency:
+  group: star-almanack-extend-weekly-ephemeris
+  cancel-in-progress: false
+
+jobs:
+  extend:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Calculate Uranus Neptune and Ceres
+        run: python extend_weekly_ephemeris.py
+
+      - name: Patch expanded Almanack builder
+        run: python patch_ephemeris_builder.py
+
+      - name: Synchronize source week tables
+        run: python sync_weekly_ephemeris_tables.py
+
+      - name: Validate extended ephemeris
+        run: |
+          python - <<'PY'
+          import csv
+          import re
+          from pathlib import Path
+
+          with open('weekly-ephemeris-2026.csv', newline='', encoding='utf-8') as f:
+              rows = list(csv.DictReader(f))
+          assert len(rows) == 53
+          assert list(rows[0]) == ['iso_week','monday_utc','sun','moon','mercury','venus','mars','jupiter','saturn','uranus','neptune','ceres']
+          assert all(r['uranus'] and r['neptune'] and r['ceres'] for r in rows)
+
+          text = Path('almanack.md').read_text(encoding='utf-8')
+          week_count = len(re.findall(r'(?m)^## ISO 2026-W\d{2}\s*$', text))
+          assert week_count > 0
+          assert text.count('### Weekly Solar-System Ephemeris') == week_count
+          assert text.count('**Extended targets:**') == week_count
+          assert text.count('| ♅ Uranus | ♆ Neptune | ⚳ Ceres |') == week_count
+
+          builder = Path('build_expanded_almanack.py').read_text(encoding='utf-8')
+          assert '♅ Uranus' in builder and '♆ Neptune' in builder and '⚳ Ceres' in builder
+          assert '### Weekly Solar-System Ephemeris' in builder
+          print(f'Validated 53-row data set and {week_count} synchronized source weeks; Pluto excluded')
+          PY
+
+      - name: Commit generated ephemeris and build integration
+        run: |
+          git add weekly-ephemeris-2026.csv almanack.md build_expanded_almanack.py
+          if git diff --cached --quiet; then
+            echo 'No ephemeris changes to commit.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'Add Uranus Neptune and Ceres to weekly ephemerides'
+          git pull --rebase origin main
+          git push

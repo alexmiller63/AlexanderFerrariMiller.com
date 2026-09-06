@@ -1,0 +1,42 @@
+# Star Almanack — adopted constants and model coefficients
+#
+# This file records the constants used by the reconstructed compact
+# Sun/Moon ephemeris engine. They are model inputs, not eclipse outputs.
+
+model:
+  name: star-almanack-compact-sun-moon
+  epoch_day_definition: "d = days from 2000 Jan 0.0 UT"
+  angle_unit: degree
+
+sun:
+  longitude_perihelion_deg:
+    base: 282.9404
+    rate_per_day: 0.0000470935
+  eccentricity:
+    base: 0.016709
+    rate_per_day: -0.000000001151
+  mean_anomaly_deg:
+    base: 356.0470
+    rate_per_day: 0.9856002585
+
+moon:
+  ascending_node_deg:
+    base: 125.1228
+    rate_per_day: -0.0529538083
+  inclination_deg: 5.1454
+  argument_perigee_deg:
+    base: 318.0634
+    rate_per_day: 0.1643573223
+  semimajor_axis_earth_radii: 60.2666
+  eccentricity: 0.054900
+  mean_anomaly_deg:
+    base: 115.3654
+    rate_per_day: 13.0649929509
+
+standards_note:
+  astronomical_unit_m: 149597870700
+  astronomical_unit_status: "IAU-defined exact length"
+  time_scales:
+    orbital_geometry: "TT for refined eclipse work"
+    earth_rotation: "UT1 for refined eclipse work"
+    publication: "UTC"
