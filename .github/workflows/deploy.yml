@@ -17,6 +17,10 @@ jobs:
           username: ${{ secrets.AWS_USER }}
           key: ${{ secrets.AWS_SSH_KEY }}
           script: |
+            set +e
+            PROJECT_DIR=/var/www/AlexanderFerrariMiller
+            W41=almanack/2026/W41
+
             echo '=== build-alex.sh deployment diagnostics ==='
             echo 'Script metadata:'
             ls -l ~/build-alex.sh || true
@@ -26,5 +30,67 @@ jobs:
             jekyll --version 2>/dev/null || true
             bundle --version 2>/dev/null || true
             ruby --version 2>/dev/null || true
+
+            echo '=== AWS state BEFORE deploy ==='
+            cd "$PROJECT_DIR" || exit 1
+            echo 'pwd:'
+            pwd
+            echo 'HEAD:'
+            git rev-parse HEAD || true
+            echo 'branch:'
+            git branch --show-current || true
+            echo 'origin/main:'
+            git rev-parse origin/main 2>/dev/null || true
+            echo 'git status:'
+            git status --short --branch || true
+            echo 'remote:'
+            git remote -v || true
+
+            echo 'Source checksums BEFORE deploy:'
+            sha256sum _config.yml 2>/dev/null || true
+            sha256sum "$W41/index.html" 2>/dev/null || true
+            sha256sum "$W41"/*.svg 2>/dev/null || true
+
+            echo 'Built checksums BEFORE deploy:'
+            sha256sum "_site/$W41/index.html" 2>/dev/null || true
+            sha256sum "_site/$W41"/*.svg 2>/dev/null || true
+
             echo '=== running normal deployment ==='
             ~/build-alex.sh
+            DEPLOY_STATUS=$?
+            echo "build-alex.sh exit status: $DEPLOY_STATUS"
+
+            echo '=== AWS state AFTER deploy ==='
+            cd "$PROJECT_DIR" || exit 1
+            echo 'HEAD:'
+            git rev-parse HEAD || true
+            echo 'branch:'
+            git branch --show-current || true
+            echo 'origin/main:'
+            git rev-parse origin/main 2>/dev/null || true
+            echo 'git status:'
+            git status --short --branch || true
+
+            echo 'Source checksums AFTER deploy:'
+            sha256sum _config.yml 2>/dev/null || true
+            sha256sum "$W41/index.html" 2>/dev/null || true
+            sha256sum "$W41"/*.svg 2>/dev/null || true
+
+            echo 'Built checksums AFTER deploy:'
+            sha256sum "_site/$W41/index.html" 2>/dev/null || true
+            sha256sum "_site/$W41"/*.svg 2>/dev/null || true
+
+            echo 'Source vs built checksum comparison:'
+            for f in index.html *.svg; do
+              if [ -f "$W41/$f" ] && [ -f "_site/$W41/$f" ]; then
+                SRC=$(sha256sum "$W41/$f" | awk '{print $1}')
+                OUT=$(sha256sum "_site/$W41/$f" | awk '{print $1}')
+                if [ "$SRC" = "$OUT" ]; then
+                  echo "MATCH $f $SRC"
+                else
+                  echo "DIFF  $f source=$SRC built=$OUT"
+                fi
+              fi
+            done
+
+            exit $DEPLOY_STATUS
