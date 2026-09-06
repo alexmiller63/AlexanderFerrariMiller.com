@@ -3,8 +3,6 @@ name: One-time cleanup of Kilroy deployment diagnostics
 on:
   push:
     branches: [main]
-    paths:
-      - .github/workflows/one-time-clean-kilroy-diagnostics.yml
 
 permissions:
   contents: write
@@ -30,8 +28,7 @@ jobs:
                   if needle not in text:
                       continue
                   lines = text.splitlines(keepends=True)
-                  new_lines = [line for line in lines if needle not in line]
-                  page.write_text(''.join(new_lines), encoding='utf-8')
+                  page.write_text(''.join(line for line in lines if needle not in line), encoding='utf-8')
                   removed.append(str(page))
           print('Removed diagnostics from:', *removed, sep='\n  ')
           if not removed:
