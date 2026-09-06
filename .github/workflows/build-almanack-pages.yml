@@ -1,14 +1,12 @@
 name: Publish 2026 Star Almanack Pages
 
-"on":
+on:
   workflow_dispatch:
   push:
-    paths:
-      - Star-Almanack-Repo/site/2026/**
-      - Star-Almanack-Repo/COPY-PROVENANCE.txt
-      - .github/workflows/build-almanack-pages.yml
-      - tools/examine-almanack-jekyll.py
-      - _config.yml
+    branches:
+      - main
+    paths-ignore:
+      - 'almanack/**'
 
 permissions:
   contents: write
@@ -57,22 +55,27 @@ jobs:
           cp -a "$SOURCE_SITE"/. almanack/2026/
           printf '%s\n' "$SOURCE_SHA" > almanack/2026/.source-commit
 
+      - name: Build ISO placeholder layers
+        run: |
+          cd website
+          python tools/build-almanack-placeholders.py
+
       - name: Validate complete fresh canonical publication
         run: |
           set -euo pipefail
           cd website
           python - <<'PY'
           from pathlib import Path
+          from datetime import date
 
           root = Path('almanack/2026')
           assert (root / 'index.html').is_file(), 'Missing 2026 Almanack index'
-          marker = (root / '.source-commit')
+          marker = root / '.source-commit'
           assert marker.is_file() and len(marker.read_text().strip()) == 40, 'Missing Star Almanack source revision marker'
 
           pages = [root / f'W{i:02d}' / 'index.html' for i in range(1, 54)]
           missing = [str(p) for p in pages if not p.is_file()]
           assert not missing, f'Missing weekly pages: {missing}'
-          assert len(pages) == 53
 
           for i, p in enumerate(pages, 1):
               text = p.read_text(encoding='utf-8')
@@ -103,12 +106,23 @@ jobs:
 
           w33 = (root / 'W33' / 'index.html').read_text(encoding='utf-8')
           assert 'Summer Triangle' in w33, 'Summer Triangle asterism note missing from W33'
-          assert 'Perseids' in w33 and 'August 13' in w33, 'Perseid meteor-shower note missing from W33'
+          assert 'Perseids' in w33 and 'August 13' in w33, 'Perseid meteor-shower note missing in W33'
+
+          for year in (2025, 2027):
+              yroot = Path('almanack') / str(year)
+              assert (yroot / 'index.html').is_file(), f'Missing {year} weekly index'
+              count = date(year, 12, 28).isocalendar().week
+              for week in range(1, count + 1):
+                  page = yroot / f'W{week:02d}' / 'index.html'
+                  assert page.is_file(), f'Missing ISO {year}-W{week:02d}'
+                  text = page.read_text(encoding='utf-8')
+                  assert f'ISO week {week:02d} {year}' in text, f'Week identity missing in {page}'
+                  assert 'currently in preparation' in text, f'Preparation notice missing in {page}'
 
           legacy_files = list(Path('almanack').glob('ISO2026-W*.html'))
           assert not legacy_files, f'Legacy ISO weekly pages remain: {legacy_files}'
           assert not Path('almanack/weeks').exists(), 'Legacy almanack/weeks tree remains'
-          print('Validated one-source-snapshot publication from Star-Almanack-Repo')
+          print('Validated canonical 2026 publication plus 2025/2027 ISO placeholder layers')
           PY
 
       - name: Set up Ruby
