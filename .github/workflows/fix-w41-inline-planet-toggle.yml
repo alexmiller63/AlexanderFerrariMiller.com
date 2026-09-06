@@ -1,0 +1,60 @@
+name: Fix W41 Inline Planet Finder Toggle
+
+on:
+  push:
+    paths:
+      - .github/workflows/fix-w41-inline-planet-toggle.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Patch W41 inline notation toggle
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          old = "let buttons=document.querySelectorAll('[data-bayer-mode]');function setMode(mode){document.querySelectorAll('.notation-item').forEach(s=>s.textContent=s.dataset[mode]||s.dataset.greek);buttons.forEach(x=>x.setAttribute('aria-pressed',x.dataset.bayerMode===mode?'true':'false'));try{localStorage.setItem('star-almanack-bayer-mode',mode)}catch(_){}}"
+          new = "let buttons=document.querySelectorAll('[data-bayer-mode]');function setMode(mode){document.querySelectorAll('.notation-item').forEach(s=>s.textContent=s.dataset[mode]||s.dataset.greek);buttons.forEach(x=>x.setAttribute('aria-pressed',x.dataset.bayerMode===mode?'true':'false'));let finderIndex={greek:0,latin:1,mixed:2}[mode];document.querySelectorAll('.w41-finder-strip').forEach(strip=>{strip.style.gridTemplateColumns='minmax(0,1fr)';strip.querySelectorAll('figure').forEach((figure,index)=>{figure.hidden=index!==finderIndex})});try{localStorage.setItem('star-almanack-bayer-mode',mode)}catch(_){}}"
+
+          paths = [
+              Path('almanack/2026/W41/index.html'),
+              Path('Star-Almanack-Repo/site/2026/W41/index.html'),
+          ]
+
+          changed = 0
+          for path in paths:
+              if not path.exists():
+                  continue
+              text = path.read_text(encoding='utf-8')
+              if old in text:
+                  path.write_text(text.replace(old, new, 1), encoding='utf-8')
+                  print('Patched', path)
+                  changed += 1
+              elif 'finderIndex={greek:0,latin:1,mixed:2}' in text:
+                  print('Already patched', path)
+              else:
+                  print('Inline toggle signature not found in', path)
+
+          if changed == 0:
+              print('No changes required')
+          PY
+
+      - name: Commit W41 toggle fix
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add almanack/2026/W41/index.html Star-Almanack-Repo/site/2026/W41/index.html
+          if git diff --cached --quiet; then
+            echo 'No W41 inline toggle changes.'
+            exit 0
+          fi
+          git commit -m 'Fix W41 Planet Finder notation toggle'
+          git push
