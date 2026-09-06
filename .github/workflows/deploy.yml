@@ -10,11 +10,21 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Deploy to AWS
+      - name: Diagnose and deploy to AWS
         uses: appleboy/ssh-action@v1.2.2
         with:
           host: ${{ secrets.AWS_HOST }}
           username: ${{ secrets.AWS_USER }}
           key: ${{ secrets.AWS_SSH_KEY }}
           script: |
+            echo '=== build-alex.sh deployment diagnostics ==='
+            echo 'Script metadata:'
+            ls -l ~/build-alex.sh || true
+            echo 'Relevant build/deploy commands:'
+            grep -nE 'jekyll|bundle|github-pages|git[[:space:]]|rsync|cp[[:space:]]|mv[[:space:]]|_site|destination|source' ~/build-alex.sh || true
+            echo 'Jekyll/Ruby versions if installed:'
+            jekyll --version 2>/dev/null || true
+            bundle --version 2>/dev/null || true
+            ruby --version 2>/dev/null || true
+            echo '=== running normal deployment ==='
             ~/build-alex.sh
