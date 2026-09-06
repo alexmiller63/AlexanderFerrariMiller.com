@@ -3,6 +3,8 @@ name: One-time cleanup of Kilroy deployment diagnostics
 on:
   push:
     branches: [main]
+    paths:
+      - .github/workflows/one-time-clean-kilroy-diagnostics.yml
 
 permissions:
   contents: write
@@ -14,31 +16,33 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v4
 
-      - name: Remove obsolete deployment diagnostics
+      - name: Remove only the obsolete deployment diagnostic marker
         run: |
           python - <<'PY'
           from pathlib import Path
-          needle = 'KILROY WAS HERE — BUILD 2026-09-05 02:12 PDT'
-          removed = []
-          for root in (Path('almanack'), Path('Star-Almanack-Repo/site')):
-              if not root.exists():
-                  continue
-              for page in root.glob('2026/W??/index.html'):
-                  text = page.read_text(encoding='utf-8')
-                  if needle not in text:
-                      continue
-                  lines = text.splitlines(keepends=True)
-                  page.write_text(''.join(line for line in lines if needle not in line), encoding='utf-8')
-                  removed.append(str(page))
-          print('Removed diagnostics from:', *removed, sep='\n  ')
-          if not removed:
-              raise SystemExit('No deployment diagnostic found')
+
+          marker = '<p id="kilroy-deployment-diagnostic" style="text-align:center;font-family:system-ui,sans-serif;font-weight:700;border:2px solid currentColor;padding:.5rem;margin:1rem 0">KILROY WAS HERE — BUILD 2026-09-05 02:12 PDT</p>'
+          targets = [
+              Path('almanack/2026/W01/index.html'),
+              Path('Star-Almanack-Repo/site/2026/W01/index.html'),
+          ]
+          changed = []
+          for page in targets:
+              text = page.read_text(encoding='utf-8')
+              if marker not in text:
+                  raise SystemExit(f'Expected Kilroy marker not found in {page}')
+              new = text.replace(marker, '', 1)
+              if len(text) - len(new) != len(marker):
+                  raise SystemExit(f'Unexpected change size in {page}')
+              page.write_text(new, encoding='utf-8')
+              changed.append(str(page))
+          print('Removed only the diagnostic marker from:', *changed, sep='\n  ')
           PY
 
       - name: Commit cleanup
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add almanack/2026 Star-Almanack-Repo/site/2026
-          git commit -m "Remove obsolete Kilroy deployment diagnostics"
+          git add almanack/2026/W01/index.html Star-Almanack-Repo/site/2026/W01/index.html
+          git commit -m "Remove obsolete Kilroy deployment marker safely"
           git push
