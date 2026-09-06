@@ -1,0 +1,56 @@
+name: Fix W41 Zodiac Text Rendering
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - .github/workflows/fix-w41-zodiac-text.yml
+
+permissions:
+  contents: write
+
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Force zodiac glyphs to text presentation
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          signs = '♈♉♊♋♌♍♎♏♐♑♒♓'
+          vs = '\ufe0e'
+
+          # Fix the generator so future W41 finder builds keep zodiac glyphs black/text-style.
+          helper = Path('tools/assemble-w41-artwork.py')
+          text = helper.read_text(encoding='utf-8')
+          old = "text=sym if mode=='Greek / Symbols' else name if mode=='Latin' else f'{sym} {name}'"
+          new = "text=(sym+'\\ufe0e') if mode=='Greek / Symbols' else name if mode=='Latin' else f'{sym}\\ufe0e {name}'"
+          if old in text:
+              text = text.replace(old, new, 1)
+              helper.write_text(text, encoding='utf-8')
+
+          # Patch the currently published SVGs without rerunning the whole artwork assembler.
+          finder_dir = Path('almanack/2026/W41/finders')
+          for path in finder_dir.glob('planet-finder-*.svg'):
+              svg = path.read_text(encoding='utf-8')
+              for sign in signs:
+                  svg = svg.replace(f'>{sign}<', f'>{sign}{vs}<')
+                  svg = svg.replace(f'>{sign} ', f'>{sign}{vs} ')
+              path.write_text(svg, encoding='utf-8')
+          PY
+
+      - name: Commit zodiac rendering fix
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add tools/assemble-w41-artwork.py almanack/2026/W41/finders/planet-finder-*.svg
+          if git diff --cached --quiet; then
+            echo 'No zodiac rendering changes needed.'
+            exit 0
+          fi
+          git commit -m 'Force W41 zodiac glyphs to black text presentation'
+          git push
