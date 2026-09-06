@@ -1,0 +1,81 @@
+name: Fix Greek Bayer constellation abbreviations
+
+on:
+  push:
+    paths:
+      - '.github/workflows/fix-greek-bayer-abbreviations.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Preserve 3-letter constellation abbreviations in Greek mode
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          files = [
+              Path('Star-Almanack-Repo/add_greek_latin_toggle.py'),
+              Path('almanack/js/notation.js'),
+          ]
+          files += sorted(Path('almanack/2026').glob('W??/index.html'))
+          files += sorted(Path('Star-Almanack-Repo/site/2026').glob('W??/index.html'))
+
+          replacements = [
+              (
+                  "greek=bm[1]+suffix+' '+con;latin=g[bm[1]]+suffix+' '+con;mixed=bm[1]+suffix+' '+g[bm[1]]+suffix+' '+con",
+                  "greek=bm[1]+suffix+' '+bm[3];latin=g[bm[1]]+suffix+' '+con;mixed=bm[1]+suffix+' '+g[bm[1]]+suffix+' '+con",
+              ),
+              (
+                  "greek = bayer[1] + suffix + ' ' + constellation;\n          latin = greekNames[bayer[1]] + suffix + ' ' + constellation;",
+                  "greek = bayer[1] + suffix + ' ' + bayer[3];\n          latin = greekNames[bayer[1]] + suffix + ' ' + constellation;",
+              ),
+          ]
+
+          changed = []
+          for path in files:
+              text = path.read_text(encoding='utf-8')
+              original = text
+              for old, new in replacements:
+                  text = text.replace(old, new)
+              if text != original:
+                  path.write_text(text, encoding='utf-8')
+                  changed.append(str(path))
+
+          if not changed:
+              raise SystemExit('No Greek-mode Bayer transformations found to update')
+
+          print('Updated:')
+          for path in changed:
+              print(path)
+          PY
+
+      - name: Verify W41 Enif and Sadalmelik Greek-mode abbreviations
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          for path in [
+              Path('almanack/2026/W41/index.html'),
+              Path('Star-Almanack-Repo/site/2026/W41/index.html'),
+          ]:
+              text = path.read_text(encoding='utf-8')
+              assert "greek=bm[1]+suffix+' '+bm[3]" in text, path
+              assert 'Enif (ε Peg)' in text, path
+              assert 'Sadalmelik (α Aqr)' in text, path
+              print('PASS', path)
+          PY
+
+      - name: Commit fix
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add Star-Almanack-Repo/add_greek_latin_toggle.py almanack/js/notation.js almanack/2026/W??/index.html Star-Almanack-Repo/site/2026/W??/index.html
+          git commit -m 'Use constellation abbreviations in Greek Bayer mode'
+          git push origin main
