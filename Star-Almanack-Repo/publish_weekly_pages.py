@@ -12,6 +12,7 @@ paragraphs, bold/emphasis, inline code, and pipe tables.
 
 from __future__ import annotations
 
+import datetime as dt
 import html
 import re
 import shutil
@@ -191,8 +192,10 @@ def main() -> None:
     if OUT.exists(): shutil.rmtree(OUT)
     OUT.mkdir(parents=True)
     week_links=[]
+    month_weeks: dict[int, list[tuple[int, dt.date]]] = {}
     for idx,match in enumerate(matches):
         week=int(match.group(2)); start=match.start()
+        monday = dt.date.fromisocalendar(2026, week, 1)
         if idx+1 < len(matches):
             end=matches[idx+1].start()
         else:
@@ -201,8 +204,22 @@ def main() -> None:
         section=text[start:end].strip(); fragment=markdown_fragment(section)
         target=OUT/f"W{week:02d}"; target.mkdir(parents=True)
         (target/"index.html").write_text(page_shell(f"ISO 2026-W{week:02d}",fragment,week_nav(week)),encoding="utf-8")
-        week_links.append(f'<li><a href="W{week:02d}/">ISO 2026-W{week:02d}</a></li>')
-    index_body='<h1>2026 Weekly Almanack</h1><p>Select an ISO week.</p><ul class="weekgrid">'+"".join(week_links)+"</ul>"
+        week_links.append((week, monday))
+        if monday.year == 2026:
+            month_weeks.setdefault(monday.month, []).append((week, monday))
+    groups=[]
+    for month in range(1,13):
+        items=month_weeks.get(month, [])
+        if not items: continue
+        monday=items[0][1]
+        links=''.join(f'<li><a href="W{week:02d}/">ISO 2026-W{week:02d}</a></li>' for week,_ in items)
+        groups.append(f'<h2 class="month">{monday.strftime("%B")} <span class="date">{monday.strftime("%B %-d, %Y")}</span></h2><ul class="weekgrid">{links}</ul>')
+    # W01 starts in December 2025; keep it visible before the January section
+    w01=next((w for w,d in week_links if w == 1), None)
+    prefix=''
+    if w01 is not None:
+        prefix='<ul class="weekgrid"><li><a href="W01/">ISO 2026-W01</a></li></ul>'
+    index_body='<h1>2026 Weekly Almanack</h1><p>Select an ISO week.</p>'+prefix+'\n'+'\n'.join(groups)
     (OUT/"index.html").write_text(page_shell("2026 Weekly Almanack",index_body),encoding="utf-8")
     print("Published 53 weekly pages to",OUT)
 
