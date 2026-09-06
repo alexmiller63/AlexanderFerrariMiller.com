@@ -8,6 +8,7 @@ on:
       - almanack-expanded.md
       - publish_weekly_pages.py
       - add_greek_latin_toggle.py
+      - add_w41_visuals.py
       - .github/workflows/publish-2026-weekly-pages.yml
 
 permissions:
@@ -29,6 +30,9 @@ jobs:
 
       - name: Add Greek Latin Bayer toggle
         run: python add_greek_latin_toggle.py
+
+      - name: Add W41 visual finders
+        run: python add_w41_visuals.py
 
       - name: Refine portrait calendar columns
         run: |
@@ -120,6 +124,9 @@ jobs:
           w41 = (root / 'W41' / 'index.html').read_text(encoding='utf-8')
           assert 'KILROY WAS HERE — W41 EXTENDED EPHEMERIS' in w41, 'Kilroy deployment diagnostic missing from W41'
           assert '♅ Uranus' in w41 and '♆ Neptune' in w41 and '⚳ Ceres' in w41, 'Extended targets missing from W41'
+          for visual in ('planet-finder-greek-symbols.svg','planet-finder-latin.svg','planet-finder-mixed-learner.svg','enif-finder.svg','sadalmelik-finder.svg'):
+              assert visual in w41, f'W41 visual missing: {visual}'
+              assert (root / 'W41' / visual).is_file(), f'W41 visual asset missing: {visual}'
 
           w33 = (root / 'W33' / 'index.html').read_text(encoding='utf-8')
           assert 'Summer Triangle' in w33, 'Summer Triangle asterism note missing from W33'
@@ -131,7 +138,7 @@ jobs:
           index = (root / 'index.html').read_text(encoding='utf-8')
           links = re.findall(r'href="W\d{2}/"', index)
           assert len(links) == 53, f'Expected 53 week links on index, found {len(links)}'
-          print('Verified 53 weekly pages with W41 Kilroy and extended ephemeris')
+          print('Verified 53 weekly pages with W41 visual finders and extended ephemeris')
           PY
 
       - name: Commit published pages
