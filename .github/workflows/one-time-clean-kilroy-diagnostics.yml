@@ -1,4 +1,4 @@
-name: One-time cleanup of Kilroy deployment diagnostics
+name: One-time repair and cleanup of W01 Kilroy diagnostic
 
 on:
   push:
@@ -15,9 +15,16 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-      - name: Remove only the obsolete deployment diagnostic marker
+      - name: Restore intact W01 and remove only Kilroy marker
         run: |
+          set -euo pipefail
+          GOOD_COMMIT=e44b1fccb98c292ff4d3e5d1dce26139fa29b0c9
+          git show "$GOOD_COMMIT:almanack/2026/W01/index.html" > almanack/2026/W01/index.html
+          git show "$GOOD_COMMIT:Star-Almanack-Repo/site/2026/W01/index.html" > Star-Almanack-Repo/site/2026/W01/index.html
+
           python - <<'PY'
           from pathlib import Path
 
@@ -26,23 +33,21 @@ jobs:
               Path('almanack/2026/W01/index.html'),
               Path('Star-Almanack-Repo/site/2026/W01/index.html'),
           ]
-          changed = []
           for page in targets:
               text = page.read_text(encoding='utf-8')
               if marker not in text:
-                  raise SystemExit(f'Expected Kilroy marker not found in {page}')
+                  raise SystemExit(f'Expected Kilroy marker not found in restored {page}')
               new = text.replace(marker, '', 1)
               if len(text) - len(new) != len(marker):
                   raise SystemExit(f'Unexpected change size in {page}')
               page.write_text(new, encoding='utf-8')
-              changed.append(str(page))
-          print('Removed only the diagnostic marker from:', *changed, sep='\n  ')
+              print(f'Restored and cleaned {page}')
           PY
 
-      - name: Commit cleanup
+      - name: Commit repair
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add almanack/2026/W01/index.html Star-Almanack-Repo/site/2026/W01/index.html
-          git commit -m "Remove obsolete Kilroy deployment marker safely"
+          git commit -m "Restore W01 and remove Kilroy marker safely"
           git push
