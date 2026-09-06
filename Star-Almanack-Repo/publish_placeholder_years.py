@@ -54,20 +54,39 @@ table.calendar th:first-child,table.calendar td:first-child { width:28%; }
 table.calendar th:nth-child(2),table.calendar td:nth-child(2) { width:20%; text-align:center; }
 table.calendar th:nth-child(3),table.calendar td:nth-child(3) { width:52%; }
 table.ephemeris th,table.ephemeris td { text-align:center; white-space:nowrap; }
-.finder-strip { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:1rem; margin:1.2rem 0 2rem; }
-.finder { margin:0; border:1px solid var(--rule); border-radius:.55rem; padding:.8rem; background:var(--paper); }
+.finder-controls { display:flex; justify-content:center; gap:.35rem; flex-wrap:wrap; margin:.8rem 0 1rem; font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; }
+.finder-controls button { appearance:none; border:1px solid #c8d3dc; background:#fff; color:var(--link); padding:.42rem .7rem; border-radius:.42rem; font:inherit; cursor:pointer; }
+.finder-controls button[aria-pressed="true"] { background:var(--navy); color:#fff; border-color:var(--navy); }
+.finder { max-width:720px; margin:0 auto 2rem; border:1px solid var(--rule); border-radius:.55rem; padding:.8rem; background:var(--paper); }
 .finder svg { display:block; width:100%; height:auto; }
 .finder figcaption { text-align:center; font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; font-size:.82rem; color:var(--muted); margin-top:.35rem; }
+.finder [data-mode] { display:none; }
+.finder [data-mode="greek"] { display:inline; }
 .sky-note { border-left:3px solid #c8d3dc; padding-left:1rem; }
 footer { font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; font-size:.88rem; }
 footer .wrap { padding-top:1.3rem; padding-bottom:1.3rem; opacity:.9; }
-@media (max-width:760px) { html{font-size:16px}.wrap{padding-left:1rem;padding-right:1rem}main.wrap{padding:1.35rem 1rem 2.5rem;box-shadow:none}.weekgrid{grid-template-columns:repeat(2,minmax(0,1fr));gap:.55rem}.weekgrid a{padding:.72rem .55rem;font-size:.92rem}h2.month .date{display:block;margin-left:0;margin-top:.15rem}.finder-strip{grid-template-columns:1fr}table.ephemeris{display:block;overflow-x:auto;-webkit-overflow-scrolling:touch}.yearnav{gap:.4rem}.yearnav a,.yearnav span{padding:.5rem .45rem} }
-@media (prefers-color-scheme:dark) { :root{--ink:#dce6ef;--muted:#a7b4c0;--link:#9fd0ff;--paper:#17212b;--page:#10171f;--rule:#394957} body{background:var(--page);color:var(--ink)} main.wrap{background:var(--paper);box-shadow:none} h1,h2,h3{color:#f1f7fb} .yearnav a,.yearnav span,.weekgrid a{background:#1c2a36;border-color:#405567;color:#b6dcff} th{background:#223444;color:#eef7ff}th,td,table{border-color:#40505e}tbody tr:nth-child(even) td{background:#1b2732} }
+@media (max-width:760px) { html{font-size:16px}.wrap{padding-left:1rem;padding-right:1rem}main.wrap{padding:1.35rem 1rem 2.5rem;box-shadow:none}.weekgrid{grid-template-columns:repeat(2,minmax(0,1fr));gap:.55rem}.weekgrid a{padding:.72rem .55rem;font-size:.92rem}h2.month .date{display:block;margin-left:0;margin-top:.15rem}table.ephemeris{display:block;overflow-x:auto;-webkit-overflow-scrolling:touch}.yearnav{gap:.4rem}.yearnav a,.yearnav span{padding:.5rem .45rem} }
+@media (prefers-color-scheme:dark) { :root{--ink:#dce6ef;--muted:#a7b4c0;--link:#9fd0ff;--paper:#17212b;--page:#10171f;--rule:#394957} body{background:var(--page);color:var(--ink)} main.wrap{background:var(--paper);box-shadow:none} h1,h2,h3{color:#f1f7fb} .yearnav a,.yearnav span,.weekgrid a,.finder-controls button{background:#1c2a36;border-color:#405567;color:#b6dcff} .finder-controls button[aria-pressed="true"]{background:#eef7ff;color:#102a43;border-color:#eef7ff} th{background:#223444;color:#eef7ff}th,td,table{border-color:#40505e}tbody tr:nth-child(even) td{background:#1b2732} }
+""".strip()
+
+SCRIPT = """
+<script>
+document.addEventListener('click', function (e) {
+  const button = e.target.closest('[data-finder-mode]');
+  if (!button) return;
+  const wrap = button.closest('.planet-finder-block');
+  const mode = button.dataset.finderMode;
+  wrap.querySelectorAll('[data-finder-mode]').forEach(b => b.setAttribute('aria-pressed', b === button ? 'true' : 'false'));
+  wrap.querySelectorAll('.finder [data-mode]').forEach(g => g.style.display = g.dataset.mode === mode ? 'inline' : 'none');
+  const caption = wrap.querySelector('figcaption');
+  caption.textContent = button.textContent;
+});
+</script>
 """.strip()
 
 
 def shell(title: str, body: str) -> str:
-    return f'''<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>{html.escape(title)} · Star Almanack</title><style>{CSS}</style></head><body><header><div class="wrap"><div class="brand"><a href="../2026/">Star Almanack</a></div><div class="subtitle">Alexander Ferrari Miller</div></div></header><main class="wrap">{body}</main><footer><div class="wrap">© 2026 Alexander Ferrari Miller. All rights reserved.</div></footer></body></html>'''
+    return f'''<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>{html.escape(title)} · Star Almanack</title><style>{CSS}</style></head><body><header><div class="wrap"><div class="brand"><a href="../2026/">Star Almanack</a></div><div class="subtitle">Alexander Ferrari Miller</div></div></header><main class="wrap">{body}</main><footer><div class="wrap">© 2026 Alexander Ferrari Miller. All rights reserved.</div></footer>{SCRIPT}</body></html>'''
 
 
 def year_nav(year: int) -> str:
@@ -80,24 +99,23 @@ def week_count(year: int) -> int:
     return dt.date(year, 12, 28).isocalendar().week
 
 
-def empty_finder_svg(label: str) -> str:
-    signs = ["♈","♉","♊","♋","♌","♍","♎","♏","♐","♑","♒","♓"]
+def empty_finder_svg() -> str:
+    symbols = ["♈︎","♉︎","♊︎","♋︎","♌︎","♍︎","♎︎","♏︎","♐︎","♑︎","♒︎","♓︎"]
+    latin = ["Aries","Taurus","Gemini","Cancer","Leo","Virgo","Libra","Scorpio","Sagittarius","Capricorn","Aquarius","Pisces"]
     positions = [(22,100),(32,60),(58,32),(100,22),(142,32),(168,60),(178,100),(168,140),(142,168),(100,178),(58,168),(32,140)]
-    labels = ''.join(f'<text x="{x}" y="{y}" text-anchor="middle" dominant-baseline="middle" font-size="12">{s}</text>' for s,(x,y) in zip(signs,positions))
-    spokes=''.join(f'<line x1="100" y1="100" x2="{x}" y2="{y}" stroke="currentColor" stroke-opacity=".28" stroke-width="1"/>' for x,y in positions)
-    return f'''<svg viewBox="0 0 200 200" role="img" aria-label="{html.escape(label)} empty planet finder"><circle cx="100" cy="100" r="78" fill="none" stroke="currentColor" stroke-width="1.5"/>{spokes}{labels}<circle cx="100" cy="100" r="3" fill="none" stroke="currentColor"/><text x="100" y="100" text-anchor="middle" dy="24" font-family="system-ui,sans-serif" font-size="7" opacity=".55">planet positions pending</text></svg>'''
+    greek_labels = ''.join(f'<text x="{x}" y="{y}" text-anchor="middle" dominant-baseline="middle" font-family="Georgia,Times New Roman,serif" font-size="12" fill="#111">{s}</text>' for s,(x,y) in zip(symbols,positions))
+    latin_labels = ''.join(f'<text x="{x}" y="{y}" text-anchor="middle" dominant-baseline="middle" font-family="Arial,Helvetica,sans-serif" font-size="5.2" fill="#111">{s}</text>' for s,(x,y) in zip(latin,positions))
+    mixed_labels = ''.join(f'<text x="{x}" y="{y-2}" text-anchor="middle" dominant-baseline="middle" font-family="Georgia,Times New Roman,serif" font-size="10" fill="#111">{sym}</text><text x="{x}" y="{y+6}" text-anchor="middle" dominant-baseline="middle" font-family="Arial,Helvetica,sans-serif" font-size="4.2" fill="#111">{name}</text>' for sym,name,(x,y) in zip(symbols,latin,positions))
+    spokes=''.join(f'<line x1="100" y1="100" x2="{x}" y2="{y}" stroke="#111" stroke-opacity=".28" stroke-width="1"/>' for x,y in positions)
+    return f'''<svg viewBox="0 0 200 200" role="img" aria-label="Empty planet finder"><rect width="200" height="200" fill="white"/><circle cx="100" cy="100" r="78" fill="none" stroke="#111" stroke-width="1.5"/>{spokes}<g data-mode="greek">{greek_labels}</g><g data-mode="latin">{latin_labels}</g><g data-mode="mixed">{mixed_labels}</g><circle cx="100" cy="100" r="3" fill="none" stroke="#111"/><text x="100" y="96" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="7" fill="#111">Tropical ecliptic longitude</text><text x="100" y="105" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="5.5" fill="#555">planet positions pending</text></svg>'''
 
 
 def weekly_placeholder(year: int, week: int, monday: dt.date) -> str:
     dates=[monday+dt.timedelta(days=i) for i in range(7)]
     rows=''.join(f'<tr><td>{d.strftime("%a, %b %-d, %Y")}</td><td>—</td><td>—</td></tr>' for d in dates)
     calendar=f'''<h3>Calendar</h3><table class="calendar"><thead><tr><th>Date</th><th>Zodiac day</th><th>Events</th></tr></thead><tbody>{rows}</tbody></table>'''
-    ephemeris='''<h3>Weekly Solar-System Ephemeris</h3><p><strong>Snapshot:</strong> pending</p><table class="ephemeris"><thead><tr><th>☉ Sun</th><th>☽ Moon</th><th>☿ Mercury</th><th>♀ Venus</th><th>♂ Mars</th><th>♃ Jupiter</th><th>♄ Saturn</th></tr></thead><tbody><tr><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr></tbody></table><p><strong>Extended targets:</strong></p><table class="ephemeris"><thead><tr><th>♅ Uranus</th><th>♆ Neptune</th><th>⚳ Ceres</th></tr></thead><tbody><tr><td>—</td><td>—</td><td>—</td></tr></tbody></table>'''
-    finders='''<h3>Planet Finders</h3><div class="finder-strip">''' + ''.join([
-        f'<figure class="finder">{empty_finder_svg("Greek / Symbols")}<figcaption>Greek / Symbols</figcaption></figure>',
-        f'<figure class="finder">{empty_finder_svg("Latin")}<figcaption>Latin</figcaption></figure>',
-        f'<figure class="finder">{empty_finder_svg("Mixed Learner")}<figcaption>Mixed Learner</figcaption></figure>',
-    ]) + '</div>'
+    ephemeris='''<h3>Weekly Solar-System Ephemeris</h3><p><strong>Snapshot:</strong> pending</p><table class="ephemeris"><thead><tr><th>Sun</th><th>Moon</th><th>Mercury</th><th>Venus</th><th>Mars</th><th>Jupiter</th><th>Saturn</th></tr></thead><tbody><tr><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr></tbody></table><p><strong>Extended targets:</strong></p><table class="ephemeris"><thead><tr><th>Uranus</th><th>Neptune</th><th>Ceres</th></tr></thead><tbody><tr><td>—</td><td>—</td><td>—</td></tr></tbody></table>'''
+    finders=f'''<h3>Planet Finder</h3><div class="planet-finder-block"><div class="finder-controls" role="group" aria-label="Planet finder notation"><button type="button" data-finder-mode="greek" aria-pressed="true">Greek / Symbols</button><button type="button" data-finder-mode="latin" aria-pressed="false">Latin</button><button type="button" data-finder-mode="mixed" aria-pressed="false">Mixed Learner</button></div><figure class="finder">{empty_finder_svg()}<figcaption>Greek / Symbols</figcaption></figure></div>'''
     lorem='Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
     sky=f'''<h3>Sky Notes</h3><div class="sky-note"><h4>Naked eye</h4><p>{lorem}</p><h4>Binoculars</h4><p>{lorem}</p><h4>Telescope</h4><p>{lorem}</p></div>'''
     return calendar+ephemeris+finders+sky
