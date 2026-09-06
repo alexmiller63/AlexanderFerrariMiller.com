@@ -54,28 +54,6 @@ jobs:
           print('Refined portrait calendar to 27% date, 23% zodiac, 50% events')
           PY
 
-      - name: Add Kilroy deployment diagnostic to W01
-        run: |
-          python - <<'PY'
-          from pathlib import Path
-          page = Path('site/2026/W01/index.html')
-          text = page.read_text(encoding='utf-8')
-          marker = '<p id="kilroy-deployment-diagnostic" style="text-align:center;font-family:system-ui,sans-serif;font-weight:700;border:2px solid currentColor;padding:.5rem;margin:1rem 0">KILROY WAS HERE — BUILD 2026-09-05 02:12 PDT</p>'
-          text = text.replace('<main class="wrap">', '<main class="wrap">' + marker, 1)
-          page.write_text(text, encoding='utf-8')
-          PY
-
-      - name: Add Kilroy deployment diagnostic to W41
-        run: |
-          python - <<'PY'
-          from pathlib import Path
-          page = Path('site/2026/W41/index.html')
-          text = page.read_text(encoding='utf-8')
-          marker = '<p id="kilroy-w41-deployment-diagnostic" style="text-align:center;font-family:system-ui,sans-serif;font-weight:700;border:2px solid currentColor;padding:.5rem;margin:1rem 0">KILROY WAS HERE — W41 EXTENDED EPHEMERIS</p>'
-          text = text.replace('<main class="wrap">', '<main class="wrap">' + marker, 1)
-          page.write_text(text, encoding='utf-8')
-          PY
-
       - name: Validate publishing output
         run: |
           python - <<'PY'
@@ -122,11 +100,7 @@ jobs:
               assert "'☉':'Sun'" in text and "'♄':'Saturn'" in text, f'Full ephemeris-body mapping missing in {page}'
               assert '© 2026 Alexander Ferrari Miller. All rights reserved.' in text, f'Copyright footer missing in {page}'
 
-          w01 = (root / 'W01' / 'index.html').read_text(encoding='utf-8')
-          assert 'KILROY WAS HERE — BUILD 2026-09-05 02:12 PDT' in w01, 'Kilroy deployment diagnostic missing from W01'
-
           w41 = (root / 'W41' / 'index.html').read_text(encoding='utf-8')
-          assert 'KILROY WAS HERE — W41 EXTENDED EPHEMERIS' in w41, 'Kilroy deployment diagnostic missing from W41'
           assert '♅ Uranus' in w41 and '♆ Neptune' in w41 and '⚳ Ceres' in w41, 'Extended targets missing from W41'
           for visual in ('planet-finder-greek-symbols.svg','planet-finder-latin.svg','planet-finder-mixed-learner.svg','enif-finder.svg','sadalmelik-finder.svg'):
               assert visual in w41, f'W41 visual missing: {visual}'
