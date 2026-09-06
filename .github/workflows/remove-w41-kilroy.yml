@@ -1,0 +1,53 @@
+name: Remove W41 Kilroy diagnostic
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - .github/workflows/remove-w41-kilroy.yml
+
+permissions:
+  contents: write
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Remove obsolete W41 Kilroy diagnostic
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          marker = '<p id="kilroy-w41-deployment-diagnostic" style="text-align:center;font-family:system-ui,sans-serif;font-weight:700;border:2px solid currentColor;padding:.5rem;margin:1rem 0">KILROY WAS HERE — W41 EXTENDED EPHEMERIS</p>'
+
+          for path in (
+              Path('Star-Almanack-Repo/site/2026/W41/index.html'),
+              Path('almanack/2026/W41/index.html'),
+          ):
+              if path.exists():
+                  text = path.read_text(encoding='utf-8')
+                  text = text.replace(marker, '')
+                  path.write_text(text, encoding='utf-8')
+
+          for path in (
+              Path('Star-Almanack-Repo/site/2026/W41/kilroy.html'),
+              Path('almanack/2026/W41/kilroy.html'),
+          ):
+              if path.exists():
+                  path.unlink()
+          PY
+
+      - name: Commit cleanup
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A Star-Almanack-Repo/site/2026/W41 almanack/2026/W41
+          if git diff --cached --quiet; then
+            echo 'No Kilroy cleanup changes needed.'
+            exit 0
+          fi
+          git commit -m 'Remove obsolete W41 Kilroy diagnostic'
+          git push
