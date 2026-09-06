@@ -33,6 +33,10 @@ main.wrap { background:var(--paper); min-height:76vh; padding:2rem 2.4rem 3.25re
 nav.weeknav { display:grid; grid-template-columns:1fr auto 1fr; align-items:center; gap:.8rem; margin:.4rem 0 2rem; font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; font-size:.9rem; }
 nav.weeknav > :last-child { justify-self:end; }
 nav.weeknav a,nav.weeknav a:visited,nav.weeknav span { display:inline-block; min-width:5.5rem; padding:.58rem .8rem; border:1px solid #c8d3dc; border-radius:.45rem; text-decoration:none; text-align:center; color:var(--link); background:#fff; }
+
+.yearnav { display:grid; grid-template-columns:1fr auto 1fr; align-items:center; gap:.8rem; margin:.4rem 0 2rem; font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; font-size:.9rem; }
+.yearnav > :last-child { justify-self:end; }
+.yearnav a,.yearnav a:visited,.yearnav span { display:inline-block; min-width:5.5rem; padding:.58rem .8rem; border:1px solid #c8d3dc; border-radius:.45rem; text-decoration:none; text-align:center; color:var(--link); background:#fff; }
 h1,h2,h3 { line-height:1.2; color:#17344d; }
 h1 { margin:.3rem 0 1rem; font-size:clamp(2rem,5vw,2.75rem); }
 h2 { margin:2.25rem 0 .8rem; padding-bottom:.35rem; border-bottom:1px solid var(--rule); font-size:1.42rem; }
@@ -133,5 +137,5 @@ def main()->None:
         monday=items[0][1]; links=''.join(f'<li><a href="W{week:02d}/">ISO 2026-W{week:02d}</a></li>' for week,_ in items); groups.append(f'<h2 class="month">{monday.strftime("%B")} <span class="date">{monday.strftime("%B %-d, %Y")}</span></h2><ul class="weekgrid">{links}</ul>')
     w01=next((w for w,d in week_links if w==1),None); prefix=''
     if w01 is not None: prefix='<h2 class="month">December <span class="date">December 29, 2025</span></h2><ul class="weekgrid"><li><a href="W01/">ISO 2026-W01</a></li></ul>'
-    index_body='<h1>2026 Weekly Almanack</h1><p>Select an ISO week.</p>'+prefix+'\n'+'\n'.join(groups); (OUT/"index.html").write_text(page_shell("2026 Weekly Almanack",index_body),encoding="utf-8"); print("Published 53 weekly pages to",OUT)
+    year_nav='<nav class="yearnav"><a href="../2025/">← 2025</a><span>ISO 2026</span><a href="../2027/">2027 →</a></nav>'; index_body=year_nav+'<h1>2026 Weekly Almanack</h1><p>Select an ISO week.</p>'+prefix+'\n'+'\n'.join(groups)+year_nav; (OUT/"index.html").write_text(page_shell("2026 Weekly Almanack",index_body),encoding="utf-8"); print("Published 53 weekly pages to",OUT)
 if __name__=="__main__": main()
