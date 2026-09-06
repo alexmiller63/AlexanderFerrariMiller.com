@@ -25,10 +25,11 @@ header a,header a:visited,footer a,footer a:visited { color:#eef7ff; }
 main.wrap { background:var(--paper); min-height:76vh; padding:2rem 2.4rem 3.25rem; box-shadow:0 0 28px rgba(25,35,45,.08); }
 .brand { font-size:1.35rem; font-weight:700; }
 .subtitle { margin-top:.1rem; opacity:.86; font-size:.94rem; }
-.yearnav { display:grid; grid-template-columns:1fr auto 1fr; align-items:center; gap:.8rem; margin:.3rem 0 1.8rem; font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; font-size:.9rem; }
-.yearnav > :last-child { justify-self:end; }
-.yearnav a,.yearnav span { display:inline-block; padding:.5rem .75rem; border:1px solid #c8d3dc; border-radius:.45rem; text-decoration:none; background:#fff; color:var(--link); text-align:center; }
+.yearnav,.weeknav { display:grid; grid-template-columns:1fr auto 1fr; align-items:center; gap:.8rem; margin:.3rem 0 1.8rem; font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; font-size:.9rem; }
+.yearnav > :last-child,.weeknav > :last-child { justify-self:end; }
+.yearnav a,.yearnav span,.weeknav a,.weeknav span { display:inline-block; min-width:5.5rem; padding:.5rem .75rem; border:1px solid #c8d3dc; border-radius:.45rem; text-decoration:none; background:#fff; color:var(--link); text-align:center; }
 .yearnav span { font-weight:700; }
+.weeknav span.disabled { color:var(--muted); }
 h1,h2,h3 { line-height:1.2; color:#17344d; }
 h1 { margin:.3rem 0 1rem; font-size:clamp(2rem,5vw,2.75rem); }
 h2 { margin:2.25rem 0 .8rem; padding-bottom:.35rem; border-bottom:1px solid var(--rule); font-size:1.42rem; }
@@ -65,8 +66,8 @@ table.ephemeris th,table.ephemeris td { text-align:center; white-space:nowrap; }
 .sky-note { border-left:3px solid #c8d3dc; padding-left:1rem; }
 footer { font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; font-size:.88rem; }
 footer .wrap { padding-top:1.3rem; padding-bottom:1.3rem; opacity:.9; }
-@media (max-width:760px) { html{font-size:16px}.wrap{padding-left:1rem;padding-right:1rem}main.wrap{padding:1.35rem 1rem 2.5rem;box-shadow:none}.weekgrid{grid-template-columns:repeat(2,minmax(0,1fr));gap:.55rem}.weekgrid a{padding:.72rem .55rem;font-size:.92rem}h2.month .date{display:block;margin-left:0;margin-top:.15rem}table.ephemeris{display:block;overflow-x:auto;-webkit-overflow-scrolling:touch}.yearnav{gap:.4rem}.yearnav a,.yearnav span{padding:.5rem .45rem} }
-@media (prefers-color-scheme:dark) { :root{--ink:#dce6ef;--muted:#a7b4c0;--link:#9fd0ff;--paper:#17212b;--page:#10171f;--rule:#394957} body{background:var(--page);color:var(--ink)} main.wrap{background:var(--paper);box-shadow:none} h1,h2,h3{color:#f1f7fb} .yearnav a,.yearnav span,.weekgrid a,.finder-controls button{background:#1c2a36;border-color:#405567;color:#b6dcff} .finder-controls button[aria-pressed="true"]{background:#eef7ff;color:#102a43;border-color:#eef7ff} th{background:#223444;color:#eef7ff}th,td,table{border-color:#40505e}tbody tr:nth-child(even) td{background:#1b2732} }
+@media (max-width:760px) { html{font-size:16px}.wrap{padding-left:1rem;padding-right:1rem}main.wrap{padding:1.35rem 1rem 2.5rem;box-shadow:none}.weekgrid{grid-template-columns:repeat(2,minmax(0,1fr));gap:.55rem}.weekgrid a{padding:.72rem .55rem;font-size:.92rem}h2.month .date{display:block;margin-left:0;margin-top:.15rem}table.ephemeris{display:block;overflow-x:auto;-webkit-overflow-scrolling:touch}.yearnav,.weeknav{gap:.4rem}.yearnav a,.yearnav span,.weeknav a,.weeknav span{min-width:0;padding:.5rem .45rem} }
+@media (prefers-color-scheme:dark) { :root{--ink:#dce6ef;--muted:#a7b4c0;--link:#9fd0ff;--paper:#17212b;--page:#10171f;--rule:#394957} body{background:var(--page);color:var(--ink)} main.wrap{background:var(--paper);box-shadow:none} h1,h2,h3{color:#f1f7fb} .yearnav a,.yearnav span,.weeknav a,.weeknav span,.weekgrid a,.finder-controls button{background:#1c2a36;border-color:#405567;color:#b6dcff} .weeknav span.disabled{color:#7f909f}.finder-controls button[aria-pressed="true"]{background:#eef7ff;color:#102a43;border-color:#eef7ff} th{background:#223444;color:#eef7ff}th,td,table{border-color:#40505e}tbody tr:nth-child(even) td{background:#1b2732} }
 """.strip()
 
 SCRIPT = """
@@ -97,6 +98,25 @@ def year_nav(year: int) -> str:
 
 def week_count(year: int) -> int:
     return dt.date(year, 12, 28).isocalendar().week
+
+
+def week_nav(year: int, week: int) -> str:
+    count = week_count(year)
+    if week > 1:
+        prev = f'<a href="../W{week-1:02d}/">← W{week-1:02d}</a>'
+    elif year == 2027:
+        prev = '<a href="../../2026/W53/">← 2026-W53</a>'
+    else:
+        prev = '<span class="disabled">← Previous</span>'
+
+    if week < count:
+        nxt = f'<a href="../W{week+1:02d}/">W{week+1:02d} →</a>'
+    elif year == 2025:
+        nxt = '<a href="../../2026/W01/">2026-W01 →</a>'
+    else:
+        nxt = '<span class="disabled">Next →</span>'
+
+    return f'<nav class="weeknav">{prev}<a href="../">All {year} weeks</a>{nxt}</nav>'
 
 
 def empty_finder_svg() -> str:
@@ -134,12 +154,14 @@ def build_year(year: int) -> None:
         page.mkdir()
         title=f'ISO week {week:02d} {year}'
         body=(year_nav(year)
+              + week_nav(year,week)
               + '<section class="placeholder">'
               + f'<h1>{title}</h1>'
               + '<p class="placeholder-note">This week is currently in preparation and will be published as part of the Star Almanack.</p>'
               + f'<p><strong>Week begins:</strong> {monday.strftime("Monday, %B %-d, %Y")}</p>'
               + '</section>'
               + weekly_placeholder(year,week,monday)
+              + week_nav(year,week)
               + year_nav(year))
         (page/'index.html').write_text(shell(title,body),encoding='utf-8')
 
