@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""Populate 2025 and 2027 Zodiac Days, solar ingresses, and lunar phases.
+"""Populate 2025 and 2027 Zodiac Days, solar ingresses, Wheel-of-the-Year stations, and lunar phases.
 
 The calculation is year-independent and uses JPL Horizons apparent geocentric
-Ecliptic-of-date longitudes for the Sun and Moon.  Event times are obtained by
-linear interpolation between 1-hour samples.  The resulting data are written
+Ecliptic-of-date longitudes for the Sun and Moon. Event times are obtained by
+linear interpolation between 1-hour samples. The resulting data are written
 back into both the durable placeholder source tree and the public Almanack tree.
 """
 from __future__ import annotations
@@ -13,7 +13,7 @@ import json
 import re
 import urllib.parse
 import urllib.request
-from datetime import date, datetime, time, timedelta, timezone
+from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -28,6 +28,16 @@ SIGN_NAMES = (
 )
 PHASES = ((0.0, "🌑 New Moon"), (90.0, "🌓 First Quarter"),
           (180.0, "🌕 Full Moon"), (270.0, "🌗 Last Quarter"))
+WHEEL_STATIONS = (
+    (315.0, "Winter–Spring midpoint", "Imbolc"),
+    (0.0, "March equinox", "Ostara"),
+    (45.0, "Spring–Summer midpoint", "Beltane"),
+    (90.0, "June solstice", "Litha"),
+    (135.0, "Summer–Autumn midpoint", "Lughnasadh"),
+    (180.0, "September equinox", "Mabon"),
+    (225.0, "Autumn–Winter midpoint", "Samhain"),
+    (270.0, "December solstice", "Yule"),
+)
 HORIZONS_API = "https://ssd.jpl.nasa.gov/api/horizons.api"
 
 
@@ -108,23 +118,36 @@ def interpolate_time(t0: datetime, v0: float, t1: datetime, v1: float, target: f
     return t0 + (t1 - t0) * f
 
 
-def solar_ingresses(samples: list[tuple[datetime, float]]) -> list[tuple[datetime, int]]:
+def longitude_events(samples: list[tuple[datetime, float]], step: float) -> list[tuple[datetime, float]]:
     times = [t for t, _ in samples]
     u = unwrap([x for _, x in samples])
-    events: list[tuple[datetime, int]] = []
-    lo = int(u[0] // 30) - 1
-    hi = int(u[-1] // 30) + 1
-    targets = [30.0 * k for k in range(lo, hi + 1)]
+    events: list[tuple[datetime, float]] = []
+    lo = int(u[0] // step) - 1
+    hi = int(u[-1] // step) + 1
     j = 0
-    for target in targets:
+    for k in range(lo, hi + 1):
+        target = step * k
         while j + 1 < len(u) and u[j + 1] < target:
             j += 1
         if j + 1 >= len(u):
             break
         if u[j] <= target <= u[j + 1]:
             ts = interpolate_time(times[j], u[j], times[j + 1], u[j + 1], target)
-            sign_index = int(round(target / 30.0)) % 12
-            events.append((ts, sign_index))
+            events.append((ts, target % 360.0))
+    return events
+
+
+def solar_ingresses(samples: list[tuple[datetime, float]]) -> list[tuple[datetime, int]]:
+    return [(ts, int(round(lon / 30.0)) % 12) for ts, lon in longitude_events(samples, 30.0)]
+
+
+def wheel_of_year(samples: list[tuple[datetime, float]]) -> list[tuple[datetime, float, str, str]]:
+    metadata = {lon: (astronomical, traditional) for lon, astronomical, traditional in WHEEL_STATIONS}
+    events = []
+    for ts, lon in longitude_events(samples, 45.0):
+        key = round(lon) % 360
+        astronomical, traditional = metadata[float(key)]
+        events.append((ts, float(key), astronomical, traditional))
     return events
 
 
@@ -170,13 +193,24 @@ def fmt_utc(ts: datetime) -> str:
     return ts.strftime("%H:%M:%S UTC")
 
 
-def build_events(first: date, last: date, ingresses: list[tuple[datetime, int]], phases: list[tuple[datetime, str]]) -> dict[date, list[str]]:
+def build_events(
+    first: date,
+    last: date,
+    ingresses: list[tuple[datetime, int]],
+    phases: list[tuple[datetime, str]],
+    wheel: list[tuple[datetime, float, str, str]],
+) -> dict[date, list[str]]:
     events: dict[date, list[str]] = {}
     for ts, idx in ingresses:
         if first <= ts.date() <= last:
             deg = idx * 30
             events.setdefault(ts.date(), []).append(
                 f"{SIGNS[idx]} {SIGN_NAMES[idx]} ingress ({deg}°) — {fmt_utc(ts)}"
+            )
+    for ts, lon, astronomical, traditional in wheel:
+        if first <= ts.date() <= last:
+            events.setdefault(ts.date(), []).append(
+                f"Wheel of the Year: {traditional} — {astronomical} ({int(lon)}°) — {fmt_utc(ts)}"
             )
     for ts, label in phases:
         if first <= ts.date() <= last:
@@ -204,8 +238,13 @@ def patch_page(path: Path, ingresses: list[tuple[datetime, int]], events: dict[d
         z = zodiac_label(d, ingresses)
         existing = [x for x in match.group(2).split("<br>") if x and x != "—"]
         generated = events.get(d, [])
-        # Replace prior generated ingress/phase rows while preserving other calendar events.
-        keep = [x for x in existing if " ingress (" not in x and not x.startswith(("🌑 New Moon", "🌓 First Quarter", "🌕 Full Moon", "🌗 Last Quarter"))]
+        # Replace prior generated ingress, Wheel-of-the-Year, and phase rows while preserving other calendar events.
+        keep = [
+            x for x in existing
+            if " ingress (" not in x
+            and not x.startswith("Wheel of the Year:")
+            and not x.startswith(("🌑 New Moon", "🌓 First Quarter", "🌕 Full Moon", "🌗 Last Quarter"))
+        ]
         merged = keep + generated
         event_html = "<br>".join(merged) if merged else "—"
         return f"<tr><td>{label}</td><td>{z}</td><td>{event_html}</td></tr>"
@@ -217,7 +256,12 @@ def patch_page(path: Path, ingresses: list[tuple[datetime, int]], events: dict[d
     return False
 
 
-def write_data(year: int, ingresses: list[tuple[datetime, int]], phases: list[tuple[datetime, str]]) -> None:
+def write_data(
+    year: int,
+    ingresses: list[tuple[datetime, int]],
+    phases: list[tuple[datetime, str]],
+    wheel: list[tuple[datetime, float, str, str]],
+) -> None:
     DATA_ROOT.mkdir(parents=True, exist_ok=True)
     payload = {
         "year": year,
@@ -225,6 +269,15 @@ def write_data(year: int, ingresses: list[tuple[datetime, int]], phases: list[tu
         "solar_ingresses": [
             {"utc": ts.isoformat().replace("+00:00", "Z"), "sign": SIGNS[idx], "name": SIGN_NAMES[idx], "longitude_deg": idx * 30}
             for ts, idx in ingresses
+        ],
+        "wheel_of_the_year": [
+            {
+                "utc": ts.isoformat().replace("+00:00", "Z"),
+                "longitude_deg": int(lon),
+                "astronomical_name": astronomical,
+                "traditional_name": traditional,
+            }
+            for ts, lon, astronomical, traditional in wheel
         ],
         "lunar_phases": [
             {"utc": ts.isoformat().replace("+00:00", "Z"), "phase": label}
@@ -241,9 +294,10 @@ def populate_year(year: int) -> int:
     sun = horizons_longitudes("10", query_start, query_stop)
     moon = horizons_longitudes("301", query_start, query_stop)
     ingresses = solar_ingresses(sun)
+    wheel = wheel_of_year(sun)
     phases = lunar_phases(sun, moon)
-    events = build_events(first, last, ingresses, phases)
-    write_data(year, ingresses, phases)
+    events = build_events(first, last, ingresses, phases, wheel)
+    write_data(year, ingresses, phases, wheel)
 
     changed = 0
     weeks = date(year, 12, 28).isocalendar().week
@@ -251,7 +305,11 @@ def populate_year(year: int) -> int:
         for week in range(1, weeks + 1):
             if patch_page(base / str(year) / f"W{week:02d}" / "index.html", ingresses, events):
                 changed += 1
-    print(f"{year}: {len(ingresses)} ingresses in query window, {len(phases)} lunar phases, {changed} pages updated")
+    print(
+        f"{year}: {len(ingresses)} ingresses in query window, "
+        f"{len(wheel)} Wheel-of-the-Year stations in query window, "
+        f"{len(phases)} lunar phases, {changed} pages updated"
+    )
     return changed
 
 
