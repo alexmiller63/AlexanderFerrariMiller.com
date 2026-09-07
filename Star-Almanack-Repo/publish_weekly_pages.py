@@ -119,7 +119,7 @@ def markdown_fragment(md: str) -> str:
         para.append(line); i+=1
     flush_para(); return "\n".join(out)
 def page_shell(title: str, body: str, nav: str="") -> str:
-    return f'''<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>{html.escape(title)} · Star Almanack</title><style>{CSS}</style></head><body><header><div class="wrap"><div class="brand"><a href="/almanack/2026/">Star Almanack</a></div><div class="subtitle">Alexander Ferrari Miller</div></div></header><main class="wrap">{nav}{body}{nav}</main><footer><div class="wrap">© 2026 Alexander Ferrari Miller. All rights reserved.</div></footer></body></html>'''
+    return f'''<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>{html.escape(title)} · Star Almanack</title><style>{CSS}</style></head><body><header><div class="wrap"><div class="brand"><a href="/almanack/2026/">Star Almanack</a></div><div class="subtitle">Alexander Ferrari Miller</div></div></header><main class="wrap"><nav class="weeknav sitenav"><a href="/star-almanack/">Calendar Home</a><a href="/projects.html">All Projects</a><a href="/index.html">Main Site</a></nav><nav class="yearnav"><a href="../2025/">← 2025</a><span>ISO 2026</span><a href="../2027/">2027 →</a></nav>{nav}{body}{nav}</main><footer><div class="wrap">© 2026 Alexander Ferrari Miller. All rights reserved.</div></footer></body></html>'''
 def week_nav(week:int)->str:
     prev=f'<a href="../W{week-1:02d}/">← W{week-1:02d}</a>' if week>1 else '<span>← Previous</span>'; nxt=f'<a href="../W{week+1:02d}/">W{week+1:02d} →</a>' if week<53 else '<span>Next →</span>'; return f'<nav class="weeknav">{prev}<a href="../">All weeks</a>{nxt}</nav>'
 def main()->None:
@@ -137,5 +137,5 @@ def main()->None:
         monday=items[0][1]; links=''.join(f'<li><a href="W{week:02d}/">ISO 2026-W{week:02d}</a></li>' for week,_ in items); groups.append(f'<h2 class="month">{monday.strftime("%B")} <span class="date">{monday.strftime("%B %-d, %Y")}</span></h2><ul class="weekgrid">{links}</ul>')
     w01=next((w for w,d in week_links if w==1),None); prefix=''
     if w01 is not None: prefix='<h2 class="month">December <span class="date">December 29, 2025</span></h2><ul class="weekgrid"><li><a href="W01/">ISO 2026-W01</a></li></ul>'
-    year_nav='<nav class="yearnav"><a href="../2025/">← 2025</a><span>ISO 2026</span><a href="../2027/">2027 →</a></nav>'; index_body=year_nav+'<h1>2026 Weekly Almanack</h1><p>Select an ISO week.</p>'+prefix+'\n'+'\n'.join(groups)+year_nav; (OUT/"index.html").write_text(page_shell("2026 Weekly Almanack",index_body),encoding="utf-8"); print("Published 53 weekly pages to",OUT)
+    index_body='<h1>2026 Weekly Almanack</h1><p>Select an ISO week.</p>'+prefix+'\n'+'\n'.join(groups); (OUT/"index.html").write_text(page_shell("2026 Weekly Almanack",index_body),encoding="utf-8"); print("Published 53 weekly pages to",OUT)
 if __name__=="__main__": main()

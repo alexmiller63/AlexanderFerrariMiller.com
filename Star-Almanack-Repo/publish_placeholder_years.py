@@ -30,6 +30,7 @@ main.wrap { background:var(--paper); min-height:76vh; padding:2rem 2.4rem 3.25re
 .yearnav > :last-child,.weeknav > :last-child { justify-self:end; }
 .yearnav a,.yearnav span,.weeknav a,.weeknav span { display:inline-block; min-width:5.5rem; padding:.5rem .75rem; border:1px solid #c8d3dc; border-radius:.45rem; text-decoration:none; background:#fff; color:var(--link); text-align:center; }
 .yearnav span { font-weight:700; }
+.yearnav > span:empty { visibility:hidden; }
 .weeknav span.disabled { color:var(--muted); }
 h1,h2,h3 { line-height:1.2; color:#17344d; }
 h1 { margin:.3rem 0 1rem; font-size:clamp(2rem,5vw,2.75rem); }
@@ -88,7 +89,7 @@ document.addEventListener('click', function (e) {
 
 
 def shell(title: str, body: str) -> str:
-    return f'''<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>{html.escape(title)} · Star Almanack</title><style>{CSS}</style></head><body><header><div class="wrap"><div class="brand"><a href="../2026/">Star Almanack</a></div><div class="subtitle">Alexander Ferrari Miller</div></div></header><main class="wrap">{body}</main><footer><div class="wrap">© 2026 Alexander Ferrari Miller. All rights reserved.</div></footer>{SCRIPT}</body></html>'''
+    return f'''<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>{html.escape(title)} · Star Almanack</title><style>{CSS}</style></head><body><header><div class="wrap"><div class="brand"><a href="../2026/">Star Almanack</a></div><div class="subtitle">Alexander Ferrari Miller</div></div></header><main class="wrap"><nav class="weeknav sitenav"><a href="/star-almanack/">Calendar Home</a><a href="/projects.html">All Projects</a><a href="/index.html">Main Site</a></nav>{body}</main><footer><div class="wrap">© 2026 Alexander Ferrari Miller. All rights reserved.</div></footer>{SCRIPT}</body></html>'''
 
 
 def year_nav(year: int) -> str:
