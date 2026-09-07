@@ -89,7 +89,7 @@ document.addEventListener('click', function (e) {
 
 
 def shell(title: str, body: str) -> str:
-    return f'''<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>{html.escape(title)} · Star Almanack</title><style>{CSS}</style></head><body><header><div class="wrap"><div class="brand"><a href="../2026/">Star Almanack</a></div><div class="subtitle">Alexander Ferrari Miller</div></div></header><main class="wrap"><nav class="weeknav sitenav"><a href="/star-almanack/">Calendar Home</a><a href="/projects.html">All Projects</a><a href="/index.html">Main Site</a></nav>{body}</main><footer><div class="wrap">© 2026 Alexander Ferrari Miller. All rights reserved.</div></footer>{SCRIPT}</body></html>'''
+    return f'''<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>{html.escape(title)} · Star Almanack</title><style>{CSS}</style></head><body><header><div class="wrap"><div class="brand"><a href="../2026/">Star Almanack</a></div><div class="subtitle">Alexander Ferrari Miller</div></div></header><main class="wrap"><nav class="weeknav sitenav"><a href="/star-almanack/">Almanack Home</a><a href="/projects.html">All Projects</a><a href="/index.html">Main Site</a></nav>{body}</main><footer><div class="wrap">© 2026 Alexander Ferrari Miller. All rights reserved.</div></footer>{SCRIPT}</body></html>'''
 
 
 def year_nav(year: int) -> str:
