@@ -74,3 +74,5 @@ jobs:
           if git diff --cached --quiet; then exit 0; fi
           git commit -m 'Wire ephemeris tables to notation modes'
           git push
+
+# Trigger workflow after creation.
