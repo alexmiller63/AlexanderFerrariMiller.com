@@ -96,7 +96,7 @@ def star_label(r: dict[str, str]) -> str:
     aid = "👁" if mag and int(mag) <= 3 else "B"
     parts = [base]
     if mag: parts.append(f"{aid} V {mag}")
-    parts.extend([declination_band(r["dec_deg"]), season_for(dt.date.fromisoformat(r["best_date"]))])
+    parts.append(f"{declination_band(r['dec_deg'])} {season_for(dt.date.fromisoformat(r['best_date']))}")
     return " — ".join(parts)
 
 
