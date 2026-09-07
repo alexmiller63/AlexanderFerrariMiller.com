@@ -52,6 +52,36 @@ def norm_name(value: str) -> str:
     return re.sub(r"[^a-z0-9]+", "", value.lower())
 
 
+def load_asterisms(path: Path):
+    """Read only the stable name/status/members fields from the catalog.
+
+    The catalog is intentionally human-readable and contains prose notes with
+    punctuation that need not obey strict YAML scalar quoting. Geometry needs
+    only these three machine fields, so parse them directly and fail closed.
+    """
+    entries = []
+    current = None
+    for raw in path.read_text(encoding="utf-8").splitlines():
+        line = raw.strip()
+        if raw.startswith("  - name: "):
+            if current is not None:
+                entries.append(current)
+            current = {"name": raw.split(":", 1)[1].strip()}
+        elif current is not None and raw.startswith("    status: "):
+            current["status"] = raw.split(":", 1)[1].strip()
+        elif current is not None and raw.startswith("    members: ["):
+            body = raw.split("[", 1)[1].rsplit("]", 1)[0]
+            current["members"] = [item.strip() for item in body.split(",") if item.strip()]
+    if current is not None:
+        entries.append(current)
+    if not entries:
+        raise RuntimeError(f"No asterisms parsed from {path}")
+    for entry in entries:
+        if entry.get("status") != "resolved" or not entry.get("members"):
+            raise RuntimeError(f"Incomplete asterism entry: {entry}")
+    return entries
+
+
 def load_bayer(path: Path):
     rows = list(csv.DictReader(path.open(newline="", encoding="utf-8")))
     proper = {norm_name(r["proper"]): r for r in rows if r.get("proper")}
@@ -63,7 +93,6 @@ def bayer_lookup(name: str, proper, keyed):
     p = proper.get(norm_name(name))
     if p:
         return p
-    # Long observing designation, e.g. "Alpha Ursae Majoris".
     for constellation, abbr in sorted(CONSTELLATION_TO_ABBR.items(), key=lambda x: -len(x[0])):
         suffix = " " + constellation
         if name.endswith(suffix):
@@ -80,8 +109,6 @@ def sesame_lookup(name: str, timeout: float = 30.0):
     with urllib.request.urlopen(req, timeout=timeout) as response:
         payload = response.read()
     root = ET.fromstring(payload)
-    # Sesame can return multiple Resolver blocks; the first coordinate-bearing
-    # resolver is sufficient because the query is an explicit catalog/name ID.
     for resolver in root.iter("Resolver"):
         ra = resolver.findtext("jradeg")
         dec = resolver.findtext("jdedeg")
@@ -100,16 +127,14 @@ def main():
     ap.add_argument("--delay", type=float, default=0.15, help="seconds between Sesame requests")
     args = ap.parse_args()
 
-    catalog = yaml.safe_load(args.asterisms.read_text(encoding="utf-8"))
+    catalog = load_asterisms(args.asterisms)
     overrides_doc = yaml.safe_load(args.overrides.read_text(encoding="utf-8"))
     overrides = {r["designation"]: r["resolved_to"] for r in overrides_doc.get("resolutions", [])}
     proper, keyed = load_bayer(args.bayer)
 
     out = []
     cache = {}
-    for asterism in catalog["asterisms"]:
-        if asterism.get("status") != "resolved":
-            raise RuntimeError(f"Unresolved membership: {asterism['name']}")
+    for asterism in catalog:
         for member in asterism["members"]:
             query_name = overrides.get(member, member)
             row = None if member in overrides else bayer_lookup(member, proper, keyed)
@@ -142,7 +167,7 @@ def main():
         w = csv.DictWriter(f, fieldnames=fields)
         w.writeheader()
         w.writerows(out)
-    print(f"Wrote {len(out)} member rows for {len(catalog['asterisms'])} asterisms to {args.output}")
+    print(f"Wrote {len(out)} member rows for {len(catalog)} asterisms to {args.output}")
 
 
 if __name__ == "__main__":
