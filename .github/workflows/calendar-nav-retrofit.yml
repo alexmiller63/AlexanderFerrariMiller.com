@@ -5,6 +5,7 @@ on:
     branches:
       - main
     paths:
+      - .github/workflows/calendar-nav-retrofit.yml
       - tools/calendar-nav-trigger.txt
 
 permissions:
@@ -30,4 +31,3 @@ jobs:
           git add almanack Star-Almanack-Repo
           git commit -m "Buttonize year navigation and rename Almanack Home"
           git push
-# navigation retrofit
