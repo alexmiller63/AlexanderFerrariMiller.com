@@ -34,15 +34,26 @@ def event_map(rows: list[dict[str, str]]) -> dict[dt.date, list[str]]:
     return events
 
 
-def inject(root: Path, year: int, events: dict[dt.date, list[str]]) -> tuple[int, int]:
+def date_pattern(d: dt.date) -> str:
+    """Match both 'Jan 1' and 'Jan 01' calendar date styles."""
+    return rf"{d.strftime('%a, %b ')}0?{d.day}, {d.year}"
+
+
+def inject(root: Path, events: dict[dt.date, list[str]]) -> tuple[int, int]:
     changed = 0
     inserted = 0
-    for page in sorted((root / str(year)).glob("W*/index.html")):
+    iso_years = sorted({d.isocalendar().year for d in events})
+    pages = []
+    for iso_year in iso_years:
+        pages.extend(sorted((root / str(iso_year)).glob("W*/index.html")))
+
+    for page in pages:
         text = page.read_text(encoding="utf-8")
         original = text
         for d, vals in events.items():
-            date_text = d.strftime("%a, %b %d, %Y").replace(" 0", " ")
-            pat = re.compile(rf"(<tr><td>{re.escape(date_text)}</td><td>.*?</td><td>)(.*?)(</td></tr>)")
+            pat = re.compile(
+                rf"(<tr><td>{date_pattern(d)}</td><td>.*?</td><td>)(.*?)(</td></tr>)"
+            )
             m = pat.search(text)
             if not m:
                 continue
@@ -63,8 +74,8 @@ def main() -> None:
     for year in YEARS:
         rows = read_rows(year)
         events = event_map(rows)
-        c1, i1 = inject(SOURCE_SITE, year, events)
-        c2, i2 = inject(PUBLIC, year, events)
+        c1, i1 = inject(SOURCE_SITE, events)
+        c2, i2 = inject(PUBLIC, events)
         if i1 != 25 or i2 != 25:
             raise SystemExit(
                 f"{year}: expected 25 inserted observances in each tree, got source={i1}, public={i2}"
