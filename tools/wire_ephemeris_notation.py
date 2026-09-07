@@ -3,29 +3,44 @@ import re
 
 SCRIPT = r'''<script id="ephemeris-notation-sync">
 (function(){
-  const bodies={Sun:'☉',Moon:'☽',Mercury:'☿',Venus:'♀',Mars:'♂',Jupiter:'♃',Saturn:'♄',Uranus:'♅',Neptune:'♆',Ceres:'⚳'};
+  const bodies={Sun:'☉',Moon:'☽',Mercury:'☿',Venus:'♀',Mars:'♂',Jupiter:'♃',Saturn:'♄',Uranus:'♅',Neptune:'♆',Ceres:'⚳',Pluto:'♇'};
   const signs={'♈':'Aries','♉':'Taurus','♊':'Gemini','♋':'Cancer','♌':'Leo','♍':'Virgo','♎':'Libra','♏':'Scorpio','♐':'Sagittarius','♑':'Capricorn','♒':'Aquarius','♓':'Pisces'};
   const VS='\ufe0e';
   function item(el,g,l,m){el.classList.add('ephemeris-notation-item');el.dataset.greek=g;el.dataset.latin=l;el.dataset.mixed=m;}
-  const tables=Array.from(document.querySelectorAll('table.ephemeris'));
-  tables.forEach(function(table){
-    table.querySelectorAll('th').forEach(function(th){
-      const txt=th.textContent.trim();
-      for(const [name,glyph] of Object.entries(bodies)){
-        const plain=txt.replace(/\ufe0e/g,'');
-        if(plain===glyph || plain===name || plain===glyph+' '+name){item(th,glyph+VS,name,glyph+VS+' '+name);break;}
-      }
+  function longitudeNode(td){
+    let node=td.querySelector('.ephemeris-longitude');
+    if(node)return node;
+    const first=Array.from(td.childNodes).find(function(n){return n.nodeType===Node.TEXT_NODE && n.textContent.trim();});
+    if(!first)return null;
+    node=document.createElement('span');
+    node.className='ephemeris-longitude';
+    node.textContent=first.textContent.trim();
+    first.replaceWith(node);
+    return node;
+  }
+  function prepare(){
+    document.querySelectorAll('table.ephemeris').forEach(function(table){
+      table.querySelectorAll('th').forEach(function(th){
+        if(th.dataset.greek)return;
+        const txt=th.textContent.trim().replace(/\ufe0e/g,'');
+        for(const [name,glyph] of Object.entries(bodies)){
+          if(txt===glyph || txt===name || txt===glyph+' '+name){item(th,glyph+VS,name,glyph+VS+' '+name);break;}
+        }
+      });
+      table.querySelectorAll('td').forEach(function(td){
+        const el=longitudeNode(td);
+        if(!el || el.dataset.greek)return;
+        const txt=el.textContent.trim();
+        const m=txt.match(/^([♈♉♊♋♌♍♎♏♐♑♒♓])\ufe0e?\s*(.*)$/);
+        if(m && signs[m[1]]){
+          const rest=m[2];
+          item(el,m[1]+VS+(rest?' '+rest:''),signs[m[1]]+(rest?' '+rest:''),m[1]+VS+' '+signs[m[1]]+(rest?' '+rest:''));
+        }
+      });
     });
-    table.querySelectorAll('td').forEach(function(td){
-      const txt=td.textContent.trim();
-      const m=txt.match(/^([♈♉♊♋♌♍♎♏♐♑♒♓])\ufe0e?\s*(.*)$/);
-      if(m && signs[m[1]]){
-        const rest=m[2];
-        item(td,m[1]+VS+(rest?' '+rest:''),signs[m[1]]+(rest?' '+rest:''),m[1]+VS+' '+signs[m[1]]+(rest?' '+rest:''));
-      }
-    });
-  });
+  }
   function setMode(mode){
+    prepare();
     document.querySelectorAll('.ephemeris-notation-item').forEach(function(el){el.textContent=el.dataset[mode]||el.dataset.greek;});
     document.querySelectorAll('[data-bayer-mode]').forEach(function(b){b.setAttribute('aria-pressed',String(b.dataset.bayerMode===mode));});
     try{localStorage.setItem('star-almanack-bayer-mode',mode)}catch(_){}
@@ -39,44 +54,45 @@ SCRIPT = r'''<script id="ephemeris-notation-sync">
 
 SCRIPT_2027 = r'''<script id="ephemeris-notation-sync">
 (function(){
-  const bodies={Sun:'☉',Moon:'☽',Mercury:'☿',Venus:'♀',Mars:'♂',Jupiter:'♃',Saturn:'♄',Uranus:'♅',Neptune:'♆',Ceres:'⚳'};
+  const bodies={Sun:'☉',Moon:'☽',Mercury:'☿',Venus:'♀',Mars:'♂',Jupiter:'♃',Saturn:'♄',Uranus:'♅',Neptune:'♆',Ceres:'⚳',Pluto:'♇'};
   const signs={'♈':'Aries','♉':'Taurus','♊':'Gemini','♋':'Cancer','♌':'Leo','♍':'Virgo','♎':'Libra','♏':'Scorpio','♐':'Sagittarius','♑':'Capricorn','♒':'Aquarius','♓':'Pisces'};
   const VS='\ufe0e';
-
+  function item(el,g,l,m){el.classList.add('ephemeris-notation-item');el.dataset.greek=g;el.dataset.latin=l;el.dataset.mixed=m;}
+  function longitudeNode(td){
+    let node=td.querySelector('.ephemeris-longitude');
+    if(node)return node;
+    const first=Array.from(td.childNodes).find(function(n){return n.nodeType===Node.TEXT_NODE && n.textContent.trim();});
+    if(!first)return null;
+    node=document.createElement('span');
+    node.className='ephemeris-longitude';
+    node.textContent=first.textContent.trim();
+    first.replaceWith(node);
+    return node;
+  }
   function prepare(){
     document.querySelectorAll('table.ephemeris').forEach(function(table){
       table.querySelectorAll('th').forEach(function(th){
         if(th.dataset.greek)return;
         const txt=th.textContent.trim().replace(/\ufe0e/g,'');
         for(const [name,glyph] of Object.entries(bodies)){
-          if(txt===glyph || txt===name || txt===glyph+' '+name){
-            th.classList.add('ephemeris-notation-item');
-            th.dataset.greek=glyph+VS;
-            th.dataset.latin=name;
-            th.dataset.mixed=glyph+VS+' '+name;
-            break;
-          }
+          if(txt===glyph || txt===name || txt===glyph+' '+name){item(th,glyph+VS,name,glyph+VS+' '+name);break;}
         }
       });
       table.querySelectorAll('td').forEach(function(td){
-        if(td.dataset.greek)return;
-        const txt=td.textContent.trim();
+        const el=longitudeNode(td);
+        if(!el || el.dataset.greek)return;
+        const txt=el.textContent.trim();
         const m=txt.match(/^([♈♉♊♋♌♍♎♏♐♑♒♓])\ufe0e?\s*(.*)$/);
         if(!m || !signs[m[1]])return;
         const rest=m[2];
-        td.classList.add('ephemeris-notation-item');
-        td.dataset.greek=m[1]+VS+(rest?' '+rest:'');
-        td.dataset.latin=signs[m[1]]+(rest?' '+rest:'');
-        td.dataset.mixed=m[1]+VS+' '+signs[m[1]]+(rest?' '+rest:'');
+        item(el,m[1]+VS+(rest?' '+rest:''),signs[m[1]]+(rest?' '+rest:''),m[1]+VS+' '+signs[m[1]]+(rest?' '+rest:''));
       });
     });
   }
-
   function setFinder(mode){
     document.querySelectorAll('[data-finder-image]').forEach(function(f){f.style.display=f.dataset.finderImage===mode?'block':'none'});
     document.querySelectorAll('.w15-finder-strip [data-finder-mode]').forEach(function(f){f.classList.toggle('is-active',f.dataset.finderMode===mode)});
   }
-
   function setMode(mode){
     prepare();
     document.querySelectorAll('.ephemeris-notation-item').forEach(function(el){el.textContent=el.dataset[mode]||el.dataset.greek;});
@@ -84,11 +100,7 @@ SCRIPT_2027 = r'''<script id="ephemeris-notation-sync">
     setFinder(mode);
     try{localStorage.setItem('star-almanack-bayer-mode',mode)}catch(_){}
   }
-
-  document.querySelectorAll('[data-bayer-mode]').forEach(function(button){
-    button.addEventListener('click',function(){setMode(button.dataset.bayerMode);});
-  });
-
+  document.querySelectorAll('[data-bayer-mode]').forEach(function(button){button.addEventListener('click',function(){setMode(button.dataset.bayerMode);});});
   let initial='greek';
   try{const s=localStorage.getItem('star-almanack-bayer-mode');if(s==='greek'||s==='latin'||s==='mixed')initial=s}catch(_){}
   setMode(initial);
