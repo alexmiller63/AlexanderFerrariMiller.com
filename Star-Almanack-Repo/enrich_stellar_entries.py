@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 """Enrich catalog-backed calendar entries with observer-facing metadata.
 
-Stars display observing aid immediately before whole-number V magnitude, followed by
-Declination-band Season. Messier objects display designation + common name when
-available, object type, Declination-band Season, and observing aid. Authoritative
-source values retain full precision; Almanack presentation is rounded/formatted.
+Calendar entries use the same reader-facing order for fixed stars and Messier objects:
+name/designation, visibility, season, declination band. Stars retain whole-number V
+magnitude beside the observing aid; Messier objects use the observing aid alone.
+Authoritative source values retain full precision; Almanack presentation is
+rounded/formatted.
 
 Current urban-observer baseline:
   V <= 3.5       -> 👁
@@ -131,7 +132,8 @@ def canonical_star(row: dict[str, str]) -> str:
     visibility_magnitude = " ".join(v for v in (equipment, f"V {mag}" if mag else "") if v)
     if visibility_magnitude:
         parts.append(visibility_magnitude)
-    parts.append(f"{declination_band(row['dec_deg'])} {season_for(d)}")
+    parts.append(season_for(d))
+    parts.append(declination_band(row["dec_deg"]))
     return " — ".join(parts)
 
 
@@ -196,15 +198,14 @@ def load_messier() -> dict[str, dict[str, str]]:
         src = source.get(designation)
         if src is None:
             raise SystemExit(f"Missing source metadata for {designation}")
-        object_type = MESSIER_TYPES.get(src["type"], src["type"])
-        if not object_type:
-            raise SystemExit(f"Missing object type for {designation}")
         heading = f"{designation} {src['name']}" if src["name"] else designation
         d = date.fromisoformat(row["best_date"])
         equipment = equipment_for(src["mag"])
-        parts = [heading, object_type, f"{declination_band(src['dec'])} {season_for(d)}"]
+        parts = [heading]
         if equipment:
             parts.append(equipment)
+        parts.append(season_for(d))
+        parts.append(declination_band(src["dec"]))
         out[designation] = {"best_date": row["best_date"], "label": " — ".join(parts)}
     return out
 
@@ -259,13 +260,13 @@ def main() -> None:
         if info["label"] not in updated:
             raise SystemExit(f"Expected enriched Messier entry not found: {info['label']}")
 
-    expected = "Enif (ε Peg) — 👁 V 2 — Tropical Autumn"
+    expected = "Enif (ε Peg) — 👁 V 2 — Autumn — Tropical"
     if expected not in updated:
         raise SystemExit(f"Expected enriched Enif entry not found: {expected}")
-    diadem = "Diadem (α Com) — B V 4 — Tropical Spring"
+    diadem = "Diadem (α Com) — B V 4 — Spring — Tropical"
     if diadem not in updated:
         raise SystemExit(f"Expected enriched Diadem entry not found: {diadem}")
-    m53 = "M53 — Globular Cluster — Tropical Spring — 🔭"
+    m53 = "M53 — 🔭 — Spring — Tropical"
     if m53 not in updated:
         raise SystemExit(f"Expected enriched M53 entry not found: {m53}")
     if re.search(r"\bV\s+[+-]?\d+\.\d+", updated):
@@ -274,7 +275,7 @@ def main() -> None:
         raise SystemExit("Obsolete variable word survived")
 
     TARGET.write_text(updated, encoding="utf-8")
-    print("Enriched stars and all 110 Messier entries with names, object types, and urban observing-aid recommendations; PASS")
+    print("Enriched stars and all 110 Messier entries as name, visibility, season, declination; PASS")
 
 
 if __name__ == "__main__":
