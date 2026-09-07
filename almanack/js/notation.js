@@ -44,7 +44,7 @@
 
     while (walker.nextNode()) {
       const parent = walker.currentNode.parentElement;
-      if (parent && !parent.closest('.notation-item') && pattern.test(walker.currentNode.nodeValue)) {
+      if (parent && !parent.closest('.notation-item') && !parent.closest('table.ephemeris') && pattern.test(walker.currentNode.nodeValue)) {
         nodes.push(walker.currentNode);
       }
       pattern.lastIndex = 0;
