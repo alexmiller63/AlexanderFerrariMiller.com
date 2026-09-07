@@ -1,0 +1,31 @@
+name: Align source ephemeris
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/align-source-ephemeris.yml'
+      - 'Star-Almanack-Repo/patch_ephemeris_builder.py'
+
+permissions:
+  contents: write
+
+jobs:
+  align:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Align expanded Almanack builder
+        run: python Star-Almanack-Repo/patch_ephemeris_builder.py
+      - name: Commit aligned builder
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add Star-Almanack-Repo/build_expanded_almanack.py
+          if git diff --cached --quiet; then
+            echo "No builder changes needed"
+            exit 0
+          fi
+          git commit -m "Align expanded Almanack builder with Pluto and beta"
+          git pull --rebase origin main
+          git push
