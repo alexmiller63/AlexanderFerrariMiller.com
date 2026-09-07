@@ -58,7 +58,7 @@
     .site-nav {
         display: flex;
         flex-wrap: wrap;
-        gap: 24px;
+        gap: 14px;
         padding: 0;
     }
 
@@ -67,14 +67,24 @@
         font-size: inherit;
         font-weight: inherit;
         text-decoration: none;
+        padding: 6px 10px;
+        border: 1px solid transparent;
+        border-radius: 6px;
     }
 
     .site-nav a:hover,
-    .site-nav a:focus,
-    .site-nav a[aria-current="page"] {
+    .site-nav a:focus {
         color: var(--accent);
-        text-decoration: underline;
-        text-underline-offset: 3px;
+        border-color: var(--border);
+        text-decoration: none;
+    }
+
+    .site-nav a[aria-current="page"] {
+        color: #ffffff;
+        background: var(--accent);
+        border-color: var(--accent);
+        font-weight: 600;
+        text-decoration: none;
     }
 
     @media (max-width: 520px) {
@@ -88,7 +98,7 @@
         }
 
         .site-nav {
-            gap: 14px 20px;
+            gap: 8px 10px;
         }
     }
 </style>
