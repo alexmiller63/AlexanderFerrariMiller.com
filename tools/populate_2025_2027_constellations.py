@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Populate 2025/2027 constellation geometry without duplicating stellar entries."""
+"""Populate 2025/2027 constellation alpha, beta, and center events from audited snapshots."""
 from __future__ import annotations
 import csv
 import datetime as dt
@@ -56,7 +56,10 @@ def write_csv(year, rows):
 
 def event_map(rows):
     events = defaultdict(list)
-    for r in rows: events[dt.date.fromisoformat(r["center_best_date"])].append(f"✦ {r['name']} geometric-center observance")
+    for r in rows:
+        if r["alpha_best_date"]: events[dt.date.fromisoformat(r["alpha_best_date"])].append(f"✦ α star — {r['alpha_bayer']}")
+        if r["beta_best_date"]: events[dt.date.fromisoformat(r["beta_best_date"])].append(f"✦ β star — {r['beta_bayer']}")
+        events[dt.date.fromisoformat(r["center_best_date"])].append(f"✦ {r['name']} geometric-center observance")
     return events
 
 
@@ -90,6 +93,6 @@ def main():
     for year in YEARS:
         rows = build_rows(year); write_csv(year, rows); events = event_map(rows)
         c1 = inject(SOURCE_SITE, year, events); c2 = inject(PUBLIC, year, events)
-        print(f"{year}: 88 constellation centers; redundant alpha/beta observances removed; updated {c1} source + {c2} public pages")
+        print(f"{year}: alpha, beta, and 88 constellation-center events; updated {c1} source + {c2} public pages")
 
 if __name__ == "__main__": main()
