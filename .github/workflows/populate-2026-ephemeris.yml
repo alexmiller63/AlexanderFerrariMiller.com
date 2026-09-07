@@ -29,4 +29,5 @@ jobs:
             exit 0
           fi
           git commit -m 'Populate 2026 weekly ephemeris with Pluto and beta'
+          git pull --rebase origin main
           git push
