@@ -62,8 +62,9 @@ def event_map(rows):
 
 def clean_legacy_observances(text):
     cells = re.compile(r'(<td>)(.*?)(</td>)')
+    legacy = re.compile(r'^✦ .*? [αβ]-star observance(?:\s*\([^)]*\))?$')
     def repl(m):
-        parts = [p for p in m.group(2).split("<br>") if not re.match(r'^✦ .* [αβ]-star observance \(', p)]
+        parts = [p for p in m.group(2).split("<br>") if not legacy.match(p.strip())]
         body = "<br>".join(parts) if parts else "—"
         return m.group(1) + body + m.group(3)
     return cells.sub(repl, text)
