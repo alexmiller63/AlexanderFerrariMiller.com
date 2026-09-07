@@ -15,7 +15,7 @@ legacy_intro = """## Working Integrated Almanack
 
 This working edition integrates the supplied 2026 zodiac calendar, best-visibility dates for 100 selected stars and Messier objects, lunar phases, Wheel-of-the-Year points, named full moons, and the 53 weekly classical-planet snapshots.
 
-Planetary positions are geocentric tropical ecliptic longitudes sampled Monday at 00:00 UTC. Weekly chart filenames are reserved for later insertion using the approved chart model.
+Planetary positions are geocentric tropical ecliptic coordinates sampled Monday at 00:00 UTC; longitude is shown in zodiac notation and β is ecliptic latitude. Weekly chart filenames are reserved for later insertion using the approved chart model.
 
 > **Validation status:** The source material reports 100/100 best-visibility calculations passing their recalculation check and all 50 lunar phases matching the USNO comparison. The 371 weekly planetary positions remain representatively checked rather than fully independently audited.
 """
@@ -89,14 +89,25 @@ if len(weeks) < 53:
         primary = [("☉ Sun", row["sun"]), ("☽ Moon", row["moon"]), ("☿ Mercury", row["mercury"]),
                    ("♀ Venus", row["venus"]), ("♂ Mars", row["mars"]), ("♃ Jupiter", row["jupiter"]),
                    ("♄ Saturn", row["saturn"])]
-        extended = [("♅ Uranus", row["uranus"]), ("♆ Neptune", row["neptune"]), ("⚳ Ceres", row["ceres"])]
+        extended = [("♅ Uranus", "uranus"), ("♆ Neptune", "neptune"),
+                    ("⚳ Ceres", "ceres"), ("♇ Pluto", "pluto")]
 
-        def render(cols):
+        def cell(value, beta_value=""):
+            return value + (f"<br><small>{beta_value}</small>" if beta_value else "")
+
+        def render_primary(cols):
             return ("| " + " | ".join(x[0] for x in cols) + " |\n"
                     "|" + "|".join("---:" for _ in cols) + "|\n"
                     "| " + " | ".join(x[1] for x in cols) + " |")
 
-        return render(primary) + "\n\n**Extended targets:**\n\n" + render(extended)
+        def render_extended(cols):
+            return ("| " + " | ".join(label for label, _ in cols) + " |\n"
+                    "|" + "|".join("---:" for _ in cols) + "|\n"
+                    "| " + " | ".join(cell(row[key], row.get(key + "_beta", "")) for _, key in cols) + " |")
+
+        return (render_primary(primary) + "\n\n**Extended targets:**\n\n" +
+                render_extended(extended) +
+                "\n\n**β** = ecliptic latitude (+ north, − south).")
 
     sign_names = {"♈":"Aries","♉":"Taurus","♊":"Gemini","♋":"Cancer","♌":"Leo","♍":"Virgo",
                   "♎":"Libra","♏":"Scorpio","♐":"Sagittarius","♑":"Capricorn","♒":"Aquarius","♓":"Pisces"}
