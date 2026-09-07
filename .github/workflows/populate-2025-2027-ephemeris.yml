@@ -7,6 +7,7 @@ on:
       - '.github/workflows/populate-2025-2027-ephemeris.yml'
       - 'tools/populate_2025_2027_ephemeris.py'
       - 'tools/populate_2025_2027_calendar.py'
+      - 'tools/populate_2025_2027_meteor_showers.py'
       - 'tools/populate_2025_2027_fixed_sky.py'
       - 'tools/populate_2025_2027_constellations.py'
       - 'tools/populate_2025_2027_asterisms.py'
@@ -26,8 +27,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Populate Zodiac Days, ingresses, and lunar phases
+      - name: Populate Zodiac Days, ingresses, Wheel of the Year, and lunar phases
         run: python tools/populate_2025_2027_calendar.py
+
+      - name: Populate major meteor-shower maxima
+        run: python tools/populate_2025_2027_meteor_showers.py
 
       - name: Populate weekly Solar-System ephemerides
         run: python tools/populate_2025_2027_ephemeris.py
@@ -52,6 +56,8 @@ jobs:
             almanack/2026/W53 Star-Almanack-Repo/site/2026/W53 \
             Star-Almanack-Repo/generated/calendar-2025.json \
             Star-Almanack-Repo/generated/calendar-2027.json \
+            Star-Almanack-Repo/generated/meteor-showers-2025.json \
+            Star-Almanack-Repo/generated/meteor-showers-2027.json \
             Star-Almanack-Repo/generated/expanded-bayer-visibility-2025.csv \
             Star-Almanack-Repo/generated/expanded-bayer-visibility-2027.csv \
             Star-Almanack-Repo/generated/bright-star-visibility-2025.csv \
