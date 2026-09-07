@@ -21,16 +21,27 @@ asterisms:
     source_url: https://www.astroleague.org/wp-content/uploads/2025/12/Asterism_List_20251223.pdf
 
   - name: Little Dipper
-    status: membership-to-resolve
+    status: resolved
+    members: [Polaris, Beta Ursae Minoris, Gamma Ursae Minoris, Delta Ursae Minoris, Epsilon Ursae Minoris, Eta Ursae Minoris, Zeta Ursae Minoris]
+    source: Astronomical League
+    source_url: https://www.astroleague.org/wp-content/uploads/2025/12/Asterism_List_20251223.pdf
 
   - name: Cassiopeia's W
-    status: membership-to-resolve
+    status: resolved
+    aliases: [W or M]
+    members: [Alpha Cassiopeiae, Beta Cassiopeiae, Gamma Cassiopeiae, Delta Cassiopeiae, Epsilon Cassiopeiae]
+    source: Astronomical League
+    source_url: https://www.astroleague.org/wp-content/uploads/2025/12/Asterism_List_20251223.pdf
 
   - name: Orion's Belt
-    status: membership-to-resolve
+    status: resolved
+    members: [Alnitak, Alnilam, Mintaka]
+    source: NASA
+    source_url: https://science.nasa.gov/image-article/apod-2025-november-20-alnitak-alnilam-mintaka/
 
   - name: Orion's Sword
     status: membership-to-resolve
+    note: NASA explicitly identifies the Sword region and Orion Nebula, but the source search has not yet produced a NASA or Astronomical League exact defining-member list.
 
   - name: Water Jar
     status: resolved
@@ -86,9 +97,11 @@ asterisms:
 
   - name: Hyades / V of Taurus
     status: membership-to-resolve
+    note: Treat the visual V as an orienting pattern, not automatically as the entire physical Hyades cluster.
 
   - name: Pleiades
     status: membership-to-resolve
+    note: Treat the naked-eye orienting pattern separately from the full physical M45 cluster membership.
 
   - name: Summer Triangle
     status: resolved
@@ -109,8 +122,11 @@ asterisms:
     source_url: https://science.nasa.gov/solar-system/skywatching/night-sky-network/connecting-the-dots-with-asterisms/
 
   - name: Spring Triangle
-    status: membership-to-resolve
-    note: Published definitions vary (Regulus versus Denebola as the Leo vertex); preserve unresolved status until source policy selects a definition.
+    status: resolved
+    members: [Arcturus, Spica, Denebola]
+    source: Sky & Telescope
+    source_url: https://skyandtelescope.org/astronomy-news/observing-news/this-weeks-sky-at-a-glance-may-1-9-3/
+    note: Definitions vary; Star Almanack uses George Lovi's Sky & Telescope Spring Triangle (Arcturus-Spica-Denebola), which is also geometrically consistent with the Great Diamond containing those three vertices plus Cor Caroli.
 
   - name: Great Diamond
     status: resolved
@@ -121,7 +137,10 @@ asterisms:
     note: NASA calls this pattern Diamond of Virgo; membership matches the League's Great Diamond.
 
   - name: False Cross
-    status: membership-to-resolve
+    status: resolved
+    members: [Avior, Aspidiske, Alsephina, Markeb]
+    source: Sky & Telescope
+    source_url: https://skyandtelescope.org/astronomy-blogs/southern-stargazing-jonathan-nally/the-stars-of-the-carina-constellation/
 
   - name: Southern Cross
     status: resolved
@@ -130,7 +149,11 @@ asterisms:
     source_url: https://www.astroleague.org/wp-content/uploads/2025/12/Asterism_List_20251223.pdf
 
   - name: Southern Pointers
-    status: membership-to-resolve
+    status: resolved
+    members: [Alpha Centauri, Beta Centauri]
+    source: ESO
+    source_url: https://www.eso.org/public/blog/navigating-the-stars/
 
   - name: Coathanger
     status: membership-to-resolve
+    note: Astronomical League defines the pattern as six bar stars plus four hook stars, but does not identify all ten individually; retain unresolved status until an authoritative exact ten-star list is selected.
