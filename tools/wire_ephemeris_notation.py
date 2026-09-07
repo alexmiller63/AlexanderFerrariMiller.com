@@ -38,13 +38,14 @@ SCRIPT = r'''<script id="ephemeris-notation-sync">
 </script>'''
 
 changed = 0
+pattern = re.compile(r'<script id="ephemeris-notation-sync">.*?</script>', re.S)
 for year in ('2025','2026','2027'):
     root = Path('almanack') / year
     if not root.exists():
         continue
     for page in sorted(root.glob('W[0-9][0-9]/index.html')):
         html = page.read_text(encoding='utf-8')
-        html2 = re.sub(r'<script id="ephemeris-notation-sync">.*?</script>', SCRIPT, html, count=1, flags=re.S)
+        html2 = pattern.sub(lambda _m: SCRIPT, html, count=1)
         if html2 == html and 'ephemeris-notation-sync' not in html:
             html2 = html.replace('</body>', SCRIPT + '</body>', 1)
         if html2 != html:
