@@ -1,0 +1,59 @@
+name: Wire 2026 Eclipses
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - tools/wire_2026_eclipses.py
+      - Star-Almanack-Repo/eclipse.yaml
+      - .github/workflows/wire-2026-eclipses.yml
+
+permissions:
+  contents: write
+
+concurrency:
+  group: wire-2026-eclipses
+  cancel-in-progress: false
+
+jobs:
+  wire:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Wire calculated eclipses into Almanack
+        run: python tools/wire_2026_eclipses.py
+
+      - name: Validate eclipse publication
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          checks = {
+              '2026-02-17': ('W08', 'Annular solar eclipse'),
+              '2026-03-03': ('W10', 'Total lunar eclipse'),
+              '2026-08-12': ('W33', 'Total solar eclipse'),
+              '2026-08-28': ('W35', 'Partial lunar eclipse'),
+          }
+          for day, (week, phrase) in checks.items():
+              for path in (Path('almanack/2026')/week/'index.html', Path('Star-Almanack-Repo/site/2026')/week/'index.html'):
+                  text = path.read_text(encoding='utf-8')
+                  assert phrase in text, f'{phrase} missing from {path}'
+          page = Path('star-almanack/eclipses.html').read_text(encoding='utf-8')
+          assert '<h2>2026 eclipses</h2>' in page
+          for phrase in ('Annular solar', 'Total lunar', 'Total solar', 'Partial lunar'):
+              assert phrase in page, phrase
+          print('Verified 4 eclipse calendar entries and eclipse page')
+          PY
+
+      - name: Commit eclipse publication
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add Star-Almanack-Repo/almanack-expanded.md Star-Almanack-Repo/site/2026 almanack/2026 star-almanack/eclipses.html
+          if git diff --cached --quiet; then
+            echo 'No eclipse wiring changes.'
+            exit 0
+          fi
+          git commit -m 'Publish calculated 2026 eclipses'
+          git pull --rebase origin main
+          git push
