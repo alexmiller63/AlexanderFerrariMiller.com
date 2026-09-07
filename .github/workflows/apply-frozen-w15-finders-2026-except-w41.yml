@@ -59,3 +59,5 @@ jobs:
           if git diff --cached --quiet; then exit 0; fi
           git commit -m 'Apply frozen W15 finders across 2026 except W41'
           git push
+
+# Trigger rollout after workflow creation.
