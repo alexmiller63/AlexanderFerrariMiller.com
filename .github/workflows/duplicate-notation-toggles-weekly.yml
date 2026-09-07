@@ -1,0 +1,77 @@
+name: Duplicate notation toggles on weekly pages
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - .github/workflows/duplicate-notation-toggles-weekly.yml
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Add synchronized notation toggles
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+
+          repo = Path('.')
+          years = (2025, 2026, 2027)
+
+          toggle = '<div class="bayer-toggle-wrap section-notation-toggle"><div class="bayer-toggle" role="group" aria-label="Astronomical notation"><span class="bayer-toggle-label">Notation:</span><button type="button" data-bayer-mode="greek" aria-pressed="true">Greek/Symbols</button><button type="button" data-bayer-mode="latin" aria-pressed="false">Latin</button><button type="button" data-bayer-mode="mixed" data-legacy-label="Mixed · Learner" aria-pressed="false">Mixed Learner</button></div></div>'
+
+          top_toggle = '<div class="bayer-toggle-wrap"><div class="bayer-toggle" role="group" aria-label="Astronomical notation"><span class="bayer-toggle-label">Notation:</span><button type="button" data-bayer-mode="greek" aria-pressed="true">Greek/Symbols</button><button type="button" data-bayer-mode="latin" aria-pressed="false">Latin</button><button type="button" data-bayer-mode="mixed" data-legacy-label="Mixed · Learner" aria-pressed="false">Mixed Learner</button></div></div>'
+
+          css = '''\n<style id="section-notation-toggle-css">\n.bayer-toggle-wrap{max-width:1080px;margin:0 auto;padding:.75rem 1.5rem 0;font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}\n.bayer-toggle{display:flex;align-items:center;justify-content:flex-end;gap:.35rem;flex-wrap:wrap;font-size:.86rem}\n.bayer-toggle-label{margin-right:.2rem;color:var(--muted)}\n.bayer-toggle button{appearance:none;border:1px solid #c8d3dc;background:#fff;color:var(--link);padding:.35rem .62rem;border-radius:.4rem;font:inherit;cursor:pointer}\n.bayer-toggle button[aria-pressed=true]{background:var(--navy);color:#fff;border-color:var(--navy)}\n.section-notation-toggle{padding:.15rem 0 .35rem;margin:0}\n.section-notation-toggle .bayer-toggle{justify-content:flex-start}\n@media(max-width:760px) and (orientation:portrait){.bayer-toggle-wrap{padding-left:1rem;padding-right:1rem}.section-notation-toggle{padding-left:0;padding-right:0}.bayer-toggle{justify-content:center;flex-wrap:nowrap;gap:.2rem;font-size:.74rem}.section-notation-toggle .bayer-toggle{justify-content:center}.bayer-toggle-label{margin-right:.05rem;white-space:nowrap}.bayer-toggle button{padding:.3rem .42rem;white-space:nowrap}}\n@media(prefers-color-scheme:dark){.bayer-toggle button{background:#1c2a36;border-color:#405567;color:#b6dcff}.bayer-toggle button[aria-pressed=true]{background:#eef7ff;color:#102a43;border-color:#eef7ff}}\n</style>'''
+
+          sync_script = '''\n<script id="section-notation-toggle-sync">\n(function(){\n  function setFinder(mode){\n    document.querySelectorAll('[data-finder-image]').forEach(function(f){f.style.display=f.dataset.finderImage===mode?'block':'none'});\n    document.querySelectorAll('.w15-finder-strip [data-finder-mode]').forEach(function(f){f.classList.toggle('is-active',f.dataset.finderMode===mode)});\n  }\n  function syncButtons(mode){\n    document.querySelectorAll('[data-bayer-mode]').forEach(function(b){b.setAttribute('aria-pressed',b.dataset.bayerMode===mode?'true':'false')});\n  }\n  document.addEventListener('click',function(e){\n    const b=e.target.closest('[data-bayer-mode]');\n    if(!b)return;\n    const mode=b.dataset.bayerMode;\n    syncButtons(mode);\n    setFinder(mode);\n  });\n  let initial='greek';\n  try{const s=localStorage.getItem('star-almanack-bayer-mode');if(s==='greek'||s==='latin'||s==='mixed')initial=s}catch(_){}\n  syncButtons(initial);\n  setFinder(initial);\n})();\n</script>'''
+
+          for year in years:
+            root = repo / 'almanack' / str(year)
+            for page in sorted(root.glob('W[0-9][0-9]/index.html')):
+              html = page.read_text(encoding='utf-8')
+
+              # Remove prior section copies from reruns.
+              html = re.sub(r'<div class="bayer-toggle-wrap section-notation-toggle">.*?</div></div>', '', html, flags=re.S)
+
+              # 2025/2027 placeholders did not yet have the standard top notation toggle.
+              if 'data-bayer-mode="greek"' not in html:
+                html = html.replace('</header>', '</header>' + top_toggle, 1)
+
+              # Replace the old finder-only control on placeholder years with the shared notation control.
+              html = re.sub(r'<div class="finder-controls" role="group" aria-label="Planet finder notation">.*?</div>', '', html, count=1, flags=re.S)
+
+              # Put a synchronized copy immediately before each requested section.
+              html = html.replace('<h3>Calendar</h3>', toggle + '<h3>Calendar</h3>', 1)
+              html = html.replace('<h3>Weekly Solar-System Ephemeris</h3>', toggle + '<h3>Weekly Solar-System Ephemeris</h3>', 1)
+              html = html.replace('<h3>Planet Finder</h3>', toggle + '<h3>Planet Finder</h3>', 1)
+
+              if 'section-notation-toggle-css' not in html:
+                html = html.replace('</head>', css + '</head>', 1)
+              if 'section-notation-toggle-sync' not in html:
+                html = html.replace('</body>', sync_script + '</body>', 1)
+
+              page.write_text(html, encoding='utf-8')
+          PY
+
+      - name: Commit notation toggle layout
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add almanack/2025 almanack/2026 almanack/2027
+          if git diff --cached --quiet; then
+            echo 'Weekly notation toggles are already in place.'
+            exit 0
+          fi
+          git commit -m 'Duplicate notation toggles before weekly sections'
+          git push
