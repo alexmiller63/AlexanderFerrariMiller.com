@@ -1,0 +1,48 @@
+# Star Almanack asterism coordinate-resolution overrides
+#
+# Purpose: resolve human observing designations that map to more than one
+# modern catalog object. These choices do not alter asterism membership;
+# they only select the reproducible sky point used by geometry.
+#
+# Default rule: use the catalog object directly named by the membership catalog.
+# Apply an override only when the published designation is genuinely non-unique.
+
+resolutions:
+  - designation: Theta Orionis
+    resolved_to: Theta1 Orionis C
+    rationale: >-
+      The historical/observer-facing middle point of Orion's Sword is the Theta
+      Orionis complex in M42. Modern sources separate Theta1 and Theta2 Orionis.
+      Theta1 is the Trapezium at the heart of M42, and Theta1 Orionis C is its
+      brightest component and a precise catalog point. Star Almanack therefore
+      uses Theta1 Orionis C as the reproducible stellar representative of the
+      Sword's central Theta vertex; this is a geometry choice, not a claim that
+      the source membership text named component C.
+    reference: https://www.astronomy.com/observing/test-your-visual-acuity-with-the-theta-orionis-challenge/
+
+  - designation: Theta Tauri
+    resolved_to: Theta2 Tauri
+    rationale: >-
+      Theta Tauri is split into Theta1 and Theta2 in modern catalogs. Theta2 is
+      the brighter naked-eye component (about V 3.35-3.42 versus V 3.84 for
+      Theta1) and is therefore used as the observer-facing V-of-Taurus vertex.
+    reference: https://simbad.u-strasbg.fr/simbad/sim-id?Ident=THETA2+TAURI&bibdisplay=none&protocol=html
+
+  - designation: Delta Tauri
+    resolved_to: Delta1 Tauri
+    rationale: >-
+      Delta Tauri is split into Delta1, Delta2, and Delta3 in modern catalogs.
+      Delta1 is the brightest naked-eye member (V about 3.77; Delta3 about 4.32;
+      Delta2 about 4.80) and is used as the observer-facing V-of-Taurus vertex.
+    reference: https://en.wikipedia.org/wiki/Delta1_Tauri
+
+  - designation: Xi Ceti
+    resolved_to: Xi2 Ceti
+    rationale: >-
+      Olcott's historical source describes a fairly regular five-star head
+      pentagon using Xi Ceti generically. Of the two modern Xi stars, Xi2 lies in
+      the compact pentagon with Alpha, Gamma, Mu, and Lambda Ceti; Xi1 lies far
+      enough west to destroy the described regular pentagon. Xi2 is also very
+      slightly brighter visually. The geometry therefore resolves historical Xi
+      Ceti to Xi2 Ceti.
+    reference: https://www.astronomical.org/constellations/cet.html
