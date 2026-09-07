@@ -2,7 +2,7 @@
 """Enrich catalog-backed calendar entries with observer-facing metadata.
 
 Calendar entries use the same reader-facing order for fixed stars and Messier objects:
-name/designation, visibility, season, declination band. Stars retain whole-number V
+name/designation, visibility, declination band, season. Stars retain whole-number V
 magnitude beside the observing aid; Messier objects use the observing aid alone.
 Authoritative source values retain full precision; Almanack presentation is
 rounded/formatted.
@@ -132,8 +132,8 @@ def canonical_star(row: dict[str, str]) -> str:
     visibility_magnitude = " ".join(v for v in (equipment, f"V {mag}" if mag else "") if v)
     if visibility_magnitude:
         parts.append(visibility_magnitude)
-    parts.append(season_for(d))
     parts.append(declination_band(row["dec_deg"]))
+    parts.append(season_for(d))
     return " — ".join(parts)
 
 
@@ -204,8 +204,8 @@ def load_messier() -> dict[str, dict[str, str]]:
         parts = [heading]
         if equipment:
             parts.append(equipment)
-        parts.append(season_for(d))
         parts.append(declination_band(src["dec"]))
+        parts.append(season_for(d))
         out[designation] = {"best_date": row["best_date"], "label": " — ".join(parts)}
     return out
 
@@ -260,13 +260,13 @@ def main() -> None:
         if info["label"] not in updated:
             raise SystemExit(f"Expected enriched Messier entry not found: {info['label']}")
 
-    expected = "Enif (ε Peg) — 👁 V 2 — Autumn — Tropical"
+    expected = "Enif (ε Peg) — 👁 V 2 — Tropical — Autumn"
     if expected not in updated:
         raise SystemExit(f"Expected enriched Enif entry not found: {expected}")
-    diadem = "Diadem (α Com) — B V 4 — Spring — Tropical"
+    diadem = "Diadem (α Com) — B V 4 — Tropical — Spring"
     if diadem not in updated:
         raise SystemExit(f"Expected enriched Diadem entry not found: {diadem}")
-    m53 = "M53 — 🔭 — Spring — Tropical"
+    m53 = "M53 — 🔭 — Tropical — Spring"
     if m53 not in updated:
         raise SystemExit(f"Expected enriched M53 entry not found: {m53}")
     if re.search(r"\bV\s+[+-]?\d+\.\d+", updated):
@@ -275,7 +275,7 @@ def main() -> None:
         raise SystemExit("Obsolete variable word survived")
 
     TARGET.write_text(updated, encoding="utf-8")
-    print("Enriched stars and all 110 Messier entries as name, visibility, season, declination; PASS")
+    print("Enriched stars and all 110 Messier entries as name, visibility, declination, season; PASS")
 
 
 if __name__ == "__main__":
