@@ -116,12 +116,12 @@ def render_ephemeris(monday: date, values: dict[str, tuple[str, str]]) -> str:
         )
 
     return (
-        '<h3>Weekly Solar-System Ephemeris</h3>'
-        f'<p><strong>Snapshot:</strong> {monday.strftime("%B")} {monday.day}, {monday.year} · 00:00 UTC</p>'
+        '<h3>Weekly Solar-System Ephemeris</h3>\n'
+        f'<p><strong>Snapshot:</strong> {monday.strftime("%B")} {monday.day}, {monday.year} · 00:00 UTC</p>\n'
         + table(primary)
-        + '<p><strong>Extended targets:</strong></p>'
+        + '\n<p><strong>Extended targets:</strong></p>\n'
         + table(extended)
-        + '<p class="ephemeris-note"><strong>β</strong> = ecliptic latitude (+ north, − south).</p>'
+        + '\n<p class="ephemeris-note"><strong>β</strong> = ecliptic latitude (+ north, − south).</p>'
     )
 
 
@@ -132,13 +132,17 @@ def main() -> None:
         print(f"Fetching {YEAR} {key} from JPL Horizons")
         generated[key] = horizons_ecliptic(command)
 
+    # Existing weekly pages contain line breaks between each part of the
+    # ephemeris block, and older pages use plain <table> tags. Match both the
+    # old and new forms while keeping the replacement bounded to the two
+    # ephemeris tables.
     pattern = re.compile(
-        r'<h3>Weekly Solar-System Ephemeris</h3>'
-        r'<p><strong>Snapshot:</strong>.*?</p>'
+        r'<h3>Weekly Solar-System Ephemeris</h3>\s*'
+        r'<p><strong>Snapshot:</strong>.*?</p>\s*'
+        r'<table(?: class="ephemeris")?>.*?</table>\s*'
+        r'<p><strong>Extended targets:</strong></p>\s*'
         r'<table(?: class="ephemeris")?>.*?</table>'
-        r'<p><strong>Extended targets:</strong></p>'
-        r'<table(?: class="ephemeris")?>.*?</table>'
-        r'(?:<p class="ephemeris-note">.*?</p>)?',
+        r'(?:\s*<p class="ephemeris-note">.*?</p>)?',
         re.DOTALL,
     )
 
