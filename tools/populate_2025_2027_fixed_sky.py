@@ -14,6 +14,13 @@ PUBLIC = ROOT / "almanack"
 SOURCE_SITE = SRC / "site"
 YEARS = (2025, 2027)
 
+GREEK_BAYER = {
+    "Alp": "α", "Bet": "β", "Gam": "γ", "Del": "δ", "Eps": "ε", "Zet": "ζ",
+    "Eta": "η", "The": "θ", "Iot": "ι", "Kap": "κ", "Lam": "λ", "Mu": "μ",
+    "Nu": "ν", "Xi": "ξ", "Omi": "ο", "Pi": "π", "Rho": "ρ", "Sig": "σ",
+    "Tau": "τ", "Ups": "υ", "Phi": "φ", "Chi": "χ", "Psi": "ψ", "Ome": "ω",
+}
+
 
 def julian_date(x: dt.datetime) -> float:
     year, month = x.year, x.month
@@ -89,8 +96,16 @@ def season_for(d: dt.date) -> str:
     return "Winter"
 
 
+def display_bayer(r: dict[str, str]) -> str:
+    bayer = r.get("bayer", "").strip()
+    if bayer in GREEK_BAYER:
+        con = r.get("con", "").strip()
+        return f"{GREEK_BAYER[bayer]} {con}" if con else GREEK_BAYER[bayer]
+    return bayer
+
+
 def star_label(r: dict[str, str]) -> str:
-    proper = r.get("proper", "").strip(); bayer = r.get("bayer", "").strip()
+    proper = r.get("proper", "").strip(); bayer = display_bayer(r)
     base = f"{proper} ({bayer})" if proper and bayer else (proper or bayer or f"{r.get('con','').strip()} star")
     mag = r.get("mag_class", "").strip()
     aid = "👁" if mag and int(mag) <= 3 else "B"
