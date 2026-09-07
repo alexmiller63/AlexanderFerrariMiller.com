@@ -1,12 +1,11 @@
 #!/usr/bin/env python3
 """Populate 2025/2027 constellation alpha, beta, and geometric-center events.
 
-Constellation membership/geometry is based on the official IAU J2000 boundary
-polygons. The center is the spherical area centroid (the project's "balance
-point"), estimated with the same solid-angle weighted sampler used by the 2026
-centroid experiment. Alpha and beta events come from the audited Bayer source.
-All three dates are independently recomputed for each requested year with the
-Star Almanack 9 PM apparent-solar-time visibility rule.
+The geometric-center values are read from the committed 2026 constellation
+observance CSV. That CSV is the repository snapshot of the already-computed
+IAU-boundary centroids, so normal Almanack builds do not need live web access.
+Alpha and beta events come from the audited Bayer source. Dates are recomputed
+for each requested year with the Star Almanack 9 PM apparent-solar-time rule.
 """
 from __future__ import annotations
 
@@ -14,7 +13,6 @@ import csv
 import datetime as dt
 import importlib.util
 import re
-import sys
 from collections import defaultdict
 from pathlib import Path
 
@@ -23,18 +21,8 @@ SRC = ROOT / "Star-Almanack-Repo"
 PUBLIC = ROOT / "almanack"
 SOURCE_SITE = SRC / "site"
 YEARS = (2025, 2027)
+CENTROID_SNAPSHOT = SRC / "constellation-observance-2026.csv"
 
-# Load the proven 2026 boundary/centroid implementation without duplicating it.
-spec = importlib.util.spec_from_file_location(
-    "constellation2026", SRC / "compute_constellation_observance_2026.py"
-)
-mod = importlib.util.module_from_spec(spec)
-assert spec and spec.loader
-# Its import of compute_bayer_visibility_2026 expects the source directory on sys.path.
-sys.path.insert(0, str(SRC))
-spec.loader.exec_module(mod)
-
-# Load the year-independent visibility function already used for 2025/2027 stars.
 fspec = importlib.util.spec_from_file_location(
     "fixedsky", ROOT / "tools" / "populate_2025_2027_fixed_sky.py"
 )
@@ -43,17 +31,29 @@ assert fspec and fspec.loader
 fspec.loader.exec_module(fixed)
 
 
-def read_bayer() -> list[dict[str, str]]:
-    with (SRC / "expanded-bayer-visibility-2026.csv").open(newline="", encoding="utf-8") as f:
+def read_csv(path: Path) -> list[dict[str, str]]:
+    with path.open(newline="", encoding="utf-8") as f:
         return list(csv.DictReader(f))
+
+
+def read_bayer() -> list[dict[str, str]]:
+    return read_csv(SRC / "expanded-bayer-visibility-2026.csv")
+
+
+def read_centroids() -> list[dict[str, str]]:
+    rows = read_csv(CENTROID_SNAPSHOT)
+    if len(rows) != 88:
+        raise SystemExit(f"Expected 88 centroid snapshot rows, got {len(rows)}")
+    needed = {"name", "abbr", "centroid_ra_h", "centroid_dec_deg", "sampled_area_sq_deg", "centroid_step_deg"}
+    if not needed.issubset(rows[0]):
+        raise SystemExit("Constellation centroid snapshot is missing required columns")
+    return rows
 
 
 def preferred_ab(rows: list[dict[str, str]], abbr: str, greek: str) -> dict[str, str] | None:
     candidates = [r for r in rows if r.get("con") == abbr and r.get("greek") == greek]
     if not candidates:
         return None
-    # Prefer an unsuffixed Bayer designation when one exists; otherwise preserve
-    # the first legitimate numbered component rather than inventing a star.
     unsuffixed = [r for r in candidates if not r.get("suffix", "").strip()]
     return (unsuffixed or candidates)[0]
 
@@ -65,10 +65,11 @@ def iso_label(d: dt.date) -> str:
 
 def build_rows(year: int) -> list[dict[str, str]]:
     bayer = read_bayer()
-    cache = SRC / ".cache" / "iau-constellation-boundaries"
     rows: list[dict[str, str]] = []
-    for name, abbr in mod.CONSTELLATIONS:
-        center_ra, center_dec, area = mod.centroid_for(abbr, cache, mod.DEFAULT_STEP_DEG)
+    for snap in read_centroids():
+        name = snap["name"]
+        abbr = snap["abbr"]
+        center_ra = float(snap["centroid_ra_h"])
         ci, cd = fixed.best_visibility(center_ra, year)
         alpha = preferred_ab(bayer, abbr, "α")
         beta = preferred_ab(bayer, abbr, "β")
@@ -80,10 +81,10 @@ def build_rows(year: int) -> list[dict[str, str]]:
         rows.append({
             "name": name,
             "abbr": abbr,
-            "centroid_ra_h": f"{center_ra:.6f}",
-            "centroid_dec_deg": f"{center_dec:.6f}",
-            "sampled_area_sq_deg": f"{area:.3f}",
-            "centroid_step_deg": f"{mod.DEFAULT_STEP_DEG:.3f}",
+            "centroid_ra_h": snap["centroid_ra_h"],
+            "centroid_dec_deg": snap["centroid_dec_deg"],
+            "sampled_area_sq_deg": snap["sampled_area_sq_deg"],
+            "centroid_step_deg": snap["centroid_step_deg"],
             "alpha_bayer": alpha.get("bayer", "") if alpha else "",
             "alpha_ra_h": alpha.get("ra_h", "") if alpha else "",
             "alpha_best_instant_utc": ai.strftime("%Y-%m-%d %H:%M") if ai else "",
@@ -106,7 +107,8 @@ def write_csv(year: int, rows: list[dict[str, str]]) -> None:
     out.parent.mkdir(parents=True, exist_ok=True)
     with out.open("w", newline="", encoding="utf-8") as f:
         w = csv.DictWriter(f, fieldnames=list(rows[0]))
-        w.writeheader(); w.writerows(rows)
+        w.writeheader()
+        w.writerows(rows)
 
 
 def event_map(rows: list[dict[str, str]]) -> dict[dt.date, list[str]]:
@@ -151,8 +153,6 @@ def inject(root: Path, year: int, events: dict[dt.date, list[str]]) -> int:
 def main() -> None:
     for year in YEARS:
         rows = build_rows(year)
-        if len(rows) != 88:
-            raise SystemExit(f"Expected 88 constellation rows, got {len(rows)}")
         write_csv(year, rows)
         events = event_map(rows)
         c1 = inject(SOURCE_SITE, year, events)
