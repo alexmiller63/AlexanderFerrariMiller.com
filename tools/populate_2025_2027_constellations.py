@@ -78,11 +78,17 @@ def event_map(rows):
     return events
 
 
-def clean_legacy_observances(text):
+def clean_legacy_constellation_events(text):
     cells = re.compile(r'(<td>)(.*?)(</td>)')
-    legacy = re.compile(r'^✦ .*? [αβ]-star observance(?:\s*\([^)]*\))?$')
+    bare = re.compile(r'^✦ (?:α|β) star — .+$')
+    bare_center = re.compile(r'^✦ .*? geometric-center observance$')
     def repl(m):
-        parts = [p for p in m.group(2).split("<br>") if not legacy.match(p.strip())]
+        parts = []
+        for p in m.group(2).split("<br>"):
+            s = p.strip()
+            if bare.match(s) or bare_center.match(s):
+                continue
+            parts.append(p)
         body = "<br>".join(parts) if parts else "—"
         return m.group(1) + body + m.group(3)
     return cells.sub(repl, text)
@@ -91,7 +97,7 @@ def clean_legacy_observances(text):
 def inject(root, year, events):
     changed = 0
     for page in sorted((root / str(year)).glob("W*/index.html")):
-        text = page.read_text(encoding="utf-8"); original = text; text = clean_legacy_observances(text)
+        text = page.read_text(encoding="utf-8"); original = text; text = clean_legacy_constellation_events(text)
         for d, vals in events.items():
             date_text = d.strftime("%a, %b %d, %Y").replace(" 0", " ")
             pat = re.compile(rf"(<tr><td>{re.escape(date_text)}</td><td>.*?</td><td>)(.*?)(</td></tr>)"); m = pat.search(text)
