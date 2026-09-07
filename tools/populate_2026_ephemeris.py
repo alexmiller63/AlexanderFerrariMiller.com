@@ -82,9 +82,7 @@ def beta(latitude_deg: float) -> str:
 
 
 def render_ephemeris(monday: date, values: dict[str, tuple[str, str]]) -> str:
-    # Sun and Moon are already represented in the weekly calendar; avoid
-    # duplicating them here. Keep Mercury through Saturn as the main ephemeris.
-    primary = TARGETS[2:7]
+    primary = TARGETS[:7]
     extended = TARGETS[7:]
     def table(columns):
         return ('<table class="ephemeris"><thead><tr>'
