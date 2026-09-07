@@ -1,10 +1,11 @@
+{% assign star_url = page.url %}
 <nav class="star-nav" aria-label="Star Almanack navigation">
   <a class="star-site-mark" href="index.html">STAR ALMANACK · MINISITE</a>
-  <a href="index.html">Star Almanack Home</a>
-  <a href="../almanack/2026/">2026 Calendar</a>
-  <a href="eclipses.html">Eclipses</a>
-  <a href="method.html">Method</a>
-  <a href="validation.html">Validation</a>
+  <a href="index.html" {% if star_url == "/star-almanack/" or star_url == "/star-almanack/index.html" %}aria-current="page"{% endif %}>Star Almanack Home</a>
+  <a href="../almanack/2026/" {% if star_url contains "/almanack/2026/" %}aria-current="page"{% endif %}>2026 Calendar</a>
+  <a href="eclipses.html" {% if star_url == "/star-almanack/eclipses.html" %}aria-current="page"{% endif %}>Eclipses</a>
+  <a href="method.html" {% if star_url == "/star-almanack/method.html" %}aria-current="page"{% endif %}>Method</a>
+  <a href="validation.html" {% if star_url == "/star-almanack/validation.html" %}aria-current="page"{% endif %}>Validation</a>
   <a href="../projects.html">All Projects</a>
   <a href="../index.html">Main Site</a>
 </nav>
