@@ -32,6 +32,19 @@ def iso_label(d):
     y, w, wd = d.isocalendar(); return f"{y}-W{w:02d}-{wd}"
 
 
+def declination_band(dec_deg):
+    value = float(dec_deg)
+    return "Northern" if value > 23.44 else "Southern" if value < -23.44 else "Tropical"
+
+
+def season_for(d):
+    md = (d.month, d.day)
+    if (3, 20) <= md < (6, 21): return "Spring"
+    if (6, 21) <= md < (9, 22): return "Summer"
+    if (9, 22) <= md < (12, 21): return "Autumn"
+    return "Winter"
+
+
 def build_rows(year):
     bayer = read_csv(SRC / "expanded-bayer-visibility-2026.csv")
     snaps = read_csv(CENTROID_SNAPSHOT)
@@ -60,7 +73,7 @@ def event_map(rows):
         if r["alpha_best_date"]: events[dt.date.fromisoformat(r["alpha_best_date"])].append(f"✦ α star — {r['alpha_bayer']}")
         if r["beta_best_date"]: events[dt.date.fromisoformat(r["beta_best_date"])].append(f"✦ β star — {r['beta_bayer']}")
         center_date = dt.date.fromisoformat(r["center_best_date"])
-        center_class = f"{fixed.declination_band(r['centroid_dec_deg'])} {fixed.season_for(center_date)}"
+        center_class = f"{declination_band(r['centroid_dec_deg'])} {season_for(center_date)}"
         events[center_date].append(f"✦ {r['name']} geometric-center observance — {center_class}")
     return events
 
@@ -85,9 +98,6 @@ def inject(root, year, events):
             if not m: continue
             keep = [] if m.group(2) == "—" else [x for x in m.group(2).split("<br>") if x]
             for v in vals:
-                if " geometric-center observance" in v:
-                    base = v.split(" — ", 1)[0]
-                    keep = [x for x in keep if not (x == base or x.startswith(base + " — "))]
                 if v not in keep: keep.append(v)
             text = text[:m.start(2)] + "<br>".join(keep) + text[m.end(2):]
         if text != original: page.write_text(text, encoding="utf-8"); changed += 1
@@ -98,6 +108,6 @@ def main():
     for year in YEARS:
         rows = build_rows(year); write_csv(year, rows); events = event_map(rows)
         c1 = inject(SOURCE_SITE, year, events); c2 = inject(PUBLIC, year, events)
-        print(f"{year}: alpha, beta, and 88 constellation-center events; updated {c1} source + {c2} public pages")
+        print(f"{year}: alpha, beta, and 88 constellation-center events with declination band and season; updated {c1} source + {c2} public pages")
 
 if __name__ == "__main__": main()
