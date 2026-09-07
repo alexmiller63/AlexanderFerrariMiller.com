@@ -17,4 +17,7 @@ jobs:
           username: ${{ secrets.AWS_USER }}
           key: ${{ secrets.AWS_SSH_KEY }}
           script: |
+            cd /var/www/AlexanderFerrariMiller
+            git fetch origin main
+            git reset --hard origin/main
             ~/build-alex.sh
