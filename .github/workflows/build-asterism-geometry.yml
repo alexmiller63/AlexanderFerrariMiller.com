@@ -58,38 +58,59 @@ jobs:
           print(f'PASS: 25 asterisms, {len(rows)} resolved member rows')
           PY
 
-      - name: Compute 2026 asterism centroids and visibility
+      - name: Compute 2025-2027 asterism centroids and visibility
         working-directory: Star-Almanack-Repo
-        run: python compute_asterism_geometry_2026.py asterism-member-coordinates.csv asterism-geometry-2026.csv
+        run: |
+          python - <<'PY'
+          import datetime as dt
+          import sys
+          import compute_bayer_visibility_2026 as vis
+          import compute_asterism_geometry_2026 as geom
+
+          for year in (2025, 2026, 2027):
+              vis.SEARCH_START = dt.datetime(year - 1, 12, 31, 12, 0)
+              vis.SEARCH_END = dt.datetime(year, 12, 31, 23, 59)
+              vis.ROUNDED_DATE_MIN = dt.date(year, 1, 1)
+              vis.ROUNDED_DATE_MAX = dt.date(year + 1, 1, 1)
+              sys.argv = [
+                  'compute_asterism_geometry_2026.py',
+                  'asterism-member-coordinates.csv',
+                  f'asterism-geometry-{year}.csv',
+              ]
+              geom.main()
+          PY
 
       - name: Validate geometry output
         working-directory: Star-Almanack-Repo
         run: |
           python - <<'PY'
           import csv
-          with open('asterism-geometry-2026.csv', newline='', encoding='utf-8') as f:
-              rows = list(csv.DictReader(f))
-          assert len(rows) == 25, len(rows)
-          names = {r['asterism'] for r in rows}
-          assert len(names) == 25
-          for r in rows:
-              assert r['best_date'].startswith('2026-') or r['best_date'] == '2027-01-01', r
-              assert 0.0 <= float(r['centroid_ra_h']) < 24.0, r
-              assert -90.0 <= float(r['centroid_dec_deg']) <= 90.0, r
-              assert float(r['area_sr']) >= 0.0, r
-          southern = next(r for r in rows if r['asterism'] == 'Southern Pointers')
-          assert southern['geometry_method'] == 'great-circle-midpoint', southern
-          print('PASS: 25 geometry rows; Southern Pointers uses geodesic midpoint')
+          for year in (2025, 2026, 2027):
+              path = f'asterism-geometry-{year}.csv'
+              with open(path, newline='', encoding='utf-8') as f:
+                  rows = list(csv.DictReader(f))
+              assert len(rows) == 25, (year, len(rows))
+              names = {r['asterism'] for r in rows}
+              assert len(names) == 25, year
+              for r in rows:
+                  d = int(r['best_date'][:4])
+                  assert d in (year, year + 1), (year, r)
+                  assert 0.0 <= float(r['centroid_ra_h']) < 24.0, r
+                  assert -90.0 <= float(r['centroid_dec_deg']) <= 90.0, r
+                  assert float(r['area_sr']) >= 0.0, r
+              southern = next(r for r in rows if r['asterism'] == 'Southern Pointers')
+              assert southern['geometry_method'] == 'great-circle-midpoint', southern
+              print(f'PASS {year}: 25 geometry rows; Southern Pointers uses geodesic midpoint')
           PY
 
       - name: Commit generated coordinate and geometry files
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add Star-Almanack-Repo/asterism-member-coordinates.csv Star-Almanack-Repo/asterism-geometry-2026.csv
+          git add Star-Almanack-Repo/asterism-member-coordinates.csv Star-Almanack-Repo/asterism-geometry-2025.csv Star-Almanack-Repo/asterism-geometry-2026.csv Star-Almanack-Repo/asterism-geometry-2027.csv
           if git diff --cached --quiet; then
             echo 'Generated asterism files unchanged.'
             exit 0
           fi
-          git commit -m 'Generate 2026 core asterism geometry'
+          git commit -m 'Generate 2025-2027 core asterism geometry'
           git push
