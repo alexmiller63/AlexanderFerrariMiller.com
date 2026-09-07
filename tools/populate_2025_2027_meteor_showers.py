@@ -43,25 +43,39 @@ ROW_RE = re.compile(
 KNOWN_LABELS = tuple(label for _, _, label in SHOWERS)
 
 
-def crossing(samples, target_deg: float):
+def crossing(samples, target_deg: float, year: int):
+    """Return the target solar-longitude crossing that falls in *year*.
+
+    The Horizons query is padded across New Year, so an unwrapped longitude can
+    contain both the previous December crossing and the requested year's
+    December crossing. Search every equivalent target (λ + 360k) and select the
+    one whose interpolated UTC timestamp belongs to the requested civil year.
+    """
     times = [t for t, _ in samples]
     values = unwrap([lon for _, lon in samples])
-    target = target_deg
-    while target < values[0]:
-        target += 360.0
-    for i in range(len(values) - 1):
-        if values[i] <= target <= values[i + 1]:
-            return interpolate_time(times[i], values[i], times[i + 1], values[i + 1], target)
-    raise RuntimeError(f"No solar-longitude crossing for {target_deg}°")
+
+    k_min = int((values[0] - target_deg) // 360) - 1
+    k_max = int((values[-1] - target_deg) // 360) + 1
+    for k in range(k_min, k_max + 1):
+        target = target_deg + 360.0 * k
+        for i in range(len(values) - 1):
+            if values[i] <= target <= values[i + 1]:
+                ts = interpolate_time(times[i], values[i], times[i + 1], values[i + 1], target)
+                if ts.year == year:
+                    return ts
+                break
+    raise RuntimeError(f"No {year} solar-longitude crossing for {target_deg}°")
 
 
 def shower_events(year: int):
-    samples = horizons_longitudes("10", date(year, 1, 1) - timedelta(days=10), date(year + 1, 1, 1) + timedelta(days=10))
+    samples = horizons_longitudes(
+        "10",
+        date(year, 1, 1) - timedelta(days=10),
+        date(year + 1, 1, 1) + timedelta(days=10),
+    )
     out = []
     for name, lon, label in SHOWERS:
-        ts = crossing(samples, lon)
-        if ts.year != year:
-            raise RuntimeError(f"{year} {name}: computed maximum outside civil year: {ts.isoformat()}")
+        ts = crossing(samples, lon, year)
         out.append((name, lon, label, ts))
     return out
 
