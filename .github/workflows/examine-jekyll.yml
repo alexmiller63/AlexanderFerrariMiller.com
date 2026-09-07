@@ -32,4 +32,4 @@ jobs:
         run: jekyll build --trace
 
       - name: Examine rendered Star Almanack
-        run: python tools/examine-almanack-jekyll.py
+        run: python tools/examine-almanack-jekyll.py 2025 2026 2027
