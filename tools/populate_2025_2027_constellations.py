@@ -59,7 +59,9 @@ def event_map(rows):
     for r in rows:
         if r["alpha_best_date"]: events[dt.date.fromisoformat(r["alpha_best_date"])].append(f"✦ α star — {r['alpha_bayer']}")
         if r["beta_best_date"]: events[dt.date.fromisoformat(r["beta_best_date"])].append(f"✦ β star — {r['beta_bayer']}")
-        events[dt.date.fromisoformat(r["center_best_date"])].append(f"✦ {r['name']} geometric-center observance")
+        center_date = dt.date.fromisoformat(r["center_best_date"])
+        center_class = f"{fixed.declination_band(r['centroid_dec_deg'])} {fixed.season_for(center_date)}"
+        events[center_date].append(f"✦ {r['name']} geometric-center observance — {center_class}")
     return events
 
 
@@ -83,6 +85,9 @@ def inject(root, year, events):
             if not m: continue
             keep = [] if m.group(2) == "—" else [x for x in m.group(2).split("<br>") if x]
             for v in vals:
+                if " geometric-center observance" in v:
+                    base = v.split(" — ", 1)[0]
+                    keep = [x for x in keep if not (x == base or x.startswith(base + " — "))]
                 if v not in keep: keep.append(v)
             text = text[:m.start(2)] + "<br>".join(keep) + text[m.end(2):]
         if text != original: page.write_text(text, encoding="utf-8"); changed += 1
