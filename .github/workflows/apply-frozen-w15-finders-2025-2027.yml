@@ -63,7 +63,6 @@ jobs:
                       continue
                   html = page.read_text(encoding='utf-8')
 
-                  # Replace the old inline placeholder finder with the three frozen W15 images.
                   html = re.sub(
                       r'<figure class="finder"><svg.*?</svg><figcaption>.*?</figcaption></figure>',
                       figures,
@@ -72,7 +71,6 @@ jobs:
                       flags=re.S,
                   )
 
-                  # If an earlier run already replaced the inline finder, keep the figures as-is.
                   if 'frozen-w15-finder-css' not in html:
                       html = html.replace('</head>', finder_css + '</head>', 1)
                   if 'frozen-w15-finder-script' not in html:
