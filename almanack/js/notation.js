@@ -30,6 +30,10 @@
   document.querySelectorAll('.zodiac-glyph').forEach(function (item) {
     const glyph = item.textContent.charAt(0);
     if (!zodiacNames[glyph]) return;
+    if (item.closest('table.calendar tbody td:nth-child(2)')) {
+      item.textContent = glyph + VS;
+      return;
+    }
     item.classList.add('notation-item');
     item.dataset.greek = glyph + VS;
     item.dataset.latin = zodiacNames[glyph];
@@ -147,8 +151,6 @@
       button.setAttribute('aria-pressed', button.dataset.bayerMode === mode ? 'true' : 'false');
     });
 
-    // W41 has three pre-rendered Planet Finders. Show only the finder that
-    // matches the active notation mode, using the same page-level toggle.
     const finderIndex = { greek: 0, latin: 1, mixed: 2 }[mode];
     document.querySelectorAll('.w41-finder-strip').forEach(function (strip) {
       strip.style.gridTemplateColumns = 'minmax(0, 1fr)';
