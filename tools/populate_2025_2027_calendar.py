@@ -184,7 +184,9 @@ def build_events(first: date, last: date, ingresses: list[tuple[datetime, int]],
     return events
 
 
-ROW_RE = re.compile(r"<tr><td>([^<]+)</td><td>.*?</td><td>(.*?)</td></tr>")
+ROW_RE = re.compile(
+    r"<tr><td>((?:Mon|Tue|Wed|Thu|Fri|Sat|Sun), [^<]+)</td><td>.*?</td><td>(.*?)</td></tr>"
+)
 
 
 def parse_page_date(label: str) -> date:
