@@ -8,6 +8,7 @@ on:
       - 'tools/populate_ephemeris.py'
       - 'tools/populate_2025_2027_ephemeris.py'
       - 'tools/wire_ephemeris_notation.py'
+      - 'tools/wire_week_navigation.py'
       - 'tools/populate_2025_2027_calendar.py'
       - 'tools/populate_2025_2027_meteor_showers.py'
       - 'tools/populate_2025_2027_fixed_sky.py'
@@ -50,6 +51,9 @@ jobs:
       - name: Populate core asterism observances
         run: python tools/populate_2025_2027_asterisms.py
 
+      - name: Wire highlighted current-week navigation
+        run: python tools/wire_week_navigation.py
+
       - name: Stamp Kilroy deployment marker
         run: |
           python - <<'PY'
@@ -78,9 +82,9 @@ jobs:
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add \
-            almanack/2025 almanack/2027 \
+            almanack/2025 almanack/2026 almanack/2027 \
             Star-Almanack-Repo/site/2025 Star-Almanack-Repo/site/2027 \
-            almanack/2026/W53 Star-Almanack-Repo/site/2026/W53 \
+            Star-Almanack-Repo/site/2026/W53 \
             Star-Almanack-Repo/generated/calendar-2025.json \
             Star-Almanack-Repo/generated/calendar-2027.json \
             Star-Almanack-Repo/generated/meteor-showers-2025.json \
