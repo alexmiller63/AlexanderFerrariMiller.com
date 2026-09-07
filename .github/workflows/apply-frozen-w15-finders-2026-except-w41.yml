@@ -1,0 +1,61 @@
+name: Apply frozen W15 finders to 2026 except W41
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/apply-frozen-w15-finders-2026-except-w41.yml
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Apply W15 finder set to 2026 except W41
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+
+          root=Path('almanack/2026')
+          source=root/'W15'/'finders'
+          files=('planet-finder-greek-symbols.svg','planet-finder-latin.svg','planet-finder-mixed-learner.svg')
+          templates={name:(source/name).read_text(encoding='utf-8') for name in files}
+
+          for week_dir in sorted(root.glob('W[0-9][0-9]')):
+              if week_dir.name == 'W41':
+                  continue
+              week=int(week_dir.name[1:])
+              target_title=f'ISO 2026-W{week:02d} Planet Finder'
+              target=week_dir/'finders'
+              target.mkdir(exist_ok=True)
+              for name,text in templates.items():
+                  text=re.sub(r'ISO 2026-W15 Planet Finder',target_title,text,count=1)
+                  (target/name).write_text(text,encoding='utf-8')
+
+              page=week_dir/'index.html'
+              if not page.exists():
+                  continue
+              html=page.read_text(encoding='utf-8')
+              figures='''<div class="w15-finder-strip"><figure data-finder-mode="greek" class="is-active"><img src="finders/planet-finder-greek-symbols.svg" alt="Planet Finder — Greek / Symbols"><figcaption>Greek / Symbols</figcaption></figure><figure data-finder-mode="latin"><img src="finders/planet-finder-latin.svg" alt="Planet Finder — Latin"><figcaption>Latin</figcaption></figure><figure data-finder-mode="mixed"><img src="finders/planet-finder-mixed-learner.svg" alt="Planet Finder — Mixed Learner"><figcaption>Mixed Learner</figcaption></figure></div>'''
+              if 'class="w15-finder-strip"' in html:
+                  html=re.sub(r'<div class="w15-finder-strip">.*?</div>',figures,html,count=1,flags=re.S)
+              else:
+                  html=re.sub(r'<figure class="finder">.*?</figure>',figures,html,count=1,flags=re.S)
+              if '.w15-finder-strip{' not in html:
+                  css='<style>.w15-finder-strip{margin:1.25rem 0 2rem}.w15-finder-strip figure{display:none;margin:0;max-width:820px;margin-left:auto;margin-right:auto}.w15-finder-strip figure.is-active{display:block}.w15-finder-strip img{display:block;width:100%;height:auto}.w15-finder-strip figcaption{text-align:center;font-family:system-ui,sans-serif;font-size:.82rem;color:var(--muted);margin-top:.35rem}</style>'
+                  html=html.replace('</head>',css+'</head>',1)
+              page.write_text(html,encoding='utf-8')
+          PY
+      - name: Commit changes
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add almanack/2026
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m 'Apply frozen W15 finders across 2026 except W41'
+          git push
