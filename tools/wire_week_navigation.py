@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Add a highlighted current-week position to generated Almanack week navigation."""
+"""Add a highlighted ISO current-week position to generated Almanack week navigation."""
 
 from __future__ import annotations
 
@@ -45,7 +45,11 @@ def add_class(tag: str, class_name: str) -> str:
     return tag.replace('<a ', f'<a class="{class_name}" ', 1)
 
 
-def rewrite_nav(text: str, week: int) -> str:
+def set_text(tag: str, label: str) -> str:
+    return re.sub(r'(?s)(>).*?(</(?:a|span)>)$', rf'\1{label}\2', tag, count=1)
+
+
+def rewrite_nav(text: str, year: int, week: int) -> str:
     match = NAV_RE.search(text)
     if not match:
         raise RuntimeError("weekly navigation not found")
@@ -63,9 +67,9 @@ def rewrite_nav(text: str, week: int) -> str:
     all_weeks = next((c for c in children if 'all-weeks' in c), None)
     if all_weeks is None:
         all_weeks = children[1]
-    all_weeks = add_class(all_weeks, "all-weeks")
+    all_weeks = set_text(add_class(all_weeks, "all-weeks"), f"All {year} Weeks")
 
-    current = f'<span class="current-week" aria-current="page">W{week:02d}</span>'
+    current = f'<span class="current-week" aria-current="page">ISO {year}-W{week:02d}</span>'
     nav = (
         '<nav class="weeknav week-position" aria-label="Week navigation">'
         f'{prev}{current}{nxt}{all_weeks}'
@@ -88,11 +92,11 @@ def main() -> None:
         for path in sorted((ROOT / str(year)).glob('W??/index.html')):
             week = int(path.parent.name[1:])
             original = path.read_text(encoding='utf-8')
-            updated = ensure_style(rewrite_nav(original, week))
+            updated = ensure_style(rewrite_nav(original, year, week))
             if updated != original:
                 path.write_text(updated, encoding='utf-8')
                 changed += 1
-    print(f"Updated week-position navigation on {changed} pages")
+    print(f"Updated ISO week-position navigation on {changed} pages")
 
 
 if __name__ == '__main__':
