@@ -1,4 +1,4 @@
-name: Build 2025 and 2027 Placeholder Years
+name: Build 2025 and 2027 Placeholder Sources
 
 on:
   workflow_dispatch:
@@ -24,32 +24,18 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: Build placeholder years
-        run: |
-          python Star-Almanack-Repo/publish_placeholder_years.py
-          python - <<'PY'
-          from pathlib import Path
-          for year in (2025, 2027):
-              root = Path('Star-Almanack-Repo/site') / str(year)
-              for path in root.rglob('index.html'):
-                  text = path.read_text(encoding='utf-8')
-                  if path.parent.name.startswith('W'):
-                      text = text.replace('href="../2026/"', 'href="../../2026/"')
-                  path.write_text(text, encoding='utf-8')
-          PY
-          rm -rf almanack/2025 almanack/2027
-          cp -a Star-Almanack-Repo/site/2025 almanack/2025
-          cp -a Star-Almanack-Repo/site/2027 almanack/2027
+      - name: Build placeholder source years only
+        run: python Star-Almanack-Repo/publish_placeholder_years.py
 
-      - name: Commit generated placeholder years
+      - name: Commit generated placeholder sources
         run: |
           set -euo pipefail
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add Star-Almanack-Repo/site/2025 Star-Almanack-Repo/site/2027 almanack/2025 almanack/2027
+          git add Star-Almanack-Repo/site/2025 Star-Almanack-Repo/site/2027
           if git diff --cached --quiet; then
-            echo 'Placeholder years already current.'
+            echo 'Placeholder source years already current.'
             exit 0
           fi
-          git commit -m 'Publish polished 2025 and 2027 placeholder calendars'
+          git commit -m 'Update placeholder source calendars'
           git push
