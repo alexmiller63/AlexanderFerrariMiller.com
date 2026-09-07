@@ -8,7 +8,10 @@ on:
       - 'tools/populate_2025_2027_ephemeris.py'
       - 'tools/populate_2025_2027_calendar.py'
       - 'tools/populate_2025_2027_fixed_sky.py'
+      - 'tools/populate_2025_2027_constellations.py'
       - 'tools/populate-2025-2027-ephemeris-trigger.txt'
+      - 'Star-Almanack-Repo/compute_constellation_observance_2026.py'
+      - 'Star-Almanack-Repo/expanded-bayer-visibility-2026.csv'
 
 permissions:
   contents: write
@@ -16,7 +19,7 @@ permissions:
 jobs:
   populate:
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 40
     steps:
       - uses: actions/checkout@v4
 
@@ -28,6 +31,9 @@ jobs:
 
       - name: Populate fixed-sky visibility events
         run: python tools/populate_2025_2027_fixed_sky.py
+
+      - name: Populate constellation alpha, beta, and center observances
+        run: python tools/populate_2025_2027_constellations.py
 
       - name: Commit generated Almanack foundations
         run: |
@@ -44,7 +50,9 @@ jobs:
             Star-Almanack-Repo/generated/bright-star-visibility-2025.csv \
             Star-Almanack-Repo/generated/bright-star-visibility-2027.csv \
             Star-Almanack-Repo/generated/messier-visibility-2025.csv \
-            Star-Almanack-Repo/generated/messier-visibility-2027.csv
+            Star-Almanack-Repo/generated/messier-visibility-2027.csv \
+            Star-Almanack-Repo/generated/constellation-observance-2025.csv \
+            Star-Almanack-Repo/generated/constellation-observance-2027.csv
           if git diff --cached --quiet; then
             echo 'No Almanack foundation changes'
             exit 0
