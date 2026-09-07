@@ -39,27 +39,17 @@ jobs:
             root = repo / 'almanack' / str(year)
             for page in sorted(root.glob('W[0-9][0-9]/index.html')):
               html = page.read_text(encoding='utf-8')
-
-              # Remove prior section copies from reruns.
               html = re.sub(r'<div class="bayer-toggle-wrap section-notation-toggle">.*?</div></div>', '', html, flags=re.S)
-
-              # 2025/2027 placeholders did not yet have the standard top notation toggle.
               if 'data-bayer-mode="greek"' not in html:
                 html = html.replace('</header>', '</header>' + top_toggle, 1)
-
-              # Replace the old finder-only control on placeholder years with the shared notation control.
               html = re.sub(r'<div class="finder-controls" role="group" aria-label="Planet finder notation">.*?</div>', '', html, count=1, flags=re.S)
-
-              # Put a synchronized copy immediately before each requested section.
               html = html.replace('<h3>Calendar</h3>', toggle + '<h3>Calendar</h3>', 1)
               html = html.replace('<h3>Weekly Solar-System Ephemeris</h3>', toggle + '<h3>Weekly Solar-System Ephemeris</h3>', 1)
               html = html.replace('<h3>Planet Finder</h3>', toggle + '<h3>Planet Finder</h3>', 1)
-
               if 'section-notation-toggle-css' not in html:
                 html = html.replace('</head>', css + '</head>', 1)
               if 'section-notation-toggle-sync' not in html:
                 html = html.replace('</body>', sync_script + '</body>', 1)
-
               page.write_text(html, encoding='utf-8')
           PY
 
@@ -75,3 +65,5 @@ jobs:
           fi
           git commit -m 'Duplicate notation toggles before weekly sections'
           git push
+
+# Triggered after initial workflow creation so the workflow actually runs.
