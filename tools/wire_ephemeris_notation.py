@@ -1,0 +1,53 @@
+from pathlib import Path
+import re
+
+SCRIPT = r'''<script id="ephemeris-notation-sync">
+(function(){
+  const bodies={Sun:'☉',Moon:'☽',Mercury:'☿',Venus:'♀',Mars:'♂',Jupiter:'♃',Saturn:'♄',Uranus:'♅',Neptune:'♆',Ceres:'⚳'};
+  const signs={'♈':'Aries','♉':'Taurus','♊':'Gemini','♋':'Cancer','♌':'Leo','♍':'Virgo','♎':'Libra','♏':'Scorpio','♐':'Sagittarius','♑':'Capricorn','♒':'Aquarius','♓':'Pisces'};
+  const VS='\ufe0e';
+  function item(el,g,l,m){el.classList.add('ephemeris-notation-item');el.dataset.greek=g;el.dataset.latin=l;el.dataset.mixed=m;}
+  const tables=Array.from(document.querySelectorAll('table.ephemeris'));
+  tables.forEach(function(table){
+    table.querySelectorAll('th').forEach(function(th){
+      const txt=th.textContent.trim();
+      for(const [name,glyph] of Object.entries(bodies)){
+        const plain=txt.replace(/\ufe0e/g,'');
+        if(plain===glyph || plain===name || plain===glyph+' '+name){item(th,glyph+VS,name,glyph+VS+' '+name);break;}
+      }
+    });
+    table.querySelectorAll('td').forEach(function(td){
+      const txt=td.textContent.trim();
+      const m=txt.match(/^([♈♉♊♋♌♍♎♏♐♑♒♓])\ufe0e?\s*(.*)$/);
+      if(m && signs[m[1]]){
+        const rest=m[2];
+        item(td,m[1]+VS+(rest?' '+rest:''),signs[m[1]]+(rest?' '+rest:''),m[1]+VS+' '+signs[m[1]]+(rest?' '+rest:''));
+      }
+    });
+  });
+  function setMode(mode){
+    document.querySelectorAll('.ephemeris-notation-item').forEach(function(el){el.textContent=el.dataset[mode]||el.dataset.greek;});
+    document.querySelectorAll('[data-bayer-mode]').forEach(function(b){b.setAttribute('aria-pressed',String(b.dataset.bayerMode===mode));});
+    try{localStorage.setItem('star-almanack-bayer-mode',mode)}catch(_){}
+  }
+  document.addEventListener('click',function(e){const b=e.target.closest('[data-bayer-mode]');if(b)setMode(b.dataset.bayerMode);});
+  let initial='greek';
+  try{const s=localStorage.getItem('star-almanack-bayer-mode');if(s==='greek'||s==='latin'||s==='mixed')initial=s}catch(_){}
+  setMode(initial);
+})();
+</script>'''
+
+changed = 0
+for year in ('2025','2026','2027'):
+    root = Path('almanack') / year
+    if not root.exists():
+        continue
+    for page in sorted(root.glob('W[0-9][0-9]/index.html')):
+        html = page.read_text(encoding='utf-8')
+        html2 = re.sub(r'<script id="ephemeris-notation-sync">.*?</script>', SCRIPT, html, count=1, flags=re.S)
+        if html2 == html and 'ephemeris-notation-sync' not in html:
+            html2 = html.replace('</body>', SCRIPT + '</body>', 1)
+        if html2 != html:
+            page.write_text(html2, encoding='utf-8')
+            changed += 1
+print(f'Wired ephemeris notation on {changed} weekly pages')
