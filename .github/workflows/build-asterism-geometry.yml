@@ -84,12 +84,12 @@ jobs:
 
       - name: Commit generated coordinate and geometry files
         run: |
-          if git diff --quiet -- Star-Almanack-Repo/asterism-member-coordinates.csv Star-Almanack-Repo/asterism-geometry-2026.csv; then
-            echo 'Generated asterism files unchanged.'
-            exit 0
-          fi
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add Star-Almanack-Repo/asterism-member-coordinates.csv Star-Almanack-Repo/asterism-geometry-2026.csv
+          if git diff --cached --quiet; then
+            echo 'Generated asterism files unchanged.'
+            exit 0
+          fi
           git commit -m 'Generate 2026 core asterism geometry'
           git push
