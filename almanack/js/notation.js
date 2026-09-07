@@ -116,6 +116,7 @@
         fragment.append(document.createTextNode(text.slice(last, match.index)));
         const span = document.createElement('span');
         span.className = 'visibility-magnitude';
+        span.style.whiteSpace = 'nowrap';
         span.textContent = match[0];
         fragment.append(span);
         last = match.index + match[0].length;
