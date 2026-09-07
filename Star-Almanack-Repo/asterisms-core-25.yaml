@@ -1,0 +1,83 @@
+# Star Almanack core orienting asterisms
+#
+# Scope is deliberately fixed at 25. This is not an attempt to catalog every
+# published asterism. Membership provenance priority is:
+#   1. NASA explicit member-star definition
+#   2. Astronomical League explicit member-star definition
+#   3. another authoritative published source only when unresolved
+#
+# A source that merely names or illustrates an asterism does not automatically
+# establish exact membership. Member lists are filled only from explicit
+# published definitions and should retain source provenance.
+#
+# Geometry downstream:
+#   published members -> catalog coordinates -> zero-margin spherical boundary
+#   -> spherical area centroid -> Star Almanack best-visibility date.
+# Member stars also qualify independently for the calendar, with presentation
+# deduplicated by physical observing target.
+
+provenance_priority:
+  - NASA
+  - Astronomical League
+  - other authoritative published source
+
+asterisms:
+  - name: Big Dipper
+    status: membership-to-resolve
+  - name: Little Dipper
+    status: membership-to-resolve
+  - name: Cassiopeia's W
+    status: membership-to-resolve
+  - name: Orion's Belt
+    status: membership-to-resolve
+  - name: Orion's Sword
+    status: membership-to-resolve
+  - name: Water Jar
+    status: membership-to-resolve
+  - name: Great Square of Pegasus
+    status: resolved
+    members: [Scheat, Alpheratz, Markab, Algenib]
+    source: NASA
+    source_url: https://science.nasa.gov/solar-system/skywatching/night-sky-network/connecting-the-dots-with-asterisms/
+  - name: Sickle of Leo
+    status: membership-to-resolve
+  - name: Keystone of Hercules
+    status: membership-to-resolve
+  - name: Northern Cross
+    status: membership-to-resolve
+  - name: Teapot of Sagittarius
+    status: membership-to-resolve
+  - name: Scorpius's Fishhook
+    status: membership-to-resolve
+  - name: Circlet of Pisces
+    status: membership-to-resolve
+  - name: Head of Cetus
+    status: membership-to-resolve
+  - name: Hyades / V of Taurus
+    status: membership-to-resolve
+  - name: Pleiades
+    status: membership-to-resolve
+  - name: Summer Triangle
+    status: resolved
+    members: [Vega, Altair, Deneb]
+    source: NASA
+    source_url: https://science.nasa.gov/solar-system/what-are-asterisms/
+  - name: Winter Triangle
+    status: resolved
+    members: [Sirius, Betelgeuse, Procyon]
+    source: NASA
+    source_url: https://science.nasa.gov/solar-system/what-are-asterisms/
+  - name: Winter Hexagon / Winter Circle
+    status: membership-to-resolve
+  - name: Spring Triangle
+    status: membership-to-resolve
+  - name: Great Diamond
+    status: membership-to-resolve
+  - name: False Cross
+    status: membership-to-resolve
+  - name: Southern Cross
+    status: membership-to-resolve
+  - name: Southern Pointers
+    status: membership-to-resolve
+  - name: Coathanger
+    status: membership-to-resolve
