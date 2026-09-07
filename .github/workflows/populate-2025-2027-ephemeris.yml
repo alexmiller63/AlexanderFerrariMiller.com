@@ -5,6 +5,7 @@ on:
   push:
     paths:
       - '.github/workflows/populate-2025-2027-ephemeris.yml'
+      - 'tools/clean_2025_2027_event_cells.py'
       - 'tools/populate_ephemeris.py'
       - 'tools/populate_2025_2027_ephemeris.py'
       - 'tools/wire_ephemeris_notation.py'
@@ -29,6 +30,9 @@ jobs:
     timeout-minutes: 40
     steps:
       - uses: actions/checkout@v4
+
+      - name: Clear 2025 and 2027 calendar event cells
+        run: python tools/clean_2025_2027_event_cells.py
 
       - name: Populate Zodiac Days, ingresses, Wheel of the Year, and lunar phases
         run: python tools/populate_2025_2027_calendar.py
