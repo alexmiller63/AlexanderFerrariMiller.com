@@ -1,4 +1,4 @@
-name: Populate 2025 and 2027 ephemerides
+name: Populate 2025 and 2027 Almanack foundations
 
 on:
   workflow_dispatch:
@@ -6,6 +6,7 @@ on:
     paths:
       - '.github/workflows/populate-2025-2027-ephemeris.yml'
       - 'tools/populate_2025_2027_ephemeris.py'
+      - 'tools/populate_2025_2027_calendar.py'
       - 'tools/populate-2025-2027-ephemeris-trigger.txt'
 
 permissions:
@@ -14,20 +15,30 @@ permissions:
 jobs:
   populate:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4
-      - name: Populate weekly ephemerides
+
+      - name: Populate Zodiac Days, ingresses, and lunar phases
+        run: python tools/populate_2025_2027_calendar.py
+
+      - name: Populate weekly Solar-System ephemerides
         run: python tools/populate_2025_2027_ephemeris.py
-      - name: Commit generated pages
+
+      - name: Commit generated Almanack foundations
         run: |
+          set -euo pipefail
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add almanack/2025 almanack/2027
+          git add \
+            almanack/2025 almanack/2027 \
+            Star-Almanack-Repo/site/2025 Star-Almanack-Repo/site/2027 \
+            Star-Almanack-Repo/generated/calendar-2025.json \
+            Star-Almanack-Repo/generated/calendar-2027.json
           if git diff --cached --quiet; then
-            echo 'No page changes'
+            echo 'No Almanack foundation changes'
             exit 0
           fi
-          git commit -m 'Populate 2025 and 2027 weekly ephemerides'
+          git commit -m 'Populate 2025 and 2027 Almanack foundations'
           git pull --rebase origin main
           git push
