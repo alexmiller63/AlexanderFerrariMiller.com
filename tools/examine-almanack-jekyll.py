@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 """Reject broken or stale Star Almanack pages in the Jekyll output."""
 
+from argparse import ArgumentParser
+from datetime import date
 from pathlib import Path
 import re
 
 
 ALMANACK_ROOT = Path("_site/almanack")
-ROOT = ALMANACK_ROOT / "2026"
 DAY_ONE_NAME = re.compile(
     r'class="zodiac-glyph">[^<]+</span>\s+\([A-Za-z]+\)\s+1</td>'
 )
@@ -21,14 +22,28 @@ CSS_REQUIREMENTS = {
 }
 
 
-def main() -> None:
-    index = ROOT / "index.html"
-    pages = [ROOT / f"W{week:02d}" / "index.html" for week in range(1, 54)]
-    missing = [str(path) for path in [index, *pages] if not path.is_file()]
-    if missing:
-        raise SystemExit(f"Missing rendered Almanack pages: {missing}")
+def weeks_in_iso_year(year: int) -> int:
+    return date(year, 12, 28).isocalendar().week
 
-    legacy_files = sorted(ALMANACK_ROOT.glob("ISO2026-W*.html"))
+
+def main() -> None:
+    parser = ArgumentParser()
+    parser.add_argument("years", nargs="*", type=int, default=[2026])
+    args = parser.parse_args()
+
+    all_pages = []
+    for year in args.years:
+        root = ALMANACK_ROOT / str(year)
+        week_count = weeks_in_iso_year(year)
+        index = root / "index.html"
+        pages = [root / f"W{week:02d}" / "index.html" for week in range(1, week_count + 1)]
+        missing = [str(path) for path in [index, *pages] if not path.is_file()]
+        if missing:
+            raise SystemExit(f"Missing rendered Almanack pages for {year}: {missing}")
+        all_pages.extend(pages)
+        print(f"PASS: Jekyll rendered the canonical {year} index and all {week_count} weekly pages")
+
+    legacy_files = sorted(ALMANACK_ROOT.glob("ISO*-W*.html"))
     legacy_tree = ALMANACK_ROOT / "weeks"
     if legacy_files or legacy_tree.exists():
         raise SystemExit(
@@ -36,7 +51,7 @@ def main() -> None:
             f"files={legacy_files}, weeks_tree={legacy_tree.exists()}"
         )
 
-    rendered = "\n".join(path.read_text(encoding="utf-8") for path in pages)
+    rendered = "\n".join(path.read_text(encoding="utf-8") for path in all_pages)
 
     if DAY_ONE_NAME.search(rendered):
         raise SystemExit("A zodiac day-1 cell still contains a redundant sign name")
@@ -56,8 +71,7 @@ def main() -> None:
     if missing_css:
         raise SystemExit(f"Missing monochrome zodiac CSS semantics: {missing_css}")
 
-    print("PASS: Jekyll rendered the canonical 2026 index and all 53 weekly pages")
-    print("PASS: no legacy ISO2026-Wxx or almanack/weeks output remains")
+    print("PASS: no legacy ISO-Wxx or almanack/weeks output remains")
     print("PASS: zodiac day 1 contains no redundant sign name")
     print("PASS: obsolete Best visibility labels are absent")
     print(f"PASS: all {ingress_count} ingress glyphs are monochrome text symbols")
