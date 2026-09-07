@@ -365,7 +365,7 @@ Last Quarter Moon opens darker evening opportunities, and M41 (NGC 2287), an ope
 | Date | Zodiac day | Events |
 |---|---|---|
 | Mon, Feb 16, 2026 | ♒ 28 | Adhara (ε CMa) — 👁 V 2 — Southern — Winter |
-| Tue, Feb 17, 2026 | ♒ 29 | 🌑 New Moon — 12:01:13 UTC |
+| Tue, Feb 17, 2026 | ♒ 29 | ☀ Annular solar eclipse — greatest 12:14 UTC<br>🌑 New Moon — 12:01:13 UTC |
 | Wed, Feb 18, 2026 | ♓ (Pisces) 1 | ♓ Pisces ingress (330°) — 15:51:56 UTC<br>M50 — B — Tropical — Winter |
 | Thu, Feb 19, 2026 | ♓ 2 | Wezen (δ CMa) — 👁 V 2 — Southern — Winter |
 | Fri, Feb 20, 2026 | ♓ 3 | — |
@@ -463,7 +463,7 @@ M47, M46, and M93 (NGC 2447), an open cluster make this a strong open-cluster we
 | Date | Zodiac day | Events |
 |---|---|---|
 | Mon, Mar 02, 2026 | ♓ 13 | — |
-| Tue, Mar 03, 2026 | ♓ 14 | 🌕 Full Moon — 11:37:56 UTC — Sap Moon |
+| Tue, Mar 03, 2026 | ♓ 14 | ☾ Total lunar eclipse — greatest 11:31 UTC<br>🌕 Full Moon — 11:37:56 UTC — Sap Moon |
 | Wed, Mar 04, 2026 | ♓ 15 | — |
 | Thu, Mar 05, 2026 | ♓ 16 | Naos (ζ Pup) — 👁 V 2 — Southern — Winter |
 | Fri, Mar 06, 2026 | ♓ 17 | M48 — B — Tropical — Winter |
@@ -1584,7 +1584,7 @@ The southern Milky Way supplies an extraordinary sequence this week: M7, the Pto
 |---|---|---|
 | Mon, Aug 10, 2026 | ♌ 20 | M28 — B — Southern — Summer |
 | Tue, Aug 11, 2026 | ♌ 21 | Kaus Australis (ε Sgr) — 👁 V 2 — Southern — Summer |
-| Wed, Aug 12, 2026 | ♌ 22 | 🌑 New Moon — 17:36:40 UTC<br>M25 — B — Tropical — Summer<br>M69 — 🔭 — Southern — Summer<br>α Tel — 👁 V 3 — Southern — Summer |
+| Wed, Aug 12, 2026 | ♌ 22 | ☀ Total solar eclipse — greatest 17:48 UTC<br>🌑 New Moon — 17:36:40 UTC<br>M25 — B — Tropical — Summer<br>M69 — 🔭 — Southern — Summer<br>α Tel — 👁 V 3 — Southern — Summer |
 | Thu, Aug 13, 2026 | ♌ 23 | M22 Sagittarius Cluster — B — Southern — Summer |
 | Fri, Aug 14, 2026 | ♌ 24 | α Sct — B V 4 — Tropical — Summer |
 | Sat, Aug 15, 2026 | ♌ 25 | M70 — 🔭 — Southern — Summer<br>Vega (α Lyr) — 👁 V 0 — Northern — Summer |
@@ -1686,7 +1686,7 @@ M11, the Wild Duck Cluster, opens the week on August 17, followed by M57, the Ri
 | Tue, Aug 25, 2026 | ♍ 3 | — |
 | Wed, Aug 26, 2026 | ♍ 4 | — |
 | Thu, Aug 27, 2026 | ♍ 5 | Rukbat (α Sgr) — B V 4 — Southern — Summer<br>Arkab Prior (β1 Sgr) — B V 4 — Southern — Summer<br>Arkab Posterior (β2 Sgr) — B V 4 — Southern — Summer |
-| Fri, Aug 28, 2026 | ♍ 6 | 🌕 Full Moon — 04:18:30 UTC |
+| Fri, Aug 28, 2026 | ♍ 6 | ☾ Partial lunar eclipse — greatest 04:10 UTC<br>🌕 Full Moon — 04:18:30 UTC |
 | Sat, Aug 29, 2026 | ♍ 7 | M55 — B — Southern — Summer<br>Albireo (β1 Cyg) — 👁 V 3 — Northern — Summer<br>Albireo B (β2 Cyg) — B V 5 — Northern — Summer<br>Anser (α Vul) — B V 4 — Northern — Summer |
 | Sun, Aug 30, 2026 | ♍ 8 | — |
 
