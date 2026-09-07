@@ -29,4 +29,5 @@ jobs:
             exit 0
           fi
           git commit -m 'Populate 2025 and 2027 weekly ephemerides'
+          git pull --rebase origin main
           git push
