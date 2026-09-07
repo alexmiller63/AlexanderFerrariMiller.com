@@ -1,10 +1,11 @@
+{% assign kilroy_url = page.url %}
 <footer class="kilroy-footer">
   <nav class="kilroy-nav" aria-label="Kilroy footer navigation">
     <a class="kilroy-site-mark" href="index.html">KILROY WAS HERE · MINISITE</a>
-    <a href="index.html">Kilroy Home</a>
-    <a href="background.html">Kilroy Background</a>
-    <a href="kilroy-sightings.html">Kilroy Sightings</a>
-    <a href="resumes.html">Kilroy Resumes</a>
+    <a href="index.html" {% if kilroy_url == "/kilroy/" or kilroy_url == "/kilroy/index.html" %}aria-current="page"{% endif %}>Kilroy Home</a>
+    <a href="background.html" {% if kilroy_url == "/kilroy/background.html" %}aria-current="page"{% endif %}>Kilroy Background</a>
+    <a href="kilroy-sightings.html" {% if kilroy_url == "/kilroy/kilroy-sightings.html" or kilroy_url contains "/kilroy/sightings-" %}aria-current="page"{% endif %}>Kilroy Sightings</a>
+    <a href="resumes.html" {% if kilroy_url == "/kilroy/resumes.html" or kilroy_url contains "/kilroy/resumes/" %}aria-current="page"{% endif %}>Kilroy Resumes</a>
     <a href="../projects.html">All Projects</a>
     <a href="../index.html">Main Site</a>
   </nav>
