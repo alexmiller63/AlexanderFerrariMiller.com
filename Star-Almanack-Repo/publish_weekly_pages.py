@@ -59,6 +59,7 @@ table.calendar th:nth-child(3),table.calendar td:nth-child(3) { width:76%; }
 table.calendar td:first-child { white-space:nowrap; font-weight:600; }
 table.calendar td:nth-child(2) { white-space:nowrap; text-align:center; }
 table.calendar td:nth-child(3) { line-height:1.6; }
+.visibility { white-space:nowrap; }
 table.ephemeris { font-size:.9rem; }
 table.ephemeris th,table.ephemeris td { text-align:center; }
 table.ephemeris td { white-space:nowrap; padding-top:.8rem; padding-bottom:.8rem; }
@@ -75,6 +76,7 @@ footer .wrap { padding-top:1.3rem; padding-bottom:1.3rem; opacity:.9; }
 def zodiac_glyph(glyph: str) -> str: return f'<span class="zodiac-glyph">{html.escape(glyph)}&#xfe0e;</span>'
 def inline_markup(text: str) -> str:
     sentinel="@@BR@@"; text=text.replace("<br>",sentinel); text=html.escape(text)
+    text=re.sub(r"(👁 V [+-]?\d+|B V [+-]?\d+)",r'<span class="visibility">\1</span>',text)
     for glyph in ZODIAC_NAMES: text=text.replace(glyph+"\ufe0f",glyph).replace(glyph+"\ufe0e",glyph); text=text.replace(glyph,zodiac_glyph(glyph))
     text=re.sub(r"`([^`]+)`",r"<code>\1</code>",text); text=re.sub(r"\*\*([^*]+)\*\*",r"<strong>\1</strong>",text); text=re.sub(r"(?<!\*)\*([^*]+)\*(?!\*)",r"<em>\1</em>",text); return text.replace(sentinel,"<br>")
 def is_separator_row(line: str) -> bool:
