@@ -34,6 +34,24 @@ a { color: #f6d77b; }
   text-decoration: none;
 }
 
+.star-nav a:not(.star-site-mark) {
+  padding: 0.35rem 0.55rem;
+  border: 1px solid transparent;
+  border-radius: 999px;
+}
+
+.star-nav a:not(.star-site-mark):hover,
+.star-nav a:not(.star-site-mark):focus {
+  border-color: rgba(246, 215, 123, 0.65);
+}
+
+.star-nav a[aria-current="page"] {
+  background: #f6d77b;
+  color: #08111f;
+  border-color: #f6d77b;
+  font-weight: 700;
+}
+
 .star-site-mark {
   font-weight: 700;
   letter-spacing: 0.08em;
