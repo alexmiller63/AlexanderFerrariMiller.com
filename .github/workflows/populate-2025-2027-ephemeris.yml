@@ -9,9 +9,12 @@ on:
       - 'tools/populate_2025_2027_calendar.py'
       - 'tools/populate_2025_2027_fixed_sky.py'
       - 'tools/populate_2025_2027_constellations.py'
+      - 'tools/populate_2025_2027_asterisms.py'
       - 'tools/populate-2025-2027-ephemeris-trigger.txt'
       - 'Star-Almanack-Repo/compute_constellation_observance_2026.py'
       - 'Star-Almanack-Repo/expanded-bayer-visibility-2026.csv'
+      - 'Star-Almanack-Repo/asterism-geometry-2025.csv'
+      - 'Star-Almanack-Repo/asterism-geometry-2027.csv'
 
 permissions:
   contents: write
@@ -34,6 +37,9 @@ jobs:
 
       - name: Populate constellation alpha, beta, and center observances
         run: python tools/populate_2025_2027_constellations.py
+
+      - name: Populate core asterism observances
+        run: python tools/populate_2025_2027_asterisms.py
 
       - name: Commit generated Almanack foundations
         run: |
