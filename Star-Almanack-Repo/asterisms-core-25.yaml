@@ -1,20 +1,12 @@
 # Star Almanack core orienting asterisms
-#
-# Scope is deliberately fixed at 25. This is not an attempt to catalog every
-# published asterism. Membership provenance priority is:
+# Scope is fixed at 25.
+# Membership provenance priority:
 #   1. NASA explicit member-star definition
 #   2. Astronomical League explicit member-star definition
 #   3. another authoritative published source only when unresolved
-#
-# A source that merely names or illustrates an asterism does not automatically
-# establish exact membership. Member lists are filled only from explicit
-# published definitions and should retain source provenance.
-#
-# Geometry downstream:
-#   published members -> catalog coordinates -> zero-margin spherical boundary
-#   -> spherical area centroid -> Star Almanack best-visibility date.
-# Member stars also qualify independently for the calendar, with presentation
-# deduplicated by physical observing target.
+# A source that merely names/illustrates an asterism does not establish exact membership.
+# Geometry downstream: published members -> catalog coordinates -> zero-margin
+# spherical boundary -> spherical area centroid -> Star Almanack visibility date.
 
 provenance_priority:
   - NASA
@@ -23,61 +15,122 @@ provenance_priority:
 
 asterisms:
   - name: Big Dipper
-    status: membership-to-resolve
+    status: resolved
+    members: [Alpha Ursae Majoris, Beta Ursae Majoris, Gamma Ursae Majoris, Delta Ursae Majoris, Epsilon Ursae Majoris, Zeta Ursae Majoris, Eta Ursae Majoris]
+    source: Astronomical League
+    source_url: https://www.astroleague.org/wp-content/uploads/2025/12/Asterism_List_20251223.pdf
+
   - name: Little Dipper
     status: membership-to-resolve
+
   - name: Cassiopeia's W
     status: membership-to-resolve
+
   - name: Orion's Belt
     status: membership-to-resolve
+
   - name: Orion's Sword
     status: membership-to-resolve
+
   - name: Water Jar
-    status: membership-to-resolve
+    status: resolved
+    members: [Zeta Aquarii, Pi Aquarii, Eta Aquarii, Gamma Aquarii]
+    source: Astronomical League
+    source_url: https://www.astroleague.org/wp-content/uploads/2025/12/Asterism_List_20251223.pdf
+
   - name: Great Square of Pegasus
     status: resolved
     members: [Scheat, Alpheratz, Markab, Algenib]
     source: NASA
     source_url: https://science.nasa.gov/solar-system/skywatching/night-sky-network/connecting-the-dots-with-asterisms/
+
   - name: Sickle of Leo
-    status: membership-to-resolve
+    status: resolved
+    members: [Alpha Leonis, Eta Leonis, Gamma Leonis, Zeta Leonis, Mu Leonis, Epsilon Leonis]
+    source: Astronomical League
+    source_url: https://www.astroleague.org/wp-content/uploads/2025/12/Asterism_List_20251223.pdf
+
   - name: Keystone of Hercules
-    status: membership-to-resolve
+    status: resolved
+    members: [Epsilon Herculis, Zeta Herculis, Eta Herculis, Pi Herculis]
+    source: Astronomical League
+    source_url: https://www.astroleague.org/wp-content/uploads/2025/12/Asterism_List_20251223.pdf
+
   - name: Northern Cross
-    status: membership-to-resolve
+    status: resolved
+    members: [Alpha Cygni, Beta Cygni, Gamma Cygni, Delta Cygni, Epsilon Cygni]
+    source: Astronomical League
+    source_url: https://www.astroleague.org/wp-content/uploads/2025/12/Asterism_List_20251223.pdf
+
   - name: Teapot of Sagittarius
-    status: membership-to-resolve
+    status: resolved
+    members: [Delta Sagittarii, Epsilon Sagittarii, Zeta Sagittarii, Phi Sagittarii, Lambda Sagittarii, Gamma Sagittarii, Sigma Sagittarii, Tau Sagittarii]
+    source: Astronomical League
+    source_url: https://www.astroleague.org/wp-content/uploads/2025/12/Asterism_List_20251223.pdf
+
   - name: Scorpius's Fishhook
-    status: membership-to-resolve
+    status: resolved
+    members: [Alpha Scorpii, Gamma Scorpii, Delta Scorpii, Epsilon Scorpii, Zeta Scorpii, Eta Scorpii, Theta Scorpii, Iota Scorpii, Kappa Scorpii, Lambda Scorpii, Mu Scorpii, Nu Scorpii, Sigma Scorpii]
+    source: Astronomical League
+    source_url: https://www.astroleague.org/wp-content/uploads/2025/12/Asterism_List_20251223.pdf
+    note: League list spells Gamma as 'Gama'; normalized here.
+
   - name: Circlet of Pisces
-    status: membership-to-resolve
+    status: resolved
+    members: [Theta Piscium, 7 Piscium, Gamma Piscium, Kappa Piscium, Lambda Piscium, TX Piscium, Iota Piscium]
+    source: Astronomical League
+    source_url: https://www.astroleague.org/wp-content/uploads/2025/12/Asterism_List_20251223.pdf
+
   - name: Head of Cetus
     status: membership-to-resolve
+
   - name: Hyades / V of Taurus
     status: membership-to-resolve
+
   - name: Pleiades
     status: membership-to-resolve
+
   - name: Summer Triangle
     status: resolved
     members: [Vega, Altair, Deneb]
     source: NASA
     source_url: https://science.nasa.gov/solar-system/what-are-asterisms/
+
   - name: Winter Triangle
     status: resolved
     members: [Sirius, Betelgeuse, Procyon]
     source: NASA
     source_url: https://science.nasa.gov/solar-system/what-are-asterisms/
+
   - name: Winter Hexagon / Winter Circle
-    status: membership-to-resolve
+    status: resolved
+    members: [Rigel, Aldebaran, Capella, Pollux, Procyon, Sirius]
+    source: NASA
+    source_url: https://science.nasa.gov/solar-system/skywatching/night-sky-network/connecting-the-dots-with-asterisms/
+
   - name: Spring Triangle
     status: membership-to-resolve
+    note: Published definitions vary (Regulus versus Denebola as the Leo vertex); preserve unresolved status until source policy selects a definition.
+
   - name: Great Diamond
-    status: membership-to-resolve
+    status: resolved
+    aliases: [Diamond of Virgo]
+    members: [Alpha Bootis, Alpha Virginis, Alpha Canum Venaticorum, Beta Leonis]
+    source: NASA
+    source_url: https://science.nasa.gov/solar-system/skywatching/night-sky-network/connecting-the-dots-with-asterisms/
+    note: NASA calls this pattern Diamond of Virgo; membership matches the League's Great Diamond.
+
   - name: False Cross
     status: membership-to-resolve
+
   - name: Southern Cross
-    status: membership-to-resolve
+    status: resolved
+    members: [Alpha Crucis, Beta Crucis, Gamma Crucis, Delta Crucis]
+    source: Astronomical League
+    source_url: https://www.astroleague.org/wp-content/uploads/2025/12/Asterism_List_20251223.pdf
+
   - name: Southern Pointers
     status: membership-to-resolve
+
   - name: Coathanger
     status: membership-to-resolve
