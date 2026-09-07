@@ -1,0 +1,94 @@
+name: Calendar navigation retrofit
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/calendar-nav-retrofit.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  retrofit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Apply calendar navigation hierarchy
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          site_nav = '<nav class="weeknav sitenav"><a href="/star-almanack/">Calendar Home</a><a href="/projects.html">All Projects</a><a href="/index.html">Main Site</a></nav>'
+          year_nav_2026 = '<nav class="yearnav"><a href="../2025/">← 2025</a><span>ISO 2026</span><a href="../2027/">2027 →</a></nav>'
+
+          # Retrofit generated/public pages.
+          for year in (2025, 2026, 2027):
+              root = Path('almanack') / str(year)
+              for path in root.rglob('index.html'):
+                  text = path.read_text(encoding='utf-8')
+                  if site_nav not in text:
+                      text = text.replace('<main class="wrap">', '<main class="wrap">' + site_nav, 1)
+                  if year == 2026 and path.parent.name.startswith('W') and year_nav_2026 not in text:
+                      text = text.replace(site_nav, site_nav + year_nav_2026, 1)
+                  # Keep empty year-grid spacers structural but invisible.
+                  if '.yearnav > span:empty { visibility:hidden; }' not in text and '.yearnav span { font-weight:700; }' in text:
+                      text = text.replace('.yearnav span { font-weight:700; }', '.yearnav span { font-weight:700; }\n.yearnav > span:empty { visibility:hidden; }', 1)
+                  path.write_text(text, encoding='utf-8')
+
+          # Keep the 2026 generator aligned with the public output.
+          path = Path('Star-Almanack-Repo/publish_weekly_pages.py')
+          text = path.read_text(encoding='utf-8')
+          old_shell = '<main class="wrap">{nav}{body}{nav}</main>'
+          new_shell = '<main class="wrap">' + site_nav + year_nav_2026 + '{nav}{body}{nav}</main>'
+          if old_shell in text:
+              text = text.replace(old_shell, new_shell, 1)
+          old_index = "year_nav='<nav class=\"yearnav\"><a href=\"../2025/\">← 2025</a><span>ISO 2026</span><a href=\"../2027/\">2027 →</a></nav>'; index_body=year_nav+'<h1>2026 Weekly Almanack</h1><p>Select an ISO week.</p>'+prefix+'\\n'+'\\n'.join(groups)+year_nav;"
+          new_index = "index_body='<h1>2026 Weekly Almanack</h1><p>Select an ISO week.</p>'+prefix+'\\n'+'\\n'.join(groups);"
+          if old_index in text:
+              text = text.replace(old_index, new_index, 1)
+          path.write_text(text, encoding='utf-8')
+
+          # Keep the 2025/2027 generator aligned with the public output.
+          path = Path('Star-Almanack-Repo/publish_placeholder_years.py')
+          text = path.read_text(encoding='utf-8')
+          old_main = '<main class="wrap">{body}</main>'
+          new_main = '<main class="wrap">' + site_nav + '{body}</main>'
+          if old_main in text:
+              text = text.replace(old_main, new_main, 1)
+          if '.yearnav > span:empty { visibility:hidden; }' not in text:
+              text = text.replace('.yearnav span { font-weight:700; }', '.yearnav span { font-weight:700; }\n.yearnav > span:empty { visibility:hidden; }', 1)
+          path.write_text(text, encoding='utf-8')
+
+          # Mirror the generated site tree used by the publishing workflow.
+          for year in (2025, 2026, 2027):
+              root = Path('Star-Almanack-Repo/site') / str(year)
+              if not root.exists():
+                  continue
+              for path in root.rglob('index.html'):
+                  text = path.read_text(encoding='utf-8')
+                  if site_nav not in text:
+                      text = text.replace('<main class="wrap">', '<main class="wrap">' + site_nav, 1)
+                  if year == 2026 and path.parent.name.startswith('W') and year_nav_2026 not in text:
+                      text = text.replace(site_nav, site_nav + year_nav_2026, 1)
+                  if '.yearnav > span:empty { visibility:hidden; }' not in text and '.yearnav span { font-weight:700; }' in text:
+                      text = text.replace('.yearnav span { font-weight:700; }', '.yearnav span { font-weight:700; }\n.yearnav > span:empty { visibility:hidden; }', 1)
+                  path.write_text(text, encoding='utf-8')
+          PY
+
+      - name: Commit retrofit
+        shell: bash
+        run: |
+          if git diff --quiet; then
+            echo 'No changes needed.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add almanack Star-Almanack-Repo/publish_weekly_pages.py Star-Almanack-Repo/publish_placeholder_years.py Star-Almanack-Repo/site
+          git commit -m 'Standardize calendar navigation hierarchy'
+          git push
