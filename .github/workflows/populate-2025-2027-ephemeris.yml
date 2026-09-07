@@ -7,6 +7,7 @@ on:
       - '.github/workflows/populate-2025-2027-ephemeris.yml'
       - 'tools/populate_ephemeris.py'
       - 'tools/populate_2025_2027_ephemeris.py'
+      - 'tools/wire_ephemeris_notation.py'
       - 'tools/populate_2025_2027_calendar.py'
       - 'tools/populate_2025_2027_meteor_showers.py'
       - 'tools/populate_2025_2027_fixed_sky.py'
@@ -36,6 +37,9 @@ jobs:
 
       - name: Populate weekly Solar-System ephemerides
         run: python tools/populate_ephemeris.py 2025 2027
+
+      - name: Wire Solar-System ephemeris notation controls
+        run: python tools/wire_ephemeris_notation.py
 
       - name: Populate fixed-sky visibility events
         run: python tools/populate_2025_2027_fixed_sky.py
