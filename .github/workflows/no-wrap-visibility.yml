@@ -1,0 +1,77 @@
+name: Keep visibility labels together
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - .github/workflows/no-wrap-visibility.yml
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Keep fixed-star visibility labels on one line
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+
+          publisher = Path('Star-Almanack-Repo/publish_weekly_pages.py')
+          text = publisher.read_text(encoding='utf-8')
+
+          css_old = 'table.calendar td:nth-child(3) { line-height:1.6; }'
+          css_new = css_old + '\n.visibility { white-space:nowrap; }'
+          if '.visibility { white-space:nowrap; }' not in text:
+              if css_old not in text:
+                  raise SystemExit('Calendar CSS insertion point not found in publisher')
+              text = text.replace(css_old, css_new, 1)
+
+          markup_old = 'sentinel="@@BR@@"; text=text.replace("<br>",sentinel); text=html.escape(text)'
+          markup_new = markup_old + '\n    text=re.sub(r"(👁 V [+-]?\\d+|B V [+-]?\\d+)",r\'<span class="visibility">\\1</span>\',text)'
+          if 'class="visibility"' not in text.split('def inline_markup', 1)[1].split('def is_separator_row', 1)[0]:
+              if markup_old not in text:
+                  raise SystemExit('inline_markup insertion point not found in publisher')
+              text = text.replace(markup_old, markup_new, 1)
+
+          publisher.write_text(text, encoding='utf-8')
+
+          css_marker = 'table.calendar td:nth-child(3) { line-height:1.6; }'
+          pattern = re.compile(r'(?<!class="visibility">)(👁 V [+-]?\d+|B V [+-]?\d+)')
+          pages = sorted(Path('almanack/2026').glob('W??/index.html')) + sorted(Path('Star-Almanack-Repo/site/2026').glob('W??/index.html'))
+          if not pages:
+              raise SystemExit('No 2026 weekly pages found')
+
+          changed = 0
+          for page in pages:
+              html = page.read_text(encoding='utf-8')
+              new = html
+              if '.visibility { white-space:nowrap; }' not in new:
+                  if css_marker in new:
+                      new = new.replace(css_marker, css_marker + '\n.visibility { white-space:nowrap; }', 1)
+                  else:
+                      new = new.replace('</style>', '.visibility{white-space:nowrap}</style>', 1)
+              new = pattern.sub(r'<span class="visibility">\1</span>', new)
+              if new != html:
+                  page.write_text(new, encoding='utf-8')
+                  changed += 1
+
+          print(f'Patched visibility no-wrap rule in publisher and {changed} weekly HTML files')
+          PY
+
+      - name: Commit changes
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add Star-Almanack-Repo/publish_weekly_pages.py Star-Almanack-Repo/site/2026/W??/index.html almanack/2026/W??/index.html
+          if git diff --cached --quiet; then
+            echo 'No visibility wrapping changes.'
+            exit 0
+          fi
+          git commit -m 'Prevent visibility labels from wrapping'
+          git pull --rebase origin main
+          git push
