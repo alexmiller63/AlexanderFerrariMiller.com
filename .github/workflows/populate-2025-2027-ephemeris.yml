@@ -7,6 +7,7 @@ on:
       - '.github/workflows/populate-2025-2027-ephemeris.yml'
       - 'tools/populate_2025_2027_ephemeris.py'
       - 'tools/populate_2025_2027_calendar.py'
+      - 'tools/populate_2025_2027_fixed_sky.py'
       - 'tools/populate-2025-2027-ephemeris-trigger.txt'
 
 permissions:
@@ -25,6 +26,9 @@ jobs:
       - name: Populate weekly Solar-System ephemerides
         run: python tools/populate_2025_2027_ephemeris.py
 
+      - name: Populate fixed-sky visibility events
+        run: python tools/populate_2025_2027_fixed_sky.py
+
       - name: Commit generated Almanack foundations
         run: |
           set -euo pipefail
@@ -34,7 +38,13 @@ jobs:
             almanack/2025 almanack/2027 \
             Star-Almanack-Repo/site/2025 Star-Almanack-Repo/site/2027 \
             Star-Almanack-Repo/generated/calendar-2025.json \
-            Star-Almanack-Repo/generated/calendar-2027.json
+            Star-Almanack-Repo/generated/calendar-2027.json \
+            Star-Almanack-Repo/generated/expanded-bayer-visibility-2025.csv \
+            Star-Almanack-Repo/generated/expanded-bayer-visibility-2027.csv \
+            Star-Almanack-Repo/generated/bright-star-visibility-2025.csv \
+            Star-Almanack-Repo/generated/bright-star-visibility-2027.csv \
+            Star-Almanack-Repo/generated/messier-visibility-2025.csv \
+            Star-Almanack-Repo/generated/messier-visibility-2027.csv
           if git diff --cached --quiet; then
             echo 'No Almanack foundation changes'
             exit 0
