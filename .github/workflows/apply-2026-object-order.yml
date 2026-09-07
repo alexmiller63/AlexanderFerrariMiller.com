@@ -1,0 +1,45 @@
+name: Apply 2026 Object Order
+
+on:
+  push:
+    paths:
+      - tools/apply_2026_object_order.py
+      - Star-Almanack-Repo/enrich_stellar_entries.py
+      - .github/workflows/apply-2026-object-order.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Standardize calendar object order
+        run: python tools/apply_2026_object_order.py
+
+      - name: Validate examples
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          pages = ''.join(p.read_text(encoding='utf-8') for p in sorted(Path('almanack/2026').glob('W??/index.html')))
+          assert 'Diadem (α Com) — B V 4 — Tropical — Spring' in pages
+          assert 'M53 — 🔭 — Tropical — Spring' in pages
+          assert 'M53 — Globular Cluster' not in pages
+          print('Validated fixed-star and Messier ordering')
+          PY
+
+      - name: Commit standardized pages
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add Star-Almanack-Repo/almanack-expanded.md Star-Almanack-Repo/site/2026/W??/index.html almanack/2026/W??/index.html
+          if git diff --cached --quiet; then
+            echo "No object-order changes."
+            exit 0
+          fi
+          git commit -m "Standardize 2026 fixed-object calendar order"
+          git pull --rebase origin main
+          git push origin main
