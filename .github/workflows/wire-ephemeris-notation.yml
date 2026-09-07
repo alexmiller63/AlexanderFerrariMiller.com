@@ -39,7 +39,7 @@ jobs:
       const txt=th.textContent.trim();
       for(const [name,glyph] of Object.entries(bodies)){
         const plain=txt.replace(/\ufe0e/g,'');
-        if(plain===name || plain===glyph+' '+name){item(th,glyph+VS,name,glyph+VS+' '+name);break;}
+        if(plain===glyph || plain===name || plain===glyph+' '+name){item(th,glyph+VS,name,glyph+VS+' '+name);break;}
       }
     });
     table.querySelectorAll('td').forEach(function(td){
@@ -85,4 +85,4 @@ jobs:
           git commit -m 'Wire Extended targets into notation modes'
           git push
 
-# Re-run to update existing ephemeris notation scripts, including the separate Extended targets table.
+# Re-run to update existing ephemeris notation scripts, including glyph-only headers in the separate Extended targets table.
