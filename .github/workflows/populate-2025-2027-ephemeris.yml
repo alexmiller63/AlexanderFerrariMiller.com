@@ -5,6 +5,7 @@ on:
   push:
     paths:
       - '.github/workflows/populate-2025-2027-ephemeris.yml'
+      - 'tools/populate_ephemeris.py'
       - 'tools/populate_2025_2027_ephemeris.py'
       - 'tools/populate_2025_2027_calendar.py'
       - 'tools/populate_2025_2027_meteor_showers.py'
@@ -34,7 +35,7 @@ jobs:
         run: python tools/populate_2025_2027_meteor_showers.py
 
       - name: Populate weekly Solar-System ephemerides
-        run: python tools/populate_2025_2027_ephemeris.py
+        run: python tools/populate_ephemeris.py 2025 2027
 
       - name: Populate fixed-sky visibility events
         run: python tools/populate_2025_2027_fixed_sky.py
