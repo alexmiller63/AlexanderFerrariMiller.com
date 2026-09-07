@@ -6,6 +6,7 @@ on:
     branches: [main]
     paths:
       - .github/workflows/wire-ephemeris-notation.yml
+      - tools/ephemeris-notation-trigger.txt
 
 permissions:
   contents: write
@@ -86,4 +87,3 @@ jobs:
           git push
 
 # Re-run to update existing ephemeris notation scripts, including glyph-only headers in the separate Extended targets table.
-# Trigger 2027 ephemeris notation retrofit: 1.
