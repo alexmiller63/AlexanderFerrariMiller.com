@@ -43,20 +43,12 @@ def horizons_ecliptic(year: int, command: str) -> list[tuple[float, float]]:
     first = date.fromisocalendar(year, 1, 1)
     last = date.fromisocalendar(year, count, 1)
     params = {
-        "format": "json",
-        "COMMAND": f"'{command}'",
-        "OBJ_DATA": "'NO'",
-        "MAKE_EPHEM": "'YES'",
-        "EPHEM_TYPE": "'OBSERVER'",
-        "CENTER": "'500@399'",
+        "format": "json", "COMMAND": f"'{command}'", "OBJ_DATA": "'NO'",
+        "MAKE_EPHEM": "'YES'", "EPHEM_TYPE": "'OBSERVER'", "CENTER": "'500@399'",
         "START_TIME": f"'{first.isoformat()} 00:00'",
         "STOP_TIME": f"'{(last + timedelta(days=1)).isoformat()} 00:00'",
-        "STEP_SIZE": "'7 d'",
-        "QUANTITIES": "'31'",
-        "CSV_FORMAT": "'YES'",
-        "ANG_FORMAT": "'DEG'",
-        "CAL_FORMAT": "'CAL'",
-        "TIME_DIGITS": "'SECONDS'",
+        "STEP_SIZE": "'7 d'", "QUANTITIES": "'31'", "CSV_FORMAT": "'YES'",
+        "ANG_FORMAT": "'DEG'", "CAL_FORMAT": "'CAL'", "TIME_DIGITS": "'SECONDS'",
     }
     url = HORIZONS_API + "?" + urllib.parse.urlencode(params)
     req = urllib.request.Request(url, headers={"User-Agent": "Star-Almanack/2025-2027"})
@@ -108,10 +100,7 @@ def render_ephemeris(monday: date, values: dict[str, tuple[str, str]]) -> str:
             '<table class="ephemeris"><thead><tr>'
             + ''.join(f'<th>{display}</th>' for display, _key, _command in columns)
             + '</tr></thead><tbody><tr>'
-            + ''.join(
-                f'<td>{values[key][0]}<br><small>{values[key][1]}</small></td>'
-                for _display, key, _command in columns
-            )
+            + ''.join(f'<td>{values[key][0]}<br><small>{values[key][1]}</small></td>' for _display, key, _command in columns)
             + '</tr></tbody></table>'
         )
 
@@ -138,28 +127,25 @@ def update_year(year: int) -> int:
         r'<table class="ephemeris">.*?</table>'
         r'<p><strong>Extended targets:</strong></p>'
         r'<table class="ephemeris">.*?</table>'
-        r'(?:<p class="ephemeris-note">.*?</p>)?',
-        re.DOTALL,
+        r'(?:<p class="ephemeris-note">.*?</p>)?', re.DOTALL,
     )
 
     changed = 0
     for week in range(1, count + 1):
-        path = ROOT / "almanack" / str(year) / f"W{week:02d}" / "index.html"
-        if not path.exists():
-            raise RuntimeError(f"Missing weekly page: {path.relative_to(ROOT)}")
-        text = path.read_text(encoding="utf-8")
         monday = date.fromisocalendar(year, week, 1)
-        values = {
-            key: (zodiac(generated[key][week - 1][0]), beta(generated[key][week - 1][1]))
-            for _display, key, _command in TARGETS
-        }
+        values = {key: (zodiac(generated[key][week - 1][0]), beta(generated[key][week - 1][1])) for _display, key, _command in TARGETS}
         replacement = render_ephemeris(monday, values)
-        new_text, n = pattern.subn(lambda _m: replacement, text, count=1)
-        if n != 1:
-            raise RuntimeError(f"Could not locate ephemeris block in {path.relative_to(ROOT)}")
-        if new_text != text:
-            path.write_text(new_text, encoding="utf-8")
-            changed += 1
+        for base in (ROOT / "almanack", ROOT / "Star-Almanack-Repo" / "site"):
+            path = base / str(year) / f"W{week:02d}" / "index.html"
+            if not path.exists():
+                raise RuntimeError(f"Missing weekly page: {path.relative_to(ROOT)}")
+            text = path.read_text(encoding="utf-8")
+            new_text, n = pattern.subn(lambda _m: replacement, text, count=1)
+            if n != 1:
+                raise RuntimeError(f"Could not locate ephemeris block in {path.relative_to(ROOT)}")
+            if new_text != text:
+                path.write_text(new_text, encoding="utf-8")
+                changed += 1
     return changed
 
 
@@ -167,9 +153,9 @@ def main() -> None:
     total = 0
     for year in YEARS:
         changed = update_year(year)
-        print(f"Updated {changed} weekly pages for {year}")
+        print(f"Updated {changed} weekly page copies for {year}")
         total += changed
-    print(f"Updated {total} weekly pages total; 2026 was not touched")
+    print(f"Updated {total} weekly page copies total; 2026 was not touched")
 
 
 if __name__ == "__main__":
