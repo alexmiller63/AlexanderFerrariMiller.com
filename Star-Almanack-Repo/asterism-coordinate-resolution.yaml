@@ -5,7 +5,8 @@
 # they only select the reproducible sky point used by geometry.
 #
 # Default rule: use the catalog object directly named by the membership catalog.
-# Apply an override only when the published designation is genuinely non-unique.
+# Apply an override only when the published designation is genuinely non-unique
+# or when a historical designation has been reassigned in the modern catalog.
 
 resolutions:
   - designation: Theta Orionis
@@ -46,3 +47,13 @@ resolutions:
       slightly brighter visually. The geometry therefore resolves historical Xi
       Ceti to Xi2 Ceti.
     reference: https://www.astronomical.org/constellations/cet.html
+
+  - designation: Gamma Scorpii
+    resolved_to: Sigma Librae
+    rationale: >-
+      The Astronomical League membership list preserves the historical Bayer
+      designation Gamma Scorpii. That star is the object now designated Sigma
+      Librae (Brachium) after the modern constellation-boundary reassignment.
+      Star Almanack keeps the League's published membership label while using
+      Sigma Librae as its modern reproducible catalog coordinate.
+    reference: https://www.iau.org/public/themes/naming_stars/
