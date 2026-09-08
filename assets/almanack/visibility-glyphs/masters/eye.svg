@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 96" role="img" aria-label="Naked-eye visibility">
+  <defs>
+    <radialGradient id="iris" cx="42%" cy="38%" r="62%">
+      <stop offset="0" stop-color="#88d8ff"/>
+      <stop offset=".34" stop-color="#3a9bd8"/>
+      <stop offset=".7" stop-color="#1f5f94"/>
+      <stop offset="1" stop-color="#123a60"/>
+    </radialGradient>
+    <linearGradient id="lid" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2a2a2a"/>
+      <stop offset=".55" stop-color="#0d0d0d"/>
+      <stop offset="1" stop-color="#000"/>
+    </linearGradient>
+  </defs>
+  <path d="M7 49C20 29 39 20 64 20s44 9 57 29c-13 20-32 29-57 29S20 69 7 49Z"
+        fill="#f8f8f8" stroke="url(#lid)" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+  <ellipse cx="64" cy="49" rx="25" ry="25" fill="url(#iris)" stroke="#0b2235" stroke-width="4"/>
+  <circle cx="64" cy="49" r="10.5" fill="#050505"/>
+  <circle cx="58" cy="41" r="4.2" fill="#fff" opacity=".94"/>
+  <circle cx="72" cy="57" r="2.4" fill="#bceaff" opacity=".7"/>
+  <path d="M11 49C24 35 41 29 64 29s40 6 53 20" fill="none" stroke="#fff" stroke-width="2.2" opacity=".6"/>
+</svg>
