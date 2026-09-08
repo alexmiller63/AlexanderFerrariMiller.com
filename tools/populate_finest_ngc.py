@@ -9,10 +9,11 @@ from __future__ import annotations
 
 import csv
 import datetime as dt
-import importlib.util
 import re
 from collections import defaultdict
 from pathlib import Path
+
+import populate_fixed_sky as fixed
 
 ROOT = Path(__file__).resolve().parents[1]
 SRC = ROOT / "Star-Almanack-Repo"
@@ -20,11 +21,6 @@ PUBLIC = ROOT / "almanack"
 SOURCE_SITE = SRC / "site"
 CATALOG = SRC / "finest-ngc-catalog.csv"
 CALDWELL = SRC / "finest-ngc-caldwell-overlap.csv"
-
-spec = importlib.util.spec_from_file_location("fixedsky", ROOT / "tools" / "populate_2025_2027_fixed_sky.py")
-fixed = importlib.util.module_from_spec(spec)
-assert spec and spec.loader
-spec.loader.exec_module(fixed)
 
 CONSTELLATIONS = {
  "And":"Andromeda","Aqr":"Aquarius","Ari":"Aries","Aur":"Auriga","Boo":"Boötes","CMa":"Canis Major",
@@ -93,7 +89,6 @@ def inject(root,year,events):
 
 def main():
     catalog=rows(CATALOG); overlap={r["finest_ngc"] for r in rows(CALDWELL)}
-    # RASC checklist has 111 physical rows because item 82 is the NGC 4567/4568 pair.
     unique=[r for r in catalog if r["finest_ngc"] not in overlap]
     if len(overlap)!=33: raise RuntimeError(f"Expected 33 Caldwell overlaps, found {len(overlap)}")
     for year in years_present():
