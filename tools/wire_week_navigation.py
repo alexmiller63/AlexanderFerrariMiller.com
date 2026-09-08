@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
-"""Add a highlighted ISO current-week position to generated Almanack week navigation."""
+"""Add highlighted ISO current-week position to generated Almanack navigation."""
 
 from __future__ import annotations
 
 import re
+from datetime import datetime, timezone
 from pathlib import Path
 
 ROOT = Path("almanack")
@@ -20,8 +21,16 @@ STYLE = """<style id="week-position-nav-css">
   grid-column:1 / -1;
   justify-self:center;
 }
+.weekgrid a.current-week,
+.weekgrid a.current-week:visited {
+  background:var(--navy);
+  color:#fff;
+  border-color:var(--navy);
+}
 @media (prefers-color-scheme:dark) {
-  .weeknav.week-position .current-week {
+  .weeknav.week-position .current-week,
+  .weekgrid a.current-week,
+  .weekgrid a.current-week:visited {
     background:#eef7ff;
     color:#102a43;
     border-color:#eef7ff;
@@ -86,6 +95,15 @@ def ensure_style(text: str) -> str:
     return text.replace('</head>', STYLE + '</head>', 1)
 
 
+def highlight_current_week_on_index(text: str, year: int, week: int) -> str:
+    text = re.sub(r' class="current-week"(?= aria-current="date" href="W\d{2}/")', '', text)
+    target = f'href="W{week:02d}/"'
+    if target not in text:
+        raise RuntimeError(f"current week W{week:02d} not found on {year} index")
+    text = text.replace(target, f'class="current-week" aria-current="date" {target}', 1)
+    return ensure_style(text)
+
+
 def main() -> None:
     changed = 0
     for year in YEARS:
@@ -96,6 +114,18 @@ def main() -> None:
             if updated != original:
                 path.write_text(updated, encoding='utf-8')
                 changed += 1
+
+    today = datetime.now(timezone.utc).date().isocalendar()
+    current_year, current_week = today.year, today.week
+    if current_year in YEARS:
+        index_path = ROOT / str(current_year) / 'index.html'
+        if index_path.exists():
+            original = index_path.read_text(encoding='utf-8')
+            updated = highlight_current_week_on_index(original, current_year, current_week)
+            if updated != original:
+                index_path.write_text(updated, encoding='utf-8')
+                changed += 1
+
     print(f"Updated ISO week-position navigation on {changed} pages")
 
 
