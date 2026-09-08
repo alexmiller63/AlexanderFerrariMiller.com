@@ -5,7 +5,7 @@ import csv,json,re,urllib.parse,urllib.request
 from datetime import date,timedelta
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]; HORIZONS_API="https://ssd.jpl.nasa.gov/api/horizons.api"; YEAR=2026; SIGNS="♈♉♊♋♌♍♎♏♐♑♒♓"
-TARGETS=[("☉ Sun","sun","10"),("☽ Moon","moon","301"),("☿ Mercury","mercury","199"),("♀ Venus","venus","299"),("♂ Mars","mars","499"),("⚳ Ceres","ceres","1;"),("♃ Jupiter","jupiter","599"),("♄ Saturn","saturn","699"),("♅ Uranus","uranus","799"),("♆ Neptune","neptune","899"),("♇ Pluto","pluto","999")]
+TARGETS=[("☉ Sun","sun","10"),("☽ Moon","moon","301"),("☿ Mercury","mercury","199"),("♀ Venus","venus","299"),("♂ Mars","mars","499"),("♃ Jupiter","jupiter","599"),("♄ Saturn","saturn","699"),("⚳ Ceres","ceres","1;"),("♅ Uranus","uranus","799"),("♆ Neptune","neptune","899"),("♇ Pluto","pluto","999")]
 def week_count(y): return date(y,12,28).isocalendar().week
 def horizons_ecliptic(command):
  c=week_count(YEAR); first=date.fromisocalendar(YEAR,1,1); last=date.fromisocalendar(YEAR,c,1); p={"format":"json","COMMAND":f"'{command}'","OBJ_DATA":"'NO'","MAKE_EPHEM":"'YES'","EPHEM_TYPE":"'OBSERVER'","CENTER":"'500@399'","START_TIME":f"'{first.isoformat()} 00:00'","STOP_TIME":f"'{(last+timedelta(days=1)).isoformat()} 00:00'","STEP_SIZE":"'7 d'","QUANTITIES":"'31'","CSV_FORMAT":"'YES'","ANG_FORMAT":"'DEG'","CAL_FORMAT":"'CAL'","TIME_DIGITS":"'SECONDS'"}; req=urllib.request.Request(HORIZONS_API+'?'+urllib.parse.urlencode(p),headers={"User-Agent":"Star-Almanack/2026"}); payload=json.load(urllib.request.urlopen(req,timeout=90)); text=payload.get('result',''); lines=text.splitlines(); h=next(x for x in lines if 'ObsEcLon' in x and 'ObsEcLat' in x); head=[x.strip() for x in next(csv.reader([h]))]; li,bi=head.index('ObsEcLon'),head.index('ObsEcLat'); vals=[]
@@ -18,7 +18,7 @@ def zodiac(x):
 def beta(x):
  sg='+' if x>=0 else '−'; m=int(round(abs(x)*60)); d,mi=divmod(m,60); return f'β {sg}{d}°{mi:02d}′'
 def render_ephemeris(monday,values):
- primary=TARGETS[:8]; extended=TARGETS[8:]
+ primary=TARGETS[:7]; extended=TARGETS[7:]
  def table(cols): return '<table class="ephemeris"><thead><tr>'+''.join(f'<th>{d}</th>' for d,_,_ in cols)+'</tr></thead><tbody><tr>'+''.join(f'<td>{values[k][0]}<br><small>{values[k][1]}</small></td>' for _,k,_ in cols)+'</tr></tbody></table>'
  return '<h3>Weekly Solar-System Ephemeris</h3>\n'+f'<p><strong>Snapshot:</strong> {monday.strftime("%B")} {monday.day}, {monday.year} · 00:00 UTC</p>\n'+table(primary)+'\n<p><strong>Extended targets:</strong></p>\n'+table(extended)+'\n<p class="ephemeris-note"><strong>β</strong> = ecliptic latitude (+ north, − south).</p>'
 def main():
