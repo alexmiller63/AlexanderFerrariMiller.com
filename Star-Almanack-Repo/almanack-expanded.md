@@ -25,7 +25,7 @@ Planetary positions are geocentric tropical ecliptic longitudes sampled Monday a
 | Mon, Dec 29, 2025 | ♑ 9 | — |
 | Tue, Dec 30, 2025 | ♑ 10 | — |
 | Wed, Dec 31, 2025 | ♑ 11 | — |
-| Thu, Jan 01, 2026 | ♑ (Capricorn) 12 | M45 Pleiades — 👁 — Northern — Winter |
+| Thu, Jan 01, 2026 | ♑ (Capricorn) 12 | Pleiades (M45), open cluster in Taurus — 👁 — Northern — Winter |
 | Fri, Jan 02, 2026 | ♑ 13 | — |
 | Sat, Jan 03, 2026 | ♑ 14 | 🌕 Full Moon — 10:02:55 UTC — Moon After Yule |
 | Sun, Jan 04, 2026 | ♑ 15 | — |
@@ -46,7 +46,7 @@ Planetary positions are geocentric tropical ecliptic longitudes sampled Monday a
 
 ### Sky Note
 
-The Pleiades (M45, the Pleiades, an open cluster) are the week's natural showpiece, reaching their Almanack visibility date on January 1, while Full Moon follows on January 3. The cluster is an ideal demonstration that a wide field can be more useful than high magnification.
+The Pleiades (Pleiades (M45), open cluster in Taurus) are the week's natural showpiece, reaching their Almanack visibility date on January 1, while Full Moon follows on January 3. The cluster is an ideal demonstration that a wide field can be more useful than high magnification.
 
 **Naked eye:** Find the compact little dipper-shaped knot of the Pleiades in Taurus. Most observers see six or seven stars readily under a clear sky, with more possible under excellent conditions.
 
@@ -175,8 +175,8 @@ Aldebaran anchors Taurus on Monday and New Moon arrives Sunday, making the latte
 | Wed, Jan 21, 2026 | ♒ 2 | Rigel (β Ori) — 👁 V 0 — Tropical — Winter |
 | Thu, Jan 22, 2026 | ♒ 3 | Capella (α Aur) — 👁 V 0 — Northern — Winter |
 | Fri, Jan 23, 2026 | ♒ 4 | — |
-| Sat, Jan 24, 2026 | ♒ 5 | Bellatrix (γ Ori) — 👁 V 2 — Tropical — Winter<br>Elnath (β Tau) — 👁 V 2 — Northern — Winter<br>M79 — 🔭 — Southern — Winter |
-| Sun, Jan 25, 2026 | ♒ 6 | M38 — B — Northern — Winter<br>Nihal (β Lep) — 👁 V 3 — Tropical — Winter |
+| Sat, Jan 24, 2026 | ♒ 5 | Bellatrix (γ Ori) — 👁 V 2 — Tropical — Winter<br>Elnath (β Tau) — 👁 V 2 — Northern — Winter<br>Messier 79 (M79), globular cluster in Lepus — 🔭 — Southern — Winter |
+| Sun, Jan 25, 2026 | ♒ 6 | Messier 38 (M38), open cluster in Auriga — B — Northern — Winter<br>Nihal (β Lep) — 👁 V 3 — Tropical — Winter |
 
 ### Weekly Solar-System Ephemeris
 
@@ -194,13 +194,13 @@ Aldebaran anchors Taurus on Monday and New Moon arrives Sunday, making the latte
 
 ### Sky Note
 
-Rigel and Capella dominate the bright-star calendar this week, while M79 (NGC 1904), a globular cluster and M38 (NGC 1912), an open cluster add two very different deep-sky targets. The result is an excellent week for moving from naked-eye orientation to binocular and telescopic observing.
+Rigel and Capella dominate the bright-star calendar this week, while Messier 79 (M79), globular cluster in Lepus and Messier 38 (M38), open cluster in Auriga add two very different deep-sky targets. The result is an excellent week for moving from naked-eye orientation to binocular and telescopic observing.
 
 **Naked eye:** Orion is unmistakable in the winter evening sky; identify Rigel at one corner and then look northward for brilliant Capella in Auriga.
 
-**Binoculars:** M38 (NGC 1912), an open cluster in Auriga is the friendlier binocular target, appearing as a granular or misty concentration in a rich star field. Wide-field sweeping around Auriga is rewarding even before the cluster is identified.
+**Binoculars:** Messier 38 (M38), open cluster in Auriga in Auriga is the friendlier binocular target, appearing as a granular or misty concentration in a rich star field. Wide-field sweeping around Auriga is rewarding even before the cluster is identified.
 
-**Small telescope:** M38 (NGC 1912), an open cluster resolves increasingly into stars. M79 (NGC 1904), a globular cluster in Lepus is a globular cluster and appears much more compact: a small concentrated glow whose outer parts may begin to look grainy with sufficient aperture.
+**Small telescope:** Messier 38 (M38), open cluster in Auriga resolves increasingly into stars. Messier 79 (M79), globular cluster in Lepus in Lepus is a globular cluster and appears much more compact: a small concentrated glow whose outer parts may begin to look grainy with sufficient aperture.
 
 **What to expect:** Open and globular clusters can have similar catalog magnitudes yet look completely different. Structure and angular size matter as much as the magnitude number.
 
@@ -218,11 +218,11 @@ Rigel and Capella dominate the bright-star calendar this week, while M79 (NGC 19
 
 | Date | Zodiac day | Events |
 |---|---|---|
-| Mon, Jan 26, 2026 | ♒ 7 | 🌓 First Quarter — 04:47:32 UTC<br>Mintaka (δ Ori) — 👁 V 2 — Tropical — Winter<br>M42 Great Nebula in Orion — B — Tropical — Winter<br>M1 Crab Nebula — 🔭 — Tropical — Winter<br>M43 De Mairan's Nebula — 🔭 — Tropical — Winter<br>β Dor — B V 4 — Southern — Winter<br>Arneb (α Lep) — 👁 V 3 — Tropical — Winter |
-| Tue, Jan 27, 2026 | ♒ 8 | Alnilam (ε Ori) — 👁 V 2 — Tropical — Winter<br>M36 — B — Northern — Winter<br>Phact (α Col) — 👁 V 3 — Southern — Winter |
+| Mon, Jan 26, 2026 | ♒ 7 | 🌓 First Quarter — 04:47:32 UTC<br>Mintaka (δ Ori) — 👁 V 2 — Tropical — Winter<br>Orion Nebula (M42), emission nebula in Orion — B — Tropical — Winter<br>Crab Nebula (M1), supernova remnant in Taurus — 🔭 — Tropical — Winter<br>De Mairan's Nebula (M43), diffuse nebula in Orion — 🔭 — Tropical — Winter<br>β Dor — B V 4 — Southern — Winter<br>Arneb (α Lep) — 👁 V 3 — Tropical — Winter |
+| Tue, Jan 27, 2026 | ♒ 8 | Alnilam (ε Ori) — 👁 V 2 — Tropical — Winter<br>Messier 36 (M36), open cluster in Auriga — B — Northern — Winter<br>Phact (α Col) — 👁 V 3 — Southern — Winter |
 | Wed, Jan 28, 2026 | ♒ 9 | Alnitak (ζ Ori) — 👁 V 2 — Tropical — Winter |
-| Thu, Jan 29, 2026 | ♒ 10 | Saiph (κ Ori) — 👁 V 2 — Tropical — Winter<br>M78 — 🔭 — Tropical — Winter<br>β Pic — B V 4 — Southern — Winter |
-| Fri, Jan 30, 2026 | ♒ 11 | M37 — B — Northern — Winter<br>Wazn (β Col) — 👁 V 3 — Southern — Winter |
+| Thu, Jan 29, 2026 | ♒ 10 | Saiph (κ Ori) — 👁 V 2 — Tropical — Winter<br>Messier 78 (M78), diffuse nebula in Orion — 🔭 — Tropical — Winter<br>β Pic — B V 4 — Southern — Winter |
+| Fri, Jan 30, 2026 | ♒ 11 | Messier 37 (M37), open cluster in Auriga — B — Northern — Winter<br>Wazn (β Col) — 👁 V 3 — Southern — Winter |
 | Sat, Jan 31, 2026 | ♒ 12 | Betelgeuse (α Ori) — 👁 V 0 — Tropical — Winter |
 | Sun, Feb 01, 2026 | ♒ 13 | 🌕 Full Moon — 22:09:16 UTC — Wolf Moon<br>Menkalinan (β Aur) — 👁 V 2 — Northern — Winter |
 
@@ -242,15 +242,15 @@ Rigel and Capella dominate the bright-star calendar this week, while M79 (NGC 19
 
 ### Sky Note
 
-This is one of the year's strongest winter observing weeks: M42, the Great Nebula in Orion, a diffuse nebula and M43, the De Mairan's Nebula, a diffuse nebula in Orion, the Crab Nebula M1, M36 (NGC 1960), an open cluster and M37 (NGC 2099), an open cluster in Auriga, M78, and a procession of Orion's bright stars all appear in the calendar. Full Moon on February 1 means the earlier part of the week offers better contrast for faint nebulosity.
+This is one of the year's strongest winter observing weeks: Orion Nebula (M42), emission nebula in Orion and De Mairan's Nebula (M43), diffuse nebula in Orion in Orion, the Crab Nebula M1, Messier 36 (M36), open cluster in Auriga and Messier 37 (M37), open cluster in Auriga in Auriga, M78, and a procession of Orion's bright stars all appear in the calendar. Full Moon on February 1 means the earlier part of the week offers better contrast for faint nebulosity.
 
-**Naked eye:** Learn Orion first—Betelgeuse, Rigel, the three Belt stars, and the Sword below the Belt. Under a reasonably dark sky the middle of the Sword already looks slightly fuzzy because of M42, the Great Nebula in Orion, a diffuse nebula.
+**Naked eye:** Learn Orion first—Betelgeuse, Rigel, the three Belt stars, and the Sword below the Belt. Under a reasonably dark sky the middle of the Sword already looks slightly fuzzy because of Orion Nebula (M42), emission nebula in Orion.
 
-**Binoculars:** M42, the Great Nebula in Orion, a diffuse nebula becomes an obvious luminous patch around the Trapezium region, embedded in a rich stellar field. M36 (NGC 1960), an open cluster and M37 (NGC 2099), an open cluster are excellent binocular clusters in Auriga.
+**Binoculars:** Orion Nebula (M42), emission nebula in Orion becomes an obvious luminous patch around the Trapezium region, embedded in a rich stellar field. Messier 36 (M36), open cluster in Auriga and Messier 37 (M37), open cluster in Auriga are excellent binocular clusters in Auriga.
 
-**Small telescope:** M42, the Great Nebula in Orion, a diffuse nebula is transformed: the bright central nebula shows shape and texture, and the Trapezium resolves into a tiny stellar grouping. M1, the Crab Nebula, a supernova remnant is much subtler, usually a dim gray oval rather than the colorful filamentary Crab seen in photographs.
+**Small telescope:** Orion Nebula (M42), emission nebula in Orion is transformed: the bright central nebula shows shape and texture, and the Trapezium resolves into a tiny stellar grouping. Crab Nebula (M1), supernova remnant in Taurus is much subtler, usually a dim gray oval rather than the colorful filamentary Crab seen in photographs.
 
-**What to expect:** M42, the Great Nebula in Orion, a diffuse nebula is unusually impressive visually, but even it will not resemble a long-exposure image. Color is generally muted or absent to the eye; structure, contrast, and the embedded stars are the visual rewards.
+**What to expect:** Orion Nebula (M42), emission nebula in Orion is unusually impressive visually, but even it will not resemble a long-exposure image. Color is generally muted or absent to the eye; structure, contrast, and the embedded stars are the visual rewards.
 
 **Asterism:** The Winter Triangle—Sirius, Procyon, and Betelgeuse—gives a large naked-eye frame for the season's bright-star field.
 
@@ -270,7 +270,7 @@ This is one of the year's strongest winter observing weeks: M42, the Great Nebul
 |---|---|---|
 | Mon, Feb 02, 2026 | ♒ 14 | — |
 | Tue, Feb 03, 2026 | ♒ 15 | Cross-quarter point — Imbolc — 20:02:00 UTC |
-| Wed, Feb 04, 2026 | ♒ 16 | M35 — B — Northern — Winter<br>α Men — B V 5 — Southern — Winter |
+| Wed, Feb 04, 2026 | ♒ 16 | Messier 35 (M35), open cluster in Gemini — B — Northern — Winter<br>α Men — B V 5 — Southern — Winter |
 | Thu, Feb 05, 2026 | ♒ 17 | — |
 | Fri, Feb 06, 2026 | ♒ 18 | — |
 | Sat, Feb 07, 2026 | ♒ 19 | Canopus (α Car) — 👁 V -1 — Southern Winter<br>Mirzam (β CMa) — 👁 V 2 — Tropical — Winter |
@@ -292,13 +292,13 @@ This is one of the year's strongest winter observing weeks: M42, the Great Nebul
 
 ### Sky Note
 
-M35 (NGC 2168), an open cluster in Gemini is the principal deep-sky target, while Canopus and Mirzam mark the southern and tropical winter sky. The week is well suited to wide-field observing after the Full Moon begins to wane.
+Messier 35 (M35), open cluster in Gemini in Gemini is the principal deep-sky target, while Canopus and Mirzam mark the southern and tropical winter sky. The week is well suited to wide-field observing after the Full Moon begins to wane.
 
 **Naked eye:** Use Gemini and bright Sirius as orientation landmarks. From sufficiently southerly latitudes, Canopus is extraordinarily bright but sits low in the south; farther north it may never rise.
 
-**Binoculars:** M35 (NGC 2168), an open cluster is excellent in binoculars, showing as a rich compact swarm near the foot of Gemini. Its setting among winter Milky Way stars is part of the view.
+**Binoculars:** Messier 35 (M35), open cluster in Gemini is excellent in binoculars, showing as a rich compact swarm near the foot of Gemini. Its setting among winter Milky Way stars is part of the view.
 
-**Small telescope:** M35 (NGC 2168), an open cluster resolves into a large population of stars and tolerates moderate magnification while still retaining its cluster character.
+**Small telescope:** Messier 35 (M35), open cluster in Gemini resolves into a large population of stars and tolerates moderate magnification while still retaining its cluster character.
 
 **What to expect:** Low altitude can make a brilliant star such as Canopus shimmer and change color dramatically. That is atmospheric refraction and turbulence, not intrinsic variability on a seconds-long timescale.
 
@@ -319,7 +319,7 @@ M35 (NGC 2168), an open cluster in Gemini is the principal deep-sky target, whil
 | Mon, Feb 09, 2026 | ♒ 21 | 🌗 Last Quarter — 12:43:14 UTC<br>β Mon — B V 4 — Tropical — Winter |
 | Tue, Feb 10, 2026 | ♒ 22 | — |
 | Wed, Feb 11, 2026 | ♒ 23 | Alhena (γ Gem) — 👁 V 2 — Tropical — Winter |
-| Thu, Feb 12, 2026 | ♒ 24 | M41 — B — Tropical — Winter |
+| Thu, Feb 12, 2026 | ♒ 24 | Messier 41 (M41), open cluster in Canis Major — B — Tropical — Winter |
 | Fri, Feb 13, 2026 | ♒ 25 | Sirius (α CMa) — 👁 V -1 — Tropical Winter<br>α Pic — 👁 V 3 — Southern — Winter |
 | Sat, Feb 14, 2026 | ♒ 26 | — |
 | Sun, Feb 15, 2026 | ♒ 27 | — |
@@ -340,15 +340,15 @@ M35 (NGC 2168), an open cluster in Gemini is the principal deep-sky target, whil
 
 ### Sky Note
 
-Last Quarter Moon opens darker evening opportunities, and M41 (NGC 2287), an open cluster provides an easy deep-sky companion to Sirius. This is a particularly good beginner's star-hop because the brightest star in the night sky points to a binocular-friendly cluster nearby.
+Last Quarter Moon opens darker evening opportunities, and Messier 41 (M41), open cluster in Canis Major provides an easy deep-sky companion to Sirius. This is a particularly good beginner's star-hop because the brightest star in the night sky points to a binocular-friendly cluster nearby.
 
 **Naked eye:** Identify Sirius first. Its brilliance and position below Orion make it difficult to mistake. From a dark site, the region below Sirius is rich with Milky Way background.
 
-**Binoculars:** Move a few degrees south of Sirius to M41 (NGC 2287), an open cluster. It appears as a loose, attractive gathering of stars and is far easier than most galaxies or nebulae.
+**Binoculars:** Move a few degrees south of Sirius to Messier 41 (M41), open cluster in Canis Major. It appears as a loose, attractive gathering of stars and is far easier than most galaxies or nebulae.
 
-**Small telescope:** Low to moderate power resolves M41 (NGC 2287), an open cluster beautifully. Higher power is usually unnecessary because the cluster is broad and benefits from some surrounding sky.
+**Small telescope:** Low to moderate power resolves Messier 41 (M41), open cluster in Canis Major beautifully. Higher power is usually unnecessary because the cluster is broad and benefits from some surrounding sky.
 
-**What to expect:** Open clusters are among the most forgiving urban and suburban deep-sky objects. Unlike a faint galaxy, M41 (NGC 2287), an open cluster is made of pointlike stars, so moderate light pollution does not erase it as quickly.
+**What to expect:** Open clusters are among the most forgiving urban and suburban deep-sky objects. Unlike a faint galaxy, Messier 41 (M41), open cluster in Canis Major is made of pointlike stars, so moderate light pollution does not erase it as quickly.
 
 ### Chart
 
@@ -366,7 +366,7 @@ Last Quarter Moon opens darker evening opportunities, and M41 (NGC 2287), an ope
 |---|---|---|
 | Mon, Feb 16, 2026 | ♒ 28 | Adhara (ε CMa) — 👁 V 2 — Southern — Winter |
 | Tue, Feb 17, 2026 | ♒ 29 | ☀ Annular solar eclipse — greatest 12:14 UTC<br>🌑 New Moon — 12:01:13 UTC |
-| Wed, Feb 18, 2026 | ♓ (Pisces) 1 | ♓ Pisces ingress (330°) — 15:51:56 UTC<br>M50 — B — Tropical — Winter |
+| Wed, Feb 18, 2026 | ♓ (Pisces) 1 | ♓ Pisces ingress (330°) — 15:51:56 UTC<br>Messier 50 (M50), open cluster in Monoceros — B — Tropical — Winter |
 | Thu, Feb 19, 2026 | ♓ 2 | Wezen (δ CMa) — 👁 V 2 — Southern — Winter |
 | Fri, Feb 20, 2026 | ♓ 3 | — |
 | Sat, Feb 21, 2026 | ♓ 4 | — |
@@ -388,13 +388,13 @@ Last Quarter Moon opens darker evening opportunities, and M41 (NGC 2287), an ope
 
 ### Sky Note
 
-New Moon on February 17 gives this week a dark-sky advantage, and M50 (NGC 2323), an open cluster provides a practical binocular target amid the rich winter Milky Way between Sirius and Procyon.
+New Moon on February 17 gives this week a dark-sky advantage, and Messier 50 (M50), open cluster in Monoceros provides a practical binocular target amid the rich winter Milky Way between Sirius and Procyon.
 
 **Naked eye:** Use Sirius and Procyon as bright anchors. Monoceros itself is inconspicuous, so the surrounding bright stars are more useful than trying to trace its faint outline first.
 
-**Binoculars:** M50 (NGC 2323), an open cluster appears as a compact concentration of stars in a rich field. Sweep slowly between the bright landmarks; the cluster is much easier to recognize once the binocular field begins to fill with Milky Way stars.
+**Binoculars:** Messier 50 (M50), open cluster in Monoceros appears as a compact concentration of stars in a rich field. Sweep slowly between the bright landmarks; the cluster is much easier to recognize once the binocular field begins to fill with Milky Way stars.
 
-**Small telescope:** Low and moderate power resolve M50 (NGC 2323), an open cluster into a loose, attractive cluster. Keep enough field around it to distinguish the cluster from the dense background.
+**Small telescope:** Low and moderate power resolve Messier 50 (M50), open cluster in Monoceros into a loose, attractive cluster. Keep enough field around it to distinguish the cluster from the dense background.
 
 **What to expect:** Some constellations are poor naked-eye signposts even when they contain good telescopic objects. Star-hopping from bright neighboring stars is often more effective than forcing yourself to see every constellation boundary.
 
@@ -414,9 +414,9 @@ New Moon on February 17 gives this week a dark-sky advantage, and M50 (NGC 2323)
 |---|---|---|
 | Mon, Feb 23, 2026 | ♓ 6 | Aludra (η CMa) — 👁 V 2 — Southern — Winter |
 | Tue, Feb 24, 2026 | ♓ 7 | 🌓 First Quarter — 12:27:42 UTC<br>Gomeisa (β CMi) — 👁 V 3 — Tropical — Winter |
-| Wed, Feb 25, 2026 | ♓ 8 | M47 — B — Tropical — Winter |
-| Thu, Feb 26, 2026 | ♓ 9 | Castor (α Gem) — 👁 V 2 — Northern — Winter<br>M46 — B — Tropical — Winter |
-| Fri, Feb 27, 2026 | ♓ 10 | Procyon (α CMi) — 👁 V 0 — Tropical — Winter<br>M93 — B — Southern — Winter<br>α Mon — B V 4 — Tropical — Winter |
+| Wed, Feb 25, 2026 | ♓ 8 | Messier 47 (M47), open cluster in Puppis — B — Tropical — Winter |
+| Thu, Feb 26, 2026 | ♓ 9 | Castor (α Gem) — 👁 V 2 — Northern — Winter<br>Messier 46 (M46), open cluster in Puppis — B — Tropical — Winter |
+| Fri, Feb 27, 2026 | ♓ 10 | Procyon (α CMi) — 👁 V 0 — Tropical — Winter<br>Messier 93 (M93), open cluster in Puppis — B — Southern — Winter<br>α Mon — B V 4 — Tropical — Winter |
 | Sat, Feb 28, 2026 | ♓ 11 | Pollux (β Gem) — 👁 V 1 — Northern — Winter |
 | Sun, Mar 01, 2026 | ♓ 12 | — |
 
@@ -436,13 +436,13 @@ New Moon on February 17 gives this week a dark-sky advantage, and M50 (NGC 2323)
 
 ### Sky Note
 
-M47, M46, and M93 (NGC 2447), an open cluster make this a strong open-cluster week, with Castor, Pollux, and Procyon providing bright orientation stars. M46 (NGC 2437), an open cluster and M47 (NGC 2422), an open cluster are especially instructive because neighboring clusters can look strikingly different.
+M47, M46, and Messier 93 (M93), open cluster in Puppis make this a strong open-cluster week, with Castor, Pollux, and Procyon providing bright orientation stars. Messier 46 (M46), open cluster in Puppis and Messier 47 (M47), open cluster in Puppis are especially instructive because neighboring clusters can look strikingly different.
 
 **Naked eye:** Identify Procyon and the Gemini pair Castor and Pollux. These bright stars establish the winter framework before you move south into Puppis.
 
-**Binoculars:** M47 (NGC 2422), an open cluster is relatively bright and coarse, with individual stars showing readily. M46 (NGC 2437), an open cluster is richer and finer, often beginning as a softer granular glow. M93 (NGC 2447), an open cluster is another rewarding compact cluster farther south.
+**Binoculars:** Messier 47 (M47), open cluster in Puppis is relatively bright and coarse, with individual stars showing readily. Messier 46 (M46), open cluster in Puppis is richer and finer, often beginning as a softer granular glow. Messier 93 (M93), open cluster in Puppis is another rewarding compact cluster farther south.
 
-**Small telescope:** M46 (NGC 2437), an open cluster blossoms into many faint stars, while M47 (NGC 2422), an open cluster remains a looser pattern of brighter ones. Comparing them at the same magnification is more informative than simply checking both off a list.
+**Small telescope:** Messier 46 (M46), open cluster in Puppis blossoms into many faint stars, while Messier 47 (M47), open cluster in Puppis remains a looser pattern of brighter ones. Comparing them at the same magnification is more informative than simply checking both off a list.
 
 **What to expect:** Catalog objects of the same type are not visually interchangeable. Stellar brightness, richness, concentration, and distance combine to give each open cluster a distinct appearance.
 
@@ -466,7 +466,7 @@ M47, M46, and M93 (NGC 2447), an open cluster make this a strong open-cluster we
 | Tue, Mar 03, 2026 | ♓ 14 | ☾ Total lunar eclipse — greatest 11:31 UTC<br>🌕 Full Moon — 11:37:56 UTC — Sap Moon |
 | Wed, Mar 04, 2026 | ♓ 15 | — |
 | Thu, Mar 05, 2026 | ♓ 16 | Naos (ζ Pup) — 👁 V 2 — Southern — Winter |
-| Fri, Mar 06, 2026 | ♓ 17 | M48 — B — Tropical — Winter |
+| Fri, Mar 06, 2026 | ♓ 17 | Messier 48 (M48), open cluster in Hydra — B — Tropical — Winter |
 | Sat, Mar 07, 2026 | ♓ 18 | γ2 Vel — 👁 V 2 — Southern — Winter |
 | Sun, Mar 08, 2026 | ♓ 19 | — |
 
@@ -486,11 +486,11 @@ M47, M46, and M93 (NGC 2447), an open cluster make this a strong open-cluster we
 
 ### Sky Note
 
-Full Moon on March 3 makes faint extended objects difficult, but M48 (NGC 2548), an open cluster remains a sensible target later in the week because open clusters withstand moonlight better than galaxies and nebulae.
+Full Moon on March 3 makes faint extended objects difficult, but Messier 48 (M48), open cluster in Hydra remains a sensible target later in the week because open clusters withstand moonlight better than galaxies and nebulae.
 
 **Naked eye:** Use the bright winter stars to maintain orientation while moonlight washes out the fainter background. The simplified sky can actually help a beginner learn the principal patterns.
 
-**Binoculars:** M48 (NGC 2548), an open cluster is broad and well suited to binoculars. Expect a scattered gathering of stars rather than a nebulous patch; move away from direct moonlight and shield your eyes from local glare.
+**Binoculars:** Messier 48 (M48), open cluster in Hydra is broad and well suited to binoculars. Expect a scattered gathering of stars rather than a nebulous patch; move away from direct moonlight and shield your eyes from local glare.
 
 **Small telescope:** Use low power so the cluster does not overflow the field. Higher magnification may show more faint members but can make the overall shape less obvious.
 
@@ -516,7 +516,7 @@ Full Moon on March 3 makes faint extended objects difficult, but M48 (NGC 2548),
 | Thu, Mar 12, 2026 | ♓ 23 | — |
 | Fri, Mar 13, 2026 | ♓ 24 | — |
 | Sat, Mar 14, 2026 | ♓ 25 | — |
-| Sun, Mar 15, 2026 | ♓ 26 | M44 Beehive Cluster — B — Tropical — Winter<br>β Pyx — B V 4 — Southern — Winter |
+| Sun, Mar 15, 2026 | ♓ 26 | Beehive Cluster (M44), open cluster in Cancer — B — Tropical — Winter<br>β Pyx — B V 4 — Southern — Winter |
 
 ### Weekly Solar-System Ephemeris
 
@@ -536,7 +536,7 @@ Full Moon on March 3 makes faint extended objects difficult, but M48 (NGC 2548),
 
 Last Quarter Moon on March 11 improves evening conditions, and M44, the Beehive Cluster, reaches its Almanack date on March 15. The Beehive is one of the clearest examples of a target for which binoculars can be preferable to a telescope.
 
-**Naked eye:** From a dark site M44, the Beehive Cluster, an open cluster can appear as a misty patch in otherwise faint Cancer. Use brighter Gemini and Leo as neighboring landmarks if Cancer itself is difficult to trace.
+**Naked eye:** From a dark site Beehive Cluster (M44), open cluster in Cancer can appear as a misty patch in otherwise faint Cancer. Use brighter Gemini and Leo as neighboring landmarks if Cancer itself is difficult to trace.
 
 **Binoculars:** The mist resolves into a broad swarm of stars filling a generous field. This is the classic Beehive view: bright enough to be easy, wide enough to reward low magnification.
 
@@ -559,7 +559,7 @@ Last Quarter Moon on March 11 improves evening conditions, and M44, the Beehive 
 | Date | Zodiac day | Events |
 |---|---|---|
 | Mon, Mar 16, 2026 | ♓ 27 | α Pyx — B V 4 — Southern — Winter<br>Alsephina (δ Vel) — 👁 V 2 — Southern — Winter |
-| Tue, Mar 17, 2026 | ♓ 28 | M67 — B — Tropical — Winter |
+| Tue, Mar 17, 2026 | ♓ 28 | Messier 67 (M67), open cluster in Cancer — B — Tropical — Winter |
 | Wed, Mar 18, 2026 | ♓ 29 | — |
 | Thu, Mar 19, 2026 | ♓ 30 | 🌑 New Moon — 01:23:28 UTC |
 | Fri, Mar 20, 2026 | ♈ (Aries) 1 | March Equinox — First Point of Aries — Ostara — 14:45:58 UTC<br>♈ Aries ingress (0°) — 14:45:58 UTC<br>Acubens (α Cnc) — B V 4 — Tropical — Spring |
@@ -582,15 +582,15 @@ Last Quarter Moon on March 11 improves evening conditions, and M44, the Beehive 
 
 ### Sky Note
 
-M67 (NGC 2682), an open cluster appears on March 17, New Moon follows on March 19, and the March equinox arrives March 20. This week therefore joins a fine old open cluster with the seasonal turning point into northern spring.
+Messier 67 (M67), open cluster in Cancer appears on March 17, New Moon follows on March 19, and the March equinox arrives March 20. This week therefore joins a fine old open cluster with the seasonal turning point into northern spring.
 
 **Naked eye:** Watch the winter constellations shift westward while Leo and the spring sky become more prominent. The equinox is a geometric event—the Sun crosses the celestial equator—not a sudden overnight change in the stars.
 
-**Binoculars:** M67 (NGC 2682), an open cluster in Cancer is much subtler than the Beehive. In binoculars it appears as a small granular or hazy patch under good conditions rather than a broad spectacular swarm.
+**Binoculars:** Messier 67 (M67), open cluster in Cancer in Cancer is much subtler than the Beehive. In binoculars it appears as a small granular or hazy patch under good conditions rather than a broad spectacular swarm.
 
-**Small telescope:** M67 (NGC 2682), an open cluster rewards aperture and moderate magnification, resolving into a dense population of relatively faint stars. It is a better telescopic target than M44, the Beehive Cluster, an open cluster precisely because it is more compact.
+**Small telescope:** Messier 67 (M67), open cluster in Cancer rewards aperture and moderate magnification, resolving into a dense population of relatively faint stars. It is a better telescopic target than Beehive Cluster (M44), open cluster in Cancer precisely because it is more compact.
 
-**What to expect:** Two open clusters in the same constellation can demand different instruments. M44, the Beehive Cluster, an open cluster favors breadth; M67 (NGC 2682), an open cluster favors resolution. Instrument choice should follow the angular scale of the object.
+**What to expect:** Two open clusters in the same constellation can demand different instruments. Beehive Cluster (M44), open cluster in Cancer favors breadth; Messier 67 (M67), open cluster in Cancer favors resolution. Instrument choice should follow the angular scale of the object.
 
 ### Chart
 
@@ -659,7 +659,7 @@ The calendar is dominated by bright spring stars rather than a Messier showpiece
 | Wed, Apr 01, 2026 | ♈ 13 | — |
 | Thu, Apr 02, 2026 | ♈ 14 | 🌕 Full Moon — 02:12:00 UTC — Seed Moon |
 | Fri, Apr 03, 2026 | ♈ 15 | — |
-| Sat, Apr 04, 2026 | ♈ 16 | M81 Bode's Galaxy — B — Northern — Spring<br>M82 Cigar Galaxy — 🔭 — Northern — Spring |
+| Sat, Apr 04, 2026 | ♈ 16 | Bode's Galaxy (M81), spiral galaxy in Ursa Major — B — Northern — Spring<br>Cigar Galaxy (M82), irregular galaxy in Ursa Major — 🔭 — Northern — Spring |
 | Sun, Apr 05, 2026 | ♈ 17 | — |
 
 ### Weekly Solar-System Ephemeris
@@ -678,13 +678,13 @@ The calendar is dominated by bright spring stars rather than a Messier showpiece
 
 ### Sky Note
 
-M81, the Bode's Galaxy, a spiral galaxy and M82, the Cigar Galaxy, an irregular galaxy reach their Almanack date on April 4, but Full Moon occurs April 2. The galaxies are therefore a useful lesson in how moonlight changes an otherwise excellent target pair.
+Bode's Galaxy (M81), spiral galaxy in Ursa Major and Cigar Galaxy (M82), irregular galaxy in Ursa Major reach their Almanack date on April 4, but Full Moon occurs April 2. The galaxies are therefore a useful lesson in how moonlight changes an otherwise excellent target pair.
 
 **Naked eye:** Use the Big Dipper as the northern signpost. Its bowl and handle are much easier to recognize than the galaxies themselves and provide the framework for the star-hop.
 
-**Binoculars:** Under a dark sky M81, the Bode's Galaxy, a spiral galaxy can be found in binoculars and M82, the Cigar Galaxy, an irregular galaxy may be detectable nearby, but bright moonlight greatly reduces their contrast. Treat a binocular detection this week as conditions-dependent rather than guaranteed.
+**Binoculars:** Under a dark sky Bode's Galaxy (M81), spiral galaxy in Ursa Major can be found in binoculars and Cigar Galaxy (M82), irregular galaxy in Ursa Major may be detectable nearby, but bright moonlight greatly reduces their contrast. Treat a binocular detection this week as conditions-dependent rather than guaranteed.
 
-**Small telescope:** M81, the Bode's Galaxy, a spiral galaxy appears as a bright oval glow with a concentrated center; M82, the Cigar Galaxy, an irregular galaxy is narrower and more elongated. The contrasting shapes are the principal visual reward, not photographic spiral arms or dust detail.
+**Small telescope:** Bode's Galaxy (M81), spiral galaxy in Ursa Major appears as a bright oval glow with a concentrated center; Cigar Galaxy (M82), irregular galaxy in Ursa Major is narrower and more elongated. The contrasting shapes are the principal visual reward, not photographic spiral arms or dust detail.
 
 **What to expect:** Return to this pair on a moonless night if the Full Moon makes them disappointing. A difficult view under poor conditions says little about what the same telescope can show against a darker sky.
 
@@ -755,8 +755,8 @@ Regulus and Algieba make Leo the week's natural observing framework while Last Q
 | Wed, Apr 15, 2026 | ♈ 27 | — |
 | Thu, Apr 16, 2026 | ♈ 28 | — |
 | Fri, Apr 17, 2026 | ♈ 29 | 🌑 New Moon — 11:51:46 UTC |
-| Sat, Apr 18, 2026 | ♈ 30 | M95 — 🔭 — Tropical — Spring |
-| Sun, Apr 19, 2026 | ♈ 31 | M96 — 🔭 — Tropical — Spring<br>M105 — 🔭 — Tropical — Spring |
+| Sat, Apr 18, 2026 | ♈ 30 | Messier 95 (M95), barred spiral galaxy in Leo — 🔭 — Tropical — Spring |
+| Sun, Apr 19, 2026 | ♈ 31 | Messier 96 (M96), spiral galaxy in Leo — 🔭 — Tropical — Spring<br>Messier 105 (M105), elliptical galaxy in Leo — 🔭 — Tropical — Spring |
 
 ### Weekly Solar-System Ephemeris
 
@@ -774,13 +774,13 @@ Regulus and Algieba make Leo the week's natural observing framework while Last Q
 
 ### Sky Note
 
-New Moon on April 17 is followed immediately by M95, M96, and M105 (NGC 3379), an elliptical galaxy on April 18–19, making this one of the better spring weeks for attempting galaxies in Leo.
+New Moon on April 17 is followed immediately by M95, M96, and Messier 105 (M105), elliptical galaxy in Leo on April 18–19, making this one of the better spring weeks for attempting galaxies in Leo.
 
 **Naked eye:** Establish Leo first with Regulus and the Sickle, then identify the rear of the constellation. The galaxies themselves are not naked-eye targets; the constellation is your map.
 
 **Binoculars:** These galaxies are challenging binocular objects and require genuinely dark skies. Use binoculars primarily for the star-hop and for fixing the correct field before changing instruments.
 
-**Small telescope:** M95 (NGC 3351), a barred galaxy and M96 (NGC 3368), a spiral galaxy appear as small gray glows, while M105 (NGC 3379), an elliptical galaxy has a more concentrated elliptical appearance. Moderate aperture and dark adaptation matter more than high magnification.
+**Small telescope:** M95 (NGC 3351), a barred galaxy and Messier 96 (M96), spiral galaxy in Leo appear as small gray glows, while Messier 105 (M105), elliptical galaxy in Leo has a more concentrated elliptical appearance. Moderate aperture and dark adaptation matter more than high magnification.
 
 **What to expect:** Photographs emphasize spiral structure and color that a small telescope usually will not show. Success begins with detecting shape, concentration, and orientation—not reproducing an image from an observatory.
 
@@ -805,7 +805,7 @@ New Moon on April 17 is followed immediately by M95, M96, and M105 (NGC 3379), a
 | Wed, Apr 22, 2026 | ♉ 3 | Alkes (α Crt) — B V 4 — Tropical — Spring |
 | Thu, Apr 23, 2026 | ♉ 4 | Dubhe (α UMa) — 👁 V 2 — Northern — Spring<br>Merak (β UMa) — 👁 V 2 — Northern — Spring |
 | Fri, Apr 24, 2026 | ♉ 5 | 🌓 First Quarter — 02:31:44 UTC |
-| Sat, Apr 25, 2026 | ♉ 6 | M97 Owl Nebula — 🔭 — Northern — Spring<br>M108 — 🔭 — Northern — Spring<br>β Crt — B V 4 — Tropical — Spring |
+| Sat, Apr 25, 2026 | ♉ 6 | Owl Nebula (M97), planetary nebula in Ursa Major — 🔭 — Northern — Spring<br>Messier 108 (M108), spiral galaxy in Ursa Major — 🔭 — Northern — Spring<br>β Crt — B V 4 — Tropical — Spring |
 | Sun, Apr 26, 2026 | ♉ 7 | — |
 
 ### Weekly Solar-System Ephemeris
@@ -824,13 +824,13 @@ New Moon on April 17 is followed immediately by M95, M96, and M105 (NGC 3379), a
 
 ### Sky Note
 
-Dubhe and Merak mark the Big Dipper's bowl on April 23, followed by the Owl Nebula M97, the Owl Nebula, a planetary nebula and galaxy M108 (NGC 3556), a spiral galaxy on April 25. First Quarter Moon means contrast will not be ideal, but the star-hop is unusually convenient.
+Dubhe and Merak mark the Big Dipper's bowl on April 23, followed by the Owl Nebula Owl Nebula (M97), planetary nebula in Ursa Major and galaxy Messier 108 (M108), spiral galaxy in Ursa Major on April 25. First Quarter Moon means contrast will not be ideal, but the star-hop is unusually convenient.
 
 **Naked eye:** Find Dubhe and Merak, the two pointer stars normally used to locate Polaris. This week use the same familiar part of the Dipper as the starting region for deep-sky work.
 
-**Binoculars:** Binoculars are best used to establish the field around the bowl stars. M97, the Owl Nebula, a planetary nebula and M108 (NGC 3556), a spiral galaxy are substantially more difficult than an open cluster and should not be expected casually in ordinary suburban binocular observing.
+**Binoculars:** Binoculars are best used to establish the field around the bowl stars. Owl Nebula (M97), planetary nebula in Ursa Major and Messier 108 (M108), spiral galaxy in Ursa Major are substantially more difficult than an open cluster and should not be expected casually in ordinary suburban binocular observing.
 
-**Small telescope:** M97, the Owl Nebula, a planetary nebula is a round, diffuse planetary nebula; the famous dark 'eyes' are subtle and may require larger aperture, excellent conditions, or a nebula filter. M108 (NGC 3556), a spiral galaxy is an elongated, low-surface-brightness galaxy nearby.
+**Small telescope:** Owl Nebula (M97), planetary nebula in Ursa Major is a round, diffuse planetary nebula; the famous dark 'eyes' are subtle and may require larger aperture, excellent conditions, or a nebula filter. Messier 108 (M108), spiral galaxy in Ursa Major is an elongated, low-surface-brightness galaxy nearby.
 
 **What to expect:** Catalog photographs can make the Owl's face seem obvious. At a modest eyepiece the first achievement is simply seeing the pale round disk. Fine internal contrast is a second-stage observation.
 
@@ -850,8 +850,8 @@ Dubhe and Merak mark the Big Dipper's bowl on April 23, followed by the Owl Nebu
 
 | Date | Zodiac day | Events |
 |---|---|---|
-| Mon, Apr 27, 2026 | ♉ 8 | M65 — 🔭 — Tropical — Spring |
-| Tue, Apr 28, 2026 | ♉ 9 | M66 — 🔭 — Tropical — Spring |
+| Mon, Apr 27, 2026 | ♉ 8 | Messier 65 (M65), spiral galaxy in Leo — 🔭 — Tropical — Spring |
+| Tue, Apr 28, 2026 | ♉ 9 | Messier 66 (M66), spiral galaxy in Leo — 🔭 — Tropical — Spring |
 | Wed, Apr 29, 2026 | ♉ 10 | — |
 | Thu, Apr 30, 2026 | ♉ 11 | — |
 | Fri, May 01, 2026 | ♉ 12 | 🌕 Full Moon — 17:23:15 UTC — Milk Moon |
@@ -874,11 +874,11 @@ Dubhe and Merak mark the Big Dipper's bowl on April 23, followed by the Owl Nebu
 
 ### Sky Note
 
-M65 (NGC 3623), a spiral galaxy and M66 (NGC 3627), a spiral galaxy reach their Almanack dates on April 27–28, but Full Moon follows May 1. These galaxies are worth knowing, yet this particular week demonstrates why timing within the week matters.
+Messier 65 (M65), spiral galaxy in Leo and Messier 66 (M66), spiral galaxy in Leo reach their Almanack dates on April 27–28, but Full Moon follows May 1. These galaxies are worth knowing, yet this particular week demonstrates why timing within the week matters.
 
 **Naked eye:** Use Leo's bright outline to establish the galaxy field. Observe earlier in the week and place the Moon behind a building or other obstruction when possible to reduce stray light.
 
-**Binoculars:** M65 (NGC 3623), a spiral galaxy and M66 (NGC 3627), a spiral galaxy are difficult binocular targets except under dark transparent skies. Binoculars remain valuable for locating the correct region even when the galaxies themselves do not emerge.
+**Binoculars:** Messier 65 (M65), spiral galaxy in Leo and Messier 66 (M66), spiral galaxy in Leo are difficult binocular targets except under dark transparent skies. Binoculars remain valuable for locating the correct region even when the galaxies themselves do not emerge.
 
 **Small telescope:** Both galaxies appear as elongated gray glows, with brighter central regions becoming apparent as conditions improve. Low-to-moderate power is usually more productive than pushing magnification.
 
@@ -901,7 +901,7 @@ M65 (NGC 3623), a spiral galaxy and M66 (NGC 3627), a spiral galaxy reach their 
 | Mon, May 04, 2026 | ♉ 15 | — |
 | Tue, May 05, 2026 | ♉ 16 | Cross-quarter point — Beltane — 11:49 UTC<br>Denebola (β Leo) — 👁 V 2 — Tropical — Spring |
 | Wed, May 06, 2026 | ♉ 17 | Phecda (γ UMa) — 👁 V 2 — Northern — Spring<br>β Hya — B V 4 — Southern — Spring<br>Zavijava (β Vir) — B V 4 — Tropical — Spring |
-| Thu, May 07, 2026 | ♉ 18 | M109 — 🔭 — Northern — Spring |
+| Thu, May 07, 2026 | ♉ 18 | Messier 109 (M109), barred spiral galaxy in Ursa Major — 🔭 — Northern — Spring |
 | Fri, May 08, 2026 | ♉ 19 | — |
 | Sat, May 09, 2026 | ♉ 20 | 🌗 Last Quarter — 21:10:33 UTC |
 | Sun, May 10, 2026 | ♉ 21 | Alchiba (α Crv) — B V 4 — Southern — Spring |
@@ -949,12 +949,12 @@ The Beltane cross-quarter point falls on May 5, while Denebola and Phecda help e
 | Date | Zodiac day | Events |
 |---|---|---|
 | Mon, May 11, 2026 | ♉ 22 | — |
-| Tue, May 12, 2026 | ♉ 23 | Megrez (δ Ursae Majoris) — Northern Spring<br>M98 — 🔭 — Tropical — Spring |
-| Wed, May 13, 2026 | ♉ 24 | M106 — 🔭 — Northern — Spring<br>M99 — 🔭 — Tropical — Spring<br>β Cha — B V 4 — Southern — Spring |
-| Thu, May 14, 2026 | ♉ 25 | M40 Winnecke 4 — 🔭 — Northern — Spring<br>M61 — 🔭 — Tropical — Spring<br>M84 — 🔭 — Tropical — Spring<br>M100 — 🔭 — Tropical — Spring |
-| Fri, May 15, 2026 | ♉ 26 | Acrux (α1 Cru) — 👁 V 1 — Southern — Spring<br>M85 — 🔭 — Tropical — Spring<br>M86 — 🔭 — Tropical — Spring<br>α2 Cru — 👁 V 2 — Southern — Spring |
-| Sat, May 16, 2026 | ♉ 27 | 🌑 New Moon — 20:01:01 UTC<br>Gacrux (γ Cru) — 👁 V 2 — Southern — Spring<br>M49 — 🔭 — Tropical — Spring<br>M87 — 🔭 — Tropical — Spring<br>M88 — 🔭 — Tropical — Spring |
-| Sun, May 17, 2026 | ♉ 28 | M89 — 🔭 — Tropical — Spring<br>M90 — 🔭 — Tropical — Spring<br>M91 — 🔭 — Tropical — Spring<br>Chara (β CVn) — B V 4 — Northern — Spring<br>Kraz (β Crv) — 👁 V 3 — Tropical — Spring<br>α Mus — 👁 V 3 — Southern — Spring |
+| Tue, May 12, 2026 | ♉ 23 | Megrez (δ Ursae Majoris) — Northern Spring<br>Messier 98 (M98), spiral galaxy in Coma Berenices — 🔭 — Tropical — Spring |
+| Wed, May 13, 2026 | ♉ 24 | Messier 106 (M106), spiral galaxy in Canes Venatici — 🔭 — Northern — Spring<br>Messier 99 (M99), spiral galaxy in Coma Berenices — 🔭 — Tropical — Spring<br>β Cha — B V 4 — Southern — Spring |
+| Thu, May 14, 2026 | ♉ 25 | Winnecke 4 (M40), double star in Ursa Major — 🔭 — Northern — Spring<br>Messier 61 (M61), spiral galaxy in Virgo — 🔭 — Tropical — Spring<br>Messier 84 (M84), lenticular galaxy in Virgo — 🔭 — Tropical — Spring<br>Messier 100 (M100), spiral galaxy in Coma Berenices — 🔭 — Tropical — Spring |
+| Fri, May 15, 2026 | ♉ 26 | Acrux (α1 Cru) — 👁 V 1 — Southern — Spring<br>Messier 85 (M85), lenticular galaxy in Coma Berenices — 🔭 — Tropical — Spring<br>Messier 86 (M86), lenticular galaxy in Virgo — 🔭 — Tropical — Spring<br>α2 Cru — 👁 V 2 — Southern — Spring |
+| Sat, May 16, 2026 | ♉ 27 | 🌑 New Moon — 20:01:01 UTC<br>Gacrux (γ Cru) — 👁 V 2 — Southern — Spring<br>Messier 49 (M49), elliptical galaxy in Virgo — 🔭 — Tropical — Spring<br>Messier 87 (M87), elliptical galaxy in Virgo — 🔭 — Tropical — Spring<br>Messier 88 (M88), spiral galaxy in Coma Berenices — 🔭 — Tropical — Spring |
+| Sun, May 17, 2026 | ♉ 28 | Messier 89 (M89), elliptical galaxy in Virgo — 🔭 — Tropical — Spring<br>Messier 90 (M90), spiral galaxy in Virgo — 🔭 — Tropical — Spring<br>Messier 91 (M91), barred spiral galaxy in Coma Berenices — 🔭 — Tropical — Spring<br>Chara (β CVn) — B V 4 — Northern — Spring<br>Kraz (β Crv) — 👁 V 3 — Tropical — Spring<br>α Mus — 👁 V 3 — Southern — Spring |
 
 ### Weekly Solar-System Ephemeris
 
@@ -978,7 +978,7 @@ This is one of the densest galaxy weeks in the Almanack. M98, M106, M99, M61, M8
 
 **Binoculars:** Use binoculars to establish the large-scale route through Coma and Virgo. Most of the week's galaxies are telescopic rather than casual binocular targets, but the wide field prevents you from becoming lost in a region where many faint galaxies occupy neighboring fields.
 
-**Small telescope:** This is the week to explore the Virgo Cluster deliberately. M84, M86, and M87 (NGC 4486), an elliptical galaxy are strong starting points; several other Messier galaxies become detectable as small gray glows under a dark sky. Move slowly and identify the field stars so that one galaxy is not mistaken for another.
+**Small telescope:** This is the week to explore the Virgo Cluster deliberately. M84, M86, and Messier 87 (M87), elliptical galaxy in Virgo are strong starting points; several other Messier galaxies become detectable as small gray glows under a dark sky. Move slowly and identify the field stars so that one galaxy is not mistaken for another.
 
 **What to expect:** A photograph of the Virgo Cluster can be crowded with obvious galaxies. At the eyepiece many are understated patches with differences in concentration, elongation, and brightness. The accomplishment is learning the geography of the cluster and distinguishing those subtle forms—not seeing photographic spiral detail.
 
@@ -998,12 +998,12 @@ This is one of the densest galaxy weeks in the Almanack. M98, M106, M99, M61, M8
 
 | Date | Zodiac day | Events |
 |---|---|---|
-| Mon, May 18, 2026 | ♉ 29 | M104 Sombrero Galaxy — 🔭 — Tropical — Spring<br>M58 — 🔭 — Tropical — Spring<br>M68 — 🔭 — Southern — Spring |
-| Tue, May 19, 2026 | ♉ 30 | M59 — 🔭 — Tropical — Spring<br>M60 — 🔭 — Tropical — Spring<br>γ Cen — 👁 V 2 — Southern — Spring |
+| Mon, May 18, 2026 | ♉ 29 | Sombrero Galaxy (M104), spiral galaxy in Virgo — 🔭 — Tropical — Spring<br>Messier 58 (M58), barred spiral galaxy in Virgo — 🔭 — Tropical — Spring<br>Messier 68 (M68), globular cluster in Hydra — 🔭 — Southern — Spring |
+| Tue, May 19, 2026 | ♉ 30 | Messier 59 (M59), elliptical galaxy in Virgo — 🔭 — Tropical — Spring<br>Messier 60 (M60), elliptical galaxy in Virgo — 🔭 — Tropical — Spring<br>γ Cen — 👁 V 2 — Southern — Spring |
 | Wed, May 20, 2026 | ♉ 31 | Mimosa (β Cru) — 👁 V 1 — Southern — Spring<br>β Mus — 👁 V 3 — Southern — Spring |
-| Thu, May 21, 2026 | ♊ (Gemini) 1 | ♊ Gemini ingress (60°) — 00:36:44 UTC<br>M94 — 🔭 — Northern — Spring |
+| Thu, May 21, 2026 | ♊ (Gemini) 1 | ♊ Gemini ingress (60°) — 00:36:44 UTC<br>Messier 94 (M94), spiral galaxy in Canes Venatici — 🔭 — Northern — Spring |
 | Fri, May 22, 2026 | ♊ 2 | Alioth (ε UMa) — 👁 V 2 — Northern — Spring<br>α1 CVn — B V 6 — Northern — Spring<br>Cor Caroli (α2 CVn) — 👁 V 3 — Northern — Spring |
-| Sat, May 23, 2026 | ♊ 3 | 🌓 First Quarter — 11:10:57 UTC<br>M64 Black Eye Galaxy — 🔭 — Tropical — Spring |
+| Sat, May 23, 2026 | ♊ 3 | 🌓 First Quarter — 11:10:57 UTC<br>Black Eye Galaxy (M64), spiral galaxy in Coma Berenices — 🔭 — Tropical — Spring |
 | Sun, May 24, 2026 | ♊ 4 | — |
 
 ### Weekly Solar-System Ephemeris
@@ -1024,11 +1024,11 @@ This is one of the densest galaxy weeks in the Almanack. M98, M106, M99, M61, M8
 
 The spring galaxy sequence continues with M104, M58, M59, M60, M94, and M64, while First Quarter Moon arrives May 23. The Sombrero Galaxy is the week's most distinctive telescopic target, and Cor Caroli supplies an excellent bright-star anchor.
 
-**Naked eye:** Identify Cor Caroli beneath the Big Dipper's handle and use the bright spring constellations to keep your bearings. Farther south, the M104, the Sombrero Galaxy, a spiral galaxy field is lower for northern observers and benefits from a clear southern horizon.
+**Naked eye:** Identify Cor Caroli beneath the Big Dipper's handle and use the bright spring constellations to keep your bearings. Farther south, the Sombrero Galaxy (M104), spiral galaxy in Virgo field is lower for northern observers and benefits from a clear southern horizon.
 
-**Binoculars:** Binoculars are most useful for navigation and for enjoying the broad Coma Berenices and Canes Venatici fields. M94 (NGC 4736), a spiral galaxy is among the more concentrated galaxies in this region but should still be treated as a dark-sky binocular challenge.
+**Binoculars:** Binoculars are most useful for navigation and for enjoying the broad Coma Berenices and Canes Venatici fields. Messier 94 (M94), spiral galaxy in Canes Venatici is among the more concentrated galaxies in this region but should still be treated as a dark-sky binocular challenge.
 
-**Small telescope:** M104, the Sombrero Galaxy, a spiral galaxy appears as a bright, flattened spindle with a strong central concentration; under favorable conditions its dark dust lane can begin to register. M94 (NGC 4736), a spiral galaxy has a compact bright center, while M64, the Black Eye Galaxy, a spiral galaxy is an oval glow whose famous dark feature requires good conditions and careful viewing.
+**Small telescope:** Sombrero Galaxy (M104), spiral galaxy in Virgo appears as a bright, flattened spindle with a strong central concentration; under favorable conditions its dark dust lane can begin to register. Messier 94 (M94), spiral galaxy in Canes Venatici has a compact bright center, while Black Eye Galaxy (M64), spiral galaxy in Coma Berenices is an oval glow whose famous dark feature requires good conditions and careful viewing.
 
 **What to expect:** The names Sombrero and Black Eye come from structures made conspicuous in photographs. A small telescope usually reveals the galaxies first as gray forms; dust features are subtler second-stage observations rather than guaranteed first impressions.
 
@@ -1048,11 +1048,11 @@ The spring galaxy sequence continues with M104, M58, M59, M60, M94, and M64, whi
 |---|---|---|
 | Mon, May 25, 2026 | ♊ 5 | — |
 | Tue, May 26, 2026 | ♊ 6 | Diadem (α Com) — B V 4 — Tropical — Spring<br>β Com — B V 4 — Northern — Spring |
-| Wed, May 27, 2026 | ♊ 7 | M63 Sunflower Galaxy — 🔭 — Northern — Spring<br>M53 — 🔭 — Tropical — Spring |
+| Wed, May 27, 2026 | ♊ 7 | Sunflower Galaxy (M63), spiral galaxy in Canes Venatici — 🔭 — Northern — Spring<br>Messier 53 (M53), globular cluster in Coma Berenices — 🔭 — Tropical — Spring |
 | Thu, May 28, 2026 | ♊ 8 | — |
 | Fri, May 29, 2026 | ♊ 9 | Spica (α Vir) — 👁 V 1 — Tropical — Spring<br>Mizar (ζ UMa) — 👁 V 2 — Northern — Spring |
 | Sat, May 30, 2026 | ♊ 10 | — |
-| Sun, May 31, 2026 | ♊ 11 | 🌕 Full Moon — 08:45:16 UTC — Flower Moon<br>M51 Whirlpool Galaxy — 🔭 — Northern — Spring |
+| Sun, May 31, 2026 | ♊ 11 | 🌕 Full Moon — 08:45:16 UTC — Flower Moon<br>Whirlpool Galaxy (M51), spiral galaxy in Canes Venatici — 🔭 — Northern — Spring |
 
 ### Weekly Solar-System Ephemeris
 
@@ -1070,13 +1070,13 @@ The spring galaxy sequence continues with M104, M58, M59, M60, M94, and M64, whi
 
 ### Sky Note
 
-M63, the Sunflower Galaxy, a spiral galaxy and M53 (NGC 5024), a globular cluster arrive early in the week, Spica and Mizar provide brilliant navigation landmarks on May 29, and M51, the Whirlpool Galaxy, reaches its Almanack date on May 31—the same day as Full Moon. The target list is excellent, but lunar glare makes the timing challenging.
+Sunflower Galaxy (M63), spiral galaxy in Canes Venatici and Messier 53 (M53), globular cluster in Coma Berenices arrive early in the week, Spica and Mizar provide brilliant navigation landmarks on May 29, and M51, the Whirlpool Galaxy, reaches its Almanack date on May 31—the same day as Full Moon. The target list is excellent, but lunar glare makes the timing challenging.
 
 **Naked eye:** Find Spica in Virgo and Mizar in the Big Dipper's handle. These bright stars remain easy even as the Moon brightens the sky and help maintain the spring framework.
 
-**Binoculars:** M53 (NGC 5024), a globular cluster is the more practical deep-sky binocular target, appearing as a small concentrated fuzzy point under decent conditions. M51, the Whirlpool Galaxy, a spiral galaxy is possible in binoculars from dark skies but Full Moon makes that substantially harder this week.
+**Binoculars:** Messier 53 (M53), globular cluster in Coma Berenices is the more practical deep-sky binocular target, appearing as a small concentrated fuzzy point under decent conditions. Whirlpool Galaxy (M51), spiral galaxy in Canes Venatici is possible in binoculars from dark skies but Full Moon makes that substantially harder this week.
 
-**Small telescope:** M53 (NGC 5024), a globular cluster becomes a concentrated globular glow whose outskirts can begin to look grainy. M51, the Whirlpool Galaxy, a spiral galaxy normally shows a brighter galaxy beside its companion NGC 5195; obvious spiral arms require darker conditions and generally more aperture than the bright-Moon sky this week favors.
+**Small telescope:** Messier 53 (M53), globular cluster in Coma Berenices becomes a concentrated globular glow whose outskirts can begin to look grainy. Whirlpool Galaxy (M51), spiral galaxy in Canes Venatici normally shows a brighter galaxy beside its companion NGC 5195; obvious spiral arms require darker conditions and generally more aperture than the bright-Moon sky this week favors.
 
 **What to expect:** Do not judge the Whirlpool by a Full-Moon attempt. The galaxy's famous spiral structure is a low-contrast feature. Use this week to locate the field, then revisit it under a dark Moon for a fair comparison.
 
@@ -1094,9 +1094,9 @@ M63, the Sunflower Galaxy, a spiral galaxy and M53 (NGC 5024), a globular cluste
 
 | Date | Zodiac day | Events |
 |---|---|---|
-| Mon, Jun 01, 2026 | ♊ 12 | M83 Southern Pinwheel — 🔭 — Southern — Spring |
+| Mon, Jun 01, 2026 | ♊ 12 | Southern Pinwheel (M83), spiral galaxy in Hydra — 🔭 — Southern — Spring |
 | Tue, Jun 02, 2026 | ♊ 13 | ε Cen — 👁 V 2 — Southern — Spring |
-| Wed, Jun 03, 2026 | ♊ 14 | M3 — B — Northern — Spring |
+| Wed, Jun 03, 2026 | ♊ 14 | Messier 3 (M3), globular cluster in Canes Venatici — B — Northern — Spring |
 | Thu, Jun 04, 2026 | ♊ 15 | Alkaid (η UMa) — 👁 V 2 — Northern — Spring |
 | Fri, Jun 05, 2026 | ♊ 16 | — |
 | Sat, Jun 06, 2026 | ♊ 17 | — |
@@ -1118,13 +1118,13 @@ M63, the Sunflower Galaxy, a spiral galaxy and M53 (NGC 5024), a globular cluste
 
 ### Sky Note
 
-M83, the Southern Pinwheel Galaxy, opens the week and M3 (NGC 5272), a globular cluster follows on June 3. These two objects make a useful north–south comparison: a low southern face-on galaxy whose accessibility depends strongly on latitude and horizon, and a bright northern globular cluster that is much more forgiving.
+M83, the Southern Pinwheel Galaxy, opens the week and Messier 3 (M3), globular cluster in Canes Venatici follows on June 3. These two objects make a useful north–south comparison: a low southern face-on galaxy whose accessibility depends strongly on latitude and horizon, and a bright northern globular cluster that is much more forgiving.
 
 **Naked eye:** Use Alkaid at the end of the Big Dipper's handle as a northern landmark. For M83, seek an unobstructed southern horizon; from northern latitudes the galaxy remains low, while southern observers see it much more favorably.
 
-**Binoculars:** M3 (NGC 5272), a globular cluster is an excellent binocular globular, appearing as a compact round glow. M83, the Southern Pinwheel, a spiral galaxy is a much more demanding binocular target because its light is spread over a broad face-on disk and atmospheric extinction can compound the difficulty when it is low.
+**Binoculars:** Messier 3 (M3), globular cluster in Canes Venatici is an excellent binocular globular, appearing as a compact round glow. Southern Pinwheel (M83), spiral galaxy in Hydra is a much more demanding binocular target because its light is spread over a broad face-on disk and atmospheric extinction can compound the difficulty when it is low.
 
-**Small telescope:** M3 (NGC 5272), a globular cluster becomes a bright concentrated ball with a grainy outer halo and increasing stellar resolution as aperture grows. M83, the Southern Pinwheel, a spiral galaxy can show a compact core and uneven disk under dark transparent conditions, but its photographic spiral pattern should not be expected automatically in a small telescope.
+**Small telescope:** Messier 3 (M3), globular cluster in Canes Venatici becomes a bright concentrated ball with a grainy outer halo and increasing stellar resolution as aperture grows. Southern Pinwheel (M83), spiral galaxy in Hydra can show a compact core and uneven disk under dark transparent conditions, but its photographic spiral pattern should not be expected automatically in a small telescope.
 
 **What to expect:** Declination matters. Two catalog objects with favorable magnitudes can have very different practical visibility because one culminates high while the other is viewed through much more atmosphere. The Almanack's north/tropical/south context is observationally meaningful, not merely classificatory.
 
@@ -1144,7 +1144,7 @@ M83, the Southern Pinwheel Galaxy, opens the week and M3 (NGC 5272), a globular 
 
 | Date | Zodiac day | Events |
 |---|---|---|
-| Mon, Jun 08, 2026 | ♊ 19 | 🌗 Last Quarter — 10:00:32 UTC<br>Hadar (β Cen) — 👁 V 1 — Southern — Spring<br>M101 Pinwheel Galaxy — 🔭 — Northern — Spring<br>Thuban (α Dra) — B V 4 — Northern — Spring |
+| Mon, Jun 08, 2026 | ♊ 19 | 🌗 Last Quarter — 10:00:32 UTC<br>Hadar (β Cen) — 👁 V 1 — Southern — Spring<br>Pinwheel Galaxy (M101), spiral galaxy in Ursa Major — 🔭 — Northern — Spring<br>Thuban (α Dra) — B V 4 — Northern — Spring |
 | Tue, Jun 09, 2026 | ♊ 20 | Menkent (θ Cen) — 👁 V 2 — Southern — Spring |
 | Wed, Jun 10, 2026 | ♊ 21 | — |
 | Thu, Jun 11, 2026 | ♊ 22 | Arcturus (α Boo) — 👁 V 0 — Tropical — Spring |
@@ -1168,15 +1168,15 @@ M83, the Southern Pinwheel Galaxy, opens the week and M3 (NGC 5272), a globular 
 
 ### Sky Note
 
-Last Quarter Moon on June 8 helps darken the evening later in the week, while Arcturus and M101, the Pinwheel Galaxy, a spiral galaxy provide a useful contrast between an easy bright-star anchor and a difficult face-on galaxy.
+Last Quarter Moon on June 8 helps darken the evening later in the week, while Arcturus and Pinwheel Galaxy (M101), spiral galaxy in Ursa Major provide a useful contrast between an easy bright-star anchor and a difficult face-on galaxy.
 
 **Naked eye:** Find orange Arcturus first. It is one of the brightest stars in the northern spring sky and a dependable orientation point for the transition toward the summer constellations.
 
-**Binoculars:** M101, the Pinwheel Galaxy, a spiral galaxy is a demanding binocular target because its light is spread across a large area. Under a genuinely dark, transparent sky it may appear as a broad, weak brightening rather than a sharply bounded object.
+**Binoculars:** Pinwheel Galaxy (M101), spiral galaxy in Ursa Major is a demanding binocular target because its light is spread across a large area. Under a genuinely dark, transparent sky it may appear as a broad, weak brightening rather than a sharply bounded object.
 
-**Small telescope:** Use low power on M101, the Pinwheel Galaxy, a spiral galaxy. Expect a pale, diffuse glow with a somewhat brighter central region; obvious photographic spiral structure is not a realistic expectation in a modest instrument.
+**Small telescope:** Use low power on Pinwheel Galaxy (M101), spiral galaxy in Ursa Major. Expect a pale, diffuse glow with a somewhat brighter central region; obvious photographic spiral structure is not a realistic expectation in a modest instrument.
 
-**What to expect:** M101, the Pinwheel Galaxy, a spiral galaxy is a classic surface-brightness lesson. A galaxy can have a respectable total magnitude and still be hard to see because its light is spread thinly over the sky.
+**What to expect:** Pinwheel Galaxy (M101), spiral galaxy in Ursa Major is a classic surface-brightness lesson. A galaxy can have a respectable total magnitude and still be hard to see because its light is spread thinly over the sky.
 
 ### Chart
 
@@ -1241,10 +1241,10 @@ New Moon opens the week, Alpha Centauri reaches its Almanack date on June 16, an
 | Date | Zodiac day | Events |
 |---|---|---|
 | Mon, Jun 22, 2026 | ♋ 2 | Nekkar (β Boo) — 👁 V 3 — Northern — Summer |
-| Tue, Jun 23, 2026 | ♋ 3 | M102 Spindle Galaxy — 🔭 — Northern — Summer |
+| Tue, Jun 23, 2026 | ♋ 3 | Spindle Galaxy (M102), lenticular galaxy in Draco — 🔭 — Northern — Summer |
 | Wed, Jun 24, 2026 | ♋ 4 | — |
 | Thu, Jun 25, 2026 | ♋ 5 | Zubeneschamali (β Lib) — 👁 V 3 — Tropical — Summer |
-| Fri, Jun 26, 2026 | ♋ 6 | M5 — B — Tropical — Summer<br>β Cir — B V 4 — Southern — Summer |
+| Fri, Jun 26, 2026 | ♋ 6 | Messier 5 (M5), globular cluster in Serpens — B — Tropical — Summer<br>β Cir — B V 4 — Southern — Summer |
 | Sat, Jun 27, 2026 | ♋ 7 | — |
 | Sun, Jun 28, 2026 | ♋ 8 | Nusakan (β CrB) — B V 4 — Northern — Summer |
 
@@ -1264,13 +1264,13 @@ New Moon opens the week, Alpha Centauri reaches its Almanack date on June 16, an
 
 ### Sky Note
 
-M5 (NGC 5904), a globular cluster reaches its Almanack date on June 26 and is one of the finest globular clusters available to northern and tropical observers. The week also includes M102, giving a useful comparison between a concentrated star cluster and a much subtler galaxy.
+Messier 5 (M5), globular cluster in Serpens reaches its Almanack date on June 26 and is one of the finest globular clusters available to northern and tropical observers. The week also includes M102, giving a useful comparison between a concentrated star cluster and a much subtler galaxy.
 
 **Naked eye:** Use bright stars in Boötes, Libra, and Corona Borealis to orient yourself before moving toward Serpens. The summer sky is beginning to favor globular clusters as the evening view shifts toward the inner Milky Way.
 
-**Binoculars:** M5 (NGC 5904), a globular cluster can appear as a small, round, misty patch under good conditions. Its concentration makes it much easier to recognize than many galaxies of similar catalog magnitude.
+**Binoculars:** Messier 5 (M5), globular cluster in Serpens can appear as a small, round, misty patch under good conditions. Its concentration makes it much easier to recognize than many galaxies of similar catalog magnitude.
 
-**Small telescope:** M5 (NGC 5904), a globular cluster becomes a bright, strongly concentrated ball. With sufficient aperture and steady conditions, the outer parts begin to break into individual stars while the core remains densely packed. M102, the Spindle Galaxy, a lenticular galaxy is far less conspicuous and appears as a slender gray spindle.
+**Small telescope:** Messier 5 (M5), globular cluster in Serpens becomes a bright, strongly concentrated ball. With sufficient aperture and steady conditions, the outer parts begin to break into individual stars while the core remains densely packed. Spindle Galaxy (M102), lenticular galaxy in Draco is far less conspicuous and appears as a slender gray spindle.
 
 **What to expect:** Globular clusters reward aperture in a different way from galaxies. Instead of revealing color or spiral structure, increased resolution gradually turns a smooth glow into a swarm of stars.
 
@@ -1340,9 +1340,9 @@ Full Moon falls on June 29, so this is better suited to bright-star observing th
 | Tue, Jul 07, 2026 | ♋ 17 | 🌗 Last Quarter — 19:28:59 UTC<br>Acrab (β1 Sco) — 👁 V 3 — Tropical — Summer<br>β2 Sco — B V 5 — Tropical — Summer |
 | Wed, Jul 08, 2026 | ♋ 18 | — |
 | Thu, Jul 09, 2026 | ♋ 19 | — |
-| Fri, Jul 10, 2026 | ♋ 20 | M80 — B — Tropical — Summer |
+| Fri, Jul 10, 2026 | ♋ 20 | Messier 80 (M80), globular cluster in Scorpius — B — Tropical — Summer |
 | Sat, Jul 11, 2026 | ♋ 21 | — |
-| Sun, Jul 12, 2026 | ♋ 22 | M4 — B — Southern — Summer |
+| Sun, Jul 12, 2026 | ♋ 22 | Messier 4 (M4), globular cluster in Scorpius — B — Southern — Summer |
 
 ### Weekly Solar-System Ephemeris
 
@@ -1360,15 +1360,15 @@ Full Moon falls on June 29, so this is better suited to bright-star observing th
 
 ### Sky Note
 
-Last Quarter Moon on July 7 improves evening conditions, and M80 (NGC 6093), a globular cluster and M4 (NGC 6121), a globular cluster arrive on July 10 and 12 in the rich Scorpius region. They are both globular clusters, but they look very different and make an excellent side-by-side observing lesson.
+Last Quarter Moon on July 7 improves evening conditions, and Messier 80 (M80), globular cluster in Scorpius and Messier 4 (M4), globular cluster in Scorpius arrive on July 10 and 12 in the rich Scorpius region. They are both globular clusters, but they look very different and make an excellent side-by-side observing lesson.
 
 **Naked eye:** Find Scorpius and its bright reddish star Antares, then trace the curved body of the constellation through Dschubba and Acrab. From northern mid-latitudes the constellation stays low, so choose a clear southern horizon.
 
-**Binoculars:** M4 (NGC 6121), a globular cluster is the easier and broader target, appearing as a diffuse patch near Antares under a dark sky. M80 (NGC 6093), a globular cluster is smaller and more concentrated, looking more nearly stellar at first glance.
+**Binoculars:** Messier 4 (M4), globular cluster in Scorpius is the easier and broader target, appearing as a diffuse patch near Antares under a dark sky. Messier 80 (M80), globular cluster in Scorpius is smaller and more concentrated, looking more nearly stellar at first glance.
 
-**Small telescope:** M4 (NGC 6121), a globular cluster begins to resolve into stars relatively readily and shows a loose structure for a globular cluster. M80 (NGC 6093), a globular cluster remains a compact, concentrated ball and generally needs more aperture or magnification before its outer stars become grainy.
+**Small telescope:** Messier 4 (M4), globular cluster in Scorpius begins to resolve into stars relatively readily and shows a loose structure for a globular cluster. Messier 80 (M80), globular cluster in Scorpius remains a compact, concentrated ball and generally needs more aperture or magnification before its outer stars become grainy.
 
-**What to expect:** Two objects with the same catalog type can present opposite visual personalities. M4 (NGC 6121), a globular cluster is broad and loose; M80 (NGC 6093), a globular cluster is compact and dense. Comparing them teaches more than observing either one in isolation.
+**What to expect:** Two objects with the same catalog type can present opposite visual personalities. Messier 4 (M4), globular cluster in Scorpius is broad and loose; Messier 80 (M80), globular cluster in Scorpius is compact and dense. Comparing them teaches more than observing either one in isolation.
 
 **Asterism:** The Keystone of Hercules is a compact four-star doorway into Hercules and a practical starting point for locating the Great Hercules Globular.
 
@@ -1387,11 +1387,11 @@ Last Quarter Moon on July 7 improves evening conditions, and M80 (NGC 6093), a g
 | Date | Zodiac day | Events |
 |---|---|---|
 | Mon, Jul 13, 2026 | ♋ 23 | Kornephoros (β Her) — 👁 V 3 — Tropical — Summer<br>Antares (α Sco) — 👁 V 1 — Southern — Summer |
-| Tue, Jul 14, 2026 | ♋ 24 | 🌑 New Moon — 09:43:34 UTC<br>M107 — 🔭 — Tropical — Summer |
+| Tue, Jul 14, 2026 | ♋ 24 | 🌑 New Moon — 09:43:34 UTC<br>Messier 107 (M107), globular cluster in Ophiuchus — 🔭 — Tropical — Summer |
 | Wed, Jul 15, 2026 | ♋ 25 | — |
-| Thu, Jul 16, 2026 | ♋ 26 | M13 Great Hercules Globular — B — Northern — Summer<br>β Aps — B V 4 — Southern — Summer |
+| Thu, Jul 16, 2026 | ♋ 26 | Great Hercules Globular (M13), globular cluster in Hercules — B — Northern — Summer<br>β Aps — B V 4 — Southern — Summer |
 | Fri, Jul 17, 2026 | ♋ 27 | — |
-| Sat, Jul 18, 2026 | ♋ 28 | M12 — B — Tropical — Summer<br>Atria (α TrA) — 👁 V 2 — Southern — Summer<br>Larawag (ε Sco) — 👁 V 2 — Southern — Summer |
+| Sat, Jul 18, 2026 | ♋ 28 | Messier 12 (M12), globular cluster in Ophiuchus — B — Tropical — Summer<br>Atria (α TrA) — 👁 V 2 — Southern — Summer<br>Larawag (ε Sco) — 👁 V 2 — Southern — Summer |
 | Sun, Jul 19, 2026 | ♋ 29 | — |
 
 ### Weekly Solar-System Ephemeris
@@ -1410,13 +1410,13 @@ Last Quarter Moon on July 7 improves evening conditions, and M80 (NGC 6093), a g
 
 ### Sky Note
 
-New Moon on July 14 opens a dark-sky week rich in globular clusters. M107 (NGC 6171), a globular cluster appears the same night, followed by the Great Hercules Cluster M13, the Great Hercules Globular, a globular cluster on July 16 and M12 (NGC 6218), a globular cluster on July 18; Antares also marks the southern summer sky on July 13.
+New Moon on July 14 opens a dark-sky week rich in globular clusters. Messier 107 (M107), globular cluster in Ophiuchus appears the same night, followed by the Great Hercules Cluster Great Hercules Globular (M13), globular cluster in Hercules on July 16 and Messier 12 (M12), globular cluster in Ophiuchus on July 18; Antares also marks the southern summer sky on July 13.
 
-**Naked eye:** Use Antares to recognize Scorpius and the Keystone of Hercules to orient yourself farther north. Under a genuinely dark sky M13, the Great Hercules Globular, a globular cluster can approach naked-eye visibility, but binoculars make identification much easier.
+**Naked eye:** Use Antares to recognize Scorpius and the Keystone of Hercules to orient yourself farther north. Under a genuinely dark sky Great Hercules Globular (M13), globular cluster in Hercules can approach naked-eye visibility, but binoculars make identification much easier.
 
-**Binoculars:** M13, the Great Hercules Globular, a globular cluster is the showpiece, appearing as a compact fuzzy ball in the Keystone. M12 (NGC 6218), a globular cluster is also a good binocular target from a dark site, while M107 (NGC 6171), a globular cluster is smaller and more difficult.
+**Binoculars:** Great Hercules Globular (M13), globular cluster in Hercules is the showpiece, appearing as a compact fuzzy ball in the Keystone. Messier 12 (M12), globular cluster in Ophiuchus is also a good binocular target from a dark site, while Messier 107 (M107), globular cluster in Ophiuchus is smaller and more difficult.
 
-**Small telescope:** M13, the Great Hercules Globular, a globular cluster begins to break into individual stars around its halo and becomes increasingly spectacular with aperture. M12 (NGC 6218), a globular cluster looks looser and less centrally concentrated; M107 (NGC 6171), a globular cluster remains subtler. Compare them rather than expecting every globular cluster to look alike.
+**Small telescope:** Great Hercules Globular (M13), globular cluster in Hercules begins to break into individual stars around its halo and becomes increasingly spectacular with aperture. Messier 12 (M12), globular cluster in Ophiuchus looks looser and less centrally concentrated; Messier 107 (M107), globular cluster in Ophiuchus remains subtler. Compare them rather than expecting every globular cluster to look alike.
 
 **What to expect:** Globular clusters are visually rewarding because increasing aperture can actually resolve their stellar structure. They still will not resemble densely saturated photographs, but the transition from unresolved glow to a swarm of faint stars is something the eye can see directly.
 
@@ -1434,12 +1434,12 @@ New Moon on July 14 opens a dark-sky week rich in globular clusters. M107 (NGC 6
 
 | Date | Zodiac day | Events |
 |---|---|---|
-| Mon, Jul 20, 2026 | ♋ 30 | M10 — B — Tropical — Summer |
-| Tue, Jul 21, 2026 | ♋ 31 | 🌓 First Quarter — 11:05:35 UTC<br>M19 — B — Southern — Summer<br>M62 — B — Southern — Summer |
+| Mon, Jul 20, 2026 | ♋ 30 | Messier 10 (M10), globular cluster in Ophiuchus — B — Tropical — Summer |
+| Tue, Jul 21, 2026 | ♋ 31 | 🌓 First Quarter — 11:05:35 UTC<br>Messier 19 (M19), globular cluster in Ophiuchus — B — Southern — Summer<br>Messier 62 (M62), globular cluster in Ophiuchus — B — Southern — Summer |
 | Wed, Jul 22, 2026 | ♌ (Leo) 1 | — |
 | Thu, Jul 23, 2026 | ♌ 2 | Sabik (η Oph) — 👁 V 2 — Tropical — Summer |
 | Fri, Jul 24, 2026 | ♌ 3 | Rasalgethi (α1 Her) — 👁 V 3 — Tropical — Summer<br>α2 Her — B V 5 — Tropical — Summer |
-| Sat, Jul 25, 2026 | ♌ 4 | M9 — 🔭 — Tropical — Summer<br>M92 — B — Northern — Summer |
+| Sat, Jul 25, 2026 | ♌ 4 | Messier 9 (M9), globular cluster in Ophiuchus — 🔭 — Tropical — Summer<br>Messier 92 (M92), globular cluster in Hercules — B — Northern — Summer |
 | Sun, Jul 26, 2026 | ♌ 5 | — |
 
 ### Weekly Solar-System Ephemeris
@@ -1458,13 +1458,13 @@ New Moon on July 14 opens a dark-sky week rich in globular clusters. M107 (NGC 6
 
 ### Sky Note
 
-This is a globular-cluster comparison week. M10 (NGC 6254), a globular cluster leads on July 20; M19 (NGC 6273), a globular cluster and M62 (NGC 6266), a globular cluster follow with First Quarter on July 21; then M9 (NGC 6333), a globular cluster and M92 (NGC 6341), a globular cluster arrive July 25. The targets range from relatively easy northern globulars to low southern objects that reward a clear horizon.
+This is a globular-cluster comparison week. Messier 10 (M10), globular cluster in Ophiuchus leads on July 20; Messier 19 (M19), globular cluster in Ophiuchus and Messier 62 (M62), globular cluster in Ophiuchus follow with First Quarter on July 21; then Messier 9 (M9), globular cluster in Ophiuchus and Messier 92 (M92), globular cluster in Hercules arrive July 25. The targets range from relatively easy northern globulars to low southern objects that reward a clear horizon.
 
 **Naked eye:** Find Hercules and Ophiuchus between the bright summer landmarks Vega, Arcturus, and Antares. Rasalgethi and Sabik help define the region even before you begin hunting the clusters.
 
-**Binoculars:** M10 (NGC 6254), a globular cluster and M92 (NGC 6341), a globular cluster are the friendlier binocular targets, showing as compact fuzzy stars or small round glows. M19 (NGC 6273), a globular cluster and M62 (NGC 6266), a globular cluster sit much farther south and become increasingly sensitive to haze and your observing latitude.
+**Binoculars:** Messier 10 (M10), globular cluster in Ophiuchus and Messier 92 (M92), globular cluster in Hercules are the friendlier binocular targets, showing as compact fuzzy stars or small round glows. Messier 19 (M19), globular cluster in Ophiuchus and Messier 62 (M62), globular cluster in Ophiuchus sit much farther south and become increasingly sensitive to haze and your observing latitude.
 
-**Small telescope:** Compare M10 (NGC 6254), a globular cluster's bright core and halo with the denser M92 (NGC 6341), a globular cluster. M9 (NGC 6333), a globular cluster is smaller and fainter. M19 (NGC 6273), a globular cluster and M62 (NGC 6266), a globular cluster benefit from observing when they are highest above the southern horizon; aperture helps, but atmospheric transparency can matter just as much.
+**Small telescope:** Compare Messier 10 (M10), globular cluster in Ophiuchus's bright core and halo with the denser Messier 92 (M92), globular cluster in Hercules. Messier 9 (M9), globular cluster in Ophiuchus is smaller and fainter. Messier 19 (M19), globular cluster in Ophiuchus and Messier 62 (M62), globular cluster in Ophiuchus benefit from observing when they are highest above the southern horizon; aperture helps, but atmospheric transparency can matter just as much.
 
 **What to expect:** Integrated magnitude does not tell the whole story. A low-altitude globular can look harder than a nominally fainter object higher in the sky. This week is an excellent practical lesson in altitude, concentration, and aperture.
 
@@ -1485,7 +1485,7 @@ This is a globular-cluster comparison week. M10 (NGC 6254), a globular cluster l
 | Mon, Jul 27, 2026 | ♌ 6 | β Ara — 👁 V 3 — Southern — Summer |
 | Tue, Jul 28, 2026 | ♌ 7 | Rastaban (β Dra) — 👁 V 3 — Northern — Summer |
 | Wed, Jul 29, 2026 | ♌ 8 | 🌕 Full Moon — 14:35:42 UTC<br>α Ara — 👁 V 3 — Southern — Summer<br>Rasalhague (α Oph) — 👁 V 2 — Tropical — Summer<br>Shaula (λ Sco) — 👁 V 2 — Southern — Summer |
-| Thu, Jul 30, 2026 | ♌ 9 | M6 Butterfly Cluster — B — Southern — Summer<br>M14 — 🔭 — Tropical — Summer<br>Sargas (θ Sco) — 👁 V 2 — Southern — Summer |
+| Thu, Jul 30, 2026 | ♌ 9 | Butterfly Cluster (M6), open cluster in Scorpius — B — Southern — Summer<br>Messier 14 (M14), globular cluster in Ophiuchus — 🔭 — Tropical — Summer<br>Sargas (θ Sco) — 👁 V 2 — Southern — Summer |
 | Fri, Jul 31, 2026 | ♌ 10 | κ Sco — 👁 V 2 — Southern — Summer |
 | Sat, Aug 01, 2026 | ♌ 11 | Cebalrai (β Oph) — 👁 V 3 — Tropical — Summer |
 | Sun, Aug 02, 2026 | ♌ 12 | — |
@@ -1506,13 +1506,13 @@ This is a globular-cluster comparison week. M10 (NGC 6254), a globular cluster l
 
 ### Sky Note
 
-Full Moon on July 29 brightens a week centered on Scorpius. Shaula and Sargas mark the southern constellation, while the Butterfly Cluster M6, the Butterfly Cluster, an open cluster and globular cluster M14 (NGC 6402), a globular cluster appear on July 30. The Moon favors bright stars and the open cluster over faint diffuse detail.
+Full Moon on July 29 brightens a week centered on Scorpius. Shaula and Sargas mark the southern constellation, while the Butterfly Cluster Butterfly Cluster (M6), open cluster in Scorpius and globular cluster Messier 14 (M14), globular cluster in Ophiuchus appear on July 30. The Moon favors bright stars and the open cluster over faint diffuse detail.
 
-**Naked eye:** Follow Scorpius southward from Antares toward the curved tail and Shaula. From dark southern skies M6, the Butterfly Cluster, an open cluster can be detected as a small misty patch, although moonlight makes that harder this week.
+**Naked eye:** Follow Scorpius southward from Antares toward the curved tail and Shaula. From dark southern skies Butterfly Cluster (M6), open cluster in Scorpius can be detected as a small misty patch, although moonlight makes that harder this week.
 
-**Binoculars:** M6, the Butterfly Cluster, an open cluster is the week's best deep-sky target. Its broad collection of bright stars is well suited to a wide binocular field, and its butterfly-like pattern becomes easier to recognize.
+**Binoculars:** Butterfly Cluster (M6), open cluster in Scorpius is the week's best deep-sky target. Its broad collection of bright stars is well suited to a wide binocular field, and its butterfly-like pattern becomes easier to recognize.
 
-**Small telescope:** Use low power on M6, the Butterfly Cluster, an open cluster so the whole cluster remains in context. M14 (NGC 6402), a globular cluster is a much more concentrated globular cluster and will appear primarily as a round glow in a small instrument, especially with the bright Moon nearby.
+**Small telescope:** Use low power on Butterfly Cluster (M6), open cluster in Scorpius so the whole cluster remains in context. Messier 14 (M14), globular cluster in Ophiuchus is a much more concentrated globular cluster and will appear primarily as a round glow in a small instrument, especially with the bright Moon nearby.
 
 **What to expect:** Open clusters tolerate moonlight better than faint galaxies and nebulae because their light is concentrated into stars. This is a good week to choose the target that suits the conditions instead of fighting the Full Moon.
 
@@ -1534,13 +1534,13 @@ Full Moon on July 29 brightens a week centered on Scorpius. Shaula and Sargas ma
 
 | Date | Zodiac day | Events |
 |---|---|---|
-| Mon, Aug 03, 2026 | ♌ 13 | M7 Ptolemy's Cluster — 👁 — Southern — Summer |
-| Tue, Aug 04, 2026 | ♌ 14 | M23 — B — Tropical — Summer<br>Eltanin (γ Dra) — 👁 V 2 — Northern — Summer |
-| Wed, Aug 05, 2026 | ♌ 15 | M8 Lagoon Nebula — B — Southern — Summer<br>M20 Trifid Nebula — 🔭 — Tropical — Summer<br>M21 — B — Tropical — Summer |
+| Mon, Aug 03, 2026 | ♌ 13 | Ptolemy's Cluster (M7), open cluster in Scorpius — 👁 — Southern — Summer |
+| Tue, Aug 04, 2026 | ♌ 14 | Messier 23 (M23), open cluster in Sagittarius — B — Tropical — Summer<br>Eltanin (γ Dra) — 👁 V 2 — Northern — Summer |
+| Wed, Aug 05, 2026 | ♌ 15 | Lagoon Nebula (M8), diffuse nebula in Sagittarius — B — Southern — Summer<br>Trifid Nebula (M20), emission and reflection nebula in Sagittarius — 🔭 — Tropical — Summer<br>Messier 21 (M21), open cluster in Sagittarius — B — Tropical — Summer |
 | Thu, Aug 06, 2026 | ♌ 16 | 🌗 Last Quarter — 02:21:32 UTC |
 | Fri, Aug 07, 2026 | ♌ 17 | — |
 | Sat, Aug 08, 2026 | ♌ 18 | — |
-| Sun, Aug 09, 2026 | ♌ 19 | M16 Eagle Nebula — B — Tropical — Summer<br>M17 Omega Nebula — B — Tropical — Summer<br>M18 — B — Tropical — Summer<br>M24 Sagittarius Star Cloud — B — Tropical — Summer |
+| Sun, Aug 09, 2026 | ♌ 19 | Eagle Nebula (M16), open cluster in Serpens — B — Tropical — Summer<br>Omega Nebula (M17), diffuse nebula in Sagittarius — B — Tropical — Summer<br>Messier 18 (M18), open cluster in Sagittarius — B — Tropical — Summer<br>Sagittarius Star Cloud (M24), Milky Way star cloud in Sagittarius — B — Tropical — Summer |
 
 ### Weekly Solar-System Ephemeris
 
@@ -1558,13 +1558,13 @@ Full Moon on July 29 brightens a week centered on Scorpius. Shaula and Sargas ma
 
 ### Sky Note
 
-The southern Milky Way supplies an extraordinary sequence this week: M7, the Ptolemy's Cluster, an open cluster on August 3; M23 (NGC 6494), an open cluster on August 4; the Lagoon Nebula M8, Trifid Nebula M20, and M21 (NGC 6531), an open cluster on August 5; then M16, M17, M18, and the Sagittarius Star Cloud M24, the Sagittarius Star Cloud, a Milky Way star cloud on August 9. Last Quarter on August 6 leaves progressively darker evening conditions later in the week.
+The southern Milky Way supplies an extraordinary sequence this week: Ptolemy's Cluster (M7), open cluster in Scorpius on August 3; Messier 23 (M23), open cluster in Sagittarius on August 4; the Lagoon Nebula M8, Trifid Nebula M20, and Messier 21 (M21), open cluster in Sagittarius on August 5; then M16, M17, M18, and the Sagittarius Star Cloud Sagittarius Star Cloud (M24), Milky Way star cloud in Sagittarius on August 9. Last Quarter on August 6 leaves progressively darker evening conditions later in the week.
 
-**Naked eye:** Under a dark sky the Sagittarius and Scorpius Milky Way should look mottled and structured rather than uniformly bright. M7, the Ptolemy's Cluster, an open cluster is large enough to stand out as a naked-eye cluster from favorable latitudes.
+**Naked eye:** Under a dark sky the Sagittarius and Scorpius Milky Way should look mottled and structured rather than uniformly bright. Ptolemy's Cluster (M7), open cluster in Scorpius is large enough to stand out as a naked-eye cluster from favorable latitudes.
 
-**Binoculars:** This is binocular territory at its best. Sweep M7, M23, M21, M24, and the star fields around M8, the Lagoon Nebula, a diffuse nebula and M17, the Omega Nebula, a diffuse nebula at low power. M24, the Sagittarius Star Cloud, a Milky Way star cloud is not a compact cluster but a brilliant window into the Milky Way packed with stars.
+**Binoculars:** This is binocular territory at its best. Sweep M7, M23, M21, M24, and the star fields around Lagoon Nebula (M8), diffuse nebula in Sagittarius and Omega Nebula (M17), diffuse nebula in Sagittarius at low power. Sagittarius Star Cloud (M24), Milky Way star cloud in Sagittarius is not a compact cluster but a brilliant window into the Milky Way packed with stars.
 
-**Small telescope:** M8, the Lagoon Nebula, a diffuse nebula shows bright nebulosity around its embedded cluster; M20, the Trifid Nebula, a diffuse nebula is subtler and its dark lanes require better conditions. M17, the Omega Nebula, a diffuse nebula can show its characteristic bright bar or swan-like form, while the clusters break into increasingly numerous stars.
+**Small telescope:** Lagoon Nebula (M8), diffuse nebula in Sagittarius shows bright nebulosity around its embedded cluster; Trifid Nebula (M20), emission and reflection nebula in Sagittarius is subtler and its dark lanes require better conditions. Omega Nebula (M17), diffuse nebula in Sagittarius can show its characteristic bright bar or swan-like form, while the clusters break into increasingly numerous stars.
 
 **What to expect:** Photographs exaggerate the color and extent of emission nebulae compared with visual observing. Expect pale gray nebulosity, dark lanes, and rich star fields. The wide-field visual experience of the Milky Way is itself the showpiece.
 
@@ -1582,13 +1582,13 @@ The southern Milky Way supplies an extraordinary sequence this week: M7, the Pto
 
 | Date | Zodiac day | Events |
 |---|---|---|
-| Mon, Aug 10, 2026 | ♌ 20 | M28 — B — Southern — Summer |
+| Mon, Aug 10, 2026 | ♌ 20 | Messier 28 (M28), globular cluster in Sagittarius — B — Southern — Summer |
 | Tue, Aug 11, 2026 | ♌ 21 | Kaus Australis (ε Sgr) — 👁 V 2 — Southern — Summer |
-| Wed, Aug 12, 2026 | ♌ 22 | ☀ Total solar eclipse — greatest 17:48 UTC<br>🌑 New Moon — 17:36:40 UTC<br>M25 — B — Tropical — Summer<br>M69 — 🔭 — Southern — Summer<br>α Tel — 👁 V 3 — Southern — Summer |
-| Thu, Aug 13, 2026 | ♌ 23 | M22 Sagittarius Cluster — B — Southern — Summer |
+| Wed, Aug 12, 2026 | ♌ 22 | ☀ Total solar eclipse — greatest 17:48 UTC<br>🌑 New Moon — 17:36:40 UTC<br>Messier 25 (M25), open cluster in Sagittarius — B — Tropical — Summer<br>Messier 69 (M69), globular cluster in Sagittarius — 🔭 — Southern — Summer<br>α Tel — 👁 V 3 — Southern — Summer |
+| Thu, Aug 13, 2026 | ♌ 23 | Sagittarius Cluster (M22), globular cluster in Sagittarius — B — Southern — Summer |
 | Fri, Aug 14, 2026 | ♌ 24 | α Sct — B V 4 — Tropical — Summer |
-| Sat, Aug 15, 2026 | ♌ 25 | M70 — 🔭 — Southern — Summer<br>Vega (α Lyr) — 👁 V 0 — Northern — Summer |
-| Sun, Aug 16, 2026 | ♌ 26 | M26 — 🔭 — Tropical — Summer |
+| Sat, Aug 15, 2026 | ♌ 25 | Messier 70 (M70), globular cluster in Sagittarius — 🔭 — Southern — Summer<br>Vega (α Lyr) — 👁 V 0 — Northern — Summer |
+| Sun, Aug 16, 2026 | ♌ 26 | Messier 26 (M26), open cluster in Scutum — 🔭 — Tropical — Summer |
 
 ### Weekly Solar-System Ephemeris
 
@@ -1606,13 +1606,13 @@ The southern Milky Way supplies an extraordinary sequence this week: M7, the Pto
 
 ### Sky Note
 
-New Moon on August 12 lands in the middle of a superb Sagittarius observing week. M28 (NGC 6626), a globular cluster appears August 10; M25 (IC4725), an open cluster and M69 (NGC 6637), a globular cluster on August 12; the bright Sagittarius globular M22, the Sagittarius Cluster, a globular cluster on August 13; M70 (NGC 6681), a globular cluster and Vega on August 15; and M26 (NGC 6694), an open cluster on August 16. Dark skies make this a particularly strong week for comparing clusters against the Milky Way.
+New Moon on August 12 lands in the middle of a superb Sagittarius observing week. Messier 28 (M28), globular cluster in Sagittarius appears August 10; M25 (IC4725), an open cluster and Messier 69 (M69), globular cluster in Sagittarius on August 12; the bright Sagittarius globular Sagittarius Cluster (M22), globular cluster in Sagittarius on August 13; Messier 70 (M70), globular cluster in Sagittarius and Vega on August 15; and Messier 26 (M26), open cluster in Scutum on August 16. Dark skies make this a particularly strong week for comparing clusters against the Milky Way.
 
 **Naked eye:** Locate the Sagittarius Teapot low in the southern sky and brilliant Vega much higher to the north. The contrast between the dense southern Milky Way and the Summer Triangle region gives the sky a large-scale structure worth learning before using optics.
 
-**Binoculars:** M22, the Sagittarius Cluster, a globular cluster is the standout globular, appearing as a conspicuous round glow under a dark sky. M25 (IC4725), an open cluster is an attractive open cluster and makes an excellent contrast with the unresolved globulars.
+**Binoculars:** Sagittarius Cluster (M22), globular cluster in Sagittarius is the standout globular, appearing as a conspicuous round glow under a dark sky. M25 (IC4725), an open cluster is an attractive open cluster and makes an excellent contrast with the unresolved globulars.
 
-**Small telescope:** M22, the Sagittarius Cluster, a globular cluster begins resolving into stars readily and is one of the finest globulars of the summer sky. M28 (NGC 6626), a globular cluster is smaller and more concentrated; M69 (NGC 6637), a globular cluster and M70 (NGC 6681), a globular cluster are subtler, lower-surface-brightness challenges near the Teapot. M26 (NGC 6694), an open cluster resolves as a compact open cluster.
+**Small telescope:** Sagittarius Cluster (M22), globular cluster in Sagittarius begins resolving into stars readily and is one of the finest globulars of the summer sky. Messier 28 (M28), globular cluster in Sagittarius is smaller and more concentrated; Messier 69 (M69), globular cluster in Sagittarius and Messier 70 (M70), globular cluster in Sagittarius are subtler, lower-surface-brightness challenges near the Teapot. Messier 26 (M26), open cluster in Scutum resolves as a compact open cluster.
 
 **What to expect:** New Moon does not make every object equally easy. Low southern altitude and extinction still matter. But with moonlight removed, this week gives an unusually fair comparison between open clusters and globular clusters of very different concentration.
 
@@ -1634,13 +1634,13 @@ New Moon on August 12 lands in the middle of a superb Sagittarius observing week
 
 | Date | Zodiac day | Events |
 |---|---|---|
-| Mon, Aug 17, 2026 | ♌ 27 | M11 Wild Duck Cluster — B — Tropical — Summer<br>β Sct — B V 4 — Tropical — Summer |
-| Tue, Aug 18, 2026 | ♌ 28 | M54 — 🔭 — Southern — Summer<br>M57 Ring Nebula — 🔭 — Northern — Summer<br>Sheliak (β Lyr) — B V 4 — Northern — Summer |
+| Mon, Aug 17, 2026 | ♌ 27 | Wild Duck Cluster (M11), open cluster in Scutum — B — Tropical — Summer<br>β Sct — B V 4 — Tropical — Summer |
+| Tue, Aug 18, 2026 | ♌ 28 | Messier 54 (M54), globular cluster in Sagittarius — 🔭 — Southern — Summer<br>Ring Nebula (M57), planetary nebula in Lyra — 🔭 — Northern — Summer<br>Sheliak (β Lyr) — B V 4 — Northern — Summer |
 | Wed, Aug 19, 2026 | ♌ 29 | — |
 | Thu, Aug 20, 2026 | ♌ 30 | 🌓 First Quarter — 02:46:20 UTC<br>Nunki (σ Sgr) — 👁 V 2 — Southern — Summer |
 | Fri, Aug 21, 2026 | ♌ 31 | — |
 | Sat, Aug 22, 2026 | ♌ 32 | — |
-| Sun, Aug 23, 2026 | ♍ (Virgo) 1 | M56 — 🔭 — Northern — Summer<br>Meridiana (α CrA) — B V 4 — Southern — Summer |
+| Sun, Aug 23, 2026 | ♍ (Virgo) 1 | Messier 56 (M56), globular cluster in Lyra — 🔭 — Northern — Summer<br>Meridiana (α CrA) — B V 4 — Southern — Summer |
 
 ### Weekly Solar-System Ephemeris
 
@@ -1660,13 +1660,13 @@ New Moon on August 12 lands in the middle of a superb Sagittarius observing week
 
 M11, the Wild Duck Cluster, opens the week on August 17, followed by M57, the Ring Nebula, on August 18. First Quarter on August 20 brightens the evening sky, but both objects remain worthwhile targets.
 
-**Naked eye:** Use the Summer Triangle to orient yourself, then trace southward through Aquila toward the rich Milky Way fields of Scutum. M11, the Wild Duck Cluster, an open cluster lies in a dense stellar region; the Milky Way itself is part of the experience from a dark site.
+**Naked eye:** Use the Summer Triangle to orient yourself, then trace southward through Aquila toward the rich Milky Way fields of Scutum. Wild Duck Cluster (M11), open cluster in Scutum lies in a dense stellar region; the Milky Way itself is part of the experience from a dark site.
 
-**Binoculars:** M11, the Wild Duck Cluster, an open cluster is an excellent binocular target, appearing as a compact hazy concentration that can look almost globular at low power. Binoculars also provide the wide field needed to appreciate how deeply the cluster is embedded in the Milky Way.
+**Binoculars:** Wild Duck Cluster (M11), open cluster in Scutum is an excellent binocular target, appearing as a compact hazy concentration that can look almost globular at low power. Binoculars also provide the wide field needed to appreciate how deeply the cluster is embedded in the Milky Way.
 
-**Small telescope:** M11, the Wild Duck Cluster, an open cluster begins to resolve into a remarkably dense swarm of stars. M57, the Ring Nebula, a planetary nebula is a different kind of object: at moderate magnification it appears as a tiny gray disk or smoke ring between Beta and Gamma Lyrae. Increase magnification after locating it.
+**Small telescope:** Wild Duck Cluster (M11), open cluster in Scutum begins to resolve into a remarkably dense swarm of stars. Ring Nebula (M57), planetary nebula in Lyra is a different kind of object: at moderate magnification it appears as a tiny gray disk or smoke ring between Beta and Gamma Lyrae. Increase magnification after locating it.
 
-**What to expect:** M57, the Ring Nebula, a planetary nebula will not show the saturated colors of processed photographs. Its visual reward is the delicate annular shape. M11, by contrast, is fundamentally a stellar spectacle and becomes richer as aperture resolves more of its crowded stars.
+**What to expect:** Ring Nebula (M57), planetary nebula in Lyra will not show the saturated colors of processed photographs. Its visual reward is the delicate annular shape. M11, by contrast, is fundamentally a stellar spectacle and becomes richer as aperture resolves more of its crowded stars.
 
 ### Chart
 
@@ -1687,7 +1687,7 @@ M11, the Wild Duck Cluster, opens the week on August 17, followed by M57, the Ri
 | Wed, Aug 26, 2026 | ♍ 4 | — |
 | Thu, Aug 27, 2026 | ♍ 5 | Rukbat (α Sgr) — B V 4 — Southern — Summer<br>Arkab Prior (β1 Sgr) — B V 4 — Southern — Summer<br>Arkab Posterior (β2 Sgr) — B V 4 — Southern — Summer |
 | Fri, Aug 28, 2026 | ♍ 6 | ☾ Partial lunar eclipse — greatest 04:10 UTC<br>🌕 Full Moon — 04:18:30 UTC |
-| Sat, Aug 29, 2026 | ♍ 7 | M55 — B — Southern — Summer<br>Albireo (β1 Cyg) — 👁 V 3 — Northern — Summer<br>Albireo B (β2 Cyg) — B V 5 — Northern — Summer<br>Anser (α Vul) — B V 4 — Northern — Summer |
+| Sat, Aug 29, 2026 | ♍ 7 | Messier 55 (M55), globular cluster in Sagittarius — B — Southern — Summer<br>Albireo (β1 Cyg) — 👁 V 3 — Northern — Summer<br>Albireo B (β2 Cyg) — B V 5 — Northern — Summer<br>Anser (α Vul) — B V 4 — Northern — Summer |
 | Sun, Aug 30, 2026 | ♍ 8 | — |
 
 ### Weekly Solar-System Ephemeris
@@ -1706,15 +1706,15 @@ M11, the Wild Duck Cluster, opens the week on August 17, followed by M57, the Ri
 
 ### Sky Note
 
-Full Moon arrives August 28, followed by M55 (NGC 6809), a globular cluster and Albireo on August 29. This is a useful week for contrasting a bright double-star target with a diffuse deep-sky object that suffers much more from moonlight.
+Full Moon arrives August 28, followed by Messier 55 (M55), globular cluster in Sagittarius and Albireo on August 29. This is a useful week for contrasting a bright double-star target with a diffuse deep-sky object that suffers much more from moonlight.
 
-**Naked eye:** Find the Summer Triangle and Cygnus. Albireo marks the head of the Swan and is easy to locate even with the bright Moon present. Sagittarius remains low toward the south, where M55 (NGC 6809), a globular cluster lies.
+**Naked eye:** Find the Summer Triangle and Cygnus. Albireo marks the head of the Swan and is easy to locate even with the bright Moon present. Sagittarius remains low toward the south, where Messier 55 (M55), globular cluster in Sagittarius lies.
 
-**Binoculars:** M55 (NGC 6809), a globular cluster can appear as a round fuzzy patch under a dark sky, but the Full Moon will greatly reduce its contrast this week. Binoculars are still useful for locating the Sagittarius field and for enjoying the surrounding Milky Way when conditions permit.
+**Binoculars:** Messier 55 (M55), globular cluster in Sagittarius can appear as a round fuzzy patch under a dark sky, but the Full Moon will greatly reduce its contrast this week. Binoculars are still useful for locating the Sagittarius field and for enjoying the surrounding Milky Way when conditions permit.
 
-**Small telescope:** Albireo is the week's dependable showpiece. Modest magnification separates its famous pair cleanly and lets observers compare their contrasting apparent colors. M55 (NGC 6809), a globular cluster appears as a broad globular glow; resolving many member stars generally requires more aperture and darker conditions.
+**Small telescope:** Albireo is the week's dependable showpiece. Modest magnification separates its famous pair cleanly and lets observers compare their contrasting apparent colors. Messier 55 (M55), globular cluster in Sagittarius appears as a broad globular glow; resolving many member stars generally requires more aperture and darker conditions.
 
-**What to expect:** Moonlight does not affect all targets equally. Albireo remains attractive in a bright sky, while M55 (NGC 6809), a globular cluster can become frustratingly washed out. The Almanack date identifies the geometry of the target, not a guarantee of ideal sky darkness.
+**What to expect:** Moonlight does not affect all targets equally. Albireo remains attractive in a bright sky, while Messier 55 (M55), globular cluster in Sagittarius can become frustratingly washed out. The Almanack date identifies the geometry of the target, not a guarantee of ideal sky darkness.
 
 ### Chart
 
@@ -1732,10 +1732,10 @@ Full Moon arrives August 28, followed by M55 (NGC 6809), a globular cluster and 
 |---|---|---|
 | Mon, Aug 31, 2026 | ♍ 9 | — |
 | Tue, Sep 01, 2026 | ♍ 10 | Sham (α Sge) — B V 4 — Tropical — Summer<br>β Sge — B V 4 — Tropical — Summer |
-| Wed, Sep 02, 2026 | ♍ 11 | M71 — 🔭 — Tropical — Summer |
+| Wed, Sep 02, 2026 | ♍ 11 | Messier 71 (M71), globular cluster in Sagitta — 🔭 — Tropical — Summer |
 | Thu, Sep 03, 2026 | ♍ 12 | — |
-| Fri, Sep 04, 2026 | ♍ 13 | 🌗 Last Quarter — 07:51:15 UTC<br>M27 Dumbbell Nebula — B — Tropical — Summer<br>Altair (α Aql) — 👁 V 1 — Tropical — Summer |
-| Sat, Sep 05, 2026 | ♍ 14 | M75 — 🔭 — Tropical — Summer<br>Alshain (β Aql) — B V 4 — Tropical — Summer |
+| Fri, Sep 04, 2026 | ♍ 13 | 🌗 Last Quarter — 07:51:15 UTC<br>Dumbbell Nebula (M27), planetary nebula in Vulpecula — B — Tropical — Summer<br>Altair (α Aql) — 👁 V 1 — Tropical — Summer |
+| Sat, Sep 05, 2026 | ♍ 14 | Messier 75 (M75), globular cluster in Sagittarius — 🔭 — Tropical — Summer<br>Alshain (β Aql) — B V 4 — Tropical — Summer |
 | Sun, Sep 06, 2026 | ♍ 15 | — |
 
 ### Weekly Solar-System Ephemeris
@@ -1758,11 +1758,11 @@ Last Quarter on September 4 shares the calendar with M27, the Dumbbell Nebula, a
 
 **Naked eye:** Altair is the southern point of the Summer Triangle and an excellent anchor for the region. From a dark site, follow the Milky Way northward through the faint constellation Vulpecula toward Cygnus.
 
-**Binoculars:** M27, the Dumbbell Nebula, a planetary nebula is unusually rewarding for a planetary nebula in binoculars. It appears as a small nonstellar glow, and 10×50-class binoculars can begin to suggest that it is not simply round. Wide-field binoculars also make the surrounding Milky Way rich and easy to explore.
+**Binoculars:** Dumbbell Nebula (M27), planetary nebula in Vulpecula is unusually rewarding for a planetary nebula in binoculars. It appears as a small nonstellar glow, and 10×50-class binoculars can begin to suggest that it is not simply round. Wide-field binoculars also make the surrounding Milky Way rich and easy to explore.
 
-**Small telescope:** M27, the Dumbbell Nebula, a planetary nebula becomes an obvious pale patch with a brighter dumbbell or apple-core region. Moderate magnification increases the contrast of its shape, and larger apertures reveal a more extended envelope. M71 (NGC 6838), a globular cluster and M75 (NGC 6864), a globular cluster elsewhere in the week are subtler compact cluster targets.
+**Small telescope:** Dumbbell Nebula (M27), planetary nebula in Vulpecula becomes an obvious pale patch with a brighter dumbbell or apple-core region. Moderate magnification increases the contrast of its shape, and larger apertures reveal a more extended envelope. Messier 71 (M71), globular cluster in Sagitta and Messier 75 (M75), globular cluster in Sagittarius elsewhere in the week are subtler compact cluster targets.
 
-**What to expect:** Photographs give M27, the Dumbbell Nebula, a planetary nebula vivid colors and extensive faint structure. Visually, expect a gray luminous form whose shape is much more conspicuous than its color. It is an excellent example of an object that is genuinely satisfying without resembling its photographs.
+**What to expect:** Photographs give Dumbbell Nebula (M27), planetary nebula in Vulpecula vivid colors and extensive faint structure. Visually, expect a gray luminous form whose shape is much more conspicuous than its color. It is an excellent example of an object that is genuinely satisfying without resembling its photographs.
 
 **Asterism:** The Northern Cross, formed by the brightest stars of Cygnus, lies along the Milky Way and is a useful bridge between Deneb and the rich star fields to the south.
 
@@ -1783,7 +1783,7 @@ Last Quarter on September 4 shares the calendar with M27, the Dumbbell Nebula, a
 | Mon, Sep 07, 2026 | ♍ 16 | — |
 | Tue, Sep 08, 2026 | ♍ 17 | — |
 | Wed, Sep 09, 2026 | ♍ 18 | — |
-| Thu, Sep 10, 2026 | ♍ 19 | M29 — B — Northern — Summer |
+| Thu, Sep 10, 2026 | ♍ 19 | Messier 29 (M29), open cluster in Cygnus — B — Northern — Summer |
 | Fri, Sep 11, 2026 | ♍ 20 | 🌑 New Moon — 03:26:55 UTC<br>α1 Cap — B V 4 — Tropical — Summer<br>Algedi (α2 Cap) — B V 4 — Tropical — Summer |
 | Sat, Sep 12, 2026 | ♍ 21 | Dabih (β Cap) — 👁 V 3 — Tropical — Summer<br>Sadr (γ Cyg) — 👁 V 2 — Northern — Summer |
 | Sun, Sep 13, 2026 | ♍ 22 | Peacock (α Pav) — 👁 V 2 — Southern — Summer |
@@ -1804,15 +1804,15 @@ Last Quarter on September 4 shares the calendar with M27, the Dumbbell Nebula, a
 
 ### Sky Note
 
-M29 (NGC 6913), an open cluster appears on September 10 and New Moon follows September 11, giving the latter part of the week excellent dark-sky potential. Sadr in Cygnus on September 12 provides a bright naked-eye landmark in one of the Milky Way's richest northern fields.
+Messier 29 (M29), open cluster in Cygnus appears on September 10 and New Moon follows September 11, giving the latter part of the week excellent dark-sky potential. Sadr in Cygnus on September 12 provides a bright naked-eye landmark in one of the Milky Way's richest northern fields.
 
 **Naked eye:** Use the Summer Triangle and then identify the cross-shaped body of Cygnus. Sadr lies near the center of the cross. Under a dark sky, the Milky Way through Cygnus is itself one of the week's finest sights.
 
-**Binoculars:** M29 (NGC 6913), an open cluster is a small open cluster that stands out as a compact concentration against a very crowded stellar background. Sweep slowly around Sadr and along Cygnus; the binocular field contains far more than the named catalog target.
+**Binoculars:** Messier 29 (M29), open cluster in Cygnus is a small open cluster that stands out as a compact concentration against a very crowded stellar background. Sweep slowly around Sadr and along Cygnus; the binocular field contains far more than the named catalog target.
 
-**Small telescope:** Low to moderate power resolves M29 (NGC 6913), an open cluster into its brighter members and makes its compact geometry easier to recognize. Avoid excessive magnification at first, because the surrounding star field is useful for orientation and context.
+**Small telescope:** Low to moderate power resolves Messier 29 (M29), open cluster in Cygnus into its brighter members and makes its compact geometry easier to recognize. Avoid excessive magnification at first, because the surrounding star field is useful for orientation and context.
 
-**What to expect:** M29 (NGC 6913), an open cluster is not a dramatic photographic showpiece. Its appeal comes from finding a small organized cluster inside an extraordinarily rich Milky Way field. New Moon makes this an especially good week to appreciate the background sky rather than only the catalog object.
+**What to expect:** Messier 29 (M29), open cluster in Cygnus is not a dramatic photographic showpiece. Its appeal comes from finding a small organized cluster inside an extraordinarily rich Milky Way field. New Moon makes this an especially good week to appreciate the background sky rather than only the catalog object.
 
 ### Chart
 
@@ -1832,8 +1832,8 @@ M29 (NGC 6913), an open cluster appears on September 10 and New Moon follows Sep
 | Tue, Sep 15, 2026 | ♍ 24 | — |
 | Wed, Sep 16, 2026 | ♍ 25 | — |
 | Thu, Sep 17, 2026 | ♍ 26 | Sualocin (α Del) — B V 4 — Tropical — Summer<br>Rotanev (β Del) — B V 4 — Tropical — Summer<br>α Ind — 👁 V 3 — Southern — Summer |
-| Fri, Sep 18, 2026 | ♍ 27 | 🌓 First Quarter — 20:43:39 UTC<br>M72 — 🔭 — Tropical — Summer<br>Deneb (α Cyg) — 👁 V 1 — Northern — Summer |
-| Sat, Sep 19, 2026 | ♍ 28 | M73 — AST — Tropical Summer — 🔭<br>β Pav — 👁 V 3 — Southern — Summer<br>Aljanah (ε Cyg) — 👁 V 2 — Northern — Summer |
+| Fri, Sep 18, 2026 | ♍ 27 | 🌓 First Quarter — 20:43:39 UTC<br>Messier 72 (M72), globular cluster in Aquarius — 🔭 — Tropical — Summer<br>Deneb (α Cyg) — 👁 V 1 — Northern — Summer |
+| Sat, Sep 19, 2026 | ♍ 28 | Messier 73 (M73), asterism in Aquarius — 🔭 — Tropical — Summer<br>β Pav — 👁 V 3 — Southern — Summer<br>Aljanah (ε Cyg) — 👁 V 2 — Northern — Summer |
 | Sun, Sep 20, 2026 | ♍ 29 | α Mic — B V 5 — Southern — Summer |
 
 ### Weekly Solar-System Ephemeris
@@ -1852,15 +1852,15 @@ M29 (NGC 6913), an open cluster appears on September 10 and New Moon follows Sep
 
 ### Sky Note
 
-Delphinus and Deneb give this week a strong naked-eye framework, while M72 (NGC 6981), a globular cluster and M73 (NGC 6994), an ast provide a useful contrast between easy star patterns and much subtler telescopic targets. First Quarter on September 18 means the Moon will increasingly brighten the evening sky as the week progresses.
+Delphinus and Deneb give this week a strong naked-eye framework, while Messier 72 (M72), globular cluster in Aquarius and M73 (NGC 6994), an ast provide a useful contrast between easy star patterns and much subtler telescopic targets. First Quarter on September 18 means the Moon will increasingly brighten the evening sky as the week progresses.
 
 **Naked eye:** Find Deneb, the brilliant northern vertex of the Summer Triangle, then look south and a little east for the small diamond-shaped constellation Delphinus. Sualocin and Rotanev mark its compact pattern and are excellent examples of stars that are easier to identify from a constellation shape than from brightness alone.
 
 **Binoculars:** Delphinus is especially attractive in binoculars because the whole little constellation fits comfortably in one field with surrounding Milky Way stars. Deneb and the Cygnus star fields also reward slow sweeping, particularly before moonlight becomes dominant.
 
-**Small telescope:** M72 (NGC 6981), a globular cluster is a faint globular cluster in Aquarius and is a much more demanding object than the bright summer globulars. Expect a small, dim glow rather than obvious individual stars in a modest aperture. M73 (NGC 6994), an ast is not a physical star cluster but a compact asterism: a tiny grouping of stars that becomes apparent with magnification.
+**Small telescope:** Messier 72 (M72), globular cluster in Aquarius is a faint globular cluster in Aquarius and is a much more demanding object than the bright summer globulars. Expect a small, dim glow rather than obvious individual stars in a modest aperture. M73 (NGC 6994), an ast is not a physical star cluster but a compact asterism: a tiny grouping of stars that becomes apparent with magnification.
 
-**What to expect:** This is a good week for learning that a Messier number does not guarantee a spectacular visual object. M72 (NGC 6981), a globular cluster is intrinsically subtle in a small telescope, while M73 (NGC 6994), an ast is essentially a tiny star pattern. The pleasure comes from finding and recognizing them, not from expecting photographic drama.
+**What to expect:** This is a good week for learning that a Messier number does not guarantee a spectacular visual object. Messier 72 (M72), globular cluster in Aquarius is intrinsically subtle in a small telescope, while M73 (NGC 6994), an ast is essentially a tiny star pattern. The pleasure comes from finding and recognizing them, not from expecting photographic drama.
 
 ### Chart
 
@@ -1929,10 +1929,10 @@ The September 26 Full Moon dominates this week, while the Sun crosses into Libra
 | Mon, Sep 28, 2026 | ♎ 6 | Alderamin (α Cep) — 👁 V 2 — Northern — Autumn |
 | Tue, Sep 29, 2026 | ♎ 7 | β Equ — B V 5 — Tropical — Autumn |
 | Wed, Sep 30, 2026 | ♎ 8 | — |
-| Thu, Oct 01, 2026 | ♎ 9 | M15 Great Pegasus Globular — B — Tropical — Autumn<br>Alfirk (β Cep) — 👁 V 3 — Northern — Autumn |
-| Fri, Oct 02, 2026 | ♎ 10 | M2 — B — Tropical — Autumn<br>M39 — B — Northern — Autumn<br>Sadalsuud (β Aqr) — 👁 V 3 — Tropical — Autumn |
+| Thu, Oct 01, 2026 | ♎ 9 | Messier 15 (M15), globular cluster in Pegasus — B — Tropical — Autumn<br>Alfirk (β Cep) — 👁 V 3 — Northern — Autumn |
+| Fri, Oct 02, 2026 | ♎ 10 | Messier 2 (M2), globular cluster in Aquarius — B — Tropical — Autumn<br>Messier 39 (M39), open cluster in Cygnus — B — Northern — Autumn<br>Sadalsuud (β Aqr) — 👁 V 3 — Tropical — Autumn |
 | Sat, Oct 03, 2026 | ♎ 11 | 🌗 Last Quarter — 13:25:02 UTC |
-| Sun, Oct 04, 2026 | ♎ 12 | M30 — B — Tropical — Autumn |
+| Sun, Oct 04, 2026 | ♎ 12 | Messier 30 (M30), globular cluster in Capricornus — B — Tropical — Autumn |
 
 ### Weekly Solar-System Ephemeris
 
@@ -1950,15 +1950,15 @@ The September 26 Full Moon dominates this week, while the Sun crosses into Libra
 
 ### Sky Note
 
-This is a compact but excellent autumn deep-sky week: M15, the Great Pegasus Globular, a globular cluster arrives October 1, followed by M2 (NGC 7089), a globular cluster and M39 (NGC 7092), an open cluster on October 2 and M30 (NGC 7099), a globular cluster on October 4. Last Quarter Moon on October 3 means the evening sky is becoming progressively friendlier for these targets.
+This is a compact but excellent autumn deep-sky week: Messier 15 (M15), globular cluster in Pegasus arrives October 1, followed by Messier 2 (M2), globular cluster in Aquarius and Messier 39 (M39), open cluster in Cygnus on October 2 and Messier 30 (M30), globular cluster in Capricornus on October 4. Last Quarter Moon on October 3 means the evening sky is becoming progressively friendlier for these targets.
 
 **Naked eye:** Use Pegasus, Aquarius, and Cygnus as the broad framework. Alderamin in Cepheus and Sadalsuud in Aquarius help anchor the northern and southern parts of the autumn sky while the Summer Triangle still lingers to the west.
 
-**Binoculars:** M15, the Great Pegasus Globular, a globular cluster and M2 (NGC 7089), a globular cluster appear as small round glows under a dark sky. M39 (NGC 7092), an open cluster is very different: a loose open cluster whose broad star pattern is especially well suited to binoculars and low-power sweeping. M30 (NGC 7099), a globular cluster is more difficult in binoculars and benefits from darker conditions and a steady hand.
+**Binoculars:** Messier 15 (M15), globular cluster in Pegasus and Messier 2 (M2), globular cluster in Aquarius appear as small round glows under a dark sky. Messier 39 (M39), open cluster in Cygnus is very different: a loose open cluster whose broad star pattern is especially well suited to binoculars and low-power sweeping. Messier 30 (M30), globular cluster in Capricornus is more difficult in binoculars and benefits from darker conditions and a steady hand.
 
-**Small telescope:** M15, the Great Pegasus Globular, a globular cluster and M2 (NGC 7089), a globular cluster show bright concentrated cores with grainier outer halos as aperture and magnification increase. M30 (NGC 7099), a globular cluster is smaller and denser, while M39 (NGC 7092), an open cluster remains better appreciated at low power because its stars are spread over a wide field.
+**Small telescope:** Messier 15 (M15), globular cluster in Pegasus and Messier 2 (M2), globular cluster in Aquarius show bright concentrated cores with grainier outer halos as aperture and magnification increase. Messier 30 (M30), globular cluster in Capricornus is smaller and denser, while Messier 39 (M39), open cluster in Cygnus remains better appreciated at low power because its stars are spread over a wide field.
 
-**What to expect:** The three globular clusters will not look alike despite belonging to the same class. Compare core concentration, apparent size, and how quickly each fades into the background. M39 (NGC 7092), an open cluster provides an instructive contrast because its stars are individually obvious rather than blended into a globular glow.
+**What to expect:** The three globular clusters will not look alike despite belonging to the same class. Compare core concentration, apparent size, and how quickly each fades into the background. Messier 39 (M39), open cluster in Cygnus provides an instructive contrast because its stars are individually obvious rather than blended into a globular glow.
 
 **Asterism:** The Great Square of Pegasus is the principal autumn signpost; its four corners open paths toward Andromeda, Pisces, and the fainter autumn constellations.
 
@@ -2000,15 +2000,15 @@ This is a compact but excellent autumn deep-sky week: M15, the Great Pegasus Glo
 
 ### Sky Note
 
-The New Moon on Saturday, October 10 makes this one of the best dark-sky weeks of the month. In the evening, begin with the Great Square of Pegasus and follow the constellation westward to Enif (ε Pegasi), the bright star marking the horse's muzzle. From Enif, M15, the Great Pegasus Globular, a globular cluster is only about 4° away and makes an excellent comparison of instruments.
+The New Moon on Saturday, October 10 makes this one of the best dark-sky weeks of the month. In the evening, begin with the Great Square of Pegasus and follow the constellation westward to Enif (ε Pegasi), the bright star marking the horse's muzzle. From Enif, Messier 15 (M15), globular cluster in Pegasus is only about 4° away and makes an excellent comparison of instruments.
 
 **Naked eye:** Under a reasonably dark sky, trace the Great Square of Pegasus first; it is the easiest framework for the week. Enif is readily visible to the southwest of the Square. The Moon becomes progressively less intrusive through the week and is absent from the evening sky around New Moon.
 
-**Binoculars:** M15, the Great Pegasus Globular, a globular cluster appears as a small, round, misty glow near Enif. Binoculars are also especially useful for sweeping the large autumn star fields because their wide field preserves the relationships among Pegasus, Andromeda, and the surrounding constellations.
+**Binoculars:** Messier 15 (M15), globular cluster in Pegasus appears as a small, round, misty glow near Enif. Binoculars are also especially useful for sweeping the large autumn star fields because their wide field preserves the relationships among Pegasus, Andromeda, and the surrounding constellations.
 
-**Small telescope:** M15, the Great Pegasus Globular, a globular cluster becomes a brighter, more concentrated ball with a conspicuous core. Increasing aperture and magnification may begin to give the outer halo a grainy or partially resolved appearance, but the dense center remains unresolved in a modest instrument. This is not the richly resolved view seen in long-exposure observatory photographs.
+**Small telescope:** Messier 15 (M15), globular cluster in Pegasus becomes a brighter, more concentrated ball with a conspicuous core. Increasing aperture and magnification may begin to give the outer halo a grainy or partially resolved appearance, but the dense center remains unresolved in a modest instrument. This is not the richly resolved view seen in long-exposure observatory photographs.
 
-**What to expect:** Deep-sky objects are visually subtle. A globular cluster such as M15, the Great Pegasus Globular, a globular cluster is normally gray-white at the eyepiece, not a saturated-color photograph. Give your eyes time to dark-adapt, use averted vision, and compare the binocular and telescope views rather than treating one as simply 'better.' The wide-field binocular view gives context; the telescope gives concentration and structure.
+**What to expect:** Deep-sky objects are visually subtle. A globular cluster such as Messier 15 (M15), globular cluster in Pegasus is normally gray-white at the eyepiece, not a saturated-color photograph. Give your eyes time to dark-adapt, use averted vision, and compare the binocular and telescope views rather than treating one as simply 'better.' The wide-field binocular view gives context; the telescope gives concentration and structure.
 
 ### Chart
 
@@ -2128,7 +2128,7 @@ Fomalhaut (α Piscis Austrini) is the standout object of W43, appearing on Octob
 | Thu, Oct 29, 2026 | ♏ 7 | — |
 | Fri, Oct 30, 2026 | ♏ 8 | — |
 | Sat, Oct 31, 2026 | ♏ 9 | — |
-| Sun, Nov 01, 2026 | ♏ 10 | 🌗 Last Quarter — 20:28:27 UTC<br>M52 — B — Northern — Autumn |
+| Sun, Nov 01, 2026 | ♏ 10 | 🌗 Last Quarter — 20:28:27 UTC<br>Messier 52 (M52), open cluster in Cassiopeia — B — Northern — Autumn |
 
 ### Weekly Solar-System Ephemeris
 
@@ -2146,13 +2146,13 @@ Fomalhaut (α Piscis Austrini) is the standout object of W43, appearing on Octob
 
 ### Sky Note
 
-This week ends with Last Quarter Moon on Sunday, November 1, leaving the first part of the evening increasingly useful for deep-sky observing. M52 (NGC 7654), an open cluster is the featured binocular-and-telescope target in the northern autumn sky. Use Cassiopeia's familiar W-shaped pattern as the naked-eye starting point before moving into the richer Milky Way star fields around it.
+This week ends with Last Quarter Moon on Sunday, November 1, leaving the first part of the evening increasingly useful for deep-sky observing. Messier 52 (M52), open cluster in Cassiopeia is the featured binocular-and-telescope target in the northern autumn sky. Use Cassiopeia's familiar W-shaped pattern as the naked-eye starting point before moving into the richer Milky Way star fields around it.
 
 **Naked eye:** Cassiopeia is the key signpost. Its five bright stars form one of the easiest autumn patterns to recognize, and the surrounding Milky Way region becomes much more obvious from a dark site.
 
-**Binoculars:** Sweep outward from Cassiopeia into the neighboring star fields. M52 (NGC 7654), an open cluster is compact enough to look like a small misty patch sprinkled against a dense stellar background; binoculars are particularly good at showing the cluster in context.
+**Binoculars:** Sweep outward from Cassiopeia into the neighboring star fields. Messier 52 (M52), open cluster in Cassiopeia is compact enough to look like a small misty patch sprinkled against a dense stellar background; binoculars are particularly good at showing the cluster in context.
 
-**Small telescope:** M52 (NGC 7654), an open cluster resolves into many faint stars, with the degree of resolution depending strongly on aperture, sky darkness, and magnification. Moderate power begins to separate the cluster from the surrounding field while retaining enough context to make its concentration obvious.
+**Small telescope:** Messier 52 (M52), open cluster in Cassiopeia resolves into many faint stars, with the degree of resolution depending strongly on aperture, sky darkness, and magnification. Moderate power begins to separate the cluster from the surrounding field while retaining enough context to make its concentration obvious.
 
 **What to expect:** An open cluster does not resemble a processed photograph in the eyepiece. The reward is the gradual emergence of individual stars from a haze-like patch as aperture and magnification increase.
 
@@ -2272,7 +2272,7 @@ New Moon falls on Monday, November 9, giving the week an excellent dark-sky begi
 | Tue, Nov 17, 2026 | ♏ 26 | 🌓 First Quarter — 11:47:49 UTC |
 | Wed, Nov 18, 2026 | ♏ 27 | β1 Tuc — B V 4 — Southern — Autumn<br>β2 Tuc — B V 5 — Southern — Autumn<br>β3 Tuc — B V 5 — Southern — Autumn |
 | Thu, Nov 19, 2026 | ♏ 28 | — |
-| Fri, Nov 20, 2026 | ♏ 29 | M31 Andromeda Galaxy — 👁 — Northern — Autumn<br>M32 — 🔭 — Northern — Autumn<br>M110 — 🔭 — Northern — Autumn<br>Schedar (α Cas) — 👁 V 2 — Northern — Autumn<br>Diphda (β Cet) — 👁 V 2 — Tropical — Autumn |
+| Fri, Nov 20, 2026 | ♏ 29 | Andromeda Galaxy (M31), spiral galaxy in Andromeda — 👁 — Northern — Autumn<br>Messier 32 (M32), elliptical galaxy in Andromeda — 🔭 — Northern — Autumn<br>Messier 110 (M110), elliptical galaxy in Andromeda — 🔭 — Northern — Autumn<br>Schedar (α Cas) — 👁 V 2 — Northern — Autumn<br>Diphda (β Cet) — 👁 V 2 — Tropical — Autumn |
 | Sat, Nov 21, 2026 | ♏ 30 | — |
 | Sun, Nov 22, 2026 | ♐ (Sagittarius) 1 | — |
 
@@ -2292,15 +2292,15 @@ New Moon falls on Monday, November 9, giving the week an excellent dark-sky begi
 
 ### Sky Note
 
-The week culminates on Friday, November 20 with M31, the Andromeda Galaxy, together with its companions M32 (NGC 221), an elliptical galaxy and M110 (NGC 205), an elliptical galaxy. This is an ideal week for showing why binoculars and telescopes reveal different aspects of the same target. First Quarter Moon occurs Tuesday, so the darkest contrast will generally be found by observing away from the Moon or before moonlight becomes dominant.
+The week culminates on Friday, November 20 with M31, the Andromeda Galaxy, together with its companions Messier 32 (M32), elliptical galaxy in Andromeda and Messier 110 (M110), elliptical galaxy in Andromeda. This is an ideal week for showing why binoculars and telescopes reveal different aspects of the same target. First Quarter Moon occurs Tuesday, so the darkest contrast will generally be found by observing away from the Moon or before moonlight becomes dominant.
 
-**Naked eye:** Under a genuinely dark sky, M31, the Andromeda Galaxy, a spiral galaxy can be detected as an elongated, diffuse patch rather than a point of light. Begin with Alpheratz and the Andromeda star chain, then use the brighter stars as stepping stones toward the galaxy.
+**Naked eye:** Under a genuinely dark sky, Andromeda Galaxy (M31), spiral galaxy in Andromeda can be detected as an elongated, diffuse patch rather than a point of light. Begin with Alpheratz and the Andromeda star chain, then use the brighter stars as stepping stones toward the galaxy.
 
-**Binoculars:** Binoculars are often the most satisfying first view of M31, the Andromeda Galaxy, a spiral galaxy because the galaxy is very large on the sky. Expect a bright central glow fading gradually outward, with the broad shape easier to appreciate than in a narrow telescopic field. M32 (NGC 221), an elliptical galaxy may be difficult in small binoculars and M110 (NGC 205), an elliptical galaxy is substantially more challenging.
+**Binoculars:** Binoculars are often the most satisfying first view of Andromeda Galaxy (M31), spiral galaxy in Andromeda because the galaxy is very large on the sky. Expect a bright central glow fading gradually outward, with the broad shape easier to appreciate than in a narrow telescopic field. Messier 32 (M32), elliptical galaxy in Andromeda may be difficult in small binoculars and Messier 110 (M110), elliptical galaxy in Andromeda is substantially more challenging.
 
-**Small telescope:** The nucleus of M31, the Andromeda Galaxy, a spiral galaxy becomes more concentrated, M32 (NGC 221), an elliptical galaxy is much easier to separate from the background, and M110 (NGC 205), an elliptical galaxy may appear as a dim elongated glow under good conditions. A small telescope usually does not reveal the colorful spiral detail familiar from photographs.
+**Small telescope:** The nucleus of Andromeda Galaxy (M31), spiral galaxy in Andromeda becomes more concentrated, Messier 32 (M32), elliptical galaxy in Andromeda is much easier to separate from the background, and Messier 110 (M110), elliptical galaxy in Andromeda may appear as a dim elongated glow under good conditions. A small telescope usually does not reveal the colorful spiral detail familiar from photographs.
 
-**What to expect:** Most of M31, the Andromeda Galaxy, a spiral galaxy's visible light at the eyepiece is gray-white. The outer disk extends far beyond the bright core but is low in surface brightness, so dark adaptation and averted vision are more important than simply adding magnification.
+**What to expect:** Most of Andromeda Galaxy (M31), spiral galaxy in Andromeda's visible light at the eyepiece is gray-white. The outer disk extends far beyond the bright core but is low in surface brightness, so dark adaptation and averted vision are more important than simply adding magnification.
 
 **Meteor shower:** The Leonids peak on November 17, with the regular nodal maximum near 23:45 UT and an expected ZHR around 15. Moonlight should not seriously hinder the peak.
 
@@ -2368,9 +2368,9 @@ Full Moon occurs Tuesday, November 24, so this is not the strongest week for fai
 |---|---|---|
 | Mon, Nov 30, 2026 | ♐ 9 | — |
 | Tue, Dec 01, 2026 | ♐ 10 | 🌗 Last Quarter — 06:08:41 UTC |
-| Wed, Dec 02, 2026 | ♐ 11 | M33 Triangulum Galaxy — B — Northern — Autumn<br>M74 — 🔭 — Tropical — Autumn<br>M103 — B — Northern — Autumn |
+| Wed, Dec 02, 2026 | ♐ 11 | Triangulum Galaxy (M33), spiral galaxy in Triangulum — B — Northern — Autumn<br>Messier 74 (M74), spiral galaxy in Pisces — 🔭 — Tropical — Autumn<br>Messier 103 (M103), open cluster in Cassiopeia — B — Northern — Autumn |
 | Thu, Dec 03, 2026 | ♐ 12 | Achernar (α Eri) — 👁 V 0 — Southern — Autumn |
-| Fri, Dec 04, 2026 | ♐ 13 | M76 Little Dumbbell Nebula — 🔭 — Northern — Autumn |
+| Fri, Dec 04, 2026 | ♐ 13 | Little Dumbbell Nebula (M76), planetary nebula in Perseus — 🔭 — Northern — Autumn |
 | Sat, Dec 05, 2026 | ♐ 14 | — |
 | Sun, Dec 06, 2026 | ♐ 15 | — |
 
@@ -2390,13 +2390,13 @@ Full Moon occurs Tuesday, November 24, so this is not the strongest week for fai
 
 ### Sky Note
 
-Last Quarter Moon occurs Tuesday, December 1, and the week brings several contrasting deep-sky targets: M33, the Triangulum Galaxy, a spiral galaxy in Triangulum, M74 (NGC 628), a spiral galaxy in Pisces, M103 (NGC 581), an open cluster in Cassiopeia, and the Little Dumbbell Nebula M76, the Little Dumbbell Nebula, a planetary nebula in Perseus. Together they make an excellent lesson in surface brightness and instrument choice.
+Last Quarter Moon occurs Tuesday, December 1, and the week brings several contrasting deep-sky targets: Triangulum Galaxy (M33), spiral galaxy in Triangulum in Triangulum, Messier 74 (M74), spiral galaxy in Pisces in Pisces, Messier 103 (M103), open cluster in Cassiopeia in Cassiopeia, and the Little Dumbbell Nebula Little Dumbbell Nebula (M76), planetary nebula in Perseus in Perseus. Together they make an excellent lesson in surface brightness and instrument choice.
 
-**Naked eye:** Use the small constellation Triangulum and the larger shapes of Cassiopeia and Perseus as the orientation framework. M33, the Triangulum Galaxy, a spiral galaxy is sometimes reported with the unaided eye from exceptionally dark sites, but it is a difficult low-contrast test and should not be expected under ordinary suburban skies.
+**Naked eye:** Use the small constellation Triangulum and the larger shapes of Cassiopeia and Perseus as the orientation framework. Triangulum Galaxy (M33), spiral galaxy in Triangulum is sometimes reported with the unaided eye from exceptionally dark sites, but it is a difficult low-contrast test and should not be expected under ordinary suburban skies.
 
-**Binoculars:** M33, the Triangulum Galaxy, a spiral galaxy is the standout binocular challenge. Rather than looking for a crisp boundary, look for a very broad, faint brightening of the background. M103 (NGC 581), an open cluster is easier as a compact star cluster and benefits from the wide field around Cassiopeia.
+**Binoculars:** Triangulum Galaxy (M33), spiral galaxy in Triangulum is the standout binocular challenge. Rather than looking for a crisp boundary, look for a very broad, faint brightening of the background. Messier 103 (M103), open cluster in Cassiopeia is easier as a compact star cluster and benefits from the wide field around Cassiopeia.
 
-**Small telescope:** M74 (NGC 628), a spiral galaxy is a difficult face-on galaxy whose low surface brightness makes dark sky more valuable than excessive magnification. M76, the Little Dumbbell Nebula, a planetary nebula is much smaller and responds better to telescopic magnification, appearing as a compact gray nebular patch; M103 (NGC 581), an open cluster begins to resolve cleanly into individual stars.
+**Small telescope:** Messier 74 (M74), spiral galaxy in Pisces is a difficult face-on galaxy whose low surface brightness makes dark sky more valuable than excessive magnification. Little Dumbbell Nebula (M76), planetary nebula in Perseus is much smaller and responds better to telescopic magnification, appearing as a compact gray nebular patch; Messier 103 (M103), open cluster in Cassiopeia begins to resolve cleanly into individual stars.
 
 **What to expect:** Integrated magnitude can be misleading. A large galaxy can have plenty of total light yet still be hard to see because that light is spread over a large area. This week is a practical demonstration of why surface brightness matters.
 
@@ -2438,13 +2438,13 @@ Last Quarter Moon occurs Tuesday, December 1, and the week brings several contra
 
 ### Sky Note
 
-The Moon is waning after Last Quarter, so evening skies become progressively friendlier to faint autumn targets. Sheratan in Aries and Mothallah in Triangulum give a simple naked-eye framework for returning to the M33, the Triangulum Galaxy, a spiral galaxy region while the winter constellations begin to claim more of the eastern evening sky.
+The Moon is waning after Last Quarter, so evening skies become progressively friendlier to faint autumn targets. Sheratan in Aries and Mothallah in Triangulum give a simple naked-eye framework for returning to the Triangulum Galaxy (M33), spiral galaxy in Triangulum region while the winter constellations begin to claim more of the eastern evening sky.
 
 **Naked eye:** Find the compact pattern of Aries, then the small triangle of Triangulum nearby. The value this week is orientation: learn these modest constellations before trying to extract faint galaxies from the background.
 
-**Binoculars:** Sweep Triangulum slowly. Under a dark sky, M33, the Triangulum Galaxy, a spiral galaxy is a broad, low-contrast brightening rather than a sharply bounded object. Wide-field binoculars are often more effective than high magnification because they preserve contrast and surrounding reference stars.
+**Binoculars:** Sweep Triangulum slowly. Under a dark sky, Triangulum Galaxy (M33), spiral galaxy in Triangulum is a broad, low-contrast brightening rather than a sharply bounded object. Wide-field binoculars are often more effective than high magnification because they preserve contrast and surrounding reference stars.
 
-**Small telescope:** Use low power first on M33, the Triangulum Galaxy, a spiral galaxy; increasing magnification too quickly can make the galaxy harder to recognize. Under good conditions a small telescope strengthens the central region and hints at uneven texture, but photographic spiral structure should not be expected.
+**Small telescope:** Use low power first on Triangulum Galaxy (M33), spiral galaxy in Triangulum; increasing magnification too quickly can make the galaxy harder to recognize. Under good conditions a small telescope strengthens the central region and hints at uneven texture, but photographic spiral structure should not be expected.
 
 **What to expect:** This is a week for learning how slowly the eye detects faint extended light. Do not expect a galaxy to announce itself like a star. Scan, stop, use averted vision, and allow several seconds for the faint glow to become convincing.
 
@@ -2467,7 +2467,7 @@ The Moon is waning after Last Quarter, so evening skies become progressively fri
 | Mon, Dec 14, 2026 | ♐ 23 | — |
 | Tue, Dec 15, 2026 | ♐ 24 | — |
 | Wed, Dec 16, 2026 | ♐ 25 | Polaris (α UMi) — 👁 V 2 — Northern — Autumn |
-| Thu, Dec 17, 2026 | ♐ 26 | 🌓 First Quarter — 05:42:40 UTC<br>M34 — B — Northern — Autumn<br>M77 — 🔭 — Tropical — Autumn |
+| Thu, Dec 17, 2026 | ♐ 26 | 🌓 First Quarter — 05:42:40 UTC<br>Messier 34 (M34), open cluster in Perseus — B — Northern — Autumn<br>Messier 77 (M77), spiral galaxy in Cetus — 🔭 — Tropical — Autumn |
 | Fri, Dec 18, 2026 | ♐ 27 | — |
 | Sat, Dec 19, 2026 | ♐ 28 | β For — B V 4 — Southern — Autumn |
 | Sun, Dec 20, 2026 | ♐ 29 | — |
