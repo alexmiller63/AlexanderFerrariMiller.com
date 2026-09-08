@@ -72,7 +72,10 @@ def rewrite_year_nav(text: str, year: int, weekly_page: bool) -> str:
     left = previous or '<span class="nav-spacer" aria-hidden="true">—</span>'
     right = following or '<span class="nav-spacer" aria-hidden="true">—</span>'
     href = "../" if weekly_page else "./"
-    center = f'<a class="current-year" aria-current="page" href="{href}">{year}</a>'
+    if weekly_page:
+        center = f'<a href="{href}">{year}</a>'
+    else:
+        center = f'<a class="current-year" aria-current="page" href="{href}">{year}</a>'
     nav = f'<nav class="yearnav">{left}{center}{right}</nav>'
     return text[:match.start()] + nav + text[match.end():]
 
