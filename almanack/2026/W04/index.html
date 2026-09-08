@@ -81,6 +81,14 @@ footer .wrap { padding-top:1.3rem; padding-bottom:1.3rem; opacity:.9; }
 .weeknav .nav-spacer {
   visibility:hidden;
 }
+.almanack-bottom-nav-wrap {
+  max-width:1080px;
+  margin:0 auto;
+  padding:1rem 1.5rem 1.5rem;
+}
+.almanack-bottom-nav-wrap nav:last-child {
+  margin-bottom:0;
+}
 @media (prefers-color-scheme:dark) {
   .yearnav .current-year,
   .yearnav .current-year:visited,
@@ -122,7 +130,7 @@ footer .wrap { padding-top:1.3rem; padding-bottom:1.3rem; opacity:.9; }
 <p><strong>Small telescope:</strong> Messier 38 (M38), open cluster in Auriga resolves increasingly into stars. Messier 79 (M79), globular cluster in Lepus in Lepus is a globular cluster and appears much more compact: a small concentrated glow whose outer parts may begin to look grainy with sufficient aperture.</p>
 <p><strong>What to expect:</strong> Open and globular clusters can have similar catalog magnitudes yet look completely different. Structure and angular size matter as much as the magnitude number.</p>
 <h3>Chart</h3>
-<p><code>ISO2026-W4-chart.png</code> — chart slot.</p><nav class="weeknav week-position" id="week-bottom-nav" aria-label="Week navigation"><a href="../W03/#week-bottom-nav">← W03</a><span class="current-week" aria-current="page">ISO 2026-W04</span><a href="../W05/#week-bottom-nav">W05 →</a></nav></main><aside class="notation-legend" aria-label="Astronomical notation legend">
+<p><code>ISO2026-W4-chart.png</code> — chart slot.</p></main><aside class="notation-legend" aria-label="Astronomical notation legend">
   <p><strong>Greek alphabet</strong></p>
   <div class="legend-line">
     <span class="legend-item">α Alpha</span><span class="legend-item">β Beta</span><span class="legend-item">γ Gamma</span><span class="legend-item">δ Delta</span><span class="legend-item">ε Epsilon</span><span class="legend-item">ζ Zeta</span><span class="legend-item">η Eta</span><span class="legend-item">θ Theta</span><span class="legend-item">ι Iota</span><span class="legend-item">κ Kappa</span><span class="legend-item">λ Lambda</span><span class="legend-item">μ Mu</span><span class="legend-item">ν Nu</span><span class="legend-item">ξ Xi</span><span class="legend-item">ο Omicron</span><span class="legend-item">π Pi</span><span class="legend-item">ρ Rho</span><span class="legend-item">σ Sigma</span><span class="legend-item">τ Tau</span><span class="legend-item">υ Upsilon</span><span class="legend-item">φ Phi</span><span class="legend-item">χ Chi</span><span class="legend-item">ψ Psi</span><span class="legend-item">ω Omega</span>
@@ -135,7 +143,7 @@ footer .wrap { padding-top:1.3rem; padding-bottom:1.3rem; opacity:.9; }
   <div class="legend-line">
     <span class="legend-item"><span class="text-symbol">☉&#xfe0e;</span> Sun</span><span class="legend-item"><span class="text-symbol">☽&#xfe0e;</span> Moon</span><span class="legend-item"><span class="text-symbol">☿&#xfe0e;</span> Mercury</span><span class="legend-item"><span class="text-symbol">♀&#xfe0e;</span> Venus</span><span class="legend-item"><span class="text-symbol">♂&#xfe0e;</span> Mars</span><span class="legend-item"><span class="text-symbol">⚳&#xfe0e;</span> Ceres</span><span class="legend-item"><span class="text-symbol">♃&#xfe0e;</span> Jupiter</span><span class="legend-item"><span class="text-symbol">♄&#xfe0e;</span> Saturn</span><span class="legend-item"><span class="text-symbol">♅&#xfe0e;</span> Uranus</span><span class="legend-item"><span class="text-symbol">♆&#xfe0e;</span> Neptune</span><span class="legend-item"><span class="text-symbol">♇&#xfe0e;</span> Pluto</span>
   </div>
-</aside><footer><div class="wrap">© 2026 Alexander Ferrari Miller. All rights reserved.</div></footer><script>(function(){
+</aside><div class="almanack-bottom-nav-wrap" id="almanack-bottom-nav"><nav class="weeknav sitenav"><a href="/star-almanack/#almanack-bottom-nav">Almanack Home</a><a href="/projects.html">All Projects</a><a href="../../../index.html">Main Site</a></nav><nav class="yearnav"><a href="../../2025/#almanack-bottom-nav">← 2025</a><a href="../#almanack-bottom-nav">2026</a><a href="../../2027/#almanack-bottom-nav">2027 →</a></nav><nav class="weeknav week-position" aria-label="Week navigation"><a href="../W03/#almanack-bottom-nav">← W03</a><span class="current-week" aria-current="page">ISO 2026-W04</span><a href="../W05/#almanack-bottom-nav">W05 →</a></nav></div><footer><div class="wrap">© 2026 Alexander Ferrari Miller. All rights reserved.</div></footer><script>(function(){
 const g={'α':'Alpha','β':'Beta','γ':'Gamma','δ':'Delta','ε':'Epsilon','ζ':'Zeta','η':'Eta','θ':'Theta','ι':'Iota','κ':'Kappa','λ':'Lambda','μ':'Mu','ν':'Nu','ξ':'Xi','ο':'Omicron','π':'Pi','ρ':'Rho','σ':'Sigma','τ':'Tau','υ':'Upsilon','φ':'Phi','χ':'Chi','ψ':'Psi','ω':'Omega'};
 const c={And:'Andromedae',Ant:'Antliae',Aps:'Apodis',Aqr:'Aquarii',Aql:'Aquilae',Ara:'Arae',Ari:'Arietis',Aur:'Aurigae',Boo:'Bootis',Cae:'Caeli',Cam:'Camelopardalis',Cnc:'Cancri',CVn:'Canum Venaticorum',CMa:'Canis Majoris',CMi:'Canis Minoris',Cap:'Capricorni',Car:'Carinae',Cas:'Cassiopeiae',Cen:'Centauri',Cep:'Cephei',Cet:'Ceti',Cha:'Chamaeleontis',Cir:'Circini',Col:'Columbae',Com:'Comae Berenices',CrA:'Coronae Australis',CrB:'Coronae Borealis',Crv:'Corvi',Crt:'Crateris',Cru:'Crucis',Cyg:'Cygni',Del:'Delphini',Dor:'Doradus',Dra:'Draconis',Equ:'Equulei',Eri:'Eridani',For:'Fornacis',Gem:'Geminorum',Gru:'Gruis',Her:'Herculis',Hor:'Horologii',Hya:'Hydrae',Hyi:'Hydri',Ind:'Indi',Lac:'Lacertae',Leo:'Leonis',LMi:'Leonis Minoris',Lep:'Leporis',Lib:'Librae',Lup:'Lupi',Lyn:'Lyncis',Lyr:'Lyrae',Men:'Mensae',Mic:'Microscopii',Mon:'Monocerotis',Mus:'Muscae',Nor:'Normae',Oct:'Octantis',Oph:'Ophiuchi',Ori:'Orionis',Pav:'Pavonis',Peg:'Pegasi',Per:'Persei',Phe:'Phoenicis',Pic:'Pictoris',Psc:'Piscium',PsA:'Piscis Austrini',Pup:'Puppis',Pyx:'Pyxidis',Ret:'Reticuli',Sge:'Sagittae',Sgr:'Sagittarii',Sco:'Scorpii',Scl:'Sculptoris',Sct:'Scuti',Ser:'Serpentis',Sex:'Sextantis',Tau:'Tauri',Tel:'Telescopii',Tri:'Trianguli',TrA:'Trianguli Australis',Tuc:'Tucanae',UMa:'Ursae Majoris',UMi:'Ursae Minoris',Vel:'Velorum',Vir:'Virginis',Vol:'Volantis',Vul:'Vulpeculae'};
 const z={'♈':'Aries','♉':'Taurus','♊':'Gemini','♋':'Cancer','♌':'Leo','♍':'Virgo','♎':'Libra','♏':'Scorpio','♐':'Sagittarius','♑':'Capricorn','♒':'Aquarius','♓':'Pisces'};
