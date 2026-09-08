@@ -7,7 +7,7 @@ from pathlib import Path
 ROOT = Path(__file__).parent
 EPHEMERIS = ROOT / "weekly-ephemeris-2026.csv"
 PRIMARY = [("☉ Sun","sun"),("☽ Moon","moon"),("☿ Mercury","mercury"),("♀ Venus","venus"),("♂ Mars","mars"),("♃ Jupiter","jupiter"),("♄ Saturn","saturn")]
-EXTENDED = [("♅ Uranus","uranus"),("♆ Neptune","neptune"),("⚳ Ceres","ceres"),("♇ Pluto","pluto")]
+EXTENDED = [("⚳ Ceres","ceres"),("♅ Uranus","uranus"),("♆ Neptune","neptune"),("♇ Pluto","pluto")]
 
 def value(row, key):
     b = row.get(key + "_beta", "").strip()
