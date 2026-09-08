@@ -15,9 +15,11 @@ on:
       - 'tools/populate_2025_2027_fixed_sky.py'
       - 'tools/populate_2025_2027_constellations.py'
       - 'tools/populate_2025_2027_asterisms.py'
+      - 'tools/populate_caldwell.py'
       - 'tools/populate-2025-2027-ephemeris-trigger.txt'
       - 'Star-Almanack-Repo/compute_constellation_observance_2026.py'
       - 'Star-Almanack-Repo/expanded-bayer-visibility-2026.csv'
+      - 'Star-Almanack-Repo/caldwell-catalog.csv'
       - 'Star-Almanack-Repo/asterism-geometry-2025.csv'
       - 'Star-Almanack-Repo/asterism-geometry-2027.csv'
 
@@ -55,6 +57,9 @@ jobs:
       - name: Populate core asterism observances
         run: python tools/populate_2025_2027_asterisms.py
 
+      - name: Populate Caldwell C1-C109 in every generated year
+        run: python tools/populate_caldwell.py
+
       - name: Wire highlighted current-week navigation
         run: python tools/wire_week_navigation.py
 
@@ -78,6 +83,9 @@ jobs:
               Star-Almanack-Repo/generated/bright-star-visibility-2027.csv \
               Star-Almanack-Repo/generated/messier-visibility-2025.csv \
               Star-Almanack-Repo/generated/messier-visibility-2027.csv \
+              Star-Almanack-Repo/generated/caldwell-visibility-2025.csv \
+              Star-Almanack-Repo/generated/caldwell-visibility-2026.csv \
+              Star-Almanack-Repo/generated/caldwell-visibility-2027.csv \
               Star-Almanack-Repo/generated/constellation-observance-2025.csv \
               Star-Almanack-Repo/generated/constellation-observance-2027.csv
           }
@@ -91,6 +99,7 @@ jobs:
             python tools/populate_2025_2027_fixed_sky.py
             python tools/populate_2025_2027_constellations.py
             python tools/populate_2025_2027_asterisms.py
+            python tools/populate_caldwell.py
             python tools/wire_week_navigation.py
           }
 
