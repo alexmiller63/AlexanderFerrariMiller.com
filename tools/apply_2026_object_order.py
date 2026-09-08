@@ -23,10 +23,14 @@ MONTHS = {m: i for i, m in enumerate(
     ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"], 1
 )}
 
-# Fixed stars: name — visibility — Declination — Season
+# Fixed stars: name — visibility — Declination Season
 STAR = re.compile(
     rf"(?P<head>(?:(?!<br>|\|).)+?) — (?P<vis>(?:👁|B|🔭) V \d+) — "
     rf"(?P<band>{BANDS}) (?P<season>{SEASONS})(?=(?:<br>| \||</td>|$))"
+)
+STAR_WITH_DASH = re.compile(
+    rf"(?P<head>(?:(?!<br>|\|).)+?) — (?P<vis>(?:👁|B|🔭) V \d+) — "
+    rf"(?P<band>{BANDS}) — (?P<season>{SEASONS})(?=(?:<br>| \||</td>|$))"
 )
 STAR_SEASON_FIRST = re.compile(
     rf"(?P<head>(?:(?!<br>|\|).)+?) — (?P<vis>(?:👁|B|🔭) V \d+) — "
@@ -36,7 +40,7 @@ STAR_SEASON_FIRST = re.compile(
 # Existing calendar forms, including old designation/name labels.
 MESSIER_CALENDAR = re.compile(
     rf"(?P<head>M\d{{1,3}}(?: [^—<|]+?)?) — (?P<vis>👁|B|🔭) — "
-    rf"(?P<band>{BANDS}) — (?P<season>{SEASONS})"
+    rf"(?P<band>{BANDS})(?: —)? (?P<season>{SEASONS})"
 )
 MESSIER_CALENDAR_OLD = re.compile(
     rf"(?P<head>M\d{{1,3}}(?: [^—<|]+?)?) — (?P<type>[^—<|]+?) — "
@@ -154,13 +158,14 @@ def designation_from_head(head: str) -> str:
 
 
 def rewrite(text: str) -> str:
-    # Preserve the established star ordering.
-    text = STAR.sub(lambda m: f"{m.group('head')} — {m.group('vis')} — {m.group('band')} — {m.group('season')}", text)
-    text = STAR_SEASON_FIRST.sub(lambda m: f"{m.group('head')} — {m.group('vis')} — {m.group('band')} — {m.group('season')}", text)
+    # Canonical fixed-star ordering: no dash between Declination Band and Season.
+    text = STAR.sub(lambda m: f"{m.group('head')} — {m.group('vis')} — {m.group('band')} {m.group('season')}", text)
+    text = STAR_WITH_DASH.sub(lambda m: f"{m.group('head')} — {m.group('vis')} — {m.group('band')} {m.group('season')}", text)
+    text = STAR_SEASON_FIRST.sub(lambda m: f"{m.group('head')} — {m.group('vis')} — {m.group('band')} {m.group('season')}", text)
 
     def cal(m: re.Match[str]) -> str:
         designation = designation_from_head(m.group('head'))
-        return f"{canonical_messier(designation)} — {m.group('vis')} — {m.group('band')} — {m.group('season')}"
+        return f"{canonical_messier(designation)} — {m.group('vis')} — {m.group('band')} {m.group('season')}"
 
     text = MESSIER_CALENDAR_OLD.sub(cal, text)
     text = MESSIER_SEASON_FIRST.sub(cal, text)
