@@ -10,6 +10,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 BASES = (ROOT / "almanack", ROOT / "Star-Almanack-Repo" / "site")
 YEARS = (2025, 2026, 2027)
+BOTTOM_ID = "almanack-bottom-nav"
 
 STYLE = """<style id="week-position-nav-css">
 .yearnav .current-year,
@@ -27,6 +28,14 @@ STYLE = """<style id="week-position-nav-css">
 .weeknav .nav-spacer {
   visibility:hidden;
 }
+.almanack-bottom-nav-wrap {
+  max-width:1080px;
+  margin:0 auto;
+  padding:1rem 1.5rem 1.5rem;
+}
+.almanack-bottom-nav-wrap nav:last-child {
+  margin-bottom:0;
+}
 @media (prefers-color-scheme:dark) {
   .yearnav .current-year,
   .yearnav .current-year:visited,
@@ -40,8 +49,10 @@ STYLE = """<style id="week-position-nav-css">
 }
 </style>"""
 
-WEEK_NAV_RE = re.compile(r'<nav class="weeknav(?: week-position)?"(?: id="week-bottom-nav")?(?: aria-label="Week navigation")?>(.*?)</nav>', re.S)
+WEEK_NAV_RE = re.compile(r'<nav class="weeknav(?: week-position)?"(?: id="(?:week-bottom-nav|almanack-bottom-nav)")?(?: aria-label="Week navigation")?>(.*?)</nav>', re.S)
 YEAR_NAV_RE = re.compile(r'<nav class="yearnav">(.*?)</nav>', re.S)
+SITE_NAV_RE = re.compile(r'<nav class="weeknav sitenav">(.*?)</nav>', re.S)
+BOTTOM_WRAP_RE = re.compile(r'<div class="almanack-bottom-nav-wrap" id="almanack-bottom-nav">.*?</div>', re.S)
 CHILD_RE = re.compile(r'(<a\b.*?</a>|<span\b.*?</span>)', re.S)
 STYLE_RE = re.compile(r'<style id="week-position-nav-css">.*?</style>', re.S)
 HREF_RE = re.compile(r'href="([^"]+)"')
@@ -50,6 +61,13 @@ HREF_RE = re.compile(r'href="([^"]+)"')
 def href_of(tag: str) -> str:
     m = HREF_RE.search(tag)
     return m.group(1) if m else ""
+
+
+def add_bottom_fragment_to_tag(tag: str) -> str:
+    def repl(match: re.Match[str]) -> str:
+        href = match.group(1).split('#', 1)[0]
+        return f'href="{href}#{BOTTOM_ID}"'
+    return HREF_RE.sub(repl, tag)
 
 
 def rewrite_year_nav(text: str, year: int, weekly_page: bool) -> str:
@@ -110,38 +128,82 @@ def build_week_nav_from_match(match: re.Match[str], year: int, week: int) -> str
     )
 
 
-def bottom_nav(top_nav: str) -> str:
-    """Make the lower nav land on the lower nav of the destination week."""
-    nav = top_nav.replace(
-        '<nav class="weeknav week-position" aria-label="Week navigation">',
-        '<nav class="weeknav week-position" id="week-bottom-nav" aria-label="Week navigation">',
-        1,
-    )
-
-    def add_fragment(match: re.Match[str]) -> str:
-        href = match.group(1).split('#', 1)[0]
-        return f'href="{href}#week-bottom-nav"'
-
-    return HREF_RE.sub(add_fragment, nav)
-
-
 def rewrite_week_nav(text: str, year: int, week: int) -> str:
     matches = list(WEEK_NAV_RE.finditer(text))
     if not matches:
         raise RuntimeError("weekly navigation not found")
 
-    # The upper navigation stays at the top of the destination page.
-    # The lower navigation carries an anchor so previous/next remains low.
     top = build_week_nav_from_match(matches[0], year, week)
-    lower = bottom_nav(top)
     index = 0
 
     def replacement(_: re.Match[str]) -> str:
         nonlocal index
         index += 1
-        return top if index == 1 else lower
+        return top if index == 1 else ""
 
     return WEEK_NAV_RE.sub(replacement, text)
+
+
+def bottom_site_nav(text: str) -> str:
+    match = SITE_NAV_RE.search(text)
+    if not match:
+        raise RuntimeError("site navigation not found")
+    nav = match.group(0)
+
+    def rewrite_link(link_match: re.Match[str]) -> str:
+        tag = link_match.group(0)
+        if "Almanack Home" in tag:
+            return add_bottom_fragment_to_tag(tag)
+        # Main Site and All Projects deliberately land at the top.
+        return tag
+
+    return re.sub(r'<a\b.*?</a>', rewrite_link, nav, flags=re.S)
+
+
+def bottom_year_nav(text: str) -> str:
+    match = YEAR_NAV_RE.search(text)
+    if not match:
+        raise RuntimeError("year navigation not found")
+    return HREF_RE.sub(
+        lambda m: f'href="{m.group(1).split("#", 1)[0]}#{BOTTOM_ID}"',
+        match.group(0),
+    )
+
+
+def bottom_week_nav(text: str) -> str:
+    match = re.search(r'<nav class="weeknav week-position" aria-label="Week navigation">.*?</nav>', text, re.S)
+    if not match:
+        raise RuntimeError("week position navigation not found")
+    return HREF_RE.sub(
+        lambda m: f'href="{m.group(1).split("#", 1)[0]}#{BOTTOM_ID}"',
+        match.group(0),
+    )
+
+
+def place_bottom_navigation(text: str) -> str:
+    text = BOTTOM_WRAP_RE.sub("", text)
+    block = (
+        f'<div class="almanack-bottom-nav-wrap" id="{BOTTOM_ID}">'
+        f'{bottom_site_nav(text)}'
+        f'{bottom_year_nav(text)}'
+        f'{bottom_week_nav(text)}'
+        '</div>'
+    )
+    if '</aside>' not in text:
+        raise RuntimeError("notation legend not found")
+    return text.replace('</aside>', '</aside>' + block, 1)
+
+
+def ensure_year_bottom_target(text: str) -> str:
+    if f'id="{BOTTOM_ID}"' in text:
+        return text
+    marker = '<footer>'
+    if marker in text:
+        return text.replace(marker, f'<div id="{BOTTOM_ID}"></div>{marker}', 1)
+    marker = '</body>'
+    if marker in text:
+        return text.replace(marker, f'<div id="{BOTTOM_ID}"></div>{marker}', 1)
+    raise RuntimeError("year page bottom target insertion point not found")
 
 
 def ensure_style(text: str) -> str:
@@ -171,6 +233,7 @@ def main() -> None:
                 original = path.read_text(encoding='utf-8')
                 updated = rewrite_year_nav(original, year, weekly_page=True)
                 updated = rewrite_week_nav(updated, year, week)
+                updated = place_bottom_navigation(updated)
                 updated = ensure_style(updated)
                 if updated != original:
                     path.write_text(updated, encoding='utf-8')
@@ -180,6 +243,7 @@ def main() -> None:
             if index_path.exists():
                 original = index_path.read_text(encoding='utf-8')
                 updated = ensure_style(rewrite_year_nav(original, year, weekly_page=False))
+                updated = ensure_year_bottom_target(updated)
                 if updated != original:
                     index_path.write_text(updated, encoding='utf-8')
                     changed += 1
