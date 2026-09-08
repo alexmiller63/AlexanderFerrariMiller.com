@@ -90,8 +90,16 @@ footer .wrap { padding-top:1.3rem; padding-bottom:1.3rem; opacity:.9; }
   grid-column:1 / -1;
   justify-self:center;
 }
+.weekgrid a.current-week,
+.weekgrid a.current-week:visited {
+  background:var(--navy);
+  color:#fff;
+  border-color:var(--navy);
+}
 @media (prefers-color-scheme:dark) {
-  .weeknav.week-position .current-week {
+  .weeknav.week-position .current-week,
+  .weekgrid a.current-week,
+  .weekgrid a.current-week:visited {
     background:#eef7ff;
     color:#102a43;
     border-color:#eef7ff;
