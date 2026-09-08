@@ -5,12 +5,58 @@ on:
     branches:
       - main
 
+permissions:
+  contents: write
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Check out site
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Stamp Kilroy before deployment
+        id: kilroy
+        if: github.event.head_commit.message != 'Stamp Kilroy for deployment'
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from datetime import datetime, timezone
+          from pathlib import Path
+          import re
+
+          path = Path('almanack/2025/index.html')
+          text = path.read_text(encoding='utf-8')
+          stamp = datetime.now(timezone.utc).strftime('%H:%M UTC')
+          new_text, count = re.subn(
+              r'KILROY WAS HERE — \d{2}:\d{2} UTC',
+              f'KILROY WAS HERE — {stamp}',
+              text,
+              count=1,
+          )
+          if count != 1:
+              raise SystemExit('Kilroy marker not found exactly once')
+          path.write_text(new_text, encoding='utf-8')
+          print(f'Stamped Kilroy: {stamp}')
+          PY
+
+          if git diff --quiet -- almanack/2025/index.html; then
+            echo 'pushed=false' >> "$GITHUB_OUTPUT"
+          else
+            git config user.name 'github-actions[bot]'
+            git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+            git add almanack/2025/index.html
+            git commit -m 'Stamp Kilroy for deployment'
+            git pull --rebase origin main
+            git push
+            echo 'pushed=true' >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Deploy to AWS
+        if: github.event.head_commit.message == 'Stamp Kilroy for deployment' || steps.kilroy.outputs.pushed != 'true'
         uses: appleboy/ssh-action@v1.2.2
         with:
           host: ${{ secrets.AWS_HOST }}
