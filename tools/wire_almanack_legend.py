@@ -3,6 +3,8 @@
 
 Canonical ephemeris-body legend order: Sun, Moon, Mercury, Venus, Mars, Ceres,
 Jupiter, Saturn, Uranus, Neptune, Pluto.
+
+This file is also the deployment trigger for refreshing stale static legends.
 """
 
 from pathlib import Path
