@@ -52,13 +52,13 @@ jobs:
       - name: Wire Solar-System ephemeris notation controls
         run: python tools/wire_ephemeris_notation.py
       - name: Populate fixed-sky visibility events
-        run: python tools/populate_2025_2027_fixed_sky.py
+        run: python tools/populate_2025_2027_fixed_sky.py 2025 2027
       - name: Standardize Messier labels, instruments, magnitudes, declination bands, and seasons
         run: python tools/standardize_messier_calendar.py
-      - name: Populate constellation alpha, beta, and center observances
-        run: python tools/populate_2025_2027_constellations.py
-      - name: Populate core asterism observances
-        run: python tools/populate_2025_2027_asterisms.py
+      - name: Populate constellation alpha, beta, and center events
+        run: python tools/populate_2025_2027_constellations.py 2025 2027
+      - name: Populate core asterisms
+        run: python tools/populate_2025_2027_asterisms.py 2025 2027
       - name: Populate Caldwell C1-C109 in every generated year
         run: python tools/populate_caldwell.py
       - name: Populate Finest NGC objects not already represented by Caldwell
@@ -91,10 +91,10 @@ jobs:
             python tools/populate_2025_2027_meteor_showers.py
             python tools/populate_ephemeris.py 2025 2027
             python tools/wire_ephemeris_notation.py
-            python tools/populate_2025_2027_fixed_sky.py
+            python tools/populate_2025_2027_fixed_sky.py 2025 2027
             python tools/standardize_messier_calendar.py
-            python tools/populate_2025_2027_constellations.py
-            python tools/populate_2025_2027_asterisms.py
+            python tools/populate_2025_2027_constellations.py 2025 2027
+            python tools/populate_2025_2027_asterisms.py 2025 2027
             python tools/populate_caldwell.py
             python tools/populate_finest_ngc.py
             python tools/reconcile_catalog_common_names.py
