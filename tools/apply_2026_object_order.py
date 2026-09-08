@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 from pathlib import Path
 import csv
+import json
 import re
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -10,40 +11,10 @@ TARGETS = [
     *sorted((ROOT / "Star-Almanack-Repo" / "site" / "2026").glob("W??/index.html")),
 ]
 FIXED_OBJECTS = ROOT / "Star-Almanack-Repo" / "fixed-objects.yaml"
+EDITORIAL_DATA = ROOT / "Star-Almanack-Repo" / "messier-editorial.json"
 
 BANDS = "Northern|Tropical|Southern"
 SEASONS = "Spring|Summer|Autumn|Winter"
-TYPE_NAMES = {
-    "SN": "supernova remnant",
-    "GC": "globular cluster",
-    "OC": "open cluster",
-    "DN": "diffuse nebula",
-    "PN": "planetary nebula",
-    "AS": "asterism",
-    "DS": "double star",
-    "MW": "Milky Way star cloud",
-    "SG": "spiral galaxy",
-    "BG": "barred galaxy",
-    "LG": "lenticular galaxy",
-    "EG": "elliptical galaxy",
-    "IG": "irregular galaxy",
-}
-CONSTELLATIONS = {
-    "And": "Andromeda", "Aqr": "Aquarius", "Aur": "Auriga", "CMa": "Canis Major",
-    "Cnc": "Cancer", "CVn": "Canes Venatici", "Cap": "Capricornus", "Cas": "Cassiopeia",
-    "Cet": "Cetus", "Com": "Coma Berenices", "Cyg": "Cygnus", "Dra": "Draco",
-    "Gem": "Gemini", "Her": "Hercules", "Hya": "Hydra", "Leo": "Leo", "Lep": "Lepus",
-    "Lyr": "Lyra", "Mon": "Monoceros", "Oph": "Ophiuchus", "Ori": "Orion",
-    "Peg": "Pegasus", "Per": "Perseus", "Psc": "Pisces", "Pup": "Puppis",
-    "Sge": "Sagitta", "Sgr": "Sagittarius", "Sco": "Scorpius", "Sct": "Scutum",
-    "Ser": "Serpens", "Tau": "Taurus", "Tri": "Triangulum", "UMa": "Ursa Major",
-    "Vir": "Virgo", "Vul": "Vulpecula",
-}
-# Reader-facing common-name corrections. None means the object is treated as unnamed.
-NAME_OVERRIDES = {
-    "M15": None,
-    "M42": "Orion Nebula",
-}
 
 ROW_RE = re.compile(
     r"(?m)^(\| (?:Mon|Tue|Wed|Thu|Fri|Sat|Sun), ([A-Z][a-z]{2}) (\d{2}), (2025|2026|2027) \| [^|]+ \| )([^|]*)( \|)$"
@@ -76,20 +47,41 @@ MESSIER_SEASON_FIRST = re.compile(
     rf"(?P<season>{SEASONS}) — (?P<band>{BANDS})"
 )
 
-# Sky-note forms emitted by the previous expander.
+# Sky-note forms emitted by the previous expander. Restrict the trailing
+# object class to known labels so a rewrite cannot swallow following prose.
+KNOWN_PROSE_TYPES = (
+    "supernova remnant|globular cluster|open cluster|diffuse nebula|"
+    "emission nebula|emission and reflection nebula|reflection nebula|"
+    "planetary nebula|asterism|double star|Milky Way star cloud|"
+    "spiral galaxy|barred spiral galaxy|lenticular galaxy|elliptical galaxy|"
+    "irregular galaxy"
+)
 MESSIER_PROSE_NAMED = re.compile(
-    r"\b(M(?:110|10\d|[1-9]\d?)), the [^,.;<]+, (?:an? )?[^,.;<]+"
+    rf"\b(M(?:110|10\d|[1-9]\d?)), the [^,.;<]+, (?:an? )?(?:{KNOWN_PROSE_TYPES})"
 )
 MESSIER_PROSE_NGC = re.compile(
-    r"\b(M(?:110|10\d|[1-9]\d?)) \((?:NGC|IC) [^)]+\), (?:an? )?[^,.;<]+"
+    rf"\b(M(?:110|10\d|[1-9]\d?)) \((?:NGC|IC) [^)]+\), (?:an? )?(?:{KNOWN_PROSE_TYPES})"
 )
 
 
-def load_messier_catalog() -> dict[str, dict[str, str | None]]:
-    catalog: dict[str, dict[str, str | None]] = {}
+def load_editorial_data() -> dict:
+    data = json.loads(EDITORIAL_DATA.read_text(encoding="utf-8"))
+    required = {"baseline_provenance", "type_labels", "constellation_labels", "objects"}
+    missing = required - set(data)
+    if missing:
+        raise SystemExit(f"Messier editorial data missing keys: {sorted(missing)}")
+    return data
+
+
+EDITORIAL = load_editorial_data()
+
+
+def load_messier_catalog() -> dict[str, dict]:
+    catalog: dict[str, dict] = {}
     in_messier = False
     for raw in FIXED_OBJECTS.read_text(encoding="utf-8").splitlines():
-        if raw.strip() == "messier:":
+        # Only the top-level data section, not schema.messier.
+        if raw == "messier:":
             in_messier = True
             continue
         if in_messier and raw and not raw.startswith(" "):
@@ -102,15 +94,42 @@ def load_messier_catalog() -> dict[str, dict[str, str | None]]:
         row = next(csv.reader([m.group(1)], skipinitialspace=True))
         if len(row) < 5 or not re.fullmatch(r"M\d{1,3}", row[0].strip()):
             continue
+
         designation = row[0].strip().upper()
-        name = row[2].strip()
-        if name.casefold() == "null":
-            name = None
-        if designation in NAME_OVERRIDES:
-            name = NAME_OVERRIDES[designation]
-        type_name = TYPE_NAMES.get(row[3].strip(), row[3].strip().lower())
-        con = CONSTELLATIONS.get(row[4].strip(), row[4].strip())
-        catalog[designation] = {"name": name, "type": type_name, "constellation": con}
+        catalog_name = row[2].strip()
+        if catalog_name.casefold() == "null":
+            catalog_name = None
+        catalog_type = row[3].strip()
+        con_code = row[4].strip()
+
+        object_editorial = EDITORIAL["objects"].get(designation, {})
+        name = object_editorial.get("accepted_name", catalog_name)
+        editorial_type = object_editorial.get(
+            "editorial_type",
+            EDITORIAL["type_labels"].get(catalog_type),
+        )
+        if not editorial_type:
+            raise SystemExit(f"No editorial type for {designation} catalog type {catalog_type}")
+
+        constellation = EDITORIAL["constellation_labels"].get(con_code)
+        if not constellation:
+            raise SystemExit(f"No constellation label for {designation}: {con_code}")
+
+        provenance = object_editorial.get(
+            "provenance",
+            [EDITORIAL["baseline_provenance"]],
+        )
+        if not provenance:
+            raise SystemExit(f"No provenance for {designation}")
+
+        catalog[designation] = {
+            "name": name,
+            "catalog_type": catalog_type,
+            "type": editorial_type,
+            "constellation": constellation,
+            "provenance": provenance,
+        }
+
     if len(catalog) != 110:
         raise SystemExit(f"Expected 110 Messier source objects, found {len(catalog)}")
     return catalog
