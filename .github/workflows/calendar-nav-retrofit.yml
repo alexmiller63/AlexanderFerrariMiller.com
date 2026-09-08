@@ -19,32 +19,38 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - name: Apply navigation fix
-        run: python3 tools/apply-calendar-nav-fix.py
-      - name: Standardize year and week buttons
-        run: python3 tools/wire_week_navigation.py
-      - name: Commit navigation fix
+      - name: Apply and commit navigation fix
         run: |
-          if git diff --quiet; then
-            echo "No changes needed."
-            exit 0
-          fi
+          set -e
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add almanack Star-Almanack-Repo
-          git commit -m "Standardize Almanack navigation button styling"
 
-          # Other deployment workflows may commit to main at the same time.
-          # Rebase and retry so a harmless concurrent commit does not lose
-          # the generated Almanack navigation changes.
+          # The deploy workflow may stamp Kilroy at the same time. Always
+          # regenerate from the newest main before each push attempt so a
+          # concurrent edit cannot create a rebase conflict or lose changes.
           for attempt in 1 2 3 4 5; do
-            git pull --rebase origin main
+            git fetch origin main
+            git reset --hard origin/main
+
+            python3 tools/apply-calendar-nav-fix.py
+            python3 tools/wire_week_navigation.py
+
+            if git diff --quiet; then
+              echo "No changes needed."
+              exit 0
+            fi
+
+            git add almanack Star-Almanack-Repo
+            git commit -m "Standardize Almanack navigation button styling"
+
             if git push origin HEAD:main; then
               exit 0
             fi
-            echo "Push raced with another main commit; retrying ($attempt/5)..."
+
+            echo "Main changed during generation; regenerating from latest main ($attempt/5)..."
             sleep 2
           done
+
           echo "Unable to push Almanack navigation changes after retries."
           exit 1
 # trigger enabled
