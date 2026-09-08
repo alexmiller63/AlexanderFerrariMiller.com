@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
-"""Populate 2025 and 2027 fixed-sky visibility events."""
+"""Populate fixed-sky visibility events for requested Almanack years."""
 from __future__ import annotations
 import csv
 import datetime as dt
 import math
 import re
+import sys
 from collections import defaultdict
 from pathlib import Path
 
@@ -12,7 +13,7 @@ ROOT = Path(__file__).resolve().parents[1]
 SRC = ROOT / "Star-Almanack-Repo"
 PUBLIC = ROOT / "almanack"
 SOURCE_SITE = SRC / "site"
-YEARS = (2025, 2027)
+DEFAULT_YEARS = (2025, 2027)
 
 GREEK_BAYER = {
     "Alp": "α", "Bet": "β", "Gam": "γ", "Del": "δ", "Eps": "ε", "Zet": "ζ",
@@ -20,6 +21,18 @@ GREEK_BAYER = {
     "Nu": "ν", "Xi": "ξ", "Omi": "ο", "Pi": "π", "Rho": "ρ", "Sig": "σ",
     "Tau": "τ", "Ups": "υ", "Phi": "φ", "Chi": "χ", "Psi": "ψ", "Ome": "ω",
 }
+
+
+def requested_years() -> tuple[int, ...]:
+    if len(sys.argv) == 1:
+        return DEFAULT_YEARS
+    try:
+        years = tuple(dict.fromkeys(int(x) for x in sys.argv[1:]))
+    except ValueError as exc:
+        raise SystemExit("Years must be integers, e.g. 2025 2027") from exc
+    if any(y < 1 for y in years):
+        raise SystemExit("Years must be positive integers")
+    return years
 
 
 def julian_date(x: dt.datetime) -> float:
@@ -153,7 +166,7 @@ def inject(root: Path, year: int, events) -> int:
 
 
 def main():
-    for year in YEARS:
+    for year in requested_years():
         events = page_date_map(year); c1 = inject(SOURCE_SITE, year, events); c2 = inject(PUBLIC, year, events)
         print(f"{year}: canonical fixed-sky entries with declination band and season; updated {c1} source + {c2} public pages")
 
