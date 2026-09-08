@@ -16,10 +16,13 @@ on:
       - 'tools/populate_2025_2027_constellations.py'
       - 'tools/populate_2025_2027_asterisms.py'
       - 'tools/populate_caldwell.py'
+      - 'tools/populate_finest_ngc.py'
       - 'tools/populate-2025-2027-ephemeris-trigger.txt'
       - 'Star-Almanack-Repo/compute_constellation_observance_2026.py'
       - 'Star-Almanack-Repo/expanded-bayer-visibility-2026.csv'
       - 'Star-Almanack-Repo/caldwell-catalog.csv'
+      - 'Star-Almanack-Repo/finest-ngc-catalog.csv'
+      - 'Star-Almanack-Repo/finest-ngc-caldwell-overlap.csv'
       - 'Star-Almanack-Repo/asterism-geometry-2025.csv'
       - 'Star-Almanack-Repo/asterism-geometry-2027.csv'
 
@@ -32,64 +35,46 @@ jobs:
     timeout-minutes: 40
     steps:
       - uses: actions/checkout@v4
-
       - name: Clear 2025 and 2027 calendar event cells
         run: python tools/clean_2025_2027_event_cells.py
-
       - name: Populate Zodiac Days, ingresses, Wheel of the Year, and lunar phases
         run: python tools/populate_2025_2027_calendar.py
-
       - name: Populate major meteor-shower maxima
         run: python tools/populate_2025_2027_meteor_showers.py
-
       - name: Populate weekly Solar-System ephemerides
         run: python tools/populate_ephemeris.py 2025 2027
-
       - name: Wire Solar-System ephemeris notation controls
         run: python tools/wire_ephemeris_notation.py
-
       - name: Populate fixed-sky visibility events
         run: python tools/populate_2025_2027_fixed_sky.py
-
       - name: Populate constellation alpha, beta, and center observances
         run: python tools/populate_2025_2027_constellations.py
-
       - name: Populate core asterism observances
         run: python tools/populate_2025_2027_asterisms.py
-
       - name: Populate Caldwell C1-C109 in every generated year
         run: python tools/populate_caldwell.py
-
+      - name: Populate Finest NGC objects not already represented by Caldwell
+        run: python tools/populate_finest_ngc.py
       - name: Wire highlighted current-week navigation
         run: python tools/wire_week_navigation.py
-
       - name: Commit generated Almanack foundations
         run: |
           set -euo pipefail
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-
           stage_generated() {
             git add \
               almanack/2025 almanack/2026 almanack/2027 \
               Star-Almanack-Repo/site/2025 Star-Almanack-Repo/site/2026 Star-Almanack-Repo/site/2027 \
-              Star-Almanack-Repo/generated/calendar-2025.json \
-              Star-Almanack-Repo/generated/calendar-2027.json \
-              Star-Almanack-Repo/generated/meteor-showers-2025.json \
-              Star-Almanack-Repo/generated/meteor-showers-2027.json \
-              Star-Almanack-Repo/generated/expanded-bayer-visibility-2025.csv \
-              Star-Almanack-Repo/generated/expanded-bayer-visibility-2027.csv \
-              Star-Almanack-Repo/generated/bright-star-visibility-2025.csv \
-              Star-Almanack-Repo/generated/bright-star-visibility-2027.csv \
-              Star-Almanack-Repo/generated/messier-visibility-2025.csv \
-              Star-Almanack-Repo/generated/messier-visibility-2027.csv \
-              Star-Almanack-Repo/generated/caldwell-visibility-2025.csv \
-              Star-Almanack-Repo/generated/caldwell-visibility-2026.csv \
-              Star-Almanack-Repo/generated/caldwell-visibility-2027.csv \
-              Star-Almanack-Repo/generated/constellation-observance-2025.csv \
-              Star-Almanack-Repo/generated/constellation-observance-2027.csv
+              Star-Almanack-Repo/generated/calendar-2025.json Star-Almanack-Repo/generated/calendar-2027.json \
+              Star-Almanack-Repo/generated/meteor-showers-2025.json Star-Almanack-Repo/generated/meteor-showers-2027.json \
+              Star-Almanack-Repo/generated/expanded-bayer-visibility-2025.csv Star-Almanack-Repo/generated/expanded-bayer-visibility-2027.csv \
+              Star-Almanack-Repo/generated/bright-star-visibility-2025.csv Star-Almanack-Repo/generated/bright-star-visibility-2027.csv \
+              Star-Almanack-Repo/generated/messier-visibility-2025.csv Star-Almanack-Repo/generated/messier-visibility-2027.csv \
+              Star-Almanack-Repo/generated/caldwell-visibility-2025.csv Star-Almanack-Repo/generated/caldwell-visibility-2026.csv Star-Almanack-Repo/generated/caldwell-visibility-2027.csv \
+              Star-Almanack-Repo/generated/finest-ngc-visibility-2025.csv Star-Almanack-Repo/generated/finest-ngc-visibility-2026.csv Star-Almanack-Repo/generated/finest-ngc-visibility-2027.csv \
+              Star-Almanack-Repo/generated/constellation-observance-2025.csv Star-Almanack-Repo/generated/constellation-observance-2027.csv
           }
-
           regenerate() {
             python tools/clean_2025_2027_event_cells.py
             python tools/populate_2025_2027_calendar.py
@@ -100,28 +85,18 @@ jobs:
             python tools/populate_2025_2027_constellations.py
             python tools/populate_2025_2027_asterisms.py
             python tools/populate_caldwell.py
+            python tools/populate_finest_ngc.py
             python tools/wire_week_navigation.py
           }
-
           stage_generated
-          if git diff --cached --quiet; then
-            echo 'No Almanack foundation changes'
-            exit 0
-          fi
-
+          if git diff --cached --quiet; then echo 'No Almanack foundation changes'; exit 0; fi
           git commit -m 'Populate 2025 and 2027 Almanack foundations'
-          if git push; then
-            exit 0
-          fi
-
+          if git push; then exit 0; fi
           echo 'main moved during generation; resynchronizing and regenerating once'
           git fetch origin main
           git reset --hard origin/main
           regenerate
           stage_generated
-          if git diff --cached --quiet; then
-            echo 'No Almanack foundation changes after resynchronization'
-            exit 0
-          fi
+          if git diff --cached --quiet; then echo 'No Almanack foundation changes after resynchronization'; exit 0; fi
           git commit -m 'Populate 2025 and 2027 Almanack foundations'
           git push
