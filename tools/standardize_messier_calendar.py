@@ -71,18 +71,49 @@ def load_catalog() -> dict[str, dict[str, str]]:
 
 
 def instrument_map() -> dict[str, str]:
-    """Preserve the established 2026 editorial observing-aid choices."""
+    """Preserve the established 2026 editorial observing-aid choices.
+
+    The 2026 pages contain both legacy text glyphs and the newer rendered SVG
+    visibility glyphs.  Read either representation so a presentation-layer
+    change cannot make the observing-aid source of truth disappear.
+    """
     aids = {}
-    patterns = [
-        re.compile(r"\b(M\d{1,3})\b[^<]*? — (👁|B|🔭)(?:\s+V\s+[0-9.]+)? —"),
-        re.compile(r"\bMessier\s+\d+\s+\((M\d{1,3})\)[^<]*? — (👁|B|🔭)(?:\s+V\s+[0-9.]+)? —"),
-    ]
+    designation_patterns = (
+        re.compile(r"\b(M\d{1,3})\b"),
+        re.compile(r"\bMessier\s+\d+\s+\((M\d{1,3})\)"),
+    )
+    rendered_aids = {
+        'alt="Naked eye"': "👁",
+        'alt="Binoculars"': "B",
+        'alt="Telescope"': "🔭",
+    }
+
     for root in (PUBLIC, SOURCE_SITE):
         for page in sorted((root / "2026").glob("W??/index.html")):
             text = page.read_text(encoding="utf-8")
-            for pat in patterns:
-                for m in pat.finditer(text):
-                    aids.setdefault(m.group(1).upper(), m.group(2))
+            for item in text.split("<br>"):
+                designation = None
+                for pat in designation_patterns:
+                    m = pat.search(item)
+                    if m:
+                        designation = m.group(1).upper()
+                        break
+                if not designation:
+                    continue
+
+                aid = None
+                for marker, value in rendered_aids.items():
+                    if marker in item:
+                        aid = value
+                        break
+                if aid is None:
+                    plain = re.sub(r"<[^>]+>", "", item)
+                    m = re.search(r" — (👁|B|🔭)(?:\s+V\s+[0-9.]+)? —", plain)
+                    if m:
+                        aid = m.group(1)
+
+                if aid:
+                    aids.setdefault(designation, aid)
     return aids
 
 
