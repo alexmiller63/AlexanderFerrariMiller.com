@@ -58,28 +58,6 @@ jobs:
       - name: Wire highlighted current-week navigation
         run: python tools/wire_week_navigation.py
 
-      - name: Stamp Kilroy deployment marker
-        run: |
-          python - <<'PY'
-          from datetime import datetime, timezone
-          from pathlib import Path
-          import re
-
-          path = Path('almanack/2025/index.html')
-          text = path.read_text(encoding='utf-8')
-          stamp = datetime.now(timezone.utc).strftime('%H:%M UTC')
-          new_text, count = re.subn(
-              r'KILROY WAS HERE — \d{2}:\d{2} UTC',
-              f'KILROY WAS HERE — {stamp}',
-              text,
-              count=1,
-          )
-          if count != 1:
-              raise SystemExit('Kilroy marker not found exactly once')
-          path.write_text(new_text, encoding='utf-8')
-          print(f'Stamped Kilroy: {stamp}')
-          PY
-
       - name: Commit generated Almanack foundations
         run: |
           set -euo pipefail
