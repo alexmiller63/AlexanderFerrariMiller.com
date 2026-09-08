@@ -10,10 +10,11 @@ from __future__ import annotations
 
 import csv
 import datetime as dt
-import importlib.util
 import re
 from collections import defaultdict
 from pathlib import Path
+
+import populate_fixed_sky as fixed
 
 ROOT = Path(__file__).resolve().parents[1]
 SRC = ROOT / "Star-Almanack-Repo"
@@ -21,11 +22,6 @@ PUBLIC = ROOT / "almanack"
 SOURCE_SITE = SRC / "site"
 CATALOG = SRC / "caldwell-catalog.csv"
 FINEST_OVERLAP = SRC / "finest-ngc-caldwell-overlap.csv"
-
-spec = importlib.util.spec_from_file_location("fixedsky", ROOT / "tools" / "populate_2025_2027_fixed_sky.py")
-fixed = importlib.util.module_from_spec(spec)
-assert spec and spec.loader
-spec.loader.exec_module(fixed)
 
 CONSTELLATIONS = {
     "And":"Andromeda", "Aps":"Apus", "Aqr":"Aquarius", "Ara":"Ara", "Aur":"Auriga",
