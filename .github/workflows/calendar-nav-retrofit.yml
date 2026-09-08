@@ -33,5 +33,18 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add almanack Star-Almanack-Repo
           git commit -m "Standardize Almanack navigation button styling"
-          git push
+
+          # Other deployment workflows may commit to main at the same time.
+          # Rebase and retry so a harmless concurrent commit does not lose
+          # the generated Almanack navigation changes.
+          for attempt in 1 2 3 4 5; do
+            git pull --rebase origin main
+            if git push origin HEAD:main; then
+              exit 0
+            fi
+            echo "Push raced with another main commit; retrying ($attempt/5)..."
+            sleep 2
+          done
+          echo "Unable to push Almanack navigation changes after retries."
+          exit 1
 # trigger enabled
