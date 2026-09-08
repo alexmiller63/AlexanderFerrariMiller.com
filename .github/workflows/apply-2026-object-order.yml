@@ -21,7 +21,7 @@ jobs:
       - name: Standardize calendar object order
         run: python tools/apply_2026_object_order.py
 
-      - name: Validate Messier examples
+      - name: Validate calendar examples
         run: |
           python - <<'PY'
           from pathlib import Path
@@ -32,13 +32,27 @@ jobs:
           )
 
           expected = [
-              'Messier 53 (M53), globular cluster in Coma Berenices — 🔭 — Tropical — Spring',
+              'Diadem (α Com)',
+              'Tropical Spring',
+              'Messier 53 (M53), globular cluster in Coma Berenices — 🔭 — Tropical Spring',
               'Messier 15 (M15), globular cluster in Pegasus',
               'Orion Nebula (M42), emission nebula in Orion',
               'Trifid Nebula (M20), emission and reflection nebula in Sagittarius',
           ]
           forbidden = [
               'Great Pegasus Globular',
+              'Tropical — Spring',
+              'Northern — Spring',
+              'Southern — Spring',
+              'Tropical — Summer',
+              'Northern — Summer',
+              'Southern — Summer',
+              'Tropical — Autumn',
+              'Northern — Autumn',
+              'Southern — Autumn',
+              'Tropical — Winter',
+              'Northern — Winter',
+              'Southern — Winter',
           ]
 
           missing = [item for item in expected if item not in pages]
@@ -55,7 +69,7 @@ jobs:
                       print(f'  - {item}')
               raise SystemExit(1)
 
-          print('Validated data-driven Messier labels')
+          print('Validated calendar labels and Declination Band + Season formatting')
           PY
 
       - name: Commit standardized pages
