@@ -13,12 +13,15 @@ on:
       - 'tools/populate_2025_2027_calendar.py'
       - 'tools/populate_2025_2027_meteor_showers.py'
       - 'tools/populate_2025_2027_fixed_sky.py'
+      - 'tools/standardize_messier_calendar.py'
       - 'tools/populate_2025_2027_constellations.py'
       - 'tools/populate_2025_2027_asterisms.py'
       - 'tools/populate_caldwell.py'
       - 'tools/populate_finest_ngc.py'
       - 'tools/populate-2025-2027-ephemeris-trigger.txt'
       - 'Star-Almanack-Repo/compute_constellation_observance_2026.py'
+      - 'Star-Almanack-Repo/fixed-objects.yaml'
+      - 'Star-Almanack-Repo/messier-editorial.json'
       - 'Star-Almanack-Repo/expanded-bayer-visibility-2026.csv'
       - 'Star-Almanack-Repo/caldwell-catalog.csv'
       - 'Star-Almanack-Repo/finest-ngc-catalog.csv'
@@ -47,6 +50,8 @@ jobs:
         run: python tools/wire_ephemeris_notation.py
       - name: Populate fixed-sky visibility events
         run: python tools/populate_2025_2027_fixed_sky.py
+      - name: Standardize Messier labels, instruments, magnitudes, declination bands, and seasons
+        run: python tools/standardize_messier_calendar.py
       - name: Populate constellation alpha, beta, and center observances
         run: python tools/populate_2025_2027_constellations.py
       - name: Populate core asterism observances
@@ -82,6 +87,7 @@ jobs:
             python tools/populate_ephemeris.py 2025 2027
             python tools/wire_ephemeris_notation.py
             python tools/populate_2025_2027_fixed_sky.py
+            python tools/standardize_messier_calendar.py
             python tools/populate_2025_2027_constellations.py
             python tools/populate_2025_2027_asterisms.py
             python tools/populate_caldwell.py
