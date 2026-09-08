@@ -1,0 +1,55 @@
+#!/usr/bin/env python3
+"""Populate requested Almanack years with core asterism events."""
+from __future__ import annotations
+import argparse,csv,datetime as dt,re
+from collections import defaultdict
+from pathlib import Path
+ROOT=Path(__file__).resolve().parents[1]; SRC=ROOT/"Star-Almanack-Repo"; PUBLIC=ROOT/"almanack"; SOURCE_SITE=SRC/"site"
+def requested_years():
+ p=argparse.ArgumentParser(description="Populate Star Almanack core asterisms"); p.add_argument("years",metavar="YEAR",type=int,nargs="+",help="Years to populate"); a=p.parse_args(); years=list(dict.fromkeys(a.years))
+ for y in years:
+  if not 1900<=y<=2100: p.error(f"YEAR must be between 1900 and 2100: {y}")
+ return years
+def read_rows(year):
+ path=SRC/f"asterism-geometry-{year}.csv"
+ if not path.exists(): raise SystemExit(f"Missing asterism geometry source for {year}: {path}")
+ with path.open(newline="",encoding="utf-8") as f: rows=list(csv.DictReader(f))
+ if len(rows)!=25: raise SystemExit(f"Expected 25 asterism rows for {year}, got {len(rows)}")
+ if len({r['asterism'] for r in rows})!=25: raise SystemExit(f"Duplicate/missing asterism names for {year}")
+ return rows
+def event_map(rows):
+ e=defaultdict(list)
+ for r in rows: e[dt.date.fromisoformat(r["best_date"])].append(f"✦ {r['asterism']} asterism")
+ return e
+def date_pattern(d): return rf"{d.strftime('%a, %b ')}0?{d.day}, {d.year}"
+def pages_for_events(root,events):
+ pages=[]
+ for y in sorted({d.isocalendar().year for d in events}): pages.extend(sorted((root/str(y)).glob("W*/index.html")))
+ return pages
+def inject(root,events):
+ changed=inserted=0
+ for page in pages_for_events(root,events):
+  text=page.read_text(encoding="utf-8"); original=text; text=text.replace(" asterism observance"," asterism")
+  for d,vals in events.items():
+   pat=re.compile(rf"(<tr><td>{date_pattern(d)}</td><td>.*?</td><td>)(.*?)(</td></tr>)"); m=pat.search(text)
+   if not m: continue
+   keep=[] if m.group(2)=="—" else [x for x in m.group(2).split("<br>") if x]; before=len(keep)
+   for v in vals:
+    if v not in keep: keep.append(v)
+   inserted+=len(keep)-before; text=text[:m.start(2)]+"<br>".join(keep)+text[m.end(2):]
+  if text!=original: page.write_text(text,encoding="utf-8"); changed+=1
+ return changed,inserted
+def validate(root,events):
+ page_texts=[(p,p.read_text(encoding="utf-8")) for p in pages_for_events(root,events)]
+ for d,vals in events.items():
+  pat=re.compile(rf"<tr><td>{date_pattern(d)}</td><td>.*?</td><td>(.*?)</td></tr>"); matches=[(p,m.group(1)) for p,text in page_texts for m in pat.finditer(text)]
+  if len(matches)!=1: raise SystemExit(f"{root}: expected exactly one calendar row for {d}, found {len(matches)}")
+  page,cell=matches[0]
+  for v in vals:
+   count=cell.split("<br>").count(v)
+   if count!=1: raise SystemExit(f"{root}: expected {v!r} exactly once on {d} in {page}, found {count}")
+def main():
+ for year in requested_years():
+  rows=read_rows(year); events=event_map(rows); c1,i1=inject(SOURCE_SITE,events); c2,i2=inject(PUBLIC,events); validate(SOURCE_SITE,events); validate(PUBLIC,events)
+  print(f"{year}: verified 25 asterisms exactly once in each tree; inserted source={i1}, public={i2}; updated {c1} source + {c2} public pages")
+if __name__=="__main__": main()
