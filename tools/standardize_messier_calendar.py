@@ -10,11 +10,12 @@ from __future__ import annotations
 
 import csv
 import datetime as dt
-import importlib.util
 import json
 import re
 from collections import defaultdict
 from pathlib import Path
+
+import populate_fixed_sky as fixed
 
 ROOT = Path(__file__).resolve().parents[1]
 SRC = ROOT / "Star-Almanack-Repo"
@@ -23,11 +24,6 @@ SOURCE_SITE = SRC / "site"
 FIXED = SRC / "fixed-objects.yaml"
 EDITORIAL = json.loads((SRC / "messier-editorial.json").read_text(encoding="utf-8"))
 YEARS = (2025, 2026, 2027)
-
-spec = importlib.util.spec_from_file_location("fixedsky", ROOT / "tools" / "populate_2025_2027_fixed_sky.py")
-fixed = importlib.util.module_from_spec(spec)
-assert spec and spec.loader
-spec.loader.exec_module(fixed)
 
 GLYPHS = {
     "👁": '<img class="visibility-glyph" src="/assets/almanack/visibility-glyphs/masters/eye.svg" alt="Naked eye" aria-label="Naked eye" style="height:1.15em;width:auto;vertical-align:-.18em">',
@@ -71,12 +67,6 @@ def load_catalog() -> dict[str, dict[str, str]]:
 
 
 def instrument_map() -> dict[str, str]:
-    """Preserve the established 2026 editorial observing-aid choices.
-
-    The 2026 pages contain both legacy text glyphs and the newer rendered SVG
-    visibility glyphs.  Read either representation so a presentation-layer
-    change cannot make the observing-aid source of truth disappear.
-    """
     aids = {}
     designation_patterns = (
         re.compile(r"\b(M\d{1,3})\b"),
