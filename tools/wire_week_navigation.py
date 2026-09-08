@@ -50,9 +50,10 @@ STYLE = """<style id="week-position-nav-css">
 </style>"""
 
 WEEK_NAV_RE = re.compile(r'<nav class="weeknav(?: week-position)?"(?: id="(?:week-bottom-nav|almanack-bottom-nav)")?(?: aria-label="Week navigation")?>(.*?)</nav>', re.S)
-YEAR_NAV_RE = re.compile(r'<nav class="yearnav">(.*?)</nav>', re.S)
+YEAR_NAV_RE = re.compile(r'<nav class="yearnav"(?: id="almanack-bottom-nav")?>(.*?)</nav>', re.S)
 SITE_NAV_RE = re.compile(r'<nav class="weeknav sitenav">(.*?)</nav>', re.S)
 BOTTOM_WRAP_RE = re.compile(r'<div class="almanack-bottom-nav-wrap" id="almanack-bottom-nav">.*?</div>', re.S)
+EMPTY_BOTTOM_RE = re.compile(r'<div id="almanack-bottom-nav"></div>')
 CHILD_RE = re.compile(r'(<a\b.*?</a>|<span\b.*?</span>)', re.S)
 STYLE_RE = re.compile(r'<style id="week-position-nav-css">.*?</style>', re.S)
 HREF_RE = re.compile(r'href="([^"]+)"')
@@ -154,7 +155,6 @@ def bottom_site_nav(text: str) -> str:
         tag = link_match.group(0)
         if "Almanack Home" in tag:
             return add_bottom_fragment_to_tag(tag)
-        # Main Site and All Projects deliberately land at the top.
         return tag
 
     return re.sub(r'<a\b.*?</a>', rewrite_link, nav, flags=re.S)
@@ -195,15 +195,21 @@ def place_bottom_navigation(text: str) -> str:
 
 
 def ensure_year_bottom_target(text: str) -> str:
-    if f'id="{BOTTOM_ID}"' in text:
-        return text
-    marker = '<footer>'
-    if marker in text:
-        return text.replace(marker, f'<div id="{BOTTOM_ID}"></div>{marker}', 1)
-    marker = '</body>'
-    if marker in text:
-        return text.replace(marker, f'<div id="{BOTTOM_ID}"></div>{marker}', 1)
-    raise RuntimeError("year page bottom target insertion point not found")
+    text = EMPTY_BOTTOM_RE.sub("", text)
+    matches = list(YEAR_NAV_RE.finditer(text))
+    if not matches:
+        raise RuntimeError("year navigation not found")
+
+    # The last year menu is the real bottom destination. Put the fragment
+    # target on that menu itself so the browser lands visibly on the controls.
+    match = matches[-1]
+    nav = match.group(0)
+    nav = nav.replace('<nav class="yearnav">', f'<nav class="yearnav" id="{BOTTOM_ID}">', 1)
+    nav = HREF_RE.sub(
+        lambda m: f'href="{m.group(1).split("#", 1)[0]}#{BOTTOM_ID}"',
+        nav,
+    )
+    return text[:match.start()] + nav + text[match.end():]
 
 
 def ensure_style(text: str) -> str:
@@ -260,7 +266,7 @@ def main() -> None:
                     index_path.write_text(updated, encoding='utf-8')
                     changed += 1
 
-    print(f"Updated year/week navigation on {changed} Almanack page copies")
+    print(f"Updated {changed} Almanack navigation page(s).")
 
 
 if __name__ == '__main__':
