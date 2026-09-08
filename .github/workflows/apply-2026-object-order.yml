@@ -26,9 +26,11 @@ jobs:
           from pathlib import Path
           pages = ''.join(p.read_text(encoding='utf-8') for p in sorted(Path('almanack/2026').glob('W??/index.html')))
           assert 'Diadem (α Com) — B V 4 — Tropical — Spring' in pages
-          assert 'M53 — 🔭 — Tropical — Spring' in pages
-          assert 'M53 — Globular Cluster' not in pages
-          print('Validated fixed-star and Messier ordering')
+          assert 'Messier 53 (M53), globular cluster in Coma Berenices — 🔭 — Tropical — Spring' in pages
+          assert 'Messier 15 (M15), globular cluster in Pegasus' in pages
+          assert 'Orion Nebula (M42), diffuse nebula in Orion' in pages
+          assert 'Great Pegasus Globular' not in pages
+          print('Validated fixed-star ordering and canonical Messier labels')
           PY
 
       - name: Commit standardized pages
