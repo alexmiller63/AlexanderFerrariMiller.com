@@ -49,6 +49,12 @@ TYPE_LABELS = {
     "dE0G":"dwarf elliptical galaxy", "PecG":"peculiar galaxy", "SeyfertG":"Seyfert galaxy",
 }
 
+# The Almanack owns its observing glyph artwork. Do not substitute an emoji.
+TELESCOPE_GLYPH = (
+    '<img class="visibility-glyph" src="/assets/almanack/visibility-glyphs/masters/telescope.svg" '
+    'alt="Telescope" aria-label="Telescope" style="height:1.15em;width:auto;vertical-align:-.18em">'
+)
+
 
 def years_present() -> tuple[int, ...]:
     years: set[int] = set()
@@ -99,14 +105,15 @@ def calendar_label(r: dict[str, str]) -> str:
     name = r.get("name", "").strip()
     obj_type = TYPE_LABELS.get(r.get("type", "").strip(), "deep-sky object")
     constellation = CONSTELLATIONS.get(r.get("con", "").strip(), r.get("con", "").strip())
-    if name:
-        head = f"{name} ({cid})"
-    else:
-        head = f"Caldwell {cid[1:]} ({cid})"
+    # Catalog identity belongs first: C4, Iris Nebula, bright nebula in Cepheus.
+    head = f"{cid}, {name}, {obj_type} in {constellation}" if name else f"{cid}, {obj_type} in {constellation}"
     day = dt.date.fromisoformat(r["best_date"])
     band = fixed.declination_band(r["dec_deg"])
     season = fixed.season_for(day)
-    return f"{head}, {obj_type} in {constellation} — 🔭 — {band} {season}"
+    mag = r.get("mag", "").strip()
+    # Observing aid and magnitude are one unit: no dash between them.
+    observing = f"{TELESCOPE_GLYPH} V {mag}" if mag else TELESCOPE_GLYPH
+    return f"{head} — {observing} — {band} {season}"
 
 
 def events_for(rows: list[dict[str, str]]) -> dict[dt.date, list[str]]:
@@ -128,10 +135,14 @@ def inject(root: Path, year: int, events: dict[dt.date, list[str]]) -> int:
             if not m:
                 continue
             keep = [] if m.group(2) == "—" else [x for x in m.group(2).split("<br>") if x]
+            cid = re.search(r"\bC\d{1,3}\b", labels[0]) if labels else None
             for label in labels:
-                identity = label.split(" — ", 1)[0]
-                # Remove a previous rendering of this Caldwell object before appending.
-                keep = [x for x in keep if not (x == identity or x.startswith(identity + " — "))]
+                label_cid = re.match(r"(C\d{1,3}),", label)
+                if label_cid:
+                    token = label_cid.group(1)
+                    # Remove any prior Caldwell rendering, including the older
+                    # name-first and "Caldwell N (CN)" forms.
+                    keep = [x for x in keep if not re.search(rf"(?:^|\(|\b){re.escape(token)}(?:\)|,|\b)", x)]
                 keep.append(label)
             text = text[:m.start(2)] + ("<br>".join(keep) if keep else "—") + text[m.end(2):]
         if text != original:
