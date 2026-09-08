@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
-"""Ensure every Almanack weekly page has the same complete notation legend."""
+"""Ensure every Almanack weekly page has the same complete notation legend.
+
+Canonical legend order: Sun, Moon, Mercury, Venus, Mars, Ceres, Jupiter,
+Saturn, Uranus, Neptune, Pluto.
+"""
 
 from pathlib import Path
 import re
