@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Add highlighted ISO current-week position to generated Almanack navigation."""
+"""Keep Almanack year/week navigation clickable and visibly current."""
 
 from __future__ import annotations
 
@@ -7,65 +7,80 @@ import re
 from datetime import datetime, timezone
 from pathlib import Path
 
-ROOT = Path("almanack")
+ROOT = Path(__file__).resolve().parents[1]
+BASES = (ROOT / "almanack", ROOT / "Star-Almanack-Repo" / "site")
 YEARS = (2025, 2026, 2027)
 
 STYLE = """<style id="week-position-nav-css">
-.weeknav.week-position .current-week {
-  font-weight:700;
-  background:var(--navy);
-  color:#fff;
-  border-color:var(--navy);
+.yearnav .current-year,
+.yearnav .current-year:visited {
+  font-weight:700 !important;
+  background:var(--soft-blue) !important;
+  color:var(--navy) !important;
+  border-color:#c8d3dc !important;
+  text-decoration:none;
 }
-.weeknav.week-position .all-weeks {
-  grid-column:1 / -1;
-  justify-self:center;
+.weeknav.week-position .current-week {
+  font-weight:700 !important;
+  background:var(--navy) !important;
+  color:#fff !important;
+  border-color:var(--navy) !important;
 }
 .weekgrid a.current-week,
 .weekgrid a.current-week:visited {
-  background:var(--navy);
-  color:#fff;
-  border-color:var(--navy);
+  font-weight:700 !important;
+  background:var(--navy) !important;
+  color:#fff !important;
+  border-color:var(--navy) !important;
 }
 @media (prefers-color-scheme:dark) {
+  .yearnav .current-year,
+  .yearnav .current-year:visited {
+    background:#1c2a36 !important;
+    color:#eef7ff !important;
+    border-color:#405567 !important;
+  }
   .weeknav.week-position .current-week,
   .weekgrid a.current-week,
   .weekgrid a.current-week:visited {
-    background:#eef7ff;
-    color:#102a43;
-    border-color:#eef7ff;
+    background:#eef7ff !important;
+    color:#102a43 !important;
+    border-color:#eef7ff !important;
   }
 }
 </style>"""
 
-NAV_RE = re.compile(r'<nav class="weeknav(?: week-position)?"(?: aria-label="Week navigation")?>(.*?)</nav>', re.S)
+WEEK_NAV_RE = re.compile(r'<nav class="weeknav(?: week-position)?"(?: aria-label="Week navigation")?>(.*?)</nav>', re.S)
+YEAR_NAV_RE = re.compile(r'<nav class="yearnav">(.*?)</nav>', re.S)
 CHILD_RE = re.compile(r'(<a\b.*?</a>|<span\b.*?</span>)', re.S)
 STYLE_RE = re.compile(r'<style id="week-position-nav-css">.*?</style>', re.S)
-
-
-def add_class(tag: str, class_name: str) -> str:
-    if re.search(r'\bclass="[^"]*"', tag):
-        return re.sub(
-            r'class="([^"]*)"',
-            lambda m: f'class="{m.group(1)} {class_name}"' if class_name not in m.group(1).split() else m.group(0),
-            tag,
-            count=1,
-        )
-    return tag.replace('<a ', f'<a class="{class_name}" ', 1)
 
 
 def set_text(tag: str, label: str) -> str:
     return re.sub(r'(?s)(>).*?(</(?:a|span)>)$', rf'\1{label}\2', tag, count=1)
 
 
-def rewrite_nav(text: str, year: int, week: int) -> str:
-    match = NAV_RE.search(text)
+def rewrite_year_nav(text: str, year: int, weekly_page: bool) -> str:
+    match = YEAR_NAV_RE.search(text)
     if not match:
-        raise RuntimeError("weekly navigation not found")
-
+        raise RuntimeError("year navigation not found")
     children = CHILD_RE.findall(match.group(1))
     if len(children) < 3:
-        raise RuntimeError("weekly navigation has fewer than 3 controls")
+        raise RuntimeError("year navigation has fewer than 3 controls")
+    left, right = children[0], children[-1]
+    href = "../" if weekly_page else f"../{year}/"
+    center = f'<a class="current-year" aria-current="page" href="{href}">{year}</a>'
+    nav = f'<nav class="yearnav">{left}{center}{right}</nav>'
+    return text[:match.start()] + nav + text[match.end():]
+
+
+def rewrite_week_nav(text: str, year: int, week: int) -> str:
+    match = WEEK_NAV_RE.search(text)
+    if not match:
+        raise RuntimeError("weekly navigation not found")
+    children = CHILD_RE.findall(match.group(1))
+    if len(children) < 2:
+        raise RuntimeError("weekly navigation has fewer than 2 controls")
 
     ordinary = [c for c in children if 'current-week' not in c and 'all-weeks' not in c]
     if len(ordinary) >= 2:
@@ -73,15 +88,10 @@ def rewrite_nav(text: str, year: int, week: int) -> str:
     else:
         prev, nxt = children[0], children[-1]
 
-    all_weeks = next((c for c in children if 'all-weeks' in c), None)
-    if all_weeks is None:
-        all_weeks = children[1]
-    all_weeks = set_text(add_class(all_weeks, "all-weeks"), f"All {year} Weeks")
-
     current = f'<span class="current-week" aria-current="page">ISO {year}-W{week:02d}</span>'
     nav = (
         '<nav class="weeknav week-position" aria-label="Week navigation">'
-        f'{prev}{current}{nxt}{all_weeks}'
+        f'{prev}{current}{nxt}'
         '</nav>'
     )
     return text[:match.start()] + nav + text[match.end():]
@@ -106,27 +116,39 @@ def highlight_current_week_on_index(text: str, year: int, week: int) -> str:
 
 def main() -> None:
     changed = 0
-    for year in YEARS:
-        for path in sorted((ROOT / str(year)).glob('W??/index.html')):
-            week = int(path.parent.name[1:])
-            original = path.read_text(encoding='utf-8')
-            updated = ensure_style(rewrite_nav(original, year, week))
-            if updated != original:
-                path.write_text(updated, encoding='utf-8')
-                changed += 1
+    for base in BASES:
+        for year in YEARS:
+            for path in sorted((base / str(year)).glob('W??/index.html')):
+                week = int(path.parent.name[1:])
+                original = path.read_text(encoding='utf-8')
+                updated = rewrite_year_nav(original, year, weekly_page=True)
+                updated = rewrite_week_nav(updated, year, week)
+                updated = ensure_style(updated)
+                if updated != original:
+                    path.write_text(updated, encoding='utf-8')
+                    changed += 1
+
+            index_path = base / str(year) / 'index.html'
+            if index_path.exists():
+                original = index_path.read_text(encoding='utf-8')
+                updated = ensure_style(rewrite_year_nav(original, year, weekly_page=False))
+                if updated != original:
+                    index_path.write_text(updated, encoding='utf-8')
+                    changed += 1
 
     today = datetime.now(timezone.utc).date().isocalendar()
     current_year, current_week = today.year, today.week
     if current_year in YEARS:
-        index_path = ROOT / str(current_year) / 'index.html'
-        if index_path.exists():
-            original = index_path.read_text(encoding='utf-8')
-            updated = highlight_current_week_on_index(original, current_year, current_week)
-            if updated != original:
-                index_path.write_text(updated, encoding='utf-8')
-                changed += 1
+        for base in BASES:
+            index_path = base / str(current_year) / 'index.html'
+            if index_path.exists():
+                original = index_path.read_text(encoding='utf-8')
+                updated = highlight_current_week_on_index(original, current_year, current_week)
+                if updated != original:
+                    index_path.write_text(updated, encoding='utf-8')
+                    changed += 1
 
-    print(f"Updated ISO week-position navigation on {changed} pages")
+    print(f"Updated year/week navigation on {changed} Almanack page copies")
 
 
 if __name__ == '__main__':
