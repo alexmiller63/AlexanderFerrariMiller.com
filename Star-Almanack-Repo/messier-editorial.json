@@ -1,0 +1,67 @@
+{
+  "schema_version": 1,
+  "principle": "Data owns the astronomy; Python owns the formatting.",
+  "baseline_provenance": {
+    "source": "NASA/GSFC HEASARC Messier Nebulae catalog",
+    "url": "https://heasarc.gsfc.nasa.gov/W3Browse/catalog/messier.html",
+    "scope": "baseline Messier identity, constellation, and broad object classification"
+  },
+  "type_labels": {
+    "SN": "supernova remnant",
+    "GC": "globular cluster",
+    "OC": "open cluster",
+    "DN": "diffuse nebula",
+    "PN": "planetary nebula",
+    "AS": "asterism",
+    "AST": "asterism",
+    "DS": "double star",
+    "MW": "Milky Way star cloud",
+    "SG": "spiral galaxy",
+    "BG": "barred spiral galaxy",
+    "LG": "lenticular galaxy",
+    "EG": "elliptical galaxy",
+    "IG": "irregular galaxy"
+  },
+  "objects": {
+    "M15": {
+      "accepted_name": null,
+      "editorial_type": "globular cluster",
+      "provenance": [
+        {
+          "source": "NASA/GSFC HEASARC Messier Nebulae catalog",
+          "url": "https://heasarc.gsfc.nasa.gov/W3Browse/catalog/messier.html",
+          "supports": "globular-cluster classification"
+        }
+      ],
+      "editorial_note": "Great Pegasus Globular is treated as a descriptive label, not an accepted proper name."
+    },
+    "M20": {
+      "accepted_name": "Trifid Nebula",
+      "editorial_type": "emission and reflection nebula",
+      "provenance": [
+        {
+          "source": "NASA Jet Propulsion Laboratory, Trifid Nebula (PIA04220)",
+          "url": "https://www.jpl.nasa.gov/images/pia04220-trifid-nebula/",
+          "supports": "hydrogen H II emission and reflected blue starlight"
+        },
+        {
+          "source": "NASA/GSFC HEASARC Messier Nebulae catalog",
+          "url": "https://heasarc.gsfc.nasa.gov/W3Browse/catalog/messier.html",
+          "supports": "Messier identity and broad diffuse-nebula classification"
+        }
+      ]
+    },
+    "M42": {
+      "accepted_name": "Orion Nebula",
+      "editorial_type": "emission nebula",
+      "provenance": [
+        {
+          "source": "NASA/GSFC HEASARC Messier Nebulae catalog",
+          "url": "https://heasarc.gsfc.nasa.gov/W3Browse/catalog/messier.html",
+          "supports": "Messier identity and broad diffuse-nebula classification"
+        }
+      ],
+      "editorial_note": "Reader-facing classification is intentionally more specific than the broad DN catalog class."
+    }
+  }
+}
