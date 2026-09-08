@@ -9,7 +9,6 @@ on:
       - 'tools/populate_calendar.py'
       - 'tools/populate_meteor_showers.py'
       - 'tools/populate_ephemeris.py'
-      - 'tools/populate_2025_2027_ephemeris.py'
       - 'tools/wire_ephemeris_notation.py'
       - 'tools/wire_week_navigation.py'
       - 'tools/populate_fixed_sky.py'
@@ -17,7 +16,7 @@ on:
       - 'tools/catalog_common_names.py'
       - 'tools/reconcile_catalog_common_names.py'
       - 'tools/populate_constellations.py'
-      - 'tools/populate_2025_2027_asterisms.py'
+      - 'tools/populate_asterisms.py'
       - 'tools/populate_caldwell.py'
       - 'tools/populate_finest_ngc.py'
       - 'tools/populate-2025-2027-ephemeris-trigger.txt'
@@ -58,7 +57,7 @@ jobs:
       - name: Populate constellation alpha, beta, and center events
         run: python tools/populate_constellations.py 2025 2027
       - name: Populate core asterisms
-        run: python tools/populate_2025_2027_asterisms.py 2025 2027
+        run: python tools/populate_asterisms.py 2025 2027
       - name: Populate Caldwell C1-C109 in every generated year
         run: python tools/populate_caldwell.py
       - name: Populate Finest NGC objects not already represented by Caldwell
@@ -94,7 +93,7 @@ jobs:
             python tools/populate_fixed_sky.py 2025 2027
             python tools/standardize_messier_calendar.py
             python tools/populate_constellations.py 2025 2027
-            python tools/populate_2025_2027_asterisms.py 2025 2027
+            python tools/populate_asterisms.py 2025 2027
             python tools/populate_caldwell.py
             python tools/populate_finest_ngc.py
             python tools/reconcile_catalog_common_names.py
