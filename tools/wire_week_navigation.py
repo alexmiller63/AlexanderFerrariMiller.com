@@ -13,25 +13,15 @@ YEARS = (2025, 2026, 2027)
 
 STYLE = """<style id="week-position-nav-css">
 .yearnav .current-year,
-.yearnav .current-year:visited {
-  font-weight:700 !important;
-  background:var(--soft-blue) !important;
-  color:var(--navy) !important;
-  border-color:#c8d3dc !important;
-  text-decoration:none;
-}
-.weeknav.week-position .current-week {
-  font-weight:700 !important;
-  background:var(--navy) !important;
-  color:#fff !important;
-  border-color:var(--navy) !important;
-}
+.yearnav .current-year:visited,
+.weeknav.week-position .current-week,
 .weekgrid a.current-week,
 .weekgrid a.current-week:visited {
   font-weight:700 !important;
   background:var(--navy) !important;
   color:#fff !important;
   border-color:var(--navy) !important;
+  text-decoration:none;
 }
 .yearnav .nav-spacer,
 .weeknav .nav-spacer {
@@ -39,11 +29,7 @@ STYLE = """<style id="week-position-nav-css">
 }
 @media (prefers-color-scheme:dark) {
   .yearnav .current-year,
-  .yearnav .current-year:visited {
-    background:#1c2a36 !important;
-    color:#eef7ff !important;
-    border-color:#405567 !important;
-  }
+  .yearnav .current-year:visited,
   .weeknav.week-position .current-week,
   .weekgrid a.current-week,
   .weekgrid a.current-week:visited {
