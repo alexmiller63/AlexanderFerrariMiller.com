@@ -74,7 +74,7 @@ The Pleiades (Pleiades (M45), open cluster in Taurus) are the week's natural sho
 |---|---|---|
 | Mon, Jan 05, 2026 | ♑ 16 | — |
 | Tue, Jan 06, 2026 | ♑ 17 | — |
-| Wed, Jan 07, 2026 | ♑ 18 | α Hor — B V 4 — Southern — Winter<br>α Ret — 👁 V 3 — Southern — Winter |
+| Wed, Jan 07, 2026 | ♑ 18 | α Hor — B V 4 — Southern Winter<br>α Ret — 👁 V 3 — Southern Winter |
 | Thu, Jan 08, 2026 | ♑ 19 | — |
 | Fri, Jan 09, 2026 | ♑ 20 | — |
 | Sat, Jan 10, 2026 | ♑ 21 | 🌗 Last Quarter — 15:48:28 UTC |
@@ -122,12 +122,12 @@ January 5–11 is a restrained observing week. The Almanack marks α Horologii a
 
 | Date | Zodiac day | Events |
 |---|---|---|
-| Mon, Jan 12, 2026 | ♑ 23 | Aldebaran (α Tau) — 👁 V 1 — Tropical — Winter<br>α Dor — 👁 V 3 — Southern — Winter |
-| Tue, Jan 13, 2026 | ♑ 24 | α Cae — B V 4 — Southern — Winter |
-| Wed, Jan 14, 2026 | ♑ 25 | β Cae — B V 5 — Southern — Winter |
+| Mon, Jan 12, 2026 | ♑ 23 | Aldebaran (α Tau) — 👁 V 1 — Tropical Winter<br>α Dor — 👁 V 3 — Southern Winter |
+| Tue, Jan 13, 2026 | ♑ 24 | α Cae — B V 4 — Southern Winter |
+| Wed, Jan 14, 2026 | ♑ 25 | β Cae — B V 5 — Southern Winter |
 | Thu, Jan 15, 2026 | ♑ 26 | — |
 | Fri, Jan 16, 2026 | ♑ 27 | — |
-| Sat, Jan 17, 2026 | ♑ 28 | α Cam — B V 4 — Northern — Winter |
+| Sat, Jan 17, 2026 | ♑ 28 | α Cam — B V 4 — Northern Winter |
 | Sun, Jan 18, 2026 | ♑ 29 | 🌑 New Moon — 19:52:06 UTC |
 
 ### Weekly Solar-System Ephemeris
@@ -170,13 +170,13 @@ Aldebaran anchors Taurus on Monday and New Moon arrives Sunday, making the latte
 
 | Date | Zodiac day | Events |
 |---|---|---|
-| Mon, Jan 19, 2026 | ♑ 30 | β Cam — B V 4 — Northern — Winter<br>β Men — B V 5 — Southern — Winter |
-| Tue, Jan 20, 2026 | ♒ (Aquarius) 1 | ♒ Aquarius ingress (300°) — 01:44:56 UTC<br>Cursa (β Eri) — 👁 V 3 — Tropical — Winter |
-| Wed, Jan 21, 2026 | ♒ 2 | Rigel (β Ori) — 👁 V 0 — Tropical — Winter |
-| Thu, Jan 22, 2026 | ♒ 3 | Capella (α Aur) — 👁 V 0 — Northern — Winter |
+| Mon, Jan 19, 2026 | ♑ 30 | β Cam — B V 4 — Northern Winter<br>β Men — B V 5 — Southern Winter |
+| Tue, Jan 20, 2026 | ♒ (Aquarius) 1 | ♒ Aquarius ingress (300°) — 01:44:56 UTC<br>Cursa (β Eri) — 👁 V 3 — Tropical Winter |
+| Wed, Jan 21, 2026 | ♒ 2 | Rigel (β Ori) — 👁 V 0 — Tropical Winter |
+| Thu, Jan 22, 2026 | ♒ 3 | Capella (α Aur) — 👁 V 0 — Northern Winter |
 | Fri, Jan 23, 2026 | ♒ 4 | — |
-| Sat, Jan 24, 2026 | ♒ 5 | Bellatrix (γ Ori) — 👁 V 2 — Tropical — Winter<br>Elnath (β Tau) — 👁 V 2 — Northern — Winter<br>Messier 79 (M79), globular cluster in Lepus — 🔭 — Southern — Winter |
-| Sun, Jan 25, 2026 | ♒ 6 | Messier 38 (M38), open cluster in Auriga — B — Northern — Winter<br>Nihal (β Lep) — 👁 V 3 — Tropical — Winter |
+| Sat, Jan 24, 2026 | ♒ 5 | Bellatrix (γ Ori) — 👁 V 2 — Tropical Winter<br>Elnath (β Tau) — 👁 V 2 — Northern Winter<br>Messier 79 (M79), globular cluster in Lepus — 🔭 — Southern — Winter |
+| Sun, Jan 25, 2026 | ♒ 6 | Messier 38 (M38), open cluster in Auriga — B — Northern — Winter<br>Nihal (β Lep) — 👁 V 3 — Tropical Winter |
 
 ### Weekly Solar-System Ephemeris
 
@@ -218,13 +218,13 @@ Rigel and Capella dominate the bright-star calendar this week, while Messier 79 
 
 | Date | Zodiac day | Events |
 |---|---|---|
-| Mon, Jan 26, 2026 | ♒ 7 | 🌓 First Quarter — 04:47:32 UTC<br>Mintaka (δ Ori) — 👁 V 2 — Tropical — Winter<br>Orion Nebula (M42), emission nebula in Orion — B — Tropical — Winter<br>Crab Nebula (M1), supernova remnant in Taurus — 🔭 — Tropical — Winter<br>De Mairan's Nebula (M43), diffuse nebula in Orion — 🔭 — Tropical — Winter<br>β Dor — B V 4 — Southern — Winter<br>Arneb (α Lep) — 👁 V 3 — Tropical — Winter |
-| Tue, Jan 27, 2026 | ♒ 8 | Alnilam (ε Ori) — 👁 V 2 — Tropical — Winter<br>Messier 36 (M36), open cluster in Auriga — B — Northern — Winter<br>Phact (α Col) — 👁 V 3 — Southern — Winter |
-| Wed, Jan 28, 2026 | ♒ 9 | Alnitak (ζ Ori) — 👁 V 2 — Tropical — Winter |
-| Thu, Jan 29, 2026 | ♒ 10 | Saiph (κ Ori) — 👁 V 2 — Tropical — Winter<br>Messier 78 (M78), diffuse nebula in Orion — 🔭 — Tropical — Winter<br>β Pic — B V 4 — Southern — Winter |
-| Fri, Jan 30, 2026 | ♒ 11 | Messier 37 (M37), open cluster in Auriga — B — Northern — Winter<br>Wazn (β Col) — 👁 V 3 — Southern — Winter |
-| Sat, Jan 31, 2026 | ♒ 12 | Betelgeuse (α Ori) — 👁 V 0 — Tropical — Winter |
-| Sun, Feb 01, 2026 | ♒ 13 | 🌕 Full Moon — 22:09:16 UTC — Wolf Moon<br>Menkalinan (β Aur) — 👁 V 2 — Northern — Winter |
+| Mon, Jan 26, 2026 | ♒ 7 | 🌓 First Quarter — 04:47:32 UTC<br>Mintaka (δ Ori) — 👁 V 2 — Tropical Winter<br>Orion Nebula (M42), emission nebula in Orion — B — Tropical — Winter<br>Crab Nebula (M1), supernova remnant in Taurus — 🔭 — Tropical — Winter<br>De Mairan's Nebula (M43), diffuse nebula in Orion — 🔭 — Tropical — Winter<br>β Dor — B V 4 — Southern Winter<br>Arneb (α Lep) — 👁 V 3 — Tropical Winter |
+| Tue, Jan 27, 2026 | ♒ 8 | Alnilam (ε Ori) — 👁 V 2 — Tropical Winter<br>Messier 36 (M36), open cluster in Auriga — B — Northern — Winter<br>Phact (α Col) — 👁 V 3 — Southern Winter |
+| Wed, Jan 28, 2026 | ♒ 9 | Alnitak (ζ Ori) — 👁 V 2 — Tropical Winter |
+| Thu, Jan 29, 2026 | ♒ 10 | Saiph (κ Ori) — 👁 V 2 — Tropical Winter<br>Messier 78 (M78), diffuse nebula in Orion — 🔭 — Tropical — Winter<br>β Pic — B V 4 — Southern Winter |
+| Fri, Jan 30, 2026 | ♒ 11 | Messier 37 (M37), open cluster in Auriga — B — Northern — Winter<br>Wazn (β Col) — 👁 V 3 — Southern Winter |
+| Sat, Jan 31, 2026 | ♒ 12 | Betelgeuse (α Ori) — 👁 V 0 — Tropical Winter |
+| Sun, Feb 01, 2026 | ♒ 13 | 🌕 Full Moon — 22:09:16 UTC — Wolf Moon<br>Menkalinan (β Aur) — 👁 V 2 — Northern Winter |
 
 ### Weekly Solar-System Ephemeris
 
@@ -270,10 +270,10 @@ This is one of the year's strongest winter observing weeks: Orion Nebula (M42), 
 |---|---|---|
 | Mon, Feb 02, 2026 | ♒ 14 | — |
 | Tue, Feb 03, 2026 | ♒ 15 | Cross-quarter point — Imbolc — 20:02:00 UTC |
-| Wed, Feb 04, 2026 | ♒ 16 | Messier 35 (M35), open cluster in Gemini — B — Northern — Winter<br>α Men — B V 5 — Southern — Winter |
+| Wed, Feb 04, 2026 | ♒ 16 | Messier 35 (M35), open cluster in Gemini — B — Northern — Winter<br>α Men — B V 5 — Southern Winter |
 | Thu, Feb 05, 2026 | ♒ 17 | — |
 | Fri, Feb 06, 2026 | ♒ 18 | — |
-| Sat, Feb 07, 2026 | ♒ 19 | Canopus (α Car) — 👁 V -1 — Southern Winter<br>Mirzam (β CMa) — 👁 V 2 — Tropical — Winter |
+| Sat, Feb 07, 2026 | ♒ 19 | Canopus (α Car) — 👁 V -1 — Southern Winter<br>Mirzam (β CMa) — 👁 V 2 — Tropical Winter |
 | Sun, Feb 08, 2026 | ♒ 20 | — |
 
 ### Weekly Solar-System Ephemeris
@@ -316,11 +316,11 @@ Messier 35 (M35), open cluster in Gemini in Gemini is the principal deep-sky tar
 
 | Date | Zodiac day | Events |
 |---|---|---|
-| Mon, Feb 09, 2026 | ♒ 21 | 🌗 Last Quarter — 12:43:14 UTC<br>β Mon — B V 4 — Tropical — Winter |
+| Mon, Feb 09, 2026 | ♒ 21 | 🌗 Last Quarter — 12:43:14 UTC<br>β Mon — B V 4 — Tropical Winter |
 | Tue, Feb 10, 2026 | ♒ 22 | — |
-| Wed, Feb 11, 2026 | ♒ 23 | Alhena (γ Gem) — 👁 V 2 — Tropical — Winter |
+| Wed, Feb 11, 2026 | ♒ 23 | Alhena (γ Gem) — 👁 V 2 — Tropical Winter |
 | Thu, Feb 12, 2026 | ♒ 24 | Messier 41 (M41), open cluster in Canis Major — B — Tropical — Winter |
-| Fri, Feb 13, 2026 | ♒ 25 | Sirius (α CMa) — 👁 V -1 — Tropical Winter<br>α Pic — 👁 V 3 — Southern — Winter |
+| Fri, Feb 13, 2026 | ♒ 25 | Sirius (α CMa) — 👁 V -1 — Tropical Winter<br>α Pic — 👁 V 3 — Southern Winter |
 | Sat, Feb 14, 2026 | ♒ 26 | — |
 | Sun, Feb 15, 2026 | ♒ 27 | — |
 
@@ -364,10 +364,10 @@ Last Quarter Moon opens darker evening opportunities, and Messier 41 (M41), open
 
 | Date | Zodiac day | Events |
 |---|---|---|
-| Mon, Feb 16, 2026 | ♒ 28 | Adhara (ε CMa) — 👁 V 2 — Southern — Winter |
+| Mon, Feb 16, 2026 | ♒ 28 | Adhara (ε CMa) — 👁 V 2 — Southern Winter |
 | Tue, Feb 17, 2026 | ♒ 29 | ☀ Annular solar eclipse — greatest 12:14 UTC<br>🌑 New Moon — 12:01:13 UTC |
 | Wed, Feb 18, 2026 | ♓ (Pisces) 1 | ♓ Pisces ingress (330°) — 15:51:56 UTC<br>Messier 50 (M50), open cluster in Monoceros — B — Tropical — Winter |
-| Thu, Feb 19, 2026 | ♓ 2 | Wezen (δ CMa) — 👁 V 2 — Southern — Winter |
+| Thu, Feb 19, 2026 | ♓ 2 | Wezen (δ CMa) — 👁 V 2 — Southern Winter |
 | Fri, Feb 20, 2026 | ♓ 3 | — |
 | Sat, Feb 21, 2026 | ♓ 4 | — |
 | Sun, Feb 22, 2026 | ♓ 5 | — |
@@ -412,12 +412,12 @@ New Moon on February 17 gives this week a dark-sky advantage, and Messier 50 (M5
 
 | Date | Zodiac day | Events |
 |---|---|---|
-| Mon, Feb 23, 2026 | ♓ 6 | Aludra (η CMa) — 👁 V 2 — Southern — Winter |
-| Tue, Feb 24, 2026 | ♓ 7 | 🌓 First Quarter — 12:27:42 UTC<br>Gomeisa (β CMi) — 👁 V 3 — Tropical — Winter |
+| Mon, Feb 23, 2026 | ♓ 6 | Aludra (η CMa) — 👁 V 2 — Southern Winter |
+| Tue, Feb 24, 2026 | ♓ 7 | 🌓 First Quarter — 12:27:42 UTC<br>Gomeisa (β CMi) — 👁 V 3 — Tropical Winter |
 | Wed, Feb 25, 2026 | ♓ 8 | Messier 47 (M47), open cluster in Puppis — B — Tropical — Winter |
-| Thu, Feb 26, 2026 | ♓ 9 | Castor (α Gem) — 👁 V 2 — Northern — Winter<br>Messier 46 (M46), open cluster in Puppis — B — Tropical — Winter |
-| Fri, Feb 27, 2026 | ♓ 10 | Procyon (α CMi) — 👁 V 0 — Tropical — Winter<br>Messier 93 (M93), open cluster in Puppis — B — Southern — Winter<br>α Mon — B V 4 — Tropical — Winter |
-| Sat, Feb 28, 2026 | ♓ 11 | Pollux (β Gem) — 👁 V 1 — Northern — Winter |
+| Thu, Feb 26, 2026 | ♓ 9 | Castor (α Gem) — 👁 V 2 — Northern Winter<br>Messier 46 (M46), open cluster in Puppis — B — Tropical — Winter |
+| Fri, Feb 27, 2026 | ♓ 10 | Procyon (α CMi) — 👁 V 0 — Tropical Winter<br>Messier 93 (M93), open cluster in Puppis — B — Southern — Winter<br>α Mon — B V 4 — Tropical Winter |
+| Sat, Feb 28, 2026 | ♓ 11 | Pollux (β Gem) — 👁 V 1 — Northern Winter |
 | Sun, Mar 01, 2026 | ♓ 12 | — |
 
 ### Weekly Solar-System Ephemeris
@@ -465,9 +465,9 @@ M47, M46, and Messier 93 (M93), open cluster in Puppis make this a strong open-c
 | Mon, Mar 02, 2026 | ♓ 13 | — |
 | Tue, Mar 03, 2026 | ♓ 14 | ☾ Total lunar eclipse — greatest 11:31 UTC<br>🌕 Full Moon — 11:37:56 UTC — Sap Moon |
 | Wed, Mar 04, 2026 | ♓ 15 | — |
-| Thu, Mar 05, 2026 | ♓ 16 | Naos (ζ Pup) — 👁 V 2 — Southern — Winter |
+| Thu, Mar 05, 2026 | ♓ 16 | Naos (ζ Pup) — 👁 V 2 — Southern Winter |
 | Fri, Mar 06, 2026 | ♓ 17 | Messier 48 (M48), open cluster in Hydra — B — Tropical — Winter |
-| Sat, Mar 07, 2026 | ♓ 18 | γ2 Vel — 👁 V 2 — Southern — Winter |
+| Sat, Mar 07, 2026 | ♓ 18 | γ2 Vel — 👁 V 2 — Southern Winter |
 | Sun, Mar 08, 2026 | ♓ 19 | — |
 
 ### Weekly Solar-System Ephemeris
@@ -510,13 +510,13 @@ Full Moon on March 3 makes faint extended objects difficult, but Messier 48 (M48
 
 | Date | Zodiac day | Events |
 |---|---|---|
-| Mon, Mar 09, 2026 | ♓ 20 | α Cha — B V 4 — Southern — Winter<br>Tarf (β Cnc) — B V 4 — Tropical — Winter |
-| Tue, Mar 10, 2026 | ♓ 21 | Avior (ε Car) — 👁 V 2 — Southern — Winter |
-| Wed, Mar 11, 2026 | ♓ 22 | 🌗 Last Quarter — 09:38:37 UTC<br>β Vol — B V 4 — Southern — Winter |
+| Mon, Mar 09, 2026 | ♓ 20 | α Cha — B V 4 — Southern Winter<br>Tarf (β Cnc) — B V 4 — Tropical Winter |
+| Tue, Mar 10, 2026 | ♓ 21 | Avior (ε Car) — 👁 V 2 — Southern Winter |
+| Wed, Mar 11, 2026 | ♓ 22 | 🌗 Last Quarter — 09:38:37 UTC<br>β Vol — B V 4 — Southern Winter |
 | Thu, Mar 12, 2026 | ♓ 23 | — |
 | Fri, Mar 13, 2026 | ♓ 24 | — |
 | Sat, Mar 14, 2026 | ♓ 25 | — |
-| Sun, Mar 15, 2026 | ♓ 26 | Beehive Cluster (M44), open cluster in Cancer — B — Tropical — Winter<br>β Pyx — B V 4 — Southern — Winter |
+| Sun, Mar 15, 2026 | ♓ 26 | Beehive Cluster (M44), open cluster in Cancer — B — Tropical — Winter<br>β Pyx — B V 4 — Southern Winter |
 
 ### Weekly Solar-System Ephemeris
 
@@ -558,12 +558,12 @@ Last Quarter Moon on March 11 improves evening conditions, and M44, the Beehive 
 
 | Date | Zodiac day | Events |
 |---|---|---|
-| Mon, Mar 16, 2026 | ♓ 27 | α Pyx — B V 4 — Southern — Winter<br>Alsephina (δ Vel) — 👁 V 2 — Southern — Winter |
+| Mon, Mar 16, 2026 | ♓ 27 | α Pyx — B V 4 — Southern Winter<br>Alsephina (δ Vel) — 👁 V 2 — Southern Winter |
 | Tue, Mar 17, 2026 | ♓ 28 | Messier 67 (M67), open cluster in Cancer — B — Tropical — Winter |
 | Wed, Mar 18, 2026 | ♓ 29 | — |
 | Thu, Mar 19, 2026 | ♓ 30 | 🌑 New Moon — 01:23:28 UTC |
-| Fri, Mar 20, 2026 | ♈ (Aries) 1 | March Equinox — First Point of Aries — Ostara — 14:45:58 UTC<br>♈ Aries ingress (0°) — 14:45:58 UTC<br>Acubens (α Cnc) — B V 4 — Tropical — Spring |
-| Sat, Mar 21, 2026 | ♈ 2 | α Vol — B V 4 — Southern — Spring |
+| Fri, Mar 20, 2026 | ♈ (Aries) 1 | March Equinox — First Point of Aries — Ostara — 14:45:58 UTC<br>♈ Aries ingress (0°) — 14:45:58 UTC<br>Acubens (α Cnc) — B V 4 — Tropical Spring |
+| Sat, Mar 21, 2026 | ♈ 2 | α Vol — B V 4 — Southern Spring |
 | Sun, Mar 22, 2026 | ♈ 3 | — |
 
 ### Weekly Solar-System Ephemeris
@@ -606,12 +606,12 @@ Messier 67 (M67), open cluster in Cancer appears on March 17, New Moon follows o
 
 | Date | Zodiac day | Events |
 |---|---|---|
-| Mon, Mar 23, 2026 | ♈ 4 | Suhail (λ Vel) — 👁 V 2 — Southern — Spring |
-| Tue, Mar 24, 2026 | ♈ 5 | Miaplacidus (β Car) — 👁 V 2 — Southern — Spring |
-| Wed, Mar 25, 2026 | ♈ 6 | 🌓 First Quarter — 19:17:40 UTC<br>Aspidiske (ι Car) — 👁 V 2 — Southern — Spring |
-| Thu, Mar 26, 2026 | ♈ 7 | α Lyn — 👁 V 3 — Northern — Spring |
-| Fri, Mar 27, 2026 | ♈ 8 | Markeb (κ Vel) — 👁 V 2 — Southern — Spring |
-| Sat, Mar 28, 2026 | ♈ 9 | Alphard (α Hya) — 👁 V 2 — Tropical — Spring |
+| Mon, Mar 23, 2026 | ♈ 4 | Suhail (λ Vel) — 👁 V 2 — Southern Spring |
+| Tue, Mar 24, 2026 | ♈ 5 | Miaplacidus (β Car) — 👁 V 2 — Southern Spring |
+| Wed, Mar 25, 2026 | ♈ 6 | 🌓 First Quarter — 19:17:40 UTC<br>Aspidiske (ι Car) — 👁 V 2 — Southern Spring |
+| Thu, Mar 26, 2026 | ♈ 7 | α Lyn — 👁 V 3 — Northern Spring |
+| Fri, Mar 27, 2026 | ♈ 8 | Markeb (κ Vel) — 👁 V 2 — Southern Spring |
+| Sat, Mar 28, 2026 | ♈ 9 | Alphard (α Hya) — 👁 V 2 — Tropical Spring |
 | Sun, Mar 29, 2026 | ♈ 10 | — |
 
 ### Weekly Solar-System Ephemeris
@@ -704,11 +704,11 @@ Bode's Galaxy (M81), spiral galaxy in Ursa Major and Cigar Galaxy (M82), irregul
 |---|---|---|
 | Mon, Apr 06, 2026 | ♈ 18 | — |
 | Tue, Apr 07, 2026 | ♈ 19 | — |
-| Wed, Apr 08, 2026 | ♈ 20 | Regulus (α Leo) — 👁 V 1 — Tropical — Spring<br>α Sex — B V 4 — Tropical — Spring |
+| Wed, Apr 08, 2026 | ♈ 20 | Regulus (α Leo) — 👁 V 1 — Tropical Spring<br>α Sex — B V 4 — Tropical Spring |
 | Thu, Apr 09, 2026 | ♈ 21 | — |
 | Fri, Apr 10, 2026 | ♈ 22 | 🌗 Last Quarter — 04:51:45 UTC |
 | Sat, Apr 11, 2026 | ♈ 23 | — |
-| Sun, Apr 12, 2026 | ♈ 24 | Algieba (γ1 Leo) — 👁 V 2 — Tropical — Spring |
+| Sun, Apr 12, 2026 | ♈ 24 | Algieba (γ1 Leo) — 👁 V 2 — Tropical Spring |
 
 ### Weekly Solar-System Ephemeris
 
@@ -750,8 +750,8 @@ Regulus and Algieba make Leo the week's natural observing framework while Last Q
 
 | Date | Zodiac day | Events |
 |---|---|---|
-| Mon, Apr 13, 2026 | ♈ 25 | α Ant — B V 4 — Southern — Spring |
-| Tue, Apr 14, 2026 | ♈ 26 | β LMi — B V 4 — Northern — Spring<br>β Sex — B V 5 — Tropical — Spring |
+| Mon, Apr 13, 2026 | ♈ 25 | α Ant — B V 4 — Southern Spring |
+| Tue, Apr 14, 2026 | ♈ 26 | β LMi — B V 4 — Northern Spring<br>β Sex — B V 5 — Tropical Spring |
 | Wed, Apr 15, 2026 | ♈ 27 | — |
 | Thu, Apr 16, 2026 | ♈ 28 | — |
 | Fri, Apr 17, 2026 | ♈ 29 | 🌑 New Moon — 11:51:46 UTC |
@@ -802,10 +802,10 @@ New Moon on April 17 is followed immediately by M95, M96, and Messier 105 (M105)
 |---|---|---|
 | Mon, Apr 20, 2026 | ♉ (Taurus) 1 | ♉ Taurus ingress (30°) — 01:39:07 UTC |
 | Tue, Apr 21, 2026 | ♉ 2 | — |
-| Wed, Apr 22, 2026 | ♉ 3 | Alkes (α Crt) — B V 4 — Tropical — Spring |
-| Thu, Apr 23, 2026 | ♉ 4 | Dubhe (α UMa) — 👁 V 2 — Northern — Spring<br>Merak (β UMa) — 👁 V 2 — Northern — Spring |
+| Wed, Apr 22, 2026 | ♉ 3 | Alkes (α Crt) — B V 4 — Tropical Spring |
+| Thu, Apr 23, 2026 | ♉ 4 | Dubhe (α UMa) — 👁 V 2 — Northern Spring<br>Merak (β UMa) — 👁 V 2 — Northern Spring |
 | Fri, Apr 24, 2026 | ♉ 5 | 🌓 First Quarter — 02:31:44 UTC |
-| Sat, Apr 25, 2026 | ♉ 6 | Owl Nebula (M97), planetary nebula in Ursa Major — 🔭 — Northern — Spring<br>Messier 108 (M108), spiral galaxy in Ursa Major — 🔭 — Northern — Spring<br>β Crt — B V 4 — Tropical — Spring |
+| Sat, Apr 25, 2026 | ♉ 6 | Owl Nebula (M97), planetary nebula in Ursa Major — 🔭 — Northern — Spring<br>Messier 108 (M108), spiral galaxy in Ursa Major — 🔭 — Northern — Spring<br>β Crt — B V 4 — Tropical Spring |
 | Sun, Apr 26, 2026 | ♉ 7 | — |
 
 ### Weekly Solar-System Ephemeris
@@ -899,12 +899,12 @@ Messier 65 (M65), spiral galaxy in Leo and Messier 66 (M66), spiral galaxy in Le
 | Date | Zodiac day | Events |
 |---|---|---|
 | Mon, May 04, 2026 | ♉ 15 | — |
-| Tue, May 05, 2026 | ♉ 16 | Cross-quarter point — Beltane — 11:49 UTC<br>Denebola (β Leo) — 👁 V 2 — Tropical — Spring |
-| Wed, May 06, 2026 | ♉ 17 | Phecda (γ UMa) — 👁 V 2 — Northern — Spring<br>β Hya — B V 4 — Southern — Spring<br>Zavijava (β Vir) — B V 4 — Tropical — Spring |
+| Tue, May 05, 2026 | ♉ 16 | Cross-quarter point — Beltane — 11:49 UTC<br>Denebola (β Leo) — 👁 V 2 — Tropical Spring |
+| Wed, May 06, 2026 | ♉ 17 | Phecda (γ UMa) — 👁 V 2 — Northern Spring<br>β Hya — B V 4 — Southern Spring<br>Zavijava (β Vir) — B V 4 — Tropical Spring |
 | Thu, May 07, 2026 | ♉ 18 | Messier 109 (M109), barred spiral galaxy in Ursa Major — 🔭 — Northern — Spring |
 | Fri, May 08, 2026 | ♉ 19 | — |
 | Sat, May 09, 2026 | ♉ 20 | 🌗 Last Quarter — 21:10:33 UTC |
-| Sun, May 10, 2026 | ♉ 21 | Alchiba (α Crv) — B V 4 — Southern — Spring |
+| Sun, May 10, 2026 | ♉ 21 | Alchiba (α Crv) — B V 4 — Southern Spring |
 
 ### Weekly Solar-System Ephemeris
 
@@ -950,11 +950,11 @@ The Beltane cross-quarter point falls on May 5, while Denebola and Phecda help e
 |---|---|---|
 | Mon, May 11, 2026 | ♉ 22 | — |
 | Tue, May 12, 2026 | ♉ 23 | Megrez (δ Ursae Majoris) — Northern Spring<br>Messier 98 (M98), spiral galaxy in Coma Berenices — 🔭 — Tropical — Spring |
-| Wed, May 13, 2026 | ♉ 24 | Messier 106 (M106), spiral galaxy in Canes Venatici — 🔭 — Northern — Spring<br>Messier 99 (M99), spiral galaxy in Coma Berenices — 🔭 — Tropical — Spring<br>β Cha — B V 4 — Southern — Spring |
+| Wed, May 13, 2026 | ♉ 24 | Messier 106 (M106), spiral galaxy in Canes Venatici — 🔭 — Northern — Spring<br>Messier 99 (M99), spiral galaxy in Coma Berenices — 🔭 — Tropical — Spring<br>β Cha — B V 4 — Southern Spring |
 | Thu, May 14, 2026 | ♉ 25 | Winnecke 4 (M40), double star in Ursa Major — 🔭 — Northern — Spring<br>Messier 61 (M61), spiral galaxy in Virgo — 🔭 — Tropical — Spring<br>Messier 84 (M84), lenticular galaxy in Virgo — 🔭 — Tropical — Spring<br>Messier 100 (M100), spiral galaxy in Coma Berenices — 🔭 — Tropical — Spring |
-| Fri, May 15, 2026 | ♉ 26 | Acrux (α1 Cru) — 👁 V 1 — Southern — Spring<br>Messier 85 (M85), lenticular galaxy in Coma Berenices — 🔭 — Tropical — Spring<br>Messier 86 (M86), lenticular galaxy in Virgo — 🔭 — Tropical — Spring<br>α2 Cru — 👁 V 2 — Southern — Spring |
-| Sat, May 16, 2026 | ♉ 27 | 🌑 New Moon — 20:01:01 UTC<br>Gacrux (γ Cru) — 👁 V 2 — Southern — Spring<br>Messier 49 (M49), elliptical galaxy in Virgo — 🔭 — Tropical — Spring<br>Messier 87 (M87), elliptical galaxy in Virgo — 🔭 — Tropical — Spring<br>Messier 88 (M88), spiral galaxy in Coma Berenices — 🔭 — Tropical — Spring |
-| Sun, May 17, 2026 | ♉ 28 | Messier 89 (M89), elliptical galaxy in Virgo — 🔭 — Tropical — Spring<br>Messier 90 (M90), spiral galaxy in Virgo — 🔭 — Tropical — Spring<br>Messier 91 (M91), barred spiral galaxy in Coma Berenices — 🔭 — Tropical — Spring<br>Chara (β CVn) — B V 4 — Northern — Spring<br>Kraz (β Crv) — 👁 V 3 — Tropical — Spring<br>α Mus — 👁 V 3 — Southern — Spring |
+| Fri, May 15, 2026 | ♉ 26 | Acrux (α1 Cru) — 👁 V 1 — Southern Spring<br>Messier 85 (M85), lenticular galaxy in Coma Berenices — 🔭 — Tropical — Spring<br>Messier 86 (M86), lenticular galaxy in Virgo — 🔭 — Tropical — Spring<br>α2 Cru — 👁 V 2 — Southern Spring |
+| Sat, May 16, 2026 | ♉ 27 | 🌑 New Moon — 20:01:01 UTC<br>Gacrux (γ Cru) — 👁 V 2 — Southern Spring<br>Messier 49 (M49), elliptical galaxy in Virgo — 🔭 — Tropical — Spring<br>Messier 87 (M87), elliptical galaxy in Virgo — 🔭 — Tropical — Spring<br>Messier 88 (M88), spiral galaxy in Coma Berenices — 🔭 — Tropical — Spring |
+| Sun, May 17, 2026 | ♉ 28 | Messier 89 (M89), elliptical galaxy in Virgo — 🔭 — Tropical — Spring<br>Messier 90 (M90), spiral galaxy in Virgo — 🔭 — Tropical — Spring<br>Messier 91 (M91), barred spiral galaxy in Coma Berenices — 🔭 — Tropical — Spring<br>Chara (β CVn) — B V 4 — Northern Spring<br>Kraz (β Crv) — 👁 V 3 — Tropical Spring<br>α Mus — 👁 V 3 — Southern Spring |
 
 ### Weekly Solar-System Ephemeris
 
@@ -999,10 +999,10 @@ This is one of the densest galaxy weeks in the Almanack. M98, M106, M99, M61, M8
 | Date | Zodiac day | Events |
 |---|---|---|
 | Mon, May 18, 2026 | ♉ 29 | Sombrero Galaxy (M104), spiral galaxy in Virgo — 🔭 — Tropical — Spring<br>Messier 58 (M58), barred spiral galaxy in Virgo — 🔭 — Tropical — Spring<br>Messier 68 (M68), globular cluster in Hydra — 🔭 — Southern — Spring |
-| Tue, May 19, 2026 | ♉ 30 | Messier 59 (M59), elliptical galaxy in Virgo — 🔭 — Tropical — Spring<br>Messier 60 (M60), elliptical galaxy in Virgo — 🔭 — Tropical — Spring<br>γ Cen — 👁 V 2 — Southern — Spring |
-| Wed, May 20, 2026 | ♉ 31 | Mimosa (β Cru) — 👁 V 1 — Southern — Spring<br>β Mus — 👁 V 3 — Southern — Spring |
+| Tue, May 19, 2026 | ♉ 30 | Messier 59 (M59), elliptical galaxy in Virgo — 🔭 — Tropical — Spring<br>Messier 60 (M60), elliptical galaxy in Virgo — 🔭 — Tropical — Spring<br>γ Cen — 👁 V 2 — Southern Spring |
+| Wed, May 20, 2026 | ♉ 31 | Mimosa (β Cru) — 👁 V 1 — Southern Spring<br>β Mus — 👁 V 3 — Southern Spring |
 | Thu, May 21, 2026 | ♊ (Gemini) 1 | ♊ Gemini ingress (60°) — 00:36:44 UTC<br>Messier 94 (M94), spiral galaxy in Canes Venatici — 🔭 — Northern — Spring |
-| Fri, May 22, 2026 | ♊ 2 | Alioth (ε UMa) — 👁 V 2 — Northern — Spring<br>α1 CVn — B V 6 — Northern — Spring<br>Cor Caroli (α2 CVn) — 👁 V 3 — Northern — Spring |
+| Fri, May 22, 2026 | ♊ 2 | Alioth (ε UMa) — 👁 V 2 — Northern Spring<br>α1 CVn — B V 6 — Northern Spring<br>Cor Caroli (α2 CVn) — 👁 V 3 — Northern Spring |
 | Sat, May 23, 2026 | ♊ 3 | 🌓 First Quarter — 11:10:57 UTC<br>Black Eye Galaxy (M64), spiral galaxy in Coma Berenices — 🔭 — Tropical — Spring |
 | Sun, May 24, 2026 | ♊ 4 | — |
 
@@ -1047,10 +1047,10 @@ The spring galaxy sequence continues with M104, M58, M59, M60, M94, and M64, whi
 | Date | Zodiac day | Events |
 |---|---|---|
 | Mon, May 25, 2026 | ♊ 5 | — |
-| Tue, May 26, 2026 | ♊ 6 | Diadem (α Com) — B V 4 — Tropical — Spring<br>β Com — B V 4 — Northern — Spring |
+| Tue, May 26, 2026 | ♊ 6 | Diadem (α Com) — B V 4 — Tropical Spring<br>β Com — B V 4 — Northern Spring |
 | Wed, May 27, 2026 | ♊ 7 | Sunflower Galaxy (M63), spiral galaxy in Canes Venatici — 🔭 — Northern — Spring<br>Messier 53 (M53), globular cluster in Coma Berenices — 🔭 — Tropical — Spring |
 | Thu, May 28, 2026 | ♊ 8 | — |
-| Fri, May 29, 2026 | ♊ 9 | Spica (α Vir) — 👁 V 1 — Tropical — Spring<br>Mizar (ζ UMa) — 👁 V 2 — Northern — Spring |
+| Fri, May 29, 2026 | ♊ 9 | Spica (α Vir) — 👁 V 1 — Tropical Spring<br>Mizar (ζ UMa) — 👁 V 2 — Northern Spring |
 | Sat, May 30, 2026 | ♊ 10 | — |
 | Sun, May 31, 2026 | ♊ 11 | 🌕 Full Moon — 08:45:16 UTC — Flower Moon<br>Whirlpool Galaxy (M51), spiral galaxy in Canes Venatici — 🔭 — Northern — Spring |
 
@@ -1095,9 +1095,9 @@ Sunflower Galaxy (M63), spiral galaxy in Canes Venatici and Messier 53 (M53), gl
 | Date | Zodiac day | Events |
 |---|---|---|
 | Mon, Jun 01, 2026 | ♊ 12 | Southern Pinwheel (M83), spiral galaxy in Hydra — 🔭 — Southern — Spring |
-| Tue, Jun 02, 2026 | ♊ 13 | ε Cen — 👁 V 2 — Southern — Spring |
+| Tue, Jun 02, 2026 | ♊ 13 | ε Cen — 👁 V 2 — Southern Spring |
 | Wed, Jun 03, 2026 | ♊ 14 | Messier 3 (M3), globular cluster in Canes Venatici — B — Northern — Spring |
-| Thu, Jun 04, 2026 | ♊ 15 | Alkaid (η UMa) — 👁 V 2 — Northern — Spring |
+| Thu, Jun 04, 2026 | ♊ 15 | Alkaid (η UMa) — 👁 V 2 — Northern Spring |
 | Fri, Jun 05, 2026 | ♊ 16 | — |
 | Sat, Jun 06, 2026 | ♊ 17 | — |
 | Sun, Jun 07, 2026 | ♊ 18 | — |
@@ -1144,10 +1144,10 @@ M83, the Southern Pinwheel Galaxy, opens the week and Messier 3 (M3), globular c
 
 | Date | Zodiac day | Events |
 |---|---|---|
-| Mon, Jun 08, 2026 | ♊ 19 | 🌗 Last Quarter — 10:00:32 UTC<br>Hadar (β Cen) — 👁 V 1 — Southern — Spring<br>Pinwheel Galaxy (M101), spiral galaxy in Ursa Major — 🔭 — Northern — Spring<br>Thuban (α Dra) — B V 4 — Northern — Spring |
-| Tue, Jun 09, 2026 | ♊ 20 | Menkent (θ Cen) — 👁 V 2 — Southern — Spring |
+| Mon, Jun 08, 2026 | ♊ 19 | 🌗 Last Quarter — 10:00:32 UTC<br>Hadar (β Cen) — 👁 V 1 — Southern Spring<br>Pinwheel Galaxy (M101), spiral galaxy in Ursa Major — 🔭 — Northern — Spring<br>Thuban (α Dra) — B V 4 — Northern Spring |
+| Tue, Jun 09, 2026 | ♊ 20 | Menkent (θ Cen) — 👁 V 2 — Southern Spring |
 | Wed, Jun 10, 2026 | ♊ 21 | — |
-| Thu, Jun 11, 2026 | ♊ 22 | Arcturus (α Boo) — 👁 V 0 — Tropical — Spring |
+| Thu, Jun 11, 2026 | ♊ 22 | Arcturus (α Boo) — 👁 V 0 — Tropical Spring |
 | Fri, Jun 12, 2026 | ♊ 23 | — |
 | Sat, Jun 13, 2026 | ♊ 24 | — |
 | Sun, Jun 14, 2026 | ♊ 25 | — |
@@ -1192,13 +1192,13 @@ Last Quarter Moon on June 8 helps darken the evening later in the week, while Ar
 
 | Date | Zodiac day | Events |
 |---|---|---|
-| Mon, Jun 15, 2026 | ♊ 26 | 🌑 New Moon — 02:54:07 UTC<br>η Cen — 👁 V 2 — Southern — Spring |
-| Tue, Jun 16, 2026 | ♊ 27 | Alpha Centauri (α Cen) — 👁 V 0 — Southern — Spring |
-| Wed, Jun 17, 2026 | ♊ 28 | α Cir — 👁 V 3 — Southern — Spring<br>α Lup — 👁 V 2 — Southern — Spring |
-| Thu, Jun 18, 2026 | ♊ 29 | α Aps — B V 4 — Southern — Spring<br>Izar (ε Boo) — 👁 V 2 — Northern — Spring |
-| Fri, Jun 19, 2026 | ♊ 30 | Kochab (β UMi) — 👁 V 2 — Northern — Spring<br>α1 Lib — B V 5 — Tropical — Spring<br>Zubenelgenubi (α2 Lib) — 👁 V 3 — Tropical — Spring |
+| Mon, Jun 15, 2026 | ♊ 26 | 🌑 New Moon — 02:54:07 UTC<br>η Cen — 👁 V 2 — Southern Spring |
+| Tue, Jun 16, 2026 | ♊ 27 | Alpha Centauri (α Cen) — 👁 V 0 — Southern Spring |
+| Wed, Jun 17, 2026 | ♊ 28 | α Cir — 👁 V 3 — Southern Spring<br>α Lup — 👁 V 2 — Southern Spring |
+| Thu, Jun 18, 2026 | ♊ 29 | α Aps — B V 4 — Southern Spring<br>Izar (ε Boo) — 👁 V 2 — Northern Spring |
+| Fri, Jun 19, 2026 | ♊ 30 | Kochab (β UMi) — 👁 V 2 — Northern Spring<br>α1 Lib — B V 5 — Tropical Spring<br>Zubenelgenubi (α2 Lib) — 👁 V 3 — Tropical Spring |
 | Sat, Jun 20, 2026 | ♊ 31 | — |
-| Sun, Jun 21, 2026 | ♋ (Cancer) 1 | 🌓 First Quarter — 21:55:20 UTC<br>June Solstice — First Point of Cancer — Litha — 08:24:31 UTC<br>♋ Cancer ingress (90°) — 08:24:31 UTC<br>β Lup — 👁 V 3 — Southern — Summer |
+| Sun, Jun 21, 2026 | ♋ (Cancer) 1 | 🌓 First Quarter — 21:55:20 UTC<br>June Solstice — First Point of Cancer — Litha — 08:24:31 UTC<br>♋ Cancer ingress (90°) — 08:24:31 UTC<br>β Lup — 👁 V 3 — Southern Summer |
 
 ### Weekly Solar-System Ephemeris
 
@@ -1240,13 +1240,13 @@ New Moon opens the week, Alpha Centauri reaches its Almanack date on June 16, an
 
 | Date | Zodiac day | Events |
 |---|---|---|
-| Mon, Jun 22, 2026 | ♋ 2 | Nekkar (β Boo) — 👁 V 3 — Northern — Summer |
+| Mon, Jun 22, 2026 | ♋ 2 | Nekkar (β Boo) — 👁 V 3 — Northern Summer |
 | Tue, Jun 23, 2026 | ♋ 3 | Spindle Galaxy (M102), lenticular galaxy in Draco — 🔭 — Northern — Summer |
 | Wed, Jun 24, 2026 | ♋ 4 | — |
-| Thu, Jun 25, 2026 | ♋ 5 | Zubeneschamali (β Lib) — 👁 V 3 — Tropical — Summer |
-| Fri, Jun 26, 2026 | ♋ 6 | Messier 5 (M5), globular cluster in Serpens — B — Tropical — Summer<br>β Cir — B V 4 — Southern — Summer |
+| Thu, Jun 25, 2026 | ♋ 5 | Zubeneschamali (β Lib) — 👁 V 3 — Tropical Summer |
+| Fri, Jun 26, 2026 | ♋ 6 | Messier 5 (M5), globular cluster in Serpens — B — Tropical — Summer<br>β Cir — B V 4 — Southern Summer |
 | Sat, Jun 27, 2026 | ♋ 7 | — |
-| Sun, Jun 28, 2026 | ♋ 8 | Nusakan (β CrB) — B V 4 — Northern — Summer |
+| Sun, Jun 28, 2026 | ♋ 8 | Nusakan (β CrB) — B V 4 — Northern Summer |
 
 ### Weekly Solar-System Ephemeris
 
@@ -1289,12 +1289,12 @@ Messier 5 (M5), globular cluster in Serpens reaches its Almanack date on June 26
 | Date | Zodiac day | Events |
 |---|---|---|
 | Mon, Jun 29, 2026 | ♋ 9 | 🌕 Full Moon — 23:56:43 UTC |
-| Tue, Jun 30, 2026 | ♋ 10 | Alphecca (α CrB) — 👁 V 2 — Northern — Summer |
+| Tue, Jun 30, 2026 | ♋ 10 | Alphecca (α CrB) — 👁 V 2 — Northern Summer |
 | Wed, Jul 01, 2026 | ♋ 11 | — |
-| Thu, Jul 02, 2026 | ♋ 12 | Unukalhai (α Ser) — 👁 V 3 — Tropical — Summer<br>β Ser — B V 4 — Tropical — Summer |
+| Thu, Jul 02, 2026 | ♋ 12 | Unukalhai (α Ser) — 👁 V 3 — Tropical Summer<br>β Ser — B V 4 — Tropical Summer |
 | Fri, Jul 03, 2026 | ♋ 13 | — |
 | Sat, Jul 04, 2026 | ♋ 14 | — |
-| Sun, Jul 05, 2026 | ♋ 15 | β TrA — 👁 V 3 — Southern — Summer |
+| Sun, Jul 05, 2026 | ♋ 15 | β TrA — 👁 V 3 — Southern Summer |
 
 ### Weekly Solar-System Ephemeris
 
@@ -1336,8 +1336,8 @@ Full Moon falls on June 29, so this is better suited to bright-star observing th
 
 | Date | Zodiac day | Events |
 |---|---|---|
-| Mon, Jul 06, 2026 | ♋ 16 | Dschubba (δ Sco) — 👁 V 2 — Tropical — Summer |
-| Tue, Jul 07, 2026 | ♋ 17 | 🌗 Last Quarter — 19:28:59 UTC<br>Acrab (β1 Sco) — 👁 V 3 — Tropical — Summer<br>β2 Sco — B V 5 — Tropical — Summer |
+| Mon, Jul 06, 2026 | ♋ 16 | Dschubba (δ Sco) — 👁 V 2 — Tropical Summer |
+| Tue, Jul 07, 2026 | ♋ 17 | 🌗 Last Quarter — 19:28:59 UTC<br>Acrab (β1 Sco) — 👁 V 3 — Tropical Summer<br>β2 Sco — B V 5 — Tropical Summer |
 | Wed, Jul 08, 2026 | ♋ 18 | — |
 | Thu, Jul 09, 2026 | ♋ 19 | — |
 | Fri, Jul 10, 2026 | ♋ 20 | Messier 80 (M80), globular cluster in Scorpius — B — Tropical — Summer |
@@ -1386,12 +1386,12 @@ Last Quarter Moon on July 7 improves evening conditions, and Messier 80 (M80), g
 
 | Date | Zodiac day | Events |
 |---|---|---|
-| Mon, Jul 13, 2026 | ♋ 23 | Kornephoros (β Her) — 👁 V 3 — Tropical — Summer<br>Antares (α Sco) — 👁 V 1 — Southern — Summer |
+| Mon, Jul 13, 2026 | ♋ 23 | Kornephoros (β Her) — 👁 V 3 — Tropical Summer<br>Antares (α Sco) — 👁 V 1 — Southern Summer |
 | Tue, Jul 14, 2026 | ♋ 24 | 🌑 New Moon — 09:43:34 UTC<br>Messier 107 (M107), globular cluster in Ophiuchus — 🔭 — Tropical — Summer |
 | Wed, Jul 15, 2026 | ♋ 25 | — |
-| Thu, Jul 16, 2026 | ♋ 26 | Great Hercules Globular (M13), globular cluster in Hercules — B — Northern — Summer<br>β Aps — B V 4 — Southern — Summer |
+| Thu, Jul 16, 2026 | ♋ 26 | Great Hercules Globular (M13), globular cluster in Hercules — B — Northern — Summer<br>β Aps — B V 4 — Southern Summer |
 | Fri, Jul 17, 2026 | ♋ 27 | — |
-| Sat, Jul 18, 2026 | ♋ 28 | Messier 12 (M12), globular cluster in Ophiuchus — B — Tropical — Summer<br>Atria (α TrA) — 👁 V 2 — Southern — Summer<br>Larawag (ε Sco) — 👁 V 2 — Southern — Summer |
+| Sat, Jul 18, 2026 | ♋ 28 | Messier 12 (M12), globular cluster in Ophiuchus — B — Tropical — Summer<br>Atria (α TrA) — 👁 V 2 — Southern Summer<br>Larawag (ε Sco) — 👁 V 2 — Southern Summer |
 | Sun, Jul 19, 2026 | ♋ 29 | — |
 
 ### Weekly Solar-System Ephemeris
@@ -1437,8 +1437,8 @@ New Moon on July 14 opens a dark-sky week rich in globular clusters. Messier 107
 | Mon, Jul 20, 2026 | ♋ 30 | Messier 10 (M10), globular cluster in Ophiuchus — B — Tropical — Summer |
 | Tue, Jul 21, 2026 | ♋ 31 | 🌓 First Quarter — 11:05:35 UTC<br>Messier 19 (M19), globular cluster in Ophiuchus — B — Southern — Summer<br>Messier 62 (M62), globular cluster in Ophiuchus — B — Southern — Summer |
 | Wed, Jul 22, 2026 | ♌ (Leo) 1 | — |
-| Thu, Jul 23, 2026 | ♌ 2 | Sabik (η Oph) — 👁 V 2 — Tropical — Summer |
-| Fri, Jul 24, 2026 | ♌ 3 | Rasalgethi (α1 Her) — 👁 V 3 — Tropical — Summer<br>α2 Her — B V 5 — Tropical — Summer |
+| Thu, Jul 23, 2026 | ♌ 2 | Sabik (η Oph) — 👁 V 2 — Tropical Summer |
+| Fri, Jul 24, 2026 | ♌ 3 | Rasalgethi (α1 Her) — 👁 V 3 — Tropical Summer<br>α2 Her — B V 5 — Tropical Summer |
 | Sat, Jul 25, 2026 | ♌ 4 | Messier 9 (M9), globular cluster in Ophiuchus — 🔭 — Tropical — Summer<br>Messier 92 (M92), globular cluster in Hercules — B — Northern — Summer |
 | Sun, Jul 26, 2026 | ♌ 5 | — |
 
@@ -1482,12 +1482,12 @@ This is a globular-cluster comparison week. Messier 10 (M10), globular cluster i
 
 | Date | Zodiac day | Events |
 |---|---|---|
-| Mon, Jul 27, 2026 | ♌ 6 | β Ara — 👁 V 3 — Southern — Summer |
-| Tue, Jul 28, 2026 | ♌ 7 | Rastaban (β Dra) — 👁 V 3 — Northern — Summer |
-| Wed, Jul 29, 2026 | ♌ 8 | 🌕 Full Moon — 14:35:42 UTC<br>α Ara — 👁 V 3 — Southern — Summer<br>Rasalhague (α Oph) — 👁 V 2 — Tropical — Summer<br>Shaula (λ Sco) — 👁 V 2 — Southern — Summer |
-| Thu, Jul 30, 2026 | ♌ 9 | Butterfly Cluster (M6), open cluster in Scorpius — B — Southern — Summer<br>Messier 14 (M14), globular cluster in Ophiuchus — 🔭 — Tropical — Summer<br>Sargas (θ Sco) — 👁 V 2 — Southern — Summer |
-| Fri, Jul 31, 2026 | ♌ 10 | κ Sco — 👁 V 2 — Southern — Summer |
-| Sat, Aug 01, 2026 | ♌ 11 | Cebalrai (β Oph) — 👁 V 3 — Tropical — Summer |
+| Mon, Jul 27, 2026 | ♌ 6 | β Ara — 👁 V 3 — Southern Summer |
+| Tue, Jul 28, 2026 | ♌ 7 | Rastaban (β Dra) — 👁 V 3 — Northern Summer |
+| Wed, Jul 29, 2026 | ♌ 8 | 🌕 Full Moon — 14:35:42 UTC<br>α Ara — 👁 V 3 — Southern Summer<br>Rasalhague (α Oph) — 👁 V 2 — Tropical Summer<br>Shaula (λ Sco) — 👁 V 2 — Southern Summer |
+| Thu, Jul 30, 2026 | ♌ 9 | Butterfly Cluster (M6), open cluster in Scorpius — B — Southern — Summer<br>Messier 14 (M14), globular cluster in Ophiuchus — 🔭 — Tropical — Summer<br>Sargas (θ Sco) — 👁 V 2 — Southern Summer |
+| Fri, Jul 31, 2026 | ♌ 10 | κ Sco — 👁 V 2 — Southern Summer |
+| Sat, Aug 01, 2026 | ♌ 11 | Cebalrai (β Oph) — 👁 V 3 — Tropical Summer |
 | Sun, Aug 02, 2026 | ♌ 12 | — |
 
 ### Weekly Solar-System Ephemeris
@@ -1535,7 +1535,7 @@ Full Moon on July 29 brightens a week centered on Scorpius. Shaula and Sargas ma
 | Date | Zodiac day | Events |
 |---|---|---|
 | Mon, Aug 03, 2026 | ♌ 13 | Ptolemy's Cluster (M7), open cluster in Scorpius — 👁 — Southern — Summer |
-| Tue, Aug 04, 2026 | ♌ 14 | Messier 23 (M23), open cluster in Sagittarius — B — Tropical — Summer<br>Eltanin (γ Dra) — 👁 V 2 — Northern — Summer |
+| Tue, Aug 04, 2026 | ♌ 14 | Messier 23 (M23), open cluster in Sagittarius — B — Tropical — Summer<br>Eltanin (γ Dra) — 👁 V 2 — Northern Summer |
 | Wed, Aug 05, 2026 | ♌ 15 | Lagoon Nebula (M8), diffuse nebula in Sagittarius — B — Southern — Summer<br>Trifid Nebula (M20), emission and reflection nebula in Sagittarius — 🔭 — Tropical — Summer<br>Messier 21 (M21), open cluster in Sagittarius — B — Tropical — Summer |
 | Thu, Aug 06, 2026 | ♌ 16 | 🌗 Last Quarter — 02:21:32 UTC |
 | Fri, Aug 07, 2026 | ♌ 17 | — |
@@ -1583,11 +1583,11 @@ The southern Milky Way supplies an extraordinary sequence this week: Ptolemy's C
 | Date | Zodiac day | Events |
 |---|---|---|
 | Mon, Aug 10, 2026 | ♌ 20 | Messier 28 (M28), globular cluster in Sagittarius — B — Southern — Summer |
-| Tue, Aug 11, 2026 | ♌ 21 | Kaus Australis (ε Sgr) — 👁 V 2 — Southern — Summer |
-| Wed, Aug 12, 2026 | ♌ 22 | ☀ Total solar eclipse — greatest 17:48 UTC<br>🌑 New Moon — 17:36:40 UTC<br>Messier 25 (M25), open cluster in Sagittarius — B — Tropical — Summer<br>Messier 69 (M69), globular cluster in Sagittarius — 🔭 — Southern — Summer<br>α Tel — 👁 V 3 — Southern — Summer |
+| Tue, Aug 11, 2026 | ♌ 21 | Kaus Australis (ε Sgr) — 👁 V 2 — Southern Summer |
+| Wed, Aug 12, 2026 | ♌ 22 | ☀ Total solar eclipse — greatest 17:48 UTC<br>🌑 New Moon — 17:36:40 UTC<br>Messier 25 (M25), open cluster in Sagittarius — B — Tropical — Summer<br>Messier 69 (M69), globular cluster in Sagittarius — 🔭 — Southern — Summer<br>α Tel — 👁 V 3 — Southern Summer |
 | Thu, Aug 13, 2026 | ♌ 23 | Sagittarius Cluster (M22), globular cluster in Sagittarius — B — Southern — Summer |
-| Fri, Aug 14, 2026 | ♌ 24 | α Sct — B V 4 — Tropical — Summer |
-| Sat, Aug 15, 2026 | ♌ 25 | Messier 70 (M70), globular cluster in Sagittarius — 🔭 — Southern — Summer<br>Vega (α Lyr) — 👁 V 0 — Northern — Summer |
+| Fri, Aug 14, 2026 | ♌ 24 | α Sct — B V 4 — Tropical Summer |
+| Sat, Aug 15, 2026 | ♌ 25 | Messier 70 (M70), globular cluster in Sagittarius — 🔭 — Southern — Summer<br>Vega (α Lyr) — 👁 V 0 — Northern Summer |
 | Sun, Aug 16, 2026 | ♌ 26 | Messier 26 (M26), open cluster in Scutum — 🔭 — Tropical — Summer |
 
 ### Weekly Solar-System Ephemeris
@@ -1634,13 +1634,13 @@ New Moon on August 12 lands in the middle of a superb Sagittarius observing week
 
 | Date | Zodiac day | Events |
 |---|---|---|
-| Mon, Aug 17, 2026 | ♌ 27 | Wild Duck Cluster (M11), open cluster in Scutum — B — Tropical — Summer<br>β Sct — B V 4 — Tropical — Summer |
-| Tue, Aug 18, 2026 | ♌ 28 | Messier 54 (M54), globular cluster in Sagittarius — 🔭 — Southern — Summer<br>Ring Nebula (M57), planetary nebula in Lyra — 🔭 — Northern — Summer<br>Sheliak (β Lyr) — B V 4 — Northern — Summer |
+| Mon, Aug 17, 2026 | ♌ 27 | Wild Duck Cluster (M11), open cluster in Scutum — B — Tropical — Summer<br>β Sct — B V 4 — Tropical Summer |
+| Tue, Aug 18, 2026 | ♌ 28 | Messier 54 (M54), globular cluster in Sagittarius — 🔭 — Southern — Summer<br>Ring Nebula (M57), planetary nebula in Lyra — 🔭 — Northern — Summer<br>Sheliak (β Lyr) — B V 4 — Northern Summer |
 | Wed, Aug 19, 2026 | ♌ 29 | — |
-| Thu, Aug 20, 2026 | ♌ 30 | 🌓 First Quarter — 02:46:20 UTC<br>Nunki (σ Sgr) — 👁 V 2 — Southern — Summer |
+| Thu, Aug 20, 2026 | ♌ 30 | 🌓 First Quarter — 02:46:20 UTC<br>Nunki (σ Sgr) — 👁 V 2 — Southern Summer |
 | Fri, Aug 21, 2026 | ♌ 31 | — |
 | Sat, Aug 22, 2026 | ♌ 32 | — |
-| Sun, Aug 23, 2026 | ♍ (Virgo) 1 | Messier 56 (M56), globular cluster in Lyra — 🔭 — Northern — Summer<br>Meridiana (α CrA) — B V 4 — Southern — Summer |
+| Sun, Aug 23, 2026 | ♍ (Virgo) 1 | Messier 56 (M56), globular cluster in Lyra — 🔭 — Northern — Summer<br>Meridiana (α CrA) — B V 4 — Southern Summer |
 
 ### Weekly Solar-System Ephemeris
 
@@ -1682,12 +1682,12 @@ M11, the Wild Duck Cluster, opens the week on August 17, followed by M57, the Ri
 
 | Date | Zodiac day | Events |
 |---|---|---|
-| Mon, Aug 24, 2026 | ♍ 2 | β CrA — B V 4 — Southern — Summer |
+| Mon, Aug 24, 2026 | ♍ 2 | β CrA — B V 4 — Southern Summer |
 | Tue, Aug 25, 2026 | ♍ 3 | — |
 | Wed, Aug 26, 2026 | ♍ 4 | — |
-| Thu, Aug 27, 2026 | ♍ 5 | Rukbat (α Sgr) — B V 4 — Southern — Summer<br>Arkab Prior (β1 Sgr) — B V 4 — Southern — Summer<br>Arkab Posterior (β2 Sgr) — B V 4 — Southern — Summer |
+| Thu, Aug 27, 2026 | ♍ 5 | Rukbat (α Sgr) — B V 4 — Southern Summer<br>Arkab Prior (β1 Sgr) — B V 4 — Southern Summer<br>Arkab Posterior (β2 Sgr) — B V 4 — Southern Summer |
 | Fri, Aug 28, 2026 | ♍ 6 | ☾ Partial lunar eclipse — greatest 04:10 UTC<br>🌕 Full Moon — 04:18:30 UTC |
-| Sat, Aug 29, 2026 | ♍ 7 | Messier 55 (M55), globular cluster in Sagittarius — B — Southern — Summer<br>Albireo (β1 Cyg) — 👁 V 3 — Northern — Summer<br>Albireo B (β2 Cyg) — B V 5 — Northern — Summer<br>Anser (α Vul) — B V 4 — Northern — Summer |
+| Sat, Aug 29, 2026 | ♍ 7 | Messier 55 (M55), globular cluster in Sagittarius — B — Southern — Summer<br>Albireo (β1 Cyg) — 👁 V 3 — Northern Summer<br>Albireo B (β2 Cyg) — B V 5 — Northern Summer<br>Anser (α Vul) — B V 4 — Northern Summer |
 | Sun, Aug 30, 2026 | ♍ 8 | — |
 
 ### Weekly Solar-System Ephemeris
@@ -1731,11 +1731,11 @@ Full Moon arrives August 28, followed by Messier 55 (M55), globular cluster in S
 | Date | Zodiac day | Events |
 |---|---|---|
 | Mon, Aug 31, 2026 | ♍ 9 | — |
-| Tue, Sep 01, 2026 | ♍ 10 | Sham (α Sge) — B V 4 — Tropical — Summer<br>β Sge — B V 4 — Tropical — Summer |
+| Tue, Sep 01, 2026 | ♍ 10 | Sham (α Sge) — B V 4 — Tropical Summer<br>β Sge — B V 4 — Tropical Summer |
 | Wed, Sep 02, 2026 | ♍ 11 | Messier 71 (M71), globular cluster in Sagitta — 🔭 — Tropical — Summer |
 | Thu, Sep 03, 2026 | ♍ 12 | — |
-| Fri, Sep 04, 2026 | ♍ 13 | 🌗 Last Quarter — 07:51:15 UTC<br>Dumbbell Nebula (M27), planetary nebula in Vulpecula — B — Tropical — Summer<br>Altair (α Aql) — 👁 V 1 — Tropical — Summer |
-| Sat, Sep 05, 2026 | ♍ 14 | Messier 75 (M75), globular cluster in Sagittarius — 🔭 — Tropical — Summer<br>Alshain (β Aql) — B V 4 — Tropical — Summer |
+| Fri, Sep 04, 2026 | ♍ 13 | 🌗 Last Quarter — 07:51:15 UTC<br>Dumbbell Nebula (M27), planetary nebula in Vulpecula — B — Tropical — Summer<br>Altair (α Aql) — 👁 V 1 — Tropical Summer |
+| Sat, Sep 05, 2026 | ♍ 14 | Messier 75 (M75), globular cluster in Sagittarius — 🔭 — Tropical — Summer<br>Alshain (β Aql) — B V 4 — Tropical Summer |
 | Sun, Sep 06, 2026 | ♍ 15 | — |
 
 ### Weekly Solar-System Ephemeris
@@ -1784,9 +1784,9 @@ Last Quarter on September 4 shares the calendar with M27, the Dumbbell Nebula, a
 | Tue, Sep 08, 2026 | ♍ 17 | — |
 | Wed, Sep 09, 2026 | ♍ 18 | — |
 | Thu, Sep 10, 2026 | ♍ 19 | Messier 29 (M29), open cluster in Cygnus — B — Northern — Summer |
-| Fri, Sep 11, 2026 | ♍ 20 | 🌑 New Moon — 03:26:55 UTC<br>α1 Cap — B V 4 — Tropical — Summer<br>Algedi (α2 Cap) — B V 4 — Tropical — Summer |
-| Sat, Sep 12, 2026 | ♍ 21 | Dabih (β Cap) — 👁 V 3 — Tropical — Summer<br>Sadr (γ Cyg) — 👁 V 2 — Northern — Summer |
-| Sun, Sep 13, 2026 | ♍ 22 | Peacock (α Pav) — 👁 V 2 — Southern — Summer |
+| Fri, Sep 11, 2026 | ♍ 20 | 🌑 New Moon — 03:26:55 UTC<br>α1 Cap — B V 4 — Tropical Summer<br>Algedi (α2 Cap) — B V 4 — Tropical Summer |
+| Sat, Sep 12, 2026 | ♍ 21 | Dabih (β Cap) — 👁 V 3 — Tropical Summer<br>Sadr (γ Cyg) — 👁 V 2 — Northern Summer |
+| Sun, Sep 13, 2026 | ♍ 22 | Peacock (α Pav) — 👁 V 2 — Southern Summer |
 
 ### Weekly Solar-System Ephemeris
 
@@ -1831,10 +1831,10 @@ Messier 29 (M29), open cluster in Cygnus appears on September 10 and New Moon fo
 | Mon, Sep 14, 2026 | ♍ 23 | — |
 | Tue, Sep 15, 2026 | ♍ 24 | — |
 | Wed, Sep 16, 2026 | ♍ 25 | — |
-| Thu, Sep 17, 2026 | ♍ 26 | Sualocin (α Del) — B V 4 — Tropical — Summer<br>Rotanev (β Del) — B V 4 — Tropical — Summer<br>α Ind — 👁 V 3 — Southern — Summer |
-| Fri, Sep 18, 2026 | ♍ 27 | 🌓 First Quarter — 20:43:39 UTC<br>Messier 72 (M72), globular cluster in Aquarius — 🔭 — Tropical — Summer<br>Deneb (α Cyg) — 👁 V 1 — Northern — Summer |
-| Sat, Sep 19, 2026 | ♍ 28 | Messier 73 (M73), asterism in Aquarius — 🔭 — Tropical — Summer<br>β Pav — 👁 V 3 — Southern — Summer<br>Aljanah (ε Cyg) — 👁 V 2 — Northern — Summer |
-| Sun, Sep 20, 2026 | ♍ 29 | α Mic — B V 5 — Southern — Summer |
+| Thu, Sep 17, 2026 | ♍ 26 | Sualocin (α Del) — B V 4 — Tropical Summer<br>Rotanev (β Del) — B V 4 — Tropical Summer<br>α Ind — 👁 V 3 — Southern Summer |
+| Fri, Sep 18, 2026 | ♍ 27 | 🌓 First Quarter — 20:43:39 UTC<br>Messier 72 (M72), globular cluster in Aquarius — 🔭 — Tropical — Summer<br>Deneb (α Cyg) — 👁 V 1 — Northern Summer |
+| Sat, Sep 19, 2026 | ♍ 28 | Messier 73 (M73), asterism in Aquarius — 🔭 — Tropical — Summer<br>β Pav — 👁 V 3 — Southern Summer<br>Aljanah (ε Cyg) — 👁 V 2 — Northern Summer |
+| Sun, Sep 20, 2026 | ♍ 29 | α Mic — B V 5 — Southern Summer |
 
 ### Weekly Solar-System Ephemeris
 
@@ -1876,13 +1876,13 @@ Delphinus and Deneb give this week a strong naked-eye framework, while Messier 7
 
 | Date | Zodiac day | Events |
 |---|---|---|
-| Mon, Sep 21, 2026 | ♍ 30 | β Mic — B V 6 — Southern — Summer |
-| Tue, Sep 22, 2026 | ♍ 31 | β Ind — B V 4 — Southern — Autumn |
+| Mon, Sep 21, 2026 | ♍ 30 | β Mic — B V 6 — Southern Summer |
+| Tue, Sep 22, 2026 | ♍ 31 | β Ind — B V 4 — Southern Autumn |
 | Wed, Sep 23, 2026 | ♎ (Libra) 1 | — |
-| Thu, Sep 24, 2026 | ♎ 2 | α Oct — B V 5 — Southern — Autumn |
+| Thu, Sep 24, 2026 | ♎ 2 | α Oct — B V 5 — Southern Autumn |
 | Fri, Sep 25, 2026 | ♎ 3 | — |
 | Sat, Sep 26, 2026 | ♎ 4 | 🌕 Full Moon — 16:49:02 UTC |
-| Sun, Sep 27, 2026 | ♎ 5 | Kitalpha (α Equ) — B V 4 — Tropical — Autumn |
+| Sun, Sep 27, 2026 | ♎ 5 | Kitalpha (α Equ) — B V 4 — Tropical Autumn |
 
 ### Weekly Solar-System Ephemeris
 
@@ -1926,11 +1926,11 @@ The September 26 Full Moon dominates this week, while the Sun crosses into Libra
 
 | Date | Zodiac day | Events |
 |---|---|---|
-| Mon, Sep 28, 2026 | ♎ 6 | Alderamin (α Cep) — 👁 V 2 — Northern — Autumn |
-| Tue, Sep 29, 2026 | ♎ 7 | β Equ — B V 5 — Tropical — Autumn |
+| Mon, Sep 28, 2026 | ♎ 6 | Alderamin (α Cep) — 👁 V 2 — Northern Autumn |
+| Tue, Sep 29, 2026 | ♎ 7 | β Equ — B V 5 — Tropical Autumn |
 | Wed, Sep 30, 2026 | ♎ 8 | — |
-| Thu, Oct 01, 2026 | ♎ 9 | Messier 15 (M15), globular cluster in Pegasus — B — Tropical — Autumn<br>Alfirk (β Cep) — 👁 V 3 — Northern — Autumn |
-| Fri, Oct 02, 2026 | ♎ 10 | Messier 2 (M2), globular cluster in Aquarius — B — Tropical — Autumn<br>Messier 39 (M39), open cluster in Cygnus — B — Northern — Autumn<br>Sadalsuud (β Aqr) — 👁 V 3 — Tropical — Autumn |
+| Thu, Oct 01, 2026 | ♎ 9 | Messier 15 (M15), globular cluster in Pegasus — B — Tropical — Autumn<br>Alfirk (β Cep) — 👁 V 3 — Northern Autumn |
+| Fri, Oct 02, 2026 | ♎ 10 | Messier 2 (M2), globular cluster in Aquarius — B — Tropical — Autumn<br>Messier 39 (M39), open cluster in Cygnus — B — Northern — Autumn<br>Sadalsuud (β Aqr) — 👁 V 3 — Tropical Autumn |
 | Sat, Oct 03, 2026 | ♎ 11 | 🌗 Last Quarter — 13:25:02 UTC |
 | Sun, Oct 04, 2026 | ♎ 12 | Messier 30 (M30), globular cluster in Capricornus — B — Tropical — Autumn |
 
@@ -1976,13 +1976,13 @@ This is a compact but excellent autumn deep-sky week: Messier 15 (M15), globular
 
 | Date | Zodiac day | Events |
 |---|---|---|
-| Mon, Oct 05, 2026 | ♎ 13 | Enif (ε Peg) — 👁 V 2 — Tropical — Autumn |
+| Mon, Oct 05, 2026 | ♎ 13 | Enif (ε Peg) — 👁 V 2 — Tropical Autumn |
 | Tue, Oct 06, 2026 | ♎ 14 | — |
 | Wed, Oct 07, 2026 | ♎ 15 | — |
 | Thu, Oct 08, 2026 | ♎ 16 | — |
 | Fri, Oct 09, 2026 | ♎ 17 | — |
 | Sat, Oct 10, 2026 | ♎ 18 | 🌑 New Moon — 15:50:01 UTC |
-| Sun, Oct 11, 2026 | ♎ 19 | Sadalmelik (α Aqr) — 👁 V 3 — Tropical — Autumn |
+| Sun, Oct 11, 2026 | ♎ 19 | Sadalmelik (α Aqr) — 👁 V 3 — Tropical Autumn |
 
 ### Weekly Solar-System Ephemeris
 
@@ -2024,13 +2024,13 @@ The New Moon on Saturday, October 10 makes this one of the best dark-sky weeks o
 
 | Date | Zodiac day | Events |
 |---|---|---|
-| Mon, Oct 12, 2026 | ♎ 20 | Alnair (α Gru) — 👁 V 2 — Southern — Autumn |
+| Mon, Oct 12, 2026 | ♎ 20 | Alnair (α Gru) — 👁 V 2 — Southern Autumn |
 | Tue, Oct 13, 2026 | ♎ 21 | — |
 | Wed, Oct 14, 2026 | ♎ 22 | — |
-| Thu, Oct 15, 2026 | ♎ 23 | α Tuc — 👁 V 3 — Southern — Autumn |
-| Fri, Oct 16, 2026 | ♎ 24 | β Lac — B V 4 — Northern — Autumn |
+| Thu, Oct 15, 2026 | ♎ 23 | α Tuc — 👁 V 3 — Southern Autumn |
+| Fri, Oct 16, 2026 | ♎ 24 | β Lac — B V 4 — Northern Autumn |
 | Sat, Oct 17, 2026 | ♎ 25 | — |
-| Sun, Oct 18, 2026 | ♎ 26 | 🌓 First Quarter — 16:12:35 UTC<br>α Lac — B V 4 — Northern — Autumn<br>β PsA — B V 4 — Southern — Autumn |
+| Sun, Oct 18, 2026 | ♎ 26 | 🌓 First Quarter — 16:12:35 UTC<br>α Lac — B V 4 — Northern Autumn<br>β PsA — B V 4 — Southern Autumn |
 
 ### Weekly Solar-System Ephemeris
 
@@ -2074,11 +2074,11 @@ The week of October 12–18 is comparatively quiet in the Almanack, which makes 
 |---|---|---|
 | Mon, Oct 19, 2026 | ♎ 27 | — |
 | Tue, Oct 20, 2026 | ♎ 28 | — |
-| Wed, Oct 21, 2026 | ♎ 29 | Tiaki (β Gru) — 👁 V 2 — Southern — Autumn |
-| Thu, Oct 22, 2026 | ♎ 30 | β Oct — B V 4 — Southern — Autumn |
+| Wed, Oct 21, 2026 | ♎ 29 | Tiaki (β Gru) — 👁 V 2 — Southern Autumn |
+| Thu, Oct 22, 2026 | ♎ 30 | β Oct — B V 4 — Southern Autumn |
 | Fri, Oct 23, 2026 | ♏ (Scorpio) 1 | — |
 | Sat, Oct 24, 2026 | ♏ 2 | — |
-| Sun, Oct 25, 2026 | ♏ 3 | Fomalhaut (α PsA) — 👁 V 1 — Southern — Autumn |
+| Sun, Oct 25, 2026 | ♏ 3 | Fomalhaut (α PsA) — 👁 V 1 — Southern Autumn |
 
 ### Weekly Solar-System Ephemeris
 
@@ -2123,7 +2123,7 @@ Fomalhaut (α Piscis Austrini) is the standout object of W43, appearing on Octob
 | Date | Zodiac day | Events |
 |---|---|---|
 | Mon, Oct 26, 2026 | ♏ 4 | 🌕 Full Moon — 04:11:48 UTC |
-| Tue, Oct 27, 2026 | ♏ 5 | Markab (α Peg) — 👁 V 2 — Tropical — Autumn<br>Scheat (β Peg) — 👁 V 2 — Northern — Autumn<br>Fumalsamakah (β Psc) — B V 4 — Tropical — Autumn |
+| Tue, Oct 27, 2026 | ♏ 5 | Markab (α Peg) — 👁 V 2 — Tropical Autumn<br>Scheat (β Peg) — 👁 V 2 — Northern Autumn<br>Fumalsamakah (β Psc) — B V 4 — Tropical Autumn |
 | Wed, Oct 28, 2026 | ♏ 6 | — |
 | Thu, Oct 29, 2026 | ♏ 7 | — |
 | Fri, Oct 30, 2026 | ♏ 8 | — |
@@ -2171,7 +2171,7 @@ This week ends with Last Quarter Moon on Sunday, November 1, leaving the first p
 | Date | Zodiac day | Events |
 |---|---|---|
 | Mon, Nov 02, 2026 | ♏ 11 | — |
-| Tue, Nov 03, 2026 | ♏ 12 | β Scl — B V 4 — Southern — Autumn |
+| Tue, Nov 03, 2026 | ♏ 12 | β Scl — B V 4 — Southern Autumn |
 | Wed, Nov 04, 2026 | ♏ 13 | — |
 | Thu, Nov 05, 2026 | ♏ 14 | — |
 | Fri, Nov 06, 2026 | ♏ 15 | — |
@@ -2221,7 +2221,7 @@ November 2–8 is deliberately a quiet Almanack week: β Sculptoris is the only 
 | Mon, Nov 09, 2026 | ♏ 18 | 🌑 New Moon — 07:02:01 UTC |
 | Tue, Nov 10, 2026 | ♏ 19 | — |
 | Wed, Nov 11, 2026 | ♏ 20 | — |
-| Thu, Nov 12, 2026 | ♏ 21 | Alpheratz (α And) — 👁 V 2 — Northern — Autumn<br>Caph (β Cas) — 👁 V 2 — Northern — Autumn |
+| Thu, Nov 12, 2026 | ♏ 21 | Alpheratz (α And) — 👁 V 2 — Northern Autumn<br>Caph (β Cas) — 👁 V 2 — Northern Autumn |
 | Fri, Nov 13, 2026 | ♏ 22 | — |
 | Sat, Nov 14, 2026 | ♏ 23 | — |
 | Sun, Nov 15, 2026 | ♏ 24 | — |
@@ -2268,11 +2268,11 @@ New Moon falls on Monday, November 9, giving the week an excellent dark-sky begi
 
 | Date | Zodiac day | Events |
 |---|---|---|
-| Mon, Nov 16, 2026 | ♏ 25 | β Hyi — 👁 V 3 — Southern — Autumn<br>Ankaa (α Phe) — 👁 V 2 — Southern — Autumn |
+| Mon, Nov 16, 2026 | ♏ 25 | β Hyi — 👁 V 3 — Southern Autumn<br>Ankaa (α Phe) — 👁 V 2 — Southern Autumn |
 | Tue, Nov 17, 2026 | ♏ 26 | 🌓 First Quarter — 11:47:49 UTC |
-| Wed, Nov 18, 2026 | ♏ 27 | β1 Tuc — B V 4 — Southern — Autumn<br>β2 Tuc — B V 5 — Southern — Autumn<br>β3 Tuc — B V 5 — Southern — Autumn |
+| Wed, Nov 18, 2026 | ♏ 27 | β1 Tuc — B V 4 — Southern Autumn<br>β2 Tuc — B V 5 — Southern Autumn<br>β3 Tuc — B V 5 — Southern Autumn |
 | Thu, Nov 19, 2026 | ♏ 28 | — |
-| Fri, Nov 20, 2026 | ♏ 29 | Andromeda Galaxy (M31), spiral galaxy in Andromeda — 👁 — Northern — Autumn<br>Messier 32 (M32), elliptical galaxy in Andromeda — 🔭 — Northern — Autumn<br>Messier 110 (M110), elliptical galaxy in Andromeda — 🔭 — Northern — Autumn<br>Schedar (α Cas) — 👁 V 2 — Northern — Autumn<br>Diphda (β Cet) — 👁 V 2 — Tropical — Autumn |
+| Fri, Nov 20, 2026 | ♏ 29 | Andromeda Galaxy (M31), spiral galaxy in Andromeda — 👁 — Northern — Autumn<br>Messier 32 (M32), elliptical galaxy in Andromeda — 🔭 — Northern — Autumn<br>Messier 110 (M110), elliptical galaxy in Andromeda — 🔭 — Northern — Autumn<br>Schedar (α Cas) — 👁 V 2 — Northern Autumn<br>Diphda (β Cet) — 👁 V 2 — Tropical Autumn |
 | Sat, Nov 21, 2026 | ♏ 30 | — |
 | Sun, Nov 22, 2026 | ♐ (Sagittarius) 1 | — |
 
@@ -2319,10 +2319,10 @@ The week culminates on Friday, November 20 with M31, the Andromeda Galaxy, toget
 | Date | Zodiac day | Events |
 |---|---|---|
 | Mon, Nov 23, 2026 | ♐ 2 | — |
-| Tue, Nov 24, 2026 | ♐ 3 | 🌕 Full Moon — 14:53:31 UTC<br>α Scl — B V 4 — Southern — Autumn<br>Cih (γ Cas) — 👁 V 2 — Northern — Autumn |
+| Tue, Nov 24, 2026 | ♐ 3 | 🌕 Full Moon — 14:53:31 UTC<br>α Scl — B V 4 — Southern Autumn<br>Cih (γ Cas) — 👁 V 2 — Northern Autumn |
 | Wed, Nov 25, 2026 | ♐ 4 | — |
-| Thu, Nov 26, 2026 | ♐ 5 | β Phe — 👁 V 3 — Southern — Autumn |
-| Fri, Nov 27, 2026 | ♐ 6 | Mirach (β And) — 👁 V 2 — Northern — Autumn |
+| Thu, Nov 26, 2026 | ♐ 5 | β Phe — 👁 V 3 — Southern Autumn |
+| Fri, Nov 27, 2026 | ♐ 6 | Mirach (β And) — 👁 V 2 — Northern Autumn |
 | Sat, Nov 28, 2026 | ♐ 7 | — |
 | Sun, Nov 29, 2026 | ♐ 8 | — |
 
@@ -2369,7 +2369,7 @@ Full Moon occurs Tuesday, November 24, so this is not the strongest week for fai
 | Mon, Nov 30, 2026 | ♐ 9 | — |
 | Tue, Dec 01, 2026 | ♐ 10 | 🌗 Last Quarter — 06:08:41 UTC |
 | Wed, Dec 02, 2026 | ♐ 11 | Triangulum Galaxy (M33), spiral galaxy in Triangulum — B — Northern — Autumn<br>Messier 74 (M74), spiral galaxy in Pisces — 🔭 — Tropical — Autumn<br>Messier 103 (M103), open cluster in Cassiopeia — B — Northern — Autumn |
-| Thu, Dec 03, 2026 | ♐ 12 | Achernar (α Eri) — 👁 V 0 — Southern — Autumn |
+| Thu, Dec 03, 2026 | ♐ 12 | Achernar (α Eri) — 👁 V 0 — Southern Autumn |
 | Fri, Dec 04, 2026 | ♐ 13 | Little Dumbbell Nebula (M76), planetary nebula in Perseus — 🔭 — Northern — Autumn |
 | Sat, Dec 05, 2026 | ♐ 14 | — |
 | Sun, Dec 06, 2026 | ♐ 15 | — |
@@ -2414,10 +2414,10 @@ Last Quarter Moon occurs Tuesday, December 1, and the week brings several contra
 
 | Date | Zodiac day | Events |
 |---|---|---|
-| Mon, Dec 07, 2026 | ♐ 16 | Sheratan (β Ari) — 👁 V 3 — Tropical — Autumn<br>Mothallah (α Tri) — 👁 V 3 — Northern — Autumn |
-| Tue, Dec 08, 2026 | ♐ 17 | α Hyi — 👁 V 3 — Southern — Autumn |
-| Wed, Dec 09, 2026 | ♐ 18 | 🌑 New Moon — 00:51:51 UTC<br>Alrescha (α Psc) — B V 4 — Tropical — Autumn<br>Almach (γ1 And) — 👁 V 2 — Northern — Autumn |
-| Thu, Dec 10, 2026 | ♐ 19 | Hamal (α Ari) — 👁 V 2 — Northern — Autumn<br>β Tri — 👁 V 3 — Northern — Autumn |
+| Mon, Dec 07, 2026 | ♐ 16 | Sheratan (β Ari) — 👁 V 3 — Tropical Autumn<br>Mothallah (α Tri) — 👁 V 3 — Northern Autumn |
+| Tue, Dec 08, 2026 | ♐ 17 | α Hyi — 👁 V 3 — Southern Autumn |
+| Wed, Dec 09, 2026 | ♐ 18 | 🌑 New Moon — 00:51:51 UTC<br>Alrescha (α Psc) — B V 4 — Tropical Autumn<br>Almach (γ1 And) — 👁 V 2 — Northern Autumn |
+| Thu, Dec 10, 2026 | ♐ 19 | Hamal (α Ari) — 👁 V 2 — Northern Autumn<br>β Tri — 👁 V 3 — Northern Autumn |
 | Fri, Dec 11, 2026 | ♐ 20 | — |
 | Sat, Dec 12, 2026 | ♐ 21 | — |
 | Sun, Dec 13, 2026 | ♐ 22 | — |
@@ -2466,10 +2466,10 @@ The Moon is waning after Last Quarter, so evening skies become progressively fri
 |---|---|---|
 | Mon, Dec 14, 2026 | ♐ 23 | — |
 | Tue, Dec 15, 2026 | ♐ 24 | — |
-| Wed, Dec 16, 2026 | ♐ 25 | Polaris (α UMi) — 👁 V 2 — Northern — Autumn |
+| Wed, Dec 16, 2026 | ♐ 25 | Polaris (α UMi) — 👁 V 2 — Northern Autumn |
 | Thu, Dec 17, 2026 | ♐ 26 | 🌓 First Quarter — 05:42:40 UTC<br>Messier 34 (M34), open cluster in Perseus — B — Northern — Autumn<br>Messier 77 (M77), spiral galaxy in Cetus — 🔭 — Tropical — Autumn |
 | Fri, Dec 18, 2026 | ♐ 27 | — |
-| Sat, Dec 19, 2026 | ♐ 28 | β For — B V 4 — Southern — Autumn |
+| Sat, Dec 19, 2026 | ♐ 28 | β For — B V 4 — Southern Autumn |
 | Sun, Dec 20, 2026 | ♐ 29 | — |
 
 ### Weekly Solar-System Ephemeris
@@ -2515,12 +2515,12 @@ Mid-December evenings mark the handoff from the autumn constellations toward the
 | Date | Zodiac day | Events |
 |---|---|---|
 | Mon, Dec 21, 2026 | ♑ (Capricorn) 1 | — |
-| Tue, Dec 22, 2026 | ♑ 2 | Menkar (α Cet) — 👁 V 3 — Tropical — Winter<br>β Hor — B V 5 — Southern — Winter |
+| Tue, Dec 22, 2026 | ♑ 2 | Menkar (α Cet) — 👁 V 3 — Tropical Winter<br>β Hor — B V 5 — Southern Winter |
 | Wed, Dec 23, 2026 | ♑ 3 | — |
-| Thu, Dec 24, 2026 | ♑ 4 | 🌕 Full Moon — 01:28:13 UTC<br>Algol (β Per) — 👁 V 2 — Northern — Winter |
-| Fri, Dec 25, 2026 | ♑ 5 | Dalim (α For) — B V 4 — Southern — Winter |
+| Thu, Dec 24, 2026 | ♑ 4 | 🌕 Full Moon — 01:28:13 UTC<br>Algol (β Per) — 👁 V 2 — Northern Winter |
+| Fri, Dec 25, 2026 | ♑ 5 | Dalim (α For) — B V 4 — Southern Winter |
 | Sat, Dec 26, 2026 | ♑ 6 | — |
-| Sun, Dec 27, 2026 | ♑ 7 | Mirfak (α Per) — 👁 V 2 — Northern — Winter |
+| Sun, Dec 27, 2026 | ♑ 7 | Mirfak (α Per) — 👁 V 2 — Northern Winter |
 
 ### Weekly Solar-System Ephemeris
 
@@ -2568,7 +2568,7 @@ The week begins with the December solstice season and reaches Full Moon on Thurs
 | Tue, Dec 29, 2026 | ♑ 9 | — |
 | Wed, Dec 30, 2026 | ♑ 10 | 🌗 Last Quarter — 18:59:34 UTC |
 | Thu, Dec 31, 2026 | ♑ 11 | — |
-| Fri, Jan 01, 2027 | ♑ 12 | β Ret — B V 4 — Southern — Winter |
+| Fri, Jan 01, 2027 | ♑ 12 | β Ret — B V 4 — Southern Winter |
 | Sat, Jan 02, 2027 | ♑ 13 | — |
 | Sun, Jan 03, 2027 | ♑ 14 | — |
 
