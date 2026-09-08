@@ -4,7 +4,8 @@
 from pathlib import Path
 import re
 
-ROOT = Path("almanack")
+ROOT = Path(__file__).resolve().parents[1]
+BASES = (ROOT / "almanack", ROOT / "Star-Almanack-Repo" / "site")
 YEARS = (2025, 2026, 2027)
 
 STYLE = """<style id="almanack-legend-css">
@@ -29,11 +30,11 @@ LEGEND = """<aside class="notation-legend" aria-label="Notation legend">
     <span class="legend-item"><span class="text-symbol">☿</span> Mercury</span>
     <span class="legend-item"><span class="text-symbol">♀</span> Venus</span>
     <span class="legend-item"><span class="text-symbol">♂</span> Mars</span>
+    <span class="legend-item"><span class="text-symbol">⚳</span> Ceres</span>
     <span class="legend-item"><span class="text-symbol">♃</span> Jupiter</span>
     <span class="legend-item"><span class="text-symbol">♄</span> Saturn</span>
     <span class="legend-item"><span class="text-symbol">♅</span> Uranus</span>
     <span class="legend-item"><span class="text-symbol">♆</span> Neptune</span>
-    <span class="legend-item"><span class="text-symbol">⚳</span> Ceres</span>
     <span class="legend-item"><span class="text-symbol">♇</span> Pluto</span>
   </p>
 </aside>"""
@@ -65,11 +66,12 @@ def wire_page(path: Path) -> bool:
 
 def main() -> None:
     changed = 0
-    for year in YEARS:
-        for path in sorted((ROOT / str(year)).glob("W??/index.html")):
-            if wire_page(path):
-                changed += 1
-    print(f"Wired complete Almanack legend on {changed} weekly pages")
+    for base in BASES:
+        for year in YEARS:
+            for path in sorted((base / str(year)).glob("W??/index.html")):
+                if wire_page(path):
+                    changed += 1
+    print(f"Wired complete Almanack legend on {changed} weekly page copies")
 
 
 if __name__ == "__main__":
