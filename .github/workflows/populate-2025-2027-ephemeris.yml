@@ -5,7 +5,9 @@ on:
   push:
     paths:
       - '.github/workflows/populate-2025-2027-ephemeris.yml'
-      - 'tools/clean_2025_2027_event_cells.py'
+      - 'tools/clean_event_cells.py'
+      - 'tools/populate_calendar.py'
+      - 'tools/populate_meteor_showers.py'
       - 'tools/populate_ephemeris.py'
       - 'tools/populate_2025_2027_ephemeris.py'
       - 'tools/wire_ephemeris_notation.py'
@@ -42,11 +44,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Clear 2025 and 2027 calendar event cells
-        run: python tools/clean_2025_2027_event_cells.py
+        run: python tools/clean_event_cells.py 2025 2027
       - name: Populate Zodiac Days, ingresses, Wheel of the Year, and lunar phases
-        run: python tools/populate_2025_2027_calendar.py
+        run: python tools/populate_calendar.py 2025 2027
       - name: Populate major meteor-shower maxima
-        run: python tools/populate_2025_2027_meteor_showers.py
+        run: python tools/populate_meteor_showers.py 2025 2027
       - name: Populate weekly Solar-System ephemerides
         run: python tools/populate_ephemeris.py 2025 2027
       - name: Wire Solar-System ephemeris notation controls
@@ -86,9 +88,9 @@ jobs:
               Star-Almanack-Repo/generated/constellation-observance-2025.csv Star-Almanack-Repo/generated/constellation-observance-2027.csv
           }
           regenerate() {
-            python tools/clean_2025_2027_event_cells.py
-            python tools/populate_2025_2027_calendar.py
-            python tools/populate_2025_2027_meteor_showers.py
+            python tools/clean_event_cells.py 2025 2027
+            python tools/populate_calendar.py 2025 2027
+            python tools/populate_meteor_showers.py 2025 2027
             python tools/populate_ephemeris.py 2025 2027
             python tools/wire_ephemeris_notation.py
             python tools/populate_2025_2027_fixed_sky.py 2025 2027
