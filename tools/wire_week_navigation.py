@@ -86,10 +86,7 @@ def week_target(tag: str) -> int | None:
     return int(m.group(1)) if m else None
 
 
-def rewrite_week_nav(text: str, year: int, week: int) -> str:
-    match = WEEK_NAV_RE.search(text)
-    if not match:
-        raise RuntimeError("weekly navigation not found")
+def build_week_nav_from_match(match: re.Match[str], year: int, week: int) -> str:
     children = CHILD_RE.findall(match.group(1))
 
     previous = None
@@ -106,12 +103,22 @@ def rewrite_week_nav(text: str, year: int, week: int) -> str:
     left = previous or '<span class="nav-spacer" aria-hidden="true">—</span>'
     right = following or '<span class="nav-spacer" aria-hidden="true">—</span>'
     current = f'<span class="current-week" aria-current="page">ISO {year}-W{week:02d}</span>'
-    nav = (
+    return (
         '<nav class="weeknav week-position" aria-label="Week navigation">'
         f'{left}{current}{right}'
         '</nav>'
     )
-    return text[:match.start()] + nav + text[match.end():]
+
+
+def rewrite_week_nav(text: str, year: int, week: int) -> str:
+    matches = list(WEEK_NAV_RE.finditer(text))
+    if not matches:
+        raise RuntimeError("weekly navigation not found")
+
+    # Use the first week-position navigation as the canonical source of
+    # previous/next links, then make every week navigation on the page match it.
+    canonical = build_week_nav_from_match(matches[0], year, week)
+    return WEEK_NAV_RE.sub(canonical, text)
 
 
 def ensure_style(text: str) -> str:
