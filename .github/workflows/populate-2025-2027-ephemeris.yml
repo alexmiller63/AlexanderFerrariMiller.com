@@ -20,6 +20,8 @@ on:
       - 'tools/populate_caldwell.py'
       - 'tools/populate_finest_ngc.py'
       - 'tools/populate-2025-2027-ephemeris-trigger.txt'
+      - 'Star-Almanack-Repo/compute_bayer_visibility_2026.py'
+      - 'Star-Almanack-Repo/expanded-bayer-stars.csv'
       - 'Star-Almanack-Repo/compute_constellation_observance_2026.py'
       - 'Star-Almanack-Repo/fixed-objects.yaml'
       - 'Star-Almanack-Repo/messier-editorial.json'
@@ -40,6 +42,8 @@ jobs:
     timeout-minutes: 40
     steps:
       - uses: actions/checkout@v4
+      - name: Verify preserved best-visibility regression
+        run: python Star-Almanack-Repo/compute_bayer_visibility_2026.py Star-Almanack-Repo/expanded-bayer-stars.csv /tmp/expanded-bayer-visibility-2026-regression.csv
       - name: Clear 2025 and 2027 calendar event cells
         run: python tools/clean_event_cells.py 2025 2027
       - name: Populate Zodiac Days, ingresses, Wheel of the Year, and lunar phases
@@ -71,6 +75,11 @@ jobs:
           set -euo pipefail
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          regression() {
+            python Star-Almanack-Repo/compute_bayer_visibility_2026.py \
+              Star-Almanack-Repo/expanded-bayer-stars.csv \
+              /tmp/expanded-bayer-visibility-2026-regression.csv
+          }
           stage_generated() {
             git add \
               almanack/2025 almanack/2026 almanack/2027 \
@@ -85,6 +94,7 @@ jobs:
               Star-Almanack-Repo/generated/constellation-observance-2025.csv Star-Almanack-Repo/generated/constellation-observance-2027.csv
           }
           regenerate() {
+            regression
             python tools/clean_event_cells.py 2025 2027
             python tools/populate_calendar.py 2025 2027
             python tools/populate_meteor_showers.py 2025 2027
