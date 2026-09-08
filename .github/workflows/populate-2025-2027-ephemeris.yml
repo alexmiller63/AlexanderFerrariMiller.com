@@ -14,6 +14,8 @@ on:
       - 'tools/populate_2025_2027_meteor_showers.py'
       - 'tools/populate_2025_2027_fixed_sky.py'
       - 'tools/standardize_messier_calendar.py'
+      - 'tools/catalog_common_names.py'
+      - 'tools/reconcile_catalog_common_names.py'
       - 'tools/populate_2025_2027_constellations.py'
       - 'tools/populate_2025_2027_asterisms.py'
       - 'tools/populate_caldwell.py'
@@ -22,6 +24,7 @@ on:
       - 'Star-Almanack-Repo/compute_constellation_observance_2026.py'
       - 'Star-Almanack-Repo/fixed-objects.yaml'
       - 'Star-Almanack-Repo/messier-editorial.json'
+      - 'Star-Almanack-Repo/messier-common-names-nasa.yaml'
       - 'Star-Almanack-Repo/expanded-bayer-visibility-2026.csv'
       - 'Star-Almanack-Repo/caldwell-catalog.csv'
       - 'Star-Almanack-Repo/finest-ngc-catalog.csv'
@@ -60,6 +63,8 @@ jobs:
         run: python tools/populate_caldwell.py
       - name: Populate Finest NGC objects not already represented by Caldwell
         run: python tools/populate_finest_ngc.py
+      - name: Reconcile common names across Messier, Caldwell, and Finest NGC
+        run: python tools/reconcile_catalog_common_names.py
       - name: Wire highlighted current-week navigation
         run: python tools/wire_week_navigation.py
       - name: Commit generated Almanack foundations
@@ -92,6 +97,7 @@ jobs:
             python tools/populate_2025_2027_asterisms.py
             python tools/populate_caldwell.py
             python tools/populate_finest_ngc.py
+            python tools/reconcile_catalog_common_names.py
             python tools/wire_week_navigation.py
           }
           stage_generated
