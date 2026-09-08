@@ -33,6 +33,10 @@ STYLE = """<style id="week-position-nav-css">
   color:#fff !important;
   border-color:var(--navy) !important;
 }
+.yearnav .nav-spacer,
+.weeknav .nav-spacer {
+  visibility:hidden;
+}
 @media (prefers-color-scheme:dark) {
   .yearnav .current-year,
   .yearnav .current-year:visited {
@@ -54,10 +58,12 @@ WEEK_NAV_RE = re.compile(r'<nav class="weeknav(?: week-position)?"(?: aria-label
 YEAR_NAV_RE = re.compile(r'<nav class="yearnav">(.*?)</nav>', re.S)
 CHILD_RE = re.compile(r'(<a\b.*?</a>|<span\b.*?</span>)', re.S)
 STYLE_RE = re.compile(r'<style id="week-position-nav-css">.*?</style>', re.S)
+HREF_RE = re.compile(r'href="([^"]+)"')
 
 
-def set_text(tag: str, label: str) -> str:
-    return re.sub(r'(?s)(>).*?(</(?:a|span)>)$', rf'\1{label}\2', tag, count=1)
+def href_of(tag: str) -> str:
+    m = HREF_RE.search(tag)
+    return m.group(1) if m else ""
 
 
 def rewrite_year_nav(text: str, year: int, weekly_page: bool) -> str:
@@ -65,13 +71,30 @@ def rewrite_year_nav(text: str, year: int, weekly_page: bool) -> str:
     if not match:
         raise RuntimeError("year navigation not found")
     children = CHILD_RE.findall(match.group(1))
-    if len(children) < 3:
-        raise RuntimeError("year navigation has fewer than 3 controls")
-    left, right = children[0], children[-1]
-    href = "../" if weekly_page else f"../{year}/"
+
+    previous = None
+    following = None
+    for child in children:
+        if not child.startswith("<a"):
+            continue
+        href = href_of(child)
+        if str(year - 1) in href or re.search(rf'\b{year - 1}\b', child):
+            previous = child
+        elif str(year + 1) in href or re.search(rf'\b{year + 1}\b', child):
+            following = child
+
+    left = previous or '<span class="nav-spacer" aria-hidden="true">—</span>'
+    right = following or '<span class="nav-spacer" aria-hidden="true">—</span>'
+    href = "../" if weekly_page else "./"
     center = f'<a class="current-year" aria-current="page" href="{href}">{year}</a>'
     nav = f'<nav class="yearnav">{left}{center}{right}</nav>'
     return text[:match.start()] + nav + text[match.end():]
+
+
+def week_target(tag: str) -> int | None:
+    href = href_of(tag)
+    m = re.search(r'W(\d{2})', href)
+    return int(m.group(1)) if m else None
 
 
 def rewrite_week_nav(text: str, year: int, week: int) -> str:
@@ -79,19 +102,24 @@ def rewrite_week_nav(text: str, year: int, week: int) -> str:
     if not match:
         raise RuntimeError("weekly navigation not found")
     children = CHILD_RE.findall(match.group(1))
-    if len(children) < 2:
-        raise RuntimeError("weekly navigation has fewer than 2 controls")
 
-    ordinary = [c for c in children if 'current-week' not in c and 'all-weeks' not in c]
-    if len(ordinary) >= 2:
-        prev, nxt = ordinary[0], ordinary[-1]
-    else:
-        prev, nxt = children[0], children[-1]
+    previous = None
+    following = None
+    for child in children:
+        if not child.startswith("<a"):
+            continue
+        target = week_target(child)
+        if target == week - 1:
+            previous = child
+        elif target == week + 1:
+            following = child
 
+    left = previous or '<span class="nav-spacer" aria-hidden="true">—</span>'
+    right = following or '<span class="nav-spacer" aria-hidden="true">—</span>'
     current = f'<span class="current-week" aria-current="page">ISO {year}-W{week:02d}</span>'
     nav = (
         '<nav class="weeknav week-position" aria-label="Week navigation">'
-        f'{prev}{current}{nxt}'
+        f'{left}{current}{right}'
         '</nav>'
     )
     return text[:match.start()] + nav + text[match.end():]
@@ -106,7 +134,8 @@ def ensure_style(text: str) -> str:
 
 
 def highlight_current_week_on_index(text: str, year: int, week: int) -> str:
-    text = re.sub(r' class="current-week"(?= aria-current="date" href="W\d{2}/")', '', text)
+    text = re.sub(r'\sclass="current-week"', '', text)
+    text = re.sub(r'\saria-current="date"', '', text)
     target = f'href="W{week:02d}/"'
     if target not in text:
         raise RuntimeError(f"current week W{week:02d} not found on {year} index")
