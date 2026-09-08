@@ -40,7 +40,7 @@ STYLE = """<style id="week-position-nav-css">
 }
 </style>"""
 
-WEEK_NAV_RE = re.compile(r'<nav class="weeknav(?: week-position)?"(?: aria-label="Week navigation")?>(.*?)</nav>', re.S)
+WEEK_NAV_RE = re.compile(r'<nav class="weeknav(?: week-position)?"(?: id="week-bottom-nav")?(?: aria-label="Week navigation")?>(.*?)</nav>', re.S)
 YEAR_NAV_RE = re.compile(r'<nav class="yearnav">(.*?)</nav>', re.S)
 CHILD_RE = re.compile(r'(<a\b.*?</a>|<span\b.*?</span>)', re.S)
 STYLE_RE = re.compile(r'<style id="week-position-nav-css">.*?</style>', re.S)
@@ -110,15 +110,38 @@ def build_week_nav_from_match(match: re.Match[str], year: int, week: int) -> str
     )
 
 
+def bottom_nav(top_nav: str) -> str:
+    """Make the lower nav land on the lower nav of the destination week."""
+    nav = top_nav.replace(
+        '<nav class="weeknav week-position" aria-label="Week navigation">',
+        '<nav class="weeknav week-position" id="week-bottom-nav" aria-label="Week navigation">',
+        1,
+    )
+
+    def add_fragment(match: re.Match[str]) -> str:
+        href = match.group(1).split('#', 1)[0]
+        return f'href="{href}#week-bottom-nav"'
+
+    return HREF_RE.sub(add_fragment, nav)
+
+
 def rewrite_week_nav(text: str, year: int, week: int) -> str:
     matches = list(WEEK_NAV_RE.finditer(text))
     if not matches:
         raise RuntimeError("weekly navigation not found")
 
-    # Use the first week-position navigation as the canonical source of
-    # previous/next links, then make every week navigation on the page match it.
-    canonical = build_week_nav_from_match(matches[0], year, week)
-    return WEEK_NAV_RE.sub(canonical, text)
+    # The upper navigation stays at the top of the destination page.
+    # The lower navigation carries an anchor so previous/next remains low.
+    top = build_week_nav_from_match(matches[0], year, week)
+    lower = bottom_nav(top)
+    index = 0
+
+    def replacement(_: re.Match[str]) -> str:
+        nonlocal index
+        index += 1
+        return top if index == 1 else lower
+
+    return WEEK_NAV_RE.sub(replacement, text)
 
 
 def ensure_style(text: str) -> str:
