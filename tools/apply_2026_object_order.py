@@ -36,6 +36,9 @@ STAR_SEASON_FIRST = re.compile(
     rf"(?P<head>(?:(?!<br>|\|).)+?) — (?P<vis>(?:👁|B|🔭) V \d+) — "
     rf"(?P<season>{SEASONS}) — (?P<band>{BANDS})(?=(?:<br>| \||</td>|$))"
 )
+BAND_SEASON_WITH_DASH = re.compile(
+    rf"\b(?P<band>{BANDS}) — (?P<season>{SEASONS})\b"
+)
 
 # Existing calendar forms, including old designation/name labels.
 MESSIER_CALENDAR = re.compile(
@@ -170,6 +173,13 @@ def rewrite(text: str) -> str:
     text = MESSIER_CALENDAR_OLD.sub(cal, text)
     text = MESSIER_SEASON_FIRST.sub(cal, text)
     text = MESSIER_CALENDAR.sub(cal, text)
+
+    # HTML wraps visibility in spans, so normalize Declination Band + Season
+    # independently of surrounding object markup.
+    text = BAND_SEASON_WITH_DASH.sub(
+        lambda m: f"{m.group('band')} {m.group('season')}",
+        text,
+    )
 
     # Canonicalize the common expanded prose forms used in Sky Notes.
     text = MESSIER_PROSE_NAMED.sub(lambda m: canonical_messier(m.group(1)), text)
