@@ -54,6 +54,7 @@ def load_hyg(path: Path):
                 "proper": r.get("proper", ""),
                 "bayer": r.get("bayer", ""),
                 "con": r.get("con", ""),
+                "magnitude_source": "HYG v4.1",
             }
             if hip in by_hip:
                 raise RuntimeError(f"duplicate HYG HIP {hip}")
@@ -62,6 +63,43 @@ def load_hyg(path: Path):
     if not by_hip:
         raise RuntimeError(f"no HYG HIP/magnitude rows parsed from {path}")
     return by_hip, rows
+
+
+def load_iau_csn(path: Path):
+    """Load a pinned IAU CSN snapshot as a systematic fallback by HIP.
+
+    HYG remains primary. The fallback exists for legitimate Hipparcos sources
+    omitted from HYG, such as the unresolved multiple HIP 55203.
+    """
+    by_hip = {}
+    with path.open(newline="", encoding="utf-8") as f:
+        for r in csv.DictReader(f, delimiter="\t"):
+            hip_text = (r.get("HIP") or "").strip()
+            mag_text = (r.get("mag") or "").strip()
+            if not hip_text.isdigit() or not mag_text or mag_text == "_":
+                continue
+            try:
+                hip = int(hip_text)
+                mag = float(mag_text)
+                ra_deg = float(r["RA(J2000)"])
+                dec_deg = float(r["Dec(J2000)"])
+            except (ValueError, KeyError):
+                continue
+            if hip in by_hip:
+                raise RuntimeError(f"duplicate IAU CSN HIP {hip}")
+            by_hip[hip] = {
+                "hip": hip,
+                "mag": mag,
+                "ra_h": ra_deg / 15.0,
+                "dec_deg": dec_deg,
+                "proper": r.get("Name/ASCII", ""),
+                "bayer": r.get("ID", ""),
+                "con": r.get("Con", ""),
+                "magnitude_source": "IAU CSN 2022-07-04 snapshot",
+            }
+    if not by_hip:
+        raise RuntimeError(f"no IAU CSN HIP/magnitude rows parsed from {path}")
+    return by_hip
 
 
 def parse_iau_figures(path: Path):
@@ -139,7 +177,17 @@ def write_csv(path: Path, rows, fields):
         w.writerows(rows)
 
 
-def build_constellations(patterns, hyg_by_hip, member_path: Path, summary_path: Path):
+def resolve_figure_star(hip, hyg_by_hip, iau_by_hip):
+    row = hyg_by_hip.get(hip)
+    if row is not None:
+        return row
+    row = iau_by_hip.get(hip)
+    if row is not None:
+        return row
+    raise RuntimeError(f"HIP {hip} missing from both HYG and pinned IAU CSN fallback")
+
+
+def build_constellations(patterns, hyg_by_hip, iau_by_hip, member_path: Path, summary_path: Path):
     members = []
     summaries = []
     for pattern, rec in patterns.items():
@@ -159,9 +207,10 @@ def build_constellations(patterns, hyg_by_hip, member_path: Path, summary_path: 
             continue
         mags = []
         for hip in unique_ids:
-            row = hyg_by_hip.get(hip)
-            if row is None:
-                raise RuntimeError(f"IAU figure {pattern}: HIP {hip} missing from HYG")
+            try:
+                row = resolve_figure_star(hip, hyg_by_hip, iau_by_hip)
+            except RuntimeError as exc:
+                raise RuntimeError(f"IAU figure {pattern}: {exc}") from exc
             mags.append(row["mag"])
             members.append({
                 "constellation": parent,
@@ -172,7 +221,7 @@ def build_constellations(patterns, hyg_by_hip, member_path: Path, summary_path: 
                 "bayer": row["bayer"],
                 "con": row["con"],
                 "v_mag": f"{row['mag']:.3f}",
-                "magnitude_source": "HYG v4.1",
+                "magnitude_source": row["magnitude_source"],
             })
         median_v, observer_class = observer_class_for_members(mags)
         summaries.append({
@@ -249,6 +298,7 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("hyg", type=Path)
     ap.add_argument("iau_figures", type=Path)
+    ap.add_argument("iau_csn", type=Path, help="Pinned IAU CSN TSV fallback for HIPs absent from HYG")
     ap.add_argument("--asterism-coordinates", type=Path, default=ROOT / "asterism-member-coordinates.csv")
     ap.add_argument("--max-crossmatch-arcsec", type=float, default=60.0)
     ap.add_argument("--constellation-members", type=Path, default=ROOT / "constellation-stick-figure-members.csv")
@@ -258,8 +308,9 @@ def main():
     args = ap.parse_args()
 
     hyg_by_hip, hyg_rows = load_hyg(args.hyg)
+    iau_by_hip = load_iau_csn(args.iau_csn)
     patterns = parse_iau_figures(args.iau_figures)
-    build_constellations(patterns, hyg_by_hip, args.constellation_members, args.constellation_summary)
+    build_constellations(patterns, hyg_by_hip, iau_by_hip, args.constellation_members, args.constellation_summary)
     build_asterisms(args.asterism_coordinates, hyg_by_hip, hyg_rows, args.max_crossmatch_arcsec, args.asterism_members, args.asterism_summary)
     print("PASS: built 87 stick-figure component classifications across 86 constellations, 2 explicit no-figure states, and 25 asterism classifications")
 
