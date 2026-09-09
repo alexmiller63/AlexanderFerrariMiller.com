@@ -59,8 +59,8 @@ def apparent_sun_ra_hours(x: dt.datetime) -> float:
 def hour_distance(a: float, b: float) -> float: return abs((a - b + 12.0) % 24.0 - 12.0)
 
 
-def best_visibility(ra_h: float, year: int) -> tuple[dt.datetime, dt.date]:
-    target = (ra_h - 9.0) % 24.0; start = dt.datetime(year - 1, 12, 31, 12); end = dt.datetime(year, 12, 31, 23, 59)
+def best_time_for_solar_ra(target: float, year: int) -> tuple[dt.datetime, dt.date]:
+    start = dt.datetime(year - 1, 12, 31, 12); end = dt.datetime(year, 12, 31, 23, 59)
     best_t, best_d = start, float("inf"); x = start
     while x <= end:
         d = hour_distance(apparent_sun_ra_hours(x), target)
@@ -72,6 +72,10 @@ def best_visibility(ra_h: float, year: int) -> tuple[dt.datetime, dt.date]:
         if d < best_d: best_t, best_d = x, d
         x += dt.timedelta(minutes=1)
     return best_t, (best_t + dt.timedelta(hours=12)).date()
+
+
+def best_visibility(ra_h: float, year: int) -> tuple[dt.datetime, dt.date]:
+    return best_time_for_solar_ra((ra_h - 9.0) % 24.0, year)
 
 
 def iso_label(d: dt.date) -> str:
@@ -87,6 +91,29 @@ def redated(rows, year):
     for row in rows:
         r = dict(row); instant, day = best_visibility(float(r["ra_h"]), year)
         r["best_instant_utc"] = instant.strftime("%Y-%m-%d %H:%M"); r["best_date"] = day.isoformat(); r["iso"] = iso_label(day); out.append(r)
+    return out
+
+
+def redated_preserving_2026_phase(rows, year):
+    """Carry each canonical 2026 placement to another year by solar-RA phase.
+
+    Messier placement in messier-visibility-2026.csv is authoritative.  Some
+    stored 2026 placements are not reproduced by deriving the phase anew from
+    the rounded catalog RA, so parameterization must preserve the actual 2026
+    solar phase rather than silently changing the baseline astronomy.
+    """
+    if year == 2026:
+        return [dict(row) for row in rows]
+    out = []
+    for row in rows:
+        canonical = dt.datetime.strptime(row["best_instant_utc"], "%Y-%m-%d %H:%M")
+        target = apparent_sun_ra_hours(canonical)
+        instant, day = best_time_for_solar_ra(target, year)
+        r = dict(row)
+        r["best_instant_utc"] = instant.strftime("%Y-%m-%d %H:%M")
+        r["best_date"] = day.isoformat()
+        r["iso"] = iso_label(day)
+        out.append(r)
     return out
 
 
@@ -131,7 +158,7 @@ def star_label(r: dict[str, str]) -> str:
 def page_date_map(year: int):
     bayer = redated(read_csv("expanded-bayer-visibility-2026.csv"), year)
     bright = redated(read_csv("bright-star-visibility-2026.csv"), year)
-    messier = redated(read_csv("messier-visibility-2026.csv"), year)
+    messier = redated_preserving_2026_phase(read_csv("messier-visibility-2026.csv"), year)
     write_csv(SRC / "generated" / f"expanded-bayer-visibility-{year}.csv", bayer)
     write_csv(SRC / "generated" / f"bright-star-visibility-{year}.csv", bright)
     write_csv(SRC / "generated" / f"messier-visibility-{year}.csv", messier)
