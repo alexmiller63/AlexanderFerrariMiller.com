@@ -36,6 +36,24 @@ STYLE = """<style id="week-position-nav-css">
 .almanack-bottom-nav-wrap nav:last-child {
   margin-bottom:0;
 }
+@media (orientation:landscape) and (max-height:500px) {
+  .almanack-bottom-nav-wrap {
+    padding:.55rem 1rem .75rem;
+  }
+  .almanack-bottom-nav-wrap .weeknav,
+  .almanack-bottom-nav-wrap .yearnav {
+    gap:.45rem;
+    margin:.2rem 0 .55rem;
+    font-size:.82rem;
+  }
+  .almanack-bottom-nav-wrap .weeknav a,
+  .almanack-bottom-nav-wrap .weeknav span,
+  .almanack-bottom-nav-wrap .yearnav a,
+  .almanack-bottom-nav-wrap .yearnav span {
+    min-width:0;
+    padding:.4rem .55rem;
+  }
+}
 @media (prefers-color-scheme:dark) {
   .yearnav .current-year,
   .yearnav .current-year:visited,
@@ -160,13 +178,20 @@ def bottom_site_nav(text: str) -> str:
     return re.sub(r'<a\b.*?</a>', rewrite_link, nav, flags=re.S)
 
 
-def bottom_year_nav(text: str) -> str:
+def bottom_year_nav(text: str, year: int) -> str:
     match = YEAR_NAV_RE.search(text)
     if not match:
         raise RuntimeError("year navigation not found")
+    nav = match.group(0)
+    nav = re.sub(
+        rf'<a href="([^"]+)">{year}</a>',
+        rf'<a class="current-year" aria-current="page" href="\1">{year}</a>',
+        nav,
+        count=1,
+    )
     return HREF_RE.sub(
         lambda m: f'href="{m.group(1).split("#", 1)[0]}#{BOTTOM_ID}"',
-        match.group(0),
+        nav,
     )
 
 
@@ -180,12 +205,12 @@ def bottom_week_nav(text: str) -> str:
     )
 
 
-def place_bottom_navigation(text: str) -> str:
+def place_bottom_navigation(text: str, year: int) -> str:
     text = BOTTOM_WRAP_RE.sub("", text)
     block = (
         f'<div class="almanack-bottom-nav-wrap" id="{BOTTOM_ID}">'
         f'{bottom_site_nav(text)}'
-        f'{bottom_year_nav(text)}'
+        f'{bottom_year_nav(text, year)}'
         f'{bottom_week_nav(text)}'
         '</div>'
     )
@@ -200,8 +225,6 @@ def ensure_year_bottom_target(text: str) -> str:
     if not matches:
         raise RuntimeError("year navigation not found")
 
-    # The last year menu is the real bottom destination. Put the fragment
-    # target on that menu itself so the browser lands visibly on the controls.
     match = matches[-1]
     nav = match.group(0)
     nav = nav.replace('<nav class="yearnav">', f'<nav class="yearnav" id="{BOTTOM_ID}">', 1)
@@ -239,7 +262,7 @@ def main() -> None:
                 original = path.read_text(encoding='utf-8')
                 updated = rewrite_year_nav(original, year, weekly_page=True)
                 updated = rewrite_week_nav(updated, year, week)
-                updated = place_bottom_navigation(updated)
+                updated = place_bottom_navigation(updated, year)
                 updated = ensure_style(updated)
                 if updated != original:
                     path.write_text(updated, encoding='utf-8')
