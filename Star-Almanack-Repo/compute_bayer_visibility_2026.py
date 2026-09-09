@@ -67,7 +67,7 @@ def best_visibility(ra_object_h: float, year: int) -> tuple[dt.datetime, dt.date
         distance = wrapped_hour_distance(apparent_sun_ra_hours(x), target)
         if distance < best_distance: best_distance, best_time = distance, x
         x += dt.timedelta(minutes=1)
-    rounded_date = (best_time + dt.timedelta(hours=12)).date()
+    rounded_date = best_time.date()
     if rounded_date.year != year:
         raise RuntimeError(f"Best-visibility date escaped requested year {year}: {rounded_date}")
     return best_time, rounded_date
