@@ -15,6 +15,7 @@ import re
 from collections import defaultdict
 from pathlib import Path
 
+import catalog_common_names as names
 import populate_fixed_sky as fixed
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -55,6 +56,7 @@ def load_catalog() -> dict[str, dict[str, str]]:
             name = ""
         edit = EDITORIAL["objects"].get(designation, {})
         name = edit.get("accepted_name", name) or ""
+        name = names.preferred_messier_name(designation, name)
         typ = edit.get("editorial_type", EDITORIAL["type_labels"].get(row[3].strip(), row[3].strip()))
         con = EDITORIAL["constellation_labels"].get(row[4].strip(), row[4].strip())
         out[designation] = {
@@ -111,7 +113,7 @@ def label(r: dict[str, str], aid: str, day: dt.date) -> str:
     head = r["id"]
     if r["name"]:
         head += f', {r["name"]}'
-    head += f', {r["type"]} in {r["con"]}'
+    head += f', {r["type"] in r["con"]}'
     glyph = GLYPHS[aid]
     mag = r["mag"]
     vis = f'{glyph} V {mag}' if mag else glyph
