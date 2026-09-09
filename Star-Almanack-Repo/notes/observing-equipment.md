@@ -39,6 +39,21 @@ For stellar patterns the shared observer thresholds are:
 
 These thresholds live in one shared source module so constellation and asterism generators cannot drift apart.
 
+## Constellation stick-figure source rule
+
+The adopted IAU/MacRobert stick-figure dataset supplies source-defined figures for 86 of the 88 constellations. It explicitly records **Mensa** and **Microscopium** as having **no stick figure**. The Almanack treats that absence as part of the source convention, not as missing data to be filled in.
+
+Therefore:
+
+- Do not invent or supplement stick figures for Mensa or Microscopium merely to force a set of 88 figures.
+- Do not calculate a stick-figure median V magnitude or derived observer glyph for either constellation.
+- Preserve an explicit `no stick figure` state in the constellation data model.
+- Other field guides and atlases may use different constellation stick figures. Those are legitimate alternative conventions, but the Almanack should use one internally consistent convention rather than mix figures from multiple traditions.
+
+### Front-matter note
+
+Preserve a short explanatory front-matter section titled **“What’s with Mensa and Microscopium?”** It should explain that constellation stick figures are conventions rather than official constellation boundaries; different field guides may connect stars differently; the Almanack adopts one consistent IAU/MacRobert convention; and that convention explicitly leaves Mensa and Microscopium without stick figures. The Almanack should preserve that intentional distinction rather than manufacture figures for them.
+
 ## Extended-object classification status
 
 The median-star rule above applies only to stellar patterns. Exact equipment borders for extended deep-sky objects are **not settled by this rule**. Integrated magnitude can be misleading for galaxies, nebulae, and other extended objects, so those recommendations should continue to be based on practical observer-facing guidance and object type rather than reusing the stellar-pattern thresholds mechanically.
