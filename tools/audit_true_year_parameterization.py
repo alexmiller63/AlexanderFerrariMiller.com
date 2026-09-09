@@ -2,9 +2,13 @@
 """Audit true-year Almanack parameterization and preserved 2026 equivalence.
 
 Two independent guarantees are enforced:
-1. requested editions contain dates and ISO-week placement for their own year;
-2. the parameterized visibility engine reproduces the preserved canonical 2026
-   visibility values exactly, to the stored minute/date/ISO-week precision.
+1. requested weekly editions contain dates and ISO-week placement for their own ISO year;
+2. parameterized visibility reproduces the preserved canonical 2026 values exactly.
+
+Generated annual visibility tables are civil observing cycles, not ISO-week
+containers: the preserved 2026 engine explicitly allows rounded dates from
+2026-01-01 through 2027-01-01.  Their ISO label must match the date, but the ISO
+week-year is allowed to cross the civil-year boundary.
 
 The audit is read-only: canonical 2026 snapshots are never rewritten.
 """
@@ -28,12 +32,6 @@ DEFAULT_YEARS = (2025, 2027)
 DATE_CELL_RE = re.compile(r"<tr><td>([A-Z][a-z]{2}, [A-Z][a-z]{2} \d{1,2}, \d{4})</td>")
 ISO_WEEK_RE = re.compile(r"ISO (\d{4})-W(\d{2})")
 DATE_COLUMNS = ("best_date", "center_best_date", "date")
-CANONICAL_2026 = (
-    (SRC / "expanded-bayer-visibility-2026.csv", "ra_h", "best_instant_utc", "best_date", "iso"),
-    (SRC / "bright-star-visibility-2026.csv", "ra_h", "best_instant_utc", "best_date", "iso"),
-    (SRC / "messier-visibility-2026.csv", "ra_h", "best_instant_utc", "best_date", "iso"),
-    (SRC / "constellation-observance-2026.csv", "centroid_ra_h", "best_instant_utc", "best_date", "iso"),
-)
 
 
 def requested_years() -> tuple[int, ...]:
@@ -96,6 +94,10 @@ def audit_generated_csv(path: Path, year: int) -> list[str]:
     if date_column is None:
         return failures
 
+    cycle_min = dt.date(year, 1, 1)
+    cycle_max = dt.date(year + 1, 1, 1)
+    iso_column = next((name for name in ("iso", "center_iso") if name in rows[0]), None)
+
     for n, row in enumerate(rows, start=2):
         raw = (row.get(date_column) or "").strip()
         if not raw:
@@ -105,52 +107,77 @@ def audit_generated_csv(path: Path, year: int) -> list[str]:
         except ValueError:
             failures.append(f"{path}:{n}: invalid {date_column}={raw!r}")
             continue
-        if day.isocalendar().year != year:
+        if not cycle_min <= day <= cycle_max:
             failures.append(
-                f"{path}:{n}: {date_column} {day.isoformat()} belongs to ISO "
-                f"{day.isocalendar().year}, expected {year}"
+                f"{path}:{n}: {date_column} {day.isoformat()} escaped the {year} observing cycle "
+                f"({cycle_min.isoformat()} through {cycle_max.isoformat()})"
             )
+        if iso_column:
+            expected_iso = fixed.iso_label(day)
+            actual_iso = (row.get(iso_column) or "").strip()
+            if actual_iso and actual_iso != expected_iso:
+                failures.append(
+                    f"{path}:{n}: {iso_column}={actual_iso!r} does not match date {day.isoformat()} "
+                    f"({expected_iso})"
+                )
+    return failures
+
+
+def compare_rows(path: Path, canonical: list[dict[str, str]], generated: list[dict[str, str]], columns: tuple[str, ...]) -> list[str]:
+    failures: list[str] = []
+    if len(canonical) != len(generated):
+        return [f"{path}: canonical row count {len(canonical)} != parameterized row count {len(generated)}"]
+    for n, (old, new) in enumerate(zip(canonical, generated), start=2):
+        for column in columns:
+            actual = (old.get(column) or "").strip()
+            value = (new.get(column) or "").strip()
+            if actual != value:
+                failures.append(
+                    f"{path}:{n}: 2026 equivalence mismatch in {column}: "
+                    f"canonical={actual!r}, parameterized={value!r}"
+                )
     return failures
 
 
 def audit_2026_equivalence() -> list[str]:
-    """Recompute canonical 2026 placement without writing any files."""
+    """Recompute or re-parameterize canonical 2026 placement without writing files."""
     failures: list[str] = []
     checked = 0
-    for path, ra_column, instant_column, date_column, iso_column in CANONICAL_2026:
+
+    direct_specs = (
+        (SRC / "expanded-bayer-visibility-2026.csv", "ra_h", "best_instant_utc", "best_date", "iso"),
+        (SRC / "bright-star-visibility-2026.csv", "ra_h", "best_instant_utc", "best_date", "iso"),
+        (SRC / "constellation-observance-2026.csv", "centroid_ra_h", "best_instant_utc", "best_date", "iso"),
+    )
+    for path, ra_column, instant_column, date_column, iso_column in direct_specs:
         if not path.exists():
             failures.append(f"missing canonical 2026 snapshot: {path}")
             continue
         rows = read_rows(path)
-        if not rows:
-            failures.append(f"canonical 2026 snapshot is empty: {path}")
-            continue
-        required = {ra_column, instant_column, date_column, iso_column}
-        missing = required - set(rows[0])
-        if missing:
-            failures.append(f"{path}: missing columns {sorted(missing)}")
-            continue
-
-        for n, row in enumerate(rows, start=2):
+        generated = []
+        for row in rows:
             instant, day = fixed.best_visibility(float(row[ra_column]), 2026)
-            expected = {
-                instant_column: instant.strftime("%Y-%m-%d %H:%M"),
-                date_column: day.isoformat(),
-                iso_column: fixed.iso_label(day),
-            }
-            for column, value in expected.items():
-                actual = (row.get(column) or "").strip()
-                if actual != value:
-                    failures.append(
-                        f"{path}:{n}: 2026 equivalence mismatch in {column}: "
-                        f"canonical={actual!r}, parameterized={value!r}"
-                    )
-            checked += 1
+            r = dict(row)
+            r[instant_column] = instant.strftime("%Y-%m-%d %H:%M")
+            r[date_column] = day.isoformat()
+            r[iso_column] = fixed.iso_label(day)
+            generated.append(r)
+        failures.extend(compare_rows(path, rows, generated, (instant_column, date_column, iso_column)))
+        checked += len(rows)
+
+    messier_path = SRC / "messier-visibility-2026.csv"
+    if not messier_path.exists():
+        failures.append(f"missing canonical 2026 snapshot: {messier_path}")
+    else:
+        rows = read_rows(messier_path)
+        generated = fixed.redated_preserving_2026_phase(rows, 2026)
+        failures.extend(compare_rows(messier_path, rows, generated, ("best_instant_utc", "best_date", "iso")))
+        checked += len(rows)
 
     if not failures:
         print(
             f"2026: EXACT VISIBILITY EQUIVALENCE PASS — {checked} canonical rows "
-            "recomputed identically by the parameterized engine"
+            "preserved exactly by the parameterized paths"
         )
     return failures
 
@@ -169,7 +196,7 @@ def audit_year(year: int) -> list[str]:
     if not failures:
         print(
             f"{year}: PASS — {counts[0]} source + {counts[1]} public weekly pages; "
-            f"generated dated CSV rows stay in ISO {year}"
+            f"generated dated CSV rows remain inside the {year} observing cycle"
         )
     return failures
 
@@ -178,7 +205,6 @@ def main() -> None:
     failures: list[str] = []
     years = requested_years()
 
-    # This invariant always runs, even when only non-2026 editions are requested.
     failures.extend(audit_2026_equivalence())
     for year in years:
         failures.extend(audit_year(year))
