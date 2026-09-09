@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Ensure every Almanack weekly page has the same complete notation legend.
+"""Ensure requested Almanack weekly pages have the same complete notation legend.
 
 Canonical ephemeris-body legend order: Sun, Moon, Mercury, Venus, Mars, Ceres,
 Jupiter, Saturn, Uranus, Neptune, Pluto.
@@ -9,10 +9,10 @@ This file is also the deployment trigger for refreshing stale static legends.
 
 from pathlib import Path
 import re
+import sys
 
 ROOT = Path(__file__).resolve().parents[1]
 BASES = (ROOT / "almanack", ROOT / "Star-Almanack-Repo" / "site")
-YEARS = (2025, 2026, 2027)
 
 STYLE = """<style id="almanack-legend-css">
 .notation-legend {
@@ -47,6 +47,23 @@ STYLE_RE = re.compile(r'<style id="almanack-legend-css">.*?</style>', re.S)
 LEGEND_RE = re.compile(r'<aside class="notation-legend".*?</aside>', re.S)
 
 
+def requested_years() -> tuple[int, ...]:
+    if len(sys.argv) > 1:
+        years = tuple(dict.fromkeys(int(arg) for arg in sys.argv[1:]))
+        if any(year < 1900 or year > 2100 for year in years):
+            raise SystemExit("Years must be in range 1900-2100")
+        return years
+
+    discovered = {
+        int(path.name)
+        for base in BASES
+        if base.is_dir()
+        for path in base.iterdir()
+        if path.is_dir() and re.fullmatch(r"\d{4}", path.name)
+    }
+    return tuple(sorted(discovered))
+
+
 def wire_page(path: Path) -> bool:
     original = path.read_text(encoding="utf-8")
     text = STYLE_RE.sub("", original)
@@ -69,13 +86,17 @@ def wire_page(path: Path) -> bool:
 
 
 def main() -> None:
+    years = requested_years()
     changed = 0
     for base in BASES:
-        for year in YEARS:
-            for path in sorted((base / str(year)).glob("W??/index.html")):
+        for year in years:
+            year_root = base / str(year)
+            if not year_root.is_dir():
+                continue
+            for path in sorted(year_root.glob("W??/index.html")):
                 if wire_page(path):
                     changed += 1
-    print(f"Wired complete Almanack legend on {changed} weekly page copies")
+    print(f"Wired complete Almanack legend on {changed} weekly page copies for {' '.join(map(str, years))}")
 
 
 if __name__ == "__main__":
