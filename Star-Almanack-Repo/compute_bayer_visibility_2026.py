@@ -50,7 +50,7 @@ def wrapped_hour_distance(a: float, b: float) -> float:
 
 def year_window(year: int) -> tuple[dt.datetime, dt.datetime]:
     return (dt.datetime(year, 1, 1) - dt.timedelta(hours=12),
-            dt.datetime(year, 12, 31, 23, 59) + dt.timedelta(hours=12))
+            dt.datetime(year, 12, 31, 23, 59))
 
 
 def best_visibility(ra_object_h: float, year: int) -> tuple[dt.datetime, dt.date]:
@@ -67,9 +67,9 @@ def best_visibility(ra_object_h: float, year: int) -> tuple[dt.datetime, dt.date
         distance = wrapped_hour_distance(apparent_sun_ra_hours(x), target)
         if distance < best_distance: best_distance, best_time = distance, x
         x += dt.timedelta(minutes=1)
-    rounded_date = best_time.date()
-    if rounded_date.year != year:
-        raise RuntimeError(f"Best-visibility date escaped requested year {year}: {rounded_date}")
+    rounded_date = (best_time + dt.timedelta(hours=12)).date()
+    if not dt.date(year, 1, 1) <= rounded_date <= dt.date(year + 1, 1, 1):
+        raise RuntimeError(f"Best-visibility date escaped requested observing cycle {year}: {rounded_date}")
     return best_time, rounded_date
 
 
@@ -88,11 +88,9 @@ def main() -> None:
     parser.add_argument("output", type=Path, nargs="?", default=None)
     parser.add_argument("--year", type=int, default=2026)
     args = parser.parse_args()
-    if args.output is None:
-        args.output = Path(f"expanded-bayer-visibility-{args.year}.csv")
+    if args.output is None: args.output = Path(f"expanded-bayer-visibility-{args.year}.csv")
 
-    with args.input.open(newline="", encoding="utf-8") as handle:
-        rows = list(csv.DictReader(handle))
+    with args.input.open(newline="", encoding="utf-8") as handle: rows = list(csv.DictReader(handle))
     if not rows: raise SystemExit("Expanded Bayer catalog is empty")
 
     output = []; proper_to_date = {}; bayer_to_date = {}
