@@ -1,68 +1,39 @@
-name: Fix current-week highlight
+name: Current-week navigation refresh
 
 on:
-  push:
-    paths:
-      - '.github/workflows/fix-current-week-highlight.yml'
   workflow_dispatch:
+    inputs:
+      years:
+        description: 'Space-separated ISO years to refresh'
+        required: true
+        default: '2025 2026 2027'
+
+env:
+  ALMANACK_YEARS: ${{ inputs.years }}
 
 permissions:
   contents: write
 
 jobs:
-  fix:
+  refresh:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Highlight current ISO week as a button on all year indexes
-        run: |
-          python - <<'PY'
-          from datetime import datetime, timezone
-          from pathlib import Path
-          import re
 
-          week = datetime.now(timezone.utc).date().isocalendar().week
-          css = '''
-          <style id="all-weeks-current-highlight-css">
-          .weekgrid a.current-week,
-          .weekgrid a.current-week:visited {
-            background:var(--navy) !important;
-            color:#fff !important;
-            border-color:var(--navy) !important;
-            font-weight:700;
-          }
-          @media (prefers-color-scheme:dark) {
-            .weekgrid a.current-week,
-            .weekgrid a.current-week:visited {
-              background:#eef7ff !important;
-              color:#102a43 !important;
-              border-color:#eef7ff !important;
-            }
-          }
-          </style>'''
+      - name: Refresh year and week navigation
+        run: python tools/wire_week_navigation.py $ALMANACK_YEARS
 
-          for root in (Path('almanack'), Path('Star-Almanack-Repo/site')):
-            for year in (2025, 2026, 2027):
-              p = root / str(year) / 'index.html'
-              text = p.read_text(encoding='utf-8')
-              text = re.sub(r'<style id="all-weeks-current-highlight-css">.*?</style>', '', text, flags=re.S)
-              text = re.sub(r'<a class="current-week" aria-current="date" href="W(\d{2})/">', r'<a href="W\1/">', text)
-              target = f'<a href="W{week:02d}/">'
-              if target not in text:
-                raise SystemExit(f'Missing W{week:02d} link in {p}')
-              text = text.replace(target, f'<a class="current-week" aria-current="date" href="W{week:02d}/">', 1)
-              text = text.replace('</head>', css + '</head>', 1)
-              p.write_text(text, encoding='utf-8')
-              print(p)
-          PY
-      - name: Commit highlight fix
+      - name: Commit navigation refresh
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add almanack/2025/index.html almanack/2026/index.html almanack/2027/index.html Star-Almanack-Repo/site/2025/index.html Star-Almanack-Repo/site/2026/index.html Star-Almanack-Repo/site/2027/index.html
+          for year in $ALMANACK_YEARS; do
+            git add "almanack/$year" "Star-Almanack-Repo/site/$year"
+          done
           if git diff --cached --quiet; then
-            echo 'No changes'
-          else
-            git commit -m 'Highlight current ISO week on all-weeks pages'
-            git push
+            echo 'No navigation changes'
+            exit 0
           fi
+          git commit -m "Refresh Almanack navigation for $ALMANACK_YEARS"
+          git pull --rebase origin main
+          git push
