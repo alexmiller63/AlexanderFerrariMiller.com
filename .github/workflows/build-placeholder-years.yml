@@ -7,7 +7,6 @@ on:
       - main
     paths:
       - Star-Almanack-Repo/publish_placeholder_years.py
-      - tools/publish_placeholder_years.py
       - .github/workflows/build-placeholder-years.yml
 
 permissions:
@@ -26,7 +25,7 @@ jobs:
           python-version: '3.12'
 
       - name: Build placeholder source years only
-        run: python tools/publish_placeholder_years.py 2025 2027
+        run: python Star-Almanack-Repo/publish_placeholder_years.py 2025 2027
 
       - name: Commit generated placeholder sources
         run: |
