@@ -76,7 +76,7 @@ jobs:
       - name: Populate Finest NGC objects not already represented by Caldwell
         run: python tools/populate_finest_ngc.py $ALMANACK_YEARS
       - name: Reconcile common names across Messier, Caldwell, and Finest NGC
-        run: python tools/reconcile_catalog_common_names.py
+        run: python tools/reconcile_catalog_common_names.py $ALMANACK_YEARS
       - name: Wire highlighted current-week navigation
         run: python tools/wire_week_navigation.py $ALMANACK_YEARS
       - name: Audit true-year parameterization
@@ -119,7 +119,7 @@ jobs:
             python tools/populate_asterisms.py $ALMANACK_YEARS
             python tools/populate_caldwell.py $ALMANACK_YEARS
             python tools/populate_finest_ngc.py $ALMANACK_YEARS
-            python tools/reconcile_catalog_common_names.py
+            python tools/reconcile_catalog_common_names.py $ALMANACK_YEARS
             python tools/wire_week_navigation.py $ALMANACK_YEARS
             python tools/audit_true_year_parameterization.py $ALMANACK_YEARS
           }
