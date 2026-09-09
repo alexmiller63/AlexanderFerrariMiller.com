@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
-"""Publish polished placeholder ISO-week calendars for 2025 and 2027."""
+"""Publish polished placeholder ISO-week calendars for requested years."""
 
 from __future__ import annotations
 
+import argparse
 import datetime as dt
 import html
 import math
@@ -11,7 +12,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).parent
 OUT_ROOT = ROOT / "site"
-YEARS = (2025, 2027)
+DEFAULT_YEARS = (2025, 2027)
+ACTIVE_YEARS: tuple[int, ...] = ()
 
 CSS = """
 :root { color-scheme: light dark; --ink:#202833; --muted:#66717d; --navy:#102a43; --link:#245c86; --paper:#fffdf8; --page:#eee9df; --rule:#d8d2c8; --soft-blue:#edf4f8; }
@@ -88,14 +90,41 @@ document.addEventListener('click', function (e) {
 """.strip()
 
 
+def parse_years() -> tuple[int, ...]:
+    parser = argparse.ArgumentParser(description="Build placeholder Star Almanack ISO years")
+    parser.add_argument("years", nargs="*", type=int, default=list(DEFAULT_YEARS))
+    args = parser.parse_args()
+    years = tuple(dict.fromkeys(args.years))
+    if not years:
+        parser.error("at least one year is required")
+    for year in years:
+        if year < 1583 or year > 9998:
+            parser.error(f"unsupported Gregorian year: {year}")
+    return years
+
+
+def available_years(requested: tuple[int, ...]) -> tuple[int, ...]:
+    known = {int(p.name) for p in OUT_ROOT.iterdir() if p.is_dir() and p.name.isdigit()}
+    known.update(requested)
+    return tuple(sorted(known))
+
+
+def neighbors(year: int) -> tuple[int | None, int | None]:
+    idx = ACTIVE_YEARS.index(year)
+    prev_year = ACTIVE_YEARS[idx - 1] if idx else None
+    next_year = ACTIVE_YEARS[idx + 1] if idx + 1 < len(ACTIVE_YEARS) else None
+    return prev_year, next_year
+
+
 def shell(title: str, body: str) -> str:
-    return f'''<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>{html.escape(title)} · Star Almanack</title><style>{CSS}</style></head><body><header><div class="wrap"><div class="brand"><a href="../2026/">Star Almanack</a></div><div class="subtitle">Alexander Ferrari Miller</div></div></header><main class="wrap"><nav class="weeknav sitenav"><a href="/star-almanack/">Almanack Home</a><a href="/projects.html">All Projects</a><a href="/index.html">Main Site</a></nav>{body}</main><footer><div class="wrap">© 2026 Alexander Ferrari Miller. All rights reserved.</div></footer>{SCRIPT}</body></html>'''
+    return f'''<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>{html.escape(title)} · Star Almanack</title><style>{CSS}</style></head><body><header><div class="wrap"><div class="brand"><a href="/star-almanack/">Star Almanack</a></div><div class="subtitle">Alexander Ferrari Miller</div></div></header><main class="wrap"><nav class="weeknav sitenav"><a href="/star-almanack/">Almanack Home</a><a href="/projects.html">All Projects</a><a href="/index.html">Main Site</a></nav>{body}</main><footer><div class="wrap">© 2026 Alexander Ferrari Miller. All rights reserved.</div></footer>{SCRIPT}</body></html>'''
 
 
 def year_nav(year: int) -> str:
-    if year == 2025:
-        return '<nav class="yearnav"><span></span><span>ISO 2025</span><a href="../2026/">2026 →</a></nav>'
-    return '<nav class="yearnav"><a href="../2026/">← 2026</a><span>ISO 2027</span><span></span></nav>'
+    prev_year, next_year = neighbors(year)
+    left = f'<a href="../{prev_year}/">← {prev_year}</a>' if prev_year is not None else '<span></span>'
+    right = f'<a href="../{next_year}/">{next_year} →</a>' if next_year is not None else '<span></span>'
+    return f'<nav class="yearnav">{left}<span>ISO {year}</span>{right}</nav>'
 
 
 def week_count(year: int) -> int:
@@ -104,17 +133,19 @@ def week_count(year: int) -> int:
 
 def week_nav(year: int, week: int) -> str:
     count = week_count(year)
+    prev_year, next_year = neighbors(year)
     if week > 1:
         prev = f'<a href="../W{week-1:02d}/">← W{week-1:02d}</a>'
-    elif year == 2027:
-        prev = '<a href="../../2026/W53/">← 2026-W53</a>'
+    elif prev_year is not None:
+        prev_count = week_count(prev_year)
+        prev = f'<a href="../../{prev_year}/W{prev_count:02d}/">← {prev_year}-W{prev_count:02d}</a>'
     else:
         prev = '<span class="disabled">← Previous</span>'
 
     if week < count:
         nxt = f'<a href="../W{week+1:02d}/">W{week+1:02d} →</a>'
-    elif year == 2025:
-        nxt = '<a href="../../2026/W01/">2026-W01 →</a>'
+    elif next_year is not None:
+        nxt = f'<a href="../../{next_year}/W01/">{next_year}-W01 →</a>'
     else:
         nxt = '<span class="disabled">Next →</span>'
 
@@ -221,9 +252,12 @@ def build_year(year: int) -> None:
 
 
 def main() -> None:
-    for year in YEARS:
+    global ACTIVE_YEARS
+    requested = parse_years()
+    ACTIVE_YEARS = available_years(requested)
+    for year in requested:
         build_year(year)
-    print('Published enriched placeholder ISO-week calendars for 2025 and 2027')
+    print("Published placeholder ISO-week calendars for " + ", ".join(map(str, requested)))
 
 
 if __name__ == '__main__':
