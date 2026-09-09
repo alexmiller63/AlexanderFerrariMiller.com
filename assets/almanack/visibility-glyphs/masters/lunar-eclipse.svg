@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="Lunar eclipse">
+  <defs>
+    <radialGradient id="moon" cx="38%" cy="34%" r="68%">
+      <stop offset="0" stop-color="#f2e7cf"/>
+      <stop offset=".52" stop-color="#c8bba4"/>
+      <stop offset="1" stop-color="#7f7669"/>
+    </radialGradient>
+    <radialGradient id="shadow" cx="45%" cy="45%" r="62%">
+      <stop offset="0" stop-color="#7a2519" stop-opacity=".94"/>
+      <stop offset=".58" stop-color="#3d0f0b" stop-opacity=".96"/>
+      <stop offset="1" stop-color="#120403"/>
+    </radialGradient>
+  </defs>
+  <g stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="64" cy="64" r="42" fill="url(#moon)" stroke="#2a2927" stroke-width="4"/>
+    <circle cx="79" cy="64" r="37" fill="url(#shadow)" stroke="#35100b" stroke-width="3"/>
+    <path d="M39 34a42 42 0 0 0-15 30 42 42 0 0 0 16 32" fill="none" stroke="#fff" stroke-width="4" opacity=".5"/>
+    <circle cx="48" cy="49" r="5" fill="#9d927f" opacity=".6"/>
+    <circle cx="53" cy="78" r="7" fill="#8c826f" opacity=".45"/>
+    <circle cx="72" cy="42" r="4" fill="#6f675c" opacity=".35"/>
+  </g>
+</svg>
