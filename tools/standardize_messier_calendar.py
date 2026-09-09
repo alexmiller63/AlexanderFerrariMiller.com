@@ -12,6 +12,7 @@ import csv
 import datetime as dt
 import json
 import re
+import sys
 from collections import defaultdict
 from pathlib import Path
 
@@ -24,13 +25,25 @@ PUBLIC = ROOT / "almanack"
 SOURCE_SITE = SRC / "site"
 FIXED = SRC / "fixed-objects.yaml"
 EDITORIAL = json.loads((SRC / "messier-editorial.json").read_text(encoding="utf-8"))
-YEARS = (2025, 2026, 2027)
+DEFAULT_YEARS = (2025, 2027)
 
 GLYPHS = {
     "👁": '<img class="visibility-glyph" src="/assets/almanack/visibility-glyphs/masters/eye.svg" alt="Naked eye" aria-label="Naked eye" style="height:1.15em;width:auto;vertical-align:-.18em">',
     "B": '<img class="visibility-glyph" src="/assets/almanack/visibility-glyphs/masters/binoculars.svg" alt="Binoculars" aria-label="Binoculars" style="height:1.15em;width:auto;vertical-align:-.18em">',
     "🔭": '<img class="visibility-glyph" src="/assets/almanack/visibility-glyphs/masters/telescope.svg" alt="Telescope" aria-label="Telescope" style="height:1.15em;width:auto;vertical-align:-.18em">',
 }
+
+
+def requested_years() -> tuple[int, ...]:
+    if len(sys.argv) == 1:
+        return DEFAULT_YEARS
+    try:
+        years = tuple(dict.fromkeys(int(value) for value in sys.argv[1:]))
+    except ValueError as exc:
+        raise SystemExit("Years must be integers, e.g. 2025 2027") from exc
+    if any(year < 1 for year in years):
+        raise SystemExit("Years must be positive integers")
+    return years
 
 
 def load_catalog() -> dict[str, dict[str, str]]:
@@ -160,7 +173,7 @@ def main():
     aids = instrument_map()
     if len(aids) < 100:
         raise RuntimeError(f"Expected established 2026 observing aids for nearly all Messier objects; found {len(aids)}")
-    for year in YEARS:
+    for year in requested_years():
         e = events(catalog, aids, year)
         a = inject(SOURCE_SITE, year, e)
         b = inject(PUBLIC, year, e)
