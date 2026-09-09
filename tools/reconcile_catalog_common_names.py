@@ -9,9 +9,7 @@ import standardize_messier_calendar as messier
 import populate_caldwell as caldwell
 import populate_finest_ngc as finest
 
-# Messier: NASA-attested names take precedence over blank/legacy source names.
-for designation, row in messier.CATALOG.items():
-    row["name"] = names.preferred_messier_name(designation, row.get("name"))
+# Messier common-name policy now lives in the canonical Messier renderer.
 
 # Caldwell: preserve genuine Caldwell common names, and fill overlap names from
 # the RASC Finest NGC source when Caldwell itself is blank.
