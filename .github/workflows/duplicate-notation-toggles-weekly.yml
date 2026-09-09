@@ -2,6 +2,11 @@ name: Duplicate notation toggles on weekly pages
 
 on:
   workflow_dispatch:
+    inputs:
+      years:
+        description: 'Space-separated Almanack years to update'
+        required: false
+        default: '2025 2026 2027'
   push:
     branches:
       - main
@@ -10,6 +15,9 @@ on:
 
 permissions:
   contents: write
+
+env:
+  ALMANACK_YEARS: ${{ github.event_name == 'workflow_dispatch' && inputs.years || '2025 2026 2027' }}
 
 jobs:
   apply:
@@ -20,12 +28,18 @@ jobs:
 
       - name: Add synchronized notation toggles
         run: |
-          python - <<'PY'
+          python - $ALMANACK_YEARS <<'PY'
           from pathlib import Path
           import re
+          import sys
 
           repo = Path('.')
-          years = (2025, 2026, 2027)
+          try:
+            years = tuple(dict.fromkeys(int(arg) for arg in sys.argv[1:]))
+          except ValueError as exc:
+            raise SystemExit('Years must be integers, e.g. 2025 2027') from exc
+          if not years or any(year < 1900 or year > 2100 for year in years):
+            raise SystemExit('Supply one or more Almanack years from 1900 through 2100')
 
           toggle = '<div class="bayer-toggle-wrap section-notation-toggle"><div class="bayer-toggle" role="group" aria-label="Astronomical notation"><span class="bayer-toggle-label">Notation:</span><button type="button" data-bayer-mode="greek" aria-pressed="true">Greek/Symbols</button><button type="button" data-bayer-mode="latin" aria-pressed="false">Latin</button><button type="button" data-bayer-mode="mixed" data-legacy-label="Mixed · Learner" aria-pressed="false">Mixed Learner</button></div></div>'
 
@@ -33,22 +47,29 @@ jobs:
 
           sync_script = '''\n<script id="section-notation-toggle-sync">\n(function(){\n  function setFinder(mode){\n    document.querySelectorAll('[data-finder-image]').forEach(function(f){f.style.display=f.dataset.finderImage===mode?'block':'none'});\n    document.querySelectorAll('.w15-finder-strip [data-finder-mode]').forEach(function(f){f.classList.toggle('is-active',f.dataset.finderMode===mode)});\n  }\n  function syncButtons(mode){\n    document.querySelectorAll('[data-bayer-mode]').forEach(function(b){b.setAttribute('aria-pressed',b.dataset.bayerMode===mode?'true':'false')});\n  }\n  document.addEventListener('click',function(e){\n    const b=e.target.closest('[data-bayer-mode]');\n    if(!b)return;\n    const mode=b.dataset.bayerMode;\n    syncButtons(mode);\n    setFinder(mode);\n  });\n  let initial='greek';\n  try{const s=localStorage.getItem('star-almanack-bayer-mode');if(s==='greek'||s==='latin'||s==='mixed')initial=s}catch(_){}\n  syncButtons(initial);\n  setFinder(initial);\n})();\n</script>'''
 
+          changed = 0
           for year in years:
-            root = repo / 'almanack' / str(year)
-            for page in sorted(root.glob('W[0-9][0-9]/index.html')):
-              html = page.read_text(encoding='utf-8')
-              html = re.sub(r'<div class="bayer-toggle-wrap section-notation-toggle">.*?</div></div>', '', html, flags=re.S)
-              # Remove the redundant page-level notation toggle immediately after the header.
-              html = re.sub(r'(</header>)\s*<div class="bayer-toggle-wrap"><div class="bayer-toggle" role="group" aria-label="Astronomical notation">.*?</div></div>', r'\1', html, count=1, flags=re.S)
-              html = re.sub(r'<div class="finder-controls" role="group" aria-label="Planet finder notation">.*?</div>', '', html, count=1, flags=re.S)
-              html = html.replace('<h3>Calendar</h3>', toggle + '<h3>Calendar</h3>', 1)
-              html = html.replace('<h3>Weekly Solar-System Ephemeris</h3>', toggle + '<h3>Weekly Solar-System Ephemeris</h3>', 1)
-              html = html.replace('<h3>Planet Finder</h3>', toggle + '<h3>Planet Finder</h3>', 1)
-              if 'section-notation-toggle-css' not in html:
-                html = html.replace('</head>', css + '</head>', 1)
-              if 'section-notation-toggle-sync' not in html:
-                html = html.replace('</body>', sync_script + '</body>', 1)
-              page.write_text(html, encoding='utf-8')
+            for tree in ('almanack', 'Star-Almanack-Repo/site'):
+              root = repo / tree / str(year)
+              if not root.exists():
+                raise SystemExit(f'Missing Almanack year tree: {root}')
+              for page in sorted(root.glob('W[0-9][0-9]/index.html')):
+                html = page.read_text(encoding='utf-8')
+                original = html
+                html = re.sub(r'<div class="bayer-toggle-wrap section-notation-toggle">.*?</div></div>', '', html, flags=re.S)
+                html = re.sub(r'(</header>)\s*<div class="bayer-toggle-wrap"><div class="bayer-toggle" role="group" aria-label="Astronomical notation">.*?</div></div>', r'\1', html, count=1, flags=re.S)
+                html = re.sub(r'<div class="finder-controls" role="group" aria-label="Planet finder notation">.*?</div>', '', html, count=1, flags=re.S)
+                html = html.replace('<h3>Calendar</h3>', toggle + '<h3>Calendar</h3>', 1)
+                html = html.replace('<h3>Weekly Solar-System Ephemeris</h3>', toggle + '<h3>Weekly Solar-System Ephemeris</h3>', 1)
+                html = html.replace('<h3>Planet Finder</h3>', toggle + '<h3>Planet Finder</h3>', 1)
+                if 'section-notation-toggle-css' not in html:
+                  html = html.replace('</head>', css + '</head>', 1)
+                if 'section-notation-toggle-sync' not in html:
+                  html = html.replace('</body>', sync_script + '</body>', 1)
+                if html != original:
+                  page.write_text(html, encoding='utf-8')
+                  changed += 1
+          print(f'Updated {changed} weekly pages for years: {" ".join(map(str, years))}')
           PY
 
       - name: Commit notation toggle layout
@@ -56,12 +77,13 @@ jobs:
           set -euo pipefail
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add almanack/2025 almanack/2026 almanack/2027
+          for year in $ALMANACK_YEARS; do
+            git add "almanack/$year" "Star-Almanack-Repo/site/$year"
+          done
           if git diff --cached --quiet; then
             echo 'Weekly notation toggles are already in place.'
             exit 0
           fi
-          git commit -m 'Remove redundant top notation toggle'
+          git commit -m "Update weekly notation toggles for $ALMANACK_YEARS"
+          git pull --rebase origin main
           git push
-
-# Re-run to remove the redundant page-level toggle while retaining section toggles.
