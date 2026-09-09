@@ -22,11 +22,13 @@ sys.path.insert(0, str(TOOLS))
 from observer_classification import observer_class_for_members  # noqa: E402
 
 NO_FIGURE = {"Mensa", "Microscopium"}
-SOURCE_NAME_ALIASES = {
-    # Serpens is one IAU constellation with two disconnected sky regions.
-    # The adopted line source stores those regions separately as SerpensA/B.
-    "SerpensA": "Serpens",
-    "SerpensB": "Serpens",
+SERPENS_COMPONENTS = {
+    # The adopted source stores the two disconnected parts of the single IAU
+    # constellation Serpens as A/B sections. Preserve them as distinct patterns.
+    # SerpensA contains HIP 92946 (theta1 Serpentis / Alya) in Serpens Cauda;
+    # SerpensB contains HIP 79195 in Serpens Caput.
+    "SerpensA": ("Serpens", "Serpens Cauda"),
+    "SerpensB": ("Serpens", "Serpens Caput"),
 }
 
 
@@ -63,27 +65,41 @@ def load_hyg(path: Path):
 
 
 def parse_iau_figures(path: Path):
-    figures = {}
+    patterns = {}
     current = None
     source_sections = 0
+    parents = set()
     for raw in path.read_text(encoding="utf-8").splitlines():
         line = raw.strip()
         if line.startswith("* "):
             source_sections += 1
             source_name = line[2:].strip()
-            current = SOURCE_NAME_ALIASES.get(source_name, source_name)
-            figures.setdefault(current, [])
+            parent, pattern = SERPENS_COMPONENTS.get(source_name, (source_name, source_name))
+            current = pattern
+            parents.add(parent)
+            if current in patterns:
+                raise RuntimeError(f"duplicate pattern label {current}")
+            patterns[current] = {
+                "constellation": parent,
+                "pattern": pattern,
+                "source_section": source_name,
+                "ids": [],
+            }
         elif current and line.startswith("["):
             ids = json.loads(line)
-            figures[current].extend(int(re.sub(r"\D", "", str(v))) for v in ids)
+            patterns[current]["ids"].extend(int(re.sub(r"\D", "", str(v))) for v in ids)
     if source_sections != 89:
-        raise RuntimeError(f"expected 89 source sections (Serpens split in two); parsed {source_sections}")
-    if len(figures) != 88:
-        raise RuntimeError(f"expected 88 IAU constellations after Serpens merge; parsed {len(figures)}")
-    actual_no_figure = {name for name, ids in figures.items() if not ids}
+        raise RuntimeError(f"expected 89 source sections; parsed {source_sections}")
+    if len(patterns) != 89:
+        raise RuntimeError(f"expected 89 distinct pattern records; parsed {len(patterns)}")
+    if len(parents) != 88:
+        raise RuntimeError(f"expected 88 parent IAU constellations; parsed {len(parents)}")
+    actual_no_figure = {name for name, rec in patterns.items() if not rec["ids"]}
     if actual_no_figure != NO_FIGURE:
         raise RuntimeError(f"unexpected no-figure set: {sorted(actual_no_figure)}")
-    return figures
+    if {patterns[n]["constellation"] for n in ("Serpens Caput", "Serpens Cauda")} != {"Serpens"}:
+        raise RuntimeError("Serpens components do not share parent constellation Serpens")
+    return patterns
 
 
 def separation_arcsec(ra1_h, dec1_deg, ra2_h, dec2_deg):
@@ -123,14 +139,18 @@ def write_csv(path: Path, rows, fields):
         w.writerows(rows)
 
 
-def build_constellations(figures, hyg_by_hip, member_path: Path, summary_path: Path):
+def build_constellations(patterns, hyg_by_hip, member_path: Path, summary_path: Path):
     members = []
     summaries = []
-    for name, ids in figures.items():
-        unique_ids = list(dict.fromkeys(ids))
+    for pattern, rec in patterns.items():
+        parent = rec["constellation"]
+        source_section = rec["source_section"]
+        unique_ids = list(dict.fromkeys(rec["ids"]))
         if not unique_ids:
             summaries.append({
-                "constellation": name,
+                "constellation": parent,
+                "pattern": pattern,
+                "source_section": source_section,
                 "figure_status": "no stick figure",
                 "member_count": 0,
                 "median_v_mag": "",
@@ -141,10 +161,12 @@ def build_constellations(figures, hyg_by_hip, member_path: Path, summary_path: P
         for hip in unique_ids:
             row = hyg_by_hip.get(hip)
             if row is None:
-                raise RuntimeError(f"IAU figure {name}: HIP {hip} missing from HYG")
+                raise RuntimeError(f"IAU figure {pattern}: HIP {hip} missing from HYG")
             mags.append(row["mag"])
             members.append({
-                "constellation": name,
+                "constellation": parent,
+                "pattern": pattern,
+                "source_section": source_section,
                 "hip": hip,
                 "proper": row["proper"],
                 "bayer": row["bayer"],
@@ -154,16 +176,30 @@ def build_constellations(figures, hyg_by_hip, member_path: Path, summary_path: P
             })
         median_v, observer_class = observer_class_for_members(mags)
         summaries.append({
-            "constellation": name,
+            "constellation": parent,
+            "pattern": pattern,
+            "source_section": source_section,
             "figure_status": "stick figure",
             "member_count": len(unique_ids),
             "median_v_mag": f"{median_v:.3f}",
             "observer_class": observer_class,
         })
-    if sum(r["figure_status"] == "stick figure" for r in summaries) != 86:
-        raise RuntimeError("constellation figure count is not 86")
-    write_csv(member_path, members, ["constellation", "hip", "proper", "bayer", "con", "v_mag", "magnitude_source"])
-    write_csv(summary_path, summaries, ["constellation", "figure_status", "member_count", "median_v_mag", "observer_class"])
+    figure_components = [r for r in summaries if r["figure_status"] == "stick figure"]
+    figure_parents = {r["constellation"] for r in figure_components}
+    if len(figure_components) != 87:
+        raise RuntimeError(f"constellation stick-figure component count is not 87: {len(figure_components)}")
+    if len(figure_parents) != 86:
+        raise RuntimeError(f"constellations with stick figures count is not 86: {len(figure_parents)}")
+    write_csv(
+        member_path,
+        members,
+        ["constellation", "pattern", "source_section", "hip", "proper", "bayer", "con", "v_mag", "magnitude_source"],
+    )
+    write_csv(
+        summary_path,
+        summaries,
+        ["constellation", "pattern", "source_section", "figure_status", "member_count", "median_v_mag", "observer_class"],
+    )
 
 
 def build_asterisms(coord_path: Path, hyg_by_hip, hyg_rows, max_arcsec, member_path: Path, summary_path: Path):
@@ -171,7 +207,7 @@ def build_asterisms(coord_path: Path, hyg_by_hip, hyg_rows, max_arcsec, member_p
     grouped = defaultdict(list)
     with coord_path.open(newline="", encoding="utf-8") as f:
         for r in csv.DictReader(f):
-            hip_match = re.fullmatch(r"HIP\s+(\d+)", r.get("source_id", "").strip())
+            hip_match = re.search(r"(?:^|;\s*)HIP\s+(\d+)(?:;|$)", r.get("source_id", "").strip())
             if hip_match:
                 hip = int(hip_match.group(1))
                 h = hyg_by_hip.get(hip)
@@ -222,10 +258,10 @@ def main():
     args = ap.parse_args()
 
     hyg_by_hip, hyg_rows = load_hyg(args.hyg)
-    figures = parse_iau_figures(args.iau_figures)
-    build_constellations(figures, hyg_by_hip, args.constellation_members, args.constellation_summary)
+    patterns = parse_iau_figures(args.iau_figures)
+    build_constellations(patterns, hyg_by_hip, args.constellation_members, args.constellation_summary)
     build_asterisms(args.asterism_coordinates, hyg_by_hip, hyg_rows, args.max_crossmatch_arcsec, args.asterism_members, args.asterism_summary)
-    print("PASS: built 86 constellation stick-figure classifications, 2 explicit no-figure states, and 25 asterism classifications")
+    print("PASS: built 87 stick-figure component classifications across 86 constellations, 2 explicit no-figure states, and 25 asterism classifications")
 
 
 if __name__ == "__main__":
