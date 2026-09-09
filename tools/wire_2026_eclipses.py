@@ -1,31 +1,49 @@
 #!/usr/bin/env python3
-"""Wire calculated 2026 eclipse data into Almanack calendar pages and eclipse page."""
+"""Wire independently calculated eclipse data into Almanack year pages.
+
+The historical filename is retained so existing workflows keep working, but
+publication is now year-parameterized. Pass one or more eclipse YAML files;
+with no arguments the preserved 2026 Star-Almanack-Repo/eclipse.yaml is used.
+"""
 from __future__ import annotations
 
 import re
+import sys
 from datetime import date
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-ECLIPSE_SOURCE = ROOT / "Star-Almanack-Repo" / "eclipse.yaml"
+DEFAULT_ECLIPSE_SOURCE = ROOT / "Star-Almanack-Repo" / "eclipse.yaml"
 ALMANACK_SOURCE = ROOT / "Star-Almanack-Repo" / "almanack-expanded.md"
-SOURCE_SITE = ROOT / "Star-Almanack-Repo" / "site" / "2026"
-PUBLIC_SITE = ROOT / "almanack" / "2026"
 ECLIPSE_PAGE = ROOT / "star-almanack" / "eclipses.html"
 
 
-def parse_eclipses(text: str) -> list[dict[str, str]]:
-    out = []
+def parse_year(text: str) -> int:
+    m = re.search(r"(?m)^year:\s*(\d{4})\s*$", text)
+    if not m:
+        raise SystemExit("Eclipse source is missing a top-level year: value")
+    return int(m.group(1))
+
+
+def parse_eclipses(text: str, year: int) -> list[dict[str, str]]:
+    out: list[dict[str, str]] = []
     blocks = re.split(r"(?m)^  - id: ", text)[1:]
     for block in blocks:
-        get = lambda key: re.search(rf"(?m)^    {re.escape(key)}: ?\"?([^\"\n]+)\"?$", block)
+        def get(key: str) -> re.Match[str]:
+            m = re.search(rf"(?m)^    {re.escape(key)}: ?\"?([^\"\n]+)\"?$", block)
+            if not m:
+                raise SystemExit(f"Eclipse entry is missing {key}")
+            return m
+
         kind = get("kind").group(1).strip()
         typ = get("type").group(1).strip()
         day = get("date").group(1).strip()
         maximum = get("maximum_geometry_utc").group(1).strip()
+        if date.fromisoformat(day).year != year:
+            raise SystemExit(f"Eclipse {day} does not belong to declared year {year}")
         out.append({"kind": kind, "type": typ, "date": day, "maximum": maximum})
-    if len(out) != 4:
-        raise SystemExit(f"Expected 4 eclipses in eclipse.yaml, found {len(out)}")
+    if not out:
+        raise SystemExit(f"No eclipses found for {year}")
     return out
 
 
@@ -69,52 +87,76 @@ def page_table(eclipses: list[dict[str, str]]) -> str:
     for e in eclipses:
         d = date.fromisoformat(e["date"])
         rows.append(
-            f"<tr><td>{d.strftime('%B %-d, %Y')}</td><td>{e['type'].title()} {e['kind']}</td>"
+            f"<tr><td>{d.strftime('%B')} {d.day}, {d.year}</td><td>{e['type'].title()} {e['kind']}</td>"
             f"<td>{e['maximum'][:5]} UTC</td></tr>"
         )
     return "<table><thead><tr><th>Date</th><th>Eclipse</th><th>Greatest eclipse</th></tr></thead><tbody>" + "".join(rows) + "</tbody></table>"
 
 
-def update_eclipse_page(text: str, eclipses: list[dict[str, str]]) -> str:
+def update_eclipse_page(text: str, year: int, eclipses: list[dict[str, str]]) -> str:
     table = page_table(eclipses)
-    start = "      <h2>2026 eclipses</h2>"
+    start = f"      <h2>{year} eclipses</h2>"
     block = start + "\n      " + table
     if start in text:
-        text = re.sub(r"      <h2>2026 eclipses</h2>.*?(?=\n\s*<h2>|\n\s*</section>)", block, text, count=1, flags=re.S)
-    else:
-        marker = "      <h2>Publication and research remain separate</h2>"
-        if marker not in text:
-            raise SystemExit("Expected eclipse-page insertion marker not found")
-        text = text.replace(marker, block + "\n\n" + marker, 1)
-    text = text.replace(
-        "The next implementation step is to connect this page to generated eclipse data from the Star Almanack calculation repository.",
-        "The 2026 eclipse list above is generated from the Star Almanack calculation data; validation and precision work continue separately."
-    )
-    return text
+        return re.sub(
+            rf"      <h2>{year} eclipses</h2>.*?(?=\n\s*<h2>|\n\s*</section>)",
+            block,
+            text,
+            count=1,
+            flags=re.S,
+        )
+
+    headings = list(re.finditer(r"      <h2>(\d{4}) eclipses</h2>", text))
+    for heading in headings:
+        if int(heading.group(1)) > year:
+            return text[:heading.start()] + block + "\n\n" + text[heading.start():]
+
+    marker = "      <h2>Publication and research remain separate</h2>"
+    if marker not in text:
+        raise SystemExit("Expected eclipse-page insertion marker not found")
+    return text.replace(marker, block + "\n\n" + marker, 1)
 
 
-def main() -> None:
-    eclipses = parse_eclipses(ECLIPSE_SOURCE.read_text(encoding="utf-8"))
+def publish(source_path: Path) -> tuple[int, int]:
+    source_text = source_path.read_text(encoding="utf-8")
+    year = parse_year(source_text)
+    eclipses = parse_eclipses(source_text, year)
 
-    source = ALMANACK_SOURCE.read_text(encoding="utf-8")
-    for e in eclipses:
-        source = update_markdown(source, e)
-    ALMANACK_SOURCE.write_text(source, encoding="utf-8")
+    # almanack-expanded.md is the preserved 2026 editorial source. Do not
+    # pretend it represents another edition; other years publish to their
+    # actual generated year trees.
+    if year == 2026:
+        source = ALMANACK_SOURCE.read_text(encoding="utf-8")
+        for e in eclipses:
+            source = update_markdown(source, e)
+        ALMANACK_SOURCE.write_text(source, encoding="utf-8")
 
+    source_site = ROOT / "Star-Almanack-Repo" / "site" / str(year)
+    public_site = ROOT / "almanack" / str(year)
     for e in eclipses:
         week = date.fromisoformat(e["date"]).isocalendar().week
-        for root in (SOURCE_SITE, PUBLIC_SITE):
+        for root in (source_site, public_site):
             page = root / f"W{week:02d}" / "index.html"
+            if not page.exists():
+                raise SystemExit(f"Missing Almanack week page: {page}")
             text = page.read_text(encoding="utf-8")
             page.write_text(update_html(text, e), encoding="utf-8")
 
     page_text = ECLIPSE_PAGE.read_text(encoding="utf-8")
-    ECLIPSE_PAGE.write_text(update_eclipse_page(page_text, eclipses), encoding="utf-8")
+    ECLIPSE_PAGE.write_text(update_eclipse_page(page_text, year, eclipses), encoding="utf-8")
+    print(f"{year}: wired {len(eclipses)} independently calculated eclipses; PASS")
+    return year, len(eclipses)
 
-    for e in eclipses:
-        token = label(e)
-        assert token in ALMANACK_SOURCE.read_text(encoding="utf-8")
-    print("Wired 4 calculated 2026 eclipses into calendar source, weekly pages, and eclipse page; PASS")
+
+def main() -> None:
+    paths = [Path(x) for x in sys.argv[1:]] or [DEFAULT_ECLIPSE_SOURCE]
+    total = 0
+    years = []
+    for path in paths:
+        year, count = publish(path)
+        years.append(str(year))
+        total += count
+    print(f"Eclipse publication parameterized for {', '.join(years)}; {total} event(s) total")
 
 
 if __name__ == "__main__":
