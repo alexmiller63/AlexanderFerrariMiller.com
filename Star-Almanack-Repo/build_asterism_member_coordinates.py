@@ -5,7 +5,9 @@ Policy:
   1. Use Star Almanack's expanded Bayer catalog wherever it contains the member.
   2. Apply explicit ambiguity overrides from asterism-coordinate-resolution.yaml.
   3. Resolve remaining stellar designations against the pinned HYG v4.1 source.
-  4. Use CDS Sesame/SIMBAD only as a coordinate fallback when HYG cannot resolve a member.
+  4. When a name is not represented uniquely in HYG, use CDS Sesame/SIMBAD only
+     to establish the object's sky position, then cross-match that position back
+     to a concrete magnitude-bearing HYG object.
 
 The output is the single resolved member dataset consumed downstream. It carries
 coordinates and visual magnitude together with explicit provenance. Downstream
@@ -16,6 +18,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+import math
 import re
 import time
 import urllib.parse
@@ -32,6 +35,7 @@ DEFAULT_BAYER = ROOT / "expanded-bayer-stars.csv"
 DEFAULT_OUTPUT = ROOT / "asterism-member-coordinates.csv"
 SESAME = "https://cds.unistra.fr/cgi-bin/nph-sesame/-oxp/SNV?{}"
 HYG_PIN = "astronexus/HYG-Database@3bf37f4b2d5460e1278286320d1d62fab9b493c1:hyg/CURRENT/hygdata_v41.csv"
+MAX_POSITIONAL_MATCH_ARCSEC = 60.0
 
 GREEK_TO_CODE = {
     "Alpha": "Alp", "Beta": "Bet", "Gamma": "Gam", "Delta": "Del",
@@ -57,7 +61,6 @@ def norm_name(value: str) -> str:
 
 
 def load_asterisms(path: Path):
-    """Read only the stable name/status/members fields from the catalog."""
     entries = []
     current = None
     for raw in path.read_text(encoding="utf-8").splitlines():
@@ -128,51 +131,17 @@ def load_hyg(path: Path):
         bayer = (row.get("bayer") or "").strip()
         flam = (row.get("flam") or "").strip()
         if proper:
-            indexes["proper"].setdefault(norm_name(proper), row)
+            indexes["proper"].setdefault(norm_name(proper), []).append(row)
         if bayer and con:
-            indexes["bayer"].setdefault((bayer, con), row)
+            indexes["bayer"].setdefault((bayer, con), []).append(row)
         if flam and con:
-            indexes["flam"].setdefault((flam, con), row)
+            indexes["flam"].setdefault((flam, con), []).append(row)
         for field in ("hip", "hd", "hr", "id"):
             value = (row.get(field) or "").strip()
             if value:
                 key = "hyg" if field == "id" else field
-                indexes[key].setdefault(value, row)
-    return indexes
-
-
-def hyg_lookup(name: str, indexes):
-    direct = indexes["proper"].get(norm_name(name))
-    if direct:
-        return direct
-
-    match = re.fullmatch(r"(?i)(HIP|HD|HR|HYG)\s*(\d+)", name.strip())
-    if match:
-        catalog, number = match.groups()
-        return indexes[catalog.lower()].get(number)
-
-    designation, abbr = designation_parts(name)
-    if not designation:
-        # Also accept compact modern abbreviations used by explicit overrides.
-        short = re.fullmatch(r"([A-Za-z]+)(\d*)\s+([A-Z][A-Za-z]{2})", name.strip())
-        if short:
-            greek, component, abbr = short.groups()
-            code = GREEK_TO_CODE.get(greek)
-            if code:
-                return indexes["bayer"].get((f"{code}{component}", abbr))
-        return None
-
-    flamsteed = re.fullmatch(r"(\d+)", designation)
-    if flamsteed:
-        return indexes["flam"].get((flamsteed.group(1), abbr))
-
-    bayer = re.fullmatch(r"([A-Za-z]+)(\d*)", designation)
-    if bayer:
-        greek, component = bayer.groups()
-        code = GREEK_TO_CODE.get(greek)
-        if code:
-            return indexes["bayer"].get((f"{code}{component}", abbr))
-    return None
+                indexes[key][value] = row
+    return rows, indexes
 
 
 def hyg_identity(row):
@@ -181,6 +150,88 @@ def hyg_identity(row):
         if value:
             return f"{label} {value}"
     return ""
+
+
+def hyg_row_complete(row) -> bool:
+    if row is None:
+        return False
+    try:
+        float(row.get("ra") or "")
+        float(row.get("dec") or "")
+        float(row.get("mag") or "")
+    except (TypeError, ValueError):
+        return False
+    return bool(hyg_identity(row))
+
+
+def unique_complete(candidates):
+    complete = [row for row in candidates if hyg_row_complete(row)]
+    return complete[0] if len(complete) == 1 else None
+
+
+def hyg_lookup(name: str, indexes):
+    direct = unique_complete(indexes["proper"].get(norm_name(name), []))
+    if direct:
+        return direct
+
+    match = re.fullmatch(r"(?i)(HIP|HD|HR|HYG)\s*(\d+)", name.strip())
+    if match:
+        catalog, number = match.groups()
+        row = indexes[catalog.lower()].get(number)
+        return row if hyg_row_complete(row) else None
+
+    designation, abbr = designation_parts(name)
+    if not designation:
+        short = re.fullmatch(r"([A-Za-z]+)(\d*)\s+([A-Z][A-Za-z]{2})", name.strip())
+        if short:
+            greek, component, abbr = short.groups()
+            code = GREEK_TO_CODE.get(greek)
+            if code:
+                return unique_complete(indexes["bayer"].get((f"{code}{component}", abbr), []))
+        return None
+
+    flamsteed = re.fullmatch(r"(\d+)", designation)
+    if flamsteed:
+        return unique_complete(indexes["flam"].get((flamsteed.group(1), abbr), []))
+
+    bayer = re.fullmatch(r"([A-Za-z]+)(\d*)", designation)
+    if bayer:
+        greek, component = bayer.groups()
+        code = GREEK_TO_CODE.get(greek)
+        if code:
+            return unique_complete(indexes["bayer"].get((f"{code}{component}", abbr), []))
+    return None
+
+
+def angular_separation_arcsec(ra1_h, dec1_deg, ra2_h, dec2_deg):
+    ra1 = math.radians(ra1_h * 15.0)
+    ra2 = math.radians(ra2_h * 15.0)
+    dec1 = math.radians(dec1_deg)
+    dec2 = math.radians(dec2_deg)
+    cos_sep = (
+        math.sin(dec1) * math.sin(dec2)
+        + math.cos(dec1) * math.cos(dec2) * math.cos(ra1 - ra2)
+    )
+    cos_sep = max(-1.0, min(1.0, cos_sep))
+    return math.degrees(math.acos(cos_sep)) * 3600.0
+
+
+def hyg_positional_match(ra_h, dec_deg, rows, max_arcsec=MAX_POSITIONAL_MATCH_ARCSEC):
+    """Return the unique nearest complete HYG object within a strict radius."""
+    matches = []
+    for row in rows:
+        if not hyg_row_complete(row):
+            continue
+        sep = angular_separation_arcsec(ra_h, dec_deg, float(row["ra"]), float(row["dec"]))
+        if sep <= max_arcsec:
+            matches.append((sep, hyg_identity(row), row))
+    if not matches:
+        return None, None
+    matches.sort(key=lambda item: (item[0], item[1]))
+    # Reject an effectively tied nearest-neighbour result rather than guessing.
+    if len(matches) > 1 and abs(matches[1][0] - matches[0][0]) < 0.01:
+        return None, None
+    return matches[0][2], matches[0][0]
 
 
 def sesame_lookup(name: str, timeout: float = 30.0):
@@ -212,7 +263,7 @@ def main():
     overrides_doc = yaml.safe_load(args.overrides.read_text(encoding="utf-8"))
     overrides = {r["designation"]: r["resolved_to"] for r in overrides_doc.get("resolutions", [])}
     proper, keyed = load_bayer(args.bayer)
-    hyg = load_hyg(args.hyg)
+    hyg_rows, hyg = load_hyg(args.hyg)
 
     out = []
     cache = {}
@@ -221,36 +272,45 @@ def main():
         for member in asterism["members"]:
             query_name = overrides.get(member, member)
             row = None if member in overrides else bayer_lookup(member, proper, keyed)
-            if row is not None:
+            if row is not None and row.get("mag", "").strip():
                 ra_h = float(row["ra_h"])
                 dec_deg = float(row["dec_deg"])
                 resolved = row.get("proper") or row.get("bayer") or member
                 source = "Star Almanack expanded-bayer-stars.csv"
                 source_id = f"HIP {row['hip']}" if row.get("hip") else (f"HD {row['hd']}" if row.get("hd") else "")
                 magnitude = row.get("mag", "").strip()
-                magnitude_source = source if magnitude else ""
+                magnitude_source = source if source_id else ""
                 magnitude_source_id = source_id if magnitude else ""
             else:
                 hrow = hyg_lookup(query_name, hyg)
+                match_note = ""
+                if hrow is None:
+                    if query_name not in cache:
+                        cache[query_name] = sesame_lookup(query_name)
+                        time.sleep(args.delay)
+                    sesame_ra_h, sesame_dec_deg, sesame_name, source_url = cache[query_name]
+                    hrow, separation = hyg_positional_match(sesame_ra_h, sesame_dec_deg, hyg_rows)
+                    if hrow is not None:
+                        match_note = f"; positional cross-match {separation:.3f} arcsec from CDS Sesame/SIMBAD {sesame_name}"
+                    else:
+                        ra_h = sesame_ra_h
+                        dec_deg = sesame_dec_deg
+                        resolved = sesame_name
+                        source = "CDS Sesame/SIMBAD"
+                        source_id = source_url
+                        magnitude = ""
+                        magnitude_source = ""
+                        magnitude_source_id = ""
+
                 if hrow is not None:
                     ra_h = float(hrow["ra"])
                     dec_deg = float(hrow["dec"])
                     resolved = (hrow.get("proper") or "").strip() or query_name
-                    source = "Pinned HYG v4.1"
+                    source = "Pinned HYG v4.1" + match_note
                     source_id = hyg_identity(hrow)
                     magnitude = (hrow.get("mag") or "").strip()
-                    magnitude_source = f"Pinned HYG v4.1 ({HYG_PIN})" if magnitude else ""
-                    magnitude_source_id = source_id if magnitude else ""
-                else:
-                    if query_name not in cache:
-                        cache[query_name] = sesame_lookup(query_name)
-                        time.sleep(args.delay)
-                    ra_h, dec_deg, resolved, source_url = cache[query_name]
-                    source = "CDS Sesame/SIMBAD"
-                    source_id = source_url
-                    magnitude = ""
-                    magnitude_source = ""
-                    magnitude_source_id = ""
+                    magnitude_source = f"Pinned HYG v4.1 ({HYG_PIN})"
+                    magnitude_source_id = source_id
 
             if not magnitude or not magnitude_source or not magnitude_source_id:
                 unresolved_magnitudes.append(f"{asterism['name']}: {member} -> {query_name}")
