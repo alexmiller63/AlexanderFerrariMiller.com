@@ -17,6 +17,7 @@ permissions:
 env:
   HYG_COMMIT: 3bf37f4b2d5460e1278286320d1d62fab9b493c1
   FIGURE_COMMIT: 75d29c207bbd752023c447ddd1f9f4ff0eb47538
+  IAU_CSN_COMMIT: 86fe2f8c0046ad85572c36f92049313fef5277cf
 
 jobs:
   build:
@@ -30,7 +31,7 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: Download pinned HYG v4.1 and IAU/MacRobert figure data
+      - name: Download pinned HYG, stick-figure, and IAU CSN data
         run: |
           set -euo pipefail
           curl --fail --location --retry 3 \
@@ -39,12 +40,16 @@ jobs:
           curl --fail --location --retry 3 \
             --output /tmp/constellation_lines_iau.dat \
             "https://raw.githubusercontent.com/dcf21/constellation-stick-figures/${FIGURE_COMMIT}/constellation_lines_iau.dat"
+          curl --fail --location --retry 3 \
+            --output /tmp/IAU-CSN.tsv \
+            "https://raw.githubusercontent.com/mirandadam/iau-starnames/${IAU_CSN_COMMIT}/catalog_data/IAU-CSN.tsv"
 
       - name: Build member-level magnitude provenance and pattern summaries
         run: |
           python Star-Almanack-Repo/build_pattern_magnitudes.py \
             /tmp/hygdata_v41.csv \
-            /tmp/constellation_lines_iau.dat
+            /tmp/constellation_lines_iau.dat \
+            /tmp/IAU-CSN.tsv
 
       - name: Validate source-grounded outputs
         run: |
@@ -70,6 +75,12 @@ jobs:
                   assert r['observer_class'] in {'naked_eye', 'binoculars', 'telescope'}, r
               else:
                   assert not r['median_v_mag'] and not r['observer_class'], r
+
+          with open('Star-Almanack-Repo/constellation-stick-figure-members.csv', newline='', encoding='utf-8') as f:
+              members = list(csv.DictReader(f))
+          hip55203 = [r for r in members if r['hip'] == '55203']
+          assert len(hip55203) == 1, hip55203
+          assert hip55203[0]['magnitude_source'] == 'IAU CSN 2022-07-04 snapshot', hip55203[0]
 
           with open('Star-Almanack-Repo/asterism-pattern-magnitudes.csv', newline='', encoding='utf-8') as f:
               a = list(csv.DictReader(f))
