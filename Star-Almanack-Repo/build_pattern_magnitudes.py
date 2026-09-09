@@ -22,6 +22,12 @@ sys.path.insert(0, str(TOOLS))
 from observer_classification import observer_class_for_members  # noqa: E402
 
 NO_FIGURE = {"Mensa", "Microscopium"}
+SOURCE_NAME_ALIASES = {
+    # Serpens is one IAU constellation with two disconnected sky regions.
+    # The adopted line source stores those regions separately as SerpensA/B.
+    "SerpensA": "Serpens",
+    "SerpensB": "Serpens",
+}
 
 
 def load_hyg(path: Path):
@@ -59,16 +65,21 @@ def load_hyg(path: Path):
 def parse_iau_figures(path: Path):
     figures = {}
     current = None
+    source_sections = 0
     for raw in path.read_text(encoding="utf-8").splitlines():
         line = raw.strip()
         if line.startswith("* "):
-            current = line[2:].strip()
-            figures[current] = []
+            source_sections += 1
+            source_name = line[2:].strip()
+            current = SOURCE_NAME_ALIASES.get(source_name, source_name)
+            figures.setdefault(current, [])
         elif current and line.startswith("["):
             ids = json.loads(line)
             figures[current].extend(int(re.sub(r"\D", "", str(v))) for v in ids)
+    if source_sections != 89:
+        raise RuntimeError(f"expected 89 source sections (Serpens split in two); parsed {source_sections}")
     if len(figures) != 88:
-        raise RuntimeError(f"expected 88 constellation entries; parsed {len(figures)}")
+        raise RuntimeError(f"expected 88 IAU constellations after Serpens merge; parsed {len(figures)}")
     actual_no_figure = {name for name, ids in figures.items() if not ids}
     if actual_no_figure != NO_FIGURE:
         raise RuntimeError(f"unexpected no-figure set: {sorted(actual_no_figure)}")
@@ -88,7 +99,6 @@ def separation_arcsec(ra1_h, dec1_deg, ra2_h, dec2_deg):
 def nearest_hyg(ra_h, dec_deg, hyg_rows, max_arcsec):
     ranked = []
     for row in hyg_rows:
-        # Cheap declination window before the spherical distance.
         if abs(row["dec_deg"] - dec_deg) * 3600.0 > max_arcsec:
             continue
         sep = separation_arcsec(ra_h, dec_deg, row["ra_h"], row["dec_deg"])
