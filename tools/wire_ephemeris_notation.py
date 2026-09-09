@@ -1,5 +1,6 @@
 from pathlib import Path
 import re
+import sys
 
 SCRIPT = r'''<script id="ephemeris-notation-sync">
 (function(){
@@ -33,14 +34,32 @@ SCRIPT = r'''<script id="ephemeris-notation-sync">
 })();
 </script>'''
 
+
+def requested_years() -> tuple[str, ...]:
+    if len(sys.argv) > 1:
+        years = tuple(dict.fromkeys(sys.argv[1:]))
+        if any(not re.fullmatch(r"\d{4}", year) for year in years):
+            raise SystemExit("Years must be four digits, e.g. 2025 2027")
+        return years
+    return tuple(
+        path.name
+        for path in sorted(Path("almanack").iterdir())
+        if path.is_dir() and re.fullmatch(r"\d{4}", path.name)
+    )
+
+
 changed = 0
 pattern = re.compile(r'<script id="ephemeris-notation-sync">.*?</script>', re.S)
-for year in ('2025','2026','2027'):
+for year in requested_years():
     root = Path('almanack') / year
-    if not root.exists(): continue
+    if not root.exists():
+        continue
     for page in sorted(root.glob('W[0-9][0-9]/index.html')):
         html = page.read_text(encoding='utf-8')
         html2 = pattern.sub(lambda _m: SCRIPT, html, count=1)
-        if html2 == html and 'ephemeris-notation-sync' not in html: html2 = html.replace('</body>', SCRIPT + '</body>', 1)
-        if html2 != html: page.write_text(html2, encoding='utf-8'); changed += 1
-print(f'Wired calendar and ephemeris notation on {changed} weekly pages')
+        if html2 == html and 'ephemeris-notation-sync' not in html:
+            html2 = html.replace('</body>', SCRIPT + '</body>', 1)
+        if html2 != html:
+            page.write_text(html2, encoding='utf-8')
+            changed += 1
+print(f'Wired calendar and ephemeris notation on {changed} weekly pages for {" ".join(requested_years())}')
