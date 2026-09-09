@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="Meteor shower">
+  <defs>
+    <radialGradient id="meteor" cx="38%" cy="32%" r="72%">
+      <stop offset="0" stop-color="#fff7c7"/>
+      <stop offset=".28" stop-color="#ffd45e"/>
+      <stop offset=".62" stop-color="#ff8a2a"/>
+      <stop offset="1" stop-color="#c73b16"/>
+    </radialGradient>
+    <linearGradient id="trail" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#3d8ed0" stop-opacity="0"/>
+      <stop offset=".45" stop-color="#77c9ff" stop-opacity=".65"/>
+      <stop offset="1" stop-color="#f8f8f8" stop-opacity=".95"/>
+    </linearGradient>
+  </defs>
+  <g stroke-linecap="round" stroke-linejoin="round">
+    <path d="M15 96 82 35" stroke="url(#trail)" stroke-width="10"/>
+    <path d="M28 103 88 48" stroke="url(#trail)" stroke-width="5" opacity=".85"/>
+    <path d="M11 78 74 24" stroke="url(#trail)" stroke-width="4" opacity=".65"/>
+    <circle cx="92" cy="31" r="15" fill="url(#meteor)" stroke="#2b1a0f" stroke-width="3"/>
+    <circle cx="87" cy="26" r="4" fill="#fff" opacity=".8"/>
+  </g>
+</svg>
