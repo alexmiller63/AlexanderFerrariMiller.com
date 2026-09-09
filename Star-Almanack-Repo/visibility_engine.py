@@ -40,8 +40,15 @@ def wrapped_hour_distance(a: float, b: float) -> float:
 
 
 def year_window(year: int) -> tuple[dt.datetime, dt.datetime]:
+    """Return the annual observing cycle used by the Almanack.
+
+    Start at noon on the preceding Dec 31 so a true optimum can round into
+    Jan 1 of the requested year. End at the requested Dec 31 so an optimum
+    can round into Jan 1 of the following year. This mirrors the established
+    2026 calculation rather than silently changing its date convention.
+    """
     return (dt.datetime(year, 1, 1) - dt.timedelta(hours=12),
-            dt.datetime(year, 12, 31, 23, 59) + dt.timedelta(hours=12))
+            dt.datetime(year, 12, 31, 23, 59))
 
 
 def best_visibility(ra_object_h: float, year: int) -> tuple[dt.datetime, dt.date]:
@@ -63,9 +70,9 @@ def best_visibility(ra_object_h: float, year: int) -> tuple[dt.datetime, dt.date
         if distance < best_distance:
             best_distance, best_time = distance, x
         x += dt.timedelta(minutes=1)
-    rounded_date = best_time.date()
-    if rounded_date.year != year:
-        raise RuntimeError(f"Best-visibility date escaped requested year {year}: {rounded_date}")
+    rounded_date = (best_time + dt.timedelta(hours=12)).date()
+    if not dt.date(year, 1, 1) <= rounded_date <= dt.date(year + 1, 1, 1):
+        raise RuntimeError(f"Best-visibility date escaped requested observing cycle {year}: {rounded_date}")
     return best_time, rounded_date
 
 
