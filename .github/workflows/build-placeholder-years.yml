@@ -1,16 +1,18 @@
-name: Build 2025 and 2027 Placeholder Sources
+name: Legacy placeholder-year build (manual compatibility)
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - main
-    paths:
-      - Star-Almanack-Repo/publish_placeholder_years.py
-      - .github/workflows/build-placeholder-years.yml
+    inputs:
+      years:
+        description: 'Space-separated placeholder years to rebuild'
+        required: false
+        default: '2025 2027'
 
 permissions:
   contents: write
+
+env:
+  ALMANACK_YEARS: ${{ inputs.years }}
 
 jobs:
   build:
@@ -18,24 +20,29 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
 
-      - name: Build placeholder source years only
-        run: python Star-Almanack-Repo/publish_placeholder_years.py 2025 2027
+      - name: Build legacy placeholder source years
+        run: python tools/publish_placeholder_years.py $ALMANACK_YEARS
 
       - name: Commit generated placeholder sources
         run: |
           set -euo pipefail
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add Star-Almanack-Repo/site/2025 Star-Almanack-Repo/site/2027
+          for year in $ALMANACK_YEARS; do
+            git add "Star-Almanack-Repo/site/$year"
+          done
           if git diff --cached --quiet; then
-            echo 'Placeholder source years already current.'
+            echo 'Requested placeholder source years already current.'
             exit 0
           fi
-          git commit -m 'Update placeholder source calendars'
+          git commit -m "Rebuild legacy placeholder source years: $ALMANACK_YEARS"
+          git pull --rebase origin main
           git push
