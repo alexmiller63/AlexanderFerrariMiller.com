@@ -2,6 +2,11 @@ name: Build asterism geometry
 
 on:
   workflow_dispatch:
+    inputs:
+      years:
+        description: 'Space-separated observing years to regenerate'
+        required: true
+        default: '2025 2026 2027'
   push:
     paths:
       - 'Star-Almanack-Repo/asterisms-core-25.yaml'
@@ -10,6 +15,9 @@ on:
       - 'Star-Almanack-Repo/build_asterism_member_coordinates.py'
       - 'Star-Almanack-Repo/compute_asterism_geometry_2026.py'
       - '.github/workflows/build-asterism-geometry.yml'
+
+env:
+  ASTERISM_YEARS: ${{ github.event_name == 'workflow_dispatch' && inputs.years || '2025 2026 2027' }}
 
 permissions:
   contents: write
@@ -58,16 +66,22 @@ jobs:
           print(f'PASS: 25 asterisms, {len(rows)} resolved member rows')
           PY
 
-      - name: Compute 2025-2027 asterism centroids and visibility
+      - name: Compute requested asterism centroids and visibility
         working-directory: Star-Almanack-Repo
         run: |
           python - <<'PY'
           import datetime as dt
+          import os
           import sys
           import compute_bayer_visibility_2026 as vis
           import compute_asterism_geometry_2026 as geom
 
-          for year in (2025, 2026, 2027):
+          years = tuple(dict.fromkeys(int(value) for value in os.environ['ASTERISM_YEARS'].split()))
+          if not years:
+              raise SystemExit('No asterism years requested')
+          for year in years:
+              if not 1900 <= year <= 2100:
+                  raise SystemExit(f'Year out of supported range: {year}')
               vis.SEARCH_START = dt.datetime(year - 1, 12, 31, 12, 0)
               vis.SEARCH_END = dt.datetime(year, 12, 31, 23, 59)
               vis.ROUNDED_DATE_MIN = dt.date(year, 1, 1)
@@ -80,12 +94,15 @@ jobs:
               geom.main()
           PY
 
-      - name: Validate geometry output
+      - name: Validate requested geometry output
         working-directory: Star-Almanack-Repo
         run: |
           python - <<'PY'
           import csv
-          for year in (2025, 2026, 2027):
+          import os
+
+          years = tuple(dict.fromkeys(int(value) for value in os.environ['ASTERISM_YEARS'].split()))
+          for year in years:
               path = f'asterism-geometry-{year}.csv'
               with open(path, newline='', encoding='utf-8') as f:
                   rows = list(csv.DictReader(f))
@@ -103,14 +120,18 @@ jobs:
               print(f'PASS {year}: 25 geometry rows; Southern Pointers uses geodesic midpoint')
           PY
 
-      - name: Commit generated coordinate and geometry files
+      - name: Commit requested coordinate and geometry files
         run: |
+          set -euo pipefail
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add Star-Almanack-Repo/asterism-member-coordinates.csv Star-Almanack-Repo/asterism-geometry-2025.csv Star-Almanack-Repo/asterism-geometry-2026.csv Star-Almanack-Repo/asterism-geometry-2027.csv
+          git add Star-Almanack-Repo/asterism-member-coordinates.csv
+          for year in $ASTERISM_YEARS; do
+            git add "Star-Almanack-Repo/asterism-geometry-$year.csv"
+          done
           if git diff --cached --quiet; then
             echo 'Generated asterism files unchanged.'
             exit 0
           fi
-          git commit -m 'Generate 2025-2027 core asterism geometry'
+          git commit -m "Generate core asterism geometry for $ASTERISM_YEARS"
           git push
