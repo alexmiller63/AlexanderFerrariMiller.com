@@ -113,7 +113,7 @@ def label(r: dict[str, str], aid: str, day: dt.date) -> str:
     head = r["id"]
     if r["name"]:
         head += f', {r["name"]}'
-    head += f', {r["type"] in r["con"]}'
+    head += f', {r["type"]} in {r["con"]}'
     glyph = GLYPHS[aid]
     mag = r["mag"]
     vis = f'{glyph} V {mag}' if mag else glyph
