@@ -102,6 +102,24 @@ footer .wrap { padding-top:1.3rem; padding-bottom:1.3rem; opacity:.9; }
 .almanack-bottom-nav-wrap nav:last-child {
   margin-bottom:0;
 }
+@media (orientation:landscape) and (max-height:500px) {
+  .almanack-bottom-nav-wrap {
+    padding:.55rem 1rem .75rem;
+  }
+  .almanack-bottom-nav-wrap .weeknav,
+  .almanack-bottom-nav-wrap .yearnav {
+    gap:.45rem;
+    margin:.2rem 0 .55rem;
+    font-size:.82rem;
+  }
+  .almanack-bottom-nav-wrap .weeknav a,
+  .almanack-bottom-nav-wrap .weeknav span,
+  .almanack-bottom-nav-wrap .yearnav a,
+  .almanack-bottom-nav-wrap .yearnav span {
+    min-width:0;
+    padding:.4rem .55rem;
+  }
+}
 @media (prefers-color-scheme:dark) {
   .yearnav .current-year,
   .yearnav .current-year:visited,

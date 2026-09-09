@@ -85,6 +85,24 @@ footer .wrap { padding-top:1.3rem; padding-bottom:1.3rem; opacity:.9; }
 .almanack-bottom-nav-wrap nav:last-child {
   margin-bottom:0;
 }
+@media (orientation:landscape) and (max-height:500px) {
+  .almanack-bottom-nav-wrap {
+    padding:.55rem 1rem .75rem;
+  }
+  .almanack-bottom-nav-wrap .weeknav,
+  .almanack-bottom-nav-wrap .yearnav {
+    gap:.45rem;
+    margin:.2rem 0 .55rem;
+    font-size:.82rem;
+  }
+  .almanack-bottom-nav-wrap .weeknav a,
+  .almanack-bottom-nav-wrap .weeknav span,
+  .almanack-bottom-nav-wrap .yearnav a,
+  .almanack-bottom-nav-wrap .yearnav span {
+    min-width:0;
+    padding:.4rem .55rem;
+  }
+}
 @media (prefers-color-scheme:dark) {
   .yearnav .current-year,
   .yearnav .current-year:visited,
@@ -121,7 +139,7 @@ footer .wrap { padding-top:1.3rem; padding-bottom:1.3rem; opacity:.9; }
   <div class="legend-line">
     <span class="legend-item"><span class="text-symbol">☉&#xfe0e;</span> Sun</span><span class="legend-item"><span class="text-symbol">☽&#xfe0e;</span> Moon</span><span class="legend-item"><span class="text-symbol">☿&#xfe0e;</span> Mercury</span><span class="legend-item"><span class="text-symbol">♀&#xfe0e;</span> Venus</span><span class="legend-item"><span class="text-symbol">♂&#xfe0e;</span> Mars</span><span class="legend-item"><span class="text-symbol">⚳&#xfe0e;</span> Ceres</span><span class="legend-item"><span class="text-symbol">♃&#xfe0e;</span> Jupiter</span><span class="legend-item"><span class="text-symbol">♄&#xfe0e;</span> Saturn</span><span class="legend-item"><span class="text-symbol">♅&#xfe0e;</span> Uranus</span><span class="legend-item"><span class="text-symbol">♆&#xfe0e;</span> Neptune</span><span class="legend-item"><span class="text-symbol">♇&#xfe0e;</span> Pluto</span>
   </div>
-</aside><div class="almanack-bottom-nav-wrap" id="almanack-bottom-nav"><nav class="weeknav sitenav"><a href="/star-almanack/#almanack-bottom-nav">Almanack Home</a><a href="/projects.html">All Projects</a><a href="/index.html">Main Site</a></nav><nav class="yearnav"><span class="nav-spacer" aria-hidden="true">—</span><a href="../#almanack-bottom-nav">2025</a><a href="../../2026/#almanack-bottom-nav">2026 →</a></nav><nav class="weeknav week-position" aria-label="Week navigation"><a href="../W25/#almanack-bottom-nav">← W25</a><span class="current-week" aria-current="page">ISO 2025-W26</span><a href="../W27/#almanack-bottom-nav">W27 →</a></nav></div><footer><div class="wrap">© 2026 Alexander Ferrari Miller. All rights reserved.</div></footer><script>
+</aside><div class="almanack-bottom-nav-wrap" id="almanack-bottom-nav"><nav class="weeknav sitenav"><a href="/star-almanack/#almanack-bottom-nav">Almanack Home</a><a href="/projects.html">All Projects</a><a href="/index.html">Main Site</a></nav><nav class="yearnav"><span class="nav-spacer" aria-hidden="true">—</span><a class="current-year" aria-current="page" href="../#almanack-bottom-nav">2025</a><a href="../../2026/#almanack-bottom-nav">2026 →</a></nav><nav class="weeknav week-position" aria-label="Week navigation"><a href="../W25/#almanack-bottom-nav">← W25</a><span class="current-week" aria-current="page">ISO 2025-W26</span><a href="../W27/#almanack-bottom-nav">W27 →</a></nav></div><footer><div class="wrap">© 2026 Alexander Ferrari Miller. All rights reserved.</div></footer><script>
 document.addEventListener('click', function (e) {
   const button = e.target.closest('[data-finder-mode]');
   if (!button) return;
