@@ -1,16 +1,16 @@
 #!/usr/bin/env python3
-"""Populate Caldwell observing events into every generated Star Almanack year.
+"""Populate Caldwell observing events into requested or discovered Star Almanack years.
 
-The Caldwell catalog is permanent fixed-sky infrastructure. Any year that has
-weekly pages under almanack/YYYY or Star-Almanack-Repo/site/YYYY is discovered
-automatically and receives C1-C109 using the same 9 PM LApST visibility rule
-used for Messier and the other fixed-sky objects.
+The Caldwell catalog is permanent fixed-sky infrastructure. When years are
+supplied on the command line, only those editions are updated. With no year
+arguments, existing generated Almanack years are discovered automatically.
 """
 from __future__ import annotations
 
 import csv
 import datetime as dt
 import re
+import sys
 from collections import defaultdict
 from pathlib import Path
 
@@ -61,6 +61,18 @@ def years_present() -> tuple[int, ...]:
             if p.is_dir() and re.fullmatch(r"20\d{2}", p.name) and any(p.glob("W??/index.html")):
                 years.add(int(p.name))
     return tuple(sorted(years))
+
+
+def requested_years() -> tuple[int, ...]:
+    if len(sys.argv) == 1:
+        return years_present()
+    try:
+        years = tuple(dict.fromkeys(int(value) for value in sys.argv[1:]))
+    except ValueError as exc:
+        raise SystemExit("Years must be integers, e.g. 2025 2027") from exc
+    if any(year < 1 for year in years):
+        raise SystemExit("Years must be positive integers")
+    return years
 
 
 def read_catalog() -> list[dict[str, str]]:
@@ -158,7 +170,7 @@ def inject(root: Path, year: int, events: dict[dt.date, list[str]]) -> int:
 def main() -> None:
     catalog = read_catalog()
     finest_ids = finest_caldwell_ids()
-    years = years_present()
+    years = requested_years()
     if not years:
         raise RuntimeError("No generated Almanack years found")
     for year in years:
