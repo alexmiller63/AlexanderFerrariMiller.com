@@ -27,7 +27,7 @@ The generated calendar should use these shared SVG assets rather than literal pl
 Constellations and asterisms are classified from the **median V magnitude of their member stars**.
 
 - For an asterism, use every star in the resolved asterism membership list, not merely convex-hull vertices.
-- For a constellation, use every star that participates in the adopted Martz/MacRobert stick figure, not every star inside the IAU boundary.
+- For a constellation stick-figure component, use every star that participates in that adopted Martz/MacRobert component, not every star inside the IAU boundary.
 - For an even number of member stars, use the ordinary statistical median: the mean of the two middle magnitudes after sorting.
 - The classification is intrinsic to the stellar pattern and is therefore reused across Almanack years; the annual date still comes from the 9:00 PM local-apparent-solar-time transit rule.
 
@@ -41,18 +41,23 @@ These thresholds live in one shared source module so constellation and asterism 
 
 ## Constellation stick-figure source rule
 
-The adopted IAU/MacRobert stick-figure dataset supplies source-defined figures for 86 of the 88 constellations. It explicitly records **Mensa** and **Microscopium** as having **no stick figure**. The Almanack treats that absence as part of the source convention, not as missing data to be filled in.
+The adopted IAU/MacRobert stick-figure dataset contains 89 source sections representing the 88 IAU constellations. The difference is intentional: **Serpens** is one constellation but is represented in two disconnected components, while **Mensa** and **Microscopium** explicitly have **no stick figure** in the adopted source.
 
 Therefore:
 
+- Preserve Serpens as one parent constellation with two separate pattern records: **Serpens Caput** and **Serpens Cauda**.
+- Derive the median V magnitude and observer glyph independently for Serpens Caput and Serpens Cauda.
+- Preserve two independent geometric centers for the two Serpens components; do not collapse them into one synthetic center.
 - Do not invent or supplement stick figures for Mensa or Microscopium merely to force a set of 88 figures.
-- Do not calculate a stick-figure median V magnitude or derived observer glyph for either constellation.
+- Do not calculate a stick-figure median V magnitude or derived observer glyph for either Mensa or Microscopium.
 - Preserve an explicit `no stick figure` state in the constellation data model.
 - Other field guides and atlases may use different constellation stick figures. Those are legitimate alternative conventions, but the Almanack should use one internally consistent convention rather than mix figures from multiple traditions.
 
+The adopted source names its Serpens components `SerpensA` and `SerpensB`. The source membership identifies `SerpensA` with **Serpens Cauda** and `SerpensB` with **Serpens Caput**; the Almanack should retain the astronomical names rather than expose the source's A/B labels.
+
 ### Front-matter note
 
-Preserve a short explanatory front-matter section titled **“What’s with Mensa and Microscopium?”** It should explain that constellation stick figures are conventions rather than official constellation boundaries; different field guides may connect stars differently; the Almanack adopts one consistent IAU/MacRobert convention; and that convention explicitly leaves Mensa and Microscopium without stick figures. The Almanack should preserve that intentional distinction rather than manufacture figures for them.
+Preserve a short explanatory front-matter section titled **“What’s up with Mensa, Microscopium, and Serpens?”** It should explain that constellation stick figures are conventions rather than official constellation boundaries; different field guides may connect stars differently; the Almanack adopts one consistent IAU/MacRobert convention; that convention explicitly leaves Mensa and Microscopium without stick figures; and Serpens is one constellation represented by two disconnected components, Caput and Cauda, which the Almanack keeps separate for their centers and observer classifications.
 
 ## Extended-object classification status
 
