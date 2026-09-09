@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Render Messier calendar events in the Star Almanack canonical form.
 
-M# [, common name], editorial type in constellation — instrument V magnitude — Declination Band Season
+M# [, common name], editorial type in constellation, instrument V magnitude, Declination Band Season
 
 The 2026 calendar is the source of truth for the established observing-aid choice.
 Astronomical identity, magnitude and declination come from fixed-objects.yaml.
@@ -130,7 +130,7 @@ def label(r: dict[str, str], aid: str, day: dt.date) -> str:
     glyph = GLYPHS[aid]
     mag = r["mag"]
     vis = f'{glyph} V {mag}' if mag else glyph
-    return f'{head} — <span class="visibility-magnitude">{vis}</span> — {fixed.declination_band(r["dec_deg"])} {fixed.season_for(day)}'
+    return f'{head}, <span class="visibility-magnitude">{vis}</span>, {fixed.declination_band(r["dec_deg"])} {fixed.season_for(day)}'
 
 
 def events(catalog, aids, year):
