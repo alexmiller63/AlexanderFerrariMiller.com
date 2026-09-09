@@ -78,7 +78,7 @@ jobs:
       - name: Reconcile common names across Messier, Caldwell, and Finest NGC
         run: python tools/reconcile_catalog_common_names.py
       - name: Wire highlighted current-week navigation
-        run: python tools/wire_week_navigation.py
+        run: python tools/wire_week_navigation.py $ALMANACK_YEARS
       - name: Audit true-year parameterization
         run: python tools/audit_true_year_parameterization.py $ALMANACK_YEARS
       - name: Commit generated Almanack foundations
@@ -124,7 +124,7 @@ jobs:
             python tools/populate_caldwell.py
             python tools/populate_finest_ngc.py
             python tools/reconcile_catalog_common_names.py
-            python tools/wire_week_navigation.py
+            python tools/wire_week_navigation.py $ALMANACK_YEARS
             python tools/audit_true_year_parameterization.py $ALMANACK_YEARS
           }
           stage_generated
