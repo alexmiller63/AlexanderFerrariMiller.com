@@ -40,10 +40,8 @@ def wrapped_hour_distance(a: float, b: float) -> float:
 
 
 def year_window(year: int) -> tuple[dt.datetime, dt.datetime]:
-    # Include the half-day on either side needed when rounding an optimum to
-    # the nearest civil date, but never select an annual occurrence from a
-    # different requested year.
-    return dt.datetime(year, 1, 1) - dt.timedelta(hours=12), dt.datetime(year, 12, 31, 23, 59) + dt.timedelta(hours=12)
+    return (dt.datetime(year, 1, 1) - dt.timedelta(hours=12),
+            dt.datetime(year, 12, 31, 23, 59) + dt.timedelta(hours=12))
 
 
 def best_visibility(ra_object_h: float, year: int) -> tuple[dt.datetime, dt.date]:
@@ -65,7 +63,7 @@ def best_visibility(ra_object_h: float, year: int) -> tuple[dt.datetime, dt.date
         if distance < best_distance:
             best_distance, best_time = distance, x
         x += dt.timedelta(minutes=1)
-    rounded_date = (best_time + dt.timedelta(hours=12)).date()
+    rounded_date = best_time.date()
     if rounded_date.year != year:
         raise RuntimeError(f"Best-visibility date escaped requested year {year}: {rounded_date}")
     return best_time, rounded_date
