@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Populate Finest NGC-only observing events into generated Star Almanack years.
+"""Populate Finest NGC-only observing events into requested or discovered Almanack years.
 
 Precedence is Messier -> Caldwell -> Finest NGC. Finest NGC objects already
 represented by Messier or Caldwell are not emitted a second time. Caldwell
@@ -10,6 +10,7 @@ from __future__ import annotations
 import csv
 import datetime as dt
 import re
+import sys
 from collections import defaultdict
 from pathlib import Path
 
@@ -42,6 +43,17 @@ def years_present():
                 if p.is_dir() and re.fullmatch(r"20\d{2}",p.name) and any(p.glob("W??/index.html")):
                     years.add(int(p.name))
     return tuple(sorted(years))
+
+def requested_years():
+    if len(sys.argv)==1:
+        return years_present()
+    try:
+        years=tuple(dict.fromkeys(int(value) for value in sys.argv[1:]))
+    except ValueError as exc:
+        raise SystemExit("Years must be integers, e.g. 2025 2027") from exc
+    if any(year<1 for year in years):
+        raise SystemExit("Years must be positive integers")
+    return years
 
 def rows(path):
     with path.open(newline="",encoding="utf-8") as f: return list(csv.DictReader(f))
@@ -91,7 +103,9 @@ def main():
     catalog=rows(CATALOG); overlap={r["finest_ngc"] for r in rows(CALDWELL)}
     unique=[r for r in catalog if r["finest_ngc"] not in overlap]
     if len(overlap)!=33: raise RuntimeError(f"Expected 33 Caldwell overlaps, found {len(overlap)}")
-    for year in years_present():
+    years=requested_years()
+    if not years: raise RuntimeError("No generated Almanack years found")
+    for year in years:
         data=visibility_rows(unique,year); write_visibility(data,year); e=events_for(data)
         a=inject(SOURCE_SITE,year,e); b=inject(PUBLIC,year,e)
         print(f"{year}: {len(data)} Finest NGC physical rows after Caldwell precedence; updated {a} source + {b} public pages")
