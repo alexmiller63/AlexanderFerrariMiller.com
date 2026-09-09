@@ -221,17 +221,26 @@ def place_bottom_navigation(text: str, year: int) -> str:
 
 def ensure_year_bottom_target(text: str, year: int) -> str:
     """Give year indexes the same first two bottom-nav rows as week pages."""
+    # Preserve the current year-nav before removing a stale bottom wrapper.
+    # Foundation indexes can arrive with their only yearnav inside that wrapper;
+    # in that case we restore it at the top before building the new bottom rows.
+    original_matches = list(YEAR_NAV_RE.finditer(text))
+    if not original_matches:
+        raise RuntimeError("year navigation not found")
+    source_nav = original_matches[0].group(0)
+
     text = BOTTOM_WRAP_RE.sub("", text)
     text = EMPTY_BOTTOM_RE.sub("", text)
     matches = list(YEAR_NAV_RE.finditer(text))
     if not matches:
-        raise RuntimeError("year navigation not found")
+        marker = '<h1'
+        pos = text.find(marker)
+        if pos < 0:
+            raise RuntimeError("year navigation insertion point not found")
+        text = text[:pos] + source_nav + text[pos:]
+        matches = list(YEAR_NAV_RE.finditer(text))
 
     match = matches[-1]
-    nav = match.group(0)
-    # The generated year-index bottom center has historically been a span
-    # (for example, "ISO 2026"). Replace it with the active-year link so the
-    # same current-year styling used by the top row is applied at the bottom.
     children = CHILD_RE.findall(match.group(1))
     left = children[0] if children else '<span class="nav-spacer" aria-hidden="true">—</span>'
     right = children[-1] if len(children) > 1 else '<span class="nav-spacer" aria-hidden="true">—</span>'
@@ -247,7 +256,7 @@ def ensure_year_bottom_target(text: str, year: int) -> str:
         f'{nav}'
         '</div>'
     )
-    return text[:match.start()] + block + text[match.end():]
+    return text[:match.start()] + match.group(0) + block + text[match.end():]
 
 
 def ensure_style(text: str) -> str:
