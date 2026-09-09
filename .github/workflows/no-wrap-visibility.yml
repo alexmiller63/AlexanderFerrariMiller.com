@@ -2,9 +2,17 @@ name: Keep visibility labels together
 
 on:
   workflow_dispatch:
+    inputs:
+      years:
+        description: 'Space-separated ISO years to patch'
+        required: true
+        default: '2025 2026 2027'
   push:
     paths:
       - .github/workflows/no-wrap-visibility.yml
+
+env:
+  ALMANACK_YEARS: ${{ github.event_name == 'workflow_dispatch' && inputs.years || '2025 2026 2027' }}
 
 permissions:
   contents: write
@@ -16,10 +24,17 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Keep fixed-star visibility labels on one line
+        env:
+          ALMANACK_YEARS: ${{ env.ALMANACK_YEARS }}
         run: |
           python - <<'PY'
           from pathlib import Path
+          import os
           import re
+
+          years = tuple(dict.fromkeys(os.environ['ALMANACK_YEARS'].split()))
+          if not years or any(not re.fullmatch(r'\d{4}', year) for year in years):
+              raise SystemExit('Years must be four digits, e.g. 2025 2027')
 
           publisher = Path('Star-Almanack-Repo/publish_weekly_pages.py')
           text = publisher.read_text(encoding='utf-8')
@@ -42,9 +57,12 @@ jobs:
 
           css_marker = 'table.calendar td:nth-child(3) { line-height:1.6; }'
           pattern = re.compile(r'(?<!class="visibility">)(👁 V [+-]?\d+|B V [+-]?\d+)')
-          pages = sorted(Path('almanack/2026').glob('W??/index.html')) + sorted(Path('Star-Almanack-Repo/site/2026').glob('W??/index.html'))
+          pages = []
+          for year in years:
+              pages.extend(sorted((Path('almanack') / year).glob('W??/index.html')))
+              pages.extend(sorted((Path('Star-Almanack-Repo/site') / year).glob('W??/index.html')))
           if not pages:
-              raise SystemExit('No 2026 weekly pages found')
+              raise SystemExit(f'No weekly pages found for requested years: {" ".join(years)}')
 
           changed = 0
           for page in pages:
@@ -60,18 +78,21 @@ jobs:
                   page.write_text(new, encoding='utf-8')
                   changed += 1
 
-          print(f'Patched visibility no-wrap rule in publisher and {changed} weekly HTML files')
+          print(f'Patched visibility no-wrap rule in publisher and {changed} weekly HTML files for {" ".join(years)}')
           PY
 
       - name: Commit changes
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add Star-Almanack-Repo/publish_weekly_pages.py Star-Almanack-Repo/site/2026/W??/index.html almanack/2026/W??/index.html
+          git add Star-Almanack-Repo/publish_weekly_pages.py
+          for year in $ALMANACK_YEARS; do
+            git add "Star-Almanack-Repo/site/$year"/W??/index.html "almanack/$year"/W??/index.html
+          done
           if git diff --cached --quiet; then
             echo 'No visibility wrapping changes.'
             exit 0
           fi
-          git commit -m 'Prevent visibility labels from wrapping'
+          git commit -m "Prevent visibility labels from wrapping for $ALMANACK_YEARS"
           git pull --rebase origin main
           git push
