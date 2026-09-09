@@ -4,13 +4,13 @@
 Policy:
   1. Use Star Almanack's expanded Bayer catalog wherever it contains the member.
   2. Apply explicit ambiguity overrides from asterism-coordinate-resolution.yaml.
-  3. Resolve only the remaining objects through CDS Sesame/SIMBAD.
+  3. Resolve remaining stellar designations against the pinned HYG v4.1 source.
+  4. Use CDS Sesame/SIMBAD only as a coordinate fallback when HYG cannot resolve a member.
 
-The output is the single resolved member dataset consumed downstream.  It carries
-coordinates and, when supplied by the authoritative stellar catalog, visual
-magnitude together with explicit provenance.  Downstream geometry and display
-code must derive values from this file rather than independently re-resolving
-stellar facts.
+The output is the single resolved member dataset consumed downstream. It carries
+coordinates and visual magnitude together with explicit provenance. Downstream
+geometry, median-magnitude, and display code must derive values from this file
+rather than independently re-resolving stellar facts.
 """
 from __future__ import annotations
 
@@ -31,6 +31,7 @@ DEFAULT_OVERRIDES = ROOT / "asterism-coordinate-resolution.yaml"
 DEFAULT_BAYER = ROOT / "expanded-bayer-stars.csv"
 DEFAULT_OUTPUT = ROOT / "asterism-member-coordinates.csv"
 SESAME = "https://cds.unistra.fr/cgi-bin/nph-sesame/-oxp/SNV?{}"
+HYG_PIN = "astronexus/HYG-Database@3bf37f4b2d5460e1278286320d1d62fab9b493c1:hyg/CURRENT/hygdata_v41.csv"
 
 GREEK_TO_CODE = {
     "Alpha": "Alp", "Beta": "Bet", "Gamma": "Gam", "Delta": "Del",
@@ -47,6 +48,7 @@ CONSTELLATION_TO_ABBR = {
     "Cygni": "Cyg", "Herculis": "Her", "Leonis": "Leo", "Orionis": "Ori",
     "Piscium": "Psc", "Sagittarii": "Sgr", "Scorpii": "Sco", "Tauri": "Tau",
     "Ursae Majoris": "UMa", "Ursae Minoris": "UMi", "Virginis": "Vir",
+    "Vulpeculae": "Vul",
 }
 
 
@@ -85,18 +87,100 @@ def load_bayer(path: Path):
     return proper, keyed
 
 
+def designation_parts(name: str):
+    for constellation, abbr in sorted(CONSTELLATION_TO_ABBR.items(), key=lambda x: -len(x[0])):
+        suffix = " " + constellation
+        if name.endswith(suffix):
+            return name[:-len(suffix)].strip(), abbr
+    return None, None
+
+
 def bayer_lookup(name: str, proper, keyed):
     p = proper.get(norm_name(name))
     if p:
         return p
-    for constellation, abbr in sorted(CONSTELLATION_TO_ABBR.items(), key=lambda x: -len(x[0])):
-        suffix = " " + constellation
-        if name.endswith(suffix):
-            greek = name[:-len(suffix)]
+    designation, abbr = designation_parts(name)
+    if not designation:
+        return None
+    match = re.fullmatch(r"([A-Za-z]+)(\d*)", designation)
+    if not match:
+        return None
+    greek, component = match.groups()
+    code = GREEK_TO_CODE.get(greek)
+    if not code:
+        return None
+    return keyed.get((f"{code}{component}", abbr))
+
+
+def load_hyg(path: Path):
+    rows = list(csv.DictReader(path.open(newline="", encoding="utf-8-sig")))
+    required = {"id", "hip", "hd", "hr", "proper", "ra", "dec", "mag", "bayer", "flam", "con"}
+    missing = required.difference(rows[0].keys() if rows else set())
+    if missing:
+        raise RuntimeError(f"HYG input missing columns: {sorted(missing)}")
+
+    indexes = {
+        "proper": {}, "bayer": {}, "flam": {}, "hip": {}, "hd": {}, "hr": {}, "hyg": {},
+    }
+    for row in rows:
+        proper = (row.get("proper") or "").strip()
+        con = (row.get("con") or "").strip()
+        bayer = (row.get("bayer") or "").strip()
+        flam = (row.get("flam") or "").strip()
+        if proper:
+            indexes["proper"].setdefault(norm_name(proper), row)
+        if bayer and con:
+            indexes["bayer"].setdefault((bayer, con), row)
+        if flam and con:
+            indexes["flam"].setdefault((flam, con), row)
+        for field in ("hip", "hd", "hr", "id"):
+            value = (row.get(field) or "").strip()
+            if value:
+                key = "hyg" if field == "id" else field
+                indexes[key].setdefault(value, row)
+    return indexes
+
+
+def hyg_lookup(name: str, indexes):
+    direct = indexes["proper"].get(norm_name(name))
+    if direct:
+        return direct
+
+    match = re.fullmatch(r"(?i)(HIP|HD|HR|HYG)\s*(\d+)", name.strip())
+    if match:
+        catalog, number = match.groups()
+        return indexes[catalog.lower()].get(number)
+
+    designation, abbr = designation_parts(name)
+    if not designation:
+        # Also accept compact modern abbreviations used by explicit overrides.
+        short = re.fullmatch(r"([A-Za-z]+)(\d*)\s+([A-Z][A-Za-z]{2})", name.strip())
+        if short:
+            greek, component, abbr = short.groups()
             code = GREEK_TO_CODE.get(greek)
             if code:
-                return keyed.get((code, abbr))
+                return indexes["bayer"].get((f"{code}{component}", abbr))
+        return None
+
+    flamsteed = re.fullmatch(r"(\d+)", designation)
+    if flamsteed:
+        return indexes["flam"].get((flamsteed.group(1), abbr))
+
+    bayer = re.fullmatch(r"([A-Za-z]+)(\d*)", designation)
+    if bayer:
+        greek, component = bayer.groups()
+        code = GREEK_TO_CODE.get(greek)
+        if code:
+            return indexes["bayer"].get((f"{code}{component}", abbr))
     return None
+
+
+def hyg_identity(row):
+    for field, label in (("hip", "HIP"), ("hd", "HD"), ("hr", "HR"), ("id", "HYG")):
+        value = (row.get(field) or "").strip()
+        if value:
+            return f"{label} {value}"
+    return ""
 
 
 def sesame_lookup(name: str, timeout: float = 30.0):
@@ -119,6 +203,7 @@ def main():
     ap.add_argument("--asterisms", type=Path, default=DEFAULT_ASTERISMS)
     ap.add_argument("--overrides", type=Path, default=DEFAULT_OVERRIDES)
     ap.add_argument("--bayer", type=Path, default=DEFAULT_BAYER)
+    ap.add_argument("--hyg", type=Path, required=True, help="Pinned HYG v4.1 CSV used as the authoritative stellar source")
     ap.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
     ap.add_argument("--delay", type=float, default=0.15, help="seconds between Sesame requests")
     args = ap.parse_args()
@@ -127,9 +212,11 @@ def main():
     overrides_doc = yaml.safe_load(args.overrides.read_text(encoding="utf-8"))
     overrides = {r["designation"]: r["resolved_to"] for r in overrides_doc.get("resolutions", [])}
     proper, keyed = load_bayer(args.bayer)
+    hyg = load_hyg(args.hyg)
 
     out = []
     cache = {}
+    unresolved_magnitudes = []
     for asterism in catalog:
         for member in asterism["members"]:
             query_name = overrides.get(member, member)
@@ -144,15 +231,30 @@ def main():
                 magnitude_source = source if magnitude else ""
                 magnitude_source_id = source_id if magnitude else ""
             else:
-                if query_name not in cache:
-                    cache[query_name] = sesame_lookup(query_name)
-                    time.sleep(args.delay)
-                ra_h, dec_deg, resolved, source_url = cache[query_name]
-                source = "CDS Sesame/SIMBAD"
-                source_id = source_url
-                magnitude = ""
-                magnitude_source = ""
-                magnitude_source_id = ""
+                hrow = hyg_lookup(query_name, hyg)
+                if hrow is not None:
+                    ra_h = float(hrow["ra"])
+                    dec_deg = float(hrow["dec"])
+                    resolved = (hrow.get("proper") or "").strip() or query_name
+                    source = "Pinned HYG v4.1"
+                    source_id = hyg_identity(hrow)
+                    magnitude = (hrow.get("mag") or "").strip()
+                    magnitude_source = f"Pinned HYG v4.1 ({HYG_PIN})" if magnitude else ""
+                    magnitude_source_id = source_id if magnitude else ""
+                else:
+                    if query_name not in cache:
+                        cache[query_name] = sesame_lookup(query_name)
+                        time.sleep(args.delay)
+                    ra_h, dec_deg, resolved, source_url = cache[query_name]
+                    source = "CDS Sesame/SIMBAD"
+                    source_id = source_url
+                    magnitude = ""
+                    magnitude_source = ""
+                    magnitude_source_id = ""
+
+            if not magnitude or not magnitude_source or not magnitude_source_id:
+                unresolved_magnitudes.append(f"{asterism['name']}: {member} -> {query_name}")
+
             out.append({
                 "asterism": asterism["name"],
                 "member": member,
@@ -176,7 +278,15 @@ def main():
         w = csv.DictWriter(f, fieldnames=fields)
         w.writeheader()
         w.writerows(out)
+
+    if unresolved_magnitudes:
+        joined = "\n  - ".join(unresolved_magnitudes)
+        raise SystemExit(
+            "Magnitude provenance incomplete; refusing to produce median-ready member data:\n  - " + joined
+        )
+
     print(f"Wrote {len(out)} resolved member rows for {len(catalog)} asterisms to {args.output}")
+    print("PASS: every asterism member has numeric stellar magnitude provenance")
 
 
 if __name__ == "__main__":
