@@ -1,12 +1,7 @@
-name: Populate 2026 ephemeris
+name: Legacy 2026 Ephemeris (manual compatibility)
 
 on:
   workflow_dispatch:
-  push:
-    paths:
-      - '.github/workflows/populate-2026-ephemeris.yml'
-      - 'tools/populate_2026_ephemeris.py'
-      - 'tools/populate-2026-ephemeris-trigger.txt'
 
 permissions:
   contents: write
@@ -14,20 +9,22 @@ permissions:
 jobs:
   populate:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
-      - name: Populate 2026 weekly ephemerides
-        run: python tools/populate_2026_ephemeris.py
-      - name: Commit generated pages
+
+      - name: Populate canonical 2026 ephemeris through parameterized generator
+        run: python tools/populate_ephemeris.py 2026
+
+      - name: Commit canonical 2026 pages
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add almanack/2026
+          git add almanack/2026 Star-Almanack-Repo/site/2026
           if git diff --cached --quiet; then
-            echo 'No page changes'
+            echo 'No 2026 ephemeris changes'
             exit 0
           fi
-          git commit -m 'Populate 2026 weekly ephemeris with Pluto and beta'
+          git commit -m 'Regenerate canonical 2026 ephemeris'
           git pull --rebase origin main
           git push
