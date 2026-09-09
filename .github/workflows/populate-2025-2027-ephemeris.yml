@@ -71,10 +71,10 @@ jobs:
         run: python tools/populate_constellations.py $ALMANACK_YEARS
       - name: Populate core asterisms
         run: python tools/populate_asterisms.py $ALMANACK_YEARS
-      - name: Populate Caldwell C1-C109 in every generated year
-        run: python tools/populate_caldwell.py
+      - name: Populate Caldwell C1-C109 in requested years
+        run: python tools/populate_caldwell.py $ALMANACK_YEARS
       - name: Populate Finest NGC objects not already represented by Caldwell
-        run: python tools/populate_finest_ngc.py
+        run: python tools/populate_finest_ngc.py $ALMANACK_YEARS
       - name: Reconcile common names across Messier, Caldwell, and Finest NGC
         run: python tools/reconcile_catalog_common_names.py
       - name: Wire highlighted current-week navigation
@@ -101,14 +101,10 @@ jobs:
                 "Star-Almanack-Repo/generated/expanded-bayer-visibility-$year.csv" \
                 "Star-Almanack-Repo/generated/bright-star-visibility-$year.csv" \
                 "Star-Almanack-Repo/generated/messier-visibility-$year.csv" \
-                "Star-Almanack-Repo/generated/constellation-observance-$year.csv"
+                "Star-Almanack-Repo/generated/constellation-observance-$year.csv" \
+                "Star-Almanack-Repo/generated/caldwell-visibility-$year.csv" \
+                "Star-Almanack-Repo/generated/finest-ngc-visibility-$year.csv"
             done
-            # These builders intentionally refresh every generated year they discover.
-            git add \
-              almanack/20?? \
-              Star-Almanack-Repo/site/20?? \
-              Star-Almanack-Repo/generated/caldwell-visibility-*.csv \
-              Star-Almanack-Repo/generated/finest-ngc-visibility-*.csv
           }
           regenerate() {
             regression
@@ -121,8 +117,8 @@ jobs:
             python tools/standardize_messier_calendar.py $ALMANACK_YEARS
             python tools/populate_constellations.py $ALMANACK_YEARS
             python tools/populate_asterisms.py $ALMANACK_YEARS
-            python tools/populate_caldwell.py
-            python tools/populate_finest_ngc.py
+            python tools/populate_caldwell.py $ALMANACK_YEARS
+            python tools/populate_finest_ngc.py $ALMANACK_YEARS
             python tools/reconcile_catalog_common_names.py
             python tools/wire_week_navigation.py $ALMANACK_YEARS
             python tools/audit_true_year_parameterization.py $ALMANACK_YEARS
