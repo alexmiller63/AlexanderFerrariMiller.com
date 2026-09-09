@@ -1,0 +1,92 @@
+name: Build pattern magnitudes
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - fix/almanack-observer-classification
+    paths:
+      - 'Star-Almanack-Repo/build_pattern_magnitudes.py'
+      - 'Star-Almanack-Repo/asterism-member-coordinates.csv'
+      - 'tools/observer_classification.py'
+      - '.github/workflows/build-pattern-magnitudes.yml'
+
+permissions:
+  contents: write
+
+env:
+  HYG_COMMIT: 3bf37f4b2d5460e1278286320d1d62fab9b493c1
+  FIGURE_COMMIT: 75d29c207bbd752023c447ddd1f9f4ff0eb47538
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Download pinned HYG v4.1 and IAU/MacRobert figure data
+        run: |
+          set -euo pipefail
+          curl --fail --location --retry 3 \
+            --output /tmp/hygdata_v41.csv \
+            "https://raw.githubusercontent.com/astronexus/HYG-Database/${HYG_COMMIT}/hyg/CURRENT/hygdata_v41.csv"
+          curl --fail --location --retry 3 \
+            --output /tmp/constellation_lines_iau.dat \
+            "https://raw.githubusercontent.com/dcf21/constellation-stick-figures/${FIGURE_COMMIT}/constellation_lines_iau.dat"
+
+      - name: Build member-level magnitude provenance and pattern summaries
+        run: |
+          python Star-Almanack-Repo/build_pattern_magnitudes.py \
+            /tmp/hygdata_v41.csv \
+            /tmp/constellation_lines_iau.dat
+
+      - name: Validate source-grounded outputs
+        run: |
+          python - <<'PY'
+          import csv
+
+          with open('Star-Almanack-Repo/constellation-pattern-magnitudes.csv', newline='', encoding='utf-8') as f:
+              c = list(csv.DictReader(f))
+          assert len(c) == 88, len(c)
+          nofig = {r['constellation'] for r in c if r['figure_status'] == 'no stick figure'}
+          assert nofig == {'Mensa', 'Microscopium'}, nofig
+          assert sum(r['figure_status'] == 'stick figure' for r in c) == 86
+          for r in c:
+              if r['figure_status'] == 'stick figure':
+                  assert int(r['member_count']) > 0, r
+                  assert r['median_v_mag'], r
+                  assert r['observer_class'] in {'naked_eye', 'binoculars', 'telescope'}, r
+              else:
+                  assert not r['median_v_mag'] and not r['observer_class'], r
+
+          with open('Star-Almanack-Repo/asterism-pattern-magnitudes.csv', newline='', encoding='utf-8') as f:
+              a = list(csv.DictReader(f))
+          assert len(a) == 25, len(a)
+          for r in a:
+              assert int(r['member_count']) > 0, r
+              assert r['observer_class'] in {'naked_eye', 'binoculars', 'telescope'}, r
+          print('PASS: 86 constellation figures + 2 explicit no-figure states + 25 asterisms')
+          PY
+
+      - name: Commit generated pattern data
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add \
+            Star-Almanack-Repo/constellation-stick-figure-members.csv \
+            Star-Almanack-Repo/constellation-pattern-magnitudes.csv \
+            Star-Almanack-Repo/asterism-member-magnitudes.csv \
+            Star-Almanack-Repo/asterism-pattern-magnitudes.csv
+          if git diff --cached --quiet; then
+            echo 'Pattern magnitude outputs unchanged.'
+            exit 0
+          fi
+          git commit -m 'Generate source-grounded pattern magnitudes'
+          git push
