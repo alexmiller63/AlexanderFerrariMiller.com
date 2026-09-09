@@ -1,14 +1,16 @@
 #!/usr/bin/env python3
-"""Build the resolved coordinate cross-match for the 25 core asterisms.
+"""Build the resolved stellar cross-match for the 25 core asterisms.
 
 Policy:
   1. Use Star Almanack's expanded Bayer catalog wherever it contains the member.
   2. Apply explicit ambiguity overrides from asterism-coordinate-resolution.yaml.
   3. Resolve only the remaining objects through CDS Sesame/SIMBAD.
 
-The output is a pinned CSV consumed by compute_asterism_geometry_2026.py.
-J2000/ICRS decimal coordinates are written with their source and resolved object
-name so every geometry vertex remains inspectable.
+The output is the single resolved member dataset consumed downstream.  It carries
+coordinates and, when supplied by the authoritative stellar catalog, visual
+magnitude together with explicit provenance.  Downstream geometry and display
+code must derive values from this file rather than independently re-resolving
+stellar facts.
 """
 from __future__ import annotations
 
@@ -53,16 +55,10 @@ def norm_name(value: str) -> str:
 
 
 def load_asterisms(path: Path):
-    """Read only the stable name/status/members fields from the catalog.
-
-    The catalog is intentionally human-readable and contains prose notes with
-    punctuation that need not obey strict YAML scalar quoting. Geometry needs
-    only these three machine fields, so parse them directly and fail closed.
-    """
+    """Read only the stable name/status/members fields from the catalog."""
     entries = []
     current = None
     for raw in path.read_text(encoding="utf-8").splitlines():
-        line = raw.strip()
         if raw.startswith("  - name: "):
             if current is not None:
                 entries.append(current)
@@ -144,6 +140,9 @@ def main():
                 resolved = row.get("proper") or row.get("bayer") or member
                 source = "Star Almanack expanded-bayer-stars.csv"
                 source_id = f"HIP {row['hip']}" if row.get("hip") else (f"HD {row['hd']}" if row.get("hd") else "")
+                magnitude = row.get("mag", "").strip()
+                magnitude_source = source if magnitude else ""
+                magnitude_source_id = source_id if magnitude else ""
             else:
                 if query_name not in cache:
                     cache[query_name] = sesame_lookup(query_name)
@@ -151,23 +150,33 @@ def main():
                 ra_h, dec_deg, resolved, source_url = cache[query_name]
                 source = "CDS Sesame/SIMBAD"
                 source_id = source_url
+                magnitude = ""
+                magnitude_source = ""
+                magnitude_source_id = ""
             out.append({
                 "asterism": asterism["name"],
                 "member": member,
                 "resolved_object": resolved,
                 "ra_h": f"{ra_h:.10f}",
                 "dec_deg": f"{dec_deg:.10f}",
+                "mag": magnitude,
                 "coordinate_source": source,
-                "source_id": source_id,
+                "coordinate_source_id": source_id,
+                "magnitude_source": magnitude_source,
+                "magnitude_source_id": magnitude_source_id,
                 "override": query_name if query_name != member else "",
             })
 
-    fields = ["asterism", "member", "resolved_object", "ra_h", "dec_deg", "coordinate_source", "source_id", "override"]
+    fields = [
+        "asterism", "member", "resolved_object", "ra_h", "dec_deg", "mag",
+        "coordinate_source", "coordinate_source_id", "magnitude_source",
+        "magnitude_source_id", "override",
+    ]
     with args.output.open("w", newline="", encoding="utf-8") as f:
         w = csv.DictWriter(f, fieldnames=fields)
         w.writeheader()
         w.writerows(out)
-    print(f"Wrote {len(out)} member rows for {len(catalog)} asterisms to {args.output}")
+    print(f"Wrote {len(out)} resolved member rows for {len(catalog)} asterisms to {args.output}")
 
 
 if __name__ == "__main__":
