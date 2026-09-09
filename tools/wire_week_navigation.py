@@ -219,7 +219,9 @@ def place_bottom_navigation(text: str, year: int) -> str:
     return text.replace('</aside>', '</aside>' + block, 1)
 
 
-def ensure_year_bottom_target(text: str) -> str:
+def ensure_year_bottom_target(text: str, year: int) -> str:
+    """Give year indexes the same first two bottom-nav rows as week pages."""
+    text = BOTTOM_WRAP_RE.sub("", text)
     text = EMPTY_BOTTOM_RE.sub("", text)
     matches = list(YEAR_NAV_RE.finditer(text))
     if not matches:
@@ -227,12 +229,25 @@ def ensure_year_bottom_target(text: str) -> str:
 
     match = matches[-1]
     nav = match.group(0)
-    nav = nav.replace('<nav class="yearnav">', f'<nav class="yearnav" id="{BOTTOM_ID}">', 1)
+    # The generated year-index bottom center has historically been a span
+    # (for example, "ISO 2026"). Replace it with the active-year link so the
+    # same current-year styling used by the top row is applied at the bottom.
+    children = CHILD_RE.findall(match.group(1))
+    left = children[0] if children else '<span class="nav-spacer" aria-hidden="true">—</span>'
+    right = children[-1] if len(children) > 1 else '<span class="nav-spacer" aria-hidden="true">—</span>'
+    center = f'<a class="current-year" aria-current="page" href="./#{BOTTOM_ID}">ISO {year}</a>'
+    nav = f'<nav class="yearnav">{left}{center}{right}</nav>'
     nav = HREF_RE.sub(
         lambda m: f'href="{m.group(1).split("#", 1)[0]}#{BOTTOM_ID}"',
         nav,
     )
-    return text[:match.start()] + nav + text[match.end():]
+    block = (
+        f'<div class="almanack-bottom-nav-wrap" id="{BOTTOM_ID}">'
+        f'{bottom_site_nav(text)}'
+        f'{nav}'
+        '</div>'
+    )
+    return text[:match.start()] + block + text[match.end():]
 
 
 def ensure_style(text: str) -> str:
@@ -272,7 +287,7 @@ def main() -> None:
             if index_path.exists():
                 original = index_path.read_text(encoding='utf-8')
                 updated = ensure_style(rewrite_year_nav(original, year, weekly_page=False))
-                updated = ensure_year_bottom_target(updated)
+                updated = ensure_year_bottom_target(updated, year)
                 if updated != original:
                     index_path.write_text(updated, encoding='utf-8')
                     changed += 1
