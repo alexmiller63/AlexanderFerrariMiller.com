@@ -5,6 +5,7 @@ on:
   push:
     paths:
       - '.github/workflows/populate-2025-2027-ephemeris.yml'
+      - 'tools/audit_true_year_parameterization.py'
       - 'tools/clean_event_cells.py'
       - 'tools/populate_calendar.py'
       - 'tools/populate_meteor_showers.py'
@@ -70,6 +71,8 @@ jobs:
         run: python tools/reconcile_catalog_common_names.py
       - name: Wire highlighted current-week navigation
         run: python tools/wire_week_navigation.py
+      - name: Audit true-year parameterization
+        run: python tools/audit_true_year_parameterization.py 2025 2027
       - name: Commit generated Almanack foundations
         run: |
           set -euo pipefail
@@ -108,6 +111,7 @@ jobs:
             python tools/populate_finest_ngc.py
             python tools/reconcile_catalog_common_names.py
             python tools/wire_week_navigation.py
+            python tools/audit_true_year_parameterization.py 2025 2027
           }
           stage_generated
           if git diff --cached --quiet; then echo 'No Almanack foundation changes'; exit 0; fi
