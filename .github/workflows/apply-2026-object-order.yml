@@ -1,4 +1,4 @@
-name: Apply 2026 Object Order
+name: Apply Almanack Object Order
 
 on:
   push:
@@ -8,9 +8,17 @@ on:
       - Star-Almanack-Repo/enrich_stellar_entries.py
       - .github/workflows/apply-2026-object-order.yml
   workflow_dispatch:
+    inputs:
+      years:
+        description: Space-separated ISO years to standardize
+        required: false
+        default: '2025 2026 2027'
 
 permissions:
   contents: write
+
+env:
+  ALMANACK_YEARS: ${{ github.event_name == 'workflow_dispatch' && inputs.years || '2025 2026 2027' }}
 
 jobs:
   apply:
@@ -19,16 +27,19 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Standardize calendar object order
-        run: python tools/apply_2026_object_order.py
+        run: python tools/apply_2026_object_order.py $ALMANACK_YEARS
 
       - name: Validate calendar examples
         run: |
-          python - <<'PY'
+          ALMANACK_YEARS="$ALMANACK_YEARS" python - <<'PY'
+          import os
           from pathlib import Path
 
+          years = [int(y) for y in os.environ['ALMANACK_YEARS'].split()]
           pages = ''.join(
               p.read_text(encoding='utf-8')
-              for p in sorted(Path('almanack/2026').glob('W??/index.html'))
+              for year in years
+              for p in sorted((Path('almanack') / str(year)).glob('W??/index.html'))
           )
 
           expected = [
@@ -41,23 +52,14 @@ jobs:
           ]
           forbidden = [
               'Great Pegasus Globular',
-              'Tropical — Spring',
-              'Northern — Spring',
-              'Southern — Spring',
-              'Tropical — Summer',
-              'Northern — Summer',
-              'Southern — Summer',
-              'Tropical — Autumn',
-              'Northern — Autumn',
-              'Southern — Autumn',
-              'Tropical — Winter',
-              'Northern — Winter',
-              'Southern — Winter',
+              'Tropical — Spring', 'Northern — Spring', 'Southern — Spring',
+              'Tropical — Summer', 'Northern — Summer', 'Southern — Summer',
+              'Tropical — Autumn', 'Northern — Autumn', 'Southern — Autumn',
+              'Tropical — Winter', 'Northern — Winter', 'Southern — Winter',
           ]
 
           missing = [item for item in expected if item not in pages]
           present_forbidden = [item for item in forbidden if item in pages]
-
           if missing or present_forbidden:
               if missing:
                   print('Missing expected calendar text:')
@@ -68,19 +70,21 @@ jobs:
                   for item in present_forbidden:
                       print(f'  - {item}')
               raise SystemExit(1)
-
-          print('Validated calendar labels and Declination Band + Season formatting')
+          print(f"Validated calendar labels and Declination Band + Season formatting for {years}")
           PY
 
       - name: Commit standardized pages
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add Star-Almanack-Repo/almanack-expanded.md Star-Almanack-Repo/site/2026/W??/index.html almanack/2026/W??/index.html
+          git add Star-Almanack-Repo/almanack-expanded.md
+          for year in $ALMANACK_YEARS; do
+            git add "Star-Almanack-Repo/site/$year"/W??/index.html "almanack/$year"/W??/index.html
+          done
           if git diff --cached --quiet; then
             echo "No object-order changes."
             exit 0
           fi
-          git commit -m "Standardize 2026 fixed-object calendar order"
+          git commit -m "Standardize Almanack fixed-object calendar order"
           git pull --rebase origin main
           git push origin main
