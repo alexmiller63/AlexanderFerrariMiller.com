@@ -62,7 +62,7 @@ jobs:
       - name: Populate weekly Solar-System ephemerides
         run: python tools/populate_ephemeris.py $ALMANACK_YEARS
       - name: Wire Solar-System ephemeris notation controls
-        run: python tools/wire_ephemeris_notation.py
+        run: python tools/wire_ephemeris_notation.py $ALMANACK_YEARS
       - name: Populate fixed-sky visibility events
         run: python tools/populate_fixed_sky.py $ALMANACK_YEARS
       - name: Standardize Messier labels, instruments, magnitudes, declination bands, and seasons
@@ -116,7 +116,7 @@ jobs:
             python tools/populate_calendar.py $ALMANACK_YEARS
             python tools/populate_meteor_showers.py $ALMANACK_YEARS
             python tools/populate_ephemeris.py $ALMANACK_YEARS
-            python tools/wire_ephemeris_notation.py
+            python tools/wire_ephemeris_notation.py $ALMANACK_YEARS
             python tools/populate_fixed_sky.py $ALMANACK_YEARS
             python tools/standardize_messier_calendar.py $ALMANACK_YEARS
             python tools/populate_constellations.py $ALMANACK_YEARS
