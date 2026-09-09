@@ -4,12 +4,12 @@
 from __future__ import annotations
 
 import re
+import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 BASES = (ROOT / "almanack", ROOT / "Star-Almanack-Repo" / "site")
-YEARS = (2025, 2026, 2027)
 BOTTOM_ID = "almanack-bottom-nav"
 
 STYLE = """<style id="week-position-nav-css">
@@ -75,6 +75,26 @@ EMPTY_BOTTOM_RE = re.compile(r'<div id="almanack-bottom-nav"></div>')
 CHILD_RE = re.compile(r'(<a\b.*?</a>|<span\b.*?</span>)', re.S)
 STYLE_RE = re.compile(r'<style id="week-position-nav-css">.*?</style>', re.S)
 HREF_RE = re.compile(r'href="([^"]+)"')
+
+
+def requested_years() -> tuple[int, ...]:
+    if len(sys.argv) > 1:
+        try:
+            years = tuple(dict.fromkeys(int(arg) for arg in sys.argv[1:]))
+        except ValueError as exc:
+            raise SystemExit("Years must be integers, e.g. 2025 2027") from exc
+        if any(year < 1 for year in years):
+            raise SystemExit("Years must be positive integers")
+        return years
+
+    discovered: set[int] = set()
+    for base in BASES:
+        if not base.exists():
+            continue
+        for path in base.iterdir():
+            if path.is_dir() and re.fullmatch(r"\d{4}", path.name):
+                discovered.add(int(path.name))
+    return tuple(sorted(discovered))
 
 
 def href_of(tag: str) -> str:
@@ -221,9 +241,6 @@ def place_bottom_navigation(text: str, year: int) -> str:
 
 def ensure_year_bottom_target(text: str, year: int) -> str:
     """Give year indexes the same first two bottom-nav rows as week pages."""
-    # Preserve the current year-nav before removing a stale bottom wrapper.
-    # Foundation indexes can arrive with their only yearnav inside that wrapper;
-    # in that case we restore it at the top before building the new bottom rows.
     original_matches = list(YEAR_NAV_RE.finditer(text))
     if not original_matches:
         raise RuntimeError("year navigation not found")
@@ -279,8 +296,9 @@ def highlight_current_week_on_index(text: str, year: int, week: int) -> str:
 
 def main() -> None:
     changed = 0
+    years = requested_years()
     for base in BASES:
-        for year in YEARS:
+        for year in years:
             for path in sorted((base / str(year)).glob('W??/index.html')):
                 week = int(path.parent.name[1:])
                 original = path.read_text(encoding='utf-8')
@@ -303,7 +321,7 @@ def main() -> None:
 
     today = datetime.now(timezone.utc).date().isocalendar()
     current_year, current_week = today.year, today.week
-    if current_year in YEARS:
+    if current_year in years:
         for base in BASES:
             index_path = base / str(current_year) / 'index.html'
             if index_path.exists():
@@ -313,7 +331,7 @@ def main() -> None:
                     index_path.write_text(updated, encoding='utf-8')
                     changed += 1
 
-    print(f"Updated {changed} Almanack navigation page(s).")
+    print(f"Updated {changed} Almanack navigation page(s) for: {' '.join(map(str, years))}.")
 
 
 if __name__ == '__main__':
