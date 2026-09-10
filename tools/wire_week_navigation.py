@@ -210,8 +210,8 @@ def ensure_year_bottom_target(text: str, year: int) -> str:
     text = EMPTY_BOTTOM_RE.sub("", text)
     block = (
         f'<div class="almanack-bottom-nav-wrap" id="{BOTTOM_ID}">'
-        f'{build_year_nav(year, weekly_page=False, bottom=True)}'
         f'{site_nav}'
+        f'{build_year_nav(year, weekly_page=False, bottom=True)}'
         '</div>'
     )
     if '</aside>' in text:
