@@ -22,10 +22,18 @@ from __future__ import annotations
 
 import csv
 import re
+import sys
 from collections import defaultdict
 from datetime import date
 from decimal import Decimal, InvalidOperation, ROUND_HALF_UP
 from pathlib import Path
+
+REPO_ROOT = Path(__file__).resolve().parents[1]
+TOOLS = REPO_ROOT / "tools"
+if str(TOOLS) not in sys.path:
+    sys.path.insert(0, str(TOOLS))
+
+from star_almanack_astronomy import declination_band, season_for
 
 ROOT = Path(__file__).parent
 TARGET = ROOT / "almanack-expanded.md"
@@ -56,26 +64,6 @@ ROW_RE = re.compile(
 MONTHS = {m: i for i, m in enumerate(
     ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"], 1
 )}
-
-
-def declination_band(dec_deg: str) -> str:
-    dec = float(dec_deg)
-    if dec > 23.44:
-        return "Northern"
-    if dec < -23.44:
-        return "Southern"
-    return "Tropical"
-
-
-def season_for(d: date) -> str:
-    md = (d.month, d.day)
-    if (3, 20) <= md < (6, 21):
-        return "Spring"
-    if (6, 21) <= md < (9, 22):
-        return "Summer"
-    if (9, 22) <= md < (12, 21):
-        return "Autumn"
-    return "Winter"
 
 
 def equipment_for(magnitude: str) -> str:
