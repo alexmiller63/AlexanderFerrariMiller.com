@@ -69,6 +69,7 @@ STYLE = """<style id="week-position-nav-css">
 
 WEEK_NAV_RE = re.compile(r'<nav class="weeknav(?: week-position)?"(?: id="(?:week-bottom-nav|almanack-bottom-nav)")?(?: aria-label="Week navigation")?>(.*?)</nav>', re.S)
 YEAR_NAV_RE = re.compile(r'<nav class="yearnav"(?: id="almanack-bottom-nav")?>(.*?)</nav>', re.S)
+SITE_NAV_RE = re.compile(r'<nav class="weeknav sitenav">.*?</nav>', re.S)
 BOTTOM_WRAP_RE = re.compile(r'<div class="almanack-bottom-nav-wrap" id="almanack-bottom-nav">.*?</div>', re.S)
 EMPTY_BOTTOM_RE = re.compile(r'<div id="almanack-bottom-nav"></div>')
 STYLE_RE = re.compile(r'<style id="week-position-nav-css">.*?</style>', re.S)
@@ -174,20 +175,45 @@ def rewrite_week_nav(text: str, year: int, week: int) -> str:
     return WEEK_NAV_RE.sub(replacement, text)
 
 
+def top_site_nav(text: str) -> str:
+    match = SITE_NAV_RE.search(text)
+    if not match:
+        raise RuntimeError("site navigation not found")
+    return match.group(0)
+
+
+def bottom_site_nav(text: str) -> str:
+    nav = top_site_nav(text)
+    return re.sub(r'href="([^"]*)"', lambda m: f'href="{m.group(1)}#{BOTTOM_ID}"' if m.group(1) and '#' not in m.group(1) else m.group(0), nav)
+
+
 def place_bottom_navigation(text: str, year: int, week: int) -> str:
-    """Replace the bottom navigation with year/week controls only; site navigation stays top-only."""
+    """Create exactly one complete bottom navigation set for a week page."""
+    site_nav = bottom_site_nav(text)
     text = BOTTOM_WRAP_RE.sub("", text)
-    block = f'<div class="almanack-bottom-nav-wrap" id="{BOTTOM_ID}">' + build_year_nav(year, weekly_page=True, bottom=True) + build_week_nav(year, week, bottom=True) + '</div>'
+    block = (
+        f'<div class="almanack-bottom-nav-wrap" id="{BOTTOM_ID}">'
+        f'{site_nav}'
+        f'{build_year_nav(year, weekly_page=True, bottom=True)}'
+        f'{build_week_nav(year, week, bottom=True)}'
+        '</div>'
+    )
     if '</aside>' not in text:
         raise RuntimeError("notation legend not found")
     return text.replace('</aside>', '</aside>' + block, 1)
 
 
 def ensure_year_bottom_target(text: str, year: int) -> str:
-    """Give year indexes canonical year navigation at the bottom without duplicating site navigation."""
+    """Create exactly one complete bottom navigation set for a year page."""
+    site_nav = bottom_site_nav(text)
     text = BOTTOM_WRAP_RE.sub("", text)
     text = EMPTY_BOTTOM_RE.sub("", text)
-    block = f'<div class="almanack-bottom-nav-wrap" id="{BOTTOM_ID}">' + build_year_nav(year, weekly_page=False, bottom=True) + '</div>'
+    block = (
+        f'<div class="almanack-bottom-nav-wrap" id="{BOTTOM_ID}">'
+        f'{site_nav}'
+        f'{build_year_nav(year, weekly_page=False, bottom=True)}'
+        '</div>'
+    )
     if '</aside>' in text:
         return text.replace('</aside>', '</aside>' + block, 1)
     if '</main>' in text:
