@@ -51,18 +51,27 @@
 
 .notation-legend p { max-width: none; margin: .35rem 0; }
 .notation-legend strong { color: inherit; }
-.legend-line { display: flex; flex-wrap: wrap; gap: .12rem .5rem; }
+.legend-line { display: flex; flex-wrap: wrap; gap: .12rem .5rem; align-items:baseline; }
 .legend-item { white-space: nowrap; }
 .text-symbol {
   font-family: 'Apple Symbols','Arial Unicode MS','Segoe UI Symbol','Noto Sans Symbols 2',serif;
   font-variant-emoji: text;
   color: currentColor;
   -webkit-text-fill-color: currentColor;
+  font-size: 2em;
+  line-height: .75;
+  vertical-align: -.12em;
 }
 
-.zodiac-day { text-align: center; line-height: 1.2; }
-.zodiac-day .notation-item { display: block; white-space: pre-line; }
-.zodiac-day .zodiac-day-number { display: block; margin: 0; }
+.zodiac-day { text-align: center; line-height: 1.05; }
+.zodiac-day .notation-item,
+table.calendar tbody td:nth-child(2) .zodiac-glyph {
+  display: block;
+  white-space: pre-line;
+  font-size: 2.4rem;
+  line-height: .9;
+}
+.zodiac-day .zodiac-day-number { display: block; margin: .15rem 0 0; }
 
 @media (max-width: 760px) and (orientation: portrait) {
   .bayer-toggle-wrap,
@@ -81,6 +90,9 @@
 
   .bayer-toggle-label { margin-right: .05rem; }
   .bayer-toggle button { padding: .32rem .44rem; }
+
+  .zodiac-day .notation-item,
+  table.calendar tbody td:nth-child(2) .zodiac-glyph { font-size: 2.2rem; }
 }
 
 @media (prefers-color-scheme: dark) {
