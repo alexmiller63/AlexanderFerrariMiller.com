@@ -81,7 +81,8 @@ footer .wrap { padding-top:1.3rem; padding-bottom:1.3rem; opacity:.9; }
 @media(prefers-color-scheme:dark){.bayer-toggle button{background:#1c2a36;border-color:#405567;color:#b6dcff}.bayer-toggle button[aria-pressed=true]{background:#eef7ff;color:#102a43;border-color:#eef7ff}}
 </style><style id="week-position-nav-css">
 .weekgrid a.current-week,
-.weekgrid a.current-week:visited {
+.weekgrid a.current-week:visited,
+.weeknav span[aria-current="page"] {
   font-weight:700 !important;
   background:var(--navy) !important;
   color:#fff !important;
@@ -120,7 +121,8 @@ footer .wrap { padding-top:1.3rem; padding-bottom:1.3rem; opacity:.9; }
 }
 @media (prefers-color-scheme:dark) {
   .weekgrid a.current-week,
-  .weekgrid a.current-week:visited {
+  .weekgrid a.current-week:visited,
+  .weeknav span[aria-current="page"] {
     background:#eef7ff !important;
     color:#102a43 !important;
     border-color:#eef7ff !important;
