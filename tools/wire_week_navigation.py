@@ -141,6 +141,15 @@ def adjacent_week(year: int, week: int, days: int) -> tuple[int, int]:
 
 def adjacent_week_link(year: int, week: int, days: int, bottom: bool = False) -> str:
     target_year, target_week = adjacent_week(year, week, days)
+
+    # Crossing a year boundary is valid only when that adjacent Almanack year
+    # has actually been published.  Never emit a clickable link to a year that
+    # does not exist; this keeps boundary navigation from producing a 404.
+    if target_year != year and target_year not in published_years():
+        label = "Previous" if days < 0 else "Next"
+        arrow = "← " if days < 0 else " →"
+        return f'<span class="disabled">{arrow}{label}</span>' if days < 0 else f'<span class="disabled">{label}{arrow}</span>'
+
     if target_year == year:
         href = f'../W{target_week:02d}/'
     else:
