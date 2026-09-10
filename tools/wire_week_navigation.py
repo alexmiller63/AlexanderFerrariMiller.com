@@ -5,7 +5,7 @@ from __future__ import annotations
 
 import re
 import sys
-from datetime import datetime, timezone
+from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -13,7 +13,6 @@ BASES = (ROOT / "almanack", ROOT / "Star-Almanack-Repo" / "site")
 BOTTOM_ID = "almanack-bottom-nav"
 
 STYLE = """<style id="week-position-nav-css">
-.weeknav.week-position .current-week,
 .weekgrid a.current-week,
 .weekgrid a.current-week:visited {
   font-weight:700 !important;
@@ -53,7 +52,6 @@ STYLE = """<style id="week-position-nav-css">
   }
 }
 @media (prefers-color-scheme:dark) {
-  .weeknav.week-position .current-week,
   .weekgrid a.current-week,
   .weekgrid a.current-week:visited {
     background:#eef7ff !important;
@@ -130,29 +128,28 @@ def rewrite_year_nav(text: str, year: int, weekly_page: bool) -> str:
     return text[:match.start()] + nav + text[match.end():]
 
 
-def week_target(tag: str) -> int | None:
-    href = href_of(tag)
-    m = re.search(r'W(\d{2})', href)
-    return int(m.group(1)) if m else None
+def adjacent_week(year: int, week: int, days: int) -> tuple[int, int]:
+    monday = date.fromisocalendar(year, week, 1)
+    target = (monday + timedelta(days=days)).isocalendar()
+    return target.year, target.week
+
+
+def adjacent_week_link(year: int, week: int, days: int) -> str:
+    target_year, target_week = adjacent_week(year, week, days)
+    if target_year == year:
+        href = f'../W{target_week:02d}/'
+    else:
+        href = f'../../{target_year}/W{target_week:02d}/'
+    label = f'ISO {target_year}-W{target_week:02d}'
+    if days < 0:
+        return f'<a href="{href}">← {label}</a>'
+    return f'<a href="{href}">{label} →</a>'
 
 
 def build_week_nav_from_match(match: re.Match[str], year: int, week: int) -> str:
-    children = CHILD_RE.findall(match.group(1))
-
-    previous = None
-    following = None
-    for child in children:
-        if not child.startswith("<a"):
-            continue
-        target = week_target(child)
-        if target == week - 1:
-            previous = child
-        elif target == week + 1:
-            following = child
-
-    left = previous or '<span class="nav-spacer" aria-hidden="true">—</span>'
-    right = following or '<span class="nav-spacer" aria-hidden="true">—</span>'
-    current = f'<span class="current-week" aria-current="page">ISO {year}-W{week:02d}</span>'
+    left = adjacent_week_link(year, week, -7)
+    right = adjacent_week_link(year, week, 7)
+    current = f'<span aria-current="page">ISO {year}-W{week:02d}</span>'
     return (
         '<nav class="weeknav week-position" aria-label="Week navigation">'
         f'{left}{current}{right}'
@@ -196,12 +193,6 @@ def bottom_year_nav(text: str, year: int) -> str:
     if not match:
         raise RuntimeError("year navigation not found")
     nav = match.group(0)
-    nav = re.sub(
-        rf'<a href="([^"]+)">{year}</a>',
-        rf'<a aria-current="page" href="\1">{year}</a>',
-        nav,
-        count=1,
-    )
     return HREF_RE.sub(
         lambda m: f'href="{m.group(1).split("#", 1)[0]}#{BOTTOM_ID}"',
         nav,
