@@ -185,6 +185,7 @@ def rewrite_week_nav(text: str, year: int, week: int) -> str:
 
 
 def place_bottom_navigation(text: str, year: int, week: int) -> str:
+    """Replace the bottom navigation with year/week controls only; site navigation stays top-only."""
     text = BOTTOM_WRAP_RE.sub("", text)
     block = (
         f'<div class="almanack-bottom-nav-wrap" id="{BOTTOM_ID}">'
@@ -198,7 +199,7 @@ def place_bottom_navigation(text: str, year: int, week: int) -> str:
 
 
 def ensure_year_bottom_target(text: str, year: int) -> str:
-    """Give year indexes the same canonical year navigation at the bottom."""
+    """Give year indexes canonical year navigation at the bottom without duplicating site navigation."""
     text = BOTTOM_WRAP_RE.sub("", text)
     text = EMPTY_BOTTOM_RE.sub("", text)
     block = (
