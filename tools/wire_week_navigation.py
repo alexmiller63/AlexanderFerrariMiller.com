@@ -17,7 +17,8 @@ LOCAL_ZONE = ZoneInfo("America/Los_Angeles")
 STYLE = """<style id="week-position-nav-css">
 .weekgrid a.current-week,
 .weekgrid a.current-week:visited,
-.weeknav span[aria-current="page"] {
+.weeknav span[aria-current="page"],
+.yearnav span[aria-current="page"] {
   font-weight:700 !important;
   background:var(--navy) !important;
   color:#fff !important;
@@ -57,7 +58,8 @@ STYLE = """<style id="week-position-nav-css">
 @media (prefers-color-scheme:dark) {
   .weekgrid a.current-week,
   .weekgrid a.current-week:visited,
-  .weeknav span[aria-current="page"] {
+  .weeknav span[aria-current="page"],
+  .yearnav span[aria-current="page"] {
     background:#eef7ff !important;
     color:#102a43 !important;
     border-color:#eef7ff !important;
@@ -112,16 +114,8 @@ def build_year_nav(year: int, weekly_page: bool, bottom: bool = False) -> str:
         base = f"../../{target}/" if weekly_page else f"../{target}/"
         return base + (f"#{BOTTOM_ID}" if bottom else "")
 
-    left = (
-        f'<a href="{href(previous)}">← {previous}</a>'
-        if previous is not None else
-        '<span class="nav-spacer" aria-hidden="true">—</span>'
-    )
-    right = (
-        f'<a href="{href(following)}">{following} →</a>'
-        if following is not None else
-        '<span class="nav-spacer" aria-hidden="true">—</span>'
-    )
+    left = f'<a href="{href(previous)}">← {previous}</a>' if previous is not None else '<span class="nav-spacer" aria-hidden="true">—</span>'
+    right = f'<a href="{href(following)}">{following} →</a>' if following is not None else '<span class="nav-spacer" aria-hidden="true">—</span>'
     if weekly_page:
         center_href = "../" + (f"#{BOTTOM_ID}" if bottom else "")
         center = f'<a href="{center_href}">{year}</a>'
@@ -162,11 +156,7 @@ def build_week_nav(year: int, week: int, bottom: bool = False) -> str:
     left = adjacent_week_link(year, week, -7, bottom)
     right = adjacent_week_link(year, week, 7, bottom)
     current = f'<span aria-current="page">ISO {year}-W{week:02d}</span>'
-    return (
-        '<nav class="weeknav week-position" aria-label="Week navigation">'
-        f'{left}{current}{right}'
-        '</nav>'
-    )
+    return '<nav class="weeknav week-position" aria-label="Week navigation">' + left + current + right + '</nav>'
 
 
 def rewrite_week_nav(text: str, year: int, week: int) -> str:
@@ -187,12 +177,7 @@ def rewrite_week_nav(text: str, year: int, week: int) -> str:
 def place_bottom_navigation(text: str, year: int, week: int) -> str:
     """Replace the bottom navigation with year/week controls only; site navigation stays top-only."""
     text = BOTTOM_WRAP_RE.sub("", text)
-    block = (
-        f'<div class="almanack-bottom-nav-wrap" id="{BOTTOM_ID}">'
-        f'{build_year_nav(year, weekly_page=True, bottom=True)}'
-        f'{build_week_nav(year, week, bottom=True)}'
-        '</div>'
-    )
+    block = f'<div class="almanack-bottom-nav-wrap" id="{BOTTOM_ID}">' + build_year_nav(year, weekly_page=True, bottom=True) + build_week_nav(year, week, bottom=True) + '</div>'
     if '</aside>' not in text:
         raise RuntimeError("notation legend not found")
     return text.replace('</aside>', '</aside>' + block, 1)
@@ -202,11 +187,7 @@ def ensure_year_bottom_target(text: str, year: int) -> str:
     """Give year indexes canonical year navigation at the bottom without duplicating site navigation."""
     text = BOTTOM_WRAP_RE.sub("", text)
     text = EMPTY_BOTTOM_RE.sub("", text)
-    block = (
-        f'<div class="almanack-bottom-nav-wrap" id="{BOTTOM_ID}">'
-        f'{build_year_nav(year, weekly_page=False, bottom=True)}'
-        '</div>'
-    )
+    block = f'<div class="almanack-bottom-nav-wrap" id="{BOTTOM_ID}">' + build_year_nav(year, weekly_page=False, bottom=True) + '</div>'
     if '</aside>' in text:
         return text.replace('</aside>', '</aside>' + block, 1)
     if '</main>' in text:
