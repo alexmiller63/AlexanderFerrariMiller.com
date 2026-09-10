@@ -5,12 +5,14 @@ from __future__ import annotations
 
 import re
 import sys
-from datetime import date, datetime, timedelta, timezone
+from datetime import date, datetime, timedelta
 from pathlib import Path
+from zoneinfo import ZoneInfo
 
 ROOT = Path(__file__).resolve().parents[1]
 BASES = (ROOT / "almanack", ROOT / "Star-Almanack-Repo" / "site")
 BOTTOM_ID = "almanack-bottom-nav"
+LOCAL_ZONE = ZoneInfo("America/Los_Angeles")
 
 STYLE = """<style id="week-position-nav-css">
 .weekgrid a.current-week,
@@ -254,7 +256,7 @@ def main() -> None:
                     index_path.write_text(updated, encoding='utf-8')
                     changed += 1
 
-    today = datetime.now(timezone.utc).date().isocalendar()
+    today = datetime.now(LOCAL_ZONE).date().isocalendar()
     current_year, current_week = today.year, today.week
     if current_year in years:
         for base in BASES:
