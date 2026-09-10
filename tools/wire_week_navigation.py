@@ -14,7 +14,8 @@ BOTTOM_ID = "almanack-bottom-nav"
 
 STYLE = """<style id="week-position-nav-css">
 .weekgrid a.current-week,
-.weekgrid a.current-week:visited {
+.weekgrid a.current-week:visited,
+.weeknav span[aria-current="page"] {
   font-weight:700 !important;
   background:var(--navy) !important;
   color:#fff !important;
@@ -53,7 +54,8 @@ STYLE = """<style id="week-position-nav-css">
 }
 @media (prefers-color-scheme:dark) {
   .weekgrid a.current-week,
-  .weekgrid a.current-week:visited {
+  .weekgrid a.current-week:visited,
+  .weeknav span[aria-current="page"] {
     background:#eef7ff !important;
     color:#102a43 !important;
     border-color:#eef7ff !important;
@@ -63,7 +65,6 @@ STYLE = """<style id="week-position-nav-css">
 
 WEEK_NAV_RE = re.compile(r'<nav class="weeknav(?: week-position)?"(?: id="(?:week-bottom-nav|almanack-bottom-nav)")?(?: aria-label="Week navigation")?>(.*?)</nav>', re.S)
 YEAR_NAV_RE = re.compile(r'<nav class="yearnav"(?: id="almanack-bottom-nav")?>(.*?)</nav>', re.S)
-SITE_NAV_RE = re.compile(r'<nav class="weeknav sitenav">(.*?)</nav>', re.S)
 BOTTOM_WRAP_RE = re.compile(r'<div class="almanack-bottom-nav-wrap" id="almanack-bottom-nav">.*?</div>', re.S)
 EMPTY_BOTTOM_RE = re.compile(r'<div id="almanack-bottom-nav"></div>')
 STYLE_RE = re.compile(r'<style id="week-position-nav-css">.*?</style>', re.S)
