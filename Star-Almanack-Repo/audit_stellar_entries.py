@@ -2,11 +2,12 @@
 """Audit every catalog-backed stellar entry in the 2026 Almanack.
 
 Checks all bright-star and Bayer visibility rows against almanack-expanded.md.
-The authoritative source magnitudes retain their original precision; this audit
-checks only observer-facing presentation:
+Authoritative source magnitudes remain in source data, but ordinary fixed-star
+magnitudes are suppressed in reader-facing calendar labels. The audit checks:
 - proper name where available;
 - Bayer designation in Greek notation;
-- whole-number V magnitude whenever an authoritative source magnitude exists;
+- observing aid present;
+- fixed-star magnitude not printed;
 - declination band followed by observing season;
 - exactly one calendar representation on the assigned best-visibility date.
 
@@ -18,7 +19,6 @@ import csv
 import re
 import sys
 from datetime import date, datetime
-from decimal import Decimal, ROUND_HALF_UP
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
@@ -65,10 +65,6 @@ def bayer_display(code: str, con: str) -> str:
     symbol = GREEK.get(m.group(1), m.group(1))
     suffix = m.group(2) or ""
     return f"{symbol}{suffix} {con}".strip()
-
-
-def whole_mag(value: str) -> str:
-    return str(int(Decimal(value).quantize(Decimal("1"), rounding=ROUND_HALF_UP)))
 
 
 def calendar_events() -> dict[str, list[str]]:
@@ -142,9 +138,9 @@ def audit_permanent_regressions(events: dict[str, list[str]], defects: list[str]
             defects.append(
                 f"permanent regression {proper} ({designation}): name/designation pair damaged; entry={entry}"
             )
-        if not re.search(r"\bV\s+[+-]?\d+\b", entry):
+        if re.search(r"\bV\s+[+-]?\d", entry):
             defects.append(
-                f"permanent regression {proper} ({designation}): whole-number magnitude missing; entry={entry}"
+                f"permanent regression {proper} ({designation}): fixed-star magnitude should be suppressed; entry={entry}"
             )
 
 
@@ -180,19 +176,10 @@ def main() -> None:
         elif designation not in entry:
             defects.append(f"{best_date} {label}: missing Bayer designation; entry={entry}")
 
-        source_mag = (
-            (r.get("representative_vmax") or "").strip()
-            or (r.get("mag") or "").strip()
-            or (r.get("catalog_v") or "").strip()
-        )
-        if not source_mag:
-            defects.append(f"{best_date} {label}: no authoritative source magnitude")
-        else:
-            expected_v = f"V {whole_mag(source_mag)}"
-            if expected_v not in entry:
-                defects.append(f"{best_date} {label}: expected {expected_v}; entry={entry}")
-            if re.search(r"\bV\s+[+-]?\d+\.\d+", entry):
-                defects.append(f"{best_date} {label}: decimal magnitude survived Almanack presentation; entry={entry}")
+        if not re.search(r"(?:👁|\bB\b|🔭)", entry):
+            defects.append(f"{best_date} {label}: observing aid missing; entry={entry}")
+        if re.search(r"\bV\s+[+-]?\d", entry):
+            defects.append(f"{best_date} {label}: fixed-star magnitude should be suppressed; entry={entry}")
 
         dec = (r.get("dec_deg") or "").strip()
         if dec:
@@ -210,7 +197,7 @@ def main() -> None:
             print(f"- {defect}")
         raise SystemExit(1)
 
-    print("PASS: all catalog-backed stellar entries and permanent regression stars have whole-number magnitudes and required presentation.")
+    print("PASS: all catalog-backed stellar entries preserve identity, observing aid, classification, and suppress fixed-star magnitudes.")
 
 
 if __name__ == "__main__":
