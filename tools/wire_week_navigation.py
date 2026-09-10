@@ -193,9 +193,9 @@ def place_bottom_navigation(text: str, year: int, week: int) -> str:
     text = BOTTOM_WRAP_RE.sub("", text)
     block = (
         f'<div class="almanack-bottom-nav-wrap" id="{BOTTOM_ID}">'
+        f'{site_nav}'
         f'{build_year_nav(year, weekly_page=True, bottom=True)}'
         f'{build_week_nav(year, week, bottom=True)}'
-        f'{site_nav}'
         '</div>'
     )
     if '</aside>' not in text:
