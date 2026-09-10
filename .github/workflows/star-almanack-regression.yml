@@ -28,5 +28,8 @@ jobs:
       - name: Astronomy regression tests
         run: python tools/test_star_almanack_astronomy.py
 
+      - name: Generate canonical stellar presentation
+        run: python Star-Almanack-Repo/enrich_stellar_entries.py
+
       - name: Stellar presentation audit
         run: python Star-Almanack-Repo/audit_stellar_entries.py
