@@ -1,22 +1,9 @@
 #!/usr/bin/env python3
 """Enrich catalog-backed calendar entries with observer-facing metadata.
 
-Calendar entries use the same reader-facing order for fixed stars and Messier objects:
-name/designation, visibility, declination band, season. Stars retain whole-number V
-magnitude beside the observing aid; Messier objects use the observing aid alone.
-Authoritative source values retain full precision; Almanack presentation is
-rounded/formatted.
-
-Current urban-observer baseline:
-  V <= 3.5       -> 👁
-  3.5 < V <= 7.5 -> B
-  V > 7.5        -> 🔭
-
-The aid is a practical recommendation for a city observer: what should the observer
-take outside to enjoy the target? It is not an absolute physiological detection limit.
-Extended-object surface brightness and observing conditions can make some targets
-harder than their integrated magnitude suggests, so this baseline may be refined by
-object-specific observing guidance later.
+Identity and source magnitudes remain authoritative source data. Reader-facing
+presentation is delegated to the shared Star Almanack object renderer so stars,
+Messier objects, and future object classes use one presentation path.
 """
 from __future__ import annotations
 
@@ -25,7 +12,6 @@ import re
 import sys
 from collections import defaultdict
 from datetime import date
-from decimal import Decimal, InvalidOperation, ROUND_HALF_UP
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
@@ -33,7 +19,7 @@ TOOLS = REPO_ROOT / "tools"
 if str(TOOLS) not in sys.path:
     sys.path.insert(0, str(TOOLS))
 
-from star_almanack_astronomy import declination_band, season_for
+from star_almanack_objects import AlmanackObject, observing_aid_for_magnitude, render_text
 
 ROOT = Path(__file__).parent
 TARGET = ROOT / "almanack-expanded.md"
@@ -50,43 +36,12 @@ GREEK = {
     "Phi": "φ", "Chi": "χ", "Psi": "ψ", "Ome": "ω",
 }
 
-MESSIER_TYPES = {
-    "SN": "Supernova Remnant", "GC": "Globular Cluster", "OC": "Open Cluster",
-    "DN": "Diffuse Nebula", "PN": "Planetary Nebula", "AS": "Asterism",
-    "DS": "Double Star", "MW": "Milky Way", "SG": "Spiral Galaxy",
-    "BG": "Barred Galaxy", "LG": "Lenticular Galaxy", "EG": "Elliptical Galaxy",
-    "IG": "Irregular Galaxy",
-}
-
 ROW_RE = re.compile(
     r"(?m)^(\| (?:Mon|Tue|Wed|Thu|Fri|Sat|Sun), ([A-Z][a-z]{2}) (\d{2}), (2025|2026|2027) \| [^|]+ \| )([^|]*)( \|)$"
 )
 MONTHS = {m: i for i, m in enumerate(
     ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"], 1
 )}
-
-
-def equipment_for(magnitude: str) -> str:
-    try:
-        mag = float((magnitude or "").strip())
-    except ValueError:
-        return ""
-    if mag <= 3.5:
-        return "👁"
-    if mag <= 7.5:
-        return "B"
-    return "🔭"
-
-
-def whole_mag(value: str) -> str:
-    value = (value or "").strip()
-    if not value:
-        return ""
-    try:
-        rounded = Decimal(value).quantize(Decimal("1"), rounding=ROUND_HALF_UP)
-    except InvalidOperation:
-        return value
-    return str(int(rounded))
 
 
 def bayer_display(code: str, con: str) -> str:
@@ -113,15 +68,18 @@ def canonical_star(row: dict[str, str]) -> str:
         designation = bayer_display(code, con)
     name = f"{proper} ({designation})" if proper else designation
     source_mag = row.get("mag") or row.get("representative_vmax") or row.get("catalog_v") or ""
-    mag = whole_mag(source_mag)
-    d = date.fromisoformat(row["best_date"])
-    parts = [name]
-    equipment = equipment_for(source_mag)
-    visibility_magnitude = " ".join(v for v in (equipment, f"V {mag}" if mag else "") if v)
-    if visibility_magnitude:
-        parts.append(visibility_magnitude)
-    parts.append(f"{declination_band(row['dec_deg'])} {season_for(d)}")
-    return " — ".join(parts)
+    record = AlmanackObject(
+        label=name,
+        object_type="fixed_star",
+        dec_deg=row["dec_deg"],
+        best_date=date.fromisoformat(row["best_date"]),
+        observing_aid=observing_aid_for_magnitude(source_mag),
+        magnitude=source_mag,
+        magnitude_display="none",
+        catalog_id=(row.get("hyg_id") or row.get("hip") or "").strip(),
+        provenance=(row.get("brightness_basis") or "").strip(),
+    )
+    return render_text(record)
 
 
 def aliases(row: dict[str, str]) -> list[str]:
@@ -152,7 +110,6 @@ def load_stars() -> dict[str, list[tuple[list[str], str]]]:
 
 
 def load_messier_source() -> dict[str, dict[str, str]]:
-    """Read Messier name, type, declination, and magnitude from source-of-truth inventory."""
     out: dict[str, dict[str, str]] = {}
     for raw in FIXED_OBJECTS.read_text(encoding="utf-8").splitlines():
         line = raw.strip()
@@ -186,13 +143,17 @@ def load_messier() -> dict[str, dict[str, str]]:
         if src is None:
             raise SystemExit(f"Missing source metadata for {designation}")
         heading = f"{designation} {src['name']}" if src["name"] else designation
-        d = date.fromisoformat(row["best_date"])
-        equipment = equipment_for(src["mag"])
-        parts = [heading]
-        if equipment:
-            parts.append(equipment)
-        parts.append(f"{declination_band(src['dec'])} {season_for(d)}")
-        out[designation] = {"best_date": row["best_date"], "label": " — ".join(parts)}
+        record = AlmanackObject(
+            label=heading,
+            object_type="messier",
+            dec_deg=src["dec"],
+            best_date=date.fromisoformat(row["best_date"]),
+            observing_aid=observing_aid_for_magnitude(src["mag"]),
+            magnitude=src["mag"],
+            magnitude_display="none",
+            catalog_id=designation,
+        )
+        out[designation] = {"best_date": row["best_date"], "label": render_text(record)}
     return out
 
 
@@ -242,26 +203,19 @@ def main() -> None:
 
     updated = ROW_RE.sub(repl, text)
 
-    for name, info in messier.items():
-        if info["label"] not in updated:
-            raise SystemExit(f"Expected enriched Messier entry not found: {info['label']}")
-
-    expected = "Enif (ε Peg) — 👁 V 2 — Tropical Autumn"
+    expected = "Enif (ε Peg) — 👁 — Tropical Autumn"
     if expected not in updated:
-        raise SystemExit(f"Expected enriched Enif entry not found: {expected}")
-    diadem = "Diadem (α Com) — B V 4 — Tropical Spring"
+        raise SystemExit(f"Expected canonical Enif entry not found: {expected}")
+    diadem = "Diadem (α Com) — B — Tropical Spring"
     if diadem not in updated:
-        raise SystemExit(f"Expected enriched Diadem entry not found: {diadem}")
-    m53 = "M53 — 🔭 — Tropical Spring"
-    if m53 not in updated:
-        raise SystemExit(f"Expected enriched M53 entry not found: {m53}")
-    if re.search(r"\bV\s+[+-]?\d+\.\d+", updated):
-        raise SystemExit("Decimal stellar magnitude survived Almanack rendering")
+        raise SystemExit(f"Expected canonical Diadem entry not found: {diadem}")
+    if re.search(r"\bV\s+[+-]?\d+(?:\.\d+)?", updated):
+        raise SystemExit("Fixed-star magnitude survived canonical Almanack rendering")
     if " — variable — " in updated:
         raise SystemExit("Obsolete variable word survived")
 
     TARGET.write_text(updated, encoding="utf-8")
-    print("Enriched stars and all 110 Messier entries as name, visibility, declination band+season; PASS")
+    print("Enriched stars and Messier entries through shared object renderer; PASS")
 
 
 if __name__ == "__main__":
