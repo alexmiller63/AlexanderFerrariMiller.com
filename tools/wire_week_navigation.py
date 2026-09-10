@@ -13,8 +13,6 @@ BASES = (ROOT / "almanack", ROOT / "Star-Almanack-Repo" / "site")
 BOTTOM_ID = "almanack-bottom-nav"
 
 STYLE = """<style id="week-position-nav-css">
-.yearnav .current-year,
-.yearnav .current-year:visited,
 .weeknav.week-position .current-week,
 .weekgrid a.current-week,
 .weekgrid a.current-week:visited {
@@ -55,8 +53,6 @@ STYLE = """<style id="week-position-nav-css">
   }
 }
 @media (prefers-color-scheme:dark) {
-  .yearnav .current-year,
-  .yearnav .current-year:visited,
   .weeknav.week-position .current-week,
   .weekgrid a.current-week,
   .weekgrid a.current-week:visited {
@@ -129,10 +125,7 @@ def rewrite_year_nav(text: str, year: int, weekly_page: bool) -> str:
     left = previous or '<span class="nav-spacer" aria-hidden="true">—</span>'
     right = following or '<span class="nav-spacer" aria-hidden="true">—</span>'
     href = "../" if weekly_page else "./"
-    if weekly_page:
-        center = f'<a href="{href}">{year}</a>'
-    else:
-        center = f'<a class="current-year" aria-current="page" href="{href}">{year}</a>'
+    center = f'<a aria-current="page" href="{href}">{year}</a>' if not weekly_page else f'<a href="{href}">{year}</a>'
     nav = f'<nav class="yearnav">{left}{center}{right}</nav>'
     return text[:match.start()] + nav + text[match.end():]
 
@@ -205,7 +198,7 @@ def bottom_year_nav(text: str, year: int) -> str:
     nav = match.group(0)
     nav = re.sub(
         rf'<a href="([^"]+)">{year}</a>',
-        rf'<a class="current-year" aria-current="page" href="\1">{year}</a>',
+        rf'<a aria-current="page" href="\1">{year}</a>',
         nav,
         count=1,
     )
@@ -261,7 +254,7 @@ def ensure_year_bottom_target(text: str, year: int) -> str:
     children = CHILD_RE.findall(match.group(1))
     left = children[0] if children else '<span class="nav-spacer" aria-hidden="true">—</span>'
     right = children[-1] if len(children) > 1 else '<span class="nav-spacer" aria-hidden="true">—</span>'
-    center = f'<a class="current-year" aria-current="page" href="./#{BOTTOM_ID}">ISO {year}</a>'
+    center = f'<a aria-current="page" href="./#{BOTTOM_ID}">ISO {year}</a>'
     nav = f'<nav class="yearnav">{left}{center}{right}</nav>'
     nav = HREF_RE.sub(
         lambda m: f'href="{m.group(1).split("#", 1)[0]}#{BOTTOM_ID}"',
