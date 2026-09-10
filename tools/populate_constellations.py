@@ -12,7 +12,7 @@ import sys
 from collections import defaultdict
 from pathlib import Path
 
-import populate_fixed_sky as fixed
+from star_almanack_astronomy import best_visibility, declination_band, season_for
 
 ROOT = Path(__file__).resolve().parents[1]
 SRC = ROOT / "Star-Almanack-Repo"
@@ -44,26 +44,13 @@ def iso_label(d):
     return f"{y}-W{w:02d}-{wd}"
 
 
-def declination_band(dec_deg):
-    value = float(dec_deg)
-    return "Northern" if value > 23.44 else "Southern" if value < -23.44 else "Tropical"
-
-
-def season_for(d):
-    md = (d.month, d.day)
-    if (3, 20) <= md < (6, 21): return "Spring"
-    if (6, 21) <= md < (9, 22): return "Summer"
-    if (9, 22) <= md < (12, 21): return "Autumn"
-    return "Winter"
-
-
 def build_rows(year):
     snaps = read_csv(CENTROID_SNAPSHOT)
     if len(snaps) != 88:
         raise SystemExit(f"Expected 88 centroid snapshot rows, got {len(snaps)}")
     rows = []
     for snap in snaps:
-        ci, cd = fixed.best_visibility(float(snap["centroid_ra_h"]), year)
+        ci, cd = best_visibility(float(snap["centroid_ra_h"]), year)
         rows.append({
             "name": snap["name"], "abbr": snap["abbr"],
             "centroid_ra_h": snap["centroid_ra_h"], "centroid_dec_deg": snap["centroid_dec_deg"],
@@ -78,7 +65,9 @@ def write_csv(year, rows):
     out = SRC / "generated" / f"constellation-observance-{year}.csv"
     out.parent.mkdir(parents=True, exist_ok=True)
     with out.open("w", newline="", encoding="utf-8") as f:
-        w = csv.DictWriter(f, fieldnames=list(rows[0])); w.writeheader(); w.writerows(rows)
+        w = csv.DictWriter(f, fieldnames=list(rows[0]))
+        w.writeheader()
+        w.writerows(rows)
 
 
 def event_map(rows):
@@ -94,34 +83,46 @@ def clean_legacy_constellation_events(text):
     cells = re.compile(r'(<td>)(.*?)(</td>)')
     bare = re.compile(r'^✦ (?:α|β) star — .+$')
     old_center = re.compile(r'^✦ .*? (?:geometric-center observance|center)(?: —)? .+$')
+
     def repl(m):
         parts = [p for p in m.group(2).split("<br>") if not bare.match(p.strip()) and not old_center.match(p.strip())]
         return m.group(1) + ("<br>".join(parts) if parts else "—") + m.group(3)
+
     return cells.sub(repl, text)
 
 
 def inject(root, year, events):
     changed = 0
     for page in sorted((root / str(year)).glob("W*/index.html")):
-        text = page.read_text(encoding="utf-8"); original = text
+        text = page.read_text(encoding="utf-8")
+        original = text
         text = clean_legacy_constellation_events(text)
         for d, vals in events.items():
             date_text = d.strftime("%a, %b %d, %Y").replace(" 0", " ")
             pat = re.compile(rf"(<tr><td>{re.escape(date_text)}</td><td>.*?</td><td>)(.*?)(</td></tr>)")
             m = pat.search(text)
-            if not m: continue
+            if not m:
+                continue
             keep = [] if m.group(2) == "—" else [x for x in m.group(2).split("<br>") if x]
             for v in vals:
-                if v not in keep: keep.append(v)
+                if v not in keep:
+                    keep.append(v)
             text = text[:m.start(2)] + "<br>".join(keep) + text[m.end(2):]
-        if text != original: page.write_text(text, encoding="utf-8"); changed += 1
+        if text != original:
+            page.write_text(text, encoding="utf-8")
+            changed += 1
     return changed
 
 
 def main():
     for year in requested_years():
-        rows = build_rows(year); write_csv(year, rows); events = event_map(rows)
-        c1 = inject(SOURCE_SITE, year, events); c2 = inject(PUBLIC, year, events)
+        rows = build_rows(year)
+        write_csv(year, rows)
+        events = event_map(rows)
+        c1 = inject(SOURCE_SITE, year, events)
+        c2 = inject(PUBLIC, year, events)
         print(f"{year}: 88 constellation-center events; updated {c1} source + {c2} public pages")
 
-if __name__ == "__main__": main()
+
+if __name__ == "__main__":
+    main()
