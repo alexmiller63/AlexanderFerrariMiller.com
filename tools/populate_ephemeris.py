@@ -5,7 +5,7 @@ import argparse,csv,json,re,urllib.parse,urllib.request
 from datetime import date,timedelta
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]; HORIZONS_API="https://ssd.jpl.nasa.gov/api/horizons.api"; SIGNS="♈♉♊♋♌♍♎♏♐♑♒♓"
-TARGETS=[("☉ Sun","sun","10"),("☽ Moon","moon","301"),("☿ Mercury","mercury","199"),("♀ Venus","venus","299"),("♂ Mars","mars","499"),("♃ Jupiter","jupiter","599"),("♄ Saturn","saturn","699"),("⚳ Ceres","ceres","1;"),("♅ Uranus","uranus","799"),("♆ Neptune","neptune","899"),("♇ Pluto","pluto","999")]
+TARGETS=[("☉ Sun","sun","10"),("☽ Moon","moon","301"),("☿ Mercury","mercury","199"),("♀ Venus","venus","299"),("♂ Mars","mars","499"),("♃ Jupiter","jupiter","599"),("♄ Saturn","saturn","699"),("⚳ Ceres","ceres","1;"),("♇ Pluto","pluto","999"),("♅ Uranus","uranus","799"),("♆ Neptune","neptune","899")]
 def week_count(y): return date(y,12,28).isocalendar().week
 def horizons_ecliptic(year,command):
  c=week_count(year); first=date.fromisocalendar(year,1,1); last=date.fromisocalendar(year,c,1); p={"format":"json","COMMAND":f"'{command}'","OBJ_DATA":"'NO'","MAKE_EPHEM":"'YES'","EPHEM_TYPE":"'OBSERVER'","CENTER":"'500@399'","START_TIME":f"'{first.isoformat()} 00:00'","STOP_TIME":f"'{(last+timedelta(days=1)).isoformat()} 00:00'","STEP_SIZE":"'7 d'","QUANTITIES":"'31'","CSV_FORMAT":"'YES'","ANG_FORMAT":"'DEG'","CAL_FORMAT":"'CAL'","TIME_DIGITS":"'SECONDS'"}
