@@ -67,7 +67,6 @@ SITE_NAV_RE = re.compile(r'<nav class="weeknav sitenav">(.*?)</nav>', re.S)
 BOTTOM_WRAP_RE = re.compile(r'<div class="almanack-bottom-nav-wrap" id="almanack-bottom-nav">.*?</div>', re.S)
 EMPTY_BOTTOM_RE = re.compile(r'<div id="almanack-bottom-nav"></div>')
 STYLE_RE = re.compile(r'<style id="week-position-nav-css">.*?</style>', re.S)
-HREF_RE = re.compile(r'href="([^"]+)"')
 
 
 def published_years() -> tuple[int, ...]:
@@ -182,33 +181,10 @@ def rewrite_week_nav(text: str, year: int, week: int) -> str:
     return WEEK_NAV_RE.sub(replacement, text)
 
 
-def add_bottom_fragment_to_tag(tag: str) -> str:
-    def repl(match: re.Match[str]) -> str:
-        href = match.group(1).split('#', 1)[0]
-        return f'href="{href}#{BOTTOM_ID}"'
-    return HREF_RE.sub(repl, tag)
-
-
-def bottom_site_nav(text: str) -> str:
-    match = SITE_NAV_RE.search(text)
-    if not match:
-        raise RuntimeError("site navigation not found")
-    nav = match.group(0)
-
-    def rewrite_link(link_match: re.Match[str]) -> str:
-        tag = link_match.group(0)
-        if "Almanack Home" in tag:
-            return add_bottom_fragment_to_tag(tag)
-        return tag
-
-    return re.sub(r'<a\b.*?</a>', rewrite_link, nav, flags=re.S)
-
-
 def place_bottom_navigation(text: str, year: int, week: int) -> str:
     text = BOTTOM_WRAP_RE.sub("", text)
     block = (
         f'<div class="almanack-bottom-nav-wrap" id="{BOTTOM_ID}">'
-        f'{bottom_site_nav(text)}'
         f'{build_year_nav(year, weekly_page=True, bottom=True)}'
         f'{build_week_nav(year, week, bottom=True)}'
         '</div>'
@@ -224,7 +200,6 @@ def ensure_year_bottom_target(text: str, year: int) -> str:
     text = EMPTY_BOTTOM_RE.sub("", text)
     block = (
         f'<div class="almanack-bottom-nav-wrap" id="{BOTTOM_ID}">'
-        f'{bottom_site_nav(text)}'
         f'{build_year_nav(year, weekly_page=False, bottom=True)}'
         '</div>'
     )
