@@ -12,9 +12,8 @@ from star_almanack_astronomy import (
     apparent_sun_ra_hours,
     best_time_for_solar_ra,
     best_visibility,
-    declination_band,
-    season_for,
 )
+from star_almanack_objects import AlmanackObject, observing_aid_for_magnitude, render_text
 
 ROOT = Path(__file__).resolve().parents[1]
 SRC = ROOT / "Star-Almanack-Repo"
@@ -107,13 +106,19 @@ def star_label(r: dict[str, str]) -> str:
     proper = r.get("proper", "").strip()
     bayer = display_bayer(r)
     base = f"{proper} ({bayer})" if proper and bayer else (proper or bayer or f"{r.get('con','').strip()} star")
-    mag = r.get("mag_class", "").strip()
-    aid = "👁" if mag and int(mag) <= 3 else "B"
-    parts = [base]
-    if mag:
-        parts.append(f"{aid} V {mag}")
-    parts.append(f"{declination_band(r['dec_deg'])} {season_for(dt.date.fromisoformat(r['best_date']))}")
-    return " — ".join(parts)
+    source_mag = (r.get("representative_vmax") or r.get("catalog_v") or r.get("mag") or "").strip()
+    record = AlmanackObject(
+        label=base,
+        object_type="fixed_star",
+        dec_deg=r["dec_deg"],
+        best_date=dt.date.fromisoformat(r["best_date"]),
+        observing_aid=observing_aid_for_magnitude(source_mag),
+        magnitude=source_mag,
+        magnitude_display="none",
+        catalog_id=(r.get("hyg_id") or r.get("hip") or "").strip(),
+        provenance=(r.get("brightness_basis") or "").strip(),
+    )
+    return render_text(record)
 
 
 def page_date_map(year: int):
