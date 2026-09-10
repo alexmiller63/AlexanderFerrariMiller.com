@@ -1,0 +1,32 @@
+name: Star Almanack Regression
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'tools/star_almanack_*.py'
+      - 'tools/populate_fixed_sky.py'
+      - 'Star-Almanack-Repo/enrich_stellar_entries.py'
+      - 'Star-Almanack-Repo/audit_stellar_entries.py'
+      - '.github/workflows/star-almanack-regression.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  regression:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Astronomy regression tests
+        run: python tools/test_star_almanack_astronomy.py
+
+      - name: Stellar presentation audit
+        run: python Star-Almanack-Repo/audit_stellar_entries.py
