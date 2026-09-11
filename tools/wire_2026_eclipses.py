@@ -2,11 +2,12 @@
 """Wire independently calculated eclipse data into Almanack year pages.
 
 The historical filename is retained so existing workflows keep working, but
-publication is now year-parameterized. Pass one or more eclipse YAML files;
+publication is year-parameterized. Pass one or more eclipse YAML files;
 with no arguments the preserved 2026 Star-Almanack-Repo/eclipse.yaml is used.
 """
 from __future__ import annotations
 
+import html
 import re
 import sys
 from datetime import date
@@ -18,8 +19,8 @@ ALMANACK_SOURCE = ROOT / "Star-Almanack-Repo" / "almanack-expanded.md"
 ECLIPSE_PAGE = ROOT / "star-almanack" / "eclipses.html"
 
 GLYPHS = {
-    "solar": '<img class="visibility-glyph" src="/assets/almanack/visibility-glyphs/masters/solar-eclipse.svg" alt="Solar eclipse" aria-label="Solar eclipse" style="height:1.15em;width:auto;vertical-align:-.18em">',
-    "lunar": '<img class="visibility-glyph" src="/assets/almanack/visibility-glyphs/masters/lunar-eclipse.svg" alt="Lunar eclipse" aria-label="Lunar eclipse" style="height:1.15em;width:auto;vertical-align:-.18em">',
+    "solar": '<img class="visibility-glyph" src="/assets/almanack/visibility-glyphs/masters/solar-eclipse.svg" alt="Solar eclipse" aria-label="Solar eclipse">',
+    "lunar": '<img class="visibility-glyph" src="/assets/almanack/visibility-glyphs/masters/lunar-eclipse.svg" alt="Lunar eclipse" aria-label="Lunar eclipse">',
 }
 
 
@@ -34,39 +35,63 @@ def parse_eclipses(text: str, year: int) -> list[dict[str, str]]:
     out: list[dict[str, str]] = []
     blocks = re.split(r"(?m)^  - id: ", text)[1:]
     for block in blocks:
-        def get(key: str) -> re.Match[str]:
+        def required(key: str) -> str:
             m = re.search(rf"(?m)^    {re.escape(key)}: ?\"?([^\"\n]+)\"?$", block)
             if not m:
                 raise SystemExit(f"Eclipse entry is missing {key}")
-            return m
+            return m.group(1).strip()
 
-        kind = get("kind").group(1).strip()
-        typ = get("type").group(1).strip()
-        day = get("date").group(1).strip()
-        maximum = get("maximum_geometry_utc").group(1).strip()
+        def optional(key: str) -> str:
+            m = re.search(rf"(?m)^    {re.escape(key)}: ?\"?([^\"\n]+)\"?$", block)
+            return m.group(1).strip() if m else ""
+
+        kind = required("kind")
+        typ = required("type")
+        day = required("date")
+        maximum = required("maximum_geometry_utc")
         if date.fromisoformat(day).year != year:
             raise SystemExit(f"Eclipse {day} does not belong to declared year {year}")
-        out.append({"kind": kind, "type": typ, "date": day, "maximum": maximum})
+        out.append({
+            "kind": kind,
+            "type": typ,
+            "date": day,
+            "maximum": maximum,
+            "magnitude": optional("magnitude"),
+            "visibility": optional("visibility"),
+            "observing_note": optional("observing_note"),
+        })
     if not out:
         raise SystemExit(f"No eclipses found for {year}")
     return out
 
 
-def label(e: dict[str, str], html: bool = True) -> str:
-    glyph = GLYPHS[e["kind"]] if html else ("☀" if e["kind"] == "solar" else "☾")
-    return f"{glyph} {e['type'].title()} {e['kind']} eclipse — greatest eclipse {e['maximum'][:5]} UTC"
+def details(e: dict[str, str]) -> list[str]:
+    parts = [f"greatest eclipse {e['maximum'][:5]} UTC"]
+    if e.get("magnitude"):
+        parts.append(f"magnitude {e['magnitude']}")
+    if e.get("visibility"):
+        parts.append(f"visibility: {e['visibility']}")
+    if e.get("observing_note"):
+        parts.append(f"observing: {e['observing_note']}")
+    return parts
+
+
+def label(e: dict[str, str], html_output: bool = True) -> str:
+    glyph = GLYPHS[e["kind"]] if html_output else ("☀" if e["kind"] == "solar" else "☾")
+    body = " · ".join(details(e))
+    return f"{glyph} {e['type'].title()} {e['kind']} eclipse · {body}"
 
 
 def update_markdown(text: str, e: dict[str, str]) -> str:
     d = date.fromisoformat(e["date"])
     day = d.strftime("%a, %b %d, %Y")
-    event = label(e, html=False)
+    event = label(e, html_output=False)
     pat = re.compile(rf"(?m)^(\| {re.escape(day)} \| [^|]+ \| )([^|]*)( \|)$")
     m = pat.search(text)
     if not m:
         raise SystemExit(f"Calendar row not found for {e['date']}")
     existing = m.group(2).strip()
-    parts = [] if existing in ("", "—") else [p for p in existing.split("<br>") if " eclipse — greatest" not in p]
+    parts = [] if existing in ("", "—") else [p for p in existing.split("<br>") if " eclipse " not in p]
     new = "<br>".join([event] + parts)
     return text[:m.start()] + m.group(1) + new + m.group(3) + text[m.end():]
 
@@ -74,13 +99,13 @@ def update_markdown(text: str, e: dict[str, str]) -> str:
 def update_html(text: str, e: dict[str, str]) -> str:
     d = date.fromisoformat(e["date"])
     day = d.strftime("%a, %b %d, %Y")
-    event = label(e, html=True)
+    event = label(e, html_output=True)
     pat = re.compile(rf"(<tr><td>{re.escape(day)}</td><td>.*?</td><td>)(.*?)(</td></tr>)")
     m = pat.search(text)
     if not m:
         raise SystemExit(f"HTML calendar row not found for {e['date']}")
     existing = m.group(2)
-    parts = [] if existing.strip() in ("", "—") else [p for p in existing.split("<br>") if " eclipse — greatest" not in p]
+    parts = [] if existing.strip() in ("", "—") else [p for p in existing.split("<br>") if " eclipse " not in p]
     new = "<br>".join([event] + parts)
     return text[:m.start()] + m.group(1) + new + m.group(3) + text[m.end():]
 
@@ -89,11 +114,17 @@ def page_table(eclipses: list[dict[str, str]]) -> str:
     rows = []
     for e in eclipses:
         d = date.fromisoformat(e["date"])
+        visibility = html.escape(e.get("visibility", "")) or "—"
+        magnitude = html.escape(e.get("magnitude", "")) or "—"
+        observing = html.escape(e.get("observing_note", "")) or "—"
         rows.append(
             f"<tr><td>{d.strftime('%B')} {d.day}, {d.year}</td><td>{e['type'].title()} {e['kind']}</td>"
-            f"<td>{e['maximum'][:5]} UTC</td></tr>"
+            f"<td>{e['maximum'][:5]} UTC</td><td>{magnitude}</td><td>{visibility}</td><td>{observing}</td></tr>"
         )
-    return "<table><thead><tr><th>Date</th><th>Eclipse</th><th>Greatest eclipse</th></tr></thead><tbody>" + "".join(rows) + "</tbody></table>"
+    return (
+        "<table><thead><tr><th>Date</th><th>Eclipse</th><th>Greatest eclipse</th><th>Magnitude</th>"
+        "<th>Visibility</th><th>Observing note</th></tr></thead><tbody>" + "".join(rows) + "</tbody></table>"
+    )
 
 
 def update_eclipse_page(text: str, year: int, eclipses: list[dict[str, str]]) -> str:
@@ -144,7 +175,7 @@ def publish(source_path: Path) -> tuple[int, int]:
 
     page_text = ECLIPSE_PAGE.read_text(encoding="utf-8")
     ECLIPSE_PAGE.write_text(update_eclipse_page(page_text, year, eclipses), encoding="utf-8")
-    print(f"{year}: wired {len(eclipses)} independently calculated eclipses; PASS")
+    print(f"{year}: wired {len(eclipses)} eclipses with magnitude, visibility, and observing details; PASS")
     return year, len(eclipses)
 
 
