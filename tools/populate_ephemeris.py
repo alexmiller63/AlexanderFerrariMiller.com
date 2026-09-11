@@ -5,7 +5,7 @@ import argparse,csv,json,re,urllib.parse,urllib.request
 from datetime import date,timedelta
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]; HORIZONS_API="https://ssd.jpl.nasa.gov/api/horizons.api"; SIGNS="♈♉♊♋♌♍♎♏♐♑♒♓"
-TARGETS=[("☉ Sun","sun","10"),("☽ Moon","moon","301"),("☿ Mercury","mercury","199"),("♀ Venus","venus","299"),("♂ Mars","mars","499"),("♃ Jupiter","jupiter","599"),("♄ Saturn","saturn","699"),("⚳ Ceres","ceres","1;"),("♇ Pluto","pluto","999"),("♅ Uranus","uranus","799"),("♆ Neptune","neptune","899")]
+TARGETS=[("☉ Sun","sun","10"),("☽ Moon","moon","301"),("☿ Mercury","mercury","199"),("♀ Venus","venus","299"),("♂ Mars","mars","499"),("♃ Jupiter","jupiter","599"),("♄ Saturn","saturn","699"),("⚳ Ceres","ceres","1;"),("♅ Uranus","uranus","799"),("♆ Neptune","neptune","899"),("♇ Pluto","pluto","999")]
 VISIBILITY_GLYPHS={
  "naked_eye":'<img class="visibility-glyph" src="/assets/almanack/visibility-glyphs/masters/eye.svg" alt="Naked eye" aria-label="Naked eye">',
  "binoculars":'<img class="visibility-glyph" src="/assets/almanack/visibility-glyphs/masters/binoculars.svg" alt="Binoculars" aria-label="Binoculars">',
