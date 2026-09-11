@@ -30,7 +30,10 @@ GENERATED = SRC / "generated"
 DEFAULT_YEARS = (2025, 2027)
 
 DATE_CELL_RE = re.compile(r"<tr><td>([A-Z][a-z]{2}, [A-Z][a-z]{2} \d{1,2}, \d{4})</td>")
-PAGE_TITLE_RE = re.compile(r"<title>ISO (\d{4})-W(\d{2}) · Star Almanack</title>")
+PAGE_TITLE_RES = (
+    re.compile(r"<title>ISO (\d{4})-W(\d{2}) · Star Almanack</title>"),
+    re.compile(r"<title>ISO week (\d{2}) (\d{4}) · Star Almanack</title>"),
+)
 DATE_COLUMNS = ("best_date", "center_best_date", "date")
 
 
@@ -52,6 +55,18 @@ def read_rows(path: Path) -> list[dict[str, str]]:
         return list(csv.DictReader(handle))
 
 
+def page_title_iso(text: str) -> tuple[int, int] | None:
+    match = PAGE_TITLE_RES[0].search(text)
+    if match:
+        year, week = map(int, match.groups())
+        return year, week
+    match = PAGE_TITLE_RES[1].search(text)
+    if match:
+        week, year = map(int, match.groups())
+        return year, week
+    return None
+
+
 def audit_week_pages(root: Path, year: int) -> tuple[int, list[str]]:
     pages = sorted((root / str(year)).glob("W??/index.html"))
     failures: list[str] = []
@@ -62,16 +77,15 @@ def audit_week_pages(root: Path, year: int) -> tuple[int, list[str]]:
         week = int(page.parent.name[1:])
         text = page.read_text(encoding="utf-8")
 
-        title_match = PAGE_TITLE_RE.search(text)
-        if not title_match:
-            failures.append(f"{page}: missing canonical ISO page title")
-        else:
-            title_year, title_week = map(int, title_match.groups())
-            if (title_year, title_week) != (year, week):
-                failures.append(
-                    f"{page}: page title is ISO {title_year}-W{title_week:02d}, "
-                    f"expected ISO {year}-W{week:02d}"
-                )
+        title_iso = page_title_iso(text)
+        if title_iso is None:
+            failures.append(f"{page}: missing recognized ISO page title")
+        elif title_iso != (year, week):
+            title_year, title_week = title_iso
+            failures.append(
+                f"{page}: page title is ISO {title_year}-W{title_week:02d}, "
+                f"expected ISO {year}-W{week:02d}"
+            )
 
         # Adjacent-year ISO labels are legitimate in prev/next navigation.
         # Calendar rows, however, must all belong to this page's ISO week.
