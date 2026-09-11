@@ -22,10 +22,10 @@ jobs:
           test -s star-almanack-microkernel.bsp
           ls -lh star-almanack-microkernel.bsp
 
-      - name: Download NAIF leap-seconds kernel
+      - name: Verify preserved NAIF leap-seconds kernel
         run: |
-          curl -L https://naif.jpl.nasa.gov/pub/naif/generic_kernels/lsk/naif0012.tls -o naif0012.tls
-          test -s naif0012.tls
+          test -s kernels/naif0012.tls
+          ls -lh kernels/naif0012.tls
 
       - name: Install Python dependencies
         run: python3 -m pip install --disable-pip-version-check spiceypy pyyaml
@@ -50,7 +50,7 @@ jobs:
           import eclipse_engine
 
           KERNEL = "star-almanack-microkernel.bsp"
-          LSK = "naif0012.tls"
+          LSK = "kernels/naif0012.tls"
           J2000 = 2451545.0
           SECONDS_PER_DAY = 86400.0
 
