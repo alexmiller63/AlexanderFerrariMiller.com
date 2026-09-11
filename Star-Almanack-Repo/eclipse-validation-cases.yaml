@@ -3,212 +3,126 @@ schema_version: 1
 suite: solar_eclipses
 
 description: >
-
   Permanent Star Almanack eclipse validation catalog. Historical cases test
-
   the engine against known events; the Mark Twain case is a negative control;
-
   future "Jell-O" cases compare Star Almanack predictions with independently
-
   published NASA predictions. Reference values are comparison targets only and
-
   must never be used by the eclipse calculation itself.
 
 # These cases become required when the event-search/classification layer is
-
 # connected to validate_star_almanack.py.
-
 required_now: false
 
 historical:
-
   - id: eclipse_1919_05_29
-
     label: Einstein-Eddington eclipse
-
     date_utc: "1919-05-29"
-
     expected_exists: true
-
     expected_type: total
-
     expected_greatest_utc: "1919-05-29T13:08:34Z"
-
     expected_magnitude: 1.0719
-
     source: "https://eclipse.gsfc.nasa.gov/SEsearch/SEdata.php?Ecl=19190529"
 
   - id: eclipse_1963_07_20
-
     label: Great Maine Eclipse of 1963
-
     date_utc: "1963-07-20"
-
     expected_exists: true
-
     expected_type: total
-
     expected_greatest_utc: "1963-07-20T20:35:38Z"
-
     expected_magnitude: 1.0224
-
     source: "https://eclipse.gsfc.nasa.gov/SEsearch/SEdata.php?Ecl=19630720"
 
   - id: eclipse_1991_07_11
-
     label: Great 1991 eclipse
-
     date_utc: "1991-07-11"
-
     expected_exists: true
-
     expected_type: total
-
     expected_greatest_utc: "1991-07-11T19:06:03Z"
-
     expected_magnitude: 1.0800
-
     source: "https://eclipse.gsfc.nasa.gov/SEsearch/SEdata.php?Ecl=19910711"
 
   - id: eclipse_2017_08_21
-
     label: Great American Eclipse
-
     date_utc: "2017-08-21"
-
     expected_exists: true
-
     expected_type: total
-
     expected_greatest_utc: "2017-08-21T18:25:30Z"
-
     expected_magnitude: 1.0306
-
     source: "https://eclipse.gsfc.nasa.gov/SEsearch/SEdata.php?Ecl=20170821"
 
   - id: eclipse_2024_04_08
-
     label: North American total eclipse
-
     date_utc: "2024-04-08"
-
     expected_exists: true
-
     expected_type: total
-
     expected_greatest_utc: "2024-04-08T18:17:15Z"
-
     expected_magnitude: 1.0566
-
     source: "https://eclipse.gsfc.nasa.gov/SEsearch/SEdata.php?Ecl=20240408"
 
 negative_controls:
-
   - id: mark_twain_0528_06_21
-
     label: Mark Twain — A Connecticut Yankee in King Arthur's Court
-
     date_utc: "0528-06-21"
-
     expected_exists: false
-
     claim_note: >
-
       Twain gives Hank Morgan a supposed total solar eclipse on June 21, 528.
-
       The Star Almanack engine must independently find no solar eclipse on
-
       that date.
-
     nasa_catalog_source: "https://eclipse.gsfc.nasa.gov/SEsearch/SEsearch.php"
-
     literary_source: "https://www.gutenberg.org/ebooks/86"
 
 future_jello:
-
   frozen_comparison_date: "2026-08-18"
-
   note: >
-
     These are frozen NASA comparison targets selected before the events.
-
-    Star Almanack must calculate each event independently and only then compare.
-
+    NASA's decade table publishes TD (Terrestrial Dynamical Time), not UT.
+    The UTC comparison values below come from NASA's detailed Besselian/search
+    pages so the validator compares UTC with UTC. The corresponding published
+    TD values are retained explicitly for provenance.
   cases:
-
     - id: jello_2027_02_06
-
       label: 2027 February 6 annular eclipse
-
       date_utc: "2027-02-06"
-
       expected_exists: true
-
       expected_type: annular
-
-      nasa_greatest_utc: "2027-02-06T16:00:47Z"
-
+      nasa_greatest_utc: "2027-02-06T15:59:32Z"
+      nasa_greatest_td: "2027-02-06T16:00:48"
       nasa_magnitude: 0.928
-
-      source: "https://eclipse.gsfc.nasa.gov/SEdecade/SEdecade2021.html"
+      source: "https://eclipse.gsfc.nasa.gov/SEsearch/SEdata.php?Ecl=+20270206"
 
     - id: jello_2027_08_02
-
       label: 2027 August 2 total eclipse
-
       date_utc: "2027-08-02"
-
       expected_exists: true
-
       expected_type: total
-
-      nasa_greatest_utc: "2027-08-02T10:07:49Z"
-
+      nasa_greatest_utc: "2027-08-02T10:06:38Z"
+      nasa_greatest_td: "2027-08-02T10:07:49.4"
       nasa_magnitude: 1.079
-
-      source: "https://eclipse.gsfc.nasa.gov/SEdecade/SEdecade2021.html"
+      source: "https://eclipse.gsfc.nasa.gov/SEbeselm/SEbeselm2001/SE2027Aug02Tbeselm.html"
 
     - id: jello_2028_01_26
-
       label: 2028 January 26 annular eclipse
-
       date_utc: "2028-01-26"
-
       expected_exists: true
-
       expected_type: annular
-
-      nasa_greatest_utc: "2028-01-26T15:08:58Z"
-
+      nasa_greatest_utc: "2028-01-26T15:07:43Z"
+      nasa_greatest_td: "2028-01-26T15:08:59"
       nasa_magnitude: 0.921
-
-      source: "https://eclipse.gsfc.nasa.gov/SEdecade/SEdecade2021.html"
+      source: "https://eclipse.gsfc.nasa.gov/SEsearch/SEdata.php?Ecl=+20280126"
 
     - id: jello_2028_07_22
-
       label: 2028 July 22 total eclipse
-
       date_utc: "2028-07-22"
-
       expected_exists: true
-
       expected_type: total
-
-      nasa_greatest_utc: "2028-07-22T02:56:39Z"
-
+      nasa_greatest_utc: "2028-07-22T02:55:27Z"
+      nasa_greatest_td: "2028-07-22T02:56:39.0"
       nasa_magnitude: 1.056
-
-      source: "https://eclipse.gsfc.nasa.gov/SEdecade/SEdecade2021.html"
+      source: "https://eclipse.gsfc.nasa.gov/SEbeselm/SEbeselm2001/SE2028Jul22Tbeselm.html"
 
 tolerances:
-
   greatest_time_seconds: 120
-
   magnitude_absolute: 0.002
-
   note: >
-
     Initial engineering tolerances. Tighten them after the full eclipse
-
     geometry, Delta-T handling, and path solution are validated.
-
