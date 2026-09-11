@@ -6,7 +6,7 @@ on:
       years:
         description: 'Space-separated ISO years to regenerate'
         required: true
-        default: '2025 2027'
+        default: '2025 2026 2027'
   push:
     paths:
       - '.github/workflows/populate-2025-2027-ephemeris.yml'
@@ -41,7 +41,7 @@ on:
       - 'Star-Almanack-Repo/asterism-geometry-2027.csv'
 
 env:
-  ALMANACK_YEARS: ${{ github.event_name == 'workflow_dispatch' && inputs.years || '2025 2027' }}
+  ALMANACK_YEARS: ${{ github.event_name == 'workflow_dispatch' && inputs.years || '2025 2026 2027' }}
 
 permissions:
   contents: write
