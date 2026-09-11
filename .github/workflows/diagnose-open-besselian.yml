@@ -5,7 +5,9 @@ on:
   push:
     paths:
       - '.github/workflows/diagnose-open-besselian.yml'
+      - 'Star-Almanack-Repo/besselian_eclipse_engine.py'
       - 'Star-Almanack-Repo/eclipse-validation-cases.yaml'
+      - 'Star-Almanack-Repo/THIRD-PARTY-LICENSES.md'
 
 permissions:
   contents: read
@@ -30,7 +32,7 @@ jobs:
           path: .cache/skyfield/de440s.bsp
           key: de440s-bsp-v1
 
-      - name: Install independent Besselian implementation
+      - name: Install pinned Besselian dependency
         run: |
           python -m pip install --upgrade pip
           python -m pip install \
@@ -53,23 +55,20 @@ jobs:
               Loader(str(root)).download('de440s.bsp')
           PY
 
-      - name: Compare Besselian greatest-eclipse times with frozen NASA targets
+      - name: Compare production backend with frozen NASA targets
         working-directory: Star-Almanack-Repo
         run: |
           python - <<'PY'
-          from __future__ import annotations
-
-          from datetime import datetime, timezone
+          from datetime import datetime
           from pathlib import Path
 
           import numpy as np
           import yaml
-          from scipy.optimize import minimize_scalar
-          from skyfield.api import load, load_file
-          from eclipse_calc.elements import bessels_at
 
-          DAY = 86400.0
-          KERNEL = Path('..') / '.cache' / 'skyfield' / 'de440s.bsp'
+          from besselian_eclipse_engine import BesselianEclipseEngine
+
+          kernel = Path('..') / '.cache' / 'skyfield' / 'de440s.bsp'
+          engine = BesselianEclipseEngine(kernel)
 
           with open('eclipse-validation-cases.yaml', 'r', encoding='utf-8') as f:
               suite = yaml.safe_load(f)
@@ -82,60 +81,26 @@ jobs:
               if case.get('expected_exists'):
                   cases.append((case['label'], case['date_utc'], case['nasa_greatest_utc']))
 
-          ts = load.timescale(builtin=True)
-          eph = load_file(str(KERNEL))
-
-          def axis2(t):
-              row = bessels_at(t, eph).iloc[0]
-              return float(row.x * row.x + row.y * row.y)
-
-          print('STAR ALMANACK — INDEPENDENT OPEN BESSELIAN GREATEST-ECLIPSE AUDIT')
-          print('Implementation: lkangas/eclipse-calc @ 23853a8f9e0d1a25e026203207aca16de1d7bb31')
+          print('STAR ALMANACK — PRODUCTION BESSELIAN GREATEST-ECLIPSE AUDIT')
+          print('Backend: Star-Almanack-Repo/besselian_eclipse_engine.py')
+          print('Dependency: lkangas/eclipse-calc @ 23853a8f9e0d1a25e026203207aca16de1d7bb31')
+          print('License notice: Star-Almanack-Repo/THIRD-PARTY-LICENSES.md')
           print('Ephemeris: JPL DE440s via Skyfield')
-          print('Definition tested: minimize x^2 + y^2 of the Besselian shadow axis on the fundamental plane')
           print()
           print(f"{'Case':38s} {'NASA UTC':20s} {'Besselian UTC':24s} {'Residual':>10s} {'gamma':>10s}")
           print('-' * 110)
 
           residuals = []
           for label, date_text, ref_text in cases:
-              y, m, d = map(int, date_text.split('-'))
-              base = ts.utc(y, m, d, 0, 0, 0)
-
-              # Reference-free search: find the day's minimum independently on
-              # a coarse grid, then refine around that minimum. NASA's time is
-              # used only after the calculation, as a comparison target.
-              coarse_seconds = np.arange(0.0, DAY + 1.0, 600.0)
-              coarse_times = base + coarse_seconds / DAY
-              B = bessels_at(coarse_times, eph)
-              q = B['x'].to_numpy() ** 2 + B['y'].to_numpy() ** 2
-              i = int(np.argmin(q))
-              center = float(coarse_seconds[i])
-              lo = max(0.0, center - 1200.0)
-              hi = min(DAY, center + 1200.0)
-
-              result = minimize_scalar(
-                  lambda seconds: axis2(base + float(seconds) / DAY),
-                  bounds=(lo, hi),
-                  method='bounded',
-                  options={'xatol': 0.001},
-              )
-              if not result.success:
-                  raise RuntimeError(f'greatest-eclipse minimization failed for {label}: {result.message}')
-
-              t_best = base + float(result.x) / DAY
-              row = bessels_at(t_best, eph).iloc[0]
-              gamma = float(np.sqrt(row.x * row.x + row.y * row.y))
-
+              event = engine.find_greatest_eclipse(date_text)
               ref_dt = datetime.fromisoformat(ref_text.replace('Z', '+00:00'))
-              calc_dt = t_best.utc_datetime()
-              if calc_dt.tzinfo is None:
-                  calc_dt = calc_dt.replace(tzinfo=timezone.utc)
+              calc_dt = datetime.fromisoformat(event.greatest_utc.replace('Z', '+00:00'))
               residual = (calc_dt - ref_dt).total_seconds()
               residuals.append(residual)
-
-              calc_text = calc_dt.strftime('%Y-%m-%dT%H:%M:%S.%f')[:-3] + 'Z'
-              print(f'{label:38.38s} {ref_text:20s} {calc_text:24s} {residual:+9.3f}s {gamma:10.6f}')
+              print(
+                  f'{label:38.38s} {ref_text:20s} {event.greatest_utc:24s} '
+                  f'{residual:+9.3f}s {event.gamma:10.6f}'
+              )
 
           arr = np.asarray(residuals, dtype=float)
           print()
@@ -145,4 +110,12 @@ jobs:
           print(f'mean signed residual = {arr.mean():+.3f} s')
           print(f'mean absolute error  = {np.abs(arr).mean():.3f} s')
           print(f'max absolute error   = {np.abs(arr).max():.3f} s')
+
+          # Guard against accidentally reverting to the old tens-of-seconds
+          # timing behavior on the modern/future validation set.
+          modern = np.abs(arr[2:])
+          if modern.max() > 10.0:
+              raise SystemExit(
+                  f'production Besselian backend regression: modern max error {modern.max():.3f}s > 10s'
+              )
           PY
