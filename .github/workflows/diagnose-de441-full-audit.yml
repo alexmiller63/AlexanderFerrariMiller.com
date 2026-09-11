@@ -1,0 +1,142 @@
+name: Diagnose DE441 Full Eclipse Audit
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  diagnose-full-audit:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: Star-Almanack-Repo
+
+    steps:
+      - name: Check out Star Almanack
+        uses: actions/checkout@v6
+
+      - name: Verify validated DE441 microkernel
+        run: |
+          test -s star-almanack-microkernel.bsp
+          ls -lh star-almanack-microkernel.bsp
+
+      - name: Install Python dependencies
+        run: python3 -m pip install --disable-pip-version-check spiceypy pyyaml
+
+      - name: Download NAIF leap-seconds kernel
+        run: |
+          curl -L https://naif.jpl.nasa.gov/pub/naif/generic_kernels/lsk/naif0012.tls -o naif0012.tls
+          test -s naif0012.tls
+
+      - name: Bootstrap ELP2000-82B archive
+        working-directory: Star-Almanack-Repo/star-almanack-elp82b
+        run: |
+          python lunar_elp.py bootstrap data/elp82b
+          python lunar_elp.py verify data/elp82b
+          python normalize_elp82b.py data/elp82b elp82b-manifest.json
+
+      - name: Run DE441 eclipse audit
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 <<'PY' 2>&1 | tee de441-eclipse-full-audit.txt
+          from datetime import datetime, timezone
+          import math
+          import spiceypy as spice
+          import yaml
+          import eclipse_engine
+
+          BSP = "star-almanack-microkernel.bsp"
+          LSK = "naif0012.tls"
+          DAY = 86400.0
+          J2000 = 2451545.0
+
+          def iso_dt(text):
+              return datetime.fromisoformat(text.replace("Z", "+00:00"))
+
+          def signed_seconds(a, b):
+              return (iso_dt(a) - iso_dt(b)).total_seconds()
+
+          def iso_to_jd(text):
+              dt = iso_dt(text).astimezone(timezone.utc)
+              h = dt.hour + dt.minute/60 + dt.second/3600 + dt.microsecond/3_600_000_000
+              return eclipse_engine.gregorian_to_jd(dt.year, dt.month, dt.day, h)
+
+          spice.furnsh(LSK)
+          spice.furnsh(BSP)
+
+          def de441_sun(jd_tdb):
+              et = (jd_tdb - J2000) * DAY
+              p, _ = spice.spkpos("SUN", et, "ECLIPJ2000", "NONE", "EARTH")
+              return eclipse_engine.Vec3(float(p[0]), float(p[1]), float(p[2]))
+
+          with open("eclipse-validation-cases.yaml", "r", encoding="utf-8") as f:
+              spec = yaml.safe_load(f)
+
+          cases = []
+          for c in spec["historical"]:
+              if c.get("expected_greatest_utc"):
+                  cases.append(("historical", c["label"], c["date_utc"], c["expected_greatest_utc"]))
+          for c in spec["future_jello"]["cases"]:
+              if c.get("nasa_greatest_utc"):
+                  cases.append(("future", c["label"], c["date_utc"], c["nasa_greatest_utc"]))
+
+          engine = eclipse_engine.EclipseEngine()
+          original_sun = eclipse_engine.sun_vector_j2000
+
+          print("STAR ALMANACK — DE441 SUN / ELP2000-82B ECLIPSE AUDIT")
+          print("Only the Sun ephemeris is replaced by DE441; Moon, geometry, and search remain production.")
+          print()
+          print(f"{'Case':<36} {'Prod':>8} {'DE441':>8} {'Shift':>8} {'dA/dt@ref':>12} {'dA/dt@calc':>13}")
+          print("-" * 94)
+
+          try:
+              for group, label, date, reference in cases:
+                  eclipse_engine.sun_vector_j2000 = original_sun
+                  prod = engine.find_solar_eclipse(date)
+                  prod_res = signed_seconds(prod.greatest_utc, reference)
+
+                  eclipse_engine.sun_vector_j2000 = de441_sun
+                  de = engine.find_solar_eclipse(date)
+                  de_res = signed_seconds(de.greatest_utc, reference)
+                  shift = signed_seconds(de.greatest_utc, prod.greatest_utc)
+
+                  ref_jd = iso_to_jd(reference)
+                  calc_jd = de.greatest_jd_utc
+                  one_sec = 1.0 / DAY
+
+                  def axis_rate(jd):
+                      gm = engine.geometry_at_utc_jd(jd - one_sec)
+                      gp = engine.geometry_at_utc_jd(jd + one_sec)
+                      return (gp.axis_distance_km - gm.axis_distance_km) / 2.0
+
+                  ref_rate = axis_rate(ref_jd)
+                  calc_rate = axis_rate(calc_jd)
+
+                  print(f"{label[:35]:<36} {prod_res:+7.1f}s {de_res:+7.1f}s {shift:+7.1f}s {ref_rate:+12.6f} {calc_rate:+13.6f}")
+
+              print()
+              print("Interpretation:")
+              print("- If DE441 removes most timing residual, the compact Sun/frame path is the main culprit.")
+              print("- If DE441 leaves the residual, the Moon/geometry/minimizer path remains implicated.")
+              print("- dA/dt near zero at the DE441 calculated instant confirms the minimizer is actually minimizing axis distance.")
+          finally:
+              eclipse_engine.sun_vector_j2000 = original_sun
+              spice.kclear()
+          PY
+
+      - name: Show audit output
+        if: always()
+        run: cat de441-eclipse-full-audit.txt || true
+
+      - name: Upload audit artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: de441-eclipse-full-audit
+          path: Star-Almanack-Repo/de441-eclipse-full-audit.txt
+          if-no-files-found: error
+          retention-days: 7
