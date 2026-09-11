@@ -6,6 +6,7 @@ on:
     paths:
       - '.github/workflows/almanack-type-coverage-regression.yml'
       - 'tools/test_almanack_type_coverage.py'
+      - 'tools/audit_almanack_population_counts.py'
       - 'tools/populate_calendar.py'
       - 'tools/populate_meteor_showers.py'
       - 'tools/populate_ephemeris.py'
@@ -20,6 +21,10 @@ on:
       - '_includes/almanack-notation-legend.html'
       - 'Star-Almanack-Repo/constellation-observance-2026.csv'
       - 'Star-Almanack-Repo/asterism-geometry-2026.csv'
+      - 'Star-Almanack-Repo/expanded-bayer-visibility-2026.csv'
+      - 'Star-Almanack-Repo/messier-visibility-2026.csv'
+      - 'Star-Almanack-Repo/caldwell-catalog.csv'
+      - 'Star-Almanack-Repo/finest-ngc-catalog.csv'
       - 'Star-Almanack-Repo/generated/expanded-bayer-visibility-2026.csv'
       - 'Star-Almanack-Repo/generated/messier-visibility-2026.csv'
       - 'Star-Almanack-Repo/generated/caldwell-visibility-2026.csv'
@@ -36,3 +41,6 @@ jobs:
       - uses: actions/checkout@v4
       - name: Run permanent type coverage regression
         run: python tools/test_almanack_type_coverage.py
+      - name: Report Almanack population counts
+        if: always()
+        run: python tools/audit_almanack_population_counts.py
