@@ -1,8 +1,10 @@
 # Star Almanack — 2026 eclipses
 #
-# These entries are calculated from Sun–Earth–Moon geometry, not copied from
-# a published eclipse table. Times are UTC. Contact times are a first-pass
-# geometric solution and should be regression-tested before publication.
+# Geometry and contact times below are calculated from Sun–Earth–Moon geometry,
+# not copied from a published eclipse table. Reader-facing visibility regions
+# and standard eclipse magnitudes are retained as publication/validation metadata
+# against the NASA GSFC eclipse catalog so the Almanack can give useful observing
+# context without replacing its independent geometry calculation.
 
 year: 2026
 method:
@@ -12,6 +14,7 @@ method:
   lunar_geometry: "compare Moon-center separation from Earth's anti-solar shadow axis with the angular radii of the Moon, umbra, and penumbra"
   time_standard: UTC
   status: independently_calculated_first_pass
+  publication_details_validation: "NASA GSFC eclipse catalog"
 
 eclipses:
   - id: 2026-02-17-solar
@@ -20,6 +23,9 @@ eclipses:
     date: 2026-02-17
     new_moon_utc: "12:01:10"
     maximum_geometry_utc: "12:14:49"
+    magnitude: "0.963"
+    visibility: "Partial eclipse from southern Argentina and Chile, southern Africa, and Antarctica; annularity crosses Antarctica."
+    observing_note: "Use certified solar-eclipse viewers or a properly filtered telescope for the entire event; an annular eclipse never becomes safe to view directly."
     contacts_utc:
       partial_begin: "09:56:07"
       annular_begin_global: "11:41:39"
@@ -38,6 +44,9 @@ eclipses:
     date: 2026-03-03
     full_moon_utc: "11:37:56"
     maximum_geometry_utc: "11:31:48"
+    magnitude: "1.151"
+    visibility: "Visible from eastern Asia, Australia, the Pacific, and the Americas wherever the Moon is above the horizon during the eclipse."
+    observing_note: "Safe to view directly. Binoculars or a small telescope can enhance the color and structure of Earth's shadow."
     contacts_utc:
       penumbral_begin: "08:46:15"
       partial_begin: "09:51:20"
@@ -58,6 +67,9 @@ eclipses:
     date: 2026-08-12
     new_moon_utc: "17:36:44"
     maximum_geometry_utc: "17:48:45"
+    magnitude: "1.039"
+    visibility: "Partial eclipse from northern North America, western Africa, and Europe; totality crosses the Arctic, Greenland, Iceland, and Spain."
+    observing_note: "Use certified solar-eclipse viewers or a properly filtered telescope during every partial phase. Direct viewing is safe only during the brief total phase for observers actually inside the path of totality."
     contacts_utc:
       partial_begin: "15:33:56"
       total_begin_global: "16:57:19"
@@ -76,6 +88,9 @@ eclipses:
     date: 2026-08-28
     full_moon_utc: "04:18:33"
     maximum_geometry_utc: "04:10:20"
+    magnitude: "0.930"
+    visibility: "Visible from the eastern Pacific, the Americas, Europe, and Africa wherever the Moon is above the horizon during the eclipse."
+    observing_note: "Safe to view directly. Binoculars or a small telescope make the umbral boundary easier to follow across the lunar surface."
     contacts_utc:
       penumbral_begin: "01:25:52"
       partial_begin: "02:35:13"
