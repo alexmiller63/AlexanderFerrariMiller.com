@@ -29,7 +29,11 @@ STYLE = """<style id="almanack-legend-css">
 .legend-line { display:flex; flex-wrap:wrap; gap:.45rem 1rem; align-items:center; }
 .legend-item { white-space:nowrap; }
 .text-symbol { font-size:1.05em; font-variant-emoji:text; }
-.legend-glyph { height:1.55em; width:auto; vertical-align:-.32em; margin-right:.2rem; }
+/* One canonical size for every observing/event glyph.  This deliberately
+   overrides legacy inline sizes and also prevents intrinsically large SVGs in
+   the Extended targets visibility row from rendering oversized. */
+.visibility-glyph { height:2.3em !important; width:auto !important; vertical-align:-.55em !important; }
+.legend-glyph { height:2.3em; width:auto; vertical-align:-.55em; margin-right:.2rem; }
 .legend-explanation { white-space:normal; }
 </style>"""
 
