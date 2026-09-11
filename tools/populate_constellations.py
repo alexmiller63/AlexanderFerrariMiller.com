@@ -5,26 +5,26 @@ Alpha/beta star events are owned by the fixed-sky population step;
 this step must not create duplicate alpha/beta events.
 
 Constellation-center visibility is an observer-facing property of the adopted
-constellation figure, not a physical magnitude of the geometric center.  The
+constellation figure, not a physical magnitude of the geometric center. The
 normal rule is the median V magnitude of the unique stars in the adopted
-Martz-Kohl / MacRobert figure.  Figure membership comes from the pinned IAU
+Martz-Kohl / MacRobert figure. Figure membership comes from the pinned IAU
 stick-figure dataset used by the Martz-Kohl presentation; stellar V magnitudes
 come from the pinned HYG catalog used elsewhere by the Almanack, reconciled
 against documented Hipparcos entries that HYG intentionally omits.
 
 Explicit front-matter exceptions:
 
-* Mensa and Microscopium have no Martz-Kohl Stars-and-Sticks figure.  For each,
+* Mensa and Microscopium have no Martz-Kohl Stars-and-Sticks figure. For each,
   use the arithmetic mean of its alpha and beta V magnitudes.
-* Serpens is one IAU constellation but has two adopted figures.  Caput and
+* Serpens is one IAU constellation but has two adopted figures. Caput and
   Cauda are emitted separately, each with its own IAU-region centroid,
   figure-member median V magnitude, observing aid, declination band, and
   season.
 
 Norma and Telescopium are ordinary figure-median cases: both have explicit
 member lists in the adopted MacRobert/IAU data, and Martz-Kohl publishes a
-Stars-and-Sticks figure for Telescopium.  There is deliberately no
-brightest-star or alpha/beta fallback for ordinary constellations.  Missing
+Stars-and-Sticks figure for Telescopium. There is deliberately no
+brightest-star or alpha/beta fallback for ordinary constellations. Missing
 figure membership is a source-data error that must be resolved explicitly
 rather than silently changing the visibility rule.
 """
@@ -52,22 +52,10 @@ BAYER_STARS = SRC / "expanded-bayer-stars.csv"
 MARTZ_FIGURES = Path("/tmp/constellation_lines_iau.dat")
 HYG_CATALOG = Path("/tmp/hygdata_v41.csv")
 
-# HYG deliberately deletes HIP 55203 (Xi UMa / Alula Australis) because that
-# multiple system does not have a valid HYG-style single-star record.  The
-# adopted IAU/MacRobert Ursa Major figure nevertheless references HIP 55203,
-# and the original Hipparcos entry supplies the unresolved system's visual
-# magnitude.  Keep such catalog-reconciliation values explicit here rather
-# than silently dropping a figure member or changing the figure-median rule.
-# HIP 55203: V = 3.79 (Xi UMa / Alula Australis, Hipparcos system magnitude).
 HYG_HIPPARCOS_SUPPLEMENTS = {
     "55203": 3.79,
 }
 
-# Explicit front matter.  Martz-Kohl does not publish Stars-and-Sticks figures
-# for Mensa or Microscopium, so those two use the same documented alpha/beta
-# mean fallback.  Serpens component centroids were calculated with the same
-# 0.1-degree spherical-area sampling method used for the 88-constellation
-# snapshot, but on the two official IAU Serpens boundary patches separately.
 FRONT_MATTER = {
     "Men": {"rule": "alpha_beta_mean"},
     "Mic": {"rule": "alpha_beta_mean"},
@@ -143,8 +131,6 @@ def alpha_beta_mean(con: str, values: dict[str, dict[str, list[float]]]) -> floa
     pair = values.get(con, {})
     if not pair.get("α") or not pair.get("β"):
         raise SystemExit(f"Front-matter alpha/beta rule cannot be resolved for {con}")
-    # When a Bayer designation resolves into multiple catalog components, use
-    # the brightest visual component as that designation's representative V.
     alpha = min(pair["α"])
     beta = min(pair["β"])
     return statistics.mean((alpha, beta))
@@ -170,9 +156,6 @@ def read_hyg(path: Path) -> dict[str, float]:
         except ValueError:
             continue
         by_hip[hip] = mag
-
-    # Reconcile only documented HYG omissions that are still referenced by the
-    # adopted Hipparcos-number stick figures.  Never overwrite a HYG value.
     for hip, mag in HYG_HIPPARCOS_SUPPLEMENTS.items():
         by_hip.setdefault(hip, mag)
     return by_hip
@@ -208,7 +191,7 @@ def median_figure_magnitude(
     missing = [hip for hip in hips if hip not in by_hip]
     if missing:
         raise SystemExit(
-            f"Pinned HYG/Hipparcos magnitude set lacks V magnitudes for "
+            "Pinned HYG/Hipparcos magnitude set lacks V magnitudes for "
             f"{figure_key} member HIP(s): " + ", ".join(missing)
         )
     return statistics.median(by_hip[hip] for hip in hips)
@@ -240,7 +223,9 @@ def constellation_magnitude(
             part = row.get("figure_part", "").strip()
             component = next((x for x in SERPENS_COMPONENTS if x["figure_part"] == part), None)
             if component is None:
-                raise SystemExit(f"Serpens row lacks a recognized Caput/Cauda component: {part!r}")
+                raise SystemExit(
+                    f"Serpens row lacks a recognized Caput/Cauda component: {part!r}"
+                )
             return median_figure_magnitude(component["figure_key"], figures, by_hip)
         raise SystemExit(f"Unknown front-matter constellation rule for {con}: {rule}")
 
@@ -318,52 +303,98 @@ def event_map(rows):
     return events
 
 
-def clean_legacy_constellation_events(text):
-    cells = re.compile(r'(<td>)(.*?)(</td>)')
-    bare = re.compile(r'^✦ (?:α|β) star — .+$')
-    old_center = re.compile(r'^(?:✦ )?.*? (?:geometric-center observance|center)(?: —)? .+$')
+BARE_LEGACY_STAR = re.compile(r'^✦ (?:α|β) star — .+$')
+LEGACY_CENTER = re.compile(r'^(?:✦ )?.*? (?:geometric-center observance|center)(?: —)? .+$')
 
-    def repl(m):
-        parts = [
-            p
-            for p in m.group(2).split("<br>")
-            if not bare.match(p.strip()) and not old_center.match(p.strip())
-        ]
-        return m.group(1) + ("<br>".join(parts) if parts else "—") + m.group(3)
 
-    return cells.sub(repl, text)
+def clean_target_event_cell(cell: str) -> list[str]:
+    """Remove only legacy/current constellation entries from one date cell.
+
+    This must never sweep an entire weekly page. Civil-year observing cycles can
+    cross an ISO-year boundary; page-wide cleaning while processing the next
+    civil year previously erased constellation centers from unrelated dates in
+    the preceding ISO year (for example Norma in 2026-W28).
+    """
+    if cell in ("", "—"):
+        return []
+    kept = []
+    for item in cell.split("<br>"):
+        stripped = item.strip()
+        if not stripped:
+            continue
+        if BARE_LEGACY_STAR.match(stripped):
+            continue
+        if " — Constellation — " in stripped:
+            continue
+        if "geometric-center observance" in stripped:
+            continue
+        if LEGACY_CENTER.match(stripped) and " — Asterism — " not in stripped:
+            continue
+        kept.append(item)
+    return kept
+
+
+def page_for_date(root: Path, d: dt.date) -> Path:
+    iso = d.isocalendar()
+    return root / str(iso.year) / f"W{iso.week:02d}" / "index.html"
 
 
 def pages_for_events(root, events):
-    pages = []
-    for iso_year in sorted({d.isocalendar().year for d in events}):
-        pages.extend(sorted((root / str(iso_year)).glob("W*/index.html")))
-    return pages
+    pages = {page_for_date(root, d) for d in events}
+    return sorted(page for page in pages if page.exists())
+
+
+def row_pattern(d: dt.date) -> re.Pattern[str]:
+    date_text = d.strftime("%a, %b %d, %Y")
+    return re.compile(
+        rf"(<tr><td>{re.escape(date_text)}</td><td>.*?</td><td>)(.*?)(</td></tr>)"
+    )
 
 
 def inject(root, events):
     changed = 0
-    for page in pages_for_events(root, events):
+    events_by_page = defaultdict(list)
+    for d, vals in events.items():
+        events_by_page[page_for_date(root, d)].append((d, vals))
+
+    for page, dated_events in sorted(events_by_page.items(), key=lambda x: str(x[0])):
+        if not page.exists():
+            raise SystemExit(f"Missing weekly page for constellation event(s): {page}")
         text = page.read_text(encoding="utf-8")
         original = text
-        text = clean_legacy_constellation_events(text)
-        for d, vals in events.items():
-            date_text = d.strftime("%a, %b %d, %Y")
-            pat = re.compile(
-                rf"(<tr><td>{re.escape(date_text)}</td><td>.*?</td><td>)(.*?)(</td></tr>)"
-            )
+        for d, vals in dated_events:
+            pat = row_pattern(d)
             m = pat.search(text)
             if not m:
-                continue
-            keep = [] if m.group(2) == "—" else [x for x in m.group(2).split("<br>") if x]
+                raise SystemExit(f"Could not find calendar row for {d} in {page}")
+            keep = clean_target_event_cell(m.group(2))
             for v in vals:
                 if v not in keep:
                     keep.append(v)
-            text = text[: m.start(2)] + "<br>".join(keep) + text[m.end(2) :]
+            replacement = "<br>".join(keep) if keep else "—"
+            text = text[: m.start(2)] + replacement + text[m.end(2) :]
         if text != original:
             page.write_text(text, encoding="utf-8")
             changed += 1
     return changed
+
+
+def validate(root, events):
+    for d, vals in events.items():
+        page = page_for_date(root, d)
+        if not page.exists():
+            raise SystemExit(f"Missing weekly page while validating constellation event(s): {page}")
+        text = page.read_text(encoding="utf-8")
+        m = row_pattern(d).search(text)
+        if not m:
+            raise SystemExit(f"Could not find calendar row for {d} while validating {page}")
+        items = m.group(2).split("<br>") if m.group(2) not in ("", "—") else []
+        for value in vals:
+            count = items.count(value)
+            if count != 1:
+                raise SystemExit(
+                    f"{root}: expected {value!r} exactly once on {d} in {page}, found {count}"
+                )
 
 
 def main():
@@ -373,8 +404,10 @@ def main():
         events = event_map(rows)
         c1 = inject(SOURCE_SITE, events)
         c2 = inject(PUBLIC, events)
+        validate(SOURCE_SITE, events)
+        validate(PUBLIC, events)
         print(
-            f"{year}: 89 constellation-center events with visibility "
+            f"{year}: verified 89 constellation-center events with visibility "
             f"(Serpens split into Caput/Cauda); updated {c1} source + {c2} public pages"
         )
 
