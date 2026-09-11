@@ -13,16 +13,19 @@ come from the pinned HYG catalog used elsewhere by the Almanack.
 
 Explicit front-matter exceptions:
 
-* Mensa and Telescopium: arithmetic mean of alpha and beta V magnitudes.
-* Norma: modern Norma has no alpha or beta; use the arithmetic mean of its two
-  brightest modern stars.
-* Serpens: one IAU constellation, but two adopted figures.  Caput and Cauda
-  are emitted separately, each with its own IAU-region centroid, figure-member
-  median V magnitude, observing aid, declination band, and season.
+* Mensa and Microscopium have no Martz-Kohl Stars-and-Sticks figure.  For each,
+  use the arithmetic mean of its alpha and beta V magnitudes.
+* Serpens is one IAU constellation but has two adopted figures.  Caput and
+  Cauda are emitted separately, each with its own IAU-region centroid,
+  figure-member median V magnitude, observing aid, declination band, and
+  season.
 
-There is deliberately no brightest-star or alpha/beta fallback for ordinary
-constellations.  Missing figure membership is a source-data error that must be
-resolved explicitly rather than silently changing the visibility rule.
+Norma and Telescopium are ordinary figure-median cases: both have explicit
+member lists in the adopted MacRobert/IAU data, and Martz-Kohl publishes a
+Stars-and-Sticks figure for Telescopium.  There is deliberately no
+brightest-star or alpha/beta fallback for ordinary constellations.  Missing
+figure membership is a source-data error that must be resolved explicitly
+rather than silently changing the visibility rule.
 """
 from __future__ import annotations
 
@@ -48,13 +51,14 @@ BAYER_STARS = SRC / "expanded-bayer-stars.csv"
 MARTZ_FIGURES = Path("/tmp/constellation_lines_iau.dat")
 HYG_CATALOG = Path("/tmp/hygdata_v41.csv")
 
-# Explicit front matter.  Serpens component centroids were calculated with the
-# same 0.1-degree spherical-area sampling method used for the 88-constellation
+# Explicit front matter.  Martz-Kohl does not publish Stars-and-Sticks figures
+# for Mensa or Microscopium, so those two use the same documented alpha/beta
+# mean fallback.  Serpens component centroids were calculated with the same
+# 0.1-degree spherical-area sampling method used for the 88-constellation
 # snapshot, but on the two official IAU Serpens boundary patches separately.
 FRONT_MATTER = {
     "Men": {"rule": "alpha_beta_mean"},
-    "Tel": {"rule": "alpha_beta_mean"},
-    "Nor": {"rule": "two_brightest_mean"},
+    "Mic": {"rule": "alpha_beta_mean"},
     "Ser": {"rule": "martz_caput_cauda"},
 }
 
@@ -134,11 +138,10 @@ def alpha_beta_mean(con: str, values: dict[str, dict[str, list[float]]]) -> floa
     return statistics.mean((alpha, beta))
 
 
-def read_hyg(path: Path):
+def read_hyg(path: Path) -> dict[str, float]:
     if not path.is_file():
         raise SystemExit(f"Missing pinned HYG catalog: {path}")
     by_hip: dict[str, float] = {}
-    by_con: dict[str, list[float]] = defaultdict(list)
     for row in read_csv(path):
         raw_mag = (row.get("mag") or "").strip()
         if not raw_mag:
@@ -148,17 +151,14 @@ def read_hyg(path: Path):
         except ValueError:
             continue
         hip = (row.get("hip") or "").strip()
-        if hip:
-            try:
-                hip = str(int(float(hip)))
-            except ValueError:
-                pass
-            else:
-                by_hip[hip] = mag
-        con = (row.get("con") or "").strip()
-        if con:
-            by_con[con].append(mag)
-    return by_hip, by_con
+        if not hip:
+            continue
+        try:
+            hip = str(int(float(hip)))
+        except ValueError:
+            continue
+        by_hip[hip] = mag
+    return by_hip
 
 
 def read_martz_figures(path: Path) -> dict[str, list[str]]:
@@ -197,13 +197,6 @@ def median_figure_magnitude(
     return statistics.median(by_hip[hip] for hip in hips)
 
 
-def two_brightest_mean(con: str, by_con: dict[str, list[float]]) -> float:
-    mags = sorted(by_con.get(con, []))
-    if len(mags) < 2:
-        raise SystemExit(f"Cannot resolve two brightest stars for {con} from pinned HYG")
-    return statistics.mean(mags[:2])
-
-
 def normal_figure_key(name: str, figures: dict[str, list[str]]) -> str:
     wanted = normalize_name(name)
     matches = [key for key in figures if normalize_name(key) == wanted]
@@ -219,7 +212,6 @@ def constellation_magnitude(
     alpha_beta: dict[str, dict[str, list[float]]],
     figures: dict[str, list[str]],
     by_hip: dict[str, float],
-    by_con: dict[str, list[float]],
 ) -> float:
     con = row["abbr"].strip()
     front = FRONT_MATTER.get(con)
@@ -227,8 +219,6 @@ def constellation_magnitude(
         rule = front["rule"]
         if rule == "alpha_beta_mean":
             return alpha_beta_mean(con, alpha_beta)
-        if rule == "two_brightest_mean":
-            return two_brightest_mean(con, by_con)
         if rule == "martz_caput_cauda":
             part = row.get("figure_part", "").strip()
             component = next((x for x in SERPENS_COMPONENTS if x["figure_part"] == part), None)
@@ -301,11 +291,11 @@ def event_map(rows):
     events = defaultdict(list)
     alpha_beta = alpha_beta_magnitudes()
     figures = read_martz_figures(MARTZ_FIGURES)
-    by_hip, by_con = read_hyg(HYG_CATALOG)
+    by_hip = read_hyg(HYG_CATALOG)
     for r in rows:
         d = dt.date.fromisoformat(r["center_best_date"])
         cls = f"{declination_band(r['centroid_dec_deg'])} {season_for(d)}"
-        mag = constellation_magnitude(r, alpha_beta, figures, by_hip, by_con)
+        mag = constellation_magnitude(r, alpha_beta, figures, by_hip)
         vis = visibility_html(mag)
         events[d].append(f"{r['name']} center — Constellation — {vis} — {cls}")
     return events
