@@ -1,0 +1,131 @@
+name: Diagnose DE441 Moon Isolation
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  diagnose-moon-isolation:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: Star-Almanack-Repo
+    steps:
+      - name: Check out Star Almanack
+        uses: actions/checkout@v6
+      - name: Verify validated DE441 microkernel
+        run: |
+          test -s star-almanack-microkernel.bsp
+          ls -lh star-almanack-microkernel.bsp
+      - name: Install Python dependencies
+        run: python3 -m pip install --disable-pip-version-check spiceypy pyyaml
+      - name: Download NAIF leap-seconds kernel
+        run: |
+          curl -L https://naif.jpl.nasa.gov/pub/naif/generic_kernels/lsk/naif0012.tls -o naif0012.tls
+          test -s naif0012.tls
+      - name: Bootstrap ELP2000-82B archive
+        working-directory: Star-Almanack-Repo/star-almanack-elp82b
+        run: |
+          python lunar_elp.py bootstrap data/elp82b
+          python lunar_elp.py verify data/elp82b
+          python normalize_elp82b.py data/elp82b elp82b-manifest.json
+      - name: Run DE441 Moon isolation test
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 <<'PY' 2>&1 | tee de441-moon-isolation.txt
+          from datetime import datetime
+          import spiceypy as spice
+          import yaml
+          import eclipse_engine
+
+          BSP = "star-almanack-microkernel.bsp"
+          LSK = "naif0012.tls"
+          DAY = 86400.0
+          J2000 = 2451545.0
+
+          def iso_dt(text):
+              return datetime.fromisoformat(text.replace("Z", "+00:00"))
+
+          def signed_seconds(a, b):
+              return (iso_dt(a) - iso_dt(b)).total_seconds()
+
+          spice.furnsh(LSK)
+          spice.furnsh(BSP)
+
+          def de441_body(body, jd_tdb):
+              et = (jd_tdb - J2000) * DAY
+              p, _ = spice.spkpos(body, et, "ECLIPJ2000", "NONE", "EARTH")
+              return eclipse_engine.Vec3(float(p[0]), float(p[1]), float(p[2]))
+
+          def de441_sun(jd_tdb):
+              return de441_body("SUN", jd_tdb)
+
+          def de441_moon(jd_tdb):
+              return de441_body("MOON", jd_tdb)
+
+          with open("eclipse-validation-cases.yaml", "r", encoding="utf-8") as f:
+              spec = yaml.safe_load(f)
+
+          cases = []
+          for c in spec["historical"]:
+              if c.get("expected_greatest_utc"):
+                  cases.append((c["label"], c["date_utc"], c["expected_greatest_utc"]))
+          for c in spec["future_jello"]["cases"]:
+              if c.get("nasa_greatest_utc"):
+                  cases.append((c["label"], c["date_utc"], c["nasa_greatest_utc"]))
+
+          engine = eclipse_engine.EclipseEngine()
+          original_sun = eclipse_engine.sun_vector_j2000
+          original_moon = engine.moon_vector_j2000
+
+          print("STAR ALMANACK — DE441 MOON ISOLATION TEST")
+          print("A = production Sun + ELP Moon")
+          print("B = DE441 Sun + ELP Moon")
+          print("C = DE441 Sun + DE441 Moon")
+          print()
+          print(f"{'Case':<36} {'A Prod':>9} {'B Sun':>9} {'C Both':>9} {'C-B':>9}")
+          print("-" * 76)
+
+          try:
+              for label, date, reference in cases:
+                  eclipse_engine.sun_vector_j2000 = original_sun
+                  engine.moon_vector_j2000 = original_moon
+                  a = engine.find_solar_eclipse(date)
+
+                  eclipse_engine.sun_vector_j2000 = de441_sun
+                  engine.moon_vector_j2000 = original_moon
+                  b = engine.find_solar_eclipse(date)
+
+                  eclipse_engine.sun_vector_j2000 = de441_sun
+                  engine.moon_vector_j2000 = de441_moon
+                  c = engine.find_solar_eclipse(date)
+
+                  ar = signed_seconds(a.greatest_utc, reference)
+                  br = signed_seconds(b.greatest_utc, reference)
+                  cr = signed_seconds(c.greatest_utc, reference)
+                  cb = signed_seconds(c.greatest_utc, b.greatest_utc)
+                  print(f"{label[:35]:<36} {ar:+8.1f}s {br:+8.1f}s {cr:+8.1f}s {cb:+8.1f}s")
+
+              print()
+              print("Interpretation:")
+              print("- If C collapses the residuals toward zero, the ELP lunar path/frame is isolated.")
+              print("- If C retains substantial residuals, inspect eclipse-axis geometry/reference convention next.")
+          finally:
+              eclipse_engine.sun_vector_j2000 = original_sun
+              engine.moon_vector_j2000 = original_moon
+              spice.kclear()
+          PY
+      - name: Show isolation output
+        if: always()
+        run: cat de441-moon-isolation.txt || true
+      - name: Upload isolation artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: de441-moon-isolation
+          path: Star-Almanack-Repo/de441-moon-isolation.txt
+          if-no-files-found: error
+          retention-days: 7
