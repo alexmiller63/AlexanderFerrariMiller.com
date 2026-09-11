@@ -14,7 +14,7 @@ import sys
 from collections import defaultdict
 from pathlib import Path
 
-from star_almanack_astronomy import best_visibility, declination_band, season_for
+from star_almanack_astronomy import best_visibility_occurrences_for_iso_year, declination_band, season_for
 
 ROOT = Path(__file__).resolve().parents[1]
 SRC = ROOT / "Star-Almanack-Repo"
@@ -76,18 +76,20 @@ def rows(path: Path) -> list[dict[str, str]]:
 def visibility_rows(catalog: list[dict[str, str]], year: int) -> list[dict[str, str]]:
     out: list[dict[str, str]] = []
     for row in catalog:
-        record = dict(row)
-        instant, day = best_visibility(float(record["ra_h"]), year)
-        record["best_instant_utc"] = instant.strftime("%Y-%m-%d %H:%M")
-        record["best_date"] = day.isoformat()
-        record["iso"] = iso_label(day)
-        out.append(record)
+        for instant, day in best_visibility_occurrences_for_iso_year(float(row["ra_h"]), year):
+            record = dict(row)
+            record["best_instant_utc"] = instant.strftime("%Y-%m-%d %H:%M")
+            record["best_date"] = day.isoformat()
+            record["iso"] = iso_label(day)
+            out.append(record)
     return out
 
 
 def write_visibility(data: list[dict[str, str]], year: int) -> None:
     path = SRC / "generated" / f"finest-ngc-visibility-{year}.csv"
     path.parent.mkdir(parents=True, exist_ok=True)
+    if not data:
+        raise RuntimeError(f"No Finest NGC visibility rows generated for ISO year {year}")
     with path.open("w", newline="", encoding="utf-8") as handle:
         writer = csv.DictWriter(handle, fieldnames=list(data[0]))
         writer.writeheader()
@@ -125,15 +127,18 @@ def pages_for_events(root: Path, events: dict[dt.date, list[str]]) -> list[Path]
     return pages
 
 
+def date_text(day: dt.date) -> str:
+    return f"{day:%a, %b} {day.day}, {day:%Y}"
+
+
 def inject(root: Path, events: dict[dt.date, list[str]]) -> int:
     changed = 0
     for page in pages_for_events(root, events):
         text = page.read_text(encoding="utf-8")
         original = text
         for day, labels in events.items():
-            date_text = day.strftime("%a, %b %d, %Y")
             pattern = re.compile(
-                rf"(<tr><td>{re.escape(date_text)}</td><td>.*?</td><td>)(.*?)(</td></tr>)"
+                rf"(<tr><td>{re.escape(date_text(day))}</td><td>.*?</td><td>)(.*?)(</td></tr>)"
             )
             match = pattern.search(text)
             if not match:
@@ -175,7 +180,7 @@ def main() -> None:
         source_changed = inject(SOURCE_SITE, events)
         public_changed = inject(PUBLIC, events)
         print(
-            f"{year}: {len(data)} Finest NGC physical rows after Caldwell precedence; "
+            f"{year}: {len(data)} Finest NGC ISO-year occurrence rows after Caldwell precedence; "
             f"updated {source_changed} source + {public_changed} public pages"
         )
 
