@@ -1,0 +1,111 @@
+name: Diagnose Besselian Eclipse Control
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/diagnose-besselian-control.yml'
+
+jobs:
+  compare-besselian:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install diagnostic dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install pyyaml scipy skyfield pandas numpy
+          python -m pip install 'git+https://github.com/lkangas/eclipse-calc.git@master'
+
+      - name: Run independent Besselian greatest-eclipse comparison
+        working-directory: Star-Almanack-Repo
+        run: |
+          python - <<'PY'
+          from datetime import datetime, timezone
+          from pathlib import Path
+
+          import yaml
+          from scipy.optimize import minimize_scalar
+          from skyfield.api import load
+          from eclipse_calc import BesselianEclipse
+
+          ROOT = Path('.')
+          CASES = ROOT / 'eclipse-validation-cases.yaml'
+          KERNEL = ROOT / 'star-almanack-microkernel.bsp'
+
+          if not KERNEL.exists():
+              raise SystemExit(f'missing preserved ephemeris kernel: {KERNEL}')
+
+          data = yaml.safe_load(CASES.read_text())
+          cases = []
+          for case in data['historical']:
+              cases.append((case['label'], case['expected_greatest_utc']))
+          for case in data['future_jello']['cases']:
+              cases.append((case['label'], case['nasa_greatest_utc']))
+
+          ts = load.timescale()
+          eph = load(str(KERNEL))
+
+          def parse_iso(s):
+              return datetime.fromisoformat(s.replace('Z', '+00:00'))
+
+          def fmt(dt):
+              return dt.astimezone(timezone.utc).strftime('%Y-%m-%dT%H:%M:%S.%fZ')
+
+          print('STAR ALMANACK — INDEPENDENT BESSELIAN CONTROL')
+          print('Implementation: lkangas/eclipse-calc (MIT), ephemeris-direct Besselian elements')
+          print('Ephemeris: preserved Star Almanack DE441 microkernel')
+          print('Greatest eclipse criterion: minimum x^2 + y^2 in the Bessel fundamental plane')
+          print()
+          print(f"{'Case':38s} {'NASA':>11s} {'Bessel':>11s} {'Residual':>10s}")
+          print('-' * 76)
+
+          residuals = []
+          for label, ref_iso in cases:
+              ref_dt = parse_iso(ref_iso)
+              t0 = ts.from_datetime(ref_dt)
+              eclipse = BesselianEclipse(t0, eph)
+
+              def objective(seconds):
+                  t = ts.tt_jd(t0.tt + seconds / 86400.0)
+                  row = eclipse.elements_at(t, derivatives=False).iloc[0]
+                  return float(row['x'])**2 + float(row['y'])**2
+
+              result = minimize_scalar(
+                  objective,
+                  bounds=(-300.0, 300.0),
+                  method='bounded',
+                  options={'xatol': 1e-5},
+              )
+              seconds = float(result.x)
+              calc = ts.tt_jd(t0.tt + seconds / 86400.0)
+              calc_dt = calc.utc_datetime().replace(tzinfo=timezone.utc)
+              residual = (calc_dt - ref_dt).total_seconds()
+              residuals.append(residual)
+
+              print(
+                  f"{label:38.38s} "
+                  f"{ref_dt.strftime('%H:%M:%S'):>11s} "
+                  f"{calc_dt.strftime('%H:%M:%S.%f')[:11]:>11s} "
+                  f"{residual:+9.3f}s"
+              )
+
+          mean_signed = sum(residuals) / len(residuals)
+          mean_abs = sum(abs(x) for x in residuals) / len(residuals)
+          max_abs = max(abs(x) for x in residuals)
+
+          print()
+          print('SUMMARY')
+          print('-' * 76)
+          print(f'n={len(residuals)}')
+          print(f'mean signed residual = {mean_signed:+.3f} s')
+          print(f'mean absolute residual = {mean_abs:.3f} s')
+          print(f'max absolute residual = {max_abs:.3f} s')
+          PY
