@@ -44,19 +44,21 @@ approximated as TT/TDB by converting UTC -> TAI -> TT using the published
 
 TAI-UTC offset plus the fixed TT-TAI offset of 32.184 seconds.
 
-For historical dates before 1972, the supplied civil time is treated as an
+For dates before 1972, the engine follows the NAIF/SPICE leap-seconds-kernel
 
-approximation to UT1 and Delta-T = TT - UT1 is used.
+convention and extends the earliest tabulated TAI-UTC value of 10 seconds
+
+backward. This keeps UTC-labelled input on one consistent ephemeris-time path
+
+instead of substituting an UT1 Delta-T approximation.
 
 TDB-TT periodic terms are below the accuracy targeted by this eclipse-search
 
 layer and are not modeled here.
 
-The Delta-T model is an engineering approximation; it is intentionally
+The separate Delta-T model remains available for calculations that explicitly
 
-isolated so it can be replaced by the Almanack's final time-scale layer
-
-without changing the eclipse geometry.
+start from UT1; it is no longer used to reinterpret UTC-labelled eclipse input.
 
 This module does not import or read eclipse-validation-cases.yaml.
 
@@ -1068,19 +1070,23 @@ def utc_to_tdb_approx(jd_utc: float) -> float:
 
     """
 
-    Approximate UTC/UT1 -> TT/TDB for orbital geometry.
+    Convert the engine's UTC-labelled Julian Date to an approximate TT/TDB JD.
 
-    In the leap-second era, convert UTC -> TAI -> TT using the published
+    In the leap-second era, UTC -> TAI uses the published TAI-UTC offset and
 
-    TAI-UTC offset plus the fixed TT-TAI offset of 32.184 seconds.
+    TT = TAI + 32.184 seconds. Before 1972, use the same convention as the
 
-    Before 1972, this search layer treats the historical civil argument as
+    NAIF leap-seconds kernel: continue the earliest tabulated TAI-UTC value
 
-    an approximation to UT1 and obtains TT from Delta-T = TT - UT1.
+    of 10 seconds backward. This keeps the numerical ephemeris argument on
 
-    TDB-TT periodic terms are below the accuracy targeted by this first
+    the same time-scale convention as DE441/SPICE instead of mixing an UT1
 
-    eclipse-search layer and are not modeled here.
+    Delta-T model into a value labelled UTC.
+
+    TDB-TT periodic terms are below this engine's present search precision
+
+    and are not modeled here.
 
     """
 
@@ -1090,29 +1096,23 @@ def utc_to_tdb_approx(jd_utc: float) -> float:
 
     )
 
-    if tai_minus_utc is not None:
+    if tai_minus_utc is None:
 
-        tt_minus_utc = (
+        tai_minus_utc = 10.0
 
-            tai_minus_utc + 32.184
+    tt_minus_utc = (
 
-        )
-
-        return (
-
-            jd_utc
-
-            + tt_minus_utc / 86400.0
-
-        )
-
-    dt = delta_t_seconds(
-
-        _decimal_year_from_jd(jd_utc)
+        tai_minus_utc + 32.184
 
     )
 
-    return jd_utc + dt / 86400.0
+    return (
+
+        jd_utc
+
+        + tt_minus_utc / 86400.0
+
+    )
 
 class EclipseEngine:
 
