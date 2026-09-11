@@ -4,6 +4,9 @@
 Canonical ephemeris-body legend order: Sun, Moon, Mercury, Venus, Mars, Ceres,
 Jupiter, Saturn, Uranus, Neptune, Pluto.
 
+The legend is the canonical reader-facing explanation of every symbol family used
+by the Star Almanack, including observing-aid and event glyphs.
+
 This file is also the deployment trigger for refreshing stale static legends.
 """
 
@@ -23,21 +26,40 @@ STYLE = """<style id="almanack-legend-css">
   font-size:.88rem;
 }
 .notation-legend p { max-width:none; margin:.35rem 0; }
-.legend-line { display:flex; flex-wrap:wrap; gap:.45rem 1rem; }
+.legend-line { display:flex; flex-wrap:wrap; gap:.45rem 1rem; align-items:center; }
 .legend-item { white-space:nowrap; }
 .text-symbol { font-size:1.05em; font-variant-emoji:text; }
+.legend-glyph { height:1.55em; width:auto; vertical-align:-.32em; margin-right:.2rem; }
+.legend-explanation { white-space:normal; }
 </style>"""
 
 LEGEND = """<aside class="notation-legend" aria-label="Astronomical notation legend">
-  <p><strong>Greek alphabet</strong></p>
+  <p><strong>Observing aid</strong> — these glyphs say how the target is intended to be observed; they do not identify the kind of astronomical object.</p>
+  <div class="legend-line">
+    <span class="legend-item"><img class="legend-glyph" src="/assets/almanack/visibility-glyphs/masters/eye.svg" alt="Naked-eye glyph"> Naked eye</span>
+    <span class="legend-item"><img class="legend-glyph" src="/assets/almanack/visibility-glyphs/masters/binoculars.svg" alt="Binoculars glyph"> Binoculars</span>
+    <span class="legend-item"><img class="legend-glyph" src="/assets/almanack/visibility-glyphs/masters/telescope.svg" alt="Telescope glyph"> Telescope</span>
+  </div>
+  <p class="legend-explanation"><strong>V</strong> followed by a number is visual magnitude; smaller or more negative numbers are brighter. If no observing-aid glyph is shown, the Almanack is not assigning an observing aid for that entry.</p>
+
+  <p><strong>Events</strong></p>
+  <div class="legend-line">
+    <span class="legend-item"><img class="legend-glyph" src="/assets/almanack/visibility-glyphs/masters/meteor-shower.svg" alt="Meteor-shower glyph"> Meteor shower</span>
+    <span class="legend-item"><img class="legend-glyph" src="/assets/almanack/visibility-glyphs/masters/solar-eclipse.svg" alt="Solar-eclipse glyph"> Solar eclipse</span>
+    <span class="legend-item"><img class="legend-glyph" src="/assets/almanack/visibility-glyphs/masters/lunar-eclipse.svg" alt="Lunar-eclipse glyph"> Lunar eclipse</span>
+  </div>
+
+  <p><strong>Greek alphabet</strong> — Bayer letters used to identify stars within a constellation.</p>
   <div class="legend-line">
     <span class="legend-item">α Alpha</span><span class="legend-item">β Beta</span><span class="legend-item">γ Gamma</span><span class="legend-item">δ Delta</span><span class="legend-item">ε Epsilon</span><span class="legend-item">ζ Zeta</span><span class="legend-item">η Eta</span><span class="legend-item">θ Theta</span><span class="legend-item">ι Iota</span><span class="legend-item">κ Kappa</span><span class="legend-item">λ Lambda</span><span class="legend-item">μ Mu</span><span class="legend-item">ν Nu</span><span class="legend-item">ξ Xi</span><span class="legend-item">ο Omicron</span><span class="legend-item">π Pi</span><span class="legend-item">ρ Rho</span><span class="legend-item">σ Sigma</span><span class="legend-item">τ Tau</span><span class="legend-item">υ Upsilon</span><span class="legend-item">φ Phi</span><span class="legend-item">χ Chi</span><span class="legend-item">ψ Psi</span><span class="legend-item">ω Omega</span>
   </div>
-  <p><strong>Zodiac</strong></p>
+
+  <p><strong>Zodiac</strong> — the 12 zodiac constellations/signs used for zodiac-day notation.</p>
   <div class="legend-line">
     <span class="legend-item"><span class="text-symbol">♈&#xfe0e;</span> Aries</span><span class="legend-item"><span class="text-symbol">♉&#xfe0e;</span> Taurus</span><span class="legend-item"><span class="text-symbol">♊&#xfe0e;</span> Gemini</span><span class="legend-item"><span class="text-symbol">♋&#xfe0e;</span> Cancer</span><span class="legend-item"><span class="text-symbol">♌&#xfe0e;</span> Leo</span><span class="legend-item"><span class="text-symbol">♍&#xfe0e;</span> Virgo</span><span class="legend-item"><span class="text-symbol">♎&#xfe0e;</span> Libra</span><span class="legend-item"><span class="text-symbol">♏&#xfe0e;</span> Scorpio</span><span class="legend-item"><span class="text-symbol">♐&#xfe0e;</span> Sagittarius</span><span class="legend-item"><span class="text-symbol">♑&#xfe0e;</span> Capricorn</span><span class="legend-item"><span class="text-symbol">♒&#xfe0e;</span> Aquarius</span><span class="legend-item"><span class="text-symbol">♓&#xfe0e;</span> Pisces</span>
   </div>
-  <p><strong>Ephemerides</strong></p>
+
+  <p><strong>Ephemerides</strong> — symbols identifying solar-system bodies in the positional tables.</p>
   <div class="legend-line">
     <span class="legend-item"><span class="text-symbol">☉&#xfe0e;</span> Sun</span><span class="legend-item"><span class="text-symbol">☽&#xfe0e;</span> Moon</span><span class="legend-item"><span class="text-symbol">☿&#xfe0e;</span> Mercury</span><span class="legend-item"><span class="text-symbol">♀&#xfe0e;</span> Venus</span><span class="legend-item"><span class="text-symbol">♂&#xfe0e;</span> Mars</span><span class="legend-item"><span class="text-symbol">⚳&#xfe0e;</span> Ceres</span><span class="legend-item"><span class="text-symbol">♃&#xfe0e;</span> Jupiter</span><span class="legend-item"><span class="text-symbol">♄&#xfe0e;</span> Saturn</span><span class="legend-item"><span class="text-symbol">♅&#xfe0e;</span> Uranus</span><span class="legend-item"><span class="text-symbol">♆&#xfe0e;</span> Neptune</span><span class="legend-item"><span class="text-symbol">♇&#xfe0e;</span> Pluto</span>
   </div>
