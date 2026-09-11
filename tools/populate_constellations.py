@@ -345,7 +345,9 @@ def pages_for_events(root, events):
 
 
 def row_pattern(d: dt.date) -> re.Pattern[str]:
-    date_text = d.strftime("%a, %b %d, %Y")
+    # Calendar pages intentionally display day numbers without a leading zero.
+    # Build the same label explicitly instead of relying on %d, which emits 01-09.
+    date_text = f"{d:%a, %b} {d.day}, {d:%Y}"
     return re.compile(
         rf"(<tr><td>{re.escape(date_text)}</td><td>.*?</td><td>)(.*?)(</td></tr>)"
     )
