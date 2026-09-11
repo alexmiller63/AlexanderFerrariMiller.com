@@ -71,7 +71,8 @@ def redated_preserving_2026_phase(rows, year):
     for row in rows:
         canonical = dt.datetime.strptime(row["best_instant_utc"], "%Y-%m-%d %H:%M")
         target = apparent_sun_ra_hours(canonical)
-        instant, day = best_time_for_solar_ra(target, year)
+        instant = best_time_for_solar_ra(target, year)
+        day = (instant + dt.timedelta(hours=12)).date()
         r = dict(row)
         r["best_instant_utc"] = instant.strftime("%Y-%m-%d %H:%M")
         r["best_date"] = day.isoformat()
