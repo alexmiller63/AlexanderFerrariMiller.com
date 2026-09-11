@@ -44,13 +44,15 @@ approximated as TT/TDB by converting UTC -> TAI -> TT using the published
 
 TAI-UTC offset plus the fixed TT-TAI offset of 32.184 seconds.
 
-For dates before 1972, the engine follows the NAIF/SPICE leap-seconds-kernel
+For dates before 1972, the engine follows NAIF/SPICE's proleptic UTC
 
-convention and extends the earliest tabulated TAI-UTC value of 10 seconds
+conversion convention. SPICE does not model the historical pre-1972
 
-backward. This keeps UTC-labelled input on one consistent ephemeris-time path
+variations in the length of the UTC second; it treats those civil days as
 
-instead of substituting an UT1 Delta-T approximation.
+exactly 86400 ephemeris seconds, corresponding here to an approximate
+
+TT-UTC offset of 41.184 seconds before the leap-second era.
 
 TDB-TT periodic terms are below the accuracy targeted by this eclipse-search
 
@@ -982,11 +984,9 @@ def tai_minus_utc_seconds(
 
     Return TAI - UTC in seconds for the leap-second era.
 
-    Returns None before 1972-01-01. For earlier eclipse work, this search
+    Returns None before 1972-01-01. Earlier dates are handled separately by
 
-    layer treats the supplied historical civil time as an approximation to
-
-    UT1 and uses Delta-T = TT - UT1 instead.
+    utc_to_tdb_approx() using the NAIF/SPICE proleptic UTC convention.
 
     """
 
@@ -1074,15 +1074,15 @@ def utc_to_tdb_approx(jd_utc: float) -> float:
 
     In the leap-second era, UTC -> TAI uses the published TAI-UTC offset and
 
-    TT = TAI + 32.184 seconds. Before 1972, use the same convention as the
+    TT = TAI + 32.184 seconds. Before 1972, follow NAIF/SPICE's documented
 
-    NAIF leap-seconds kernel: continue the earliest tabulated TAI-UTC value
+    proleptic UTC convention: do not attempt to reconstruct the historical
 
-    of 10 seconds backward. This keeps the numerical ephemeris argument on
+    variable-length UTC second, and use an approximate TT-UTC offset of
 
-    the same time-scale convention as DE441/SPICE instead of mixing an UT1
+    41.184 seconds. This matches SPICE's pre-1972 civil-time path while
 
-    Delta-T model into a value labelled UTC.
+    keeping UT1 Delta-T separate.
 
     TDB-TT periodic terms are below this engine's present search precision
 
@@ -1098,7 +1098,15 @@ def utc_to_tdb_approx(jd_utc: float) -> float:
 
     if tai_minus_utc is None:
 
-        tai_minus_utc = 10.0
+        # NAIF/SPICE's pre-1972 UTC conversion is proleptic: historical
+
+        # variations in UTC-second length are not reconstructed. Its civil
+
+        # UTC -> TDB path is approximately 41.184 s, so with TT-TAI =
+
+        # 32.184 s the equivalent offset used by this approximation is 9 s.
+
+        tai_minus_utc = 9.0
 
     tt_minus_utc = (
 
