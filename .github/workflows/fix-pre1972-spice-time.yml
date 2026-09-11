@@ -1,0 +1,118 @@
+name: Fix Pre-1972 SPICE Time
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  fix-pre1972-spice-time:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+
+      - name: Correct pre-1972 SPICE convention
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 <<'PY'
+          from pathlib import Path
+
+          path = Path("Star-Almanack-Repo/eclipse_engine.py")
+          text = path.read_text(encoding="utf-8")
+
+          old_module = '''For dates before 1972, the engine follows the NAIF/SPICE leap-seconds-kernel\n\nconvention and extends the earliest tabulated TAI-UTC value of 10 seconds\n\nbackward. This keeps UTC-labelled input on one consistent ephemeris-time path\n\ninstead of substituting an UT1 Delta-T approximation.\n'''
+          new_module = '''For dates before 1972, the engine follows NAIF/SPICE's proleptic UTC\n\nconversion convention. SPICE does not model the historical pre-1972\n\nvariations in the length of the UTC second; it treats those civil days as\n\nexactly 86400 ephemeris seconds, corresponding here to an approximate\n\nTT-UTC offset of 41.184 seconds before the leap-second era.\n'''
+          if old_module not in text:
+              raise SystemExit("Expected module pre-1972 time-convention text not found")
+          text = text.replace(old_module, new_module, 1)
+
+          old_tai_doc = '''    Returns None before 1972-01-01. For earlier eclipse work, this search\n\n    layer treats the supplied historical civil time as an approximation to\n\n    UT1 and uses Delta-T = TT - UT1 instead.\n'''
+          new_tai_doc = '''    Returns None before 1972-01-01. Earlier dates are handled separately by\n\n    utc_to_tdb_approx() using the NAIF/SPICE proleptic UTC convention.\n'''
+          if old_tai_doc not in text:
+              raise SystemExit("Expected tai_minus_utc_seconds doc text not found")
+          text = text.replace(old_tai_doc, new_tai_doc, 1)
+
+          old_func_doc = '''    In the leap-second era, UTC -> TAI uses the published TAI-UTC offset and\n\n    TT = TAI + 32.184 seconds. Before 1972, use the same convention as the\n\n    NAIF leap-seconds kernel: continue the earliest tabulated TAI-UTC value\n\n    of 10 seconds backward. This keeps the numerical ephemeris argument on\n\n    the same time-scale convention as DE441/SPICE instead of mixing an UT1\n\n    Delta-T model into a value labelled UTC.\n'''
+          new_func_doc = '''    In the leap-second era, UTC -> TAI uses the published TAI-UTC offset and\n\n    TT = TAI + 32.184 seconds. Before 1972, follow NAIF/SPICE's documented\n\n    proleptic UTC convention: do not attempt to reconstruct the historical\n\n    variable-length UTC second, and use an approximate TT-UTC offset of\n\n    41.184 seconds. This matches SPICE's pre-1972 civil-time path while\n\n    keeping UT1 Delta-T separate.\n'''
+          if old_func_doc not in text:
+              raise SystemExit("Expected utc_to_tdb_approx doc text not found")
+          text = text.replace(old_func_doc, new_func_doc, 1)
+
+          old_code = '''    if tai_minus_utc is None:\n\n        tai_minus_utc = 10.0\n'''
+          new_code = '''    if tai_minus_utc is None:\n\n        # NAIF/SPICE's pre-1972 UTC conversion is proleptic: historical\n\n        # variations in UTC-second length are not reconstructed. Its civil\n\n        # UTC -> TDB path is approximately 41.184 s, so with TT-TAI =\n\n        # 32.184 s the equivalent offset used by this approximation is 9 s.\n\n        tai_minus_utc = 9.0\n'''
+          if old_code not in text:
+              raise SystemExit("Expected pre-1972 10-second fallback not found")
+          text = text.replace(old_code, new_code, 1)
+
+          path.write_text(text, encoding="utf-8")
+          PY
+
+      - name: Verify conversion invariants
+        working-directory: Star-Almanack-Repo
+        run: |
+          python3 - <<'PY'
+          import eclipse_engine
+
+          def offset_seconds(y, m, d):
+              jd = eclipse_engine.gregorian_to_jd(y, m, d)
+              return (eclipse_engine.utc_to_tdb_approx(jd) - jd) * 86400.0
+
+          checks = [
+              ((1919, 5, 29), 41.184),
+              ((1963, 7, 20), 41.184),
+              ((1971, 12, 31), 41.184),
+              ((1972, 1, 1), 42.184),
+              ((1991, 7, 11), 58.184),
+              ((2017, 8, 21), 69.184),
+              ((2024, 4, 8), 69.184),
+          ]
+
+          for date, expected in checks:
+              got = offset_seconds(*date)
+              if abs(got - expected) > 0.001:
+                  raise SystemExit(f"{date}: expected {expected:.3f}s, got {got:.6f}s")
+              print(f"PASS {date}: {got:.3f}s")
+          PY
+
+      - name: Verify against NAIF SPICE
+        working-directory: Star-Almanack-Repo
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl -L https://naif.jpl.nasa.gov/pub/naif/generic_kernels/lsk/naif0012.tls -o naif0012.tls
+          python3 -m pip install --disable-pip-version-check spiceypy
+          python3 <<'PY'
+          import spiceypy as spice
+          import eclipse_engine
+
+          J2000 = 2451545.0
+          DAY = 86400.0
+          spice.furnsh("naif0012.tls")
+          try:
+              for stamp in ("1919-05-29T00:00:00", "1963-07-20T00:00:00"):
+                  y, m, rest = stamp.split("-")
+                  d = int(rest[:2])
+                  jd = eclipse_engine.gregorian_to_jd(int(y), int(m), d)
+                  ours = (eclipse_engine.utc_to_tdb_approx(jd) - J2000) * DAY
+                  theirs = spice.str2et(stamp)
+                  delta = ours - theirs
+                  print(f"{stamp}: engine-SPICE = {delta:+.6f}s")
+                  if abs(delta) > 0.01:
+                      raise SystemExit(f"pre-1972 conversion still differs from SPICE by {delta:+.6f}s")
+          finally:
+              spice.kclear()
+          PY
+
+      - name: Commit root-cause fix
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add Star-Almanack-Repo/eclipse_engine.py
+          git diff --cached --check
+          git commit -m "Correct pre-1972 SPICE time convention"
+          git push
