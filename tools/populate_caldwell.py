@@ -14,7 +14,7 @@ import sys
 from collections import defaultdict
 from pathlib import Path
 
-import populate_fixed_sky as fixed
+from star_almanack_astronomy import best_visibility, declination_band, season_for
 
 ROOT = Path(__file__).resolve().parents[1]
 SRC = ROOT / "Star-Almanack-Repo"
@@ -52,14 +52,19 @@ TELESCOPE_GLYPH = (
 )
 
 
+def iso_label(day: dt.date) -> str:
+    year, week, weekday = day.isocalendar()
+    return f"{year}-W{week:02d}-{weekday}"
+
+
 def years_present() -> tuple[int, ...]:
     years: set[int] = set()
     for root in (PUBLIC, SOURCE_SITE):
         if not root.exists():
             continue
-        for p in root.iterdir():
-            if p.is_dir() and re.fullmatch(r"20\d{2}", p.name) and any(p.glob("W??/index.html")):
-                years.add(int(p.name))
+        for path in root.iterdir():
+            if path.is_dir() and re.fullmatch(r"20\d{2}", path.name) and any(path.glob("W??/index.html")):
+                years.add(int(path.name))
     return tuple(sorted(years))
 
 
@@ -76,21 +81,21 @@ def requested_years() -> tuple[int, ...]:
 
 
 def read_catalog() -> list[dict[str, str]]:
-    with CATALOG.open(newline="", encoding="utf-8") as f:
-        rows = list(csv.DictReader(f))
+    with CATALOG.open(newline="", encoding="utf-8") as handle:
+        rows = list(csv.DictReader(handle))
     if len(rows) != 109:
         raise RuntimeError(f"Caldwell catalog must contain 109 rows; found {len(rows)}")
     expected = {f"C{i}" for i in range(1, 110)}
-    actual = {r["caldwell"] for r in rows}
+    actual = {row["caldwell"] for row in rows}
     if actual != expected:
         raise RuntimeError("Caldwell catalog identifiers are incomplete or duplicated")
     return rows
 
 
 def finest_caldwell_ids() -> set[str]:
-    with FINEST_OVERLAP.open(newline="", encoding="utf-8") as f:
-        rows = list(csv.DictReader(f))
-    ids = {r["caldwell"] for r in rows}
+    with FINEST_OVERLAP.open(newline="", encoding="utf-8") as handle:
+        rows = list(csv.DictReader(handle))
+    ids = {row["caldwell"] for row in rows}
     if len(rows) != 33 or len(ids) != 33:
         raise RuntimeError("Finest NGC/Caldwell overlap must contain 33 unique Caldwell identities")
     return ids
@@ -99,35 +104,45 @@ def finest_caldwell_ids() -> set[str]:
 def visibility_rows(rows: list[dict[str, str]], year: int) -> list[dict[str, str]]:
     out: list[dict[str, str]] = []
     for row in rows:
-        r = dict(row)
-        instant, day = fixed.best_visibility(float(r["ra_h"]), year)
-        r["best_instant_utc"] = instant.strftime("%Y-%m-%d %H:%M")
-        r["best_date"] = day.isoformat()
-        r["iso"] = fixed.iso_label(day)
-        out.append(r)
+        record = dict(row)
+        instant, day = best_visibility(float(record["ra_h"]), year)
+        record["best_instant_utc"] = instant.strftime("%Y-%m-%d %H:%M")
+        record["best_date"] = day.isoformat()
+        record["iso"] = iso_label(day)
+        out.append(record)
     return out
 
 
 def write_visibility(rows: list[dict[str, str]], year: int) -> None:
     path = SRC / "generated" / f"caldwell-visibility-{year}.csv"
     path.parent.mkdir(parents=True, exist_ok=True)
-    with path.open("w", newline="", encoding="utf-8") as f:
-        w = csv.DictWriter(f, fieldnames=list(rows[0]))
-        w.writeheader()
-        w.writerows(rows)
+    with path.open("w", newline="", encoding="utf-8") as handle:
+        writer = csv.DictWriter(handle, fieldnames=list(rows[0]))
+        writer.writeheader()
+        writer.writerows(rows)
 
 
-def calendar_label(r: dict[str, str], finest_ids: set[str]) -> str:
-    cid = r["caldwell"]
-    name = r.get("name", "").strip()
-    obj_type = TYPE_LABELS.get(r.get("type", "").strip(), "deep-sky object")
-    constellation = CONSTELLATIONS.get(r.get("con", "").strip(), r.get("con", "").strip())
-    head = f"{cid}, {name}, {obj_type} in {constellation}" if name else f"{cid}, {obj_type} in {constellation}"
-    day = dt.date.fromisoformat(r["best_date"])
-    band = fixed.declination_band(r["dec_deg"])
-    season = fixed.season_for(day)
-    mag = r.get("mag", "").strip()
-    observing = f"{TELESCOPE_GLYPH} V {mag}" if mag else TELESCOPE_GLYPH
+def calendar_label(record: dict[str, str], finest_ids: set[str]) -> str:
+    cid = record["caldwell"].strip()
+    catalog = record.get("catalog", "").strip()
+    name = record.get("name", "").strip()
+    object_type = TYPE_LABELS.get(record.get("type", "").strip(), "deep-sky object")
+    constellation_code = record.get("con", "").strip()
+    constellation = CONSTELLATIONS.get(constellation_code, constellation_code)
+
+    identity = [cid]
+    if catalog:
+        identity.append(catalog)
+    if name:
+        identity.append(name)
+    head = ", ".join(identity) + f", {object_type} in {constellation}"
+
+    day = dt.date.fromisoformat(record["best_date"])
+    band = declination_band(record["dec_deg"])
+    season = season_for(day)
+    magnitude = record.get("mag", "").strip()
+    observing = f"{TELESCOPE_GLYPH} V {magnitude}" if magnitude else TELESCOPE_GLYPH
+
     parts = [head, observing]
     if cid in finest_ids:
         parts.append("Finest NGC")
@@ -137,30 +152,43 @@ def calendar_label(r: dict[str, str], finest_ids: set[str]) -> str:
 
 def events_for(rows: list[dict[str, str]], finest_ids: set[str]) -> dict[dt.date, list[str]]:
     events: dict[dt.date, list[str]] = defaultdict(list)
-    for r in rows:
-        events[dt.date.fromisoformat(r["best_date"])].append(calendar_label(r, finest_ids))
+    for record in rows:
+        events[dt.date.fromisoformat(record["best_date"])].append(calendar_label(record, finest_ids))
     return events
 
 
-def inject(root: Path, year: int, events: dict[dt.date, list[str]]) -> int:
+def pages_for_events(root: Path, events: dict[dt.date, list[str]]) -> list[Path]:
+    pages: list[Path] = []
+    for iso_year in sorted({day.isocalendar().year for day in events}):
+        pages.extend(sorted((root / str(iso_year)).glob("W??/index.html")))
+    return pages
+
+
+def inject(root: Path, events: dict[dt.date, list[str]]) -> int:
     changed = 0
-    for page in sorted((root / str(year)).glob("W??/index.html")):
+    for page in pages_for_events(root, events):
         text = page.read_text(encoding="utf-8")
         original = text
         for day, labels in events.items():
             date_text = day.strftime("%a, %b %d, %Y").replace(" 0", " ")
-            pat = re.compile(rf"(<tr><td>{re.escape(date_text)}</td><td>.*?</td><td>)(.*?)(</td></tr>)")
-            m = pat.search(text)
-            if not m:
+            pattern = re.compile(
+                rf"(<tr><td>{re.escape(date_text)}</td><td>.*?</td><td>)(.*?)(</td></tr>)"
+            )
+            match = pattern.search(text)
+            if not match:
                 continue
-            keep = [] if m.group(2) == "—" else [x for x in m.group(2).split("<br>") if x]
+            keep = [] if match.group(2) == "—" else [item for item in match.group(2).split("<br>") if item]
             for label in labels:
-                label_cid = re.match(r"(C\d{1,3}),", label)
-                if label_cid:
-                    token = label_cid.group(1)
-                    keep = [x for x in keep if not re.search(rf"(?:^|\(|\b){re.escape(token)}(?:\)|,|\b)", x)]
+                id_match = re.match(r"(C\d{1,3}),", label)
+                if id_match:
+                    token = id_match.group(1)
+                    keep = [
+                        item
+                        for item in keep
+                        if not re.search(rf"(?:^|\(|\b){re.escape(token)}(?:\)|,|\b)", item)
+                    ]
                 keep.append(label)
-            text = text[:m.start(2)] + ("<br>".join(keep) if keep else "—") + text[m.end(2):]
+            text = text[: match.start(2)] + ("<br>".join(keep) if keep else "—") + text[match.end(2) :]
         if text != original:
             page.write_text(text, encoding="utf-8")
             changed += 1
@@ -177,9 +205,12 @@ def main() -> None:
         rows = visibility_rows(catalog, year)
         write_visibility(rows, year)
         events = events_for(rows, finest_ids)
-        source_changed = inject(SOURCE_SITE, year, events)
-        public_changed = inject(PUBLIC, year, events)
-        print(f"{year}: Caldwell C1-C109; {len(finest_ids)} also Finest NGC; updated {source_changed} source + {public_changed} public pages")
+        source_changed = inject(SOURCE_SITE, events)
+        public_changed = inject(PUBLIC, events)
+        print(
+            f"{year}: Caldwell C1-C109; {len(finest_ids)} also Finest NGC; "
+            f"updated {source_changed} source + {public_changed} public pages"
+        )
 
 
 if __name__ == "__main__":
