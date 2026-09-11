@@ -15,6 +15,7 @@ on:
       - 'tools/populate_calendar.py'
       - 'tools/populate_meteor_showers.py'
       - 'tools/populate_ephemeris.py'
+      - 'tools/wire_2026_eclipses.py'
       - 'tools/wire_ephemeris_notation.py'
       - 'tools/wire_week_navigation.py'
       - 'tools/populate_fixed_sky.py'
@@ -26,6 +27,7 @@ on:
       - 'tools/populate_caldwell.py'
       - 'tools/populate_finest_ngc.py'
       - 'tools/populate-2025-2027-ephemeris-trigger.txt'
+      - 'Star-Almanack-Repo/eclipse.yaml'
       - 'Star-Almanack-Repo/compute_bayer_visibility_2026.py'
       - 'Star-Almanack-Repo/expanded-bayer-stars.csv'
       - 'Star-Almanack-Repo/compute_constellation_observance_2026.py'
@@ -58,6 +60,11 @@ jobs:
         run: python tools/clean_event_cells.py $ALMANACK_YEARS
       - name: Populate Zodiac Days, ingresses, Wheel of the Year, and lunar phases
         run: python tools/populate_calendar.py $ALMANACK_YEARS
+      - name: Publish independently calculated 2026 eclipses
+        run: |
+          if [[ " $ALMANACK_YEARS " == *" 2026 "* ]]; then
+            python tools/wire_2026_eclipses.py
+          fi
       - name: Populate major meteor-shower maxima
         run: python tools/populate_meteor_showers.py $ALMANACK_YEARS
       - name: Populate weekly Solar-System ephemerides
@@ -68,9 +75,9 @@ jobs:
         run: python tools/populate_fixed_sky.py $ALMANACK_YEARS
       - name: Standardize Messier labels, instruments, magnitudes, declination bands, and seasons
         run: python tools/standardize_messier_calendar.py $ALMANACK_YEARS
-      - name: Populate constellation alpha, beta, and center events
+      - name: Populate constellation centers
         run: python tools/populate_constellations.py $ALMANACK_YEARS
-      - name: Populate core asterisms
+      - name: Populate core asterism centers
         run: python tools/populate_asterisms.py $ALMANACK_YEARS
       - name: Populate Caldwell C1-C109 in requested years
         run: python tools/populate_caldwell.py $ALMANACK_YEARS
@@ -106,11 +113,15 @@ jobs:
                 "Star-Almanack-Repo/generated/caldwell-visibility-$year.csv" \
                 "Star-Almanack-Repo/generated/finest-ngc-visibility-$year.csv"
             done
+            if [[ " $ALMANACK_YEARS " == *" 2026 "* ]]; then
+              git add Star-Almanack-Repo/almanack-expanded.md star-almanack/eclipses.html
+            fi
           }
           regenerate() {
             regression
             python tools/clean_event_cells.py $ALMANACK_YEARS
             python tools/populate_calendar.py $ALMANACK_YEARS
+            if [[ " $ALMANACK_YEARS " == *" 2026 "* ]]; then python tools/wire_2026_eclipses.py; fi
             python tools/populate_meteor_showers.py $ALMANACK_YEARS
             python tools/populate_ephemeris.py $ALMANACK_YEARS
             python tools/wire_ephemeris_notation.py $ALMANACK_YEARS
