@@ -75,7 +75,7 @@ def event_map(rows):
     for r in rows:
         d = dt.date.fromisoformat(r["center_best_date"])
         cls = f"{declination_band(r['centroid_dec_deg'])} {season_for(d)}"
-        events[d].append(f"✦ {r['name']} center {cls}")
+        events[d].append(f"✦ {r['name']} center — Constellation — {cls}")
     return events
 
 
@@ -91,9 +91,16 @@ def clean_legacy_constellation_events(text):
     return cells.sub(repl, text)
 
 
-def inject(root, year, events):
+def pages_for_events(root, events):
+    pages = []
+    for iso_year in sorted({d.isocalendar().year for d in events}):
+        pages.extend(sorted((root / str(iso_year)).glob("W*/index.html")))
+    return pages
+
+
+def inject(root, events):
     changed = 0
-    for page in sorted((root / str(year)).glob("W*/index.html")):
+    for page in pages_for_events(root, events):
         text = page.read_text(encoding="utf-8")
         original = text
         text = clean_legacy_constellation_events(text)
@@ -119,8 +126,8 @@ def main():
         rows = build_rows(year)
         write_csv(year, rows)
         events = event_map(rows)
-        c1 = inject(SOURCE_SITE, year, events)
-        c2 = inject(PUBLIC, year, events)
+        c1 = inject(SOURCE_SITE, events)
+        c2 = inject(PUBLIC, events)
         print(f"{year}: 88 constellation-center events; updated {c1} source + {c2} public pages")
 
 
