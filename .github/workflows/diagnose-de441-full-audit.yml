@@ -42,7 +42,7 @@ jobs:
           python lunar_elp.py verify data/elp82b
           python normalize_elp82b.py data/elp82b elp82b-manifest.json
 
-      - name: Run DE441 eclipse accuracy audit
+      - name: Run DE441 eclipse geometry audit
         shell: bash
         run: |
           set -euo pipefail
@@ -94,23 +94,24 @@ jobs:
           historical_residuals = []
           future_residuals = []
 
-          print("STAR ALMANACK — DE441 SUN / ELP2000-82B ECLIPSE ACCURACY AUDIT")
+          print("STAR ALMANACK — DE441 SUN / ELP2000-82B ECLIPSE GEOMETRY AUDIT")
           print("Reference: NASA greatest-eclipse UTC values in eclipse-validation-cases.yaml")
           print("Sun: DE441 geometric; Moon: production ELP2000-82B; geometry/search: production")
           print()
-          print(f"{'Case':<36} {'Prod':>8} {'DE441':>8} {'Shift':>8} {'dA/dt@ref':>12} {'dA/dt@calc':>13}")
-          print("-" * 94)
+          print("For each case:")
+          print("  ref  = geometry at the published greatest-eclipse instant")
+          print("  calc = geometry at the Star Almanack minimizer's greatest-eclipse instant")
+          print("  dA/dt is the centered 1-second derivative of shadow-axis distance")
+          print()
+          print(f"{'Case':<36} {'dt':>9} {'Aref km':>12} {'Acalc km':>12} {'dA km':>10} {'dA/dt ref':>12} {'dA/dt calc':>13}")
+          print("-" * 112)
 
           try:
-              for group, label, date, reference in cases:
-                  eclipse_engine.sun_vector_j2000 = original_sun
-                  prod = engine.find_solar_eclipse(date)
-                  prod_res = signed_seconds(prod.greatest_utc, reference)
+              eclipse_engine.sun_vector_j2000 = de441_sun
 
-                  eclipse_engine.sun_vector_j2000 = de441_sun
+              for group, label, date, reference in cases:
                   de = engine.find_solar_eclipse(date)
                   de_res = signed_seconds(de.greatest_utc, reference)
-                  shift = signed_seconds(de.greatest_utc, prod.greatest_utc)
 
                   de441_residuals.append(de_res)
                   (historical_residuals if group == "historical" else future_residuals).append(de_res)
@@ -124,10 +125,23 @@ jobs:
                       gp = engine.geometry_at_utc_jd(jd + one_sec)
                       return (gp.axis_distance_km - gm.axis_distance_km) / 2.0
 
+                  g_ref = engine.geometry_at_utc_jd(ref_jd)
+                  g_calc = engine.geometry_at_utc_jd(calc_jd)
                   ref_rate = axis_rate(ref_jd)
                   calc_rate = axis_rate(calc_jd)
+                  axis_delta = g_calc.axis_distance_km - g_ref.axis_distance_km
 
-                  print(f"{label[:35]:<36} {prod_res:+7.1f}s {de_res:+7.1f}s {shift:+7.1f}s {ref_rate:+12.6f} {calc_rate:+13.6f}")
+                  print(
+                      f"{label[:35]:<36} {de_res:+8.3f}s "
+                      f"{g_ref.axis_distance_km:12.6f} {g_calc.axis_distance_km:12.6f} "
+                      f"{axis_delta:+10.6f} {ref_rate:+12.6f} {calc_rate:+13.6f}"
+                  )
+
+                  print(
+                      f"{'':36} "
+                      f"core(ref/calc)={g_ref.core_radius_km:.6f}/{g_calc.core_radius_km:.6f} km  "
+                      f"margin(ref/calc)={g_ref.eclipse_margin_km:.6f}/{g_calc.eclipse_margin_km:.6f} km"
+                  )
 
               def summarize(label, values):
                   if not values:
@@ -148,9 +162,10 @@ jobs:
               summarize("all", de441_residuals)
               print()
               print("Interpretation:")
-              print("- DE441 residual is calculated greatest UTC minus NASA reference UTC.")
-              print("- Negative means Star Almanack is early; positive means it is late.")
-              print("- dA/dt near zero at the calculated instant confirms the minimizer is minimizing axis distance.")
+              print("- dA/dt(calc) near zero means the search/minimizer is doing its job.")
+              print("- If dA/dt(calc) is near zero but dA/dt(ref) is not, the remaining timing residual is geometric/model disagreement, not the solver.")
+              print("- If dA/dt(calc) is materially nonzero, inspect the event-search/minimizer.")
+              print("- Acalc should be <= Aref when the calculated instant is the minimum of this engine's own geometry.")
           finally:
               eclipse_engine.sun_vector_j2000 = original_sun
               spice.kclear()
