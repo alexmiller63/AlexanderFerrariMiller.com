@@ -17,6 +17,11 @@ DEFAULT_ECLIPSE_SOURCE = ROOT / "Star-Almanack-Repo" / "eclipse.yaml"
 ALMANACK_SOURCE = ROOT / "Star-Almanack-Repo" / "almanack-expanded.md"
 ECLIPSE_PAGE = ROOT / "star-almanack" / "eclipses.html"
 
+GLYPHS = {
+    "solar": '<img class="visibility-glyph" src="/assets/almanack/visibility-glyphs/masters/solar-eclipse.svg" alt="Solar eclipse" aria-label="Solar eclipse" style="height:1.15em;width:auto;vertical-align:-.18em">',
+    "lunar": '<img class="visibility-glyph" src="/assets/almanack/visibility-glyphs/masters/lunar-eclipse.svg" alt="Lunar eclipse" aria-label="Lunar eclipse" style="height:1.15em;width:auto;vertical-align:-.18em">',
+}
+
 
 def parse_year(text: str) -> int:
     m = re.search(r"(?m)^year:\s*(\d{4})\s*$", text)
@@ -47,38 +52,36 @@ def parse_eclipses(text: str, year: int) -> list[dict[str, str]]:
     return out
 
 
-def label(e: dict[str, str]) -> str:
-    symbol = "☀" if e["kind"] == "solar" else "☾"
-    return f"{symbol} {e['type'].title()} {e['kind']} eclipse — greatest {e['maximum'][:5]} UTC"
+def label(e: dict[str, str], html: bool = True) -> str:
+    glyph = GLYPHS[e["kind"]] if html else ("☀" if e["kind"] == "solar" else "☾")
+    return f"{glyph} {e['type'].title()} {e['kind']} eclipse — greatest eclipse {e['maximum'][:5]} UTC"
 
 
 def update_markdown(text: str, e: dict[str, str]) -> str:
     d = date.fromisoformat(e["date"])
     day = d.strftime("%a, %b %d, %Y")
-    event = label(e)
+    event = label(e, html=False)
     pat = re.compile(rf"(?m)^(\| {re.escape(day)} \| [^|]+ \| )([^|]*)( \|)$")
     m = pat.search(text)
     if not m:
         raise SystemExit(f"Calendar row not found for {e['date']}")
     existing = m.group(2).strip()
-    if event in existing:
-        return text
-    new = event if existing in ("", "—") else event + "<br>" + existing
+    parts = [] if existing in ("", "—") else [p for p in existing.split("<br>") if " eclipse — greatest" not in p]
+    new = "<br>".join([event] + parts)
     return text[:m.start()] + m.group(1) + new + m.group(3) + text[m.end():]
 
 
 def update_html(text: str, e: dict[str, str]) -> str:
     d = date.fromisoformat(e["date"])
     day = d.strftime("%a, %b %d, %Y")
-    event = label(e)
+    event = label(e, html=True)
     pat = re.compile(rf"(<tr><td>{re.escape(day)}</td><td>.*?</td><td>)(.*?)(</td></tr>)")
     m = pat.search(text)
     if not m:
         raise SystemExit(f"HTML calendar row not found for {e['date']}")
     existing = m.group(2)
-    if event in existing:
-        return text
-    new = event if existing.strip() in ("", "—") else event + "<br>" + existing
+    parts = [] if existing.strip() in ("", "—") else [p for p in existing.split("<br>") if " eclipse — greatest" not in p]
+    new = "<br>".join([event] + parts)
     return text[:m.start()] + m.group(1) + new + m.group(3) + text[m.end():]
 
 
@@ -122,9 +125,6 @@ def publish(source_path: Path) -> tuple[int, int]:
     year = parse_year(source_text)
     eclipses = parse_eclipses(source_text, year)
 
-    # almanack-expanded.md is the preserved 2026 editorial source. Do not
-    # pretend it represents another edition; other years publish to their
-    # actual generated year trees.
     if year == 2026:
         source = ALMANACK_SOURCE.read_text(encoding="utf-8")
         for e in eclipses:
@@ -134,8 +134,8 @@ def publish(source_path: Path) -> tuple[int, int]:
     source_site = ROOT / "Star-Almanack-Repo" / "site" / str(year)
     public_site = ROOT / "almanack" / str(year)
     for e in eclipses:
-        week = date.fromisoformat(e["date"]).isocalendar().week
-        for root in (source_site, public_site):
+        iso_year, week, _ = date.fromisoformat(e["date"]).isocalendar()
+        for root in (source_site if iso_year == year else ROOT / "Star-Almanack-Repo" / "site" / str(iso_year), public_site if iso_year == year else ROOT / "almanack" / str(iso_year)):
             page = root / f"W{week:02d}" / "index.html"
             if not page.exists():
                 raise SystemExit(f"Missing Almanack week page: {page}")
