@@ -13,13 +13,13 @@ from star_almanack_astronomy import (
     best_time_for_solar_ra,
     best_visibility,
 )
-from star_almanack_objects import AlmanackObject, observing_aid_for_magnitude, render_text
+from star_almanack_objects import AlmanackObject, observing_aid_for_magnitude, render_html
 
 ROOT = Path(__file__).resolve().parents[1]
 SRC = ROOT / "Star-Almanack-Repo"
 PUBLIC = ROOT / "almanack"
 SOURCE_SITE = SRC / "site"
-DEFAULT_YEARS = (2025, 2027)
+DEFAULT_YEARS = (2025, 2026, 2027)
 
 GREEK_BAYER = {
     "Alp": "α", "Bet": "β", "Gam": "γ", "Del": "δ", "Eps": "ε", "Zet": "ζ",
@@ -35,7 +35,7 @@ def requested_years() -> tuple[int, ...]:
     try:
         years = tuple(dict.fromkeys(int(x) for x in sys.argv[1:]))
     except ValueError as exc:
-        raise SystemExit("Years must be integers, e.g. 2025 2027") from exc
+        raise SystemExit("Years must be integers, e.g. 2025 2026 2027") from exc
     if any(y < 1 for y in years):
         raise SystemExit("Years must be positive integers")
     return years
@@ -64,13 +64,7 @@ def redated(rows, year):
 
 
 def redated_preserving_2026_phase(rows, year):
-    """Carry each canonical 2026 placement to another year by solar-RA phase.
-
-    Messier placement in messier-visibility-2026.csv is authoritative. Some
-    stored 2026 placements are not reproduced by deriving the phase anew from
-    the rounded catalog RA, so parameterization must preserve the actual 2026
-    solar phase rather than silently changing the baseline astronomy.
-    """
+    """Carry each canonical 2026 placement to another year by solar-RA phase."""
     if year == 2026:
         return [dict(row) for row in rows]
     out = []
@@ -114,11 +108,11 @@ def star_label(r: dict[str, str]) -> str:
         best_date=dt.date.fromisoformat(r["best_date"]),
         observing_aid=observing_aid_for_magnitude(source_mag),
         magnitude=source_mag,
-        magnitude_display="none",
+        magnitude_display="whole",
         catalog_id=(r.get("hyg_id") or r.get("hip") or "").strip(),
         provenance=(r.get("brightness_basis") or "").strip(),
     )
-    return render_text(record)
+    return render_html(record)
 
 
 def page_date_map(year: int):
@@ -151,9 +145,17 @@ def page_date_map(year: int):
     return events
 
 
+def pages_for_events(root: Path, events) -> list[Path]:
+    iso_years = sorted({d.isocalendar().year for d in events})
+    pages: list[Path] = []
+    for iso_year in iso_years:
+        pages.extend(sorted((root / str(iso_year)).glob("W*/index.html")))
+    return pages
+
+
 def inject(root: Path, year: int, events) -> int:
     changed = 0
-    for page in sorted((root / str(year)).glob("W*/index.html")):
+    for page in pages_for_events(root, events):
         text = page.read_text(encoding="utf-8")
         original = text
         for d, vals in events.items():
@@ -179,7 +181,7 @@ def main():
         events = page_date_map(year)
         c1 = inject(SOURCE_SITE, year, events)
         c2 = inject(PUBLIC, year, events)
-        print(f"{year}: canonical fixed-sky entries with declination band and season; updated {c1} source + {c2} public pages")
+        print(f"{year}: canonical fixed-sky entries with observing glyph, magnitude, declination band and season; updated {c1} source + {c2} public pages")
 
 
 if __name__ == "__main__":
