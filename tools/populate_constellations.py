@@ -39,7 +39,11 @@ import unicodedata
 from collections import defaultdict
 from pathlib import Path
 
-from star_almanack_astronomy import best_visibility, declination_band, season_for
+from star_almanack_astronomy import (
+    best_visibility_occurrences_for_iso_year,
+    declination_band,
+    season_for,
+)
 from star_almanack_objects import HTML_AID, observing_aid_for_magnitude
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -248,35 +252,62 @@ def visibility_html(mag: float) -> str:
     )
 
 
-def make_row(source: dict[str, str], year: int) -> dict[str, str]:
-    ci, cd = best_visibility(float(source["centroid_ra_h"]), year)
-    return {
-        "name": source["name"],
-        "abbr": source["abbr"],
-        "figure_part": source.get("figure_part", ""),
-        "centroid_ra_h": source["centroid_ra_h"],
-        "centroid_dec_deg": source["centroid_dec_deg"],
-        "sampled_area_sq_deg": source["sampled_area_sq_deg"],
-        "centroid_step_deg": source["centroid_step_deg"],
-        "center_best_instant_utc": ci.strftime("%Y-%m-%d %H:%M"),
-        "center_best_date": cd.isoformat(),
-        "center_iso": iso_label(cd),
-    }
+def make_rows(source: dict[str, str], iso_year: int) -> list[dict[str, str]]:
+    rows = []
+    occurrences = best_visibility_occurrences_for_iso_year(
+        float(source["centroid_ra_h"]), iso_year
+    )
+    if not occurrences:
+        raise SystemExit(
+            f"No constellation-center occurrence for {source['name']} in ISO year {iso_year}"
+        )
+    for ci, cd in occurrences:
+        rows.append({
+            "name": source["name"],
+            "abbr": source["abbr"],
+            "figure_part": source.get("figure_part", ""),
+            "centroid_ra_h": source["centroid_ra_h"],
+            "centroid_dec_deg": source["centroid_dec_deg"],
+            "sampled_area_sq_deg": source["sampled_area_sq_deg"],
+            "centroid_step_deg": source["centroid_step_deg"],
+            "center_best_instant_utc": ci.strftime("%Y-%m-%d %H:%M"),
+            "center_best_date": cd.isoformat(),
+            "center_iso": iso_label(cd),
+        })
+    return rows
+
+
+def source_identity(source: dict[str, str]) -> tuple[str, str]:
+    return source["abbr"].strip(), source.get("figure_part", "").strip()
 
 
 def build_rows(year):
     snaps = read_csv(CENTROID_SNAPSHOT)
     if len(snaps) != 88:
         raise SystemExit(f"Expected 88 centroid snapshot rows, got {len(snaps)}")
-    rows = []
+
+    sources = []
     for snap in snaps:
         if snap["abbr"].strip() != "Ser":
-            rows.append(make_row(snap, year))
+            sources.append(snap)
             continue
         for component in SERPENS_COMPONENTS:
-            rows.append(make_row({**component, "abbr": "Ser"}, year))
-    if len(rows) != 89:
-        raise SystemExit(f"Expected 89 center rows after splitting Serpens, got {len(rows)}")
+            sources.append({**component, "abbr": "Ser"})
+
+    if len(sources) != 89:
+        raise SystemExit(f"Expected 89 center identities after splitting Serpens, got {len(sources)}")
+
+    rows = []
+    for source in sources:
+        rows.extend(make_rows(source, year))
+
+    expected = {source_identity(source) for source in sources}
+    represented = {source_identity(row) for row in rows}
+    missing = expected - represented
+    if missing:
+        raise SystemExit(
+            f"ISO year {year} is missing constellation-center identities: {sorted(missing)}"
+        )
     return rows
 
 
@@ -310,10 +341,9 @@ LEGACY_CENTER = re.compile(r'^(?:✦ )?.*? (?:geometric-center observance|center
 def clean_target_event_cell(cell: str) -> list[str]:
     """Remove only legacy/current constellation entries from one date cell.
 
-    This must never sweep an entire weekly page. Civil-year observing cycles can
-    cross an ISO-year boundary; page-wide cleaning while processing the next
-    civil year previously erased constellation centers from unrelated dates in
-    the preceding ISO year (for example Norma in 2026-W28).
+    This must never sweep an entire weekly page. ISO-year population can
+    contain occurrences from neighboring astronomical cycles, so cleanup is
+    deliberately restricted to the target calendar row.
     """
     if cell in ("", "—"):
         return []
@@ -345,7 +375,7 @@ def pages_for_events(root, events):
 
 
 def row_pattern(d: dt.date) -> re.Pattern[str]:
-    date_text = d.strftime("%a, %b %d, %Y")
+    date_text = f"{d:%a, %b} {d.day}, {d:%Y}"
     return re.compile(
         rf"(<tr><td>{re.escape(date_text)}</td><td>.*?</td><td>)(.*?)(</td></tr>)"
     )
@@ -407,7 +437,7 @@ def main():
         validate(SOURCE_SITE, events)
         validate(PUBLIC, events)
         print(
-            f"{year}: verified 89 constellation-center events with visibility "
+            f"{year}: verified 89 constellation-center identities across {len(rows)} ISO-year occurrences "
             f"(Serpens split into Caput/Cauda); updated {c1} source + {c2} public pages"
         )
 
