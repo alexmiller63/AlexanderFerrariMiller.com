@@ -10,8 +10,8 @@ from pathlib import Path
 
 from star_almanack_astronomy import (
     apparent_sun_ra_hours,
-    best_time_for_solar_ra,
-    best_visibility,
+    best_visibility_occurrences_for_iso_year,
+    solar_ra_occurrences_for_iso_year,
 )
 from star_almanack_objects import AlmanackObject, observing_aid_for_magnitude, render_html
 
@@ -51,38 +51,37 @@ def read_csv(name: str) -> list[dict[str, str]]:
         return list(csv.DictReader(f))
 
 
-def redated(rows, year):
+def redated(rows, iso_year):
     out = []
     for row in rows:
-        r = dict(row)
-        instant, day = best_visibility(float(r["ra_h"]), year)
-        r["best_instant_utc"] = instant.strftime("%Y-%m-%d %H:%M")
-        r["best_date"] = day.isoformat()
-        r["iso"] = iso_label(day)
-        out.append(r)
+        for instant, day in best_visibility_occurrences_for_iso_year(float(row["ra_h"]), iso_year):
+            r = dict(row)
+            r["best_instant_utc"] = instant.strftime("%Y-%m-%d %H:%M")
+            r["best_date"] = day.isoformat()
+            r["iso"] = iso_label(day)
+            out.append(r)
     return out
 
 
-def redated_preserving_2026_phase(rows, year):
-    """Carry each canonical 2026 placement to another year by solar-RA phase."""
-    if year == 2026:
-        return [dict(row) for row in rows]
+def redated_preserving_2026_phase(rows, iso_year):
+    """Carry each canonical 2026 placement by solar-RA phase into an ISO year."""
     out = []
     for row in rows:
         canonical = dt.datetime.strptime(row["best_instant_utc"], "%Y-%m-%d %H:%M")
         target = apparent_sun_ra_hours(canonical)
-        instant = best_time_for_solar_ra(target, year)
-        day = (instant + dt.timedelta(hours=12)).date()
-        r = dict(row)
-        r["best_instant_utc"] = instant.strftime("%Y-%m-%d %H:%M")
-        r["best_date"] = day.isoformat()
-        r["iso"] = iso_label(day)
-        out.append(r)
+        for instant, day in solar_ra_occurrences_for_iso_year(target, iso_year):
+            r = dict(row)
+            r["best_instant_utc"] = instant.strftime("%Y-%m-%d %H:%M")
+            r["best_date"] = day.isoformat()
+            r["iso"] = iso_label(day)
+            out.append(r)
     return out
 
 
 def write_csv(path, rows):
     path.parent.mkdir(parents=True, exist_ok=True)
+    if not rows:
+        raise RuntimeError(f"No visibility rows generated for {path.name}")
     with path.open("w", newline="", encoding="utf-8") as f:
         w = csv.DictWriter(f, fieldnames=list(rows[0]))
         w.writeheader()
@@ -154,14 +153,17 @@ def pages_for_events(root: Path, events) -> list[Path]:
     return pages
 
 
+def date_text(d: dt.date) -> str:
+    return f"{d:%a, %b} {d.day}, {d:%Y}"
+
+
 def inject(root: Path, year: int, events) -> int:
     changed = 0
     for page in pages_for_events(root, events):
         text = page.read_text(encoding="utf-8")
         original = text
         for d, vals in events.items():
-            date_text = d.strftime("%a, %b %d, %Y")
-            pat = re.compile(rf"(<tr><td>{re.escape(date_text)}</td><td>.*?</td><td>)(.*?)(</td></tr>)")
+            pat = re.compile(rf"(<tr><td>{re.escape(date_text(d))}</td><td>.*?</td><td>)(.*?)(</td></tr>)")
             m = pat.search(text)
             if not m:
                 continue
