@@ -67,12 +67,7 @@ def _best_time_for_solar_ra(target: float, start: dt.datetime, end: dt.datetime)
 
 
 def best_time_for_solar_ra(target: float, year: int) -> dt.datetime:
-    """Find the instant matching a solar RA within one astronomical year.
-
-    The cycle is bounded by the first point of Aries in ``year`` and
-    ``year + 1``, so an event can legitimately fall in a different ISO/civil
-    year without being duplicated or lost.
-    """
+    """Find the instant matching a solar RA within one astronomical year."""
     start = first_point_of_aries(year)
     end = first_point_of_aries(year + 1)
     return _best_time_for_solar_ra(target, start, end)
@@ -86,18 +81,50 @@ def first_point_of_aries(year: int) -> dt.datetime:
 
 
 def best_visibility(ra_h: float, year: int) -> tuple[dt.datetime, dt.date]:
-    """Return the annual instant/date when the object transits at 9:00 PM LApST.
-
-    The observing cycle is astronomical, not civil: it runs from the first
-    point of Aries (apparent solar RA 0h) in ``year`` to the first point of
-    Aries in ``year + 1``. This permits one astronomical cycle to straddle an
-    ISO/civil-year boundary without creating a duplicate or losing an event.
-    """
+    """Return one occurrence in the Aries-to-Aries astronomical cycle ``year``."""
     start = first_point_of_aries(year)
     end = first_point_of_aries(year + 1)
     target = (ra_h - 9.0) % 24.0
     best_t = _best_time_for_solar_ra(target, start, end)
     return best_t, (best_t + dt.timedelta(hours=12)).date()
+
+
+def iso_year_bounds(iso_year: int) -> tuple[dt.date, dt.date]:
+    """Return the inclusive civil-date bounds of an ISO week-numbering year."""
+    start = dt.date.fromisocalendar(iso_year, 1, 1)
+    end = dt.date.fromisocalendar(iso_year, 52, 7)
+    if dt.date(iso_year, 12, 28).isocalendar().week == 53:
+        end = dt.date.fromisocalendar(iso_year, 53, 7)
+    return start, end
+
+
+def best_visibility_occurrences_for_iso_year(
+    ra_h: float, iso_year: int
+) -> list[tuple[dt.datetime, dt.date]]:
+    """Return every annual fixed-object occurrence displayed in an ISO year.
+
+    Physical recurrence is defined by Aries-to-Aries astronomical cycles, but
+    Almanack pages are grouped by ISO week-numbering year.  An ISO year may
+    therefore contain occurrences from two neighboring astronomical cycles.
+    We calculate those cycles independently and retain every rounded date whose
+    ISO week-numbering year is ``iso_year``.  No object-name deduplication is
+    appropriate here: two occurrences in one ISO year are physically distinct.
+    """
+    first, last = iso_year_bounds(iso_year)
+    occurrences: list[tuple[dt.datetime, dt.date]] = []
+    seen_instants: set[dt.datetime] = set()
+
+    # These three Aries cycles safely cover an ISO year, including the few
+    # civil days belonging to the neighboring civil years at either boundary.
+    for cycle_year in (iso_year - 1, iso_year, iso_year + 1):
+        instant, day = best_visibility(ra_h, cycle_year)
+        if first <= day <= last and day.isocalendar().year == iso_year:
+            if instant not in seen_instants:
+                occurrences.append((instant, day))
+                seen_instants.add(instant)
+
+    occurrences.sort(key=lambda item: item[0])
+    return occurrences
 
 
 def declination_band(dec_deg: str | float) -> str:
