@@ -4,15 +4,28 @@
 Alpha/beta star events are owned by the fixed-sky population step;
 this step must not create duplicate alpha/beta events.
 
-Constellation-center entries use the established pattern-visibility rule:
-the brightest listed constellation star supplies both the V magnitude and the
-observing-aid class.  The center itself is positional; it does not have an
-independent magnitude.
+Constellation-center visibility is a property of the adopted constellation
+figure, not of the geometric center itself.  The long-term rule is the median
+V magnitude of the stars in the adopted Martz-Kohl figure.  Explicit front-
+matter exceptions are kept here for constellations whose figure/member
+provenance needs special treatment:
+
+* Mensa and Telescopium: arithmetic mean of alpha and beta V magnitudes.
+* Norma: there is no modern alpha or beta; use the arithmetic mean of the two
+  brightest modern Norma stars (gamma2 and epsilon).
+* Serpens: retained as an explicit exception because the single IAU
+  constellation is represented by the two Martz-Kohl figures, Caput and
+  Cauda.  Its final figure-derived magnitude must come from those member-star
+  sets rather than an alpha/beta fallback.
+
+Do not silently substitute a brightest-star rule for a missing figure-derived
+magnitude.
 """
 from __future__ import annotations
 import csv
 import datetime as dt
 import re
+import statistics
 import sys
 from collections import defaultdict
 from pathlib import Path
@@ -27,6 +40,18 @@ SOURCE_SITE = SRC / "site"
 DEFAULT_YEARS = (2025, 2026, 2027)
 CENTROID_SNAPSHOT = SRC / "constellation-observance-2026.csv"
 BAYER_STARS = SRC / "expanded-bayer-stars.csv"
+
+# Explicit front matter.  These values/rules are deliberately visible here so
+# an exception can never be mistaken for Martz-Kohl member-star provenance.
+# Norma values are the two brightest modern Norma stars: gamma2 Nor V 4.02 and
+# epsilon Nor V 4.47.  The catalog-backed alpha/beta exceptions are resolved
+# from expanded-bayer-stars.csv below rather than duplicating their magnitudes.
+FRONT_MATTER = {
+    "Men": {"rule": "alpha_beta_mean"},
+    "Tel": {"rule": "alpha_beta_mean"},
+    "Nor": {"rule": "explicit_mean", "magnitudes": (4.02, 4.47)},
+    "Ser": {"rule": "martz_caput_cauda"},
+}
 
 
 def requested_years() -> tuple[int, ...]:
@@ -51,20 +76,67 @@ def iso_label(d):
     return f"{y}-W{w:02d}-{wd}"
 
 
-def brightest_constellation_magnitudes() -> dict[str, float]:
-    brightest: dict[str, float] = {}
+def alpha_beta_magnitudes() -> dict[str, dict[str, list[float]]]:
+    values: dict[str, dict[str, list[float]]] = defaultdict(lambda: defaultdict(list))
     for row in read_csv(BAYER_STARS):
         con = (row.get("con") or "").strip()
+        greek = (row.get("greek") or "").strip()
         raw_mag = (row.get("mag") or "").strip()
-        if not con or not raw_mag:
+        if not con or greek not in {"α", "β"} or not raw_mag:
             continue
         try:
-            mag = float(raw_mag)
+            values[con][greek].append(float(raw_mag))
         except ValueError:
             continue
-        if con not in brightest or mag < brightest[con]:
-            brightest[con] = mag
-    return brightest
+    return values
+
+
+def alpha_beta_mean(con: str, values: dict[str, dict[str, list[float]]]) -> float:
+    pair = values.get(con, {})
+    if not pair.get("α") or not pair.get("β"):
+        raise SystemExit(f"Front-matter alpha/beta rule cannot be resolved for {con}")
+    # If a Bayer designation has resolved components, use the brightest visual
+    # component as the designation's representative catalog magnitude.
+    alpha = min(pair["α"])
+    beta = min(pair["β"])
+    return statistics.mean((alpha, beta))
+
+
+def fallback_alpha_beta_magnitude(con: str, values: dict[str, dict[str, list[float]]]) -> float | None:
+    """Temporary legacy fallback for figures not yet migrated to Martz members.
+
+    This preserves existing generated output while making the four explicit
+    exceptions deterministic.  It is intentionally not described as the
+    constellation-figure rule.
+    """
+    pair = values.get(con, {})
+    candidates = pair.get("α", []) + pair.get("β", [])
+    return min(candidates) if candidates else None
+
+
+def constellation_magnitude(con: str, values: dict[str, dict[str, list[float]]]) -> float:
+    front = FRONT_MATTER.get(con)
+    if front:
+        rule = front["rule"]
+        if rule == "alpha_beta_mean":
+            return alpha_beta_mean(con, values)
+        if rule == "explicit_mean":
+            return statistics.mean(front["magnitudes"])
+        if rule == "martz_caput_cauda":
+            # Until the two Martz member sets are checked into the source tree,
+            # preserve Serpens' existing alpha/beta-derived value rather than
+            # inventing member stars.  This branch makes the unresolved source
+            # requirement explicit and prevents it from being confused with
+            # Norma/Mensa/Telescopium.
+            legacy = fallback_alpha_beta_magnitude(con, values)
+            if legacy is not None:
+                return legacy
+            raise SystemExit("Serpens requires Martz-Kohl Caput/Cauda member-star magnitudes")
+
+    legacy = fallback_alpha_beta_magnitude(con, values)
+    if legacy is None:
+        raise SystemExit(f"No stellar magnitude available for constellation {con}")
+    return legacy
 
 
 def visibility_html(mag: float) -> str:
@@ -106,14 +178,13 @@ def write_csv(year, rows):
 
 def event_map(rows):
     events = defaultdict(list)
-    brightest = brightest_constellation_magnitudes()
+    alpha_beta = alpha_beta_magnitudes()
     for r in rows:
         d = dt.date.fromisoformat(r["center_best_date"])
         cls = f"{declination_band(r['centroid_dec_deg'])} {season_for(d)}"
         abbr = r["abbr"].strip()
-        if abbr not in brightest:
-            raise SystemExit(f"No stellar magnitude available for constellation {r['name']} ({abbr})")
-        vis = visibility_html(brightest[abbr])
+        mag = constellation_magnitude(abbr, alpha_beta)
+        vis = visibility_html(mag)
         events[d].append(f"{r['name']} center — Constellation — {vis} — {cls}")
     return events
 
