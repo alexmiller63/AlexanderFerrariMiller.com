@@ -3,7 +3,8 @@
 
 Asterism-center entries use the established pattern-visibility rule: the
 brightest member star supplies both the V magnitude and the observing-aid class.
-The center itself is positional and has no independent magnitude.
+When the same physical object is represented by a catalog identity, the catalog
+entry takes precedence and the duplicate asterism-center event is suppressed.
 """
 from __future__ import annotations
 import argparse,csv,datetime as dt,re
@@ -18,6 +19,7 @@ SRC=ROOT/"Star-Almanack-Repo"
 PUBLIC=ROOT/"almanack"
 SOURCE_SITE=SRC/"site"
 MEMBER_COORDS=SRC/"asterism-member-coordinates.csv"
+CATALOG_OVERLAP=SRC/"asterism-catalog-overlap.csv"
 
 def requested_years():
  p=argparse.ArgumentParser(description="Populate Star Almanack core asterism centers")
@@ -34,6 +36,12 @@ def read_rows(year):
  if len(rows)!=25: raise SystemExit(f"Expected 25 asterism rows for {year}, got {len(rows)}")
  if len({r['asterism'] for r in rows})!=25: raise SystemExit(f"Duplicate/missing asterism names for {year}")
  return rows
+
+def catalog_overlaps():
+ with CATALOG_OVERLAP.open(newline="",encoding="utf-8") as f: rows=list(csv.DictReader(f))
+ names={r["asterism"].strip() for r in rows if r.get("asterism") and r.get("catalog")}
+ if len(names)!=len(rows): raise SystemExit("Asterism/catalog overlap registry contains incomplete or duplicate identities")
+ return names
 
 def brightest_asterism_magnitudes():
  with MEMBER_COORDS.open(newline="",encoding="utf-8") as f: rows=list(csv.DictReader(f))
@@ -52,11 +60,12 @@ def visibility_html(mag):
  return f'<span class="visibility-magnitude">{HTML_AID[aid]} V {mag:.1f}</span>'
 
 def event_map(rows):
- e=defaultdict(list); brightest=brightest_asterism_magnitudes()
+ e=defaultdict(list); brightest=brightest_asterism_magnitudes(); overlaps=catalog_overlaps()
  for r in rows:
+  name=r['asterism']
+  if name in overlaps: continue
   d=dt.date.fromisoformat(r["best_date"])
   cls=f"{declination_band(r['centroid_dec_deg'])} {season_for(d)}"
-  name=r['asterism']
   if name not in brightest: raise SystemExit(f"No stellar magnitude available for asterism {name}")
   e[d].append(f"{name} center — Asterism — {visibility_html(brightest[name])} — {cls}")
  return e
@@ -73,12 +82,14 @@ def inject(root,events):
  changed=inserted=0
  for page in pages_for_events(root,events):
   text=page.read_text(encoding="utf-8"); original=text
+  # Remove all previously generated asterism-center rows, including catalog-overlap rows.
+  text=re.sub(r"(?:<br>)?(?:✦ )?[^<]*? center — Asterism — .*?(?=<br>|</td>)","",text)
+  text=text.replace("<td><br>","<td>").replace("<br></td>","</td>").replace("<br><br>","<br>")
   for d,vals in events.items():
    pat=re.compile(rf"(<tr><td>{date_pattern(d)}</td><td>.*?</td><td>)(.*?)(</td></tr>)")
    m=pat.search(text)
    if not m: continue
-   keep=[] if m.group(2)=="—" else [x for x in m.group(2).split("<br>") if x]
-   keep=[x for x in keep if not re.match(r"^(?:✦ )?.*?(?: asterism(?: observance)?| center — Asterism)",x.strip())]
+   keep=[] if m.group(2) in ("—","") else [x for x in m.group(2).split("<br>") if x]
    before=len(keep)
    for v in vals:
     if v not in keep: keep.append(v)
@@ -97,12 +108,14 @@ def validate(root,events):
   for v in vals:
    count=cell.split("<br>").count(v)
    if count!=1: raise SystemExit(f"{root}: expected {v!r} exactly once on {d} in {page}, found {count}")
+  
 
 def main():
  for year in requested_years():
-  rows=read_rows(year); events=event_map(rows)
+  rows=read_rows(year); events=event_map(rows); overlaps=catalog_overlaps()
+  expected=len(rows)-len(overlaps)
   c1,i1=inject(SOURCE_SITE,events); c2,i2=inject(PUBLIC,events)
   validate(SOURCE_SITE,events); validate(PUBLIC,events)
-  print(f"{year}: verified 25 asterism centers with visibility exactly once in each tree; inserted source={i1}, public={i2}; updated {c1} source + {c2} public pages")
+  print(f"{year}: verified {expected} independent asterism centers; {len(overlaps)} catalog overlaps suppressed; inserted source={i1}, public={i2}; updated {c1} source + {c2} public pages")
 
 if __name__=="__main__": main()
