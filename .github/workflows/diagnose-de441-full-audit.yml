@@ -2,6 +2,9 @@ name: Diagnose DE441 Full Eclipse Audit
 
 on:
   workflow_dispatch:
+  push:
+    paths:
+      - .github/workflows/diagnose-de441-full-audit.yml
 
 permissions:
   contents: read
@@ -23,13 +26,13 @@ jobs:
           test -s star-almanack-microkernel.bsp
           ls -lh star-almanack-microkernel.bsp
 
+      - name: Verify preserved NAIF leap-seconds kernel
+        run: |
+          test -s kernels/naif0012.tls
+          ls -lh kernels/naif0012.tls
+
       - name: Install Python dependencies
         run: python3 -m pip install --disable-pip-version-check spiceypy pyyaml
-
-      - name: Download NAIF leap-seconds kernel
-        run: |
-          curl -L https://naif.jpl.nasa.gov/pub/naif/generic_kernels/lsk/naif0012.tls -o naif0012.tls
-          test -s naif0012.tls
 
       - name: Bootstrap ELP2000-82B archive
         working-directory: Star-Almanack-Repo/star-almanack-elp82b
@@ -38,19 +41,19 @@ jobs:
           python lunar_elp.py verify data/elp82b
           python normalize_elp82b.py data/elp82b elp82b-manifest.json
 
-      - name: Run DE441 eclipse audit
+      - name: Run DE441 eclipse accuracy audit
         shell: bash
         run: |
           set -euo pipefail
           python3 <<'PY' 2>&1 | tee de441-eclipse-full-audit.txt
           from datetime import datetime, timezone
-          import math
+          import statistics
           import spiceypy as spice
           import yaml
           import eclipse_engine
 
           BSP = "star-almanack-microkernel.bsp"
-          LSK = "naif0012.tls"
+          LSK = "kernels/naif0012.tls"
           DAY = 86400.0
           J2000 = 2451545.0
 
@@ -86,9 +89,13 @@ jobs:
 
           engine = eclipse_engine.EclipseEngine()
           original_sun = eclipse_engine.sun_vector_j2000
+          de441_residuals = []
+          historical_residuals = []
+          future_residuals = []
 
-          print("STAR ALMANACK — DE441 SUN / ELP2000-82B ECLIPSE AUDIT")
-          print("Only the Sun ephemeris is replaced by DE441; Moon, geometry, and search remain production.")
+          print("STAR ALMANACK — DE441 SUN / ELP2000-82B ECLIPSE ACCURACY AUDIT")
+          print("Reference: frozen NASA greatest-eclipse UTC values in eclipse-validation-cases.yaml")
+          print("Sun: DE441 geometric; Moon: production ELP2000-82B; geometry/search: production")
           print()
           print(f"{'Case':<36} {'Prod':>8} {'DE441':>8} {'Shift':>8} {'dA/dt@ref':>12} {'dA/dt@calc':>13}")
           print("-" * 94)
@@ -104,6 +111,9 @@ jobs:
                   de_res = signed_seconds(de.greatest_utc, reference)
                   shift = signed_seconds(de.greatest_utc, prod.greatest_utc)
 
+                  de441_residuals.append(de_res)
+                  (historical_residuals if group == "historical" else future_residuals).append(de_res)
+
                   ref_jd = iso_to_jd(reference)
                   calc_jd = de.greatest_jd_utc
                   one_sec = 1.0 / DAY
@@ -118,11 +128,28 @@ jobs:
 
                   print(f"{label[:35]:<36} {prod_res:+7.1f}s {de_res:+7.1f}s {shift:+7.1f}s {ref_rate:+12.6f} {calc_rate:+13.6f}")
 
+              def summarize(label, values):
+                  if not values:
+                      return
+                  abs_values = [abs(v) for v in values]
+                  print(
+                      f"{label:<12} n={len(values):2d}  "
+                      f"mean signed={statistics.fmean(values):+7.3f}s  "
+                      f"mean |err|={statistics.fmean(abs_values):7.3f}s  "
+                      f"max |err|={max(abs_values):7.3f}s"
+                  )
+
+              print()
+              print("DE441 TIMING ACCURACY SUMMARY")
+              print("-" * 72)
+              summarize("historical", historical_residuals)
+              summarize("future", future_residuals)
+              summarize("all", de441_residuals)
               print()
               print("Interpretation:")
-              print("- If DE441 removes most timing residual, the compact Sun/frame path is the main culprit.")
-              print("- If DE441 leaves the residual, the Moon/geometry/minimizer path remains implicated.")
-              print("- dA/dt near zero at the DE441 calculated instant confirms the minimizer is actually minimizing axis distance.")
+              print("- DE441 residual is calculated greatest UTC minus NASA reference UTC.")
+              print("- Negative means Star Almanack is early; positive means it is late.")
+              print("- dA/dt near zero at the calculated instant confirms the minimizer is minimizing axis distance.")
           finally:
               eclipse_engine.sun_vector_j2000 = original_sun
               spice.kclear()
