@@ -1,16 +1,23 @@
 #!/usr/bin/env python3
-"""Populate requested Almanack years with core asterism-center events."""
+"""Populate requested Almanack years with core asterism-center events.
+
+Asterism-center entries use the established pattern-visibility rule: the
+brightest member star supplies both the V magnitude and the observing-aid class.
+The center itself is positional and has no independent magnitude.
+"""
 from __future__ import annotations
 import argparse,csv,datetime as dt,re
 from collections import defaultdict
 from pathlib import Path
 
 from star_almanack_astronomy import declination_band, season_for
+from star_almanack_objects import HTML_AID, observing_aid_for_magnitude
 
 ROOT=Path(__file__).resolve().parents[1]
 SRC=ROOT/"Star-Almanack-Repo"
 PUBLIC=ROOT/"almanack"
 SOURCE_SITE=SRC/"site"
+MEMBER_COORDS=SRC/"asterism-member-coordinates.csv"
 
 def requested_years():
  p=argparse.ArgumentParser(description="Populate Star Almanack core asterism centers")
@@ -28,12 +35,30 @@ def read_rows(year):
  if len({r['asterism'] for r in rows})!=25: raise SystemExit(f"Duplicate/missing asterism names for {year}")
  return rows
 
+def brightest_asterism_magnitudes():
+ with MEMBER_COORDS.open(newline="",encoding="utf-8") as f: rows=list(csv.DictReader(f))
+ brightest={}
+ for r in rows:
+  name=(r.get("asterism") or "").strip(); raw=(r.get("mag") or "").strip()
+  if not name or not raw: continue
+  try: mag=float(raw)
+  except ValueError: continue
+  if name not in brightest or mag<brightest[name]: brightest[name]=mag
+ return brightest
+
+def visibility_html(mag):
+ aid=observing_aid_for_magnitude(str(mag))
+ if aid is None: raise SystemExit(f"Could not derive observing aid for magnitude {mag}")
+ return f'<span class="visibility-magnitude">{HTML_AID[aid]} V {mag:.1f}</span>'
+
 def event_map(rows):
- e=defaultdict(list)
+ e=defaultdict(list); brightest=brightest_asterism_magnitudes()
  for r in rows:
   d=dt.date.fromisoformat(r["best_date"])
   cls=f"{declination_band(r['centroid_dec_deg'])} {season_for(d)}"
-  e[d].append(f"✦ {r['asterism']} center — Asterism — {cls}")
+  name=r['asterism']
+  if name not in brightest: raise SystemExit(f"No stellar magnitude available for asterism {name}")
+  e[d].append(f"{name} center — Asterism — {visibility_html(brightest[name])} — {cls}")
  return e
 
 def date_pattern(d): return rf"{d.strftime('%a, %b ')}0?{d.day}, {d.year}"
@@ -53,7 +78,7 @@ def inject(root,events):
    m=pat.search(text)
    if not m: continue
    keep=[] if m.group(2)=="—" else [x for x in m.group(2).split("<br>") if x]
-   keep=[x for x in keep if not re.match(r"^✦ .*?(?: asterism(?: observance)?| center — Asterism)",x.strip())]
+   keep=[x for x in keep if not re.match(r"^(?:✦ )?.*?(?: asterism(?: observance)?| center — Asterism)",x.strip())]
    before=len(keep)
    for v in vals:
     if v not in keep: keep.append(v)
@@ -78,6 +103,6 @@ def main():
   rows=read_rows(year); events=event_map(rows)
   c1,i1=inject(SOURCE_SITE,events); c2,i2=inject(PUBLIC,events)
   validate(SOURCE_SITE,events); validate(PUBLIC,events)
-  print(f"{year}: verified 25 asterism centers exactly once in each tree; inserted source={i1}, public={i2}; updated {c1} source + {c2} public pages")
+  print(f"{year}: verified 25 asterism centers with visibility exactly once in each tree; inserted source={i1}, public={i2}; updated {c1} source + {c2} public pages")
 
 if __name__=="__main__": main()
