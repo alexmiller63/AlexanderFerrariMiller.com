@@ -47,9 +47,8 @@ def hour_distance(a: float, b: float) -> float:
     return abs((a - b + 12.0) % 24.0 - 12.0)
 
 
-def best_time_for_solar_ra(target: float, year: int) -> tuple[dt.datetime, dt.date]:
-    start = dt.datetime(year - 1, 12, 31, 12)
-    end = dt.datetime(year, 12, 31, 23, 59)
+def _best_time_for_solar_ra(target: float, start: dt.datetime, end: dt.datetime) -> dt.datetime:
+    """Find the instant in an explicitly bounded astronomical cycle."""
     best_t, best_d = start, float("inf")
     x = start
     while x <= end:
@@ -64,12 +63,29 @@ def best_time_for_solar_ra(target: float, year: int) -> tuple[dt.datetime, dt.da
         if d < best_d:
             best_t, best_d = x, d
         x += dt.timedelta(minutes=1)
-    return best_t, (best_t + dt.timedelta(hours=12)).date()
+    return best_t
+
+
+def first_point_of_aries(year: int) -> dt.datetime:
+    """Return the apparent-Sun RA=0 instant defining the Aries-cycle boundary."""
+    start = dt.datetime(year, 3, 18)
+    end = dt.datetime(year, 3, 22, 23, 59)
+    return _best_time_for_solar_ra(0.0, start, end)
 
 
 def best_visibility(ra_h: float, year: int) -> tuple[dt.datetime, dt.date]:
-    """Return the annual instant/date when the object transits at 9:00 PM LApST."""
-    return best_time_for_solar_ra((ra_h - 9.0) % 24.0, year)
+    """Return the annual instant/date when the object transits at 9:00 PM LApST.
+
+    The observing cycle is astronomical, not civil: it runs from the first
+    point of Aries (apparent solar RA 0h) in ``year`` to the first point of
+    Aries in ``year + 1``. This permits one astronomical cycle to straddle an
+    ISO/civil-year boundary without creating a duplicate or losing an event.
+    """
+    start = first_point_of_aries(year)
+    end = first_point_of_aries(year + 1)
+    target = (ra_h - 9.0) % 24.0
+    best_t = _best_time_for_solar_ra(target, start, end)
+    return best_t, (best_t + dt.timedelta(hours=12)).date()
 
 
 def declination_band(dec_deg: str | float) -> str:
