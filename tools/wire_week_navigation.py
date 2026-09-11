@@ -143,7 +143,7 @@ def adjacent_week_link(year: int, week: int, days: int, bottom: bool = False) ->
     target_year, target_week = adjacent_week(year, week, days)
 
     # Crossing a year boundary is valid only when that adjacent Almanack year
-    # has actually been published.  Never emit a clickable link to a year that
+    # has actually been published. Never emit a clickable link to a year that
     # does not exist; this keeps boundary navigation from producing a 404.
     if target_year != year and target_year not in published_years():
         label = "Previous" if days < 0 else "Next"
@@ -192,8 +192,8 @@ def top_site_nav(text: str) -> str:
 
 
 def bottom_site_nav(text: str) -> str:
-    nav = top_site_nav(text)
-    return re.sub(r'href="([^"]*)"', lambda m: f'href="{m.group(1)}#{BOTTOM_ID}"' if m.group(1) and '#' not in m.group(1) else m.group(0), nav)
+    """Bottom site navigation must use the same destinations as the top menu."""
+    return top_site_nav(text)
 
 
 def place_bottom_navigation(text: str, year: int, week: int) -> str:
