@@ -6,100 +6,143 @@ on:
     paths:
       - '.github/workflows/diagnose-open-besselian.yml'
 
+permissions:
+  contents: read
+
 jobs:
-  compare:
+  compare-besselian-greatest:
     runs-on: ubuntu-latest
     timeout-minutes: 20
-    steps:
-      - uses: actions/checkout@v4
 
-      - uses: actions/setup-python@v5
+    steps:
+      - name: Check out Star Almanack
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+
+      - name: Restore DE440s kernel cache
+        uses: actions/cache@v4
+        with:
+          path: .cache/skyfield/de440s.bsp
+          key: de440s-bsp-v1
 
       - name: Install independent Besselian implementation
         run: |
           python -m pip install --upgrade pip
-          python -m pip install pyyaml scipy skyfield
-          python -m pip install 'git+https://github.com/lkangas/eclipse-calc.git@23853a8f9e0d1a25e026203207aca16de1d7bb31'
+          python -m pip install \
+            'git+https://github.com/lkangas/eclipse-calc.git@23853a8f9e0d1a25e026203207aca16de1d7bb31' \
+            scipy pyyaml
 
-      - name: Run Besselian greatest-eclipse comparison
+      - name: Download DE440s once if cache is empty
+        run: |
+          mkdir -p .cache/skyfield
+          python - <<'PY'
+          from pathlib import Path
+          from skyfield.api import Loader
+
+          root = Path('.cache/skyfield')
+          kernel = root / 'de440s.bsp'
+          if kernel.exists():
+              print(f'Reusing cached {kernel} ({kernel.stat().st_size:,} bytes)')
+          else:
+              print('Downloading de440s.bsp once for reuse through the Actions cache')
+              Loader(str(root)).download('de440s.bsp')
+          PY
+
+      - name: Compare Besselian greatest-eclipse times with frozen NASA targets
         working-directory: Star-Almanack-Repo
         run: |
           python - <<'PY'
+          from __future__ import annotations
+
           from datetime import datetime, timezone
           from pathlib import Path
 
+          import numpy as np
           import yaml
           from scipy.optimize import minimize_scalar
-          from skyfield.api import load
+          from skyfield.api import load, load_file
           from eclipse_calc.elements import bessels_at
 
+          DAY = 86400.0
           ROOT = Path('.')
-          KERNEL = ROOT / 'star-almanack-microkernel.bsp'
-          CASES = ROOT / 'eclipse-validation-cases.yaml'
+          KERNEL = ROOT.parent / '.cache' / 'skyfield' / 'de440s.bsp'
 
-          if not KERNEL.exists():
-              raise SystemExit(f'missing preserved ephemeris kernel: {KERNEL}')
+          with open('eclipse-validation-cases.yaml', 'r', encoding='utf-8') as f:
+              suite = yaml.safe_load(f)
 
-          data = yaml.safe_load(CASES.read_text())
           cases = []
-          for c in data['historical']:
-              cases.append((c['label'], c['expected_greatest_utc']))
-          for c in data['future_jello']['cases']:
-              cases.append((c['label'], c['nasa_greatest_utc']))
+          for case in suite['historical']:
+              if case.get('expected_exists'):
+                  cases.append((case['label'], case['date_utc'], case['expected_greatest_utc']))
+          for case in suite['future_jello']['cases']:
+              if case.get('expected_exists'):
+                  cases.append((case['label'], case['date_utc'], case['nasa_greatest_utc']))
 
-          eph = load(str(KERNEL))
-          ts = load.timescale()
+          ts = load.timescale(builtin=True)
+          eph = load_file(str(KERNEL))
 
-          def parse_utc(s):
-              return datetime.fromisoformat(s.replace('Z', '+00:00')).astimezone(timezone.utc)
-
-          def t_from_unix(seconds):
-              dt = datetime.fromtimestamp(seconds, tz=timezone.utc)
-              return ts.from_datetime(dt)
-
-          def q(seconds):
-              row = bessels_at(t_from_unix(seconds), eph).iloc[0]
+          def axis2(t):
+              row = bessels_at(t, eph).iloc[0]
               return float(row.x * row.x + row.y * row.y)
 
-          print('STAR ALMANACK — INDEPENDENT OPEN BESSELIAN DIAGNOSTIC')
-          print('Implementation: lkangas/eclipse-calc @ 23853a8f9e0d1a25e026203207aca16de1d7bb31 (MIT)')
-          print('Ephemeris: preserved Star Almanack JPL/SPK microkernel')
-          print('Criterion: minimize x^2 + y^2 in the Besselian fundamental plane')
+          print('STAR ALMANACK — INDEPENDENT OPEN BESSELIAN GREATEST-ECLIPSE AUDIT')
+          print('Implementation: lkangas/eclipse-calc @ 23853a8f9e0d1a25e026203207aca16de1d7bb31')
+          print('Ephemeris: JPL DE440s via Skyfield')
+          print('Definition tested: minimize x^2 + y^2 of the Besselian shadow axis on the fundamental plane')
           print()
-          print(f"{'Case':38s} {'NASA':>10s} {'Bessel':>10s} {'B-N':>8s} {'gamma':>10s}")
-          print('-' * 82)
+          print(f"{'Case':38s} {'NASA UTC':20s} {'Besselian UTC':24s} {'Residual':>10s} {'gamma':>10s}")
+          print('-' * 110)
 
           residuals = []
-          for label, ref_text in cases:
-              ref = parse_utc(ref_text)
-              center = ref.timestamp()
+          for label, date_text, ref_text in cases:
+              y, m, d = map(int, date_text.split('-'))
+              base = ts.utc(y, m, d, 0, 0, 0)
+
+              # Reference-free search: find the day's minimum independently on
+              # a coarse grid, then refine around that minimum. NASA's time is
+              # used only after the calculation, as a comparison target.
+              coarse_seconds = np.arange(0.0, DAY + 1.0, 600.0)
+              coarse_times = base + coarse_seconds / DAY
+              B = bessels_at(coarse_times, eph)
+              q = B['x'].to_numpy() ** 2 + B['y'].to_numpy() ** 2
+              i = int(np.argmin(q))
+              center = float(coarse_seconds[i])
+              lo = max(0.0, center - 1200.0)
+              hi = min(DAY, center + 1200.0)
+
               result = minimize_scalar(
-                  q,
-                  bounds=(center - 900.0, center + 900.0),
+                  lambda seconds: axis2(base + float(seconds) / DAY),
+                  bounds=(lo, hi),
                   method='bounded',
                   options={'xatol': 0.001},
               )
-              calc = datetime.fromtimestamp(result.x, tz=timezone.utc)
-              residual = result.x - center
-              row = bessels_at(t_from_unix(result.x), eph).iloc[0]
-              gamma = (float(row.x * row.x + row.y * row.y)) ** 0.5
-              residuals.append(residual)
-              print(
-                  f"{label[:38]:38s} "
-                  f"{ref.strftime('%H:%M:%S'):>10s} "
-                  f"{calc.strftime('%H:%M:%S.%f')[:12]:>12s} "
-                  f"{residual:+8.3f}s "
-                  f"{gamma:10.6f}"
-              )
+              if not result.success:
+                  raise RuntimeError(f'greatest-eclipse minimization failed for {label}: {result.message}')
 
-          abs_res = [abs(x) for x in residuals]
+              t_best = base + float(result.x) / DAY
+              row = bessels_at(t_best, eph).iloc[0]
+              gamma = float(np.sqrt(row.x * row.x + row.y * row.y))
+
+              ref_dt = datetime.fromisoformat(ref_text.replace('Z', '+00:00'))
+              calc_dt = t_best.utc_datetime()
+              if calc_dt.tzinfo is None:
+                  calc_dt = calc_dt.replace(tzinfo=timezone.utc)
+              residual = (calc_dt - ref_dt).total_seconds()
+              residuals.append(residual)
+
+              calc_text = calc_dt.strftime('%Y-%m-%dT%H:%M:%S.%f')[:-3] + 'Z'
+              print(f'{label:38.38s} {ref_text:20s} {calc_text:24s} {residual:+9.3f}s {gamma:10.6f}')
+
+          arr = np.asarray(residuals, dtype=float)
           print()
           print('SUMMARY')
-          print('-' * 40)
-          print(f'n={len(residuals)}')
-          print(f'mean signed = {sum(residuals)/len(residuals):+.3f} s')
-          print(f'mean |error| = {sum(abs_res)/len(abs_res):.3f} s')
-          print(f'max |error| = {max(abs_res):.3f} s')
+          print('-' * 72)
+          print(f'n={len(arr)}')
+          print(f'mean signed residual = {arr.mean():+.3f} s')
+          print(f'mean absolute error  = {np.abs(arr).mean():.3f} s')
+          print(f'max absolute error   = {np.abs(arr).max():.3f} s')
           PY
