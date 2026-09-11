@@ -1,0 +1,81 @@
+name: Fix Eclipse Time Scale
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  fix-eclipse-time-scale:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+
+      - name: Replace historical UTC to TDB path
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 <<'PY'
+          from pathlib import Path
+
+          path = Path("Star-Almanack-Repo/eclipse_engine.py")
+          text = path.read_text(encoding="utf-8")
+
+          old = '''def utc_to_tdb_approx(jd_utc: float) -> float:\n\n    \"\"\"\n\n    Approximate UTC/UT1 -> TT/TDB for orbital geometry.\n\n    In the leap-second era, convert UTC -> TAI -> TT using the published\n\n    TAI-UTC offset plus the fixed TT-TAI offset of 32.184 seconds.\n\n    Before 1972, this search layer treats the historical civil argument as\n\n    an approximation to UT1 and obtains TT from Delta-T = TT - UT1.\n\n    TDB-TT periodic terms are below the accuracy targeted by this first\n\n    eclipse-search layer and are not modeled here.\n\n    \"\"\"\n\n    tai_minus_utc = tai_minus_utc_seconds(\n\n        jd_utc\n\n    )\n\n    if tai_minus_utc is not None:\n\n        tt_minus_utc = (\n\n            tai_minus_utc + 32.184\n\n        )\n\n        return (\n\n            jd_utc\n\n            + tt_minus_utc / 86400.0\n\n        )\n\n    dt = delta_t_seconds(\n\n        _decimal_year_from_jd(jd_utc)\n\n    )\n\n    return jd_utc + dt / 86400.0\n'''
+
+          new = '''def utc_to_tdb_approx(jd_utc: float) -> float:\n\n    \"\"\"\n\n    Convert the engine's UTC-labelled Julian Date to an approximate TT/TDB JD.\n\n    In the leap-second era, UTC -> TAI uses the published TAI-UTC offset and\n\n    TT = TAI + 32.184 seconds. Before 1972, use the same convention as the\n\n    NAIF leap-seconds kernel: continue the earliest tabulated TAI-UTC value\n\n    of 10 seconds backward. This keeps the numerical ephemeris argument on\n\n    the same time-scale convention as DE441/SPICE instead of mixing an UT1\n\n    Delta-T model into a value labelled UTC.\n\n    TDB-TT periodic terms are below this engine's present search precision\n\n    and are not modeled here.\n\n    \"\"\"\n\n    tai_minus_utc = tai_minus_utc_seconds(\n\n        jd_utc\n\n    )\n\n    if tai_minus_utc is None:\n\n        tai_minus_utc = 10.0\n\n    tt_minus_utc = (\n\n        tai_minus_utc + 32.184\n\n    )\n\n    return (\n\n        jd_utc\n\n        + tt_minus_utc / 86400.0\n\n    )\n'''
+
+          if old not in text:
+              raise SystemExit("Expected utc_to_tdb_approx block not found; refusing partial patch")
+
+          text = text.replace(old, new, 1)
+
+          old_doc = '''For historical dates before 1972, the supplied civil time is treated as an\n\napproximation to UT1 and Delta-T = TT - UT1 is used.\n\nTDB-TT periodic terms are below the accuracy targeted by this eclipse-search\n\nlayer and are not modeled here.\n\nThe Delta-T model is an engineering approximation; it is intentionally\n\nisolated so it can be replaced by the Almanack's final time-scale layer\n\nwithout changing the eclipse geometry.\n'''
+
+          new_doc = '''For dates before 1972, the engine follows the NAIF/SPICE leap-seconds-kernel\n\nconvention and extends the earliest tabulated TAI-UTC value of 10 seconds\n\nbackward. This keeps UTC-labelled input on one consistent ephemeris-time path\n\ninstead of substituting an UT1 Delta-T approximation.\n\nTDB-TT periodic terms are below the accuracy targeted by this eclipse-search\n\nlayer and are not modeled here.\n\nThe separate Delta-T model remains available for calculations that explicitly\n\nstart from UT1; it is no longer used to reinterpret UTC-labelled eclipse input.\n'''
+
+          if old_doc not in text:
+              raise SystemExit("Expected module time-convention text not found; refusing partial patch")
+
+          text = text.replace(old_doc, new_doc, 1)
+          path.write_text(text, encoding="utf-8")
+          PY
+
+      - name: Verify conversion invariants
+        working-directory: Star-Almanack-Repo
+        run: |
+          python3 - <<'PY'
+          import eclipse_engine
+
+          def offset_seconds(y, m, d):
+              jd = eclipse_engine.gregorian_to_jd(y, m, d)
+              return (eclipse_engine.utc_to_tdb_approx(jd) - jd) * 86400.0
+
+          checks = [
+              ((1919, 5, 29), 42.184),
+              ((1963, 7, 20), 42.184),
+              ((1972, 1, 1), 42.184),
+              ((1991, 7, 11), 58.184),
+              ((2017, 8, 21), 69.184),
+              ((2024, 4, 8), 69.184),
+          ]
+
+          for date, expected in checks:
+              got = offset_seconds(*date)
+              if abs(got - expected) > 0.001:
+                  raise SystemExit(f"{date}: expected {expected:.3f}s, got {got:.6f}s")
+              print(f"PASS {date}: {got:.3f}s")
+          PY
+
+      - name: Commit root-cause fix
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add Star-Almanack-Repo/eclipse_engine.py
+          git diff --cached --check
+          git commit -m "Fix historical UTC to TDB conversion"
+          git push
