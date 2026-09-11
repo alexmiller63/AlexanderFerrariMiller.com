@@ -9,7 +9,8 @@ constellation figure, not a physical magnitude of the geometric center.  The
 normal rule is the median V magnitude of the unique stars in the adopted
 Martz-Kohl / MacRobert figure.  Figure membership comes from the pinned IAU
 stick-figure dataset used by the Martz-Kohl presentation; stellar V magnitudes
-come from the pinned HYG catalog used elsewhere by the Almanack.
+come from the pinned HYG catalog used elsewhere by the Almanack, reconciled
+against documented Hipparcos entries that HYG intentionally omits.
 
 Explicit front-matter exceptions:
 
@@ -50,6 +51,17 @@ CENTROID_SNAPSHOT = SRC / "constellation-observance-2026.csv"
 BAYER_STARS = SRC / "expanded-bayer-stars.csv"
 MARTZ_FIGURES = Path("/tmp/constellation_lines_iau.dat")
 HYG_CATALOG = Path("/tmp/hygdata_v41.csv")
+
+# HYG deliberately deletes HIP 55203 (Xi UMa / Alula Australis) because that
+# multiple system does not have a valid HYG-style single-star record.  The
+# adopted IAU/MacRobert Ursa Major figure nevertheless references HIP 55203,
+# and the original Hipparcos entry supplies the unresolved system's visual
+# magnitude.  Keep such catalog-reconciliation values explicit here rather
+# than silently dropping a figure member or changing the figure-median rule.
+# HIP 55203: V = 3.79 (Xi UMa / Alula Australis, Hipparcos system magnitude).
+HYG_HIPPARCOS_SUPPLEMENTS = {
+    "55203": 3.79,
+}
 
 # Explicit front matter.  Martz-Kohl does not publish Stars-and-Sticks figures
 # for Mensa or Microscopium, so those two use the same documented alpha/beta
@@ -158,6 +170,11 @@ def read_hyg(path: Path) -> dict[str, float]:
         except ValueError:
             continue
         by_hip[hip] = mag
+
+    # Reconcile only documented HYG omissions that are still referenced by the
+    # adopted Hipparcos-number stick figures.  Never overwrite a HYG value.
+    for hip, mag in HYG_HIPPARCOS_SUPPLEMENTS.items():
+        by_hip.setdefault(hip, mag)
     return by_hip
 
 
@@ -191,8 +208,8 @@ def median_figure_magnitude(
     missing = [hip for hip in hips if hip not in by_hip]
     if missing:
         raise SystemExit(
-            f"Pinned HYG catalog lacks V magnitudes for {figure_key} member HIP(s): "
-            + ", ".join(missing)
+            f"Pinned HYG/Hipparcos magnitude set lacks V magnitudes for "
+            f"{figure_key} member HIP(s): " + ", ".join(missing)
         )
     return statistics.median(by_hip[hip] for hip in hips)
 
