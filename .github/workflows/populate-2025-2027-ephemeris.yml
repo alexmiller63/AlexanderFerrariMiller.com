@@ -11,6 +11,7 @@ on:
     paths:
       - '.github/workflows/populate-2025-2027-ephemeris.yml'
       - 'tools/audit_true_year_parameterization.py'
+      - 'tools/audit_constellation_centers.py'
       - 'tools/clean_event_cells.py'
       - 'tools/populate_calendar.py'
       - 'tools/populate_meteor_showers.py'
@@ -95,6 +96,8 @@ jobs:
         run: python tools/reconcile_catalog_common_names.py $ALMANACK_YEARS
       - name: Wire highlighted current-week navigation
         run: python tools/wire_week_navigation.py $ALMANACK_YEARS
+      - name: Verify all constellation centers survived downstream passes
+        run: python tools/audit_constellation_centers.py $ALMANACK_YEARS
       - name: Audit true-year parameterization
         run: python tools/audit_true_year_parameterization.py $ALMANACK_YEARS
       - name: Commit generated Almanack foundations
@@ -141,6 +144,7 @@ jobs:
             python tools/populate_finest_ngc.py $ALMANACK_YEARS
             python tools/reconcile_catalog_common_names.py $ALMANACK_YEARS
             python tools/wire_week_navigation.py $ALMANACK_YEARS
+            python tools/audit_constellation_centers.py $ALMANACK_YEARS
             python tools/audit_true_year_parameterization.py $ALMANACK_YEARS
           }
           stage_generated
