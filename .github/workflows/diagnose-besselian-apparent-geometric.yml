@@ -1,0 +1,127 @@
+name: Diagnose Besselian Apparent vs Geometric
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/diagnose-besselian-apparent-geometric.yml'
+      - 'Star-Almanack-Repo/eclipse-validation-cases.yaml'
+
+permissions:
+  contents: read
+
+jobs:
+  compare-coordinate-conventions:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/cache@v4
+        with:
+          path: .cache/skyfield/de440s.bsp
+          key: de440s-bsp-v1
+      - name: Install dependencies
+        run: |
+          python -m pip install 'git+https://github.com/lkangas/eclipse-calc.git@23853a8f9e0d1a25e026203207aca16de1d7bb31' scipy pyyaml
+      - name: Ensure cached kernel exists
+        run: |
+          mkdir -p .cache/skyfield
+          python - <<'PY'
+          from pathlib import Path
+          from skyfield.api import Loader
+          p = Path('.cache/skyfield/de440s.bsp')
+          if not p.exists():
+              Loader('.cache/skyfield').download('de440s.bsp')
+          else:
+              print(f'Reusing cached {p} ({p.stat().st_size:,} bytes)')
+          PY
+      - name: Compare apparent and geometric Besselian minima
+        working-directory: Star-Almanack-Repo
+        run: |
+          python - <<'PY'
+          from datetime import datetime, timezone
+          from pathlib import Path
+          import numpy as np
+          import yaml
+          from numpy import cos, sin
+          from scipy.optimize import minimize_scalar
+          from skyfield.api import load, load_file
+
+          DAY = 86400.0
+          ts = load.timescale(builtin=True)
+          eph = load_file(str(Path('..') / '.cache/skyfield/de440s.bsp'))
+          earth, moon, sun = eph['earth'], eph['moon'], eph['sun']
+
+          def xy(t, apparent):
+              ea = earth.at(t)
+              if apparent:
+                  ps = ea.observe(sun).apparent()
+                  pm = ea.observe(moon).apparent()
+              else:
+                  # Astrometric positions: light-time included, but no aberration
+                  # or gravitational deflection. This isolates the .apparent()
+                  # convention used by eclipse-calc without changing ephemeris.
+                  ps = ea.observe(sun)
+                  pm = ea.observe(moon)
+              shadow = ps - pm
+              ra_m, dec_m, dist_m = pm.radec(epoch=t)
+              ra_s, dec_s, _ = shadow.radec(epoch=t)
+              # Scale cancels from timing objective; use Moon distance in km.
+              r = dist_m.km
+              cdm, sdm = cos(dec_m.radians), sin(dec_m.radians)
+              cds, sds = cos(dec_s.radians), sin(dec_s.radians)
+              da = ra_m.radians - ra_s.radians
+              x = r * cdm * sin(da)
+              y = r * (sdm * cds - cdm * sds * cos(da))
+              return np.asarray(x), np.asarray(y)
+
+          def greatest(date_text, apparent):
+              y, m, d = map(int, date_text.split('-'))
+              base = ts.utc(y, m, d)
+              grid = np.arange(0.0, DAY + 1.0, 600.0)
+              xg, yg = xy(base + grid / DAY, apparent)
+              q = xg*xg + yg*yg
+              center = float(grid[int(np.argmin(q))])
+              lo, hi = max(0.0, center-1200.0), min(DAY, center+1200.0)
+              def objective(sec):
+                  x, yv = xy(base + float(sec)/DAY, apparent)
+                  return float(x[0]*x[0] + yv[0]*yv[0])
+              result = minimize_scalar(objective, bounds=(lo,hi), method='bounded', options={'xatol':0.001})
+              return base + float(result.x)/DAY
+
+          with open('eclipse-validation-cases.yaml', encoding='utf-8') as f:
+              suite = yaml.safe_load(f)
+          cases=[]
+          for c in suite['historical']:
+              if c.get('expected_exists'):
+                  cases.append((c['label'],c['date_utc'],c['expected_greatest_utc']))
+          for c in suite['future_jello']['cases']:
+              if c.get('expected_exists'):
+                  cases.append((c['label'],c['date_utc'],c['nasa_greatest_utc']))
+
+          def residual(t, ref):
+              calc=t.utc_datetime().astimezone(timezone.utc)
+              target=datetime.fromisoformat(ref.replace('Z','+00:00'))
+              return (calc-target).total_seconds()
+
+          print('BESSELIAN COORDINATE-CONVENTION ISOLATION')
+          print('Same DE440s, same search, only Skyfield .apparent() toggled')
+          print(f"{'Case':38s} {'Apparent':>10s} {'Astrometric':>12s} {'Shift':>10s}")
+          print('-'*76)
+          app=[]; astro=[]
+          for label,date,ref in cases:
+              ta=greatest(date,True); tg=greatest(date,False)
+              ra=residual(ta,ref); rg=residual(tg,ref)
+              app.append(ra); astro.append(rg)
+              print(f'{label:38.38s} {ra:+9.3f}s {rg:+11.3f}s {rg-ra:+9.3f}s')
+          app=np.asarray(app); astro=np.asarray(astro)
+          print('\nSUMMARY')
+          print(f'apparent MAE    = {np.abs(app).mean():.3f} s')
+          print(f'astrometric MAE = {np.abs(astro).mean():.3f} s')
+          print(f'mean convention shift = {(astro-app).mean():+.3f} s')
+          print(f'modern apparent MAE    = {np.abs(app[2:]).mean():.3f} s')
+          print(f'modern astrometric MAE = {np.abs(astro[2:]).mean():.3f} s')
+          PY
