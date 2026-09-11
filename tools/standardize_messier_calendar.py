@@ -1,10 +1,9 @@
 #!/usr/bin/env python3
 """Render Messier calendar events in the Star Almanack canonical form.
 
-M# [, common name], editorial type in constellation, instrument V magnitude, Declination Band Season
-
-The 2026 calendar is the source of truth for the established observing-aid choice.
-Astronomical identity, magnitude and declination come from fixed-objects.yaml.
+M# [, common name], editorial type in constellation, instrument V magnitude, Declination Band Season.
+Astronomical identity, magnitude and declination come from fixed-objects.yaml;
+observing aid is derived from magnitude through the shared Almanack rule.
 """
 from __future__ import annotations
 
@@ -18,6 +17,7 @@ from pathlib import Path
 
 import catalog_common_names as names
 import populate_fixed_sky as fixed
+from star_almanack_objects import observing_aid_for_magnitude, HTML_AID
 
 ROOT = Path(__file__).resolve().parents[1]
 SRC = ROOT / "Star-Almanack-Repo"
@@ -25,13 +25,7 @@ PUBLIC = ROOT / "almanack"
 SOURCE_SITE = SRC / "site"
 FIXED = SRC / "fixed-objects.yaml"
 EDITORIAL = json.loads((SRC / "messier-editorial.json").read_text(encoding="utf-8"))
-DEFAULT_YEARS = (2025, 2027)
-
-GLYPHS = {
-    "👁": '<img class="visibility-glyph" src="/assets/almanack/visibility-glyphs/masters/eye.svg" alt="Naked eye" aria-label="Naked eye" style="height:1.15em;width:auto;vertical-align:-.18em">',
-    "B": '<img class="visibility-glyph" src="/assets/almanack/visibility-glyphs/masters/binoculars.svg" alt="Binoculars" aria-label="Binoculars" style="height:1.15em;width:auto;vertical-align:-.18em">',
-    "🔭": '<img class="visibility-glyph" src="/assets/almanack/visibility-glyphs/masters/telescope.svg" alt="Telescope" aria-label="Telescope" style="height:1.15em;width:auto;vertical-align:-.18em">',
-}
+DEFAULT_YEARS = (2025, 2026, 2027)
 
 
 def requested_years() -> tuple[int, ...]:
@@ -40,7 +34,7 @@ def requested_years() -> tuple[int, ...]:
     try:
         years = tuple(dict.fromkeys(int(value) for value in sys.argv[1:]))
     except ValueError as exc:
-        raise SystemExit("Years must be integers, e.g. 2025 2027") from exc
+        raise SystemExit("Years must be integers, e.g. 2025 2026 2027") from exc
     if any(year < 1 for year in years):
         raise SystemExit("Years must be positive integers")
     return years
@@ -81,64 +75,30 @@ def load_catalog() -> dict[str, dict[str, str]]:
     return out
 
 
-def instrument_map() -> dict[str, str]:
-    aids = {}
-    designation_patterns = (
-        re.compile(r"\b(M\d{1,3})\b"),
-        re.compile(r"\bMessier\s+\d+\s+\((M\d{1,3})\)"),
-    )
-    rendered_aids = {
-        'alt="Naked eye"': "👁",
-        'alt="Binoculars"': "B",
-        'alt="Telescope"': "🔭",
-    }
-
-    for root in (PUBLIC, SOURCE_SITE):
-        for page in sorted((root / "2026").glob("W??/index.html")):
-            text = page.read_text(encoding="utf-8")
-            for item in text.split("<br>"):
-                designation = None
-                for pat in designation_patterns:
-                    m = pat.search(item)
-                    if m:
-                        designation = m.group(1).upper()
-                        break
-                if not designation:
-                    continue
-
-                aid = None
-                for marker, value in rendered_aids.items():
-                    if marker in item:
-                        aid = value
-                        break
-                if aid is None:
-                    plain = re.sub(r"<[^>]+>", "", item)
-                    m = re.search(r" — (👁|B|🔭)(?:\s+V\s+[0-9.]+)? —", plain)
-                    if m:
-                        aid = m.group(1)
-
-                if aid:
-                    aids.setdefault(designation, aid)
-    return aids
-
-
-def label(r: dict[str, str], aid: str, day: dt.date) -> str:
+def label(r: dict[str, str], day: dt.date) -> str:
     head = r["id"]
     if r["name"]:
         head += f', {r["name"]}'
     head += f', {r["type"]} in {r["con"]}'
-    glyph = GLYPHS[aid]
+    aid = observing_aid_for_magnitude(r["mag"])
+    glyph = HTML_AID[aid] if aid is not None else ""
     mag = r["mag"]
-    vis = f'{glyph} V {mag}' if mag else glyph
-    return f'{head}, <span class="visibility-magnitude">{vis}</span>, {fixed.declination_band(r["dec_deg"])} {fixed.season_for(day)}'
+    vis = " ".join(part for part in (glyph, f"V {mag}" if mag else "") if part)
+    vis_html = f'<span class="visibility-magnitude">{vis}</span>' if vis else ""
+    parts = [head]
+    if vis_html:
+        parts.append(vis_html)
+    parts.append(f"{fixed.declination_band(r['dec_deg'])} {fixed.season_for(day)}")
+    return " — ".join(parts)
 
 
-def events(catalog, aids, year):
+def events(catalog, year):
     out = defaultdict(list)
+    visibility = {row["messier"]: row for row in fixed.redated_preserving_2026_phase(fixed.read_csv("messier-visibility-2026.csv"), year)}
     for designation in sorted(catalog, key=lambda x: int(x[1:])):
         r = catalog[designation]
-        _, day = fixed.best_visibility(float(r["ra_h"]), year)
-        out[day].append(label(r, aids.get(designation, "🔭"), day))
+        day = dt.date.fromisoformat(visibility[designation]["best_date"])
+        out[day].append(label(r, day))
     return out
 
 
@@ -147,9 +107,16 @@ def is_messier_event(item: str) -> bool:
     return bool(re.match(r"^(?:Messier\s+\d+\s+\(M\d+\)|M\d+\b|[^—]+\s+\(M\d+\),)", plain))
 
 
-def inject(root: Path, year: int, by_date) -> int:
+def pages_for_events(root: Path, by_date) -> list[Path]:
+    pages = []
+    for iso_year in sorted({day.isocalendar().year for day in by_date}):
+        pages.extend(sorted((root / str(iso_year)).glob("W??/index.html")))
+    return pages
+
+
+def inject(root: Path, by_date) -> int:
     changed = 0
-    for page in sorted((root / str(year)).glob("W??/index.html")):
+    for page in pages_for_events(root, by_date):
         text = page.read_text(encoding="utf-8")
         original = text
         for day, labels in by_date.items():
@@ -170,13 +137,10 @@ def inject(root: Path, year: int, by_date) -> int:
 
 def main():
     catalog = load_catalog()
-    aids = instrument_map()
-    if len(aids) < 100:
-        raise RuntimeError(f"Expected established 2026 observing aids for nearly all Messier objects; found {len(aids)}")
     for year in requested_years():
-        e = events(catalog, aids, year)
-        a = inject(SOURCE_SITE, year, e)
-        b = inject(PUBLIC, year, e)
+        e = events(catalog, year)
+        a = inject(SOURCE_SITE, e)
+        b = inject(PUBLIC, e)
         print(f"{year}: standardized 110 Messier events; updated {a} source + {b} public pages")
 
 if __name__ == "__main__":
