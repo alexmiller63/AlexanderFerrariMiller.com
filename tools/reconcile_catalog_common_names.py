@@ -14,23 +14,35 @@ from star_almanack_astronomy import declination_band, season_for
 
 # Caldwell: preserve genuine Caldwell common names, and fill overlap names from
 # the RASC Finest NGC source when Caldwell itself is blank.
-def caldwell_label(r, finest_ids):
-    cid = r["caldwell"]
+# Keep this wrapper API-compatible with populate_caldwell.calendar_label so the
+# shared reconciliation pass can replace the renderer without dropping current
+# observing-aid or asterism behavior.
+def caldwell_label(r, finest_ids, asterism_ids):
+    cid = r["caldwell"].strip()
     catalog = r.get("catalog", "").strip()
     name = names.preferred_deep_sky_name(catalog, r.get("name", ""))
     obj_type = caldwell.TYPE_LABELS.get(r.get("type", "").strip(), "deep-sky object")
     constellation = caldwell.CONSTELLATIONS.get(r.get("con", "").strip(), r.get("con", "").strip())
+
     identity = [cid]
-    if catalog:
-        identity.append(catalog)
-    if name:
-        identity.append(name)
-    head = ", ".join(identity) + f", {obj_type} in {constellation}"
+    for value in (catalog, name):
+        if value and value.casefold() not in {x.casefold() for x in identity}:
+            identity.append(value)
+
+    head = ", ".join(identity) + f", {obj_type}"
+    if cid in asterism_ids:
+        head += " (also an asterism)"
+    head += f" in {constellation}"
+
     day = dt.date.fromisoformat(r["best_date"])
     mag = r.get("mag", "").strip()
-    vis = f"{caldwell.TELESCOPE_GLYPH} V {mag}" if mag else caldwell.TELESCOPE_GLYPH
-    observing = f'<span class="visibility-magnitude">{vis}</span>'
-    parts = [head, observing]
+    aid = caldwell.observing_aid_for_magnitude(mag)
+    glyph = caldwell.HTML_AID[aid] if aid is not None else ""
+    vis = " ".join(p for p in (glyph, f"V {mag}" if mag else "") if p)
+
+    parts = [head]
+    if vis:
+        parts.append(f'<span class="visibility-magnitude">{vis}</span>')
     if cid in finest_ids:
         parts.append("Finest NGC")
     parts.append(f"{declination_band(r['dec_deg'])} {season_for(day)}")
