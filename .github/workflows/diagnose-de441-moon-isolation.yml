@@ -2,6 +2,9 @@ name: Diagnose DE441 Moon Isolation
 
 on:
   workflow_dispatch:
+  push:
+    paths:
+      - .github/workflows/diagnose-de441-moon-isolation.yml
 
 permissions:
   contents: read
@@ -19,12 +22,12 @@ jobs:
         run: |
           test -s star-almanack-microkernel.bsp
           ls -lh star-almanack-microkernel.bsp
+      - name: Verify preserved NAIF leap-seconds kernel
+        run: |
+          test -s kernels/naif0012.tls
+          ls -lh kernels/naif0012.tls
       - name: Install Python dependencies
         run: python3 -m pip install --disable-pip-version-check spiceypy pyyaml
-      - name: Download NAIF leap-seconds kernel
-        run: |
-          curl -L https://naif.jpl.nasa.gov/pub/naif/generic_kernels/lsk/naif0012.tls -o naif0012.tls
-          test -s naif0012.tls
       - name: Bootstrap ELP2000-82B archive
         working-directory: Star-Almanack-Repo/star-almanack-elp82b
         run: |
@@ -42,7 +45,7 @@ jobs:
           import eclipse_engine
 
           BSP = "star-almanack-microkernel.bsp"
-          LSK = "naif0012.tls"
+          LSK = "kernels/naif0012.tls"
           DAY = 86400.0
           J2000 = 2451545.0
 
