@@ -5,6 +5,7 @@ on:
   push:
     paths:
       - .github/workflows/diagnose-de441-full-audit.yml
+      - Star-Almanack-Repo/eclipse-validation-cases.yaml
 
 permissions:
   contents: read
@@ -94,7 +95,7 @@ jobs:
           future_residuals = []
 
           print("STAR ALMANACK — DE441 SUN / ELP2000-82B ECLIPSE ACCURACY AUDIT")
-          print("Reference: frozen NASA greatest-eclipse UTC values in eclipse-validation-cases.yaml")
+          print("Reference: NASA greatest-eclipse UTC values in eclipse-validation-cases.yaml")
           print("Sun: DE441 geometric; Moon: production ELP2000-82B; geometry/search: production")
           print()
           print(f"{'Case':<36} {'Prod':>8} {'DE441':>8} {'Shift':>8} {'dA/dt@ref':>12} {'dA/dt@calc':>13}")
