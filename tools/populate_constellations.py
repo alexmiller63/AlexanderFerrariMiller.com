@@ -18,7 +18,7 @@ ROOT = Path(__file__).resolve().parents[1]
 SRC = ROOT / "Star-Almanack-Repo"
 PUBLIC = ROOT / "almanack"
 SOURCE_SITE = SRC / "site"
-DEFAULT_YEARS = (2025, 2027)
+DEFAULT_YEARS = (2025, 2026, 2027)
 CENTROID_SNAPSHOT = SRC / "constellation-observance-2026.csv"
 
 
@@ -28,7 +28,7 @@ def requested_years() -> tuple[int, ...]:
     try:
         years = tuple(dict.fromkeys(int(x) for x in sys.argv[1:]))
     except ValueError as exc:
-        raise SystemExit("Years must be integers, e.g. 2025 2027") from exc
+        raise SystemExit("Years must be integers, e.g. 2025 2026 2027") from exc
     if any(y < 1 for y in years):
         raise SystemExit("Years must be positive integers")
     return years
