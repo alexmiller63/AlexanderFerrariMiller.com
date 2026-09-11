@@ -1,5 +1,10 @@
 #!/usr/bin/env python3
-"""Populate Caldwell observing events into requested or discovered Star Almanack years."""
+"""Populate Caldwell observing events into requested or discovered Star Almanack years.
+
+Visible Almanack classification is mutually exclusive: Messier -> Caldwell ->
+Finest NGC.  Complete cross-catalog memberships remain in the source/front
+matter data, but a Caldwell entry is rendered only as Caldwell.
+"""
 from __future__ import annotations
 import csv,datetime as dt,re,sys
 from collections import defaultdict
@@ -56,7 +61,9 @@ def calendar_label(record,finest_ids,asterism_ids):
  day=dt.date.fromisoformat(record["best_date"]); magnitude=record.get("mag","").strip(); aid=observing_aid_for_magnitude(magnitude); glyph=HTML_AID[aid] if aid is not None else ""; observing=" ".join(p for p in (glyph,f"V {magnitude}" if magnitude else "") if p)
  parts=[head]
  if observing: parts.append(f'<span class="visibility-magnitude">{observing}</span>')
- if cid in finest_ids: parts.append("Finest NGC")
+ # Cross-membership is deliberately not rendered here.  finest_ids is retained
+ # as a validated source-data set so the overlap remains available to front matter
+ # and audits without violating the one-visible-catalog rule.
  parts.append(f"{declination_band(record['dec_deg'])} {season_for(day)}"); return " — ".join(parts)
 def events_for(rows,finest_ids,asterism_ids):
  events=defaultdict(list)
@@ -87,5 +94,5 @@ def main():
  catalog=read_catalog(); finest_ids=finest_caldwell_ids(); asterism_ids=asterism_catalog_ids(); years=requested_years()
  if not years: raise RuntimeError("No generated Almanack years found")
  for year in years:
-  rows=visibility_rows(catalog,year); write_visibility(rows,year); events=events_for(rows,finest_ids,asterism_ids); s=inject(SOURCE_SITE,events); p=inject(PUBLIC,events); print(f"{year}: Caldwell C1-C109 ISO-year occurrences; {len(finest_ids)} also Finest NGC; updated {s} source + {p} public pages")
+  rows=visibility_rows(catalog,year); write_visibility(rows,year); events=events_for(rows,finest_ids,asterism_ids); s=inject(SOURCE_SITE,events); p=inject(PUBLIC,events); print(f"{year}: Caldwell C1-C109 ISO-year occurrences; {len(finest_ids)} overlap memberships preserved as source data only; updated {s} source + {p} public pages")
 if __name__=="__main__": main()
