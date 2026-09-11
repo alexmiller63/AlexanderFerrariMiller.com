@@ -3,6 +3,11 @@
 
 Alpha/beta star events are owned by the fixed-sky population step;
 this step must not create duplicate alpha/beta events.
+
+Constellation-center entries use the established pattern-visibility rule:
+the brightest listed constellation star supplies both the V magnitude and the
+observing-aid class.  The center itself is positional; it does not have an
+independent magnitude.
 """
 from __future__ import annotations
 import csv
@@ -13,6 +18,7 @@ from collections import defaultdict
 from pathlib import Path
 
 from star_almanack_astronomy import best_visibility, declination_band, season_for
+from star_almanack_objects import HTML_AID, observing_aid_for_magnitude
 
 ROOT = Path(__file__).resolve().parents[1]
 SRC = ROOT / "Star-Almanack-Repo"
@@ -20,6 +26,7 @@ PUBLIC = ROOT / "almanack"
 SOURCE_SITE = SRC / "site"
 DEFAULT_YEARS = (2025, 2026, 2027)
 CENTROID_SNAPSHOT = SRC / "constellation-observance-2026.csv"
+BAYER_STARS = SRC / "expanded-bayer-stars.csv"
 
 
 def requested_years() -> tuple[int, ...]:
@@ -42,6 +49,33 @@ def read_csv(path: Path):
 def iso_label(d):
     y, w, wd = d.isocalendar()
     return f"{y}-W{w:02d}-{wd}"
+
+
+def brightest_constellation_magnitudes() -> dict[str, float]:
+    brightest: dict[str, float] = {}
+    for row in read_csv(BAYER_STARS):
+        con = (row.get("con") or "").strip()
+        raw_mag = (row.get("mag") or "").strip()
+        if not con or not raw_mag:
+            continue
+        try:
+            mag = float(raw_mag)
+        except ValueError:
+            continue
+        if con not in brightest or mag < brightest[con]:
+            brightest[con] = mag
+    return brightest
+
+
+def visibility_html(mag: float) -> str:
+    aid = observing_aid_for_magnitude(str(mag))
+    if aid is None:
+        raise SystemExit(f"Could not derive observing aid for magnitude {mag}")
+    return (
+        '<span class="visibility-magnitude">'
+        f'{HTML_AID[aid]} V {mag:.1f}'
+        '</span>'
+    )
 
 
 def build_rows(year):
@@ -72,17 +106,22 @@ def write_csv(year, rows):
 
 def event_map(rows):
     events = defaultdict(list)
+    brightest = brightest_constellation_magnitudes()
     for r in rows:
         d = dt.date.fromisoformat(r["center_best_date"])
         cls = f"{declination_band(r['centroid_dec_deg'])} {season_for(d)}"
-        events[d].append(f"✦ {r['name']} center — Constellation — {cls}")
+        abbr = r["abbr"].strip()
+        if abbr not in brightest:
+            raise SystemExit(f"No stellar magnitude available for constellation {r['name']} ({abbr})")
+        vis = visibility_html(brightest[abbr])
+        events[d].append(f"{r['name']} center — Constellation — {vis} — {cls}")
     return events
 
 
 def clean_legacy_constellation_events(text):
     cells = re.compile(r'(<td>)(.*?)(</td>)')
     bare = re.compile(r'^✦ (?:α|β) star — .+$')
-    old_center = re.compile(r'^✦ .*? (?:geometric-center observance|center)(?: —)? .+$')
+    old_center = re.compile(r'^(?:✦ )?.*? (?:geometric-center observance|center)(?: —)? .+$')
 
     def repl(m):
         parts = [p for p in m.group(2).split("<br>") if not bare.match(p.strip()) and not old_center.match(p.strip())]
@@ -128,7 +167,7 @@ def main():
         events = event_map(rows)
         c1 = inject(SOURCE_SITE, events)
         c2 = inject(PUBLIC, events)
-        print(f"{year}: 88 constellation-center events; updated {c1} source + {c2} public pages")
+        print(f"{year}: 88 constellation-center events with visibility; updated {c1} source + {c2} public pages")
 
 
 if __name__ == "__main__":
