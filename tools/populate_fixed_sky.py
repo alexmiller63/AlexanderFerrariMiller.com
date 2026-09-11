@@ -159,7 +159,7 @@ def inject(root: Path, year: int, events) -> int:
         text = page.read_text(encoding="utf-8")
         original = text
         for d, vals in events.items():
-            date_text = d.strftime("%a, %b %d, %Y").replace(" 0", " ")
+            date_text = d.strftime("%a, %b %d, %Y")
             pat = re.compile(rf"(<tr><td>{re.escape(date_text)}</td><td>.*?</td><td>)(.*?)(</td></tr>)")
             m = pat.search(text)
             if not m:

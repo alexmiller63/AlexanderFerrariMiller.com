@@ -131,7 +131,7 @@ def inject(root: Path, events: dict[dt.date, list[str]]) -> int:
         text = page.read_text(encoding="utf-8")
         original = text
         for day, labels in events.items():
-            date_text = day.strftime("%a, %b %d, %Y").replace(" 0", " ")
+            date_text = day.strftime("%a, %b %d, %Y")
             pattern = re.compile(
                 rf"(<tr><td>{re.escape(date_text)}</td><td>.*?</td><td>)(.*?)(</td></tr>)"
             )

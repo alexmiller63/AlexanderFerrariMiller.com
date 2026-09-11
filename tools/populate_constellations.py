@@ -105,7 +105,7 @@ def inject(root, events):
         original = text
         text = clean_legacy_constellation_events(text)
         for d, vals in events.items():
-            date_text = d.strftime("%a, %b %d, %Y").replace(" 0", " ")
+            date_text = d.strftime("%a, %b %d, %Y")
             pat = re.compile(rf"(<tr><td>{re.escape(date_text)}</td><td>.*?</td><td>)(.*?)(</td></tr>)")
             m = pat.search(text)
             if not m:
