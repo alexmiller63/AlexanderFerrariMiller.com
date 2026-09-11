@@ -31,12 +31,15 @@ def close_together(html,left,right,radius=1200):
  return right in html[max(0,pos-radius):min(len(html),pos+len(left)+radius)]
 def source_week(path,selector,iso_field='iso'):return week_from_iso(row_for(path,**selector)[iso_field])
 def build_cases():
- constellation_week=source_week(GENERATED/'constellation-observance-2026.csv',{'name':'Andromeda'},'center_iso')
+ # The preserved 2026 source-of-truth tables live at SRC root. Catalogs that are
+ # generated for every edition remain under GENERATED. Do not assume a uniform
+ # generated/ location: that makes the regression depend on nonexistent copies.
+ constellation_week=source_week(SRC/'constellation-observance-2026.csv',{'name':'Andromeda'})
  asterism_week=source_week(SRC/'asterism-geometry-2026.csv',{'asterism':'Great Square of Pegasus'})
  pleiades_week=source_week(SRC/'asterism-geometry-2026.csv',{'asterism':'Pleiades'})
- alpha_week=source_week(GENERATED/'expanded-bayer-visibility-2026.csv',{'proper':'Achernar'})
- beta_week=source_week(GENERATED/'expanded-bayer-visibility-2026.csv',{'proper':'Cursa'})
- messier_week=source_week(GENERATED/'messier-visibility-2026.csv',{'messier':'M45'})
+ alpha_week=source_week(SRC/'expanded-bayer-visibility-2026.csv',{'proper':'Achernar'})
+ beta_week=source_week(SRC/'expanded-bayer-visibility-2026.csv',{'proper':'Cursa'})
+ messier_week=source_week(SRC/'messier-visibility-2026.csv',{'messier':'M45'})
  caldwell_week=source_week(GENERATED/'caldwell-visibility-2026.csv',{'caldwell':'C4'})
  finest_week=source_week(GENERATED/'finest-ngc-visibility-2026.csv',{'finest_ngc':'19'})
  return [
@@ -49,7 +52,7 @@ def build_cases():
  Case('Finest NGC object',finest_week,'NGC 1491 appears as the selected Finest NGC sample.',('NGC 1491',)),
  Case('naked-eye observing aid',alpha_week,'Achernar has naked-eye SVG and magnitude.',('Achernar','eye.svg','V ')),
  Case('binocular observing aid','W40','M15 has binocular SVG, never a letter B as its rendered observing symbol.',('M15','binoculars.svg')),
- Case('telescope observing aid',source_week(GENERATED/'messier-visibility-2026.csv',{'messier':'M74'}),'M74 has telescope SVG on its canonical generated week.',('M74','telescope.svg')),
+ Case('telescope observing aid',source_week(SRC/'messier-visibility-2026.csv',{'messier':'M74'}),'M74 has telescope SVG on its canonical generated week.',('M74','telescope.svg')),
  Case('meteor shower','W33','Perseids has dedicated meteor-shower glyph.',('Perseids','meteor-shower.svg')),
  Case('solar eclipse','W33','Aug 12 total solar eclipse has dedicated solar-eclipse glyph.',('Total solar eclipse','solar-eclipse.svg','greatest eclipse')),
  Case('lunar eclipse','W10','Mar 3 total lunar eclipse has dedicated lunar-eclipse glyph and clear maximum terminology.',('Total lunar eclipse','lunar-eclipse.svg','greatest eclipse')),
