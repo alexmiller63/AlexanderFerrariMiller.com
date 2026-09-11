@@ -4,7 +4,7 @@ from __future__ import annotations
 import csv,datetime as dt,re,sys
 from collections import defaultdict
 from pathlib import Path
-from star_almanack_astronomy import best_visibility,declination_band,season_for
+from star_almanack_astronomy import best_visibility_occurrences_for_iso_year,declination_band,season_for
 from star_almanack_objects import HTML_AID,observing_aid_for_magnitude
 ROOT=Path(__file__).resolve().parents[1]; SRC=ROOT/"Star-Almanack-Repo"; PUBLIC=ROOT/"almanack"; SOURCE_SITE=SRC/"site"
 CATALOG=SRC/"caldwell-catalog.csv"; FINEST_OVERLAP=SRC/"finest-ngc-caldwell-overlap.csv"; ASTERISM_OVERLAP=SRC/"asterism-catalog-overlap.csv"
@@ -38,10 +38,12 @@ def asterism_catalog_ids():
 def visibility_rows(rows,year):
  out=[]
  for row in rows:
-  record=dict(row); instant,day=best_visibility(float(record["ra_h"]),year); record["best_instant_utc"]=instant.strftime("%Y-%m-%d %H:%M"); record["best_date"]=day.isoformat(); record["iso"]=iso_label(day); out.append(record)
+  for instant,day in best_visibility_occurrences_for_iso_year(float(row["ra_h"]),year):
+   record=dict(row); record["best_instant_utc"]=instant.strftime("%Y-%m-%d %H:%M"); record["best_date"]=day.isoformat(); record["iso"]=iso_label(day); out.append(record)
  return out
 def write_visibility(rows,year):
  path=SRC/"generated"/f"caldwell-visibility-{year}.csv"; path.parent.mkdir(parents=True,exist_ok=True)
+ if not rows: raise RuntimeError(f"No Caldwell visibility rows generated for ISO year {year}")
  with path.open("w",newline="",encoding="utf-8") as h: w=csv.DictWriter(h,fieldnames=list(rows[0])); w.writeheader(); w.writerows(rows)
 def calendar_label(record,finest_ids,asterism_ids):
  cid=record["caldwell"].strip(); catalog=record.get("catalog","").strip(); name=record.get("name","").strip(); object_type=TYPE_LABELS.get(record.get("type","").strip(),"deep-sky object"); constellation=CONSTELLATIONS.get(record.get("con","").strip(),record.get("con","").strip())
@@ -64,12 +66,13 @@ def pages_for_events(root,events):
  pages=[]
  for y in sorted({d.isocalendar().year for d in events}): pages.extend(sorted((root/str(y)).glob("W??/index.html")))
  return pages
+def date_text(day): return f"{day:%a, %b} {day.day}, {day:%Y}"
 def inject(root,events):
  changed=0
  for page in pages_for_events(root,events):
   text=page.read_text(encoding="utf-8"); original=text
   for day,labels in events.items():
-   date_text=day.strftime("%a, %b %d, %Y"); pattern=re.compile(rf"(<tr><td>{re.escape(date_text)}</td><td>.*?</td><td>)(.*?)(</td></tr>)"); match=pattern.search(text)
+   pattern=re.compile(rf"(<tr><td>{re.escape(date_text(day))}</td><td>.*?</td><td>)(.*?)(</td></tr>)"); match=pattern.search(text)
    if not match: continue
    keep=[] if match.group(2)=="—" else [i for i in match.group(2).split("<br>") if i]
    for label in labels:
@@ -84,5 +87,5 @@ def main():
  catalog=read_catalog(); finest_ids=finest_caldwell_ids(); asterism_ids=asterism_catalog_ids(); years=requested_years()
  if not years: raise RuntimeError("No generated Almanack years found")
  for year in years:
-  rows=visibility_rows(catalog,year); write_visibility(rows,year); events=events_for(rows,finest_ids,asterism_ids); s=inject(SOURCE_SITE,events); p=inject(PUBLIC,events); print(f"{year}: Caldwell C1-C109; {len(finest_ids)} also Finest NGC; updated {s} source + {p} public pages")
+  rows=visibility_rows(catalog,year); write_visibility(rows,year); events=events_for(rows,finest_ids,asterism_ids); s=inject(SOURCE_SITE,events); p=inject(PUBLIC,events); print(f"{year}: Caldwell C1-C109 ISO-year occurrences; {len(finest_ids)} also Finest NGC; updated {s} source + {p} public pages")
 if __name__=="__main__": main()
