@@ -51,7 +51,10 @@ def render_ephemeris(monday,values):
 def update_year(year):
  c=week_count(year); g={}
  for _,k,cmd in TARGETS: print(f"Fetching {year} {k} from JPL Horizons"); g[k]=horizons_ephemeris(year,cmd)
- pat=re.compile(r'<h3>Weekly Solar-System Ephemeris</h3>\s*<p><strong>Snapshot:</strong>.*?</p>\s*(?:<p><strong>Naked Eye</strong></p>\s*)?<table class="ephemeris">.*?</table>\s*<p><strong>Extended targets:</strong></p>\s*<table class="ephemeris">.*?</table>\s*(?:<p class="ephemeris-note">.*?</p>)?',re.DOTALL); changed=0
+ # Accept both canonical tables and preserved legacy tables that predate the
+ # ephemeris class. Every successful match is rewritten to canonical markup.
+ table=r'<table(?:\s+class="ephemeris")?>.*?</table>'
+ pat=re.compile(r'<h3>Weekly Solar-System Ephemeris</h3>\s*<p><strong>Snapshot:</strong>.*?</p>\s*(?:<p><strong>Naked Eye</strong></p>\s*)?'+table+r'\s*<p><strong>Extended targets:</strong></p>\s*'+table+r'\s*(?:<p class="ephemeris-note">.*?</p>)?',re.DOTALL); changed=0
  for w in range(1,c+1):
   monday=date.fromisocalendar(year,w,1); vals={k:(zodiac(g[k][w-1][0]),beta(g[k][w-1][1]),visibility_html(g[k][w-1][2],g[k][w-1][3])) for _,k,_ in TARGETS}; replacement=render_ephemeris(monday,vals)
   for base in (ROOT/'almanack',ROOT/'Star-Almanack-Repo'/'site'):
