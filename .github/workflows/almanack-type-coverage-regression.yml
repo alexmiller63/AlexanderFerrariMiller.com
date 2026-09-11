@@ -1,0 +1,38 @@
+name: Almanack type coverage regression
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/almanack-type-coverage-regression.yml'
+      - 'tools/test_almanack_type_coverage.py'
+      - 'tools/populate_calendar.py'
+      - 'tools/populate_meteor_showers.py'
+      - 'tools/populate_ephemeris.py'
+      - 'tools/wire_ephemeris_notation.py'
+      - 'tools/populate_fixed_sky.py'
+      - 'tools/standardize_messier_calendar.py'
+      - 'tools/populate_constellations.py'
+      - 'tools/populate_asterisms.py'
+      - 'tools/populate_caldwell.py'
+      - 'tools/populate_finest_ngc.py'
+      - 'tools/reconcile_catalog_common_names.py'
+      - '_includes/almanack-notation-legend.html'
+      - 'Star-Almanack-Repo/constellation-observance-2026.csv'
+      - 'Star-Almanack-Repo/asterism-geometry-2026.csv'
+      - 'Star-Almanack-Repo/generated/expanded-bayer-visibility-2026.csv'
+      - 'Star-Almanack-Repo/generated/messier-visibility-2026.csv'
+      - 'Star-Almanack-Repo/generated/caldwell-visibility-2026.csv'
+      - 'Star-Almanack-Repo/generated/finest-ngc-visibility-2026.csv'
+      - 'almanack/2026/**'
+
+permissions:
+  contents: read
+
+jobs:
+  type-coverage:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run permanent type coverage regression
+        run: python tools/test_almanack_type_coverage.py
