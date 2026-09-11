@@ -54,6 +54,14 @@ jobs:
     timeout-minutes: 40
     steps:
       - uses: actions/checkout@v4
+      - name: Fetch pinned constellation-figure and stellar sources
+        run: |
+          curl -fL \
+            https://raw.githubusercontent.com/dcf21/constellation-stick-figures/75d29c207bbd752023c447ddd1f9f4ff0eb47538/constellation_lines_iau.dat \
+            -o /tmp/constellation_lines_iau.dat
+          curl -fL \
+            https://raw.githubusercontent.com/astronexus/HYG-Database/3bf37f4b2d5460e1278286320d1d62fab9b493c1/hyg/CURRENT/hygdata_v41.csv \
+            -o /tmp/hygdata_v41.csv
       - name: Verify preserved 2026 best-visibility regression
         run: python Star-Almanack-Repo/compute_bayer_visibility_2026.py Star-Almanack-Repo/expanded-bayer-stars.csv /tmp/expanded-bayer-visibility-2026-regression.csv
       - name: Clear requested calendar event cells
