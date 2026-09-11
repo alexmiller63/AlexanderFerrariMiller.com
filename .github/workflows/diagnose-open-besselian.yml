@@ -1,0 +1,105 @@
+name: Diagnose Open Besselian Eclipse Geometry
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/diagnose-open-besselian.yml'
+
+jobs:
+  compare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install independent Besselian implementation
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install pyyaml scipy skyfield
+          python -m pip install 'git+https://github.com/lkangas/eclipse-calc.git@23853a8f9e0d1a25e026203207aca16de1d7bb31'
+
+      - name: Run Besselian greatest-eclipse comparison
+        working-directory: Star-Almanack-Repo
+        run: |
+          python - <<'PY'
+          from datetime import datetime, timezone
+          from pathlib import Path
+
+          import yaml
+          from scipy.optimize import minimize_scalar
+          from skyfield.api import load
+          from eclipse_calc.elements import bessels_at
+
+          ROOT = Path('.')
+          KERNEL = ROOT / 'star-almanack-microkernel.bsp'
+          CASES = ROOT / 'eclipse-validation-cases.yaml'
+
+          if not KERNEL.exists():
+              raise SystemExit(f'missing preserved ephemeris kernel: {KERNEL}')
+
+          data = yaml.safe_load(CASES.read_text())
+          cases = []
+          for c in data['historical']:
+              cases.append((c['label'], c['expected_greatest_utc']))
+          for c in data['future_jello']['cases']:
+              cases.append((c['label'], c['nasa_greatest_utc']))
+
+          eph = load(str(KERNEL))
+          ts = load.timescale()
+
+          def parse_utc(s):
+              return datetime.fromisoformat(s.replace('Z', '+00:00')).astimezone(timezone.utc)
+
+          def t_from_unix(seconds):
+              dt = datetime.fromtimestamp(seconds, tz=timezone.utc)
+              return ts.from_datetime(dt)
+
+          def q(seconds):
+              row = bessels_at(t_from_unix(seconds), eph).iloc[0]
+              return float(row.x * row.x + row.y * row.y)
+
+          print('STAR ALMANACK — INDEPENDENT OPEN BESSELIAN DIAGNOSTIC')
+          print('Implementation: lkangas/eclipse-calc @ 23853a8f9e0d1a25e026203207aca16de1d7bb31 (MIT)')
+          print('Ephemeris: preserved Star Almanack JPL/SPK microkernel')
+          print('Criterion: minimize x^2 + y^2 in the Besselian fundamental plane')
+          print()
+          print(f"{'Case':38s} {'NASA':>10s} {'Bessel':>10s} {'B-N':>8s} {'gamma':>10s}")
+          print('-' * 82)
+
+          residuals = []
+          for label, ref_text in cases:
+              ref = parse_utc(ref_text)
+              center = ref.timestamp()
+              result = minimize_scalar(
+                  q,
+                  bounds=(center - 900.0, center + 900.0),
+                  method='bounded',
+                  options={'xatol': 0.001},
+              )
+              calc = datetime.fromtimestamp(result.x, tz=timezone.utc)
+              residual = result.x - center
+              row = bessels_at(t_from_unix(result.x), eph).iloc[0]
+              gamma = (float(row.x * row.x + row.y * row.y)) ** 0.5
+              residuals.append(residual)
+              print(
+                  f"{label[:38]:38s} "
+                  f"{ref.strftime('%H:%M:%S'):>10s} "
+                  f"{calc.strftime('%H:%M:%S.%f')[:12]:>12s} "
+                  f"{residual:+8.3f}s "
+                  f"{gamma:10.6f}"
+              )
+
+          abs_res = [abs(x) for x in residuals]
+          print()
+          print('SUMMARY')
+          print('-' * 40)
+          print(f'n={len(residuals)}')
+          print(f'mean signed = {sum(residuals)/len(residuals):+.3f} s')
+          print(f'mean |error| = {sum(abs_res)/len(abs_res):.3f} s')
+          print(f'max |error| = {max(abs_res):.3f} s')
+          PY
