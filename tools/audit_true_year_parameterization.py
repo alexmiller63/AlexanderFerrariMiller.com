@@ -7,7 +7,7 @@ Two independent guarantees are enforced:
 
 Generated annual visibility tables are civil observing cycles, not ISO-week
 containers: the preserved 2026 engine explicitly allows rounded dates from
-2026-01-01 through 2027-01-01.  Their ISO label must match the date, but the ISO
+2026-01-01 through 2027-01-01. Their ISO label must match the date, but the ISO
 week-year is allowed to cross the civil-year boundary.
 
 The audit is read-only: canonical 2026 snapshots are never rewritten.
@@ -30,7 +30,7 @@ GENERATED = SRC / "generated"
 DEFAULT_YEARS = (2025, 2027)
 
 DATE_CELL_RE = re.compile(r"<tr><td>([A-Z][a-z]{2}, [A-Z][a-z]{2} \d{1,2}, \d{4})</td>")
-ISO_WEEK_RE = re.compile(r"ISO (\d{4})-W(\d{2})")
+PAGE_TITLE_RE = re.compile(r"<title>ISO (\d{4})-W(\d{2}) · Star Almanack</title>")
 DATE_COLUMNS = ("best_date", "center_best_date", "date")
 
 
@@ -62,13 +62,19 @@ def audit_week_pages(root: Path, year: int) -> tuple[int, list[str]]:
         week = int(page.parent.name[1:])
         text = page.read_text(encoding="utf-8")
 
-        labels = [(int(y), int(w)) for y, w in ISO_WEEK_RE.findall(text)]
-        if (year, week) not in labels:
-            failures.append(f"{page}: missing ISO {year}-W{week:02d} page label")
-        wrong = sorted({(y, w) for y, w in labels if y != year})
-        if wrong:
-            failures.append(f"{page}: foreign ISO week labels {wrong}")
+        title_match = PAGE_TITLE_RE.search(text)
+        if not title_match:
+            failures.append(f"{page}: missing canonical ISO page title")
+        else:
+            title_year, title_week = map(int, title_match.groups())
+            if (title_year, title_week) != (year, week):
+                failures.append(
+                    f"{page}: page title is ISO {title_year}-W{title_week:02d}, "
+                    f"expected ISO {year}-W{week:02d}"
+                )
 
+        # Adjacent-year ISO labels are legitimate in prev/next navigation.
+        # Calendar rows, however, must all belong to this page's ISO week.
         cells = DATE_CELL_RE.findall(text)
         if not cells:
             failures.append(f"{page}: no calendar date rows found")
