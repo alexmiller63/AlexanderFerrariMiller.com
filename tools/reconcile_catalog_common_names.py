@@ -8,6 +8,7 @@ import catalog_common_names as names
 import standardize_messier_calendar as messier
 import populate_caldwell as caldwell
 import populate_finest_ngc as finest
+from star_almanack_astronomy import declination_band, season_for
 
 # Messier common-name policy now lives in the canonical Messier renderer.
 
@@ -15,10 +16,16 @@ import populate_finest_ngc as finest
 # the RASC Finest NGC source when Caldwell itself is blank.
 def caldwell_label(r, finest_ids):
     cid = r["caldwell"]
-    name = names.preferred_deep_sky_name(r.get("catalog", ""), r.get("name", ""))
+    catalog = r.get("catalog", "").strip()
+    name = names.preferred_deep_sky_name(catalog, r.get("name", ""))
     obj_type = caldwell.TYPE_LABELS.get(r.get("type", "").strip(), "deep-sky object")
     constellation = caldwell.CONSTELLATIONS.get(r.get("con", "").strip(), r.get("con", "").strip())
-    head = f"{cid}, {name}, {obj_type} in {constellation}" if name else f"{cid}, {obj_type} in {constellation}"
+    identity = [cid]
+    if catalog:
+        identity.append(catalog)
+    if name:
+        identity.append(name)
+    head = ", ".join(identity) + f", {obj_type} in {constellation}"
     day = dt.date.fromisoformat(r["best_date"])
     mag = r.get("mag", "").strip()
     vis = f"{caldwell.TELESCOPE_GLYPH} V {mag}" if mag else caldwell.TELESCOPE_GLYPH
@@ -26,7 +33,7 @@ def caldwell_label(r, finest_ids):
     parts = [head, observing]
     if cid in finest_ids:
         parts.append("Finest NGC")
-    parts.append(f"{caldwell.fixed.declination_band(r['dec_deg'])} {caldwell.fixed.season_for(day)}")
+    parts.append(f"{declination_band(r['dec_deg'])} {season_for(day)}")
     return " — ".join(parts)
 
 caldwell.calendar_label = caldwell_label
@@ -43,7 +50,7 @@ def finest_label(r):
     mag = r.get("mag", "").strip()
     vis = f"{finest.TELESCOPE_GLYPH} V {mag}" if mag else finest.TELESCOPE_GLYPH
     observing = f'<span class="visibility-magnitude">{vis}</span>'
-    return f"{head} — {observing} — Finest NGC — {finest.fixed.declination_band(r['dec_deg'])} {finest.fixed.season_for(day)}"
+    return f"{head} — {observing} — Finest NGC — {declination_band(r['dec_deg'])} {season_for(day)}"
 
 finest.label = finest_label
 
