@@ -1,0 +1,163 @@
+name: Diagnose Eclipse Reference Convention
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - .github/workflows/diagnose-eclipse-reference-convention.yml
+
+permissions:
+  contents: read
+
+jobs:
+  diagnose-reference-convention:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: Star-Almanack-Repo
+
+    steps:
+      - name: Check out Star Almanack
+        uses: actions/checkout@v6
+
+      - name: Verify preserved kernels
+        run: |
+          test -s star-almanack-microkernel.bsp
+          test -s kernels/naif0012.tls
+          ls -lh star-almanack-microkernel.bsp kernels/naif0012.tls
+
+      - name: Install Python dependencies
+        run: python3 -m pip install --disable-pip-version-check spiceypy pyyaml
+
+      - name: Bootstrap ELP2000-82B archive
+        working-directory: Star-Almanack-Repo/star-almanack-elp82b
+        run: |
+          python lunar_elp.py bootstrap data/elp82b
+          python lunar_elp.py verify data/elp82b
+          python normalize_elp82b.py data/elp82b elp82b-manifest.json
+
+      - name: Compare geometric and apparent-reference conventions
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 <<'PY' 2>&1 | tee eclipse-reference-convention.txt
+          from datetime import datetime
+          import spiceypy as spice
+          import yaml
+          import eclipse_engine
+
+          BSP = "star-almanack-microkernel.bsp"
+          LSK = "kernels/naif0012.tls"
+          DAY = 86400.0
+          J2000 = 2451545.0
+
+          def iso_dt(text):
+              return datetime.fromisoformat(text.replace("Z", "+00:00"))
+
+          def signed_seconds(a, b):
+              return (iso_dt(a) - iso_dt(b)).total_seconds()
+
+          spice.furnsh(LSK)
+          spice.furnsh(BSP)
+
+          def body_vector(body, abcorr):
+              def f(jd_tdb):
+                  et = (jd_tdb - J2000) * DAY
+                  p, _ = spice.spkpos(body, et, "ECLIPJ2000", abcorr, "EARTH")
+                  return eclipse_engine.Vec3(float(p[0]), float(p[1]), float(p[2]))
+              return f
+
+          with open("eclipse-validation-cases.yaml", "r", encoding="utf-8") as f:
+              spec = yaml.safe_load(f)
+
+          cases = []
+          for c in spec["historical"]:
+              if c.get("expected_greatest_utc"):
+                  cases.append((c["label"], c["date_utc"], c["expected_greatest_utc"]))
+          for c in spec["future_jello"]["cases"]:
+              if c.get("nasa_greatest_utc"):
+                  cases.append((c["label"], c["date_utc"], c["nasa_greatest_utc"]))
+
+          # NASA defines greatest eclipse as the instant when the Moon-shadow
+          # axis passes closest to Earth's center.  Our production objective is
+          # already exactly that Euclidean axis distance.  This diagnostic
+          # therefore tests the remaining convention most likely to move the
+          # instant: which geocentric ephemeris correction is applied before
+          # constructing that axis.
+          variants = [
+              ("NONE/NONE", "NONE", "NONE"),
+              ("CN/NONE",   "CN",   "NONE"),
+              ("NONE/CN",   "NONE", "CN"),
+              ("CN/CN",     "CN",   "CN"),
+              ("CN+S/NONE", "CN+S", "NONE"),
+              ("NONE/CN+S", "NONE", "CN+S"),
+              ("CN+S/CN+S", "CN+S", "CN+S"),
+          ]
+
+          engine = eclipse_engine.EclipseEngine()
+          original_sun = eclipse_engine.sun_vector_j2000
+          original_moon = engine.moon_vector_j2000
+
+          print("STAR ALMANACK — ECLIPSE REFERENCE-CONVENTION DIAGNOSTIC")
+          print("Objective in every row: minimum distance of Moon-shadow axis from geocenter")
+          print("Sun/Moon vectors: DE441 in ECLIPJ2000; only SPICE aberration convention varies")
+          print()
+          print("NASA definition check: our objective matches NASA's published definition;")
+          print("this test asks whether its ephemeris convention is geometric, light-time, or apparent.")
+          print()
+
+          all_results = {code: [] for code, _, _ in variants}
+
+          try:
+              header = f"{'Case':<36}" + ''.join(f" {code:>13}" for code, _, _ in variants)
+              print(header)
+              print("-" * len(header))
+
+              for label, date, reference in cases:
+                  row = f"{label[:35]:<36}"
+                  for code, sun_corr, moon_corr in variants:
+                      eclipse_engine.sun_vector_j2000 = body_vector("SUN", sun_corr)
+                      engine.moon_vector_j2000 = body_vector("MOON", moon_corr)
+                      event = engine.find_solar_eclipse(date)
+                      residual = signed_seconds(event.greatest_utc, reference)
+                      all_results[code].append(residual)
+                      row += f" {residual:+12.1f}s"
+                  print(row)
+
+              print()
+              print("SUMMARY (seconds relative to frozen NASA/SEsearch UTC target)")
+              print(f"{'Convention':<15} {'mean signed':>12} {'mean |err|':>12} {'max |err|':>12}")
+              print("-" * 55)
+              for code, _, _ in variants:
+                  vals = all_results[code]
+                  mean_signed = sum(vals) / len(vals)
+                  mean_abs = sum(abs(v) for v in vals) / len(vals)
+                  max_abs = max(abs(v) for v in vals)
+                  print(f"{code:<15} {mean_signed:+11.3f}s {mean_abs:11.3f}s {max_abs:11.3f}s")
+
+              best = min(variants, key=lambda v: sum(abs(x) for x in all_results[v[0]]) / len(all_results[v[0]]))
+              print()
+              print(f"BEST BY MEAN ABSOLUTE TIMING ERROR: {best[0]}")
+              print()
+              print("Interpretation:")
+              print("- If NONE/NONE wins, aberration/light-time is not the missing convention.")
+              print("- If a corrected variant collapses residuals, that correction belongs in the eclipse-axis ephemeris path.")
+              print("- If every variant retains tens-of-seconds residuals, next compare NASA Besselian x/y/gamma directly rather than changing the event solver.")
+          finally:
+              eclipse_engine.sun_vector_j2000 = original_sun
+              engine.moon_vector_j2000 = original_moon
+              spice.kclear()
+          PY
+
+      - name: Show diagnostic output
+        if: always()
+        run: cat eclipse-reference-convention.txt || true
+
+      - name: Upload diagnostic artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eclipse-reference-convention
+          path: Star-Almanack-Repo/eclipse-reference-convention.txt
+          if-no-files-found: error
+          retention-days: 7
