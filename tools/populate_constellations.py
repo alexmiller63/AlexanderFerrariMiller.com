@@ -4,29 +4,34 @@
 Alpha/beta star events are owned by the fixed-sky population step;
 this step must not create duplicate alpha/beta events.
 
-Constellation-center visibility is a property of the adopted constellation
-figure, not of the geometric center itself.  The long-term rule is the median
-V magnitude of the stars in the adopted Martz-Kohl figure.  Explicit front-
-matter exceptions are kept here for constellations whose figure/member
-provenance needs special treatment:
+Constellation-center visibility is an observer-facing property of the adopted
+constellation figure, not a physical magnitude of the geometric center.  The
+normal rule is the median V magnitude of the unique stars in the adopted
+Martz-Kohl / MacRobert figure.  Figure membership comes from the pinned IAU
+stick-figure dataset used by the Martz-Kohl presentation; stellar V magnitudes
+come from the pinned HYG catalog used elsewhere by the Almanack.
+
+Explicit front-matter exceptions:
 
 * Mensa and Telescopium: arithmetic mean of alpha and beta V magnitudes.
-* Norma: there is no modern alpha or beta; use the arithmetic mean of the two
-  brightest modern Norma stars (gamma2 and epsilon).
-* Serpens: retained as an explicit exception because the single IAU
-  constellation is represented by the two Martz-Kohl figures, Caput and
-  Cauda.  Its final figure-derived magnitude must come from those member-star
-  sets rather than an alpha/beta fallback.
+* Norma: modern Norma has no alpha or beta; use the arithmetic mean of its two
+  brightest modern stars.
+* Serpens: one IAU constellation, but two adopted figures.  Caput and Cauda
+  are emitted separately, each with its own IAU-region centroid, figure-member
+  median V magnitude, observing aid, declination band, and season.
 
-Do not silently substitute a brightest-star rule for a missing figure-derived
-magnitude.
+There is deliberately no brightest-star or alpha/beta fallback for ordinary
+constellations.  Missing figure membership is a source-data error that must be
+resolved explicitly rather than silently changing the visibility rule.
 """
 from __future__ import annotations
+
 import csv
 import datetime as dt
 import re
 import statistics
 import sys
+import unicodedata
 from collections import defaultdict
 from pathlib import Path
 
@@ -40,18 +45,39 @@ SOURCE_SITE = SRC / "site"
 DEFAULT_YEARS = (2025, 2026, 2027)
 CENTROID_SNAPSHOT = SRC / "constellation-observance-2026.csv"
 BAYER_STARS = SRC / "expanded-bayer-stars.csv"
+MARTZ_FIGURES = Path("/tmp/constellation_lines_iau.dat")
+HYG_CATALOG = Path("/tmp/hygdata_v41.csv")
 
-# Explicit front matter.  These values/rules are deliberately visible here so
-# an exception can never be mistaken for Martz-Kohl member-star provenance.
-# Norma values are the two brightest modern Norma stars: gamma2 Nor V 4.02 and
-# epsilon Nor V 4.47.  The catalog-backed alpha/beta exceptions are resolved
-# from expanded-bayer-stars.csv below rather than duplicating their magnitudes.
+# Explicit front matter.  Serpens component centroids were calculated with the
+# same 0.1-degree spherical-area sampling method used for the 88-constellation
+# snapshot, but on the two official IAU Serpens boundary patches separately.
 FRONT_MATTER = {
     "Men": {"rule": "alpha_beta_mean"},
     "Tel": {"rule": "alpha_beta_mean"},
-    "Nor": {"rule": "explicit_mean", "magnitudes": (4.02, 4.47)},
+    "Nor": {"rule": "two_brightest_mean"},
     "Ser": {"rule": "martz_caput_cauda"},
 }
+
+SERPENS_COMPONENTS = (
+    {
+        "name": "Serpens Caput",
+        "figure_part": "Caput",
+        "figure_key": "SerpensB",
+        "centroid_ra_h": "15.695035",
+        "centroid_dec_deg": "9.909187",
+        "sampled_area_sq_deg": "428.632",
+        "centroid_step_deg": "0.100",
+    },
+    {
+        "name": "Serpens Cauda",
+        "figure_part": "Cauda",
+        "figure_key": "SerpensA",
+        "centroid_ra_h": "18.162525",
+        "centroid_dec_deg": "-6.367014",
+        "sampled_area_sq_deg": "208.365",
+        "centroid_step_deg": "0.100",
+    },
+)
 
 
 def requested_years() -> tuple[int, ...]:
@@ -76,6 +102,12 @@ def iso_label(d):
     return f"{y}-W{w:02d}-{wd}"
 
 
+def normalize_name(value: str) -> str:
+    text = unicodedata.normalize("NFKD", value)
+    text = "".join(ch for ch in text if not unicodedata.combining(ch))
+    return re.sub(r"[^a-z0-9]", "", text.lower())
+
+
 def alpha_beta_magnitudes() -> dict[str, dict[str, list[float]]]:
     values: dict[str, dict[str, list[float]]] = defaultdict(lambda: defaultdict(list))
     for row in read_csv(BAYER_STARS):
@@ -95,48 +127,122 @@ def alpha_beta_mean(con: str, values: dict[str, dict[str, list[float]]]) -> floa
     pair = values.get(con, {})
     if not pair.get("α") or not pair.get("β"):
         raise SystemExit(f"Front-matter alpha/beta rule cannot be resolved for {con}")
-    # If a Bayer designation has resolved components, use the brightest visual
-    # component as the designation's representative catalog magnitude.
+    # When a Bayer designation resolves into multiple catalog components, use
+    # the brightest visual component as that designation's representative V.
     alpha = min(pair["α"])
     beta = min(pair["β"])
     return statistics.mean((alpha, beta))
 
 
-def fallback_alpha_beta_magnitude(con: str, values: dict[str, dict[str, list[float]]]) -> float | None:
-    """Temporary legacy fallback for figures not yet migrated to Martz members.
+def read_hyg(path: Path):
+    if not path.is_file():
+        raise SystemExit(f"Missing pinned HYG catalog: {path}")
+    by_hip: dict[str, float] = {}
+    by_con: dict[str, list[float]] = defaultdict(list)
+    for row in read_csv(path):
+        raw_mag = (row.get("mag") or "").strip()
+        if not raw_mag:
+            continue
+        try:
+            mag = float(raw_mag)
+        except ValueError:
+            continue
+        hip = (row.get("hip") or "").strip()
+        if hip:
+            try:
+                hip = str(int(float(hip)))
+            except ValueError:
+                pass
+            else:
+                by_hip[hip] = mag
+        con = (row.get("con") or "").strip()
+        if con:
+            by_con[con].append(mag)
+    return by_hip, by_con
 
-    This preserves existing generated output while making the four explicit
-    exceptions deterministic.  It is intentionally not described as the
-    constellation-figure rule.
-    """
-    pair = values.get(con, {})
-    candidates = pair.get("α", []) + pair.get("β", [])
-    return min(candidates) if candidates else None
+
+def read_martz_figures(path: Path) -> dict[str, list[str]]:
+    if not path.is_file():
+        raise SystemExit(f"Missing pinned Martz/MacRobert figure data: {path}")
+    figures: dict[str, list[str]] = {}
+    current: str | None = None
+    for raw in path.read_text(encoding="utf-8").splitlines():
+        line = raw.strip()
+        if line.startswith("* "):
+            current = line[2:].strip()
+            figures.setdefault(current, [])
+            continue
+        if current is None or not line.startswith("["):
+            continue
+        for hip in re.findall(r'"(\d+)\*?"', line):
+            if hip not in figures[current]:
+                figures[current].append(hip)
+    return figures
 
 
-def constellation_magnitude(con: str, values: dict[str, dict[str, list[float]]]) -> float:
+def median_figure_magnitude(
+    figure_key: str,
+    figures: dict[str, list[str]],
+    by_hip: dict[str, float],
+) -> float:
+    hips = figures.get(figure_key, [])
+    if not hips:
+        raise SystemExit(f"No member stars enumerated for adopted figure {figure_key}")
+    missing = [hip for hip in hips if hip not in by_hip]
+    if missing:
+        raise SystemExit(
+            f"Pinned HYG catalog lacks V magnitudes for {figure_key} member HIP(s): "
+            + ", ".join(missing)
+        )
+    return statistics.median(by_hip[hip] for hip in hips)
+
+
+def two_brightest_mean(con: str, by_con: dict[str, list[float]]) -> float:
+    mags = sorted(by_con.get(con, []))
+    if len(mags) < 2:
+        raise SystemExit(f"Cannot resolve two brightest stars for {con} from pinned HYG")
+    return statistics.mean(mags[:2])
+
+
+def normal_figure_key(name: str, figures: dict[str, list[str]]) -> str:
+    wanted = normalize_name(name)
+    matches = [key for key in figures if normalize_name(key) == wanted]
+    if len(matches) != 1:
+        raise SystemExit(
+            f"Could not uniquely match {name} to adopted Martz/MacRobert figure data"
+        )
+    return matches[0]
+
+
+def constellation_magnitude(
+    row: dict[str, str],
+    alpha_beta: dict[str, dict[str, list[float]]],
+    figures: dict[str, list[str]],
+    by_hip: dict[str, float],
+    by_con: dict[str, list[float]],
+) -> float:
+    con = row["abbr"].strip()
     front = FRONT_MATTER.get(con)
     if front:
         rule = front["rule"]
         if rule == "alpha_beta_mean":
-            return alpha_beta_mean(con, values)
-        if rule == "explicit_mean":
-            return statistics.mean(front["magnitudes"])
+            return alpha_beta_mean(con, alpha_beta)
+        if rule == "two_brightest_mean":
+            return two_brightest_mean(con, by_con)
         if rule == "martz_caput_cauda":
-            # Until the two Martz member sets are checked into the source tree,
-            # preserve Serpens' existing alpha/beta-derived value rather than
-            # inventing member stars.  This branch makes the unresolved source
-            # requirement explicit and prevents it from being confused with
-            # Norma/Mensa/Telescopium.
-            legacy = fallback_alpha_beta_magnitude(con, values)
-            if legacy is not None:
-                return legacy
-            raise SystemExit("Serpens requires Martz-Kohl Caput/Cauda member-star magnitudes")
+            part = row.get("figure_part", "").strip()
+            component = next((x for x in SERPENS_COMPONENTS if x["figure_part"] == part), None)
+            if component is None:
+                raise SystemExit(f"Serpens row lacks a recognized Caput/Cauda component: {part!r}")
+            return median_figure_magnitude(component["figure_key"], figures, by_hip)
+        raise SystemExit(f"Unknown front-matter constellation rule for {con}: {rule}")
 
-    legacy = fallback_alpha_beta_magnitude(con, values)
-    if legacy is None:
-        raise SystemExit(f"No stellar magnitude available for constellation {con}")
-    return legacy
+    figure_key = normal_figure_key(row["name"], figures)
+    if not figures.get(figure_key):
+        raise SystemExit(
+            f"No member stars enumerated for adopted figure {row['name']} ({con})"
+        )
+    return median_figure_magnitude(figure_key, figures, by_hip)
 
 
 def visibility_html(mag: float) -> str:
@@ -150,20 +256,35 @@ def visibility_html(mag: float) -> str:
     )
 
 
+def make_row(source: dict[str, str], year: int) -> dict[str, str]:
+    ci, cd = best_visibility(float(source["centroid_ra_h"]), year)
+    return {
+        "name": source["name"],
+        "abbr": source["abbr"],
+        "figure_part": source.get("figure_part", ""),
+        "centroid_ra_h": source["centroid_ra_h"],
+        "centroid_dec_deg": source["centroid_dec_deg"],
+        "sampled_area_sq_deg": source["sampled_area_sq_deg"],
+        "centroid_step_deg": source["centroid_step_deg"],
+        "center_best_instant_utc": ci.strftime("%Y-%m-%d %H:%M"),
+        "center_best_date": cd.isoformat(),
+        "center_iso": iso_label(cd),
+    }
+
+
 def build_rows(year):
     snaps = read_csv(CENTROID_SNAPSHOT)
     if len(snaps) != 88:
         raise SystemExit(f"Expected 88 centroid snapshot rows, got {len(snaps)}")
     rows = []
     for snap in snaps:
-        ci, cd = best_visibility(float(snap["centroid_ra_h"]), year)
-        rows.append({
-            "name": snap["name"], "abbr": snap["abbr"],
-            "centroid_ra_h": snap["centroid_ra_h"], "centroid_dec_deg": snap["centroid_dec_deg"],
-            "sampled_area_sq_deg": snap["sampled_area_sq_deg"], "centroid_step_deg": snap["centroid_step_deg"],
-            "center_best_instant_utc": ci.strftime("%Y-%m-%d %H:%M"),
-            "center_best_date": cd.isoformat(), "center_iso": iso_label(cd),
-        })
+        if snap["abbr"].strip() != "Ser":
+            rows.append(make_row(snap, year))
+            continue
+        for component in SERPENS_COMPONENTS:
+            rows.append(make_row({**component, "abbr": "Ser"}, year))
+    if len(rows) != 89:
+        raise SystemExit(f"Expected 89 center rows after splitting Serpens, got {len(rows)}")
     return rows
 
 
@@ -179,11 +300,12 @@ def write_csv(year, rows):
 def event_map(rows):
     events = defaultdict(list)
     alpha_beta = alpha_beta_magnitudes()
+    figures = read_martz_figures(MARTZ_FIGURES)
+    by_hip, by_con = read_hyg(HYG_CATALOG)
     for r in rows:
         d = dt.date.fromisoformat(r["center_best_date"])
         cls = f"{declination_band(r['centroid_dec_deg'])} {season_for(d)}"
-        abbr = r["abbr"].strip()
-        mag = constellation_magnitude(abbr, alpha_beta)
+        mag = constellation_magnitude(r, alpha_beta, figures, by_hip, by_con)
         vis = visibility_html(mag)
         events[d].append(f"{r['name']} center — Constellation — {vis} — {cls}")
     return events
@@ -195,7 +317,11 @@ def clean_legacy_constellation_events(text):
     old_center = re.compile(r'^(?:✦ )?.*? (?:geometric-center observance|center)(?: —)? .+$')
 
     def repl(m):
-        parts = [p for p in m.group(2).split("<br>") if not bare.match(p.strip()) and not old_center.match(p.strip())]
+        parts = [
+            p
+            for p in m.group(2).split("<br>")
+            if not bare.match(p.strip()) and not old_center.match(p.strip())
+        ]
         return m.group(1) + ("<br>".join(parts) if parts else "—") + m.group(3)
 
     return cells.sub(repl, text)
@@ -216,7 +342,9 @@ def inject(root, events):
         text = clean_legacy_constellation_events(text)
         for d, vals in events.items():
             date_text = d.strftime("%a, %b %d, %Y")
-            pat = re.compile(rf"(<tr><td>{re.escape(date_text)}</td><td>.*?</td><td>)(.*?)(</td></tr>)")
+            pat = re.compile(
+                rf"(<tr><td>{re.escape(date_text)}</td><td>.*?</td><td>)(.*?)(</td></tr>)"
+            )
             m = pat.search(text)
             if not m:
                 continue
@@ -224,7 +352,7 @@ def inject(root, events):
             for v in vals:
                 if v not in keep:
                     keep.append(v)
-            text = text[:m.start(2)] + "<br>".join(keep) + text[m.end(2):]
+            text = text[: m.start(2)] + "<br>".join(keep) + text[m.end(2) :]
         if text != original:
             page.write_text(text, encoding="utf-8")
             changed += 1
@@ -238,7 +366,10 @@ def main():
         events = event_map(rows)
         c1 = inject(SOURCE_SITE, events)
         c2 = inject(PUBLIC, events)
-        print(f"{year}: 88 constellation-center events with visibility; updated {c1} source + {c2} public pages")
+        print(
+            f"{year}: 89 constellation-center events with visibility "
+            f"(Serpens split into Caput/Cauda); updated {c1} source + {c2} public pages"
+        )
 
 
 if __name__ == "__main__":
