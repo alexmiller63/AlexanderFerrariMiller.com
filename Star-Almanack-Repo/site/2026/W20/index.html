@@ -105,18 +105,6 @@ footer .wrap { padding-top:1.3rem; padding-bottom:1.3rem; opacity:.9; }
     border-color:#eef7ff !important;
   }
 }
-</style><style id="almanack-legend-css">
-.notation-legend {
-  max-width:1080px;
-  margin:0 auto;
-  padding:1rem 1.5rem 1.35rem;
-  font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
-  font-size:.88rem;
-}
-.notation-legend p { max-width:none; margin:.35rem 0; }
-.legend-line { display:flex; flex-wrap:wrap; gap:.45rem 1rem; }
-.legend-item { white-space:nowrap; }
-.text-symbol { font-size:1.05em; font-variant-emoji:text; }
 </style>
 <style id="section-notation-toggle-css">
 .bayer-toggle-wrap{max-width:1080px;margin:0 auto;padding:.75rem 1.5rem 0;font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
@@ -128,6 +116,20 @@ footer .wrap { padding-top:1.3rem; padding-bottom:1.3rem; opacity:.9; }
 .section-notation-toggle .bayer-toggle{justify-content:flex-start}
 @media(max-width:760px) and (orientation:portrait){.bayer-toggle-wrap{padding-left:1rem;padding-right:1rem}.section-notation-toggle{padding-left:0;padding-right:0}.bayer-toggle{justify-content:center;flex-wrap:nowrap;gap:.2rem;font-size:.74rem}.section-notation-toggle .bayer-toggle{justify-content:center}.bayer-toggle-label{margin-right:.05rem;white-space:nowrap}.bayer-toggle button{padding:.3rem .42rem;white-space:nowrap}}
 @media(prefers-color-scheme:dark){.bayer-toggle button{background:#1c2a36;border-color:#405567;color:#b6dcff}.bayer-toggle button[aria-pressed=true]{background:#eef7ff;color:#102a43;border-color:#eef7ff}}
+</style><style id="almanack-legend-css">
+.notation-legend {
+  max-width:1080px;
+  margin:0 auto;
+  padding:1rem 1.5rem 1.35rem;
+  font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  font-size:.88rem;
+}
+.notation-legend p { max-width:none; margin:.35rem 0; }
+.legend-line { display:flex; flex-wrap:wrap; gap:.45rem 1rem; align-items:center; }
+.legend-item { white-space:nowrap; }
+.text-symbol { font-size:1.05em; font-variant-emoji:text; }
+.legend-glyph { height:1.55em; width:auto; vertical-align:-.32em; margin-right:.2rem; }
+.legend-explanation { white-space:normal; }
 </style></head><body><header><div class="wrap"><div class="brand"><a href="/almanack/2026/">Star Almanack</a></div><div class="subtitle">Alexander Ferrari Miller</div></div></header><main class="wrap"><nav class="weeknav sitenav"><a href="/star-almanack/">Almanack Home</a><a href="/projects.html">All Projects</a><a href="/index.html">Main Site</a></nav><nav class="yearnav"><a href="../../2025/">← 2025</a><a href="../">2026</a><a href="../../2027/">2027 →</a></nav><nav class="weeknav week-position" aria-label="Week navigation"><a href="../W19/">← ISO 2026-W19</a><span aria-current="page">ISO 2026-W20</span><a href="../W21/">ISO 2026-W21 →</a></nav><h2>ISO 2026-W20</h2>
 <p><strong>ISO dates:</strong> 2026-W20-1 through 2026-W20-7</p>
 <p><strong>Civil dates:</strong> May 11, 2026 – May 17, 2026</p>
@@ -146,20 +148,37 @@ footer .wrap { padding-top:1.3rem; padding-bottom:1.3rem; opacity:.9; }
 <p><strong>What to expect:</strong> A photograph of the Virgo Cluster can be crowded with obvious galaxies. At the eyepiece many are understated patches with differences in concentration, elongation, and brightness. The accomplishment is learning the geography of the cluster and distinguishing those subtle forms—not seeing photographic spiral detail.</p>
 <p><strong>Asterism:</strong> The Big Dipper is an observing tool as much as a familiar pattern: its pointer stars lead to Polaris, while the handle arcs toward Arcturus.</p>
 <h3>Chart</h3>
-<p><code>ISO2026-W20-chart.png</code> — chart slot.</p></main><aside class="notation-legend" aria-label="Astronomical notation legend">
-  <p><strong>Greek alphabet</strong></p>
+<p><code>ISO2026-W20-chart.png</code> — chart slot.</p></main><div class="almanack-bottom-nav-wrap" id="almanack-bottom-nav"><nav class="weeknav sitenav"><a href="/star-almanack/">Almanack Home</a><a href="/projects.html">All Projects</a><a href="/index.html">Main Site</a></nav><nav class="yearnav"><a href="../../2025/#almanack-bottom-nav">← 2025</a><a href="../#almanack-bottom-nav">2026</a><a href="../../2027/#almanack-bottom-nav">2027 →</a></nav><nav class="weeknav week-position" aria-label="Week navigation"><a href="../W19/#almanack-bottom-nav">← ISO 2026-W19</a><span aria-current="page">ISO 2026-W20</span><a href="../W21/#almanack-bottom-nav">ISO 2026-W21 →</a></nav></div><aside class="notation-legend" aria-label="Astronomical notation legend">
+  <p><strong>Observing aid</strong> — these glyphs say how the target is intended to be observed; they do not identify the kind of astronomical object.</p>
+  <div class="legend-line">
+    <span class="legend-item"><img class="legend-glyph" src="/assets/almanack/visibility-glyphs/masters/eye.svg" alt="Naked-eye glyph"> Naked eye</span>
+    <span class="legend-item"><img class="legend-glyph" src="/assets/almanack/visibility-glyphs/masters/binoculars.svg" alt="Binoculars glyph"> Binoculars</span>
+    <span class="legend-item"><img class="legend-glyph" src="/assets/almanack/visibility-glyphs/masters/telescope.svg" alt="Telescope glyph"> Telescope</span>
+  </div>
+  <p class="legend-explanation"><strong>V</strong> followed by a number is visual magnitude; smaller or more negative numbers are brighter. If no observing-aid glyph is shown, the Almanack is not assigning an observing aid for that entry.</p>
+
+  <p><strong>Events</strong></p>
+  <div class="legend-line">
+    <span class="legend-item"><img class="legend-glyph" src="/assets/almanack/visibility-glyphs/masters/meteor-shower.svg" alt="Meteor-shower glyph"> Meteor shower</span>
+    <span class="legend-item"><img class="legend-glyph" src="/assets/almanack/visibility-glyphs/masters/solar-eclipse.svg" alt="Solar-eclipse glyph"> Solar eclipse</span>
+    <span class="legend-item"><img class="legend-glyph" src="/assets/almanack/visibility-glyphs/masters/lunar-eclipse.svg" alt="Lunar-eclipse glyph"> Lunar eclipse</span>
+  </div>
+
+  <p><strong>Greek alphabet</strong> — Bayer letters used to identify stars within a constellation.</p>
   <div class="legend-line">
     <span class="legend-item">α Alpha</span><span class="legend-item">β Beta</span><span class="legend-item">γ Gamma</span><span class="legend-item">δ Delta</span><span class="legend-item">ε Epsilon</span><span class="legend-item">ζ Zeta</span><span class="legend-item">η Eta</span><span class="legend-item">θ Theta</span><span class="legend-item">ι Iota</span><span class="legend-item">κ Kappa</span><span class="legend-item">λ Lambda</span><span class="legend-item">μ Mu</span><span class="legend-item">ν Nu</span><span class="legend-item">ξ Xi</span><span class="legend-item">ο Omicron</span><span class="legend-item">π Pi</span><span class="legend-item">ρ Rho</span><span class="legend-item">σ Sigma</span><span class="legend-item">τ Tau</span><span class="legend-item">υ Upsilon</span><span class="legend-item">φ Phi</span><span class="legend-item">χ Chi</span><span class="legend-item">ψ Psi</span><span class="legend-item">ω Omega</span>
   </div>
-  <p><strong>Zodiac</strong></p>
+
+  <p><strong>Zodiac</strong> — the 12 zodiac constellations/signs used for zodiac-day notation.</p>
   <div class="legend-line">
     <span class="legend-item"><span class="text-symbol">♈&#xfe0e;</span> Aries</span><span class="legend-item"><span class="text-symbol">♉&#xfe0e;</span> Taurus</span><span class="legend-item"><span class="text-symbol">♊&#xfe0e;</span> Gemini</span><span class="legend-item"><span class="text-symbol">♋&#xfe0e;</span> Cancer</span><span class="legend-item"><span class="text-symbol">♌&#xfe0e;</span> Leo</span><span class="legend-item"><span class="text-symbol">♍&#xfe0e;</span> Virgo</span><span class="legend-item"><span class="text-symbol">♎&#xfe0e;</span> Libra</span><span class="legend-item"><span class="text-symbol">♏&#xfe0e;</span> Scorpio</span><span class="legend-item"><span class="text-symbol">♐&#xfe0e;</span> Sagittarius</span><span class="legend-item"><span class="text-symbol">♑&#xfe0e;</span> Capricorn</span><span class="legend-item"><span class="text-symbol">♒&#xfe0e;</span> Aquarius</span><span class="legend-item"><span class="text-symbol">♓&#xfe0e;</span> Pisces</span>
   </div>
-  <p><strong>Ephemerides</strong></p>
+
+  <p><strong>Ephemerides</strong> — symbols identifying solar-system bodies in the positional tables.</p>
   <div class="legend-line">
     <span class="legend-item"><span class="text-symbol">☉&#xfe0e;</span> Sun</span><span class="legend-item"><span class="text-symbol">☽&#xfe0e;</span> Moon</span><span class="legend-item"><span class="text-symbol">☿&#xfe0e;</span> Mercury</span><span class="legend-item"><span class="text-symbol">♀&#xfe0e;</span> Venus</span><span class="legend-item"><span class="text-symbol">♂&#xfe0e;</span> Mars</span><span class="legend-item"><span class="text-symbol">⚳&#xfe0e;</span> Ceres</span><span class="legend-item"><span class="text-symbol">♃&#xfe0e;</span> Jupiter</span><span class="legend-item"><span class="text-symbol">♄&#xfe0e;</span> Saturn</span><span class="legend-item"><span class="text-symbol">♅&#xfe0e;</span> Uranus</span><span class="legend-item"><span class="text-symbol">♆&#xfe0e;</span> Neptune</span><span class="legend-item"><span class="text-symbol">♇&#xfe0e;</span> Pluto</span>
   </div>
-</aside><div class="almanack-bottom-nav-wrap" id="almanack-bottom-nav"><nav class="weeknav sitenav"><a href="/star-almanack/">Almanack Home</a><a href="/projects.html">All Projects</a><a href="/index.html">Main Site</a></nav><nav class="yearnav"><a href="../../2025/#almanack-bottom-nav">← 2025</a><a href="../#almanack-bottom-nav">2026</a><a href="../../2027/#almanack-bottom-nav">2027 →</a></nav><nav class="weeknav week-position" aria-label="Week navigation"><a href="../W19/#almanack-bottom-nav">← ISO 2026-W19</a><span aria-current="page">ISO 2026-W20</span><a href="../W21/#almanack-bottom-nav">ISO 2026-W21 →</a></nav></div><footer><div class="wrap">© 2026 Alexander Ferrari Miller. All rights reserved.</div></footer><script>(function(){
+</aside><footer><div class="wrap">© 2026 Alexander Ferrari Miller. All rights reserved.</div></footer><script>(function(){
 const g={'α':'Alpha','β':'Beta','γ':'Gamma','δ':'Delta','ε':'Epsilon','ζ':'Zeta','η':'Eta','θ':'Theta','ι':'Iota','κ':'Kappa','λ':'Lambda','μ':'Mu','ν':'Nu','ξ':'Xi','ο':'Omicron','π':'Pi','ρ':'Rho','σ':'Sigma','τ':'Tau','υ':'Upsilon','φ':'Phi','χ':'Chi','ψ':'Psi','ω':'Omega'};
 const c={And:'Andromedae',Ant:'Antliae',Aps:'Apodis',Aqr:'Aquarii',Aql:'Aquilae',Ara:'Arae',Ari:'Arietis',Aur:'Aurigae',Boo:'Bootis',Cae:'Caeli',Cam:'Camelopardalis',Cnc:'Cancri',CVn:'Canum Venaticorum',CMa:'Canis Majoris',CMi:'Canis Minoris',Cap:'Capricorni',Car:'Carinae',Cas:'Cassiopeiae',Cen:'Centauri',Cep:'Cephei',Cet:'Ceti',Cha:'Chamaeleontis',Cir:'Circini',Col:'Columbae',Com:'Comae Berenices',CrA:'Coronae Australis',CrB:'Coronae Borealis',Crv:'Corvi',Crt:'Crateris',Cru:'Crucis',Cyg:'Cygni',Del:'Delphini',Dor:'Doradus',Dra:'Draconis',Equ:'Equulei',Eri:'Eridani',For:'Fornacis',Gem:'Geminorum',Gru:'Gruis',Her:'Herculis',Hor:'Horologii',Hya:'Hydrae',Hyi:'Hydri',Ind:'Indi',Lac:'Lacertae',Leo:'Leonis',LMi:'Leonis Minoris',Lep:'Leporis',Lib:'Librae',Lup:'Lupi',Lyn:'Lyncis',Lyr:'Lyrae',Men:'Mensae',Mic:'Microscopii',Mon:'Monocerotis',Mus:'Muscae',Nor:'Normae',Oct:'Octantis',Oph:'Ophiuchi',Ori:'Orionis',Pav:'Pavonis',Peg:'Pegasi',Per:'Persei',Phe:'Phoenicis',Pic:'Pictoris',Psc:'Piscium',PsA:'Piscis Austrini',Pup:'Puppis',Pyx:'Pyxidis',Ret:'Reticuli',Sge:'Sagittae',Sgr:'Sagittarii',Sco:'Scorpii',Scl:'Sculptoris',Sct:'Scuti',Ser:'Serpentis',Sex:'Sextantis',Tau:'Tauri',Tel:'Telescopii',Tri:'Trianguli',TrA:'Trianguli Australis',Tuc:'Tucanae',UMa:'Ursae Majoris',UMi:'Ursae Minoris',Vel:'Velorum',Vir:'Virginis',Vol:'Volantis',Vul:'Vulpeculae'};
 const z={'♈':'Aries','♉':'Taurus','♊':'Gemini','♋':'Cancer','♌':'Leo','♍':'Virgo','♎':'Libra','♏':'Scorpio','♐':'Sagittarius','♑':'Capricorn','♒':'Aquarius','♓':'Pisces'};
