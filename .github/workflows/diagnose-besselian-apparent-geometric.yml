@@ -79,8 +79,8 @@ jobs:
               return np.asarray(x), np.asarray(y)
 
           def greatest(date_text, apparent):
-              y, m, d = map(int, date_text.split('-'))
-              base = ts.utc(y, m, d)
+              year, month, day = map(int, date_text.split('-'))
+              base = ts.utc(year, month, day)
               grid = np.arange(0.0, DAY + 1.0, 600.0)
               xg, yg = xy(base + grid / DAY, apparent)
               q = xg*xg + yg*yg
@@ -88,8 +88,10 @@ jobs:
               lo, hi = max(0.0, center-1200.0), min(DAY, center+1200.0)
               def objective(sec):
                   x, yv = xy(base + float(sec)/DAY, apparent)
-                  return float(x[0]*x[0] + yv[0]*yv[0])
+                  return float(x*x + yv*yv)
               result = minimize_scalar(objective, bounds=(lo,hi), method='bounded', options={'xatol':0.001})
+              if not result.success:
+                  raise RuntimeError(result.message)
               return base + float(result.x)/DAY
 
           with open('eclipse-validation-cases.yaml', encoding='utf-8') as f:
