@@ -69,8 +69,7 @@ jobs:
           from eclipse_calc.elements import bessels_at
 
           DAY = 86400.0
-          ROOT = Path('.')
-          KERNEL = ROOT.parent / '.cache' / 'skyfield' / 'de440s.bsp'
+          KERNEL = Path('..') / '.cache' / 'skyfield' / 'de440s.bsp'
 
           with open('eclipse-validation-cases.yaml', 'r', encoding='utf-8') as f:
               suite = yaml.safe_load(f)
