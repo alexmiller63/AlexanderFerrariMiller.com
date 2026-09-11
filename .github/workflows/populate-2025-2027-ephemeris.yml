@@ -19,6 +19,7 @@ on:
       - 'tools/wire_2026_eclipses.py'
       - 'tools/wire_ephemeris_notation.py'
       - 'tools/wire_week_navigation.py'
+      - 'tools/wire_almanack_legend.py'
       - 'tools/populate_fixed_sky.py'
       - 'tools/standardize_messier_calendar.py'
       - 'tools/catalog_common_names.py'
@@ -67,7 +68,7 @@ jobs:
         run: python Star-Almanack-Repo/compute_bayer_visibility_2026.py Star-Almanack-Repo/expanded-bayer-stars.csv /tmp/expanded-bayer-visibility-2026-regression.csv
       - name: Clear requested calendar event cells
         run: python tools/clean_event_cells.py $ALMANACK_YEARS
-      - name: Populate Zodiac Days, ingresses, Wheel of the Year, and lunar phases
+      - name: Populate Zodiac Days, ingresses, solar stations, and named lunar phases
         run: python tools/populate_calendar.py $ALMANACK_YEARS
       - name: Publish independently calculated 2026 eclipses
         run: |
@@ -96,6 +97,8 @@ jobs:
         run: python tools/reconcile_catalog_common_names.py $ALMANACK_YEARS
       - name: Wire highlighted current-week navigation
         run: python tools/wire_week_navigation.py $ALMANACK_YEARS
+      - name: Wire canonical legend and glyph sizing
+        run: python tools/wire_almanack_legend.py $ALMANACK_YEARS
       - name: Verify all constellation centers survived downstream passes
         run: python tools/audit_constellation_centers.py $ALMANACK_YEARS
       - name: Audit true-year parameterization
@@ -144,6 +147,7 @@ jobs:
             python tools/populate_finest_ngc.py $ALMANACK_YEARS
             python tools/reconcile_catalog_common_names.py $ALMANACK_YEARS
             python tools/wire_week_navigation.py $ALMANACK_YEARS
+            python tools/wire_almanack_legend.py $ALMANACK_YEARS
             python tools/audit_constellation_centers.py $ALMANACK_YEARS
             python tools/audit_true_year_parameterization.py $ALMANACK_YEARS
           }
