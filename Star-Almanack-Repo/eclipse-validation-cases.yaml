@@ -76,9 +76,9 @@ future_jello:
   note: >
     These are frozen NASA comparison targets selected before the events.
     NASA's decade table publishes TD (Terrestrial Dynamical Time), not UT.
-    The UTC comparison values below come from NASA's detailed Besselian/search
-    pages so the validator compares UTC with UTC. The corresponding published
-    TD values are retained explicitly for provenance.
+    The UTC comparison values below come from NASA's SEsearch Besselian pages
+    using VSOP87/ELP2000-82, matching the historical validation series. The
+    corresponding published TD values are retained explicitly for provenance.
   cases:
     - id: jello_2027_02_06
       label: 2027 February 6 annular eclipse
@@ -88,17 +88,17 @@ future_jello:
       nasa_greatest_utc: "2027-02-06T15:59:32Z"
       nasa_greatest_td: "2027-02-06T16:00:48"
       nasa_magnitude: 0.928
-      source: "https://eclipse.gsfc.nasa.gov/SEsearch/SEdata.php?Ecl=+20270206"
+      source: "https://eclipse.gsfc.nasa.gov/SEsearch/SEdata.php?Ecl=20270206"
 
     - id: jello_2027_08_02
       label: 2027 August 2 total eclipse
       date_utc: "2027-08-02"
       expected_exists: true
       expected_type: total
-      nasa_greatest_utc: "2027-08-02T10:06:38Z"
-      nasa_greatest_td: "2027-08-02T10:07:49.4"
+      nasa_greatest_utc: "2027-08-02T10:06:34Z"
+      nasa_greatest_td: "2027-08-02T10:07:50"
       nasa_magnitude: 1.079
-      source: "https://eclipse.gsfc.nasa.gov/SEbeselm/SEbeselm2001/SE2027Aug02Tbeselm.html"
+      source: "https://eclipse.gsfc.nasa.gov/SEsearch/SEdata.php?Ecl=20270802"
 
     - id: jello_2028_01_26
       label: 2028 January 26 annular eclipse
@@ -108,17 +108,17 @@ future_jello:
       nasa_greatest_utc: "2028-01-26T15:07:43Z"
       nasa_greatest_td: "2028-01-26T15:08:59"
       nasa_magnitude: 0.921
-      source: "https://eclipse.gsfc.nasa.gov/SEsearch/SEdata.php?Ecl=+20280126"
+      source: "https://eclipse.gsfc.nasa.gov/SEsearch/SEdata.php?Ecl=20280126"
 
     - id: jello_2028_07_22
       label: 2028 July 22 total eclipse
       date_utc: "2028-07-22"
       expected_exists: true
       expected_type: total
-      nasa_greatest_utc: "2028-07-22T02:55:27Z"
-      nasa_greatest_td: "2028-07-22T02:56:39.0"
+      nasa_greatest_utc: "2028-07-22T02:55:23Z"
+      nasa_greatest_td: "2028-07-22T02:56:40"
       nasa_magnitude: 1.056
-      source: "https://eclipse.gsfc.nasa.gov/SEbeselm/SEbeselm2001/SE2028Jul22Tbeselm.html"
+      source: "https://eclipse.gsfc.nasa.gov/SEsearch/SEdata.php?Ecl=20280722"
 
 tolerances:
   greatest_time_seconds: 120
