@@ -66,6 +66,18 @@ def _best_time_for_solar_ra(target: float, start: dt.datetime, end: dt.datetime)
     return best_t
 
 
+def best_time_for_solar_ra(target: float, year: int) -> dt.datetime:
+    """Find the instant matching a solar RA within one astronomical year.
+
+    The cycle is bounded by the first point of Aries in ``year`` and
+    ``year + 1``, so an event can legitimately fall in a different ISO/civil
+    year without being duplicated or lost.
+    """
+    start = first_point_of_aries(year)
+    end = first_point_of_aries(year + 1)
+    return _best_time_for_solar_ra(target, start, end)
+
+
 def first_point_of_aries(year: int) -> dt.datetime:
     """Return the apparent-Sun RA=0 instant defining the Aries-cycle boundary."""
     start = dt.datetime(year, 3, 18)
