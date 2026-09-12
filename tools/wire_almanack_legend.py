@@ -48,14 +48,26 @@ STYLE = """<style id="almanack-legend-css">
   line-height:.75;
   vertical-align:-.12em;
 }
-.ephemeris-notation-item {
+/* Notation items can render either symbols or words. Keep the container at
+   ordinary text size, then enlarge only the leading astronomical symbol when
+   Greek/Symbols or Mixed Learner mode is active. Latin mode therefore never
+   enlarges the first letter of a word such as Capricorn or Beta. */
+.ephemeris-notation-item,
+.calendar-notation-item,
+.notation-item,
+.zodiac-glyph.notation-item {
   display:inline-block;
+  font-size:1em;
+  line-height:inherit;
+  vertical-align:baseline;
+  font-family:inherit;
 }
-.ephemeris-notation-item::first-letter,
-.calendar-notation-item::first-letter,
-.notation-item::first-letter {
-  font-size:2.4em;
-  line-height:.72;
+body:not(:has([data-bayer-mode="latin"][aria-pressed="true"])) .ephemeris-notation-item::first-letter,
+body:not(:has([data-bayer-mode="latin"][aria-pressed="true"])) .calendar-notation-item::first-letter,
+body:not(:has([data-bayer-mode="latin"][aria-pressed="true"])) .notation-item::first-letter {
+  font-family:'Apple Symbols','Arial Unicode MS','Segoe UI Symbol','Noto Sans Symbols 2',serif;
+  font-size:2em;
+  line-height:.75;
 }
 .ephemeris-symbol {
   display:inline-block;
