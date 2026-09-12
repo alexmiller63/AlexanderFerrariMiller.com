@@ -1,32 +1,14 @@
 #!/usr/bin/env python3
 """Populate constellation-center events for requested Almanack years.
 
-Alpha/beta star events are owned by the fixed-sky population step;
-this step must not create duplicate alpha/beta events.
+Alpha/beta star events are owned by the fixed-sky population step; this step
+must not create duplicate alpha/beta events.
 
-Constellation-center visibility is an observer-facing property of the adopted
-constellation figure, not a physical magnitude of the geometric center. The
-normal rule is the median V magnitude of the unique stars in the adopted
-Martz-Kohl / MacRobert figure. Figure membership comes from the pinned IAU
-stick-figure dataset used by the Martz-Kohl presentation; stellar V magnitudes
-come from the pinned HYG catalog used elsewhere by the Almanack, reconciled
-against documented Hipparcos entries that HYG intentionally omits.
-
-Explicit front-matter exceptions:
-
-* Mensa and Microscopium have no Martz-Kohl Stars-and-Sticks figure. For each,
-  use the arithmetic mean of its alpha and beta V magnitudes.
-* Serpens is one IAU constellation but has two adopted figures. Caput and
-  Cauda are emitted separately, each with its own IAU-region centroid,
-  figure-member median V magnitude, observing aid, declination band, and
-  season.
-
-Norma and Telescopium are ordinary figure-median cases: both have explicit
-member lists in the adopted MacRobert/IAU data, and Martz-Kohl publishes a
-Stars-and-Sticks figure for Telescopium. There is deliberately no
-brightest-star or alpha/beta fallback for ordinary constellations. Missing
-figure membership is a source-data error that must be resolved explicitly
-rather than silently changing the visibility rule.
+A constellation center recurs once per astronomical Aries-to-Aries cycle, not
+necessarily once per ISO week-numbering year. A 52-week ISO year can therefore
+contain zero occurrences for an identity near the year boundary, while a
+53-week ISO year can contain two. The generator must preserve those real
+occurrences rather than forcing a one-per-ISO-year invariant.
 """
 from __future__ import annotations
 
@@ -56,9 +38,7 @@ BAYER_STARS = SRC / "expanded-bayer-stars.csv"
 MARTZ_FIGURES = Path("/tmp/constellation_lines_iau.dat")
 HYG_CATALOG = Path("/tmp/hygdata_v41.csv")
 
-HYG_HIPPARCOS_SUPPLEMENTS = {
-    "55203": 3.79,
-}
+HYG_HIPPARCOS_SUPPLEMENTS = {"55203": 3.79}
 
 FRONT_MATTER = {
     "Men": {"rule": "alpha_beta_mean"},
@@ -105,7 +85,7 @@ def read_csv(path: Path):
         return list(csv.DictReader(f))
 
 
-def iso_label(d):
+def iso_label(d: dt.date) -> str:
     y, w, wd = d.isocalendar()
     return f"{y}-W{w:02d}-{wd}"
 
@@ -127,7 +107,7 @@ def alpha_beta_magnitudes() -> dict[str, dict[str, list[float]]]:
         try:
             values[con][greek].append(float(raw_mag))
         except ValueError:
-            continue
+            pass
     return values
 
 
@@ -135,9 +115,7 @@ def alpha_beta_mean(con: str, values: dict[str, dict[str, list[float]]]) -> floa
     pair = values.get(con, {})
     if not pair.get("α") or not pair.get("β"):
         raise SystemExit(f"Front-matter alpha/beta rule cannot be resolved for {con}")
-    alpha = min(pair["α"])
-    beta = min(pair["β"])
-    return statistics.mean((alpha, beta))
+    return statistics.mean((min(pair["α"]), min(pair["β"])))
 
 
 def read_hyg(path: Path) -> dict[str, float]:
@@ -146,20 +124,13 @@ def read_hyg(path: Path) -> dict[str, float]:
     by_hip: dict[str, float] = {}
     for row in read_csv(path):
         raw_mag = (row.get("mag") or "").strip()
-        if not raw_mag:
-            continue
-        try:
-            mag = float(raw_mag)
-        except ValueError:
-            continue
         hip = (row.get("hip") or "").strip()
-        if not hip:
+        if not raw_mag or not hip:
             continue
         try:
-            hip = str(int(float(hip)))
+            by_hip[str(int(float(hip)))] = float(raw_mag)
         except ValueError:
             continue
-        by_hip[hip] = mag
     for hip, mag in HYG_HIPPARCOS_SUPPLEMENTS.items():
         by_hip.setdefault(hip, mag)
     return by_hip
@@ -184,11 +155,7 @@ def read_martz_figures(path: Path) -> dict[str, list[str]]:
     return figures
 
 
-def median_figure_magnitude(
-    figure_key: str,
-    figures: dict[str, list[str]],
-    by_hip: dict[str, float],
-) -> float:
+def median_figure_magnitude(figure_key, figures, by_hip) -> float:
     hips = figures.get(figure_key, [])
     if not hips:
         raise SystemExit(f"No member stars enumerated for adopted figure {figure_key}")
@@ -205,18 +172,11 @@ def normal_figure_key(name: str, figures: dict[str, list[str]]) -> str:
     wanted = normalize_name(name)
     matches = [key for key in figures if normalize_name(key) == wanted]
     if len(matches) != 1:
-        raise SystemExit(
-            f"Could not uniquely match {name} to adopted Martz/MacRobert figure data"
-        )
+        raise SystemExit(f"Could not uniquely match {name} to adopted Martz/MacRobert figure data")
     return matches[0]
 
 
-def constellation_magnitude(
-    row: dict[str, str],
-    alpha_beta: dict[str, dict[str, list[float]]],
-    figures: dict[str, list[str]],
-    by_hip: dict[str, float],
-) -> float:
+def constellation_magnitude(row, alpha_beta, figures, by_hip) -> float:
     con = row["abbr"].strip()
     front = FRONT_MATTER.get(con)
     if front:
@@ -227,41 +187,25 @@ def constellation_magnitude(
             part = row.get("figure_part", "").strip()
             component = next((x for x in SERPENS_COMPONENTS if x["figure_part"] == part), None)
             if component is None:
-                raise SystemExit(
-                    f"Serpens row lacks a recognized Caput/Cauda component: {part!r}"
-                )
+                raise SystemExit(f"Serpens row lacks a recognized Caput/Cauda component: {part!r}")
             return median_figure_magnitude(component["figure_key"], figures, by_hip)
         raise SystemExit(f"Unknown front-matter constellation rule for {con}: {rule}")
-
-    figure_key = normal_figure_key(row["name"], figures)
-    if not figures.get(figure_key):
-        raise SystemExit(
-            f"No member stars enumerated for adopted figure {row['name']} ({con})"
-        )
-    return median_figure_magnitude(figure_key, figures, by_hip)
+    key = normal_figure_key(row["name"], figures)
+    return median_figure_magnitude(key, figures, by_hip)
 
 
 def visibility_html(mag: float) -> str:
     aid = observing_aid_for_magnitude(str(mag))
     if aid is None:
         raise SystemExit(f"Could not derive observing aid for magnitude {mag}")
-    return (
-        '<span class="visibility-magnitude">'
-        f'{HTML_AID[aid]} V {mag:.1f}'
-        '</span>'
-    )
+    return f'<span class="visibility-magnitude">{HTML_AID[aid]} V {mag:.1f}</span>'
 
 
 def make_rows(source: dict[str, str], iso_year: int) -> list[dict[str, str]]:
     rows = []
-    occurrences = best_visibility_occurrences_for_iso_year(
+    for instant, day in best_visibility_occurrences_for_iso_year(
         float(source["centroid_ra_h"]), iso_year
-    )
-    if not occurrences:
-        raise SystemExit(
-            f"No constellation-center occurrence for {source['name']} in ISO year {iso_year}"
-        )
-    for ci, cd in occurrences:
+    ):
         rows.append({
             "name": source["name"],
             "abbr": source["abbr"],
@@ -270,48 +214,42 @@ def make_rows(source: dict[str, str], iso_year: int) -> list[dict[str, str]]:
             "centroid_dec_deg": source["centroid_dec_deg"],
             "sampled_area_sq_deg": source["sampled_area_sq_deg"],
             "centroid_step_deg": source["centroid_step_deg"],
-            "center_best_instant_utc": ci.strftime("%Y-%m-%d %H:%M"),
-            "center_best_date": cd.isoformat(),
-            "center_iso": iso_label(cd),
+            "center_best_instant_utc": instant.strftime("%Y-%m-%d %H:%M"),
+            "center_best_date": day.isoformat(),
+            "center_iso": iso_label(day),
         })
     return rows
 
 
-def source_identity(source: dict[str, str]) -> tuple[str, str]:
-    return source["abbr"].strip(), source.get("figure_part", "").strip()
-
-
-def build_rows(year):
+def source_rows() -> list[dict[str, str]]:
     snaps = read_csv(CENTROID_SNAPSHOT)
     if len(snaps) != 88:
         raise SystemExit(f"Expected 88 centroid snapshot rows, got {len(snaps)}")
-
     sources = []
     for snap in snaps:
         if snap["abbr"].strip() != "Ser":
             sources.append(snap)
-            continue
-        for component in SERPENS_COMPONENTS:
-            sources.append({**component, "abbr": "Ser"})
-
+        else:
+            for component in SERPENS_COMPONENTS:
+                sources.append({**component, "abbr": "Ser"})
     if len(sources) != 89:
         raise SystemExit(f"Expected 89 center identities after splitting Serpens, got {len(sources)}")
+    return sources
 
+
+def build_rows(year: int) -> list[dict[str, str]]:
     rows = []
-    for source in sources:
+    for source in source_rows():
         rows.extend(make_rows(source, year))
-
-    expected = {source_identity(source) for source in sources}
-    represented = {source_identity(row) for row in rows}
-    missing = expected - represented
-    if missing:
-        raise SystemExit(
-            f"ISO year {year} is missing constellation-center identities: {sorted(missing)}"
-        )
+    if not rows:
+        raise SystemExit(f"No constellation-center occurrences fall in ISO year {year}")
+    for row in rows:
+        if dt.date.fromisoformat(row["center_best_date"]).isocalendar().year != year:
+            raise SystemExit(f"Out-of-year constellation occurrence leaked into {year}: {row}")
     return rows
 
 
-def write_csv(year, rows):
+def write_csv(year: int, rows: list[dict[str, str]]) -> None:
     out = SRC / "generated" / f"constellation-observance-{year}.csv"
     out.parent.mkdir(parents=True, exist_ok=True)
     with out.open("w", newline="", encoding="utf-8") as f:
@@ -325,12 +263,12 @@ def event_map(rows):
     alpha_beta = alpha_beta_magnitudes()
     figures = read_martz_figures(MARTZ_FIGURES)
     by_hip = read_hyg(HYG_CATALOG)
-    for r in rows:
-        d = dt.date.fromisoformat(r["center_best_date"])
-        cls = f"{declination_band(r['centroid_dec_deg'])} {season_for(d)}"
-        mag = constellation_magnitude(r, alpha_beta, figures, by_hip)
+    for row in rows:
+        day = dt.date.fromisoformat(row["center_best_date"])
+        cls = f"{declination_band(row['centroid_dec_deg'])} {season_for(day)}"
+        mag = constellation_magnitude(row, alpha_beta, figures, by_hip)
         vis = visibility_html(mag)
-        events[d].append(f"{r['name']} center — Constellation — {vis} — {cls}")
+        events[day].append(f"{row['name']} center — Constellation — {vis} — {cls}")
     return events
 
 
@@ -339,12 +277,6 @@ LEGACY_CENTER = re.compile(r'^(?:✦ )?.*? (?:geometric-center observance|center
 
 
 def clean_target_event_cell(cell: str) -> list[str]:
-    """Remove only legacy/current constellation entries from one date cell.
-
-    This must never sweep an entire weekly page. ISO-year population can
-    contain occurrences from neighboring astronomical cycles, so cleanup is
-    deliberately restricted to the target calendar row.
-    """
     if cell in ("", "—"):
         return []
     kept = []
@@ -364,81 +296,74 @@ def clean_target_event_cell(cell: str) -> list[str]:
     return kept
 
 
-def page_for_date(root: Path, d: dt.date) -> Path:
-    iso = d.isocalendar()
+def page_for_date(root: Path, day: dt.date) -> Path:
+    iso = day.isocalendar()
     return root / str(iso.year) / f"W{iso.week:02d}" / "index.html"
 
 
-def pages_for_events(root, events):
-    pages = {page_for_date(root, d) for d in events}
-    return sorted(page for page in pages if page.exists())
+def row_pattern(day: dt.date) -> re.Pattern[str]:
+    date_text = f"{day:%a, %b} {day.day}, {day:%Y}"
+    return re.compile(rf"(<tr><td>{re.escape(date_text)}</td><td>.*?</td><td>)(.*?)(</td></tr>)")
 
 
-def row_pattern(d: dt.date) -> re.Pattern[str]:
-    date_text = f"{d:%a, %b} {d.day}, {d:%Y}"
-    return re.compile(
-        rf"(<tr><td>{re.escape(date_text)}</td><td>.*?</td><td>)(.*?)(</td></tr>)"
-    )
-
-
-def inject(root, events):
+def inject(root: Path, events) -> int:
     changed = 0
     events_by_page = defaultdict(list)
-    for d, vals in events.items():
-        events_by_page[page_for_date(root, d)].append((d, vals))
-
+    for day, vals in events.items():
+        events_by_page[page_for_date(root, day)].append((day, vals))
     for page, dated_events in sorted(events_by_page.items(), key=lambda x: str(x[0])):
         if not page.exists():
             raise SystemExit(f"Missing weekly page for constellation event(s): {page}")
         text = page.read_text(encoding="utf-8")
         original = text
-        for d, vals in dated_events:
-            pat = row_pattern(d)
-            m = pat.search(text)
-            if not m:
-                raise SystemExit(f"Could not find calendar row for {d} in {page}")
-            keep = clean_target_event_cell(m.group(2))
-            for v in vals:
-                if v not in keep:
-                    keep.append(v)
+        for day, vals in dated_events:
+            match = row_pattern(day).search(text)
+            if not match:
+                raise SystemExit(f"Could not find calendar row for {day} in {page}")
+            keep = clean_target_event_cell(match.group(2))
+            for value in vals:
+                if value not in keep:
+                    keep.append(value)
             replacement = "<br>".join(keep) if keep else "—"
-            text = text[: m.start(2)] + replacement + text[m.end(2) :]
+            text = text[:match.start(2)] + replacement + text[match.end(2):]
         if text != original:
             page.write_text(text, encoding="utf-8")
             changed += 1
     return changed
 
 
-def validate(root, events):
-    for d, vals in events.items():
-        page = page_for_date(root, d)
+def validate(root: Path, events) -> None:
+    for day, vals in events.items():
+        page = page_for_date(root, day)
         if not page.exists():
             raise SystemExit(f"Missing weekly page while validating constellation event(s): {page}")
         text = page.read_text(encoding="utf-8")
-        m = row_pattern(d).search(text)
-        if not m:
-            raise SystemExit(f"Could not find calendar row for {d} while validating {page}")
-        items = m.group(2).split("<br>") if m.group(2) not in ("", "—") else []
+        match = row_pattern(day).search(text)
+        if not match:
+            raise SystemExit(f"Could not find calendar row for {day} while validating {page}")
+        items = match.group(2).split("<br>") if match.group(2) not in ("", "—") else []
         for value in vals:
             count = items.count(value)
             if count != 1:
                 raise SystemExit(
-                    f"{root}: expected {value!r} exactly once on {d} in {page}, found {count}"
+                    f"{root}: expected {value!r} exactly once on {day} in {page}, found {count}"
                 )
 
 
-def main():
+def main() -> None:
     for year in requested_years():
         rows = build_rows(year)
         write_csv(year, rows)
         events = event_map(rows)
-        c1 = inject(SOURCE_SITE, events)
-        c2 = inject(PUBLIC, events)
+        source_changed = inject(SOURCE_SITE, events)
+        public_changed = inject(PUBLIC, events)
         validate(SOURCE_SITE, events)
         validate(PUBLIC, events)
+        identities = {(row["abbr"], row.get("figure_part", "")) for row in rows}
         print(
-            f"{year}: verified 89 constellation-center identities across {len(rows)} ISO-year occurrences "
-            f"(Serpens split into Caput/Cauda); updated {c1} source + {c2} public pages"
+            f"{year}: {len(rows)} constellation-center ISO-year occurrence(s) across "
+            f"{len(identities)} represented identities; updated {source_changed} source + "
+            f"{public_changed} public pages"
         )
 
 
