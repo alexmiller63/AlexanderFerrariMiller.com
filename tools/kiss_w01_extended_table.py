@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""One-time KISS edit for 2026-W01: put Extended data in the proven-good table shell."""
+"""One-time KISS diagnostic for 2026-W01: make all three ephemeris tables identical."""
 from pathlib import Path
 import re
 
@@ -12,28 +12,16 @@ matches = list(TABLE.finditer(text))
 if len(matches) != 3:
     raise SystemExit(f"STOP: expected exactly 3 ephemeris tables, found {len(matches)}")
 
-first, second, third = [m.group(0) for m in matches]
-if first != second:
-    raise SystemExit("STOP: tables 1 and 2 are not identical; nothing changed")
-if not third.startswith('<table class="ephemeris extended-ephemeris">'):
-    raise SystemExit("STOP: table 3 is not the expected old Extended table; nothing changed")
-
-third_inner = re.fullmatch(r'<table class="ephemeris extended-ephemeris">(.*)</table>', third, re.DOTALL)
-if not third_inner:
-    raise SystemExit("STOP: could not isolate table 3 contents; nothing changed")
-
-replacement = '<table class="ephemeris">' + third_inner.group(1) + '</table>'
-new = text[:matches[1].start()] + replacement + text[matches[1].end():]
+first = matches[0].group(0)
+# KISS means KISS: table 1 is the known-good control.  Do not reinterpret,
+# restyle, reclass, or transplant data.  Copy its exact bytes twice.
+new = text[:matches[0].end()] + text[matches[0].end():matches[1].start()] + first + text[matches[1].end():matches[2].start()] + first + text[matches[2].end():]
 
 new_matches = list(TABLE.finditer(new))
 if len(new_matches) != 3:
     raise SystemExit("STOP: post-edit table count is not 3; nothing changed")
-if new_matches[0].group(0) != first:
-    raise SystemExit("STOP: table 1 changed unexpectedly; nothing changed")
-if new_matches[1].group(0) != replacement:
-    raise SystemExit("STOP: table 2 verification failed; nothing changed")
-if new_matches[2].group(0) != third:
-    raise SystemExit("STOP: table 3 changed unexpectedly; nothing changed")
+if not all(m.group(0) == first for m in new_matches):
+    raise SystemExit("STOP: the three tables are not byte-for-byte identical; nothing changed")
 
 PATH.write_text(new, encoding="utf-8")
-print("PASS: W01 table 2 now contains Ceres–Pluto in the plain ephemeris shell; tables 1 and 3 unchanged.")
+print("PASS: W01 has 3 byte-for-byte identical copies of table 1.")
