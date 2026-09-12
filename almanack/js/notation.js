@@ -153,10 +153,10 @@
   });
 
   // Section-specific astronomical-symbol scale: calendar symbols remain at the
-  // canonical 2x size; ephemeris symbols are intentionally quieter at 1.5x.
-  // This is scoped to ephemeris tables and does not alter the legend.
+  // canonical 2x size; every text glyph inside ephemerides is 1.5x. Observing
+  // image glyphs are intentionally unchanged, and the legend is untouched.
   const ephemerisGlyphStyle = document.createElement('style');
-  ephemerisGlyphStyle.textContent = 'table.ephemeris .ephemeris-symbol{font-size:1.5em!important}';
+  ephemerisGlyphStyle.textContent = 'table.ephemeris .ephemeris-symbol,table.ephemeris .greek-letter{font-size:1.5em!important}';
   document.head.append(ephemerisGlyphStyle);
 
   function setMode(mode) {
