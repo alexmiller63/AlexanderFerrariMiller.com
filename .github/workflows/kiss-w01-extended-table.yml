@@ -2,6 +2,9 @@ name: KISS W01 Extended Table
 
 on:
   workflow_dispatch:
+  push:
+    paths:
+      - tools/kiss_w01_extended_table.py
 
 permissions:
   contents: write
@@ -24,6 +27,6 @@ jobs:
           if git diff --cached --quiet; then
             echo "No W01 change to commit."
           else
-            git commit -m "KISS: substitute Extended data into W01 diagnostic table"
+            git commit -m "KISS: change W01 table 2 first heading to Ceres"
             git push
           fi
