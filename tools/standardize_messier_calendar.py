@@ -84,7 +84,7 @@ def inject(root,by_date):
  for page in pages_for_events(root,by_date):
   text=page.read_text(encoding="utf-8"); original=text
   for day,labels in by_date.items():
-   date_text=day.strftime("%a, %b %d, %Y"); pattern=re.compile(rf"(<tr><td>{re.escape(date_text)}</td><td>.*?</td><td>)(.*?)(</td></tr>)"); match=pattern.search(text)
+   date_text=f"{day:%a, %b} {day.day}, {day.year}"; pattern=re.compile(rf"(<tr><td>{re.escape(date_text)}</td><td>.*?</td><td>)(.*?)(</td></tr>)"); match=pattern.search(text)
    if not match: continue
    keep=[] if match.group(2)=="—" else [item for item in match.group(2).split("<br>") if item and not is_messier_event(item)]
    keep.extend(labels); replacement="<br>".join(keep) if keep else "—"; text=text[:match.start(2)]+replacement+text[match.end(2):]
