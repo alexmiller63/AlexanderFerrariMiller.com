@@ -11,6 +11,7 @@ SIGNS=[('♈','Aries'),('♉','Taurus'),('♊','Gemini'),('♋','Cancer'),('♌'
 SIGN_INDEX={s:i for i,(s,_) in enumerate(SIGNS)}
 BODIES=[('☉','Sun','sun'),('☽','Moon','moon'),('☿','Mercury','mercury'),('♀','Venus','venus'),('♂','Mars','mars'),('♃','Jupiter','jupiter'),('♄','Saturn','saturn'),('♅','Uranus','uranus'),('♆','Neptune','neptune'),('⚳','Ceres','ceres')]
 W=H=1400; C=700; RI=430; RO=560
+CENTER_RESERVED=[(700,680,380,48),(700,722,640,40),(700,758,480,40)]
 
 def xy(lon,r):
     t=math.radians(180+lon)
@@ -32,7 +33,7 @@ def dims(mode,name):
     return max(140,14*len(name)+74),52
 
 def place(mode,rows):
-    reserved=[(700,680,380,48),(700,722,640,40),(700,758,480,40)]
+    reserved=list(CENTER_RESERVED)
     placed=[]; result={}
     lons=[r[-1] for r in rows]
     order=sorted(range(len(rows)),key=lambda i:min(abs((lons[i]-lons[j]+180)%360-180) for j in range(len(rows)) if j!=i))
@@ -63,6 +64,60 @@ def edge_point(x,y,w,h,ax,ay,mode):
     t=min(sx,sy)
     return x+dx*t,y+dy*t
 
+def seg_hits_box(a,b,box,pad=10):
+    """Return True when segment a-b enters an axis-aligned obstacle box."""
+    x1,y1=a; x2,y2=b
+    bx,by,bw,bh=box
+    xmin=bx-bw/2-pad; xmax=bx+bw/2+pad
+    ymin=by-bh/2-pad; ymax=by+bh/2+pad
+    dx=x2-x1; dy=y2-y1
+    t0=0.0; t1=1.0
+    for p,q in ((-dx,x1-xmin),(dx,xmax-x1),(-dy,y1-ymin),(dy,ymax-y1)):
+        if abs(p)<1e-9:
+            if q<0: return False
+            continue
+        r=q/p
+        if p<0:
+            if r>t1: return False
+            if r>t0: t0=r
+        else:
+            if r<t0: return False
+            if r<t1: t1=r
+    return t0<=t1
+
+def route_leader(anchor,target_box,L,mode,obstacles):
+    """Route a leader without moving its exact-longitude anchor.
+
+    Prefer a direct line. If it would cross another label or the protected
+    center text, search deterministic radial/tangential doglegs. Failure is
+    explicit rather than silently emitting a colliding leader.
+    """
+    x,y,w,h=target_box
+
+    def end_from(point):
+        return edge_point(x,y,w,h,point[0],point[1],mode)
+
+    def clear(points):
+        return all(not any(seg_hits_box(a,b,q) for q in obstacles)
+                   for a,b in zip(points,points[1:]))
+
+    direct=[anchor,end_from(anchor)]
+    if clear(direct):
+        return direct
+
+    theta=math.radians(180+L)
+    tx=-math.sin(theta); ty=-math.cos(theta)
+    for radius in (400,370,340,310,280,250,220,190,160,130):
+        rx,ry=xy(L,radius)
+        for shift in (0,-35,35,-70,70,-105,105,-140,140,-175,175,-210,210):
+            bend=(rx+shift*tx,ry+shift*ty)
+            end=end_from(bend)
+            route=[anchor,bend,end]
+            if clear(route):
+                return route
+
+    raise RuntimeError('No collision-free leader route')
+
 def build(mode,year,week,monday,rows):
     title={'symbols':'Greek / Symbols','latin':'Latin','mixed':'Mixed / Learner'}[mode]
     date=dt.date.fromisoformat(monday)
@@ -79,9 +134,13 @@ def build(mode,year,week,monday,rows):
         s.append(f'<text{cls} x="{x:.1f}" y="{y+8:.1f}" text-anchor="middle" font-size="{fs}">{text}</text>')
     s.append('<text x="112" y="708" text-anchor="end" font-size="20" class="sans">0° Aries</text>')
     boxes=place(mode,rows)
-    for row,box in zip(rows,boxes):
-        sym,name,sign,d,m,L=row; x,y,w,h=box; ax,ay=xy(L,RI-5); gx,gy=xy(L,390); ex,ey=edge_point(x,y,w,h,ax,ay,mode)
-        s.append(f'<polyline points="{ax:.1f},{ay:.1f} {gx:.1f},{gy:.1f} {ex:.1f},{ey:.1f}" fill="none" stroke="#777" stroke-width="1.5" stroke-linejoin="round"/>')
+    for idx,(row,box) in enumerate(zip(rows,boxes)):
+        sym,name,sign,d,m,L=row
+        ax,ay=xy(L,RI-5)
+        obstacles=list(CENTER_RESERVED)+[q for j,q in enumerate(boxes) if j!=idx]
+        route=route_leader((ax,ay),box,L,mode,obstacles)
+        points=' '.join(f'{px:.1f},{py:.1f}' for px,py in route)
+        s.append(f'<polyline points="{points}" fill="none" stroke="#777" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/>')
         s.append(f'<circle cx="{ax:.1f}" cy="{ay:.1f}" r="3.5" fill="#111"/>')
     for row,box in zip(rows,boxes):
         sym,name,sign,d,m,L=row; x,y,w,h=box
