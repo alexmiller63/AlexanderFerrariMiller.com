@@ -31,9 +31,7 @@ STYLE = """<style id="almanack-legend-css">
 .legend-line { display:flex; flex-wrap:wrap; gap:.45rem 1rem; align-items:center; }
 .legend-item { white-space:nowrap; }
 .text-symbol { font-size:2em; line-height:.75; vertical-align:-.12em; font-variant-emoji:text; }
-/* Canonical astronomical-symbol sizing. Zodiac, solar-system, and Bayer Greek
-   symbols are all twice normal text size. Labels, constellation abbreviations,
-   and coordinates remain at normal text size. */
+/* Calendar and general astronomical symbols stay at 2x normal text size. */
 .zodiac-glyph {
   display:inline-block;
   font-family:'Apple Symbols','Arial Unicode MS','Segoe UI Symbol','Noto Sans Symbols 2',serif;
@@ -64,38 +62,46 @@ STYLE = """<style id="almanack-legend-css">
   vertical-align:baseline;
   font-family:inherit;
 }
-body:not(:has([data-bayer-mode="latin"][aria-pressed="true"])) .ephemeris-notation-item::first-letter,
 body:not(:has([data-bayer-mode="latin"][aria-pressed="true"])) .calendar-notation-item::first-letter,
 body:not(:has([data-bayer-mode="latin"][aria-pressed="true"])) .notation-item::first-letter {
   font-family:'Apple Symbols','Arial Unicode MS','Segoe UI Symbol','Noto Sans Symbols 2',serif;
   font-size:2em;
   line-height:.75;
 }
+body:not(:has([data-bayer-mode="latin"][aria-pressed="true"])) .ephemeris-notation-item::first-letter {
+  font-family:'Apple Symbols','Arial Unicode MS','Segoe UI Symbol','Noto Sans Symbols 2',serif;
+  font-size:1.5em;
+  line-height:.75;
+}
+/* Ephemeris astronomical symbols are intentionally quieter at 1.5x. */
 .ephemeris-symbol {
   display:inline-block;
   font-family:'Apple Symbols','Arial Unicode MS','Segoe UI Symbol','Noto Sans Symbols 2',serif;
   font-variant-emoji:text;
   color:currentColor;
   -webkit-text-fill-color:currentColor;
-  font-size:2em;
+  font-size:1.5em;
   line-height:.75;
   vertical-align:-.12em;
 }
-/* One canonical size for every observing/event glyph. */
+table.ephemeris .greek-letter { font-size:1.5em; }
+/* Calendar/event observing glyphs retain their canonical size. Ephemeris
+   observing glyphs use the same 1.5x section scale as the other ephemeris glyphs. */
 .visibility-glyph { height:3em !important; width:auto !important; vertical-align:-.78em !important; }
+table.ephemeris .visibility-glyph { height:1.5em !important; vertical-align:-.28em !important; }
 .legend-glyph { height:3em; width:auto; vertical-align:-.78em; margin-right:.2rem; }
-.ephemeris-visibility .text-symbol { font-size:3em; line-height:.7; vertical-align:-.2em; }
+.ephemeris-visibility .text-symbol { font-size:1.5em; line-height:.75; vertical-align:-.12em; }
 .legend-explanation { white-space:normal; }
 
 /* Ephemeris presentation layer: a clean CSS Grid, independent of the browser's
-   table-width algorithm.  Each track takes the width required by its current
-   notation content, then shares any remaining space.  Greek therefore stays
+   table-width algorithm. Each track takes the width required by its current
+   notation content, then shares any remaining space. Greek therefore stays
    compact while Latin and Mixed expand naturally instead of being clipped. */
 table.ephemeris {
   display:grid !important;
   grid-template-columns:repeat(7,minmax(max-content,1fr));
   width:100% !important;
-  min-width:0 !important;
+  min-width:max-content !important;
   table-layout:auto !important;
   overflow-x:auto !important;
   overflow-y:hidden !important;
@@ -222,9 +228,9 @@ def wire_page(path: Path) -> bool:
     else:
         text = text.replace("</body>", LEGEND + "</body>", 1)
 
-    # Weekly pages live at YEAR/WEEK/index.html.  A root-absolute /assets URL
+    # Weekly pages live at YEAR/WEEK/index.html. A root-absolute /assets URL
     # works on the custom domain but misses the repository prefix on GitHub
-    # Pages.  This relative path resolves to the same checked-in asset directory
+    # Pages. This relative path resolves to the same checked-in asset directory
     # in both deployments, so every observing/event glyph uses one portable path.
     text = text.replace(f'src="{GLYPH_ROOT}', f'src="{WEEKLY_GLYPH_ROOT}')
 
