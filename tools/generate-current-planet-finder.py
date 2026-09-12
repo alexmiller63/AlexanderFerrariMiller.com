@@ -36,6 +36,7 @@ def place(mode,rows):
     reserved=list(CENTER_RESERVED)
     placed=[]; result={}
     lons=[r[-1] for r in rows]
+    anchors=[xy(L,RI-5) for L in lons]
     nearest=[min(abs((lons[i]-lons[j]+180)%360-180)
                  for j in range(len(rows)) if j!=i)
              for i in range(len(rows))]
@@ -57,12 +58,18 @@ def place(mode,rows):
         )
         label_pad=4 if mode=='symbols' else 16
         reserved_pad=8 if mode=='symbols' else 18
+        anchor_pad=2 if mode=='symbols' else 10
         for r,sh in candidates:
             bx,by=xy(L,r)
             x=bx+sh*tx; y=by+sh*ty; box=(x,y,w,h)
             if x-w/2<300 or x+w/2>1100 or y-h/2<300 or y+h/2>1100: continue
             if any(overlap(box,q,label_pad) for q in placed): continue
             if any(overlap(box,q,reserved_pad) for q in reserved): continue
+            # Every leader starts at its exact-longitude anchor just inside the
+            # zodiac ring. A label may never cover any anchor: if it did, no
+            # collision-free route could leave that anchor in the first place.
+            if any(abs(ax-x)<=w/2+anchor_pad and abs(ay-y)<=h/2+anchor_pad
+                   for ax,ay in anchors): continue
             chosen=box; break
         if not chosen:
             raise RuntimeError(f'No collision-free label position for {name}')
