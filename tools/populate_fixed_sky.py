@@ -25,18 +25,22 @@ def iso_label(d):y,w,wd=d.isocalendar(); return f"{y}-W{w:02d}-{wd}"
 def read_csv(name):
     with (SRC/name).open(newline="",encoding="utf-8") as f:return list(csv.DictReader(f))
 def canonical_occurrence(occurrences,year,identity):
-    """Select one annual event when an ISO week-year straddles civil years.
+    """Select the single annual event represented by one ISO week-year.
 
-    ISO W01/W52/W53 can include dates from an adjacent civil year, so an annual
-    solar-RA crossing can occur twice inside the same ISO-year page set.  The
-    Almanack catalog contract is one visibility event per object per civil year.
+    ISO week-years legitimately contain a few dates from adjacent civil years.
+    A single occurrence on one of those dates is valid and must be retained.
+    The ambiguity arises only when an annual solar-RA crossing occurs twice in
+    the same ISO-year page set (for example near both ends of a 53-week year).
+    In that case, prefer the occurrence in the matching civil year.
     """
     occurrences=list(occurrences)
+    if len(occurrences)==1:
+        return occurrences[0]
     preferred=[pair for pair in occurrences if pair[1].year==year]
-    if len(preferred)!=1:
-        dates=", ".join(day.isoformat() for _,day in occurrences)
-        raise RuntimeError(f"Expected exactly one civil-{year} visibility occurrence for {identity}; found {len(preferred)} among [{dates}]")
-    return preferred[0]
+    if len(preferred)==1:
+        return preferred[0]
+    dates=", ".join(day.isoformat() for _,day in occurrences)
+    raise RuntimeError(f"Could not select one canonical visibility occurrence for {identity} in ISO {year}; matching-civil-year={len(preferred)} among [{dates}]")
 def redated(rows,iso_year):
     out=[]
     for row in rows:
