@@ -50,13 +50,11 @@ STYLE = """<style id="almanack-legend-css">
   line-height:inherit;
   vertical-align:baseline;
 }
-/* Notation containers stay at ordinary text size. The renderer wraps only true
-   astronomical symbols in .calendar-symbol or .ephemeris-symbol, so Latin words
-   such as Beta and Capricorn can never acquire symbol sizing. */
+/* Notation containers stay at ordinary text size. True calendar zodiac glyphs
+   are excluded so their canonical 2x glyph rule cannot be overridden. */
 .ephemeris-notation-item,
 .calendar-notation-item,
-.notation-item,
-.zodiac-glyph.notation-item {
+.notation-item:not(.zodiac-glyph) {
   display:inline-block;
   font-size:1em;
   line-height:inherit;
