@@ -169,11 +169,15 @@ def render_ephemeris(monday, values):
             + "</tbody></table>"
         )
 
+    primary_table = table(primary)
+    diagnostic_copy = primary_table if monday == date(2025, 12, 29) else ""
+
     return (
         "<h3>Weekly Solar-System Ephemeris</h3>"
         + f'<p><strong>Snapshot:</strong> {monday.strftime("%B")} {monday.day}, {monday.year} · 00:00 UTC</p>'
         + "<p><strong>Naked Eye</strong></p>"
-        + table(primary)
+        + primary_table
+        + diagnostic_copy
         + "<p><strong>Extended targets:</strong></p>"
         + table(extended, extra_class="extended-ephemeris")
         + '<p class="ephemeris-note"><strong>β</strong> = ecliptic latitude (+ north, − south). Observing combines visual magnitude with solar elongation. <span class="text-symbol">☉</span> = Near Sun — not currently observable.</p>'
@@ -186,6 +190,7 @@ EPHEMERIS_BLOCK = re.compile(
     r'<p><strong>Snapshot:</strong>.*?</p>\s*'
     r'(?:<p><strong>Naked Eye</strong></p>\s*)?'
     + EPHEMERIS_TABLE
+    + r'(?:\s*' + EPHEMERIS_TABLE + r')?'
     + r'\s*<p><strong>Extended targets:</strong></p>\s*'
     + EPHEMERIS_TABLE
     + r'\s*(?:<p class="ephemeris-note">.*?</p>)?',
