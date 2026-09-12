@@ -11,16 +11,16 @@ ALMANACK_ROOT = Path("_site/almanack")
 DAY_ONE_NAME = re.compile(
     r'class="zodiac-glyph">[^<]+</span>\s+\([A-Za-z]+\)\s+1</td>'
 )
-# Current calendar wording is "☉ Sun enters <zodiac glyph> (Sign) — ...".
-# Count the semantic event, then require every such event to use the canonical
-# monochrome zodiac-glyph wrapper. Accept either a literal U+FE0E or its HTML
-# entity because Jekyll/HTML serialization may preserve either representation.
-INGRESS = re.compile(r"☉\s+Sun enters\s+")
-WRAPPED_INGRESS = re.compile(
-    r'☉\s+Sun enters\s+<span class="zodiac-glyph">'
-    r'(?:♈|♉|♊|♋|♌|♍|♎|♏|♐|♑|♒|♓)'
-    r'(?:\ufe0e|&#xfe0e;)</span>\s+'
-    r'\((?:Aries|Taurus|Gemini|Cancer|Leo|Virgo|Libra|Scorpio|Sagittarius|Capricorn|Aquarius|Pisces)\)'
+# Canonical calendar wording is "<zodiac glyph> Sun enters Sign — ...".
+# Count the semantic ingress phrase, then require the immediately preceding
+# sign to use the monochrome zodiac-glyph wrapper. Accept an optional text
+# variation selector because the generator/Jekyll serializer may omit it.
+INGRESS = re.compile(
+    r'<span class="zodiac-glyph">(?:♈|♉|♊|♋|♌|♍|♎|♏|♐|♑|♒|♓)(?:\ufe0e|&#xfe0e;)?</span>\s+'
+    r'Sun enters\s+(?:Aries|Taurus|Gemini|Cancer|Leo|Virgo|Libra|Scorpio|Sagittarius|Capricorn|Aquarius|Pisces)\b'
+)
+PLAIN_INGRESS = re.compile(
+    r'Sun enters\s+(?:Aries|Taurus|Gemini|Cancer|Leo|Virgo|Libra|Scorpio|Sagittarius|Capricorn|Aquarius|Pisces)\b'
 )
 CSS_REQUIREMENTS = {
     "Apple Symbols font": re.compile(r"font-family\s*:\s*['\"]Apple Symbols['\"]"),
@@ -66,8 +66,8 @@ def main() -> None:
     if "Best visibility:" in rendered:
         raise SystemExit("Rendered Almanack still contains obsolete 'Best visibility:' labels")
 
-    ingress_count = len(INGRESS.findall(rendered))
-    wrapped_ingress_count = len(WRAPPED_INGRESS.findall(rendered))
+    ingress_count = len(PLAIN_INGRESS.findall(rendered))
+    wrapped_ingress_count = len(INGRESS.findall(rendered))
     if ingress_count == 0 or wrapped_ingress_count != ingress_count:
         raise SystemExit(
             "Every ingress glyph must use the monochrome zodiac-glyph wrapper "
