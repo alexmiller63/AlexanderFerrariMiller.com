@@ -16,6 +16,8 @@ import sys
 
 ROOT = Path(__file__).resolve().parents[1]
 BASES = (ROOT / "almanack", ROOT / "Star-Almanack-Repo" / "site")
+GLYPH_ROOT = "/assets/almanack/visibility-glyphs/masters/"
+WEEKLY_GLYPH_ROOT = "../../../assets/almanack/visibility-glyphs/masters/"
 
 STYLE = """<style id="almanack-legend-css">
 .notation-legend {
@@ -84,6 +86,51 @@ body:not(:has([data-bayer-mode="latin"][aria-pressed="true"])) .notation-item::f
 .legend-glyph { height:3em; width:auto; vertical-align:-.78em; margin-right:.2rem; }
 .ephemeris-visibility .text-symbol { font-size:3em; line-height:.7; vertical-align:-.2em; }
 .legend-explanation { white-space:normal; }
+
+/* Extended ephemerides always use one four-column grid.  This prevents mobile
+   browsers from independently sizing rows and collapsing the header into a
+   staircase when labels, coordinates, and observing glyphs have different
+   intrinsic widths. */
+table.extended-ephemeris {
+  display:table;
+  width:100%;
+  table-layout:fixed;
+}
+table.extended-ephemeris th,
+table.extended-ephemeris td {
+  width:25%;
+  min-width:0;
+  text-align:center;
+}
+table.extended-ephemeris th {
+  overflow-wrap:anywhere;
+}
+table.extended-ephemeris td,
+table.extended-ephemeris small {
+  white-space:nowrap;
+}
+@media (max-width:760px) {
+  table.extended-ephemeris {
+    display:table !important;
+    width:100% !important;
+    table-layout:fixed !important;
+    overflow:visible !important;
+  }
+  table.extended-ephemeris th,
+  table.extended-ephemeris td {
+    width:25% !important;
+    min-width:0 !important;
+    padding:.55rem .25rem !important;
+  }
+  table.extended-ephemeris th { font-size:.78rem; }
+  table.extended-ephemeris td { font-size:.78rem; }
+  table.extended-ephemeris .ephemeris-symbol { font-size:1.55em; }
+  table.extended-ephemeris .visibility-glyph {
+    max-width:100%;
+    height:2.4em !important;
+    object-fit:contain;
+  }
+}
 </style>"""
 
 LEGEND = """<aside class="notation-legend" aria-label="Astronomical notation legend">
@@ -163,6 +210,12 @@ def wire_page(path: Path) -> bool:
         text = text.replace("<footer", LEGEND + "<footer", 1)
     else:
         text = text.replace("</body>", LEGEND + "</body>", 1)
+
+    # Weekly pages live at YEAR/WEEK/index.html.  A root-absolute /assets URL
+    # works on the custom domain but misses the repository prefix on GitHub
+    # Pages.  This relative path resolves to the same checked-in asset directory
+    # in both deployments, so every observing/event glyph uses one portable path.
+    text = text.replace(f'src="{GLYPH_ROOT}', f'src="{WEEKLY_GLYPH_ROOT}')
 
     if text != original:
         path.write_text(text, encoding="utf-8")
