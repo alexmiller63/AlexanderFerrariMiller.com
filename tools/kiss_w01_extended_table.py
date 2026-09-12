@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""One-time KISS diagnostic for 2026-W01: change one copied-table header only."""
+"""One-time KISS diagnostic for 2026-W01: restore copied-table Sun header exactly."""
 from pathlib import Path
 import re
 
@@ -16,17 +16,21 @@ if len(matches) != 2:
 
 first = matches[0].group(0)
 second = matches[1].group(0)
-if second.count(SUN_HEADER) != 1:
-    raise SystemExit("STOP: copied table does not contain exactly one Sun header; nothing changed")
+if first.count(SUN_HEADER) != 1:
+    raise SystemExit("STOP: table 1 does not contain exactly one Sun header; nothing changed")
+if second.count(CERES_HEADER) != 1:
+    raise SystemExit("STOP: table 2 does not contain exactly one plain Ceres header; nothing changed")
 
-changed_second = second.replace(SUN_HEADER, CERES_HEADER, 1)
-new = text[:matches[1].start()] + changed_second + text[matches[1].end():]
+restored_second = second.replace(CERES_HEADER, SUN_HEADER, 1)
+new = text[:matches[1].start()] + restored_second + text[matches[1].end():]
 
 new_matches = list(TABLE.finditer(new))
-if len(new_matches) != 2 or new_matches[0].group(0) != first:
-    raise SystemExit("STOP: table 1 changed or table count changed; nothing changed")
-if new_matches[1].group(0) != changed_second:
-    raise SystemExit("STOP: table 2 change did not verify; nothing changed")
+if len(new_matches) != 2:
+    raise SystemExit("STOP: table count changed; nothing changed")
+if new_matches[0].group(0) != first:
+    raise SystemExit("STOP: table 1 changed; nothing changed")
+if new_matches[1].group(0) != first:
+    raise SystemExit("STOP: restored table 2 is not byte-for-byte identical to table 1; nothing changed")
 
 PATH.write_text(new, encoding="utf-8")
-print("PASS: table 1 unchanged; table 2 first header is plain Ceres with no glyph.")
+print("PASS: table 2 restored; both W01 ephemeris tables are byte-for-byte identical.")
