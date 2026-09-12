@@ -16,6 +16,7 @@
 
   const bodyNames = {'☉':'Sun','☽':'Moon','☿':'Mercury','♀':'Venus','♂':'Mars','♃':'Jupiter','♄':'Saturn'};
   const VS = '\ufe0e';
+  const LEADING_SYMBOL = /^[αβγδεζηθικλμνξοπρστυφχψω♈♉♊♋♌♍♎♏♐♑♒♓☉☽☿♀♂♃♄⚳♅♆♇]/;
 
   function notationSpan(greek, latin, mixed) {
     const span = document.createElement('span');
@@ -25,6 +26,34 @@
     span.dataset.mixed = mixed;
     span.textContent = greek;
     return span;
+  }
+
+  function renderNotation(item, value) {
+    item.classList.add('notation-rendered');
+    item.classList.remove('notation-item');
+    item.replaceChildren();
+
+    const match = value.match(LEADING_SYMBOL);
+    if (!match) {
+      item.textContent = value;
+      return;
+    }
+
+    const symbol = document.createElement('span');
+    symbol.className = 'notation-leading-symbol';
+    let consumed = match[0].length;
+    symbol.textContent = match[0];
+    if (value.charAt(consumed) === VS) {
+      symbol.textContent += VS;
+      consumed += 1;
+    }
+    symbol.style.display = 'inline-block';
+    symbol.style.fontFamily = "'Apple Symbols','Arial Unicode MS','Segoe UI Symbol','Noto Sans Symbols 2',serif";
+    symbol.style.fontVariantEmoji = 'text';
+    symbol.style.fontSize = item.closest('table.ephemeris') ? '1.5em' : '2em';
+    symbol.style.lineHeight = '.75';
+    symbol.style.verticalAlign = '-.12em';
+    item.append(symbol, document.createTextNode(value.slice(consumed)));
   }
 
   document.querySelectorAll('.zodiac-glyph').forEach(function (item) {
@@ -190,8 +219,8 @@
   const buttons = document.querySelectorAll('[data-bayer-mode]');
 
   function setMode(mode) {
-    document.querySelectorAll('.notation-item').forEach(function (item) {
-      item.textContent = item.dataset[mode] || item.dataset.greek || item.textContent;
+    document.querySelectorAll('.notation-item, .notation-rendered').forEach(function (item) {
+      renderNotation(item, item.dataset[mode] || item.dataset.greek || item.textContent);
     });
     document.querySelectorAll('.observing-aid-notation').forEach(function (item) {
       const symbol = item.querySelector('.observing-aid-symbol');
