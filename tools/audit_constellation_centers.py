@@ -1,21 +1,23 @@
 #!/usr/bin/env python3
-"""Verify that all Almanack constellation-center events survive final generation.
+"""Verify generated constellation-center occurrences survive final generation.
 
-There are 88 IAU constellations, but the Almanack emits 89 center events because
-Serpens is represented by separate Caput and Cauda centers.
+Constellation centers recur once per astronomical Aries-to-Aries cycle. ISO
+week-numbering years are not astronomical cycles: a given identity can appear
+zero, one, or twice in an ISO year near the year boundary. The audit therefore
+compares rendered output with the generated occurrence snapshot instead of
+forcing 89 events into every ISO year.
 """
 from __future__ import annotations
 
 import csv
 import re
 import sys
+from collections import Counter
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 SRC = ROOT / "Star-Almanack-Repo"
 ROOTS = (SRC / "site", ROOT / "almanack")
-EXPECTED_EVENTS = 89
-EXPECTED_CONSTELLATIONS = 88
 EVENT_RE = re.compile(r"(?:^|<br>)([^<]*? center) — Constellation —")
 
 
@@ -28,57 +30,59 @@ def requested_years() -> tuple[int, ...]:
         raise SystemExit("Years must be integers") from exc
 
 
-def expected_names(year: int) -> list[str]:
+def expected_counts(year: int) -> Counter[str]:
     path = SRC / "generated" / f"constellation-observance-{year}.csv"
     if not path.exists():
         raise SystemExit(f"Missing generated constellation snapshot: {path}")
     with path.open(newline="", encoding="utf-8") as handle:
         rows = list(csv.DictReader(handle))
-    names = [row["name"].strip() for row in rows]
-    if len(names) != EXPECTED_EVENTS or len(set(names)) != EXPECTED_EVENTS:
-        raise SystemExit(
-            f"{year}: expected {EXPECTED_EVENTS} distinct center rows, got "
-            f"{len(names)} rows / {len(set(names))} distinct names"
-        )
-    if "Serpens Caput" not in names or "Serpens Cauda" not in names:
-        raise SystemExit(f"{year}: Serpens Caput/Cauda split is missing")
-    return names
+    if not rows:
+        raise SystemExit(f"{year}: generated constellation snapshot is empty")
+    counts = Counter(row["name"].strip() for row in rows)
+    if any(count not in (1, 2) for count in counts.values()):
+        raise SystemExit(f"{year}: unexpected per-identity occurrence count: {counts}")
+    return counts
 
 
-def audit_root(root: Path, year: int, names: list[str]) -> list[str]:
+def audit_root(root: Path, year: int, expected: Counter[str]) -> list[str]:
     failures: list[str] = []
     text = "\n".join(
         page.read_text(encoding="utf-8")
         for page in sorted((root / str(year)).glob("W??/index.html"))
     )
-    found = EVENT_RE.findall(text)
-    if len(found) != EXPECTED_EVENTS:
+    found = Counter(EVENT_RE.findall(text))
+    normalized_found = Counter()
+    for token, count in found.items():
+        name = token[:-7] if token.endswith(" center") else token
+        normalized_found[name] += count
+
+    if sum(normalized_found.values()) != sum(expected.values()):
         failures.append(
-            f"{root}/{year}: expected {EXPECTED_EVENTS} constellation-center events, found {len(found)}"
+            f"{root}/{year}: expected {sum(expected.values())} constellation-center occurrences, "
+            f"found {sum(normalized_found.values())}"
         )
-    for name in names:
-        token = f"{name} center — Constellation —"
-        count = text.count(token)
-        if count != 1:
-            failures.append(f"{root}/{year}: {token!r} occurs {count} times; expected 1")
+    for name in sorted(set(expected) | set(normalized_found)):
+        if normalized_found[name] != expected[name]:
+            failures.append(
+                f"{root}/{year}: {name} center occurs {normalized_found[name]} times; "
+                f"expected {expected[name]}"
+            )
     return failures
 
 
 def main() -> None:
     failures: list[str] = []
     for year in requested_years():
-        names = expected_names(year)
-        # 88 IAU constellations are represented by these 89 Almanack center events:
-        # Serpens contributes two named component centers instead of one.
-        represented = EXPECTED_EVENTS - 1
-        if represented != EXPECTED_CONSTELLATIONS:
-            failures.append(f"internal invariant failure: {represented} != {EXPECTED_CONSTELLATIONS}")
+        expected = expected_counts(year)
+        year_failures: list[str] = []
         for root in ROOTS:
-            failures.extend(audit_root(root, year, names))
-        if not failures:
+            year_failures.extend(audit_root(root, year, expected))
+        failures.extend(year_failures)
+        if not year_failures:
             print(
-                f"{year}: PASS — {EXPECTED_CONSTELLATIONS} constellations represented by "
-                f"{EXPECTED_EVENTS} center events (Serpens Caput + Cauda), surviving in source and public output"
+                f"{year}: PASS — {sum(expected.values())} generated constellation-center "
+                f"occurrence(s) across {len(expected)} represented identities survive in "
+                "source and public output"
             )
     if failures:
         print("CONSTELLATION-CENTER SURVIVAL REGRESSION FAILED")
