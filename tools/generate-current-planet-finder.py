@@ -128,9 +128,10 @@ def smart_route(anchor,target_box,mode,obstacles):
         (x-w/2-gap,y-h/2-gap),(x+w/2+gap,y-h/2-gap),
         (x-w/2-gap,y+h/2+gap),(x+w/2+gap,y+h/2+gap),
     ]
-    approaches=[p for p in approaches
-                if math.hypot(p[0]-C,p[1]-C)<=RI-2
-                and clear_segment(p,end_from(p))]
+    # Visibility routing is governed by obstacle clearance, not by an artificial
+    # inner-circle boundary. Valid routes may need to skirt the outside corner of
+    # a label before returning to the destination perimeter.
+    approaches=[p for p in approaches if clear_segment(p,end_from(p))]
     if not approaches:
         return None
 
@@ -149,8 +150,6 @@ def smart_route(anchor,target_box,mode,obstacles):
             (xmin,(ymin+ymax)/2),(xmax,(ymin+ymax)/2),
         ]
         for p in candidates:
-            if math.hypot(p[0]-C,p[1]-C)>RI-2:
-                continue
             if any(point_in_box(p,q,collision_pad) for q in obstacles):
                 continue
             nodes.append(p)
