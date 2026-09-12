@@ -1,0 +1,43 @@
+name: Generate current Planet Finder
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - tools/generate-current-planet-finder.py
+      - Star-Almanack-Repo/weekly-ephemeris-*.csv
+      - .github/workflows/generate-current-planet-finder.yml
+
+permissions:
+  contents: write
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Determine current ISO week
+        id: iso
+        run: |
+          echo "year=$(date -u +%G)" >> "$GITHUB_OUTPUT"
+          echo "week=$(date -u +%V)" >> "$GITHUB_OUTPUT"
+      - name: Generate Planet Finder
+        run: python tools/generate-current-planet-finder.py "${{ steps.iso.outputs.year }}" "$((10#${{ steps.iso.outputs.week }}))"
+      - name: Commit generated finder
+        run: |
+          YEAR="${{ steps.iso.outputs.year }}"
+          WEEK="${{ steps.iso.outputs.week }}"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "almanack/$YEAR/W$WEEK/finders/planet-finder-greek-symbols.svg" \
+                  "almanack/$YEAR/W$WEEK/finders/planet-finder-latin.svg" \
+                  "almanack/$YEAR/W$WEEK/finders/planet-finder-mixed-learner.svg"
+          if git diff --cached --quiet; then
+            echo "Planet Finder already current."
+            exit 0
+          fi
+          git commit -m "Generate ISO $YEAR-W$WEEK Planet Finder"
+          git pull --rebase origin main
+          git push origin HEAD:main
