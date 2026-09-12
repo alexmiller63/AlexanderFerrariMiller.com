@@ -159,12 +159,26 @@ jobs:
           stage_generated
           if git diff --cached --quiet; then echo 'No Almanack foundation changes'; exit 0; fi
           git commit -m "Populate Almanack foundations for $ALMANACK_YEARS"
-          if git push; then exit 0; fi
-          echo 'main moved during generation; resynchronizing and regenerating once'
-          git fetch origin main
-          git reset --hard origin/main
-          regenerate
-          stage_generated
-          if git diff --cached --quiet; then echo 'No Almanack foundation changes after resynchronization'; exit 0; fi
-          git commit -m "Populate Almanack foundations for $ALMANACK_YEARS"
-          git push
+
+          max_attempts=5
+          attempt=1
+          while true; do
+            if git push; then
+              exit 0
+            fi
+            if (( attempt >= max_attempts )); then
+              echo "Push failed after $max_attempts attempts because main kept moving"
+              exit 1
+            fi
+            echo "main moved during generation; resynchronizing and regenerating (retry $attempt of $((max_attempts - 1)))"
+            git fetch origin main
+            git reset --hard origin/main
+            regenerate
+            stage_generated
+            if git diff --cached --quiet; then
+              echo 'No Almanack foundation changes after resynchronization'
+              exit 0
+            fi
+            git commit -m "Populate Almanack foundations for $ALMANACK_YEARS"
+            attempt=$((attempt + 1))
+          done
