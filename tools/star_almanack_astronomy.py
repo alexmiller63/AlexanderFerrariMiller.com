@@ -96,21 +96,25 @@ def iso_year_bounds(iso_year: int) -> tuple[dt.date, dt.date]:
 
 
 def solar_ra_occurrences_for_iso_year(
-    target: float, iso_year: int
+    target: float, iso_year: int, *, date_mode: str = "nearest"
 ) -> list[tuple[dt.datetime, dt.date]]:
     """Return every occurrence of a solar-RA phase that belongs to an ISO year.
 
-    The physical recurrence is computed independently in neighboring
-    Aries-to-Aries astronomical cycles, then filtered by the rounded date's ISO
-    week-numbering year. This is required because ISO years have 52 or 53 weeks
-    and do not share the astronomical-cycle boundary.
+    ``date_mode='nearest'`` implements the Almanack fixed-sky rule: round the
+    UTC instant to the nearest civil date by adding 12 hours. ``date_mode='utc'``
+    uses the UTC civil date containing the instant, which is the preserved
+    Messier catalog convention. The physical recurrence is always calculated
+    independently in neighboring Aries-to-Aries cycles before the chosen civil
+    date is filtered into the requested ISO week-numbering year.
     """
+    if date_mode not in {"nearest", "utc"}:
+        raise ValueError(f"Unknown solar-RA occurrence date mode: {date_mode!r}")
     first, last = iso_year_bounds(iso_year)
     occurrences: list[tuple[dt.datetime, dt.date]] = []
     seen_instants: set[dt.datetime] = set()
     for cycle_year in (iso_year - 1, iso_year, iso_year + 1):
         instant = best_time_for_solar_ra(target, cycle_year)
-        day = (instant + dt.timedelta(hours=12)).date()
+        day = (instant + dt.timedelta(hours=12)).date() if date_mode == "nearest" else instant.date()
         if first <= day <= last and day.isocalendar().year == iso_year:
             if instant not in seen_instants:
                 occurrences.append((instant, day))
