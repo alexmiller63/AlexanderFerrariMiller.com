@@ -1,0 +1,52 @@
+name: Generate W37 Planet Finders
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/generate-w37-planet-finders.yml'
+      - 'tools/generate_planet_finders.py'
+      - 'tools/populate_ephemeris.py'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: generate-w37-planet-finders
+  cancel-in-progress: false
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Generate W37 only
+        run: python tools/generate_planet_finders.py --year 2026 --week 37
+      - name: Commit W37 finder SVGs
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add \
+            almanack/2026/W37/finders/planet-finder-greek-symbols.svg \
+            almanack/2026/W37/finders/planet-finder-latin.svg \
+            almanack/2026/W37/finders/planet-finder-mixed-learner.svg
+          if git diff --cached --quiet; then
+            echo "W37 Planet Finders already current."
+            exit 0
+          fi
+          git commit -m "Generate collision-safe W37 Planet Finders"
+          for attempt in 1 2 3 4 5; do
+            if git push origin HEAD:main; then exit 0; fi
+            git fetch origin main
+            git rebase origin/main
+            sleep $((attempt * 2))
+          done
+          exit 1
