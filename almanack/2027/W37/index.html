@@ -198,53 +198,57 @@ body:not(:has([data-bayer-mode="latin"][aria-pressed="true"])) .notation-item::f
 .ephemeris-visibility .text-symbol { font-size:3em; line-height:.7; vertical-align:-.2em; }
 .legend-explanation { white-space:normal; }
 
-/* Extended ephemerides always use one four-column grid.  Width belongs only to
-   actual four-column cells; row-spanning headers such as Observing must keep
-   their natural colspan width. */
-table.extended-ephemeris {
-  display:table;
-  width:100%;
-  table-layout:fixed;
+/* Ephemeris presentation layer: a clean CSS Grid, independent of the browser's
+   table-width algorithm.  The semantic table markup remains intact. */
+table.ephemeris {
+  display:grid !important;
+  grid-template-columns:repeat(7,minmax(5.75rem,1fr));
+  width:100% !important;
+  min-width:0 !important;
+  table-layout:auto !important;
+  overflow-x:auto !important;
+  overflow-y:hidden !important;
+  -webkit-overflow-scrolling:touch;
 }
-table.extended-ephemeris th,
-table.extended-ephemeris td {
-  min-width:0;
+table.ephemeris.extended-ephemeris {
+  grid-template-columns:repeat(4,minmax(4.75rem,1fr));
+}
+table.ephemeris thead,
+table.ephemeris tbody,
+table.ephemeris tr {
+  display:contents;
+}
+table.ephemeris th,
+table.ephemeris td {
+  width:auto !important;
+  min-width:0 !important;
+  padding:.7rem .55rem !important;
   text-align:center;
-}
-table.extended-ephemeris thead th,
-table.extended-ephemeris tbody td {
-  width:25%;
-}
-table.extended-ephemeris th {
-  overflow-wrap:anywhere;
-}
-table.extended-ephemeris td,
-table.extended-ephemeris small {
   white-space:nowrap;
+  overflow-wrap:normal;
+  word-break:normal;
 }
+table.ephemeris thead th {
+  align-self:stretch;
+}
+table.ephemeris .ephemeris-visibility-label th {
+  grid-column:1 / -1;
+  width:auto !important;
+  white-space:normal;
+}
+table.ephemeris small { white-space:nowrap; }
+
 @media (max-width:760px) {
-  table.extended-ephemeris {
-    display:table !important;
-    width:100% !important;
-    table-layout:fixed !important;
-    overflow:visible !important;
+  table.ephemeris {
+    font-size:.86rem !important;
+    grid-template-columns:repeat(7,minmax(5.5rem,1fr));
   }
-  table.extended-ephemeris th,
-  table.extended-ephemeris td {
-    min-width:0 !important;
-    padding:.55rem .25rem !important;
+  table.ephemeris.extended-ephemeris {
+    grid-template-columns:repeat(4,minmax(4.6rem,1fr));
   }
-  table.extended-ephemeris thead th,
-  table.extended-ephemeris tbody td {
-    width:25% !important;
-  }
-  table.extended-ephemeris th { font-size:.78rem; }
-  table.extended-ephemeris td { font-size:.78rem; }
-  table.extended-ephemeris .ephemeris-symbol { font-size:1.55em; }
-  table.extended-ephemeris .visibility-glyph {
-    max-width:100%;
-    height:2.4em !important;
-    object-fit:contain;
+  table.ephemeris th,
+  table.ephemeris td {
+    padding:.55rem .35rem !important;
   }
 }
 </style></head><body><header><div class="wrap"><div class="brand"><a href="../../2026/">Star Almanack</a></div><div class="subtitle">Alexander Ferrari Miller</div></div></header><main class="wrap"><nav class="weeknav sitenav"><a href="/star-almanack/">Almanack Home</a><a href="/projects.html">All Projects</a><a href="../../../index.html">Main Site</a></nav><nav class="yearnav"><a href="../../2026/">← 2026</a><a href="../">2027</a><span class="nav-spacer" aria-hidden="true">—</span></nav><nav class="weeknav week-position" aria-label="Week navigation"><a href="../W36/">← ISO 2027-W36</a><span aria-current="page">ISO 2027-W37</span><a href="../W38/">ISO 2027-W38 →</a></nav><section class="placeholder"><h1>ISO week 37 2027</h1><p class="placeholder-note">This week is currently in preparation and will be published as part of the Star Almanack.</p><p><strong>Week begins:</strong> Monday, September 13, 2027</p></section><div class="bayer-toggle-wrap section-notation-toggle"><div class="bayer-toggle" role="group" aria-label="Astronomical notation"><span class="bayer-toggle-label">Notation:</span><button type="button" data-bayer-mode="greek" aria-pressed="true">Greek/Symbols</button><button type="button" data-bayer-mode="latin" aria-pressed="false">Latin</button><button type="button" data-bayer-mode="mixed" data-legacy-label="Mixed · Learner" aria-pressed="false">Mixed Learner</button></div></div><h3>Calendar</h3><table class="calendar"><thead><tr><th>Date</th><th>Zodiac day</th><th>Events</th></tr></thead><tbody><tr data-date="2027-09-13"><td data-date="2027-09-13">Mon, Sep 13, 2027</td><td data-zodiac-sign="Virgo" data-zodiac-day="22"><span class="zodiac-glyph">♍</span> 22</td><td>Sadr (<span class="greek-letter">γ</span> Cyg) — <span class="visibility-magnitude"><img class="visibility-glyph" src="../../../assets/almanack/visibility-glyphs/masters/eye.svg" alt="Naked eye" aria-label="Naked eye"> V 2</span> — Northern Summer</td></tr><tr data-date="2027-09-14"><td data-date="2027-09-14">Tue, Sep 14, 2027</td><td data-zodiac-sign="Virgo" data-zodiac-day="23"><span class="zodiac-glyph">♍</span> 23</td><td>Peacock (<span class="greek-letter">α</span> Pav) — <span class="visibility-magnitude"><img class="visibility-glyph" src="../../../assets/almanack/visibility-glyphs/masters/eye.svg" alt="Naked eye" aria-label="Naked eye"> V 2</span> — Southern Summer</td></tr><tr data-date="2027-09-15"><td data-date="2027-09-15">Wed, Sep 15, 2027</td><td data-zodiac-sign="Virgo" data-zodiac-day="24"><span class="zodiac-glyph">♍</span> 24</td><td>🌕 Full Moon · Harvest Moon — 23:03:31 UTC<br>NGC 6939, open cluster in Cep — <span class="visibility-magnitude"><img class="visibility-glyph" src="../../../assets/almanack/visibility-glyphs/masters/telescope.svg" alt="Telescope" aria-label="Telescope"> V 10.1</span> — Finest NGC — Northern Summer</td></tr><tr data-date="2027-09-16"><td data-date="2027-09-16">Thu, Sep 16, 2027</td><td data-zodiac-sign="Virgo" data-zodiac-day="25"><span class="zodiac-glyph">♍</span> 25</td><td>C12, NGC 6946, Fireworks Galaxy; Arp 29, spiral galaxy in Cepheus — <span class="visibility-magnitude"><img class="visibility-glyph" src="../../../assets/almanack/visibility-glyphs/masters/telescope.svg" alt="Telescope" aria-label="Telescope"> V 9.7</span> — Finest NGC — Northern Summer<br>C47, NGC 6934, globular cluster in Delphinus — <span class="visibility-magnitude"><img class="visibility-glyph" src="../../../assets/almanack/visibility-glyphs/masters/telescope.svg" alt="Telescope" aria-label="Telescope"> V 8.9</span> — Tropical Summer<br>NGC 6940, open cluster in Vul — <span class="visibility-magnitude"><img class="visibility-glyph" src="../../../assets/almanack/visibility-glyphs/masters/telescope.svg" alt="Telescope" aria-label="Telescope"> V 7.2</span> — Finest NGC — Northern Summer</td></tr><tr data-date="2027-09-17"><td data-date="2027-09-17">Fri, Sep 17, 2027</td><td data-zodiac-sign="Virgo" data-zodiac-day="26"><span class="zodiac-glyph">♍</span> 26</td><td>Rotanev (<span class="greek-letter">β</span> Del) — <span class="visibility-magnitude"><img class="visibility-glyph" src="../../../assets/almanack/visibility-glyphs/masters/binoculars.svg" alt="Binoculars" aria-label="Binoculars"> V 4</span> — Tropical Summer<br><span class="greek-letter">α</span> Ind — <span class="visibility-magnitude"><img class="visibility-glyph" src="../../../assets/almanack/visibility-glyphs/masters/eye.svg" alt="Naked eye" aria-label="Naked eye"> V 3</span> — Southern Summer<br>Cygnus center — Constellation — <span class="visibility-magnitude"><img class="visibility-glyph" src="../../../assets/almanack/visibility-glyphs/masters/eye.svg" alt="Naked eye" aria-label="Naked eye"> V 3.5</span> — Northern Summer</td></tr><tr data-date="2027-09-18"><td data-date="2027-09-18">Sat, Sep 18, 2027</td><td data-zodiac-sign="Virgo" data-zodiac-day="27"><span class="zodiac-glyph">♍</span> 27</td><td>Deneb (<span class="greek-letter">α</span> Cyg) — <span class="visibility-magnitude"><img class="visibility-glyph" src="../../../assets/almanack/visibility-glyphs/masters/eye.svg" alt="Naked eye" aria-label="Naked eye"> V 1</span> — Northern Summer<br>Sualocin (<span class="greek-letter">α</span> Del) — <span class="visibility-magnitude"><img class="visibility-glyph" src="../../../assets/almanack/visibility-glyphs/masters/binoculars.svg" alt="Binoculars" aria-label="Binoculars"> V 4</span> — Tropical Summer<br>Delphinus center — Constellation — <span class="visibility-magnitude"><img class="visibility-glyph" src="../../../assets/almanack/visibility-glyphs/masters/binoculars.svg" alt="Binoculars" aria-label="Binoculars"> V 4.2</span> — Tropical Summer<br>M72, globular cluster in Aquarius — <span class="visibility-magnitude"><img class="visibility-glyph" src="../../../assets/almanack/visibility-glyphs/masters/telescope.svg" alt="Telescope" aria-label="Telescope"> V 9.3</span> — Tropical Summer</td></tr><tr data-date="2027-09-19"><td data-date="2027-09-19">Sun, Sep 19, 2027</td><td data-zodiac-sign="Virgo" data-zodiac-day="28"><span class="zodiac-glyph">♍</span> 28</td><td><span class="greek-letter">β</span> Pav — <span class="visibility-magnitude"><img class="visibility-glyph" src="../../../assets/almanack/visibility-glyphs/masters/eye.svg" alt="Naked eye" aria-label="Naked eye"> V 3</span> — Southern Summer<br>Aljanah (<span class="greek-letter">ε</span> Cyg) — <span class="visibility-magnitude"><img class="visibility-glyph" src="../../../assets/almanack/visibility-glyphs/masters/eye.svg" alt="Naked eye" aria-label="Naked eye"> V 2</span> — Northern Summer<br>C34, NGC 6960, Western Veil Nebula, supernova remnant in Cygnus — Finest NGC — Northern Summer</td></tr></tbody></table><div class="bayer-toggle-wrap section-notation-toggle"><div class="bayer-toggle" role="group" aria-label="Astronomical notation"><span class="bayer-toggle-label">Notation:</span><button type="button" data-bayer-mode="greek" aria-pressed="true">Greek/Symbols</button><button type="button" data-bayer-mode="latin" aria-pressed="false">Latin</button><button type="button" data-bayer-mode="mixed" data-legacy-label="Mixed · Learner" aria-pressed="false">Mixed Learner</button></div></div><h3>Weekly Solar-System Ephemeris</h3><p><strong>Snapshot:</strong> September 13, 2027 · 00:00 UTC</p><p><strong>Naked Eye</strong></p><table class="ephemeris"><thead><tr><th><span class="ephemeris-symbol">☉&#xfe0e;</span> Sun</th><th><span class="ephemeris-symbol">☽&#xfe0e;</span> Moon</th><th><span class="ephemeris-symbol">☿&#xfe0e;</span> Mercury</th><th><span class="ephemeris-symbol">♀&#xfe0e;</span> Venus</th><th><span class="ephemeris-symbol">♂&#xfe0e;</span> Mars</th><th><span class="ephemeris-symbol">♃&#xfe0e;</span> Jupiter</th><th><span class="ephemeris-symbol">♄&#xfe0e;</span> Saturn</th></tr></thead><tbody><tr><td><span class="ephemeris-symbol">♍&#xfe0e;</span> 20°00′<br><small><span class="greek-letter">β</span> +0°00′</small></td><td><span class="ephemeris-symbol">♒&#xfe0e;</span> 17°18′<br><small><span class="greek-letter">β</span> +0°34′</small></td><td><span class="ephemeris-symbol">♎&#xfe0e;</span> 13°46′<br><small><span class="greek-letter">β</span> −1°14′</small></td><td><span class="ephemeris-symbol">♍&#xfe0e;</span> 28°44′<br><small><span class="greek-letter">β</span> +1°19′</small></td><td><span class="ephemeris-symbol">♏&#xfe0e;</span> 7°13′<br><small><span class="greek-letter">β</span> −0°24′</small></td><td><span class="ephemeris-symbol">♍&#xfe0e;</span> 10°27′<br><small><span class="greek-letter">β</span> +0°56′</small></td><td><span class="ephemeris-symbol">♈&#xfe0e;</span> 26°54′<br><small><span class="greek-letter">β</span> −2°44′</small></td></tr><tr class="ephemeris-visibility-label"><th colspan="7" scope="rowgroup">Observing</th></tr><tr class="ephemeris-visibility" aria-label="Observing"><td><span class="text-symbol" role="img" aria-label="Near Sun — not currently observable" title="Near Sun — not currently observable">☉</span></td><td><img class="visibility-glyph" src="../../../assets/almanack/visibility-glyphs/masters/eye.svg" alt="Naked eye" aria-label="Naked eye"></td><td><img class="visibility-glyph" src="../../../assets/almanack/visibility-glyphs/masters/eye.svg" alt="Naked eye" aria-label="Naked eye"></td><td><span class="text-symbol" role="img" aria-label="Near Sun — not currently observable" title="Near Sun — not currently observable">☉</span></td><td><img class="visibility-glyph" src="../../../assets/almanack/visibility-glyphs/masters/eye.svg" alt="Naked eye" aria-label="Naked eye"></td><td><span class="text-symbol" role="img" aria-label="Near Sun — not currently observable" title="Near Sun — not currently observable">☉</span></td><td><img class="visibility-glyph" src="../../../assets/almanack/visibility-glyphs/masters/eye.svg" alt="Naked eye" aria-label="Naked eye"></td></tr></tbody></table><p><strong>Extended targets:</strong></p><table class="ephemeris extended-ephemeris"><thead><tr><th><span class="ephemeris-symbol">⚳&#xfe0e;</span> Ceres</th><th><span class="ephemeris-symbol">♅&#xfe0e;</span> Uranus</th><th><span class="ephemeris-symbol">♆&#xfe0e;</span> Neptune</th><th><span class="ephemeris-symbol">♇&#xfe0e;</span> Pluto</th></tr></thead><tbody><tr><td><span class="ephemeris-symbol">♍&#xfe0e;</span> 19°35′<br><small><span class="greek-letter">β</span> +7°36′</small></td><td><span class="ephemeris-symbol">♊&#xfe0e;</span> 9°57′<br><small><span class="greek-letter">β</span> −0°06′</small></td><td><span class="ephemeris-symbol">♈&#xfe0e;</span> 5°40′<br><small><span class="greek-letter">β</span> −1°28′</small></td><td><span class="ephemeris-symbol">♒&#xfe0e;</span> 5°01′<br><small><span class="greek-letter">β</span> −4°48′</small></td></tr><tr class="ephemeris-visibility-label"><th colspan="4" scope="rowgroup">Observing</th></tr><tr class="ephemeris-visibility" aria-label="Observing"><td><span class="text-symbol" role="img" aria-label="Near Sun — not currently observable" title="Near Sun — not currently observable">☉</span></td><td><img class="visibility-glyph" src="../../../assets/almanack/visibility-glyphs/masters/binoculars.svg" alt="Binoculars" aria-label="Binoculars"></td><td><img class="visibility-glyph" src="../../../assets/almanack/visibility-glyphs/masters/telescope.svg" alt="Telescope" aria-label="Telescope"></td><td><img class="visibility-glyph" src="../../../assets/almanack/visibility-glyphs/masters/telescope.svg" alt="Telescope" aria-label="Telescope"></td></tr></tbody></table><p class="ephemeris-note"><strong><span class="greek-letter">β</span></strong> = ecliptic latitude (+ north, − south). Observing combines visual magnitude with solar elongation. <span class="text-symbol">☉</span> = Near Sun — not currently observable.</p><div class="bayer-toggle-wrap section-notation-toggle"><div class="bayer-toggle" role="group" aria-label="Astronomical notation"><span class="bayer-toggle-label">Notation:</span><button type="button" data-bayer-mode="greek" aria-pressed="true">Greek/Symbols</button><button type="button" data-bayer-mode="latin" aria-pressed="false">Latin</button><button type="button" data-bayer-mode="mixed" data-legacy-label="Mixed · Learner" aria-pressed="false">Mixed Learner</button></div></div><h3>Planet Finder</h3><div class="planet-finder-block"><figure class="frozen-finder-figure" data-finder-image="greek"><img src="finders/planet-finder-greek-symbols.svg" alt="Planet Finder — Greek / Symbols"><figcaption>Greek / Symbols</figcaption></figure><figure class="frozen-finder-figure" data-finder-image="latin"><img src="finders/planet-finder-latin.svg" alt="Planet Finder — Latin"><figcaption>Latin</figcaption></figure><figure class="frozen-finder-figure" data-finder-image="mixed"><img src="finders/planet-finder-mixed-learner.svg" alt="Planet Finder — Mixed Learner"><figcaption>Mixed Learner</figcaption></figure></div><h3>Sky Notes</h3><div class="sky-note"><h4>Naked eye</h4><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p><h4>Binoculars</h4><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p><h4>Telescope</h4><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p></div><nav class="yearnav"><a href="../../2026/">← 2026</a><span>ISO 2027</span><span></span></nav></main><div class="almanack-bottom-nav-wrap" id="almanack-bottom-nav"><nav class="weeknav sitenav"><a href="/star-almanack/">Almanack Home</a><a href="/projects.html">All Projects</a><a href="../../../index.html">Main Site</a></nav><nav class="yearnav"><a href="../../2026/#almanack-bottom-nav">← 2026</a><a href="../#almanack-bottom-nav">2027</a><span class="nav-spacer" aria-hidden="true">—</span></nav><nav class="weeknav week-position" aria-label="Week navigation"><a href="../W36/#almanack-bottom-nav">← ISO 2027-W36</a><span aria-current="page">ISO 2027-W37</span><a href="../W38/#almanack-bottom-nav">ISO 2027-W38 →</a></nav></div><aside class="notation-legend" aria-label="Astronomical notation legend">

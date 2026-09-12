@@ -184,53 +184,57 @@ body:not(:has([data-bayer-mode="latin"][aria-pressed="true"])) .notation-item::f
 .ephemeris-visibility .text-symbol { font-size:3em; line-height:.7; vertical-align:-.2em; }
 .legend-explanation { white-space:normal; }
 
-/* Extended ephemerides always use one four-column grid.  Width belongs only to
-   actual four-column cells; row-spanning headers such as Observing must keep
-   their natural colspan width. */
-table.extended-ephemeris {
-  display:table;
-  width:100%;
-  table-layout:fixed;
+/* Ephemeris presentation layer: a clean CSS Grid, independent of the browser's
+   table-width algorithm.  The semantic table markup remains intact. */
+table.ephemeris {
+  display:grid !important;
+  grid-template-columns:repeat(7,minmax(5.75rem,1fr));
+  width:100% !important;
+  min-width:0 !important;
+  table-layout:auto !important;
+  overflow-x:auto !important;
+  overflow-y:hidden !important;
+  -webkit-overflow-scrolling:touch;
 }
-table.extended-ephemeris th,
-table.extended-ephemeris td {
-  min-width:0;
+table.ephemeris.extended-ephemeris {
+  grid-template-columns:repeat(4,minmax(4.75rem,1fr));
+}
+table.ephemeris thead,
+table.ephemeris tbody,
+table.ephemeris tr {
+  display:contents;
+}
+table.ephemeris th,
+table.ephemeris td {
+  width:auto !important;
+  min-width:0 !important;
+  padding:.7rem .55rem !important;
   text-align:center;
-}
-table.extended-ephemeris thead th,
-table.extended-ephemeris tbody td {
-  width:25%;
-}
-table.extended-ephemeris th {
-  overflow-wrap:anywhere;
-}
-table.extended-ephemeris td,
-table.extended-ephemeris small {
   white-space:nowrap;
+  overflow-wrap:normal;
+  word-break:normal;
 }
+table.ephemeris thead th {
+  align-self:stretch;
+}
+table.ephemeris .ephemeris-visibility-label th {
+  grid-column:1 / -1;
+  width:auto !important;
+  white-space:normal;
+}
+table.ephemeris small { white-space:nowrap; }
+
 @media (max-width:760px) {
-  table.extended-ephemeris {
-    display:table !important;
-    width:100% !important;
-    table-layout:fixed !important;
-    overflow:visible !important;
+  table.ephemeris {
+    font-size:.86rem !important;
+    grid-template-columns:repeat(7,minmax(5.5rem,1fr));
   }
-  table.extended-ephemeris th,
-  table.extended-ephemeris td {
-    min-width:0 !important;
-    padding:.55rem .25rem !important;
+  table.ephemeris.extended-ephemeris {
+    grid-template-columns:repeat(4,minmax(4.6rem,1fr));
   }
-  table.extended-ephemeris thead th,
-  table.extended-ephemeris tbody td {
-    width:25% !important;
-  }
-  table.extended-ephemeris th { font-size:.78rem; }
-  table.extended-ephemeris td { font-size:.78rem; }
-  table.extended-ephemeris .ephemeris-symbol { font-size:1.55em; }
-  table.extended-ephemeris .visibility-glyph {
-    max-width:100%;
-    height:2.4em !important;
-    object-fit:contain;
+  table.ephemeris th,
+  table.ephemeris td {
+    padding:.55rem .35rem !important;
   }
 }
 </style></head><body><header><div class="wrap"><div class="brand"><a href="/almanack/2026/">Star Almanack</a></div><div class="subtitle">Alexander Ferrari Miller</div></div></header><main class="wrap"><nav class="weeknav sitenav"><a href="/star-almanack/">Almanack Home</a><a href="/projects.html">All Projects</a><a href="../../../index.html">Main Site</a></nav><nav class="yearnav"><a href="../../2025/">← 2025</a><a href="../">2026</a><a href="../../2027/">2027 →</a></nav><nav class="weeknav week-position" aria-label="Week navigation"><a href="../W45/">← ISO 2026-W45</a><span aria-current="page">ISO 2026-W46</span><a href="../W47/">ISO 2026-W47 →</a></nav><h2>ISO 2026-W46</h2>
