@@ -8,7 +8,7 @@ from collections import defaultdict
 from pathlib import Path
 
 from almanack_calendar import ensure_calendar_metadata, get_events, set_events
-from star_almanack_astronomy import apparent_sun_ra_hours,best_visibility,best_visibility_occurrences_for_iso_year,solar_ra_occurrences_for_iso_year
+from star_almanack_astronomy import apparent_sun_ra_hours,best_visibility_occurrences_for_iso_year,solar_ra_occurrences_for_iso_year
 from star_almanack_objects import AlmanackObject,observing_aid_for_magnitude,render_html
 
 ROOT=Path(__file__).resolve().parents[1]; SRC=ROOT/"Star-Almanack-Repo"; PUBLIC=ROOT/"almanack"; SOURCE_SITE=SRC/"site"; DEFAULT_YEARS=(2025,2026,2027)
@@ -34,7 +34,7 @@ def redated_preserving_2026_phase(rows,iso_year):
     out=[]
     for row in rows:
         canonical=dt.datetime.strptime(row["best_instant_utc"],"%Y-%m-%d %H:%M"); target=apparent_sun_ra_hours(canonical)
-        for instant,day in solar_ra_occurrences_for_iso_year(target,iso_year,date_mode="utc"):
+        for instant,day in solar_ra_occurrences_for_iso_year(target,iso_year):
             r=dict(row); r["best_instant_utc"]=instant.strftime("%Y-%m-%d %H:%M"); r["best_date"]=day.isoformat(); r["iso"]=iso_label(day); out.append(r)
     return out
 def write_csv(path,rows):
