@@ -33,3 +33,5 @@ if not new_matches[1].group(0).startswith('<table class="ephemeris"><thead><tr><
 
 PATH.write_text(new, encoding="utf-8")
 print("PASS: changed only table 2 first heading cell to plain Ceres.")
+
+# Trigger KISS workflow run.
