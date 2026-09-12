@@ -152,6 +152,13 @@
     table.style.setProperty('min-width', 'max-content', 'important');
   });
 
+  // Section-specific astronomical-symbol scale: calendar symbols remain at the
+  // canonical 2x size; ephemeris symbols are intentionally quieter at 1.5x.
+  // This is scoped to ephemeris tables and does not alter the legend.
+  const ephemerisGlyphStyle = document.createElement('style');
+  ephemerisGlyphStyle.textContent = 'table.ephemeris .ephemeris-symbol{font-size:1.5em!important}';
+  document.head.append(ephemerisGlyphStyle);
+
   function setMode(mode) {
     document.querySelectorAll('.notation-item').forEach(function (item) {
       item.textContent = item.dataset[mode] || item.dataset.greek || item.textContent;
