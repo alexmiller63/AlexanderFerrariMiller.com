@@ -33,6 +33,7 @@ VISIBILITY_GLYPHS = {
     "naked_eye": '<img class="visibility-glyph" src="/assets/almanack/visibility-glyphs/masters/eye.svg" alt="Naked eye" aria-label="Naked eye">',
     "binoculars": '<img class="visibility-glyph" src="/assets/almanack/visibility-glyphs/masters/binoculars.svg" alt="Binoculars" aria-label="Binoculars">',
     "telescope": '<img class="visibility-glyph" src="/assets/almanack/visibility-glyphs/masters/telescope.svg" alt="Telescope" aria-label="Telescope">',
+    "near_sun": '<span class="text-symbol" role="img" aria-label="Near Sun — not currently observable" title="Near Sun — not currently observable">☉</span>',
 }
 
 
@@ -114,8 +115,10 @@ def beta(latitude):
 
 
 def current_visibility(magnitude, elongation):
-    """Return practical observing aid; solar proximity can suppress visibility entirely."""
-    if magnitude is None or elongation is None or elongation < 20.0:
+    """Return the current observing status from magnitude and solar elongation."""
+    if elongation is not None and elongation < 20.0:
+        return "near_sun"
+    if magnitude is None or elongation is None:
         return None
     if magnitude <= 3.5:
         return "naked_eye"
@@ -133,7 +136,7 @@ def render_ephemeris(monday, values):
     primary = TARGETS[:7]
     extended = TARGETS[7:]
 
-    def table(columns, show_visibility=False):
+    def table(columns, show_visibility=True):
         headers = "".join(f"<th>{display}</th>" for display, _, _ in columns)
         positions = "".join(
             f"<td>{values[key][0]}<br><small>{values[key][1]}</small></td>"
@@ -142,7 +145,7 @@ def render_ephemeris(monday, values):
         rows = "<tr>" + positions + "</tr>"
         if show_visibility:
             rows += (
-                '<tr class="ephemeris-visibility"><th scope="row">Current visibility</th>'
+                '<tr class="ephemeris-visibility"><th scope="row">Observing</th>'
                 + "".join(f"<td>{values[key][2]}</td>" for _, key, _ in columns)
                 + "</tr>"
             )
@@ -160,8 +163,8 @@ def render_ephemeris(monday, values):
         + "<p><strong>Naked Eye</strong></p>"
         + table(primary)
         + "<p><strong>Extended targets:</strong></p>"
-        + table(extended, True)
-        + '<p class="ephemeris-note"><strong>β</strong> = ecliptic latitude (+ north, − south). Current visibility combines visual magnitude with solar elongation; no glyph means not currently observable.</p>'
+        + table(extended)
+        + '<p class="ephemeris-note"><strong>β</strong> = ecliptic latitude (+ north, − south). Observing combines visual magnitude with solar elongation. <span class="text-symbol">☉</span> = Near Sun — not currently observable.</p>'
     )
 
 
