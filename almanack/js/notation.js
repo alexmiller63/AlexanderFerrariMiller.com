@@ -127,6 +127,51 @@
     });
   });
 
+  /* Calendar observing aids participate in the same notation mode as Bayer and
+     zodiac notation. Greek/Symbols keeps the pictogram, Latin shows the plain
+     name, and Mixed Learner shows both. A pair of adjacent telescope glyphs is
+     treated as one semantic observing aid: Substantial telescope. */
+  document.querySelectorAll('table.calendar .visibility-magnitude').forEach(function (visibility) {
+    const images = Array.from(visibility.querySelectorAll('img.visibility-glyph'));
+    let index = 0;
+    while (index < images.length) {
+      const image = images[index];
+      if (!image.isConnected) { index += 1; continue; }
+      const source = image.getAttribute('src') || '';
+      const isTelescope = /telescope\.svg(?:$|[?#])/.test(source);
+      const next = images[index + 1];
+      const nextSource = next ? (next.getAttribute('src') || '') : '';
+      const substantial = isTelescope && next && next.isConnected && /telescope\.svg(?:$|[?#])/.test(nextSource);
+
+      let label = 'Observing aid';
+      if (substantial) label = 'Substantial telescope';
+      else if (/eye\.svg(?:$|[?#])/.test(source)) label = 'Naked eye';
+      else if (/binoculars\.svg(?:$|[?#])/.test(source)) label = 'Binoculars';
+      else if (isTelescope) label = 'Telescope';
+      else { index += 1; continue; }
+
+      const wrapper = document.createElement('span');
+      wrapper.className = 'observing-aid-notation';
+      wrapper.dataset.label = label;
+      wrapper.style.whiteSpace = 'nowrap';
+
+      const symbol = document.createElement('span');
+      symbol.className = 'observing-aid-symbol';
+      image.replaceWith(wrapper);
+      symbol.append(image);
+      if (substantial) {
+        symbol.append(next);
+        index += 1;
+      }
+
+      const word = document.createElement('span');
+      word.className = 'observing-aid-word';
+      word.textContent = label;
+      wrapper.append(symbol, word);
+      index += 1;
+    }
+  });
+
   document.querySelectorAll('table.calendar tbody td:nth-child(2)').forEach(function (cell) {
     const text = cell.textContent.trim();
     const match = text.match(/^([^\d]*?)(\d+)$/);
@@ -147,6 +192,14 @@
   function setMode(mode) {
     document.querySelectorAll('.notation-item').forEach(function (item) {
       item.textContent = item.dataset[mode] || item.dataset.greek || item.textContent;
+    });
+    document.querySelectorAll('.observing-aid-notation').forEach(function (item) {
+      const symbol = item.querySelector('.observing-aid-symbol');
+      const word = item.querySelector('.observing-aid-word');
+      if (!symbol || !word) return;
+      symbol.hidden = mode === 'latin';
+      word.hidden = mode === 'greek';
+      item.classList.toggle('is-mixed', mode === 'mixed');
     });
     buttons.forEach(function (button) {
       button.setAttribute('aria-pressed', button.dataset.bayerMode === mode ? 'true' : 'false');
