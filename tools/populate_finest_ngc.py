@@ -6,10 +6,11 @@ from collections import defaultdict
 from pathlib import Path
 from almanack_calendar import ensure_calendar_metadata,get_events,set_events
 from star_almanack_astronomy import best_visibility_occurrences_for_iso_year,declination_band,season_for
+from star_almanack_objects import HTML_AID, ObservingAid
 ROOT=Path(__file__).resolve().parents[1]; SRC=ROOT/"Star-Almanack-Repo"; PUBLIC=ROOT/"almanack"; SOURCE_SITE=SRC/"site"; CATALOG=SRC/"finest-ngc-catalog.csv"; CALDWELL=SRC/"finest-ngc-caldwell-overlap.csv"
 CONSTELLATIONS={"And":"Andromeda","Aqr":"Aquarius","Ari":"Aries","Aur":"Auriga","Boo":"Boötes","CMa":"Canis Major","Cam":"Camelopardalis","Cas":"Cassiopeia","Cet":"Cetus","Com":"Coma Berenices","Crv":"Corvus","CVn":"Canes Venatici","Cyg":"Cygnus","Dra":"Draco","Eri":"Eridanus","Gem":"Gemini","Her":"Hercules","Hya":"Hydra","Leo":"Leo","LMi":"Leo Minor","Mon":"Monoceros","Ori":"Orion","Peg":"Pegasus","Per":"Perseus","Pup":"Puppis","Scl":"Sculptor","Sex":"Sextans","Sgr":"Sagittarius","Tau":"Taurus","UMa":"Ursa Major","Vir":"Virgo"}
 TYPE_LABELS={"OC":"open cluster","GC":"globular cluster","PN":"planetary nebula","EN":"emission nebula","RN":"reflection nebula","E/RN":"emission/reflection nebula","Gal":"galaxy"}
-TELESCOPE_GLYPH='<img class="visibility-glyph" src="/assets/almanack/visibility-glyphs/masters/telescope.svg" alt="Telescope" aria-label="Telescope" style="height:1.15em;width:auto;vertical-align:-.18em">'
+TELESCOPE_GLYPH=HTML_AID[ObservingAid.TELESCOPE]
 def iso_label(day):y,w,wd=day.isocalendar(); return f"{y}-W{w:02d}-{wd}"
 def years_present():
  years=set()
