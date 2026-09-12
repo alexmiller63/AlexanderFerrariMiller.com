@@ -47,16 +47,17 @@ def load_visibility(year):
  if len(grouped)!=110: raise RuntimeError(f"Expected 110 Messier IDs for {year}, found {len(grouped)}")
  by_id={}
  for designation,candidates in grouped.items():
-  # ISO week-years can include a few days from the adjacent civil year.  A
-  # near-boundary visibility date may therefore appear twice in one generated
-  # ISO-year file (for example M45 on 2026-01-01 and again on 2027-01-01 in
-  # ISO 2026-W53).  The Almanack publishes one annual catalog event, so select
-  # the candidate whose civil year is the requested Almanack year rather than
-  # silently letting the last CSV row win.
+  # A single date on an adjacent civil year is valid when it belongs to this
+  # ISO week-year (for example 2024-12-31 in ISO 2025-W01).  Only when there
+  # are multiple annual candidates do we need to disambiguate; then prefer
+  # the occurrence in the matching civil year.
+  if len(candidates)==1:
+   by_id[designation]=candidates[0]
+   continue
   preferred=[r for r in candidates if dt.date.fromisoformat(r["best_date"]).year==year]
   if len(preferred)!=1:
    dates=", ".join(r.get("best_date","") for r in candidates)
-   raise RuntimeError(f"Expected exactly one civil-{year} visibility date for {designation}; found {len(preferred)} among [{dates}]")
+   raise RuntimeError(f"Could not select one canonical visibility date for {designation} in ISO {year}; matching-civil-year={len(preferred)} among [{dates}]")
   by_id[designation]=preferred[0]
  return by_id
 def label(record,day,asterism_ids):
