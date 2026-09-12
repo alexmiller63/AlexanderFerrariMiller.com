@@ -18,6 +18,7 @@ on:
       - 'tools/populate_calendar.py'
       - 'tools/populate_meteor_showers.py'
       - 'tools/populate_ephemeris.py'
+      - 'tools/generate-current-planet-finder.py'
       - 'tools/wire_2026_eclipses.py'
       - 'tools/wire_ephemeris_notation.py'
       - 'tools/wire_week_navigation.py'
@@ -81,6 +82,17 @@ jobs:
         run: python tools/populate_meteor_showers.py $ALMANACK_YEARS
       - name: Populate weekly Solar-System ephemerides
         run: python tools/populate_ephemeris.py $ALMANACK_YEARS
+      - name: Generate current Planet Finder
+        run: |
+          read current_year current_week < <(python - <<'PY'
+          from datetime import datetime, timezone
+          iso = datetime.now(timezone.utc).date().isocalendar()
+          print(iso.year, iso.week)
+          PY
+          )
+          if [[ " $ALMANACK_YEARS " == *" $current_year "* ]]; then
+            python tools/generate-current-planet-finder.py "$current_year" "$current_week"
+          fi
       - name: Wire Solar-System ephemeris notation controls
         run: python tools/wire_ephemeris_notation.py $ALMANACK_YEARS
       - name: Populate fixed-sky visibility events
@@ -117,6 +129,17 @@ jobs:
               Star-Almanack-Repo/expanded-bayer-stars.csv \
               /tmp/expanded-bayer-visibility-2026-regression.csv
           }
+          generate_current_planet_finder() {
+            read current_year current_week < <(python - <<'PY'
+          from datetime import datetime, timezone
+          iso = datetime.now(timezone.utc).date().isocalendar()
+          print(iso.year, iso.week)
+          PY
+            )
+            if [[ " $ALMANACK_YEARS " == *" $current_year "* ]]; then
+              python tools/generate-current-planet-finder.py "$current_year" "$current_week"
+            fi
+          }
           stage_generated() {
             for year in $ALMANACK_YEARS; do
               git add \
@@ -142,6 +165,7 @@ jobs:
             if [[ " $ALMANACK_YEARS " == *" 2026 "* ]]; then python tools/wire_2026_eclipses.py; fi
             python tools/populate_meteor_showers.py $ALMANACK_YEARS
             python tools/populate_ephemeris.py $ALMANACK_YEARS
+            generate_current_planet_finder
             python tools/wire_ephemeris_notation.py $ALMANACK_YEARS
             python tools/populate_fixed_sky.py $ALMANACK_YEARS
             python tools/standardize_messier_calendar.py $ALMANACK_YEARS
