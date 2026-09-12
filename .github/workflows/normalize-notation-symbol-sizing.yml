@@ -1,0 +1,88 @@
+name: Normalize notation symbol sizing
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/normalize-notation-symbol-sizing.yml
+
+permissions:
+  contents: write
+
+jobs:
+  normalize:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Fix semantic notation sizing at the source
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          legend = Path('tools/wire_almanack_legend.py')
+          text = legend.read_text(encoding='utf-8')
+
+          old = '''body:not(:has([data-bayer-mode="latin"][aria-pressed="true"])) .calendar-notation-item::first-letter,
+          body:not(:has([data-bayer-mode="latin"][aria-pressed="true"])) .notation-item::first-letter {
+            font-family:'Apple Symbols','Arial Unicode MS','Segoe UI Symbol','Noto Sans Symbols 2',serif;
+            font-size:2em;
+            line-height:.75;
+          }
+          body:not(:has([data-bayer-mode="latin"][aria-pressed="true"])) .ephemeris-notation-item::first-letter {
+            font-family:'Apple Symbols','Arial Unicode MS','Segoe UI Symbol','Noto Sans Symbols 2',serif;
+            font-size:1.5em;
+            line-height:.75;
+          }
+          '''
+          if old not in text:
+              raise SystemExit('Expected legacy ::first-letter sizing block not found')
+          new = '''.calendar-symbol {
+            display:inline-block;
+            font-family:'Apple Symbols','Arial Unicode MS','Segoe UI Symbol','Noto Sans Symbols 2',serif;
+            font-variant-emoji:text;
+            color:currentColor;
+            -webkit-text-fill-color:currentColor;
+            font-size:2em;
+            line-height:.75;
+            vertical-align:-.12em;
+          }
+          '''
+          text = text.replace(old, new, 1)
+          legend.write_text(text, encoding='utf-8')
+
+          notation = Path('tools/wire_ephemeris_notation.py')
+          text = notation.read_text(encoding='utf-8')
+
+          old_item = "  function item(el,g,l,m,klass){el.classList.add(klass);el.dataset.greek=g;el.dataset.latin=l;el.dataset.mixed=m;}"
+          new_item = "  function item(el,g,l,m,klass){el.classList.add(klass);if(klass==='calendar-notation-item')el.classList.remove('zodiac-glyph','greek-letter');if(klass==='ephemeris-notation-item')el.classList.remove('ephemeris-symbol','zodiac-glyph','greek-letter');el.dataset.greek=g;el.dataset.latin=l;el.dataset.mixed=m;}"
+          if old_item not in text:
+              raise SystemExit('Expected item() helper not found')
+          text = text.replace(old_item, new_item, 1)
+
+          old_mode = "  function setMode(mode){prepareCalendar();prepareObservingAids();prepareEphemeris();document.querySelectorAll('.calendar-notation-item,.ephemeris-notation-item').forEach(function(el){el.textContent=el.dataset[mode]||el.dataset.greek;});setObservingMode(mode);document.querySelectorAll('[data-bayer-mode]').forEach(function(b){b.setAttribute('aria-pressed',b.dataset.bayerMode===mode?'true':'false');});setFinder(mode);try{localStorage.setItem('star-almanack-bayer-mode',mode)}catch(_){}}"
+          new_mode = "  function renderNotation(el,value,mode){el.textContent='';if(mode==='latin'){el.textContent=value;return;}const m=value.match(/^([αβγδεζηθικλμνξοπρστυφχψω♈♉♊♋♌♍♎♏♐♑♒♓☉☽☿♀♂♃♄♅♆⚳♇])(\\ufe0e)?(.*)$/u);if(!m){el.textContent=value;return;}const symbol=document.createElement('span');symbol.className=el.classList.contains('ephemeris-notation-item')?'ephemeris-symbol':'calendar-symbol';symbol.textContent=m[1]+(m[2]||'');el.append(symbol);if(m[3])el.append(document.createTextNode(m[3]));}\n  function setMode(mode){prepareCalendar();prepareObservingAids();prepareEphemeris();document.querySelectorAll('.calendar-notation-item,.ephemeris-notation-item').forEach(function(el){renderNotation(el,el.dataset[mode]||el.dataset.greek,mode);});setObservingMode(mode);document.querySelectorAll('[data-bayer-mode]').forEach(function(b){b.setAttribute('aria-pressed',b.dataset.bayerMode===mode?'true':'false');});setFinder(mode);try{localStorage.setItem('star-almanack-bayer-mode',mode)}catch(_){}}"
+          if old_mode not in text:
+              raise SystemExit('Expected legacy setMode() not found')
+          text = text.replace(old_mode, new_mode, 1)
+          notation.write_text(text, encoding='utf-8')
+          PY
+
+      - name: Regenerate notation wiring and canonical sizing
+        run: |
+          python tools/wire_ephemeris_notation.py 2025 2026 2027
+          python tools/wire_almanack_legend.py 2025 2026 2027
+
+      - name: Commit normalized sizing
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add tools/wire_ephemeris_notation.py tools/wire_almanack_legend.py almanack/2025 almanack/2026 almanack/2027 Star-Almanack-Repo/site/2025 Star-Almanack-Repo/site/2026 Star-Almanack-Repo/site/2027
+          if git diff --cached --quiet; then
+            echo 'No notation sizing changes needed.'
+            exit 0
+          fi
+          git commit -m 'Normalize notation symbol sizing semantically'
+          git push
