@@ -302,7 +302,7 @@ def page_for_date(root: Path, day: dt.date) -> Path:
 
 
 def row_pattern(day: dt.date) -> re.Pattern[str]:
-    date_text = day.strftime("%a, %b %d, %Y")
+    date_text = f"{day:%a, %b} {day.day}, {day.year}"
     return re.compile(rf"(<tr><td>{re.escape(date_text)}</td><td>.*?</td><td>)(.*?)(</td></tr>)")
 
 
