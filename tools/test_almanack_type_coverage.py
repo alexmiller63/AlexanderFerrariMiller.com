@@ -57,6 +57,26 @@ def build_cases():
  Case('Pleiades asterism identity',messier_week,'Pleiades M45 says also an asterism inline.',('M45','Pleiades','also an asterism'),(('Pleiades','also an asterism'),)),
  Case('Hyades asterism identity',hyades_week,'Hyades C41 says also an asterism inline.',('C41','Hyades','also an asterism'),(('Hyades','also an asterism'),)),
  ]
+def extended_ephemeris_contract():
+ html=html_for('W01'); reasons=[]
+ match=re.search(r'<table class="ephemeris extended-ephemeris">(.*?)</table>',html,re.S)
+ if not match:return ['missing explicit extended-ephemeris table class']
+ table=match.group(1)
+ head=re.search(r'<thead><tr>(.*?)</tr></thead>',table,re.S)
+ first_row=re.search(r'<tbody><tr>(.*?)</tr>',table,re.S)
+ observing=re.search(r'<tr class="ephemeris-visibility"[^>]*>(.*?)</tr>',table,re.S)
+ if not head or head.group(1).count('<th')!=4:reasons.append('extended header is not exactly four columns')
+ if not first_row or first_row.group(1).count('<td')!=4:reasons.append('extended position row is not exactly four columns')
+ if 'colspan="4"' not in table:reasons.append('Observing rowgroup does not span exactly four columns')
+ if not observing or observing.group(1).count('<td')!=4:reasons.append('extended observing row is not exactly four columns')
+ if 'table.extended-ephemeris' not in html:reasons.append('fixed-grid extended-ephemeris CSS is missing')
+ return reasons
+def glyph_path_contract():
+ bad=[]
+ for page in sorted(SITE.glob('W??/index.html')):
+  html=page.read_text(encoding='utf-8')
+  if 'src="/assets/almanack/visibility-glyphs/masters/' in html:bad.append(page.parent.name)
+ return [f'root-absolute observing glyph paths remain in: {", ".join(bad)}'] if bad else []
 def run():
  cases=build_cases(); passed=failed=0
  print('Star Almanack Type Coverage Regression'); print('='*40)
@@ -72,12 +92,21 @@ def run():
   else:passed+=1; status='PASS'
   print(f'{i:02d}. {status} — {case.name}\n    {url}\n    Expected: {case.expected}')
   for reason in reasons:print(f'    - {reason}')
+ for name,reasons in (
+  ('mobile extended-ephemeris structure',extended_ephemeris_contract()),
+  ('portable observing-glyph paths',glyph_path_contract()),
+ ):
+  if reasons:
+   failed+=1; print(f'CONTRACT FAIL — {name}')
+   for reason in reasons:print(f'    - {reason}')
+  else:
+   passed+=1; print(f'CONTRACT PASS — {name}')
  legend=(ROOT/'_includes'/'almanack-notation-legend.html').read_text(encoding='utf-8')
  required=('eye.svg','binoculars.svg','telescope.svg','meteor-shower.svg','solar-eclipse.svg','lunar-eclipse.svg','Observing aid','Events')
  missing=[x for x in required if x not in legend]
  if missing:
   failed+=1; print('LEGEND FAIL')
   for x in missing:print(f'    - missing {x!r}')
- print('-'*40); print(f'RESULT: {passed} PASS / {failed} FAIL'); print(f'Concrete sample cases: {len(cases)}')
+ print('-'*40); print(f'RESULT: {passed} PASS / {failed} FAIL'); print(f'Concrete sample cases: {len(cases)} + 2 structural contracts')
  return 1 if failed else 0
 if __name__=='__main__':sys.exit(run())
