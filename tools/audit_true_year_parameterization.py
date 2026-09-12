@@ -221,7 +221,7 @@ def audit_2026_equivalence() -> list[str]:
         for n, row in enumerate(rows, start=2):
             canonical = dt.datetime.strptime(row["best_instant_utc"], "%Y-%m-%d %H:%M")
             target = fixed.apparent_sun_ra_hours(canonical)
-            occurrences = fixed.solar_ra_occurrences_for_iso_year(target, 2026)
+            occurrences = fixed.solar_ra_occurrences_for_iso_year(target, 2026, date_mode="nearest")
             selected = canonical_occurrence(occurrences, row)
             if selected is None:
                 failures.append(
