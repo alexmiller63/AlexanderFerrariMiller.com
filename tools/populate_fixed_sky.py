@@ -34,7 +34,7 @@ def redated_preserving_2026_phase(rows,iso_year):
     out=[]
     for row in rows:
         canonical=dt.datetime.strptime(row["best_instant_utc"],"%Y-%m-%d %H:%M"); target=apparent_sun_ra_hours(canonical)
-        for instant,day in solar_ra_occurrences_for_iso_year(target,iso_year):
+        for instant,day in solar_ra_occurrences_for_iso_year(target,iso_year,date_mode="utc"):
             r=dict(row); r["best_instant_utc"]=instant.strftime("%Y-%m-%d %H:%M"); r["best_date"]=day.isoformat(); r["iso"]=iso_label(day); out.append(r)
     return out
 def write_csv(path,rows):
