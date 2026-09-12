@@ -17,9 +17,87 @@ def ov(a,b,p=12):
     ax,ay,aw,ah=a; bx,by,bw,bh=b
     return abs(ax-bx)<(aw+bw)/2+p and abs(ay-by)<(ah+bh)/2+p
 
+def point_in_box(p,box,pad=0):
+    x,y=p; bx,by,bw,bh=box
+    return bx-bw/2-pad <= x <= bx+bw/2+pad and by-bh/2-pad <= y <= by+bh/2+pad
+
+def seg_hits_box(a,b,box,pad=8):
+    """Return True when segment a-b enters an axis-aligned label box."""
+    x1,y1=a; x2,y2=b
+    bx,by,bw,bh=box
+    xmin=bx-bw/2-pad; xmax=bx+bw/2+pad
+    ymin=by-bh/2-pad; ymax=by+bh/2+pad
+    dx=x2-x1; dy=y2-y1
+    t0=0.0; t1=1.0
+    for p,q in ((-dx,x1-xmin),(dx,xmax-x1),(-dy,y1-ymin),(dy,ymax-y1)):
+        if abs(p) < 1e-9:
+            if q < 0: return False
+            continue
+        r=q/p
+        if p < 0:
+            if r > t1: return False
+            if r > t0: t0=r
+        else:
+            if r < t0: return False
+            if r < t1: t1=r
+    return t0 <= t1
+
+def box_edge(center,box,toward):
+    """Point on box perimeter reached from center in direction toward."""
+    cx,cy=center; tx,ty=toward; _,_,bw,bh=box
+    dx=tx-cx; dy=ty-cy
+    if abs(dx) < 1e-9 and abs(dy) < 1e-9:
+        return center
+    sx=(bw/2)/abs(dx) if abs(dx) > 1e-9 else float('inf')
+    sy=(bh/2)/abs(dy) if abs(dy) > 1e-9 else float('inf')
+    s=min(sx,sy)
+    return cx+dx*s, cy+dy*s
+
+def route_leader(anchor,target_box,L,r,obstacles):
+    """Route from exact longitude anchor to target label without crossing labels.
+
+    The anchor never moves. Prefer a direct segment; otherwise move inward along
+    the same longitude, then use a tangential dogleg. This preserves the exact
+    longitude reference while routing around occupied label boxes.
+    """
+    tx,ty,_,_=target_box
+    target=(tx,ty)
+
+    def clear(points):
+        for a,b in zip(points,points[1:]):
+            if any(seg_hits_box(a,b,box,10) for box in obstacles):
+                return False
+        return True
+
+    end=box_edge(target,target_box,anchor)
+    direct=[anchor,end]
+    if clear(direct):
+        return direct
+
+    route_radii=[]
+    for rr in (min(RI-55,max(r+55,170)), r, max(r-55,150), max(r-95,130), 180, 150):
+        if rr not in route_radii:
+            route_radii.append(rr)
+
+    theta=math.radians(180+L)
+    tangent=(-math.sin(theta), math.cos(theta))
+    for rr in route_radii:
+        radial=xy(L,rr)
+        for shift in (0,40,-40,70,-70,100,-100,130,-130,160,-160):
+            bend=(radial[0]+shift*tangent[0], radial[1]+shift*tangent[1])
+            end=box_edge(target,target_box,bend)
+            pts=[anchor,bend,end]
+            if clear(pts):
+                return pts
+
+    # Deterministic fallback: preserve the exact anchor and stop at the label
+    # edge even if no collision-free dogleg is available.
+    return direct
+
 def build(mode):
     pos=[]; placed=[]
-    reserved=[(C,C-18,540,46),(C,C+22,690,40),(C,C+57,440,40)]
+    center_reserved=[(C,C-18,540,46),(C,C+22,690,40),(C,C+57,440,40)]
+    reserved=list(center_reserved)
     for i,(_,n) in enumerate(SIGNS):
         x,y=xy(i*30+15,(RI+RO)/2); reserved.append((x,y,170 if n in ('Aries','Cancer') else 130,66 if n in ('Aries','Cancer') else 50))
     slots=[345,290,235,180,400,150]
@@ -47,8 +125,15 @@ def build(mode):
     for i,(sgn,n) in enumerate(SIGNS):
         x,y=xy(i*30+15,(RI+RO)/2); txt=sgn if mode=='symbols' else (n if mode=='latin' else f'{sgn} {n}'); fs=48 if mode=='symbols' else (24 if mode=='latin' else 22); s.append(f'<text x="{x:.1f}" y="{y+10:.1f}" text-anchor="middle" font-size="{fs}">{txt}</text>')
     s.append(f'<text x="250" y="708" text-anchor="end" font-size="20" class="sans">0° Aries</text>')
-    for sym,name,sgn,d,m,L,r,x,y,w,h in pos:
-        ex,ey=xy(L,RI-5); s.append(f'<line x1="{ex:.1f}" y1="{ey:.1f}" x2="{x:.1f}" y2="{y:.1f}" stroke="#777" stroke-width="1.3"/>')
+
+    all_boxes=[(x,y,w,h) for _,_,_,_,_,_,_,x,y,w,h in pos]
+    for idx,(sym,name,sgn,d,m,L,r,x,y,w,h) in enumerate(pos):
+        ex,ey=xy(L,RI-5)
+        target_box=(x,y,w,h)
+        obstacles=center_reserved + [b for j,b in enumerate(all_boxes) if j != idx]
+        route=route_leader((ex,ey),target_box,L,r,obstacles)
+        pts=' '.join(f'{px:.1f},{py:.1f}' for px,py in route)
+        s.append(f'<polyline points="{pts}" fill="none" stroke="#777" stroke-width="1.3" stroke-linejoin="round" stroke-linecap="round"/>')
         if mode=='symbols': s.append(f'<circle cx="{x:.1f}" cy="{y:.1f}" r="29" fill="white" stroke="#111"/><text x="{x:.1f}" y="{y+13:.1f}" text-anchor="middle" font-size="44">{sym}</text>')
         else:
             label=name if mode=='latin' else f'{sym} {name}'; ww=max(100,13*len(name)+26) if mode=='latin' else max(118,12*len(name)+58); s.append(f'<rect x="{x-ww/2:.1f}" y="{y-24:.1f}" width="{ww:.1f}" height="48" rx="10" fill="white" stroke="#111"/><text x="{x:.1f}" y="{y+7:.1f}" text-anchor="middle" font-size="18">{label}</text>')
