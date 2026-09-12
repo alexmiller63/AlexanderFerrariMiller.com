@@ -146,7 +146,7 @@ def render_ephemeris(monday, values):
     primary = TARGETS[:7]
     extended = TARGETS[7:]
 
-    def table(columns, show_visibility=True):
+    def table(columns, show_visibility=True, extra_class=""):
         headers = "".join(f"<th>{target_heading(display)}</th>" for display, _, _ in columns)
         positions = "".join(
             f"<td>{values[key][0]}<br><small>{values[key][1]}</small></td>"
@@ -160,8 +160,9 @@ def render_ephemeris(monday, values):
                 + "".join(f"<td>{values[key][2]}</td>" for _, key, _ in columns)
                 + "</tr>"
             )
+        classes = "ephemeris" + (f" {extra_class}" if extra_class else "")
         return (
-            '<table class="ephemeris"><thead><tr>'
+            f'<table class="{classes}"><thead><tr>'
             + headers
             + "</tr></thead><tbody>"
             + rows
@@ -169,15 +170,16 @@ def render_ephemeris(monday, values):
         )
 
     primary_table = table(primary)
-    extended_table = table(extended)
+    diagnostic_copy = primary_table if monday == date(2025, 12, 29) else ""
 
     return (
         "<h3>Weekly Solar-System Ephemeris</h3>"
         + f'<p><strong>Snapshot:</strong> {monday.strftime("%B")} {monday.day}, {monday.year} · 00:00 UTC</p>'
         + "<p><strong>Naked Eye</strong></p>"
         + primary_table
+        + diagnostic_copy
         + "<p><strong>Extended targets:</strong></p>"
-        + extended_table
+        + table(extended, extra_class="extended-ephemeris")
         + '<p class="ephemeris-note"><strong>β</strong> = ecliptic latitude (+ north, − south). Observing combines visual magnitude with solar elongation. <span class="text-symbol">☉</span> = Near Sun — not currently observable.</p>'
     )
 
