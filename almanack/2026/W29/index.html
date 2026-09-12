@@ -185,10 +185,12 @@ body:not(:has([data-bayer-mode="latin"][aria-pressed="true"])) .notation-item::f
 .legend-explanation { white-space:normal; }
 
 /* Ephemeris presentation layer: a clean CSS Grid, independent of the browser's
-   table-width algorithm.  The semantic table markup remains intact. */
+   table-width algorithm.  Each track takes the width required by its current
+   notation content, then shares any remaining space.  Greek therefore stays
+   compact while Latin and Mixed expand naturally instead of being clipped. */
 table.ephemeris {
   display:grid !important;
-  grid-template-columns:repeat(7,minmax(5.75rem,1fr));
+  grid-template-columns:repeat(7,minmax(max-content,1fr));
   width:100% !important;
   min-width:0 !important;
   table-layout:auto !important;
@@ -197,7 +199,7 @@ table.ephemeris {
   -webkit-overflow-scrolling:touch;
 }
 table.ephemeris.extended-ephemeris {
-  grid-template-columns:repeat(4,minmax(4.75rem,1fr));
+  grid-template-columns:repeat(4,minmax(max-content,1fr));
 }
 table.ephemeris thead,
 table.ephemeris tbody,
@@ -227,10 +229,10 @@ table.ephemeris small { white-space:nowrap; }
 @media (max-width:760px) {
   table.ephemeris {
     font-size:.86rem !important;
-    grid-template-columns:repeat(7,minmax(5.5rem,1fr));
+    grid-template-columns:repeat(7,minmax(max-content,1fr));
   }
   table.ephemeris.extended-ephemeris {
-    grid-template-columns:repeat(4,minmax(4.6rem,1fr));
+    grid-template-columns:repeat(4,minmax(max-content,1fr));
   }
   table.ephemeris th,
   table.ephemeris td {
