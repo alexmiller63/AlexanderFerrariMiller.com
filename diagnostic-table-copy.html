@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Ephemeris Table Copy Diagnostic</title>
+<style>
+:root { color-scheme: light dark; --ink:#202833; --paper:#fffdf8; --page:#eee9df; }
+* { box-sizing:border-box; }
+html { font-size:17px; }
+body { margin:0; font-family:Georgia,'Times New Roman',serif; line-height:1.65; background:var(--page); color:var(--ink); }
+main { max-width:1080px; margin:0 auto; background:var(--paper); min-height:100vh; padding:2rem 2.4rem 3.25rem; }
+table { width:100%; border-collapse:separate; border-spacing:0; margin:1rem 0 2rem; font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; font-size:.93rem; line-height:1.45; border:1px solid #cbd3da; border-radius:.5rem; overflow:hidden; }
+th,td { padding:.7rem .8rem; vertical-align:top; border-right:1px solid #d6dde3; border-bottom:1px solid #d6dde3; }
+th:last-child,td:last-child { border-right:0; }
+tbody tr:last-child td { border-bottom:0; }
+th { background:#e8f0f5; text-align:left; color:#17344d; font-weight:700; }
+.ephemeris-scroll { width:100%; overflow-x:auto; -webkit-overflow-scrolling:touch; margin:1rem 0 2rem; border-radius:.5rem; }
+.ephemeris-scroll table { margin:0; }
+table.ephemeris { display:table; font-size:.9rem; min-width:44rem; }
+table.ephemeris th,table.ephemeris td { text-align:center; white-space:nowrap; }
+table.ephemeris td { padding-top:.8rem; padding-bottom:.8rem; }
+@media(max-width:760px){html{font-size:16px}main{padding:1.35rem 1rem 2.5rem}table.ephemeris{font-size:.86rem}table.ephemeris th,table.ephemeris td{padding-left:.45rem;padding-right:.45rem}}
+@media(prefers-color-scheme:dark){:root{--ink:#dce6ef;--paper:#17212b;--page:#10171f}body{background:var(--page);color:var(--ink)}main{background:var(--paper)}th{background:#223444;color:#eef7ff}th,td,table{border-color:#40505e}}
+</style>
+</head>
+<body><main>
+<h1>Exact ephemeris table copy diagnostic</h1>
+<div class="ephemeris-scroll"><table class="ephemeris"><thead><tr><th>☉</th><th>☽</th><th>☿</th><th>♀</th><th>♂</th><th>♃</th><th>♄</th></tr></thead><tbody><tr><td><span class="zodiac-notation-source">♑&#xfe0e;</span> 7°31′</td><td><span class="zodiac-notation-source">♈&#xfe0e;</span> 22°56′</td><td><span class="zodiac-notation-source">♐&#xfe0e;</span> 24°06′</td><td><span class="zodiac-notation-source">♑&#xfe0e;</span> 5°26′</td><td><span class="zodiac-notation-source">♑&#xfe0e;</span> 10°24′</td><td><span class="zodiac-notation-source">♋&#xfe0e;</span> 21°45′</td><td><span class="zodiac-notation-source">♓&#xfe0e;</span> 26°00′</td></tr></tbody></table></div>
+</main></body></html>
