@@ -146,7 +146,7 @@ def render_ephemeris(monday, values):
     primary = TARGETS[:7]
     extended = TARGETS[7:]
 
-    def table(columns, show_visibility=True):
+    def table(columns, show_visibility=True, extra_class=""):
         headers = "".join(f"<th>{target_heading(display)}</th>" for display, _, _ in columns)
         positions = "".join(
             f"<td>{values[key][0]}<br><small>{values[key][1]}</small></td>"
@@ -160,8 +160,9 @@ def render_ephemeris(monday, values):
                 + "".join(f"<td>{values[key][2]}</td>" for _, key, _ in columns)
                 + "</tr>"
             )
+        classes = "ephemeris" + (f" {extra_class}" if extra_class else "")
         return (
-            '<table class="ephemeris"><thead><tr>'
+            f'<table class="{classes}"><thead><tr>'
             + headers
             + "</tr></thead><tbody>"
             + rows
@@ -174,12 +175,12 @@ def render_ephemeris(monday, values):
         + "<p><strong>Naked Eye</strong></p>"
         + table(primary)
         + "<p><strong>Extended targets:</strong></p>"
-        + table(extended)
+        + table(extended, extra_class="extended-ephemeris")
         + '<p class="ephemeris-note"><strong>β</strong> = ecliptic latitude (+ north, − south). Observing combines visual magnitude with solar elongation. <span class="text-symbol">☉</span> = Near Sun — not currently observable.</p>'
     )
 
 
-EPHEMERIS_TABLE = r'<table(?:\s+class="ephemeris")?>.*?</table>'
+EPHEMERIS_TABLE = r'<table(?:\s+class="[^"]*ephemeris[^"]*")?>.*?</table>'
 EPHEMERIS_BLOCK = re.compile(
     r'<h3>Weekly Solar-System Ephemeris</h3>\s*'
     r'<p><strong>Snapshot:</strong>.*?</p>\s*'
