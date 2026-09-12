@@ -29,6 +29,18 @@ STYLE = """<style id="almanack-legend-css">
 .legend-line { display:flex; flex-wrap:wrap; gap:.45rem 1rem; align-items:center; }
 .legend-item { white-space:nowrap; }
 .text-symbol { font-size:1.05em; font-variant-emoji:text; }
+/* Solar-system body symbols and zodiac-position symbols are deliberately
+   larger than their label/coordinate text, but share one canonical size. */
+.ephemeris-symbol {
+  display:inline-block;
+  font-family:'Apple Symbols','Arial Unicode MS','Segoe UI Symbol','Noto Sans Symbols 2',serif;
+  font-variant-emoji:text;
+  color:currentColor;
+  -webkit-text-fill-color:currentColor;
+  font-size:2em;
+  line-height:.75;
+  vertical-align:-.12em;
+}
 /* One canonical size for every observing/event glyph.  This deliberately
    overrides legacy inline sizes and also prevents intrinsically large SVGs in
    the Extended targets visibility row from rendering oversized. */
