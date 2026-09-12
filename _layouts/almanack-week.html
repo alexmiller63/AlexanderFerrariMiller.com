@@ -4,8 +4,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{{ page.title | default: page.iso_week | escape }} · Star Almanack</title>
-  <link rel="stylesheet" href="{{ '/almanack/css/week.css' | relative_url }}">
-  <link rel="stylesheet" href="{{ '/almanack/css/notation.css' | relative_url }}">
+  <link rel="stylesheet" href="{{ '/almanack/css/week.css' | relative_url }}?v={{ site.github.build_revision | default: site.time | date: '%s' }}">
+  <link rel="stylesheet" href="{{ '/almanack/css/notation.css' | relative_url }}?v={{ site.github.build_revision | default: site.time | date: '%s' }}">
 </head>
 <body>
   {% include almanack-header.html %}
@@ -19,6 +19,6 @@
 
   {% include almanack-notation-legend.html %}
   {% include almanack-footer.html %}
-  <script src="{{ '/almanack/js/notation.js' | relative_url }}"></script>
+  <script src="{{ '/almanack/js/notation.js' | relative_url }}?v={{ site.github.build_revision | default: site.time | date: '%s' }}"></script>
 </body>
 </html>
