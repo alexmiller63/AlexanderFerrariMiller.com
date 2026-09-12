@@ -87,10 +87,9 @@ body:not(:has([data-bayer-mode="latin"][aria-pressed="true"])) .notation-item::f
 .ephemeris-visibility .text-symbol { font-size:3em; line-height:.7; vertical-align:-.2em; }
 .legend-explanation { white-space:normal; }
 
-/* Extended ephemerides always use one four-column grid.  This prevents mobile
-   browsers from independently sizing rows and collapsing the header into a
-   staircase when labels, coordinates, and observing glyphs have different
-   intrinsic widths. */
+/* Extended ephemerides always use one four-column grid.  Width belongs only to
+   actual four-column cells; row-spanning headers such as Observing must keep
+   their natural colspan width. */
 table.extended-ephemeris {
   display:table;
   width:100%;
@@ -98,9 +97,12 @@ table.extended-ephemeris {
 }
 table.extended-ephemeris th,
 table.extended-ephemeris td {
-  width:25%;
   min-width:0;
   text-align:center;
+}
+table.extended-ephemeris thead th,
+table.extended-ephemeris tbody td {
+  width:25%;
 }
 table.extended-ephemeris th {
   overflow-wrap:anywhere;
@@ -118,9 +120,12 @@ table.extended-ephemeris small {
   }
   table.extended-ephemeris th,
   table.extended-ephemeris td {
-    width:25% !important;
     min-width:0 !important;
     padding:.55rem .25rem !important;
+  }
+  table.extended-ephemeris thead th,
+  table.extended-ephemeris tbody td {
+    width:25% !important;
   }
   table.extended-ephemeris th { font-size:.78rem; }
   table.extended-ephemeris td { font-size:.78rem; }
