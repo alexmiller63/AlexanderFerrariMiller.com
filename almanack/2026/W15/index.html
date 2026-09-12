@@ -129,37 +129,8 @@ footer .wrap { padding-top:1.3rem; padding-bottom:1.3rem; opacity:.9; }
 .legend-line { display:flex; flex-wrap:wrap; gap:.45rem 1rem; align-items:center; }
 .legend-item { white-space:nowrap; }
 .text-symbol { font-size:2em; line-height:.75; vertical-align:-.12em; font-variant-emoji:text; }
-/* Calendar and general astronomical symbols stay at 2x normal text size. */
-.zodiac-glyph {
-  display:inline-block;
-  font-family:'Apple Symbols','Arial Unicode MS','Segoe UI Symbol','Noto Sans Symbols 2',serif;
-  font-variant-emoji:text;
-  color:currentColor;
-  -webkit-text-fill-color:currentColor;
-  font-size:2em;
-  line-height:.75;
-  vertical-align:-.12em;
-}
-.greek-letter {
-  display:inline-block;
-  font-size:2em;
-  line-height:.75;
-  vertical-align:-.12em;
-}
-/* Notation items can render either symbols or words. Keep the container at
-   ordinary text size, then enlarge only the leading astronomical symbol when
-   Greek/Symbols or Mixed Learner mode is active. Latin mode therefore never
-   enlarges the first letter of a word such as Capricorn or Beta. */
-.ephemeris-notation-item,
-.calendar-notation-item,
-.notation-item,
-.zodiac-glyph.notation-item {
-  display:inline-block;
-  font-size:1em;
-  line-height:inherit;
-  vertical-align:baseline;
-  font-family:inherit;
-}
+/* Calendar astronomical symbols, including zodiac-day glyphs, are 2x. */
+.zodiac-glyph,
 .calendar-symbol {
   display:inline-block;
   font-family:'Apple Symbols','Arial Unicode MS','Segoe UI Symbol','Noto Sans Symbols 2',serif;
@@ -169,6 +140,26 @@ footer .wrap { padding-top:1.3rem; padding-bottom:1.3rem; opacity:.9; }
   font-size:2em;
   line-height:.75;
   vertical-align:-.12em;
+}
+/* Bayer letters are identifiers, not astronomical glyphs: keep them at text size. */
+.greek-letter {
+  display:inline-block;
+  font-size:1em;
+  line-height:inherit;
+  vertical-align:baseline;
+}
+/* Notation containers stay at ordinary text size. The renderer wraps only true
+   astronomical symbols in .calendar-symbol or .ephemeris-symbol, so Latin words
+   such as Beta and Capricorn can never acquire symbol sizing. */
+.ephemeris-notation-item,
+.calendar-notation-item,
+.notation-item,
+.zodiac-glyph.notation-item {
+  display:inline-block;
+  font-size:1em;
+  line-height:inherit;
+  vertical-align:baseline;
+  font-family:inherit;
 }
 /* Ephemeris astronomical symbols are intentionally quieter at 1.5x. */
 .ephemeris-symbol {
@@ -181,7 +172,7 @@ footer .wrap { padding-top:1.3rem; padding-bottom:1.3rem; opacity:.9; }
   line-height:.75;
   vertical-align:-.12em;
 }
-table.ephemeris .greek-letter { font-size:1.5em; }
+table.ephemeris .greek-letter { font-size:1em; }
 /* Calendar/event observing glyphs retain their canonical size. Ephemeris
    observing glyphs use one absolute section scale so every ephemeris table
    renders them identically regardless of inherited table font sizing. */
