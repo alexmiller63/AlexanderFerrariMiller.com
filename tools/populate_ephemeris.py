@@ -170,7 +170,7 @@ def render_ephemeris(monday, values):
         )
 
     primary_table = table(primary)
-    diagnostic_copy = primary_table if monday == date(2025, 12, 29) else ""
+    diagnostic_copy = table(extended) if monday == date(2025, 12, 29) else ""
 
     return (
         "<h3>Weekly Solar-System Ephemeris</h3>"
