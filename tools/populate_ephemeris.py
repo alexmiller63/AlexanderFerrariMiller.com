@@ -155,7 +155,8 @@ def render_ephemeris(monday, values):
         rows = "<tr>" + positions + "</tr>"
         if show_visibility:
             rows += (
-                '<tr class="ephemeris-visibility"><th scope="row">Observing</th>'
+                f'<tr class="ephemeris-visibility-label"><th colspan="{len(columns)}" scope="rowgroup">Observing</th></tr>'
+                + '<tr class="ephemeris-visibility" aria-label="Observing">'
                 + "".join(f"<td>{values[key][2]}</td>" for _, key, _ in columns)
                 + "</tr>"
             )
