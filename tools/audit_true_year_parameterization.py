@@ -168,6 +168,15 @@ def compare_rows(path: Path, canonical: list[dict[str, str]], generated: list[di
     return failures
 
 
+def canonical_occurrence(occurrences: list[tuple[dt.datetime, dt.date]], row: dict[str, str]) -> tuple[dt.datetime, dt.date] | None:
+    """Select the ISO-year occurrence corresponding to a canonical snapshot row."""
+    canonical_day = dt.date.fromisoformat(row["best_date"][:10])
+    matches = [(instant, day) for instant, day in occurrences if day == canonical_day]
+    if len(matches) == 1:
+        return matches[0]
+    return None
+
+
 def audit_2026_equivalence() -> list[str]:
     """Recompute canonical 2026 placement without writing files."""
     failures: list[str] = []
@@ -184,14 +193,23 @@ def audit_2026_equivalence() -> list[str]:
             continue
         rows = read_rows(path)
         generated = []
-        for row in rows:
-            instant, day = fixed.best_visibility(float(row[ra_column]), 2026)
+        for n, row in enumerate(rows, start=2):
+            occurrences = fixed.best_visibility_occurrences_for_iso_year(float(row[ra_column]), 2026)
+            selected = canonical_occurrence(occurrences, row)
+            if selected is None:
+                failures.append(
+                    f"{path}:{n}: no unique parameterized 2026 occurrence for canonical "
+                    f"{date_column}={row[date_column]!r}"
+                )
+                continue
+            instant, day = selected
             r = dict(row)
             r[instant_column] = instant.strftime("%Y-%m-%d %H:%M")
             r[date_column] = day.isoformat()
             r[iso_column] = fixed.iso_label(day)
             generated.append(r)
-        failures.extend(compare_rows(path, rows, generated, (instant_column, date_column, iso_column)))
+        if len(generated) == len(rows):
+            failures.extend(compare_rows(path, rows, generated, (instant_column, date_column, iso_column)))
         checked += len(rows)
 
     messier_path = SRC / "messier-visibility-2026.csv"
@@ -199,8 +217,26 @@ def audit_2026_equivalence() -> list[str]:
         failures.append(f"missing canonical 2026 snapshot: {messier_path}")
     else:
         rows = read_rows(messier_path)
-        generated = fixed.redated_preserving_2026_phase(rows, 2026)
-        failures.extend(compare_rows(messier_path, rows, generated, ("best_instant_utc", "best_date", "iso")))
+        generated = []
+        for n, row in enumerate(rows, start=2):
+            canonical = dt.datetime.strptime(row["best_instant_utc"], "%Y-%m-%d %H:%M")
+            target = fixed.apparent_sun_ra_hours(canonical)
+            occurrences = fixed.solar_ra_occurrences_for_iso_year(target, 2026)
+            selected = canonical_occurrence(occurrences, row)
+            if selected is None:
+                failures.append(
+                    f"{messier_path}:{n}: no unique parameterized 2026 occurrence for canonical "
+                    f"best_date={row['best_date']!r}"
+                )
+                continue
+            instant, day = selected
+            r = dict(row)
+            r["best_instant_utc"] = instant.strftime("%Y-%m-%d %H:%M")
+            r["best_date"] = day.isoformat()
+            r["iso"] = fixed.iso_label(day)
+            generated.append(r)
+        if len(generated) == len(rows):
+            failures.extend(compare_rows(messier_path, rows, generated, ("best_instant_utc", "best_date", "iso")))
         checked += len(rows)
 
     if not failures:
