@@ -31,16 +31,13 @@ def close_together(html,left,right,radius=1200):
  return right in html[max(0,pos-radius):min(len(html),pos+len(left)+radius)]
 def source_week(path,selector,iso_field='iso'):return week_from_iso(row_for(path,**selector)[iso_field])
 def build_cases():
- # The preserved 2026 source-of-truth tables live at SRC root. Catalogs that are
- # generated for every edition remain under GENERATED. Do not assume a uniform
- # generated/ location: that makes the regression depend on nonexistent copies.
  constellation_week=source_week(SRC/'constellation-observance-2026.csv',{'name':'Andromeda'})
  asterism_week=source_week(SRC/'asterism-geometry-2026.csv',{'asterism':'Great Square of Pegasus'})
- pleiades_week=source_week(SRC/'asterism-geometry-2026.csv',{'asterism':'Pleiades'})
  alpha_week=source_week(SRC/'expanded-bayer-visibility-2026.csv',{'proper':'Achernar'})
  beta_week=source_week(SRC/'expanded-bayer-visibility-2026.csv',{'proper':'Cursa'})
  messier_week=source_week(SRC/'messier-visibility-2026.csv',{'messier':'M45'})
  caldwell_week=source_week(GENERATED/'caldwell-visibility-2026.csv',{'caldwell':'C4'})
+ hyades_week=source_week(GENERATED/'caldwell-visibility-2026.csv',{'caldwell':'C41'})
  finest_week=source_week(GENERATED/'finest-ngc-visibility-2026.csv',{'finest_ngc':'19'})
  return [
  Case('constellation center',constellation_week,'Andromeda center is explicitly a constellation-center event.',('Andromeda','center')),
@@ -57,7 +54,8 @@ def build_cases():
  Case('solar eclipse','W33','Aug 12 total solar eclipse has dedicated solar-eclipse glyph.',('Total solar eclipse','solar-eclipse.svg','greatest eclipse')),
  Case('lunar eclipse','W10','Mar 3 total lunar eclipse has dedicated lunar-eclipse glyph and clear maximum terminology.',('Total lunar eclipse','lunar-eclipse.svg','greatest eclipse')),
  Case('Solar-System ephemeris','W41','Extended targets are ordered Ceres, Uranus, Neptune, Pluto.',('Ceres','Uranus','Neptune','Pluto'),(('Ceres','Uranus'),('Uranus','Neptune'),('Neptune','Pluto'))),
- Case('overlapping semantic identities',pleiades_week,'Pleiades preserves M45 identity and separately appears as an Asterism center.',('Pleiades','M45','Asterism','center'),(('Pleiades','M45'),('Pleiades','Asterism'))),
+ Case('Pleiades asterism identity',messier_week,'Pleiades M45 says also an asterism inline.',('M45','Pleiades','also an asterism'),(('Pleiades','also an asterism'),)),
+ Case('Hyades asterism identity',hyades_week,'Hyades C41 says also an asterism inline.',('C41','Hyades','also an asterism'),(('Hyades','also an asterism'),)),
  ]
 def run():
  cases=build_cases(); passed=failed=0
