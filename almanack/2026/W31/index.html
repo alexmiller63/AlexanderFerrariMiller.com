@@ -159,16 +159,15 @@ footer .wrap { padding-top:1.3rem; padding-bottom:1.3rem; opacity:.9; }
   vertical-align:baseline;
   font-family:inherit;
 }
-body:not(:has([data-bayer-mode="latin"][aria-pressed="true"])) .calendar-notation-item::first-letter,
-body:not(:has([data-bayer-mode="latin"][aria-pressed="true"])) .notation-item::first-letter {
+.calendar-symbol {
+  display:inline-block;
   font-family:'Apple Symbols','Arial Unicode MS','Segoe UI Symbol','Noto Sans Symbols 2',serif;
+  font-variant-emoji:text;
+  color:currentColor;
+  -webkit-text-fill-color:currentColor;
   font-size:2em;
   line-height:.75;
-}
-body:not(:has([data-bayer-mode="latin"][aria-pressed="true"])) .ephemeris-notation-item::first-letter {
-  font-family:'Apple Symbols','Arial Unicode MS','Segoe UI Symbol','Noto Sans Symbols 2',serif;
-  font-size:1.5em;
-  line-height:.75;
+  vertical-align:-.12em;
 }
 /* Ephemeris astronomical symbols are intentionally quieter at 1.5x. */
 .ephemeris-symbol {
@@ -334,7 +333,7 @@ let buttons=document.querySelectorAll('[data-bayer-mode]');function setMode(mode
   const constellations={And:'Andromedae',Ant:'Antliae',Aps:'Apodis',Aqr:'Aquarii',Aql:'Aquilae',Ara:'Arae',Ari:'Arietis',Aur:'Aurigae',Boo:'Bootis',Cae:'Caeli',Cam:'Camelopardalis',Cnc:'Cancri',CVn:'Canum Venaticorum',CMa:'Canis Majoris',CMi:'Canis Minoris',Cap:'Capricorni',Car:'Carinae',Cas:'Cassiopeiae',Cen:'Centauri',Cep:'Cephei',Cet:'Ceti',Cha:'Chamaeleontis',Cir:'Circini',Col:'Columbae',Com:'Comae Berenices',CrA:'Coronae Australis',CrB:'Coronae Borealis',Crv:'Corvi',Crt:'Crateris',Cru:'Crucis',Cyg:'Cygni',Del:'Delphini',Dor:'Doradus',Dra:'Draconis',Equ:'Equulei',Eri:'Eridani',For:'Fornacis',Gem:'Geminorum',Gru:'Gruis',Her:'Herculis',Hor:'Horologii',Hya:'Hydrae',Hyi:'Hydri',Ind:'Indi',Lac:'Lacertae',Leo:'Leonis',LMi:'Leonis Minoris',Lep:'Leporis',Lib:'Librae',Lup:'Lupi',Lyn:'Lyncis',Lyr:'Lyrae',Men:'Mensae',Mic:'Microscopii',Mon:'Monocerotis',Mus:'Muscae',Nor:'Normae',Oct:'Octantis',Oph:'Ophiuchi',Ori:'Orionis',Pav:'Pavonis',Peg:'Pegasi',Per:'Persei',Phe:'Phoenicis',Pic:'Pictoris',Psc:'Piscium',PsA:'Piscis Austrini',Pup:'Puppis',Pyx:'Pyxidis',Ret:'Reticuli',Sge:'Sagittae',Sgr:'Sagittarii',Sco:'Scorpii',Scl:'Sculptoris',Sct:'Scuti',Ser:'Serpentis',Sex:'Sextantis',Tau:'Tauri',Tel:'Telescopii',Tri:'Trianguli',TrA:'Trianguli Australis',Tuc:'Tucanae',UMa:'Ursae Majoris',UMi:'Ursae Minoris',Vel:'Velorum',Vir:'Virginis',Vol:'Volantis',Vul:'Vulpeculae'};
   const observingNames={eye:'Naked eye',binoculars:'Binoculars',telescope:'Telescope'};
   const VS='\ufe0e';
-  function item(el,g,l,m,klass){el.classList.add(klass);el.dataset.greek=g;el.dataset.latin=l;el.dataset.mixed=m;}
+  function item(el,g,l,m,klass){el.classList.add(klass);if(klass==='calendar-notation-item')el.classList.remove('zodiac-glyph','greek-letter');if(klass==='ephemeris-notation-item')el.classList.remove('ephemeris-symbol','zodiac-glyph','greek-letter');el.dataset.greek=g;el.dataset.latin=l;el.dataset.mixed=m;}
   function prepareCalendar(){
     document.querySelectorAll('table.calendar tbody td:nth-child(2) .zodiac-glyph').forEach(function(el){
       if(el.dataset.greek)return;
@@ -406,7 +405,8 @@ let buttons=document.querySelectorAll('[data-bayer-mode]');function setMode(mode
     });
   }
   function setFinder(mode){document.querySelectorAll('[data-finder-image]').forEach(function(f){f.style.display=f.dataset.finderImage===mode?'block':'none'});document.querySelectorAll('.w15-finder-strip [data-finder-mode]').forEach(function(f){f.classList.toggle('is-active',f.dataset.finderMode===mode)});}
-  function setMode(mode){prepareCalendar();prepareObservingAids();prepareEphemeris();document.querySelectorAll('.calendar-notation-item,.ephemeris-notation-item').forEach(function(el){el.textContent=el.dataset[mode]||el.dataset.greek;});setObservingMode(mode);document.querySelectorAll('[data-bayer-mode]').forEach(function(b){b.setAttribute('aria-pressed',b.dataset.bayerMode===mode?'true':'false');});setFinder(mode);try{localStorage.setItem('star-almanack-bayer-mode',mode)}catch(_){}}
+  function renderNotation(el,value,mode){el.textContent='';if(mode==='latin'){el.textContent=value;return;}const m=value.match(/^([αβγδεζηθικλμνξοπρστυφχψω♈♉♊♋♌♍♎♏♐♑♒♓☉☽☿♀♂♃♄♅♆⚳♇])(\ufe0e)?(.*)$/u);if(!m){el.textContent=value;return;}const symbol=document.createElement('span');symbol.className=el.classList.contains('ephemeris-notation-item')?'ephemeris-symbol':'calendar-symbol';symbol.textContent=m[1]+(m[2]||'');el.append(symbol);if(m[3])el.append(document.createTextNode(m[3]));}
+  function setMode(mode){prepareCalendar();prepareObservingAids();prepareEphemeris();document.querySelectorAll('.calendar-notation-item,.ephemeris-notation-item').forEach(function(el){renderNotation(el,el.dataset[mode]||el.dataset.greek,mode);});setObservingMode(mode);document.querySelectorAll('[data-bayer-mode]').forEach(function(b){b.setAttribute('aria-pressed',b.dataset.bayerMode===mode?'true':'false');});setFinder(mode);try{localStorage.setItem('star-almanack-bayer-mode',mode)}catch(_){}}
   document.querySelectorAll('[data-bayer-mode]').forEach(function(button){button.addEventListener('click',function(){setMode(button.dataset.bayerMode);});});let initial='greek';try{const s=localStorage.getItem('star-almanack-bayer-mode');if(s==='greek'||s==='latin'||s==='mixed')initial=s}catch(_){}setMode(initial);
 })();
 </script></body></html>

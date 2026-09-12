@@ -166,16 +166,15 @@ footer .wrap { padding-top:1.3rem; padding-bottom:1.3rem; opacity:.9; }
   vertical-align:baseline;
   font-family:inherit;
 }
-body:not(:has([data-bayer-mode="latin"][aria-pressed="true"])) .calendar-notation-item::first-letter,
-body:not(:has([data-bayer-mode="latin"][aria-pressed="true"])) .notation-item::first-letter {
+.calendar-symbol {
+  display:inline-block;
   font-family:'Apple Symbols','Arial Unicode MS','Segoe UI Symbol','Noto Sans Symbols 2',serif;
+  font-variant-emoji:text;
+  color:currentColor;
+  -webkit-text-fill-color:currentColor;
   font-size:2em;
   line-height:.75;
-}
-body:not(:has([data-bayer-mode="latin"][aria-pressed="true"])) .ephemeris-notation-item::first-letter {
-  font-family:'Apple Symbols','Arial Unicode MS','Segoe UI Symbol','Noto Sans Symbols 2',serif;
-  font-size:1.5em;
-  line-height:.75;
+  vertical-align:-.12em;
 }
 /* Ephemeris astronomical symbols are intentionally quieter at 1.5x. */
 .ephemeris-symbol {
