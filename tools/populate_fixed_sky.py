@@ -24,18 +24,33 @@ def requested_years():
 def iso_label(d):y,w,wd=d.isocalendar(); return f"{y}-W{w:02d}-{wd}"
 def read_csv(name):
     with (SRC/name).open(newline="",encoding="utf-8") as f:return list(csv.DictReader(f))
+def canonical_occurrence(occurrences,year,identity):
+    """Select one annual event when an ISO week-year straddles civil years.
+
+    ISO W01/W52/W53 can include dates from an adjacent civil year, so an annual
+    solar-RA crossing can occur twice inside the same ISO-year page set.  The
+    Almanack catalog contract is one visibility event per object per civil year.
+    """
+    occurrences=list(occurrences)
+    preferred=[pair for pair in occurrences if pair[1].year==year]
+    if len(preferred)!=1:
+        dates=", ".join(day.isoformat() for _,day in occurrences)
+        raise RuntimeError(f"Expected exactly one civil-{year} visibility occurrence for {identity}; found {len(preferred)} among [{dates}]")
+    return preferred[0]
 def redated(rows,iso_year):
     out=[]
     for row in rows:
-        for instant,day in best_visibility_occurrences_for_iso_year(float(row["ra_h"]),iso_year):
-            r=dict(row); r["best_instant_utc"]=instant.strftime("%Y-%m-%d %H:%M"); r["best_date"]=day.isoformat(); r["iso"]=iso_label(day); out.append(r)
+        identity=(row.get("proper") or row.get("bayer") or row.get("messier") or row.get("hyg_id") or "object").strip()
+        instant,day=canonical_occurrence(best_visibility_occurrences_for_iso_year(float(row["ra_h"]),iso_year),iso_year,identity)
+        r=dict(row); r["best_instant_utc"]=instant.strftime("%Y-%m-%d %H:%M"); r["best_date"]=day.isoformat(); r["iso"]=iso_label(day); out.append(r)
     return out
 def redated_preserving_2026_phase(rows,iso_year):
     out=[]
     for row in rows:
         canonical=dt.datetime.strptime(row["best_instant_utc"],"%Y-%m-%d %H:%M"); target=apparent_sun_ra_hours(canonical)
-        for instant,day in solar_ra_occurrences_for_iso_year(target,iso_year,date_mode="nearest"):
-            r=dict(row); r["best_instant_utc"]=instant.strftime("%Y-%m-%d %H:%M"); r["best_date"]=day.isoformat(); r["iso"]=iso_label(day); out.append(r)
+        identity=(row.get("messier") or row.get("proper") or row.get("bayer") or "object").strip()
+        instant,day=canonical_occurrence(solar_ra_occurrences_for_iso_year(target,iso_year,date_mode="nearest"),iso_year,identity)
+        r=dict(row); r["best_instant_utc"]=instant.strftime("%Y-%m-%d %H:%M"); r["best_date"]=day.isoformat(); r["iso"]=iso_label(day); out.append(r)
     return out
 def write_csv(path,rows):
     path.parent.mkdir(parents=True,exist_ok=True)
