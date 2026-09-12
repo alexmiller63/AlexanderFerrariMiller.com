@@ -41,6 +41,16 @@ def week_count(year):
     return date(year, 12, 28).isocalendar().week
 
 
+def symbol_html(glyph):
+    """Render a solar-system or zodiac glyph independently from its label text."""
+    return f'<span class="ephemeris-symbol">{glyph}&#xfe0e;</span>'
+
+
+def target_heading(display):
+    glyph, name = display.split(" ", 1)
+    return f"{symbol_html(glyph)} {name}"
+
+
 def horizons_ephemeris(year, command):
     count = week_count(year)
     first = date.fromisocalendar(year, 1, 1)
@@ -104,7 +114,7 @@ def zodiac(longitude):
     minutes = int(round((longitude % 360) * 60)) % (360 * 60)
     sign, within = divmod(minutes, 1800)
     degree, minute = divmod(within, 60)
-    return f"{SIGNS[sign]} {degree}°{minute:02d}′"
+    return f"{symbol_html(SIGNS[sign])} {degree}°{minute:02d}′"
 
 
 def beta(latitude):
@@ -137,7 +147,7 @@ def render_ephemeris(monday, values):
     extended = TARGETS[7:]
 
     def table(columns, show_visibility=True):
-        headers = "".join(f"<th>{display}</th>" for display, _, _ in columns)
+        headers = "".join(f"<th>{target_heading(display)}</th>" for display, _, _ in columns)
         positions = "".join(
             f"<td>{values[key][0]}<br><small>{values[key][1]}</small></td>"
             for _, key, _ in columns
