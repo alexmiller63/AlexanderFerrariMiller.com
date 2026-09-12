@@ -1,0 +1,99 @@
+name: Fix explicit Almanack notation symbol sizing
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/fix-explicit-notation-symbol-sizing.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Fix canonical notation renderer and sizing
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          js = Path('tools/wire_ephemeris_notation.py')
+          text = js.read_text(encoding='utf-8')
+          old = """  function setMode(mode){prepareCalendar();prepareObservingAids();prepareEphemeris();document.querySelectorAll('.calendar-notation-item,.ephemeris-notation-item').forEach(function(el){el.textContent=el.dataset[mode]||el.dataset.greek;});setObservingMode(mode);document.querySelectorAll('[data-bayer-mode]').forEach(function(b){b.setAttribute('aria-pressed',b.dataset.bayerMode===mode?'true':'false');});setFinder(mode);try{localStorage.setItem('star-almanack-bayer-mode',mode)}catch(_){}}"""
+          new = """  function renderNotation(el,mode){
+            const value=el.dataset[mode]||el.dataset.greek||'';
+            el.textContent='';
+            if(mode==='latin'){el.textContent=value;return;}
+            const m=value.match(/^([αβγδεζηθικλμνξοπρστυφχψω](?:\\d+)?|[☉☽☿♀♂⚳♃♄♅♆♇♈♉♊♋♌♍♎♏♐♑♒♓]\\ufe0e?)(.*)$/u);
+            if(!m){el.textContent=value;return;}
+            const symbol=document.createElement('span');
+            symbol.className=el.classList.contains('ephemeris-notation-item')?'ephemeris-symbol':(m[1].match(/^[α-ω]/u)?'greek-letter':'zodiac-glyph');
+            symbol.textContent=m[1];
+            el.append(symbol,document.createTextNode(m[2]));
+          }
+          function setMode(mode){prepareCalendar();prepareObservingAids();prepareEphemeris();document.querySelectorAll('.calendar-notation-item,.ephemeris-notation-item').forEach(function(el){renderNotation(el,mode);});setObservingMode(mode);document.querySelectorAll('[data-bayer-mode]').forEach(function(b){b.setAttribute('aria-pressed',b.dataset.bayerMode===mode?'true':'false');});setFinder(mode);try{localStorage.setItem('star-almanack-bayer-mode',mode)}catch(_){}}"""
+          if old not in text:
+              raise SystemExit('Canonical setMode block not found')
+          js.write_text(text.replace(old,new,1),encoding='utf-8')
+
+          css = Path('tools/wire_almanack_legend.py')
+          text = css.read_text(encoding='utf-8')
+          old = '''/* Notation items can render either symbols or words. Keep the container at
+   ordinary text size, then enlarge only the leading astronomical symbol when
+   Greek/Symbols or Mixed Learner mode is active. Latin mode therefore never
+   enlarges the first letter of a word such as Capricorn or Beta. */
+.ephemeris-notation-item,
+.calendar-notation-item,
+.notation-item,
+.zodiac-glyph.notation-item {
+  display:inline-block;
+  font-size:1em;
+  line-height:inherit;
+  vertical-align:baseline;
+  font-family:inherit;
+}
+body:not(:has([data-bayer-mode="latin"][aria-pressed="true"])) .calendar-notation-item::first-letter,
+body:not(:has([data-bayer-mode="latin"][aria-pressed="true"])) .notation-item::first-letter {
+  font-family:'Apple Symbols','Arial Unicode MS','Segoe UI Symbol','Noto Sans Symbols 2',serif;
+  font-size:2em;
+  line-height:.75;
+}
+body:not(:has([data-bayer-mode="latin"][aria-pressed="true"])) .ephemeris-notation-item::first-letter {
+  font-family:'Apple Symbols','Arial Unicode MS','Segoe UI Symbol','Noto Sans Symbols 2',serif;
+  font-size:1.5em;
+  line-height:.75;
+}
+'''
+          new = '''/* Notation containers stay at ordinary text size. Astronomical symbols are
+   explicit child spans, so words are never enlarged by first-letter styling. */
+.ephemeris-notation-item,
+.calendar-notation-item,
+.notation-item,
+.zodiac-glyph.notation-item {
+  display:inline-block;
+  font-size:1em;
+  line-height:inherit;
+  vertical-align:baseline;
+  font-family:inherit;
+}
+'''
+          if old not in text:
+              raise SystemExit('Canonical notation CSS block not found')
+          css.write_text(text.replace(old,new,1),encoding='utf-8')
+          PY
+
+          python tools/wire_ephemeris_notation.py 2025 2026 2027
+          python tools/wire_almanack_legend.py 2025 2026 2027
+
+      - name: Commit source and regenerated weeks
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add tools/wire_ephemeris_notation.py tools/wire_almanack_legend.py almanack/2025 almanack/2026 almanack/2027 Star-Almanack-Repo/site/2025 Star-Almanack-Repo/site/2026 Star-Almanack-Repo/site/2027
+          git commit -m 'Render only explicit Almanack symbols at enlarged size'
+          git pull --rebase origin main
+          git push
