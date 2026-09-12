@@ -194,9 +194,9 @@ def smart_route(anchor,target_box,mode,obstacles):
 def route_leader(anchor,target_box,L,mode,obstacles):
     """Route a leader without moving its exact-longitude anchor.
 
-    Prefer a direct line, then inexpensive deterministic doglegs. If those are
-    blocked, build a visibility graph around every label and protected center
-    box and solve for the shortest collision-free route.
+    Prefer a direct line, then the shortest collision-free one-bend dogleg. If
+    those are blocked, build a visibility graph around every label and protected
+    center box and solve for the shortest collision-free route.
     """
     x,y,w,h=target_box
     collision_pad=2 if mode=='symbols' else 10
@@ -208,12 +208,17 @@ def route_leader(anchor,target_box,L,mode,obstacles):
         return all(not any(seg_hits_box(a,b,q,collision_pad) for q in obstacles)
                    for a,b in zip(points,points[1:]))
 
+    def route_length(points):
+        return sum(math.hypot(b[0]-a[0],b[1]-a[1])
+                   for a,b in zip(points,points[1:]))
+
     direct=[anchor,end_from(anchor)]
     if clear(direct):
         return direct
 
     theta=math.radians(180+L)
     tx=-math.sin(theta); ty=-math.cos(theta)
+    doglegs=[]
     for radius in (400,370,340,310,280,250,220,190,160,130):
         rx,ry=xy(L,radius)
         for shift in (0,-35,35,-70,70,-105,105,-140,140,-175,175,-210,210):
@@ -221,7 +226,9 @@ def route_leader(anchor,target_box,L,mode,obstacles):
             end=end_from(bend)
             route=[anchor,bend,end]
             if clear(route):
-                return route
+                doglegs.append(route)
+    if doglegs:
+        return min(doglegs,key=route_length)
 
     route=smart_route(anchor,target_box,mode,obstacles)
     if route:
