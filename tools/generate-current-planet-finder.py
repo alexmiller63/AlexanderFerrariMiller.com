@@ -4,7 +4,7 @@
 Usage: python tools/generate-current-planet-finder.py 2026 37
 """
 from pathlib import Path
-import csv, datetime as dt, math, sys
+import csv, datetime as dt, heapq, math, sys
 
 ROOT=Path(__file__).resolve().parents[1]
 SIGNS=[('♈','Aries'),('♉','Taurus'),('♊','Gemini'),('♋','Cancer'),('♌','Leo'),('♍','Virgo'),('♎','Libra'),('♏','Scorpio'),('♐','Sagittarius'),('♑','Capricorn'),('♒','Aquarius'),('♓','Pisces')]
@@ -85,12 +85,102 @@ def seg_hits_box(a,b,box,pad=10):
             if r<t1: t1=r
     return t0<=t1
 
+def point_in_box(point,box,pad=10):
+    x,y=point; bx,by,bw,bh=box
+    return (bx-bw/2-pad <= x <= bx+bw/2+pad and
+            by-bh/2-pad <= y <= by+bh/2+pad)
+
+def smart_route(anchor,target_box,mode,obstacles):
+    """Find a collision-free route with a visibility graph around obstacles."""
+    x,y,w,h=target_box
+
+    def end_from(point):
+        return edge_point(x,y,w,h,point[0],point[1],mode)
+
+    def clear_segment(a,b):
+        return not any(seg_hits_box(a,b,q,10) for q in obstacles)
+
+    # Give the graph several legal ways to approach the target label.
+    gap=24
+    approaches=[
+        (x-w/2-gap,y),(x+w/2+gap,y),(x,y-h/2-gap),(x,y+h/2+gap),
+        (x-w/2-gap,y-h/2-gap),(x+w/2+gap,y-h/2-gap),
+        (x-w/2-gap,y+h/2+gap),(x+w/2+gap,y+h/2+gap),
+    ]
+    approaches=[p for p in approaches
+                if math.hypot(p[0]-C,p[1]-C)<=RI-2
+                and clear_segment(p,end_from(p))]
+    if not approaches:
+        return None
+
+    nodes=[anchor]
+    goal_ids=[]
+    for p in approaches:
+        goal_ids.append(len(nodes)); nodes.append(p)
+
+    # Corners and side midpoints of padded obstacles are natural waypoints.
+    # The extra 14 px keeps graph nodes outside the 10 px collision margin.
+    for bx,by,bw,bh in obstacles:
+        pad=14
+        xmin=bx-bw/2-pad; xmax=bx+bw/2+pad
+        ymin=by-bh/2-pad; ymax=by+bh/2+pad
+        candidates=[
+            (xmin,ymin),(xmax,ymin),(xmin,ymax),(xmax,ymax),
+            ((xmin+xmax)/2,ymin),((xmin+xmax)/2,ymax),
+            (xmin,(ymin+ymax)/2),(xmax,(ymin+ymax)/2),
+        ]
+        for p in candidates:
+            if math.hypot(p[0]-C,p[1]-C)>RI-2:
+                continue
+            if any(point_in_box(p,q,10) for q in obstacles):
+                continue
+            nodes.append(p)
+
+    # Connect every mutually visible pair. Dijkstra then chooses the shortest
+    # legal polyline, with a tiny per-segment cost to avoid gratuitous bends.
+    n=len(nodes)
+    graph=[[] for _ in range(n)]
+    for i in range(n):
+        for j in range(i+1,n):
+            if not clear_segment(nodes[i],nodes[j]):
+                continue
+            distance=math.hypot(nodes[i][0]-nodes[j][0],nodes[i][1]-nodes[j][1])+4
+            graph[i].append((j,distance)); graph[j].append((i,distance))
+
+    goals=set(goal_ids)
+    dist=[float('inf')]*n; prev=[None]*n
+    dist[0]=0.0
+    queue=[(0.0,0)]
+    found=None
+    while queue:
+        current_dist,i=heapq.heappop(queue)
+        if current_dist!=dist[i]:
+            continue
+        if i in goals:
+            found=i; break
+        for j,cost in graph[i]:
+            new_dist=current_dist+cost
+            if new_dist<dist[j]:
+                dist[j]=new_dist; prev[j]=i
+                heapq.heappush(queue,(new_dist,j))
+
+    if found is None:
+        return None
+
+    route=[]
+    i=found
+    while i is not None:
+        route.append(nodes[i]); i=prev[i]
+    route.reverse()
+    route.append(end_from(route[-1]))
+    return route
+
 def route_leader(anchor,target_box,L,mode,obstacles):
     """Route a leader without moving its exact-longitude anchor.
 
-    Prefer a direct line. If it would cross another label or the protected
-    center text, search deterministic radial/tangential doglegs. Failure is
-    explicit rather than silently emitting a colliding leader.
+    Prefer a direct line, then inexpensive deterministic doglegs. If those are
+    blocked, build a visibility graph around every label and protected center
+    box and solve for the shortest collision-free route.
     """
     x,y,w,h=target_box
 
@@ -116,7 +206,11 @@ def route_leader(anchor,target_box,L,mode,obstacles):
             if clear(route):
                 return route
 
-    raise RuntimeError('No collision-free leader route')
+    route=smart_route(anchor,target_box,mode,obstacles)
+    if route:
+        return route
+
+    raise RuntimeError('No collision-free leader route after visibility-graph search')
 
 def build(mode,year,week,monday,rows):
     title={'symbols':'Greek / Symbols','latin':'Latin','mixed':'Mixed / Learner'}[mode]
