@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""One-time KISS diagnostic for 2026-W01: make all three ephemeris tables identical."""
+"""One-time KISS diagnostic for 2026-W01: keep table 1 and one exact duplicate."""
 from pathlib import Path
 import re
 
@@ -9,19 +9,22 @@ TABLE = re.compile(r'<table class="[^"]*ephemeris[^"]*">.*?</table>', re.DOTALL)
 
 text = PATH.read_text(encoding="utf-8")
 matches = list(TABLE.finditer(text))
-if len(matches) != 3:
-    raise SystemExit(f"STOP: expected exactly 3 ephemeris tables, found {len(matches)}")
+if not matches:
+    raise SystemExit("STOP: no ephemeris table found; nothing changed")
 
 first = matches[0].group(0)
-# KISS means KISS: table 1 is the known-good control.  Do not reinterpret,
-# restyle, reclass, or transplant data.  Copy its exact bytes twice.
-new = text[:matches[0].end()] + text[matches[0].end():matches[1].start()] + first + text[matches[1].end():matches[2].start()] + first + text[matches[2].end():]
+
+# KISS: preserve table 1 byte-for-byte and put exactly one byte-for-byte copy
+# immediately after it. Remove every other ephemeris table.
+prefix = text[:matches[0].start()]
+suffix = text[matches[-1].end():]
+new = prefix + first + first + suffix
 
 new_matches = list(TABLE.finditer(new))
-if len(new_matches) != 3:
-    raise SystemExit("STOP: post-edit table count is not 3; nothing changed")
-if not all(m.group(0) == first for m in new_matches):
-    raise SystemExit("STOP: the three tables are not byte-for-byte identical; nothing changed")
+if len(new_matches) != 2:
+    raise SystemExit(f"STOP: post-edit table count is {len(new_matches)}, not 2; nothing changed")
+if new_matches[0].group(0) != first or new_matches[1].group(0) != first:
+    raise SystemExit("STOP: the two tables are not byte-for-byte identical; nothing changed")
 
 PATH.write_text(new, encoding="utf-8")
-print("PASS: W01 has 3 byte-for-byte identical copies of table 1.")
+print("PASS: W01 has exactly 2 byte-for-byte identical copies of table 1.")
