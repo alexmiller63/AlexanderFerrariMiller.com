@@ -10,7 +10,9 @@ Publication rules enforced here:
 - equinox/solstice terminology follows the Almanack's traditional naming;
 - First Point names are included for Aries and Libra only;
 - Full Moons receive the Almanack's astronomical seasonal Moon names;
-- no duplicate longitude/time text is emitted for a combined event.
+- no duplicate longitude/time text is emitted for a combined event;
+- displayed civil dates and zodiac labels are presentation only; population is
+  keyed by machine-readable ISO dates on the calendar rows.
 """
 from __future__ import annotations
 
@@ -18,11 +20,18 @@ import argparse
 import csv
 import json
 import math
-import re
 import urllib.parse
 import urllib.request
 from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
+
+from almanack_calendar import (
+    ensure_calendar_metadata,
+    get_events,
+    page_dates,
+    set_events,
+    set_zodiac,
+)
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE_ROOT = ROOT / "Star-Almanack-Repo" / "site"
@@ -159,14 +168,10 @@ def full_moon_names(phases, wheel):
     fulls = sorted(ts for ts, label in phases if label == "🌕 Full Moon")
     quarters = _quarter_boundaries(wheel)
     names: dict[datetime, str] = {}
-
-    # Seasonal Blue Moon: third Full Moon in an astronomical season containing four.
     for (start, lon), (end, _) in zip(quarters, quarters[1:]):
         in_season = [ts for ts in fulls if start <= ts < end]
         if len(in_season) == 4:
             names[in_season[2]] = "Blue Moon"
-
-    # Protected autumn/Yule anchors.
     september_equinoxes = [ts for ts, lon in quarters if lon == 180]
     december_solstices = [ts for ts, lon in quarters if lon == 270]
     for eq in september_equinoxes:
@@ -176,46 +181,28 @@ def full_moon_names(phases, wheel):
     for solstice in december_solstices:
         before = [ts for ts in fulls if ts < solstice]
         after = [ts for ts in fulls if ts > solstice]
-        if before:
-            names[max(before)] = "Moon Before Yule"
-        if after:
-            names[min(after)] = "Moon After Yule"
-
-    # Ordinary winter/spring/summer sequence, preserving Blue Moon as an intercalation.
+        if before: names[max(before)] = "Moon Before Yule"
+        if after: names[min(after)] = "Moon After Yule"
     for (start, lon), (end, _) in zip(quarters, quarters[1:]):
-        if lon not in SEASON_NAMES:
-            continue
+        if lon not in SEASON_NAMES: continue
         in_season = [ts for ts in fulls if start <= ts < end]
-        ordinary = SEASON_NAMES[lon]
-        ordinary_index = 0
+        ordinary = SEASON_NAMES[lon]; ordinary_index = 0
         for ts in in_season:
-            if names.get(ts) == "Blue Moon":
-                continue
-            if ts in names:  # protected Moon After Yule
-                ordinary_index += 1
-                continue
-            if ordinary_index < len(ordinary):
-                names[ts] = ordinary[ordinary_index]
+            if names.get(ts) == "Blue Moon": continue
+            if ts in names:
+                ordinary_index += 1; continue
+            if ordinary_index < len(ordinary): names[ts] = ordinary[ordinary_index]
             ordinary_index += 1
-
-    # Autumn sequence is anchored by Harvest and Moon Before Yule.  Any extra
-    # lunation between Hunter's Moon and Moon Before Yule becomes Frost Moon,
-    # unless the seasonal Blue-Moon rule already has priority.
     harvests = sorted(ts for ts, name in names.items() if name == "Harvest Moon")
     before_yules = sorted(ts for ts, name in names.items() if name == "Moon Before Yule")
     for harvest in harvests:
         later = [ts for ts in before_yules if ts > harvest]
-        if not later:
-            continue
-        end = later[0]
-        middle = [ts for ts in fulls if harvest < ts < end]
-        if middle:
-            if middle[0] not in names or names[middle[0]] != "Blue Moon":
-                names[middle[0]] = "Hunter's Moon"
+        if not later: continue
+        end = later[0]; middle = [ts for ts in fulls if harvest < ts < end]
+        if middle and (middle[0] not in names or names[middle[0]] != "Blue Moon"):
+            names[middle[0]] = "Hunter's Moon"
         for ts in middle[1:]:
-            if names.get(ts) != "Blue Moon":
-                names[ts] = "Frost Moon"
-
+            if names.get(ts) != "Blue Moon": names[ts] = "Frost Moon"
     return names
 
 
@@ -239,54 +226,40 @@ def build_events(first, last, ingresses, phases, wheel):
     moon_names = full_moon_names(phases, wheel)
     wheel_by_longitude = {int(round(lon)) % 360: (ts, astronomical, traditional) for ts, lon, astronomical, traditional in wheel}
     consumed_wheel: set[int] = set()
-
     for ts, idx in ingresses:
-        if not first <= ts.date() <= last:
-            continue
-        deg = idx * 30
-        glyph = f'<span class="zodiac-glyph">{SIGNS[idx]}</span>'
+        if not first <= ts.date() <= last: continue
+        deg = idx * 30; glyph = f'<span class="zodiac-glyph">{SIGNS[idx]}</span>'
         if deg in (0, 90, 180, 270) and deg in wheel_by_longitude:
             _, astronomical, traditional = wheel_by_longitude[deg]
             names = [f"{glyph} Sun enters {SIGN_NAMES[idx]}", astronomical]
-            if deg in FIRST_POINTS:
-                names.append(FIRST_POINTS[deg])
-            names.append(traditional)
-            event = " · ".join(names) + f" — {fmt_utc(ts)}"
-            consumed_wheel.add(deg)
+            if deg in FIRST_POINTS: names.append(FIRST_POINTS[deg])
+            names.append(traditional); event = " · ".join(names) + f" — {fmt_utc(ts)}"; consumed_wheel.add(deg)
         else:
             event = f"{glyph} Sun enters {SIGN_NAMES[idx]} — {fmt_utc(ts)}"
         events.setdefault(ts.date(), []).append(event)
-
     for ts, lon, astronomical, traditional in wheel:
         key = int(round(lon)) % 360
-        if key in consumed_wheel:
-            continue
+        if key in consumed_wheel: continue
         if first <= ts.date() <= last:
             events.setdefault(ts.date(), []).append(f"{traditional} · {astronomical} — {fmt_utc(ts)}")
-
     for ts, label in phases:
-        if not first <= ts.date() <= last:
-            continue
-        if label == "🌕 Full Moon" and ts in moon_names:
-            label = f"{label} · {moon_names[ts]}"
+        if not first <= ts.date() <= last: continue
+        if label == "🌕 Full Moon" and ts in moon_names: label = f"{label} · {moon_names[ts]}"
         events.setdefault(ts.date(), []).append(f"{label} — {fmt_utc(ts)}")
     return events
 
 
-ROW_RE = re.compile(r"<tr><td>((?:Mon|Tue|Wed|Thu|Fri|Sat|Sun), [^<]+)</td><td>.*?</td><td>(.*?)</td></tr>")
-
-
-def parse_page_date(label): return datetime.strptime(label, "%a, %b %d, %Y").date()
-
-
 def patch_page(path, ingresses, events):
     if not path.exists(): return False
-    text = path.read_text(encoding="utf-8")
-    def repl(match):
-        label = match.group(1); d = parse_page_date(label); z = zodiac_label(d, ingresses)
-        existing = [x for x in match.group(2).split("<br>") if x and x != "—"]
+    original = path.read_text(encoding="utf-8")
+    text = ensure_calendar_metadata(original, path)
+    calendar_prefixes = ("🌑 New Moon", "🌓 First Quarter", "🌕 Full Moon", "🌗 Last Quarter")
+    for d in page_dates(path):
+        existing_html = get_events(text, d)
+        if existing_html is None:
+            raise RuntimeError(f"Missing machine-readable calendar row for {d} in {path}")
+        existing = [x for x in existing_html.split("<br>") if x and x != "—"]
         generated = events.get(d, [])
-        calendar_prefixes = ("🌑 New Moon", "🌓 First Quarter", "🌕 Full Moon", "🌗 Last Quarter")
         keep = [
             x for x in existing
             if " ingress (" not in x
@@ -296,10 +269,14 @@ def patch_page(path, ingresses, events):
             and not any(name in x for _, name, _ in WHEEL_STATIONS)
         ]
         merged = keep + generated
-        return f"<tr><td>{label}</td><td>{z}</td><td>{'<br>'.join(merged) if merged else '—'}</td></tr>"
-    new = ROW_RE.sub(repl, text)
-    if new != text:
-        path.write_text(new, encoding="utf-8"); return True
+        text, found = set_events(text, d, "<br>".join(merged) if merged else "—")
+        if not found: raise RuntimeError(f"Could not update Events for {d} in {path}")
+        idx, n = zodiac_for_day(d, ingresses)
+        rendered = f'<span class="zodiac-glyph">{SIGNS[idx]}</span> {n}'
+        text, found = set_zodiac(text, d, sign_name=SIGN_NAMES[idx], zodiac_day=n, rendered_html=rendered)
+        if not found: raise RuntimeError(f"Could not update Zodiac day for {d} in {path}")
+    if text != original:
+        path.write_text(text, encoding="utf-8"); return True
     return False
 
 
