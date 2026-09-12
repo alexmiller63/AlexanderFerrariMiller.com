@@ -11,9 +11,16 @@ ALMANACK_ROOT = Path("_site/almanack")
 DAY_ONE_NAME = re.compile(
     r'class="zodiac-glyph">[^<]+</span>\s+\([A-Za-z]+\)\s+1</td>'
 )
-INGRESS = re.compile(r"[A-Za-z]+ ingress \(")
+# Current calendar wording is "☉ Sun enters <zodiac glyph> (Sign) — ...".
+# Count the semantic event, then require every such event to use the canonical
+# monochrome zodiac-glyph wrapper. Accept either a literal U+FE0E or its HTML
+# entity because Jekyll/HTML serialization may preserve either representation.
+INGRESS = re.compile(r"☉\s+Sun enters\s+")
 WRAPPED_INGRESS = re.compile(
-    r'<span class="zodiac-glyph">.*?</span>\s+[A-Za-z]+ ingress \('
+    r'☉\s+Sun enters\s+<span class="zodiac-glyph">'
+    r'(?:♈|♉|♊|♋|♌|♍|♎|♏|♐|♑|♒|♓)'
+    r'(?:\ufe0e|&#xfe0e;)</span>\s+'
+    r'\((?:Aries|Taurus|Gemini|Cancer|Leo|Virgo|Libra|Scorpio|Sagittarius|Capricorn|Aquarius|Pisces)\)'
 )
 CSS_REQUIREMENTS = {
     "Apple Symbols font": re.compile(r"font-family\s*:\s*['\"]Apple Symbols['\"]"),
