@@ -48,8 +48,8 @@ STYLE = """<style id="almanack-legend-css">
 .ephemeris-notation-item::first-letter,
 .calendar-notation-item::first-letter,
 .notation-item::first-letter {
-  font-size:2em;
-  line-height:.75;
+  font-size:2.4em;
+  line-height:.72;
 }
 .ephemeris-symbol {
   display:inline-block;
@@ -61,11 +61,10 @@ STYLE = """<style id="almanack-legend-css">
   line-height:.75;
   vertical-align:-.12em;
 }
-/* One canonical size for every observing/event glyph.  This deliberately
-   overrides legacy inline sizes and also prevents intrinsically large SVGs in
-   the Extended targets visibility row from rendering oversized. */
-.visibility-glyph { height:2.3em !important; width:auto !important; vertical-align:-.55em !important; }
-.legend-glyph { height:2.3em; width:auto; vertical-align:-.55em; margin-right:.2rem; }
+/* One canonical size for every observing/event glyph. */
+.visibility-glyph { height:3em !important; width:auto !important; vertical-align:-.78em !important; }
+.legend-glyph { height:3em; width:auto; vertical-align:-.78em; margin-right:.2rem; }
+.ephemeris-visibility .text-symbol { font-size:3em; line-height:.7; vertical-align:-.2em; }
 .legend-explanation { white-space:normal; }
 </style>"""
 
