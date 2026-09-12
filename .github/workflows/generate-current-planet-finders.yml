@@ -1,0 +1,91 @@
+name: Generate current Planet Finders
+
+on:
+  workflow_dispatch:
+    inputs:
+      year:
+        description: ISO week-year (blank = current UTC week)
+        required: false
+        type: string
+      week:
+        description: ISO week number (blank = current UTC week)
+        required: false
+        type: string
+  schedule:
+    - cron: '17 0 * * 1'
+  push:
+    paths:
+      - 'tools/generate_planet_finders.py'
+      - 'tools/populate_ephemeris.py'
+      - '.github/workflows/generate-current-planet-finders.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: planet-finders
+  cancel-in-progress: false
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Generate Planet Finders
+        shell: bash
+        env:
+          INPUT_YEAR: ${{ inputs.year }}
+          INPUT_WEEK: ${{ inputs.week }}
+        run: |
+          set -euo pipefail
+          if [[ -n "${INPUT_YEAR:-}" || -n "${INPUT_WEEK:-}" ]]; then
+            if [[ -z "${INPUT_YEAR:-}" || -z "${INPUT_WEEK:-}" ]]; then
+              echo 'Both year and week are required when either input is supplied.' >&2
+              exit 2
+            fi
+            python tools/generate_planet_finders.py --year "$INPUT_YEAR" --week "$INPUT_WEEK"
+          else
+            python tools/generate_planet_finders.py --current
+          fi
+
+      - name: Commit generated finders
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add 'almanack/'
+          if git diff --cached --quiet; then
+            echo 'Planet Finders are already current.'
+            exit 0
+          fi
+          git commit -m 'Generate current collision-free Planet Finders'
+
+          for attempt in 1 2 3 4 5; do
+            if git push origin HEAD:main; then
+              exit 0
+            fi
+            echo "Push race on attempt $attempt; regenerating from current main."
+            git fetch origin main
+            git reset --hard origin/main
+            if [[ -n "${INPUT_YEAR:-}" && -n "${INPUT_WEEK:-}" ]]; then
+              python tools/generate_planet_finders.py --year "$INPUT_YEAR" --week "$INPUT_WEEK"
+            else
+              python tools/generate_planet_finders.py --current
+            fi
+            git add 'almanack/'
+            if git diff --cached --quiet; then
+              echo 'Another workflow already produced the same output.'
+              exit 0
+            fi
+            git commit -m 'Generate current collision-free Planet Finders'
+          done
+          echo 'Unable to push generated Planet Finders after 5 attempts.' >&2
+          exit 1
