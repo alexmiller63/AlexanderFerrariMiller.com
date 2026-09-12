@@ -48,9 +48,8 @@ def load_visibility(year):
 def label(record,day,asterism_ids):
  head=record["id"]
  if record["name"]: head+=f', {record["name"]}'
- head+=f', {record["type"]}'
+ head+=f', {record["type"]} in {record["con"]}'
  if record["id"] in asterism_ids: head+=' (also an asterism)'
- head+=f' in {record["con"]}'
  aid=observing_aid_for_magnitude(record["mag"]); glyph=HTML_AID[aid] if aid is not None else ""; magnitude=record["mag"]
  visibility=" ".join(p for p in (glyph,f"V {magnitude}" if magnitude else "") if p); visibility_html=f'<span class="visibility-magnitude">{visibility}</span>' if visibility else ""
  parts=[head]
