@@ -36,20 +36,34 @@ def place(mode,rows):
     reserved=list(CENTER_RESERVED)
     placed=[]; result={}
     lons=[r[-1] for r in rows]
-    order=sorted(range(len(rows)),key=lambda i:min(abs((lons[i]-lons[j]+180)%360-180) for j in range(len(rows)) if j!=i))
+    nearest=[min(abs((lons[i]-lons[j]+180)%360-180)
+                 for j in range(len(rows)) if j!=i)
+             for i in range(len(rows))]
+    # Resolve equally crowded bodies by longitude rather than source-list order.
+    # This gives close pairs a stable geometric ordering (for W37, Mars before Moon).
+    order=sorted(range(len(rows)),key=lambda i:(nearest[i],lons[i]))
     for i in order:
         sym,name,sign,d,m,L=rows[i]; w,h=dims(mode,name)
         t=math.radians(180+L); tx=-math.sin(t); ty=-math.cos(t)
         chosen=None
-        for r in (340,300,260,380,220,180):
+        radii=(340,300,260,380,220,180)
+        shifts=(0,-70,70,-120,120,-170,170)
+        # Compact symbols should stay on their longitude ray whenever possible.
+        # Try every radial distance with zero tangential shift before bending away.
+        candidates=(
+            [(r,sh) for sh in (0,-45,45,-80,80,-120,120) for r in radii]
+            if mode=='symbols' else
+            [(r,sh) for r in radii for sh in shifts]
+        )
+        label_pad=4 if mode=='symbols' else 16
+        reserved_pad=8 if mode=='symbols' else 18
+        for r,sh in candidates:
             bx,by=xy(L,r)
-            for sh in (0,-70,70,-120,120,-170,170):
-                x=bx+sh*tx; y=by+sh*ty; box=(x,y,w,h)
-                if x-w/2<300 or x+w/2>1100 or y-h/2<300 or y+h/2>1100: continue
-                if any(overlap(box,q,16) for q in placed): continue
-                if any(overlap(box,q,18) for q in reserved): continue
-                chosen=box; break
-            if chosen: break
+            x=bx+sh*tx; y=by+sh*ty; box=(x,y,w,h)
+            if x-w/2<300 or x+w/2>1100 or y-h/2<300 or y+h/2>1100: continue
+            if any(overlap(box,q,label_pad) for q in placed): continue
+            if any(overlap(box,q,reserved_pad) for q in reserved): continue
+            chosen=box; break
         if not chosen:
             raise RuntimeError(f'No collision-free label position for {name}')
         placed.append(chosen); result[i]=chosen
@@ -93,15 +107,15 @@ def point_in_box(point,box,pad=10):
 def smart_route(anchor,target_box,mode,obstacles):
     """Find a collision-free route with a visibility graph around obstacles."""
     x,y,w,h=target_box
+    collision_pad=2 if mode=='symbols' else 10
 
     def end_from(point):
         return edge_point(x,y,w,h,point[0],point[1],mode)
 
     def clear_segment(a,b):
-        return not any(seg_hits_box(a,b,q,10) for q in obstacles)
+        return not any(seg_hits_box(a,b,q,collision_pad) for q in obstacles)
 
-    # Give the graph several legal ways to approach the target label.
-    gap=24
+    gap=16 if mode=='symbols' else 24
     approaches=[
         (x-w/2-gap,y),(x+w/2+gap,y),(x,y-h/2-gap),(x,y+h/2+gap),
         (x-w/2-gap,y-h/2-gap),(x+w/2+gap,y-h/2-gap),
@@ -118,10 +132,8 @@ def smart_route(anchor,target_box,mode,obstacles):
     for p in approaches:
         goal_ids.append(len(nodes)); nodes.append(p)
 
-    # Corners and side midpoints of padded obstacles are natural waypoints.
-    # The extra 14 px keeps graph nodes outside the 10 px collision margin.
     for bx,by,bw,bh in obstacles:
-        pad=14
+        pad=collision_pad+4
         xmin=bx-bw/2-pad; xmax=bx+bw/2+pad
         ymin=by-bh/2-pad; ymax=by+bh/2+pad
         candidates=[
@@ -132,12 +144,10 @@ def smart_route(anchor,target_box,mode,obstacles):
         for p in candidates:
             if math.hypot(p[0]-C,p[1]-C)>RI-2:
                 continue
-            if any(point_in_box(p,q,10) for q in obstacles):
+            if any(point_in_box(p,q,collision_pad) for q in obstacles):
                 continue
             nodes.append(p)
 
-    # Connect every mutually visible pair. Dijkstra then chooses the shortest
-    # legal polyline, with a tiny per-segment cost to avoid gratuitous bends.
     n=len(nodes)
     graph=[[] for _ in range(n)]
     for i in range(n):
@@ -183,12 +193,13 @@ def route_leader(anchor,target_box,L,mode,obstacles):
     box and solve for the shortest collision-free route.
     """
     x,y,w,h=target_box
+    collision_pad=2 if mode=='symbols' else 10
 
     def end_from(point):
         return edge_point(x,y,w,h,point[0],point[1],mode)
 
     def clear(points):
-        return all(not any(seg_hits_box(a,b,q) for q in obstacles)
+        return all(not any(seg_hits_box(a,b,q,collision_pad) for q in obstacles)
                    for a,b in zip(points,points[1:]))
 
     direct=[anchor,end_from(anchor)]
