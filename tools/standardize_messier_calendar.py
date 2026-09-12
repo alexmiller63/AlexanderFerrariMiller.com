@@ -42,8 +42,22 @@ def load_visibility(year):
  path=GENERATED/f"messier-visibility-{year}.csv"
  if not path.exists(): raise RuntimeError(f"Missing {path.relative_to(ROOT)}; run populate_fixed_sky.py before Messier standardization")
  with path.open(newline="",encoding="utf-8") as h: rows=list(csv.DictReader(h))
- by_id={r["messier"].strip().upper():r for r in rows}
- if len(by_id)!=110: raise RuntimeError(f"Expected 110 Messier visibility rows for {year}, found {len(by_id)}")
+ grouped=defaultdict(list)
+ for r in rows: grouped[r["messier"].strip().upper()].append(r)
+ if len(grouped)!=110: raise RuntimeError(f"Expected 110 Messier IDs for {year}, found {len(grouped)}")
+ by_id={}
+ for designation,candidates in grouped.items():
+  # ISO week-years can include a few days from the adjacent civil year.  A
+  # near-boundary visibility date may therefore appear twice in one generated
+  # ISO-year file (for example M45 on 2026-01-01 and again on 2027-01-01 in
+  # ISO 2026-W53).  The Almanack publishes one annual catalog event, so select
+  # the candidate whose civil year is the requested Almanack year rather than
+  # silently letting the last CSV row win.
+  preferred=[r for r in candidates if dt.date.fromisoformat(r["best_date"]).year==year]
+  if len(preferred)!=1:
+   dates=", ".join(r.get("best_date","") for r in candidates)
+   raise RuntimeError(f"Expected exactly one civil-{year} visibility date for {designation}; found {len(preferred)} among [{dates}]")
+  by_id[designation]=preferred[0]
  return by_id
 def label(record,day,asterism_ids):
  head=record["id"]
