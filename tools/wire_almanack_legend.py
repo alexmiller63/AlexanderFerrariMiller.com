@@ -42,6 +42,12 @@ STYLE = """<style id="almanack-legend-css">
   line-height:.75;
   vertical-align:-.12em;
 }
+.greek-letter {
+  display:inline-block;
+  font-size:2em;
+  line-height:.75;
+  vertical-align:-.12em;
+}
 .ephemeris-notation-item {
   display:inline-block;
 }
@@ -86,7 +92,7 @@ LEGEND = """<aside class="notation-legend" aria-label="Astronomical notation leg
 
   <p><strong>Greek alphabet</strong> — Bayer letters used to identify stars within a constellation.</p>
   <div class="legend-line">
-    <span class="legend-item">α Alpha</span><span class="legend-item">β Beta</span><span class="legend-item">γ Gamma</span><span class="legend-item">δ Delta</span><span class="legend-item">ε Epsilon</span><span class="legend-item">ζ Zeta</span><span class="legend-item">η Eta</span><span class="legend-item">θ Theta</span><span class="legend-item">ι Iota</span><span class="legend-item">κ Kappa</span><span class="legend-item">λ Lambda</span><span class="legend-item">μ Mu</span><span class="legend-item">ν Nu</span><span class="legend-item">ξ Xi</span><span class="legend-item">ο Omicron</span><span class="legend-item">π Pi</span><span class="legend-item">ρ Rho</span><span class="legend-item">σ Sigma</span><span class="legend-item">τ Tau</span><span class="legend-item">υ Upsilon</span><span class="legend-item">φ Phi</span><span class="legend-item">χ Chi</span><span class="legend-item">ψ Psi</span><span class="legend-item">ω Omega</span>
+    <span class="legend-item"><span class="greek-letter">α</span> Alpha</span><span class="legend-item"><span class="greek-letter">β</span> Beta</span><span class="legend-item"><span class="greek-letter">γ</span> Gamma</span><span class="legend-item"><span class="greek-letter">δ</span> Delta</span><span class="legend-item"><span class="greek-letter">ε</span> Epsilon</span><span class="legend-item"><span class="greek-letter">ζ</span> Zeta</span><span class="legend-item"><span class="greek-letter">η</span> Eta</span><span class="legend-item"><span class="greek-letter">θ</span> Theta</span><span class="legend-item"><span class="greek-letter">ι</span> Iota</span><span class="legend-item"><span class="greek-letter">κ</span> Kappa</span><span class="legend-item"><span class="greek-letter">λ</span> Lambda</span><span class="legend-item"><span class="greek-letter">μ</span> Mu</span><span class="legend-item"><span class="greek-letter">ν</span> Nu</span><span class="legend-item"><span class="greek-letter">ξ</span> Xi</span><span class="legend-item"><span class="greek-letter">ο</span> Omicron</span><span class="legend-item"><span class="greek-letter">π</span> Pi</span><span class="legend-item"><span class="greek-letter">ρ</span> Rho</span><span class="legend-item"><span class="greek-letter">σ</span> Sigma</span><span class="legend-item"><span class="greek-letter">τ</span> Tau</span><span class="legend-item"><span class="greek-letter">υ</span> Upsilon</span><span class="legend-item"><span class="greek-letter">φ</span> Phi</span><span class="legend-item"><span class="greek-letter">χ</span> Chi</span><span class="legend-item"><span class="greek-letter">ψ</span> Psi</span><span class="legend-item"><span class="greek-letter">ω</span> Omega</span>
   </div>
 
   <p><strong>Zodiac</strong> — the 12 zodiac constellations/signs used for zodiac-day notation.</p>
@@ -102,6 +108,10 @@ LEGEND = """<aside class="notation-legend" aria-label="Astronomical notation leg
 
 STYLE_RE = re.compile(r'<style id="almanack-legend-css">.*?</style>', re.S)
 LEGEND_RE = re.compile(r'<aside class="notation-legend".*?</aside>', re.S)
+GREEK_SPAN_RE = re.compile(r'<span class="greek-letter">([α-ω])</span>')
+BAYER_EVENT_RE = re.compile(r'([α-ω])(?= [A-Z][a-z]{2}\b)')
+BETA_LAT_RE = re.compile(r'(<small>)β(?= [−+\-])')
+BETA_NOTE_RE = re.compile(r'(<strong>)β(?=</strong>)')
 
 
 def requested_years() -> tuple[int, ...]:
@@ -125,6 +135,12 @@ def wire_page(path: Path) -> bool:
     original = path.read_text(encoding="utf-8")
     text = STYLE_RE.sub("", original)
     text = LEGEND_RE.sub("", text)
+
+    # Normalize any previous run before adding the canonical Greek-letter markup.
+    text = GREEK_SPAN_RE.sub(r"\1", text)
+    text = BAYER_EVENT_RE.sub(r'<span class="greek-letter">\1</span>', text)
+    text = BETA_LAT_RE.sub(r'\1<span class="greek-letter">β</span>', text)
+    text = BETA_NOTE_RE.sub(r'\1<span class="greek-letter">β</span>', text)
 
     if "</head>" not in text or "</body>" not in text:
         raise RuntimeError(f"unexpected Almanack page shell: {path}")
