@@ -84,7 +84,7 @@ def visibility_html(magnitude, elongation):
 
 
 def planet_finder(year, week):
-    base = f"/almanack/{year}/W{week:02d}/finders"
+    base = "finders"
     return (
         '<div class="w15-finder-strip">'
         f'<figure data-finder-mode="greek" class="is-active"><img src="{base}/planet-finder-greek-symbols.svg" alt="Planet Finder — Greek / Symbols"><figcaption>Greek / Symbols</figcaption></figure>'
@@ -116,6 +116,7 @@ def render_ephemeris(monday, values):
         + table(extended, extra_class="extended-ephemeris")
         + '<p class="ephemeris-note"><strong>β</strong> = ecliptic latitude (+ north, − south). Observing combines visual magnitude with solar elongation. <span class="text-symbol">☉</span> = Near Sun — not currently observable.</p>'
         + '<h3>Planet Finder</h3>'
+        + NOTATION_TOGGLE
         + planet_finder(monday.year, week)
     )
 
