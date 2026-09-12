@@ -144,6 +144,14 @@
 
   const buttons = document.querySelectorAll('[data-bayer-mode]');
 
+  // The ephemeris grid must never be narrower than the content in its active
+  // notation mode. width:100% keeps compact Greek tables full-width; this
+  // intrinsic minimum lets longer Latin/Mixed labels widen the same grid and
+  // use its existing horizontal scroller instead of squeezing the columns.
+  document.querySelectorAll('table.ephemeris').forEach(function (table) {
+    table.style.setProperty('min-width', 'max-content', 'important');
+  });
+
   function setMode(mode) {
     document.querySelectorAll('.notation-item').forEach(function (item) {
       item.textContent = item.dataset[mode] || item.dataset.greek || item.textContent;
