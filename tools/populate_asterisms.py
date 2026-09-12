@@ -3,12 +3,9 @@
 
 Asterism-center entries use the established pattern-visibility rule: the
 brightest member star supplies both the V magnitude and the observing-aid class.
-
-Catalog membership and asterism identity are different semantic dimensions. A
-physical object such as the Pleiades may therefore appear once as a catalog
-object (M45) and once as an asterism center. Catalog precedence still applies
-within the mutually exclusive catalog classes (Messier/Caldwell/Finest NGC),
-but it must not erase an independent asterism-center observance.
+When the same physical object is already represented by a catalog identity, the
+catalog entry carries the inline "also an asterism" note and the duplicate
+asterism-center event is suppressed.
 """
 from __future__ import annotations
 import argparse,csv,datetime as dt,re
@@ -42,7 +39,6 @@ def read_rows(year):
  return rows
 
 def catalog_overlaps():
- """Return documented cross-identities for provenance/auditing only."""
  with CATALOG_OVERLAP.open(newline="",encoding="utf-8") as f: rows=list(csv.DictReader(f))
  names={r["asterism"].strip() for r in rows if r.get("asterism") and r.get("catalog")}
  if len(names)!=len(rows): raise SystemExit("Asterism/catalog overlap registry contains incomplete or duplicate identities")
@@ -65,9 +61,10 @@ def visibility_html(mag):
  return f'<span class="visibility-magnitude">{HTML_AID[aid]} V {mag:.1f}</span>'
 
 def event_map(rows):
- e=defaultdict(list); brightest=brightest_asterism_magnitudes()
+ e=defaultdict(list); brightest=brightest_asterism_magnitudes(); overlaps=catalog_overlaps()
  for r in rows:
   name=r['asterism']
+  if name in overlaps: continue
   d=dt.date.fromisoformat(r["best_date"])
   cls=f"{declination_band(r['centroid_dec_deg'])} {season_for(d)}"
   if name not in brightest: raise SystemExit(f"No stellar magnitude available for asterism {name}")
@@ -86,7 +83,6 @@ def inject(root,events):
  changed=inserted=0
  for page in pages_for_events(root,events):
   text=page.read_text(encoding="utf-8"); original=text
-  # Remove all previously generated asterism-center rows before rebuilding them.
   text=re.sub(r"(?:<br>)?(?:✦ )?[^<]*? center — Asterism — .*?(?=<br>|</td>)","",text)
   text=text.replace("<td><br>","<td>").replace("<br></td>","</td>").replace("<br><br>","<br>")
   for d,vals in events.items():
@@ -116,8 +112,9 @@ def validate(root,events):
 def main():
  for year in requested_years():
   rows=read_rows(year); events=event_map(rows); overlaps=catalog_overlaps()
+  expected=len(rows)-len(overlaps)
   c1,i1=inject(SOURCE_SITE,events); c2,i2=inject(PUBLIC,events)
   validate(SOURCE_SITE,events); validate(PUBLIC,events)
-  print(f"{year}: verified {len(rows)} asterism centers; {len(overlaps)} also have catalog identities retained separately; inserted source={i1}, public={i2}; updated {c1} source + {c2} public pages")
+  print(f"{year}: verified {expected} independent asterism centers; {len(overlaps)} catalog overlaps represented inline; inserted source={i1}, public={i2}; updated {c1} source + {c2} public pages")
 
 if __name__=="__main__": main()
