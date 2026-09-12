@@ -105,16 +105,22 @@ def render_ephemeris(monday, values):
         + '<p class="ephemeris-note"><strong>β</strong> = ecliptic latitude (+ north, − south). Observing combines visual magnitude with solar elongation. <span class="text-symbol">☉</span> = Near Sun — not currently observable.</p>'
     )
 
-EPHEMERIS_TABLE = r'<table(?:\s+class="[^"]*ephemeris[^"]*")?>.*?</table>'
-EPHEMERIS_BLOCK = re.compile(r'<h3>Weekly Solar-System Ephemeris</h3>\s*' r'<p><strong>Snapshot:</strong>.*?</p>\s*' r'(?:<div class="bayer-toggle-wrap section-notation-toggle">.*?</div></div>\s*)?' r'(?:<p><strong>Naked Eye</strong></p>\s*)?' + EPHEMERIS_TABLE + r'(?:\s*' + EPHEMERIS_TABLE + r')?' + r'\s*<p><strong>Extended targets:</strong></p>\s*' + EPHEMERIS_TABLE + r'\s*(?:<p class="ephemeris-note">.*?</p>)?', re.DOTALL)
+# Replace the whole ephemeris section, not an assumed table arrangement. This
+# deliberately consumes any stale duplicate ephemeris headings/tables until the
+# next non-ephemeris section heading, so regeneration is idempotent.
+EPHEMERIS_SECTION = re.compile(
+    r'<h3>Weekly Solar-System Ephemeris</h3>.*?'
+    r'(?=<h3>(?!Weekly Solar-System Ephemeris</h3>)|<h2>|</main>)',
+    re.DOTALL,
+)
 CALENDAR_BLOCK = re.compile(r'(<h3>Calendar</h3>\s*<table\s+class="calendar">.*?</table>)', re.DOTALL)
 
 def put_ephemeris(text, replacement, path):
-    new, count = EPHEMERIS_BLOCK.subn(lambda _: replacement, text, count=1)
+    new, count = EPHEMERIS_SECTION.subn(lambda _: replacement, text, count=1)
     if count == 1: return new
     new, count = CALENDAR_BLOCK.subn(lambda match: match.group(1) + replacement, text, count=1)
     if count == 1: return new
-    raise RuntimeError(f"Could not locate either an ephemeris block or calendar insertion point in {path.relative_to(ROOT)}")
+    raise RuntimeError(f"Could not locate either an ephemeris section or calendar insertion point in {path.relative_to(ROOT)}")
 
 def update_year(year):
     count = week_count(year); generated = {}
