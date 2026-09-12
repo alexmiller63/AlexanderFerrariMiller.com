@@ -83,8 +83,20 @@ def visibility_html(magnitude, elongation):
     aid = current_visibility(magnitude, elongation); return VISIBILITY_GLYPHS[aid] if aid else ""
 
 
+def planet_finder(year, week):
+    base = f"/almanack/{year}/W{week:02d}/finders"
+    return (
+        '<div class="w15-finder-strip">'
+        f'<figure data-finder-mode="greek" class="is-active"><img src="{base}/planet-finder-greek-symbols.svg" alt="Planet Finder — Greek / Symbols"><figcaption>Greek / Symbols</figcaption></figure>'
+        f'<figure data-finder-mode="latin"><img src="{base}/planet-finder-latin.svg" alt="Planet Finder — Latin"><figcaption>Latin</figcaption></figure>'
+        f'<figure data-finder-mode="mixed"><img src="{base}/planet-finder-mixed-learner.svg" alt="Planet Finder — Mixed Learner"><figcaption>Mixed Learner</figcaption></figure>'
+        '</div>'
+    )
+
+
 def render_ephemeris(monday, values):
     primary, extended = TARGETS[:7], TARGETS[7:]
+    week = monday.isocalendar().week
     def table(columns, show_visibility=True, extra_class=""):
         headers = "".join(f"<th>{target_heading(display)}</th>" for display, _, _ in columns)
         positions = "".join(f"<td>{values[key][0]}<br><small>{values[key][1]}</small></td>" for _, key, _ in columns)
@@ -103,14 +115,16 @@ def render_ephemeris(monday, values):
         + "<p><strong>Extended targets:</strong></p>"
         + table(extended, extra_class="extended-ephemeris")
         + '<p class="ephemeris-note"><strong>β</strong> = ecliptic latitude (+ north, − south). Observing combines visual magnitude with solar elongation. <span class="text-symbol">☉</span> = Near Sun — not currently observable.</p>'
+        + '<h3>Planet Finder</h3>'
+        + planet_finder(monday.year, week)
     )
 
-# Replace the whole ephemeris section, not an assumed table arrangement. This
-# deliberately consumes any stale duplicate ephemeris headings/tables until the
-# next non-ephemeris section heading, so regeneration is idempotent.
+# Replace the whole ephemeris section, including its Planet Finder, not an
+# assumed table arrangement. Keeping the finder inside the generated section
+# makes foundation regeneration idempotent instead of deleting the artwork.
 EPHEMERIS_SECTION = re.compile(
     r'<h3>Weekly Solar-System Ephemeris</h3>.*?'
-    r'(?=<h3>(?!Weekly Solar-System Ephemeris</h3>)|<h2>|</main>)',
+    r'(?=<h3>(?!Weekly Solar-System Ephemeris</h3>|Planet Finder</h3>)|<h2>|</main>)',
     re.DOTALL,
 )
 CALENDAR_BLOCK = re.compile(r'(<h3>Calendar</h3>\s*<table\s+class="calendar">.*?</table>)', re.DOTALL)
