@@ -25,7 +25,10 @@ def parse_years() -> list[int]:
 def clear_year(year: int) -> int:
     changed = 0
     for base in BASES:
-        for page in sorted((base / str(year)).glob("W*/index.html")):
+        # Only canonical ISO-week directories (W01..W53) participate in the
+        # production calendar contract.  Test/sandbox directories such as
+        # W22-glyph-test are deliberately excluded.
+        for page in sorted((base / str(year)).glob("W??/index.html")):
             text = page.read_text(encoding="utf-8")
             new = ensure_calendar_metadata(text, page)
             new = clear_events(new)
