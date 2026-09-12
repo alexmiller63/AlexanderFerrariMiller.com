@@ -32,6 +32,14 @@ def dims(mode,name):
     if mode=='latin': return max(110,14*len(name)+34),52
     return max(140,14*len(name)+74),52
 
+def box_inside_inner_rim(box,clearance=10):
+    """Require every label corner to remain inside the zodiac inner rim."""
+    x,y,w,h=box
+    limit=RI-clearance
+    return all(math.hypot(px-C,py-C)<=limit
+               for px in (x-w/2,x+w/2)
+               for py in (y-h/2,y+h/2))
+
 def place(mode,rows):
     reserved=list(CENTER_RESERVED)
     placed=[]; result={}
@@ -63,6 +71,8 @@ def place(mode,rows):
             bx,by=xy(L,r)
             x=bx+sh*tx; y=by+sh*ty; box=(x,y,w,h)
             if x-w/2<300 or x+w/2>1100 or y-h/2<300 or y+h/2>1100: continue
+            # Text labels belong wholly inside the finder, not in the zodiac band.
+            if mode!='symbols' and not box_inside_inner_rim(box): continue
             if any(overlap(box,q,label_pad) for q in placed): continue
             if any(overlap(box,q,reserved_pad) for q in reserved): continue
             # Every leader starts at its exact-longitude anchor just inside the
