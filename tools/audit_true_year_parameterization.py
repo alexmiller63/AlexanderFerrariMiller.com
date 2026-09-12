@@ -5,10 +5,15 @@ Two independent guarantees are enforced:
 1. requested weekly editions contain dates and ISO-week placement for their own ISO year;
 2. parameterized visibility reproduces the preserved canonical 2026 values exactly.
 
-Generated annual visibility tables are civil observing cycles, not ISO-week
-containers: the preserved 2026 engine explicitly allows rounded dates from
-2026-01-01 through 2027-01-01. Their ISO label must match the date, but the ISO
-week-year is allowed to cross the civil-year boundary.
+Weekly-page identity is read only from machine metadata (data-date) and the
+YEAR/Www container. Rendered civil dates and zodiac labels are presentation and
+are deliberately ignored by this audit.
+
+Generated visibility tables are keyed to the requested ISO edition year. A
+physical phase is calculated in neighboring Aries-to-Aries cycles and retained
+only when its rounded civil date belongs to the requested ISO week-numbering
+year. Thus Dec/Jan boundary dates are legitimate when their ISO year matches
+the requested edition.
 
 The audit is read-only: canonical 2026 snapshots are never rewritten.
 """
@@ -21,6 +26,7 @@ import sys
 from pathlib import Path
 
 import populate_fixed_sky as fixed
+from almanack_calendar import CALENDAR_RE, ROW_RE, _get_attr, page_dates
 
 ROOT = Path(__file__).resolve().parents[1]
 PUBLIC = ROOT / "almanack"
@@ -29,7 +35,6 @@ SOURCE_SITE = SRC / "site"
 GENERATED = SRC / "generated"
 DEFAULT_YEARS = (2025, 2027)
 
-DATE_CELL_RE = re.compile(r"<tr><td>([A-Z][a-z]{2}, [A-Z][a-z]{2} \d{1,2}, \d{4})</td>")
 PAGE_TITLE_RES = (
     re.compile(r"<title>ISO (\d{4})-W(\d{2}) · Star Almanack</title>"),
     re.compile(r"<title>ISO week (\d{2}) (\d{4}) · Star Almanack</title>"),
@@ -44,10 +49,6 @@ def requested_years() -> tuple[int, ...]:
         return tuple(dict.fromkeys(int(x) for x in sys.argv[1:]))
     except ValueError as exc:
         raise SystemExit("Years must be integers, e.g. 2025 2027") from exc
-
-
-def parse_calendar_date(text: str) -> dt.date:
-    return dt.datetime.strptime(text, "%a, %b %d, %Y").date()
 
 
 def read_rows(path: Path) -> list[dict[str, str]]:
@@ -87,24 +88,31 @@ def audit_week_pages(root: Path, year: int) -> tuple[int, list[str]]:
                 f"expected ISO {year}-W{week:02d}"
             )
 
-        # Adjacent-year ISO labels are legitimate in prev/next navigation.
-        # Calendar rows, however, must all belong to this page's ISO week.
-        cells = DATE_CELL_RE.findall(text)
-        if not cells:
-            failures.append(f"{page}: no calendar date rows found")
+        table = CALENDAR_RE.search(text)
+        if not table:
+            failures.append(f"{page}: no calendar table found")
             continue
-        for raw in cells:
-            day = parse_calendar_date(raw)
+        rows = list(ROW_RE.finditer(table.group("body")))
+        expected = page_dates(page)
+        if len(rows) != 7:
+            failures.append(f"{page}: expected 7 calendar rows, found {len(rows)}")
+            continue
+        for row, day in zip(rows, expected):
+            actual = _get_attr(row.group("trattrs"), "data-date")
+            if actual != day.isoformat():
+                failures.append(
+                    f"{page}: row machine date {actual!r}, expected {day.isoformat()}"
+                )
             iso = day.isocalendar()
             if iso.year != year or iso.week != week:
                 failures.append(
-                    f"{page}: {day.isoformat()} belongs to ISO {iso.year}-W{iso.week:02d}, "
-                    f"not ISO {year}-W{week:02d}"
+                    f"{page}: derived date {day.isoformat()} belongs to ISO "
+                    f"{iso.year}-W{iso.week:02d}, not ISO {year}-W{week:02d}"
                 )
     return len(pages), failures
 
 
-def audit_generated_csv(path: Path, year: int) -> list[str]:
+def audit_generated_csv(path: Path, iso_year: int) -> list[str]:
     failures: list[str] = []
     rows = read_rows(path)
     if not rows:
@@ -114,8 +122,9 @@ def audit_generated_csv(path: Path, year: int) -> list[str]:
     if date_column is None:
         return failures
 
-    cycle_min = dt.date(year, 1, 1)
-    cycle_max = dt.date(year + 1, 1, 1)
+    first = dt.date.fromisocalendar(iso_year, 1, 1)
+    weeks = dt.date(iso_year, 12, 28).isocalendar().week
+    last = dt.date.fromisocalendar(iso_year, weeks, 7)
     iso_column = next((name for name in ("iso", "center_iso") if name in rows[0]), None)
 
     for n, row in enumerate(rows, start=2):
@@ -127,18 +136,18 @@ def audit_generated_csv(path: Path, year: int) -> list[str]:
         except ValueError:
             failures.append(f"{path}:{n}: invalid {date_column}={raw!r}")
             continue
-        if not cycle_min <= day <= cycle_max:
+        if not first <= day <= last or day.isocalendar().year != iso_year:
             failures.append(
-                f"{path}:{n}: {date_column} {day.isoformat()} escaped the {year} observing cycle "
-                f"({cycle_min.isoformat()} through {cycle_max.isoformat()})"
+                f"{path}:{n}: {date_column} {day.isoformat()} does not belong to ISO "
+                f"{iso_year} ({first.isoformat()} through {last.isoformat()})"
             )
         if iso_column:
             expected_iso = fixed.iso_label(day)
             actual_iso = (row.get(iso_column) or "").strip()
             if actual_iso and actual_iso != expected_iso:
                 failures.append(
-                    f"{path}:{n}: {iso_column}={actual_iso!r} does not match date {day.isoformat()} "
-                    f"({expected_iso})"
+                    f"{path}:{n}: {iso_column}={actual_iso!r} does not match date "
+                    f"{day.isoformat()} ({expected_iso})"
                 )
     return failures
 
@@ -160,7 +169,7 @@ def compare_rows(path: Path, canonical: list[dict[str, str]], generated: list[di
 
 
 def audit_2026_equivalence() -> list[str]:
-    """Recompute or re-parameterize canonical 2026 placement without writing files."""
+    """Recompute canonical 2026 placement without writing files."""
     failures: list[str] = []
     checked = 0
 
@@ -216,7 +225,7 @@ def audit_year(year: int) -> list[str]:
     if not failures:
         print(
             f"{year}: PASS — {counts[0]} source + {counts[1]} public weekly pages; "
-            f"generated dated CSV rows remain inside the {year} observing cycle"
+            f"generated dated CSV rows belong to ISO {year}"
         )
     return failures
 
