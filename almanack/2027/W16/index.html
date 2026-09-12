@@ -197,9 +197,10 @@ body:not(:has([data-bayer-mode="latin"][aria-pressed="true"])) .ephemeris-notati
 }
 table.ephemeris .greek-letter { font-size:1.5em; }
 /* Calendar/event observing glyphs retain their canonical size. Ephemeris
-   observing glyphs use the same 1.5x section scale as the other ephemeris glyphs. */
+   observing glyphs use one absolute section scale so every ephemeris table
+   renders them identically regardless of inherited table font sizing. */
 .visibility-glyph { height:3em !important; width:auto !important; vertical-align:-.78em !important; }
-table.ephemeris .visibility-glyph { height:1.5em !important; vertical-align:-.28em !important; }
+table.ephemeris .visibility-glyph { height:1.5rem !important; vertical-align:-.28rem !important; }
 .legend-glyph { height:3em; width:auto; vertical-align:-.78em; margin-right:.2rem; }
 .ephemeris-visibility .text-symbol { font-size:1.5em; line-height:.75; vertical-align:-.12em; }
 .legend-explanation { white-space:normal; }
