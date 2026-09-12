@@ -50,7 +50,7 @@ def event_map(rows):
  return e
 def pages_for_events(root,events):
  pages=[]
- for y in sorted({d.isocalendar().year for d in events}):pages.extend(sorted((root/str(y)).glob("W*/index.html")))
+ for y in sorted({d.isocalendar().year for d in events}):pages.extend(sorted((root/str(y)).glob("W??/index.html")))
  return pages
 def inject(root,events):
  changed=inserted=0
