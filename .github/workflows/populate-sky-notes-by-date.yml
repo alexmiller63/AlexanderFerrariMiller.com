@@ -27,14 +27,15 @@ jobs:
         with:
           ref: main
 
-      - name: Populate Sky Notes prose for requested ISO dates
+      - name: Create and populate Sky Notes prose for requested ISO dates
         run: python tools/populate_sky_notes_by_date.py "${{ inputs.start_date }}" "${{ inputs.end_date }}"
 
-      - name: Commit Sky Notes prose changes only
+      - name: Commit Sky Notes prose and generated sources only
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -- almanack Star-Almanack-Repo/site
+          git add --all -- Star-Almanack-Repo/sky-notes-*
           if git diff --cached --quiet; then
             echo "No Sky Notes prose changes in requested ISO date range."
             exit 0
