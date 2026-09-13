@@ -1,12 +1,18 @@
 #!/usr/bin/env python3
 """Canonical calendar-row interface for Star Almanack generators.
 
-Rendered civil dates and zodiac labels are presentation only.  Generator stages
+Rendered civil dates and zodiac labels are presentation only. Generator stages
 must address calendar rows by the machine-readable ISO civil date stored in
 ``data-date`` and must never parse or compare displayed date/zodiac text.
 
+Each solar date owns exactly one calendar row and exactly one zodiac-day cell.
+The Events region owns zero or more independent visual event cells. Existing
+population stages may continue to exchange events as ``<br>``-separated HTML;
+this module translates that legacy interchange format to/from the canonical
+multi-cell rendering so the rule is enforced in one place.
+
 The authoritative civil dates of a weekly page are derived from its ISO
-``YEAR/Www`` path.  This lets us repair/normalize old pages without trusting
+``YEAR/Www`` path. This lets us repair/normalize old pages without trusting
 whatever date formatting happens to be visible in the HTML.
 """
 from __future__ import annotations
@@ -34,6 +40,22 @@ ROW_RE = re.compile(
 CIVIL_RANGE_RE = re.compile(
     r'(<p><strong>Civil dates:</strong>\s*)(.*?)(</p>)', re.DOTALL
 )
+EVENT_GRID_RE = re.compile(
+    r'^\s*<div\b[^>]*class="[^"]*\bcalendar-events\b[^"]*"[^>]*>(?P<body>.*?)</div>\s*$',
+    re.DOTALL,
+)
+EVENT_CELL_RE = re.compile(
+    r'<div\b[^>]*class="[^"]*\bevent-cell\b[^"]*"[^>]*>(?P<event>.*?)</div>',
+    re.DOTALL,
+)
+EVENT_STYLE_ID = "calendar-event-cells-css"
+EVENT_STYLE = f'''<style id="{EVENT_STYLE_ID}">
+.calendar td.calendar-events-region{{padding:.45rem;vertical-align:stretch}}
+.calendar-events{{display:grid;grid-template-columns:repeat(auto-fit,minmax(10rem,1fr));gap:.35rem;width:100%;align-items:stretch}}
+.calendar-events .event-cell{{min-width:0;padding:.52rem .6rem;border:1px solid var(--rule);border-radius:.35rem;background:var(--paper);line-height:1.45;overflow-wrap:anywhere}}
+.calendar-events:empty{{min-height:1.8rem}}
+@media(max-width:760px){{.calendar-events{{grid-template-columns:1fr}}}}
+</style>'''
 
 
 def _set_attr(attrs: str, name: str, value: str) -> str:
@@ -50,13 +72,54 @@ def _get_attr(attrs: str, name: str) -> str | None:
     return html.unescape(m.group(1)) if m else None
 
 
+def _ensure_class(attrs: str, class_name: str) -> str:
+    m = re.search(r'\s+class="([^"]*)"', attrs)
+    if not m:
+        return attrs + f' class="{class_name}"'
+    classes = m.group(1).split()
+    if class_name not in classes:
+        classes.append(class_name)
+    return attrs[:m.start(1)] + " ".join(classes) + attrs[m.end(1):]
+
+
+def _event_items(events_html: str) -> list[str]:
+    """Return canonical event items from either old or new event markup."""
+    raw = events_html.strip()
+    grid = EVENT_GRID_RE.match(raw)
+    if grid:
+        return [m.group("event").strip() for m in EVENT_CELL_RE.finditer(grid.group("body")) if m.group("event").strip()]
+    if not raw or raw == "—":
+        return []
+    return [item.strip() for item in re.split(r'<br\s*/?>', raw, flags=re.IGNORECASE) if item.strip() and item.strip() != "—"]
+
+
+def _render_event_cells(events_html: str) -> str:
+    items = _event_items(events_html)
+    cells = "".join(f'<div class="event-cell">{item}</div>' for item in items)
+    return f'<div class="calendar-events">{cells}</div>'
+
+
+def _legacy_events(events_html: str) -> str:
+    """Expose event contents to existing generators without coupling them to layout."""
+    items = _event_items(events_html)
+    return "<br>".join(items) if items else "—"
+
+
+def _ensure_event_style(text: str) -> str:
+    if f'id="{EVENT_STYLE_ID}"' in text:
+        return text
+    pos = text.lower().find("</head>")
+    if pos < 0:
+        return text
+    return text[:pos] + EVENT_STYLE + "\n" + text[pos:]
+
+
 def page_iso_week(path: Path) -> tuple[int, int]:
     week_name = path.parent.name
     year_name = path.parent.parent.name
     if not re.fullmatch(r'W\d{2}', week_name) or not re.fullmatch(r'\d{4}', year_name):
         raise ValueError(f"Weekly Almanack page is not under YEAR/Www: {path}")
     year, week = int(year_name), int(week_name[1:])
-    # Validation is delegated to fromisocalendar so impossible W53 values fail.
     dt.date.fromisocalendar(year, week, 1)
     return year, week
 
@@ -86,11 +149,7 @@ def _render_row(parts: dict[str, str]) -> str:
 
 
 def ensure_calendar_metadata(text: str, path: Path) -> str:
-    """Normalize one weekly page and install stable machine-readable keys.
-
-    The 7 civil dates are derived from the ISO week encoded in ``path``.  No
-    displayed date or zodiac text is parsed to discover identity.
-    """
+    """Normalize one weekly page and install stable machine-readable keys."""
     match = CALENDAR_RE.search(text)
     if not match:
         raise ValueError(f"No calendar table found in {path}")
@@ -109,11 +168,12 @@ def ensure_calendar_metadata(text: str, path: Path) -> str:
         parts["trattrs"] = _set_attr(parts["trattrs"], "data-date", iso)
         parts["dateattrs"] = _set_attr(parts["dateattrs"], "data-date", iso)
         parts["date"] = civil_date_text(day)
-        # Zodiac metadata exists independently of its rendered glyph/wording.
         if _get_attr(parts["zattrs"], "data-zodiac-sign") is None:
             parts["zattrs"] = _set_attr(parts["zattrs"], "data-zodiac-sign", "")
         if _get_attr(parts["zattrs"], "data-zodiac-day") is None:
             parts["zattrs"] = _set_attr(parts["zattrs"], "data-zodiac-day", "")
+        parts["eattrs"] = _ensure_class(parts["eattrs"], "calendar-events-region")
+        parts["events"] = _render_event_cells(parts["events"])
         out.append(_render_row(parts))
         cursor = row_match.end()
     out.append(body[cursor:])
@@ -126,7 +186,7 @@ def ensure_calendar_metadata(text: str, path: Path) -> str:
         text,
         count=1,
     )
-    return text
+    return _ensure_event_style(text)
 
 
 def _transform_row(text: str, day: dt.date, transform: Callable[[dict[str, str]], None]) -> tuple[str, bool]:
@@ -153,14 +213,16 @@ def get_events(text: str, day: dt.date) -> str | None:
         return None
     for row_match in ROW_RE.finditer(match.group("body")):
         if _get_attr(row_match.group("trattrs"), "data-date") == iso:
-            return row_match.group("events")
+            return _legacy_events(row_match.group("events"))
     return None
 
 
 def set_events(text: str, day: dt.date, events_html: str) -> tuple[str, bool]:
     def transform(parts: dict[str, str]) -> None:
-        parts["events"] = events_html
-    return _transform_row(text, day, transform)
+        parts["eattrs"] = _ensure_class(parts["eattrs"], "calendar-events-region")
+        parts["events"] = _render_event_cells(events_html)
+    updated, found = _transform_row(text, day, transform)
+    return (_ensure_event_style(updated) if found else updated), found
 
 
 def clear_events(text: str) -> str:
@@ -173,12 +235,14 @@ def clear_events(text: str) -> str:
     for row_match in ROW_RE.finditer(body):
         out.append(body[cursor:row_match.start()])
         parts = row_match.groupdict()
-        parts["events"] = "—"
+        parts["eattrs"] = _ensure_class(parts["eattrs"], "calendar-events-region")
+        parts["events"] = _render_event_cells("")
         out.append(_render_row(parts))
         cursor = row_match.end()
     out.append(body[cursor:])
     new_body = "".join(out)
-    return text[:match.start("body")] + new_body + text[match.end("body"):]
+    text = text[:match.start("body")] + new_body + text[match.end("body"):]
+    return _ensure_event_style(text)
 
 
 def set_zodiac(
