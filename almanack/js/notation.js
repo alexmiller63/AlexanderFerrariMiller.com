@@ -234,12 +234,10 @@
       button.setAttribute('aria-pressed', button.dataset.bayerMode === mode ? 'true' : 'false');
     });
 
-    const finderIndex = { greek: 0, latin: 1, mixed: 2 }[mode];
-    document.querySelectorAll('.w41-finder-strip').forEach(function (strip) {
-      strip.style.gridTemplateColumns = 'minmax(0, 1fr)';
-      strip.querySelectorAll('figure').forEach(function (figure, index) {
-        figure.hidden = index !== finderIndex;
-      });
+    document.querySelectorAll('[data-finder-mode]').forEach(function (figure) {
+      const active = figure.dataset.finderMode === mode;
+      figure.hidden = !active;
+      figure.classList.toggle('is-active', active);
     });
 
     try { localStorage.setItem('star-almanack-bayer-mode', mode); } catch (_) {}
