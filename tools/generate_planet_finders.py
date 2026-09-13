@@ -145,10 +145,23 @@ def layout(mode: str, bodies: list[tuple[str, str, float]]):
     result = []
 
     # Densest neighborhoods first, then canonical order, makes the greedy layout stable.
+    # In Latin mode only, swap Saturn/Neptune priority so Neptune claims the upper
+    # placement before Saturn in their crowded Aries neighborhood.
     def crowd(item):
         _, _, lon = item
         return -sum(1 for _, _, other in bodies if other != lon and min((lon-other) % 360, (other-lon) % 360) < 18)
-    ordered = sorted(enumerate(bodies), key=lambda p: (crowd(p[1]), p[0]))
+
+    def order_key(p):
+        original_index, (_, name, _) = p
+        rank = original_index
+        if mode == "latin":
+            if name == "Saturn":
+                rank = CANONICAL.index("Neptune")
+            elif name == "Neptune":
+                rank = CANONICAL.index("Saturn")
+        return crowd(p[1]), rank
+
+    ordered = sorted(enumerate(bodies), key=order_key)
 
     staged = {}
     for original_index, (symbol, name, longitude) in ordered:
