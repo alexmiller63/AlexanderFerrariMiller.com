@@ -145,7 +145,7 @@ def smart_route(anchor,target_box,mode,obstacles):
     route.reverse(); route.append(end_from(route[-1])); return route
 
 def route_leader(anchor,target_box,L,mode,obstacles):
-    """Choose a collision-free leader by balancing clearance and detour costs."""
+    """Choose a collision-free leader by balancing obstacle, rim, and detour costs."""
     x,y,w,h=target_box; collision_pad=2 if mode=='symbols' else 10
     def end_from(point): return edge_point(x,y,w,h,point[0],point[1],mode)
     def clear(points,pad=collision_pad):
@@ -154,6 +154,20 @@ def route_leader(anchor,target_box,L,mode,obstacles):
                         for a,b in zip(points,points[1:])))
     def route_length(points):
         return sum(math.hypot(b[0]-a[0],b[1]-a[1]) for a,b in zip(points,points[1:]))
+    def rim_clearance(points,ignore_start=18.0):
+        """Minimum inner-rim clearance after the leader has left its anchor."""
+        best=float('inf'); traveled=0.0
+        for a,b in zip(points,points[1:]):
+            seg_len=math.hypot(b[0]-a[0],b[1]-a[1])
+            steps=max(1,math.ceil(seg_len/6.0))
+            for step in range(1,steps+1):
+                frac=step/steps
+                distance=traveled+frac*seg_len
+                if distance<=ignore_start: continue
+                px=a[0]+(b[0]-a[0])*frac; py=a[1]+(b[1]-a[1])*frac
+                best=min(best,RI-math.hypot(px-C,py-C))
+            traveled+=seg_len
+        return best
 
     candidates=[]
     direct=[anchor,end_from(anchor)]
@@ -167,19 +181,22 @@ def route_leader(anchor,target_box,L,mode,obstacles):
             if clear(route): candidates.append(route)
 
     if candidates:
-        # Two independent aesthetic penalties: routes that crowd obstacles pay a
-        # clearance cost, while routes longer than the direct leader pay a detour
-        # cost. Neither concern dominates absolutely, so the chosen route can
-        # make a modest bend for breathing room without taking an oversized V.
+        # Three independent aesthetic penalties: crowding another object,
+        # crowding the zodiac rim after leaving the anchor, and excess detour.
+        # The rim term prevents near-tangent leaders from visually merging with
+        # the circle without imposing a hard route shape or a body-specific fix.
         desired_clearance=22 if mode=='symbols' else 24
+        desired_rim_clearance=26
         clearance_steps=tuple(range(desired_clearance,collision_pad-1,-2))
         direct_length=route_length(direct)
         def route_score(route):
             clearance=max((pad for pad in clearance_steps if clear(route,pad)),default=collision_pad)
             clearance_penalty=max(0,desired_clearance-clearance) ** 2
+            rim_deficit=max(0.0,desired_rim_clearance-rim_clearance(route))
+            rim_penalty=0.75*rim_deficit**2
             detour=max(0.0,route_length(route)-direct_length)
             detour_penalty=0.12*detour
-            return clearance_penalty+detour_penalty
+            return clearance_penalty+rim_penalty+detour_penalty
         return min(candidates,key=route_score)
 
     route=smart_route(anchor,target_box,mode,obstacles)
