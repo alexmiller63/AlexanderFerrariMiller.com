@@ -50,6 +50,23 @@ jobs:
       - name: Generate Calendar
         run: python tools/populate_calendar_by_date.py "${{ steps.range.outputs.start_date }}" "${{ steps.range.outputs.end_date }}"
 
+      - name: Restore notation behavior on generated Calendar pages
+        run: |
+          python tools/wire_ephemeris_notation.py $(python - <<'PY'
+          from datetime import date, timedelta
+          start = date.fromisoformat('${{ steps.range.outputs.start_date }}')
+          end = date.fromisoformat('${{ steps.range.outputs.end_date }}')
+          years = []
+          d = start
+          while d <= end:
+              year = str(d.isocalendar().year)
+              if year not in years:
+                  years.append(year)
+              d += timedelta(days=7)
+          print(' '.join(years))
+          PY
+          )
+
       - name: Commit Calendar changes only
         run: |
           git config user.name "github-actions[bot]"
