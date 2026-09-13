@@ -9,7 +9,7 @@ on:
       - 'Star-Almanack-Repo/eclipse-validation-cases.yaml'
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   compare-before-after:
@@ -58,13 +58,12 @@ jobs:
       - name: Compare pre-JDTDB and current eclipse timing
         working-directory: Star-Almanack-Repo
         env:
-          # Last repository state immediately before the JDTDB Besselian
-          # migration commit d9cb3bb3147122e4a90e7e50d7a6c1554b993fef.
           PRE_JDTDB_COMMIT: 0c64439dc222f2be35bc616da0fc4f5ce0bc5a00
         run: |
+          set -o pipefail
           git show "$PRE_JDTDB_COMMIT:Star-Almanack-Repo/besselian_eclipse_engine.py" > /tmp/besselian_before.py
 
-          python - <<'PY'
+          python - <<'PY' | tee eclipse-jdtdb-audit.txt
           from datetime import datetime
           import importlib.util
           from pathlib import Path
@@ -99,7 +98,7 @@ jobs:
 
           print('STAR ALMANACK — JDTDB ECLIPSE MIGRATION BEFORE/AFTER AUDIT')
           print('Before: 0c64439dc222f2be35bc616da0fc4f5ce0bc5a00')
-          print('After:  current besselian_eclipse_engine.py')
+          print('After: current besselian_eclipse_engine.py')
           print('Reference: frozen eclipse-validation-cases.yaml targets')
           print()
           print(
@@ -146,12 +145,21 @@ jobs:
           worsened = int(np.sum(new_abs > old_abs + 0.0005))
           print(f'cases improved/unchanged/worsened = {improved}/{unchanged}/{worsened}')
 
-          # Preserve the existing production safety guard. The first two
-          # historical cases intentionally exercise older time-model behavior;
-          # the modern/future set must not regress beyond ten seconds.
           modern = new_abs[2:]
           if modern.max() > 10.0:
               raise SystemExit(
                   f'JDTDB migration regression: modern max error {modern.max():.3f}s > 10s'
               )
           PY
+
+      - name: Commit audit report
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add Star-Almanack-Repo/eclipse-jdtdb-audit.txt
+          if git diff --cached --quiet; then
+            echo 'Audit report unchanged.'
+          else
+            git commit -m 'Record JDTDB eclipse audit results'
+            git push
+          fi
