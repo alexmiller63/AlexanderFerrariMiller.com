@@ -42,12 +42,16 @@ def sky_note_bounds(text: str) -> tuple[int, int]:
 
 
 def strip_owned_artwork(section: str) -> str:
-    return re.sub(
-        r'<figure class="w41-star-finder"[^>]*data-sky-note-artwork="(?:enif-m15|sadalmelik-aquarius)".*?</figure>\s*',
-        "",
-        section,
-        flags=re.S,
+    # Remove both the new explicitly-owned form and the legacy approved W41
+    # figures, which predate data-sky-note-artwork markers. This makes the
+    # recreation idempotent on old and new page generations.
+    patterns = (
+        r'<figure\b[^>]*data-sky-note-artwork="(?:enif-m15|sadalmelik-aquarius)"[^>]*>.*?</figure>\s*',
+        r'<figure\b[^>]*class="[^"]*w41-star-finder[^"]*"[^>]*>\s*<img\b[^>]*src="finders/(?:enif-finder|sadalmelik-finder)\.svg"[^>]*>.*?</figure>\s*',
     )
+    for pattern in patterns:
+        section = re.sub(pattern, "", section, flags=re.S)
+    return section
 
 
 def insert_artwork(section: str) -> str:
