@@ -253,7 +253,7 @@
     return false;
   }
 
-  function setMode(scope, mode, sourceButton) {
+  function updateTarget(scope, mode) {
     const root = scopeRoot(scope);
     if (!root) return;
 
@@ -273,12 +273,6 @@
       });
     }
 
-    const group = sourceButton ? sourceButton.closest('.bayer-toggle') : null;
-    const buttons = group ? group.querySelectorAll('[data-bayer-mode]') : document.querySelectorAll('[data-bayer-mode]');
-    buttons.forEach(function (button) {
-      button.setAttribute('aria-pressed', button.dataset.bayerMode === mode ? 'true' : 'false');
-    });
-
     if (scope === 'finder' || scope === 'page') {
       root.querySelectorAll('[data-finder-mode], [data-finder-image]').forEach(function (figure) {
         const figureMode = figure.dataset.finderMode || figure.dataset.finderImage;
@@ -288,28 +282,35 @@
         figure.classList.toggle('is-active', active);
       });
     }
-
-    try { localStorage.setItem('star-almanack-bayer-mode-' + scope, mode); } catch (_) {}
   }
 
-  const groups = Array.from(document.querySelectorAll('.bayer-toggle'));
-  groups.forEach(function (group) {
-    const firstButton = group.querySelector('[data-bayer-mode]');
-    if (!firstButton) return;
-    const scope = toggleScope(firstButton);
-    let initial = 'greek';
-    try {
-      const scoped = localStorage.getItem('star-almanack-bayer-mode-' + scope);
-      const legacy = localStorage.getItem('star-almanack-bayer-mode');
-      const saved = scoped || legacy;
-      if (saved === 'greek' || saved === 'latin' || saved === 'mixed') initial = saved;
-    } catch (_) {}
-    setMode(scope, initial, firstButton);
+  function syncButtons(mode) {
+    document.querySelectorAll('[data-bayer-mode]').forEach(function (button) {
+      button.setAttribute('aria-pressed', button.dataset.bayerMode === mode ? 'true' : 'false');
+    });
+  }
 
-    group.querySelectorAll('[data-bayer-mode]').forEach(function (button) {
-      button.addEventListener('click', function () {
-        setMode(toggleScope(button), button.dataset.bayerMode, button);
-      });
+  function applyMode(mode) {
+    const scopes = new Set();
+    document.querySelectorAll('.bayer-toggle [data-bayer-mode]').forEach(function (button) {
+      scopes.add(toggleScope(button));
+    });
+    scopes.forEach(function (scope) { updateTarget(scope, mode); });
+    syncButtons(mode);
+    try { localStorage.setItem('star-almanack-bayer-mode', mode); } catch (_) {}
+  }
+
+  document.querySelectorAll('[data-bayer-mode]').forEach(function (button) {
+    button.addEventListener('click', function () {
+      applyMode(button.dataset.bayerMode);
     });
   });
+
+  let initial = 'greek';
+  try {
+    const saved = localStorage.getItem('star-almanack-bayer-mode');
+    if (saved === 'greek' || saved === 'latin' || saved === 'mixed') initial = saved;
+  } catch (_) {}
+
+  applyMode(initial);
 })();
