@@ -9,9 +9,17 @@ Time architecture
 -----------------
 
 UTC is used only to define the requested civil-day search window and to render
-the published result. The numerical search coordinate is JDTDB. Skyfield Time
-objects are constructed from those JDTDB values only at the library boundary
-required by the Besselian/SPK routines.
+the published result. The astronomical solution is represented canonically as
+JDTDB. Skyfield Time objects are constructed from JDTDB values only at the
+library boundary required by the Besselian/SPK routines.
+
+The bounded scalar minimizer does not operate directly on the large absolute
+Julian-Date value. SciPy's bounded method includes a floating-point relative
+term in its stopping criterion; at JD ~= 2.4 million that term is large enough
+to degrade a millisecond-scale search by tens or hundreds of seconds. Instead,
+the minimizer uses a small day offset from the UTC-day's starting JDTDB and the
+objective immediately reconstructs the absolute JDTDB. This preserves JDTDB as
+the astronomical coordinate while avoiding loss of numerical resolution.
 
 Third-party dependency
 ----------------------
@@ -90,8 +98,11 @@ class BesselianEclipseEngine:
         """Return the day's reference-free Besselian shadow-axis minimum.
 
         ``date_utc`` must be ``YYYY-MM-DD``. No published eclipse time is used
-        as a seed. UTC defines only the civil-day bounds. The coarse search and
-        bounded refinement operate on JDTDB values.
+        as a seed. UTC defines only the civil-day bounds. The coarse search is
+        sampled in JDTDB. The bounded refinement uses a small offset in TDB days
+        from ``start_jd_tdb`` and reconstructs absolute JDTDB for each objective
+        evaluation, avoiding the large-JD tolerance problem in SciPy's bounded
+        minimizer.
         """
         year, month, day = map(int, date_utc.split("-"))
         utc_start = self._timescale.utc(year, month, day, 0, 0, 0)
@@ -112,11 +123,19 @@ class BesselianEclipseEngine:
         center_jd_tdb = float(coarse_jd_tdb[index])
 
         half_window_days = refine_half_window_seconds / DAY_SECONDS
-        lo = max(start_jd_tdb, center_jd_tdb - half_window_days)
-        hi = min(stop_jd_tdb, center_jd_tdb + half_window_days)
+        lo_jd_tdb = max(start_jd_tdb, center_jd_tdb - half_window_days)
+        hi_jd_tdb = min(stop_jd_tdb, center_jd_tdb + half_window_days)
+        lo_offset_days = lo_jd_tdb - start_jd_tdb
+        hi_offset_days = hi_jd_tdb - start_jd_tdb
+
+        def objective_offset_days(offset_days: float) -> float:
+            return self._axis_distance_squared_jd_tdb(
+                start_jd_tdb + float(offset_days)
+            )
+
         result = minimize_scalar(
-            self._axis_distance_squared_jd_tdb,
-            bounds=(lo, hi),
+            objective_offset_days,
+            bounds=(lo_offset_days, hi_offset_days),
             method="bounded",
             options={"xatol": 0.001 / DAY_SECONDS},
         )
@@ -126,7 +145,7 @@ class BesselianEclipseEngine:
                 f"{result.message}"
             )
 
-        greatest_jd_tdb = float(result.x)
+        greatest_jd_tdb = start_jd_tdb + float(result.x)
         t_best = self._time_from_jd_tdb(greatest_jd_tdb)
         row = bessels_at(t_best, self._ephemeris).iloc[0]
         x = float(row.x)
