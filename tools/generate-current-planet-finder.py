@@ -78,7 +78,23 @@ def place(mode,rows):
             options.sort(key=crowded_score)
         candidates[i]=tuple(options)
     assigned={}; search_nodes=0; node_limit=1_000_000
-    def compatible(box): return all(not overlap(box,q,label_pad) for q in assigned.values())
+    def angular_delta(a,b): return (a-b+180)%360-180
+    def label_longitude(box):
+        x,y,_,_=box
+        return (math.degrees(math.atan2(C-y,x-C))-180)%360
+    def preserves_local_order(i,box):
+        # Nearby bodies should read around the wheel in the same angular
+        # order as their exact anchors. This prevents two close labels from
+        # visually swapping places even when both arrangements are collision-free.
+        box_lon=label_longitude(box)
+        for j,q in assigned.items():
+            anchor_delta=angular_delta(lons[i],lons[j])
+            if abs(anchor_delta)>=18: continue
+            label_delta=angular_delta(box_lon,label_longitude(q))
+            if abs(label_delta)<1e-6 or anchor_delta*label_delta<=0: return False
+        return True
+    def compatible(i,box):
+        return preserves_local_order(i,box) and all(not overlap(box,q,label_pad) for q in assigned.values())
     def solve():
         nonlocal search_nodes
         search_nodes+=1
@@ -87,7 +103,7 @@ def place(mode,rows):
         best_i=None; best_options=None
         for i in range(len(rows)):
             if i in assigned: continue
-            options=[box for box in candidates[i] if compatible(box)]
+            options=[box for box in candidates[i] if compatible(i,box)]
             if not options: return False
             if best_options is None or len(options)<len(best_options) or (len(options)==len(best_options) and priority[i]<priority[best_i]): best_i=i; best_options=options
         for box in best_options:
