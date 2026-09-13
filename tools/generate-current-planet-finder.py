@@ -63,11 +63,6 @@ def place(mode,rows):
             if any(abs(ax-x)<=w/2+anchor_pad and abs(ay-y)<=h/2+anchor_pad for ax,ay in anchors): continue
             options.append(box)
         if not options: raise RuntimeError(f'No statically valid label positions for {name}')
-        # In crowded anchor neighborhoods, visual separation matters more than simply
-        # taking the first geometrically legal slot. Rank candidate labels by their
-        # clearance from the *other* anchors, then by leader length. This naturally
-        # pushes a label away from a neighboring dot (for example the W38 Moon/Venus
-        # pair) while preserving the old ordering for uncrowded bodies.
         if nearest[i] < 18:
             own_anchor=anchors[i]
             other_anchors=[a for j,a in enumerate(anchors) if j!=i]
@@ -83,13 +78,10 @@ def place(mode,rows):
         x,y,_,_=box
         return (math.degrees(math.atan2(C-y,x-C))-180)%360
     def preserves_local_order(i,box):
-        # Nearby bodies should read around the wheel in the same angular
-        # order as their exact anchors. This prevents two close labels from
-        # visually swapping places even when both arrangements are collision-free.
         box_lon=label_longitude(box)
         for j,q in assigned.items():
             anchor_delta=angular_delta(lons[i],lons[j])
-            if abs(anchor_delta)>=18: continue
+            if abs(anchor_delta)>=30: continue
             label_delta=angular_delta(box_lon,label_longitude(q))
             if abs(label_delta)<1e-6 or anchor_delta*label_delta<=0: return False
         return True
@@ -198,8 +190,6 @@ def route_leader(anchor,target_box,L,mode,obstacles,other_anchors=()):
         if not other_anchors: return float('inf')
         return min(point_segment_distance(p,a,b) for p in other_anchors for a,b in zip(points,points[1:]))
     def geometry_penalty(points):
-        # Favor diagrammatic geometry: a clean right-angle dog-leg should beat an
-        # arbitrary diagonal when both are safe and reasonably similar in length.
         if len(points)==2:
             dx=abs(points[1][0]-points[0][0]); dy=abs(points[1][1]-points[0][1])
             long=max(dx,dy)
@@ -214,9 +204,6 @@ def route_leader(anchor,target_box,L,mode,obstacles,other_anchors=()):
         return 6.0*(len(points)-2)
     candidates=[]; direct=[anchor,end_from(anchor)]
     if clear(direct): candidates.append(direct)
-    # Explicit cardinal attachment points create true one-bend rectilinear routes.
-    # These are especially useful when a label has open space above/below/left/right
-    # but the straight shot would look accidental or ambiguous.
     edge_targets=[(x-w/2,y),(x+w/2,y),(x,y-h/2),(x,y+h/2)]
     for end in edge_targets:
         for bend in ((anchor[0],end[1]),(end[0],anchor[1])):
@@ -231,17 +218,14 @@ def route_leader(anchor,target_box,L,mode,obstacles,other_anchors=()):
             bend=(rx+shift*tx,ry+shift*ty); route=[anchor,bend,end_from(bend)]
             if clear(route): candidates.append(route)
     if candidates:
-        desired_clearance=22 if mode=='symbols' else 24; desired_rim_clearance=26; desired_anchor_clearance=28
+        desired_clearance=22 if mode=='symbols' else 24; desired_rim_clearance=26; desired_anchor_clearance=20
         clearance_steps=tuple(range(desired_clearance,collision_pad-1,-2)); direct_length=route_length(direct)
         def route_score(route):
             clearance=max((pad for pad in clearance_steps if clear(route,pad)),default=collision_pad)
             clearance_penalty=max(0,desired_clearance-clearance)**2
             rim_deficit=max(0.0,desired_rim_clearance-rim_clearance(route)); rim_penalty=0.75*rim_deficit**2
             detour=max(0.0,route_length(route)-direct_length); detour_penalty=0.12*detour
-            # A leader that runs close to somebody else's dot can make the dot-to-label
-            # pairing ambiguous even without a geometric collision. Penalize that
-            # approach corridor heavily so neighboring anchors read independently.
-            anchor_deficit=max(0.0,desired_anchor_clearance-anchor_clearance(route)); anchor_penalty=2.0*anchor_deficit**2
+            anchor_deficit=max(0.0,desired_anchor_clearance-anchor_clearance(route)); anchor_penalty=0.5*anchor_deficit**2
             return clearance_penalty+rim_penalty+detour_penalty+anchor_penalty+geometry_penalty(route)
         return min(candidates,key=route_score)
     route=smart_route(anchor,target_box,mode,obstacles)
