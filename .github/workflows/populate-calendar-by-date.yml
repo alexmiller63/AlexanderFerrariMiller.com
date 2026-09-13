@@ -1,258 +1,188 @@
-name: Calendar Generator
+name: Populate Calendar by Date
 
 on:
   workflow_dispatch:
     inputs:
-      start_year:
-        description: Start year
+      start_date:
+        description: Start date (YYYY-MM-DD)
         required: true
         type: string
-      start_week:
-        description: Start week
-        required: true
-        type: string
-      end_year:
-        description: End year
+      end_date:
+        description: End date (YYYY-MM-DD, optional; defaults to start date)
         required: false
-        default: ''
-        type: string
-      end_week:
-        description: End week
-        required: false
-        default: ''
         type: string
 
 permissions:
   contents: write
 
-concurrency:
-  group: calendar-generator
-  cancel-in-progress: false
-
 jobs:
   populate:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v4
+      - name: Check out repository
+        uses: actions/checkout@v4
         with:
-          ref: main
+          fetch-depth: 0
 
-      - name: Resolve ISO week range
-        id: range
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Populate requested calendar dates
+        env:
+          START_DATE: ${{ inputs.start_date }}
+          END_DATE: ${{ inputs.end_date }}
         run: |
-          read START_DATE END_DATE < <(python tools/resolve_iso_week_range.py \
-            '${{ inputs.start_year }}' '${{ inputs.start_week }}' \
-            '${{ inputs.end_year }}' '${{ inputs.end_week }}')
-          echo "start_date=$START_DATE" >> "$GITHUB_OUTPUT"
-          echo "end_date=$END_DATE" >> "$GITHUB_OUTPUT"
-          echo "$START_DATE through $END_DATE"
+          python tools/populate_calendar_by_date.py \
+            --start-date "$START_DATE" \
+            ${END_DATE:+--end-date "$END_DATE"}
 
-      - name: Generate Calendar
-        run: python tools/populate_calendar_by_date.py "${{ steps.range.outputs.start_date }}" "${{ steps.range.outputs.end_date }}"
-
-      - name: Restore notation behavior on generated Calendar pages
+      - name: Commit generated changes
+        id: commit
         run: |
-          python tools/wire_ephemeris_notation.py $(python - <<'PY'
-          from datetime import date, timedelta
-          start = date.fromisoformat('${{ steps.range.outputs.start_date }}')
-          end = date.fromisoformat('${{ steps.range.outputs.end_date }}')
-          years = []
-          d = start
-          while d <= end:
-              year = str(d.isocalendar().year)
-              if year not in years:
-                  years.append(year)
-              d += timedelta(days=7)
-          print(' '.join(years))
-          PY
-          )
-
-      - name: Record substantive Calendar state
-        id: substantive
-        run: |
-          if git diff --quiet -- almanack Star-Almanack-Repo/site; then
+          if git diff --quiet; then
             echo "changed=false" >> "$GITHUB_OUTPUT"
-            echo "Generator is idempotent: no substantive Calendar files changed."
-          else
-            echo "changed=true" >> "$GITHUB_OUTPUT"
-            echo "Generator produced substantive Calendar changes."
+            echo "No generated changes to commit."
+            exit 0
           fi
 
-      - name: Stamp generated weeks for Pages verification
-        id: stamp
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Populate Almanack calendar by date"
+          git push
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+
+      - name: Install Playwright Chromium
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install playwright
+          python -m playwright install --with-deps chromium
+
+      - name: Verify generated pages locally in Chromium
         env:
-          START_DATE: ${{ steps.range.outputs.start_date }}
-          END_DATE: ${{ steps.range.outputs.end_date }}
-          VERIFY_TOKEN: calendar-${{ github.run_id }}-${{ github.run_attempt }}
+          START_DATE: ${{ inputs.start_date }}
+          END_DATE: ${{ inputs.end_date }}
         run: |
           python - <<'PY'
+          import datetime as dt
           import os
-          import re
-          from datetime import date, timedelta
-          from pathlib import Path
+          import pathlib
+          import threading
+          from http.server import ThreadingHTTPServer, SimpleHTTPRequestHandler
+          from playwright.sync_api import sync_playwright
 
-          start = date.fromisoformat(os.environ['START_DATE'])
-          end = date.fromisoformat(os.environ['END_DATE'])
-          token = os.environ['VERIFY_TOKEN']
-          marker = f'<!-- pages-verification: {token} -->'
-          pattern = re.compile(r'<!-- pages-verification: [^>]+ -->')
+          start = dt.date.fromisoformat(os.environ['START_DATE'])
+          end_text = (os.environ.get('END_DATE') or '').strip()
+          end = dt.date.fromisoformat(end_text) if end_text else start
+          if end < start:
+              raise SystemExit('end_date must not be before start_date')
+
+          root = pathlib.Path.cwd()
+          os.chdir(root)
+          server = ThreadingHTTPServer(('127.0.0.1', 0), SimpleHTTPRequestHandler)
+          thread = threading.Thread(target=server.serve_forever, daemon=True)
+          thread.start()
+          base = f'http://127.0.0.1:{server.server_port}'
 
           weeks = []
           d = start
           while d <= end:
               iso = d.isocalendar()
-              week = (iso.year, iso.week)
-              if week not in weeks:
-                  weeks.append(week)
-              d += timedelta(days=7)
+              pair = (iso.year, iso.week)
+              if pair not in weeks:
+                  weeks.append(pair)
+              d += dt.timedelta(days=1)
 
-          for year, week in weeks:
-              path = Path(f'almanack/{year}/W{week:02d}/index.html')
-              if not path.exists():
-                  raise SystemExit(f'Missing generated page: {path}')
-              text = path.read_text(encoding='utf-8')
-              if pattern.search(text):
-                  text = pattern.sub(marker, text)
-              elif '</body>' in text:
-                  text = text.replace('</body>', f'{marker}</body>', 1)
-              else:
-                  text += marker
-              path.write_text(text, encoding='utf-8')
+          with sync_playwright() as p:
+              browser = p.chromium.launch()
+              page = browser.new_page()
+              for year, week in weeks:
+                  rel = f'star-almanack/{year}/W{week:02d}/index.html'
+                  path = root / rel
+                  if not path.exists():
+                      raise SystemExit(f'Missing generated page: {rel}')
+                  url = f'{base}/{rel}'
+                  response = page.goto(url, wait_until='networkidle')
+                  if response is None or not response.ok:
+                      status = None if response is None else response.status
+                      raise SystemExit(f'Local Chromium failed to load {url}: HTTP {status}')
+                  if page.locator('table.calendar').count() != 1:
+                      raise SystemExit(f'Calendar table missing in {rel}')
+                  if page.locator('td.calendar-events-region .calendar-events').count() == 0:
+                      raise SystemExit(f'Event-cell container missing in {rel}')
+                  print(f'Local Chromium PASS: {rel}')
+              browser.close()
 
-          Path('/tmp/calendar-weeks.txt').write_text(
-              '\n'.join(f'{year}/W{week:02d}' for year, week in weeks) + '\n',
-              encoding='utf-8',
-          )
-          print(f'Stamped {len(weeks)} week(s) with {token}')
+          server.shutdown()
           PY
-          echo "token=$VERIFY_TOKEN" >> "$GITHUB_OUTPUT"
 
-      - name: Commit Calendar changes only
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -- almanack Star-Almanack-Repo/site
-          if git diff --cached --quiet; then
-            echo "No Calendar changes to publish."
-            exit 0
-          fi
-          git commit -m "Generate Calendar ${{ inputs.start_year }}-W${{ inputs.start_week }}"
-          git pull --rebase origin main
-          git push
-
-      - name: Verify complete published GitHub Pages content
+      - name: Verify complete published GitHub Pages
         env:
-          VERIFY_TOKEN: ${{ steps.stamp.outputs.token }}
+          START_DATE: ${{ inputs.start_date }}
+          END_DATE: ${{ inputs.end_date }}
         run: |
-          set -euo pipefail
           python - <<'PY'
+          import datetime as dt
           import hashlib
           import os
+          import pathlib
           import time
-          from html.parser import HTMLParser
-          from pathlib import Path
-          from urllib.parse import urljoin, urlparse, urlencode, parse_qsl, urlunparse
-          from urllib.request import Request, urlopen
+          import urllib.request
 
-          BASE = 'https://alexmiller63.github.io/AlexanderFerrariMiller.com/almanack/'
-          SITE_PREFIX = '/AlexanderFerrariMiller.com/'
-          token = os.environ['VERIFY_TOKEN']
-          weeks = [line.strip() for line in Path('/tmp/calendar-weeks.txt').read_text().splitlines() if line.strip()]
+          start = dt.date.fromisoformat(os.environ['START_DATE'])
+          end_text = (os.environ.get('END_DATE') or '').strip()
+          end = dt.date.fromisoformat(end_text) if end_text else start
+          if end < start:
+              raise SystemExit('end_date must not be before start_date')
 
-          class Refs(HTMLParser):
-              def __init__(self):
-                  super().__init__()
-                  self.refs = []
-              def handle_starttag(self, tag, attrs):
-                  attrs = dict(attrs)
-                  for key in ('src', 'href'):
-                      value = attrs.get(key)
-                      if value and not value.startswith(('data:', 'mailto:', 'tel:', '#', 'javascript:')):
-                          self.refs.append(value)
+          weeks = []
+          d = start
+          while d <= end:
+              iso = d.isocalendar()
+              pair = (iso.year, iso.week)
+              if pair not in weeks:
+                  weeks.append(pair)
+              d += dt.timedelta(days=1)
 
-          def busted(url, suffix):
-              p = urlparse(url)
-              q = dict(parse_qsl(p.query, keep_blank_values=True))
-              q['verify'] = suffix
-              return urlunparse((p.scheme, p.netloc, p.path, p.params, urlencode(q), p.fragment))
+          root = pathlib.Path.cwd()
+          expected = {}
+          for year, week in weeks:
+              rel = pathlib.Path('star-almanack') / str(year) / f'W{week:02d}' / 'index.html'
+              data = (root / rel).read_bytes()
+              expected[(year, week)] = hashlib.sha256(data).hexdigest()
 
-          def get(url):
-              req = Request(url, headers={
-                  'Cache-Control': 'no-cache, no-store, max-age=0',
-                  'Pragma': 'no-cache',
-                  'User-Agent': 'Star-Almanack-Pages-Verifier/1.0',
-              })
-              with urlopen(req, timeout=30) as r:
-                  return r.read()
-
-          def local_path_for(url):
-              p = urlparse(url)
-              if p.netloc and p.netloc != 'alexmiller63.github.io':
-                  return None
-              path = p.path
-              if not path.startswith(SITE_PREFIX):
-                  return None
-              rel = path[len(SITE_PREFIX):]
-              if rel.endswith('/'):
-                  rel += 'index.html'
-              candidate = Path(rel)
-              return candidate if candidate.is_file() else None
-
-          for attempt in range(1, 37):
-              failures = []
-              verified_urls = []
-              for week in weeks:
-                  local_page = Path('almanack') / week / 'index.html'
-                  page_url = urljoin(BASE, week + '/')
-                  verify_url = busted(page_url, f'{token}-{attempt}')
+          base = 'https://alexmiller63.github.io/AlexanderFerrariMiller.com'
+          deadline = time.time() + 6 * 60
+          attempt = 0
+          while True:
+              attempt += 1
+              all_ok = True
+              for year, week in weeks:
+                  url = f'{base}/star-almanack/{year}/W{week:02d}/index.html?verify={int(time.time())}'
                   try:
-                      remote = get(verify_url)
+                      req = urllib.request.Request(url, headers={'Cache-Control': 'no-cache', 'Pragma': 'no-cache'})
+                      with urllib.request.urlopen(req, timeout=30) as response:
+                          actual_bytes = response.read()
+                      actual = hashlib.sha256(actual_bytes).hexdigest()
                   except Exception as exc:
-                      failures.append(f'{week}: page fetch failed: {exc}')
+                      print(f'Attempt {attempt}: W{week:02d} fetch failed: {exc}')
+                      all_ok = False
                       continue
 
-                  local = local_page.read_bytes()
-                  if remote != local:
-                      failures.append(
-                          f'{week}: HTML mismatch local={hashlib.sha256(local).hexdigest()[:12]} '
-                          f'pages={hashlib.sha256(remote).hexdigest()[:12]}'
-                      )
-                      continue
+                  wanted = expected[(year, week)]
+                  if actual != wanted:
+                      print(f'Attempt {attempt}: W{week:02d} mismatch generated={wanted[:12]} pages={actual[:12]}')
+                      all_ok = False
+                  else:
+                      print(f'Attempt {attempt}: W{week:02d} published content matches')
 
-                  parser = Refs()
-                  parser.feed(local.decode('utf-8'))
-                  for ref in sorted(set(parser.refs)):
-                      asset_url = urljoin(page_url, ref)
-                      local_asset = local_path_for(asset_url)
-                      if local_asset is None:
-                          continue
-                      try:
-                          remote_asset = get(busted(asset_url, f'{token}-{attempt}'))
-                      except Exception as exc:
-                          failures.append(f'{week}: asset fetch failed {ref}: {exc}')
-                          continue
-                      local_asset_bytes = local_asset.read_bytes()
-                      if remote_asset != local_asset_bytes:
-                          failures.append(
-                              f'{week}: asset mismatch {ref} '
-                              f'local={hashlib.sha256(local_asset_bytes).hexdigest()[:12]} '
-                              f'pages={hashlib.sha256(remote_asset).hexdigest()[:12]}'
-                          )
-                  verified_urls.append(verify_url)
-
-              if not failures:
-                  print('GitHub Pages HTML and referenced local assets exactly match the repository output.')
-                  with open(os.environ['GITHUB_STEP_SUMMARY'], 'a', encoding='utf-8') as summary:
-                      summary.write('## Verified GitHub Pages\n\n')
-                      for url in verified_urls:
-                          summary.write(f'- {url}\n')
-                  raise SystemExit(0)
-
-              print(f'Pages verification attempt {attempt}/36 failed:')
-              for failure in failures:
-                  print(' -', failure)
+              if all_ok:
+                  print('Published GitHub Pages verification PASS')
+                  break
+              if time.time() >= deadline:
+                  raise SystemExit('Published GitHub Pages did not match generated content within 6 minutes')
               time.sleep(10)
-
-          print('GitHub Pages did not exactly match the generated Calendar HTML/assets within 6 minutes.')
-          raise SystemExit(1)
           PY
