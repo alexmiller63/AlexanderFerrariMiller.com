@@ -67,6 +67,55 @@ jobs:
           PY
           )
 
+      - name: Stamp generated weeks for Pages verification
+        id: stamp
+        env:
+          START_DATE: ${{ steps.range.outputs.start_date }}
+          END_DATE: ${{ steps.range.outputs.end_date }}
+          VERIFY_TOKEN: calendar-${{ github.run_id }}-${{ github.run_attempt }}
+        run: |
+          python - <<'PY'
+          import os
+          import re
+          from datetime import date, timedelta
+          from pathlib import Path
+
+          start = date.fromisoformat(os.environ['START_DATE'])
+          end = date.fromisoformat(os.environ['END_DATE'])
+          token = os.environ['VERIFY_TOKEN']
+          marker = f'<!-- pages-verification: {token} -->'
+          pattern = re.compile(r'<!-- pages-verification: [^>]+ -->')
+
+          weeks = []
+          d = start
+          while d <= end:
+              iso = d.isocalendar()
+              week = (iso.year, iso.week)
+              if week not in weeks:
+                  weeks.append(week)
+              d += timedelta(days=7)
+
+          for year, week in weeks:
+              path = Path(f'almanack/{year}/W{week:02d}/index.html')
+              if not path.exists():
+                  raise SystemExit(f'Missing generated page: {path}')
+              text = path.read_text(encoding='utf-8')
+              if pattern.search(text):
+                  text = pattern.sub(marker, text)
+              elif '</body>' in text:
+                  text = text.replace('</body>', f'{marker}</body>', 1)
+              else:
+                  text += marker
+              path.write_text(text, encoding='utf-8')
+
+          Path('/tmp/calendar-weeks.txt').write_text(
+              '\n'.join(f'{year}/W{week:02d}' for year, week in weeks) + '\n',
+              encoding='utf-8',
+          )
+          print(f'Stamped {len(weeks)} week(s) with {token}')
+          PY
+          echo "token=$VERIFY_TOKEN" >> "$GITHUB_OUTPUT"
+
       - name: Commit Calendar changes only
         run: |
           git config user.name "github-actions[bot]"
@@ -74,8 +123,42 @@ jobs:
           git add -- almanack Star-Almanack-Repo/site
           if git diff --cached --quiet; then
             echo "No Calendar changes in requested ISO week range."
-            exit 0
+            exit 1
           fi
           git commit -m "Generate Calendar ${{ inputs.start_year }}-W${{ inputs.start_week }}"
           git pull --rebase origin main
           git push
+
+      - name: Verify published GitHub Pages
+        env:
+          VERIFY_TOKEN: ${{ steps.stamp.outputs.token }}
+        run: |
+          set -euo pipefail
+          BASE='https://alexmiller63.github.io/AlexanderFerrariMiller.com/almanack'
+          mapfile -t WEEKS < /tmp/calendar-weeks.txt
+
+          for attempt in $(seq 1 36); do
+            missing=0
+            echo "Pages verification attempt $attempt/36"
+            for week in "${WEEKS[@]}"; do
+              url="$BASE/$week/?verify=$VERIFY_TOKEN-$attempt"
+              if curl -fsSL \
+                  -H 'Cache-Control: no-cache' \
+                  -H 'Pragma: no-cache' \
+                  "$url" | grep -Fq "pages-verification: $VERIFY_TOKEN"; then
+                echo "Verified $week"
+              else
+                echo "Waiting for $week"
+                missing=1
+              fi
+            done
+
+            if [ "$missing" -eq 0 ]; then
+              echo "GitHub Pages contains the newly generated Calendar output."
+              exit 0
+            fi
+            sleep 10
+          done
+
+          echo "GitHub Pages did not publish the expected Calendar output within 6 minutes."
+          exit 1
