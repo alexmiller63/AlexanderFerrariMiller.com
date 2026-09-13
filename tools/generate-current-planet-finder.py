@@ -85,25 +85,29 @@ def place(mode,rows):
             label_delta=angular_delta(box_lon,label_longitude(q))
             if abs(label_delta)<1e-6 or anchor_delta*label_delta<=0: return False
         return True
-    def compatible(i,box):
-        return preserves_local_order(i,box) and all(not overlap(box,q,label_pad) for q in assigned.values())
-    def solve():
+    def compatible(i,box,enforce_order):
+        return (not enforce_order or preserves_local_order(i,box)) and all(not overlap(box,q,label_pad) for q in assigned.values())
+    def solve(enforce_order):
         nonlocal search_nodes
         search_nodes+=1
-        if search_nodes>node_limit: raise RuntimeError(f'Label placement search exceeded {node_limit} states')
+        if search_nodes>node_limit: return False
         if len(assigned)==len(rows): return True
         best_i=None; best_options=None
         for i in range(len(rows)):
             if i in assigned: continue
-            options=[box for box in candidates[i] if compatible(i,box)]
+            options=[box for box in candidates[i] if compatible(i,box,enforce_order)]
             if not options: return False
             if best_options is None or len(options)<len(best_options) or (len(options)==len(best_options) and priority[i]<priority[best_i]): best_i=i; best_options=options
         for box in best_options:
             assigned[best_i]=box
-            if solve(): return True
+            if solve(enforce_order): return True
             del assigned[best_i]
         return False
-    if not solve(): raise RuntimeError(f'No collision-free label arrangement for {mode} after {search_nodes} search states')
+    if not solve(True):
+        strict_nodes=search_nodes
+        assigned.clear(); search_nodes=0
+        if not solve(False):
+            raise RuntimeError(f'No collision-free label arrangement for {mode} after {strict_nodes + search_nodes} search states')
     return [assigned[i] for i in range(len(rows))]
 
 def edge_point(x,y,w,h,ax,ay,mode):
