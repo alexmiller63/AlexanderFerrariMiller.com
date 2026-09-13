@@ -16,6 +16,7 @@ on:
       - 'tools/audit_constellation_centers.py'
       - 'tools/clean_event_cells.py'
       - 'tools/populate_calendar.py'
+      - 'tools/populate_galactic_center.py'
       - 'tools/populate_meteor_showers.py'
       - 'tools/populate_ephemeris.py'
       - 'tools/generate-current-planet-finder.py'
@@ -73,6 +74,8 @@ jobs:
         run: python tools/clean_event_cells.py $ALMANACK_YEARS
       - name: Populate Zodiac Days, ingresses, solar stations, and named lunar phases
         run: python tools/populate_calendar.py $ALMANACK_YEARS
+      - name: Populate Galactic Center conjunction
+        run: python tools/populate_galactic_center.py $ALMANACK_YEARS
       - name: Publish independently calculated 2026 eclipses
         run: |
           if [[ " $ALMANACK_YEARS " == *" 2026 "* ]]; then
@@ -119,6 +122,8 @@ jobs:
         run: python tools/audit_constellation_centers.py $ALMANACK_YEARS
       - name: Audit true-year parameterization
         run: python tools/audit_true_year_parameterization.py $ALMANACK_YEARS
+      - name: Verify Galactic Center survived downstream passes
+        run: python tools/populate_galactic_center.py --verify-only $ALMANACK_YEARS
       - name: Commit generated Almanack foundations
         run: |
           set -euo pipefail
@@ -162,6 +167,7 @@ jobs:
             regression
             python tools/clean_event_cells.py $ALMANACK_YEARS
             python tools/populate_calendar.py $ALMANACK_YEARS
+            python tools/populate_galactic_center.py $ALMANACK_YEARS
             if [[ " $ALMANACK_YEARS " == *" 2026 "* ]]; then python tools/wire_2026_eclipses.py; fi
             python tools/populate_meteor_showers.py $ALMANACK_YEARS
             python tools/populate_ephemeris.py $ALMANACK_YEARS
@@ -179,6 +185,7 @@ jobs:
             python tools/audit_calendar_contract.py $ALMANACK_YEARS
             python tools/audit_constellation_centers.py $ALMANACK_YEARS
             python tools/audit_true_year_parameterization.py $ALMANACK_YEARS
+            python tools/populate_galactic_center.py --verify-only $ALMANACK_YEARS
           }
           stage_generated
           if git diff --cached --quiet; then echo 'No Almanack foundation changes'; exit 0; fi
