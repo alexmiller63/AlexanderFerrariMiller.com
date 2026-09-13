@@ -1,19 +1,33 @@
-name: Populate Calendar by Date
+name: Calendar Generator
 
 on:
   workflow_dispatch:
     inputs:
-      start_date:
-        description: Start date (YYYY-MM-DD)
+      start_year:
+        description: Start year
         required: true
         type: string
-      end_date:
-        description: End date (YYYY-MM-DD, optional; defaults to start date)
+      start_week:
+        description: Start week
+        required: true
+        type: string
+      end_year:
+        description: End year
         required: false
+        default: ''
+        type: string
+      end_week:
+        description: End week
+        required: false
+        default: ''
         type: string
 
 permissions:
   contents: write
+
+concurrency:
+  group: calendar-generator
+  cancel-in-progress: false
 
 jobs:
   populate:
@@ -30,14 +44,24 @@ jobs:
         with:
           python-version: '3.x'
 
+      - name: Resolve ISO week range
+        id: range
+        run: |
+          read START_DATE END_DATE < <(python tools/resolve_iso_week_range.py \
+            '${{ inputs.start_year }}' '${{ inputs.start_week }}' \
+            '${{ inputs.end_year }}' '${{ inputs.end_week }}')
+          echo "start_date=$START_DATE" >> "$GITHUB_OUTPUT"
+          echo "end_date=$END_DATE" >> "$GITHUB_OUTPUT"
+          echo "Resolved $START_DATE through $END_DATE"
+
       - name: Populate requested calendar dates
         env:
-          START_DATE: ${{ inputs.start_date }}
-          END_DATE: ${{ inputs.end_date }}
+          START_DATE: ${{ steps.range.outputs.start_date }}
+          END_DATE: ${{ steps.range.outputs.end_date }}
         run: |
           python tools/populate_calendar_by_date.py \
             --start-date "$START_DATE" \
-            ${END_DATE:+--end-date "$END_DATE"}
+            --end-date "$END_DATE"
 
       - name: Commit generated changes
         id: commit
@@ -51,7 +75,8 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A
-          git commit -m "Populate Almanack calendar by date"
+          git commit -m "Populate Almanack calendar ${{ inputs.start_year }}-W${{ inputs.start_week }}"
+          git pull --rebase origin main
           git push
           echo "changed=true" >> "$GITHUB_OUTPUT"
 
@@ -63,8 +88,8 @@ jobs:
 
       - name: Verify generated pages locally in Chromium
         env:
-          START_DATE: ${{ inputs.start_date }}
-          END_DATE: ${{ inputs.end_date }}
+          START_DATE: ${{ steps.range.outputs.start_date }}
+          END_DATE: ${{ steps.range.outputs.end_date }}
         run: |
           python - <<'PY'
           import datetime as dt
@@ -75,13 +100,8 @@ jobs:
           from playwright.sync_api import sync_playwright
 
           start = dt.date.fromisoformat(os.environ['START_DATE'])
-          end_text = (os.environ.get('END_DATE') or '').strip()
-          end = dt.date.fromisoformat(end_text) if end_text else start
-          if end < start:
-              raise SystemExit('end_date must not be before start_date')
-
+          end = dt.date.fromisoformat(os.environ['END_DATE'])
           root = pathlib.Path.cwd()
-          os.chdir(root)
           server = ThreadingHTTPServer(('127.0.0.1', 0), SimpleHTTPRequestHandler)
           thread = threading.Thread(target=server.serve_forever, daemon=True)
           thread.start()
@@ -104,25 +124,23 @@ jobs:
                   path = root / rel
                   if not path.exists():
                       raise SystemExit(f'Missing generated page: {rel}')
-                  url = f'{base}/{rel}'
-                  response = page.goto(url, wait_until='networkidle')
+                  response = page.goto(f'{base}/{rel}', wait_until='networkidle')
                   if response is None or not response.ok:
                       status = None if response is None else response.status
-                      raise SystemExit(f'Local Chromium failed to load {url}: HTTP {status}')
+                      raise SystemExit(f'Local Chromium failed to load {rel}: HTTP {status}')
                   if page.locator('table.calendar').count() != 1:
                       raise SystemExit(f'Calendar table missing in {rel}')
                   if page.locator('td.calendar-events-region .calendar-events').count() == 0:
                       raise SystemExit(f'Event-cell container missing in {rel}')
                   print(f'Local Chromium PASS: {rel}')
               browser.close()
-
           server.shutdown()
           PY
 
       - name: Verify complete published GitHub Pages
         env:
-          START_DATE: ${{ inputs.start_date }}
-          END_DATE: ${{ inputs.end_date }}
+          START_DATE: ${{ steps.range.outputs.start_date }}
+          END_DATE: ${{ steps.range.outputs.end_date }}
         run: |
           python - <<'PY'
           import datetime as dt
@@ -133,11 +151,7 @@ jobs:
           import urllib.request
 
           start = dt.date.fromisoformat(os.environ['START_DATE'])
-          end_text = (os.environ.get('END_DATE') or '').strip()
-          end = dt.date.fromisoformat(end_text) if end_text else start
-          if end < start:
-              raise SystemExit('end_date must not be before start_date')
-
+          end = dt.date.fromisoformat(os.environ['END_DATE'])
           weeks = []
           d = start
           while d <= end:
@@ -151,8 +165,7 @@ jobs:
           expected = {}
           for year, week in weeks:
               rel = pathlib.Path('star-almanack') / str(year) / f'W{week:02d}' / 'index.html'
-              data = (root / rel).read_bytes()
-              expected[(year, week)] = hashlib.sha256(data).hexdigest()
+              expected[(year, week)] = hashlib.sha256((root / rel).read_bytes()).hexdigest()
 
           base = 'https://alexmiller63.github.io/AlexanderFerrariMiller.com'
           deadline = time.time() + 6 * 60
@@ -165,20 +178,17 @@ jobs:
                   try:
                       req = urllib.request.Request(url, headers={'Cache-Control': 'no-cache', 'Pragma': 'no-cache'})
                       with urllib.request.urlopen(req, timeout=30) as response:
-                          actual_bytes = response.read()
-                      actual = hashlib.sha256(actual_bytes).hexdigest()
+                          actual = hashlib.sha256(response.read()).hexdigest()
                   except Exception as exc:
                       print(f'Attempt {attempt}: W{week:02d} fetch failed: {exc}')
                       all_ok = False
                       continue
-
                   wanted = expected[(year, week)]
                   if actual != wanted:
                       print(f'Attempt {attempt}: W{week:02d} mismatch generated={wanted[:12]} pages={actual[:12]}')
                       all_ok = False
                   else:
                       print(f'Attempt {attempt}: W{week:02d} published content matches')
-
               if all_ok:
                   print('Published GitHub Pages verification PASS')
                   break
