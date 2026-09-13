@@ -9,16 +9,20 @@ STYLE_ID = "calendar-mobile-layout-css"
 STYLE = f'''<style id="{STYLE_ID}">
 @media (max-width:760px) {{
   table.calendar {{ width:100%; table-layout:fixed; }}
-  table.calendar th, table.calendar td {{ min-width:0; padding:.55rem .45rem; overflow-wrap:anywhere; word-break:normal; }}
-  table.calendar th:first-child, table.calendar td:first-child {{ width:26%; }}
-  table.calendar th:nth-child(2), table.calendar td:nth-child(2) {{ width:24%; }}
-  table.calendar th:nth-child(3), table.calendar td:nth-child(3) {{ width:50%; }}
-  table.calendar td:first-child {{ white-space:normal; }}
+  table.calendar th, table.calendar td {{ min-width:0; padding:.55rem .45rem; overflow-wrap:normal; word-break:normal; }}
+  table.calendar th:first-child, table.calendar td:first-child {{ width:24%; }}
+  table.calendar th:nth-child(2), table.calendar td:nth-child(2) {{ width:18%; }}
+  table.calendar th:nth-child(3), table.calendar td:nth-child(3) {{ width:58%; }}
+  table.calendar td:first-child {{ white-space:normal; overflow-wrap:anywhere; }}
   table.calendar td:nth-child(2) {{ white-space:normal; text-align:center; }}
   table.calendar td.calendar-events-region,
   .calendar-events,
   .calendar-events .event-cell {{ min-width:0; max-width:100%; }}
-  .calendar-events .event-cell {{ overflow-wrap:anywhere; word-break:normal; }}
+  .calendar-events .event-cell {{ overflow-wrap:normal; word-break:normal; }}
+  table.calendar .notation-item,
+  table.calendar .notation-rendered,
+  table.calendar .visibility-magnitude,
+  table.calendar .observing-aid-notation {{ white-space:nowrap; }}
   .visibility {{ white-space:normal; }}
 }}
 </style>'''
