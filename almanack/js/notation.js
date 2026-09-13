@@ -216,42 +216,100 @@
     cell.append(day);
   });
 
-  const buttons = document.querySelectorAll('[data-bayer-mode]');
+  function toggleScope(button) {
+    const wrapper = button.closest('.section-notation-toggle');
+    if (wrapper && wrapper.dataset.notationTarget) return wrapper.dataset.notationTarget;
+    if (!wrapper) return 'page';
 
-  function setMode(mode) {
-    document.querySelectorAll('.notation-item, .notation-rendered').forEach(function (item) {
+    let next = wrapper.nextElementSibling;
+    if (next && next.matches('h3')) {
+      if (next.textContent.trim() === 'Calendar') return 'calendar';
+      if (next.textContent.trim() === 'Planet Finder') return 'finder';
+      if (next.textContent.trim() === 'Weekly Solar-System Ephemeris') return 'ephemeris';
+    }
+
+    let previous = wrapper.previousElementSibling;
+    while (previous) {
+      if (previous.matches('h3')) {
+        if (previous.textContent.trim() === 'Weekly Solar-System Ephemeris') return 'ephemeris';
+        break;
+      }
+      previous = previous.previousElementSibling;
+    }
+    return 'page';
+  }
+
+  function scopeRoot(scope) {
+    if (scope === 'calendar') return document.querySelector('table.calendar');
+    if (scope === 'ephemeris') return document.querySelector('table.ephemeris') ? document.querySelector('main') : null;
+    if (scope === 'finder') return document.querySelector('.planet-finder-strip, .w15-finder-strip');
+    return document;
+  }
+
+  function itemBelongsToScope(item, scope) {
+    if (scope === 'calendar') return !!item.closest('table.calendar');
+    if (scope === 'ephemeris') return !!item.closest('table.ephemeris') || !!item.closest('.ephemeris-note');
+    if (scope === 'page') return true;
+    return false;
+  }
+
+  function setMode(scope, mode, sourceButton) {
+    const root = scopeRoot(scope);
+    if (!root) return;
+
+    root.querySelectorAll('.notation-item, .notation-rendered').forEach(function (item) {
+      if (!itemBelongsToScope(item, scope)) return;
       renderNotation(item, item.dataset[mode] || item.dataset.greek || item.textContent);
     });
-    document.querySelectorAll('.observing-aid-notation').forEach(function (item) {
-      const symbol = item.querySelector('.observing-aid-symbol');
-      const word = item.querySelector('.observing-aid-word');
-      if (!symbol || !word) return;
-      symbol.hidden = mode === 'latin';
-      word.hidden = mode === 'greek';
-      item.classList.toggle('is-mixed', mode === 'mixed');
-    });
+
+    if (scope === 'calendar' || scope === 'page') {
+      root.querySelectorAll('.observing-aid-notation').forEach(function (item) {
+        const symbol = item.querySelector('.observing-aid-symbol');
+        const word = item.querySelector('.observing-aid-word');
+        if (!symbol || !word) return;
+        symbol.hidden = mode === 'latin';
+        word.hidden = mode === 'greek';
+        item.classList.toggle('is-mixed', mode === 'mixed');
+      });
+    }
+
+    const group = sourceButton ? sourceButton.closest('.bayer-toggle') : null;
+    const buttons = group ? group.querySelectorAll('[data-bayer-mode]') : document.querySelectorAll('[data-bayer-mode]');
     buttons.forEach(function (button) {
       button.setAttribute('aria-pressed', button.dataset.bayerMode === mode ? 'true' : 'false');
     });
 
-    document.querySelectorAll('[data-finder-mode]').forEach(function (figure) {
-      const active = figure.dataset.finderMode === mode;
-      figure.hidden = !active;
-      figure.classList.toggle('is-active', active);
-    });
+    if (scope === 'finder' || scope === 'page') {
+      root.querySelectorAll('[data-finder-mode], [data-finder-image]').forEach(function (figure) {
+        const figureMode = figure.dataset.finderMode || figure.dataset.finderImage;
+        const active = figureMode === mode;
+        figure.hidden = !active;
+        figure.style.display = active ? '' : 'none';
+        figure.classList.toggle('is-active', active);
+      });
+    }
 
-    try { localStorage.setItem('star-almanack-bayer-mode', mode); } catch (_) {}
+    try { localStorage.setItem('star-almanack-bayer-mode-' + scope, mode); } catch (_) {}
   }
 
-  buttons.forEach(function (button) {
-    button.addEventListener('click', function () { setMode(button.dataset.bayerMode); });
+  const groups = Array.from(document.querySelectorAll('.bayer-toggle'));
+  groups.forEach(function (group) {
+    const firstButton = group.querySelector('[data-bayer-mode]');
+    if (!firstButton) return;
+    const scope = toggleScope(firstButton);
+    let initial = 'greek';
+    try {
+      const scoped = localStorage.getItem('star-almanack-bayer-mode-' + scope);
+      const legacy = localStorage.getItem('star-almanack-bayer-mode');
+      const saved = scoped || legacy;
+      if (saved === 'greek' || saved === 'latin' || saved === 'mixed') initial = saved;
+    } catch (_) {}
+    setMode(scope, initial, firstButton);
+
+    group.querySelectorAll('[data-bayer-mode]').forEach(function (button) {
+      button.addEventListener('click', function () {
+        setMode(toggleScope(button), button.dataset.bayerMode, button);
+      });
+    });
   });
-
-  let initial = 'greek';
-  try {
-    const saved = localStorage.getItem('star-almanack-bayer-mode');
-    if (saved === 'greek' || saved === 'latin' || saved === 'mixed') initial = saved;
-  } catch (_) {}
-
-  setMode(initial);
 })();
