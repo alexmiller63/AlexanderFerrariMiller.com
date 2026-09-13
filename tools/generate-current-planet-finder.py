@@ -46,36 +46,84 @@ def box_inside_inner_rim(box,clearance=10):
                for py in (y-h/2,y+h/2))
 
 def place(mode,rows):
-    reserved=list(CENTER_RESERVED)
-    placed=[]; result={}
+    """Place all labels with finite, bounded recursive backtracking.
+
+    Candidate geometry is finite and precomputed. Each recursive call assigns
+    exactly one previously-unassigned label, so recursion depth can never exceed
+    len(rows). The next label is chosen with a minimum-remaining-values heuristic
+    to expose dead ends early, while the original crowded-first ordering is used
+    as a deterministic tie-breaker. A generous state budget protects CI from an
+    accidental combinatorial explosion without permitting a recursion loop.
+    """
+    reserved=tuple(CENTER_RESERVED)
     lons=[r[-1] for r in rows]
     anchors=[xy(L,RI-5) for L in lons]
     nearest=[min(abs((lons[i]-lons[j]+180)%360-180)
                  for j in range(len(rows)) if j!=i)
              for i in range(len(rows))]
-    order=sorted(range(len(rows)),key=lambda i:(nearest[i],lons[i]))
-    for i in order:
-        sym,name,sign,d,m,L=rows[i]; w,h=dims(mode,name)
+    original_order=sorted(range(len(rows)),key=lambda i:(nearest[i],lons[i]))
+    priority={i:rank for rank,i in enumerate(original_order)}
+
+    radii=(340,300,260,380,220,180)
+    shifts=(0,-70,70,-120,120,-170,170)
+    candidate_specs=([(r,sh) for sh in (0,-45,45,-80,80,-120,120) for r in radii]
+                     if mode=='symbols' else [(r,sh) for r in radii for sh in shifts])
+    label_pad=4 if mode=='symbols' else 16
+    reserved_pad=8 if mode=='symbols' else 18
+    anchor_pad=2 if mode=='symbols' else 10
+
+    candidates={}
+    for i,row in enumerate(rows):
+        sym,name,sign,d,m,L=row; w,h=dims(mode,name)
         t=math.radians(180+L); tx=-math.sin(t); ty=-math.cos(t)
-        chosen=None
-        radii=(340,300,260,380,220,180)
-        shifts=(0,-70,70,-120,120,-170,170)
-        candidates=([(r,sh) for sh in (0,-45,45,-80,80,-120,120) for r in radii]
-                    if mode=='symbols' else [(r,sh) for r in radii for sh in shifts])
-        label_pad=4 if mode=='symbols' else 16
-        reserved_pad=8 if mode=='symbols' else 18
-        anchor_pad=2 if mode=='symbols' else 10
-        for r,sh in candidates:
+        options=[]
+        for r,sh in candidate_specs:
             bx,by=xy(L,r); x=bx+sh*tx; y=by+sh*ty; box=(x,y,w,h)
             if x-w/2<300 or x+w/2>1100 or y-h/2<300 or y+h/2>1100: continue
             if mode!='symbols' and not box_inside_inner_rim(box): continue
-            if any(overlap(box,q,label_pad) for q in placed): continue
             if any(overlap(box,q,reserved_pad) for q in reserved): continue
-            if any(abs(ax-x)<=w/2+anchor_pad and abs(ay-y)<=h/2+anchor_pad for ax,ay in anchors): continue
-            chosen=box; break
-        if not chosen: raise RuntimeError(f'No collision-free label position for {name}')
-        placed.append(chosen); result[i]=chosen
-    return [result[i] for i in range(len(rows))]
+            if any(abs(ax-x)<=w/2+anchor_pad and abs(ay-y)<=h/2+anchor_pad
+                   for ax,ay in anchors): continue
+            options.append(box)
+        if not options:
+            raise RuntimeError(f'No statically valid label positions for {name}')
+        candidates[i]=tuple(options)
+
+    assigned={}
+    search_nodes=0
+    node_limit=1_000_000
+
+    def compatible(box):
+        return all(not overlap(box,q,label_pad) for q in assigned.values())
+
+    def solve():
+        nonlocal search_nodes
+        search_nodes+=1
+        if search_nodes>node_limit:
+            raise RuntimeError(f'Label placement search exceeded {node_limit} states')
+        if len(assigned)==len(rows):
+            return True
+
+        best_i=None; best_options=None
+        for i in range(len(rows)):
+            if i in assigned: continue
+            options=[box for box in candidates[i] if compatible(box)]
+            if not options:
+                return False
+            if (best_options is None or len(options)<len(best_options) or
+                (len(options)==len(best_options) and priority[i]<priority[best_i])):
+                best_i=i; best_options=options
+
+        for box in best_options:
+            assigned[best_i]=box
+            if solve():
+                return True
+            del assigned[best_i]
+        return False
+
+    if not solve():
+        raise RuntimeError(f'No collision-free label arrangement for {mode} after {search_nodes} search states')
+    return [assigned[i] for i in range(len(rows))]
 
 def edge_point(x,y,w,h,ax,ay,mode):
     dx=ax-x; dy=ay-y
