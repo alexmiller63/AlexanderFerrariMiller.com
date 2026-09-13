@@ -1,5 +1,10 @@
 #!/usr/bin/env python3
-"""Populate weekly Star Almanack Solar-System ephemerides from JPL Horizons."""
+"""Populate weekly Star Almanack Solar-System ephemerides from JPL Horizons.
+
+The weekly table is a civil-time presentation snapshot, not an event solver:
+each row is sampled directly at Monday 00:00 UTC. Event interpolation elsewhere
+uses the Almanack's canonical JDTDB time layer.
+"""
 from __future__ import annotations
 
 import argparse
@@ -52,8 +57,15 @@ def target_heading(display):
 
 
 def horizons_ephemeris(year, command):
+    """Return direct Horizons samples at each ISO Monday 00:00 UTC.
+
+    This function deliberately requests calendar-format observer epochs because
+    the epoch itself is a publication-defined UTC snapshot. No event instant is
+    solved or interpolated here, so converting the sampling grid to JDTDB would
+    change the requested civil snapshot rather than improve its time model.
+    """
     count = week_count(year); first = date.fromisocalendar(year, 1, 1); last = date.fromisocalendar(year, count, 1)
-    params = {"format":"json","COMMAND":f"'{command}'","OBJ_DATA":"'NO'","MAKE_EPHEM":"'YES'","EPHEM_TYPE":"'OBSERVER'","CENTER":"'500@399'","START_TIME":f"'{first.isoformat()} 00:00'","STOP_TIME":f"'{(last + timedelta(days=1)).isoformat()} 00:00'","STEP_SIZE":"'7 d'","QUANTITIES":"'9,23,31'","CSV_FORMAT":"'YES'","ANG_FORMAT":"'DEG'","CAL_FORMAT":"'CAL'","TIME_DIGITS":"'SECONDS'"}
+    params = {"format":"json","COMMAND":f"'{command}'","OBJ_DATA":"'NO'","MAKE_EPHEM":"'YES'","EPHEM_TYPE":"'OBSERVER'","CENTER":"'500@399'","START_TIME":f"'{first.isoformat()} 00:00 UTC'","STOP_TIME":f"'{(last + timedelta(days=1)).isoformat()} 00:00 UTC'","STEP_SIZE":"'7 d'","QUANTITIES":"'9,23,31'","CSV_FORMAT":"'YES'","ANG_FORMAT":"'DEG'","CAL_FORMAT":"'CAL'","TIME_DIGITS":"'SECONDS'"}
     req = urllib.request.Request(HORIZONS_API + "?" + urllib.parse.urlencode(params), headers={"User-Agent":"Star-Almanack/ephemeris"})
     payload = json.load(urllib.request.urlopen(req, timeout=90)); text = payload.get("result", ""); lines = text.splitlines()
     header_line = next(x for x in lines if "ObsEcLon" in x and "ObsEcLat" in x); header = [x.strip() for x in next(csv.reader([header_line]))]
@@ -130,9 +142,6 @@ def render_ephemeris(monday, values):
         + planet_finder(monday.year, week)
     )
 
-# Replace the whole ephemeris section, including its Planet Finder, not an
-# assumed table arrangement. Keeping the finder inside the generated section
-# makes foundation regeneration idempotent instead of deleting the artwork.
 EPHEMERIS_SECTION = re.compile(
     r'<h3>Weekly Solar-System Ephemeris</h3>.*?'
     r'(?=<h3>(?!Weekly Solar-System Ephemeris</h3>|Planet Finder</h3>)|<h2>|</main>)',
