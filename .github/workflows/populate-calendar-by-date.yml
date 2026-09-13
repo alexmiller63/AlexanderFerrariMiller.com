@@ -59,9 +59,7 @@ jobs:
           START_DATE: ${{ steps.range.outputs.start_date }}
           END_DATE: ${{ steps.range.outputs.end_date }}
         run: |
-          python tools/populate_calendar_by_date.py \
-            --start-date "$START_DATE" \
-            --end-date "$END_DATE"
+          python tools/populate_calendar_by_date.py "$START_DATE" "$END_DATE"
 
       - name: Commit generated changes
         id: commit
