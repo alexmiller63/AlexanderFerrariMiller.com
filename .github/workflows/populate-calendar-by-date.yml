@@ -116,7 +116,7 @@ jobs:
 
           with sync_playwright() as p:
               browser = p.chromium.launch()
-              page = browser.new_page()
+              page = browser.new_page(viewport={"width": 390, "height": 844})
               for year, week in weeks:
                   rel = f'almanack/{year}/W{week:02d}/index.html'
                   path = root / rel
@@ -130,6 +130,23 @@ jobs:
                       raise SystemExit(f'Calendar table missing in {rel}')
                   if page.locator('td.calendar-events-region .calendar-events').count() == 0:
                       raise SystemExit(f'Event-cell container missing in {rel}')
+
+                  overflow = page.evaluate('''() => ({
+                    page: document.documentElement.scrollWidth > window.innerWidth + 1,
+                    calendar: (() => {
+                      const el = document.querySelector('table.calendar');
+                      return !!el && el.scrollWidth > el.clientWidth + 1;
+                    })(),
+                    cells: [...document.querySelectorAll('table.calendar td, table.calendar th, .event-cell')]
+                      .filter(el => el.scrollWidth > el.clientWidth + 1)
+                      .map(el => (el.textContent || '').trim().slice(0, 80))
+                  })''')
+                  if overflow['page'] or overflow['calendar'] or overflow['cells']:
+                      raise SystemExit(
+                          f'Mobile Calendar overflow in {rel}: '
+                          f'page={overflow["page"]} calendar={overflow["calendar"]} '
+                          f'cells={overflow["cells"][:5]}'
+                      )
                   print(f'Local Chromium PASS: {rel}')
               browser.close()
           server.shutdown()
