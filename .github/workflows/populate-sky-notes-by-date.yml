@@ -1,22 +1,32 @@
-name: Populate Sky Notes — by ISO date
+name: Sky Notes Generator
 
 on:
   workflow_dispatch:
     inputs:
-      start_date:
-        description: Start date (ISO YYYY-MM-DD)
+      start_year:
+        description: Start year
         required: true
         type: string
-      end_date:
-        description: End date (ISO YYYY-MM-DD)
+      start_week:
+        description: Start week
         required: true
+        type: string
+      end_year:
+        description: End year
+        required: false
+        default: ''
+        type: string
+      end_week:
+        description: End week
+        required: false
+        default: ''
         type: string
 
 permissions:
   contents: write
 
 concurrency:
-  group: populate-sky-notes-by-date
+  group: sky-notes-generator
   cancel-in-progress: false
 
 jobs:
@@ -27,8 +37,18 @@ jobs:
         with:
           ref: main
 
-      - name: Create and populate Sky Notes for requested ISO dates
-        run: python tools/populate_sky_notes_by_date.py "${{ inputs.start_date }}" "${{ inputs.end_date }}"
+      - name: Resolve ISO week range
+        id: range
+        run: |
+          read START_DATE END_DATE < <(python tools/resolve_iso_week_range.py \
+            '${{ inputs.start_year }}' '${{ inputs.start_week }}' \
+            '${{ inputs.end_year }}' '${{ inputs.end_week }}')
+          echo "start_date=$START_DATE" >> "$GITHUB_OUTPUT"
+          echo "end_date=$END_DATE" >> "$GITHUB_OUTPUT"
+          echo "$START_DATE through $END_DATE"
+
+      - name: Generate Sky Notes
+        run: python tools/populate_sky_notes_by_date.py "${{ steps.range.outputs.start_date }}" "${{ steps.range.outputs.end_date }}"
 
       - name: Commit Sky Notes, artwork descriptors, and generated sources only
         run: |
@@ -37,9 +57,9 @@ jobs:
           git add -- almanack Star-Almanack-Repo/site
           git add --all -- Star-Almanack-Repo/generated-sky-notes
           if git diff --cached --quiet; then
-            echo "No Sky Notes changes in requested ISO date range."
+            echo "No Sky Notes changes in requested ISO week range."
             exit 0
           fi
-          git commit -m "Populate Sky Notes ${{ inputs.start_date }} through ${{ inputs.end_date }}"
+          git commit -m "Generate Sky Notes ${{ inputs.start_year }}-W${{ inputs.start_week }}"
           git pull --rebase origin main
           git push
