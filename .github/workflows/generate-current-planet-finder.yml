@@ -1,7 +1,24 @@
-name: Generate current Planet Finder
+name: Generate Planet Finder
 
 on:
   workflow_dispatch:
+    inputs:
+      start_year:
+        description: 'ISO start year (blank = current ISO year)'
+        required: false
+        type: string
+      start_week:
+        description: 'ISO start week 1-53 (blank = current ISO week)'
+        required: false
+        type: string
+      end_year:
+        description: 'ISO end year (blank = start year)'
+        required: false
+        type: string
+      end_week:
+        description: 'ISO end week 1-53 (blank = start week)'
+        required: false
+        type: string
   push:
     paths:
       - tools/generate-current-planet-finder.py
@@ -18,26 +35,89 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - name: Determine current ISO week
-        id: iso
+
+      - name: Resolve ISO week range
+        id: range
+        env:
+          INPUT_START_YEAR: ${{ inputs.start_year }}
+          INPUT_START_WEEK: ${{ inputs.start_week }}
+          INPUT_END_YEAR: ${{ inputs.end_year }}
+          INPUT_END_WEEK: ${{ inputs.end_week }}
         run: |
-          echo "year=$(date -u +%G)" >> "$GITHUB_OUTPUT"
-          echo "week=$(date -u +%V)" >> "$GITHUB_OUTPUT"
-      - name: Generate Planet Finder
-        run: python tools/generate-current-planet-finder.py "${{ steps.iso.outputs.year }}" "$((10#${{ steps.iso.outputs.week }}))"
-      - name: Commit generated finder
+          python - <<'PY'
+          import os
+          from datetime import date
+
+          today = date.today()
+          current_year, current_week, _ = today.isocalendar()
+
+          def parse_int(name, raw, default):
+              raw = (raw or '').strip()
+              if not raw:
+                  return default
+              try:
+                  return int(raw)
+              except ValueError:
+                  raise SystemExit(f'{name} must be an integer')
+
+          sy = parse_int('start_year', os.getenv('INPUT_START_YEAR'), current_year)
+          sw = parse_int('start_week', os.getenv('INPUT_START_WEEK'), current_week)
+          ey = parse_int('end_year', os.getenv('INPUT_END_YEAR'), sy)
+          ew = parse_int('end_week', os.getenv('INPUT_END_WEEK'), sw)
+
+          def monday(y, w):
+              try:
+                  return date.fromisocalendar(y, w, 1)
+              except ValueError as exc:
+                  raise SystemExit(f'Invalid ISO week {y}-W{w:02d}: {exc}')
+
+          start = monday(sy, sw)
+          end = monday(ey, ew)
+          if end < start:
+              raise SystemExit('End ISO week must not precede start ISO week')
+
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
+              f.write(f'start_year={sy}\n')
+              f.write(f'start_week={sw}\n')
+              f.write(f'end_year={ey}\n')
+              f.write(f'end_week={ew}\n')
+              f.write(f'start_date={start.isoformat()}\n')
+              f.write(f'end_date={end.isoformat()}\n')
+          PY
+
+      - name: Generate Planet Finder range
+        env:
+          START_DATE: ${{ steps.range.outputs.start_date }}
+          END_DATE: ${{ steps.range.outputs.end_date }}
         run: |
-          YEAR="${{ steps.iso.outputs.year }}"
-          WEEK="${{ steps.iso.outputs.week }}"
+          python - <<'PY'
+          import os
+          import subprocess
+          from datetime import date, timedelta
+
+          d = date.fromisoformat(os.environ['START_DATE'])
+          end = date.fromisoformat(os.environ['END_DATE'])
+          while d <= end:
+              year, week, _ = d.isocalendar()
+              print(f'Generating ISO {year}-W{week:02d}')
+              subprocess.run(
+                  ['python', 'tools/generate-current-planet-finder.py', str(year), str(week)],
+                  check=True,
+              )
+              d += timedelta(days=7)
+          PY
+
+      - name: Commit generated finders
+        run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add "almanack/$YEAR/W$WEEK/finders/planet-finder-greek-symbols.svg" \
-                  "almanack/$YEAR/W$WEEK/finders/planet-finder-latin.svg" \
-                  "almanack/$YEAR/W$WEEK/finders/planet-finder-mixed-learner.svg"
+          git add almanack/*/W*/finders/planet-finder-greek-symbols.svg \
+                  almanack/*/W*/finders/planet-finder-latin.svg \
+                  almanack/*/W*/finders/planet-finder-mixed-learner.svg
           if git diff --cached --quiet; then
-            echo "Planet Finder already current."
+            echo "Planet Finder output already current."
             exit 0
           fi
-          git commit -m "Generate ISO $YEAR-W$WEEK Planet Finder"
+          git commit -m "Generate Planet Finder ISO week range"
           git pull --rebase origin main
           git push origin HEAD:main
