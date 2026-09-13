@@ -12,11 +12,12 @@ This is a bridge layer, not a replacement ephemeris.
 
 Inputs
 ------
-- UTC civil date/time.
+- UTC civil date/time at the presentation boundary.
 - Normalized ELP2000-82B coefficient JSON produced by normalize_elp82b.py.
 
 Outputs
 -------
+- Canonical JDTDB for the astronomical instant.
 - Geocentric Sun vector, kilometres.
 - Geocentric Moon vector, kilometres.
 - Ecliptic longitude/latitude and distance for each body.
@@ -25,13 +26,10 @@ Outputs
 
 Time
 ----
-ELP2000-82B's reference routine is evaluated on a dynamical time argument.
-For 2017-01-01 through the present build horizon, TAI-UTC = 37 s, so
-
-    TT = UTC + 69.184 s.
-
-TDB-TT is at the millisecond level and is intentionally left as a later
-refinement. The validation layer reports this approximation explicitly.
+Astronomical evaluation is performed on Julian Date TDB (JDTDB). UTC is used
+only to accept/render the civil instant. Skyfield supplies the UTC -> TDB
+conversion, including leap seconds and the periodic TDB-TT correction, so this
+bridge no longer carries its former fixed UTC + 69.184 s TT approximation.
 """
 
 from __future__ import annotations
@@ -43,12 +41,15 @@ import argparse
 import json
 import math
 
+from skyfield.api import load
+
 import lunar_elp
 import ephemeris_engine
 
 
 AU_KM = 149_597_870.7
-TT_MINUS_UTC_SECONDS_2017_ONWARD = 69.184
+J2000_DAY_ZERO_JD = 2451543.5  # 2000 Jan 0.0, basis of compact solar elements
+_TIMESCALE = load.timescale(builtin=True)
 
 
 @dataclass(frozen=True)
@@ -65,7 +66,7 @@ class EclipticVector:
 class EclipseCoordinates:
     utc_iso: str
     jd_utc: float
-    jd_tt_approx: float
+    jd_tdb: float
     time_note: str
     sun: EclipticVector
     moon: EclipticVector
@@ -74,7 +75,7 @@ class EclipseCoordinates:
 
 
 def julian_date_utc(dt: datetime) -> float:
-    """Gregorian UTC datetime -> Julian Date."""
+    """Gregorian UTC datetime -> Julian Date UTC for reporting only."""
     if dt.tzinfo is None:
         dt = dt.replace(tzinfo=timezone.utc)
     dt = dt.astimezone(timezone.utc)
@@ -104,9 +105,12 @@ def julian_date_utc(dt: datetime) -> float:
     )
 
 
-def utc_to_tt_approx(jd_utc: float) -> float:
-    """UTC JD -> approximate TT JD for dates with TAI-UTC = 37 s."""
-    return jd_utc + TT_MINUS_UTC_SECONDS_2017_ONWARD / 86400.0
+def utc_to_jd_tdb(dt: datetime) -> float:
+    """Convert an aware civil UTC datetime to canonical JDTDB."""
+    if dt.tzinfo is None:
+        raise ValueError("UTC -> TDB conversion requires a timezone-aware datetime")
+    utc = dt.astimezone(timezone.utc)
+    return float(_TIMESCALE.from_datetime(utc).tdb)
 
 
 def spherical_to_vector(longitude_deg: float, latitude_deg: float, distance_km: float) -> EclipticVector:
@@ -143,13 +147,16 @@ def wrap_signed_degrees(x: float) -> float:
 
 
 def coordinates_at_utc(normalized: dict, dt: datetime, precision_rad: float = 0.0) -> EclipseCoordinates:
-    jd_utc = julian_date_utc(dt)
-    jd_tt = utc_to_tt_approx(jd_utc)
+    if dt.tzinfo is None:
+        dt = dt.replace(tzinfo=timezone.utc)
+    dt = dt.astimezone(timezone.utc)
 
-    # ELP evaluator returns the spherical solution before its final J2000
-    # precession rotation. That spherical solution is the coordinate set we
-    # pair with the Almanack's geocentric ecliptic-of-date solar longitude.
-    moon_eval = lunar_elp.evaluate(normalized, jd_tt, precision_rad)
+    jd_utc = julian_date_utc(dt)
+    jd_tdb = utc_to_jd_tdb(dt)
+
+    # ELP2000-82B is evaluated on the same canonical dynamical time coordinate
+    # used by the rest of the Almanack event-solving architecture.
+    moon_eval = lunar_elp.evaluate(normalized, jd_tdb, precision_rad)
     ms = moon_eval.spherical
 
     moon = spherical_to_vector(
@@ -158,12 +165,10 @@ def coordinates_at_utc(normalized: dict, dt: datetime, precision_rad: float = 0.
         ms.distance_km,
     )
 
-    hour_utc = (
-        dt.hour
-        + dt.minute / 60.0
-        + (dt.second + dt.microsecond / 1_000_000.0) / 3600.0
-    )
-    d = ephemeris_engine.day_number(dt.year, dt.month, dt.day, hour_utc)
+    # The compact solar coefficients use d = days since 2000 Jan 0.0. Evaluate
+    # that independent variable on JDTDB as well, rather than mixing a UTC day
+    # number with a dynamical-time lunar vector.
+    d = jd_tdb - J2000_DAY_ZERO_JD
     sp = ephemeris_engine.sun_position(d)
 
     sun = spherical_to_vector(
@@ -176,12 +181,12 @@ def coordinates_at_utc(normalized: dict, dt: datetime, precision_rad: float = 0.
     dlon = wrap_signed_degrees(moon.longitude_deg - sun.longitude_deg)
 
     return EclipseCoordinates(
-        utc_iso=dt.astimezone(timezone.utc).isoformat().replace("+00:00", "Z"),
+        utc_iso=dt.isoformat().replace("+00:00", "Z"),
         jd_utc=jd_utc,
-        jd_tt_approx=jd_tt,
+        jd_tdb=jd_tdb,
         time_note=(
-            "TT approximated as UTC + 69.184 s; TDB-TT millisecond correction "
-            "not yet applied."
+            "Astronomical evaluation uses JDTDB; UTC is retained only as the "
+            "civil input/output representation."
         ),
         sun=sun,
         moon=moon,
@@ -204,7 +209,7 @@ def as_dict(result: EclipseCoordinates) -> dict:
     return {
         "utc": result.utc_iso,
         "jd_utc": result.jd_utc,
-        "jd_tt_approx": result.jd_tt_approx,
+        "jd_tdb": result.jd_tdb,
         "time_note": result.time_note,
         "sun": vec(result.sun),
         "moon": vec(result.moon),
@@ -245,7 +250,7 @@ def main(argv: list[str] | None = None) -> None:
 
     print(f"UTC: {result.utc_iso}")
     print(f"JD UTC: {result.jd_utc:.9f}")
-    print(f"JD TT approx: {result.jd_tt_approx:.9f}")
+    print(f"JDTDB: {result.jd_tdb:.9f}")
     print(result.time_note)
     print()
     print("Sun, geocentric ecliptic-of-date:")
