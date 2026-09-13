@@ -66,12 +66,14 @@ jobs:
             week="${item##*:}"
             week_number="${week#W}"
 
-            if [ -f tools/populate_sky_notes_artwork.py ]; then
+            # W41 is an approved preserved fixture. Recreate only its Sky Note
+            # artwork layer; Planet Finder remains owned by the Ephemeris workflow.
+            if [ "$year" = "2026" ] && [ "$week" = "W41" ]; then
+              python tools/recreate_w41_sky_note_artwork.py
+            elif [ -f tools/populate_sky_notes_artwork.py ]; then
               python tools/populate_sky_notes_artwork.py --year "$year" --week "$week_number"
             elif [ -f "tools/sky-notes-artwork/$year-$week.py" ]; then
               python "tools/sky-notes-artwork/$year-$week.py"
-            elif [ "$year" = "2026" ] && [ "$week" = "W41" ] && [ -f tools/assemble-w41-artwork.py ]; then
-              python tools/assemble-w41-artwork.py
             else
               echo "No Sky Notes artwork generator is defined for ISO $year-$week; skipping."
             fi
