@@ -1,0 +1,56 @@
+{
+  "fixture": "ISO 2026-W41",
+  "purpose": "Preserved approved reference for recreation and regression testing",
+  "baseline_commit": "1bd40b5c05db344f1cb959f3c1385c7ee39f0bf3",
+  "week": {
+    "iso_year": 2026,
+    "iso_week": 41,
+    "monday": "2026-10-05"
+  },
+  "canonical_sources": {
+    "sky_note": {
+      "path": "Star-Almanack-Repo/sky-notes-2026.json",
+      "key": "W41",
+      "recover_from_baseline": true
+    },
+    "page": {
+      "path": "almanack/2026/W41/index.html",
+      "recover_from_baseline": true,
+      "role": "visual and structural reference only; do not overwrite unrelated sections during recreation"
+    }
+  },
+  "sky_note_artwork": [
+    {
+      "path": "Star-Almanack-Repo/observer-views/W41/enif-finder.svg",
+      "blob_sha": "36472649523c5adc4c896379b58913974c1641dc",
+      "published_path": "almanack/2026/W41/finders/enif-finder.svg",
+      "placement": "inside Sky Note after opening paragraph"
+    },
+    {
+      "path": "Star-Almanack-Repo/observer-views/W41/sadalmelik-finder.svg",
+      "blob_sha": "19c3e2aef42d1c302589950b66668e256592e966",
+      "published_path": "almanack/2026/W41/finders/sadalmelik-finder.svg",
+      "placement": "inside Sky Note before the next section heading"
+    },
+    {
+      "path": "Star-Almanack-Repo/observer-views/W41/water-jar-kilroy-1919-inset.svg",
+      "blob_sha": "682a42a16827d8bc629ee1c2dd5a8825c0690f19",
+      "placement": "preserved source artwork; not required by the current W41 page recreation"
+    }
+  ],
+  "planet_finder_reference": {
+    "owner": "Populate Ephemeris + Planet Finder — by ISO date",
+    "note": "Preserved here only as an approved visual reference. Sky Notes Artwork must never recreate or overwrite Planet Finder assets.",
+    "published_blobs": {
+      "planet-finder-greek-symbols.svg": "9496697f7a99bfac921b5217c994f7ec1d5e7da6",
+      "planet-finder-latin.svg": "e64c89b49be1ebb836a89aefd028026c440dc802",
+      "planet-finder-mixed-learner.svg": "8fa8d3e0ddfb7929726d6033e6ad8f81ff7fd23d"
+    }
+  },
+  "ownership": {
+    "calendar": "Populate Calendar — by ISO date",
+    "ephemeris_and_planet_finder": "Populate Ephemeris + Planet Finder — by ISO date",
+    "sky_note_text": "Populate Sky Notes — by ISO date",
+    "sky_note_artwork": "Populate Sky Notes Artwork — by ISO date"
+  }
+}
