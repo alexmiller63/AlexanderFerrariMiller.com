@@ -137,7 +137,7 @@ def smart_route(anchor,target_box,mode,obstacles):
     route.reverse(); route.append(end_from(route[-1])); return route
 
 def route_leader(anchor,target_box,L,mode,obstacles):
-    """Choose a collision-free leader by visual clearance, then by length."""
+    """Choose a collision-free leader by balancing clearance and detour costs."""
     x,y,w,h=target_box; collision_pad=2 if mode=='symbols' else 10
     def end_from(point): return edge_point(x,y,w,h,point[0],point[1],mode)
     def clear(points,pad=collision_pad):
@@ -157,14 +157,19 @@ def route_leader(anchor,target_box,L,mode,obstacles):
             if clear(route): candidates.append(route)
 
     if candidates:
-        # Collision freedom is only the minimum requirement. Among valid routes,
-        # prefer visible breathing room around labels; once 28 px is achieved,
-        # choose the shortest route. This keeps the rule general rather than
-        # special-casing any planet pair.
-        clearance_steps=(28,22,16,10,6,2) if mode=='symbols' else (28,22,16,10)
+        # Two independent aesthetic penalties: routes that crowd obstacles pay a
+        # clearance cost, while routes longer than the direct leader pay a detour
+        # cost. Neither concern dominates absolutely, so the chosen route can
+        # make a modest bend for breathing room without taking an oversized V.
+        desired_clearance=22 if mode=='symbols' else 24
+        clearance_steps=tuple(range(desired_clearance,collision_pad-1,-2))
+        direct_length=route_length(direct)
         def route_score(route):
             clearance=max((pad for pad in clearance_steps if clear(route,pad)),default=collision_pad)
-            return (-min(clearance,28),route_length(route))
+            clearance_penalty=max(0,desired_clearance-clearance) ** 2
+            detour=max(0.0,route_length(route)-direct_length)
+            detour_penalty=0.12*detour
+            return clearance_penalty+detour_penalty
         return min(candidates,key=route_score)
 
     route=smart_route(anchor,target_box,mode,obstacles)
