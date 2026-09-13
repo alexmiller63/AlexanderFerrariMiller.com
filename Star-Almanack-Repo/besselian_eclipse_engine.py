@@ -2,8 +2,16 @@
 """Star Almanack production Besselian greatest-eclipse backend.
 
 This module deliberately keeps the production search independent of the
-validation catalog.  It computes the minimum distance of the lunar shadow axis
+validation catalog. It computes the minimum distance of the lunar shadow axis
 from the center of the Besselian fundamental plane over a UTC civil day.
+
+Time architecture
+-----------------
+
+UTC is used only to define the requested civil-day search window and to render
+the published result. The numerical search coordinate is JDTDB. Skyfield Time
+objects are constructed from those JDTDB values only at the library boundary
+required by the Besselian/SPK routines.
 
 Third-party dependency
 ----------------------
@@ -13,22 +21,22 @@ The Besselian element calculation is provided by ``eclipse-calc``:
     https://github.com/lkangas/eclipse-calc
     pinned revision: 23853a8f9e0d1a25e026203207aca16de1d7bb31
 
-``eclipse-calc`` is MIT licensed, Copyright (c) 2026 komakallio.  Star
-Almanack's complete retained notice is in ``THIRD-PARTY-LICENSES.md``.  The
+``eclipse-calc`` is MIT licensed, Copyright (c) 2026 komakallio. Star
+Almanack's complete retained notice is in ``THIRD-PARTY-LICENSES.md``. The
 upstream package is imported rather than copied into this file.
 
 Ephemeris
 ---------
 
-A JPL SPK kernel path is supplied by the caller.  The validated production
-configuration uses DE440s.  Kernel acquisition/caching belongs to the build or
+A JPL SPK kernel path is supplied by the caller. The validated production
+configuration uses DE440s. Kernel acquisition/caching belongs to the build or
 runtime environment; this module never downloads data implicitly.
 """
 
 from __future__ import annotations
 
 from dataclasses import dataclass
-from datetime import datetime, timezone
+from datetime import timezone
 from pathlib import Path
 
 import numpy as np
@@ -44,8 +52,8 @@ DEFAULT_REFINE_HALF_WINDOW_SECONDS = 1_200.0
 @dataclass(frozen=True)
 class BesselianGreatestEclipse:
     date_utc: str
+    greatest_jd_tdb: float
     greatest_utc: str
-    greatest_seconds_utc: float
     gamma: float
     x: float
     y: float
@@ -63,7 +71,12 @@ class BesselianEclipseEngine:
         self._timescale = load.timescale(builtin=True)
         self._ephemeris = load_file(str(self.kernel_path))
 
-    def _axis_distance_squared(self, t) -> float:
+    def _time_from_jd_tdb(self, jd_tdb: float):
+        """Skyfield boundary conversion from canonical JDTDB to Time."""
+        return self._timescale.tdb_jd(float(jd_tdb))
+
+    def _axis_distance_squared_jd_tdb(self, jd_tdb: float) -> float:
+        t = self._time_from_jd_tdb(jd_tdb)
         row = bessels_at(t, self._ephemeris).iloc[0]
         return float(row.x * row.x + row.y * row.y)
 
@@ -76,29 +89,36 @@ class BesselianEclipseEngine:
     ) -> BesselianGreatestEclipse:
         """Return the day's reference-free Besselian shadow-axis minimum.
 
-        ``date_utc`` must be ``YYYY-MM-DD``.  No published eclipse time is used
-        as a seed.  A coarse full-day search finds the candidate minimum, then
-        a bounded scalar minimization refines it to millisecond-scale timing.
+        ``date_utc`` must be ``YYYY-MM-DD``. No published eclipse time is used
+        as a seed. UTC defines only the civil-day bounds. The coarse search and
+        bounded refinement operate on JDTDB values.
         """
         year, month, day = map(int, date_utc.split("-"))
-        base = self._timescale.utc(year, month, day, 0, 0, 0)
+        utc_start = self._timescale.utc(year, month, day, 0, 0, 0)
+        utc_stop = utc_start + 1.0
+        start_jd_tdb = float(utc_start.tdb)
+        stop_jd_tdb = float(utc_stop.tdb)
 
-        coarse_seconds = np.arange(0.0, DAY_SECONDS + 1.0, grid_seconds)
-        coarse_times = base + coarse_seconds / DAY_SECONDS
+        step_days = grid_seconds / DAY_SECONDS
+        coarse_jd_tdb = np.arange(
+            start_jd_tdb,
+            stop_jd_tdb + step_days * 0.5,
+            step_days,
+        )
+        coarse_times = self._timescale.tdb_jd(coarse_jd_tdb)
         elements = bessels_at(coarse_times, self._ephemeris)
         q = elements["x"].to_numpy() ** 2 + elements["y"].to_numpy() ** 2
         index = int(np.argmin(q))
-        center = float(coarse_seconds[index])
+        center_jd_tdb = float(coarse_jd_tdb[index])
 
-        lo = max(0.0, center - refine_half_window_seconds)
-        hi = min(DAY_SECONDS, center + refine_half_window_seconds)
+        half_window_days = refine_half_window_seconds / DAY_SECONDS
+        lo = max(start_jd_tdb, center_jd_tdb - half_window_days)
+        hi = min(stop_jd_tdb, center_jd_tdb + half_window_days)
         result = minimize_scalar(
-            lambda seconds: self._axis_distance_squared(
-                base + float(seconds) / DAY_SECONDS
-            ),
+            self._axis_distance_squared_jd_tdb,
             bounds=(lo, hi),
             method="bounded",
-            options={"xatol": 0.001},
+            options={"xatol": 0.001 / DAY_SECONDS},
         )
         if not result.success:
             raise RuntimeError(
@@ -106,13 +126,14 @@ class BesselianEclipseEngine:
                 f"{result.message}"
             )
 
-        seconds = float(result.x)
-        t_best = base + seconds / DAY_SECONDS
+        greatest_jd_tdb = float(result.x)
+        t_best = self._time_from_jd_tdb(greatest_jd_tdb)
         row = bessels_at(t_best, self._ephemeris).iloc[0]
         x = float(row.x)
         y = float(row.y)
         gamma = float(np.hypot(x, y))
 
+        # Publication conversion happens once, after the astronomical solution.
         dt = t_best.utc_datetime()
         if dt.tzinfo is None:
             dt = dt.replace(tzinfo=timezone.utc)
@@ -122,8 +143,8 @@ class BesselianEclipseEngine:
 
         return BesselianGreatestEclipse(
             date_utc=date_utc,
+            greatest_jd_tdb=greatest_jd_tdb,
             greatest_utc=greatest_utc,
-            greatest_seconds_utc=seconds,
             gamma=gamma,
             x=x,
             y=y,
@@ -141,6 +162,7 @@ def _main() -> int:
     args = parser.parse_args()
 
     event = BesselianEclipseEngine(args.kernel).find_greatest_eclipse(args.date_utc)
+    print(f"JDTDB={event.greatest_jd_tdb:.12f}")
     print(event.greatest_utc)
     print(f"gamma={event.gamma:.9f}")
     print(f"x={event.x:.9f} y={event.y:.9f} l1={event.l1:.9f} l2={event.l2:.9f}")
