@@ -1,0 +1,76 @@
+name: Balance planet leader routing
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/balance-planet-leader-routing.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  balance-routing:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Replace lexicographic routing with two-penalty scoring
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          path = Path('tools/generate-current-planet-finder.py')
+          text = path.read_text()
+
+          old = '''    if candidates:
+              # Collision freedom is only the minimum requirement. Among valid routes,
+              # prefer visible breathing room around labels; once 28 px is achieved,
+              # choose the shortest route. This keeps the rule general rather than
+              # special-casing any planet pair.
+              clearance_steps=(28,22,16,10,6,2) if mode=='symbols' else (28,22,16,10)
+              def route_score(route):
+                  clearance=max((pad for pad in clearance_steps if clear(route,pad)),default=collision_pad)
+                  return (-min(clearance,28),route_length(route))
+              return min(candidates,key=route_score)
+          '''
+
+          new = '''    if candidates:
+              # Collision freedom is the hard constraint. Visual quality is then a
+              # balance between two independent soft penalties: crowding and detour.
+              # This avoids both extremes: a leader that hugs an obstacle and a leader
+              # that takes a large excursion merely to maximize clearance.
+              clearance_steps=(28,22,18,16,14,12,10,8,6,4,2) if mode=='symbols' else (28,22,18,16,14,12,10)
+              preferred_clearance=18
+              direct_length=route_length(direct)
+              def route_score(route):
+                  clearance=max((pad for pad in clearance_steps if clear(route,pad)),default=collision_pad)
+                  clearance_shortfall=max(0,preferred_clearance-clearance)
+                  clearance_penalty=1.5*clearance_shortfall*clearance_shortfall
+                  detour_penalty=max(0,route_length(route)-direct_length)
+                  return clearance_penalty+detour_penalty
+              return min(candidates,key=route_score)
+          '''
+
+          if old not in text:
+              raise SystemExit('Expected routing block not found; refusing a blind patch')
+
+          path.write_text(text.replace(old, new, 1))
+          PY
+
+      - name: Syntax check
+        run: python -m py_compile tools/generate-current-planet-finder.py
+
+      - name: Commit root-cause fix
+        run: |
+          if git diff --quiet; then
+            echo 'No change needed.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add tools/generate-current-planet-finder.py
+          git commit -m 'Balance leader clearance and detour costs'
+          git push
