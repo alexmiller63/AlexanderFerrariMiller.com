@@ -181,8 +181,33 @@ def route_leader(anchor,target_box,L,mode,obstacles,other_anchors=()):
     def anchor_clearance(points):
         if not other_anchors: return float('inf')
         return min(point_segment_distance(p,a,b) for p in other_anchors for a,b in zip(points,points[1:]))
+    def geometry_penalty(points):
+        # Favor diagrammatic geometry: a clean right-angle dog-leg should beat an
+        # arbitrary diagonal when both are safe and reasonably similar in length.
+        if len(points)==2:
+            dx=abs(points[1][0]-points[0][0]); dy=abs(points[1][1]-points[0][1])
+            long=max(dx,dy)
+            return 0.0 if long<1e-9 else 18.0*min(dx,dy)/long
+        if len(points)==3:
+            a,b,c=points; v1=(a[0]-b[0],a[1]-b[1]); v2=(c[0]-b[0],c[1]-b[1])
+            n1=math.hypot(*v1); n2=math.hypot(*v2)
+            if n1<1e-9 or n2<1e-9: return 20.0
+            cosine=max(-1.0,min(1.0,(v1[0]*v2[0]+v1[1]*v2[1])/(n1*n2)))
+            angle=math.degrees(math.acos(cosine))
+            return 0.25*abs(90.0-angle)
+        return 6.0*(len(points)-2)
     candidates=[]; direct=[anchor,end_from(anchor)]
     if clear(direct): candidates.append(direct)
+    # Explicit cardinal attachment points create true one-bend rectilinear routes.
+    # These are especially useful when a label has open space above/below/left/right
+    # but the straight shot would look accidental or ambiguous.
+    edge_targets=[(x-w/2,y),(x+w/2,y),(x,y-h/2),(x,y+h/2)]
+    for end in edge_targets:
+        for bend in ((anchor[0],end[1]),(end[0],anchor[1])):
+            if math.hypot(bend[0]-anchor[0],bend[1]-anchor[1])<8: continue
+            if math.hypot(end[0]-bend[0],end[1]-bend[1])<8: continue
+            route=[anchor,bend,end]
+            if clear(route): candidates.append(route)
     theta=math.radians(180+L); tx=-math.sin(theta); ty=-math.cos(theta)
     for radius in (400,370,340,310,280,250,220,190,160,130):
         rx,ry=xy(L,radius)
@@ -201,7 +226,7 @@ def route_leader(anchor,target_box,L,mode,obstacles,other_anchors=()):
             # pairing ambiguous even without a geometric collision. Penalize that
             # approach corridor heavily so neighboring anchors read independently.
             anchor_deficit=max(0.0,desired_anchor_clearance-anchor_clearance(route)); anchor_penalty=2.0*anchor_deficit**2
-            return clearance_penalty+rim_penalty+detour_penalty+anchor_penalty
+            return clearance_penalty+rim_penalty+detour_penalty+anchor_penalty+geometry_penalty(route)
         return min(candidates,key=route_score)
     route=smart_route(anchor,target_box,mode,obstacles)
     if route: return route
