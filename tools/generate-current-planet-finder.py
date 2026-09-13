@@ -137,30 +137,36 @@ def smart_route(anchor,target_box,mode,obstacles):
     route.reverse(); route.append(end_from(route[-1])); return route
 
 def route_leader(anchor,target_box,L,mode,obstacles):
-    """Prefer simple leaders with visible breathing room around obstacles."""
+    """Choose a collision-free leader by visual clearance, then by length."""
     x,y,w,h=target_box; collision_pad=2 if mode=='symbols' else 10
     def end_from(point): return edge_point(x,y,w,h,point[0],point[1],mode)
     def clear(points,pad=collision_pad):
         return all(not any(seg_hits_box(a,b,q,pad) for q in obstacles) for a,b in zip(points,points[1:]))
     def route_length(points):
         return sum(math.hypot(b[0]-a[0],b[1]-a[1]) for a,b in zip(points,points[1:]))
+
+    candidates=[]
     direct=[anchor,end_from(anchor)]
-    if clear(direct): return direct
-    theta=math.radians(180+L); tx=-math.sin(theta); ty=-math.cos(theta); doglegs=[]
+    if clear(direct): candidates.append(direct)
+
+    theta=math.radians(180+L); tx=-math.sin(theta); ty=-math.cos(theta)
     for radius in (400,370,340,310,280,250,220,190,160,130):
         rx,ry=xy(L,radius)
         for shift in (0,-35,35,-70,70,-105,105,-140,140,-175,175,-210,210):
             bend=(rx+shift*tx,ry+shift*ty); route=[anchor,bend,end_from(bend)]
-            if clear(route): doglegs.append(route)
-    if doglegs:
-        # A little extra length is visually cheaper than hugging an obstacle.
-        # First maximize useful white-space clearance, capped so enormous detours
-        # gain no advantage; use length to choose among similarly clear routes.
-        clearance_steps=(28,22,16,10,6,2) if mode=='symbols' else (34,28,22,16,10)
+            if clear(route): candidates.append(route)
+
+    if candidates:
+        # Collision freedom is only the minimum requirement. Among valid routes,
+        # prefer visible breathing room around labels; once 28 px is achieved,
+        # choose the shortest route. This keeps the rule general rather than
+        # special-casing any planet pair.
+        clearance_steps=(28,22,16,10,6,2) if mode=='symbols' else (28,22,16,10)
         def route_score(route):
             clearance=max((pad for pad in clearance_steps if clear(route,pad)),default=collision_pad)
-            return route_length(route)-min(clearance,28)*3.0
-        return min(doglegs,key=route_score)
+            return (-min(clearance,28),route_length(route))
+        return min(candidates,key=route_score)
+
     route=smart_route(anchor,target_box,mode,obstacles)
     if route: return route
     raise RuntimeError('No collision-free leader route after visibility-graph search')
