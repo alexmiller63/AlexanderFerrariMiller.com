@@ -67,6 +67,7 @@ jobs:
           from datetime import datetime
           import importlib.util
           from pathlib import Path
+          import sys
 
           import numpy as np
           import yaml
@@ -75,6 +76,7 @@ jobs:
 
           spec = importlib.util.spec_from_file_location('besselian_before', '/tmp/besselian_before.py')
           before_module = importlib.util.module_from_spec(spec)
+          sys.modules[spec.name] = before_module
           spec.loader.exec_module(before_module)
           BeforeEngine = before_module.BesselianEclipseEngine
 
