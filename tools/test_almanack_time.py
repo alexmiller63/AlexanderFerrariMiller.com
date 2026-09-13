@@ -46,6 +46,25 @@ class AlmanackTimeTests(unittest.TestCase):
         self.assertEqual(instant.publication_date().isoformat(), "2026-03-03")
         self.assertEqual(instant.publication_time_text(), "23:59:59 UTC")
 
+    def test_pre_unix_epoch_rounding_is_symmetric(self):
+        source = datetime(1969, 12, 31, 23, 59, 58, 600000, tzinfo=timezone.utc)
+        instant = AstroInstant.from_horizons_utc(datetime_to_jd_utc(source), 0.0)
+        self.assertEqual(
+            instant.publication_utc(),
+            datetime(1969, 12, 31, 23, 59, 59, tzinfo=timezone.utc),
+        )
+        self.assertEqual(instant.publication_date().isoformat(), "1969-12-31")
+        self.assertEqual(instant.publication_time_text(), "23:59:59 UTC")
+
+    def test_pre_unix_midnight_carry_moves_date_and_time_together(self):
+        source = datetime(1969, 12, 31, 23, 59, 59, 600000, tzinfo=timezone.utc)
+        instant = AstroInstant.from_horizons_utc(datetime_to_jd_utc(source), 0.0)
+        self.assertEqual(
+            instant.publication_utc(), datetime(1970, 1, 1, 0, 0, 0, tzinfo=timezone.utc)
+        )
+        self.assertEqual(instant.publication_date().isoformat(), "1970-01-01")
+        self.assertEqual(instant.publication_time_text(), "00:00:00 UTC")
+
     def test_interpolation_is_in_jdtb(self):
         a = AstroInstant(2461111.0, 69.184)
         b = AstroInstant(2461112.0, 69.186)
