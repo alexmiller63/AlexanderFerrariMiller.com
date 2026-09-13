@@ -335,6 +335,28 @@ document.addEventListener('click',function(e){
     document.querySelectorAll('table.calendar tbody td:nth-child(3) .zodiac-glyph').forEach(function(el){
       const glyph=el.textContent.replace(/\ufe0e/g,'').trim().charAt(0); if(signs[glyph])el.textContent=glyph+VS;
     });
+    /* Normalize Bayer designations whose Greek letter has already been wrapped
+       by calendar generation, e.g. <span class="greek-letter">ε</span> Peg.
+       Treat the Greek letter plus following 3-letter constellation abbreviation
+       as one notation item so Latin mode can render the proper genitive (Pegasi). */
+    document.querySelectorAll('table.calendar tbody td:nth-child(3) .greek-letter').forEach(function(el){
+      if(el.closest('.calendar-notation-item'))return;
+      const letter=el.textContent.replace(/\ufe0e/g,'').trim();
+      if(!greekNames[letter])return;
+      const next=el.nextSibling;
+      if(!next||next.nodeType!==Node.TEXT_NODE)return;
+      const m=next.nodeValue.match(/^(\d+)?\s+([A-Z][A-Za-z]{2})\b/);
+      if(!m)return;
+      const suffix=m[1]||'',abbr=m[2],constellation=constellations[abbr]||abbr;
+      const span=document.createElement('span');
+      const greek=letter+suffix+' '+abbr;
+      const latin=(greekNames[letter]||letter)+suffix+' '+constellation;
+      const mixed=letter+suffix+' '+(greekNames[letter]||letter)+suffix+' '+constellation;
+      item(span,greek,latin,mixed,'calendar-notation-item');
+      span.textContent=greek;
+      next.nodeValue=next.nodeValue.slice(m[0].length);
+      el.replaceWith(span);
+    });
     const pattern=/([αβγδεζηθικλμνξοπρστυφχψω])(\d+)?\s+([A-Z][A-Za-z]{2})\b/g;
     document.querySelectorAll('table.calendar tbody td:nth-child(3)').forEach(function(cell){
       const nodes=[]; const walker=document.createTreeWalker(cell,NodeFilter.SHOW_TEXT);

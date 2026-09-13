@@ -71,6 +71,28 @@
 
   const main = document.querySelector('main');
   if (main) {
+    /* Calendar generation may wrap the Greek Bayer letter separately from the
+       constellation abbreviation. Recombine that split token before the normal
+       text-node pass so Latin mode uses the constellation genitive. */
+    main.querySelectorAll('table.calendar tbody td:nth-child(3) .greek-letter').forEach(function (el) {
+      if (el.closest('.notation-item,.notation-rendered')) return;
+      const letter = el.textContent.replace(/\ufe0e/g, '').trim();
+      if (!greekNames[letter]) return;
+      const next = el.nextSibling;
+      if (!next || next.nodeType !== Node.TEXT_NODE) return;
+      const match = next.nodeValue.match(/^(\d+)?\s+([A-Z][A-Za-z]{2})\b/);
+      if (!match) return;
+      const suffix = match[1] || '';
+      const abbr = match[2];
+      const constellation = constellationNames[abbr] || abbr;
+      const span = notationSpan(
+        letter + suffix + ' ' + abbr,
+        greekNames[letter] + suffix + ' ' + constellation,
+        letter + suffix + ' ' + greekNames[letter] + suffix + ' ' + constellation
+      );
+      next.nodeValue = next.nodeValue.slice(match[0].length);
+      el.replaceWith(span);
+    });
     const pattern = /([αβγδεζηθικλμνξοπρστυφχψω])(\d+)?\s+([A-Z][A-Za-z]{2})\b|[☉☽☿♀♂♃♄]|([αβγδεζηθικλμνξοπρστυφχψω])(\d+)?/g;
     const nodes = [];
     const walker = document.createTreeWalker(main, NodeFilter.SHOW_TEXT);
