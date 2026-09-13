@@ -16,6 +16,7 @@ between time scales.
 """
 from __future__ import annotations
 
+import math
 from dataclasses import dataclass
 from datetime import date, datetime, timedelta, timezone
 
@@ -90,7 +91,9 @@ class AstroInstant:
         ts = self.utc_datetime()
         epoch = datetime(1970, 1, 1, tzinfo=timezone.utc)
         seconds = (ts - epoch).total_seconds()
-        rounded = int(seconds / quantum_seconds + 0.5) * quantum_seconds
+        # floor(x + 0.5), unlike int(x + 0.5), is correct on both sides of the
+        # Unix epoch. This keeps the publication rule symmetric for 1900-2100.
+        rounded = math.floor(seconds / quantum_seconds + 0.5) * quantum_seconds
         return epoch + timedelta(seconds=rounded)
 
     def publication_date(self, quantum_seconds: int = 1) -> date:
