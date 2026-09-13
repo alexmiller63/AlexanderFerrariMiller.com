@@ -29,7 +29,17 @@ VISIBILITY_GLYPHS = {
     "near_sun": '<span class="text-symbol" role="img" aria-label="Near Sun — not currently observable" title="Near Sun — not currently observable">☉</span>',
 }
 
-NOTATION_TOGGLE = '<div class="bayer-toggle-wrap section-notation-toggle"><div class="bayer-toggle" role="group" aria-label="Astronomical notation"><span class="bayer-toggle-label">Notation:</span><button type="button" data-bayer-mode="greek" aria-pressed="true">Greek/Symbols</button><button type="button" data-bayer-mode="latin" aria-pressed="false">Latin</button><button type="button" data-bayer-mode="mixed" data-legacy-label="Mixed · Learner" aria-pressed="false">Mixed Learner</button></div></div>'
+
+def notation_toggle(target):
+    return (
+        f'<div class="bayer-toggle-wrap section-notation-toggle" data-notation-target="{target}">'
+        '<div class="bayer-toggle" role="group" aria-label="Astronomical notation">'
+        '<span class="bayer-toggle-label">Notation:</span>'
+        '<button type="button" data-bayer-mode="greek" aria-pressed="true">Greek/Symbols</button>'
+        '<button type="button" data-bayer-mode="latin" aria-pressed="false">Latin</button>'
+        '<button type="button" data-bayer-mode="mixed" data-legacy-label="Mixed · Learner" aria-pressed="false">Mixed Learner</button>'
+        '</div></div>'
+    )
 
 
 def week_count(year): return date(year, 12, 28).isocalendar().week
@@ -86,7 +96,7 @@ def visibility_html(magnitude, elongation):
 def planet_finder(year, week):
     base = "finders"
     return (
-        '<div class="planet-finder-strip">'
+        '<div class="planet-finder-strip w15-finder-strip">'
         f'<figure data-finder-mode="greek" class="is-active"><img src="{base}/planet-finder-greek-symbols.svg" alt="Planet Finder — Greek / Symbols"><figcaption>Greek / Symbols</figcaption></figure>'
         f'<figure data-finder-mode="latin"><img src="{base}/planet-finder-latin.svg" alt="Planet Finder — Latin"><figcaption>Latin</figcaption></figure>'
         f'<figure data-finder-mode="mixed"><img src="{base}/planet-finder-mixed-learner.svg" alt="Planet Finder — Mixed Learner"><figcaption>Mixed Learner</figcaption></figure>'
@@ -109,12 +119,13 @@ def render_ephemeris(monday, values):
     return (
         "<h3>Weekly Solar-System Ephemeris</h3>"
         + f'<p><strong>Snapshot:</strong> {monday.strftime("%B")} {monday.day}, {monday.year} · 00:00 UTC</p>'
-        + NOTATION_TOGGLE
+        + notation_toggle("ephemeris")
         + "<p><strong>Naked Eye</strong></p>"
         + table(primary)
         + "<p><strong>Extended targets:</strong></p>"
         + table(extended, extra_class="extended-ephemeris")
         + '<p class="ephemeris-note"><strong>β</strong> = ecliptic latitude (+ north, − south). Observing combines visual magnitude with solar elongation. <span class="text-symbol">☉</span> = Near Sun — not currently observable.</p>'
+        + notation_toggle("finder")
         + '<h3>Planet Finder</h3>'
         + planet_finder(monday.year, week)
     )
