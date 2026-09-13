@@ -67,6 +67,17 @@ jobs:
           PY
           )
 
+      - name: Record substantive Calendar state
+        id: substantive
+        run: |
+          if git diff --quiet -- almanack Star-Almanack-Repo/site; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "Generator is idempotent: no substantive Calendar files changed."
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+            echo "Generator produced substantive Calendar changes."
+          fi
+
       - name: Stamp generated weeks for Pages verification
         id: stamp
         env:
@@ -122,43 +133,126 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -- almanack Star-Almanack-Repo/site
           if git diff --cached --quiet; then
-            echo "No Calendar changes in requested ISO week range."
-            exit 1
+            echo "No Calendar changes to publish."
+            exit 0
           fi
           git commit -m "Generate Calendar ${{ inputs.start_year }}-W${{ inputs.start_week }}"
           git pull --rebase origin main
           git push
 
-      - name: Verify published GitHub Pages
+      - name: Verify complete published GitHub Pages content
         env:
           VERIFY_TOKEN: ${{ steps.stamp.outputs.token }}
         run: |
           set -euo pipefail
-          BASE='https://alexmiller63.github.io/AlexanderFerrariMiller.com/almanack'
-          mapfile -t WEEKS < /tmp/calendar-weeks.txt
+          python - <<'PY'
+          import hashlib
+          import os
+          import time
+          from html.parser import HTMLParser
+          from pathlib import Path
+          from urllib.parse import urljoin, urlparse, urlencode, parse_qsl, urlunparse
+          from urllib.request import Request, urlopen
 
-          for attempt in $(seq 1 36); do
-            missing=0
-            echo "Pages verification attempt $attempt/36"
-            for week in "${WEEKS[@]}"; do
-              url="$BASE/$week/?verify=$VERIFY_TOKEN-$attempt"
-              if curl -fsSL \
-                  -H 'Cache-Control: no-cache' \
-                  -H 'Pragma: no-cache' \
-                  "$url" | grep -Fq "pages-verification: $VERIFY_TOKEN"; then
-                echo "Verified $week"
-              else
-                echo "Waiting for $week"
-                missing=1
-              fi
-            done
+          BASE = 'https://alexmiller63.github.io/AlexanderFerrariMiller.com/almanack/'
+          SITE_PREFIX = '/AlexanderFerrariMiller.com/'
+          token = os.environ['VERIFY_TOKEN']
+          weeks = [line.strip() for line in Path('/tmp/calendar-weeks.txt').read_text().splitlines() if line.strip()]
 
-            if [ "$missing" -eq 0 ]; then
-              echo "GitHub Pages contains the newly generated Calendar output."
-              exit 0
-            fi
-            sleep 10
-          done
+          class Refs(HTMLParser):
+              def __init__(self):
+                  super().__init__()
+                  self.refs = []
+              def handle_starttag(self, tag, attrs):
+                  attrs = dict(attrs)
+                  for key in ('src', 'href'):
+                      value = attrs.get(key)
+                      if value and not value.startswith(('data:', 'mailto:', 'tel:', '#', 'javascript:')):
+                          self.refs.append(value)
 
-          echo "GitHub Pages did not publish the expected Calendar output within 6 minutes."
-          exit 1
+          def busted(url, suffix):
+              p = urlparse(url)
+              q = dict(parse_qsl(p.query, keep_blank_values=True))
+              q['verify'] = suffix
+              return urlunparse((p.scheme, p.netloc, p.path, p.params, urlencode(q), p.fragment))
+
+          def get(url):
+              req = Request(url, headers={
+                  'Cache-Control': 'no-cache, no-store, max-age=0',
+                  'Pragma': 'no-cache',
+                  'User-Agent': 'Star-Almanack-Pages-Verifier/1.0',
+              })
+              with urlopen(req, timeout=30) as r:
+                  return r.read()
+
+          def local_path_for(url):
+              p = urlparse(url)
+              if p.netloc and p.netloc != 'alexmiller63.github.io':
+                  return None
+              path = p.path
+              if not path.startswith(SITE_PREFIX):
+                  return None
+              rel = path[len(SITE_PREFIX):]
+              if rel.endswith('/'):
+                  rel += 'index.html'
+              candidate = Path(rel)
+              return candidate if candidate.is_file() else None
+
+          for attempt in range(1, 37):
+              failures = []
+              verified_urls = []
+              for week in weeks:
+                  local_page = Path('almanack') / week / 'index.html'
+                  page_url = urljoin(BASE, week + '/')
+                  verify_url = busted(page_url, f'{token}-{attempt}')
+                  try:
+                      remote = get(verify_url)
+                  except Exception as exc:
+                      failures.append(f'{week}: page fetch failed: {exc}')
+                      continue
+
+                  local = local_page.read_bytes()
+                  if remote != local:
+                      failures.append(
+                          f'{week}: HTML mismatch local={hashlib.sha256(local).hexdigest()[:12]} '
+                          f'pages={hashlib.sha256(remote).hexdigest()[:12]}'
+                      )
+                      continue
+
+                  parser = Refs()
+                  parser.feed(local.decode('utf-8'))
+                  for ref in sorted(set(parser.refs)):
+                      asset_url = urljoin(page_url, ref)
+                      local_asset = local_path_for(asset_url)
+                      if local_asset is None:
+                          continue
+                      try:
+                          remote_asset = get(busted(asset_url, f'{token}-{attempt}'))
+                      except Exception as exc:
+                          failures.append(f'{week}: asset fetch failed {ref}: {exc}')
+                          continue
+                      local_asset_bytes = local_asset.read_bytes()
+                      if remote_asset != local_asset_bytes:
+                          failures.append(
+                              f'{week}: asset mismatch {ref} '
+                              f'local={hashlib.sha256(local_asset_bytes).hexdigest()[:12]} '
+                              f'pages={hashlib.sha256(remote_asset).hexdigest()[:12]}'
+                          )
+                  verified_urls.append(verify_url)
+
+              if not failures:
+                  print('GitHub Pages HTML and referenced local assets exactly match the repository output.')
+                  with open(os.environ['GITHUB_STEP_SUMMARY'], 'a', encoding='utf-8') as summary:
+                      summary.write('## Verified GitHub Pages\n\n')
+                      for url in verified_urls:
+                          summary.write(f'- {url}\n')
+                  raise SystemExit(0)
+
+              print(f'Pages verification attempt {attempt}/36 failed:')
+              for failure in failures:
+                  print(' -', failure)
+              time.sleep(10)
+
+          print('GitHub Pages did not exactly match the generated Calendar HTML/assets within 6 minutes.')
+          raise SystemExit(1)
+          PY
