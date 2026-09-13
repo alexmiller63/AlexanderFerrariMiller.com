@@ -5,6 +5,7 @@ from __future__ import annotations
 from datetime import timedelta
 
 import populate_calendar as calendar
+from calendar_mobile_layout import patch_file as patch_mobile_layout
 from iso_date_range import group_by_year, parse_range_args
 
 
@@ -26,7 +27,9 @@ def populate_selected_year(year: int, selected_weeks: list[int]) -> int:
             path = base / str(year) / f"W{week:02d}" / "index.html"
             if not path.exists():
                 raise RuntimeError(f"Missing weekly page: {path.relative_to(calendar.ROOT)}")
-            if calendar.patch_page(path, ingresses, events):
+            page_changed = calendar.patch_page(path, ingresses, events)
+            layout_changed = patch_mobile_layout(path)
+            if page_changed or layout_changed:
                 changed += 1
     return changed
 
