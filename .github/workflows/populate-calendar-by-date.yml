@@ -118,7 +118,7 @@ jobs:
               browser = p.chromium.launch()
               page = browser.new_page()
               for year, week in weeks:
-                  rel = f'star-almanack/{year}/W{week:02d}/index.html'
+                  rel = f'almanack/{year}/W{week:02d}/index.html'
                   path = root / rel
                   if not path.exists():
                       raise SystemExit(f'Missing generated page: {rel}')
@@ -162,7 +162,7 @@ jobs:
           root = pathlib.Path.cwd()
           expected = {}
           for year, week in weeks:
-              rel = pathlib.Path('star-almanack') / str(year) / f'W{week:02d}' / 'index.html'
+              rel = pathlib.Path('almanack') / str(year) / f'W{week:02d}' / 'index.html'
               expected[(year, week)] = hashlib.sha256((root / rel).read_bytes()).hexdigest()
 
           base = 'https://alexmiller63.github.io/AlexanderFerrariMiller.com'
@@ -172,7 +172,7 @@ jobs:
               attempt += 1
               all_ok = True
               for year, week in weeks:
-                  url = f'{base}/star-almanack/{year}/W{week:02d}/index.html?verify={int(time.time())}'
+                  url = f'{base}/almanack/{year}/W{week:02d}/index.html?verify={int(time.time())}'
                   try:
                       req = urllib.request.Request(url, headers={'Cache-Control': 'no-cache', 'Pragma': 'no-cache'})
                       with urllib.request.urlopen(req, timeout=30) as response:
