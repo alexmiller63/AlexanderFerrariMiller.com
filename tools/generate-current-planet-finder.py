@@ -49,8 +49,13 @@ def place(mode,rows):
     reserved=tuple(CENTER_RESERVED); lons=[r[-1] for r in rows]; anchors=[xy(L,RI-5) for L in lons]
     nearest=[min(abs((lons[i]-lons[j]+180)%360-180) for j in range(len(rows)) if j!=i) for i in range(len(rows))]
     original_order=sorted(range(len(rows)),key=lambda i:(nearest[i],lons[i])); priority={i:rank for rank,i in enumerate(original_order)}
-    radii=(340,300,260,380,220,180); shifts=(0,-70,70,-120,120,-170,170)
-    candidate_specs=([(r,sh) for sh in (0,-45,45,-80,80,-120,120) for r in radii] if mode=='symbols' else [(r,sh) for r in radii for sh in shifts])
+    # Dense candidate geometry lets wide Latin/mixed labels find valid
+    # collision-free placements in crowded weeks without weakening constraints.
+    symbol_radii=(340,300,260,380,220,180)
+    symbol_shifts=(0,-45,45,-80,80,-120,120)
+    text_radii=(380,360,340,320,300,280,260,240,220,200,180,160)
+    text_shifts=(0,-35,35,-70,70,-105,105,-140,140,-175,175,-210,210)
+    candidate_specs=([(r,sh) for sh in symbol_shifts for r in symbol_radii] if mode=='symbols' else [(r,sh) for r in text_radii for sh in text_shifts])
     label_pad=4 if mode=='symbols' else 16; reserved_pad=8 if mode=='symbols' else 18; anchor_pad=2 if mode=='symbols' else 10
     candidates={}
     for i,row in enumerate(rows):
