@@ -11,6 +11,8 @@ on:
     paths:
       - '.github/workflows/populate-2025-2027-ephemeris.yml'
       - 'tools/almanack_calendar.py'
+      - 'tools/almanack_time.py'
+      - 'tools/test_almanack_time.py'
       - 'tools/audit_calendar_contract.py'
       - 'tools/audit_true_year_parameterization.py'
       - 'tools/audit_constellation_centers.py'
@@ -60,6 +62,8 @@ jobs:
     timeout-minutes: 40
     steps:
       - uses: actions/checkout@v4
+      - name: Verify canonical JDTDB time handling
+        run: python tools/test_almanack_time.py
       - name: Fetch pinned constellation-figure and stellar sources
         run: |
           curl -fL \
@@ -164,6 +168,7 @@ jobs:
             fi
           }
           regenerate() {
+            python tools/test_almanack_time.py
             regression
             python tools/clean_event_cells.py $ALMANACK_YEARS
             python tools/populate_calendar.py $ALMANACK_YEARS
