@@ -32,6 +32,11 @@ def dims(mode,name):
     if mode=='latin': return max(110,14*len(name)+34),52
     return max(140,14*len(name)+74),52
 
+def point_inside_inner_rim(point,clearance=1):
+    """Keep leader geometry strictly inside the zodiac inner rim."""
+    x,y=point
+    return math.hypot(x-C,y-C)<=RI-clearance
+
 def box_inside_inner_rim(box,clearance=10):
     """Require every label corner to remain inside the zodiac inner rim."""
     x,y,w,h=box
@@ -104,7 +109,9 @@ def point_in_box(point,box,pad=10):
 def smart_route(anchor,target_box,mode,obstacles):
     x,y,w,h=target_box; collision_pad=2 if mode=='symbols' else 10
     def end_from(point): return edge_point(x,y,w,h,point[0],point[1],mode)
-    def clear_segment(a,b): return not any(seg_hits_box(a,b,q,collision_pad) for q in obstacles)
+    def clear_segment(a,b):
+        return (point_inside_inner_rim(a) and point_inside_inner_rim(b)
+                and not any(seg_hits_box(a,b,q,collision_pad) for q in obstacles))
     gap=16 if mode=='symbols' else 24
     approaches=[(x-w/2-gap,y),(x+w/2+gap,y),(x,y-h/2-gap),(x,y+h/2+gap),(x-w/2-gap,y-h/2-gap),(x+w/2+gap,y-h/2-gap),(x-w/2-gap,y+h/2+gap),(x+w/2+gap,y+h/2+gap)]
     approaches=[p for p in approaches if clear_segment(p,end_from(p))]
@@ -115,6 +122,7 @@ def smart_route(anchor,target_box,mode,obstacles):
         pad=collision_pad+4; xmin=bx-bw/2-pad; xmax=bx+bw/2+pad; ymin=by-bh/2-pad; ymax=by+bh/2+pad
         candidates=[(xmin,ymin),(xmax,ymin),(xmin,ymax),(xmax,ymax),((xmin+xmax)/2,ymin),((xmin+xmax)/2,ymax),(xmin,(ymin+ymax)/2),(xmax,(ymin+ymax)/2)]
         for p in candidates:
+            if not point_inside_inner_rim(p): continue
             if any(point_in_box(p,q,collision_pad) for q in obstacles): continue
             nodes.append(p)
     n=len(nodes); graph=[[] for _ in range(n)]
@@ -141,7 +149,9 @@ def route_leader(anchor,target_box,L,mode,obstacles):
     x,y,w,h=target_box; collision_pad=2 if mode=='symbols' else 10
     def end_from(point): return edge_point(x,y,w,h,point[0],point[1],mode)
     def clear(points,pad=collision_pad):
-        return all(not any(seg_hits_box(a,b,q,pad) for q in obstacles) for a,b in zip(points,points[1:]))
+        return (all(point_inside_inner_rim(p) for p in points)
+                and all(not any(seg_hits_box(a,b,q,pad) for q in obstacles)
+                        for a,b in zip(points,points[1:])))
     def route_length(points):
         return sum(math.hypot(b[0]-a[0],b[1]-a[1]) for a,b in zip(points,points[1:]))
 
