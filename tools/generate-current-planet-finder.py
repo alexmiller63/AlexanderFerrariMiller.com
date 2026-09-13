@@ -33,109 +33,61 @@ def dims(mode,name):
     return max(140,14*len(name)+74),52
 
 def point_inside_inner_rim(point,clearance=1):
-    """Keep leader geometry strictly inside the zodiac inner rim."""
     x,y=point
     return math.hypot(x-C,y-C)<=RI-clearance
 
 def box_inside_inner_rim(box,clearance=10):
-    """Require every label corner to remain inside the zodiac inner rim."""
-    x,y,w,h=box
-    limit=RI-clearance
-    return all(math.hypot(px-C,py-C)<=limit
-               for px in (x-w/2,x+w/2)
-               for py in (y-h/2,y+h/2))
+    x,y,w,h=box; limit=RI-clearance
+    return all(math.hypot(px-C,py-C)<=limit for px in (x-w/2,x+w/2) for py in (y-h/2,y+h/2))
 
 def place(mode,rows):
-    """Place all labels with finite, bounded recursive backtracking.
-
-    Candidate geometry is finite and precomputed. Each recursive call assigns
-    exactly one previously-unassigned label, so recursion depth can never exceed
-    len(rows). The next label is chosen with a minimum-remaining-values heuristic
-    to expose dead ends early, while the original crowded-first ordering is used
-    as a deterministic tie-breaker. A generous state budget protects CI from an
-    accidental combinatorial explosion without permitting a recursion loop.
-    """
-    reserved=tuple(CENTER_RESERVED)
-    lons=[r[-1] for r in rows]
-    anchors=[xy(L,RI-5) for L in lons]
-    nearest=[min(abs((lons[i]-lons[j]+180)%360-180)
-                 for j in range(len(rows)) if j!=i)
-             for i in range(len(rows))]
-    original_order=sorted(range(len(rows)),key=lambda i:(nearest[i],lons[i]))
-    priority={i:rank for rank,i in enumerate(original_order)}
-
-    radii=(340,300,260,380,220,180)
-    shifts=(0,-70,70,-120,120,-170,170)
-    candidate_specs=([(r,sh) for sh in (0,-45,45,-80,80,-120,120) for r in radii]
-                     if mode=='symbols' else [(r,sh) for r in radii for sh in shifts])
-    label_pad=4 if mode=='symbols' else 16
-    reserved_pad=8 if mode=='symbols' else 18
-    anchor_pad=2 if mode=='symbols' else 10
-
+    reserved=tuple(CENTER_RESERVED); lons=[r[-1] for r in rows]; anchors=[xy(L,RI-5) for L in lons]
+    nearest=[min(abs((lons[i]-lons[j]+180)%360-180) for j in range(len(rows)) if j!=i) for i in range(len(rows))]
+    original_order=sorted(range(len(rows)),key=lambda i:(nearest[i],lons[i])); priority={i:rank for rank,i in enumerate(original_order)}
+    radii=(340,300,260,380,220,180); shifts=(0,-70,70,-120,120,-170,170)
+    candidate_specs=([(r,sh) for sh in (0,-45,45,-80,80,-120,120) for r in radii] if mode=='symbols' else [(r,sh) for r in radii for sh in shifts])
+    label_pad=4 if mode=='symbols' else 16; reserved_pad=8 if mode=='symbols' else 18; anchor_pad=2 if mode=='symbols' else 10
     candidates={}
     for i,row in enumerate(rows):
-        sym,name,sign,d,m,L=row; w,h=dims(mode,name)
-        t=math.radians(180+L); tx=-math.sin(t); ty=-math.cos(t)
-        options=[]
+        sym,name,sign,d,m,L=row; w,h=dims(mode,name); t=math.radians(180+L); tx=-math.sin(t); ty=-math.cos(t); options=[]
         for r,sh in candidate_specs:
             bx,by=xy(L,r); x=bx+sh*tx; y=by+sh*ty; box=(x,y,w,h)
             if x-w/2<300 or x+w/2>1100 or y-h/2<300 or y+h/2>1100: continue
             if mode!='symbols' and not box_inside_inner_rim(box): continue
             if any(overlap(box,q,reserved_pad) for q in reserved): continue
-            if any(abs(ax-x)<=w/2+anchor_pad and abs(ay-y)<=h/2+anchor_pad
-                   for ax,ay in anchors): continue
+            if any(abs(ax-x)<=w/2+anchor_pad and abs(ay-y)<=h/2+anchor_pad for ax,ay in anchors): continue
             options.append(box)
-        if not options:
-            raise RuntimeError(f'No statically valid label positions for {name}')
+        if not options: raise RuntimeError(f'No statically valid label positions for {name}')
         candidates[i]=tuple(options)
-
-    assigned={}
-    search_nodes=0
-    node_limit=1_000_000
-
-    def compatible(box):
-        return all(not overlap(box,q,label_pad) for q in assigned.values())
-
+    assigned={}; search_nodes=0; node_limit=1_000_000
+    def compatible(box): return all(not overlap(box,q,label_pad) for q in assigned.values())
     def solve():
         nonlocal search_nodes
         search_nodes+=1
-        if search_nodes>node_limit:
-            raise RuntimeError(f'Label placement search exceeded {node_limit} states')
-        if len(assigned)==len(rows):
-            return True
-
+        if search_nodes>node_limit: raise RuntimeError(f'Label placement search exceeded {node_limit} states')
+        if len(assigned)==len(rows): return True
         best_i=None; best_options=None
         for i in range(len(rows)):
             if i in assigned: continue
             options=[box for box in candidates[i] if compatible(box)]
-            if not options:
-                return False
-            if (best_options is None or len(options)<len(best_options) or
-                (len(options)==len(best_options) and priority[i]<priority[best_i])):
-                best_i=i; best_options=options
-
+            if not options: return False
+            if best_options is None or len(options)<len(best_options) or (len(options)==len(best_options) and priority[i]<priority[best_i]): best_i=i; best_options=options
         for box in best_options:
             assigned[best_i]=box
-            if solve():
-                return True
+            if solve(): return True
             del assigned[best_i]
         return False
-
-    if not solve():
-        raise RuntimeError(f'No collision-free label arrangement for {mode} after {search_nodes} search states')
+    if not solve(): raise RuntimeError(f'No collision-free label arrangement for {mode} after {search_nodes} search states')
     return [assigned[i] for i in range(len(rows))]
 
 def edge_point(x,y,w,h,ax,ay,mode):
     dx=ax-x; dy=ay-y
     if mode=='symbols':
-        dist=math.hypot(dx,dy) or 1
-        return x+dx/dist*34,y+dy/dist*34
-    sx=(w/2)/abs(dx) if dx else 1e9; sy=(h/2)/abs(dy) if dy else 1e9
-    t=min(sx,sy); return x+dx*t,y+dy*t
+        dist=math.hypot(dx,dy) or 1; return x+dx/dist*34,y+dy/dist*34
+    sx=(w/2)/abs(dx) if dx else 1e9; sy=(h/2)/abs(dy) if dy else 1e9; t=min(sx,sy); return x+dx*t,y+dy*t
 
 def seg_hits_box(a,b,box,pad=10):
-    x1,y1=a; x2,y2=b; bx,by,bw,bh=box
-    xmin=bx-bw/2-pad; xmax=bx+bw/2+pad; ymin=by-bh/2-pad; ymax=by+bh/2+pad
+    x1,y1=a; x2,y2=b; bx,by,bw,bh=box; xmin=bx-bw/2-pad; xmax=bx+bw/2+pad; ymin=by-bh/2-pad; ymax=by+bh/2+pad
     dx=x2-x1; dy=y2-y1; t0=0.0; t1=1.0
     for p,q in ((-dx,x1-xmin),(dx,xmax-x1),(-dy,y1-ymin),(dy,ymax-y1)):
         if abs(p)<1e-9:
@@ -154,12 +106,16 @@ def point_in_box(point,box,pad=10):
     x,y=point; bx,by,bw,bh=box
     return bx-bw/2-pad<=x<=bx+bw/2+pad and by-bh/2-pad<=y<=by+bh/2+pad
 
+def point_segment_distance(p,a,b):
+    px,py=p; ax,ay=a; bx,by=b; dx=bx-ax; dy=by-ay; denom=dx*dx+dy*dy
+    if denom==0: return math.hypot(px-ax,py-ay)
+    t=max(0.0,min(1.0,((px-ax)*dx+(py-ay)*dy)/denom)); qx=ax+t*dx; qy=ay+t*dy
+    return math.hypot(px-qx,py-qy)
+
 def smart_route(anchor,target_box,mode,obstacles):
     x,y,w,h=target_box; collision_pad=2 if mode=='symbols' else 10
     def end_from(point): return edge_point(x,y,w,h,point[0],point[1],mode)
-    def clear_segment(a,b):
-        return (point_inside_inner_rim(a) and point_inside_inner_rim(b)
-                and not any(seg_hits_box(a,b,q,collision_pad) for q in obstacles))
+    def clear_segment(a,b): return point_inside_inner_rim(a) and point_inside_inner_rim(b) and not any(seg_hits_box(a,b,q,collision_pad) for q in obstacles)
     gap=16 if mode=='symbols' else 24
     approaches=[(x-w/2-gap,y),(x+w/2+gap,y),(x,y-h/2-gap),(x,y+h/2+gap),(x-w/2-gap,y-h/2-gap),(x+w/2+gap,y-h/2-gap),(x-w/2-gap,y+h/2+gap),(x+w/2+gap,y+h/2+gap)]
     approaches=[p for p in approaches if clear_segment(p,end_from(p))]
@@ -168,17 +124,13 @@ def smart_route(anchor,target_box,mode,obstacles):
     for p in approaches: goal_ids.append(len(nodes)); nodes.append(p)
     for bx,by,bw,bh in obstacles:
         pad=collision_pad+4; xmin=bx-bw/2-pad; xmax=bx+bw/2+pad; ymin=by-bh/2-pad; ymax=by+bh/2+pad
-        candidates=[(xmin,ymin),(xmax,ymin),(xmin,ymax),(xmax,ymax),((xmin+xmax)/2,ymin),((xmin+xmax)/2,ymax),(xmin,(ymin+ymax)/2),(xmax,(ymin+ymax)/2)]
-        for p in candidates:
-            if not point_inside_inner_rim(p): continue
-            if any(point_in_box(p,q,collision_pad) for q in obstacles): continue
-            nodes.append(p)
+        for p in [(xmin,ymin),(xmax,ymin),(xmin,ymax),(xmax,ymax),((xmin+xmax)/2,ymin),((xmin+xmax)/2,ymax),(xmin,(ymin+ymax)/2),(xmax,(ymin+ymax)/2)]:
+            if point_inside_inner_rim(p) and not any(point_in_box(p,q,collision_pad) for q in obstacles): nodes.append(p)
     n=len(nodes); graph=[[] for _ in range(n)]
     for i in range(n):
         for j in range(i+1,n):
-            if not clear_segment(nodes[i],nodes[j]): continue
-            distance=math.hypot(nodes[i][0]-nodes[j][0],nodes[i][1]-nodes[j][1])+4
-            graph[i].append((j,distance)); graph[j].append((i,distance))
+            if clear_segment(nodes[i],nodes[j]):
+                distance=math.hypot(nodes[i][0]-nodes[j][0],nodes[i][1]-nodes[j][1])+4; graph[i].append((j,distance)); graph[j].append((i,distance))
     goals=set(goal_ids); dist=[float('inf')]*n; prev=[None]*n; dist[0]=0.0; queue=[(0.0,0)]; found=None
     while queue:
         current_dist,i=heapq.heappop(queue)
@@ -192,61 +144,47 @@ def smart_route(anchor,target_box,mode,obstacles):
     while i is not None: route.append(nodes[i]); i=prev[i]
     route.reverse(); route.append(end_from(route[-1])); return route
 
-def route_leader(anchor,target_box,L,mode,obstacles):
-    """Choose a collision-free leader by balancing obstacle, rim, and detour costs."""
+def route_leader(anchor,target_box,L,mode,obstacles,other_anchors=()):
+    """Choose a collision-free, visually unambiguous leader."""
     x,y,w,h=target_box; collision_pad=2 if mode=='symbols' else 10
     def end_from(point): return edge_point(x,y,w,h,point[0],point[1],mode)
-    def clear(points,pad=collision_pad):
-        return (all(point_inside_inner_rim(p) for p in points)
-                and all(not any(seg_hits_box(a,b,q,pad) for q in obstacles)
-                        for a,b in zip(points,points[1:])))
-    def route_length(points):
-        return sum(math.hypot(b[0]-a[0],b[1]-a[1]) for a,b in zip(points,points[1:]))
+    def clear(points,pad=collision_pad): return all(point_inside_inner_rim(p) for p in points) and all(not any(seg_hits_box(a,b,q,pad) for q in obstacles) for a,b in zip(points,points[1:]))
+    def route_length(points): return sum(math.hypot(b[0]-a[0],b[1]-a[1]) for a,b in zip(points,points[1:]))
     def rim_clearance(points,ignore_start=18.0):
-        """Minimum inner-rim clearance after the leader has left its anchor."""
         best=float('inf'); traveled=0.0
         for a,b in zip(points,points[1:]):
-            seg_len=math.hypot(b[0]-a[0],b[1]-a[1])
-            steps=max(1,math.ceil(seg_len/6.0))
+            seg_len=math.hypot(b[0]-a[0],b[1]-a[1]); steps=max(1,math.ceil(seg_len/6.0))
             for step in range(1,steps+1):
-                frac=step/steps
-                distance=traveled+frac*seg_len
+                frac=step/steps; distance=traveled+frac*seg_len
                 if distance<=ignore_start: continue
-                px=a[0]+(b[0]-a[0])*frac; py=a[1]+(b[1]-a[1])*frac
-                best=min(best,RI-math.hypot(px-C,py-C))
+                px=a[0]+(b[0]-a[0])*frac; py=a[1]+(b[1]-a[1])*frac; best=min(best,RI-math.hypot(px-C,py-C))
             traveled+=seg_len
         return best
-
-    candidates=[]
-    direct=[anchor,end_from(anchor)]
+    def anchor_clearance(points):
+        if not other_anchors: return float('inf')
+        return min(point_segment_distance(p,a,b) for p in other_anchors for a,b in zip(points,points[1:]))
+    candidates=[]; direct=[anchor,end_from(anchor)]
     if clear(direct): candidates.append(direct)
-
     theta=math.radians(180+L); tx=-math.sin(theta); ty=-math.cos(theta)
     for radius in (400,370,340,310,280,250,220,190,160,130):
         rx,ry=xy(L,radius)
         for shift in (0,-35,35,-70,70,-105,105,-140,140,-175,175,-210,210):
             bend=(rx+shift*tx,ry+shift*ty); route=[anchor,bend,end_from(bend)]
             if clear(route): candidates.append(route)
-
     if candidates:
-        # Three independent aesthetic penalties: crowding another object,
-        # crowding the zodiac rim after leaving the anchor, and excess detour.
-        # The rim term prevents near-tangent leaders from visually merging with
-        # the circle without imposing a hard route shape or a body-specific fix.
-        desired_clearance=22 if mode=='symbols' else 24
-        desired_rim_clearance=26
-        clearance_steps=tuple(range(desired_clearance,collision_pad-1,-2))
-        direct_length=route_length(direct)
+        desired_clearance=22 if mode=='symbols' else 24; desired_rim_clearance=26; desired_anchor_clearance=28
+        clearance_steps=tuple(range(desired_clearance,collision_pad-1,-2)); direct_length=route_length(direct)
         def route_score(route):
             clearance=max((pad for pad in clearance_steps if clear(route,pad)),default=collision_pad)
-            clearance_penalty=max(0,desired_clearance-clearance) ** 2
-            rim_deficit=max(0.0,desired_rim_clearance-rim_clearance(route))
-            rim_penalty=0.75*rim_deficit**2
-            detour=max(0.0,route_length(route)-direct_length)
-            detour_penalty=0.12*detour
-            return clearance_penalty+rim_penalty+detour_penalty
+            clearance_penalty=max(0,desired_clearance-clearance)**2
+            rim_deficit=max(0.0,desired_rim_clearance-rim_clearance(route)); rim_penalty=0.75*rim_deficit**2
+            detour=max(0.0,route_length(route)-direct_length); detour_penalty=0.12*detour
+            # A leader that runs close to somebody else's dot can make the dot-to-label
+            # pairing ambiguous even without a geometric collision. Penalize that
+            # approach corridor heavily so neighboring anchors read independently.
+            anchor_deficit=max(0.0,desired_anchor_clearance-anchor_clearance(route)); anchor_penalty=2.0*anchor_deficit**2
+            return clearance_penalty+rim_penalty+detour_penalty+anchor_penalty
         return min(candidates,key=route_score)
-
     route=smart_route(anchor,target_box,mode,obstacles)
     if route: return route
     raise RuntimeError('No collision-free leader route after visibility-graph search')
@@ -264,10 +202,11 @@ def build(mode,year,week,monday,rows):
         else: text,fs,cls=sgn+'︎ '+name,22,' class="symbol"'
         s.append(f'<text{cls} x="{x:.1f}" y="{y+8:.1f}" text-anchor="middle" font-size="{fs}">{text}</text>')
     s.append('<text x="112" y="708" text-anchor="end" font-size="20" class="sans">0° Aries</text>')
-    boxes=place(mode,rows)
+    boxes=place(mode,rows); anchors=[xy(row[-1],RI-5) for row in rows]
     for idx,(row,box) in enumerate(zip(rows,boxes)):
-        sym,name,sign,d,m,L=row; ax,ay=xy(L,RI-5); obstacles=list(CENTER_RESERVED)+[q for j,q in enumerate(boxes) if j!=idx]
-        route=route_leader((ax,ay),box,L,mode,obstacles); points=' '.join(f'{px:.1f},{py:.1f}' for px,py in route)
+        sym,name,sign,d,m,L=row; ax,ay=anchors[idx]; obstacles=list(CENTER_RESERVED)+[q for j,q in enumerate(boxes) if j!=idx]
+        other_anchors=[a for j,a in enumerate(anchors) if j!=idx]
+        route=route_leader((ax,ay),box,L,mode,obstacles,other_anchors); points=' '.join(f'{px:.1f},{py:.1f}' for px,py in route)
         s.append(f'<polyline points="{points}" fill="none" stroke="#777" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/>'); s.append(f'<circle cx="{ax:.1f}" cy="{ay:.1f}" r="3.5" fill="#111"/>')
     for row,box in zip(rows,boxes):
         sym,name,sign,d,m,L=row; x,y,w,h=box
