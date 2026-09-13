@@ -114,6 +114,30 @@ jobs:
                   weeks.append(pair)
               d += dt.timedelta(days=1)
 
+          def verify_layout(page, rel, mode):
+              result = page.evaluate('''() => ({
+                page: document.documentElement.scrollWidth > window.innerWidth + 1,
+                calendar: (() => {
+                  const el = document.querySelector('table.calendar');
+                  return !!el && el.scrollWidth > el.clientWidth + 1;
+                })(),
+                cells: [...document.querySelectorAll('table.calendar td, table.calendar th, .event-cell')]
+                  .filter(el => el.scrollWidth > el.clientWidth + 1)
+                  .map(el => (el.textContent || '').trim().slice(0, 100)),
+                wrappedTokens: [...document.querySelectorAll(
+                    'table.calendar .notation-item, table.calendar .notation-rendered, '
+                    + 'table.calendar .visibility-magnitude, table.calendar .observing-aid-notation'
+                  )]
+                  .filter(el => el.getClientRects().length > 1)
+                  .map(el => (el.textContent || '').trim().slice(0, 100))
+              })''')
+              if result['page'] or result['calendar'] or result['cells'] or result['wrappedTokens']:
+                  raise SystemExit(
+                      f'Mobile Calendar layout failure in {rel} mode={mode}: '
+                      f'page={result["page"]} calendar={result["calendar"]} '
+                      f'cells={result["cells"][:5]} wrappedTokens={result["wrappedTokens"][:5]}'
+                  )
+
           with sync_playwright() as p:
               browser = p.chromium.launch()
               page = browser.new_page(viewport={"width": 390, "height": 844})
@@ -131,23 +155,16 @@ jobs:
                   if page.locator('td.calendar-events-region .calendar-events').count() == 0:
                       raise SystemExit(f'Event-cell container missing in {rel}')
 
-                  overflow = page.evaluate('''() => ({
-                    page: document.documentElement.scrollWidth > window.innerWidth + 1,
-                    calendar: (() => {
-                      const el = document.querySelector('table.calendar');
-                      return !!el && el.scrollWidth > el.clientWidth + 1;
-                    })(),
-                    cells: [...document.querySelectorAll('table.calendar td, table.calendar th, .event-cell')]
-                      .filter(el => el.scrollWidth > el.clientWidth + 1)
-                      .map(el => (el.textContent || '').trim().slice(0, 80))
-                  })''')
-                  if overflow['page'] or overflow['calendar'] or overflow['cells']:
-                      raise SystemExit(
-                          f'Mobile Calendar overflow in {rel}: '
-                          f'page={overflow["page"]} calendar={overflow["calendar"]} '
-                          f'cells={overflow["cells"][:5]}'
-                      )
-                  print(f'Local Chromium PASS: {rel}')
+                  calendar_toggle = '.section-notation-toggle[data-notation-target="calendar"]'
+                  for mode in ('greek', 'latin', 'mixed'):
+                      button = page.locator(f'{calendar_toggle} button[data-bayer-mode="{mode}"]')
+                      if button.count() != 1:
+                          raise SystemExit(f'Calendar notation button missing in {rel}: {mode}')
+                      button.click()
+                      page.wait_for_timeout(50)
+                      verify_layout(page, rel, mode)
+
+                  print(f'Local Chromium PASS all notation modes: {rel}')
               browser.close()
           server.shutdown()
           PY
