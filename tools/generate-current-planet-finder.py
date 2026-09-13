@@ -40,6 +40,11 @@ def box_inside_inner_rim(box,clearance=10):
     x,y,w,h=box; limit=RI-clearance
     return all(math.hypot(px-C,py-C)<=limit for px in (x-w/2,x+w/2) for py in (y-h/2,y+h/2))
 
+def point_box_clearance(point,box):
+    px,py=point; x,y,w,h=box
+    dx=max(abs(px-x)-w/2,0.0); dy=max(abs(py-y)-h/2,0.0)
+    return math.hypot(dx,dy)
+
 def place(mode,rows):
     reserved=tuple(CENTER_RESERVED); lons=[r[-1] for r in rows]; anchors=[xy(L,RI-5) for L in lons]
     nearest=[min(abs((lons[i]-lons[j]+180)%360-180) for j in range(len(rows)) if j!=i) for i in range(len(rows))]
@@ -58,6 +63,19 @@ def place(mode,rows):
             if any(abs(ax-x)<=w/2+anchor_pad and abs(ay-y)<=h/2+anchor_pad for ax,ay in anchors): continue
             options.append(box)
         if not options: raise RuntimeError(f'No statically valid label positions for {name}')
+        # In crowded anchor neighborhoods, visual separation matters more than simply
+        # taking the first geometrically legal slot. Rank candidate labels by their
+        # clearance from the *other* anchors, then by leader length. This naturally
+        # pushes a label away from a neighboring dot (for example the W38 Moon/Venus
+        # pair) while preserving the old ordering for uncrowded bodies.
+        if nearest[i] < 18:
+            own_anchor=anchors[i]
+            other_anchors=[a for j,a in enumerate(anchors) if j!=i]
+            def crowded_score(box):
+                clearance=min(point_box_clearance(a,box) for a in other_anchors)
+                leader_len=math.hypot(box[0]-own_anchor[0],box[1]-own_anchor[1])
+                return (-clearance,leader_len)
+            options.sort(key=crowded_score)
         candidates[i]=tuple(options)
     assigned={}; search_nodes=0; node_limit=1_000_000
     def compatible(box): return all(not overlap(box,q,label_pad) for q in assigned.values())
