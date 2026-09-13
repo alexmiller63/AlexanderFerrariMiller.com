@@ -1,0 +1,100 @@
+name: Populate Sky Notes — by ISO date
+
+on:
+  workflow_dispatch:
+    inputs:
+      start_date:
+        description: Start date (ISO YYYY-MM-DD)
+        required: true
+        type: string
+      end_date:
+        description: End date (ISO YYYY-MM-DD)
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: populate-sky-notes-by-date
+  cancel-in-progress: false
+
+jobs:
+  populate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Resolve ISO years and weeks
+        id: range
+        env:
+          START_DATE: ${{ inputs.start_date }}
+          END_DATE: ${{ inputs.end_date }}
+        run: |
+          python - <<'PY' >> "$GITHUB_OUTPUT"
+          import os
+          from datetime import date, timedelta
+
+          start = date.fromisoformat(os.environ['START_DATE'])
+          end = date.fromisoformat(os.environ['END_DATE'])
+          if end < start:
+              raise SystemExit('end_date must be on or after start_date')
+          if (end - start).days > 1096:
+              raise SystemExit('Date range may span at most 3 years')
+
+          years = []
+          weeks = []
+          d = start
+          seen = set()
+          while d <= end:
+              iso = d.isocalendar()
+              if iso.year not in years:
+                  years.append(iso.year)
+              key = (iso.year, iso.week)
+              if key not in seen:
+                  seen.add(key)
+                  weeks.append(f'{iso.year}:W{iso.week:02d}')
+              d += timedelta(days=1)
+
+          print('years=' + ' '.join(map(str, years)))
+          print('weeks=' + ' '.join(weeks))
+          PY
+
+      - name: Populate available Sky Notes sources
+        env:
+          YEARS: ${{ steps.range.outputs.years }}
+        run: |
+          for year in $YEARS; do
+            if [ "$year" = "2026" ] && [ -f Star-Almanack-Repo/apply_sky_notes.py ]; then
+              (
+                cd Star-Almanack-Repo
+                python apply_sky_notes.py
+                python publish_weekly_pages.py
+              )
+            else
+              echo "No Sky Notes population source is currently defined for ISO $year; skipping."
+            fi
+          done
+
+      - name: Commit only requested ISO weeks
+        env:
+          WEEKS: ${{ steps.range.outputs.weeks }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          for item in $WEEKS; do
+            year="${item%%:*}"
+            week="${item##*:}"
+            for path in "Star-Almanack-Repo/site/$year/$week" "almanack/$year/$week"; do
+              if [ -e "$path" ]; then git add "$path"; fi
+            done
+          done
+          if git diff --cached --quiet; then
+            echo "No Sky Notes changes in requested ISO date range."
+            exit 0
+          fi
+          git commit -m "Populate Sky Notes ${{ inputs.start_date }} through ${{ inputs.end_date }}"
+          git pull --rebase origin main
+          git push
