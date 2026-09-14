@@ -19,8 +19,8 @@ def calculate_year(year: int):
     return ephemeris.computed_ephemeris(year)
 
 
-def observing_html(magnitude, elongation) -> str:
-    aid = ephemeris.current_visibility(magnitude, elongation)
+def observing_html(key, magnitude, elongation) -> str:
+    aid = ephemeris.current_visibility(key, magnitude, elongation)
     if not aid:
         return ""
     if aid == "near_sun":
@@ -43,7 +43,7 @@ def populate_week(year: int, week: int, generated) -> int:
         key: (
             ephemeris.zodiac(generated[key][week - 1][0]),
             ephemeris.beta(generated[key][week - 1][1]),
-            observing_html(generated[key][week - 1][2], generated[key][week - 1][3]),
+            observing_html(key, generated[key][week - 1][2], generated[key][week - 1][3]),
         )
         for _, key, _ in ephemeris.TARGETS
     }
