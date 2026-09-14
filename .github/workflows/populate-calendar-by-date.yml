@@ -116,16 +116,22 @@ jobs:
 
           def verify_layout(page, rel, mode):
               result = page.evaluate('''() => {
-                const actuallyWraps = (el) => {
-                  const range = document.createRange();
-                  range.selectNodeContents(el);
-                  const rects = [...range.getClientRects()].filter(r => r.width > 0 && r.height > 0);
-                  if (rects.length < 2) return false;
-                  const tops = [];
-                  for (const r of rects) {
-                    if (!tops.some(top => Math.abs(top - r.top) <= 1)) tops.push(r.top);
+                const textActuallyWraps = (el) => {
+                  const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+                  let node;
+                  while ((node = walker.nextNode())) {
+                    if (!(node.textContent || '').trim()) continue;
+                    const range = document.createRange();
+                    range.selectNodeContents(node);
+                    const rects = [...range.getClientRects()].filter(r => r.width > 0 && r.height > 0);
+                    if (rects.length < 2) continue;
+                    const tops = [];
+                    for (const r of rects) {
+                      if (!tops.some(top => Math.abs(top - r.top) <= 1)) tops.push(r.top);
+                    }
+                    if (tops.length > 1) return true;
                   }
-                  return tops.length > 1;
+                  return false;
                 };
                 return {
                   page: document.documentElement.scrollWidth > window.innerWidth + 1,
@@ -143,7 +149,7 @@ jobs:
                       + 'td.calendar-events-region .calendar-events .observing-aid-notation, '
                       + 'td.calendar-events-region .calendar-events .observing-notation-item'
                     )]
-                    .filter(actuallyWraps)
+                    .filter(textActuallyWraps)
                     .map(el => (el.textContent || '').trim().slice(0, 100))
                 };
               }''')
