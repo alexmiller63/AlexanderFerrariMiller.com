@@ -35,6 +35,7 @@ from almanack_time import AstroInstant, datetime_to_jd_utc
 from skyfield.api import load, load_file
 from skyfield.framelib import ecliptic_frame
 from skyfield.magnitudelib import planetary_magnitude
+from skyfield.vectorlib import VectorFunction
 
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_KERNEL_DIR = ROOT / ".cache" / "skyfield"
@@ -53,6 +54,42 @@ class EphemerisSample:
 
 def _norm3(v) -> float:
     return math.sqrt(float(v[0] ** 2 + v[1] ** 2 + v[2] ** 2))
+
+
+class _PiecewiseSpkPosition(VectorFunction):
+    """Present several consecutive SPK segments as one Skyfield vector.
+
+    The historical Ceres kernel is split into hundreds of Sun-to-Ceres
+    segments.  They are source coefficients for different time intervals, not
+    competing answers.  Skyfield exposes each interval as a separate vector,
+    so this adapter selects the segment whose published coverage contains the
+    requested TDB epoch and lets Skyfield evaluate that segment normally.
+    """
+
+    def __init__(self, segments) -> None:
+        ordered = sorted(segments, key=lambda s: s.spk_segment.start_jd)
+        if not ordered:
+            raise ValueError("Piecewise SPK position requires at least one segment")
+        center = ordered[0].center
+        target = ordered[0].target
+        if any(s.center != center or s.target != target for s in ordered):
+            raise ValueError("Piecewise SPK segments must share one center/target pair")
+        self.center = center
+        self.target = target
+        self.segments = ordered
+
+    def _at(self, t):
+        jd_tdb = float(t.tdb)
+        for segment in self.segments:
+            raw = segment.spk_segment
+            if raw.start_jd <= jd_tdb <= raw.end_jd:
+                return segment._at(t)
+        first = self.segments[0].spk_segment.start_jd
+        last = self.segments[-1].spk_segment.end_jd
+        raise ValueError(
+            f"TDB JD {jd_tdb:.9f} outside Ceres SPK coverage "
+            f"{first:.9f}..{last:.9f}"
+        )
 
 
 class StarAlmanackEphemeris:
@@ -93,10 +130,9 @@ class StarAlmanackEphemeris:
         self.ceres = None
         if self.ceres_path.is_file():
             self.asteroids = load_file(str(self.ceres_path))
-            # This historical NAIF kernel contains a Sun(10) -> Ceres(2000001)
-            # segment but no 0 -> 10 segment, so Skyfield cannot resolve Ceres
-            # through SpiceKernel.__getitem__(). Select the kernel segment by
-            # its published SPICE center/target IDs, then compose it with the
+            # This historical NAIF kernel contains many consecutive Sun(10) ->
+            # Ceres(2000001) segments but no 0 -> 10 segment.  Join those
+            # intervals into one time-routed vector, then compose it with the
             # DE440s barycentric Sun vector.
             candidates = [
                 segment for segment in self.asteroids.segments
@@ -106,14 +142,7 @@ class StarAlmanackEphemeris:
                 raise RuntimeError(
                     f"{self.ceres_path} contains no Sun(10) -> Ceres(2000001) SPK segment"
                 )
-            if len(candidates) == 1:
-                ceres_relative = candidates[0]
-            else:
-                # The 1900-2100 file is expected to have a single continuous
-                # segment. Refuse an ambiguous kernel rather than guessing.
-                raise RuntimeError(
-                    f"{self.ceres_path} contains {len(candidates)} Sun-to-Ceres segments; expected exactly one"
-                )
+            ceres_relative = _PiecewiseSpkPosition(candidates)
             self.ceres = self.sun + ceres_relative
             self.bodies["ceres"] = self.ceres
 
