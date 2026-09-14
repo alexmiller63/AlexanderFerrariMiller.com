@@ -54,9 +54,9 @@ SCRIPT = r'''<script id="ephemeris-notation-sync">
     return src.replace(/\.svg(?:\?.*)?$/,'');
   }
   function prepareObservingAids(){
-    document.querySelectorAll('table.calendar .visibility-magnitude').forEach(function(container){
+    document.querySelectorAll('table.calendar .visibility-magnitude, table.ephemeris tr.ephemeris-visibility td').forEach(function(container){
       if(container.querySelector('.observing-notation-item'))return;
-      const glyphs=Array.from(container.querySelectorAll(':scope > img.visibility-glyph'));
+      const glyphs=Array.from(container.querySelectorAll(':scope > img.visibility-glyph, :scope > .substantial-telescope img.visibility-glyph'));
       if(!glyphs.length)return;
       const kinds=glyphs.map(aidKind);
       let label;
