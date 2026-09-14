@@ -16,6 +16,28 @@ SOURCE_ROOT = ROOT / "Star-Almanack-Repo"
 CANONICAL_ROOT = SOURCE_ROOT / "descriptors"
 PUBLIC_ROOT = ROOT / "almanack" / "descriptors"
 FIGURE_SOURCE = SOURCE_ROOT / "constellation-figures.json"
+ASTERISM_SOURCE = SOURCE_ROOT / "asterisms-core-25.yaml"
+STAR_HOP_SOURCE = SOURCE_ROOT / "guiding-star-hops.json"
+
+BAYER_WORDS = {
+    "Alp": "Alpha", "Bet": "Beta", "Gam": "Gamma", "Del": "Delta",
+    "Eps": "Epsilon", "Zet": "Zeta", "Eta": "Eta", "The": "Theta",
+    "Iot": "Iota", "Kap": "Kappa", "Lam": "Lambda", "Mu": "Mu",
+    "Nu": "Nu", "Xi": "Xi", "Omi": "Omicron", "Pi": "Pi",
+    "Rho": "Rho", "Sig": "Sigma", "Tau": "Tau", "Ups": "Upsilon",
+    "Phi": "Phi", "Chi": "Chi", "Psi": "Psi", "Ome": "Omega",
+}
+
+# Genitives needed by the preserved 25-asterism membership catalog. Proper
+# names remain the primary match; these aliases cover catalogued Bayer names.
+CONSTELLATION_GENITIVES = {
+    "Aqr": "Aquarii", "Boo": "Bootis", "Car": "Carinae", "Cas": "Cassiopeiae",
+    "Cen": "Centauri", "Cet": "Ceti", "Cru": "Crucis", "CVn": "Canum Venaticorum",
+    "Cyg": "Cygni", "Her": "Herculis", "Leo": "Leonis", "Ori": "Orionis",
+    "Peg": "Pegasi", "Psc": "Piscium", "Sco": "Scorpii", "Sgr": "Sagittarii",
+    "Tau": "Tauri", "UMa": "Ursae Majoris", "UMi": "Ursae Minoris",
+    "Vel": "Velorum", "Vir": "Virginis", "Vul": "Vulpeculae",
+}
 
 OBSERVING_CONCEPTS = {
     "ecliptic-longitude": {
@@ -82,6 +104,120 @@ def _figure_catalog() -> dict:
     return json.loads(FIGURE_SOURCE.read_text(encoding="utf-8"))
 
 
+def _core_asterisms() -> list[dict]:
+    """Read the fields needed from the dependency-free core YAML catalog."""
+    records: list[dict] = []
+    current: dict | None = None
+    for raw in ASTERISM_SOURCE.read_text(encoding="utf-8").splitlines():
+        if raw.startswith("  - name: "):
+            if current is not None:
+                records.append(current)
+            current = {"name": raw.split(":", 1)[1].strip()}
+        elif current is not None and raw.startswith("    status: "):
+            current["status"] = raw.split(":", 1)[1].strip()
+        elif current is not None and raw.startswith("    members: ["):
+            body = raw.split("[", 1)[1].rsplit("]", 1)[0]
+            current["members"] = [item.strip() for item in body.split(",") if item.strip()]
+        elif current is not None and raw.startswith("    source: "):
+            current["source"] = raw.split(":", 1)[1].strip()
+        elif current is not None and raw.startswith("    source_url: "):
+            current["source_url"] = raw.split(":", 1)[1].strip()
+    if current is not None:
+        records.append(current)
+    resolved = [record for record in records if record.get("status") == "resolved" and record.get("members")]
+    if len(resolved) != 25:
+        raise RuntimeError(f"Expected 25 resolved core asterisms, found {len(resolved)}")
+    return resolved
+
+
+def _star_hops() -> list[dict]:
+    document = json.loads(STAR_HOP_SOURCE.read_text(encoding="utf-8"))
+    if document.get("selection_policy") != "curated-established-routes-only":
+        raise RuntimeError("Guiding star-hop catalog must require curated established routes")
+    routes = document.get("routes")
+    if not isinstance(routes, list):
+        raise RuntimeError("Guiding star-hop catalog has no routes list")
+    for route in routes:
+        provenance = route.get("provenance")
+        if not isinstance(provenance, dict):
+            raise RuntimeError(f"Star-hop route {route.get('id')} has no provenance")
+        if provenance.get("source_role") != "verification":
+            raise RuntimeError(f"Star-hop route {route.get('id')} must use its source for verification")
+        if provenance.get("supports") != "star-hop-method":
+            raise RuntimeError(f"Star-hop route {route.get('id')} has ambiguous source support")
+        if route.get("instruction_authorship") != "Star Almanack original wording":
+            raise RuntimeError(f"Star-hop route {route.get('id')} must identify its instruction authorship")
+    return routes
+
+
+def _star_aliases(star: dict | None, name: str) -> set[str]:
+    aliases = {name.casefold()}
+    if star:
+        word = BAYER_WORDS.get(star.get("bayer"))
+        genitive = CONSTELLATION_GENITIVES.get(star.get("con"))
+        if word and genitive:
+            aliases.add(f"{word} {genitive}".casefold())
+    return aliases
+
+
+def _guiding_asterisms(
+    star: dict | None,
+    name: str,
+    hops: list[dict],
+    *,
+    include_memberships: bool = True,
+) -> list[dict]:
+    aliases = _star_aliases(star, name)
+    guides = []
+    catalog = _core_asterisms()
+    if include_memberships:
+        for record in catalog:
+            if not any(member.casefold() in aliases for member in record["members"]):
+                continue
+            guides.append({
+                "id": f"asterism-{slugify(record['name'])}",
+                "name": record["name"],
+                "relationship": "visual-member",
+                "provenance": {
+                    "source": record.get("source"),
+                    "source_url": record.get("source_url"),
+                    "source_role": "verification",
+                    "supports": "visual-membership",
+                },
+            })
+    known = {guide["name"] for guide in guides}
+    steps = {str(step).casefold() for hop in hops for step in hop.get("steps", [])}
+    for record in catalog:
+        if record["name"].casefold() not in steps or record["name"] in known:
+            continue
+        route_ids = [
+            str(hop["id"])
+            for hop in hops
+            if record["name"].casefold()
+            in {str(step).casefold() for step in hop.get("steps", [])}
+        ]
+        guides.append({
+            "id": f"asterism-{slugify(record['name'])}",
+            "name": record["name"],
+            "relationship": "star-hop-anchor",
+            "relationship_route_ids": route_ids,
+            "provenance": {
+                "source": record.get("source"),
+                "source_url": record.get("source_url"),
+                "source_role": "verification",
+                "supports": "asterism-definition",
+            },
+        })
+    return guides
+
+
+def _guiding_star_hops(name: str, target_type: str = "star") -> list[dict]:
+    return [
+        dict(route) for route in _star_hops()
+        if route.get("target_type") == target_type and route.get("target") == name
+    ]
+
+
 def _figure_for_abbreviation(abbreviation: str, figures: dict) -> tuple[str, dict] | tuple[None, None]:
     for name, record in figures.items():
         if record.get("constellation") == abbreviation:
@@ -105,6 +241,12 @@ def _deep_sky_descriptor(raw_name: str) -> dict:
     record["object_type"] = object_type
     if constellation:
         record["constellation"] = constellation
+    hops = _guiding_star_hops(catalog_name, "deep-sky-object")
+    if hops:
+        record["guiding_asterisms"] = _guiding_asterisms(
+            None, catalog_name, hops, include_memberships=False
+        )
+        record["star_hops"] = hops
     record["source_label"] = raw_name
     return record
 
@@ -174,6 +316,12 @@ def build_descriptors(
                 "ecliptic_latitude_deg": round(star["ecliptic_lat_deg"], 6),
             }
             record["representative_visual_magnitude"] = star["mag"]
+        hops = _guiding_star_hops(name)
+        guides = _guiding_asterisms(star, name, hops)
+        if guides:
+            record["guiding_asterisms"] = guides
+        if hops:
+            record["star_hops"] = hops
         add(record)
         add_constellation(con)
 
@@ -262,7 +410,24 @@ def human_sentence(record: dict) -> str:
         if magnitude is not None:
             details.append(f"with representative visual magnitude {magnitude:g}")
         tail = " ".join(details)
-        return f"{name} is a bright fixed-sky reference{' ' + tail if tail else ''}."
+        sentences = [f"{name} is a bright fixed-sky reference{' ' + tail if tail else ''}."]
+        guides = [
+            guide for guide in record.get("guiding_asterisms") or []
+            if guide.get("relationship") == "visual-member"
+        ]
+        if guides:
+            guide_names = [html.escape(str(guide["name"])) for guide in guides]
+            if len(guide_names) == 1:
+                joined = guide_names[0]
+            elif len(guide_names) == 2:
+                joined = f"{guide_names[0]} and {guide_names[1]}"
+            else:
+                joined = ", ".join(guide_names[:-1]) + f", and {guide_names[-1]}"
+            sentences.append(f"It helps form the observer-facing {joined}.")
+        hops = record.get("star_hops") or []
+        if hops:
+            sentences.append(html.escape(str(hops[0]["instruction"])))
+        return " ".join(sentences)
 
     if kind == "constellation":
         figure = record.get("figure")
@@ -283,7 +448,12 @@ def human_sentence(record: dict) -> str:
         object_type = html.escape(str(record.get("object_type", "deep-sky object")))
         constellation = record.get("constellation")
         where = f" in {html.escape(str(constellation))}" if constellation else ""
-        return f"{name} is a {object_type}{where} selected as a fixed-sky target for this week."
+        article = "an" if object_type[:1].lower() in "aeiou" else "a"
+        sentences = [f"{name} is {article} {object_type}{where} selected as a fixed-sky target for this week."]
+        hops = record.get("star_hops") or []
+        if hops:
+            sentences.append(html.escape(str(hops[0]["instruction"])))
+        return " ".join(sentences)
 
     if kind == "planet":
         return f"{name} is tracked in the weekly ephemeris and Planet Finder."

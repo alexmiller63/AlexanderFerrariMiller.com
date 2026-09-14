@@ -67,7 +67,7 @@
       },
       "target_arrows": false
     },
-    "constellation": "Pav",
+    "constellation": "Pavo",
     "asterism": null,
     "targets": [
       {
@@ -113,13 +113,13 @@
       "id": "star-peacock",
       "type": "star",
       "name": "Peacock",
-      "summary": "bright star in Pav used as a fixed-sky reference",
+      "summary": "bright star in Pavo used as a fixed-sky reference",
       "representation": {
         "machine": "./star-peacock.json",
         "human_source": "summary"
       },
       "constellation_abbreviation": "Pav",
-      "constellation": "Pav",
+      "constellation": "Pavo",
       "position": {
         "ra_deg": 306.411885,
         "dec_deg": -56.73509,
@@ -130,12 +130,12 @@
     },
     {
       "schema_version": 1,
-      "id": "constellation-pav",
+      "id": "constellation-pavo",
       "type": "constellation",
-      "name": "Pav",
+      "name": "Pavo",
       "summary": "constellation used by Star Almanack to organize fixed-sky objects and finder geometry",
       "representation": {
-        "machine": "./constellation-pav.json",
+        "machine": "./constellation-pavo.json",
         "human_source": "summary"
       },
       "abbreviation": "Pav"
@@ -152,6 +152,42 @@
       },
       "catalog_name": "M29",
       "object_type": "open cluster in Cygnus",
+      "guiding_asterisms": [
+        {
+          "id": "asterism-northern-cross",
+          "name": "Northern Cross",
+          "relationship": "star-hop-anchor",
+          "relationship_route_ids": [
+            "northern-cross-sadr-m29"
+          ],
+          "provenance": {
+            "source": "Astronomical League",
+            "source_url": "https://www.astroleague.org/wp-content/uploads/2025/12/Asterism_List_20251223.pdf",
+            "source_role": "verification",
+            "supports": "asterism-definition"
+          }
+        }
+      ],
+      "star_hops": [
+        {
+          "id": "northern-cross-sadr-m29",
+          "target_type": "deep-sky-object",
+          "target": "M29",
+          "steps": [
+            "Northern Cross",
+            "Sadr",
+            "M29"
+          ],
+          "instruction": "Find the Northern Cross, center on Sadr, then move about 1.8° south to M29.",
+          "instruction_authorship": "Star Almanack original wording",
+          "provenance": {
+            "source": "Astronomy Magazine",
+            "source_url": "https://www.astronomy.com/science/open-cluster-m29-spiral-galaxy-ngc-6951-and-the-egg-nebula/",
+            "source_role": "verification",
+            "supports": "star-hop-method"
+          }
+        }
+      ],
       "source_label": "M29, open cluster in Cygnus"
     },
     {
@@ -183,7 +219,65 @@
         "ecliptic_longitude_deg": 203.841357,
         "ecliptic_latitude_deg": -2.054492
       },
-      "representative_visual_magnitude": 0.98
+      "representative_visual_magnitude": 0.98,
+      "guiding_asterisms": [
+        {
+          "id": "asterism-spring-triangle",
+          "name": "Spring Triangle",
+          "relationship": "visual-member",
+          "provenance": {
+            "source": "Sky & Telescope",
+            "source_url": "https://skyandtelescope.org/astronomy-news/observing-news/this-weeks-sky-at-a-glance-may-1-9-3/",
+            "source_role": "verification",
+            "supports": "visual-membership"
+          }
+        },
+        {
+          "id": "asterism-great-diamond",
+          "name": "Great Diamond",
+          "relationship": "visual-member",
+          "provenance": {
+            "source": "NASA",
+            "source_url": "https://science.nasa.gov/solar-system/skywatching/night-sky-network/connecting-the-dots-with-asterisms/",
+            "source_role": "verification",
+            "supports": "visual-membership"
+          }
+        },
+        {
+          "id": "asterism-big-dipper",
+          "name": "Big Dipper",
+          "relationship": "star-hop-anchor",
+          "relationship_route_ids": [
+            "big-dipper-arcturus-spica"
+          ],
+          "provenance": {
+            "source": "Astronomical League",
+            "source_url": "https://www.astroleague.org/wp-content/uploads/2025/12/Asterism_List_20251223.pdf",
+            "source_role": "verification",
+            "supports": "asterism-definition"
+          }
+        }
+      ],
+      "star_hops": [
+        {
+          "id": "big-dipper-arcturus-spica",
+          "target_type": "star",
+          "target": "Spica",
+          "steps": [
+            "Big Dipper",
+            "Arcturus",
+            "Spica"
+          ],
+          "instruction": "Trace the curve of the Big Dipper's handle to Arcturus, then continue the same sweep to Spica.",
+          "instruction_authorship": "Star Almanack original wording",
+          "provenance": {
+            "source": "NASA Jet Propulsion Laboratory",
+            "source_url": "https://www.jpl.nasa.gov/videos/whats-up-for-april-2011/",
+            "source_role": "verification",
+            "supports": "star-hop-method"
+          }
+        }
+      ]
     },
     {
       "schema_version": 1,
@@ -226,7 +320,65 @@
         "ecliptic_longitude_deg": 69.789181,
         "ecliptic_latitude_deg": -5.467327
       },
-      "representative_visual_magnitude": 0.87
+      "representative_visual_magnitude": 0.87,
+      "guiding_asterisms": [
+        {
+          "id": "asterism-hyades-v-of-taurus",
+          "name": "Hyades / V of Taurus",
+          "relationship": "visual-member",
+          "provenance": {
+            "source": "Astronomy Magazine",
+            "source_url": "https://www.astronomy.com/astronomy-for-beginners/asterisms-hunt-the-night-skys-faux-constellations/",
+            "source_role": "verification",
+            "supports": "visual-membership"
+          }
+        },
+        {
+          "id": "asterism-winter-hexagon-winter-circle",
+          "name": "Winter Hexagon / Winter Circle",
+          "relationship": "visual-member",
+          "provenance": {
+            "source": "NASA",
+            "source_url": "https://science.nasa.gov/solar-system/skywatching/night-sky-network/connecting-the-dots-with-asterisms/",
+            "source_role": "verification",
+            "supports": "visual-membership"
+          }
+        },
+        {
+          "id": "asterism-orion-s-belt",
+          "name": "Orion's Belt",
+          "relationship": "star-hop-anchor",
+          "relationship_route_ids": [
+            "orions-belt-aldebaran"
+          ],
+          "provenance": {
+            "source": "NASA",
+            "source_url": "https://science.nasa.gov/image-article/apod-2025-november-20-alnitak-alnilam-mintaka/",
+            "source_role": "verification",
+            "supports": "asterism-definition"
+          }
+        }
+      ],
+      "star_hops": [
+        {
+          "id": "orions-belt-aldebaran",
+          "target_type": "star",
+          "target": "Aldebaran",
+          "steps": [
+            "Orion's Belt",
+            "Aldebaran",
+            "Hyades / V of Taurus"
+          ],
+          "instruction": "Use Orion's three Belt stars as a pointer westward toward orange Aldebaran and the Hyades V.",
+          "instruction_authorship": "Star Almanack original wording",
+          "provenance": {
+            "source": "NASA Night Sky Network",
+            "source_url": "https://science.nasa.gov/solar-system/skywatching/night-sky-network/spot-the-young-stars-of-the-hyades-and-pleiades/",
+            "source_role": "verification",
+            "supports": "star-hop-method"
+          }
+        }
+      ]
     },
     {
       "schema_version": 1,

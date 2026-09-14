@@ -16,5 +16,63 @@
     "ecliptic_longitude_deg": 203.841357,
     "ecliptic_latitude_deg": -2.054492
   },
-  "representative_visual_magnitude": 0.98
+  "representative_visual_magnitude": 0.98,
+  "guiding_asterisms": [
+    {
+      "id": "asterism-spring-triangle",
+      "name": "Spring Triangle",
+      "relationship": "visual-member",
+      "provenance": {
+        "source": "Sky & Telescope",
+        "source_url": "https://skyandtelescope.org/astronomy-news/observing-news/this-weeks-sky-at-a-glance-may-1-9-3/",
+        "source_role": "verification",
+        "supports": "visual-membership"
+      }
+    },
+    {
+      "id": "asterism-great-diamond",
+      "name": "Great Diamond",
+      "relationship": "visual-member",
+      "provenance": {
+        "source": "NASA",
+        "source_url": "https://science.nasa.gov/solar-system/skywatching/night-sky-network/connecting-the-dots-with-asterisms/",
+        "source_role": "verification",
+        "supports": "visual-membership"
+      }
+    },
+    {
+      "id": "asterism-big-dipper",
+      "name": "Big Dipper",
+      "relationship": "star-hop-anchor",
+      "relationship_route_ids": [
+        "big-dipper-arcturus-spica"
+      ],
+      "provenance": {
+        "source": "Astronomical League",
+        "source_url": "https://www.astroleague.org/wp-content/uploads/2025/12/Asterism_List_20251223.pdf",
+        "source_role": "verification",
+        "supports": "asterism-definition"
+      }
+    }
+  ],
+  "star_hops": [
+    {
+      "id": "big-dipper-arcturus-spica",
+      "target_type": "star",
+      "target": "Spica",
+      "steps": [
+        "Big Dipper",
+        "Arcturus",
+        "Spica"
+      ],
+      "instruction": "Trace the curve of the Big Dipper's handle to Arcturus, then continue the same sweep to Spica.",
+      "instruction_authorship": "Star Almanack original wording",
+      "provenance": {
+        "source": "NASA Jet Propulsion Laboratory",
+        "source_url": "https://www.jpl.nasa.gov/videos/whats-up-for-april-2011/",
+        "source_role": "verification",
+        "supports": "star-hop-method"
+      }
+    }
+  ]
 }

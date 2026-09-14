@@ -35,10 +35,29 @@ PLANET_DISPLAY = {
     "saturn": "Saturn", "uranus": "Uranus", "neptune": "Neptune",
 }
 CONSTELLATION_NAMES = {
-    "Aqr": "Aquarius", "Aur": "Auriga", "Boo": "Boötes", "Cas": "Cassiopeia",
-    "CMa": "Canis Major", "Cyg": "Cygnus", "Gem": "Gemini", "Leo": "Leo",
-    "Ori": "Orion", "Peg": "Pegasus", "Sgr": "Sagittarius", "Tau": "Taurus",
-    "UMa": "Ursa Major", "UMi": "Ursa Minor", "Vir": "Virgo",
+    "And": "Andromeda", "Ant": "Antlia", "Aps": "Apus", "Aqr": "Aquarius",
+    "Aql": "Aquila", "Ara": "Ara", "Ari": "Aries", "Aur": "Auriga",
+    "Boo": "Boötes", "Cae": "Caelum", "Cam": "Camelopardalis", "Cnc": "Cancer",
+    "CVn": "Canes Venatici", "CMa": "Canis Major", "CMi": "Canis Minor",
+    "Cap": "Capricornus", "Car": "Carina", "Cas": "Cassiopeia", "Cen": "Centaurus",
+    "Cep": "Cepheus", "Cet": "Cetus", "Cha": "Chamaeleon", "Cir": "Circinus",
+    "Col": "Columba", "Com": "Coma Berenices", "CrA": "Corona Australis",
+    "CrB": "Corona Borealis", "Crv": "Corvus", "Crt": "Crater", "Cru": "Crux",
+    "Cyg": "Cygnus", "Del": "Delphinus", "Dor": "Dorado", "Dra": "Draco",
+    "Equ": "Equuleus", "Eri": "Eridanus", "For": "Fornax", "Gem": "Gemini",
+    "Gru": "Grus", "Her": "Hercules", "Hor": "Horologium", "Hya": "Hydra",
+    "Hyi": "Hydrus", "Ind": "Indus", "Lac": "Lacerta", "Leo": "Leo",
+    "LMi": "Leo Minor", "Lep": "Lepus", "Lib": "Libra", "Lup": "Lupus",
+    "Lyn": "Lynx", "Lyr": "Lyra", "Men": "Mensa", "Mic": "Microscopium",
+    "Mon": "Monoceros", "Mus": "Musca", "Nor": "Norma", "Oct": "Octans",
+    "Oph": "Ophiuchus", "Ori": "Orion", "Pav": "Pavo", "Peg": "Pegasus",
+    "Per": "Perseus", "Phe": "Phoenix", "Pic": "Pictor", "Psc": "Pisces",
+    "PsA": "Piscis Austrinus", "Pup": "Puppis", "Pyx": "Pyxis", "Ret": "Reticulum",
+    "Sge": "Sagitta", "Sgr": "Sagittarius", "Sco": "Scorpius", "Scl": "Sculptor",
+    "Sct": "Scutum", "Ser": "Serpens", "Sex": "Sextans", "Tau": "Taurus",
+    "Tel": "Telescopium", "Tri": "Triangulum", "TrA": "Triangulum Australe",
+    "Tuc": "Tucana", "UMa": "Ursa Major", "UMi": "Ursa Minor", "Vel": "Vela",
+    "Vir": "Virgo", "Vol": "Volans", "Vul": "Vulpecula",
 }
 ASTERISMS = {
     "Ori": {"id": "orions-belt", "name": "Orion’s Belt", "members": ("Mintaka", "Alnilam", "Alnitak")},
@@ -98,6 +117,7 @@ def load_bright_stars() -> list[dict]:
             lon_deg, lat_deg = equatorial_to_ecliptic(ra_deg, dec_deg)
             stars.append({
                 "name": row["proper"],
+                "bayer": row["bayer"],
                 "con": row["con"],
                 "ra_deg": ra_deg,
                 "dec_deg": dec_deg,
