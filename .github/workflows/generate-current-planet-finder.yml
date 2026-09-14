@@ -209,6 +209,7 @@ jobs:
 
       - name: Commit generated finders
         run: |
+          set -euo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add almanack/*/W*/finders/planet-finder-greek-symbols.svg \
@@ -216,9 +217,11 @@ jobs:
                   almanack/*/W*/finders/planet-finder-mixed-learner.svg
 
           # The weekly ephemeris CSVs are temporary local inputs for this workflow.
-          # Restore them before rebasing so they cannot leave the worktree dirty
-          # or accidentally replace the canonical full-year CSVs with a date slice.
-          git restore --worktree -- Star-Almanack-Repo/weekly-ephemeris-*.csv
+          # Restore tracked canonical CSVs, then delete only untracked temporary slices.
+          git ls-files -z 'Star-Almanack-Repo/weekly-ephemeris-*.csv' \
+            | xargs -0 -r git restore --worktree --
+          git ls-files --others --exclude-standard -z -- 'Star-Almanack-Repo/weekly-ephemeris-*.csv' \
+            | xargs -0 -r rm -f --
 
           if git diff --cached --quiet; then
             echo "Planet Finder output already current."
