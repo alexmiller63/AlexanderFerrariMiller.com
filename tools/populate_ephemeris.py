@@ -24,10 +24,14 @@ TARGETS = [
     ("♆ Neptune", "neptune", "neptune"), ("♇ Pluto", "pluto", "pluto"),
 ]
 
+# Weekly pages live at YEAR/WEEK/index.html. Use the portable relative asset
+# path so the same generated HTML works both on the custom domain and on the
+# repository-prefixed GitHub Pages deployment.
+VISIBILITY_GLYPH_ROOT = "../../../assets/almanack/visibility-glyphs/masters/"
 VISIBILITY_GLYPHS = {
-    "naked_eye": '<img class="visibility-glyph" src="/assets/almanack/visibility-glyphs/masters/eye.svg" alt="Naked eye" aria-label="Naked eye">',
-    "binoculars": '<img class="visibility-glyph" src="/assets/almanack/visibility-glyphs/masters/binoculars.svg" alt="Binoculars" aria-label="Binoculars">',
-    "telescope": '<img class="visibility-glyph" src="/assets/almanack/visibility-glyphs/masters/telescope.svg" alt="Telescope" aria-label="Telescope">',
+    "naked_eye": f'<img class="visibility-glyph" src="{VISIBILITY_GLYPH_ROOT}eye.svg" alt="Naked eye" aria-label="Naked eye">',
+    "binoculars": f'<img class="visibility-glyph" src="{VISIBILITY_GLYPH_ROOT}binoculars.svg" alt="Binoculars" aria-label="Binoculars">',
+    "telescope": f'<img class="visibility-glyph" src="{VISIBILITY_GLYPH_ROOT}telescope.svg" alt="Telescope" aria-label="Telescope">',
     "near_sun": '<span class="text-symbol" role="img" aria-label="Near Sun — not currently observable" title="Near Sun — not currently observable">☉</span>',
 }
 
