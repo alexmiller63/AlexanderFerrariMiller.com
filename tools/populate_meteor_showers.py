@@ -1,9 +1,14 @@
 #!/usr/bin/env python3
 """Populate major Star Almanack meteor-shower maxima for requested years.
 
-Solar-longitude crossings and Moon context are solved using canonical JDTDB
-instants from ``populate_calendar.horizons_longitudes``. UTC is generated only
-for publication and calendar placement.
+Solar-longitude crossings and Moon context are solved from locally calculated
+Sun/Moon longitudes based on cached JPL/NAIF SPK source kernels. UTC is generated
+only for publication and calendar placement.
+
+The nominal shower solar longitudes and ZHR values are editorial source data,
+not computed ephemeris answers. Their provenance is documented in
+Star-Almanack-Repo/EPHEMERIS-PROVENANCE.md; the reference working list is the
+International Meteor Organization Meteor Shower Calendar.
 """
 from __future__ import annotations
 
@@ -15,13 +20,17 @@ from pathlib import Path
 
 from almanack_calendar import ensure_calendar_metadata, get_events, page_dates, set_events
 from almanack_time import AstroInstant
-from populate_calendar import horizons_longitudes, interpolate_time, unwrap
+from populate_calendar import interpolate_time, source_longitudes, unwrap
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE_ROOT = ROOT / "Star-Almanack-Repo" / "site"
 PUBLIC_ROOT = ROOT / "almanack"
 DATA_ROOT = ROOT / "Star-Almanack-Repo" / "generated"
 METEOR_GLYPH = '<img class="visibility-glyph" src="/assets/almanack/visibility-glyphs/masters/meteor-shower.svg" alt="Meteor shower" aria-label="Meteor shower">'
+
+# Frozen editorial inputs derived from the IMO visual-shower working list.
+# They require source review when the working list changes; the computed event
+# time itself comes from Star Almanack's local solar-longitude calculation.
 SHOWERS = (
     ("Quadrantids", 283.15, "Boötes", 120),
     ("Lyrids", 32.32, "Lyra", 18),
@@ -104,8 +113,8 @@ def observing_guidance(p):
 def shower_events(year):
     start = date(year, 1, 1) - timedelta(days=10)
     stop = date(year + 1, 1, 1) + timedelta(days=10)
-    sun = horizons_longitudes("10", start, stop)
-    moon = horizons_longitudes("301", start, stop)
+    sun = source_longitudes("sun", start, stop)
+    moon = source_longitudes("moon", start, stop)
     events = []
     for name, lon, constellation, zhr in SHOWERS:
         ts = crossing(sun, lon, year)
@@ -156,9 +165,9 @@ def populate_year(year):
     payload = {
         "year": year,
         "basis": (
-            "Nominal maximum solar longitude with JDTDB crossing calculated from "
-            "JPL Horizons apparent geocentric ecliptic-of-date solar longitude; "
-            "Moon illumination calculated from Sun-Moon elongation at maximum; "
+            "Nominal maximum solar longitude from documented IMO editorial inputs; "
+            "JDTDB crossing calculated locally from apparent geocentric ecliptic-of-date solar longitude using cached JPL/NAIF source kernels; "
+            "Moon illumination calculated from locally computed Sun-Moon elongation at maximum; "
             "UTC conversion only at publication"
         ),
         "showers": [
