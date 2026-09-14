@@ -1,11 +1,9 @@
 #!/usr/bin/env python3
-"""Generate canonical weekly Planet Finder SVGs from the exact JPL ephemeris.
+"""Generate canonical weekly Planet Finder SVGs from Star Almanack calculations.
 
-The renderer follows the frozen Planet Finder specification. It uses the same
-JPL Horizons source as tools/populate_ephemeris.py, preserves each body's exact
-tropical ecliptic longitude at the leader-line anchor, and deterministically
-places labels so that labels do not overlap one another, zodiac labels, center
-text, or existing leader lines.
+The renderer follows the frozen Planet Finder specification. It consumes the
+same internally calculated planetary positions as the weekly ephemeris and does
+not query Horizons or another answer service.
 """
 from __future__ import annotations
 
@@ -16,7 +14,8 @@ from dataclasses import dataclass
 from datetime import date
 from pathlib import Path
 
-from populate_ephemeris import TARGETS, horizons_ephemeris, week_count
+from populate_ephemeris import TARGETS, computed_ephemeris, week_count
+from star_almanack_ephemeris import StarAlmanackEphemeris
 
 ROOT = Path(__file__).resolve().parents[1]
 W = H = 1400
@@ -240,18 +239,16 @@ def generate_week(year: int, week: int):
         raise ValueError(f"Invalid ISO week {year}-W{week:02d}")
     monday = date.fromisocalendar(year, week, 1)
     needed = {BODY_NAMES[name] for name in CANONICAL}
-    values = {}
-    for display, key, command in TARGETS:
-        if key in needed:
-            print(f"Fetching {year} {key} from JPL Horizons")
-            values[key] = horizons_ephemeris(year, command)[week - 1][0]
+    engine = StarAlmanackEphemeris()
+    generated = computed_ephemeris(year, engine)
+    values = {key: generated[key][week - 1][0] for key in needed}
     bodies = [(BODY_SYMBOLS[BODY_NAMES[name]], name, values[BODY_NAMES[name]] % 360) for name in CANONICAL]
     outdir = ROOT / "almanack" / str(year) / f"W{week:02d}" / "finders"
     outdir.mkdir(parents=True, exist_ok=True)
     filenames = {"greek": "planet-finder-greek-symbols.svg", "latin": "planet-finder-latin.svg", "mixed": "planet-finder-mixed-learner.svg"}
     for mode, filename in filenames.items():
         (outdir / filename).write_text(render(year, week, monday, mode, bodies), encoding="utf-8")
-    print(f"Generated collision-free Planet Finders for ISO {year}-W{week:02d}")
+    print(f"Generated collision-free Planet Finders for ISO {year}-W{week:02d} from internal calculations")
 
 
 def parse_args():
