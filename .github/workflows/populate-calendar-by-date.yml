@@ -306,9 +306,139 @@ jobs:
                   else:
                       print(f'Attempt {attempt}: W{week:02d} published content matches')
               if all_ok:
-                  print('Published GitHub Pages verification PASS')
+                  print('Published GitHub Pages content verification PASS')
                   break
               if time.time() >= deadline:
                   raise SystemExit('Published GitHub Pages did not match generated content within 6 minutes')
               time.sleep(10)
+          PY
+
+      - name: Verify published GitHub Pages visually in Chromium
+        env:
+          START_DATE: ${{ steps.range.outputs.start_date }}
+          END_DATE: ${{ steps.range.outputs.end_date }}
+        run: |
+          python - <<'PY'
+          import datetime as dt
+          import os
+          import time
+          from playwright.sync_api import sync_playwright
+
+          start = dt.date.fromisoformat(os.environ['START_DATE'])
+          end = dt.date.fromisoformat(os.environ['END_DATE'])
+          weeks = []
+          d = start
+          while d <= end:
+              iso = d.isocalendar()
+              pair = (iso.year, iso.week)
+              if pair not in weeks:
+                  weeks.append(pair)
+              d += dt.timedelta(days=1)
+
+          base = 'https://alexmiller63.github.io/AlexanderFerrariMiller.com'
+
+          def text_actually_wraps(page, selector):
+              return page.locator(selector).evaluate_all('''els => els.filter(el => {
+                const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+                let node;
+                while ((node = walker.nextNode())) {
+                  if (!(node.textContent || '').trim()) continue;
+                  const range = document.createRange();
+                  range.selectNodeContents(node);
+                  const rects = [...range.getClientRects()].filter(r => r.width > 0 && r.height > 0);
+                  const tops = [];
+                  for (const r of rects) {
+                    if (!tops.some(top => Math.abs(top - r.top) <= 1)) tops.push(r.top);
+                  }
+                  if (tops.length > 1) return true;
+                }
+                return false;
+              }).map(el => (el.textContent || '').trim().slice(0, 100))''')
+
+          with sync_playwright() as p:
+              browser = p.chromium.launch()
+              context = browser.new_context(
+                  viewport={"width": 390, "height": 844},
+                  extra_http_headers={"Cache-Control": "no-cache", "Pragma": "no-cache"},
+              )
+              page = context.new_page()
+
+              for year, week in weeks:
+                  rel = f'almanack/{year}/W{week:02d}/index.html'
+                  url = f'{base}/{rel}?chromium_verify={time.time_ns()}'
+                  response = page.goto(url, wait_until='networkidle', timeout=120000)
+                  if response is None or not response.ok:
+                      status = None if response is None else response.status
+                      raise SystemExit(f'Published Chromium failed to load {rel}: HTTP {status}')
+
+                  if page.locator('table.calendar').count() != 1:
+                      raise SystemExit(f'Published Calendar table missing in {rel}')
+                  if page.locator('td.calendar-events-region .calendar-events').count() == 0:
+                      raise SystemExit(f'Published event-cell container missing in {rel}')
+
+                  calendar_toggle = '.section-notation-toggle[data-notation-target="calendar"]'
+                  allowed = {'Naked eye', 'Binoculars', 'Telescope', 'Substantial telescope'}
+
+                  for mode in ('greek', 'latin', 'mixed'):
+                      button = page.locator(f'{calendar_toggle} button[data-bayer-mode="{mode}"]')
+                      if button.count() != 1:
+                          raise SystemExit(f'Published Calendar notation button missing in {rel}: {mode}')
+                      button.click()
+                      page.wait_for_timeout(100)
+
+                      overflow = page.evaluate('''() => ({
+                        page: document.documentElement.scrollWidth > window.innerWidth + 1,
+                        calendar: (() => {
+                          const el = document.querySelector('table.calendar');
+                          return !!el && el.scrollWidth > el.clientWidth + 1;
+                        })()
+                      })''')
+                      wrapped = text_actually_wraps(
+                          page,
+                          'td.calendar-events-region .calendar-events .notation-item, '
+                          'td.calendar-events-region .calendar-events .notation-rendered, '
+                          'td.calendar-events-region .calendar-events .visibility-magnitude, '
+                          'td.calendar-events-region .calendar-events .observing-aid-notation, '
+                          'td.calendar-events-region .calendar-events .observing-notation-item'
+                      )
+                      if overflow['page'] or overflow['calendar'] or wrapped:
+                          raise SystemExit(
+                              f'Published mobile layout failure in {rel} mode={mode}: '
+                              f'page={overflow["page"]} calendar={overflow["calendar"]} wrapped={wrapped[:5]}'
+                          )
+
+                      canonical = page.locator('table.calendar .observing-aid-notation')
+                      rendered = page.locator('table.calendar .observing-notation-item')
+                      if canonical.count():
+                          words = page.locator('table.calendar .observing-aid-notation .observing-aid-word:visible')
+                          symbols = page.locator('table.calendar .observing-aid-notation .observing-aid-symbol:visible')
+                          if mode == 'latin':
+                              labels = [t.strip() for t in words.all_text_contents()]
+                              if words.count() != canonical.count() or symbols.count() != 0 or any(x not in allowed for x in labels):
+                                  raise SystemExit(f'Published Latin observing-aid failure in {rel}: {labels}')
+                          elif mode == 'greek':
+                              if symbols.count() != canonical.count() or words.count() != 0:
+                                  raise SystemExit(f'Published Greek observing-aid failure in {rel}')
+                          else:
+                              if words.count() != canonical.count() or symbols.count() != canonical.count():
+                                  raise SystemExit(f'Published Mixed observing-aid failure in {rel}')
+
+                      if rendered.count():
+                          states = rendered.evaluate_all('''els => els.map(el => ({
+                            text: (el.textContent || '').trim(),
+                            images: el.querySelectorAll('img.visibility-glyph').length
+                          }))''')
+                          if mode == 'latin':
+                              bad = [s for s in states if s['images'] != 0 or s['text'] not in allowed]
+                          elif mode == 'greek':
+                              bad = [s for s in states if s['images'] < 1 or s['text']]
+                          else:
+                              bad = [s for s in states if s['images'] < 1 or s['text'] not in allowed]
+                          if bad:
+                              raise SystemExit(f'Published {mode} observing-aid visual failure in {rel}: {bad[:5]}')
+
+                  print(f'Published Chromium PASS all notation modes: {rel}')
+
+              context.close()
+              browser.close()
           PY
