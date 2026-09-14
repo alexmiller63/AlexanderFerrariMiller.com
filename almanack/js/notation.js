@@ -32,21 +32,13 @@
     item.classList.add('notation-rendered');
     item.classList.remove('notation-item');
     item.replaceChildren();
-
     const match = value.match(LEADING_SYMBOL);
-    if (!match) {
-      item.textContent = value;
-      return;
-    }
-
+    if (!match) { item.textContent = value; return; }
     const symbol = document.createElement('span');
     symbol.className = 'notation-leading-symbol';
     let consumed = match[0].length;
     symbol.textContent = match[0];
-    if (value.charAt(consumed) === VS) {
-      symbol.textContent += VS;
-      consumed += 1;
-    }
+    if (value.charAt(consumed) === VS) { symbol.textContent += VS; consumed += 1; }
     symbol.style.display = 'inline-block';
     symbol.style.fontFamily = "'Apple Symbols','Arial Unicode MS','Segoe UI Symbol','Noto Sans Symbols 2',serif";
     symbol.style.fontVariantEmoji = 'text';
@@ -59,10 +51,7 @@
   document.querySelectorAll('.zodiac-glyph').forEach(function (item) {
     const glyph = item.textContent.charAt(0);
     if (!zodiacNames[glyph]) return;
-    if (item.closest('table.calendar tbody td:nth-child(2)')) {
-      item.textContent = glyph + VS;
-      return;
-    }
+    if (item.closest('table.calendar tbody td:nth-child(2)')) { item.textContent = glyph + VS; return; }
     item.classList.add('notation-item');
     item.dataset.greek = glyph + VS;
     item.dataset.latin = zodiacNames[glyph];
@@ -71,9 +60,6 @@
 
   const main = document.querySelector('main');
   if (main) {
-    /* Calendar generation may wrap the Greek Bayer letter separately from the
-       constellation abbreviation. Recombine that split token before the normal
-       text-node pass so Latin mode uses the constellation genitive. */
     main.querySelectorAll('table.calendar tbody td:nth-child(3) .greek-letter').forEach(function (el) {
       if (el.closest('.notation-item,.notation-rendered')) return;
       const letter = el.textContent.replace(/\ufe0e/g, '').trim();
@@ -85,62 +71,42 @@
       const suffix = match[1] || '';
       const abbr = match[2];
       const constellation = constellationNames[abbr] || abbr;
-      const span = notationSpan(
-        letter + suffix + ' ' + abbr,
-        greekNames[letter] + suffix + ' ' + constellation,
-        letter + suffix + ' ' + greekNames[letter] + suffix + ' ' + constellation
-      );
+      const span = notationSpan(letter + suffix + ' ' + abbr, greekNames[letter] + suffix + ' ' + constellation, letter + suffix + ' ' + greekNames[letter] + suffix + ' ' + constellation);
       next.nodeValue = next.nodeValue.slice(match[0].length);
       el.replaceWith(span);
     });
     const pattern = /([αβγδεζηθικλμνξοπρστυφχψω])(\d+)?\s+([A-Z][A-Za-z]{2})\b|[☉☽☿♀♂♃♄]|([αβγδεζηθικλμνξοπρστυφχψω])(\d+)?/g;
     const nodes = [];
     const walker = document.createTreeWalker(main, NodeFilter.SHOW_TEXT);
-
     while (walker.nextNode()) {
       const parent = walker.currentNode.parentElement;
-      if (parent && !parent.closest('.notation-item') && !parent.closest('table.ephemeris') && pattern.test(walker.currentNode.nodeValue)) {
-        nodes.push(walker.currentNode);
-      }
+      if (parent && !parent.closest('.notation-item') && !parent.closest('table.ephemeris') && pattern.test(walker.currentNode.nodeValue)) nodes.push(walker.currentNode);
       pattern.lastIndex = 0;
     }
-
     nodes.forEach(function (node) {
       const text = node.nodeValue;
       const fragment = document.createDocumentFragment();
-      let last = 0;
-      let match;
+      let last = 0, match;
       pattern.lastIndex = 0;
-
       while ((match = pattern.exec(text))) {
         fragment.append(document.createTextNode(text.slice(last, match.index)));
         const token = match[0];
-        let greek = token;
-        let latin = token;
-        let mixed = token;
+        let greek = token, latin = token, mixed = token;
         const bayer = token.match(/^([αβγδεζηθικλμνξοπρστυφχψω])(\d+)?\s+([A-Z][A-Za-z]{2})$/);
         const greekOnly = token.match(/^([αβγδεζηθικλμνξοπρστυφχψω])(\d+)?$/);
-
         if (bayer) {
-          const suffix = bayer[2] || '';
-          const constellation = constellationNames[bayer[3]] || bayer[3];
+          const suffix = bayer[2] || '', constellation = constellationNames[bayer[3]] || bayer[3];
           greek = bayer[1] + suffix + ' ' + bayer[3];
           latin = greekNames[bayer[1]] + suffix + ' ' + constellation;
           mixed = bayer[1] + suffix + ' ' + greekNames[bayer[1]] + suffix + ' ' + constellation;
         } else if (bodyNames[token]) {
-          greek = token + VS;
-          latin = bodyNames[token];
-          mixed = token + VS + ' ' + bodyNames[token];
+          greek = token + VS; latin = bodyNames[token]; mixed = token + VS + ' ' + bodyNames[token];
         } else if (greekOnly) {
-          greek = greekOnly[1] + (greekOnly[2] || '');
-          latin = greekNames[greekOnly[1]] + (greekOnly[2] || '');
-          mixed = greek + ' ' + latin;
+          greek = greekOnly[1] + (greekOnly[2] || ''); latin = greekNames[greekOnly[1]] + (greekOnly[2] || ''); mixed = greek + ' ' + latin;
         }
-
         fragment.append(notationSpan(greek, latin, mixed));
         last = match.index + token.length;
       }
-
       fragment.append(document.createTextNode(text.slice(last)));
       node.replaceWith(fragment);
     });
@@ -148,116 +114,64 @@
 
   document.querySelectorAll('table.calendar tbody td:nth-child(3)').forEach(function (cell) {
     const visibilityPattern = /(?:👁|B|🔭)\s+V\s+\d+(?:\.\d+)?/g;
-    const nodes = [];
-    const walker = document.createTreeWalker(cell, NodeFilter.SHOW_TEXT);
-
-    while (walker.nextNode()) {
-      if (visibilityPattern.test(walker.currentNode.nodeValue)) nodes.push(walker.currentNode);
-      visibilityPattern.lastIndex = 0;
-    }
-
+    const nodes = [], walker = document.createTreeWalker(cell, NodeFilter.SHOW_TEXT);
+    while (walker.nextNode()) { if (visibilityPattern.test(walker.currentNode.nodeValue)) nodes.push(walker.currentNode); visibilityPattern.lastIndex = 0; }
     nodes.forEach(function (node) {
-      const text = node.nodeValue;
-      const fragment = document.createDocumentFragment();
-      let last = 0;
-      let match;
-      visibilityPattern.lastIndex = 0;
-
+      const text = node.nodeValue, fragment = document.createDocumentFragment();
+      let last = 0, match; visibilityPattern.lastIndex = 0;
       while ((match = visibilityPattern.exec(text))) {
         fragment.append(document.createTextNode(text.slice(last, match.index)));
-        const span = document.createElement('span');
-        span.className = 'visibility-magnitude';
-        span.style.whiteSpace = 'nowrap';
-        span.textContent = match[0];
-        fragment.append(span);
+        const span = document.createElement('span'); span.className = 'visibility-magnitude'; span.style.whiteSpace = 'nowrap'; span.textContent = match[0]; fragment.append(span);
         last = match.index + match[0].length;
       }
-
-      fragment.append(document.createTextNode(text.slice(last)));
-      node.replaceWith(fragment);
+      fragment.append(document.createTextNode(text.slice(last))); node.replaceWith(fragment);
     });
   });
 
-  /* Calendar observing aids participate in the same notation mode as Bayer and
-     zodiac notation. Greek/Symbols keeps the pictogram, Latin shows the plain
-     name, and Mixed Learner shows both. A pair of adjacent telescope glyphs is
-     treated as one semantic observing aid: Substantial telescope. */
-  document.querySelectorAll('table.calendar .visibility-magnitude').forEach(function (visibility) {
-    const images = Array.from(visibility.querySelectorAll('img.visibility-glyph'));
+  /* Process the actual generated visibility glyphs directly. They are images,
+     so they need not be inside a text-derived .visibility-magnitude wrapper. */
+  document.querySelectorAll('table.calendar tbody td:nth-child(3)').forEach(function (cell) {
+    const images = Array.from(cell.querySelectorAll('img.visibility-glyph'));
     let index = 0;
     while (index < images.length) {
       const image = images[index];
-      if (!image.isConnected) { index += 1; continue; }
+      if (!image.isConnected || image.closest('.observing-aid-notation')) { index += 1; continue; }
       const source = image.getAttribute('src') || '';
       const isTelescope = /telescope\.svg(?:$|[?#])/.test(source);
       const next = images[index + 1];
       const nextSource = next ? (next.getAttribute('src') || '') : '';
-      const substantial = isTelescope && next && next.isConnected && /telescope\.svg(?:$|[?#])/.test(nextSource);
-
+      const substantial = isTelescope && next && next.isConnected && !next.closest('.observing-aid-notation') && /telescope\.svg(?:$|[?#])/.test(nextSource);
       let label = 'Observing aid';
       if (substantial) label = 'Substantial telescope';
       else if (/eye\.svg(?:$|[?#])/.test(source)) label = 'Naked eye';
       else if (/binoculars\.svg(?:$|[?#])/.test(source)) label = 'Binoculars';
       else if (isTelescope) label = 'Telescope';
       else { index += 1; continue; }
-
-      const wrapper = document.createElement('span');
-      wrapper.className = 'observing-aid-notation';
-      wrapper.dataset.label = label;
-      wrapper.style.whiteSpace = 'nowrap';
-
-      const symbol = document.createElement('span');
-      symbol.className = 'observing-aid-symbol';
-      image.replaceWith(wrapper);
-      symbol.append(image);
-      if (substantial) {
-        symbol.append(next);
-        index += 1;
-      }
-
-      const word = document.createElement('span');
-      word.className = 'observing-aid-word';
-      word.textContent = label;
-      wrapper.append(symbol, word);
-      index += 1;
+      const wrapper = document.createElement('span'); wrapper.className = 'observing-aid-notation'; wrapper.dataset.label = label; wrapper.style.whiteSpace = 'nowrap';
+      const symbol = document.createElement('span'); symbol.className = 'observing-aid-symbol';
+      image.replaceWith(wrapper); symbol.append(image);
+      if (substantial) { symbol.append(next); index += 1; }
+      const word = document.createElement('span'); word.className = 'observing-aid-word'; word.textContent = label;
+      wrapper.append(symbol, word); index += 1;
     }
   });
 
   document.querySelectorAll('table.calendar tbody td:nth-child(2)').forEach(function (cell) {
-    const text = cell.textContent.trim();
-    const match = text.match(/^([^\d]*?)(\d+)$/);
+    const text = cell.textContent.trim(), match = text.match(/^([^\d]*?)(\d+)$/);
     if (!match) return;
-    const number = match[2];
-    cell.classList.add('zodiac-day');
-    Array.from(cell.childNodes).forEach(function (node) {
-      if (node.nodeType === 3) node.nodeValue = node.nodeValue.replace(/\s*\d+\s*$/, '');
-    });
-    const day = document.createElement('span');
-    day.className = 'zodiac-day-number';
-    day.textContent = number;
-    cell.append(day);
+    const number = match[2]; cell.classList.add('zodiac-day');
+    Array.from(cell.childNodes).forEach(function (node) { if (node.nodeType === 3) node.nodeValue = node.nodeValue.replace(/\s*\d+\s*$/, ''); });
+    const day = document.createElement('span'); day.className = 'zodiac-day-number'; day.textContent = number; cell.append(day);
   });
 
   function toggleScope(button) {
     const wrapper = button.closest('.section-notation-toggle');
     if (wrapper && wrapper.dataset.notationTarget) return wrapper.dataset.notationTarget;
     if (!wrapper) return 'page';
-
     let next = wrapper.nextElementSibling;
-    if (next && next.matches('h3')) {
-      if (next.textContent.trim() === 'Calendar') return 'calendar';
-      if (next.textContent.trim() === 'Planet Finder') return 'finder';
-      if (next.textContent.trim() === 'Weekly Solar-System Ephemeris') return 'ephemeris';
-    }
-
+    if (next && next.matches('h3')) { if (next.textContent.trim() === 'Calendar') return 'calendar'; if (next.textContent.trim() === 'Planet Finder') return 'finder'; if (next.textContent.trim() === 'Weekly Solar-System Ephemeris') return 'ephemeris'; }
     let previous = wrapper.previousElementSibling;
-    while (previous) {
-      if (previous.matches('h3')) {
-        if (previous.textContent.trim() === 'Weekly Solar-System Ephemeris') return 'ephemeris';
-        break;
-      }
-      previous = previous.previousElementSibling;
-    }
+    while (previous) { if (previous.matches('h3')) { if (previous.textContent.trim() === 'Weekly Solar-System Ephemeris') return 'ephemeris'; break; } previous = previous.previousElementSibling; }
     return 'page';
   }
 
@@ -276,63 +190,27 @@
   }
 
   function updateTarget(scope, mode) {
-    const root = scopeRoot(scope);
-    if (!root) return;
-
-    root.querySelectorAll('.notation-item, .notation-rendered').forEach(function (item) {
-      if (!itemBelongsToScope(item, scope)) return;
-      renderNotation(item, item.dataset[mode] || item.dataset.greek || item.textContent);
-    });
-
+    const root = scopeRoot(scope); if (!root) return;
+    root.querySelectorAll('.notation-item, .notation-rendered').forEach(function (item) { if (!itemBelongsToScope(item, scope)) return; renderNotation(item, item.dataset[mode] || item.dataset.greek || item.textContent); });
     if (scope === 'calendar' || scope === 'page') {
       root.querySelectorAll('.observing-aid-notation').forEach(function (item) {
-        const symbol = item.querySelector('.observing-aid-symbol');
-        const word = item.querySelector('.observing-aid-word');
-        if (!symbol || !word) return;
-        symbol.hidden = mode === 'latin';
-        word.hidden = mode === 'greek';
-        item.classList.toggle('is-mixed', mode === 'mixed');
+        const symbol = item.querySelector('.observing-aid-symbol'), word = item.querySelector('.observing-aid-word'); if (!symbol || !word) return;
+        symbol.hidden = mode === 'latin'; word.hidden = mode === 'greek'; item.classList.toggle('is-mixed', mode === 'mixed');
       });
     }
-
     if (scope === 'finder' || scope === 'page') {
-      root.querySelectorAll('[data-finder-mode], [data-finder-image]').forEach(function (figure) {
-        const figureMode = figure.dataset.finderMode || figure.dataset.finderImage;
-        const active = figureMode === mode;
-        figure.hidden = !active;
-        figure.style.display = active ? '' : 'none';
-        figure.classList.toggle('is-active', active);
-      });
+      root.querySelectorAll('[data-finder-mode], [data-finder-image]').forEach(function (figure) { const figureMode = figure.dataset.finderMode || figure.dataset.finderImage, active = figureMode === mode; figure.hidden = !active; figure.style.display = active ? '' : 'none'; figure.classList.toggle('is-active', active); });
     }
   }
 
-  function syncButtons(mode) {
-    document.querySelectorAll('[data-bayer-mode]').forEach(function (button) {
-      button.setAttribute('aria-pressed', button.dataset.bayerMode === mode ? 'true' : 'false');
-    });
-  }
-
+  function syncButtons(mode) { document.querySelectorAll('[data-bayer-mode]').forEach(function (button) { button.setAttribute('aria-pressed', button.dataset.bayerMode === mode ? 'true' : 'false'); }); }
   function applyMode(mode) {
-    const scopes = new Set();
-    document.querySelectorAll('.bayer-toggle [data-bayer-mode]').forEach(function (button) {
-      scopes.add(toggleScope(button));
-    });
-    scopes.forEach(function (scope) { updateTarget(scope, mode); });
-    syncButtons(mode);
+    const scopes = new Set(); document.querySelectorAll('.bayer-toggle [data-bayer-mode]').forEach(function (button) { scopes.add(toggleScope(button)); });
+    scopes.forEach(function (scope) { updateTarget(scope, mode); }); syncButtons(mode);
     try { localStorage.setItem('star-almanack-bayer-mode', mode); } catch (_) {}
   }
-
-  document.querySelectorAll('[data-bayer-mode]').forEach(function (button) {
-    button.addEventListener('click', function () {
-      applyMode(button.dataset.bayerMode);
-    });
-  });
-
+  document.querySelectorAll('[data-bayer-mode]').forEach(function (button) { button.addEventListener('click', function () { applyMode(button.dataset.bayerMode); }); });
   let initial = 'greek';
-  try {
-    const saved = localStorage.getItem('star-almanack-bayer-mode');
-    if (saved === 'greek' || saved === 'latin' || saved === 'mixed') initial = saved;
-  } catch (_) {}
-
+  try { const saved = localStorage.getItem('star-almanack-bayer-mode'); if (saved === 'greek' || saved === 'latin' || saved === 'mixed') initial = saved; } catch (_) {}
   applyMode(initial);
 })();
