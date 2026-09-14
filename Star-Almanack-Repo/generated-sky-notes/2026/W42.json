@@ -1,0 +1,219 @@
+{
+  "week": "W42",
+  "title": "Observer’s guide for ISO 2026-W42",
+  "status": "generated",
+  "planetary_source": "Star-Almanack-Repo/weekly-ephemeris-2026.csv",
+  "planetary_coordinate": "geocentric tropical ecliptic longitude; Monday 00:00 UTC",
+  "fixed_sky": [
+    {
+      "type": "star",
+      "name": "Alnair",
+      "constellation": "Gru"
+    }
+  ],
+  "planet_relations": [
+    {
+      "kind": "planet-star-longitude",
+      "planet": "Uranus",
+      "planet_longitude_deg": 65.3,
+      "star": "Aldebaran",
+      "constellation": "Tau",
+      "star_ecliptic_longitude_deg": 69.789,
+      "star_ecliptic_latitude_deg": -5.467,
+      "longitude_separation_deg": 4.5,
+      "basis": "Star Almanack preserved geocentric tropical ecliptic longitude"
+    }
+  ],
+  "artwork": {
+    "schema_version": 1,
+    "id": "2026-W42-stellar-finder",
+    "week": "2026-W42",
+    "kind": "stellar-finder",
+    "geometry": {
+      "constellation_system": "Martz/MacRobert",
+      "constellation_abbreviation": "Gru",
+      "on_missing_geometry": "fail",
+      "invent_geometry": false
+    },
+    "style": {
+      "background": "night-sky",
+      "constellation": {
+        "stroke": "#5c8fe8",
+        "role": "ordinary constellation figure"
+      },
+      "asterism": {
+        "stroke": "#59c86d",
+        "role": "orienting asterism"
+      },
+      "target": {
+        "stroke": "#ffd84d",
+        "fill": "none",
+        "role": "open target circle"
+      },
+      "target_arrows": false
+    },
+    "constellation": "Gru",
+    "asterism": null,
+    "targets": [
+      {
+        "type": "star",
+        "name": "Alnair"
+      }
+    ],
+    "planetary_context": [
+      {
+        "kind": "planet-star-longitude",
+        "planet": "Uranus",
+        "planet_longitude_deg": 65.3,
+        "star": "Aldebaran",
+        "constellation": "Tau",
+        "star_ecliptic_longitude_deg": 69.789,
+        "star_ecliptic_latitude_deg": -5.467,
+        "longitude_separation_deg": 4.5,
+        "basis": "Star Almanack preserved geocentric tropical ecliptic longitude"
+      }
+    ],
+    "planet_plot_policy": "do not plot from longitude alone; require preserved 2-D Star Almanack position data",
+    "reference_standard": "Star-Almanack-Repo/docs/finder-standard.md"
+  },
+  "note": "ISO 2026-W42 runs from October 12 through October 18. Fixed-sky highlights include Alnair. Uranus is about 4.5° in ecliptic longitude from Aldebaran in Taurus.\n\n**Naked eye:** 🌓 First Quarter — 16:12:41 UTCα Lac — V 4 — Northern Autumn — in the Milky Wayβ PsA — V 4 — Southern AutumnGrus center — Constellation — V 3.7 — Southern AutumnLacerta center — Constellation — V 4.5 — Northern AutumnC63, NGC 7293, Helix Nebula, planetary nebula in Aquarius — V 6.5 — Finest NGC — Tropical Autumn. Moderate moonlight makes timing and local sky position important for faint targets. Use Alnair as the week’s fixed-sky framework.\n\n**Planets:** Uranus is about 4.5° in ecliptic longitude from Aldebaran in Taurus.\n\n**Binoculars:** Favor Alnair; wide fields help connect the charted geometry to the real sky.\n\n**Small telescope:** Concentrate on the compact fixed-sky targets selected for the week. Increase magnification only after the target and surrounding pattern are secure.",
+  "descriptors": [
+    {
+      "schema_version": 1,
+      "id": "star-alnair",
+      "type": "star",
+      "name": "Alnair",
+      "summary": "bright star in Gru used as a fixed-sky reference",
+      "representation": {
+        "machine": "/almanack/descriptors/star-alnair.json",
+        "human_source": "summary"
+      },
+      "constellation_abbreviation": "Gru",
+      "constellation": "Gru",
+      "position": {
+        "ra_deg": 332.058135,
+        "dec_deg": -46.960975,
+        "ecliptic_longitude_deg": 315.906879,
+        "ecliptic_latitude_deg": -32.91321
+      },
+      "representative_visual_magnitude": 1.73
+    },
+    {
+      "schema_version": 1,
+      "id": "constellation-gru",
+      "type": "constellation",
+      "name": "Gru",
+      "summary": "constellation used by Star Almanack to organize fixed-sky objects and finder geometry",
+      "representation": {
+        "machine": "/almanack/descriptors/constellation-gru.json",
+        "human_source": "summary"
+      },
+      "abbreviation": "Gru"
+    },
+    {
+      "schema_version": 1,
+      "id": "planet-uranus",
+      "type": "planet",
+      "name": "Uranus",
+      "summary": "Solar-System planet tracked by the Star Almanack weekly ephemeris and Planet Finder",
+      "representation": {
+        "machine": "/almanack/descriptors/planet-uranus.json",
+        "human_source": "summary"
+      }
+    },
+    {
+      "schema_version": 1,
+      "id": "star-aldebaran",
+      "type": "star",
+      "name": "Aldebaran",
+      "summary": "bright star in Taurus used as a fixed-sky reference",
+      "representation": {
+        "machine": "/almanack/descriptors/star-aldebaran.json",
+        "human_source": "summary"
+      },
+      "constellation_abbreviation": "Tau",
+      "constellation": "Taurus",
+      "position": {
+        "ra_deg": 68.980155,
+        "dec_deg": 16.509301,
+        "ecliptic_longitude_deg": 69.789181,
+        "ecliptic_latitude_deg": -5.467327
+      },
+      "representative_visual_magnitude": 0.87
+    },
+    {
+      "schema_version": 1,
+      "id": "constellation-taurus",
+      "type": "constellation",
+      "name": "Taurus",
+      "summary": "constellation used by Star Almanack to organize fixed-sky objects and finder geometry",
+      "representation": {
+        "machine": "/almanack/descriptors/constellation-taurus.json",
+        "human_source": "summary"
+      },
+      "abbreviation": "Tau"
+    },
+    {
+      "schema_version": 1,
+      "id": "ecliptic-longitude",
+      "type": "observing-concept",
+      "name": "ecliptic longitude",
+      "summary": "angular position measured along the ecliptic, used here for conservative weekly Solar-System comparisons",
+      "representation": {
+        "machine": "/almanack/descriptors/ecliptic-longitude.json",
+        "human_source": "summary"
+      }
+    },
+    {
+      "schema_version": 1,
+      "id": "naked-eye",
+      "type": "observing-concept",
+      "name": "Naked eye",
+      "summary": "observing without optical aid",
+      "representation": {
+        "machine": "/almanack/descriptors/naked-eye.json",
+        "human_source": "summary"
+      }
+    },
+    {
+      "schema_version": 1,
+      "id": "binoculars",
+      "type": "observing-concept",
+      "name": "Binoculars",
+      "summary": "wide-field optical aid useful for locating star fields and brighter deep-sky targets",
+      "representation": {
+        "machine": "/almanack/descriptors/binoculars.json",
+        "human_source": "summary"
+      }
+    },
+    {
+      "schema_version": 1,
+      "id": "small-telescope",
+      "type": "observing-concept",
+      "name": "Small telescope",
+      "summary": "a telescope suitable for resolving compact targets after the surrounding field is identified",
+      "representation": {
+        "machine": "/almanack/descriptors/small-telescope.json",
+        "human_source": "summary"
+      }
+    },
+    {
+      "schema_version": 1,
+      "id": "zodiac",
+      "type": "observing-concept",
+      "name": "zodiac",
+      "summary": "the band of constellations along the ecliptic used to orient Solar-System objects",
+      "representation": {
+        "machine": "/almanack/descriptors/zodiac.json",
+        "human_source": "summary"
+      }
+    }
+  ],
+  "descriptor_policy": {
+    "source_of_truth": "machine-readable JSON",
+    "inline_human_descriptors_target": "3-4",
+    "additional_json_links_target": "5-6",
+    "link_target": "/almanack/descriptors/<id>.json",
+    "artwork_descriptor_is_separate": true
+  }
+}

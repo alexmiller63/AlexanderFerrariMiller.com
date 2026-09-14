@@ -1,0 +1,61 @@
+{
+  "schema_version": 1,
+  "id": "constellation-pegasus",
+  "type": "constellation",
+  "name": "Pegasus",
+  "summary": "constellation used by Star Almanack to organize fixed-sky objects and finder geometry",
+  "representation": {
+    "machine": "/almanack/descriptors/constellation-pegasus.json",
+    "human_source": "summary"
+  },
+  "abbreviation": "Peg",
+  "figure": {
+    "system": "Martz/MacRobert",
+    "source_name": "Pegasus",
+    "figure_paths": [
+      [
+        "Alp Peg",
+        "Zet Peg",
+        "Eps Peg"
+      ],
+      [
+        "Bet Peg",
+        "Eta Peg",
+        "The Peg",
+        "Eps Peg"
+      ],
+      [
+        "Alp Peg",
+        "Iot Peg",
+        "Kap Peg"
+      ],
+      [
+        "Bet Peg",
+        "Mu Peg",
+        "Lam Peg"
+      ]
+    ],
+    "magnitude_cutoff": 4.0,
+    "exceptions": [
+      "Kap Peg"
+    ]
+  },
+  "asterisms": [
+    {
+      "name": "Great Square of Pegasus",
+      "label_offset": [
+        0,
+        18
+      ],
+      "paths": [
+        [
+          "Alp And",
+          "Bet Peg",
+          "Alp Peg",
+          "Gam Peg",
+          "Alp And"
+        ]
+      ]
+    }
+  ]
+}
