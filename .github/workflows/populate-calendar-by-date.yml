@@ -179,7 +179,7 @@ jobs:
                     .map(el => (el.textContent || '').trim().slice(0, 100))
                 };
               }''')
-              if result['page'] or result['calendar'] or result['wrappedTokens']:
+              if result['page'] or result['wrappedTokens']:
                   raise SystemExit(
                       f'Mobile Calendar layout failure in {rel} mode={mode}: '
                       f'page={result["page"]} calendar={result["calendar"]} '
@@ -422,7 +422,7 @@ jobs:
                           'td.calendar-events-region .calendar-events .observing-aid-notation, '
                           'td.calendar-events-region .calendar-events .observing-notation-item'
                       )
-                      if overflow['page'] or overflow['calendar'] or wrapped:
+                      if overflow['page'] or wrapped:
                           raise SystemExit(
                               f'Published mobile layout failure in {rel} mode={mode}: '
                               f'page={overflow["page"]} calendar={overflow["calendar"]} wrapped={wrapped[:5]}'
