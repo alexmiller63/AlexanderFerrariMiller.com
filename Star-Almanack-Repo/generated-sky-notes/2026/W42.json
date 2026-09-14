@@ -85,7 +85,7 @@
       "name": "Alnair",
       "summary": "bright star in Gru used as a fixed-sky reference",
       "representation": {
-        "machine": "/almanack/descriptors/star-alnair.json",
+        "machine": "./star-alnair.json",
         "human_source": "summary"
       },
       "constellation_abbreviation": "Gru",
@@ -105,7 +105,7 @@
       "name": "Gru",
       "summary": "constellation used by Star Almanack to organize fixed-sky objects and finder geometry",
       "representation": {
-        "machine": "/almanack/descriptors/constellation-gru.json",
+        "machine": "./constellation-gru.json",
         "human_source": "summary"
       },
       "abbreviation": "Gru"
@@ -117,7 +117,7 @@
       "name": "Uranus",
       "summary": "Solar-System planet tracked by the Star Almanack weekly ephemeris and Planet Finder",
       "representation": {
-        "machine": "/almanack/descriptors/planet-uranus.json",
+        "machine": "./planet-uranus.json",
         "human_source": "summary"
       }
     },
@@ -128,7 +128,7 @@
       "name": "Aldebaran",
       "summary": "bright star in Taurus used as a fixed-sky reference",
       "representation": {
-        "machine": "/almanack/descriptors/star-aldebaran.json",
+        "machine": "./star-aldebaran.json",
         "human_source": "summary"
       },
       "constellation_abbreviation": "Tau",
@@ -148,7 +148,7 @@
       "name": "Taurus",
       "summary": "constellation used by Star Almanack to organize fixed-sky objects and finder geometry",
       "representation": {
-        "machine": "/almanack/descriptors/constellation-taurus.json",
+        "machine": "./constellation-taurus.json",
         "human_source": "summary"
       },
       "abbreviation": "Tau"
@@ -160,7 +160,7 @@
       "name": "ecliptic longitude",
       "summary": "angular position measured along the ecliptic, used here for conservative weekly Solar-System comparisons",
       "representation": {
-        "machine": "/almanack/descriptors/ecliptic-longitude.json",
+        "machine": "./ecliptic-longitude.json",
         "human_source": "summary"
       }
     },
@@ -171,7 +171,7 @@
       "name": "Naked eye",
       "summary": "observing without optical aid",
       "representation": {
-        "machine": "/almanack/descriptors/naked-eye.json",
+        "machine": "./naked-eye.json",
         "human_source": "summary"
       }
     },
@@ -182,7 +182,7 @@
       "name": "Binoculars",
       "summary": "wide-field optical aid useful for locating star fields and brighter deep-sky targets",
       "representation": {
-        "machine": "/almanack/descriptors/binoculars.json",
+        "machine": "./binoculars.json",
         "human_source": "summary"
       }
     },
@@ -193,7 +193,7 @@
       "name": "Small telescope",
       "summary": "a telescope suitable for resolving compact targets after the surrounding field is identified",
       "representation": {
-        "machine": "/almanack/descriptors/small-telescope.json",
+        "machine": "./small-telescope.json",
         "human_source": "summary"
       }
     },
@@ -204,7 +204,7 @@
       "name": "zodiac",
       "summary": "the band of constellations along the ecliptic used to orient Solar-System objects",
       "representation": {
-        "machine": "/almanack/descriptors/zodiac.json",
+        "machine": "./zodiac.json",
         "human_source": "summary"
       }
     }
@@ -213,7 +213,7 @@
     "source_of_truth": "machine-readable JSON",
     "inline_human_descriptors_target": "3-4",
     "additional_json_links_target": "5-6",
-    "link_target": "/almanack/descriptors/<id>.json",
+    "link_target": "../../descriptors/<id>.json",
     "artwork_descriptor_is_separate": true
   }
 }

@@ -115,7 +115,7 @@
       "name": "Peacock",
       "summary": "bright star in Pav used as a fixed-sky reference",
       "representation": {
-        "machine": "/almanack/descriptors/star-peacock.json",
+        "machine": "./star-peacock.json",
         "human_source": "summary"
       },
       "constellation_abbreviation": "Pav",
@@ -135,7 +135,7 @@
       "name": "Pav",
       "summary": "constellation used by Star Almanack to organize fixed-sky objects and finder geometry",
       "representation": {
-        "machine": "/almanack/descriptors/constellation-pav.json",
+        "machine": "./constellation-pav.json",
         "human_source": "summary"
       },
       "abbreviation": "Pav"
@@ -147,7 +147,7 @@
       "name": "M29",
       "summary": "open cluster in Cygnus selected as a weekly fixed-sky observing target",
       "representation": {
-        "machine": "/almanack/descriptors/m29.json",
+        "machine": "./m29.json",
         "human_source": "summary"
       },
       "catalog_name": "M29",
@@ -161,7 +161,7 @@
       "name": "Venus",
       "summary": "Solar-System planet tracked by the Star Almanack weekly ephemeris and Planet Finder",
       "representation": {
-        "machine": "/almanack/descriptors/planet-venus.json",
+        "machine": "./planet-venus.json",
         "human_source": "summary"
       }
     },
@@ -172,7 +172,7 @@
       "name": "Spica",
       "summary": "bright star in Virgo used as a fixed-sky reference",
       "representation": {
-        "machine": "/almanack/descriptors/star-spica.json",
+        "machine": "./star-spica.json",
         "human_source": "summary"
       },
       "constellation_abbreviation": "Vir",
@@ -192,7 +192,7 @@
       "name": "Virgo",
       "summary": "constellation used by Star Almanack to organize fixed-sky objects and finder geometry",
       "representation": {
-        "machine": "/almanack/descriptors/constellation-virgo.json",
+        "machine": "./constellation-virgo.json",
         "human_source": "summary"
       },
       "abbreviation": "Vir"
@@ -204,7 +204,7 @@
       "name": "Uranus",
       "summary": "Solar-System planet tracked by the Star Almanack weekly ephemeris and Planet Finder",
       "representation": {
-        "machine": "/almanack/descriptors/planet-uranus.json",
+        "machine": "./planet-uranus.json",
         "human_source": "summary"
       }
     },
@@ -215,7 +215,7 @@
       "name": "Aldebaran",
       "summary": "bright star in Taurus used as a fixed-sky reference",
       "representation": {
-        "machine": "/almanack/descriptors/star-aldebaran.json",
+        "machine": "./star-aldebaran.json",
         "human_source": "summary"
       },
       "constellation_abbreviation": "Tau",
@@ -235,7 +235,7 @@
       "name": "Taurus",
       "summary": "constellation used by Star Almanack to organize fixed-sky objects and finder geometry",
       "representation": {
-        "machine": "/almanack/descriptors/constellation-taurus.json",
+        "machine": "./constellation-taurus.json",
         "human_source": "summary"
       },
       "abbreviation": "Tau"
@@ -247,7 +247,7 @@
       "name": "ecliptic longitude",
       "summary": "angular position measured along the ecliptic, used here for conservative weekly Solar-System comparisons",
       "representation": {
-        "machine": "/almanack/descriptors/ecliptic-longitude.json",
+        "machine": "./ecliptic-longitude.json",
         "human_source": "summary"
       }
     },
@@ -258,7 +258,7 @@
       "name": "Naked eye",
       "summary": "observing without optical aid",
       "representation": {
-        "machine": "/almanack/descriptors/naked-eye.json",
+        "machine": "./naked-eye.json",
         "human_source": "summary"
       }
     },
@@ -269,7 +269,7 @@
       "name": "Binoculars",
       "summary": "wide-field optical aid useful for locating star fields and brighter deep-sky targets",
       "representation": {
-        "machine": "/almanack/descriptors/binoculars.json",
+        "machine": "./binoculars.json",
         "human_source": "summary"
       }
     }
@@ -278,7 +278,7 @@
     "source_of_truth": "machine-readable JSON",
     "inline_human_descriptors_target": "3-4",
     "additional_json_links_target": "5-6",
-    "link_target": "/almanack/descriptors/<id>.json",
+    "link_target": "../../descriptors/<id>.json",
     "artwork_descriptor_is_separate": true
   }
 }

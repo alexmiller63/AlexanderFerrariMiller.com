@@ -53,7 +53,13 @@ def slugify(value: str) -> str:
 
 
 def descriptor_href(descriptor_id: str) -> str:
-    return f"/almanack/descriptors/{descriptor_id}.json"
+    """Return a descriptor link relative to an Almanack weekly page."""
+    return f"../../descriptors/{descriptor_id}.json"
+
+
+def descriptor_self_reference(descriptor_id: str) -> str:
+    """Return the portable self-reference stored in a descriptor record."""
+    return f"./{descriptor_id}.json"
 
 
 def _base(descriptor_id: str, kind: str, name: str, summary: str) -> dict:
@@ -64,7 +70,7 @@ def _base(descriptor_id: str, kind: str, name: str, summary: str) -> dict:
         "name": name,
         "summary": summary,
         "representation": {
-            "machine": descriptor_href(descriptor_id),
+            "machine": descriptor_self_reference(descriptor_id),
             "human_source": "summary",
         },
     }

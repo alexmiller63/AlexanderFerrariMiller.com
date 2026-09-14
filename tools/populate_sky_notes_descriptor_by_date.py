@@ -21,7 +21,7 @@ def generated_note(year: int, week: int, page_path, yearly, stars: list[dict]) -
         "source_of_truth": "machine-readable JSON",
         "inline_human_descriptors_target": "3-4",
         "additional_json_links_target": "5-6",
-        "link_target": "/almanack/descriptors/<id>.json",
+        "link_target": "../../descriptors/<id>.json",
         "artwork_descriptor_is_separate": True,
     }
     return payload
