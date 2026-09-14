@@ -122,9 +122,18 @@ jobs:
               wrapped = observing.count('class="observing-notation-item"')
               if glyphs and wrapped == 0:
                   raise SystemExit(f'Raw observing glyphs are not notation-aware: {path}')
-              for label in ('Naked eye', 'Binoculars', 'Telescope'):
-                  if f'aria-label="{label}"' in observing and f'data-latin="{label}"' not in observing:
-                      raise SystemExit(f'{label} glyph lacks Latin notation: {path}')
+
+              # Validate each notation wrapper by its semantic Latin label.  A
+              # substantial-telescope aid deliberately contains two ordinary
+              # telescope glyph images, so aria-label="Telescope" is not by
+              # itself evidence that the wrapper's Latin text must be exactly
+              # "Telescope".
+              items = re.findall(r'<span class="observing-notation-item"[^>]*>', observing)
+              valid_labels = ('Naked eye', 'Binoculars', 'Telescope', 'Substantial telescope')
+              for item in items:
+                  match = re.search(r'data-latin="([^"]+)"', item)
+                  if not match or match.group(1) not in valid_labels:
+                      raise SystemExit(f'Observing aid lacks valid Latin notation: {path}')
               checked += 1
               day += timedelta(days=7)
           print(f'PASS: {checked} Ephemeris week(s) have notation-aware observing aids')
