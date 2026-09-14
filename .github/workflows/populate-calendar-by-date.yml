@@ -138,6 +138,45 @@ jobs:
                       f'cells={result["cells"][:5]} wrappedTokens={result["wrappedTokens"][:5]}'
                   )
 
+          def verify_visible_notation(page, rel, mode):
+              source_glyphs = page.locator('table.calendar img.visibility-glyph').count()
+              aids = page.locator('table.calendar .observing-aid-notation')
+              aid_count = aids.count()
+              if source_glyphs and aid_count == 0:
+                  raise SystemExit(
+                      f'Calendar observing-aid wrappers missing in {rel}: source_glyphs={source_glyphs}'
+                  )
+              if not aid_count:
+                  return
+
+              visible_words = page.locator('table.calendar .observing-aid-word:visible')
+              visible_symbols = page.locator('table.calendar .observing-aid-symbol:visible')
+              words = visible_words.count()
+              symbols = visible_symbols.count()
+
+              if mode == 'latin':
+                  if words != aid_count or symbols != 0:
+                      raise SystemExit(
+                          f'Calendar Latin observing-aid visual failure in {rel}: '
+                          f'aids={aid_count} visible_words={words} visible_symbols={symbols}'
+                      )
+                  labels = [text.strip() for text in visible_words.all_text_contents()]
+                  allowed = {'Naked eye', 'Binoculars', 'Telescope', 'Substantial telescope'}
+                  if any(label not in allowed for label in labels):
+                      raise SystemExit(f'Unexpected visible Latin observing aid in {rel}: {labels}')
+              elif mode == 'greek':
+                  if symbols != aid_count or words != 0:
+                      raise SystemExit(
+                          f'Calendar Greek observing-aid visual failure in {rel}: '
+                          f'aids={aid_count} visible_words={words} visible_symbols={symbols}'
+                      )
+              elif mode == 'mixed':
+                  if words != aid_count or symbols != aid_count:
+                      raise SystemExit(
+                          f'Calendar Mixed observing-aid visual failure in {rel}: '
+                          f'aids={aid_count} visible_words={words} visible_symbols={symbols}'
+                      )
+
           with sync_playwright() as p:
               browser = p.chromium.launch()
               page = browser.new_page(viewport={"width": 390, "height": 844})
@@ -163,6 +202,7 @@ jobs:
                       button.click()
                       page.wait_for_timeout(50)
                       verify_layout(page, rel, mode)
+                      verify_visible_notation(page, rel, mode)
 
                   print(f'Local Chromium PASS all notation modes: {rel}')
               browser.close()
