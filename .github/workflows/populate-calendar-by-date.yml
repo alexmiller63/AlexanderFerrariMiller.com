@@ -115,22 +115,35 @@ jobs:
               d += dt.timedelta(days=1)
 
           def verify_layout(page, rel, mode):
-              result = page.evaluate('''() => ({
-                page: document.documentElement.scrollWidth > window.innerWidth + 1,
-                calendar: (() => {
-                  const el = document.querySelector('table.calendar');
-                  return !!el && el.scrollWidth > el.clientWidth + 1;
-                })(),
-                cells: [...document.querySelectorAll('table.calendar td, table.calendar th, .event-cell')]
-                  .filter(el => el.scrollWidth > el.clientWidth + 1)
-                  .map(el => (el.textContent || '').trim().slice(0, 100)),
-                wrappedTokens: [...document.querySelectorAll(
-                    'table.calendar .notation-item, table.calendar .notation-rendered, '
-                    + 'table.calendar .visibility-magnitude, table.calendar .observing-aid-notation'
-                  )]
-                  .filter(el => el.getClientRects().length > 1)
-                  .map(el => (el.textContent || '').trim().slice(0, 100))
-              })''')
+              result = page.evaluate('''() => {
+                const actuallyWraps = (el) => {
+                  const range = document.createRange();
+                  range.selectNodeContents(el);
+                  const rects = [...range.getClientRects()].filter(r => r.width > 0 && r.height > 0);
+                  if (rects.length < 2) return false;
+                  const tops = [];
+                  for (const r of rects) {
+                    if (!tops.some(top => Math.abs(top - r.top) <= 1)) tops.push(r.top);
+                  }
+                  return tops.length > 1;
+                };
+                return {
+                  page: document.documentElement.scrollWidth > window.innerWidth + 1,
+                  calendar: (() => {
+                    const el = document.querySelector('table.calendar');
+                    return !!el && el.scrollWidth > el.clientWidth + 1;
+                  })(),
+                  cells: [...document.querySelectorAll('table.calendar td, table.calendar th, .event-cell')]
+                    .filter(el => el.scrollWidth > el.clientWidth + 1)
+                    .map(el => (el.textContent || '').trim().slice(0, 100)),
+                  wrappedTokens: [...document.querySelectorAll(
+                      'table.calendar .notation-item, table.calendar .notation-rendered, '
+                      + 'table.calendar .visibility-magnitude, table.calendar .observing-aid-notation'
+                    )]
+                    .filter(actuallyWraps)
+                    .map(el => (el.textContent || '').trim().slice(0, 100))
+                };
+              }''')
               if result['page'] or result['calendar'] or result['cells'] or result['wrappedTokens']:
                   raise SystemExit(
                       f'Mobile Calendar layout failure in {rel} mode={mode}: '
