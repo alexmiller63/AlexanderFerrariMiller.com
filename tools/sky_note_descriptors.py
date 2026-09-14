@@ -2,7 +2,7 @@
 """Machine-readable descriptor support for Star Almanack Sky Notes.
 
 JSON descriptor records are the source of truth for descriptor presentation.
-Human-readable glosses and Sky Note links are derived from these records.
+Human-readable prose and Sky Note links are derived from these records.
 """
 from __future__ import annotations
 
@@ -134,7 +134,7 @@ def build_descriptors(
             descriptor_id,
             "constellation",
             name,
-            f"constellation used by Star Almanack to organize fixed-sky objects and finder geometry",
+            "constellation used by Star Almanack to organize fixed-sky objects and finder geometry",
         )
         record["abbreviation"] = abbreviation
         figure_name, figure = _figure_for_abbreviation(abbreviation, figures)
@@ -218,8 +218,7 @@ def build_descriptors(
                         break
             add(record)
 
-    # These concepts guarantee that every weekly note has enough useful descriptor
-    # touchpoints without inventing weak astronomical objects merely to hit a count.
+    # Concepts fill out the descriptor layer without inventing weak astronomical objects.
     for descriptor_id in ("ecliptic-longitude", "naked-eye", "binoculars", "small-telescope", "zodiac"):
         concept = OBSERVING_CONCEPTS[descriptor_id]
         add(_base(descriptor_id, concept["type"], concept["name"], concept["summary"]))
@@ -237,34 +236,95 @@ def write_descriptor_records(records: list[dict]) -> None:
         (PUBLIC_ROOT / filename).write_text(body, encoding="utf-8")
 
 
+def _linked_name(record: dict) -> str:
+    return (
+        f'<a class="descriptor-link" href="{html.escape(descriptor_href(record["id"]), quote=True)}" '
+        f'type="application/json">{html.escape(record["name"], quote=False)}</a>'
+    )
+
+
+def human_sentence(record: dict) -> str:
+    """Render useful prose strictly from fields in the machine-readable record."""
+    name = _linked_name(record)
+    kind = record.get("type")
+
+    if kind == "star":
+        constellation = record.get("constellation")
+        magnitude = record.get("representative_visual_magnitude")
+        details = []
+        if constellation:
+            details.append(f"in {html.escape(str(constellation))}")
+        if magnitude is not None:
+            details.append(f"with representative visual magnitude {magnitude:g}")
+        tail = " ".join(details)
+        return f"{name} is a bright fixed-sky reference{' ' + tail if tail else ''}."
+
+    if kind == "constellation":
+        figure = record.get("figure")
+        if figure:
+            paths = figure.get("figure_paths") or []
+            return (
+                f"{name} uses the preserved Martz/MacRobert stick figure in Star Almanack"
+                f" ({len(paths)} figure path{'s' if len(paths) != 1 else ''})."
+            )
+        return f"{name} is used to organize the week’s fixed-sky objects and finder geometry."
+
+    if kind == "asterism":
+        members = record.get("members") or []
+        if members:
+            shown = ", ".join(html.escape(str(member)) for member in members[:5])
+            extra = " and others" if len(members) > 5 else ""
+            return f"{name} is an observer-facing asterism defined by {shown}{extra}."
+        return f"{name} is an observer-facing star pattern preserved separately from the constellation figure."
+
+    if kind == "deep-sky-object":
+        object_type = html.escape(str(record.get("object_type", "deep-sky object")))
+        constellation = record.get("constellation")
+        where = f" in {html.escape(str(constellation))}" if constellation else ""
+        return f"{name} is a {object_type}{where} selected as a fixed-sky target for this week."
+
+    if kind == "planet":
+        return f"{name} is tracked in the weekly ephemeris and Planet Finder as part of the Solar-System context."
+
+    return f"{name} means {html.escape(str(record.get('summary', 'a Star Almanack observing concept')))}."
+
+
 def decorate_note_html(rendered_html: str, records: list[dict]) -> str:
-    """Add 3–4 inline human glosses plus 5–6 direct JSON descriptor links."""
+    """Render 3–4 substantive descriptor sentences plus 5–6 direct JSON links."""
     decorated = rendered_html
-    inline_ids: set[str] = set()
-    inline_count = 0
 
-    for record in records:
-        if inline_count >= 4:
-            break
-        name = record["name"]
-        escaped_name = html.escape(name, quote=False)
-        if escaped_name not in decorated:
-            continue
-        link = (
-            f'<a class="descriptor-link" href="{html.escape(descriptor_href(record["id"]), quote=True)}" '
-            f'type="application/json">{escaped_name}</a>'
-            f' <span class="descriptor-gloss">({html.escape(record["summary"], quote=False)})</span>'
+    # Prefer actual sky objects and geometry for prose. Concepts are fallback only.
+    priority = {
+        "deep-sky-object": 0,
+        "star": 1,
+        "asterism": 2,
+        "constellation": 3,
+        "planet": 4,
+        "observing-concept": 5,
+    }
+    ordered = sorted(enumerate(records), key=lambda item: (priority.get(item[1].get("type"), 9), item[0]))
+    prose_records = [record for _, record in ordered[:4]]
+    prose_ids = {record["id"] for record in prose_records}
+
+    # Existing mentions become direct machine-readable links without adding tiny
+    # parenthetical placeholders. The richer explanation is generated below.
+    for record in prose_records:
+        escaped_name = html.escape(record["name"], quote=False)
+        if escaped_name in decorated:
+            decorated = decorated.replace(escaped_name, _linked_name(record), 1)
+
+    if prose_records:
+        sentences = " ".join(human_sentence(record) for record in prose_records)
+        decorated += (
+            '\n<p class="sky-note-descriptor-prose" data-sky-note-descriptor-prose="true">'
+            f'<strong>Descriptor context:</strong> {sentences}</p>'
         )
-        decorated = decorated.replace(escaped_name, link, 1)
-        inline_ids.add(record["id"])
-        inline_count += 1
 
-    related = [record for record in records if record["id"] not in inline_ids][:6]
+    related = [record for record in records if record["id"] not in prose_ids][:6]
     if related:
-        links = " · ".join(
-            f'<a class="descriptor-link" href="{html.escape(descriptor_href(record["id"]), quote=True)}" '
-            f'type="application/json">{html.escape(record["name"], quote=False)}</a>'
-            for record in related
+        links = " · ".join(_linked_name(record) for record in related)
+        decorated += (
+            '\n<p class="sky-note-descriptors" data-sky-note-descriptors="true">'
+            f'<strong>Related descriptors:</strong> {links}</p>'
         )
-        decorated += f'\n<p class="sky-note-descriptors"><strong>Related descriptors:</strong> {links}</p>'
     return decorated
