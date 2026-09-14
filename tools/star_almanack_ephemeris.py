@@ -2,7 +2,7 @@
 """Star Almanack planetary calculation layer.
 
 This module computes Almanack positions from locally cached public-domain JPL
-SPK source data.  It does not query Horizons or any other answer service.
+SPK source data. It does not query Horizons or any other answer service.
 
 Production source data:
 - JPL DE440s planetary SPK for Sun, Moon, and planets.
@@ -38,6 +38,10 @@ class EphemerisSample:
     elongation_deg: float
 
 
+def _norm3(v) -> float:
+    return math.sqrt(float(v[0] ** 2 + v[1] ** 2 + v[2] ** 2))
+
+
 class StarAlmanackEphemeris:
     """Compute weekly geocentric apparent ecliptic positions from cached SPKs."""
 
@@ -61,13 +65,9 @@ class StarAlmanackEphemeris:
         self.earth = self.planets["earth"]
         self.sun = self.planets["sun"]
 
-        # The NAIF Ceres kernel is centered on the Sun.  Skyfield vector
-        # functions compose, producing a Solar-System-barycentric Ceres vector.
-        try:
-            ceres_relative = self.asteroids[10, 2000001]
-        except Exception:
-            # Some SPK readers expose the segment by numeric target alone.
-            ceres_relative = self.asteroids[2000001]
+        # NAIF's Ceres kernel segment is Sun-centered. Vector composition turns
+        # it into the barycentric vector needed by Skyfield's observe() chain.
+        ceres_relative = self.asteroids[10, 2000001]
         self.ceres = self.sun + ceres_relative
 
         self.bodies = {
@@ -89,22 +89,27 @@ class StarAlmanackEphemeris:
         av = a.position.au
         bv = b.position.au
         dot = float(av[0] * bv[0] + av[1] * bv[1] + av[2] * bv[2])
-        an = math.sqrt(float(av[0] ** 2 + av[1] ** 2 + av[2] ** 2))
-        bn = math.sqrt(float(bv[0] ** 2 + bv[1] ** 2 + bv[2] ** 2))
+        an = _norm3(av)
+        bn = _norm3(bv)
         cosine = max(-1.0, min(1.0, dot / (an * bn)))
         return math.degrees(math.acos(cosine))
 
+    def _heliocentric_distance_au(self, body, t) -> float:
+        body_bary = body.at(t).position.au
+        sun_bary = self.sun.at(t).position.au
+        return _norm3(body_bary - sun_bary)
+
     def _ceres_magnitude(self, t, apparent) -> float:
-        """IAU H-G visual magnitude from independently computed geometry."""
+        """Compute Ceres visual magnitude from H-G constants and geometry."""
         # Public catalog constants commonly adopted for (1) Ceres.
         h, g = 3.34, 0.12
-        sun_to_ceres = (self.ceres - self.sun).at(t)
-        earth_to_ceres = apparent
-        ceres_to_sun = (self.sun - self.ceres).at(t)
-        ceres_to_earth = (self.earth - self.ceres).at(t)
-        r = float(sun_to_ceres.distance().au)
-        delta = float(earth_to_ceres.distance().au)
-        phase = math.radians(self._angle_between(ceres_to_sun, ceres_to_earth))
+        r = self._heliocentric_distance_au(self.ceres, t)
+        delta = float(apparent.distance().au)
+        earth_sun = float(self.earth.at(t).observe(self.sun).distance().au)
+
+        # Phase angle at Ceres from the Sun-Ceres-Earth triangle.
+        cosine = (r * r + delta * delta - earth_sun * earth_sun) / (2.0 * r * delta)
+        phase = math.acos(max(-1.0, min(1.0, cosine)))
         tan_half = max(0.0, math.tan(phase / 2.0))
         phi1 = math.exp(-3.33 * tan_half ** 0.63)
         phi2 = math.exp(-1.87 * tan_half ** 1.22)
@@ -119,9 +124,9 @@ class StarAlmanackEphemeris:
         if key == "ceres":
             return self._ceres_magnitude(t, apparent)
         if key == "pluto":
-            # Pluto remains far below the Almanack's binocular threshold; use
-            # absolute-magnitude distance scaling rather than an answer table.
-            r = float((self.bodies["pluto"] - self.sun).at(t).distance().au)
+            # Pluto is always far below the Almanack binocular threshold. This
+            # is an internally computed distance scaling, not a published table.
+            r = self._heliocentric_distance_au(self.bodies["pluto"], t)
             delta = float(apparent.distance().au)
             return -0.7 + 5.0 * math.log10(r * delta)
         return None
