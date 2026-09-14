@@ -3,10 +3,22 @@ name: Wire ephemeris notation modes
 on:
   workflow_dispatch:
     inputs:
-      years:
-        description: 'Space-separated ISO years to update'
+      start_year:
+        description: 'First ISO year'
         required: true
-        default: '2025 2026 2027'
+        default: '2026'
+      start_week:
+        description: 'First ISO week'
+        required: true
+        default: '38'
+      end_year:
+        description: 'Last ISO year (blank = start week only)'
+        required: false
+        default: ''
+      end_week:
+        description: 'Last ISO week (blank = start week only)'
+        required: false
+        default: ''
   push:
     branches: [main]
     paths:
@@ -15,7 +27,10 @@ on:
       - tools/wire_ephemeris_notation.py
 
 env:
-  ALMANACK_YEARS: ${{ github.event_name == 'workflow_dispatch' && inputs.years || '2025 2026 2027' }}
+  START_YEAR: ${{ github.event_name == 'workflow_dispatch' && inputs.start_year || '2025' }}
+  START_WEEK: ${{ github.event_name == 'workflow_dispatch' && inputs.start_week || '1' }}
+  END_YEAR: ${{ github.event_name == 'workflow_dispatch' && inputs.end_year || '2027' }}
+  END_WEEK: ${{ github.event_name == 'workflow_dispatch' && inputs.end_week || '52' }}
 
 permissions:
   contents: write
@@ -27,19 +42,17 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Wire ephemeris notation
-        run: python tools/wire_ephemeris_notation.py $ALMANACK_YEARS
+        run: python tools/wire_ephemeris_notation.py "$START_YEAR" "$START_WEEK" "$END_YEAR" "$END_WEEK"
 
       - name: Commit changes
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          for year in $ALMANACK_YEARS; do
-            git add "almanack/$year"
-          done
+          git add almanack
           if git diff --cached --quiet; then
             echo 'No ephemeris-notation changes'
             exit 0
           fi
-          git commit -m "Wire ephemeris notation modes for $ALMANACK_YEARS"
+          git commit -m "Wire ephemeris notation modes for ISO range $START_YEAR-W$START_WEEK to $END_YEAR-W$END_WEEK"
           git pull --rebase origin main
           git push
