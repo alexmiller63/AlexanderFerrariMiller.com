@@ -17,6 +17,7 @@ on:
     paths:
       - 'tools/generate_planet_finders.py'
       - 'tools/populate_ephemeris.py'
+      - 'tools/star_almanack_ephemeris.py'
       - '.github/workflows/generate-current-planet-finders.yml'
 
 permissions:
@@ -38,11 +39,43 @@ jobs:
         with:
           python-version: '3.12'
 
+      - name: Restore public-domain ephemeris source cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            .cache/skyfield/de440s.bsp
+            .cache/skyfield/ceres_1900_2100.bsp
+          key: star-almanack-source-kernels-v1
+
+      - name: Install calculation dependency
+        run: python -m pip install --disable-pip-version-check skyfield
+
+      - name: Download source kernels only when cache is empty
+        run: |
+          mkdir -p .cache/skyfield
+          python - <<'PY'
+          from pathlib import Path
+          from urllib.request import urlretrieve
+          from skyfield.api import Loader
+          root = Path('.cache/skyfield')
+          de440s = root / 'de440s.bsp'
+          ceres = root / 'ceres_1900_2100.bsp'
+          if not de440s.exists():
+              Loader(str(root)).download('de440s.bsp')
+          else:
+              print(f'Reusing cached {de440s}')
+          if not ceres.exists():
+              urlretrieve('https://naif.jpl.nasa.gov/pub/naif/generic_kernels/spk/asteroids/a_old_versions/ceres_1900_2100.bsp', ceres)
+          else:
+              print(f'Reusing cached {ceres}')
+          PY
+
       - name: Generate Planet Finders
         shell: bash
         env:
           INPUT_YEAR: ${{ inputs.year }}
           INPUT_WEEK: ${{ inputs.week }}
+          STAR_ALMANACK_EPHEMERIS_DIR: ${{ github.workspace }}/.cache/skyfield
         run: |
           set -euo pipefail
           if [[ -n "${INPUT_YEAR:-}" || -n "${INPUT_WEEK:-}" ]]; then
@@ -57,6 +90,8 @@ jobs:
 
       - name: Commit generated finders
         shell: bash
+        env:
+          STAR_ALMANACK_EPHEMERIS_DIR: ${{ github.workspace }}/.cache/skyfield
         run: |
           set -euo pipefail
           git config user.name 'github-actions[bot]'
