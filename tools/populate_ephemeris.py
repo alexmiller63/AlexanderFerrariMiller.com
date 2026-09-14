@@ -2,8 +2,8 @@
 """Populate weekly Star Almanack Solar-System ephemerides from local source kernels.
 
 The weekly table is a civil-time presentation snapshot: each row is sampled at
-Monday 00:00 UTC, then calculated locally from cached public-domain JPL SPK
-source data.  No Horizons or other answer service is queried.
+Monday 00:00 UTC, then calculated locally from cached JPL/NAIF SPK source data.
+No Horizons or other answer service is queried.
 """
 from __future__ import annotations
 
