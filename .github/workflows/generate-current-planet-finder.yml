@@ -214,9 +214,20 @@ jobs:
           git add almanack/*/W*/finders/planet-finder-greek-symbols.svg \
                   almanack/*/W*/finders/planet-finder-latin.svg \
                   almanack/*/W*/finders/planet-finder-mixed-learner.svg
+
+          # The weekly ephemeris CSVs are temporary local inputs for this workflow.
+          # Restore them before rebasing so they cannot leave the worktree dirty
+          # or accidentally replace the canonical full-year CSVs with a date slice.
+          git restore --worktree -- Star-Almanack-Repo/weekly-ephemeris-*.csv
+
           if git diff --cached --quiet; then
             echo "Planet Finder output already current."
             exit 0
+          fi
+          if ! git diff --quiet; then
+            echo "Unexpected unstaged tracked changes remain before commit:"
+            git status --short
+            exit 1
           fi
           git commit -m "Generate Planet Finder ISO week range"
           git pull --rebase origin main
