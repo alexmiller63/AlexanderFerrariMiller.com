@@ -28,9 +28,10 @@ from __future__ import annotations
 import math
 import os
 from dataclasses import dataclass
-from datetime import date
+from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 
+from almanack_time import AstroInstant, datetime_to_jd_utc
 from skyfield.api import load, load_file
 from skyfield.framelib import ecliptic_frame
 from skyfield.magnitudelib import planetary_magnitude
@@ -39,6 +40,7 @@ ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_KERNEL_DIR = ROOT / ".cache" / "skyfield"
 DE440S_NAME = "de440s.bsp"
 CERES_NAME = "ceres_1900_2100.bsp"
+SECONDS_PER_DAY = 86400.0
 
 
 @dataclass(frozen=True)
@@ -65,22 +67,11 @@ class StarAlmanackEphemeris:
             raise FileNotFoundError(
                 f"Missing {self.de440s_path}. The workflow must restore/download the JPL/NAIF DE440s source kernel first."
             )
-        if not self.ceres_path.is_file():
-            raise FileNotFoundError(
-                f"Missing {self.ceres_path}. The workflow must restore/download the JPL/NAIF Ceres source kernel first."
-            )
 
         self.ts = load.timescale(builtin=True)
         self.planets = load_file(str(self.de440s_path))
-        self.asteroids = load_file(str(self.ceres_path))
         self.earth = self.planets["earth"]
         self.sun = self.planets["sun"]
-
-        # NAIF's Ceres kernel segment is Sun-centered. Skyfield vector
-        # composition supplies the barycentric vector needed by observe().
-        ceres_relative = self.asteroids[10, 2000001]
-        self.ceres = self.sun + ceres_relative
-
         self.bodies = {
             "sun": self.sun,
             "moon": self.planets["moon"],
@@ -89,11 +80,34 @@ class StarAlmanackEphemeris:
             "mars": self.planets["mars barycenter"],
             "jupiter": self.planets["jupiter barycenter"],
             "saturn": self.planets["saturn barycenter"],
-            "ceres": self.ceres,
             "uranus": self.planets["uranus barycenter"],
             "neptune": self.planets["neptune barycenter"],
             "pluto": self.planets["pluto barycenter"],
         }
+
+        # Ceres is optional for calculations that need only the DE440s bodies,
+        # such as calendar Sun/Moon sampling. Ephemeris generation requests it
+        # explicitly and therefore fails closed if the Ceres source kernel is
+        # absent.
+        self.asteroids = None
+        self.ceres = None
+        if self.ceres_path.is_file():
+            self.asteroids = load_file(str(self.ceres_path))
+            # NAIF's Ceres kernel segment is Sun-centered. Skyfield vector
+            # composition supplies the barycentric vector needed by observe().
+            ceres_relative = self.asteroids[10, 2000001]
+            self.ceres = self.sun + ceres_relative
+            self.bodies["ceres"] = self.ceres
+
+    def _body(self, key: str):
+        if key == "ceres" and key not in self.bodies:
+            raise FileNotFoundError(
+                f"Missing {self.ceres_path}. Ceres calculations require the JPL/NAIF Ceres source kernel."
+            )
+        try:
+            return self.bodies[key]
+        except KeyError as exc:
+            raise KeyError(f"Unsupported Star Almanack ephemeris body: {key}") from exc
 
     @staticmethod
     def _angle_between(a, b) -> float:
@@ -106,6 +120,17 @@ class StarAlmanackEphemeris:
         return math.degrees(math.acos(cosine))
 
     @staticmethod
+    def _instant_from_skyfield(t) -> AstroInstant:
+        """Create the Almanack's canonical JDTDB instant from a Skyfield Time."""
+        utc = t.utc_datetime()
+        jd_utc = datetime_to_jd_utc(utc)
+        jd_tdb = float(t.tdb)
+        return AstroInstant(
+            jd_tdb=jd_tdb,
+            tdb_minus_utc_seconds=(jd_tdb - jd_utc) * SECONDS_PER_DAY,
+        )
+
+    @staticmethod
     def _supported_planet_magnitude(apparent) -> float | None:
         """Use Skyfield's attributed planet model; fail closed if unsupported."""
         try:
@@ -114,10 +139,43 @@ class StarAlmanackEphemeris:
             return None
         return magnitude if math.isfinite(magnitude) else None
 
+    def longitude_samples(
+        self,
+        key: str,
+        start: date,
+        stop: date,
+        step_hours: int = 1,
+    ) -> list[tuple[AstroInstant, float]]:
+        """Return locally computed apparent geocentric ecliptic longitudes.
+
+        Sampling epochs are civil UTC grid points, but each returned epoch is
+        immediately represented as the Almanack's canonical JDTDB AstroInstant.
+        The stop-date midnight sample is included, matching the historical
+        calendar solver's bracketing behavior.
+        """
+        if step_hours <= 0:
+            raise ValueError("step_hours must be positive")
+        if stop < start:
+            raise ValueError("stop date must not precede start date")
+
+        body = self._body(key)
+        current = datetime(start.year, start.month, start.day, tzinfo=timezone.utc)
+        end = datetime(stop.year, stop.month, stop.day, tzinfo=timezone.utc)
+        step = timedelta(hours=step_hours)
+        out: list[tuple[AstroInstant, float]] = []
+        earth = self.earth
+        while current <= end:
+            t = self.ts.from_datetime(current)
+            apparent = earth.at(t).observe(body).apparent()
+            _, lon, _ = apparent.frame_latlon(ecliptic_frame)
+            out.append((self._instant_from_skyfield(t), float(lon.degrees) % 360.0))
+            current += step
+        return out
+
     def sample(self, key: str, day: date) -> EphemerisSample:
         """Return a Monday-00:00-UTC publication snapshot for one body."""
         t = self.ts.utc(day.year, day.month, day.day, 0, 0, 0)
-        body = self.bodies[key]
+        body = self._body(key)
         apparent = self.earth.at(t).observe(body).apparent()
         lat, lon, _ = apparent.frame_latlon(ecliptic_frame)
 
