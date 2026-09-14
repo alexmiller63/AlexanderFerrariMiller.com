@@ -1,16 +1,27 @@
 #!/usr/bin/env python3
 """Star Almanack planetary calculation layer.
 
-This module computes Almanack positions from locally cached public-domain JPL
-SPK source data. It does not query Horizons or any other answer service.
+This module computes Almanack positions from locally cached JPL/NAIF SPK source
+kernels. It does not query Horizons or any other service for finished answers.
 
-Production source data:
+Source data:
 - JPL DE440s planetary SPK for Sun, Moon, and planets.
 - JPL/NAIF Ceres 1900-2100 SPK for Ceres.
 
-Kernel acquisition and caching belongs to the workflow/runtime environment.
-The normal GitHub Actions path stores both kernels under .cache/skyfield and
-reuses them through actions/cache.
+The kernels are inputs, not published ephemeris answers. NAIF permits kernels on
+its server to be downloaded and used subject to its published SPICE rules; do
+not describe them as "public domain" without a source that actually says so.
+
+Calculation dependency:
+- Skyfield (MIT licensed), used as an imported library to read SPK data and
+  perform apparent-position and reference-frame calculations.
+- Skyfield's planetary_magnitude() is used only for bodies it supports. Its
+  documentation attributes those magnitude formulae to Mallama & Hilton (2018).
+  Star Almanack does not copy those formulae into this module.
+
+Kernel acquisition/caching belongs to the workflow/runtime environment. The
+normal GitHub Actions path stores the kernels under .cache/skyfield and reuses
+them through actions/cache. See Star-Almanack-Repo/EPHEMERIS-PROVENANCE.md.
 """
 from __future__ import annotations
 
@@ -43,7 +54,7 @@ def _norm3(v) -> float:
 
 
 class StarAlmanackEphemeris:
-    """Compute weekly geocentric apparent ecliptic positions from cached SPKs."""
+    """Compute geocentric apparent ecliptic positions from cached SPK inputs."""
 
     def __init__(self, kernel_dir: str | Path | None = None) -> None:
         configured = kernel_dir or os.environ.get("STAR_ALMANACK_EPHEMERIS_DIR")
@@ -52,11 +63,11 @@ class StarAlmanackEphemeris:
         self.ceres_path = self.kernel_dir / CERES_NAME
         if not self.de440s_path.is_file():
             raise FileNotFoundError(
-                f"Missing {self.de440s_path}. The workflow must restore/download the public-domain DE440s source kernel first."
+                f"Missing {self.de440s_path}. The workflow must restore/download the JPL/NAIF DE440s source kernel first."
             )
         if not self.ceres_path.is_file():
             raise FileNotFoundError(
-                f"Missing {self.ceres_path}. The workflow must restore/download the public-domain Ceres source kernel first."
+                f"Missing {self.ceres_path}. The workflow must restore/download the JPL/NAIF Ceres source kernel first."
             )
 
         self.ts = load.timescale(builtin=True)
@@ -65,8 +76,8 @@ class StarAlmanackEphemeris:
         self.earth = self.planets["earth"]
         self.sun = self.planets["sun"]
 
-        # NAIF's Ceres kernel segment is Sun-centered. Vector composition turns
-        # it into the barycentric vector needed by Skyfield's observe() chain.
+        # NAIF's Ceres kernel segment is Sun-centered. Skyfield vector
+        # composition supplies the barycentric vector needed by observe().
         ceres_relative = self.asteroids[10, 2000001]
         self.ceres = self.sun + ceres_relative
 
@@ -94,42 +105,14 @@ class StarAlmanackEphemeris:
         cosine = max(-1.0, min(1.0, dot / (an * bn)))
         return math.degrees(math.acos(cosine))
 
-    def _heliocentric_distance_au(self, body, t) -> float:
-        body_bary = body.at(t).position.au
-        sun_bary = self.sun.at(t).position.au
-        return _norm3(body_bary - sun_bary)
-
-    def _ceres_magnitude(self, t, apparent) -> float:
-        """Compute Ceres visual magnitude from H-G constants and geometry."""
-        # Public catalog constants commonly adopted for (1) Ceres.
-        h, g = 3.34, 0.12
-        r = self._heliocentric_distance_au(self.ceres, t)
-        delta = float(apparent.distance().au)
-        earth_sun = float(self.earth.at(t).observe(self.sun).distance().au)
-
-        # Phase angle at Ceres from the Sun-Ceres-Earth triangle.
-        cosine = (r * r + delta * delta - earth_sun * earth_sun) / (2.0 * r * delta)
-        phase = math.acos(max(-1.0, min(1.0, cosine)))
-        tan_half = max(0.0, math.tan(phase / 2.0))
-        phi1 = math.exp(-3.33 * tan_half ** 0.63)
-        phi2 = math.exp(-1.87 * tan_half ** 1.22)
-        phase_term = max(1e-12, (1.0 - g) * phi1 + g * phi2)
-        return h + 5.0 * math.log10(r * delta) - 2.5 * math.log10(phase_term)
-
-    def _fallback_magnitude(self, key: str, t, apparent) -> float | None:
-        if key == "sun":
-            return -26.74
-        if key == "moon":
-            return -12.0
-        if key == "ceres":
-            return self._ceres_magnitude(t, apparent)
-        if key == "pluto":
-            # Pluto is always far below the Almanack binocular threshold. This
-            # is an internally computed distance scaling, not a published table.
-            r = self._heliocentric_distance_au(self.bodies["pluto"], t)
-            delta = float(apparent.distance().au)
-            return -0.7 + 5.0 * math.log10(r * delta)
-        return None
+    @staticmethod
+    def _supported_planet_magnitude(apparent) -> float | None:
+        """Use Skyfield's attributed planet model; fail closed if unsupported."""
+        try:
+            magnitude = float(planetary_magnitude(apparent))
+        except Exception:
+            return None
+        return magnitude if math.isfinite(magnitude) else None
 
     def sample(self, key: str, day: date) -> EphemerisSample:
         """Return a Monday-00:00-UTC publication snapshot for one body."""
@@ -140,11 +123,7 @@ class StarAlmanackEphemeris:
 
         sun_apparent = self.earth.at(t).observe(self.sun).apparent()
         elongation = 0.0 if key == "sun" else self._angle_between(apparent, sun_apparent)
-
-        try:
-            magnitude = float(planetary_magnitude(apparent))
-        except Exception:
-            magnitude = self._fallback_magnitude(key, t, apparent)
+        magnitude = self._supported_planet_magnitude(apparent)
 
         return EphemerisSample(
             longitude_deg=float(lon.degrees) % 360.0,
