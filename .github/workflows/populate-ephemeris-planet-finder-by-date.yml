@@ -37,6 +37,49 @@ jobs:
         with:
           ref: main
 
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Restore public-domain ephemeris source cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            .cache/skyfield/de440s.bsp
+            .cache/skyfield/ceres_1900_2100.bsp
+          key: star-almanack-source-kernels-v1
+
+      - name: Install calculation dependency
+        run: python -m pip install --disable-pip-version-check skyfield
+
+      - name: Download source kernels only when cache is empty
+        run: |
+          mkdir -p .cache/skyfield
+          python - <<'PY'
+          from pathlib import Path
+          from urllib.request import urlretrieve
+          from skyfield.api import Loader
+
+          root = Path('.cache/skyfield')
+          de440s = root / 'de440s.bsp'
+          ceres = root / 'ceres_1900_2100.bsp'
+
+          if de440s.exists():
+              print(f'Reusing cached {de440s} ({de440s.stat().st_size:,} bytes)')
+          else:
+              print('Downloading JPL DE440s source kernel once for reuse')
+              Loader(str(root)).download('de440s.bsp')
+
+          if ceres.exists():
+              print(f'Reusing cached {ceres} ({ceres.stat().st_size:,} bytes)')
+          else:
+              print('Downloading JPL/NAIF Ceres 1900-2100 source kernel once for reuse')
+              urlretrieve(
+                  'https://naif.jpl.nasa.gov/pub/naif/generic_kernels/spk/asteroids/a_old_versions/ceres_1900_2100.bsp',
+                  ceres,
+              )
+          PY
+
       - name: Resolve ISO week range
         id: range
         run: |
@@ -47,7 +90,9 @@ jobs:
           echo "end_date=$END_DATE" >> "$GITHUB_OUTPUT"
           echo "$START_DATE through $END_DATE"
 
-      - name: Generate Planet Finder
+      - name: Generate Ephemeris and Planet Finder from local calculations
+        env:
+          STAR_ALMANACK_EPHEMERIS_DIR: ${{ github.workspace }}/.cache/skyfield
         run: python tools/populate_ephemeris_planet_finder_by_date.py "${{ steps.range.outputs.start_date }}" "${{ steps.range.outputs.end_date }}"
 
       - name: Commit Planet Finder changes only
