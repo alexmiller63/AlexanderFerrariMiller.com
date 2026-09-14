@@ -95,12 +95,17 @@ jobs:
       - name: Commit generated finders
         shell: bash
         env:
+          INPUT_YEAR: ${{ inputs.year }}
+          INPUT_WEEK: ${{ inputs.week }}
           STAR_ALMANACK_EPHEMERIS_DIR: ${{ github.workspace }}/.cache/skyfield
         run: |
           set -euo pipefail
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add 'almanack/'
+
+          # Stage only published Almanack output. Runtime caches and Python
+          # bytecode are deliberately never part of a generated-content commit.
+          git add -- 'almanack/'
           if git diff --cached --quiet; then
             echo 'Planet Finders are already current.'
             exit 0
@@ -111,7 +116,7 @@ jobs:
             if git push origin HEAD:main; then
               exit 0
             fi
-            echo "Push race on attempt $attempt; regenerating from current main."
+            echo "Push race on attempt $attempt; regenerating requested range from current main."
             git fetch origin main
             git reset --hard origin/main
             if [[ -n "${INPUT_YEAR:-}" && -n "${INPUT_WEEK:-}" ]]; then
@@ -119,7 +124,7 @@ jobs:
             else
               python tools/generate_planet_finders.py --current
             fi
-            git add 'almanack/'
+            git add -- 'almanack/'
             if git diff --cached --quiet; then
               echo 'Another workflow already produced the same output.'
               exit 0
