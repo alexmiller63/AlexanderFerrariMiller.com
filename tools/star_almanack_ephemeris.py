@@ -93,9 +93,27 @@ class StarAlmanackEphemeris:
         self.ceres = None
         if self.ceres_path.is_file():
             self.asteroids = load_file(str(self.ceres_path))
-            # NAIF's Ceres kernel segment is Sun-centered. Skyfield vector
-            # composition supplies the barycentric vector needed by observe().
-            ceres_relative = self.asteroids[10, 2000001]
+            # This historical NAIF kernel contains a Sun(10) -> Ceres(2000001)
+            # segment but no 0 -> 10 segment, so Skyfield cannot resolve Ceres
+            # through SpiceKernel.__getitem__(). Select the kernel segment by
+            # its published SPICE center/target IDs, then compose it with the
+            # DE440s barycentric Sun vector.
+            candidates = [
+                segment for segment in self.asteroids.segments
+                if segment.center == 10 and segment.target == 2000001
+            ]
+            if not candidates:
+                raise RuntimeError(
+                    f"{self.ceres_path} contains no Sun(10) -> Ceres(2000001) SPK segment"
+                )
+            if len(candidates) == 1:
+                ceres_relative = candidates[0]
+            else:
+                # The 1900-2100 file is expected to have a single continuous
+                # segment. Refuse an ambiguous kernel rather than guessing.
+                raise RuntimeError(
+                    f"{self.ceres_path} contains {len(candidates)} Sun-to-Ceres segments; expected exactly one"
+                )
             self.ceres = self.sun + ceres_relative
             self.bodies["ceres"] = self.ceres
 
