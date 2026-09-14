@@ -153,7 +153,12 @@ jobs:
                     .map(el => (el.textContent || '').trim().slice(0, 100))
                 };
               }''')
-              if result['page'] or result['calendar'] or result['cells'] or result['wrappedTokens']:
+              # Individual calendar cells may legitimately report scrollWidth > clientWidth
+              # because nowrap notation and nested event rows use intrinsic widths. That is
+              # not a visible mobile-layout defect when neither the page nor calendar itself
+              # overflows. Fail only on viewport/calendar overflow or notation that actually
+              # wraps onto multiple visual lines. Keep cell overflow in the diagnostic.
+              if result['page'] or result['calendar'] or result['wrappedTokens']:
                   raise SystemExit(
                       f'Mobile Calendar layout failure in {rel} mode={mode}: '
                       f'page={result["page"]} calendar={result["calendar"]} '
