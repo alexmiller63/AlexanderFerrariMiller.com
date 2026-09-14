@@ -253,9 +253,9 @@ def main() -> int:
     print(f"Classified {total} fixed objects; {inside} are inside the Milky Way mask.")
 
     # Human-readable spot check for the motivating example when Sirius is present.
-    sirius = result["objects"].get("bayer", {}).get("Alp CMa")
+    sirius = result["objects"].get("bayer", {}).get("α CMa")
     if sirius is not None:
-        print(f"Sirius (Alp CMa): in_milky_way={sirius['milky_way']['inside']}")
+        print(f"Sirius (α CMa): in_milky_way={sirius['milky_way']['inside']}")
     return 0
 
 
