@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 """Populate Star Almanack calendar astronomy for one or more ISO years.
 
-Year-independent engine using JPL Horizons apparent geocentric ecliptic-of-date
-longitudes for the Sun and Moon. Astronomical event instants are carried as
-JDTDB and linearly interpolated between 1-hour samples. UTC civil time is
-created only at the publication boundary, where one rounded UTC instant supplies
-both the calendar date and displayed clock time.
+Year-independent engine using locally computed apparent geocentric
+Ecliptic-of-date longitudes for the Sun and Moon from cached JPL/NAIF SPK source
+kernels. Astronomical event instants are carried as JDTDB and linearly
+interpolated between 1-hour samples. UTC civil time is created only at the
+publication boundary, where one rounded UTC instant supplies both the calendar
+date and displayed clock time.
 
 Publication rules enforced here:
 - ingress and quarter-day names that describe the same instant are one event;
@@ -19,10 +20,7 @@ Publication rules enforced here:
 from __future__ import annotations
 
 import argparse
-import csv
 import json
-import urllib.parse
-import urllib.request
 from datetime import date, timedelta
 from pathlib import Path
 
@@ -34,6 +32,7 @@ from almanack_calendar import (
     set_zodiac,
 )
 from almanack_time import AstroInstant, interpolate_instant
+from star_almanack_ephemeris import StarAlmanackEphemeris
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE_ROOT = ROOT / "Star-Almanack-Repo" / "site"
@@ -62,7 +61,7 @@ SEASON_NAMES = {
     0: ("Seed Moon", "Milk Moon", "Flower Moon"),
     90: ("Hay Moon", "Grain Moon", "Fruit Moon"),
 }
-HORIZONS_API = "https://ssd.jpl.nasa.gov/api/horizons.api"
+_SOURCE_ENGINE: StarAlmanackEphemeris | None = None
 
 
 def iso_bounds(year: int) -> tuple[date, date]:
@@ -71,48 +70,20 @@ def iso_bounds(year: int) -> tuple[date, date]:
     return first, date.fromisocalendar(year, weeks, 7)
 
 
-def horizons_longitudes(
-    command: str, start: date, stop: date
-) -> list[tuple[AstroInstant, float]]:
-    """Return Horizons longitude samples with canonical JDTDB instants.
+def _source_engine() -> StarAlmanackEphemeris:
+    global _SOURCE_ENGINE
+    if _SOURCE_ENGINE is None:
+        _SOURCE_ENGINE = StarAlmanackEphemeris()
+    return _SOURCE_ENGINE
 
-    Horizons OBSERVER-table epochs are UT/UTC after 1962. Quantity 30 supplies
-    TDB-UT in seconds, allowing each input epoch to be converted immediately to
-    JDTDB. No civil datetime enters the astronomical event solver.
-    """
-    params = {
-        "format": "json", "COMMAND": f"'{command}'", "OBJ_DATA": "'NO'",
-        "MAKE_EPHEM": "'YES'", "EPHEM_TYPE": "'OBSERVER'", "CENTER": "'500@399'",
-        "START_TIME": f"'{start.isoformat()} 00:00'", "STOP_TIME": f"'{stop.isoformat()} 00:00'",
-        "STEP_SIZE": "'1 h'", "QUANTITIES": "'30,31'", "CSV_FORMAT": "'YES'",
-        "ANG_FORMAT": "'DEG'", "CAL_FORMAT": "'JD'", "TIME_DIGITS": "'SECONDS'",
-    }
-    url = HORIZONS_API + "?" + urllib.parse.urlencode(params)
-    req = urllib.request.Request(url, headers={"User-Agent": "Star-Almanack/calendar-population"})
-    with urllib.request.urlopen(req, timeout=120) as response:
-        payload = json.load(response)
-    text = payload.get("result", "")
-    if "$$SOE" not in text or "$$EOE" not in text:
-        raise RuntimeError(f"Horizons returned no ephemeris for target {command}: {text[:500]}")
-    lines = text.splitlines()
-    header_line = next((line for line in lines if "ObsEcLon" in line), None)
-    if not header_line:
-        raise RuntimeError(f"Could not find ObsEcLon header for target {command}")
-    header = [h.strip() for h in next(csv.reader([header_line]))]
-    lon_index = header.index("ObsEcLon")
-    tdb_index = next((i for i, name in enumerate(header) if name.startswith("TDB-UT")), None)
-    if tdb_index is None:
-        raise RuntimeError(f"Could not find TDB-UT header for target {command}: {header}")
-    start_i, stop_i = lines.index("$$SOE") + 1, lines.index("$$EOE")
-    out: list[tuple[AstroInstant, float]] = []
-    for line in lines[start_i:stop_i]:
-        if line.strip():
-            row = next(csv.reader([line]))
-            jd_utc = float(row[0].strip())
-            tdb_minus_utc = float(row[tdb_index].strip())
-            instant = AstroInstant.from_horizons_utc(jd_utc, tdb_minus_utc)
-            out.append((instant, float(row[lon_index].strip()) % 360.0))
-    return out
+
+def source_longitudes(
+    key: str, start: date, stop: date
+) -> list[tuple[AstroInstant, float]]:
+    """Return locally calculated longitude samples with canonical JDTDB epochs."""
+    if key not in ("sun", "moon"):
+        raise ValueError(f"Calendar source supports Sun and Moon only, not {key!r}")
+    return _source_engine().longitude_samples(key, start, stop, step_hours=1)
 
 
 def unwrap(values: list[float]) -> list[float]:
@@ -179,7 +150,7 @@ def lunar_phases(sun, moon):
     times = [t for t, _ in sun]
     for (sun_t, _), (moon_t, _) in zip(sun, moon):
         if abs(sun_t.jd_tdb - moon_t.jd_tdb) > 1e-8:
-            raise RuntimeError("Sun and Moon Horizons epochs differ")
+            raise RuntimeError("Sun and Moon source epochs differ")
     elong = unwrap([((m - s) % 360.0) for (_, s), (_, m) in zip(sun, moon)])
     events = []
     lo, hi, j = int(elong[0] // 90) - 1, int(elong[-1] // 90) + 1, 0
@@ -367,7 +338,7 @@ def write_data(year, ingresses, phases, wheel):
     payload = {
         "year": year,
         "basis": (
-            "JPL Horizons apparent geocentric ecliptic-of-date longitude; "
+            "Locally calculated apparent geocentric ecliptic-of-date longitude from cached JPL/NAIF DE440s source data; "
             "JDTDB internal epochs; 1-hour sampling with linear interpolation; "
             "UTC conversion only at publication"
         ),
@@ -413,8 +384,8 @@ def write_data(year, ingresses, phases, wheel):
 def populate_year(year):
     first, last = iso_bounds(year)
     query_start, query_stop = first - timedelta(days=45), last + timedelta(days=45)
-    sun = horizons_longitudes("10", query_start, query_stop)
-    moon = horizons_longitudes("301", query_start, query_stop)
+    sun = source_longitudes("sun", query_start, query_stop)
+    moon = source_longitudes("moon", query_start, query_stop)
     ingresses = solar_ingresses(sun)
     wheel = wheel_of_year(sun)
     phases = lunar_phases(sun, moon)
