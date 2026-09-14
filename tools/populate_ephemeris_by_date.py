@@ -11,6 +11,7 @@ AID_LABELS = {
     "naked_eye": "Naked eye",
     "binoculars": "Binoculars",
     "telescope": "Telescope",
+    "substantial_telescope": "Substantial telescope",
 }
 
 
