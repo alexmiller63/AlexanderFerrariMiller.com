@@ -138,7 +138,8 @@ jobs:
                     .map(el => (el.textContent || '').trim().slice(0, 100)),
                   wrappedTokens: [...document.querySelectorAll(
                       'table.calendar .notation-item, table.calendar .notation-rendered, '
-                      + 'table.calendar .visibility-magnitude, table.calendar .observing-aid-notation'
+                      + 'table.calendar .visibility-magnitude, table.calendar .observing-aid-notation, '
+                      + 'table.calendar .observing-notation-item'
                     )]
                     .filter(actuallyWraps)
                     .map(el => (el.textContent || '').trim().slice(0, 100))
@@ -152,9 +153,11 @@ jobs:
                   )
 
           def verify_visible_notation(page, rel, mode):
+              allowed = {'Naked eye', 'Binoculars', 'Telescope', 'Substantial telescope'}
               source_glyphs = page.locator('table.calendar img.visibility-glyph').count()
-              aids = page.locator('table.calendar .observing-aid-notation')
-              aid_count = aids.count()
+              canonical = page.locator('table.calendar .observing-aid-notation')
+              rendered = page.locator('table.calendar .observing-notation-item')
+              aid_count = canonical.count() + rendered.count()
               if source_glyphs and aid_count == 0:
                   raise SystemExit(
                       f'Calendar observing-aid wrappers missing in {rel}: source_glyphs={source_glyphs}'
@@ -162,32 +165,47 @@ jobs:
               if not aid_count:
                   return
 
-              visible_words = page.locator('table.calendar .observing-aid-word:visible')
-              visible_symbols = page.locator('table.calendar .observing-aid-symbol:visible')
-              words = visible_words.count()
-              symbols = visible_symbols.count()
+              if canonical.count():
+                  visible_words = page.locator('table.calendar .observing-aid-notation .observing-aid-word:visible')
+                  visible_symbols = page.locator('table.calendar .observing-aid-notation .observing-aid-symbol:visible')
+                  words = visible_words.count()
+                  symbols = visible_symbols.count()
+                  if mode == 'latin':
+                      if words != canonical.count() or symbols != 0:
+                          raise SystemExit(
+                              f'Calendar Latin observing-aid visual failure in {rel}: '
+                              f'aids={canonical.count()} visible_words={words} visible_symbols={symbols}'
+                          )
+                      labels = [text.strip() for text in visible_words.all_text_contents()]
+                      if any(label not in allowed for label in labels):
+                          raise SystemExit(f'Unexpected visible Latin observing aid in {rel}: {labels}')
+                  elif mode == 'greek':
+                      if symbols != canonical.count() or words != 0:
+                          raise SystemExit(
+                              f'Calendar Greek observing-aid visual failure in {rel}: '
+                              f'aids={canonical.count()} visible_words={words} visible_symbols={symbols}'
+                          )
+                  elif mode == 'mixed':
+                      if words != canonical.count() or symbols != canonical.count():
+                          raise SystemExit(
+                              f'Calendar Mixed observing-aid visual failure in {rel}: '
+                              f'aids={canonical.count()} visible_words={words} visible_symbols={symbols}'
+                          )
 
-              if mode == 'latin':
-                  if words != aid_count or symbols != 0:
+              if rendered.count():
+                  states = rendered.evaluate_all('''els => els.map(el => ({
+                    text: (el.textContent || '').trim(),
+                    images: el.querySelectorAll('img.visibility-glyph').length
+                  }))''')
+                  if mode == 'latin':
+                      bad = [state for state in states if state['images'] != 0 or state['text'] not in allowed]
+                  elif mode == 'greek':
+                      bad = [state for state in states if state['images'] < 1 or state['text']]
+                  else:
+                      bad = [state for state in states if state['images'] < 1 or state['text'] not in allowed]
+                  if bad:
                       raise SystemExit(
-                          f'Calendar Latin observing-aid visual failure in {rel}: '
-                          f'aids={aid_count} visible_words={words} visible_symbols={symbols}'
-                      )
-                  labels = [text.strip() for text in visible_words.all_text_contents()]
-                  allowed = {'Naked eye', 'Binoculars', 'Telescope', 'Substantial telescope'}
-                  if any(label not in allowed for label in labels):
-                      raise SystemExit(f'Unexpected visible Latin observing aid in {rel}: {labels}')
-              elif mode == 'greek':
-                  if symbols != aid_count or words != 0:
-                      raise SystemExit(
-                          f'Calendar Greek observing-aid visual failure in {rel}: '
-                          f'aids={aid_count} visible_words={words} visible_symbols={symbols}'
-                      )
-              elif mode == 'mixed':
-                  if words != aid_count or symbols != aid_count:
-                      raise SystemExit(
-                          f'Calendar Mixed observing-aid visual failure in {rel}: '
-                          f'aids={aid_count} visible_words={words} visible_symbols={symbols}'
+                          f'Calendar {mode} observing-aid visual failure in {rel}: {bad[:5]}'
                       )
 
           with sync_playwright() as p:
