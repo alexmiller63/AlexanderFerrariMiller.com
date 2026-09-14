@@ -22,7 +22,12 @@ STYLE = f'''<style id="{STYLE_ID}">
   table.calendar .notation-item,
   table.calendar .notation-rendered,
   table.calendar .visibility-magnitude,
-  table.calendar .observing-aid-notation {{ white-space:nowrap; }}
+  table.calendar .observing-aid-notation,
+  table.calendar .observing-notation-item {{ white-space:nowrap; }}
+  /* Observing-aid labels are semantic tokens.  In mixed mode the symbol and
+     word must move together rather than splitting across two visual lines. */
+  table.calendar .observing-aid-notation,
+  table.calendar .observing-notation-item {{ display:inline-block; max-width:100%; }}
   /* Latin zodiac names must fit the compact Zodiac-day column without
      wrapping; keep the Greek glyph size unchanged in Greek mode. */
   main:has(.section-notation-toggle[data-notation-target="calendar"] button[data-bayer-mode="latin"][aria-pressed="true"])
