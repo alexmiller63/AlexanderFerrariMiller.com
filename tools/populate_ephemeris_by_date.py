@@ -14,12 +14,9 @@ AID_LABELS = {
 }
 
 
-def fetch_year(year: int):
-    generated = {}
-    for _, key, command in ephemeris.TARGETS:
-        print(f"Fetching {year} {key} from JPL Horizons")
-        generated[key] = ephemeris.horizons_ephemeris(year, command)
-    return generated
+def calculate_year(year: int):
+    print(f"Calculating {year} ephemeris locally from cached JPL/NAIF source kernels")
+    return ephemeris.computed_ephemeris(year)
 
 
 def observing_html(magnitude, elongation) -> str:
@@ -73,7 +70,7 @@ def main() -> None:
     )
     total = 0
     for year, selected in group_by_year(weeks).items():
-        generated = fetch_year(year)
+        generated = calculate_year(year)
         for week in selected:
             total += populate_week(year, week, generated)
     print(
