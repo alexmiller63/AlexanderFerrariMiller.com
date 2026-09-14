@@ -7,6 +7,7 @@ from datetime import date
 import generate_planet_finders as finder
 import populate_ephemeris as ephemeris
 from iso_date_range import group_by_year, parse_range_args
+from star_almanack_ephemeris import StarAlmanackEphemeris
 
 FINDER_FILENAMES = {
     "greek": "planet-finder-greek-symbols.svg",
@@ -15,12 +16,9 @@ FINDER_FILENAMES = {
 }
 
 
-def fetch_year(year: int) -> dict[str, list[tuple[float, float, float | None, float | None]]]:
-    generated = {}
-    for _, key, command in ephemeris.TARGETS:
-        print(f"Fetching {year} {key} from JPL Horizons")
-        generated[key] = ephemeris.horizons_ephemeris(year, command)
-    return generated
+def calculate_year(year: int, engine: StarAlmanackEphemeris):
+    print(f"Calculating {year} weekly planetary snapshots from cached JPL source kernels")
+    return ephemeris.computed_ephemeris(year, engine)
 
 
 def finder_bodies(generated, week: int):
@@ -69,9 +67,10 @@ def populate_week(year: int, week: int, generated) -> int:
 def main() -> None:
     start, end, weeks = parse_range_args("Populate Star Almanack Ephemeris + Planet Finder by inclusive ISO date range")
     grouped = group_by_year(weeks)
+    engine = StarAlmanackEphemeris()
     total = 0
     for year, selected in grouped.items():
-        generated = fetch_year(year)
+        generated = calculate_year(year, engine)
         for week in selected:
             total += populate_week(year, week, generated)
     print(f"Ephemeris + Planet Finder complete for {start.isoformat()} through {end.isoformat()}: {total} page copies updated")
