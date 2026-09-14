@@ -8,6 +8,7 @@ The original `../notes.md` is preserved as the historical append-only project lo
 - `ephemeris.md` — ephemeris and notation conventions.
 - `eclipses-meteors.md` — eclipse and meteor calendar policy.
 - `finders.md` — finder and sky-orientation conventions.
+- `sky-notes.md` — Sky Notes descriptor-first architecture, inline descriptor prose, and machine-readable descriptor links.
 - `pipeline.md` — generalized multi-year generation architecture.
 - `history.md` — pointer to the preserved legacy chronological log.
 
