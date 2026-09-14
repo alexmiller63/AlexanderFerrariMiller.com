@@ -18,6 +18,10 @@ Calculation dependency:
 - Skyfield's planetary_magnitude() is used only for bodies it supports. Its
   documentation attributes those magnitude formulae to Mallama & Hilton (2018).
   Star Almanack does not copy those formulae into this module.
+- Moon magnitude is calculated locally from the published Allen/Schaefer lunar
+  phase approximation, with Earth-Moon and Sun-Moon distance correction.
+- Ceres magnitude is calculated locally with the standard IAU H-G asteroid
+  phase law using JPL's published Ceres H=3.34 and G=0.12 parameters.
 
 Kernel acquisition/caching belongs to the workflow/runtime environment. The
 normal GitHub Actions path stores the kernels under .cache/skyfield and reuses
@@ -42,6 +46,10 @@ DEFAULT_KERNEL_DIR = ROOT / ".cache" / "skyfield"
 DE440S_NAME = "de440s.bsp"
 CERES_NAME = "ceres_1900_2100.bsp"
 SECONDS_PER_DAY = 86400.0
+AU_KM = 149597870.7
+MEAN_LUNAR_DISTANCE_KM = 384400.0
+CERES_H = 3.34
+CERES_G = 0.12
 
 
 @dataclass(frozen=True)
@@ -54,6 +62,22 @@ class EphemerisSample:
 
 def _norm3(v) -> float:
     return math.sqrt(float(v[0] ** 2 + v[1] ** 2 + v[2] ** 2))
+
+
+def _difference(a, b):
+    return (
+        float(a[0] - b[0]),
+        float(a[1] - b[1]),
+        float(a[2] - b[2]),
+    )
+
+
+def _angle_deg(a, b) -> float:
+    dot = float(a[0] * b[0] + a[1] * b[1] + a[2] * b[2])
+    an = _norm3(a)
+    bn = _norm3(b)
+    cosine = max(-1.0, min(1.0, dot / (an * bn)))
+    return math.degrees(math.acos(cosine))
 
 
 class _PiecewiseSpkPosition(VectorFunction):
@@ -158,13 +182,7 @@ class StarAlmanackEphemeris:
 
     @staticmethod
     def _angle_between(a, b) -> float:
-        av = a.position.au
-        bv = b.position.au
-        dot = float(av[0] * bv[0] + av[1] * bv[1] + av[2] * bv[2])
-        an = _norm3(av)
-        bn = _norm3(bv)
-        cosine = max(-1.0, min(1.0, dot / (an * bn)))
-        return math.degrees(math.acos(cosine))
+        return _angle_deg(a.position.au, b.position.au)
 
     @staticmethod
     def _instant_from_skyfield(t) -> AstroInstant:
@@ -185,6 +203,58 @@ class StarAlmanackEphemeris:
         except Exception:
             return None
         return magnitude if math.isfinite(magnitude) else None
+
+    @staticmethod
+    def _moon_magnitude(body_at, sun_at, earth_at) -> float:
+        """Approximate apparent V magnitude from local geometry.
+
+        Phase law: Allen, Astrophysical Quantities (1976), as published by
+        B. E. Schaefer, Vistas in Astronomy 36 (1993), Eq. 12:
+          m = -12.73 + 0.026*a + 4e-9*a^4
+        for phase angle a in degrees at the mean lunar distance.  We apply the
+        standard inverse-square distance correction using the actual SPK-derived
+        Earth-Moon and Sun-Moon distances.  The approximation is least accurate
+        at the thinnest crescents and does not model eclipses/opposition surge.
+        """
+        moon = body_at.position.au
+        sun = sun_at.position.au
+        earth = earth_at.position.au
+        moon_to_sun = _difference(sun, moon)
+        moon_to_earth = _difference(earth, moon)
+        phase = _angle_deg(moon_to_sun, moon_to_earth)
+        earth_distance_au = _norm3(moon_to_earth)
+        sun_distance_au = _norm3(moon_to_sun)
+        mean_lunar_distance_au = MEAN_LUNAR_DISTANCE_KM / AU_KM
+        distance_term = 5.0 * math.log10(
+            (earth_distance_au / mean_lunar_distance_au) * sun_distance_au
+        )
+        return -12.73 + 0.026 * phase + 4.0e-9 * phase ** 4 + distance_term
+
+    @staticmethod
+    def _ceres_magnitude(body_at, sun_at, earth_at) -> float:
+        """Calculate Ceres apparent V magnitude with the standard H-G law.
+
+        JPL's published small-body element table gives Ceres H=3.34 mag and
+        G=0.12.  Geometry comes entirely from our local SPK evaluation.
+        """
+        ceres = body_at.position.au
+        sun = sun_at.position.au
+        earth = earth_at.position.au
+        ceres_to_sun = _difference(sun, ceres)
+        ceres_to_earth = _difference(earth, ceres)
+        phase_deg = _angle_deg(ceres_to_sun, ceres_to_earth)
+        phase_rad = math.radians(phase_deg)
+        tangent = math.tan(phase_rad / 2.0)
+        phi1 = math.exp(-3.33 * tangent ** 0.63)
+        phi2 = math.exp(-1.87 * tangent ** 1.22)
+        phase_term = (1.0 - CERES_G) * phi1 + CERES_G * phi2
+        r_au = _norm3(ceres_to_sun)
+        delta_au = _norm3(ceres_to_earth)
+        return (
+            CERES_H
+            + 5.0 * math.log10(r_au * delta_au)
+            - 2.5 * math.log10(phase_term)
+        )
 
     def longitude_samples(
         self,
@@ -223,12 +293,20 @@ class StarAlmanackEphemeris:
         """Return a Monday-00:00-UTC publication snapshot for one body."""
         t = self.ts.utc(day.year, day.month, day.day, 0, 0, 0)
         body = self._body(key)
-        apparent = self.earth.at(t).observe(body).apparent()
+        earth_at = self.earth.at(t)
+        sun_at = self.sun.at(t)
+        body_at = body.at(t)
+        apparent = earth_at.observe(body).apparent()
         lat, lon, _ = apparent.frame_latlon(ecliptic_frame)
 
-        sun_apparent = self.earth.at(t).observe(self.sun).apparent()
+        sun_apparent = earth_at.observe(self.sun).apparent()
         elongation = 0.0 if key == "sun" else self._angle_between(apparent, sun_apparent)
-        magnitude = self._supported_planet_magnitude(apparent)
+        if key == "moon":
+            magnitude = self._moon_magnitude(body_at, sun_at, earth_at)
+        elif key == "ceres":
+            magnitude = self._ceres_magnitude(body_at, sun_at, earth_at)
+        else:
+            magnitude = self._supported_planet_magnitude(apparent)
 
         return EphemerisSample(
             longitude_deg=float(lon.degrees) % 360.0,
