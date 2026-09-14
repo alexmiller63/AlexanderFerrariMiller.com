@@ -36,11 +36,30 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ```
 
+## Skyfield
+
+Source: https://github.com/skyfielders/python-skyfield
+
+Production version: `1.55`
+
+License: MIT
+
+Copyright notice in the upstream LICENSE: Copyright © 2013–2018 Brandon Rhodes.
+
+Star Almanack imports Skyfield as a runtime dependency for JPL SPK reading,
+apparent-position calculations, reference-frame conversion, and supported
+major-planet magnitude calculations. Skyfield source code is not copied into
+Star Almanack. The installed Python package retains its upstream license.
+
+For astronomical/data provenance associated with the ephemeris calculation
+path, see `EPHEMERIS-PROVENANCE.md`.
+
 ## Integration rule
 
 Any Star Almanack production code that copies or incorporates a substantial
-portion of `eclipse-calc` must retain the copyright and permission notice above.
-Files derived from that implementation must identify the upstream project and
-pinned revision in their source header. Code independently implemented from
-published astronomical methods should be documented separately so provenance
-is unambiguous.
+portion of a third-party implementation must retain the copyright and
+permission notice required by that implementation's license. Files derived
+from such an implementation must identify the upstream project and pinned
+revision in their source header. Code independently implemented from published
+astronomical methods should be documented separately so provenance is
+unambiguous.
