@@ -1,0 +1,110 @@
+{
+  "week": "W37",
+  "title": "Observer’s guide for ISO 2026-W37",
+  "status": "generated",
+  "planetary_source": "Star-Almanack-Repo/weekly-ephemeris-2026.csv",
+  "planetary_coordinate": "geocentric tropical ecliptic longitude; Monday 00:00 UTC",
+  "fixed_sky": [
+    {
+      "type": "star",
+      "name": "Peacock",
+      "constellation": "Pav"
+    },
+    {
+      "type": "deep-sky",
+      "name": "M29, open cluster in Cygnus"
+    }
+  ],
+  "planet_relations": [
+    {
+      "kind": "planet-star-longitude",
+      "planet": "Venus",
+      "planet_longitude_deg": 207.717,
+      "star": "Spica",
+      "constellation": "Vir",
+      "star_ecliptic_longitude_deg": 203.841,
+      "star_ecliptic_latitude_deg": -2.054,
+      "longitude_separation_deg": 3.9,
+      "basis": "Star Almanack preserved geocentric tropical ecliptic longitude"
+    },
+    {
+      "kind": "planet-star-longitude",
+      "planet": "Uranus",
+      "planet_longitude_deg": 65.683,
+      "star": "Aldebaran",
+      "constellation": "Tau",
+      "star_ecliptic_longitude_deg": 69.789,
+      "star_ecliptic_latitude_deg": -5.467,
+      "longitude_separation_deg": 4.1,
+      "basis": "Star Almanack preserved geocentric tropical ecliptic longitude"
+    }
+  ],
+  "artwork": {
+    "schema_version": 1,
+    "id": "2026-W37-stellar-finder",
+    "week": "2026-W37",
+    "kind": "stellar-finder",
+    "geometry": {
+      "constellation_system": "Martz/MacRobert",
+      "constellation_abbreviation": "Pav",
+      "on_missing_geometry": "fail",
+      "invent_geometry": false
+    },
+    "style": {
+      "background": "night-sky",
+      "constellation": {
+        "stroke": "#5c8fe8",
+        "role": "ordinary constellation figure"
+      },
+      "asterism": {
+        "stroke": "#59c86d",
+        "role": "orienting asterism"
+      },
+      "target": {
+        "stroke": "#ffd84d",
+        "fill": "none",
+        "role": "open target circle"
+      },
+      "target_arrows": false
+    },
+    "constellation": "Pav",
+    "asterism": null,
+    "targets": [
+      {
+        "type": "star",
+        "name": "Peacock"
+      },
+      {
+        "type": "deep-sky",
+        "name": "M29, open cluster in Cygnus"
+      }
+    ],
+    "planetary_context": [
+      {
+        "kind": "planet-star-longitude",
+        "planet": "Venus",
+        "planet_longitude_deg": 207.717,
+        "star": "Spica",
+        "constellation": "Vir",
+        "star_ecliptic_longitude_deg": 203.841,
+        "star_ecliptic_latitude_deg": -2.054,
+        "longitude_separation_deg": 3.9,
+        "basis": "Star Almanack preserved geocentric tropical ecliptic longitude"
+      },
+      {
+        "kind": "planet-star-longitude",
+        "planet": "Uranus",
+        "planet_longitude_deg": 65.683,
+        "star": "Aldebaran",
+        "constellation": "Tau",
+        "star_ecliptic_longitude_deg": 69.789,
+        "star_ecliptic_latitude_deg": -5.467,
+        "longitude_separation_deg": 4.1,
+        "basis": "Star Almanack preserved geocentric tropical ecliptic longitude"
+      }
+    ],
+    "planet_plot_policy": "do not plot from longitude alone; require preserved 2-D Star Almanack position data",
+    "reference_standard": "Star-Almanack-Repo/docs/finder-standard.md"
+  },
+  "note": "ISO 2026-W37 runs from September 7 through September 13. Fixed-sky highlights include Peacock, M29, open cluster in Cygnus. Venus is about 3.9° in ecliptic longitude from Spica in Virgo. Uranus is about 4.1° in ecliptic longitude from Aldebaran in Taurus.\n\n**Naked eye:** 🌑 New Moon — 03:27:00 UTCα1 Cap — V 4 — Tropical SummerAlgedi (α2 Cap) — V 4 — Tropical SummerVulpecula center — Constellation — V 4.5 — Northern Summer. The dark Moon favors faint targets and extended star fields. Use Peacock as the week’s fixed-sky framework.\n\n**Planets:** Venus is about 3.9° in ecliptic longitude from Spica in Virgo. Uranus is about 4.1° in ecliptic longitude from Aldebaran in Taurus.\n\n**Binoculars:** Favor M29, open cluster in Cygnus, Peacock; wide fields help connect the charted geometry to the real sky.\n\n**Small telescope:** Concentrate on M29, open cluster in Cygnus. Increase magnification only after the target and surrounding pattern are secure."
+}
