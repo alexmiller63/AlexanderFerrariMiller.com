@@ -471,6 +471,27 @@ def _replace_first_mention(text: str, record: dict, replacement: str) -> tuple[s
 def decorate_note_html(rendered_html: str, records: list[dict]) -> str:
     """Place descriptor-derived prose inside the existing Sky Note paragraphs."""
     decorated = rendered_html
+
+    # Observing-method section labels are themselves descriptor mentions. Link them
+    # directly without attaching explanatory prose inside the <strong> heading.
+    used_ids: set[str] = set()
+    section_descriptors = {
+        "Naked eye": "naked-eye",
+        "Binoculars": "binoculars",
+        "Small telescope": "small-telescope",
+    }
+    records_by_id = {record["id"]: record for record in records}
+    for label, descriptor_id in section_descriptors.items():
+        record = records_by_id.get(descriptor_id)
+        if not record:
+            continue
+        marker = f"<strong>{label}:</strong>"
+        if marker not in decorated:
+            continue
+        linked = _linked_name(record)
+        decorated = decorated.replace(marker, f"<strong>{linked}:</strong>", 1)
+        used_ids.add(descriptor_id)
+
     priority = {
         "deep-sky-object": 0,
         "star": 1,
@@ -483,7 +504,6 @@ def decorate_note_html(rendered_html: str, records: list[dict]) -> str:
         enumerate(records), key=lambda item: (priority.get(item[1].get("type"), 9), item[0])
     )]
 
-    used_ids: set[str] = set()
     inline_count = 0
 
     # First enrich descriptors that already occur naturally in the generated prose.
