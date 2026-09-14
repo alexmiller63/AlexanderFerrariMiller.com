@@ -22,6 +22,9 @@ Calculation dependency:
   phase approximation, with Earth-Moon and Sun-Moon distance correction.
 - Ceres magnitude is calculated locally with the standard IAU H-G asteroid
   phase law using JPL's published Ceres H=3.34 and G=0.12 parameters.
+- Pluto magnitude is calculated locally from SPK-derived Sun/Pluto/Earth
+  geometry using the published linear visual phase law
+  V = -1.01 + 5 log10(r delta) + 0.041 alpha.
 
 Kernel acquisition/caching belongs to the workflow/runtime environment. The
 normal GitHub Actions path stores the kernels under .cache/skyfield and reuses
@@ -50,6 +53,8 @@ AU_KM = 149597870.7
 MEAN_LUNAR_DISTANCE_KM = 384400.0
 CERES_H = 3.34
 CERES_G = 0.12
+PLUTO_V_1_0 = -1.01
+PLUTO_PHASE_COEFF = 0.041
 
 
 @dataclass(frozen=True)
@@ -84,8 +89,8 @@ class _PiecewiseSpkPosition(VectorFunction):
     """Present several consecutive SPK segments as one Skyfield vector.
 
     The historical Ceres kernel is split into hundreds of Sun-to-Ceres
-    segments.  They are source coefficients for different time intervals, not
-    competing answers.  Skyfield exposes each interval as a separate vector,
+    segments. They are source coefficients for different time intervals, not
+    competing answers. Skyfield exposes each interval as a separate vector,
     so this adapter selects the segment whose published coverage contains the
     requested TDB epoch and lets Skyfield evaluate that segment normally.
     """
@@ -146,18 +151,10 @@ class StarAlmanackEphemeris:
             "pluto": self.planets["pluto barycenter"],
         }
 
-        # Ceres is optional for calculations that need only the DE440s bodies,
-        # such as calendar Sun/Moon sampling. Ephemeris generation requests it
-        # explicitly and therefore fails closed if the Ceres source kernel is
-        # absent.
         self.asteroids = None
         self.ceres = None
         if self.ceres_path.is_file():
             self.asteroids = load_file(str(self.ceres_path))
-            # This historical NAIF kernel contains many consecutive Sun(10) ->
-            # Ceres(2000001) segments but no 0 -> 10 segment.  Join those
-            # intervals into one time-routed vector, then compose it with the
-            # DE440s barycentric Sun vector.
             candidates = [
                 segment for segment in self.asteroids.segments
                 if segment.center == 10 and segment.target == 2000001
@@ -206,16 +203,7 @@ class StarAlmanackEphemeris:
 
     @staticmethod
     def _moon_magnitude(body_at, sun_at, earth_at) -> float:
-        """Approximate apparent V magnitude from local geometry.
-
-        Phase law: Allen, Astrophysical Quantities (1976), as published by
-        B. E. Schaefer, Vistas in Astronomy 36 (1993), Eq. 12:
-          m = -12.73 + 0.026*a + 4e-9*a^4
-        for phase angle a in degrees at the mean lunar distance.  We apply the
-        standard inverse-square distance correction using the actual SPK-derived
-        Earth-Moon and Sun-Moon distances.  The approximation is least accurate
-        at the thinnest crescents and does not model eclipses/opposition surge.
-        """
+        """Approximate apparent V magnitude from local geometry."""
         moon = body_at.position.au
         sun = sun_at.position.au
         earth = earth_at.position.au
@@ -232,11 +220,7 @@ class StarAlmanackEphemeris:
 
     @staticmethod
     def _ceres_magnitude(body_at, sun_at, earth_at) -> float:
-        """Calculate Ceres apparent V magnitude with the standard H-G law.
-
-        JPL's published small-body element table gives Ceres H=3.34 mag and
-        G=0.12.  Geometry comes entirely from our local SPK evaluation.
-        """
+        """Calculate Ceres apparent V magnitude with the standard H-G law."""
         ceres = body_at.position.au
         sun = sun_at.position.au
         earth = earth_at.position.au
@@ -256,6 +240,29 @@ class StarAlmanackEphemeris:
             - 2.5 * math.log10(phase_term)
         )
 
+    @staticmethod
+    def _pluto_magnitude(body_at, sun_at, earth_at) -> float:
+        """Calculate Pluto apparent visual magnitude from local geometry.
+
+        The published linear phase relation is evaluated with r (Sun-Pluto
+        distance), delta (Earth-Pluto distance), and alpha (phase angle) all
+        calculated here from the cached JPL SPK vectors. No ephemeris magnitude
+        answer is downloaded.
+        """
+        pluto = body_at.position.au
+        sun = sun_at.position.au
+        earth = earth_at.position.au
+        pluto_to_sun = _difference(sun, pluto)
+        pluto_to_earth = _difference(earth, pluto)
+        phase_deg = _angle_deg(pluto_to_sun, pluto_to_earth)
+        r_au = _norm3(pluto_to_sun)
+        delta_au = _norm3(pluto_to_earth)
+        return (
+            PLUTO_V_1_0
+            + 5.0 * math.log10(r_au * delta_au)
+            + PLUTO_PHASE_COEFF * phase_deg
+        )
+
     def longitude_samples(
         self,
         key: str,
@@ -263,13 +270,7 @@ class StarAlmanackEphemeris:
         stop: date,
         step_hours: int = 1,
     ) -> list[tuple[AstroInstant, float]]:
-        """Return locally computed apparent geocentric ecliptic longitudes.
-
-        Sampling epochs are civil UTC grid points, but each returned epoch is
-        immediately represented as the Almanack's canonical JDTDB AstroInstant.
-        The stop-date midnight sample is included, matching the historical
-        calendar solver's bracketing behavior.
-        """
+        """Return locally computed apparent geocentric ecliptic longitudes."""
         if step_hours <= 0:
             raise ValueError("step_hours must be positive")
         if stop < start:
@@ -305,6 +306,8 @@ class StarAlmanackEphemeris:
             magnitude = self._moon_magnitude(body_at, sun_at, earth_at)
         elif key == "ceres":
             magnitude = self._ceres_magnitude(body_at, sun_at, earth_at)
+        elif key == "pluto":
+            magnitude = self._pluto_magnitude(body_at, sun_at, earth_at)
         else:
             magnitude = self._supported_planet_magnitude(apparent)
 
