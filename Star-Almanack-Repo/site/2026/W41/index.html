@@ -255,8 +255,8 @@ table.ephemeris small { white-space:nowrap; }
   table.calendar { width:100%; table-layout:fixed; }
   table.calendar th, table.calendar td { min-width:0; padding:.55rem .45rem; overflow-wrap:normal; word-break:normal; }
   table.calendar th:first-child, table.calendar td:first-child { width:24%; }
-  table.calendar th:nth-child(2), table.calendar td:nth-child(2) { width:18%; }
-  table.calendar th:nth-child(3), table.calendar td:nth-child(3) { width:58%; }
+  table.calendar th:nth-child(2), table.calendar td:nth-child(2) { width:24%; }
+  table.calendar th:nth-child(3), table.calendar td:nth-child(3) { width:52%; }
   table.calendar td:first-child { white-space:normal; overflow-wrap:anywhere; }
   table.calendar td:nth-child(2) { white-space:normal; text-align:center; }
   table.calendar td.calendar-events-region,
@@ -267,6 +267,12 @@ table.ephemeris small { white-space:nowrap; }
   table.calendar .notation-rendered,
   table.calendar .visibility-magnitude,
   table.calendar .observing-aid-notation { white-space:nowrap; }
+  /* Latin zodiac names must fit the compact Zodiac-day column without
+     wrapping; keep the Greek glyph size unchanged in Greek mode. */
+  main:has(.section-notation-toggle[data-notation-target="calendar"] button[data-bayer-mode="latin"][aria-pressed="true"])
+    table.calendar .zodiac-day .notation-item,
+  main:has(.section-notation-toggle[data-notation-target="calendar"] button[data-bayer-mode="latin"][aria-pressed="true"])
+    table.calendar .zodiac-day .notation-rendered { font-size:.76rem; line-height:1.05; }
   .visibility { white-space:normal; }
 }
 </style>
