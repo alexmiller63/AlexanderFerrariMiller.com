@@ -8,6 +8,7 @@ No Horizons or other answer service is queried.
 from __future__ import annotations
 
 import argparse
+import csv
 import re
 from datetime import date
 from pathlib import Path
@@ -77,11 +78,18 @@ def computed_ephemeris(year: int, engine: StarAlmanackEphemeris | None = None):
     return generated
 
 
-def zodiac(longitude):
+def zodiac_text(longitude):
+    """Render a machine-readable zodiac longitude without presentation markup."""
     minutes = int(round((longitude % 360) * 60)) % (360 * 60)
     sign, within = divmod(minutes, 1800)
     degree, minute = divmod(within, 60)
-    return f"{symbol_html(SIGNS[sign])} {degree}°{minute:02d}′"
+    return f"{SIGNS[sign]} {degree}°{minute:02d}′"
+
+
+def zodiac(longitude):
+    position = zodiac_text(longitude)
+    glyph, value = position.split(" ", 1)
+    return f"{symbol_html(glyph)} {value}"
 
 
 def beta(latitude):
@@ -167,8 +175,27 @@ def put_ephemeris(text, replacement, path):
     raise RuntimeError(f"Could not locate either an ephemeris section or calendar insertion point in {path.relative_to(ROOT)}")
 
 
+def write_preserved_weekly_table(year, generated):
+    """Persist the shared calculation layer consumed by presentation generators."""
+    path = ROOT / "Star-Almanack-Repo" / f"weekly-ephemeris-{year}.csv"
+    fields = ["iso_week", "monday_utc", *[key for _, key, _ in TARGETS if key != "pluto"]]
+    rows = []
+    for week in range(1, week_count(year) + 1):
+        monday = date.fromisocalendar(year, week, 1)
+        row = {"iso_week": f"{year}-W{week:02d}", "monday_utc": monday.isoformat()}
+        for key in fields[2:]:
+            row[key] = zodiac_text(generated[key][week - 1][0])
+        rows.append(row)
+    with path.open("w", encoding="utf-8", newline="") as handle:
+        writer = csv.DictWriter(handle, fieldnames=fields, lineterminator="\n")
+        writer.writeheader()
+        writer.writerows(rows)
+    return path
+
+
 def update_year(year, engine=None):
     generated = computed_ephemeris(year, engine)
+    write_preserved_weekly_table(year, generated)
     count = week_count(year)
     changed = 0
     for week in range(1, count + 1):
