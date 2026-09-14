@@ -32,6 +32,8 @@ concurrency:
 jobs:
   populate:
     runs-on: ubuntu-latest
+    env:
+      STAR_ALMANACK_EPHEMERIS_DIR: ${{ github.workspace }}/.cache/skyfield
 
     steps:
       - name: Check out repository
@@ -42,7 +44,31 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.x'
+          python-version: '3.12'
+
+      - name: Restore DE440s source cache
+        uses: actions/cache@v4
+        with:
+          path: .cache/skyfield/de440s.bsp
+          key: star-almanack-de440s-v1
+
+      - name: Install astronomical calculation dependency
+        run: python -m pip install --disable-pip-version-check skyfield==1.55
+
+      - name: Download DE440s only when cache is empty
+        run: |
+          mkdir -p .cache/skyfield
+          python - <<'PY'
+          from pathlib import Path
+          from skyfield.api import Loader
+          root = Path('.cache/skyfield')
+          kernel = root / 'de440s.bsp'
+          if kernel.exists():
+              print(f'Reusing cached {kernel} ({kernel.stat().st_size:,} bytes)')
+          else:
+              print('Downloading JPL/NAIF DE440s source kernel for local calculation')
+              Loader(str(root)).download('de440s.bsp')
+          PY
 
       - name: Resolve ISO week range
         id: range
@@ -153,11 +179,6 @@ jobs:
                     .map(el => (el.textContent || '').trim().slice(0, 100))
                 };
               }''')
-              # Individual calendar cells may legitimately report scrollWidth > clientWidth
-              # because nowrap notation and nested event rows use intrinsic widths. That is
-              # not a visible mobile-layout defect when neither the page nor calendar itself
-              # overflows. Fail only on viewport/calendar overflow or notation that actually
-              # wraps onto multiple visual lines. Keep cell overflow in the diagnostic.
               if result['page'] or result['calendar'] or result['wrappedTokens']:
                   raise SystemExit(
                       f'Mobile Calendar layout failure in {rel} mode={mode}: '
