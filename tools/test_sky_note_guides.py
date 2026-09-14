@@ -5,7 +5,7 @@ from __future__ import annotations
 import unittest
 
 import populate_sky_notes_by_date as notes
-from sky_note_descriptors import build_descriptors, human_sentence
+from sky_note_descriptors import build_descriptors, decorate_note_html, human_sentence
 
 
 class SkyNoteGuideTests(unittest.TestCase):
@@ -90,6 +90,37 @@ class SkyNoteGuideTests(unittest.TestCase):
         self.assertEqual(enif["star_hops"][0]["steps"], ["Great Square of Pegasus", "Enif"])
         self.assertEqual(enif["star_hops"][0]["provenance"]["source"], "Sky & Telescope")
         self.assertEqual(enif["star_hops"][0]["provenance"]["supports"], "star-hop-method")
+
+
+    def test_observing_method_headings_link_to_machine_descriptors(self) -> None:
+        records = build_descriptors(
+            [],
+            [],
+            self.stars,
+            notes.CONSTELLATION_NAMES,
+            notes.ASTERISMS,
+        )
+        rendered = (
+            "<p><strong>Naked eye:</strong> Bright targets.</p>"
+            "<p><strong>Binoculars:</strong> Wide fields.</p>"
+            "<p><strong>Small telescope:</strong> Compact targets.</p>"
+        )
+        decorated = decorate_note_html(rendered, records)
+        self.assertIn(
+            '<strong><a class="descriptor-link" href="../../descriptors/naked-eye.json" '
+            'type="application/json">Naked eye</a>:</strong>',
+            decorated,
+        )
+        self.assertIn(
+            '<strong><a class="descriptor-link" href="../../descriptors/binoculars.json" '
+            'type="application/json">Binoculars</a>:</strong>',
+            decorated,
+        )
+        self.assertIn(
+            '<strong><a class="descriptor-link" href="../../descriptors/small-telescope.json" '
+            'type="application/json">Small telescope</a>:</strong>',
+            decorated,
+        )
 
 
 if __name__ == "__main__":
