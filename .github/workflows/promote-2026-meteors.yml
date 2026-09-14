@@ -9,8 +9,37 @@ permissions:
 jobs:
   promote:
     runs-on: ubuntu-latest
+    env:
+      STAR_ALMANACK_EPHEMERIS_DIR: ${{ github.workspace }}/.cache/skyfield
     steps:
       - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Restore DE440s source cache
+        uses: actions/cache@v4
+        with:
+          path: .cache/skyfield/de440s.bsp
+          key: star-almanack-de440s-v1
+
+      - name: Install astronomical calculation dependency
+        run: python -m pip install --disable-pip-version-check skyfield==1.55
+
+      - name: Download DE440s only when cache is empty
+        run: |
+          mkdir -p .cache/skyfield
+          python - <<'PY'
+          from pathlib import Path
+          from skyfield.api import Loader
+          root = Path('.cache/skyfield')
+          kernel = root / 'de440s.bsp'
+          if kernel.exists():
+              print(f'Reusing cached {kernel} ({kernel.stat().st_size:,} bytes)')
+          else:
+              Loader(str(root)).download('de440s.bsp')
+          PY
 
       - name: Populate canonical 2026 meteor showers through parameterized generator
         run: python tools/populate_meteor_showers.py 2026
