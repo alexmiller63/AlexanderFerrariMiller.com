@@ -106,5 +106,179 @@
     "planet_plot_policy": "do not plot from longitude alone; require preserved 2-D Star Almanack position data",
     "reference_standard": "Star-Almanack-Repo/docs/finder-standard.md"
   },
-  "note": "ISO 2026-W37 runs from September 7 through September 13. Fixed-sky highlights include Peacock, M29, open cluster in Cygnus. Venus is about 3.9° in ecliptic longitude from Spica in Virgo. Uranus is about 4.1° in ecliptic longitude from Aldebaran in Taurus.\n\n**Naked eye:** 🌑 New Moon — 03:27:00 UTCα1 Cap — V 4 — Tropical SummerAlgedi (α2 Cap) — V 4 — Tropical SummerVulpecula center — Constellation — V 4.5 — Northern Summer. The dark Moon favors faint targets and extended star fields. Use Peacock as the week’s fixed-sky framework.\n\n**Planets:** Venus is about 3.9° in ecliptic longitude from Spica in Virgo. Uranus is about 4.1° in ecliptic longitude from Aldebaran in Taurus.\n\n**Binoculars:** Favor M29, open cluster in Cygnus, Peacock; wide fields help connect the charted geometry to the real sky.\n\n**Small telescope:** Concentrate on M29, open cluster in Cygnus. Increase magnification only after the target and surrounding pattern are secure."
+  "note": "ISO 2026-W37 runs from September 7 through September 13. Fixed-sky highlights include Peacock, M29, open cluster in Cygnus. Venus is about 3.9° in ecliptic longitude from Spica in Virgo. Uranus is about 4.1° in ecliptic longitude from Aldebaran in Taurus.\n\n**Naked eye:** 🌑 New Moon — 03:27:00 UTCα1 Cap — V 4 — Tropical SummerAlgedi (α2 Cap) — V 4 — Tropical SummerVulpecula center — Constellation — V 4.5 — Northern Summer. The dark Moon favors faint targets and extended star fields. Use Peacock as the week’s fixed-sky framework.\n\n**Planets:** Venus is about 3.9° in ecliptic longitude from Spica in Virgo. Uranus is about 4.1° in ecliptic longitude from Aldebaran in Taurus.\n\n**Binoculars:** Favor M29, open cluster in Cygnus, Peacock; wide fields help connect the charted geometry to the real sky.\n\n**Small telescope:** Concentrate on M29, open cluster in Cygnus. Increase magnification only after the target and surrounding pattern are secure.",
+  "descriptors": [
+    {
+      "schema_version": 1,
+      "id": "star-peacock",
+      "type": "star",
+      "name": "Peacock",
+      "summary": "bright star in Pav used as a fixed-sky reference",
+      "representation": {
+        "machine": "/almanack/descriptors/star-peacock.json",
+        "human_source": "summary"
+      },
+      "constellation_abbreviation": "Pav",
+      "constellation": "Pav",
+      "position": {
+        "ra_deg": 306.411885,
+        "dec_deg": -56.73509,
+        "ecliptic_longitude_deg": 293.817457,
+        "ecliptic_latitude_deg": -36.267622
+      },
+      "representative_visual_magnitude": 1.94
+    },
+    {
+      "schema_version": 1,
+      "id": "constellation-pav",
+      "type": "constellation",
+      "name": "Pav",
+      "summary": "constellation used by Star Almanack to organize fixed-sky objects and finder geometry",
+      "representation": {
+        "machine": "/almanack/descriptors/constellation-pav.json",
+        "human_source": "summary"
+      },
+      "abbreviation": "Pav"
+    },
+    {
+      "schema_version": 1,
+      "id": "m29",
+      "type": "deep-sky-object",
+      "name": "M29",
+      "summary": "open cluster in Cygnus selected as a weekly fixed-sky observing target",
+      "representation": {
+        "machine": "/almanack/descriptors/m29.json",
+        "human_source": "summary"
+      },
+      "catalog_name": "M29",
+      "object_type": "open cluster in Cygnus",
+      "source_label": "M29, open cluster in Cygnus"
+    },
+    {
+      "schema_version": 1,
+      "id": "planet-venus",
+      "type": "planet",
+      "name": "Venus",
+      "summary": "Solar-System planet tracked by the Star Almanack weekly ephemeris and Planet Finder",
+      "representation": {
+        "machine": "/almanack/descriptors/planet-venus.json",
+        "human_source": "summary"
+      }
+    },
+    {
+      "schema_version": 1,
+      "id": "star-spica",
+      "type": "star",
+      "name": "Spica",
+      "summary": "bright star in Virgo used as a fixed-sky reference",
+      "representation": {
+        "machine": "/almanack/descriptors/star-spica.json",
+        "human_source": "summary"
+      },
+      "constellation_abbreviation": "Vir",
+      "constellation": "Virgo",
+      "position": {
+        "ra_deg": 201.298245,
+        "dec_deg": -11.161322,
+        "ecliptic_longitude_deg": 203.841357,
+        "ecliptic_latitude_deg": -2.054492
+      },
+      "representative_visual_magnitude": 0.98
+    },
+    {
+      "schema_version": 1,
+      "id": "constellation-virgo",
+      "type": "constellation",
+      "name": "Virgo",
+      "summary": "constellation used by Star Almanack to organize fixed-sky objects and finder geometry",
+      "representation": {
+        "machine": "/almanack/descriptors/constellation-virgo.json",
+        "human_source": "summary"
+      },
+      "abbreviation": "Vir"
+    },
+    {
+      "schema_version": 1,
+      "id": "planet-uranus",
+      "type": "planet",
+      "name": "Uranus",
+      "summary": "Solar-System planet tracked by the Star Almanack weekly ephemeris and Planet Finder",
+      "representation": {
+        "machine": "/almanack/descriptors/planet-uranus.json",
+        "human_source": "summary"
+      }
+    },
+    {
+      "schema_version": 1,
+      "id": "star-aldebaran",
+      "type": "star",
+      "name": "Aldebaran",
+      "summary": "bright star in Taurus used as a fixed-sky reference",
+      "representation": {
+        "machine": "/almanack/descriptors/star-aldebaran.json",
+        "human_source": "summary"
+      },
+      "constellation_abbreviation": "Tau",
+      "constellation": "Taurus",
+      "position": {
+        "ra_deg": 68.980155,
+        "dec_deg": 16.509301,
+        "ecliptic_longitude_deg": 69.789181,
+        "ecliptic_latitude_deg": -5.467327
+      },
+      "representative_visual_magnitude": 0.87
+    },
+    {
+      "schema_version": 1,
+      "id": "constellation-taurus",
+      "type": "constellation",
+      "name": "Taurus",
+      "summary": "constellation used by Star Almanack to organize fixed-sky objects and finder geometry",
+      "representation": {
+        "machine": "/almanack/descriptors/constellation-taurus.json",
+        "human_source": "summary"
+      },
+      "abbreviation": "Tau"
+    },
+    {
+      "schema_version": 1,
+      "id": "ecliptic-longitude",
+      "type": "observing-concept",
+      "name": "ecliptic longitude",
+      "summary": "angular position measured along the ecliptic, used here for conservative weekly Solar-System comparisons",
+      "representation": {
+        "machine": "/almanack/descriptors/ecliptic-longitude.json",
+        "human_source": "summary"
+      }
+    },
+    {
+      "schema_version": 1,
+      "id": "naked-eye",
+      "type": "observing-concept",
+      "name": "Naked eye",
+      "summary": "observing without optical aid",
+      "representation": {
+        "machine": "/almanack/descriptors/naked-eye.json",
+        "human_source": "summary"
+      }
+    },
+    {
+      "schema_version": 1,
+      "id": "binoculars",
+      "type": "observing-concept",
+      "name": "Binoculars",
+      "summary": "wide-field optical aid useful for locating star fields and brighter deep-sky targets",
+      "representation": {
+        "machine": "/almanack/descriptors/binoculars.json",
+        "human_source": "summary"
+      }
+    }
+  ],
+  "descriptor_policy": {
+    "source_of_truth": "machine-readable JSON",
+    "inline_human_descriptors_target": "3-4",
+    "additional_json_links_target": "5-6",
+    "link_target": "/almanack/descriptors/<id>.json",
+    "artwork_descriptor_is_separate": true
+  }
 }

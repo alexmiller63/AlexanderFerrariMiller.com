@@ -19,5 +19,112 @@
     }
   ],
   "artwork": null,
-  "note": "ISO 2026-W38 runs from September 14 through September 20. Uranus is about 4.1° in ecliptic longitude from Aldebaran in Taurus.\n\n**Naked eye:** 🌓 First Quarter — 20:43:47 UTCDeneb (α Cyg) — V 1 — Northern Summer — in the Milky WayDelphinus center — Constellation — V 4.2 — Tropical SummerM72, globular cluster in Aquarius — V 9.3 — Tropical Summer. Moderate moonlight makes timing and local sky position important for faint targets. Use the brightest seasonal stars and the zodiac as the week’s fixed-sky framework.\n\n**Planets:** Uranus is about 4.1° in ecliptic longitude from Aldebaran in Taurus.\n\n**Binoculars:** Favor the week’s richest fixed-star fields; wide fields help connect the charted geometry to the real sky.\n\n**Small telescope:** Concentrate on the compact fixed-sky targets selected for the week. Increase magnification only after the target and surrounding pattern are secure."
+  "note": "ISO 2026-W38 runs from September 14 through September 20. Uranus is about 4.1° in ecliptic longitude from Aldebaran in Taurus.\n\n**Naked eye:** 🌓 First Quarter — 20:43:47 UTCDeneb (α Cyg) — V 1 — Northern Summer — in the Milky WayDelphinus center — Constellation — V 4.2 — Tropical SummerM72, globular cluster in Aquarius — V 9.3 — Tropical Summer. Moderate moonlight makes timing and local sky position important for faint targets. Use the brightest seasonal stars and the zodiac as the week’s fixed-sky framework.\n\n**Planets:** Uranus is about 4.1° in ecliptic longitude from Aldebaran in Taurus.\n\n**Binoculars:** Favor the week’s richest fixed-star fields; wide fields help connect the charted geometry to the real sky.\n\n**Small telescope:** Concentrate on the compact fixed-sky targets selected for the week. Increase magnification only after the target and surrounding pattern are secure.",
+  "descriptors": [
+    {
+      "schema_version": 1,
+      "id": "planet-uranus",
+      "type": "planet",
+      "name": "Uranus",
+      "summary": "Solar-System planet tracked by the Star Almanack weekly ephemeris and Planet Finder",
+      "representation": {
+        "machine": "/almanack/descriptors/planet-uranus.json",
+        "human_source": "summary"
+      }
+    },
+    {
+      "schema_version": 1,
+      "id": "star-aldebaran",
+      "type": "star",
+      "name": "Aldebaran",
+      "summary": "bright star in Taurus used as a fixed-sky reference",
+      "representation": {
+        "machine": "/almanack/descriptors/star-aldebaran.json",
+        "human_source": "summary"
+      },
+      "constellation_abbreviation": "Tau",
+      "constellation": "Taurus",
+      "position": {
+        "ra_deg": 68.980155,
+        "dec_deg": 16.509301,
+        "ecliptic_longitude_deg": 69.789181,
+        "ecliptic_latitude_deg": -5.467327
+      },
+      "representative_visual_magnitude": 0.87
+    },
+    {
+      "schema_version": 1,
+      "id": "constellation-taurus",
+      "type": "constellation",
+      "name": "Taurus",
+      "summary": "constellation used by Star Almanack to organize fixed-sky objects and finder geometry",
+      "representation": {
+        "machine": "/almanack/descriptors/constellation-taurus.json",
+        "human_source": "summary"
+      },
+      "abbreviation": "Tau"
+    },
+    {
+      "schema_version": 1,
+      "id": "ecliptic-longitude",
+      "type": "observing-concept",
+      "name": "ecliptic longitude",
+      "summary": "angular position measured along the ecliptic, used here for conservative weekly Solar-System comparisons",
+      "representation": {
+        "machine": "/almanack/descriptors/ecliptic-longitude.json",
+        "human_source": "summary"
+      }
+    },
+    {
+      "schema_version": 1,
+      "id": "naked-eye",
+      "type": "observing-concept",
+      "name": "Naked eye",
+      "summary": "observing without optical aid",
+      "representation": {
+        "machine": "/almanack/descriptors/naked-eye.json",
+        "human_source": "summary"
+      }
+    },
+    {
+      "schema_version": 1,
+      "id": "binoculars",
+      "type": "observing-concept",
+      "name": "Binoculars",
+      "summary": "wide-field optical aid useful for locating star fields and brighter deep-sky targets",
+      "representation": {
+        "machine": "/almanack/descriptors/binoculars.json",
+        "human_source": "summary"
+      }
+    },
+    {
+      "schema_version": 1,
+      "id": "small-telescope",
+      "type": "observing-concept",
+      "name": "Small telescope",
+      "summary": "a telescope suitable for resolving compact targets after the surrounding field is identified",
+      "representation": {
+        "machine": "/almanack/descriptors/small-telescope.json",
+        "human_source": "summary"
+      }
+    },
+    {
+      "schema_version": 1,
+      "id": "zodiac",
+      "type": "observing-concept",
+      "name": "zodiac",
+      "summary": "the band of constellations along the ecliptic used to orient Solar-System objects",
+      "representation": {
+        "machine": "/almanack/descriptors/zodiac.json",
+        "human_source": "summary"
+      }
+    }
+  ],
+  "descriptor_policy": {
+    "source_of_truth": "machine-readable JSON",
+    "inline_human_descriptors_target": "3-4",
+    "additional_json_links_target": "5-6",
+    "link_target": "/almanack/descriptors/<id>.json",
+    "artwork_descriptor_is_separate": true
+  }
 }
