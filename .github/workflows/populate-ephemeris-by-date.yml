@@ -1,0 +1,100 @@
+name: Ephemeris Generator
+
+on:
+  workflow_dispatch:
+    inputs:
+      start_year:
+        description: Start year
+        required: true
+        type: string
+      start_week:
+        description: Start week
+        required: true
+        type: string
+      end_year:
+        description: End year
+        required: false
+        default: ''
+        type: string
+      end_week:
+        description: End week
+        required: false
+        default: ''
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ephemeris-generator
+  cancel-in-progress: false
+
+jobs:
+  populate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Resolve ISO week range
+        id: range
+        run: |
+          read START_DATE END_DATE < <(python tools/resolve_iso_week_range.py \
+            '${{ inputs.start_year }}' '${{ inputs.start_week }}' \
+            '${{ inputs.end_year }}' '${{ inputs.end_week }}')
+          echo "start_date=$START_DATE" >> "$GITHUB_OUTPUT"
+          echo "end_date=$END_DATE" >> "$GITHUB_OUTPUT"
+          echo "$START_DATE through $END_DATE"
+
+      - name: Generate Ephemeris
+        run: python tools/populate_ephemeris_by_date.py "${{ steps.range.outputs.start_date }}" "${{ steps.range.outputs.end_date }}"
+
+      - name: Verify observing notation markup
+        run: |
+          python - <<'PY'
+          from datetime import date, timedelta
+          from pathlib import Path
+          import re
+          import os
+
+          start = date.fromisoformat('${{ steps.range.outputs.start_date }}')
+          end = date.fromisoformat('${{ steps.range.outputs.end_date }}')
+          day = start
+          checked = 0
+          while day <= end:
+              iso = day.isocalendar()
+              path = Path(f'almanack/{iso.year}/W{iso.week:02d}/index.html')
+              text = path.read_text(encoding='utf-8')
+              section = re.search(r'<h3>Weekly Solar-System Ephemeris</h3>.*?(?=<h3>Planet Finder</h3>)', text, re.S)
+              if not section:
+                  raise SystemExit(f'Missing Ephemeris section: {path}')
+              html = section.group(0)
+              raw = re.findall(r'<tr class="ephemeris-visibility"[^>]*>.*?</tr>', html, re.S)
+              if not raw:
+                  raise SystemExit(f'Missing Ephemeris observing row: {path}')
+              observing = ''.join(raw)
+              glyphs = observing.count('class="visibility-glyph"')
+              wrapped = observing.count('class="observing-notation-item"')
+              if glyphs and wrapped == 0:
+                  raise SystemExit(f'Raw observing glyphs are not notation-aware: {path}')
+              for label in ('Naked eye', 'Binoculars', 'Telescope'):
+                  if f'aria-label="{label}"' in observing and f'data-latin="{label}"' not in observing:
+                      raise SystemExit(f'{label} glyph lacks Latin notation: {path}')
+              checked += 1
+              day += timedelta(days=7)
+          print(f'PASS: {checked} Ephemeris week(s) have notation-aware observing aids')
+          PY
+
+      - name: Commit Ephemeris changes only
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- almanack Star-Almanack-Repo/site
+          if git diff --cached --quiet; then
+            echo "No Ephemeris changes in requested ISO week range."
+            exit 0
+          fi
+          git commit -m "Generate Ephemeris ${{ inputs.start_year }}-W${{ inputs.start_week }}"
+          git pull --rebase origin main
+          git push
