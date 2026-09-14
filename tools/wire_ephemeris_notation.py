@@ -134,7 +134,13 @@ def requested_pages() -> tuple[Path, ...]:
         raise SystemExit("Usage: wire_ephemeris_notation.py START_YEAR START_WEEK [END_YEAR END_WEEK]")
     try:
         start_year, start_week = int(sys.argv[1]), int(sys.argv[2])
-        end_year, end_week = (int(sys.argv[3]), int(sys.argv[4])) if len(sys.argv) == 5 else (start_year, start_week)
+        if len(sys.argv) == 5:
+            end_year_arg, end_week_arg = sys.argv[3].strip(), sys.argv[4].strip()
+            if bool(end_year_arg) != bool(end_week_arg):
+                raise ValueError("End year and End week must either both be blank or both be supplied")
+            end_year, end_week = (int(end_year_arg), int(end_week_arg)) if end_year_arg else (start_year, start_week)
+        else:
+            end_year, end_week = start_year, start_week
         start = __import__("datetime").date.fromisocalendar(start_year, start_week, 1)
         end = __import__("datetime").date.fromisocalendar(end_year, end_week, 1)
     except (TypeError, ValueError) as exc:
