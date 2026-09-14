@@ -128,32 +128,29 @@
     });
   });
 
-  /* Process the actual generated visibility glyphs directly. They are images,
-     so they need not be inside a text-derived .visibility-magnitude wrapper. */
-  document.querySelectorAll('table.calendar tbody td:nth-child(3)').forEach(function (cell) {
-    const images = Array.from(cell.querySelectorAll('img.visibility-glyph'));
-    let index = 0;
-    while (index < images.length) {
-      const image = images[index];
-      if (!image.isConnected || image.closest('.observing-aid-notation')) { index += 1; continue; }
-      const source = image.getAttribute('src') || '';
-      const isTelescope = /telescope\.svg(?:$|[?#])/.test(source);
-      const next = images[index + 1];
-      const nextSource = next ? (next.getAttribute('src') || '') : '';
-      const substantial = isTelescope && next && next.isConnected && !next.closest('.observing-aid-notation') && /telescope\.svg(?:$|[?#])/.test(nextSource);
-      let label = 'Observing aid';
-      if (substantial) label = 'Substantial telescope';
-      else if (/eye\.svg(?:$|[?#])/.test(source)) label = 'Naked eye';
-      else if (/binoculars\.svg(?:$|[?#])/.test(source)) label = 'Binoculars';
-      else if (isTelescope) label = 'Telescope';
-      else { index += 1; continue; }
-      const wrapper = document.createElement('span'); wrapper.className = 'observing-aid-notation'; wrapper.dataset.label = label; wrapper.style.whiteSpace = 'nowrap';
-      const symbol = document.createElement('span'); symbol.className = 'observing-aid-symbol';
-      image.replaceWith(wrapper); symbol.append(image);
-      if (substantial) { symbol.append(next); index += 1; }
-      const word = document.createElement('span'); word.className = 'observing-aid-word'; word.textContent = label;
-      wrapper.append(symbol, word); index += 1;
-    }
+  /* Process every actual generated observing-aid glyph in the Calendar, regardless
+     of whether the event is rendered in the legacy third column or a nested event
+     cell.  This prevents raw eye/binocular/telescope images from surviving Latin. */
+  const observingImages = Array.from(document.querySelectorAll('table.calendar img.visibility-glyph'));
+  observingImages.forEach(function (image) {
+    if (!image.isConnected || image.closest('.observing-aid-notation')) return;
+    const source = image.getAttribute('src') || '';
+    const isTelescope = /telescope\.svg(?:$|[?#])/.test(source);
+    const sibling = image.nextElementSibling;
+    const siblingSource = sibling && sibling.matches('img.visibility-glyph') ? (sibling.getAttribute('src') || '') : '';
+    const substantial = isTelescope && sibling && sibling.matches('img.visibility-glyph') && /telescope\.svg(?:$|[?#])/.test(siblingSource);
+    let label = null;
+    if (substantial) label = 'Substantial telescope';
+    else if (/eye\.svg(?:$|[?#])/.test(source)) label = 'Naked eye';
+    else if (/binoculars\.svg(?:$|[?#])/.test(source)) label = 'Binoculars';
+    else if (isTelescope) label = 'Telescope';
+    if (!label) return;
+    const wrapper = document.createElement('span'); wrapper.className = 'observing-aid-notation'; wrapper.dataset.label = label; wrapper.style.whiteSpace = 'nowrap';
+    const symbol = document.createElement('span'); symbol.className = 'observing-aid-symbol';
+    image.replaceWith(wrapper); symbol.append(image);
+    if (substantial && sibling.isConnected) symbol.append(sibling);
+    const word = document.createElement('span'); word.className = 'observing-aid-word'; word.textContent = label;
+    wrapper.append(symbol, word);
   });
 
   document.querySelectorAll('table.calendar tbody td:nth-child(2)').forEach(function (cell) {
