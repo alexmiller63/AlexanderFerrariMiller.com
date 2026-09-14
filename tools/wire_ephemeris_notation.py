@@ -129,31 +129,43 @@ SCRIPT = r'''<script id="ephemeris-notation-sync">
 </script>'''
 
 
-def requested_years() -> tuple[str, ...]:
-    if len(sys.argv) > 1:
-        years = tuple(dict.fromkeys(sys.argv[1:]))
-        if any(not re.fullmatch(r"\d{4}", year) for year in years):
-            raise SystemExit("Years must be four digits, e.g. 2025 2027")
-        return years
-    return tuple(
-        path.name
-        for path in sorted(Path("almanack").iterdir())
-        if path.is_dir() and re.fullmatch(r"\d{4}", path.name)
-    )
+def requested_pages() -> tuple[Path, ...]:
+    if len(sys.argv) not in (3, 5):
+        raise SystemExit("Usage: wire_ephemeris_notation.py START_YEAR START_WEEK [END_YEAR END_WEEK]")
+    try:
+        start_year, start_week = int(sys.argv[1]), int(sys.argv[2])
+        end_year, end_week = (int(sys.argv[3]), int(sys.argv[4])) if len(sys.argv) == 5 else (start_year, start_week)
+        start = __import__("datetime").date.fromisocalendar(start_year, start_week, 1)
+        end = __import__("datetime").date.fromisocalendar(end_year, end_week, 1)
+    except (TypeError, ValueError) as exc:
+        raise SystemExit(f"Invalid ISO week range: {exc}") from exc
+    if end < start:
+        raise SystemExit("End ISO week must not precede Start ISO week")
+    pages = []
+    for root in sorted(Path("almanack").iterdir()):
+        if not (root.is_dir() and re.fullmatch(r"\d{4}", root.name)):
+            continue
+        year = int(root.name)
+        for page in sorted(root.glob("W[0-9][0-9]/index.html")):
+            week = int(page.parent.name[1:])
+            try:
+                monday = __import__("datetime").date.fromisocalendar(year, week, 1)
+            except ValueError:
+                continue
+            if start <= monday <= end:
+                pages.append(page)
+    return tuple(pages)
 
 
+pages = requested_pages()
 changed = 0
 pattern = re.compile(r'<script id="ephemeris-notation-sync">.*?</script>', re.S)
-for year in requested_years():
-    root = Path('almanack') / year
-    if not root.exists():
-        continue
-    for page in sorted(root.glob('W[0-9][0-9]/index.html')):
-        html = page.read_text(encoding='utf-8')
-        html2 = pattern.sub(lambda _m: SCRIPT, html, count=1)
-        if html2 == html and 'ephemeris-notation-sync' not in html:
-            html2 = html.replace('</body>', SCRIPT + '</body>', 1)
-        if html2 != html:
-            page.write_text(html2, encoding='utf-8')
-            changed += 1
-print(f'Wired calendar and ephemeris notation on {changed} weekly pages for {" ".join(requested_years())}')
+for page in pages:
+    html = page.read_text(encoding='utf-8')
+    html2 = pattern.sub(lambda _m: SCRIPT, html, count=1)
+    if html2 == html and 'ephemeris-notation-sync' not in html:
+        html2 = html.replace('</body>', SCRIPT + '</body>', 1)
+    if html2 != html:
+        page.write_text(html2, encoding='utf-8')
+        changed += 1
+print(f'Wired calendar and ephemeris notation on {changed} weekly pages')
