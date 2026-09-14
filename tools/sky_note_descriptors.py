@@ -218,7 +218,6 @@ def build_descriptors(
                         break
             add(record)
 
-    # Concepts fill out the descriptor layer without inventing weak astronomical objects.
     for descriptor_id in ("ecliptic-longitude", "naked-eye", "binoculars", "small-telescope", "zodiac"):
         concept = OBSERVING_CONCEPTS[descriptor_id]
         add(_base(descriptor_id, concept["type"], concept["name"], concept["summary"]))
@@ -263,18 +262,15 @@ def human_sentence(record: dict) -> str:
         figure = record.get("figure")
         if figure:
             paths = figure.get("figure_paths") or []
-            return (
-                f"{name} uses the preserved Martz/MacRobert stick figure in Star Almanack"
-                f" ({len(paths)} figure path{'s' if len(paths) != 1 else ''})."
-            )
-        return f"{name} is used to organize the week’s fixed-sky objects and finder geometry."
+            return f"{name} uses the preserved Martz/MacRobert stick figure ({len(paths)} figure path{'s' if len(paths) != 1 else ''})."
+        return f"{name} organizes the week’s fixed-sky objects and finder geometry."
 
     if kind == "asterism":
         members = record.get("members") or []
         if members:
             shown = ", ".join(html.escape(str(member)) for member in members[:5])
             extra = " and others" if len(members) > 5 else ""
-            return f"{name} is an observer-facing asterism defined by {shown}{extra}."
+            return f"{name} is the observer-facing asterism defined by {shown}{extra}."
         return f"{name} is an observer-facing star pattern preserved separately from the constellation figure."
 
     if kind == "deep-sky-object":
@@ -284,16 +280,21 @@ def human_sentence(record: dict) -> str:
         return f"{name} is a {object_type}{where} selected as a fixed-sky target for this week."
 
     if kind == "planet":
-        return f"{name} is tracked in the weekly ephemeris and Planet Finder as part of the Solar-System context."
+        return f"{name} is tracked in the weekly ephemeris and Planet Finder."
 
     return f"{name} means {html.escape(str(record.get('summary', 'a Star Almanack observing concept')))}."
 
 
-def decorate_note_html(rendered_html: str, records: list[dict]) -> str:
-    """Render 3–4 substantive descriptor sentences plus 5–6 direct JSON links."""
-    decorated = rendered_html
+def _replace_first_mention(text: str, record: dict, replacement: str) -> tuple[str, bool]:
+    escaped_name = html.escape(record["name"], quote=False)
+    if escaped_name not in text:
+        return text, False
+    return text.replace(escaped_name, replacement, 1), True
 
-    # Prefer actual sky objects and geometry for prose. Concepts are fallback only.
+
+def decorate_note_html(rendered_html: str, records: list[dict]) -> str:
+    """Place descriptor-derived prose inside the existing Sky Note paragraphs."""
+    decorated = rendered_html
     priority = {
         "deep-sky-object": 0,
         "star": 1,
@@ -302,29 +303,60 @@ def decorate_note_html(rendered_html: str, records: list[dict]) -> str:
         "planet": 4,
         "observing-concept": 5,
     }
-    ordered = sorted(enumerate(records), key=lambda item: (priority.get(item[1].get("type"), 9), item[0]))
-    prose_records = [record for _, record in ordered[:4]]
-    prose_ids = {record["id"] for record in prose_records}
+    ordered = [record for _, record in sorted(
+        enumerate(records), key=lambda item: (priority.get(item[1].get("type"), 9), item[0])
+    )]
 
-    # Existing mentions become direct machine-readable links without adding tiny
-    # parenthetical placeholders. The richer explanation is generated below.
-    for record in prose_records:
-        escaped_name = html.escape(record["name"], quote=False)
-        if escaped_name in decorated:
-            decorated = decorated.replace(escaped_name, _linked_name(record), 1)
+    used_ids: set[str] = set()
+    inline_count = 0
 
-    if prose_records:
-        sentences = " ".join(human_sentence(record) for record in prose_records)
-        decorated += (
-            '\n<p class="sky-note-descriptor-prose" data-sky-note-descriptor-prose="true">'
-            f'<strong>Descriptor context:</strong> {sentences}</p>'
-        )
+    # First enrich descriptors that already occur naturally in the generated prose.
+    for record in ordered:
+        if inline_count >= 4:
+            break
+        linked = _linked_name(record)
+        sentence = human_sentence(record)
+        replacement = f"{linked}<span class=\"descriptor-inline-prose\"> — {sentence[len(linked):].lstrip()}</span>"
+        decorated, changed = _replace_first_mention(decorated, record, replacement)
+        if changed:
+            used_ids.add(record["id"])
+            inline_count += 1
 
-    related = [record for record in records if record["id"] not in prose_ids][:6]
+    # If fewer than four natural mentions exist, inject complete descriptor sentences
+    # into the most relevant existing prose paragraphs rather than creating a separate
+    # descriptor section. Prefer Planets, Binoculars, Small telescope, then Naked eye.
+    if inline_count < 4:
+        paragraph_labels = ("<strong>Planets:</strong>", "<strong>Binoculars:</strong>", "<strong>Small telescope:</strong>", "<strong>Naked eye:</strong>")
+        remaining = [record for record in ordered if record["id"] not in used_ids]
+        for label in paragraph_labels:
+            if inline_count >= 4 or not remaining:
+                break
+            match = re.search(rf"(<p>{re.escape(label)}.*?</p>)", decorated, flags=re.S)
+            if not match:
+                continue
+            record = remaining.pop(0)
+            paragraph = match.group(1)
+            sentence = human_sentence(record)
+            enriched = paragraph[:-4].rstrip() + " " + sentence + "</p>"
+            decorated = decorated[:match.start()] + enriched + decorated[match.end():]
+            used_ids.add(record["id"])
+            inline_count += 1
+
+    # Add direct JSON links as ordinary prose at the end of the final Sky Note paragraph,
+    # not as a separate descriptor block.
+    related = [record for record in ordered if record["id"] not in used_ids][:6]
     if related:
-        links = " · ".join(_linked_name(record) for record in related)
-        decorated += (
-            '\n<p class="sky-note-descriptors" data-sky-note-descriptors="true">'
-            f'<strong>Related descriptors:</strong> {links}</p>'
-        )
+        links = ", ".join(_linked_name(record) for record in related[:-1])
+        if len(related) > 1:
+            links = (links + ", and " if links else "") + _linked_name(related[-1])
+        else:
+            links = _linked_name(related[0])
+        addition = f" Related machine-readable descriptors include {links}."
+        paragraphs = list(re.finditer(r"<p>.*?</p>", decorated, flags=re.S))
+        if paragraphs:
+            last = paragraphs[-1]
+            paragraph = last.group(0)
+            enriched = paragraph[:-4].rstrip() + addition + "</p>"
+            decorated = decorated[:last.start()] + enriched + decorated[last.end():]
+
     return decorated
