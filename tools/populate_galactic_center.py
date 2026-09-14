@@ -3,9 +3,16 @@
 
 The event is the instant at which the apparent geocentric ecliptic longitude of
 the Sun equals the ecliptic-of-date longitude of Sagittarius A*, used here as
-the physical Galactic Center. The Sun samples come from the same JPL Horizons
-engine used by ``populate_calendar.py``. Sgr A* is precessed from J2000 using
-the canonical JDTDB event epoch. UTC is created only at publication.
+the physical Galactic Center. Sun samples are calculated locally from cached
+JPL/NAIF SPK source kernels. Sgr A* is precessed from J2000 using the canonical
+JDTDB event epoch. UTC is created only at publication.
+
+Provenance:
+- Sgr A* J2000 radio position: Reid & Brunthaler (2004), as documented in
+  Star-Almanack-Repo/EPHEMERIS-PROVENANCE.md.
+- Precession model: independently implemented IAU 1976 precession formulae;
+  coefficients are attributed there to the published standard rather than to
+  copied software.
 """
 from __future__ import annotations
 
@@ -16,13 +23,15 @@ from pathlib import Path
 
 from almanack_calendar import ensure_calendar_metadata, get_events, page_dates, set_events
 from almanack_time import AstroInstant, interpolate_instant
-from populate_calendar import horizons_longitudes, iso_bounds
+from populate_calendar import iso_bounds, source_longitudes
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE_ROOT = ROOT / "Star-Almanack-Repo" / "site"
 PUBLIC_ROOT = ROOT / "almanack"
 
-# Sagittarius A* ICRS/J2000 position: 17h45m40.0409s, -29d00m28.118s.
+# Sagittarius A* J2000 radio position from Reid & Brunthaler (2004),
+# ApJ 616, 872. These are published observational source coordinates, not a
+# third-party calculated conjunction answer.
 GC_RA_J2000_DEG = 266.4168370833333
 GC_DEC_J2000_DEG = -29.007810555555555
 EVENT_PREFIX = "☉ Galactic Center conjunction"
@@ -31,10 +40,10 @@ EVENT_PREFIX = "☉ Galactic Center conjunction"
 def galactic_center_ecliptic_longitude(jd_tdb: float) -> float:
     """Return mean ecliptic-of-date longitude of Sgr A* in degrees.
 
-    Uses the IAU 1976 precession angles, ample for the Almanack's 1900–2100
-    supported interval and far below the one-hour source sampling interval.
-    The precession epoch is evaluated directly from JDTDB rather than from a
-    civil datetime.
+    Uses the IAU 1976 precession model (Lieske et al. published coefficients),
+    independently implemented here for the Almanack's 1900–2100 interval. The
+    precession epoch is evaluated directly from JDTDB rather than from a civil
+    datetime.
     """
     t = (jd_tdb - 2451545.0) / 36525.0
     arcsec = math.pi / (180.0 * 3600.0)
@@ -115,7 +124,7 @@ def patch_page(path: Path, event_times: dict[date, AstroInstant]) -> bool:
 def expected_for_year(year: int) -> dict[date, AstroInstant]:
     first, last = iso_bounds(year)
     # Margin guarantees a bracketing sample around an ISO-year boundary.
-    sun = horizons_longitudes("10", first - timedelta(days=2), last + timedelta(days=2))
+    sun = source_longitudes("sun", first - timedelta(days=2), last + timedelta(days=2))
     hits = [
         ts for ts in conjunctions(sun)
         if first <= ts.publication_date() <= last
