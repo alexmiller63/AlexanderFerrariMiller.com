@@ -89,16 +89,25 @@ def beta(latitude):
     return f"β {sign}{degree}°{minute:02d}′"
 
 
-def current_visibility(magnitude, elongation):
-    if elongation is not None and elongation < 20.0: return "near_sun"
-    if magnitude is None or elongation is None: return None
-    if magnitude <= 3.5: return "naked_eye"
-    if magnitude <= 7.5: return "binoculars"
-    return "telescope"
+def current_visibility(key, magnitude, elongation):
+    if elongation is not None and elongation < 20.0:
+        return "near_sun"
+    if magnitude is not None and elongation is not None:
+        if magnitude <= 3.5: return "naked_eye"
+        if magnitude <= 7.5: return "binoculars"
+        return "telescope"
+
+    # Skyfield's attributed planetary-magnitude model does not provide values
+    # for these bodies.  Do not leave their observing cells blank: retain the
+    # elongation-based Near-Sun rule above, then use the Almanack's conservative
+    # observing-aid classification when a magnitude model is unavailable.
+    if key == "moon": return "naked_eye"
+    if key in {"ceres", "pluto"}: return "telescope"
+    return None
 
 
-def visibility_html(magnitude, elongation):
-    aid = current_visibility(magnitude, elongation)
+def visibility_html(key, magnitude, elongation):
+    aid = current_visibility(key, magnitude, elongation)
     return VISIBILITY_GLYPHS[aid] if aid else ""
 
 
@@ -168,7 +177,7 @@ def update_year(year, engine=None):
             key: (
                 zodiac(generated[key][week - 1][0]),
                 beta(generated[key][week - 1][1]),
-                visibility_html(generated[key][week - 1][2], generated[key][week - 1][3]),
+                visibility_html(key, generated[key][week - 1][2], generated[key][week - 1][3]),
             )
             for _, key, _ in TARGETS
         }
