@@ -24,14 +24,16 @@ TARGETS = [
     ("♆ Neptune", "neptune", "neptune"), ("♇ Pluto", "pluto", "pluto"),
 ]
 
-# Weekly pages live at YEAR/WEEK/index.html. Use the portable relative asset
-# path so the same generated HTML works both on the custom domain and on the
-# repository-prefixed GitHub Pages deployment.
 VISIBILITY_GLYPH_ROOT = "../../../assets/almanack/visibility-glyphs/masters/"
+_TELESCOPE_GLYPH = f'<img class="visibility-glyph" src="{VISIBILITY_GLYPH_ROOT}telescope.svg" alt="Telescope" aria-label="Telescope">'
 VISIBILITY_GLYPHS = {
     "naked_eye": f'<img class="visibility-glyph" src="{VISIBILITY_GLYPH_ROOT}eye.svg" alt="Naked eye" aria-label="Naked eye">',
     "binoculars": f'<img class="visibility-glyph" src="{VISIBILITY_GLYPH_ROOT}binoculars.svg" alt="Binoculars" aria-label="Binoculars">',
-    "telescope": f'<img class="visibility-glyph" src="{VISIBILITY_GLYPH_ROOT}telescope.svg" alt="Telescope" aria-label="Telescope">',
+    "telescope": _TELESCOPE_GLYPH,
+    "substantial_telescope": (
+        '<span class="substantial-telescope" role="img" aria-label="Substantial telescope">'
+        + _TELESCOPE_GLYPH + _TELESCOPE_GLYPH + '</span>'
+    ),
     "near_sun": '<span class="text-symbol" role="img" aria-label="Near Sun — not currently observable" title="Near Sun — not currently observable">☉</span>',
 }
 
@@ -95,14 +97,12 @@ def current_visibility(key, magnitude, elongation):
     if magnitude is not None and elongation is not None:
         if magnitude <= 3.5: return "naked_eye"
         if magnitude <= 7.5: return "binoculars"
-        return "telescope"
+        if magnitude <= 12.0: return "telescope"
+        return "substantial_telescope"
 
-    # Skyfield's attributed planetary-magnitude model does not provide values
-    # for these bodies.  Do not leave their observing cells blank: retain the
-    # elongation-based Near-Sun rule above, then use the Almanack's conservative
-    # observing-aid classification when a magnitude model is unavailable.
     if key == "moon": return "naked_eye"
-    if key in {"ceres", "pluto"}: return "telescope"
+    if key == "ceres": return "telescope"
+    if key == "pluto": return "substantial_telescope"
     return None
 
 
@@ -144,7 +144,7 @@ def render_ephemeris(monday, values):
         + table(primary)
         + "<p><strong>Extended targets:</strong></p>"
         + table(extended, extra_class="extended-ephemeris")
-        + '<p class="ephemeris-note"><strong>β</strong> = ecliptic latitude (+ north, − south). Observing combines visual magnitude with solar elongation. <span class="text-symbol">☉</span> = Near Sun — not currently observable.</p>'
+        + '<p class="ephemeris-note"><strong>β</strong> = ecliptic latitude (+ north, − south). Observing combines visual magnitude with solar elongation. Two telescope glyphs = substantial telescope. <span class="text-symbol">☉</span> = Near Sun — not currently observable.</p>'
         + notation_toggle("finder")
         + '<h3>Planet Finder</h3>'
         + planet_finder(monday.year, week)
