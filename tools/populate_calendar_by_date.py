@@ -13,9 +13,9 @@ def populate_selected_year(year: int, selected_weeks: list[int]) -> int:
     first, last = calendar.iso_bounds(year)
     query_start, query_stop = first - timedelta(days=45), last + timedelta(days=45)
 
-    print(f"Fetching {year} Sun and Moon calendar astronomy from JPL Horizons")
-    sun = calendar.horizons_longitudes("10", query_start, query_stop)
-    moon = calendar.horizons_longitudes("301", query_start, query_stop)
+    print(f"Calculating {year} Sun and Moon calendar astronomy from cached SPK source data")
+    sun = calendar.source_longitudes("sun", query_start, query_stop)
+    moon = calendar.source_longitudes("moon", query_start, query_stop)
     ingresses = calendar.solar_ingresses(sun)
     wheel = calendar.wheel_of_year(sun)
     phases = calendar.lunar_phases(sun, moon)
