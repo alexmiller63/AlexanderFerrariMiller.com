@@ -7,11 +7,14 @@ import sys
 from collections import defaultdict
 from pathlib import Path
 
+import yaml
+
 from almanack_calendar import ensure_calendar_metadata, get_events, set_events
 from star_almanack_astronomy import apparent_sun_ra_hours,best_visibility_occurrences_for_iso_year,solar_ra_occurrences_for_iso_year
 from star_almanack_objects import AlmanackObject,observing_aid_for_magnitude,render_html
 
 ROOT=Path(__file__).resolve().parents[1]; SRC=ROOT/"Star-Almanack-Repo"; PUBLIC=ROOT/"almanack"; SOURCE_SITE=SRC/"site"; DEFAULT_YEARS=(2025,2026,2027)
+REGIONS=SRC/"fixed-object-regions.yaml"
 GREEK_BAYER={"Alp":"α","Bet":"β","Gam":"γ","Del":"δ","Eps":"ε","Zet":"ζ","Eta":"η","The":"θ","Iot":"ι","Kap":"κ","Lam":"λ","Mu":"μ","Nu":"ν","Xi":"ξ","Omi":"ο","Pi":"π","Rho":"ρ","Sig":"σ","Tau":"τ","Ups":"υ","Phi":"φ","Chi":"χ","Psi":"ψ","Ome":"ω"}
 
 def requested_years():
@@ -24,6 +27,12 @@ def requested_years():
 def iso_label(d):y,w,wd=d.isocalendar(); return f"{y}-W{w:02d}-{wd}"
 def read_csv(name):
     with (SRC/name).open(newline="",encoding="utf-8") as f:return list(csv.DictReader(f))
+def load_regions():
+    if not REGIONS.exists():
+        raise RuntimeError(f"Missing {REGIONS.relative_to(ROOT)}; run the fixed-object region classifier first")
+    data=yaml.safe_load(REGIONS.read_text(encoding="utf-8")) or {}
+    return data.get("objects",{})
+REGION_OBJECTS=load_regions()
 def canonical_occurrence(occurrences,year,identity):
     """Select the single annual event represented by one ISO week-year.
 
@@ -65,9 +74,14 @@ def display_bayer(r):
     if bayer in GREEK_BAYER:
         con=r.get("con","").strip(); return f"{GREEK_BAYER[bayer]} {con}" if con else GREEK_BAYER[bayer]
     return bayer
+def in_milky_way(r):
+    key=display_bayer(r)
+    entry=REGION_OBJECTS.get("bayer",{}).get(key,{})
+    return bool(entry.get("milky_way",{}).get("inside",False))
 def star_label(r):
     proper=r.get("proper","").strip(); bayer=display_bayer(r); base=f"{proper} ({bayer})" if proper and bayer else (proper or bayer or f"{r.get('con','').strip()} star"); source_mag=(r.get("representative_vmax") or r.get("catalog_v") or r.get("mag") or "").strip()
-    return render_html(AlmanackObject(label=base,object_type="fixed_star",dec_deg=r["dec_deg"],best_date=dt.date.fromisoformat(r["best_date"]),observing_aid=observing_aid_for_magnitude(source_mag),magnitude=source_mag,magnitude_display="whole",catalog_id=(r.get("hyg_id") or r.get("hip") or "").strip(),provenance=(r.get("brightness_basis") or "").strip()))
+    label=render_html(AlmanackObject(label=base,object_type="fixed_star",dec_deg=r["dec_deg"],best_date=dt.date.fromisoformat(r["best_date"]),observing_aid=observing_aid_for_magnitude(source_mag),magnitude=source_mag,magnitude_display="whole",catalog_id=(r.get("hyg_id") or r.get("hip") or "").strip(),provenance=(r.get("brightness_basis") or "").strip()))
+    return label+(" — in the Milky Way" if in_milky_way(r) else "")
 def page_date_map(year):
     bayer=redated(read_csv("expanded-bayer-visibility-2026.csv"),year); bright=redated(read_csv("bright-star-visibility-2026.csv"),year); messier=redated_preserving_2026_phase(read_csv("messier-visibility-2026.csv"),year)
     write_csv(SRC/"generated"/f"expanded-bayer-visibility-{year}.csv",bayer); write_csv(SRC/"generated"/f"bright-star-visibility-{year}.csv",bright); write_csv(SRC/"generated"/f"messier-visibility-{year}.csv",messier)
@@ -101,5 +115,5 @@ def inject(root,year,events):
     return changed
 def main():
     for year in requested_years():
-        events=page_date_map(year); c1=inject(SOURCE_SITE,year,events); c2=inject(PUBLIC,year,events); print(f"{year}: canonical fixed-sky entries with observing glyph, magnitude, declination band and season; updated {c1} source + {c2} public pages")
+        events=page_date_map(year); c1=inject(SOURCE_SITE,year,events); c2=inject(PUBLIC,year,events); print(f"{year}: canonical fixed-sky entries with observing glyph, magnitude, declination band, season and Milky Way membership; updated {c1} source + {c2} public pages")
 if __name__=="__main__":main()
