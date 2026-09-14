@@ -54,5 +54,15 @@ jobs:
             exit 0
           fi
           git commit -m "Wire ephemeris notation modes for ISO range $START_YEAR-W$START_WEEK to $END_YEAR-W$END_WEEK"
-          git pull --rebase origin main
-          git push
+
+          for attempt in 1 2 3; do
+            git fetch origin main
+            git rebase origin/main
+            if git push origin HEAD:main; then
+              exit 0
+            fi
+            echo "Push race detected; retrying ($attempt/3)"
+          done
+
+          echo 'Unable to push after 3 attempts'
+          exit 1
