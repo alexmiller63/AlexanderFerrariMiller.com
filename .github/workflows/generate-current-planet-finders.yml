@@ -18,6 +18,8 @@ on:
       - 'tools/generate_planet_finders.py'
       - 'tools/populate_ephemeris.py'
       - 'tools/star_almanack_ephemeris.py'
+      - 'Star-Almanack-Repo/EPHEMERIS-PROVENANCE.md'
+      - 'Star-Almanack-Repo/THIRD-PARTY-LICENSES.md'
       - '.github/workflows/generate-current-planet-finders.yml'
 
 permissions:
@@ -39,7 +41,7 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: Restore public-domain ephemeris source cache
+      - name: Restore JPL/NAIF ephemeris source cache
         uses: actions/cache@v4
         with:
           path: |
@@ -47,8 +49,8 @@ jobs:
             .cache/skyfield/ceres_1900_2100.bsp
           key: star-almanack-source-kernels-v1
 
-      - name: Install calculation dependency
-        run: python -m pip install --disable-pip-version-check skyfield
+      - name: Install pinned calculation dependency
+        run: python -m pip install --disable-pip-version-check 'skyfield==1.55'
 
       - name: Download source kernels only when cache is empty
         run: |
@@ -61,10 +63,12 @@ jobs:
           de440s = root / 'de440s.bsp'
           ceres = root / 'ceres_1900_2100.bsp'
           if not de440s.exists():
+              print('Downloading JPL DE440s source kernel under NAIF distribution rules')
               Loader(str(root)).download('de440s.bsp')
           else:
               print(f'Reusing cached {de440s}')
           if not ceres.exists():
+              print('Downloading JPL/NAIF Ceres source kernel under NAIF distribution rules')
               urlretrieve('https://naif.jpl.nasa.gov/pub/naif/generic_kernels/spk/asteroids/a_old_versions/ceres_1900_2100.bsp', ceres)
           else:
               print(f'Reusing cached {ceres}')
