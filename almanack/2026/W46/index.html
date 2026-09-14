@@ -250,7 +250,38 @@ table.ephemeris small { white-space:nowrap; }
     padding:.55rem .35rem !important;
   }
 }
-</style></head><body><header><div class="wrap"><div class="brand"><a href="/almanack/2026/">Star Almanack</a></div><div class="subtitle">Alexander Ferrari Miller</div></div></header><main class="wrap"><nav class="weeknav sitenav"><a href="/star-almanack/">Almanack Home</a><a href="/projects.html">All Projects</a><a href="../../../index.html">Main Site</a></nav><nav class="yearnav"><a href="../../2025/">← 2025</a><a href="../">2026</a><a href="../../2027/">2027 →</a></nav><nav class="weeknav week-position" aria-label="Week navigation"><a href="../W45/">← ISO 2026-W45</a><span aria-current="page">ISO 2026-W46</span><a href="../W47/">ISO 2026-W47 →</a></nav><h2>ISO 2026-W46</h2>
+</style><style id="calendar-mobile-layout-css">
+@media (max-width:760px) {
+  table.calendar { width:100%; table-layout:fixed; }
+  table.calendar th, table.calendar td { min-width:0; padding:.55rem .45rem; overflow-wrap:normal; word-break:normal; }
+  table.calendar th:first-child, table.calendar td:first-child { width:24%; }
+  table.calendar th:nth-child(2), table.calendar td:nth-child(2) { width:24%; }
+  table.calendar th:nth-child(3), table.calendar td:nth-child(3) { width:52%; }
+  table.calendar td:first-child { white-space:normal; overflow-wrap:anywhere; }
+  table.calendar td:nth-child(2) { white-space:normal; text-align:center; }
+  table.calendar td.calendar-events-region,
+  .calendar-events,
+  .calendar-events .event-cell { min-width:0; max-width:100%; }
+  .calendar-events .event-cell { overflow-wrap:normal; word-break:normal; }
+  table.calendar .notation-item,
+  table.calendar .notation-rendered,
+  table.calendar .visibility-magnitude,
+  table.calendar .observing-aid-notation,
+  table.calendar .observing-notation-item { white-space:nowrap; }
+  /* Observing-aid labels are semantic tokens.  In mixed mode the symbol and
+     word must move together rather than splitting across two visual lines. */
+  table.calendar .observing-aid-notation,
+  table.calendar .observing-notation-item { display:inline-block; max-width:100%; }
+  /* Latin zodiac names must fit the compact Zodiac-day column without
+     wrapping; keep the Greek glyph size unchanged in Greek mode. */
+  main:has(.section-notation-toggle[data-notation-target="calendar"] button[data-bayer-mode="latin"][aria-pressed="true"])
+    table.calendar .zodiac-day .notation-item,
+  main:has(.section-notation-toggle[data-notation-target="calendar"] button[data-bayer-mode="latin"][aria-pressed="true"])
+    table.calendar .zodiac-day .notation-rendered { font-size:.76rem; line-height:1.05; }
+  .visibility { white-space:normal; }
+}
+</style>
+</head><body><header><div class="wrap"><div class="brand"><a href="/almanack/2026/">Star Almanack</a></div><div class="subtitle">Alexander Ferrari Miller</div></div></header><main class="wrap"><nav class="weeknav sitenav"><a href="/star-almanack/">Almanack Home</a><a href="/projects.html">All Projects</a><a href="../../../index.html">Main Site</a></nav><nav class="yearnav"><a href="../../2025/">← 2025</a><a href="../">2026</a><a href="../../2027/">2027 →</a></nav><nav class="weeknav week-position" aria-label="Week navigation"><a href="../W45/">← ISO 2026-W45</a><span aria-current="page">ISO 2026-W46</span><a href="../W47/">ISO 2026-W47 →</a></nav><h2>ISO 2026-W46</h2>
 <p><strong>ISO dates:</strong> 2026-W46-1 through 2026-W46-7</p>
 <p><strong>Civil dates:</strong> Nov 9, 2026 – Nov 15, 2026</p>
 <div class="bayer-toggle-wrap section-notation-toggle" data-notation-target="calendar"><div class="bayer-toggle" role="group" aria-label="Astronomical notation"><span class="bayer-toggle-label">Notation:</span><button type="button" data-bayer-mode="greek" aria-pressed="true">Greek/Symbols</button><button type="button" data-bayer-mode="latin" aria-pressed="false">Latin</button><button type="button" data-bayer-mode="mixed" data-legacy-label="Mixed · Learner" aria-pressed="false">Mixed Learner</button></div></div><h3>Calendar</h3>
