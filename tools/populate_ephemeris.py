@@ -1,30 +1,27 @@
 #!/usr/bin/env python3
-"""Populate weekly Star Almanack Solar-System ephemerides from JPL Horizons.
+"""Populate weekly Star Almanack Solar-System ephemerides from local source kernels.
 
-The weekly table is a civil-time presentation snapshot, not an event solver:
-each row is sampled directly at Monday 00:00 UTC. Event interpolation elsewhere
-uses the Almanack's canonical JDTDB time layer.
+The weekly table is a civil-time presentation snapshot: each row is sampled at
+Monday 00:00 UTC, then calculated locally from cached public-domain JPL SPK
+source data.  No Horizons or other answer service is queried.
 """
 from __future__ import annotations
 
 import argparse
-import csv
-import json
 import re
-import urllib.parse
-import urllib.request
-from datetime import date, timedelta
+from datetime import date
 from pathlib import Path
 
+from star_almanack_ephemeris import StarAlmanackEphemeris
+
 ROOT = Path(__file__).resolve().parents[1]
-HORIZONS_API = "https://ssd.jpl.nasa.gov/api/horizons.api"
 SIGNS = "♈♉♊♋♌♍♎♏♐♑♒♓"
 
 TARGETS = [
-    ("☉ Sun", "sun", "10"), ("☽ Moon", "moon", "301"), ("☿ Mercury", "mercury", "199"),
-    ("♀ Venus", "venus", "299"), ("♂ Mars", "mars", "499"), ("♃ Jupiter", "jupiter", "599"),
-    ("♄ Saturn", "saturn", "699"), ("⚳ Ceres", "ceres", "1;"), ("♅ Uranus", "uranus", "799"),
-    ("♆ Neptune", "neptune", "899"), ("♇ Pluto", "pluto", "999"),
+    ("☉ Sun", "sun", "sun"), ("☽ Moon", "moon", "moon"), ("☿ Mercury", "mercury", "mercury"),
+    ("♀ Venus", "venus", "venus"), ("♂ Mars", "mars", "mars"), ("♃ Jupiter", "jupiter", "jupiter"),
+    ("♄ Saturn", "saturn", "saturn"), ("⚳ Ceres", "ceres", "ceres"), ("♅ Uranus", "uranus", "uranus"),
+    ("♆ Neptune", "neptune", "neptune"), ("♇ Pluto", "pluto", "pluto"),
 ]
 
 VISIBILITY_GLYPHS = {
@@ -56,43 +53,37 @@ def target_heading(display):
     return f"{symbol_html(glyph)} {name}"
 
 
-def horizons_ephemeris(year, command):
-    """Return direct Horizons samples at each ISO Monday 00:00 UTC.
-
-    This function deliberately requests calendar-format observer epochs because
-    the epoch itself is a publication-defined UTC snapshot. No event instant is
-    solved or interpolated here, so converting the sampling grid to JDTDB would
-    change the requested civil snapshot rather than improve its time model.
-    """
-    count = week_count(year); first = date.fromisocalendar(year, 1, 1); last = date.fromisocalendar(year, count, 1)
-    params = {"format":"json","COMMAND":f"'{command}'","OBJ_DATA":"'NO'","MAKE_EPHEM":"'YES'","EPHEM_TYPE":"'OBSERVER'","CENTER":"'500@399'","START_TIME":f"'{first.isoformat()} 00:00 UTC'","STOP_TIME":f"'{(last + timedelta(days=1)).isoformat()} 00:00 UTC'","STEP_SIZE":"'7 d'","QUANTITIES":"'9,23,31'","CSV_FORMAT":"'YES'","ANG_FORMAT":"'DEG'","CAL_FORMAT":"'CAL'","TIME_DIGITS":"'SECONDS'"}
-    req = urllib.request.Request(HORIZONS_API + "?" + urllib.parse.urlencode(params), headers={"User-Agent":"Star-Almanack/ephemeris"})
-    payload = json.load(urllib.request.urlopen(req, timeout=90)); text = payload.get("result", ""); lines = text.splitlines()
-    header_line = next(x for x in lines if "ObsEcLon" in x and "ObsEcLat" in x); header = [x.strip() for x in next(csv.reader([header_line]))]
-    def column(*names):
-        for name in names:
-            if name in header: return header.index(name)
-        return None
-    lon_i, lat_i, mag_i, elong_i = column("ObsEcLon"), column("ObsEcLat"), column("APmag","T-mag"), column("S-O-T")
-    values = []
-    for line in lines[lines.index("$$SOE") + 1 : lines.index("$$EOE")]:
-        if not line.strip(): continue
-        row = next(csv.reader([line]))
-        def number(index):
-            if index is None or row[index].strip() in ("", "n.a."): return None
-            return float(row[index].strip())
-        values.append((number(lon_i), number(lat_i), number(mag_i), number(elong_i)))
-    if len(values) != count: raise RuntimeError(f"Expected {count} weekly rows for {year} target {command}, found {len(values)}")
-    return values
+def computed_ephemeris(year: int, engine: StarAlmanackEphemeris | None = None):
+    """Return locally calculated Monday-00:00-UTC samples for every target."""
+    engine = engine or StarAlmanackEphemeris()
+    count = week_count(year)
+    generated = {key: [] for _, key, _ in TARGETS}
+    for week in range(1, count + 1):
+        monday = date.fromisocalendar(year, week, 1)
+        for _, key, _ in TARGETS:
+            sample = engine.sample(key, monday)
+            generated[key].append((
+                sample.longitude_deg,
+                sample.latitude_deg,
+                sample.magnitude,
+                sample.elongation_deg,
+            ))
+    return generated
 
 
 def zodiac(longitude):
-    minutes = int(round((longitude % 360) * 60)) % (360 * 60); sign, within = divmod(minutes, 1800); degree, minute = divmod(within, 60)
+    minutes = int(round((longitude % 360) * 60)) % (360 * 60)
+    sign, within = divmod(minutes, 1800)
+    degree, minute = divmod(within, 60)
     return f"{symbol_html(SIGNS[sign])} {degree}°{minute:02d}′"
 
+
 def beta(latitude):
-    sign = "+" if latitude >= 0 else "−"; minutes = int(round(abs(latitude) * 60)); degree, minute = divmod(minutes, 60)
+    sign = "+" if latitude >= 0 else "−"
+    minutes = int(round(abs(latitude) * 60))
+    degree, minute = divmod(minutes, 60)
     return f"β {sign}{degree}°{minute:02d}′"
+
 
 def current_visibility(magnitude, elongation):
     if elongation is not None and elongation < 20.0: return "near_sun"
@@ -101,8 +92,10 @@ def current_visibility(magnitude, elongation):
     if magnitude <= 7.5: return "binoculars"
     return "telescope"
 
+
 def visibility_html(magnitude, elongation):
-    aid = current_visibility(magnitude, elongation); return VISIBILITY_GLYPHS[aid] if aid else ""
+    aid = current_visibility(magnitude, elongation)
+    return VISIBILITY_GLYPHS[aid] if aid else ""
 
 
 def planet_finder(year, week):
@@ -119,12 +112,14 @@ def planet_finder(year, week):
 def render_ephemeris(monday, values):
     primary, extended = TARGETS[:7], TARGETS[7:]
     week = monday.isocalendar().week
+
     def table(columns, show_visibility=True, extra_class=""):
         headers = "".join(f"<th>{target_heading(display)}</th>" for display, _, _ in columns)
         positions = "".join(f"<td>{values[key][0]}<br><small>{values[key][1]}</small></td>" for _, key, _ in columns)
         rows = "<tr>" + positions + "</tr>"
         if show_visibility:
-            rows += f'<tr class="ephemeris-visibility-label"><th colspan="{len(columns)}" scope="rowgroup">Observing</th></tr>' + '<tr class="ephemeris-visibility" aria-label="Observing">' + "".join(f"<td>{values[key][2]}</td>" for _, key, _ in columns) + "</tr>"
+            rows += f'<tr class="ephemeris-visibility-label"><th colspan="{len(columns)}" scope="rowgroup">Observing</th></tr>'
+            rows += '<tr class="ephemeris-visibility" aria-label="Observing">' + "".join(f"<td>{values[key][2]}</td>" for _, key, _ in columns) + "</tr>"
         classes = "ephemeris" + (f" {extra_class}" if extra_class else "")
         return f'<table class="{classes}"><thead><tr>' + headers + "</tr></thead><tbody>" + rows + "</tbody></table>"
 
@@ -142,12 +137,14 @@ def render_ephemeris(monday, values):
         + planet_finder(monday.year, week)
     )
 
+
 EPHEMERIS_SECTION = re.compile(
     r'<h3>Weekly Solar-System Ephemeris</h3>.*?'
     r'(?=<h3>(?!Weekly Solar-System Ephemeris</h3>|Planet Finder</h3>)|<h2>|</main>)',
     re.DOTALL,
 )
 CALENDAR_BLOCK = re.compile(r'(<h3>Calendar</h3>\s*<table\s+class="calendar">.*?</table>)', re.DOTALL)
+
 
 def put_ephemeris(text, replacement, path):
     new, count = EPHEMERIS_SECTION.subn(lambda _: replacement, text, count=1)
@@ -156,30 +153,52 @@ def put_ephemeris(text, replacement, path):
     if count == 1: return new
     raise RuntimeError(f"Could not locate either an ephemeris section or calendar insertion point in {path.relative_to(ROOT)}")
 
-def update_year(year):
-    count = week_count(year); generated = {}
-    for _, key, command in TARGETS:
-        print(f"Fetching {year} {key} from JPL Horizons"); generated[key] = horizons_ephemeris(year, command)
+
+def update_year(year, engine=None):
+    generated = computed_ephemeris(year, engine)
+    count = week_count(year)
     changed = 0
     for week in range(1, count + 1):
         monday = date.fromisocalendar(year, week, 1)
-        values = {key:(zodiac(generated[key][week-1][0]), beta(generated[key][week-1][1]), visibility_html(generated[key][week-1][2], generated[key][week-1][3])) for _, key, _ in TARGETS}
+        values = {
+            key: (
+                zodiac(generated[key][week - 1][0]),
+                beta(generated[key][week - 1][1]),
+                visibility_html(generated[key][week - 1][2], generated[key][week - 1][3]),
+            )
+            for _, key, _ in TARGETS
+        }
         replacement = render_ephemeris(monday, values)
         for base in (ROOT / "almanack", ROOT / "Star-Almanack-Repo" / "site"):
-            path = base / str(year) / f"W{week:02d}" / "index.html"; text = path.read_text(encoding="utf-8"); new = put_ephemeris(text, replacement, path)
-            if new != text: path.write_text(new, encoding="utf-8"); changed += 1
+            path = base / str(year) / f"W{week:02d}" / "index.html"
+            text = path.read_text(encoding="utf-8")
+            new = put_ephemeris(text, replacement, path)
+            if new != text:
+                path.write_text(new, encoding="utf-8")
+                changed += 1
     return changed
 
+
 def parse_years():
-    parser = argparse.ArgumentParser(description="Populate weekly Solar-System ephemeris for one or more ISO years."); parser.add_argument("years", nargs="+", type=int, help="ISO week-years to populate"); args = parser.parse_args(); years = list(dict.fromkeys(args.years))
+    parser = argparse.ArgumentParser(description="Populate weekly Solar-System ephemeris for one or more ISO years.")
+    parser.add_argument("years", nargs="+", type=int, help="ISO week-years to populate")
+    args = parser.parse_args()
+    years = list(dict.fromkeys(args.years))
     for year in years:
-        if not 1900 <= year <= 2100: parser.error(f"YEAR must be between 1900 and 2100: {year}")
+        if not 1900 <= year <= 2100:
+            parser.error(f"YEAR must be between 1900 and 2100: {year}")
     return years
 
+
 def main():
-    years = parse_years(); total = 0
+    years = parse_years()
+    engine = StarAlmanackEphemeris()
+    total = 0
     for year in years:
-        changed = update_year(year); print(f"Updated {changed} weekly pages for {year}"); total += changed
+        changed = update_year(year, engine)
+        print(f"Updated {changed} weekly pages for {year}")
+        total += changed
     print(f"Updated {total} weekly pages total")
+
 
 if __name__ == "__main__": main()
