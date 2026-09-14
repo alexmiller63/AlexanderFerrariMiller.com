@@ -35,9 +35,9 @@ jobs:
           from pathlib import Path
 
           data = yaml.safe_load(Path('Star-Almanack-Repo/fixed-object-regions.yaml').read_text())
-          sirius = data['objects']['bayer'].get('Alp CMa')
+          sirius = data['objects']['bayer'].get('α CMa')
           if sirius is None:
-              raise SystemExit('Sirius (Alp CMa) was not found in fixed-object-regions.yaml')
+              raise SystemExit('Sirius (α CMa) was not found in fixed-object-regions.yaml')
           print('Sirius:', sirius['milky_way'])
           PY
 
