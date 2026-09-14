@@ -78,8 +78,8 @@ jobs:
             .cache/skyfield/ceres_1900_2100.bsp
           key: star-almanack-source-kernels-v1
 
-      - name: Install astronomical calculation dependency
-        run: python -m pip install --disable-pip-version-check skyfield==1.55
+      - name: Install astronomical calculation dependencies
+        run: python -m pip install --disable-pip-version-check skyfield==1.55 PyYAML
 
       - name: Download source kernels only when cache is empty
         run: |
