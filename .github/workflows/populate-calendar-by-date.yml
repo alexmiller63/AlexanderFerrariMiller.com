@@ -137,9 +137,11 @@ jobs:
                     .filter(el => el.scrollWidth > el.clientWidth + 1)
                     .map(el => (el.textContent || '').trim().slice(0, 100)),
                   wrappedTokens: [...document.querySelectorAll(
-                      'table.calendar .notation-item, table.calendar .notation-rendered, '
-                      + 'table.calendar .visibility-magnitude, table.calendar .observing-aid-notation, '
-                      + 'table.calendar .observing-notation-item'
+                      'td.calendar-events-region .calendar-events .notation-item, '
+                      + 'td.calendar-events-region .calendar-events .notation-rendered, '
+                      + 'td.calendar-events-region .calendar-events .visibility-magnitude, '
+                      + 'td.calendar-events-region .calendar-events .observing-aid-notation, '
+                      + 'td.calendar-events-region .calendar-events .observing-notation-item'
                     )]
                     .filter(actuallyWraps)
                     .map(el => (el.textContent || '').trim().slice(0, 100))
