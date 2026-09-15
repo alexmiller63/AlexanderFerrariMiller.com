@@ -174,7 +174,7 @@ jobs:
               rows_by_year[year].append(row)
               d += timedelta(days=7)
 
-          root = Path('Star-Almanack-Repo')
+          root = Path('Historical')
           fields = ['iso_week', 'monday_utc', *bodies]
           for year, rows in sorted(rows_by_year.items()):
               path = root / f'weekly-ephemeris-{year}.csv'
@@ -218,9 +218,9 @@ jobs:
 
           # The weekly ephemeris CSVs are temporary local inputs for this workflow.
           # Restore tracked canonical CSVs, then delete only untracked temporary slices.
-          git ls-files -z 'Star-Almanack-Repo/weekly-ephemeris-*.csv' \
+          git ls-files -z 'Historical/weekly-ephemeris-*.csv' \
             | xargs -0 -r git restore --worktree --
-          git ls-files --others --exclude-standard -z -- 'Star-Almanack-Repo/weekly-ephemeris-*.csv' \
+          git ls-files --others --exclude-standard -z -- 'Historical/weekly-ephemeris-*.csv' \
             | xargs -0 -r rm -f --
 
           if git diff --cached --quiet; then

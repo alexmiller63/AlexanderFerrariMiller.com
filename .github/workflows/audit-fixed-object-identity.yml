@@ -29,7 +29,7 @@ jobs:
 
       - name: Commit audit and registry results
         run: |
-          git add Star-Almanack-Repo/generated/fixed-object-identity-audit.json Star-Almanack-Repo/generated/fixed-object-contradiction-review.json Star-Almanack-Repo/generated/fixed-object-identity-exceptions.json Star-Almanack-Repo/database/fixed-object-registry.json
+          git add Historical/generated/fixed-object-identity-audit.json Historical/generated/fixed-object-contradiction-review.json Historical/generated/fixed-object-identity-exceptions.json Historical/database/fixed-object-registry.json
           if git diff --cached --quiet; then
             echo "Identity audit and registry are already current."
             exit 0

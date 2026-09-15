@@ -25,7 +25,7 @@ jobs:
           python -m pip install 'git+https://github.com/lkangas/eclipse-calc.git@master'
 
       - name: Run independent Besselian greatest-eclipse comparison
-        working-directory: Star-Almanack-Repo
+        working-directory: Historical
         run: |
           python - <<'PY'
           from datetime import datetime, timezone

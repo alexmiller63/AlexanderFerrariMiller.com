@@ -36,7 +36,7 @@ jobs:
           if not years or any(not re.fullmatch(r'\d{4}', year) for year in years):
               raise SystemExit('Years must be four digits, e.g. 2025 2027')
 
-          publisher = Path('Star-Almanack-Repo/publish_weekly_pages.py')
+          publisher = Path('Historical/publish_weekly_pages.py')
           text = publisher.read_text(encoding='utf-8')
 
           css_old = 'table.calendar td:nth-child(3) { line-height:1.6; }'
@@ -60,7 +60,7 @@ jobs:
           pages = []
           for year in years:
               pages.extend(sorted((Path('almanack') / year).glob('W??/index.html')))
-              pages.extend(sorted((Path('Star-Almanack-Repo/site') / year).glob('W??/index.html')))
+              pages.extend(sorted((Path('Historical/site') / year).glob('W??/index.html')))
           if not pages:
               raise SystemExit(f'No weekly pages found for requested years: {" ".join(years)}')
 
@@ -85,9 +85,9 @@ jobs:
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add Star-Almanack-Repo/publish_weekly_pages.py
+          git add Historical/publish_weekly_pages.py
           for year in $ALMANACK_YEARS; do
-            git add "Star-Almanack-Repo/site/$year"/W??/index.html "almanack/$year"/W??/index.html
+            git add "Historical/site/$year"/W??/index.html "almanack/$year"/W??/index.html
           done
           if git diff --cached --quiet; then
             echo 'No visibility wrapping changes.'

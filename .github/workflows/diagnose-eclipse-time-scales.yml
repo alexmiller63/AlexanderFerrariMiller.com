@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: Star-Almanack-Repo
+        working-directory: Historical
 
     steps:
       - name: Check out Star Almanack
@@ -31,7 +31,7 @@ jobs:
         run: python3 -m pip install --disable-pip-version-check spiceypy pyyaml
 
       - name: Bootstrap ELP2000-82B archive
-        working-directory: Star-Almanack-Repo/star-almanack-elp82b
+        working-directory: Historical/star-almanack-elp82b
         run: |
           python lunar_elp.py bootstrap data/elp82b
           python lunar_elp.py verify data/elp82b
@@ -144,6 +144,6 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: eclipse-time-scale-diagnostic
-          path: Star-Almanack-Repo/eclipse-time-scale-diagnostic.txt
+          path: Historical/eclipse-time-scale-diagnostic.txt
           if-no-files-found: error
           retention-days: 7

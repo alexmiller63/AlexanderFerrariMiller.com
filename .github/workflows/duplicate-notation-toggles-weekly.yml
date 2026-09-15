@@ -60,7 +60,7 @@ jobs:
 
           changed = 0
           for year in years:
-            for tree in ('almanack', 'Star-Almanack-Repo/site'):
+            for tree in ('almanack', 'Historical/site'):
               root = repo / tree / str(year)
               if not root.exists():
                 raise SystemExit(f'Missing Almanack year tree: {root}')
@@ -99,7 +99,7 @@ jobs:
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           for year in $ALMANACK_YEARS; do
-            git add "almanack/$year" "Star-Almanack-Repo/site/$year"
+            git add "almanack/$year" "Historical/site/$year"
           done
           if git diff --cached --quiet; then
             echo 'Weekly notation toggles are already in place.'

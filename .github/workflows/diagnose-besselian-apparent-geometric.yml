@@ -5,7 +5,7 @@ on:
   push:
     paths:
       - '.github/workflows/diagnose-besselian-apparent-geometric.yml'
-      - 'Star-Almanack-Repo/eclipse-validation-cases.yaml'
+      - 'Historical/eclipse-validation-cases.yaml'
 
 permissions:
   contents: read
@@ -39,7 +39,7 @@ jobs:
               print(f'Reusing cached {p} ({p.stat().st_size:,} bytes)')
           PY
       - name: Compare apparent and geometric Besselian minima
-        working-directory: Star-Almanack-Repo
+        working-directory: Historical
         run: |
           python - <<'PY'
           from datetime import datetime, timezone

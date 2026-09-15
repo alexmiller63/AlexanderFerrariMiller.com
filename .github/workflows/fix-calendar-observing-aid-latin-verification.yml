@@ -23,9 +23,9 @@ jobs:
           new = r'''document.querySelectorAll('table.calendar .visibility-magnitude').forEach(v=>{let imgs=Array.from(v.querySelectorAll('img.visibility-glyph')),i=0;while(i<imgs.length){let img=imgs[i],src=img.getAttribute('src')||'',tel=/telescope\.svg(?:$|[?#])/.test(src),next=imgs[i+1],nextsrc=next?(next.getAttribute('src')||''):'',sub=tel&&next&&/telescope\.svg(?:$|[?#])/.test(nextsrc),label=sub?'Substantial telescope':/eye\.svg(?:$|[?#])/.test(src)?'Naked eye':/binoculars\.svg(?:$|[?#])/.test(src)?'Binoculars':tel?'Telescope':null;if(!label){i++;continue}let wrap=document.createElement('span');wrap.className='observing-aid-notation';wrap.dataset.label=label;wrap.style.whiteSpace='nowrap';let symbol=document.createElement('span');symbol.className='observing-aid-symbol';img.replaceWith(wrap);symbol.append(img);if(sub){symbol.append(next);i++}let word=document.createElement('span');word.className='observing-aid-word';word.textContent=label;wrap.append(symbol,word);i++}});
 let buttons=document.querySelectorAll('[data-bayer-mode]');function setMode(mode){document.querySelectorAll('.notation-item').forEach(s=>s.textContent=s.dataset[mode]||s.dataset.greek);document.querySelectorAll('table.calendar .observing-aid-notation').forEach(item=>{let symbol=item.querySelector('.observing-aid-symbol'),word=item.querySelector('.observing-aid-word');symbol.hidden=mode==='latin';word.hidden=mode==='greek'});buttons.forEach(x=>x.setAttribute('aria-pressed',x.dataset.bayerMode===mode?'true':'false'));'''
 
-          paths = [Path('Star-Almanack-Repo/add_greek_latin_toggle.py')]
+          paths = [Path('Historical/add_greek_latin_toggle.py')]
           paths += sorted(Path('almanack').glob('20??/W??/index.html'))
-          paths += sorted(Path('Star-Almanack-Repo/site').glob('20??/W??/index.html'))
+          paths += sorted(Path('Historical/site').glob('20??/W??/index.html'))
           changed = 0
           for p in paths:
               text = p.read_text(encoding='utf-8')
@@ -54,7 +54,7 @@ let buttons=document.querySelectorAll('[data-bayer-mode]');function setMode(mode
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add Star-Almanack-Repo/add_greek_latin_toggle.py almanack Star-Almanack-Repo/site .github/workflows/populate-calendar-by-date.yml
+          git add Historical/add_greek_latin_toggle.py almanack Historical/site .github/workflows/populate-calendar-by-date.yml
           if git diff --cached --quiet; then
             echo 'No changes to commit.'
             exit 0

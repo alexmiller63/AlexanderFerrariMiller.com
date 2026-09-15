@@ -22,11 +22,11 @@ jobs:
           from pathlib import Path
 
           files = [
-              Path('Star-Almanack-Repo/add_greek_latin_toggle.py'),
+              Path('Historical/add_greek_latin_toggle.py'),
               Path('almanack/js/notation.js'),
           ]
           files += sorted(Path('almanack/2026').glob('W??/index.html'))
-          files += sorted(Path('Star-Almanack-Repo/site/2026').glob('W??/index.html'))
+          files += sorted(Path('Historical/site/2026').glob('W??/index.html'))
 
           replacements = [
               (
@@ -63,7 +63,7 @@ jobs:
           from pathlib import Path
           for path in [
               Path('almanack/2026/W41/index.html'),
-              Path('Star-Almanack-Repo/site/2026/W41/index.html'),
+              Path('Historical/site/2026/W41/index.html'),
           ]:
               text = path.read_text(encoding='utf-8')
               assert "greek=bm[1]+suffix+' '+bm[3]" in text, path
@@ -76,6 +76,6 @@ jobs:
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add Star-Almanack-Repo/add_greek_latin_toggle.py almanack/js/notation.js almanack/2026/W??/index.html Star-Almanack-Repo/site/2026/W??/index.html
+          git add Historical/add_greek_latin_toggle.py almanack/js/notation.js almanack/2026/W??/index.html Historical/site/2026/W??/index.html
           git commit -m 'Use constellation abbreviations in Greek Bayer mode'
           git push origin main

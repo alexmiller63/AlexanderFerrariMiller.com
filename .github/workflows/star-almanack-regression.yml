@@ -6,8 +6,8 @@ on:
     paths:
       - 'tools/star_almanack_*.py'
       - 'tools/populate_fixed_sky.py'
-      - 'Star-Almanack-Repo/enrich_stellar_entries.py'
-      - 'Star-Almanack-Repo/audit_stellar_entries.py'
+      - 'Historical/enrich_stellar_entries.py'
+      - 'Historical/audit_stellar_entries.py'
       - '.github/workflows/star-almanack-regression.yml'
 
 permissions:
@@ -29,7 +29,7 @@ jobs:
         run: python tools/test_star_almanack_astronomy.py
 
       - name: Generate canonical stellar presentation
-        run: python Star-Almanack-Repo/enrich_stellar_entries.py
+        run: python Historical/enrich_stellar_entries.py
 
       - name: Stellar presentation audit
-        run: python Star-Almanack-Repo/audit_stellar_entries.py
+        run: python Historical/audit_stellar_entries.py

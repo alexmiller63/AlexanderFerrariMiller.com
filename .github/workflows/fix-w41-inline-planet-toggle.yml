@@ -25,7 +25,7 @@ jobs:
 
           paths = [
               Path('almanack/2026/W41/index.html'),
-              Path('Star-Almanack-Repo/site/2026/W41/index.html'),
+              Path('Historical/site/2026/W41/index.html'),
           ]
 
           changed = 0
@@ -51,7 +51,7 @@ jobs:
           set -euo pipefail
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add almanack/2026/W41/index.html Star-Almanack-Repo/site/2026/W41/index.html
+          git add almanack/2026/W41/index.html Historical/site/2026/W41/index.html
           if git diff --cached --quiet; then
             echo 'No W41 inline toggle changes.'
             exit 0

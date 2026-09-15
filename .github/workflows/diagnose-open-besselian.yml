@@ -5,9 +5,9 @@ on:
   push:
     paths:
       - '.github/workflows/diagnose-open-besselian.yml'
-      - 'Star-Almanack-Repo/besselian_eclipse_engine.py'
-      - 'Star-Almanack-Repo/eclipse-validation-cases.yaml'
-      - 'Star-Almanack-Repo/THIRD-PARTY-LICENSES.md'
+      - 'Historical/besselian_eclipse_engine.py'
+      - 'Historical/eclipse-validation-cases.yaml'
+      - 'Historical/THIRD-PARTY-LICENSES.md'
 
 permissions:
   contents: read
@@ -56,7 +56,7 @@ jobs:
           PY
 
       - name: Compare production backend with frozen NASA targets
-        working-directory: Star-Almanack-Repo
+        working-directory: Historical
         run: |
           python - <<'PY'
           from datetime import datetime
@@ -82,9 +82,9 @@ jobs:
                   cases.append((case['label'], case['date_utc'], case['nasa_greatest_utc']))
 
           print('STAR ALMANACK — PRODUCTION BESSELIAN GREATEST-ECLIPSE AUDIT')
-          print('Backend: Star-Almanack-Repo/besselian_eclipse_engine.py')
+          print('Backend: Historical/besselian_eclipse_engine.py')
           print('Dependency: lkangas/eclipse-calc @ 23853a8f9e0d1a25e026203207aca16de1d7bb31')
-          print('License notice: Star-Almanack-Repo/THIRD-PARTY-LICENSES.md')
+          print('License notice: Historical/THIRD-PARTY-LICENSES.md')
           print('Ephemeris: JPL DE440s via Skyfield')
           print()
           print(f"{'Case':38s} {'NASA UTC':20s} {'Besselian UTC':24s} {'Residual':>10s} {'gamma':>10s}")
