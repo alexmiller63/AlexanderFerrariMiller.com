@@ -239,7 +239,7 @@ def render_ephemeris(monday, values):
                 cells.append(content)
             rows.append(f'<tr><th scope="row">{label}</th>{"".join(cells)}</tr>')
         classes = "ephemeris" + (f" {extra_class}" if extra_class else "")
-        return f'<table class="{classes}"><thead><tr>{headers}</tr></thead><tbody>{"".join(rows)}</tbody></table>'
+        return f'<div class="ephemeris-scroll"><table class="{classes}"><thead><tr>{headers}</tr></thead><tbody>{"".join(rows)}</tbody></table></div>'
 
     return (
         "<h3>Weekly Solar-System Ephemeris</h3>"
