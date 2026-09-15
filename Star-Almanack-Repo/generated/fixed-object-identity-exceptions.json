@@ -2,7 +2,7 @@
   "schema_version": 1,
   "purpose": "Compact exception report for pre-migration fixed-object identity audit.",
   "source_audit": "Star-Almanack-Repo/generated/fixed-object-identity-audit.json",
-  "exception_count": 8,
+  "exception_count": 10,
   "exceptions": [
     {
       "candidate_id": 24,
@@ -207,6 +207,64 @@
       "catalog_target_model": "region",
       "review_class": "no_cross_source_identifier",
       "database_guidance": "Coalsack dark-nebula region; preserve region semantics rather than treating it as an ordinary compact object."
+    },
+    {
+      "candidate_id": 637,
+      "source": "database/supplemental-physical-objects.json",
+      "source_key": "hd:238107",
+      "identifiers": [
+        {
+          "namespace": "hd",
+          "value": "238107"
+        },
+        {
+          "namespace": "gaia_dr3",
+          "value": "1575047353068482688"
+        },
+        {
+          "namespace": "wds",
+          "value": "J12222+5805A"
+        }
+      ],
+      "name": "HD 238107",
+      "constellation": "UMa",
+      "ra_h": 12.37014645,
+      "dec_deg": 58.08293027,
+      "object_type": "star",
+      "object_type_family": "star",
+      "notes": "Winnecke 4 / M40 component A; ICRS J2000 position from Gaia DR3-backed SIMBAD record.",
+      "identity_role": "physical_object_candidate",
+      "supplemental_source": "SIMBAD",
+      "supplemental_source_record": "HD 238107",
+      "review_class": "no_cross_source_identifier",
+      "database_guidance": "Review catalog/target semantics before permanent identity assignment."
+    },
+    {
+      "candidate_id": 638,
+      "source": "database/supplemental-physical-objects.json",
+      "source_key": "hd:238108",
+      "identifiers": [
+        {
+          "namespace": "hd",
+          "value": "238108"
+        },
+        {
+          "namespace": "wds",
+          "value": "J12222+5805B"
+        }
+      ],
+      "name": "HD 238108",
+      "constellation": "UMa",
+      "ra_h": 12.37194429,
+      "dec_deg": 58.08621314,
+      "object_type": "star",
+      "object_type_family": "star",
+      "notes": "Winnecke 4 / M40 component B; ICRS J2000 position 12 22 18.9994 +58 05 10.3673 as reported from SIMBAD.",
+      "identity_role": "physical_object_candidate",
+      "supplemental_source": "SIMBAD",
+      "supplemental_source_record": "HD 238108",
+      "review_class": "no_cross_source_identifier",
+      "database_guidance": "Review catalog/target semantics before permanent identity assignment."
     }
   ],
   "permanent_ids_assigned": false
