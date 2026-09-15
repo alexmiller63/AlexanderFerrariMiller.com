@@ -7,7 +7,7 @@ on:
       - tools/trigger-historical-path-repair.txt
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   repair:
@@ -15,29 +15,81 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
-      - name: Prepare repaired workflow files
+      - name: Create repaired workflow blobs
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPOSITORY: ${{ github.repository }}
         run: |
           python - <<'PY'
+          import base64
+          import json
+          import os
           from pathlib import Path
+          from urllib.request import Request, urlopen
 
           old = "Star-Almanack-Repo"
           new = "Historical"
-          changed = []
-          root = Path('.github/workflows')
-          for path in sorted(root.glob('*.y*ml')):
-              text = path.read_text(encoding='utf-8')
+          skip = {
+              ".github/workflows/copy-star-almanack-repo.yml",
+              ".github/workflows/repair-historical-path-references.yml",
+          }
+          token = os.environ["GH_TOKEN"]
+          repo = os.environ["GH_REPOSITORY"]
+          entries = []
+
+          def post(path, payload):
+              data = json.dumps(payload).encode("utf-8")
+              req = Request(
+                  f"https://api.github.com/repos/{repo}/{path}",
+                  data=data,
+                  method="POST",
+                  headers={
+                      "Authorization": f"Bearer {token}",
+                      "Accept": "application/vnd.github+json",
+                      "X-GitHub-Api-Version": "2022-11-28",
+                      "Content-Type": "application/json",
+                  },
+              )
+              with urlopen(req) as response:
+                  return json.load(response)
+
+          for path in sorted(Path(".github/workflows").glob("*.y*ml")):
+              repo_path = path.as_posix()
+              if repo_path in skip:
+                  continue
+              text = path.read_text(encoding="utf-8")
               if old not in text:
                   continue
-              path.write_text(text.replace(old, new), encoding='utf-8')
-              changed.append(str(path))
-          print(f"Prepared {len(changed)} repaired workflow files")
-          for path in changed:
-              print(path)
+              repaired = text.replace(old, new)
+              blob = post("git/blobs", {
+                  "content": base64.b64encode(repaired.encode("utf-8")).decode("ascii"),
+                  "encoding": "base64",
+              })
+              entries.append({
+                  "path": repo_path,
+                  "mode": "100644",
+                  "type": "blob",
+                  "sha": blob["sha"],
+              })
+
+          manifest = {
+              "replacement_count": len(entries),
+              "tree_entries": entries,
+              "delete_paths": [
+                  ".github/workflows/copy-star-almanack-repo.yml",
+                  ".github/workflows/repair-historical-path-references.yml",
+                  "tools/trigger-historical-path-repair.txt",
+              ],
+          }
+          Path("repair-manifest.json").write_text(
+              json.dumps(manifest, indent=2) + "\n", encoding="utf-8"
+          )
+          print(f"Created {len(entries)} repaired workflow blobs")
           PY
 
-      - name: Upload repaired workflows
+      - name: Upload repair manifest
         uses: actions/upload-artifact@v4
         with:
-          name: repaired-workflows
-          path: .github/workflows
+          name: historical-path-repair-manifest
+          path: repair-manifest.json
           if-no-files-found: error
