@@ -86,12 +86,30 @@ table.ephemeris .visibility-glyph { height:1.5rem !important; vertical-align:-.2
    The generator emits one header row and four data rows (Body, Observing,
    Rise, Set). Native table layout keeps every row aligned with its body
    heading, including when the notation mode changes. */
+table.ephemeris,
+table.ephemeris thead,
+table.ephemeris tbody,
+table.ephemeris tr,
+table.ephemeris th,
+table.ephemeris td {
+  /* Clear any legacy grid presentation left on previously generated pages. */
+  display:revert !important;
+}
 table.ephemeris {
   display:table !important;
   width:max-content !important;
   min-width:100% !important;
   table-layout:auto !important;
   overflow:visible !important;
+}
+table.ephemeris thead { display:table-header-group !important; }
+table.ephemeris tbody { display:table-row-group !important; }
+table.ephemeris tr { display:table-row !important; }
+table.ephemeris th,
+table.ephemeris td { display:table-cell !important; }
+table.ephemeris.extended-ephemeris {
+  grid-template-columns:none !important;
+  grid-template-rows:none !important;
 }
 table.ephemeris th,
 table.ephemeris td {
