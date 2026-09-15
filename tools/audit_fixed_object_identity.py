@@ -15,6 +15,7 @@ OUT = SRC / "generated" / "fixed-object-identity-audit.json"
 REVIEW_OUT = SRC / "generated" / "fixed-object-contradiction-review.json"
 TARGET_LAYER = SRC / "database" / "catalog-entry-targets.json"
 SUPPLEMENTAL_OBJECTS = SRC / "database" / "supplemental-physical-objects.json"
+CONSTELLATION_REVIEWS = SRC / "database" / "object-constellation-reviews.json"
 
 CATALOG_RE = re.compile(r"^(NGC|IC)\s*0*(\d+)$", re.I)
 HIP_RE = re.compile(r"^HIP\s*0*(\d+)$", re.I)
@@ -229,6 +230,38 @@ def append_supplemental_candidates(cs):
     return validation
 
 
+def load_constellation_reviews():
+    data = read_json(CONSTELLATION_REVIEWS)
+    validation = {
+        "path": str(CONSTELLATION_REVIEWS.relative_to(ROOT)),
+        "loaded": data is not None,
+        "review_count": 0,
+        "resolved_identifier_count": 0,
+        "resolved_identifiers": [],
+        "errors": [],
+    }
+    resolved = set()
+    if data is None:
+        validation["errors"].append("object constellation review file is missing")
+        return validation, resolved
+    reviews = data.get("reviews") or []
+    validation["review_count"] = len(reviews)
+    for review in reviews:
+        ident = review.get("object_identifier") or {}
+        ns = str(ident.get("namespace") or "").strip()
+        value = str(ident.get("value") or "").strip()
+        if not ns or not value:
+            validation["errors"].append("constellation review has incomplete object_identifier")
+            continue
+        if review.get("audit_resolution") != "suppress_constellation_identity_contradiction":
+            continue
+        key = (ns, value)
+        resolved.add(key)
+        validation["resolved_identifiers"].append({"namespace": ns, "value": value, "status": review.get("status")})
+    validation["resolved_identifier_count"] = len(resolved)
+    return validation, resolved
+
+
 def angular_sep_deg(a, b):
     try:
         r1, d1 = math.radians(float(a["ra_h"]) * 15), math.radians(float(a["dec_deg"]))
@@ -239,7 +272,8 @@ def angular_sep_deg(a, b):
     return math.degrees(math.acos(x))
 
 
-def reconcile(cs):
+def reconcile(cs, resolved_constellation_ids=None):
+    resolved_constellation_ids = resolved_constellation_ids or set()
     parent = {c["candidate_id"]: c["candidate_id"] for c in cs}
     def find(x):
         while parent[x] != x:
@@ -268,11 +302,16 @@ def reconcile(cs):
     for number, ids in enumerate(sorted(grouped.values(), key=min), 1):
         idset = set(ids)
         evidence = []
+        group_identifiers = set()
+        for candidate_id in ids:
+            for ident in cmap[candidate_id]["identifiers"]:
+                group_identifiers.add((ident["namespace"], ident["value"]))
         for (namespace, value), members in sorted(by.items()):
             shared = sorted(idset.intersection(members))
             if len(shared) > 1:
                 evidence.append({"namespace": namespace, "value": value, "candidate_ids": shared})
         contradictions = []
+        resolved_reviews = []
         max_sep = 0.0
         if len(ids) > 1:
             rows = [cmap[i] for i in ids]
@@ -280,7 +319,16 @@ def reconcile(cs):
             raw_types = sorted({r["object_type"] for r in rows if r["object_type"]})
             families = sorted({r["object_type_family"] for r in rows if r["object_type_family"]})
             if len(constellations) > 1:
-                contradictions.append({"kind": "constellation", "values": constellations, "severity": "boundary_review"})
+                matches = sorted(group_identifiers.intersection(resolved_constellation_ids))
+                if matches:
+                    resolved_reviews.append({
+                        "kind": "constellation",
+                        "values": constellations,
+                        "resolution": "resolved_by_object_constellation_review",
+                        "identifiers": [{"namespace": ns, "value": value} for ns, value in matches],
+                    })
+                else:
+                    contradictions.append({"kind": "constellation", "values": constellations, "severity": "boundary_review"})
             if len(families) > 1:
                 contradictions.append({"kind": "object_type_family", "values": families, "raw_values": raw_types, "severity": "review"})
             for x in range(len(rows)):
@@ -297,6 +345,7 @@ def reconcile(cs):
             "merge_evidence": evidence,
             "max_coordinate_separation_deg": round(max_sep, 6) if len(ids) > 1 else None,
             "contradictions": contradictions,
+            "resolved_reviews": resolved_reviews,
             "review_status": status,
         })
     return groups, by
@@ -383,10 +432,11 @@ def main():
     original_candidate_count = len(cs)
     supplemental_validation = append_supplemental_candidates(cs)
     target_validation = apply_catalog_target_layer(cs)
+    constellation_validation, resolved_constellation_ids = load_constellation_reviews()
 
-    groups, by = reconcile(cs)
+    groups, by = reconcile(cs, resolved_constellation_ids)
     physical_candidates = [c for c in cs if c["identity_role"] == "physical_object_candidate"]
-    physical_groups, physical_by = reconcile(physical_candidates)
+    physical_groups, physical_by = reconcile(physical_candidates, resolved_constellation_ids)
 
     overlaps = [{"namespace": ns, "value": value, "candidate_ids": ids} for (ns, value), ids in sorted(by.items()) if len(ids) > 1]
     physical_overlaps = [{"namespace": ns, "value": value, "candidate_ids": ids} for (ns, value), ids in sorted(physical_by.items()) if len(ids) > 1]
@@ -412,6 +462,8 @@ def main():
         blockers.append("supplemental_physical_object_errors")
     if target_validation["errors"]:
         blockers.append("catalog_target_layer_errors")
+    if constellation_validation["errors"]:
+        blockers.append("constellation_review_errors")
     if target_validation["unresolved_target_identifier_count"]:
         blockers.append("unresolved_catalog_target_identifiers")
     m40 = next((e for e in (read_json(TARGET_LAYER) or {}).get("catalog_entries", []) if e.get("catalog_entry_key") == "messier:M40"), None)
@@ -420,12 +472,13 @@ def main():
 
     registry_ready = not blockers and not physical_review
     result = {
-        "schema_version": 9,
+        "schema_version": 10,
         "purpose": "pre-migration physical fixed-object identity audit; no permanent IDs assigned",
         "canonical_source": "Star-Almanack-Repo/fixed-objects.yaml",
         "original_candidate_count": original_candidate_count,
         "supplemental_physical_objects": supplemental_validation,
         "catalog_target_relationship_layer": target_validation,
+        "constellation_review_layer": constellation_validation,
         "candidate_count": len(cs),
         "physical_object_candidate_count": len(physical_candidates),
         "catalog_target_only_candidate_count": len(cs) - len(physical_candidates),
@@ -463,8 +516,8 @@ def main():
 
     cmap = {c["candidate_id"]: c for c in cs}
     review_result = {
-        "schema_version": 5,
-        "purpose": "focused review after catalog-target separation and supplemental physical-object resolution",
+        "schema_version": 6,
+        "purpose": "focused unresolved review after catalog-target, supplemental-object, and boundary-review resolution",
         "group_count": len(physical_review),
         "groups": [dict(g, candidates=[cmap[i] for i in g["candidate_ids"]]) for g in physical_review],
     }
@@ -476,7 +529,8 @@ def main():
     print(f"Wrote {REVIEW_OUT.relative_to(ROOT)}")
     print(f"Candidates: {len(cs)}; physical candidates: {len(physical_candidates)}")
     print(f"Supplemental physical objects: {supplemental_validation['object_count']}")
-    print(f"Physical groups: {len(physical_groups)}; merged: {len(physical_merged)}; validated: {len(physical_validated)}; review: {len(physical_review)}")
+    print(f"Resolved constellation reviews: {constellation_validation['resolved_identifier_count']}")
+    print(f"Physical groups: {len(physical_groups)}; merged: {len(physical_merged)}; validated: {len(physical_validated)}; unresolved review: {len(physical_review)}")
     print(f"Catalog-target exclusions: {len(cs) - len(physical_candidates)}; unresolved target identifiers: {target_validation['unresolved_target_identifier_count']}")
     print(f"Physical registry ready: {registry_ready}; blockers: {blockers}")
     print("No fixed_object_id values were assigned.")
