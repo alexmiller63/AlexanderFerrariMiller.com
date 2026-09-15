@@ -16,7 +16,7 @@ import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-SOURCE_ROOT = ROOT / "Star-Almanack-Repo"
+SOURCE_ROOT = ROOT / "Historical"
 
 SIGN_BASE = {
     "♈": 0.0, "♉": 30.0, "♊": 60.0, "♋": 90.0,

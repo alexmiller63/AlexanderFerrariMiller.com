@@ -22,7 +22,7 @@ from pathlib import Path
 from almanack_calendar import ensure_calendar_metadata, get_events
 
 ROOT = Path(__file__).resolve().parents[1]
-SRC = ROOT / "Star-Almanack-Repo"
+SRC = ROOT / "Historical"
 ROOTS = (SRC / "site", ROOT / "almanack")
 
 

@@ -5,7 +5,7 @@ import html,re,sys
 from datetime import date
 from pathlib import Path
 from almanack_calendar import ensure_calendar_metadata,get_events,set_events
-ROOT=Path(__file__).resolve().parents[1]; DEFAULT_ECLIPSE_SOURCE=ROOT/"Star-Almanack-Repo"/"eclipse.yaml"; ALMANACK_SOURCE=ROOT/"Star-Almanack-Repo"/"almanack-expanded.md"; ECLIPSE_PAGE=ROOT/"star-almanack"/"eclipses.html"
+ROOT=Path(__file__).resolve().parents[1]; DEFAULT_ECLIPSE_SOURCE=ROOT/"Historical"/"eclipse.yaml"; ALMANACK_SOURCE=ROOT/"Historical"/"almanack-expanded.md"; ECLIPSE_PAGE=ROOT/"star-almanack"/"eclipses.html"
 GLYPHS={"solar":'<img class="visibility-glyph" src="/assets/almanack/visibility-glyphs/masters/solar-eclipse.svg" alt="Solar eclipse" aria-label="Solar eclipse">',"lunar":'<img class="visibility-glyph" src="/assets/almanack/visibility-glyphs/masters/lunar-eclipse.svg" alt="Lunar eclipse" aria-label="Lunar eclipse">'}
 def parse_year(text):
  m=re.search(r"(?m)^year:\s*(\d{4})\s*$",text)
@@ -67,7 +67,7 @@ def publish(source_path):
   ALMANACK_SOURCE.write_text(source,encoding="utf-8")
  for e in eclipses:
   iso_year,week,_=date.fromisoformat(e["date"]).isocalendar()
-  for root in (ROOT/"Star-Almanack-Repo"/"site"/str(iso_year),ROOT/"almanack"/str(iso_year)):
+  for root in (ROOT/"Historical"/"site"/str(iso_year),ROOT/"almanack"/str(iso_year)):
    page=root/f"W{week:02d}"/"index.html"
    if not page.exists():raise SystemExit(f"Missing Almanack week page: {page}")
    page.write_text(update_html(page.read_text(encoding="utf-8"),e,page),encoding="utf-8")

@@ -10,7 +10,7 @@ from collections import Counter, defaultdict
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-SRC = ROOT / "Star-Almanack-Repo"
+SRC = ROOT / "Historical"
 OUT = SRC / "generated" / "fixed-object-identity-audit.json"
 REVIEW_OUT = SRC / "generated" / "fixed-object-contradiction-review.json"
 TARGET_LAYER = SRC / "database" / "catalog-entry-targets.json"
@@ -474,7 +474,7 @@ def main():
     result = {
         "schema_version": 10,
         "purpose": "pre-migration physical fixed-object identity audit; no permanent IDs assigned",
-        "canonical_source": "Star-Almanack-Repo/fixed-objects.yaml",
+        "canonical_source": "Historical/fixed-objects.yaml",
         "original_candidate_count": original_candidate_count,
         "supplemental_physical_objects": supplemental_validation,
         "catalog_target_relationship_layer": target_validation,

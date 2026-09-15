@@ -23,7 +23,7 @@ The Sky Notes Artwork workflow must never regenerate or overwrite the Planet Fin
 
 Run `python tools/recreate_w41_sky_note_artwork.py` to recreate only the approved Sky Note artwork layer. It copies the preserved Enif/M15 and Sadalmelik/Aquarius finder sources into the published W41 finder directory and restores their placements inside the Sky Note without rewriting Calendar, Ephemeris, Planet Finder, or Sky Note prose.
 
-The source artwork is already preserved under `Star-Almanack-Repo/observer-views/W41/`. The expected Git blob SHAs and placement rules are recorded in `manifest.json`.
+The source artwork is already preserved under `Historical/observer-views/W41/`. The expected Git blob SHAs and placement rules are recorded in `manifest.json`.
 
 ## Full historical recovery
 

@@ -7,7 +7,7 @@ only for publication and calendar placement.
 
 The nominal shower solar longitudes and ZHR values are editorial source data,
 not computed ephemeris answers. Their provenance is documented in
-Star-Almanack-Repo/EPHEMERIS-PROVENANCE.md; the reference working list is the
+Historical/EPHEMERIS-PROVENANCE.md; the reference working list is the
 International Meteor Organization Meteor Shower Calendar.
 """
 from __future__ import annotations
@@ -23,9 +23,9 @@ from almanack_time import AstroInstant
 from populate_calendar import interpolate_time, source_longitudes, unwrap
 
 ROOT = Path(__file__).resolve().parents[1]
-SOURCE_ROOT = ROOT / "Star-Almanack-Repo" / "site"
+SOURCE_ROOT = ROOT / "Historical" / "site"
 PUBLIC_ROOT = ROOT / "almanack"
-DATA_ROOT = ROOT / "Star-Almanack-Repo" / "generated"
+DATA_ROOT = ROOT / "Historical" / "generated"
 METEOR_GLYPH = '<img class="visibility-glyph" src="/assets/almanack/visibility-glyphs/masters/meteor-shower.svg" alt="Meteor shower" aria-label="Meteor shower">'
 
 # Frozen editorial inputs derived from the IMO visual-shower working list.

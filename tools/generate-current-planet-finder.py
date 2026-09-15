@@ -270,7 +270,7 @@ def build(mode,year,week,monday,rows):
     s += ['<text x="700" y="682" text-anchor="middle" font-size="28" font-weight="700">Tropical ecliptic longitude</text>','<text x="700" y="722" text-anchor="middle" font-size="22">0° Aries at 9:00 · zodiac increases counterclockwise</text>','<text x="700" y="757" text-anchor="middle" font-size="22">12 equal sectors · 30° each</text>','</svg>']; return '\n'.join(s)
 
 def main():
-    year=int(sys.argv[1]); week=int(sys.argv[2]); key=f'{year}-W{week:02d}'; csv_path=ROOT/'Star-Almanack-Repo'/f'weekly-ephemeris-{year}.csv'
+    year=int(sys.argv[1]); week=int(sys.argv[2]); key=f'{year}-W{week:02d}'; csv_path=ROOT/'Historical'/f'weekly-ephemeris-{year}.csv'
     with csv_path.open(encoding='utf-8',newline='') as f: row=next((r for r in csv.DictReader(f) if r['iso_week']==key),None)
     if not row: raise SystemExit(f'{key} not found in {csv_path}')
     parsed=[]

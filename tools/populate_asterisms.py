@@ -7,7 +7,7 @@ from pathlib import Path
 from almanack_calendar import ensure_calendar_metadata,get_events,set_events
 from star_almanack_astronomy import declination_band, season_for
 from star_almanack_objects import HTML_AID, observing_aid_for_magnitude
-ROOT=Path(__file__).resolve().parents[1]; SRC=ROOT/"Star-Almanack-Repo"; PUBLIC=ROOT/"almanack"; SOURCE_SITE=SRC/"site"; MEMBER_COORDS=SRC/"asterism-member-coordinates.csv"; CATALOG_OVERLAP=SRC/"asterism-catalog-overlap.csv"
+ROOT=Path(__file__).resolve().parents[1]; SRC=ROOT/"Historical"; PUBLIC=ROOT/"almanack"; SOURCE_SITE=SRC/"site"; MEMBER_COORDS=SRC/"asterism-member-coordinates.csv"; CATALOG_OVERLAP=SRC/"asterism-catalog-overlap.csv"
 def requested_years():
  p=argparse.ArgumentParser(description="Populate Star Almanack core asterism centers"); p.add_argument("years",metavar="YEAR",type=int,nargs="+"); a=p.parse_args(); years=list(dict.fromkeys(a.years))
  for y in years:

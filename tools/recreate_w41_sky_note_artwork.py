@@ -14,7 +14,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 PAGE = ROOT / "almanack" / "2026" / "W41" / "index.html"
 FINDERS = PAGE.parent / "finders"
-SOURCE = ROOT / "Star-Almanack-Repo" / "observer-views" / "W41"
+SOURCE = ROOT / "Historical" / "observer-views" / "W41"
 
 ASSETS = (
     ("enif-finder.svg", "enif-finder.svg"),

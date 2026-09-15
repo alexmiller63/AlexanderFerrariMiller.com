@@ -63,7 +63,7 @@ The pre-migration identity audit established that the model must support catalog
 
 These are resolved schema cases, not missing identities. They demonstrate why a catalog row must not be equated mechanically with a `fixed_object` row.
 
-The first machine-readable relationship layer is now stored at `Star-Almanack-Repo/database/catalog-entry-targets.json`. It records these eight exception cases without assigning permanent `fixed_object_id` values. During migration it may use source references, external object identifiers, and audit candidate IDs as temporary references; those temporary references must be replaced or resolved when the permanent physical-object registry is created.
+The first machine-readable relationship layer is now stored at `Historical/database/catalog-entry-targets.json`. It records these eight exception cases without assigning permanent `fixed_object_id` values. During migration it may use source references, external object identifiers, and audit candidate IDs as temporary references; those temporary references must be replaced or resolved when the permanent physical-object registry is created.
 
 ### Star and object enrichment triggers
 

@@ -16,7 +16,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 YEAR = 2026
-SRC = ROOT / "Star-Almanack-Repo"
+SRC = ROOT / "Historical"
 SITE = ROOT / "almanack" / str(YEAR)
 
 

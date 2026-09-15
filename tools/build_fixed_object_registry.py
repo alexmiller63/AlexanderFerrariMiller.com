@@ -13,7 +13,7 @@ import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-SRC = ROOT / "Star-Almanack-Repo"
+SRC = ROOT / "Historical"
 AUDIT_PATH = SRC / "generated" / "fixed-object-identity-audit.json"
 REGISTRY_PATH = SRC / "database" / "fixed-object-registry.json"
 

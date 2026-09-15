@@ -337,7 +337,7 @@ def put_ephemeris(text, replacement, path):
 
 def write_preserved_weekly_table(year, generated):
     """Persist the shared calculation layer consumed by presentation generators."""
-    path = ROOT / "Star-Almanack-Repo" / f"weekly-ephemeris-{year}.csv"
+    path = ROOT / "Historical" / f"weekly-ephemeris-{year}.csv"
     fields = ["iso_week", "monday_utc", *[key for _, key, _ in TARGETS if key != "pluto"]]
     rows = []
     for week in range(1, week_count(year) + 1):
@@ -380,7 +380,7 @@ def update_year(year, engine=None):
                 "horizon_deg": -0.8333 if key == "sun" else -0.5667,
             }
         replacement = render_ephemeris(monday, values)
-        for base in (ROOT / "almanack", ROOT / "Star-Almanack-Repo" / "site"):
+        for base in (ROOT / "almanack", ROOT / "Historical" / "site"):
             path = base / str(year) / f"W{week:02d}" / "index.html"
             text = path.read_text(encoding="utf-8")
             new = put_ephemeris(text, replacement, path)

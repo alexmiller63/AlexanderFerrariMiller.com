@@ -5,7 +5,7 @@ import json
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-SRC = ROOT / "Star-Almanack-Repo"
+SRC = ROOT / "Historical"
 AUDIT = SRC / "generated" / "fixed-object-identity-audit.json"
 OUT = SRC / "generated" / "fixed-object-identity-exceptions.json"
 
@@ -35,7 +35,7 @@ def main() -> None:
     result = {
         "schema_version": 1,
         "purpose": "Compact exception report for pre-migration fixed-object identity audit.",
-        "source_audit": "Star-Almanack-Repo/generated/fixed-object-identity-audit.json",
+        "source_audit": "Historical/generated/fixed-object-identity-audit.json",
         "exception_count": len(exceptions),
         "exceptions": exceptions,
         "permanent_ids_assigned": False,

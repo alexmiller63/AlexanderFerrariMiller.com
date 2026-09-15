@@ -12,7 +12,7 @@ import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-SOURCE_ROOT = ROOT / "Star-Almanack-Repo"
+SOURCE_ROOT = ROOT / "Historical"
 CANONICAL_ROOT = SOURCE_ROOT / "descriptors"
 PUBLIC_ROOT = ROOT / "almanack" / "descriptors"
 FIGURE_SOURCE = SOURCE_ROOT / "constellation-figures.json"

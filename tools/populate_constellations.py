@@ -7,7 +7,7 @@ from pathlib import Path
 from almanack_calendar import ensure_calendar_metadata,get_events,set_events
 from star_almanack_astronomy import best_visibility_occurrences_for_iso_year,declination_band,season_for
 from star_almanack_objects import HTML_AID,observing_aid_for_magnitude
-ROOT=Path(__file__).resolve().parents[1]; SRC=ROOT/"Star-Almanack-Repo"; PUBLIC=ROOT/"almanack"; SOURCE_SITE=SRC/"site"; DEFAULT_YEARS=(2025,2026,2027)
+ROOT=Path(__file__).resolve().parents[1]; SRC=ROOT/"Historical"; PUBLIC=ROOT/"almanack"; SOURCE_SITE=SRC/"site"; DEFAULT_YEARS=(2025,2026,2027)
 CENTROID_SNAPSHOT=SRC/"constellation-observance-2026.csv"; BAYER_STARS=SRC/"expanded-bayer-stars.csv"; MARTZ_FIGURES=Path("/tmp/constellation_lines_iau.dat"); HYG_CATALOG=Path("/tmp/hygdata_v41.csv")
 HYG_HIPPARCOS_SUPPLEMENTS={"55203":3.79}; FRONT_MATTER={"Men":{"rule":"alpha_beta_mean"},"Mic":{"rule":"alpha_beta_mean"},"Ser":{"rule":"martz_caput_cauda"}}
 SERPENS_COMPONENTS=(

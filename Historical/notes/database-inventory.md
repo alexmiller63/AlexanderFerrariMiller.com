@@ -10,7 +10,7 @@ The repository already behaves partly like a database, but identity is distribut
 
 ### `fixed-objects.yaml`
 
-Current code explicitly describes `Star-Almanack-Repo/fixed-objects.yaml` as the authoritative fixed-object catalog. It contains separate schemas/collections for at least:
+Current code explicitly describes `Historical/fixed-objects.yaml` as the authoritative fixed-object catalog. It contains separate schemas/collections for at least:
 
 - `messier`: `id`, `ngc`, `name`, `type`, `con`, `ra_h`, `dec_deg`, `mag`, `size_arcmin`, `best`, `iso`;
 - `bayer`: `bayer`, `con`, `name`, `ra_h`, `dec_deg`, `mag`, `best`, `iso`;

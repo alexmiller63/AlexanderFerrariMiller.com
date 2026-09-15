@@ -17,14 +17,14 @@ from datetime import datetime
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-GENERATED = ROOT / "Star-Almanack-Repo" / "generated"
-ECLIPSE_YAML = ROOT / "Star-Almanack-Repo" / "eclipse.yaml"
+GENERATED = ROOT / "Historical" / "generated"
+ECLIPSE_YAML = ROOT / "Historical" / "eclipse.yaml"
 
 TIMED_GENERATORS = (
     ROOT / "tools" / "populate_calendar.py",
     ROOT / "tools" / "populate_galactic_center.py",
     ROOT / "tools" / "populate_meteor_showers.py",
-    ROOT / "Star-Almanack-Repo" / "besselian_eclipse_engine.py",
+    ROOT / "Historical" / "besselian_eclipse_engine.py",
     ROOT / "tools" / "wire_2026_eclipses.py",
 )
 

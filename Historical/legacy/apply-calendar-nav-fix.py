@@ -33,13 +33,13 @@ def patch_html(path: Path) -> None:
 
 
 for year in (2025, 2026, 2027):
-    for root in (Path("almanack") / str(year), Path("Star-Almanack-Repo/site") / str(year)):
+    for root in (Path("almanack") / str(year), Path("Historical/site") / str(year)):
         if root.exists():
             for path in root.rglob("index.html"):
                 patch_html(path)
 
 # Keep 2026 source generator aligned.
-path = Path("Star-Almanack-Repo/publish_weekly_pages.py")
+path = Path("Historical/publish_weekly_pages.py")
 if path.exists():
     text = path.read_text(encoding="utf-8")
     text = text.replace(">Calendar Home<", ">Almanack Home<")
@@ -54,7 +54,7 @@ if path.exists():
 
 # Keep placeholder-year generator label aligned. Its weekly year links are
 # normalized in the generated output above.
-path = Path("Star-Almanack-Repo/publish_placeholder_years.py")
+path = Path("Historical/publish_placeholder_years.py")
 if path.exists():
     text = path.read_text(encoding="utf-8").replace(">Calendar Home<", ">Almanack Home<")
     path.write_text(text, encoding="utf-8")

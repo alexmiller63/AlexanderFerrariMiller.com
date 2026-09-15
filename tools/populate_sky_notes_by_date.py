@@ -26,8 +26,8 @@ from iso_date_range import group_by_year, parse_range_args
 from star_almanack_planets import PLANET_COLUMNS, load_weekly_longitudes
 
 ROOT = Path(__file__).resolve().parents[1]
-SOURCE_ROOT = ROOT / "Star-Almanack-Repo"
-PAGE_ROOTS = (ROOT / "Star-Almanack-Repo" / "site", ROOT / "almanack")
+SOURCE_ROOT = ROOT / "Historical"
+PAGE_ROOTS = (ROOT / "Historical" / "site", ROOT / "almanack")
 BRIGHT_STARS = SOURCE_ROOT / "bright-stars-2mag.csv"
 
 PLANET_DISPLAY = {
@@ -263,7 +263,7 @@ def artwork_descriptor(year: int, week: int, fixed: list[dict], relations: list[
         "targets": [{"type": item["type"], "name": item["name"]} for item in fixed[:3]],
         "planetary_context": relations[:2],
         "planet_plot_policy": "do not plot from longitude alone; require preserved 2-D Star Almanack position data",
-        "reference_standard": "Star-Almanack-Repo/docs/finder-standard.md",
+        "reference_standard": "Historical/docs/finder-standard.md",
     }
     return descriptor
 
@@ -316,7 +316,7 @@ def generated_note(year: int, week: int, page_path: Path, yearly: dict[int, dict
         "week": f"W{week:02d}",
         "title": f"Observer’s guide for ISO {year}-W{week:02d}",
         "status": "generated",
-        "planetary_source": f"Star-Almanack-Repo/weekly-ephemeris-{year}.csv",
+        "planetary_source": f"Historical/weekly-ephemeris-{year}.csv",
         "planetary_coordinate": "geocentric tropical ecliptic longitude; Monday 00:00 UTC",
         "fixed_sky": fixed,
         "planet_relations": relations,

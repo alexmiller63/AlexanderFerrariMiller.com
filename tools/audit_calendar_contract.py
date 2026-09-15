@@ -13,7 +13,7 @@ from pathlib import Path
 from almanack_calendar import CALENDAR_RE, ROW_RE, civil_date_text, page_dates
 
 ROOT = Path(__file__).resolve().parents[1]
-ROOTS = (ROOT / "Star-Almanack-Repo" / "site", ROOT / "almanack")
+ROOTS = (ROOT / "Historical" / "site", ROOT / "almanack")
 SIGNS = {
     "Aries", "Taurus", "Gemini", "Cancer", "Leo", "Virgo",
     "Libra", "Scorpio", "Sagittarius", "Capricorn", "Aquarius", "Pisces",

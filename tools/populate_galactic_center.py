@@ -9,7 +9,7 @@ JDTDB event epoch. UTC is created only at publication.
 
 Provenance:
 - Sgr A* J2000 radio position: Reid & Brunthaler (2004), as documented in
-  Star-Almanack-Repo/EPHEMERIS-PROVENANCE.md.
+  Historical/EPHEMERIS-PROVENANCE.md.
 - Precession model: independently implemented IAU 1976 precession formulae;
   coefficients are attributed there to the published standard rather than to
   copied software.
@@ -26,7 +26,7 @@ from almanack_time import AstroInstant, interpolate_instant
 from populate_calendar import iso_bounds, source_longitudes
 
 ROOT = Path(__file__).resolve().parents[1]
-SOURCE_ROOT = ROOT / "Star-Almanack-Repo" / "site"
+SOURCE_ROOT = ROOT / "Historical" / "site"
 PUBLIC_ROOT = ROOT / "almanack"
 
 # Sagittarius A* J2000 radio position from Reid & Brunthaler (2004),

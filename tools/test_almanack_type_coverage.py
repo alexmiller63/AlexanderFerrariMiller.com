@@ -9,7 +9,7 @@ from __future__ import annotations
 import csv,re,sys
 from dataclasses import dataclass
 from pathlib import Path
-ROOT=Path(__file__).resolve().parents[1]; YEAR=2026; SITE=ROOT/'almanack'/str(YEAR); SRC=ROOT/'Star-Almanack-Repo'; GENERATED=SRC/'generated'; BASE_URL=f'https://AlexanderFerrariMiller.com/almanack/{YEAR}'
+ROOT=Path(__file__).resolve().parents[1]; YEAR=2026; SITE=ROOT/'almanack'/str(YEAR); SRC=ROOT/'Historical'; GENERATED=SRC/'generated'; BASE_URL=f'https://AlexanderFerrariMiller.com/almanack/{YEAR}'
 @dataclass(frozen=True)
 class Case:
  name:str; week:str; expected:str; checks:tuple[str,...]; proximity:tuple[tuple[str,str],...]=()
