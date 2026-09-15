@@ -115,17 +115,16 @@ def beta(latitude):
 def current_visibility(key, magnitude, elongation, daylight=False):
     if key == "sun":
         return "visible"
-    if daylight:
-        return "daylight"
     if elongation is not None and elongation < 20.0:
         return "solar_glare"
     if magnitude is not None and elongation is not None:
-        if magnitude <= 3.5: return "naked_eye"
+        if magnitude <= 3.5:
+            return "daylight" if daylight else "naked_eye"
         if magnitude <= 7.5: return "binoculars"
         if magnitude <= 12.0: return "telescope"
         return "substantial_telescope"
 
-    if key == "moon": return "naked_eye"
+    if key == "moon": return "daylight" if daylight else "naked_eye"
     if key == "ceres": return "telescope"
     if key == "pluto": return "substantial_telescope"
     return None
@@ -231,6 +230,7 @@ def render_ephemeris(monday, values):
                         f'<td class="ephemeris-observing" '
                         f'data-normal-label="{html.escape(item["normal_label"], quote=True)}" '
                         f'data-solar-glare="{str(item["solar_glare"]).lower()}" '
+                        f'data-sun-special="{str(item["sun_special"]).lower()}" '
                         f'data-sun-dec-deg="{item["sun_dec_deg"]:.9f}">'
                         f'{content}</td>'
                     )
@@ -309,6 +309,7 @@ def update_year(year, engine=None):
                 "observing": observing_html(key, sample[2], sample[3], sample[6]),
                 "normal_label": observing_label(key, sample[2], sample[3], False),
                 "solar_glare": aid == "solar_glare",
+                "sun_special": key == "sun",
                 "rise": sample[4],
                 "set": sample[5],
                 "ra_hours": sample[7],
