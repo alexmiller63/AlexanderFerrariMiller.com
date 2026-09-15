@@ -1,0 +1,116 @@
+{
+  "schema_version": 1,
+  "status": "canonical-logical-schema",
+  "description": "Normalized logical schema for Star Almanack fixed astronomical data. Milky Way named-region taxonomy is intentionally deferred.",
+  "tables": {
+    "fixed_objects": {
+      "primary_key": "fixed_object_id",
+      "columns": {
+        "fixed_object_id": {"type": "positive_integer", "permanent": true, "mutable": false},
+        "object_type": {"type": "string", "nullable": true},
+        "canonical_name": {"type": "string", "nullable": true},
+        "ra_h": {"type": "number", "nullable": true},
+        "dec_deg": {"type": "number", "nullable": true}
+      }
+    },
+    "object_identifiers": {
+      "primary_key": ["namespace", "value"],
+      "columns": {
+        "namespace": {"type": "string"},
+        "value": {"type": "string"},
+        "fixed_object_id": {"type": "positive_integer", "references": "fixed_objects.fixed_object_id"}
+      },
+      "rule": "Catalog and designation identifiers identify physical objects but never serve as internal primary keys."
+    },
+    "catalog_entries": {
+      "primary_key": "catalog_entry_id",
+      "columns": {
+        "catalog_entry_id": {"type": "positive_integer", "permanent": true},
+        "catalog": {"type": "string"},
+        "designation": {"type": "string"},
+        "target_model": {"type": "string"}
+      }
+    },
+    "catalog_entry_targets": {
+      "primary_key": ["catalog_entry_id", "ordinal"],
+      "columns": {
+        "catalog_entry_id": {"type": "positive_integer", "references": "catalog_entries.catalog_entry_id"},
+        "ordinal": {"type": "positive_integer"},
+        "relationship": {"type": "string"},
+        "fixed_object_id": {"type": "positive_integer", "nullable": true, "references": "fixed_objects.fixed_object_id"},
+        "target_kind": {"type": "string"},
+        "target_key": {"type": "string", "nullable": true}
+      },
+      "rule": "Composite, structured, asterism, complex, and region catalog targets are relationships and must not be flattened into invented physical objects."
+    },
+    "object_facts": {
+      "primary_key": "object_fact_id",
+      "columns": {
+        "object_fact_id": {"type": "positive_integer", "permanent": true},
+        "fixed_object_id": {"type": "positive_integer", "references": "fixed_objects.fixed_object_id"},
+        "fact_type": {"type": "string"},
+        "value": {"type": "any"},
+        "source_id": {"type": "positive_integer", "nullable": true, "references": "sources.source_id"}
+      }
+    },
+    "sources": {
+      "primary_key": "source_id",
+      "columns": {
+        "source_id": {"type": "positive_integer", "permanent": true},
+        "source_type": {"type": "string"},
+        "citation": {"type": "string"},
+        "locator": {"type": "string", "nullable": true}
+      }
+    },
+    "asterisms": {
+      "primary_key": "asterism_id",
+      "columns": {
+        "asterism_id": {"type": "positive_integer", "permanent": true},
+        "name": {"type": "string"}
+      }
+    },
+    "asterism_memberships": {
+      "primary_key": ["asterism_id", "fixed_object_id"],
+      "columns": {
+        "asterism_id": {"type": "positive_integer", "references": "asterisms.asterism_id"},
+        "fixed_object_id": {"type": "positive_integer", "references": "fixed_objects.fixed_object_id"},
+        "ordinal": {"type": "positive_integer", "nullable": true}
+      }
+    },
+    "constellation_memberships": {
+      "primary_key": "fixed_object_id",
+      "columns": {
+        "fixed_object_id": {"type": "positive_integer", "references": "fixed_objects.fixed_object_id"},
+        "constellation": {"type": "string"},
+        "derivation": {"type": "string", "default": "IAU_boundary"}
+      },
+      "derived": true
+    },
+    "milky_way_region_memberships": {
+      "primary_key": ["fixed_object_id", "region_id"],
+      "columns": {
+        "fixed_object_id": {"type": "positive_integer", "references": "fixed_objects.fixed_object_id"},
+        "region_id": {"type": "positive_integer", "references": "milky_way_regions.region_id"}
+      },
+      "derived": true,
+      "deferred": true,
+      "rule": "Do not define named-region Boolean columns. Region names, geometry, thresholds, and IDs remain deferred until the Milky Way region taxonomy is finalized."
+    },
+    "milky_way_regions": {
+      "primary_key": "region_id",
+      "columns": {
+        "region_id": {"type": "positive_integer", "permanent": true},
+        "name": {"type": "string"},
+        "definition": {"type": "object"}
+      },
+      "deferred": true
+    }
+  },
+  "identity_rules": [
+    "fixed_object_id identifies one physical astronomical object and is never renumbered after assignment.",
+    "Catalog membership, display name, calendar placement, constellation membership, and Milky Way membership do not define physical identity.",
+    "External identifiers are reconciliation evidence and aliases, not internal database keys.",
+    "Coordinates validate identity but do not silently merge close or structured objects.",
+    "New physical objects receive the next unused fixed_object_id."
+  ]
+}
