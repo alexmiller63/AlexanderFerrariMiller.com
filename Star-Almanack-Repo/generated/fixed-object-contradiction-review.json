@@ -1,10 +1,10 @@
 {
-  "schema_version": 3,
-  "purpose": "focused review after normalization of compatible object-type vocabularies",
+  "schema_version": 4,
+  "purpose": "focused review after normalization of compatible object-type vocabularies and separation of catalog targets from physical identity",
   "group_count": 1,
   "groups": [
     {
-      "provisional_group_id": 293,
+      "provisional_group_id": 291,
       "candidate_ids": [
         293,
         500
@@ -53,7 +53,8 @@
           "dec_deg": "60.1500",
           "object_type": "ScG",
           "object_type_family": "galaxy",
-          "notes": null
+          "notes": null,
+          "identity_role": "physical_object_candidate"
         },
         {
           "candidate_id": 500,
@@ -75,7 +76,8 @@
           "dec_deg": "60.1539",
           "object_type": "Gal",
           "object_type_family": "galaxy",
-          "notes": null
+          "notes": null,
+          "identity_role": "physical_object_candidate"
         }
       ]
     }

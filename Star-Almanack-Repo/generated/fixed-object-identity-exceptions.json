@@ -21,6 +21,9 @@
       "object_type": "MW",
       "object_type_family": "milky_way",
       "notes": null,
+      "identity_role": "catalog_target_only",
+      "catalog_entry_key": "messier:M24",
+      "catalog_target_model": "region",
       "review_class": "no_cross_source_identifier",
       "database_guidance": "Milky Way/star-cloud target; do not force into a conventional compact-object identity."
     },
@@ -41,6 +44,9 @@
       "object_type": "DS",
       "object_type_family": "double_star",
       "notes": null,
+      "identity_role": "catalog_target_only",
+      "catalog_entry_key": "messier:M40",
+      "catalog_target_model": "structured_multiple_star",
       "review_class": "no_cross_source_identifier",
       "database_guidance": "Double-star observing target; preserve component identities separately."
     },
@@ -61,6 +67,9 @@
       "object_type": "OC",
       "object_type_family": "open_cluster",
       "notes": null,
+      "identity_role": "physical_object_candidate",
+      "catalog_entry_key": "messier:M45",
+      "catalog_target_model": "physical_object_with_asterism",
       "review_class": "no_cross_source_identifier",
       "database_guidance": "Pleiades target/asterism; preserve target identity and member relationships."
     },
@@ -85,6 +94,9 @@
       "object_type": "OC",
       "object_type_family": "open_cluster",
       "notes": null,
+      "identity_role": "catalog_target_only",
+      "catalog_entry_key": "caldwell:C14",
+      "catalog_target_model": "composite_physical_objects",
       "review_class": "no_cross_source_identifier",
       "database_guidance": "Double Cluster target; one catalog target relates to NGC 869 and NGC 884."
     },
@@ -109,6 +121,9 @@
       "object_type": "SN",
       "object_type_family": "supernova_remnant",
       "notes": null,
+      "identity_role": "catalog_target_only",
+      "catalog_entry_key": "caldwell:C33",
+      "catalog_target_model": "composite_physical_objects",
       "review_class": "no_cross_source_identifier",
       "database_guidance": "Eastern Veil target; Caldwell entry encompasses NGC 6992/6995."
     },
@@ -133,6 +148,9 @@
       "object_type": "OC",
       "object_type_family": "open_cluster",
       "notes": null,
+      "identity_role": "physical_object_candidate",
+      "catalog_entry_key": "caldwell:C41",
+      "catalog_target_model": "physical_object_with_asterism",
       "review_class": "no_cross_source_identifier",
       "database_guidance": "Hyades target/asterism; preserve cluster/asterism relationship."
     },
@@ -157,6 +175,9 @@
       "object_type": "BN",
       "object_type_family": "emission_nebula",
       "notes": null,
+      "identity_role": "catalog_target_only",
+      "catalog_entry_key": "caldwell:C49",
+      "catalog_target_model": "nebular_complex",
       "review_class": "no_cross_source_identifier",
       "database_guidance": "Rosette complex target; preserve the complex relationship to its component NGC entries."
     },
@@ -181,6 +202,9 @@
       "object_type": "DN",
       "object_type_family": "dark_nebula",
       "notes": null,
+      "identity_role": "catalog_target_only",
+      "catalog_entry_key": "caldwell:C99",
+      "catalog_target_model": "region",
       "review_class": "no_cross_source_identifier",
       "database_guidance": "Coalsack dark-nebula region; preserve region semantics rather than treating it as an ordinary compact object."
     }
