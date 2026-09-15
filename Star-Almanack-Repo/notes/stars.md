@@ -21,3 +21,19 @@ Betelgeuse is a model case: one calendar target can simultaneously carry α Orio
 The editorial division of labor is therefore:
 
 **Calendar: when. Star Note: how much.**
+
+## 2026-09-15 — Fixed-object lore, history, and noteworthy facts
+
+Before expanding Milky Way artwork, enrich fixed-object Sky Notes with the lore, history, and noteworthy facts that explain **why an object matters to a human observer**. Physical astronomy and lore/history remain distinguishable so that traditional or historical interpretations are not presented as physical facts.
+
+The first source should be information the Almanack has already curated. The special-star list contains many facts that can seed this layer and should be mined before performing new research. Existing curated facts and newly researched facts must enrich the same object record rather than create a second competing knowledge system.
+
+Thuban (α Draconis) is a model case. Its importance is not exhausted by its present physical properties: because of axial precession it served as the northern pole star in antiquity. That historical relationship between the star and Earth's changing sky is Star Note material.
+
+α and β stars receive special attention even when they are not otherwise on the special-star list. Their role as principal constellation landmarks makes them strong candidates for additional noteworthy facts. Research for α and β stars should look for material such as name origin, historical identification, navigation use, unusual Bayer-letter history, whether α is actually the constellation's brightest star, notable physical properties, multiplicity or variability, cultural associations, historical observing significance, and useful star-hopping relationships.
+
+The special-star list and α/β research are inputs to a single factoid/lore/history layer. When they overlap, facts are merged into one rich Star Note rather than duplicated.
+
+This principle extends beyond stars to fixed objects generally, including clusters, nebulae, galaxies, and other catalogued deep-sky objects. Discovery history, historical descriptions, observing milestones, changes in scientific understanding, traditional associations where reliably sourced, and the object's role in learning or navigating the sky may all be relevant.
+
+Canonical editorial question: **Why is this fixed object worth knowing, remembering, or using when learning the sky?**
