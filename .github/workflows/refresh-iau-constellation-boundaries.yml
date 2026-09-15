@@ -1,0 +1,36 @@
+name: Refresh IAU Constellation Boundary Snapshot
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'Star-Almanack-Repo/tools/refresh_iau_constellation_boundaries.py'
+      - '.github/workflows/refresh-iau-constellation-boundaries.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.x'
+      - name: Refresh official IAU boundary snapshot
+        run: python Star-Almanack-Repo/tools/refresh_iau_constellation_boundaries.py
+      - name: Verify complete snapshot
+        run: |
+          test "$(find Star-Almanack-Repo/reference-data/iau-constellation-boundaries -maxdepth 1 -name '*.txt' | wc -l)" -eq 89
+      - name: Commit snapshot if changed
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add Star-Almanack-Repo/reference-data/iau-constellation-boundaries
+          if git diff --cached --quiet; then
+            echo 'IAU boundary snapshot already current.'
+            exit 0
+          fi
+          git commit -m 'Refresh IAU constellation boundary snapshot'
+          git push
