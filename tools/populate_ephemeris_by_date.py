@@ -8,6 +8,17 @@ import populate_ephemeris as ephemeris
 from iso_date_range import group_by_year, parse_range_args
 
 
+# Body names are supplied by the notation controller.  Generate only the
+# astronomical symbol in each heading so Latin/Mixed rendering cannot append a
+# second copy of Sun, Moon, or another body name during initialization.
+def _symbol_only_target_heading(display: str) -> str:
+    glyph, _name = display.split(" ", 1)
+    return ephemeris.symbol_html(glyph)
+
+
+ephemeris.target_heading = _symbol_only_target_heading
+
+
 def calculate_year(year: int):
     print(f"Calculating {year} ephemeris locally from cached JPL/NAIF source kernels")
     return ephemeris.computed_ephemeris(year)
