@@ -27,3 +27,15 @@ Asterisms are curated star patterns rather than IAU regions. Define an asterism 
 5. Use that centroid for the asterism's own visibility timing and label placement.
 
 Member stars retain their own independent star visibility dates. Asterism membership can qualify a member star for calendar inclusion, subject to observer-target deduplication.
+
+## 2026-09-15 — IAU constellation boundary direct-download pattern
+
+The IAU archive exposes each constellation's machine-readable boundary as a direct TXT resource using the lowercase three-letter IAU constellation abbreviation:
+
+`https://iauarchive.eso.org/static/public/constellations/txt/{iau_abbreviation}.txt`
+
+Example for Andromeda (`and`):
+
+`https://iauarchive.eso.org/static/public/constellations/txt/and.txt`
+
+Use this deterministic direct-download pattern for acquisition rather than scraping the presentation page. Preserve downloaded source files as an authoritative snapshot with provenance, and validate the complete expected boundary-file set before downstream geometric processing.
