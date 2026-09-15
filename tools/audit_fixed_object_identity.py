@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Audit Star Almanack fixed-object identity before permanent IDs are assigned.
 
-This is deliberately read-only with respect to canonical source data.  It emits
-machine-readable candidate records and a summary.  It does NOT assign
+This is deliberately read-only with respect to canonical source data. It emits
+machine-readable candidate records and a summary. It does NOT assign
 fixed_object_id values and it does NOT merge ambiguous coordinate matches.
 """
 from __future__ import annotations
@@ -19,6 +19,20 @@ OUT = SRC / "generated" / "fixed-object-identity-audit.json"
 
 CATALOG_RE = re.compile(r"^(NGC|IC)\s*0*(\d+)$", re.I)
 HIP_RE = re.compile(r"^HIP\s*0*(\d+)$", re.I)
+SH2_RE = re.compile(r"^Sh\s*2\s*[- ]\s*0*(\d+)$", re.I)
+VARIABLE_STAR_RE = re.compile(r"^([A-Z]{1,2}\d+)\s+([A-Za-z]{3})$")
+
+# These identifiers can independently connect records from different source
+# files without relying on coordinates or common names.
+CROSS_SOURCE_NAMESPACES = {"ngc", "ic", "hip", "bayer", "sh2", "variable_star"}
+
+# These are stable identifiers inside a recognized catalog/list. They are valid
+# durable designations, but list membership alone does not prove that a record
+# in another source is the same physical object.
+STABLE_SOURCE_NAMESPACES = {
+    "messier", "caldwell", "finest_ngc", "special", "component",
+    "asterism_member_label",
+}
 
 
 def norm_catalog(value: object) -> str | None:
@@ -36,6 +50,35 @@ def norm_catalog(value: object) -> str | None:
     return s
 
 
+def catalog_identifier(value: object) -> tuple[str, str] | None:
+    """Return a normalized external identifier when the catalog syntax is known.
+
+    Unknown named catalog labels are deliberately not promoted to strong
+    cross-source identity. They remain available as catalog_label metadata.
+    """
+    cat = norm_catalog(value)
+    if not cat:
+        return None
+
+    m = CATALOG_RE.match(cat)
+    if m:
+        return (m.group(1).lower(), str(int(m.group(2))))
+
+    m = HIP_RE.match(cat)
+    if m:
+        return ("hip", str(int(m.group(1))))
+
+    m = SH2_RE.match(cat)
+    if m:
+        return ("sh2", str(int(m.group(1))))
+
+    m = VARIABLE_STAR_RE.match(cat)
+    if m:
+        return ("variable_star", f"{m.group(1)} {m.group(2)}")
+
+    return ("catalog_label", cat)
+
+
 def read_csv(path: Path) -> list[dict[str, str]]:
     if not path.exists():
         return []
@@ -46,9 +89,9 @@ def read_csv(path: Path) -> list[dict[str, str]]:
 def parse_fixed_simple_yaml(path: Path) -> dict[str, list[list[object]]]:
     """Parse only the simple top-level bracket-row collections in fixed-objects.yaml.
 
-    PyYAML is intentionally not required by this audit.  Rows in the canonical
+    PyYAML is intentionally not required by this audit. Rows in the canonical
     file use YAML flow sequences; csv.reader safely handles the quoted commas we
-    need here.  Schema names are fixed below and row-width mismatches are flagged.
+    need here. Schema names are fixed below and row-width mismatches are flagged.
     """
     schemas = {
         "messier": ["id", "ngc", "name", "type", "con", "ra_h", "dec_deg", "mag", "size_arcmin", "best", "iso"],
@@ -129,26 +172,18 @@ def main() -> None:
             source_key = f"{section}:{n}"
             if section == "messier":
                 ids.append(("messier", r["id"]))
-                cat = norm_catalog(r["ngc"])
-                if cat:
-                    ns, value = cat.split(" ", 1) if " " in cat else ("catalog", cat)
-                    ids.append((ns.lower(), value))
+                ident = catalog_identifier(r["ngc"])
+                if ident:
+                    ids.append(ident)
                 source_key = str(r["id"])
             elif section == "bayer":
                 ids.append(("bayer", f"{r['bayer']} {r['con']}"))
                 source_key = f"{r['bayer']} {r['con']}"
             elif section == "special":
                 ids.append(("special", r["id"]))
-                cat = norm_catalog(r["catalog"])
-                if cat:
-                    mhip = HIP_RE.match(cat)
-                    if mhip:
-                        ids.append(("hip", str(int(mhip.group(1)))))
-                    elif " " in cat:
-                        ns, value = cat.split(" ", 1)
-                        ids.append((ns.lower(), value))
-                    else:
-                        ids.append(("catalog", cat))
+                ident = catalog_identifier(r["catalog"])
+                if ident:
+                    ids.append(ident)
                 source_key = str(r["id"])
             elif section == "component":
                 ids.append(("bayer", f"{r['bayer']} {r['con']}"))
@@ -158,22 +193,22 @@ def main() -> None:
                           r.get("name"), r.get("con"), r.get("ra_h"), r.get("dec_deg"), r.get("type"), r.get("note"))
 
     for r in read_csv(SRC / "caldwell-catalog.csv"):
-        cat = norm_catalog(r.get("catalog"))
         ids = [("caldwell", r.get("caldwell"))]
-        if cat and " " in cat:
-            ns, value = cat.split(" ", 1); ids.append((ns.lower(), value))
+        ident = catalog_identifier(r.get("catalog"))
+        if ident:
+            ids.append(ident)
         add_candidate(candidates, "caldwell-catalog.csv", r.get("caldwell", ""), ids,
                       r.get("name"), r.get("con"), r.get("ra_h"), r.get("dec_deg"), r.get("type"))
 
     for r in read_csv(SRC / "finest-ngc-catalog.csv"):
-        cat = norm_catalog(r.get("catalog"))
         ids = [("finest_ngc", r.get("finest_ngc"))]
-        if cat and " " in cat:
-            ns, value = cat.split(" ", 1); ids.append((ns.lower(), value))
+        ident = catalog_identifier(r.get("catalog"))
+        if ident:
+            ids.append(ident)
         add_candidate(candidates, "finest-ngc-catalog.csv", r.get("finest_ngc", ""), ids,
                       r.get("name"), r.get("con"), r.get("ra_h"), r.get("dec_deg"), r.get("type"))
 
-    # Asterism members provide especially useful HIP cross-identifiers.  They are
+    # Asterism members provide especially useful HIP cross-identifiers. They are
     # candidates for reconciliation, not new objects simply because they appear in
     # an asterism.
     for n, r in enumerate(read_csv(SRC / "asterism-member-coordinates.csv"), 1):
@@ -189,10 +224,7 @@ def main() -> None:
     by_identifier = defaultdict(list)
     for c in candidates:
         for ident in c["identifiers"]:
-            # Membership/list IDs are unique within their own source and do not by
-            # themselves prove cross-source physical identity.  External IDs and
-            # Bayer identities do.
-            if ident["namespace"] in {"ngc", "ic", "hip", "bayer"}:
+            if ident["namespace"] in CROSS_SOURCE_NAMESPACES:
                 by_identifier[(ident["namespace"], ident["value"])].append(c["candidate_id"])
 
     overlaps = []
@@ -209,22 +241,28 @@ def main() -> None:
 
     counts = Counter(c["source"] for c in candidates)
     identifier_counts = Counter(i["namespace"] for c in candidates for i in c["identifiers"])
-    no_strong_id = []
-    strong = {"ngc", "ic", "hip", "bayer"}
+
+    without_cross_source = []
+    without_any_identifier = []
     for c in candidates:
-        if not any(i["namespace"] in strong for i in c["identifiers"]):
-            no_strong_id.append(c["candidate_id"])
+        if not c["identifiers"]:
+            without_any_identifier.append(c["candidate_id"])
+        if not any(i["namespace"] in CROSS_SOURCE_NAMESPACES for i in c["identifiers"]):
+            without_cross_source.append(c["candidate_id"])
 
     result = {
-        "schema_version": 1,
+        "schema_version": 2,
         "purpose": "pre-migration physical fixed-object identity audit; no permanent IDs assigned",
         "canonical_source": "Star-Almanack-Repo/fixed-objects.yaml",
         "candidate_count": len(candidates),
         "source_counts": dict(sorted(counts.items())),
         "identifier_counts": dict(sorted(identifier_counts.items())),
-        "strong_identifier_overlap_count": len(overlaps),
-        "strong_identifier_overlaps": overlaps,
-        "candidates_without_strong_identifier": no_strong_id,
+        "cross_source_identifier_namespaces": sorted(CROSS_SOURCE_NAMESPACES),
+        "stable_source_identifier_namespaces": sorted(STABLE_SOURCE_NAMESPACES),
+        "cross_source_identifier_overlap_count": len(overlaps),
+        "cross_source_identifier_overlaps": overlaps,
+        "candidates_without_cross_source_identifier": without_cross_source,
+        "candidates_without_any_identifier": without_any_identifier,
         "explicit_overlap_counts": {k: len(v) for k, v in explicit.items()},
         "warnings": warnings,
         "candidates": candidates,
@@ -234,8 +272,9 @@ def main() -> None:
     OUT.write_text(json.dumps(result, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
     print(f"Wrote {OUT.relative_to(ROOT)}")
     print(f"Candidates: {len(candidates)}")
-    print(f"Strong-ID overlaps: {len(overlaps)}")
-    print(f"Without strong ID: {len(no_strong_id)}")
+    print(f"Cross-source-ID overlaps: {len(overlaps)}")
+    print(f"Without cross-source ID: {len(without_cross_source)}")
+    print(f"Without any identifier: {len(without_any_identifier)}")
     print("No fixed_object_id values were assigned.")
 
 
