@@ -1,0 +1,30 @@
+name: Milky Way Region Analysis
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Run Mellinger contrast analysis
+        run: |
+          python tools/analyze_milky_way_regions.py
+
+      - name: Show machine-readable results
+        if: always()
+        run: |
+          if [ -f .cache/source-data/milky-way-mellinger-validation.json ]; then
+            cat .cache/source-data/milky-way-mellinger-validation.json
+          fi
