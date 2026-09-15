@@ -7,46 +7,37 @@ on:
       - tools/trigger-historical-path-repair.txt
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   repair:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
-      - name: Replace obsolete directory references outside workflows
+
+      - name: Prepare repaired workflow files
         run: |
           python - <<'PY'
           from pathlib import Path
-          import subprocess
 
-          old = b"Star-Almanack-Repo"
-          new = b"Historical"
+          old = "Star-Almanack-Repo"
+          new = "Historical"
           changed = []
-          files = subprocess.check_output(["git", "ls-files", "-z"]).split(b"\0")
-          for raw in files:
-              if not raw:
+          root = Path('.github/workflows')
+          for path in sorted(root.glob('*.y*ml')):
+              text = path.read_text(encoding='utf-8')
+              if old not in text:
                   continue
-              path = Path(raw.decode("utf-8"))
-              if path.parts[:2] == (".github", "workflows"):
-                  continue
-              data = path.read_bytes()
-              if old not in data or b"\0" in data:
-                  continue
-              path.write_bytes(data.replace(old, new))
+              path.write_text(text.replace(old, new), encoding='utf-8')
               changed.append(str(path))
-          print(f"Updated {len(changed)} tracked text files")
+          print(f"Prepared {len(changed)} repaired workflow files")
           for path in changed:
               print(path)
           PY
-      - name: Commit repaired references
-        run: |
-          if git diff --quiet; then
-            echo "No obsolete non-workflow references remain."
-            exit 0
-          fi
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A
-          git commit -m "Update references after Historical rename"
-          git push
+
+      - name: Upload repaired workflows
+        uses: actions/upload-artifact@v4
+        with:
+          name: repaired-workflows
+          path: .github/workflows
+          if-no-files-found: error
