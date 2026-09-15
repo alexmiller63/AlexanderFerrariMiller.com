@@ -12,7 +12,7 @@ import json
 import re
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[2]
+ROOT = Path(__file__).resolve().parents[1]
 SRC = ROOT
 AUDIT_PATH = SRC / "generated" / "fixed-object-identity-audit.json"
 REGISTRY_PATH = SRC / "database" / "fixed-object-registry.json"
