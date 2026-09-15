@@ -21,9 +21,17 @@ def main() -> None:
     DEST.mkdir(parents=True, exist_ok=True)
     expected = set(FILES)
     for filename in FILES:
-        url = f"{BASE}/{filename}"
-        print(f"Fetching {url}")
-        with urllib.request.urlopen(url, timeout=30) as response:
+        # The IAU archive publishes boundary filenames using uppercase
+        # constellation abbreviations. Keep our repository snapshot lowercase
+        # so existing Almanack consumers remain unchanged.
+        remote_filename = filename.upper()
+        url = f"{BASE}/{remote_filename}"
+        print(f"Fetching {url} -> {filename}")
+        request = urllib.request.Request(
+            url,
+            headers={"User-Agent": "Star-Almanack/1.0 (+https://AlexanderFerrariMiller.com)"},
+        )
+        with urllib.request.urlopen(request, timeout=30) as response:
             data = response.read()
         text = data.decode("utf-8")
         if "|" not in text:
