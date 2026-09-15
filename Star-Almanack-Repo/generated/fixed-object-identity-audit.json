@@ -1,5 +1,5 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "purpose": "pre-migration physical fixed-object identity audit; no permanent IDs assigned",
   "canonical_source": "Star-Almanack-Repo/fixed-objects.yaml",
   "candidate_count": 634,
@@ -15,16 +15,34 @@
     "asterism_member_label": 132,
     "bayer": 170,
     "caldwell": 109,
+    "catalog_label": 5,
     "finest_ngc": 112,
     "hip": 132,
     "ic": 9,
     "messier": 110,
-    "ngc": 316,
+    "ngc": 313,
+    "sh2": 1,
     "special": 1,
-    "v645": 1
+    "variable_star": 1
   },
-  "strong_identifier_overlap_count": 37,
-  "strong_identifier_overlaps": [
+  "cross_source_identifier_namespaces": [
+    "bayer",
+    "hip",
+    "ic",
+    "ngc",
+    "sh2",
+    "variable_star"
+  ],
+  "stable_source_identifier_namespaces": [
+    "asterism_member_label",
+    "caldwell",
+    "component",
+    "finest_ngc",
+    "messier",
+    "special"
+  ],
+  "cross_source_identifier_overlap_count": 37,
+  "cross_source_identifier_overlaps": [
     {
       "namespace": "hip",
       "value": "102098",
@@ -322,15 +340,17 @@
       ]
     }
   ],
-  "candidates_without_strong_identifier": [
+  "candidates_without_cross_source_identifier": [
     24,
     40,
     45,
-    281,
-    290,
+    295,
+    314,
     322,
+    330,
     380
   ],
+  "candidates_without_any_identifier": [],
   "explicit_overlap_counts": {
     "finest_ngc_caldwell": 33,
     "asterism_catalog": 2
@@ -5535,8 +5555,8 @@
           "value": "proxima-centauri"
         },
         {
-          "namespace": "v645",
-          "value": "Cen"
+          "namespace": "variable_star",
+          "value": "V645 Cen"
         }
       ],
       "name": "Proxima Centauri",
@@ -5722,6 +5742,10 @@
         {
           "namespace": "caldwell",
           "value": "C9"
+        },
+        {
+          "namespace": "sh2",
+          "value": "155"
         }
       ],
       "name": "Cave Nebula",
@@ -5825,8 +5849,8 @@
           "value": "C14"
         },
         {
-          "namespace": "ngc",
-          "value": "869/884"
+          "namespace": "catalog_label",
+          "value": "NGC 869/884"
         }
       ],
       "name": "Double Cluster",
@@ -6224,8 +6248,8 @@
           "value": "C33"
         },
         {
-          "namespace": "ngc",
-          "value": "6992/6995"
+          "namespace": "catalog_label",
+          "value": "NGC 6992/6995"
         }
       ],
       "name": "Eastern Veil Nebula",
@@ -6390,6 +6414,10 @@
         {
           "namespace": "caldwell",
           "value": "C41"
+        },
+        {
+          "namespace": "catalog_label",
+          "value": "Hyades"
         }
       ],
       "name": "Hyades",
@@ -6556,8 +6584,8 @@
           "value": "C49"
         },
         {
-          "namespace": "ngc",
-          "value": "2237-2239"
+          "namespace": "catalog_label",
+          "value": "NGC 2237-2239"
         }
       ],
       "name": "Rosette Nebula",
@@ -7604,6 +7632,10 @@
         {
           "namespace": "caldwell",
           "value": "C99"
+        },
+        {
+          "namespace": "catalog_label",
+          "value": "Coalsack"
         }
       ],
       "name": "Coalsack Nebula",
