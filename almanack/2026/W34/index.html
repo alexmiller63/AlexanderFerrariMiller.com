@@ -239,7 +239,15 @@ table.ephemeris td {
   /* Clear any legacy grid presentation left on previously generated pages. */
   display:revert !important;
 }
-table.ephemeris {
+.ephemeris-scroll {
+  width:100%;
+  max-width:100%;
+  min-width:0;
+  overflow-x:auto;
+  overflow-y:hidden;
+  -webkit-overflow-scrolling:touch;
+}
+.ephemeris-scroll table.ephemeris {
   display:table !important;
   width:max-content !important;
   min-width:100% !important;
