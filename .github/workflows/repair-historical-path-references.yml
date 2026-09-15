@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
-      - name: Replace obsolete directory references
+      - name: Replace obsolete directory references outside workflows
         run: |
           python - <<'PY'
           from pathlib import Path
@@ -28,6 +28,8 @@ jobs:
               if not raw:
                   continue
               path = Path(raw.decode("utf-8"))
+              if path.parts[:2] == (".github", "workflows"):
+                  continue
               data = path.read_bytes()
               if old not in data or b"\0" in data:
                   continue
@@ -40,7 +42,7 @@ jobs:
       - name: Commit repaired references
         run: |
           if git diff --quiet; then
-            echo "No obsolete references remain."
+            echo "No obsolete non-workflow references remain."
             exit 0
           fi
           git config user.name "github-actions[bot]"
