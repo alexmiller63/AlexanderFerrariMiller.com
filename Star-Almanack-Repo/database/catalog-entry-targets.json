@@ -1,5 +1,5 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "purpose": "Pre-migration machine-readable relationship layer separating catalog entries and observing targets from physical fixed-object identity.",
   "status": "migration_scaffold",
   "permanent_fixed_object_ids_assigned": false,
@@ -8,7 +8,8 @@
     "comprises",
     "has_component",
     "represents_region",
-    "has_asterism"
+    "has_asterism",
+    "historical_designation"
   ],
   "catalog_entries": [
     {
@@ -42,10 +43,22 @@
           "target_kind": "structured_target",
           "target_key": "winnecke-4",
           "display_name": "Winnecke 4"
+        },
+        {
+          "relationship": "has_component",
+          "target_kind": "physical_object_identifier",
+          "identifier": {"namespace": "hd", "value": "238107"},
+          "display_name": "HD 238107"
+        },
+        {
+          "relationship": "has_component",
+          "target_kind": "physical_object_identifier",
+          "identifier": {"namespace": "hd", "value": "238108"},
+          "display_name": "HD 238108"
         }
       ],
-      "component_resolution_status": "required_before_permanent_identity_registry",
-      "note": "The observing target is a double-star system; its stellar components must receive separate physical identities when resolved."
+      "component_resolution_status": "resolved",
+      "note": "Winnecke 4 is an optical pair. HD 238107 and HD 238108 are separately identified physical stars."
     },
     {
       "catalog_entry_key": "messier:M45",
@@ -151,22 +164,24 @@
       "target_model": "nebular_complex",
       "targets": [
         {
-          "relationship": "comprises",
+          "relationship": "designates",
           "target_kind": "physical_object_identifier",
           "identifier": {"namespace": "ngc", "value": "2237"},
           "display_name": "NGC 2237"
         },
         {
-          "relationship": "comprises",
-          "target_kind": "physical_object_identifier",
+          "relationship": "historical_designation",
+          "target_kind": "catalog_designation",
           "identifier": {"namespace": "ngc", "value": "2238"},
-          "display_name": "NGC 2238"
+          "display_name": "NGC 2238",
+          "note": "SIMBAD treats NGC 2238 as an obsolete designation for a portion of the Rosette Nebula; it is not forced into a separate physical identity."
         },
         {
-          "relationship": "comprises",
-          "target_kind": "physical_object_identifier",
+          "relationship": "historical_designation",
+          "target_kind": "catalog_designation",
           "identifier": {"namespace": "ngc", "value": "2239"},
-          "display_name": "NGC 2239"
+          "display_name": "NGC 2239",
+          "note": "NGC 2239 has conflicting historical usage and is retained as catalog semantics rather than forced into a new physical identity in C49."
         }
       ],
       "display_name": "Rosette Nebula"
