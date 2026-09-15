@@ -25,7 +25,7 @@ jobs:
         run: python tools/audit_fixed_object_exceptions.py
 
       - name: Build permanent fixed-object registry
-        run: python Star-Almanack-Repo/tools/build_fixed_object_registry.py
+        run: python tools/build_fixed_object_registry.py
 
       - name: Commit audit and registry results
         run: |
