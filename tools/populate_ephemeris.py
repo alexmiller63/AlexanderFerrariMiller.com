@@ -307,7 +307,7 @@ def render_ephemeris(monday, values):
         "<h3>Weekly Solar-System Ephemeris</h3>"
         + EPHEMERIS_STYLE
         + f'<p><strong>Snapshot:</strong> {monday.strftime("%B")} {monday.day}, {monday.year} · 00:00 UTC</p>'
-        + '<p class="ephemeris-latitude-control"><label for="ephemeris-latitude"><strong>Observer latitude:</strong> <input id="ephemeris-latitude" name="ephemeris-latitude" type="number" min="-90" max="90" step="0.1" value="45" data-ephemeris-latitude>°</label> <span>(default +45°)</span></p>'
+        + '<p class="ephemeris-latitude-control"><label for="ephemeris-latitude"><strong>Observer latitude:</strong> <input id="ephemeris-latitude" name="ephemeris-latitude" type="text" inputmode="text" value="45" data-ephemeris-latitude aria-describedby="ephemeris-latitude-range">°</label> <button type="button" data-ephemeris-apply>Apply</button> <span id="ephemeris-latitude-range">(−90° to +90°; default +45°)</span></p>'
         + notation_toggle("ephemeris")
         + table(primary)
         + "<p><strong>Extended targets:</strong></p>"
