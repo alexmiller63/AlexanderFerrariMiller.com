@@ -21,9 +21,9 @@ jobs:
       - name: Run identity audit
         run: python tools/audit_fixed_object_identity.py
 
-      - name: Commit audit result
+      - name: Commit audit results
         run: |
-          git add Star-Almanack-Repo/generated/fixed-object-identity-audit.json
+          git add Star-Almanack-Repo/generated/fixed-object-identity-audit.json Star-Almanack-Repo/generated/fixed-object-contradiction-review.json
           if git diff --cached --quiet; then
             echo "Identity audit is already current."
             exit 0
