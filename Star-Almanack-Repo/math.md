@@ -898,3 +898,5 @@ Fixed-star entries remain nightly observing guidance. They are not changed by th
 The companion app uses the observer's exact date and time and exact location, including latitude and longitude; elevation may also be supported. It calculates location-specific planetary visibility, rise, set, daylight, and solar-glare status rather than relying on the weekly website epoch.
 
 The website is free. The companion app is priced at **$0.99** as a one-time purchase.
+
+The website's latitude control recalculates Rise and Set interactively. The website observing snapshot uses **21:00 LAT** for the daylight test: Daylight replaces a naked-eye classification when the Sun is above the apparent horizon; Solar glare is used when the Sun is below the horizon but the body is too close to the Sun. The Sun itself remains glyph **☉** with text **visible** at every latitude.
