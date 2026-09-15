@@ -24,17 +24,14 @@ jobs:
       - name: Create compact exception report
         run: python tools/audit_fixed_object_exceptions.py
 
-      - name: Build permanent fixed-object registry
-        run: python tools/build_fixed_object_registry.py
-
-      - name: Commit audit and registry results
+      - name: Commit audit results
         run: |
-          git add Historical/generated/fixed-object-identity-audit.json Historical/generated/fixed-object-contradiction-review.json Historical/generated/fixed-object-identity-exceptions.json Historical/database/fixed-object-registry.json
+          git add generated/fixed-object-identity-audit.json generated/fixed-object-contradiction-review.json generated/fixed-object-identity-exceptions.json
           if git diff --cached --quiet; then
-            echo "Identity audit and registry are already current."
+            echo "Identity audit is already current."
             exit 0
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git commit -m "Update fixed-object identity audit and registry"
+          git commit -m "Update fixed-object identity audit"
           git push

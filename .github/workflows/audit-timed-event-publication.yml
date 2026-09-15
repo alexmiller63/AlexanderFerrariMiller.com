@@ -11,9 +11,9 @@ on:
       - 'tools/populate_galactic_center.py'
       - 'tools/populate_meteor_showers.py'
       - 'tools/wire_2026_eclipses.py'
-      - 'Historical/besselian_eclipse_engine.py'
-      - 'Historical/eclipse.yaml'
-      - 'Historical/generated/*.json'
+      - 'besselian_eclipse_engine.py'
+      - 'eclipse.yaml'
+      - 'generated/*.json'
       - '.github/workflows/audit-timed-event-publication.yml'
 
 permissions:

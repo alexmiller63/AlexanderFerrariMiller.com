@@ -218,9 +218,9 @@ jobs:
 
           # The weekly ephemeris CSVs are temporary local inputs for this workflow.
           # Restore tracked canonical CSVs, then delete only untracked temporary slices.
-          git ls-files -z 'Historical/weekly-ephemeris-*.csv' \
+          git ls-files -z 'weekly-ephemeris-*.csv' \
             | xargs -0 -r git restore --worktree --
-          git ls-files --others --exclude-standard -z -- 'Historical/weekly-ephemeris-*.csv' \
+          git ls-files --others --exclude-standard -z -- 'weekly-ephemeris-*.csv' \
             | xargs -0 -r rm -f --
 
           if git diff --cached --quiet; then

@@ -4,7 +4,7 @@ name: Refresh IAU Constellation Boundary Snapshot
   workflow_dispatch:
   push:
     paths:
-      - 'Historical/tools/refresh_iau_constellation_boundaries.py'
+      - 'tools/refresh_iau_constellation_boundaries.py'
       - '.github/workflows/refresh-iau-constellation-boundaries.yml'
 
 permissions:
@@ -19,15 +19,15 @@ jobs:
         with:
           python-version: '3.x'
       - name: Refresh official IAU boundary snapshot
-        run: python Historical/tools/refresh_iau_constellation_boundaries.py
+        run: python tools/refresh_iau_constellation_boundaries.py
       - name: Verify complete snapshot
         run: |
-          test "$(find Historical/reference-data/iau-constellation-boundaries -maxdepth 1 -name '*.txt' | wc -l)" -eq 89
+          test "$(find reference-data/iau-constellation-boundaries -maxdepth 1 -name '*.txt' | wc -l)" -eq 89
       - name: Commit snapshot if changed
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add Historical/reference-data/iau-constellation-boundaries
+          git add reference-data/iau-constellation-boundaries
           if git diff --cached --quiet; then
             echo 'IAU boundary snapshot already current.'
             exit 0

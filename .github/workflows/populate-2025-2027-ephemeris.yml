@@ -36,21 +36,21 @@ on:
       - 'tools/populate_caldwell.py'
       - 'tools/populate_finest_ngc.py'
       - 'tools/populate-2025-2027-ephemeris-trigger.txt'
-      - 'Historical/EPHEMERIS-PROVENANCE.md'
-      - 'Historical/eclipse.yaml'
-      - 'Historical/compute_bayer_visibility_2026.py'
-      - 'Historical/expanded-bayer-stars.csv'
-      - 'Historical/compute_constellation_observance_2026.py'
-      - 'Historical/fixed-objects.yaml'
-      - 'Historical/messier-editorial.json'
-      - 'Historical/messier-common-names-nasa.yaml'
-      - 'Historical/expanded-bayer-visibility-2026.csv'
-      - 'Historical/caldwell-catalog.csv'
-      - 'Historical/finest-ngc-catalog.csv'
-      - 'Historical/finest-ngc-caldwell-overlap.csv'
-      - 'Historical/asterism-geometry-2025.csv'
-      - 'Historical/asterism-geometry-2026.csv'
-      - 'Historical/asterism-geometry-2027.csv'
+      - 'EPHEMERIS-PROVENANCE.md'
+      - 'eclipse.yaml'
+      - 'compute_bayer_visibility_2026.py'
+      - 'expanded-bayer-stars.csv'
+      - 'compute_constellation_observance_2026.py'
+      - 'fixed-objects.yaml'
+      - 'messier-editorial.json'
+      - 'messier-common-names-nasa.yaml'
+      - 'expanded-bayer-visibility-2026.csv'
+      - 'caldwell-catalog.csv'
+      - 'finest-ngc-catalog.csv'
+      - 'finest-ngc-caldwell-overlap.csv'
+      - 'asterism-geometry-2025.csv'
+      - 'asterism-geometry-2026.csv'
+      - 'asterism-geometry-2027.csv'
 
 env:
   ALMANACK_YEARS: ${{ github.event_name == 'workflow_dispatch' && inputs.years || '2025 2026 2027' }}
@@ -120,7 +120,7 @@ jobs:
             https://raw.githubusercontent.com/astronexus/HYG-Database/3bf37f4b2d5460e1278286320d1d62fab9b493c1/hyg/CURRENT/hygdata_v41.csv \
             -o /tmp/hygdata_v41.csv
       - name: Verify preserved 2026 best-visibility regression
-        run: python Historical/compute_bayer_visibility_2026.py Historical/expanded-bayer-stars.csv /tmp/expanded-bayer-visibility-2026-regression.csv
+        run: python compute_bayer_visibility_2026.py expanded-bayer-stars.csv /tmp/expanded-bayer-visibility-2026-regression.csv
       - name: Normalize calendar keys and clear requested event cells
         run: python tools/clean_event_cells.py $ALMANACK_YEARS
       - name: Populate Zodiac Days, ingresses, solar stations, and named lunar phases
@@ -181,8 +181,8 @@ jobs:
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           regression() {
-            python Historical/compute_bayer_visibility_2026.py \
-              Historical/expanded-bayer-stars.csv \
+            python compute_bayer_visibility_2026.py \
+              expanded-bayer-stars.csv \
               /tmp/expanded-bayer-visibility-2026-regression.csv
           }
           generate_current_planet_finder() {
@@ -200,19 +200,19 @@ jobs:
             for year in $ALMANACK_YEARS; do
               git add \
                 "almanack/$year" \
-                "Historical/site/$year" \
-                "Historical/weekly-ephemeris-$year.csv" \
-                "Historical/generated/calendar-$year.json" \
-                "Historical/generated/meteor-showers-$year.json" \
-                "Historical/generated/expanded-bayer-visibility-$year.csv" \
-                "Historical/generated/bright-star-visibility-$year.csv" \
-                "Historical/generated/messier-visibility-$year.csv" \
-                "Historical/generated/constellation-observance-$year.csv" \
-                "Historical/generated/caldwell-visibility-$year.csv" \
-                "Historical/generated/finest-ngc-visibility-$year.csv"
+                "site/$year" \
+                "weekly-ephemeris-$year.csv" \
+                "generated/calendar-$year.json" \
+                "generated/meteor-showers-$year.json" \
+                "generated/expanded-bayer-visibility-$year.csv" \
+                "generated/bright-star-visibility-$year.csv" \
+                "generated/messier-visibility-$year.csv" \
+                "generated/constellation-observance-$year.csv" \
+                "generated/caldwell-visibility-$year.csv" \
+                "generated/finest-ngc-visibility-$year.csv"
             done
             if [[ " $ALMANACK_YEARS " == *" 2026 "* ]]; then
-              git add Historical/almanack-expanded.md star-almanack/eclipses.html
+              git add almanack-expanded.md star-almanack/eclipses.html
             fi
           }
           regenerate() {

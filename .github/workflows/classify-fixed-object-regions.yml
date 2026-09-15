@@ -34,7 +34,7 @@ jobs:
           import yaml
           from pathlib import Path
 
-          data = yaml.safe_load(Path('Historical/fixed-object-regions.yaml').read_text())
+          data = yaml.safe_load(Path('fixed-object-regions.yaml').read_text())
           sirius = data['objects']['bayer'].get('α CMa')
           if sirius is None:
               raise SystemExit('Sirius (α CMa) was not found in fixed-object-regions.yaml')
@@ -45,7 +45,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -- Historical/fixed-object-regions.yaml
+          git add -- fixed-object-regions.yaml
           if git diff --cached --quiet; then
             echo "Fixed-object region metadata is already current."
             exit 0
@@ -60,7 +60,7 @@ jobs:
             git fetch origin main
             git rebase origin/main
             python tools/classify_fixed_object_regions.py
-            git add -- Historical/fixed-object-regions.yaml
+            git add -- fixed-object-regions.yaml
             if ! git diff --cached --quiet; then
               git commit --amend --no-edit
             fi

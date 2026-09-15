@@ -9,11 +9,11 @@ on:
         default: '2025 2026 2027'
   push:
     paths:
-      - 'Historical/asterisms-core-25.yaml'
-      - 'Historical/asterism-coordinate-resolution.yaml'
-      - 'Historical/expanded-bayer-stars.csv'
-      - 'Historical/build_asterism_member_coordinates.py'
-      - 'Historical/compute_asterism_geometry_2026.py'
+      - 'asterisms-core-25.yaml'
+      - 'asterism-coordinate-resolution.yaml'
+      - 'expanded-bayer-stars.csv'
+      - 'build_asterism_member_coordinates.py'
+      - 'compute_asterism_geometry_2026.py'
       - '.github/workflows/build-asterism-geometry.yml'
 
 env:
@@ -134,9 +134,9 @@ jobs:
           set -euo pipefail
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add Historical/asterism-member-coordinates.csv
+          git add asterism-member-coordinates.csv
           for year in $ASTERISM_YEARS; do
-            git add "Historical/asterism-geometry-$year.csv"
+            git add "asterism-geometry-$year.csv"
           done
           if git diff --cached --quiet; then
             echo 'Generated asterism files unchanged.'

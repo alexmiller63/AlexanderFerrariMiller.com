@@ -5,8 +5,8 @@ on:
   push:
     paths:
       - '.github/workflows/audit-eclipse-jdtdb-migration.yml'
-      - 'Historical/besselian_eclipse_engine.py'
-      - 'Historical/eclipse-validation-cases.yaml'
+      - 'besselian_eclipse_engine.py'
+      - 'eclipse-validation-cases.yaml'
 
 permissions:
   contents: write
@@ -61,7 +61,7 @@ jobs:
           PRE_JDTDB_COMMIT: 0c64439dc222f2be35bc616da0fc4f5ce0bc5a00
         run: |
           set -o pipefail
-          git show "$PRE_JDTDB_COMMIT:Historical/besselian_eclipse_engine.py" > /tmp/besselian_before.py
+          git show "$PRE_JDTDB_COMMIT:besselian_eclipse_engine.py" > /tmp/besselian_before.py
 
           python - <<'PY' | tee eclipse-jdtdb-audit.txt
           from datetime import datetime
@@ -158,7 +158,7 @@ jobs:
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add Historical/eclipse-jdtdb-audit.txt
+          git add eclipse-jdtdb-audit.txt
           if git diff --cached --quiet; then
             echo 'Audit report unchanged.'
           else

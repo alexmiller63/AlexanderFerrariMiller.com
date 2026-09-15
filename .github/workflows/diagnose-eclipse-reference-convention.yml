@@ -30,7 +30,7 @@ jobs:
         run: python3 -m pip install --disable-pip-version-check spiceypy pyyaml
 
       - name: Bootstrap ELP2000-82B archive
-        working-directory: Historical/star-almanack-elp82b
+        working-directory: star-almanack-elp82b
         run: |
           python lunar_elp.py bootstrap data/elp82b
           python lunar_elp.py verify data/elp82b
@@ -158,6 +158,6 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: eclipse-reference-convention
-          path: Historical/eclipse-reference-convention.txt
+          path: eclipse-reference-convention.txt
           if-no-files-found: error
           retention-days: 7

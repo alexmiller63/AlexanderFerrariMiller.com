@@ -4,8 +4,8 @@ on:
   push:
     paths:
       - tools/apply_2026_object_order.py
-      - Historical/messier-editorial.json
-      - Historical/enrich_stellar_entries.py
+      - messier-editorial.json
+      - enrich_stellar_entries.py
       - .github/workflows/apply-2026-object-order.yml
   workflow_dispatch:
     inputs:
@@ -77,9 +77,9 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add Historical/almanack-expanded.md
+          git add almanack-expanded.md
           for year in $ALMANACK_YEARS; do
-            git add "Historical/site/$year"/W??/index.html "almanack/$year"/W??/index.html
+            git add "site/$year"/W??/index.html "almanack/$year"/W??/index.html
           done
           if git diff --cached --quiet; then
             echo "No object-order changes."

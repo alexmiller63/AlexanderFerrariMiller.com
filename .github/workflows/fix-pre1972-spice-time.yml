@@ -21,7 +21,7 @@ jobs:
           python3 <<'PY'
           from pathlib import Path
 
-          path = Path("Historical/eclipse_engine.py")
+          path = Path("eclipse_engine.py")
           text = path.read_text(encoding="utf-8")
 
           old_module = '''For dates before 1972, the engine follows the NAIF/SPICE leap-seconds-kernel\n\nconvention and extends the earliest tabulated TAI-UTC value of 10 seconds\n\nbackward. This keeps UTC-labelled input on one consistent ephemeris-time path\n\ninstead of substituting an UT1 Delta-T approximation.\n'''
@@ -112,7 +112,7 @@ jobs:
           set -euo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add Historical/eclipse_engine.py
+          git add eclipse_engine.py
           git diff --cached --check
           git commit -m "Correct pre-1972 SPICE time convention"
           git push

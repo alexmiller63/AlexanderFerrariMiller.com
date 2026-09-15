@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   push:
     paths:
-      - 'Historical/diagnose_nasa_besselian_reference.py'
+      - 'diagnose_nasa_besselian_reference.py'
       - '.github/workflows/diagnose-nasa-besselian-reference.yml'
 
 jobs:
@@ -15,4 +15,4 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Run independent Besselian control
-        run: python Historical/diagnose_nasa_besselian_reference.py
+        run: python diagnose_nasa_besselian_reference.py
