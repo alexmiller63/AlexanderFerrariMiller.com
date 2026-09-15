@@ -277,10 +277,6 @@ let buttons=document.querySelectorAll('[data-bayer-mode]');function setMode(mode
     document.querySelectorAll('table.calendar tbody td:nth-child(3) .zodiac-glyph').forEach(function(el){
       const glyph=el.textContent.replace(/\ufe0e/g,'').trim().charAt(0); if(signs[glyph])el.textContent=glyph+VS;
     });
-    /* Normalize Bayer designations whose Greek letter has already been wrapped
-       by calendar generation, e.g. <span class="greek-letter">ε</span> Peg.
-       Treat the Greek letter plus following 3-letter constellation abbreviation
-       as one notation item so Latin mode can render the proper genitive (Pegasi). */
     document.querySelectorAll('table.calendar tbody td:nth-child(3) .greek-letter').forEach(function(el){
       if(el.closest('.calendar-notation-item'))return;
       const letter=el.textContent.replace(/\ufe0e/g,'').trim();
@@ -306,31 +302,18 @@ let buttons=document.querySelectorAll('[data-bayer-mode]');function setMode(mode
       nodes.forEach(function(node){const text=node.nodeValue,frag=document.createDocumentFragment();let last=0,m;pattern.lastIndex=0;while((m=pattern.exec(text))){frag.append(document.createTextNode(text.slice(last,m.index)));const suffix=m[2]||'',greek=m[1]+suffix+' '+m[3],latin=(greekNames[m[1]]||m[1])+suffix+' '+(constellations[m[3]]||m[3]),mixed=m[1]+suffix+' '+(greekNames[m[1]]||m[1])+suffix+' '+(constellations[m[3]]||m[3]);const span=document.createElement('span');item(span,greek,latin,mixed,'calendar-notation-item');span.textContent=greek;frag.append(span);last=m.index+m[0].length;}frag.append(document.createTextNode(text.slice(last)));node.replaceWith(frag);});
     });
   }
-  function aidKind(img){
-    const src=(img.getAttribute('src')||'').split('/').pop()||'';
-    return src.replace(/\.svg(?:\?.*)?$/,'');
-  }
+  function aidKind(img){const src=(img.getAttribute('src')||'').split('/').pop()||'';return src.replace(/\.svg(?:\?.*)?$/,'');}
   function prepareObservingAids(){
     document.querySelectorAll('table.calendar .visibility-magnitude, table.ephemeris tr.ephemeris-visibility td').forEach(function(container){
       if(container.querySelector('.observing-notation-item'))return;
       const glyphs=Array.from(container.querySelectorAll(':scope > img.visibility-glyph, :scope > .substantial-telescope img.visibility-glyph'));
       if(!glyphs.length)return;
-      const kinds=glyphs.map(aidKind);
-      let label;
-      if(kinds.length===2&&kinds.every(function(kind){return kind==='telescope';})){
-        label='Substantial telescope';
-      }else{
-        label=kinds.map(function(kind){return observingNames[kind]||'';}).filter(Boolean).join(' / ');
-      }
+      const kinds=glyphs.map(aidKind);let label;
+      if(kinds.length===2&&kinds.every(function(kind){return kind==='telescope';}))label='Substantial telescope';
+      else label=kinds.map(function(kind){return observingNames[kind]||'';}).filter(Boolean).join(' / ');
       if(!label)return;
       const greekHtml=glyphs.map(function(img){return img.outerHTML;}).join('');
-      const span=document.createElement('span');
-      span.className='observing-notation-item';
-      span.dataset.greekHtml=greekHtml;
-      span.dataset.latin=label;
-      span.dataset.mixedHtml=greekHtml+' '+label;
-      glyphs[0].before(span);
-      glyphs.forEach(function(img){img.remove();});
+      const span=document.createElement('span');span.className='observing-notation-item';span.dataset.greekHtml=greekHtml;span.dataset.latin=label;span.dataset.mixedHtml=greekHtml+' '+label;glyphs[0].before(span);glyphs.forEach(function(img){img.remove();});
     });
   }
   function prepareEphemeris(){
@@ -339,48 +322,25 @@ let buttons=document.querySelectorAll('[data-bayer-mode]');function setMode(mode
         if(th.dataset.greek)return;
         const txt=th.textContent.trim().replace(/\ufe0e/g,'');
         for(const [name,glyph] of Object.entries(bodies)){
-          if(txt===glyph||txt===name||txt===glyph+' '+name){
-            th.textContent=glyph+VS;
-            item(th,glyph+VS,name,glyph+VS+' '+name,'ephemeris-notation-item');
-            break;
-          }
+          if(txt===glyph||txt===name||txt===glyph+' '+name){th.textContent=glyph+VS;item(th,glyph+VS,name,glyph+VS+' '+name,'ephemeris-notation-item');break;}
         }
       });
-      table.querySelectorAll('td .ephemeris-symbol').forEach(function(el){
-        if(el.dataset.greek)return;
-        const glyph=el.textContent.replace(/\ufe0e/g,'').trim().charAt(0);
-        if(signs[glyph]) item(el,glyph+VS,signs[glyph],glyph+VS+' '+signs[glyph],'ephemeris-notation-item');
-      });
+      table.querySelectorAll('td .ephemeris-symbol').forEach(function(el){if(el.dataset.greek)return;const glyph=el.textContent.replace(/\ufe0e/g,'').trim().charAt(0);if(signs[glyph]) item(el,glyph+VS,signs[glyph],glyph+VS+' '+signs[glyph],'ephemeris-notation-item');});
     });
   }
-  function setObservingMode(mode){
-    document.querySelectorAll('.observing-notation-item').forEach(function(el){
-      if(mode==='latin')el.textContent=el.dataset.latin||'';
-      else if(mode==='mixed')el.innerHTML=el.dataset.mixedHtml||el.dataset.greekHtml||'';
-      else el.innerHTML=el.dataset.greekHtml||'';
-    });
-  }
-  function setFinder(mode){
-    document.querySelectorAll('[data-finder-image]').forEach(function(f){
-      f.style.display=f.dataset.finderImage===mode?'block':'none';
-    });
-    document.querySelectorAll('.w15-finder-strip [data-finder-mode]').forEach(function(f){
-      const active=f.dataset.finderMode===mode;
-      f.classList.toggle('is-active',active);
-      f.hidden=!active;
-      f.style.display=active?'block':'none';
-    });
-  }
+  function setObservingMode(mode){document.querySelectorAll('.observing-notation-item').forEach(function(el){if(mode==='latin')el.textContent=el.dataset.latin||'';else if(mode==='mixed')el.innerHTML=el.dataset.mixedHtml||el.dataset.greekHtml||'';else el.innerHTML=el.dataset.greekHtml||'';});}
+  function setFinder(mode){document.querySelectorAll('[data-finder-image]').forEach(function(f){f.style.display=f.dataset.finderImage===mode?'block':'none';});document.querySelectorAll('.w15-finder-strip [data-finder-mode]').forEach(function(f){const active=f.dataset.finderMode===mode;f.classList.toggle('is-active',active);f.hidden=!active;f.style.display=active?'block':'none';});}
   function renderNotation(el,value,mode){el.textContent='';if(mode==='latin'){el.textContent=value;return;}const m=value.match(/^([αβγδεζηθικλμνξοπρστυφχψω♈♉♊♋♌♍♎♏♐♑♒♓☉☽☿♀♂♃♄♅♆⚳♇])(\ufe0e)?(.*)$/u);if(!m){el.textContent=value;return;}const symbol=document.createElement('span');symbol.className=el.classList.contains('ephemeris-notation-item')?'ephemeris-symbol':'calendar-symbol';symbol.textContent=m[1]+(m[2]||'');el.append(symbol);if(m[3])el.append(document.createTextNode(m[3]));}
   function setMode(mode){prepareCalendar();prepareObservingAids();prepareEphemeris();document.querySelectorAll('.calendar-notation-item,.ephemeris-notation-item').forEach(function(el){renderNotation(el,el.dataset[mode]||el.dataset.greek,mode);});setObservingMode(mode);document.querySelectorAll('[data-bayer-mode]').forEach(function(b){b.setAttribute('aria-pressed',b.dataset.bayerMode===mode?'true':'false');});setFinder(mode);try{localStorage.setItem('star-almanack-bayer-mode',mode)}catch(_){}}
-  function setModeKeepingControlStill(button,mode){
-    const control=button.closest('.section-notation-toggle')||button;
-    const before=control.getBoundingClientRect().top;
-    setMode(mode);
-    const after=control.getBoundingClientRect().top;
-    const delta=after-before;
-    if(Math.abs(delta)>0.5) window.scrollBy(0,delta);
-  }
-  document.querySelectorAll('[data-bayer-mode]').forEach(function(button){button.addEventListener('click',function(){setModeKeepingControlStill(button,button.dataset.bayerMode);});});let initial='greek';try{const s=localStorage.getItem('star-almanack-bayer-mode');if(s==='greek'||s==='latin'||s==='mixed')initial=s}catch(_){}setMode(initial);
+  function setModeKeepingControlStill(button,mode){const control=button.closest('.section-notation-toggle')||button;const before=control.getBoundingClientRect().top;setMode(mode);const after=control.getBoundingClientRect().top;const delta=after-before;if(Math.abs(delta)>0.5) window.scrollBy(0,delta);}
+  document.querySelectorAll('[data-bayer-mode]').forEach(function(button){button.addEventListener('click',function(){setModeKeepingControlStill(button,button.dataset.bayerMode);});});
+  let initial='greek';try{const s=localStorage.getItem('star-almanack-bayer-mode');if(s==='greek'||s==='latin'||s==='mixed')initial=s}catch(_){}
+  /* Always normalize generated markup from its canonical Greek/symbol state before
+     restoring a saved Latin or Mixed preference. This makes first-load behavior
+     identical to an explicit mode switch and prevents duplicated body names. */
+  prepareCalendar();prepareObservingAids();prepareEphemeris();
+  document.querySelectorAll('.calendar-notation-item,.ephemeris-notation-item').forEach(function(el){renderNotation(el,el.dataset.greek,'greek');});
+  setObservingMode('greek');
+  setMode(initial);
 })();
 </script></body></html>
