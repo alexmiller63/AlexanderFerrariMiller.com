@@ -7,6 +7,7 @@ from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1];SRC=ROOT/'Star-Almanack-Repo';OUT=SRC/'generated'/'fixed-object-identity-audit.json';REVIEW_OUT=SRC/'generated'/'fixed-object-contradiction-review.json'
 CATALOG_RE=re.compile(r'^(NGC|IC)\s*0*(\d+)$',re.I);HIP_RE=re.compile(r'^HIP\s*0*(\d+)$',re.I);SH2_RE=re.compile(r'^Sh\s*2\s*[- ]\s*0*(\d+)$',re.I);VARIABLE_STAR_RE=re.compile(r'^([A-Z]{1,2}\d+)\s+([A-Za-z]{3})$')
 CROSS_SOURCE_NAMESPACES={'ngc','ic','hip','bayer','sh2','variable_star'};STABLE_SOURCE_NAMESPACES={'messier','caldwell','finest_ngc','special','component','asterism_member_label'}
+TYPE_FAMILIES={'Gal':'galaxy','ScG':'galaxy','SbG':'galaxy','dE0G':'galaxy','IG':'galaxy','SG':'galaxy','EG':'galaxy','LG':'galaxy','BG':'galaxy','BN':'emission_nebula','EN':'emission_nebula','DN':'dark_nebula','PN':'planetary_nebula','OC':'open_cluster','GC':'globular_cluster','SN':'supernova_remnant','DS':'double_star','MW':'milky_way','AS':'asterism'}
 def norm_catalog(v):
  if v is None:return None
  s=str(v).strip()
@@ -27,6 +28,7 @@ def catalog_identifier(v):
  m=VARIABLE_STAR_RE.match(cat)
  if m:return('variable_star',f'{m.group(1)} {m.group(2)}')
  return('catalog_label',cat)
+def type_family(v):return TYPE_FAMILIES.get(v,v) if v else None
 def read_csv(p):
  if not p.exists():return []
  with p.open(newline='',encoding='utf-8') as f:return list(csv.DictReader(f))
@@ -50,7 +52,7 @@ def add_candidate(cs,source,key,ids,name=None,con=None,ra_h=None,dec_deg=None,ob
   v=str(val).strip()
   if not v or v.lower()=='null' or(ns,v)in seen:continue
   seen.add((ns,v));clean.append({'namespace':ns,'value':v})
- cs.append({'candidate_id':len(cs)+1,'source':source,'source_key':key,'identifiers':clean,'name':name or None,'constellation':con or None,'ra_h':ra_h or None,'dec_deg':dec_deg or None,'object_type':obj_type or None,'notes':notes or None})
+ cs.append({'candidate_id':len(cs)+1,'source':source,'source_key':key,'identifiers':clean,'name':name or None,'constellation':con or None,'ra_h':ra_h or None,'dec_deg':dec_deg or None,'object_type':obj_type or None,'object_type_family':type_family(obj_type),'notes':notes or None})
 def angular_sep_deg(a,b):
  try:r1=math.radians(float(a['ra_h'])*15);d1=math.radians(float(a['dec_deg']));r2=math.radians(float(b['ra_h'])*15);d2=math.radians(float(b['dec_deg']))
  except(TypeError,ValueError):return None
@@ -79,9 +81,9 @@ def reconcile(cs):
    if len(shared)>1:evidence.append({'namespace':ns,'value':v,'candidate_ids':shared})
   contradictions=[];max_sep=0.0
   if len(ids)>1:
-   rows=[cmap[i]for i in ids];cons=sorted({r['constellation']for r in rows if r['constellation']});types=sorted({r['object_type']for r in rows if r['object_type']})
-   if len(cons)>1:contradictions.append({'kind':'constellation','values':cons})
-   if len(types)>1:contradictions.append({'kind':'object_type','values':types,'severity':'review'})
+   rows=[cmap[i]for i in ids];cons=sorted({r['constellation']for r in rows if r['constellation']});rawtypes=sorted({r['object_type']for r in rows if r['object_type']});families=sorted({r['object_type_family']for r in rows if r['object_type_family']})
+   if len(cons)>1:contradictions.append({'kind':'constellation','values':cons,'severity':'boundary_review'})
+   if len(families)>1:contradictions.append({'kind':'object_type_family','values':families,'raw_values':rawtypes,'severity':'review'})
    for x in range(len(rows)):
     for y in range(x+1,len(rows)):
      sep=angular_sep_deg(rows[x],rows[y]);max_sep=max(max_sep,sep or 0.0)
@@ -106,8 +108,8 @@ def main():
  for n,r in enumerate(read_csv(SRC/'asterism-member-coordinates.csv'),1):
   ids=[];hip=HIP_RE.match((r.get('coordinate_source_id')or'').strip());ids+=([('hip',str(int(hip.group(1))))]if hip else[]);ids.append(('asterism_member_label',r.get('member')));add_candidate(cs,'asterism-member-coordinates.csv',f'row:{n}',ids,r.get('resolved_object'),None,r.get('ra_h'),r.get('dec_deg'),'star',f"asterism={r.get('asterism','')}")
  groups,by=reconcile(cs);overlaps=[{'namespace':ns,'value':v,'candidate_ids':ids}for(ns,v),ids in sorted(by.items())if len(ids)>1];explicit={'finest_ngc_caldwell':read_csv(SRC/'finest-ngc-caldwell-overlap.csv'),'asterism_catalog':read_csv(SRC/'asterism-catalog-overlap.csv')};counts=Counter(c['source']for c in cs);icounts=Counter(i['namespace']for c in cs for i in c['identifiers']);no_cross=[c['candidate_id']for c in cs if not any(i['namespace']in CROSS_SOURCE_NAMESPACES for i in c['identifiers'])];no_any=[c['candidate_id']for c in cs if not c['identifiers']];merged=[g for g in groups if g['candidate_count']>1];review=[g for g in merged if g['contradictions']];validated=[g for g in merged if not g['contradictions']]
- result={'schema_version':5,'purpose':'pre-migration physical fixed-object identity audit; no permanent IDs assigned','canonical_source':'Star-Almanack-Repo/fixed-objects.yaml','candidate_count':len(cs),'provisional_reconciliation_group_count':len(groups),'provisional_merged_group_count':len(merged),'provisional_singleton_group_count':len(groups)-len(merged),'validated_exact_identifier_group_count':len(validated),'contradiction_review_group_count':len(review),'source_counts':dict(sorted(counts.items())),'identifier_counts':dict(sorted(icounts.items())),'cross_source_identifier_namespaces':sorted(CROSS_SOURCE_NAMESPACES),'stable_source_identifier_namespaces':sorted(STABLE_SOURCE_NAMESPACES),'cross_source_identifier_overlap_count':len(overlaps),'cross_source_identifier_overlaps':overlaps,'candidates_without_cross_source_identifier':no_cross,'candidates_without_any_identifier':no_any,'explicit_overlap_counts':{k:len(v)for k,v in explicit.items()},'warnings':[],'provisional_reconciliation_groups':groups,'candidates':cs,'explicit_overlap_records':explicit}
- cmap={c['candidate_id']:c for c in cs};review_result={'schema_version':1,'purpose':'focused review of provisional exact-identifier groups with contradictions','group_count':len(review),'groups':[dict(g,candidates=[cmap[i]for i in g['candidate_ids']])for g in review]}
+ result={'schema_version':6,'purpose':'pre-migration physical fixed-object identity audit; no permanent IDs assigned','canonical_source':'Star-Almanack-Repo/fixed-objects.yaml','candidate_count':len(cs),'provisional_reconciliation_group_count':len(groups),'provisional_merged_group_count':len(merged),'provisional_singleton_group_count':len(groups)-len(merged),'validated_exact_identifier_group_count':len(validated),'contradiction_review_group_count':len(review),'source_counts':dict(sorted(counts.items())),'identifier_counts':dict(sorted(icounts.items())),'cross_source_identifier_namespaces':sorted(CROSS_SOURCE_NAMESPACES),'stable_source_identifier_namespaces':sorted(STABLE_SOURCE_NAMESPACES),'object_type_families':TYPE_FAMILIES,'cross_source_identifier_overlap_count':len(overlaps),'cross_source_identifier_overlaps':overlaps,'candidates_without_cross_source_identifier':no_cross,'candidates_without_any_identifier':no_any,'explicit_overlap_counts':{k:len(v)for k,v in explicit.items()},'warnings':[],'provisional_reconciliation_groups':groups,'candidates':cs,'explicit_overlap_records':explicit}
+ cmap={c['candidate_id']:c for c in cs};review_result={'schema_version':2,'purpose':'focused review after normalization of compatible object-type vocabularies','group_count':len(review),'groups':[dict(g,candidates=[cmap[i]for i in g['candidate_ids']])for g in review]}
  OUT.parent.mkdir(parents=True,exist_ok=True);OUT.write_text(json.dumps(result,indent=2,ensure_ascii=False)+'\n',encoding='utf-8');REVIEW_OUT.write_text(json.dumps(review_result,indent=2,ensure_ascii=False)+'\n',encoding='utf-8')
  print(f'Wrote {OUT.relative_to(ROOT)}');print(f'Wrote {REVIEW_OUT.relative_to(ROOT)}');print(f'Candidates: {len(cs)}');print(f'Provisional groups: {len(groups)}; merged: {len(merged)}; validated: {len(validated)}; review: {len(review)}');print('No fixed_object_id values were assigned.')
 if __name__=='__main__':main()
