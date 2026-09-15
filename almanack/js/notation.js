@@ -14,7 +14,7 @@
     '♎':'Libra','♏':'Scorpio','♐':'Sagittarius','♑':'Capricorn','♒':'Aquarius','♓':'Pisces'
   };
 
-  const bodyNames = {'☉':'Sun','☽':'Moon','☿':'Mercury','♀':'Venus','♂':'Mars','♃':'Jupiter','♄':'Saturn'};
+  const bodyNames = {'☉':'Sun','☽':'Moon','☿':'Mercury','♀':'Venus','♂':'Mars','♃':'Jupiter','♄':'Saturn','⚳':'Ceres','♅':'Uranus','♆':'Neptune','♇':'Pluto'};
   const VS = '\ufe0e';
   const LEADING_SYMBOL = /^[αβγδεζηθικλμνξοπρστυφχψω♈♉♊♋♌♍♎♏♐♑♒♓☉☽☿♀♂♃♄⚳♅♆♇]/;
 

@@ -131,7 +131,15 @@ def symbol_html(glyph): return f'<span class="ephemeris-symbol">{glyph}&#xfe0e;<
 
 def target_heading(display):
     glyph, name = display.split(" ", 1)
-    return f"{symbol_html(glyph)} {name}"
+    greek = f"{glyph}\ufe0e"
+    mixed = f"{greek} {name}"
+    return (
+        '<span class="notation-item ephemeris-notation-item" '
+        f'data-greek="{html.escape(greek, quote=True)}" '
+        f'data-latin="{html.escape(name, quote=True)}" '
+        f'data-mixed="{html.escape(mixed, quote=True)}">'
+        f'{symbol_html(glyph)}</span>'
+    )
 
 
 def computed_ephemeris(year: int, engine: StarAlmanackEphemeris | None = None):
