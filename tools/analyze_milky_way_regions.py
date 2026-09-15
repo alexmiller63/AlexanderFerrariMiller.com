@@ -60,7 +60,8 @@ FAINT_CONTROLS = (
         "gal_l_deg": 165.0,
         "gal_b_deg": 0.0,
         "expected": "faint",
-    },    {
+    },
+    {
         "name": "Faint control l=175",
         "ra_h": 5.553013,
         "dec_deg": 33.168128,
@@ -141,9 +142,9 @@ def fits_values(payload: bytes):
         for i in range(count)
     ]
     return nx, ny, values
-    
-    
-    def request_channel(
+
+
+def request_channel(
     anchor: dict[str, Any],
     survey: str,
     size: float,
@@ -238,7 +239,8 @@ def analyze(args):
         entry["mean_rgb_local_contrast"] = statistics.mean(contrasts)
         entry["prominent"] = (
             entry["mean_rgb_center_median"] >= PROMINENCE_THRESHOLD
-        )        result["anchors"].append(entry)
+        )
+        result["anchors"].append(entry)
 
         print(
             f"{entry['name']} [{entry['expected']}]: "
@@ -261,9 +263,7 @@ def analyze(args):
     bright_min = min(bright)
     faint_max = max(faint)
 
-    fixed_threshold_separates = (
-        faint_max < PROMINENCE_THRESHOLD <= bright_min
-    )
+    fixed_threshold_separates = faint_max < PROMINENCE_THRESHOLD <= bright_min
 
     result["validation"] = {
         "bright_min": bright_min,
@@ -272,9 +272,7 @@ def analyze(args):
         "fixed_threshold": PROMINENCE_THRESHOLD,
         "fixed_threshold_separates": fixed_threshold_separates,
         "candidate_midpoint_threshold": (
-            (faint_max + bright_min) / 2
-            if faint_max < bright_min
-            else None
+            (faint_max + bright_min) / 2 if faint_max < bright_min else None
         ),
     }
 
