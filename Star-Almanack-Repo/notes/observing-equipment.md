@@ -16,10 +16,49 @@ The Almanack is designed with a city observer in mind. Light pollution therefore
 
 ## Symbols
 
-- Naked eye: Unicode **👁** (U+1F441 EYE)
-- Binocular: use the word **Binocular**; there is no selected dedicated Unicode binocular symbol
-- Telescope: Unicode **🔭** (U+1F52D TELESCOPE)
+- Naked eye: Star Almanack eye SVG
+- Binocular: Star Almanack binoculars SVG
+- Telescope: Star Almanack telescope SVG
 
-## Classification status
+The generated calendar should use these shared SVG assets rather than literal placeholder letters or unrelated Unicode symbols.
 
-Exact magnitude/equipment borders are **not yet settled**. Do not treat the provisional magnitude thresholds in code as the final Almanack standard. The final classification should be based on practical recommended equipment under urban skies and should account for object type where integrated magnitude alone is misleading, especially extended objects such as galaxies and nebulae.
+## Stellar-pattern classification
+
+Constellations and asterisms are classified from the **median V magnitude of their member stars**.
+
+- For an asterism, use every star in the resolved asterism membership list, not merely convex-hull vertices.
+- For a constellation stick-figure component, use every star that participates in that adopted Martz/MacRobert component, not every star inside the IAU boundary.
+- For an even number of member stars, use the ordinary statistical median: the mean of the two middle magnitudes after sorting.
+- The classification is intrinsic to the stellar pattern and is therefore reused across Almanack years; the annual date still comes from the 9:00 PM local-apparent-solar-time transit rule.
+
+For stellar patterns the shared observer thresholds are:
+
+- median V <= 3.0: **Naked eye**
+- 3.0 < median V <= 6.0: **Binoculars**
+- median V > 6.0: **Telescope**
+
+These thresholds live in one shared source module so constellation and asterism generators cannot drift apart.
+
+## Constellation stick-figure source rule
+
+The adopted IAU/MacRobert stick-figure dataset contains 89 source sections representing the 88 IAU constellations. The difference is intentional: **Serpens** is one constellation but is represented in two disconnected components, while **Mensa** and **Microscopium** explicitly have **no stick figure** in the adopted source.
+
+Therefore:
+
+- Preserve Serpens as one parent constellation with two separate pattern records: **Serpens Caput** and **Serpens Cauda**.
+- Derive the median V magnitude and observer glyph independently for Serpens Caput and Serpens Cauda.
+- Preserve two independent geometric centers for the two Serpens components; do not collapse them into one synthetic center.
+- Do not invent or supplement stick figures for Mensa or Microscopium merely to force a set of 88 figures.
+- Do not calculate a stick-figure median V magnitude or derived observer glyph for either Mensa or Microscopium.
+- Preserve an explicit `no stick figure` state in the constellation data model.
+- Other field guides and atlases may use different constellation stick figures. Those are legitimate alternative conventions, but the Almanack should use one internally consistent convention rather than mix figures from multiple traditions.
+
+The adopted source names its Serpens components `SerpensA` and `SerpensB`. The source membership identifies `SerpensA` with **Serpens Cauda** and `SerpensB` with **Serpens Caput**; the Almanack should retain the astronomical names rather than expose the source's A/B labels.
+
+### Front-matter note
+
+Preserve a short explanatory front-matter section titled **“What’s up with Mensa, Microscopium, and Serpens?”** It should explain that constellation stick figures are conventions rather than official constellation boundaries; different field guides may connect stars differently; the Almanack adopts one consistent IAU/MacRobert convention; that convention explicitly leaves Mensa and Microscopium without stick figures; and Serpens is one constellation represented by two disconnected components, Caput and Cauda, which the Almanack keeps separate for their centers and observer classifications.
+
+## Extended-object classification status
+
+The median-star rule above applies only to stellar patterns. Exact equipment borders for extended deep-sky objects are **not settled by this rule**. Integrated magnitude can be misleading for galaxies, nebulae, and other extended objects, so those recommendations should continue to be based on practical observer-facing guidance and object type rather than reusing the stellar-pattern thresholds mechanically.
