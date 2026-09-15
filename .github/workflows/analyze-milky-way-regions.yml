@@ -18,7 +18,37 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: Run Mellinger contrast analysis
+      - name: Inspect scientific Mellinger FITS header
+        run: |
+          python - <<'PY'
+          import urllib.request
+
+          url = "https://web.archive.org/web/20160317214047/http://galaxy.phy.cmich.edu/~axel/mwpan2/mwpan2_RGB_3600.fits"
+          path = "/tmp/mwpan2_RGB_3600.fits"
+          print(f"Downloading {url}")
+          urllib.request.urlretrieve(url, path)
+
+          cards = []
+          with open(path, "rb") as f:
+              while True:
+                  block = f.read(2880)
+                  if not block:
+                      raise RuntimeError("FITS END card not found")
+                  for offset in range(0, len(block), 80):
+                      card = block[offset:offset + 80].decode("ascii", errors="replace")
+                      cards.append(card)
+                      if card.startswith("END"):
+                          print("--- FITS PRIMARY HEADER ---")
+                          for item in cards:
+                              print(item)
+                          print("--- CALIBRATION KEYWORDS ---")
+                          for key in ("BITPIX", "NAXIS", "NAXIS1", "NAXIS2", "NAXIS3", "BUNIT", "BSCALE", "BZERO", "DATAMIN", "DATAMAX"):
+                              matches = [c for c in cards if c[:8].strip() == key]
+                              print(matches[0] if matches else f"{key:<8}= <absent>")
+                          raise SystemExit(0)
+          PY
+
+      - name: Run Mellinger region analysis
         run: |
           python tools/analyze_milky_way_regions.py
 
