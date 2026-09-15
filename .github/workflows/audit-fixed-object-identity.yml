@@ -23,12 +23,12 @@ jobs:
 
       - name: Commit audit result
         run: |
-          if git diff --quiet -- Star-Almanack-Repo/generated/fixed-object-identity-audit.json; then
+          git add Star-Almanack-Repo/generated/fixed-object-identity-audit.json
+          if git diff --cached --quiet; then
             echo "Identity audit is already current."
             exit 0
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add Star-Almanack-Repo/generated/fixed-object-identity-audit.json
           git commit -m "Update fixed-object identity audit"
           git push
