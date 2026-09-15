@@ -1,13 +1,13 @@
 {
-  "schema_version": 5,
+  "schema_version": 6,
   "purpose": "pre-migration physical fixed-object identity audit; no permanent IDs assigned",
   "canonical_source": "Star-Almanack-Repo/fixed-objects.yaml",
   "candidate_count": 634,
   "provisional_reconciliation_group_count": 597,
   "provisional_merged_group_count": 37,
   "provisional_singleton_group_count": 560,
-  "validated_exact_identifier_group_count": 18,
-  "contradiction_review_group_count": 19,
+  "validated_exact_identifier_group_count": 33,
+  "contradiction_review_group_count": 4,
   "source_counts": {
     "asterism-member-coordinates.csv": 132,
     "caldwell-catalog.csv": 109,
@@ -46,6 +46,27 @@
     "messier",
     "special"
   ],
+  "object_type_families": {
+    "Gal": "galaxy",
+    "ScG": "galaxy",
+    "SbG": "galaxy",
+    "dE0G": "galaxy",
+    "IG": "galaxy",
+    "SG": "galaxy",
+    "EG": "galaxy",
+    "LG": "galaxy",
+    "BG": "galaxy",
+    "BN": "emission_nebula",
+    "EN": "emission_nebula",
+    "DN": "dark_nebula",
+    "PN": "planetary_nebula",
+    "OC": "open_cluster",
+    "GC": "globular_cluster",
+    "SN": "supernova_remnant",
+    "DS": "double_star",
+    "MW": "milky_way",
+    "AS": "asterism"
+  },
   "cross_source_identifier_overlap_count": 37,
   "cross_source_identifier_overlaps": [
     {
@@ -3557,17 +3578,8 @@
         }
       ],
       "max_coordinate_separation_deg": 0.006111,
-      "contradictions": [
-        {
-          "kind": "object_type",
-          "values": [
-            "Gal",
-            "ScG"
-          ],
-          "severity": "review"
-        }
-      ],
-      "review_status": "contradiction_review"
+      "contradictions": [],
+      "review_status": "validated_exact_identifier"
     },
     {
       "provisional_group_id": 289,
@@ -3630,17 +3642,8 @@
         }
       ],
       "max_coordinate_separation_deg": 0.008869,
-      "contradictions": [
-        {
-          "kind": "object_type",
-          "values": [
-            "BN",
-            "EN"
-          ],
-          "severity": "review"
-        }
-      ],
-      "review_status": "contradiction_review"
+      "contradictions": [],
+      "review_status": "validated_exact_identifier"
     },
     {
       "provisional_group_id": 293,
@@ -3666,15 +3669,8 @@
           "values": [
             "Cep",
             "Cyg"
-          ]
-        },
-        {
-          "kind": "object_type",
-          "values": [
-            "Gal",
-            "ScG"
           ],
-          "severity": "review"
+          "severity": "boundary_review"
         }
       ],
       "review_status": "contradiction_review"
@@ -3772,17 +3768,8 @@
         }
       ],
       "max_coordinate_separation_deg": 0.00731,
-      "contradictions": [
-        {
-          "kind": "object_type",
-          "values": [
-            "Gal",
-            "dE0G"
-          ],
-          "severity": "review"
-        }
-      ],
-      "review_status": "contradiction_review"
+      "contradictions": [],
+      "review_status": "validated_exact_identifier"
     },
     {
       "provisional_group_id": 300,
@@ -3813,17 +3800,8 @@
         }
       ],
       "max_coordinate_separation_deg": 0.067566,
-      "contradictions": [
-        {
-          "kind": "object_type",
-          "values": [
-            "BN",
-            "EN"
-          ],
-          "severity": "review"
-        }
-      ],
-      "review_status": "contradiction_review"
+      "contradictions": [],
+      "review_status": "validated_exact_identifier"
     },
     {
       "provisional_group_id": 302,
@@ -3843,17 +3821,8 @@
         }
       ],
       "max_coordinate_separation_deg": 0.008167,
-      "contradictions": [
-        {
-          "kind": "object_type",
-          "values": [
-            "Gal",
-            "IG"
-          ],
-          "severity": "review"
-        }
-      ],
-      "review_status": "contradiction_review"
+      "contradictions": [],
+      "review_status": "validated_exact_identifier"
     },
     {
       "provisional_group_id": 303,
@@ -3894,17 +3863,8 @@
         }
       ],
       "max_coordinate_separation_deg": 0.008685,
-      "contradictions": [
-        {
-          "kind": "object_type",
-          "values": [
-            "Gal",
-            "SbG"
-          ],
-          "severity": "review"
-        }
-      ],
-      "review_status": "contradiction_review"
+      "contradictions": [],
+      "review_status": "validated_exact_identifier"
     },
     {
       "provisional_group_id": 305,
@@ -3946,17 +3906,8 @@
         }
       ],
       "max_coordinate_separation_deg": 0.010083,
-      "contradictions": [
-        {
-          "kind": "object_type",
-          "values": [
-            "Gal",
-            "SG"
-          ],
-          "severity": "review"
-        }
-      ],
-      "review_status": "contradiction_review"
+      "contradictions": [],
+      "review_status": "validated_exact_identifier"
     },
     {
       "provisional_group_id": 308,
@@ -3976,17 +3927,8 @@
         }
       ],
       "max_coordinate_separation_deg": 0.051152,
-      "contradictions": [
-        {
-          "kind": "object_type",
-          "values": [
-            "BN",
-            "EN"
-          ],
-          "severity": "review"
-        }
-      ],
-      "review_status": "contradiction_review"
+      "contradictions": [],
+      "review_status": "validated_exact_identifier"
     },
     {
       "provisional_group_id": 309,
@@ -4017,17 +3959,8 @@
         }
       ],
       "max_coordinate_separation_deg": 0.010976,
-      "contradictions": [
-        {
-          "kind": "object_type",
-          "values": [
-            "Gal",
-            "SbG"
-          ],
-          "severity": "review"
-        }
-      ],
-      "review_status": "contradiction_review"
+      "contradictions": [],
+      "review_status": "validated_exact_identifier"
     },
     {
       "provisional_group_id": 311,
@@ -4047,17 +3980,8 @@
         }
       ],
       "max_coordinate_separation_deg": 0.004959,
-      "contradictions": [
-        {
-          "kind": "object_type",
-          "values": [
-            "Gal",
-            "SbG"
-          ],
-          "severity": "review"
-        }
-      ],
-      "review_status": "contradiction_review"
+      "contradictions": [],
+      "review_status": "validated_exact_identifier"
     },
     {
       "provisional_group_id": 312,
@@ -4088,17 +4012,8 @@
         }
       ],
       "max_coordinate_separation_deg": 0.010763,
-      "contradictions": [
-        {
-          "kind": "object_type",
-          "values": [
-            "Gal",
-            "ScG"
-          ],
-          "severity": "review"
-        }
-      ],
-      "review_status": "contradiction_review"
+      "contradictions": [],
+      "review_status": "validated_exact_identifier"
     },
     {
       "provisional_group_id": 314,
@@ -4131,8 +4046,12 @@
       "max_coordinate_separation_deg": 0.0,
       "contradictions": [
         {
-          "kind": "object_type",
+          "kind": "object_type_family",
           "values": [
+            "SNR",
+            "supernova_remnant"
+          ],
+          "raw_values": [
             "SN",
             "SNR"
           ],
@@ -4170,17 +4089,8 @@
         }
       ],
       "max_coordinate_separation_deg": 0.010592,
-      "contradictions": [
-        {
-          "kind": "object_type",
-          "values": [
-            "Gal",
-            "ScG"
-          ],
-          "severity": "review"
-        }
-      ],
-      "review_status": "contradiction_review"
+      "contradictions": [],
+      "review_status": "validated_exact_identifier"
     },
     {
       "provisional_group_id": 318,
@@ -4211,17 +4121,8 @@
         }
       ],
       "max_coordinate_separation_deg": 0.011576,
-      "contradictions": [
-        {
-          "kind": "object_type",
-          "values": [
-            "Gal",
-            "SbG"
-          ],
-          "severity": "review"
-        }
-      ],
-      "review_status": "contradiction_review"
+      "contradictions": [],
+      "review_status": "validated_exact_identifier"
     },
     {
       "provisional_group_id": 320,
@@ -4330,8 +4231,12 @@
       "max_coordinate_separation_deg": 0.018271,
       "contradictions": [
         {
-          "kind": "object_type",
+          "kind": "object_type_family",
           "values": [
+            "E/RN",
+            "emission_nebula"
+          ],
+          "raw_values": [
             "BN",
             "E/RN"
           ],
@@ -4426,8 +4331,12 @@
       "max_coordinate_separation_deg": 0.007671,
       "contradictions": [
         {
-          "kind": "object_type",
+          "kind": "object_type_family",
           "values": [
+            "E6G",
+            "galaxy"
+          ],
+          "raw_values": [
             "E6G",
             "Gal"
           ],
@@ -4550,17 +4459,8 @@
         }
       ],
       "max_coordinate_separation_deg": 0.004333,
-      "contradictions": [
-        {
-          "kind": "object_type",
-          "values": [
-            "Gal",
-            "ScG"
-          ],
-          "severity": "review"
-        }
-      ],
-      "review_status": "contradiction_review"
+      "contradictions": [],
+      "review_status": "validated_exact_identifier"
     },
     {
       "provisional_group_id": 342,
@@ -4634,17 +4534,8 @@
         }
       ],
       "max_coordinate_separation_deg": 0.01221,
-      "contradictions": [
-        {
-          "kind": "object_type",
-          "values": [
-            "Gal",
-            "SG"
-          ],
-          "severity": "review"
-        }
-      ],
-      "review_status": "contradiction_review"
+      "contradictions": [],
+      "review_status": "validated_exact_identifier"
     },
     {
       "provisional_group_id": 347,
@@ -7498,6 +7389,7 @@
       "ra_h": "5.575",
       "dec_deg": "22.01666667",
       "object_type": "SN",
+      "object_type_family": "supernova_remnant",
       "notes": null
     },
     {
@@ -7519,6 +7411,7 @@
       "ra_h": "21.55833333",
       "dec_deg": "0.81666667",
       "object_type": "GC",
+      "object_type_family": "globular_cluster",
       "notes": null
     },
     {
@@ -7540,6 +7433,7 @@
       "ra_h": "13.70333333",
       "dec_deg": "28.38333333",
       "object_type": "GC",
+      "object_type_family": "globular_cluster",
       "notes": null
     },
     {
@@ -7561,6 +7455,7 @@
       "ra_h": "16.39333333",
       "dec_deg": "-26.53333333",
       "object_type": "GC",
+      "object_type_family": "globular_cluster",
       "notes": null
     },
     {
@@ -7582,6 +7477,7 @@
       "ra_h": "15.31",
       "dec_deg": "2.08333333",
       "object_type": "GC",
+      "object_type_family": "globular_cluster",
       "notes": null
     },
     {
@@ -7603,6 +7499,7 @@
       "ra_h": "17.66833333",
       "dec_deg": "-32.21666667",
       "object_type": "OC",
+      "object_type_family": "open_cluster",
       "notes": null
     },
     {
@@ -7624,6 +7521,7 @@
       "ra_h": "17.89833333",
       "dec_deg": "-34.81666667",
       "object_type": "OC",
+      "object_type_family": "open_cluster",
       "notes": null
     },
     {
@@ -7645,6 +7543,7 @@
       "ra_h": "18.06333333",
       "dec_deg": "-24.38333333",
       "object_type": "DN",
+      "object_type_family": "dark_nebula",
       "notes": null
     },
     {
@@ -7666,6 +7565,7 @@
       "ra_h": "17.32",
       "dec_deg": "-18.51666667",
       "object_type": "GC",
+      "object_type_family": "globular_cluster",
       "notes": null
     },
     {
@@ -7687,6 +7587,7 @@
       "ra_h": "16.95166667",
       "dec_deg": "-4.1",
       "object_type": "GC",
+      "object_type_family": "globular_cluster",
       "notes": null
     },
     {
@@ -7708,6 +7609,7 @@
       "ra_h": "18.85166667",
       "dec_deg": "-6.26666667",
       "object_type": "OC",
+      "object_type_family": "open_cluster",
       "notes": null
     },
     {
@@ -7729,6 +7631,7 @@
       "ra_h": "16.78666667",
       "dec_deg": "-1.95",
       "object_type": "GC",
+      "object_type_family": "globular_cluster",
       "notes": null
     },
     {
@@ -7750,6 +7653,7 @@
       "ra_h": "16.695",
       "dec_deg": "36.46666667",
       "object_type": "GC",
+      "object_type_family": "globular_cluster",
       "notes": null
     },
     {
@@ -7771,6 +7675,7 @@
       "ra_h": "17.62666667",
       "dec_deg": "-3.25",
       "object_type": "GC",
+      "object_type_family": "globular_cluster",
       "notes": null
     },
     {
@@ -7792,6 +7697,7 @@
       "ra_h": "21.5",
       "dec_deg": "12.16666667",
       "object_type": "GC",
+      "object_type_family": "globular_cluster",
       "notes": null
     },
     {
@@ -7813,6 +7719,7 @@
       "ra_h": "18.31333333",
       "dec_deg": "-13.78333333",
       "object_type": "OC",
+      "object_type_family": "open_cluster",
       "notes": null
     },
     {
@@ -7834,6 +7741,7 @@
       "ra_h": "18.34666667",
       "dec_deg": "-16.18333333",
       "object_type": "DN",
+      "object_type_family": "dark_nebula",
       "notes": null
     },
     {
@@ -7855,6 +7763,7 @@
       "ra_h": "18.33166667",
       "dec_deg": "-17.13333333",
       "object_type": "OC",
+      "object_type_family": "open_cluster",
       "notes": null
     },
     {
@@ -7876,6 +7785,7 @@
       "ra_h": "17.04333333",
       "dec_deg": "-26.26666667",
       "object_type": "GC",
+      "object_type_family": "globular_cluster",
       "notes": null
     },
     {
@@ -7897,6 +7807,7 @@
       "ra_h": "18.04333333",
       "dec_deg": "-23.03333333",
       "object_type": "DN",
+      "object_type_family": "dark_nebula",
       "notes": null
     },
     {
@@ -7918,6 +7829,7 @@
       "ra_h": "18.07666667",
       "dec_deg": "-22.5",
       "object_type": "OC",
+      "object_type_family": "open_cluster",
       "notes": null
     },
     {
@@ -7939,6 +7851,7 @@
       "ra_h": "18.60666667",
       "dec_deg": "-23.9",
       "object_type": "GC",
+      "object_type_family": "globular_cluster",
       "notes": null
     },
     {
@@ -7960,6 +7873,7 @@
       "ra_h": "17.94666667",
       "dec_deg": "-19.01666667",
       "object_type": "OC",
+      "object_type_family": "open_cluster",
       "notes": null
     },
     {
@@ -7977,6 +7891,7 @@
       "ra_h": "18.28166667",
       "dec_deg": "-18.5",
       "object_type": "MW",
+      "object_type_family": "milky_way",
       "notes": null
     },
     {
@@ -7998,6 +7913,7 @@
       "ra_h": "18.52666667",
       "dec_deg": "-19.25",
       "object_type": "OC",
+      "object_type_family": "open_cluster",
       "notes": null
     },
     {
@@ -8019,6 +7935,7 @@
       "ra_h": "18.75333333",
       "dec_deg": "-9.4",
       "object_type": "OC",
+      "object_type_family": "open_cluster",
       "notes": null
     },
     {
@@ -8040,6 +7957,7 @@
       "ra_h": "19.99333333",
       "dec_deg": "22.71666667",
       "object_type": "PN",
+      "object_type_family": "planetary_nebula",
       "notes": null
     },
     {
@@ -8061,6 +7979,7 @@
       "ra_h": "18.40833333",
       "dec_deg": "-24.86666667",
       "object_type": "GC",
+      "object_type_family": "globular_cluster",
       "notes": null
     },
     {
@@ -8082,6 +8001,7 @@
       "ra_h": "20.39833333",
       "dec_deg": "38.53333333",
       "object_type": "OC",
+      "object_type_family": "open_cluster",
       "notes": null
     },
     {
@@ -8103,6 +8023,7 @@
       "ra_h": "21.67333333",
       "dec_deg": "-23.18333333",
       "object_type": "GC",
+      "object_type_family": "globular_cluster",
       "notes": null
     },
     {
@@ -8124,6 +8045,7 @@
       "ra_h": "0.69666667",
       "dec_deg": "41.26666667",
       "object_type": "SG",
+      "object_type_family": "galaxy",
       "notes": null
     },
     {
@@ -8145,6 +8067,7 @@
       "ra_h": "0.71333333",
       "dec_deg": "40.86666667",
       "object_type": "EG",
+      "object_type_family": "galaxy",
       "notes": null
     },
     {
@@ -8166,6 +8089,7 @@
       "ra_h": "1.565",
       "dec_deg": "30.65",
       "object_type": "SG",
+      "object_type_family": "galaxy",
       "notes": null
     },
     {
@@ -8187,6 +8111,7 @@
       "ra_h": "2.7",
       "dec_deg": "42.78333333",
       "object_type": "OC",
+      "object_type_family": "open_cluster",
       "notes": null
     },
     {
@@ -8208,6 +8133,7 @@
       "ra_h": "6.14833333",
       "dec_deg": "24.33333333",
       "object_type": "OC",
+      "object_type_family": "open_cluster",
       "notes": null
     },
     {
@@ -8229,6 +8155,7 @@
       "ra_h": "5.60166667",
       "dec_deg": "34.13333333",
       "object_type": "OC",
+      "object_type_family": "open_cluster",
       "notes": null
     },
     {
@@ -8250,6 +8177,7 @@
       "ra_h": "5.87333333",
       "dec_deg": "32.55",
       "object_type": "OC",
+      "object_type_family": "open_cluster",
       "notes": null
     },
     {
@@ -8271,6 +8199,7 @@
       "ra_h": "5.47833333",
       "dec_deg": "35.83333333",
       "object_type": "OC",
+      "object_type_family": "open_cluster",
       "notes": null
     },
     {
@@ -8292,6 +8221,7 @@
       "ra_h": "21.53666667",
       "dec_deg": "48.43333333",
       "object_type": "OC",
+      "object_type_family": "open_cluster",
       "notes": null
     },
     {
@@ -8309,6 +8239,7 @@
       "ra_h": "12.37013889",
       "dec_deg": "58.08305556",
       "object_type": "DS",
+      "object_type_family": "double_star",
       "notes": null
     },
     {
@@ -8330,6 +8261,7 @@
       "ra_h": "6.78333333",
       "dec_deg": "-20.73333333",
       "object_type": "OC",
+      "object_type_family": "open_cluster",
       "notes": null
     },
     {
@@ -8351,6 +8283,7 @@
       "ra_h": "5.59",
       "dec_deg": "-5.45",
       "object_type": "DN",
+      "object_type_family": "dark_nebula",
       "notes": null
     },
     {
@@ -8372,6 +8305,7 @@
       "ra_h": "5.59333333",
       "dec_deg": "-5.26666667",
       "object_type": "DN",
+      "object_type_family": "dark_nebula",
       "notes": null
     },
     {
@@ -8393,6 +8327,7 @@
       "ra_h": "8.66833333",
       "dec_deg": "19.98333333",
       "object_type": "OC",
+      "object_type_family": "open_cluster",
       "notes": null
     },
     {
@@ -8410,6 +8345,7 @@
       "ra_h": "3.78333333",
       "dec_deg": "24.11666667",
       "object_type": "OC",
+      "object_type_family": "open_cluster",
       "notes": null
     },
     {
@@ -8431,6 +8367,7 @@
       "ra_h": "7.69666667",
       "dec_deg": "-14.81666667",
       "object_type": "OC",
+      "object_type_family": "open_cluster",
       "notes": null
     },
     {
@@ -8452,6 +8389,7 @@
       "ra_h": "7.61",
       "dec_deg": "-14.5",
       "object_type": "OC",
+      "object_type_family": "open_cluster",
       "notes": null
     },
     {
@@ -8473,6 +8411,7 @@
       "ra_h": "8.23",
       "dec_deg": "-5.8",
       "object_type": "OC",
+      "object_type_family": "open_cluster",
       "notes": null
     },
     {
@@ -8494,6 +8433,7 @@
       "ra_h": "12.49666667",
       "dec_deg": "8.0",
       "object_type": "EG",
+      "object_type_family": "galaxy",
       "notes": null
     },
     {
@@ -8515,6 +8455,7 @@
       "ra_h": "7.05333333",
       "dec_deg": "-8.33333333",
       "object_type": "OC",
+      "object_type_family": "open_cluster",
       "notes": null
     },
     {
@@ -8536,6 +8477,7 @@
       "ra_h": "13.5",
       "dec_deg": "47.18333333",
       "object_type": "SG",
+      "object_type_family": "galaxy",
       "notes": null
     },
     {
@@ -8557,6 +8499,7 @@
       "ra_h": "23.40333333",
       "dec_deg": "61.58333333",
       "object_type": "OC",
+      "object_type_family": "open_cluster",
       "notes": null
     },
     {
@@ -8578,6 +8521,7 @@
       "ra_h": "13.215",
       "dec_deg": "18.16666667",
       "object_type": "GC",
+      "object_type_family": "globular_cluster",
       "notes": null
     },
     {
@@ -8599,6 +8543,7 @@
       "ra_h": "18.91833333",
       "dec_deg": "-30.48333333",
       "object_type": "GC",
+      "object_type_family": "globular_cluster",
       "notes": null
     },
     {
@@ -8620,6 +8565,7 @@
       "ra_h": "19.66666667",
       "dec_deg": "-30.96666667",
       "object_type": "GC",
+      "object_type_family": "globular_cluster",
       "notes": null
     },
     {
@@ -8641,6 +8587,7 @@
       "ra_h": "19.27666667",
       "dec_deg": "30.18333333",
       "object_type": "GC",
+      "object_type_family": "globular_cluster",
       "notes": null
     },
     {
@@ -8662,6 +8609,7 @@
       "ra_h": "18.89333333",
       "dec_deg": "33.03333333",
       "object_type": "PN",
+      "object_type_family": "planetary_nebula",
       "notes": null
     },
     {
@@ -8683,6 +8631,7 @@
       "ra_h": "12.62833333",
       "dec_deg": "11.81666667",
       "object_type": "BG",
+      "object_type_family": "galaxy",
       "notes": null
     },
     {
@@ -8704,6 +8653,7 @@
       "ra_h": "12.7",
       "dec_deg": "11.65",
       "object_type": "EG",
+      "object_type_family": "galaxy",
       "notes": null
     },
     {
@@ -8725,6 +8675,7 @@
       "ra_h": "12.72833333",
       "dec_deg": "11.55",
       "object_type": "EG",
+      "object_type_family": "galaxy",
       "notes": null
     },
     {
@@ -8746,6 +8697,7 @@
       "ra_h": "12.365",
       "dec_deg": "4.46666667",
       "object_type": "SG",
+      "object_type_family": "galaxy",
       "notes": null
     },
     {
@@ -8767,6 +8719,7 @@
       "ra_h": "17.02",
       "dec_deg": "-30.11666667",
       "object_type": "GC",
+      "object_type_family": "globular_cluster",
       "notes": null
     },
     {
@@ -8788,6 +8741,7 @@
       "ra_h": "13.26333333",
       "dec_deg": "42.03333333",
       "object_type": "SG",
+      "object_type_family": "galaxy",
       "notes": null
     },
     {
@@ -8809,6 +8763,7 @@
       "ra_h": "12.945",
       "dec_deg": "21.68333333",
       "object_type": "SG",
+      "object_type_family": "galaxy",
       "notes": null
     },
     {
@@ -8830,6 +8785,7 @@
       "ra_h": "11.315",
       "dec_deg": "13.08333333",
       "object_type": "SG",
+      "object_type_family": "galaxy",
       "notes": null
     },
     {
@@ -8851,6 +8807,7 @@
       "ra_h": "11.33666667",
       "dec_deg": "12.98333333",
       "object_type": "SG",
+      "object_type_family": "galaxy",
       "notes": null
     },
     {
@@ -8872,6 +8829,7 @@
       "ra_h": "8.84",
       "dec_deg": "11.81666667",
       "object_type": "OC",
+      "object_type_family": "open_cluster",
       "notes": null
     },
     {
@@ -8893,6 +8851,7 @@
       "ra_h": "12.65833333",
       "dec_deg": "-26.75",
       "object_type": "GC",
+      "object_type_family": "globular_cluster",
       "notes": null
     },
     {
@@ -8914,6 +8873,7 @@
       "ra_h": "18.52333333",
       "dec_deg": "-32.35",
       "object_type": "GC",
+      "object_type_family": "globular_cluster",
       "notes": null
     },
     {
@@ -8935,6 +8895,7 @@
       "ra_h": "18.72",
       "dec_deg": "-32.3",
       "object_type": "GC",
+      "object_type_family": "globular_cluster",
       "notes": null
     },
     {
@@ -8956,6 +8917,7 @@
       "ra_h": "19.89666667",
       "dec_deg": "18.78333333",
       "object_type": "GC",
+      "object_type_family": "globular_cluster",
       "notes": null
     },
     {
@@ -8977,6 +8939,7 @@
       "ra_h": "20.89166667",
       "dec_deg": "-12.53333333",
       "object_type": "GC",
+      "object_type_family": "globular_cluster",
       "notes": null
     },
     {
@@ -8998,6 +8961,7 @@
       "ra_h": "20.98333333",
       "dec_deg": "-12.63333333",
       "object_type": "AST",
+      "object_type_family": "AST",
       "notes": null
     },
     {
@@ -9019,6 +8983,7 @@
       "ra_h": "1.61166667",
       "dec_deg": "15.78333333",
       "object_type": "SG",
+      "object_type_family": "galaxy",
       "notes": null
     },
     {
@@ -9040,6 +9005,7 @@
       "ra_h": "20.10166667",
       "dec_deg": "-21.91666667",
       "object_type": "GC",
+      "object_type_family": "globular_cluster",
       "notes": null
     },
     {
@@ -9061,6 +9027,7 @@
       "ra_h": "1.70666667",
       "dec_deg": "51.56666667",
       "object_type": "PN",
+      "object_type_family": "planetary_nebula",
       "notes": null
     },
     {
@@ -9082,6 +9049,7 @@
       "ra_h": "2.71166667",
       "dec_deg": "0.03333333",
       "object_type": "SG",
+      "object_type_family": "galaxy",
       "notes": null
     },
     {
@@ -9103,6 +9071,7 @@
       "ra_h": "5.77833333",
       "dec_deg": "0.05",
       "object_type": "DN",
+      "object_type_family": "dark_nebula",
       "notes": null
     },
     {
@@ -9124,6 +9093,7 @@
       "ra_h": "5.40833333",
       "dec_deg": "-24.55",
       "object_type": "GC",
+      "object_type_family": "globular_cluster",
       "notes": null
     },
     {
@@ -9145,6 +9115,7 @@
       "ra_h": "16.28333333",
       "dec_deg": "-22.98333333",
       "object_type": "GC",
+      "object_type_family": "globular_cluster",
       "notes": null
     },
     {
@@ -9166,6 +9137,7 @@
       "ra_h": "9.92666667",
       "dec_deg": "69.06666667",
       "object_type": "SG",
+      "object_type_family": "galaxy",
       "notes": null
     },
     {
@@ -9187,6 +9159,7 @@
       "ra_h": "9.93",
       "dec_deg": "69.68333333",
       "object_type": "IG",
+      "object_type_family": "galaxy",
       "notes": null
     },
     {
@@ -9208,6 +9181,7 @@
       "ra_h": "13.61666667",
       "dec_deg": "-29.86666667",
       "object_type": "SG",
+      "object_type_family": "galaxy",
       "notes": null
     },
     {
@@ -9229,6 +9203,7 @@
       "ra_h": "12.41833333",
       "dec_deg": "12.88333333",
       "object_type": "LG",
+      "object_type_family": "galaxy",
       "notes": null
     },
     {
@@ -9250,6 +9225,7 @@
       "ra_h": "12.425",
       "dec_deg": "18.2",
       "object_type": "LG",
+      "object_type_family": "galaxy",
       "notes": null
     },
     {
@@ -9271,6 +9247,7 @@
       "ra_h": "12.43666667",
       "dec_deg": "12.95",
       "object_type": "LG",
+      "object_type_family": "galaxy",
       "notes": null
     },
     {
@@ -9292,6 +9269,7 @@
       "ra_h": "12.51333333",
       "dec_deg": "12.4",
       "object_type": "EG",
+      "object_type_family": "galaxy",
       "notes": null
     },
     {
@@ -9313,6 +9291,7 @@
       "ra_h": "12.535",
       "dec_deg": "14.43333333",
       "object_type": "SG",
+      "object_type_family": "galaxy",
       "notes": null
     },
     {
@@ -9334,6 +9313,7 @@
       "ra_h": "12.595",
       "dec_deg": "12.55",
       "object_type": "EG",
+      "object_type_family": "galaxy",
       "notes": null
     },
     {
@@ -9355,6 +9335,7 @@
       "ra_h": "12.61333333",
       "dec_deg": "13.16666667",
       "object_type": "SG",
+      "object_type_family": "galaxy",
       "notes": null
     },
     {
@@ -9376,6 +9357,7 @@
       "ra_h": "12.59166667",
       "dec_deg": "14.5",
       "object_type": "BG",
+      "object_type_family": "galaxy",
       "notes": null
     },
     {
@@ -9397,6 +9379,7 @@
       "ra_h": "17.285",
       "dec_deg": "43.13333333",
       "object_type": "GC",
+      "object_type_family": "globular_cluster",
       "notes": null
     },
     {
@@ -9418,6 +9401,7 @@
       "ra_h": "7.74333333",
       "dec_deg": "-23.86666667",
       "object_type": "OC",
+      "object_type_family": "open_cluster",
       "notes": null
     },
     {
@@ -9439,6 +9423,7 @@
       "ra_h": "12.84833333",
       "dec_deg": "41.13333333",
       "object_type": "SG",
+      "object_type_family": "galaxy",
       "notes": null
     },
     {
@@ -9460,6 +9445,7 @@
       "ra_h": "10.73333333",
       "dec_deg": "11.7",
       "object_type": "BG",
+      "object_type_family": "galaxy",
       "notes": null
     },
     {
@@ -9481,6 +9467,7 @@
       "ra_h": "10.78",
       "dec_deg": "11.81666667",
       "object_type": "SG",
+      "object_type_family": "galaxy",
       "notes": null
     },
     {
@@ -9502,6 +9489,7 @@
       "ra_h": "11.24666667",
       "dec_deg": "55.01666667",
       "object_type": "PN",
+      "object_type_family": "planetary_nebula",
       "notes": null
     },
     {
@@ -9523,6 +9511,7 @@
       "ra_h": "12.23166667",
       "dec_deg": "14.91666667",
       "object_type": "SG",
+      "object_type_family": "galaxy",
       "notes": null
     },
     {
@@ -9544,6 +9533,7 @@
       "ra_h": "12.315",
       "dec_deg": "14.43333333",
       "object_type": "SG",
+      "object_type_family": "galaxy",
       "notes": null
     },
     {
@@ -9565,6 +9555,7 @@
       "ra_h": "12.38333333",
       "dec_deg": "15.83333333",
       "object_type": "SG",
+      "object_type_family": "galaxy",
       "notes": null
     },
     {
@@ -9586,6 +9577,7 @@
       "ra_h": "14.05333333",
       "dec_deg": "54.35",
       "object_type": "SG",
+      "object_type_family": "galaxy",
       "notes": null
     },
     {
@@ -9607,6 +9599,7 @@
       "ra_h": "15.10833333",
       "dec_deg": "55.76666667",
       "object_type": "LG",
+      "object_type_family": "galaxy",
       "notes": null
     },
     {
@@ -9628,6 +9621,7 @@
       "ra_h": "1.55333333",
       "dec_deg": "60.7",
       "object_type": "OC",
+      "object_type_family": "open_cluster",
       "notes": null
     },
     {
@@ -9649,6 +9643,7 @@
       "ra_h": "12.66666667",
       "dec_deg": "-11.61666667",
       "object_type": "SG",
+      "object_type_family": "galaxy",
       "notes": null
     },
     {
@@ -9670,6 +9665,7 @@
       "ra_h": "10.79666667",
       "dec_deg": "12.58333333",
       "object_type": "EG",
+      "object_type_family": "galaxy",
       "notes": null
     },
     {
@@ -9691,6 +9687,7 @@
       "ra_h": "12.315",
       "dec_deg": "47.31666667",
       "object_type": "SG",
+      "object_type_family": "galaxy",
       "notes": null
     },
     {
@@ -9712,6 +9709,7 @@
       "ra_h": "16.54166667",
       "dec_deg": "-13.05",
       "object_type": "GC",
+      "object_type_family": "globular_cluster",
       "notes": null
     },
     {
@@ -9733,6 +9731,7 @@
       "ra_h": "11.19166667",
       "dec_deg": "55.66666667",
       "object_type": "SG",
+      "object_type_family": "galaxy",
       "notes": null
     },
     {
@@ -9754,6 +9753,7 @@
       "ra_h": "11.96",
       "dec_deg": "53.38333333",
       "object_type": "BG",
+      "object_type_family": "galaxy",
       "notes": null
     },
     {
@@ -9775,6 +9775,7 @@
       "ra_h": "0.67333333",
       "dec_deg": "41.68333333",
       "object_type": "EG",
+      "object_type_family": "galaxy",
       "notes": null
     },
     {
@@ -9792,6 +9793,7 @@
       "ra_h": "0.139806",
       "dec_deg": "29.090432",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -9809,6 +9811,7 @@
       "ra_h": "1.162194",
       "dec_deg": "35.620558",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -9826,6 +9829,7 @@
       "ra_h": "10.452528",
       "dec_deg": "-31.067778",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -9843,6 +9847,7 @@
       "ra_h": "9.487417",
       "dec_deg": "-35.951333",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -9860,6 +9865,7 @@
       "ra_h": "14.797667",
       "dec_deg": "-79.044750",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -9877,6 +9883,7 @@
       "ra_h": "16.717944",
       "dec_deg": "-77.517444",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -9894,6 +9901,7 @@
       "ra_h": "22.096389",
       "dec_deg": "-0.319833",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -9911,6 +9919,7 @@
       "ra_h": "21.525972",
       "dec_deg": "-5.571167",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -9928,6 +9937,7 @@
       "ra_h": "19.846389",
       "dec_deg": "8.868333",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -9945,6 +9955,7 @@
       "ra_h": "19.921889",
       "dec_deg": "6.406750",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -9962,6 +9973,7 @@
       "ra_h": "17.530694",
       "dec_deg": "-49.876111",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -9979,6 +9991,7 @@
       "ra_h": "17.421667",
       "dec_deg": "-55.529833",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -9996,6 +10009,7 @@
       "ra_h": "2.119556",
       "dec_deg": "23.462417",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -10013,6 +10027,7 @@
       "ra_h": "1.910667",
       "dec_deg": "20.808028",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -10030,6 +10045,7 @@
       "ra_h": "5.278167",
       "dec_deg": "45.998028",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -10047,6 +10063,7 @@
       "ra_h": "5.992139",
       "dec_deg": "44.947444",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -10064,6 +10081,7 @@
       "ra_h": "14.261028",
       "dec_deg": "19.182417",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -10081,6 +10099,7 @@
       "ra_h": "15.032444",
       "dec_deg": "40.390556",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -10098,6 +10117,7 @@
       "ra_h": "4.676028",
       "dec_deg": "-41.863750",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -10115,6 +10135,7 @@
       "ra_h": "4.700972",
       "dec_deg": "-37.144278",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -10132,6 +10153,7 @@
       "ra_h": "4.900833",
       "dec_deg": "66.342667",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -10149,6 +10171,7 @@
       "ra_h": "5.056972",
       "dec_deg": "60.442278",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -10166,6 +10189,7 @@
       "ra_h": "8.974778",
       "dec_deg": "11.857694",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -10183,6 +10207,7 @@
       "ra_h": "8.275250",
       "dec_deg": "9.185667",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -10200,6 +10225,7 @@
       "ra_h": "12.933806",
       "dec_deg": "38.318389",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -10217,6 +10243,7 @@
       "ra_h": "12.562361",
       "dec_deg": "41.357472",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -10234,6 +10261,7 @@
       "ra_h": "6.752472",
       "dec_deg": "-16.716111",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -10251,6 +10279,7 @@
       "ra_h": "6.378333",
       "dec_deg": "-17.955917",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -10268,6 +10297,7 @@
       "ra_h": "7.655028",
       "dec_deg": "5.225000",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -10285,6 +10315,7 @@
       "ra_h": "7.452500",
       "dec_deg": "8.289306",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -10302,6 +10333,7 @@
       "ra_h": "20.300889",
       "dec_deg": "-12.544861",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -10319,6 +10351,7 @@
       "ra_h": "20.350194",
       "dec_deg": "-14.781389",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -10336,6 +10369,7 @@
       "ra_h": "6.399194",
       "dec_deg": "-52.695667",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -10353,6 +10387,7 @@
       "ra_h": "9.220000",
       "dec_deg": "-69.717194",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -10370,6 +10405,7 @@
       "ra_h": "0.675139",
       "dec_deg": "56.537333",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -10387,6 +10423,7 @@
       "ra_h": "0.152972",
       "dec_deg": "59.149778",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -10404,6 +10441,7 @@
       "ra_h": "14.660139",
       "dec_deg": "-60.833972",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -10421,6 +10459,7 @@
       "ra_h": "14.063722",
       "dec_deg": "-60.373028",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -10438,6 +10477,7 @@
       "ra_h": "21.309667",
       "dec_deg": "62.585583",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -10455,6 +10495,7 @@
       "ra_h": "21.477667",
       "dec_deg": "70.560722",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -10472,6 +10513,7 @@
       "ra_h": "3.037972",
       "dec_deg": "4.089722",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -10489,6 +10531,7 @@
       "ra_h": "0.726500",
       "dec_deg": "-17.986611",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -10506,6 +10549,7 @@
       "ra_h": "8.308694",
       "dec_deg": "-76.919722",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -10523,6 +10567,7 @@
       "ra_h": "12.305750",
       "dec_deg": "-79.312278",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -10540,6 +10585,7 @@
       "ra_h": "14.708444",
       "dec_deg": "-64.975139",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -10557,6 +10603,7 @@
       "ra_h": "15.291917",
       "dec_deg": "-58.801194",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -10574,6 +10621,7 @@
       "ra_h": "5.660806",
       "dec_deg": "-34.074111",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -10591,6 +10639,7 @@
       "ra_h": "5.849333",
       "dec_deg": "-35.768306",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -10608,6 +10657,7 @@
       "ra_h": "13.166472",
       "dec_deg": "17.529444",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -10625,6 +10675,7 @@
       "ra_h": "13.197889",
       "dec_deg": "27.878167",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -10642,6 +10693,7 @@
       "ra_h": "19.157889",
       "dec_deg": "-37.904472",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -10659,6 +10711,7 @@
       "ra_h": "19.167139",
       "dec_deg": "-39.340694",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -10676,6 +10729,7 @@
       "ra_h": "15.578139",
       "dec_deg": "26.714694",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -10693,6 +10747,7 @@
       "ra_h": "15.463806",
       "dec_deg": "29.105694",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -10710,6 +10765,7 @@
       "ra_h": "12.140222",
       "dec_deg": "-24.728778",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -10727,6 +10783,7 @@
       "ra_h": "12.573111",
       "dec_deg": "-23.396750",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -10744,6 +10801,7 @@
       "ra_h": "10.996250",
       "dec_deg": "-18.298778",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -10761,6 +10819,7 @@
       "ra_h": "11.194306",
       "dec_deg": "-22.825833",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -10778,6 +10837,7 @@
       "ra_h": "12.443306",
       "dec_deg": "-63.099056",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -10795,6 +10855,7 @@
       "ra_h": "12.795333",
       "dec_deg": "-59.688778",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -10812,6 +10873,7 @@
       "ra_h": "20.690528",
       "dec_deg": "45.280333",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -10829,6 +10891,7 @@
       "ra_h": "19.512028",
       "dec_deg": "27.959694",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -10846,6 +10909,7 @@
       "ra_h": "20.660639",
       "dec_deg": "15.912056",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -10863,6 +10927,7 @@
       "ra_h": "20.625833",
       "dec_deg": "14.595083",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -10880,6 +10945,7 @@
       "ra_h": "4.566611",
       "dec_deg": "-55.045000",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -10897,6 +10963,7 @@
       "ra_h": "5.560417",
       "dec_deg": "-62.489861",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -10914,6 +10981,7 @@
       "ra_h": "14.073139",
       "dec_deg": "64.375833",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -10931,6 +10999,7 @@
       "ra_h": "17.507222",
       "dec_deg": "52.301361",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -10948,6 +11017,7 @@
       "ra_h": "21.263722",
       "dec_deg": "5.247833",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -10965,6 +11035,7 @@
       "ra_h": "21.381556",
       "dec_deg": "6.811139",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -10982,6 +11053,7 @@
       "ra_h": "1.628583",
       "dec_deg": "-57.236750",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -10999,6 +11071,7 @@
       "ra_h": "5.130833",
       "dec_deg": "-5.086444",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -11016,6 +11089,7 @@
       "ra_h": "3.201194",
       "dec_deg": "-28.986806",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -11033,6 +11107,7 @@
       "ra_h": "2.818167",
       "dec_deg": "-32.405889",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -11050,6 +11125,7 @@
       "ra_h": "7.576667",
       "dec_deg": "31.888278",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -11067,6 +11143,7 @@
       "ra_h": "7.755250",
       "dec_deg": "28.026194",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -11084,6 +11161,7 @@
       "ra_h": "22.137222",
       "dec_deg": "-46.960972",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -11101,6 +11179,7 @@
       "ra_h": "22.711111",
       "dec_deg": "-46.884583",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -11118,6 +11197,7 @@
       "ra_h": "17.244139",
       "dec_deg": "14.390333",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -11135,6 +11215,7 @@
       "ra_h": "16.503667",
       "dec_deg": "21.489611",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -11152,6 +11233,7 @@
       "ra_h": "4.233361",
       "dec_deg": "-42.294361",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -11169,6 +11251,7 @@
       "ra_h": "2.979944",
       "dec_deg": "-64.071278",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -11186,6 +11269,7 @@
       "ra_h": "9.459806",
       "dec_deg": "-8.658611",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -11203,6 +11287,7 @@
       "ra_h": "11.881806",
       "dec_deg": "-33.908139",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -11220,6 +11305,7 @@
       "ra_h": "1.979500",
       "dec_deg": "-61.569861",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -11237,6 +11323,7 @@
       "ra_h": "0.429194",
       "dec_deg": "-77.254250",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -11254,6 +11341,7 @@
       "ra_h": "20.626111",
       "dec_deg": "-47.291500",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -11271,6 +11359,7 @@
       "ra_h": "20.913500",
       "dec_deg": "-58.454111",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -11288,6 +11377,7 @@
       "ra_h": "22.521528",
       "dec_deg": "50.282444",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -11305,6 +11395,7 @@
       "ra_h": "22.392667",
       "dec_deg": "52.229028",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -11322,6 +11413,7 @@
       "ra_h": "10.139528",
       "dec_deg": "11.967194",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -11339,6 +11431,7 @@
       "ra_h": "11.817667",
       "dec_deg": "14.572056",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -11356,6 +11449,7 @@
       "ra_h": "10.888528",
       "dec_deg": "34.214861",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -11373,6 +11467,7 @@
       "ra_h": "10.464722",
       "dec_deg": "36.707222",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -11390,6 +11485,7 @@
       "ra_h": "5.545500",
       "dec_deg": "-17.822306",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -11407,6 +11503,7 @@
       "ra_h": "5.470750",
       "dec_deg": "-20.759444",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -11424,6 +11521,7 @@
       "ra_h": "14.847972",
       "dec_deg": "-16.041778",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -11441,6 +11539,7 @@
       "ra_h": "15.283444",
       "dec_deg": "-9.382917",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -11458,6 +11557,7 @@
       "ra_h": "14.698833",
       "dec_deg": "-47.388194",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -11475,6 +11575,7 @@
       "ra_h": "14.975528",
       "dec_deg": "-43.133972",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -11492,6 +11593,7 @@
       "ra_h": "9.350917",
       "dec_deg": "34.392556",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -11509,6 +11611,7 @@
       "ra_h": "9.314083",
       "dec_deg": "36.802889",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -11526,6 +11629,7 @@
       "ra_h": "18.615639",
       "dec_deg": "38.783694",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -11543,6 +11647,7 @@
       "ra_h": "18.834667",
       "dec_deg": "33.362667",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -11560,6 +11665,7 @@
       "ra_h": "6.170611",
       "dec_deg": "-74.752528",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -11577,6 +11683,7 @@
       "ra_h": "5.045278",
       "dec_deg": "-71.314333",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -11594,6 +11701,7 @@
       "ra_h": "20.832806",
       "dec_deg": "-33.779667",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -11611,6 +11719,7 @@
       "ra_h": "20.866306",
       "dec_deg": "-33.177972",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -11628,6 +11737,7 @@
       "ra_h": "7.687444",
       "dec_deg": "-9.551083",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -11645,6 +11755,7 @@
       "ra_h": "6.480278",
       "dec_deg": "-7.033056",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -11662,6 +11773,7 @@
       "ra_h": "12.619722",
       "dec_deg": "-69.135528",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -11679,6 +11791,7 @@
       "ra_h": "12.771361",
       "dec_deg": "-68.108111",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -11696,6 +11809,7 @@
       "ra_h": "21.078611",
       "dec_deg": "-77.023778",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -11713,6 +11827,7 @@
       "ra_h": "22.767583",
       "dec_deg": "-81.381611",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -11730,6 +11845,7 @@
       "ra_h": "17.582250",
       "dec_deg": "12.560028",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -11747,6 +11863,7 @@
       "ra_h": "17.724556",
       "dec_deg": "4.567306",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -11764,6 +11881,7 @@
       "ra_h": "5.919528",
       "dec_deg": "7.407056",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -11781,6 +11899,7 @@
       "ra_h": "5.242306",
       "dec_deg": "-8.201639",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -11798,6 +11917,7 @@
       "ra_h": "20.427444",
       "dec_deg": "-56.735083",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -11815,6 +11935,7 @@
       "ra_h": "20.749306",
       "dec_deg": "-66.203222",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -11832,6 +11953,7 @@
       "ra_h": "23.079361",
       "dec_deg": "15.205250",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -11849,6 +11971,7 @@
       "ra_h": "23.062917",
       "dec_deg": "28.082778",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -11866,6 +11989,7 @@
       "ra_h": "3.405389",
       "dec_deg": "49.861167",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -11883,6 +12007,7 @@
       "ra_h": "3.136139",
       "dec_deg": "40.955639",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -11900,6 +12025,7 @@
       "ra_h": "0.438056",
       "dec_deg": "-42.306111",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -11917,6 +12043,7 @@
       "ra_h": "1.101389",
       "dec_deg": "-46.718500",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -11934,6 +12061,7 @@
       "ra_h": "6.803167",
       "dec_deg": "-61.941389",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -11951,6 +12079,7 @@
       "ra_h": "5.788083",
       "dec_deg": "-51.066722",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -11968,6 +12097,7 @@
       "ra_h": "2.034111",
       "dec_deg": "2.763750",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -11985,6 +12115,7 @@
       "ra_h": "23.064611",
       "dec_deg": "3.820056",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -12002,6 +12133,7 @@
       "ra_h": "22.960861",
       "dec_deg": "-29.622250",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -12019,6 +12151,7 @@
       "ra_h": "22.525083",
       "dec_deg": "-32.346028",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -12036,6 +12169,7 @@
       "ra_h": "8.726528",
       "dec_deg": "-33.186389",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -12053,6 +12187,7 @@
       "ra_h": "8.668389",
       "dec_deg": "-35.308333",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -12070,6 +12205,7 @@
       "ra_h": "4.240417",
       "dec_deg": "-62.473861",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -12087,6 +12223,7 @@
       "ra_h": "3.736667",
       "dec_deg": "-64.806917",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -12104,6 +12241,7 @@
       "ra_h": "19.668278",
       "dec_deg": "18.013889",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -12121,6 +12259,7 @@
       "ra_h": "19.684139",
       "dec_deg": "17.476028",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -12138,6 +12277,7 @@
       "ra_h": "19.398111",
       "dec_deg": "-40.615944",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -12155,6 +12295,7 @@
       "ra_h": "19.377306",
       "dec_deg": "-44.458972",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -12172,6 +12313,7 @@
       "ra_h": "16.490139",
       "dec_deg": "-26.432028",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -12189,6 +12331,7 @@
       "ra_h": "16.090611",
       "dec_deg": "-19.805444",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -12206,6 +12349,7 @@
       "ra_h": "0.976778",
       "dec_deg": "-29.357444",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -12223,6 +12367,7 @@
       "ra_h": "23.549500",
       "dec_deg": "-37.818361",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -12240,6 +12385,7 @@
       "ra_h": "18.586778",
       "dec_deg": "-8.244056",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -12257,6 +12403,7 @@
       "ra_h": "18.786250",
       "dec_deg": "-4.747833",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -12274,6 +12421,7 @@
       "ra_h": "15.737806",
       "dec_deg": "6.425639",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -12291,6 +12439,7 @@
       "ra_h": "15.769806",
       "dec_deg": "15.421833",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -12308,6 +12457,7 @@
       "ra_h": "10.132306",
       "dec_deg": "-0.371639",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -12325,6 +12475,7 @@
       "ra_h": "10.504861",
       "dec_deg": "-0.636972",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -12342,6 +12493,7 @@
       "ra_h": "4.598667",
       "dec_deg": "16.509306",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -12359,6 +12511,7 @@
       "ra_h": "5.438194",
       "dec_deg": "28.607444",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -12376,6 +12529,7 @@
       "ra_h": "18.449556",
       "dec_deg": "-45.968333",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -12393,6 +12547,7 @@
       "ra_h": "18.480528",
       "dec_deg": "-49.070028",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -12410,6 +12565,7 @@
       "ra_h": "1.884694",
       "dec_deg": "29.578833",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -12427,6 +12583,7 @@
       "ra_h": "2.159056",
       "dec_deg": "34.987306",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -12444,6 +12601,7 @@
       "ra_h": "16.811083",
       "dec_deg": "-69.027722",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -12461,6 +12619,7 @@
       "ra_h": "15.919028",
       "dec_deg": "-63.430722",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -12478,6 +12637,7 @@
       "ra_h": "22.308361",
       "dec_deg": "-60.259583",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -12495,6 +12655,7 @@
       "ra_h": "0.525750",
       "dec_deg": "-62.958222",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -12512,6 +12673,7 @@
       "ra_h": "11.062139",
       "dec_deg": "61.750833",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -12529,6 +12691,7 @@
       "ra_h": "11.030694",
       "dec_deg": "56.382444",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -12546,6 +12709,7 @@
       "ra_h": "2.530194",
       "dec_deg": "89.264111",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -12563,6 +12727,7 @@
       "ra_h": "14.845083",
       "dec_deg": "74.155500",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -12580,6 +12745,7 @@
       "ra_h": "13.419889",
       "dec_deg": "-11.161333",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -12597,6 +12763,7 @@
       "ra_h": "11.844917",
       "dec_deg": "1.764722",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -12614,6 +12781,7 @@
       "ra_h": "9.040778",
       "dec_deg": "-66.396083",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -12631,6 +12799,7 @@
       "ra_h": "8.428944",
       "dec_deg": "-66.136889",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -12648,6 +12817,7 @@
       "ra_h": "19.478444",
       "dec_deg": "24.664917",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -12665,6 +12835,7 @@
       "ra_h": "19.270278",
       "dec_deg": "21.390444",
       "object_type": null,
+      "object_type_family": null,
       "notes": null
     },
     {
@@ -12686,6 +12857,7 @@
       "ra_h": "14.495264",
       "dec_deg": "-62.679486",
       "object_type": null,
+      "object_type_family": null,
       "notes": "Special addition outside the alpha/beta inclusion rule; not a naked-eye star."
     },
     {
@@ -12707,6 +12879,7 @@
       "ra_h": "0.7400",
       "dec_deg": "85.3333",
       "object_type": "OC",
+      "object_type_family": "open_cluster",
       "notes": null
     },
     {
@@ -12728,6 +12901,7 @@
       "ra_h": "0.2167",
       "dec_deg": "72.5333",
       "object_type": "PN",
+      "object_type_family": "planetary_nebula",
       "notes": null
     },
     {
@@ -12749,6 +12923,7 @@
       "ra_h": "12.2783",
       "dec_deg": "69.4667",
       "object_type": "SbG",
+      "object_type_family": "galaxy",
       "notes": null
     },
     {
@@ -12770,6 +12945,7 @@
       "ra_h": "21.0300",
       "dec_deg": "68.2000",
       "object_type": "BN",
+      "object_type_family": "emission_nebula",
       "notes": null
     },
     {
@@ -12791,6 +12967,7 @@
       "ra_h": "3.7800",
       "dec_deg": "68.1000",
       "object_type": "SBcG",
+      "object_type_family": "SBcG",
       "notes": null
     },
     {
@@ -12812,6 +12989,7 @@
       "ra_h": "17.9767",
       "dec_deg": "66.6333",
       "object_type": "PN",
+      "object_type_family": "planetary_nebula",
       "notes": null
     },
     {
@@ -12833,6 +13011,7 @@
       "ra_h": "7.6150",
       "dec_deg": "65.6000",
       "object_type": "ScG",
+      "object_type_family": "galaxy",
       "notes": null
     },
     {
@@ -12854,6 +13033,7 @@
       "ra_h": "1.4917",
       "dec_deg": "63.3000",
       "object_type": "OC",
+      "object_type_family": "open_cluster",
       "notes": null
     },
     {
@@ -12875,6 +13055,7 @@
       "ra_h": "22.9467",
       "dec_deg": "62.6167",
       "object_type": "BN",
+      "object_type_family": "emission_nebula",
       "notes": null
     },
     {
@@ -12896,6 +13077,7 @@
       "ra_h": "1.7667",
       "dec_deg": "61.2500",
       "object_type": "OC",
+      "object_type_family": "open_cluster",
       "notes": null
     },
     {
@@ -12917,6 +13099,7 @@
       "ra_h": "23.3450",
       "dec_deg": "61.2000",
       "object_type": "BN",
+      "object_type_family": "emission_nebula",
       "notes": null
     },
     {
@@ -12938,6 +13121,7 @@
       "ra_h": "20.5800",
       "dec_deg": "60.1500",
       "object_type": "ScG",
+      "object_type_family": "galaxy",
       "notes": null
     },
     {
@@ -12959,6 +13143,7 @@
       "ra_h": "1.3183",
       "dec_deg": "58.3333",
       "object_type": "OC",
+      "object_type_family": "open_cluster",
       "notes": null
     },
     {
@@ -12980,6 +13165,7 @@
       "ra_h": "2.3333",
       "dec_deg": "57.1333",
       "object_type": "OC",
+      "object_type_family": "open_cluster",
       "notes": null
     },
     {
@@ -13001,6 +13187,7 @@
       "ra_h": "19.7467",
       "dec_deg": "50.5167",
       "object_type": "PN",
+      "object_type_family": "planetary_nebula",
       "notes": null
     },
     {
@@ -13022,6 +13209,7 @@
       "ra_h": "22.2550",
       "dec_deg": "49.8833",
       "object_type": "OC",
+      "object_type_family": "open_cluster",
       "notes": null
     },
     {
@@ -13043,6 +13231,7 @@
       "ra_h": "0.5533",
       "dec_deg": "48.5000",
       "object_type": "dE4G",
+      "object_type_family": "dE4G",
       "notes": null
     },
     {
@@ -13064,6 +13253,7 @@
       "ra_h": "0.6500",
       "dec_deg": "48.3333",
       "object_type": "dE0G",
+      "object_type_family": "galaxy",
       "notes": null
     },
     {
@@ -13085,6 +13275,7 @@
       "ra_h": "21.8917",
       "dec_deg": "47.2667",
       "object_type": "BN",
+      "object_type_family": "emission_nebula",
       "notes": null
     },
     {
@@ -13106,6 +13297,7 @@
       "ra_h": "20.9800",
       "dec_deg": "44.3333",
       "object_type": "BN",
+      "object_type_family": "emission_nebula",
       "notes": null
     },
     {
@@ -13127,6 +13319,7 @@
       "ra_h": "12.4700",
       "dec_deg": "44.1000",
       "object_type": "IG",
+      "object_type_family": "galaxy",
       "notes": null
     },
     {
@@ -13148,6 +13341,7 @@
       "ra_h": "23.4317",
       "dec_deg": "42.5500",
       "object_type": "PN",
+      "object_type_family": "planetary_nebula",
       "notes": null
     },
     {
@@ -13169,6 +13363,7 @@
       "ra_h": "2.3767",
       "dec_deg": "42.3500",
       "object_type": "SbG",
+      "object_type_family": "galaxy",
       "notes": null
     },
     {
@@ -13190,6 +13385,7 @@
       "ra_h": "3.3300",
       "dec_deg": "41.5167",
       "object_type": "SeyfertG",
+      "object_type_family": "SeyfertG",
       "notes": null
     },
     {
@@ -13211,6 +13407,7 @@
       "ra_h": "7.6350",
       "dec_deg": "38.8833",
       "object_type": "GC",
+      "object_type_family": "globular_cluster",
       "notes": null
     },
     {
@@ -13232,6 +13429,7 @@
       "ra_h": "12.2917",
       "dec_deg": "37.8167",
       "object_type": "SG",
+      "object_type_family": "galaxy",
       "notes": null
     },
     {
@@ -13253,6 +13451,7 @@
       "ra_h": "20.2000",
       "dec_deg": "38.3500",
       "object_type": "BN",
+      "object_type_family": "emission_nebula",
       "notes": null
     },
     {
@@ -13274,6 +13473,7 @@
       "ra_h": "1.9633",
       "dec_deg": "37.6833",
       "object_type": "OC",
+      "object_type_family": "open_cluster",
       "notes": null
     },
     {
@@ -13295,6 +13495,7 @@
       "ra_h": "13.1817",
       "dec_deg": "37.0500",
       "object_type": "SbG",
+      "object_type_family": "galaxy",
       "notes": null
     },
     {
@@ -13316,6 +13517,7 @@
       "ra_h": "22.6183",
       "dec_deg": "34.4167",
       "object_type": "SbG",
+      "object_type_family": "galaxy",
       "notes": null
     },
     {
@@ -13337,6 +13539,7 @@
       "ra_h": "5.2700",
       "dec_deg": "34.2667",
       "object_type": "BN",
+      "object_type_family": "emission_nebula",
       "notes": null
     },
     {
@@ -13358,6 +13561,7 @@
       "ra_h": "12.7017",
       "dec_deg": "32.5333",
       "object_type": "ScG",
+      "object_type_family": "galaxy",
       "notes": null
     },
     {
@@ -13379,6 +13583,7 @@
       "ra_h": "20.9400",
       "dec_deg": "31.7167",
       "object_type": "SN",
+      "object_type_family": "supernova_remnant",
       "notes": null
     },
     {
@@ -13400,6 +13605,7 @@
       "ra_h": "20.7617",
       "dec_deg": "30.7167",
       "object_type": "SN",
+      "object_type_family": "supernova_remnant",
       "notes": null
     },
     {
@@ -13421,6 +13627,7 @@
       "ra_h": "13.0017",
       "dec_deg": "27.9833",
       "object_type": "E4G",
+      "object_type_family": "E4G",
       "notes": null
     },
     {
@@ -13442,6 +13649,7 @@
       "ra_h": "12.6000",
       "dec_deg": "27.9667",
       "object_type": "ScG",
+      "object_type_family": "galaxy",
       "notes": null
     },
     {
@@ -13463,6 +13671,7 @@
       "ra_h": "20.2000",
       "dec_deg": "26.4833",
       "object_type": "OC",
+      "object_type_family": "open_cluster",
       "notes": null
     },
     {
@@ -13484,6 +13693,7 @@
       "ra_h": "12.6050",
       "dec_deg": "25.9833",
       "object_type": "SbG",
+      "object_type_family": "galaxy",
       "notes": null
     },
     {
@@ -13505,6 +13715,7 @@
       "ra_h": "7.4867",
       "dec_deg": "20.9167",
       "object_type": "PN",
+      "object_type_family": "planetary_nebula",
       "notes": null
     },
     {
@@ -13526,6 +13737,7 @@
       "ra_h": "11.3350",
       "dec_deg": "18.3500",
       "object_type": "SbG",
+      "object_type_family": "galaxy",
       "notes": null
     },
     {
@@ -13547,6 +13759,7 @@
       "ra_h": "4.4500",
       "dec_deg": "16.0000",
       "object_type": "OC",
+      "object_type_family": "open_cluster",
       "notes": null
     },
     {
@@ -13568,6 +13781,7 @@
       "ra_h": "21.0250",
       "dec_deg": "16.1833",
       "object_type": "GC",
+      "object_type_family": "globular_cluster",
       "notes": null
     },
     {
@@ -13589,6 +13803,7 @@
       "ra_h": "0.0550",
       "dec_deg": "16.1500",
       "object_type": "SbG",
+      "object_type_family": "galaxy",
       "notes": null
     },
     {
@@ -13610,6 +13825,7 @@
       "ra_h": "23.0817",
       "dec_deg": "12.3167",
       "object_type": "SBbG",
+      "object_type_family": "SBbG",
       "notes": null
     },
     {
@@ -13631,6 +13847,7 @@
       "ra_h": "13.6250",
       "dec_deg": "8.8833",
       "object_type": "ScG",
+      "object_type_family": "galaxy",
       "notes": null
     },
     {
@@ -13652,6 +13869,7 @@
       "ra_h": "6.6533",
       "dec_deg": "8.7333",
       "object_type": "BN",
+      "object_type_family": "emission_nebula",
       "notes": null
     },
     {
@@ -13673,6 +13891,7 @@
       "ra_h": "20.5700",
       "dec_deg": "7.4000",
       "object_type": "GC",
+      "object_type_family": "globular_cluster",
       "notes": null
     },
     {
@@ -13694,6 +13913,7 @@
       "ra_h": "9.1717",
       "dec_deg": "7.0333",
       "object_type": "SaG",
+      "object_type_family": "SaG",
       "notes": null
     },
     {
@@ -13715,6 +13935,7 @@
       "ra_h": "6.5383",
       "dec_deg": "5.0500",
       "object_type": "BN",
+      "object_type_family": "emission_nebula",
       "notes": null
     },
     {
@@ -13736,6 +13957,7 @@
       "ra_h": "6.5400",
       "dec_deg": "4.8667",
       "object_type": "OC",
+      "object_type_family": "open_cluster",
       "notes": null
     },
     {
@@ -13757,6 +13979,7 @@
       "ra_h": "1.0800",
       "dec_deg": "2.1167",
       "object_type": "IG",
+      "object_type_family": "galaxy",
       "notes": null
     },
     {
@@ -13778,6 +14001,7 @@
       "ra_h": "12.8100",
       "dec_deg": "-5.8000",
       "object_type": "E4G",
+      "object_type_family": "E4G",
       "notes": null
     },
     {
@@ -13799,6 +14023,7 @@
       "ra_h": "10.0867",
       "dec_deg": "-7.7167",
       "object_type": "E6G",
+      "object_type_family": "E6G",
       "notes": null
     },
     {
@@ -13820,6 +14045,7 @@
       "ra_h": "8.0033",
       "dec_deg": "-10.7833",
       "object_type": "OC",
+      "object_type_family": "open_cluster",
       "notes": null
     },
     {
@@ -13841,6 +14067,7 @@
       "ra_h": "21.0700",
       "dec_deg": "-11.3667",
       "object_type": "PN",
+      "object_type_family": "planetary_nebula",
       "notes": null
     },
     {
@@ -13862,6 +14089,7 @@
       "ra_h": "0.7833",
       "dec_deg": "-11.8833",
       "object_type": "PN",
+      "object_type_family": "planetary_nebula",
       "notes": null
     },
     {
@@ -13883,6 +14111,7 @@
       "ra_h": "19.7483",
       "dec_deg": "-14.8000",
       "object_type": "IG",
+      "object_type_family": "galaxy",
       "notes": null
     },
     {
@@ -13904,6 +14133,7 @@
       "ra_h": "7.2967",
       "dec_deg": "-15.6167",
       "object_type": "OC",
+      "object_type_family": "open_cluster",
       "notes": null
     },
     {
@@ -13925,6 +14155,7 @@
       "ra_h": "10.4133",
       "dec_deg": "-18.6333",
       "object_type": "PN",
+      "object_type_family": "planetary_nebula",
       "notes": null
     },
     {
@@ -13946,6 +14177,7 @@
       "ra_h": "12.0317",
       "dec_deg": "-18.8667",
       "object_type": "ScG",
+      "object_type_family": "galaxy",
       "notes": null
     },
     {
@@ -13967,6 +14199,7 @@
       "ra_h": "12.0317",
       "dec_deg": "-18.8833",
       "object_type": "ScG",
+      "object_type_family": "galaxy",
       "notes": null
     },
     {
@@ -13988,6 +14221,7 @@
       "ra_h": "0.7850",
       "dec_deg": "-20.7667",
       "object_type": "SG",
+      "object_type_family": "galaxy",
       "notes": null
     },
     {
@@ -14009,6 +14243,7 @@
       "ra_h": "22.4933",
       "dec_deg": "-20.8000",
       "object_type": "PN",
+      "object_type_family": "planetary_nebula",
       "notes": null
     },
     {
@@ -14030,6 +14265,7 @@
       "ra_h": "7.3133",
       "dec_deg": "-24.9500",
       "object_type": "OC",
+      "object_type_family": "open_cluster",
       "notes": null
     },
     {
@@ -14051,6 +14287,7 @@
       "ra_h": "0.7933",
       "dec_deg": "-25.2833",
       "object_type": "SG",
+      "object_type_family": "galaxy",
       "notes": null
     },
     {
@@ -14072,6 +14309,7 @@
       "ra_h": "14.6600",
       "dec_deg": "-26.5333",
       "object_type": "GC",
+      "object_type_family": "globular_cluster",
       "notes": null
     },
     {
@@ -14093,6 +14331,7 @@
       "ra_h": "2.7717",
       "dec_deg": "-30.2833",
       "object_type": "SBbG",
+      "object_type_family": "SBbG",
       "notes": null
     },
     {
@@ -14114,6 +14353,7 @@
       "ra_h": "19.0317",
       "dec_deg": "-36.9500",
       "object_type": "BN",
+      "object_type_family": "emission_nebula",
       "notes": null
     },
     {
@@ -14135,6 +14375,7 @@
       "ra_h": "17.2283",
       "dec_deg": "-37.1000",
       "object_type": "PN",
+      "object_type_family": "planetary_nebula",
       "notes": null
     },
     {
@@ -14156,6 +14397,7 @@
       "ra_h": "0.9150",
       "dec_deg": "-37.6833",
       "object_type": "SdG",
+      "object_type_family": "SdG",
       "notes": null
     },
     {
@@ -14177,6 +14419,7 @@
       "ra_h": "7.8717",
       "dec_deg": "-38.5500",
       "object_type": "OC",
+      "object_type_family": "open_cluster",
       "notes": null
     },
     {
@@ -14198,6 +14441,7 @@
       "ra_h": "0.2483",
       "dec_deg": "-39.1833",
       "object_type": "SBG",
+      "object_type_family": "SBG",
       "notes": null
     },
     {
@@ -14219,6 +14463,7 @@
       "ra_h": "5.2350",
       "dec_deg": "-40.0500",
       "object_type": "GC",
+      "object_type_family": "globular_cluster",
       "notes": null
     },
     {
@@ -14240,6 +14485,7 @@
       "ra_h": "10.1283",
       "dec_deg": "-40.4333",
       "object_type": "PN",
+      "object_type_family": "planetary_nebula",
       "notes": null
     },
     {
@@ -14261,6 +14507,7 @@
       "ra_h": "16.4267",
       "dec_deg": "-40.6667",
       "object_type": "OC",
+      "object_type_family": "open_cluster",
       "notes": null
     },
     {
@@ -14282,6 +14529,7 @@
       "ra_h": "16.9000",
       "dec_deg": "-41.8000",
       "object_type": "OC",
+      "object_type_family": "open_cluster",
       "notes": null
     },
     {
@@ -14303,6 +14551,7 @@
       "ra_h": "13.4250",
       "dec_deg": "-43.0167",
       "object_type": "PecG",
+      "object_type_family": "PecG",
       "notes": null
     },
     {
@@ -14324,6 +14573,7 @@
       "ra_h": "18.1333",
       "dec_deg": "-43.7000",
       "object_type": "GC",
+      "object_type_family": "globular_cluster",
       "notes": null
     },
     {
@@ -14345,6 +14595,7 @@
       "ra_h": "10.2933",
       "dec_deg": "-46.4167",
       "object_type": "GC",
+      "object_type_family": "globular_cluster",
       "notes": null
     },
     {
@@ -14366,6 +14617,7 @@
       "ra_h": "13.4467",
       "dec_deg": "-47.4833",
       "object_type": "GC",
+      "object_type_family": "globular_cluster",
       "notes": null
     },
     {
@@ -14387,6 +14639,7 @@
       "ra_h": "17.4250",
       "dec_deg": "-48.4167",
       "object_type": "GC",
+      "object_type_family": "globular_cluster",
       "notes": null
     },
     {
@@ -14408,6 +14661,7 @@
       "ra_h": "16.6883",
       "dec_deg": "-48.7667",
       "object_type": "OC",
+      "object_type_family": "open_cluster",
       "notes": null
     },
     {
@@ -14429,6 +14683,7 @@
       "ra_h": "13.0900",
       "dec_deg": "-49.4667",
       "object_type": "SBcG",
+      "object_type_family": "SBcG",
       "notes": null
     },
     {
@@ -14450,6 +14705,7 @@
       "ra_h": "13.7733",
       "dec_deg": "-51.3667",
       "object_type": "GC",
+      "object_type_family": "globular_cluster",
       "notes": null
     },
     {
@@ -14471,6 +14727,7 @@
       "ra_h": "8.6700",
       "dec_deg": "-53.0667",
       "object_type": "OC",
+      "object_type_family": "open_cluster",
       "notes": null
     },
     {
@@ -14492,6 +14749,7 @@
       "ra_h": "17.6783",
       "dec_deg": "-53.6667",
       "object_type": "GC",
+      "object_type_family": "globular_cluster",
       "notes": null
     },
     {
@@ -14513,6 +14771,7 @@
       "ra_h": "3.2050",
       "dec_deg": "-55.2167",
       "object_type": "GC",
+      "object_type_family": "globular_cluster",
       "notes": null
     },
     {
@@ -14534,6 +14793,7 @@
       "ra_h": "15.0950",
       "dec_deg": "-55.6000",
       "object_type": "OC",
+      "object_type_family": "open_cluster",
       "notes": null
     },
     {
@@ -14555,6 +14815,7 @@
       "ra_h": "16.3150",
       "dec_deg": "-57.9000",
       "object_type": "OC",
+      "object_type_family": "open_cluster",
       "notes": null
     },
     {
@@ -14576,6 +14837,7 @@
       "ra_h": "9.3567",
       "dec_deg": "-58.3167",
       "object_type": "PN",
+      "object_type_family": "planetary_nebula",
       "notes": null
     },
     {
@@ -14597,6 +14859,7 @@
       "ra_h": "11.1067",
       "dec_deg": "-58.6667",
       "object_type": "OC",
+      "object_type_family": "open_cluster",
       "notes": null
     },
     {
@@ -14618,6 +14881,7 @@
       "ra_h": "10.7300",
       "dec_deg": "-59.8667",
       "object_type": "BN",
+      "object_type_family": "emission_nebula",
       "notes": null
     },
     {
@@ -14639,6 +14903,7 @@
       "ra_h": "19.1817",
       "dec_deg": "-59.9833",
       "object_type": "GC",
+      "object_type_family": "globular_cluster",
       "notes": null
     },
     {
@@ -14660,6 +14925,7 @@
       "ra_h": "12.8933",
       "dec_deg": "-60.3333",
       "object_type": "OC",
+      "object_type_family": "open_cluster",
       "notes": null
     },
     {
@@ -14681,6 +14947,7 @@
       "ra_h": "16.0617",
       "dec_deg": "-60.5000",
       "object_type": "OC",
+      "object_type_family": "open_cluster",
       "notes": null
     },
     {
@@ -14702,6 +14969,7 @@
       "ra_h": "7.9717",
       "dec_deg": "-60.8667",
       "object_type": "OC",
+      "object_type_family": "open_cluster",
       "notes": null
     },
     {
@@ -14723,6 +14991,7 @@
       "ra_h": "11.6017",
       "dec_deg": "-61.6167",
       "object_type": "OC",
+      "object_type_family": "open_cluster",
       "notes": null
     },
     {
@@ -14744,6 +15013,7 @@
       "ra_h": "12.7050",
       "dec_deg": "-62.9667",
       "object_type": "OC",
+      "object_type_family": "open_cluster",
       "notes": null
     },
     {
@@ -14765,6 +15035,7 @@
       "ra_h": "12.8833",
       "dec_deg": "-63.0000",
       "object_type": "DN",
+      "object_type_family": "dark_nebula",
       "notes": null
     },
     {
@@ -14786,6 +15057,7 @@
       "ra_h": "11.6100",
       "dec_deg": "-63.0333",
       "object_type": "OC",
+      "object_type_family": "open_cluster",
       "notes": null
     },
     {
@@ -14807,6 +15079,7 @@
       "ra_h": "19.1633",
       "dec_deg": "-63.8500",
       "object_type": "SBbG",
+      "object_type_family": "SBbG",
       "notes": null
     },
     {
@@ -14828,6 +15101,7 @@
       "ra_h": "10.7200",
       "dec_deg": "-64.4000",
       "object_type": "OC",
+      "object_type_family": "open_cluster",
       "notes": null
     },
     {
@@ -14849,6 +15123,7 @@
       "ra_h": "5.6450",
       "dec_deg": "-69.1000",
       "object_type": "BN",
+      "object_type_family": "emission_nebula",
       "notes": null
     },
     {
@@ -14870,6 +15145,7 @@
       "ra_h": "1.0533",
       "dec_deg": "-70.8500",
       "object_type": "GC",
+      "object_type_family": "globular_cluster",
       "notes": null
     },
     {
@@ -14891,6 +15167,7 @@
       "ra_h": "12.9933",
       "dec_deg": "-70.8833",
       "object_type": "GC",
+      "object_type_family": "globular_cluster",
       "notes": null
     },
     {
@@ -14912,6 +15189,7 @@
       "ra_h": "0.4017",
       "dec_deg": "-72.0833",
       "object_type": "GC",
+      "object_type_family": "globular_cluster",
       "notes": null
     },
     {
@@ -14933,6 +15211,7 @@
       "ra_h": "16.4300",
       "dec_deg": "-72.2000",
       "object_type": "GC",
+      "object_type_family": "globular_cluster",
       "notes": null
     },
     {
@@ -14954,6 +15233,7 @@
       "ra_h": "12.4300",
       "dec_deg": "-72.6667",
       "object_type": "GC",
+      "object_type_family": "globular_cluster",
       "notes": null
     },
     {
@@ -14975,6 +15255,7 @@
       "ra_h": "10.1583",
       "dec_deg": "-80.8667",
       "object_type": "PN",
+      "object_type_family": "planetary_nebula",
       "notes": null
     },
     {
@@ -14996,6 +15277,7 @@
       "ra_h": "21.0697",
       "dec_deg": "-11.3633",
       "object_type": "PN",
+      "object_type_family": "planetary_nebula",
       "notes": null
     },
     {
@@ -15017,6 +15299,7 @@
       "ra_h": "22.4940",
       "dec_deg": "-20.8372",
       "object_type": "PN",
+      "object_type_family": "planetary_nebula",
       "notes": null
     },
     {
@@ -15038,6 +15321,7 @@
       "ra_h": "22.6179",
       "dec_deg": "34.4164",
       "object_type": "Gal",
+      "object_type_family": "galaxy",
       "notes": null
     },
     {
@@ -15059,6 +15343,7 @@
       "ra_h": "23.3453",
       "dec_deg": "61.2086",
       "object_type": "EN",
+      "object_type_family": "emission_nebula",
       "notes": null
     },
     {
@@ -15080,6 +15365,7 @@
       "ra_h": "23.9567",
       "dec_deg": "56.7083",
       "object_type": "OC",
+      "object_type_family": "open_cluster",
       "notes": null
     },
     {
@@ -15101,6 +15387,7 @@
       "ra_h": "0.6494",
       "dec_deg": "48.3375",
       "object_type": "Gal",
+      "object_type_family": "galaxy",
       "notes": null
     },
     {
@@ -15122,6 +15409,7 @@
       "ra_h": "0.8833",
       "dec_deg": "56.6167",
       "object_type": "EN",
+      "object_type_family": "emission_nebula",
       "notes": null
     },
     {
@@ -15143,6 +15431,7 @@
       "ra_h": "1.3264",
       "dec_deg": "58.2867",
       "object_type": "OC",
+      "object_type_family": "open_cluster",
       "notes": null
     },
     {
@@ -15164,6 +15453,7 @@
       "ra_h": "1.7692",
       "dec_deg": "61.2350",
       "object_type": "OC",
+      "object_type_family": "open_cluster",
       "notes": null
     },
     {
@@ -15185,6 +15475,7 @@
       "ra_h": "3.1720",
       "dec_deg": "61.3169",
       "object_type": "PN",
+      "object_type_family": "planetary_nebula",
       "notes": null
     },
     {
@@ -15206,6 +15497,7 @@
       "ra_h": "23.4317",
       "dec_deg": "42.5347",
       "object_type": "PN",
+      "object_type_family": "planetary_nebula",
       "notes": null
     },
     {
@@ -15227,6 +15519,7 @@
       "ra_h": "2.3760",
       "dec_deg": "42.3461",
       "object_type": "Gal",
+      "object_type_family": "galaxy",
       "notes": null
     },
     {
@@ -15248,6 +15541,7 @@
       "ra_h": "0.7925",
       "dec_deg": "-25.2889",
       "object_type": "Gal",
+      "object_type_family": "galaxy",
       "notes": null
     },
     {
@@ -15269,6 +15563,7 @@
       "ra_h": "1.9889",
       "dec_deg": "19.0078",
       "object_type": "Gal",
+      "object_type_family": "galaxy",
       "notes": null
     },
     {
@@ -15290,6 +15585,7 @@
       "ra_h": "0.7843",
       "dec_deg": "-11.8720",
       "object_type": "PN",
+      "object_type_family": "planetary_nebula",
       "notes": null
     },
     {
@@ -15311,6 +15607,7 @@
       "ra_h": "2.4604",
       "dec_deg": "-1.1556",
       "object_type": "Gal",
+      "object_type_family": "galaxy",
       "notes": null
     },
     {
@@ -15332,6 +15629,7 @@
       "ra_h": "2.3717",
       "dec_deg": "57.1367",
       "object_type": "OC",
+      "object_type_family": "open_cluster",
       "notes": null
     },
     {
@@ -15353,6 +15651,7 @@
       "ra_h": "2.6733",
       "dec_deg": "39.0633",
       "object_type": "Gal",
+      "object_type_family": "galaxy",
       "notes": null
     },
     {
@@ -15374,6 +15673,7 @@
       "ra_h": "4.0557",
       "dec_deg": "51.3214",
       "object_type": "EN",
+      "object_type_family": "emission_nebula",
       "notes": null
     },
     {
@@ -15395,6 +15695,7 @@
       "ra_h": "4.1164",
       "dec_deg": "60.9206",
       "object_type": "PN",
+      "object_type_family": "planetary_nebula",
       "notes": null
     },
     {
@@ -15416,6 +15717,7 @@
       "ra_h": "3.1626",
       "dec_deg": "-20.5808",
       "object_type": "Gal",
+      "object_type_family": "galaxy",
       "notes": null
     },
     {
@@ -15437,6 +15739,7 @@
       "ra_h": "4.2377",
       "dec_deg": "-12.7394",
       "object_type": "PN",
+      "object_type_family": "planetary_nebula",
       "notes": null
     },
     {
@@ -15458,6 +15761,7 @@
       "ra_h": "4.1547",
       "dec_deg": "30.7758",
       "object_type": "PN",
+      "object_type_family": "planetary_nebula",
       "notes": null
     },
     {
@@ -15479,6 +15783,7 @@
       "ra_h": "5.5244",
       "dec_deg": "34.2486",
       "object_type": "E/RN",
+      "object_type_family": "E/RN",
       "notes": null
     },
     {
@@ -15500,6 +15805,7 @@
       "ra_h": "5.1150",
       "dec_deg": "-3.3333",
       "object_type": "RN",
+      "object_type_family": "RN",
       "notes": null
     },
     {
@@ -15521,6 +15827,7 @@
       "ra_h": "5.5850",
       "dec_deg": "-4.7333",
       "object_type": "E/RN",
+      "object_type_family": "E/RN",
       "notes": null
     },
     {
@@ -15542,6 +15849,7 @@
       "ra_h": "5.7017",
       "dec_deg": "9.0864",
       "object_type": "PN",
+      "object_type_family": "planetary_nebula",
       "notes": null
     },
     {
@@ -15563,6 +15871,7 @@
       "ra_h": "5.6950",
       "dec_deg": "-1.8500",
       "object_type": "EN",
+      "object_type_family": "emission_nebula",
       "notes": null
     },
     {
@@ -15584,6 +15893,7 @@
       "ra_h": "6.2292",
       "dec_deg": "12.8067",
       "object_type": "OC",
+      "object_type_family": "open_cluster",
       "notes": null
     },
     {
@@ -15605,6 +15915,7 @@
       "ra_h": "7.4263",
       "dec_deg": "29.4906",
       "object_type": "PN",
+      "object_type_family": "planetary_nebula",
       "notes": null
     },
     {
@@ -15626,6 +15937,7 @@
       "ra_h": "7.4863",
       "dec_deg": "20.9117",
       "object_type": "PN",
+      "object_type_family": "planetary_nebula",
       "notes": null
     },
     {
@@ -15647,6 +15959,7 @@
       "ra_h": "6.5339",
       "dec_deg": "4.9861",
       "object_type": "EN",
+      "object_type_family": "emission_nebula",
       "notes": null
     },
     {
@@ -15668,6 +15981,7 @@
       "ra_h": "6.6528",
       "dec_deg": "8.7500",
       "object_type": "E/RN",
+      "object_type_family": "E/RN",
       "notes": null
     },
     {
@@ -15689,6 +16003,7 @@
       "ra_h": "7.3083",
       "dec_deg": "-13.2333",
       "object_type": "EN",
+      "object_type_family": "emission_nebula",
       "notes": null
     },
     {
@@ -15710,6 +16025,7 @@
       "ra_h": "7.6987",
       "dec_deg": "-18.2086",
       "object_type": "PN",
+      "object_type_family": "planetary_nebula",
       "notes": null
     },
     {
@@ -15731,6 +16047,7 @@
       "ra_h": "8.1769",
       "dec_deg": "-12.8183",
       "object_type": "OC",
+      "object_type_family": "open_cluster",
       "notes": null
     },
     {
@@ -15752,6 +16069,7 @@
       "ra_h": "7.6141",
       "dec_deg": "65.6025",
       "object_type": "Gal",
+      "object_type_family": "galaxy",
       "notes": null
     },
     {
@@ -15773,6 +16091,7 @@
       "ra_h": "8.9275",
       "dec_deg": "78.2236",
       "object_type": "Gal",
+      "object_type_family": "galaxy",
       "notes": null
     },
     {
@@ -15794,6 +16113,7 @@
       "ra_h": "8.8781",
       "dec_deg": "33.4211",
       "object_type": "Gal",
+      "object_type_family": "galaxy",
       "notes": null
     },
     {
@@ -15815,6 +16135,7 @@
       "ra_h": "9.3674",
       "dec_deg": "50.9764",
       "object_type": "Gal",
+      "object_type_family": "galaxy",
       "notes": null
     },
     {
@@ -15836,6 +16157,7 @@
       "ra_h": "10.0329",
       "dec_deg": "55.6806",
       "object_type": "Gal",
+      "object_type_family": "galaxy",
       "notes": null
     },
     {
@@ -15857,6 +16179,7 @@
       "ra_h": "10.3047",
       "dec_deg": "41.4244",
       "object_type": "Gal",
+      "object_type_family": "galaxy",
       "notes": null
     },
     {
@@ -15878,6 +16201,7 @@
       "ra_h": "11.7688",
       "dec_deg": "47.4947",
       "object_type": "Gal",
+      "object_type_family": "galaxy",
       "notes": null
     },
     {
@@ -15899,6 +16223,7 @@
       "ra_h": "11.8820",
       "dec_deg": "36.9864",
       "object_type": "Gal",
+      "object_type_family": "galaxy",
       "notes": null
     },
     {
@@ -15920,6 +16245,7 @@
       "ra_h": "11.9903",
       "dec_deg": "50.9617",
       "object_type": "Gal",
+      "object_type_family": "galaxy",
       "notes": null
     },
     {
@@ -15941,6 +16267,7 @@
       "ra_h": "12.0927",
       "dec_deg": "50.5394",
       "object_type": "Gal",
+      "object_type_family": "galaxy",
       "notes": null
     },
     {
@@ -15962,6 +16289,7 @@
       "ra_h": "12.1847",
       "dec_deg": "50.4853",
       "object_type": "Gal",
+      "object_type_family": "galaxy",
       "notes": null
     },
     {
@@ -15983,6 +16311,7 @@
       "ra_h": "12.6665",
       "dec_deg": "61.6092",
       "object_type": "Gal",
+      "object_type_family": "galaxy",
       "notes": null
     },
     {
@@ -16004,6 +16333,7 @@
       "ra_h": "10.0872",
       "dec_deg": "-7.7186",
       "object_type": "Gal",
+      "object_type_family": "galaxy",
       "notes": null
     },
     {
@@ -16025,6 +16355,7 @@
       "ra_h": "10.4128",
       "dec_deg": "-18.6422",
       "object_type": "PN",
+      "object_type_family": "planetary_nebula",
       "notes": null
     },
     {
@@ -16046,6 +16377,7 @@
       "ra_h": "9.8099",
       "dec_deg": "33.4219",
       "object_type": "Gal",
+      "object_type_family": "galaxy",
       "notes": null
     },
     {
@@ -16067,6 +16399,7 @@
       "ra_h": "10.7253",
       "dec_deg": "24.9222",
       "object_type": "Gal",
+      "object_type_family": "galaxy",
       "notes": null
     },
     {
@@ -16088,6 +16421,7 @@
       "ra_h": "10.8753",
       "dec_deg": "36.6192",
       "object_type": "Gal",
+      "object_type_family": "galaxy",
       "notes": null
     },
     {
@@ -16109,6 +16443,7 @@
       "ra_h": "9.5360",
       "dec_deg": "21.5008",
       "object_type": "Gal",
+      "object_type_family": "galaxy",
       "notes": null
     },
     {
@@ -16130,6 +16465,7 @@
       "ra_h": "10.8047",
       "dec_deg": "12.6286",
       "object_type": "Gal",
+      "object_type_family": "galaxy",
       "notes": null
     },
     {
@@ -16151,6 +16487,7 @@
       "ra_h": "11.0969",
       "dec_deg": "-0.0350",
       "object_type": "Gal",
+      "object_type_family": "galaxy",
       "notes": null
     },
     {
@@ -16172,6 +16509,7 @@
       "ra_h": "11.2818",
       "dec_deg": "18.0531",
       "object_type": "Gal",
+      "object_type_family": "galaxy",
       "notes": null
     },
     {
@@ -16193,6 +16531,7 @@
       "ra_h": "11.3380",
       "dec_deg": "13.5911",
       "object_type": "Gal",
+      "object_type_family": "galaxy",
       "notes": null
     },
     {
@@ -16214,6 +16553,7 @@
       "ra_h": "12.1176",
       "dec_deg": "43.0653",
       "object_type": "Gal",
+      "object_type_family": "galaxy",
       "notes": null
     },
     {
@@ -16235,6 +16575,7 @@
       "ra_h": "12.2609",
       "dec_deg": "36.3281",
       "object_type": "Gal",
+      "object_type_family": "galaxy",
       "notes": null
     },
     {
@@ -16256,6 +16597,7 @@
       "ra_h": "12.2915",
       "dec_deg": "37.8069",
       "object_type": "Gal",
+      "object_type_family": "galaxy",
       "notes": null
     },
     {
@@ -16277,6 +16619,7 @@
       "ra_h": "12.4697",
       "dec_deg": "44.0925",
       "object_type": "Gal",
+      "object_type_family": "galaxy",
       "notes": null
     },
     {
@@ -16298,6 +16641,7 @@
       "ra_h": "12.5101",
       "dec_deg": "41.6436",
       "object_type": "Gal",
+      "object_type_family": "galaxy",
       "notes": null
     },
     {
@@ -16319,6 +16663,7 @@
       "ra_h": "12.7021",
       "dec_deg": "32.5428",
       "object_type": "Gal",
+      "object_type_family": "galaxy",
       "notes": null
     },
     {
@@ -16340,6 +16685,7 @@
       "ra_h": "12.7327",
       "dec_deg": "32.1703",
       "object_type": "Gal",
+      "object_type_family": "galaxy",
       "notes": null
     },
     {
@@ -16361,6 +16707,7 @@
       "ra_h": "13.1823",
       "dec_deg": "37.0583",
       "object_type": "Gal",
+      "object_type_family": "galaxy",
       "notes": null
     },
     {
@@ -16382,6 +16729,7 @@
       "ra_h": "13.2243",
       "dec_deg": "36.5936",
       "object_type": "Gal",
+      "object_type_family": "galaxy",
       "notes": null
     },
     {
@@ -16403,6 +16751,7 @@
       "ra_h": "12.3307",
       "dec_deg": "29.6142",
       "object_type": "Gal",
+      "object_type_family": "galaxy",
       "notes": null
     },
     {
@@ -16424,6 +16773,7 @@
       "ra_h": "12.4409",
       "dec_deg": "31.2228",
       "object_type": "Gal",
+      "object_type_family": "galaxy",
       "notes": null
     },
     {
@@ -16445,6 +16795,7 @@
       "ra_h": "12.5233",
       "dec_deg": "25.7750",
       "object_type": "Gal",
+      "object_type_family": "galaxy",
       "notes": null
     },
     {
@@ -16466,6 +16817,7 @@
       "ra_h": "12.5994",
       "dec_deg": "27.9597",
       "object_type": "Gal",
+      "object_type_family": "galaxy",
       "notes": null
     },
     {
@@ -16487,6 +16839,7 @@
       "ra_h": "12.6058",
       "dec_deg": "25.9875",
       "object_type": "Gal",
+      "object_type_family": "galaxy",
       "notes": null
     },
     {
@@ -16508,6 +16861,7 @@
       "ra_h": "12.8407",
       "dec_deg": "25.5008",
       "object_type": "Gal",
+      "object_type_family": "galaxy",
       "notes": null
     },
     {
@@ -16529,6 +16883,7 @@
       "ra_h": "12.0314",
       "dec_deg": "-18.8675",
       "object_type": "Gal",
+      "object_type_family": "galaxy",
       "notes": null
     },
     {
@@ -16550,6 +16905,7 @@
       "ra_h": "12.4086",
       "dec_deg": "-18.7850",
       "object_type": "PN",
+      "object_type_family": "planetary_nebula",
       "notes": null
     },
     {
@@ -16571,6 +16927,7 @@
       "ra_h": "12.2651",
       "dec_deg": "13.1500",
       "object_type": "Gal",
+      "object_type_family": "galaxy",
       "notes": null
     },
     {
@@ -16592,6 +16949,7 @@
       "ra_h": "12.4297",
       "dec_deg": "12.6622",
       "object_type": "Gal",
+      "object_type_family": "galaxy",
       "notes": null
     },
     {
@@ -16613,6 +16971,7 @@
       "ra_h": "12.4628",
       "dec_deg": "13.0089",
       "object_type": "Gal",
+      "object_type_family": "galaxy",
       "notes": null
     },
     {
@@ -16634,6 +16993,7 @@
       "ra_h": "12.5460",
       "dec_deg": "0.1150",
       "object_type": "Gal",
+      "object_type_family": "galaxy",
       "notes": null
     },
     {
@@ -16655,6 +17015,7 @@
       "ra_h": "12.5675",
       "dec_deg": "7.6992",
       "object_type": "Gal",
+      "object_type_family": "galaxy",
       "notes": null
     },
     {
@@ -16676,6 +17037,7 @@
       "ra_h": "12.5723",
       "dec_deg": "8.1978",
       "object_type": "Gal",
+      "object_type_family": "galaxy",
       "notes": null
     },
     {
@@ -16697,6 +17059,7 @@
       "ra_h": "12.6091",
       "dec_deg": "11.2578",
       "object_type": "Gal",
+      "object_type_family": "galaxy",
       "notes": null
     },
     {
@@ -16718,6 +17081,7 @@
       "ra_h": "12.6095",
       "dec_deg": "11.2386",
       "object_type": "Gal",
+      "object_type_family": "galaxy",
       "notes": null
     },
     {
@@ -16739,6 +17103,7 @@
       "ra_h": "12.8173",
       "dec_deg": "-8.6644",
       "object_type": "Gal",
+      "object_type_family": "galaxy",
       "notes": null
     },
     {
@@ -16760,6 +17125,7 @@
       "ra_h": "12.8822",
       "dec_deg": "11.2306",
       "object_type": "Gal",
+      "object_type_family": "galaxy",
       "notes": null
     },
     {
@@ -16781,6 +17147,7 @@
       "ra_h": "14.7489",
       "dec_deg": "1.9547",
       "object_type": "Gal",
+      "object_type_family": "galaxy",
       "notes": null
     },
     {
@@ -16802,6 +17169,7 @@
       "ra_h": "14.0908",
       "dec_deg": "28.5350",
       "object_type": "GC",
+      "object_type_family": "globular_cluster",
       "notes": null
     },
     {
@@ -16823,6 +17191,7 @@
       "ra_h": "15.2649",
       "dec_deg": "56.3289",
       "object_type": "Gal",
+      "object_type_family": "galaxy",
       "notes": null
     },
     {
@@ -16844,6 +17213,7 @@
       "ra_h": "17.8240",
       "dec_deg": "70.1444",
       "object_type": "Gal",
+      "object_type_family": "galaxy",
       "notes": null
     },
     {
@@ -16865,6 +17235,7 @@
       "ra_h": "17.9759",
       "dec_deg": "66.6331",
       "object_type": "PN",
+      "object_type_family": "planetary_nebula",
       "notes": null
     },
     {
@@ -16886,6 +17257,7 @@
       "ra_h": "16.7415",
       "dec_deg": "23.8000",
       "object_type": "PN",
+      "object_type_family": "planetary_nebula",
       "notes": null
     },
     {
@@ -16907,6 +17279,7 @@
       "ra_h": "17.4889",
       "dec_deg": "-23.7594",
       "object_type": "PN",
+      "object_type_family": "planetary_nebula",
       "notes": null
     },
     {
@@ -16928,6 +17301,7 @@
       "ra_h": "18.2018",
       "dec_deg": "6.8533",
       "object_type": "PN",
+      "object_type_family": "planetary_nebula",
       "notes": null
     },
     {
@@ -16949,6 +17323,7 @@
       "ra_h": "18.4542",
       "dec_deg": "6.5083",
       "object_type": "OC",
+      "object_type_family": "open_cluster",
       "notes": null
     },
     {
@@ -16970,6 +17345,7 @@
       "ra_h": "18.8844",
       "dec_deg": "-8.7050",
       "object_type": "GC",
+      "object_type_family": "globular_cluster",
       "notes": null
     },
     {
@@ -16991,6 +17367,7 @@
       "ra_h": "19.3078",
       "dec_deg": "6.5386",
       "object_type": "PN",
+      "object_type_family": "planetary_nebula",
       "notes": null
     },
     {
@@ -17012,6 +17389,7 @@
       "ra_h": "19.6883",
       "dec_deg": "40.1867",
       "object_type": "OC",
+      "object_type_family": "open_cluster",
       "notes": null
     },
     {
@@ -17033,6 +17411,7 @@
       "ra_h": "19.7467",
       "dec_deg": "50.5250",
       "object_type": "PN",
+      "object_type_family": "planetary_nebula",
       "notes": null
     },
     {
@@ -17054,6 +17433,7 @@
       "ra_h": "20.2033",
       "dec_deg": "38.3167",
       "object_type": "EN",
+      "object_type_family": "emission_nebula",
       "notes": null
     },
     {
@@ -17075,6 +17455,7 @@
       "ra_h": "20.9400",
       "dec_deg": "31.7167",
       "object_type": "SNR",
+      "object_type_family": "SNR",
       "notes": null
     },
     {
@@ -17096,6 +17477,7 @@
       "ra_h": "20.7617",
       "dec_deg": "30.7167",
       "object_type": "SNR",
+      "object_type_family": "SNR",
       "notes": null
     },
     {
@@ -17117,6 +17499,7 @@
       "ra_h": "20.9750",
       "dec_deg": "44.3744",
       "object_type": "EN",
+      "object_type_family": "emission_nebula",
       "notes": null
     },
     {
@@ -17138,6 +17521,7 @@
       "ra_h": "21.1171",
       "dec_deg": "42.2361",
       "object_type": "PN",
+      "object_type_family": "planetary_nebula",
       "notes": null
     },
     {
@@ -17159,6 +17543,7 @@
       "ra_h": "17.8209",
       "dec_deg": "-20.0094",
       "object_type": "PN",
+      "object_type_family": "planetary_nebula",
       "notes": null
     },
     {
@@ -17180,6 +17565,7 @@
       "ra_h": "18.0567",
       "dec_deg": "-27.8883",
       "object_type": "OC",
+      "object_type_family": "open_cluster",
       "notes": null
     },
     {
@@ -17201,6 +17587,7 @@
       "ra_h": "19.7327",
       "dec_deg": "-14.1533",
       "object_type": "PN",
+      "object_type_family": "planetary_nebula",
       "notes": null
     },
     {
@@ -17222,6 +17609,7 @@
       "ra_h": "19.5097",
       "dec_deg": "20.2617",
       "object_type": "OC",
+      "object_type_family": "open_cluster",
       "notes": null
     },
     {
@@ -17243,6 +17631,7 @@
       "ra_h": "20.5739",
       "dec_deg": "28.2833",
       "object_type": "OC",
+      "object_type_family": "open_cluster",
       "notes": null
     },
     {
@@ -17264,6 +17653,7 @@
       "ra_h": "20.5250",
       "dec_deg": "60.6617",
       "object_type": "OC",
+      "object_type_family": "open_cluster",
       "notes": null
     },
     {
@@ -17285,6 +17675,7 @@
       "ra_h": "20.5813",
       "dec_deg": "60.1539",
       "object_type": "Gal",
+      "object_type_family": "galaxy",
       "notes": null
     },
     {
@@ -17306,6 +17697,7 @@
       "ra_h": "21.7167",
       "dec_deg": "66.1167",
       "object_type": "RN",
+      "object_type_family": "RN",
       "notes": null
     },
     {
@@ -17327,6 +17719,7 @@
       "ra_h": "0.2169",
       "dec_deg": "72.5219",
       "object_type": "PN",
+      "object_type_family": "planetary_nebula",
       "notes": null
     },
     {
@@ -17348,6 +17741,7 @@
       "ra_h": "11.0621550000",
       "dec_deg": "61.7510330000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=Big Dipper"
     },
     {
@@ -17369,6 +17763,7 @@
       "ra_h": "11.0306770000",
       "dec_deg": "56.3824270000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=Big Dipper"
     },
     {
@@ -17390,6 +17785,7 @@
       "ra_h": "11.8971680000",
       "dec_deg": "53.6947600000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=Big Dipper"
     },
     {
@@ -17411,6 +17807,7 @@
       "ra_h": "12.2570860000",
       "dec_deg": "57.0326170000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=Big Dipper"
     },
     {
@@ -17432,6 +17829,7 @@
       "ra_h": "12.9004720000",
       "dec_deg": "55.9598210000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=Big Dipper"
     },
     {
@@ -17453,6 +17851,7 @@
       "ra_h": "13.3987470000",
       "dec_deg": "54.9253620000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=Big Dipper"
     },
     {
@@ -17474,6 +17873,7 @@
       "ra_h": "13.7923540000",
       "dec_deg": "49.3132650000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=Big Dipper"
     },
     {
@@ -17495,6 +17895,7 @@
       "ra_h": "2.5297500000",
       "dec_deg": "89.2641090000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=Little Dipper"
     },
     {
@@ -17516,6 +17917,7 @@
       "ra_h": "14.8451050000",
       "dec_deg": "74.1555050000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=Little Dipper"
     },
     {
@@ -17537,6 +17939,7 @@
       "ra_h": "15.3454830000",
       "dec_deg": "71.8340160000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=Little Dipper"
     },
     {
@@ -17558,6 +17961,7 @@
       "ra_h": "17.5369180000",
       "dec_deg": "86.5864600000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=Little Dipper"
     },
     {
@@ -17579,6 +17983,7 @@
       "ra_h": "16.7661590000",
       "dec_deg": "82.0372620000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=Little Dipper"
     },
     {
@@ -17600,6 +18005,7 @@
       "ra_h": "16.2917910000",
       "dec_deg": "75.7553300000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=Little Dipper"
     },
     {
@@ -17621,6 +18027,7 @@
       "ra_h": "15.7342990000",
       "dec_deg": "77.7944930000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=Little Dipper"
     },
     {
@@ -17642,6 +18049,7 @@
       "ra_h": "0.6751160000",
       "dec_deg": "56.5373310000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=Cassiopeia's W"
     },
     {
@@ -17663,6 +18071,7 @@
       "ra_h": "0.1528870000",
       "dec_deg": "59.1497800000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=Cassiopeia's W"
     },
     {
@@ -17684,6 +18093,7 @@
       "ra_h": "0.9451430000",
       "dec_deg": "60.7167400000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=Cassiopeia's W"
     },
     {
@@ -17705,6 +18115,7 @@
       "ra_h": "1.4302160000",
       "dec_deg": "60.2352830000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=Cassiopeia's W"
     },
     {
@@ -17726,6 +18137,7 @@
       "ra_h": "1.9065840000",
       "dec_deg": "63.6701010000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=Cassiopeia's W"
     },
     {
@@ -17747,6 +18159,7 @@
       "ra_h": "5.6793130000",
       "dec_deg": "-1.9425720000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=Orion's Belt"
     },
     {
@@ -17768,6 +18181,7 @@
       "ra_h": "5.6035590000",
       "dec_deg": "-1.2019200000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=Orion's Belt"
     },
     {
@@ -17789,6 +18203,7 @@
       "ra_h": "5.5334450000",
       "dec_deg": "-0.2990920000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=Orion's Belt"
     },
     {
@@ -17810,6 +18225,7 @@
       "ra_h": "5.5897680000",
       "dec_deg": "-4.8383580000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=Orion's Sword"
     },
     {
@@ -17831,6 +18247,7 @@
       "ra_h": "5.5879070000",
       "dec_deg": "-5.3896960000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=Orion's Sword"
     },
     {
@@ -17852,6 +18269,7 @@
       "ra_h": "5.5905510000",
       "dec_deg": "-5.9099010000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=Orion's Sword"
     },
     {
@@ -17873,6 +18291,7 @@
       "ra_h": "22.4805310000",
       "dec_deg": "-0.0199720000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=Water Jar"
     },
     {
@@ -17894,6 +18313,7 @@
       "ra_h": "22.4212840000",
       "dec_deg": "1.3774010000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=Water Jar"
     },
     {
@@ -17915,6 +18335,7 @@
       "ra_h": "22.5892720000",
       "dec_deg": "-0.1174980000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=Water Jar"
     },
     {
@@ -17936,6 +18357,7 @@
       "ra_h": "22.3609380000",
       "dec_deg": "-1.3873310000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=Water Jar"
     },
     {
@@ -17957,6 +18379,7 @@
       "ra_h": "23.0629010000",
       "dec_deg": "28.0827890000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=Great Square of Pegasus"
     },
     {
@@ -17978,6 +18401,7 @@
       "ra_h": "0.1397910000",
       "dec_deg": "29.0904320000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=Great Square of Pegasus"
     },
     {
@@ -17999,6 +18423,7 @@
       "ra_h": "23.0793480000",
       "dec_deg": "15.2052640000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=Great Square of Pegasus"
     },
     {
@@ -18020,6 +18445,7 @@
       "ra_h": "0.2205980000",
       "dec_deg": "15.1835960000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=Great Square of Pegasus"
     },
     {
@@ -18041,6 +18467,7 @@
       "ra_h": "10.1395320000",
       "dec_deg": "11.9672070000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=Sickle of Leo"
     },
     {
@@ -18062,6 +18489,7 @@
       "ra_h": "10.1222090000",
       "dec_deg": "16.7626640000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=Sickle of Leo"
     },
     {
@@ -18083,6 +18511,7 @@
       "ra_h": "10.3328730000",
       "dec_deg": "19.8414890000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=Sickle of Leo"
     },
     {
@@ -18104,6 +18533,7 @@
       "ra_h": "10.2781710000",
       "dec_deg": "23.4173110000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=Sickle of Leo"
     },
     {
@@ -18125,6 +18555,7 @@
       "ra_h": "9.8793980000",
       "dec_deg": "26.0069510000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=Sickle of Leo"
     },
     {
@@ -18146,6 +18577,7 @@
       "ra_h": "9.7641880000",
       "dec_deg": "23.7742550000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=Sickle of Leo"
     },
     {
@@ -18167,6 +18599,7 @@
       "ra_h": "17.0048270000",
       "dec_deg": "30.9264050000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=Keystone of Hercules"
     },
     {
@@ -18188,6 +18621,7 @@
       "ra_h": "16.6881130000",
       "dec_deg": "31.6027260000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=Keystone of Hercules"
     },
     {
@@ -18209,6 +18643,7 @@
       "ra_h": "16.7149330000",
       "dec_deg": "38.9222540000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=Keystone of Hercules"
     },
     {
@@ -18230,6 +18665,7 @@
       "ra_h": "17.2507880000",
       "dec_deg": "36.8091620000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=Keystone of Hercules"
     },
     {
@@ -18251,6 +18687,7 @@
       "ra_h": "20.6905320000",
       "dec_deg": "45.2803380000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=Northern Cross"
     },
     {
@@ -18272,6 +18709,7 @@
       "ra_h": "19.5120230000",
       "dec_deg": "27.9596810000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=Northern Cross"
     },
     {
@@ -18293,6 +18731,7 @@
       "ra_h": "20.3704730000",
       "dec_deg": "40.2566790000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=Northern Cross"
     },
     {
@@ -18314,6 +18753,7 @@
       "ra_h": "19.7495740000",
       "dec_deg": "45.1308100000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=Northern Cross"
     },
     {
@@ -18335,6 +18775,7 @@
       "ra_h": "20.7701780000",
       "dec_deg": "33.9702560000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=Northern Cross"
     },
     {
@@ -18356,6 +18797,7 @@
       "ra_h": "18.3499000000",
       "dec_deg": "-29.8281030000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=Teapot of Sagittarius"
     },
     {
@@ -18377,6 +18819,7 @@
       "ra_h": "18.4028680000",
       "dec_deg": "-34.3846160000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=Teapot of Sagittarius"
     },
     {
@@ -18398,6 +18841,7 @@
       "ra_h": "19.0435320000",
       "dec_deg": "-29.8801050000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=Teapot of Sagittarius"
     },
     {
@@ -18419,6 +18863,7 @@
       "ra_h": "18.7609400000",
       "dec_deg": "-26.9907780000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=Teapot of Sagittarius"
     },
     {
@@ -18440,6 +18885,7 @@
       "ra_h": "18.4661790000",
       "dec_deg": "-25.4217000000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=Teapot of Sagittarius"
     },
     {
@@ -18461,6 +18907,7 @@
       "ra_h": "18.0968030000",
       "dec_deg": "-30.4240910000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=Teapot of Sagittarius"
     },
     {
@@ -18482,6 +18929,7 @@
       "ra_h": "18.9210900000",
       "dec_deg": "-26.2967220000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=Teapot of Sagittarius"
     },
     {
@@ -18503,6 +18951,7 @@
       "ra_h": "19.1156700000",
       "dec_deg": "-27.6704230000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=Teapot of Sagittarius"
     },
     {
@@ -18524,6 +18973,7 @@
       "ra_h": "16.4901280000",
       "dec_deg": "-26.4320020000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=Scorpius's Fishhook"
     },
     {
@@ -18545,6 +18995,7 @@
       "ra_h": "15.0678390000",
       "dec_deg": "-25.2819650000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=Scorpius's Fishhook"
     },
     {
@@ -18566,6 +19017,7 @@
       "ra_h": "16.0055570000",
       "dec_deg": "-22.6217100000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=Scorpius's Fishhook"
     },
     {
@@ -18587,6 +19039,7 @@
       "ra_h": "16.8360800000",
       "dec_deg": "-34.2932320000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=Scorpius's Fishhook"
     },
     {
@@ -18608,6 +19061,7 @@
       "ra_h": "16.9097310000",
       "dec_deg": "-42.3613130000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=Scorpius's Fishhook"
     },
     {
@@ -18629,6 +19083,7 @@
       "ra_h": "17.2025520000",
       "dec_deg": "-43.2391890000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=Scorpius's Fishhook"
     },
     {
@@ -18650,6 +19105,7 @@
       "ra_h": "17.6219800000",
       "dec_deg": "-42.9978240000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=Scorpius's Fishhook"
     },
     {
@@ -18671,6 +19127,7 @@
       "ra_h": "17.7930780000",
       "dec_deg": "-40.1269970000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=Scorpius's Fishhook"
     },
     {
@@ -18692,6 +19149,7 @@
       "ra_h": "17.7081320000",
       "dec_deg": "-39.0299830000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=Scorpius's Fishhook"
     },
     {
@@ -18713,6 +19171,7 @@
       "ra_h": "17.5601450000",
       "dec_deg": "-37.1038210000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=Scorpius's Fishhook"
     },
     {
@@ -18734,6 +19193,7 @@
       "ra_h": "16.8645090000",
       "dec_deg": "-38.0473800000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=Scorpius's Fishhook"
     },
     {
@@ -18755,6 +19215,7 @@
       "ra_h": "16.1999260000",
       "dec_deg": "-19.4607080000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=Scorpius's Fishhook"
     },
     {
@@ -18776,6 +19237,7 @@
       "ra_h": "16.3531430000",
       "dec_deg": "-25.5927960000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=Scorpius's Fishhook"
     },
     {
@@ -18797,6 +19259,7 @@
       "ra_h": "23.4661380000",
       "dec_deg": "6.3789920000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=Circlet of Pisces"
     },
     {
@@ -18818,6 +19281,7 @@
       "ra_h": "23.3390510000",
       "dec_deg": "5.3813070000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=Circlet of Pisces"
     },
     {
@@ -18839,6 +19303,7 @@
       "ra_h": "23.2860940000",
       "dec_deg": "3.2822890000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=Circlet of Pisces"
     },
     {
@@ -18860,6 +19325,7 @@
       "ra_h": "23.4488760000",
       "dec_deg": "1.2556080000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=Circlet of Pisces"
     },
     {
@@ -18881,6 +19347,7 @@
       "ra_h": "23.7007790000",
       "dec_deg": "1.7800410000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=Circlet of Pisces"
     },
     {
@@ -18902,6 +19369,7 @@
       "ra_h": "23.7731990000",
       "dec_deg": "3.4868110000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=Circlet of Pisces"
     },
     {
@@ -18923,6 +19391,7 @@
       "ra_h": "23.6658440000",
       "dec_deg": "5.6262920000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=Circlet of Pisces"
     },
     {
@@ -18944,6 +19413,7 @@
       "ra_h": "3.0379920000",
       "dec_deg": "4.0897340000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=Head of Cetus"
     },
     {
@@ -18965,6 +19435,7 @@
       "ra_h": "2.7216780000",
       "dec_deg": "3.2358180000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=Head of Cetus"
     },
     {
@@ -18986,6 +19457,7 @@
       "ra_h": "2.4693170000",
       "dec_deg": "8.4600540000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=Head of Cetus"
     },
     {
@@ -19007,6 +19479,7 @@
       "ra_h": "2.7490390000",
       "dec_deg": "10.1141460000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=Head of Cetus"
     },
     {
@@ -19028,6 +19501,7 @@
       "ra_h": "2.9952500000",
       "dec_deg": "8.9073650000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=Head of Cetus"
     },
     {
@@ -19049,6 +19523,7 @@
       "ra_h": "4.5986770000",
       "dec_deg": "16.5093010000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=Hyades / V of Taurus"
     },
     {
@@ -19070,6 +19545,7 @@
       "ra_h": "4.4777050000",
       "dec_deg": "15.8708830000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=Hyades / V of Taurus"
     },
     {
@@ -19091,6 +19567,7 @@
       "ra_h": "4.3298890000",
       "dec_deg": "15.6276420000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=Hyades / V of Taurus"
     },
     {
@@ -19112,6 +19589,7 @@
       "ra_h": "4.3822470000",
       "dec_deg": "17.5425140000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=Hyades / V of Taurus"
     },
     {
@@ -19133,6 +19611,7 @@
       "ra_h": "4.4769430000",
       "dec_deg": "19.1804310000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=Hyades / V of Taurus"
     },
     {
@@ -19154,6 +19633,7 @@
       "ra_h": "3.7914100000",
       "dec_deg": "24.1051370000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=Pleiades"
     },
     {
@@ -19175,6 +19655,7 @@
       "ra_h": "3.8193730000",
       "dec_deg": "24.0534150000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=Pleiades"
     },
     {
@@ -19196,6 +19677,7 @@
       "ra_h": "3.7479270000",
       "dec_deg": "24.1133390000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=Pleiades"
     },
     {
@@ -19217,6 +19699,7 @@
       "ra_h": "3.7637790000",
       "dec_deg": "24.3677480000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=Pleiades"
     },
     {
@@ -19238,6 +19721,7 @@
       "ra_h": "3.7721040000",
       "dec_deg": "23.9483580000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=Pleiades"
     },
     {
@@ -19259,6 +19743,7 @@
       "ra_h": "3.7534700000",
       "dec_deg": "24.4672780000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=Pleiades"
     },
     {
@@ -19280,6 +19765,7 @@
       "ra_h": "3.8197820000",
       "dec_deg": "24.1367120000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=Pleiades"
     },
     {
@@ -19301,6 +19787,7 @@
       "ra_h": "18.6156400000",
       "dec_deg": "38.7836920000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=Summer Triangle"
     },
     {
@@ -19322,6 +19809,7 @@
       "ra_h": "19.8463880000",
       "dec_deg": "8.8683220000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=Summer Triangle"
     },
     {
@@ -19343,6 +19831,7 @@
       "ra_h": "20.6905320000",
       "dec_deg": "45.2803380000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=Summer Triangle"
     },
     {
@@ -19364,6 +19853,7 @@
       "ra_h": "6.7524810000",
       "dec_deg": "-16.7161160000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=Winter Triangle"
     },
     {
@@ -19385,6 +19875,7 @@
       "ra_h": "5.9195290000",
       "dec_deg": "7.4070630000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=Winter Triangle"
     },
     {
@@ -19406,6 +19897,7 @@
       "ra_h": "7.6550330000",
       "dec_deg": "5.2249930000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=Winter Triangle"
     },
     {
@@ -19427,6 +19919,7 @@
       "ra_h": "5.2422980000",
       "dec_deg": "-8.2016400000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=Winter Hexagon / Winter Circle"
     },
     {
@@ -19448,6 +19941,7 @@
       "ra_h": "4.5986770000",
       "dec_deg": "16.5093010000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=Winter Hexagon / Winter Circle"
     },
     {
@@ -19469,6 +19963,7 @@
       "ra_h": "5.2781500000",
       "dec_deg": "45.9979910000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=Winter Hexagon / Winter Circle"
     },
     {
@@ -19490,6 +19985,7 @@
       "ra_h": "7.7552770000",
       "dec_deg": "28.0261990000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=Winter Hexagon / Winter Circle"
     },
     {
@@ -19511,6 +20007,7 @@
       "ra_h": "7.6550330000",
       "dec_deg": "5.2249930000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=Winter Hexagon / Winter Circle"
     },
     {
@@ -19532,6 +20029,7 @@
       "ra_h": "6.7524810000",
       "dec_deg": "-16.7161160000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=Winter Hexagon / Winter Circle"
     },
     {
@@ -19553,6 +20051,7 @@
       "ra_h": "14.2610300000",
       "dec_deg": "19.1824100000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=Spring Triangle"
     },
     {
@@ -19574,6 +20073,7 @@
       "ra_h": "13.4198830000",
       "dec_deg": "-11.1613220000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=Spring Triangle"
     },
     {
@@ -19595,6 +20095,7 @@
       "ra_h": "11.8176630000",
       "dec_deg": "14.5720600000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=Spring Triangle"
     },
     {
@@ -19616,6 +20117,7 @@
       "ra_h": "14.2610300000",
       "dec_deg": "19.1824100000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=Great Diamond"
     },
     {
@@ -19637,6 +20139,7 @@
       "ra_h": "13.4198830000",
       "dec_deg": "-11.1613220000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=Great Diamond"
     },
     {
@@ -19658,6 +20161,7 @@
       "ra_h": "12.9338070000",
       "dec_deg": "38.3183800000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=Great Diamond"
     },
     {
@@ -19679,6 +20183,7 @@
       "ra_h": "11.8176630000",
       "dec_deg": "14.5720600000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=Great Diamond"
     },
     {
@@ -19700,6 +20205,7 @@
       "ra_h": "8.3752360000",
       "dec_deg": "-59.5094830000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=False Cross"
     },
     {
@@ -19721,6 +20227,7 @@
       "ra_h": "9.2848380000",
       "dec_deg": "-59.2752290000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=False Cross"
     },
     {
@@ -19742,6 +20249,7 @@
       "ra_h": "8.7450590000",
       "dec_deg": "-54.7088210000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=False Cross"
     },
     {
@@ -19763,6 +20271,7 @@
       "ra_h": "9.3685620000",
       "dec_deg": "-55.0106680000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=False Cross"
     },
     {
@@ -19784,6 +20293,7 @@
       "ra_h": "12.4433110000",
       "dec_deg": "-63.0990920000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=Southern Cross"
     },
     {
@@ -19805,6 +20315,7 @@
       "ra_h": "12.7953590000",
       "dec_deg": "-59.6887640000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=Southern Cross"
     },
     {
@@ -19826,6 +20337,7 @@
       "ra_h": "12.5194290000",
       "dec_deg": "-57.1132120000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=Southern Cross"
     },
     {
@@ -19847,6 +20359,7 @@
       "ra_h": "12.2524270000",
       "dec_deg": "-58.7489280000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=Southern Cross"
     },
     {
@@ -19868,6 +20381,7 @@
       "ra_h": "14.6601372220",
       "dec_deg": "-60.8339926940",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=Southern Pointers"
     },
     {
@@ -19889,6 +20403,7 @@
       "ra_h": "14.0637290000",
       "dec_deg": "-60.3730390000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=Southern Pointers"
     },
     {
@@ -19910,6 +20425,7 @@
       "ra_h": "19.4246110000",
       "dec_deg": "19.7983650000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=Coathanger"
     },
     {
@@ -19931,6 +20447,7 @@
       "ra_h": "19.4370130000",
       "dec_deg": "20.0977330000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=Coathanger"
     },
     {
@@ -19952,6 +20469,7 @@
       "ra_h": "19.4413020000",
       "dec_deg": "19.8914930000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=Coathanger"
     },
     {
@@ -19973,6 +20491,7 @@
       "ra_h": "19.4228870000",
       "dec_deg": "20.2717270000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=Coathanger"
     },
     {
@@ -19994,6 +20513,7 @@
       "ra_h": "19.4891380000",
       "dec_deg": "20.2797370000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=Coathanger"
     },
     {
@@ -20015,6 +20535,7 @@
       "ra_h": "19.3963690000",
       "dec_deg": "20.2643560000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=Coathanger"
     },
     {
@@ -20036,6 +20557,7 @@
       "ra_h": "19.4418330000",
       "dec_deg": "20.2589830000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=Coathanger"
     },
     {
@@ -20057,6 +20579,7 @@
       "ra_h": "19.4650180000",
       "dec_deg": "20.2473830000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=Coathanger"
     },
     {
@@ -20078,6 +20601,7 @@
       "ra_h": "19.3867270000",
       "dec_deg": "20.2779430000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=Coathanger"
     },
     {
@@ -20099,6 +20623,7 @@
       "ra_h": "19.4123180000",
       "dec_deg": "19.9394250000",
       "object_type": "star",
+      "object_type_family": "star",
       "notes": "asterism=Coathanger"
     }
   ],
