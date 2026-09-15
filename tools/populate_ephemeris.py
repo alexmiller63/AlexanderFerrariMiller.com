@@ -42,6 +42,76 @@ VISIBILITY_GLYPHS = {
     "visible": '<span class="text-symbol" role="img" aria-label="visible" title="visible">☉︎</span>',
 }
 
+EPHEMERIS_STYLE = """<style id="ephemeris-css">
+.ephemeris-notation-item {
+  display:inline-block;
+  font-size:1em;
+  line-height:inherit;
+  vertical-align:baseline;
+  font-family:inherit;
+}
+.ephemeris-symbol {
+  display:inline-block;
+  font-family:'Apple Symbols','Arial Unicode MS','Segoe UI Symbol','Noto Sans Symbols 2',serif;
+  font-variant-emoji:text;
+  color:currentColor;
+  -webkit-text-fill-color:currentColor;
+  font-size:1.5em;
+  line-height:.75;
+  vertical-align:-.12em;
+}
+table.ephemeris .greek-letter { font-size:1em; }
+table.ephemeris .visibility-glyph { height:1.5rem !important; width:auto !important; vertical-align:-.28rem !important; }
+.ephemeris-visibility .text-symbol { font-size:1.5em; line-height:.75; vertical-align:-.12em; }
+table.ephemeris,
+table.ephemeris thead,
+table.ephemeris tbody,
+table.ephemeris tr,
+table.ephemeris th,
+table.ephemeris td { display:revert !important; }
+.ephemeris-scroll {
+  display:block;
+  width:100%;
+  max-width:100%;
+  min-width:0;
+  overflow-x:auto;
+  overflow-y:hidden;
+  -webkit-overflow-scrolling:touch;
+}
+.ephemeris-scroll table.ephemeris {
+  display:table !important;
+  width:max-content !important;
+  min-width:100% !important;
+  table-layout:auto !important;
+  overflow:visible !important;
+}
+table.ephemeris thead { display:table-header-group !important; }
+table.ephemeris tbody { display:table-row-group !important; }
+table.ephemeris tr { display:table-row !important; }
+table.ephemeris th,
+table.ephemeris td { display:table-cell !important; }
+table.ephemeris.extended-ephemeris {
+  grid-template-columns:none !important;
+  grid-template-rows:none !important;
+}
+table.ephemeris th,
+table.ephemeris td {
+  width:auto !important;
+  min-width:0 !important;
+  padding:.7rem .55rem !important;
+  text-align:center;
+  white-space:nowrap;
+  overflow-wrap:normal;
+  word-break:normal;
+}
+table.ephemeris small { white-space:nowrap; }
+@media (max-width:760px) {
+  table.ephemeris { font-size:.86rem !important; }
+  table.ephemeris th,
+  table.ephemeris td { padding:.55rem .35rem !important; }
+}
+</style>"""
+
 
 def notation_toggle(target):
     return (
@@ -123,7 +193,6 @@ def current_visibility(key, magnitude, elongation, daylight=False):
         if magnitude <= 7.5: return "binoculars"
         if magnitude <= 12.0: return "telescope"
         return "substantial_telescope"
-
     if key == "moon": return "daylight" if daylight else "naked_eye"
     if key == "ceres": return "telescope"
     if key == "pluto": return "substantial_telescope"
@@ -165,27 +234,13 @@ def observing_html(key, magnitude, elongation, daylight=False):
 
 
 def render_observing_status(key, sample_values):
-    aid = current_visibility(
-        key,
-        sample_values["magnitude"],
-        sample_values["elongation"],
-        sample_values["daylight"],
-    )
+    aid = current_visibility(key, sample_values["magnitude"], sample_values["elongation"], sample_values["daylight"])
     return {
         "aid": aid,
-        "label": observing_label(
-            key,
-            sample_values["magnitude"],
-            sample_values["elongation"],
-            sample_values["daylight"],
-        ),
-        "html": observing_html(
-            key,
-            sample_values["magnitude"],
-            sample_values["elongation"],
-            sample_values["daylight"],
-        ),
+        "label": observing_label(key, sample_values["magnitude"], sample_values["elongation"], sample_values["daylight"]),
+        "html": observing_html(key, sample_values["magnitude"], sample_values["elongation"], sample_values["daylight"]),
     }
+
 
 def planet_finder(year, week):
     base = "finders"
@@ -231,8 +286,7 @@ def render_ephemeris(monday, values):
                         f'data-normal-label="{html.escape(item["normal_label"], quote=True)}" '
                         f'data-solar-glare="{str(item["solar_glare"]).lower()}" '
                         f'data-sun-special="{str(item["sun_special"]).lower()}" '
-                        f'data-sun-dec-deg="{item["sun_dec_deg"]:.9f}">'
-                        f'{content}</td>'
+                        f'data-sun-dec-deg="{item["sun_dec_deg"]:.9f}">{content}</td>'
                     )
                 else:
                     content = f"<td>{content}</td>"
@@ -243,6 +297,7 @@ def render_ephemeris(monday, values):
 
     return (
         "<h3>Weekly Solar-System Ephemeris</h3>"
+        + EPHEMERIS_STYLE
         + f'<p><strong>Snapshot:</strong> {monday.strftime("%B")} {monday.day}, {monday.year} · 00:00 UTC</p>'
         + '<p class="ephemeris-latitude-control"><label for="ephemeris-latitude"><strong>Observer latitude:</strong> <input id="ephemeris-latitude" name="ephemeris-latitude" type="number" min="-90" max="90" step="0.1" value="45" data-ephemeris-latitude>°</label> <span>(default +45°)</span></p>'
         + notation_toggle("ephemeris")
@@ -254,8 +309,6 @@ def render_ephemeris(monday, values):
         + "<h3>Planet Finder</h3>"
         + planet_finder(monday.year, week)
     )
-
-
 
 
 EPHEMERIS_SECTION = re.compile(
