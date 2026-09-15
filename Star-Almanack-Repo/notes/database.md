@@ -18,13 +18,19 @@ Canonical rule: **one physical object = one fixed-object record = one permanent 
 
 Human identifiers are attributes and aliases, not primary keys. Examples include proper names, Bayer and Flamsteed designations, HIP/HD/HR identifiers, Messier numbers, Caldwell numbers, NGC/IC identifiers, and other catalog designations.
 
+A catalog entry or observing target is **not automatically a physical object**. Some catalog entries designate one physical object; others designate multiple physical objects, a structured system, an asterism, a complex, or an extended sky region. Therefore permanent `fixed_object_id` values belong only to physical objects.
+
 ### Core logical entities
 
 **fixed_objects** — one row per physical astronomical object. Holds the immutable ID and core object classification/coordinates needed to identify the physical target.
 
 **object_identifiers** — aliases and external catalog identifiers attached to `fixed_object_id`. Each identifier records its namespace/catalog and value. Preferred display names are presentation metadata, not identity.
 
-**catalog_memberships** — curated-list or catalog relationships such as Messier, Caldwell, Finest NGC, special-star membership, and future observing lists. Membership can itself trigger enrichment research without creating another object.
+**catalog_entries** — one row per entry in a curated catalog or observing list, such as M24, C14, C33, C49, or a Finest NGC entry. A catalog entry has its own designation and provenance but does not necessarily receive a `fixed_object_id`.
+
+**catalog_entry_targets** — typed relationships from a `catalog_entry` to what it designates. A target can resolve to one physical fixed object, multiple physical fixed objects, a region, an asterism, or a structured/composite target. Relationship semantics may include `designates`, `contains`, `comprises`, `has_component`, `represents_region`, or another documented type.
+
+**catalog_memberships** — relationships expressing that a physical object or structured target participates in a curated list. For simple one-object entries this can be derived from `catalog_entry_targets`; it must not be used to force composite entries into one-object identity.
 
 **object_facts** — structured noteworthy facts about a fixed object. Facts may describe physical astronomy, observing significance, history, discovery, navigation, naming, culture/lore, exceptional events, or other reasons the object matters to an observer.
 
@@ -41,6 +47,21 @@ Human identifiers are attributes and aliases, not primary keys. Examples include
 **object_constellation_membership** — geometric relationship between a fixed object's position and the official IAU constellation boundary containing it. This relationship should be derivable rather than independently hand-maintained whenever possible.
 
 **milky_way_regions** — named Milky Way regions and the data/geometry needed to identify and render them. These remain distinct from constellations and asterisms.
+
+### Catalog-target semantics discovered by the identity audit
+
+The pre-migration identity audit established that the model must support catalog targets that are not ordinary one-row/one-object identities:
+
+- **M24** — Sagittarius Star Cloud: Milky Way/star-cloud region target.
+- **M40** — Winnecke 4: double-star observing target whose stellar components must remain separately identifiable.
+- **M45** — Pleiades: physical open cluster with an associated visual asterism/member pattern.
+- **C14** — Double Cluster: one Caldwell entry designating NGC 869 and NGC 884.
+- **C33** — Eastern Veil Nebula: one Caldwell entry encompassing NGC 6992 and NGC 6995.
+- **C41** — Hyades: physical cluster with a corresponding asterism/member relationship.
+- **C49** — Rosette Nebula: complex target spanning multiple NGC designations.
+- **C99** — Coalsack Nebula: extended dark-nebula region.
+
+These are resolved schema cases, not missing identities. They demonstrate why a catalog row must not be equated mechanically with a `fixed_object` row.
 
 ### Star and object enrichment triggers
 
@@ -67,7 +88,9 @@ Thuban is a model case: its identity remains one fixed object regardless of its 
 
 A Messier object that is also Caldwell-listed or otherwise specially selected remains one physical object. A star that is α, belongs to several asterisms, has a proper name, and appears in a special-star list remains one physical object. Relationships enrich the object; they do not create copies.
 
-Generated Sky Notes should assemble relevant facts and relationships for a `fixed_object_id`. The generated prose is presentation, not the canonical database record.
+Conversely, one catalog entry can legitimately relate to multiple physical objects or to a region/asterism. The database must preserve that structure instead of manufacturing a fake single physical identity for the catalog entry.
+
+Generated Sky Notes should assemble relevant facts and relationships for a `fixed_object_id` or structured observing target. The generated prose is presentation, not the canonical database record.
 
 ### Provenance
 
@@ -81,13 +104,14 @@ Unverified lore should not silently become fact. Traditional or cultural materia
 2. Inventory existing YAML/JSON and identify the physical entities and relationships already encoded.
 3. Establish deterministic mappings from existing records to permanent IDs.
 4. Detect aliases and duplicate representations before assigning separate IDs.
-5. Preserve existing fields and provenance during migration.
-6. Add database-style validation: unique IDs, unique catalog identifiers where appropriate, valid foreign keys, and no dangling relationships.
-7. Move generators toward consuming normalized data incrementally; do not require a flag-day rewrite.
-8. Once a permanent ID has been assigned to a physical object, never recycle or renumber it.
-9. Derived data should be reproducible from canonical data wherever practical and should be marked as derived rather than hand-maintained.
-10. Human-readable YAML/JSON may remain the repository storage mechanism until a different physical database engine provides a demonstrated advantage.
+5. Never assign a `fixed_object_id` to a catalog entry merely because it occupies one source row; resolve whether the entry designates one object, multiple objects, a system, an asterism, or a region.
+6. Preserve existing fields and provenance during migration.
+7. Add database-style validation: unique IDs, unique catalog identifiers where appropriate, valid foreign keys, and no dangling relationships.
+8. Move generators toward consuming normalized data incrementally; do not require a flag-day rewrite.
+9. Once a permanent ID has been assigned to a physical object, never recycle or renumber it.
+10. Derived data should be reproducible from canonical data wherever practical and should be marked as derived rather than hand-maintained.
+11. Human-readable YAML/JSON may remain the repository storage mechanism until a different physical database engine provides a demonstrated advantage.
 
 ### Immediate next step
 
-Before changing generators, inventory the current fixed-object, special-star, catalog, asterism, constellation, Sky Note, and related YAML/JSON files. Map their current identifiers and relationships into this logical model, identify duplicate identities and missing provenance, and determine the deterministic initial assignment of `fixed_object_id` values.
+Define the machine-readable `catalog_entries` / `catalog_entry_targets` relationship layer for the resolved exception cases, then rerun identity reconciliation using that distinction. Only after the physical-object set is cleanly separated from composite/region/asterism targets should the deterministic initial `fixed_object_id` registry be created.
