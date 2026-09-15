@@ -63,6 +63,8 @@ The pre-migration identity audit established that the model must support catalog
 
 These are resolved schema cases, not missing identities. They demonstrate why a catalog row must not be equated mechanically with a `fixed_object` row.
 
+The first machine-readable relationship layer is now stored at `Star-Almanack-Repo/database/catalog-entry-targets.json`. It records these eight exception cases without assigning permanent `fixed_object_id` values. During migration it may use source references, external object identifiers, and audit candidate IDs as temporary references; those temporary references must be replaced or resolved when the permanent physical-object registry is created.
+
 ### Star and object enrichment triggers
 
 Research queues are derived from database relationships rather than maintained as disconnected lists. Initial high-value triggers include:
@@ -114,4 +116,4 @@ Unverified lore should not silently become fact. Traditional or cultural materia
 
 ### Immediate next step
 
-Define the machine-readable `catalog_entries` / `catalog_entry_targets` relationship layer for the resolved exception cases, then rerun identity reconciliation using that distinction. Only after the physical-object set is cleanly separated from composite/region/asterism targets should the deterministic initial `fixed_object_id` registry be created.
+Teach the identity reconciliation audit to consume `database/catalog-entry-targets.json`, exclude catalog/region/structured-target records from the physical-object registry, and verify that every referenced NGC/object/asterism target resolves cleanly. Resolve the M40 component identities before creating the deterministic initial `fixed_object_id` registry.
