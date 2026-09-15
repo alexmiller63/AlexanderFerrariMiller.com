@@ -18,7 +18,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Promote backup content and remove active archive dependencies
+      - name: Promote backup content and repair non-workflow paths
         run: |
           python - <<'PY'
           from pathlib import Path
@@ -30,8 +30,6 @@ jobs:
           if not backup.is_dir():
               raise SystemExit("Historical backup directory is missing; refusing migration")
 
-          # Historical is a migration backup. Promote only missing files into the
-          # live repository; never overwrite an already-migrated live file.
           excluded_backup_roots = {".github", "COPY-PROVENANCE.txt"}
           copied = []
 
@@ -52,65 +50,39 @@ jobs:
                   continue
               copy_missing(child, root / child.name)
 
-          # Remove archive-directory aliases from every live UTF-8 text file.
-          # The backup itself remains byte-for-byte untouched.
-          changed = []
-          skip_dirs = {".git", "Historical"}
-          workflow_self = Path(".github/workflows/complete-star-almanack-migration.yml")
-
-          def is_skipped(path: Path) -> bool:
-              rel = path.relative_to(root)
-              return bool(rel.parts and rel.parts[0] in skip_dirs)
-
-          for path in root.rglob("*"):
-              if not path.is_file() or is_skipped(path) or path.relative_to(root) == workflow_self:
-                  continue
-              try:
-                  text = path.read_text(encoding="utf-8")
-              except (UnicodeDecodeError, OSError):
-                  continue
-              original = text
+          def repair_text(text: str) -> str:
               text = text.replace("Star-Almanack-Repo/", "")
               text = text.replace("Historical/", "")
-              # Python pathlib expressions such as ROOT / "Historical" / "site"
-              # become ROOT / "site". This is deliberately limited to path-operator syntax.
               text = re.sub(r"\s*/\s*(['\"])(?:Historical|Star-Almanack-Repo)\1", "", text)
               text = text.replace('Path("Historical")', 'Path(".")')
               text = text.replace("Path('Historical')", "Path('.')")
               text = text.replace('Path("Star-Almanack-Repo")', 'Path(".")')
               text = text.replace("Path('Star-Almanack-Repo')", "Path('.')")
-              if text != original:
-                  path.write_text(text, encoding="utf-8")
-                  changed.append(str(path.relative_to(root)))
+              return text
 
-          # Restore the audit to validation-only behavior. Registry creation is a
-          # separate explicit migration operation, never a side effect of an audit.
-          audit_wf = root / ".github/workflows/audit-fixed-object-identity.yml"
-          if audit_wf.exists():
-              text = audit_wf.read_text(encoding="utf-8")
-              before = text
-              text = re.sub(
-                  r"\n\s*- name: Build permanent fixed-object registry\n\s*run: python tools/build_fixed_object_registry\.py\n",
-                  "\n",
-                  text,
-              )
-              text = text.replace("Commit audit and registry results", "Commit audit results")
-              text = text.replace(" database/fixed-object-registry.json", "")
-              text = text.replace("Identity audit and registry are already current.", "Identity audit is already current.")
-              text = text.replace("Update fixed-object identity audit and registry", "Update fixed-object identity audit")
-              if text != before:
-                  audit_wf.write_text(text, encoding="utf-8")
-                  if str(audit_wf.relative_to(root)) not in changed:
-                      changed.append(str(audit_wf.relative_to(root)))
+          changed = []
+          for path in root.rglob("*"):
+              if not path.is_file():
+                  continue
+              rel = path.relative_to(root)
+              if rel.parts and rel.parts[0] in {".git", "Historical"}:
+                  continue
+              if len(rel.parts) >= 2 and rel.parts[0] == ".github" and rel.parts[1] == "workflows":
+                  continue
+              try:
+                  text = path.read_text(encoding="utf-8")
+              except (UnicodeDecodeError, OSError):
+                  continue
+              repaired = repair_text(text)
+              if repaired != text:
+                  path.write_text(repaired, encoding="utf-8")
+                  changed.append(str(rel))
 
           print(f"Promoted {len(copied)} missing backup files into live locations")
-          print(f"Repaired {len(changed)} live text files")
+          print(f"Repaired {len(changed)} non-workflow live text files")
           PY
 
-      - name: Remove one-time migration workflow
-        run: rm .github/workflows/complete-star-almanack-migration.yml
-
-      - name: Verify live tree is independent of backup
+      - name: Verify non-workflow live tree is independent of backup
         run: |
           python - <<'PY'
           from pathlib import Path
@@ -125,6 +97,8 @@ jobs:
               rel = path.relative_to(root)
               if rel.parts and rel.parts[0] in {"Historical", ".git"}:
                   continue
+              if len(rel.parts) >= 2 and rel.parts[0] == ".github" and rel.parts[1] == "workflows":
+                  continue
               try:
                   text = path.read_text(encoding="utf-8")
               except (UnicodeDecodeError, OSError):
@@ -132,21 +106,75 @@ jobs:
               if "Historical/" in text or "Star-Almanack-Repo/" in text or path_expr.search(text):
                   violations.append(str(rel))
           if violations:
-              print("Active backup dependencies remain:")
+              print("Non-workflow backup dependencies remain:")
               for item in violations:
                   print(item)
               raise SystemExit(1)
-          print("PASS: no active file depends on Historical/ or Star-Almanack-Repo/")
+          print("PASS: non-workflow live tree is independent of backup")
           PY
 
-      - name: Commit completed migration
+      - name: Prepare repaired workflow files
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+          import shutil
+
+          root = Path.cwd()
+          src = root / ".github/workflows"
+          out = Path("/tmp/repaired-workflows")
+          if out.exists():
+              shutil.rmtree(out)
+          out.mkdir(parents=True)
+          self_name = "complete-star-almanack-migration.yml"
+
+          def repair_text(text: str) -> str:
+              text = text.replace("Star-Almanack-Repo/", "")
+              text = text.replace("Historical/", "")
+              text = re.sub(r"\s*/\s*(['\"])(?:Historical|Star-Almanack-Repo)\1", "", text)
+              return text
+
+          for path in sorted(src.glob("*.y*ml")):
+              if path.name == self_name:
+                  continue
+              text = repair_text(path.read_text(encoding="utf-8"))
+              if path.name == "audit-fixed-object-identity.yml":
+                  text = re.sub(
+                      r"\n\s*- name: Build permanent fixed-object registry\n\s*run: python tools/build_fixed_object_registry\.py\n",
+                      "\n",
+                      text,
+                  )
+                  text = text.replace("Commit audit and registry results", "Commit audit results")
+                  text = text.replace(" database/fixed-object-registry.json", "")
+                  text = text.replace("Identity audit and registry are already current.", "Identity audit is already current.")
+                  text = text.replace("Update fixed-object identity audit and registry", "Update fixed-object identity audit")
+              (out / path.name).write_text(text, encoding="utf-8")
+
+          violations = []
+          for path in out.glob("*.y*ml"):
+              text = path.read_text(encoding="utf-8")
+              if "Historical/" in text or "Star-Almanack-Repo/" in text:
+                  violations.append(path.name)
+          if violations:
+              raise SystemExit("Workflow backup dependencies remain: " + ", ".join(violations))
+          print(f"Prepared {len(list(out.glob('*.y*ml')))} repaired workflows")
+          PY
+
+      - name: Upload repaired workflow files
+        uses: actions/upload-artifact@v4
+        with:
+          name: repaired-live-workflows
+          path: /tmp/repaired-workflows
+          if-no-files-found: error
+
+      - name: Commit non-workflow migration
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A
+          git add -A -- . ':(exclude).github/workflows' ':(exclude).github/workflows/**'
           if git diff --cached --quiet; then
-            echo "No migration changes required"
+            echo "No non-workflow migration changes required"
             exit 0
           fi
-          git commit -m "Complete Star Almanack live migration"
+          git commit -m "Promote Star Almanack live project data"
           git push
