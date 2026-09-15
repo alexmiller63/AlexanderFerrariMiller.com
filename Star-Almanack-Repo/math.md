@@ -865,3 +865,36 @@ The Sun's one-way light-travel time in these tests was approximately 491–507 s
 
 Therefore finite light-travel time is retained as an explicit physical consideration, but the matrix demonstrates that it cannot explain the remaining approximately 30–40-second residuals. The dominant remaining discrepancy must arise elsewhere in the eclipse model.
 
+
+## Product Specification: Weekly Planetary Ephemeris and App
+
+This section records the agreed product behavior for the planetary ephemeris display and the companion app.
+
+### Weekly website ephemeris
+
+The free website uses a weekly sampling epoch of **Monday 00:00 UTC** for each ISO week.
+
+Each body receives 4 rows:
+
+1. **Body** — the body name and ephemeris position data.
+2. **Observing** — the observing glyph and observing-status text.
+3. **Rise** — rise time in **Local Apparent Time (LAT)**.
+4. **Set** — set time in **Local Apparent Time (LAT)**.
+
+Rise and set calculations use an observer-latitude input. The default latitude is **+45°** and the value remains editable. Longitude is not required when the result is expressed directly in LAT.
+
+For planets, the observing status is:
+
+- **Daylight** — the Sun is above the horizon at the observing time.
+- **Solar glare** — the Sun is below the horizon, but the planet is too close to the Sun for naked-eye observation.
+- Otherwise, the normal observing classification is shown.
+
+The Sun is a special case. Its observing glyph is **☉** and its observing text is **visible**. The Sun also receives Rise and Set rows.
+
+Fixed-star entries remain nightly observing guidance. They are not changed by the planetary ephemeris row structure.
+
+### Companion app
+
+The companion app uses the observer's exact date and time and exact location, including latitude and longitude; elevation may also be supported. It calculates location-specific planetary visibility, rise, set, daylight, and solar-glare status rather than relying on the weekly website epoch.
+
+The website is free. The companion app is priced at **$0.99** as a one-time purchase.
