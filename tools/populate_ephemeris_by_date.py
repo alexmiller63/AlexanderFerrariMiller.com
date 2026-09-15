@@ -38,13 +38,13 @@ def populate_week(year: int, week: int, generated) -> int:
 
     changed = 0
     path = ephemeris.ROOT / "almanack" / str(year) / f"W{week:02d}" / "index.html"
-        if not path.exists():
-            raise RuntimeError(f"Missing weekly page: {path.relative_to(ephemeris.ROOT)}")
-        text = path.read_text(encoding="utf-8")
-        new = ephemeris.put_ephemeris(text, replacement, path)
-        if new != text:
-            path.write_text(new, encoding="utf-8")
-            changed += 1
+    if not path.exists():
+        raise RuntimeError(f"Missing weekly page: {path.relative_to(ephemeris.ROOT)}")
+    text = path.read_text(encoding="utf-8")
+    new = ephemeris.put_ephemeris(text, replacement, path)
+    if new != text:
+        path.write_text(new, encoding="utf-8")
+        changed += 1
 
     print(f"Generated Ephemeris for ISO {year}-W{week:02d}")
     return changed
