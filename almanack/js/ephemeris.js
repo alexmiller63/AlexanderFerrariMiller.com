@@ -63,9 +63,18 @@
   function update(root) {
     const input = root.querySelector('[data-ephemeris-latitude]');
     if (!input) return;
-    let latitude = Number(input.value);
-    if (!Number.isFinite(latitude)) latitude = 45;
-    latitude = Math.max(-90, Math.min(90, latitude));
+    let latitude = Number(input.value.replace('−', '-').trim());
+    if (!Number.isFinite(latitude)) {
+      input.setCustomValidity('Enter a latitude from -90 to +90.');
+      input.reportValidity();
+      return;
+    }
+    if (latitude < -90 || latitude > 90) {
+      input.setCustomValidity('Latitude must be from -90 to +90.');
+      input.reportValidity();
+      return;
+    }
+    input.setCustomValidity('');
     input.value = String(latitude);
     root.querySelectorAll('td.ephemeris-rise').forEach(function (cell) {
       cell.textContent = riseSet(cell, latitude)[0];
@@ -88,8 +97,14 @@
   document.querySelectorAll('main').forEach(function (root) {
     const input = root.querySelector('[data-ephemeris-latitude]');
     if (!input) return;
-    input.addEventListener('input', function () { update(root); });
-    input.addEventListener('change', function () { update(root); });
+    const apply = root.querySelector('[data-ephemeris-apply]');
+    if (apply) apply.addEventListener('click', function () { update(root); });
+    input.addEventListener('keydown', function (event) {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        update(root);
+      }
+    });
     update(root);
   });
 })();
