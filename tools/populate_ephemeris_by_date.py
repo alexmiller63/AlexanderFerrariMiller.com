@@ -7,47 +7,32 @@ from datetime import date
 import populate_ephemeris as ephemeris
 from iso_date_range import group_by_year, parse_range_args
 
-AID_LABELS = {
-    "naked_eye": "Naked eye",
-    "binoculars": "Binoculars",
-    "telescope": "Telescope",
-    "substantial_telescope": "Substantial telescope",
-}
-
 
 def calculate_year(year: int):
     print(f"Calculating {year} ephemeris locally from cached JPL/NAIF source kernels")
     return ephemeris.computed_ephemeris(year)
 
 
-def observing_html(key, magnitude, elongation) -> str:
-    aid = ephemeris.current_visibility(key, magnitude, elongation)
-    if not aid:
-        return ""
-    if aid == "near_sun":
-        return ephemeris.VISIBILITY_GLYPHS[aid]
-
-    label = AID_LABELS[aid]
-    glyph = ephemeris.VISIBILITY_GLYPHS[aid]
-    return (
-        '<span class="observing-notation-item" '
-        f'data-greek-html="{glyph.replace(chr(34), "&quot;")}" '
-        f'data-latin="{label}" '
-        f'data-mixed-html="{(glyph + " " + label).replace(chr(34), "&quot;")}">'
-        f'{glyph}</span>'
-    )
-
-
 def populate_week(year: int, week: int, generated) -> int:
     monday = date.fromisocalendar(year, week, 1)
-    values = {
-        key: (
-            ephemeris.zodiac(generated[key][week - 1][0]),
-            ephemeris.beta(generated[key][week - 1][1]),
-            observing_html(key, generated[key][week - 1][2], generated[key][week - 1][3]),
-        )
-        for _, key, _ in ephemeris.TARGETS
-    }
+    values = {}
+    for _, key, _ in ephemeris.TARGETS:
+        sample = generated[key][week - 1]
+        aid = ephemeris.current_visibility(key, sample[2], sample[3], sample[6])
+        values[key] = {
+            "position": ephemeris.zodiac(sample[0]),
+            "beta": ephemeris.beta(sample[1]),
+            "observing": ephemeris.observing_html(key, sample[2], sample[3], sample[6]),
+            "normal_label": ephemeris.observing_label(key, sample[2], sample[3], False),
+            "solar_glare": aid == "solar_glare",
+            "rise": sample[4],
+            "set": sample[5],
+            "ra_hours": sample[7],
+            "dec_deg": sample[8],
+            "sun_ra_hours": sample[9],
+            "sun_dec_deg": sample[10],
+            "horizon_deg": -0.8333 if key == "sun" else -0.5667,
+        }
     replacement = ephemeris.render_ephemeris(monday, values)
 
     changed = 0
