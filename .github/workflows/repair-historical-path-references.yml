@@ -1,0 +1,50 @@
+name: Repair Historical Path References
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - tools/trigger-historical-path-repair.txt
+
+permissions:
+  contents: write
+
+jobs:
+  repair:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: Replace obsolete directory references
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import subprocess
+
+          old = b"Star-Almanack-Repo"
+          new = b"Historical"
+          changed = []
+          files = subprocess.check_output(["git", "ls-files", "-z"]).split(b"\0")
+          for raw in files:
+              if not raw:
+                  continue
+              path = Path(raw.decode("utf-8"))
+              data = path.read_bytes()
+              if old not in data or b"\0" in data:
+                  continue
+              path.write_bytes(data.replace(old, new))
+              changed.append(str(path))
+          print(f"Updated {len(changed)} tracked text files")
+          for path in changed:
+              print(path)
+          PY
+      - name: Commit repaired references
+        run: |
+          if git diff --quiet; then
+            echo "No obsolete references remain."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Update references after Historical rename"
+          git push
