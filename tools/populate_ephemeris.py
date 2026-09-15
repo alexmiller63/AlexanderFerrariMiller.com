@@ -203,11 +203,11 @@ def render_ephemeris(monday, values):
     week = monday.isocalendar().week
 
     def table(columns, extra_class=""):
-        headers = '<th scope="col">Measure</th>' + "".join(
+        headers = '<th scope="col">Body</th>' + "".join(
             f"<th scope=\"col\">{target_heading(display)}</th>" for display, _, _ in columns
         )
         rows = []
-        for label, field in (("Body", "position"), ("Observing", "observing"), ("Rise", "rise"), ("Set", "set")):
+        for label, field in (("Ecliptic", "position"), ("Observing", "observing"), ("Rise", "rise"), ("Set", "set")):
             cells = []
             for _, key, _ in columns:
                 item = values[key]
