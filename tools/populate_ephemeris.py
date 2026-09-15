@@ -38,8 +38,8 @@ VISIBILITY_GLYPHS = {
         + _TELESCOPE_GLYPH + _TELESCOPE_GLYPH + '</span>'
     ),
     "daylight": '<span class="text-symbol" role="img" aria-label="Daylight" title="Daylight">☉︎</span>',
-    "solar_glare": '<span class="text-symbol" role="img" aria-label="Solar glare" title="Solar glare">☉︎</span>',
-    "visible": '<span class="text-symbol" role="img" aria-label="visible" title="visible">☉︎</span>',
+    "solar_glare": '<span class="text-symbol" role="img" aria-label="Solar Glare" title="Solar Glare">☉︎</span>',
+    "visible": '<span class="text-symbol" role="img" aria-label="Visible" title="Visible">☉︎</span>',
 }
 
 EPHEMERIS_STYLE = """<style id="ephemeris-css">
@@ -211,8 +211,8 @@ def observing_label(key, magnitude, elongation, daylight=False):
         "telescope": "Telescope",
         "substantial_telescope": "Substantial telescope",
         "daylight": "Daylight",
-        "solar_glare": "Solar glare",
-        "visible": "visible",
+        "solar_glare": "Solar Glare",
+        "visible": "Visible",
     }
     aid = current_visibility(key, magnitude, elongation, daylight)
     return labels.get(aid, "")
@@ -304,7 +304,7 @@ def render_ephemeris(monday, values):
         + table(primary)
         + "<p><strong>Extended targets:</strong></p>"
         + table(extended, "extended-ephemeris")
-        + '<p class="ephemeris-note"><strong>β</strong> = ecliptic latitude (+ north, − south). Rise and set are Local Apparent Time for the selected latitude. Naked-eye classification becomes <strong>Daylight</strong> when the Sun is above the horizon at 21:00 LAT, and <strong>Solar glare</strong> when the Sun is below the horizon but the body is too close to the Sun. The Sun uses glyph <span class="text-symbol">☉</span> and text <strong>visible</strong>.</p>'
+        + '<p class="ephemeris-note"><strong>β</strong> = ecliptic latitude (+ north, − south). Rise and set are Local Apparent Time for the selected latitude. Naked-eye classification becomes <strong>Daylight</strong> when the Sun is above the horizon at 21:00 LAT, and <strong>Solar Glare</strong> when the Sun is below the horizon but the body is too close to the Sun. The Sun uses glyph <span class="text-symbol">☉</span> and text <strong>Visible</strong>.</p>'
         + notation_toggle("finder")
         + "<h3>Planet Finder</h3>"
         + planet_finder(monday.year, week)
