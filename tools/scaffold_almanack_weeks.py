@@ -57,7 +57,7 @@ def calendar_rows(monday):
 
 def ephemeris_tables():
     primary=('Sun','Moon','Mercury','Venus','Mars','Jupiter','Saturn')
-    extended=('Uranus','Neptune','Ceres')
+    extended=('Ceres','Uranus','Neptune','Pluto')
     def table(bodies):
         headers=''.join(f'<th>{body}</th>' for body in bodies)
         cells=''.join('<td>—</td>' for _ in bodies)
@@ -68,8 +68,6 @@ def page(year,week,monday):
     title=f'ISO {year}-W{week:02d}'; rows=calendar_rows(monday); top=nav_stack(year,week); bottom=f'<div class="almanack-bottom-nav-wrap" id="{BOTTOM_ID}">{nav_stack(year,week,True)}</div>'
     body=f'''{top}<h1>{title}</h1><p><strong>Week begins:</strong> {monday.strftime("Monday, %B")} {monday.day}, {monday.year}</p>
 <h3>Calendar</h3><table class="calendar"><thead><tr><th>Date</th><th>Zodiac day</th><th>Events</th></tr></thead><tbody>{rows}</tbody></table>
-<h3>Naked Eye Bodies</h3><div class="naked-eye-bodies"><p>Naked Eye Bodies pending.</p></div>
-<h3>Extended Bodies</h3><div class="extended-bodies"><p>Extended Bodies pending.</p></div>
 <h3>Weekly Solar-System Ephemeris</h3><p><strong>Snapshot:</strong> pending</p>{ephemeris_tables()}
 <h3>Planet Finder</h3><div class="planet-finder-block"><p>Planet finder pending.</p></div>
 <h3>Sky Notes</h3><div class="sky-note"><p>Sky notes pending.</p></div>{bottom}'''
