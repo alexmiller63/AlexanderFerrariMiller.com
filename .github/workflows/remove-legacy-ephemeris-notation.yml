@@ -1,0 +1,64 @@
+name: Remove legacy ephemeris notation
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Remove injected legacy notation controllers
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+
+          pattern = re.compile(r'<script id="ephemeris-notation-sync">.*?</script>', re.S)
+          changed = 0
+          removed = 0
+
+          for path in sorted(Path('almanack').glob('[0-9][0-9][0-9][0-9]/W[0-9][0-9]/index.html')):
+              text = path.read_text(encoding='utf-8')
+              new, count = pattern.subn('', text)
+              if count:
+                  path.write_text(new, encoding='utf-8')
+                  changed += 1
+                  removed += count
+
+          print(f'Removed {removed} legacy controller(s) from {changed} weekly page(s)')
+
+          leftovers = []
+          for path in sorted(Path('almanack').glob('[0-9][0-9][0-9][0-9]/W[0-9][0-9]/index.html')):
+              if 'ephemeris-notation-sync' in path.read_text(encoding='utf-8'):
+                  leftovers.append(str(path))
+          if leftovers:
+              raise SystemExit('Legacy notation controller remains in: ' + ', '.join(leftovers))
+          PY
+
+      - name: Commit cleaned weekly pages
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add almanack
+          if git diff --cached --quiet; then
+            echo 'No legacy ephemeris notation controllers found'
+            exit 0
+          fi
+          git commit -m 'Remove legacy ephemeris notation controllers from weekly pages'
+
+          for attempt in 1 2 3; do
+            git fetch origin main
+            git rebase origin/main
+            if git push origin HEAD:main; then
+              exit 0
+            fi
+            echo "Push race detected; retrying ($attempt/3)"
+          done
+
+          echo 'Unable to push after 3 attempts'
+          exit 1
