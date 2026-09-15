@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+import html
 import re
 from datetime import date
 from pathlib import Path
@@ -16,6 +17,7 @@ from pathlib import Path
 from star_almanack_ephemeris import StarAlmanackEphemeris
 
 ROOT = Path(__file__).resolve().parents[1]
+DEFAULT_LATITUDE_DEG = 45.0
 SIGNS = "♈♉♊♋♌♍♎♏♐♑♒♓"
 
 TARGETS = [
@@ -35,7 +37,9 @@ VISIBILITY_GLYPHS = {
         '<span class="substantial-telescope" role="img" aria-label="Substantial telescope">'
         + _TELESCOPE_GLYPH + _TELESCOPE_GLYPH + '</span>'
     ),
-    "near_sun": '<span class="text-symbol" role="img" aria-label="Near Sun — not currently observable" title="Near Sun — not currently observable">☉</span>',
+    "daylight": '<span class="text-symbol" role="img" aria-label="Daylight" title="Daylight">☉︎</span>',
+    "solar_glare": '<span class="text-symbol" role="img" aria-label="Solar glare" title="Solar glare">☉︎</span>',
+    "visible": '<span class="text-symbol" role="img" aria-label="visible" title="visible">☉︎</span>',
 }
 
 
@@ -69,11 +73,20 @@ def computed_ephemeris(year: int, engine: StarAlmanackEphemeris | None = None):
         monday = date.fromisocalendar(year, week, 1)
         for _, key, _ in TARGETS:
             sample = engine.sample(key, monday)
+            rise, setting = engine.rise_set_lat(sample, key, DEFAULT_LATITUDE_DEG)
+            daylight = engine.daylight_at_observing_time(sample, DEFAULT_LATITUDE_DEG)
             generated[key].append((
                 sample.longitude_deg,
                 sample.latitude_deg,
                 sample.magnitude,
                 sample.elongation_deg,
+                rise,
+                setting,
+                daylight,
+                sample.right_ascension_hours,
+                sample.declination_deg,
+                sample.sun_right_ascension_hours,
+                sample.sun_declination_deg,
             ))
     return generated
 
@@ -99,9 +112,13 @@ def beta(latitude):
     return f"β {sign}{degree}°{minute:02d}′"
 
 
-def current_visibility(key, magnitude, elongation):
+def current_visibility(key, magnitude, elongation, daylight=False):
+    if key == "sun":
+        return "visible"
+    if daylight:
+        return "daylight"
     if elongation is not None and elongation < 20.0:
-        return "near_sun"
+        return "solar_glare"
     if magnitude is not None and elongation is not None:
         if magnitude <= 3.5: return "naked_eye"
         if magnitude <= 7.5: return "binoculars"
@@ -114,10 +131,62 @@ def current_visibility(key, magnitude, elongation):
     return None
 
 
-def visibility_html(key, magnitude, elongation):
-    aid = current_visibility(key, magnitude, elongation)
+def visibility_html(key, magnitude, elongation, daylight=False):
+    aid = current_visibility(key, magnitude, elongation, daylight)
     return VISIBILITY_GLYPHS[aid] if aid else ""
 
+
+def observing_label(key, magnitude, elongation, daylight=False):
+    labels = {
+        "naked_eye": "Naked eye",
+        "binoculars": "Binoculars",
+        "telescope": "Telescope",
+        "substantial_telescope": "Substantial telescope",
+        "daylight": "Daylight",
+        "solar_glare": "Solar glare",
+        "visible": "visible",
+    }
+    aid = current_visibility(key, magnitude, elongation, daylight)
+    return labels.get(aid, "")
+
+
+def observing_html(key, magnitude, elongation, daylight=False):
+    aid = current_visibility(key, magnitude, elongation, daylight)
+    if not aid:
+        return ""
+    glyph = VISIBILITY_GLYPHS[aid]
+    label = observing_label(key, magnitude, elongation, daylight)
+    return (
+        '<span class="observing-notation-item" '
+        f'data-greek-html="{html.escape(glyph, quote=True)}" '
+        f'data-latin="{html.escape(label, quote=True)}" '
+        f'data-mixed-html="{html.escape(glyph + " " + label, quote=True)}">'
+        f'{glyph}</span>'
+    )
+
+
+def render_observing_status(key, sample_values):
+    aid = current_visibility(
+        key,
+        sample_values["magnitude"],
+        sample_values["elongation"],
+        sample_values["daylight"],
+    )
+    return {
+        "aid": aid,
+        "label": observing_label(
+            key,
+            sample_values["magnitude"],
+            sample_values["elongation"],
+            sample_values["daylight"],
+        ),
+        "html": observing_html(
+            key,
+            sample_values["magnitude"],
+            sample_values["elongation"],
+            sample_values["daylight"],
+        ),
+    }
 
 def planet_finder(year, week):
     base = "finders"
@@ -134,29 +203,59 @@ def render_ephemeris(monday, values):
     primary, extended = TARGETS[:7], TARGETS[7:]
     week = monday.isocalendar().week
 
-    def table(columns, show_visibility=True, extra_class=""):
-        headers = "".join(f"<th>{target_heading(display)}</th>" for display, _, _ in columns)
-        positions = "".join(f"<td>{values[key][0]}<br><small>{values[key][1]}</small></td>" for _, key, _ in columns)
-        rows = "<tr>" + positions + "</tr>"
-        if show_visibility:
-            rows += f'<tr class="ephemeris-visibility-label"><th colspan="{len(columns)}" scope="rowgroup">Observing</th></tr>'
-            rows += '<tr class="ephemeris-visibility" aria-label="Observing">' + "".join(f"<td>{values[key][2]}</td>" for _, key, _ in columns) + "</tr>"
+    def table(columns, extra_class=""):
+        headers = '<th scope="col">Measure</th>' + "".join(
+            f"<th scope=\"col\">{target_heading(display)}</th>" for display, _, _ in columns
+        )
+        rows = []
+        for label, field in (("Body", "position"), ("Observing", "observing"), ("Rise", "rise"), ("Set", "set")):
+            cells = []
+            for _, key, _ in columns:
+                item = values[key]
+                if field == "position":
+                    content = f'{item["position"]}<br><small>{item["beta"]}</small>'
+                elif field == "observing":
+                    content = item["observing"]
+                else:
+                    content = item[field]
+                if field in ("rise", "set"):
+                    content = (
+                        f'<td class="ephemeris-{field.lower()}" '
+                        f'data-ra-hours="{item["ra_hours"]:.9f}" '
+                        f'data-dec-deg="{item["dec_deg"]:.9f}" '
+                        f'data-sun-ra-hours="{item["sun_ra_hours"]:.9f}" '
+                        f'data-horizon-deg="{item["horizon_deg"]:.4f}">{content}</td>'
+                    )
+                elif field == "observing":
+                    content = (
+                        f'<td class="ephemeris-observing" '
+                        f'data-normal-label="{html.escape(item["normal_label"], quote=True)}" '
+                        f'data-solar-glare="{str(item["solar_glare"]).lower()}" '
+                        f'data-sun-dec-deg="{item["sun_dec_deg"]:.9f}">'
+                        f'{content}</td>'
+                    )
+                else:
+                    content = f"<td>{content}</td>"
+                cells.append(content)
+            rows.append(f'<tr><th scope="row">{label}</th>{"".join(cells)}</tr>')
         classes = "ephemeris" + (f" {extra_class}" if extra_class else "")
-        return f'<table class="{classes}"><thead><tr>' + headers + "</tr></thead><tbody>" + rows + "</tbody></table>"
+        return f'<table class="{classes}"><thead><tr>{headers}</tr></thead><tbody>{"".join(rows)}</tbody></table>'
 
     return (
         "<h3>Weekly Solar-System Ephemeris</h3>"
         + f'<p><strong>Snapshot:</strong> {monday.strftime("%B")} {monday.day}, {monday.year} · 00:00 UTC</p>'
+        + '<p class="ephemeris-latitude-control"><label for="ephemeris-latitude"><strong>Observer latitude:</strong> <input id="ephemeris-latitude" name="ephemeris-latitude" type="number" min="-90" max="90" step="0.1" value="45" data-ephemeris-latitude>°</label> <span>(default +45°)</span></p>'
         + notation_toggle("ephemeris")
-        + "<p><strong>Naked Eye</strong></p>"
         + table(primary)
         + "<p><strong>Extended targets:</strong></p>"
-        + table(extended, extra_class="extended-ephemeris")
-        + '<p class="ephemeris-note"><strong>β</strong> = ecliptic latitude (+ north, − south). Observing combines visual magnitude with solar elongation. Two telescope glyphs = substantial telescope. <span class="text-symbol">☉</span> = Near Sun — not currently observable.</p>'
+        + table(extended, "extended-ephemeris")
+        + '<p class="ephemeris-note"><strong>β</strong> = ecliptic latitude (+ north, − south). Rise and set are Local Apparent Time for the selected latitude. Naked-eye classification becomes <strong>Daylight</strong> when the Sun is above the horizon at 21:00 LAT, and <strong>Solar glare</strong> when the Sun is below the horizon but the body is too close to the Sun. The Sun uses glyph <span class="text-symbol">☉</span> and text <strong>visible</strong>.</p>'
         + notation_toggle("finder")
-        + '<h3>Planet Finder</h3>'
+        + "<h3>Planet Finder</h3>"
         + planet_finder(monday.year, week)
     )
+
+
 
 
 EPHEMERIS_SECTION = re.compile(
@@ -200,14 +299,24 @@ def update_year(year, engine=None):
     changed = 0
     for week in range(1, count + 1):
         monday = date.fromisocalendar(year, week, 1)
-        values = {
-            key: (
-                zodiac(generated[key][week - 1][0]),
-                beta(generated[key][week - 1][1]),
-                visibility_html(key, generated[key][week - 1][2], generated[key][week - 1][3]),
-            )
-            for _, key, _ in TARGETS
-        }
+        values = {}
+        for _, key, _ in TARGETS:
+            sample = generated[key][week - 1]
+            aid = current_visibility(key, sample[2], sample[3], sample[6])
+            values[key] = {
+                "position": zodiac(sample[0]),
+                "beta": beta(sample[1]),
+                "observing": observing_html(key, sample[2], sample[3], sample[6]),
+                "normal_label": observing_label(key, sample[2], sample[3], False),
+                "solar_glare": aid == "solar_glare",
+                "rise": sample[4],
+                "set": sample[5],
+                "ra_hours": sample[7],
+                "dec_deg": sample[8],
+                "sun_ra_hours": sample[9],
+                "sun_dec_deg": sample[10],
+                "horizon_deg": -0.8333 if key == "sun" else -0.5667,
+            }
         replacement = render_ephemeris(monday, values)
         for base in (ROOT / "almanack", ROOT / "Star-Almanack-Repo" / "site"):
             path = base / str(year) / f"W{week:02d}" / "index.html"
