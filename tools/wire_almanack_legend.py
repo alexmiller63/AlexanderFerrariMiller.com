@@ -88,7 +88,7 @@ table.ephemeris .visibility-glyph { height:1.5rem !important; vertical-align:-.2
    compact while Latin and Mixed expand naturally instead of being clipped. */
 table.ephemeris {
   display:grid !important;
-  grid-template-columns:repeat(7,minmax(max-content,1fr));
+  grid-template-columns:repeat(8,minmax(max-content,1fr));
   width:100% !important;
   min-width:max-content !important;
   table-layout:auto !important;
@@ -97,7 +97,7 @@ table.ephemeris {
   -webkit-overflow-scrolling:touch;
 }
 table.ephemeris.extended-ephemeris {
-  grid-template-columns:repeat(4,minmax(max-content,1fr));
+  grid-template-columns:repeat(5,minmax(max-content,1fr));
 }
 table.ephemeris thead,
 table.ephemeris tbody,
@@ -127,10 +127,10 @@ table.ephemeris small { white-space:nowrap; }
 @media (max-width:760px) {
   table.ephemeris {
     font-size:.86rem !important;
-    grid-template-columns:repeat(7,minmax(max-content,1fr));
+    grid-template-columns:repeat(8,minmax(max-content,1fr));
   }
   table.ephemeris.extended-ephemeris {
-    grid-template-columns:repeat(4,minmax(max-content,1fr));
+    grid-template-columns:repeat(5,minmax(max-content,1fr));
   }
   table.ephemeris th,
   table.ephemeris td {
