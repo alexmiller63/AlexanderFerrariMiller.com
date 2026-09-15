@@ -42,6 +42,11 @@ def populate_week(year: int, week: int, generated) -> int:
         raise RuntimeError(f"Missing weekly page: {path.relative_to(ephemeris.ROOT)}")
     text = path.read_text(encoding="utf-8")
     new = ephemeris.put_ephemeris(text, replacement, path)
+    runtime = '<script src="../../../js/ephemeris.js"></script>'
+    if runtime not in new:
+        if '</body>' not in new:
+            raise RuntimeError(f"Missing </body> in weekly page: {path.relative_to(ephemeris.ROOT)}")
+        new = new.replace('</body>', runtime + '\n</body>', 1)
     if new != text:
         path.write_text(new, encoding="utf-8")
         changed += 1
