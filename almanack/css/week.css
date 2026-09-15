@@ -90,6 +90,10 @@ table.calendar td:nth-child(3) { line-height: 1.6; }
 .visibility-magnitude { white-space: nowrap; }
 
 table.ephemeris { font-size: .9rem; }
+.ephemeris-latitude-control { font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+.ephemeris-latitude-control input { width: 5.5rem; margin-left: .35rem; padding: .25rem .35rem; font: inherit; }
+table.ephemeris th[scope="row"] { white-space: nowrap; text-align: left; }
+.ephemeris-observing .text-symbol { font-family: 'Apple Symbols','Arial Unicode MS','Segoe UI Symbol','Noto Sans Symbols 2',serif; font-variant-emoji: text; }
 table.ephemeris th, table.ephemeris td { text-align: center; }
 table.ephemeris td { white-space: nowrap; padding-top: .8rem; padding-bottom: .8rem; }
 
