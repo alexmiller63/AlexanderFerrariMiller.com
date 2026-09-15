@@ -1,13 +1,13 @@
 {
-  "schema_version": 6,
+  "schema_version": 7,
   "purpose": "pre-migration physical fixed-object identity audit; no permanent IDs assigned",
   "canonical_source": "Star-Almanack-Repo/fixed-objects.yaml",
   "candidate_count": 634,
   "provisional_reconciliation_group_count": 597,
   "provisional_merged_group_count": 37,
   "provisional_singleton_group_count": 560,
-  "validated_exact_identifier_group_count": 33,
-  "contradiction_review_group_count": 4,
+  "validated_exact_identifier_group_count": 36,
+  "contradiction_review_group_count": 1,
   "source_counts": {
     "asterism-member-coordinates.csv": 132,
     "caldwell-catalog.csv": 109,
@@ -51,6 +51,7 @@
     "ScG": "galaxy",
     "SbG": "galaxy",
     "dE0G": "galaxy",
+    "E6G": "galaxy",
     "IG": "galaxy",
     "SG": "galaxy",
     "EG": "galaxy",
@@ -58,11 +59,13 @@
     "BG": "galaxy",
     "BN": "emission_nebula",
     "EN": "emission_nebula",
+    "E/RN": "emission_nebula",
     "DN": "dark_nebula",
     "PN": "planetary_nebula",
     "OC": "open_cluster",
     "GC": "globular_cluster",
     "SN": "supernova_remnant",
+    "SNR": "supernova_remnant",
     "DS": "double_star",
     "MW": "milky_way",
     "AS": "asterism"
@@ -4044,21 +4047,8 @@
         }
       ],
       "max_coordinate_separation_deg": 0.0,
-      "contradictions": [
-        {
-          "kind": "object_type_family",
-          "values": [
-            "SNR",
-            "supernova_remnant"
-          ],
-          "raw_values": [
-            "SN",
-            "SNR"
-          ],
-          "severity": "review"
-        }
-      ],
-      "review_status": "contradiction_review"
+      "contradictions": [],
+      "review_status": "validated_exact_identifier"
     },
     {
       "provisional_group_id": 316,
@@ -4229,21 +4219,8 @@
         }
       ],
       "max_coordinate_separation_deg": 0.018271,
-      "contradictions": [
-        {
-          "kind": "object_type_family",
-          "values": [
-            "E/RN",
-            "emission_nebula"
-          ],
-          "raw_values": [
-            "BN",
-            "E/RN"
-          ],
-          "severity": "review"
-        }
-      ],
-      "review_status": "contradiction_review"
+      "contradictions": [],
+      "review_status": "validated_exact_identifier"
     },
     {
       "provisional_group_id": 328,
@@ -4329,21 +4306,8 @@
         }
       ],
       "max_coordinate_separation_deg": 0.007671,
-      "contradictions": [
-        {
-          "kind": "object_type_family",
-          "values": [
-            "E6G",
-            "galaxy"
-          ],
-          "raw_values": [
-            "E6G",
-            "Gal"
-          ],
-          "severity": "review"
-        }
-      ],
-      "review_status": "contradiction_review"
+      "contradictions": [],
+      "review_status": "validated_exact_identifier"
     },
     {
       "provisional_group_id": 335,
@@ -14023,7 +13987,7 @@
       "ra_h": "10.0867",
       "dec_deg": "-7.7167",
       "object_type": "E6G",
-      "object_type_family": "E6G",
+      "object_type_family": "galaxy",
       "notes": null
     },
     {
@@ -15783,7 +15747,7 @@
       "ra_h": "5.5244",
       "dec_deg": "34.2486",
       "object_type": "E/RN",
-      "object_type_family": "E/RN",
+      "object_type_family": "emission_nebula",
       "notes": null
     },
     {
@@ -15827,7 +15791,7 @@
       "ra_h": "5.5850",
       "dec_deg": "-4.7333",
       "object_type": "E/RN",
-      "object_type_family": "E/RN",
+      "object_type_family": "emission_nebula",
       "notes": null
     },
     {
@@ -15981,7 +15945,7 @@
       "ra_h": "6.6528",
       "dec_deg": "8.7500",
       "object_type": "E/RN",
-      "object_type_family": "E/RN",
+      "object_type_family": "emission_nebula",
       "notes": null
     },
     {
@@ -17455,7 +17419,7 @@
       "ra_h": "20.9400",
       "dec_deg": "31.7167",
       "object_type": "SNR",
-      "object_type_family": "SNR",
+      "object_type_family": "supernova_remnant",
       "notes": null
     },
     {
@@ -17477,7 +17441,7 @@
       "ra_h": "20.7617",
       "dec_deg": "30.7167",
       "object_type": "SNR",
-      "object_type_family": "SNR",
+      "object_type_family": "supernova_remnant",
       "notes": null
     },
     {
