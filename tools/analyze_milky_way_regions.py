@@ -3,14 +3,15 @@
 
 This is an analysis tool, not a second Milky Way boundary model. Vieira ``ol1``
 remains authoritative for ``milky_way.inside``. Mellinger data are used only to
-measure internal optical prominence/contrast so named regions can later be
-validated and derived without changing the existing outer boundary.
+measure internal optical prominence so named regions can later be validated and
+derived without changing the existing outer boundary.
 
-SkyView supplies the Mellinger survey as three calibrated optical channels.
-The script requests small linear-scaled FITS cutouts around validation anchors,
-computes a robust center-versus-surround contrast for each channel, and writes
-machine-readable JSON. No visibility threshold is hard-coded here: the purpose
-of the measurements is to let the validation suite determine that threshold.
+SkyView supplies the Mellinger survey as three optical channels. The primary
+validation metric is the median brightness of the central disk at each published
+bright-region anchor. Local center-versus-surround contrast is retained as a
+secondary diagnostic only; it must not be used as the region-cutting threshold
+because a bright region embedded in a bright Milky Way background can have low
+local contrast.
 """
 
 from __future__ import annotations
@@ -29,8 +30,6 @@ DEFAULT_OUTPUT = ROOT / ".cache" / "source-data" / "milky-way-mellinger-validati
 SKYVIEW = "https://skyview.gsfc.nasa.gov/cgi-bin/images"
 SURVEYS = ("mell-r", "mell-g", "mell-b")
 
-# Independent bright-region anchors published by the Astronomical Society of
-# Southern Africa. These are validation anchors, not hand-drawn region borders.
 BRIGHT_ANCHORS = (
     {"name": "Carina", "ra_h": 10.75, "dec_deg": -60.0, "expected": "bright"},
     {"name": "Norma", "ra_h": 16.30, "dec_deg": -53.0, "expected": "bright"},
@@ -50,7 +49,6 @@ def parse_args() -> argparse.Namespace:
 
 
 def fits_values(payload: bytes) -> tuple[int, int, list[float]]:
-    """Read a simple 2-D primary FITS image without adding a runtime dependency."""
     cards: list[str] = []
     end = None
     for offset in range(0, len(payload), 80):
@@ -83,8 +81,7 @@ def fits_values(payload: bytes) -> tuple[int, int, list[float]]:
     step = abs(bitpix) // 8
     values = [
         struct.unpack(fmt, payload[data_start + i * step : data_start + (i + 1) * step])[0]
-        * bscale
-        + bzero
+        * bscale + bzero
         for i in range(count)
     ]
     return nx, ny, values
@@ -106,12 +103,8 @@ def request_channel(anchor: dict[str, Any], survey: str, size: float, pixels: in
         return fits_values(response.read())
 
 
-def robust_contrast(nx: int, ny: int, values: list[float]) -> dict[str, float]:
-    """Compare a central disk with an outer annulus using medians.
-
-    Radius is normalized to half the image width. Center r<=0.25 samples the
-    named anchor; surround 0.55<=r<=0.90 estimates its local sky environment.
-    """
+def measure(nx: int, ny: int, values: list[float]) -> dict[str, float]:
+    """Measure absolute central brightness plus secondary local contrast."""
     cx, cy = (nx - 1) / 2.0, (ny - 1) / 2.0
     scale = min(nx, ny) / 2.0
     center: list[float] = []
@@ -127,38 +120,46 @@ def robust_contrast(nx: int, ny: int, values: list[float]) -> dict[str, float]:
             elif 0.55 <= r <= 0.90:
                 surround.append(value)
     if not center or not surround:
-        raise ValueError("insufficient finite FITS pixels for contrast measurement")
+        raise ValueError("insufficient finite FITS pixels for brightness measurement")
     c = statistics.median(center)
     b = statistics.median(surround)
     return {
         "center_median": c,
         "surround_median": b,
-        "contrast": (c - b) / b if b else float("nan"),
+        "local_contrast": (c - b) / b if b else float("nan"),
     }
 
 
 def analyze(args: argparse.Namespace) -> dict[str, Any]:
     result: dict[str, Any] = {
-        "schema_version": 1,
+        "schema_version": 2,
         "purpose": "validation measurements for named Milky Way regions",
         "boundary_model": "Vieira ol1 remains authoritative; this file does not redefine it",
         "source": "Axel Mellinger optical survey via NASA SkyView",
+        "primary_metric": "mean_rgb_center_median",
         "threshold": None,
         "anchors": [],
     }
     for anchor in BRIGHT_ANCHORS:
         entry = dict(anchor)
         entry["channels"] = {}
+        brightnesses: list[float] = []
         contrasts: list[float] = []
         for survey in SURVEYS:
             nx, ny, values = request_channel(anchor, survey, args.size, args.pixels)
-            measurement = robust_contrast(nx, ny, values)
+            measurement = measure(nx, ny, values)
             entry["channels"][survey] = measurement
-            if math.isfinite(measurement["contrast"]):
-                contrasts.append(measurement["contrast"])
-        entry["mean_rgb_contrast"] = statistics.mean(contrasts) if contrasts else None
+            if math.isfinite(measurement["center_median"]):
+                brightnesses.append(measurement["center_median"])
+            if math.isfinite(measurement["local_contrast"]):
+                contrasts.append(measurement["local_contrast"])
+        entry["mean_rgb_center_median"] = statistics.mean(brightnesses) if brightnesses else None
+        entry["mean_rgb_local_contrast"] = statistics.mean(contrasts) if contrasts else None
         result["anchors"].append(entry)
-        print(f"{entry['name']}: mean RGB contrast={entry['mean_rgb_contrast']:.6f}")
+        print(
+            f"{entry['name']}: mean RGB brightness={entry['mean_rgb_center_median']:.6f}; "
+            f"local contrast={entry['mean_rgb_local_contrast']:.6f}"
+        )
     return result
 
 
@@ -167,7 +168,10 @@ def main() -> int:
     if args.offline:
         data = json.loads(args.output.read_text(encoding="utf-8"))
         for entry in data.get("anchors", []):
-            print(f"{entry['name']}: mean RGB contrast={entry.get('mean_rgb_contrast')}")
+            print(
+                f"{entry['name']}: mean RGB brightness={entry.get('mean_rgb_center_median')}; "
+                f"local contrast={entry.get('mean_rgb_local_contrast')}"
+            )
         return 0
 
     result = analyze(args)
