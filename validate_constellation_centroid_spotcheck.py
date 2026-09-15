@@ -19,7 +19,7 @@ from pathlib import Path
 from compute_bayer_visibility_2026 import best_visibility
 from compute_constellation_observance_2026 import CONSTELLATIONS, centroid_for
 
-CACHE_DIR = Path('.cache/iau-constellation-boundaries')
+SNAPSHOT_DIR = Path(__file__).resolve().parent / 'reference-data' / 'iau-constellation-boundaries'
 OUTPUT = Path('constellation-centroid-spotcheck-2026.csv')
 
 # Includes the only 0.10 -> 0.05 date mover (UMi), the largest measured
@@ -60,9 +60,9 @@ def main() -> None:
     max_shift = 0
 
     for name, abbr in selected_rows:
-        r005, d005, a005 = centroid_for(abbr, CACHE_DIR, 0.05)
+        r005, d005, a005 = centroid_for(abbr, SNAPSHOT_DIR, 0.05)
         _, date005 = best_visibility(r005)
-        r0025, d0025, a0025 = centroid_for(abbr, CACHE_DIR, 0.025)
+        r0025, d0025, a0025 = centroid_for(abbr, SNAPSHOT_DIR, 0.025)
         _, date0025 = best_visibility(r0025)
 
         sep = angular_separation_deg(r005, d005, r0025, d0025)
