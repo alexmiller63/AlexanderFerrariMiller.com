@@ -1,0 +1,152 @@
+name: Complete Star Almanack Live Migration
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/complete-star-almanack-migration.yml
+
+permissions:
+  contents: write
+
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Promote backup content and remove active archive dependencies
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+          import shutil
+
+          root = Path.cwd()
+          backup = root / "Historical"
+          if not backup.is_dir():
+              raise SystemExit("Historical backup directory is missing; refusing migration")
+
+          # Historical is a migration backup. Promote only missing files into the
+          # live repository; never overwrite an already-migrated live file.
+          excluded_backup_roots = {".github", "COPY-PROVENANCE.txt"}
+          copied = []
+
+          def copy_missing(src: Path, dst: Path) -> None:
+              if src.is_dir():
+                  dst.mkdir(parents=True, exist_ok=True)
+                  for child in src.iterdir():
+                      copy_missing(child, dst / child.name)
+                  return
+              if dst.exists():
+                  return
+              dst.parent.mkdir(parents=True, exist_ok=True)
+              shutil.copy2(src, dst)
+              copied.append(str(dst.relative_to(root)))
+
+          for child in backup.iterdir():
+              if child.name in excluded_backup_roots:
+                  continue
+              copy_missing(child, root / child.name)
+
+          # Remove archive-directory aliases from every live UTF-8 text file.
+          # The backup itself remains byte-for-byte untouched.
+          changed = []
+          skip_dirs = {".git", "Historical"}
+          workflow_self = Path(".github/workflows/complete-star-almanack-migration.yml")
+
+          def is_skipped(path: Path) -> bool:
+              rel = path.relative_to(root)
+              return bool(rel.parts and rel.parts[0] in skip_dirs)
+
+          for path in root.rglob("*"):
+              if not path.is_file() or is_skipped(path) or path.relative_to(root) == workflow_self:
+                  continue
+              try:
+                  text = path.read_text(encoding="utf-8")
+              except (UnicodeDecodeError, OSError):
+                  continue
+              original = text
+              text = text.replace("Star-Almanack-Repo/", "")
+              text = text.replace("Historical/", "")
+              # Python pathlib expressions such as ROOT / "Historical" / "site"
+              # become ROOT / "site". This is deliberately limited to path-operator syntax.
+              text = re.sub(r"\s*/\s*(['\"])(?:Historical|Star-Almanack-Repo)\1", "", text)
+              text = text.replace('Path("Historical")', 'Path(".")')
+              text = text.replace("Path('Historical')", "Path('.')")
+              text = text.replace('Path("Star-Almanack-Repo")', 'Path(".")')
+              text = text.replace("Path('Star-Almanack-Repo')", "Path('.')")
+              if text != original:
+                  path.write_text(text, encoding="utf-8")
+                  changed.append(str(path.relative_to(root)))
+
+          # Restore the audit to validation-only behavior. Registry creation is a
+          # separate explicit migration operation, never a side effect of an audit.
+          audit_wf = root / ".github/workflows/audit-fixed-object-identity.yml"
+          if audit_wf.exists():
+              text = audit_wf.read_text(encoding="utf-8")
+              before = text
+              text = re.sub(
+                  r"\n\s*- name: Build permanent fixed-object registry\n\s*run: python tools/build_fixed_object_registry\.py\n",
+                  "\n",
+                  text,
+              )
+              text = text.replace("Commit audit and registry results", "Commit audit results")
+              text = text.replace(" database/fixed-object-registry.json", "")
+              text = text.replace("Identity audit and registry are already current.", "Identity audit is already current.")
+              text = text.replace("Update fixed-object identity audit and registry", "Update fixed-object identity audit")
+              if text != before:
+                  audit_wf.write_text(text, encoding="utf-8")
+                  if str(audit_wf.relative_to(root)) not in changed:
+                      changed.append(str(audit_wf.relative_to(root)))
+
+          print(f"Promoted {len(copied)} missing backup files into live locations")
+          print(f"Repaired {len(changed)} live text files")
+          PY
+
+      - name: Remove one-time migration workflow
+        run: rm .github/workflows/complete-star-almanack-migration.yml
+
+      - name: Verify live tree is independent of backup
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+
+          root = Path.cwd()
+          violations = []
+          path_expr = re.compile(r"(?:/|Path\()\s*['\"](?:Historical|Star-Almanack-Repo)['\"]")
+          for path in root.rglob("*"):
+              if not path.is_file():
+                  continue
+              rel = path.relative_to(root)
+              if rel.parts and rel.parts[0] in {"Historical", ".git"}:
+                  continue
+              try:
+                  text = path.read_text(encoding="utf-8")
+              except (UnicodeDecodeError, OSError):
+                  continue
+              if "Historical/" in text or "Star-Almanack-Repo/" in text or path_expr.search(text):
+                  violations.append(str(rel))
+          if violations:
+              print("Active backup dependencies remain:")
+              for item in violations:
+                  print(item)
+              raise SystemExit(1)
+          print("PASS: no active file depends on Historical/ or Star-Almanack-Repo/")
+          PY
+
+      - name: Commit completed migration
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "No migration changes required"
+            exit 0
+          fi
+          git commit -m "Complete Star Almanack live migration"
+          git push
