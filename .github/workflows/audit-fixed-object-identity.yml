@@ -1,0 +1,34 @@
+name: Fixed Object Identity Audit
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v5
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.x'
+
+      - name: Run identity audit
+        run: python tools/audit_fixed_object_identity.py
+
+      - name: Commit audit result
+        run: |
+          if git diff --quiet -- Star-Almanack-Repo/generated/fixed-object-identity-audit.json; then
+            echo "Identity audit is already current."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add Star-Almanack-Repo/generated/fixed-object-identity-audit.json
+          git commit -m "Update fixed-object identity audit"
+          git push
