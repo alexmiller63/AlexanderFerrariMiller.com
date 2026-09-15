@@ -24,6 +24,7 @@ on:
 
 permissions:
   contents: write
+  actions: write
 
 concurrency:
   group: ephemeris-generator
@@ -133,10 +134,6 @@ jobs:
               if glyphs and wrapped == 0:
                   raise SystemExit(f'Raw observing glyphs are not notation-aware: {path}')
 
-              # data-greek-html deliberately contains encoded HTML whose tag
-              # closing ">" appears inside the quoted attribute value.  Do not
-              # parse the wrapper with [^>]*; scan through that quoted value to
-              # the semantic data-latin attribute instead.
               labels = re.findall(
                   r'<span class="observing-notation-item"\s+'
                   r'data-greek-html=".*?"\s+'
@@ -162,8 +159,13 @@ jobs:
           git add -- almanack
           if git diff --cached --quiet; then
             echo "No Ephemeris changes in requested ISO week range."
-            exit 0
+          else
+            git commit -m "Generate Ephemeris ${{ inputs.start_year }}-W${{ inputs.start_week }}"
+            git pull --rebase origin main
+            git push
           fi
-          git commit -m "Generate Ephemeris ${{ inputs.start_year }}-W${{ inputs.start_week }}"
-          git pull --rebase origin main
-          git push
+
+      - name: Deploy generated site
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run deploy.yml --ref main
