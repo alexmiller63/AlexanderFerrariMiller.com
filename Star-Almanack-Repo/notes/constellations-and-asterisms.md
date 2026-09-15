@@ -37,3 +37,22 @@ Thus constellations and asterisms share one conceptual model:
 - **Asterism:** curated member stars → zero-margin derived boundary → spherical area centroid.
 
 The distinction is the source of the boundary, not the method used to derive the center. This model is year-independent and should be part of the generalized Almanack generation architecture.
+
+## 2026-09-15 — Asterism display and historical star-hopping guidance
+
+An asterism is a pattern of stars, not an officially bounded region of the sky. Any zero-margin geometry derived from its member stars for centroid calculations is internal computational geometry only; it is **not** an asterism boundary and must not be displayed as one.
+
+Artwork convention:
+
+- Constellation stick figures are blue.
+- Asterism stick figures are green.
+- Official IAU constellation boundaries are white.
+- Asterisms have no displayed boundaries.
+
+Historical star figures may be retained as asterisms when they remain useful to an observer. A former constellation is not included merely because it once existed. Its stellar pattern should be sufficiently recognizable and useful for learning or navigating the sky.
+
+This gives historical asterisms an observational purpose: they serve as **star-hopping scaffolds**. An observer can recognize a compact pattern, learn its member stars, and use it to navigate toward neighboring stars, deep-sky objects, constellations, and other asterisms.
+
+Quadrans Muralis is the model case: it is no longer a modern IAU constellation, but its historical stellar figure can be represented as an asterism — a green stick figure with no boundary — while the white modern IAU constellation boundaries show the current astronomical geography of the same sky area.
+
+Canonical selection rule: **include a historical asterism when its stellar pattern is sufficiently recognizable and useful for learning or navigating the sky; historical existence alone is not sufficient.**
