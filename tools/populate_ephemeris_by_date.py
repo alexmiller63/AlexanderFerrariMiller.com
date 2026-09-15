@@ -25,6 +25,7 @@ def populate_week(year: int, week: int, generated) -> int:
             "observing": ephemeris.observing_html(key, sample[2], sample[3], sample[6]),
             "normal_label": ephemeris.observing_label(key, sample[2], sample[3], False),
             "solar_glare": aid == "solar_glare",
+            "sun_special": key == "sun",
             "rise": sample[4],
             "set": sample[5],
             "ra_hours": sample[7],
