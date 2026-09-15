@@ -96,11 +96,62 @@ main.wrap table.ephemeris{width:100%!important;max-width:100%!important;min-widt
 .visibility-glyph { height:3em !important; width:auto !important; vertical-align:-.78em !important; }
 .legend-glyph { height:3em; width:auto; vertical-align:-.78em; margin-right:.2rem; }
 .legend-explanation { white-space:normal; }
+</style><style id="week-position-nav-css">
+.weekgrid a.current-week,
+.weekgrid a.current-week:visited,
+.weeknav span[aria-current="page"],
+.yearnav span[aria-current="page"] {
+  font-weight:700 !important;
+  background:var(--navy) !important;
+  color:#fff !important;
+  border-color:var(--navy) !important;
+  text-decoration:none;
+}
+.yearnav .nav-spacer,
+.weeknav .nav-spacer {
+  visibility:hidden;
+}
+.almanack-bottom-nav-wrap {
+  max-width:1080px;
+  margin:0 auto;
+  padding:1rem 1.5rem 1.5rem;
+}
+.almanack-bottom-nav-wrap nav:last-child {
+  margin-bottom:0;
+}
+@media (orientation:landscape) and (max-height:500px) {
+  .almanack-bottom-nav-wrap {
+    padding:.55rem 1rem .75rem;
+  }
+  .almanack-bottom-nav-wrap .weeknav,
+  .almanack-bottom-nav-wrap .yearnav {
+    gap:.45rem;
+    margin:.2rem 0 .55rem;
+    font-size:.82rem;
+  }
+  .almanack-bottom-nav-wrap .weeknav a,
+  .almanack-bottom-nav-wrap .weeknav span,
+  .almanack-bottom-nav-wrap .yearnav a,
+  .almanack-bottom-nav-wrap .yearnav span {
+    min-width:0;
+    padding:.4rem .55rem;
+  }
+}
+@media (prefers-color-scheme:dark) {
+  .weekgrid a.current-week,
+  .weekgrid a.current-week:visited,
+  .weeknav span[aria-current="page"],
+  .yearnav span[aria-current="page"] {
+    background:#eef7ff !important;
+    color:#102a43 !important;
+    border-color:#eef7ff !important;
+  }
+}
 </style></head><body><header><div class="wrap"><div class="brand"><a href="/star-almanack/">Star Almanack</a></div><div class="subtitle">Alexander Ferrari Miller</div></div></header><main class="wrap"><nav class="weeknav sitenav"><a href="/star-almanack/">Almanack Home</a><a href="/projects.html">All Projects</a><a href="/index.html">Main Site</a></nav><nav class="yearnav"><a href="../../2025/">← 2025</a><a href="../">2026</a><a href="../../2027/">2027 →</a></nav><nav class="weeknav week-position" aria-label="Week navigation"><a href="../W38/">← ISO 2026-W38</a><span aria-current="page">ISO 2026-W39</span><a href="../W40/">ISO 2026-W40 →</a></nav><h1>ISO 2026-W39</h1><p><strong>Week begins:</strong> Monday, September 21, 2026</p>
 <div class="bayer-toggle-wrap section-notation-toggle" data-notation-target="calendar"><div class="bayer-toggle" role="group" aria-label="Astronomical notation"><span class="bayer-toggle-label">Notation:</span><button type="button" data-bayer-mode="greek" aria-pressed="true">Greek/Symbols</button><button type="button" data-bayer-mode="latin" aria-pressed="false">Latin</button><button type="button" data-bayer-mode="mixed" data-legacy-label="Mixed · Learner" aria-pressed="false">Mixed Learner</button></div></div><h3>Calendar</h3><table class="calendar"><thead><tr><th>Date</th><th>Zodiac day</th><th>Events</th></tr></thead><tbody><tr data-date="2026-09-21"><td data-date="2026-09-21">Mon, Sep 21, 2026</td><td data-zodiac-day="30" data-zodiac-sign="Virgo"><span class="zodiac-glyph">♍</span> 30</td><td data-events class="calendar-events-region"><div class="calendar-events"></div></td></tr><tr data-date="2026-09-22"><td data-date="2026-09-22">Tue, Sep 22, 2026</td><td data-zodiac-day="31" data-zodiac-sign="Virgo"><span class="zodiac-glyph">♍</span> 31</td><td data-events class="calendar-events-region"><div class="calendar-events"></div></td></tr><tr data-date="2026-09-23"><td data-date="2026-09-23">Wed, Sep 23, 2026</td><td data-zodiac-day="1" data-zodiac-sign="Libra"><span class="zodiac-glyph">♎</span> 1</td><td data-events class="calendar-events-region"><div class="calendar-events"><div class="event-cell"><span class="zodiac-glyph">♎</span> Sun enters Libra · Autumnal equinox · First Point of Libra · Mabon — 00:05:13 UTC</div></div></td></tr><tr data-date="2026-09-24"><td data-date="2026-09-24">Thu, Sep 24, 2026</td><td data-zodiac-day="2" data-zodiac-sign="Libra"><span class="zodiac-glyph">♎</span> 2</td><td data-events class="calendar-events-region"><div class="calendar-events"></div></td></tr><tr data-date="2026-09-25"><td data-date="2026-09-25">Fri, Sep 25, 2026</td><td data-zodiac-day="3" data-zodiac-sign="Libra"><span class="zodiac-glyph">♎</span> 3</td><td data-events class="calendar-events-region"><div class="calendar-events"></div></td></tr><tr data-date="2026-09-26"><td data-date="2026-09-26">Sat, Sep 26, 2026</td><td data-zodiac-day="4" data-zodiac-sign="Libra"><span class="zodiac-glyph">♎</span> 4</td><td data-events class="calendar-events-region"><div class="calendar-events"><div class="event-cell">🌕 Full Moon · Harvest Moon — 16:49:02 UTC</div></div></td></tr><tr data-date="2026-09-27"><td data-date="2026-09-27">Sun, Sep 27, 2026</td><td data-zodiac-day="5" data-zodiac-sign="Libra"><span class="zodiac-glyph">♎</span> 5</td><td data-events class="calendar-events-region"><div class="calendar-events"></div></td></tr></tbody></table>
 <h3>Weekly Solar-System Ephemeris</h3><p><strong>Snapshot:</strong> pending</p><div class="bayer-toggle-wrap section-notation-toggle" data-notation-target="ephemeris"><div class="bayer-toggle" role="group" aria-label="Astronomical notation"><span class="bayer-toggle-label">Notation:</span><button type="button" data-bayer-mode="greek" aria-pressed="true">Greek/Symbols</button><button type="button" data-bayer-mode="latin" aria-pressed="false">Latin</button><button type="button" data-bayer-mode="mixed" data-legacy-label="Mixed · Learner" aria-pressed="false">Mixed Learner</button></div></div><h3>Naked Eye Bodies</h3><div class="ephemeris-wrap"><table class="ephemeris"><thead><tr><th>Sun</th><th>Moon</th><th>Mercury</th><th>Venus</th><th>Mars</th><th>Jupiter</th><th>Saturn</th></tr></thead><tbody><tr><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr></tbody></table></div><h3>Extended Bodies</h3><div class="ephemeris-wrap"><table class="ephemeris"><thead><tr><th>Ceres</th><th>Uranus</th><th>Neptune</th><th>Pluto</th></tr></thead><tbody><tr><td>—</td><td>—</td><td>—</td><td>—</td></tr></tbody></table></div>
 <div class="bayer-toggle-wrap section-notation-toggle" data-notation-target="finder"><div class="bayer-toggle" role="group" aria-label="Astronomical notation"><span class="bayer-toggle-label">Notation:</span><button type="button" data-bayer-mode="greek" aria-pressed="true">Greek/Symbols</button><button type="button" data-bayer-mode="latin" aria-pressed="false">Latin</button><button type="button" data-bayer-mode="mixed" data-legacy-label="Mixed · Learner" aria-pressed="false">Mixed Learner</button></div></div><h3>Planet Finder</h3><div class="planet-finder-block"><p>Planet finder pending.</p></div>
-<h3>Sky Notes</h3><div class="sky-note"><p>Sky notes pending.</p></div><div class="almanack-bottom-nav-wrap" id="almanack-bottom-nav"><nav class="weeknav sitenav"><a href="/star-almanack/">Almanack Home</a><a href="/projects.html">All Projects</a><a href="/index.html">Main Site</a></nav><nav class="yearnav"><a href="../../2025/#almanack-bottom-nav">← 2025</a><a href="../#almanack-bottom-nav">2026</a><a href="../../2027/#almanack-bottom-nav">2027 →</a></nav><nav class="weeknav week-position" aria-label="Week navigation"><a href="../W38/#almanack-bottom-nav">← ISO 2026-W38</a><span aria-current="page">ISO 2026-W39</span><a href="../W40/#almanack-bottom-nav">ISO 2026-W40 →</a></nav></div></main><aside class="notation-legend" aria-label="Astronomical notation legend">
+<h3>Sky Notes</h3><div class="sky-note"><p>Sky notes pending.</p></div></main><aside class="notation-legend" aria-label="Astronomical notation legend">
   <p><strong>Observing aid</strong> — these glyphs say how the target is intended to be observed; they do not identify the kind of astronomical object.</p>
   <div class="legend-line">
     <span class="legend-item"><img class="legend-glyph" src="../../../assets/almanack/visibility-glyphs/masters/eye.svg" alt="Naked-eye glyph"> Naked eye</span>
@@ -131,4 +182,4 @@ main.wrap table.ephemeris{width:100%!important;max-width:100%!important;min-widt
   <div class="legend-line">
     <span class="legend-item"><span class="text-symbol">☉&#xfe0e;</span> Sun</span><span class="legend-item"><span class="text-symbol">☽&#xfe0e;</span> Moon</span><span class="legend-item"><span class="text-symbol">☿&#xfe0e;</span> Mercury</span><span class="legend-item"><span class="text-symbol">♀&#xfe0e;</span> Venus</span><span class="legend-item"><span class="text-symbol">♂&#xfe0e;</span> Mars</span><span class="legend-item"><span class="text-symbol">⚳&#xfe0e;</span> Ceres</span><span class="legend-item"><span class="text-symbol">♃&#xfe0e;</span> Jupiter</span><span class="legend-item"><span class="text-symbol">♄&#xfe0e;</span> Saturn</span><span class="legend-item"><span class="text-symbol">♅&#xfe0e;</span> Uranus</span><span class="legend-item"><span class="text-symbol">♆&#xfe0e;</span> Neptune</span><span class="legend-item"><span class="text-symbol">♇&#xfe0e;</span> Pluto</span>
   </div>
-</aside><footer><div class="wrap">© 2026 Alexander Ferrari Miller. All rights reserved.</div></footer><script src="/almanack/js/notation.js"></script></body></html>
+</aside><div class="almanack-bottom-nav-wrap" id="almanack-bottom-nav"><nav class="weeknav sitenav"><a href="/star-almanack/">Almanack Home</a><a href="/projects.html">All Projects</a><a href="/index.html">Main Site</a></nav><nav class="yearnav"><a href="../../2025/#almanack-bottom-nav">← 2025</a><a href="../#almanack-bottom-nav">2026</a><a href="../../2027/#almanack-bottom-nav">2027 →</a></nav><nav class="weeknav week-position" aria-label="Week navigation"><a href="../W38/#almanack-bottom-nav">← ISO 2026-W38</a><span aria-current="page">ISO 2026-W39</span><a href="../W40/#almanack-bottom-nav">ISO 2026-W40 →</a></nav></div><footer><div class="wrap">© 2026 Alexander Ferrari Miller. All rights reserved.</div></footer><script src="/almanack/js/notation.js"></script></body></html>
