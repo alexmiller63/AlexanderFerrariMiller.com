@@ -240,27 +240,16 @@ table.ephemeris .visibility-glyph { height:1.5rem !important; vertical-align:-.2
 .ephemeris-visibility .text-symbol { font-size:1.5em; line-height:.75; vertical-align:-.12em; }
 .legend-explanation { white-space:normal; }
 
-/* Ephemeris presentation layer: a clean CSS Grid, independent of the browser's
-   table-width algorithm. Each track takes the width required by its current
-   notation content, then shares any remaining space. Greek therefore stays
-   compact while Latin and Mixed expand naturally instead of being clipped. */
+/* Ephemeris presentation layer: keep the semantic HTML table as a table.
+   The generator emits one header row and four data rows (Body, Observing,
+   Rise, Set). Native table layout keeps every row aligned with its body
+   heading, including when the notation mode changes. */
 table.ephemeris {
-  display:grid !important;
-  grid-template-columns:repeat(7,minmax(max-content,1fr));
-  width:100% !important;
-  min-width:max-content !important;
+  display:table !important;
+  width:max-content !important;
+  min-width:100% !important;
   table-layout:auto !important;
-  overflow-x:auto !important;
-  overflow-y:hidden !important;
-  -webkit-overflow-scrolling:touch;
-}
-table.ephemeris.extended-ephemeris {
-  grid-template-columns:repeat(4,minmax(max-content,1fr));
-}
-table.ephemeris thead,
-table.ephemeris tbody,
-table.ephemeris tr {
-  display:contents;
+  overflow:visible !important;
 }
 table.ephemeris th,
 table.ephemeris td {
@@ -272,23 +261,11 @@ table.ephemeris td {
   overflow-wrap:normal;
   word-break:normal;
 }
-table.ephemeris thead th {
-  align-self:stretch;
-}
-table.ephemeris .ephemeris-visibility-label th {
-  grid-column:1 / -1;
-  width:auto !important;
-  white-space:normal;
-}
 table.ephemeris small { white-space:nowrap; }
 
 @media (max-width:760px) {
   table.ephemeris {
     font-size:.86rem !important;
-    grid-template-columns:repeat(7,minmax(max-content,1fr));
-  }
-  table.ephemeris.extended-ephemeris {
-    grid-template-columns:repeat(4,minmax(max-content,1fr));
   }
   table.ephemeris th,
   table.ephemeris td {
