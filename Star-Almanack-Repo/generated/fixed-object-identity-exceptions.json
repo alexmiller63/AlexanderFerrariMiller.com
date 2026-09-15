@@ -1,0 +1,189 @@
+{
+  "schema_version": 1,
+  "purpose": "Compact exception report for pre-migration fixed-object identity audit.",
+  "source_audit": "Star-Almanack-Repo/generated/fixed-object-identity-audit.json",
+  "exception_count": 8,
+  "exceptions": [
+    {
+      "candidate_id": 24,
+      "source": "fixed-objects.yaml:messier",
+      "source_key": "M24",
+      "identifiers": [
+        {
+          "namespace": "messier",
+          "value": "M24"
+        }
+      ],
+      "name": "Sagittarius Star Cloud",
+      "constellation": "Sgr",
+      "ra_h": "18.28166667",
+      "dec_deg": "-18.5",
+      "object_type": "MW",
+      "object_type_family": "milky_way",
+      "notes": null,
+      "review_class": "no_cross_source_identifier",
+      "database_guidance": "Milky Way/star-cloud target; do not force into a conventional compact-object identity."
+    },
+    {
+      "candidate_id": 40,
+      "source": "fixed-objects.yaml:messier",
+      "source_key": "M40",
+      "identifiers": [
+        {
+          "namespace": "messier",
+          "value": "M40"
+        }
+      ],
+      "name": "Winnecke 4",
+      "constellation": "UMa",
+      "ra_h": "12.37013889",
+      "dec_deg": "58.08305556",
+      "object_type": "DS",
+      "object_type_family": "double_star",
+      "notes": null,
+      "review_class": "no_cross_source_identifier",
+      "database_guidance": "Double-star observing target; preserve component identities separately."
+    },
+    {
+      "candidate_id": 45,
+      "source": "fixed-objects.yaml:messier",
+      "source_key": "M45",
+      "identifiers": [
+        {
+          "namespace": "messier",
+          "value": "M45"
+        }
+      ],
+      "name": "Pleiades",
+      "constellation": "Tau",
+      "ra_h": "3.78333333",
+      "dec_deg": "24.11666667",
+      "object_type": "OC",
+      "object_type_family": "open_cluster",
+      "notes": null,
+      "review_class": "no_cross_source_identifier",
+      "database_guidance": "Pleiades target/asterism; preserve target identity and member relationships."
+    },
+    {
+      "candidate_id": 295,
+      "source": "caldwell-catalog.csv",
+      "source_key": "C14",
+      "identifiers": [
+        {
+          "namespace": "caldwell",
+          "value": "C14"
+        },
+        {
+          "namespace": "catalog_label",
+          "value": "NGC 869/884"
+        }
+      ],
+      "name": "Double Cluster",
+      "constellation": "Per",
+      "ra_h": "2.3333",
+      "dec_deg": "57.1333",
+      "object_type": "OC",
+      "object_type_family": "open_cluster",
+      "notes": null,
+      "review_class": "no_cross_source_identifier",
+      "database_guidance": "Double Cluster target; one catalog target relates to NGC 869 and NGC 884."
+    },
+    {
+      "candidate_id": 314,
+      "source": "caldwell-catalog.csv",
+      "source_key": "C33",
+      "identifiers": [
+        {
+          "namespace": "caldwell",
+          "value": "C33"
+        },
+        {
+          "namespace": "catalog_label",
+          "value": "NGC 6992/6995"
+        }
+      ],
+      "name": "Eastern Veil Nebula",
+      "constellation": "Cyg",
+      "ra_h": "20.9400",
+      "dec_deg": "31.7167",
+      "object_type": "SN",
+      "object_type_family": "supernova_remnant",
+      "notes": null,
+      "review_class": "no_cross_source_identifier",
+      "database_guidance": "Eastern Veil target; Caldwell entry encompasses NGC 6992/6995."
+    },
+    {
+      "candidate_id": 322,
+      "source": "caldwell-catalog.csv",
+      "source_key": "C41",
+      "identifiers": [
+        {
+          "namespace": "caldwell",
+          "value": "C41"
+        },
+        {
+          "namespace": "catalog_label",
+          "value": "Hyades"
+        }
+      ],
+      "name": "Hyades",
+      "constellation": "Tau",
+      "ra_h": "4.4500",
+      "dec_deg": "16.0000",
+      "object_type": "OC",
+      "object_type_family": "open_cluster",
+      "notes": null,
+      "review_class": "no_cross_source_identifier",
+      "database_guidance": "Hyades target/asterism; preserve cluster/asterism relationship."
+    },
+    {
+      "candidate_id": 330,
+      "source": "caldwell-catalog.csv",
+      "source_key": "C49",
+      "identifiers": [
+        {
+          "namespace": "caldwell",
+          "value": "C49"
+        },
+        {
+          "namespace": "catalog_label",
+          "value": "NGC 2237-2239"
+        }
+      ],
+      "name": "Rosette Nebula",
+      "constellation": "Mon",
+      "ra_h": "6.5383",
+      "dec_deg": "5.0500",
+      "object_type": "BN",
+      "object_type_family": "emission_nebula",
+      "notes": null,
+      "review_class": "no_cross_source_identifier",
+      "database_guidance": "Rosette complex target; preserve the complex relationship to its component NGC entries."
+    },
+    {
+      "candidate_id": 380,
+      "source": "caldwell-catalog.csv",
+      "source_key": "C99",
+      "identifiers": [
+        {
+          "namespace": "caldwell",
+          "value": "C99"
+        },
+        {
+          "namespace": "catalog_label",
+          "value": "Coalsack"
+        }
+      ],
+      "name": "Coalsack Nebula",
+      "constellation": "Cru",
+      "ra_h": "12.8833",
+      "dec_deg": "-63.0000",
+      "object_type": "DN",
+      "object_type_family": "dark_nebula",
+      "notes": null,
+      "review_class": "no_cross_source_identifier",
+      "database_guidance": "Coalsack dark-nebula region; preserve region semantics rather than treating it as an ordinary compact object."
+    }
+  ],
+  "permanent_ids_assigned": false
+}
