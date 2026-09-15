@@ -51,7 +51,7 @@
 
   function observingStatus(cell, latitude) {
     if (cell.dataset.sunSpecial === 'true') return 'visible';
-    return sunAboveHorizon(cell, latitude)
+    return sunAboveHorizon(cell, latitude) && cell.dataset.normalLabel === 'Naked eye'
       ? 'Daylight'
       : (cell.dataset.solarGlare === 'true' ? 'Solar glare' : cell.dataset.normalLabel);
   }
