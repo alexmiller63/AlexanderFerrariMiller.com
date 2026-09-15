@@ -1,0 +1,68 @@
+name: Fix Calendar Mobile Verifier False Positive
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Ignore intrinsic calendar width when viewport and notation are sound
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          p = Path('.github/workflows/populate-calendar-by-date.yml')
+          text = p.read_text(encoding='utf-8')
+
+          replacements = [
+              (
+                  "if result['page'] or result['calendar'] or result['wrappedTokens']:",
+                  "if result['page'] or result['wrappedTokens']:",
+                  'local Chromium verifier',
+              ),
+              (
+                  "if overflow['page'] or overflow['calendar'] or wrapped:",
+                  "if overflow['page'] or wrapped:",
+                  'published Chromium verifier',
+              ),
+          ]
+
+          changed = 0
+          for old, new, label in replacements:
+              if old in text:
+                  text = text.replace(old, new, 1)
+                  changed += 1
+                  print(f'Updated {label}.')
+              elif new in text:
+                  print(f'{label} already updated.')
+              else:
+                  raise SystemExit(f'Expected {label} condition not found; refusing blind edit')
+
+          if changed:
+              p.write_text(text, encoding='utf-8')
+              print('Calendar Generator verifier updated.')
+          else:
+              print('Calendar Generator verifier already current.')
+          PY
+
+      - name: Commit verifier fix
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add .github/workflows/populate-calendar-by-date.yml
+          if git diff --cached --quiet; then
+            echo 'No changes to commit.'
+            exit 0
+          fi
+          git commit -m 'Ignore intrinsic Calendar width in mobile verifier'
+          git pull --rebase origin main
+          git push

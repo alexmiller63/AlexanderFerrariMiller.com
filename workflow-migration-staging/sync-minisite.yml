@@ -1,0 +1,150 @@
+name: Sync Minisite
+
+on:
+  workflow_call:
+    inputs:
+      source_repo:
+        description: Public GitHub repository in owner/name form
+        required: true
+        type: string
+      source_ref:
+        description: Branch, tag, or commit to fetch from the source repository
+        required: false
+        default: main
+        type: string
+      source_path:
+        description: Directory inside the source repository to publish
+        required: true
+        type: string
+      destination_path:
+        description: Directory inside this repository that receives the minisite
+        required: true
+        type: string
+      marker_name:
+        description: Version marker file written inside the destination directory
+        required: false
+        default: .minisite-source.json
+        type: string
+      commit_message:
+        description: Commit message used when the destination changes
+        required: false
+        default: Sync minisite
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: minisite-sync-${{ github.repository }}-${{ inputs.destination_path }}
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out destination repository
+        uses: actions/checkout@v4
+
+      - name: Validate paths
+        env:
+          SOURCE_PATH: ${{ inputs.source_path }}
+          DESTINATION_PATH: ${{ inputs.destination_path }}
+          MARKER_NAME: ${{ inputs.marker_name }}
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import os
+          from pathlib import PurePosixPath
+
+          for name in ('SOURCE_PATH', 'DESTINATION_PATH'):
+              value = os.environ[name].strip().strip('/')
+              p = PurePosixPath(value)
+              assert value, f'{name} must not be empty'
+              assert not p.is_absolute(), f'{name} must be relative'
+              assert '..' not in p.parts, f'{name} must not contain ..'
+
+          marker = os.environ['MARKER_NAME'].strip()
+          mp = PurePosixPath(marker)
+          assert marker and len(mp.parts) == 1 and marker not in ('.', '..'), 'MARKER_NAME must be a filename only'
+          PY
+
+      - name: Fetch one exact source snapshot
+        env:
+          SOURCE_REPO: ${{ inputs.source_repo }}
+          SOURCE_REF: ${{ inputs.source_ref }}
+        run: |
+          set -euo pipefail
+          rm -rf "$RUNNER_TEMP/minisite-source"
+          git init -q "$RUNNER_TEMP/minisite-source"
+          git -C "$RUNNER_TEMP/minisite-source" remote add origin "https://github.com/${SOURCE_REPO}.git"
+          git -C "$RUNNER_TEMP/minisite-source" fetch --depth=1 origin "$SOURCE_REF"
+          SOURCE_SHA="$(git -C "$RUNNER_TEMP/minisite-source" rev-parse FETCH_HEAD)"
+          git -C "$RUNNER_TEMP/minisite-source" checkout -q --detach "$SOURCE_SHA"
+          printf '%s\n' "$SOURCE_SHA" > "$RUNNER_TEMP/minisite-source-sha"
+          echo "Pinned source: ${SOURCE_REPO}@${SOURCE_SHA}"
+
+      - name: Replace destination from pinned source
+        env:
+          SOURCE_REPO: ${{ inputs.source_repo }}
+          SOURCE_REF: ${{ inputs.source_ref }}
+          SOURCE_PATH: ${{ inputs.source_path }}
+          DESTINATION_PATH: ${{ inputs.destination_path }}
+          MARKER_NAME: ${{ inputs.marker_name }}
+        run: |
+          set -euo pipefail
+          SRC="$RUNNER_TEMP/minisite-source/${SOURCE_PATH#/}"
+          DEST="${DESTINATION_PATH#/}"
+          test -d "$SRC" || { echo "Source directory does not exist: $SOURCE_PATH" >&2; exit 1; }
+
+          rm -rf "$RUNNER_TEMP/minisite-stage"
+          mkdir -p "$RUNNER_TEMP/minisite-stage"
+          cp -a "$SRC/." "$RUNNER_TEMP/minisite-stage/"
+
+          rm -rf "$DEST"
+          mkdir -p "$DEST"
+          cp -a "$RUNNER_TEMP/minisite-stage/." "$DEST/"
+
+          SOURCE_SHA="$(cat "$RUNNER_TEMP/minisite-source-sha")"
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+
+          dest = Path(os.environ['DESTINATION_PATH'].strip('/'))
+          marker = dest / os.environ['MARKER_NAME']
+          payload = {
+              'source_repo': os.environ['SOURCE_REPO'],
+              'source_ref': os.environ['SOURCE_REF'],
+              'source_path': os.environ['SOURCE_PATH'],
+              'source_sha': Path(os.environ['RUNNER_TEMP'], 'minisite-source-sha').read_text().strip(),
+          }
+          marker.write_text(json.dumps(payload, indent=2, sort_keys=True) + '\n', encoding='utf-8')
+          PY
+
+      - name: Verify transport integrity
+        env:
+          SOURCE_PATH: ${{ inputs.source_path }}
+          DESTINATION_PATH: ${{ inputs.destination_path }}
+          MARKER_NAME: ${{ inputs.marker_name }}
+        run: |
+          set -euo pipefail
+          SRC="$RUNNER_TEMP/minisite-source/${SOURCE_PATH#/}"
+          DEST="${DESTINATION_PATH#/}"
+          diff -qr --exclude="$MARKER_NAME" "$SRC" "$DEST"
+          test -s "$DEST/$MARKER_NAME"
+          echo "Destination matches the pinned source snapshot."
+
+      - name: Commit synchronized minisite
+        env:
+          DESTINATION_PATH: ${{ inputs.destination_path }}
+          COMMIT_MESSAGE: ${{ inputs.commit_message }}
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A -- "${DESTINATION_PATH#/}"
+          if git diff --cached --quiet; then
+            echo "Minisite already matches the pinned source."
+            exit 0
+          fi
+          git commit -m "$COMMIT_MESSAGE"
+          git push

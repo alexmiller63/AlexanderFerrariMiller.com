@@ -1,0 +1,68 @@
+name: Diagnose NASA Besselian Polynomial Timing
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/diagnose-nasa-besselian-polynomial.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  nasa-polynomial-control:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install scipy
+        run: python -m pip install scipy
+      - name: Compare NASA published polynomial axis minimum with NASA greatest eclipse
+        run: |
+          python - <<'PY'
+          from scipy.optimize import minimize_scalar
+
+          # Frozen NASA SEsearch VSOP87/ELP2000-82 Besselian elements.
+          # This diagnostic intentionally uses NASA's published polynomial
+          # coefficients as data; it does not use NASA's greatest-eclipse time
+          # as a search seed or objective.
+          cases = [
+              {
+                  'label': '2024-04-08 total',
+                  't0_td_h': 18.0,
+                  'greatest_td_h': 18 + 18/60 + 29/3600,
+                  'x': [-0.3182440, 0.5117116, 0.0000326, -0.0000084],
+                  'y': [ 0.2197640, 0.2709589,-0.0000595,-0.0000047],
+              },
+              {
+                  'label': '2027-08-02 total',
+                  't0_td_h': 10.0,
+                  'greatest_td_h': 10 + 7/60 + 50/3600,
+                  'x': [-0.0197720, 0.5447123,-0.0000446,-0.0000092],
+                  'y': [ 0.1600610,-0.2111582,-0.0001217, 0.0000038],
+              },
+          ]
+
+          def poly(c, t):
+              return c[0] + c[1]*t + c[2]*t*t + c[3]*t*t*t
+
+          print('NASA PUBLISHED BESSELIAN POLYNOMIAL CONTROL')
+          print('Independent minimization of x(t)^2 + y(t)^2; greatest time compared only afterward.')
+          print()
+          for c in cases:
+              def q(dt_h):
+                  x = poly(c['x'], dt_h)
+                  y = poly(c['y'], dt_h)
+                  return x*x + y*y
+              result = minimize_scalar(q, bounds=(-3.0, 3.0), method='bounded', options={'xatol': 1e-12})
+              calc_td_h = c['t0_td_h'] + result.x
+              residual_s = (calc_td_h - c['greatest_td_h']) * 3600.0
+              print(f"{c['label']:24s} axis-min TD={calc_td_h:12.9f} h  NASA GE TD={c['greatest_td_h']:12.9f} h  residual={residual_s:+8.3f} s")
+
+          print()
+          print('Interpretation:')
+          print('If these residuals are several seconds, NASA greatest eclipse is not simply the minimum of x^2+y^2.')
+          print('If they are near zero, the remaining DE440s-vs-NASA offset is upstream in ephemeris/Besselian element generation.')
+          PY

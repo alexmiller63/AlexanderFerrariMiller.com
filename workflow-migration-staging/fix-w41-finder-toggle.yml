@@ -1,0 +1,44 @@
+name: Fix W41 Planet Finder Toggle
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - .github/workflows/fix-w41-finder-toggle.yml
+
+permissions:
+  contents: write
+
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Make Planet Finder follow notation toggle
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('almanack/js/notation.js')
+          text = p.read_text(encoding='utf-8')
+          old = """    buttons.forEach(function (button) {\n      button.setAttribute('aria-pressed', button.dataset.bayerMode === mode ? 'true' : 'false');\n    });\n    try { localStorage.setItem('star-almanack-bayer-mode', mode); } catch (_) {}\n"""
+          new = """    buttons.forEach(function (button) {\n      button.setAttribute('aria-pressed', button.dataset.bayerMode === mode ? 'true' : 'false');\n    });\n\n    // W41 has three pre-rendered Planet Finders. Show only the finder that\n    // matches the active notation mode, using the same page-level toggle.\n    const finderIndex = { greek: 0, latin: 1, mixed: 2 }[mode];\n    document.querySelectorAll('.w41-finder-strip').forEach(function (strip) {\n      strip.style.gridTemplateColumns = 'minmax(0, 1fr)';\n      strip.querySelectorAll('figure').forEach(function (figure, index) {\n        figure.hidden = index !== finderIndex;\n      });\n    });\n\n    try { localStorage.setItem('star-almanack-bayer-mode', mode); } catch (_) {}\n"""
+          if new in text:
+              print('Toggle fix already present.')
+          elif old in text:
+              p.write_text(text.replace(old, new, 1), encoding='utf-8')
+              print('Patched', p)
+          else:
+              raise SystemExit('Expected notation.js block not found')
+          PY
+      - name: Commit fix
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add almanack/js/notation.js
+          if git diff --cached --quiet; then
+            echo 'No changes.'
+            exit 0
+          fi
+          git commit -m 'Make W41 Planet Finder follow notation toggle'
+          git push

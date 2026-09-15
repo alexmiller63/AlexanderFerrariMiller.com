@@ -1,0 +1,36 @@
+name: Migrate Almanack weeks to Jekyll
+
+on:
+  push:
+    branches:
+      - jekyll-week-migration
+    paths:
+      - tools/migrate-almanack-weeks.py
+      - .github/workflows/migrate-almanack-weeks.yml
+
+permissions:
+  contents: write
+
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: jekyll-week-migration
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      - name: Migrate week pages
+        run: python tools/migrate-almanack-weeks.py
+      - name: Commit migrated weeks
+        run: |
+          if git diff --quiet; then
+            echo "No migration changes needed."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add almanack/2026/W*/index.html
+          git commit -m "Migrate Almanack weeks to shared Jekyll layout"
+          git push origin HEAD:jekyll-week-migration

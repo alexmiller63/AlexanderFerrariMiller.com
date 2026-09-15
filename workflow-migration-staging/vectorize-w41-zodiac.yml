@@ -1,0 +1,77 @@
+name: Vectorize W41 Zodiac
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - .github/workflows/vectorize-w41-zodiac.yml
+
+permissions:
+  contents: write
+
+jobs:
+  vectorize:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install vector tooling
+        run: |
+          pip install fonttools
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq fonts-dejavu-core
+      - name: Convert zodiac font glyphs to black SVG paths
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+          from fontTools.ttLib import TTFont
+          from fontTools.pens.svgPathPen import SVGPathPen
+          from fontTools.pens.boundsPen import BoundsPen
+
+          font = TTFont('/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf')
+          cmap = font.getBestCmap()
+          glyphs = font.getGlyphSet()
+          zodiac = set('♈♉♊♋♌♍♎♏♐♑♒♓')
+
+          def path_for(ch, x, cy, height):
+              glyph = glyphs[cmap[ord(ch)]]
+              bp = BoundsPen(glyphs); glyph.draw(bp)
+              x0,y0,x1,y1 = bp.bounds
+              pen = SVGPathPen(glyphs); glyph.draw(pen)
+              d = pen.getCommands()
+              s = height / (y1-y0)
+              tx = x - s*(x0+x1)/2
+              ty = cy + s*(y0+y1)/2
+              return f'<g class="zodiac-vector" transform="translate({tx:.3f} {ty:.3f}) scale({s:.6f} {-s:.6f})"><path d="{d}" fill="#111"/></g>'
+
+          pat = re.compile(r'<text class="z" x="([\d.]+)" y="([\d.]+)" text-anchor="middle" font-size="(\d+)">([^<]+)</text>')
+          for path in Path('almanack/2026/W41/finders').glob('planet-finder-*.svg'):
+              text = path.read_text(encoding='utf-8')
+              def repl(m):
+                  x=float(m.group(1)); y=float(m.group(2)); fs=float(m.group(3)); content=m.group(4).replace('\ufe0e','')
+                  if not content or content[0] not in zodiac:
+                      return m.group(0)
+                  ch=content[0]
+                  if len(content.strip()) == 1:
+                      return path_for(ch, x, y-8, fs)
+                  name=content[1:].strip()
+                  # Mixed/Learner: keep the name as text, but draw the symbol as a path.
+                  return path_for(ch, x-36, y-7, fs) + f'<text x="{x+12:.1f}" y="{y:.1f}" text-anchor="middle" font-size="{fs:.0f}" fill="#111">{name}</text>'
+              new = pat.sub(repl, text)
+              path.write_text(new, encoding='utf-8')
+              print(path)
+          PY
+      - name: Commit vectorized W41 zodiac
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add almanack/2026/W41/finders
+          if git diff --cached --quiet; then
+            echo 'No changes.'
+            exit 0
+          fi
+          git commit -m 'Vectorize W41 zodiac symbols'
+          git push

@@ -1,0 +1,86 @@
+name: Diagnose live cache
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Inspect AWS build and web cache configuration
+        uses: appleboy/ssh-action@v1.2.2
+        with:
+          host: ${{ secrets.AWS_HOST }}
+          username: ${{ secrets.AWS_USER }}
+          key: ${{ secrets.AWS_SSH_KEY }}
+          script: |
+            set -u
+
+            echo '=== HOST ==='
+            date -u
+            hostname
+            id
+            echo
+
+            echo '=== BUILD SCRIPT METADATA ==='
+            if [ -f "$HOME/build-alex.sh" ]; then
+              ls -l "$HOME/build-alex.sh"
+              stat "$HOME/build-alex.sh" 2>/dev/null || true
+            else
+              echo "$HOME/build-alex.sh not found"
+            fi
+            echo
+
+            echo '=== BUILD SCRIPT (line numbered; obvious secret assignments redacted) ==='
+            if [ -r "$HOME/build-alex.sh" ]; then
+              awk '
+                BEGIN { IGNORECASE=1 }
+                {
+                  line=$0
+                  if (line ~ /(password|passwd|token|secret|api[_-]?key|access[_-]?key|private[_-]?key)[[:space:]]*=/) {
+                    print NR ": [REDACTED POSSIBLE SECRET ASSIGNMENT]"
+                  } else {
+                    print NR ": " line
+                  }
+                }
+              ' "$HOME/build-alex.sh"
+            else
+              echo 'build-alex.sh is not readable by the deploy user'
+            fi
+            echo
+
+            echo '=== WEB SERVER DETECTION ==='
+            command -v nginx || true
+            command -v apache2 || true
+            command -v httpd || true
+            ps -ef | grep -E '[n]ginx|[a]pache2|[h]ttpd' || true
+            echo
+
+            echo '=== CACHE-RELATED WEB SERVER CONFIG (read-only) ==='
+            grep -RInsE 'cache-control|expires|add_header|proxy_cache|fastcgi_cache|header[[:space:]]+set' \
+              /etc/nginx /etc/apache2 /etc/httpd 2>/dev/null | head -n 250 || true
+            echo
+
+            echo '=== DEPLOY TREE / WEEK FILE ==='
+            cd /var/www/AlexanderFerrariMiller 2>/dev/null || true
+            pwd
+            git rev-parse --short HEAD 2>/dev/null || true
+            git status --short 2>/dev/null || true
+            find . -path '*almanack/2026/W01/index.html' -o -path '*almanack/2025/index.html' 2>/dev/null | head -n 20 || true
+            echo
+
+            echo '=== LIVE RESPONSE HEADERS ==='
+            curl -sS -D - -o /dev/null --max-time 15 \
+              https://alexanderferrarimiller.com/almanack/2026/W01/ || true
+            echo
+
+            echo '=== GITHUB PAGES RESPONSE HEADERS ==='
+            curl -sS -D - -o /dev/null --max-time 15 \
+              https://alexmiller63.github.io/AlexanderFerrariMiller.com/almanack/2026/W01/ || true
+            echo
+
+            echo '=== DONE: diagnostic made no changes ==='

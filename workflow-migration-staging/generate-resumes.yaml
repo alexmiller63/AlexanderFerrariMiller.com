@@ -1,0 +1,123 @@
+name: Generate Resumes
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y pandoc libreoffice
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install markdown
+
+      - name: Generate selected resumes
+        id: generate
+        run: |
+          set -euo pipefail
+
+          list_file="resumes/generate-list.txt"
+
+          if [ ! -f "$list_file" ]; then
+              echo "Missing $list_file"
+              exit 1
+          fi
+
+          generated=0
+
+          while IFS= read -r stem || [ -n "$stem" ]
+          do
+              stem="${stem%%#*}"
+              stem="$(printf '%s' "$stem" | xargs)"
+
+              [ -z "$stem" ] && continue
+
+              source="resumes/$stem.md"
+
+              if [ ! -f "$source" ]; then
+                  echo "Resume source not found: $source"
+                  exit 1
+              fi
+
+              echo "Generating $stem"
+              python tools/generate-resumes.py "$stem"
+              generated=$((generated + 1))
+          done < "$list_file"
+
+          if [ "$generated" -eq 0 ]; then
+              echo "has_resumes=false" >> "$GITHUB_OUTPUT"
+              echo "::warning title=No resumes queued::Add one or more resume stems to resumes/generate-list.txt, commit the change, then run Generate Resumes again."
+              {
+                  echo "## No resumes queued"
+                  echo
+                  echo "Add one or more resume stems to \`resumes/generate-list.txt\`, commit the change, then run **Generate Resumes** again."
+              } >> "$GITHUB_STEP_SUMMARY"
+              exit 0
+          fi
+
+          echo "has_resumes=true" >> "$GITHUB_OUTPUT"
+
+      - name: Package selected resume files
+        if: steps.generate.outputs.has_resumes == 'true'
+        run: |
+          set -euo pipefail
+
+          list_file="resumes/generate-list.txt"
+          mkdir -p resume-output
+
+          while IFS= read -r stem || [ -n "$stem" ]
+          do
+              stem="${stem%%#*}"
+              stem="$(printf '%s' "$stem" | xargs)"
+
+              [ -z "$stem" ] && continue
+
+              for extension in html pdf docx odt txt
+              do
+                  cp "resumes/$stem.$extension" resume-output/
+              done
+          done < "$list_file"
+
+      - name: Upload resume files
+        if: steps.generate.outputs.has_resumes == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: selected-resumes
+          path: resume-output/
+
+      - name: Reset resume generation list
+        if: steps.generate.outputs.has_resumes == 'true'
+        run: |
+          set -euo pipefail
+
+          : > resumes/generate-list.txt
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add resumes/generate-list.txt
+
+          if git diff --cached --quiet; then
+              echo "Resume generation list already empty"
+          else
+              git commit -m "Reset resume generation list"
+              git push
+          fi

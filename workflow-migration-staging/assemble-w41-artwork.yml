@@ -1,0 +1,38 @@
+name: Assemble W41 Artwork
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - tools/assemble-w41-artwork.py
+
+permissions:
+  contents: write
+
+jobs:
+  assemble:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out website repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Assemble W41 artwork
+        run: python tools/assemble-w41-artwork.py
+
+      - name: Commit W41 artwork
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add almanack/2026/W41
+          if git diff --cached --quiet; then
+            echo 'No W41 artwork changes.'
+            exit 0
+          fi
+          git commit -m 'Assemble W41 Planet Finders and stellar notes'
+          git push

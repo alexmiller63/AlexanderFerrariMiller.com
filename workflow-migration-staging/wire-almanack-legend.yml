@@ -1,0 +1,50 @@
+name: Wire complete Almanack legend
+
+on:
+  workflow_dispatch:
+    inputs:
+      years:
+        description: 'Space-separated ISO years to update'
+        required: true
+        default: '2025 2026 2027'
+  push:
+    paths:
+      - 'tools/wire_almanack_legend.py'
+      - '_includes/almanack-notation-legend.html'
+      - '.github/workflows/wire-almanack-legend.yml'
+
+env:
+  ALMANACK_YEARS: ${{ github.event_name == 'workflow_dispatch' && inputs.years || '2025 2026 2027' }}
+
+permissions:
+  contents: write
+
+jobs:
+  wire:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Wire legend on requested weekly pages
+        run: python tools/wire_almanack_legend.py $ALMANACK_YEARS
+
+      - name: Commit generated legends
+        run: |
+          if git diff --quiet; then
+            echo "No legend changes."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          for year in $ALMANACK_YEARS; do
+            git add "almanack/$year" "site/$year"
+          done
+          if git diff --cached --quiet; then
+            echo "No requested-year legend changes."
+            exit 0
+          fi
+          git commit -m "Apply complete legend to Almanack years $ALMANACK_YEARS"
+          git pull --rebase origin main
+          git push

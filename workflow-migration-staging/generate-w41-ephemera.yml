@@ -1,0 +1,78 @@
+name: Generate 2026-W41 Ephemera
+
+on:
+  push:
+    paths:
+      - '.github/workflows/generate-w41-ephemera.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: generate-2026-w41-ephemera
+  cancel-in-progress: false
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Restore JPL/NAIF ephemeris source cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            .cache/skyfield/de440s.bsp
+            .cache/skyfield/ceres_1900_2100.bsp
+          key: star-almanack-source-kernels-v1
+
+      - name: Install pinned calculation dependency
+        run: python -m pip install --disable-pip-version-check 'skyfield==1.55'
+
+      - name: Download source kernels only when cache is empty
+        run: |
+          mkdir -p .cache/skyfield
+          python - <<'PY'
+          from pathlib import Path
+          from urllib.request import urlretrieve
+          from skyfield.api import Loader
+
+          root = Path('.cache/skyfield')
+          de440s = root / 'de440s.bsp'
+          ceres = root / 'ceres_1900_2100.bsp'
+          if not de440s.exists():
+              Loader(str(root)).download('de440s.bsp')
+          if not ceres.exists():
+              urlretrieve(
+                  'https://naif.jpl.nasa.gov/pub/naif/generic_kernels/spk/asteroids/a_old_versions/ceres_1900_2100.bsp',
+                  ceres,
+              )
+          PY
+
+      - name: Generate W41 ephemera from local calculations
+        env:
+          STAR_ALMANACK_EPHEMERIS_DIR: ${{ github.workspace }}/.cache/skyfield
+        run: python tools/populate_ephemeris_by_date.py 2026-10-05 2026-10-05
+
+      - name: Commit W41 ephemera only
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -- almanack/2026/W41 site/2026/W41
+          if git diff --cached --quiet; then
+            echo 'No W41 ephemera changes'
+            exit 0
+          fi
+          git commit -m 'Generate 2026-W41 ephemera'
+          git pull --rebase origin main
+          git push
+
+# Triggered for the 2026-W41 regeneration after numerical validation.

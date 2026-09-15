@@ -1,0 +1,146 @@
+name: Build asterism geometry
+
+on:
+  workflow_dispatch:
+    inputs:
+      years:
+        description: 'Space-separated observing years to regenerate'
+        required: true
+        default: '2025 2026 2027'
+  push:
+    paths:
+      - 'asterisms-core-25.yaml'
+      - 'asterism-coordinate-resolution.yaml'
+      - 'expanded-bayer-stars.csv'
+      - 'build_asterism_member_coordinates.py'
+      - 'compute_asterism_geometry_2026.py'
+      - '.github/workflows/build-asterism-geometry.yml'
+
+env:
+  ASTERISM_YEARS: ${{ github.event_name == 'workflow_dispatch' && inputs.years || '2025 2026 2027' }}
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install YAML dependency
+        run: python -m pip install --disable-pip-version-check pyyaml
+
+      - name: Fetch pinned HYG v4.1 catalog
+        run: |
+          curl -fL \
+            https://raw.githubusercontent.com/astronexus/HYG-Database/3bf37f4b2d5460e1278286320d1d62fab9b493c1/hyg/CURRENT/hygdata_v41.csv \
+            -o /tmp/hygdata_v41.csv
+
+      - name: Resolve member stellar data
+        working-directory: Historical
+        run: python build_asterism_member_coordinates.py --hyg /tmp/hygdata_v41.csv
+
+      - name: Validate resolved member cross-match
+        working-directory: Historical
+        run: |
+          python - <<'PY'
+          import csv
+          from collections import Counter
+          from pathlib import Path
+          from build_asterism_member_coordinates import load_asterisms
+
+          cat = load_asterisms(Path('asterisms-core-25.yaml'))
+          expected = sum(len(a['members']) for a in cat)
+          with open('asterism-member-coordinates.csv', newline='', encoding='utf-8') as f:
+              rows = list(csv.DictReader(f))
+          assert len(cat) == 25, len(cat)
+          assert len(rows) == expected, (len(rows), expected)
+          counts = Counter(r['asterism'] for r in rows)
+          for a in cat:
+              assert counts[a['name']] == len(a['members']), a['name']
+          for r in rows:
+              ra = float(r['ra_h']); dec = float(r['dec_deg']); mag = float(r['mag'])
+              assert 0.0 <= ra < 24.0, r
+              assert -90.0 <= dec <= 90.0, r
+              assert -30.0 < mag < 30.0, r
+              assert r['magnitude_source'].strip(), r
+              assert r['magnitude_source_id'].strip(), r
+          print(f'PASS: 25 asterisms, {len(rows)} resolved member rows with magnitude provenance')
+          PY
+
+      - name: Compute requested asterism centroids and visibility
+        working-directory: Historical
+        run: |
+          python - <<'PY'
+          import datetime as dt
+          import os
+          import sys
+          import compute_bayer_visibility_2026 as vis
+          import compute_asterism_geometry_2026 as geom
+
+          years = tuple(dict.fromkeys(int(value) for value in os.environ['ASTERISM_YEARS'].split()))
+          if not years:
+              raise SystemExit('No asterism years requested')
+          for year in years:
+              if not 1900 <= year <= 2100:
+                  raise SystemExit(f'Year out of supported range: {year}')
+              vis.SEARCH_START = dt.datetime(year - 1, 12, 31, 12, 0)
+              vis.SEARCH_END = dt.datetime(year, 12, 31, 23, 59)
+              vis.ROUNDED_DATE_MIN = dt.date(year, 1, 1)
+              vis.ROUNDED_DATE_MAX = dt.date(year + 1, 1, 1)
+              sys.argv = [
+                  'compute_asterism_geometry_2026.py',
+                  'asterism-member-coordinates.csv',
+                  f'asterism-geometry-{year}.csv',
+              ]
+              geom.main()
+          PY
+
+      - name: Validate requested geometry output
+        working-directory: Historical
+        run: |
+          python - <<'PY'
+          import csv
+          import os
+
+          years = tuple(dict.fromkeys(int(value) for value in os.environ['ASTERISM_YEARS'].split()))
+          for year in years:
+              path = f'asterism-geometry-{year}.csv'
+              with open(path, newline='', encoding='utf-8') as f:
+                  rows = list(csv.DictReader(f))
+              assert len(rows) == 25, (year, len(rows))
+              names = {r['asterism'] for r in rows}
+              assert len(names) == 25, year
+              for r in rows:
+                  d = int(r['best_date'][:4])
+                  assert d in (year, year + 1), (year, r)
+                  assert 0.0 <= float(r['centroid_ra_h']) < 24.0, r
+                  assert -90.0 <= float(r['centroid_dec_deg']) <= 90.0, r
+                  assert float(r['area_sr']) >= 0.0, r
+              southern = next(r for r in rows if r['asterism'] == 'Southern Pointers')
+              assert southern['geometry_method'] == 'great-circle-midpoint', southern
+              print(f'PASS {year}: 25 geometry rows; Southern Pointers uses geodesic midpoint')
+          PY
+
+      - name: Commit requested resolved-member and geometry files
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add asterism-member-coordinates.csv
+          for year in $ASTERISM_YEARS; do
+            git add "asterism-geometry-$year.csv"
+          done
+          if git diff --cached --quiet; then
+            echo 'Generated asterism files unchanged.'
+            exit 0
+          fi
+          git commit -m "Generate core asterism geometry for $ASTERISM_YEARS"
+          git push

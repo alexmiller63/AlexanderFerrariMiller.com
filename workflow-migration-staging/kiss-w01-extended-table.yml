@@ -1,0 +1,29 @@
+name: KISS W01 Extended Table
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  edit-w01:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Run KISS W01 edit
+        run: python tools/kiss_w01_extended_table.py
+
+      - name: Commit W01 only
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add almanack/2026/W01/index.html
+          if git diff --cached --quiet; then
+            echo "No W01 change to commit."
+          else
+            git commit -m "KISS: substitute Extended data into W01 diagnostic table"
+            git push
+          fi

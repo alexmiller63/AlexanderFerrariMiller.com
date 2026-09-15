@@ -1,0 +1,90 @@
+name: One-off Rebuild Tiny Kilroy
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  rebuild:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Pillow
+        run: python -m pip install pillow
+
+      - name: Back up and rebuild tiny Kilroy
+        run: |
+          python - <<'PY'
+          from hashlib import sha256
+          from pathlib import Path
+          from shutil import copy2
+
+          from PIL import Image
+
+          image_dir = Path("kilroy/images")
+          source = image_dir / "attractive.PNG"
+          target = image_dir / "tiny-kilroy.gif"
+          backup = image_dir / "tiny-kilroy-before-attractive.gif"
+
+          for path in (source, target):
+              if not path.is_file():
+                  raise SystemExit(f"Missing required file: {path}")
+
+          if backup.exists():
+              raise SystemExit(
+                  f"Backup already exists: {backup}. "
+                  "This one-off workflow will not overwrite it."
+              )
+
+          original_hash = sha256(target.read_bytes()).hexdigest()
+          copy2(target, backup)
+
+          with Image.open(target) as old_image:
+              target_size = old_image.size
+
+          with Image.open(source) as source_image:
+              rebuilt = source_image.convert("RGBA")
+              rebuilt.thumbnail(target_size, Image.Resampling.LANCZOS)
+
+          canvas = Image.new("RGBA", target_size, (255, 255, 255, 255))
+          position = (
+              (target_size[0] - rebuilt.width) // 2,
+              (target_size[1] - rebuilt.height) // 2,
+          )
+          canvas.alpha_composite(rebuilt, position)
+          canvas.convert("RGB").save(target, format="GIF", optimize=True)
+
+          if sha256(backup.read_bytes()).hexdigest() != original_hash:
+              raise SystemExit("Backup verification failed")
+
+          with Image.open(target) as result:
+              if result.format != "GIF":
+                  raise SystemExit("Replacement is not a GIF")
+              if result.size != target_size:
+                  raise SystemExit(
+                      f"Replacement size {result.size} does not match {target_size}"
+                  )
+
+          print(f"Backed up original to {backup}")
+          print(f"Rebuilt {target} at {target_size[0]}x{target_size[1]}")
+          PY
+
+      - name: Commit the backup and replacement
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add \
+            kilroy/images/tiny-kilroy-before-attractive.gif \
+            kilroy/images/tiny-kilroy.gif
+          git commit -m "Rebuild tiny Kilroy from attractive artwork"
+          git push

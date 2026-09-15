@@ -1,0 +1,64 @@
+name: Fix Calendar Latin Observing Aids
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Fix generated-page notation source and existing pages
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          old = "let buttons=document.querySelectorAll('[data-bayer-mode]');function setMode(mode){document.querySelectorAll('.notation-item').forEach(s=>s.textContent=s.dataset[mode]||s.dataset.greek);buttons.forEach(x=>x.setAttribute('aria-pressed',x.dataset.bayerMode===mode?'true':'false'));"
+          new = r'''document.querySelectorAll('table.calendar .visibility-magnitude').forEach(v=>{let imgs=Array.from(v.querySelectorAll('img.visibility-glyph')),i=0;while(i<imgs.length){let img=imgs[i],src=img.getAttribute('src')||'',tel=/telescope\.svg(?:$|[?#])/.test(src),next=imgs[i+1],nextsrc=next?(next.getAttribute('src')||''):'',sub=tel&&next&&/telescope\.svg(?:$|[?#])/.test(nextsrc),label=sub?'Substantial telescope':/eye\.svg(?:$|[?#])/.test(src)?'Naked eye':/binoculars\.svg(?:$|[?#])/.test(src)?'Binoculars':tel?'Telescope':null;if(!label){i++;continue}let wrap=document.createElement('span');wrap.className='observing-aid-notation';wrap.dataset.label=label;wrap.style.whiteSpace='nowrap';let symbol=document.createElement('span');symbol.className='observing-aid-symbol';img.replaceWith(wrap);symbol.append(img);if(sub){symbol.append(next);i++}let word=document.createElement('span');word.className='observing-aid-word';word.textContent=label;wrap.append(symbol,word);i++}});
+let buttons=document.querySelectorAll('[data-bayer-mode]');function setMode(mode){document.querySelectorAll('.notation-item').forEach(s=>s.textContent=s.dataset[mode]||s.dataset.greek);document.querySelectorAll('table.calendar .observing-aid-notation').forEach(item=>{let symbol=item.querySelector('.observing-aid-symbol'),word=item.querySelector('.observing-aid-word');symbol.hidden=mode==='latin';word.hidden=mode==='greek'});buttons.forEach(x=>x.setAttribute('aria-pressed',x.dataset.bayerMode===mode?'true':'false'));'''
+
+          paths = [Path('add_greek_latin_toggle.py')]
+          paths += sorted(Path('almanack').glob('20??/W??/index.html'))
+          paths += sorted(Path('site').glob('20??/W??/index.html'))
+          changed = 0
+          for p in paths:
+              text = p.read_text(encoding='utf-8')
+              if old in text:
+                  p.write_text(text.replace(old, new), encoding='utf-8')
+                  changed += 1
+          if not changed:
+              raise SystemExit('Legacy inline notation setMode block not found')
+          print(f'Patched Latin observing-aid rendering in {changed} source/generated files')
+          PY
+
+      - name: Strengthen Calendar Generator Chromium verifier
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('.github/workflows/populate-calendar-by-date.yml')
+          text=p.read_text(encoding='utf-8')
+          needle="""                      button.click()\n                      page.wait_for_timeout(50)\n                      verify_layout(page, rel, mode)\n"""
+          replacement="""                      button.click()\n                      page.wait_for_timeout(50)\n                      verify_layout(page, rel, mode)\n\n                      # Verify what a human actually sees, not merely DOM state.\n                      aids = page.locator('table.calendar .observing-aid-notation')\n                      if aids.count():\n                          visible_words = page.locator('table.calendar .observing-aid-word:visible')\n                          visible_symbols = page.locator('table.calendar .observing-aid-symbol:visible')\n                          if mode == 'latin':\n                              if visible_words.count() != aids.count() or visible_symbols.count() != 0:\n                                  raise SystemExit(\n                                      f'Calendar Latin observing-aid visual failure in {rel}: '\n                                      f'aids={aids.count()} visible_words={visible_words.count()} '\n                                      f'visible_symbols={visible_symbols.count()}'\n                                  )\n                              labels = [s.strip() for s in visible_words.all_text_contents()]\n                              allowed = {'Naked eye','Binoculars','Telescope','Substantial telescope'}\n                              if any(label not in allowed for label in labels):\n                                  raise SystemExit(f'Unexpected visible Latin observing aid in {rel}: {labels}')\n                          elif mode == 'greek':\n                              if visible_symbols.count() != aids.count() or visible_words.count() != 0:\n                                  raise SystemExit(\n                                      f'Calendar Greek observing-aid visual failure in {rel}: '\n                                      f'aids={aids.count()} visible_words={visible_words.count()} '\n                                      f'visible_symbols={visible_symbols.count()}'\n                                  )\n                          elif mode == 'mixed':\n                              if visible_words.count() != aids.count() or visible_symbols.count() != aids.count():\n                                  raise SystemExit(\n                                      f'Calendar Mixed observing-aid visual failure in {rel}: '\n                                      f'aids={aids.count()} visible_words={visible_words.count()} '\n                                      f'visible_symbols={visible_symbols.count()}'\n                                  )\n"""
+          if needle not in text:
+              raise SystemExit('Chromium verifier insertion point not found')
+          p.write_text(text.replace(needle,replacement),encoding='utf-8')
+          PY
+
+      - name: Commit root fix
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add add_greek_latin_toggle.py almanack site .github/workflows/populate-calendar-by-date.yml
+          if git diff --cached --quiet; then
+            echo 'No changes to commit.'
+            exit 0
+          fi
+          git commit -m 'Render Latin observing aids and verify visible Chromium output'
+          git pull --rebase origin main
+          git push

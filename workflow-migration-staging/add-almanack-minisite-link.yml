@@ -1,0 +1,58 @@
+name: Add Almanack Mini-site Link
+
+on:
+  push:
+    paths:
+      - '.github/workflows/add-almanack-minisite-link.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  update-project-card:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Point Star Almanack card to mini-site
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          path = Path('_includes/projects-content.html')
+          text = path.read_text()
+
+          old = '''            <article class="project-card">
+                <h2>Star Almanack</h2>
+                <p>
+                    An observer-first astronomy and publishing project that
+                    turns precise astronomical calculations into practical
+                    guidance for finding and understanding the night sky.
+                </p>
+            </article>'''
+
+          new = '''            <article class="project-card">
+                <h2>Star Almanack</h2>
+                <p>
+                    An observer-first astronomy and publishing project that
+                    turns precise astronomical calculations into practical
+                    guidance for finding and understanding the night sky.
+                </p>
+                <p style="margin-top: 12px;">
+                    <a class="project-link" href="https://AlexanderFerrariMiller.com/almanack/">Visit the Almanack mini-site</a>
+                </p>
+            </article>'''
+
+          if old not in text:
+              raise SystemExit('Expected Star Almanack project card not found')
+
+          path.write_text(text.replace(old, new, 1))
+          PY
+
+      - name: Commit change
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add _includes/projects-content.html
+          git commit -m "Point Star Almanack card to Almanack mini-site"
+          git push

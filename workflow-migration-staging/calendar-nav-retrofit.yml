@@ -1,0 +1,65 @@
+name: Calendar navigation retrofit
+
+on:
+  workflow_dispatch:
+    inputs:
+      years:
+        description: 'Space-separated ISO years to refresh'
+        required: true
+        default: '2025 2026 2027'
+  push:
+    branches:
+      - main
+    paths:
+      - .github/workflows/calendar-nav-retrofit.yml
+      - tools/calendar-nav-trigger.txt
+      - tools/wire_week_navigation.py
+
+env:
+  ALMANACK_YEARS: ${{ github.event_name == 'workflow_dispatch' && inputs.years || '2025 2026 2027' }}
+
+permissions:
+  contents: write
+
+jobs:
+  retrofit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Apply and commit navigation fix
+        run: |
+          set -e
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          # Always regenerate from newest main before each push attempt so a
+          # concurrent deployment stamp cannot create a rebase conflict.
+          for attempt in 1 2 3 4 5; do
+            git fetch origin main
+            git reset --hard origin/main
+
+            python3 tools/wire_week_navigation.py $ALMANACK_YEARS
+
+            if git diff --quiet; then
+              echo "No changes needed."
+              exit 0
+            fi
+
+            for year in $ALMANACK_YEARS; do
+              git add "almanack/$year" "site/$year"
+            done
+            git commit -m "Standardize Almanack navigation for $ALMANACK_YEARS"
+
+            if git push origin HEAD:main; then
+              exit 0
+            fi
+
+            echo "Main changed during generation; regenerating from latest main ($attempt/5)..."
+            sleep 2
+          done
+
+          echo "Unable to push Almanack navigation changes after retries."
+          exit 1

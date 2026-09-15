@@ -1,0 +1,121 @@
+name: Diagnose Open Besselian Eclipse Geometry
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/diagnose-open-besselian.yml'
+      - 'besselian_eclipse_engine.py'
+      - 'eclipse-validation-cases.yaml'
+      - 'THIRD-PARTY-LICENSES.md'
+
+permissions:
+  contents: read
+
+jobs:
+  compare-besselian-greatest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Check out Star Almanack
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Restore DE440s kernel cache
+        uses: actions/cache@v4
+        with:
+          path: .cache/skyfield/de440s.bsp
+          key: de440s-bsp-v1
+
+      - name: Install pinned Besselian dependency
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install \
+            'git+https://github.com/lkangas/eclipse-calc.git@23853a8f9e0d1a25e026203207aca16de1d7bb31' \
+            scipy pyyaml
+
+      - name: Download DE440s once if cache is empty
+        run: |
+          mkdir -p .cache/skyfield
+          python - <<'PY'
+          from pathlib import Path
+          from skyfield.api import Loader
+
+          root = Path('.cache/skyfield')
+          kernel = root / 'de440s.bsp'
+          if kernel.exists():
+              print(f'Reusing cached {kernel} ({kernel.stat().st_size:,} bytes)')
+          else:
+              print('Downloading de440s.bsp once for reuse through the Actions cache')
+              Loader(str(root)).download('de440s.bsp')
+          PY
+
+      - name: Compare production backend with frozen NASA targets
+        working-directory: Historical
+        run: |
+          python - <<'PY'
+          from datetime import datetime
+          from pathlib import Path
+
+          import numpy as np
+          import yaml
+
+          from besselian_eclipse_engine import BesselianEclipseEngine
+
+          kernel = Path('..') / '.cache' / 'skyfield' / 'de440s.bsp'
+          engine = BesselianEclipseEngine(kernel)
+
+          with open('eclipse-validation-cases.yaml', 'r', encoding='utf-8') as f:
+              suite = yaml.safe_load(f)
+
+          cases = []
+          for case in suite['historical']:
+              if case.get('expected_exists'):
+                  cases.append((case['label'], case['date_utc'], case['expected_greatest_utc']))
+          for case in suite['future_jello']['cases']:
+              if case.get('expected_exists'):
+                  cases.append((case['label'], case['date_utc'], case['nasa_greatest_utc']))
+
+          print('STAR ALMANACK — PRODUCTION BESSELIAN GREATEST-ECLIPSE AUDIT')
+          print('Backend: besselian_eclipse_engine.py')
+          print('Dependency: lkangas/eclipse-calc @ 23853a8f9e0d1a25e026203207aca16de1d7bb31')
+          print('License notice: THIRD-PARTY-LICENSES.md')
+          print('Ephemeris: JPL DE440s via Skyfield')
+          print()
+          print(f"{'Case':38s} {'NASA UTC':20s} {'Besselian UTC':24s} {'Residual':>10s} {'gamma':>10s}")
+          print('-' * 110)
+
+          residuals = []
+          for label, date_text, ref_text in cases:
+              event = engine.find_greatest_eclipse(date_text)
+              ref_dt = datetime.fromisoformat(ref_text.replace('Z', '+00:00'))
+              calc_dt = datetime.fromisoformat(event.greatest_utc.replace('Z', '+00:00'))
+              residual = (calc_dt - ref_dt).total_seconds()
+              residuals.append(residual)
+              print(
+                  f'{label:38.38s} {ref_text:20s} {event.greatest_utc:24s} '
+                  f'{residual:+9.3f}s {event.gamma:10.6f}'
+              )
+
+          arr = np.asarray(residuals, dtype=float)
+          print()
+          print('SUMMARY')
+          print('-' * 72)
+          print(f'n={len(arr)}')
+          print(f'mean signed residual = {arr.mean():+.3f} s')
+          print(f'mean absolute error  = {np.abs(arr).mean():.3f} s')
+          print(f'max absolute error   = {np.abs(arr).max():.3f} s')
+
+          # Guard against accidentally reverting to the old tens-of-seconds
+          # timing behavior on the modern/future validation set.
+          modern = np.abs(arr[2:])
+          if modern.max() > 10.0:
+              raise SystemExit(
+                  f'production Besselian backend regression: modern max error {modern.max():.3f}s > 10s'
+              )
+          PY

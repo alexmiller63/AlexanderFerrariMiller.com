@@ -1,0 +1,268 @@
+name: Populate Almanack foundations
+
+on:
+  workflow_dispatch:
+    inputs:
+      years:
+        description: 'Space-separated ISO years to regenerate'
+        required: true
+        default: '2025 2026 2027'
+  push:
+    paths:
+      - '.github/workflows/populate-2025-2027-ephemeris.yml'
+      - 'tools/almanack_calendar.py'
+      - 'tools/almanack_time.py'
+      - 'tools/star_almanack_ephemeris.py'
+      - 'tools/test_almanack_time.py'
+      - 'tools/audit_calendar_contract.py'
+      - 'tools/audit_true_year_parameterization.py'
+      - 'tools/audit_constellation_centers.py'
+      - 'tools/clean_event_cells.py'
+      - 'tools/populate_calendar.py'
+      - 'tools/populate_galactic_center.py'
+      - 'tools/populate_meteor_showers.py'
+      - 'tools/populate_ephemeris.py'
+      - 'tools/generate-current-planet-finder.py'
+      - 'tools/wire_2026_eclipses.py'
+      - 'tools/wire_ephemeris_notation.py'
+      - 'tools/wire_week_navigation.py'
+      - 'tools/wire_almanack_legend.py'
+      - 'tools/populate_fixed_sky.py'
+      - 'tools/standardize_messier_calendar.py'
+      - 'tools/catalog_common_names.py'
+      - 'tools/reconcile_catalog_common_names.py'
+      - 'tools/populate_constellations.py'
+      - 'tools/populate_asterisms.py'
+      - 'tools/populate_caldwell.py'
+      - 'tools/populate_finest_ngc.py'
+      - 'tools/populate-2025-2027-ephemeris-trigger.txt'
+      - 'EPHEMERIS-PROVENANCE.md'
+      - 'eclipse.yaml'
+      - 'compute_bayer_visibility_2026.py'
+      - 'expanded-bayer-stars.csv'
+      - 'compute_constellation_observance_2026.py'
+      - 'fixed-objects.yaml'
+      - 'messier-editorial.json'
+      - 'messier-common-names-nasa.yaml'
+      - 'expanded-bayer-visibility-2026.csv'
+      - 'caldwell-catalog.csv'
+      - 'finest-ngc-catalog.csv'
+      - 'finest-ngc-caldwell-overlap.csv'
+      - 'asterism-geometry-2025.csv'
+      - 'asterism-geometry-2026.csv'
+      - 'asterism-geometry-2027.csv'
+
+env:
+  ALMANACK_YEARS: ${{ github.event_name == 'workflow_dispatch' && inputs.years || '2025 2026 2027' }}
+  STAR_ALMANACK_EPHEMERIS_DIR: ${{ github.workspace }}/.cache/skyfield
+
+permissions:
+  contents: write
+
+jobs:
+  populate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Restore astronomical source cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            .cache/skyfield/de440s.bsp
+            .cache/skyfield/ceres_1900_2100.bsp
+          key: star-almanack-source-kernels-v1
+
+      - name: Install astronomical calculation dependencies
+        run: python -m pip install --disable-pip-version-check skyfield==1.55 PyYAML
+
+      - name: Download source kernels only when cache is empty
+        run: |
+          mkdir -p .cache/skyfield
+          python - <<'PY'
+          from pathlib import Path
+          from urllib.request import urlretrieve
+          from skyfield.api import Loader
+
+          root = Path('.cache/skyfield')
+          de440s = root / 'de440s.bsp'
+          ceres = root / 'ceres_1900_2100.bsp'
+
+          if de440s.exists():
+              print(f'Reusing cached {de440s} ({de440s.stat().st_size:,} bytes)')
+          else:
+              print('Downloading JPL/NAIF DE440s source kernel')
+              Loader(str(root)).download('de440s.bsp')
+
+          if ceres.exists():
+              print(f'Reusing cached {ceres} ({ceres.stat().st_size:,} bytes)')
+          else:
+              print('Downloading JPL/NAIF Ceres 1900-2100 source kernel')
+              urlretrieve(
+                  'https://naif.jpl.nasa.gov/pub/naif/generic_kernels/spk/asteroids/a_old_versions/ceres_1900_2100.bsp',
+                  ceres,
+              )
+          PY
+
+      - name: Verify canonical JDTDB time handling
+        run: python tools/test_almanack_time.py
+      - name: Fetch pinned constellation-figure and stellar sources
+        run: |
+          curl -fL \
+            https://raw.githubusercontent.com/dcf21/constellation-stick-figures/75d29c207bbd752023c447ddd1f9f4ff0eb47538/constellation_lines_iau.dat \
+            -o /tmp/constellation_lines_iau.dat
+          curl -fL \
+            https://raw.githubusercontent.com/astronexus/HYG-Database/3bf37f4b2d5460e1278286320d1d62fab9b493c1/hyg/CURRENT/hygdata_v41.csv \
+            -o /tmp/hygdata_v41.csv
+      - name: Verify preserved 2026 best-visibility regression
+        run: python compute_bayer_visibility_2026.py expanded-bayer-stars.csv /tmp/expanded-bayer-visibility-2026-regression.csv
+      - name: Normalize calendar keys and clear requested event cells
+        run: python tools/clean_event_cells.py $ALMANACK_YEARS
+      - name: Populate Zodiac Days, ingresses, solar stations, and named lunar phases
+        run: python tools/populate_calendar.py $ALMANACK_YEARS
+      - name: Populate Galactic Center conjunction
+        run: python tools/populate_galactic_center.py $ALMANACK_YEARS
+      - name: Publish independently calculated 2026 eclipses
+        run: |
+          if [[ " $ALMANACK_YEARS " == *" 2026 "* ]]; then
+            python tools/wire_2026_eclipses.py
+          fi
+      - name: Populate major meteor-shower maxima
+        run: python tools/populate_meteor_showers.py $ALMANACK_YEARS
+      - name: Populate weekly Solar-System ephemerides
+        run: python tools/populate_ephemeris.py $ALMANACK_YEARS
+      - name: Generate current Planet Finder
+        run: |
+          read current_year current_week < <(python - <<'PY'
+          from datetime import datetime, timezone
+          iso = datetime.now(timezone.utc).date().isocalendar()
+          print(iso.year, iso.week)
+          PY
+          )
+          if [[ " $ALMANACK_YEARS " == *" $current_year "* ]]; then
+            python tools/generate-current-planet-finder.py "$current_year" "$current_week"
+          fi
+      - name: Wire Solar-System ephemeris notation controls
+        run: python tools/wire_ephemeris_notation.py $ALMANACK_YEARS
+      - name: Populate fixed-sky visibility events
+        run: python tools/populate_fixed_sky.py $ALMANACK_YEARS
+      - name: Standardize Messier labels, instruments, magnitudes, declination bands, and seasons
+        run: python tools/standardize_messier_calendar.py $ALMANACK_YEARS
+      - name: Populate constellation centers
+        run: python tools/populate_constellations.py $ALMANACK_YEARS
+      - name: Populate core asterism centers
+        run: python tools/populate_asterisms.py $ALMANACK_YEARS
+      - name: Populate Caldwell C1-C109 in requested years
+        run: python tools/populate_caldwell.py $ALMANACK_YEARS
+      - name: Populate Finest NGC objects not already represented by Caldwell
+        run: python tools/populate_finest_ngc.py $ALMANACK_YEARS
+      - name: Reconcile common names across Messier, Caldwell, and Finest NGC
+        run: python tools/reconcile_catalog_common_names.py $ALMANACK_YEARS
+      - name: Wire highlighted current-week navigation
+        run: python tools/wire_week_navigation.py $ALMANACK_YEARS
+      - name: Wire canonical legend and glyph sizing
+        run: python tools/wire_almanack_legend.py $ALMANACK_YEARS
+      - name: Verify machine-readable calendar contract
+        run: python tools/audit_calendar_contract.py $ALMANACK_YEARS
+      - name: Verify all constellation centers survived downstream passes
+        run: python tools/audit_constellation_centers.py $ALMANACK_YEARS
+      - name: Audit true-year parameterization
+        run: python tools/audit_true_year_parameterization.py $ALMANACK_YEARS
+      - name: Verify Galactic Center survived downstream passes
+        run: python tools/populate_galactic_center.py --verify-only $ALMANACK_YEARS
+      - name: Commit generated Almanack foundations
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          regression() {
+            python compute_bayer_visibility_2026.py \
+              expanded-bayer-stars.csv \
+              /tmp/expanded-bayer-visibility-2026-regression.csv
+          }
+          generate_current_planet_finder() {
+            read current_year current_week < <(python - <<'PY'
+          from datetime import datetime, timezone
+          iso = datetime.now(timezone.utc).date().isocalendar()
+          print(iso.year, iso.week)
+          PY
+            )
+            if [[ " $ALMANACK_YEARS " == *" $current_year "* ]]; then
+              python tools/generate-current-planet-finder.py "$current_year" "$current_week"
+            fi
+          }
+          stage_generated() {
+            for year in $ALMANACK_YEARS; do
+              git add \
+                "almanack/$year" \
+                "site/$year" \
+                "weekly-ephemeris-$year.csv" \
+                "generated/calendar-$year.json" \
+                "generated/meteor-showers-$year.json" \
+                "generated/expanded-bayer-visibility-$year.csv" \
+                "generated/bright-star-visibility-$year.csv" \
+                "generated/messier-visibility-$year.csv" \
+                "generated/constellation-observance-$year.csv" \
+                "generated/caldwell-visibility-$year.csv" \
+                "generated/finest-ngc-visibility-$year.csv"
+            done
+            if [[ " $ALMANACK_YEARS " == *" 2026 "* ]]; then
+              git add almanack-expanded.md star-almanack/eclipses.html
+            fi
+          }
+          regenerate() {
+            python tools/test_almanack_time.py
+            regression
+            python tools/clean_event_cells.py $ALMANACK_YEARS
+            python tools/populate_calendar.py $ALMANACK_YEARS
+            python tools/populate_galactic_center.py $ALMANACK_YEARS
+            if [[ " $ALMANACK_YEARS " == *" 2026 "* ]]; then python tools/wire_2026_eclipses.py; fi
+            python tools/populate_meteor_showers.py $ALMANACK_YEARS
+            python tools/populate_ephemeris.py $ALMANACK_YEARS
+            generate_current_planet_finder
+            python tools/wire_ephemeris_notation.py $ALMANACK_YEARS
+            python tools/populate_fixed_sky.py $ALMANACK_YEARS
+            python tools/standardize_messier_calendar.py $ALMANACK_YEARS
+            python tools/populate_constellations.py $ALMANACK_YEARS
+            python tools/populate_asterisms.py $ALMANACK_YEARS
+            python tools/populate_caldwell.py $ALMANACK_YEARS
+            python tools/populate_finest_ngc.py $ALMANACK_YEARS
+            python tools/reconcile_catalog_common_names.py $ALMANACK_YEARS
+            python tools/wire_week_navigation.py $ALMANACK_YEARS
+            python tools/wire_almanack_legend.py $ALMANACK_YEARS
+            python tools/audit_calendar_contract.py $ALMANACK_YEARS
+            python tools/audit_constellation_centers.py $ALMANACK_YEARS
+            python tools/audit_true_year_parameterization.py $ALMANACK_YEARS
+            python tools/populate_galactic_center.py --verify-only $ALMANACK_YEARS
+          }
+          stage_generated
+          if git diff --cached --quiet; then echo 'No Almanack foundation changes'; exit 0; fi
+          git commit -m "Populate Almanack foundations for $ALMANACK_YEARS"
+
+          max_attempts=5
+          attempt=1
+          while true; do
+            if git push; then
+              exit 0
+            fi
+            if (( attempt >= max_attempts )); then
+              echo "Push failed after $max_attempts attempts because main kept moving"
+              exit 1
+            fi
+            echo "main moved during generation; resynchronizing and regenerating (retry $attempt of $((max_attempts - 1)))"
+            git fetch origin main
+            git reset --hard origin/main
+            regenerate
+            stage_generated
+            if git diff --cached --quiet; then
+              echo 'No Almanack foundation changes after resynchronization'
+              exit 0
+            fi
+            git commit -m "Populate Almanack foundations for $ALMANACK_YEARS"
+            attempt=$((attempt + 1))
+          done

@@ -1,0 +1,67 @@
+name: Artwork Generator
+
+on:
+  workflow_dispatch:
+    inputs:
+      start_year:
+        description: Start year
+        required: true
+        type: string
+      start_week:
+        description: Start week
+        required: true
+        type: string
+      end_year:
+        description: End year
+        required: false
+        default: ''
+        type: string
+      end_week:
+        description: End week
+        required: false
+        default: ''
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: artwork-generator
+  cancel-in-progress: false
+
+jobs:
+  populate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Resolve ISO week range
+        id: range
+        run: |
+          read START_DATE END_DATE < <(python tools/resolve_iso_week_range.py \
+            '${{ inputs.start_year }}' '${{ inputs.start_week }}' \
+            '${{ inputs.end_year }}' '${{ inputs.end_week }}')
+          echo "start_date=$START_DATE" >> "$GITHUB_OUTPUT"
+          echo "end_date=$END_DATE" >> "$GITHUB_OUTPUT"
+          echo "$START_DATE through $END_DATE"
+
+      - name: Generate Artwork
+        run: python tools/populate_sky_notes_artwork_by_date.py "${{ steps.range.outputs.start_date }}" "${{ steps.range.outputs.end_date }}"
+
+      - name: Commit Artwork changes only
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- almanack site
+          if [ -e sky-notes-artwork ]; then
+            git add -- sky-notes-artwork
+          fi
+          if git diff --cached --quiet; then
+            echo "No Artwork changes in requested ISO week range."
+            exit 0
+          fi
+          git commit -m "Generate Artwork ${{ inputs.start_year }}-W${{ inputs.start_week }}"
+          git pull --rebase origin main
+          git push
