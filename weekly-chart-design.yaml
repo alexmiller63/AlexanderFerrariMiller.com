@@ -1,0 +1,344 @@
+# Star Almanack
+
+# Weekly Classical-Planet Chart Design
+
+# Model: ISO2026-W33-chart
+
+chart:
+
+  type: weekly-classical-planet-chart
+
+  filename:
+
+    pattern: "ISO{iso_year}-W{iso_week}-chart.png"
+
+    example: "ISO2026-W33-chart.png"
+
+  title:
+
+    pattern: "ISO {iso_year}-W{iso_week}-{iso_weekday} — {civil_date} · 00:00 UTC"
+
+    example: "ISO 2026-W33-1 — Monday, Aug 10, 2026 · 00:00 UTC"
+
+  epoch:
+
+    weekday: Monday
+
+    iso_weekday: 1
+
+    time: "00:00 UTC"
+
+zodiac:
+
+  system: tropical
+
+  reference:
+
+    sign: Aries
+
+    longitude_degrees: 0
+
+    clock_position: "9 o'clock"
+
+  direction: counterclockwise
+
+  signs:
+
+    - symbol: "♈"
+
+      name: Aries
+
+    - symbol: "♉"
+
+      name: Taurus
+
+    - symbol: "♊"
+
+      name: Gemini
+
+    - symbol: "♋"
+
+      name: Cancer
+
+    - symbol: "♌"
+
+      name: Leo
+
+    - symbol: "♍"
+
+      name: Virgo
+
+    - symbol: "♎"
+
+      name: Libra
+
+    - symbol: "♏"
+
+      name: Scorpio
+
+    - symbol: "♐"
+
+      name: Sagittarius
+
+    - symbol: "♑"
+
+      name: Capricorn
+
+    - symbol: "♒"
+
+      name: Aquarius
+
+    - symbol: "♓"
+
+      name: Pisces
+
+  display:
+
+    position: outer_annulus
+
+    divisions: 12
+
+    degrees_per_sign: 30
+
+    show_symbols: true
+
+    show_sign_names_on_wheel: false
+
+planets:
+
+  bodies:
+
+    - symbol: "☉"
+
+      name: Sun
+
+    - symbol: "☽"
+
+      name: Moon
+
+    - symbol: "☿"
+
+      name: Mercury
+
+    - symbol: "♀"
+
+      name: Venus
+
+    - symbol: "♂"
+
+      name: Mars
+
+    - symbol: "♃"
+
+      name: Jupiter
+
+    - symbol: "♄"
+
+      name: Saturn
+
+  coordinates:
+
+    frame: geocentric
+
+    longitude: tropical_ecliptic
+
+  display:
+
+    position: inside_zodiac_annulus
+
+    show_symbols: true
+
+    show_names_on_wheel: false
+
+    collision_handling:
+
+      enabled: true
+
+      method: radial_stagger
+
+      preserve_longitude: true
+
+wheel:
+
+  outer_circle: true
+
+  zodiac_inner_boundary: true
+
+  additional_inner_circle: false
+
+legends:
+
+  planets:
+
+    enabled: true
+
+    position: below_wheel
+
+    content:
+
+      - "☉ Sun"
+
+      - "☽ Moon"
+
+      - "☿ Mercury"
+
+      - "♀ Venus"
+
+      - "♂ Mars"
+
+      - "♃ Jupiter"
+
+      - "♄ Saturn"
+
+  zodiac:
+
+    enabled: true
+
+    position: below_planet_legend
+
+    content:
+
+      - "♈ Aries"
+
+      - "♉ Taurus"
+
+      - "♊ Gemini"
+
+      - "♋ Cancer"
+
+      - "♌ Leo"
+
+      - "♍ Virgo"
+
+      - "♎ Libra"
+
+      - "♏ Scorpio"
+
+      - "♐ Sagittarius"
+
+      - "♑ Capricorn"
+
+      - "♒ Aquarius"
+
+      - "♓ Pisces"
+
+sky_note:
+
+  enabled: true
+
+  position: below_legends
+
+  purpose: >
+
+    Identify noteworthy astronomical geometry in the weekly
+
+    snapshot and explain its practical observational significance.
+
+  analysis:
+
+    calculate_from_ephemeris: true
+
+    do_not_infer_from_chart_image: true
+
+    consider:
+
+      - conjunctions
+
+      - close_pairings
+
+      - multi_body_groupings
+
+      - oppositions
+
+      - angular_separations
+
+      - solar_proximity
+
+      - morning_visibility
+
+      - evening_visibility
+
+      - twilight_visibility
+
+      - night_sky_visibility
+
+  writing:
+
+    concise: true
+
+    plain_language: true
+
+    distinguish_geometry_from_observability: true
+
+    avoid_overstating_visibility: true
+
+    omit_unremarkable_features: true
+
+data:
+
+  source: weekly_ephemeris
+
+  sampling:
+
+    weekday: Monday
+
+    time: "00:00 UTC"
+
+  required_fields:
+
+    - iso_year
+
+    - iso_week
+
+    - civil_date
+
+    - sun_longitude
+
+    - moon_longitude
+
+    - mercury_longitude
+
+    - venus_longitude
+
+    - mars_longitude
+
+    - jupiter_longitude
+
+    - saturn_longitude
+
+model_chart:
+
+  iso_week: "2026-W33"
+
+  iso_date: "2026-W33-1"
+
+  civil_date: "Monday, Aug 10, 2026"
+
+  filename: "ISO2026-W33-chart.png"
+
+  status: approved_model
+
+motion:
+
+  direct:
+
+    color: black
+
+  retrograde:
+
+    color: red
+
+  rules:
+
+    - Determine motion from the change in geocentric tropical ecliptic longitude around the Monday 00:00 UTC snapshot.
+
+    - If longitude is decreasing, classify the body as retrograde.
+
+    - If longitude is increasing, classify the body as direct.
+
+    - Color only the plotted planetary glyph.
+
+    - Keep the zodiac wheel, zodiac glyphs, legends, title, and Sky Note black.
+
+    - Sun and Moon remain black.
+

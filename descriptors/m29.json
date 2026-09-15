@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "id": "m29",
+  "type": "deep-sky-object",
+  "name": "M29",
+  "summary": "open cluster in Cygnus selected as a weekly fixed-sky observing target",
+  "representation": {
+    "machine": "./m29.json",
+    "human_source": "summary"
+  },
+  "catalog_name": "M29",
+  "object_type": "open cluster in Cygnus",
+  "guiding_asterisms": [
+    {
+      "id": "asterism-northern-cross",
+      "name": "Northern Cross",
+      "relationship": "star-hop-anchor",
+      "relationship_route_ids": [
+        "northern-cross-sadr-m29"
+      ],
+      "provenance": {
+        "source": "Astronomical League",
+        "source_url": "https://www.astroleague.org/wp-content/uploads/2025/12/Asterism_List_20251223.pdf",
+        "source_role": "verification",
+        "supports": "asterism-definition"
+      }
+    }
+  ],
+  "star_hops": [
+    {
+      "id": "northern-cross-sadr-m29",
+      "target_type": "deep-sky-object",
+      "target": "M29",
+      "steps": [
+        "Northern Cross",
+        "Sadr",
+        "M29"
+      ],
+      "instruction": "Find the Northern Cross, center on Sadr, then move about 1.8° south to M29.",
+      "instruction_authorship": "Star Almanack original wording",
+      "provenance": {
+        "source": "Astronomy Magazine",
+        "source_url": "https://www.astronomy.com/science/open-cluster-m29-spiral-galaxy-ngc-6951-and-the-egg-nebula/",
+        "source_role": "verification",
+        "supports": "star-hop-method"
+      }
+    }
+  ],
+  "source_label": "M29, open cluster in Cygnus"
+}

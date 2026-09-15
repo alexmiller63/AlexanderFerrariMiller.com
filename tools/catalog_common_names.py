@@ -11,7 +11,7 @@ import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-SRC = ROOT / "Historical"
+SRC = ROOT
 
 _ALT_ID = re.compile(
     r"^(?:NGC|IC|M|C|OCL|COLLINDER|CR|ARP|MCG|UGC|PGC|PN\s*G|SH\s*2|SH2|VDB|LBN|LDN)\b",

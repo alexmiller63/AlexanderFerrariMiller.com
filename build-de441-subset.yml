@@ -1,0 +1,960 @@
+name: Build Star Almanack Microkernel
+
+on:
+
+  workflow_dispatch:
+
+permissions:
+
+  contents: write
+
+jobs:
+
+  build-de441-subset:
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Check out Star Almanack
+
+        uses: actions/checkout@v6
+
+      - name: Start debug.txt
+
+        run: |
+
+          echo "Star Almanack Microkernel build (derived from JPL DE441)" > debug.txt
+
+          echo "Started: $(date -u)" >> debug.txt
+
+          echo "" >> debug.txt
+
+          echo "Runner:" >> debug.txt
+
+          uname -a >> debug.txt
+
+      - name: Download DE441 source kernels
+
+        run: |
+
+          wget -q --show-progress https://naif.jpl.nasa.gov/pub/naif/generic_kernels/spk/planets/de441_part-1.bsp
+
+          wget -q --show-progress https://naif.jpl.nasa.gov/pub/naif/generic_kernels/spk/planets/de441_part-2.bsp
+
+      - name: Download leap-seconds kernel
+
+        run: |
+
+          wget -q https://naif.jpl.nasa.gov/pub/naif/generic_kernels/lsk/naif0012.tls
+
+      - name: Download NAIF SPICE Toolkit
+
+        run: |
+
+          wget -q https://naif.jpl.nasa.gov/pub/naif/toolkit/C/PC_Linux_GCC_64bit/packages/cspice.tar.Z
+
+          tar -xf cspice.tar.Z
+
+          test -x ./cspice/exe/brief
+
+          test -x ./cspice/exe/spkmerge
+
+      - name: Install Python diagnostic dependencies
+
+        run: |
+
+          python3 -m pip install --disable-pip-version-check spiceypy pyyaml
+
+      - name: Bootstrap ELP2000-82B archive
+
+        working-directory: star-almanack-elp82b
+
+        run: |
+
+          python lunar_elp.py bootstrap data/elp82b
+
+      - name: Verify ELP2000-82B archive
+
+        working-directory: star-almanack-elp82b
+
+        run: |
+
+          python lunar_elp.py verify data/elp82b
+
+      - name: Normalize ELP2000-82B coefficients
+
+        working-directory: star-almanack-elp82b
+
+        run: |
+
+          python normalize_elp82b.py data/elp82b elp82b-manifest.json
+
+      - name: Record source sizes and checksums
+
+        run: |
+
+          echo "" >> debug.txt
+
+          echo "===== DE441 SOURCE FILES =====" >> debug.txt
+
+          ls -lh de441_part-1.bsp de441_part-2.bsp naif0012.tls >> debug.txt
+
+          echo "" >> debug.txt
+
+          echo "SHA-256:" >> debug.txt
+
+          sha256sum de441_part-1.bsp de441_part-2.bsp naif0012.tls >> debug.txt
+
+      - name: Create SPKMERGE command file
+
+        run: |
+
+          cat > de441-subset.cmd <<'EOF'
+
+          LEAPSECONDS_KERNEL = naif0012.tls
+
+          SPK_KERNEL = star-almanack-microkernel.bsp
+
+            LOG_FILE = spkmerge.log
+
+            BODIES = 3, 10, 301, 399
+
+            BEGIN_TIME = 1 JAN 1800 00:00:00.000
+
+            END_TIME = 1 JAN 2200 00:00:00.000
+
+            SOURCE_SPK_KERNEL = de441_part-1.bsp
+
+            SOURCE_SPK_KERNEL = de441_part-2.bsp
+
+          EOF
+
+          echo "" >> debug.txt
+
+          echo "===== SPKMERGE COMMAND =====" >> debug.txt
+
+          cat de441-subset.cmd >> debug.txt
+
+      - name: Build Star Almanack Microkernel
+
+        run: |
+
+          rm -f star-almanack-microkernel.bsp
+          rm -f spkmerge.log
+
+          ./cspice/exe/spkmerge de441-subset.cmd
+
+          test -s star-almanack-microkernel.bsp
+
+      - name: Compare full DE441 with Star Almanack Microkernel for 2024 eclipse
+
+        shell: bash
+
+        run: |
+
+          set -euo pipefail
+
+          python3 <<'PY' | tee de441-full-vs-subset-2024.txt
+
+          from __future__ import annotations
+
+          from datetime import datetime
+
+          import spiceypy as spice
+
+          import eclipse_engine
+
+          DATE = "2024-04-08"
+
+          FULL_KERNELS = [
+
+              "de441_part-1.bsp",
+
+              "de441_part-2.bsp",
+
+          ]
+
+          SUBSET_KERNEL = "star-almanack-microkernel.bsp"
+
+          original_sun_function = eclipse_engine.sun_vector_j2000
+
+          def de441_sun_vector_j2000(
+
+              jd_tdb: float
+
+          ) -> eclipse_engine.Vec3:
+
+              et = (jd_tdb - 2451545.0) * 86400.0
+
+              position, _ = spice.spkpos(
+
+                  "SUN",
+
+                  et,
+
+                  "ECLIPJ2000",
+
+                  "NONE",
+
+                  "EARTH",
+
+              )
+
+              return eclipse_engine.Vec3(
+
+                  float(position[0]),
+
+                  float(position[1]),
+
+                  float(position[2]),
+
+              )
+
+          def run_with_kernels(kernels):
+
+              spice.kclear()
+
+              for kernel in kernels:
+
+                  spice.furnsh(kernel)
+
+              eclipse_engine.sun_vector_j2000 = de441_sun_vector_j2000
+
+              engine = eclipse_engine.EclipseEngine()
+
+              return engine.find_solar_eclipse(DATE)
+
+          try:
+
+              full = run_with_kernels(FULL_KERNELS)
+
+              subset = run_with_kernels([SUBSET_KERNEL])
+
+              full_time = datetime.fromisoformat(
+
+                  full.greatest_utc.replace("Z", "+00:00")
+
+              )
+
+              subset_time = datetime.fromisoformat(
+
+                  subset.greatest_utc.replace("Z", "+00:00")
+
+              )
+
+              delta_seconds = (
+
+                  subset_time - full_time
+
+              ).total_seconds()
+
+              axis_delta = (
+
+                  subset.geometry.axis_distance_km
+
+                  - full.geometry.axis_distance_km
+
+              )
+
+              print("=" * 72)
+
+              print(
+
+                  "STAR ALMANACK — FULL DE441 vs "
+
+                  "STAR ALMANACK MICROKERNEL"
+
+              )
+
+              print("=" * 72)
+
+              print()
+
+              print(f"Eclipse date: {DATE}")
+
+              print()
+
+              print("FULL DE441")
+
+              print(f"  greatest: {full.greatest_utc}")
+
+              print(f"  type:     {full.eclipse_type}")
+
+              print(
+
+                  f"  axis:     "
+
+                  f"{full.geometry.axis_distance_km:.6f} km"
+
+              )
+
+              print()
+
+              print("STAR ALMANACK MICROKERNEL")
+
+              print(f"  greatest: {subset.greatest_utc}")
+
+              print(f"  type:     {subset.eclipse_type}")
+
+              print(
+
+                  f"  axis:     "
+
+                  f"{subset.geometry.axis_distance_km:.6f} km"
+
+              )
+
+              print()
+
+              print("DIFFERENCE")
+
+              print(
+
+                  f"  greatest-time difference: "
+
+                  f"{delta_seconds:+.6f} s"
+
+              )
+
+              print(
+
+                  f"  axis-distance difference: "
+
+                  f"{axis_delta:+.9f} km"
+
+              )
+
+              print()
+
+              if (
+
+                  full.greatest_utc == subset.greatest_utc
+
+                  and full.eclipse_type == subset.eclipse_type
+
+                  and abs(axis_delta) < 1e-9
+
+              ):
+
+                  print("RESULT: MATCH")
+
+              else:
+
+                  print("RESULT: DIFFERENCE DETECTED")
+
+              print("=" * 72)
+
+          finally:
+
+              eclipse_engine.sun_vector_j2000 = original_sun_function
+
+              spice.kclear()
+
+          PY
+
+          echo "" >> debug.txt
+
+          echo "===== FULL DE441 vs STAR ALMANACK MICROKERNEL — 2024-04-08 =====" >> debug.txt
+
+          cat de441-full-vs-subset-2024.txt >> debug.txt
+
+      - name: Record SPKMERGE log
+
+        if: always()
+
+        run: |
+
+          echo "" >> debug.txt
+
+          echo "===== SPKMERGE LOG =====" >> debug.txt
+
+          if [ -f spkmerge.log ]; then
+
+            cat spkmerge.log >> debug.txt
+
+          else
+
+            echo "spkmerge.log not found" >> debug.txt
+
+          fi
+
+      - name: Verify Star Almanack Microkernel with BRIEF
+
+        run: |
+
+          echo "" >> debug.txt
+
+          echo "===== BRIEF: STAR ALMANACK MICROKERNEL =====" >> debug.txt
+
+          ./cspice/exe/brief -c star-almanack-microkernel.bsp >> debug.txt 2>&1
+
+      - name: Record required body chain
+
+        run: |
+
+          echo "" >> debug.txt
+
+          echo "===== REQUIRED BODY/CENTER CHAIN =====" >> debug.txt
+
+          echo "10  = Sun" >> debug.txt
+
+          echo "3   = Earth-Moon barycenter" >> debug.txt
+
+          echo "399 = Earth" >> debug.txt
+
+          echo "301 = Moon" >> debug.txt
+
+          echo "" >> debug.txt
+
+          echo "Expected chain:" >> debug.txt
+
+          echo "10  relative to 0" >> debug.txt
+
+          echo "3   relative to 0" >> debug.txt
+
+          echo "399 relative to 3" >> debug.txt
+
+          echo "301 relative to 3" >> debug.txt
+
+      - name: Compare compact Sun with DE441 Sun in eclipse engine
+
+        shell: bash
+
+        run: |
+
+          set -euo pipefail
+
+          python3 <<'PY' | tee de441-eclipse-comparison.txt
+
+          from __future__ import annotations
+
+          from datetime import datetime
+
+          import math
+
+          import spiceypy as spice
+
+          import yaml
+
+          import eclipse_engine
+
+          KERNEL = "star-almanack-microkernel.bsp"
+
+          def signed_seconds(calculated: str, reference: str) -> float:
+
+              a = datetime.fromisoformat(
+
+                  calculated.replace("Z", "+00:00")
+
+              )
+
+              b = datetime.fromisoformat(
+
+                  reference.replace("Z", "+00:00")
+
+              )
+
+              return (a - b).total_seconds()
+
+          def format_seconds(value: float) -> str:
+
+              sign = "+" if value >= 0 else "-"
+
+              whole = int(round(abs(value)))
+
+              hours, remainder = divmod(whole, 3600)
+
+              minutes, seconds = divmod(remainder, 60)
+
+              direction = (
+
+                  "LATE"
+
+                  if value > 0
+
+                  else "EARLY"
+
+                  if value < 0
+
+                  else "EXACT"
+
+              )
+
+              return (
+
+                  f"{sign}{hours:02d}:{minutes:02d}:{seconds:02d} "
+
+                  f"({direction})"
+
+              )
+
+          def angle_between_deg(a, b) -> float:
+
+              denominator = a.norm() * b.norm()
+
+              cosine = a.dot(b) / denominator
+
+              cosine = max(-1.0, min(1.0, cosine))
+
+              return math.degrees(math.acos(cosine))
+
+          spice.furnsh(KERNEL)
+
+          def de441_sun_vector_j2000(
+
+              jd_tdb: float
+
+          ) -> eclipse_engine.Vec3:
+
+              et = (jd_tdb - 2451545.0) * 86400.0
+
+              position, _ = spice.spkpos(
+
+                  "SUN",
+
+                  et,
+
+                  "ECLIPJ2000",
+
+                  "NONE",
+
+                  "EARTH",
+
+              )
+
+              return eclipse_engine.Vec3(
+
+                  float(position[0]),
+
+                  float(position[1]),
+
+                  float(position[2]),
+
+              )
+
+          with open(
+
+              "eclipse-validation-cases.yaml",
+
+              "r",
+
+              encoding="utf-8",
+
+          ) as handle:
+
+              spec = yaml.safe_load(handle)
+
+          cases = []
+
+          for case in spec["historical"]:
+
+              cases.append(
+
+                  {
+
+                      "id": case["id"],
+
+                      "label": case["label"],
+
+                      "date": case["date_utc"],
+
+                      "reference": case["expected_greatest_utc"],
+
+                  }
+
+              )
+
+          for case in spec["future_jello"]["cases"]:
+
+              cases.append(
+
+                  {
+
+                      "id": case["id"],
+
+                      "label": case["label"],
+
+                      "date": case["date_utc"],
+
+                      "reference": case["nasa_greatest_utc"],
+
+                  }
+
+              )
+
+          engine = eclipse_engine.EclipseEngine()
+
+          original_sun_function = eclipse_engine.sun_vector_j2000
+
+          print("=" * 72)
+
+          print("STAR ALMANACK — COMPACT SUN vs DE441 SUN")
+
+          print("=" * 72)
+
+          print()
+
+          print("Moon ephemeris: ELP2000-82B in BOTH calculations")
+
+          print("Search/geometry: identical Star Almanack eclipse engine")
+
+          print("Only changed input: geocentric Sun vector")
+
+          print()
+
+          print("A = existing compact Sun")
+
+          print("B = NASA/JPL DE441 Sun relative to Earth")
+
+          print()
+
+          try:
+
+              for case in cases:
+
+                  print("=" * 72)
+
+                  print(case["label"])
+
+                  print(f"Date:      {case['date']}")
+
+                  print(f"Reference: {case['reference']}")
+
+                  print()
+
+                  eclipse_engine.sun_vector_j2000 = original_sun_function
+
+                  compact = engine.find_solar_eclipse(
+
+                      case["date"]
+
+                  )
+
+                  eclipse_engine.sun_vector_j2000 = (
+
+                      de441_sun_vector_j2000
+
+                  )
+
+                  de441 = engine.find_solar_eclipse(
+
+                      case["date"]
+
+                  )
+
+                  compact_error = signed_seconds(
+
+                      compact.greatest_utc,
+
+                      case["reference"],
+
+                  )
+
+                  de441_error = signed_seconds(
+
+                      de441.greatest_utc,
+
+                      case["reference"],
+
+                  )
+
+                  improvement = (
+
+                      abs(compact_error) - abs(de441_error)
+
+                  )
+
+                  jd_reference = eclipse_engine.gregorian_to_jd(
+
+                      int(case["date"][0:4]),
+
+                      int(case["date"][5:7]),
+
+                      int(case["date"][8:10]),
+
+                      0.0,
+
+                  )
+
+                  compact_sun = original_sun_function(
+
+                      eclipse_engine.utc_to_tdb_approx(
+
+                          jd_reference
+
+                      )
+
+                  )
+
+                  de441_sun = de441_sun_vector_j2000(
+
+                      eclipse_engine.utc_to_tdb_approx(
+
+                          jd_reference
+
+                      )
+
+                  )
+
+                  sun_angle = angle_between_deg(
+
+                      compact_sun,
+
+                      de441_sun,
+
+                  )
+
+                  sun_distance = (
+
+                      compact_sun - de441_sun
+
+                  ).norm()
+
+                  print("A — compact Sun")
+
+                  print(
+
+                      f"  greatest: {compact.greatest_utc}"
+
+                  )
+
+                  print(
+
+                      f"  residual: "
+
+                      f"{format_seconds(compact_error)}"
+
+                  )
+
+                  print(
+
+                      f"  type:     {compact.eclipse_type}"
+
+                  )
+
+                  print(
+
+                      f"  axis:     "
+
+                      f"{compact.geometry.axis_distance_km:.3f} km"
+
+                  )
+
+                  print()
+
+                  print("B — DE441 Sun")
+
+                  print(
+
+                      f"  greatest: {de441.greatest_utc}"
+
+                  )
+
+                  print(
+
+                      f"  residual: "
+
+                      f"{format_seconds(de441_error)}"
+
+                  )
+
+                  print(
+
+                      f"  type:     {de441.eclipse_type}"
+
+                  )
+
+                  print(
+
+                      f"  axis:     "
+
+                      f"{de441.geometry.axis_distance_km:.3f} km"
+
+                  )
+
+                  print()
+
+                  print("Difference")
+
+                  print(
+
+                      f"  DE441 shift from compact result: "
+
+                      f"{signed_seconds(de441.greatest_utc, compact.greatest_utc):+.0f} s"
+
+                  )
+
+                  if improvement > 0:
+
+                      print(
+
+                          f"  DE441 improves absolute timing residual by "
+
+                          f"{improvement:.0f} s"
+
+                      )
+
+                  elif improvement < 0:
+
+                      print(
+
+                          f"  DE441 worsens absolute timing residual by "
+
+                          f"{abs(improvement):.0f} s"
+
+                      )
+
+                  else:
+
+                      print(
+
+                          "  DE441 leaves absolute timing residual unchanged"
+
+                      )
+
+                  print(
+
+                      f"  Sun-vector angular difference at 00:00 UTC: "
+
+                      f"{sun_angle:.9f} deg"
+
+                  )
+
+                  print(
+
+                      f"  Sun-vector Cartesian difference at 00:00 UTC: "
+
+                      f"{sun_distance:.3f} km"
+
+                  )
+
+                  print()
+
+          finally:
+
+              eclipse_engine.sun_vector_j2000 = original_sun_function
+
+              spice.kclear()
+
+          print("=" * 72)
+
+          print("COMPARISON COMPLETE")
+
+          print("=" * 72)
+
+          PY
+
+          echo "" >> debug.txt
+
+          echo "===== COMPACT SUN vs DE441 ECLIPSE COMPARISON =====" >> debug.txt
+
+          cat de441-eclipse-comparison.txt >> debug.txt
+
+      - name: Record Microkernel size and checksum
+
+        run: |
+
+          echo "" >> debug.txt
+
+          echo "===== STAR ALMANACK MICROKERNEL =====" >> debug.txt
+
+          ls -lh star-almanack-microkernel.bsp >> debug.txt
+
+          echo "" >> debug.txt
+
+          echo "SHA-256:" >> debug.txt
+
+          sha256sum star-almanack-microkernel.bsp >> debug.txt
+
+          echo "" >> debug.txt
+
+          echo "Finished: $(date -u)" >> debug.txt
+
+      - name: Show debug.txt
+
+        if: always()
+
+        run: cat debug.txt
+
+      - name: Free DE441 source-kernel disk space
+
+        run: |
+
+          echo "Disk space before cleanup:"
+
+          df -h .
+
+          rm -f de441_part-1.bsp de441_part-2.bsp
+
+          echo "Disk space after cleanup:"
+
+          df -h .
+
+          test -s star-almanack-microkernel.bsp
+
+      - name: Upload Star Almanack Microkernel
+
+        uses: actions/upload-artifact@v4
+
+        with:
+
+          name: star-almanack-microkernel
+
+          path: |
+
+            star-almanack-microkernel.bsp
+
+            naif0012.tls
+
+            debug.txt
+
+            de441-eclipse-comparison.txt
+
+            de441-full-vs-subset-2024.txt
+
+          if-no-files-found: error
+
+      - name: Upload diagnostic
+
+        if: always()
+
+        uses: actions/upload-artifact@v4
+
+        with:
+
+          name: de441-diagnostic
+
+          path: |
+
+            debug.txt
+
+            de441-eclipse-comparison.txt
+
+            de441-full-vs-subset-2024.txt
+
+          if-no-files-found: error
+
+      - name: Commit Star Almanack Microkernel
+
+        run: |
+
+          git config user.name "github-actions[bot]"
+
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add star-almanack-microkernel.bsp
+
+          if git diff --cached --quiet; then
+
+            echo "Microkernel is already current."
+
+          else
+
+            git commit -m "Update Star Almanack Microkernel"
+
+            git pull --rebase
+
+            git push
+
+          fi

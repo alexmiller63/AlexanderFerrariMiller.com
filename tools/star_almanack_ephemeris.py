@@ -28,7 +28,7 @@ Calculation dependency:
 
 Kernel acquisition/caching belongs to the workflow/runtime environment. The
 normal GitHub Actions path stores the kernels under .cache/skyfield and reuses
-them through actions/cache. See Historical/EPHEMERIS-PROVENANCE.md.
+them through actions/cache. See EPHEMERIS-PROVENANCE.md.
 """
 from __future__ import annotations
 

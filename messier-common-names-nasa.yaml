@@ -1,0 +1,38 @@
+# NASA-attested Messier common names
+# Admission rule: include a common/traditional name only when NASA Science uses it for that Messier object.
+# This file records provenance for reconciliation into fixed-objects.yaml; it does not replace fixed-objects.yaml as source of truth.
+source: https://science.nasa.gov/mission/hubble/science/explore-the-night-sky/hubble-messier-catalog/
+verified: 2026-09-05
+
+names:
+  M1: [Crab Nebula]
+  M8: [Lagoon Nebula]
+  M11: [Wild Duck Cluster]
+  M13: [Hercules Cluster]
+  M15: [Great Pegasus Cluster]
+  M16: [Eagle Nebula]
+  M17: [Omega Nebula, Swan Nebula]
+  M20: [Trifid Nebula]
+  M27: [Dumbbell Nebula]
+  M31: [Andromeda Galaxy]
+  M33: [Triangulum Galaxy]
+  M35: [Shoe Buckle Cluster]
+  M42: [Orion Nebula]
+  M43: [DeMairan's Nebula]
+  M44: [Beehive Cluster, Praesepe]
+  M45: [Pleiades, Seven Sisters]
+  M51: [Whirlpool Galaxy]
+  M57: [Ring Nebula]
+  M63: [Sunflower Galaxy]
+  M64: [Black Eye Galaxy]
+  M67: [King Cobra Cluster, Golden Eye Cluster]
+  M76: [Cork Nebula, Barbell Nebula, Little Dumbbell Nebula]
+  M82: [Cigar Galaxy]
+  M83: [Southern Pinwheel]
+  M101: [Pinwheel Galaxy]
+  M102: [Spindle Galaxy]
+  M104: [Sombrero Galaxy]
+
+# Entries above are the conservative NASA-attested set established by this audit pass.
+# Existing fixed-objects.yaml names not listed here are not automatically rejected;
+# they require their own NASA provenance check before being changed or removed.

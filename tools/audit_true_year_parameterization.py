@@ -30,7 +30,7 @@ from almanack_calendar import CALENDAR_RE, ROW_RE, _get_attr, page_dates
 
 ROOT = Path(__file__).resolve().parents[1]
 PUBLIC = ROOT / "almanack"
-SRC = ROOT / "Historical"
+SRC = ROOT
 SOURCE_SITE = SRC / "site"
 GENERATED = SRC / "generated"
 DEFAULT_YEARS = (2025, 2027)

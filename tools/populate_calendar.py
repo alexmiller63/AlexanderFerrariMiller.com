@@ -35,9 +35,9 @@ from almanack_time import AstroInstant, interpolate_instant
 from star_almanack_ephemeris import StarAlmanackEphemeris
 
 ROOT = Path(__file__).resolve().parents[1]
-SOURCE_ROOT = ROOT / "Historical" / "site"
+SOURCE_ROOT = ROOT / "site"
 PUBLIC_ROOT = ROOT / "almanack"
-DATA_ROOT = ROOT / "Historical" / "generated"
+DATA_ROOT = ROOT / "generated"
 SIGNS = "♈♉♊♋♌♍♎♏♐♑♒♓"
 SIGN_NAMES = (
     "Aries", "Taurus", "Gemini", "Cancer", "Leo", "Virgo",

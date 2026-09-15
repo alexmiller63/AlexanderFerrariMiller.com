@@ -4,7 +4,7 @@ from __future__ import annotations
 import argparse,csv,datetime as dt
 from pathlib import Path
 from almanack_calendar import ensure_calendar_metadata,get_events
-ROOT=Path(__file__).resolve().parents[1]; SRC=ROOT/"Historical"; GENERATED=SRC/"generated"; ROOTS=(SRC/"site",ROOT/"almanack")
+ROOT=Path(__file__).resolve().parents[1]; SRC=ROOT; GENERATED=SRC/"generated"; ROOTS=(SRC/"site",ROOT/"almanack")
 def parse_years():
  p=argparse.ArgumentParser(description="Verify Star Almanack constellation centers"); p.add_argument("years",metavar="YEAR",type=int,nargs="+"); a=p.parse_args(); years=list(dict.fromkeys(a.years))
  for y in years:

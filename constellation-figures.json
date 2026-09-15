@@ -1,0 +1,80 @@
+{
+  "Pegasus": {
+    "constellation": "Peg",
+    "target": "Eps Peg",
+    "target_name": "Enif",
+    "field_deg": 55.0,
+    "figure_cutoff": 4.0,
+    "exception_cutoff": 4.5,
+    "exceptions": ["Kap Peg"],
+    "figure_paths": [
+      ["Alp Peg", "Zet Peg", "Eps Peg"],
+      ["Bet Peg", "Eta Peg", "The Peg", "Eps Peg"],
+      ["Alp Peg", "Iot Peg", "Kap Peg"],
+      ["Bet Peg", "Mu Peg", "Lam Peg"]
+    ],
+    "asterisms": [
+      {
+        "name": "Great Square of Pegasus",
+        "label_offset": [0, 18],
+        "paths": [["Alp And", "Bet Peg", "Alp Peg", "Gam Peg", "Alp And"]]
+      }
+    ],
+    "deep_sky_objects": [
+      {
+        "name": "M15",
+        "type": "globular cluster",
+        "ra_deg": 322.4930,
+        "dec_deg": 12.1670,
+        "from_ref": "Eps Peg",
+        "distance_label": "≈4°",
+        "label_offset": [10, 10]
+      }
+    ],
+    "caption": "Pegasus · Martz/MacRobert stick figure · Great Square · Enif ↔ M15"
+  },
+  "Aquarius": {
+    "constellation": "Aqr",
+    "target": "Alp Aqr",
+    "target_name": "Sadalmelik",
+    "field_deg": 58.0,
+    "figure_cutoff": 4.0,
+    "exception_cutoff": 4.5,
+    "exceptions": [],
+    "show_figure_labels": true,
+    "figure_paths": [
+      ["Alp Aqr", "HIP 110395", "HIP 110960", "HIP 110672", "Alp Aqr", "HIP 106278", "HIP 102618"],
+      ["HIP 111497", "HIP 110960"],
+      ["HIP 106278", "HIP 109139"],
+      ["Alp Aqr", "HIP 110003", "HIP 112961", "HIP 114724", "HIP 114855", "HIP 115438"],
+      ["HIP 112961", "HIP 112716", "HIP 113136", "HIP 114855", "HIP 114341"]
+    ],
+    "label_offsets": {
+      "HIP 115438": [-12, 5],
+      "HIP 113136": [16, 5]
+    },
+    "asterisms": [
+      {
+        "name": "Water Jar",
+        "label_offset": [0, 52],
+        "hide_component_labels": true,
+        "inset": true,
+        "inset_slug": "water-jar-kilroy-1919",
+        "inset_label_offsets": {
+          "HIP 110395": [12, 8],
+          "HIP 110960": [30, 5]
+        },
+        "paths": [
+          ["HIP 110395", "HIP 110960", "HIP 110672"],
+          ["HIP 111497", "HIP 110960"]
+        ]
+      },
+      {
+        "name": "Great Square of Pegasus",
+        "label_offset": [0, 18],
+        "paths": [["Alp And", "Bet Peg", "Alp Peg", "Gam Peg", "Alp And"]]
+      }
+    ],
+    "caption": "Aquarius · Martz/MacRobert stick figure · Water Jar highlighted"
+  }
+}

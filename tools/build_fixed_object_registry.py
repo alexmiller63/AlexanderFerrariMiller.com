@@ -13,7 +13,7 @@ import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-SRC = ROOT / "Historical"
+SRC = ROOT
 AUDIT_PATH = SRC / "generated" / "fixed-object-identity-audit.json"
 REGISTRY_PATH = SRC / "database" / "fixed-object-registry.json"
 

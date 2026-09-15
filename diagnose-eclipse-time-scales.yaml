@@ -1,0 +1,280 @@
+name: Diagnose Eclipse Time Scales
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  diagnose-eclipse-time-scales:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out Star Almanack
+        uses: actions/checkout@v6
+
+      - name: Verify validated DE441 microkernel
+        run: |
+          test -s star-almanack-microkernel.bsp
+          ls -lh star-almanack-microkernel.bsp
+
+      - name: Download NAIF leap-seconds kernel
+        run: |
+          wget -q --show-progress \
+            "https://naif.jpl.nasa.gov/pub/naif/generic_kernels/lsk/naif0012.tls"
+
+      - name: Install Python dependencies
+        run: |
+          python3 -m pip install --disable-pip-version-check spiceypy pyyaml
+
+      - name: Bootstrap ELP2000-82B archive
+        working-directory: star-almanack-elp82b
+        run: |
+          python lunar_elp.py bootstrap data/elp82b
+          python lunar_elp.py verify data/elp82b
+          python normalize_elp82b.py data/elp82b elp82b-manifest.json
+
+      - name: Instrument UTC, TDB, and greatest-eclipse geometry
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          python3 <<'PY' | tee eclipse-time-scale-diagnostic.txt
+          from __future__ import annotations
+
+          from datetime import datetime, timedelta, timezone
+          import math
+
+          import spiceypy as spice
+          import yaml
+
+          import eclipse_engine
+
+          KERNEL = "star-almanack-microkernel.bsp"
+          LSK = "naif0012.tls"
+          J2000 = 2451545.0
+          SECONDS_PER_DAY = 86400.0
+
+          def parse_iso_z(text: str) -> datetime:
+              return datetime.fromisoformat(text.replace("Z", "+00:00")).astimezone(timezone.utc)
+
+          def datetime_to_jd(dt: datetime) -> float:
+              dt = dt.astimezone(timezone.utc)
+              hour = (
+                  dt.hour
+                  + dt.minute / 60.0
+                  + dt.second / 3600.0
+                  + dt.microsecond / 3_600_000_000.0
+              )
+              return eclipse_engine.gregorian_to_jd(
+                  dt.year, dt.month, dt.day, hour
+              )
+
+          def jd_to_datetime(jd: float) -> datetime:
+              return datetime(2000, 1, 1, 12, tzinfo=timezone.utc) + timedelta(
+                  days=jd - J2000
+              )
+
+          def jd_to_spice_utc(jd: float) -> str:
+              dt = jd_to_datetime(jd)
+              return dt.strftime("%Y-%m-%dT%H:%M:%S.%f")
+
+          def signed_seconds(a: str, b: str) -> float:
+              return (parse_iso_z(a) - parse_iso_z(b)).total_seconds()
+
+          def de441_sun_geometric(jd_tdb: float) -> eclipse_engine.Vec3:
+              et = (jd_tdb - J2000) * SECONDS_PER_DAY
+              pos, _ = spice.spkpos(
+                  "SUN",
+                  et,
+                  "ECLIPJ2000",
+                  "NONE",
+                  "EARTH",
+              )
+              return eclipse_engine.Vec3(
+                  float(pos[0]), float(pos[1]), float(pos[2])
+              )
+
+          def spice_tdb_jd_from_utc_jd(jd_utc: float) -> float:
+              utc_text = jd_to_spice_utc(jd_utc)
+              et = spice.str2et(utc_text)
+              return J2000 + et / SECONDS_PER_DAY
+
+          spice.furnsh(LSK)
+          spice.furnsh(KERNEL)
+
+          original_sun = eclipse_engine.sun_vector_j2000
+          original_time = eclipse_engine.utc_to_tdb_approx
+
+          with open("eclipse-validation-cases.yaml", "r", encoding="utf-8") as handle:
+              spec = yaml.safe_load(handle)
+
+          cases = []
+          for case in spec["historical"]:
+              cases.append(
+                  (
+                      case["label"],
+                      case["date_utc"],
+                      case["expected_greatest_utc"],
+                  )
+              )
+          for case in spec["future_jello"]["cases"]:
+              cases.append(
+                  (
+                      case["label"],
+                      case["date_utc"],
+                      case["nasa_greatest_utc"],
+                  )
+              )
+
+          print("=" * 100)
+          print("STAR ALMANACK — ECLIPSE TIME-SCALE / GEOMETRY INSTRUMENTATION")
+          print("=" * 100)
+          print()
+          print("Sun:  DE441 geometric, ECLIPJ2000, Earth-centered")
+          print("Moon: ELP2000-82B")
+          print()
+          print("A = current engine time conversion: UTC JD + Delta-T approximation")
+          print("B = NAIF SPICE conversion: UTC -> ET/TDB using naif0012.tls")
+          print()
+          print("No production files are modified by this diagnostic.")
+          print()
+
+          try:
+              eclipse_engine.sun_vector_j2000 = de441_sun_geometric
+              engine = eclipse_engine.EclipseEngine()
+
+              for label, date_utc, reference_utc in cases:
+                  print("-" * 100)
+                  print(label)
+                  print(f"Date:       {date_utc}")
+                  print(f"Reference:  {reference_utc}")
+                  print()
+
+                  # A: current time-scale behavior.
+                  eclipse_engine.utc_to_tdb_approx = original_time
+                  event_a = engine.find_solar_eclipse(date_utc)
+
+                  calc_jd_a = event_a.greatest_jd_utc
+                  ref_jd = datetime_to_jd(parse_iso_z(reference_utc))
+
+                  geom_calc_a = engine.geometry_at_utc_jd(calc_jd_a)
+                  geom_ref_a = engine.geometry_at_utc_jd(ref_jd)
+
+                  # Directly compare the engine's adopted ephemeris time against
+                  # SPICE's UTC->TDB conversion at both instants.
+                  spice_tdb_calc = spice_tdb_jd_from_utc_jd(calc_jd_a)
+                  spice_tdb_ref = spice_tdb_jd_from_utc_jd(ref_jd)
+
+                  engine_offset_calc = (
+                      geom_calc_a.jd_tdb_approx - calc_jd_a
+                  ) * SECONDS_PER_DAY
+                  engine_offset_ref = (
+                      geom_ref_a.jd_tdb_approx - ref_jd
+                  ) * SECONDS_PER_DAY
+
+                  spice_offset_calc = (
+                      spice_tdb_calc - calc_jd_a
+                  ) * SECONDS_PER_DAY
+                  spice_offset_ref = (
+                      spice_tdb_ref - ref_jd
+                  ) * SECONDS_PER_DAY
+
+                  print("A — CURRENT ENGINE TIME SCALE")
+                  print(f"  greatest UTC:                    {event_a.greatest_utc}")
+                  print(
+                      f"  residual vs reference:           "
+                      f"{signed_seconds(event_a.greatest_utc, reference_utc):+.3f} s"
+                  )
+                  print(f"  engine UTC->TDB-like offset:      {engine_offset_calc:+.6f} s")
+                  print(f"  SPICE UTC->TDB offset:            {spice_offset_calc:+.6f} s")
+                  print(
+                      f"  engine minus SPICE TDB argument:  "
+                      f"{(geom_calc_a.jd_tdb_approx - spice_tdb_calc) * SECONDS_PER_DAY:+.6f} s"
+                  )
+                  print(f"  axis distance at calculated:      {geom_calc_a.axis_distance_km:.9f} km")
+                  print(f"  axis distance at reference:       {geom_ref_a.axis_distance_km:.9f} km")
+                  print(
+                      f"  reference minus calculated axis:  "
+                      f"{geom_ref_a.axis_distance_km - geom_calc_a.axis_distance_km:+.9f} km"
+                  )
+                  print(f"  q_min at calculated:              {geom_calc_a.q_min_km:.9f} km")
+                  print(f"  q_min at reference:               {geom_ref_a.q_min_km:.9f} km")
+                  print()
+
+                  print("REFERENCE-INSTANT TIME OFFSETS")
+                  print(f"  engine UTC->TDB-like offset:      {engine_offset_ref:+.6f} s")
+                  print(f"  SPICE UTC->TDB offset:            {spice_offset_ref:+.6f} s")
+                  print(
+                      f"  engine minus SPICE TDB argument:  "
+                      f"{(geom_ref_a.jd_tdb_approx - spice_tdb_ref) * SECONDS_PER_DAY:+.6f} s"
+                  )
+                  print()
+
+                  # B: replace only the UTC->ephemeris-time conversion.
+                  eclipse_engine.utc_to_tdb_approx = spice_tdb_jd_from_utc_jd
+                  event_b = engine.find_solar_eclipse(date_utc)
+                  geom_calc_b = event_b.geometry
+
+                  print("B — SPICE UTC -> TDB")
+                  print(f"  greatest UTC:                    {event_b.greatest_utc}")
+                  print(
+                      f"  residual vs reference:           "
+                      f"{signed_seconds(event_b.greatest_utc, reference_utc):+.3f} s"
+                  )
+                  print(
+                      f"  shift B minus A:                  "
+                      f"{signed_seconds(event_b.greatest_utc, event_a.greatest_utc):+.3f} s"
+                  )
+                  print(f"  axis distance at calculated:      {geom_calc_b.axis_distance_km:.9f} km")
+                  print()
+
+                  # Sample the objective around the published instant using B,
+                  # so its local direction is visible without relying on the minimizer.
+                  print("SPICE-TDB OBJECTIVE AROUND REFERENCE")
+                  for offset_s in (-60, -30, -10, 0, 10, 30, 60):
+                      sample_jd = ref_jd + offset_s / SECONDS_PER_DAY
+                      g = engine.geometry_at_utc_jd(sample_jd)
+                      print(
+                          f"  reference {offset_s:+4d} s : "
+                          f"axis={g.axis_distance_km:.9f} km"
+                      )
+                  print()
+
+                  if geom_ref_a.axis_distance_km < geom_calc_a.axis_distance_km:
+                      print("INTERPRETATION: reference instant has better A-geometry -> investigate search.")
+                  else:
+                      print("INTERPRETATION: calculated instant has better A-geometry -> displacement is upstream of search.")
+
+                  if abs(signed_seconds(event_b.greatest_utc, reference_utc)) < abs(
+                      signed_seconds(event_a.greatest_utc, reference_utc)
+                  ):
+                      print("TIME-SCALE TEST: SPICE UTC->TDB improves the residual.")
+                  elif abs(signed_seconds(event_b.greatest_utc, reference_utc)) > abs(
+                      signed_seconds(event_a.greatest_utc, reference_utc)
+                  ):
+                      print("TIME-SCALE TEST: SPICE UTC->TDB worsens the residual.")
+                  else:
+                      print("TIME-SCALE TEST: SPICE UTC->TDB leaves the rounded residual unchanged.")
+
+                  print()
+
+          finally:
+              eclipse_engine.sun_vector_j2000 = original_sun
+              eclipse_engine.utc_to_tdb_approx = original_time
+              spice.kclear()
+
+          print("=" * 100)
+          print("DIAGNOSTIC COMPLETE")
+          print("=" * 100)
+          PY
+
+      - name: Upload diagnostic
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eclipse-time-scale-diagnostic
+          path: eclipse-time-scale-diagnostic.txt
+          if-no-files-found: warn
+          retention-days: 7

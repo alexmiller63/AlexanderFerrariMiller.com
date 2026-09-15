@@ -6,8 +6,8 @@ import re
 import sys
 
 ROOT = Path(__file__).resolve().parents[1]
-FIXED_OBJECTS = ROOT / "Historical" / "fixed-objects.yaml"
-EDITORIAL_DATA = ROOT / "Historical" / "messier-editorial.json"
+FIXED_OBJECTS = ROOT / "fixed-objects.yaml"
+EDITORIAL_DATA = ROOT / "messier-editorial.json"
 
 BANDS = "Northern|Tropical|Southern"
 SEASONS = "Spring|Summer|Autumn|Winter"
@@ -75,10 +75,10 @@ def parse_years() -> list[int]:
 
 
 def targets(years: list[int]) -> list[Path]:
-    paths = [ROOT / "Historical" / "almanack-expanded.md"]
+    paths = [ROOT / "almanack-expanded.md"]
     for year in years:
         paths.extend(sorted((ROOT / "almanack" / str(year)).glob("W??/index.html")))
-        paths.extend(sorted((ROOT / "Historical" / "site" / str(year)).glob("W??/index.html")))
+        paths.extend(sorted((ROOT / "site" / str(year)).glob("W??/index.html")))
     return paths
 
 

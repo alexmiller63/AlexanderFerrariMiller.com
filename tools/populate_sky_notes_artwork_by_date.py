@@ -17,7 +17,7 @@ from pathlib import Path
 from iso_date_range import parse_range_args
 
 ROOT = Path(__file__).resolve().parents[1]
-SOURCE_ROOT = ROOT / "Historical"
+SOURCE_ROOT = ROOT
 DESCRIPTOR_ROOT = SOURCE_ROOT / "generated-sky-notes"
 GEOMETRY_REGISTRY = SOURCE_ROOT / "finder-geometry" / "martz-macrobert.json"
 

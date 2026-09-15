@@ -5,9 +5,9 @@ The first region implemented is the visible Milky Way.  Membership is derived
 from the outermost (``ol1``) contour in the Milky Way Outline Catalog by
 José R. Vieira, using the J2000 GeoJSON conversion distributed by d3-celestial.
 
-The authoritative fixed-object catalog remains ``Historical/fixed-objects.yaml``.
+The authoritative fixed-object catalog remains ``fixed-objects.yaml``.
 Derived region membership is written to the companion catalog
-``Historical/fixed-object-regions.yaml`` so future Milky Way subregions
+``fixed-object-regions.yaml`` so future Milky Way subregions
 can be added without changing the fixed-object row schemas.
 
 No live astronomical answer is consumed.  The mask is pinned to a historical
@@ -28,8 +28,8 @@ from typing import Any, Iterable
 import yaml
 
 ROOT = Path(__file__).resolve().parents[1]
-FIXED_OBJECTS = ROOT / "Historical" / "fixed-objects.yaml"
-OUTPUT = ROOT / "Historical" / "fixed-object-regions.yaml"
+FIXED_OBJECTS = ROOT / "fixed-objects.yaml"
+OUTPUT = ROOT / "fixed-object-regions.yaml"
 CACHE = ROOT / ".cache" / "source-data" / "milky-way-vieira-mw.json"
 
 SOURCE_COMMIT = "fc3f358ff33c95a708d0908a84b2f5348bb445ea"

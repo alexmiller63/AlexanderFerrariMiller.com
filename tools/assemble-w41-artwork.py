@@ -6,7 +6,7 @@ import math, shutil
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "almanack" / "2026" / "W41"
 FINDERS = OUT / "finders"
-SOURCE_FINDERS = ROOT / "Historical" / "observer-views" / "W41"
+SOURCE_FINDERS = ROOT / "observer-views" / "W41"
 
 BODIES = [
     ("☉","Sun",6,11+46/60),("☽","Moon",4,0+38/60),

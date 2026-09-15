@@ -1,0 +1,82 @@
+week:
+  iso_week: "2026-W34"
+  iso_date: "2026-W34-1"
+  civil_start: "2026-08-17"
+  civil_end: "2026-08-23"
+  snapshot_utc: "2026-08-17T00:00:00Z"
+  title: "August 17–23, 2026"
+
+chart:
+  reference_frame: geocentric
+  zodiac: tropical
+  longitude_direction:
+    counterclockwise: east
+    clockwise: west
+  wheel:
+    aries_start_longitude_deg: 0
+    aries_start_angle_deg: 180
+    direction: counterclockwise
+    show_sign_names: false
+    show_sign_glyphs: true
+    show_sign_longitude_ranges: true
+    show_planet_degree_labels_inside_wheel: false
+    center_text:
+      - "ISO 2026-W34-1"
+      - "00:00 UTC"
+
+planetary_positions_at_start:
+  - body: Sun
+    glyph: "☉"
+    sign: Leo
+    sign_glyph: "♌"
+    sign_degree: "24°08′"
+    ecliptic_longitude_deg: 144.1333333333
+
+  - body: Moon
+    glyph: "☽"
+    sign: Libra
+    sign_glyph: "♎"
+    sign_degree: "18°27′"
+    ecliptic_longitude_deg: 198.45
+
+  - body: Mercury
+    glyph: "☿"
+    sign: Leo
+    sign_glyph: "♌"
+    sign_degree: "13°05′"
+    ecliptic_longitude_deg: 133.0833333333
+
+  - body: Venus
+    glyph: "♀"
+    sign: Libra
+    sign_glyph: "♎"
+    sign_degree: "10°00′"
+    ecliptic_longitude_deg: 190.0
+
+  - body: Mars
+    glyph: "♂"
+    sign: Cancer
+    sign_glyph: "♋"
+    sign_degree: "3°43′"
+    ecliptic_longitude_deg: 93.7166666667
+
+  - body: Jupiter
+    glyph: "♃"
+    sign: Leo
+    sign_glyph: "♌"
+    sign_degree: "10°29′"
+    ecliptic_longitude_deg: 130.4833333333
+
+  - body: Saturn
+    glyph: "♄"
+    sign: Aries
+    sign_glyph: "♈"
+    sign_degree: "14°22′"
+    ecliptic_longitude_deg: 14.3666666667
+
+panels:
+  planetary_positions_title: "PLANETARY POSITIONS AT START"
+  show_week_at_a_glance: false
+  show_best_visibility_note: false
+  show_placidus_houses: false
+  ingress_title: "UPCOMING INGRESSES"

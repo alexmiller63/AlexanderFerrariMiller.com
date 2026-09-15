@@ -1,0 +1,198 @@
+name: Diagnose DE441 Light-Time
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  diagnose-light-time:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out Star Almanack
+        uses: actions/checkout@v6
+
+      - name: Download DE441 source kernels
+        run: |
+          wget -q --show-progress https://naif.jpl.nasa.gov/pub/naif/generic_kernels/spk/planets/de441_part-1.bsp
+          wget -q --show-progress https://naif.jpl.nasa.gov/pub/naif/generic_kernels/spk/planets/de441_part-2.bsp
+
+      - name: Download leap-seconds kernel
+        run: |
+          wget -q https://naif.jpl.nasa.gov/pub/naif/generic_kernels/lsk/naif0012.tls
+
+      - name: Download NAIF SPICE Toolkit
+        run: |
+          wget -q https://naif.jpl.nasa.gov/pub/naif/toolkit/C/PC_Linux_GCC_64bit/packages/cspice.tar.Z
+          tar -xf cspice.tar.Z
+          test -x ./cspice/exe/spkmerge
+
+      - name: Install Python dependencies
+        run: |
+          python3 -m pip install --disable-pip-version-check spiceypy pyyaml
+
+      - name: Bootstrap ELP2000-82B archive
+        working-directory: star-almanack-elp82b
+        run: |
+          python lunar_elp.py bootstrap data/elp82b
+          python lunar_elp.py verify data/elp82b
+          python normalize_elp82b.py data/elp82b elp82b-manifest.json
+
+      - name: Build Star Almanack microkernel
+        run: |
+          cat > de441-subset.cmd <<'EOF'
+          LEAPSECONDS_KERNEL = naif0012.tls
+          SPK_KERNEL = star-almanack-microkernel.bsp
+            LOG_FILE = spkmerge.log
+            BODIES = 3, 10, 301, 399
+            BEGIN_TIME = 1 JAN 1800 00:00:00.000
+            END_TIME = 1 JAN 2200 00:00:00.000
+            SOURCE_SPK_KERNEL = de441_part-1.bsp
+            SOURCE_SPK_KERNEL = de441_part-2.bsp
+          EOF
+
+          ./cspice/exe/spkmerge de441-subset.cmd
+          test -s star-almanack-microkernel.bsp
+
+      - name: Compare geometric and light-time-corrected DE441 Sun
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          python3 <<'PY' | tee de441-light-time-diagnostic.txt
+          from __future__ import annotations
+
+          from datetime import datetime
+          import spiceypy as spice
+          import yaml
+          import eclipse_engine
+
+          KERNEL = "star-almanack-microkernel.bsp"
+
+          def signed_seconds(calculated: str, reference: str) -> float:
+              a = datetime.fromisoformat(calculated.replace("Z", "+00:00"))
+              b = datetime.fromisoformat(reference.replace("Z", "+00:00"))
+              return (a - b).total_seconds()
+
+          def format_seconds(value: float) -> str:
+              sign = "+" if value >= 0 else "-"
+              whole = int(round(abs(value)))
+              hours, rem = divmod(whole, 3600)
+              minutes, seconds = divmod(rem, 60)
+              direction = "LATE" if value > 0 else "EARLY" if value < 0 else "EXACT"
+              return f"{sign}{hours:02d}:{minutes:02d}:{seconds:02d} ({direction})"
+
+          spice.furnsh(KERNEL)
+
+          def de441_sun(jd_tdb: float, abcorr: str) -> eclipse_engine.Vec3:
+              et = (jd_tdb - 2451545.0) * 86400.0
+              position, light_time = spice.spkpos(
+                  "SUN",
+                  et,
+                  "ECLIPJ2000",
+                  abcorr,
+                  "EARTH",
+              )
+              return eclipse_engine.Vec3(
+                  float(position[0]),
+                  float(position[1]),
+                  float(position[2]),
+              )
+
+          def geometric_sun(jd_tdb: float) -> eclipse_engine.Vec3:
+              return de441_sun(jd_tdb, "NONE")
+
+          def light_time_sun(jd_tdb: float) -> eclipse_engine.Vec3:
+              # CN = converged Newtonian one-way light-time correction.
+              # No stellar aberration is included.
+              return de441_sun(jd_tdb, "CN")
+
+          with open("eclipse-validation-cases.yaml", "r", encoding="utf-8") as handle:
+              spec = yaml.safe_load(handle)
+
+          cases = []
+          for case in spec["historical"]:
+              cases.append({
+                  "label": case["label"],
+                  "date": case["date_utc"],
+                  "reference": case["expected_greatest_utc"],
+              })
+
+          for case in spec["future_jello"]["cases"]:
+              cases.append({
+                  "label": case["label"],
+                  "date": case["date_utc"],
+                  "reference": case["nasa_greatest_utc"],
+              })
+
+          engine = eclipse_engine.EclipseEngine()
+          original_sun_function = eclipse_engine.sun_vector_j2000
+
+          print("=" * 76)
+          print("STAR ALMANACK — DE441 LIGHT-TIME DIAGNOSTIC")
+          print("=" * 76)
+          print()
+          print("A = geometric DE441 Sun (SPICE aberration correction NONE)")
+          print("B = converged one-way light-time DE441 Sun (SPICE correction CN)")
+          print("Moon = existing ELP2000-82B calculation in both runs")
+          print("No stellar aberration is applied.")
+          print()
+
+          try:
+              for case in cases:
+                  eclipse_engine.sun_vector_j2000 = geometric_sun
+                  geometric = engine.find_solar_eclipse(case["date"])
+
+                  eclipse_engine.sun_vector_j2000 = light_time_sun
+                  corrected = engine.find_solar_eclipse(case["date"])
+
+                  geometric_error = signed_seconds(
+                      geometric.greatest_utc, case["reference"]
+                  )
+                  corrected_error = signed_seconds(
+                      corrected.greatest_utc, case["reference"]
+                  )
+                  shift = signed_seconds(
+                      corrected.greatest_utc, geometric.greatest_utc
+                  )
+                  improvement = abs(geometric_error) - abs(corrected_error)
+
+                  # Report the actual dynamically calculated Sun light time
+                  # at the corrected event's ephemeris time.
+                  et = (corrected.geometry.jd_tdb_approx - 2451545.0) * 86400.0
+                  _, lt = spice.spkpos(
+                      "SUN", et, "ECLIPJ2000", "CN", "EARTH"
+                  )
+
+                  print("-" * 76)
+                  print(case["label"])
+                  print(f"Date:                    {case['date']}")
+                  print(f"Reference greatest:      {case['reference']}")
+                  print(f"Geometric greatest:      {geometric.greatest_utc}")
+                  print(f"Geometric residual:      {format_seconds(geometric_error)}")
+                  print(f"Light-time greatest:     {corrected.greatest_utc}")
+                  print(f"Light-time residual:     {format_seconds(corrected_error)}")
+                  print(f"Resulting event shift:   {shift:+.3f} s")
+                  print(f"Residual improvement:    {improvement:+.3f} s")
+                  print(f"Calculated Sun light time: {float(lt):.6f} s")
+                  print()
+
+          finally:
+              eclipse_engine.sun_vector_j2000 = original_sun_function
+              spice.kclear()
+
+          print("=" * 76)
+          print("DIAGNOSTIC COMPLETE")
+          print("=" * 76)
+          PY
+
+      - name: Upload diagnostic
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: de441-light-time-diagnostic
+          path: de441-light-time-diagnostic.txt
+          if-no-files-found: warn
+          retention-days: 7

@@ -1,0 +1,71 @@
+{
+  "schema_version": 1,
+  "purpose": "Pre-migration physical-object candidates required to resolve catalog targets that are referenced by the relationship layer but absent from the original source candidate set.",
+  "status": "migration_scaffold",
+  "permanent_fixed_object_ids_assigned": false,
+  "objects": [
+    {
+      "supplemental_key": "ngc:869",
+      "identifiers": [
+        {"namespace": "ngc", "value": "869"}
+      ],
+      "name": "h Persei Cluster",
+      "constellation": "Per",
+      "ra_h": 2.31605556,
+      "dec_deg": 57.13388889,
+      "object_type": "OC",
+      "object_type_family": "open_cluster",
+      "source": "SIMBAD",
+      "source_record": "NGC 869",
+      "source_note": "ICRS J2000 position 02 18 57.8 +57 08 02; open cluster."
+    },
+    {
+      "supplemental_key": "ngc:6995",
+      "identifiers": [
+        {"namespace": "ngc", "value": "6995"}
+      ],
+      "name": "Eastern Veil Nebula component",
+      "constellation": "Cyg",
+      "ra_h": 20.95,
+      "dec_deg": 31.21666667,
+      "object_type": "SNR",
+      "object_type_family": "supernova_remnant",
+      "source": "SIMBAD",
+      "source_record": "NGC 6995",
+      "source_note": "ICRS J2000 position 20 57 00.0 +31 13 00; included in the Veil Nebula."
+    },
+    {
+      "supplemental_key": "hd:238107",
+      "identifiers": [
+        {"namespace": "hd", "value": "238107"},
+        {"namespace": "gaia_dr3", "value": "1575047353068482688"},
+        {"namespace": "wds", "value": "J12222+5805A"}
+      ],
+      "name": "HD 238107",
+      "constellation": "UMa",
+      "ra_h": 12.37014645,
+      "dec_deg": 58.08293027,
+      "object_type": "star",
+      "object_type_family": "star",
+      "source": "SIMBAD",
+      "source_record": "HD 238107",
+      "source_note": "Winnecke 4 / M40 component A; ICRS J2000 position from Gaia DR3-backed SIMBAD record."
+    },
+    {
+      "supplemental_key": "hd:238108",
+      "identifiers": [
+        {"namespace": "hd", "value": "238108"},
+        {"namespace": "wds", "value": "J12222+5805B"}
+      ],
+      "name": "HD 238108",
+      "constellation": "UMa",
+      "ra_h": 12.37194429,
+      "dec_deg": 58.08621314,
+      "object_type": "star",
+      "object_type_family": "star",
+      "source": "SIMBAD",
+      "source_record": "HD 238108",
+      "source_note": "Winnecke 4 / M40 component B; ICRS J2000 position 12 22 18.9994 +58 05 10.3673 as reported from SIMBAD."
+    }
+  ]
+}

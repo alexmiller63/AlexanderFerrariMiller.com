@@ -2,7 +2,7 @@
 """Generate Star Almanack placeholder years with generic year navigation.
 
 This is the production front end for the legacy placeholder renderer in
-Historical/publish_placeholder_years.py.  The legacy module continues to
+publish_placeholder_years.py.  The legacy module continues to
 own the proven HTML/calendar rendering, while this wrapper supplies generic
 navigation and an arbitrary list of ISO years.
 """
@@ -14,7 +14,7 @@ import importlib.util
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-LEGACY = ROOT / "Historical" / "publish_placeholder_years.py"
+LEGACY = ROOT / "publish_placeholder_years.py"
 
 spec = importlib.util.spec_from_file_location("placeholder_renderer", LEGACY)
 renderer = importlib.util.module_from_spec(spec)

@@ -1,0 +1,25 @@
+model: ELP2000-82B
+purpose: eclipse-grade geocentric lunar longitude latitude and distance
+provenance:
+  archive: CDS/VizieR VI/79
+  authors:
+    - Michele Chapront-Touze
+    - Jean Chapront
+  theory_papers:
+    - "The Lunar Ephemeris ELP 2000, Astronomy & Astrophysics 124 (1983) 50"
+    - "ELP 2000-85: a semi-analytical lunar ephemeris adequate for historical times, Astronomy & Astrophysics 190 (1988) 342"
+inputs:
+  coefficient_tables: 36
+  components:
+    - main lunar problem
+    - Earth figure perturbations
+    - planetary perturbations
+    - tidal effects
+    - lunar figure perturbations
+    - relativistic perturbations
+    - solar-eccentricity planetary terms
+time_argument: TT
+policy:
+  published_model_coefficients: allowed_input
+  published_eclipse_times: validation_only
+  empirical_eclipse_time_offsets: forbidden

@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "purpose": "Machine-readable resolutions for fixed objects whose source constellation labels disagree because of official IAU boundary geometry.",
+  "reviews": [
+    {
+      "object_identifier": {"namespace": "ngc", "value": "6946"},
+      "display_name": "NGC 6946",
+      "status": "resolved_boundary_spanning_object",
+      "reference_position": {
+        "frame": "ICRS",
+        "epoch": "J2000",
+        "ra_hms": "20 34 52.332",
+        "dec_dms": "+60 09 13.24",
+        "ra_h": 20.58120333,
+        "dec_deg": 60.15367778,
+        "source": "SIMBAD"
+      },
+      "iau_boundary_snapshot": {
+        "coordinate_epoch": "J2000",
+        "primary_constellation_by_reference_point": "Cyg",
+        "boundary_constellations_intersected_by_extended_object": ["Cyg", "Cep"],
+        "files": ["cyg.txt", "cep.txt"]
+      },
+      "source_label_explanation": "The galaxy is extended and straddles the official Cepheus-Cygnus boundary. The SIMBAD reference center lies in Cygnus. The rounded Caldwell position lies just inside Cepheus, while the Finest NGC position lies in Cygnus. Preserve the source labels as provenance; do not treat the difference as a physical-identity contradiction.",
+      "audit_resolution": "suppress_constellation_identity_contradiction"
+    }
+  ]
+}

@@ -8,7 +8,7 @@ import catalog_common_names as names
 from almanack_calendar import ensure_calendar_metadata,get_events,set_events
 from star_almanack_astronomy import declination_band, season_for
 from star_almanack_objects import HTML_AID, observing_aid_for_magnitude
-ROOT=Path(__file__).resolve().parents[1]; SRC=ROOT/"Historical"; GENERATED=SRC/"generated"
+ROOT=Path(__file__).resolve().parents[1]; SRC=ROOT; GENERATED=SRC/"generated"
 PUBLIC=ROOT/"almanack"; SOURCE_SITE=SRC/"site"; FIXED=SRC/"fixed-objects.yaml"
 EDITORIAL=json.loads((SRC/"messier-editorial.json").read_text(encoding="utf-8"))
 ASTERISM_OVERLAP=SRC/"asterism-catalog-overlap.csv"; DEFAULT_YEARS=(2025,2026,2027)

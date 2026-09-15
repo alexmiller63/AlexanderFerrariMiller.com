@@ -1,0 +1,37 @@
+edition: 2026
+
+definition:
+  frame: geocentric
+  zodiac: tropical
+  longitude: apparent_solar_ecliptic_longitude
+  description: >
+    Astronomical cross-quarter points occur when the apparent geocentric Sun
+    reaches the four longitudes halfway between the equinoxes and solstices:
+    45°, 135°, 225°, and 315°.
+
+cross_quarter_points:
+  - longitude: 315°
+    label: "Winter–Spring midpoint"
+    utc: "2026-02-03T20:02:08Z"
+    iso: "2026-W06-2"
+
+  - longitude: 45°
+    label: "Spring–Summer midpoint"
+    utc: "2026-05-05T11:48:44Z"
+    iso: "2026-W19-2"
+
+  - longitude: 135°
+    label: "Summer–Autumn midpoint"
+    utc: "2026-08-07T11:42:45Z"
+    iso: "2026-W32-5"
+
+  - longitude: 225°
+    label: "Autumn–Winter midpoint"
+    utc: "2026-11-07T09:52:05Z"
+    iso: "2026-W45-6"
+
+validation:
+  note: >
+    Calculated with the same apparent-solar-longitude convention used by
+    Star Almanack for the 2026 zodiac ingresses. The calculation reproduces
+    the repository's 0°, 90°, 180°, and 270° seasonal boundary times to the second.
