@@ -56,8 +56,79 @@ main.wrap table.ephemeris{width:100%!important;max-width:100%!important;min-widt
 .planet-finder-strip figcaption,.w15-finder-strip figcaption{text-align:center;font-family:system-ui,sans-serif;font-size:.82rem;color:var(--muted);margin-top:.35rem}
 @media(max-width:760px) and (orientation:portrait){.bayer-toggle-wrap{padding-left:1rem;padding-right:1rem}.section-notation-toggle{padding-left:0;padding-right:0}.bayer-toggle{justify-content:center;flex-wrap:nowrap;gap:.2rem;font-size:.74rem}.section-notation-toggle .bayer-toggle{justify-content:center}.bayer-toggle-label{margin-right:.05rem;white-space:nowrap}.bayer-toggle button{padding:.3rem .42rem;white-space:nowrap}}
 @media(prefers-color-scheme:dark){.bayer-toggle button{background:#1c2a36;border-color:#405567;color:#b6dcff}.bayer-toggle button[aria-pressed=true]{background:#eef7ff;color:#102a43;border-color:#eef7ff}}
+</style><style id="almanack-legend-css">
+.notation-legend {
+  max-width:1080px;
+  margin:0 auto;
+  padding:1rem 1.5rem 1.35rem;
+  font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  font-size:.88rem;
+}
+.notation-legend p { max-width:none; margin:.35rem 0; }
+.legend-line { display:flex; flex-wrap:wrap; gap:.45rem 1rem; align-items:center; }
+.legend-item { white-space:nowrap; }
+.text-symbol { font-size:2em; line-height:.75; vertical-align:-.12em; font-variant-emoji:text; }
+.zodiac-glyph,
+.calendar-symbol {
+  display:inline-block;
+  font-family:'Apple Symbols','Arial Unicode MS','Segoe UI Symbol','Noto Sans Symbols 2',serif;
+  font-variant-emoji:text;
+  color:currentColor;
+  -webkit-text-fill-color:currentColor;
+  font-size:2em;
+  line-height:.75;
+  vertical-align:-.12em;
+}
+.greek-letter {
+  display:inline-block;
+  font-size:1em;
+  line-height:inherit;
+  vertical-align:baseline;
+}
+.calendar-notation-item,
+.notation-item:not(.zodiac-glyph) {
+  display:inline-block;
+  font-size:1em;
+  line-height:inherit;
+  vertical-align:baseline;
+  font-family:inherit;
+}
+.visibility-glyph { height:3em !important; width:auto !important; vertical-align:-.78em !important; }
+.legend-glyph { height:3em; width:auto; vertical-align:-.78em; margin-right:.2rem; }
+.legend-explanation { white-space:normal; }
 </style></head><body><header><div class="wrap"><div class="brand"><a href="/star-almanack/">Star Almanack</a></div><div class="subtitle">Alexander Ferrari Miller</div></div></header><main class="wrap"><nav class="weeknav sitenav"><a href="/star-almanack/">Almanack Home</a><a href="/projects.html">All Projects</a><a href="/index.html">Main Site</a></nav><nav class="yearnav"><a href="../../2025/">← 2025</a><a href="../">2026</a><a href="../../2027/">2027 →</a></nav><nav class="weeknav week-position" aria-label="Week navigation"><a href="../W39/">← ISO 2026-W39</a><span aria-current="page">ISO 2026-W40</span><a href="../W41/">ISO 2026-W41 →</a></nav><h1>ISO 2026-W40</h1><p><strong>Week begins:</strong> Monday, September 28, 2026</p>
 <div class="bayer-toggle-wrap section-notation-toggle" data-notation-target="calendar"><div class="bayer-toggle" role="group" aria-label="Astronomical notation"><span class="bayer-toggle-label">Notation:</span><button type="button" data-bayer-mode="greek" aria-pressed="true">Greek/Symbols</button><button type="button" data-bayer-mode="latin" aria-pressed="false">Latin</button><button type="button" data-bayer-mode="mixed" data-legacy-label="Mixed · Learner" aria-pressed="false">Mixed Learner</button></div></div><h3>Calendar</h3><table class="calendar"><thead><tr><th>Date</th><th>Zodiac day</th><th>Events</th></tr></thead><tbody><tr data-date="2026-09-28"><td data-date="2026-09-28">Mon, Sep 28, 2026</td><td data-zodiac-day="6" data-zodiac-sign="Libra"><span class="zodiac-glyph">♎</span> 6</td><td data-events class="calendar-events-region"><div class="calendar-events"></div></td></tr><tr data-date="2026-09-29"><td data-date="2026-09-29">Tue, Sep 29, 2026</td><td data-zodiac-day="7" data-zodiac-sign="Libra"><span class="zodiac-glyph">♎</span> 7</td><td data-events class="calendar-events-region"><div class="calendar-events"></div></td></tr><tr data-date="2026-09-30"><td data-date="2026-09-30">Wed, Sep 30, 2026</td><td data-zodiac-day="8" data-zodiac-sign="Libra"><span class="zodiac-glyph">♎</span> 8</td><td data-events class="calendar-events-region"><div class="calendar-events"></div></td></tr><tr data-date="2026-10-01"><td data-date="2026-10-01">Thu, Oct 1, 2026</td><td data-zodiac-day="9" data-zodiac-sign="Libra"><span class="zodiac-glyph">♎</span> 9</td><td data-events class="calendar-events-region"><div class="calendar-events"></div></td></tr><tr data-date="2026-10-02"><td data-date="2026-10-02">Fri, Oct 2, 2026</td><td data-zodiac-day="10" data-zodiac-sign="Libra"><span class="zodiac-glyph">♎</span> 10</td><td data-events class="calendar-events-region"><div class="calendar-events"></div></td></tr><tr data-date="2026-10-03"><td data-date="2026-10-03">Sat, Oct 3, 2026</td><td data-zodiac-day="11" data-zodiac-sign="Libra"><span class="zodiac-glyph">♎</span> 11</td><td data-events class="calendar-events-region"><div class="calendar-events"><div class="event-cell">🌗 Last Quarter — 13:25:04 UTC</div></div></td></tr><tr data-date="2026-10-04"><td data-date="2026-10-04">Sun, Oct 4, 2026</td><td data-zodiac-day="12" data-zodiac-sign="Libra"><span class="zodiac-glyph">♎</span> 12</td><td data-events class="calendar-events-region"><div class="calendar-events"></div></td></tr></tbody></table>
 <h3>Weekly Solar-System Ephemeris</h3><p><strong>Snapshot:</strong> pending</p><div class="bayer-toggle-wrap section-notation-toggle" data-notation-target="ephemeris"><div class="bayer-toggle" role="group" aria-label="Astronomical notation"><span class="bayer-toggle-label">Notation:</span><button type="button" data-bayer-mode="greek" aria-pressed="true">Greek/Symbols</button><button type="button" data-bayer-mode="latin" aria-pressed="false">Latin</button><button type="button" data-bayer-mode="mixed" data-legacy-label="Mixed · Learner" aria-pressed="false">Mixed Learner</button></div></div><h3>Naked Eye Bodies</h3><div class="ephemeris-wrap"><table class="ephemeris"><thead><tr><th>Sun</th><th>Moon</th><th>Mercury</th><th>Venus</th><th>Mars</th><th>Jupiter</th><th>Saturn</th></tr></thead><tbody><tr><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr></tbody></table></div><h3>Extended Bodies</h3><div class="ephemeris-wrap"><table class="ephemeris"><thead><tr><th>Ceres</th><th>Uranus</th><th>Neptune</th><th>Pluto</th></tr></thead><tbody><tr><td>—</td><td>—</td><td>—</td><td>—</td></tr></tbody></table></div>
 <div class="bayer-toggle-wrap section-notation-toggle" data-notation-target="finder"><div class="bayer-toggle" role="group" aria-label="Astronomical notation"><span class="bayer-toggle-label">Notation:</span><button type="button" data-bayer-mode="greek" aria-pressed="true">Greek/Symbols</button><button type="button" data-bayer-mode="latin" aria-pressed="false">Latin</button><button type="button" data-bayer-mode="mixed" data-legacy-label="Mixed · Learner" aria-pressed="false">Mixed Learner</button></div></div><h3>Planet Finder</h3><div class="planet-finder-block"><p>Planet finder pending.</p></div>
-<h3>Sky Notes</h3><div class="sky-note"><p>Sky notes pending.</p></div><div class="almanack-bottom-nav-wrap" id="almanack-bottom-nav"><nav class="weeknav sitenav"><a href="/star-almanack/">Almanack Home</a><a href="/projects.html">All Projects</a><a href="/index.html">Main Site</a></nav><nav class="yearnav"><a href="../../2025/#almanack-bottom-nav">← 2025</a><a href="../#almanack-bottom-nav">2026</a><a href="../../2027/#almanack-bottom-nav">2027 →</a></nav><nav class="weeknav week-position" aria-label="Week navigation"><a href="../W39/#almanack-bottom-nav">← ISO 2026-W39</a><span aria-current="page">ISO 2026-W40</span><a href="../W41/#almanack-bottom-nav">ISO 2026-W41 →</a></nav></div></main><footer><div class="wrap">© 2026 Alexander Ferrari Miller. All rights reserved.</div></footer><script src="/almanack/js/notation.js"></script></body></html>
+<h3>Sky Notes</h3><div class="sky-note"><p>Sky notes pending.</p></div><div class="almanack-bottom-nav-wrap" id="almanack-bottom-nav"><nav class="weeknav sitenav"><a href="/star-almanack/">Almanack Home</a><a href="/projects.html">All Projects</a><a href="/index.html">Main Site</a></nav><nav class="yearnav"><a href="../../2025/#almanack-bottom-nav">← 2025</a><a href="../#almanack-bottom-nav">2026</a><a href="../../2027/#almanack-bottom-nav">2027 →</a></nav><nav class="weeknav week-position" aria-label="Week navigation"><a href="../W39/#almanack-bottom-nav">← ISO 2026-W39</a><span aria-current="page">ISO 2026-W40</span><a href="../W41/#almanack-bottom-nav">ISO 2026-W41 →</a></nav></div></main><aside class="notation-legend" aria-label="Astronomical notation legend">
+  <p><strong>Observing aid</strong> — these glyphs say how the target is intended to be observed; they do not identify the kind of astronomical object.</p>
+  <div class="legend-line">
+    <span class="legend-item"><img class="legend-glyph" src="../../../assets/almanack/visibility-glyphs/masters/eye.svg" alt="Naked-eye glyph"> Naked eye</span>
+    <span class="legend-item"><img class="legend-glyph" src="../../../assets/almanack/visibility-glyphs/masters/binoculars.svg" alt="Binoculars glyph"> Binoculars</span>
+    <span class="legend-item"><img class="legend-glyph" src="../../../assets/almanack/visibility-glyphs/masters/telescope.svg" alt="Telescope glyph"> Telescope</span>
+    <span class="legend-item"><img class="legend-glyph" src="../../../assets/almanack/visibility-glyphs/masters/telescope.svg" alt="Telescope glyph"><img class="legend-glyph" src="../../../assets/almanack/visibility-glyphs/masters/telescope.svg" alt="Telescope glyph"> Substantial telescope</span>
+  </div>
+  <p class="legend-explanation"><strong>V</strong> followed by a number is visual magnitude; smaller or more negative numbers are brighter. If no observing-aid glyph is shown, the Almanack is not assigning an observing aid for that entry.</p>
+
+  <p><strong>Events</strong></p>
+  <div class="legend-line">
+    <span class="legend-item"><img class="legend-glyph" src="../../../assets/almanack/visibility-glyphs/masters/meteor-shower.svg" alt="Meteor-shower glyph"> Meteor shower</span>
+    <span class="legend-item"><img class="legend-glyph" src="../../../assets/almanack/visibility-glyphs/masters/solar-eclipse.svg" alt="Solar-eclipse glyph"> Solar eclipse</span>
+    <span class="legend-item"><img class="legend-glyph" src="../../../assets/almanack/visibility-glyphs/masters/lunar-eclipse.svg" alt="Lunar-eclipse glyph"> Lunar eclipse</span>
+  </div>
+
+  <p><strong>Greek alphabet</strong> — Bayer letters used to identify stars within a constellation.</p>
+  <div class="legend-line">
+    <span class="legend-item"><span class="greek-letter">α</span> Alpha</span><span class="legend-item"><span class="greek-letter">β</span> Beta</span><span class="legend-item"><span class="greek-letter">γ</span> Gamma</span><span class="legend-item"><span class="greek-letter">δ</span> Delta</span><span class="legend-item"><span class="greek-letter">ε</span> Epsilon</span><span class="legend-item"><span class="greek-letter">ζ</span> Zeta</span><span class="legend-item"><span class="greek-letter">η</span> Eta</span><span class="legend-item"><span class="greek-letter">θ</span> Theta</span><span class="legend-item"><span class="greek-letter">ι</span> Iota</span><span class="legend-item"><span class="greek-letter">κ</span> Kappa</span><span class="legend-item"><span class="greek-letter">λ</span> Lambda</span><span class="legend-item"><span class="greek-letter">μ</span> Mu</span><span class="legend-item"><span class="greek-letter">ν</span> Nu</span><span class="legend-item"><span class="greek-letter">ξ</span> Xi</span><span class="legend-item"><span class="greek-letter">ο</span> Omicron</span><span class="legend-item"><span class="greek-letter">π</span> Pi</span><span class="legend-item"><span class="greek-letter">ρ</span> Rho</span><span class="legend-item"><span class="greek-letter">σ</span> Sigma</span><span class="legend-item"><span class="greek-letter">τ</span> Tau</span><span class="legend-item"><span class="greek-letter">υ</span> Upsilon</span><span class="legend-item"><span class="greek-letter">φ</span> Phi</span><span class="legend-item"><span class="greek-letter">χ</span> Chi</span><span class="legend-item"><span class="greek-letter">ψ</span> Psi</span><span class="legend-item"><span class="greek-letter">ω</span> Omega</span>
+  </div>
+
+  <p><strong>Zodiac</strong> — the 12 zodiac constellations/signs used for zodiac-day notation.</p>
+  <div class="legend-line">
+    <span class="legend-item"><span class="text-symbol">♈&#xfe0e;</span> Aries</span><span class="legend-item"><span class="text-symbol">♉&#xfe0e;</span> Taurus</span><span class="legend-item"><span class="text-symbol">♊&#xfe0e;</span> Gemini</span><span class="legend-item"><span class="text-symbol">♋&#xfe0e;</span> Cancer</span><span class="legend-item"><span class="text-symbol">♌&#xfe0e;</span> Leo</span><span class="legend-item"><span class="text-symbol">♍&#xfe0e;</span> Virgo</span><span class="legend-item"><span class="text-symbol">♎&#xfe0e;</span> Libra</span><span class="legend-item"><span class="text-symbol">♏&#xfe0e;</span> Scorpio</span><span class="legend-item"><span class="text-symbol">♐&#xfe0e;</span> Sagittarius</span><span class="legend-item"><span class="text-symbol">♑&#xfe0e;</span> Capricorn</span><span class="legend-item"><span class="text-symbol">♒&#xfe0e;</span> Aquarius</span><span class="legend-item"><span class="text-symbol">♓&#xfe0e;</span> Pisces</span>
+  </div>
+
+  <p><strong>Ephemerides</strong> — symbols identifying solar-system bodies in the positional tables.</p>
+  <div class="legend-line">
+    <span class="legend-item"><span class="text-symbol">☉&#xfe0e;</span> Sun</span><span class="legend-item"><span class="text-symbol">☽&#xfe0e;</span> Moon</span><span class="legend-item"><span class="text-symbol">☿&#xfe0e;</span> Mercury</span><span class="legend-item"><span class="text-symbol">♀&#xfe0e;</span> Venus</span><span class="legend-item"><span class="text-symbol">♂&#xfe0e;</span> Mars</span><span class="legend-item"><span class="text-symbol">⚳&#xfe0e;</span> Ceres</span><span class="legend-item"><span class="text-symbol">♃&#xfe0e;</span> Jupiter</span><span class="legend-item"><span class="text-symbol">♄&#xfe0e;</span> Saturn</span><span class="legend-item"><span class="text-symbol">♅&#xfe0e;</span> Uranus</span><span class="legend-item"><span class="text-symbol">♆&#xfe0e;</span> Neptune</span><span class="legend-item"><span class="text-symbol">♇&#xfe0e;</span> Pluto</span>
+  </div>
+</aside><footer><div class="wrap">© 2026 Alexander Ferrari Miller. All rights reserved.</div></footer><script src="/almanack/js/notation.js"></script></body></html>
