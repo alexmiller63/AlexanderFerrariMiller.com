@@ -144,7 +144,7 @@ jobs:
                   observing,
                   re.S,
               )
-              valid_labels = ('Naked eye', 'Binoculars', 'Telescope', 'Substantial telescope', 'Daylight', 'Solar glare', 'visible')
+              valid_labels = ('Naked eye', 'Binoculars', 'Telescope', 'Substantial telescope', 'Daylight', 'Solar Glare', 'Visible')
               if len(labels) != wrapped:
                   raise SystemExit(f'Observing aid lacks Latin notation markup: {path}')
               for label in labels:
