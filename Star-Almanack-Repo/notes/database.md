@@ -91,3 +91,15 @@ Unverified lore should not silently become fact. Traditional or cultural materia
 ### Immediate next step
 
 Before changing generators, inventory the current fixed-object, special-star, catalog, asterism, constellation, Sky Note, and related YAML/JSON files. Map their current identifiers and relationships into this logical model, identify duplicate identities and missing provenance, and determine the deterministic initial assignment of `fixed_object_id` values.
+
+## 2026-09-15 — IAU constellation boundary direct-download pattern
+
+The IAU archive exposes each constellation's machine-readable boundary as a direct TXT resource using the lowercase three-letter IAU constellation abbreviation:
+
+`https://iauarchive.eso.org/static/public/constellations/txt/{iau_abbreviation}.txt`
+
+Example for Andromeda (`and`):
+
+`https://iauarchive.eso.org/static/public/constellations/txt/and.txt`
+
+Use this deterministic direct-download pattern for acquisition rather than scraping the presentation page. Preserve downloaded source files as an authoritative snapshot with provenance, and validate the complete expected boundary-file set before downstream geometric processing.
