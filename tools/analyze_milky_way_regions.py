@@ -140,8 +140,10 @@ def fits_values(payload: bytes):
         + bzero
         for i in range(count)
     ]
-
-    return nx, ny, valuesdef request_channel(
+    return nx, ny, values
+    
+    
+    def request_channel(
     anchor: dict[str, Any],
     survey: str,
     size: float,
