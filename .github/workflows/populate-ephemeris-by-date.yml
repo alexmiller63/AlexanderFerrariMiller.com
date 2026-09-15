@@ -114,7 +114,14 @@ jobs:
               if not section:
                   raise SystemExit(f'Missing Ephemeris section: {path}')
               html = section.group(0)
-              raw = re.findall(r'<tr class="ephemeris-visibility"[^>]*>.*?</tr>', html, re.S)
+              rows = re.findall(r'<tbody>(.*?)</tbody>', html, re.S)
+              if len(rows) != 2:
+                  raise SystemExit(f'Expected primary and extended Ephemeris tables: {path}')
+              labels = re.findall(r'<tr><th scope="row">(Body|Observing|Rise|Set)</th>', html)
+              if labels.count('Body') != 2 or labels.count('Observing') != 2 or labels.count('Rise') != 2 or labels.count('Set') != 2:
+                  raise SystemExit(f'Each Ephemeris table must contain Body/Observing/Rise/Set rows: {path}')
+
+              raw = re.findall(r'<tr><th scope="row">Observing</th>.*?</tr>', html, re.S)
               if not raw:
                   raise SystemExit(f'Missing Ephemeris observing row: {path}')
               observing = ''.join(raw)
@@ -134,7 +141,7 @@ jobs:
                   observing,
                   re.S,
               )
-              valid_labels = ('Naked eye', 'Binoculars', 'Telescope', 'Substantial telescope')
+              valid_labels = ('Naked eye', 'Binoculars', 'Telescope', 'Substantial telescope', 'Daylight', 'Solar glare', 'visible')
               if len(labels) != wrapped:
                   raise SystemExit(f'Observing aid lacks Latin notation markup: {path}')
               for label in labels:
