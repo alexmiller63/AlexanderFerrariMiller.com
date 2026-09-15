@@ -50,10 +50,10 @@
   }
 
   function observingStatus(cell, latitude) {
-    if (cell.dataset.sunSpecial === 'true') return 'visible';
+    if (cell.dataset.sunSpecial === 'true') return 'Visible';
     return sunAboveHorizon(cell, latitude) && cell.dataset.normalLabel === 'Naked eye'
       ? 'Daylight'
-      : (cell.dataset.solarGlare === 'true' ? 'Solar glare' : cell.dataset.normalLabel);
+      : (cell.dataset.solarGlare === 'true' ? 'Solar Glare' : cell.dataset.normalLabel);
   }
 
   function specialHtml(label) {
@@ -77,7 +77,7 @@
       if (cell.dataset.sunSpecial === 'true') return;
       if (!cell._normalHTML) cell._normalHTML = cell.innerHTML;
       const status = observingStatus(cell, latitude);
-      if (status === 'Daylight' || status === 'Solar glare') {
+      if (status === 'Daylight' || status === 'Solar Glare') {
         cell.innerHTML = specialHtml(status);
       } else {
         cell.innerHTML = cell._normalHTML;
