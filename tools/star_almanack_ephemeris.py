@@ -55,6 +55,10 @@ CERES_H = 3.34
 CERES_G = 0.12
 PLUTO_V_1_0 = -1.01
 PLUTO_PHASE_COEFF = 0.041
+DEFAULT_OBSERVER_LATITUDE_DEG = 45.0
+PLANET_HORIZON_DEG = -0.5667
+SUN_HORIZON_DEG = -0.8333
+OBSERVING_HOUR_ANGLE_HOURS = 9.0
 
 
 @dataclass(frozen=True)
@@ -63,6 +67,10 @@ class EphemerisSample:
     latitude_deg: float
     magnitude: float | None
     elongation_deg: float
+    right_ascension_hours: float
+    declination_deg: float
+    sun_right_ascension_hours: float
+    sun_declination_deg: float
 
 
 def _norm3(v) -> float:
@@ -290,6 +298,63 @@ class StarAlmanackEphemeris:
             current += step
         return out
 
+    @staticmethod
+    def _format_lat(hours: float) -> str:
+        total_minutes = int(round((hours % 24.0) * 60.0)) % (24 * 60)
+        hour, minute = divmod(total_minutes, 60)
+        return f"{hour:02d}:{minute:02d}"
+
+    @staticmethod
+    def rise_set_lat(sample: EphemerisSample, key: str, latitude_deg: float) -> tuple[str, str]:
+        """Return rise and set times in Local Apparent Time for one snapshot.
+
+        The calculation uses the body's apparent right ascension/declination at
+        the Monday 00:00 UTC snapshot.  LAT is derived from the body's rise/set
+        hour angle relative to the Sun's apparent right ascension, so longitude
+        is not required for the published LAT result.
+        """
+        if not -90.0 <= latitude_deg <= 90.0:
+            raise ValueError("latitude_deg must be between -90 and +90 degrees")
+
+        latitude = math.radians(latitude_deg)
+        declination = math.radians(sample.declination_deg)
+        horizon = math.radians(SUN_HORIZON_DEG if key == "sun" else PLANET_HORIZON_DEG)
+        sin_lat = math.sin(latitude)
+        cos_lat = math.cos(latitude)
+        sin_dec = math.sin(declination)
+        cos_dec = math.cos(declination)
+
+        if abs(cos_lat * cos_dec) < 1.0e-12:
+            always_up = sin_lat * sin_dec > math.sin(horizon)
+            if always_up:
+                return ("always up", "does not set")
+            return ("does not rise", "does not set")
+
+        cosine_hour_angle = (math.sin(horizon) - sin_lat * sin_dec) / (cos_lat * cos_dec)
+        if cosine_hour_angle < -1.0:
+            return ("always up", "does not set")
+        if cosine_hour_angle > 1.0:
+            return ("does not rise", "does not set")
+
+        hour_angle = math.degrees(math.acos(max(-1.0, min(1.0, cosine_hour_angle)))) / 15.0
+        rise_lat = 12.0 + (sample.right_ascension_hours - hour_angle - sample.sun_right_ascension_hours)
+        set_lat = 12.0 + (sample.right_ascension_hours + hour_angle - sample.sun_right_ascension_hours)
+        return (StarAlmanackEphemeris._format_lat(rise_lat), StarAlmanackEphemeris._format_lat(set_lat))
+
+    @staticmethod
+    def daylight_at_observing_time(sample: EphemerisSample, latitude_deg: float) -> bool:
+        """Whether daylight reaches the standard apparent horizon at 21:00 LAT."""
+        if not -90.0 <= latitude_deg <= 90.0:
+            raise ValueError("latitude_deg must be between -90 and +90 degrees")
+        latitude = math.radians(latitude_deg)
+        declination = math.radians(sample.sun_declination_deg)
+        hour_angle = math.radians(15.0 * OBSERVING_HOUR_ANGLE_HOURS)
+        altitude = math.asin(
+            math.sin(latitude) * math.sin(declination)
+            + math.cos(latitude) * math.cos(declination) * math.cos(hour_angle)
+        )
+        return math.degrees(altitude) > SUN_HORIZON_DEG
+
     def sample(self, key: str, day: date) -> EphemerisSample:
         """Return a Monday-00:00-UTC publication snapshot for one body."""
         t = self.ts.utc(day.year, day.month, day.day, 0, 0, 0)
@@ -301,6 +366,8 @@ class StarAlmanackEphemeris:
         lat, lon, _ = apparent.frame_latlon(ecliptic_frame)
 
         sun_apparent = earth_at.observe(self.sun).apparent()
+        ra, dec, _ = apparent.radec()
+        sun_ra, sun_dec, _ = sun_apparent.radec()
         elongation = 0.0 if key == "sun" else self._angle_between(apparent, sun_apparent)
         if key == "moon":
             magnitude = self._moon_magnitude(body_at, sun_at, earth_at)
@@ -316,4 +383,8 @@ class StarAlmanackEphemeris:
             latitude_deg=float(lat.degrees),
             magnitude=magnitude,
             elongation_deg=elongation,
+            right_ascension_hours=float(ra.hours) % 24.0,
+            declination_deg=float(dec.degrees),
+            sun_right_ascension_hours=float(sun_ra.hours) % 24.0,
+            sun_declination_deg=float(sun_dec.degrees),
         )
