@@ -18,7 +18,7 @@ from compute_bayer_visibility_2026 import best_visibility
 from compute_constellation_observance_2026 import CONSTELLATIONS, centroid_for
 
 STEPS = (0.20, 0.10, 0.05, 0.025)
-CACHE_DIR = Path('.cache/iau-constellation-boundaries')
+SNAPSHOT_DIR = Path(__file__).resolve().parent / 'reference-data' / 'iau-constellation-boundaries'
 OUTPUT = Path('constellation-centroid-convergence-2026.csv')
 
 
@@ -52,7 +52,7 @@ def main() -> None:
     for name, abbr in CONSTELLATIONS:
         solutions = {}
         for step in STEPS:
-            ra_h, dec_deg, area = centroid_for(abbr, CACHE_DIR, step)
+            ra_h, dec_deg, area = centroid_for(abbr, SNAPSHOT_DIR, step)
             instant, date = best_visibility(ra_h)
             solutions[step] = (ra_h, dec_deg, area, instant, date)
 
