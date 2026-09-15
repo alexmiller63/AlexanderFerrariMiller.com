@@ -31,7 +31,6 @@ STYLE = """<style id="almanack-legend-css">
 .legend-line { display:flex; flex-wrap:wrap; gap:.45rem 1rem; align-items:center; }
 .legend-item { white-space:nowrap; }
 .text-symbol { font-size:2em; line-height:.75; vertical-align:-.12em; font-variant-emoji:text; }
-/* Calendar astronomical symbols, including zodiac-day glyphs, are 2x. */
 .zodiac-glyph,
 .calendar-symbol {
   display:inline-block;
@@ -43,16 +42,12 @@ STYLE = """<style id="almanack-legend-css">
   line-height:.75;
   vertical-align:-.12em;
 }
-/* Bayer letters are identifiers, not astronomical glyphs: keep them at text size. */
 .greek-letter {
   display:inline-block;
   font-size:1em;
   line-height:inherit;
   vertical-align:baseline;
 }
-/* Notation containers stay at ordinary text size. True calendar zodiac glyphs
-   are excluded so their canonical 2x glyph rule cannot be overridden. */
-.ephemeris-notation-item,
 .calendar-notation-item,
 .notation-item:not(.zodiac-glyph) {
   display:inline-block;
@@ -61,85 +56,9 @@ STYLE = """<style id="almanack-legend-css">
   vertical-align:baseline;
   font-family:inherit;
 }
-/* Ephemeris astronomical symbols are intentionally quieter at 1.5x. */
-.ephemeris-symbol {
-  display:inline-block;
-  font-family:'Apple Symbols','Arial Unicode MS','Segoe UI Symbol','Noto Sans Symbols 2',serif;
-  font-variant-emoji:text;
-  color:currentColor;
-  -webkit-text-fill-color:currentColor;
-  font-size:1.5em;
-  line-height:.75;
-  vertical-align:-.12em;
-}
-table.ephemeris .greek-letter { font-size:1em; }
-/* Calendar/event observing glyphs retain their canonical size. Ephemeris
-   observing glyphs use one absolute section scale so every ephemeris table
-   renders them identically regardless of inherited table font sizing. */
 .visibility-glyph { height:3em !important; width:auto !important; vertical-align:-.78em !important; }
-table.ephemeris .visibility-glyph { height:1.5rem !important; vertical-align:-.28rem !important; }
 .legend-glyph { height:3em; width:auto; vertical-align:-.78em; margin-right:.2rem; }
-.ephemeris-visibility .text-symbol { font-size:1.5em; line-height:.75; vertical-align:-.12em; }
 .legend-explanation { white-space:normal; }
-
-/* Ephemeris presentation layer: keep the semantic HTML table as a table.
-   The generator emits one header row and four data rows (Body, Observing,
-   Rise, Set). Native table layout keeps every row aligned with its body
-   heading, including when the notation mode changes. */
-table.ephemeris,
-table.ephemeris thead,
-table.ephemeris tbody,
-table.ephemeris tr,
-table.ephemeris th,
-table.ephemeris td {
-  /* Clear any legacy grid presentation left on previously generated pages. */
-  display:revert !important;
-}
-.ephemeris-scroll {
-  width:100%;
-  max-width:100%;
-  min-width:0;
-  overflow-x:auto;
-  overflow-y:hidden;
-  -webkit-overflow-scrolling:touch;
-}
-.ephemeris-scroll table.ephemeris {
-  display:table !important;
-  width:max-content !important;
-  min-width:100% !important;
-  table-layout:auto !important;
-  overflow:visible !important;
-}
-table.ephemeris thead { display:table-header-group !important; }
-table.ephemeris tbody { display:table-row-group !important; }
-table.ephemeris tr { display:table-row !important; }
-table.ephemeris th,
-table.ephemeris td { display:table-cell !important; }
-table.ephemeris.extended-ephemeris {
-  grid-template-columns:none !important;
-  grid-template-rows:none !important;
-}
-table.ephemeris th,
-table.ephemeris td {
-  width:auto !important;
-  min-width:0 !important;
-  padding:.7rem .55rem !important;
-  text-align:center;
-  white-space:nowrap;
-  overflow-wrap:normal;
-  word-break:normal;
-}
-table.ephemeris small { white-space:nowrap; }
-
-@media (max-width:760px) {
-  table.ephemeris {
-    font-size:.86rem !important;
-  }
-  table.ephemeris th,
-  table.ephemeris td {
-    padding:.55rem .35rem !important;
-  }
-}
 </style>"""
 
 LEGEND = """<aside class="notation-legend" aria-label="Astronomical notation legend">
