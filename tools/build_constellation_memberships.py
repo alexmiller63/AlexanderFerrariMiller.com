@@ -13,6 +13,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 OBJECTS_PATH = ROOT / "database" / "fixed-objects.json"
+REGISTRY_PATH = ROOT / "database" / "fixed-object-registry.json"
 REVIEWS_PATH = ROOT / "database" / "object-constellation-reviews.json"
 OUT_PATH = ROOT / "database" / "constellation-memberships.json"
 
@@ -48,8 +49,17 @@ def reviewed_resolutions():
     }
 
 
-def review_for_object(obj, resolutions):
-    for identifier in obj.get("identifiers") or []:
+def registry_identifiers_by_fixed_id():
+    """Return permanent object identifiers keyed by immutable fixed_object_id."""
+    registry = load(REGISTRY_PATH)
+    return {
+        obj["fixed_object_id"]: obj.get("identifiers") or []
+        for obj in registry.get("fixed_objects") or []
+    }
+
+
+def review_for_identifiers(identifiers, resolutions):
+    for identifier in identifiers:
         review = resolutions.get(identifier_key(identifier))
         if review:
             return review
@@ -59,6 +69,7 @@ def review_for_object(obj, resolutions):
 def main():
     data = load(OBJECTS_PATH)
     resolutions = reviewed_resolutions()
+    registry_identifiers = registry_identifiers_by_fixed_id()
     memberships = []
     no_constellation = []
 
@@ -80,7 +91,7 @@ def main():
         distinct = sorted(set(values))
         review = None
         if len(distinct) > 1:
-            review = review_for_object(obj, resolutions)
+            review = review_for_identifiers(registry_identifiers.get(fixed_id, []), resolutions)
             if not review:
                 raise SystemExit(
                     f"fixed_object_id {fixed_id} has conflicting reconciled constellation values: {distinct}"
