@@ -21,6 +21,7 @@ ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_CONSTELLATIONS = ROOT / "constellation-observance-2026.csv"
 DEFAULT_ASTERISMS = ROOT / "asterism-member-coordinates.csv"
 DEFAULT_ASTERISM_PATHS = ROOT / "asterism-figure-paths.json"
+DEFAULT_SUBFIGURES = ROOT / "constellation-named-subfigures.json"
 DEFAULT_OUTPUT = ROOT / "finder-geometry" / "martz-macrobert.json"
 
 SOURCE_URL = (
@@ -127,6 +128,74 @@ def constellation_records(
     return records
 
 
+def apply_named_subfigures(
+    records: dict[str, dict[str, object]],
+    path: Path,
+) -> None:
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    if payload.get("schema_version") != 1:
+        raise RuntimeError(f"Unsupported named-subfigure schema in {path}")
+    raw_subfigures = payload.get("subfigures")
+    if not isinstance(raw_subfigures, list):
+        raise RuntimeError(f"Named-subfigure source must contain a list: {path}")
+
+    seen_ids: set[str] = set()
+    for raw in raw_subfigures:
+        if not isinstance(raw, dict):
+            raise RuntimeError("Invalid named-subfigure record")
+        identifier = raw.get("id")
+        name = raw.get("name")
+        abbreviation = raw.get("constellation")
+        raw_paths = raw.get("paths")
+        if not all(isinstance(value, str) and value for value in (identifier, name, abbreviation)):
+            raise RuntimeError(f"Incomplete named-subfigure record: {raw}")
+        if identifier in seen_ids:
+            raise RuntimeError(f"Duplicate named-subfigure id {identifier!r}")
+        seen_ids.add(identifier)
+        if abbreviation not in records:
+            raise RuntimeError(f"{name}: unknown parent constellation {abbreviation!r}")
+        if raw.get("geometry_policy") != "reuse-parent-edges":
+            raise RuntimeError(f"{name}: named subfigure must reuse parent edges")
+        display = raw.get("display")
+        if display != {"role": "asterism-highlight", "stroke": "#59c86d"}:
+            raise RuntimeError(
+                f"{name}: named subfigure must use the approved green asterism highlight"
+            )
+        if not isinstance(raw_paths, list) or not raw_paths:
+            raise RuntimeError(f"{name}: named subfigure has no paths")
+
+        parent_paths = records[abbreviation]["paths"]
+        parent_edges = {
+            tuple(sorted((left["id"], right["id"])))
+            for parent_path in parent_paths
+            for left, right in zip(parent_path, parent_path[1:])
+        }
+        paths = []
+        for path_index, raw_path in enumerate(raw_paths, 1):
+            if not isinstance(raw_path, list) or len(raw_path) < 2:
+                raise RuntimeError(f"{name}: path {path_index} needs at least 2 vertices")
+            try:
+                ids = [int(vertex) for vertex in raw_path]
+            except (TypeError, ValueError) as exc:
+                raise RuntimeError(f"{name}: path {path_index} has a non-HIP vertex") from exc
+            for left, right in zip(ids, ids[1:]):
+                if tuple(sorted((left, right))) not in parent_edges:
+                    raise RuntimeError(
+                        f"{name}: HIP {left}–HIP {right} is not an accepted parent edge"
+                    )
+            paths.append([{"catalog": "HIP", "id": vertex} for vertex in ids])
+
+        records[abbreviation].setdefault("named_subfigures", []).append(
+            {
+                "id": identifier,
+                "name": name,
+                "geometry_policy": "reuse-parent-edges",
+                "display": display,
+                "paths": paths,
+            }
+        )
+
+
 def read_asterism_paths(path: Path) -> dict[str, list[list[str]]]:
     payload = json.loads(path.read_text(encoding="utf-8"))
     if payload.get("schema_version") != 1:
@@ -227,9 +296,12 @@ def build(
     constellations: Path,
     asterisms: Path,
     asterism_paths: Path,
+    subfigures: Path,
 ) -> dict[str, object]:
     figures = read_figure_source(source)
     identities = read_constellation_map(constellations)
+    constellation_data = constellation_records(identities, figures)
+    apply_named_subfigures(constellation_data, subfigures)
     try:
         asterism_source = str(asterisms.resolve().relative_to(ROOT))
     except ValueError:
@@ -238,6 +310,10 @@ def build(
         asterism_path_source = str(asterism_paths.resolve().relative_to(ROOT))
     except ValueError:
         asterism_path_source = str(asterism_paths)
+    try:
+        subfigure_source = str(subfigures.resolve().relative_to(ROOT))
+    except ValueError:
+        subfigure_source = str(subfigures)
     return {
         "schema_version": 1,
         "system": "Martz/MacRobert",
@@ -247,8 +323,9 @@ def build(
             "constellation_source_note": "IAU/Sky & Telescope stick-figure dataset adopted by Star Almanack",
             "asterism_source": asterism_source,
             "asterism_path_source": asterism_path_source,
+            "named_subfigure_source": subfigure_source,
         },
-        "constellations": constellation_records(identities, figures),
+        "constellations": constellation_data,
         "asterisms": asterism_records(asterisms, asterism_paths),
     }
 
@@ -259,10 +336,17 @@ def main() -> None:
     parser.add_argument("--constellations", type=Path, default=DEFAULT_CONSTELLATIONS)
     parser.add_argument("--asterisms", type=Path, default=DEFAULT_ASTERISMS)
     parser.add_argument("--asterism-paths", type=Path, default=DEFAULT_ASTERISM_PATHS)
+    parser.add_argument("--subfigures", type=Path, default=DEFAULT_SUBFIGURES)
     parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
     parser.add_argument("--check", action="store_true")
     args = parser.parse_args()
-    payload = build(args.source, args.constellations, args.asterisms, args.asterism_paths)
+    payload = build(
+        args.source,
+        args.constellations,
+        args.asterisms,
+        args.asterism_paths,
+        args.subfigures,
+    )
     rendered = json.dumps(payload, indent=2, ensure_ascii=False) + "\n"
     if args.check:
         if not args.output.is_file() or args.output.read_text(encoding="utf-8") != rendered:

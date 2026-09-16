@@ -6,7 +6,8 @@
     "constellation_source_commit": "75d29c207bbd752023c447ddd1f9f4ff0eb47538",
     "constellation_source_note": "IAU/Sky & Telescope stick-figure dataset adopted by Star Almanack",
     "asterism_source": "asterism-member-coordinates.csv",
-    "asterism_path_source": "asterism-figure-paths.json"
+    "asterism_path_source": "asterism-figure-paths.json",
+    "named_subfigure_source": "constellation-named-subfigures.json"
   },
   "constellations": {
     "And": {
@@ -1861,6 +1862,41 @@
             "external_to_constellation": false
           }
         ]
+      ],
+      "named_subfigures": [
+        {
+          "id": "subfigure-jobs-coffin",
+          "name": "Job's Coffin",
+          "geometry_policy": "reuse-parent-edges",
+          "display": {
+            "role": "asterism-highlight",
+            "stroke": "#59c86d"
+          },
+          "paths": [
+            [
+              {
+                "catalog": "HIP",
+                "id": 101769
+              },
+              {
+                "catalog": "HIP",
+                "id": 101958
+              },
+              {
+                "catalog": "HIP",
+                "id": 102532
+              },
+              {
+                "catalog": "HIP",
+                "id": 102281
+              },
+              {
+                "catalog": "HIP",
+                "id": 101769
+              }
+            ]
+          ]
+        }
       ]
     },
     "Dor": {
