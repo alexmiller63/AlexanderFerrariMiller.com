@@ -15,12 +15,14 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 DB = ROOT / "database" / "fixed-objects.json"
 EVENT_RE = re.compile(r'(<div\b)(?P<attrs>[^>]*\bclass="[^"]*\bevent-cell\b[^"]*"[^>]*>)(?P<body>.*?)</div>', re.S)
+BAYER_RE = re.compile(r"^[αβγδεζηθικλμνξοπρστυφχψω](?:\d+)?\s+[A-Z][a-z]{2}$")
 
 
-def identity_index() -> tuple[dict[str, int], dict[str, int]]:
+def identity_index() -> tuple[dict[str, int], dict[str, int], dict[str, int]]:
     data = json.loads(DB.read_text(encoding="utf-8"))
     names: dict[str, int] = {}
     messier: dict[str, int] = {}
+    bayer: dict[str, int] = {}
     for obj in data["fixed_objects"]:
         fixed_id = int(obj["fixed_object_id"])
         for record in obj.get("source_records", []):
@@ -29,10 +31,13 @@ def identity_index() -> tuple[dict[str, int], dict[str, int]]:
                 value = facts.get(key)
                 if value:
                     names.setdefault(str(value).strip().casefold(), fixed_id)
-            source_key = str(record.get("source_key", "")).strip().upper()
-            if re.fullmatch(r"M(?:110|10\d|[1-9]\d?)", source_key):
-                messier.setdefault(source_key, fixed_id)
-    return names, messier
+            source_key = str(record.get("source_key", "")).strip()
+            source_key_upper = source_key.upper()
+            if re.fullmatch(r"M(?:110|10\d|[1-9]\d?)", source_key_upper):
+                messier.setdefault(source_key_upper, fixed_id)
+            if BAYER_RE.fullmatch(source_key):
+                bayer.setdefault(source_key.casefold(), fixed_id)
+    return names, messier, bayer
 
 
 def plain(fragment: str) -> str:
@@ -40,13 +45,16 @@ def plain(fragment: str) -> str:
     return re.sub(r"\s+", " ", html.unescape(value)).strip()
 
 
-def resolve(body: str, names: dict[str, int], messier: dict[str, int]) -> int | None:
+def resolve(body: str, names: dict[str, int], messier: dict[str, int], bayer: dict[str, int]) -> int | None:
     text = plain(body)
     m = re.search(r"(?<![A-Za-z0-9])M(?:110|10\d|[1-9]\d?)(?!\d)", text, re.I)
     if m:
         found = messier.get(m.group(0).upper())
         if found is not None:
             return found
+    for designation, fixed_id in bayer.items():
+        if re.search(rf"(?<![\w]){re.escape(designation)}(?![\w])", text.casefold()):
+            return fixed_id
     folded = text.casefold()
     hits = [(len(name), fixed_id) for name, fixed_id in names.items()
             if re.search(rf"(?<![\w]){re.escape(name)}(?![\w])", folded)]
@@ -57,13 +65,13 @@ def resolve(body: str, names: dict[str, int], messier: dict[str, int]) -> int | 
 
 
 def patch_text(text: str) -> tuple[str, int]:
-    names, messier = identity_index()
+    names, messier, bayer = identity_index()
     count = 0
     def repl(match: re.Match[str]) -> str:
         nonlocal count
         attrs = match.group("attrs")
         body = match.group("body")
-        fixed_id = resolve(body, names, messier)
+        fixed_id = resolve(body, names, messier, bayer)
         attrs = re.sub(r'\s+data-fixed-object-id="[^"]*"', '', attrs)
         if fixed_id is not None:
             attrs = attrs[:-1] + f' data-fixed-object-id="{fixed_id}">'
