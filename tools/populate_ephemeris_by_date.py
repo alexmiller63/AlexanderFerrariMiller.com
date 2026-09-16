@@ -5,12 +5,22 @@ from __future__ import annotations
 from datetime import date
 
 import populate_ephemeris as ephemeris
+from almanack_sections import replace_section_inner
 from iso_date_range import group_by_year, parse_range_args
 
 
 def calculate_year(year: int):
     print(f"Calculating {year} ephemeris locally from cached JPL/NAIF source kernels")
     return ephemeris.computed_ephemeris(year)
+
+
+def split_rendered_sections(rendered: str) -> tuple[str, str]:
+    finder_marker = ephemeris.notation_toggle("finder") + "<h3>Planet Finder</h3>"
+    if finder_marker not in rendered:
+        raise RuntimeError("Rendered Ephemeris is missing its Planet Finder boundary")
+    ephemeris_html, finder_body = rendered.split(finder_marker, 1)
+    finder_html = finder_marker + finder_body
+    return ephemeris_html, finder_html
 
 
 def populate_week(year: int, week: int, generated) -> int:
@@ -34,14 +44,16 @@ def populate_week(year: int, week: int, generated) -> int:
             "sun_dec_deg": sample[10],
             "horizon_deg": -0.8333 if key == "sun" else -0.5667,
         }
-    replacement = ephemeris.render_ephemeris(monday, values)
+    rendered = ephemeris.render_ephemeris(monday, values)
+    ephemeris_html, finder_html = split_rendered_sections(rendered)
 
     changed = 0
     path = ephemeris.ROOT / "almanack" / str(year) / f"W{week:02d}" / "index.html"
     if not path.exists():
         raise RuntimeError(f"Missing weekly page: {path.relative_to(ephemeris.ROOT)}")
     text = path.read_text(encoding="utf-8")
-    new = ephemeris.put_ephemeris(text, replacement, path)
+    new = replace_section_inner(text, 3, ephemeris_html, path)
+    new = replace_section_inner(new, 4, finder_html, path)
     runtime = '<script src="../../js/ephemeris.js"></script>'
     if runtime not in new:
         if '</body>' not in new:
