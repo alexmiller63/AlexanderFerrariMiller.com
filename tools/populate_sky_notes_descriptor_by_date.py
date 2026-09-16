@@ -17,11 +17,6 @@ FIXED_OBJECTS_DB = base.ROOT / "database" / "fixed-objects.json"
 
 
 def load_story_identity_index() -> tuple[dict[str, int], dict[str, int]]:
-    """Build lookup indexes only for resolving calendar text to permanent IDs.
-
-    Story lookup itself is always collection + fixed_object_id. Names and
-    catalog labels stop being keys once the permanent identity is resolved.
-    """
     data = json.loads(FIXED_OBJECTS_DB.read_text(encoding="utf-8"))
     names: dict[str, int] = {}
     messier: dict[str, int] = {}
@@ -71,8 +66,32 @@ def story_previews(fixed_sky: list[dict], names: dict[str, int], messier: dict[s
                 "hed": story.hed,
                 "dek": story.dek,
                 "url": story.public_url,
+                "artwork": story.artwork,
             })
     return previews
+
+
+def story_artwork_descriptor(year: int, week: int, fixed_sky: list[dict], relations: list[dict], stories: list[dict]) -> dict | None:
+    requests = [story for story in stories if story.get("artwork")]
+    if not requests:
+        return None
+    kinds = {story["artwork"] for story in requests}
+    if kinds != {"stellar-finder"}:
+        raise RuntimeError(f"Unsupported story artwork request(s) for ISO {year}-W{week:02d}: {sorted(kinds)}")
+    descriptor = base.artwork_descriptor(year, week, fixed_sky, relations)
+    if descriptor is None:
+        raise RuntimeError(
+            f"ISO {year}-W{week:02d}: story requests stellar-finder artwork but accepted fixed-sky geometry cannot supply it"
+        )
+    descriptor["story_sources"] = [
+        {
+            "collection": story["collection"],
+            "fixed_object_id": story["fixed_object_id"],
+            "artwork": story["artwork"],
+        }
+        for story in requests
+    ]
+    return descriptor
 
 
 def render_story_previews(previews: list[dict]) -> str:
@@ -102,12 +121,16 @@ def generated_note(year: int, week: int, page_path, yearly, stars: list[dict], i
     if identity_index is None:
         identity_index = load_story_identity_index()
     payload["stories"] = story_previews(payload["fixed_sky"], *identity_index)
+    payload["artwork"] = story_artwork_descriptor(
+        year, week, payload["fixed_sky"], payload["planet_relations"], payload["stories"]
+    )
     payload["descriptor_policy"] = {
         "source_of_truth": "machine-readable JSON",
         "inline_human_descriptors_target": "3-4",
         "additional_json_links_target": "5-6",
         "link_target": "../../descriptors/<id>.json",
         "artwork_descriptor_is_separate": True,
+        "artwork_source": "explicit story front matter only",
         "story_source": "stories/<collection>/<fixed_object_id>.md",
         "story_preview": "hed + dek",
         "annual_note_is_separate_from_evergreen_story": True,
@@ -159,7 +182,7 @@ def main() -> None:
             if patch_page(path, payload):
                 changed += 1
 
-        art_state = "artwork descriptor emitted" if payload["artwork"] else "no stellar artwork descriptor needed"
+        art_state = "story-declared artwork descriptor emitted" if payload["artwork"] else "no story-declared artwork"
         print(
             f"Generated descriptor-first Sky Note for ISO {item.year}-{week_key}: "
             f"{source.relative_to(base.ROOT)} ({len(payload['descriptors'])} descriptors; "
