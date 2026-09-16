@@ -5,7 +5,9 @@ from __future__ import annotations
 from datetime import timedelta
 
 import populate_calendar as calendar
+import populate_fixed_sky as fixed_sky
 from almanack_sections import require_section
+from calendar_fixed_object_ids import patch_file as patch_fixed_object_ids
 from calendar_mobile_layout import patch_file as patch_mobile_layout
 from iso_date_range import group_by_year, parse_range_args
 
@@ -22,17 +24,45 @@ def populate_selected_year(year: int, selected_weeks: list[int]) -> int:
     phases = calendar.lunar_phases(sun, moon)
     events = calendar.build_events(first, last, ingresses, phases, wheel)
 
+    # Fixed-sky dates are calculated from the same canonical annual sources,
+    # then only the requested ISO weeks are written.  Calendar event cells are
+    # finally tagged with permanent database IDs for downstream consumers.
+    fixed_events = fixed_sky.page_date_map(year)
+
     changed = 0
     for week in selected_weeks:
+        monday = __import__('datetime').date.fromisocalendar(year, week, 1)
+        week_dates = {monday + timedelta(days=i) for i in range(7)}
         for base in (calendar.SOURCE_ROOT, calendar.PUBLIC_ROOT):
             path = base / str(year) / f"W{week:02d}" / "index.html"
             if not path.exists():
                 raise RuntimeError(f"Missing weekly page: {path.relative_to(calendar.ROOT)}")
+            before = path.read_text(encoding="utf-8")
+            require_section(before, 2, path)
+            calendar.patch_page(path, ingresses, events)
+
+            # Merge canonical fixed-sky events without touching other event types.
             text = path.read_text(encoding="utf-8")
-            require_section(text, 2, path)
-            page_changed = calendar.patch_page(path, ingresses, events)
-            layout_changed = patch_mobile_layout(path)
-            if page_changed or layout_changed:
+            text = fixed_sky.ensure_calendar_metadata(text, path)
+            for day in week_dates:
+                vals = fixed_events.get(day, [])
+                if not vals:
+                    continue
+                cell = fixed_sky.get_events(text, day)
+                if cell is None:
+                    raise RuntimeError(f"Could not find Calendar row {day} in {path}")
+                keep = [] if cell == "—" else [x for x in cell.split("<br>") if x]
+                for value in vals:
+                    base_label = value.split(" — ", 1)[0]
+                    keep = [x for x in keep if not (x == base_label or x.startswith(base_label + " — "))]
+                    keep.append(value)
+                text, found = fixed_sky.set_events(text, day, "<br>".join(keep) if keep else "—")
+                if not found:
+                    raise RuntimeError(f"Could not update Calendar row {day} in {path}")
+            path.write_text(text, encoding="utf-8")
+            patch_fixed_object_ids(path)
+            patch_mobile_layout(path)
+            if path.read_text(encoding="utf-8") != before:
                 changed += 1
     return changed
 
