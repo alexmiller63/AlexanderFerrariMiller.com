@@ -29,15 +29,18 @@ jobs:
       - name: Migrate catalog targets to permanent IDs
         run: python tools/migrate_catalog_targets_to_fixed_ids.py
 
-      - name: Commit registry and migrated relationships
+      - name: Build normalized fixed-object records
+        run: python tools/build_fixed_object_records.py
+
+      - name: Commit normalized fixed-object database
         run: |
-          git add database/fixed-object-registry.json database/catalog-entry-targets.json generated/fixed-object-identity-audit.json
+          git add database/fixed-object-registry.json database/fixed-objects.json database/catalog-entry-targets.json generated/fixed-object-identity-audit.json
           if git diff --cached --quiet; then
-            echo "No registry or relationship changes."
+            echo "No fixed-object database changes."
             exit 0
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git commit -m "Build permanent fixed-object identity data"
+          git commit -m "Build normalized fixed-object database"
           git pull --rebase origin main
           git push origin HEAD:main
