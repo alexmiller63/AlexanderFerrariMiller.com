@@ -46,7 +46,9 @@ jobs:
 
       - name: Commit normalized fixed-object database
         run: |
-          git add database/fixed-object-registry.json database/fixed-objects.json database/catalog-entry-targets.json database/constellation-memberships.json generated/fixed-object-identity-audit.json generated/constellation-membership-validation.json reference-data/roman-vi42/data.dat
+          echo "Generated changes before commit:"
+          git status --short
+          git add -A
           if git diff --cached --quiet; then
             echo "No fixed-object database changes."
             exit 0
