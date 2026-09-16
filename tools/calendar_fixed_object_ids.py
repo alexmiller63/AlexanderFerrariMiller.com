@@ -15,7 +15,14 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 DB = ROOT / "database" / "fixed-objects.json"
 EVENT_RE = re.compile(r'(<div\b)(?P<attrs>[^>]*\bclass="[^"]*\bevent-cell\b[^"]*"[^>]*>)(?P<body>.*?)</div>', re.S)
+# Bayer suffixes may be stored/displayed as ordinary digits (α1 Cap) or
+# Unicode superscripts (α¹ Cap).  Normalize both forms before lookup.
 BAYER_RE = re.compile(r"^[αβγδεζηθικλμνξοπρστυφχψω](?:\d+)?\s+[A-Z][a-z]{2}$")
+SUPERSCRIPT_DIGITS = str.maketrans("⁰¹²³⁴⁵⁶⁷⁸⁹", "0123456789")
+
+
+def normalize_bayer(value: str) -> str:
+    return re.sub(r"\s+", " ", value.translate(SUPERSCRIPT_DIGITS).strip()).casefold()
 
 
 def identity_index() -> tuple[dict[str, int], dict[str, int], dict[str, int]]:
@@ -35,8 +42,9 @@ def identity_index() -> tuple[dict[str, int], dict[str, int], dict[str, int]]:
             source_key_upper = source_key.upper()
             if re.fullmatch(r"M(?:110|10\d|[1-9]\d?)", source_key_upper):
                 messier.setdefault(source_key_upper, fixed_id)
-            if BAYER_RE.fullmatch(source_key):
-                bayer.setdefault(source_key.casefold(), fixed_id)
+            normalized_source_key = normalize_bayer(source_key)
+            if BAYER_RE.fullmatch(source_key.translate(SUPERSCRIPT_DIGITS)):
+                bayer.setdefault(normalized_source_key, fixed_id)
     return names, messier, bayer
 
 
@@ -52,8 +60,9 @@ def resolve(body: str, names: dict[str, int], messier: dict[str, int], bayer: di
         found = messier.get(m.group(0).upper())
         if found is not None:
             return found
+    normalized_text = normalize_bayer(text)
     for designation, fixed_id in bayer.items():
-        if re.search(rf"(?<![\w]){re.escape(designation)}(?![\w])", text.casefold()):
+        if re.search(rf"(?<![\w]){re.escape(designation)}(?![\w])", normalized_text):
             return fixed_id
     folded = text.casefold()
     hits = [(len(name), fixed_id) for name, fixed_id in names.items()
