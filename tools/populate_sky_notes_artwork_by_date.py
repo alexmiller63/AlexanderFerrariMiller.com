@@ -14,12 +14,14 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+from finder_geometry_adapter import asterism_spec, constellation_paths
 from iso_date_range import parse_range_args
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE_ROOT = ROOT
 DESCRIPTOR_ROOT = SOURCE_ROOT / "generated-sky-notes"
 GEOMETRY_REGISTRY = SOURCE_ROOT / "finder-geometry" / "martz-macrobert.json"
+RENDER_SPECS_ROOT = SOURCE_ROOT / "sky-notes-artwork" / "specs"
 
 
 def load_descriptor(year: int, week: int) -> dict | None:
@@ -43,13 +45,9 @@ def validate_descriptor(descriptor: dict, year: int, week: int) -> None:
     if descriptor.get("schema_version") != 1:
         raise RuntimeError(f"{expected_week}: unsupported artwork descriptor schema")
     if descriptor.get("week") != expected_week:
-        raise RuntimeError(
-            f"{expected_week}: descriptor week is {descriptor.get('week')!r}"
-        )
+        raise RuntimeError(f"{expected_week}: descriptor week is {descriptor.get('week')!r}")
     if descriptor.get("kind") != "stellar-finder":
-        raise RuntimeError(
-            f"{expected_week}: unsupported artwork kind {descriptor.get('kind')!r}"
-        )
+        raise RuntimeError(f"{expected_week}: unsupported artwork kind {descriptor.get('kind')!r}")
 
     geometry = descriptor.get("geometry") or {}
     if geometry.get("constellation_system") != "Martz/MacRobert":
@@ -105,6 +103,43 @@ def accepted_geometry(descriptor: dict) -> dict:
     return registry
 
 
+def build_renderer_spec(descriptor: dict, registry: dict) -> dict:
+    """Translate a validated artwork descriptor into legacy renderer geometry."""
+    abbreviation = descriptor["geometry"]["constellation_abbreviation"]
+    targets = descriptor.get("targets") or []
+    if not targets:
+        raise RuntimeError(f"{descriptor['week']}: stellar finder has no target")
+    target = targets[0]
+    if target.get("type") != "star" or not target.get("name"):
+        raise RuntimeError(
+            f"{descriptor['week']}: generic renderer currently requires a named star target"
+        )
+
+    spec = {
+        "name": descriptor.get("constellation") or abbreviation,
+        "target": target["name"],
+        "figure_paths": constellation_paths(registry, abbreviation),
+        "asterisms": [],
+        "deep_sky_objects": [],
+    }
+    requested = descriptor.get("asterism")
+    if requested:
+        spec["asterisms"].append(
+            asterism_spec(registry, requested["id"], requested.get("name", ""))
+        )
+    return spec
+
+
+def write_renderer_spec(year: int, week: int, spec: dict) -> Path:
+    out_dir = RENDER_SPECS_ROOT / str(year)
+    out_dir.mkdir(parents=True, exist_ok=True)
+    out = out_dir / f"W{week:02d}.json"
+    text = json.dumps(spec, indent=2, ensure_ascii=False) + "\n"
+    if not out.exists() or out.read_text(encoding="utf-8") != text:
+        out.write_text(text, encoding="utf-8")
+    return out
+
+
 def generate_week(year: int, week: int) -> bool:
     key = f"{year}-W{week:02d}"
     descriptor = load_descriptor(year, week)
@@ -113,15 +148,11 @@ def generate_week(year: int, week: int) -> bool:
         return False
 
     validate_descriptor(descriptor, year, week)
-    accepted_geometry(descriptor)
-
-    # The descriptor/geometry contract is intentionally complete before the
-    # renderer is allowed to write files. The next renderer stage must consume
-    # only these validated records; it must never synthesize a constellation.
-    raise RuntimeError(
-        f"ISO {key}: descriptor and accepted geometry validated, but the generic "
-        "SVG renderer has not yet been installed. No artwork was modified."
-    )
+    registry = accepted_geometry(descriptor)
+    spec = build_renderer_spec(descriptor, registry)
+    out = write_renderer_spec(year, week, spec)
+    print(f"ISO {key}: accepted finder geometry prepared at {out.relative_to(ROOT)}")
+    return True
 
 
 def main() -> None:
@@ -133,7 +164,7 @@ def main() -> None:
         generated += int(generate_week(item.year, item.week))
     print(
         f"Sky Notes artwork complete for {start.isoformat()} through {end.isoformat()}: "
-        f"{generated} ISO weeks generated/recreated"
+        f"{generated} ISO weeks prepared for rendering"
     )
 
 
