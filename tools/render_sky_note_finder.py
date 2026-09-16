@@ -15,9 +15,6 @@ from pathlib import Path
 
 import matplotlib.pyplot as plt
 
-# This script lives in tools/, while the established stellar-rendering helpers
-# live at repository root.  Add that root explicitly so direct execution from
-# GitHub Actions resolves the shared renderer deterministically.
 REPO_ROOT = Path(__file__).resolve().parents[1]
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
@@ -45,24 +42,29 @@ def refs_from_paths(paths):
 
 
 def bayer_label(star, figure_constellation):
+    """Chart label: Greek only, except foreign-constellation stars add IAU abbreviation."""
     label = greek_bayer_symbol(star.bayer) if star.bayer else ""
     if label and star.con and star.con != figure_constellation:
         label += f" {star.con}"
     return label
 
 
+def legend_label(star, figure_constellation):
+    """Legend: Greek + proper name; constellation abbreviation only for foreign stars."""
+    greek = greek_bayer_symbol(star.bayer) if star.bayer else ""
+    if not greek:
+        return ""
+    if star.con and star.con != figure_constellation:
+        greek += f" {star.con}"
+    return f"{greek} — {star.proper}" if star.proper else greek
+
+
 def draw_path(ax, path, idx, center, color, linewidth):
     points = [project(idx[ref].ra_deg, idx[ref].dec_deg, *center) for ref in path]
     points = [point for point in points if point is not None]
     if len(points) >= 2:
-        ax.plot(
-            [point[0] for point in points],
-            [point[1] for point in points],
-            color=color,
-            linewidth=linewidth,
-            alpha=0.95,
-            zorder=2,
-        )
+        ax.plot([point[0] for point in points], [point[1] for point in points],
+                color=color, linewidth=linewidth, alpha=0.95, zorder=2)
 
 
 def render(spec: dict, stars, output: Path) -> None:
@@ -80,10 +82,7 @@ def render(spec: dict, stars, output: Path) -> None:
 
     center_stars = [idx[ref] for ref in refs_from_paths(figure_paths) | {target_ref}]
     center = spherical_center(center_stars)
-    projected_geometry = [
-        project(idx[ref].ra_deg, idx[ref].dec_deg, *center)
-        for ref in refs
-    ]
+    projected_geometry = [project(idx[ref].ra_deg, idx[ref].dec_deg, *center) for ref in refs]
     projected_geometry = [point for point in projected_geometry if point is not None]
     if not projected_geometry:
         raise RuntimeError("Accepted geometry produced no visible projected points")
@@ -110,13 +109,8 @@ def render(spec: dict, stars, output: Path) -> None:
     ax.set_aspect("equal")
 
     if visible:
-        ax.scatter(
-            [item[0] for item in visible],
-            [item[1] for item in visible],
-            s=[marker_area(item[2].mag, 7) for item in visible],
-            color=STAR,
-            zorder=1,
-        )
+        ax.scatter([item[0] for item in visible], [item[1] for item in visible],
+                   s=[marker_area(item[2].mag, 7) for item in visible], color=STAR, zorder=1)
 
     for path in figure_paths:
         draw_path(ax, path, idx, center, FIGURE_BLUE, 2.7)
@@ -140,13 +134,13 @@ def render(spec: dict, stars, output: Path) -> None:
         label = bayer_label(star, figure_constellation)
         if label:
             ax.annotate(label, point, xytext=(5, 5), textcoords="offset points",
-                        fontsize=8, color=TEXT, zorder=6)
+                        fontsize=9, color=TEXT, zorder=6)
 
     if figure_constellation and figure_points:
         ax.text(sum(x for x, _ in figure_points) / len(figure_points),
                 sum(y for _, y in figure_points) / len(figure_points),
-                figure_constellation, color=FIGURE_BLUE, fontsize=10,
-                ha="center", va="center", zorder=5)
+                figure_constellation, color=FIGURE_BLUE, fontsize=16,
+                fontweight="bold", ha="center", va="center", zorder=5)
 
     for asterism in asterisms:
         for path in asterism.get("paths") or []:
@@ -156,47 +150,33 @@ def render(spec: dict, stars, output: Path) -> None:
     target_xy = project(target.ra_deg, target.dec_deg, *center)
     if target_xy is None:
         raise RuntimeError(f"Target {target_ref!r} is outside the projection")
-    ax.scatter(
-        [target_xy[0]],
-        [target_xy[1]],
-        s=210,
-        facecolors="none",
-        edgecolors=TARGET_YELLOW,
-        linewidths=2.6,
-        zorder=8,
-    )
-    ax.annotate(
-        target.proper or target_ref,
-        target_xy,
-        xytext=(14, 0),
-        textcoords="offset points",
-        ha="left",
-        va="center",
-        fontsize=10,
-        color=TEXT,
-        bbox=dict(facecolor=NIGHT, edgecolor="none", pad=0.8),
-        zorder=9,
-    )
+    ax.scatter([target_xy[0]], [target_xy[1]], s=210, facecolors="none",
+               edgecolors=TARGET_YELLOW, linewidths=2.6, zorder=8)
 
-    ax.set_title(spec.get("chart_title") or f"{target.proper or target_ref} Finder", color=TEXT, fontsize=14, pad=12)
-    ax.text(
-        0.5,
-        -0.035,
-        "East ←                                      → West",
-        transform=ax.transAxes,
-        ha="center",
-        va="top",
-        fontsize=8,
-        color=TEXT,
-    )
-    legend = []
-    for star in figure_stars:
-        designation = bayer_label(star, figure_constellation)
-        if designation:
-            legend.append(f"{designation} — {star.proper}" if star.proper else designation)
+    target_greek = greek_bayer_symbol(target.bayer) if target.bayer else ""
+    target_name = target.proper or target_ref
+    target_chart_label = " ".join(part for part in (target_greek, target_name) if part)
+    ax.annotate(target_chart_label, target_xy, xytext=(14, 0), textcoords="offset points",
+                ha="left", va="center", fontsize=10, color=TARGET_YELLOW,
+                bbox=dict(facecolor=NIGHT, edgecolor="none", pad=0.8), zorder=9)
+
+    # Title convention: Greek Bayer symbol + IAU abbreviation, proper name, in constellation.
+    title_const = target.con or figure_constellation
+    if target_greek and title_const:
+        title = f"{target_greek} {title_const}, {target_name}, in {figure_constellation}"
+    else:
+        title = spec.get("chart_title") or f"{target_name} Finder"
+    ax.set_title(title, color=TEXT, fontsize=14, pad=12)
+
+    ax.text(0.5, -0.035, "East ←                                      → West",
+            transform=ax.transAxes, ha="center", va="top", fontsize=8, color=TEXT)
+
+    legend = [legend_label(star, figure_constellation) for star in figure_stars]
+    legend = [item for item in legend if item]
     if legend:
         ax.text(0.5, -0.075, "   •   ".join(legend), transform=ax.transAxes,
                 ha="center", va="top", fontsize=7, color=TEXT, wrap=True)
+
     ax.set_xticks([])
     ax.set_yticks([])
     ax.grid(False)
@@ -217,7 +197,6 @@ def main() -> None:
     args = parser.parse_args()
 
     import json
-
     spec = json.loads(args.spec.read_text(encoding="utf-8"))
     render(spec, load_hyg(args.hyg_catalog), args.output)
     print(f"wrote {args.output}")
