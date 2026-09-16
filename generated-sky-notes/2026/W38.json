@@ -19,7 +19,7 @@
     }
   ],
   "artwork": null,
-  "note": "ISO 2026-W38 runs from September 14 through September 20. Uranus is about 4.1° in ecliptic longitude from Aldebaran in Taurus.\n\n**Naked eye:** 🌓 First Quarter — 20:43:47 UTC. Moderate moonlight makes timing and local sky position important for faint targets. Use the brightest seasonal stars and the zodiac as the week’s fixed-sky framework.\n\n**Planets:** Uranus is about 4.1° in ecliptic longitude from Aldebaran in Taurus.\n\n**Binoculars:** Favor the week’s richest fixed-star fields; wide fields help connect the charted geometry to the real sky.\n\n**Small telescope:** Concentrate on the compact fixed-sky targets selected for the week. Increase magnification only after the target and surrounding pattern are secure.",
+  "note": "ISO 2026-W38 runs from September 14 through September 20. Uranus is about 4.1° in ecliptic longitude from Aldebaran in Taurus.\n\n**Naked eye:** 🌓 First Quarter — 20:43:47 UTCDeneb (α Cyg) — V 1 — Northern Summer — in the Milky WayM72 — 🔭. Moderate moonlight makes timing and local sky position important for faint targets. Use the brightest seasonal stars and the zodiac as the week’s fixed-sky framework.\n\n**Planets:** Uranus is about 4.1° in ecliptic longitude from Aldebaran in Taurus.\n\n**Binoculars:** Favor the week’s richest fixed-star fields; wide fields help connect the charted geometry to the real sky.\n\n**Small telescope:** Concentrate on the compact fixed-sky targets selected for the week. Increase magnification only after the target and surrounding pattern are secure.",
   "descriptors": [
     {
       "schema_version": 1,
@@ -178,7 +178,35 @@
       }
     }
   ],
-  "stories": [],
+  "calendar_fixed_object_ids": [
+    454,
+    539,
+    466,
+    453,
+    390,
+    567,
+    112,
+    392,
+    476
+  ],
+  "stories": [
+    {
+      "fixed_object_id": 390,
+      "collection": "messier",
+      "hed": "One of Messier’s farthest star cities",
+      "dek": "M72 is one of the most remote globular clusters in the Messier catalog, about 50,000 light-years from Earth.",
+      "url": "/stories/messier/390.html",
+      "artwork": null
+    },
+    {
+      "fixed_object_id": 392,
+      "collection": "messier",
+      "hed": "Messier catalogued four stars that only look acquainted",
+      "dek": "M73 is not a star cluster at all, but a tiny asterism whose stars happen to lie along nearly the same line of sight.",
+      "url": "/stories/messier/392.html",
+      "artwork": null
+    }
+  ],
   "descriptor_policy": {
     "source_of_truth": "machine-readable JSON",
     "inline_human_descriptors_target": "3-4",
@@ -186,6 +214,7 @@
     "link_target": "../../descriptors/<id>.json",
     "artwork_descriptor_is_separate": true,
     "artwork_source": "explicit story front matter only",
+    "story_identity_source": "Calendar data-fixed-object-id only",
     "story_source": "stories/<collection>/<fixed_object_id>.md",
     "story_preview": "hed + dek",
     "annual_note_is_separate_from_evergreen_story": true

@@ -4,7 +4,21 @@
   "status": "generated",
   "planetary_source": "weekly-ephemeris-2026.csv",
   "planetary_coordinate": "geocentric tropical ecliptic longitude; Monday 00:00 UTC",
-  "fixed_sky": [],
+  "fixed_sky": [
+    {
+      "type": "star",
+      "name": "Alderamin",
+      "constellation": "Cep"
+    },
+    {
+      "type": "deep-sky",
+      "name": "Sadalsuud (β Aqr)"
+    },
+    {
+      "type": "deep-sky",
+      "name": "M30"
+    }
+  ],
   "planet_relations": [
     {
       "kind": "planet-star-longitude",
@@ -30,8 +44,68 @@
     }
   ],
   "artwork": null,
-  "note": "ISO 2026-W40 runs from September 28 through October 4. Mercury is about 2.8° in ecliptic longitude from Spica in Virgo. Uranus is about 4.2° in ecliptic longitude from Aldebaran in Taurus.\n\n**Naked eye:** 🌗 Last Quarter — 13:25:04 UTC. Moderate moonlight makes timing and local sky position important for faint targets. Use the brightest seasonal stars and the zodiac as the week’s fixed-sky framework.\n\n**Planets:** Mercury is about 2.8° in ecliptic longitude from Spica in Virgo. Uranus is about 4.2° in ecliptic longitude from Aldebaran in Taurus.\n\n**Binoculars:** Favor the week’s richest fixed-star fields; wide fields help connect the charted geometry to the real sky.\n\n**Small telescope:** Concentrate on the compact fixed-sky targets selected for the week. Increase magnification only after the target and surrounding pattern are secure.",
+  "note": "ISO 2026-W40 runs from September 28 through October 4. Fixed-sky highlights include Alderamin, Sadalsuud (β Aqr), M30. Mercury is about 2.8° in ecliptic longitude from Spica in Virgo. Uranus is about 4.2° in ecliptic longitude from Aldebaran in Taurus.\n\n**Naked eye:** 🌗 Last Quarter — 13:25:04 UTC. Moderate moonlight makes timing and local sky position important for faint targets. Use Alderamin as the week’s fixed-sky framework.\n\n**Planets:** Mercury is about 2.8° in ecliptic longitude from Spica in Virgo. Uranus is about 4.2° in ecliptic longitude from Aldebaran in Taurus.\n\n**Binoculars:** Favor Sadalsuud (β Aqr), M30, Alderamin; wide fields help connect the charted geometry to the real sky.\n\n**Small telescope:** Concentrate on Sadalsuud (β Aqr), M30. Increase magnification only after the target and surrounding pattern are secure.",
   "descriptors": [
+    {
+      "schema_version": 1,
+      "id": "star-alderamin",
+      "type": "star",
+      "name": "Alderamin",
+      "summary": "bright star in Cepheus used as a fixed-sky reference",
+      "representation": {
+        "machine": "./star-alderamin.json",
+        "human_source": "summary"
+      },
+      "constellation_abbreviation": "Cep",
+      "constellation": "Cepheus",
+      "position": {
+        "ra_deg": 319.64445,
+        "dec_deg": 62.585573,
+        "ecliptic_longitude_deg": 12.777807,
+        "ecliptic_latitude_deg": 68.913861
+      },
+      "representative_visual_magnitude": 2.45
+    },
+    {
+      "schema_version": 1,
+      "id": "constellation-cepheus",
+      "type": "constellation",
+      "name": "Cepheus",
+      "summary": "constellation used by Star Almanack to organize fixed-sky objects and finder geometry",
+      "representation": {
+        "machine": "./constellation-cepheus.json",
+        "human_source": "summary"
+      },
+      "abbreviation": "Cep"
+    },
+    {
+      "schema_version": 1,
+      "id": "sadalsuud-aqr",
+      "type": "deep-sky-object",
+      "name": "Sadalsuud (β Aqr)",
+      "summary": "deep-sky object selected as a weekly fixed-sky observing target",
+      "representation": {
+        "machine": "./sadalsuud-aqr.json",
+        "human_source": "summary"
+      },
+      "catalog_name": "Sadalsuud (β Aqr)",
+      "object_type": "deep-sky object",
+      "source_label": "Sadalsuud (β Aqr)"
+    },
+    {
+      "schema_version": 1,
+      "id": "m30",
+      "type": "deep-sky-object",
+      "name": "M30",
+      "summary": "deep-sky object selected as a weekly fixed-sky observing target",
+      "representation": {
+        "machine": "./m30.json",
+        "human_source": "summary"
+      },
+      "catalog_name": "M30",
+      "object_type": "deep-sky object",
+      "source_label": "M30"
+    },
     {
       "schema_version": 1,
       "id": "planet-mercury",
@@ -255,42 +329,52 @@
         "machine": "./naked-eye.json",
         "human_source": "summary"
       }
-    },
-    {
-      "schema_version": 1,
-      "id": "binoculars",
-      "type": "observing-concept",
-      "name": "Binoculars",
-      "summary": "wide-field optical aid useful for locating star fields and brighter deep-sky targets",
-      "representation": {
-        "machine": "./binoculars.json",
-        "human_source": "summary"
-      }
-    },
-    {
-      "schema_version": 1,
-      "id": "small-telescope",
-      "type": "observing-concept",
-      "name": "Small telescope",
-      "summary": "a telescope suitable for resolving compact targets after the surrounding field is identified",
-      "representation": {
-        "machine": "./small-telescope.json",
-        "human_source": "summary"
-      }
-    },
-    {
-      "schema_version": 1,
-      "id": "zodiac",
-      "type": "observing-concept",
-      "name": "zodiac",
-      "summary": "the band of constellations along the ecliptic used to orient Solar-System objects",
-      "representation": {
-        "machine": "./zodiac.json",
-        "human_source": "summary"
-      }
     }
   ],
-  "stories": [],
+  "calendar_fixed_object_ids": [
+    438,
+    542,
+    523,
+    399,
+    512,
+    400,
+    401,
+    402
+  ],
+  "stories": [
+    {
+      "fixed_object_id": 399,
+      "collection": "messier",
+      "hed": "A star swarm with something strange at its heart",
+      "dek": "M15 is one of the densest globular clusters known, an ancient swarm whose brilliant center is crowded on a scale the quiet binocular glow does not suggest.",
+      "url": "/stories/messier/399.html",
+      "artwork": null
+    },
+    {
+      "fixed_object_id": 400,
+      "collection": "messier",
+      "hed": "A comet hunter found a city of 150,000 stars",
+      "dek": "M2 can look like a small misty ball, but the haze is the unresolved light of more than 150,000 stars bound together by gravity.",
+      "url": "/stories/messier/400.html",
+      "artwork": null
+    },
+    {
+      "fixed_object_id": 401,
+      "collection": "messier",
+      "hed": "A cluster that wants a wide field",
+      "dek": "M39 is an open cluster whose loose bright stars make more sense together than they do one at a time.",
+      "url": "/stories/messier/401.html",
+      "artwork": null
+    },
+    {
+      "fixed_object_id": 402,
+      "collection": "messier",
+      "hed": "The cluster that sorted its stars by weight",
+      "dek": "M30 is an ancient globular cluster whose crowded history has literally rearranged its stellar population.",
+      "url": "/stories/messier/402.html",
+      "artwork": null
+    }
+  ],
   "descriptor_policy": {
     "source_of_truth": "machine-readable JSON",
     "inline_human_descriptors_target": "3-4",
@@ -298,6 +382,7 @@
     "link_target": "../../descriptors/<id>.json",
     "artwork_descriptor_is_separate": true,
     "artwork_source": "explicit story front matter only",
+    "story_identity_source": "Calendar data-fixed-object-id only",
     "story_source": "stories/<collection>/<fixed_object_id>.md",
     "story_preview": "hed + dek",
     "annual_note_is_separate_from_evergreen_story": true
