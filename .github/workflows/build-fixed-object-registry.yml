@@ -32,9 +32,12 @@ jobs:
       - name: Build normalized fixed-object records
         run: python tools/build_fixed_object_records.py
 
+      - name: Build constellation memberships
+        run: python tools/build_constellation_memberships.py
+
       - name: Commit normalized fixed-object database
         run: |
-          git add database/fixed-object-registry.json database/fixed-objects.json database/catalog-entry-targets.json generated/fixed-object-identity-audit.json
+          git add database/fixed-object-registry.json database/fixed-objects.json database/catalog-entry-targets.json database/constellation-memberships.json generated/fixed-object-identity-audit.json
           if git diff --cached --quiet; then
             echo "No fixed-object database changes."
             exit 0
