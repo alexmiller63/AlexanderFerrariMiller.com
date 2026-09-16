@@ -1,8 +1,8 @@
 {
-  "schema_version": 2,
-  "purpose": "Pre-migration machine-readable relationship layer separating catalog entries and observing targets from physical fixed-object identity.",
-  "status": "migration_scaffold",
-  "permanent_fixed_object_ids_assigned": false,
+  "schema_version": 3,
+  "purpose": "Machine-readable relationship layer separating catalog entries and observing targets from permanent physical fixed-object identity.",
+  "status": "permanent_identity_migrated",
+  "permanent_fixed_object_ids_assigned": true,
   "relationship_types": [
     "designates",
     "comprises",
@@ -46,15 +46,23 @@
         },
         {
           "relationship": "has_component",
-          "target_kind": "physical_object_identifier",
-          "identifier": {"namespace": "hd", "value": "238107"},
-          "display_name": "HD 238107"
+          "target_kind": "fixed_object",
+          "identifier": {
+            "namespace": "hd",
+            "value": "238107"
+          },
+          "display_name": "HD 238107",
+          "fixed_object_id": 126
         },
         {
           "relationship": "has_component",
-          "target_kind": "physical_object_identifier",
-          "identifier": {"namespace": "hd", "value": "238108"},
-          "display_name": "HD 238108"
+          "target_kind": "fixed_object",
+          "identifier": {
+            "namespace": "hd",
+            "value": "238108"
+          },
+          "display_name": "HD 238108",
+          "fixed_object_id": 127
         }
       ],
       "component_resolution_status": "resolved",
@@ -71,9 +79,10 @@
       "targets": [
         {
           "relationship": "designates",
-          "target_kind": "physical_object_candidate",
+          "target_kind": "fixed_object",
           "candidate_ref": "fixed-objects.yaml:messier/M45",
-          "display_name": "Pleiades"
+          "display_name": "Pleiades",
+          "fixed_object_id": 594
         },
         {
           "relationship": "has_asterism",
@@ -94,15 +103,23 @@
       "targets": [
         {
           "relationship": "comprises",
-          "target_kind": "physical_object_identifier",
-          "identifier": {"namespace": "ngc", "value": "869"},
-          "display_name": "NGC 869"
+          "target_kind": "fixed_object",
+          "identifier": {
+            "namespace": "ngc",
+            "value": "869"
+          },
+          "display_name": "NGC 869",
+          "fixed_object_id": 152
         },
         {
           "relationship": "comprises",
-          "target_kind": "physical_object_identifier",
-          "identifier": {"namespace": "ngc", "value": "884"},
-          "display_name": "NGC 884"
+          "target_kind": "fixed_object",
+          "identifier": {
+            "namespace": "ngc",
+            "value": "884"
+          },
+          "display_name": "NGC 884",
+          "fixed_object_id": 153
         }
       ],
       "display_name": "Double Cluster"
@@ -118,15 +135,23 @@
       "targets": [
         {
           "relationship": "comprises",
-          "target_kind": "physical_object_identifier",
-          "identifier": {"namespace": "ngc", "value": "6992"},
-          "display_name": "NGC 6992"
+          "target_kind": "fixed_object",
+          "identifier": {
+            "namespace": "ngc",
+            "value": "6992"
+          },
+          "display_name": "NGC 6992",
+          "fixed_object_id": 391
         },
         {
           "relationship": "comprises",
-          "target_kind": "physical_object_identifier",
-          "identifier": {"namespace": "ngc", "value": "6995"},
-          "display_name": "NGC 6995"
+          "target_kind": "fixed_object",
+          "identifier": {
+            "namespace": "ngc",
+            "value": "6995"
+          },
+          "display_name": "NGC 6995",
+          "fixed_object_id": 393
         }
       ],
       "display_name": "Eastern Veil Nebula"
@@ -142,9 +167,10 @@
       "targets": [
         {
           "relationship": "designates",
-          "target_kind": "physical_object_candidate",
+          "target_kind": "fixed_object",
           "candidate_ref": "caldwell-catalog.csv/C41",
-          "display_name": "Hyades"
+          "display_name": "Hyades",
+          "fixed_object_id": 595
         },
         {
           "relationship": "has_asterism",
@@ -165,21 +191,31 @@
       "targets": [
         {
           "relationship": "designates",
-          "target_kind": "physical_object_identifier",
-          "identifier": {"namespace": "ngc", "value": "2237"},
-          "display_name": "NGC 2237"
+          "target_kind": "fixed_object",
+          "identifier": {
+            "namespace": "ngc",
+            "value": "2237"
+          },
+          "display_name": "NGC 2237",
+          "fixed_object_id": 184
         },
         {
           "relationship": "historical_designation",
           "target_kind": "catalog_designation",
-          "identifier": {"namespace": "ngc", "value": "2238"},
+          "identifier": {
+            "namespace": "ngc",
+            "value": "2238"
+          },
           "display_name": "NGC 2238",
           "note": "SIMBAD treats NGC 2238 as an obsolete designation for a portion of the Rosette Nebula; it is not forced into a separate physical identity."
         },
         {
           "relationship": "historical_designation",
           "target_kind": "catalog_designation",
-          "identifier": {"namespace": "ngc", "value": "2239"},
+          "identifier": {
+            "namespace": "ngc",
+            "value": "2239"
+          },
           "display_name": "NGC 2239",
           "note": "NGC 2239 has conflicting historical usage and is retained as catalog semantics rather than forced into a new physical identity in C49."
         }
@@ -203,5 +239,6 @@
         }
       ]
     }
-  ]
+  ],
+  "fixed_object_registry": "database/fixed-object-registry.json"
 }
