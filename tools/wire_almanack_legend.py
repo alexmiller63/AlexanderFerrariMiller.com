@@ -10,6 +10,7 @@ by the Star Almanack, including observing-aid and event glyphs.
 This file is also the deployment trigger for refreshing stale static legends.
 """
 
+from datetime import date, timedelta
 from pathlib import Path
 import re
 import sys
@@ -102,21 +103,35 @@ BETA_LAT_RE = re.compile(r'(<small>)β(?= [−+\-])')
 BETA_NOTE_RE = re.compile(r'(<strong>)β(?=</strong>)')
 
 
-def requested_years() -> tuple[int, ...]:
-    if len(sys.argv) > 1:
-        years = tuple(dict.fromkeys(int(arg) for arg in sys.argv[1:]))
-        if any(year < 1900 or year > 2100 for year in years):
-            raise SystemExit("Years must be in range 1900-2100")
-        return years
+def requested_weeks() -> tuple[tuple[int, int], ...]:
+    if len(sys.argv) == 1:
+        values = (2026, 36, 2026, 40)
+    elif len(sys.argv) == 5:
+        try:
+            values = tuple(int(arg) for arg in sys.argv[1:5])
+        except ValueError as exc:
+            raise SystemExit("ISO year/week arguments must be integers") from exc
+    else:
+        raise SystemExit(
+            "usage: wire_almanack_legend.py START_YEAR START_WEEK END_YEAR END_WEEK"
+        )
 
-    discovered = {
-        int(path.name)
-        for base in BASES
-        if base.is_dir()
-        for path in base.iterdir()
-        if path.is_dir() and re.fullmatch(r"\d{4}", path.name)
-    }
-    return tuple(sorted(discovered))
+    start_year, start_week, end_year, end_week = values
+    try:
+        start = date.fromisocalendar(start_year, start_week, 1)
+        end = date.fromisocalendar(end_year, end_week, 1)
+    except ValueError as exc:
+        raise SystemExit(f"Invalid ISO week range: {exc}") from exc
+    if end < start:
+        raise SystemExit("End ISO week must not precede start ISO week")
+
+    weeks = []
+    current = start
+    while current <= end:
+        iso = current.isocalendar()
+        weeks.append((iso.year, iso.week))
+        current += timedelta(days=7)
+    return tuple(weeks)
 
 
 def wire_page(path: Path) -> bool:
@@ -153,17 +168,23 @@ def wire_page(path: Path) -> bool:
 
 
 def main() -> None:
-    years = requested_years()
+    weeks = requested_weeks()
     changed = 0
     for base in BASES:
-        for year in years:
-            year_root = base / str(year)
-            if not year_root.is_dir():
+        for year, week in weeks:
+            path = base / str(year) / f"W{week:02d}" / "index.html"
+            if not path.is_file():
                 continue
-            for path in sorted(year_root.glob("W??/index.html")):
-                if wire_page(path):
-                    changed += 1
-    print(f"Wired complete Almanack legend on {changed} weekly page copies for {' '.join(map(str, years))}")
+            if wire_page(path):
+                changed += 1
+
+    first_year, first_week = weeks[0]
+    last_year, last_week = weeks[-1]
+    print(
+        "Wired complete Almanack legend on "
+        f"{changed} weekly page copies for "
+        f"{first_year}-W{first_week:02d} through {last_year}-W{last_week:02d}"
+    )
 
 
 if __name__ == "__main__":
