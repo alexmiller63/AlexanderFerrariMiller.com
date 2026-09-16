@@ -39,6 +39,12 @@ def parse_boundary(path: Path):
         ra_deg = 15.0 * (h + m / 60.0 + s / 3600.0)
         dec_deg = float(parts[1])
         row_abbreviation = parts[2].upper()
+        # The IAU snapshot represents the two disconnected Serpens regions as
+        # SER1 and SER2. They are polygons of one constellation, whose IAU
+        # abbreviation is SER. Preserve the source files verbatim and
+        # normalize only the semantic constellation identifier here.
+        if row_abbreviation in {"SER1", "SER2"}:
+            row_abbreviation = "SER"
         if abbreviation is None:
             abbreviation = row_abbreviation
         elif row_abbreviation != abbreviation:
