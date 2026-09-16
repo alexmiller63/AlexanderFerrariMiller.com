@@ -113,14 +113,34 @@ def reserved_boxes(mode: str) -> list[Box]:
 
 
 def candidate_positions(longitude: float):
-    radii = (345, 300, 255, 210, 390, 165, 120)
-    shifts = (0, -42, 42, -84, 84, -126, 126, -168, 168, -210, 210)
+    # Search the usable interior systematically instead of sampling only seven
+    # radial tracks and eleven tangent offsets.  Dense planetary conjunctions
+    # can require a label to move farther around the wheel than that old finite
+    # sample allowed, especially in Mixed / Learner mode where labels are widest.
+    # Keep the old preferred positions first so ordinary weeks remain visually
+    # stable; then expand deterministically until the whole useful interior has
+    # been offered to the backtracking solver.
+    preferred_radii = (345, 300, 255, 210, 390, 165, 120)
+    preferred_shifts = (0, -42, 42, -84, 84, -126, 126, -168, 168, -210, 210)
     theta = math.radians(180 + longitude)
     tx, ty = -math.sin(theta), -math.cos(theta)
-    for r in radii:
-        bx, by = xy(longitude, r)
-        for shift in shifts:
-            yield bx + shift * tx, by + shift * ty
+    seen: set[tuple[int, int]] = set()
+
+    def offer(radii, shifts):
+        for r in radii:
+            bx, by = xy(longitude, r)
+            for shift in shifts:
+                x, y = bx + shift * tx, by + shift * ty
+                key = (round(x * 10), round(y * 10))
+                if key not in seen:
+                    seen.add(key)
+                    yield x, y
+
+    yield from offer(preferred_radii, preferred_shifts)
+
+    expanded_radii = tuple(range(400, 79, -20))
+    expanded_shifts = (0,) + tuple(v for n in range(28, 337, 28) for v in (-n, n))
+    yield from offer(expanded_radii, expanded_shifts)
 
 
 def route(anchor: tuple[float, float], center: tuple[float, float], obstacles: list[Box]) -> list[tuple[float, float]] | None:
