@@ -6,6 +6,7 @@ import html
 import json
 import re
 
+from almanack_sections import replace_section_inner
 from iso_date_range import group_by_year, parse_range_args
 from star_almanack_planets import load_weekly_longitudes
 import populate_sky_notes_by_date as base
@@ -116,17 +117,17 @@ def generated_note(year: int, week: int, page_path, yearly, stars: list[dict], i
 
 def patch_page(path, payload: dict) -> bool:
     text = path.read_text(encoding="utf-8")
-    body_start, end = base.sky_note_bounds(text, path)
     rendered = base.render_note(payload["note"])
     rendered = decorate_note_html(rendered, payload["descriptors"])
     stories = render_story_previews(payload.get("stories", []))
     placeholder = base.render_artwork_placeholder(payload["artwork"])
-    new_body = "\n" + rendered + "\n"
+    body = rendered + "\n"
     if stories:
-        new_body += stories + "\n"
+        body += stories + "\n"
     if placeholder:
-        new_body += placeholder + "\n"
-    new = text[:body_start] + new_body + text[end:]
+        body += placeholder + "\n"
+    section_html = '<h3>Sky Notes</h3><div class="sky-note">\n' + body + '</div>'
+    new = replace_section_inner(text, 5, section_html, path)
     if new == text:
         return False
     path.write_text(new, encoding="utf-8")
