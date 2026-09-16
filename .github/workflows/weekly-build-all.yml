@@ -1,0 +1,100 @@
+name: Weekly Build All
+
+on:
+  workflow_dispatch:
+    inputs:
+      start_year:
+        description: Start ISO year
+        required: true
+        default: '2026'
+        type: string
+      start_week:
+        description: Start ISO week
+        required: true
+        default: '36'
+        type: string
+      end_year:
+        description: End ISO year
+        required: true
+        default: '2026'
+        type: string
+      end_week:
+        description: End ISO week
+        required: true
+        default: '40'
+        type: string
+
+permissions:
+  contents: read
+  actions: write
+
+concurrency:
+  group: weekly-build-all
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Scaffold
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh workflow run scaffold-almanack-weeks.yml --repo "${{ github.repository }}" --ref main \
+            -f start_year='${{ inputs.start_year }}' -f start_week='${{ inputs.start_week }}' \
+            -f end_year='${{ inputs.end_year }}' -f end_week='${{ inputs.end_week }}'
+          gh run watch --repo "${{ github.repository }}" --exit-status "$(gh run list --repo "${{ github.repository }}" --workflow scaffold-almanack-weeks.yml --event workflow_dispatch --limit 1 --json databaseId --jq '.[0].databaseId')"
+
+      - name: Calendar
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh workflow run populate-calendar-by-date.yml --repo "${{ github.repository }}" --ref main \
+            -f start_year='${{ inputs.start_year }}' -f start_week='${{ inputs.start_week }}' \
+            -f end_year='${{ inputs.end_year }}' -f end_week='${{ inputs.end_week }}'
+          gh run watch --repo "${{ github.repository }}" --exit-status "$(gh run list --repo "${{ github.repository }}" --workflow populate-calendar-by-date.yml --event workflow_dispatch --limit 1 --json databaseId --jq '.[0].databaseId')"
+
+      - name: Ephemeris
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh workflow run populate-ephemeris-by-date.yml --repo "${{ github.repository }}" --ref main \
+            -f start_year='${{ inputs.start_year }}' -f start_week='${{ inputs.start_week }}' \
+            -f end_year='${{ inputs.end_year }}' -f end_week='${{ inputs.end_week }}'
+          gh run watch --repo "${{ github.repository }}" --exit-status "$(gh run list --repo "${{ github.repository }}" --workflow populate-ephemeris-by-date.yml --event workflow_dispatch --limit 1 --json databaseId --jq '.[0].databaseId')"
+
+      - name: Planet Finder
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh workflow run populate-ephemeris-planet-finder-by-date.yml --repo "${{ github.repository }}" --ref main \
+            -f start_year='${{ inputs.start_year }}' -f start_week='${{ inputs.start_week }}' \
+            -f end_year='${{ inputs.end_year }}' -f end_week='${{ inputs.end_week }}'
+          gh run watch --repo "${{ github.repository }}" --exit-status "$(gh run list --repo "${{ github.repository }}" --workflow populate-ephemeris-planet-finder-by-date.yml --event workflow_dispatch --limit 1 --json databaseId --jq '.[0].databaseId')"
+
+      - name: Sky Notes
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh workflow run populate-sky-notes-by-date.yml --repo "${{ github.repository }}" --ref main \
+            -f start_year='${{ inputs.start_year }}' -f start_week='${{ inputs.start_week }}' \
+            -f end_year='${{ inputs.end_year }}' -f end_week='${{ inputs.end_week }}'
+          gh run watch --repo "${{ github.repository }}" --exit-status "$(gh run list --repo "${{ github.repository }}" --workflow populate-sky-notes-by-date.yml --event workflow_dispatch --limit 1 --json databaseId --jq '.[0].databaseId')"
+
+      - name: Artwork
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh workflow run populate-sky-notes-artwork-by-date.yml --repo "${{ github.repository }}" --ref main \
+            -f start_year='${{ inputs.start_year }}' -f start_week='${{ inputs.start_week }}' \
+            -f end_year='${{ inputs.end_year }}' -f end_week='${{ inputs.end_week }}'
+          gh run watch --repo "${{ github.repository }}" --exit-status "$(gh run list --repo "${{ github.repository }}" --workflow populate-sky-notes-artwork-by-date.yml --event workflow_dispatch --limit 1 --json databaseId --jq '.[0].databaseId')"
+
+      - name: Legend
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh workflow run wire-almanack-legend.yml --repo "${{ github.repository }}" --ref main \
+            -f start_year='${{ inputs.start_year }}' -f start_week='${{ inputs.start_week }}' \
+            -f end_year='${{ inputs.end_year }}' -f end_week='${{ inputs.end_week }}'
+          gh run watch --repo "${{ github.repository }}" --exit-status "$(gh run list --repo "${{ github.repository }}" --workflow wire-almanack-legend.yml --event workflow_dispatch --limit 1 --json databaseId --jq '.[0].databaseId')"
