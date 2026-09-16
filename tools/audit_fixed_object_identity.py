@@ -150,6 +150,28 @@ def add_candidate(cs, source, key, ids, name=None, con=None, ra_h=None, dec_deg=
     })
 
 
+def append_suffixed_bayer_candidates(cs):
+    """Append missing Bayer components without renumbering existing audit candidates."""
+    for row in read_csv(SRC / "expanded-bayer-stars.csv"):
+        suffix = str(row.get("suffix") or "").strip()
+        if not suffix:
+            continue
+        bayer = str(row.get("bayer") or "").strip()
+        con = str(row.get("con") or "").strip()
+        if not bayer or not con:
+            continue
+        ids = [("bayer", bayer)]
+        hip = str(row.get("hip") or "").strip()
+        hd = str(row.get("hd") or "").strip()
+        if hip:
+            ids.append(("hip", hip))
+        if hd:
+            ids.append(("hd", hd))
+        add_candidate(cs, "expanded-bayer-stars.csv:suffixed", bayer, ids,
+                      row.get("proper"), con, row.get("ra_h"), row.get("dec_deg"),
+                      "star", f"bayer_code={row.get('bayer_code', '')}; suffix={suffix}")
+
+
 def load_source_candidates():
     cs = []
     fixed = parse_fixed_simple_yaml(SRC / "fixed-objects.yaml")
@@ -176,40 +198,6 @@ def load_source_candidates():
                 key = f"{row['bayer']} {row['con']}:{row['component']}"
             add_candidate(cs, f"fixed-objects.yaml:{section}", key, ids, row.get("name"), row.get("con"), row.get("ra_h"), row.get("dec_deg"), row.get("type"), row.get("note"))
 
-    # The expanded Bayer catalog carries physical component identities such as
-    # α1 Cap and α2 Cap.  Unsuffixed rows duplicate the canonical Bayer layer;
-    # only suffixed rows are missing from that layer and need to enter the
-    # permanent-ID reconciliation pipeline.  HIP and HD identifiers allow
-    # these rows to merge with an existing physical object when one is already
-    # represented elsewhere, while genuinely new components append later.
-    for row in read_csv(SRC / "expanded-bayer-stars.csv"):
-        suffix = str(row.get("suffix") or "").strip()
-        if not suffix:
-            continue
-        bayer = str(row.get("bayer") or "").strip()
-        con = str(row.get("con") or "").strip()
-        if not bayer or not con:
-            continue
-        ids = [("bayer", bayer)]
-        hip = str(row.get("hip") or "").strip()
-        hd = str(row.get("hd") or "").strip()
-        if hip:
-            ids.append(("hip", hip))
-        if hd:
-            ids.append(("hd", hd))
-        add_candidate(
-            cs,
-            "expanded-bayer-stars.csv:suffixed",
-            bayer,
-            ids,
-            row.get("proper"),
-            con,
-            row.get("ra_h"),
-            row.get("dec_deg"),
-            "star",
-            f"bayer_code={row.get('bayer_code', '')}; suffix={suffix}",
-        )
-
     for row in read_csv(SRC / "caldwell-catalog.csv"):
         ids = [("caldwell", row.get("caldwell"))]
         ident = catalog_identifier(row.get("catalog"))
@@ -228,18 +216,17 @@ def load_source_candidates():
         ids += [("hip", str(int(hip.group(1))))] if hip else []
         ids.append(("asterism_member_label", row.get("member")))
         add_candidate(cs, "asterism-member-coordinates.csv", f"row:{n}", ids, row.get("resolved_object"), None, row.get("ra_h"), row.get("dec_deg"), "star", f"asterism={row.get('asterism', '')}")
+
+    # Preserve all pre-existing audit_candidate_id values used by the target
+    # relationship layer. New Bayer components are appended only after every
+    # legacy source candidate has received its historical candidate number.
+    append_suffixed_bayer_candidates(cs)
     return cs
 
 
 def append_supplemental_candidates(cs):
     data = read_json(SUPPLEMENTAL_OBJECTS)
-    validation = {
-        "path": str(SUPPLEMENTAL_OBJECTS.relative_to(ROOT)),
-        "loaded": data is not None,
-        "object_count": 0,
-        "candidate_ids": [],
-        "errors": [],
-    }
+    validation = {"path": str(SUPPLEMENTAL_OBJECTS.relative_to(ROOT)), "loaded": data is not None, "object_count": 0, "candidate_ids": [], "errors": []}
     if data is None:
         validation["errors"].append("supplemental physical-object file is missing")
         return validation
@@ -266,14 +253,7 @@ def append_supplemental_candidates(cs):
 
 def load_constellation_reviews():
     data = read_json(CONSTELLATION_REVIEWS)
-    validation = {
-        "path": str(CONSTELLATION_REVIEWS.relative_to(ROOT)),
-        "loaded": data is not None,
-        "review_count": 0,
-        "resolved_identifier_count": 0,
-        "resolved_identifiers": [],
-        "errors": [],
-    }
+    validation = {"path": str(CONSTELLATION_REVIEWS.relative_to(ROOT)), "loaded": data is not None, "review_count": 0, "resolved_identifier_count": 0, "resolved_identifiers": [], "errors": []}
     resolved = set()
     if data is None:
         validation["errors"].append("object constellation review file is missing")
@@ -318,7 +298,6 @@ def reconcile(cs, resolved_constellation_ids=None):
         a, b = find(a), find(b)
         if a != b:
             parent[max(a, b)] = min(a, b)
-
     by = defaultdict(list)
     for c in cs:
         for ident in c["identifiers"]:
@@ -327,7 +306,6 @@ def reconcile(cs, resolved_constellation_ids=None):
     for ids in by.values():
         for candidate_id in ids[1:]:
             union(ids[0], candidate_id)
-
     grouped = defaultdict(list)
     for c in cs:
         grouped[find(c["candidate_id"])].append(c["candidate_id"])
@@ -355,12 +333,7 @@ def reconcile(cs, resolved_constellation_ids=None):
             if len(constellations) > 1:
                 matches = sorted(group_identifiers.intersection(resolved_constellation_ids))
                 if matches:
-                    resolved_reviews.append({
-                        "kind": "constellation",
-                        "values": constellations,
-                        "resolution": "resolved_by_object_constellation_review",
-                        "identifiers": [{"namespace": ns, "value": value} for ns, value in matches],
-                    })
+                    resolved_reviews.append({"kind": "constellation", "values": constellations, "resolution": "resolved_by_object_constellation_review", "identifiers": [{"namespace": ns, "value": value} for ns, value in matches]})
                 else:
                     contradictions.append({"kind": "constellation", "values": constellations, "severity": "boundary_review"})
             if len(families) > 1:
@@ -372,37 +345,16 @@ def reconcile(cs, resolved_constellation_ids=None):
             if max_sep > 1.0:
                 contradictions.append({"kind": "coordinates", "max_separation_deg": round(max_sep, 6), "severity": "review"})
         status = "singleton" if len(ids) == 1 else ("contradiction_review" if contradictions else "validated_exact_identifier")
-        groups.append({
-            "provisional_group_id": number,
-            "candidate_ids": sorted(ids),
-            "candidate_count": len(ids),
-            "merge_evidence": evidence,
-            "max_coordinate_separation_deg": round(max_sep, 6) if len(ids) > 1 else None,
-            "contradictions": contradictions,
-            "resolved_reviews": resolved_reviews,
-            "review_status": status,
-        })
+        groups.append({"provisional_group_id": number, "candidate_ids": sorted(ids), "candidate_count": len(ids), "merge_evidence": evidence, "max_coordinate_separation_deg": round(max_sep, 6) if len(ids) > 1 else None, "contradictions": contradictions, "resolved_reviews": resolved_reviews, "review_status": status})
     return groups, by
 
 
 def apply_catalog_target_layer(cs):
     layer = read_json(TARGET_LAYER)
-    validation = {
-        "path": str(TARGET_LAYER.relative_to(ROOT)),
-        "loaded": layer is not None,
-        "catalog_entry_count": 0,
-        "resolved_entry_count": 0,
-        "excluded_catalog_target_candidate_count": 0,
-        "physical_candidate_entry_count": 0,
-        "unresolved_target_identifier_count": 0,
-        "unresolved_target_identifiers": [],
-        "errors": [],
-        "warnings": [],
-    }
+    validation = {"path": str(TARGET_LAYER.relative_to(ROOT)), "loaded": layer is not None, "catalog_entry_count": 0, "resolved_entry_count": 0, "excluded_catalog_target_candidate_count": 0, "physical_candidate_entry_count": 0, "unresolved_target_identifier_count": 0, "unresolved_target_identifiers": [], "errors": [], "warnings": []}
     if layer is None:
         validation["errors"].append("catalog target relationship layer is missing")
         return validation
-
     entries = layer.get("catalog_entries") or []
     validation["catalog_entry_count"] = len(entries)
     cmap = {c["candidate_id"]: c for c in cs}
@@ -411,7 +363,6 @@ def apply_catalog_target_layer(cs):
     for c in cs:
         for ident in c["identifiers"]:
             identifiers[(ident["namespace"], ident["value"])].append(c["candidate_id"])
-
     seen_candidate_ids = set()
     for entry in entries:
         cid = entry.get("audit_candidate_id")
@@ -438,7 +389,6 @@ def apply_catalog_target_layer(cs):
         else:
             candidate["identity_role"] = "catalog_target_only"
             validation["excluded_catalog_target_candidate_count"] += 1
-
         for target in entry.get("targets") or []:
             if target.get("target_kind") != "physical_object_identifier":
                 continue
@@ -448,13 +398,7 @@ def apply_catalog_target_layer(cs):
                 validation["errors"].append(f"{entry.get('catalog_entry_key')}: physical_object_identifier target is incomplete")
                 continue
             if not identifiers.get((ns, value)):
-                validation["unresolved_target_identifiers"].append({
-                    "catalog_entry_key": entry.get("catalog_entry_key"),
-                    "namespace": ns,
-                    "value": value,
-                    "display_name": target.get("display_name"),
-                })
-
+                validation["unresolved_target_identifiers"].append({"catalog_entry_key": entry.get("catalog_entry_key"), "namespace": ns, "value": value, "display_name": target.get("display_name")})
     validation["unresolved_target_identifier_count"] = len(validation["unresolved_target_identifiers"])
     if validation["unresolved_target_identifier_count"]:
         validation["warnings"].append("Some catalog-entry physical targets are not yet represented by a candidate.")
@@ -467,95 +411,49 @@ def main():
     supplemental_validation = append_supplemental_candidates(cs)
     target_validation = apply_catalog_target_layer(cs)
     constellation_validation, resolved_constellation_ids = load_constellation_reviews()
-
     groups, by = reconcile(cs, resolved_constellation_ids)
     physical_candidates = [c for c in cs if c["identity_role"] == "physical_object_candidate"]
     physical_groups, physical_by = reconcile(physical_candidates, resolved_constellation_ids)
-
     overlaps = [{"namespace": ns, "value": value, "candidate_ids": ids} for (ns, value), ids in sorted(by.items()) if len(ids) > 1]
     physical_overlaps = [{"namespace": ns, "value": value, "candidate_ids": ids} for (ns, value), ids in sorted(physical_by.items()) if len(ids) > 1]
-    explicit = {
-        "finest_ngc_caldwell": read_csv(SRC / "finest-ngc-caldwell-overlap.csv"),
-        "asterism_catalog": read_csv(SRC / "asterism-catalog-overlap.csv"),
-    }
+    explicit = {"finest_ngc_caldwell": read_csv(SRC / "finest-ngc-caldwell-overlap.csv"), "asterism_catalog": read_csv(SRC / "asterism-catalog-overlap.csv")}
     counts = Counter(c["source"] for c in cs)
     identifier_counts = Counter(i["namespace"] for c in cs for i in c["identifiers"])
     no_cross = [c["candidate_id"] for c in cs if not any(i["namespace"] in CROSS_SOURCE_NAMESPACES for i in c["identifiers"])]
     no_cross_physical = [c["candidate_id"] for c in physical_candidates if not any(i["namespace"] in CROSS_SOURCE_NAMESPACES for i in c["identifiers"])]
     no_any = [c["candidate_id"] for c in cs if not c["identifiers"]]
-
     merged = [g for g in groups if g["candidate_count"] > 1]
     review = [g for g in merged if g["contradictions"]]
     validated = [g for g in merged if not g["contradictions"]]
     physical_merged = [g for g in physical_groups if g["candidate_count"] > 1]
     physical_review = [g for g in physical_merged if g["contradictions"]]
     physical_validated = [g for g in physical_merged if not g["contradictions"]]
-
     blockers = []
-    if supplemental_validation["errors"]:
-        blockers.append("supplemental_physical_object_errors")
-    if target_validation["errors"]:
-        blockers.append("catalog_target_layer_errors")
-    if constellation_validation["errors"]:
-        blockers.append("constellation_review_errors")
-    if target_validation["unresolved_target_identifier_count"]:
-        blockers.append("unresolved_catalog_target_identifiers")
+    if supplemental_validation["errors"]: blockers.append("supplemental_physical_object_errors")
+    if target_validation["errors"]: blockers.append("catalog_target_layer_errors")
+    if constellation_validation["errors"]: blockers.append("constellation_review_errors")
+    if target_validation["unresolved_target_identifier_count"]: blockers.append("unresolved_catalog_target_identifiers")
     m40 = next((e for e in (read_json(TARGET_LAYER) or {}).get("catalog_entries", []) if e.get("catalog_entry_key") == "messier:M40"), None)
-    if m40 and m40.get("component_resolution_status") != "resolved":
-        blockers.append("m40_component_resolution")
-
+    if m40 and m40.get("component_resolution_status") != "resolved": blockers.append("m40_component_resolution")
     registry_ready = not blockers and not physical_review
     result = {
-        "schema_version": 10,
-        "purpose": "pre-migration physical fixed-object identity audit; no permanent IDs assigned",
-        "canonical_source": "fixed-objects.yaml",
-        "original_candidate_count": original_candidate_count,
-        "supplemental_physical_objects": supplemental_validation,
-        "catalog_target_relationship_layer": target_validation,
-        "constellation_review_layer": constellation_validation,
-        "candidate_count": len(cs),
-        "physical_object_candidate_count": len(physical_candidates),
-        "catalog_target_only_candidate_count": len(cs) - len(physical_candidates),
-        "provisional_reconciliation_group_count": len(groups),
-        "provisional_merged_group_count": len(merged),
-        "provisional_singleton_group_count": len(groups) - len(merged),
-        "validated_exact_identifier_group_count": len(validated),
-        "contradiction_review_group_count": len(review),
-        "physical_reconciliation_group_count": len(physical_groups),
-        "physical_merged_group_count": len(physical_merged),
-        "physical_singleton_group_count": len(physical_groups) - len(physical_merged),
-        "physical_validated_exact_identifier_group_count": len(physical_validated),
-        "physical_contradiction_review_group_count": len(physical_review),
-        "physical_registry_ready": registry_ready,
-        "physical_registry_blockers": blockers,
-        "source_counts": dict(sorted(counts.items())),
-        "identifier_counts": dict(sorted(identifier_counts.items())),
-        "cross_source_identifier_namespaces": sorted(CROSS_SOURCE_NAMESPACES),
-        "stable_source_identifier_namespaces": sorted(STABLE_SOURCE_NAMESPACES),
-        "object_type_families": TYPE_FAMILIES,
-        "cross_source_identifier_overlap_count": len(overlaps),
-        "cross_source_identifier_overlaps": overlaps,
-        "physical_cross_source_identifier_overlap_count": len(physical_overlaps),
-        "physical_cross_source_identifier_overlaps": physical_overlaps,
-        "candidates_without_cross_source_identifier": no_cross,
-        "physical_candidates_without_cross_source_identifier": no_cross_physical,
-        "candidates_without_any_identifier": no_any,
-        "explicit_overlap_counts": {k: len(v) for k, v in explicit.items()},
-        "warnings": [],
-        "provisional_reconciliation_groups": groups,
-        "physical_reconciliation_groups": physical_groups,
-        "candidates": cs,
-        "explicit_overlap_records": explicit,
+        "schema_version": 10, "purpose": "pre-migration physical fixed-object identity audit; no permanent IDs assigned", "canonical_source": "fixed-objects.yaml",
+        "original_candidate_count": original_candidate_count, "supplemental_physical_objects": supplemental_validation, "catalog_target_relationship_layer": target_validation,
+        "constellation_review_layer": constellation_validation, "candidate_count": len(cs), "physical_object_candidate_count": len(physical_candidates),
+        "catalog_target_only_candidate_count": len(cs) - len(physical_candidates), "provisional_reconciliation_group_count": len(groups),
+        "provisional_merged_group_count": len(merged), "provisional_singleton_group_count": len(groups) - len(merged), "validated_exact_identifier_group_count": len(validated),
+        "contradiction_review_group_count": len(review), "physical_reconciliation_group_count": len(physical_groups), "physical_merged_group_count": len(physical_merged),
+        "physical_singleton_group_count": len(physical_groups) - len(physical_merged), "physical_validated_exact_identifier_group_count": len(physical_validated),
+        "physical_contradiction_review_group_count": len(physical_review), "physical_registry_ready": registry_ready, "physical_registry_blockers": blockers,
+        "source_counts": dict(sorted(counts.items())), "identifier_counts": dict(sorted(identifier_counts.items())), "cross_source_identifier_namespaces": sorted(CROSS_SOURCE_NAMESPACES),
+        "stable_source_identifier_namespaces": sorted(STABLE_SOURCE_NAMESPACES), "object_type_families": TYPE_FAMILIES, "cross_source_identifier_overlap_count": len(overlaps),
+        "cross_source_identifier_overlaps": overlaps, "physical_cross_source_identifier_overlap_count": len(physical_overlaps), "physical_cross_source_identifier_overlaps": physical_overlaps,
+        "candidates_without_cross_source_identifier": no_cross, "physical_candidates_without_cross_source_identifier": no_cross_physical, "candidates_without_any_identifier": no_any,
+        "explicit_overlap_counts": {k: len(v) for k, v in explicit.items()}, "warnings": [], "provisional_reconciliation_groups": groups,
+        "physical_reconciliation_groups": physical_groups, "candidates": cs, "explicit_overlap_records": explicit,
     }
-
     cmap = {c["candidate_id"]: c for c in cs}
-    review_result = {
-        "schema_version": 6,
-        "purpose": "focused unresolved review after catalog-target, supplemental-object, and boundary-review resolution",
-        "group_count": len(physical_review),
-        "groups": [dict(g, candidates=[cmap[i] for i in g["candidate_ids"]]) for g in physical_review],
-    }
-
+    review_result = {"schema_version": 6, "purpose": "focused unresolved review after catalog-target, supplemental-object, and boundary-review resolution", "group_count": len(physical_review), "groups": [dict(g, candidates=[cmap[i] for i in g["candidate_ids"]]) for g in physical_review]}
     OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(json.dumps(result, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
     REVIEW_OUT.write_text(json.dumps(review_result, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
