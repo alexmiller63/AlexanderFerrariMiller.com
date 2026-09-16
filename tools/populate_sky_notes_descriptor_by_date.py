@@ -48,6 +48,35 @@ def resolve_fixed_object_id(item: dict, names: dict[str, int], messier: dict[str
     return None
 
 
+def annual_story_features(year: int, week: int, stars: list[dict]) -> list[dict]:
+    """Read the curated annual note only to discover named fixed-object stories.
+
+    The annual note remains separate editorial content. Artwork is still never
+    inferred from prose: only a matched story's explicit front matter can
+    request artwork. This function merely supplies the named fixed-sky object
+    and its accepted constellation geometry to the story layer.
+    """
+    path = base.ROOT / f"sky-notes-{year}" / f"W{week:02d}.json"
+    if not path.exists():
+        return []
+    data = json.loads(path.read_text(encoding="utf-8"))
+    entries = [str(data.get("title", "")), str(data.get("note", ""))]
+    return base.featured_fixed_sky(entries, stars)
+
+
+def merge_features(*groups: list[dict]) -> list[dict]:
+    merged = []
+    seen = set()
+    for group in groups:
+        for item in group:
+            key = (item.get("type"), item.get("name"))
+            if key in seen:
+                continue
+            seen.add(key)
+            merged.append(item)
+    return merged
+
+
 def story_previews(fixed_sky: list[dict], names: dict[str, int], messier: dict[str, int]) -> list[dict]:
     previews = []
     seen = set()
@@ -120,9 +149,15 @@ def generated_note(year: int, week: int, page_path, yearly, stars: list[dict], i
     )
     if identity_index is None:
         identity_index = load_story_identity_index()
-    payload["stories"] = story_previews(payload["fixed_sky"], *identity_index)
+
+    # Calendar-derived fixed sky remains the generated note's factual layer.
+    # Curated annual note names supplement only story discovery/finder context.
+    story_features = merge_features(
+        payload["fixed_sky"], annual_story_features(year, week, stars)
+    )
+    payload["stories"] = story_previews(story_features, *identity_index)
     payload["artwork"] = story_artwork_descriptor(
-        year, week, payload["fixed_sky"], payload["planet_relations"], payload["stories"]
+        year, week, story_features, payload["planet_relations"], payload["stories"]
     )
     payload["descriptor_policy"] = {
         "source_of_truth": "machine-readable JSON",
@@ -131,6 +166,7 @@ def generated_note(year: int, week: int, page_path, yearly, stars: list[dict], i
         "link_target": "../../descriptors/<id>.json",
         "artwork_descriptor_is_separate": True,
         "artwork_source": "explicit story front matter only",
+        "story_discovery": "calendar fixed sky plus curated annual note named objects",
         "story_source": "stories/<collection>/<fixed_object_id>.md",
         "story_preview": "hed + dek",
         "annual_note_is_separate_from_evergreen_story": True,
