@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Populate Sky Notes with descriptor-first records and evergreen story previews."""
+"""Populate descriptor-first Sky Notes and story previews from Calendar IDs."""
 from __future__ import annotations
 
 import html
@@ -13,77 +13,24 @@ import populate_sky_notes_by_date as base
 from fixed_object_stories import available_stories
 from sky_note_descriptors import build_descriptors, decorate_note_html, write_descriptor_records
 
-FIXED_OBJECTS_DB = base.ROOT / "database" / "fixed-objects.json"
 
-
-def load_story_identity_index() -> tuple[dict[str, int], dict[str, int]]:
-    data = json.loads(FIXED_OBJECTS_DB.read_text(encoding="utf-8"))
-    names: dict[str, int] = {}
-    messier: dict[str, int] = {}
-    for obj in data["fixed_objects"]:
-        fixed_id = int(obj["fixed_object_id"])
-        for record in obj.get("source_records", []):
-            facts = record.get("facts", {})
-            name = facts.get("name")
-            if name:
-                names.setdefault(str(name).casefold(), fixed_id)
-            key = str(record.get("source_key", "")).upper()
-            if re.fullmatch(r"M(?:110|10\d|[1-9]\d?)", key):
-                messier.setdefault(key, fixed_id)
-    return names, messier
-
-
-def resolve_fixed_object_id(item: dict, names: dict[str, int], messier: dict[str, int]) -> int | None:
-    label = str(item.get("name", ""))
-    match = re.search(r"(?<![A-Za-z0-9])M(?:110|10\d|[1-9]\d?)(?!\d)", label, flags=re.I)
-    if match:
-        found = messier.get(match.group(0).upper())
-        if found is not None:
-            return found
-    candidates = [label, label.split(",", 1)[0], re.sub(r"\s*\([^)]*\)\s*", "", label).strip()]
-    for candidate in candidates:
-        found = names.get(candidate.strip().casefold())
-        if found is not None:
-            return found
-    return None
-
-
-def annual_story_features(year: int, week: int, stars: list[dict]) -> list[dict]:
-    """Read the curated annual note only to discover named fixed-object stories.
-
-    The annual note remains separate editorial content. Artwork is still never
-    inferred from prose: only a matched story's explicit front matter can
-    request artwork. This function merely supplies the named fixed-sky object
-    and its accepted constellation geometry to the story layer.
-    """
-    path = base.ROOT / f"sky-notes-{year}" / f"W{week:02d}.json"
-    if not path.exists():
-        return []
-    data = json.loads(path.read_text(encoding="utf-8"))
-    entries = [str(data.get("title", "")), str(data.get("note", ""))]
-    return base.featured_fixed_sky(entries, stars)
-
-
-def merge_features(*groups: list[dict]) -> list[dict]:
-    merged = []
+def calendar_fixed_object_ids(page_path) -> list[int]:
+    """Read permanent object identities carried by Calendar event cells."""
+    text = page_path.read_text(encoding="utf-8")
+    ids = []
     seen = set()
-    for group in groups:
-        for item in group:
-            key = (item.get("type"), item.get("name"))
-            if key in seen:
-                continue
-            seen.add(key)
-            merged.append(item)
-    return merged
+    for raw in re.findall(r'\bdata-fixed-object-id="(\d+)"', text):
+        fixed_id = int(raw)
+        if fixed_id not in seen:
+            seen.add(fixed_id)
+            ids.append(fixed_id)
+    return ids
 
 
-def story_previews(fixed_sky: list[dict], names: dict[str, int], messier: dict[str, int]) -> list[dict]:
+def story_previews(fixed_ids: list[int]) -> list[dict]:
     previews = []
     seen = set()
-    for item in fixed_sky:
-        fixed_id = resolve_fixed_object_id(item, names, messier)
-        if fixed_id is None:
-            continue
+    for fixed_id in fixed_ids:
         for story in available_stories(fixed_id):
             key = (story.collection, story.fixed_object_id)
             if key in seen:
@@ -110,14 +57,11 @@ def story_artwork_descriptor(year: int, week: int, fixed_sky: list[dict], relati
     descriptor = base.artwork_descriptor(year, week, fixed_sky, relations)
     if descriptor is None:
         raise RuntimeError(
-            f"ISO {year}-W{week:02d}: story requests stellar-finder artwork but accepted fixed-sky geometry cannot supply it"
+            f"ISO {year}-W{week:02d}: Calendar story requests stellar-finder artwork "
+            "but accepted fixed-sky geometry cannot supply it"
         )
     descriptor["story_sources"] = [
-        {
-            "collection": story["collection"],
-            "fixed_object_id": story["fixed_object_id"],
-            "artwork": story["artwork"],
-        }
+        {"collection": story["collection"], "fixed_object_id": story["fixed_object_id"], "artwork": story["artwork"]}
         for story in requests
     ]
     return descriptor
@@ -141,23 +85,17 @@ def render_story_previews(previews: list[dict]) -> str:
     return "\n".join(blocks)
 
 
-def generated_note(year: int, week: int, page_path, yearly, stars: list[dict], identity_index=None) -> dict:
+def generated_note(year: int, week: int, page_path, yearly, stars: list[dict]) -> dict:
     payload = base.generated_note(year, week, page_path, yearly, stars)
     payload["descriptors"] = build_descriptors(
         payload["fixed_sky"], payload["planet_relations"], stars,
         base.CONSTELLATION_NAMES, base.ASTERISMS,
     )
-    if identity_index is None:
-        identity_index = load_story_identity_index()
-
-    # Calendar-derived fixed sky remains the generated note's factual layer.
-    # Curated annual note names supplement only story discovery/finder context.
-    story_features = merge_features(
-        payload["fixed_sky"], annual_story_features(year, week, stars)
-    )
-    payload["stories"] = story_previews(story_features, *identity_index)
+    fixed_ids = calendar_fixed_object_ids(page_path)
+    payload["calendar_fixed_object_ids"] = fixed_ids
+    payload["stories"] = story_previews(fixed_ids)
     payload["artwork"] = story_artwork_descriptor(
-        year, week, story_features, payload["planet_relations"], payload["stories"]
+        year, week, payload["fixed_sky"], payload["planet_relations"], payload["stories"]
     )
     payload["descriptor_policy"] = {
         "source_of_truth": "machine-readable JSON",
@@ -166,7 +104,7 @@ def generated_note(year: int, week: int, page_path, yearly, stars: list[dict], i
         "link_target": "../../descriptors/<id>.json",
         "artwork_descriptor_is_separate": True,
         "artwork_source": "explicit story front matter only",
-        "story_discovery": "calendar fixed sky plus curated annual note named objects",
+        "story_identity_source": "Calendar data-fixed-object-id only",
         "story_source": "stories/<collection>/<fixed_object_id>.md",
         "story_preview": "hed + dek",
         "annual_note_is_separate_from_evergreen_story": True,
@@ -196,7 +134,6 @@ def patch_page(path, payload: dict) -> bool:
 def main() -> None:
     start, end, weeks = parse_range_args("Create descriptor-first Star Almanack Sky Notes by inclusive ISO date range")
     stars = base.load_bright_stars()
-    identity_index = load_story_identity_index()
     grouped = group_by_year(weeks)
     yearly = {year: load_weekly_longitudes(year) for year in grouped}
     changed = 0
@@ -207,7 +144,7 @@ def main() -> None:
         if not public_page.exists():
             raise RuntimeError(f"Missing weekly page: {public_page.relative_to(base.ROOT)}")
 
-        payload = generated_note(item.year, item.week, public_page, yearly[item.year], stars, identity_index)
+        payload = generated_note(item.year, item.week, public_page, yearly[item.year], stars)
         write_descriptor_records(payload["descriptors"])
         source = base.write_generated_source(item.year, item.week, payload)
 
