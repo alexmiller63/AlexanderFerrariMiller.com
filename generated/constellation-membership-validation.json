@@ -1,0 +1,13 @@
+{
+  "schema_version": 3,
+  "purpose": "Independent validation of canonical constellation memberships.",
+  "fixed_objects_source": "database/fixed-objects.json",
+  "memberships_source": "database/constellation-memberships.json",
+  "production_method": "tools/constellation_membership.py: J2000 FK5 -> B1875 FK5 -> Roman VI/42",
+  "validation_method": "Astropy get_constellation() applied independently to the reference J2000 FK5 position.",
+  "validated_count": 595,
+  "unvalidated_count": 0,
+  "mismatch_count": 0,
+  "unvalidated_fixed_object_ids": [],
+  "mismatches": []
+}
