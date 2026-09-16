@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build the resolved stellar cross-match for the 25 core asterisms.
+"""Build the resolved stellar cross-match for the Star Almanack asterism catalog.
 
 Policy:
   1. Use Star Almanack's expanded Bayer catalog wherever it contains the member.
@@ -49,10 +49,10 @@ GREEK_TO_CODE = {
 CONSTELLATION_TO_ABBR = {
     "Aquarii": "Aqr", "Bootis": "Boo", "Canum Venaticorum": "CVn",
     "Cassiopeiae": "Cas", "Centauri": "Cen", "Ceti": "Cet", "Crucis": "Cru",
-    "Cygni": "Cyg", "Herculis": "Her", "Leonis": "Leo", "Orionis": "Ori",
-    "Piscium": "Psc", "Sagittarii": "Sgr", "Scorpii": "Sco", "Tauri": "Tau",
-    "Ursae Majoris": "UMa", "Ursae Minoris": "UMi", "Virginis": "Vir",
-    "Vulpeculae": "Vul",
+    "Cygni": "Cyg", "Delphini": "Del", "Draconis": "Dra", "Herculis": "Her",
+    "Leonis": "Leo", "Orionis": "Ori", "Piscium": "Psc", "Sagittarii": "Sgr",
+    "Scorpii": "Sco", "Tauri": "Tau", "Ursae Majoris": "UMa",
+    "Ursae Minoris": "UMi", "Virginis": "Vir", "Vulpeculae": "Vul",
 }
 
 
@@ -228,7 +228,6 @@ def hyg_positional_match(ra_h, dec_deg, rows, max_arcsec=MAX_POSITIONAL_MATCH_AR
     if not matches:
         return None, None
     matches.sort(key=lambda item: (item[0], item[1]))
-    # Reject an effectively tied nearest-neighbour result rather than guessing.
     if len(matches) > 1 and abs(matches[1][0] - matches[0][0]) < 0.01:
         return None, None
     return matches[0][2], matches[0][0]
