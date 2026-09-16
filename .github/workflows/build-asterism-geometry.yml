@@ -44,11 +44,9 @@ jobs:
             -o /tmp/hygdata_v41.csv
 
       - name: Resolve member stellar data
-        working-directory: Historical
         run: python build_asterism_member_coordinates.py --hyg /tmp/hygdata_v41.csv
 
       - name: Validate resolved member cross-match
-        working-directory: Historical
         run: |
           python - <<'PY'
           import csv
@@ -60,7 +58,7 @@ jobs:
           expected = sum(len(a['members']) for a in cat)
           with open('asterism-member-coordinates.csv', newline='', encoding='utf-8') as f:
               rows = list(csv.DictReader(f))
-          assert len(cat) == 25, len(cat)
+          assert len(cat) == 28, len(cat)
           assert len(rows) == expected, (len(rows), expected)
           counts = Counter(r['asterism'] for r in rows)
           for a in cat:
@@ -72,11 +70,10 @@ jobs:
               assert -30.0 < mag < 30.0, r
               assert r['magnitude_source'].strip(), r
               assert r['magnitude_source_id'].strip(), r
-          print(f'PASS: 25 asterisms, {len(rows)} resolved member rows with magnitude provenance')
+          print(f'PASS: 28 asterisms, {len(rows)} resolved member rows with magnitude provenance')
           PY
 
       - name: Compute requested asterism centroids and visibility
-        working-directory: Historical
         run: |
           python - <<'PY'
           import datetime as dt
@@ -104,7 +101,6 @@ jobs:
           PY
 
       - name: Validate requested geometry output
-        working-directory: Historical
         run: |
           python - <<'PY'
           import csv
@@ -115,9 +111,9 @@ jobs:
               path = f'asterism-geometry-{year}.csv'
               with open(path, newline='', encoding='utf-8') as f:
                   rows = list(csv.DictReader(f))
-              assert len(rows) == 25, (year, len(rows))
+              assert len(rows) == 28, (year, len(rows))
               names = {r['asterism'] for r in rows}
-              assert len(names) == 25, year
+              assert len(names) == 28, year
               for r in rows:
                   d = int(r['best_date'][:4])
                   assert d in (year, year + 1), (year, r)
@@ -126,7 +122,7 @@ jobs:
                   assert float(r['area_sr']) >= 0.0, r
               southern = next(r for r in rows if r['asterism'] == 'Southern Pointers')
               assert southern['geometry_method'] == 'great-circle-midpoint', southern
-              print(f'PASS {year}: 25 geometry rows; Southern Pointers uses geodesic midpoint')
+              print(f'PASS {year}: 28 geometry rows; Southern Pointers uses geodesic midpoint')
           PY
 
       - name: Commit requested resolved-member and geometry files
@@ -142,5 +138,5 @@ jobs:
             echo 'Generated asterism files unchanged.'
             exit 0
           fi
-          git commit -m "Generate core asterism geometry for $ASTERISM_YEARS"
+          git commit -m "Generate asterism geometry for $ASTERISM_YEARS"
           git push
