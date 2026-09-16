@@ -19,7 +19,7 @@
     }
   ],
   "artwork": null,
-  "note": "ISO 2026-W39 runs from September 21 through September 27. Uranus is about 4.1° in ecliptic longitude from Aldebaran in Taurus.\n\n**Naked eye:** 🌕 Full Moon · Harvest Moon — 16:49:02 UTCEquuleus center — Constellation — V 4.2 — Tropical Autumn. Bright moonlight favors prominent stars and planets while reducing contrast on faint deep-sky objects. Use the brightest seasonal stars and the zodiac as the week’s fixed-sky framework.\n\n**Planets:** Uranus is about 4.1° in ecliptic longitude from Aldebaran in Taurus.\n\n**Binoculars:** Favor the week’s richest fixed-star fields; wide fields help connect the charted geometry to the real sky.\n\n**Small telescope:** Concentrate on the compact fixed-sky targets selected for the week. Increase magnification only after the target and surrounding pattern are secure.",
+  "note": "ISO 2026-W39 runs from September 21 through September 27. Uranus is about 4.1° in ecliptic longitude from Aldebaran in Taurus.\n\n**Naked eye:** 🌕 Full Moon · Harvest Moon — 16:49:02 UTC. Bright moonlight favors prominent stars and planets while reducing contrast on faint deep-sky objects. Use the brightest seasonal stars and the zodiac as the week’s fixed-sky framework.\n\n**Planets:** Uranus is about 4.1° in ecliptic longitude from Aldebaran in Taurus.\n\n**Binoculars:** Favor the week’s richest fixed-star fields; wide fields help connect the charted geometry to the real sky.\n\n**Small telescope:** Concentrate on the compact fixed-sky targets selected for the week. Increase magnification only after the target and surrounding pattern are secure.",
   "descriptors": [
     {
       "schema_version": 1,
@@ -178,11 +178,15 @@
       }
     }
   ],
+  "stories": [],
   "descriptor_policy": {
     "source_of_truth": "machine-readable JSON",
     "inline_human_descriptors_target": "3-4",
     "additional_json_links_target": "5-6",
     "link_target": "../../descriptors/<id>.json",
-    "artwork_descriptor_is_separate": true
+    "artwork_descriptor_is_separate": true,
+    "story_source": "stories/<collection>/<fixed_object_id>.md",
+    "story_preview": "hed + dek",
+    "annual_note_is_separate_from_evergreen_story": true
   }
 }

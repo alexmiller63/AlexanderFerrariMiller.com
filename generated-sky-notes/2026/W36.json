@@ -4,12 +4,7 @@
   "status": "generated",
   "planetary_source": "weekly-ephemeris-2026.csv",
   "planetary_coordinate": "geocentric tropical ecliptic longitude; Monday 00:00 UTC",
-  "fixed_sky": [
-    {
-      "type": "deep-sky",
-      "name": "M71, globular cluster in Sagitta"
-    }
-  ],
+  "fixed_sky": [],
   "planet_relations": [
     {
       "kind": "planet-star-longitude",
@@ -35,22 +30,8 @@
     }
   ],
   "artwork": null,
-  "note": "ISO 2026-W36 runs from August 31 through September 6. Fixed-sky highlights include M71, globular cluster in Sagitta. Venus is about 1.5° in ecliptic longitude from Spica in Virgo. Uranus is about 4.1° in ecliptic longitude from Aldebaran in Taurus.\n\n**Naked eye:** 🌗 Last Quarter — 07:51:14 UTCAltair (α Aql) — V 1 — Tropical SummerM27, Dumbbell Nebula, planetary nebula in Vulpecula — V 7.4 — Tropical Summer. Moderate moonlight makes timing and local sky position important for faint targets. Use the brightest seasonal stars and the zodiac as the week’s fixed-sky framework.\n\n**Planets:** Venus is about 1.5° in ecliptic longitude from Spica in Virgo. Uranus is about 4.1° in ecliptic longitude from Aldebaran in Taurus.\n\n**Binoculars:** Favor M71, globular cluster in Sagitta; wide fields help connect the charted geometry to the real sky.\n\n**Small telescope:** Concentrate on M71, globular cluster in Sagitta. Increase magnification only after the target and surrounding pattern are secure.",
+  "note": "ISO 2026-W36 runs from August 31 through September 6. Venus is about 1.5° in ecliptic longitude from Spica in Virgo. Uranus is about 4.1° in ecliptic longitude from Aldebaran in Taurus.\n\n**Naked eye:** 🌗 Last Quarter — 07:51:14 UTC. Moderate moonlight makes timing and local sky position important for faint targets. Use the brightest seasonal stars and the zodiac as the week’s fixed-sky framework.\n\n**Planets:** Venus is about 1.5° in ecliptic longitude from Spica in Virgo. Uranus is about 4.1° in ecliptic longitude from Aldebaran in Taurus.\n\n**Binoculars:** Favor the week’s richest fixed-star fields; wide fields help connect the charted geometry to the real sky.\n\n**Small telescope:** Concentrate on the compact fixed-sky targets selected for the week. Increase magnification only after the target and surrounding pattern are secure.",
   "descriptors": [
-    {
-      "schema_version": 1,
-      "id": "m71",
-      "type": "deep-sky-object",
-      "name": "M71",
-      "summary": "globular cluster in Sagitta selected as a weekly fixed-sky observing target",
-      "representation": {
-        "machine": "./m71.json",
-        "human_source": "summary"
-      },
-      "catalog_name": "M71",
-      "object_type": "globular cluster in Sagitta",
-      "source_label": "M71, globular cluster in Sagitta"
-    },
     {
       "schema_version": 1,
       "id": "planet-venus",
@@ -309,11 +290,15 @@
       }
     }
   ],
+  "stories": [],
   "descriptor_policy": {
     "source_of_truth": "machine-readable JSON",
     "inline_human_descriptors_target": "3-4",
     "additional_json_links_target": "5-6",
     "link_target": "../../descriptors/<id>.json",
-    "artwork_descriptor_is_separate": true
+    "artwork_descriptor_is_separate": true,
+    "story_source": "stories/<collection>/<fixed_object_id>.md",
+    "story_preview": "hed + dek",
+    "annual_note_is_separate_from_evergreen_story": true
   }
 }
