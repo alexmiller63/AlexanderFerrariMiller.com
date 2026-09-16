@@ -22,7 +22,7 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
-from render_stellar_finders import load_hyg, marker_area, project, spherical_center, star_index
+from render_stellar_finders import greek_bayer_symbol, load_hyg, marker_area, project, spherical_center, star_index
 
 NIGHT = "#071423"
 STAR = "#f7f7f2"
@@ -42,6 +42,13 @@ def complete_index(stars):
 
 def refs_from_paths(paths):
     return {ref for path in paths for ref in path}
+
+
+def bayer_label(star, figure_constellation):
+    label = greek_bayer_symbol(star.bayer) if star.bayer else ""
+    if label and star.con and star.con != figure_constellation:
+        label += f" {star.con}"
+    return label
 
 
 def draw_path(ax, path, idx, center, color, linewidth):
@@ -113,6 +120,34 @@ def render(spec: dict, stars, output: Path) -> None:
 
     for path in figure_paths:
         draw_path(ax, path, idx, center, FIGURE_BLUE, 2.7)
+
+    figure_refs = []
+    seen = set()
+    for path in figure_paths:
+        for ref in path:
+            if ref not in seen:
+                seen.add(ref)
+                figure_refs.append(ref)
+    figure_stars = [idx[ref] for ref in figure_refs]
+    figure_constellation = spec.get("name") or ""
+
+    figure_points = []
+    for star in figure_stars:
+        point = project(star.ra_deg, star.dec_deg, *center)
+        if point is None:
+            continue
+        figure_points.append(point)
+        label = bayer_label(star, figure_constellation)
+        if label:
+            ax.annotate(label, point, xytext=(5, 5), textcoords="offset points",
+                        fontsize=8, color=TEXT, zorder=6)
+
+    if figure_constellation and figure_points:
+        ax.text(sum(x for x, _ in figure_points) / len(figure_points),
+                sum(y for _, y in figure_points) / len(figure_points),
+                figure_constellation, color=FIGURE_BLUE, fontsize=10,
+                ha="center", va="center", zorder=5)
+
     for asterism in asterisms:
         for path in asterism.get("paths") or []:
             draw_path(ax, path, idx, center, ASTERISM_GREEN, 3.2)
@@ -154,6 +189,14 @@ def render(spec: dict, stars, output: Path) -> None:
         fontsize=8,
         color=TEXT,
     )
+    legend = []
+    for star in figure_stars:
+        designation = bayer_label(star, figure_constellation)
+        if designation:
+            legend.append(f"{designation} — {star.proper}" if star.proper else designation)
+    if legend:
+        ax.text(0.5, -0.075, "   •   ".join(legend), transform=ax.transAxes,
+                ha="center", va="top", fontsize=7, color=TEXT, wrap=True)
     ax.set_xticks([])
     ax.set_yticks([])
     ax.grid(False)
@@ -161,7 +204,7 @@ def render(spec: dict, stars, output: Path) -> None:
         spine.set_visible(False)
 
     output.parent.mkdir(parents=True, exist_ok=True)
-    fig.tight_layout()
+    fig.tight_layout(rect=(0, 0.08, 1, 1))
     fig.savefig(output, format="svg", bbox_inches="tight", facecolor=fig.get_facecolor())
     plt.close(fig)
 
