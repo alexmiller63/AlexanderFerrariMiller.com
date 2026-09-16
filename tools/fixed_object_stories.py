@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 """Evergreen fixed-object story lookup for Star Almanack.
 
-Story source is deliberately separate from database facts.  A story lives at
-stories/{collection}/{fixed_object_id}.md.  The Markdown H1 is the hed, the
-first paragraph after the H1 is the dek, and the remaining Markdown is body.
+Story source is deliberately separate from database facts. A story lives at
+stories/{collection}/{fixed_object_id}.md. Optional Jekyll front matter is
+ignored by the story parser. The Markdown H1 is the hed, the first paragraph
+after the H1 is the dek, and the remaining Markdown is body.
 
-Consumers pass a collection and permanent fixed_object_id.  No object name is
+Consumers pass a collection and permanent fixed_object_id. No object name is
 used as an inter-layer key.
 """
 from __future__ import annotations
@@ -49,12 +50,21 @@ def story_path(collection: str, fixed_object_id: int) -> Path:
     return STORIES_ROOT / collection / f"{fixed_object_id}.md"
 
 
+def _strip_front_matter(text: str) -> str:
+    if text.startswith("---\n"):
+        end = text.find("\n---\n", 4)
+        if end < 0:
+            raise RuntimeError("Unterminated Jekyll front matter")
+        return text[end + 5:].lstrip()
+    return text
+
+
 def read_story(collection: str, fixed_object_id: int) -> Story | None:
     path = story_path(collection, fixed_object_id)
     if not path.exists():
         return None
 
-    text = path.read_text(encoding="utf-8").strip()
+    text = _strip_front_matter(path.read_text(encoding="utf-8").strip())
     match = re.match(r"^#\s+(.+?)\s*\n+(.*)$", text, flags=re.S)
     if not match:
         raise RuntimeError(f"Story must begin with one Markdown H1: {path.relative_to(ROOT)}")
@@ -67,14 +77,7 @@ def read_story(collection: str, fixed_object_id: int) -> Story | None:
     if not dek:
         raise RuntimeError(f"Story must contain a dek after its H1: {path.relative_to(ROOT)}")
 
-    return Story(
-        collection=collection,
-        fixed_object_id=fixed_object_id,
-        path=path,
-        hed=hed,
-        dek=dek,
-        body=body,
-    )
+    return Story(collection, fixed_object_id, path, hed, dek, body)
 
 
 def available_stories(fixed_object_id: int) -> list[Story]:
