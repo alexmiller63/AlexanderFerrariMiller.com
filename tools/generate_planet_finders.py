@@ -139,13 +139,10 @@ def route(anchor: tuple[float, float], center: tuple[float, float], obstacles: l
 
 def layout(mode: str, bodies: list[tuple[str, str, float]]):
     reserved = reserved_boxes(mode)
-    placed: list[Box] = []
-    leaders: list[list[tuple[float, float]]] = []
-    result = []
 
-    # Densest neighborhoods first, then canonical order, makes the greedy layout stable.
-    # In Latin mode only, swap Saturn/Neptune priority so Neptune claims the upper
-    # placement before Saturn in their crowded Aries neighborhood.
+    # Densest neighborhoods first, then canonical order.  Candidate ordering is
+    # deterministic, but placement itself uses backtracking so an early locally
+    # valid choice cannot strand a later body in a crowded neighborhood.
     def crowd(item):
         _, _, lon = item
         return -sum(1 for _, _, other in bodies if other != lon and min((lon-other) % 360, (other-lon) % 360) < 18)
@@ -161,12 +158,18 @@ def layout(mode: str, bodies: list[tuple[str, str, float]]):
         return crowd(p[1]), rank
 
     ordered = sorted(enumerate(bodies), key=order_key)
-
     staged = {}
-    for original_index, (symbol, name, longitude) in ordered:
+    placed: list[Box] = []
+    leaders: list[list[tuple[float, float]]] = []
+
+    def solve(position: int) -> bool:
+        if position == len(ordered):
+            return True
+
+        original_index, (symbol, name, longitude) = ordered[position]
         w, h = label_size(mode, name)
         anchor = xy(longitude, RI - 5)
-        chosen = None
+
         for x, y in candidate_positions(longitude):
             box = Box(x, y, w, h)
             if any(boxes_overlap(box, b, 14) for b in reserved + placed):
@@ -176,13 +179,20 @@ def layout(mode: str, bodies: list[tuple[str, str, float]]):
             path = route(anchor, (x, y), reserved + placed)
             if path is None:
                 continue
-            chosen = (box, path)
-            break
-        if chosen is None:
-            raise RuntimeError(f"No collision-free Planet Finder placement for {name} at {longitude:.6f}° in {mode} mode")
-        box, path = chosen
-        placed.append(box); leaders.append(path)
-        staged[original_index] = (symbol, name, longitude, box, path)
+
+            placed.append(box)
+            leaders.append(path)
+            staged[original_index] = (symbol, name, longitude, box, path)
+            if solve(position + 1):
+                return True
+            del staged[original_index]
+            leaders.pop()
+            placed.pop()
+
+        return False
+
+    if not solve(0):
+        raise RuntimeError(f"No collision-free Planet Finder layout exists in {mode} mode")
     return [staged[i] for i in range(len(bodies))]
 
 
