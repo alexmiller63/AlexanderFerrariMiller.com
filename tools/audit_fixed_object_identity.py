@@ -176,6 +176,40 @@ def load_source_candidates():
                 key = f"{row['bayer']} {row['con']}:{row['component']}"
             add_candidate(cs, f"fixed-objects.yaml:{section}", key, ids, row.get("name"), row.get("con"), row.get("ra_h"), row.get("dec_deg"), row.get("type"), row.get("note"))
 
+    # The expanded Bayer catalog carries physical component identities such as
+    # α1 Cap and α2 Cap.  Unsuffixed rows duplicate the canonical Bayer layer;
+    # only suffixed rows are missing from that layer and need to enter the
+    # permanent-ID reconciliation pipeline.  HIP and HD identifiers allow
+    # these rows to merge with an existing physical object when one is already
+    # represented elsewhere, while genuinely new components append later.
+    for row in read_csv(SRC / "expanded-bayer-stars.csv"):
+        suffix = str(row.get("suffix") or "").strip()
+        if not suffix:
+            continue
+        bayer = str(row.get("bayer") or "").strip()
+        con = str(row.get("con") or "").strip()
+        if not bayer or not con:
+            continue
+        ids = [("bayer", bayer)]
+        hip = str(row.get("hip") or "").strip()
+        hd = str(row.get("hd") or "").strip()
+        if hip:
+            ids.append(("hip", hip))
+        if hd:
+            ids.append(("hd", hd))
+        add_candidate(
+            cs,
+            "expanded-bayer-stars.csv:suffixed",
+            bayer,
+            ids,
+            row.get("proper"),
+            con,
+            row.get("ra_h"),
+            row.get("dec_deg"),
+            "star",
+            f"bayer_code={row.get('bayer_code', '')}; suffix={suffix}",
+        )
+
     for row in read_csv(SRC / "caldwell-catalog.csv"):
         ids = [("caldwell", row.get("caldwell"))]
         ident = catalog_identifier(row.get("catalog"))
