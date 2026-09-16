@@ -5,7 +5,8 @@
     "constellation_source": "https://raw.githubusercontent.com/dcf21/constellation-stick-figures/75d29c207bbd752023c447ddd1f9f4ff0eb47538/constellation_lines_iau.dat",
     "constellation_source_commit": "75d29c207bbd752023c447ddd1f9f4ff0eb47538",
     "constellation_source_note": "IAU/Sky & Telescope stick-figure dataset adopted by Star Almanack",
-    "asterism_source": "asterism-member-coordinates.csv"
+    "asterism_source": "asterism-member-coordinates.csv",
+    "asterism_path_source": "asterism-figure-paths.json"
   },
   "constellations": {
     "And": {
@@ -5609,8 +5610,8 @@
   "asterisms": {
     "asterism-big-dipper": {
       "name": "Big Dipper",
-      "geometry_status": "resolved-membership-only",
-      "draw_policy": "Do not infer edges; use an accepted path definition before drawing lines.",
+      "geometry_status": "accepted-paths",
+      "draw_policy": "Draw only the accepted paths; do not infer or replace edges.",
       "members": [
         {
           "member": "Alpha Ursae Majoris",
@@ -5675,12 +5676,56 @@
           "dec_deg": 49.313265,
           "magnitude": 1.85
         }
+      ],
+      "paths": [
+        [
+          {
+            "member": "Eta Ursae Majoris",
+            "catalog": "HIP",
+            "id": 67301
+          },
+          {
+            "member": "Zeta Ursae Majoris",
+            "catalog": "HIP",
+            "id": 65378
+          },
+          {
+            "member": "Epsilon Ursae Majoris",
+            "catalog": "HIP",
+            "id": 62956
+          },
+          {
+            "member": "Delta Ursae Majoris",
+            "catalog": "HIP",
+            "id": 59774
+          },
+          {
+            "member": "Alpha Ursae Majoris",
+            "catalog": "HIP",
+            "id": 54061
+          },
+          {
+            "member": "Gamma Ursae Majoris",
+            "catalog": "HIP",
+            "id": 58001
+          },
+          {
+            "member": "Beta Ursae Majoris",
+            "catalog": "HIP",
+            "id": 53910
+          },
+          {
+            "member": "Delta Ursae Majoris",
+            "catalog": "HIP",
+            "id": 59774
+          }
+        ]
       ]
     },
     "asterism-cassiopeia-s-w": {
       "name": "Cassiopeia's W",
-      "geometry_status": "resolved-membership-only",
-      "draw_policy": "Do not infer edges; use an accepted path definition before drawing lines.",
+      "geometry_status": "accepted-paths",
+      "draw_policy": "Draw only the accepted paths; do not infer or replace edges.",
       "members": [
         {
           "member": "Alpha Cassiopeiae",
@@ -5727,12 +5772,41 @@
           "dec_deg": 63.670101,
           "magnitude": 3.35
         }
+      ],
+      "paths": [
+        [
+          {
+            "member": "Beta Cassiopeiae",
+            "catalog": "HIP",
+            "id": 746
+          },
+          {
+            "member": "Alpha Cassiopeiae",
+            "catalog": "HIP",
+            "id": 3179
+          },
+          {
+            "member": "Gamma Cassiopeiae",
+            "catalog": "HIP",
+            "id": 4427
+          },
+          {
+            "member": "Delta Cassiopeiae",
+            "catalog": "HIP",
+            "id": 6686
+          },
+          {
+            "member": "Epsilon Cassiopeiae",
+            "catalog": "HIP",
+            "id": 8886
+          }
+        ]
       ]
     },
     "asterism-circlet-of-pisces": {
       "name": "Circlet of Pisces",
-      "geometry_status": "resolved-membership-only",
-      "draw_policy": "Do not infer edges; use an accepted path definition before drawing lines.",
+      "geometry_status": "accepted-paths",
+      "draw_policy": "Draw only the accepted paths; do not infer or replace edges.",
       "members": [
         {
           "member": "Theta Piscium",
@@ -5797,12 +5871,56 @@
           "dec_deg": 5.626292,
           "magnitude": 4.13
         }
+      ],
+      "paths": [
+        [
+          {
+            "member": "Theta Piscium",
+            "catalog": "HIP",
+            "id": 115830
+          },
+          {
+            "member": "7 Piscium",
+            "catalog": "HIP",
+            "id": 115227
+          },
+          {
+            "member": "Gamma Piscium",
+            "catalog": "HIP",
+            "id": 114971
+          },
+          {
+            "member": "Kappa Piscium",
+            "catalog": "HIP",
+            "id": 115738
+          },
+          {
+            "member": "Lambda Piscium",
+            "catalog": "HIP",
+            "id": 116928
+          },
+          {
+            "member": "TX Piscium",
+            "catalog": "HIP",
+            "id": 117245
+          },
+          {
+            "member": "Iota Piscium",
+            "catalog": "HIP",
+            "id": 116771
+          },
+          {
+            "member": "Theta Piscium",
+            "catalog": "HIP",
+            "id": 115830
+          }
+        ]
       ]
     },
     "asterism-coathanger": {
       "name": "Coathanger",
-      "geometry_status": "resolved-membership-only",
-      "draw_policy": "Do not infer edges; use an accepted path definition before drawing lines.",
+      "geometry_status": "accepted-paths",
+      "draw_policy": "Draw only the accepted paths; do not infer or replace edges.",
       "members": [
         {
           "member": "4 Vulpeculae",
@@ -5894,12 +6012,73 @@
           "dec_deg": 19.939425,
           "magnitude": 7.16
         }
+      ],
+      "paths": [
+        [
+          {
+            "member": "HD 182293",
+            "catalog": "HIP",
+            "id": 95291
+          },
+          {
+            "member": "HD 182422",
+            "catalog": "HIP",
+            "id": 95340
+          },
+          {
+            "member": "HD 182761",
+            "catalog": "HIP",
+            "id": 95487
+          },
+          {
+            "member": "HD 182972",
+            "catalog": "HIP",
+            "id": 95584
+          },
+          {
+            "member": "HD 183261",
+            "catalog": "HIP",
+            "id": 95700
+          },
+          {
+            "member": "7 Vulpeculae",
+            "catalog": "HIP",
+            "id": 95818
+          }
+        ],
+        [
+          {
+            "member": "HD 182761",
+            "catalog": "HIP",
+            "id": 95487
+          },
+          {
+            "member": "5 Vulpeculae",
+            "catalog": "HIP",
+            "id": 95560
+          },
+          {
+            "member": "HD 182620",
+            "catalog": "HIP",
+            "id": 95432
+          },
+          {
+            "member": "4 Vulpeculae",
+            "catalog": "HIP",
+            "id": 95498
+          },
+          {
+            "member": "HD 182955",
+            "catalog": "HIP",
+            "id": 95582
+          }
+        ]
       ]
     },
     "asterism-false-cross": {
       "name": "False Cross",
-      "geometry_status": "resolved-membership-only",
-      "draw_policy": "Do not infer edges; use an accepted path definition before drawing lines.",
+      "geometry_status": "accepted-paths",
+      "draw_policy": "Draw only the accepted paths; do not infer or replace edges.",
       "members": [
         {
           "member": "Avior",
@@ -5937,12 +6116,38 @@
           "dec_deg": -55.010668,
           "magnitude": 2.47
         }
+      ],
+      "paths": [
+        [
+          {
+            "member": "Avior",
+            "catalog": "HIP",
+            "id": 41037
+          },
+          {
+            "member": "Markeb",
+            "catalog": "HIP",
+            "id": 45941
+          }
+        ],
+        [
+          {
+            "member": "Aspidiske",
+            "catalog": "HIP",
+            "id": 45556
+          },
+          {
+            "member": "Alsephina",
+            "catalog": "HIP",
+            "id": 42913
+          }
+        ]
       ]
     },
     "asterism-great-diamond": {
       "name": "Great Diamond",
-      "geometry_status": "resolved-membership-only",
-      "draw_policy": "Do not infer edges; use an accepted path definition before drawing lines.",
+      "geometry_status": "accepted-paths",
+      "draw_policy": "Draw only the accepted paths; do not infer or replace edges.",
       "members": [
         {
           "member": "Alpha Bootis",
@@ -5980,12 +6185,41 @@
           "dec_deg": 14.57206,
           "magnitude": 2.14
         }
+      ],
+      "paths": [
+        [
+          {
+            "member": "Alpha Bootis",
+            "catalog": "HIP",
+            "id": 69673
+          },
+          {
+            "member": "Alpha Virginis",
+            "catalog": "HIP",
+            "id": 65474
+          },
+          {
+            "member": "Beta Leonis",
+            "catalog": "HIP",
+            "id": 57632
+          },
+          {
+            "member": "Alpha Canum Venaticorum",
+            "catalog": "HIP",
+            "id": 63125
+          },
+          {
+            "member": "Alpha Bootis",
+            "catalog": "HIP",
+            "id": 69673
+          }
+        ]
       ]
     },
     "asterism-great-square-of-pegasus": {
       "name": "Great Square of Pegasus",
-      "geometry_status": "resolved-membership-only",
-      "draw_policy": "Do not infer edges; use an accepted path definition before drawing lines.",
+      "geometry_status": "accepted-paths",
+      "draw_policy": "Draw only the accepted paths; do not infer or replace edges.",
       "members": [
         {
           "member": "Scheat",
@@ -6023,12 +6257,41 @@
           "dec_deg": 15.183596,
           "magnitude": 2.83
         }
+      ],
+      "paths": [
+        [
+          {
+            "member": "Alpheratz",
+            "catalog": "HIP",
+            "id": 677
+          },
+          {
+            "member": "Scheat",
+            "catalog": "HIP",
+            "id": 113881
+          },
+          {
+            "member": "Markab",
+            "catalog": "HIP",
+            "id": 113963
+          },
+          {
+            "member": "Algenib",
+            "catalog": "HIP",
+            "id": 1067
+          },
+          {
+            "member": "Alpheratz",
+            "catalog": "HIP",
+            "id": 677
+          }
+        ]
       ]
     },
     "asterism-head-of-cetus": {
       "name": "Head of Cetus",
-      "geometry_status": "resolved-membership-only",
-      "draw_policy": "Do not infer edges; use an accepted path definition before drawing lines.",
+      "geometry_status": "accepted-paths",
+      "draw_policy": "Draw only the accepted paths; do not infer or replace edges.",
       "members": [
         {
           "member": "Alpha Ceti",
@@ -6075,12 +6338,46 @@
           "dec_deg": 8.907365,
           "magnitude": 4.71
         }
+      ],
+      "paths": [
+        [
+          {
+            "member": "Alpha Ceti",
+            "catalog": "HIP",
+            "id": 14135
+          },
+          {
+            "member": "Gamma Ceti",
+            "catalog": "HIP",
+            "id": 12706
+          },
+          {
+            "member": "Xi Ceti",
+            "catalog": "HIP",
+            "id": 11484
+          },
+          {
+            "member": "Mu Ceti",
+            "catalog": "HIP",
+            "id": 12828
+          },
+          {
+            "member": "Lambda Ceti",
+            "catalog": "HIP",
+            "id": 13954
+          },
+          {
+            "member": "Alpha Ceti",
+            "catalog": "HIP",
+            "id": 14135
+          }
+        ]
       ]
     },
     "asterism-hyades-v-of-taurus": {
       "name": "Hyades / V of Taurus",
-      "geometry_status": "resolved-membership-only",
-      "draw_policy": "Do not infer edges; use an accepted path definition before drawing lines.",
+      "geometry_status": "accepted-paths",
+      "draw_policy": "Draw only the accepted paths; do not infer or replace edges.",
       "members": [
         {
           "member": "Aldebaran",
@@ -6127,12 +6424,48 @@
           "dec_deg": 19.180431,
           "magnitude": 3.53
         }
+      ],
+      "paths": [
+        [
+          {
+            "member": "Gamma Tauri",
+            "catalog": "HIP",
+            "id": 20205
+          },
+          {
+            "member": "Delta Tauri",
+            "catalog": "HIP",
+            "id": 20455
+          },
+          {
+            "member": "Epsilon Tauri",
+            "catalog": "HIP",
+            "id": 20889
+          }
+        ],
+        [
+          {
+            "member": "Gamma Tauri",
+            "catalog": "HIP",
+            "id": 20205
+          },
+          {
+            "member": "Theta Tauri",
+            "catalog": "HIP",
+            "id": 20894
+          },
+          {
+            "member": "Aldebaran",
+            "catalog": "HIP",
+            "id": 21421
+          }
+        ]
       ]
     },
     "asterism-keystone-of-hercules": {
       "name": "Keystone of Hercules",
-      "geometry_status": "resolved-membership-only",
-      "draw_policy": "Do not infer edges; use an accepted path definition before drawing lines.",
+      "geometry_status": "accepted-paths",
+      "draw_policy": "Draw only the accepted paths; do not infer or replace edges.",
       "members": [
         {
           "member": "Epsilon Herculis",
@@ -6170,12 +6503,41 @@
           "dec_deg": 36.809162,
           "magnitude": 3.16
         }
+      ],
+      "paths": [
+        [
+          {
+            "member": "Epsilon Herculis",
+            "catalog": "HIP",
+            "id": 83207
+          },
+          {
+            "member": "Zeta Herculis",
+            "catalog": "HIP",
+            "id": 81693
+          },
+          {
+            "member": "Eta Herculis",
+            "catalog": "HIP",
+            "id": 81833
+          },
+          {
+            "member": "Pi Herculis",
+            "catalog": "HIP",
+            "id": 84380
+          },
+          {
+            "member": "Epsilon Herculis",
+            "catalog": "HIP",
+            "id": 83207
+          }
+        ]
       ]
     },
     "asterism-little-dipper": {
       "name": "Little Dipper",
-      "geometry_status": "resolved-membership-only",
-      "draw_policy": "Do not infer edges; use an accepted path definition before drawing lines.",
+      "geometry_status": "accepted-paths",
+      "draw_policy": "Draw only the accepted paths; do not infer or replace edges.",
       "members": [
         {
           "member": "Polaris",
@@ -6240,12 +6602,56 @@
           "dec_deg": 77.794493,
           "magnitude": 4.29
         }
+      ],
+      "paths": [
+        [
+          {
+            "member": "Polaris",
+            "catalog": "HIP",
+            "id": 11767
+          },
+          {
+            "member": "Delta Ursae Minoris",
+            "catalog": "HIP",
+            "id": 85822
+          },
+          {
+            "member": "Epsilon Ursae Minoris",
+            "catalog": "HIP",
+            "id": 82080
+          },
+          {
+            "member": "Zeta Ursae Minoris",
+            "catalog": "HIP",
+            "id": 77055
+          },
+          {
+            "member": "Eta Ursae Minoris",
+            "catalog": "HIP",
+            "id": 79822
+          },
+          {
+            "member": "Beta Ursae Minoris",
+            "catalog": "HIP",
+            "id": 72607
+          },
+          {
+            "member": "Gamma Ursae Minoris",
+            "catalog": "HIP",
+            "id": 75097
+          },
+          {
+            "member": "Zeta Ursae Minoris",
+            "catalog": "HIP",
+            "id": 77055
+          }
+        ]
       ]
     },
     "asterism-northern-cross": {
       "name": "Northern Cross",
-      "geometry_status": "resolved-membership-only",
-      "draw_policy": "Do not infer edges; use an accepted path definition before drawing lines.",
+      "geometry_status": "accepted-paths",
+      "draw_policy": "Draw only the accepted paths; do not infer or replace edges.",
       "members": [
         {
           "member": "Alpha Cygni",
@@ -6292,12 +6698,48 @@
           "dec_deg": 33.970256,
           "magnitude": 2.48
         }
+      ],
+      "paths": [
+        [
+          {
+            "member": "Alpha Cygni",
+            "catalog": "HIP",
+            "id": 102098
+          },
+          {
+            "member": "Gamma Cygni",
+            "catalog": "HIP",
+            "id": 100453
+          },
+          {
+            "member": "Beta Cygni",
+            "catalog": "HIP",
+            "id": 95947
+          }
+        ],
+        [
+          {
+            "member": "Delta Cygni",
+            "catalog": "HIP",
+            "id": 97165
+          },
+          {
+            "member": "Gamma Cygni",
+            "catalog": "HIP",
+            "id": 100453
+          },
+          {
+            "member": "Epsilon Cygni",
+            "catalog": "HIP",
+            "id": 102488
+          }
+        ]
       ]
     },
     "asterism-orion-s-belt": {
       "name": "Orion's Belt",
-      "geometry_status": "resolved-membership-only",
-      "draw_policy": "Do not infer edges; use an accepted path definition before drawing lines.",
+      "geometry_status": "accepted-paths",
+      "draw_policy": "Draw only the accepted paths; do not infer or replace edges.",
       "members": [
         {
           "member": "Alnitak",
@@ -6326,12 +6768,31 @@
           "dec_deg": -0.299092,
           "magnitude": 2.25
         }
+      ],
+      "paths": [
+        [
+          {
+            "member": "Alnitak",
+            "catalog": "HIP",
+            "id": 26727
+          },
+          {
+            "member": "Alnilam",
+            "catalog": "HIP",
+            "id": 26311
+          },
+          {
+            "member": "Mintaka",
+            "catalog": "HIP",
+            "id": 25930
+          }
+        ]
       ]
     },
     "asterism-orion-s-sword": {
       "name": "Orion's Sword",
-      "geometry_status": "resolved-membership-only",
-      "draw_policy": "Do not infer edges; use an accepted path definition before drawing lines.",
+      "geometry_status": "accepted-paths",
+      "draw_policy": "Draw only the accepted paths; do not infer or replace edges.",
       "members": [
         {
           "member": "42 Orionis",
@@ -6360,12 +6821,31 @@
           "dec_deg": -5.909901,
           "magnitude": 2.75
         }
+      ],
+      "paths": [
+        [
+          {
+            "member": "42 Orionis",
+            "catalog": "HIP",
+            "id": 26237
+          },
+          {
+            "member": "Theta Orionis",
+            "catalog": "HIP",
+            "id": 26221
+          },
+          {
+            "member": "Iota Orionis",
+            "catalog": "HIP",
+            "id": 26241
+          }
+        ]
       ]
     },
     "asterism-pleiades": {
       "name": "Pleiades",
-      "geometry_status": "resolved-membership-only",
-      "draw_policy": "Do not infer edges; use an accepted path definition before drawing lines.",
+      "geometry_status": "accepted-paths",
+      "draw_policy": "Draw only the accepted paths; do not infer or replace edges.",
       "members": [
         {
           "member": "Alcyone",
@@ -6430,12 +6910,63 @@
           "dec_deg": 24.136712,
           "magnitude": 5.05
         }
+      ],
+      "paths": [
+        [
+          {
+            "member": "Pleione",
+            "catalog": "HIP",
+            "id": 17851
+          },
+          {
+            "member": "Atlas",
+            "catalog": "HIP",
+            "id": 17847
+          },
+          {
+            "member": "Alcyone",
+            "catalog": "HIP",
+            "id": 17702
+          },
+          {
+            "member": "Maia",
+            "catalog": "HIP",
+            "id": 17573
+          },
+          {
+            "member": "Taygeta",
+            "catalog": "HIP",
+            "id": 17531
+          }
+        ],
+        [
+          {
+            "member": "Alcyone",
+            "catalog": "HIP",
+            "id": 17702
+          },
+          {
+            "member": "Merope",
+            "catalog": "HIP",
+            "id": 17608
+          },
+          {
+            "member": "Electra",
+            "catalog": "HIP",
+            "id": 17499
+          },
+          {
+            "member": "Maia",
+            "catalog": "HIP",
+            "id": 17573
+          }
+        ]
       ]
     },
     "asterism-scorpius-s-fishhook": {
       "name": "Scorpius's Fishhook",
-      "geometry_status": "resolved-membership-only",
-      "draw_policy": "Do not infer edges; use an accepted path definition before drawing lines.",
+      "geometry_status": "accepted-paths",
+      "draw_policy": "Draw only the accepted paths; do not infer or replace edges.",
       "members": [
         {
           "member": "Alpha Scorpii",
@@ -6554,12 +7085,81 @@
           "dec_deg": -25.592796,
           "magnitude": 2.9
         }
+      ],
+      "paths": [
+        [
+          {
+            "member": "Gamma Scorpii",
+            "catalog": "HIP",
+            "id": 73714
+          },
+          {
+            "member": "Nu Scorpii",
+            "catalog": "HIP",
+            "id": 79374
+          },
+          {
+            "member": "Delta Scorpii",
+            "catalog": "HIP",
+            "id": 78401
+          },
+          {
+            "member": "Alpha Scorpii",
+            "catalog": "HIP",
+            "id": 80763
+          },
+          {
+            "member": "Sigma Scorpii",
+            "catalog": "HIP",
+            "id": 80112
+          },
+          {
+            "member": "Epsilon Scorpii",
+            "catalog": "HIP",
+            "id": 82396
+          },
+          {
+            "member": "Mu Scorpii",
+            "catalog": "HIP",
+            "id": 82514
+          },
+          {
+            "member": "Zeta Scorpii",
+            "catalog": "HIP",
+            "id": 82729
+          },
+          {
+            "member": "Eta Scorpii",
+            "catalog": "HIP",
+            "id": 84143
+          },
+          {
+            "member": "Theta Scorpii",
+            "catalog": "HIP",
+            "id": 86228
+          },
+          {
+            "member": "Iota Scorpii",
+            "catalog": "HIP",
+            "id": 87073
+          },
+          {
+            "member": "Kappa Scorpii",
+            "catalog": "HIP",
+            "id": 86670
+          },
+          {
+            "member": "Lambda Scorpii",
+            "catalog": "HIP",
+            "id": 85927
+          }
+        ]
       ]
     },
     "asterism-sickle-of-leo": {
       "name": "Sickle of Leo",
-      "geometry_status": "resolved-membership-only",
-      "draw_policy": "Do not infer edges; use an accepted path definition before drawing lines.",
+      "geometry_status": "accepted-paths",
+      "draw_policy": "Draw only the accepted paths; do not infer or replace edges.",
       "members": [
         {
           "member": "Alpha Leonis",
@@ -6615,12 +7215,46 @@
           "dec_deg": 23.774255,
           "magnitude": 2.97
         }
+      ],
+      "paths": [
+        [
+          {
+            "member": "Alpha Leonis",
+            "catalog": "HIP",
+            "id": 49669
+          },
+          {
+            "member": "Eta Leonis",
+            "catalog": "HIP",
+            "id": 49583
+          },
+          {
+            "member": "Gamma Leonis",
+            "catalog": "HIP",
+            "id": 50583
+          },
+          {
+            "member": "Zeta Leonis",
+            "catalog": "HIP",
+            "id": 50335
+          },
+          {
+            "member": "Mu Leonis",
+            "catalog": "HIP",
+            "id": 48455
+          },
+          {
+            "member": "Epsilon Leonis",
+            "catalog": "HIP",
+            "id": 47908
+          }
+        ]
       ]
     },
     "asterism-southern-cross": {
       "name": "Southern Cross",
-      "geometry_status": "resolved-membership-only",
-      "draw_policy": "Do not infer edges; use an accepted path definition before drawing lines.",
+      "geometry_status": "accepted-paths",
+      "draw_policy": "Draw only the accepted paths; do not infer or replace edges.",
       "members": [
         {
           "member": "Alpha Crucis",
@@ -6658,12 +7292,38 @@
           "dec_deg": -58.748928,
           "magnitude": 2.79
         }
+      ],
+      "paths": [
+        [
+          {
+            "member": "Alpha Crucis",
+            "catalog": "HIP",
+            "id": 60718
+          },
+          {
+            "member": "Gamma Crucis",
+            "catalog": "HIP",
+            "id": 61084
+          }
+        ],
+        [
+          {
+            "member": "Beta Crucis",
+            "catalog": "HIP",
+            "id": 62434
+          },
+          {
+            "member": "Delta Crucis",
+            "catalog": "HIP",
+            "id": 59747
+          }
+        ]
       ]
     },
     "asterism-southern-pointers": {
       "name": "Southern Pointers",
-      "geometry_status": "resolved-membership-only",
-      "draw_policy": "Do not infer edges; use an accepted path definition before drawing lines.",
+      "geometry_status": "accepted-paths",
+      "draw_policy": "Draw only the accepted paths; do not infer or replace edges.",
       "members": [
         {
           "member": "Alpha Centauri",
@@ -6683,12 +7343,26 @@
           "dec_deg": -60.373039,
           "magnitude": 0.61
         }
+      ],
+      "paths": [
+        [
+          {
+            "member": "Alpha Centauri",
+            "catalog": "HIP",
+            "id": 71683
+          },
+          {
+            "member": "Beta Centauri",
+            "catalog": "HIP",
+            "id": 68702
+          }
+        ]
       ]
     },
     "asterism-spring-triangle": {
       "name": "Spring Triangle",
-      "geometry_status": "resolved-membership-only",
-      "draw_policy": "Do not infer edges; use an accepted path definition before drawing lines.",
+      "geometry_status": "accepted-paths",
+      "draw_policy": "Draw only the accepted paths; do not infer or replace edges.",
       "members": [
         {
           "member": "Arcturus",
@@ -6717,12 +7391,36 @@
           "dec_deg": 14.57206,
           "magnitude": 2.14
         }
+      ],
+      "paths": [
+        [
+          {
+            "member": "Arcturus",
+            "catalog": "HIP",
+            "id": 69673
+          },
+          {
+            "member": "Spica",
+            "catalog": "HIP",
+            "id": 65474
+          },
+          {
+            "member": "Denebola",
+            "catalog": "HIP",
+            "id": 57632
+          },
+          {
+            "member": "Arcturus",
+            "catalog": "HIP",
+            "id": 69673
+          }
+        ]
       ]
     },
     "asterism-summer-triangle": {
       "name": "Summer Triangle",
-      "geometry_status": "resolved-membership-only",
-      "draw_policy": "Do not infer edges; use an accepted path definition before drawing lines.",
+      "geometry_status": "accepted-paths",
+      "draw_policy": "Draw only the accepted paths; do not infer or replace edges.",
       "members": [
         {
           "member": "Vega",
@@ -6751,12 +7449,36 @@
           "dec_deg": 45.280338,
           "magnitude": 1.25
         }
+      ],
+      "paths": [
+        [
+          {
+            "member": "Vega",
+            "catalog": "HIP",
+            "id": 91262
+          },
+          {
+            "member": "Deneb",
+            "catalog": "HIP",
+            "id": 102098
+          },
+          {
+            "member": "Altair",
+            "catalog": "HIP",
+            "id": 97649
+          },
+          {
+            "member": "Vega",
+            "catalog": "HIP",
+            "id": 91262
+          }
+        ]
       ]
     },
     "asterism-teapot-of-sagittarius": {
       "name": "Teapot of Sagittarius",
-      "geometry_status": "resolved-membership-only",
-      "draw_policy": "Do not infer edges; use an accepted path definition before drawing lines.",
+      "geometry_status": "accepted-paths",
+      "draw_policy": "Draw only the accepted paths; do not infer or replace edges.",
       "members": [
         {
           "member": "Delta Sagittarii",
@@ -6830,12 +7552,90 @@
           "dec_deg": -27.670423,
           "magnitude": 3.32
         }
+      ],
+      "paths": [
+        [
+          {
+            "member": "Lambda Sagittarii",
+            "catalog": "HIP",
+            "id": 90496
+          },
+          {
+            "member": "Phi Sagittarii",
+            "catalog": "HIP",
+            "id": 92041
+          },
+          {
+            "member": "Zeta Sagittarii",
+            "catalog": "HIP",
+            "id": 93506
+          },
+          {
+            "member": "Epsilon Sagittarii",
+            "catalog": "HIP",
+            "id": 90185
+          },
+          {
+            "member": "Delta Sagittarii",
+            "catalog": "HIP",
+            "id": 89931
+          },
+          {
+            "member": "Lambda Sagittarii",
+            "catalog": "HIP",
+            "id": 90496
+          }
+        ],
+        [
+          {
+            "member": "Phi Sagittarii",
+            "catalog": "HIP",
+            "id": 92041
+          },
+          {
+            "member": "Tau Sagittarii",
+            "catalog": "HIP",
+            "id": 93864
+          },
+          {
+            "member": "Sigma Sagittarii",
+            "catalog": "HIP",
+            "id": 92855
+          },
+          {
+            "member": "Zeta Sagittarii",
+            "catalog": "HIP",
+            "id": 93506
+          }
+        ],
+        [
+          {
+            "member": "Lambda Sagittarii",
+            "catalog": "HIP",
+            "id": 90496
+          },
+          {
+            "member": "Delta Sagittarii",
+            "catalog": "HIP",
+            "id": 89931
+          },
+          {
+            "member": "Gamma Sagittarii",
+            "catalog": "HIP",
+            "id": 88635
+          },
+          {
+            "member": "Epsilon Sagittarii",
+            "catalog": "HIP",
+            "id": 90185
+          }
+        ]
       ]
     },
     "asterism-water-jar": {
       "name": "Water Jar",
-      "geometry_status": "resolved-membership-only",
-      "draw_policy": "Do not infer edges; use an accepted path definition before drawing lines.",
+      "geometry_status": "accepted-paths",
+      "draw_policy": "Draw only the accepted paths; do not infer or replace edges.",
       "members": [
         {
           "member": "Zeta Aquarii",
@@ -6873,12 +7673,43 @@
           "dec_deg": -1.387331,
           "magnitude": 3.86
         }
+      ],
+      "paths": [
+        [
+          {
+            "member": "Gamma Aquarii",
+            "catalog": "HIP",
+            "id": 110395
+          },
+          {
+            "member": "Zeta Aquarii",
+            "catalog": "HIP",
+            "id": 110960
+          },
+          {
+            "member": "Pi Aquarii",
+            "catalog": "HIP",
+            "id": 110672
+          }
+        ],
+        [
+          {
+            "member": "Eta Aquarii",
+            "catalog": "HIP",
+            "id": 111497
+          },
+          {
+            "member": "Zeta Aquarii",
+            "catalog": "HIP",
+            "id": 110960
+          }
+        ]
       ]
     },
     "asterism-winter-hexagon-winter-circle": {
       "name": "Winter Hexagon / Winter Circle",
-      "geometry_status": "resolved-membership-only",
-      "draw_policy": "Do not infer edges; use an accepted path definition before drawing lines.",
+      "geometry_status": "accepted-paths",
+      "draw_policy": "Draw only the accepted paths; do not infer or replace edges.",
       "members": [
         {
           "member": "Rigel",
@@ -6934,12 +7765,51 @@
           "dec_deg": -16.716116,
           "magnitude": -1.44
         }
+      ],
+      "paths": [
+        [
+          {
+            "member": "Rigel",
+            "catalog": "HIP",
+            "id": 24436
+          },
+          {
+            "member": "Aldebaran",
+            "catalog": "HIP",
+            "id": 21421
+          },
+          {
+            "member": "Capella",
+            "catalog": "HIP",
+            "id": 24608
+          },
+          {
+            "member": "Pollux",
+            "catalog": "HIP",
+            "id": 37826
+          },
+          {
+            "member": "Procyon",
+            "catalog": "HIP",
+            "id": 37279
+          },
+          {
+            "member": "Sirius",
+            "catalog": "HIP",
+            "id": 32349
+          },
+          {
+            "member": "Rigel",
+            "catalog": "HIP",
+            "id": 24436
+          }
+        ]
       ]
     },
     "asterism-winter-triangle": {
       "name": "Winter Triangle",
-      "geometry_status": "resolved-membership-only",
-      "draw_policy": "Do not infer edges; use an accepted path definition before drawing lines.",
+      "geometry_status": "accepted-paths",
+      "draw_policy": "Draw only the accepted paths; do not infer or replace edges.",
       "members": [
         {
           "member": "Sirius",
@@ -6968,6 +7838,30 @@
           "dec_deg": 5.224993,
           "magnitude": 0.4
         }
+      ],
+      "paths": [
+        [
+          {
+            "member": "Sirius",
+            "catalog": "HIP",
+            "id": 32349
+          },
+          {
+            "member": "Betelgeuse",
+            "catalog": "HIP",
+            "id": 27989
+          },
+          {
+            "member": "Procyon",
+            "catalog": "HIP",
+            "id": 37279
+          },
+          {
+            "member": "Sirius",
+            "catalog": "HIP",
+            "id": 32349
+          }
+        ]
       ]
     }
   }

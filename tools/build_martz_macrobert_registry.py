@@ -2,8 +2,9 @@
 """Build the accepted Martz/MacRobert finder-geometry registry.
 
 Constellation paths come from the repository's pinned IAU/Sky & Telescope
-stick-figure source.  Asterism records preserve resolved member positions;
-they do not invent line connections where the source defines membership only.
+stick-figure source. Asterism paths come from Star Almanack's accepted,
+human-maintained observer-facing figure definitions. Renderers consume both
+sets of paths and never invent line connections.
 """
 from __future__ import annotations
 
@@ -19,6 +20,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_CONSTELLATIONS = ROOT / "constellation-observance-2026.csv"
 DEFAULT_ASTERISMS = ROOT / "asterism-member-coordinates.csv"
+DEFAULT_ASTERISM_PATHS = ROOT / "asterism-figure-paths.json"
 DEFAULT_OUTPUT = ROOT / "finder-geometry" / "martz-macrobert.json"
 
 SOURCE_URL = (
@@ -125,8 +127,35 @@ def constellation_records(
     return records
 
 
-def asterism_records(path: Path) -> dict[str, dict[str, object]]:
-    with path.open(newline="", encoding="utf-8") as handle:
+def read_asterism_paths(path: Path) -> dict[str, list[list[str]]]:
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    if payload.get("schema_version") != 1:
+        raise RuntimeError(f"Unsupported asterism path schema in {path}")
+    raw_records = payload.get("asterisms")
+    if not isinstance(raw_records, dict) or len(raw_records) != 25:
+        count = len(raw_records) if isinstance(raw_records, dict) else 0
+        raise RuntimeError(f"Expected 25 accepted asterism figures, found {count}")
+    records: dict[str, list[list[str]]] = {}
+    for name, record in raw_records.items():
+        raw_paths = record.get("paths") if isinstance(record, dict) else None
+        if not isinstance(raw_paths, list) or not raw_paths:
+            raise RuntimeError(f"{name}: accepted figure has no paths")
+        paths: list[list[str]] = []
+        for index, raw_path in enumerate(raw_paths, 1):
+            if not isinstance(raw_path, list) or len(raw_path) < 2:
+                raise RuntimeError(f"{name}: path {index} needs at least 2 vertices")
+            if not all(isinstance(vertex, str) and vertex.strip() for vertex in raw_path):
+                raise RuntimeError(f"{name}: path {index} has an invalid vertex")
+            paths.append([vertex.strip() for vertex in raw_path])
+        records[name] = paths
+    return records
+
+
+def asterism_records(
+    member_path: Path,
+    figure_path: Path,
+) -> dict[str, dict[str, object]]:
+    with member_path.open(newline="", encoding="utf-8") as handle:
         rows = list(csv.DictReader(handle))
     grouped: dict[str, list[dict[str, str]]] = defaultdict(list)
     for row in rows:
@@ -135,6 +164,11 @@ def asterism_records(path: Path) -> dict[str, dict[str, object]]:
             grouped[name].append(row)
     if len(grouped) != 25:
         raise RuntimeError(f"Expected 25 resolved asterisms, found {len(grouped)}")
+    accepted_paths = read_asterism_paths(figure_path)
+    if set(accepted_paths) != set(grouped):
+        missing = sorted(set(grouped) - set(accepted_paths))
+        extra = sorted(set(accepted_paths) - set(grouped))
+        raise RuntimeError(f"Asterism figure/member mismatch: missing={missing}, extra={extra}")
     records: dict[str, dict[str, object]] = {}
     for name, members in sorted(grouped.items()):
         identifier = f"asterism-{slug(name)}"
@@ -155,22 +189,55 @@ def asterism_records(path: Path) -> dict[str, dict[str, object]]:
                     "magnitude": float(row["mag"]),
                 }
             )
+        by_member = {vertex["member"]: vertex for vertex in vertices}
+        used_members: set[str] = set()
+        paths = []
+        for path_index, accepted_path in enumerate(accepted_paths[name], 1):
+            resolved_path = []
+            for member in accepted_path:
+                vertex = by_member.get(member)
+                if vertex is None:
+                    raise RuntimeError(
+                        f"{name}: accepted path {path_index} references non-member {member!r}"
+                    )
+                used_members.add(member)
+                resolved_path.append(
+                    {
+                        "member": member,
+                        "catalog": vertex["catalog"],
+                        "id": vertex["id"],
+                    }
+                )
+            paths.append(resolved_path)
+        unused_members = sorted(set(by_member) - used_members)
+        if unused_members:
+            raise RuntimeError(f"{name}: members absent from accepted paths: {unused_members}")
         records[identifier] = {
             "name": name,
-            "geometry_status": "resolved-membership-only",
-            "draw_policy": "Do not infer edges; use an accepted path definition before drawing lines.",
+            "geometry_status": "accepted-paths",
+            "draw_policy": "Draw only the accepted paths; do not infer or replace edges.",
             "members": vertices,
+            "paths": paths,
         }
     return records
 
 
-def build(source: Path, constellations: Path, asterisms: Path) -> dict[str, object]:
+def build(
+    source: Path,
+    constellations: Path,
+    asterisms: Path,
+    asterism_paths: Path,
+) -> dict[str, object]:
     figures = read_figure_source(source)
     identities = read_constellation_map(constellations)
     try:
         asterism_source = str(asterisms.resolve().relative_to(ROOT))
     except ValueError:
         asterism_source = str(asterisms)
+    try:
+        asterism_path_source = str(asterism_paths.resolve().relative_to(ROOT))
+    except ValueError:
+        asterism_path_source = str(asterism_paths)
     return {
         "schema_version": 1,
         "system": "Martz/MacRobert",
@@ -179,9 +246,10 @@ def build(source: Path, constellations: Path, asterisms: Path) -> dict[str, obje
             "constellation_source_commit": SOURCE_COMMIT,
             "constellation_source_note": "IAU/Sky & Telescope stick-figure dataset adopted by Star Almanack",
             "asterism_source": asterism_source,
+            "asterism_path_source": asterism_path_source,
         },
         "constellations": constellation_records(identities, figures),
-        "asterisms": asterism_records(asterisms),
+        "asterisms": asterism_records(asterisms, asterism_paths),
     }
 
 
@@ -190,10 +258,11 @@ def main() -> None:
     parser.add_argument("--source", type=Path, required=True)
     parser.add_argument("--constellations", type=Path, default=DEFAULT_CONSTELLATIONS)
     parser.add_argument("--asterisms", type=Path, default=DEFAULT_ASTERISMS)
+    parser.add_argument("--asterism-paths", type=Path, default=DEFAULT_ASTERISM_PATHS)
     parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
     parser.add_argument("--check", action="store_true")
     args = parser.parse_args()
-    payload = build(args.source, args.constellations, args.asterisms)
+    payload = build(args.source, args.constellations, args.asterisms, args.asterism_paths)
     rendered = json.dumps(payload, indent=2, ensure_ascii=False) + "\n"
     if args.check:
         if not args.output.is_file() or args.output.read_text(encoding="utf-8") != rendered:

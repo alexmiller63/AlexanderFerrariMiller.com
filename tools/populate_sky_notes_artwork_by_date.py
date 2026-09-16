@@ -90,10 +90,17 @@ def accepted_geometry(descriptor: dict) -> dict:
     asterism = descriptor.get("asterism")
     if asterism:
         asterisms = registry.get("asterisms") or {}
-        if asterism.get("id") not in asterisms:
+        asterism_id = asterism.get("id")
+        if asterism_id not in asterisms:
             raise RuntimeError(
-                f"Accepted Star Almanack asterism {asterism.get('id')!r} is undefined; "
+                f"Accepted Star Almanack asterism {asterism_id!r} is undefined; "
                 "refusing to invent it."
+            )
+        accepted = asterisms[asterism_id]
+        if accepted.get("geometry_status") != "accepted-paths" or not accepted.get("paths"):
+            raise RuntimeError(
+                f"Star Almanack asterism {asterism_id!r} has members but no accepted "
+                "drawable paths; refusing to infer connections."
             )
     return registry
 
