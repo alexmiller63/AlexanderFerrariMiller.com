@@ -10,9 +10,17 @@ from __future__ import annotations
 
 import argparse
 import math
+import sys
 from pathlib import Path
 
 import matplotlib.pyplot as plt
+
+# This script lives in tools/, while the established stellar-rendering helpers
+# live at repository root.  Add that root explicitly so direct execution from
+# GitHub Actions resolves the shared renderer deterministically.
+REPO_ROOT = Path(__file__).resolve().parents[1]
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
 
 from render_stellar_finders import load_hyg, marker_area, project, spherical_center, star_index
 
