@@ -12,6 +12,7 @@ geometry registry and Star Almanack asterism definitions.
 from __future__ import annotations
 
 import json
+import re
 from pathlib import Path
 
 from finder_geometry_adapter import asterism_spec, constellation_paths
@@ -21,6 +22,7 @@ ROOT = Path(__file__).resolve().parents[1]
 SOURCE_ROOT = ROOT
 DESCRIPTOR_ROOT = SOURCE_ROOT / "generated-sky-notes"
 GEOMETRY_REGISTRY = SOURCE_ROOT / "finder-geometry" / "martz-macrobert.json"
+FIXED_OBJECT_REGISTRY = SOURCE_ROOT / "database" / "fixed-object-registry.json"
 RENDER_SPECS_ROOT = SOURCE_ROOT / "sky-notes-artwork" / "specs"
 
 
@@ -103,8 +105,67 @@ def accepted_geometry(descriptor: dict) -> dict:
     return registry
 
 
+def fixed_object_id_by_hip() -> dict[str, int]:
+    """Return HIP number -> immutable Star Almanack fixed_object_id."""
+    registry = json.loads(FIXED_OBJECT_REGISTRY.read_text(encoding="utf-8"))
+    result = {}
+    for obj in registry.get("fixed_objects") or []:
+        if obj.get("status") != "active":
+            continue
+        for identifier in obj.get("identifiers") or []:
+            if str(identifier.get("namespace", "")).lower() == "hip":
+                result[str(identifier.get("value"))] = obj["fixed_object_id"]
+    return result
+
+
+def hip_number(ref: str) -> str | None:
+    match = re.fullmatch(r"HIP\s+(\d+)", str(ref).strip(), flags=re.IGNORECASE)
+    return match.group(1) if match else None
+
+
+def attach_fixed_object_ids(spec: dict) -> dict:
+    """Attach canonical hidden Star Almanack IDs while preserving renderer aliases."""
+    by_hip = fixed_object_id_by_hip()
+    refs = []
+    seen = set()
+    for path in spec.get("figure_paths") or []:
+        for ref in path:
+            if ref not in seen:
+                seen.add(ref)
+                refs.append(ref)
+    for asterism in spec.get("asterisms") or []:
+        for path in asterism.get("paths") or []:
+            for ref in path:
+                if ref not in seen:
+                    seen.add(ref)
+                    refs.append(ref)
+
+    identities = []
+    unresolved = []
+    for ref in refs:
+        hip = hip_number(ref)
+        if not hip:
+            continue
+        fixed_id = by_hip.get(hip)
+        if fixed_id is None:
+            unresolved.append(ref)
+            continue
+        identities.append({
+            "fixed_object_id": fixed_id,
+            "renderer_ref": ref,
+            "identifiers": {"hip": hip},
+        })
+    if unresolved:
+        raise RuntimeError(
+            "Finder geometry contains HIP stars with no Star Almanack fixed_object_id: "
+            + ", ".join(unresolved)
+        )
+    spec["fixed_object_identities"] = identities
+    return spec
+
+
 def build_renderer_spec(descriptor: dict, registry: dict) -> dict:
-    """Translate a validated artwork descriptor into legacy renderer geometry."""
+    """Translate a validated artwork descriptor into renderer geometry."""
     abbreviation = descriptor["geometry"]["constellation_abbreviation"]
     targets = descriptor.get("targets") or []
     if not targets:
@@ -127,7 +188,7 @@ def build_renderer_spec(descriptor: dict, registry: dict) -> dict:
         spec["asterisms"].append(
             asterism_spec(registry, requested["id"], requested.get("name", ""))
         )
-    return spec
+    return attach_fixed_object_ids(spec)
 
 
 def write_renderer_spec(year: int, week: int, spec: dict) -> Path:
