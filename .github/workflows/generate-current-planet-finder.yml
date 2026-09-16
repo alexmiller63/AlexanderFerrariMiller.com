@@ -4,20 +4,24 @@ on:
   workflow_dispatch:
     inputs:
       start_year:
-        description: 'ISO start year (blank = current ISO year)'
-        required: false
+        description: 'ISO start year'
+        required: true
+        default: '2026'
         type: string
       start_week:
-        description: 'ISO start week 1-53 (blank = current ISO week)'
-        required: false
+        description: 'ISO start week 1-53'
+        required: true
+        default: '36'
         type: string
       end_year:
-        description: 'ISO end year (blank = start year)'
-        required: false
+        description: 'ISO end year'
+        required: true
+        default: '2026'
         type: string
       end_week:
-        description: 'ISO end week 1-53 (blank = start week)'
-        required: false
+        description: 'ISO end week 1-53'
+        required: true
+        default: '40'
         type: string
   push:
     paths:
