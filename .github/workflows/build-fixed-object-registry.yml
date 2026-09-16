@@ -28,13 +28,13 @@ jobs:
 
       - name: Commit registry
         run: |
-          if git diff --quiet -- database/fixed-object-registry.json generated/fixed-object-identity-audit.json; then
+          git add database/fixed-object-registry.json generated/fixed-object-identity-audit.json
+          if git diff --cached --quiet; then
             echo "No registry changes."
             exit 0
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add database/fixed-object-registry.json generated/fixed-object-identity-audit.json
           git commit -m "Build permanent fixed-object registry"
           git pull --rebase origin main
           git push origin HEAD:main
