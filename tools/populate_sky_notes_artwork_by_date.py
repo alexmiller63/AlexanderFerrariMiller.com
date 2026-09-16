@@ -23,6 +23,7 @@ SOURCE_ROOT = ROOT
 DESCRIPTOR_ROOT = SOURCE_ROOT / "generated-sky-notes"
 GEOMETRY_REGISTRY = SOURCE_ROOT / "finder-geometry" / "martz-macrobert.json"
 FIXED_OBJECT_REGISTRY = SOURCE_ROOT / "database" / "fixed-object-registry.json"
+FIXED_OBJECT_DATABASE = SOURCE_ROOT / "database" / "fixed-objects.json"
 RENDER_SPECS_ROOT = SOURCE_ROOT / "sky-notes-artwork" / "specs"
 
 
@@ -118,14 +119,54 @@ def fixed_object_id_by_hip() -> dict[str, int]:
     return result
 
 
+def fixed_object_metadata() -> tuple[dict[int, dict], dict[str, int]]:
+    """Return display metadata keyed by immutable ID, plus proper-name -> ID.
+
+    Bayer/proper-name metadata is taken from normalized database source records,
+    never inferred from renderer aliases.  The immutable database ID remains the
+    join key carried in the renderer spec.
+    """
+    payload = json.loads(FIXED_OBJECT_DATABASE.read_text(encoding="utf-8"))
+    by_id: dict[int, dict] = {}
+    by_name: dict[str, int] = {}
+    for obj in payload.get("fixed_objects") or []:
+        fixed_id = obj["fixed_object_id"]
+        meta = {"fixed_object_id": fixed_id}
+        for record in obj.get("source_records") or []:
+            facts = record.get("facts") or {}
+            source = str(record.get("source", ""))
+            source_key = str(record.get("source_key", ""))
+            name = facts.get("name")
+            constellation = facts.get("constellation")
+            if name and not meta.get("proper_name"):
+                meta["proper_name"] = name
+            if constellation and not meta.get("constellation_abbreviation"):
+                meta["constellation_abbreviation"] = constellation
+            if source == "fixed-objects.yaml:bayer" and source_key:
+                # Canonical source key is e.g. "α Pav". Preserve the Greek
+                # symbol verbatim and keep the IAU abbreviation separately.
+                parts = source_key.split()
+                if parts:
+                    meta["bayer"] = parts[0]
+                if len(parts) > 1:
+                    meta["constellation_abbreviation"] = parts[-1]
+                if name:
+                    meta["proper_name"] = name
+        by_id[fixed_id] = meta
+        if meta.get("proper_name"):
+            by_name.setdefault(meta["proper_name"].casefold(), fixed_id)
+    return by_id, by_name
+
+
 def hip_number(ref: str) -> str | None:
     match = re.fullmatch(r"HIP\s+(\d+)", str(ref).strip(), flags=re.IGNORECASE)
     return match.group(1) if match else None
 
 
 def attach_fixed_object_ids(spec: dict) -> dict:
-    """Attach canonical hidden Star Almanack IDs while preserving renderer aliases."""
+    """Attach hidden database IDs and database-resolved display metadata."""
     by_hip = fixed_object_id_by_hip()
+    metadata_by_id, id_by_name = fixed_object_metadata()
     refs = []
     seen = set()
     for path in spec.get("figure_paths") or []:
@@ -150,17 +191,42 @@ def attach_fixed_object_ids(spec: dict) -> dict:
         if fixed_id is None:
             unresolved.append(ref)
             continue
-        identities.append({
+        identity = {
             "fixed_object_id": fixed_id,
             "renderer_ref": ref,
             "identifiers": {"hip": hip},
-        })
+        }
+        identity.update({k: v for k, v in metadata_by_id.get(fixed_id, {}).items()
+                         if k != "fixed_object_id" and v})
+        identities.append(identity)
     if unresolved:
         raise RuntimeError(
             "Finder geometry contains HIP stars with no Star Almanack fixed_object_id: "
             + ", ".join(unresolved)
         )
+
+    target_name = str(spec.get("target") or "").strip()
+    target_id = id_by_name.get(target_name.casefold()) if target_name else None
+    if target_id is None:
+        raise RuntimeError(f"Finder target {target_name!r} has no database fixed_object_id")
+    target_meta = metadata_by_id.get(target_id, {})
+    target_identity = {"fixed_object_id": target_id}
+    target_identity.update({k: v for k, v in target_meta.items()
+                            if k != "fixed_object_id" and v})
+    # Resolve the renderer alias from the same immutable ID when the target is a
+    # figure star. This removes proper-name lookup from the renderer itself.
+    for identity in identities:
+        if identity["fixed_object_id"] == target_id:
+            target_identity["renderer_ref"] = identity["renderer_ref"]
+            target_identity["identifiers"] = identity["identifiers"]
+            break
+    if not target_identity.get("renderer_ref"):
+        raise RuntimeError(
+            f"Finder target {target_name!r} (fixed_object_id {target_id}) is not present in accepted geometry"
+        )
+
     spec["fixed_object_identities"] = identities
+    spec["target_identity"] = target_identity
     return spec
 
 
