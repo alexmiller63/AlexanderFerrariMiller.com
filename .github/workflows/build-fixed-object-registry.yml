@@ -20,6 +20,12 @@ jobs:
         with:
           python-version: '3.x'
 
+      - name: Install astronomy dependency
+        run: python -m pip install astropy
+
+      - name: Acquire Roman VI/42 constellation lookup once
+        run: python tools/acquire_roman_constellation_lookup.py
+
       - name: Audit fixed-object identity
         run: python tools/audit_fixed_object_identity.py
 
@@ -35,12 +41,12 @@ jobs:
       - name: Build constellation memberships
         run: python tools/build_constellation_memberships.py
 
-      - name: Validate constellation memberships against IAU boundaries
+      - name: Validate constellation memberships with Roman VI/42
         run: python tools/validate_constellation_memberships.py
 
       - name: Commit normalized fixed-object database
         run: |
-          git add database/fixed-object-registry.json database/fixed-objects.json database/catalog-entry-targets.json database/constellation-memberships.json generated/fixed-object-identity-audit.json generated/constellation-membership-validation.json
+          git add database/fixed-object-registry.json database/fixed-objects.json database/catalog-entry-targets.json database/constellation-memberships.json generated/fixed-object-identity-audit.json generated/constellation-membership-validation.json reference-data/roman-vi42/data.dat
           if git diff --cached --quiet; then
             echo "No fixed-object database changes."
             exit 0
