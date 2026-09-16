@@ -1,0 +1,50 @@
+name: Build Martz-MacRobert Geometry Registry
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'tools/build_martz_macrobert_registry.py'
+      - 'constellation-observance-2026.csv'
+      - 'asterism-member-coordinates.csv'
+      - '.github/workflows/build-martz-macrobert-registry.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Fetch pinned Martz-MacRobert constellation paths
+        run: |
+          curl -fL \
+            https://raw.githubusercontent.com/dcf21/constellation-stick-figures/75d29c207bbd752023c447ddd1f9f4ff0eb47538/constellation_lines_iau.dat \
+            -o /tmp/constellation_lines_iau.dat
+
+      - name: Build accepted geometry registry
+        run: python tools/build_martz_macrobert_registry.py --source /tmp/constellation_lines_iau.dat
+
+      - name: Verify deterministic registry
+        run: python tools/build_martz_macrobert_registry.py --source /tmp/constellation_lines_iau.dat --check
+
+      - name: Commit accepted geometry registry
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add finder-geometry/martz-macrobert.json
+          if git diff --cached --quiet; then
+            echo 'Accepted geometry registry unchanged.'
+            exit 0
+          fi
+          git commit -m 'Build accepted Martz-MacRobert geometry registry'
+          git push
