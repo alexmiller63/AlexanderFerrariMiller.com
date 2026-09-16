@@ -39,10 +39,6 @@ def parse_boundary(path: Path):
         ra_deg = 15.0 * (h + m / 60.0 + s / 3600.0)
         dec_deg = float(parts[1])
         row_abbreviation = parts[2].upper()
-        # The IAU snapshot represents the two disconnected Serpens regions as
-        # SER1 and SER2. They are polygons of one constellation, whose IAU
-        # abbreviation is SER. Preserve the source files verbatim and
-        # normalize only the semantic constellation identifier here.
         if row_abbreviation in {"SER1", "SER2"}:
             row_abbreviation = "SER"
         if abbreviation is None:
@@ -80,12 +76,7 @@ def on_segment(px, py, ax, ay, bx, by, eps=1e-10):
 
 
 def point_in_polygon(ra_deg, dec_deg, vertices):
-    """Ray-cast after unwrapping every RA around the tested meridian.
-
-    IAU J2000 boundary edges are represented by RA/Dec vertices. Unwrapping
-    around the point makes the 0h/24h seam continuous for the local polygon.
-    Boundary points count as inside.
-    """
+    """Ray-cast after unwrapping every RA around the tested meridian."""
     polygon = [(unwrap_ra(x, ra_deg), y) for x, y in vertices]
     px, py = ra_deg, dec_deg
     inside = False
@@ -113,7 +104,6 @@ def geometric_constellation(ra_h, dec_deg, boundaries):
 
 
 def reference_position(obj):
-    """Choose the most precise usable RA/Dec pair preserved in source facts."""
     candidates = []
     for record in obj.get("source_records") or []:
         facts = record.get("facts") or {}
@@ -133,8 +123,6 @@ def reference_position(obj):
         candidates.append((record.get("source", ""), record.get("source_key", ""), ra, dec))
     if not candidates:
         return None
-    # Preserve source order: normalization already preserves the reconciled
-    # evidence ordering, and the first usable pair is deterministic.
     source, source_key, ra, dec = candidates[0]
     return {"source": source, "source_key": source_key, "ra_h": ra, "dec_deg": dec}
 
@@ -147,6 +135,8 @@ def main():
     checked = []
     mismatches = []
     ambiguous = []
+    zero_matches = []
+    multiple_matches = []
     unvalidated = []
 
     for membership in memberships:
@@ -166,8 +156,12 @@ def main():
             "reference_position": position,
         }
         checked.append(result)
-        if len(matches) != 1:
+        if not matches:
             ambiguous.append(result)
+            zero_matches.append(result)
+        elif len(matches) > 1:
+            ambiguous.append(result)
+            multiple_matches.append(result)
         elif matches[0].lower() != str(membership["constellation"]).lower():
             mismatches.append(result)
 
@@ -181,8 +175,12 @@ def main():
         "unvalidated_count": len(unvalidated),
         "mismatch_count": len(mismatches),
         "ambiguous_boundary_count": len(ambiguous),
+        "zero_match_count": len(zero_matches),
+        "multiple_match_count": len(multiple_matches),
         "unvalidated_fixed_object_ids": unvalidated,
         "mismatches": mismatches,
+        "zero_match_results": zero_matches,
+        "multiple_match_results": multiple_matches,
         "ambiguous_boundary_results": ambiguous,
     }
     REPORT_PATH.parent.mkdir(parents=True, exist_ok=True)
@@ -190,8 +188,17 @@ def main():
 
     print(
         f"Validated {len(checked)} memberships; {len(unvalidated)} without usable coordinates; "
-        f"{len(mismatches)} mismatches; {len(ambiguous)} ambiguous boundary results."
+        f"{len(mismatches)} mismatches; {len(ambiguous)} ambiguous boundary results "
+        f"({len(zero_matches)} zero-match, {len(multiple_matches)} multiple-match)."
     )
+    for result in ambiguous[:10]:
+        pos = result["reference_position"]
+        print(
+            "AMBIGUOUS SAMPLE: "
+            f"{result['fixed_object_id']} derived={result['derived_constellation']} "
+            f"ra_h={pos['ra_h']} dec_deg={pos['dec_deg']} "
+            f"matches={result['geometric_constellations']}"
+        )
     if mismatches or ambiguous:
         raise SystemExit("IAU geometric constellation-membership validation requires review")
 
