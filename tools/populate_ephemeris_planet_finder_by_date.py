@@ -6,6 +6,7 @@ from datetime import date
 
 import generate_planet_finders as finder
 import populate_ephemeris as ephemeris
+from almanack_sections import replace_section_inner
 from iso_date_range import group_by_year, parse_range_args
 from star_almanack_ephemeris import StarAlmanackEphemeris
 
@@ -30,17 +31,37 @@ def finder_bodies(generated, week: int):
     return result
 
 
+def split_rendered_sections(rendered: str) -> tuple[str, str]:
+    finder_marker = ephemeris.notation_toggle("finder") + "<h3>Planet Finder</h3>"
+    if finder_marker not in rendered:
+        raise RuntimeError("Rendered Ephemeris is missing its Planet Finder boundary")
+    ephemeris_html, finder_body = rendered.split(finder_marker, 1)
+    return ephemeris_html, finder_marker + finder_body
+
+
 def populate_week(year: int, week: int, generated) -> int:
     monday = date.fromisocalendar(year, week, 1)
-    values = {
-        key: (
-            ephemeris.zodiac(generated[key][week - 1][0]),
-            ephemeris.beta(generated[key][week - 1][1]),
-            ephemeris.visibility_html(generated[key][week - 1][2], generated[key][week - 1][3]),
-        )
-        for _, key, _ in ephemeris.TARGETS
-    }
-    replacement = ephemeris.render_ephemeris(monday, values)
+    values = {}
+    for _, key, _ in ephemeris.TARGETS:
+        sample = generated[key][week - 1]
+        aid = ephemeris.current_visibility(key, sample[2], sample[3], sample[6])
+        values[key] = {
+            "position": ephemeris.zodiac(sample[0]),
+            "beta": ephemeris.beta(sample[1]),
+            "observing": ephemeris.observing_html(key, sample[2], sample[3], sample[6]),
+            "normal_label": ephemeris.observing_label(key, sample[2], sample[3], False),
+            "solar_glare": aid == "solar_glare",
+            "sun_special": key == "sun",
+            "rise": sample[4],
+            "set": sample[5],
+            "ra_hours": sample[7],
+            "dec_deg": sample[8],
+            "sun_ra_hours": sample[9],
+            "sun_dec_deg": sample[10],
+            "horizon_deg": -0.8333 if key == "sun" else -0.5667,
+        }
+    rendered = ephemeris.render_ephemeris(monday, values)
+    ephemeris_html, finder_html = split_rendered_sections(rendered)
 
     changed = 0
     for base in (ephemeris.ROOT / "almanack", ephemeris.ROOT / "site"):
@@ -48,7 +69,8 @@ def populate_week(year: int, week: int, generated) -> int:
         if not path.exists():
             raise RuntimeError(f"Missing weekly page: {path.relative_to(ephemeris.ROOT)}")
         text = path.read_text(encoding="utf-8")
-        new = ephemeris.put_ephemeris(text, replacement, path)
+        new = replace_section_inner(text, 3, ephemeris_html, path)
+        new = replace_section_inner(new, 4, finder_html, path)
         if new != text:
             path.write_text(new, encoding="utf-8")
             changed += 1
