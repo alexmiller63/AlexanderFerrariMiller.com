@@ -10,6 +10,7 @@ from almanack_sections import require_section
 from calendar_fixed_object_ids import patch_file as patch_fixed_object_ids
 from calendar_mobile_layout import patch_file as patch_mobile_layout
 from iso_date_range import group_by_year, parse_range_args
+from planet_finder_layout import patch_file as patch_planet_finder_layout
 
 
 def populate_selected_year(year: int, selected_weeks: list[int]) -> int:
@@ -62,6 +63,7 @@ def populate_selected_year(year: int, selected_weeks: list[int]) -> int:
             path.write_text(text, encoding="utf-8")
             patch_fixed_object_ids(path)
             patch_mobile_layout(path)
+            patch_planet_finder_layout(path)
             if path.read_text(encoding="utf-8") != before:
                 changed += 1
     return changed

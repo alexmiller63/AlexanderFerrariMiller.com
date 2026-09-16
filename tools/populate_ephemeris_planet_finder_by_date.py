@@ -8,6 +8,7 @@ import generate_planet_finders as finder
 import populate_ephemeris as ephemeris
 from almanack_sections import replace_section_inner
 from iso_date_range import group_by_year, parse_range_args
+from planet_finder_layout import patch_file as patch_planet_finder_layout
 from star_almanack_ephemeris import StarAlmanackEphemeris
 
 FINDER_FILENAMES = {
@@ -74,6 +75,7 @@ def populate_week(year: int, week: int, generated) -> int:
         if new != text:
             path.write_text(new, encoding="utf-8")
             changed += 1
+        patch_planet_finder_layout(path)
 
     bodies = finder_bodies(generated, week)
     outdir = ephemeris.ROOT / "almanack" / str(year) / f"W{week:02d}" / "finders"

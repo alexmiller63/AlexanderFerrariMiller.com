@@ -70,13 +70,32 @@ def verify_page(page, rel: str):
         if before != after:
             raise SystemExit(f'Fixed-object IDs changed in {rel} after {mode} rendering')
 
-        overflow = page.evaluate("""() => ({
-          page: document.documentElement.scrollWidth > window.innerWidth + 1,
+        overflow = page.evaluate("""() => {
+          const viewportRight = window.innerWidth + 1;
+          const offenders = [...document.querySelectorAll('body *')]
+            .filter(el => {
+              const rect = el.getBoundingClientRect();
+              return rect.right > viewportRight || rect.left < -1;
+            })
+            .slice(0, 8)
+            .map(el => ({
+              tag: el.tagName.toLowerCase(),
+              id: el.id || '',
+              class: typeof el.className === 'string' ? el.className : '',
+              right: Math.round(el.getBoundingClientRect().right),
+              scrollWidth: el.scrollWidth,
+              clientWidth: el.clientWidth
+            }));
+          return {
+          page: document.documentElement.scrollWidth > viewportRight,
+          pageScrollWidth: document.documentElement.scrollWidth,
+          viewportWidth: window.innerWidth,
+          offenders,
           calendar: (() => {
             const el = document.querySelector('table.calendar');
             return !!el && el.scrollWidth > el.clientWidth + 1;
           })()
-        })""")
+        }}""")
         if overflow['page']:
             raise SystemExit(
                 f'Mobile Calendar layout failure in {rel} mode={mode}: {overflow}'
