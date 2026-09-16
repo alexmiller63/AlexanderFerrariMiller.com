@@ -3,80 +3,29 @@
   "system": "Star Almanack",
   "policy": "Accepted observer-facing paths. Renderers must preserve these connections and must not infer replacement edges.",
   "asterisms": {
-    "Big Dipper": {
-      "paths": [["Eta Ursae Majoris", "Zeta Ursae Majoris", "Epsilon Ursae Majoris", "Delta Ursae Majoris", "Alpha Ursae Majoris", "Gamma Ursae Majoris", "Beta Ursae Majoris", "Delta Ursae Majoris"]]
-    },
-    "Little Dipper": {
-      "paths": [["Polaris", "Delta Ursae Minoris", "Epsilon Ursae Minoris", "Zeta Ursae Minoris", "Eta Ursae Minoris", "Beta Ursae Minoris", "Gamma Ursae Minoris", "Zeta Ursae Minoris"]]
-    },
-    "Cassiopeia's W": {
-      "paths": [["Beta Cassiopeiae", "Alpha Cassiopeiae", "Gamma Cassiopeiae", "Delta Cassiopeiae", "Epsilon Cassiopeiae"]]
-    },
-    "Orion's Belt": {
-      "paths": [["Alnitak", "Alnilam", "Mintaka"]]
-    },
-    "Orion's Sword": {
-      "paths": [["42 Orionis", "Theta Orionis", "Iota Orionis"]]
-    },
-    "Water Jar": {
-      "paths": [["Gamma Aquarii", "Zeta Aquarii", "Pi Aquarii"], ["Eta Aquarii", "Zeta Aquarii"]]
-    },
-    "Great Square of Pegasus": {
-      "paths": [["Alpheratz", "Scheat", "Markab", "Algenib", "Alpheratz"]]
-    },
-    "Sickle of Leo": {
-      "paths": [["Alpha Leonis", "Eta Leonis", "Gamma Leonis", "Zeta Leonis", "Mu Leonis", "Epsilon Leonis"]]
-    },
-    "Keystone of Hercules": {
-      "paths": [["Epsilon Herculis", "Zeta Herculis", "Eta Herculis", "Pi Herculis", "Epsilon Herculis"]]
-    },
-    "Northern Cross": {
-      "paths": [["Alpha Cygni", "Gamma Cygni", "Beta Cygni"], ["Delta Cygni", "Gamma Cygni", "Epsilon Cygni"]]
-    },
-    "Teapot of Sagittarius": {
-      "paths": [["Lambda Sagittarii", "Phi Sagittarii", "Zeta Sagittarii", "Epsilon Sagittarii", "Delta Sagittarii", "Lambda Sagittarii"], ["Phi Sagittarii", "Tau Sagittarii", "Sigma Sagittarii", "Zeta Sagittarii"], ["Lambda Sagittarii", "Delta Sagittarii", "Gamma Sagittarii", "Epsilon Sagittarii"]]
-    },
-    "Scorpius's Fishhook": {
-      "paths": [["Gamma Scorpii", "Nu Scorpii", "Delta Scorpii", "Alpha Scorpii", "Sigma Scorpii", "Epsilon Scorpii", "Mu Scorpii", "Zeta Scorpii", "Eta Scorpii", "Theta Scorpii", "Iota Scorpii", "Kappa Scorpii", "Lambda Scorpii"]]
-    },
-    "Circlet of Pisces": {
-      "paths": [["Theta Piscium", "7 Piscium", "Gamma Piscium", "Kappa Piscium", "Lambda Piscium", "TX Piscium", "Iota Piscium", "Theta Piscium"]]
-    },
-    "Head of Cetus": {
-      "paths": [["Alpha Ceti", "Gamma Ceti", "Xi Ceti", "Mu Ceti", "Lambda Ceti", "Alpha Ceti"]]
-    },
-    "Hyades / V of Taurus": {
-      "paths": [["Gamma Tauri", "Delta Tauri", "Epsilon Tauri"], ["Gamma Tauri", "Theta Tauri", "Aldebaran"]]
-    },
-    "Pleiades": {
-      "paths": [["Pleione", "Atlas", "Alcyone", "Maia", "Taygeta"], ["Alcyone", "Merope", "Electra", "Maia"]]
-    },
-    "Summer Triangle": {
-      "paths": [["Vega", "Deneb", "Altair", "Vega"]]
-    },
-    "Winter Triangle": {
-      "paths": [["Sirius", "Betelgeuse", "Procyon", "Sirius"]]
-    },
-    "Winter Hexagon / Winter Circle": {
-      "paths": [["Rigel", "Aldebaran", "Capella", "Pollux", "Procyon", "Sirius", "Rigel"]]
-    },
-    "Spring Triangle": {
-      "paths": [["Arcturus", "Spica", "Denebola", "Arcturus"]]
-    },
-    "Great Diamond": {
-      "paths": [["Alpha Bootis", "Alpha Virginis", "Beta Leonis", "Alpha Canum Venaticorum", "Alpha Bootis"]]
-    },
-    "False Cross": {
-      "paths": [["Avior", "Markeb"], ["Aspidiske", "Alsephina"]]
-    },
-    "Southern Cross": {
-      "paths": [["Alpha Crucis", "Gamma Crucis"], ["Beta Crucis", "Delta Crucis"]]
-    },
-    "Southern Pointers": {
-      "paths": [["Alpha Centauri", "Beta Centauri"]]
-    },
-    "Coathanger": {
-      "paths": [["HD 182293", "HD 182422", "HD 182761", "HD 182972", "HD 183261", "7 Vulpeculae"], ["HD 182761", "5 Vulpeculae", "HD 182620", "4 Vulpeculae", "HD 182955"]]
-    }
+    "Big Dipper": {"paths": [["Eta Ursae Majoris", "Zeta Ursae Majoris", "Epsilon Ursae Majoris", "Delta Ursae Majoris", "Alpha Ursae Majoris", "Gamma Ursae Majoris", "Beta Ursae Majoris", "Delta Ursae Majoris"]]},
+    "Little Dipper": {"paths": [["Polaris", "Delta Ursae Minoris", "Epsilon Ursae Minoris", "Zeta Ursae Minoris", "Eta Ursae Minoris", "Beta Ursae Minoris", "Gamma Ursae Minoris", "Zeta Ursae Minoris"]]},
+    "Cassiopeia's W": {"paths": [["Beta Cassiopeiae", "Alpha Cassiopeiae", "Gamma Cassiopeiae", "Delta Cassiopeiae", "Epsilon Cassiopeiae"]]},
+    "Orion's Belt": {"paths": [["Alnitak", "Alnilam", "Mintaka"]]},
+    "Water Jar": {"paths": [["Gamma Aquarii", "Pi Aquarii", "Eta Aquarii", "Gamma Aquarii"], ["Zeta Aquarii", "Gamma Aquarii"], ["Zeta Aquarii", "Pi Aquarii"], ["Zeta Aquarii", "Eta Aquarii"]]},
+    "Great Square of Pegasus": {"paths": [["Alpheratz", "Scheat", "Markab", "Algenib", "Alpheratz"]]},
+    "Sickle of Leo": {"paths": [["Alpha Leonis", "Eta Leonis", "Gamma Leonis", "Zeta Leonis", "Mu Leonis", "Epsilon Leonis"]]},
+    "Keystone of Hercules": {"paths": [["Epsilon Herculis", "Zeta Herculis", "Eta Herculis", "Pi Herculis", "Epsilon Herculis"]]},
+    "Northern Cross": {"paths": [["Alpha Cygni", "Gamma Cygni", "Beta Cygni"], ["Delta Cygni", "Gamma Cygni", "Epsilon Cygni"]]},
+    "Teapot of Sagittarius": {"paths": [["Lambda Sagittarii", "Phi Sagittarii", "Zeta Sagittarii", "Epsilon Sagittarii", "Delta Sagittarii", "Lambda Sagittarii"], ["Phi Sagittarii", "Tau Sagittarii", "Sigma Sagittarii", "Zeta Sagittarii"], ["Lambda Sagittarii", "Delta Sagittarii", "Gamma Sagittarii", "Epsilon Sagittarii"]]},
+    "Scorpius's Fishhook": {"paths": [["Gamma Scorpii", "Nu Scorpii", "Delta Scorpii", "Alpha Scorpii", "Sigma Scorpii", "Epsilon Scorpii", "Mu Scorpii", "Zeta Scorpii", "Eta Scorpii", "Theta Scorpii", "Iota Scorpii", "Kappa Scorpii", "Lambda Scorpii"]]},
+    "Circlet of Pisces": {"paths": [["Theta Piscium", "7 Piscium", "Gamma Piscium", "Kappa Piscium", "Lambda Piscium", "TX Piscium", "Iota Piscium", "Theta Piscium"]]},
+    "Head of Cetus": {"paths": [["Alpha Ceti", "Gamma Ceti", "Xi Ceti", "Mu Ceti", "Lambda Ceti", "Alpha Ceti"]]},
+    "Summer Triangle": {"paths": [["Vega", "Deneb", "Altair", "Vega"]]},
+    "Winter Triangle": {"paths": [["Sirius", "Betelgeuse", "Procyon", "Sirius"]]},
+    "Winter Hexagon / Winter Circle": {"paths": [["Rigel", "Aldebaran", "Capella", "Pollux", "Procyon", "Sirius", "Rigel"]]},
+    "Spring Triangle": {"paths": [["Arcturus", "Spica", "Denebola", "Arcturus"]]},
+    "Great Diamond": {"paths": [["Alpha Bootis", "Alpha Virginis", "Beta Leonis", "Alpha Canum Venaticorum", "Alpha Bootis"]]},
+    "False Cross": {"paths": [["Avior", "Markeb"], ["Aspidiske", "Alsephina"]]},
+    "Southern Pointers": {"paths": [["Alpha Centauri", "Beta Centauri"]]},
+    "Coathanger": {"paths": [["HD 182293", "HD 182422", "HD 182761", "HD 182972", "HD 183261", "7 Vulpeculae"], ["HD 182761", "5 Vulpeculae", "HD 182620", "4 Vulpeculae", "HD 182955"]]},
+    "Job's Coffin": {"paths": [["Alpha Delphini", "Beta Delphini", "Gamma Delphini", "Delta Delphini", "Alpha Delphini"]]},
+    "Lozenge of Draco": {"paths": [["Gamma Draconis", "Beta Draconis", "Nu Draconis", "Xi Draconis", "Gamma Draconis"]]},
+    "Quadrans Muralis": {"paths": [["HIP 78180", "HIP 77738", "HIP 75043", "HIP 78180"]]}
   }
 }
