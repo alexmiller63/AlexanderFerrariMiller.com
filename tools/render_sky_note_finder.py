@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import argparse
 import math
+import re
 import sys
 from pathlib import Path
 
@@ -28,6 +29,13 @@ FIGURE_BLUE = "#5c8fe8"
 ASTERISM_GREEN = "#59c86d"
 TARGET_YELLOW = "#ffd84d"
 
+GREEK_ORDER = {
+    name: rank for rank, name in enumerate((
+        "Alp", "Bet", "Gam", "Del", "Eps", "Zet", "Eta", "The", "Iot", "Kap", "Lam", "Mu",
+        "Nu", "Xi", "Omi", "Pi", "Rho", "Sig", "Tau", "Ups", "Phi", "Chi", "Psi", "Ome"
+    ))
+}
+
 
 def complete_index(stars):
     idx = star_index(stars)
@@ -41,22 +49,27 @@ def refs_from_paths(paths):
     return {ref for path in paths for ref in path}
 
 
-def bayer_label(star, figure_constellation):
-    """Chart label: Greek only, except foreign-constellation stars add IAU abbreviation."""
-    label = greek_bayer_symbol(star.bayer) if star.bayer else ""
-    if label and star.con and star.con != figure_constellation:
-        label += f" {star.con}"
-    return label
+def bayer_label(star):
+    """Chart labels are Greek letters only."""
+    return greek_bayer_symbol(star.bayer) if star.bayer else ""
 
 
-def legend_label(star, figure_constellation):
-    """Legend: Greek + proper name; constellation abbreviation only for foreign stars."""
+def legend_label(star):
+    """Legend entries are Greek letter followed by proper name, when one exists."""
     greek = greek_bayer_symbol(star.bayer) if star.bayer else ""
     if not greek:
         return ""
-    if star.con and star.con != figure_constellation:
-        greek += f" {star.con}"
     return f"{greek} — {star.proper}" if star.proper else greek
+
+
+def greek_sort_key(star):
+    """Sort Bayer stars in Greek alphabet order, preserving numeric suffixes."""
+    bayer = (star.bayer or "").strip()
+    match = re.match(r"([A-Za-z]+)\s*(\d*)", bayer)
+    if not match:
+        return (999, 999, bayer)
+    stem, suffix = match.groups()
+    return (GREEK_ORDER.get(stem[:3].title(), 999), int(suffix) if suffix else 0, bayer)
 
 
 def draw_path(ax, path, idx, center, color, linewidth):
@@ -131,7 +144,7 @@ def render(spec: dict, stars, output: Path) -> None:
         if point is None:
             continue
         figure_points.append(point)
-        label = bayer_label(star, figure_constellation)
+        label = bayer_label(star)
         if label:
             ax.annotate(label, point, xytext=(5, 5), textcoords="offset points",
                         fontsize=9, color=TEXT, zorder=6)
@@ -154,24 +167,29 @@ def render(spec: dict, stars, output: Path) -> None:
                edgecolors=TARGET_YELLOW, linewidths=2.6, zorder=8)
 
     target_greek = greek_bayer_symbol(target.bayer) if target.bayer else ""
-    target_name = target.proper or target_ref
+    target_name = target.proper or ""
     target_chart_label = " ".join(part for part in (target_greek, target_name) if part)
     ax.annotate(target_chart_label, target_xy, xytext=(14, 0), textcoords="offset points",
                 ha="left", va="center", fontsize=10, color=TARGET_YELLOW,
                 bbox=dict(facecolor=NIGHT, edgecolor="none", pad=0.8), zorder=9)
 
-    # Title convention: Greek Bayer symbol + IAU abbreviation, proper name, in constellation.
-    title_const = target.con or figure_constellation
-    if target_greek and title_const:
-        title = f"{target_greek} {title_const}, {target_name}, in {figure_constellation}"
-    else:
-        title = spec.get("chart_title") or f"{target_name} Finder"
+    # Title: Greek Bayer symbol + IAU abbreviation, proper name if any, in constellation.
+    title_const = target.con or ""
+    title_parts = [" ".join(part for part in (target_greek, title_const) if part)]
+    if target_name:
+        title_parts.append(target_name)
+    title = ", ".join(part for part in title_parts if part)
+    if figure_constellation:
+        title += f", in {figure_constellation}"
+    if not title:
+        title = spec.get("chart_title") or "Stellar Finder"
     ax.set_title(title, color=TEXT, fontsize=14, pad=12)
 
     ax.text(0.5, -0.035, "East ←                                      → West",
             transform=ax.transAxes, ha="center", va="top", fontsize=8, color=TEXT)
 
-    legend = [legend_label(star, figure_constellation) for star in figure_stars]
+    legend_stars = sorted((star for star in figure_stars if star.bayer), key=greek_sort_key)
+    legend = [legend_label(star) for star in legend_stars]
     legend = [item for item in legend if item]
     if legend:
         ax.text(0.5, -0.075, "   •   ".join(legend), transform=ax.transAxes,
