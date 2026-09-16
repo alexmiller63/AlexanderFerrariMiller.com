@@ -1,12 +1,28 @@
-name: Wire complete Almanack legend
+name: Legend Generator
 
 on:
   workflow_dispatch:
     inputs:
-      years:
-        description: 'Space-separated ISO years to update'
+      start_year:
+        description: Start ISO year
         required: true
-        default: '2025 2026 2027'
+        default: '2026'
+        type: string
+      start_week:
+        description: Start ISO week
+        required: true
+        default: '36'
+        type: string
+      end_year:
+        description: End ISO year
+        required: true
+        default: '2026'
+        type: string
+      end_week:
+        description: End ISO week
+        required: true
+        default: '40'
+        type: string
   push:
     paths:
       - 'tools/wire_almanack_legend.py'
@@ -14,7 +30,10 @@ on:
       - '.github/workflows/wire-almanack-legend.yml'
 
 env:
-  ALMANACK_YEARS: ${{ github.event_name == 'workflow_dispatch' && inputs.years || '2025 2026 2027' }}
+  ALMANACK_START_YEAR: ${{ github.event_name == 'workflow_dispatch' && inputs.start_year || '2026' }}
+  ALMANACK_START_WEEK: ${{ github.event_name == 'workflow_dispatch' && inputs.start_week || '36' }}
+  ALMANACK_END_YEAR: ${{ github.event_name == 'workflow_dispatch' && inputs.end_year || '2026' }}
+  ALMANACK_END_WEEK: ${{ github.event_name == 'workflow_dispatch' && inputs.end_week || '40' }}
 
 permissions:
   contents: write
@@ -28,7 +47,10 @@ jobs:
           fetch-depth: 0
 
       - name: Wire legend on requested weekly pages
-        run: python tools/wire_almanack_legend.py $ALMANACK_YEARS
+        run: >-
+          python tools/wire_almanack_legend.py
+          "$ALMANACK_START_YEAR" "$ALMANACK_START_WEEK"
+          "$ALMANACK_END_YEAR" "$ALMANACK_END_WEEK"
 
       - name: Commit generated legends
         run: |
@@ -38,13 +60,11 @@ jobs:
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          for year in $ALMANACK_YEARS; do
-            git add "almanack/$year" "site/$year"
-          done
+          git add almanack site
           if git diff --cached --quiet; then
-            echo "No requested-year legend changes."
+            echo "No requested-week legend changes."
             exit 0
           fi
-          git commit -m "Apply complete legend to Almanack years $ALMANACK_YEARS"
+          git commit -m "Apply complete legend $ALMANACK_START_YEAR-W$ALMANACK_START_WEEK through $ALMANACK_END_YEAR-W$ALMANACK_END_WEEK"
           git pull --rebase origin main
           git push
