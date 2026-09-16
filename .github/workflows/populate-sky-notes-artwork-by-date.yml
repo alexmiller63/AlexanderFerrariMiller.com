@@ -39,6 +39,19 @@ jobs:
         with:
           ref: main
 
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install renderer dependency
+        run: python -m pip install matplotlib
+
+      - name: Fetch pinned HYG v4.1 catalog
+        run: |
+          curl -fL \
+            https://raw.githubusercontent.com/astronexus/HYG-Database/3bf37f4b2d5460e1278286320d1d62fab9b493c1/hyg/CURRENT/hygdata_v41.csv \
+            -o /tmp/hygdata_v41.csv
+
       - name: Resolve ISO week range
         id: range
         run: |
@@ -49,8 +62,26 @@ jobs:
           echo "end_date=$END_DATE" >> "$GITHUB_OUTPUT"
           echo "$START_DATE through $END_DATE"
 
-      - name: Generate Artwork
+      - name: Generate Artwork specs
         run: python tools/populate_sky_notes_artwork_by_date.py "${{ steps.range.outputs.start_date }}" "${{ steps.range.outputs.end_date }}"
+
+      - name: Render stellar finder SVGs
+        shell: bash
+        run: |
+          set -euo pipefail
+          for spec in sky-notes-artwork/specs/${{ inputs.start_year }}/W*.json; do
+            [ -e "$spec" ] || continue
+            week="$(basename "$spec" .json)"
+            week_number="${week#W}"
+            week_value=$((10#$week_number))
+            start_value=$((10#${{ inputs.start_week }}))
+            end_value=$((10#${{ inputs.end_week }}))
+            if (( week_value < start_value || week_value > end_value )); then
+              continue
+            fi
+            out="sky-notes-artwork/${{ inputs.start_year }}/${week}/finder.svg"
+            python tools/render_sky_note_finder.py /tmp/hygdata_v41.csv "$spec" "$out"
+          done
 
       - name: Commit Artwork changes only
         run: |
