@@ -2,16 +2,16 @@
   "schema_version": 10,
   "purpose": "pre-migration physical fixed-object identity audit; no permanent IDs assigned",
   "canonical_source": "fixed-objects.yaml",
-  "original_candidate_count": 634,
+  "original_candidate_count": 653,
   "supplemental_physical_objects": {
     "path": "database/supplemental-physical-objects.json",
     "loaded": true,
     "object_count": 4,
     "candidate_ids": [
-      635,
-      636,
-      637,
-      638
+      654,
+      655,
+      656,
+      657
     ],
     "errors": []
   },
@@ -41,18 +41,18 @@
     ],
     "errors": []
   },
-  "candidate_count": 638,
-  "physical_object_candidate_count": 632,
+  "candidate_count": 657,
+  "physical_object_candidate_count": 651,
   "catalog_target_only_candidate_count": 6,
-  "provisional_reconciliation_group_count": 601,
-  "provisional_merged_group_count": 37,
-  "provisional_singleton_group_count": 564,
-  "validated_exact_identifier_group_count": 37,
+  "provisional_reconciliation_group_count": 617,
+  "provisional_merged_group_count": 40,
+  "provisional_singleton_group_count": 577,
+  "validated_exact_identifier_group_count": 40,
   "contradiction_review_group_count": 0,
-  "physical_reconciliation_group_count": 595,
-  "physical_merged_group_count": 37,
-  "physical_singleton_group_count": 558,
-  "physical_validated_exact_identifier_group_count": 37,
+  "physical_reconciliation_group_count": 611,
+  "physical_merged_group_count": 40,
+  "physical_singleton_group_count": 571,
+  "physical_validated_exact_identifier_group_count": 40,
   "physical_contradiction_review_group_count": 0,
   "physical_registry_ready": true,
   "physical_registry_blockers": [],
@@ -60,6 +60,7 @@
     "asterism-member-coordinates.csv": 132,
     "caldwell-catalog.csv": 109,
     "database/supplemental-physical-objects.json": 4,
+    "expanded-bayer-stars.csv:suffixed": 19,
     "finest-ngc-catalog.csv": 112,
     "fixed-objects.yaml:bayer": 170,
     "fixed-objects.yaml:messier": 110,
@@ -67,13 +68,13 @@
   },
   "identifier_counts": {
     "asterism_member_label": 132,
-    "bayer": 170,
+    "bayer": 189,
     "caldwell": 109,
     "catalog_label": 5,
     "finest_ngc": 112,
     "gaia_dr3": 1,
-    "hd": 2,
-    "hip": 132,
+    "hd": 20,
+    "hip": 148,
     "ic": 9,
     "messier": 110,
     "ngc": 315,
@@ -126,7 +127,7 @@
     "AS": "asterism",
     "star": "star"
   },
-  "cross_source_identifier_overlap_count": 37,
+  "cross_source_identifier_overlap_count": 40,
   "cross_source_identifier_overlaps": [
     {
       "namespace": "hip",
@@ -170,6 +171,22 @@
     },
     {
       "namespace": "hip",
+      "value": "60718",
+      "candidate_ids": [
+        619,
+        639
+      ]
+    },
+    {
+      "namespace": "hip",
+      "value": "63125",
+      "candidate_ids": [
+        613,
+        636
+      ]
+    },
+    {
+      "namespace": "hip",
       "value": "65474",
       "candidate_ids": [
         609,
@@ -182,6 +199,14 @@
       "candidate_ids": [
         608,
         611
+      ]
+    },
+    {
+      "namespace": "hip",
+      "value": "95947",
+      "candidate_ids": [
+        547,
+        641
       ]
     },
     {
@@ -425,7 +450,7 @@
       ]
     }
   ],
-  "physical_cross_source_identifier_overlap_count": 37,
+  "physical_cross_source_identifier_overlap_count": 40,
   "physical_cross_source_identifier_overlaps": [
     {
       "namespace": "hip",
@@ -469,6 +494,22 @@
     },
     {
       "namespace": "hip",
+      "value": "60718",
+      "candidate_ids": [
+        619,
+        639
+      ]
+    },
+    {
+      "namespace": "hip",
+      "value": "63125",
+      "candidate_ids": [
+        613,
+        636
+      ]
+    },
+    {
+      "namespace": "hip",
       "value": "65474",
       "candidate_ids": [
         609,
@@ -481,6 +522,14 @@
       "candidate_ids": [
         608,
         611
+      ]
+    },
+    {
+      "namespace": "hip",
+      "value": "95947",
+      "candidate_ids": [
+        547,
+        641
       ]
     },
     {
@@ -7265,14 +7314,24 @@
     {
       "provisional_group_id": 517,
       "candidate_ids": [
-        547
+        547,
+        641
       ],
-      "candidate_count": 1,
-      "merge_evidence": [],
-      "max_coordinate_separation_deg": null,
+      "candidate_count": 2,
+      "merge_evidence": [
+        {
+          "namespace": "hip",
+          "value": "95947",
+          "candidate_ids": [
+            547,
+            641
+          ]
+        }
+      ],
+      "max_coordinate_separation_deg": 0.0,
       "contradictions": [],
       "resolved_reviews": [],
-      "review_status": "singleton"
+      "review_status": "validated_exact_identifier"
     },
     {
       "provisional_group_id": 518,
@@ -8045,14 +8104,24 @@
     {
       "provisional_group_id": 577,
       "candidate_ids": [
-        613
+        613,
+        636
       ],
-      "candidate_count": 1,
-      "merge_evidence": [],
-      "max_coordinate_separation_deg": null,
+      "candidate_count": 2,
+      "merge_evidence": [
+        {
+          "namespace": "hip",
+          "value": "63125",
+          "candidate_ids": [
+            613,
+            636
+          ]
+        }
+      ],
+      "max_coordinate_separation_deg": 0.000125,
       "contradictions": [],
       "resolved_reviews": [],
-      "review_status": "singleton"
+      "review_status": "validated_exact_identifier"
     },
     {
       "provisional_group_id": 578,
@@ -8105,14 +8174,24 @@
     {
       "provisional_group_id": 582,
       "candidate_ids": [
-        619
+        619,
+        639
       ],
-      "candidate_count": 1,
-      "merge_evidence": [],
-      "max_coordinate_separation_deg": null,
+      "candidate_count": 2,
+      "merge_evidence": [
+        {
+          "namespace": "hip",
+          "value": "60718",
+          "candidate_ids": [
+            619,
+            639
+          ]
+        }
+      ],
+      "max_coordinate_separation_deg": 4.4e-05,
       "contradictions": [],
       "resolved_reviews": [],
-      "review_status": "singleton"
+      "review_status": "validated_exact_identifier"
     },
     {
       "provisional_group_id": 583,
@@ -8309,7 +8388,7 @@
     {
       "provisional_group_id": 599,
       "candidate_ids": [
-        636
+        637
       ],
       "candidate_count": 1,
       "merge_evidence": [],
@@ -8321,7 +8400,7 @@
     {
       "provisional_group_id": 600,
       "candidate_ids": [
-        637
+        638
       ],
       "candidate_count": 1,
       "merge_evidence": [],
@@ -8333,7 +8412,199 @@
     {
       "provisional_group_id": 601,
       "candidate_ids": [
-        638
+        640
+      ],
+      "candidate_count": 1,
+      "merge_evidence": [],
+      "max_coordinate_separation_deg": null,
+      "contradictions": [],
+      "resolved_reviews": [],
+      "review_status": "singleton"
+    },
+    {
+      "provisional_group_id": 602,
+      "candidate_ids": [
+        642
+      ],
+      "candidate_count": 1,
+      "merge_evidence": [],
+      "max_coordinate_separation_deg": null,
+      "contradictions": [],
+      "resolved_reviews": [],
+      "review_status": "singleton"
+    },
+    {
+      "provisional_group_id": 603,
+      "candidate_ids": [
+        643
+      ],
+      "candidate_count": 1,
+      "merge_evidence": [],
+      "max_coordinate_separation_deg": null,
+      "contradictions": [],
+      "resolved_reviews": [],
+      "review_status": "singleton"
+    },
+    {
+      "provisional_group_id": 604,
+      "candidate_ids": [
+        644
+      ],
+      "candidate_count": 1,
+      "merge_evidence": [],
+      "max_coordinate_separation_deg": null,
+      "contradictions": [],
+      "resolved_reviews": [],
+      "review_status": "singleton"
+    },
+    {
+      "provisional_group_id": 605,
+      "candidate_ids": [
+        645
+      ],
+      "candidate_count": 1,
+      "merge_evidence": [],
+      "max_coordinate_separation_deg": null,
+      "contradictions": [],
+      "resolved_reviews": [],
+      "review_status": "singleton"
+    },
+    {
+      "provisional_group_id": 606,
+      "candidate_ids": [
+        646
+      ],
+      "candidate_count": 1,
+      "merge_evidence": [],
+      "max_coordinate_separation_deg": null,
+      "contradictions": [],
+      "resolved_reviews": [],
+      "review_status": "singleton"
+    },
+    {
+      "provisional_group_id": 607,
+      "candidate_ids": [
+        647
+      ],
+      "candidate_count": 1,
+      "merge_evidence": [],
+      "max_coordinate_separation_deg": null,
+      "contradictions": [],
+      "resolved_reviews": [],
+      "review_status": "singleton"
+    },
+    {
+      "provisional_group_id": 608,
+      "candidate_ids": [
+        648
+      ],
+      "candidate_count": 1,
+      "merge_evidence": [],
+      "max_coordinate_separation_deg": null,
+      "contradictions": [],
+      "resolved_reviews": [],
+      "review_status": "singleton"
+    },
+    {
+      "provisional_group_id": 609,
+      "candidate_ids": [
+        649
+      ],
+      "candidate_count": 1,
+      "merge_evidence": [],
+      "max_coordinate_separation_deg": null,
+      "contradictions": [],
+      "resolved_reviews": [],
+      "review_status": "singleton"
+    },
+    {
+      "provisional_group_id": 610,
+      "candidate_ids": [
+        650
+      ],
+      "candidate_count": 1,
+      "merge_evidence": [],
+      "max_coordinate_separation_deg": null,
+      "contradictions": [],
+      "resolved_reviews": [],
+      "review_status": "singleton"
+    },
+    {
+      "provisional_group_id": 611,
+      "candidate_ids": [
+        651
+      ],
+      "candidate_count": 1,
+      "merge_evidence": [],
+      "max_coordinate_separation_deg": null,
+      "contradictions": [],
+      "resolved_reviews": [],
+      "review_status": "singleton"
+    },
+    {
+      "provisional_group_id": 612,
+      "candidate_ids": [
+        652
+      ],
+      "candidate_count": 1,
+      "merge_evidence": [],
+      "max_coordinate_separation_deg": null,
+      "contradictions": [],
+      "resolved_reviews": [],
+      "review_status": "singleton"
+    },
+    {
+      "provisional_group_id": 613,
+      "candidate_ids": [
+        653
+      ],
+      "candidate_count": 1,
+      "merge_evidence": [],
+      "max_coordinate_separation_deg": null,
+      "contradictions": [],
+      "resolved_reviews": [],
+      "review_status": "singleton"
+    },
+    {
+      "provisional_group_id": 614,
+      "candidate_ids": [
+        654
+      ],
+      "candidate_count": 1,
+      "merge_evidence": [],
+      "max_coordinate_separation_deg": null,
+      "contradictions": [],
+      "resolved_reviews": [],
+      "review_status": "singleton"
+    },
+    {
+      "provisional_group_id": 615,
+      "candidate_ids": [
+        655
+      ],
+      "candidate_count": 1,
+      "merge_evidence": [],
+      "max_coordinate_separation_deg": null,
+      "contradictions": [],
+      "resolved_reviews": [],
+      "review_status": "singleton"
+    },
+    {
+      "provisional_group_id": 616,
+      "candidate_ids": [
+        656
+      ],
+      "candidate_count": 1,
+      "merge_evidence": [],
+      "max_coordinate_separation_deg": null,
+      "contradictions": [],
+      "resolved_reviews": [],
+      "review_status": "singleton"
+    },
+    {
+      "provisional_group_id": 617,
+      "candidate_ids": [
+        657
       ],
       "candidate_count": 1,
       "merge_evidence": [],
@@ -14792,14 +15063,24 @@
     {
       "provisional_group_id": 511,
       "candidate_ids": [
-        547
+        547,
+        641
       ],
-      "candidate_count": 1,
-      "merge_evidence": [],
-      "max_coordinate_separation_deg": null,
+      "candidate_count": 2,
+      "merge_evidence": [
+        {
+          "namespace": "hip",
+          "value": "95947",
+          "candidate_ids": [
+            547,
+            641
+          ]
+        }
+      ],
+      "max_coordinate_separation_deg": 0.0,
       "contradictions": [],
       "resolved_reviews": [],
-      "review_status": "singleton"
+      "review_status": "validated_exact_identifier"
     },
     {
       "provisional_group_id": 512,
@@ -15572,14 +15853,24 @@
     {
       "provisional_group_id": 571,
       "candidate_ids": [
-        613
+        613,
+        636
       ],
-      "candidate_count": 1,
-      "merge_evidence": [],
-      "max_coordinate_separation_deg": null,
+      "candidate_count": 2,
+      "merge_evidence": [
+        {
+          "namespace": "hip",
+          "value": "63125",
+          "candidate_ids": [
+            613,
+            636
+          ]
+        }
+      ],
+      "max_coordinate_separation_deg": 0.000125,
       "contradictions": [],
       "resolved_reviews": [],
-      "review_status": "singleton"
+      "review_status": "validated_exact_identifier"
     },
     {
       "provisional_group_id": 572,
@@ -15632,14 +15923,24 @@
     {
       "provisional_group_id": 576,
       "candidate_ids": [
-        619
+        619,
+        639
       ],
-      "candidate_count": 1,
-      "merge_evidence": [],
-      "max_coordinate_separation_deg": null,
+      "candidate_count": 2,
+      "merge_evidence": [
+        {
+          "namespace": "hip",
+          "value": "60718",
+          "candidate_ids": [
+            619,
+            639
+          ]
+        }
+      ],
+      "max_coordinate_separation_deg": 4.4e-05,
       "contradictions": [],
       "resolved_reviews": [],
-      "review_status": "singleton"
+      "review_status": "validated_exact_identifier"
     },
     {
       "provisional_group_id": 577,
@@ -15836,7 +16137,7 @@
     {
       "provisional_group_id": 593,
       "candidate_ids": [
-        636
+        637
       ],
       "candidate_count": 1,
       "merge_evidence": [],
@@ -15848,7 +16149,7 @@
     {
       "provisional_group_id": 594,
       "candidate_ids": [
-        637
+        638
       ],
       "candidate_count": 1,
       "merge_evidence": [],
@@ -15860,7 +16161,199 @@
     {
       "provisional_group_id": 595,
       "candidate_ids": [
-        638
+        640
+      ],
+      "candidate_count": 1,
+      "merge_evidence": [],
+      "max_coordinate_separation_deg": null,
+      "contradictions": [],
+      "resolved_reviews": [],
+      "review_status": "singleton"
+    },
+    {
+      "provisional_group_id": 596,
+      "candidate_ids": [
+        642
+      ],
+      "candidate_count": 1,
+      "merge_evidence": [],
+      "max_coordinate_separation_deg": null,
+      "contradictions": [],
+      "resolved_reviews": [],
+      "review_status": "singleton"
+    },
+    {
+      "provisional_group_id": 597,
+      "candidate_ids": [
+        643
+      ],
+      "candidate_count": 1,
+      "merge_evidence": [],
+      "max_coordinate_separation_deg": null,
+      "contradictions": [],
+      "resolved_reviews": [],
+      "review_status": "singleton"
+    },
+    {
+      "provisional_group_id": 598,
+      "candidate_ids": [
+        644
+      ],
+      "candidate_count": 1,
+      "merge_evidence": [],
+      "max_coordinate_separation_deg": null,
+      "contradictions": [],
+      "resolved_reviews": [],
+      "review_status": "singleton"
+    },
+    {
+      "provisional_group_id": 599,
+      "candidate_ids": [
+        645
+      ],
+      "candidate_count": 1,
+      "merge_evidence": [],
+      "max_coordinate_separation_deg": null,
+      "contradictions": [],
+      "resolved_reviews": [],
+      "review_status": "singleton"
+    },
+    {
+      "provisional_group_id": 600,
+      "candidate_ids": [
+        646
+      ],
+      "candidate_count": 1,
+      "merge_evidence": [],
+      "max_coordinate_separation_deg": null,
+      "contradictions": [],
+      "resolved_reviews": [],
+      "review_status": "singleton"
+    },
+    {
+      "provisional_group_id": 601,
+      "candidate_ids": [
+        647
+      ],
+      "candidate_count": 1,
+      "merge_evidence": [],
+      "max_coordinate_separation_deg": null,
+      "contradictions": [],
+      "resolved_reviews": [],
+      "review_status": "singleton"
+    },
+    {
+      "provisional_group_id": 602,
+      "candidate_ids": [
+        648
+      ],
+      "candidate_count": 1,
+      "merge_evidence": [],
+      "max_coordinate_separation_deg": null,
+      "contradictions": [],
+      "resolved_reviews": [],
+      "review_status": "singleton"
+    },
+    {
+      "provisional_group_id": 603,
+      "candidate_ids": [
+        649
+      ],
+      "candidate_count": 1,
+      "merge_evidence": [],
+      "max_coordinate_separation_deg": null,
+      "contradictions": [],
+      "resolved_reviews": [],
+      "review_status": "singleton"
+    },
+    {
+      "provisional_group_id": 604,
+      "candidate_ids": [
+        650
+      ],
+      "candidate_count": 1,
+      "merge_evidence": [],
+      "max_coordinate_separation_deg": null,
+      "contradictions": [],
+      "resolved_reviews": [],
+      "review_status": "singleton"
+    },
+    {
+      "provisional_group_id": 605,
+      "candidate_ids": [
+        651
+      ],
+      "candidate_count": 1,
+      "merge_evidence": [],
+      "max_coordinate_separation_deg": null,
+      "contradictions": [],
+      "resolved_reviews": [],
+      "review_status": "singleton"
+    },
+    {
+      "provisional_group_id": 606,
+      "candidate_ids": [
+        652
+      ],
+      "candidate_count": 1,
+      "merge_evidence": [],
+      "max_coordinate_separation_deg": null,
+      "contradictions": [],
+      "resolved_reviews": [],
+      "review_status": "singleton"
+    },
+    {
+      "provisional_group_id": 607,
+      "candidate_ids": [
+        653
+      ],
+      "candidate_count": 1,
+      "merge_evidence": [],
+      "max_coordinate_separation_deg": null,
+      "contradictions": [],
+      "resolved_reviews": [],
+      "review_status": "singleton"
+    },
+    {
+      "provisional_group_id": 608,
+      "candidate_ids": [
+        654
+      ],
+      "candidate_count": 1,
+      "merge_evidence": [],
+      "max_coordinate_separation_deg": null,
+      "contradictions": [],
+      "resolved_reviews": [],
+      "review_status": "singleton"
+    },
+    {
+      "provisional_group_id": 609,
+      "candidate_ids": [
+        655
+      ],
+      "candidate_count": 1,
+      "merge_evidence": [],
+      "max_coordinate_separation_deg": null,
+      "contradictions": [],
+      "resolved_reviews": [],
+      "review_status": "singleton"
+    },
+    {
+      "provisional_group_id": 610,
+      "candidate_ids": [
+        656
+      ],
+      "candidate_count": 1,
+      "merge_evidence": [],
+      "max_coordinate_separation_deg": null,
+      "contradictions": [],
+      "resolved_reviews": [],
+      "review_status": "singleton"
+    },
+    {
+      "provisional_group_id": 611,
+      "candidate_ids": [
+        657
       ],
       "candidate_count": 1,
       "merge_evidence": [],
@@ -29779,6 +30272,503 @@
     },
     {
       "candidate_id": 635,
+      "source": "expanded-bayer-stars.csv:suffixed",
+      "source_key": "α1 CVn",
+      "identifiers": [
+        {
+          "namespace": "bayer",
+          "value": "α1 CVn"
+        },
+        {
+          "namespace": "hip",
+          "value": "63121"
+        },
+        {
+          "namespace": "hd",
+          "value": "112412"
+        }
+      ],
+      "name": null,
+      "constellation": "CVn",
+      "ra_h": "12.933453197",
+      "dec_deg": "38.314852517",
+      "object_type": "star",
+      "object_type_family": "star",
+      "notes": "bayer_code=Alp1; suffix=1",
+      "identity_role": "physical_object_candidate"
+    },
+    {
+      "candidate_id": 636,
+      "source": "expanded-bayer-stars.csv:suffixed",
+      "source_key": "α2 CVn",
+      "identifiers": [
+        {
+          "namespace": "bayer",
+          "value": "α2 CVn"
+        },
+        {
+          "namespace": "hip",
+          "value": "63125"
+        },
+        {
+          "namespace": "hd",
+          "value": "112413"
+        }
+      ],
+      "name": "Cor Caroli",
+      "constellation": "CVn",
+      "ra_h": "12.933796389",
+      "dec_deg": "38.318375000",
+      "object_type": "star",
+      "object_type_family": "star",
+      "notes": "bayer_code=Alp2; suffix=2",
+      "identity_role": "physical_object_candidate"
+    },
+    {
+      "candidate_id": 637,
+      "source": "expanded-bayer-stars.csv:suffixed",
+      "source_key": "α1 Cap",
+      "identifiers": [
+        {
+          "namespace": "bayer",
+          "value": "α1 Cap"
+        },
+        {
+          "namespace": "hip",
+          "value": "100027"
+        },
+        {
+          "namespace": "hd",
+          "value": "192876"
+        }
+      ],
+      "name": null,
+      "constellation": "Cap",
+      "ra_h": "20.294128889",
+      "dec_deg": "-12.508208333",
+      "object_type": "star",
+      "object_type_family": "star",
+      "notes": "bayer_code=Alp1; suffix=1",
+      "identity_role": "physical_object_candidate"
+    },
+    {
+      "candidate_id": 638,
+      "source": "expanded-bayer-stars.csv:suffixed",
+      "source_key": "α2 Cap",
+      "identifiers": [
+        {
+          "namespace": "bayer",
+          "value": "α2 Cap"
+        },
+        {
+          "namespace": "hip",
+          "value": "100064"
+        },
+        {
+          "namespace": "hd",
+          "value": "192947"
+        }
+      ],
+      "name": "Algedi",
+      "constellation": "Cap",
+      "ra_h": "20.300904332",
+      "dec_deg": "-12.544852120",
+      "object_type": "star",
+      "object_type_family": "star",
+      "notes": "bayer_code=Alp2; suffix=2",
+      "identity_role": "physical_object_candidate"
+    },
+    {
+      "candidate_id": 639,
+      "source": "expanded-bayer-stars.csv:suffixed",
+      "source_key": "α1 Cru",
+      "identifiers": [
+        {
+          "namespace": "bayer",
+          "value": "α1 Cru"
+        },
+        {
+          "namespace": "hip",
+          "value": "60718"
+        },
+        {
+          "namespace": "hd",
+          "value": "108248"
+        }
+      ],
+      "name": "Acrux",
+      "constellation": "Cru",
+      "ra_h": "12.443304444",
+      "dec_deg": "-63.099091667",
+      "object_type": "star",
+      "object_type_family": "star",
+      "notes": "bayer_code=Alp1; suffix=1",
+      "identity_role": "physical_object_candidate"
+    },
+    {
+      "candidate_id": 640,
+      "source": "expanded-bayer-stars.csv:suffixed",
+      "source_key": "α2 Cru",
+      "identifiers": [
+        {
+          "namespace": "bayer",
+          "value": "α2 Cru"
+        },
+        {
+          "namespace": "hd",
+          "value": "108249"
+        }
+      ],
+      "name": null,
+      "constellation": "Cru",
+      "ra_h": "12.443333333",
+      "dec_deg": "-63.099444444",
+      "object_type": "star",
+      "object_type_family": "star",
+      "notes": "bayer_code=Alp2; suffix=2",
+      "identity_role": "physical_object_candidate"
+    },
+    {
+      "candidate_id": 641,
+      "source": "expanded-bayer-stars.csv:suffixed",
+      "source_key": "β1 Cyg",
+      "identifiers": [
+        {
+          "namespace": "bayer",
+          "value": "β1 Cyg"
+        },
+        {
+          "namespace": "hip",
+          "value": "95947"
+        },
+        {
+          "namespace": "hd",
+          "value": "183912"
+        }
+      ],
+      "name": "Albireo",
+      "constellation": "Cyg",
+      "ra_h": "19.512023",
+      "dec_deg": "27.959681",
+      "object_type": "star",
+      "object_type_family": "star",
+      "notes": "bayer_code=Bet1; suffix=1",
+      "identity_role": "physical_object_candidate"
+    },
+    {
+      "candidate_id": 642,
+      "source": "expanded-bayer-stars.csv:suffixed",
+      "source_key": "β2 Cyg",
+      "identifiers": [
+        {
+          "namespace": "bayer",
+          "value": "β2 Cyg"
+        },
+        {
+          "namespace": "hip",
+          "value": "95951"
+        },
+        {
+          "namespace": "hd",
+          "value": "183914"
+        }
+      ],
+      "name": "Albireo B",
+      "constellation": "Cyg",
+      "ra_h": "19.51261",
+      "dec_deg": "27.965276",
+      "object_type": "star",
+      "object_type_family": "star",
+      "notes": "bayer_code=Bet2; suffix=2",
+      "identity_role": "physical_object_candidate"
+    },
+    {
+      "candidate_id": 643,
+      "source": "expanded-bayer-stars.csv:suffixed",
+      "source_key": "α1 Her",
+      "identifiers": [
+        {
+          "namespace": "bayer",
+          "value": "α1 Her"
+        },
+        {
+          "namespace": "hip",
+          "value": "84345"
+        },
+        {
+          "namespace": "hd",
+          "value": "156014"
+        }
+      ],
+      "name": "Rasalgethi",
+      "constellation": "Her",
+      "ra_h": "17.244125833",
+      "dec_deg": "14.390372222",
+      "object_type": "star",
+      "object_type_family": "star",
+      "notes": "bayer_code=Alp1; suffix=1",
+      "identity_role": "physical_object_candidate"
+    },
+    {
+      "candidate_id": 644,
+      "source": "expanded-bayer-stars.csv:suffixed",
+      "source_key": "α2 Her",
+      "identifiers": [
+        {
+          "namespace": "bayer",
+          "value": "α2 Her"
+        },
+        {
+          "namespace": "hd",
+          "value": "156015"
+        }
+      ],
+      "name": null,
+      "constellation": "Her",
+      "ra_h": "17.244216944",
+      "dec_deg": "14.389994444",
+      "object_type": "star",
+      "object_type_family": "star",
+      "notes": "bayer_code=Alp2; suffix=2",
+      "identity_role": "physical_object_candidate"
+    },
+    {
+      "candidate_id": 645,
+      "source": "expanded-bayer-stars.csv:suffixed",
+      "source_key": "α1 Lib",
+      "identifiers": [
+        {
+          "namespace": "bayer",
+          "value": "α1 Lib"
+        },
+        {
+          "namespace": "hip",
+          "value": "72603"
+        },
+        {
+          "namespace": "hd",
+          "value": "130819"
+        }
+      ],
+      "name": null,
+      "constellation": "Lib",
+      "ra_h": "14.844772492",
+      "dec_deg": "-15.997235611",
+      "object_type": "star",
+      "object_type_family": "star",
+      "notes": "bayer_code=Alp1; suffix=1",
+      "identity_role": "physical_object_candidate"
+    },
+    {
+      "candidate_id": 646,
+      "source": "expanded-bayer-stars.csv:suffixed",
+      "source_key": "α2 Lib",
+      "identifiers": [
+        {
+          "namespace": "bayer",
+          "value": "α2 Lib"
+        },
+        {
+          "namespace": "hip",
+          "value": "72622"
+        },
+        {
+          "namespace": "hd",
+          "value": "130841"
+        }
+      ],
+      "name": "Zubenelgenubi",
+      "constellation": "Lib",
+      "ra_h": "14.847975858",
+      "dec_deg": "-16.041777778",
+      "object_type": "star",
+      "object_type_family": "star",
+      "notes": "bayer_code=Alp2; suffix=2",
+      "identity_role": "physical_object_candidate"
+    },
+    {
+      "candidate_id": 647,
+      "source": "expanded-bayer-stars.csv:suffixed",
+      "source_key": "β1 Sco",
+      "identifiers": [
+        {
+          "namespace": "bayer",
+          "value": "β1 Sco"
+        },
+        {
+          "namespace": "hip",
+          "value": "78820"
+        },
+        {
+          "namespace": "hd",
+          "value": "144217"
+        }
+      ],
+      "name": "Acrab",
+      "constellation": "Sco",
+      "ra_h": "16.090619994",
+      "dec_deg": "-19.805452778",
+      "object_type": "star",
+      "object_type_family": "star",
+      "notes": "bayer_code=Bet1; suffix=1",
+      "identity_role": "physical_object_candidate"
+    },
+    {
+      "candidate_id": 648,
+      "source": "expanded-bayer-stars.csv:suffixed",
+      "source_key": "β2 Sco",
+      "identifiers": [
+        {
+          "namespace": "bayer",
+          "value": "β2 Sco"
+        },
+        {
+          "namespace": "hip",
+          "value": "78821"
+        },
+        {
+          "namespace": "hd",
+          "value": "144218"
+        }
+      ],
+      "name": null,
+      "constellation": "Sco",
+      "ra_h": "16.090714244",
+      "dec_deg": "-19.801904333",
+      "object_type": "star",
+      "object_type_family": "star",
+      "notes": "bayer_code=Bet2; suffix=2",
+      "identity_role": "physical_object_candidate"
+    },
+    {
+      "candidate_id": 649,
+      "source": "expanded-bayer-stars.csv:suffixed",
+      "source_key": "β1 Sgr",
+      "identifiers": [
+        {
+          "namespace": "bayer",
+          "value": "β1 Sgr"
+        },
+        {
+          "namespace": "hip",
+          "value": "95241"
+        },
+        {
+          "namespace": "hd",
+          "value": "181454"
+        }
+      ],
+      "name": "Arkab Prior",
+      "constellation": "Sgr",
+      "ra_h": "19.377305337",
+      "dec_deg": "-44.458958385",
+      "object_type": "star",
+      "object_type_family": "star",
+      "notes": "bayer_code=Bet1; suffix=1",
+      "identity_role": "physical_object_candidate"
+    },
+    {
+      "candidate_id": 650,
+      "source": "expanded-bayer-stars.csv:suffixed",
+      "source_key": "β2 Sgr",
+      "identifiers": [
+        {
+          "namespace": "bayer",
+          "value": "β2 Sgr"
+        },
+        {
+          "namespace": "hip",
+          "value": "95294"
+        },
+        {
+          "namespace": "hd",
+          "value": "181623"
+        }
+      ],
+      "name": "Arkab Posterior",
+      "constellation": "Sgr",
+      "ra_h": "19.386982625",
+      "dec_deg": "-44.799779197",
+      "object_type": "star",
+      "object_type_family": "star",
+      "notes": "bayer_code=Bet2; suffix=2",
+      "identity_role": "physical_object_candidate"
+    },
+    {
+      "candidate_id": 651,
+      "source": "expanded-bayer-stars.csv:suffixed",
+      "source_key": "β1 Tuc",
+      "identifiers": [
+        {
+          "namespace": "bayer",
+          "value": "β1 Tuc"
+        },
+        {
+          "namespace": "hip",
+          "value": "2484"
+        },
+        {
+          "namespace": "hd",
+          "value": "2884"
+        }
+      ],
+      "name": null,
+      "constellation": "Tuc",
+      "ra_h": "0.525741917",
+      "dec_deg": "-62.958218611",
+      "object_type": "star",
+      "object_type_family": "star",
+      "notes": "bayer_code=Bet1; suffix=1",
+      "identity_role": "physical_object_candidate"
+    },
+    {
+      "candidate_id": 652,
+      "source": "expanded-bayer-stars.csv:suffixed",
+      "source_key": "β2 Tuc",
+      "identifiers": [
+        {
+          "namespace": "bayer",
+          "value": "β2 Tuc"
+        },
+        {
+          "namespace": "hip",
+          "value": "2487"
+        },
+        {
+          "namespace": "hd",
+          "value": "2885"
+        }
+      ],
+      "name": null,
+      "constellation": "Tuc",
+      "ra_h": "0.525950639",
+      "dec_deg": "-62.965592778",
+      "object_type": "star",
+      "object_type_family": "star",
+      "notes": "bayer_code=Bet2; suffix=2",
+      "identity_role": "physical_object_candidate"
+    },
+    {
+      "candidate_id": 653,
+      "source": "expanded-bayer-stars.csv:suffixed",
+      "source_key": "β3 Tuc",
+      "identifiers": [
+        {
+          "namespace": "bayer",
+          "value": "β3 Tuc"
+        }
+      ],
+      "name": null,
+      "constellation": "Tuc",
+      "ra_h": "0.545529167",
+      "dec_deg": "-63.031500000",
+      "object_type": "star",
+      "object_type_family": "star",
+      "notes": "bayer_code=Bet3; suffix=3",
+      "identity_role": "physical_object_candidate"
+    },
+    {
+      "candidate_id": 654,
       "source": "database/supplemental-physical-objects.json",
       "source_key": "ngc:869",
       "identifiers": [
@@ -29799,7 +30789,7 @@
       "supplemental_source_record": "NGC 869"
     },
     {
-      "candidate_id": 636,
+      "candidate_id": 655,
       "source": "database/supplemental-physical-objects.json",
       "source_key": "ngc:6995",
       "identifiers": [
@@ -29820,7 +30810,7 @@
       "supplemental_source_record": "NGC 6995"
     },
     {
-      "candidate_id": 637,
+      "candidate_id": 656,
       "source": "database/supplemental-physical-objects.json",
       "source_key": "hd:238107",
       "identifiers": [
@@ -29849,7 +30839,7 @@
       "supplemental_source_record": "HD 238107"
     },
     {
-      "candidate_id": 638,
+      "candidate_id": 657,
       "source": "database/supplemental-physical-objects.json",
       "source_key": "hd:238108",
       "identifiers": [
