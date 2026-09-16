@@ -1,13 +1,10 @@
 #!/usr/bin/env python3
 """Build derived constellation membership keyed by permanent fixed_object_id.
 
-This deliberately treats constellation membership as a relationship, never as
-part of physical-object identity. For each normalized physical object, the
-builder selects one reconciled source position and records the corresponding
-constellation value carried by that source. The existing identity audit has
-already resolved/reviewed source constellation contradictions, including
-boundary-spanning cases. A later geometry validator may independently compare
-these relationships against the committed IAU boundary snapshot.
+Constellation membership is a relationship, never part of physical-object
+identity. Source constellation labels are preserved as evidence. When source
+labels disagree, an explicit machine-readable review may resolve the derived
+membership (for example, an extended object spanning an IAU boundary).
 """
 from __future__ import annotations
 
@@ -16,6 +13,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 OBJECTS_PATH = ROOT / "database" / "fixed-objects.json"
+REVIEWS_PATH = ROOT / "database" / "object-constellation-reviews.json"
 OUT_PATH = ROOT / "database" / "constellation-memberships.json"
 
 
@@ -33,8 +31,34 @@ def constellation_from_facts(facts):
     return value or None
 
 
+def identifier_key(identifier):
+    return (str(identifier.get("namespace", "")).strip().lower(), str(identifier.get("value", "")).strip())
+
+
+def reviewed_resolutions():
+    """Index explicit reviewed boundary resolutions by object identifier."""
+    if not REVIEWS_PATH.exists():
+        return {}
+    reviews = load(REVIEWS_PATH).get("reviews") or []
+    return {
+        identifier_key(review["object_identifier"]): review
+        for review in reviews
+        if review.get("audit_resolution") == "suppress_constellation_identity_contradiction"
+        and review.get("object_identifier")
+    }
+
+
+def review_for_object(obj, resolutions):
+    for identifier in obj.get("identifiers") or []:
+        review = resolutions.get(identifier_key(identifier))
+        if review:
+            return review
+    return None
+
+
 def main():
     data = load(OBJECTS_PATH)
+    resolutions = reviewed_resolutions()
     memberships = []
     no_constellation = []
 
@@ -54,26 +78,44 @@ def main():
                 })
 
         distinct = sorted(set(values))
+        review = None
         if len(distinct) > 1:
-            raise SystemExit(
-                f"fixed_object_id {fixed_id} has conflicting reconciled constellation values: {distinct}"
-            )
+            review = review_for_object(obj, resolutions)
+            if not review:
+                raise SystemExit(
+                    f"fixed_object_id {fixed_id} has conflicting reconciled constellation values: {distinct}"
+                )
+            resolved = (review.get("iau_boundary_snapshot") or {}).get("primary_constellation_by_reference_point")
+            if not resolved:
+                raise SystemExit(
+                    f"fixed_object_id {fixed_id} has reviewed constellation conflict but no primary boundary membership"
+                )
+            distinct = [resolved]
+
         if not distinct:
             no_constellation.append(fixed_id)
             continue
 
-        memberships.append({
+        membership = {
             "fixed_object_id": fixed_id,
             "constellation": distinct[0],
-            "derivation": "reconciled_source_membership",
+            "derivation": "reviewed_iau_boundary_membership" if review else "reconciled_source_membership",
             "evidence": evidence,
-        })
+        }
+        if review:
+            membership["review"] = {
+                "source": "database/object-constellation-reviews.json",
+                "status": review.get("status"),
+                "audit_resolution": review.get("audit_resolution"),
+            }
+        memberships.append(membership)
 
     result = {
         "schema_version": 1,
         "purpose": "Derived constellation membership relationships for permanent physical fixed objects.",
         "identity_registry": "database/fixed-object-registry.json",
         "fixed_objects_source": "database/fixed-objects.json",
+        "constellation_reviews": "database/object-constellation-reviews.json",
         "iau_boundary_snapshot": "reference-data/iau-constellation-boundaries",
         "membership_is_identity_defining": False,
         "membership_count": len(memberships),
