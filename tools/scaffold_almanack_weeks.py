@@ -6,6 +6,8 @@ import datetime as dt
 import html
 from pathlib import Path
 
+from almanack_sections import section_open
+
 ROOT = Path(__file__).resolve().parents[1]
 PUBLIC_ROOT = ROOT / "almanack"
 BOTTOM_ID = "almanack-bottom-nav"
@@ -77,11 +79,13 @@ def ephemeris_tables():
 
 def page(year,week,monday):
     title=f'ISO {year}-W{week:02d}'; rows=calendar_rows(monday); top=nav_stack(year,week); bottom=f'<div class="almanack-bottom-nav-wrap" id="{BOTTOM_ID}">{nav_stack(year,week,True)}</div>'
-    body=f'''{top}<h1>{title}</h1><p><strong>Week begins:</strong> {monday.strftime("Monday, %B")} {monday.day}, {monday.year}</p>
-{notation_toggle("calendar")}<h3>Calendar</h3><table class="calendar"><thead><tr><th>Date</th><th>Zodiac day</th><th>Events</th></tr></thead><tbody>{rows}</tbody></table>
-<h3>Weekly Solar-System Ephemeris</h3><p><strong>Snapshot:</strong> pending</p>{notation_toggle("ephemeris")}{ephemeris_tables()}
-{notation_toggle("finder")}<h3>Planet Finder</h3><div class="planet-finder-block"><p>Planet finder pending.</p></div>
-<h3>Sky Notes</h3><div class="sky-note"><p>Sky notes pending.</p></div>{bottom}'''
+    body=(
+        f'{section_open(1)}{top}</div><h1>{title}</h1><p><strong>Week begins:</strong> {monday.strftime("Monday, %B")} {monday.day}, {monday.year}</p>\n'
+        f'{section_open(2)}{notation_toggle("calendar")}<h3>Calendar</h3><table class="calendar"><thead><tr><th>Date</th><th>Zodiac day</th><th>Events</th></tr></thead><tbody>{rows}</tbody></table></div>\n'
+        f'{section_open(3)}<h3>Weekly Solar-System Ephemeris</h3><p><strong>Snapshot:</strong> pending</p>{notation_toggle("ephemeris")}{ephemeris_tables()}</div>\n'
+        f'{section_open(4)}{notation_toggle("finder")}<h3>Planet Finder</h3><div class="planet-finder-block"><p>Planet finder pending.</p></div></div>\n'
+        f'{section_open(5)}<h3>Sky Notes</h3><div class="sky-note"><p>Sky notes pending.</p></div></div>{bottom}'
+    )
     return f'''<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>{html.escape(title)} · Star Almanack</title><style>{CSS}</style></head><body><header><div class="wrap"><div class="brand"><a href="/star-almanack/">Star Almanack</a></div><div class="subtitle">Alexander Ferrari Miller</div></div></header><main class="wrap">{body}</main><footer><div class="wrap">© 2026 Alexander Ferrari Miller. All rights reserved.</div></footer><script src="/almanack/js/notation.js"></script></body></html>'''
 
 def main():
