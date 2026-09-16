@@ -1,5 +1,4 @@
-# Star Almanack core orienting asterisms
-# Scope is fixed at 25.
+# Star Almanack orienting asterisms
 # Membership provenance priority:
 #   1. NASA explicit member-star definition
 #   2. Astronomical League explicit member-star definition
@@ -44,7 +43,7 @@ asterisms:
     members: [42 Orionis, Theta Orionis, Iota Orionis]
     source: Royal Astronomical Society of Canada World Asterisms Project
     source_url: https://www.rasc.ca/sites/default/files/World%20Asterisms%20Project%20Handbook%20V%202024.4.pdf
-    note: Geometry uses the three stellar positions. M42 is an observing object within the Sword and is not an additional geometric vertex.
+    note: Retained as an observing asterism, but not drawn as green stick geometry; M42 is integral to its visual identity.
 
   - name: Water Jar
     status: resolved
@@ -100,21 +99,21 @@ asterisms:
     members: [Alpha Ceti, Gamma Ceti, Xi Ceti, Mu Ceti, Lambda Ceti]
     source: William Tyler Olcott, Star Lore of All Ages
     source_url: https://en.wikisource.org/wiki/Star_Lore_Of_All_Ages/Cetus
-    note: Traditional five-star pentagon defining the Whale's head; selected as an observer-facing geometric asterism rather than a broader anatomical star grouping.
+    note: Traditional five-star pentagon defining the Whale's head.
 
   - name: Hyades / V of Taurus
     status: resolved
     members: [Aldebaran, Theta Tauri, Gamma Tauri, Delta Tauri, Epsilon Tauri]
     source: Astronomy Magazine
     source_url: https://www.astronomy.com/astronomy-for-beginners/asterisms-hunt-the-night-skys-faux-constellations/
-    note: Star Almanack defines the observer's five-vertex V. Aldebaran is a foreground star and not a physical member of the Hyades cluster; its inclusion here is visual, not astrophysical.
+    note: Retained as an observing object/asterism but not drawn as duplicate green stick geometry.
 
   - name: Pleiades
     status: resolved
     members: [Alcyone, Atlas, Electra, Maia, Merope, Taygeta, Pleione]
     source: Monthly Notices of the Royal Astronomical Society
     source_url: https://academic.oup.com/mnras/article/471/3/2882/4081952
-    note: Star Almanack uses the seven brightest Pleiades members as the traditional naked-eye Seven Sisters observing set, distinct from the full physical M45 cluster. Star Note observing prompt: How many can you see?
+    note: Retained as the naked-eye Seven Sisters observing set but not drawn as duplicate green stick geometry.
 
   - name: Summer Triangle
     status: resolved
@@ -139,7 +138,7 @@ asterisms:
     members: [Arcturus, Spica, Denebola]
     source: Sky & Telescope
     source_url: https://skyandtelescope.org/astronomy-news/observing-news/this-weeks-sky-at-a-glance-may-1-9-3/
-    note: Definitions vary; Star Almanack uses George Lovi's Sky & Telescope Spring Triangle (Arcturus-Spica-Denebola), which is also geometrically consistent with the Great Diamond containing those three vertices plus Cor Caroli.
+    note: Star Almanack uses George Lovi's Arcturus-Spica-Denebola definition.
 
   - name: Great Diamond
     status: resolved
@@ -147,7 +146,6 @@ asterisms:
     members: [Alpha Bootis, Alpha Virginis, Alpha Canum Venaticorum, Beta Leonis]
     source: NASA
     source_url: https://science.nasa.gov/solar-system/skywatching/night-sky-network/connecting-the-dots-with-asterisms/
-    note: NASA calls this pattern Diamond of Virgo; membership matches the League's Great Diamond.
 
   - name: False Cross
     status: resolved
@@ -160,6 +158,7 @@ asterisms:
     members: [Alpha Crucis, Beta Crucis, Gamma Crucis, Delta Crucis]
     source: Astronomical League
     source_url: https://www.astroleague.org/wp-content/uploads/2025/12/Asterism_List_20251223.pdf
+    note: Retained as an observing asterism but not drawn separately; modern Crux constellation geometry supplies the blue figure.
 
   - name: Southern Pointers
     status: resolved
@@ -173,4 +172,24 @@ asterisms:
     members: [4 Vulpeculae, 5 Vulpeculae, HD 182955, HD 182761, 7 Vulpeculae, HD 182422, HD 182972, HD 183261, HD 182293, HD 182620]
     source: published observing and catalog cross-check
     source_url: https://www.constellation-guide.com/the-coathanger-brocchis-cluster/
-    note: Ten-star visual asterism: six stars form the straight bar and four form the hook. The stars are a visual grouping rather than a physical cluster.
+
+  - name: Job's Coffin
+    status: resolved
+    members: [Alpha Delphini, Beta Delphini, Gamma Delphini, Delta Delphini]
+    source: traditional Delphinus asterism
+    source_url: https://en.wikipedia.org/wiki/Delphinus
+    note: Star Almanack draws the four-star diamond as a closed green figure.
+
+  - name: Lozenge of Draco
+    status: resolved
+    members: [Gamma Draconis, Beta Draconis, Nu Draconis, Xi Draconis]
+    source: Astronomy Magazine
+    source_url: https://www.astronomy.com/observing/the-sky-this-week-soak-up-summers-last-super-moon/
+    note: Star Almanack explicitly uses the four Draco head stars, avoiding the alternate Lozenge definition using Iota Herculis.
+
+  - name: Quadrans Muralis
+    status: resolved
+    members: [HIP 78180, HIP 77738, HIP 75043]
+    source: Royal Astronomical Society of Canada World Asterisms Project
+    source_url: https://www.rasc.ca/sites/default/files/World%20Asterisms%20Project%20Handbook%20V%202025.14.pdf
+    note: Historical/obsolete constellation represented by its documented three-star locator triangle; render green and label historical.
