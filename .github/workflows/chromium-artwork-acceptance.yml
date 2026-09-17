@@ -35,6 +35,28 @@ jobs:
           python -m pip install playwright
           python -m playwright install --with-deps chromium
 
+      - name: Prove verifier rejects a bad deployed URL
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from playwright.sync_api import sync_playwright
+
+          url = 'https://alexmiller63.github.io/AlexanderFerrariMiller.com/__chromium_verifier_must_404__.html'
+          print(f'NEGATIVE CONTROL URL: {url}')
+          with sync_playwright() as p:
+              browser = p.chromium.launch()
+              page = browser.new_page()
+              response = page.goto(url, wait_until='networkidle')
+              status = None if response is None else response.status
+              print(f'NEGATIVE CONTROL HTTP STATUS: {status}')
+              browser.close()
+
+          if response is not None and response.ok:
+              raise SystemExit(f'Negative control unexpectedly succeeded: HTTP {status}: {url}')
+          print('NEGATIVE CONTROL PASSED: Chromium correctly observed the deliberately missing deployed URL.')
+          PY
+
       - name: Validate published GitHub Pages artwork
         shell: bash
         env:
@@ -61,28 +83,36 @@ jobs:
               for n in range(start, end + 1):
                   week = f'W{n:02d}'
                   url = f'{base}/site/{year}/{week}/index.html'
+                  print(f'WEEK PAGE URL: {url}')
                   response = page.goto(url, wait_until='networkidle')
                   status = None if response is None else response.status
+                  print(f'{week}: WEEK PAGE HTTP STATUS: {status}')
                   if response is None or not response.ok:
                       raise SystemExit(f'{week}: published week page failed: HTTP {status}: {url}')
 
                   artwork = page.locator('figure.sky-note-artwork a', has_text='Artwork')
-                  if artwork.count() != 1:
-                      raise SystemExit(f'{week}: expected exactly one published Artwork link, found {artwork.count()}')
+                  count = artwork.count()
+                  print(f'{week}: ARTWORK LINK COUNT: {count}')
+                  if count != 1:
+                      raise SystemExit(f'{week}: expected exactly one published Artwork link, found {count}: {url}')
                   href = artwork.first.get_attribute('href')
                   if not href:
-                      raise SystemExit(f'{week}: published Artwork link has no href')
+                      raise SystemExit(f'{week}: published Artwork link has no href: {url}')
 
                   destination_url = urljoin(page.url, href)
+                  print(f'{week}: ARTWORK DESTINATION URL: {destination_url}')
                   destination = context.new_page()
                   response = destination.goto(destination_url, wait_until='networkidle')
                   status = None if response is None else response.status
+                  print(f'{week}: ARTWORK DESTINATION HTTP STATUS: {status}')
                   if response is None or not response.ok:
                       raise SystemExit(f'{week}: published Artwork destination failed: HTTP {status}: {destination_url}')
-                  if destination.locator('svg').count() < 1:
+                  svg_count = destination.locator('svg').count()
+                  print(f'{week}: RENDERED SVG COUNT: {svg_count}')
+                  if svg_count < 1:
                       body = destination.locator('body').inner_text()[:200]
                       raise SystemExit(f'{week}: published Artwork destination is not rendered SVG: {destination_url}; body={body!r}')
-                  print(f'{week}: published Chromium check passed: {destination_url}')
+                  print(f'{week}: POSITIVE CONTROL PASSED: deployed artwork rendered in Chromium: {destination_url}')
                   destination.close()
                   checked += 1
               context.close()
@@ -90,5 +120,5 @@ jobs:
 
           if checked == 0:
               raise SystemExit('No published Artwork pages were checked.')
-          print(f'Chromium validated {checked} published GitHub Pages Artwork page(s).')
+          print(f'VERIFIER PROOF COMPLETE: Chromium validated {checked} published GitHub Pages Artwork page(s) after passing the negative control.')
           PY
