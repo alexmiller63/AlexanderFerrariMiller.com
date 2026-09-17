@@ -83,12 +83,15 @@ jobs:
             python tools/render_sky_note_finder.py /tmp/hygdata_v41.csv "$spec" "$out"
           done
 
+      - name: Publish rendered Artwork into weekly pages
+        run: python tools/publish_sky_note_artwork.py "${{ steps.range.outputs.start_date }}" "${{ steps.range.outputs.end_date }}"
+
       - name: Commit Artwork changes only
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -- almanack site
-          git add -A -- tools/render_sky_note_finder.py
+          git add -A -- tools/render_sky_note_finder.py tools/publish_sky_note_artwork.py
           if [ -e sky-notes-artwork ]; then
             git add -- sky-notes-artwork
           fi
