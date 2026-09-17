@@ -229,7 +229,18 @@ def layout(mode: str, bodies: list[tuple[str, str, float]]):
             f"with {order[0][1][1]}",
             flush=True,
         )
-        solved, result = _solve_order(mode, bodies, order)
+        try:
+            solved, result = _solve_order(mode, bodies, order)
+        except RuntimeError as exc:
+            if "Planet Finder search budget exhausted" not in str(exc):
+                raise
+            solved, result = False, None
+            print(
+                f"Planet Finder {mode}: search budget exhausted with "
+                f"{order[0][1][1]} first; restarting from scratch with the next body",
+                flush=True,
+            )
+
         if solved:
             print(
                 f"Planet Finder {mode}: solved with {order[0][1][1]} first",
