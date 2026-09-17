@@ -1,0 +1,35 @@
+name: Repair Sky Note descriptor count
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  repair:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Patch descriptor count
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          path = Path("tools/sky_note_descriptors.py")
+          text = path.read_text(encoding="utf-8")
+          old = 'if len(resolved) != 25:\n        raise RuntimeError(f"Expected 25 resolved core asterisms, found {len(resolved)}")'
+          new = 'if len(resolved) != 28:\n        raise RuntimeError(f"Expected 28 resolved core asterisms, found {len(resolved)}")'
+          if old not in text:
+              raise SystemExit("Expected 25-count guard was not found")
+          path.write_text(text.replace(old, new, 1), encoding="utf-8")
+          PY
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add tools/sky_note_descriptors.py
+          git commit -m "Set Sky Notes asterism count to 28"
+          git push
+          rm -f .github/workflows/repair-sky-note-descriptor-count.yml
+          git add .github/workflows/repair-sky-note-descriptor-count.yml
+          git commit -m "Remove temporary descriptor repair workflow"
+          git push
