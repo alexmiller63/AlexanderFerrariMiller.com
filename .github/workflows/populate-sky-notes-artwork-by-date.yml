@@ -116,42 +116,16 @@ jobs:
             "$chromium_bin" --headless --no-sandbox --disable-gpu --virtual-time-budget=3000 --dump-dom "$url" > "$dom_file"
             python tools/check_sky_note_artwork_dom.py "$dom_file" "$svg" "$week"
 
-            artwork_href="$(python - "$dom_file" <<'PY'
-            import sys
-            from pathlib import Path
-            from tools.check_sky_note_artwork_dom import ArtworkParser
-            p = ArtworkParser()
-            p.feed(Path(sys.argv[1]).read_text(encoding='utf-8'))
-            if len(p.artwork_hrefs) != 1:
-                raise SystemExit(f'Expected exactly one Artwork link, found {p.artwork_hrefs!r}')
-            print(p.artwork_hrefs[0])
-            PY
-            )"
+            artwork_href="$(python -c 'import sys; from pathlib import Path; from tools.check_sky_note_artwork_dom import ArtworkParser; p=ArtworkParser(); p.feed(Path(sys.argv[1]).read_text(encoding="utf-8")); len(p.artwork_hrefs)==1 or (_ for _ in ()).throw(SystemExit(f"Expected exactly one Artwork link, found {p.artwork_hrefs!r}")); print(p.artwork_hrefs[0])' "$dom_file")"
             case "$artwork_href" in
               http://*|https://*) artwork_url="$artwork_href" ;;
               /*) artwork_url="http://127.0.0.1:8765$artwork_href" ;;
-              *) artwork_url="$(python - "$url" "$artwork_href" <<'PY'
-            import sys
-            from urllib.parse import urljoin
-            print(urljoin(sys.argv[1], sys.argv[2]))
-            PY
-            )" ;;
+              *) artwork_url="$(python -c 'import sys; from urllib.parse import urljoin; print(urljoin(sys.argv[1], sys.argv[2]))' "$url" "$artwork_href")" ;;
             esac
 
             destination="/tmp/${week}-artwork-destination"
             "$chromium_bin" --headless --no-sandbox --disable-gpu --virtual-time-budget=3000 --dump-dom "$artwork_url" > "$destination"
-            python - "$artwork_url" "$destination" <<'PY'
-            import sys
-            from pathlib import Path
-            from urllib.parse import urlparse
-            url, path = sys.argv[1], Path(sys.argv[2])
-            if urlparse(url).path.lower().endswith('.json'):
-                raise SystemExit(f'Artwork link resolved to JSON descriptor: {url}')
-            text = path.read_text(encoding='utf-8', errors='replace').lstrip().lower()
-            if '<svg' not in text:
-                raise SystemExit(f'Artwork link did not render SVG artwork: {url}')
-            print(f'Chromium followed Artwork link to rendered SVG: {url}')
-            PY
+            python -c 'import sys; from pathlib import Path; from urllib.parse import urlparse; url=sys.argv[1]; path=Path(sys.argv[2]); urlparse(url).path.lower().endswith(".json") and (_ for _ in ()).throw(SystemExit(f"Artwork link resolved to JSON descriptor: {url}")); text=path.read_text(encoding="utf-8", errors="replace").lstrip().lower(); "<svg" in text or (_ for _ in ()).throw(SystemExit(f"Artwork link did not render SVG artwork: {url}")); print(f"Chromium followed Artwork link to rendered SVG: {url}")' "$artwork_url" "$destination"
           done
 
           if [ "$checked" -eq 0 ]; then
