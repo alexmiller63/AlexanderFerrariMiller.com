@@ -13,8 +13,6 @@ import populate_sky_notes_by_date as base
 from fixed_object_stories import available_stories
 from sky_note_descriptors import build_descriptors, decorate_note_html, write_descriptor_records
 
-INLINE_STORY_GUIDANCE = 4
-LINKED_STORY_GUIDANCE = 6
 FIXED_OBJECT_DATABASE = base.ROOT / "database" / "fixed-objects.json"
 
 
@@ -101,10 +99,8 @@ def story_candidates(fixed_ids: list[int]) -> list[dict]:
 
 
 def story_presentations(candidates: list[dict]) -> tuple[list[dict], list[dict]]:
-    """Apply tunable presentation guidance without changing the candidate pool."""
-    inline = candidates[:INLINE_STORY_GUIDANCE]
-    linked = candidates[INLINE_STORY_GUIDANCE:INLINE_STORY_GUIDANCE + LINKED_STORY_GUIDANCE]
-    return inline, linked
+    """Wordy/debug presentation: emit every qualified story without an editorial cap."""
+    return list(candidates), []
 
 
 def observer_note(year: int, week: int, page_path, fixed: list[dict], relations: list[dict]) -> str:
@@ -207,6 +203,26 @@ def render_linked_stories(stories: list[dict]) -> str:
     return '<div class="sky-note-more-stories"><h4>More Sky Notes</h4><ul>' + "".join(items) + '</ul></div>'
 
 
+def descriptor_policy() -> dict:
+    return {
+        "source_of_truth": "machine-readable JSON",
+        "candidate_pool": "complete; presentation never limits discovery",
+        "presentation": "Wordy",
+        "story_limit": None,
+        "wordy_policy": "emit every qualified story inline; no editorial cap",
+        "future_presentations": ["Highlights"],
+        "link_target": "../../descriptors/<id>.json",
+        "artwork_descriptor_is_separate": True,
+        "artwork_source": "explicit story front matter only",
+        "fixed_sky_identity_source": "Calendar data-fixed-object-id + database/fixed-objects.json",
+        "story_identity_source": "Calendar data-fixed-object-id only",
+        "story_source": "stories/<collection>/<fixed_object_id>.md",
+        "inline_story_content": "hed + dek + body",
+        "linked_story_content": "reserved for Highlights presentation",
+        "annual_note_is_separate_from_evergreen_story": True,
+    }
+
+
 def generated_note(year: int, week: int, page_path, yearly, stars: list[dict]) -> dict:
     payload = base.generated_note(year, week, page_path, yearly, stars)
     fixed_ids = calendar_fixed_object_ids(page_path)
@@ -227,22 +243,7 @@ def generated_note(year: int, week: int, page_path, yearly, stars: list[dict]) -
     payload["artwork"] = story_artwork_descriptor(
         year, week, fixed, payload["planet_relations"], candidates
     )
-    payload["descriptor_policy"] = {
-        "source_of_truth": "machine-readable JSON",
-        "candidate_pool": "complete; presentation guidance never limits discovery",
-        "inline_story_guidance": INLINE_STORY_GUIDANCE,
-        "linked_story_guidance": LINKED_STORY_GUIDANCE,
-        "future_presentations": ["Highlights", "Wordy"],
-        "link_target": "../../descriptors/<id>.json",
-        "artwork_descriptor_is_separate": True,
-        "artwork_source": "explicit story front matter only",
-        "fixed_sky_identity_source": "Calendar data-fixed-object-id + database/fixed-objects.json",
-        "story_identity_source": "Calendar data-fixed-object-id only",
-        "story_source": "stories/<collection>/<fixed_object_id>.md",
-        "inline_story_content": "hed + dek + body",
-        "linked_story_content": "hed + dek + story link",
-        "annual_note_is_separate_from_evergreen_story": True,
-    }
+    payload["descriptor_policy"] = descriptor_policy()
     return payload
 
 
@@ -298,22 +299,7 @@ def main() -> None:
         payload["linked_stories"] = linked
         payload["stories"] = candidates
         payload["artwork"] = story_artwork_descriptor(item.year, item.week, fixed, payload["planet_relations"], candidates)
-        payload["descriptor_policy"] = {
-            "source_of_truth": "machine-readable JSON",
-            "candidate_pool": "complete; presentation guidance never limits discovery",
-            "inline_story_guidance": INLINE_STORY_GUIDANCE,
-            "linked_story_guidance": LINKED_STORY_GUIDANCE,
-            "future_presentations": ["Highlights", "Wordy"],
-            "link_target": "../../descriptors/<id>.json",
-            "artwork_descriptor_is_separate": True,
-            "artwork_source": "explicit story front matter only",
-            "fixed_sky_identity_source": "Calendar data-fixed-object-id + database/fixed-objects.json",
-            "story_identity_source": "Calendar data-fixed-object-id only",
-            "story_source": "stories/<collection>/<fixed_object_id>.md",
-            "inline_story_content": "hed + dek + body",
-            "linked_story_content": "hed + dek + story link",
-            "annual_note_is_separate_from_evergreen_story": True,
-        }
+        payload["descriptor_policy"] = descriptor_policy()
         write_descriptor_records(payload["descriptors"])
         source = base.write_generated_source(item.year, item.week, payload)
 
