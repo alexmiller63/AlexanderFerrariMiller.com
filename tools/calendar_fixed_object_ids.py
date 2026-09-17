@@ -14,6 +14,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 DB = ROOT / "database" / "fixed-objects.json"
+MERGES = ROOT / "database" / "fixed-object-id-merges.json"
 EVENT_RE = re.compile(r'(<div\b)(?P<attrs>[^>]*\bclass="[^"]*\bevent-cell\b[^"]*"[^>]*>)(?P<body>.*?)</div>', re.S)
 # Bayer suffixes may be stored/displayed as ordinary digits (α1 Cap) or
 # Unicode superscripts (α¹ Cap).  Normalize both forms before lookup.
@@ -25,13 +26,34 @@ def normalize_bayer(value: str) -> str:
     return re.sub(r"\s+", " ", value.translate(SUPERSCRIPT_DIGITS).strip()).casefold()
 
 
+def merge_map() -> dict[int, int]:
+    """Return retired -> surviving fixed-object identities."""
+    payload = json.loads(MERGES.read_text(encoding="utf-8"))
+    return {
+        int(item["retired_fixed_object_id"]): int(item["surviving_fixed_object_id"])
+        for item in payload.get("merges") or []
+    }
+
+
+def canonical_fixed_object_id(fixed_id: int, merges: dict[int, int]) -> int:
+    """Follow merge chains to the current surviving permanent identity."""
+    seen: set[int] = set()
+    while fixed_id in merges:
+        if fixed_id in seen:
+            raise RuntimeError(f"fixed-object ID merge cycle at {fixed_id}")
+        seen.add(fixed_id)
+        fixed_id = merges[fixed_id]
+    return fixed_id
+
+
 def identity_index() -> tuple[dict[str, int], dict[str, int], dict[str, int]]:
     data = json.loads(DB.read_text(encoding="utf-8"))
+    merges = merge_map()
     names: dict[str, int] = {}
     messier: dict[str, int] = {}
     bayer: dict[str, int] = {}
     for obj in data["fixed_objects"]:
-        fixed_id = int(obj["fixed_object_id"])
+        fixed_id = canonical_fixed_object_id(int(obj["fixed_object_id"]), merges)
         for record in obj.get("source_records", []):
             facts = record.get("facts", {})
             for key in ("name", "proper"):
