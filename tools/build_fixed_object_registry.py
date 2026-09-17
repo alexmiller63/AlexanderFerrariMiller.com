@@ -5,6 +5,8 @@ The initial registry is assigned deterministically from the reconciled physical
 identity audit. After creation, existing fixed_object_id values are immutable:
 reruns preserve IDs by matching stable identifiers and append new IDs only for
 new physical identities. Ambiguous merges/splits fail loudly for human review.
+Human-reviewed historical duplicate IDs may be redirected explicitly through
+fixed-object-id-merges.json; IDs are never recycled or silently discarded.
 """
 from __future__ import annotations
 
@@ -16,6 +18,7 @@ ROOT = Path(__file__).resolve().parents[1]
 SRC = ROOT
 AUDIT_PATH = SRC / "generated" / "fixed-object-identity-audit.json"
 REGISTRY_PATH = SRC / "database" / "fixed-object-registry.json"
+MERGES_PATH = SRC / "database" / "fixed-object-id-merges.json"
 
 MATCH_NAMESPACES = {
     "ngc", "ic", "hip", "hd", "gaia_dr3", "wds", "bayer", "sh2",
@@ -87,17 +90,46 @@ def initial_group_sort_key(item):
     )
 
 
-def registry_alias_index(records):
+def load_merge_redirects(records):
+    payload = read_json(MERGES_PATH) or {"merges": []}
+    known_ids = {r["fixed_object_id"] for r in records}
+    redirects = {}
+    for item in payload.get("merges") or []:
+        retired = int(item["retired_fixed_object_id"])
+        survivor = int(item["surviving_fixed_object_id"])
+        if retired == survivor:
+            raise SystemExit(f"Invalid fixed-object merge {retired} -> itself")
+        if retired not in known_ids or survivor not in known_ids:
+            raise SystemExit(f"Fixed-object merge references unknown ID: {retired} -> {survivor}")
+        if retired in redirects and redirects[retired] != survivor:
+            raise SystemExit(f"Conflicting fixed-object merge for ID {retired}")
+        redirects[retired] = survivor
+
+    def resolve(fixed_id):
+        seen = set()
+        while fixed_id in redirects:
+            if fixed_id in seen:
+                raise SystemExit("Cycle in fixed-object ID merge redirects")
+            seen.add(fixed_id)
+            fixed_id = redirects[fixed_id]
+        return fixed_id
+
+    return {retired: resolve(survivor) for retired, survivor in redirects.items()}
+
+
+def registry_alias_index(records, redirects=None):
+    redirects = redirects or {}
     index = {}
     for record in records:
         fixed_id = record["fixed_object_id"]
+        effective_id = redirects.get(fixed_id, fixed_id)
         for alias in record.get("identifiers") or []:
             key = alias_key(alias)
             prior = index.get(key)
-            if prior is not None and prior != fixed_id:
-                raise SystemExit(f"Registry identifier collision {key}: fixed_object_id {prior} and {fixed_id}")
+            if prior is not None and prior != effective_id:
+                raise SystemExit(f"Registry identifier collision {key}: fixed_object_id {prior} and {effective_id}")
             if alias["namespace"] in MATCH_NAMESPACES:
-                index[key] = fixed_id
+                index[key] = effective_id
     return index
 
 
@@ -140,7 +172,8 @@ def main():
         if sorted(by_id) != list(range(1, max(by_id, default=0) + 1)):
             raise SystemExit("Existing registry IDs are not a contiguous historical sequence.")
 
-        alias_index = registry_alias_index(records)
+        redirects = load_merge_redirects(records)
+        alias_index = registry_alias_index(records, redirects)
         group_matches = []
         used_existing_ids = set()
         new_groups = []
@@ -170,6 +203,7 @@ def main():
             for alias in aliases:
                 merged_aliases[alias_key(alias)] = alias
             record["status"] = "active"
+            record.pop("merged_into_fixed_object_id", None)
             record["identifiers"] = sorted(merged_aliases.values(), key=alias_sort_key)
             record["source_refs"] = source_refs(group, candidate_map)
 
@@ -188,8 +222,12 @@ def main():
             appended += 1
 
         for fixed_id, record in by_id.items():
-            if fixed_id not in used_existing_ids and fixed_id <= historical_max:
+            if fixed_id in redirects:
+                record["status"] = "merged_historical_duplicate"
+                record["merged_into_fixed_object_id"] = redirects[fixed_id]
+            elif fixed_id not in used_existing_ids and fixed_id <= historical_max:
                 record["status"] = "missing_from_current_audit"
+                record.pop("merged_into_fixed_object_id", None)
 
         records.sort(key=lambda r: r["fixed_object_id"])
         mode = "preserve_and_append"
