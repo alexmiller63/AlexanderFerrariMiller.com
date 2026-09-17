@@ -174,8 +174,11 @@ def layout(mode: str, bodies: list[tuple[str, str, float]]):
 
     for start in range(len(indexed)):
         order = indexed[start:] + indexed[:start]
+        print(f"Planet Finder {mode}: starting search with {order[0][1][1]}", flush=True)
         solved, result = _solve_order(mode, bodies, order)
         if solved:
+            print(f"Planet Finder {mode}: solved with {order[0][1][1]} first", flush=True)
             return result
+        print(f"Planet Finder {mode}: no solution with {order[0][1][1]} first", flush=True)
 
     raise RuntimeError(f"No collision-free Planet Finder layout exists in {mode} mode after trying every starting body")
