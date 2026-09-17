@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """Attach permanent fixed_object_id metadata to Calendar event cells.
 
-Visible Calendar wording is presentation.  Downstream generators must use the
-stable database identity carried by ``data-fixed-object-id`` rather than
-reverse-matching display names.
+Visible Calendar wording is presentation. Downstream generators must use the
+stable identity registry carried by ``database/fixed-object-registry.json``
+rather than reverse-matching against the normalized presentation records.
 """
 from __future__ import annotations
 
@@ -13,11 +13,11 @@ import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-DB = ROOT / "database" / "fixed-objects.json"
+REGISTRY = ROOT / "database" / "fixed-object-registry.json"
 MERGES = ROOT / "database" / "fixed-object-id-merges.json"
 EVENT_RE = re.compile(r'(<div\b)(?P<attrs>[^>]*\bclass="[^"]*\bevent-cell\b[^"]*"[^>]*>)(?P<body>.*?)</div>', re.S)
 # Bayer suffixes may be stored/displayed as ordinary digits (α1 Cap) or
-# Unicode superscripts (α¹ Cap).  Normalize both forms before lookup.
+# Unicode superscripts (α¹ Cap). Normalize both forms before lookup.
 BAYER_RE = re.compile(r"^[αβγδεζηθικλμνξοπρστυφχψω](?:\d+)?\s+[A-Z][a-z]{2}$")
 SUPERSCRIPT_DIGITS = str.maketrans("⁰¹²³⁴⁵⁶⁷⁸⁹", "0123456789")
 
@@ -47,26 +47,36 @@ def canonical_fixed_object_id(fixed_id: int, merges: dict[int, int]) -> int:
 
 
 def identity_index() -> tuple[dict[str, int], dict[str, int], dict[str, int]]:
-    data = json.loads(DB.read_text(encoding="utf-8"))
+    """Build lookup indexes directly from the permanent identity registry.
+
+    The registry is authoritative for fixed-object identity. Normalized source
+    records are deliberately not consulted here: a newly appended registry
+    identity must be immediately usable by Calendar even before another
+    presentation database is rebuilt.
+    """
+    data = json.loads(REGISTRY.read_text(encoding="utf-8"))
     merges = merge_map()
     names: dict[str, int] = {}
     messier: dict[str, int] = {}
     bayer: dict[str, int] = {}
-    for obj in data["fixed_objects"]:
+    for obj in data.get("fixed_objects") or []:
+        status = str(obj.get("status") or "")
+        if status not in {"active", "merged_historical_duplicate"}:
+            continue
         fixed_id = canonical_fixed_object_id(int(obj["fixed_object_id"]), merges)
-        for record in obj.get("source_records", []):
-            facts = record.get("facts", {})
-            for key in ("name", "proper"):
-                value = facts.get(key)
-                if value:
-                    names.setdefault(str(value).strip().casefold(), fixed_id)
-            source_key = str(record.get("source_key", "")).strip()
-            source_key_upper = source_key.upper()
-            if re.fullmatch(r"M(?:110|10\d|[1-9]\d?)", source_key_upper):
-                messier.setdefault(source_key_upper, fixed_id)
-            normalized_source_key = normalize_bayer(source_key)
-            if BAYER_RE.fullmatch(source_key.translate(SUPERSCRIPT_DIGITS)):
-                bayer.setdefault(normalized_source_key, fixed_id)
+        for ident in obj.get("identifiers") or []:
+            namespace = str(ident.get("namespace") or "").strip()
+            value = str(ident.get("value") or "").strip()
+            if not namespace or not value:
+                continue
+            if namespace == "messier":
+                messier.setdefault(value.upper(), fixed_id)
+            elif namespace == "bayer":
+                normalized = normalize_bayer(value)
+                if BAYER_RE.fullmatch(value.translate(SUPERSCRIPT_DIGITS)):
+                    bayer.setdefault(normalized, fixed_id)
+            elif namespace in {"asterism_member_label", "catalog_label", "special"}:
+                names.setdefault(value.casefold(), fixed_id)
     return names, messier, bayer
 
 
@@ -87,8 +97,11 @@ def resolve(body: str, names: dict[str, int], messier: dict[str, int], bayer: di
         if re.search(rf"(?<![\w]){re.escape(designation)}(?![\w])", normalized_text):
             return fixed_id
     folded = text.casefold()
-    hits = [(len(name), fixed_id) for name, fixed_id in names.items()
-            if re.search(rf"(?<![\w]){re.escape(name)}(?![\w])", folded)]
+    hits = [
+        (len(name), fixed_id)
+        for name, fixed_id in names.items()
+        if re.search(rf"(?<![\w]){re.escape(name)}(?![\w])", folded)
+    ]
     if not hits:
         return None
     hits.sort(reverse=True)
@@ -98,6 +111,7 @@ def resolve(body: str, names: dict[str, int], messier: dict[str, int], bayer: di
 def patch_text(text: str) -> tuple[str, int]:
     names, messier, bayer = identity_index()
     count = 0
+
     def repl(match: re.Match[str]) -> str:
         nonlocal count
         attrs = match.group("attrs")
@@ -108,6 +122,7 @@ def patch_text(text: str) -> tuple[str, int]:
             attrs = attrs[:-1] + f' data-fixed-object-id="{fixed_id}">'
             count += 1
         return match.group(1) + attrs + body + "</div>"
+
     return EVENT_RE.sub(repl, text), count
 
 
