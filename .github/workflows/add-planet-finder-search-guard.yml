@@ -1,0 +1,41 @@
+name: Add Planet Finder search guard
+
+on:
+  push:
+    paths:
+      - '.github/workflows/add-planet-finder-search-guard.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - name: Add one-million-node guard
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('tools/generate_planet_finders.py')
+          s = p.read_text(encoding='utf-8')
+          old = '''    staged = {}\n    placed: list[Box] = []\n    leaders: list[list[tuple[float, float]]] = []\n\n    def solve(position: int) -> bool:\n        if position == len(order):'''
+          new = '''    staged = {}\n    placed: list[Box] = []\n    leaders: list[list[tuple[float, float]]] = []\n    nodes = 0\n    max_nodes = 1_000_000\n\n    def solve(position: int) -> bool:\n        nonlocal nodes\n        nodes += 1\n        if nodes > max_nodes:\n            raise RuntimeError(\n                f"Planet Finder search budget exhausted in {mode} mode "\n                f"starting with {order[0][1][1]} after {max_nodes:,} recursive nodes"\n            )\n        if position == len(order):'''
+          if old not in s:
+              raise SystemExit('Expected solver block not found; refusing blind patch')
+          s = s.replace(old, new, 1)
+          p.write_text(s, encoding='utf-8')
+          PY
+      - name: Syntax check
+        run: python -m py_compile tools/generate_planet_finders.py
+      - name: Commit and remove fixer
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add tools/generate_planet_finders.py
+          git rm .github/workflows/add-planet-finder-search-guard.yml
+          git commit -m 'Bound Planet Finder recursive search'
+          git push origin HEAD:main
