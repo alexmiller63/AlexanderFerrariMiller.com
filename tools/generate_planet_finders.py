@@ -159,8 +159,17 @@ def _solve_order(mode: str, bodies, order):
     staged = {}
     placed: list[Box] = []
     leaders: list[list[tuple[float, float]]] = []
+    nodes = 0
+    max_nodes = 1_000_000
 
     def solve(position: int) -> bool:
+        nonlocal nodes
+        nodes += 1
+        if nodes > max_nodes:
+            raise RuntimeError(
+                f"Planet Finder search budget exhausted in {mode} mode "
+                f"starting with {order[0][1][1]} after {max_nodes:,} recursive nodes"
+            )
         if position == len(order):
             return True
 
