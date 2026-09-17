@@ -33,16 +33,14 @@ def object_id_for_week(year: int, week: int) -> int:
     if not spec_path.exists():
         raise RuntimeError(f"Missing renderer spec {spec_path.relative_to(ROOT)}")
     spec = json.loads(spec_path.read_text(encoding="utf-8"))
-    identity = spec.get("target_identity") or {}
+    identity = spec.get("artwork_owner_identity") or {}
     fixed_id = identity.get("fixed_object_id")
     if not isinstance(fixed_id, int):
-        raise RuntimeError(f"{spec_path.relative_to(ROOT)} has no immutable target fixed_object_id")
+        raise RuntimeError(f"{spec_path.relative_to(ROOT)} has no immutable artwork-owner fixed_object_id")
     return fixed_id
 
 
 def published_figure(fixed_id: int, descriptor: dict) -> str:
-    # Weekly pages live two directories below their page-tree root. Artwork is
-    # owned by immutable fixed-object identity, never by the week that uses it.
     href = f"../../../sky-notes-artwork/objects/{fixed_id}/finder.svg"
     constellation = descriptor.get("constellation") or "the sky"
     asterism = descriptor.get("asterism") or {}
