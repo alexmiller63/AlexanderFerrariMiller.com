@@ -21,11 +21,6 @@ jobs:
           python-version: '3.x'
 
       - name: Install astronomy dependency
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.x'
-
-      - name: Install astronomy dependency
         run: python -m pip install astropy
 
       - name: Acquire Roman VI/42 constellation lookup once
