@@ -40,6 +40,13 @@ class Story:
         return f"/stories/{self.collection}/{self.fixed_object_id}.html"
 
 
+def reader_story_url(public_url: str) -> str:
+    """Return a story href that works on both custom-domain and project GitHub Pages weekly pages."""
+    if not public_url.startswith("/stories/"):
+        raise ValueError(f"Unexpected story public URL: {public_url!r}")
+    return "../../../" + public_url.lstrip("/")
+
+
 def story_path(collection: str, fixed_object_id: int) -> Path:
     if collection not in COLLECTIONS:
         raise ValueError(f"Unknown story collection: {collection}")
