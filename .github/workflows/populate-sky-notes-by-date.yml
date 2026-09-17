@@ -52,11 +52,16 @@ jobs:
       - name: Generate descriptor-first Sky Notes
         run: python tools/populate_sky_notes_descriptor_by_date.py "${{ steps.range.outputs.start_date }}" "${{ steps.range.outputs.end_date }}"
 
+      - name: Verify reader-facing Sky Note links
+        shell: bash
+        run: |
+          set -euo pipefail
+          python tools/verify_sky_note_human_links.py '${{ inputs.start_year }}' '${{ inputs.start_week }}' '${{ inputs.end_week }}'
       - name: Commit Sky Notes, JSON descriptors, artwork descriptors, and generated sources only
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -- almanack site
+          git add -- almanack site stories
           git add --all -- generated-sky-notes descriptors
           if git diff --cached --quiet; then
             echo "No Sky Notes changes in requested ISO week range."
