@@ -559,12 +559,12 @@
   ],
   "descriptor_policy": {
     "source_of_truth": "machine-readable JSON",
-    "candidate_pool": "complete; presentation guidance never limits discovery",
-    "inline_story_guidance": 4,
-    "linked_story_guidance": 6,
+    "candidate_pool": "complete; presentation never limits discovery",
+    "presentation": "Wordy",
+    "story_limit": null,
+    "wordy_policy": "emit every qualified story inline; no editorial cap",
     "future_presentations": [
-      "Highlights",
-      "Wordy"
+      "Highlights"
     ],
     "link_target": "../../descriptors/<id>.json",
     "artwork_descriptor_is_separate": true,
@@ -573,7 +573,7 @@
     "story_identity_source": "Calendar data-fixed-object-id only",
     "story_source": "stories/<collection>/<fixed_object_id>.md",
     "inline_story_content": "hed + dek + body",
-    "linked_story_content": "hed + dek + story link",
+    "linked_story_content": "reserved for Highlights presentation",
     "annual_note_is_separate_from_evergreen_story": true
   }
 }
