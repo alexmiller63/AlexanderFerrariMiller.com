@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import html
+import json
 import re
 
 from almanack_sections import replace_section_inner
@@ -12,12 +13,9 @@ import populate_sky_notes_by_date as base
 from fixed_object_stories import available_stories
 from sky_note_descriptors import build_descriptors, decorate_note_html, write_descriptor_records
 
-# Editorial guidance, deliberately separate from candidate discovery. These are
-# presentation targets, not limits on the underlying weekly story pool. Raising
-# them is useful for debugging and prepares the data model for a later
-# Highlights/Wordy presentation toggle.
 INLINE_STORY_GUIDANCE = 4
 LINKED_STORY_GUIDANCE = 6
+FIXED_OBJECT_DATABASE = base.ROOT / "database" / "fixed-objects.json"
 
 
 def calendar_fixed_object_ids(page_path) -> list[int]:
@@ -31,6 +29,53 @@ def calendar_fixed_object_ids(page_path) -> list[int]:
             seen.add(fixed_id)
             ids.append(fixed_id)
     return ids
+
+
+def fixed_object_metadata() -> dict[int, dict]:
+    """Resolve presentation metadata from normalized records keyed by immutable ID."""
+    payload = json.loads(FIXED_OBJECT_DATABASE.read_text(encoding="utf-8"))
+    result: dict[int, dict] = {}
+    for obj in payload.get("fixed_objects") or []:
+        fixed_id = obj["fixed_object_id"]
+        meta = {"fixed_object_id": fixed_id}
+        for record in obj.get("source_records") or []:
+            facts = record.get("facts") or {}
+            if facts.get("name") and not meta.get("name"):
+                meta["name"] = facts["name"]
+            if facts.get("constellation") and not meta.get("constellation"):
+                meta["constellation"] = facts["constellation"]
+            family = facts.get("object_type_family")
+            if family and not meta.get("object_type_family"):
+                meta["object_type_family"] = family
+            if record.get("source") == "fixed-objects.yaml:bayer":
+                if facts.get("name"):
+                    meta["name"] = facts["name"]
+                if facts.get("constellation"):
+                    meta["constellation"] = facts["constellation"]
+        result[fixed_id] = meta
+    return result
+
+
+def fixed_sky_from_ids(fixed_ids: list[int], metadata: dict[int, dict]) -> list[dict]:
+    """Build fixed-sky objects from identity records, never from Calendar display text."""
+    result = []
+    for fixed_id in fixed_ids:
+        meta = metadata.get(fixed_id)
+        if meta is None:
+            raise RuntimeError(f"Calendar references unknown fixed_object_id {fixed_id}")
+        name = meta.get("name")
+        family = meta.get("object_type_family")
+        if not name or not family:
+            continue
+        item = {
+            "fixed_object_id": fixed_id,
+            "type": "star" if family == "star" else "deep-sky",
+            "name": name,
+        }
+        if family == "star" and meta.get("constellation"):
+            item["constellation"] = meta["constellation"]
+        result.append(item)
+    return result
 
 
 def story_candidates(fixed_ids: list[int]) -> list[dict]:
@@ -62,6 +107,48 @@ def story_presentations(candidates: list[dict]) -> tuple[list[dict], list[dict]]
     return inline, linked
 
 
+def observer_note(year: int, week: int, page_path, fixed: list[dict], relations: list[dict]) -> str:
+    """Compose observer prose from identity-backed fixed-sky objects."""
+    rows = base.calendar_events_from_page(page_path)
+    monday, sunday = rows[0][0], rows[-1][0]
+    entries = [entry for _, items in rows for entry in items]
+    moon = next((entry for entry in entries if re.search(r"\b(New Moon|First Quarter|Full Moon|Last Quarter)\b", entry, flags=re.I)), None)
+    highlights = [item["name"] for item in fixed[:3]]
+    opening = f"ISO {year}-W{week:02d} runs from {monday.strftime('%B')} {monday.day} through {sunday.strftime('%B')} {sunday.day}."
+    if highlights:
+        opening += " Fixed-sky highlights include " + ", ".join(highlights) + "."
+    if relations:
+        opening += " " + " ".join(base.relation_sentence(item) for item in relations[:2])
+
+    moon_text = moon or "No principal lunar phase is listed this week"
+    if moon and "New Moon" in moon:
+        condition = "The dark Moon favors faint targets and extended star fields."
+    elif moon and "Full Moon" in moon:
+        condition = "Bright moonlight favors prominent stars and planets while reducing contrast on faint deep-sky objects."
+    elif moon:
+        condition = "Moderate moonlight makes timing and local sky position important for faint targets."
+    else:
+        condition = "Check the Moon's position each night and favor darker hours for low-contrast targets."
+
+    star_names = [item["name"] for item in fixed if item["type"] == "star"]
+    deep_names = [item["name"] for item in fixed if item["type"] == "deep-sky"]
+    naked_targets = ", ".join(star_names[:3]) if star_names else "the brightest seasonal stars and the zodiac"
+    binocular_targets = ", ".join((deep_names + star_names)[:3]) if (deep_names or star_names) else "the week’s richest fixed-star fields"
+    telescope_targets = ", ".join(deep_names[:2]) if deep_names else "the compact fixed-sky targets selected for the week"
+    planet_paragraph = (
+        " ".join(base.relation_sentence(item) for item in relations)
+        if relations else
+        "No close longitude relationship passes the conservative weekly selection threshold; use the Planet Finder for the broader Solar-System pattern."
+    )
+    return "\n\n".join((
+        opening,
+        f"**Naked eye:** {moon_text}. {condition} Use {naked_targets} as the week’s fixed-sky framework.",
+        f"**Planets:** {planet_paragraph}",
+        f"**Binoculars:** Favor {binocular_targets}; wide fields help connect the charted geometry to the real sky.",
+        f"**Small telescope:** Concentrate on {telescope_targets}. Increase magnification only after the target and surrounding pattern are secure.",
+    ))
+
+
 def story_artwork_descriptor(year: int, week: int, fixed_sky: list[dict], relations: list[dict], stories: list[dict]) -> dict | None:
     requests = [story for story in stories if story.get("artwork")]
     if not requests:
@@ -87,12 +174,11 @@ def render_inline_stories(stories: list[dict]) -> str:
     for story in stories:
         hed = html.escape(story["hed"])
         dek = html.escape(story["dek"])
-        body = html.escape(story["body"])
         url = html.escape(story["url"], quote=True)
         body_html = "".join(
             f"<p>{html.escape(' '.join(part.splitlines()))}</p>"
             for part in re.split(r"\n\s*\n", story["body"].strip()) if part.strip()
-        ) if body else ""
+        )
         blocks.append(
             '<article class="sky-note-story sky-note-story-inline" '
             f'data-fixed-object-id="{story["fixed_object_id"]}" data-story-collection="{html.escape(story["collection"], quote=True)}">'
@@ -123,22 +209,23 @@ def render_linked_stories(stories: list[dict]) -> str:
 
 def generated_note(year: int, week: int, page_path, yearly, stars: list[dict]) -> dict:
     payload = base.generated_note(year, week, page_path, yearly, stars)
+    fixed_ids = calendar_fixed_object_ids(page_path)
+    fixed = fixed_sky_from_ids(fixed_ids, fixed_object_metadata())
+    payload["fixed_sky"] = fixed
+    payload["note"] = observer_note(year, week, page_path, fixed, payload["planet_relations"])
     payload["descriptors"] = build_descriptors(
-        payload["fixed_sky"], payload["planet_relations"], stars,
+        fixed, payload["planet_relations"], stars,
         base.CONSTELLATION_NAMES, base.ASTERISMS,
     )
-    fixed_ids = calendar_fixed_object_ids(page_path)
     candidates = story_candidates(fixed_ids)
     inline, linked = story_presentations(candidates)
     payload["calendar_fixed_object_ids"] = fixed_ids
     payload["story_candidates"] = candidates
     payload["inline_stories"] = inline
     payload["linked_stories"] = linked
-    # Compatibility field while the artwork pipeline is promoted from one
-    # weekly finder to story-scoped artwork descriptors.
     payload["stories"] = candidates
     payload["artwork"] = story_artwork_descriptor(
-        year, week, payload["fixed_sky"], payload["planet_relations"], candidates
+        year, week, fixed, payload["planet_relations"], candidates
     )
     payload["descriptor_policy"] = {
         "source_of_truth": "machine-readable JSON",
@@ -149,6 +236,7 @@ def generated_note(year: int, week: int, page_path, yearly, stars: list[dict]) -
         "link_target": "../../descriptors/<id>.json",
         "artwork_descriptor_is_separate": True,
         "artwork_source": "explicit story front matter only",
+        "fixed_sky_identity_source": "Calendar data-fixed-object-id + database/fixed-objects.json",
         "story_identity_source": "Calendar data-fixed-object-id only",
         "story_source": "stories/<collection>/<fixed_object_id>.md",
         "inline_story_content": "hed + dek + body",
@@ -183,6 +271,7 @@ def patch_page(path, payload: dict) -> bool:
 def main() -> None:
     start, end, weeks = parse_range_args("Create descriptor-first Star Almanack Sky Notes by inclusive ISO date range")
     stars = base.load_bright_stars()
+    metadata = fixed_object_metadata()
     grouped = group_by_year(weeks)
     yearly = {year: load_weekly_longitudes(year) for year in grouped}
     changed = 0
@@ -193,7 +282,38 @@ def main() -> None:
         if not public_page.exists():
             raise RuntimeError(f"Missing weekly page: {public_page.relative_to(base.ROOT)}")
 
-        payload = generated_note(item.year, item.week, public_page, yearly[item.year], stars)
+        payload = base.generated_note(item.year, item.week, public_page, yearly[item.year], stars)
+        fixed_ids = calendar_fixed_object_ids(public_page)
+        fixed = fixed_sky_from_ids(fixed_ids, metadata)
+        payload["fixed_sky"] = fixed
+        payload["note"] = observer_note(item.year, item.week, public_page, fixed, payload["planet_relations"])
+        payload["descriptors"] = build_descriptors(
+            fixed, payload["planet_relations"], stars, base.CONSTELLATION_NAMES, base.ASTERISMS
+        )
+        candidates = story_candidates(fixed_ids)
+        inline, linked = story_presentations(candidates)
+        payload["calendar_fixed_object_ids"] = fixed_ids
+        payload["story_candidates"] = candidates
+        payload["inline_stories"] = inline
+        payload["linked_stories"] = linked
+        payload["stories"] = candidates
+        payload["artwork"] = story_artwork_descriptor(item.year, item.week, fixed, payload["planet_relations"], candidates)
+        payload["descriptor_policy"] = {
+            "source_of_truth": "machine-readable JSON",
+            "candidate_pool": "complete; presentation guidance never limits discovery",
+            "inline_story_guidance": INLINE_STORY_GUIDANCE,
+            "linked_story_guidance": LINKED_STORY_GUIDANCE,
+            "future_presentations": ["Highlights", "Wordy"],
+            "link_target": "../../descriptors/<id>.json",
+            "artwork_descriptor_is_separate": True,
+            "artwork_source": "explicit story front matter only",
+            "fixed_sky_identity_source": "Calendar data-fixed-object-id + database/fixed-objects.json",
+            "story_identity_source": "Calendar data-fixed-object-id only",
+            "story_source": "stories/<collection>/<fixed_object_id>.md",
+            "inline_story_content": "hed + dek + body",
+            "linked_story_content": "hed + dek + story link",
+            "annual_note_is_separate_from_evergreen_story": True,
+        }
         write_descriptor_records(payload["descriptors"])
         source = base.write_generated_source(item.year, item.week, payload)
 
