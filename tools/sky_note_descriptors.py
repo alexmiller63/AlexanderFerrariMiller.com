@@ -390,9 +390,12 @@ def write_descriptor_records(records: list[dict]) -> None:
 
 
 def _linked_name(record: dict) -> str:
+    human_href = (record.get("representation") or {}).get("human")
+    href = human_href or descriptor_href(record["id"])
+    type_attr = "" if human_href else ' type="application/json"'
     return (
-        f'<a class="descriptor-link" href="{html.escape(descriptor_href(record["id"]), quote=True)}" '
-        f'type="application/json">{html.escape(record["name"], quote=False)}</a>'
+        f'<a class="descriptor-link" href="{html.escape(href, quote=True)}"'
+        f'{type_attr}>{html.escape(record["name"], quote=False)}</a>'
     )
 
 
