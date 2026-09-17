@@ -9,10 +9,12 @@ consumed exactly as supplied by the generated spec; it is never inferred.
 from __future__ import annotations
 
 import argparse
+import json
 import math
 import re
 import sys
 from pathlib import Path
+from types import SimpleNamespace
 
 import matplotlib.pyplot as plt
 
@@ -59,6 +61,48 @@ def identity_index(spec):
         by_ref[ref] = identity
         by_id[fixed_id] = identity
     return by_ref, by_id
+
+
+def fixed_object_database_record(fixed_id):
+    """Return the authoritative normalized fixed-object record for an immutable ID."""
+    path = REPO_ROOT / "database" / "fixed-objects.json"
+    if not path.exists():
+        raise RuntimeError(f"Fixed-object database is missing at {path.relative_to(REPO_ROOT)}")
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    for obj in payload.get("fixed_objects") or []:
+        if obj.get("fixed_object_id") == fixed_id:
+            return obj
+    raise RuntimeError(f"Target fixed_object_id {fixed_id} is absent from fixed-object database")
+
+
+def fixed_object_metadata(fixed_id, fallback=None):
+    """Resolve display metadata and catalog position for any fixed object.
+
+    Stellar guides come from the HYG renderer catalog. Deep-sky targets do not,
+    so their canonical coordinates are taken from the normalized fixed-object
+    database instead of being mistaken for one of the guide stars.
+    """
+    meta = dict(fallback or {})
+    record = fixed_object_database_record(fixed_id)
+    for source_record in record.get("source_records") or []:
+        facts = source_record.get("facts") or {}
+        if facts.get("name") and not meta.get("proper_name"):
+            meta["proper_name"] = facts["name"]
+        if facts.get("constellation") and not meta.get("constellation_abbreviation"):
+            meta["constellation_abbreviation"] = facts["constellation"]
+        ra_h = facts.get("ra_h")
+        dec_deg = facts.get("dec_deg")
+        if meta.get("ra_deg") is None and ra_h not in (None, ""):
+            try:
+                meta["ra_deg"] = float(ra_h) * 15.0
+            except (TypeError, ValueError):
+                pass
+        if meta.get("dec_deg") is None and dec_deg not in (None, ""):
+            try:
+                meta["dec_deg"] = float(dec_deg)
+            except (TypeError, ValueError):
+                pass
+    return meta
 
 
 def bayer_label(identity, star=None):
@@ -120,15 +164,22 @@ def render(spec: dict, stars, output: Path) -> None:
     figure_paths = spec.get("figure_paths") or []
     asterisms = spec.get("asterisms") or []
 
-    target_identity = spec.get("target_identity") or {}
+    # Artwork ownership is keyed by immutable fixed_object_id.  A stellar
+    # owner also has a renderer_ref; a deep-sky owner deliberately does not.
+    target_identity = spec.get("target_identity") or spec.get("artwork_owner_identity") or {}
     target_id = target_identity.get("fixed_object_id")
-    target_ref = target_identity.get("renderer_ref")
-    if target_id is None or not target_ref:
+    if target_id is None:
         raise RuntimeError("Finder target must resolve through hidden fixed_object_id")
-    if target_id not in identities_by_id:
-        raise RuntimeError(f"Target fixed_object_id {target_id} is absent from finder identities")
 
-    refs = refs_from_paths(figure_paths) | {target_ref}
+    target_star_identity = identities_by_id.get(target_id)
+    target_ref = target_identity.get("renderer_ref") or (target_star_identity or {}).get("renderer_ref")
+    if target_ref and target_ref not in idx:
+        raise RuntimeError(f"Target renderer_ref {target_ref} is not present in coordinate catalog")
+
+    # Guide-star geometry is independent of the fixed object being located.
+    refs = refs_from_paths(figure_paths)
+    if target_ref:
+        refs.add(target_ref)
     for asterism in asterisms:
         refs |= refs_from_paths(asterism.get("paths") or [])
     missing_identities = sorted(ref for ref in refs if ref not in identities_by_ref)
@@ -138,9 +189,31 @@ def render(spec: dict, stars, output: Path) -> None:
     if missing:
         raise RuntimeError("Configured stars not found in coordinate catalog: " + ", ".join(missing))
 
-    center_stars = [idx[ref] for ref in refs_from_paths(figure_paths) | {target_ref}]
+    target_meta = fixed_object_metadata(target_id, target_identity)
+    if target_ref:
+        target_star = idx[target_ref]
+        target_ra = target_star.ra_deg
+        target_dec = target_star.dec_deg
+        target_meta.setdefault("proper_name", target_star.proper)
+        target_meta.setdefault("constellation_abbreviation", target_star.con)
+    else:
+        target_star = None
+        if target_meta.get("ra_deg") is None or target_meta.get("dec_deg") is None:
+            raise RuntimeError(f"Target fixed_object_id {target_id} has no authoritative sky coordinates")
+        target_ra = target_meta["ra_deg"]
+        target_dec = target_meta["dec_deg"]
+
+    center_stars = [idx[ref] for ref in refs_from_paths(figure_paths)]
+    if target_star is not None:
+        center_stars.append(target_star)
+    else:
+        center_stars.append(SimpleNamespace(ra_deg=target_ra, dec_deg=target_dec))
     center = spherical_center(center_stars)
+
     projected_geometry = [project(idx[ref].ra_deg, idx[ref].dec_deg, *center) for ref in refs]
+    target_point = project(target_ra, target_dec, *center)
+    if target_point is not None:
+        projected_geometry.append(target_point)
     projected_geometry = [point for point in projected_geometry if point is not None]
     if not projected_geometry:
         raise RuntimeError("Accepted geometry produced no visible projected points")
@@ -181,8 +254,7 @@ def render(spec: dict, stars, output: Path) -> None:
                 seen.add(ref)
                 figure_refs.append(ref)
     figure_constellation = spec.get("name") or ""
-    target_meta = identities_by_id[target_id]
-    figure_abbreviation = str(target_meta.get("constellation_abbreviation") or idx[target_ref].con or "").strip()
+    figure_abbreviation = str(target_meta.get("constellation_abbreviation") or "").strip()
 
     figure_points = []
     for ref in figure_refs:
@@ -192,7 +264,7 @@ def render(spec: dict, stars, output: Path) -> None:
         if point is None:
             continue
         figure_points.append(point)
-        # The target receives its yellow target label below; do not label it a second time.
+        # A stellar target receives its yellow target label below; do not label it twice.
         if identity.get("fixed_object_id") == target_id:
             continue
         label = chart_bayer_label(identity, star, figure_abbreviation)
@@ -210,22 +282,24 @@ def render(spec: dict, stars, output: Path) -> None:
         for path in asterism.get("paths") or []:
             draw_path(ax, path, idx, center, ASTERISM_GREEN, 3.2)
 
-    target = idx[target_ref]
-    target_xy = project(target.ra_deg, target.dec_deg, *center)
-    if target_xy is None:
+    if target_point is None:
         raise RuntimeError(f"Target fixed_object_id {target_id} is outside the projection")
-    ax.scatter([target_xy[0]], [target_xy[1]], s=210, facecolors="none",
+    ax.scatter([target_point[0]], [target_point[1]], s=210, facecolors="none",
                edgecolors=TARGET_YELLOW, linewidths=2.6, zorder=8)
 
-    target_full_bayer = bayer_label(target_meta, target)
-    target_greek = target_full_bayer.split()[0] if target_full_bayer else ""
-    target_name = str(target_meta.get("proper_name") or target.proper or "").strip()
+    target_name = str(target_meta.get("proper_name") or target_identity.get("name") or "").strip()
+    target_greek = ""
+    if target_star_identity and target_star is not None:
+        full = bayer_label(target_star_identity, target_star)
+        target_greek = full.split()[0] if full else ""
     target_chart_label = " ".join(part for part in (target_greek, target_name) if part)
-    ax.annotate(target_chart_label, target_xy, xytext=(14, 0), textcoords="offset points",
+    if not target_chart_label:
+        target_chart_label = str(target_identity.get("name") or "Target")
+    ax.annotate(target_chart_label, target_point, xytext=(14, 0), textcoords="offset points",
                 ha="left", va="center", fontsize=10, color=TARGET_YELLOW,
                 bbox=dict(facecolor=NIGHT, edgecolor="none", pad=0.8), zorder=9)
 
-    title_const = str(target_meta.get("constellation_abbreviation") or target.con or "").strip()
+    title_const = str(target_meta.get("constellation_abbreviation") or "").strip()
     title_parts = [" ".join(part for part in (target_greek, title_const) if part)]
     if target_name:
         title_parts.append(target_name)
@@ -271,7 +345,6 @@ def main() -> None:
     parser.add_argument("output", type=Path)
     args = parser.parse_args()
 
-    import json
     spec = json.loads(args.spec.read_text(encoding="utf-8"))
     render(spec, load_hyg(args.hyg_catalog), args.output)
     print(f"wrote {args.output}")
