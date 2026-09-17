@@ -1,0 +1,29 @@
+name: Preflight Calendar Fixed Object IDs
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'almanack/**'
+      - 'database/fixed-objects.json'
+      - 'database/fixed-object-id-merges.json'
+      - 'tools/preflight_calendar_fixed_object_ids.py'
+      - '.github/workflows/preflight-calendar-fixed-object-ids.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  preflight:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Preflight all Calendar fixed-object IDs
+        run: python tools/preflight_calendar_fixed_object_ids.py
