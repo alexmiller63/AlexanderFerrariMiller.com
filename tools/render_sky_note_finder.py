@@ -20,7 +20,7 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
-from render_stellar_finders import load_hyg, marker_area, project, spherical_center, star_index
+from render_stellar_finders import greek_bayer_symbol, load_hyg, marker_area, project, spherical_center, star_index
 
 NIGHT = "#071423"
 STAR = "#f7f7f2"
@@ -54,29 +54,52 @@ def identity_index(spec):
         ref = identity.get("renderer_ref")
         if fixed_id is None or not ref:
             raise RuntimeError("Finder identity is missing fixed_object_id or renderer_ref")
+        if fixed_id in by_id:
+            raise RuntimeError(f"Duplicate fixed_object_id {fixed_id} in finder identities")
         by_ref[ref] = identity
         by_id[fixed_id] = identity
     return by_ref, by_id
 
 
-def bayer_label(identity):
-    """Chart labels are Greek letters only, sourced from the database identity."""
-    return str(identity.get("bayer") or "").strip()
-
-
-def legend_label(identity):
-    """Legend is Greek letter plus database proper name, when one exists."""
-    greek = bayer_label(identity)
-    if not greek:
+def bayer_label(identity, star=None):
+    """Return a Greek Bayer designation, falling back to the pinned HYG star record."""
+    stored = str(identity.get("bayer") or "").strip()
+    if stored:
+        return stored
+    if star is None:
         return ""
-    proper = str(identity.get("proper_name") or "").strip()
+    greek = greek_bayer_symbol(star.bayer)
+    return " ".join(part for part in (greek, star.con) if part)
+
+
+def chart_bayer_label(identity, star, figure_abbreviation):
+    """Figure labels are Greek only; external-constellation stars add the IAU abbreviation."""
+    full = bayer_label(identity, star)
+    if not full:
+        return ""
+    parts = full.split()
+    greek = parts[0]
+    constellation = str(identity.get("constellation_abbreviation") or star.con or "").strip()
+    if constellation and figure_abbreviation and constellation != figure_abbreviation:
+        return f"{greek} {constellation}"
+    return greek
+
+
+def legend_label(identity, star=None):
+    """Legend is Greek letter plus proper name, when one exists."""
+    full = bayer_label(identity, star)
+    if not full:
+        return ""
+    greek = full.split()[0]
+    proper = str(identity.get("proper_name") or (star.proper if star else "") or "").strip()
     return f"{greek} — {proper}" if proper else greek
 
 
-def greek_sort_key(identity):
-    bayer = bayer_label(identity)
-    if not bayer:
+def greek_sort_key(identity, star=None):
+    full = bayer_label(identity, star)
+    if not full:
         return (999, 999, "")
+    bayer = full.split()[0]
     symbol = bayer[0]
     suffix_match = re.search(r"(\d+)$", bayer)
     suffix = int(suffix_match.group(1)) if suffix_match else 0
@@ -158,6 +181,8 @@ def render(spec: dict, stars, output: Path) -> None:
                 seen.add(ref)
                 figure_refs.append(ref)
     figure_constellation = spec.get("name") or ""
+    target_meta = identities_by_id[target_id]
+    figure_abbreviation = str(target_meta.get("constellation_abbreviation") or idx[target_ref].con or "").strip()
 
     figure_points = []
     for ref in figure_refs:
@@ -167,7 +192,10 @@ def render(spec: dict, stars, output: Path) -> None:
         if point is None:
             continue
         figure_points.append(point)
-        label = bayer_label(identity)
+        # The target receives its yellow target label below; do not label it a second time.
+        if identity.get("fixed_object_id") == target_id:
+            continue
+        label = chart_bayer_label(identity, star, figure_abbreviation)
         if label:
             ax.annotate(label, point, xytext=(5, 5), textcoords="offset points",
                         fontsize=9, color=TEXT, zorder=6)
@@ -183,22 +211,21 @@ def render(spec: dict, stars, output: Path) -> None:
             draw_path(ax, path, idx, center, ASTERISM_GREEN, 3.2)
 
     target = idx[target_ref]
-    target_meta = identities_by_id[target_id]
     target_xy = project(target.ra_deg, target.dec_deg, *center)
     if target_xy is None:
         raise RuntimeError(f"Target fixed_object_id {target_id} is outside the projection")
     ax.scatter([target_xy[0]], [target_xy[1]], s=210, facecolors="none",
                edgecolors=TARGET_YELLOW, linewidths=2.6, zorder=8)
 
-    target_greek = bayer_label(target_meta)
-    target_name = str(target_meta.get("proper_name") or "").strip()
+    target_full_bayer = bayer_label(target_meta, target)
+    target_greek = target_full_bayer.split()[0] if target_full_bayer else ""
+    target_name = str(target_meta.get("proper_name") or target.proper or "").strip()
     target_chart_label = " ".join(part for part in (target_greek, target_name) if part)
     ax.annotate(target_chart_label, target_xy, xytext=(14, 0), textcoords="offset points",
                 ha="left", va="center", fontsize=10, color=TARGET_YELLOW,
                 bbox=dict(facecolor=NIGHT, edgecolor="none", pad=0.8), zorder=9)
 
-    # Title: Greek Bayer symbol + IAU abbreviation, proper name if any, in constellation.
-    title_const = str(target_meta.get("constellation_abbreviation") or "").strip()
+    title_const = str(target_meta.get("constellation_abbreviation") or target.con or "").strip()
     title_parts = [" ".join(part for part in (target_greek, title_const) if part)]
     if target_name:
         title_parts.append(target_name)
@@ -212,11 +239,14 @@ def render(spec: dict, stars, output: Path) -> None:
     ax.text(0.5, -0.035, "East ←                                      → West",
             transform=ax.transAxes, ha="center", va="top", fontsize=8, color=TEXT)
 
-    legend_identities = sorted(
-        (identities_by_ref[ref] for ref in figure_refs if bayer_label(identities_by_ref[ref])),
-        key=greek_sort_key,
-    )
-    legend = [legend_label(identity) for identity in legend_identities]
+    legend_entries = []
+    for ref in figure_refs:
+        identity = identities_by_ref[ref]
+        star = idx[ref]
+        if bayer_label(identity, star):
+            legend_entries.append((identity, star))
+    legend_entries.sort(key=lambda pair: greek_sort_key(pair[0], pair[1]))
+    legend = [legend_label(identity, star) for identity, star in legend_entries]
     legend = [item for item in legend if item]
     if legend:
         ax.text(0.5, -0.075, "   •   ".join(legend), transform=ax.transAxes,
