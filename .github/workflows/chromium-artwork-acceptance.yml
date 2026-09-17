@@ -90,6 +90,30 @@ jobs:
                   if response is None or not response.ok:
                       raise SystemExit(f'{week}: published week page failed: HTTP {status}: {url}')
 
+                  # Acceptance is reader-facing: every Sky Notes link must resolve on the
+                  # deployed page, not merely exist in generated source.
+                  links = page.locator('.sky-note a')
+                  link_count = links.count()
+                  print(f'{week}: SKY NOTES LINK COUNT: {link_count}')
+                  if link_count == 0:
+                      raise SystemExit(f'{week}: Sky Notes contains no reader-facing links: {url}')
+                  for i in range(link_count):
+                      href = links.nth(i).get_attribute('href')
+                      label = links.nth(i).inner_text().strip() or f'link {i + 1}'
+                      if not href:
+                          raise SystemExit(f'{week}: Sky Notes link has no href: {label!r}: {url}')
+                      link_url = urljoin(page.url, href)
+                      target = context.new_page()
+                      link_response = target.goto(link_url, wait_until='networkidle')
+                      link_status = None if link_response is None else link_response.status
+                      print(f'{week}: SKY NOTES LINK: {label!r} -> HTTP {link_status}: {link_url}')
+                      if link_response is None or not link_response.ok:
+                          raise SystemExit(
+                              f'{week}: reader-facing Sky Notes link failed: '
+                              f'{label!r} -> HTTP {link_status}: {link_url}'
+                          )
+                      target.close()
+
                   artwork = page.locator('figure.sky-note-artwork a', has_text='Artwork')
                   count = artwork.count()
                   print(f'{week}: ARTWORK LINK COUNT: {count}')
