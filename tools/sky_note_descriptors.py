@@ -304,11 +304,11 @@ def build_descriptors(
                 record["asterisms"] = figure["asterisms"]
         add(record)
 
-    def add_star(name: str, abbreviation: str | None = None) -> None:
+    def add_star(name: str, abbreviation: str | None = None, fixed_object_id: int | None = None) -> None:
         star = stars_by_name.get(name.lower())
         con = abbreviation or (star.get("con") if star else None)
         constellation = constellation_names.get(con, con) if con else None
-        descriptor_id = f"star-{slugify(name)}"
+        descriptor_id = str(fixed_object_id) if fixed_object_id is not None else f"star-{slugify(name)}"
         summary = f"bright star{f' in {constellation}' if constellation else ''} used as a fixed-sky reference"
         record = _base(descriptor_id, "star", name, summary)
         if con:
@@ -342,7 +342,7 @@ def build_descriptors(
 
     for item in fixed:
         if item.get("type") == "star":
-            add_star(item["name"], item.get("constellation"))
+            add_star(item["name"], item.get("constellation"), item.get("fixed_object_id"))
         elif item.get("type") == "deep-sky":
             add(_deep_sky_descriptor(item["name"], item.get("fixed_object_id")))
 
