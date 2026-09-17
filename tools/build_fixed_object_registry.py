@@ -12,6 +12,7 @@ from __future__ import annotations
 
 import json
 import re
+from collections import Counter
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -19,6 +20,7 @@ SRC = ROOT
 AUDIT_PATH = SRC / "generated" / "fixed-object-identity-audit.json"
 REGISTRY_PATH = SRC / "database" / "fixed-object-registry.json"
 MERGES_PATH = SRC / "database" / "fixed-object-id-merges.json"
+COLLISION_REPORT_PATH = SRC / "generated" / "fixed-object-identity-collisions.json"
 
 MATCH_NAMESPACES = {
     "ngc", "ic", "hip", "hd", "gaia_dr3", "wds", "bayer", "sh2",
@@ -133,6 +135,72 @@ def registry_alias_index(records, redirects=None):
     return index
 
 
+def classify_identity_collision(group, aliases, matches, alias_index, by_id, candidate_map):
+    evidence = {}
+    for alias in aliases:
+        key = alias_key(alias)
+        fixed_id = alias_index.get(key)
+        if fixed_id in matches:
+            evidence.setdefault(fixed_id, []).append(alias)
+
+    namespaces = {alias["namespace"] for items in evidence.values() for alias in items}
+    refs = source_refs(group, candidate_map)
+    sources = {ref["source"] for ref in refs}
+
+    if "figure_stars" in sources or any("figure" in source.casefold() for source in sources):
+        classification = "figure_star_introduction"
+    elif len(matches) == 2 and any(ns in namespaces for ns in {"hip", "hd", "gaia_dr3", "wds"}):
+        classification = "likely_historical_duplicate_identity"
+    elif len(matches) == 2:
+        classification = "likely_legacy_permanent_id_duplicate"
+    else:
+        classification = "multi_id_ambiguous_identity"
+
+    return {
+        "type": "physical_group_matches_multiple_permanent_ids",
+        "classification": classification,
+        "provisional_group_id": group["provisional_group_id"],
+        "permanent_ids": matches,
+        "matching_identifiers_by_permanent_id": {
+            str(fixed_id): sorted(evidence.get(fixed_id, []), key=alias_sort_key)
+            for fixed_id in matches
+        },
+        "permanent_id_canonical_identities": {
+            str(fixed_id): by_id[fixed_id].get("canonical_identity")
+            for fixed_id in matches if fixed_id in by_id
+        },
+        "current_group_identifiers": aliases,
+        "source_refs": refs,
+    }
+
+
+def write_collision_report(identity_details, split_collisions, by_id):
+    classifications = Counter(item["classification"] for item in identity_details)
+    split_details = []
+    for fixed_id, group_id in split_collisions:
+        split_details.append({
+            "type": "permanent_id_matches_multiple_physical_groups",
+            "classification": "physical_identity_split",
+            "fixed_object_id": fixed_id,
+            "additional_provisional_group_id": group_id,
+            "canonical_identity": by_id.get(fixed_id, {}).get("canonical_identity"),
+        })
+    if split_details:
+        classifications["physical_identity_split"] += len(split_details)
+
+    payload = {
+        "schema_version": 1,
+        "purpose": "Complete fixed-object identity collision classification for batch review.",
+        "total_collision_count": len(identity_details) + len(split_details),
+        "classification_counts": dict(sorted(classifications.items())),
+        "identity_collisions": identity_details,
+        "split_collisions": split_details,
+    }
+    COLLISION_REPORT_PATH.parent.mkdir(parents=True, exist_ok=True)
+    COLLISION_REPORT_PATH.write_text(json.dumps(payload, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    return payload
+
+
 def main():
     audit = read_json(AUDIT_PATH)
     if audit is None:
@@ -186,7 +254,10 @@ def main():
                 if alias["namespace"] in MATCH_NAMESPACES and alias_key(alias) in alias_index
             }
             if len(matches) > 1:
-                identity_collisions.append((group["provisional_group_id"], sorted(matches)))
+                sorted_matches = sorted(matches)
+                identity_collisions.append(classify_identity_collision(
+                    group, aliases, sorted_matches, alias_index, by_id, candidate_map
+                ))
                 continue
             if matches:
                 fixed_id = next(iter(matches))
@@ -199,17 +270,20 @@ def main():
                 new_groups.append((group, aliases))
 
         if identity_collisions or split_collisions:
+            report = write_collision_report(identity_collisions, split_collisions, by_id)
             print("Fixed-object identity validation failed:")
-            if identity_collisions:
-                print("\nPhysical groups matching multiple permanent IDs:")
-                for group_id, matches in identity_collisions:
-                    print(f"  Physical group {group_id} -> permanent IDs {matches}")
+            print(f"\nCollected {report['total_collision_count']} collision(s) into {COLLISION_REPORT_PATH.relative_to(ROOT)}")
+            print("Classification summary:")
+            for classification, count in report["classification_counts"].items():
+                print(f"  {classification}: {count}")
+            print("\nPhysical groups matching multiple permanent IDs:")
+            for item in identity_collisions:
+                print(f"  Physical group {item['provisional_group_id']} -> permanent IDs {item['permanent_ids']} [{item['classification']}]")
             if split_collisions:
                 print("\nPermanent IDs matching more than one current physical group:")
                 for fixed_id, group_id in split_collisions:
-                    print(f"  Permanent ID {fixed_id} -> additional physical group {group_id}")
-            total = len(identity_collisions) + len(split_collisions)
-            raise SystemExit(f"\n{total} fixed-object identity collision(s) require review; registry not built.")
+                    print(f"  Permanent ID {fixed_id} -> additional physical group {group_id} [physical_identity_split]")
+            raise SystemExit(f"\n{report['total_collision_count']} fixed-object identity collision(s) require review; registry not built.")
 
         preserved = len(group_matches)
         next_id = max(by_id, default=0) + 1
