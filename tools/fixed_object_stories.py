@@ -139,11 +139,9 @@ def baseline_story(fixed_object_id: int) -> Story:
                  url_override=f"/stories/baseline/{fixed_object_id}.html")
 
 
-def write_public_story(story: Story) -> Path | None:
-    """Materialize baseline narrative HTML; descriptor JSON remains a separate debug/data layer."""
-    if story.collection != "baseline":
-        return None
-    path = STORIES_ROOT / "baseline" / f"{story.fixed_object_id}.html"
+def write_public_story(story: Story) -> Path:
+    """Materialize the human-readable HTML representation for any story."""
+    path = STORIES_ROOT / story.collection / f"{story.fixed_object_id}.html"
     path.parent.mkdir(parents=True, exist_ok=True)
     paragraphs = "\n".join(
         f"<p>{html.escape(' '.join(part.splitlines()))}</p>"
@@ -171,6 +169,8 @@ def available_stories(fixed_object_id: int) -> list[Story]:
         if story is not None:
             stories.append(story)
     if stories:
+        for story in stories:
+            write_public_story(story)
         return stories
     baseline = baseline_story(fixed_object_id)
     write_public_story(baseline)
