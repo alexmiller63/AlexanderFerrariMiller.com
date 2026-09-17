@@ -119,16 +119,17 @@ def fixed_object_id_by_hip() -> dict[str, int]:
     return result
 
 
-def fixed_object_metadata() -> tuple[dict[int, dict], dict[str, int]]:
-    """Return display metadata keyed by immutable ID, plus proper-name -> ID.
+def fixed_object_metadata() -> tuple[dict[int, dict], dict[str, list[int]]]:
+    """Return display metadata keyed by immutable ID, plus proper-name -> IDs.
 
     Bayer/proper-name metadata is taken from normalized database source records,
-    never inferred from renderer aliases.  The immutable database ID remains the
-    join key carried in the renderer spec.
+    never inferred from renderer aliases. Proper names are intentionally allowed
+    to map to more than one database row; the accepted geometry's immutable IDs
+    disambiguate the physical target later.
     """
     payload = json.loads(FIXED_OBJECT_DATABASE.read_text(encoding="utf-8"))
     by_id: dict[int, dict] = {}
-    by_name: dict[str, int] = {}
+    by_name: dict[str, list[int]] = {}
     for obj in payload.get("fixed_objects") or []:
         fixed_id = obj["fixed_object_id"]
         meta = {"fixed_object_id": fixed_id}
@@ -154,7 +155,7 @@ def fixed_object_metadata() -> tuple[dict[int, dict], dict[str, int]]:
                     meta["proper_name"] = name
         by_id[fixed_id] = meta
         if meta.get("proper_name"):
-            by_name.setdefault(meta["proper_name"].casefold(), fixed_id)
+            by_name.setdefault(meta["proper_name"].casefold(), []).append(fixed_id)
     return by_id, by_name
 
 
@@ -166,7 +167,7 @@ def hip_number(ref: str) -> str | None:
 def attach_fixed_object_ids(spec: dict) -> dict:
     """Attach hidden database IDs and database-resolved display metadata."""
     by_hip = fixed_object_id_by_hip()
-    metadata_by_id, id_by_name = fixed_object_metadata()
+    metadata_by_id, ids_by_name = fixed_object_metadata()
     refs = []
     seen = set()
     for path in spec.get("figure_paths") or []:
@@ -206,24 +207,29 @@ def attach_fixed_object_ids(spec: dict) -> dict:
         )
 
     target_name = str(spec.get("target") or "").strip()
-    target_id = id_by_name.get(target_name.casefold()) if target_name else None
-    if target_id is None:
+    candidate_ids = ids_by_name.get(target_name.casefold(), []) if target_name else []
+    if not candidate_ids:
         raise RuntimeError(f"Finder target {target_name!r} has no database fixed_object_id")
+
+    # A proper name is display metadata, not an identity key. Resolve it only
+    # among the immutable fixed_object_ids already established by accepted
+    # geometry (HIP -> registry ID). This prevents a same-name database row in
+    # another source namespace from becoming the renderer target.
+    identity_by_id = {identity["fixed_object_id"]: identity for identity in identities}
+    geometry_candidates = [fixed_id for fixed_id in candidate_ids if fixed_id in identity_by_id]
+    if len(geometry_candidates) != 1:
+        raise RuntimeError(
+            f"Finder target {target_name!r} resolves to database IDs {candidate_ids}, "
+            f"but accepted geometry matches {geometry_candidates}; expected exactly one immutable ID"
+        )
+
+    target_id = geometry_candidates[0]
     target_meta = metadata_by_id.get(target_id, {})
     target_identity = {"fixed_object_id": target_id}
     target_identity.update({k: v for k, v in target_meta.items()
                             if k != "fixed_object_id" and v})
-    # Resolve the renderer alias from the same immutable ID when the target is a
-    # figure star. This removes proper-name lookup from the renderer itself.
-    for identity in identities:
-        if identity["fixed_object_id"] == target_id:
-            target_identity["renderer_ref"] = identity["renderer_ref"]
-            target_identity["identifiers"] = identity["identifiers"]
-            break
-    if not target_identity.get("renderer_ref"):
-        raise RuntimeError(
-            f"Finder target {target_name!r} (fixed_object_id {target_id}) is not present in accepted geometry"
-        )
+    target_identity["renderer_ref"] = identity_by_id[target_id]["renderer_ref"]
+    target_identity["identifiers"] = identity_by_id[target_id]["identifiers"]
 
     spec["fixed_object_identities"] = identities
     spec["target_identity"] = target_identity
