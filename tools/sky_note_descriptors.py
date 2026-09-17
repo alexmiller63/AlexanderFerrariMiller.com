@@ -76,7 +76,7 @@ def slugify(value: str) -> str:
 
 def descriptor_href(descriptor_id: str) -> str:
     """Return a descriptor link relative to an Almanack weekly page."""
-    return f"../../descriptors/{descriptor_id}.json"
+    return f"/almanack/descriptors/{descriptor_id}.json"
 
 
 def descriptor_self_reference(descriptor_id: str) -> str:
