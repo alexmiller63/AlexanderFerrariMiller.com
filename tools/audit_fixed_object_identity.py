@@ -56,9 +56,10 @@ def type_family(value): return TYPE_FAMILIES.get(value,value) if value else None
 def schemas(): return {"messier":["id","ngc","name","type","con","ra_h","dec_deg","mag","size_arcmin","best","iso"],"bayer":["bayer","con","name","ra_h","dec_deg","mag","best","iso"],"special":["id","name","catalog","con","ra_h","dec_deg","mag","best","iso","note"],"component":["bayer","con","component","name","ra_h","dec_deg","mag"]}
 def parse_fixed_simple_yaml(path):
     schema=schemas(); result={key:[] for key in schema}; current=None; inside_schema=True
+    section_aliases={"components":"component"}
     for raw in path.read_text(encoding="utf-8").splitlines():
         if raw and not raw.startswith(" ") and raw.rstrip().endswith(":"):
-            key=raw.strip()[:-1]; inside_schema=key=="schema"; current=None if inside_schema else (key if key in schema else None); continue
+            key=raw.strip()[:-1]; inside_schema=key=="schema"; key=section_aliases.get(key,key); current=None if inside_schema else (key if key in schema else None); continue
         if inside_schema or current is None: continue
         text=raw.strip()
         if text.startswith("- [") and text.endswith("]"):
@@ -104,7 +105,10 @@ def load_source_candidates():
             if section=="messier": ids=[("messier",row["id"])]; ident=catalog_identifier(row["ngc"]); ids += [ident] if ident else []; key=str(row["id"])
             elif section=="bayer": ids=[("bayer",f"{row['bayer']} {row['con']}")]; key=f"{row['bayer']} {row['con']}"
             elif section=="special": ids=[("special",row["id"])]; ident=catalog_identifier(row["catalog"]); ids += [ident] if ident else []; key=str(row["id"])
-            elif section=="component": ids=[("bayer",f"{row['bayer']} {row['con']}"),("component",row["component"])]; key=f"{row['bayer']} {row['con']}:{row['component']}"
+            elif section=="component":
+                bayer=f"{row['bayer']}{row['component']} {row['con']}"
+                ids=[("bayer",bayer),("component",row["component"])]
+                key=bayer
             add_candidate(cs,f"fixed-objects.yaml:{section}",key,ids,row.get("name"),row.get("con"),row.get("ra_h"),row.get("dec_deg"),row.get("type"),row.get("note"))
     for row in read_csv(SRC/"caldwell-catalog.csv"):
         ids=[("caldwell",row.get("caldwell"))]; ident=catalog_identifier(row.get("catalog")); ids += [ident] if ident else []; add_candidate(cs,"caldwell-catalog.csv",row.get("caldwell",""),ids,row.get("name"),row.get("con"),row.get("ra_h"),row.get("dec_deg"),row.get("type"))
