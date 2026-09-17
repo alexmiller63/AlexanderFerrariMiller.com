@@ -114,7 +114,7 @@ def reserved_boxes(mode: str) -> list[Box]:
 
 def candidate_positions(longitude: float):
     # Search the usable interior systematically instead of sampling only seven
-    # radial tracks and eleven tangent offsets.  Dense planetary conjunctions
+    # radial tracks and eleven tangent offsets. Dense planetary conjunctions
     # can require a label to move farther around the wheel than that old finite
     # sample allowed, especially in Mixed / Learner mode where labels are widest.
     # Keep the old preferred positions first so ordinary weeks remain visually
@@ -160,60 +160,63 @@ def route(anchor: tuple[float, float], center: tuple[float, float], obstacles: l
 def layout(mode: str, bodies: list[tuple[str, str, float]]):
     reserved = reserved_boxes(mode)
 
-    # Densest neighborhoods first, then canonical order.  Candidate ordering is
-    # deterministic, but placement itself uses backtracking so an early locally
-    # valid choice cannot strand a later body in a crowded neighborhood.
-    def crowd(item):
-        _, _, lon = item
-        return -sum(1 for _, _, other in bodies if other != lon and min((lon-other) % 360, (other-lon) % 360) < 18)
+    # Backtracking must be allowed to reconsider the identity of the first
+    # placed body, not merely the position of the later bodies. Each complete
+    # attempt uses canonical order, rotated to a different starting body.
+    # Thus the first attempt is Sun, Moon, Mercury, ...; if it dead-ends, the
+    # next attempt is Moon, Mercury, ..., Sun; then Mercury, ..., Moon; etc.
+    # This is deterministic and preserves canonical order within every attempt.
+    n = len(bodies)
+    ordered_indices = list(range(n))
 
-    def order_key(p):
-        original_index, (_, name, _) = p
-        rank = original_index
-        if mode == "latin":
-            if name == "Saturn":
-                rank = CANONICAL.index("Neptune")
-            elif name == "Neptune":
-                rank = CANONICAL.index("Saturn")
-        return crowd(p[1]), rank
+    def try_order(start: int):
+        order = [(start + offset) % n for offset in range(n)]
+        # Preserve the historical Latin Saturn/Neptune presentation exception
+        # only within candidate placement priority; the retry identity order is
+        # always the canonical sequence and is never changed by this exception.
+        return order
 
-    ordered = sorted(enumerate(bodies), key=order_key)
-    staged = {}
-    placed: list[Box] = []
-    leaders: list[list[tuple[float, float]]] = []
+    for start in range(n):
+        ordered = try_order(start)
+        staged = {}
+        placed: list[Box] = []
+        leaders: list[list[tuple[float, float]]] = []
 
-    def solve(position: int) -> bool:
-        if position == len(ordered):
-            return True
-
-        original_index, (symbol, name, longitude) = ordered[position]
-        w, h = label_size(mode, name)
-        anchor = xy(longitude, RI - 5)
-
-        for x, y in candidate_positions(longitude):
-            box = Box(x, y, w, h)
-            if any(boxes_overlap(box, b, 14) for b in reserved + placed):
-                continue
-            if any(segment_hits_box(seg[i], seg[i+1], box, 10) for seg in leaders for i in range(len(seg)-1)):
-                continue
-            path = route(anchor, (x, y), reserved + placed)
-            if path is None:
-                continue
-
-            placed.append(box)
-            leaders.append(path)
-            staged[original_index] = (symbol, name, longitude, box, path)
-            if solve(position + 1):
+        def solve(position: int) -> bool:
+            if position == len(ordered):
                 return True
-            del staged[original_index]
-            leaders.pop()
-            placed.pop()
 
-        return False
+            original_index = ordered[position]
+            symbol, name, longitude = bodies[original_index]
+            w, h = label_size(mode, name)
+            anchor = xy(longitude, RI - 5)
 
-    if not solve(0):
-        raise RuntimeError(f"No collision-free Planet Finder layout exists in {mode} mode")
-    return [staged[i] for i in range(len(bodies))]
+            for x, y in candidate_positions(longitude):
+                box = Box(x, y, w, h)
+                if any(boxes_overlap(box, b, 14) for b in reserved + placed):
+                    continue
+                if any(segment_hits_box(seg[i], seg[i+1], box, 10) for seg in leaders for i in range(len(seg)-1)):
+                    continue
+                path = route(anchor, (x, y), reserved + placed)
+                if path is None:
+                    continue
+
+                placed.append(box)
+                leaders.append(path)
+                staged[original_index] = (symbol, name, longitude, box, path)
+                if solve(position + 1):
+                    return True
+                del staged[original_index]
+                leaders.pop()
+                placed.pop()
+
+            return False
+
+        if solve(0):
+            print(f"Planet Finder layout solved in {mode} mode starting with {bodies[start][1]}")
+            return [staged[i] for i in range(len(bodies))]
+
+    raise RuntimeError(f"No collision-free Planet Finder layout exists in {mode} mode after {n} canonical starting orders")
 
 
 def polyline(points):
