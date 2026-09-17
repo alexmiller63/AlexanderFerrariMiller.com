@@ -1,15 +1,11 @@
 #!/usr/bin/env python3
-"""Verify Calendar fixed-object identity in rendered pages.
-
-The stable data-fixed-object-id is authoritative. Visible Greek/Latin/Mixed
-wording and observing-aid glyphs are presentation and are not used to identify
-an astronomical object.
-"""
+"""Verify Calendar fixed-object identity and reader-facing Sky Note links."""
 from __future__ import annotations
 
 import argparse
 import datetime as dt
 from pathlib import Path
+from urllib.parse import urljoin
 
 from playwright.sync_api import sync_playwright
 
@@ -27,6 +23,39 @@ def weeks_between(start: str, end: str):
     return out
 
 
+def verify_reader_links(page, rel: str):
+    """Reader-facing Sky Note links must never expose descriptor JSON."""
+    links = page.locator('.sky-note a')
+    for index in range(links.count()):
+        link = links.nth(index)
+        href = link.get_attribute('href') or ''
+        media_type = (link.get_attribute('type') or '').lower()
+        if href.lower().split('?', 1)[0].endswith('.json') or media_type == 'application/json':
+            text = link.inner_text().strip()
+            raise SystemExit(
+                f'Reader-facing Sky Note link exposes machine JSON in {rel}: '
+                f'{text!r} -> {href!r}'
+            )
+
+    story_links = page.locator('.sky-note-story a[href]')
+    checked = set()
+    for index in range(story_links.count()):
+        href = story_links.nth(index).get_attribute('href') or ''
+        if not href or href.startswith('#') or href in checked:
+            continue
+        checked.add(href)
+        target = urljoin(page.url, href)
+        response = page.request.get(target, timeout=120000)
+        if not response.ok:
+            raise SystemExit(f'Sky Note story link failed in {rel}: {href} -> HTTP {response.status}')
+        content_type = (response.headers.get('content-type') or '').lower()
+        if 'text/html' not in content_type:
+            raise SystemExit(
+                f'Sky Note story link is not HTML in {rel}: {href} -> {content_type or "unknown content type"}'
+            )
+    print(f'Sky Note reader-link PASS: {rel} ({len(checked)} story destinations)')
+
+
 def verify_page(page, rel: str):
     if page.locator('table.calendar').count() != 1:
         raise SystemExit(f'Calendar table missing in {rel}')
@@ -40,13 +69,10 @@ def verify_page(page, rel: str):
     if bad:
         raise SystemExit(f'Invalid data-fixed-object-id in {rel}: {bad[:5]}')
     if len(ids) != len(set(ids)):
-        # Repeated objects on different dates are legitimate; report count only.
         print(f'{rel}: {len(ids)} fixed-object references, {len(set(ids))} unique IDs')
     else:
         print(f'{rel}: {len(ids)} fixed-object references, all IDs valid')
 
-    # Every observing-aid presentation belonging to a fixed-object event must
-    # remain inside the event carrying the permanent database identity.
     orphan_aids = page.locator(
         'table.calendar .event-cell:not([data-fixed-object-id]) '
         '.observing-aid-notation, '
@@ -101,6 +127,7 @@ def verify_page(page, rel: str):
                 f'Mobile Calendar layout failure in {rel} mode={mode}: {overflow}'
             )
 
+    verify_reader_links(page, rel)
     print(f'Calendar fixed-object ID PASS all notation modes: {rel}')
 
 
