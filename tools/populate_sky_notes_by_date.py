@@ -29,6 +29,7 @@ ROOT = Path(__file__).resolve().parents[1]
 SOURCE_ROOT = ROOT
 PAGE_ROOTS = (ROOT / "site", ROOT / "almanack")
 BRIGHT_STARS = SOURCE_ROOT / "bright-stars-2mag.csv"
+GEOMETRY_REGISTRY = ROOT / "finder-geometry" / "martz-macrobert.json"
 
 PLANET_DISPLAY = {
     "mercury": "Mercury", "venus": "Venus", "mars": "Mars", "jupiter": "Jupiter",
@@ -60,14 +61,40 @@ CONSTELLATION_NAMES = {
     "Vir": "Virgo", "Vol": "Volans", "Vul": "Vulpecula",
 }
 ASTERISMS = {
-    "Ori": {"id": "orions-belt", "name": "Orion’s Belt", "members": ("Mintaka", "Alnilam", "Alnitak")},
-    "Peg": {"id": "great-square-of-pegasus", "name": "Great Square of Pegasus", "members": ("Markab", "Scheat", "Algenib", "Alpheratz")},
-    "UMa": {"id": "big-dipper", "name": "Big Dipper", "members": ("Dubhe", "Merak", "Phecda", "Megrez", "Alioth", "Mizar", "Alkaid")},
-    "Cyg": {"id": "northern-cross", "name": "Northern Cross", "members": ("Deneb", "Sadr", "Gienah", "Albireo")},
-    "Sgr": {"id": "teapot", "name": "Teapot", "members": ("Kaus Australis", "Kaus Media", "Kaus Borealis", "Nunki", "Ascella")},
-    "Leo": {"id": "sickle", "name": "Sickle", "members": ("Regulus", "Algieba", "Adhafera")},
-    "Aqr": {"id": "water-jar", "name": "Water Jar", "members": ("Sadalmelik", "Sadalsuud", "Sadachbia", "Skat")},
+    "Ori": {"name": "Orion’s Belt", "members": ("Mintaka", "Alnilam", "Alnitak")},
+    "Peg": {"name": "Great Square of Pegasus", "members": ("Markab", "Scheat", "Algenib", "Alpheratz")},
+    "UMa": {"name": "Big Dipper", "members": ("Dubhe", "Merak", "Phecda", "Megrez", "Alioth", "Mizar", "Alkaid")},
+    "Cyg": {"name": "Northern Cross", "members": ("Deneb", "Sadr", "Gienah", "Albireo")},
+    "Sgr": {"name": "Teapot", "members": ("Kaus Australis", "Kaus Media", "Kaus Borealis", "Nunki", "Ascella")},
+    "Leo": {"name": "Sickle", "members": ("Regulus", "Algieba", "Adhafera")},
+    "Aqr": {"name": "Water Jar", "members": ("Sadalmelik", "Sadalsuud", "Sadachbia", "Skat")},
 }
+
+
+def canonical_asterism(asterism: dict) -> dict:
+    """Resolve an observer-facing asterism to its canonical geometry-registry identity."""
+    if not GEOMETRY_REGISTRY.exists():
+        raise RuntimeError(f"Accepted geometry registry is missing: {GEOMETRY_REGISTRY.relative_to(ROOT)}")
+    registry = json.loads(GEOMETRY_REGISTRY.read_text(encoding="utf-8"))
+    wanted = str(asterism.get("name") or "").strip().casefold()
+    matches = [
+        (asterism_id, record)
+        for asterism_id, record in (registry.get("asterisms") or {}).items()
+        if str(record.get("name") or "").strip().casefold() == wanted
+    ]
+    if len(matches) != 1:
+        raise RuntimeError(
+            f"Asterism {asterism.get('name')!r} resolves to {len(matches)} canonical geometry records; expected exactly one"
+        )
+    asterism_id, record = matches[0]
+    if record.get("geometry_status") != "accepted-paths" or not record.get("paths"):
+        raise RuntimeError(f"Canonical asterism {asterism_id!r} has no accepted drawable paths")
+    members = [
+        member.get("display_name") or member.get("member")
+        for member in (record.get("members") or [])
+        if member.get("display_name") or member.get("member")
+    ]
+    return {"id": asterism_id, "name": record.get("name") or asterism["name"], "members": members}
 
 
 def plain_text(fragment: str) -> str:
@@ -116,13 +143,9 @@ def load_bright_stars() -> list[dict]:
             dec_deg = float(row["dec_deg"])
             lon_deg, lat_deg = equatorial_to_ecliptic(ra_deg, dec_deg)
             stars.append({
-                "name": row["proper"],
-                "bayer": row["bayer"],
-                "con": row["con"],
-                "ra_deg": ra_deg,
-                "dec_deg": dec_deg,
-                "ecliptic_lon_deg": lon_deg,
-                "ecliptic_lat_deg": lat_deg,
+                "name": row["proper"], "bayer": row["bayer"], "con": row["con"],
+                "ra_deg": ra_deg, "dec_deg": dec_deg,
+                "ecliptic_lon_deg": lon_deg, "ecliptic_lat_deg": lat_deg,
                 "mag": float(row["representative_vmax"].split(";")[0]),
             })
     return stars
@@ -133,18 +156,11 @@ def longitude_distance(a: float, b: float) -> float:
 
 
 def notable_planet_relations(week: int, yearly: dict[int, dict[str, float]], stars: list[dict]) -> list[dict]:
-    """Select relationships justified by the preserved longitude data.
-
-    A full sky-plane separation would require a planet latitude/RA/Dec that the
-    preserved Star Almanack weekly table does not contain. We therefore make
-    only longitude claims, and restrict fixed-star comparisons to stars near
-    the ecliptic so the prose cannot imply an unsupported 2-D conjunction.
-    """
+    """Select relationships justified by the preserved longitude data."""
     if week not in yearly:
         raise RuntimeError(f"Missing preserved planetary row for ISO week {week:02d}")
     positions = yearly[week]
     candidates: list[dict] = []
-
     ecliptic_stars = [star for star in stars if abs(star["ecliptic_lat_deg"]) <= 6.0]
     for planet in PLANET_COLUMNS:
         plon = positions[planet]
@@ -153,10 +169,8 @@ def notable_planet_relations(week: int, yearly: dict[int, dict[str, float]], sta
             if delta > 5.0:
                 continue
             relation = {
-                "kind": "planet-star-longitude",
-                "planet": PLANET_DISPLAY[planet],
-                "planet_longitude_deg": round(plon, 3),
-                "star": star["name"],
+                "kind": "planet-star-longitude", "planet": PLANET_DISPLAY[planet],
+                "planet_longitude_deg": round(plon, 3), "star": star["name"],
                 "constellation": star["con"],
                 "star_ecliptic_longitude_deg": round(star["ecliptic_lon_deg"], 3),
                 "star_ecliptic_latitude_deg": round(star["ecliptic_lat_deg"], 3),
@@ -167,22 +181,19 @@ def notable_planet_relations(week: int, yearly: dict[int, dict[str, float]], sta
             if asterism and star["name"] in asterism["members"]:
                 relation["asterism"] = asterism["name"]
             candidates.append(relation)
-
     planets = list(PLANET_COLUMNS)
     for i, first in enumerate(planets):
         for second in planets[i + 1:]:
             delta = longitude_distance(positions[first], positions[second])
             if delta <= 4.0:
                 candidates.append({
-                    "kind": "planet-planet-longitude",
-                    "planet": PLANET_DISPLAY[first],
+                    "kind": "planet-planet-longitude", "planet": PLANET_DISPLAY[first],
                     "other_planet": PLANET_DISPLAY[second],
                     "planet_longitude_deg": round(positions[first], 3),
                     "other_longitude_deg": round(positions[second], 3),
                     "longitude_separation_deg": round(delta, 1),
                     "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
                 })
-
     candidates.sort(key=lambda item: item["longitude_separation_deg"])
     return candidates[:4]
 
@@ -216,38 +227,22 @@ def fixed_sky_context(features: list[dict]) -> tuple[str | None, dict | None]:
 def relation_sentence(item: dict) -> str:
     sep = item["longitude_separation_deg"]
     if item["kind"] == "planet-planet-longitude":
-        return (
-            f"{item['planet']} and {item['other_planet']} are separated by about {sep:.1f}° "
-            "in geocentric ecliptic longitude at the Monday 00:00 UTC snapshot."
-        )
+        return f"{item['planet']} and {item['other_planet']} are separated by about {sep:.1f}° in geocentric ecliptic longitude at the Monday 00:00 UTC snapshot."
     constellation = CONSTELLATION_NAMES.get(item["constellation"], item["constellation"])
     if item.get("asterism"):
-        return (
-            f"{item['planet']} is about {sep:.1f}° in ecliptic longitude from {item['star']}, "
-            f"one of the stars used to orient {item['asterism']} in {constellation}."
-        )
-    return (
-        f"{item['planet']} is about {sep:.1f}° in ecliptic longitude from "
-        f"{item['star']} in {constellation}."
-    )
+        return f"{item['planet']} is about {sep:.1f}° in ecliptic longitude from {item['star']}, one of the stars used to orient {item['asterism']} in {constellation}."
+    return f"{item['planet']} is about {sep:.1f}° in ecliptic longitude from {item['star']} in {constellation}."
 
 
 def artwork_descriptor(year: int, week: int, fixed: list[dict], relations: list[dict]) -> dict | None:
     con, asterism = fixed_sky_context(fixed)
     if con is None:
         return None
-
-    descriptor = {
-        "schema_version": 1,
-        "id": f"{year}-W{week:02d}-stellar-finder",
-        "week": f"{year}-W{week:02d}",
-        "kind": "stellar-finder",
-        "geometry": {
-            "constellation_system": "Martz/MacRobert",
-            "constellation_abbreviation": con,
-            "on_missing_geometry": "fail",
-            "invent_geometry": False,
-        },
+    canonical = canonical_asterism(asterism) if asterism else None
+    return {
+        "schema_version": 1, "id": f"{year}-W{week:02d}-stellar-finder",
+        "week": f"{year}-W{week:02d}", "kind": "stellar-finder",
+        "geometry": {"constellation_system": "Martz/MacRobert", "constellation_abbreviation": con, "on_missing_geometry": "fail", "invent_geometry": False},
         "style": {
             "background": "night-sky",
             "constellation": {"stroke": "#5c8fe8", "role": "ordinary constellation figure"},
@@ -256,16 +251,12 @@ def artwork_descriptor(year: int, week: int, fixed: list[dict], relations: list[
             "target_arrows": False,
         },
         "constellation": CONSTELLATION_NAMES.get(con, con),
-        "asterism": (
-            {"id": asterism["id"], "name": asterism["name"], "members": list(asterism["members"])}
-            if asterism else None
-        ),
+        "asterism": canonical,
         "targets": [{"type": item["type"], "name": item["name"]} for item in fixed[:3]],
         "planetary_context": relations[:2],
         "planet_plot_policy": "do not plot from longitude alone; require preserved 2-D Star Almanack position data",
         "reference_standard": "docs/finder-standard.md",
     }
-    return descriptor
 
 
 def generated_note(year: int, week: int, page_path: Path, yearly: dict[int, dict[str, float]], stars: list[dict]) -> dict:
@@ -274,7 +265,6 @@ def generated_note(year: int, week: int, page_path: Path, yearly: dict[int, dict
     entries = [entry for _, items in rows for entry in items]
     fixed = featured_fixed_sky(entries, stars)
     relations = notable_planet_relations(week, yearly, stars)
-
     moon = next((entry for entry in entries if re.search(r"\b(New Moon|First Quarter|Full Moon|Last Quarter)\b", entry, flags=re.I)), None)
     highlights = [item["name"] for item in fixed[:3]]
     opening = f"ISO {year}-W{week:02d} runs from {monday.strftime('%B')} {monday.day} through {sunday.strftime('%B')} {sunday.day}."
@@ -282,7 +272,6 @@ def generated_note(year: int, week: int, page_path: Path, yearly: dict[int, dict
         opening += " Fixed-sky highlights include " + ", ".join(highlights) + "."
     if relations:
         opening += " " + " ".join(relation_sentence(item) for item in relations[:2])
-
     moon_text = moon or "No principal lunar phase is listed this week"
     if moon and "New Moon" in moon:
         condition = "The dark Moon favors faint targets and extended star fields."
@@ -292,19 +281,12 @@ def generated_note(year: int, week: int, page_path: Path, yearly: dict[int, dict
         condition = "Moderate moonlight makes timing and local sky position important for faint targets."
     else:
         condition = "Check the Moon's position each night and favor darker hours for low-contrast targets."
-
     star_names = [item["name"] for item in fixed if item["type"] == "star"]
     deep_names = [item["name"] for item in fixed if item["type"] == "deep-sky"]
     naked_targets = ", ".join(star_names[:3]) if star_names else "the brightest seasonal stars and the zodiac"
     binocular_targets = ", ".join((deep_names + star_names)[:3]) if (deep_names or star_names) else "the week’s richest fixed-star fields"
     telescope_targets = ", ".join(deep_names[:2]) if deep_names else "the compact fixed-sky targets selected for the week"
-
-    planet_paragraph = (
-        " ".join(relation_sentence(item) for item in relations)
-        if relations else
-        "No close longitude relationship passes the conservative weekly selection threshold; use the Planet Finder for the broader Solar-System pattern."
-    )
-
+    planet_paragraph = " ".join(relation_sentence(item) for item in relations) if relations else "No close longitude relationship passes the conservative weekly selection threshold; use the Planet Finder for the broader Solar-System pattern."
     note = "\n\n".join((
         opening,
         f"**Naked eye:** {moon_text}. {condition} Use {naked_targets} as the week’s fixed-sky framework.",
@@ -313,15 +295,11 @@ def generated_note(year: int, week: int, page_path: Path, yearly: dict[int, dict
         f"**Small telescope:** Concentrate on {telescope_targets}. Increase magnification only after the target and surrounding pattern are secure.",
     ))
     return {
-        "week": f"W{week:02d}",
-        "title": f"Observer’s guide for ISO {year}-W{week:02d}",
-        "status": "generated",
+        "week": f"W{week:02d}", "title": f"Observer’s guide for ISO {year}-W{week:02d}", "status": "generated",
         "planetary_source": f"weekly-ephemeris-{year}.csv",
         "planetary_coordinate": "geocentric tropical ecliptic longitude; Monday 00:00 UTC",
-        "fixed_sky": fixed,
-        "planet_relations": relations,
-        "artwork": artwork_descriptor(year, week, fixed, relations),
-        "note": note,
+        "fixed_sky": fixed, "planet_relations": relations,
+        "artwork": artwork_descriptor(year, week, fixed, relations), "note": note,
     }
 
 
@@ -356,8 +334,7 @@ def render_artwork_placeholder(descriptor: dict | None) -> str:
     target_text = ", ".join(targets) if targets else "weekly observing targets"
     caption = f"Artwork descriptor: {subject}; highlight {target_text}."
     return (
-        f'<figure class="sky-note-artwork-placeholder" data-sky-note-artwork-placeholder="true" '
-        f'data-artwork-descriptor="{encoded}">'
+        f'<figure class="sky-note-artwork-placeholder" data-sky-note-artwork-placeholder="true" data-artwork-descriptor="{encoded}">'
         '<div class="sky-note-artwork-placeholder-box"><strong>Sky Note artwork pending</strong><br>'
         'The artwork workflow will render this descriptor only from accepted Star Almanack geometry.</div>'
         f'<figcaption>{html.escape(caption)}</figcaption></figure>'
@@ -397,16 +374,13 @@ def main() -> None:
     grouped = group_by_year(weeks)
     yearly = {year: load_weekly_longitudes(year) for year in grouped}
     changed = 0
-
     for item in weeks:
         week_key = f"W{item.week:02d}"
         public_page = ROOT / "almanack" / str(item.year) / week_key / "index.html"
         if not public_page.exists():
             raise RuntimeError(f"Missing weekly page: {public_page.relative_to(ROOT)}")
-
         payload = generated_note(item.year, item.week, public_page, yearly[item.year], stars)
         source = write_generated_source(item.year, item.week, payload)
-
         for root in PAGE_ROOTS:
             path = root / str(item.year) / week_key / "index.html"
             if not path.exists():
@@ -415,11 +389,7 @@ def main() -> None:
                 changed += 1
         art_state = "artwork descriptor emitted" if payload["artwork"] else "no stellar artwork descriptor needed"
         print(f"Generated Sky Note for ISO {item.year}-{week_key}: {source.relative_to(ROOT)} ({art_state})")
-
-    print(
-        f"Sky Notes complete for {start.isoformat()} through {end.isoformat()}: "
-        f"{len(weeks)} notes generated, {changed} page copies updated"
-    )
+    print(f"Sky Notes complete for {start.isoformat()} through {end.isoformat()}: {len(weeks)} notes generated, {changed} page copies updated")
 
 
 if __name__ == "__main__":
