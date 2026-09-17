@@ -125,8 +125,8 @@ def _core_asterisms() -> list[dict]:
     if current is not None:
         records.append(current)
     resolved = [record for record in records if record.get("status") == "resolved" and record.get("members")]
-    if len(resolved) != 25:
-        raise RuntimeError(f"Expected 25 resolved core asterisms, found {len(resolved)}")
+    if len(resolved) != 28:
+        raise RuntimeError(f"Expected 28 resolved core asterisms, found {len(resolved)}")
     return resolved
 
 
