@@ -170,7 +170,7 @@ def render_inline_stories(stories: list[dict]) -> str:
     for story in stories:
         hed = html.escape(story["hed"])
         dek = html.escape(story["dek"])
-        url = html.escape(story["url"], quote=True)
+        url = html.escape(reader_story_url(story["url"]), quote=True)
         body_html = "".join(
             f"<p>{html.escape(' '.join(part.splitlines()))}</p>"
             for part in re.split(r"\n\s*\n", story["body"].strip()) if part.strip()
@@ -194,7 +194,7 @@ def render_linked_stories(stories: list[dict]) -> str:
     for story in stories:
         hed = html.escape(story["hed"])
         dek = html.escape(story["dek"])
-        url = html.escape(story["url"], quote=True)
+        url = html.escape(reader_story_url(story["url"]), quote=True)
         items.append(
             f'<li data-fixed-object-id="{story["fixed_object_id"]}" '
             f'data-story-collection="{html.escape(story["collection"], quote=True)}">'
