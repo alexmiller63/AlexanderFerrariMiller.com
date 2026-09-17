@@ -11,7 +11,7 @@ import json
 import re
 from pathlib import Path
 
-from fixed_object_stories import available_stories
+from fixed_object_stories import available_stories, reader_story_url
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE_ROOT = ROOT
@@ -397,7 +397,7 @@ def write_descriptor_records(records: list[dict]) -> None:
 
 def _linked_name(record: dict) -> str:
     human_href = (record.get("representation") or {}).get("human")
-    href = human_href or descriptor_href(record["id"])
+    href = reader_story_url(human_href) if human_href else descriptor_href(record["id"])
     type_attr = "" if human_href else ' type="application/json"'
     return (
         f'<a class="descriptor-link" href="{html.escape(href, quote=True)}"'
