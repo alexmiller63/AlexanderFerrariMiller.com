@@ -349,12 +349,14 @@ def build_descriptors(
 
     def add_planet(name: str) -> None:
         descriptor_id = str(SOLAR_SYSTEM_OBJECT_IDS[name])
-        add(_base(
-            descriptor_id,
-            "planet",
-            name,
-            "Solar-System planet tracked by the Star Almanack weekly ephemeris and Planet Finder",
-        ))
+        kind = "planet" if name in {"Mercury", "Venus", "Earth", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune"} else "solar-system-object"
+        summary = "Solar-System object tracked by the Star Almanack weekly ephemeris and Planet Finder"
+        add(_base(descriptor_id, kind, name, summary))
+
+    # Seed canonical Solar System identities independently of weekly relations.
+    # Weekly relations select references; they do not define database identity.
+    for name in SOLAR_SYSTEM_OBJECT_IDS:
+        add_planet(name)
 
     for item in fixed:
         if item.get("type") == "star":
@@ -398,7 +400,7 @@ def build_descriptors(
         concept = OBSERVING_CONCEPTS[descriptor_id]
         add(_base(descriptor_id, concept["type"], concept["name"], concept["summary"]))
 
-    return records[:12]
+    return records
 
 
 def write_descriptor_records(records: list[dict]) -> None:
