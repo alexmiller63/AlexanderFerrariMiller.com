@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
-"""Populate descriptor-first Sky Notes and story previews from Calendar IDs."""
+"""Populate descriptor-first Sky Notes and story presentations from Calendar IDs."""
 from __future__ import annotations
 
 import html
-import json
 import re
 
 from almanack_sections import replace_section_inner
@@ -12,6 +11,13 @@ from star_almanack_planets import load_weekly_longitudes
 import populate_sky_notes_by_date as base
 from fixed_object_stories import available_stories
 from sky_note_descriptors import build_descriptors, decorate_note_html, write_descriptor_records
+
+# Editorial guidance, deliberately separate from candidate discovery. These are
+# presentation targets, not limits on the underlying weekly story pool. Raising
+# them is useful for debugging and prepares the data model for a later
+# Highlights/Wordy presentation toggle.
+INLINE_STORY_GUIDANCE = 4
+LINKED_STORY_GUIDANCE = 6
 
 
 def calendar_fixed_object_ids(page_path) -> list[int]:
@@ -27,8 +33,9 @@ def calendar_fixed_object_ids(page_path) -> list[int]:
     return ids
 
 
-def story_previews(fixed_ids: list[int]) -> list[dict]:
-    previews = []
+def story_candidates(fixed_ids: list[int]) -> list[dict]:
+    """Return the complete ordered story pool; never apply presentation limits here."""
+    candidates = []
     seen = set()
     for fixed_id in fixed_ids:
         for story in available_stories(fixed_id):
@@ -36,15 +43,23 @@ def story_previews(fixed_ids: list[int]) -> list[dict]:
             if key in seen:
                 continue
             seen.add(key)
-            previews.append({
+            candidates.append({
                 "fixed_object_id": story.fixed_object_id,
                 "collection": story.collection,
                 "hed": story.hed,
                 "dek": story.dek,
+                "body": story.body,
                 "url": story.public_url,
                 "artwork": story.artwork,
             })
-    return previews
+    return candidates
+
+
+def story_presentations(candidates: list[dict]) -> tuple[list[dict], list[dict]]:
+    """Apply tunable presentation guidance without changing the candidate pool."""
+    inline = candidates[:INLINE_STORY_GUIDANCE]
+    linked = candidates[INLINE_STORY_GUIDANCE:INLINE_STORY_GUIDANCE + LINKED_STORY_GUIDANCE]
+    return inline, linked
 
 
 def story_artwork_descriptor(year: int, week: int, fixed_sky: list[dict], relations: list[dict], stories: list[dict]) -> dict | None:
@@ -67,22 +82,43 @@ def story_artwork_descriptor(year: int, week: int, fixed_sky: list[dict], relati
     return descriptor
 
 
-def render_story_previews(previews: list[dict]) -> str:
-    if not previews:
-        return ""
+def render_inline_stories(stories: list[dict]) -> str:
     blocks = []
-    for story in previews:
+    for story in stories:
         hed = html.escape(story["hed"])
         dek = html.escape(story["dek"])
+        body = html.escape(story["body"])
         url = html.escape(story["url"], quote=True)
+        body_html = "".join(
+            f"<p>{html.escape(' '.join(part.splitlines()))}</p>"
+            for part in re.split(r"\n\s*\n", story["body"].strip()) if part.strip()
+        ) if body else ""
         blocks.append(
-            '<article class="sky-note-story-preview" '
+            '<article class="sky-note-story sky-note-story-inline" '
             f'data-fixed-object-id="{story["fixed_object_id"]}" data-story-collection="{html.escape(story["collection"], quote=True)}">'
             f'<h4><a href="{url}">{hed}</a></h4>'
-            f'<p>{dek} <a href="{url}">Read the story.</a></p>'
+            f'<p class="sky-note-story-dek">{dek}</p>'
+            f'{body_html}'
+            f'<p><a href="{url}">Read the story.</a></p>'
             '</article>'
         )
     return "\n".join(blocks)
+
+
+def render_linked_stories(stories: list[dict]) -> str:
+    if not stories:
+        return ""
+    items = []
+    for story in stories:
+        hed = html.escape(story["hed"])
+        dek = html.escape(story["dek"])
+        url = html.escape(story["url"], quote=True)
+        items.append(
+            f'<li data-fixed-object-id="{story["fixed_object_id"]}" '
+            f'data-story-collection="{html.escape(story["collection"], quote=True)}">'
+            f'<a href="{url}">{hed}</a> — {dek}</li>'
+        )
+    return '<div class="sky-note-more-stories"><h4>More Sky Notes</h4><ul>' + "".join(items) + '</ul></div>'
 
 
 def generated_note(year: int, week: int, page_path, yearly, stars: list[dict]) -> dict:
@@ -92,21 +128,31 @@ def generated_note(year: int, week: int, page_path, yearly, stars: list[dict]) -
         base.CONSTELLATION_NAMES, base.ASTERISMS,
     )
     fixed_ids = calendar_fixed_object_ids(page_path)
+    candidates = story_candidates(fixed_ids)
+    inline, linked = story_presentations(candidates)
     payload["calendar_fixed_object_ids"] = fixed_ids
-    payload["stories"] = story_previews(fixed_ids)
+    payload["story_candidates"] = candidates
+    payload["inline_stories"] = inline
+    payload["linked_stories"] = linked
+    # Compatibility field while the artwork pipeline is promoted from one
+    # weekly finder to story-scoped artwork descriptors.
+    payload["stories"] = candidates
     payload["artwork"] = story_artwork_descriptor(
-        year, week, payload["fixed_sky"], payload["planet_relations"], payload["stories"]
+        year, week, payload["fixed_sky"], payload["planet_relations"], candidates
     )
     payload["descriptor_policy"] = {
         "source_of_truth": "machine-readable JSON",
-        "inline_human_descriptors_target": "3-4",
-        "additional_json_links_target": "5-6",
+        "candidate_pool": "complete; presentation guidance never limits discovery",
+        "inline_story_guidance": INLINE_STORY_GUIDANCE,
+        "linked_story_guidance": LINKED_STORY_GUIDANCE,
+        "future_presentations": ["Highlights", "Wordy"],
         "link_target": "../../descriptors/<id>.json",
         "artwork_descriptor_is_separate": True,
         "artwork_source": "explicit story front matter only",
         "story_identity_source": "Calendar data-fixed-object-id only",
         "story_source": "stories/<collection>/<fixed_object_id>.md",
-        "story_preview": "hed + dek",
+        "inline_story_content": "hed + dek + body",
+        "linked_story_content": "hed + dek + story link",
         "annual_note_is_separate_from_evergreen_story": True,
     }
     return payload
@@ -116,11 +162,14 @@ def patch_page(path, payload: dict) -> bool:
     text = path.read_text(encoding="utf-8")
     rendered = base.render_note(payload["note"])
     rendered = decorate_note_html(rendered, payload["descriptors"])
-    stories = render_story_previews(payload.get("stories", []))
+    inline = render_inline_stories(payload.get("inline_stories", []))
+    linked = render_linked_stories(payload.get("linked_stories", []))
     placeholder = base.render_artwork_placeholder(payload["artwork"])
     body = rendered + "\n"
-    if stories:
-        body += stories + "\n"
+    if inline:
+        body += inline + "\n"
+    if linked:
+        body += linked + "\n"
     if placeholder:
         body += placeholder + "\n"
     section_html = '<h3>Sky Notes</h3><div class="sky-note">\n' + body + '</div>'
@@ -159,7 +208,8 @@ def main() -> None:
         print(
             f"Generated descriptor-first Sky Note for ISO {item.year}-{week_key}: "
             f"{source.relative_to(base.ROOT)} ({len(payload['descriptors'])} descriptors; "
-            f"{len(payload['stories'])} story previews; {art_state})"
+            f"{len(payload['story_candidates'])} story candidates; "
+            f"{len(payload['inline_stories'])} inline; {len(payload['linked_stories'])} linked; {art_state})"
         )
 
     print(
