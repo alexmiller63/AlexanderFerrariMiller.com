@@ -1,10 +1,5 @@
 #!/usr/bin/env python3
-"""Evergreen fixed-object story lookup for Star Almanack.
-
-Every permanent fixed-object ID has a baseline story assembled from authoritative
-Star Almanack data. Curated Markdown stories enrich that baseline; they never gate
-whether an object can participate in Sky Notes.
-"""
+"""Evergreen fixed-object story lookup for Star Almanack."""
 from __future__ import annotations
 
 import html
@@ -17,7 +12,6 @@ ROOT = Path(__file__).resolve().parents[1]
 STORIES_ROOT = ROOT / "stories"
 FIXED_OBJECT_DATABASE = ROOT / "database" / "fixed-objects.json"
 STAR_HOPS = ROOT / "guiding-star-hops.json"
-
 COLLECTIONS = {"alpha-stars", "beta-stars", "special-stars", "messier", "caldwell", "finest"}
 ARTWORK_KINDS = {"stellar-finder"}
 
@@ -118,7 +112,6 @@ def _routes_for(name: str) -> list[dict]:
 
 
 def baseline_story(fixed_object_id: int) -> Story:
-    """Build the always-present baseline note for one permanent fixed-object ID."""
     meta = _fixed_object_meta(fixed_object_id)
     name = meta.get("name") or f"Fixed object {fixed_object_id}"
     family = meta.get("object_type_family") or "fixed-sky object"
@@ -135,23 +128,12 @@ def baseline_story(fixed_object_id: int) -> Story:
     else:
         context = f"Use its charted position in {constellation} and the surrounding figure stars to identify the field." if constellation else "Use the surrounding charted stars and finder geometry to identify the field before increasing magnification."
         body = f"Why it is here: {reason}\n\nHow to find it: {context}"
-    return Story(
-        collection="baseline",
-        fixed_object_id=fixed_object_id,
-        path=FIXED_OBJECT_DATABASE,
-        hed=name,
-        dek=reason,
-        body=body,
-        url_override=f"/stories/baseline/{fixed_object_id}.html",
-    )
+    return Story("baseline", fixed_object_id, FIXED_OBJECT_DATABASE, name, reason, body,
+                 url_override=f"/stories/baseline/{fixed_object_id}.html")
 
 
 def write_public_story(story: Story) -> Path | None:
-    """Materialize generated baseline narrative as human-facing HTML.
-
-    Curated stories already have their own publishing path. Descriptor JSON is
-    deliberately not used here: descriptors remain a separate debugging/data layer.
-    """
+    """Write baseline narrative HTML; descriptor JSON remains a separate data/debug layer."""
     if story.collection != "baseline":
         return None
     path = STORIES_ROOT / "baseline" / f"{story.fixed_object_id}.html"
@@ -161,13 +143,12 @@ def write_public_story(story: Story) -> Path | None:
         for part in re.split(r"\n\s*\n", story.body.strip()) if part.strip()
     )
     document = (
-        "<!doctype html>\n<html lang=\"en\">\n<head>\n"
-        "<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n"
-        f"<title>{html.escape(story.hed)} — Star Almanack Sky Notes</title>\n"
-        "</head>\n<body>\n<main class=\"sky-note-story-page\">\n"
+        "<!doctype html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n"
+        "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n"
+        f"<title>{html.escape(story.hed)} — Star Almanack Sky Notes</title>\n</head>\n"
+        "<body>\n<main class=\"sky-note-story-page\">\n"
         f"<h1>{html.escape(story.hed)}</h1>\n"
-        f"<p class=\"sky-note-story-dek\">{html.escape(story.dek)}</p>\n"
-        f"{paragraphs}\n"
+        f"<p class=\"sky-note-story-dek\">{html.escape(story.dek)}</p>\n{paragraphs}\n"
         "</main>\n</body>\n</html>\n"
     )
     if not path.exists() or path.read_text(encoding="utf-8") != document:
@@ -177,7 +158,9 @@ def write_public_story(story: Story) -> Path | None:
 
 def available_stories(fixed_object_id: int) -> list[Story]:
     """Return baseline first, followed by every curated enrichment for this ID."""
-    stories = [baseline_story(fixed_object_id)]
+    baseline = baseline_story(fixed_object_id)
+    write_public_story(baseline)
+    stories = [baseline]
     for collection in sorted(COLLECTIONS):
         story = read_story(collection, fixed_object_id)
         if story is not None:
