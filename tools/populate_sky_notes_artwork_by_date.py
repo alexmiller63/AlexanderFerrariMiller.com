@@ -117,13 +117,8 @@ def fixed_object_metadata() -> tuple[dict[int, dict], dict[str, list[int]]]:
         if meta.get("proper_name"):
             by_name.setdefault(meta["proper_name"].casefold(), []).append(fixed_id)
 
-    # expanded-bayer-stars.csv is the authoritative stellar identity catalog.
-    # Enrich existing immutable fixed-object IDs by HIP; never create or select IDs here.
     if not BAYER_CATALOG.exists():
         raise RuntimeError(f"Authoritative Bayer catalog is missing at {BAYER_CATALOG.relative_to(ROOT)}")
-    by_hip = {str(obj.get("identifiers", {}).get("hip")): fixed_id for fixed_id, obj in by_id.items()
-              if obj.get("identifiers", {}).get("hip")}
-    # The normalized records do not necessarily retain the HIP identifier, so build it from registry below.
     registry = json.loads(FIXED_OBJECT_REGISTRY.read_text(encoding="utf-8"))
     registry_hip = {}
     for obj in registry.get("fixed_objects") or []:
@@ -157,6 +152,23 @@ def hip_number(ref: str) -> str | None:
     return match.group(1) if match else None
 
 
+def catalog_target_refs(target_name: str) -> list[str]:
+    """Resolve a named stellar target to authoritative HIP renderer refs.
+
+    A finder target need not be a vertex of the accepted constellation or
+    asterism line geometry.  Its point position comes from the authoritative
+    Bayer catalog; this does not invent or alter figure geometry.
+    """
+    matches = []
+    with BAYER_CATALOG.open(newline="", encoding="utf-8") as fh:
+        for row in csv.DictReader(fh):
+            proper = str(row.get("proper") or row.get("name") or "").strip()
+            hip = str(row.get("hip") or "").strip()
+            if proper.casefold() == target_name.casefold() and hip:
+                matches.append(f"HIP {hip}")
+    return list(dict.fromkeys(matches))
+
+
 def attach_fixed_object_ids(spec: dict) -> dict:
     by_hip = fixed_object_id_by_hip()
     metadata_by_id, ids_by_name = fixed_object_metadata()
@@ -170,6 +182,15 @@ def attach_fixed_object_ids(spec: dict) -> dict:
             for ref in path:
                 if ref not in seen:
                     seen.add(ref); refs.append(ref)
+
+    target_name = str(spec.get("target") or "").strip()
+    target_refs = catalog_target_refs(target_name) if target_name else []
+    if len(target_refs) != 1:
+        raise RuntimeError(f"Finder target {target_name!r} resolves to authoritative catalog refs {target_refs}; expected exactly one HIP renderer ref")
+    target_ref = target_refs[0]
+    if target_ref not in seen:
+        seen.add(target_ref); refs.append(target_ref)
+
     identities, unresolved = [], []
     for ref in refs:
         hip = hip_number(ref)
@@ -182,17 +203,16 @@ def attach_fixed_object_ids(spec: dict) -> dict:
         identity.update({k: v for k, v in metadata_by_id.get(fixed_id, {}).items() if k != "fixed_object_id" and v})
         identities.append(identity)
     if unresolved:
-        raise RuntimeError("Finder geometry contains HIP stars with no Star Almanack fixed_object_id: " + ", ".join(unresolved))
+        raise RuntimeError("Finder geometry/targets contain HIP stars with no Star Almanack fixed_object_id: " + ", ".join(unresolved))
 
-    target_name = str(spec.get("target") or "").strip()
     candidate_ids = ids_by_name.get(target_name.casefold(), []) if target_name else []
     if not candidate_ids:
         raise RuntimeError(f"Finder target {target_name!r} has no database fixed_object_id")
     identity_by_id = {identity["fixed_object_id"]: identity for identity in identities}
-    geometry_candidates = [fixed_id for fixed_id in candidate_ids if fixed_id in identity_by_id]
-    if len(geometry_candidates) != 1:
-        raise RuntimeError(f"Finder target {target_name!r} resolves to database IDs {candidate_ids}, but accepted geometry matches {geometry_candidates}; expected exactly one immutable ID")
-    target_id = geometry_candidates[0]
+    target_hip = hip_number(target_ref)
+    target_id = by_hip.get(target_hip) if target_hip else None
+    if target_id is None or target_id not in candidate_ids:
+        raise RuntimeError(f"Finder target {target_name!r} resolves to database IDs {candidate_ids}, but authoritative catalog ref {target_ref!r} resolves to immutable ID {target_id!r}")
     target_meta = metadata_by_id.get(target_id, {})
     target_identity = {"fixed_object_id": target_id}
     target_identity.update({k: v for k, v in target_meta.items() if k != "fixed_object_id" and v})
