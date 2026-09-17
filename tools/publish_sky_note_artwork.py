@@ -1,10 +1,12 @@
 #!/usr/bin/env python3
-"""Replace Sky Note artwork placeholders with the rendered weekly finder.
+"""Replace Sky Note artwork placeholders with rendered weekly finders.
 
 This is the publication half of the Artwork Generator: the descriptor-first Sky
-Notes generator emits the structured request, the renderer creates finder.svg,
-and this step wires the published weekly pages to that rendered artifact.  It
-never changes story or machine-descriptor links.
+Notes generator emits structured requests, the renderer creates finder.svg for
+requests it can render, and this step wires the published weekly pages to those
+rendered artifacts.  A requested week with no rendered finder is not a
+publication error: renderer output is the source of truth for what can be
+published.  This step never changes story or machine-descriptor links.
 """
 from __future__ import annotations
 
@@ -61,18 +63,27 @@ def publish_page(path: Path, year: int, week: int) -> bool:
 def main() -> None:
     start, end, weeks = parse_range_args("Publish rendered Star Almanack Sky Note artwork by inclusive ISO date range")
     changed = 0
+    published = 0
+    skipped = 0
     for item in weeks:
         week_key = f"W{item.week:02d}"
         artwork = ARTWORK_ROOT / str(item.year) / week_key / "finder.svg"
         if not artwork.exists():
-            raise RuntimeError(f"Rendered artwork is missing: {artwork.relative_to(ROOT)}")
+            print(f"No rendered artwork for {item.year}-{week_key}; skipping publication")
+            skipped += 1
+            continue
+        published += 1
         for root in PAGE_ROOTS:
             page = root / str(item.year) / week_key / "index.html"
             if not page.exists():
                 raise RuntimeError(f"Weekly page is missing: {page.relative_to(ROOT)}")
             if publish_page(page, item.year, item.week):
                 changed += 1
-    print(f"Published Sky Note artwork for {start.isoformat()} through {end.isoformat()}: {changed} page copies updated")
+    print(
+        f"Published Sky Note artwork for {start.isoformat()} through {end.isoformat()}: "
+        f"{published} rendered weeks, {skipped} unrendered weeks skipped, "
+        f"{changed} page copies updated"
+    )
 
 
 if __name__ == "__main__":
