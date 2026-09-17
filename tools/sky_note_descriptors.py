@@ -41,7 +41,7 @@ CONSTELLATION_GENITIVES = {
     "Vel": "Velorum", "Vir": "Virginis", "Vul": "Vulpeculae",
 }
 
-OBSERVING_CONCEPTS = {
+SOLAR_SYSTEM_OBJECT_IDS = {\n    "Sun": 1249, "Mercury": 1250, "Venus": 1251, "Earth": 1252,\n    "Mars": 1253, "Jupiter": 1254, "Saturn": 1255, "Uranus": 1256,\n    "Neptune": 1257, "Ceres": 1258, "Pluto": 1259,\n}\n\nOBSERVING_CONCEPTS = {
     "ecliptic-longitude": {
         "name": "ecliptic longitude",
         "type": "observing-concept",
@@ -332,7 +332,7 @@ def build_descriptors(
         add_constellation(con)
 
     def add_planet(name: str) -> None:
-        descriptor_id = f"planet-{slugify(name)}"
+        descriptor_id = str(SOLAR_SYSTEM_OBJECT_IDS[name])
         add(_base(
             descriptor_id,
             "planet",
