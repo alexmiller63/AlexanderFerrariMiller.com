@@ -177,6 +177,8 @@ def main():
         group_matches = []
         used_existing_ids = set()
         new_groups = []
+        identity_collisions = []
+        split_collisions = []
         for group, aliases in prepared:
             matches = {
                 alias_index[alias_key(alias)]
@@ -184,15 +186,30 @@ def main():
                 if alias["namespace"] in MATCH_NAMESPACES and alias_key(alias) in alias_index
             }
             if len(matches) > 1:
-                raise SystemExit(f"Current physical group {group['provisional_group_id']} matches multiple permanent IDs: {sorted(matches)}")
+                identity_collisions.append((group["provisional_group_id"], sorted(matches)))
+                continue
             if matches:
                 fixed_id = next(iter(matches))
                 if fixed_id in used_existing_ids:
-                    raise SystemExit(f"Permanent ID {fixed_id} matches more than one current physical group; possible split requires review.")
+                    split_collisions.append((fixed_id, group["provisional_group_id"]))
+                    continue
                 used_existing_ids.add(fixed_id)
                 group_matches.append((fixed_id, group, aliases))
             else:
                 new_groups.append((group, aliases))
+
+        if identity_collisions or split_collisions:
+            print("Fixed-object identity validation failed:")
+            if identity_collisions:
+                print("\nPhysical groups matching multiple permanent IDs:")
+                for group_id, matches in identity_collisions:
+                    print(f"  Physical group {group_id} -> permanent IDs {matches}")
+            if split_collisions:
+                print("\nPermanent IDs matching more than one current physical group:")
+                for fixed_id, group_id in split_collisions:
+                    print(f"  Permanent ID {fixed_id} -> additional physical group {group_id}")
+            total = len(identity_collisions) + len(split_collisions)
+            raise SystemExit(f"\n{total} fixed-object identity collision(s) require review; registry not built.")
 
         preserved = len(group_matches)
         next_id = max(by_id, default=0) + 1
