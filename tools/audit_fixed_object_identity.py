@@ -201,14 +201,16 @@ def reconcile(cs,resolved_constellation_ids=None):
 def apply_catalog_target_layer(cs):
     layer=read_json(TARGET_LAYER); validation={"path":str(TARGET_LAYER.relative_to(ROOT)),"loaded":layer is not None,"catalog_entry_count":0,"resolved_entry_count":0,"excluded_catalog_target_candidate_count":0,"physical_candidate_entry_count":0,"unresolved_target_identifier_count":0,"unresolved_target_identifiers":[],"errors":[],"warnings":[]}
     if layer is None: validation["errors"].append("catalog target relationship layer is missing"); return validation
-    entries=layer.get("catalog_entries") or []; validation["catalog_entry_count"]=len(entries); cmap={c["candidate_id"]:c for c in cs}; by_source_key={(c["source"],str(c["source_key"])):c for c in cs}; identifiers=defaultdict(list)
+    entries=layer.get("catalog_entries") or []; validation["catalog_entry_count"]=len(entries); by_source_key=defaultdict(list)
+    for c in cs: by_source_key[(c["source"],str(c["source_key"]))].append(c)
+    cmap={c["candidate_id"]:c for c in cs}; identifiers=defaultdict(list)
     for c in cs:
         for ident in c["identifiers"]: identifiers[(ident["namespace"],ident["value"])].append(c["candidate_id"])
     seen_candidate_ids=set()
     for entry in entries:
-        cid=entry.get("audit_candidate_id"); source=entry.get("source"); source_key=str(entry.get("source_key") or ""); target_model=entry.get("target_model"); expected=by_source_key.get((source,source_key)); candidate=cmap.get(cid)
+        cid=entry.get("audit_candidate_id"); source=entry.get("source"); source_key=str(entry.get("source_key") or ""); target_model=entry.get("target_model"); candidate=cmap.get(cid); source_candidates=by_source_key.get((source,source_key),[])
         if candidate is None: validation["errors"].append(f"{entry.get('catalog_entry_key')}: audit_candidate_id {cid} does not exist"); continue
-        if expected is None or expected["candidate_id"]!=cid: validation["errors"].append(f"{entry.get('catalog_entry_key')}: source/source_key does not match candidate {cid}"); continue
+        if candidate["source"]!=source or candidate not in source_candidates: validation["errors"].append(f"{entry.get('catalog_entry_key')}: source/source_key does not match candidate {cid}"); continue
         if cid in seen_candidate_ids: validation["errors"].append(f"{entry.get('catalog_entry_key')}: candidate {cid} appears more than once"); continue
         seen_candidate_ids.add(cid); validation["resolved_entry_count"]+=1; candidate["catalog_entry_key"]=entry.get("catalog_entry_key"); candidate["catalog_target_model"]=target_model
         if target_model in PHYSICAL_TARGET_MODELS: validation["physical_candidate_entry_count"]+=1
