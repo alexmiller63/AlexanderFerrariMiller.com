@@ -55,7 +55,8 @@ jobs:
 
           with sync_playwright() as p:
               browser = p.chromium.launch()
-              page = browser.new_page()
+              context = browser.new_context()
+              page = context.new_page()
               for n in range(start, end + 1):
                   week = f'W{n:02d}'
                   url = f'{base}/site/{year}/{week}/index.html'
@@ -71,7 +72,7 @@ jobs:
                   if not href:
                       raise SystemExit(f'{week}: published Artwork link has no href')
 
-                  destination = page.context.new_page()
+                  destination = context.new_page()
                   response = destination.goto(href, wait_until='networkidle')
                   status = None if response is None else response.status
                   if response is None or not response.ok:
@@ -82,6 +83,7 @@ jobs:
                   print(f'{week}: published Chromium check passed: {href}')
                   destination.close()
                   checked += 1
+              context.close()
               browser.close()
 
           if checked == 0:
