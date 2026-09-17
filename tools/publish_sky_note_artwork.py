@@ -56,7 +56,10 @@ def load_descriptor(year: int, week: int) -> dict:
 
 
 def published_figure(year: int, week: int, descriptor: dict) -> str:
-    href = f"/sky-notes-artwork/{year}/W{week:02d}/finder.svg"
+    # Weekly pages live two directories below their page-tree root.  Use a
+    # relative URL so the link works both on the custom domain and on GitHub
+    # Pages' project-site prefix (/AlexanderFerrariMiller.com/).
+    href = f"../../../sky-notes-artwork/{year}/W{week:02d}/finder.svg"
     constellation = descriptor.get("constellation") or "the weekly sky"
     asterism = descriptor.get("asterism") or {}
     subject = f"{asterism.get('name')} in {constellation}" if asterism.get("name") else constellation
