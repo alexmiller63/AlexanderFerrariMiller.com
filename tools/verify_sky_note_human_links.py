@@ -38,8 +38,9 @@ for root in (Path("almanack"), Path("site")):
                 raise SystemExit(f"{page}: missing human target {human}")
             if f'href="/almanack/descriptors/{fixed_id}.json"' in text:
                 raise SystemExit(f"{page}: reader-facing link still points to JSON for {fixed_id}")
-            if f'href="{human}"' not in text:
-                raise SystemExit(f"{page}: missing reader-facing link {human}")
+            reader_human = "../../../" + human.lstrip("/") if human.startswith("/stories/") else human
+            if f'href="{reader_human}"' not in text:
+                raise SystemExit(f"{page}: missing reader-facing link {reader_human}")
             checked += 1
 
 if checked == 0:
