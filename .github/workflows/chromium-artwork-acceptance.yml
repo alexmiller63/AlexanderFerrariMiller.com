@@ -45,6 +45,7 @@ jobs:
           set -euo pipefail
           python - <<'PY'
           import os
+          from urllib.parse import urljoin
           from playwright.sync_api import sync_playwright
 
           year = os.environ['YEAR']
@@ -72,15 +73,16 @@ jobs:
                   if not href:
                       raise SystemExit(f'{week}: published Artwork link has no href')
 
+                  destination_url = urljoin(page.url, href)
                   destination = context.new_page()
-                  response = destination.goto(href, wait_until='networkidle')
+                  response = destination.goto(destination_url, wait_until='networkidle')
                   status = None if response is None else response.status
                   if response is None or not response.ok:
-                      raise SystemExit(f'{week}: published Artwork destination failed: HTTP {status}: {href}')
+                      raise SystemExit(f'{week}: published Artwork destination failed: HTTP {status}: {destination_url}')
                   if destination.locator('svg').count() < 1:
                       body = destination.locator('body').inner_text()[:200]
-                      raise SystemExit(f'{week}: published Artwork destination is not rendered SVG: {href}; body={body!r}')
-                  print(f'{week}: published Chromium check passed: {href}')
+                      raise SystemExit(f'{week}: published Artwork destination is not rendered SVG: {destination_url}; body={body!r}')
+                  print(f'{week}: published Chromium check passed: {destination_url}')
                   destination.close()
                   checked += 1
               context.close()
