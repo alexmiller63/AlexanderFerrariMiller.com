@@ -10,7 +10,7 @@ from almanack_sections import replace_section_inner
 from iso_date_range import group_by_year, parse_range_args
 from star_almanack_planets import load_weekly_longitudes
 import populate_sky_notes_by_date as base
-from fixed_object_stories import available_stories
+from fixed_object_stories import available_stories, reader_story_url
 from sky_note_descriptors import build_descriptors, decorate_note_html, write_descriptor_records
 
 FIXED_OBJECT_DATABASE = base.ROOT / "database" / "fixed-objects.json"
