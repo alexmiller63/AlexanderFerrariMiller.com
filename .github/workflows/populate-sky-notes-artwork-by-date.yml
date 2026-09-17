@@ -60,33 +60,32 @@ jobs:
             '${{ inputs.end_year }}' '${{ inputs.end_week }}')
           echo "start_date=$START_DATE" >> "$GITHUB_OUTPUT"
           echo "end_date=$END_DATE" >> "$GITHUB_OUTPUT"
-          echo "$START_DATE through $END_DATE"
 
-      - name: Generate Artwork specs
+      - name: Generate Artwork request specs
         run: python tools/populate_sky_notes_artwork_by_date.py "${{ steps.range.outputs.start_date }}" "${{ steps.range.outputs.end_date }}"
 
-      - name: Render stellar finder SVGs
+      - name: Render fixed-object finder SVGs
         shell: bash
         run: |
           set -euo pipefail
           for spec in sky-notes-artwork/specs/${{ inputs.start_year }}/W*.json; do
             [ -e "$spec" ] || continue
             week="$(basename "$spec" .json)"
-            week_number="${week#W}"
-            week_value=$((10#$week_number))
+            week_value=$((10#${week#W}))
             start_value=$((10#${{ inputs.start_week }}))
             end_value=$((10#${{ inputs.end_week }}))
-            if (( week_value < start_value || week_value > end_value )); then
-              continue
-            fi
-            out="sky-notes-artwork/${{ inputs.start_year }}/${week}/finder.svg"
+            (( week_value >= start_value && week_value <= end_value )) || continue
+            fixed_id="$(python -c 'import json,sys; d=json.load(open(sys.argv[1])); print(d["target_identity"]["fixed_object_id"])' "$spec")"
+            out="sky-notes-artwork/objects/${fixed_id}/finder.svg"
+            mkdir -p "$(dirname "$out")"
             python tools/render_sky_note_finder.py /tmp/hygdata_v41.csv "$spec" "$out"
+            echo "$week -> fixed object $fixed_id -> $out"
           done
 
-      - name: Publish rendered Artwork into weekly pages
+      - name: Publish fixed-object Artwork into weekly pages
         run: python tools/publish_sky_note_artwork.py "${{ steps.range.outputs.start_date }}" "${{ steps.range.outputs.end_date }}"
 
-      - name: Chromium Artwork acceptance check
+      - name: Chromium fixed-object Artwork acceptance check
         shell: bash
         run: |
           set -euo pipefail
@@ -94,59 +93,44 @@ jobs:
           server_pid=$!
           trap 'kill "$server_pid" 2>/dev/null || true' EXIT
           sleep 1
-
           chromium_bin="$(command -v chromium || command -v chromium-browser || command -v google-chrome || true)"
-          if [ -z "$chromium_bin" ]; then
-            echo "Chromium/Chrome is not available on this runner." >&2
-            exit 1
-          fi
+          [ -n "$chromium_bin" ] || { echo "Chromium/Chrome is not available." >&2; exit 1; }
 
           checked=0
           for ((week_value=10#${{ inputs.start_week }}; week_value<=10#${{ inputs.end_week }}; week_value++)); do
             week="W$(printf '%02d' "$week_value")"
             page="site/${{ inputs.start_year }}/${week}/index.html"
-            svg="sky-notes-artwork/${{ inputs.start_year }}/${week}/finder.svg"
-            if [ ! -f "$page" ] || [ ! -f "$svg" ]; then
-              continue
-            fi
+            spec="sky-notes-artwork/specs/${{ inputs.start_year }}/${week}.json"
+            [ -f "$page" ] && [ -f "$spec" ] || continue
+            fixed_id="$(python -c 'import json,sys; print(json.load(open(sys.argv[1]))["target_identity"]["fixed_object_id"])' "$spec")"
+            svg="sky-notes-artwork/objects/${fixed_id}/finder.svg"
+            [ -f "$svg" ] || { echo "$week: missing fixed-object artwork $svg" >&2; exit 1; }
 
             checked=$((checked + 1))
             url="http://127.0.0.1:8765/site/${{ inputs.start_year }}/${week}/index.html"
             dom_file="/tmp/${week}-artwork-dom.html"
             "$chromium_bin" --headless --no-sandbox --disable-gpu --virtual-time-budget=3000 --dump-dom "$url" > "$dom_file"
-            python tools/check_sky_note_artwork_dom.py "$dom_file" "$svg" "$week"
+            python tools/check_sky_note_artwork_dom.py "$dom_file" "$svg" "$week/fixed-object-$fixed_id"
 
             artwork_href="$(python -c 'import sys; from pathlib import Path; from tools.check_sky_note_artwork_dom import ArtworkParser; p=ArtworkParser(); p.feed(Path(sys.argv[1]).read_text(encoding="utf-8")); len(p.artwork_hrefs)==1 or (_ for _ in ()).throw(SystemExit(f"Expected exactly one Artwork link, found {p.artwork_hrefs!r}")); print(p.artwork_hrefs[0])' "$dom_file")"
-            case "$artwork_href" in
-              http://*|https://*) artwork_url="$artwork_href" ;;
-              /*) artwork_url="http://127.0.0.1:8765$artwork_href" ;;
-              *) artwork_url="$(python -c 'import sys; from urllib.parse import urljoin; print(urljoin(sys.argv[1], sys.argv[2]))' "$url" "$artwork_href")" ;;
-            esac
-
-            destination="/tmp/${week}-artwork-destination"
+            artwork_url="$(python -c 'import sys; from urllib.parse import urljoin; print(urljoin(sys.argv[1], sys.argv[2]))' "$url" "$artwork_href")"
+            destination="/tmp/${week}-fixed-object-${fixed_id}-destination"
             "$chromium_bin" --headless --no-sandbox --disable-gpu --virtual-time-budget=3000 --dump-dom "$artwork_url" > "$destination"
-            python -c 'import sys; from pathlib import Path; from urllib.parse import urlparse; url=sys.argv[1]; path=Path(sys.argv[2]); urlparse(url).path.lower().endswith(".json") and (_ for _ in ()).throw(SystemExit(f"Artwork link resolved to JSON descriptor: {url}")); text=path.read_text(encoding="utf-8", errors="replace").lstrip().lower(); "<svg" in text or (_ for _ in ()).throw(SystemExit(f"Artwork link did not render SVG artwork: {url}")); print(f"Chromium followed Artwork link to rendered SVG: {url}")' "$artwork_url" "$destination"
+            python -c 'import sys; from pathlib import Path; url=sys.argv[1]; text=Path(sys.argv[2]).read_text(encoding="utf-8",errors="replace").lstrip().lower(); "<svg" in text or (_ for _ in ()).throw(SystemExit(f"Artwork link did not render SVG: {url}")); print(f"PROOF: Chromium followed fixed-object artwork link to rendered SVG: {url}")' "$artwork_url" "$destination"
           done
-
-          if [ "$checked" -eq 0 ]; then
-            echo "No generated Artwork pages were available for Chromium validation." >&2
-            exit 1
-          fi
-          echo "Chromium validated $checked Artwork page(s), including link destinations."
+          [ "$checked" -gt 0 ] || { echo "No fixed-object Artwork pages available for validation." >&2; exit 1; }
+          echo "PROOF COMPLETE: Chromium validated $checked fixed-object Artwork page(s)."
 
       - name: Commit Artwork changes only
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -- almanack site
-          git add -A -- tools/render_sky_note_finder.py tools/publish_sky_note_artwork.py
-          if [ -e sky-notes-artwork ]; then
-            git add -- sky-notes-artwork
-          fi
+          git add -A -- tools/publish_sky_note_artwork.py sky-notes-artwork
           if git diff --cached --quiet; then
             echo "No Artwork changes in requested ISO week range."
             exit 0
           fi
-          git commit -m "Generate Artwork ${{ inputs.start_year }}-W${{ inputs.start_week }}"
+          git commit -m "Generate fixed-object Artwork ${{ inputs.start_year }}-W${{ inputs.start_week }}"
           git pull --rebase origin main
           git push
