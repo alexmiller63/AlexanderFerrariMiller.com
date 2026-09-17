@@ -225,7 +225,7 @@ def _figure_for_abbreviation(abbreviation: str, figures: dict) -> tuple[str, dic
     return None, None
 
 
-def _deep_sky_descriptor(raw_name: str) -> dict:
+def _deep_sky_descriptor(raw_name: str, fixed_object_id: int | None = None) -> dict:
     parts = [part.strip() for part in raw_name.split(",")]
     catalog_name = parts[0]
     object_type = parts[1] if len(parts) > 1 else "deep-sky object"
@@ -234,7 +234,7 @@ def _deep_sky_descriptor(raw_name: str) -> dict:
         match = re.search(r"\bin\s+(.+)$", parts[2], flags=re.I)
         if match:
             constellation = match.group(1).strip()
-    descriptor_id = slugify(catalog_name)
+    descriptor_id = str(fixed_object_id) if fixed_object_id is not None else slugify(catalog_name)
     summary = f"{object_type} selected as a weekly fixed-sky observing target"
     record = _base(descriptor_id, "deep-sky-object", catalog_name, summary)
     record["catalog_name"] = catalog_name
@@ -338,7 +338,7 @@ def build_descriptors(
         if item.get("type") == "star":
             add_star(item["name"], item.get("constellation"))
         elif item.get("type") == "deep-sky":
-            add(_deep_sky_descriptor(item["name"]))
+            add(_deep_sky_descriptor(item["name"], item.get("fixed_object_id")))
 
     for relation in relations:
         add_planet(relation["planet"])
