@@ -7,6 +7,7 @@ whether an object can participate in Sky Notes.
 """
 from __future__ import annotations
 
+import html
 import json
 import re
 from dataclasses import dataclass
@@ -17,14 +18,7 @@ STORIES_ROOT = ROOT / "stories"
 FIXED_OBJECT_DATABASE = ROOT / "database" / "fixed-objects.json"
 STAR_HOPS = ROOT / "guiding-star-hops.json"
 
-COLLECTIONS = {
-    "alpha-stars",
-    "beta-stars",
-    "special-stars",
-    "messier",
-    "caldwell",
-    "finest",
-}
+COLLECTIONS = {"alpha-stars", "beta-stars", "special-stars", "messier", "caldwell", "finest"}
 ARTWORK_KINDS = {"stellar-finder"}
 
 
@@ -76,16 +70,13 @@ def read_story(collection: str, fixed_object_id: int) -> Story | None:
     path = story_path(collection, fixed_object_id)
     if not path.exists():
         return None
-
     metadata, text = _split_front_matter(path.read_text(encoding="utf-8").strip())
     artwork = metadata.get("artwork") or None
     if artwork is not None and artwork not in ARTWORK_KINDS:
         raise RuntimeError(f"Unknown story artwork kind {artwork!r}: {path.relative_to(ROOT)}")
-
     match = re.match(r"^#\s+(.+?)\s*\n+(.*)$", text, flags=re.S)
     if not match:
         raise RuntimeError(f"Story must begin with one Markdown H1: {path.relative_to(ROOT)}")
-
     hed = match.group(1).strip()
     remainder = match.group(2).strip()
     parts = re.split(r"\n\s*\n", remainder, maxsplit=1)
@@ -93,7 +84,6 @@ def read_story(collection: str, fixed_object_id: int) -> Story | None:
     body = parts[1].strip() if len(parts) == 2 else ""
     if not dek:
         raise RuntimeError(f"Story must contain a dek after its H1: {path.relative_to(ROOT)}")
-
     return Story(collection, fixed_object_id, path, hed, dek, body, artwork)
 
 
@@ -133,15 +123,11 @@ def baseline_story(fixed_object_id: int) -> Story:
     name = meta.get("name") or f"Fixed object {fixed_object_id}"
     family = meta.get("object_type_family") or "fixed-sky object"
     constellation = meta.get("constellation")
-
     if family == "star":
-        kind = "star"
         location = f" in {constellation}" if constellation else ""
-        reason = f"{name} is a charted {kind}{location} selected by the Calendar as part of this week’s fixed-sky observing framework."
+        reason = f"{name} is a charted star{location} selected by the Calendar as part of this week’s fixed-sky observing framework."
     else:
-        kind = "deep-sky object"
-        reason = f"{name} is a charted {kind} selected by the Calendar as one of this week’s fixed-sky observing targets."
-
+        reason = f"{name} is a charted deep-sky object selected by the Calendar as one of this week’s fixed-sky observing targets."
     routes = _routes_for(name)
     if routes:
         route_text = " ".join(route.get("instruction", "").strip() for route in routes if route.get("instruction"))
@@ -149,8 +135,6 @@ def baseline_story(fixed_object_id: int) -> Story:
     else:
         context = f"Use its charted position in {constellation} and the surrounding figure stars to identify the field." if constellation else "Use the surrounding charted stars and finder geometry to identify the field before increasing magnification."
         body = f"Why it is here: {reason}\n\nHow to find it: {context}"
-
-    slug = re.sub(r"[^a-z0-9]+", "-", name.lower()).strip("-")
     return Story(
         collection="baseline",
         fixed_object_id=fixed_object_id,
@@ -158,8 +142,37 @@ def baseline_story(fixed_object_id: int) -> Story:
         hed=name,
         dek=reason,
         body=body,
-        url_override=f"/descriptors/{'star-' if family == 'star' else ''}{slug}.json",
+        url_override=f"/stories/baseline/{fixed_object_id}.html",
     )
+
+
+def write_public_story(story: Story) -> Path | None:
+    """Materialize generated baseline narrative as human-facing HTML.
+
+    Curated stories already have their own publishing path. Descriptor JSON is
+    deliberately not used here: descriptors remain a separate debugging/data layer.
+    """
+    if story.collection != "baseline":
+        return None
+    path = STORIES_ROOT / "baseline" / f"{story.fixed_object_id}.html"
+    path.parent.mkdir(parents=True, exist_ok=True)
+    paragraphs = "\n".join(
+        f"<p>{html.escape(' '.join(part.splitlines()))}</p>"
+        for part in re.split(r"\n\s*\n", story.body.strip()) if part.strip()
+    )
+    document = (
+        "<!doctype html>\n<html lang=\"en\">\n<head>\n"
+        "<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n"
+        f"<title>{html.escape(story.hed)} — Star Almanack Sky Notes</title>\n"
+        "</head>\n<body>\n<main class=\"sky-note-story-page\">\n"
+        f"<h1>{html.escape(story.hed)}</h1>\n"
+        f"<p class=\"sky-note-story-dek\">{html.escape(story.dek)}</p>\n"
+        f"{paragraphs}\n"
+        "</main>\n</body>\n</html>\n"
+    )
+    if not path.exists() or path.read_text(encoding="utf-8") != document:
+        path.write_text(document, encoding="utf-8")
+    return path
 
 
 def available_stories(fixed_object_id: int) -> list[Story]:
