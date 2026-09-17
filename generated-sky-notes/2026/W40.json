@@ -6,17 +6,27 @@
   "planetary_coordinate": "geocentric tropical ecliptic longitude; Monday 00:00 UTC",
   "fixed_sky": [
     {
+      "fixed_object_id": 1173,
       "type": "star",
       "name": "Alderamin",
       "constellation": "Cep"
     },
     {
-      "type": "deep-sky",
-      "name": "Sadalsuud (β Aqr)"
+      "fixed_object_id": 1177,
+      "type": "star",
+      "name": "Alfirk",
+      "constellation": "Cep"
     },
     {
+      "fixed_object_id": 399,
       "type": "deep-sky",
-      "name": "M30"
+      "name": "Great Pegasus Globular"
+    },
+    {
+      "fixed_object_id": 1178,
+      "type": "star",
+      "name": "Sadalsuud",
+      "constellation": "Aqr"
     }
   ],
   "planet_relations": [
@@ -44,7 +54,7 @@
     }
   ],
   "artwork": null,
-  "note": "ISO 2026-W40 runs from September 28 through October 4. Fixed-sky highlights include Alderamin, Sadalsuud (β Aqr), M30. Mercury is about 2.8° in ecliptic longitude from Spica in Virgo. Uranus is about 4.2° in ecliptic longitude from Aldebaran in Taurus.\n\n**Naked eye:** 🌗 Last Quarter — 13:25:04 UTC. Moderate moonlight makes timing and local sky position important for faint targets. Use Alderamin as the week’s fixed-sky framework.\n\n**Planets:** Mercury is about 2.8° in ecliptic longitude from Spica in Virgo. Uranus is about 4.2° in ecliptic longitude from Aldebaran in Taurus.\n\n**Binoculars:** Favor Sadalsuud (β Aqr), M30, Alderamin; wide fields help connect the charted geometry to the real sky.\n\n**Small telescope:** Concentrate on Sadalsuud (β Aqr), M30. Increase magnification only after the target and surrounding pattern are secure.",
+  "note": "ISO 2026-W40 runs from September 28 through October 4. Fixed-sky highlights include Alderamin, Alfirk, Great Pegasus Globular. Mercury is about 2.8° in ecliptic longitude from Spica in Virgo. Uranus is about 4.2° in ecliptic longitude from Aldebaran in Taurus.\n\n**Naked eye:** 🌗 Last Quarter — 13:25:04 UTC. Moderate moonlight makes timing and local sky position important for faint targets. Use Alderamin, Alfirk, Sadalsuud as the week’s fixed-sky framework.\n\n**Planets:** Mercury is about 2.8° in ecliptic longitude from Spica in Virgo. Uranus is about 4.2° in ecliptic longitude from Aldebaran in Taurus.\n\n**Binoculars:** Favor Great Pegasus Globular, Alderamin, Alfirk; wide fields help connect the charted geometry to the real sky.\n\n**Small telescope:** Concentrate on Great Pegasus Globular. Increase magnification only after the target and surrounding pattern are secure.",
   "descriptors": [
     {
       "schema_version": 1,
@@ -80,31 +90,144 @@
     },
     {
       "schema_version": 1,
-      "id": "sadalsuud-aqr",
-      "type": "deep-sky-object",
-      "name": "Sadalsuud (β Aqr)",
-      "summary": "deep-sky object selected as a weekly fixed-sky observing target",
+      "id": "star-alfirk",
+      "type": "star",
+      "name": "Alfirk",
+      "summary": "bright star in Cepheus used as a fixed-sky reference",
       "representation": {
-        "machine": "./sadalsuud-aqr.json",
+        "machine": "./star-alfirk.json",
         "human_source": "summary"
       },
-      "catalog_name": "Sadalsuud (β Aqr)",
-      "object_type": "deep-sky object",
-      "source_label": "Sadalsuud (β Aqr)"
+      "constellation_abbreviation": "Cep",
+      "constellation": "Cepheus"
     },
     {
       "schema_version": 1,
-      "id": "m30",
+      "id": "great-pegasus-globular",
       "type": "deep-sky-object",
-      "name": "M30",
+      "name": "Great Pegasus Globular",
       "summary": "deep-sky object selected as a weekly fixed-sky observing target",
       "representation": {
-        "machine": "./m30.json",
+        "machine": "./great-pegasus-globular.json",
         "human_source": "summary"
       },
-      "catalog_name": "M30",
+      "catalog_name": "Great Pegasus Globular",
       "object_type": "deep-sky object",
-      "source_label": "M30"
+      "source_label": "Great Pegasus Globular"
+    },
+    {
+      "schema_version": 1,
+      "id": "star-sadalsuud",
+      "type": "star",
+      "name": "Sadalsuud",
+      "summary": "bright star in Aquarius used as a fixed-sky reference",
+      "representation": {
+        "machine": "./star-sadalsuud.json",
+        "human_source": "summary"
+      },
+      "constellation_abbreviation": "Aqr",
+      "constellation": "Aquarius"
+    },
+    {
+      "schema_version": 1,
+      "id": "constellation-aquarius",
+      "type": "constellation",
+      "name": "Aquarius",
+      "summary": "constellation used by Star Almanack to organize fixed-sky objects and finder geometry",
+      "representation": {
+        "machine": "./constellation-aquarius.json",
+        "human_source": "summary"
+      },
+      "abbreviation": "Aqr",
+      "figure": {
+        "system": "Martz/MacRobert",
+        "source_name": "Aquarius",
+        "figure_paths": [
+          [
+            "Alp Aqr",
+            "HIP 110395",
+            "HIP 110960",
+            "HIP 110672",
+            "Alp Aqr",
+            "HIP 106278",
+            "HIP 102618"
+          ],
+          [
+            "HIP 111497",
+            "HIP 110960"
+          ],
+          [
+            "HIP 106278",
+            "HIP 109139"
+          ],
+          [
+            "Alp Aqr",
+            "HIP 110003",
+            "HIP 112961",
+            "HIP 114724",
+            "HIP 114855",
+            "HIP 115438"
+          ],
+          [
+            "HIP 112961",
+            "HIP 112716",
+            "HIP 113136",
+            "HIP 114855",
+            "HIP 114341"
+          ]
+        ],
+        "magnitude_cutoff": 4.0,
+        "exceptions": []
+      },
+      "asterisms": [
+        {
+          "name": "Water Jar",
+          "label_offset": [
+            0,
+            52
+          ],
+          "hide_component_labels": true,
+          "inset": true,
+          "inset_slug": "water-jar-kilroy-1919",
+          "inset_label_offsets": {
+            "HIP 110395": [
+              12,
+              8
+            ],
+            "HIP 110960": [
+              30,
+              5
+            ]
+          },
+          "paths": [
+            [
+              "HIP 110395",
+              "HIP 110960",
+              "HIP 110672"
+            ],
+            [
+              "HIP 111497",
+              "HIP 110960"
+            ]
+          ]
+        },
+        {
+          "name": "Great Square of Pegasus",
+          "label_offset": [
+            0,
+            18
+          ],
+          "paths": [
+            [
+              "Alp And",
+              "Bet Peg",
+              "Alp Peg",
+              "Gam Peg",
+              "Alp And"
+            ]
+          ]
+        }
+      ]
     },
     {
       "schema_version": 1,
@@ -307,36 +430,14 @@
         "human_source": "summary"
       },
       "abbreviation": "Tau"
-    },
-    {
-      "schema_version": 1,
-      "id": "ecliptic-longitude",
-      "type": "observing-concept",
-      "name": "ecliptic longitude",
-      "summary": "angular position measured along the ecliptic, used here for conservative weekly Solar-System comparisons",
-      "representation": {
-        "machine": "./ecliptic-longitude.json",
-        "human_source": "summary"
-      }
-    },
-    {
-      "schema_version": 1,
-      "id": "naked-eye",
-      "type": "observing-concept",
-      "name": "Naked eye",
-      "summary": "observing without optical aid",
-      "representation": {
-        "machine": "./naked-eye.json",
-        "human_source": "summary"
-      }
     }
   ],
   "calendar_fixed_object_ids": [
-    438,
+    1173,
     542,
-    523,
+    1177,
     399,
-    512,
+    1178,
     400,
     401,
     402
@@ -468,6 +569,7 @@
     "link_target": "../../descriptors/<id>.json",
     "artwork_descriptor_is_separate": true,
     "artwork_source": "explicit story front matter only",
+    "fixed_sky_identity_source": "Calendar data-fixed-object-id + database/fixed-objects.json",
     "story_identity_source": "Calendar data-fixed-object-id only",
     "story_source": "stories/<collection>/<fixed_object_id>.md",
     "inline_story_content": "hed + dek + body",

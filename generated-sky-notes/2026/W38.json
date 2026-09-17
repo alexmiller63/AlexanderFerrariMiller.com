@@ -4,7 +4,31 @@
   "status": "generated",
   "planetary_source": "weekly-ephemeris-2026.csv",
   "planetary_coordinate": "geocentric tropical ecliptic longitude; Monday 00:00 UTC",
-  "fixed_sky": [],
+  "fixed_sky": [
+    {
+      "fixed_object_id": 1159,
+      "type": "star",
+      "name": "Sualocin",
+      "constellation": "Del"
+    },
+    {
+      "fixed_object_id": 1157,
+      "type": "star",
+      "name": "Rotanev",
+      "constellation": "Del"
+    },
+    {
+      "fixed_object_id": 111,
+      "type": "star",
+      "name": "Deneb",
+      "constellation": "Cyg"
+    },
+    {
+      "fixed_object_id": 112,
+      "type": "star",
+      "name": "Aljanah"
+    }
+  ],
   "planet_relations": [
     {
       "kind": "planet-star-longitude",
@@ -18,9 +42,211 @@
       "basis": "Star Almanack preserved geocentric tropical ecliptic longitude"
     }
   ],
-  "artwork": null,
-  "note": "ISO 2026-W38 runs from September 14 through September 20. Uranus is about 4.1° in ecliptic longitude from Aldebaran in Taurus.\n\n**Naked eye:** 🌓 First Quarter — 20:43:47 UTCDeneb (α Cyg) — V 1 — Northern Summer — in the Milky WayM72 — 🔭. Moderate moonlight makes timing and local sky position important for faint targets. Use the brightest seasonal stars and the zodiac as the week’s fixed-sky framework.\n\n**Planets:** Uranus is about 4.1° in ecliptic longitude from Aldebaran in Taurus.\n\n**Binoculars:** Favor the week’s richest fixed-star fields; wide fields help connect the charted geometry to the real sky.\n\n**Small telescope:** Concentrate on the compact fixed-sky targets selected for the week. Increase magnification only after the target and surrounding pattern are secure.",
+  "artwork": {
+    "schema_version": 1,
+    "id": "2026-W38-stellar-finder",
+    "week": "2026-W38",
+    "kind": "stellar-finder",
+    "geometry": {
+      "constellation_system": "Martz/MacRobert",
+      "constellation_abbreviation": "Cyg",
+      "on_missing_geometry": "fail",
+      "invent_geometry": false
+    },
+    "style": {
+      "background": "night-sky",
+      "constellation": {
+        "stroke": "#5c8fe8",
+        "role": "ordinary constellation figure"
+      },
+      "asterism": {
+        "stroke": "#59c86d",
+        "role": "orienting asterism"
+      },
+      "target": {
+        "stroke": "#ffd84d",
+        "fill": "none",
+        "role": "open target circle"
+      },
+      "target_arrows": false
+    },
+    "constellation": "Cygnus",
+    "asterism": {
+      "id": "northern-cross",
+      "name": "Northern Cross",
+      "members": [
+        "Deneb",
+        "Sadr",
+        "Gienah",
+        "Albireo"
+      ]
+    },
+    "targets": [
+      {
+        "type": "star",
+        "name": "Sualocin"
+      },
+      {
+        "type": "star",
+        "name": "Rotanev"
+      },
+      {
+        "type": "star",
+        "name": "Deneb"
+      }
+    ],
+    "planetary_context": [
+      {
+        "kind": "planet-star-longitude",
+        "planet": "Uranus",
+        "planet_longitude_deg": 65.7,
+        "star": "Aldebaran",
+        "constellation": "Tau",
+        "star_ecliptic_longitude_deg": 69.789,
+        "star_ecliptic_latitude_deg": -5.467,
+        "longitude_separation_deg": 4.1,
+        "basis": "Star Almanack preserved geocentric tropical ecliptic longitude"
+      }
+    ],
+    "planet_plot_policy": "do not plot from longitude alone; require preserved 2-D Star Almanack position data",
+    "reference_standard": "docs/finder-standard.md",
+    "story_sources": [
+      {
+        "collection": "alpha-stars",
+        "fixed_object_id": 111,
+        "artwork": "stellar-finder"
+      }
+    ]
+  },
+  "note": "ISO 2026-W38 runs from September 14 through September 20. Fixed-sky highlights include Sualocin, Rotanev, Deneb. Uranus is about 4.1° in ecliptic longitude from Aldebaran in Taurus.\n\n**Naked eye:** 🌓 First Quarter — 20:43:47 UTCDeneb (α Cyg) — V 1 — Northern Summer — in the Milky WayM72 — 🔭. Moderate moonlight makes timing and local sky position important for faint targets. Use Sualocin, Rotanev, Deneb as the week’s fixed-sky framework.\n\n**Planets:** Uranus is about 4.1° in ecliptic longitude from Aldebaran in Taurus.\n\n**Binoculars:** Favor Sualocin, Rotanev, Deneb; wide fields help connect the charted geometry to the real sky.\n\n**Small telescope:** Concentrate on the compact fixed-sky targets selected for the week. Increase magnification only after the target and surrounding pattern are secure.",
   "descriptors": [
+    {
+      "schema_version": 1,
+      "id": "star-sualocin",
+      "type": "star",
+      "name": "Sualocin",
+      "summary": "bright star in Delphinus used as a fixed-sky reference",
+      "representation": {
+        "machine": "./star-sualocin.json",
+        "human_source": "summary"
+      },
+      "constellation_abbreviation": "Del",
+      "constellation": "Delphinus"
+    },
+    {
+      "schema_version": 1,
+      "id": "constellation-delphinus",
+      "type": "constellation",
+      "name": "Delphinus",
+      "summary": "constellation used by Star Almanack to organize fixed-sky objects and finder geometry",
+      "representation": {
+        "machine": "./constellation-delphinus.json",
+        "human_source": "summary"
+      },
+      "abbreviation": "Del"
+    },
+    {
+      "schema_version": 1,
+      "id": "star-rotanev",
+      "type": "star",
+      "name": "Rotanev",
+      "summary": "bright star in Delphinus used as a fixed-sky reference",
+      "representation": {
+        "machine": "./star-rotanev.json",
+        "human_source": "summary"
+      },
+      "constellation_abbreviation": "Del",
+      "constellation": "Delphinus"
+    },
+    {
+      "schema_version": 1,
+      "id": "star-deneb",
+      "type": "star",
+      "name": "Deneb",
+      "summary": "bright star in Cygnus used as a fixed-sky reference",
+      "representation": {
+        "machine": "./star-deneb.json",
+        "human_source": "summary"
+      },
+      "constellation_abbreviation": "Cyg",
+      "constellation": "Cygnus",
+      "position": {
+        "ra_deg": 310.35798,
+        "dec_deg": 45.280338,
+        "ecliptic_longitude_deg": 335.329224,
+        "ecliptic_latitude_deg": 59.906149
+      },
+      "representative_visual_magnitude": 1.25,
+      "guiding_asterisms": [
+        {
+          "id": "asterism-northern-cross",
+          "name": "Northern Cross",
+          "relationship": "visual-member",
+          "provenance": {
+            "source": "Astronomical League",
+            "source_url": "https://www.astroleague.org/wp-content/uploads/2025/12/Asterism_List_20251223.pdf",
+            "source_role": "verification",
+            "supports": "visual-membership"
+          }
+        },
+        {
+          "id": "asterism-summer-triangle",
+          "name": "Summer Triangle",
+          "relationship": "visual-member",
+          "provenance": {
+            "source": "NASA",
+            "source_url": "https://science.nasa.gov/solar-system/what-are-asterisms/",
+            "source_role": "verification",
+            "supports": "visual-membership"
+          }
+        }
+      ]
+    },
+    {
+      "schema_version": 1,
+      "id": "constellation-cygnus",
+      "type": "constellation",
+      "name": "Cygnus",
+      "summary": "constellation used by Star Almanack to organize fixed-sky objects and finder geometry",
+      "representation": {
+        "machine": "./constellation-cygnus.json",
+        "human_source": "summary"
+      },
+      "abbreviation": "Cyg"
+    },
+    {
+      "schema_version": 1,
+      "id": "star-aljanah",
+      "type": "star",
+      "name": "Aljanah",
+      "summary": "bright star in Cygnus used as a fixed-sky reference",
+      "representation": {
+        "machine": "./star-aljanah.json",
+        "human_source": "summary"
+      },
+      "constellation_abbreviation": "Cyg",
+      "constellation": "Cygnus",
+      "position": {
+        "ra_deg": 311.55267,
+        "dec_deg": 33.970256,
+        "ecliptic_longitude_deg": 327.745415,
+        "ecliptic_latitude_deg": 49.422315
+      },
+      "representative_visual_magnitude": 2.48,
+      "guiding_asterisms": [
+        {
+          "id": "asterism-northern-cross",
+          "name": "Northern Cross",
+          "relationship": "visual-member",
+          "provenance": {
+            "source": "Astronomical League",
+            "source_url": "https://www.astroleague.org/wp-content/uploads/2025/12/Asterism_List_20251223.pdf",
+            "source_role": "verification",
+            "supports": "visual-membership"
+          }
+        }
+      ]
+    },
     {
       "schema_version": 1,
       "id": "planet-uranus",
@@ -154,42 +380,29 @@
         "machine": "./binoculars.json",
         "human_source": "summary"
       }
-    },
-    {
-      "schema_version": 1,
-      "id": "small-telescope",
-      "type": "observing-concept",
-      "name": "Small telescope",
-      "summary": "a telescope suitable for resolving compact targets after the surrounding field is identified",
-      "representation": {
-        "machine": "./small-telescope.json",
-        "human_source": "summary"
-      }
-    },
-    {
-      "schema_version": 1,
-      "id": "zodiac",
-      "type": "observing-concept",
-      "name": "zodiac",
-      "summary": "the band of constellations along the ecliptic used to orient Solar-System objects",
-      "representation": {
-        "machine": "./zodiac.json",
-        "human_source": "summary"
-      }
     }
   ],
   "calendar_fixed_object_ids": [
-    454,
-    539,
-    466,
-    453,
+    1159,
+    1157,
+    1158,
+    111,
     390,
-    567,
+    1161,
     112,
     392,
     476
   ],
   "story_candidates": [
+    {
+      "fixed_object_id": 111,
+      "collection": "alpha-stars",
+      "hed": "The bright star that should not look this bright",
+      "dek": "Deneb looks comparable to Vega and Altair in the Summer Triangle, but it is vastly farther away and therefore enormously more luminous.",
+      "body": "That contrast is the heart of Deneb’s story. Apparent brightness tells us how much light reaches us, not how much light the star actually produces. A nearby star can look brilliant without being extraordinary; a distant star that still looks brilliant has to be pouring tremendous energy into space.\n\nDeneb is a luminous supergiant and marks the tail of Cygnus, the Swan. It is also the northern corner of the Summer Triangle, so it works simultaneously as a stellar laboratory and as one of the easiest large-scale navigation points in the summer sky.\n\nThe lesson is almost philosophical: the night sky has no depth cues. Stars that appear to sit beside one another on a flat celestial pattern can occupy radically different distances and possess radically different intrinsic powers.\n\nDeneb makes that hidden third dimension difficult to ignore.\n\nSources: ESA/Hipparcos and Gaia distance work; standard stellar references for Alpha Cygni.",
+      "url": "/stories/alpha-stars/111.html",
+      "artwork": "stellar-finder"
+    },
     {
       "fixed_object_id": 390,
       "collection": "messier",
@@ -211,6 +424,15 @@
   ],
   "inline_stories": [
     {
+      "fixed_object_id": 111,
+      "collection": "alpha-stars",
+      "hed": "The bright star that should not look this bright",
+      "dek": "Deneb looks comparable to Vega and Altair in the Summer Triangle, but it is vastly farther away and therefore enormously more luminous.",
+      "body": "That contrast is the heart of Deneb’s story. Apparent brightness tells us how much light reaches us, not how much light the star actually produces. A nearby star can look brilliant without being extraordinary; a distant star that still looks brilliant has to be pouring tremendous energy into space.\n\nDeneb is a luminous supergiant and marks the tail of Cygnus, the Swan. It is also the northern corner of the Summer Triangle, so it works simultaneously as a stellar laboratory and as one of the easiest large-scale navigation points in the summer sky.\n\nThe lesson is almost philosophical: the night sky has no depth cues. Stars that appear to sit beside one another on a flat celestial pattern can occupy radically different distances and possess radically different intrinsic powers.\n\nDeneb makes that hidden third dimension difficult to ignore.\n\nSources: ESA/Hipparcos and Gaia distance work; standard stellar references for Alpha Cygni.",
+      "url": "/stories/alpha-stars/111.html",
+      "artwork": "stellar-finder"
+    },
+    {
       "fixed_object_id": 390,
       "collection": "messier",
       "hed": "One of Messier’s farthest star cities",
@@ -231,6 +453,15 @@
   ],
   "linked_stories": [],
   "stories": [
+    {
+      "fixed_object_id": 111,
+      "collection": "alpha-stars",
+      "hed": "The bright star that should not look this bright",
+      "dek": "Deneb looks comparable to Vega and Altair in the Summer Triangle, but it is vastly farther away and therefore enormously more luminous.",
+      "body": "That contrast is the heart of Deneb’s story. Apparent brightness tells us how much light reaches us, not how much light the star actually produces. A nearby star can look brilliant without being extraordinary; a distant star that still looks brilliant has to be pouring tremendous energy into space.\n\nDeneb is a luminous supergiant and marks the tail of Cygnus, the Swan. It is also the northern corner of the Summer Triangle, so it works simultaneously as a stellar laboratory and as one of the easiest large-scale navigation points in the summer sky.\n\nThe lesson is almost philosophical: the night sky has no depth cues. Stars that appear to sit beside one another on a flat celestial pattern can occupy radically different distances and possess radically different intrinsic powers.\n\nDeneb makes that hidden third dimension difficult to ignore.\n\nSources: ESA/Hipparcos and Gaia distance work; standard stellar references for Alpha Cygni.",
+      "url": "/stories/alpha-stars/111.html",
+      "artwork": "stellar-finder"
+    },
     {
       "fixed_object_id": 390,
       "collection": "messier",
@@ -262,6 +493,7 @@
     "link_target": "../../descriptors/<id>.json",
     "artwork_descriptor_is_separate": true,
     "artwork_source": "explicit story front matter only",
+    "fixed_sky_identity_source": "Calendar data-fixed-object-id + database/fixed-objects.json",
     "story_identity_source": "Calendar data-fixed-object-id only",
     "story_source": "stories/<collection>/<fixed_object_id>.md",
     "inline_story_content": "hed + dek + body",

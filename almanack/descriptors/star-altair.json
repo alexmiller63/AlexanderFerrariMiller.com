@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "id": "star-altair",
+  "type": "star",
+  "name": "Altair",
+  "summary": "bright star in Aquila used as a fixed-sky reference",
+  "representation": {
+    "machine": "./star-altair.json",
+    "human_source": "summary"
+  },
+  "constellation_abbreviation": "Aql",
+  "constellation": "Aquila",
+  "position": {
+    "ra_deg": 297.69582,
+    "dec_deg": 8.868322,
+    "ecliptic_longitude_deg": 301.776408,
+    "ecliptic_latitude_deg": 29.303464
+  },
+  "representative_visual_magnitude": 0.76,
+  "guiding_asterisms": [
+    {
+      "id": "asterism-summer-triangle",
+      "name": "Summer Triangle",
+      "relationship": "visual-member",
+      "provenance": {
+        "source": "NASA",
+        "source_url": "https://science.nasa.gov/solar-system/what-are-asterisms/",
+        "source_role": "verification",
+        "supports": "visual-membership"
+      }
+    }
+  ]
+}

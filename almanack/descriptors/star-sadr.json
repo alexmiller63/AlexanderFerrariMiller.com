@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "id": "star-sadr",
+  "type": "star",
+  "name": "Sadr",
+  "summary": "bright star in Cygnus used as a fixed-sky reference",
+  "representation": {
+    "machine": "./star-sadr.json",
+    "human_source": "summary"
+  },
+  "constellation_abbreviation": "Cyg",
+  "constellation": "Cygnus",
+  "position": {
+    "ra_deg": 305.557095,
+    "dec_deg": 40.256679,
+    "ecliptic_longitude_deg": 324.841514,
+    "ecliptic_latitude_deg": 57.124408
+  },
+  "representative_visual_magnitude": 2.23,
+  "guiding_asterisms": [
+    {
+      "id": "asterism-northern-cross",
+      "name": "Northern Cross",
+      "relationship": "visual-member",
+      "provenance": {
+        "source": "Astronomical League",
+        "source_url": "https://www.astroleague.org/wp-content/uploads/2025/12/Asterism_List_20251223.pdf",
+        "source_role": "verification",
+        "supports": "visual-membership"
+      }
+    }
+  ]
+}

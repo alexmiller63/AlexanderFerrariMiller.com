@@ -6,8 +6,27 @@
   "planetary_coordinate": "geocentric tropical ecliptic longitude; Monday 00:00 UTC",
   "fixed_sky": [
     {
+      "fixed_object_id": 1138,
+      "type": "star",
+      "name": "Sham",
+      "constellation": "Sge"
+    },
+    {
+      "fixed_object_id": 109,
+      "type": "star",
+      "name": "Altair",
+      "constellation": "Aql"
+    },
+    {
+      "fixed_object_id": 380,
       "type": "deep-sky",
-      "name": "M71"
+      "name": "Dumbbell Nebula"
+    },
+    {
+      "fixed_object_id": 1145,
+      "type": "star",
+      "name": "Alshain",
+      "constellation": "Aql"
     }
   ],
   "planet_relations": [
@@ -34,22 +53,182 @@
       "basis": "Star Almanack preserved geocentric tropical ecliptic longitude"
     }
   ],
-  "artwork": null,
-  "note": "ISO 2026-W36 runs from August 31 through September 6. Fixed-sky highlights include M71. Venus is about 1.5° in ecliptic longitude from Spica in Virgo. Uranus is about 4.1° in ecliptic longitude from Aldebaran in Taurus.\n\n**Naked eye:** 🌗 Last Quarter — 07:51:14 UTCAltair (α Aql) — V 1 — Tropical SummerM27 — 🔭. Moderate moonlight makes timing and local sky position important for faint targets. Use the brightest seasonal stars and the zodiac as the week’s fixed-sky framework.\n\n**Planets:** Venus is about 1.5° in ecliptic longitude from Spica in Virgo. Uranus is about 4.1° in ecliptic longitude from Aldebaran in Taurus.\n\n**Binoculars:** Favor M71; wide fields help connect the charted geometry to the real sky.\n\n**Small telescope:** Concentrate on M71. Increase magnification only after the target and surrounding pattern are secure.",
+  "artwork": {
+    "schema_version": 1,
+    "id": "2026-W36-stellar-finder",
+    "week": "2026-W36",
+    "kind": "stellar-finder",
+    "geometry": {
+      "constellation_system": "Martz/MacRobert",
+      "constellation_abbreviation": "Sge",
+      "on_missing_geometry": "fail",
+      "invent_geometry": false
+    },
+    "style": {
+      "background": "night-sky",
+      "constellation": {
+        "stroke": "#5c8fe8",
+        "role": "ordinary constellation figure"
+      },
+      "asterism": {
+        "stroke": "#59c86d",
+        "role": "orienting asterism"
+      },
+      "target": {
+        "stroke": "#ffd84d",
+        "fill": "none",
+        "role": "open target circle"
+      },
+      "target_arrows": false
+    },
+    "constellation": "Sagitta",
+    "asterism": null,
+    "targets": [
+      {
+        "type": "star",
+        "name": "Sham"
+      },
+      {
+        "type": "star",
+        "name": "Altair"
+      },
+      {
+        "type": "deep-sky",
+        "name": "Dumbbell Nebula"
+      }
+    ],
+    "planetary_context": [
+      {
+        "kind": "planet-star-longitude",
+        "planet": "Venus",
+        "planet_longitude_deg": 202.367,
+        "star": "Spica",
+        "constellation": "Vir",
+        "star_ecliptic_longitude_deg": 203.841,
+        "star_ecliptic_latitude_deg": -2.054,
+        "longitude_separation_deg": 1.5,
+        "basis": "Star Almanack preserved geocentric tropical ecliptic longitude"
+      },
+      {
+        "kind": "planet-star-longitude",
+        "planet": "Uranus",
+        "planet_longitude_deg": 65.65,
+        "star": "Aldebaran",
+        "constellation": "Tau",
+        "star_ecliptic_longitude_deg": 69.789,
+        "star_ecliptic_latitude_deg": -5.467,
+        "longitude_separation_deg": 4.1,
+        "basis": "Star Almanack preserved geocentric tropical ecliptic longitude"
+      }
+    ],
+    "planet_plot_policy": "do not plot from longitude alone; require preserved 2-D Star Almanack position data",
+    "reference_standard": "docs/finder-standard.md",
+    "story_sources": [
+      {
+        "collection": "alpha-stars",
+        "fixed_object_id": 109,
+        "artwork": "stellar-finder"
+      }
+    ]
+  },
+  "note": "ISO 2026-W36 runs from August 31 through September 6. Fixed-sky highlights include Sham, Altair, Dumbbell Nebula. Venus is about 1.5° in ecliptic longitude from Spica in Virgo. Uranus is about 4.1° in ecliptic longitude from Aldebaran in Taurus.\n\n**Naked eye:** 🌗 Last Quarter — 07:51:14 UTCAltair (α Aql) — V 1 — Tropical SummerM27 — 🔭. Moderate moonlight makes timing and local sky position important for faint targets. Use Sham, Altair, Alshain as the week’s fixed-sky framework.\n\n**Planets:** Venus is about 1.5° in ecliptic longitude from Spica in Virgo. Uranus is about 4.1° in ecliptic longitude from Aldebaran in Taurus.\n\n**Binoculars:** Favor Dumbbell Nebula, Sham, Altair; wide fields help connect the charted geometry to the real sky.\n\n**Small telescope:** Concentrate on Dumbbell Nebula. Increase magnification only after the target and surrounding pattern are secure.",
   "descriptors": [
     {
       "schema_version": 1,
-      "id": "m71",
-      "type": "deep-sky-object",
-      "name": "M71",
-      "summary": "deep-sky object selected as a weekly fixed-sky observing target",
+      "id": "star-sham",
+      "type": "star",
+      "name": "Sham",
+      "summary": "bright star in Sagitta used as a fixed-sky reference",
       "representation": {
-        "machine": "./m71.json",
+        "machine": "./star-sham.json",
         "human_source": "summary"
       },
-      "catalog_name": "M71",
+      "constellation_abbreviation": "Sge",
+      "constellation": "Sagitta"
+    },
+    {
+      "schema_version": 1,
+      "id": "constellation-sagitta",
+      "type": "constellation",
+      "name": "Sagitta",
+      "summary": "constellation used by Star Almanack to organize fixed-sky objects and finder geometry",
+      "representation": {
+        "machine": "./constellation-sagitta.json",
+        "human_source": "summary"
+      },
+      "abbreviation": "Sge"
+    },
+    {
+      "schema_version": 1,
+      "id": "star-altair",
+      "type": "star",
+      "name": "Altair",
+      "summary": "bright star in Aquila used as a fixed-sky reference",
+      "representation": {
+        "machine": "./star-altair.json",
+        "human_source": "summary"
+      },
+      "constellation_abbreviation": "Aql",
+      "constellation": "Aquila",
+      "position": {
+        "ra_deg": 297.69582,
+        "dec_deg": 8.868322,
+        "ecliptic_longitude_deg": 301.776408,
+        "ecliptic_latitude_deg": 29.303464
+      },
+      "representative_visual_magnitude": 0.76,
+      "guiding_asterisms": [
+        {
+          "id": "asterism-summer-triangle",
+          "name": "Summer Triangle",
+          "relationship": "visual-member",
+          "provenance": {
+            "source": "NASA",
+            "source_url": "https://science.nasa.gov/solar-system/what-are-asterisms/",
+            "source_role": "verification",
+            "supports": "visual-membership"
+          }
+        }
+      ]
+    },
+    {
+      "schema_version": 1,
+      "id": "constellation-aquila",
+      "type": "constellation",
+      "name": "Aquila",
+      "summary": "constellation used by Star Almanack to organize fixed-sky objects and finder geometry",
+      "representation": {
+        "machine": "./constellation-aquila.json",
+        "human_source": "summary"
+      },
+      "abbreviation": "Aql"
+    },
+    {
+      "schema_version": 1,
+      "id": "dumbbell-nebula",
+      "type": "deep-sky-object",
+      "name": "Dumbbell Nebula",
+      "summary": "deep-sky object selected as a weekly fixed-sky observing target",
+      "representation": {
+        "machine": "./dumbbell-nebula.json",
+        "human_source": "summary"
+      },
+      "catalog_name": "Dumbbell Nebula",
       "object_type": "deep-sky object",
-      "source_label": "M71"
+      "source_label": "Dumbbell Nebula"
+    },
+    {
+      "schema_version": 1,
+      "id": "star-alshain",
+      "type": "star",
+      "name": "Alshain",
+      "summary": "bright star in Aquila used as a fixed-sky reference",
+      "representation": {
+        "machine": "./star-alshain.json",
+        "human_source": "summary"
+      },
+      "constellation_abbreviation": "Aql",
+      "constellation": "Aquila"
     },
     {
       "schema_version": 1,
@@ -252,73 +431,27 @@
         "human_source": "summary"
       },
       "abbreviation": "Tau"
-    },
-    {
-      "schema_version": 1,
-      "id": "ecliptic-longitude",
-      "type": "observing-concept",
-      "name": "ecliptic longitude",
-      "summary": "angular position measured along the ecliptic, used here for conservative weekly Solar-System comparisons",
-      "representation": {
-        "machine": "./ecliptic-longitude.json",
-        "human_source": "summary"
-      }
-    },
-    {
-      "schema_version": 1,
-      "id": "naked-eye",
-      "type": "observing-concept",
-      "name": "Naked eye",
-      "summary": "observing without optical aid",
-      "representation": {
-        "machine": "./naked-eye.json",
-        "human_source": "summary"
-      }
-    },
-    {
-      "schema_version": 1,
-      "id": "binoculars",
-      "type": "observing-concept",
-      "name": "Binoculars",
-      "summary": "wide-field optical aid useful for locating star fields and brighter deep-sky targets",
-      "representation": {
-        "machine": "./binoculars.json",
-        "human_source": "summary"
-      }
-    },
-    {
-      "schema_version": 1,
-      "id": "small-telescope",
-      "type": "observing-concept",
-      "name": "Small telescope",
-      "summary": "a telescope suitable for resolving compact targets after the surrounding field is identified",
-      "representation": {
-        "machine": "./small-telescope.json",
-        "human_source": "summary"
-      }
-    },
-    {
-      "schema_version": 1,
-      "id": "zodiac",
-      "type": "observing-concept",
-      "name": "zodiac",
-      "summary": "the band of constellations along the ecliptic used to orient Solar-System objects",
-      "representation": {
-        "machine": "./zodiac.json",
-        "human_source": "summary"
-      }
     }
   ],
   "calendar_fixed_object_ids": [
-    496,
-    581,
+    1138,
+    1139,
     379,
-    426,
+    109,
     380,
-    511,
+    1145,
     381
   ],
   "story_candidates": [
+    {
+      "fixed_object_id": 109,
+      "collection": "alpha-stars",
+      "hed": "The fast star at the foot of the Eagle",
+      "dek": "Altair is one of the nearest bright stars and one of the three unmistakable corners of the Summer Triangle.",
+      "body": "Its apparent simplicity hides a remarkable physical fact: Altair rotates very rapidly. The spin is fast enough to distort the star from a sphere, making it wider around its equator than from pole to pole. Modern interferometry can actually resolve that flattened shape and the resulting differences in surface temperature.\n\nThe name belongs to a much older observing tradition. Altair marks Aquila, the Eagle, and for a naked-eye observer it is the southern vertex of the enormous Summer Triangle with Vega and Deneb. That geometric role makes Altair useful before any telescope is involved: find the triangle and a large section of the northern summer sky suddenly has a framework.\n\nAltair is therefore a fine example of the two scales on which a bright star can matter. To the eye it is a point used to navigate the heavens. To modern instruments it is a nearby rotating stellar surface whose shape can be measured.\n\nSources: NASA/JPL and modern optical-interferometry studies of Altair; IAU Working Group on Star Names.",
+      "url": "/stories/alpha-stars/109.html",
+      "artwork": "stellar-finder"
+    },
     {
       "fixed_object_id": 380,
       "collection": "messier",
@@ -331,6 +464,15 @@
   ],
   "inline_stories": [
     {
+      "fixed_object_id": 109,
+      "collection": "alpha-stars",
+      "hed": "The fast star at the foot of the Eagle",
+      "dek": "Altair is one of the nearest bright stars and one of the three unmistakable corners of the Summer Triangle.",
+      "body": "Its apparent simplicity hides a remarkable physical fact: Altair rotates very rapidly. The spin is fast enough to distort the star from a sphere, making it wider around its equator than from pole to pole. Modern interferometry can actually resolve that flattened shape and the resulting differences in surface temperature.\n\nThe name belongs to a much older observing tradition. Altair marks Aquila, the Eagle, and for a naked-eye observer it is the southern vertex of the enormous Summer Triangle with Vega and Deneb. That geometric role makes Altair useful before any telescope is involved: find the triangle and a large section of the northern summer sky suddenly has a framework.\n\nAltair is therefore a fine example of the two scales on which a bright star can matter. To the eye it is a point used to navigate the heavens. To modern instruments it is a nearby rotating stellar surface whose shape can be measured.\n\nSources: NASA/JPL and modern optical-interferometry studies of Altair; IAU Working Group on Star Names.",
+      "url": "/stories/alpha-stars/109.html",
+      "artwork": "stellar-finder"
+    },
+    {
       "fixed_object_id": 380,
       "collection": "messier",
       "hed": "A dying star made the Dumbbell",
@@ -342,6 +484,15 @@
   ],
   "linked_stories": [],
   "stories": [
+    {
+      "fixed_object_id": 109,
+      "collection": "alpha-stars",
+      "hed": "The fast star at the foot of the Eagle",
+      "dek": "Altair is one of the nearest bright stars and one of the three unmistakable corners of the Summer Triangle.",
+      "body": "Its apparent simplicity hides a remarkable physical fact: Altair rotates very rapidly. The spin is fast enough to distort the star from a sphere, making it wider around its equator than from pole to pole. Modern interferometry can actually resolve that flattened shape and the resulting differences in surface temperature.\n\nThe name belongs to a much older observing tradition. Altair marks Aquila, the Eagle, and for a naked-eye observer it is the southern vertex of the enormous Summer Triangle with Vega and Deneb. That geometric role makes Altair useful before any telescope is involved: find the triangle and a large section of the northern summer sky suddenly has a framework.\n\nAltair is therefore a fine example of the two scales on which a bright star can matter. To the eye it is a point used to navigate the heavens. To modern instruments it is a nearby rotating stellar surface whose shape can be measured.\n\nSources: NASA/JPL and modern optical-interferometry studies of Altair; IAU Working Group on Star Names.",
+      "url": "/stories/alpha-stars/109.html",
+      "artwork": "stellar-finder"
+    },
     {
       "fixed_object_id": 380,
       "collection": "messier",
@@ -364,6 +515,7 @@
     "link_target": "../../descriptors/<id>.json",
     "artwork_descriptor_is_separate": true,
     "artwork_source": "explicit story front matter only",
+    "fixed_sky_identity_source": "Calendar data-fixed-object-id + database/fixed-objects.json",
     "story_identity_source": "Calendar data-fixed-object-id only",
     "story_source": "stories/<collection>/<fixed_object_id>.md",
     "inline_story_content": "hed + dek + body",

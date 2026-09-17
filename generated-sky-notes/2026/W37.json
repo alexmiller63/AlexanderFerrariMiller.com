@@ -6,13 +6,27 @@
   "planetary_coordinate": "geocentric tropical ecliptic longitude; Monday 00:00 UTC",
   "fixed_sky": [
     {
+      "fixed_object_id": 608,
+      "type": "star",
+      "name": "Algedi",
+      "constellation": "Cap"
+    },
+    {
+      "fixed_object_id": 1152,
+      "type": "star",
+      "name": "Dabih",
+      "constellation": "Cap"
+    },
+    {
+      "fixed_object_id": 110,
+      "type": "star",
+      "name": "Sadr"
+    },
+    {
+      "fixed_object_id": 1153,
       "type": "star",
       "name": "Peacock",
       "constellation": "Pav"
-    },
-    {
-      "type": "deep-sky",
-      "name": "M29"
     }
   ],
   "planet_relations": [
@@ -46,7 +60,7 @@
     "kind": "stellar-finder",
     "geometry": {
       "constellation_system": "Martz/MacRobert",
-      "constellation_abbreviation": "Pav",
+      "constellation_abbreviation": "Cap",
       "on_missing_geometry": "fail",
       "invent_geometry": false
     },
@@ -67,16 +81,20 @@
       },
       "target_arrows": false
     },
-    "constellation": "Pavo",
+    "constellation": "Capricornus",
     "asterism": null,
     "targets": [
       {
         "type": "star",
-        "name": "Peacock"
+        "name": "Algedi"
       },
       {
-        "type": "deep-sky",
-        "name": "M29"
+        "type": "star",
+        "name": "Dabih"
+      },
+      {
+        "type": "star",
+        "name": "Sadr"
       }
     ],
     "planetary_context": [
@@ -113,8 +131,91 @@
       }
     ]
   },
-  "note": "ISO 2026-W37 runs from September 7 through September 13. Fixed-sky highlights include Peacock, M29. Venus is about 3.9° in ecliptic longitude from Spica in Virgo. Uranus is about 4.1° in ecliptic longitude from Aldebaran in Taurus.\n\n**Naked eye:** 🌑 New Moon — 03:27:00 UTCα1 Cap — V 4 — Tropical SummerAlgedi (α2 Cap) — V 4 — Tropical Summer. The dark Moon favors faint targets and extended star fields. Use Peacock as the week’s fixed-sky framework.\n\n**Planets:** Venus is about 3.9° in ecliptic longitude from Spica in Virgo. Uranus is about 4.1° in ecliptic longitude from Aldebaran in Taurus.\n\n**Binoculars:** Favor M29, Peacock; wide fields help connect the charted geometry to the real sky.\n\n**Small telescope:** Concentrate on M29. Increase magnification only after the target and surrounding pattern are secure.",
+  "note": "ISO 2026-W37 runs from September 7 through September 13. Fixed-sky highlights include Algedi, Dabih, Sadr. Venus is about 3.9° in ecliptic longitude from Spica in Virgo. Uranus is about 4.1° in ecliptic longitude from Aldebaran in Taurus.\n\n**Naked eye:** 🌑 New Moon — 03:27:00 UTCα1 Cap — V 4 — Tropical SummerAlgedi (α2 Cap) — V 4 — Tropical Summer. The dark Moon favors faint targets and extended star fields. Use Algedi, Dabih, Sadr as the week’s fixed-sky framework.\n\n**Planets:** Venus is about 3.9° in ecliptic longitude from Spica in Virgo. Uranus is about 4.1° in ecliptic longitude from Aldebaran in Taurus.\n\n**Binoculars:** Favor Algedi, Dabih, Sadr; wide fields help connect the charted geometry to the real sky.\n\n**Small telescope:** Concentrate on the compact fixed-sky targets selected for the week. Increase magnification only after the target and surrounding pattern are secure.",
   "descriptors": [
+    {
+      "schema_version": 1,
+      "id": "star-algedi",
+      "type": "star",
+      "name": "Algedi",
+      "summary": "bright star in Capricornus used as a fixed-sky reference",
+      "representation": {
+        "machine": "./star-algedi.json",
+        "human_source": "summary"
+      },
+      "constellation_abbreviation": "Cap",
+      "constellation": "Capricornus"
+    },
+    {
+      "schema_version": 1,
+      "id": "constellation-capricornus",
+      "type": "constellation",
+      "name": "Capricornus",
+      "summary": "constellation used by Star Almanack to organize fixed-sky objects and finder geometry",
+      "representation": {
+        "machine": "./constellation-capricornus.json",
+        "human_source": "summary"
+      },
+      "abbreviation": "Cap"
+    },
+    {
+      "schema_version": 1,
+      "id": "star-dabih",
+      "type": "star",
+      "name": "Dabih",
+      "summary": "bright star in Capricornus used as a fixed-sky reference",
+      "representation": {
+        "machine": "./star-dabih.json",
+        "human_source": "summary"
+      },
+      "constellation_abbreviation": "Cap",
+      "constellation": "Capricornus"
+    },
+    {
+      "schema_version": 1,
+      "id": "star-sadr",
+      "type": "star",
+      "name": "Sadr",
+      "summary": "bright star in Cygnus used as a fixed-sky reference",
+      "representation": {
+        "machine": "./star-sadr.json",
+        "human_source": "summary"
+      },
+      "constellation_abbreviation": "Cyg",
+      "constellation": "Cygnus",
+      "position": {
+        "ra_deg": 305.557095,
+        "dec_deg": 40.256679,
+        "ecliptic_longitude_deg": 324.841514,
+        "ecliptic_latitude_deg": 57.124408
+      },
+      "representative_visual_magnitude": 2.23,
+      "guiding_asterisms": [
+        {
+          "id": "asterism-northern-cross",
+          "name": "Northern Cross",
+          "relationship": "visual-member",
+          "provenance": {
+            "source": "Astronomical League",
+            "source_url": "https://www.astroleague.org/wp-content/uploads/2025/12/Asterism_List_20251223.pdf",
+            "source_role": "verification",
+            "supports": "visual-membership"
+          }
+        }
+      ]
+    },
+    {
+      "schema_version": 1,
+      "id": "constellation-cygnus",
+      "type": "constellation",
+      "name": "Cygnus",
+      "summary": "constellation used by Star Almanack to organize fixed-sky objects and finder geometry",
+      "representation": {
+        "machine": "./constellation-cygnus.json",
+        "human_source": "summary"
+      },
+      "abbreviation": "Cyg"
+    },
     {
       "schema_version": 1,
       "id": "star-peacock",
@@ -146,56 +247,6 @@
         "human_source": "summary"
       },
       "abbreviation": "Pav"
-    },
-    {
-      "schema_version": 1,
-      "id": "m29",
-      "type": "deep-sky-object",
-      "name": "M29",
-      "summary": "deep-sky object selected as a weekly fixed-sky observing target",
-      "representation": {
-        "machine": "./m29.json",
-        "human_source": "summary"
-      },
-      "catalog_name": "M29",
-      "object_type": "deep-sky object",
-      "guiding_asterisms": [
-        {
-          "id": "asterism-northern-cross",
-          "name": "Northern Cross",
-          "relationship": "star-hop-anchor",
-          "relationship_route_ids": [
-            "northern-cross-sadr-m29"
-          ],
-          "provenance": {
-            "source": "Astronomical League",
-            "source_url": "https://www.astroleague.org/wp-content/uploads/2025/12/Asterism_List_20251223.pdf",
-            "source_role": "verification",
-            "supports": "asterism-definition"
-          }
-        }
-      ],
-      "star_hops": [
-        {
-          "id": "northern-cross-sadr-m29",
-          "target_type": "deep-sky-object",
-          "target": "M29",
-          "steps": [
-            "Northern Cross",
-            "Sadr",
-            "M29"
-          ],
-          "instruction": "Find the Northern Cross, center on Sadr, then move about 1.8° south to M29.",
-          "instruction_authorship": "Star Almanack original wording",
-          "provenance": {
-            "source": "Astronomy Magazine",
-            "source_url": "https://www.astronomy.com/science/open-cluster-m29-spiral-galaxy-ngc-6951-and-the-egg-nebula/",
-            "source_role": "verification",
-            "supports": "star-hop-method"
-          }
-        }
-      ],
-      "source_label": "M29"
     },
     {
       "schema_version": 1,
@@ -386,60 +437,15 @@
           }
         }
       ]
-    },
-    {
-      "schema_version": 1,
-      "id": "constellation-taurus",
-      "type": "constellation",
-      "name": "Taurus",
-      "summary": "constellation used by Star Almanack to organize fixed-sky objects and finder geometry",
-      "representation": {
-        "machine": "./constellation-taurus.json",
-        "human_source": "summary"
-      },
-      "abbreviation": "Tau"
-    },
-    {
-      "schema_version": 1,
-      "id": "ecliptic-longitude",
-      "type": "observing-concept",
-      "name": "ecliptic longitude",
-      "summary": "angular position measured along the ecliptic, used here for conservative weekly Solar-System comparisons",
-      "representation": {
-        "machine": "./ecliptic-longitude.json",
-        "human_source": "summary"
-      }
-    },
-    {
-      "schema_version": 1,
-      "id": "naked-eye",
-      "type": "observing-concept",
-      "name": "Naked eye",
-      "summary": "observing without optical aid",
-      "representation": {
-        "machine": "./naked-eye.json",
-        "human_source": "summary"
-      }
-    },
-    {
-      "schema_version": 1,
-      "id": "binoculars",
-      "type": "observing-concept",
-      "name": "Binoculars",
-      "summary": "wide-field optical aid useful for locating star fields and brighter deep-sky targets",
-      "representation": {
-        "machine": "./binoculars.json",
-        "human_source": "summary"
-      }
     }
   ],
   "calendar_fixed_object_ids": [
     384,
     607,
     608,
-    519,
+    1152,
     110,
-    482
+    1153
   ],
   "story_candidates": [
     {
@@ -514,6 +520,7 @@
     "link_target": "../../descriptors/<id>.json",
     "artwork_descriptor_is_separate": true,
     "artwork_source": "explicit story front matter only",
+    "fixed_sky_identity_source": "Calendar data-fixed-object-id + database/fixed-objects.json",
     "story_identity_source": "Calendar data-fixed-object-id only",
     "story_source": "stories/<collection>/<fixed_object_id>.md",
     "inline_story_content": "hed + dek + body",

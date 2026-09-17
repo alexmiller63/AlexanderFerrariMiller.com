@@ -4,7 +4,14 @@
   "status": "generated",
   "planetary_source": "weekly-ephemeris-2026.csv",
   "planetary_coordinate": "geocentric tropical ecliptic longitude; Monday 00:00 UTC",
-  "fixed_sky": [],
+  "fixed_sky": [
+    {
+      "fixed_object_id": 1172,
+      "type": "star",
+      "name": "Kitalpha",
+      "constellation": "Equ"
+    }
+  ],
   "planet_relations": [
     {
       "kind": "planet-star-longitude",
@@ -19,8 +26,33 @@
     }
   ],
   "artwork": null,
-  "note": "ISO 2026-W39 runs from September 21 through September 27. Uranus is about 4.1° in ecliptic longitude from Aldebaran in Taurus.\n\n**Naked eye:** 🌕 Full Moon · Harvest Moon — 16:49:02 UTC. Bright moonlight favors prominent stars and planets while reducing contrast on faint deep-sky objects. Use the brightest seasonal stars and the zodiac as the week’s fixed-sky framework.\n\n**Planets:** Uranus is about 4.1° in ecliptic longitude from Aldebaran in Taurus.\n\n**Binoculars:** Favor the week’s richest fixed-star fields; wide fields help connect the charted geometry to the real sky.\n\n**Small telescope:** Concentrate on the compact fixed-sky targets selected for the week. Increase magnification only after the target and surrounding pattern are secure.",
+  "note": "ISO 2026-W39 runs from September 21 through September 27. Fixed-sky highlights include Kitalpha. Uranus is about 4.1° in ecliptic longitude from Aldebaran in Taurus.\n\n**Naked eye:** 🌕 Full Moon · Harvest Moon — 16:49:02 UTC. Bright moonlight favors prominent stars and planets while reducing contrast on faint deep-sky objects. Use Kitalpha as the week’s fixed-sky framework.\n\n**Planets:** Uranus is about 4.1° in ecliptic longitude from Aldebaran in Taurus.\n\n**Binoculars:** Favor Kitalpha; wide fields help connect the charted geometry to the real sky.\n\n**Small telescope:** Concentrate on the compact fixed-sky targets selected for the week. Increase magnification only after the target and surrounding pattern are secure.",
   "descriptors": [
+    {
+      "schema_version": 1,
+      "id": "star-kitalpha",
+      "type": "star",
+      "name": "Kitalpha",
+      "summary": "bright star in Equuleus used as a fixed-sky reference",
+      "representation": {
+        "machine": "./star-kitalpha.json",
+        "human_source": "summary"
+      },
+      "constellation_abbreviation": "Equ",
+      "constellation": "Equuleus"
+    },
+    {
+      "schema_version": 1,
+      "id": "constellation-equuleus",
+      "type": "constellation",
+      "name": "Equuleus",
+      "summary": "constellation used by Star Almanack to organize fixed-sky objects and finder geometry",
+      "representation": {
+        "machine": "./constellation-equuleus.json",
+        "human_source": "summary"
+      },
+      "abbreviation": "Equ"
+    },
     {
       "schema_version": 1,
       "id": "planet-uranus",
@@ -180,9 +212,9 @@
   ],
   "calendar_fixed_object_ids": [
     561,
-    551,
+    1167,
     479,
-    457
+    1172
   ],
   "story_candidates": [],
   "inline_stories": [],
@@ -200,6 +232,7 @@
     "link_target": "../../descriptors/<id>.json",
     "artwork_descriptor_is_separate": true,
     "artwork_source": "explicit story front matter only",
+    "fixed_sky_identity_source": "Calendar data-fixed-object-id + database/fixed-objects.json",
     "story_identity_source": "Calendar data-fixed-object-id only",
     "story_source": "stories/<collection>/<fixed_object_id>.md",
     "inline_story_content": "hed + dek + body",
