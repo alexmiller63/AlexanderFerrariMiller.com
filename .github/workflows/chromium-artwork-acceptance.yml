@@ -30,80 +30,61 @@ jobs:
         with:
           ref: main
 
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
+      - name: Install Playwright Chromium
+        run: |
+          python -m pip install playwright
+          python -m playwright install --with-deps chromium
 
-      - name: Chromium Artwork acceptance check
+      - name: Validate published GitHub Pages artwork
         shell: bash
+        env:
+          YEAR: ${{ inputs.year }}
+          START_WEEK: ${{ inputs.start_week }}
+          END_WEEK: ${{ inputs.end_week }}
         run: |
           set -euo pipefail
-          python -m http.server 8765 --directory . >/tmp/artwork-http.log 2>&1 &
-          server_pid=$!
-          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
-          sleep 1
+          python - <<'PY'
+          import os
+          from playwright.sync_api import sync_playwright
 
-          chromium_bin="$(command -v chromium || command -v chromium-browser || command -v google-chrome || true)"
-          if [ -z "$chromium_bin" ]; then
-            echo "Chromium/Chrome is not available on this runner." >&2
-            exit 1
-          fi
+          year = os.environ['YEAR']
+          start = int(os.environ['START_WEEK'])
+          end = int(os.environ['END_WEEK'])
+          base = 'https://alexmiller63.github.io/AlexanderFerrariMiller.com'
+          checked = 0
 
-          checked=0
-          for ((week_value=10#${{ inputs.start_week }}; week_value<=10#${{ inputs.end_week }}; week_value++)); do
-            week="W$(printf '%02d' "$week_value")"
-            page="site/${{ inputs.year }}/${week}/index.html"
-            svg="sky-notes-artwork/${{ inputs.year }}/${week}/finder.svg"
-            if [ ! -f "$page" ] || [ ! -f "$svg" ]; then
-              continue
-            fi
+          with sync_playwright() as p:
+              browser = p.chromium.launch()
+              page = browser.new_page()
+              for n in range(start, end + 1):
+                  week = f'W{n:02d}'
+                  url = f'{base}/site/{year}/{week}/index.html'
+                  response = page.goto(url, wait_until='networkidle')
+                  status = None if response is None else response.status
+                  if response is None or not response.ok:
+                      raise SystemExit(f'{week}: published week page failed: HTTP {status}: {url}')
 
-            checked=$((checked + 1))
-            url="http://127.0.0.1:8765/site/${{ inputs.year }}/${week}/index.html"
-            dom_file="/tmp/${week}-artwork-dom.html"
-            "$chromium_bin" --headless --no-sandbox --disable-gpu --virtual-time-budget=3000 --dump-dom "$url" > "$dom_file"
-            python tools/check_sky_note_artwork_dom.py "$dom_file" "$svg" "$week"
+                  artwork = page.locator('figure.sky-note-artwork a', has_text='Artwork')
+                  if artwork.count() != 1:
+                      raise SystemExit(f'{week}: expected exactly one published Artwork link, found {artwork.count()}')
+                  href = artwork.first.get_attribute('href')
+                  if not href:
+                      raise SystemExit(f'{week}: published Artwork link has no href')
 
-            artwork_href="$(python - "$dom_file" <<'PY'
-import sys
-from pathlib import Path
-from tools.check_sky_note_artwork_dom import ArtworkParser
-p = ArtworkParser()
-p.feed(Path(sys.argv[1]).read_text(encoding='utf-8'))
-if len(p.artwork_hrefs) != 1:
-    raise SystemExit(f'Expected exactly one Artwork link, found {p.artwork_hrefs!r}')
-print(p.artwork_hrefs[0])
-PY
-)"
-            case "$artwork_href" in
-              http://*|https://*) artwork_url="$artwork_href" ;;
-              /*) artwork_url="http://127.0.0.1:8765$artwork_href" ;;
-              *) artwork_url="$(python - "$url" "$artwork_href" <<'PY'
-import sys
-from urllib.parse import urljoin
-print(urljoin(sys.argv[1], sys.argv[2]))
-PY
-)" ;;
-            esac
+                  destination = page.context.new_page()
+                  response = destination.goto(href, wait_until='networkidle')
+                  status = None if response is None else response.status
+                  if response is None or not response.ok:
+                      raise SystemExit(f'{week}: published Artwork destination failed: HTTP {status}: {href}')
+                  if destination.locator('svg').count() < 1:
+                      body = destination.locator('body').inner_text()[:200]
+                      raise SystemExit(f'{week}: published Artwork destination is not rendered SVG: {href}; body={body!r}')
+                  print(f'{week}: published Chromium check passed: {href}')
+                  destination.close()
+                  checked += 1
+              browser.close()
 
-            destination="/tmp/${week}-artwork-destination"
-            "$chromium_bin" --headless --no-sandbox --disable-gpu --virtual-time-budget=3000 --dump-dom "$artwork_url" > "$destination"
-            python - "$artwork_url" "$destination" <<'PY'
-import sys
-from pathlib import Path
-from urllib.parse import urlparse
-url, path = sys.argv[1], Path(sys.argv[2])
-if urlparse(url).path.lower().endswith('.json'):
-    raise SystemExit(f'Artwork link resolved to JSON descriptor: {url}')
-text = path.read_text(encoding='utf-8', errors='replace').lstrip().lower()
-if '<svg' not in text:
-    raise SystemExit(f'Artwork link did not render SVG artwork: {url}')
-print(f'Chromium followed Artwork link to rendered SVG: {url}')
-PY
-          done
-
-          if [ "$checked" -eq 0 ]; then
-            echo "No generated Artwork pages were available for Chromium validation." >&2
-            exit 1
-          fi
-          echo "Chromium validated $checked Artwork page(s), including link destinations."
+          if checked == 0:
+              raise SystemExit('No published Artwork pages were checked.')
+          print(f'Chromium validated {checked} published GitHub Pages Artwork page(s).')
+          PY
