@@ -75,11 +75,11 @@ jobs:
             start_value=$((10#${{ inputs.start_week }}))
             end_value=$((10#${{ inputs.end_week }}))
             (( week_value >= start_value && week_value <= end_value )) || continue
-            fixed_id="$(python -c 'import json,sys; d=json.load(open(sys.argv[1])); print(d["target_identity"]["fixed_object_id"])' "$spec")"
+            fixed_id="$(python -c 'import json,sys; d=json.load(open(sys.argv[1])); print(d["artwork_owner_identity"]["fixed_object_id"])' "$spec")"
             out="sky-notes-artwork/objects/${fixed_id}/finder.svg"
             mkdir -p "$(dirname "$out")"
             python tools/render_sky_note_finder.py /tmp/hygdata_v41.csv "$spec" "$out"
-            echo "$week -> fixed object $fixed_id -> $out"
+            echo "$week -> artwork owner fixed object $fixed_id -> $out"
           done
 
       - name: Publish fixed-object Artwork into weekly pages
@@ -102,9 +102,9 @@ jobs:
             page="site/${{ inputs.start_year }}/${week}/index.html"
             spec="sky-notes-artwork/specs/${{ inputs.start_year }}/${week}.json"
             [ -f "$page" ] && [ -f "$spec" ] || continue
-            fixed_id="$(python -c 'import json,sys; print(json.load(open(sys.argv[1]))["target_identity"]["fixed_object_id"])' "$spec")"
+            fixed_id="$(python -c 'import json,sys; print(json.load(open(sys.argv[1]))["artwork_owner_identity"]["fixed_object_id"])' "$spec")"
             svg="sky-notes-artwork/objects/${fixed_id}/finder.svg"
-            [ -f "$svg" ] || { echo "$week: missing fixed-object artwork $svg" >&2; exit 1; }
+            [ -f "$svg" ] || { echo "$week: missing artwork-owner asset $svg" >&2; exit 1; }
 
             checked=$((checked + 1))
             url="http://127.0.0.1:8765/site/${{ inputs.start_year }}/${week}/index.html"
@@ -116,7 +116,7 @@ jobs:
             artwork_url="$(python -c 'import sys; from urllib.parse import urljoin; print(urljoin(sys.argv[1], sys.argv[2]))' "$url" "$artwork_href")"
             destination="/tmp/${week}-fixed-object-${fixed_id}-destination"
             "$chromium_bin" --headless --no-sandbox --disable-gpu --virtual-time-budget=3000 --dump-dom "$artwork_url" > "$destination"
-            python -c 'import sys; from pathlib import Path; url=sys.argv[1]; text=Path(sys.argv[2]).read_text(encoding="utf-8",errors="replace").lstrip().lower(); "<svg" in text or (_ for _ in ()).throw(SystemExit(f"Artwork link did not render SVG: {url}")); print(f"PROOF: Chromium followed fixed-object artwork link to rendered SVG: {url}")' "$artwork_url" "$destination"
+            python -c 'import sys; from pathlib import Path; url=sys.argv[1]; text=Path(sys.argv[2]).read_text(encoding="utf-8",errors="replace").lstrip().lower(); "<svg" in text or (_ for _ in ()).throw(SystemExit(f"Artwork link did not render SVG: {url}")); print(f"PROOF: Chromium followed artwork-owner link to rendered SVG: {url}")' "$artwork_url" "$destination"
           done
           [ "$checked" -gt 0 ] || { echo "No fixed-object Artwork pages available for validation." >&2; exit 1; }
           echo "PROOF COMPLETE: Chromium validated $checked fixed-object Artwork page(s)."
