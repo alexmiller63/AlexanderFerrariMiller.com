@@ -41,7 +41,23 @@ CONSTELLATION_GENITIVES = {
     "Vel": "Velorum", "Vir": "Virginis", "Vul": "Vulpeculae",
 }
 
-SOLAR_SYSTEM_OBJECT_IDS = {\n    "Sun": 1249, "Mercury": 1250, "Venus": 1251, "Earth": 1252,\n    "Mars": 1253, "Jupiter": 1254, "Saturn": 1255, "Uranus": 1256,\n    "Neptune": 1257, "Ceres": 1258, "Pluto": 1259,\n}\n\nOBSERVING_CONCEPTS = {
+SOLAR_SYSTEM_OBJECT_IDS = {
+    # Canonical Star Almanack order. These IDs are permanent database keys.
+    "Sun": 1249,
+    "Mercury": 1250,
+    "Venus": 1251,
+    "Earth": 1252,
+    "Moon": 1253,
+    "Mars": 1254,
+    "Ceres": 1255,
+    "Jupiter": 1256,
+    "Saturn": 1257,
+    "Uranus": 1258,
+    "Neptune": 1259,
+    "Pluto": 1260,
+}
+
+OBSERVING_CONCEPTS = {
     "ecliptic-longitude": {
         "name": "ecliptic longitude",
         "type": "observing-concept",
