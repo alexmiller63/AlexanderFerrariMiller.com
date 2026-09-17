@@ -11,6 +11,8 @@ import json
 import re
 from pathlib import Path
 
+from fixed_object_stories import available_stories
+
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE_ROOT = ROOT
 CANONICAL_ROOT = SOURCE_ROOT / "descriptors"
@@ -237,6 +239,10 @@ def _deep_sky_descriptor(raw_name: str, fixed_object_id: int | None = None) -> d
     descriptor_id = str(fixed_object_id) if fixed_object_id is not None else slugify(catalog_name)
     summary = f"{object_type} selected as a weekly fixed-sky observing target"
     record = _base(descriptor_id, "deep-sky-object", catalog_name, summary)
+    if fixed_object_id is not None:
+        stories = available_stories(fixed_object_id)
+        if stories:
+            record["representation"]["human"] = stories[0].public_url
     record["catalog_name"] = catalog_name
     record["object_type"] = object_type
     if constellation:
