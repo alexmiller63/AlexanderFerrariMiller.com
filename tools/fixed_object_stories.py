@@ -163,10 +163,10 @@ def baseline_story(fixed_object_id: int) -> Story:
 
 
 def available_stories(fixed_object_id: int) -> list[Story]:
-    """Return baseline first, followed by every curated enrichment for this ID."""
-    stories = [baseline_story(fixed_object_id)]
+    """Return curated stories when present; use the machine-derived baseline only as fallback."""
+    stories = []
     for collection in sorted(COLLECTIONS):
         story = read_story(collection, fixed_object_id)
         if story is not None:
             stories.append(story)
-    return stories
+    return stories or [baseline_story(fixed_object_id)]
