@@ -211,7 +211,7 @@ def descriptor_policy() -> dict:
         "story_limit": None,
         "wordy_policy": "emit every qualified story inline; no editorial cap",
         "future_presentations": ["Highlights"],
-        "link_target": "../../descriptors/<id>.json",
+        "link_target": "/almanack/descriptors/<fixed_object_id>.json for fixed-object descriptors",
         "artwork_descriptor_is_separate": True,
         "artwork_source": "explicit story front matter only",
         "fixed_sky_identity_source": "Calendar data-fixed-object-id + database/fixed-objects.json",
