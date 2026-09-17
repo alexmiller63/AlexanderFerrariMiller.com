@@ -254,13 +254,18 @@ def patch_page(path, payload: dict) -> bool:
     inline = render_inline_stories(payload.get("inline_stories", []))
     linked = render_linked_stories(payload.get("linked_stories", []))
     placeholder = base.render_artwork_placeholder(payload["artwork"])
+    # Populate must not erase artwork already published by the artwork workflow.
+    # Preserve the rendered figure across idempotent Sky Notes regeneration; the
+    # artwork publisher will replace it later when the descriptor actually changes.
+    published_match = re.search(r'<figure class="sky-note-artwork">.*?</figure>', text, flags=re.S)
+    artwork_slot = published_match.group(0) if published_match is not None else placeholder
     body = rendered + "\n"
     if inline:
         body += inline + "\n"
     if linked:
         body += linked + "\n"
-    if placeholder:
-        body += placeholder + "\n"
+    if artwork_slot:
+        body += artwork_slot + "\n"
     section_html = '<h3>Sky Notes</h3><div class="sky-note">\n' + body + '</div>'
     new = replace_section_inner(text, 5, section_html, path)
     if new == text:
