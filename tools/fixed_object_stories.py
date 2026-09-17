@@ -1,23 +1,21 @@
 #!/usr/bin/env python3
 """Evergreen fixed-object story lookup for Star Almanack.
 
-Story source is deliberately separate from database facts. A story lives at
-stories/{collection}/{fixed_object_id}.md. Optional Jekyll front matter may
-declare machine-readable story metadata. The Markdown H1 is the hed, the first
-paragraph after the H1 is the dek, and the remaining Markdown is body.
-
-Consumers pass a collection and permanent fixed_object_id. No object name is
-used as an inter-layer key. Artwork is never inferred from story prose: a story
-must explicitly declare `artwork: stellar-finder` in front matter to request it.
+Every permanent fixed-object ID has a baseline story assembled from authoritative
+Star Almanack data. Curated Markdown stories enrich that baseline; they never gate
+whether an object can participate in Sky Notes.
 """
 from __future__ import annotations
 
+import json
 import re
 from dataclasses import dataclass
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 STORIES_ROOT = ROOT / "stories"
+FIXED_OBJECT_DATABASE = ROOT / "database" / "fixed-objects.json"
+STAR_HOPS = ROOT / "guiding-star-hops.json"
 
 COLLECTIONS = {
     "alpha-stars",
@@ -39,9 +37,12 @@ class Story:
     dek: str
     body: str
     artwork: str | None = None
+    url_override: str | None = None
 
     @property
     def public_url(self) -> str:
+        if self.url_override:
+            return self.url_override
         return f"/stories/{self.collection}/{self.fixed_object_id}.html"
 
 
@@ -96,8 +97,74 @@ def read_story(collection: str, fixed_object_id: int) -> Story | None:
     return Story(collection, fixed_object_id, path, hed, dek, body, artwork)
 
 
+def _fixed_object_meta(fixed_object_id: int) -> dict:
+    payload = json.loads(FIXED_OBJECT_DATABASE.read_text(encoding="utf-8"))
+    for obj in payload.get("fixed_objects") or []:
+        if obj.get("fixed_object_id") != fixed_object_id:
+            continue
+        meta = {"fixed_object_id": fixed_object_id}
+        for record in obj.get("source_records") or []:
+            facts = record.get("facts") or {}
+            if facts.get("name") and not meta.get("name"):
+                meta["name"] = facts["name"]
+            if facts.get("constellation") and not meta.get("constellation"):
+                meta["constellation"] = facts["constellation"]
+            if facts.get("object_type_family") and not meta.get("object_type_family"):
+                meta["object_type_family"] = facts["object_type_family"]
+            if record.get("source") == "fixed-objects.yaml:bayer":
+                if facts.get("name"):
+                    meta["name"] = facts["name"]
+                if facts.get("constellation"):
+                    meta["constellation"] = facts["constellation"]
+        return meta
+    raise RuntimeError(f"Unknown fixed_object_id {fixed_object_id}")
+
+
+def _routes_for(name: str) -> list[dict]:
+    if not STAR_HOPS.exists():
+        return []
+    payload = json.loads(STAR_HOPS.read_text(encoding="utf-8"))
+    return [route for route in payload.get("routes") or [] if route.get("target") == name]
+
+
+def baseline_story(fixed_object_id: int) -> Story:
+    """Build the always-present baseline note for one permanent fixed-object ID."""
+    meta = _fixed_object_meta(fixed_object_id)
+    name = meta.get("name") or f"Fixed object {fixed_object_id}"
+    family = meta.get("object_type_family") or "fixed-sky object"
+    constellation = meta.get("constellation")
+
+    if family == "star":
+        kind = "star"
+        location = f" in {constellation}" if constellation else ""
+        reason = f"{name} is a charted {kind}{location} selected by the Calendar as part of this week’s fixed-sky observing framework."
+    else:
+        kind = "deep-sky object"
+        reason = f"{name} is a charted {kind} selected by the Calendar as one of this week’s fixed-sky observing targets."
+
+    routes = _routes_for(name)
+    if routes:
+        route_text = " ".join(route.get("instruction", "").strip() for route in routes if route.get("instruction"))
+        body = f"Why it is here: {reason}\n\nHow to find it: {route_text}"
+    else:
+        context = f"Use its charted position in {constellation} and the surrounding figure stars to identify the field." if constellation else "Use the surrounding charted stars and finder geometry to identify the field before increasing magnification."
+        body = f"Why it is here: {reason}\n\nHow to find it: {context}"
+
+    slug = re.sub(r"[^a-z0-9]+", "-", name.lower()).strip("-")
+    return Story(
+        collection="baseline",
+        fixed_object_id=fixed_object_id,
+        path=FIXED_OBJECT_DATABASE,
+        hed=name,
+        dek=reason,
+        body=body,
+        url_override=f"/descriptors/{'star-' if family == 'star' else ''}{slug}.json",
+    )
+
+
 def available_stories(fixed_object_id: int) -> list[Story]:
-    stories = []
+    """Return baseline first, followed by every curated enrichment for this ID."""
+    stories = [baseline_story(fixed_object_id)]
     for collection in sorted(COLLECTIONS):
         story = read_story(collection, fixed_object_id)
         if story is not None:
