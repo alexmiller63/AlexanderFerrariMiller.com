@@ -19,17 +19,11 @@ BAYER_CATALOG = ROOT / "expanded-bayer-stars.csv"
 RENDER_SPECS_ROOT = ROOT / "sky-notes-artwork" / "specs"
 
 
-def load_descriptor(year: int, week: int) -> dict | None:
+def load_generated_source(year: int, week: int) -> dict:
     source = DESCRIPTOR_ROOT / str(year) / f"W{week:02d}.json"
     if not source.exists():
         raise RuntimeError(f"Missing generated Sky Note source {source.relative_to(ROOT)}. Run Populate Sky Notes first.")
-    payload = json.loads(source.read_text(encoding="utf-8"))
-    descriptor = payload.get("artwork")
-    if descriptor is None:
-        return None
-    if not isinstance(descriptor, dict):
-        raise RuntimeError(f"Invalid artwork descriptor in {source.relative_to(ROOT)}")
-    return descriptor
+    return json.loads(source.read_text(encoding="utf-8"))
 
 
 def validate_descriptor(descriptor: dict, year: int, week: int) -> None:
@@ -89,7 +83,6 @@ def fixed_object_id_by_hip() -> dict[str, int]:
 
 
 def fixed_object_metadata() -> tuple[dict[int, dict], dict[str, list[int]]]:
-    """Return immutable-ID metadata, enriched from the authoritative Bayer catalog."""
     payload = json.loads(FIXED_OBJECT_DATABASE.read_text(encoding="utf-8"))
     by_id: dict[int, dict] = {}
     by_name: dict[str, list[int]] = {}
@@ -153,12 +146,6 @@ def hip_number(ref: str) -> str | None:
 
 
 def catalog_target_refs(target_name: str) -> list[str]:
-    """Resolve a named stellar target to authoritative HIP renderer refs.
-
-    A finder target need not be a vertex of the accepted constellation or
-    asterism line geometry.  Its point position comes from the authoritative
-    Bayer catalog; this does not invent or alter figure geometry.
-    """
     matches = []
     with BAYER_CATALOG.open(newline="", encoding="utf-8") as fh:
         for row in csv.DictReader(fh):
@@ -167,6 +154,28 @@ def catalog_target_refs(target_name: str) -> list[str]:
             if proper.casefold() == target_name.casefold() and hip:
                 matches.append(f"HIP {hip}")
     return list(dict.fromkeys(matches))
+
+
+def artwork_owner_identity(payload: dict, descriptor: dict) -> dict:
+    """Choose the object the finder locates, independently of its guide stars.
+
+    A stellar finder may contain any number of stellar guides.  When exactly
+    one deep-sky target is present, that object owns the canonical artwork.
+    With no deep-sky target, the explicitly listed first target owns it.  More
+    than one deep-sky target is ambiguous and must be resolved upstream rather
+    than silently assigning ownership to a guide.
+    """
+    targets = descriptor.get("targets") or []
+    deep = [item for item in targets if item.get("type") == "deep-sky"]
+    if len(deep) > 1:
+        raise RuntimeError(f"{descriptor['week']}: finder has multiple deep-sky targets; artwork ownership must be explicit")
+    owner = deep[0] if deep else (targets[0] if targets else None)
+    if not owner or not owner.get("name"):
+        raise RuntimeError(f"{descriptor['week']}: finder has no artwork target")
+    matches = [item for item in payload.get("fixed_sky") or [] if item.get("name") == owner["name"]]
+    if len(matches) != 1 or not isinstance(matches[0].get("fixed_object_id"), int):
+        raise RuntimeError(f"{descriptor['week']}: artwork target {owner['name']!r} does not resolve to exactly one immutable fixed object")
+    return dict(matches[0])
 
 
 def attach_fixed_object_ids(spec: dict) -> dict:
@@ -183,13 +192,13 @@ def attach_fixed_object_ids(spec: dict) -> dict:
                 if ref not in seen:
                     seen.add(ref); refs.append(ref)
 
-    target_name = str(spec.get("target") or "").strip()
-    target_refs = catalog_target_refs(target_name) if target_name else []
-    if len(target_refs) != 1:
-        raise RuntimeError(f"Finder target {target_name!r} resolves to authoritative catalog refs {target_refs}; expected exactly one HIP renderer ref")
-    target_ref = target_refs[0]
-    if target_ref not in seen:
-        seen.add(target_ref); refs.append(target_ref)
+    guide_name = str(spec.get("target") or "").strip()
+    guide_refs = catalog_target_refs(guide_name) if guide_name else []
+    if len(guide_refs) != 1:
+        raise RuntimeError(f"Finder guide {guide_name!r} resolves to authoritative catalog refs {guide_refs}; expected exactly one HIP renderer ref")
+    guide_ref = guide_refs[0]
+    if guide_ref not in seen:
+        seen.add(guide_ref); refs.append(guide_ref)
 
     identities, unresolved = [], []
     for ref in refs:
@@ -203,38 +212,31 @@ def attach_fixed_object_ids(spec: dict) -> dict:
         identity.update({k: v for k, v in metadata_by_id.get(fixed_id, {}).items() if k != "fixed_object_id" and v})
         identities.append(identity)
     if unresolved:
-        raise RuntimeError("Finder geometry/targets contain HIP stars with no Star Almanack fixed_object_id: " + ", ".join(unresolved))
+        raise RuntimeError("Finder geometry/guides contain HIP stars with no Star Almanack fixed_object_id: " + ", ".join(unresolved))
 
-    candidate_ids = ids_by_name.get(target_name.casefold(), []) if target_name else []
-    if not candidate_ids:
-        raise RuntimeError(f"Finder target {target_name!r} has no database fixed_object_id")
+    candidate_ids = ids_by_name.get(guide_name.casefold(), []) if guide_name else []
     identity_by_id = {identity["fixed_object_id"]: identity for identity in identities}
-    target_hip = hip_number(target_ref)
-    target_id = by_hip.get(target_hip) if target_hip else None
-    if target_id is None or target_id not in candidate_ids:
-        raise RuntimeError(f"Finder target {target_name!r} resolves to database IDs {candidate_ids}, but authoritative catalog ref {target_ref!r} resolves to immutable ID {target_id!r}")
-    target_meta = metadata_by_id.get(target_id, {})
-    target_identity = {"fixed_object_id": target_id}
-    target_identity.update({k: v for k, v in target_meta.items() if k != "fixed_object_id" and v})
-    target_identity["renderer_ref"] = identity_by_id[target_id]["renderer_ref"]
-    target_identity["identifiers"] = identity_by_id[target_id]["identifiers"]
+    guide_hip = hip_number(guide_ref)
+    guide_id = by_hip.get(guide_hip) if guide_hip else None
+    if guide_id is None or guide_id not in candidate_ids:
+        raise RuntimeError(f"Finder guide {guide_name!r} does not resolve consistently to an immutable fixed object")
     spec["fixed_object_identities"] = identities
-    spec["target_identity"] = target_identity
+    spec["guide_anchor_identity"] = identity_by_id[guide_id]
     return spec
 
 
-def build_renderer_spec(descriptor: dict, registry: dict) -> dict:
+def build_renderer_spec(descriptor: dict, registry: dict, owner_identity: dict) -> dict:
     abbreviation = descriptor["geometry"]["constellation_abbreviation"]
     targets = descriptor.get("targets") or []
-    if not targets:
-        raise RuntimeError(f"{descriptor['week']}: stellar finder has no target")
-    target = targets[0]
-    if target.get("type") != "star" or not target.get("name"):
-        raise RuntimeError(f"{descriptor['week']}: generic renderer requires a named star target")
+    guides = [item for item in targets if item.get("type") == "star" and item.get("name")]
+    if not guides:
+        raise RuntimeError(f"{descriptor['week']}: stellar finder requires at least one named stellar guide")
     spec = {"name": descriptor.get("constellation") or abbreviation,
-            "target": target["name"],
+            "target": guides[0]["name"],
             "figure_paths": constellation_paths(registry, abbreviation),
-            "asterisms": [], "deep_sky_objects": []}
+            "asterisms": [], "deep_sky_objects": [],
+            "artwork_owner_identity": owner_identity,
+            "guide_objects": guides}
     requested = descriptor.get("asterism")
     if requested:
         spec["asterisms"].append(asterism_spec(registry, requested["id"], requested.get("name", "")))
@@ -252,14 +254,18 @@ def write_renderer_spec(year: int, week: int, spec: dict) -> Path:
 
 def generate_week(year: int, week: int) -> bool:
     key = f"{year}-W{week:02d}"
-    descriptor = load_descriptor(year, week)
+    payload = load_generated_source(year, week)
+    descriptor = payload.get("artwork")
     if descriptor is None:
         print(f"ISO {key}: Sky Note has no artwork descriptor; no artwork needed"); return False
+    if not isinstance(descriptor, dict):
+        raise RuntimeError(f"ISO {key}: invalid artwork descriptor")
     validate_descriptor(descriptor, year, week)
     registry = accepted_geometry(descriptor)
-    spec = build_renderer_spec(descriptor, registry)
+    owner = artwork_owner_identity(payload, descriptor)
+    spec = build_renderer_spec(descriptor, registry, owner)
     out = write_renderer_spec(year, week, spec)
-    print(f"ISO {key}: accepted finder geometry prepared at {out.relative_to(ROOT)}")
+    print(f"ISO {key}: fixed object {owner['fixed_object_id']} owns finder; accepted guide geometry prepared at {out.relative_to(ROOT)}")
     return True
 
 
