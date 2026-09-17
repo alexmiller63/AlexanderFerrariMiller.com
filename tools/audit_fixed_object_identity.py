@@ -74,16 +74,22 @@ def add_candidate(cs,source,key,ids,name=None,con=None,ra_h=None,dec_deg=None,ob
         if not value or value.lower()=="null" or pair in seen: continue
         seen.add(pair); clean.append({"namespace":namespace,"value":value})
     cs.append({"candidate_id":len(cs)+1,"source":source,"source_key":key,"identifiers":clean,"name":name or None,"constellation":con or None,"ra_h":ra_h if ra_h is not None else None,"dec_deg":dec_deg if dec_deg is not None else None,"object_type":obj_type or None,"object_type_family":type_family(obj_type),"notes":notes or None,"identity_role":"physical_object_candidate"})
-def append_suffixed_bayer_candidates(cs):
+def append_bayer_cross_id_candidates(cs):
+    """Bridge every Bayer record to its HIP/HD catalog identities.
+
+    The expanded Bayer table is the cross-identifier source for both ordinary
+    and suffixed Bayer stars. Restricting this bridge to suffixed rows leaves
+    ordinary stars such as alpha Pavonis disconnected from their figure-star
+    HIP identity and creates duplicate permanent objects.
+    """
     for row in read_csv(SRC/"expanded-bayer-stars.csv"):
-        suffix=str(row.get("suffix") or "").strip()
-        if not suffix: continue
         bayer=str(row.get("bayer") or "").strip(); con=str(row.get("con") or "").strip()
         if not bayer or not con: continue
         ids=[("bayer",bayer)]; hip=str(row.get("hip") or "").strip(); hd=str(row.get("hd") or "").strip()
         if hip: ids.append(("hip",hip))
         if hd: ids.append(("hd",hd))
-        add_candidate(cs,"expanded-bayer-stars.csv:suffixed",bayer,ids,row.get("proper"),con,row.get("ra_h"),row.get("dec_deg"),"star",f"bayer_code={row.get('bayer_code','')}; suffix={suffix}")
+        suffix=str(row.get("suffix") or "").strip()
+        add_candidate(cs,"expanded-bayer-stars.csv",bayer,ids,row.get("proper"),con,row.get("ra_h"),row.get("dec_deg"),"star",f"bayer_code={row.get('bayer_code','')}; suffix={suffix}")
 def load_source_candidates():
     cs=[]; fixed=parse_fixed_simple_yaml(SRC/"fixed-objects.yaml")
     for section,rows in fixed.items():
@@ -100,7 +106,7 @@ def load_source_candidates():
         ids=[("finest_ngc",row.get("finest_ngc"))]; ident=catalog_identifier(row.get("catalog")); ids += [ident] if ident else []; add_candidate(cs,"finest-ngc-catalog.csv",row.get("finest_ngc",""),ids,row.get("name"),row.get("con"),row.get("ra_h"),row.get("dec_deg"),row.get("type"))
     for n,row in enumerate(read_csv(SRC/"asterism-member-coordinates.csv"),1):
         ids=[]; hip=HIP_RE.match((row.get("coordinate_source_id") or "").strip()); ids += [("hip",str(int(hip.group(1))))] if hip else []; ids.append(("asterism_member_label",row.get("member"))); add_candidate(cs,"asterism-member-coordinates.csv",f"row:{n}",ids,row.get("resolved_object"),None,row.get("ra_h"),row.get("dec_deg"),"star",f"asterism={row.get('asterism','')}")
-    append_suffixed_bayer_candidates(cs); return cs
+    append_bayer_cross_id_candidates(cs); return cs
 
 def append_figure_star_candidates(cs):
     """Add every unique HIP used by accepted constellation/asterism geometry.
