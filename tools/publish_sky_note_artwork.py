@@ -1,17 +1,5 @@
 #!/usr/bin/env python3
-"""Publish rendered weekly Sky Note finders into generated weekly pages.
-
-This is the publication half of the Artwork Generator.  The descriptor-first
-Sky Notes generator owns the artwork request, the artwork generator renders the
-finder, and this step wires that rendered artifact into both weekly page trees.
-
-Publication is deliberately idempotent: a fresh Sky Notes page contains an
-artwork placeholder, while a page from an earlier successful Artwork run
-contains an already-published artwork figure.  Either state is a valid input.
-The generated Sky Note JSON remains the source of truth for the descriptor, so
-rerunning Artwork never requires regenerating Sky Notes merely to recreate a
-consumed placeholder.
-"""
+"""Publish fixed-object-owned Sky Note finders into generated weekly pages."""
 from __future__ import annotations
 
 import html
@@ -23,74 +11,60 @@ from iso_date_range import parse_range_args
 
 ROOT = Path(__file__).resolve().parents[1]
 PAGE_ROOTS = (ROOT / "site", ROOT / "almanack")
-ARTWORK_ROOT = ROOT / "sky-notes-artwork"
+ARTWORK_ROOT = ROOT / "sky-notes-artwork" / "objects"
 DESCRIPTOR_ROOT = ROOT / "generated-sky-notes"
+SPEC_ROOT = ROOT / "sky-notes-artwork" / "specs"
 
-PLACEHOLDER_RE = re.compile(
-    r'<figure class="sky-note-artwork-placeholder"\s+'
-    r'data-sky-note-artwork-placeholder="true"\s+'
-    r'data-artwork-descriptor="[^"]*">.*?</figure>',
-    flags=re.S,
-)
-PUBLISHED_RE = re.compile(
-    r'<figure class="sky-note-artwork">.*?</figure>',
-    flags=re.S,
-)
+PLACEHOLDER_RE = re.compile(r'<figure class="sky-note-artwork-placeholder"\s+data-sky-note-artwork-placeholder="true"\s+data-artwork-descriptor="[^"]*">.*?</figure>', flags=re.S)
+PUBLISHED_RE = re.compile(r'<figure class="sky-note-artwork">.*?</figure>', flags=re.S)
 
 
 def load_descriptor(year: int, week: int) -> dict:
     source = DESCRIPTOR_ROOT / str(year) / f"W{week:02d}.json"
-    if not source.exists():
-        raise RuntimeError(
-            f"Missing generated Sky Note source {source.relative_to(ROOT)}. "
-            "Run Populate Sky Notes first."
-        )
     payload = json.loads(source.read_text(encoding="utf-8"))
     descriptor = payload.get("artwork")
     if not isinstance(descriptor, dict):
-        raise RuntimeError(
-            f"Rendered artwork exists for {year}-W{week:02d}, but "
-            f"{source.relative_to(ROOT)} has no artwork descriptor"
-        )
+        raise RuntimeError(f"{source.relative_to(ROOT)} has no artwork descriptor")
     return descriptor
 
 
-def published_figure(year: int, week: int, descriptor: dict) -> str:
-    # Weekly pages live two directories below their page-tree root.  Use a
-    # relative URL so the link works both on the custom domain and on GitHub
-    # Pages' project-site prefix (/AlexanderFerrariMiller.com/).
-    href = f"../../../sky-notes-artwork/{year}/W{week:02d}/finder.svg"
-    constellation = descriptor.get("constellation") or "the weekly sky"
+def object_id_for_week(year: int, week: int) -> int:
+    spec_path = SPEC_ROOT / str(year) / f"W{week:02d}.json"
+    if not spec_path.exists():
+        raise RuntimeError(f"Missing renderer spec {spec_path.relative_to(ROOT)}")
+    spec = json.loads(spec_path.read_text(encoding="utf-8"))
+    identity = spec.get("target_identity") or {}
+    fixed_id = identity.get("fixed_object_id")
+    if not isinstance(fixed_id, int):
+        raise RuntimeError(f"{spec_path.relative_to(ROOT)} has no immutable target fixed_object_id")
+    return fixed_id
+
+
+def published_figure(fixed_id: int, descriptor: dict) -> str:
+    # Weekly pages live two directories below their page-tree root. Artwork is
+    # owned by immutable fixed-object identity, never by the week that uses it.
+    href = f"../../../sky-notes-artwork/objects/{fixed_id}/finder.svg"
+    constellation = descriptor.get("constellation") or "the sky"
     asterism = descriptor.get("asterism") or {}
     subject = f"{asterism.get('name')} in {constellation}" if asterism.get("name") else constellation
     targets = [str(item.get("name")) for item in descriptor.get("targets", []) if item.get("name")]
-    target_text = ", ".join(targets) if targets else "weekly observing targets"
+    target_text = ", ".join(targets) if targets else f"fixed object {fixed_id}"
     alt = html.escape(f"Sky Note stellar finder for {subject}; highlighting {target_text}", quote=True)
     caption = html.escape(f"Stellar finder: {subject}; highlight {target_text}.")
-    return (
-        '<figure class="sky-note-artwork">'
-        f'<a class="sky-note-artwork-link" href="{href}"><img src="{href}" alt="{alt}" loading="lazy"></a>'
-        f'<figcaption>{caption} <a href="{href}">Artwork</a></figcaption>'
-        '</figure>'
-    )
+    return ('<figure class="sky-note-artwork">'
+            f'<a class="sky-note-artwork-link" href="{href}"><img src="{href}" alt="{alt}" loading="lazy"></a>'
+            f'<figcaption>{caption} <a href="{href}">Artwork</a></figcaption>'
+            '</figure>')
 
 
-def publish_page(path: Path, year: int, week: int, descriptor: dict) -> bool:
+def publish_page(path: Path, fixed_id: int, descriptor: dict) -> bool:
     text = path.read_text(encoding="utf-8")
-    replacement = published_figure(year, week, descriptor)
-
+    replacement = published_figure(fixed_id, descriptor)
     placeholder = PLACEHOLDER_RE.search(text)
     published = PUBLISHED_RE.search(text)
-    if placeholder is not None:
-        match = placeholder
-    elif published is not None:
-        match = published
-    else:
-        raise RuntimeError(
-            f"Missing Sky Note artwork publication slot in {path.relative_to(ROOT)}: "
-            "expected either a fresh placeholder or an existing published artwork figure"
-        )
-
+    match = placeholder if placeholder is not None else published
+    if match is None:
+        raise RuntimeError(f"Missing Sky Note artwork publication slot in {path.relative_to(ROOT)}")
     new = text[:match.start()] + replacement + text[match.end():]
     if new == text:
         return False
@@ -99,32 +73,30 @@ def publish_page(path: Path, year: int, week: int, descriptor: dict) -> bool:
 
 
 def main() -> None:
-    start, end, weeks = parse_range_args("Publish rendered Star Almanack Sky Note artwork by inclusive ISO date range")
-    changed = 0
-    published = 0
-    skipped = 0
+    start, end, weeks = parse_range_args("Publish fixed-object-owned Star Almanack Sky Note artwork")
+    changed = published = skipped = 0
     for item in weeks:
         week_key = f"W{item.week:02d}"
-        artwork = ARTWORK_ROOT / str(item.year) / week_key / "finder.svg"
-        if not artwork.exists():
-            print(f"No rendered artwork for {item.year}-{week_key}; skipping publication")
+        spec = SPEC_ROOT / str(item.year) / f"{week_key}.json"
+        if not spec.exists():
+            print(f"No renderer spec for {item.year}-{week_key}; skipping publication")
             skipped += 1
             continue
-
+        fixed_id = object_id_for_week(item.year, item.week)
+        artwork = ARTWORK_ROOT / str(fixed_id) / "finder.svg"
+        if not artwork.exists():
+            print(f"No rendered artwork for fixed object {fixed_id}; skipping {item.year}-{week_key}")
+            skipped += 1
+            continue
         descriptor = load_descriptor(item.year, item.week)
         published += 1
         for root in PAGE_ROOTS:
             page = root / str(item.year) / week_key / "index.html"
             if not page.exists():
                 raise RuntimeError(f"Weekly page is missing: {page.relative_to(ROOT)}")
-            if publish_page(page, item.year, item.week, descriptor):
+            if publish_page(page, fixed_id, descriptor):
                 changed += 1
-
-    print(
-        f"Published Sky Note artwork for {start.isoformat()} through {end.isoformat()}: "
-        f"{published} rendered weeks, {skipped} unrendered weeks skipped, "
-        f"{changed} page copies updated"
-    )
+    print(f"Published fixed-object artwork for {start.isoformat()} through {end.isoformat()}: {published} weeks, {skipped} skipped, {changed} page copies updated")
 
 
 if __name__ == "__main__":
