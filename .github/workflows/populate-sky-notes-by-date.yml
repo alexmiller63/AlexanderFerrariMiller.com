@@ -26,6 +26,7 @@ on:
 
 permissions:
   contents: write
+  actions: write
 
 concurrency:
   group: sky-notes-generator
@@ -70,3 +71,63 @@ jobs:
           git commit -m "Generate descriptor-first Sky Notes ${{ inputs.start_year }}-W${{ inputs.start_week }}"
           git pull --rebase origin main
           git push
+
+      - name: Install Playwright Chromium
+        run: |
+          python -m pip install playwright
+          python -m playwright install --with-deps chromium
+
+      - name: Verify deployed Sky Note links in Chromium
+        shell: bash
+        env:
+          START_YEAR: ${{ inputs.start_year }}
+          START_WEEK: ${{ inputs.start_week }}
+          END_YEAR: ${{ inputs.end_year }}
+          END_WEEK: ${{ inputs.end_week }}
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import os, time
+          from datetime import date, timedelta
+          from urllib.parse import urljoin
+          from playwright.sync_api import sync_playwright
+          base = 'https://alexmiller63.github.io/AlexanderFerrariMiller.com/'
+          sy, sw = int(os.environ['START_YEAR']), int(os.environ['START_WEEK'])
+          ey, ew = int(os.environ['END_YEAR']), int(os.environ['END_WEEK'])
+          d, end = date.fromisocalendar(sy, sw, 1), date.fromisocalendar(ey, ew, 1)
+          weeks = []
+          while d <= end:
+              y, w, _ = d.isocalendar(); weeks.append((y, w)); d += timedelta(days=7)
+          def load(page, url):
+              status = None
+              for attempt in range(1, 13):
+                  response = page.goto(url, wait_until='networkidle')
+                  status = None if response is None else response.status
+                  if response is not None and response.ok: return
+                  print(f'WAITING FOR DEPLOYMENT attempt={attempt} status={status} url={url}')
+                  time.sleep(10)
+              raise SystemExit(f'DEPLOYED PAGE FAILED: HTTP {status}: {url}')
+          checked = 0
+          with sync_playwright() as p:
+              browser = p.chromium.launch(); context = browser.new_context()
+              for year, week in weeks:
+                  page = context.new_page()
+                  week_url = urljoin(base, f'almanack/{year}/W{week:02d}/')
+                  load(page, week_url)
+                  links = page.locator('[data-fixed-object-id] a[href]')
+                  for i in range(links.count()):
+                      link = links.nth(i); href = link.get_attribute('href')
+                      if not href or href.startswith(('#','mailto:','javascript:')): continue
+                      label = link.inner_text().strip(); destination_url = urljoin(page.url, href)
+                      destination = context.new_page()
+                      response = destination.goto(destination_url, wait_until='networkidle')
+                      status = None if response is None else response.status
+                      print(f'{year}-W{week:02d}: {label!r} -> {destination_url} HTTP {status}')
+                      if response is None or not response.ok:
+                          raise SystemExit(f'DEPLOYED SKY NOTE LINK FAILED: {year}-W{week:02d} {label!r}: HTTP {status}: {destination_url}')
+                      destination.close(); checked += 1
+                  page.close()
+              context.close(); browser.close()
+          if checked == 0: raise SystemExit('No deployed reader-facing Sky Note links were exercised.')
+          print(f'DEPLOYED ACCEPTANCE PASSED: Chromium exercised {checked} reader-facing Sky Note link(s).')
+          PY
