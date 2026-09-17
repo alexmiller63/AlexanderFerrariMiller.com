@@ -1,0 +1,118 @@
+name: Fix Planet Finder retry order
+
+on:
+  push:
+    paths:
+      - '.github/workflows/fix-planet-finder-retry-order.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Apply root-cause Planet Finder solver fix
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          path = Path('tools/generate_planet_finders.py')
+          text = path.read_text(encoding='utf-8')
+
+          old_symbols = '''    "jupiter": "♃", "saturn": "♄", "uranus": "♅", "neptune": "♆", "ceres": "⚳",\n}'''
+          new_symbols = '''    "jupiter": "♃", "saturn": "♄", "uranus": "♅", "neptune": "♆", "ceres": "⚳", "pluto": "♇",\n}'''
+          if old_symbols not in text:
+              raise SystemExit('Expected BODY_SYMBOLS block not found; refusing blind patch')
+          text = text.replace(old_symbols, new_symbols, 1)
+
+          old_canonical = 'CANONICAL = ["Sun", "Moon", "Mercury", "Venus", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Ceres"]'
+          new_canonical = 'CANONICAL = ["Sun", "Moon", "Mercury", "Venus", "Mars", "Jupiter", "Saturn", "Ceres", "Uranus", "Neptune", "Pluto"]'
+          if old_canonical not in text:
+              raise SystemExit('Expected CANONICAL order not found; refusing blind patch')
+          text = text.replace(old_canonical, new_canonical, 1)
+
+          start = text.index('def layout(mode: str, bodies: list[tuple[str, str, float]]):')
+          end = text.index('\ndef polyline(points):', start)
+          new_layout = '''def layout(mode: str, bodies: list[tuple[str, str, float]]):
+    reserved = reserved_boxes(mode)
+
+    # Try the canonical body order first. If the complete search dead-ends,
+    # restart from scratch with the next body as the first placement. This
+    # rotates the starting body through the canonical sequence rather than
+    # allowing one unlucky first placement to determine the entire search.
+    n = len(bodies)
+    last_error = None
+
+    for start_index in range(n):
+        ordered = [
+            (start_index + offset) % n
+            for offset in range(n)
+        ]
+        staged = {}
+        placed: list[Box] = []
+        leaders: list[list[tuple[float, float]]] = []
+
+        def solve(position: int) -> bool:
+            if position == n:
+                return True
+
+            original_index = ordered[position]
+            symbol, name, longitude = bodies[original_index]
+            w, h = label_size(mode, name)
+            anchor = xy(longitude, RI - 5)
+
+            for x, y in candidate_positions(longitude):
+                box = Box(x, y, w, h)
+                if any(boxes_overlap(box, b, 14) for b in reserved + placed):
+                    continue
+                if any(segment_hits_box(seg[i], seg[i+1], box, 10) for seg in leaders for i in range(len(seg)-1)):
+                    continue
+                path = route(anchor, (x, y), reserved + placed)
+                if path is None:
+                    continue
+
+                placed.append(box)
+                leaders.append(path)
+                staged[original_index] = (symbol, name, longitude, box, path)
+                if solve(position + 1):
+                    return True
+                del staged[original_index]
+                leaders.pop()
+                placed.pop()
+
+            return False
+
+        if solve(0):
+            return [staged[i] for i in range(n)]
+
+        first_name = bodies[start_index][1]
+        last_error = first_name
+        print(f"Planet Finder layout dead-ended in {mode} mode with {first_name} first; restarting from the next canonical body")
+
+    raise RuntimeError(
+        f"No collision-free Planet Finder layout exists in {mode} mode "
+        f"after trying every canonical starting body"
+    )
+'''
+          text = text[:start] + new_layout + text[end:]
+
+          path.write_text(text, encoding='utf-8')
+          PY
+
+      - name: Syntax check
+        run: python -m py_compile tools/generate_planet_finders.py tools/populate_ephemeris_planet_finder_by_date.py
+
+      - name: Commit root-cause fix and remove one-shot workflow
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add tools/generate_planet_finders.py
+          git rm .github/workflows/fix-planet-finder-retry-order.yml
+          git commit -m 'Retry Planet Finder layout from each canonical starting body'
+          git push origin HEAD:main
