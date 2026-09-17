@@ -42,6 +42,7 @@ def split_rendered_sections(rendered: str) -> tuple[str, str]:
 
 def populate_week(year: int, week: int, generated) -> int:
     monday = date.fromisocalendar(year, week, 1)
+    print(f"Starting ISO {year}-W{week:02d} (Monday {monday.isoformat()})", flush=True)
     values = {}
     for _, key, _ in ephemeris.TARGETS:
         sample = generated[key][week - 1]
@@ -84,7 +85,7 @@ def populate_week(year: int, week: int, generated) -> int:
         svg = finder.render(year, week, monday, mode, bodies)
         (outdir / filename).write_text(svg, encoding="utf-8")
 
-    print(f"Generated Ephemeris + Planet Finder for ISO {year}-W{week:02d}")
+    print(f"Generated Ephemeris + Planet Finder for ISO {year}-W{week:02d}", flush=True)
     return changed
 
 
