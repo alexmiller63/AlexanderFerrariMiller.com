@@ -15,9 +15,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 REGISTRY = ROOT / "database" / "fixed-object-registry.json"
 MERGES = ROOT / "database" / "fixed-object-id-merges.json"
+AUDIT = ROOT / "generated" / "fixed-object-identity-audit.json"
 EVENT_RE = re.compile(r'(<div\b)(?P<attrs>[^>]*\bclass="[^"]*\bevent-cell\b[^"]*"[^>]*>)(?P<body>.*?)</div>', re.S)
-# Bayer suffixes may be stored/displayed as ordinary digits (α1 Cap) or
-# Unicode superscripts (α¹ Cap). Normalize both forms before lookup.
 BAYER_RE = re.compile(r"^[αβγδεζηθικλμνξοπρστυφχψω](?:\d+)?\s+[A-Z][a-z]{2}$")
 SUPERSCRIPT_DIGITS = str.maketrans("⁰¹²³⁴⁵⁶⁷⁸⁹", "0123456789")
 
@@ -27,7 +26,6 @@ def normalize_bayer(value: str) -> str:
 
 
 def merge_map() -> dict[int, int]:
-    """Return retired -> surviving fixed-object identities."""
     payload = json.loads(MERGES.read_text(encoding="utf-8"))
     return {
         int(item["retired_fixed_object_id"]): int(item["surviving_fixed_object_id"])
@@ -36,7 +34,6 @@ def merge_map() -> dict[int, int]:
 
 
 def canonical_fixed_object_id(fixed_id: int, merges: dict[int, int]) -> int:
-    """Follow merge chains to the current surviving permanent identity."""
     seen: set[int] = set()
     while fixed_id in merges:
         if fixed_id in seen:
@@ -47,15 +44,21 @@ def canonical_fixed_object_id(fixed_id: int, merges: dict[int, int]) -> int:
 
 
 def identity_index() -> tuple[dict[str, int], dict[str, int], dict[str, int]]:
-    """Build lookup indexes directly from the permanent identity registry.
+    """Build identity indexes from the permanent registry.
 
-    The registry is authoritative for fixed-object identity. Normalized source
-    records are deliberately not consulted here: a newly appended registry
-    identity must be immediately usable by Calendar even before another
-    presentation database is rebuilt.
+    Registry IDs remain authoritative. Source-audit names are used only as
+    presentation aliases for registry identities; they never create or assign
+    an identity. This covers fixed objects whose calendar presentation uses a
+    proper name while their registry identity is represented by a catalog or
+    asterism-member identifier (for example Sadr / Gamma Cygni / HIP 100453).
     """
     data = json.loads(REGISTRY.read_text(encoding="utf-8"))
     merges = merge_map()
+    audit = json.loads(AUDIT.read_text(encoding="utf-8")) if AUDIT.exists() else {}
+    candidates = {
+        (str(c.get("source")), str(c.get("source_key"))): c
+        for c in audit.get("candidates") or []
+    }
     names: dict[str, int] = {}
     messier: dict[str, int] = {}
     bayer: dict[str, int] = {}
@@ -77,6 +80,16 @@ def identity_index() -> tuple[dict[str, int], dict[str, int], dict[str, int]]:
                     bayer.setdefault(normalized, fixed_id)
             elif namespace in {"asterism_member_label", "catalog_label", "special"}:
                 names.setdefault(value.casefold(), fixed_id)
+
+        # Names in the source audit are aliases attached to this already-known
+        # permanent identity. They are not used to manufacture new IDs.
+        for ref in obj.get("source_refs") or []:
+            candidate = candidates.get((str(ref.get("source")), str(ref.get("source_key"))))
+            if candidate:
+                for key in ("name", "proper"):
+                    value = str(candidate.get(key) or "").strip()
+                    if value:
+                        names.setdefault(value.casefold(), fixed_id)
     return names, messier, bayer
 
 
