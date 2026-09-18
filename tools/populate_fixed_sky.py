@@ -116,11 +116,16 @@ def in_milky_way(r):
 def star_event(r):
     proper=r.get("proper","").strip(); bayer=display_bayer(r); base=f"{proper} ({bayer})" if proper and bayer else (proper or bayer or f"{r.get('con','').strip()} star"); source_mag=(r.get("representative_vmax") or r.get("catalog_v") or r.get("mag") or "").strip()
     aid=observing_aid_for_magnitude(source_mag)
-    record=AlmanackObject(label=base,object_type="fixed_star",dec_deg=r["dec_deg"],best_date=dt.date.fromisoformat(r["best_date"]),observing_aid=aid,magnitude=source_mag,magnitude_display="whole",catalog_id=(r.get("hyg_id") or r.get("hip") or "").strip(),provenance=(r.get("brightness_basis") or "").strip())
+    catalog_id=(r.get("hyg_id") or r.get("hip") or r.get("hd") or bayer or "").strip()
+    record=AlmanackObject(label=base,object_type="fixed_star",dec_deg=r["dec_deg"],best_date=dt.date.fromisoformat(r["best_date"]),observing_aid=aid,magnitude=source_mag,magnitude_display="whole",catalog_id=catalog_id,provenance=(r.get("brightness_basis") or "").strip())
     label=render_html(record)+(" — in the Milky Way" if in_milky_way(r) else "")
-    hip=(r.get("hip") or "").strip()
-    if not hip:raise RuntimeError(f"Missing HIP identity for Calendar fixed star {base}")
-    return CalendarEvent(label,fixed_object_id("hip",hip),aid.value if aid else None)
+    identifiers=[("hip",(r.get("hip") or "").strip()),("hd",(r.get("hd") or "").strip()),("bayer",bayer)]
+    for namespace,value in identifiers:
+        if not value:continue
+        fixed_id=FIXED_OBJECT_IDS.get((namespace,value))
+        if fixed_id is not None:return CalendarEvent(label,fixed_id,aid.value if aid else None)
+    attempted=", ".join(f"{namespace}:{value}" for namespace,value in identifiers if value) or "none"
+    raise RuntimeError(f"Permanent fixed-object identity not found for Calendar fixed star {base}; tried {attempted}")
 def page_date_map(year):
     bayer=redated(read_csv("expanded-bayer-visibility-2026.csv"),year); bright=redated(read_csv("bright-star-visibility-2026.csv"),year); messier=redated_preserving_2026_phase(read_csv("messier-visibility-2026.csv"),year)
     write_csv(SRC/"generated"/f"expanded-bayer-visibility-{year}.csv",bayer); write_csv(SRC/"generated"/f"bright-star-visibility-{year}.csv",bright); write_csv(SRC/"generated"/f"messier-visibility-{year}.csv",messier)
