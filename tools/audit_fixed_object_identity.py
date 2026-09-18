@@ -82,20 +82,21 @@ def append_bayer_cross_id_candidates(cs):
     ordinary stars such as alpha Pavonis disconnected from their figure-star
     HIP identity and creates duplicate permanent objects.
     """
-    for row_number,row in enumerate(read_csv(SRC/"expanded-bayer-stars.csv"),1):
-        bayer=str(row.get("bayer") or "").strip(); con=str(row.get("con") or "").strip()
-        if not bayer or not con: continue
-        ids=[("bayer",bayer)]; hip=str(row.get("hip") or "").strip(); hd=str(row.get("hd") or "").strip()
-        if hip: ids.append(("hip",hip))
-        if hd: ids.append(("hd",hd))
-        suffix=str(row.get("suffix") or "").strip()
-        key_parts=[bayer]
-        if hip: key_parts.append(f"HIP {hip}")
-        elif hd: key_parts.append(f"HD {hd}")
-        elif row.get("hyg_id"): key_parts.append(f"HYG {str(row.get('hyg_id')).strip()}")
-        elif suffix: key_parts.append(f"suffix {suffix}")
-        else: key_parts.append(f"row {row_number}")
-        add_candidate(cs,"expanded-bayer-stars.csv"," | ".join(key_parts),ids,row.get("proper"),con,row.get("ra_h"),row.get("dec_deg"),"star",f"bayer_code={row.get('bayer_code','')}; suffix={suffix}")
+    for source_name in ("expanded-bayer-stars.csv", "bayer-supplement.csv"):
+        for row_number,row in enumerate(read_csv(SRC/source_name),1):
+            bayer=str(row.get("bayer") or "").strip(); con=str(row.get("con") or "").strip()
+            if not bayer or not con: continue
+            ids=[("bayer",bayer)]; hip=str(row.get("hip") or "").strip(); hd=str(row.get("hd") or "").strip()
+            if hip: ids.append(("hip",hip))
+            if hd: ids.append(("hd",hd))
+            suffix=str(row.get("suffix") or "").strip()
+            key_parts=[bayer]
+            if hip: key_parts.append(f"HIP {hip}")
+            elif hd: key_parts.append(f"HD {hd}")
+            elif row.get("hyg_id"): key_parts.append(f"HYG {str(row.get('hyg_id')).strip()}")
+            elif suffix: key_parts.append(f"suffix {suffix}")
+            else: key_parts.append(f"row {row_number}")
+            add_candidate(cs,source_name," | ".join(key_parts),ids,row.get("proper"),con,row.get("ra_h"),row.get("dec_deg"),"star",f"bayer_code={row.get('bayer_code','')}; suffix={suffix}")
 def load_source_candidates():
     cs=[]; fixed=parse_fixed_simple_yaml(SRC/"fixed-objects.yaml")
     for section,rows in fixed.items():
