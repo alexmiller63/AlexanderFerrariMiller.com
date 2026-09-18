@@ -112,7 +112,16 @@ def calendar_events_from_page(path: Path) -> list[tuple[date, list[str]]]:
         if not cells:
             continue
         entries = []
-        for part in re.split(r"<br\s*/?>", cells[-1], flags=re.I):
+        event_parts = re.findall(
+            r'<(?:div|span)[^>]*class="[^"]*event-cell[^"]*"[^>]*>(.*?)</(?:div|span)>',
+            cells[-1],
+            flags=re.S | re.I,
+        )
+        if event_parts:
+            parts = event_parts
+        else:
+            parts = re.split(r"<br\s*/?>", cells[-1], flags=re.I)
+        for part in parts:
             cleaned = plain_text(part)
             if cleaned and cleaned != "—":
                 entries.append(cleaned)
