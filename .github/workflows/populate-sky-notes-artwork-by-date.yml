@@ -197,6 +197,9 @@ jobs:
                   expected = f"sky-notes-artwork/objects/{owner}/finder.svg"
                   if expected not in html:
                       raise SystemExit(f"{key}: {page} does not publish selected artwork owner {owner} ({expected})")
+                  descriptor = f"almanack/descriptors/{owner}.json"
+                  if descriptor not in html:
+                      raise SystemExit(f"{key}: {page} publishes artwork owner {owner} without its machine-readable descriptor ({descriptor})")
               print(f"PROOF: {key} selected artwork owner {owner} exists and is published in both page copies")
               checked += 1
           if checked == 0:
@@ -232,6 +235,9 @@ jobs:
               expected=f"sky-notes-artwork/objects/{fixed_id}/finder.svg"
               if expected not in body or "<img " not in body:
                   raise SystemExit(f"{week}: descriptor {fixed_id} lacks visibly rendered object artwork")
+              descriptor=f"almanack/descriptors/{fixed_id}.json"
+              if descriptor not in body:
+                  raise SystemExit(f"{week}: artwork for descriptor {fixed_id} is not accompanied by its machine-readable descriptor link")
               asset=Path(expected)
               if not asset.exists() or "<svg" not in asset.read_text(encoding="utf-8",errors="replace").lower():
                   raise SystemExit(f"{week}: descriptor {fixed_id} artwork asset is missing or invalid: {expected}")
