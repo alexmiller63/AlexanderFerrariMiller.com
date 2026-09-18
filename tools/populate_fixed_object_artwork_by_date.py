@@ -29,11 +29,17 @@ def owner_identity(fixed_id: int, item: dict, by_hip: dict[str, int], metadata: 
     owner = {"fixed_object_id": fixed_id, "name": item.get("name")}
     owner.update({k: v for k, v in metadata.get(fixed_id, {}).items() if k != "fixed_object_id" and v})
     if item.get("type") == "star":
-        refs = legacy.catalog_target_refs(str(item.get("name") or ""))
-        matching = [ref for ref in refs if by_hip.get(legacy.hip_number(ref) or "") == fixed_id]
-        if len(matching) != 1:
-            raise RuntimeError(f"fixed object {fixed_id} {item.get('name')!r} resolves to stellar refs {refs}; expected one ref owned by this ID")
-        owner["renderer_ref"] = matching[0]
+        # Renderer identity comes from the immutable fixed-object registry, not
+        # from a presentation name.  Proper names such as Sham need not be
+        # aliases in the renderer catalog as long as this fixed_object_id owns
+        # exactly one HIP identifier.
+        owned_hips = [hip for hip, fid in by_hip.items() if fid == fixed_id]
+        if len(owned_hips) != 1:
+            raise RuntimeError(
+                f"fixed object {fixed_id} {item.get('name')!r} owns HIP identifiers "
+                f"{owned_hips}; expected exactly one"
+            )
+        owner["renderer_ref"] = f"HIP {owned_hips[0]}"
     return owner
 
 
