@@ -549,7 +549,25 @@ def _replace_first_mention(text: str, record: dict, replacement: str) -> tuple[s
     escaped_name = html.escape(record["name"], quote=False)
     if escaped_name not in text:
         return text, False
-    return text.replace(escaped_name, replacement, 1), True
+
+    # Do not consume a mention that is already inside generated markup.  Story
+    # articles and links are appended to the same HTML string, so a plain
+    # str.replace() can decorate a later <h4>/<a> occurrence while leaving the
+    # earlier reader-facing Sky Note mention untouched.
+    tag_re = re.compile(r"<[^>]*>")
+    for match in re.finditer(re.escape(escaped_name), text):
+        prefix = text[:match.start()]
+        last_lt = prefix.rfind("<")
+        last_gt = prefix.rfind(">")
+        if last_lt > last_gt:
+            continue
+        # Skip text already inside an anchor; it is already reader-facing.
+        open_anchor = prefix.rfind("<a ")
+        close_anchor = prefix.rfind("</a>")
+        if open_anchor > close_anchor:
+            continue
+        return text[:match.start()] + replacement + text[match.end():], True
+    return text, False
 
 
 def decorate_note_html(rendered_html: str, records: list[dict]) -> str:
