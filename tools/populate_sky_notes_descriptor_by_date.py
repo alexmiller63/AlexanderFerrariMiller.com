@@ -162,9 +162,21 @@ def observer_note(year: int, week: int, page_path, fixed: list[dict], relations:
     naked = [by_id[i]["name"] for i, aid in observing_aids.items() if aid == "naked eye" and i in by_id]
     binocular = [by_id[i]["name"] for i, aid in observing_aids.items() if aid == "binoculars" and i in by_id]
     telescope = [by_id[i]["name"] for i, aid in observing_aids.items() if aid == "telescope" and i in by_id]
-    naked_targets = ", ".join(naked) if naked else "the brightest seasonal stars and the zodiac"
-    binocular_targets = ", ".join(binocular) if binocular else "the week’s richest fixed-star fields"
-    telescope_targets = ", ".join(telescope) if telescope else "the compact fixed-sky targets selected for the week"
+    naked_guidance = (
+        f"Use {', '.join(naked)} as the week’s fixed-sky framework."
+        if naked else
+        "No fixed-sky Calendar object is classified for naked-eye observing this week."
+    )
+    binocular_guidance = (
+        f"Favor {', '.join(binocular)}; wide fields help connect the charted geometry to the real sky."
+        if binocular else
+        "No fixed-sky Calendar object is classified for binocular observing this week."
+    )
+    telescope_guidance = (
+        f"Concentrate on {', '.join(telescope)}. Increase magnification only after the target and surrounding pattern are secure."
+        if telescope else
+        "No fixed-sky Calendar object is classified for telescope observing this week."
+    )
     planet_paragraph = (
         " ".join(base.relation_sentence(item) for item in relations)
         if relations else
@@ -172,10 +184,10 @@ def observer_note(year: int, week: int, page_path, fixed: list[dict], relations:
     )
     return "\n\n".join((
         opening,
-        f"**Naked eye:** {moon_text}. {condition} Use {naked_targets} as the week’s fixed-sky framework.",
+        f"**Naked eye:** {moon_text}. {condition} {naked_guidance}",
         f"**Planets:** {planet_paragraph}",
-        f"**Binoculars:** Favor {binocular_targets}; wide fields help connect the charted geometry to the real sky.",
-        f"**Small telescope:** Concentrate on {telescope_targets}. Increase magnification only after the target and surrounding pattern are secure.",
+        f"**Binoculars:** {binocular_guidance}",
+        f"**Small telescope:** {telescope_guidance}",
     ))
 
 
