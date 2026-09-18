@@ -15,7 +15,7 @@ DESCRIPTOR_ROOT = ROOT / "generated-sky-notes"
 GEOMETRY_REGISTRY = ROOT / "finder-geometry" / "martz-macrobert.json"
 FIXED_OBJECT_REGISTRY = ROOT / "database" / "fixed-object-registry.json"
 FIXED_OBJECT_DATABASE = ROOT / "database" / "fixed-objects.json"
-BAYER_CATALOG = ROOT / "expanded-bayer-stars.csv"
+STELLAR_CATALOG = ROOT / "bright-stars-2mag.csv"
 RENDER_SPECS_ROOT = ROOT / "sky-notes-artwork" / "specs"
 
 
@@ -110,8 +110,8 @@ def fixed_object_metadata() -> tuple[dict[int, dict], dict[str, list[int]]]:
         if meta.get("proper_name"):
             by_name.setdefault(meta["proper_name"].casefold(), []).append(fixed_id)
 
-    if not BAYER_CATALOG.exists():
-        raise RuntimeError(f"Authoritative Bayer catalog is missing at {BAYER_CATALOG.relative_to(ROOT)}")
+    if not STELLAR_CATALOG.exists():
+        raise RuntimeError(f"Authoritative stellar catalog is missing at {STELLAR_CATALOG.relative_to(ROOT)}")
     registry = json.loads(FIXED_OBJECT_REGISTRY.read_text(encoding="utf-8"))
     registry_hip = {}
     for obj in registry.get("fixed_objects") or []:
@@ -119,7 +119,7 @@ def fixed_object_metadata() -> tuple[dict[int, dict], dict[str, list[int]]]:
         for identifier in obj.get("identifiers") or []:
             if str(identifier.get("namespace", "")).lower() == "hip":
                 registry_hip[str(identifier.get("value"))] = fid
-    with BAYER_CATALOG.open(newline="", encoding="utf-8") as fh:
+    with STELLAR_CATALOG.open(newline="", encoding="utf-8") as fh:
         for row in csv.DictReader(fh):
             hip = str(row.get("hip") or "").strip()
             fid = registry_hip.get(hip)
@@ -156,17 +156,17 @@ def normalize_guide_name(value: str) -> str:
 
 
 def catalog_target_refs(target_name: str) -> list[str]:
-    """Resolve a finder guide through authoritative Bayer-catalog identities.
+    """Resolve a finder guide through authoritative stellar-catalog identities.
 
     Finder descriptors may use a proper name (for example Altair) or a
-    human-readable Bayer label (for example Alpha1 Cap).  The catalog stores
+    human-readable Bayer label (for example Alpha1 Cap).  The stellar catalog stores
     those as separate fields, so both forms must resolve through the catalog
     row's HIP identity rather than requiring the Bayer label to masquerade as
     a proper name.
     """
     wanted = normalize_guide_name(target_name)
     matches = []
-    with BAYER_CATALOG.open(newline="", encoding="utf-8") as fh:
+    with STELLAR_CATALOG.open(newline="", encoding="utf-8") as fh:
         for row in csv.DictReader(fh):
             hip = str(row.get("hip") or "").strip()
             if not hip:
