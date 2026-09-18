@@ -125,9 +125,16 @@ def page_date_map(year):
     bayer=redated(read_csv("expanded-bayer-visibility-2026.csv"),year); bright=redated(read_csv("bright-star-visibility-2026.csv"),year); messier=redated_preserving_2026_phase(read_csv("messier-visibility-2026.csv"),year)
     write_csv(SRC/"generated"/f"expanded-bayer-visibility-{year}.csv",bayer); write_csv(SRC/"generated"/f"bright-star-visibility-{year}.csv",bright); write_csv(SRC/"generated"/f"messier-visibility-{year}.csv",messier)
     events=defaultdict(list); seen=set()
+    bayer_targets={}
     for r in bayer:
-        d=dt.date.fromisoformat(r["best_date"]); identity=(r.get("proper") or r.get("bayer") or "").strip().lower(); key=(d,identity)
-        if identity and key not in seen:events[d].append(star_event(r)); seen.add(key)
+        identity=display_bayer(r).strip().lower()
+        if not identity:continue
+        current=bayer_targets.get(identity)
+        if current is None or (not (current.get("proper") or "").strip() and (r.get("proper") or "").strip()):
+            bayer_targets[identity]=r
+    for identity,r in bayer_targets.items():
+        d=dt.date.fromisoformat(r["best_date"]); key=(d,identity)
+        if key not in seen:events[d].append(star_event(r)); seen.add(key)
     for r in bright:
         if r.get("new_non_alpha_beta","").lower()!="yes":continue
         d=dt.date.fromisoformat(r["best_date"]); identity=(r.get("proper") or (r.get("bayer","")+r.get("con",""))).strip().lower(); key=(d,identity)
