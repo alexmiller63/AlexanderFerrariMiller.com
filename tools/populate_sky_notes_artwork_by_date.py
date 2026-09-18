@@ -145,13 +145,44 @@ def hip_number(ref: str) -> str | None:
     return match.group(1) if match else None
 
 
+BAYER_GUIDE_WORDS = {
+    "Alp": "Alpha", "Bet": "Beta",
+}
+
+
+def normalize_guide_name(value: str) -> str:
+    """Normalize renderer guide labels without confusing presentation with identity."""
+    return re.sub(r"[^a-z0-9]+", "", str(value).casefold())
+
+
 def catalog_target_refs(target_name: str) -> list[str]:
+    """Resolve a finder guide through authoritative Bayer-catalog identities.
+
+    Finder descriptors may use a proper name (for example Altair) or a
+    human-readable Bayer label (for example Alpha1 Cap).  The catalog stores
+    those as separate fields, so both forms must resolve through the catalog
+    row's HIP identity rather than requiring the Bayer label to masquerade as
+    a proper name.
+    """
+    wanted = normalize_guide_name(target_name)
     matches = []
     with BAYER_CATALOG.open(newline="", encoding="utf-8") as fh:
         for row in csv.DictReader(fh):
-            proper = str(row.get("proper") or row.get("name") or "").strip()
             hip = str(row.get("hip") or "").strip()
-            if proper.casefold() == target_name.casefold() and hip:
+            if not hip:
+                continue
+            aliases = {
+                str(row.get("proper") or row.get("name") or "").strip(),
+                str(row.get("bayer") or "").strip(),
+            }
+            code = str(row.get("bayer_code") or "").strip()
+            con = str(row.get("con") or "").strip()
+            match = re.fullmatch(r"([A-Za-z]+)(\\d*)", code)
+            if match and con:
+                word = BAYER_GUIDE_WORDS.get(match.group(1))
+                if word:
+                    aliases.add(f"{word}{match.group(2)} {con}")
+            if wanted and any(normalize_guide_name(alias) == wanted for alias in aliases if alias):
                 matches.append(f"HIP {hip}")
     return list(dict.fromkeys(matches))
 
