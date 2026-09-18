@@ -57,6 +57,12 @@ def calendar_observing_aids(page_path) -> dict[int, str]:
         if re.search(r'aria-label="Substantial telescope"', body, flags=re.I):
             aids[fixed_id] = "substantial telescope"
             continue
+        # Some Calendar deep-sky entries use the compact telescope character
+        # instead of image markup. It carries the same ordinary Telescope
+        # observing-aid meaning and must survive the Calendar -> Sky Notes handoff.
+        if "🔭" in body:
+            aids[fixed_id] = "telescope"
+            continue
         labels = re.findall(r'aria-label="(Naked eye|Binoculars|Telescope)"', body, flags=re.I)
         if labels:
             # A doubled telescope glyph is also the established substantial-
