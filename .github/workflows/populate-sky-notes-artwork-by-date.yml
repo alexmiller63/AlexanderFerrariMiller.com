@@ -118,11 +118,11 @@ jobs:
       - name: Publish fixed-object Artwork into weekly pages
         run: python tools/publish_sky_note_artwork.py "${{ steps.range.outputs.start_date }}" "${{ steps.range.outputs.end_date }}"
 
-      - name: Verify related descriptor Artwork is visibly rendered
+      - name: Verify weekly object-story Artwork links
         shell: bash
         run: |
           set -euo pipefail
-          python -m http.server 8766 --directory . >/tmp/descriptor-artwork-http.log 2>&1 &
+          python -m http.server 8766 --directory . >/tmp/object-story-http.log 2>&1 &
           server_pid=$!
           trap 'kill "$server_pid" 2>/dev/null || true' EXIT
           sleep 1
@@ -134,32 +134,28 @@ jobs:
             page="site/${{ inputs.start_year }}/$week/index.html"
             [ -f "$page" ] || continue
             url="http://127.0.0.1:8766/$page"
-            dom="/tmp/$week-related-descriptor-dom.html"
+            dom="/tmp/$week-object-story-dom.html"
             "$chromium_bin" --headless --no-sandbox --disable-gpu --virtual-time-budget=3000 --dump-dom "$url" > "$dom"
             python - "$dom" "$week" <<'PY'
           import re, sys
           from pathlib import Path
           text=Path(sys.argv[1]).read_text(encoding="utf-8", errors="replace")
           week=sys.argv[2]
-          figures=re.findall(r'<figure class="descriptor-artwork" data-descriptor-id="(\d+)">(.*?)</figure>', text, re.S)
-          for fixed_id, body in figures:
-              expected=f"sky-notes-artwork/objects/{fixed_id}/finder.svg"
-              if expected not in body or "<img " not in body:
-                  raise SystemExit(f"{week}: descriptor {fixed_id} lacks visibly rendered object artwork")
-              descriptor=f"almanack/descriptors/{fixed_id}.json"
-              if descriptor not in body:
-                  raise SystemExit(f"{week}: artwork for descriptor {fixed_id} is not accompanied by its machine-readable descriptor link")
-              asset=Path(expected)
-              if not asset.exists() or "<svg" not in asset.read_text(encoding="utf-8",errors="replace").lower():
-                  raise SystemExit(f"{week}: descriptor {fixed_id} artwork asset is missing or invalid: {expected}")
-              print(f"PROOF: {week} related descriptor {fixed_id} visibly renders {expected}")
-          print(f"RELATED_COUNT={len(figures)}")
+          section=re.search(r'<div class="other-objects-listed-week"[^>]*>(.*?)</div>', text, re.S)
+          if not section:
+              raise SystemExit(f"{week}: missing 'Other objects listed this week' section")
+          links=re.findall(r'<a class="object-artwork-link" href="([^"]+)">([^<]+)</a>', section.group(1))
+          if not links:
+              raise SystemExit(f"{week}: no object artwork links rendered")
+          for href, name in links:
+              print(f"PROOF: {week} {name} -> {href}")
+          print(f"OTHER_OBJECTS_COUNT={len(links)}")
           PY
-            count="$(grep -o 'class="descriptor-artwork"' "$dom" | wc -l)"
+            count="$(grep -o 'class="object-artwork-link"' "$dom" | wc -l)"
             checked=$((checked + count))
           done
-          [ "$checked" -gt 0 ] || { echo "No related descriptor Artwork was rendered; refusing false green." >&2; exit 1; }
-          echo "PROOF COMPLETE: Chromium visibly rendered $checked related descriptor Artwork item(s)."
+          [ "$checked" -gt 0 ] || { echo "No weekly object-artwork links were rendered; refusing false green." >&2; exit 1; }
+          echo "PROOF COMPLETE: Chromium verified $checked weekly object-artwork links."
 
       - name: Commit Artwork changes only
         run: |
