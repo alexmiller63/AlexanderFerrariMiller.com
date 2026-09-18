@@ -43,6 +43,18 @@
       "fixed_object_id": 381,
       "type": "deep-sky",
       "name": "M75"
+    },
+    {
+      "fixed_object_id": 60,
+      "type": "star",
+      "name": "Spica",
+      "constellation": "Vir"
+    },
+    {
+      "fixed_object_id": 25,
+      "type": "star",
+      "name": "Aldebaran",
+      "constellation": "Tau"
     }
   ],
   "planet_relations": [
@@ -543,39 +555,6 @@
     },
     {
       "schema_version": 1,
-      "id": "naked-eye",
-      "type": "observing-concept",
-      "name": "Naked eye",
-      "summary": "observing without optical aid",
-      "representation": {
-        "machine": "./naked-eye.json",
-        "human_source": "summary"
-      }
-    },
-    {
-      "schema_version": 1,
-      "id": "binoculars",
-      "type": "observing-concept",
-      "name": "Binoculars",
-      "summary": "wide-field optical aid useful for locating star fields and brighter deep-sky targets",
-      "representation": {
-        "machine": "./binoculars.json",
-        "human_source": "summary"
-      }
-    },
-    {
-      "schema_version": 1,
-      "id": "small-telescope",
-      "type": "observing-concept",
-      "name": "Small telescope",
-      "summary": "a telescope suitable for resolving compact targets after the surrounding field is identified",
-      "representation": {
-        "machine": "./small-telescope.json",
-        "human_source": "summary"
-      }
-    },
-    {
-      "schema_version": 1,
       "id": "zodiac",
       "type": "observing-concept",
       "name": "zodiac",
@@ -593,7 +572,9 @@
     109,
     380,
     1145,
-    381
+    381,
+    60,
+    25
   ],
   "story_candidates": [
     {
@@ -657,6 +638,24 @@
       "dek": "M75 is a charted deep-sky object selected by the Calendar as one of this week’s fixed-sky observing targets.",
       "body": "Why it is here: M75 is a charted deep-sky object selected by the Calendar as one of this week’s fixed-sky observing targets.\n\nHow to find it: Use its charted position in Sgr and the surrounding figure stars to identify the field.",
       "url": "/stories/baseline/381.html",
+      "artwork": null
+    },
+    {
+      "fixed_object_id": 60,
+      "collection": "baseline",
+      "hed": "Spica",
+      "dek": "Spica is a charted star in Vir selected by the Calendar as part of this week’s fixed-sky observing framework.",
+      "body": "Why it is here: Spica is a charted star in Vir selected by the Calendar as part of this week’s fixed-sky observing framework.\n\nHow to find it: Trace the curve of the Big Dipper's handle to Arcturus, then continue the same sweep to Spica.",
+      "url": "/stories/baseline/60.html",
+      "artwork": null
+    },
+    {
+      "fixed_object_id": 25,
+      "collection": "baseline",
+      "hed": "Aldebaran",
+      "dek": "Aldebaran is a charted star in Tau selected by the Calendar as part of this week’s fixed-sky observing framework.",
+      "body": "Why it is here: Aldebaran is a charted star in Tau selected by the Calendar as part of this week’s fixed-sky observing framework.\n\nHow to find it: Use Orion's three Belt stars as a pointer westward toward orange Aldebaran and the Hyades V.",
+      "url": "/stories/baseline/25.html",
       "artwork": null
     }
   ],
@@ -723,6 +722,24 @@
       "body": "Why it is here: M75 is a charted deep-sky object selected by the Calendar as one of this week’s fixed-sky observing targets.\n\nHow to find it: Use its charted position in Sgr and the surrounding figure stars to identify the field.",
       "url": "/stories/baseline/381.html",
       "artwork": null
+    },
+    {
+      "fixed_object_id": 60,
+      "collection": "baseline",
+      "hed": "Spica",
+      "dek": "Spica is a charted star in Vir selected by the Calendar as part of this week’s fixed-sky observing framework.",
+      "body": "Why it is here: Spica is a charted star in Vir selected by the Calendar as part of this week’s fixed-sky observing framework.\n\nHow to find it: Trace the curve of the Big Dipper's handle to Arcturus, then continue the same sweep to Spica.",
+      "url": "/stories/baseline/60.html",
+      "artwork": null
+    },
+    {
+      "fixed_object_id": 25,
+      "collection": "baseline",
+      "hed": "Aldebaran",
+      "dek": "Aldebaran is a charted star in Tau selected by the Calendar as part of this week’s fixed-sky observing framework.",
+      "body": "Why it is here: Aldebaran is a charted star in Tau selected by the Calendar as part of this week’s fixed-sky observing framework.\n\nHow to find it: Use Orion's three Belt stars as a pointer westward toward orange Aldebaran and the Hyades V.",
+      "url": "/stories/baseline/25.html",
+      "artwork": null
     }
   ],
   "linked_stories": [],
@@ -788,6 +805,24 @@
       "dek": "M75 is a charted deep-sky object selected by the Calendar as one of this week’s fixed-sky observing targets.",
       "body": "Why it is here: M75 is a charted deep-sky object selected by the Calendar as one of this week’s fixed-sky observing targets.\n\nHow to find it: Use its charted position in Sgr and the surrounding figure stars to identify the field.",
       "url": "/stories/baseline/381.html",
+      "artwork": null
+    },
+    {
+      "fixed_object_id": 60,
+      "collection": "baseline",
+      "hed": "Spica",
+      "dek": "Spica is a charted star in Vir selected by the Calendar as part of this week’s fixed-sky observing framework.",
+      "body": "Why it is here: Spica is a charted star in Vir selected by the Calendar as part of this week’s fixed-sky observing framework.\n\nHow to find it: Trace the curve of the Big Dipper's handle to Arcturus, then continue the same sweep to Spica.",
+      "url": "/stories/baseline/60.html",
+      "artwork": null
+    },
+    {
+      "fixed_object_id": 25,
+      "collection": "baseline",
+      "hed": "Aldebaran",
+      "dek": "Aldebaran is a charted star in Tau selected by the Calendar as part of this week’s fixed-sky observing framework.",
+      "body": "Why it is here: Aldebaran is a charted star in Tau selected by the Calendar as part of this week’s fixed-sky observing framework.\n\nHow to find it: Use Orion's three Belt stars as a pointer westward toward orange Aldebaran and the Hyades V.",
+      "url": "/stories/baseline/25.html",
       "artwork": null
     }
   ],
