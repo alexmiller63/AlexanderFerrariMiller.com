@@ -160,7 +160,7 @@ def write_public_story(story: Story) -> Path:
         f"<title>{html.escape(story.hed)} — Star Almanack Sky Notes</title>\n</head>\n"
         "<body>\n<main class=\"sky-note-story-page\">\n"
         f"<h1>{html.escape(story.hed)}</h1>\n"
-        f"<p class=\"sky-note-story-dek\">{html.escape(story.dek)}</p>\n{paragraphs}\n"
+        f"<p class=\"sky-note-story-dek story-dek\" data-dek=\"true\">{html.escape(story.dek)}</p>\n{paragraphs}\n"\n        f"<p><a class=\"descriptor-link\" href=\"/almanack/descriptors/{story.fixed_object_id}.json\">Machine-readable descriptor</a></p>\n"
         "</main>\n</body>\n</html>\n"
     )
     if not path.exists() or path.read_text(encoding="utf-8") != document:
