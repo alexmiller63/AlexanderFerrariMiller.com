@@ -158,9 +158,13 @@ def write_public_story(story: Story) -> Path:
         "<!doctype html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n"
         "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n"
         f"<title>{html.escape(story.hed)} — Star Almanack Sky Notes</title>\n</head>\n"
-        "<body>\n<main class=\"sky-note-story-page\">\n"
-        f"<h1>{html.escape(story.hed)}</h1>\n"
-        f"<p class=\"sky-note-story-dek story-dek\" data-dek=\"true\">{html.escape(story.dek)}</p>\\n{paragraphs}\\n"
+        f"<body>\n<main class=\"sky-note-story-page\" data-fixed-object-id=\"{story.fixed_object_id}\">\n"
+        f"<h1 data-story-field=\"hed\">{html.escape(story.hed)}</h1>\n"
+        f"<p class=\"sky-note-story-dek story-dek\" data-story-field=\"dek\">{html.escape(story.dek)}</p>\n"
+        f"<section class=\"sky-note-story-body\" data-story-field=\"body\">{paragraphs}</section>\n"
+        f"<p class=\"sky-note-story-descriptor\" data-story-field=\"descriptor\">"
+        f"<a class=\"descriptor-link\" data-descriptor-id=\"{story.fixed_object_id}\" "
+        f"href=\"../../almanack/descriptors/{story.fixed_object_id}.json\" type=\"application/json\">Descriptor</a></p>\n"
         "</main>\n</body>\n</html>\n"
     )
     if not path.exists() or path.read_text(encoding="utf-8") != document:
