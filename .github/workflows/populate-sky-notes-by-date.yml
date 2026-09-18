@@ -145,7 +145,10 @@ jobs:
                           descriptor = destination.locator('[data-story-field="descriptor"]:visible')
                           descriptor_link = descriptor.locator('a[href]').first if descriptor.count() == 1 else None
                           art_count = destination.locator('main.sky-note-story-page img:visible, main.sky-note-story-page svg:visible, main.sky-note-story-page picture:visible').count()
+                          hed_text = hed.first.inner_text().strip() if hed.count() == 1 else ''
+                          dek_text = dek.first.inner_text().strip() if dek.count() == 1 else ''
                           body_text = body.first.inner_text().strip() if body.count() == 1 else ''
+                          body_excerpt = ' '.join(body_text.split())[:240]
                           descriptor_text = descriptor.first.inner_text().strip() if descriptor.count() == 1 else ''
                           descriptor_href = descriptor_link.get_attribute('href') if descriptor_link is not None and descriptor_link.count() == 1 else ''
                           descriptor_url = urljoin(destination.url, descriptor_href) if descriptor_href else ''
@@ -162,8 +165,8 @@ jobs:
                                       descriptor_id = None
                           root_id = story_root.first.get_attribute('data-fixed-object-id') if story_root.count() == 1 else None
                           diagnostics = {
-                              'hed': hed.count() == 1 and bool(hed.first.inner_text().strip()),
-                              'dek': dek.count() == 1 and bool(dek.first.inner_text().strip()),
+                              'hed': hed.count() == 1 and bool(hed_text),
+                              'dek': dek.count() == 1 and bool(dek_text),
                               'body': body.count() == 1 and len(body_text) >= 40,
                               'art': art_count > 0,
                               # Descriptor presence is a rendered-page fact, and the
@@ -177,14 +180,30 @@ jobs:
                                   and descriptor_id == root_id
                               ),
                           }
+                          art_urls = destination.locator('main.sky-note-story-page img:visible').evaluate_all("els => els.map(e => e.currentSrc || e.src).filter(Boolean)")
+                          art_url = art_urls[0] if art_urls else 'NONE'
                           print(
                               f'DIAGNOSTIC attempt={package_attempt} {year}-W{week:02d} {label!r}: '
                               + ' '.join(f'{key}={"YES" if value else "NO"}' for key, value in diagnostics.items())
-                              + f' descriptor_text={descriptor_text!r} descriptor_href={descriptor_href!r}\n'                              + f' descriptor_url={descriptor_url!r} descriptor_status={descriptor_status!r} descriptor_id={descriptor_id!r}'
+                              + f' hed_text={hed_text!r} dek_text={dek_text!r} body_excerpt={body_excerpt!r}'
+                              + f' art_url={art_url!r} descriptor_text={descriptor_text!r} descriptor_href={descriptor_href!r}\n'
+                              + f' descriptor_url={descriptor_url!r} descriptor_status={descriptor_status!r} descriptor_id={descriptor_id!r}'
                               + f' root_id={root_id!r} url={destination_url}'
                           )
-                          if all(diagnostics.values()):
+                          # Every required field must be rendered inside the one typed
+                          # story root for this numeric object identity. This prevents
+                          # unrelated DOM content from satisfying package acceptance.
+                          same_story = (
+                              story_root.count() == 1
+                              and root_id is not None
+                              and hed.count() == 1 and story_root.locator('[data-story-field="hed"]:visible').count() == 1
+                              and dek.count() == 1 and story_root.locator('[data-story-field="dek"]:visible').count() == 1
+                              and body.count() == 1 and story_root.locator('[data-story-field="body"]:visible').count() == 1
+                              and descriptor.count() == 1 and story_root.locator('[data-story-field="descriptor"]:visible').count() == 1
+                          )
+                          if all(diagnostics.values()) and same_story:
                               break
+                          diagnostics['same_story'] = same_story
                           if package_attempt < 12:
                               time.sleep(10)
                               destination.reload(wait_until='networkidle')
