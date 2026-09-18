@@ -65,16 +65,6 @@ OBSERVING_CONCEPTS = {
         "type": "observing-concept",
         "summary": "angular position measured along the ecliptic, used here for conservative weekly Solar-System comparisons",
     },
-    "binoculars": {
-        "name": "Binoculars",
-        "type": "observing-concept",
-        "summary": "wide-field optical aid useful for locating star fields and brighter deep-sky targets",
-    },
-    "small-telescope": {
-        "name": "Small telescope",
-        "type": "observing-concept",
-        "summary": "a telescope suitable for resolving compact targets after the surrounding field is identified",
-    },
     "zodiac": {
         "name": "zodiac",
         "type": "observing-concept",
@@ -434,7 +424,7 @@ def build_descriptors(
                         break
             add(record)
 
-    for descriptor_id in ("ecliptic-longitude", "binoculars", "small-telescope", "zodiac"):
+    for descriptor_id in ("ecliptic-longitude", "zodiac"):
         concept = OBSERVING_CONCEPTS[descriptor_id]
         add(_base(descriptor_id, concept["type"], concept["name"], concept["summary"]))
 
@@ -569,10 +559,7 @@ def decorate_note_html(rendered_html: str, records: list[dict]) -> str:
     # Observing-method section labels are themselves descriptor mentions. Link them
     # directly without attaching explanatory prose inside the <strong> heading.
     used_ids: set[str] = set()
-    section_descriptors = {
-        "Binoculars": "binoculars",
-        "Small telescope": "small-telescope",
-    }
+    section_descriptors = {}
     records_by_id = {record["id"]: record for record in records}
     for label, descriptor_id in section_descriptors.items():
         record = records_by_id.get(descriptor_id)
