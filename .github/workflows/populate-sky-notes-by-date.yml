@@ -148,21 +148,39 @@ jobs:
                           body_text = body.first.inner_text().strip() if body.count() == 1 else ''
                           descriptor_text = descriptor.first.inner_text().strip() if descriptor.count() == 1 else ''
                           descriptor_href = descriptor_link.get_attribute('href') if descriptor_link is not None and descriptor_link.count() == 1 else ''
+                          descriptor_url = urljoin(destination.url, descriptor_href) if descriptor_href else ''
+                          descriptor_status = None
+                          descriptor_id = None
+                          if descriptor_url:
+                              descriptor_response = context.request.get(descriptor_url)
+                              descriptor_status = descriptor_response.status
+                              if descriptor_response.ok:
+                                  try:
+                                      descriptor_json = descriptor_response.json()
+                                      descriptor_id = str(descriptor_json.get('id')) if isinstance(descriptor_json, dict) else None
+                                  except Exception:
+                                      descriptor_id = None
                           root_id = story_root.first.get_attribute('data-fixed-object-id') if story_root.count() == 1 else None
                           diagnostics = {
                               'hed': hed.count() == 1 and bool(hed.first.inner_text().strip()),
                               'dek': dek.count() == 1 and bool(dek.first.inner_text().strip()),
                               'body': body.count() == 1 and len(body_text) >= 40,
                               'art': art_count > 0,
-                              # Descriptor presence is a rendered-page fact. Do not infer
-                              # it from package bookkeeping or require its ID to duplicate
-                              # the story root ID merely to prove that it is visibly there.
-                              'descriptor': descriptor.count() == 1 and bool(descriptor_text) and bool(descriptor_href),
+                              # Descriptor presence is a rendered-page fact, and the
+                              # descriptor target must itself resolve successfully.
+                              'descriptor': (
+                                  descriptor.count() == 1
+                                  and bool(descriptor_text)
+                                  and bool(descriptor_href)
+                                  and descriptor_status is not None
+                                  and 200 <= descriptor_status < 300
+                                  and descriptor_id == root_id
+                              ),
                           }
                           print(
                               f'DIAGNOSTIC attempt={package_attempt} {year}-W{week:02d} {label!r}: '
                               + ' '.join(f'{key}={"YES" if value else "NO"}' for key, value in diagnostics.items())
-                              + f' descriptor_text={descriptor_text!r} descriptor_href={descriptor_href!r}'
+                              + f' descriptor_text={descriptor_text!r} descriptor_href={descriptor_href!r}'\n                              + f' descriptor_url={descriptor_url!r} descriptor_status={descriptor_status!r} descriptor_id={descriptor_id!r}'
                               + f' root_id={root_id!r} url={destination_url}'
                           )
                           if all(diagnostics.values()):
@@ -175,7 +193,7 @@ jobs:
                           raise SystemExit(
                               f'DEPLOYED FIXED-OBJECT PACKAGE INCOMPLETE AFTER RENDERED RETRIES: '
                               f'{year}-W{week:02d} {label!r}; missing={",".join(missing)}; '
-                              f'descriptor_text={descriptor_text!r}; descriptor_href={descriptor_href!r}; '
+                              f'descriptor_text={descriptor_text!r}; descriptor_href={descriptor_href!r}; '\n                              f'descriptor_url={descriptor_url!r}; descriptor_status={descriptor_status!r}; descriptor_id={descriptor_id!r}; '
                               f'url={destination_url}'
                           )
                       destination.close(); checked += 1
