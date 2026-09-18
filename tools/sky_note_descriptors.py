@@ -429,12 +429,35 @@ def write_descriptor_records(records: list[dict]) -> None:
 
 
 def _linked_name(record: dict) -> str:
-    human_href = (record.get("representation") or {}).get("human")
-    href = reader_story_url(human_href) if human_href else descriptor_href(record["id"])
-    type_attr = "" if human_href else ' type="application/json"'
+    """Return a safe reader-facing link for a descriptor.
+
+    Curated story URLs are preferred, but a missing/invalid story URL must never
+    turn the Sky Note generator into an AttributeError inside html.escape().
+    The descriptor JSON remains the deterministic fallback.
+    """
+    representation = record.get("representation") or {}
+    human_href = representation.get("human")
+    href = None
+    if human_href:
+        try:
+            href = reader_story_url(human_href)
+        except (AttributeError, TypeError, ValueError) as exc:
+            raise RuntimeError(
+                f"Invalid human story URL for descriptor {record.get('id')!r}: "
+                f"{human_href!r} ({exc})"
+            ) from exc
+    if not href:
+        href = descriptor_href(str(record["id"]))
+        type_attr = ' type="application/json"'
+    else:
+        type_attr = ""
+    if not isinstance(href, str) or not href:
+        raise RuntimeError(
+            f"Descriptor {record.get('id')!r} resolved to an empty reader-facing href"
+        )
     return (
         f'<a class="descriptor-link" href="{html.escape(href, quote=True)}"'
-        f'{type_attr}>{html.escape(record["name"], quote=False)}</a>'
+        f'{type_attr}>{html.escape(str(record["name"]), quote=False)}</a>'
     )
 
 
