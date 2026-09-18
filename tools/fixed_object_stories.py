@@ -19,7 +19,7 @@ FIXED_OBJECT_DATABASE = ROOT / "database" / "fixed-objects.json"
 STAR_HOPS = ROOT / "guiding-star-hops.json"
 
 COLLECTIONS = {"alpha-stars", "beta-stars", "special-stars", "messier", "caldwell", "finest"}
-ARTWORK_KINDS = {"stellar-finder"}
+ARTWORK_KINDS = {"stellar-finder"}\nBAYER_NAMES = {"Alp":"Alpha","Bet":"Beta","Gam":"Gamma","Del":"Delta","Eps":"Epsilon","Zet":"Zeta","Eta":"Eta","The":"Theta","Iot":"Iota","Kap":"Kappa","Lam":"Lambda","Mu":"Mu","Nu":"Nu","Xi":"Xi","Omi":"Omicron","Pi":"Pi","Rho":"Rho","Sig":"Sigma","Tau":"Tau","Ups":"Upsilon","Phi":"Phi","Chi":"Chi","Psi":"Psi","Ome":"Omega"}\n\ndef _bayer_fallback_name(facts: dict) -> str | None:\n    notes = str(facts.get("notes") or "")\n    match = re.search(r"(?:^|;\\s*)bayer_code=([^;]+)", notes)\n    code = match.group(1).strip() if match else ""\n    con = str(facts.get("constellation") or "").strip()\n    if not code or not con:\n        return None\n    m = re.match(r"([A-Za-z]+)(.*)", code)\n    stem, suffix = (m.group(1), m.group(2)) if m else (code, "")\n    return f"{BAYER_NAMES.get(stem, stem)}{suffix} {con}"
 
 
 @dataclass(frozen=True)
