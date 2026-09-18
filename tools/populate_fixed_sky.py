@@ -3,19 +3,21 @@
 from __future__ import annotations
 import csv
 import datetime as dt
+import json
 import sys
 from collections import defaultdict
 from pathlib import Path
 
 import yaml
 
-from almanack_calendar import ensure_calendar_metadata, get_events, set_events
+from almanack_calendar import CalendarEvent, ensure_calendar_metadata, get_events, set_events
 from star_almanack_astronomy import apparent_sun_ra_hours,best_visibility_occurrences_for_iso_year,solar_ra_occurrences_for_iso_year
 from star_almanack_objects import AlmanackObject,ObservingAid,observing_aid_for_magnitude,render_html
 
 ROOT=Path(__file__).resolve().parents[1]; SRC=ROOT; PUBLIC=ROOT/"almanack"; SOURCE_SITE=SRC/"site"; DEFAULT_YEARS=(2025,2026,2027)
 REGIONS=SRC/"fixed-object-regions.yaml"
 FIXED_OBJECTS=SRC/"fixed-objects.yaml"
+FIXED_OBJECT_REGISTRY=SRC/"database"/"fixed-object-registry.json"
 GREEK_BAYER={"Alp":"α","Bet":"β","Gam":"γ","Del":"δ","Eps":"ε","Zet":"ζ","Eta":"η","The":"θ","Iot":"ι","Kap":"κ","Lam":"λ","Mu":"μ","Nu":"ν","Xi":"ξ","Omi":"ο","Pi":"π","Rho":"ρ","Sig":"σ","Tau":"τ","Ups":"υ","Phi":"φ","Chi":"χ","Psi":"ψ","Ome":"ω"}
 
 def requested_years():
@@ -48,6 +50,24 @@ def load_messier_catalog():
     return catalog
 REGION_OBJECTS=load_regions()
 MESSIER_CATALOG=load_messier_catalog()
+
+def load_fixed_object_ids():
+    data=json.loads(FIXED_OBJECT_REGISTRY.read_text(encoding="utf-8"))
+    by_identifier={}
+    for obj in data.get("fixed_objects",[]):
+        if obj.get("status")!="active":continue
+        fixed_id=int(obj["fixed_object_id"])
+        for ident in obj.get("identifiers",[]):
+            key=(str(ident.get("namespace") or "").strip().lower(),str(ident.get("value") or "").strip().lower())
+            if key[0] and key[1]:by_identifier[key]=fixed_id
+    return by_identifier
+FIXED_OBJECT_IDS=load_fixed_object_ids()
+
+def fixed_object_id(namespace,value):
+    key=(namespace.strip().lower(),str(value or "").strip().lower())
+    fixed_id=FIXED_OBJECT_IDS.get(key)
+    if fixed_id is None:raise RuntimeError(f"Permanent fixed-object ID not found for {namespace}:{value}")
+    return fixed_id
 def canonical_occurrence(occurrences,year,identity):
     """Select the single annual event represented by one ISO week-year.
 
@@ -93,28 +113,32 @@ def in_milky_way(r):
     key=display_bayer(r)
     entry=REGION_OBJECTS.get("bayer",{}).get(key,{})
     return bool(entry.get("milky_way",{}).get("inside",False))
-def star_label(r):
+def star_event(r):
     proper=r.get("proper","").strip(); bayer=display_bayer(r); base=f"{proper} ({bayer})" if proper and bayer else (proper or bayer or f"{r.get('con','').strip()} star"); source_mag=(r.get("representative_vmax") or r.get("catalog_v") or r.get("mag") or "").strip()
-    label=render_html(AlmanackObject(label=base,object_type="fixed_star",dec_deg=r["dec_deg"],best_date=dt.date.fromisoformat(r["best_date"]),observing_aid=observing_aid_for_magnitude(source_mag),magnitude=source_mag,magnitude_display="whole",catalog_id=(r.get("hyg_id") or r.get("hip") or "").strip(),provenance=(r.get("brightness_basis") or "").strip()))
-    return label+(" — in the Milky Way" if in_milky_way(r) else "")
+    aid=observing_aid_for_magnitude(source_mag)
+    record=AlmanackObject(label=base,object_type="fixed_star",dec_deg=r["dec_deg"],best_date=dt.date.fromisoformat(r["best_date"]),observing_aid=aid,magnitude=source_mag,magnitude_display="whole",catalog_id=(r.get("hyg_id") or r.get("hip") or "").strip(),provenance=(r.get("brightness_basis") or "").strip())
+    label=render_html(record)+(" — in the Milky Way" if in_milky_way(r) else "")
+    hip=(r.get("hip") or "").strip()
+    if not hip:raise RuntimeError(f"Missing HIP identity for Calendar fixed star {base}")
+    return CalendarEvent(label,fixed_object_id("hip",hip),aid.value if aid else None)
 def page_date_map(year):
     bayer=redated(read_csv("expanded-bayer-visibility-2026.csv"),year); bright=redated(read_csv("bright-star-visibility-2026.csv"),year); messier=redated_preserving_2026_phase(read_csv("messier-visibility-2026.csv"),year)
     write_csv(SRC/"generated"/f"expanded-bayer-visibility-{year}.csv",bayer); write_csv(SRC/"generated"/f"bright-star-visibility-{year}.csv",bright); write_csv(SRC/"generated"/f"messier-visibility-{year}.csv",messier)
     events=defaultdict(list); seen=set()
     for r in bayer:
         d=dt.date.fromisoformat(r["best_date"]); identity=(r.get("proper") or r.get("bayer") or "").strip().lower(); key=(d,identity)
-        if identity and key not in seen:events[d].append(star_label(r)); seen.add(key)
+        if identity and key not in seen:events[d].append(star_event(r)); seen.add(key)
     for r in bright:
         if r.get("new_non_alpha_beta","").lower()!="yes":continue
         d=dt.date.fromisoformat(r["best_date"]); identity=(r.get("proper") or (r.get("bayer","")+r.get("con",""))).strip().lower(); key=(d,identity)
-        if identity and key not in seen:events[d].append(star_label(r)); seen.add(key)
+        if identity and key not in seen:events[d].append(star_event(r)); seen.add(key)
     for r in messier:
         d=dt.date.fromisoformat(r["best_date"])
         identity=r["messier"].strip()
         catalog=MESSIER_CATALOG.get(identity)
         if catalog is None:raise RuntimeError(f"Missing {identity} from {FIXED_OBJECTS.name} Messier catalog")
         if catalog.get("dec_deg") is None:raise RuntimeError(f"Missing declination for {identity} in {FIXED_OBJECTS.name}")
-        events[d].append(render_html(AlmanackObject(label=identity,object_type="deep_sky",dec_deg=catalog["dec_deg"],best_date=d,observing_aid=ObservingAid.TELESCOPE)))
+        events[d].append(CalendarEvent(render_html(AlmanackObject(label=identity,object_type="deep_sky",dec_deg=catalog["dec_deg"],best_date=d,observing_aid=ObservingAid.TELESCOPE)),fixed_object_id("messier",identity),ObservingAid.TELESCOPE.value))
     return events
 def pages_for_events(root,events):
     pages=[]
@@ -128,9 +152,13 @@ def inject(root,year,events):
             cell=get_events(text,d)
             if cell is None:continue
             keep=[] if cell=="—" else [x for x in cell.split("<br>") if x]
+            semantic=[]
             for v in vals:
-                base=v.split(" — ",1)[0]; keep=[x for x in keep if not (x==base or x.startswith(base+" — "))]; keep.append(v)
-            text,found=set_events(text,d,"<br>".join(keep) if keep else "—")
+                base=v.html.split(" — ",1)[0]
+                keep=[x for x in keep if not (x==base or x.startswith(base+" — "))]
+                semantic.append(v)
+            records=[CalendarEvent(x) for x in keep]+semantic
+            text,found=set_events(text,d,records)
             if not found:raise RuntimeError(f"Could not update {d} in {page}")
         if text!=original:page.write_text(text,encoding="utf-8"); changed+=1
     return changed
