@@ -21,6 +21,7 @@ FIGURE_SOURCE = SOURCE_ROOT / "constellation-figures.json"
 ASTERISM_SOURCE = SOURCE_ROOT / "asterisms-core-25.yaml"
 STAR_HOP_SOURCE = SOURCE_ROOT / "guiding-star-hops.json"
 IDENTITY_REGISTRY = SOURCE_ROOT / "descriptor-identities.json"
+FIXED_OBJECT_DATABASE = SOURCE_ROOT / "database" / "fixed-objects.json"
 
 BAYER_WORDS = {
     "Alp": "Alpha", "Bet": "Beta", "Gam": "Gamma", "Del": "Delta",
@@ -91,6 +92,27 @@ def slugify(value: str) -> str:
     value = value.lower().replace("’", "'")
     value = re.sub(r"[^a-z0-9]+", "-", value).strip("-")
     return value or "descriptor"
+
+
+def _fixed_object_identity(name: str, abbreviation: str | None = None) -> int | None:
+    """Resolve a physical fixed-sky object name to its permanent database ID."""
+    database = json.loads(FIXED_OBJECT_DATABASE.read_text(encoding="utf-8"))
+    matches = []
+    for obj in database.get("fixed_objects", []):
+        facts = [src.get("facts") or {} for src in obj.get("source_records", [])]
+        named = [fact for fact in facts if str(fact.get("name") or "").casefold() == name.casefold()]
+        if not named:
+            continue
+        if abbreviation and not any(
+            not fact.get("constellation") or str(fact.get("constellation")) == abbreviation
+            for fact in named
+        ):
+            continue
+        matches.append(int(obj["fixed_object_id"]))
+    matches = sorted(set(matches))
+    if len(matches) > 1:
+        raise RuntimeError(f"Ambiguous fixed-object identity for {name!r} ({abbreviation}): {matches}")
+    return matches[0] if matches else None
 
 
 def _constellation_identity(name: str, abbreviation: str) -> str:
@@ -339,6 +361,8 @@ def build_descriptors(
         star = stars_by_name.get(name.lower())
         con = abbreviation or (star.get("con") if star else None)
         constellation = constellation_names.get(con, con) if con else None
+        if fixed_object_id is None:
+            fixed_object_id = _fixed_object_identity(name, con)
         descriptor_id = str(fixed_object_id) if fixed_object_id is not None else f"star-{slugify(name)}"
         summary = f"bright star{f' in {constellation}' if constellation else ''} used as a fixed-sky reference"
         record = _base(descriptor_id, "star", name, summary)
@@ -609,21 +633,34 @@ def decorate_note_html(rendered_html: str, records: list[dict]) -> str:
             used_ids.add(record["id"])
             inline_count += 1
 
-    # Add direct JSON links as ordinary prose at the end of the final Sky Note paragraph,
-    # not as a separate descriptor block.
-    related = [record for record in ordered if record["id"] not in used_ids][:6]
+    # Related descriptors are a visual object strip.  Only physical fixed-sky
+    # identities belong here: every item must have an immutable numeric ID and
+    # therefore a canonical object-owned finder.  Concepts, planets, asterisms,
+    # and constellations remain machine-readable through their inline links but
+    # are not mislabeled as artwork-backed fixed objects.
+    related = [
+        record for record in ordered
+        if record["id"] not in used_ids
+        and record.get("type") in {"star", "deep-sky-object"}
+        and str(record.get("id", "")).isdigit()
+    ][:6]
     if related:
-        links = ", ".join(_linked_name(record) for record in related[:-1])
-        if len(related) > 1:
-            links = (links + ", and " if links else "") + _linked_name(related[-1])
-        else:
-            links = _linked_name(related[0])
-        addition = f" Related machine-readable descriptors include {links}."
-        paragraphs = list(re.finditer(r"<p>.*?</p>", decorated, flags=re.S))
-        if paragraphs:
-            last = paragraphs[-1]
-            paragraph = last.group(0)
-            enriched = paragraph[:-4].rstrip() + addition + "</p>"
-            decorated = decorated[:last.start()] + enriched + decorated[last.end():]
+        cards = []
+        for record in related:
+            fixed_id = str(record["id"])
+            linked = _linked_name(record)
+            artwork = f"../../../sky-notes-artwork/objects/{fixed_id}/finder.svg"
+            cards.append(
+                f'<figure class="descriptor-artwork" data-descriptor-id="{fixed_id}">'
+                f'<a href="{html.escape(artwork, quote=True)}">'
+                f'<img src="{html.escape(artwork, quote=True)}" '
+                f'alt="Stellar finder for {html.escape(str(record["name"]), quote=True)}" loading="lazy"></a>'
+                f'<figcaption>{linked}</figcaption></figure>'
+            )
+        addition = (
+            '<div class="related-descriptor-artwork" data-related-descriptor-artwork="true">'
+            '<p>Related machine-readable descriptors:</p>' + "".join(cards) + '</div>'
+        )
+        decorated += addition
 
     return decorated
