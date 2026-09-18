@@ -299,7 +299,7 @@ def generated_note(year: int, week: int, page_path: Path, yearly: dict[int, dict
         "planetary_source": f"weekly-ephemeris-{year}.csv",
         "planetary_coordinate": "geocentric tropical ecliptic longitude; Monday 00:00 UTC",
         "fixed_sky": fixed, "planet_relations": relations,
-        "artwork": None, "note": note,
+        "note": note,
     }
 
 
