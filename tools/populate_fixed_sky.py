@@ -11,7 +11,7 @@ import yaml
 
 from almanack_calendar import ensure_calendar_metadata, get_events, set_events
 from star_almanack_astronomy import apparent_sun_ra_hours,best_visibility_occurrences_for_iso_year,solar_ra_occurrences_for_iso_year
-from star_almanack_objects import AlmanackObject,observing_aid_for_magnitude,render_html
+from star_almanack_objects import AlmanackObject,ObservingAid,observing_aid_for_magnitude,render_html
 
 ROOT=Path(__file__).resolve().parents[1]; SRC=ROOT; PUBLIC=ROOT/"almanack"; SOURCE_SITE=SRC/"site"; DEFAULT_YEARS=(2025,2026,2027)
 REGIONS=SRC/"fixed-object-regions.yaml"
@@ -93,7 +93,7 @@ def page_date_map(year):
         if r.get("new_non_alpha_beta","").lower()!="yes":continue
         d=dt.date.fromisoformat(r["best_date"]); identity=(r.get("proper") or (r.get("bayer","")+r.get("con",""))).strip().lower(); key=(d,identity)
         if identity and key not in seen:events[d].append(star_label(r)); seen.add(key)
-    for r in messier:events[dt.date.fromisoformat(r["best_date"])].append(r["messier"]+" — 🔭")
+    for r in messier:\n        d=dt.date.fromisoformat(r["best_date"])\n        events[d].append(render_html(AlmanackObject(label=r["messier"],object_type="deep_sky",dec_deg=r["dec_deg"],best_date=d,observing_aid=ObservingAid.TELESCOPE)))
     return events
 def pages_for_events(root,events):
     pages=[]
