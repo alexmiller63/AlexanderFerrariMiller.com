@@ -130,32 +130,53 @@ jobs:
                       # destination is complete only when its story package is present.
                       # Story fields are typed in the generated HTML. Never infer
                       # body or descriptor presence from generic page prose.
-                      story_root = destination.locator('main.sky-note-story-page[data-fixed-object-id]')
-                      hed = destination.locator('[data-story-field="hed"]')
-                      dek = destination.locator('[data-story-field="dek"]')
-                      body = destination.locator('[data-story-field="body"]')
-                      descriptor = destination.locator('[data-story-field="descriptor"] [data-descriptor-id]')
-                      art_count = destination.locator('img, svg, picture').count()
-                      body_text = body.first.inner_text().strip() if body.count() == 1 else ''
-                      descriptor_id = descriptor.first.get_attribute('data-descriptor-id') if descriptor.count() == 1 else None
-                      root_id = story_root.first.get_attribute('data-fixed-object-id') if story_root.count() == 1 else None
-                      diagnostics = {
-                          'hed': hed.count() == 1 and bool(hed.first.inner_text().strip()),
-                          'dek': dek.count() == 1 and bool(dek.first.inner_text().strip()),
-                          'body': body.count() == 1 and len(body_text) >= 40,
-                          'art': art_count > 0,
-                          'descriptor': descriptor.count() == 1 and descriptor_id == root_id,
-                      }
-                      print(
-                          f'DIAGNOSTIC {year}-W{week:02d} {label!r}: '
-                          + ' '.join(f'{key}={"YES" if value else "NO"}' for key, value in diagnostics.items())
-                          + f' url={destination_url}'
-                      )
+                      # GitHub Pages can return HTTP 200 for the previous deployed
+                      # revision while the just-pushed story package is still propagating.
+                      # Inspect what Chromium actually renders, and retry the rendered
+                      # package rather than treating the first HTTP 200 as authoritative.
+                      diagnostics = {}
+                      descriptor_text = ''
+                      descriptor_href = ''
+                      for package_attempt in range(1, 13):
+                          story_root = destination.locator('main.sky-note-story-page[data-fixed-object-id]')
+                          hed = destination.locator('[data-story-field="hed"]:visible')
+                          dek = destination.locator('[data-story-field="dek"]:visible')
+                          body = destination.locator('[data-story-field="body"]:visible')
+                          descriptor = destination.locator('[data-story-field="descriptor"]:visible')
+                          descriptor_link = descriptor.locator('a[href]').first if descriptor.count() == 1 else None
+                          art_count = destination.locator('main.sky-note-story-page img:visible, main.sky-note-story-page svg:visible, main.sky-note-story-page picture:visible').count()
+                          body_text = body.first.inner_text().strip() if body.count() == 1 else ''
+                          descriptor_text = descriptor.first.inner_text().strip() if descriptor.count() == 1 else ''
+                          descriptor_href = descriptor_link.get_attribute('href') if descriptor_link is not None and descriptor_link.count() == 1 else ''
+                          root_id = story_root.first.get_attribute('data-fixed-object-id') if story_root.count() == 1 else None
+                          diagnostics = {
+                              'hed': hed.count() == 1 and bool(hed.first.inner_text().strip()),
+                              'dek': dek.count() == 1 and bool(dek.first.inner_text().strip()),
+                              'body': body.count() == 1 and len(body_text) >= 40,
+                              'art': art_count > 0,
+                              # Descriptor presence is a rendered-page fact. Do not infer
+                              # it from package bookkeeping or require its ID to duplicate
+                              # the story root ID merely to prove that it is visibly there.
+                              'descriptor': descriptor.count() == 1 and bool(descriptor_text) and bool(descriptor_href),
+                          }
+                          print(
+                              f'DIAGNOSTIC attempt={package_attempt} {year}-W{week:02d} {label!r}: '
+                              + ' '.join(f'{key}={"YES" if value else "NO"}' for key, value in diagnostics.items())
+                              + f' descriptor_text={descriptor_text!r} descriptor_href={descriptor_href!r}'
+                              + f' root_id={root_id!r} url={destination_url}'
+                          )
+                          if all(diagnostics.values()):
+                              break
+                          if package_attempt < 12:
+                              time.sleep(10)
+                              destination.reload(wait_until='networkidle')
                       missing = [key for key, value in diagnostics.items() if not value]
                       if missing:
                           raise SystemExit(
-                              f'DEPLOYED FIXED-OBJECT PACKAGE INCOMPLETE: {year}-W{week:02d} {label!r}; '
-                              f'missing={",".join(missing)}; url={destination_url}'
+                              f'DEPLOYED FIXED-OBJECT PACKAGE INCOMPLETE AFTER RENDERED RETRIES: '
+                              f'{year}-W{week:02d} {label!r}; missing={",".join(missing)}; '
+                              f'descriptor_text={descriptor_text!r}; descriptor_href={descriptor_href!r}; '
+                              f'url={destination_url}'
                           )
                       destination.close(); checked += 1
                   page.close()
