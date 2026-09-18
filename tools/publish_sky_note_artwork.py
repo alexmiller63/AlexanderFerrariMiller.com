@@ -14,7 +14,11 @@ PAGE_ROOTS = (ROOT / "site", ROOT / "almanack")
 ARTWORK_ROOT = ROOT / "sky-notes-artwork" / "objects"
 DESCRIPTOR_ROOT = ROOT / "generated-sky-notes"
 
-PLACEHOLDER_RE = re.compile(r\'<figure class="sky-note-artwork-placeholder"\\s+data-sky-note-artwork-placeholder="true"\\s+data-artwork-descriptor="[^"]*">.*?</figure>\', flags=re.S)\nPUBLISHED_RE = re.compile(r\'<figure class="sky-note-artwork"[^>]*>.*?</figure>\', flags=re.S)\nRELATED_RE = re.compile(r\'<div class="related-descriptor-artwork"\\s+data-related-descriptor-artwork="true">.*?</div>\', flags=re.S)\n\n
+PLACEHOLDER_RE = re.compile(r'<figure class="sky-note-artwork-placeholder"\s+data-sky-note-artwork-placeholder="true"\s+data-artwork-descriptor="[^"]*">.*?</figure>', flags=re.S)
+PUBLISHED_RE = re.compile(r'<figure class="sky-note-artwork"[^>]*>.*?</figure>', flags=re.S)
+RELATED_RE = re.compile(r'<div class="related-descriptor-artwork"\s+data-related-descriptor-artwork="true">.*?</div>', flags=re.S)
+
+
 def descriptor_artwork(records: list[dict]) -> str:
     cards = []
     for record in records:
@@ -53,7 +57,7 @@ def publish_page(path: Path, records: list[dict]) -> bool:
     if placeholder is not None:
         new = new[:placeholder.start()] + related + new[placeholder.end():]
     elif related:
-        marker = "</div></div><div class=\"almanack-bottom-nav-wrap\""
+        marker = '</div></div><div class="almanack-bottom-nav-wrap"'
         if marker not in new:
             raise RuntimeError(f"Missing Sky Notes publication anchor in {path.relative_to(ROOT)}")
         new = new.replace(marker, related + marker, 1)
