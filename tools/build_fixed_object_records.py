@@ -18,6 +18,50 @@ OUT_PATH = ROOT / "database" / "fixed-objects.json"
 
 IDENTITY_ONLY_KEYS = {"candidate_id", "identifiers", "source", "source_key"}
 
+BAYER_WORDS = {
+    "Alp": "Alpha", "Bet": "Beta", "Gam": "Gamma", "Del": "Delta",
+    "Eps": "Epsilon", "Zet": "Zeta", "Eta": "Eta", "The": "Theta",
+    "Iot": "Iota", "Kap": "Kappa", "Lam": "Lambda", "Mu": "Mu",
+    "Nu": "Nu", "Xi": "Xi", "Omi": "Omicron", "Pi": "Pi",
+    "Rho": "Rho", "Sig": "Sigma", "Tau": "Tau", "Ups": "Upsilon",
+    "Phi": "Phi", "Chi": "Chi", "Psi": "Psi", "Ome": "Omega",
+}
+
+
+def canonical_name(candidate: dict) -> str | None:
+    """Derive presentation metadata from source semantics, never from object IDs."""
+    name = candidate.get("name")
+    if name:
+        return str(name).strip()
+
+    source = str(candidate.get("source") or "")
+    source_key = str(candidate.get("source_key") or "").strip()
+
+    # Catalog designations are canonical names when the source has no separate
+    # common-name field (Messier, Caldwell, NGC, etc.).
+    if source == "fixed-objects.yaml:messier" and source_key:
+        return source_key
+
+    # Bayer records carry identity in their source key / bayer_code even when
+    # no proper name exists. Convert that catalog identity to readable metadata.
+    if source in {"fixed-objects.yaml:bayer", "expanded-bayer-stars.csv"}:
+        notes = str(candidate.get("notes") or "")
+        code = ""
+        for field in notes.split(";"):
+            if field.strip().startswith("bayer_code="):
+                code = field.split("=", 1)[1].strip()
+                break
+        constellation = str(candidate.get("constellation") or "").strip()
+        if code and constellation:
+            import re
+            match = re.match(r"([A-Za-z]+)(.*)", code)
+            stem, suffix = (match.group(1), match.group(2)) if match else (code, "")
+            return f"{BAYER_WORDS.get(stem, stem)}{suffix} {constellation}"
+        if source_key:
+            return source_key
+
+    return None
+
 
 def load(path: Path):
     return json.loads(path.read_text(encoding="utf-8"))
@@ -47,6 +91,8 @@ def main():
                 unresolved.append((identity["fixed_object_id"], key))
                 continue
             facts = {k: v for k, v in candidate.items() if k not in IDENTITY_ONLY_KEYS}
+            if not facts.get("name"):
+                facts["name"] = canonical_name(candidate)
             source_records.append({
                 "source": ref["source"],
                 "source_key": ref["source_key"],
