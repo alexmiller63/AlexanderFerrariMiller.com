@@ -75,9 +75,15 @@ jobs:
           for week in range(int("${{ inputs.start_week }}"), int("${{ inputs.end_week }}")+1):
               p=Path("generated-sky-notes")/"${{ inputs.start_year }}"/f"W{week:02d}.json"
               if not p.exists(): continue
-              for item in json.loads(p.read_text(encoding="utf-8")).get("fixed_sky") or []:
+              payload=json.loads(p.read_text(encoding="utf-8"))
+              for item in payload.get("fixed_sky") or []:
                   fid=item.get("fixed_object_id")
                   if isinstance(fid,int) and fid not in seen: seen.append(fid)
+              for descriptor in payload.get("descriptors") or []:
+                  did=str(descriptor.get("id",""))
+                  if descriptor.get("type") in {"star","deep-sky-object"} and did.isdigit():
+                      fid=int(did)
+                      if fid not in seen: seen.append(fid)
           print(" ".join(map(str,seen)))
           PY
           )"
@@ -197,6 +203,46 @@ jobs:
               raise SystemExit("No selected Sky Note artwork owners were available for validation.")
           print(f"PROOF COMPLETE: {checked} selected Sky Note artwork owner(s) are present and published.")
           PY
+
+      - name: Verify related descriptor Artwork is visibly rendered
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m http.server 8766 --directory . >/tmp/descriptor-artwork-http.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+          sleep 1
+          chromium_bin="$(command -v chromium || command -v chromium-browser || command -v google-chrome || true)"
+          [ -n "$chromium_bin" ] || { echo "Chromium/Chrome is not available." >&2; exit 1; }
+          checked=0
+          for ((week_value=10#${{ inputs.start_week }}; week_value<=10#${{ inputs.end_week }}; week_value++)); do
+            week="W$(printf '%02d' "$week_value")"
+            page="site/${{ inputs.start_year }}/$week/index.html"
+            [ -f "$page" ] || continue
+            url="http://127.0.0.1:8766/$page"
+            dom="/tmp/$week-related-descriptor-dom.html"
+            "$chromium_bin" --headless --no-sandbox --disable-gpu --virtual-time-budget=3000 --dump-dom "$url" > "$dom"
+            python - "$dom" "$week" <<'PY'
+          import re, sys
+          from pathlib import Path
+          text=Path(sys.argv[1]).read_text(encoding="utf-8", errors="replace")
+          week=sys.argv[2]
+          figures=re.findall(r'<figure class="descriptor-artwork" data-descriptor-id="(\d+)">(.*?)</figure>', text, re.S)
+          for fixed_id, body in figures:
+              expected=f"sky-notes-artwork/objects/{fixed_id}/finder.svg"
+              if expected not in body or "<img " not in body:
+                  raise SystemExit(f"{week}: descriptor {fixed_id} lacks visibly rendered object artwork")
+              asset=Path(expected)
+              if not asset.exists() or "<svg" not in asset.read_text(encoding="utf-8",errors="replace").lower():
+                  raise SystemExit(f"{week}: descriptor {fixed_id} artwork asset is missing or invalid: {expected}")
+              print(f"PROOF: {week} related descriptor {fixed_id} visibly renders {expected}")
+          print(f"RELATED_COUNT={len(figures)}")
+          PY
+            count="$(grep -o 'class="descriptor-artwork"' "$dom" | wc -l)"
+            checked=$((checked + count))
+          done
+          [ "$checked" -gt 0 ] || { echo "No related descriptor Artwork was rendered; refusing false green." >&2; exit 1; }
+          echo "PROOF COMPLETE: Chromium visibly rendered $checked related descriptor Artwork item(s)."
 
       - name: Commit Artwork changes only
         run: |
