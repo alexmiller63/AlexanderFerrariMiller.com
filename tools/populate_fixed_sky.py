@@ -15,6 +15,7 @@ from star_almanack_objects import AlmanackObject,ObservingAid,observing_aid_for_
 
 ROOT=Path(__file__).resolve().parents[1]; SRC=ROOT; PUBLIC=ROOT/"almanack"; SOURCE_SITE=SRC/"site"; DEFAULT_YEARS=(2025,2026,2027)
 REGIONS=SRC/"fixed-object-regions.yaml"
+FIXED_OBJECTS=SRC/"fixed-objects.yaml"
 GREEK_BAYER={"Alp":"α","Bet":"β","Gam":"γ","Del":"δ","Eps":"ε","Zet":"ζ","Eta":"η","The":"θ","Iot":"ι","Kap":"κ","Lam":"λ","Mu":"μ","Nu":"ν","Xi":"ξ","Omi":"ο","Pi":"π","Rho":"ρ","Sig":"σ","Tau":"τ","Ups":"υ","Phi":"φ","Chi":"χ","Psi":"ψ","Ome":"ω"}
 
 def requested_years():
@@ -32,7 +33,21 @@ def load_regions():
         raise RuntimeError(f"Missing {REGIONS.relative_to(ROOT)}; run the fixed-object region classifier first")
     data=yaml.safe_load(REGIONS.read_text(encoding="utf-8")) or {}
     return data.get("objects",{})
+def load_messier_catalog():
+    if not FIXED_OBJECTS.exists():
+        raise RuntimeError(f"Missing {FIXED_OBJECTS.relative_to(ROOT)}")
+    data=yaml.safe_load(FIXED_OBJECTS.read_text(encoding="utf-8")) or {}
+    fields=(data.get("schema") or {}).get("messier") or []
+    rows=data.get("messier") or []
+    catalog={}
+    for values in rows:
+        row=dict(zip(fields,values))
+        identity=str(row.get("id") or "").strip()
+        if identity:
+            catalog[identity]=row
+    return catalog
 REGION_OBJECTS=load_regions()
+MESSIER_CATALOG=load_messier_catalog()
 def canonical_occurrence(occurrences,year,identity):
     """Select the single annual event represented by one ISO week-year.
 
@@ -95,7 +110,11 @@ def page_date_map(year):
         if identity and key not in seen:events[d].append(star_label(r)); seen.add(key)
     for r in messier:
         d=dt.date.fromisoformat(r["best_date"])
-        events[d].append(render_html(AlmanackObject(label=r["messier"],object_type="deep_sky",dec_deg=r["dec_deg"],best_date=d,observing_aid=ObservingAid.TELESCOPE)))
+        identity=r["messier"].strip()
+        catalog=MESSIER_CATALOG.get(identity)
+        if catalog is None:raise RuntimeError(f"Missing {identity} from {FIXED_OBJECTS.name} Messier catalog")
+        if catalog.get("dec_deg") is None:raise RuntimeError(f"Missing declination for {identity} in {FIXED_OBJECTS.name}")
+        events[d].append(render_html(AlmanackObject(label=identity,object_type="deep_sky",dec_deg=catalog["dec_deg"],best_date=d,observing_aid=ObservingAid.TELESCOPE)))
     return events
 def pages_for_events(root,events):
     pages=[]
