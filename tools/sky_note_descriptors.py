@@ -633,34 +633,30 @@ def decorate_note_html(rendered_html: str, records: list[dict]) -> str:
             used_ids.add(record["id"])
             inline_count += 1
 
-    # Related descriptors are a visual object strip.  Only physical fixed-sky
-    # identities belong here: every item must have an immutable numeric ID and
-    # therefore a canonical object-owned finder.  Concepts, planets, asterisms,
-    # and constellations remain machine-readable through their inline links but
-    # are not mislabeled as artwork-backed fixed objects.
-    related = [
+    # Other objects listed this week are machine-readable object references.
+    # They link to canonical object-owned artwork; artwork is not embedded in
+    # the Sky Note itself. These are mentions in the week, not semantic
+    # "related objects".
+    other_objects = [
         record for record in ordered
         if record["id"] not in used_ids
         and record.get("type") in {"star", "deep-sky-object"}
         and str(record.get("id", "")).isdigit()
     ][:6]
-    if related:
-        cards = []
-        for record in related:
+    if other_objects:
+        links = []
+        for record in other_objects:
             fixed_id = str(record["id"])
-            linked = _linked_name(record)
             artwork = f"../../../sky-notes-artwork/objects/{fixed_id}/finder.svg"
-            cards.append(
-                f'<figure class="descriptor-artwork" data-descriptor-id="{fixed_id}">'
-                f'<a href="{html.escape(artwork, quote=True)}">'
-                f'<img src="{html.escape(artwork, quote=True)}" '
-                f'alt="Stellar finder for {html.escape(str(record["name"]), quote=True)}" loading="lazy"></a>'
-                f'<figcaption>{linked}</figcaption></figure>'
+            links.append(
+                f'<a class="object-artwork-link" '
+                f'href="{html.escape(artwork, quote=True)}">'
+                f'{html.escape(str(record["name"]), quote=False)}</a>'
             )
-        addition = (
-            '<div class="related-descriptor-artwork" data-related-descriptor-artwork="true">'
-            '<p>Related machine-readable descriptors:</p>' + "".join(cards) + '</div>'
+        decorated += (
+            '<div class="other-objects-listed-week" data-other-objects-listed-week="true">'
+            '<p><strong>Other objects listed this week:</strong> '
+            + ", ".join(links) + '</p></div>'
         )
-        decorated += addition
 
     return decorated
