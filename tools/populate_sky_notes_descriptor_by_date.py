@@ -60,8 +60,9 @@ def fixed_object_metadata() -> dict[int, dict]:
             if family and not meta.get("object_type_family"):
                 meta["object_type_family"] = family
             if record.get("source") == "fixed-objects.yaml:bayer":
-                if facts.get("name"):
-                    meta["name"] = facts["name"]
+                bayer_name = facts.get("name") or _bayer_fallback_name(facts)
+                if bayer_name:
+                    meta["name"] = bayer_name
                 if facts.get("constellation"):
                     meta["constellation"] = facts["constellation"]
         result[fixed_id] = meta
