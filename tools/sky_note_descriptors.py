@@ -109,7 +109,7 @@ def _constellation_identity(name: str, abbreviation: str) -> str:
 
 def descriptor_href(descriptor_id: str) -> str:
     """Return a descriptor link relative to an Almanack weekly page."""
-    return f"/almanack/descriptors/{descriptor_id}.json"
+    # Weekly Sky Note pages live at almanack/YYYY/Www/index.html.\n    # Use a relative path so this also works on the GitHub Pages project site,\n    # whose public root is /AlexanderFerrariMiller.com/ rather than /.\n    return f"../../../almanack/descriptors/{descriptor_id}.json"
 
 
 def descriptor_self_reference(descriptor_id: str) -> str:
