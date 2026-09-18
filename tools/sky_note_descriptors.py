@@ -19,7 +19,8 @@ CANONICAL_ROOT = SOURCE_ROOT / "descriptors"
 PUBLIC_ROOT = ROOT / "almanack" / "descriptors"
 FIGURE_SOURCE = SOURCE_ROOT / "constellation-figures.json"
 ASTERISM_SOURCE = SOURCE_ROOT / "asterisms-core-25.yaml"
-STAR_HOP_SOURCE = SOURCE_ROOT / "guiding-star-hops.json"\nIDENTITY_REGISTRY = SOURCE_ROOT / "descriptor-identities.json"
+STAR_HOP_SOURCE = SOURCE_ROOT / "guiding-star-hops.json"
+IDENTITY_REGISTRY = SOURCE_ROOT / "descriptor-identities.json"
 
 BAYER_WORDS = {
     "Alp": "Alpha", "Bet": "Beta", "Gam": "Gamma", "Del": "Delta",
