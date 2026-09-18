@@ -62,24 +62,32 @@ jobs:
           echo "end_date=$END_DATE" >> "$GITHUB_OUTPUT"
 
       - name: Generate Artwork request specs
-        run: python tools/populate_sky_notes_artwork_by_date.py "${{ steps.range.outputs.start_date }}" "${{ steps.range.outputs.end_date }}"
+        run: python tools/populate_fixed_object_artwork_by_date.py "${{ steps.range.outputs.start_date }}" "${{ steps.range.outputs.end_date }}"
 
       - name: Render fixed-object finder SVGs
         shell: bash
         run: |
           set -euo pipefail
-          for spec in sky-notes-artwork/specs/${{ inputs.start_year }}/W*.json; do
-            [ -e "$spec" ] || continue
-            week="$(basename "$spec" .json)"
-            week_value=$((10#${week#W}))
-            start_value=$((10#${{ inputs.start_week }}))
-            end_value=$((10#${{ inputs.end_week }}))
-            (( week_value >= start_value && week_value <= end_value )) || continue
-            fixed_id="$(python -c 'import json,sys; d=json.load(open(sys.argv[1])); print(d["artwork_owner_identity"]["fixed_object_id"])' "$spec")"
+          ids="$(python - <<'PY'
+          import json
+          from pathlib import Path
+          seen=[]
+          for week in range(int("${{ inputs.start_week }}"), int("${{ inputs.end_week }}")+1):
+              p=Path("generated-sky-notes")/"${{ inputs.start_year }}"/f"W{week:02d}.json"
+              if not p.exists(): continue
+              for item in json.loads(p.read_text(encoding="utf-8")).get("fixed_sky") or []:
+                  fid=item.get("fixed_object_id")
+                  if isinstance(fid,int) and fid not in seen: seen.append(fid)
+          print(" ".join(map(str,seen)))
+          PY
+          )"
+          for fixed_id in $ids; do
+            spec="sky-notes-artwork/specs/objects/${fixed_id}.json"
+            [ -f "$spec" ] || { echo "missing fixed-object renderer spec $spec" >&2; exit 1; }
             out="sky-notes-artwork/objects/${fixed_id}/finder.svg"
             mkdir -p "$(dirname "$out")"
             python tools/render_sky_note_finder.py /tmp/hygdata_v41.csv "$spec" "$out"
-            echo "$week -> artwork owner fixed object $fixed_id -> $out"
+            echo "fixed object $fixed_id -> $out"
           done
 
       - name: Publish fixed-object Artwork into weekly pages
