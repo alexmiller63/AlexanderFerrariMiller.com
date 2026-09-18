@@ -114,8 +114,8 @@ def story_candidates(fixed_ids: list[int]) -> list[dict]:
 
 
 def story_presentations(candidates: list[dict]) -> tuple[list[dict], list[dict]]:
-    """Wordy/debug presentation: emit every qualified story without an editorial cap."""
-    return list(candidates), []
+    """Weekly pages link to object stories; story prose is owned by story pages."""
+    return [], []
 
 
 def observer_note(year: int, week: int, page_path, fixed: list[dict], relations: list[dict]) -> str:
@@ -266,8 +266,10 @@ def patch_page(path, payload: dict) -> bool:
     text = path.read_text(encoding="utf-8")
     rendered = base.render_note(payload["note"])
     rendered = decorate_note_html(rendered, payload["descriptors"], payload.get("calendar_fixed_object_ids", []))
-    inline = render_inline_stories(payload.get("inline_stories", []))
-    linked = render_linked_stories(payload.get("linked_stories", []))
+    # Object-story prose is not embedded in weekly pages.  The observing guide
+    # links to canonical story pages, which own the prose and artwork.
+    inline = ""
+    linked = ""
     # Legacy week-owned artwork is deliberately removed. Fixed-object artwork
     # belongs on the object story/package and is published independently.
     artwork_slot = ""
