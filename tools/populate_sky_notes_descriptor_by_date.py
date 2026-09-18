@@ -124,10 +124,7 @@ def observer_note(year: int, week: int, page_path, fixed: list[dict], relations:
     monday, sunday = rows[0][0], rows[-1][0]
     entries = [entry for _, items in rows for entry in items]
     moon = next((entry for entry in entries if re.search(r"\b(New Moon|First Quarter|Full Moon|Last Quarter)\b", entry, flags=re.I)), None)
-    highlights = [item["name"] for item in fixed[:3]]
     opening = f"ISO {year}-W{week:02d} runs from {monday.strftime('%B')} {monday.day} through {sunday.strftime('%B')} {sunday.day}."
-    if highlights:
-        opening += " Fixed-sky highlights include " + ", ".join(highlights) + "."
     if relations:
         opening += " " + " ".join(base.relation_sentence(item) for item in relations[:2])
 
