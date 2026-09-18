@@ -90,6 +90,25 @@ jobs:
             echo "fixed object $fixed_id -> $out"
           done
 
+      - name: Rebuild fixed-object story pages with rendered Artwork
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          from tools.fixed_object_stories import available_stories, write_public_story
+          seen=set()
+          for week in range(int("${{ inputs.start_week }}"), int("${{ inputs.end_week }}")+1):
+              p=Path("generated-sky-notes")/"${{ inputs.start_year }}"/f"W{week:02d}.json"
+              if not p.exists(): continue
+              for item in json.loads(p.read_text(encoding="utf-8")).get("fixed_sky") or []:
+                  fid=item.get("fixed_object_id")
+                  if not isinstance(fid,int) or fid in seen: continue
+                  seen.add(fid)
+                  for story in available_stories(fid):
+                      write_public_story(story)
+          print(f"Rebuilt {len(seen)} fixed-object story package(s) after Artwork rendering")
+          PY
+
       - name: Publish fixed-object Artwork into weekly pages
         run: python tools/publish_sky_note_artwork.py "${{ steps.range.outputs.start_date }}" "${{ steps.range.outputs.end_date }}"
 
@@ -184,7 +203,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -- almanack site
-          git add -A -- tools/publish_sky_note_artwork.py sky-notes-artwork
+          git add -A -- tools/publish_sky_note_artwork.py tools/populate_fixed_object_artwork_by_date.py sky-notes-artwork stories
           if git diff --cached --quiet; then
             echo "No Artwork changes in requested ISO week range."
             exit 0
