@@ -138,11 +138,14 @@ def observer_note(year: int, week: int, page_path, fixed: list[dict], relations:
     else:
         condition = "Check the Moon's position each night and favor darker hours for low-contrast targets."
 
+    # Observing sections must be driven by observing capability, not by object
+    # type or Calendar order.  Until capability metadata is supplied here, do
+    # not pretend that the first stars/deep-sky objects are ranked targets.
     star_names = [item["name"] for item in fixed if item["type"] == "star"]
     deep_names = [item["name"] for item in fixed if item["type"] == "deep-sky"]
-    naked_targets = ", ".join(star_names[:3]) if star_names else "the brightest seasonal stars and the zodiac"
-    binocular_targets = ", ".join((deep_names + star_names)[:3]) if (deep_names or star_names) else "the week’s richest fixed-star fields"
-    telescope_targets = ", ".join(deep_names[:2]) if deep_names else "the compact fixed-sky targets selected for the week"
+    naked_targets = ", ".join(star_names) if star_names else "the brightest seasonal stars and the zodiac"
+    binocular_targets = ", ".join(star_names + deep_names) if (star_names or deep_names) else "the week’s richest fixed-star fields"
+    telescope_targets = ", ".join(deep_names) if deep_names else "the compact fixed-sky targets selected for the week"
     planet_paragraph = (
         " ".join(base.relation_sentence(item) for item in relations)
         if relations else
