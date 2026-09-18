@@ -74,7 +74,6 @@
       "basis": "Star Almanack preserved geocentric tropical ecliptic longitude"
     }
   ],
-  "artwork": null,
   "note": "ISO 2026-W40 runs from September 28 through October 4. Fixed-sky highlights include Alderamin, β Equ, Alfirk. Mercury is about 2.8° in ecliptic longitude from Spica in Virgo. Uranus is about 4.2° in ecliptic longitude from Aldebaran in Taurus.\n\n**Naked eye:** 🌗 Last Quarter — 13:25:04 UTC. Moderate moonlight makes timing and local sky position important for faint targets. Use Alderamin, β Equ, Alfirk as the week’s fixed-sky framework.\n\n**Planets:** Mercury is about 2.8° in ecliptic longitude from Spica in Virgo. Uranus is about 4.2° in ecliptic longitude from Aldebaran in Taurus.\n\n**Binoculars:** Favor Great Pegasus Globular, M2, M39; wide fields help connect the charted geometry to the real sky.\n\n**Small telescope:** Concentrate on Great Pegasus Globular, M2. Increase magnification only after the target and surrounding pattern are secure.",
   "descriptors": [
     {
@@ -455,12 +454,12 @@
     },
     {
       "schema_version": 1,
-      "id": "star-spica",
+      "id": "60",
       "type": "star",
       "name": "Spica",
       "summary": "bright star in Virgo used as a fixed-sky reference",
       "representation": {
-        "machine": "./star-spica.json",
+        "machine": "./60.json",
         "human_source": "summary"
       },
       "constellation_abbreviation": "Vir",
@@ -545,12 +544,12 @@
     },
     {
       "schema_version": 1,
-      "id": "star-aldebaran",
+      "id": "25",
       "type": "star",
       "name": "Aldebaran",
       "summary": "bright star in Taurus used as a fixed-sky reference",
       "representation": {
-        "machine": "./star-aldebaran.json",
+        "machine": "./25.json",
         "human_source": "summary"
       },
       "constellation_abbreviation": "Tau",
@@ -922,6 +921,7 @@
       "artwork": null
     }
   ],
+  "artwork": null,
   "descriptor_policy": {
     "source_of_truth": "machine-readable JSON",
     "candidate_pool": "complete; presentation never limits discovery",

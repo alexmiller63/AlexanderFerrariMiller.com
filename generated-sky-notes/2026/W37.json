@@ -64,84 +64,6 @@
       "basis": "Star Almanack preserved geocentric tropical ecliptic longitude"
     }
   ],
-  "artwork": {
-    "schema_version": 1,
-    "id": "2026-W37-stellar-finder",
-    "week": "2026-W37",
-    "kind": "stellar-finder",
-    "geometry": {
-      "constellation_system": "Martz/MacRobert",
-      "constellation_abbreviation": "Cap",
-      "on_missing_geometry": "fail",
-      "invent_geometry": false
-    },
-    "style": {
-      "background": "night-sky",
-      "constellation": {
-        "stroke": "#5c8fe8",
-        "role": "ordinary constellation figure"
-      },
-      "asterism": {
-        "stroke": "#59c86d",
-        "role": "orienting asterism"
-      },
-      "target": {
-        "stroke": "#ffd84d",
-        "fill": "none",
-        "role": "open target circle"
-      },
-      "target_arrows": false
-    },
-    "constellation": "Capricornus",
-    "asterism": null,
-    "targets": [
-      {
-        "type": "deep-sky",
-        "name": "M29"
-      },
-      {
-        "type": "star",
-        "name": "Alpha1 Cap"
-      },
-      {
-        "type": "star",
-        "name": "Algedi"
-      }
-    ],
-    "planetary_context": [
-      {
-        "kind": "planet-star-longitude",
-        "planet": "Venus",
-        "planet_longitude_deg": 207.717,
-        "star": "Spica",
-        "constellation": "Vir",
-        "star_ecliptic_longitude_deg": 203.841,
-        "star_ecliptic_latitude_deg": -2.054,
-        "longitude_separation_deg": 3.9,
-        "basis": "Star Almanack preserved geocentric tropical ecliptic longitude"
-      },
-      {
-        "kind": "planet-star-longitude",
-        "planet": "Uranus",
-        "planet_longitude_deg": 65.683,
-        "star": "Aldebaran",
-        "constellation": "Tau",
-        "star_ecliptic_longitude_deg": 69.789,
-        "star_ecliptic_latitude_deg": -5.467,
-        "longitude_separation_deg": 4.1,
-        "basis": "Star Almanack preserved geocentric tropical ecliptic longitude"
-      }
-    ],
-    "planet_plot_policy": "do not plot from longitude alone; require preserved 2-D Star Almanack position data",
-    "reference_standard": "docs/finder-standard.md",
-    "story_sources": [
-      {
-        "collection": "special-stars",
-        "fixed_object_id": 110,
-        "artwork": "stellar-finder"
-      }
-    ]
-  },
   "note": "ISO 2026-W37 runs from September 7 through September 13. Fixed-sky highlights include M29, Alpha1 Cap, Algedi. Venus is about 3.9° in ecliptic longitude from Spica in Virgo. Uranus is about 4.1° in ecliptic longitude from Aldebaran in Taurus.\n\n**Naked eye:** 🌑 New Moon — 03:27:00 UTCα1 Cap — V 4 — Tropical SummerAlgedi (α2 Cap) — V 4 — Tropical Summer. The dark Moon favors faint targets and extended star fields. Use Alpha1 Cap, Algedi, Dabih as the week’s fixed-sky framework.\n\n**Planets:** Venus is about 3.9° in ecliptic longitude from Spica in Virgo. Uranus is about 4.1° in ecliptic longitude from Aldebaran in Taurus.\n\n**Binoculars:** Favor M29, Alpha1 Cap, Algedi; wide fields help connect the charted geometry to the real sky.\n\n**Small telescope:** Concentrate on M29. Increase magnification only after the target and surrounding pattern are secure.",
   "descriptors": [
     {
@@ -457,12 +379,12 @@
     },
     {
       "schema_version": 1,
-      "id": "star-spica",
+      "id": "60",
       "type": "star",
       "name": "Spica",
       "summary": "bright star in Virgo used as a fixed-sky reference",
       "representation": {
-        "machine": "./star-spica.json",
+        "machine": "./60.json",
         "human_source": "summary"
       },
       "constellation_abbreviation": "Vir",
@@ -547,12 +469,12 @@
     },
     {
       "schema_version": 1,
-      "id": "star-aldebaran",
+      "id": "25",
       "type": "star",
       "name": "Aldebaran",
       "summary": "bright star in Taurus used as a fixed-sky reference",
       "representation": {
-        "machine": "./star-aldebaran.json",
+        "machine": "./25.json",
         "human_source": "summary"
       },
       "constellation_abbreviation": "Tau",
@@ -868,6 +790,7 @@
       "artwork": null
     }
   ],
+  "artwork": null,
   "descriptor_policy": {
     "source_of_truth": "machine-readable JSON",
     "candidate_pool": "complete; presentation never limits discovery",

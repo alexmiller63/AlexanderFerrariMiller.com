@@ -70,83 +70,6 @@
       "basis": "Star Almanack preserved geocentric tropical ecliptic longitude"
     }
   ],
-  "artwork": {
-    "schema_version": 1,
-    "id": "2026-W38-stellar-finder",
-    "week": "2026-W38",
-    "kind": "stellar-finder",
-    "geometry": {
-      "constellation_system": "Martz/MacRobert",
-      "constellation_abbreviation": "Cyg",
-      "on_missing_geometry": "fail",
-      "invent_geometry": false
-    },
-    "style": {
-      "background": "night-sky",
-      "constellation": {
-        "stroke": "#5c8fe8",
-        "role": "ordinary constellation figure"
-      },
-      "asterism": {
-        "stroke": "#59c86d",
-        "role": "orienting asterism"
-      },
-      "target": {
-        "stroke": "#ffd84d",
-        "fill": "none",
-        "role": "open target circle"
-      },
-      "target_arrows": false
-    },
-    "constellation": "Cygnus",
-    "asterism": {
-      "id": "asterism-northern-cross",
-      "name": "Northern Cross",
-      "members": [
-        "Deneb",
-        "Albireo",
-        "Sadr",
-        "Fawaris",
-        "Aljanah"
-      ]
-    },
-    "targets": [
-      {
-        "type": "star",
-        "name": "Sualocin"
-      },
-      {
-        "type": "star",
-        "name": "Rotanev"
-      },
-      {
-        "type": "star",
-        "name": "α Ind"
-      }
-    ],
-    "planetary_context": [
-      {
-        "kind": "planet-star-longitude",
-        "planet": "Uranus",
-        "planet_longitude_deg": 65.7,
-        "star": "Aldebaran",
-        "constellation": "Tau",
-        "star_ecliptic_longitude_deg": 69.789,
-        "star_ecliptic_latitude_deg": -5.467,
-        "longitude_separation_deg": 4.1,
-        "basis": "Star Almanack preserved geocentric tropical ecliptic longitude"
-      }
-    ],
-    "planet_plot_policy": "do not plot from longitude alone; require preserved 2-D Star Almanack position data",
-    "reference_standard": "docs/finder-standard.md",
-    "story_sources": [
-      {
-        "collection": "alpha-stars",
-        "fixed_object_id": 111,
-        "artwork": "stellar-finder"
-      }
-    ]
-  },
   "note": "ISO 2026-W38 runs from September 14 through September 20. Fixed-sky highlights include Sualocin, Rotanev, α Ind. Uranus is about 4.1° in ecliptic longitude from Aldebaran in Taurus.\n\n**Naked eye:** 🌓 First Quarter — 20:43:47 UTCDeneb (α Cyg) — V 1 — Northern Summer — in the Milky WayM72 — 🔭. Moderate moonlight makes timing and local sky position important for faint targets. Use Sualocin, Rotanev, α Ind as the week’s fixed-sky framework.\n\n**Planets:** Uranus is about 4.1° in ecliptic longitude from Aldebaran in Taurus.\n\n**Binoculars:** Favor M72, M73, Sualocin; wide fields help connect the charted geometry to the real sky.\n\n**Small telescope:** Concentrate on M72, M73. Increase magnification only after the target and surrounding pattern are secure.",
   "descriptors": [
     {
@@ -515,12 +438,12 @@
     },
     {
       "schema_version": 1,
-      "id": "star-aldebaran",
+      "id": "25",
       "type": "star",
       "name": "Aldebaran",
       "summary": "bright star in Taurus used as a fixed-sky reference",
       "representation": {
-        "machine": "./star-aldebaran.json",
+        "machine": "./25.json",
         "human_source": "summary"
       },
       "constellation_abbreviation": "Tau",
@@ -920,6 +843,7 @@
       "artwork": null
     }
   ],
+  "artwork": null,
   "descriptor_policy": {
     "source_of_truth": "machine-readable JSON",
     "candidate_pool": "complete; presentation never limits discovery",
