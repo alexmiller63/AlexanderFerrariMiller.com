@@ -20,6 +20,7 @@ from __future__ import annotations
 import datetime as dt
 import html
 import re
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Callable
 
@@ -48,6 +49,14 @@ EVENT_CELL_RE = re.compile(
     r'<div\b[^>]*class="[^"]*\bevent-cell\b[^"]*"[^>]*>(?P<event>.*?)</div>',
     re.DOTALL,
 )
+@dataclass(frozen=True)
+class CalendarEvent:
+    """Semantic Calendar event; metadata exists before HTML rendering."""
+    html: str
+    fixed_object_id: int | None = None
+    observing_aid: str | None = None
+
+
 EVENT_STYLE_ID = "calendar-event-cells-css"
 EVENT_STYLE = f'''<style id="{EVENT_STYLE_ID}">
 .calendar td.calendar-events-region{{padding:.45rem;vertical-align:stretch}}
@@ -93,10 +102,21 @@ def _event_items(events_html: str) -> list[str]:
     return [item.strip() for item in re.split(r'<br\s*/?>', raw, flags=re.IGNORECASE) if item.strip() and item.strip() != "—"]
 
 
-def _render_event_cells(events_html: str) -> str:
-    items = _event_items(events_html)
-    cells = "".join(f'<div class="event-cell">{item}</div>' for item in items)
-    return f'<div class="calendar-events">{cells}</div>'
+def _render_event(event: CalendarEvent) -> str:
+    attrs = ['class="event-cell"']
+    if event.fixed_object_id is not None:
+        attrs.append(f'data-fixed-object-id="{int(event.fixed_object_id)}"')
+    if event.observing_aid:
+        attrs.append(f'data-observing-aid="{html.escape(event.observing_aid, quote=True)}"')
+    return f'<div {" ".join(attrs)}>{event.html}</div>'
+
+
+def _render_event_cells(events: str | list[CalendarEvent]) -> str:
+    if isinstance(events, str):
+        records = [CalendarEvent(item) for item in _event_items(events)]
+    else:
+        records = events
+    return f'<div class="calendar-events">{"".join(_render_event(event) for event in records)}</div>'
 
 
 def _legacy_events(events_html: str) -> str:
@@ -217,7 +237,7 @@ def get_events(text: str, day: dt.date) -> str | None:
     return None
 
 
-def set_events(text: str, day: dt.date, events_html: str) -> tuple[str, bool]:
+def set_events(text: str, day: dt.date, events_html: str | list[CalendarEvent]) -> tuple[str, bool]:
     def transform(parts: dict[str, str]) -> None:
         parts["eattrs"] = _ensure_class(parts["eattrs"], "calendar-events-region")
         parts["events"] = _render_event_cells(events_html)
