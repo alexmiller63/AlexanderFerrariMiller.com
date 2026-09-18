@@ -49,9 +49,10 @@ def published_figure(fixed_id: int, descriptor: dict) -> str:
     target_text = ", ".join(targets) if targets else f"fixed object {fixed_id}"
     alt = html.escape(f"Sky Note stellar finder for {subject}; highlighting {target_text}", quote=True)
     caption = html.escape(f"Stellar finder: {subject}; highlight {target_text}.")
-    return ('<figure class="sky-note-artwork">'
+    descriptor_href = f"../../../almanack/descriptors/{fixed_id}.json"
+    return ('<figure class="sky-note-artwork" data-descriptor-id="' + str(fixed_id) + '">'
             f'<a class="sky-note-artwork-link" href="{href}"><img src="{href}" alt="{alt}" loading="lazy"></a>'
-            f'<figcaption>{caption} <a href="{href}">Artwork</a></figcaption>'
+            f'<figcaption>{caption} <a href="{descriptor_href}" type="application/json">Descriptor</a> · <a href="{href}">Artwork</a></figcaption>'
             '</figure>')
 
 
@@ -79,7 +80,7 @@ def publish_page(path: Path, fixed_id: int, descriptor: dict, records: list[dict
         cards.append(
             f'<figure class="descriptor-artwork" data-descriptor-id="{related_id}">'
             f'<a href="{href}"><img src="{href}" alt="Stellar finder for {name}" loading="lazy"></a>'
-            f'<figcaption>{name}</figcaption></figure>'
+            f'<figcaption><a href="../../../almanack/descriptors/{related_id}.json" type="application/json">{name}</a></figcaption></figure>'
         )
         if len(cards) == 6:
             break
