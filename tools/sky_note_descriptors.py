@@ -604,15 +604,38 @@ def decorate_note_html(rendered_html: str, records: list[dict]) -> str:
 
     inline_count = 0
 
-    # Enrich every astronomical object that occurs naturally in the generated
-    # prose.  Presentation density must not decide whether an object gets its
-    # canonical reader-facing link.
-    for record in ordered:
+    # Link every astronomical object occurrence in the original rendered prose.
+    # Determine mention locations before adding any descriptor prose: otherwise
+    # prose inserted for an earlier object can introduce another object's name
+    # (for example a constellation) and steal that object's first-match pass.
+    astronomical = [
+        record for record in ordered
+        if record.get("type") in {"deep-sky-object", "star", "planet", "solar-system-object"}
+    ]
+    for record in astronomical:
         linked = _linked_name(record)
-        sentence = human_sentence(record)
-        replacement = f"{linked}<span class=\"descriptor-inline-prose\"> — {sentence[len(linked):].lstrip()}</span>"
-        decorated, changed = _replace_first_mention(decorated, record, replacement)
+        escaped_name = html.escape(str(record["name"]), quote=False)
+        pattern = re.compile(
+            rf"(?<![A-Za-z0-9]){re.escape(escaped_name)}(?![A-Za-z0-9])"
+        )
+        changed = False
+        pieces = re.split(r"(<[^>]+>)", decorated)
+        anchor_depth = 0
+        for index, piece in enumerate(pieces):
+            if piece.startswith("<"):
+                if re.match(r"<a\b", piece):
+                    anchor_depth += 1
+                elif piece.startswith("</a"):
+                    anchor_depth = max(0, anchor_depth - 1)
+                continue
+            if anchor_depth or not piece:
+                continue
+            new_piece, count = pattern.subn(linked, piece)
+            if count:
+                pieces[index] = new_piece
+                changed = True
         if changed:
+            decorated = "".join(pieces)
             used_ids.add(record["id"])
             inline_count += 1
 
