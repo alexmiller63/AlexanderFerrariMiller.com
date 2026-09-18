@@ -275,10 +275,7 @@ def generated_note(year: int, week: int, page_path: Path, yearly: dict[int, dict
     fixed = featured_fixed_sky(entries, stars)
     relations = notable_planet_relations(week, yearly, stars)
     moon = next((entry for entry in entries if re.search(r"\b(New Moon|First Quarter|Full Moon|Last Quarter)\b", entry, flags=re.I)), None)
-    highlights = [item["name"] for item in fixed[:3]]
     opening = f"ISO {year}-W{week:02d} runs from {monday.strftime('%B')} {monday.day} through {sunday.strftime('%B')} {sunday.day}."
-    if highlights:
-        opening += " Fixed-sky highlights include " + ", ".join(highlights) + "."
     if relations:
         opening += " " + " ".join(relation_sentence(item) for item in relations[:2])
     moon_text = moon or "No principal lunar phase is listed this week"
