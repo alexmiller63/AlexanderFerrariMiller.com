@@ -6,6 +6,17 @@
   "planetary_coordinate": "geocentric tropical ecliptic longitude; Monday 00:00 UTC",
   "fixed_sky": [
     {
+      "fixed_object_id": 384,
+      "type": "deep-sky",
+      "name": "M29"
+    },
+    {
+      "fixed_object_id": 607,
+      "type": "star",
+      "name": "Alpha1 Cap",
+      "constellation": "Cap"
+    },
+    {
       "fixed_object_id": 608,
       "type": "star",
       "name": "Algedi",
@@ -85,16 +96,16 @@
     "asterism": null,
     "targets": [
       {
+        "type": "deep-sky",
+        "name": "M29"
+      },
+      {
+        "type": "star",
+        "name": "Alpha1 Cap"
+      },
+      {
         "type": "star",
         "name": "Algedi"
-      },
-      {
-        "type": "star",
-        "name": "Dabih"
-      },
-      {
-        "type": "star",
-        "name": "Sadr"
       }
     ],
     "planetary_context": [
@@ -131,7 +142,7 @@
       }
     ]
   },
-  "note": "ISO 2026-W37 runs from September 7 through September 13. Fixed-sky highlights include Algedi, Dabih, Sadr. Venus is about 3.9° in ecliptic longitude from Spica in Virgo. Uranus is about 4.1° in ecliptic longitude from Aldebaran in Taurus.\n\n**Naked eye:** 🌑 New Moon — 03:27:00 UTCα1 Cap — V 4 — Tropical SummerAlgedi (α2 Cap) — V 4 — Tropical Summer. The dark Moon favors faint targets and extended star fields. Use Algedi, Dabih, Sadr as the week’s fixed-sky framework.\n\n**Planets:** Venus is about 3.9° in ecliptic longitude from Spica in Virgo. Uranus is about 4.1° in ecliptic longitude from Aldebaran in Taurus.\n\n**Binoculars:** Favor Algedi, Dabih, Sadr; wide fields help connect the charted geometry to the real sky.\n\n**Small telescope:** Concentrate on the compact fixed-sky targets selected for the week. Increase magnification only after the target and surrounding pattern are secure.",
+  "note": "ISO 2026-W37 runs from September 7 through September 13. Fixed-sky highlights include M29, Alpha1 Cap, Algedi. Venus is about 3.9° in ecliptic longitude from Spica in Virgo. Uranus is about 4.1° in ecliptic longitude from Aldebaran in Taurus.\n\n**Naked eye:** 🌑 New Moon — 03:27:00 UTCα1 Cap — V 4 — Tropical SummerAlgedi (α2 Cap) — V 4 — Tropical Summer. The dark Moon favors faint targets and extended star fields. Use Alpha1 Cap, Algedi, Dabih as the week’s fixed-sky framework.\n\n**Planets:** Venus is about 3.9° in ecliptic longitude from Spica in Virgo. Uranus is about 4.1° in ecliptic longitude from Aldebaran in Taurus.\n\n**Binoculars:** Favor M29, Alpha1 Cap, Algedi; wide fields help connect the charted geometry to the real sky.\n\n**Small telescope:** Concentrate on M29. Increase magnification only after the target and surrounding pattern are secure.",
   "descriptors": [
     {
       "schema_version": 1,
@@ -267,12 +278,63 @@
     },
     {
       "schema_version": 1,
-      "id": "608",
+      "id": "384",
+      "type": "deep-sky-object",
+      "name": "M29",
+      "summary": "deep-sky object selected as a weekly fixed-sky observing target",
+      "representation": {
+        "machine": "./384.json",
+        "human_source": "summary",
+        "human": "/stories/messier/384.html"
+      },
+      "catalog_name": "M29",
+      "object_type": "deep-sky object",
+      "guiding_asterisms": [
+        {
+          "id": "asterism-northern-cross",
+          "name": "Northern Cross",
+          "relationship": "star-hop-anchor",
+          "relationship_route_ids": [
+            "northern-cross-sadr-m29"
+          ],
+          "provenance": {
+            "source": "Astronomical League",
+            "source_url": "https://www.astroleague.org/wp-content/uploads/2025/12/Asterism_List_20251223.pdf",
+            "source_role": "verification",
+            "supports": "asterism-definition"
+          }
+        }
+      ],
+      "star_hops": [
+        {
+          "id": "northern-cross-sadr-m29",
+          "target_type": "deep-sky-object",
+          "target": "M29",
+          "steps": [
+            "Northern Cross",
+            "Sadr",
+            "M29"
+          ],
+          "instruction": "Find the Northern Cross, center on Sadr, then move about 1.8° south to M29.",
+          "instruction_authorship": "Star Almanack original wording",
+          "provenance": {
+            "source": "Astronomy Magazine",
+            "source_url": "https://www.astronomy.com/science/open-cluster-m29-spiral-galaxy-ngc-6951-and-the-egg-nebula/",
+            "source_role": "verification",
+            "supports": "star-hop-method"
+          }
+        }
+      ],
+      "source_label": "M29"
+    },
+    {
+      "schema_version": 1,
+      "id": "607",
       "type": "star",
-      "name": "Algedi",
+      "name": "Alpha1 Cap",
       "summary": "bright star in Capricornus used as a fixed-sky reference",
       "representation": {
-        "machine": "./608.json",
+        "machine": "./607.json",
         "human_source": "summary"
       },
       "constellation_abbreviation": "Cap",
@@ -289,6 +351,19 @@
         "human_source": "summary"
       },
       "abbreviation": "Cap"
+    },
+    {
+      "schema_version": 1,
+      "id": "608",
+      "type": "star",
+      "name": "Algedi",
+      "summary": "bright star in Capricornus used as a fixed-sky reference",
+      "representation": {
+        "machine": "./608.json",
+        "human_source": "summary"
+      },
+      "constellation_abbreviation": "Cap",
+      "constellation": "Capricornus"
     },
     {
       "schema_version": 1,
@@ -637,9 +712,9 @@
     {
       "fixed_object_id": 607,
       "collection": "baseline",
-      "hed": "Fixed object 607",
-      "dek": "Fixed object 607 is a charted star in Cap selected by the Calendar as part of this week’s fixed-sky observing framework.",
-      "body": "Why it is here: Fixed object 607 is a charted star in Cap selected by the Calendar as part of this week’s fixed-sky observing framework.\n\nHow to find it: Use its charted position in Cap and the surrounding figure stars to identify the field.",
+      "hed": "Alpha1 Cap",
+      "dek": "Alpha1 Cap is a charted star in Cap selected by the Calendar as part of this week’s fixed-sky observing framework.",
+      "body": "Why it is here: Alpha1 Cap is a charted star in Cap selected by the Calendar as part of this week’s fixed-sky observing framework.\n\nHow to find it: Use its charted position in Cap and the surrounding figure stars to identify the field.",
       "url": "/stories/baseline/607.html",
       "artwork": null
     },
@@ -693,9 +768,9 @@
     {
       "fixed_object_id": 607,
       "collection": "baseline",
-      "hed": "Fixed object 607",
-      "dek": "Fixed object 607 is a charted star in Cap selected by the Calendar as part of this week’s fixed-sky observing framework.",
-      "body": "Why it is here: Fixed object 607 is a charted star in Cap selected by the Calendar as part of this week’s fixed-sky observing framework.\n\nHow to find it: Use its charted position in Cap and the surrounding figure stars to identify the field.",
+      "hed": "Alpha1 Cap",
+      "dek": "Alpha1 Cap is a charted star in Cap selected by the Calendar as part of this week’s fixed-sky observing framework.",
+      "body": "Why it is here: Alpha1 Cap is a charted star in Cap selected by the Calendar as part of this week’s fixed-sky observing framework.\n\nHow to find it: Use its charted position in Cap and the surrounding figure stars to identify the field.",
       "url": "/stories/baseline/607.html",
       "artwork": null
     },
@@ -750,9 +825,9 @@
     {
       "fixed_object_id": 607,
       "collection": "baseline",
-      "hed": "Fixed object 607",
-      "dek": "Fixed object 607 is a charted star in Cap selected by the Calendar as part of this week’s fixed-sky observing framework.",
-      "body": "Why it is here: Fixed object 607 is a charted star in Cap selected by the Calendar as part of this week’s fixed-sky observing framework.\n\nHow to find it: Use its charted position in Cap and the surrounding figure stars to identify the field.",
+      "hed": "Alpha1 Cap",
+      "dek": "Alpha1 Cap is a charted star in Cap selected by the Calendar as part of this week’s fixed-sky observing framework.",
+      "body": "Why it is here: Alpha1 Cap is a charted star in Cap selected by the Calendar as part of this week’s fixed-sky observing framework.\n\nHow to find it: Use its charted position in Cap and the surrounding figure stars to identify the field.",
       "url": "/stories/baseline/607.html",
       "artwork": null
     },

@@ -12,6 +12,12 @@
       "constellation": "Cep"
     },
     {
+      "fixed_object_id": 542,
+      "type": "star",
+      "name": "β Equ",
+      "constellation": "Equ"
+    },
+    {
       "fixed_object_id": 1177,
       "type": "star",
       "name": "Alfirk",
@@ -27,6 +33,21 @@
       "type": "star",
       "name": "Sadalsuud",
       "constellation": "Aqr"
+    },
+    {
+      "fixed_object_id": 400,
+      "type": "deep-sky",
+      "name": "M2"
+    },
+    {
+      "fixed_object_id": 401,
+      "type": "deep-sky",
+      "name": "M39"
+    },
+    {
+      "fixed_object_id": 402,
+      "type": "deep-sky",
+      "name": "M30"
     }
   ],
   "planet_relations": [
@@ -54,7 +75,7 @@
     }
   ],
   "artwork": null,
-  "note": "ISO 2026-W40 runs from September 28 through October 4. Fixed-sky highlights include Alderamin, Alfirk, Great Pegasus Globular. Mercury is about 2.8° in ecliptic longitude from Spica in Virgo. Uranus is about 4.2° in ecliptic longitude from Aldebaran in Taurus.\n\n**Naked eye:** 🌗 Last Quarter — 13:25:04 UTC. Moderate moonlight makes timing and local sky position important for faint targets. Use Alderamin, Alfirk, Sadalsuud as the week’s fixed-sky framework.\n\n**Planets:** Mercury is about 2.8° in ecliptic longitude from Spica in Virgo. Uranus is about 4.2° in ecliptic longitude from Aldebaran in Taurus.\n\n**Binoculars:** Favor Great Pegasus Globular, Alderamin, Alfirk; wide fields help connect the charted geometry to the real sky.\n\n**Small telescope:** Concentrate on Great Pegasus Globular. Increase magnification only after the target and surrounding pattern are secure.",
+  "note": "ISO 2026-W40 runs from September 28 through October 4. Fixed-sky highlights include Alderamin, β Equ, Alfirk. Mercury is about 2.8° in ecliptic longitude from Spica in Virgo. Uranus is about 4.2° in ecliptic longitude from Aldebaran in Taurus.\n\n**Naked eye:** 🌗 Last Quarter — 13:25:04 UTC. Moderate moonlight makes timing and local sky position important for faint targets. Use Alderamin, β Equ, Alfirk as the week’s fixed-sky framework.\n\n**Planets:** Mercury is about 2.8° in ecliptic longitude from Spica in Virgo. Uranus is about 4.2° in ecliptic longitude from Aldebaran in Taurus.\n\n**Binoculars:** Favor Great Pegasus Globular, M2, M39; wide fields help connect the charted geometry to the real sky.\n\n**Small telescope:** Concentrate on Great Pegasus Globular, M2. Increase magnification only after the target and surrounding pattern are secure.",
   "descriptors": [
     {
       "schema_version": 1,
@@ -222,6 +243,31 @@
     },
     {
       "schema_version": 1,
+      "id": "542",
+      "type": "star",
+      "name": "β Equ",
+      "summary": "bright star in Equuleus used as a fixed-sky reference",
+      "representation": {
+        "machine": "./542.json",
+        "human_source": "summary"
+      },
+      "constellation_abbreviation": "Equ",
+      "constellation": "Equuleus"
+    },
+    {
+      "schema_version": 1,
+      "id": "1307",
+      "type": "constellation",
+      "name": "Equuleus",
+      "summary": "constellation used by Star Almanack to organize fixed-sky objects and finder geometry",
+      "representation": {
+        "machine": "./1307.json",
+        "human_source": "summary"
+      },
+      "abbreviation": "Equ"
+    },
+    {
+      "schema_version": 1,
       "id": "1177",
       "type": "star",
       "name": "Alfirk",
@@ -361,6 +407,51 @@
           ]
         }
       ]
+    },
+    {
+      "schema_version": 1,
+      "id": "400",
+      "type": "deep-sky-object",
+      "name": "M2",
+      "summary": "deep-sky object selected as a weekly fixed-sky observing target",
+      "representation": {
+        "machine": "./400.json",
+        "human_source": "summary",
+        "human": "/stories/messier/400.html"
+      },
+      "catalog_name": "M2",
+      "object_type": "deep-sky object",
+      "source_label": "M2"
+    },
+    {
+      "schema_version": 1,
+      "id": "401",
+      "type": "deep-sky-object",
+      "name": "M39",
+      "summary": "deep-sky object selected as a weekly fixed-sky observing target",
+      "representation": {
+        "machine": "./401.json",
+        "human_source": "summary",
+        "human": "/stories/messier/401.html"
+      },
+      "catalog_name": "M39",
+      "object_type": "deep-sky object",
+      "source_label": "M39"
+    },
+    {
+      "schema_version": 1,
+      "id": "402",
+      "type": "deep-sky-object",
+      "name": "M30",
+      "summary": "deep-sky object selected as a weekly fixed-sky observing target",
+      "representation": {
+        "machine": "./402.json",
+        "human_source": "summary",
+        "human": "/stories/messier/402.html"
+      },
+      "catalog_name": "M30",
+      "object_type": "deep-sky object",
+      "source_label": "M30"
     },
     {
       "schema_version": 1,
@@ -621,9 +712,9 @@
     {
       "fixed_object_id": 542,
       "collection": "baseline",
-      "hed": "Fixed object 542",
-      "dek": "Fixed object 542 is a charted star in Equ selected by the Calendar as part of this week’s fixed-sky observing framework.",
-      "body": "Why it is here: Fixed object 542 is a charted star in Equ selected by the Calendar as part of this week’s fixed-sky observing framework.\n\nHow to find it: Use its charted position in Equ and the surrounding figure stars to identify the field.",
+      "hed": "β Equ",
+      "dek": "β Equ is a charted star in Equ selected by the Calendar as part of this week’s fixed-sky observing framework.",
+      "body": "Why it is here: β Equ is a charted star in Equ selected by the Calendar as part of this week’s fixed-sky observing framework.\n\nHow to find it: Use its charted position in Equ and the surrounding figure stars to identify the field.",
       "url": "/stories/baseline/542.html",
       "artwork": null
     },
@@ -695,9 +786,9 @@
     {
       "fixed_object_id": 542,
       "collection": "baseline",
-      "hed": "Fixed object 542",
-      "dek": "Fixed object 542 is a charted star in Equ selected by the Calendar as part of this week’s fixed-sky observing framework.",
-      "body": "Why it is here: Fixed object 542 is a charted star in Equ selected by the Calendar as part of this week’s fixed-sky observing framework.\n\nHow to find it: Use its charted position in Equ and the surrounding figure stars to identify the field.",
+      "hed": "β Equ",
+      "dek": "β Equ is a charted star in Equ selected by the Calendar as part of this week’s fixed-sky observing framework.",
+      "body": "Why it is here: β Equ is a charted star in Equ selected by the Calendar as part of this week’s fixed-sky observing framework.\n\nHow to find it: Use its charted position in Equ and the surrounding figure stars to identify the field.",
       "url": "/stories/baseline/542.html",
       "artwork": null
     },
@@ -770,9 +861,9 @@
     {
       "fixed_object_id": 542,
       "collection": "baseline",
-      "hed": "Fixed object 542",
-      "dek": "Fixed object 542 is a charted star in Equ selected by the Calendar as part of this week’s fixed-sky observing framework.",
-      "body": "Why it is here: Fixed object 542 is a charted star in Equ selected by the Calendar as part of this week’s fixed-sky observing framework.\n\nHow to find it: Use its charted position in Equ and the surrounding figure stars to identify the field.",
+      "hed": "β Equ",
+      "dek": "β Equ is a charted star in Equ selected by the Calendar as part of this week’s fixed-sky observing framework.",
+      "body": "Why it is here: β Equ is a charted star in Equ selected by the Calendar as part of this week’s fixed-sky observing framework.\n\nHow to find it: Use its charted position in Equ and the surrounding figure stars to identify the field.",
       "url": "/stories/baseline/542.html",
       "artwork": null
     },

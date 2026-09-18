@@ -18,15 +18,43 @@
       "constellation": "Del"
     },
     {
+      "fixed_object_id": 1158,
+      "type": "star",
+      "name": "α Ind",
+      "constellation": "Ind"
+    },
+    {
       "fixed_object_id": 111,
       "type": "star",
       "name": "Deneb",
       "constellation": "Cyg"
     },
     {
+      "fixed_object_id": 390,
+      "type": "deep-sky",
+      "name": "M72"
+    },
+    {
+      "fixed_object_id": 1161,
+      "type": "star",
+      "name": "β Pav",
+      "constellation": "Pav"
+    },
+    {
       "fixed_object_id": 112,
       "type": "star",
       "name": "Aljanah"
+    },
+    {
+      "fixed_object_id": 392,
+      "type": "deep-sky",
+      "name": "M73"
+    },
+    {
+      "fixed_object_id": 476,
+      "type": "star",
+      "name": "α Mic",
+      "constellation": "Mic"
     }
   ],
   "planet_relations": [
@@ -93,7 +121,7 @@
       },
       {
         "type": "star",
-        "name": "Deneb"
+        "name": "α Ind"
       }
     ],
     "planetary_context": [
@@ -119,7 +147,7 @@
       }
     ]
   },
-  "note": "ISO 2026-W38 runs from September 14 through September 20. Fixed-sky highlights include Sualocin, Rotanev, Deneb. Uranus is about 4.1° in ecliptic longitude from Aldebaran in Taurus.\n\n**Naked eye:** 🌓 First Quarter — 20:43:47 UTCDeneb (α Cyg) — V 1 — Northern Summer — in the Milky WayM72 — 🔭. Moderate moonlight makes timing and local sky position important for faint targets. Use Sualocin, Rotanev, Deneb as the week’s fixed-sky framework.\n\n**Planets:** Uranus is about 4.1° in ecliptic longitude from Aldebaran in Taurus.\n\n**Binoculars:** Favor Sualocin, Rotanev, Deneb; wide fields help connect the charted geometry to the real sky.\n\n**Small telescope:** Concentrate on the compact fixed-sky targets selected for the week. Increase magnification only after the target and surrounding pattern are secure.",
+  "note": "ISO 2026-W38 runs from September 14 through September 20. Fixed-sky highlights include Sualocin, Rotanev, α Ind. Uranus is about 4.1° in ecliptic longitude from Aldebaran in Taurus.\n\n**Naked eye:** 🌓 First Quarter — 20:43:47 UTCDeneb (α Cyg) — V 1 — Northern Summer — in the Milky WayM72 — 🔭. Moderate moonlight makes timing and local sky position important for faint targets. Use Sualocin, Rotanev, α Ind as the week’s fixed-sky framework.\n\n**Planets:** Uranus is about 4.1° in ecliptic longitude from Aldebaran in Taurus.\n\n**Binoculars:** Favor M72, M73, Sualocin; wide fields help connect the charted geometry to the real sky.\n\n**Small telescope:** Concentrate on M72, M73. Increase magnification only after the target and surrounding pattern are secure.",
   "descriptors": [
     {
       "schema_version": 1,
@@ -293,6 +321,31 @@
     },
     {
       "schema_version": 1,
+      "id": "1158",
+      "type": "star",
+      "name": "α Ind",
+      "summary": "bright star in Indus used as a fixed-sky reference",
+      "representation": {
+        "machine": "./1158.json",
+        "human_source": "summary"
+      },
+      "constellation_abbreviation": "Ind",
+      "constellation": "Indus"
+    },
+    {
+      "schema_version": 1,
+      "id": "1316",
+      "type": "constellation",
+      "name": "Indus",
+      "summary": "constellation used by Star Almanack to organize fixed-sky objects and finder geometry",
+      "representation": {
+        "machine": "./1316.json",
+        "human_source": "summary"
+      },
+      "abbreviation": "Ind"
+    },
+    {
+      "schema_version": 1,
       "id": "111",
       "type": "star",
       "name": "Deneb",
@@ -349,6 +402,46 @@
     },
     {
       "schema_version": 1,
+      "id": "390",
+      "type": "deep-sky-object",
+      "name": "M72",
+      "summary": "deep-sky object selected as a weekly fixed-sky observing target",
+      "representation": {
+        "machine": "./390.json",
+        "human_source": "summary",
+        "human": "/stories/messier/390.html"
+      },
+      "catalog_name": "M72",
+      "object_type": "deep-sky object",
+      "source_label": "M72"
+    },
+    {
+      "schema_version": 1,
+      "id": "1161",
+      "type": "star",
+      "name": "β Pav",
+      "summary": "bright star in Pavo used as a fixed-sky reference",
+      "representation": {
+        "machine": "./1161.json",
+        "human_source": "summary"
+      },
+      "constellation_abbreviation": "Pav",
+      "constellation": "Pavo"
+    },
+    {
+      "schema_version": 1,
+      "id": "1333",
+      "type": "constellation",
+      "name": "Pavo",
+      "summary": "constellation used by Star Almanack to organize fixed-sky objects and finder geometry",
+      "representation": {
+        "machine": "./1333.json",
+        "human_source": "summary"
+      },
+      "abbreviation": "Pav"
+    },
+    {
+      "schema_version": 1,
       "id": "112",
       "type": "star",
       "name": "Aljanah",
@@ -379,6 +472,46 @@
           }
         }
       ]
+    },
+    {
+      "schema_version": 1,
+      "id": "392",
+      "type": "deep-sky-object",
+      "name": "M73",
+      "summary": "deep-sky object selected as a weekly fixed-sky observing target",
+      "representation": {
+        "machine": "./392.json",
+        "human_source": "summary",
+        "human": "/stories/messier/392.html"
+      },
+      "catalog_name": "M73",
+      "object_type": "deep-sky object",
+      "source_label": "M73"
+    },
+    {
+      "schema_version": 1,
+      "id": "476",
+      "type": "star",
+      "name": "α Mic",
+      "summary": "bright star in Microscopium used as a fixed-sky reference",
+      "representation": {
+        "machine": "./476.json",
+        "human_source": "summary"
+      },
+      "constellation_abbreviation": "Mic",
+      "constellation": "Microscopium"
+    },
+    {
+      "schema_version": 1,
+      "id": "1326",
+      "type": "constellation",
+      "name": "Microscopium",
+      "summary": "constellation used by Star Almanack to organize fixed-sky objects and finder geometry",
+      "representation": {
+        "machine": "./1326.json",
+        "human_source": "summary"
+      },
+      "abbreviation": "Mic"
     },
     {
       "schema_version": 1,
@@ -559,9 +692,9 @@
     {
       "fixed_object_id": 1158,
       "collection": "baseline",
-      "hed": "Fixed object 1158",
-      "dek": "Fixed object 1158 is a charted star in Ind selected by the Calendar as part of this week’s fixed-sky observing framework.",
-      "body": "Why it is here: Fixed object 1158 is a charted star in Ind selected by the Calendar as part of this week’s fixed-sky observing framework.\n\nHow to find it: Use its charted position in Ind and the surrounding figure stars to identify the field.",
+      "hed": "α Ind",
+      "dek": "α Ind is a charted star in Ind selected by the Calendar as part of this week’s fixed-sky observing framework.",
+      "body": "Why it is here: α Ind is a charted star in Ind selected by the Calendar as part of this week’s fixed-sky observing framework.\n\nHow to find it: Use its charted position in Ind and the surrounding figure stars to identify the field.",
       "url": "/stories/baseline/1158.html",
       "artwork": null
     },
@@ -586,9 +719,9 @@
     {
       "fixed_object_id": 1161,
       "collection": "baseline",
-      "hed": "Fixed object 1161",
-      "dek": "Fixed object 1161 is a charted star in Pav selected by the Calendar as part of this week’s fixed-sky observing framework.",
-      "body": "Why it is here: Fixed object 1161 is a charted star in Pav selected by the Calendar as part of this week’s fixed-sky observing framework.\n\nHow to find it: Use its charted position in Pav and the surrounding figure stars to identify the field.",
+      "hed": "β Pav",
+      "dek": "β Pav is a charted star in Pav selected by the Calendar as part of this week’s fixed-sky observing framework.",
+      "body": "Why it is here: β Pav is a charted star in Pav selected by the Calendar as part of this week’s fixed-sky observing framework.\n\nHow to find it: Use its charted position in Pav and the surrounding figure stars to identify the field.",
       "url": "/stories/baseline/1161.html",
       "artwork": null
     },
@@ -613,9 +746,9 @@
     {
       "fixed_object_id": 476,
       "collection": "baseline",
-      "hed": "Fixed object 476",
-      "dek": "Fixed object 476 is a charted star in Mic selected by the Calendar as part of this week’s fixed-sky observing framework.",
-      "body": "Why it is here: Fixed object 476 is a charted star in Mic selected by the Calendar as part of this week’s fixed-sky observing framework.\n\nHow to find it: Use its charted position in Mic and the surrounding figure stars to identify the field.",
+      "hed": "α Mic",
+      "dek": "α Mic is a charted star in Mic selected by the Calendar as part of this week’s fixed-sky observing framework.",
+      "body": "Why it is here: α Mic is a charted star in Mic selected by the Calendar as part of this week’s fixed-sky observing framework.\n\nHow to find it: Use its charted position in Mic and the surrounding figure stars to identify the field.",
       "url": "/stories/baseline/476.html",
       "artwork": null
     }
@@ -642,9 +775,9 @@
     {
       "fixed_object_id": 1158,
       "collection": "baseline",
-      "hed": "Fixed object 1158",
-      "dek": "Fixed object 1158 is a charted star in Ind selected by the Calendar as part of this week’s fixed-sky observing framework.",
-      "body": "Why it is here: Fixed object 1158 is a charted star in Ind selected by the Calendar as part of this week’s fixed-sky observing framework.\n\nHow to find it: Use its charted position in Ind and the surrounding figure stars to identify the field.",
+      "hed": "α Ind",
+      "dek": "α Ind is a charted star in Ind selected by the Calendar as part of this week’s fixed-sky observing framework.",
+      "body": "Why it is here: α Ind is a charted star in Ind selected by the Calendar as part of this week’s fixed-sky observing framework.\n\nHow to find it: Use its charted position in Ind and the surrounding figure stars to identify the field.",
       "url": "/stories/baseline/1158.html",
       "artwork": null
     },
@@ -669,9 +802,9 @@
     {
       "fixed_object_id": 1161,
       "collection": "baseline",
-      "hed": "Fixed object 1161",
-      "dek": "Fixed object 1161 is a charted star in Pav selected by the Calendar as part of this week’s fixed-sky observing framework.",
-      "body": "Why it is here: Fixed object 1161 is a charted star in Pav selected by the Calendar as part of this week’s fixed-sky observing framework.\n\nHow to find it: Use its charted position in Pav and the surrounding figure stars to identify the field.",
+      "hed": "β Pav",
+      "dek": "β Pav is a charted star in Pav selected by the Calendar as part of this week’s fixed-sky observing framework.",
+      "body": "Why it is here: β Pav is a charted star in Pav selected by the Calendar as part of this week’s fixed-sky observing framework.\n\nHow to find it: Use its charted position in Pav and the surrounding figure stars to identify the field.",
       "url": "/stories/baseline/1161.html",
       "artwork": null
     },
@@ -696,9 +829,9 @@
     {
       "fixed_object_id": 476,
       "collection": "baseline",
-      "hed": "Fixed object 476",
-      "dek": "Fixed object 476 is a charted star in Mic selected by the Calendar as part of this week’s fixed-sky observing framework.",
-      "body": "Why it is here: Fixed object 476 is a charted star in Mic selected by the Calendar as part of this week’s fixed-sky observing framework.\n\nHow to find it: Use its charted position in Mic and the surrounding figure stars to identify the field.",
+      "hed": "α Mic",
+      "dek": "α Mic is a charted star in Mic selected by the Calendar as part of this week’s fixed-sky observing framework.",
+      "body": "Why it is here: α Mic is a charted star in Mic selected by the Calendar as part of this week’s fixed-sky observing framework.\n\nHow to find it: Use its charted position in Mic and the surrounding figure stars to identify the field.",
       "url": "/stories/baseline/476.html",
       "artwork": null
     }
@@ -726,9 +859,9 @@
     {
       "fixed_object_id": 1158,
       "collection": "baseline",
-      "hed": "Fixed object 1158",
-      "dek": "Fixed object 1158 is a charted star in Ind selected by the Calendar as part of this week’s fixed-sky observing framework.",
-      "body": "Why it is here: Fixed object 1158 is a charted star in Ind selected by the Calendar as part of this week’s fixed-sky observing framework.\n\nHow to find it: Use its charted position in Ind and the surrounding figure stars to identify the field.",
+      "hed": "α Ind",
+      "dek": "α Ind is a charted star in Ind selected by the Calendar as part of this week’s fixed-sky observing framework.",
+      "body": "Why it is here: α Ind is a charted star in Ind selected by the Calendar as part of this week’s fixed-sky observing framework.\n\nHow to find it: Use its charted position in Ind and the surrounding figure stars to identify the field.",
       "url": "/stories/baseline/1158.html",
       "artwork": null
     },
@@ -753,9 +886,9 @@
     {
       "fixed_object_id": 1161,
       "collection": "baseline",
-      "hed": "Fixed object 1161",
-      "dek": "Fixed object 1161 is a charted star in Pav selected by the Calendar as part of this week’s fixed-sky observing framework.",
-      "body": "Why it is here: Fixed object 1161 is a charted star in Pav selected by the Calendar as part of this week’s fixed-sky observing framework.\n\nHow to find it: Use its charted position in Pav and the surrounding figure stars to identify the field.",
+      "hed": "β Pav",
+      "dek": "β Pav is a charted star in Pav selected by the Calendar as part of this week’s fixed-sky observing framework.",
+      "body": "Why it is here: β Pav is a charted star in Pav selected by the Calendar as part of this week’s fixed-sky observing framework.\n\nHow to find it: Use its charted position in Pav and the surrounding figure stars to identify the field.",
       "url": "/stories/baseline/1161.html",
       "artwork": null
     },
@@ -780,9 +913,9 @@
     {
       "fixed_object_id": 476,
       "collection": "baseline",
-      "hed": "Fixed object 476",
-      "dek": "Fixed object 476 is a charted star in Mic selected by the Calendar as part of this week’s fixed-sky observing framework.",
-      "body": "Why it is here: Fixed object 476 is a charted star in Mic selected by the Calendar as part of this week’s fixed-sky observing framework.\n\nHow to find it: Use its charted position in Mic and the surrounding figure stars to identify the field.",
+      "hed": "α Mic",
+      "dek": "α Mic is a charted star in Mic selected by the Calendar as part of this week’s fixed-sky observing framework.",
+      "body": "Why it is here: α Mic is a charted star in Mic selected by the Calendar as part of this week’s fixed-sky observing framework.\n\nHow to find it: Use its charted position in Mic and the surrounding figure stars to identify the field.",
       "url": "/stories/baseline/476.html",
       "artwork": null
     }

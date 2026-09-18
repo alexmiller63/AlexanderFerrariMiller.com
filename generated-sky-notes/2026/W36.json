@@ -12,6 +12,17 @@
       "constellation": "Sge"
     },
     {
+      "fixed_object_id": 1139,
+      "type": "star",
+      "name": "β Sge",
+      "constellation": "Sge"
+    },
+    {
+      "fixed_object_id": 379,
+      "type": "deep-sky",
+      "name": "M71"
+    },
+    {
       "fixed_object_id": 109,
       "type": "star",
       "name": "Altair",
@@ -27,6 +38,11 @@
       "type": "star",
       "name": "Alshain",
       "constellation": "Aql"
+    },
+    {
+      "fixed_object_id": 381,
+      "type": "deep-sky",
+      "name": "M75"
     }
   ],
   "planet_relations": [
@@ -90,11 +106,11 @@
       },
       {
         "type": "star",
-        "name": "Altair"
+        "name": "β Sge"
       },
       {
         "type": "deep-sky",
-        "name": "Dumbbell Nebula"
+        "name": "M71"
       }
     ],
     "planetary_context": [
@@ -131,7 +147,7 @@
       }
     ]
   },
-  "note": "ISO 2026-W36 runs from August 31 through September 6. Fixed-sky highlights include Sham, Altair, Dumbbell Nebula. Venus is about 1.5° in ecliptic longitude from Spica in Virgo. Uranus is about 4.1° in ecliptic longitude from Aldebaran in Taurus.\n\n**Naked eye:** 🌗 Last Quarter — 07:51:14 UTCAltair (α Aql) — V 1 — Tropical SummerM27 — 🔭. Moderate moonlight makes timing and local sky position important for faint targets. Use Sham, Altair, Alshain as the week’s fixed-sky framework.\n\n**Planets:** Venus is about 1.5° in ecliptic longitude from Spica in Virgo. Uranus is about 4.1° in ecliptic longitude from Aldebaran in Taurus.\n\n**Binoculars:** Favor Dumbbell Nebula, Sham, Altair; wide fields help connect the charted geometry to the real sky.\n\n**Small telescope:** Concentrate on Dumbbell Nebula. Increase magnification only after the target and surrounding pattern are secure.",
+  "note": "ISO 2026-W36 runs from August 31 through September 6. Fixed-sky highlights include Sham, β Sge, M71. Venus is about 1.5° in ecliptic longitude from Spica in Virgo. Uranus is about 4.1° in ecliptic longitude from Aldebaran in Taurus.\n\n**Naked eye:** 🌗 Last Quarter — 07:51:14 UTCAltair (α Aql) — V 1 — Tropical SummerM27 — 🔭. Moderate moonlight makes timing and local sky position important for faint targets. Use Sham, β Sge, Altair as the week’s fixed-sky framework.\n\n**Planets:** Venus is about 1.5° in ecliptic longitude from Spica in Virgo. Uranus is about 4.1° in ecliptic longitude from Aldebaran in Taurus.\n\n**Binoculars:** Favor M71, Dumbbell Nebula, M75; wide fields help connect the charted geometry to the real sky.\n\n**Small telescope:** Concentrate on M71, Dumbbell Nebula. Increase magnification only after the target and surrounding pattern are secure.",
   "descriptors": [
     {
       "schema_version": 1,
@@ -292,6 +308,34 @@
     },
     {
       "schema_version": 1,
+      "id": "1139",
+      "type": "star",
+      "name": "β Sge",
+      "summary": "bright star in Sagitta used as a fixed-sky reference",
+      "representation": {
+        "machine": "./1139.json",
+        "human_source": "summary"
+      },
+      "constellation_abbreviation": "Sge",
+      "constellation": "Sagitta"
+    },
+    {
+      "schema_version": 1,
+      "id": "379",
+      "type": "deep-sky-object",
+      "name": "M71",
+      "summary": "deep-sky object selected as a weekly fixed-sky observing target",
+      "representation": {
+        "machine": "./379.json",
+        "human_source": "summary",
+        "human": "/stories/baseline/379.html"
+      },
+      "catalog_name": "M71",
+      "object_type": "deep-sky object",
+      "source_label": "M71"
+    },
+    {
+      "schema_version": 1,
       "id": "109",
       "type": "star",
       "name": "Altair",
@@ -362,6 +406,21 @@
       },
       "constellation_abbreviation": "Aql",
       "constellation": "Aquila"
+    },
+    {
+      "schema_version": 1,
+      "id": "381",
+      "type": "deep-sky-object",
+      "name": "M75",
+      "summary": "deep-sky object selected as a weekly fixed-sky observing target",
+      "representation": {
+        "machine": "./381.json",
+        "human_source": "summary",
+        "human": "/stories/baseline/381.html"
+      },
+      "catalog_name": "M75",
+      "object_type": "deep-sky object",
+      "source_label": "M75"
     },
     {
       "schema_version": 1,
@@ -621,18 +680,18 @@
     {
       "fixed_object_id": 1139,
       "collection": "baseline",
-      "hed": "Fixed object 1139",
-      "dek": "Fixed object 1139 is a charted star in Sge selected by the Calendar as part of this week’s fixed-sky observing framework.",
-      "body": "Why it is here: Fixed object 1139 is a charted star in Sge selected by the Calendar as part of this week’s fixed-sky observing framework.\n\nHow to find it: Use its charted position in Sge and the surrounding figure stars to identify the field.",
+      "hed": "β Sge",
+      "dek": "β Sge is a charted star in Sge selected by the Calendar as part of this week’s fixed-sky observing framework.",
+      "body": "Why it is here: β Sge is a charted star in Sge selected by the Calendar as part of this week’s fixed-sky observing framework.\n\nHow to find it: Use its charted position in Sge and the surrounding figure stars to identify the field.",
       "url": "/stories/baseline/1139.html",
       "artwork": null
     },
     {
       "fixed_object_id": 379,
       "collection": "baseline",
-      "hed": "Fixed object 379",
-      "dek": "Fixed object 379 is a charted deep-sky object selected by the Calendar as one of this week’s fixed-sky observing targets.",
-      "body": "Why it is here: Fixed object 379 is a charted deep-sky object selected by the Calendar as one of this week’s fixed-sky observing targets.\n\nHow to find it: Use its charted position in Sge and the surrounding figure stars to identify the field.",
+      "hed": "M71",
+      "dek": "M71 is a charted deep-sky object selected by the Calendar as one of this week’s fixed-sky observing targets.",
+      "body": "Why it is here: M71 is a charted deep-sky object selected by the Calendar as one of this week’s fixed-sky observing targets.\n\nHow to find it: Use its charted position in Sge and the surrounding figure stars to identify the field.",
       "url": "/stories/baseline/379.html",
       "artwork": null
     },
@@ -666,9 +725,9 @@
     {
       "fixed_object_id": 381,
       "collection": "baseline",
-      "hed": "Fixed object 381",
-      "dek": "Fixed object 381 is a charted deep-sky object selected by the Calendar as one of this week’s fixed-sky observing targets.",
-      "body": "Why it is here: Fixed object 381 is a charted deep-sky object selected by the Calendar as one of this week’s fixed-sky observing targets.\n\nHow to find it: Use its charted position in Sgr and the surrounding figure stars to identify the field.",
+      "hed": "M75",
+      "dek": "M75 is a charted deep-sky object selected by the Calendar as one of this week’s fixed-sky observing targets.",
+      "body": "Why it is here: M75 is a charted deep-sky object selected by the Calendar as one of this week’s fixed-sky observing targets.\n\nHow to find it: Use its charted position in Sgr and the surrounding figure stars to identify the field.",
       "url": "/stories/baseline/381.html",
       "artwork": null
     }
@@ -686,18 +745,18 @@
     {
       "fixed_object_id": 1139,
       "collection": "baseline",
-      "hed": "Fixed object 1139",
-      "dek": "Fixed object 1139 is a charted star in Sge selected by the Calendar as part of this week’s fixed-sky observing framework.",
-      "body": "Why it is here: Fixed object 1139 is a charted star in Sge selected by the Calendar as part of this week’s fixed-sky observing framework.\n\nHow to find it: Use its charted position in Sge and the surrounding figure stars to identify the field.",
+      "hed": "β Sge",
+      "dek": "β Sge is a charted star in Sge selected by the Calendar as part of this week’s fixed-sky observing framework.",
+      "body": "Why it is here: β Sge is a charted star in Sge selected by the Calendar as part of this week’s fixed-sky observing framework.\n\nHow to find it: Use its charted position in Sge and the surrounding figure stars to identify the field.",
       "url": "/stories/baseline/1139.html",
       "artwork": null
     },
     {
       "fixed_object_id": 379,
       "collection": "baseline",
-      "hed": "Fixed object 379",
-      "dek": "Fixed object 379 is a charted deep-sky object selected by the Calendar as one of this week’s fixed-sky observing targets.",
-      "body": "Why it is here: Fixed object 379 is a charted deep-sky object selected by the Calendar as one of this week’s fixed-sky observing targets.\n\nHow to find it: Use its charted position in Sge and the surrounding figure stars to identify the field.",
+      "hed": "M71",
+      "dek": "M71 is a charted deep-sky object selected by the Calendar as one of this week’s fixed-sky observing targets.",
+      "body": "Why it is here: M71 is a charted deep-sky object selected by the Calendar as one of this week’s fixed-sky observing targets.\n\nHow to find it: Use its charted position in Sge and the surrounding figure stars to identify the field.",
       "url": "/stories/baseline/379.html",
       "artwork": null
     },
@@ -731,9 +790,9 @@
     {
       "fixed_object_id": 381,
       "collection": "baseline",
-      "hed": "Fixed object 381",
-      "dek": "Fixed object 381 is a charted deep-sky object selected by the Calendar as one of this week’s fixed-sky observing targets.",
-      "body": "Why it is here: Fixed object 381 is a charted deep-sky object selected by the Calendar as one of this week’s fixed-sky observing targets.\n\nHow to find it: Use its charted position in Sgr and the surrounding figure stars to identify the field.",
+      "hed": "M75",
+      "dek": "M75 is a charted deep-sky object selected by the Calendar as one of this week’s fixed-sky observing targets.",
+      "body": "Why it is here: M75 is a charted deep-sky object selected by the Calendar as one of this week’s fixed-sky observing targets.\n\nHow to find it: Use its charted position in Sgr and the surrounding figure stars to identify the field.",
       "url": "/stories/baseline/381.html",
       "artwork": null
     }
@@ -752,18 +811,18 @@
     {
       "fixed_object_id": 1139,
       "collection": "baseline",
-      "hed": "Fixed object 1139",
-      "dek": "Fixed object 1139 is a charted star in Sge selected by the Calendar as part of this week’s fixed-sky observing framework.",
-      "body": "Why it is here: Fixed object 1139 is a charted star in Sge selected by the Calendar as part of this week’s fixed-sky observing framework.\n\nHow to find it: Use its charted position in Sge and the surrounding figure stars to identify the field.",
+      "hed": "β Sge",
+      "dek": "β Sge is a charted star in Sge selected by the Calendar as part of this week’s fixed-sky observing framework.",
+      "body": "Why it is here: β Sge is a charted star in Sge selected by the Calendar as part of this week’s fixed-sky observing framework.\n\nHow to find it: Use its charted position in Sge and the surrounding figure stars to identify the field.",
       "url": "/stories/baseline/1139.html",
       "artwork": null
     },
     {
       "fixed_object_id": 379,
       "collection": "baseline",
-      "hed": "Fixed object 379",
-      "dek": "Fixed object 379 is a charted deep-sky object selected by the Calendar as one of this week’s fixed-sky observing targets.",
-      "body": "Why it is here: Fixed object 379 is a charted deep-sky object selected by the Calendar as one of this week’s fixed-sky observing targets.\n\nHow to find it: Use its charted position in Sge and the surrounding figure stars to identify the field.",
+      "hed": "M71",
+      "dek": "M71 is a charted deep-sky object selected by the Calendar as one of this week’s fixed-sky observing targets.",
+      "body": "Why it is here: M71 is a charted deep-sky object selected by the Calendar as one of this week’s fixed-sky observing targets.\n\nHow to find it: Use its charted position in Sge and the surrounding figure stars to identify the field.",
       "url": "/stories/baseline/379.html",
       "artwork": null
     },
@@ -797,9 +856,9 @@
     {
       "fixed_object_id": 381,
       "collection": "baseline",
-      "hed": "Fixed object 381",
-      "dek": "Fixed object 381 is a charted deep-sky object selected by the Calendar as one of this week’s fixed-sky observing targets.",
-      "body": "Why it is here: Fixed object 381 is a charted deep-sky object selected by the Calendar as one of this week’s fixed-sky observing targets.\n\nHow to find it: Use its charted position in Sgr and the surrounding figure stars to identify the field.",
+      "hed": "M75",
+      "dek": "M75 is a charted deep-sky object selected by the Calendar as one of this week’s fixed-sky observing targets.",
+      "body": "Why it is here: M75 is a charted deep-sky object selected by the Calendar as one of this week’s fixed-sky observing targets.\n\nHow to find it: Use its charted position in Sgr and the surrounding figure stars to identify the field.",
       "url": "/stories/baseline/381.html",
       "artwork": null
     }
