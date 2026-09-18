@@ -43,6 +43,23 @@ def calendar_fixed_object_ids(page_path) -> list[int]:
     return ids
 
 
+def calendar_observing_aids(page_path) -> dict[int, str]:
+    """Read observing-aid metadata from the same Calendar event cell as each identity."""
+    text = page_path.read_text(encoding="utf-8")
+    aids: dict[int, str] = {}
+    for cell in re.finditer(
+        r'<div[^>]*class="[^"]*event-cell[^"]*"[^>]*data-fixed-object-id="(\d+)"[^>]*>(.*?)</div>',
+        text,
+        flags=re.S | re.I,
+    ):
+        fixed_id = int(cell.group(1))
+        body = cell.group(2)
+        labels = re.findall(r'aria-label="(Naked eye|Binoculars|Telescope)"', body, flags=re.I)
+        if labels:
+            aids[fixed_id] = labels[0].lower()
+    return aids
+
+
 def fixed_object_metadata() -> dict[int, dict]:
     """Resolve presentation metadata from normalized records keyed by immutable ID."""
     payload = json.loads(FIXED_OBJECT_DATABASE.read_text(encoding="utf-8"))
@@ -138,14 +155,16 @@ def observer_note(year: int, week: int, page_path, fixed: list[dict], relations:
     else:
         condition = "Check the Moon's position each night and favor darker hours for low-contrast targets."
 
-    # Observing sections must be driven by observing capability, not by object
-    # type or Calendar order.  Until capability metadata is supplied here, do
-    # not pretend that the first stars/deep-sky objects are ranked targets.
-    star_names = [item["name"] for item in fixed if item["type"] == "star"]
-    deep_names = [item["name"] for item in fixed if item["type"] == "deep-sky"]
-    naked_targets = ", ".join(star_names) if star_names else "the brightest seasonal stars and the zodiac"
-    binocular_targets = ", ".join(star_names + deep_names) if (star_names or deep_names) else "the week’s richest fixed-star fields"
-    telescope_targets = ", ".join(deep_names) if deep_names else "the compact fixed-sky targets selected for the week"
+    # Calendar is authoritative for observing aid; immutable object ID joins
+    # that classification to normalized Sky Notes identity.
+    observing_aids = calendar_observing_aids(page_path)
+    by_id = {item["fixed_object_id"]: item for item in fixed}
+    naked = [by_id[i]["name"] for i, aid in observing_aids.items() if aid == "naked eye" and i in by_id]
+    binocular = [by_id[i]["name"] for i, aid in observing_aids.items() if aid == "binoculars" and i in by_id]
+    telescope = [by_id[i]["name"] for i, aid in observing_aids.items() if aid == "telescope" and i in by_id]
+    naked_targets = ", ".join(naked) if naked else "the brightest seasonal stars and the zodiac"
+    binocular_targets = ", ".join(binocular) if binocular else "the week’s richest fixed-star fields"
+    telescope_targets = ", ".join(telescope) if telescope else "the compact fixed-sky targets selected for the week"
     planet_paragraph = (
         " ".join(base.relation_sentence(item) for item in relations)
         if relations else
