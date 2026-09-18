@@ -121,6 +121,16 @@ def resolve(body: str, names: dict[str, int], messier: dict[str, int], bayer: di
     return hits[0][1]
 
 
+def observing_aid(body: str) -> str | None:
+    """Return semantic observing-aid data carried by Calendar presentation."""
+    if re.search(r'aria-label="Substantial telescope"', body, re.I):
+        return "substantial_telescope"
+    labels = re.findall(r'aria-label="(Naked eye|Binoculars|Telescope)"', body, re.I)
+    if labels:
+        return labels[0].lower().replace(" ", "_")
+    return None
+
+
 def patch_text(text: str) -> tuple[str, int]:
     names, messier, bayer = identity_index()
     count = 0
@@ -131,8 +141,12 @@ def patch_text(text: str) -> tuple[str, int]:
         body = match.group("body")
         fixed_id = resolve(body, names, messier, bayer)
         attrs = re.sub(r'\s+data-fixed-object-id="[^"]*"', '', attrs)
+        attrs = re.sub(r'\s+data-observing-aid="[^"]*"', '', attrs)
         if fixed_id is not None:
             attrs = attrs[:-1] + f' data-fixed-object-id="{fixed_id}">'
+            aid = observing_aid(body)
+            if aid is not None:
+                attrs = attrs[:-1] + f' data-observing-aid="{aid}">'
             count += 1
         return match.group(1) + attrs + body + "</div>"
 
