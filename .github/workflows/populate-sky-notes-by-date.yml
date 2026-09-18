@@ -125,6 +125,32 @@ jobs:
                       print(f'{year}-W{week:02d}: {label!r} -> {destination_url} HTTP {status}')
                       if response is None or not response.ok:
                           raise SystemExit(f'DEPLOYED SKY NOTE LINK FAILED: {year}-W{week:02d} {label!r}: HTTP {status}: {destination_url}')
+
+                      # HTTP 200 is necessary but not sufficient. A fixed-object human
+                      # destination is complete only when its story package is present.
+                      body_text = destination.locator('body').inner_text().strip()
+                      title_text = destination.locator('h1').first.inner_text().strip() if destination.locator('h1').count() else ''
+                      dek_count = destination.locator('.dek, [data-dek], .story-dek').count()
+                      art_count = destination.locator('img, svg, picture').count()
+                      descriptor_count = destination.locator('a.descriptor-link, a[href*="/descriptors/"], [data-descriptor-id]').count()
+                      diagnostics = {
+                          'hed': bool(title_text),
+                          'dek': dek_count > 0,
+                          'body': len(body_text) > len(title_text) + 40,
+                          'art': art_count > 0,
+                          'descriptor': descriptor_count > 0,
+                      }
+                      print(
+                          f'DIAGNOSTIC {year}-W{week:02d} {label!r}: '
+                          + ' '.join(f'{key}={"YES" if value else "NO"}' for key, value in diagnostics.items())
+                          + f' url={destination_url}'
+                      )
+                      missing = [key for key, value in diagnostics.items() if not value]
+                      if missing:
+                          raise SystemExit(
+                              f'DEPLOYED FIXED-OBJECT PACKAGE INCOMPLETE: {year}-W{week:02d} {label!r}; '
+                              f'missing={",".join(missing)}; url={destination_url}'
+                          )
                       destination.close(); checked += 1
                   page.close()
               context.close(); browser.close()
