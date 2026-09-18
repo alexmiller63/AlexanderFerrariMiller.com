@@ -333,7 +333,7 @@ def main() -> None:
             if patch_page(path, payload):
                 changed += 1
 
-        art_state = "fixed-object-owned artwork only; no week-owned artwork"
+        art_state = "fixed-object-owned artwork only; no week-owned artwork field"
         print(
             f"Generated descriptor-first Sky Note for ISO {item.year}-{week_key}: "
             f"{source.relative_to(base.ROOT)} ({len(payload['descriptors'])} descriptors; "
