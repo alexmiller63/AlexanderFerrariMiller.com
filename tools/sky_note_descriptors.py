@@ -570,7 +570,7 @@ def _replace_first_mention(text: str, record: dict, replacement: str) -> tuple[s
     return text, False
 
 
-def decorate_note_html(rendered_html: str, records: list[dict]) -> str:
+def decorate_note_html(rendered_html: str, records: list[dict], weekly_fixed_ids: list[int] | None = None) -> str:
     """Place descriptor-derived prose inside the existing Sky Note paragraphs."""
     decorated = rendered_html
 
@@ -660,25 +660,16 @@ def decorate_note_html(rendered_html: str, records: list[dict]) -> str:
             used_ids.add(record["id"])
             inline_count += 1
 
-    # Other objects listed this week are object references, not a separate
-    # artwork index.  Link each name through the same reader-facing story/
-    # descriptor resolution used everywhere else in Sky Notes.  The object's
-    # story page owns access to its artwork; the weekly page does not bypass
-    # that prose layer by linking directly to finder.svg.
-    # A descriptor being available is not enough to make it a weekly object.
-    # Only list fixed-sky objects whose names actually occur in the week's
-    # original rendered note.  This keeps the section semantically tied to
-    # "objects listed this week" rather than to the descriptor inventory.
-    original_visible_text = re.sub(r"<[^>]+>", " ", rendered_html)
+    # "Other objects listed this week" comes from the Calendar's immutable
+    # weekly fixed-object identities, not from decorator leftovers.  Objects
+    # already used in the observing prose are excluded from this supplemental
+    # index, but membership itself is defined by the week.
+    weekly_id_set = {str(value) for value in (weekly_fixed_ids or [])}
     other_objects = [
         record for record in ordered
-        if record["id"] not in used_ids
+        if str(record.get("id", "")) in weekly_id_set
+        and record["id"] not in used_ids
         and record.get("type") in {"star", "deep-sky-object"}
-        and str(record.get("id", "")).isdigit()
-        and re.search(
-            rf"(?<![A-Za-z0-9]){re.escape(str(record['name']))}(?![A-Za-z0-9])",
-            original_visible_text,
-        )
     ][:6]
     if other_objects:
         links = []
