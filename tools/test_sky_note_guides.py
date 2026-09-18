@@ -92,7 +92,7 @@ class SkyNoteGuideTests(unittest.TestCase):
         self.assertEqual(enif["star_hops"][0]["provenance"]["supports"], "star-hop-method")
 
 
-    def test_observing_method_headings_link_to_machine_descriptors(self) -> None:
+    def test_observing_method_labels_remain_plain_text(self) -> None:
         records = build_descriptors(
             [],
             [],
@@ -104,23 +104,13 @@ class SkyNoteGuideTests(unittest.TestCase):
             "<p><strong>Naked eye:</strong> Bright targets.</p>"
             "<p><strong>Binoculars:</strong> Wide fields.</p>"
             "<p><strong>Small telescope:</strong> Compact targets.</p>"
+            "<p><strong>Substantial telescope:</strong> Faint targets.</p>"
         )
         decorated = decorate_note_html(rendered, records)
-        self.assertIn(
-            '<strong><a class="descriptor-link" href="../../descriptors/naked-eye.json" '
-            'type="application/json">Naked eye</a>:</strong>',
-            decorated,
-        )
-        self.assertIn(
-            '<strong><a class="descriptor-link" href="../../descriptors/binoculars.json" '
-            'type="application/json">Binoculars</a>:</strong>',
-            decorated,
-        )
-        self.assertIn(
-            '<strong><a class="descriptor-link" href="../../descriptors/small-telescope.json" '
-            'type="application/json">Small telescope</a>:</strong>',
-            decorated,
-        )
+        for label in ("Naked eye", "Binoculars", "Small telescope", "Substantial telescope"):
+            self.assertIn(f"<strong>{label}:</strong>", decorated)
+        self.assertNotIn('descriptor-link', decorated)
+
 
 
 if __name__ == "__main__":
