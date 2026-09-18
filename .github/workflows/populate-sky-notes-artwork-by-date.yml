@@ -121,6 +121,56 @@ jobs:
           [ "$checked" -gt 0 ] || { echo "No fixed-object Artwork pages available for validation." >&2; exit 1; }
           echo "PROOF COMPLETE: Chromium validated $checked fixed-object Artwork page(s)."
 
+      - name: Verify every selected Sky Note artwork owner is published
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          root = Path('.')
+          year = int("${{ inputs.start_year }}")
+          start = int("${{ inputs.start_week }}")
+          end = int("${{ inputs.end_week }}")
+          checked = 0
+          for week in range(start, end + 1):
+              key = f"W{week:02d}"
+              source = root / "generated-sky-notes" / str(year) / f"{key}.json"
+              if not source.exists():
+                  continue
+              payload = json.loads(source.read_text(encoding="utf-8"))
+              descriptor = payload.get("artwork")
+              if descriptor is None:
+                  continue
+              spec_path = root / "sky-notes-artwork" / "specs" / str(year) / f"{key}.json"
+              if not spec_path.exists():
+                  raise SystemExit(f"{key}: artwork descriptor exists but renderer spec is missing: {spec_path}")
+              spec = json.loads(spec_path.read_text(encoding="utf-8"))
+              owner = (spec.get("artwork_owner_identity") or {}).get("fixed_object_id")
+              if not isinstance(owner, int):
+                  raise SystemExit(f"{key}: renderer spec has no immutable artwork owner")
+              svg = root / "sky-notes-artwork" / "objects" / str(owner) / "finder.svg"
+              if not svg.exists():
+                  raise SystemExit(f"{key}: selected artwork owner {owner} has no published finder: {svg}")
+              svg_text = svg.read_text(encoding="utf-8", errors="replace").lstrip().lower()
+              if "<svg" not in svg_text:
+                  raise SystemExit(f"{key}: selected artwork owner {owner} asset is not SVG: {svg}")
+              for page_root in ("site", "almanack"):
+                  page = root / page_root / str(year) / key / "index.html"
+                  if not page.exists():
+                      raise SystemExit(f"{key}: missing published page copy: {page}")
+                  html = page.read_text(encoding="utf-8", errors="replace")
+                  expected = f"sky-notes-artwork/objects/{owner}/finder.svg"
+                  if expected not in html:
+                      raise SystemExit(f"{key}: {page} does not publish selected artwork owner {owner} ({expected})")
+              print(f"PROOF: {key} selected artwork owner {owner} exists and is published in both page copies")
+              checked += 1
+          if checked == 0:
+              raise SystemExit("No selected Sky Note artwork owners were available for validation.")
+          print(f"PROOF COMPLETE: {checked} selected Sky Note artwork owner(s) are present and published.")
+          PY
+
       - name: Commit Artwork changes only
         run: |
           git config user.name "github-actions[bot]"
