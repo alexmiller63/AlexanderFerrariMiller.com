@@ -277,7 +277,17 @@ def patch_page(path, payload: dict) -> bool:
         body += linked + "\n"
     if artwork_slot:
         body += artwork_slot + "\n"
-    section_html = '<h3>Sky Notes</h3><div class="sky-note">\n' + body + '</div>'
+    # Presentation-mode control is intentionally inert for now.  Wordy is the
+    # only authored mode; Highlights will later be derived from the same
+    # structured Sky Notes data rather than maintained as separate content.
+    mode_toggle = (
+        '<div class="sky-note-mode-toggle" role="group" aria-label="Sky Notes presentation">'
+        '<span class="sky-note-mode-label">View:</span>'
+        '<button type="button" data-sky-note-mode="highlights" aria-pressed="false">Highlights</button>'
+        '<button type="button" data-sky-note-mode="wordy" aria-pressed="true">Wordy</button>'
+        '</div>'
+    )
+    section_html = '<h3>Sky Notes</h3>' + mode_toggle + '<div class="sky-note" data-sky-note-mode="wordy">\n' + body + '</div>'
     new = replace_section_inner(text, 5, section_html, path)
     if new == text:
         return False
