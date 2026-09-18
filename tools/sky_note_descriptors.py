@@ -586,10 +586,10 @@ def decorate_note_html(rendered_html: str, records: list[dict]) -> str:
 
     inline_count = 0
 
-    # First enrich descriptors that already occur naturally in the generated prose.
+    # Enrich every astronomical object that occurs naturally in the generated
+    # prose.  Presentation density must not decide whether an object gets its
+    # canonical reader-facing link.
     for record in ordered:
-        if inline_count >= 4:
-            break
         linked = _linked_name(record)
         sentence = human_sentence(record)
         replacement = f"{linked}<span class=\"descriptor-inline-prose\"> — {sentence[len(linked):].lstrip()}</span>"
@@ -601,6 +601,7 @@ def decorate_note_html(rendered_html: str, records: list[dict]) -> str:
     # If fewer than four natural mentions exist, inject complete descriptor sentences
     # into the most relevant existing prose paragraphs rather than creating a separate
     # descriptor section. Prefer Planets, Binoculars, Small telescope, then Naked eye.
+    # This is prose enrichment only; it is not a cap on object linking above.
     if inline_count < 4:
         paragraph_labels = ("<strong>Planets:</strong>", "<strong>Binoculars:</strong>", "<strong>Small telescope:</strong>", "<strong>Naked eye:</strong>")
         remaining = [record for record in ordered if record["id"] not in used_ids]
