@@ -50,6 +50,17 @@ jobs:
           echo "end_date=$END_DATE" >> "$GITHUB_OUTPUT"
           echo "$START_DATE through $END_DATE"
 
+      - name: Compile Sky Notes generator sources
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m py_compile \
+            tools/populate_sky_notes_descriptor_by_date.py \
+            tools/populate_sky_notes_by_date.py \
+            tools/fixed_object_stories.py \
+            tools/sky_note_descriptors.py
+          echo "Sky Notes generator sources compile cleanly."
+
       - name: Generate descriptor-first Sky Notes
         run: python tools/populate_sky_notes_descriptor_by_date.py "${{ steps.range.outputs.start_date }}" "${{ steps.range.outputs.end_date }}"
 
