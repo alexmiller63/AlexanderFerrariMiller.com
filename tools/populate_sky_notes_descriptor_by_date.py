@@ -265,7 +265,7 @@ def generated_note(year: int, week: int, page_path, yearly, stars: list[dict]) -
 def patch_page(path, payload: dict) -> bool:
     text = path.read_text(encoding="utf-8")
     rendered = base.render_note(payload["note"])
-    rendered = decorate_note_html(rendered, payload["descriptors"])
+    rendered = decorate_note_html(rendered, payload["descriptors"], payload.get("calendar_fixed_object_ids", []))
     inline = render_inline_stories(payload.get("inline_stories", []))
     linked = render_linked_stories(payload.get("linked_stories", []))
     # Legacy week-owned artwork is deliberately removed. Fixed-object artwork
