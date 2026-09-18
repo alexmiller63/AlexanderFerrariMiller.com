@@ -13,7 +13,7 @@ import populate_sky_notes_by_date as base
 from fixed_object_stories import available_stories, reader_story_url
 from sky_note_descriptors import build_descriptors, decorate_note_html, write_descriptor_records
 
-FIXED_OBJECT_DATABASE = base.ROOT / "database" / "fixed-objects.json"
+FIXED_OBJECT_DATABASE = base.ROOT / "database" / "fixed-objects.json"\n\nBAYER_NAMES = {"Alp":"Alpha","Bet":"Beta","Gam":"Gamma","Del":"Delta","Eps":"Epsilon","Zet":"Zeta","Eta":"Eta","The":"Theta","Iot":"Iota","Kap":"Kappa","Lam":"Lambda","Mu":"Mu","Nu":"Nu","Xi":"Xi","Omi":"Omicron","Pi":"Pi","Rho":"Rho","Sig":"Sigma","Tau":"Tau","Ups":"Upsilon","Phi":"Phi","Chi":"Chi","Psi":"Psi","Ome":"Omega"}\n\ndef _bayer_fallback_name(facts: dict) -> str | None:\n    """Recover an unnamed Bayer star from database facts, never Calendar display text."""\n    notes = str(facts.get("notes") or "")\n    match = re.search(r"(?:^|;\\s*)bayer_code=([^;]+)", notes)\n    code = match.group(1).strip() if match else ""\n    con = str(facts.get("constellation") or "").strip()\n    if not code or not con:\n        return None\n    m = re.match(r"([A-Za-z]+)(.*)", code)\n    stem, suffix = (m.group(1), m.group(2)) if m else (code, "")\n    return f"{BAYER_NAMES.get(stem, stem)}{suffix} {con}"
 
 
 def calendar_fixed_object_ids(page_path) -> list[int]:
@@ -305,7 +305,7 @@ def main() -> None:
         payload["stories"] = candidates
         payload["artwork"] = story_artwork_descriptor(item.year, item.week, fixed, payload["planet_relations"], candidates)
         payload["descriptor_policy"] = descriptor_policy()
-        write_descriptor_records(payload["descriptors"])
+        descriptor_ids = {str(record["id"]) for record in payload["descriptors"]}\n        missing_descriptor_ids = [str(fixed_id) for fixed_id in fixed_ids if str(fixed_id) not in descriptor_ids]\n        if missing_descriptor_ids:\n            raise RuntimeError(\n                f"ISO {item.year}-{week_key}: fixed objects missing descriptor records: " + ", ".join(missing_descriptor_ids)\n            )\n        write_descriptor_records(payload["descriptors"])
         source = base.write_generated_source(item.year, item.week, payload)
 
         for root in base.PAGE_ROOTS:
