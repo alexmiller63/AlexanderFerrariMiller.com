@@ -177,7 +177,7 @@ def catalog_target_refs(target_name: str) -> list[str]:
             }
             code = str(row.get("bayer_code") or "").strip()
             con = str(row.get("con") or "").strip()
-            match = re.fullmatch(r"([A-Za-z]+)(\\d*)", code)
+            match = re.fullmatch(r"([A-Za-z]+)(\d*)", code)
             if match and con:
                 word = BAYER_GUIDE_WORDS.get(match.group(1))
                 if word:
