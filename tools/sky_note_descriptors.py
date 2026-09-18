@@ -65,11 +65,6 @@ OBSERVING_CONCEPTS = {
         "type": "observing-concept",
         "summary": "angular position measured along the ecliptic, used here for conservative weekly Solar-System comparisons",
     },
-    "naked-eye": {
-        "name": "Naked eye",
-        "type": "observing-concept",
-        "summary": "observing without optical aid",
-    },
     "binoculars": {
         "name": "Binoculars",
         "type": "observing-concept",
@@ -439,7 +434,7 @@ def build_descriptors(
                         break
             add(record)
 
-    for descriptor_id in ("ecliptic-longitude", "naked-eye", "binoculars", "small-telescope", "zodiac"):
+    for descriptor_id in ("ecliptic-longitude", "binoculars", "small-telescope", "zodiac"):
         concept = OBSERVING_CONCEPTS[descriptor_id]
         add(_base(descriptor_id, concept["type"], concept["name"], concept["summary"]))
 
@@ -575,7 +570,6 @@ def decorate_note_html(rendered_html: str, records: list[dict]) -> str:
     # directly without attaching explanatory prose inside the <strong> heading.
     used_ids: set[str] = set()
     section_descriptors = {
-        "Naked eye": "naked-eye",
         "Binoculars": "binoculars",
         "Small telescope": "small-telescope",
     }
