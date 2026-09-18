@@ -43,7 +43,7 @@
       "basis": "Star Almanack preserved geocentric tropical ecliptic longitude"
     }
   ],
-  "note": "ISO 2026-W39 runs from September 21 through September 27. Fixed-sky highlights include β Mic, β Ind, α Oct. Uranus is about 4.1° in ecliptic longitude from Aldebaran in Taurus.\n\n**Naked eye:** 🌕 Full Moon · Harvest Moon — 16:49:02 UTC. Bright moonlight favors prominent stars and planets while reducing contrast on faint deep-sky objects. Use β Mic, β Ind, α Oct as the week’s fixed-sky framework.\n\n**Planets:** Uranus is about 4.1° in ecliptic longitude from Aldebaran in Taurus.\n\n**Binoculars:** Favor β Mic, β Ind, α Oct; wide fields help connect the charted geometry to the real sky.\n\n**Small telescope:** Concentrate on the compact fixed-sky targets selected for the week. Increase magnification only after the target and surrounding pattern are secure.",
+  "note": "ISO 2026-W39 runs from September 21 through September 27. Uranus is about 4.1° in ecliptic longitude from Aldebaran in Taurus.\n\n**Naked eye:** 🌕 Full Moon · Harvest Moon — 16:49:02 UTC. Bright moonlight favors prominent stars and planets while reducing contrast on faint deep-sky objects. No fixed-sky Calendar object is classified for naked-eye observing this week.\n\n**Planets:** Uranus is about 4.1° in ecliptic longitude from Aldebaran in Taurus.\n\n**Binoculars:** Favor β Mic, β Ind, α Oct, Kitalpha; wide fields help connect the charted geometry to the real sky.\n\n**Small telescope:** No fixed-sky Calendar object is classified for telescope observing this week.\n\n**Substantial telescope:** No fixed-sky Calendar object is classified as requiring a substantial telescope this week.",
   "descriptors": [
     {
       "schema_version": 1,
@@ -185,7 +185,8 @@
       "summary": "bright star in Microscopium used as a fixed-sky reference",
       "representation": {
         "machine": "./561.json",
-        "human_source": "summary"
+        "human_source": "summary",
+        "human": "/stories/baseline/561.html"
       },
       "constellation_abbreviation": "Mic",
       "constellation": "Microscopium"
@@ -210,7 +211,8 @@
       "summary": "bright star in Indus used as a fixed-sky reference",
       "representation": {
         "machine": "./1167.json",
-        "human_source": "summary"
+        "human_source": "summary",
+        "human": "/stories/baseline/1167.html"
       },
       "constellation_abbreviation": "Ind",
       "constellation": "Indus"
@@ -235,7 +237,8 @@
       "summary": "bright star in Octans used as a fixed-sky reference",
       "representation": {
         "machine": "./479.json",
-        "human_source": "summary"
+        "human_source": "summary",
+        "human": "/stories/baseline/479.html"
       },
       "constellation_abbreviation": "Oct",
       "constellation": "Octans"
@@ -260,7 +263,8 @@
       "summary": "bright star in Equuleus used as a fixed-sky reference",
       "representation": {
         "machine": "./1172.json",
-        "human_source": "summary"
+        "human_source": "summary",
+        "human": "/stories/baseline/1172.html"
       },
       "constellation_abbreviation": "Equ",
       "constellation": "Equuleus"
@@ -285,7 +289,8 @@
       "summary": "bright star in Taurus used as a fixed-sky reference",
       "representation": {
         "machine": "./25.json",
-        "human_source": "summary"
+        "human_source": "summary",
+        "human": "/stories/baseline/25.html"
       },
       "constellation_abbreviation": "Tau",
       "constellation": "Taurus",
@@ -380,39 +385,6 @@
     },
     {
       "schema_version": 1,
-      "id": "naked-eye",
-      "type": "observing-concept",
-      "name": "Naked eye",
-      "summary": "observing without optical aid",
-      "representation": {
-        "machine": "./naked-eye.json",
-        "human_source": "summary"
-      }
-    },
-    {
-      "schema_version": 1,
-      "id": "binoculars",
-      "type": "observing-concept",
-      "name": "Binoculars",
-      "summary": "wide-field optical aid useful for locating star fields and brighter deep-sky targets",
-      "representation": {
-        "machine": "./binoculars.json",
-        "human_source": "summary"
-      }
-    },
-    {
-      "schema_version": 1,
-      "id": "small-telescope",
-      "type": "observing-concept",
-      "name": "Small telescope",
-      "summary": "a telescope suitable for resolving compact targets after the surrounding field is identified",
-      "representation": {
-        "machine": "./small-telescope.json",
-        "human_source": "summary"
-      }
-    },
-    {
-      "schema_version": 1,
       "id": "zodiac",
       "type": "observing-concept",
       "name": "zodiac",
@@ -467,44 +439,7 @@
       "artwork": null
     }
   ],
-  "inline_stories": [
-    {
-      "fixed_object_id": 561,
-      "collection": "baseline",
-      "hed": "β Mic",
-      "dek": "β Mic is a charted star in Mic selected by the Calendar as part of this week’s fixed-sky observing framework.",
-      "body": "Why it is here: β Mic is a charted star in Mic selected by the Calendar as part of this week’s fixed-sky observing framework.\n\nHow to find it: Use its charted position in Mic and the surrounding figure stars to identify the field.",
-      "url": "/stories/baseline/561.html",
-      "artwork": null
-    },
-    {
-      "fixed_object_id": 1167,
-      "collection": "baseline",
-      "hed": "β Ind",
-      "dek": "β Ind is a charted star in Ind selected by the Calendar as part of this week’s fixed-sky observing framework.",
-      "body": "Why it is here: β Ind is a charted star in Ind selected by the Calendar as part of this week’s fixed-sky observing framework.\n\nHow to find it: Use its charted position in Ind and the surrounding figure stars to identify the field.",
-      "url": "/stories/baseline/1167.html",
-      "artwork": null
-    },
-    {
-      "fixed_object_id": 479,
-      "collection": "baseline",
-      "hed": "α Oct",
-      "dek": "α Oct is a charted star in Oct selected by the Calendar as part of this week’s fixed-sky observing framework.",
-      "body": "Why it is here: α Oct is a charted star in Oct selected by the Calendar as part of this week’s fixed-sky observing framework.\n\nHow to find it: Use its charted position in Oct and the surrounding figure stars to identify the field.",
-      "url": "/stories/baseline/479.html",
-      "artwork": null
-    },
-    {
-      "fixed_object_id": 1172,
-      "collection": "baseline",
-      "hed": "Kitalpha",
-      "dek": "Kitalpha is a charted star in Equ selected by the Calendar as part of this week’s fixed-sky observing framework.",
-      "body": "Why it is here: Kitalpha is a charted star in Equ selected by the Calendar as part of this week’s fixed-sky observing framework.\n\nHow to find it: Use its charted position in Equ and the surrounding figure stars to identify the field.",
-      "url": "/stories/baseline/1172.html",
-      "artwork": null
-    }
-  ],
+  "inline_stories": [],
   "linked_stories": [],
   "stories": [
     {
@@ -550,14 +485,14 @@
     "candidate_pool": "complete; presentation never limits discovery",
     "presentation": "Wordy",
     "story_limit": null,
-    "wordy_policy": "emit every qualified story inline; no editorial cap",
+    "wordy_policy": "rich weekly observing prose; link to complete object stories rather than embedding them",
     "future_presentations": [
       "Highlights"
     ],
     "link_target": "/almanack/descriptors/<fixed_object_id>.json for fixed-object descriptors",
     "artwork_descriptor_is_separate": true,
     "artwork_source": "explicit story front matter only",
-    "fixed_sky_identity_source": "Calendar data-fixed-object-id + database/fixed-objects.json",
+    "fixed_sky_identity_source": "Calendar data-fixed-object-id + data-observing-aid + database/fixed-objects.json",
     "story_identity_source": "Calendar data-fixed-object-id only",
     "story_source": "stories/<collection>/<fixed_object_id>.md",
     "inline_story_content": "hed + dek + body",

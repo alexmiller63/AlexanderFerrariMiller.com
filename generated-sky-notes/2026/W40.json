@@ -74,7 +74,7 @@
       "basis": "Star Almanack preserved geocentric tropical ecliptic longitude"
     }
   ],
-  "note": "ISO 2026-W40 runs from September 28 through October 4. Fixed-sky highlights include Alderamin, β Equ, Alfirk. Mercury is about 2.8° in ecliptic longitude from Spica in Virgo. Uranus is about 4.2° in ecliptic longitude from Aldebaran in Taurus.\n\n**Naked eye:** 🌗 Last Quarter — 13:25:04 UTC. Moderate moonlight makes timing and local sky position important for faint targets. Use Alderamin, β Equ, Alfirk as the week’s fixed-sky framework.\n\n**Planets:** Mercury is about 2.8° in ecliptic longitude from Spica in Virgo. Uranus is about 4.2° in ecliptic longitude from Aldebaran in Taurus.\n\n**Binoculars:** Favor Great Pegasus Globular, M2, M39; wide fields help connect the charted geometry to the real sky.\n\n**Small telescope:** Concentrate on Great Pegasus Globular, M2. Increase magnification only after the target and surrounding pattern are secure.",
+  "note": "ISO 2026-W40 runs from September 28 through October 4. Mercury is about 2.8° in ecliptic longitude from Spica in Virgo. Uranus is about 4.2° in ecliptic longitude from Aldebaran in Taurus.\n\n**Naked eye:** 🌗 Last Quarter — 13:25:04 UTC. Moderate moonlight makes timing and local sky position important for faint targets. Use Alderamin, Alfirk, Sadalsuud as the week’s fixed-sky framework.\n\n**Planets:** Mercury is about 2.8° in ecliptic longitude from Spica in Virgo. Uranus is about 4.2° in ecliptic longitude from Aldebaran in Taurus.\n\n**Binoculars:** Favor β Equ; wide fields help connect the charted geometry to the real sky.\n\n**Small telescope:** Concentrate on Great Pegasus Globular, M2, M39, M30. Increase magnification only after the target and surrounding pattern are secure.\n\n**Substantial telescope:** No fixed-sky Calendar object is classified as requiring a substantial telescope this week.",
   "descriptors": [
     {
       "schema_version": 1,
@@ -216,7 +216,8 @@
       "summary": "bright star in Cepheus used as a fixed-sky reference",
       "representation": {
         "machine": "./1173.json",
-        "human_source": "summary"
+        "human_source": "summary",
+        "human": "/stories/baseline/1173.html"
       },
       "constellation_abbreviation": "Cep",
       "constellation": "Cepheus",
@@ -248,7 +249,8 @@
       "summary": "bright star in Equuleus used as a fixed-sky reference",
       "representation": {
         "machine": "./542.json",
-        "human_source": "summary"
+        "human_source": "summary",
+        "human": "/stories/baseline/542.html"
       },
       "constellation_abbreviation": "Equ",
       "constellation": "Equuleus"
@@ -273,7 +275,8 @@
       "summary": "bright star in Cepheus used as a fixed-sky reference",
       "representation": {
         "machine": "./1177.json",
-        "human_source": "summary"
+        "human_source": "summary",
+        "human": "/stories/baseline/1177.html"
       },
       "constellation_abbreviation": "Cep",
       "constellation": "Cepheus"
@@ -301,7 +304,8 @@
       "summary": "bright star in Aquarius used as a fixed-sky reference",
       "representation": {
         "machine": "./1178.json",
-        "human_source": "summary"
+        "human_source": "summary",
+        "human": "/stories/baseline/1178.html"
       },
       "constellation_abbreviation": "Aqr",
       "constellation": "Aquarius"
@@ -460,7 +464,8 @@
       "summary": "bright star in Virgo used as a fixed-sky reference",
       "representation": {
         "machine": "./60.json",
-        "human_source": "summary"
+        "human_source": "summary",
+        "human": "/stories/baseline/60.html"
       },
       "constellation_abbreviation": "Vir",
       "constellation": "Virgo",
@@ -550,7 +555,8 @@
       "summary": "bright star in Taurus used as a fixed-sky reference",
       "representation": {
         "machine": "./25.json",
-        "human_source": "summary"
+        "human_source": "summary",
+        "human": "/stories/baseline/25.html"
       },
       "constellation_abbreviation": "Tau",
       "constellation": "Taurus",
@@ -640,39 +646,6 @@
       "summary": "angular position measured along the ecliptic, used here for conservative weekly Solar-System comparisons",
       "representation": {
         "machine": "./ecliptic-longitude.json",
-        "human_source": "summary"
-      }
-    },
-    {
-      "schema_version": 1,
-      "id": "naked-eye",
-      "type": "observing-concept",
-      "name": "Naked eye",
-      "summary": "observing without optical aid",
-      "representation": {
-        "machine": "./naked-eye.json",
-        "human_source": "summary"
-      }
-    },
-    {
-      "schema_version": 1,
-      "id": "binoculars",
-      "type": "observing-concept",
-      "name": "Binoculars",
-      "summary": "wide-field optical aid useful for locating star fields and brighter deep-sky targets",
-      "representation": {
-        "machine": "./binoculars.json",
-        "human_source": "summary"
-      }
-    },
-    {
-      "schema_version": 1,
-      "id": "small-telescope",
-      "type": "observing-concept",
-      "name": "Small telescope",
-      "summary": "a telescope suitable for resolving compact targets after the surrounding field is identified",
-      "representation": {
-        "machine": "./small-telescope.json",
         "human_source": "summary"
       }
     },
@@ -772,80 +745,7 @@
       "artwork": null
     }
   ],
-  "inline_stories": [
-    {
-      "fixed_object_id": 1173,
-      "collection": "baseline",
-      "hed": "Alderamin",
-      "dek": "Alderamin is a charted star in Cep selected by the Calendar as part of this week’s fixed-sky observing framework.",
-      "body": "Why it is here: Alderamin is a charted star in Cep selected by the Calendar as part of this week’s fixed-sky observing framework.\n\nHow to find it: Use its charted position in Cep and the surrounding figure stars to identify the field.",
-      "url": "/stories/baseline/1173.html",
-      "artwork": null
-    },
-    {
-      "fixed_object_id": 542,
-      "collection": "baseline",
-      "hed": "β Equ",
-      "dek": "β Equ is a charted star in Equ selected by the Calendar as part of this week’s fixed-sky observing framework.",
-      "body": "Why it is here: β Equ is a charted star in Equ selected by the Calendar as part of this week’s fixed-sky observing framework.\n\nHow to find it: Use its charted position in Equ and the surrounding figure stars to identify the field.",
-      "url": "/stories/baseline/542.html",
-      "artwork": null
-    },
-    {
-      "fixed_object_id": 1177,
-      "collection": "baseline",
-      "hed": "Alfirk",
-      "dek": "Alfirk is a charted star in Cep selected by the Calendar as part of this week’s fixed-sky observing framework.",
-      "body": "Why it is here: Alfirk is a charted star in Cep selected by the Calendar as part of this week’s fixed-sky observing framework.\n\nHow to find it: Use its charted position in Cep and the surrounding figure stars to identify the field.",
-      "url": "/stories/baseline/1177.html",
-      "artwork": null
-    },
-    {
-      "fixed_object_id": 399,
-      "collection": "messier",
-      "hed": "A star swarm with something strange at its heart",
-      "dek": "M15 is one of the densest globular clusters known, an ancient swarm whose brilliant center is crowded on a scale the quiet binocular glow does not suggest.",
-      "body": "Jean-Dominique Maraldi discovered M15 in 1746 while searching for comets. Today it is known as an old globular cluster roughly 34,000 light-years away in Pegasus. Its stars become dramatically more concentrated toward the center, making the cluster a classic example of the dense stellar environments that globular clusters can create.\n\nM15 also contains Pease 1, a planetary nebula discovered in 1928. Planetary nebulae are rare inside globular clusters, so finding the remains of a dying star embedded in such an ancient stellar population gives M15 an unusual second identity.\n\nStudies of the cluster’s crowded core have also been used to investigate whether an intermediate-mass black hole may reside there. The central dynamics are difficult to untangle, which makes M15 not merely a beautiful object but an active astrophysical laboratory.\n\nAt the eyepiece all of that begins as a small round glow. Knowing what is packed into that glow changes the view.\n\nSources: NASA Hubble Messier Catalog, “Messier 15”; NASA Hubble studies of the M15 core.",
-      "url": "/stories/messier/399.html",
-      "artwork": null
-    },
-    {
-      "fixed_object_id": 1178,
-      "collection": "baseline",
-      "hed": "Sadalsuud",
-      "dek": "Sadalsuud is a charted star in Aqr selected by the Calendar as part of this week’s fixed-sky observing framework.",
-      "body": "Why it is here: Sadalsuud is a charted star in Aqr selected by the Calendar as part of this week’s fixed-sky observing framework.\n\nHow to find it: Use its charted position in Aqr and the surrounding figure stars to identify the field.",
-      "url": "/stories/baseline/1178.html",
-      "artwork": null
-    },
-    {
-      "fixed_object_id": 400,
-      "collection": "messier",
-      "hed": "A comet hunter found a city of 150,000 stars",
-      "dek": "M2 can look like a small misty ball, but the haze is the unresolved light of more than 150,000 stars bound together by gravity.",
-      "body": "Jean-Dominique Maraldi discovered the cluster in 1746 while observing a comet. Messier later added it to his catalog of objects that could be confused with comets—the practical observing list that accidentally became one of astronomy’s most famous tours of the deep sky.\n\nM2 lies roughly 37,000 light-years away in Aquarius and spans more than 150 light-years. Like other globular clusters, its stars crowd much more densely toward the center, producing the bright core and fading halo that observers can compare directly with other globulars.\n\nThe contrast between discovery and reality is part of the pleasure. To an 18th-century comet hunter it was a persistent fuzzy nuisance. To us it is an ancient gravitational system containing a stellar population on a scale no single glance through the telescope can resolve.\n\nSources: NASA Hubble Messier Catalog, “Messier 2.”",
-      "url": "/stories/messier/400.html",
-      "artwork": null
-    },
-    {
-      "fixed_object_id": 401,
-      "collection": "messier",
-      "hed": "A cluster that wants a wide field",
-      "dek": "M39 is an open cluster whose loose bright stars make more sense together than they do one at a time.",
-      "body": "Unlike a globular cluster, M39 is not a compact ball of ancient stars. It is a comparatively sparse stellar family in Cygnus, spread broadly enough across the sky that binoculars or a low-power telescope often show its character better than high magnification does.\n\nThat makes M39 a useful reminder that more magnification is not automatically more astronomy. An object has a natural scale. Push too close and a broad cluster can dissolve into unrelated-looking stars; step back and the pattern reappears.\n\nOpen clusters are temporary by astronomical standards. Their stars formed together, but interactions among the stars and the gravitational influence of the Milky Way gradually disperse them. The recognizable cluster is therefore a phase in the life of a stellar family, not a permanent arrangement.\n\nM39 rewards the observer who gives it room.\n\nSources: standard Messier catalog and open-cluster references.",
-      "url": "/stories/messier/401.html",
-      "artwork": null
-    },
-    {
-      "fixed_object_id": 402,
-      "collection": "messier",
-      "hed": "The cluster that sorted its stars by weight",
-      "dek": "M30 is an ancient globular cluster whose crowded history has literally rearranged its stellar population.",
-      "body": "The cluster is about 28,000 light-years away in Capricornus. Like other globulars, it contains an old population held in a dense spherical system, but M30 is especially interesting because its core has undergone gravitational collapse, driving stars into an extremely concentrated center.\n\nHubble observations found two distinct populations of blue stragglers—stars that appear younger and bluer than the cluster’s ordinary old population. Their distribution preserves evidence of different formation routes and of the cluster’s internal dynamical evolution.\n\nSo the small glow in the telescope is not static. Over immense spans of time, encounters between stars and binary systems redistribute energy, move stars inward or outward, and alter what kinds of stars appear in different parts of the cluster.\n\nM30 looks quiet because stellar dynamics move slowly on a human clock. On the cluster’s clock, it has been sorting itself for billions of years.\n\nSources: NASA Hubble Messier Catalog, “Messier 30,” and Hubble studies of blue stragglers in M30.",
-      "url": "/stories/messier/402.html",
-      "artwork": null
-    }
-  ],
+  "inline_stories": [],
   "linked_stories": [],
   "stories": [
     {
@@ -927,14 +827,14 @@
     "candidate_pool": "complete; presentation never limits discovery",
     "presentation": "Wordy",
     "story_limit": null,
-    "wordy_policy": "emit every qualified story inline; no editorial cap",
+    "wordy_policy": "rich weekly observing prose; link to complete object stories rather than embedding them",
     "future_presentations": [
       "Highlights"
     ],
     "link_target": "/almanack/descriptors/<fixed_object_id>.json for fixed-object descriptors",
     "artwork_descriptor_is_separate": true,
     "artwork_source": "explicit story front matter only",
-    "fixed_sky_identity_source": "Calendar data-fixed-object-id + database/fixed-objects.json",
+    "fixed_sky_identity_source": "Calendar data-fixed-object-id + data-observing-aid + database/fixed-objects.json",
     "story_identity_source": "Calendar data-fixed-object-id only",
     "story_source": "stories/<collection>/<fixed_object_id>.md",
     "inline_story_content": "hed + dek + body",

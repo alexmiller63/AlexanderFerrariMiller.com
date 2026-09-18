@@ -70,7 +70,7 @@
       "basis": "Star Almanack preserved geocentric tropical ecliptic longitude"
     }
   ],
-  "note": "ISO 2026-W38 runs from September 14 through September 20. Fixed-sky highlights include Sualocin, Rotanev, α Ind. Uranus is about 4.1° in ecliptic longitude from Aldebaran in Taurus.\n\n**Naked eye:** 🌓 First Quarter — 20:43:47 UTC. Moderate moonlight makes timing and local sky position important for faint targets. Use Sualocin, Rotanev, α Ind as the week’s fixed-sky framework.\n\n**Planets:** Uranus is about 4.1° in ecliptic longitude from Aldebaran in Taurus.\n\n**Binoculars:** Favor M72, M73, Sualocin; wide fields help connect the charted geometry to the real sky.\n\n**Small telescope:** Concentrate on M72, M73. Increase magnification only after the target and surrounding pattern are secure.",
+  "note": "ISO 2026-W38 runs from September 14 through September 20. Uranus is about 4.1° in ecliptic longitude from Aldebaran in Taurus.\n\n**Naked eye:** 🌓 First Quarter — 20:43:47 UTC. Moderate moonlight makes timing and local sky position important for faint targets. Use α Ind, Deneb, β Pav, Aljanah as the week’s fixed-sky framework.\n\n**Planets:** Uranus is about 4.1° in ecliptic longitude from Aldebaran in Taurus.\n\n**Binoculars:** Favor Sualocin, Rotanev, α Mic; wide fields help connect the charted geometry to the real sky.\n\n**Small telescope:** Concentrate on M72, M73. Increase magnification only after the target and surrounding pattern are secure.\n\n**Substantial telescope:** No fixed-sky Calendar object is classified as requiring a substantial telescope this week.",
   "descriptors": [
     {
       "schema_version": 1,
@@ -212,7 +212,8 @@
       "summary": "bright star in Delphinus used as a fixed-sky reference",
       "representation": {
         "machine": "./1159.json",
-        "human_source": "summary"
+        "human_source": "summary",
+        "human": "/stories/baseline/1159.html"
       },
       "constellation_abbreviation": "Del",
       "constellation": "Delphinus"
@@ -237,7 +238,8 @@
       "summary": "bright star in Delphinus used as a fixed-sky reference",
       "representation": {
         "machine": "./1157.json",
-        "human_source": "summary"
+        "human_source": "summary",
+        "human": "/stories/baseline/1157.html"
       },
       "constellation_abbreviation": "Del",
       "constellation": "Delphinus"
@@ -250,7 +252,8 @@
       "summary": "bright star in Indus used as a fixed-sky reference",
       "representation": {
         "machine": "./1158.json",
-        "human_source": "summary"
+        "human_source": "summary",
+        "human": "/stories/baseline/1158.html"
       },
       "constellation_abbreviation": "Ind",
       "constellation": "Indus"
@@ -275,7 +278,8 @@
       "summary": "bright star in Cygnus used as a fixed-sky reference",
       "representation": {
         "machine": "./111.json",
-        "human_source": "summary"
+        "human_source": "summary",
+        "human": "/stories/alpha-stars/111.html"
       },
       "constellation_abbreviation": "Cyg",
       "constellation": "Cygnus",
@@ -346,7 +350,8 @@
       "summary": "bright star in Pavo used as a fixed-sky reference",
       "representation": {
         "machine": "./1161.json",
-        "human_source": "summary"
+        "human_source": "summary",
+        "human": "/stories/baseline/1161.html"
       },
       "constellation_abbreviation": "Pav",
       "constellation": "Pavo"
@@ -371,7 +376,8 @@
       "summary": "bright star in Cygnus used as a fixed-sky reference",
       "representation": {
         "machine": "./112.json",
-        "human_source": "summary"
+        "human_source": "summary",
+        "human": "/stories/baseline/112.html"
       },
       "constellation_abbreviation": "Cyg",
       "constellation": "Cygnus",
@@ -419,7 +425,8 @@
       "summary": "bright star in Microscopium used as a fixed-sky reference",
       "representation": {
         "machine": "./476.json",
-        "human_source": "summary"
+        "human_source": "summary",
+        "human": "/stories/baseline/476.html"
       },
       "constellation_abbreviation": "Mic",
       "constellation": "Microscopium"
@@ -444,7 +451,8 @@
       "summary": "bright star in Taurus used as a fixed-sky reference",
       "representation": {
         "machine": "./25.json",
-        "human_source": "summary"
+        "human_source": "summary",
+        "human": "/stories/baseline/25.html"
       },
       "constellation_abbreviation": "Tau",
       "constellation": "Taurus",
@@ -534,39 +542,6 @@
       "summary": "angular position measured along the ecliptic, used here for conservative weekly Solar-System comparisons",
       "representation": {
         "machine": "./ecliptic-longitude.json",
-        "human_source": "summary"
-      }
-    },
-    {
-      "schema_version": 1,
-      "id": "naked-eye",
-      "type": "observing-concept",
-      "name": "Naked eye",
-      "summary": "observing without optical aid",
-      "representation": {
-        "machine": "./naked-eye.json",
-        "human_source": "summary"
-      }
-    },
-    {
-      "schema_version": 1,
-      "id": "binoculars",
-      "type": "observing-concept",
-      "name": "Binoculars",
-      "summary": "wide-field optical aid useful for locating star fields and brighter deep-sky targets",
-      "representation": {
-        "machine": "./binoculars.json",
-        "human_source": "summary"
-      }
-    },
-    {
-      "schema_version": 1,
-      "id": "small-telescope",
-      "type": "observing-concept",
-      "name": "Small telescope",
-      "summary": "a telescope suitable for resolving compact targets after the surrounding field is identified",
-      "representation": {
-        "machine": "./small-telescope.json",
         "human_source": "summary"
       }
     },
@@ -676,89 +651,7 @@
       "artwork": null
     }
   ],
-  "inline_stories": [
-    {
-      "fixed_object_id": 1159,
-      "collection": "baseline",
-      "hed": "Sualocin",
-      "dek": "Sualocin is a charted star in Del selected by the Calendar as part of this week’s fixed-sky observing framework.",
-      "body": "Why it is here: Sualocin is a charted star in Del selected by the Calendar as part of this week’s fixed-sky observing framework.\n\nHow to find it: Use its charted position in Del and the surrounding figure stars to identify the field.",
-      "url": "/stories/baseline/1159.html",
-      "artwork": null
-    },
-    {
-      "fixed_object_id": 1157,
-      "collection": "baseline",
-      "hed": "Rotanev",
-      "dek": "Rotanev is a charted star in Del selected by the Calendar as part of this week’s fixed-sky observing framework.",
-      "body": "Why it is here: Rotanev is a charted star in Del selected by the Calendar as part of this week’s fixed-sky observing framework.\n\nHow to find it: Use its charted position in Del and the surrounding figure stars to identify the field.",
-      "url": "/stories/baseline/1157.html",
-      "artwork": null
-    },
-    {
-      "fixed_object_id": 1158,
-      "collection": "baseline",
-      "hed": "α Ind",
-      "dek": "α Ind is a charted star in Ind selected by the Calendar as part of this week’s fixed-sky observing framework.",
-      "body": "Why it is here: α Ind is a charted star in Ind selected by the Calendar as part of this week’s fixed-sky observing framework.\n\nHow to find it: Use its charted position in Ind and the surrounding figure stars to identify the field.",
-      "url": "/stories/baseline/1158.html",
-      "artwork": null
-    },
-    {
-      "fixed_object_id": 111,
-      "collection": "alpha-stars",
-      "hed": "The bright star that should not look this bright",
-      "dek": "Deneb looks comparable to Vega and Altair in the Summer Triangle, but it is vastly farther away and therefore enormously more luminous.",
-      "body": "That contrast is the heart of Deneb’s story. Apparent brightness tells us how much light reaches us, not how much light the star actually produces. A nearby star can look brilliant without being extraordinary; a distant star that still looks brilliant has to be pouring tremendous energy into space.\n\nDeneb is a luminous supergiant and marks the tail of Cygnus, the Swan. It is also the northern corner of the Summer Triangle, so it works simultaneously as a stellar laboratory and as one of the easiest large-scale navigation points in the summer sky.\n\nThe lesson is almost philosophical: the night sky has no depth cues. Stars that appear to sit beside one another on a flat celestial pattern can occupy radically different distances and possess radically different intrinsic powers.\n\nDeneb makes that hidden third dimension difficult to ignore.\n\nSources: ESA/Hipparcos and Gaia distance work; standard stellar references for Alpha Cygni.",
-      "url": "/stories/alpha-stars/111.html",
-      "artwork": "stellar-finder"
-    },
-    {
-      "fixed_object_id": 390,
-      "collection": "messier",
-      "hed": "One of Messier’s farthest star cities",
-      "dek": "M72 is one of the most remote globular clusters in the Messier catalog, about 50,000 light-years from Earth.",
-      "body": "Pierre Méchain discovered it in 1780 while working in the same comet-hunting world that produced Messier’s catalog. A small telescope shows little more than a faint patch, but that modest glow is the combined light of an ancient spherical population of stars packed increasingly tightly toward a common center.\n\nGlobular clusters are relics of the Milky Way’s deep past. Their stars are generally old, and the clusters orbit through the Galactic halo rather than tracing the young star-forming disk in the way open clusters do.\n\nM72 is valuable precisely because it refuses to be flashy. The observer sees a dim unresolved glow; the physical object is an enormous gravitational community of stars at a distance that makes its light seem almost inconsequential.\n\nSometimes the faintest-looking entry on the calendar has the largest scale behind it.\n\nSources: NASA Hubble Messier Catalog, “Messier 72.”",
-      "url": "/stories/messier/390.html",
-      "artwork": null
-    },
-    {
-      "fixed_object_id": 1161,
-      "collection": "baseline",
-      "hed": "β Pav",
-      "dek": "β Pav is a charted star in Pav selected by the Calendar as part of this week’s fixed-sky observing framework.",
-      "body": "Why it is here: β Pav is a charted star in Pav selected by the Calendar as part of this week’s fixed-sky observing framework.\n\nHow to find it: Use its charted position in Pav and the surrounding figure stars to identify the field.",
-      "url": "/stories/baseline/1161.html",
-      "artwork": null
-    },
-    {
-      "fixed_object_id": 112,
-      "collection": "baseline",
-      "hed": "Aljanah",
-      "dek": "Aljanah is a charted star selected by the Calendar as part of this week’s fixed-sky observing framework.",
-      "body": "Why it is here: Aljanah is a charted star selected by the Calendar as part of this week’s fixed-sky observing framework.\n\nHow to find it: Use the surrounding charted stars and finder geometry to identify the field before increasing magnification.",
-      "url": "/stories/baseline/112.html",
-      "artwork": null
-    },
-    {
-      "fixed_object_id": 392,
-      "collection": "messier",
-      "hed": "Messier catalogued four stars that only look acquainted",
-      "dek": "M73 is not a star cluster at all, but a tiny asterism whose stars happen to lie along nearly the same line of sight.",
-      "body": "That makes it one of the most instructive oddities in the Messier catalog. Early telescopic observers could see a compact little group, but appearance alone could not establish whether its stars were physically associated. Modern measurements of stellar motion and distance let astronomers ask a question Messier could not settle from the eyepiece: are these stars actually traveling through space together?\n\nThe answer is no. M73 is a chance alignment.\n\nThat does not make it a mistake or a useless object. Quite the opposite. It preserves a basic problem of observational astronomy: the sky is a two-dimensional projection of a three-dimensional universe. Things that look grouped together may be separated by enormous distances.\n\nM73 is therefore a catalog object whose most interesting property is that it is not the kind of object it once appeared to be.\n\nSources: modern astrometric studies of M73 and standard Messier catalog references.",
-      "url": "/stories/messier/392.html",
-      "artwork": null
-    },
-    {
-      "fixed_object_id": 476,
-      "collection": "baseline",
-      "hed": "α Mic",
-      "dek": "α Mic is a charted star in Mic selected by the Calendar as part of this week’s fixed-sky observing framework.",
-      "body": "Why it is here: α Mic is a charted star in Mic selected by the Calendar as part of this week’s fixed-sky observing framework.\n\nHow to find it: Use its charted position in Mic and the surrounding figure stars to identify the field.",
-      "url": "/stories/baseline/476.html",
-      "artwork": null
-    }
-  ],
+  "inline_stories": [],
   "linked_stories": [],
   "stories": [
     {
@@ -849,14 +742,14 @@
     "candidate_pool": "complete; presentation never limits discovery",
     "presentation": "Wordy",
     "story_limit": null,
-    "wordy_policy": "emit every qualified story inline; no editorial cap",
+    "wordy_policy": "rich weekly observing prose; link to complete object stories rather than embedding them",
     "future_presentations": [
       "Highlights"
     ],
     "link_target": "/almanack/descriptors/<fixed_object_id>.json for fixed-object descriptors",
     "artwork_descriptor_is_separate": true,
     "artwork_source": "explicit story front matter only",
-    "fixed_sky_identity_source": "Calendar data-fixed-object-id + database/fixed-objects.json",
+    "fixed_sky_identity_source": "Calendar data-fixed-object-id + data-observing-aid + database/fixed-objects.json",
     "story_identity_source": "Calendar data-fixed-object-id only",
     "story_source": "stories/<collection>/<fixed_object_id>.md",
     "inline_story_content": "hed + dek + body",
