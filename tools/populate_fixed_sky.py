@@ -93,7 +93,9 @@ def page_date_map(year):
         if r.get("new_non_alpha_beta","").lower()!="yes":continue
         d=dt.date.fromisoformat(r["best_date"]); identity=(r.get("proper") or (r.get("bayer","")+r.get("con",""))).strip().lower(); key=(d,identity)
         if identity and key not in seen:events[d].append(star_label(r)); seen.add(key)
-    for r in messier:\n        d=dt.date.fromisoformat(r["best_date"])\n        events[d].append(render_html(AlmanackObject(label=r["messier"],object_type="deep_sky",dec_deg=r["dec_deg"],best_date=d,observing_aid=ObservingAid.TELESCOPE)))
+    for r in messier:
+        d=dt.date.fromisoformat(r["best_date"])
+        events[d].append(render_html(AlmanackObject(label=r["messier"],object_type="deep_sky",dec_deg=r["dec_deg"],best_date=d,observing_aid=ObservingAid.TELESCOPE)))
     return events
 def pages_for_events(root,events):
     pages=[]
