@@ -180,7 +180,7 @@ jobs:
                           print(
                               f'DIAGNOSTIC attempt={package_attempt} {year}-W{week:02d} {label!r}: '
                               + ' '.join(f'{key}={"YES" if value else "NO"}' for key, value in diagnostics.items())
-                              + f' descriptor_text={descriptor_text!r} descriptor_href={descriptor_href!r}'\n                              + f' descriptor_url={descriptor_url!r} descriptor_status={descriptor_status!r} descriptor_id={descriptor_id!r}'
+                              + f' descriptor_text={descriptor_text!r} descriptor_href={descriptor_href!r}\n'                              + f' descriptor_url={descriptor_url!r} descriptor_status={descriptor_status!r} descriptor_id={descriptor_id!r}'
                               + f' root_id={root_id!r} url={destination_url}'
                           )
                           if all(diagnostics.values()):
@@ -193,7 +193,7 @@ jobs:
                           raise SystemExit(
                               f'DEPLOYED FIXED-OBJECT PACKAGE INCOMPLETE AFTER RENDERED RETRIES: '
                               f'{year}-W{week:02d} {label!r}; missing={",".join(missing)}; '
-                              f'descriptor_text={descriptor_text!r}; descriptor_href={descriptor_href!r}; '\n                              f'descriptor_url={descriptor_url!r}; descriptor_status={descriptor_status!r}; descriptor_id={descriptor_id!r}; '
+                              f'descriptor_text={descriptor_text!r}; descriptor_href={descriptor_href!r}; \n'                              f'descriptor_url={descriptor_url!r}; descriptor_status={descriptor_status!r}; descriptor_id={descriptor_id!r}; '
                               f'url={destination_url}'
                           )
                       destination.close(); checked += 1
