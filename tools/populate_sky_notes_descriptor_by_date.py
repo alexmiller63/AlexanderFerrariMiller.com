@@ -54,9 +54,15 @@ def calendar_observing_aids(page_path) -> dict[int, str]:
     ):
         fixed_id = int(cell.group(1))
         body = cell.group(2)
+        if re.search(r'aria-label="Substantial telescope"', body, flags=re.I):
+            aids[fixed_id] = "substantial telescope"
+            continue
         labels = re.findall(r'aria-label="(Naked eye|Binoculars|Telescope)"', body, flags=re.I)
         if labels:
-            aids[fixed_id] = labels[0].lower()
+            # A doubled telescope glyph is also the established substantial-
+            # telescope representation when no wrapper label is available.
+            telescope_glyphs = len(re.findall(r'telescope\.svg(?:[?#][^"\']*)?', body, flags=re.I))
+            aids[fixed_id] = "substantial telescope" if labels[0].lower() == "telescope" and telescope_glyphs >= 2 else labels[0].lower()
     return aids
 
 
@@ -162,6 +168,7 @@ def observer_note(year: int, week: int, page_path, fixed: list[dict], relations:
     naked = [by_id[i]["name"] for i, aid in observing_aids.items() if aid == "naked eye" and i in by_id]
     binocular = [by_id[i]["name"] for i, aid in observing_aids.items() if aid == "binoculars" and i in by_id]
     telescope = [by_id[i]["name"] for i, aid in observing_aids.items() if aid == "telescope" and i in by_id]
+    substantial = [by_id[i]["name"] for i, aid in observing_aids.items() if aid == "substantial telescope" and i in by_id]
     naked_guidance = (
         f"Use {', '.join(naked)} as the week’s fixed-sky framework."
         if naked else
@@ -177,6 +184,11 @@ def observer_note(year: int, week: int, page_path, fixed: list[dict], relations:
         if telescope else
         "No fixed-sky Calendar object is classified for telescope observing this week."
     )
+    substantial_guidance = (
+        f"These targets call for a substantial telescope: {', '.join(substantial)}."
+        if substantial else
+        "No fixed-sky Calendar object is classified as requiring a substantial telescope this week."
+    )
     planet_paragraph = (
         " ".join(base.relation_sentence(item) for item in relations)
         if relations else
@@ -188,6 +200,7 @@ def observer_note(year: int, week: int, page_path, fixed: list[dict], relations:
         f"**Planets:** {planet_paragraph}",
         f"**Binoculars:** {binocular_guidance}",
         f"**Small telescope:** {telescope_guidance}",
+        f"**Substantial telescope:** {substantial_guidance}",
     ))
 
 
