@@ -574,21 +574,10 @@ def decorate_note_html(rendered_html: str, records: list[dict], weekly_fixed_ids
     """Place descriptor-derived prose inside the existing Sky Note paragraphs."""
     decorated = rendered_html
 
-    # Observing-method section labels are themselves descriptor mentions. Link them
-    # directly without attaching explanatory prose inside the <strong> heading.
+    # Observing-method headings are presentation labels, not astronomical
+    # object mentions. Keep them as plain section labels even when the same
+    # concepts have machine-readable descriptor records.
     used_ids: set[str] = set()
-    section_descriptors = {}
-    records_by_id = {record["id"]: record for record in records}
-    for label, descriptor_id in section_descriptors.items():
-        record = records_by_id.get(descriptor_id)
-        if not record:
-            continue
-        marker = f"<strong>{label}:</strong>"
-        if marker not in decorated:
-            continue
-        linked = _linked_name(record)
-        decorated = decorated.replace(marker, f"<strong>{linked}:</strong>", 1)
-        used_ids.add(descriptor_id)
 
     priority = {
         "deep-sky-object": 0,
