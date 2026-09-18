@@ -44,31 +44,15 @@ def calendar_fixed_object_ids(page_path) -> list[int]:
 
 
 def calendar_observing_aids(page_path) -> dict[int, str]:
-    """Read observing-aid metadata from the same Calendar event cell as each identity."""
+    """Read semantic observing-aid metadata attached to Calendar identities."""
     text = page_path.read_text(encoding="utf-8")
     aids: dict[int, str] = {}
-    for cell in re.finditer(
-        r'<div[^>]*class="[^"]*event-cell[^"]*"[^>]*data-fixed-object-id="(\d+)"[^>]*>(.*?)</div>',
+    for match in re.finditer(
+        r'<div[^>]*class="[^"]*event-cell[^"]*"[^>]*data-fixed-object-id="(\d+)"[^>]*data-observing-aid="([^"]+)"[^>]*>',
         text,
-        flags=re.S | re.I,
+        flags=re.I,
     ):
-        fixed_id = int(cell.group(1))
-        body = cell.group(2)
-        if re.search(r'aria-label="Substantial telescope"', body, flags=re.I):
-            aids[fixed_id] = "substantial telescope"
-            continue
-        # Some Calendar deep-sky entries use the compact telescope character
-        # instead of image markup. It carries the same ordinary Telescope
-        # observing-aid meaning and must survive the Calendar -> Sky Notes handoff.
-        if "🔭" in body:
-            aids[fixed_id] = "telescope"
-            continue
-        labels = re.findall(r'aria-label="(Naked eye|Binoculars|Telescope)"', body, flags=re.I)
-        if labels:
-            # A doubled telescope glyph is also the established substantial-
-            # telescope representation when no wrapper label is available.
-            telescope_glyphs = len(re.findall(r'telescope\.svg(?:[?#][^"\']*)?', body, flags=re.I))
-            aids[fixed_id] = "substantial telescope" if labels[0].lower() == "telescope" and telescope_glyphs >= 2 else labels[0].lower()
+        aids[int(match.group(1))] = match.group(2).lower().replace("_", " ")
     return aids
 
 
