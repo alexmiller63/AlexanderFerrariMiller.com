@@ -447,13 +447,19 @@ def _linked_name(record: dict) -> str:
                 f"{human_href!r} ({exc})"
             ) from exc
     if not href:
-        href = descriptor_href(str(record["id"]))
+        descriptor_id = str(record["id"])
+        href = descriptor_href(descriptor_id)
+        # Descriptor JSON is the deterministic reader-facing fallback.
+        # A missing human story must never abort the Sky Note build.
+        if not isinstance(href, str) or not href.strip():
+            href = f"../../../almanack/descriptors/{descriptor_id}.json"
         type_attr = ' type="application/json"'
     else:
         type_attr = ""
-    if not isinstance(href, str) or not href:
+    if not isinstance(href, str) or not href.strip():
+        descriptor_id = str(record.get("id", "unknown"))
         raise RuntimeError(
-            f"Descriptor {record.get('id')!r} resolved to an empty reader-facing href"
+            f"Descriptor {descriptor_id!r} has no reader-facing href after fallback"
         )
     return (
         f'<a class="descriptor-link" href="{html.escape(href, quote=True)}"'
