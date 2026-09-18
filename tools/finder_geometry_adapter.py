@@ -35,7 +35,7 @@ def constellation_paths(registry: dict, abbreviation: str) -> list[list[str]]:
         raise RuntimeError(f"No accepted constellation geometry for {abbreviation!r}")
     record = figures[abbreviation]
     if not record.get("has_figure"):
-        raise RuntimeError(f"Accepted constellation {abbreviation!r} has no drawable figure")
+        return []
     paths = renderer_paths(record)
     if not paths:
         raise RuntimeError(f"Accepted constellation {abbreviation!r} has no drawable paths")
