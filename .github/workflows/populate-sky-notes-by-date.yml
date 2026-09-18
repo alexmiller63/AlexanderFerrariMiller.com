@@ -109,22 +109,24 @@ jobs:
           weeks = []
           while d <= end:
               y, w, _ = d.isocalendar(); weeks.append((y, w)); d += timedelta(days=7)
-          def load(page, url):
+          def load_week(page, url):
               status = None
               for attempt in range(1, 13):
                   response = page.goto(url, wait_until='networkidle')
                   status = None if response is None else response.status
-                  if response is not None and response.ok: return
-                  print(f'WAITING FOR DEPLOYMENT attempt={attempt} status={status} url={url}')
+                  links = page.locator('[data-fixed-object-id] a[href]')
+                  if response is not None and response.ok and links.count() > 0:
+                      return
+                  print(f'WAITING FOR DEPLOYED SKY NOTES attempt={attempt} status={status} links={links.count()} url={url}')
                   time.sleep(10)
-              raise SystemExit(f'DEPLOYED PAGE FAILED: HTTP {status}: {url}')
+              raise SystemExit(f'DEPLOYED WEEK NOT CURRENT: HTTP {status}, no reader-facing Sky Note links: {url}')
           checked = 0
           with sync_playwright() as p:
               browser = p.chromium.launch(); context = browser.new_context()
               for year, week in weeks:
                   page = context.new_page()
                   week_url = urljoin(base, f'almanack/{year}/W{week:02d}/')
-                  load(page, week_url)
+                  load_week(page, week_url)
                   links = page.locator('[data-fixed-object-id] a[href]')
                   for i in range(links.count()):
                       link = links.nth(i); href = link.get_attribute('href')
