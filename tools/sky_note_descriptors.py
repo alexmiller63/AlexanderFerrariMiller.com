@@ -366,6 +366,10 @@ def build_descriptors(
         descriptor_id = str(fixed_object_id) if fixed_object_id is not None else f"star-{slugify(name)}"
         summary = f"bright star{f' in {constellation}' if constellation else ''} used as a fixed-sky reference"
         record = _base(descriptor_id, "star", name, summary)
+        if fixed_object_id is not None:
+            stories = available_stories(fixed_object_id)
+            if stories:
+                record["representation"]["human"] = stories[0].public_url
         if con:
             record["constellation_abbreviation"] = con
             record["constellation"] = constellation
@@ -648,10 +652,13 @@ def decorate_note_html(rendered_html: str, records: list[dict]) -> str:
         for record in other_objects:
             fixed_id = str(record["id"])
             artwork = f"../../../sky-notes-artwork/objects/{fixed_id}/finder.svg"
+            prose = _linked_name(record)
             links.append(
-                f'<a class="object-artwork-link" '
-                f'href="{html.escape(artwork, quote=True)}">'
-                f'{html.escape(str(record["name"]), quote=False)}</a>'
+                f'<span class="other-object-links" data-fixed-object-id="{fixed_id}">'
+                f'{prose} '
+                f'(<a class="object-artwork-link" '
+                f'href="{html.escape(artwork, quote=True)}">art</a>)'
+                f'</span>'
             )
         decorated += (
             '<div class="other-objects-listed-week" data-other-objects-listed-week="true">'
