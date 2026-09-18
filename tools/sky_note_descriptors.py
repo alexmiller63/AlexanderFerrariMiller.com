@@ -670,7 +670,7 @@ def decorate_note_html(rendered_html: str, records: list[dict], weekly_fixed_ids
         if str(record.get("id", "")) in weekly_id_set
         and record["id"] not in used_ids
         and record.get("type") in {"star", "deep-sky-object"}
-    ][:6]
+    ]
     if other_objects:
         links = []
         for record in other_objects:
