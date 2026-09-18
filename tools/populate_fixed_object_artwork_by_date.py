@@ -87,10 +87,26 @@ def main() -> None:
     made = 0
     for week in weeks:
         payload = legacy.load_generated_source(week.year, week.week)
-        for item in payload.get("fixed_sky") or []:
+        items = list(payload.get("fixed_sky") or [])
+        known = {int(item["fixed_object_id"]) for item in items if isinstance(item.get("fixed_object_id"), int)}
+        for descriptor in payload.get("descriptors") or []:
+            descriptor_id = str(descriptor.get("id", ""))
+            if descriptor.get("type") not in {"star", "deep-sky-object"} or not descriptor_id.isdigit():
+                continue
+            fixed_id = int(descriptor_id)
+            if fixed_id in known:
+                continue
+            known.add(fixed_id)
+            items.append({
+                "fixed_object_id": fixed_id,
+                "name": descriptor.get("name"),
+                "type": "deep-sky" if descriptor.get("type") == "deep-sky-object" else "star",
+                "constellation": descriptor.get("constellation_abbreviation"),
+            })
+        for item in items:
             fixed_id = item.get("fixed_object_id")
             if not isinstance(fixed_id, int):
-                raise RuntimeError(f"{week.year}-W{week.week:02d}: fixed_sky item has no immutable ID")
+                raise RuntimeError(f"{week.year}-W{week.week:02d}: artwork item has no immutable ID")
             spec = make_spec(item, registry, by_hip, metadata)
             OUT.mkdir(parents=True, exist_ok=True)
             path = OUT / f"{fixed_id}.json"
