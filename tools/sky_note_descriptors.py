@@ -637,10 +637,11 @@ def decorate_note_html(rendered_html: str, records: list[dict]) -> str:
             used_ids.add(record["id"])
             inline_count += 1
 
-    # Other objects listed this week are machine-readable object references.
-    # They link to canonical object-owned artwork; artwork is not embedded in
-    # the Sky Note itself. These are mentions in the week, not semantic
-    # "related objects".
+    # Other objects listed this week are object references, not a separate
+    # artwork index.  Link each name through the same reader-facing story/
+    # descriptor resolution used everywhere else in Sky Notes.  The object's
+    # story page owns access to its artwork; the weekly page does not bypass
+    # that prose layer by linking directly to finder.svg.
     other_objects = [
         record for record in ordered
         if record["id"] not in used_ids
@@ -651,13 +652,10 @@ def decorate_note_html(rendered_html: str, records: list[dict]) -> str:
         links = []
         for record in other_objects:
             fixed_id = str(record["id"])
-            artwork = f"../../../sky-notes-artwork/objects/{fixed_id}/finder.svg"
             prose = _linked_name(record)
             links.append(
                 f'<span class="other-object-links" data-fixed-object-id="{fixed_id}">'
-                f'{prose} '
-                f'(<a class="object-artwork-link" '
-                f'href="{html.escape(artwork, quote=True)}">art</a>)'
+                f'{prose}'
                 f'</span>'
             )
         decorated += (
