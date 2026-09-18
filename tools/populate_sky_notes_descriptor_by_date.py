@@ -255,9 +255,8 @@ def generated_note(year: int, week: int, page_path, yearly, stars: list[dict]) -
     payload["inline_stories"] = inline
     payload["linked_stories"] = linked
     payload["stories"] = candidates
-    payload["artwork"] = story_artwork_descriptor(
-        year, week, fixed, payload["planet_relations"], candidates
-    )
+    # Artwork is owned by immutable fixed objects, never by an ISO week.
+    payload["artwork"] = None
     payload["descriptor_policy"] = descriptor_policy()
     return payload
 
@@ -268,12 +267,9 @@ def patch_page(path, payload: dict) -> bool:
     rendered = decorate_note_html(rendered, payload["descriptors"])
     inline = render_inline_stories(payload.get("inline_stories", []))
     linked = render_linked_stories(payload.get("linked_stories", []))
-    placeholder = base.render_artwork_placeholder(payload["artwork"])
-    # Populate must not erase artwork already published by the artwork workflow.
-    # Preserve the rendered figure across idempotent Sky Notes regeneration; the
-    # artwork publisher will replace it later when the descriptor actually changes.
-    published_match = re.search(r'<figure class="sky-note-artwork">.*?</figure>', text, flags=re.S)
-    artwork_slot = published_match.group(0) if published_match is not None else placeholder
+    # Legacy week-owned artwork is deliberately removed. Fixed-object artwork
+    # belongs on the object story/package and is published independently.
+    artwork_slot = ""
     body = rendered + "\n"
     if inline:
         body += inline + "\n"
@@ -318,7 +314,8 @@ def main() -> None:
         payload["inline_stories"] = inline
         payload["linked_stories"] = linked
         payload["stories"] = candidates
-        payload["artwork"] = story_artwork_descriptor(item.year, item.week, fixed, payload["planet_relations"], candidates)
+        # Artwork is owned by immutable fixed objects, never by an ISO week.
+        payload["artwork"] = None
         payload["descriptor_policy"] = descriptor_policy()
         descriptor_ids = {str(record["id"]) for record in payload["descriptors"]}
         missing_descriptor_ids = [str(fixed_id) for fixed_id in fixed_ids if str(fixed_id) not in descriptor_ids]
@@ -336,7 +333,7 @@ def main() -> None:
             if patch_page(path, payload):
                 changed += 1
 
-        art_state = "story-declared artwork descriptor emitted" if payload["artwork"] else "no story-declared artwork"
+        art_state = "fixed-object-owned artwork only; no week-owned artwork"
         print(
             f"Generated descriptor-first Sky Note for ISO {item.year}-{week_key}: "
             f"{source.relative_to(base.ROOT)} ({len(payload['descriptors'])} descriptors; "
