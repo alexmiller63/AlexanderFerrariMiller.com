@@ -93,6 +93,20 @@ def slugify(value: str) -> str:
     return value or "descriptor"
 
 
+def _constellation_identity(name: str, abbreviation: str) -> str:
+    """Return the permanent numeric descriptor ID for a constellation identity."""
+    registry = json.loads(IDENTITY_REGISTRY.read_text(encoding="utf-8"))
+    matches = [
+        record for record in registry.get("constellations", [])
+        if record.get("name") == name and record.get("abbr") == abbreviation
+    ]
+    if len(matches) != 1:
+        raise RuntimeError(
+            f"Expected exactly one constellation identity for {name!r} ({abbreviation}), found {len(matches)}"
+        )
+    return str(matches[0]["id"])
+
+
 def descriptor_href(descriptor_id: str) -> str:
     """Return a descriptor link relative to an Almanack weekly page."""
     return f"/almanack/descriptors/{descriptor_id}.json"
