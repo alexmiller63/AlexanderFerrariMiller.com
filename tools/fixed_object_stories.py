@@ -162,7 +162,12 @@ def write_public_story(story: Story) -> Path:
         f"<h1 data-story-field=\"hed\">{html.escape(story.hed)}</h1>\n"
         f"<p class=\"sky-note-story-dek story-dek\" data-story-field=\"dek\">{html.escape(story.dek)}</p>\n"
         f"<section class=\"sky-note-story-body\" data-story-field=\"body\">{paragraphs}</section>\n"
-        f"<p class=\"sky-note-story-descriptor\" data-story-field=\"descriptor\">"
+        + (f"<figure class=\"sky-note-story-artwork\" data-story-field=\"artwork\">"
+           f"<a href=\"../../sky-notes-artwork/objects/{story.fixed_object_id}/finder.svg\">"
+           f"<img src=\"../../sky-notes-artwork/objects/{story.fixed_object_id}/finder.svg\" "
+           f"alt=\"Stellar finder for {html.escape(story.hed, quote=True)}\" loading=\"lazy\"></a></figure>\n"
+           if (ROOT / "sky-notes-artwork" / "objects" / str(story.fixed_object_id) / "finder.svg").exists() else "")
+        + f"<p class=\"sky-note-story-descriptor\" data-story-field=\"descriptor\">"
         f"<a class=\"descriptor-link\" data-descriptor-id=\"{story.fixed_object_id}\" "
         f"href=\"../../almanack/descriptors/{story.fixed_object_id}.json\" type=\"application/json\">Descriptor</a></p>\n"
         "</main>\n</body>\n</html>\n"
