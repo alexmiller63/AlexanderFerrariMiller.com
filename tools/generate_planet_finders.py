@@ -404,8 +404,6 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
     solution_keys = set()
     current_body = "-"
     exhausted = False
-    max_order_nodes = max(1, int(os.environ.get("PLANET_FINDER_MAX_ORDER_NODES", "100000")))
-    max_order_seconds = max(1.0, float(os.environ.get("PLANET_FINDER_MAX_ORDER_SECONDS", "5")))
     def dump_diagnostics(reason):
         order_names = " > ".join(item[1][1] for item in order)
         active = []
@@ -590,17 +588,6 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 f"Planet Finder run-wide wall-clock budget exhausted in {mode} mode "
                 f"after {run_elapsed:.1f}s (limit {budget['max_seconds']:.1f}s)"
             )
-        order_elapsed = time.monotonic() - started
-        if nodes >= max_order_nodes or order_elapsed >= max_order_seconds:
-            reason = (
-                f"order node budget exhausted ({nodes:,}/{max_order_nodes:,})"
-                if nodes >= max_order_nodes
-                else f"order time budget exhausted ({order_elapsed:.1f}s/{max_order_seconds:.1f}s)"
-            )
-            dump_diagnostics(reason)
-            exhausted = True
-            break
-
         if resume_position is None:
             position = len(stack)
         else:
