@@ -226,6 +226,7 @@ def route(
     obstacles: list[Box],
     diagnostic=None,
     allow_initial_escape_count: int = 0,
+    prefix_cache: dict | None = None,
 ) -> list[tuple[float, float]] | None:
     """Prefer a straight leader; otherwise try deterministic radial elbows.
 
@@ -359,10 +360,16 @@ def route(
     lon = math.degrees(math.atan2(-(ay - CY), ax - CX)) - 180
     theta = math.radians(180 + lon)
     tx, ty = -math.sin(theta), -math.cos(theta)
-    for r in (395, 365, 335, 305, 275, 245, 215, 185, 155):
-        e1 = xy(lon, r)
-        for shift in (70, -70, 105, -105, 140, -140, 175, -175, 210, -210, 245, -245, 280, -280, 315, -315):
-            e2 = (e1[0] + shift * tx, e1[1] + shift * ty)
+    # The first 2 dogleg legs depend only on the body's anchor and the
+    # current DFS obstacle state, not on the candidate label position. Build
+    # those legal prefixes once for this frame and reuse them for every label
+    # candidate; only the final e2->label leg is candidate-specific.
+    cache_key = "dogleg_prefixes"
+    dogleg_prefixes = prefix_cache.get(cache_key) if prefix_cache is not None else None
+    if dogleg_prefixes is None:
+        dogleg_prefixes = []
+        for r in (395, 365, 335, 305, 275, 245, 215, 185, 155):
+            e1 = xy(lon, r)
             first_blocked = any(
                 hits(
                     anchor,
@@ -373,18 +380,28 @@ def route(
                 )
                 for i, b in enumerate(obstacles)
             )
-            second_blocked = any(
-                hits(e1, e2, b, pad=obstacle_pad(i))
-                for i, b in enumerate(obstacles)
-            )
-            third_blocked = any(
-                hits(e2, center, b, pad=obstacle_pad(i))
-                for i, b in enumerate(obstacles)
-            )
-            if not first_blocked and not second_blocked and not third_blocked:
-                if diagnostic is not None:
-                    diagnostic["dogleg_success"] = diagnostic.get("dogleg_success", 0) + 1
-                return [anchor, e1, e2, center]
+            if first_blocked:
+                continue
+            for shift in (70, -70, 105, -105, 140, -140, 175, -175, 210, -210, 245, -245, 280, -280, 315, -315):
+                e2 = (e1[0] + shift * tx, e1[1] + shift * ty)
+                second_blocked = any(
+                    hits(e1, e2, b, pad=obstacle_pad(i))
+                    for i, b in enumerate(obstacles)
+                )
+                if not second_blocked:
+                    dogleg_prefixes.append((e1, e2))
+        if prefix_cache is not None:
+            prefix_cache[cache_key] = dogleg_prefixes
+
+    for e1, e2 in dogleg_prefixes:
+        third_blocked = any(
+            hits(e2, center, b, pad=obstacle_pad(i))
+            for i, b in enumerate(obstacles)
+        )
+        if not third_blocked:
+            if diagnostic is not None:
+                diagnostic["dogleg_success"] = diagnostic.get("dogleg_success", 0) + 1
+            return [anchor, e1, e2, center]
     if diagnostic is not None:
         diagnostic["dogleg_failed"] = diagnostic.get("dogleg_failed", 0) + 1
         diagnostic["route_failed"] = diagnostic.get("route_failed", 0) + 1
@@ -475,6 +492,10 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         nonlocal candidates, rejected_overlap, rejected_leader, rejected_route
         w, h = label_size(mode, name)
         anchor = xy(longitude, RI - 5)
+        # This generator is created for one fixed DFS prefix. The placed
+        # obstacles therefore remain stable for its lifetime, so anchor-side
+        # routing work can be safely reused across all candidate labels.
+        route_prefix_cache = {}
         body_candidates = 0
         for x, y, box in legal_candidate_positions(longitude, w, h, reserved):
             # Candidate production is lazy. Geometry owns geometry; the search
@@ -528,6 +549,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 reserved + placed,
                 route_diag,
                 allow_initial_escape_count=len(reserved),
+                prefix_cache=route_prefix_cache,
             )
             if path is None:
                 rejected_route += 1
