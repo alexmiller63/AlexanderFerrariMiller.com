@@ -533,13 +533,16 @@ def layout(mode: str, bodies: list[tuple[str, str, float]], target_solutions: in
                 natural = xy(longitude, 345)
                 radial_error += abs(math.hypot(box.x-CX, box.y-CY) - 345)
                 tangential_error += math.hypot(box.x-natural[0], box.y-natural[1])
-            return (elbows, total_length, radial_error, tangential_error)
+            # Prefer simple leaders first, then short leaders and labels close to
+            # their body's natural radial direction. This makes long/kinked
+            # detours lose even when they are technically collision-free.
+            return (elbows, total_length, tangential_error, radial_error)
         scored = sorted((score(result), i, result) for i, result in enumerate(results))
         best_score, best_index, best = scored[0]
         print(
             f"Planet Finder {mode}: selected candidate {best_index + 1}/{len(results)} "
             f"score[elbows={best_score[0]},length={best_score[1]:.1f},"
-            f"radial={best_score[2]:.1f},displacement={best_score[3]:.1f}]",
+            f"displacement={best_score[2]:.1f},radial={best_score[3]:.1f}]",
             flush=True,
         )
         return best
@@ -580,7 +583,13 @@ def render(year: int, week: int, monday: date, mode: str, bodies: list[tuple[str
         else:
             text, fs = f'{symbol}\ufe0e {name}', 22
         out.append(f'<text x="{x:.1f}" y="{y+10:.1f}" text-anchor="middle" font-size="{fs}">{html.escape(text)}</text>')
-    out.append('<text x="250" y="708" text-anchor="end" font-size="20" class="sans">0° Aries</text>')
+    # Fixed geometric annotation: 0° Aries is the 9-o'clock boundary.
+    # Keep it deterministic and independent of body-label placement.
+    aries_x, aries_y = xy(0, RI)
+    out.append(
+        f'<text x="{aries_x - 12:.1f}" y="{aries_y + 7:.1f}" '
+        'text-anchor="end" font-size="20" class="sans">0° Aries</text>'
+    )
 
     for symbol, name, _, box, path in placed:
         out.append(polyline(path))
