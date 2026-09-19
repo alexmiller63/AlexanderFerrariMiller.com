@@ -144,13 +144,54 @@ def candidate_positions(longitude: float):
 def route(anchor: tuple[float, float], center: tuple[float, float], obstacles: list[Box], diagnostic=None) -> list[tuple[float, float]] | None:
     """Prefer a straight leader; otherwise try deterministic radial elbows.
 
-    When diagnostic is supplied, record which obstacle indices block the
-    straight route and each elbow leg. This is instrumentation only and does
-    not change route acceptance or search order.
+    A leader is allowed to leave an obstacle that contains its anchor.  This
+    is the correct geometry for a body marker lying beneath/adjacent to a
+    zodiac label: the leader may escape that local label, but after it has
+    exited it may not cross that obstacle again.
     """
+    def hits(a, b, obstacle):
+        # If the segment begins inside the padded obstacle, ignore only the
+        # initial escape through that same obstacle.  Test the remainder after
+        # the first exit, so a route that later re-enters is still rejected.
+        pad = 8
+        inside = (
+            obstacle.left - pad <= a[0] <= obstacle.right + pad and
+            obstacle.top - pad <= a[1] <= obstacle.bottom + pad
+        )
+        if not inside:
+            return segment_hits_box(a, b, obstacle, pad)
+        dx, dy = b[0] - a[0], b[1] - a[1]
+        if abs(dx) < 1e-12 and abs(dy) < 1e-12:
+            return False
+        ts = []
+        if abs(dx) >= 1e-12:
+            ts.extend([
+                (obstacle.left - pad - a[0]) / dx,
+                (obstacle.right + pad - a[0]) / dx,
+            ])
+        if abs(dy) >= 1e-12:
+            ts.extend([
+                (obstacle.top - pad - a[1]) / dy,
+                (obstacle.bottom + pad - a[1]) / dy,
+            ])
+        exits = []
+        for t in ts:
+            if 0 < t < 1:
+                p = (a[0] + dx * (t + 1e-7), a[1] + dy * (t + 1e-7))
+                if not (
+                    obstacle.left - pad <= p[0] <= obstacle.right + pad and
+                    obstacle.top - pad <= p[1] <= obstacle.bottom + pad
+                ):
+                    exits.append(t)
+        if not exits:
+            return False
+        t = min(exits) + 1e-6
+        escaped = (a[0] + dx * t, a[1] + dy * t)
+        return segment_hits_box(escaped, b, obstacle, pad)
+
     straight_blockers = [
         i for i, b in enumerate(obstacles)
-        if segment_hits_box(anchor, center, b, 8)
+        if hits(anchor, center, b)
     ]
     if not straight_blockers:
         return [anchor, center]
@@ -166,11 +207,11 @@ def route(anchor: tuple[float, float], center: tuple[float, float], obstacles: l
         ex, ey = xy(lon, r)
         first_blockers = [
             i for i, b in enumerate(obstacles)
-            if segment_hits_box(anchor, (ex, ey), b, 8)
+            if hits(anchor, (ex, ey), b)
         ]
         second_blockers = [
             i for i, b in enumerate(obstacles)
-            if segment_hits_box((ex, ey), center, b, 8)
+            if hits((ex, ey), center, b)
         ]
         if not first_blockers and not second_blockers:
             return [anchor, (ex, ey), center]
@@ -194,9 +235,9 @@ def route(anchor: tuple[float, float], center: tuple[float, float], obstacles: l
         e1 = xy(lon, r)
         for shift in (70, -70, 105, -105, 140, -140, 175, -175, 210, -210, 245, -245, 280, -280, 315, -315):
             e2 = (e1[0] + shift * tx, e1[1] + shift * ty)
-            first_blocked = any(segment_hits_box(anchor, e1, b, 8) for b in obstacles)
-            second_blocked = any(segment_hits_box(e1, e2, b, 8) for b in obstacles)
-            third_blocked = any(segment_hits_box(e2, center, b, 8) for b in obstacles)
+            first_blocked = any(hits(anchor, e1, b) for b in obstacles)
+            second_blocked = any(hits(e1, e2, b) for b in obstacles)
+            third_blocked = any(hits(e2, center, b) for b in obstacles)
             if not first_blocked and not second_blocked and not third_blocked:
                 if diagnostic is not None:
                     diagnostic["dogleg_success"] = diagnostic.get("dogleg_success", 0) + 1
