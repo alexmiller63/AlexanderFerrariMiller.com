@@ -712,33 +712,16 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             staged[original_index] = (symbol, name, longitude, box, path)
 
             try:
-                # Recursive forward viability: reject a parent placement unless
-                # the remaining bodies have at least one complete continuation.
-                # This is deliberately the same recursive backtracking relation
-                # as DFS, rather than a one-child peek: a Jupiter placement that
-                # admits Saturn but strands Uranus (or any later body) is a
-                # doomed family and must be discarded before the main search
-                # grows that subtree.
+                # Cheap forward viability probe. Backtracking belongs to search();
+                # this test asks only whether the immediate next body has at
+                # least one legal child in the current state. It deliberately
+                # short-circuits on that first child instead of recursively
+                # building a second search tree inside the DFS.
                 def continuation_exists(next_depth):
                     if next_depth == len(order):
                         return True
-
                     child_item = order[next_depth]
-                    child_index, (child_symbol, child_name, child_longitude) = child_item
-                    for child_box, child_path in viable_candidates(child_item, next_depth):
-                        placed.append(child_box)
-                        leaders.append(child_path)
-                        staged[child_index] = (
-                            child_symbol, child_name, child_longitude, child_box, child_path
-                        )
-                        try:
-                            if continuation_exists(next_depth + 1):
-                                return True
-                        finally:
-                            staged.pop(child_index, None)
-                            leaders.pop()
-                            placed.pop()
-                    return False
+                    return next(viable_candidates(child_item, next_depth), None) is not None
 
                 child_viable = continuation_exists(depth + 1)
                 if child_viable and search(depth + 1):
