@@ -442,41 +442,8 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
     solution_keys = set()
     current_body = "-"
     exhausted = False
-    ornery_limit = max(1, int(os.environ.get("PLANET_FINDER_ORNERY_CANDIDATES", "50")))
     max_order_nodes = max(1, int(os.environ.get("PLANET_FINDER_MAX_ORDER_NODES", "100000")))
     max_order_seconds = max(1.0, float(os.environ.get("PLANET_FINDER_MAX_ORDER_SECONDS", "5")))
-    # Prevent one difficult ordering from monopolizing the run-wide candidate
-    # budget. Each planned ordering gets a bounded slice; unused capacity stays
-    # available to later, deliberately different orderings.
-    max_order_candidates = max(
-        1,
-        int(os.environ.get(
-            "PLANET_FINDER_MAX_ORDER_CANDIDATES",
-            str(min(100, budget["max_candidates"])),
-        )),
-    )
-    # A squeaky-wheel ordering is evidence-driven, not just the next blind
-    # permutation.  Reserve a complete order slice only when we actually have
-    # squeaky-wheel evidence.  Without a remembered dead-end body, there is no
-    # reason to strand part of the run-wide candidate budget.
-    is_squeaky_order = bool(budget.get("squeaky_order_active"))
-    squeaky_reserve = (
-        min(max_order_candidates, budget["max_candidates"])
-        if is_squeaky_order
-        else 0
-    )
-    effective_global_limit = budget["max_candidates"] if is_squeaky_order else (
-        budget["max_candidates"] - squeaky_reserve
-    )
-    max_proposals = max(1, int(os.environ.get("PLANET_FINDER_MAX_PROPOSALS", str(max(10000, budget["max_candidates"] * 20)))))
-    proposals = 0
-    order_candidate_start = budget["candidates"]
-    # Preserve squeaky-wheel feedback across order boundaries. An ordering
-    # can exhaust its per-order slice before reaching a zero-option dead end;
-    # clearing the previous signal here would then make the reserved final
-    # slice unusable. A later genuine dead end replaces the signal when it
-    # reaches an equal or greater depth.
-
     def dump_diagnostics(reason):
         order_names = " > ".join(item[1][1] for item in order)
         active = []
@@ -533,76 +500,12 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         anchor = xy(longitude, RI - 5)
         body_candidates = 0
         for x, y, box in legal_candidate_positions(longitude, w, h, reserved):
-            proposals += 1
-            if proposals > max_proposals:
-                dump_diagnostics("proposal budget exhausted")
-                raise RuntimeError(f"Planet Finder proposal budget exhausted in {mode} mode after {proposals - 1:,}/{max_proposals:,} proposals")
-            if budget["candidates"] - order_candidate_start >= max_order_candidates:
-                stats["blocked"] = "order-budget"
-                print(
-                    f"Planet Finder {mode}: ORDER-BUDGET-EXHAUSTED order={order_index} "
-                    f"used={budget['candidates'] - order_candidate_start:,}/{max_order_candidates:,} "
-                    f"global={budget['candidates']:,}/{budget['max_candidates']:,} action=next-order",
-                    flush=True,
-                )
-                raise StopIteration("Planet Finder per-order candidate budget exhausted")
-            if budget["candidates"] >= effective_global_limit:
-                stats["blocked"] = "squeaky-reserve" if not is_squeaky_order else "global-budget"
-                raise StopIteration(
-                    "Planet Finder squeaky reserve reached"
-                    if not is_squeaky_order
-                    else "Planet Finder candidate budget exhausted"
-                )
-            if body_candidates >= ornery_limit:
-                print(
-                    f"Planet Finder {mode}: ORNERY order={order_index} "
-                    f"depth={depth}/{len(order)} body={name} "
-                    f"generated={body_candidates:,} viable=0 limit={ornery_limit:,} "
-                    f"action=backtrack",
-                    flush=True,
-                )
-                break
-            # Share the *remaining* global budget across the current and
-            # later DFS depths.  The old rule reserved a full ornery_limit for
-            # every later depth against the original global cap.  Once the run
-            # had used enough candidates, that reserve could equal/exceed all
-            # remaining capacity and every new ordering became "not-evaluated".
-            #
-            # Reserve only a proportional share of what is actually left.
-            # This guarantees the current body a non-zero working allowance
-            # whenever any global budget remains, while still preserving work
-            # for later depths.
-            remaining_depths = len(order) - depth - 1
-            remaining_budget = budget["max_candidates"] - budget["candidates"]
-            if remaining_budget <= 0:
+            # Candidate production is lazy. Geometry owns geometry; the search
+            # controller owns limits. The only run-wide limits checked here are
+            # the same hard safety limits used by DFS.
+            if budget["candidates"] >= budget["max_candidates"]:
                 stats["blocked"] = "global-budget"
-                print(
-                    f"Planet Finder {mode}: BUDGET-EXHAUSTED order={order_index} "
-                    f"depth={depth}/{len(order)} body={name} "
-                    f"used={budget['candidates']:,}/{budget['max_candidates']:,} "
-                    f"action=stop",
-                    flush=True,
-                )
-                # This is a run-wide terminal condition, not an ordinary
-                # no-options dead end. Returning [] here makes the DFS
-                # backtrack and call viable_candidates() again forever while
-                # the shared counter remains pinned at its maximum.
-                raise StopIteration("Planet Finder global candidate budget exhausted")
-            depths_including_current = remaining_depths + 1
-            current_allowance = max(1, remaining_budget // depths_including_current)
-            current_allowance = min(ornery_limit, current_allowance)
-            if body_candidates >= current_allowance:
-                reserved_for_later = remaining_budget - body_candidates
-                print(
-                    f"Planet Finder {mode}: BUDGET-SHARE order={order_index} "
-                    f"depth={depth}/{len(order)} body={name} "
-                    f"used={budget['candidates']:,}/{budget['max_candidates']:,} "
-                    f"body-used={body_candidates:,} allowance={current_allowance:,} "
-                    f"reserved-after-share={reserved_for_later:,} "
-                    f"remaining-depths={remaining_depths} action=backtrack",
-                    flush=True,
-                )
-                break
+                raise StopIteration("Planet Finder candidate budget exhausted")
             # Enforce the run-wide deadline inside candidate generation too.
             # Geometry/routing can otherwise keep one DFS iteration busy past the limit.
             run_elapsed = time.monotonic() - budget["started"]
@@ -716,10 +619,8 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
     resume_position = None
 
     while True:
-        # Enforce the shared run-wide wall-clock deadline inside the DFS loop.
-        # Merely storing max_seconds in the budget is not sufficient: every
-        # fixed ordering must cooperatively stop once the generator deadline
-        # has expired.
+        # One run-wide wall-clock guard. The same deadline is also checked
+        # while lazily routing a candidate so expensive geometry cannot overrun it.
         run_elapsed = time.monotonic() - budget["started"]
         if run_elapsed >= budget["max_seconds"]:
             dump_diagnostics("run-wide wall-clock budget exhausted")
@@ -728,13 +629,6 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 f"after {run_elapsed:.1f}s (limit {budget['max_seconds']:.1f}s)"
             )
         order_elapsed = time.monotonic() - started
-        run_elapsed = time.monotonic() - budget["started"]
-        if run_elapsed >= budget["max_seconds"]:
-            dump_diagnostics("run time budget exhausted")
-            raise RuntimeError(
-                f"Planet Finder run-wide time budget exhausted in {mode} mode "
-                f"after {run_elapsed:.1f}s (limit {budget['max_seconds']:.1f}s)"
-            )
         if nodes >= max_order_nodes or order_elapsed >= max_order_seconds:
             reason = (
                 f"order node budget exhausted ({nodes:,}/{max_order_nodes:,})"
@@ -922,17 +816,10 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         original_index, (symbol, name, longitude) = frame["item"]
         current_body = name
 
-        # Charge candidate budget only when DFS actually tries an option.
-        # Merely precomputing viable options must not consume the search
-        # budget; rejected geometry already died before entering this list.
-        if budget["candidates"] - order_candidate_start >= max_order_candidates:
-            raise StopIteration("Planet Finder per-order candidate budget exhausted")
-        if budget["candidates"] >= effective_global_limit:
-            raise StopIteration(
-                "Planet Finder squeaky reserve reached"
-                if not is_squeaky_order
-                else "Planet Finder candidate budget exhausted"
-            )
+        # Charge the run-wide candidate ceiling only when DFS actually tries
+        # a geometrically viable option.
+        if budget["candidates"] >= budget["max_candidates"]:
+            raise StopIteration("Planet Finder candidate budget exhausted")
         candidates += 1
         budget["candidates"] += 1
 
