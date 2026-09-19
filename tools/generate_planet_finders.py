@@ -537,7 +537,23 @@ def layout(mode: str, bodies: list[tuple[str, str, float]], target_solutions: in
             # their body's natural radial direction. This makes long/kinked
             # detours lose even when they are technically collision-free.
             return (elbows, total_length, tangential_error, radial_error)
-        scored = sorted((score(result), i, result) for i, result in enumerate(results))
+        validated = []
+        for i, result in enumerate(results):
+            valid, errors = validate_layout(mode, result)
+            if valid:
+                validated.append((score(result), i, result))
+            else:
+                print(
+                    f"Planet Finder {mode}: rejected complete candidate {i + 1}/{len(results)} "
+                    f"by post-layout validation: " + "; ".join(errors),
+                    flush=True,
+                )
+        if not validated:
+            raise RuntimeError(
+                f"Planet Finder {mode}: all {len(results)} complete candidates failed "
+                "post-layout collision validation"
+            )
+        scored = sorted(validated)
         best_score, best_index, best = scored[0]
         print(
             f"Planet Finder {mode}: selected candidate {best_index + 1}/{len(results)} "
@@ -551,6 +567,50 @@ def layout(mode: str, bodies: list[tuple[str, str, float]], target_solutions: in
         f"No collision-free Planet Finder layout exists in {mode} mode after "
         f"dynamic body-order and placement backtracking"
     )
+
+def validate_layout(mode: str, result) -> tuple[bool, list[str]]:
+    """Recheck a completed layout independently before rendering it."""
+    errors = []
+    reserved = reserved_boxes(mode)
+    boxes = [row[3] for row in result]
+    paths = [row[4] for row in result]
+
+    # Labels must not overlap reserved annotations/zodiac labels or each other.
+    for i, box in enumerate(boxes):
+        name = result[i][1]
+        for j, obstacle in enumerate(reserved):
+            if boxes_overlap(box, obstacle, 14):
+                errors.append(f"{name}: label overlaps reserved obstacle {j}")
+        for j in range(i):
+            if boxes_overlap(box, boxes[j], 14):
+                errors.append(f"{name}: label overlaps {result[j][1]}")
+
+    # Every leader must remain clear of every label except its own endpoint.
+    for i, path in enumerate(paths):
+        name = result[i][1]
+        for j, box in enumerate(boxes):
+            if i == j:
+                continue
+            for a, b in zip(path, path[1:]):
+                if segment_hits_box(a, b, box, 10):
+                    errors.append(f"{name}: leader crosses {result[j][1]} label")
+                    break
+        for j, obstacle in enumerate(reserved):
+            # The route solver permits an initial escape from an obstacle
+            # containing the body's anchor. Do not reinterpret that legal
+            # escape as a post-layout collision; later segments must be clear.
+            for seg_index, (a, b) in enumerate(zip(path, path[1:])):
+                if seg_index == 0 and (
+                    obstacle.left - 8 <= a[0] <= obstacle.right + 8 and
+                    obstacle.top - 8 <= a[1] <= obstacle.bottom + 8
+                ):
+                    continue
+                if segment_hits_box(a, b, obstacle, 8):
+                    errors.append(f"{name}: leader crosses reserved obstacle {j}")
+                    break
+
+    return not errors, errors
+
 
 def polyline(points):
     pts = " ".join(f"{x:.1f},{y:.1f}" for x, y in points)
