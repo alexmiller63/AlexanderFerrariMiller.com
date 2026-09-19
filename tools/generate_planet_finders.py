@@ -411,10 +411,11 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
     max_proposals = max(1, int(os.environ.get("PLANET_FINDER_MAX_PROPOSALS", str(max(10000, budget["max_candidates"] * 20)))))
     proposals = 0
     order_candidate_start = budget["candidates"]
-    # Squeaky-wheel feedback belongs to the ordering that just ran. Clear the
-    # previous signal here; a genuine dead end below will replace it.
-    budget["squeaky_body"] = None
-    budget["squeaky_depth"] = -1
+    # Preserve squeaky-wheel feedback across order boundaries. An ordering
+    # can exhaust its per-order slice before reaching a zero-option dead end;
+    # clearing the previous signal here would then make the reserved final
+    # slice unusable. A later genuine dead end replaces the signal when it
+    # reaches an equal or greater depth.
 
     def dump_diagnostics(reason):
         order_names = " > ".join(item[1][1] for item in order)
