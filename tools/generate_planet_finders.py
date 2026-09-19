@@ -387,21 +387,40 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                     flush=True,
                 )
                 break
-            # Do not let an early DFS depth consume the evaluations needed
-            # to give every still-unvisited body a fair ornery-limit probe.
-            # The current body is already being evaluated, so reserve one full
-            # per-body allowance for each later depth.
+            # Share the *remaining* global budget across the current and
+            # later DFS depths.  The old rule reserved a full ornery_limit for
+            # every later depth against the original global cap.  Once the run
+            # had used enough candidates, that reserve could equal/exceed all
+            # remaining capacity and every new ordering became "not-evaluated".
+            #
+            # Reserve only a proportional share of what is actually left.
+            # This guarantees the current body a non-zero working allowance
+            # whenever any global budget remains, while still preserving work
+            # for later depths.
             remaining_depths = len(order) - depth - 1
-            reserved_for_later = remaining_depths * ornery_limit
-            usable_limit = budget["max_candidates"] - reserved_for_later
-            if budget["candidates"] >= usable_limit:
-                stats["blocked"] = "reserved-budget"
+            remaining_budget = budget["max_candidates"] - budget["candidates"]
+            if remaining_budget <= 0:
+                stats["blocked"] = "global-budget"
                 print(
-                    f"Planet Finder {mode}: BUDGET-RESERVE order={order_index} "
+                    f"Planet Finder {mode}: BUDGET-EXHAUSTED order={order_index} "
                     f"depth={depth}/{len(order)} body={name} "
-                    f"used={budget['candidates']:,} usable={usable_limit:,} "
-                    f"reserved={reserved_for_later:,} remaining-depths={remaining_depths} "
-                    f"action=backtrack",
+                    f"used={budget['candidates']:,}/{budget['max_candidates']:,} "
+                    f"action=stop",
+                    flush=True,
+                )
+                break
+            depths_including_current = remaining_depths + 1
+            current_allowance = max(1, remaining_budget // depths_including_current)
+            current_allowance = min(ornery_limit, current_allowance)
+            if body_candidates >= current_allowance:
+                reserved_for_later = remaining_budget - body_candidates
+                print(
+                    f"Planet Finder {mode}: BUDGET-SHARE order={order_index} "
+                    f"depth={depth}/{len(order)} body={name} "
+                    f"used={budget['candidates']:,}/{budget['max_candidates']:,} "
+                    f"body-used={body_candidates:,} allowance={current_allowance:,} "
+                    f"reserved-after-share={reserved_for_later:,} "
+                    f"remaining-depths={remaining_depths} action=backtrack",
                     flush=True,
                 )
                 break
