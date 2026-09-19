@@ -455,7 +455,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         stats = diagnostic_stats.setdefault(key, {
             "generated": 0, "viable": 0, "overlap": 0, "leader": 0, "route": 0, "started": False, "blocked": None,
         })
-        nonlocal candidates, rejected_overlap, rejected_leader, rejected_route, proposals
+        nonlocal candidates, rejected_overlap, rejected_leader, rejected_route
         w, h = label_size(mode, name)
         anchor = xy(longitude, RI - 5)
         body_candidates = 0
@@ -475,7 +475,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                     f"Planet Finder {mode}: CANDIDATE-GENERATION STOP wall-clock budget exhausted "
                     f"order={order_index} depth={depth}/{len(order)} body={name} "
                     f"after {run_elapsed:.1f}s/{budget['max_seconds']:.1f}s "
-                    f"proposals={proposals:,} viable={body_candidates:,}",
+                    f"viable={body_candidates:,}",
                     flush=True,
                 )
                 raise RuntimeError(
@@ -520,11 +520,8 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 rejected_leader += 1
                 stats["leader"] += 1
                 continue
-            # This geometry is viable and may enter the frame's option list,
-            # but it has not been *tried* by DFS yet. Do not charge search
-            # candidate budget here. Eager option generation used to burn
-            # dozens of candidates that were never selected, starving deeper
-            # bodies and the squeaky-wheel retry.
+            # Yield immediately: DFS tries this legal geometry before asking
+            # for another route. Rejected geometry never consumes candidate budget.
             body_candidates += 1
             stats["generated"] += 1
             stats["viable"] += 1
@@ -647,7 +644,10 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             # the last valid order index.
             final_position = len(stack) - 1
             clear_selected(stack[final_position])
-            stack[final_position]["index"] += 1
+            try:
+                stack[final_position]["next_option"] = next(stack[final_position]["options"])
+            except StopIteration:
+                stack[final_position]["exhausted"] = True
             backtracks += 1
             resume_position = final_position
             continue
@@ -665,7 +665,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             selected_flags = [frame.get("selected") is not None for frame in stack]
             try:
                 first_unselected = selected_flags.index(False)
-            except ValueError:                raise RuntimeError(
+            except ValueError:\n                raise RuntimeError(
                     f"Planet Finder DFS state corruption in {mode}: "
                     "sentinel reached with every frame selected"
                 )
