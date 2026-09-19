@@ -414,11 +414,12 @@ class CandidateBudgetExhausted(RuntimeError):
 
 
 def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_index=1, total_orders=None, context_label=None):
-    """Solve one fixed body ordering with an explicit iterative DFS.
+    """Solve one fixed body ordering with recursive depth-first search.
 
-    The ordering is fixed for this pass.  Placement backtracking is represented
-    by an explicit stack of frames rather than recursive calls.  When the
-    ordering is exhausted, the caller selects a deliberately distant ordering.
+    The ordering is fixed for this pass. Each recursive call owns one body
+    depth; returning from a child restores the parent placement and tries the
+    next sibling. When the ordering is exhausted, the caller selects a
+    deliberately distant ordering.
     """
     reserved = reserved_boxes(mode)
     reserved_names = ["center_title", "center_direction", "center_sector_note",
@@ -426,7 +427,6 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
     placed: list[Box] = []
     leaders: list[list[tuple[float, float]]] = []
     staged = {}
-    stack = []
     nodes = 0
     started = time.monotonic()
     last_heartbeat = started
@@ -441,8 +441,6 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
     # which descendant subtree consumes a parent's generator suspension time.
     depth_residence = {}
     depth_visits = {}
-    last_loop_at = time.monotonic()
-    last_loop_depth = None
     diagnostic_stats = {}
     route_diagnostics = {}
     solutions = []
@@ -451,13 +449,6 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
     exhausted = False
     def dump_diagnostics(reason):
         order_names = " > ".join(item[1][1] for item in order)
-        active = []
-        for depth, frame in enumerate(stack):
-            _, (_, frame_name, _) = frame["item"]
-            active.append(
-                f"{depth}:{frame_name}[stream={'exhausted' if frame.get('exhausted') else 'open'},"
-                f"selected={'yes' if frame.get('selected') is not None else 'no'}]"
-            )
         print(
             f"Planet Finder {mode}: TERMINAL {context_label + ' ' if context_label else ''}reason={reason} order={order_index}"
             f"{('/' + str(total_orders)) if total_orders else ''} "
@@ -469,11 +460,6 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             flush=True,
         )
         print(f"Planet Finder {mode}: TERMINAL ORDER sequence={order_names}", flush=True)
-        print(
-            "Planet Finder "
-            f"{mode}: TERMINAL STACK " + (" | ".join(active) if active else "(empty)"),
-            flush=True,
-        )
         for (depth, name), s in sorted(diagnostic_stats.items()):
             print(
                 f"Planet Finder {mode}: TERMINAL BODY depth={depth}/{len(order)} body={name} "
@@ -482,11 +468,6 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 f"rejects[overlap={s['overlap']:,},leader={s['leader']:,},route={s['route']:,}]",
                 flush=True,
             )
-        partial = [
-            f"{depth}:{frame['item'][1][1]}"
-            for depth, frame in enumerate(stack)
-            if frame.get("selected") is not None
-        ]
         for depth in sorted(set(depth_residence) | set(depth_visits)):
             body_name = order[depth][1][1] if depth < len(order) else "complete-layout"
             print(
@@ -496,8 +477,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 flush=True,
             )
         print(
-            f"Planet Finder {mode}: TERMINAL BEST-PARTIAL deepest={deepest}/{len(order)} "            f"active-depth={len(partial)} placements="
-            + (" > ".join(partial) if partial else "(none)"),
+            f"Planet Finder {mode}: TERMINAL BEST-PARTIAL deepest={deepest}/{len(order)}",
             flush=True,
         )
 
