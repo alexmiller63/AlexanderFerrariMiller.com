@@ -93,8 +93,9 @@ def main() -> None:
                 }
             )
 
-    existing = {(r["bayer_code"], r["con"]) for r in rows}
+    by_designation = {(r["bayer_code"], r["con"]): r for r in rows}
     supplement_count = 0
+    supplement_enrichment_count = 0
     if args.supplement:
         with args.supplement.open(newline="", encoding="utf-8-sig") as handle:
             reader = csv.DictReader(handle)
@@ -105,15 +106,36 @@ def main() -> None:
                 key = ((row.get("bayer_code") or "").strip(), (row.get("con") or "").strip())
                 if not key[0] or not key[1]:
                     raise SystemExit(f"Invalid supplement row: {row}")
-                if key in existing:
-                    raise SystemExit(f"Supplement duplicates existing Bayer designation: {key[0]} {key[1]}")
                 normalized = {name: (row.get(name) or "").strip() for name in FIELDNAMES}
                 if normalized["greek"] not in {"α", "β"}:
                     raise SystemExit(f"Invalid supplement Greek letter: {normalized['greek']}")
                 if not normalized["ra_h"]:
                     raise SystemExit(f"Supplement row missing RA: {key[0]} {key[1]}")
+
+                existing = by_designation.get(key)
+                if existing is not None:
+                    # An audited supplement may enrich an incomplete HYG row, but it
+                    # must never silently overwrite contradictory source data.
+                    changed = False
+                    for name in FIELDNAMES:
+                        supplied = normalized[name]
+                        current = existing[name]
+                        if not supplied:
+                            continue
+                        if not current:
+                            existing[name] = supplied
+                            changed = True
+                        elif current != supplied:
+                            raise SystemExit(
+                                f"Supplement contradicts HYG for {key[0]} {key[1]} "
+                                f"field {name}: HYG={current!r}, supplement={supplied!r}"
+                            )
+                    if changed:
+                        supplement_enrichment_count += 1
+                    continue
+
                 rows.append(normalized)
-                existing.add(key)
+                by_designation[key] = normalized
                 supplement_count += 1
 
     rows.sort(key=lambda r: (r["con"], 0 if r["greek"] == "α" else 1, r["suffix"], float(r["mag"] or 99), r["hyg_id"]))
@@ -131,7 +153,7 @@ def main() -> None:
     systems = {(r["greek"], r["con"]) for r in rows}
     exact_designations = {(r["bayer_code"], r["con"]) for r in rows}
     print(f"Wrote {len(rows)} source rows: {alpha} α, {beta} β")
-    print(f"Audited supplement rows merged: {supplement_count}")
+    print(f"Audited supplement rows added: {supplement_count}")\n    print(f"Existing HYG rows enriched from supplement: {supplement_enrichment_count}")
     print(f"Constellation-letter systems represented: {len(systems)}")
     print(f"Distinct Bayer designations represented: {len(exact_designations)}")
 
