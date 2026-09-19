@@ -288,7 +288,7 @@ def _planned_order_ranks(total: int):
             yield rank
 
 
-def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_index=1, total_orders=None):
+def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_index=1, total_orders=None, context_label=None):
     """Solve one fixed body ordering with an explicit iterative DFS.
 
     The ordering is fixed for this pass.  Placement backtracking is represented
@@ -320,7 +320,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
 
     def dump_diagnostics(reason):
         print(
-            f"Planet Finder {mode}: TERMINAL reason={reason} order={order_index}"
+            f"Planet Finder {mode}: TERMINAL {context_label + ' ' if context_label else ''}reason={reason} order={order_index}"
             f"{('/' + str(total_orders)) if total_orders else ''} "
             f"nodes={nodes:,} deepest={deepest}/{len(order)} current_body={current_body} "
             f"candidates={candidates:,} global_candidates={budget['candidates']:,}/"
@@ -396,12 +396,17 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             return
         elapsed = now - started
         rate = nodes / elapsed if elapsed else 0
+        run_started = budget.get("started", started)
+        run_elapsed = now - run_started
+        run_rate = budget["candidates"] / run_elapsed if run_elapsed else 0
         print(
-            f"Planet Finder {mode}: heartbeat elapsed={elapsed:.1f}s "
+            f"Planet Finder {mode}: heartbeat {context_label + ' ' if context_label else ''}"
+            f"elapsed={elapsed:.1f}s run-elapsed={run_elapsed:.1f}s "
             f"order={order_index}{('/' + str(total_orders)) if total_orders else ''} "
             f"nodes={nodes:,} ({rate:,.0f}/s) depth={position}/{len(order)} "
             f"body={current_body} candidates={candidates:,} "
             f"global_candidates={budget['candidates']:,}/{budget['max_candidates']:,} "
+            f"global-rate={run_rate:,.0f}/s "
             f"rejects[overlap={rejected_overlap:,},leader={rejected_leader:,},"
             f"route={rejected_route:,}] backtracks={backtracks:,}",
             flush=True,
@@ -575,7 +580,26 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
     return solutions
 
 
-def layout(mode: str, bodies: list[tuple[str, str, float]], target_solutions: int | None = None):
+def new_search_budget(max_candidates: int | None = None):
+    """Create the shared candidate budget for one complete generator run."""
+    if max_candidates is None:
+        max_candidates = int(os.environ.get("PLANET_FINDER_MAX_CANDIDATES", "1000000"))
+    if max_candidates <= 0:
+        raise ValueError("PLANET_FINDER_MAX_CANDIDATES must be positive")
+    return {
+        "candidates": 0,
+        "max_candidates": max_candidates,
+        "started": time.monotonic(),
+    }
+
+
+def layout(
+    mode: str,
+    bodies: list[tuple[str, str, float]],
+    target_solutions: int | None = None,
+    budget: dict | None = None,
+    context_label: str | None = None,
+):
     """Search widely separated body orderings with iterative placement DFS.
 
     The canonical order is always the first ordering.  If that ordering cannot
@@ -598,12 +622,14 @@ def layout(mode: str, bodies: list[tuple[str, str, float]], target_solutions: in
         target_solutions = max(1, int(os.environ.get("PLANET_FINDER_CANDIDATES", "5")))
 
     total_orders = math.factorial(len(indexed))
-    budget = {"candidates": 0, "max_candidates": 1_000_000}
+    if budget is None:
+        budget = new_search_budget()
     all_solutions = []
     seen_solution_keys = set()
 
     print(
         f"Planet Finder {mode}: starting planned-order iterative search "
+        f"{context_label + ' ' if context_label else ''}"
         f"target={target_solutions} max-candidates={budget['max_candidates']:,} "
         f"permutation-space={total_orders:,}",
         flush=True,
@@ -614,6 +640,7 @@ def layout(mode: str, bodies: list[tuple[str, str, float]], target_solutions: in
         order_names = " > ".join(item[1][1] for item in order)
         print(
             f"Planet Finder {mode}: ORDER {order_index} rank={rank:,}/{total_orders:,} "
+            f"run-candidates={budget['candidates']:,}/{budget['max_candidates']:,} "
             f"sequence={order_names}",
             flush=True,
         )
@@ -626,6 +653,7 @@ def layout(mode: str, bodies: list[tuple[str, str, float]], target_solutions: in
             target_solutions=max(1, target_solutions - len(all_solutions)),
             order_index=order_index,
             total_orders=total_orders,
+            context_label=context_label,
         )
         for result in solutions:
             key = tuple(
@@ -677,6 +705,7 @@ def layout(mode: str, bodies: list[tuple[str, str, float]], target_solutions: in
     best_score, best_index, best = scored[0]
     print(
         f"Planet Finder {mode}: selected candidate {best_index + 1}/{len(all_solutions)} "
+        f"{context_label + ' ' if context_label else ''}"
         f"score[elbows={best_score[0]},length={best_score[1]:.1f},"
         f"displacement={best_score[2]:.1f},radial={best_score[3]:.1f}]",
         flush=True,
@@ -732,10 +761,18 @@ def polyline(points):
     return f'<polyline points="{pts}" fill="none" stroke="#777" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/>'
 
 
-def render(year: int, week: int, monday: date, mode: str, bodies: list[tuple[str, str, float]]) -> str:
+def render(
+    year: int,
+    week: int,
+    monday: date,
+    mode: str,
+    bodies: list[tuple[str, str, float]],
+    budget: dict | None = None,
+    context_label: str | None = None,
+) -> str:
     labels = {"greek": "Greek / Symbols", "latin": "Latin", "mixed": "Mixed / Learner"}
     title = labels[mode]
-    placed = layout(mode, bodies)
+    placed = layout(mode, bodies, budget=budget, context_label=context_label)
     out = [
         f'<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="1400" viewBox="0 0 {W} {H}">',
         '<rect width="100%" height="100%" fill="white"/>',
@@ -785,7 +822,12 @@ def render(year: int, week: int, monday: date, mode: str, bodies: list[tuple[str
     return "\n".join(out) + "\n"
 
 
-def generate_week(year: int, week: int):
+def generate_week(
+    year: int,
+    week: int,
+    budget: dict | None = None,
+    context_label: str | None = None,
+):
     if not 1 <= week <= week_count(year):
         raise ValueError(f"Invalid ISO week {year}-W{week:02d}")
     monday = date.fromisocalendar(year, week, 1)
@@ -802,7 +844,14 @@ def generate_week(year: int, week: int):
         "mixed": "planet-finder-mixed-learner.svg",
     }
     for mode, filename in filenames.items():
-        (outdir / filename).write_text(render(year, week, monday, mode, bodies), encoding="utf-8")
+        (outdir / filename).write_text(
+            render(
+                year, week, monday, mode, bodies,
+                budget=budget,
+                context_label=context_label,
+            ),
+            encoding="utf-8",
+        )
     print(f"Generated collision-free Planet Finders for ISO {year}-W{week:02d} from internal calculations")
 
 
