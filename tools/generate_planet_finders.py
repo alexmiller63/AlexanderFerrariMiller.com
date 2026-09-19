@@ -97,8 +97,7 @@ def segment_hits_box(a: tuple[float, float], b: tuple[float, float], box: Box, p
     return True
 
 
-def point_segment_distance(p, a, b) -> float:
-    """Shortest distance from point p to line segment a-b."""
+def point_segment_distance(p, a, b) -> float:    """Shortest distance from point p to line segment a-b."""
     dx, dy = b[0] - a[0], b[1] - a[1]
     if abs(dx) < 1e-12 and abs(dy) < 1e-12:
         return math.hypot(p[0] - a[0], p[1] - a[1])
@@ -198,7 +197,6 @@ def candidate_positions(longitude: float):
 
 def legal_candidate_positions(longitude: float, w: float, h: float, reserved: list[Box]):
     """Yield only proposals that are legal against immutable chart geometry.
-
     Reserved center annotations and zodiac labels never move, so a candidate
     that overlaps one can never become valid through DFS backtracking. Reject
     it here, before it enters the search candidate pool or consumes budget.
@@ -297,15 +295,15 @@ def route(
             b,
             allow_initial_escape=(i < allow_initial_escape_count),
             pad=obstacle_pad(i),
-        )
-    ]
+        )    ]
     if not straight_blockers:
         return [anchor, center]
     if diagnostic is not None:
         diagnostic["straight_blocked"] = diagnostic.get("straight_blocked", 0) + 1
         for i in straight_blockers:
             key = f"obstacle_{i}"
-            diagnostic["straight_blockers"][key] = diagnostic["straight_blockers"].get(key, 0) + 1
+            blockers = diagnostic.setdefault("straight_blockers", {})
+            blockers[key] = blockers.get(key, 0) + 1
 
     # Rotten-cake preflight: a placed body label containing this body's
     # anchor is an immutable dead end for the current DFS state. No straight,
@@ -397,8 +395,7 @@ def route(
         third_blocked = any(
             hits(e2, center, b, pad=obstacle_pad(i))
             for i, b in enumerate(obstacles)
-        )
-        if not third_blocked:
+        )        if not third_blocked:
             if diagnostic is not None:
                 diagnostic["dogleg_success"] = diagnostic.get("dogleg_success", 0) + 1
             return [anchor, e1, e2, center]
@@ -497,8 +494,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 flush=True,
             )
         print(
-            f"Planet Finder {mode}: TERMINAL BEST-PARTIAL deepest={deepest}/{len(order)} "
-            f"active-depth={len(partial)} placements="
+            f"Planet Finder {mode}: TERMINAL BEST-PARTIAL deepest={deepest}/{len(order)} "            f"active-depth={len(partial)} placements="
             + (" > ".join(partial) if partial else "(none)"),
             flush=True,
         )
@@ -597,8 +593,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                     f"after {run_elapsed:.1f}s/{budget['max_seconds']:.1f}s "
                     f"viable={body_candidates:,}",
                     flush=True,
-                )
-                raise RuntimeError(
+                )                raise RuntimeError(
                     f"Planet Finder run-wide wall-clock budget exhausted in {mode} mode "
                     f"during candidate generation for {name} after {run_elapsed:.1f}s "
                     f"(limit {budget['max_seconds']:.1f}s)"
@@ -697,8 +692,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                     tuple((round(x, 3), round(y, 3)) for x, y in row[4]),
                 )
                 for row in result
-            )
-            if key not in solution_keys:
+            )            if key not in solution_keys:
                 solution_keys.add(key)
                 valid, errors = validate_layout(mode, result)
                 if valid:
@@ -796,7 +790,6 @@ def new_search_budget(max_candidates: int | None = None):
         "max_seconds": max_seconds,
         "started": None,
     }
-
 
 def layout(
     mode: str,
@@ -898,99 +891,3 @@ def validate_layout(mode: str, result) -> tuple[bool, list[str]]:
     paths = [row[4] for row in result]
 
     # Labels must not overlap reserved annotations/zodiac labels or each other.
-    for i, box in enumerate(boxes):
-        name = result[i][1]
-        for j, obstacle in enumerate(reserved):
-            if boxes_overlap(box, obstacle, 14):
-                errors.append(f"{name}: label overlaps reserved obstacle {j}")
-        for j in range(i):
-            if boxes_overlap(box, boxes[j], 14):
-                errors.append(f"{name}: label overlaps {result[j][1]}")
-
-    # Every leader must remain clear of every label except its own endpoint.
-    for i, path in enumerate(paths):
-        name = result[i][1]
-        for j, box in enumerate(boxes):
-            if i == j:
-                continue
-            for a, b in zip(path, path[1:]):
-                if segment_hits_box(a, b, box, 10):
-                    errors.append(f"{name}: leader crosses {result[j][1]} label")
-                    break
-        for j, obstacle in enumerate(reserved):
-            # The route solver permits an initial escape from an obstacle
-            # containing the body's anchor. Do not reinterpret that legal
-            # escape as a post-layout collision; later segments must be clear.
-            for seg_index, (a, b) in enumerate(zip(path, path[1:])):
-                if seg_index == 0 and (
-                    obstacle.left - 8 <= a[0] <= obstacle.right + 8 and
-                    obstacle.top - 8 <= a[1] <= obstacle.bottom + 8
-                ):
-                    continue
-                if segment_hits_box(a, b, obstacle, 8):
-                    errors.append(f"{name}: leader crosses reserved obstacle {j}")
-                    break
-
-    # Leaders are mutually exclusive geometry.  This is intentionally a
-    # second, independent check after proposal-time rejection so a stale or
-    # future search-state bug can never render crossing/grazing leaders.
-    for i, path in enumerate(paths):
-        for j in range(i):
-            if leaders_too_close(path, [paths[j]]):
-                errors.append(
-                    f"{result[i][1]}: leader crosses or grazes {result[j][1]} leader"
-                )
-
-    # Recheck the hard inner-rim rule independently of candidate generation.
-    rim_limit = RI - 14
-    for i, box in enumerate(boxes):
-        if any(
-            math.hypot(px - CX, py - CY) >= rim_limit
-            for px in (box.left, box.right)
-            for py in (box.top, box.bottom)
-        ):
-            errors.append(f"{result[i][1]}: label collides with inner zodiac border")
-
-    return not errors, errors
-
-
-def polyline(points):
-    pts = " ".join(f"{x:.1f},{y:.1f}" for x, y in points)
-    return f'<polyline points="{pts}" fill="none" stroke="#777" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/>'
-
-
-def render(
-    year: int,
-    week: int,
-    monday: date,
-    mode: str,
-    bodies: list[tuple[str, str, float]],
-    budget: dict | None = None,
-    context_label: str | None = None,
-) -> str:
-    labels = {"greek": "Greek / Symbols", "latin": "Latin", "mixed": "Mixed / Learner"}
-    title = labels[mode]
-    placed = layout(mode, bodies, budget=budget, context_label=context_label)
-    out = [
-        f'<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="1400" viewBox="0 0 {W} {H}">',
-        '<rect width="100%" height="100%" fill="white"/>',
-        '<style>text{font-family:Georgia,"Times New Roman",serif;fill:#111!important;color:#111!important;-webkit-text-fill-color:#111!important}.sans{font-family:Arial,Helvetica,sans-serif}</style>',
-        f'<text x="{CX}" y="72" text-anchor="middle" font-size="38" font-weight="700">ISO {year}-W{week:02d} Planet Finder</text>',
-        f'<text x="{CX}" y="110" text-anchor="middle" font-size="23">{title} · Monday, {monday.strftime("%B")} {monday.day}, {year} · 00:00 UTC</text>',
-        f'<circle cx="{CX}" cy="{CY}" r="{RO}" fill="none" stroke="#111" stroke-width="4"/>',
-        f'<circle cx="{CX}" cy="{CY}" r="{RI}" fill="none" stroke="#111" stroke-width="2"/>',
-    ]
-    for i in range(12):
-        x1, y1 = xy(i * 30, RI)
-        x2, y2 = xy(i * 30, RO)
-        out.append(f'<line x1="{x1:.1f}" y1="{y1:.1f}" x2="{x2:.1f}" y2="{y2:.1f}" stroke="#111" stroke-width="2"/>')
-    for i, (symbol, name) in enumerate(SIGNS):
-        x, y = xy(i * 30 + 15, (RI + RO) / 2)
-        if mode == "greek":
-            text, fs = symbol + "\ufe0e", 48
-        elif mode == "latin":
-            text, fs = name, 24
-        else:
-            text, fs = f'{symbol}\ufe0e {name}', 22
-        out.append(f'<text x="{x:.1f}" y="{y+10:.1f}" text-anchor="middle" font-size="{fs}">{html.escape(text)}</text>')
-    # Fixed geometric annotation: 0° Aries is the 9-o'clock boundary.
