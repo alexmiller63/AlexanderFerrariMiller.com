@@ -154,7 +154,7 @@ def route(anchor: tuple[float, float], center: tuple[float, float], obstacles: l
     return None
 
 
-def _solve_order(mode: str, bodies, order):
+def _solve_order(mode: str, bodies, order, budget):
     """Solve one complete placement pass in the supplied body order."""
     reserved = reserved_boxes(mode)
     staged = {}
@@ -205,6 +205,12 @@ def _solve_order(mode: str, bodies, order):
 
         for x, y in candidate_positions(longitude):
             candidates += 1
+            budget["candidates"] += 1
+            if budget["candidates"] > budget["max_candidates"]:
+                raise RuntimeError(
+                    f"Planet Finder candidate budget exhausted in {mode} mode "
+                    f"after {budget['max_candidates']:,} candidate evaluations"
+                )
             box = Box(x, y, w, h)
             if any(boxes_overlap(box, b, 14) for b in reserved + placed):
                 rejected_overlap += 1
@@ -261,6 +267,10 @@ def layout(mode: str, bodies: list[tuple[str, str, float]]):
     if {name for _, (_, name, _) in indexed} != set(CANONICAL):
         raise RuntimeError("Planet Finder body set does not match the canonical Solar-System objects")
 
+    # One hard candidate budget covers every ordering attempt for this mode.
+    # It is an emergency brake, not the search strategy.
+    budget = {"candidates": 0, "max_candidates": 1_000_000}
+
     for start in range(len(indexed)):
         order = indexed[start:] + indexed[:start]
         print(
@@ -269,13 +279,15 @@ def layout(mode: str, bodies: list[tuple[str, str, float]]):
             flush=True,
         )
         try:
-            solved, result = _solve_order(mode, bodies, order)
+            solved, result = _solve_order(mode, bodies, order, budget)
         except RuntimeError as exc:
+            if "candidate budget exhausted" in str(exc):
+                raise
             if "Planet Finder search budget exhausted" not in str(exc):
                 raise
             solved, result = False, None
             print(
-                f"Planet Finder {mode}: search budget exhausted with "
+                f"Planet Finder {mode}: node budget exhausted with "
                 f"{order[0][1][1]} first; restarting from scratch with the next body",
                 flush=True,
             )
