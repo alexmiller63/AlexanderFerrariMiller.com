@@ -237,6 +237,13 @@ def route(
         )
         if not inside:
             return segment_hits_box(a, b, obstacle, pad)
+        # Starting inside an obstacle is legal only for the explicitly
+        # permitted immutable obstacle containing the body's own anchor.
+        # A placed body label is never an escape obstacle: if the anchor is
+        # already inside another body's label, this route is rotten before
+        # routing begins and must be rejected immediately.
+        if not allow_initial_escape:
+            return True
         dx, dy = b[0] - a[0], b[1] - a[1]
         if abs(dx) < 1e-12 and abs(dy) < 1e-12:
             return False
