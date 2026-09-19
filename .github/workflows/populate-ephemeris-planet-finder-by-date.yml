@@ -123,16 +123,17 @@ jobs:
           PLANET_FINDER_MAX_ORDER_SECONDS: '5'
           PLANET_FINDER_MAX_ORDER_NODES: '100000'
         run: |
-          # Hard process-level ceiling. The generator's internal timer remains
-          # useful for diagnostics, but this prevents any search path from
-          # making the Actions step uncancellable/indefinite.
+          # PLANET_FINDER_MAX_SECONDS is the generator's search-only budget.
+          # Setup and annual ephemeris calculation happen before that clock starts.
+          # Keep a separate emergency process ceiling so a non-search hang still dies.
+          PROCESS_TIMEOUT_SECONDS=$((PLANET_FINDER_MAX_SECONDS + 60))
           timeout --signal=TERM --kill-after=5s \
-            "${PLANET_FINDER_MAX_SECONDS}s" \
+            "${PROCESS_TIMEOUT_SECONDS}s" \
             python tools/populate_ephemeris_planet_finder_by_date.py \
               "${{ steps.range.outputs.start_date }}" "${{ steps.range.outputs.end_date }}"
           status=$?
           if [ "$status" -eq 124 ] || [ "$status" -eq 137 ]; then
-            echo "::error::Planet Finder exceeded the hard ${PLANET_FINDER_MAX_SECONDS}-second process limit."
+            echo "::error::Planet Finder process exceeded the emergency ${PROCESS_TIMEOUT_SECONDS}-second ceiling (search budget: ${PLANET_FINDER_MAX_SECONDS}s)."
           fi
           exit "$status"
 
