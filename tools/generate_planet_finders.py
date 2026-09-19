@@ -835,13 +835,13 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 original_index, (_, name, _) = item
                 current_body = name
                 s = diagnostic_stats[(position, name)]
-                # Squeaky wheel gets the grease: remember the deepest body
-                # that actually reached a zero-option dead end. layout() will
-                # promote it to the front of the next deliberately different
-                # ordering, instead of blindly trying another permutation.
-                if position >= budget.get("squeaky_depth", -1):
-                    budget["squeaky_body"] = name
-                    budget["squeaky_depth"] = position
+                # Squeaky wheel gets the grease: the *current* genuine
+                # zero-option dead end is the evidence that should drive the
+                # next ordering. Do not keep an older, deeper squeaky body
+                # forever; that stale signal can repeatedly promote the wrong
+                # body even after a different body is now blocking progress.
+                budget["squeaky_body"] = name
+                budget["squeaky_depth"] = position
                 print(
                     f"Planet Finder {mode}: dead end order={order_index} "
                     f"depth={position}/{len(order)} body={name} "
