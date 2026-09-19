@@ -1,0 +1,23 @@
+name: Planet Finder Unit Tests
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'tools/generate_planet_finders.py'
+      - 'tests/test_planet_finder_candidate_generation.py'
+      - '.github/workflows/test-planet-finder.yml'
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      - name: Install test dependencies
+        run: pip install pytest
+      - name: Run current Planet Finder unit tests
+        run: pytest -q tests/test_planet_finder_candidate_generation.py
