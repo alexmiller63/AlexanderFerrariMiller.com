@@ -480,12 +480,11 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 )
                 break
             stats["started"] = True
-            candidates += 1
-            body_candidates += 1
-            stats["generated"] += 1
-            budget["candidates"] += 1
-            # Immutable reserved collisions were already rejected at proposal
-            # time. Only movable, DFS-dependent collisions belong here.
+            # Reject geometry that is already impossible in the current DFS
+            # state before admitting the proposal to the candidate pool. A
+            # label overlapping an already placed label, or crossing an
+            # existing leader, cannot become valid without backtracking, so it
+            # must not consume candidate/search budget.
             if any(boxes_overlap(box, b, 14) for b in placed):
                 rejected_overlap += 1
                 stats["overlap"] += 1
@@ -495,6 +494,10 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 rejected_leader += 1
                 stats["leader"] += 1
                 continue
+            candidates += 1
+            body_candidates += 1
+            stats["generated"] += 1
+            budget["candidates"] += 1
             route_diag = route_diagnostics.setdefault((depth, name), {
                 "straight_blocked": 0,
                 "route_failed": 0,
