@@ -229,30 +229,37 @@ def _solve_order(mode: str, bodies, order, budget):
             return True
 
         # Squeaky wheel gets the grease: measure every remaining body against
-        # the current partial layout, then place the one with the fewest options.
+        # the current partial layout.  Try the most constrained body first, but
+        # body choice itself is part of the backtracking search: if all of that
+        # body's placements fail deeper down, try the next-most-constrained body.
         ranked = []
         for rank, item in enumerate(remaining):
             options = viable_candidates(item)
             ranked.append((len(options), rank, item, options))
-            if not options:
-                current_body = item[1][1]
-                backtracks += 1
-                return False
-        _, chosen_rank, chosen, options = min(ranked, key=lambda row: (row[0], row[1]))
-        original_index, (symbol, name, longitude) = chosen
-        current_body = name
-        next_remaining = remaining[:chosen_rank] + remaining[chosen_rank + 1:]
+        ranked.sort(key=lambda row: (row[0], row[1]))
 
-        for box, path in options:
-            placed.append(box)
-            leaders.append(path)
-            staged[original_index] = (symbol, name, longitude, box, path)
-            if solve(next_remaining):
-                return True
-            del staged[original_index]
-            leaders.pop()
-            placed.pop()
+        # A body with no viable placement makes this partial layout impossible;
+        # changing which other body is selected next cannot restore free space.
+        if ranked[0][0] == 0:
+            current_body = ranked[0][2][1][1]
             backtracks += 1
+            return False
+
+        for _, chosen_rank, chosen, options in ranked:
+            original_index, (symbol, name, longitude) = chosen
+            current_body = name
+            next_remaining = remaining[:chosen_rank] + remaining[chosen_rank + 1:]
+
+            for box, path in options:
+                placed.append(box)
+                leaders.append(path)
+                staged[original_index] = (symbol, name, longitude, box, path)
+                if solve(next_remaining):
+                    return True
+                del staged[original_index]
+                leaders.pop()
+                placed.pop()
+                backtracks += 1
         return False
 
     solved = solve(order)
@@ -325,7 +332,8 @@ def layout(mode: str, bodies: list[tuple[str, str, float]]):
         )
 
     raise RuntimeError(
-        f"No collision-free Planet Finder layout exists in {mode} mode after trying every starting body"
+        f"No collision-free Planet Finder layout exists in {mode} mode after "
+        f"full body-order and placement backtracking"
     )
 
 
