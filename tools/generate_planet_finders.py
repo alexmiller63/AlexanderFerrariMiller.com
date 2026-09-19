@@ -376,6 +376,19 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             viable.append((box, path))
         return viable
 
+    def clear_selected(frame):
+        """Remove the placement owned by one active DFS frame."""
+        selected = frame.get("selected")
+        if selected is None:
+            return
+        original_index = selected[0]
+        staged.pop(original_index, None)
+        if leaders:
+            leaders.pop()
+        if placed:
+            placed.pop()
+        frame["selected"] = None
+
     def log_heartbeat(position):
         nonlocal last_heartbeat
         now = time.monotonic()
@@ -402,6 +415,17 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         log_heartbeat(position)
 
         if position == len(order):
+            # At a complete depth every frame must own exactly one placement.
+            # The old implementation removed the parent placement when a child
+            # frame exhausted its options, leaving the child frame on the stack
+            # and eventually producing KeyError from this reconstruction.
+            missing = [i for i in range(len(bodies)) if i not in staged]
+            if missing:
+                raise RuntimeError(
+                    f"Planet Finder DFS state corruption in {mode}: "
+                    f"complete depth but missing staged indices {missing}; "
+                    f"stack={len(stack)}"
+                )
             result = [staged[i] for i in range(len(bodies))]
             key = tuple(
                 (
@@ -436,10 +460,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             if position < 0:
                 exhausted = True
                 break
-            original_index, (_, name, _) = order[position]
-            del staged[original_index]
-            leaders.pop()
-            placed.pop()
+            clear_selected(stack[position])
             stack[position]["index"] += 1
             backtracks += 1
             continue
@@ -451,6 +472,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 "item": item,
                 "options": options,
                 "index": 0,
+                "selected": None,
             })
             if not options:
                 original_index, (_, name, _) = item
@@ -469,26 +491,21 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                     exhausted = True
                     break
                 position -= 1
-                original_index, (_, parent_name, _) = order[position]
-                del staged[original_index]
-                leaders.pop()
-                placed.pop()
+                clear_selected(stack[position])
                 stack[position]["index"] += 1
                 backtracks += 1
                 continue
 
         frame = stack[position]
         if frame["index"] >= len(frame["options"]):
+            # This frame has tried every candidate. Remove its own placement,
+            # then return control to its parent without disturbing the parent.
+            clear_selected(frame)
             stack.pop()
             if position == 0:
                 exhausted = True
                 break
-            position -= 1
-            original_index, (_, parent_name, _) = order[position]
-            del staged[original_index]
-            leaders.pop()
-            placed.pop()
-            stack[position]["index"] += 1
+            stack[position - 1]["index"] += 1
             backtracks += 1
             continue
 
@@ -498,6 +515,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         placed.append(box)
         leaders.append(path)
         staged[original_index] = (symbol, name, longitude, box, path)
+        frame["selected"] = (original_index, (symbol, name, longitude, box, path))
 
     elapsed = time.monotonic() - started
     print(
