@@ -665,7 +665,8 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             selected_flags = [frame.get("selected") is not None for frame in stack]
             try:
                 first_unselected = selected_flags.index(False)
-            except ValueError:\n                raise RuntimeError(
+            except ValueError:
+                raise RuntimeError(
                     f"Planet Finder DFS state corruption in {mode}: "
                     "sentinel reached with every frame selected"
                 )
