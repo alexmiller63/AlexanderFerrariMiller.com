@@ -29,9 +29,9 @@ on:
         default: '5'
         type: string
       max_node_candidates:
-        description: Maximum candidate placements examined per DFS node
+        description: Maximum DFS node visits per body depth
         required: true
-        default: '100'
+        default: '200'
         type: string
       max_search_candidates:
         description: Maximum candidate evaluations for the entire run
