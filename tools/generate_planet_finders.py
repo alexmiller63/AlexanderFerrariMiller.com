@@ -497,7 +497,24 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         # routing work can be safely reused across all candidate labels.
         route_prefix_cache = {}
         body_candidates = 0
+        raw_positions = 0
+        candidate_started = time.monotonic()
+        candidate_last_heartbeat = candidate_started
+        timing = {"overlap": 0.0, "existing_leader": 0.0, "route": 0.0, "final_leader": 0.0}
         for x, y, box in legal_candidate_positions(longitude, w, h, reserved):
+            raw_positions += 1
+            now = time.monotonic()
+            if now - candidate_last_heartbeat >= 5.0:
+                print(
+                    f"Planet Finder {mode}: CANDIDATE HEARTBEAT order={order_index} "
+                    f"depth={depth}/{len(order)} body={name} elapsed={now-candidate_started:.1f}s "
+                    f"raw={raw_positions:,} viable={body_candidates:,} "
+                    f"rejects[overlap={stats['overlap']:,},leader={stats['leader']:,},route={stats['route']:,}] "
+                    f"time[overlap={timing['overlap']:.3f}s,existing-leader={timing['existing_leader']:.3f}s,"
+                    f"route={timing['route']:.3f}s,final-leader={timing['final_leader']:.3f}s]",
+                    flush=True,
+                )
+                candidate_last_heartbeat = now
             # Candidate production is lazy. Geometry owns geometry; the search
             # controller owns limits. The only run-wide limits checked here are
             # the same hard safety limits used by DFS.
@@ -527,12 +544,18 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             # label overlapping an already placed label, or crossing an
             # existing leader, cannot become valid without backtracking, so it
             # must not consume candidate/search budget.
-            if any(boxes_overlap(box, b, 14) for b in placed):
+            t0 = time.monotonic()
+            overlaps_placed = any(boxes_overlap(box, b, 14) for b in placed)
+            timing["overlap"] += time.monotonic() - t0
+            if overlaps_placed:
                 rejected_overlap += 1
                 stats["overlap"] += 1
                 continue
-            if any(segment_hits_box(seg[i], seg[i + 1], box, 10)
-                   for seg in leaders for i in range(len(seg) - 1)):
+            t0 = time.monotonic()
+            hit_existing_leader = any(segment_hits_box(seg[i], seg[i + 1], box, 10)
+                                      for seg in leaders for i in range(len(seg) - 1))
+            timing["existing_leader"] += time.monotonic() - t0
+            if hit_existing_leader:
                 rejected_leader += 1
                 stats["leader"] += 1
                 continue
@@ -555,7 +578,10 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 rejected_route += 1
                 stats["route"] += 1
                 continue
-            if leaders_too_close(path, leaders):
+            t0 = time.monotonic()
+            too_close = leaders_too_close(path, leaders)
+            timing["final_leader"] += time.monotonic() - t0
+            if too_close:
                 rejected_leader += 1
                 stats["leader"] += 1
                 continue
