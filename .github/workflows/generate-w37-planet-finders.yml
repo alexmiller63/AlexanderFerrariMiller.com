@@ -26,14 +26,57 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+      - name: Restore JPL/NAIF ephemeris source cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            .cache/skyfield/de440s.bsp
+            .cache/skyfield/ceres_1900_2100.bsp
+          key: star-almanack-source-kernels-v1
+
       - name: Install pinned calculation dependency
         run: python -m pip install --disable-pip-version-check 'skyfield==1.55'
-      - name: Generate W37 only
-        env:
-          STAR_ALMANACK_EPHEMERIS_DIR: ${{ github.workspace }}/.cache/skyfield
+
+      - name: Download source kernels only when cache is empty
         run: |
           mkdir -p .cache/skyfield
-          python tools/generate_planet_finders.py --year 2026 --week 37
+          python - <<'PY'
+          from pathlib import Path
+          from urllib.request import urlretrieve
+          from skyfield.api import Loader
+
+          root = Path('.cache/skyfield')
+          de440s = root / 'de440s.bsp'
+          ceres = root / 'ceres_1900_2100.bsp'
+
+          if de440s.exists():
+              print(f'Reusing cached {de440s} ({de440s.stat().st_size:,} bytes)')
+          else:
+              print('Downloading JPL DE440s source kernel under NAIF distribution rules')
+              Loader(str(root)).download('de440s.bsp')
+
+          if ceres.exists():
+              print(f'Reusing cached {ceres} ({ceres.stat().st_size:,} bytes)')
+          else:
+              print('Downloading JPL/NAIF Ceres source kernel under NAIF distribution rules')
+              urlretrieve(
+                  'https://naif.jpl.nasa.gov/pub/naif/generic_kernels/spk/asteroids/a_old_versions/ceres_1900_2100.bsp',
+                  ceres,
+              )
+          PY
+
+      - name: Generate W37 through production Ephemeris + Planet Finder path
+        env:
+          STAR_ALMANACK_EPHEMERIS_DIR: ${{ github.workspace }}/.cache/skyfield
+          PLANET_FINDER_CANDIDATES: '2'
+          PLANET_FINDER_MAX_CANDIDATES: '1000'
+          PLANET_FINDER_MAX_SECONDS: '90'
+          PLANET_FINDER_MAX_ORDER_SECONDS: '5'
+          PLANET_FINDER_MAX_ORDER_NODES: '100000'
+        run: |
+          timeout --signal=TERM --kill-after=5s 150s \
+            python tools/populate_ephemeris_planet_finder_by_date.py \
+              2026-09-07 2026-09-07
       - name: Commit W37 finder SVGs
         shell: bash
         run: |
