@@ -23,6 +23,11 @@ on:
         required: true
         default: '40'
         type: string
+      candidate_layouts:
+        description: Complete layouts to score per mode
+        required: true
+        default: '5'
+        type: string
 
 permissions:
   contents: write
@@ -95,6 +100,7 @@ jobs:
       - name: Generate Ephemeris and Planet Finder from local calculations
         env:
           STAR_ALMANACK_EPHEMERIS_DIR: ${{ github.workspace }}/.cache/skyfield
+          PLANET_FINDER_CANDIDATES: ${{ inputs.candidate_layouts }}
         run: python tools/populate_ephemeris_planet_finder_by_date.py "${{ steps.range.outputs.start_date }}" "${{ steps.range.outputs.end_date }}"
 
       - name: Commit Planet Finder changes only
