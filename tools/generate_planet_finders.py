@@ -597,32 +597,28 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             resume_position = final_position
             continue
 
-        # Never index the fixed order at its sentinel depth.  A complete
-        # placement is handled above; any other arrival at depth == len(order)
-        # means the final frame has been left without a selected placement.
-        # Recover explicitly to the final frame instead of allowing
-        # order[position] to raise IndexError.  This is also instrumented so a
-        # future DFS-state regression is visible in the workflow log.
+        # Never index the fixed order at sentinel depth. A valid DFS stack
+        # owns placements as one contiguous prefix. If a parent is unselected
+        # while a deeper child is selected, repair the stack from the deepest
+        # frame upward before resuming the first unselected frame.
         if position >= len(order):
-            if position > len(order):
+            if position > len(order) or len(stack) != len(order):
                 raise RuntimeError(
                     f"Planet Finder DFS state corruption in {mode}: "
-                    f"position={position} exceeds order depth {len(order)}; "
-                    f"stack={len(stack)}"
+                    f"position={position} stack={len(stack)} order={len(order)}"
                 )
-            if not stack:
+            selected_flags = [frame.get("selected") is not None for frame in stack]
+            try:
+                first_unselected = selected_flags.index(False)
+            except ValueError:
                 raise RuntimeError(
                     f"Planet Finder DFS state corruption in {mode}: "
-                    f"sentinel depth with empty stack"
+                    "sentinel reached with every frame selected"
                 )
-            print(
-                f"Planet Finder {mode}: DFS sentinel recovery "
-                f"order={order_index} depth={position}/{len(order)} "
-                f"selected={[frame.get('selected') is not None for frame in stack]}",
-                flush=True,
-            )
-            position = len(order) - 1
-            resume_position = position
+            for depth in range(len(stack) - 1, first_unselected, -1):
+                clear_selected(stack[depth])
+                stack.pop()
+            resume_position = first_unselected
             continue
 
         if len(stack) == position:
