@@ -773,6 +773,20 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             continue
 
         if len(stack) == position:
+            # A child candidate may only be generated against a complete,
+            # selected placement prefix. This invariant catches any future
+            # backtracking transition that would otherwise skip an unselected
+            # parent and admit geometry that was never checked against it.
+            unselected_prefix = [
+                depth for depth, frame in enumerate(stack)
+                if frame.get("selected") is None
+            ]
+            if unselected_prefix:
+                raise RuntimeError(
+                    f"Planet Finder DFS prefix corruption in {mode}: "
+                    f"attempted depth={position} with unselected frames "
+                    f"{unselected_prefix}"
+                )
             item = order[position]
             options = viable_candidates(item, position)
             stack.append({
@@ -809,6 +823,10 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 clear_selected(stack[position])
                 stack[position]["index"] += 1
                 backtracks += 1
+                # Resume the parent frame we just advanced. Using len(stack)
+                # here skips that now-unselected parent and incorrectly
+                # generates child candidates against an incomplete prefix.
+                resume_position = position
                 continue
 
         frame = stack[position]
@@ -824,6 +842,11 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             clear_selected(parent)
             parent["index"] += 1
             backtracks += 1
+            # Resume the parent whose candidate index changed. Falling
+            # through with resume_position=None makes the next iteration use
+            # len(stack), which is the child depth, and admits candidates
+            # without the parent placement present.
+            resume_position = position - 1
             continue
 
         original_index, (symbol, name, longitude) = frame["item"]
