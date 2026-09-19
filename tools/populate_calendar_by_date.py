@@ -55,7 +55,13 @@ def populate_selected_year(year: int, selected_weeks: list[int]) -> int:
                 keep = [] if cell == "—" else [x for x in cell.split("<br>") if x]
                 for value in vals:
                     base_label = value.html.split(" — ", 1)[0]
-                    keep = [x for x in keep if not (x == base_label or x.startswith(base_label + " — "))]
+                    keep = [
+                        x for x in keep
+                        if not (
+                            (x.html if isinstance(x, fixed_sky.CalendarEvent) else x) == base_label
+                            or (x.html if isinstance(x, fixed_sky.CalendarEvent) else x).startswith(base_label + " — ")
+                        )
+                    ]
                     keep.append(value)
                 records = [fixed_sky.CalendarEvent(x) for x in keep if isinstance(x, str)] + [x for x in keep if isinstance(x, fixed_sky.CalendarEvent)]
                 text, found = fixed_sky.set_events(text, day, records if records else "—")
