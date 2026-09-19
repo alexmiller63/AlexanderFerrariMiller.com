@@ -228,6 +228,37 @@ def _solve_order(mode: str, bodies, order, budget):
     diagnostic_stats = {}
     route_diagnostics = {}
     body_choice_attempts = {}
+    zero_viable_events = {}
+    last_ranked = []
+
+    def dump_diagnostics(reason):
+        print(
+            f"Planet Finder {mode}: TERMINAL reason={reason} nodes={nodes:,} "
+            f"deepest={deepest}/{len(order)} current_body={current_body} "
+            f"candidates={candidates:,} global_candidates={budget['candidates']:,}/"
+            f"{budget['max_candidates']:,} rejects[overlap={rejected_overlap:,},"
+            f"leader={rejected_leader:,},route={rejected_route:,}] backtracks={backtracks:,}",
+            flush=True,
+        )
+        if last_ranked:
+            print(
+                "Planet Finder " + mode + ": TERMINAL last-ranking " +
+                ", ".join(f"{name}:{count}" for name, count in last_ranked),
+                flush=True,
+            )
+        for (depth, name), count in sorted(zero_viable_events.items()):
+            print(
+                f"Planet Finder {mode}: TERMINAL zero-viable depth={depth} "
+                f"body={name} occurrences={count:,}", flush=True,
+            )
+        for (depth, name), s in sorted(diagnostic_stats.items()):
+            accounted = s["viable"] + s["overlap"] + s["leader"] + s["route"]
+            print(
+                f"Planet Finder {mode}: TERMINAL body depth={depth} body={name} "
+                f"generated={s['generated']:,} viable={s['viable']:,} "
+                f"rejects[overlap={s['overlap']:,},leader={s['leader']:,},route={s['route']:,}] "
+                f"accounted={accounted:,}/{s['generated']:,}", flush=True,
+            )
 
     def viable_candidates(item, depth):
         """Materialize currently viable placements for one remaining body."""
@@ -245,6 +276,7 @@ def _solve_order(mode: str, bodies, order, budget):
             stats["generated"] += 1
             budget["candidates"] += 1
             if budget["candidates"] > budget["max_candidates"]:
+                dump_diagnostics("candidate budget exhausted")
                 raise RuntimeError(
                     f"Planet Finder candidate budget exhausted in {mode} mode "
                     f"after {budget['max_candidates']:,} candidate evaluations"
@@ -294,6 +326,7 @@ def _solve_order(mode: str, bodies, order, budget):
             )
             last_heartbeat = now
         if nodes > max_nodes:
+            dump_diagnostics("recursive-node budget exhausted")
             raise RuntimeError(
                 f"Planet Finder search budget exhausted in {mode} mode "
                 f"after {max_nodes:,} recursive nodes"
@@ -310,12 +343,20 @@ def _solve_order(mode: str, bodies, order, budget):
             options = viable_candidates(item, position)
             ranked.append((len(options), rank, item, options))
         ranked.sort(key=lambda row: (row[0], row[1]))
+        last_ranked[:] = [(row[2][1][1], row[0]) for row in ranked]
+        print(
+            f"Planet Finder {mode}: ranking depth={position} " +
+            ", ".join(f"{name}={count}" for name, count in last_ranked),
+            flush=True,
+        )
 
         # A body with no viable placement makes this partial layout impossible;
         # changing which other body is selected next cannot restore free space.
         if ranked[0][0] == 0:
             current_body = ranked[0][2][1][1]
             s = diagnostic_stats[(position, current_body)]
+            zero_key = (position, current_body)
+            zero_viable_events[zero_key] = zero_viable_events.get(zero_key, 0) + 1
             accounted = s["viable"] + s["overlap"] + s["leader"] + s["route"]
             print(
                 f"Planet Finder {mode}: dead end depth={position}/{len(order)} "
@@ -346,7 +387,11 @@ def _solve_order(mode: str, bodies, order, budget):
                 backtracks += 1
         return False
 
-    solved = solve(order)
+    try:
+        solved = solve(order)
+    except Exception as exc:
+        dump_diagnostics(f"exception {type(exc).__name__}: {exc}")
+        raise
     elapsed = time.monotonic() - started
     print(
         f"Planet Finder {mode}: dynamic-search summary solved={solved} "
@@ -390,6 +435,7 @@ def _solve_order(mode: str, bodies, order, budget):
                 flush=True,
             )
     if not solved:
+        dump_diagnostics("search space exhausted without a complete layout")
         return False, None
     return True, [staged[i] for i in range(len(bodies))]
 
