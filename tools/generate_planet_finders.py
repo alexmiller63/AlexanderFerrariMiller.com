@@ -701,7 +701,14 @@ def new_search_budget(max_candidates: int | None = None):
     if max_candidates <= 0:
         raise ValueError("PLANET_FINDER_MAX_CANDIDATES must be positive")
     max_seconds = max(1.0, float(os.environ.get("PLANET_FINDER_MAX_SECONDS", "90")))
-    # Start the wall-clock budget lazily at the first actual layout search.\n    # Ephemeris setup/kernel work must not consume the Planet Finder search ceiling.\n    return {\n        "candidates": 0,\n        "max_candidates": max_candidates,\n        "max_seconds": max_seconds,\n        "started": None,\n    }
+    # Start the wall-clock budget lazily at the first actual layout search.
+    # Ephemeris setup/kernel work must not consume the Planet Finder search ceiling.
+    return {
+        "candidates": 0,
+        "max_candidates": max_candidates,
+        "max_seconds": max_seconds,
+        "started": None,
+    }
 
 
 def layout(
@@ -733,7 +740,15 @@ def layout(
         target_solutions = max(1, int(os.environ.get("PLANET_FINDER_CANDIDATES", "5")))
 
     total_orders = math.factorial(len(indexed))
-    if budget is None:\n        budget = new_search_budget()\n    if budget.get("started") is None:\n        budget["started"] = time.monotonic()\n        print(\n            f"Planet Finder SEARCH CLOCK STARTED: limit={budget[\'max_seconds\']:.1f}s",\n            flush=True,\n        )\n    all_solutions = []
+    if budget is None:
+        budget = new_search_budget()
+    if budget.get("started") is None:
+        budget["started"] = time.monotonic()
+        print(
+            f"Planet Finder SEARCH CLOCK STARTED: limit={budget[\'max_seconds\']:.1f}s",
+            flush=True,
+        )
+    all_solutions = []
     seen_solution_keys = set()
 
     print(
@@ -928,7 +943,9 @@ def render(
         f'<text x="{CX}" y="757" text-anchor="middle" font-size="22">12 equal sectors · 30° each</text>',
         '</svg>',
     ])
-    return "\n".join(out) + "\n"
+    return "
+".join(out) + "
+"
 
 
 def generate_week(
