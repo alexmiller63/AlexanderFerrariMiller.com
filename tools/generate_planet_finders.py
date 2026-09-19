@@ -595,7 +595,8 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                     f"after {run_elapsed:.1f}s/{budget['max_seconds']:.1f}s "
                     f"viable={body_candidates:,}",
                     flush=True,
-                )                raise RuntimeError(
+                )
+                raise RuntimeError(
                     f"Planet Finder run-wide wall-clock budget exhausted in {mode} mode "
                     f"during candidate generation for {name} after {run_elapsed:.1f}s "
                     f"(limit {budget['max_seconds']:.1f}s)"
