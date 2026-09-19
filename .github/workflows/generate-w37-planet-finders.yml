@@ -26,8 +26,14 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+      - name: Install pinned calculation dependency
+        run: python -m pip install --disable-pip-version-check 'skyfield==1.55'
       - name: Generate W37 only
-        run: python tools/generate_planet_finders.py --year 2026 --week 37
+        env:
+          STAR_ALMANACK_EPHEMERIS_DIR: ${{ github.workspace }}/.cache/skyfield
+        run: |
+          mkdir -p .cache/skyfield
+          python tools/generate_planet_finders.py --year 2026 --week 37
       - name: Commit W37 finder SVGs
         shell: bash
         run: |
