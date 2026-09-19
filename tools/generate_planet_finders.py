@@ -508,7 +508,6 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         # Proposal work is local to this fixed DFS prefix. A pathological child
         # may exhaust its own stream, but must never consume the parent's
         # ability to generate the next sibling during backtracking.
-        stream_proposals = 0
         candidate_started = time.monotonic()
         candidate_last_heartbeat = candidate_started
         last_yield_at = None
@@ -538,22 +537,6 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                     f"depth={depth}/{len(order)} raw={raw_positions:,} dt={stream_dt:.3f}s",
                     flush=True,
                 )
-            # Count search work separately from candidates admitted to DFS.
-            # A geometrically rotten proposal must never consume candidate
-            # budget, but examining it is still finite solver work. This
-            # prevents a pathological body/prefix from monopolizing the run
-            # while producing zero viable candidates.
-            if stream_proposals >= budget["max_proposals"]:
-                stats["blocked"] = "proposal-budget"
-                print(
-                    f"Planet Finder {mode}: CANDIDATE-GENERATION STOP per-prefix proposal budget exhausted "
-                    f"order={order_index} depth={depth}/{len(order)} body={name} "
-                    f"proposals={stream_proposals:,}/{budget['max_proposals']:,} "
-                    f"viable={body_candidates:,}",
-                    flush=True,
-                )
-                return
-            stream_proposals += 1
             now = time.monotonic()
             if now - candidate_last_heartbeat >= 5.0:
                 print(
@@ -770,25 +753,17 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
 
 
 def new_search_budget(max_candidates: int | None = None):
-    """Create the shared candidate/wall-clock limits and per-prefix proposal limit."""
+    """Create the shared run-wide candidate and wall-clock safety limits."""
     if max_candidates is None:
         max_candidates = int(os.environ.get("PLANET_FINDER_MAX_CANDIDATES", "1000000"))
     if max_candidates <= 0:
         raise ValueError("PLANET_FINDER_MAX_CANDIDATES must be positive")
-    # Proposal work and admitted candidates are deliberately different
-    # currencies. The proposal ceiling applies independently to each fixed DFS
-    # prefix: rejected geometry may terminate a pathological child stream, but
-    # it must not prevent a parent from producing its next sibling.
-    max_proposals = int(os.environ.get("PLANET_FINDER_MAX_PROPOSALS", str(max_candidates)))
-    if max_proposals <= 0:
-        raise ValueError("PLANET_FINDER_MAX_PROPOSALS must be positive")
     max_seconds = max(1.0, float(os.environ.get("PLANET_FINDER_MAX_SECONDS", "90")))
     # Start the wall-clock budget lazily at the first actual layout search.
     # Ephemeris setup/kernel work must not consume the Planet Finder search ceiling.
     return {
         "candidates": 0,
         "max_candidates": max_candidates,
-        "max_proposals": max_proposals,
         "max_seconds": max_seconds,
         "started": None,
     }
@@ -833,7 +808,6 @@ def layout(
         f"Planet Finder {mode}: canonical-order lazy DFS "
         f"{context_label + ' ' if context_label else ''}"
         f"target={target_solutions} max-candidates={budget['max_candidates']:,} "
-        f"max-proposals={budget['max_proposals']:,} "
         f"sequence=" + " > ".join(item[1][1] for item in order),
         flush=True,
     )
