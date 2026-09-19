@@ -941,6 +941,7 @@ def layout(
             flush=True,
         )
 
+        order_candidate_start = budget["candidates"]
         try:
             solutions = _solve_order(
                 mode,
@@ -961,6 +962,14 @@ def layout(
                     flush=True,
                 )
                 continue
+            if budget.get("squeaky_order_active") and budget["candidates"] == order_candidate_start:
+                print(
+                    f"Planet Finder {mode}: SEARCH STOP squeaky-wheel ordering made "
+                    f"no candidate progress at order={order_index} "
+                    f"candidates={budget['candidates']:,}/{budget['max_candidates']:,}",
+                    flush=True,
+                )
+                break
             if "per-order" in str(exc):
                 print(
                     f"Planet Finder {mode}: ORDER {order_index} candidate slice exhausted; "
