@@ -483,7 +483,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         for depth, frame in enumerate(stack):
             _, (_, frame_name, _) = frame["item"]
             active.append(
-                f"{depth}:{frame_name}[option={frame['index'] + 1}/{len(frame['options'])},"
+                f"{depth}:{frame_name}[stream={'exhausted' if frame.get('exhausted') else 'open'},"
                 f"selected={'yes' if frame.get('selected') is not None else 'no'}]"
             )
         print(
@@ -531,7 +531,6 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         nonlocal candidates, rejected_overlap, rejected_leader, rejected_route, proposals
         w, h = label_size(mode, name)
         anchor = xy(longitude, RI - 5)
-        viable = []
         body_candidates = 0
         for x, y, box in legal_candidate_positions(longitude, w, h, reserved):
             proposals += 1
@@ -666,8 +665,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             body_candidates += 1
             stats["generated"] += 1
             stats["viable"] += 1
-            viable.append((box, path))
-        return viable
+            yield box, path
 
     def clear_selected(frame):
         """Remove the placement owned by one active DFS frame."""
@@ -854,10 +852,14 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             stack.append({
                 "item": item,
                 "options": options,
-                "index": 0,
                 "selected": None,
+                "exhausted": False,
             })
-            if not options:
+            try:
+                stack[position]["next_option"] = next(options)
+            except StopIteration:
+                stack[position]["exhausted"] = True
+            if stack[position]["exhausted"]:
                 original_index, (_, name, _) = item
                 current_body = name
                 s = diagnostic_stats[(position, name)]
@@ -883,7 +885,10 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                     break
                 position -= 1
                 clear_selected(stack[position])
-                stack[position]["index"] += 1
+                try:
+                stack[position]["next_option"] = next(stack[position]["options"])
+            except StopIteration:
+                stack[position]["exhausted"] = True
                 backtracks += 1
                 # Resume the parent frame we just advanced. Using len(stack)
                 # here skips that now-unselected parent and incorrectly
@@ -892,7 +897,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 continue
 
         frame = stack[position]
-        if frame["index"] >= len(frame["options"]):
+        if frame.get("exhausted"):
             # This frame has tried every candidate. Remove its own placement,
             # then return control to its parent without disturbing the parent.
             clear_selected(frame)
@@ -902,7 +907,10 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 break
             parent = stack[position - 1]
             clear_selected(parent)
-            parent["index"] += 1
+            try:
+                parent["next_option"] = next(parent["options"])
+            except StopIteration:
+                parent["exhausted"] = True
             backtracks += 1
             # Resume the parent whose candidate index changed. Falling
             # through with resume_position=None makes the next iteration use
@@ -928,7 +936,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         candidates += 1
         budget["candidates"] += 1
 
-        box, path = frame["options"][frame["index"]]
+        box, path = frame.pop("next_option")
         placed.append(box)
         leaders.append(path)
         staged[original_index] = (symbol, name, longitude, box, path)
