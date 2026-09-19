@@ -401,6 +401,10 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
     max_proposals = max(1, int(os.environ.get("PLANET_FINDER_MAX_PROPOSALS", str(max(10000, budget["max_candidates"] * 20)))))
     proposals = 0
     order_candidate_start = budget["candidates"]
+    # Squeaky-wheel feedback belongs to the ordering that just ran. Clear the
+    # previous signal here; a genuine dead end below will replace it.
+    budget["squeaky_body"] = None
+    budget["squeaky_depth"] = -1
 
     def dump_diagnostics(reason):
         order_names = " > ".join(item[1][1] for item in order)
@@ -743,6 +747,13 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 original_index, (_, name, _) = item
                 current_body = name
                 s = diagnostic_stats[(position, name)]
+                # Squeaky wheel gets the grease: remember the deepest body
+                # that actually reached a zero-option dead end. layout() will
+                # promote it to the front of the next deliberately different
+                # ordering, instead of blindly trying another permutation.
+                if position >= budget.get("squeaky_depth", -1):
+                    budget["squeaky_body"] = name
+                    budget["squeaky_depth"] = position
                 print(
                     f"Planet Finder {mode}: dead end order={order_index} "
                     f"depth={position}/{len(order)} body={name} "
@@ -889,6 +900,21 @@ def layout(
             break
 
         order = _permutation_by_rank(indexed, rank)
+        squeaky_body = budget.get("squeaky_body")
+        if squeaky_body:
+            squeaky_index = next(
+                (i for i, item in enumerate(order) if item[1][1] == squeaky_body),
+                None,
+            )
+            if squeaky_index is not None and squeaky_index > 0:
+                squeaky_item = order.pop(squeaky_index)
+                order.insert(0, squeaky_item)
+                print(
+                    f"Planet Finder {mode}: SQUEAKY-WHEEL body={squeaky_body} "
+                    f"previous-depth={budget.get('squeaky_depth', -1)}/{len(order)} "
+                    f"action=promote-to-front",
+                    flush=True,
+                )
         order_names = " > ".join(item[1][1] for item in order)
         print(
             f"Planet Finder {mode}: ORDER {order_index} rank={rank:,}/{total_orders:,} "
