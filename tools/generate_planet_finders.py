@@ -332,6 +332,17 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
     ornery_limit = max(1, int(os.environ.get("PLANET_FINDER_ORNERY_CANDIDATES", "50")))
     max_order_nodes = max(1, int(os.environ.get("PLANET_FINDER_MAX_ORDER_NODES", "100000")))
     max_order_seconds = max(1.0, float(os.environ.get("PLANET_FINDER_MAX_ORDER_SECONDS", "5")))
+    # Prevent one difficult ordering from monopolizing the run-wide candidate
+    # budget. Each planned ordering gets a bounded slice; unused capacity stays
+    # available to later, deliberately different orderings.
+    max_order_candidates = max(
+        1,
+        int(os.environ.get(
+            "PLANET_FINDER_MAX_ORDER_CANDIDATES",
+            str(min(100, budget["max_candidates"])),
+        )),
+    )
+    order_candidate_start = budget["candidates"]
 
     def dump_diagnostics(reason):
         order_names = " > ".join(item[1][1] for item in order)
@@ -390,6 +401,15 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         viable = []
         body_candidates = 0
         for x, y in candidate_positions(longitude):
+            if budget["candidates"] - order_candidate_start >= max_order_candidates:
+                stats["blocked"] = "order-budget"
+                print(
+                    f"Planet Finder {mode}: ORDER-BUDGET-EXHAUSTED order={order_index} "
+                    f"used={budget['candidates'] - order_candidate_start:,}/{max_order_candidates:,} "
+                    f"global={budget['candidates']:,}/{budget['max_candidates']:,} action=next-order",
+                    flush=True,
+                )
+                raise StopIteration("Planet Finder per-order candidate budget exhausted")
             if body_candidates >= ornery_limit:
                 print(
                     f"Planet Finder {mode}: ORNERY order={order_index} "
@@ -815,7 +835,14 @@ def layout(
                 total_orders=total_orders,
                 context_label=context_label,
             )
-        except StopIteration:
+        except StopIteration as exc:
+            if "per-order" in str(exc):
+                print(
+                    f"Planet Finder {mode}: ORDER {order_index} candidate slice exhausted; "
+                    f"advancing to next planned ordering",
+                    flush=True,
+                )
+                continue
             print(
                 f"Planet Finder {mode}: SEARCH STOP candidate budget exhausted "
                 f"orders-tried={order_index} "
