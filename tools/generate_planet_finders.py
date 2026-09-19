@@ -428,6 +428,14 @@ class CandidateBudgetExhausted(RuntimeError):
     """Signal that the run-wide viable-candidate budget is exhausted."""
 
 
+class DepthNodeBudgetExhausted(RuntimeError):
+    """Signal that a body-depth node budget is exhausted for this DFS tree."""
+
+    def __init__(self, depth: int, name: str):
+        super().__init__(f"node budget exhausted at depth {depth} for {name}")
+        self.depth = depth
+        self.name = name
+
 
 def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_index=1, total_orders=None, context_label=None):
     """Solve one fixed body ordering with recursive depth-first search.
@@ -672,7 +680,12 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 f"visits={depth_visits.get(depth, 0):,}/{budget['max_node_candidates']:,}",
                 flush=True,
             )
-            return False
+            # This cap is shared across the whole depth, not one parent prefix.
+            # Once it is exhausted, no remaining ancestor sibling can produce a
+            # complete layout without crossing this closed level. Propagate the
+            # stop through the recursive stack instead of manufacturing doomed
+            # siblings at shallower depths.
+            raise DepthNodeBudgetExhausted(depth, name)
 
         nodes += 1
         deepest = max(deepest, depth)
@@ -747,7 +760,13 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             )
         return False
 
-    try:        exhausted = not search(0)
+    try:
+        exhausted = not search(0)
+    except DepthNodeBudgetExhausted as exc:
+        exhausted = True
+        dump_diagnostics(
+            f"node budget exhausted at depth={exc.depth}/{len(order)} body={exc.name}"
+        )
     except CandidateBudgetExhausted:
         dump_diagnostics("run-wide candidate budget exhausted")
         raise
