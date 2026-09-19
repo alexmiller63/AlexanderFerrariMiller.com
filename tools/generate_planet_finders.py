@@ -500,9 +500,15 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         raw_positions = 0
         candidate_started = time.monotonic()
         candidate_last_heartbeat = candidate_started
+        last_yield_at = None
+        suspended_total = 0.0
         timing = {"stream_wait": 0.0, "overlap": 0.0, "existing_leader": 0.0, "route": 0.0, "final_leader": 0.0}
         legal_positions = iter(legal_candidate_positions(longitude, w, h, reserved))
         while True:
+            resumed_at = time.monotonic()
+            if last_yield_at is not None:
+                suspended_total += max(0.0, resumed_at - last_yield_at)
+                last_yield_at = None
             stream_t0 = time.monotonic()
             try:
                 x, y, box = next(legal_positions)
@@ -519,7 +525,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                     f"rejects[overlap={stats['overlap']:,},leader={stats['leader']:,},route={stats['route']:,}] "
                     f"time[stream-wait={timing['stream_wait']:.3f}s,overlap={timing['overlap']:.3f}s,"
                     f"existing-leader={timing['existing_leader']:.3f}s,route={timing['route']:.3f}s,"
-                    f"final-leader={timing['final_leader']:.3f}s]",
+                    f"final-leader={timing['final_leader']:.3f}s,suspended={suspended_total:.3f}s]",
                     flush=True,
                 )
                 candidate_last_heartbeat = now
@@ -574,6 +580,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 "elbows": {},
             })
             route_diag["obstacle_names"] = reserved_names + [f"placed_{i}" for i in range(len(placed))]
+            t0 = time.monotonic()
             path = route(
                 anchor,
                 (x, y),
@@ -582,6 +589,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 allow_initial_escape_count=len(reserved),
                 prefix_cache=route_prefix_cache,
             )
+            timing["route"] += time.monotonic() - t0
             if path is None:
                 rejected_route += 1
                 stats["route"] += 1
@@ -598,10 +606,8 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             body_candidates += 1
             stats["generated"] += 1
             stats["viable"] += 1
-            active_time += time.monotonic() - active_started
-            last_resume = time.monotonic()
+            last_yield_at = time.monotonic()
             yield box, path
-            last_resume = time.monotonic()
 
     def clear_selected(frame):
         """Remove the placement owned by one active DFS frame."""
