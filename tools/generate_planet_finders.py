@@ -631,13 +631,13 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 rejected_leader += 1
                 stats["leader"] += 1
                 continue
-            # A proposal becomes a search candidate only after all immediate
-            # geometry checks, including leader routing and leader-to-leader
-            # clearance, have succeeded.
-            candidates += 1
+            # This geometry is viable and may enter the frame's option list,
+            # but it has not been *tried* by DFS yet. Do not charge search
+            # candidate budget here. Eager option generation used to burn
+            # dozens of candidates that were never selected, starving deeper
+            # bodies and the squeaky-wheel retry.
             body_candidates += 1
             stats["generated"] += 1
-            budget["candidates"] += 1
             stats["viable"] += 1
             viable.append((box, path))
         return viable
@@ -887,6 +887,21 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
 
         original_index, (symbol, name, longitude) = frame["item"]
         current_body = name
+
+        # Charge candidate budget only when DFS actually tries an option.
+        # Merely precomputing viable options must not consume the search
+        # budget; rejected geometry already died before entering this list.
+        if budget["candidates"] - order_candidate_start >= max_order_candidates:
+            raise StopIteration("Planet Finder per-order candidate budget exhausted")
+        if budget["candidates"] >= effective_global_limit:
+            raise StopIteration(
+                "Planet Finder squeaky reserve reached"
+                if not is_squeaky_order
+                else "Planet Finder candidate budget exhausted"
+            )
+        candidates += 1
+        budget["candidates"] += 1
+
         box, path = frame["options"][frame["index"]]
         placed.append(box)
         leaders.append(path)
