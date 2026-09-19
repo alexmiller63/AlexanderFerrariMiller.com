@@ -175,7 +175,7 @@ def candidate_positions(longitude: float):
     consume DFS/search budget.
     """
     preferred_radii = (345, 300, 255, 210, 390, 165, 120)
-    preferred_shifts = (0, -42, 42, -84, 84, -126, 126, -168, 168, -210, 210)
+    preferred_shifts = (0, -105, 105, -210, 210)
     theta = math.radians(180 + longitude)
     tx, ty = -math.sin(theta), -math.cos(theta)
     seen: set[tuple[int, int]] = set()
@@ -192,7 +192,7 @@ def candidate_positions(longitude: float):
 
     yield from offer(preferred_radii, preferred_shifts)
     expanded_radii = tuple(range(400, 79, -20))
-    expanded_shifts = (0,) + tuple(v for n in range(28, 337, 28) for v in (-n, n))
+    expanded_shifts = (0,) + tuple(v for n in range(105, 421, 105) for v in (-n, n))
     yield from offer(expanded_radii, expanded_shifts)
 
 
@@ -436,12 +436,6 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
     rejected_route = 0
     backtracks = 0
     deepest = 0
-    # Targeted forward-pruning diagnostics: count only the cheap one-child
-    # viability probe, separately from ordinary geometry rejection/backtracking.
-    viability_checks = 0
-    viability_prunes = 0
-    viability_prunes_by_parent = {}
-    deepest_viability_prune = None
     # Diagnostic-only DFS residence accounting. Charge elapsed controller time
     # to the depth/body that owned control between loop iterations; this shows
     # which descendant subtree consumes a parent's generator suspension time.
@@ -659,7 +653,6 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         Returning from a child is the only backtracking mechanism.
         """
         nonlocal nodes, deepest, candidates, backtracks, current_body
-        nonlocal viability_checks, viability_prunes, deepest_viability_prune
 
         run_elapsed = time.monotonic() - budget["started"]
         if run_elapsed >= budget["max_seconds"]:
@@ -719,30 +712,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             staged[original_index] = (symbol, name, longitude, box, path)
 
             try:
-                # Cheap forward viability probe. Backtracking belongs to search();
-                # this test asks only whether the immediate next body has at
-                # least one legal child in the current state. It deliberately
-                # short-circuits on that first child instead of recursively
-                # building a second search tree inside the DFS.
-                def continuation_exists(next_depth):
-                    if next_depth == len(order):
-                        return True
-                    child_item = order[next_depth]
-                    return next(viable_candidates(child_item, next_depth), None) is not None
-
-                viability_checks += 1
-                child_viable = continuation_exists(depth + 1)
-                if not child_viable:
-                    viability_prunes += 1
-                    child_name = (
-                        order[depth + 1][1][1]
-                        if depth + 1 < len(order) else "complete-layout"
-                    )
-                    key = (depth, name, child_name)
-                    viability_prunes_by_parent[key] = viability_prunes_by_parent.get(key, 0) + 1
-                    if deepest_viability_prune is None or depth > deepest_viability_prune[0]:
-                        deepest_viability_prune = (depth, name, child_name)
-                elif search(depth + 1):
+                if search(depth + 1):
                     return True
             finally:
                 staged.pop(original_index, None)
@@ -775,22 +745,6 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
 
     if exhausted:
         dump_diagnostics("search exhausted without a complete solution")
-
-    print(
-        f"Planet Finder {mode}: VIABILITY checks={viability_checks:,} "
-        f"prunes={viability_prunes:,} "
-        f"deepest-prune={deepest_viability_prune if deepest_viability_prune else 'none'}",
-        flush=True,
-    )
-    for (parent_depth, parent_name, child_name), count in sorted(
-        viability_prunes_by_parent.items(),
-        key=lambda row: (-row[1], -row[0][0], row[0][1], row[0][2]),
-    ):
-        print(
-            f"Planet Finder {mode}: VIABILITY PRUNE depth={parent_depth}/{len(order)} "
-            f"parent={parent_name} child={child_name} count={count:,}",
-            flush=True,
-        )
 
     elapsed = time.monotonic() - started
     print(
