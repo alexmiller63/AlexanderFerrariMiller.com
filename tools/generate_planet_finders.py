@@ -879,6 +879,35 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 if position == 0:
                     exhausted = True
                     break
+
+                # Family pruning: a zero-candidate descendant proves the
+                # current family prefix unusable.  When a grandparent exists,
+                # discard the parent with it and introduce the grandparent's
+                # next sibling ("great-uncle") instead of enumerating more
+                # descendants of the same doomed family.
+                if position >= 2:
+                    parent_depth = position - 1
+                    grandparent_depth = position - 2
+                    clear_selected(stack[parent_depth])
+                    stack.pop()
+                    grandparent = stack[grandparent_depth]
+                    clear_selected(grandparent)
+                    try:
+                        grandparent["next_option"] = next(grandparent["options"])
+                    except StopIteration:
+                        grandparent["exhausted"] = True
+                    backtracks += 1
+                    print(
+                        f"Planet Finder {mode}: PRUNE doomed-family "
+                        f"dead-depth={position} jump-depth={grandparent_depth} "
+                        f"next=great-uncle",
+                        flush=True,
+                    )
+                    resume_position = grandparent_depth
+                    continue
+
+                # At depth 1 there is no grandparent, so ordinary parent
+                # backtracking is the only legal transition.
                 position -= 1
                 clear_selected(stack[position])
                 try:
@@ -886,9 +915,6 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 except StopIteration:
                     stack[position]["exhausted"] = True
                 backtracks += 1
-                # Resume the parent frame we just advanced. Using len(stack)
-                # here skips that now-unselected parent and incorrectly
-                # generates child candidates against an incomplete prefix.
                 resume_position = position
                 continue
 
