@@ -955,13 +955,52 @@ def layout(
             )
         except StopIteration as exc:
             if "squeaky reserve reached" in str(exc):
+                # The ordinary ordering has reached the reserved final slice.
+                # Do not spin through more permutations at the same candidate
+                # count.  Immediately retry this evidence-driven ordering with
+                # the most recently identified dead-end body promoted, which
+                # makes the reserved evaluations available to _solve_order().
+                squeaky_body = budget.get("squeaky_body")
+                if not squeaky_body:
+                    print(
+                        f"Planet Finder {mode}: SEARCH STOP reserved slice reached "
+                        f"without a squeaky-wheel body at order={order_index}",
+                        flush=True,
+                    )
+                    break
+                squeaky_index = next(
+                    (i for i, item in enumerate(order) if item[1][1] == squeaky_body),
+                    None,
+                )
+                if squeaky_index is not None and squeaky_index > 0:
+                    squeaky_item = order.pop(squeaky_index)
+                    order.insert(0, squeaky_item)
+                budget["squeaky_order_active"] = True
                 print(
-                    f"Planet Finder {mode}: ORDER {order_index} stopped at reserved "
-                    f"squeaky-wheel slice; advancing with "
-                    f"{budget['max_candidates'] - budget['candidates']:,} evaluations reserved",
+                    f"Planet Finder {mode}: SQUEAKY-WHEEL reserved retry "
+                    f"body={squeaky_body} order={order_index} "
+                    f"evaluations-available="
+                    f"{budget['max_candidates'] - budget['candidates']:,}",
                     flush=True,
                 )
-                continue
+                try:
+                    solutions = _solve_order(
+                        mode,
+                        bodies,
+                        order,
+                        budget,
+                        target_solutions=max(1, target_solutions - len(all_solutions)),
+                        order_index=order_index,
+                        total_orders=total_orders,
+                        context_label=context_label,
+                    )
+                except StopIteration as squeaky_exc:
+                    print(
+                        f"Planet Finder {mode}: SEARCH STOP squeaky-wheel reserved "
+                        f"retry exhausted: {squeaky_exc}",
+                        flush=True,
+                    )
+                    break
             if budget.get("squeaky_order_active") and budget["candidates"] == order_candidate_start:
                 print(
                     f"Planet Finder {mode}: SEARCH STOP squeaky-wheel ordering made "
