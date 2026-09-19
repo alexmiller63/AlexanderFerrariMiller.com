@@ -375,7 +375,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         viable = []
         body_candidates = 0
         for x, y in candidate_positions(longitude):
-            if body_candidates >= ornery_limit and not viable:
+            if body_candidates >= ornery_limit:
                 print(
                     f"Planet Finder {mode}: ORNERY order={order_index} "
                     f"depth={depth}/{len(order)} body={name} "
