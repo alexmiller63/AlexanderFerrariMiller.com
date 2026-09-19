@@ -28,6 +28,11 @@ on:
         required: true
         default: '5'
         type: string
+      max_search_candidates:
+        description: Maximum candidate evaluations for the entire run
+        required: true
+        default: '1000000'
+        type: string
 
 permissions:
   contents: write
@@ -101,6 +106,7 @@ jobs:
         env:
           STAR_ALMANACK_EPHEMERIS_DIR: ${{ github.workspace }}/.cache/skyfield
           PLANET_FINDER_CANDIDATES: ${{ inputs.candidate_layouts }}
+          PLANET_FINDER_MAX_CANDIDATES: ${{ inputs.max_search_candidates }}
         run: python tools/populate_ephemeris_planet_finder_by_date.py "${{ steps.range.outputs.start_date }}" "${{ steps.range.outputs.end_date }}"
 
       - name: Commit Planet Finder changes only
