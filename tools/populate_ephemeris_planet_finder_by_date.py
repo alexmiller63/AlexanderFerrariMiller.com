@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from datetime import date
+import time
 
 import generate_planet_finders as finder
 import populate_ephemeris as ephemeris
@@ -52,7 +53,7 @@ def populate_week(
     context_label = f"week={week_index}/{total_weeks} ISO={year}-W{week:02d}"
     print(
         f"Starting ISO {year}-W{week:02d} (Monday {monday.isoformat()}) "
-        f"run-candidates={budget['candidates']:,}/{budget['max_candidates']:,}",
+        f"per-mode-candidate-limit={budget['max_candidates']:,}",
         flush=True,
     )
     values = {}
@@ -94,11 +95,24 @@ def populate_week(
     outdir = ephemeris.ROOT / "almanack" / str(year) / f"W{week:02d}" / "finders"
     outdir.mkdir(parents=True, exist_ok=True)
     for mode, filename in FINDER_FILENAMES.items():
+        # Candidate evaluations are a per-layout resource: Greek, Latin, and
+        # mixed each receive the full configured allowance.  Only the
+        # wall-clock deadline is shared across the complete generator run.
+        if budget["started"] is None:
+            budget["started"] = time.monotonic()
+            print(
+                f"Planet Finder SEARCH CLOCK STARTED: limit={budget['max_seconds']:.1f}s",
+                flush=True,
+            )
+        mode_budget = finder.new_search_budget(budget["max_candidates"])
+        mode_budget["started"] = budget["started"]
+        mode_budget["max_seconds"] = budget["max_seconds"]
         svg = finder.render(
             year, week, monday, mode, bodies,
-            budget=budget,
+            budget=mode_budget,
             context_label=context_label,
         )
+        budget["candidates"] += mode_budget["candidates"]
         (outdir / filename).write_text(svg, encoding="utf-8")
 
     print(f"Generated Ephemeris + Planet Finder for ISO {year}-W{week:02d}", flush=True)
@@ -115,7 +129,7 @@ def main() -> None:
     budget = finder.new_search_budget()
     print(
         f"Planet Finder RUN BUDGET: {budget['max_candidates']:,} candidate evaluations "
-        f"shared across all {total_weeks} requested weeks and all three modes",
+        f"per mode/layout; {budget['max_seconds']:.1f}s wall-clock shared across the run",
         flush=True,
     )
     for year, selected in grouped.items():
@@ -126,8 +140,8 @@ def main() -> None:
                 year, week, generated, budget, week_index, total_weeks
             )
     print(
-        f"Planet Finder RUN COMPLETE: candidates={budget['candidates']:,}/"
-        f"{budget['max_candidates']:,} across {total_weeks} weeks",
+        f"Planet Finder RUN COMPLETE: total-candidates={budget['candidates']:,} "
+        f"with per-mode limit={budget['max_candidates']:,} across {total_weeks} weeks",
         flush=True,
     )
     print(f"Ephemeris + Planet Finder complete for {start.isoformat()} through {end.isoformat()}: {total} page copies updated")
