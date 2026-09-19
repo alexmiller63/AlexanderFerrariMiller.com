@@ -10,6 +10,7 @@ from __future__ import annotations
 import argparse
 import html
 import math
+import time
 from dataclasses import dataclass
 from datetime import date
 from pathlib import Path
@@ -161,10 +162,34 @@ def _solve_order(mode: str, bodies, order):
     leaders: list[list[tuple[float, float]]] = []
     nodes = 0
     max_nodes = 1_000_000
+    started = time.monotonic()
+    last_heartbeat = started
+    candidates = 0
+    rejected_overlap = 0
+    rejected_leader = 0
+    rejected_route = 0
+    backtracks = 0
+    deepest = 0
+    current_body = "-"
 
     def solve(position: int) -> bool:
-        nonlocal nodes
+        nonlocal nodes, last_heartbeat, candidates, rejected_overlap
+        nonlocal rejected_leader, rejected_route, backtracks, deepest, current_body
         nodes += 1
+        deepest = max(deepest, position)
+        now = time.monotonic()
+        if now - last_heartbeat >= 5:
+            elapsed = now - started
+            rate = nodes / elapsed if elapsed else 0
+            print(
+                f"Planet Finder {mode}: heartbeat elapsed={elapsed:.1f}s "
+                f"nodes={nodes:,} ({rate:,.0f}/s) depth={position}/{len(order)} "
+                f"body={current_body} candidates={candidates:,} "
+                f"rejects[overlap={rejected_overlap:,},leader={rejected_leader:,},route={rejected_route:,}] "
+                f"backtracks={backtracks:,}",
+                flush=True,
+            )
+            last_heartbeat = now
         if nodes > max_nodes:
             raise RuntimeError(
                 f"Planet Finder search budget exhausted in {mode} mode "
@@ -174,17 +199,22 @@ def _solve_order(mode: str, bodies, order):
             return True
 
         original_index, (symbol, name, longitude) = order[position]
+        current_body = name
         w, h = label_size(mode, name)
         anchor = xy(longitude, RI - 5)
 
         for x, y in candidate_positions(longitude):
+            candidates += 1
             box = Box(x, y, w, h)
             if any(boxes_overlap(box, b, 14) for b in reserved + placed):
+                rejected_overlap += 1
                 continue
             if any(segment_hits_box(seg[i], seg[i + 1], box, 10) for seg in leaders for i in range(len(seg) - 1)):
+                rejected_leader += 1
                 continue
             path = route(anchor, (x, y), reserved + placed)
             if path is None:
+                rejected_route += 1
                 continue
 
             placed.append(box)
@@ -195,9 +225,18 @@ def _solve_order(mode: str, bodies, order):
             del staged[original_index]
             leaders.pop()
             placed.pop()
+            backtracks += 1
         return False
 
     solved = solve(0)
+    elapsed = time.monotonic() - started
+    print(
+        f"Planet Finder {mode}: pass summary first={order[0][1][1]} solved={solved} "
+        f"elapsed={elapsed:.2f}s nodes={nodes:,} deepest={deepest}/{len(order)} "
+        f"candidates={candidates:,} rejects[overlap={rejected_overlap:,},"
+        f"leader={rejected_leader:,},route={rejected_route:,}] backtracks={backtracks:,}",
+        flush=True,
+    )
     if not solved:
         return False, None
     return True, [staged[i] for i in range(len(bodies))]
