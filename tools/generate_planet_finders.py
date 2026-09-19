@@ -712,20 +712,35 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             staged[original_index] = (symbol, name, longitude, box, path)
 
             try:
-                # Forward-check one generation before descending. A parent
-                # placement with no legal child is a doomed family: reject it
-                # here and let this frame try the next sibling. The final body
-                # has no child to test.
-                child_viable = True
-                if depth + 1 < len(order):
-                    child_stream = viable_candidates(order[depth + 1], depth + 1)
-                    try:
-                        next(child_stream)
-                    except StopIteration:
-                        child_viable = False
-                    finally:
-                        child_stream.close()
+                # Recursive forward viability: reject a parent placement unless
+                # the remaining bodies have at least one complete continuation.
+                # This is deliberately the same recursive backtracking relation
+                # as DFS, rather than a one-child peek: a Jupiter placement that
+                # admits Saturn but strands Uranus (or any later body) is a
+                # doomed family and must be discarded before the main search
+                # grows that subtree.
+                def continuation_exists(next_depth):
+                    if next_depth == len(order):
+                        return True
 
+                    child_item = order[next_depth]
+                    child_index, (child_symbol, child_name, child_longitude) = child_item
+                    for child_box, child_path in viable_candidates(child_item, next_depth):
+                        placed.append(child_box)
+                        leaders.append(child_path)
+                        staged[child_index] = (
+                            child_symbol, child_name, child_longitude, child_box, child_path
+                        )
+                        try:
+                            if continuation_exists(next_depth + 1):
+                                return True
+                        finally:
+                            staged.pop(child_index, None)
+                            leaders.pop()
+                            placed.pop()
+                    return False
+
+                child_viable = continuation_exists(depth + 1)
                 if child_viable and search(depth + 1):
                     return True
             finally:
