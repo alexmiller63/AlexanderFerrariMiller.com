@@ -224,13 +224,12 @@ def route(
     zodiac label: the leader may escape that local label, but after it has
     exited it may not cross that obstacle again.
     """
-    def hits(a, b, obstacle, allow_initial_escape=False):
+    def hits(a, b, obstacle, allow_initial_escape=False, pad=8):
         # Only an immutable chart obstacle containing the body's anchor may
         # permit the initial escape. A placed label belonging to another body
         # must never become an escape obstacle merely because this body's
         # anchor happens to fall inside it. The final validator enforces the
         # same rule; route generation must agree with it.
-        pad = 8
         inside = (
             obstacle.left - pad <= a[0] <= obstacle.right + pad and
             obstacle.top - pad <= a[1] <= obstacle.bottom + pad
@@ -273,9 +272,21 @@ def route(
         escaped = (a[0] + dx * t, a[1] + dy * t)
         return segment_hits_box(escaped, b, obstacle, pad)
 
+    def obstacle_pad(i: int) -> int:
+        # Match final validation exactly: immutable chart obstacles use 8 px
+        # clearance; placed body labels use 10 px. Candidate admission must
+        # never be more permissive than final validation.
+        return 8 if i < allow_initial_escape_count else 10
+
     straight_blockers = [
         i for i, b in enumerate(obstacles)
-        if hits(anchor, center, b, allow_initial_escape=(i < allow_initial_escape_count))
+        if hits(
+            anchor,
+            center,
+            b,
+            allow_initial_escape=(i < allow_initial_escape_count),
+            pad=obstacle_pad(i),
+        )
     ]
     if not straight_blockers:
         return [anchor, center]
@@ -291,11 +302,17 @@ def route(
         ex, ey = xy(lon, r)
         first_blockers = [
             i for i, b in enumerate(obstacles)
-            if hits(anchor, (ex, ey), b, allow_initial_escape=(i < allow_initial_escape_count))
+            if hits(
+                anchor,
+                (ex, ey),
+                b,
+                allow_initial_escape=(i < allow_initial_escape_count),
+                pad=obstacle_pad(i),
+            )
         ]
         second_blockers = [
             i for i, b in enumerate(obstacles)
-            if hits((ex, ey), center, b)
+            if hits((ex, ey), center, b, pad=obstacle_pad(i))
         ]
         if not first_blockers and not second_blockers:
             return [anchor, (ex, ey), center]
@@ -320,11 +337,23 @@ def route(
         for shift in (70, -70, 105, -105, 140, -140, 175, -175, 210, -210, 245, -245, 280, -280, 315, -315):
             e2 = (e1[0] + shift * tx, e1[1] + shift * ty)
             first_blocked = any(
-                hits(anchor, e1, b, allow_initial_escape=(i < allow_initial_escape_count))
+                hits(
+                    anchor,
+                    e1,
+                    b,
+                    allow_initial_escape=(i < allow_initial_escape_count),
+                    pad=obstacle_pad(i),
+                )
                 for i, b in enumerate(obstacles)
             )
-            second_blocked = any(hits(e1, e2, b) for b in obstacles)
-            third_blocked = any(hits(e2, center, b) for b in obstacles)
+            second_blocked = any(
+                hits(e1, e2, b, pad=obstacle_pad(i))
+                for i, b in enumerate(obstacles)
+            )
+            third_blocked = any(
+                hits(e2, center, b, pad=obstacle_pad(i))
+                for i, b in enumerate(obstacles)
+            )
             if not first_blocked and not second_blocked and not third_blocked:
                 if diagnostic is not None:
                     diagnostic["dogleg_success"] = diagnostic.get("dogleg_success", 0) + 1
