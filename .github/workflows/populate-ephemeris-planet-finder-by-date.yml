@@ -26,12 +26,17 @@ on:
       candidate_layouts:
         description: Complete layouts to score per mode
         required: true
-        default: '2'
+        default: '5'
+        type: string
+      max_node_candidates:
+        description: Maximum candidate placements examined per DFS node
+        required: true
+        default: '100'
         type: string
       max_search_candidates:
         description: Maximum candidate evaluations for the entire run
         required: true
-        default: '1000'
+        default: '10000'
         type: string
       max_search_seconds:
         description: Maximum Planet Finder search time for the entire run
@@ -118,6 +123,7 @@ jobs:
         env:
           STAR_ALMANACK_EPHEMERIS_DIR: ${{ github.workspace }}/.cache/skyfield
           PLANET_FINDER_CANDIDATES: ${{ inputs.candidate_layouts }}
+          PLANET_FINDER_MAX_NODE_CANDIDATES: ${{ inputs.max_node_candidates }}
           PLANET_FINDER_MAX_CANDIDATES: ${{ inputs.max_search_candidates }}
           PLANET_FINDER_MAX_SECONDS: ${{ inputs.max_search_seconds }}
           PLANET_FINDER_MAX_ORDER_SECONDS: '5'
