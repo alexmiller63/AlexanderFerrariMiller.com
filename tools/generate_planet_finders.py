@@ -155,7 +155,7 @@ def route(anchor: tuple[float, float], center: tuple[float, float], obstacles: l
 
 
 def _solve_order(mode: str, bodies, order, budget):
-    """Solve one complete placement pass in the supplied body order."""
+    """Solve one placement pass, choosing the most constrained body at each level."""
     reserved = reserved_boxes(mode)
     staged = {}
     placed: list[Box] = []
@@ -172,10 +172,40 @@ def _solve_order(mode: str, bodies, order, budget):
     deepest = 0
     current_body = "-"
 
-    def solve(position: int) -> bool:
-        nonlocal nodes, last_heartbeat, candidates, rejected_overlap
-        nonlocal rejected_leader, rejected_route, backtracks, deepest, current_body
+    def viable_candidates(item):
+        """Materialize currently viable placements for one remaining body."""
+        nonlocal candidates, rejected_overlap, rejected_leader, rejected_route
+        original_index, (symbol, name, longitude) = item
+        w, h = label_size(mode, name)
+        anchor = xy(longitude, RI - 5)
+        viable = []
+        for x, y in candidate_positions(longitude):
+            candidates += 1
+            budget["candidates"] += 1
+            if budget["candidates"] > budget["max_candidates"]:
+                raise RuntimeError(
+                    f"Planet Finder candidate budget exhausted in {mode} mode "
+                    f"after {budget['max_candidates']:,} candidate evaluations"
+                )
+            box = Box(x, y, w, h)
+            if any(boxes_overlap(box, b, 14) for b in reserved + placed):
+                rejected_overlap += 1
+                continue
+            if any(segment_hits_box(seg[i], seg[i + 1], box, 10)
+                   for seg in leaders for i in range(len(seg) - 1)):
+                rejected_leader += 1
+                continue
+            path = route(anchor, (x, y), reserved + placed)
+            if path is None:
+                rejected_route += 1
+                continue
+            viable.append((box, path))
+        return viable
+
+    def solve(remaining) -> bool:
+        nonlocal nodes, last_heartbeat, backtracks, deepest, current_body
         nodes += 1
+        position = len(order) - len(remaining)
         deepest = max(deepest, position)
         now = time.monotonic()
         if now - last_heartbeat >= 5:
@@ -193,40 +223,31 @@ def _solve_order(mode: str, bodies, order, budget):
         if nodes > max_nodes:
             raise RuntimeError(
                 f"Planet Finder search budget exhausted in {mode} mode "
-                f"starting with {order[0][1][1]} after {max_nodes:,} recursive nodes"
+                f"after {max_nodes:,} recursive nodes"
             )
-        if position == len(order):
+        if not remaining:
             return True
 
-        original_index, (symbol, name, longitude) = order[position]
+        # Squeaky wheel gets the grease: measure every remaining body against
+        # the current partial layout, then place the one with the fewest options.
+        ranked = []
+        for rank, item in enumerate(remaining):
+            options = viable_candidates(item)
+            ranked.append((len(options), rank, item, options))
+            if not options:
+                current_body = item[1][1]
+                backtracks += 1
+                return False
+        _, chosen_rank, chosen, options = min(ranked, key=lambda row: (row[0], row[1]))
+        original_index, (symbol, name, longitude) = chosen
         current_body = name
-        w, h = label_size(mode, name)
-        anchor = xy(longitude, RI - 5)
+        next_remaining = remaining[:chosen_rank] + remaining[chosen_rank + 1:]
 
-        for x, y in candidate_positions(longitude):
-            candidates += 1
-            budget["candidates"] += 1
-            if budget["candidates"] > budget["max_candidates"]:
-                raise RuntimeError(
-                    f"Planet Finder candidate budget exhausted in {mode} mode "
-                    f"after {budget['max_candidates']:,} candidate evaluations"
-                )
-            box = Box(x, y, w, h)
-            if any(boxes_overlap(box, b, 14) for b in reserved + placed):
-                rejected_overlap += 1
-                continue
-            if any(segment_hits_box(seg[i], seg[i + 1], box, 10) for seg in leaders for i in range(len(seg) - 1)):
-                rejected_leader += 1
-                continue
-            path = route(anchor, (x, y), reserved + placed)
-            if path is None:
-                rejected_route += 1
-                continue
-
+        for box, path in options:
             placed.append(box)
             leaders.append(path)
             staged[original_index] = (symbol, name, longitude, box, path)
-            if solve(position + 1):
+            if solve(next_remaining):
                 return True
             del staged[original_index]
             leaders.pop()
@@ -234,7 +255,7 @@ def _solve_order(mode: str, bodies, order, budget):
             backtracks += 1
         return False
 
-    solved = solve(0)
+    solved = solve(order)
     elapsed = time.monotonic() - started
     print(
         f"Planet Finder {mode}: pass summary first={order[0][1][1]} solved={solved} "
