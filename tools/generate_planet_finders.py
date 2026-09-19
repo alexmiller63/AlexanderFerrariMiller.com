@@ -382,11 +382,34 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5):
             key = tuple((round(row[3].x, 3), round(row[3].y, 3), tuple((round(x, 3), round(y, 3)) for x, y in row[4])) for row in result)
             if key not in solution_keys:
                 solution_keys.add(key)
+
+                # Validate at the leaf, not after filling the solution quota.
+                # A failed complete layout teaches the ordering heuristic which
+                # bodies are causing trouble, then search continues immediately.
+                valid, errors = validate_layout(mode, result)
+                if not valid:
+                    implicated = set()
+                    for error in errors:
+                        for body_name in CANONICAL:
+                            if body_name in error:
+                                implicated.add(body_name)
+                    for body_name in implicated:
+                        conflict_pressure[body_name] = conflict_pressure.get(body_name, 0) + 1
+                    print(
+                        f"Planet Finder {mode}: learned from rejected complete layout "
+                        f"pressure=" + ",".join(
+                            f"{name}:{conflict_pressure[name]}" for name in sorted(implicated)
+                        ) + " errors=" + "; ".join(errors),
+                        flush=True,
+                    )
+                    return False
+
                 solutions.append(result)
-                solution_orders.append(tuple(row[1] for row in result))
+                placement_order = tuple(staged[i][1] for i in staged)
+                solution_orders.append(placement_order)
                 print(
-                    f"Planet Finder {mode}: complete candidate {len(solutions)}/{target_solutions} "
-                    f"placement-order=" + " > ".join(staged[i][1] for i in staged),
+                    f"Planet Finder {mode}: complete valid candidate {len(solutions)}/{target_solutions} "
+                    f"placement-order=" + " > ".join(placement_order),
                     flush=True,
                 )
             return len(solutions) >= target_solutions
