@@ -420,7 +420,11 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                     f"action=stop",
                     flush=True,
                 )
-                break
+                # This is a run-wide terminal condition, not an ordinary
+                # no-options dead end. Returning [] here makes the DFS
+                # backtrack and call viable_candidates() again forever while
+                # the shared counter remains pinned at its maximum.
+                raise StopIteration("Planet Finder global candidate budget exhausted")
             depths_including_current = remaining_depths + 1
             current_allowance = max(1, remaining_budget // depths_including_current)
             current_allowance = min(ornery_limit, current_allowance)
@@ -800,16 +804,25 @@ def layout(
             flush=True,
         )
 
-        solutions = _solve_order(
-            mode,
-            bodies,
-            order,
-            budget,
-            target_solutions=max(1, target_solutions - len(all_solutions)),
-            order_index=order_index,
-            total_orders=total_orders,
-            context_label=context_label,
-        )
+        try:
+            solutions = _solve_order(
+                mode,
+                bodies,
+                order,
+                budget,
+                target_solutions=max(1, target_solutions - len(all_solutions)),
+                order_index=order_index,
+                total_orders=total_orders,
+                context_label=context_label,
+            )
+        except StopIteration:
+            print(
+                f"Planet Finder {mode}: SEARCH STOP candidate budget exhausted "
+                f"orders-tried={order_index} "
+                f"candidates={budget['candidates']:,}/{budget['max_candidates']:,}",
+                flush=True,
+            )
+            break
         for result in solutions:
             key = tuple(
                 (
