@@ -500,8 +500,15 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         raw_positions = 0
         candidate_started = time.monotonic()
         candidate_last_heartbeat = candidate_started
-        timing = {"overlap": 0.0, "existing_leader": 0.0, "route": 0.0, "final_leader": 0.0}
-        for x, y, box in legal_candidate_positions(longitude, w, h, reserved):
+        timing = {"stream_wait": 0.0, "overlap": 0.0, "existing_leader": 0.0, "route": 0.0, "final_leader": 0.0}
+        legal_positions = iter(legal_candidate_positions(longitude, w, h, reserved))
+        while True:
+            stream_t0 = time.monotonic()
+            try:
+                x, y, box = next(legal_positions)
+            except StopIteration:
+                break
+            timing["stream_wait"] += time.monotonic() - stream_t0
             raw_positions += 1
             now = time.monotonic()
             if now - candidate_last_heartbeat >= 5.0:
@@ -510,8 +517,9 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                     f"depth={depth}/{len(order)} body={name} elapsed={now-candidate_started:.1f}s "
                     f"raw={raw_positions:,} viable={body_candidates:,} "
                     f"rejects[overlap={stats['overlap']:,},leader={stats['leader']:,},route={stats['route']:,}] "
-                    f"time[overlap={timing['overlap']:.3f}s,existing-leader={timing['existing_leader']:.3f}s,"
-                    f"route={timing['route']:.3f}s,final-leader={timing['final_leader']:.3f}s]",
+                    f"time[stream-wait={timing['stream_wait']:.3f}s,overlap={timing['overlap']:.3f}s,"
+                    f"existing-leader={timing['existing_leader']:.3f}s,route={timing['route']:.3f}s,"
+                    f"final-leader={timing['final_leader']:.3f}s]",
                     flush=True,
                 )
                 candidate_last_heartbeat = now
