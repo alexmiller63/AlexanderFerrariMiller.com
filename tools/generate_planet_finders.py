@@ -207,6 +207,16 @@ def legal_candidate_positions(longitude: float, w: float, h: float, reserved: li
         box = Box(x, y, w, h)
         if any(boxes_overlap(box, obstacle, 14) for obstacle in reserved):
             continue
+        # Body labels live inside the inner zodiac rim.  A label touching or
+        # crossing that border is rotten geometry, not a scoring preference.
+        # Test all 4 corners with clearance before the proposal can enter DFS.
+        rim_limit = RI - 14
+        if any(
+            math.hypot(px - CX, py - CY) >= rim_limit
+            for px in (box.left, box.right)
+            for py in (box.top, box.bottom)
+        ):
+            continue
         yield x, y, box
 
 
@@ -397,8 +407,7 @@ def _planned_order_ranks(total: int):
     step = 19_958_401
     rank = 0
     while len(seen) < total:
-        rank = (rank + step) % total
-        if rank not in seen:
+        rank = (rank + step) % total        if rank not in seen:
             seen.add(rank)
             yield rank
 
@@ -797,8 +806,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             selected_flags = [frame.get("selected") is not None for frame in stack]
             try:
                 first_unselected = selected_flags.index(False)
-            except ValueError:
-                raise RuntimeError(
+            except ValueError:                raise RuntimeError(
                     f"Planet Finder DFS state corruption in {mode}: "
                     "sentinel reached with every frame selected"
                 )
@@ -1197,8 +1205,7 @@ def validate_layout(mode: str, result) -> tuple[bool, list[str]]:
         name = result[i][1]
         for j, box in enumerate(boxes):
             if i == j:
-                continue
-            for a, b in zip(path, path[1:]):
+                continue            for a, b in zip(path, path[1:]):
                 if segment_hits_box(a, b, box, 10):
                     errors.append(f"{name}: leader crosses {result[j][1]} label")
                     break
@@ -1215,6 +1222,26 @@ def validate_layout(mode: str, result) -> tuple[bool, list[str]]:
                 if segment_hits_box(a, b, obstacle, 8):
                     errors.append(f"{name}: leader crosses reserved obstacle {j}")
                     break
+
+    # Leaders are mutually exclusive geometry.  This is intentionally a
+    # second, independent check after proposal-time rejection so a stale or
+    # future search-state bug can never render crossing/grazing leaders.
+    for i, path in enumerate(paths):
+        for j in range(i):
+            if leaders_too_close(path, [paths[j]]):
+                errors.append(
+                    f"{result[i][1]}: leader crosses or grazes {result[j][1]} leader"
+                )
+
+    # Recheck the hard inner-rim rule independently of candidate generation.
+    rim_limit = RI - 14
+    for i, box in enumerate(boxes):
+        if any(
+            math.hypot(px - CX, py - CY) >= rim_limit
+            for px in (box.left, box.right)
+            for py in (box.top, box.bottom)
+        ):
+            errors.append(f"{result[i][1]}: label collides with inner zodiac border")
 
     return not errors, errors
 
