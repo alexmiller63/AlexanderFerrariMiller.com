@@ -713,7 +713,21 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             staged[original_index] = (symbol, name, longitude, box, path)
 
             try:
-                if search(depth + 1):
+                # Forward-check one generation before descending. A parent
+                # placement with no legal child is a doomed family: reject it
+                # here and let this frame try the next sibling. The final body
+                # has no child to test.
+                child_viable = True
+                if depth + 1 < len(order):
+                    child_stream = viable_candidates(order[depth + 1], depth + 1)
+                    try:
+                        next(child_stream)
+                    except StopIteration:
+                        child_viable = False
+                    finally:
+                        child_stream.close()
+
+                if child_viable and search(depth + 1):
                     return True
             finally:
                 staged.pop(original_index, None)
