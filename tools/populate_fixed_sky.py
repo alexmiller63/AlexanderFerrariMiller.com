@@ -18,6 +18,7 @@ ROOT=Path(__file__).resolve().parents[1]; SRC=ROOT; PUBLIC=ROOT/"almanack"; SOUR
 REGIONS=SRC/"fixed-object-regions.yaml"
 FIXED_OBJECTS=SRC/"fixed-objects.yaml"
 FIXED_OBJECT_REGISTRY=SRC/"database"/"fixed-object-registry.json"
+CATALOG_ENTRY_TARGETS=SRC/"database"/"catalog-entry-targets.json"
 GREEK_BAYER={"Alp":"α","Bet":"β","Gam":"γ","Del":"δ","Eps":"ε","Zet":"ζ","Eta":"η","The":"θ","Iot":"ι","Kap":"κ","Lam":"λ","Mu":"μ","Nu":"ν","Xi":"ξ","Omi":"ο","Pi":"π","Rho":"ρ","Sig":"σ","Tau":"τ","Ups":"υ","Phi":"φ","Chi":"χ","Psi":"ψ","Ome":"ω"}
 
 def requested_years():
@@ -50,6 +51,32 @@ def load_messier_catalog():
     return catalog
 REGION_OBJECTS=load_regions()
 MESSIER_CATALOG=load_messier_catalog()
+
+def load_catalog_entry_targets():
+    if not CATALOG_ENTRY_TARGETS.exists():
+        raise RuntimeError(f"Missing {CATALOG_ENTRY_TARGETS.relative_to(ROOT)}")
+    data=json.loads(CATALOG_ENTRY_TARGETS.read_text(encoding="utf-8"))
+    return {str(entry.get("catalog_entry_key") or "").strip(): entry for entry in data.get("catalog_entries", [])}
+CATALOG_ENTRY_TARGETS_DATA=load_catalog_entry_targets()
+
+def catalog_target_fixed_object_id(catalog, designation):
+    """Return a direct physical-object ID when the catalog entry designates one.
+
+    Catalog entries can legitimately represent regions or structured targets
+    (for example M24 and M40). Those targets must not be fabricated into
+    physical fixed-object identities merely to satisfy calendar metadata.
+    """
+    entry=CATALOG_ENTRY_TARGETS_DATA.get(f"{catalog.lower()}:{designation}")
+    if not entry:return None
+    direct=[]
+    for target in entry.get("targets") or []:
+        if target.get("target_kind") != "fixed_object":continue
+        if target.get("relationship") not in {"designates"}:continue
+        fixed_id=target.get("fixed_object_id")
+        if fixed_id is not None:direct.append(int(fixed_id))
+    if len(set(direct))>1:
+        raise RuntimeError(f"Multiple direct fixed-object targets for {catalog}:{designation}: {direct}")
+    return direct[0] if direct else None
 
 def load_fixed_object_ids():
     data=json.loads(FIXED_OBJECT_REGISTRY.read_text(encoding="utf-8"))
@@ -150,7 +177,7 @@ def page_date_map(year):
         catalog=MESSIER_CATALOG.get(identity)
         if catalog is None:raise RuntimeError(f"Missing {identity} from {FIXED_OBJECTS.name} Messier catalog")
         if catalog.get("dec_deg") is None:raise RuntimeError(f"Missing declination for {identity} in {FIXED_OBJECTS.name}")
-        events[d].append(CalendarEvent(render_html(AlmanackObject(label=identity,object_type="deep_sky",dec_deg=catalog["dec_deg"],best_date=d,observing_aid=ObservingAid.TELESCOPE)),fixed_object_id("messier",identity),ObservingAid.TELESCOPE.value))
+        events[d].append(CalendarEvent(render_html(AlmanackObject(label=identity,object_type="deep_sky",dec_deg=catalog["dec_deg"],best_date=d,observing_aid=ObservingAid.TELESCOPE)),catalog_target_fixed_object_id("messier",identity),ObservingAid.TELESCOPE.value))
     return events
 def pages_for_events(root,events):
     pages=[]
