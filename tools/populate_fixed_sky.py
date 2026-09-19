@@ -122,7 +122,7 @@ def star_event(r):
     identifiers=[("hip",(r.get("hip") or "").strip()),("hd",(r.get("hd") or "").strip()),("bayer",bayer)]
     for namespace,value in identifiers:
         if not value:continue
-        fixed_id=FIXED_OBJECT_IDS.get((namespace,value))
+        fixed_id=FIXED_OBJECT_IDS.get((namespace.strip().lower(),value.strip().lower()))
         if fixed_id is not None:return CalendarEvent(label,fixed_id,aid.value if aid else None)
     attempted=", ".join(f"{namespace}:{value}" for namespace,value in identifiers if value) or "none"
     raise RuntimeError(f"Permanent fixed-object identity not found for Calendar fixed star {base}; tried {attempted}")
