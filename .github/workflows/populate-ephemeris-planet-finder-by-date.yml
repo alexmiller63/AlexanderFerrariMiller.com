@@ -98,6 +98,12 @@ jobs:
               )
           PY
 
+      - name: Compile-check Planet Finder Python
+        run: |
+          python -m py_compile \
+            tools/generate_planet_finders.py \
+            tools/populate_ephemeris_planet_finder_by_date.py
+
       - name: Resolve ISO week range
         id: range
         run: |
