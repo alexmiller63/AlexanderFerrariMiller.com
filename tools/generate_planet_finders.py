@@ -318,6 +318,8 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
     current_body = "-"
     exhausted = False
     ornery_limit = max(1, int(os.environ.get("PLANET_FINDER_ORNERY_CANDIDATES", "50")))
+    max_order_nodes = max(1, int(os.environ.get("PLANET_FINDER_MAX_ORDER_NODES", "100000")))
+    max_order_seconds = max(1.0, float(os.environ.get("PLANET_FINDER_MAX_ORDER_SECONDS", "5")))
 
     def dump_diagnostics(reason):
         order_names = " > ".join(item[1][1] for item in order)
@@ -469,6 +471,24 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
     resume_position = None
 
     while True:
+        order_elapsed = time.monotonic() - started
+        run_elapsed = time.monotonic() - budget["started"]
+        if run_elapsed >= budget["max_seconds"]:
+            dump_diagnostics("run time budget exhausted")
+            raise RuntimeError(
+                f"Planet Finder run-wide time budget exhausted in {mode} mode "
+                f"after {run_elapsed:.1f}s (limit {budget['max_seconds']:.1f}s)"
+            )
+        if nodes >= max_order_nodes or order_elapsed >= max_order_seconds:
+            reason = (
+                f"order node budget exhausted ({nodes:,}/{max_order_nodes:,})"
+                if nodes >= max_order_nodes
+                else f"order time budget exhausted ({order_elapsed:.1f}s/{max_order_seconds:.1f}s)"
+            )
+            dump_diagnostics(reason)
+            exhausted = True
+            break
+
         if resume_position is None:
             position = len(stack)
         else:
@@ -630,14 +650,16 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
 
 
 def new_search_budget(max_candidates: int | None = None):
-    """Create the shared candidate budget for one complete generator run."""
+    """Create the shared candidate and wall-clock budget for one complete generator run."""
     if max_candidates is None:
         max_candidates = int(os.environ.get("PLANET_FINDER_MAX_CANDIDATES", "1000000"))
     if max_candidates <= 0:
         raise ValueError("PLANET_FINDER_MAX_CANDIDATES must be positive")
+    max_seconds = max(1.0, float(os.environ.get("PLANET_FINDER_MAX_SECONDS", "90")))
     return {
         "candidates": 0,
         "max_candidates": max_candidates,
+        "max_seconds": max_seconds,
         "started": time.monotonic(),
     }
 
