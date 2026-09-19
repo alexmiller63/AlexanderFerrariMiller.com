@@ -274,6 +274,8 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5):
     last_ranked = []
     solutions = []
     solution_keys = set()
+    solution_orders = []
+    conflict_pressure = {}
 
     def dump_diagnostics(reason):
         print(
@@ -381,7 +383,12 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5):
             if key not in solution_keys:
                 solution_keys.add(key)
                 solutions.append(result)
-                print(f"Planet Finder {mode}: complete candidate {len(solutions)}/{target_solutions}", flush=True)
+                solution_orders.append(tuple(row[1] for row in result))
+                print(
+                    f"Planet Finder {mode}: complete candidate {len(solutions)}/{target_solutions} "
+                    f"placement-order=" + " > ".join(staged[i][1] for i in staged),
+                    flush=True,
+                )
             return len(solutions) >= target_solutions
 
         # Squeaky wheel gets the grease: measure every remaining body against
@@ -392,7 +399,15 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5):
         for rank, item in enumerate(remaining):
             options = viable_candidates(item, position)
             ranked.append((len(options), rank, item, options))
-        ranked.sort(key=lambda row: (row[0], row[1]))
+        # Planned ordering: fail-first remains primary, but repeated trouble
+        # deliberately promotes implicated bodies.  This is deterministic and
+        # uses information learned during this run instead of enumerating
+        # permutations.
+        ranked.sort(key=lambda row: (
+            row[0],
+            -conflict_pressure.get(row[2][1][1], 0),
+            row[1],
+        ))
         last_ranked[:] = [(row[2][1][1], row[0]) for row in ranked]
         print(
             f"Planet Finder {mode}: ranking depth={position} " +
