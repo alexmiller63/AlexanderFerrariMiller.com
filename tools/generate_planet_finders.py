@@ -500,10 +500,6 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 rejected_leader += 1
                 stats["leader"] += 1
                 continue
-            candidates += 1
-            body_candidates += 1
-            stats["generated"] += 1
-            budget["candidates"] += 1
             route_diag = route_diagnostics.setdefault((depth, name), {
                 "straight_blocked": 0,
                 "route_failed": 0,
@@ -516,6 +512,12 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 rejected_route += 1
                 stats["route"] += 1
                 continue
+            # A proposal becomes a search candidate only after all immediate
+            # geometry checks, including leader routing, have succeeded.
+            candidates += 1
+            body_candidates += 1
+            stats["generated"] += 1
+            budget["candidates"] += 1
             stats["viable"] += 1
             viable.append((box, path))
         return viable
