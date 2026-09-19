@@ -399,14 +399,17 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         )),
     )
     # A squeaky-wheel ordering is evidence-driven, not just the next blind
-    # permutation.  Give it a complete order slice while keeping the same
-    # run-wide candidate ceiling: earlier planned orders may use only the
-    # non-reserved portion of the budget.  The reserve becomes available as
-    # soon as a deep dead end identifies a body to promote.
-    squeaky_reserve = min(max_order_candidates, budget["max_candidates"])
+    # permutation.  Reserve a complete order slice only when we actually have
+    # squeaky-wheel evidence.  Without a remembered dead-end body, there is no
+    # reason to strand part of the run-wide candidate budget.
     is_squeaky_order = bool(budget.get("squeaky_order_active"))
-    effective_global_limit = budget["max_candidates"] if is_squeaky_order else max(
-        1, budget["max_candidates"] - squeaky_reserve
+    squeaky_reserve = (
+        min(max_order_candidates, budget["max_candidates"])
+        if is_squeaky_order
+        else 0
+    )
+    effective_global_limit = budget["max_candidates"] if is_squeaky_order else (
+        budget["max_candidates"] - squeaky_reserve
     )
     max_proposals = max(1, int(os.environ.get("PLANET_FINDER_MAX_PROPOSALS", str(max(10000, budget["max_candidates"] * 20)))))
     proposals = 0
