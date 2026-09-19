@@ -116,7 +116,19 @@ jobs:
           PLANET_FINDER_MAX_SECONDS: ${{ inputs.max_search_seconds }}
           PLANET_FINDER_MAX_ORDER_SECONDS: '5'
           PLANET_FINDER_MAX_ORDER_NODES: '100000'
-        run: python tools/populate_ephemeris_planet_finder_by_date.py "${{ steps.range.outputs.start_date }}" "${{ steps.range.outputs.end_date }}"
+        run: |
+          # Hard process-level ceiling. The generator's internal timer remains
+          # useful for diagnostics, but this prevents any search path from
+          # making the Actions step uncancellable/indefinite.
+          timeout --signal=TERM --kill-after=5s \
+            "${PLANET_FINDER_MAX_SECONDS}s" \
+            python tools/populate_ephemeris_planet_finder_by_date.py \
+              "${{ steps.range.outputs.start_date }}" "${{ steps.range.outputs.end_date }}"
+          status=$?
+          if [ "$status" -eq 124 ] || [ "$status" -eq 137 ]; then
+            echo "::error::Planet Finder exceeded the hard ${PLANET_FINDER_MAX_SECONDS}-second process limit."
+          fi
+          exit "$status"
 
       - name: Commit Planet Finder changes only
         run: |
