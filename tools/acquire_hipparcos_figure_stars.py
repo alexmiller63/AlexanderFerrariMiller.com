@@ -18,6 +18,14 @@ DEST = ROOT / "reference-data" / "hipparcos" / "figure-stars.csv"
 URL = "https://cdsarc.cds.unistra.fr/ftp/cats/I/239/hip_main.dat"
 FIELDS = ("hip", "ra_h", "dec_deg")
 
+# Documented astrometric fallbacks for valid HIP identities lacking usable
+# positions in the original Hipparcos I/239 main catalogue. Keep this table
+# deliberately small and source-specific; ordinary stars must still come from
+# I/239. HIP 55203 = Xi Ursae Majoris (Alula Australis).
+ASTROMETRIC_FALLBACKS: dict[int, tuple[str, str]] = {
+    55203: ("11.3031000000", "31.5308000000"),
+}
+
 
 def required_hips() -> set[int]:
     data = json.loads(GEOMETRY.read_text(encoding="utf-8"))
@@ -95,6 +103,9 @@ def main() -> None:
     if missing:
         acquired = download_positions(missing)
         unresolved = missing.difference(acquired)
+        fallback = {hip: ASTROMETRIC_FALLBACKS[hip] for hip in unresolved if hip in ASTROMETRIC_FALLBACKS}
+        acquired.update(fallback)
+        unresolved.difference_update(fallback)
         if unresolved:
             sample = ", ".join(str(hip) for hip in sorted(unresolved)[:20])
             raise SystemExit(
