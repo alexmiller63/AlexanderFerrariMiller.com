@@ -306,6 +306,23 @@ def route(
             key = f"obstacle_{i}"
             diagnostic["straight_blockers"][key] = diagnostic["straight_blockers"].get(key, 0) + 1
 
+    # Rotten-cake preflight: a placed body label containing this body's
+    # anchor is an immutable dead end for the current DFS state. No straight,
+    # elbow, or dogleg route may legally escape another body's label, so reject
+    # the candidate before entering the expensive route-shape search.
+    for i, obstacle in enumerate(obstacles):
+        if i < allow_initial_escape_count:
+            continue
+        pad = obstacle_pad(i)
+        if (
+            obstacle.left - pad <= anchor[0] <= obstacle.right + pad and
+            obstacle.top - pad <= anchor[1] <= obstacle.bottom + pad
+        ):
+            if diagnostic is not None:
+                diagnostic["anchor_blocked"] = diagnostic.get("anchor_blocked", 0) + 1
+                diagnostic["route_failed"] = diagnostic.get("route_failed", 0) + 1
+            return None
+
     ax, ay = anchor
     for r in (395, 365, 335, 305, 275, 245, 215, 185, 155):
         lon = math.degrees(math.atan2(-(ay - CY), ax - CX)) - 180
@@ -998,93 +1015,3 @@ def render(
             text, fs = f'{symbol}\ufe0e {name}', 22
         out.append(f'<text x="{x:.1f}" y="{y+10:.1f}" text-anchor="middle" font-size="{fs}">{html.escape(text)}</text>')
     # Fixed geometric annotation: 0° Aries is the 9-o'clock boundary.
-    # Keep it deterministic and independent of body-label placement.
-    aries_x, aries_y = xy(0, RI)
-    out.append(
-        f'<text x="{aries_x - 12:.1f}" y="{aries_y + 7:.1f}" '
-        'text-anchor="end" font-size="20" class="sans">0° Aries</text>'
-    )
-
-    for symbol, name, _, box, path in placed:
-        out.append(polyline(path))
-        if mode == "greek":
-            out.append(f'<circle cx="{box.x:.1f}" cy="{box.y:.1f}" r="29" fill="white" stroke="#111"/>')
-            out.append(f'<text x="{box.x:.1f}" y="{box.y+13:.1f}" text-anchor="middle" font-size="44">{html.escape(symbol)}\ufe0e</text>')
-        else:
-            text = name if mode == "latin" else f"{symbol}\ufe0e {name}"
-            out.append(f'<rect x="{box.left:.1f}" y="{box.top:.1f}" width="{box.w:.1f}" height="{box.h:.1f}" rx="10" fill="white" stroke="#111"/>')
-            out.append(f'<text x="{box.x:.1f}" y="{box.y+7:.1f}" text-anchor="middle" font-size="18">{html.escape(text)}</text>')
-
-    out.extend([
-        f'<text x="{CX}" y="682" text-anchor="middle" font-size="28" font-weight="700">Tropical ecliptic longitude</text>',
-        f'<text x="{CX}" y="722" text-anchor="middle" font-size="22">0° Aries at 9:00 · zodiac increases counterclockwise</text>',
-        f'<text x="{CX}" y="757" text-anchor="middle" font-size="22">12 equal sectors · 30° each</text>',
-        '</svg>',
-    ])
-    return "\n".join(out) + "\n"
-
-
-def generate_week(
-    year: int,
-    week: int,
-    budget: dict | None = None,
-    context_label: str | None = None,
-):
-    if not 1 <= week <= week_count(year):
-        raise ValueError(f"Invalid ISO week {year}-W{week:02d}")
-    monday = date.fromisocalendar(year, week, 1)
-    needed = {BODY_NAMES[name] for name in CANONICAL}
-    engine = StarAlmanackEphemeris()
-    generated = computed_ephemeris(year, engine)
-    values = {key: generated[key][week - 1][0] for key in needed}
-    bodies = [(BODY_SYMBOLS[BODY_NAMES[name]], name, values[BODY_NAMES[name]] % 360) for name in CANONICAL]
-    outdir = ROOT / "almanack" / str(year) / f"W{week:02d}" / "finders"
-    outdir.mkdir(parents=True, exist_ok=True)
-    filenames = {
-        "greek": "planet-finder-greek-symbols.svg",
-        "latin": "planet-finder-latin.svg",
-        "mixed": "planet-finder-mixed-learner.svg",
-    }
-    for mode, filename in filenames.items():
-        (outdir / filename).write_text(
-            render(
-                year, week, monday, mode, bodies,
-                budget=budget,
-                context_label=context_label,
-            ),
-            encoding="utf-8",
-        )
-    print(f"Generated collision-free Planet Finders for ISO {year}-W{week:02d} from internal calculations")
-
-
-def parse_args():
-    p = argparse.ArgumentParser()
-    g = p.add_mutually_exclusive_group(required=True)
-    g.add_argument("--current", action="store_true", help="generate the current UTC ISO week")
-    g.add_argument("--year", type=int, help="ISO week-year")
-    p.add_argument("--week", type=int, help="ISO week number; required with --year")
-    args = p.parse_args()
-    if args.year is not None and args.week is None:
-        p.error("--week is required with --year")
-    return args
-
-
-def main() -> None:
-    args = parse_args()
-    if args.current:
-        today = date.today()
-        iso = today.isocalendar()
-        year, week = iso.year, iso.week
-    else:
-        year, week = args.year, args.week
-    budget = new_search_budget()
-    generate_week(
-        year,
-        week,
-        budget=budget,
-        context_label=f"ISO={year}-W{week:02d}",
-    )
-
-
-if __name__ == "__main__":
-    main()
