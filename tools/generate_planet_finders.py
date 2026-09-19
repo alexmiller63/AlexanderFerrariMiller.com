@@ -387,13 +387,24 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                     flush=True,
                 )
                 break
-            if budget["candidates"] >= budget["max_candidates"]:
-                stats["blocked"] = "candidate-budget"
-                dump_diagnostics("candidate budget exhausted")
-                raise RuntimeError(
-                    f"Planet Finder run-wide candidate budget exhausted in {mode} mode "
-                    f"after {budget['max_candidates']:,} candidate evaluations"
+            # Do not let an early DFS depth consume the evaluations needed
+            # to give every still-unvisited body a fair ornery-limit probe.
+            # The current body is already being evaluated, so reserve one full
+            # per-body allowance for each later depth.
+            remaining_depths = len(order) - depth - 1
+            reserved_for_later = remaining_depths * ornery_limit
+            usable_limit = budget["max_candidates"] - reserved_for_later
+            if budget["candidates"] >= usable_limit:
+                stats["blocked"] = "reserved-budget"
+                print(
+                    f"Planet Finder {mode}: BUDGET-RESERVE order={order_index} "
+                    f"depth={depth}/{len(order)} body={name} "
+                    f"used={budget['candidates']:,} usable={usable_limit:,} "
+                    f"reserved={reserved_for_later:,} remaining-depths={remaining_depths} "
+                    f"action=backtrack",
+                    flush=True,
                 )
+                break
             stats["started"] = True
             candidates += 1
             body_candidates += 1
