@@ -349,6 +349,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         for (depth, name), s in sorted(diagnostic_stats.items()):
             print(
                 f"Planet Finder {mode}: TERMINAL BODY depth={depth}/{len(order)} body={name} "
+                f"status={'evaluated' if s.get('started') else 'not-evaluated'} "
                 f"generated={s['generated']:,} viable={s['viable']:,} "
                 f"rejects[overlap={s['overlap']:,},leader={s['leader']:,},route={s['route']:,}]",
                 flush=True,
@@ -369,7 +370,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         original_index, (symbol, name, longitude) = item
         key = (depth, name)
         stats = diagnostic_stats.setdefault(key, {
-            "generated": 0, "viable": 0, "overlap": 0, "leader": 0, "route": 0,
+            "generated": 0, "viable": 0, "overlap": 0, "leader": 0, "route": 0, "started": False,
         })
         nonlocal candidates, rejected_overlap, rejected_leader, rejected_route
         w, h = label_size(mode, name)
@@ -392,6 +393,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                     f"Planet Finder run-wide candidate budget exhausted in {mode} mode "
                     f"after {budget['max_candidates']:,} candidate evaluations"
                 )
+            stats["started"] = True
             candidates += 1
             body_candidates += 1
             stats["generated"] += 1
@@ -597,6 +599,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 print(
                     f"Planet Finder {mode}: dead end order={order_index} "
                     f"depth={position}/{len(order)} body={name} "
+                    f"status={'evaluated' if s.get('started') else 'not-evaluated'} "
                     f"generated={s['generated']:,} viable={s['viable']:,} "
                     f"rejects[overlap={s['overlap']:,},leader={s['leader']:,},"
                     f"route={s['route']:,}]",
