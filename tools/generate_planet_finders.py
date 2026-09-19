@@ -763,10 +763,13 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
     try:
         exhausted = not search(0)
     except DepthNodeBudgetExhausted as exc:
-        exhausted = True
+        # Hitting the per-body/depth cap is the squeaky-wheel signal.  Report
+        # this fixed ordering, then let layout() discard the whole DFS napkin
+        # and retry from a clean state with that body promoted to first.
         dump_diagnostics(
             f"node budget exhausted at depth={exc.depth}/{len(order)} body={exc.name}"
         )
+        raise
     except CandidateBudgetExhausted:
         dump_diagnostics("run-wide candidate budget exhausted")
         raise
@@ -847,28 +850,71 @@ def layout(
         )
 
     order = indexed
-    print(
-        f"Planet Finder {mode}: canonical-order lazy DFS "
-        f"{context_label + ' ' if context_label else ''}"
-        f"target={target_solutions} max-node-candidates={budget['max_node_candidates']:,} "
-        f"max-candidates={budget['max_candidates']:,} "
-        f"sequence=" + " > ".join(item[1][1] for item in order),
-        flush=True,
-    )
+    attempted_orders = set()
+    all_solutions = []
+    order_index = 0
 
-    try:
-        all_solutions = _solve_order(
-            mode,
-            bodies,
-            order,
-            budget,
-            target_solutions=target_solutions,
-            order_index=1,
-            total_orders=1,
-            context_label=context_label,
+    # Squeaky-wheel ordering: a body that hits the per-depth node cap is not
+    # merely stopped.  That cap identifies the body currently exploding the
+    # tree.  Throw away this fixed-order DFS state, promote that body to the
+    # front, and begin a completely fresh recursive search.
+    while True:
+        order_key = tuple(item[1][1] for item in order)
+        if order_key in attempted_orders:
+            break
+        attempted_orders.add(order_key)
+        order_index += 1
+
+        print(
+            f"Planet Finder {mode}: squeaky-wheel lazy DFS "
+            f"{context_label + ' ' if context_label else ''}"
+            f"order={order_index} target={target_solutions} "
+            f"max-node-candidates={budget['max_node_candidates']:,} "
+            f"max-candidates={budget['max_candidates']:,} "
+            f"sequence=" + " > ".join(item[1][1] for item in order),
+            flush=True,
         )
-    except CandidateBudgetExhausted:
-        all_solutions = []
+
+        try:
+            all_solutions = _solve_order(
+                mode,
+                bodies,
+                order,
+                budget,
+                target_solutions=target_solutions,
+                order_index=order_index,
+                total_orders=None,
+                context_label=context_label,
+            )
+        except DepthNodeBudgetExhausted as exc:
+            squeaky_index = next(
+                (i for i, item in enumerate(order) if item[1][1] == exc.name),
+                None,
+            )
+            if squeaky_index is None:
+                raise
+            if squeaky_index == 0:
+                print(
+                    f"Planet Finder {mode}: squeaky wheel {exc.name} already first; "
+                    "cannot promote further",
+                    flush=True,
+                )
+                all_solutions = []
+                break
+
+            order = [order[squeaky_index], *order[:squeaky_index], *order[squeaky_index + 1:]]
+            print(
+                f"Planet Finder {mode}: SQUEAKY-WHEEL PROMOTE body={exc.name} "
+                f"after hitting {budget['max_node_candidates']:,}; "
+                "discarding fixed-order search state and restarting with sequence="
+                + " > ".join(item[1][1] for item in order),
+                flush=True,
+            )
+            continue
+        except CandidateBudgetExhausted:
+            all_solutions = []
+
+        break
 
     if not all_solutions:
         raise RuntimeError(
