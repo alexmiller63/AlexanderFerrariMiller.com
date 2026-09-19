@@ -168,22 +168,21 @@ def reserved_boxes(mode: str) -> list[Box]:
 
 
 def candidate_positions(longitude: float):
-    """Yield deterministic geometric proposals, preferred positions first.
+    """Yield deterministic geometric proposals from coarse to fine.
 
-    This function knows only the polar search geometry. Immutable chart
-    legality is enforced by legal_candidate_positions() before a proposal can
-    consume DFS/search budget.
+    Candidate ordering is geometry only. DFS owns all backtracking and the
+    viability rules decide whether each proposal is legal. Explore every
+    position at a large displacement before introducing closer siblings.
     """
     preferred_radii = (345, 300, 255, 210, 390, 165, 120)
-    preferred_shifts = (0, -105, 105, -210, 210)
     theta = math.radians(180 + longitude)
     tx, ty = -math.sin(theta), -math.cos(theta)
-    # Sibling proposals must be meaningfully different choices. The natural
-    # tangential placement step is 105 px; do not create another DFS sibling
-    # for a tiny nudge smaller than one quarter of that step. Recursion owns
-    # backtracking; candidate generation owns only the geometry of distinct
-    # choices.
-    min_sibling_separation = 105.0 / 4.0
+
+    # One label-length is the established 105 px tangential placement step.
+    # Search coarse-to-fine: exhaust all siblings at each displacement before
+    # allowing recursion to consider a smaller movement.
+    label_length = 105.0
+    displacement_scales = (2.0, 1.5, 1.0, 0.5, 0.25)
     offered: list[tuple[float, float]] = []
 
     def offer(radii, shifts):
@@ -192,17 +191,25 @@ def candidate_positions(longitude: float):
             for shift in shifts:
                 x, y = bx + shift * tx, by + shift * ty
                 if any(
-                    math.hypot(x - ox, y - oy) < min_sibling_separation
+                    math.hypot(x - ox, y - oy) < 1e-9
                     for ox, oy in offered
                 ):
                     continue
                 offered.append((x, y))
                 yield x, y
 
-    yield from offer(preferred_radii, preferred_shifts)
+    # Preserve the natural position first, then explore increasingly finer
+    # displacement rings. Within a ring, both tangential directions are peers.
+    yield from offer(preferred_radii, (0.0,))
+    for scale in displacement_scales:
+        shift = label_length * scale
+        yield from offer(preferred_radii, (-shift, shift))
+
     expanded_radii = tuple(range(400, 79, -20))
-    expanded_shifts = (0,) + tuple(v for n in range(105, 421, 105) for v in (-n, n))
-    yield from offer(expanded_radii, expanded_shifts)
+    yield from offer(expanded_radii, (0.0,))
+    for scale in displacement_scales:
+        shift = label_length * scale
+        yield from offer(expanded_radii, (-shift, shift))
 
 
 def legal_candidate_positions(longitude: float, w: float, h: float, reserved: list[Box]):
