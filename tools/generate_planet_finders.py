@@ -604,6 +604,23 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                     flush=True,
                 )
                 break
+            # Enforce the run-wide deadline inside candidate generation too.
+            # Geometry/routing can otherwise keep one DFS iteration busy past the limit.
+            run_elapsed = time.monotonic() - budget["started"]
+            if run_elapsed >= budget["max_seconds"]:
+                stats["blocked"] = "wall-clock"
+                print(
+                    f"Planet Finder {mode}: CANDIDATE-GENERATION STOP wall-clock budget exhausted "
+                    f"order={order_index} depth={depth}/{len(order)} body={name} "
+                    f"after {run_elapsed:.1f}s/{budget['max_seconds']:.1f}s "
+                    f"proposals={proposals:,} viable={body_candidates:,}",
+                    flush=True,
+                )
+                raise RuntimeError(
+                    f"Planet Finder run-wide wall-clock budget exhausted in {mode} mode "
+                    f"during candidate generation for {name} after {run_elapsed:.1f}s "
+                    f"(limit {budget['max_seconds']:.1f}s)"
+                )
             stats["started"] = True
             # Reject geometry that is already impossible in the current DFS
             # state before admitting the proposal to the candidate pool. A
