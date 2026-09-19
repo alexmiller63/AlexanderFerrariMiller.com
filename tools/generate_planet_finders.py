@@ -531,6 +531,22 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 break
             timing["stream_wait"] += time.monotonic() - stream_t0
             raw_positions += 1
+            # Count search work separately from candidates admitted to DFS.
+            # A geometrically rotten proposal must never consume candidate
+            # budget, but examining it is still finite solver work. This
+            # prevents a pathological body/prefix from monopolizing the run
+            # while producing zero viable candidates.
+            if budget["proposals"] >= budget["max_proposals"]:
+                stats["blocked"] = "proposal-budget"
+                print(
+                    f"Planet Finder {mode}: CANDIDATE-GENERATION STOP proposal budget exhausted "
+                    f"order={order_index} depth={depth}/{len(order)} body={name} "
+                    f"proposals={budget['proposals']:,}/{budget['max_proposals']:,} "
+                    f"viable={body_candidates:,}",
+                    flush=True,
+                )
+                return
+            budget["proposals"] += 1
             now = time.monotonic()
             if now - candidate_last_heartbeat >= 5.0:
                 print(
@@ -890,17 +906,26 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
 
 
 def new_search_budget(max_candidates: int | None = None):
-    """Create the shared candidate and wall-clock budget for one complete generator run."""
+    """Create the shared candidate, proposal-work, and wall-clock budgets."""
     if max_candidates is None:
         max_candidates = int(os.environ.get("PLANET_FINDER_MAX_CANDIDATES", "1000000"))
     if max_candidates <= 0:
         raise ValueError("PLANET_FINDER_MAX_CANDIDATES must be positive")
+    # Proposal work and admitted candidates are deliberately different
+    # currencies. By default they share the user's search ceiling numerically,
+    # but they are accounted independently: rejected geometry costs proposal
+    # work and never masquerades as a DFS candidate.
+    max_proposals = int(os.environ.get("PLANET_FINDER_MAX_PROPOSALS", str(max_candidates)))
+    if max_proposals <= 0:
+        raise ValueError("PLANET_FINDER_MAX_PROPOSALS must be positive")
     max_seconds = max(1.0, float(os.environ.get("PLANET_FINDER_MAX_SECONDS", "90")))
     # Start the wall-clock budget lazily at the first actual layout search.
     # Ephemeris setup/kernel work must not consume the Planet Finder search ceiling.
     return {
         "candidates": 0,
         "max_candidates": max_candidates,
+        "proposals": 0,
+        "max_proposals": max_proposals,
         "max_seconds": max_seconds,
         "started": None,
     }
@@ -946,6 +971,7 @@ def layout(
         f"Planet Finder {mode}: canonical-order lazy DFS "
         f"{context_label + ' ' if context_label else ''}"
         f"target={target_solutions} max-candidates={budget['max_candidates']:,} "
+        f"max-proposals={budget['max_proposals']:,} "
         f"sequence=" + " > ".join(item[1][1] for item in order),
         flush=True,
     )
