@@ -374,44 +374,6 @@ def route(
     return None
 
 
-def _permutation_by_rank(items, rank: int):
-    """Return one lexicographic permutation without recursive generation."""
-    pool = list(items)
-    result = []
-    for size in range(len(pool), 0, -1):
-        block = math.factorial(size - 1)
-        choice, rank = divmod(rank, block)
-        result.append(pool.pop(choice))
-    return result
-
-
-def _planned_order_ranks(total: int):
-    """Yield widely separated permutation ranks deterministically.
-
-    The first probes are deliberately far apart: canonical, reverse, midpoint,
-    quarter points, then a full-cycle modular walk.  This avoids the old
-    behavior where a failed ordering was followed by a nearly identical
-    ordering.  The sequence is iterative and can eventually cover every
-    permutation rank.
-    """
-    if total <= 0:
-        return
-    seen = set()
-    initial = (0, total - 1, total // 2, total // 4, (3 * total) // 4)
-    for rank in initial:
-        if rank not in seen:
-            seen.add(rank)
-            yield rank
-
-    # Coprime with 11! so this modular walk eventually visits every rank.
-    step = 19_958_401
-    rank = 0
-    while len(seen) < total:
-        rank = (rank + step) % total
-        if rank not in seen:
-            seen.add(rank)
-            yield rank
-
 
 def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_index=1, total_orders=None, context_label=None):
     """Solve one fixed body ordering with an explicit iterative DFS.
@@ -757,13 +719,6 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 original_index, (_, name, _) = item
                 current_body = name
                 s = diagnostic_stats[(position, name)]
-                # Squeaky wheel gets the grease: the *current* genuine
-                # zero-option dead end is the evidence that should drive the
-                # next ordering. Do not keep an older, deeper squeaky body
-                # forever; that stale signal can repeatedly promote the wrong
-                # body even after a different body is now blocking progress.
-                budget["squeaky_body"] = name
-                budget["squeaky_depth"] = position
                 print(
                     f"Planet Finder {mode}: dead end order={order_index} "
                     f"depth={position}/{len(order)} body={name} "
@@ -867,12 +822,10 @@ def layout(
     budget: dict | None = None,
     context_label: str | None = None,
 ):
-    """Search widely separated body orderings with iterative placement DFS.
+    """Find collision-free layouts with deterministic canonical-order DFS.
 
-    The canonical order is always the first ordering.  If that ordering cannot
-    supply the requested candidates, the next ordering is deliberately far away
-    in permutation space.  The search eventually covers all 11! orderings,
-    subject to the shared 1,000,000 candidate-evaluation cap.
+    Candidate generation is lazy. Geometry rejects impossible proposals before
+    they enter DFS. Search limits are safety ceilings, not placement policy.
     """
     canonical_index = {name: i for i, name in enumerate(CANONICAL)}
     indexed = list(enumerate(bodies))
@@ -888,7 +841,6 @@ def layout(
     if target_solutions is None:
         target_solutions = max(1, int(os.environ.get("PLANET_FINDER_CANDIDATES", "5")))
 
-    total_orders = math.factorial(len(indexed))
     if budget is None:
         budget = new_search_budget()
     if budget.get("started") is None:
@@ -897,176 +849,34 @@ def layout(
             f"Planet Finder SEARCH CLOCK STARTED: limit={budget['max_seconds']:.1f}s",
             flush=True,
         )
-    all_solutions = []
-    seen_solution_keys = set()
 
+    order = indexed
     print(
-        f"Planet Finder {mode}: starting planned-order iterative search "
+        f"Planet Finder {mode}: canonical-order lazy DFS "
         f"{context_label + ' ' if context_label else ''}"
         f"target={target_solutions} max-candidates={budget['max_candidates']:,} "
-        f"permutation-space={total_orders:,}",
+        f"sequence=" + " > ".join(item[1][1] for item in order),
         flush=True,
     )
 
-    for order_index, rank in enumerate(_planned_order_ranks(total_orders), start=1):
-        # This is the outermost repeated search loop.  Check the shared exit
-        # conditions here, before constructing another ordering or entering
-        # another DFS.  The DFS has the same guards internally, but it cannot
-        # protect time spent cycling between exhausted orderings.
-        run_elapsed = time.monotonic() - budget["started"]
-        if run_elapsed >= budget["max_seconds"]:
-            print(
-                f"Planet Finder {mode}: SEARCH STOP wall-clock budget exhausted "
-                f"after {run_elapsed:.1f}s/{budget['max_seconds']:.1f}s "
-                f"orders-tried={order_index - 1} "
-                f"candidates={budget['candidates']:,}/{budget['max_candidates']:,}",
-                flush=True,
-            )
-            break
-        if budget["candidates"] >= budget["max_candidates"]:
-            print(
-                f"Planet Finder {mode}: SEARCH STOP candidate budget exhausted "
-                f"orders-tried={order_index - 1} "
-                f"candidates={budget['candidates']:,}/{budget['max_candidates']:,}",
-                flush=True,
-            )
-            break
-
-        order = _permutation_by_rank(indexed, rank)
-        squeaky_body = budget.get("squeaky_body")
-        budget["squeaky_order_active"] = bool(squeaky_body)
-        if squeaky_body:
-            squeaky_index = next(
-                (i for i, item in enumerate(order) if item[1][1] == squeaky_body),
-                None,
-            )
-            if squeaky_index is not None and squeaky_index > 0:
-                squeaky_item = order.pop(squeaky_index)
-                order.insert(0, squeaky_item)
-                print(
-                    f"Planet Finder {mode}: SQUEAKY-WHEEL body={squeaky_body} "
-                    f"previous-depth={budget.get('squeaky_depth', -1)}/{len(order)} "
-                    f"action=promote-to-front",
-                    flush=True,
-                )
-        order_names = " > ".join(item[1][1] for item in order)
-        print(
-            f"Planet Finder {mode}: ORDER {order_index} rank={rank:,}/{total_orders:,} "
-            f"run-candidates={budget['candidates']:,}/{budget['max_candidates']:,} "
-            f"sequence={order_names}",
-            flush=True,
+    try:
+        all_solutions = _solve_order(
+            mode,
+            bodies,
+            order,
+            budget,
+            target_solutions=target_solutions,
+            order_index=1,
+            total_orders=1,
+            context_label=context_label,
         )
-
-        order_candidate_start = budget["candidates"]
-        try:
-            solutions = _solve_order(
-                mode,
-                bodies,
-                order,
-                budget,
-                target_solutions=max(1, target_solutions - len(all_solutions)),
-                order_index=order_index,
-                total_orders=total_orders,
-                context_label=context_label,
-            )
-        except StopIteration as exc:
-            if "squeaky reserve reached" in str(exc):
-                # The ordinary ordering has reached the reserved final slice.
-                # Do not spin through more permutations at the same candidate
-                # count.  Immediately retry this evidence-driven ordering with
-                # the most recently identified dead-end body promoted, which
-                # makes the reserved evaluations available to _solve_order().
-                squeaky_body = budget.get("squeaky_body")
-                if not squeaky_body:
-                    print(
-                        f"Planet Finder {mode}: SEARCH STOP reserved slice reached "
-                        f"without a squeaky-wheel body at order={order_index}",
-                        flush=True,
-                    )
-                    break
-                squeaky_index = next(
-                    (i for i, item in enumerate(order) if item[1][1] == squeaky_body),
-                    None,
-                )
-                if squeaky_index is not None and squeaky_index > 0:
-                    squeaky_item = order.pop(squeaky_index)
-                    order.insert(0, squeaky_item)
-                budget["squeaky_order_active"] = True
-                print(
-                    f"Planet Finder {mode}: SQUEAKY-WHEEL reserved retry "
-                    f"body={squeaky_body} order={order_index} "
-                    f"evaluations-available="
-                    f"{budget['max_candidates'] - budget['candidates']:,}",
-                    flush=True,
-                )
-                try:
-                    solutions = _solve_order(
-                        mode,
-                        bodies,
-                        order,
-                        budget,
-                        target_solutions=max(1, target_solutions - len(all_solutions)),
-                        order_index=order_index,
-                        total_orders=total_orders,
-                        context_label=context_label,
-                    )
-                except StopIteration as squeaky_exc:
-                    print(
-                        f"Planet Finder {mode}: SEARCH STOP squeaky-wheel reserved "
-                        f"retry exhausted: {squeaky_exc}",
-                        flush=True,
-                    )
-                    break
-            if budget.get("squeaky_order_active") and budget["candidates"] == order_candidate_start:
-                print(
-                    f"Planet Finder {mode}: SEARCH STOP squeaky-wheel ordering made "
-                    f"no candidate progress at order={order_index} "
-                    f"candidates={budget['candidates']:,}/{budget['max_candidates']:,}",
-                    flush=True,
-                )
-                break
-            if "per-order" in str(exc):
-                print(
-                    f"Planet Finder {mode}: ORDER {order_index} candidate slice exhausted; "
-                    f"advancing to next planned ordering",
-                    flush=True,
-                )
-                continue
-            print(
-                f"Planet Finder {mode}: SEARCH STOP candidate budget exhausted "
-                f"orders-tried={order_index} "
-                f"candidates={budget['candidates']:,}/{budget['max_candidates']:,}",
-                flush=True,
-            )
-            break
-        for result in solutions:
-            key = tuple(
-                (
-                    row[1],
-                    round(row[3].x, 3),
-                    round(row[3].y, 3),
-                    tuple((round(x, 3), round(y, 3)) for x, y in row[4]),
-                )
-                for row in result
-            )
-            if key not in seen_solution_keys:
-                seen_solution_keys.add(key)
-                all_solutions.append(result)
-                if len(all_solutions) >= target_solutions:
-                    break
-
-        if len(all_solutions) >= target_solutions:
-            print(
-                f"Planet Finder {mode}: target reached with {len(all_solutions)} "
-                f"unique candidates after {order_index} planned orderings",
-                flush=True,
-            )
-            break
+    except StopIteration:
+        all_solutions = []
 
     if not all_solutions:
         raise RuntimeError(
             f"No collision-free Planet Finder layout found in {mode} mode after "
-            f"{budget['candidates']:,} candidate evaluations across planned orderings"
+            f"{budget['candidates']:,} candidate evaluations"
         )
 
     def score(result):
