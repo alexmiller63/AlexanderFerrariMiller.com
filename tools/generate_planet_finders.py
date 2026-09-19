@@ -396,7 +396,8 @@ def route(
         third_blocked = any(
             hits(e2, center, b, pad=obstacle_pad(i))
             for i, b in enumerate(obstacles)
-        )        if not third_blocked:
+        )
+        if not third_blocked:
             if diagnostic is not None:
                 diagnostic["dogleg_success"] = diagnostic.get("dogleg_success", 0) + 1
             return [anchor, e1, e2, center]
@@ -594,7 +595,8 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                     f"after {run_elapsed:.1f}s/{budget['max_seconds']:.1f}s "
                     f"viable={body_candidates:,}",
                     flush=True,
-                )                raise RuntimeError(
+                )
+                raise RuntimeError(
                     f"Planet Finder run-wide wall-clock budget exhausted in {mode} mode "
                     f"during candidate generation for {name} after {run_elapsed:.1f}s "
                     f"(limit {budget['max_seconds']:.1f}s)"
@@ -693,7 +695,8 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                     tuple((round(x, 3), round(y, 3)) for x, y in row[4]),
                 )
                 for row in result
-            )            if key not in solution_keys:
+            )
+            if key not in solution_keys:
                 solution_keys.add(key)
                 valid, errors = validate_layout(mode, result)
                 if valid:
@@ -798,97 +801,3 @@ def layout(
     target_solutions: int | None = None,
     budget: dict | None = None,
     context_label: str | None = None,
-):
-    """Find collision-free layouts with deterministic canonical-order DFS.
-
-    Candidate generation is lazy. Geometry rejects impossible proposals before
-    they enter DFS. Search limits are safety ceilings, not placement policy.
-    """
-    canonical_index = {name: i for i, name in enumerate(CANONICAL)}
-    indexed = list(enumerate(bodies))
-    indexed.sort(key=lambda item: canonical_index[item[1][1]])
-
-    if len(indexed) != len(CANONICAL):
-        raise RuntimeError(
-            f"Planet Finder body set has {len(indexed)} bodies; expected {len(CANONICAL)}"
-        )
-    if {name for _, (_, name, _) in indexed} != set(CANONICAL):
-        raise RuntimeError("Planet Finder body set does not match the canonical Solar-System objects")
-
-    if target_solutions is None:
-        target_solutions = max(1, int(os.environ.get("PLANET_FINDER_CANDIDATES", "5")))
-
-    if budget is None:
-        budget = new_search_budget()
-    if budget.get("started") is None:
-        budget["started"] = time.monotonic()
-        print(
-            f"Planet Finder SEARCH CLOCK STARTED: limit={budget['max_seconds']:.1f}s",
-            flush=True,
-        )
-
-    order = indexed
-    print(
-        f"Planet Finder {mode}: canonical-order lazy DFS "
-        f"{context_label + ' ' if context_label else ''}"
-        f"target={target_solutions} max-candidates={budget['max_candidates']:,} "
-        f"max-proposals={budget['max_proposals']:,} "
-        f"sequence=" + " > ".join(item[1][1] for item in order),
-        flush=True,
-    )
-
-    try:
-        all_solutions = _solve_order(
-            mode,
-            bodies,
-            order,
-            budget,
-            target_solutions=target_solutions,
-            order_index=1,
-            total_orders=1,
-            context_label=context_label,
-        )
-    except CandidateBudgetExhausted:
-        all_solutions = []
-
-    if not all_solutions:
-        raise RuntimeError(
-            f"No collision-free Planet Finder layout found in {mode} mode after "
-            f"{budget['candidates']:,} candidate evaluations"
-        )
-
-    def score(result):
-        total_length = 0.0
-        elbows = 0
-        radial_error = 0.0
-        tangential_error = 0.0
-        for _, _, longitude, box, path in result:
-            total_length += sum(
-                math.hypot(b[0]-a[0], b[1]-a[1])
-                for a, b in zip(path, path[1:])
-            )
-            elbows += max(0, len(path) - 2)
-            natural = xy(longitude, 345)
-            radial_error += abs(math.hypot(box.x-CX, box.y-CY) - 345)
-            tangential_error += math.hypot(box.x-natural[0], box.y-natural[1])
-        return (elbows, total_length, tangential_error, radial_error)
-
-    scored = sorted((score(result), i, result) for i, result in enumerate(all_solutions))
-    best_score, best_index, best = scored[0]
-    print(
-        f"Planet Finder {mode}: selected candidate {best_index + 1}/{len(all_solutions)} "
-        f"{context_label + ' ' if context_label else ''}"
-        f"score[elbows={best_score[0]},length={best_score[1]:.1f},"
-        f"displacement={best_score[2]:.1f},radial={best_score[3]:.1f}]",
-        flush=True,
-    )
-    return best
-
-def validate_layout(mode: str, result) -> tuple[bool, list[str]]:
-    """Recheck a completed layout independently before rendering it."""
-    errors = []
-    reserved = reserved_boxes(mode)
-    boxes = [row[3] for row in result]
-    paths = [row[4] for row in result]
-
-    # Labels must not overlap reserved annotations/zodiac labels or each other.
