@@ -97,6 +97,43 @@ def segment_hits_box(a: tuple[float, float], b: tuple[float, float], box: Box, p
     return True
 
 
+def point_segment_distance(p, a, b) -> float:
+    """Shortest distance from point p to line segment a-b."""
+    dx, dy = b[0] - a[0], b[1] - a[1]
+    if abs(dx) < 1e-12 and abs(dy) < 1e-12:
+        return math.hypot(p[0] - a[0], p[1] - a[1])
+    t = ((p[0] - a[0]) * dx + (p[1] - a[1]) * dy) / (dx * dx + dy * dy)
+    t = max(0.0, min(1.0, t))
+    q = (a[0] + t * dx, a[1] + t * dy)
+    return math.hypot(p[0] - q[0], p[1] - q[1])
+
+
+def segments_too_close(a, b, c, d, clearance: float = 8.0) -> bool:
+    """Return whether two leader segments intersect or come within clearance."""
+    def orient(p, q, r):
+        return (q[0] - p[0]) * (r[1] - p[1]) - (q[1] - p[1]) * (r[0] - p[0])
+
+    o1, o2, o3, o4 = orient(a, b, c), orient(a, b, d), orient(c, d, a), orient(c, d, b)
+    if ((o1 > 0 and o2 < 0) or (o1 < 0 and o2 > 0)) and ((o3 > 0 and o4 < 0) or (o3 < 0 and o4 > 0)):
+        return True
+    return min(
+        point_segment_distance(a, c, d),
+        point_segment_distance(b, c, d),
+        point_segment_distance(c, a, b),
+        point_segment_distance(d, a, b),
+    ) < clearance
+
+
+def leaders_too_close(path, existing_paths, clearance: float = 8.0) -> bool:
+    """Reject a proposed leader that grazes or crosses an existing leader."""
+    return any(
+        segments_too_close(path[i], path[i + 1], other[j], other[j + 1], clearance)
+        for other in existing_paths
+        for i in range(len(path) - 1)
+        for j in range(len(other) - 1)
+    )
+
+
 def label_size(mode: str, name: str) -> tuple[float, float]:
     if mode == "greek":
         return 64, 64
@@ -512,8 +549,13 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 rejected_route += 1
                 stats["route"] += 1
                 continue
+            if leaders_too_close(path, leaders):
+                rejected_leader += 1
+                stats["leader"] += 1
+                continue
             # A proposal becomes a search candidate only after all immediate
-            # geometry checks, including leader routing, have succeeded.
+            # geometry checks, including leader routing and leader-to-leader
+            # clearance, have succeeded.
             candidates += 1
             body_candidates += 1
             stats["generated"] += 1
