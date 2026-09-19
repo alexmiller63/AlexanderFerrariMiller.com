@@ -656,7 +656,6 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
 
         run_elapsed = time.monotonic() - budget["started"]
         if run_elapsed >= budget["max_seconds"]:
-            dump_diagnostics("run-wide wall-clock budget exhausted")
             raise RuntimeError(
                 f"Planet Finder run-wide wall-clock budget exhausted in {mode} mode "
                 f"after {run_elapsed:.1f}s (limit {budget['max_seconds']:.1f}s)"
@@ -749,7 +748,17 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             )
         return False
 
-    exhausted = not search(0)
+    try:
+        exhausted = not search(0)
+    except CandidateBudgetExhausted:
+        dump_diagnostics("run-wide candidate budget exhausted")
+        raise
+    except RuntimeError as exc:
+        dump_diagnostics(f"runtime failure: {exc}")
+        raise
+
+    if exhausted:
+        dump_diagnostics("search exhausted without a complete solution")
 
     elapsed = time.monotonic() - started
     print(
