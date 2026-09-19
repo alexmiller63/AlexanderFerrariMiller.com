@@ -31,7 +31,12 @@ on:
       max_search_candidates:
         description: Maximum candidate evaluations for the entire run
         required: true
-        default: '1000000'
+        default: '1000'
+        type: string
+      max_search_seconds:
+        description: Maximum Planet Finder search time for the entire run
+        required: true
+        default: '90'
         type: string
 
 permissions:
@@ -39,11 +44,12 @@ permissions:
 
 concurrency:
   group: planet-finder-generator
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   populate:
     runs-on: ubuntu-latest
+    timeout-minutes: 3
     steps:
       - uses: actions/checkout@v4
         with:
@@ -107,6 +113,9 @@ jobs:
           STAR_ALMANACK_EPHEMERIS_DIR: ${{ github.workspace }}/.cache/skyfield
           PLANET_FINDER_CANDIDATES: ${{ inputs.candidate_layouts }}
           PLANET_FINDER_MAX_CANDIDATES: ${{ inputs.max_search_candidates }}
+          PLANET_FINDER_MAX_SECONDS: ${{ inputs.max_search_seconds }}
+          PLANET_FINDER_MAX_ORDER_SECONDS: '5'
+          PLANET_FINDER_MAX_ORDER_NODES: '100000'
         run: python tools/populate_ephemeris_planet_finder_by_date.py "${{ steps.range.outputs.start_date }}" "${{ steps.range.outputs.end_date }}"
 
       - name: Commit Planet Finder changes only
