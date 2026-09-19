@@ -432,6 +432,13 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
     rejected_route = 0
     backtracks = 0
     deepest = 0
+    # Diagnostic-only DFS residence accounting. Charge elapsed controller time
+    # to the depth/body that owned control between loop iterations; this shows
+    # which descendant subtree consumes a parent's generator suspension time.
+    depth_residence = {}
+    depth_visits = {}
+    last_loop_at = time.monotonic()
+    last_loop_depth = None
     diagnostic_stats = {}
     route_diagnostics = {}
     solutions = []
@@ -476,6 +483,14 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             for depth, frame in enumerate(stack)
             if frame.get("selected") is not None
         ]
+        for depth in sorted(set(depth_residence) | set(depth_visits)):
+            body_name = order[depth][1][1] if depth < len(order) else "complete-layout"
+            print(
+                f"Planet Finder {mode}: TERMINAL DFS-TIME depth={depth}/{len(order)} "
+                f"body={body_name} residence={depth_residence.get(depth, 0.0):.3f}s "
+                f"visits={depth_visits.get(depth, 0):,}",
+                flush=True,
+            )
         print(
             f"Planet Finder {mode}: TERMINAL BEST-PARTIAL deepest={deepest}/{len(order)} "
             f"active-depth={len(partial)} placements="
@@ -658,6 +673,10 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
     resume_position = None
 
     while True:
+        loop_now = time.monotonic()
+        if last_loop_depth is not None:
+            depth_residence[last_loop_depth] = depth_residence.get(last_loop_depth, 0.0) + (loop_now - last_loop_at)
+        last_loop_at = loop_now
         # One run-wide wall-clock guard. The same deadline is also checked
         # while lazily routing a candidate so expensive geometry cannot overrun it.
         run_elapsed = time.monotonic() - budget["started"]
@@ -674,6 +693,8 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             resume_position = None
         deepest = max(deepest, position)
         nodes += 1
+        last_loop_depth = position
+        depth_visits[position] = depth_visits.get(position, 0) + 1
         log_heartbeat(position)
 
         if position == len(order) and all(frame.get("selected") is not None for frame in stack):
