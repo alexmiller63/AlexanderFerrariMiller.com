@@ -399,14 +399,19 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         run_started = budget.get("started", started)
         run_elapsed = now - run_started
         run_rate = budget["candidates"] / run_elapsed if run_elapsed else 0
+        run_remaining = max(0, budget["max_candidates"] - budget["candidates"])
+        run_percent = 100.0 * budget["candidates"] / budget["max_candidates"]
+        run_eta = run_remaining / run_rate if run_rate > 0 else float("inf")
+        eta_text = f"{run_eta:.0f}s" if math.isfinite(run_eta) else "unknown"
         print(
             f"Planet Finder {mode}: heartbeat {context_label + ' ' if context_label else ''}"
             f"elapsed={elapsed:.1f}s run-elapsed={run_elapsed:.1f}s "
             f"order={order_index}{('/' + str(total_orders)) if total_orders else ''} "
             f"nodes={nodes:,} ({rate:,.0f}/s) depth={position}/{len(order)} "
             f"body={current_body} candidates={candidates:,} "
-            f"global_candidates={budget['candidates']:,}/{budget['max_candidates']:,} "
-            f"global-rate={run_rate:,.0f}/s "
+            f"RUN={budget['candidates']:,}/{budget['max_candidates']:,} "
+            f"({run_percent:.1f}%) remaining={run_remaining:,} "
+            f"rate={run_rate:,.0f}/s eta={eta_text} "
             f"rejects[overlap={rejected_overlap:,},leader={rejected_leader:,},"
             f"route={rejected_route:,}] backtracks={backtracks:,}",
             flush=True,
