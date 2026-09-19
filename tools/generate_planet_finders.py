@@ -131,7 +131,12 @@ def reserved_boxes(mode: str) -> list[Box]:
 
 
 def candidate_positions(longitude: float):
-    """Yield deterministic label positions, preferred positions first."""
+    """Yield deterministic geometric proposals, preferred positions first.
+
+    This function knows only the polar search geometry. Immutable chart
+    legality is enforced by legal_candidate_positions() before a proposal can
+    consume DFS/search budget.
+    """
     preferred_radii = (345, 300, 255, 210, 390, 165, 120)
     preferred_shifts = (0, -42, 42, -84, 84, -126, 126, -168, 168, -210, 210)
     theta = math.radians(180 + longitude)
@@ -152,6 +157,20 @@ def candidate_positions(longitude: float):
     expanded_radii = tuple(range(400, 79, -20))
     expanded_shifts = (0,) + tuple(v for n in range(28, 337, 28) for v in (-n, n))
     yield from offer(expanded_radii, expanded_shifts)
+
+
+def legal_candidate_positions(longitude: float, w: float, h: float, reserved: list[Box]):
+    """Yield only proposals that are legal against immutable chart geometry.
+
+    Reserved center annotations and zodiac labels never move, so a candidate
+    that overlaps one can never become valid through DFS backtracking. Reject
+    it here, before it enters the search candidate pool or consumes budget.
+    """
+    for x, y in candidate_positions(longitude):
+        box = Box(x, y, w, h)
+        if any(boxes_overlap(box, obstacle, 14) for obstacle in reserved):
+            continue
+        yield x, y, box
 
 
 def route(anchor: tuple[float, float], center: tuple[float, float], obstacles: list[Box], diagnostic=None) -> list[tuple[float, float]] | None:
@@ -400,7 +419,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         anchor = xy(longitude, RI - 5)
         viable = []
         body_candidates = 0
-        for x, y in candidate_positions(longitude):
+        for x, y, box in legal_candidate_positions(longitude, w, h, reserved):
             if budget["candidates"] - order_candidate_start >= max_order_candidates:
                 stats["blocked"] = "order-budget"
                 print(
@@ -465,8 +484,9 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             body_candidates += 1
             stats["generated"] += 1
             budget["candidates"] += 1
-            box = Box(x, y, w, h)
-            if any(boxes_overlap(box, b, 14) for b in reserved + placed):
+            # Immutable reserved collisions were already rejected at proposal
+            # time. Only movable, DFS-dependent collisions belong here.
+            if any(boxes_overlap(box, b, 14) for b in placed):
                 rejected_overlap += 1
                 stats["overlap"] += 1
                 continue
