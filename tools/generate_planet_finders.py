@@ -320,6 +320,14 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
     ornery_limit = max(1, int(os.environ.get("PLANET_FINDER_ORNERY_CANDIDATES", "50")))
 
     def dump_diagnostics(reason):
+        order_names = " > ".join(item[1][1] for item in order)
+        active = []
+        for depth, frame in enumerate(stack):
+            _, (_, frame_name, _) = frame["item"]
+            active.append(
+                f"{depth}:{frame_name}[option={frame['index'] + 1}/{len(frame['options'])},"
+                f"selected={'yes' if frame.get('selected') is not None else 'no'}]"
+            )
         print(
             f"Planet Finder {mode}: TERMINAL {context_label + ' ' if context_label else ''}reason={reason} order={order_index}"
             f"{('/' + str(total_orders)) if total_orders else ''} "
@@ -328,6 +336,30 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             f"{budget['max_candidates']:,} rejects[overlap={rejected_overlap:,},"
             f"leader={rejected_leader:,},route={rejected_route:,}] "
             f"backtracks={backtracks:,}",
+            flush=True,
+        )
+        print(f"Planet Finder {mode}: TERMINAL ORDER sequence={order_names}", flush=True)
+        print(
+            "Planet Finder "
+            f"{mode}: TERMINAL STACK " + (" | ".join(active) if active else "(empty)"),
+            flush=True,
+        )
+        for (depth, name), s in sorted(diagnostic_stats.items()):
+            print(
+                f"Planet Finder {mode}: TERMINAL BODY depth={depth}/{len(order)} body={name} "
+                f"generated={s['generated']:,} viable={s['viable']:,} "
+                f"rejects[overlap={s['overlap']:,},leader={s['leader']:,},route={s['route']:,}]",
+                flush=True,
+            )
+        partial = [
+            f"{depth}:{frame['item'][1][1]}"
+            for depth, frame in enumerate(stack)
+            if frame.get("selected") is not None
+        ]
+        print(
+            f"Planet Finder {mode}: TERMINAL BEST-PARTIAL deepest={deepest}/{len(order)} "
+            f"active-depth={len(partial)} placements="
+            + (" > ".join(partial) if partial else "(none)"),
             flush=True,
         )
 
