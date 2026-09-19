@@ -249,15 +249,60 @@ def route(anchor: tuple[float, float], center: tuple[float, float], obstacles: l
     return None
 
 
-def _solve_order(mode: str, bodies, order, budget, target_solutions=5):
-    """Solve one placement pass, choosing the most constrained body at each level."""
+def _permutation_by_rank(items, rank: int):
+    """Return one lexicographic permutation without recursive generation."""
+    pool = list(items)
+    result = []
+    for size in range(len(pool), 0, -1):
+        block = math.factorial(size - 1)
+        choice, rank = divmod(rank, block)
+        result.append(pool.pop(choice))
+    return result
+
+
+def _planned_order_ranks(total: int):
+    """Yield widely separated permutation ranks deterministically.
+
+    The first probes are deliberately far apart: canonical, reverse, midpoint,
+    quarter points, then a full-cycle modular walk.  This avoids the old
+    behavior where a failed ordering was followed by a nearly identical
+    ordering.  The sequence is iterative and can eventually cover every
+    permutation rank.
+    """
+    if total <= 0:
+        return
+    seen = set()
+    initial = (0, total - 1, total // 2, total // 4, (3 * total) // 4)
+    for rank in initial:
+        if rank not in seen:
+            seen.add(rank)
+            yield rank
+
+    # Coprime with 11! so this modular walk eventually visits every rank.
+    step = 19_958_401
+    rank = 0
+    while len(seen) < total:
+        rank = (rank + step) % total
+        if rank not in seen:
+            seen.add(rank)
+            yield rank
+
+
+def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_index=1, total_orders=None):
+    """Solve one fixed body ordering with an explicit iterative DFS.
+
+    The ordering is fixed for this pass.  Placement backtracking is represented
+    by an explicit stack of frames rather than recursive calls.  When the
+    ordering is exhausted, the caller selects a deliberately distant ordering.
+    """
     reserved = reserved_boxes(mode)
-    reserved_names = ["center_title", "center_direction", "center_sector_note", *[f"zodiac_{name}" for _, name in SIGNS]]
-    staged = {}
+    reserved_names = ["center_title", "center_direction", "center_sector_note",
+                      *[f"zodiac_{name}" for _, name in SIGNS]]
     placed: list[Box] = []
     leaders: list[list[tuple[float, float]]] = []
+    staged = {}
+    stack = []
     nodes = 0
-    max_nodes = 1_000_000
     started = time.monotonic()
     last_heartbeat = started
     candidates = 0
@@ -266,48 +311,26 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5):
     rejected_route = 0
     backtracks = 0
     deepest = 0
-    current_body = "-"
     diagnostic_stats = {}
     route_diagnostics = {}
-    body_choice_attempts = {}
-    zero_viable_events = {}
-    last_ranked = []
     solutions = []
     solution_keys = set()
-    solution_orders = []
-    conflict_pressure = {}
+    current_body = "-"
+    exhausted = False
 
     def dump_diagnostics(reason):
         print(
-            f"Planet Finder {mode}: TERMINAL reason={reason} nodes={nodes:,} "
-            f"deepest={deepest}/{len(order)} current_body={current_body} "
+            f"Planet Finder {mode}: TERMINAL reason={reason} order={order_index}"
+            f"{('/' + str(total_orders)) if total_orders else ''} "
+            f"nodes={nodes:,} deepest={deepest}/{len(order)} current_body={current_body} "
             f"candidates={candidates:,} global_candidates={budget['candidates']:,}/"
             f"{budget['max_candidates']:,} rejects[overlap={rejected_overlap:,},"
-            f"leader={rejected_leader:,},route={rejected_route:,}] backtracks={backtracks:,}",
+            f"leader={rejected_leader:,},route={rejected_route:,}] "
+            f"backtracks={backtracks:,}",
             flush=True,
         )
-        if last_ranked:
-            print(
-                "Planet Finder " + mode + ": TERMINAL last-ranking " +
-                ", ".join(f"{name}:{count}" for name, count in last_ranked),
-                flush=True,
-            )
-        for (depth, name), count in sorted(zero_viable_events.items()):
-            print(
-                f"Planet Finder {mode}: TERMINAL zero-viable depth={depth} "
-                f"body={name} occurrences={count:,}", flush=True,
-            )
-        for (depth, name), s in sorted(diagnostic_stats.items()):
-            accounted = s["viable"] + s["overlap"] + s["leader"] + s["route"]
-            print(
-                f"Planet Finder {mode}: TERMINAL body depth={depth} body={name} "
-                f"generated={s['generated']:,} viable={s['viable']:,} "
-                f"rejects[overlap={s['overlap']:,},leader={s['leader']:,},route={s['route']:,}] "
-                f"accounted={accounted:,}/{s['generated']:,}", flush=True,
-            )
 
     def viable_candidates(item, depth):
-        """Materialize currently viable placements for one remaining body."""
         original_index, (symbol, name, longitude) = item
         key = (depth, name)
         stats = diagnostic_stats.setdefault(key, {
@@ -353,188 +376,148 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5):
             viable.append((box, path))
         return viable
 
-    def solve(remaining) -> bool:
-        nonlocal nodes, last_heartbeat, backtracks, deepest, current_body
-        nodes += 1
-        position = len(order) - len(remaining)
-        deepest = max(deepest, position)
+    def log_heartbeat(position):
+        nonlocal last_heartbeat
         now = time.monotonic()
-        if now - last_heartbeat >= 5:
-            elapsed = now - started
-            rate = nodes / elapsed if elapsed else 0
-            print(
-                f"Planet Finder {mode}: heartbeat elapsed={elapsed:.1f}s "
-                f"nodes={nodes:,} ({rate:,.0f}/s) depth={position}/{len(order)} "
-                f"body={current_body} candidates={candidates:,} "
-                f"rejects[overlap={rejected_overlap:,},leader={rejected_leader:,},route={rejected_route:,}] "
-                f"backtracks={backtracks:,}",
-                flush=True,
-            )
-            last_heartbeat = now
-        if nodes > max_nodes:
-            dump_diagnostics("recursive-node budget exhausted")
-            raise RuntimeError(
-                f"Planet Finder search budget exhausted in {mode} mode "
-                f"after {max_nodes:,} recursive nodes"
-            )
-        if not remaining:
-            result = [staged[i] for i in range(len(bodies))]
-            key = tuple((round(row[3].x, 3), round(row[3].y, 3), tuple((round(x, 3), round(y, 3)) for x, y in row[4])) for row in result)
-            if key not in solution_keys:
-                solution_keys.add(key)
-
-                # Validate at the leaf, not after filling the solution quota.
-                # A failed complete layout teaches the ordering heuristic which
-                # bodies are causing trouble, then search continues immediately.
-                valid, errors = validate_layout(mode, result)
-                if not valid:
-                    implicated = set()
-                    for error in errors:
-                        for body_name in CANONICAL:
-                            if body_name in error:
-                                implicated.add(body_name)
-                    for body_name in implicated:
-                        conflict_pressure[body_name] = conflict_pressure.get(body_name, 0) + 1
-                    print(
-                        f"Planet Finder {mode}: learned from rejected complete layout "
-                        f"pressure=" + ",".join(
-                            f"{name}:{conflict_pressure[name]}" for name in sorted(implicated)
-                        ) + " errors=" + "; ".join(errors),
-                        flush=True,
-                    )
-                    return False
-
-                solutions.append(result)
-                placement_order = tuple(staged[i][1] for i in staged)
-                solution_orders.append(placement_order)
-                print(
-                    f"Planet Finder {mode}: complete valid candidate {len(solutions)}/{target_solutions} "
-                    f"placement-order=" + " > ".join(placement_order),
-                    flush=True,
-                )
-            return len(solutions) >= target_solutions
-
-        # Squeaky wheel gets the grease: measure every remaining body against
-        # the current partial layout.  Try the most constrained body first, but
-        # body choice itself is part of the backtracking search: if all of that
-        # body's placements fail deeper down, try the next-most-constrained body.
-        ranked = []
-        for rank, item in enumerate(remaining):
-            options = viable_candidates(item, position)
-            ranked.append((len(options), rank, item, options))
-        # Planned ordering: fail-first remains primary, but repeated trouble
-        # deliberately promotes implicated bodies.  This is deterministic and
-        # uses information learned during this run instead of enumerating
-        # permutations.
-        ranked.sort(key=lambda row: (
-            row[0],
-            -conflict_pressure.get(row[2][1][1], 0),
-            row[1],
-        ))
-        last_ranked[:] = [(row[2][1][1], row[0]) for row in ranked]
+        if now - last_heartbeat < 5:
+            return
+        elapsed = now - started
+        rate = nodes / elapsed if elapsed else 0
         print(
-            f"Planet Finder {mode}: ranking depth={position} " +
-            ", ".join(f"{name}={count}" for name, count in last_ranked),
+            f"Planet Finder {mode}: heartbeat elapsed={elapsed:.1f}s "
+            f"order={order_index}{('/' + str(total_orders)) if total_orders else ''} "
+            f"nodes={nodes:,} ({rate:,.0f}/s) depth={position}/{len(order)} "
+            f"body={current_body} candidates={candidates:,} "
+            f"global_candidates={budget['candidates']:,}/{budget['max_candidates']:,} "
+            f"rejects[overlap={rejected_overlap:,},leader={rejected_leader:,},"
+            f"route={rejected_route:,}] backtracks={backtracks:,}",
             flush=True,
         )
+        last_heartbeat = now
 
-        # A body with no viable placement makes this partial layout impossible;
-        # changing which other body is selected next cannot restore free space.
-        if ranked[0][0] == 0:
-            current_body = ranked[0][2][1][1]
-            s = diagnostic_stats[(position, current_body)]
-            zero_key = (position, current_body)
-            zero_viable_events[zero_key] = zero_viable_events.get(zero_key, 0) + 1
-            accounted = s["viable"] + s["overlap"] + s["leader"] + s["route"]
-            print(
-                f"Planet Finder {mode}: dead end depth={position}/{len(order)} "
-                f"body={current_body} generated={s['generated']:,} viable={s['viable']:,} "
-                f"rejects[overlap={s['overlap']:,},leader={s['leader']:,},route={s['route']:,}] "
-                f"accounted={accounted:,}/{s['generated']:,}",
-                flush=True,
+    while True:
+        position = len(stack)
+        deepest = max(deepest, position)
+        nodes += 1
+        log_heartbeat(position)
+
+        if position == len(order):
+            result = [staged[i] for i in range(len(bodies))]
+            key = tuple(
+                (
+                    round(row[3].x, 3),
+                    round(row[3].y, 3),
+                    tuple((round(x, 3), round(y, 3)) for x, y in row[4]),
+                )
+                for row in result
             )
+            if key not in solution_keys:
+                solution_keys.add(key)
+                valid, errors = validate_layout(mode, result)
+                if valid:
+                    solutions.append(result)
+                    print(
+                        f"Planet Finder {mode}: complete valid candidate "
+                        f"{len(solutions)}/{target_solutions} "
+                        f"order={order_index} placement-order=" +
+                        " > ".join(row[1] for row in result),
+                        flush=True,
+                    )
+                else:
+                    print(
+                        f"Planet Finder {mode}: rejected complete layout "
+                        f"order={order_index} errors=" + "; ".join(errors),
+                        flush=True,
+                    )
+
+            position -= 1
+            if position < 0:
+                exhausted = True
+                break
+            original_index, (_, name, _) = order[position]
+            del staged[original_index]
+            leaders.pop()
+            placed.pop()
+            stack[position]["index"] += 1
             backtracks += 1
-            return False
+            continue
 
-        for _, chosen_rank, chosen, options in ranked:
-            original_index, (symbol, name, longitude) = chosen
-            current_body = name
-            choice_key = (position, name)
-            body_choice_attempts[choice_key] = body_choice_attempts.get(choice_key, 0) + 1
-            next_remaining = remaining[:chosen_rank] + remaining[chosen_rank + 1:]
-
-            for box, path in options:
-                placed.append(box)
-                leaders.append(path)
-                staged[original_index] = (symbol, name, longitude, box, path)
-                if solve(next_remaining):
-                    return True
+        if len(stack) == position:
+            item = order[position]
+            options = viable_candidates(item, position)
+            stack.append({
+                "item": item,
+                "options": options,
+                "index": 0,
+            })
+            if not options:
+                original_index, (_, name, _) = item
+                current_body = name
+                s = diagnostic_stats[(position, name)]
+                print(
+                    f"Planet Finder {mode}: dead end order={order_index} "
+                    f"depth={position}/{len(order)} body={name} "
+                    f"generated={s['generated']:,} viable={s['viable']:,} "
+                    f"rejects[overlap={s['overlap']:,},leader={s['leader']:,},"
+                    f"route={s['route']:,}]",
+                    flush=True,
+                )
+                stack.pop()
+                if position == 0:
+                    exhausted = True
+                    break
+                position -= 1
+                original_index, (_, parent_name, _) = order[position]
                 del staged[original_index]
                 leaders.pop()
                 placed.pop()
+                stack[position]["index"] += 1
                 backtracks += 1
-        return False
+                continue
 
-    try:
-        solved = solve(order)
-    except Exception as exc:
-        dump_diagnostics(f"exception {type(exc).__name__}: {exc}")
-        raise
+        frame = stack[position]
+        if frame["index"] >= len(frame["options"]):
+            stack.pop()
+            if position == 0:
+                exhausted = True
+                break
+            position -= 1
+            original_index, (_, parent_name, _) = order[position]
+            del staged[original_index]
+            leaders.pop()
+            placed.pop()
+            stack[position]["index"] += 1
+            backtracks += 1
+            continue
+
+        original_index, (symbol, name, longitude) = frame["item"]
+        current_body = name
+        box, path = frame["options"][frame["index"]]
+        placed.append(box)
+        leaders.append(path)
+        staged[original_index] = (symbol, name, longitude, box, path)
+
     elapsed = time.monotonic() - started
     print(
-        f"Planet Finder {mode}: dynamic-search summary solved={solved} "
-        f"elapsed={elapsed:.2f}s nodes={nodes:,} deepest={deepest}/{len(order)} "
-        f"candidates={candidates:,} rejects[overlap={rejected_overlap:,},"
-        f"leader={rejected_leader:,},route={rejected_route:,}] backtracks={backtracks:,}",
+        f"Planet Finder {mode}: fixed-order summary order={order_index} "
+        f"exhausted={exhausted} elapsed={elapsed:.2f}s nodes={nodes:,} "
+        f"deepest={deepest}/{len(order)} candidates={candidates:,} "
+        f"global_candidates={budget['candidates']:,}/{budget['max_candidates']:,} "
+        f"rejects[overlap={rejected_overlap:,},leader={rejected_leader:,},"
+        f"route={rejected_route:,}] backtracks={backtracks:,} "
+        f"solutions={len(solutions)}",
         flush=True,
     )
-    for (depth, name), count in sorted(body_choice_attempts.items()):
-        print(
-            f"Planet Finder {mode}: body-choice depth={depth} body={name} attempts={count:,}",
-            flush=True,
-        )
-    for (depth, name), s in sorted(diagnostic_stats.items()):
-        accounted = s["viable"] + s["overlap"] + s["leader"] + s["route"]
-        print(
-            f"Planet Finder {mode}: diagnostic depth={depth} body={name} "
-            f"generated={s['generated']:,} viable={s['viable']:,} "
-            f"rejects[overlap={s['overlap']:,},leader={s['leader']:,},route={s['route']:,}] "
-            f"accounted={accounted:,}/{s['generated']:,}",
-            flush=True,
-        )
-    for (depth, name), d in sorted(route_diagnostics.items()):
-        if d["route_failed"] == 0:
-            continue
-        straight = ",".join(
-            f"{d['obstacle_names'][int(k.split('_')[1])]}:{v}" for k, v in sorted(d["straight_blockers"].items())
-        ) or "-"
-        print(
-            f"Planet Finder {mode}: route diagnostic depth={depth} body={name} "
-            f"straight_blocked={d['straight_blocked']:,} route_failed={d['route_failed']:,} "
-            f"straight_blockers[{straight}]",
-            flush=True,
-        )
-        for r, legs in d["elbows"].items():
-            first = ",".join(f"{d['obstacle_names'][int(k.split('_')[1])]}:{v}" for k, v in sorted(legs["first"].items())) or "-"
-            second = ",".join(f"{d['obstacle_names'][int(k.split('_')[1])]}:{v}" for k, v in sorted(legs["second"].items())) or "-"
-            print(
-                f"Planet Finder {mode}: route elbow depth={depth} body={name} r={r} "
-                f"first[{first}] second[{second}]",
-                flush=True,
-            )
-    if not solved:
-        dump_diagnostics("search space exhausted without a complete layout")
-        return False, None
-    return True, solutions
+    return solutions
 
 
 def layout(mode: str, bodies: list[tuple[str, str, float]], target_solutions: int | None = None):
-    """Find a collision-free layout with dynamic body-order backtracking.
+    """Search widely separated body orderings with iterative placement DFS.
 
-    Canonical order is retained only as the deterministic tie-break order.
-    At every recursion level the solver measures all remaining bodies, tries
-    the most constrained first, and can backtrack over both placement and body
-    choice.  There is therefore no outer "first body" retry loop.
+    The canonical order is always the first ordering.  If that ordering cannot
+    supply the requested candidates, the next ordering is deliberately far away
+    in permutation space.  The search eventually covers all 11! orderings,
+    subject to the shared 1,000,000 candidate-evaluation cap.
     """
     canonical_index = {name: i for i, name in enumerate(CANONICAL)}
     indexed = list(enumerate(bodies))
@@ -549,62 +532,92 @@ def layout(mode: str, bodies: list[tuple[str, str, float]], target_solutions: in
 
     if target_solutions is None:
         target_solutions = max(1, int(os.environ.get("PLANET_FINDER_CANDIDATES", "5")))
+
+    total_orders = math.factorial(len(indexed))
     budget = {"candidates": 0, "max_candidates": 1_000_000}
+    all_solutions = []
+    seen_solution_keys = set()
+
     print(
-        f"Planet Finder {mode}: starting dynamic body-order and placement search",
+        f"Planet Finder {mode}: starting planned-order iterative search "
+        f"target={target_solutions} max-candidates={budget['max_candidates']:,} "
+        f"permutation-space={total_orders:,}",
         flush=True,
     )
-    solved, results = _solve_order(mode, bodies, indexed, budget, target_solutions)
-    if solved:
-        print(
-            f"Planet Finder {mode}: solved by dynamic body-order backtracking",
-            flush=True,
-        )
-        def score(result):
-            total_length = 0.0
-            elbows = 0
-            radial_error = 0.0
-            tangential_error = 0.0
-            for _, _, longitude, box, path in result:
-                total_length += sum(math.hypot(b[0]-a[0], b[1]-a[1]) for a, b in zip(path, path[1:]))
-                elbows += max(0, len(path) - 2)
-                natural = xy(longitude, 345)
-                radial_error += abs(math.hypot(box.x-CX, box.y-CY) - 345)
-                tangential_error += math.hypot(box.x-natural[0], box.y-natural[1])
-            # Prefer simple leaders first, then short leaders and labels close to
-            # their body's natural radial direction. This makes long/kinked
-            # detours lose even when they are technically collision-free.
-            return (elbows, total_length, tangential_error, radial_error)
-        validated = []
-        for i, result in enumerate(results):
-            valid, errors = validate_layout(mode, result)
-            if valid:
-                validated.append((score(result), i, result))
-            else:
-                print(
-                    f"Planet Finder {mode}: rejected complete candidate {i + 1}/{len(results)} "
-                    f"by post-layout validation: " + "; ".join(errors),
-                    flush=True,
-                )
-        if not validated:
-            raise RuntimeError(
-                f"Planet Finder {mode}: all {len(results)} complete candidates failed "
-                "post-layout collision validation"
-            )
-        scored = sorted(validated)
-        best_score, best_index, best = scored[0]
-        print(
-            f"Planet Finder {mode}: selected candidate {best_index + 1}/{len(results)} "
-            f"score[elbows={best_score[0]},length={best_score[1]:.1f},"
-            f"displacement={best_score[2]:.1f},radial={best_score[3]:.1f}]",
-            flush=True,
-        )
-        return best
 
-    raise RuntimeError(
-        f"No collision-free Planet Finder layout exists in {mode} mode after "
-        f"dynamic body-order and placement backtracking"
+    for order_index, rank in enumerate(_planned_order_ranks(total_orders), start=1):
+        order = _permutation_by_rank(indexed, rank)
+        order_names = " > ".join(item[1][1] for item in order)
+        print(
+            f"Planet Finder {mode}: ORDER {order_index} rank={rank:,}/{total_orders:,} "
+            f"sequence={order_names}",
+            flush=True,
+        )
+
+        solutions = _solve_order(
+            mode,
+            bodies,
+            order,
+            budget,
+            target_solutions=max(1, target_solutions - len(all_solutions)),
+            order_index=order_index,
+            total_orders=total_orders,
+        )
+        for result in solutions:
+            key = tuple(
+                (
+                    row[1],
+                    round(row[3].x, 3),
+                    round(row[3].y, 3),
+                    tuple((round(x, 3), round(y, 3)) for x, y in row[4]),
+                )
+                for row in result
+            )
+            if key not in seen_solution_keys:
+                seen_solution_keys.add(key)
+                all_solutions.append(result)
+                if len(all_solutions) >= target_solutions:
+                    break
+
+        if len(all_solutions) >= target_solutions:
+            print(
+                f"Planet Finder {mode}: target reached with {len(all_solutions)} "
+                f"unique candidates after {order_index} planned orderings",
+                flush=True,
+            )
+            break
+
+    if not all_solutions:
+        raise RuntimeError(
+            f"No collision-free Planet Finder layout found in {mode} mode after "
+            f"{budget['candidates']:,} candidate evaluations across planned orderings"
+        )
+
+    def score(result):
+        total_length = 0.0
+        elbows = 0
+        radial_error = 0.0
+        tangential_error = 0.0
+        for _, _, longitude, box, path in result:
+            total_length += sum(
+                math.hypot(b[0]-a[0], b[1]-a[1])
+                for a, b in zip(path, path[1:])
+            )
+            elbows += max(0, len(path) - 2)
+            natural = xy(longitude, 345)
+            radial_error += abs(math.hypot(box.x-CX, box.y-CY) - 345)
+            tangential_error += math.hypot(box.x-natural[0], box.y-natural[1])
+        return (elbows, total_length, tangential_error, radial_error)
+
+    scored = sorted((score(result), i, result) for i, result in enumerate(all_solutions))
+    best_score, best_index, best = scored[0]
+    print(
+        f"Planet Finder {mode}: selected candidate {best_index + 1}/{len(all_solutions)} "
+        f"score[elbows={best_score[0]},length={best_score[1]:.1f},"
+        f"displacement={best_score[2]:.1f},radial={best_score[3]:.1f}]",
+        flush=True,
     )
+    return best
 
 def validate_layout(mode: str, result) -> tuple[bool, list[str]]:
     """Recheck a completed layout independently before rendering it."""
