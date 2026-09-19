@@ -34,22 +34,6 @@ jobs:
         continue-on-error: true
         run: python tools/build_fixed_object_registry.py
 
-      - name: Commit collision report for batch repair
-        if: steps.build_registry.outcome == 'failure'
-        run: |
-          if [ ! -f generated/fixed-object-identity-collisions.json ]; then
-            echo "Registry failed without producing a collision report."
-            exit 1
-          fi
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add generated/fixed-object-identity-collisions.json
-          if ! git diff --cached --quiet; then
-            git commit -m "Record fixed-object identity collisions"
-            git pull --rebase --autostash origin main
-            git push origin HEAD:main
-          fi
-
       - name: Repair fixed-object ID collisions in batch
         if: steps.build_registry.outcome == 'failure'
         run: python tools/repair_fixed_object_id_collisions.py
