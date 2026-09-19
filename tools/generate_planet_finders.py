@@ -210,7 +210,13 @@ def legal_candidate_positions(longitude: float, w: float, h: float, reserved: li
         yield x, y, box
 
 
-def route(anchor: tuple[float, float], center: tuple[float, float], obstacles: list[Box], diagnostic=None) -> list[tuple[float, float]] | None:
+def route(
+    anchor: tuple[float, float],
+    center: tuple[float, float],
+    obstacles: list[Box],
+    diagnostic=None,
+    allow_initial_escape_count: int = 0,
+) -> list[tuple[float, float]] | None:
     """Prefer a straight leader; otherwise try deterministic radial elbows.
 
     A leader is allowed to leave an obstacle that contains its anchor.  This
@@ -218,10 +224,12 @@ def route(anchor: tuple[float, float], center: tuple[float, float], obstacles: l
     zodiac label: the leader may escape that local label, but after it has
     exited it may not cross that obstacle again.
     """
-    def hits(a, b, obstacle):
-        # If the segment begins inside the padded obstacle, ignore only the
-        # initial escape through that same obstacle.  Test the remainder after
-        # the first exit, so a route that later re-enters is still rejected.
+    def hits(a, b, obstacle, allow_initial_escape=False):
+        # Only an immutable chart obstacle containing the body's anchor may
+        # permit the initial escape. A placed label belonging to another body
+        # must never become an escape obstacle merely because this body's
+        # anchor happens to fall inside it. The final validator enforces the
+        # same rule; route generation must agree with it.
         pad = 8
         inside = (
             obstacle.left - pad <= a[0] <= obstacle.right + pad and
@@ -260,7 +268,7 @@ def route(anchor: tuple[float, float], center: tuple[float, float], obstacles: l
 
     straight_blockers = [
         i for i, b in enumerate(obstacles)
-        if hits(anchor, center, b)
+        if hits(anchor, center, b, allow_initial_escape=(i < allow_initial_escape_count))
     ]
     if not straight_blockers:
         return [anchor, center]
@@ -276,7 +284,7 @@ def route(anchor: tuple[float, float], center: tuple[float, float], obstacles: l
         ex, ey = xy(lon, r)
         first_blockers = [
             i for i, b in enumerate(obstacles)
-            if hits(anchor, (ex, ey), b)
+            if hits(anchor, (ex, ey), b, allow_initial_escape=(i < allow_initial_escape_count))
         ]
         second_blockers = [
             i for i, b in enumerate(obstacles)
@@ -304,7 +312,10 @@ def route(anchor: tuple[float, float], center: tuple[float, float], obstacles: l
         e1 = xy(lon, r)
         for shift in (70, -70, 105, -105, 140, -140, 175, -175, 210, -210, 245, -245, 280, -280, 315, -315):
             e2 = (e1[0] + shift * tx, e1[1] + shift * ty)
-            first_blocked = any(hits(anchor, e1, b) for b in obstacles)
+            first_blocked = any(
+                hits(anchor, e1, b, allow_initial_escape=(i < allow_initial_escape_count))
+                for i, b in enumerate(obstacles)
+            )
             second_blocked = any(hits(e1, e2, b) for b in obstacles)
             third_blocked = any(hits(e2, center, b) for b in obstacles)
             if not first_blocked and not second_blocked and not third_blocked:
@@ -569,7 +580,13 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 "elbows": {},
             })
             route_diag["obstacle_names"] = reserved_names + [f"placed_{i}" for i in range(len(placed))]
-            path = route(anchor, (x, y), reserved + placed, route_diag)
+            path = route(
+                anchor,
+                (x, y),
+                reserved + placed,
+                route_diag,
+                allow_initial_escape_count=len(reserved),
+            )
             if path is None:
                 rejected_route += 1
                 stats["route"] += 1
