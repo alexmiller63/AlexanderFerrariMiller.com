@@ -522,6 +522,20 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         timing = {"stream_wait": 0.0, "overlap": 0.0, "existing_leader": 0.0, "route": 0.0, "final_leader": 0.0}
         legal_positions = iter(legal_candidate_positions(longitude, w, h, reserved))
         while True:
+            # Each DFS invocation owns a bounded proposal search. Count every
+            # placement examined, including geometry rejected before it becomes
+            # a viable DFS child. Exhausting this local budget simply rejects
+            # this node and lets ordinary recursion backtrack to its parent.
+            if raw_positions >= budget["max_node_candidates"]:
+                stats["blocked"] = "node-budget"
+                print(
+                    f"Planet Finder {mode}: NODE-BUDGET STOP order={order_index} "
+                    f"depth={depth}/{len(order)} body={name} "
+                    f"examined={raw_positions:,}/{budget['max_node_candidates']:,} "
+                    f"viable={body_candidates:,}",
+                    flush=True,
+                )
+                break
             resumed_at = time.monotonic()
             if last_yield_at is not None:
                 suspended_total += max(0.0, resumed_at - last_yield_at)
@@ -765,12 +779,16 @@ def new_search_budget(max_candidates: int | None = None):
         max_candidates = int(os.environ.get("PLANET_FINDER_MAX_CANDIDATES", "1000000"))
     if max_candidates <= 0:
         raise ValueError("PLANET_FINDER_MAX_CANDIDATES must be positive")
+    max_node_candidates = int(os.environ.get("PLANET_FINDER_MAX_NODE_CANDIDATES", "100"))
+    if max_node_candidates <= 0:
+        raise ValueError("PLANET_FINDER_MAX_NODE_CANDIDATES must be positive")
     max_seconds = max(1.0, float(os.environ.get("PLANET_FINDER_MAX_SECONDS", "90")))
     # Start the wall-clock budget lazily at the first actual layout search.
     # Ephemeris setup/kernel work must not consume the Planet Finder search ceiling.
     return {
         "candidates": 0,
         "max_candidates": max_candidates,
+        "max_node_candidates": max_node_candidates,
         "max_seconds": max_seconds,
         "started": None,
     }
@@ -814,7 +832,8 @@ def layout(
     print(
         f"Planet Finder {mode}: canonical-order lazy DFS "
         f"{context_label + ' ' if context_label else ''}"
-        f"target={target_solutions} max-candidates={budget['max_candidates']:,} "
+        f"target={target_solutions} max-node-candidates={budget['max_node_candidates']:,} "
+        f"max-candidates={budget['max_candidates']:,} "
         f"sequence=" + " > ".join(item[1][1] for item in order),
         flush=True,
     )
