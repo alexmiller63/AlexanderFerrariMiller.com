@@ -206,6 +206,7 @@ def _solve_order(mode: str, bodies, order, budget):
     current_body = "-"
     diagnostic_stats = {}
     route_diagnostics = {}
+    body_choice_attempts = {}
 
     def viable_candidates(item, depth):
         """Materialize currently viable placements for one remaining body."""
@@ -307,6 +308,8 @@ def _solve_order(mode: str, bodies, order, budget):
         for _, chosen_rank, chosen, options in ranked:
             original_index, (symbol, name, longitude) = chosen
             current_body = name
+            choice_key = (position, name)
+            body_choice_attempts[choice_key] = body_choice_attempts.get(choice_key, 0) + 1
             next_remaining = remaining[:chosen_rank] + remaining[chosen_rank + 1:]
 
             for box, path in options:
@@ -324,12 +327,17 @@ def _solve_order(mode: str, bodies, order, budget):
     solved = solve(order)
     elapsed = time.monotonic() - started
     print(
-        f"Planet Finder {mode}: pass summary first={order[0][1][1]} solved={solved} "
+        f"Planet Finder {mode}: dynamic-search summary solved={solved} "
         f"elapsed={elapsed:.2f}s nodes={nodes:,} deepest={deepest}/{len(order)} "
         f"candidates={candidates:,} rejects[overlap={rejected_overlap:,},"
         f"leader={rejected_leader:,},route={rejected_route:,}] backtracks={backtracks:,}",
         flush=True,
     )
+    for (depth, name), count in sorted(body_choice_attempts.items()):
+        print(
+            f"Planet Finder {mode}: body-choice depth={depth} body={name} attempts={count:,}",
+            flush=True,
+        )
     for (depth, name), s in sorted(diagnostic_stats.items()):
         accounted = s["viable"] + s["overlap"] + s["leader"] + s["route"]
         print(
@@ -365,12 +373,12 @@ def _solve_order(mode: str, bodies, order, budget):
 
 
 def layout(mode: str, bodies: list[tuple[str, str, float]]):
-    """Find a collision-free layout, rotating the starting body after failure.
+    """Find a collision-free layout with dynamic body-order backtracking.
 
-    Every pass starts from scratch. Pass zero follows the canonical order. If it
-    fails, the next pass starts with the next canonical body, wrapping around the
-    sequence. This makes retries deterministic and independent of an unlucky
-    first placement.
+    Canonical order is retained only as the deterministic tie-break order.
+    At every recursion level the solver measures all remaining bodies, tries
+    the most constrained first, and can backtrack over both placement and body
+    choice.  There is therefore no outer "first body" retry loop.
     """
     canonical_index = {name: i for i, name in enumerate(CANONICAL)}
     indexed = list(enumerate(bodies))
@@ -383,47 +391,23 @@ def layout(mode: str, bodies: list[tuple[str, str, float]]):
     if {name for _, (_, name, _) in indexed} != set(CANONICAL):
         raise RuntimeError("Planet Finder body set does not match the canonical Solar-System objects")
 
-    # One hard candidate budget covers every ordering attempt for this mode.
-    # It is an emergency brake, not the search strategy.
     budget = {"candidates": 0, "max_candidates": 1_000_000}
-
-    for start in range(len(indexed)):
-        order = indexed[start:] + indexed[:start]
+    print(
+        f"Planet Finder {mode}: starting dynamic body-order and placement search",
+        flush=True,
+    )
+    solved, result = _solve_order(mode, bodies, indexed, budget)
+    if solved:
         print(
-            f"Planet Finder {mode}: starting placement pass {start + 1}/{len(indexed)} "
-            f"with {order[0][1][1]}",
+            f"Planet Finder {mode}: solved by dynamic body-order backtracking",
             flush=True,
         )
-        try:
-            solved, result = _solve_order(mode, bodies, order, budget)
-        except RuntimeError as exc:
-            if "candidate budget exhausted" in str(exc):
-                raise
-            if "Planet Finder search budget exhausted" not in str(exc):
-                raise
-            solved, result = False, None
-            print(
-                f"Planet Finder {mode}: node budget exhausted with "
-                f"{order[0][1][1]} first; restarting from scratch with the next body",
-                flush=True,
-            )
-
-        if solved:
-            print(
-                f"Planet Finder {mode}: solved with {order[0][1][1]} first",
-                flush=True,
-            )
-            return result
-        print(
-            f"Planet Finder {mode}: no solution with {order[0][1][1]} first",
-            flush=True,
-        )
+        return result
 
     raise RuntimeError(
         f"No collision-free Planet Finder layout exists in {mode} mode after "
-        f"full body-order and placement backtracking"
+        f"dynamic body-order and placement backtracking"
     )
-
 
 def polyline(points):
     pts = " ".join(f"{x:.1f},{y:.1f}" for x, y in points)
