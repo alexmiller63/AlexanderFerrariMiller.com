@@ -745,7 +745,7 @@ def layout(
     if budget.get("started") is None:
         budget["started"] = time.monotonic()
         print(
-            f"Planet Finder SEARCH CLOCK STARTED: limit={budget[\'max_seconds\']:.1f}s",
+            f"Planet Finder SEARCH CLOCK STARTED: limit={budget['max_seconds']:.1f}s",
             flush=True,
         )
     all_solutions = []
