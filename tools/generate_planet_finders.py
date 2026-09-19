@@ -190,6 +190,7 @@ def route(anchor: tuple[float, float], center: tuple[float, float], obstacles: l
 def _solve_order(mode: str, bodies, order, budget):
     """Solve one placement pass, choosing the most constrained body at each level."""
     reserved = reserved_boxes(mode)
+    reserved_names = ["center_title", "center_direction", "center_sector_note", *[f"zodiac_{name}" for _, name in SIGNS]]
     staged = {}
     placed: list[Box] = []
     leaders: list[list[tuple[float, float]]] = []
@@ -244,6 +245,7 @@ def _solve_order(mode: str, bodies, order, budget):
                 "straight_blockers": {},
                 "elbows": {},
             })
+            route_diag["obstacle_names"] = reserved_names + [f"placed_{i}" for i in range(len(placed))]
             path = route(anchor, (x, y), reserved + placed, route_diag)
             if path is None:
                 rejected_route += 1
@@ -351,7 +353,7 @@ def _solve_order(mode: str, bodies, order, budget):
         if d["route_failed"] == 0:
             continue
         straight = ",".join(
-            f"{k}:{v}" for k, v in sorted(d["straight_blockers"].items())
+            f"{d['obstacle_names'][int(k.split('_')[1])]}:{v}" for k, v in sorted(d["straight_blockers"].items())
         ) or "-"
         print(
             f"Planet Finder {mode}: route diagnostic depth={depth} body={name} "
@@ -360,8 +362,8 @@ def _solve_order(mode: str, bodies, order, budget):
             flush=True,
         )
         for r, legs in d["elbows"].items():
-            first = ",".join(f"{k}:{v}" for k, v in sorted(legs["first"].items())) or "-"
-            second = ",".join(f"{k}:{v}" for k, v in sorted(legs["second"].items())) or "-"
+            first = ",".join(f"{d['obstacle_names'][int(k.split('_')[1])]}:{v}" for k, v in sorted(legs["first"].items())) or "-"
+            second = ",".join(f"{d['obstacle_names'][int(k.split('_')[1])]}:{v}" for k, v in sorted(legs["second"].items())) or "-"
             print(
                 f"Planet Finder {mode}: route elbow depth={depth} body={name} r={r} "
                 f"first[{first}] second[{second}]",
