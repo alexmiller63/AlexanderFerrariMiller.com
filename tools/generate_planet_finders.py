@@ -533,8 +533,19 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 x, y, box = next(legal_positions)
             except StopIteration:
                 break
-            timing["stream_wait"] += time.monotonic() - stream_t0
+            stream_dt = time.monotonic() - stream_t0
+            timing["stream_wait"] += stream_dt
             raw_positions += 1
+
+            # Narrow instrumentation for pathological candidate generation.
+            # Report any single stage that stalls for >= 1s immediately, rather
+            # than waiting for the 5s aggregate heartbeat.
+            if stream_dt >= 1.0:
+                print(
+                    f"Planet Finder {mode}: SLOW candidate-position body={name} "
+                    f"depth={depth}/{len(order)} raw={raw_positions:,} dt={stream_dt:.3f}s",
+                    flush=True,
+                )
             # Count search work separately from candidates admitted to DFS.
             # A geometrically rotten proposal must never consume candidate
             # budget, but examining it is still finite solver work. This
@@ -624,7 +635,15 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 allow_initial_escape_count=len(reserved),
                 prefix_cache=route_prefix_cache,
             )
-            timing["route"] += time.monotonic() - t0
+            route_dt = time.monotonic() - t0
+            timing["route"] += route_dt
+            if route_dt >= 1.0:
+                print(
+                    f"Planet Finder {mode}: SLOW route body={name} "
+                    f"depth={depth}/{len(order)} raw={raw_positions:,} dt={route_dt:.3f}s "
+                    f"result={'none' if path is None else 'ok'}",
+                    flush=True,
+                )
             if path is None:
                 rejected_route += 1
                 stats["route"] += 1
