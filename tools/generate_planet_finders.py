@@ -341,15 +341,15 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         anchor = xy(longitude, RI - 5)
         viable = []
         for x, y in candidate_positions(longitude):
+            if budget["candidates"] >= budget["max_candidates"]:
+                dump_diagnostics("candidate budget exhausted")
+                raise RuntimeError(
+                    f"Planet Finder run-wide candidate budget exhausted in {mode} mode "
+                    f"after {budget['max_candidates']:,} candidate evaluations"
+                )
             candidates += 1
             stats["generated"] += 1
             budget["candidates"] += 1
-            if budget["candidates"] > budget["max_candidates"]:
-                dump_diagnostics("candidate budget exhausted")
-                raise RuntimeError(
-                    f"Planet Finder candidate budget exhausted in {mode} mode "
-                    f"after {budget['max_candidates']:,} candidate evaluations"
-                )
             box = Box(x, y, w, h)
             if any(boxes_overlap(box, b, 14) for b in reserved + placed):
                 rejected_overlap += 1
