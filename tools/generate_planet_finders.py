@@ -398,6 +398,16 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             str(min(100, budget["max_candidates"])),
         )),
     )
+    # A squeaky-wheel ordering is evidence-driven, not just the next blind
+    # permutation.  Give it a complete order slice while keeping the same
+    # run-wide candidate ceiling: earlier planned orders may use only the
+    # non-reserved portion of the budget.  The reserve becomes available as
+    # soon as a deep dead end identifies a body to promote.
+    squeaky_reserve = min(max_order_candidates, budget["max_candidates"])
+    is_squeaky_order = bool(budget.get("squeaky_order_active"))
+    effective_global_limit = budget["max_candidates"] if is_squeaky_order else max(
+        1, budget["max_candidates"] - squeaky_reserve
+    )
     max_proposals = max(1, int(os.environ.get("PLANET_FINDER_MAX_PROPOSALS", str(max(10000, budget["max_candidates"] * 20)))))
     proposals = 0
     order_candidate_start = budget["candidates"]
@@ -476,6 +486,13 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                     flush=True,
                 )
                 raise StopIteration("Planet Finder per-order candidate budget exhausted")
+            if budget["candidates"] >= effective_global_limit:
+                stats["blocked"] = "squeaky-reserve" if not is_squeaky_order else "global-budget"
+                raise StopIteration(
+                    "Planet Finder squeaky reserve reached"
+                    if not is_squeaky_order
+                    else "Planet Finder candidate budget exhausted"
+                )
             if body_candidates >= ornery_limit:
                 print(
                     f"Planet Finder {mode}: ORNERY order={order_index} "
@@ -901,6 +918,7 @@ def layout(
 
         order = _permutation_by_rank(indexed, rank)
         squeaky_body = budget.get("squeaky_body")
+        budget["squeaky_order_active"] = bool(squeaky_body)
         if squeaky_body:
             squeaky_index = next(
                 (i for i, item in enumerate(order) if item[1][1] == squeaky_body),
@@ -935,6 +953,14 @@ def layout(
                 context_label=context_label,
             )
         except StopIteration as exc:
+            if "squeaky reserve reached" in str(exc):
+                print(
+                    f"Planet Finder {mode}: ORDER {order_index} stopped at reserved "
+                    f"squeaky-wheel slice; advancing with "
+                    f"{budget['max_candidates'] - budget['candidates']:,} evaluations reserved",
+                    flush=True,
+                )
+                continue
             if "per-order" in str(exc):
                 print(
                     f"Planet Finder {mode}: ORDER {order_index} candidate slice exhausted; "
