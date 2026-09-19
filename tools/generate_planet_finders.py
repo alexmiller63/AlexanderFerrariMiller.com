@@ -695,7 +695,8 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                     tuple((round(x, 3), round(y, 3)) for x, y in row[4]),
                 )
                 for row in result
-            )            if key not in solution_keys:
+            )
+            if key not in solution_keys:
                 solution_keys.add(key)
                 valid, errors = validate_layout(mode, result)
                 if valid:
