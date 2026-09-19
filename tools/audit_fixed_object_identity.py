@@ -16,7 +16,8 @@ REVIEW_OUT = SRC / "generated" / "fixed-object-contradiction-review.json"
 TARGET_LAYER = SRC / "database" / "catalog-entry-targets.json"
 SUPPLEMENTAL_OBJECTS = SRC / "database" / "supplemental-physical-objects.json"
 CONSTELLATION_REVIEWS = SRC / "database" / "object-constellation-reviews.json"
-FIGURE_GEOMETRY = SRC / "finder-geometry" / "martz-macrobert.json"\nHIPPARCOS_FIGURE_STARS = SRC / "reference-data" / "hipparcos" / "figure-stars.csv"
+FIGURE_GEOMETRY = SRC / "finder-geometry" / "martz-macrobert.json"
+HIPPARCOS_FIGURE_STARS = SRC / "reference-data" / "hipparcos" / "figure-stars.csv"
 
 CATALOG_RE = re.compile(r"^(NGC|IC)\s*0*(\d+)$", re.I)
 HIP_RE = re.compile(r"^HIP\s*0*(\d+)$", re.I)
@@ -286,7 +287,8 @@ def main():
     cs=load_source_candidates(); original_candidate_count=len(cs); supplemental_validation=append_supplemental_candidates(cs); figure_validation=append_figure_star_candidates(cs); hipparcos_validation=append_hipparcos_reference_candidates(cs); target_validation=apply_catalog_target_layer(cs); constellation_validation,resolved_constellation_ids=load_constellation_reviews(); groups,by=reconcile(cs,resolved_constellation_ids); physical_candidates=[c for c in cs if c["identity_role"]=="physical_object_candidate"]; physical_groups,physical_by=reconcile(physical_candidates,resolved_constellation_ids); overlaps=[{"namespace":ns,"value":value,"candidate_ids":ids} for (ns,value),ids in sorted(by.items()) if len(ids)>1]; physical_overlaps=[{"namespace":ns,"value":value,"candidate_ids":ids} for (ns,value),ids in sorted(physical_by.items()) if len(ids)>1]; explicit={"finest_ngc_caldwell":read_csv(SRC/"finest-ngc-caldwell-overlap.csv"),"asterism_catalog":read_csv(SRC/"asterism-catalog-overlap.csv")}; counts=Counter(c["source"] for c in cs); identifier_counts=Counter(i["namespace"] for c in cs for i in c["identifiers"]); no_cross=[c["candidate_id"] for c in cs if not any(i["namespace"] in CROSS_SOURCE_NAMESPACES for i in c["identifiers"])]; no_cross_physical=[c["candidate_id"] for c in physical_candidates if not any(i["namespace"] in CROSS_SOURCE_NAMESPACES for i in c["identifiers"])]; no_any=[c["candidate_id"] for c in cs if not c["identifiers"]]; merged=[g for g in groups if g["candidate_count"]>1]; review=[g for g in merged if g["contradictions"]]; validated=[g for g in merged if not g["contradictions"]]; physical_merged=[g for g in physical_groups if g["candidate_count"]>1]; physical_review=[g for g in physical_merged if g["contradictions"]]; physical_validated=[g for g in physical_merged if not g["contradictions"]]; blockers=[]
     if numbered_bayer_validation["missing_cross_id_count"]: blockers.append("numbered_bayer_components_without_cross_id")
     if supplemental_validation["errors"]: blockers.append("supplemental_physical_object_errors")
-    if figure_validation["errors"]: blockers.append("figure_star_errors")\n    if hipparcos_validation["errors"]: blockers.append("hipparcos_figure_star_errors")
+    if figure_validation["errors"]: blockers.append("figure_star_errors")
+    if hipparcos_validation["errors"]: blockers.append("hipparcos_figure_star_errors")
     if target_validation["errors"]: blockers.append("catalog_target_layer_errors")
     if constellation_validation["errors"]: blockers.append("constellation_review_errors")
     if target_validation["unresolved_target_identifier_count"]: blockers.append("unresolved_catalog_target_identifiers")
