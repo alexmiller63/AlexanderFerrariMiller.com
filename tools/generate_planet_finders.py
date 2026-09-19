@@ -182,7 +182,27 @@ def route(anchor: tuple[float, float], center: tuple[float, float], obstacles: l
             for i in second_blockers:
                 key = f"obstacle_{i}"
                 elbow["second"][key] = elbow["second"].get(key, 0) + 1
+
+    # A single radial elbow can still force the final leg through the wide
+    # center annotations.  Try deterministic two-elbow doglegs next: leave
+    # the body radially, move tangentially around the center text, then enter
+    # the label.  Straight and one-elbow routes remain preferred.
+    lon = math.degrees(math.atan2(-(ay - CY), ax - CX)) - 180
+    theta = math.radians(180 + lon)
+    tx, ty = -math.sin(theta), -math.cos(theta)
+    for r in (395, 365, 335, 305, 275, 245, 215, 185, 155):
+        e1 = xy(lon, r)
+        for shift in (70, -70, 105, -105, 140, -140, 175, -175, 210, -210, 245, -245, 280, -280, 315, -315):
+            e2 = (e1[0] + shift * tx, e1[1] + shift * ty)
+            first_blocked = any(segment_hits_box(anchor, e1, b, 8) for b in obstacles)
+            second_blocked = any(segment_hits_box(e1, e2, b, 8) for b in obstacles)
+            third_blocked = any(segment_hits_box(e2, center, b, 8) for b in obstacles)
+            if not first_blocked and not second_blocked and not third_blocked:
+                if diagnostic is not None:
+                    diagnostic["dogleg_success"] = diagnostic.get("dogleg_success", 0) + 1
+                return [anchor, e1, e2, center]
     if diagnostic is not None:
+        diagnostic["dogleg_failed"] = diagnostic.get("dogleg_failed", 0) + 1
         diagnostic["route_failed"] = diagnostic.get("route_failed", 0) + 1
     return None
 
