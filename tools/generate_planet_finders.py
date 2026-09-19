@@ -171,16 +171,22 @@ def _solve_order(mode: str, bodies, order, budget):
     backtracks = 0
     deepest = 0
     current_body = "-"
+    diagnostic_stats = {}
 
-    def viable_candidates(item):
+    def viable_candidates(item, depth):
         """Materialize currently viable placements for one remaining body."""
-        nonlocal candidates, rejected_overlap, rejected_leader, rejected_route
         original_index, (symbol, name, longitude) = item
+        key = (depth, name)
+        stats = diagnostic_stats.setdefault(key, {
+            "generated": 0, "viable": 0, "overlap": 0, "leader": 0, "route": 0,
+        })
+        nonlocal candidates, rejected_overlap, rejected_leader, rejected_route
         w, h = label_size(mode, name)
         anchor = xy(longitude, RI - 5)
         viable = []
         for x, y in candidate_positions(longitude):
             candidates += 1
+            stats["generated"] += 1
             budget["candidates"] += 1
             if budget["candidates"] > budget["max_candidates"]:
                 raise RuntimeError(
@@ -190,15 +196,19 @@ def _solve_order(mode: str, bodies, order, budget):
             box = Box(x, y, w, h)
             if any(boxes_overlap(box, b, 14) for b in reserved + placed):
                 rejected_overlap += 1
+                stats["overlap"] += 1
                 continue
             if any(segment_hits_box(seg[i], seg[i + 1], box, 10)
                    for seg in leaders for i in range(len(seg) - 1)):
                 rejected_leader += 1
+                stats["leader"] += 1
                 continue
             path = route(anchor, (x, y), reserved + placed)
             if path is None:
                 rejected_route += 1
+                stats["route"] += 1
                 continue
+            stats["viable"] += 1
             viable.append((box, path))
         return viable
 
@@ -234,7 +244,7 @@ def _solve_order(mode: str, bodies, order, budget):
         # body's placements fail deeper down, try the next-most-constrained body.
         ranked = []
         for rank, item in enumerate(remaining):
-            options = viable_candidates(item)
+            options = viable_candidates(item, position)
             ranked.append((len(options), rank, item, options))
         ranked.sort(key=lambda row: (row[0], row[1]))
 
@@ -242,6 +252,15 @@ def _solve_order(mode: str, bodies, order, budget):
         # changing which other body is selected next cannot restore free space.
         if ranked[0][0] == 0:
             current_body = ranked[0][2][1][1]
+            s = diagnostic_stats[(position, current_body)]
+            accounted = s["viable"] + s["overlap"] + s["leader"] + s["route"]
+            print(
+                f"Planet Finder {mode}: dead end depth={position}/{len(order)} "
+                f"body={current_body} generated={s['generated']:,} viable={s['viable']:,} "
+                f"rejects[overlap={s['overlap']:,},leader={s['leader']:,},route={s['route']:,}] "
+                f"accounted={accounted:,}/{s['generated']:,}",
+                flush=True,
+            )
             backtracks += 1
             return False
 
@@ -271,6 +290,15 @@ def _solve_order(mode: str, bodies, order, budget):
         f"leader={rejected_leader:,},route={rejected_route:,}] backtracks={backtracks:,}",
         flush=True,
     )
+    for (depth, name), s in sorted(diagnostic_stats.items()):
+        accounted = s["viable"] + s["overlap"] + s["leader"] + s["route"]
+        print(
+            f"Planet Finder {mode}: diagnostic depth={depth} body={name} "
+            f"generated={s['generated']:,} viable={s['viable']:,} "
+            f"rejects[overlap={s['overlap']:,},leader={s['leader']:,},route={s['route']:,}] "
+            f"accounted={accounted:,}/{s['generated']:,}",
+            flush=True,
+        )
     if not solved:
         return False, None
     return True, [staged[i] for i in range(len(bodies))]
