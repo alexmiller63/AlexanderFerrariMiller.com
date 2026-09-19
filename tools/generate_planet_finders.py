@@ -407,7 +407,8 @@ def _planned_order_ranks(total: int):
     step = 19_958_401
     rank = 0
     while len(seen) < total:
-        rank = (rank + step) % total        if rank not in seen:
+        rank = (rank + step) % total
+        if rank not in seen:
             seen.add(rank)
             yield rank
 
@@ -1205,7 +1206,8 @@ def validate_layout(mode: str, result) -> tuple[bool, list[str]]:
         name = result[i][1]
         for j, box in enumerate(boxes):
             if i == j:
-                continue            for a, b in zip(path, path[1:]):
+                continue
+            for a, b in zip(path, path[1:]):
                 if segment_hits_box(a, b, box, 10):
                     errors.append(f"{name}: leader crosses {result[j][1]} label")
                     break
