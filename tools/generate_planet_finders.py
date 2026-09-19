@@ -1277,3 +1277,24 @@ def parse_args():
     if args.year is not None and args.week is None:
         p.error("--week is required with --year")
     return args
+
+
+def main() -> None:
+    args = parse_args()
+    if args.current:
+        today = date.today()
+        iso = today.isocalendar()
+        year, week = iso.year, iso.week
+    else:
+        year, week = args.year, args.week
+    budget = new_search_budget()
+    generate_week(
+        year,
+        week,
+        budget=budget,
+        context_label=f"ISO={year}-W{week:02d}",
+    )
+
+
+if __name__ == "__main__":
+    main()
