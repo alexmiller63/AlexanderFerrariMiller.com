@@ -29,6 +29,9 @@ jobs:
       - name: Acquire Hipparcos figure-star positions once
         run: python tools/acquire_hipparcos_figure_stars.py
 
+      - name: Validate Python sources
+        run: python -m compileall -q tools
+
       - name: Audit fixed-object identity
         run: python tools/audit_fixed_object_identity.py
 
