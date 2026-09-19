@@ -18,6 +18,6 @@ jobs:
         with:
           python-version: '3.x'
       - name: Install test dependencies
-        run: pip install pytest
+        run: pip install pytest skyfield==1.55
       - name: Run current Planet Finder unit tests
         run: pytest -q tests/test_planet_finder_candidate_generation.py
