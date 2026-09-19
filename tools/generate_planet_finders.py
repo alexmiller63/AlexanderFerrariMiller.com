@@ -97,7 +97,8 @@ def segment_hits_box(a: tuple[float, float], b: tuple[float, float], box: Box, p
     return True
 
 
-def point_segment_distance(p, a, b) -> float:    """Shortest distance from point p to line segment a-b."""
+def point_segment_distance(p, a, b) -> float:
+    """Shortest distance from point p to line segment a-b."""
     dx, dy = b[0] - a[0], b[1] - a[1]
     if abs(dx) < 1e-12 and abs(dy) < 1e-12:
         return math.hypot(p[0] - a[0], p[1] - a[1])
