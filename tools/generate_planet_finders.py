@@ -886,9 +886,9 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 position -= 1
                 clear_selected(stack[position])
                 try:
-                stack[position]["next_option"] = next(stack[position]["options"])
-            except StopIteration:
-                stack[position]["exhausted"] = True
+                    stack[position]["next_option"] = next(stack[position]["options"])
+                except StopIteration:
+                    stack[position]["exhausted"] = True
                 backtracks += 1
                 # Resume the parent frame we just advanced. Using len(stack)
                 # here skips that now-unselected parent and incorrectly
