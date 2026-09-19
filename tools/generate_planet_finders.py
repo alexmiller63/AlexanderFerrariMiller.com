@@ -408,8 +408,18 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         )
         last_heartbeat = now
 
+    # After emitting a complete candidate, resume at the final frame so
+    # that frame can try its next placement.  Recomputing position solely from
+    # len(stack) would incorrectly produce position == len(order) with an
+    # unselected final frame and then index order[position].
+    resume_position = None
+
     while True:
-        position = len(stack)
+        if resume_position is None:
+            position = len(stack)
+        else:
+            position = resume_position
+            resume_position = None
         deepest = max(deepest, position)
         nodes += 1
         log_heartbeat(position)
@@ -458,13 +468,15 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                         flush=True,
                     )
 
-            position -= 1
-            if position < 0:
-                exhausted = True
-                break
-            clear_selected(stack[position])
-            stack[position]["index"] += 1
+            # Keep the final frame alive and resume it at its next option.
+            # This is the ordinary DFS "next sibling" transition; it must not
+            # recompute position as len(stack), because that would be one past
+            # the last valid order index.
+            final_position = len(stack) - 1
+            clear_selected(stack[final_position])
+            stack[final_position]["index"] += 1
             backtracks += 1
+            resume_position = final_position
             continue
 
         if len(stack) == position:
