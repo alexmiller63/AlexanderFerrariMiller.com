@@ -505,7 +505,9 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             if position == 0:
                 exhausted = True
                 break
-            stack[position - 1]["index"] += 1
+            parent = stack[position - 1]
+            clear_selected(parent)
+            parent["index"] += 1
             backtracks += 1
             continue
 
