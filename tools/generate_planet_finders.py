@@ -485,6 +485,17 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
     resume_position = None
 
     while True:
+        # Enforce the shared run-wide wall-clock deadline inside the DFS loop.
+        # Merely storing max_seconds in the budget is not sufficient: every
+        # fixed ordering must cooperatively stop once the generator deadline
+        # has expired.
+        run_elapsed = time.monotonic() - budget["started"]
+        if run_elapsed >= budget["max_seconds"]:
+            dump_diagnostics("run-wide wall-clock budget exhausted")
+            raise RuntimeError(
+                f"Planet Finder run-wide wall-clock budget exhausted in {mode} mode "
+                f"after {run_elapsed:.1f}s (limit {budget['max_seconds']:.1f}s)"
+            )
         order_elapsed = time.monotonic() - started
         run_elapsed = time.monotonic() - budget["started"]
         if run_elapsed >= budget["max_seconds"]:
