@@ -361,6 +361,8 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             str(min(100, budget["max_candidates"])),
         )),
     )
+    max_proposals = max(1, int(os.environ.get("PLANET_FINDER_MAX_PROPOSALS", str(max(10000, budget["max_candidates"] * 20)))))
+    proposals = 0
     order_candidate_start = budget["candidates"]
 
     def dump_diagnostics(reason):
@@ -414,12 +416,16 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         stats = diagnostic_stats.setdefault(key, {
             "generated": 0, "viable": 0, "overlap": 0, "leader": 0, "route": 0, "started": False, "blocked": None,
         })
-        nonlocal candidates, rejected_overlap, rejected_leader, rejected_route
+        nonlocal candidates, rejected_overlap, rejected_leader, rejected_route, proposals
         w, h = label_size(mode, name)
         anchor = xy(longitude, RI - 5)
         viable = []
         body_candidates = 0
         for x, y, box in legal_candidate_positions(longitude, w, h, reserved):
+            proposals += 1
+            if proposals > max_proposals:
+                dump_diagnostics("proposal budget exhausted")
+                raise RuntimeError(f"Planet Finder proposal budget exhausted in {mode} mode after {proposals - 1:,}/{max_proposals:,} proposals")
             if budget["candidates"] - order_candidate_start >= max_order_candidates:
                 stats["blocked"] = "order-budget"
                 print(
