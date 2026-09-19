@@ -21,12 +21,12 @@ on:
       end_week:
         description: End week
         required: true
-        default: '40'
+        default: '36'
         type: string
       candidate_layouts:
         description: Complete layouts to score per mode
         required: true
-        default: '5'
+        default: '2'
         type: string
       max_search_candidates:
         description: Maximum candidate evaluations for the entire run
