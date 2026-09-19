@@ -1,5 +1,10 @@
 {
-  "schema_version": 11,
+  "schema_version": 12,
+  "numbered_bayer_cross_id_validation": {
+    "checked_component_count": 19,
+    "missing_cross_id_count": 0,
+    "missing_cross_ids": []
+  },
   "purpose": "pre-migration physical fixed-object identity audit; no permanent IDs assigned",
   "canonical_source": "fixed-objects.yaml",
   "original_candidate_count": 840,
@@ -858,8 +863,8 @@
     "catalog_label": 5,
     "finest_ngc": 112,
     "gaia_dr3": 1,
-    "hd": 196,
-    "hip": 1106,
+    "hd": 197,
+    "hip": 1107,
     "ic": 9,
     "messier": 110,
     "ngc": 315,
@@ -913,7 +918,7 @@
     "star": "star",
     "figure star": "star"
   },
-  "cross_source_identifier_overlap_count": 485,
+  "cross_source_identifier_overlap_count": 487,
   "cross_source_identifier_overlaps": [
     {
       "namespace": "bayer",
@@ -2439,6 +2444,14 @@
       ]
     },
     {
+      "namespace": "hd",
+      "value": "3003",
+      "candidate_ids": [
+        813,
+        840
+      ]
+    },
+    {
       "namespace": "hip",
       "value": "100027",
       "candidate_ids": [
@@ -3118,6 +3131,14 @@
       "candidate_ids": [
         746,
         1031
+      ]
+    },
+    {
+      "namespace": "hip",
+      "value": "2578",
+      "candidate_ids": [
+        813,
+        840
       ]
     },
     {
@@ -4856,7 +4877,7 @@
       ]
     }
   ],
-  "physical_cross_source_identifier_overlap_count": 485,
+  "physical_cross_source_identifier_overlap_count": 487,
   "physical_cross_source_identifier_overlaps": [
     {
       "namespace": "bayer",
@@ -6382,6 +6403,14 @@
       ]
     },
     {
+      "namespace": "hd",
+      "value": "3003",
+      "candidate_ids": [
+        813,
+        840
+      ]
+    },
+    {
       "namespace": "hip",
       "value": "100027",
       "candidate_ids": [
@@ -7061,6 +7090,14 @@
       "candidate_ids": [
         746,
         1031
+      ]
+    },
+    {
+      "namespace": "hip",
+      "value": "2578",
+      "candidate_ids": [
+        813,
+        840
       ]
     },
     {
@@ -20699,6 +20736,22 @@
         {
           "namespace": "bayer",
           "value": "β3 Tuc",
+          "candidate_ids": [
+            813,
+            840
+          ]
+        },
+        {
+          "namespace": "hd",
+          "value": "3003",
+          "candidate_ids": [
+            813,
+            840
+          ]
+        },
+        {
+          "namespace": "hip",
+          "value": "2578",
           "candidate_ids": [
             813,
             840
@@ -38675,6 +38728,22 @@
         {
           "namespace": "bayer",
           "value": "β3 Tuc",
+          "candidate_ids": [
+            813,
+            840
+          ]
+        },
+        {
+          "namespace": "hd",
+          "value": "3003",
+          "candidate_ids": [
+            813,
+            840
+          ]
+        },
+        {
+          "namespace": "hip",
+          "value": "2578",
           "candidate_ids": [
             813,
             840
@@ -63499,11 +63568,19 @@
     {
       "candidate_id": 813,
       "source": "expanded-bayer-stars.csv",
-      "source_key": "β3 Tuc | suffix 3",
+      "source_key": "β3 Tuc | HIP 2578",
       "identifiers": [
         {
           "namespace": "bayer",
           "value": "β3 Tuc"
+        },
+        {
+          "namespace": "hip",
+          "value": "2578"
+        },
+        {
+          "namespace": "hd",
+          "value": "3003"
         }
       ],
       "name": null,
