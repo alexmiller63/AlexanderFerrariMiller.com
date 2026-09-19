@@ -106,15 +106,27 @@ def label_size(mode: str, name: str) -> tuple[float, float]:
 
 
 def reserved_boxes(mode: str) -> list[Box]:
+    """Hard obstacles matching the geometry actually rendered on the chart.
+
+    These boxes are consulted at proposal time, before a body-label position
+    can enter the DFS candidate set.  Keep them deliberately conservative:
+    rendered text must fit *inside* its obstacle, never merely approximate it.
+    """
     boxes = [Box(CX, 682, 520, 40), Box(CX, 722, 690, 34), Box(CX, 757, 440, 34)]
     for i, (_, name) in enumerate(SIGNS):
         x, y = xy(i * 30 + 15, (RI + RO) / 2)
         if mode == "greek":
-            boxes.append(Box(x, y, 66, 66))
+            # 48 px zodiac glyphs need more than their nominal em box once
+            # font bearings/antialiasing are included.
+            boxes.append(Box(x, y, 76, 76))
         elif mode == "latin":
-            boxes.append(Box(x, y, max(92, 14 * len(name)), 46))
+            # Rendered at 24 px Georgia.  Use a conservative text envelope
+            # rather than the former narrow character-count estimate.
+            boxes.append(Box(x, y, max(108, 16 * len(name)), 58))
         else:
-            boxes.append(Box(x, y, max(122, 14 * len(name) + 45), 46))
+            # Mixed mode renders "<glyph> <name>" at 22 px.  The zodiac glyph
+            # is substantially wider than an ordinary Latin character.
+            boxes.append(Box(x, y, max(148, 16 * len(name) + 58), 58))
     return boxes
 
 
