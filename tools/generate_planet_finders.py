@@ -598,7 +598,10 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             body_candidates += 1
             stats["generated"] += 1
             stats["viable"] += 1
+            active_time += time.monotonic() - active_started
+            last_resume = time.monotonic()
             yield box, path
+            last_resume = time.monotonic()
 
     def clear_selected(frame):
         """Remove the placement owned by one active DFS frame."""
