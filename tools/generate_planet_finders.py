@@ -178,17 +178,26 @@ def candidate_positions(longitude: float):
     preferred_shifts = (0, -105, 105, -210, 210)
     theta = math.radians(180 + longitude)
     tx, ty = -math.sin(theta), -math.cos(theta)
-    seen: set[tuple[int, int]] = set()
+    # Sibling proposals must be meaningfully different choices. The natural
+    # tangential placement step is 105 px; do not create another DFS sibling
+    # for a tiny nudge smaller than one quarter of that step. Recursion owns
+    # backtracking; candidate generation owns only the geometry of distinct
+    # choices.
+    min_sibling_separation = 105.0 / 4.0
+    offered: list[tuple[float, float]] = []
 
     def offer(radii, shifts):
         for r in radii:
             bx, by = xy(longitude, r)
             for shift in shifts:
                 x, y = bx + shift * tx, by + shift * ty
-                key = (round(x * 10), round(y * 10))
-                if key not in seen:
-                    seen.add(key)
-                    yield x, y
+                if any(
+                    math.hypot(x - ox, y - oy) < min_sibling_separation
+                    for ox, oy in offered
+                ):
+                    continue
+                offered.append((x, y))
+                yield x, y
 
     yield from offer(preferred_radii, preferred_shifts)
     expanded_radii = tuple(range(400, 79, -20))
