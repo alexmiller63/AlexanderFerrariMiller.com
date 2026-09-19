@@ -317,6 +317,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
     solution_keys = set()
     current_body = "-"
     exhausted = False
+    ornery_limit = max(1, int(os.environ.get("PLANET_FINDER_ORNERY_CANDIDATES", "50")))
 
     def dump_diagnostics(reason):
         print(
@@ -340,7 +341,17 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         w, h = label_size(mode, name)
         anchor = xy(longitude, RI - 5)
         viable = []
+        body_candidates = 0
         for x, y in candidate_positions(longitude):
+            if body_candidates >= ornery_limit and not viable:
+                print(
+                    f"Planet Finder {mode}: ORNERY order={order_index} "
+                    f"depth={depth}/{len(order)} body={name} "
+                    f"generated={body_candidates:,} viable=0 limit={ornery_limit:,} "
+                    f"action=backtrack",
+                    flush=True,
+                )
+                break
             if budget["candidates"] >= budget["max_candidates"]:
                 dump_diagnostics("candidate budget exhausted")
                 raise RuntimeError(
@@ -348,6 +359,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                     f"after {budget['max_candidates']:,} candidate evaluations"
                 )
             candidates += 1
+            body_candidates += 1
             stats["generated"] += 1
             budget["candidates"] += 1
             box = Box(x, y, w, h)
