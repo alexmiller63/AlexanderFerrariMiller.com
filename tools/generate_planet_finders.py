@@ -10,6 +10,7 @@ from __future__ import annotations
 import argparse
 import html
 import math
+import os
 import time
 from dataclasses import dataclass
 from datetime import date
@@ -248,7 +249,7 @@ def route(anchor: tuple[float, float], center: tuple[float, float], obstacles: l
     return None
 
 
-def _solve_order(mode: str, bodies, order, budget):
+def _solve_order(mode: str, bodies, order, budget, target_solutions=5):
     """Solve one placement pass, choosing the most constrained body at each level."""
     reserved = reserved_boxes(mode)
     reserved_names = ["center_title", "center_direction", "center_sector_note", *[f"zodiac_{name}" for _, name in SIGNS]]
@@ -271,6 +272,8 @@ def _solve_order(mode: str, bodies, order, budget):
     body_choice_attempts = {}
     zero_viable_events = {}
     last_ranked = []
+    solutions = []
+    solution_keys = set()
 
     def dump_diagnostics(reason):
         print(
@@ -373,7 +376,13 @@ def _solve_order(mode: str, bodies, order, budget):
                 f"after {max_nodes:,} recursive nodes"
             )
         if not remaining:
-            return True
+            result = [staged[i] for i in range(len(bodies))]
+            key = tuple((round(row[3].x, 3), round(row[3].y, 3), tuple((round(x, 3), round(y, 3)) for x, y in row[4])) for row in result)
+            if key not in solution_keys:
+                solution_keys.add(key)
+                solutions.append(result)
+                print(f"Planet Finder {mode}: complete candidate {len(solutions)}/{target_solutions}", flush=True)
+            return len(solutions) >= target_solutions
 
         # Squeaky wheel gets the grease: measure every remaining body against
         # the current partial layout.  Try the most constrained body first, but
@@ -478,10 +487,10 @@ def _solve_order(mode: str, bodies, order, budget):
     if not solved:
         dump_diagnostics("search space exhausted without a complete layout")
         return False, None
-    return True, [staged[i] for i in range(len(bodies))]
+    return True, solutions
 
 
-def layout(mode: str, bodies: list[tuple[str, str, float]]):
+def layout(mode: str, bodies: list[tuple[str, str, float]], target_solutions: int | None = None):
     """Find a collision-free layout with dynamic body-order backtracking.
 
     Canonical order is retained only as the deterministic tie-break order.
@@ -500,18 +509,40 @@ def layout(mode: str, bodies: list[tuple[str, str, float]]):
     if {name for _, (_, name, _) in indexed} != set(CANONICAL):
         raise RuntimeError("Planet Finder body set does not match the canonical Solar-System objects")
 
+    if target_solutions is None:
+        target_solutions = max(1, int(os.environ.get("PLANET_FINDER_CANDIDATES", "5")))
     budget = {"candidates": 0, "max_candidates": 1_000_000}
     print(
         f"Planet Finder {mode}: starting dynamic body-order and placement search",
         flush=True,
     )
-    solved, result = _solve_order(mode, bodies, indexed, budget)
+    solved, results = _solve_order(mode, bodies, indexed, budget, target_solutions)
     if solved:
         print(
             f"Planet Finder {mode}: solved by dynamic body-order backtracking",
             flush=True,
         )
-        return result
+        def score(result):
+            total_length = 0.0
+            elbows = 0
+            radial_error = 0.0
+            tangential_error = 0.0
+            for _, _, longitude, box, path in result:
+                total_length += sum(math.hypot(b[0]-a[0], b[1]-a[1]) for a, b in zip(path, path[1:]))
+                elbows += max(0, len(path) - 2)
+                natural = xy(longitude, 345)
+                radial_error += abs(math.hypot(box.x-CX, box.y-CY) - 345)
+                tangential_error += math.hypot(box.x-natural[0], box.y-natural[1])
+            return (elbows, total_length, radial_error, tangential_error)
+        scored = sorted((score(result), i, result) for i, result in enumerate(results))
+        best_score, best_index, best = scored[0]
+        print(
+            f"Planet Finder {mode}: selected candidate {best_index + 1}/{len(results)} "
+            f"score[elbows={best_score[0]},length={best_score[1]:.1f},"
+            f"radial={best_score[2]:.1f},displacement={best_score[3]:.1f}]",
+            flush=True,
+        )
+        return best
 
     raise RuntimeError(
         f"No collision-free Planet Finder layout exists in {mode} mode after "
