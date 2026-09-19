@@ -414,11 +414,13 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         nodes += 1
         log_heartbeat(position)
 
-        if position == len(order):
-            # At a complete depth every frame must own exactly one placement.
-            # The old implementation removed the parent placement when a child
-            # frame exhausted its options, leaving the child frame on the stack
-            # and eventually producing KeyError from this reconstruction.
+        if position == len(order) and all(frame.get("selected") is not None for frame in stack):
+            # A complete depth is valid only when every active frame still owns
+            # its placement. After a complete candidate is emitted, the final
+            # frame is cleared and its index is advanced but deliberately kept
+            # on the stack so its next candidate can be tried. Without this
+            # invariant guard, the loop re-entered the complete-depth branch
+            # with an empty final frame and reported false state corruption.
             missing = [i for i in range(len(bodies)) if i not in staged]
             if missing:
                 raise RuntimeError(
