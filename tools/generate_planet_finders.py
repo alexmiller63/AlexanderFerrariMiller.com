@@ -768,6 +768,29 @@ def layout(
     )
 
     for order_index, rank in enumerate(_planned_order_ranks(total_orders), start=1):
+        # This is the outermost repeated search loop.  Check the shared exit
+        # conditions here, before constructing another ordering or entering
+        # another DFS.  The DFS has the same guards internally, but it cannot
+        # protect time spent cycling between exhausted orderings.
+        run_elapsed = time.monotonic() - budget["started"]
+        if run_elapsed >= budget["max_seconds"]:
+            print(
+                f"Planet Finder {mode}: SEARCH STOP wall-clock budget exhausted "
+                f"after {run_elapsed:.1f}s/{budget['max_seconds']:.1f}s "
+                f"orders-tried={order_index - 1} "
+                f"candidates={budget['candidates']:,}/{budget['max_candidates']:,}",
+                flush=True,
+            )
+            break
+        if budget["candidates"] >= budget["max_candidates"]:
+            print(
+                f"Planet Finder {mode}: SEARCH STOP candidate budget exhausted "
+                f"orders-tried={order_index - 1} "
+                f"candidates={budget['candidates']:,}/{budget['max_candidates']:,}",
+                flush=True,
+            )
+            break
+
         order = _permutation_by_rank(indexed, rank)
         order_names = " > ".join(item[1][1] for item in order)
         print(
@@ -997,18 +1020,3 @@ def parse_args():
     if args.year is not None and args.week is None:
         p.error("--week is required with --year")
     return args
-
-
-def main():
-    args = parse_args()
-    if args.current:
-        today = date.today()
-        iso = today.isocalendar()
-        year, week = iso.year, iso.week
-    else:
-        year, week = args.year, args.week
-    generate_week(year, week)
-
-
-if __name__ == "__main__":
-    main()
