@@ -943,9 +943,7 @@ def render(
         f'<text x="{CX}" y="757" text-anchor="middle" font-size="22">12 equal sectors · 30° each</text>',
         '</svg>',
     ])
-    return "
-".join(out) + "
-"
+    return "\n".join(out) + "\n"
 
 
 def generate_week(
