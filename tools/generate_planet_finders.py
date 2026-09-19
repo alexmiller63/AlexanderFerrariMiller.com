@@ -423,6 +423,8 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                         " > ".join(row[1] for row in result),
                         flush=True,
                     )
+                    if len(solutions) >= target_solutions:
+                        break
                 else:
                     print(
                         f"Planet Finder {mode}: rejected complete layout "
