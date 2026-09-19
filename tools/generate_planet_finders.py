@@ -409,6 +409,11 @@ def route(
 
 
 
+class CandidateBudgetExhausted(RuntimeError):
+    """Signal that the run-wide viable-candidate budget is exhausted."""
+
+
+
 def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_index=1, total_orders=None, context_label=None):
     """Solve one fixed body ordering with an explicit iterative DFS.
 
@@ -580,7 +585,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             # the same hard safety limits used by DFS.
             if budget["candidates"] >= budget["max_candidates"]:
                 stats["blocked"] = "global-budget"
-                raise StopIteration("Planet Finder candidate budget exhausted")
+                raise CandidateBudgetExhausted("Planet Finder candidate budget exhausted")
             # Enforce the run-wide deadline inside candidate generation too.
             # Geometry/routing can otherwise keep one DFS iteration busy past the limit.
             run_elapsed = time.monotonic() - budget["started"]
@@ -947,7 +952,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         # Charge the run-wide candidate ceiling only when DFS actually tries
         # a geometrically viable option.
         if budget["candidates"] >= budget["max_candidates"]:
-            raise StopIteration("Planet Finder candidate budget exhausted")
+            raise CandidateBudgetExhausted("Planet Finder candidate budget exhausted")
         candidates += 1
         budget["candidates"] += 1
 
@@ -1052,7 +1057,7 @@ def layout(
             total_orders=1,
             context_label=context_label,
         )
-    except StopIteration:
+    except CandidateBudgetExhausted:
         all_solutions = []
 
     if not all_solutions:
