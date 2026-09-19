@@ -668,61 +668,14 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             last_yield_at = time.monotonic()
             yield box, path
 
-    def clear_selected(frame):
-        """Remove the placement owned by one active DFS frame."""
-        selected = frame.get("selected")
-        if selected is None:
-            return
-        original_index = selected[0]
-        staged.pop(original_index, None)
-        if leaders:
-            leaders.pop()
-        if placed:
-            placed.pop()
-        frame["selected"] = None
+    def search(depth):
+        """Recursive DFS: each call owns exactly one body depth.
 
-    def log_heartbeat(position):
-        nonlocal last_heartbeat
-        now = time.monotonic()
-        if now - last_heartbeat < 5:
-            return
-        elapsed = now - started
-        rate = nodes / elapsed if elapsed else 0
-        run_started = budget.get("started", started)
-        run_elapsed = now - run_started
-        run_rate = budget["candidates"] / run_elapsed if run_elapsed else 0
-        run_remaining = max(0, budget["max_candidates"] - budget["candidates"])
-        run_percent = 100.0 * budget["candidates"] / budget["max_candidates"]
-        run_eta = run_remaining / run_rate if run_rate > 0 else float("inf")
-        eta_text = f"{run_eta:.0f}s" if math.isfinite(run_eta) else "unknown"
-        print(
-            f"Planet Finder {mode}: heartbeat {context_label + ' ' if context_label else ''}"
-            f"elapsed={elapsed:.1f}s run-elapsed={run_elapsed:.1f}s "
-            f"order={order_index}{('/' + str(total_orders)) if total_orders else ''} "
-            f"nodes={nodes:,} ({rate:,.0f}/s) depth={position}/{len(order)} "
-            f"body={current_body} candidates={candidates:,} "
-            f"RUN={budget['candidates']:,}/{budget['max_candidates']:,} "
-            f"({run_percent:.1f}%) remaining={run_remaining:,} "
-            f"rate={run_rate:,.0f}/s eta={eta_text} "
-            f"rejects[overlap={rejected_overlap:,},leader={rejected_leader:,},"
-            f"route={rejected_route:,}] backtracks={backtracks:,}",
-            flush=True,
-        )
-        last_heartbeat = now
+        Geometry rejects bad proposals before they enter this function.
+        Returning from a child is the only backtracking mechanism.
+        """
+        nonlocal nodes, deepest, candidates, backtracks, current_body
 
-    # After emitting a complete candidate, resume at the final frame so
-    # that frame can try its next placement.  Recomputing position solely from
-    # len(stack) would incorrectly produce position == len(order) with an
-    # unselected final frame and then index order[position].
-    resume_position = None
-
-    while True:
-        loop_now = time.monotonic()
-        if last_loop_depth is not None:
-            depth_residence[last_loop_depth] = depth_residence.get(last_loop_depth, 0.0) + (loop_now - last_loop_at)
-        last_loop_at = loop_now
-        # One run-wide wall-clock guard. The same deadline is also checked
-        # while lazily routing a candidate so expensive geometry cannot overrun it.
         run_elapsed = time.monotonic() - budget["started"]
         if run_elapsed >= budget["max_seconds"]:
             dump_diagnostics("run-wide wall-clock budget exhausted")
@@ -730,31 +683,12 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 f"Planet Finder run-wide wall-clock budget exhausted in {mode} mode "
                 f"after {run_elapsed:.1f}s (limit {budget['max_seconds']:.1f}s)"
             )
-        if resume_position is None:
-            position = len(stack)
-        else:
-            position = resume_position
-            resume_position = None
-        deepest = max(deepest, position)
-        nodes += 1
-        last_loop_depth = position
-        depth_visits[position] = depth_visits.get(position, 0) + 1
-        log_heartbeat(position)
 
-        if position == len(order) and all(frame.get("selected") is not None for frame in stack):
-            # A complete depth is valid only when every active frame still owns
-            # its placement. After a complete candidate is emitted, the final
-            # frame is cleared and its index is advanced but deliberately kept
-            # on the stack so its next candidate can be tried. Without this
-            # invariant guard, the loop re-entered the complete-depth branch
-            # with an empty final frame and reported false state corruption.
-            missing = [i for i in range(len(bodies)) if i not in staged]
-            if missing:
-                raise RuntimeError(
-                    f"Planet Finder DFS state corruption in {mode}: "
-                    f"complete depth but missing staged indices {missing}; "
-                    f"stack={len(stack)}"
-                )
+        nodes += 1
+        deepest = max(deepest, depth)
+        depth_visits[depth] = depth_visits.get(depth, 0) + 1
+
+        if depth == len(order):
             result = [staged[i] for i in range(len(bodies))]
             key = tuple(
                 (
@@ -776,191 +710,54 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                         " > ".join(row[1] for row in result),
                         flush=True,
                     )
-                    if len(solutions) >= target_solutions:
-                        break
                 else:
                     print(
                         f"Planet Finder {mode}: rejected complete layout "
                         f"order={order_index} errors=" + "; ".join(errors),
                         flush=True,
                     )
+            return len(solutions) >= target_solutions
 
-            # Keep the final frame alive and resume it at its next option.
-            # This is the ordinary DFS "next sibling" transition; it must not
-            # recompute position as len(stack), because that would be one past
-            # the last valid order index.
-            final_position = len(stack) - 1
-            clear_selected(stack[final_position])
-            try:
-                stack[final_position]["next_option"] = next(stack[final_position]["options"])
-            except StopIteration:
-                stack[final_position]["exhausted"] = True
-            backtracks += 1
-            resume_position = final_position
-            continue
-
-        # Never index the fixed order at sentinel depth. A valid DFS stack
-        # owns placements as one contiguous prefix. If a parent is unselected
-        # while a deeper child is selected, repair the stack from the deepest
-        # frame upward before resuming the first unselected frame.
-        if position >= len(order):
-            if position > len(order) or len(stack) != len(order):
-                raise RuntimeError(
-                    f"Planet Finder DFS state corruption in {mode}: "
-                    f"position={position} stack={len(stack)} order={len(order)}"
-                )
-            selected_flags = [frame.get("selected") is not None for frame in stack]
-            try:
-                first_unselected = selected_flags.index(False)
-            except ValueError:
-                raise RuntimeError(
-                    f"Planet Finder DFS state corruption in {mode}: "
-                    "sentinel reached with every frame selected"
-                )
-            for depth in range(len(stack) - 1, first_unselected, -1):
-                clear_selected(stack[depth])
-                stack.pop()
-            resume_position = first_unselected
-            continue
-
-        if len(stack) == position:
-            # A child candidate may only be generated against a complete,
-            # selected placement prefix. This invariant catches any future
-            # backtracking transition that would otherwise skip an unselected
-            # parent and admit geometry that was never checked against it.
-            unselected_prefix = [
-                depth for depth, frame in enumerate(stack)
-                if frame.get("selected") is None
-            ]
-            if unselected_prefix:
-                raise RuntimeError(
-                    f"Planet Finder DFS prefix corruption in {mode}: "
-                    f"attempted depth={position} with unselected frames "
-                    f"{unselected_prefix}"
-                )
-            item = order[position]
-            options = viable_candidates(item, position)
-            stack.append({
-                "item": item,
-                "options": options,
-                "selected": None,
-                "exhausted": False,
-            })
-            try:
-                stack[position]["next_option"] = next(options)
-            except StopIteration:
-                stack[position]["exhausted"] = True
-            if stack[position]["exhausted"]:
-                original_index, (_, name, _) = item
-                current_body = name
-                s = diagnostic_stats[(position, name)]
-                # When a child is impossible, expose the two selected
-                # ancestors that define the prefix. This lets us distinguish
-                # a bad parent candidate from a grandparent state under which
-                # every parent candidate is doomed, without changing pruning.
-                ancestor_text = ""
-                if position >= 2:
-                    ancestor_parts = []
-                    for ancestor_depth in (position - 2, position - 1):
-                        ancestor = stack[ancestor_depth].get("selected")
-                        if ancestor is not None:
-                            _, (_, ancestor_name, _, ancestor_box, _) = ancestor
-                            ancestor_parts.append(
-                                f"d{ancestor_depth}={ancestor_name}@"
-                                f"({ancestor_box.x:.1f},{ancestor_box.y:.1f})"
-                            )
-                    if ancestor_parts:
-                        ancestor_text = " ancestors[" + ",".join(ancestor_parts) + "]"
-                print(
-                    f"Planet Finder {mode}: dead end order={order_index} "
-                    f"depth={position}/{len(order)} body={name} "
-                    f"status={'evaluated' if s.get('started') else 'not-evaluated'} "
-                    f"generated={s['generated']:,} viable={s['viable']:,} "
-                    f"rejects[overlap={s['overlap']:,},leader={s['leader']:,},"
-                    f"route={s['route']:,}]" + ancestor_text,
-                    flush=True,
-                )
-                stack.pop()
-                if position == 0:
-                    exhausted = True
-                    break
-
-                # Family pruning: a zero-candidate descendant proves the
-                # current family prefix unusable.  When a grandparent exists,
-                # discard the parent with it and introduce the grandparent's
-                # next sibling ("great-uncle") instead of enumerating more
-                # descendants of the same doomed family.
-                if position >= 2:
-                    parent_depth = position - 1
-                    grandparent_depth = position - 2
-                    clear_selected(stack[parent_depth])
-                    stack.pop()
-                    grandparent = stack[grandparent_depth]
-                    clear_selected(grandparent)
-                    try:
-                        grandparent["next_option"] = next(grandparent["options"])
-                    except StopIteration:
-                        grandparent["exhausted"] = True
-                    backtracks += 1
-                    print(
-                        f"Planet Finder {mode}: PRUNE doomed-family "
-                        f"dead-depth={position} jump-depth={grandparent_depth} "
-                        f"next=great-uncle",
-                        flush=True,
-                    )
-                    resume_position = grandparent_depth
-                    continue
-
-                # At depth 1 there is no grandparent, so ordinary parent
-                # backtracking is the only legal transition.
-                position -= 1
-                clear_selected(stack[position])
-                try:
-                    stack[position]["next_option"] = next(stack[position]["options"])
-                except StopIteration:
-                    stack[position]["exhausted"] = True
-                backtracks += 1
-                resume_position = position
-                continue
-
-        frame = stack[position]
-        if frame.get("exhausted"):
-            # This frame has tried every candidate. Remove its own placement,
-            # then return control to its parent without disturbing the parent.
-            clear_selected(frame)
-            stack.pop()
-            if position == 0:
-                exhausted = True
-                break
-            parent = stack[position - 1]
-            clear_selected(parent)
-            try:
-                parent["next_option"] = next(parent["options"])
-            except StopIteration:
-                parent["exhausted"] = True
-            backtracks += 1
-            # Resume the parent whose candidate index changed. Falling
-            # through with resume_position=None makes the next iteration use
-            # len(stack), which is the child depth, and admits candidates
-            # without the parent placement present.
-            resume_position = position - 1
-            continue
-
-        original_index, (symbol, name, longitude) = frame["item"]
+        item = order[depth]
+        original_index, (symbol, name, longitude) = item
         current_body = name
+        generated_here = False
 
-        # Charge the run-wide candidate ceiling only when DFS actually tries
-        # a geometrically viable option.
-        if budget["candidates"] >= budget["max_candidates"]:
-            raise CandidateBudgetExhausted("Planet Finder candidate budget exhausted")
-        candidates += 1
-        budget["candidates"] += 1
+        for box, path in viable_candidates(item, depth):
+            generated_here = True
+            if budget["candidates"] >= budget["max_candidates"]:
+                raise CandidateBudgetExhausted("Planet Finder candidate budget exhausted")
 
-        box, path = frame.pop("next_option")
-        placed.append(box)
-        leaders.append(path)
-        staged[original_index] = (symbol, name, longitude, box, path)
-        frame["selected"] = (original_index, (symbol, name, longitude, box, path))
+            candidates += 1
+            budget["candidates"] += 1
+            placed.append(box)
+            leaders.append(path)
+            staged[original_index] = (symbol, name, longitude, box, path)
+
+            try:
+                if search(depth + 1):
+                    return True
+            finally:
+                staged.pop(original_index, None)
+                leaders.pop()
+                placed.pop()
+
+            backtracks += 1
+
+        if not generated_here:
+            stats = diagnostic_stats[(depth, name)]
+            print(
+                f"Planet Finder {mode}: dead end order={order_index} "
+                f"depth={depth}/{len(order)} body={name} "
+                f"status={'evaluated' if stats.get('started') else 'not-evaluated'} "
+                f"generated={stats['generated']:,} viable={stats['viable']:,} "
+                f"rejects[overlap={stats['overlap']:,},leader={stats['leader']:,},"
+                f"route={stats['route']:,}]",
+                flush=True,
+            )
+        return False
+
+    exhausted = not search(0)
 
     elapsed = time.monotonic() - started
     print(
