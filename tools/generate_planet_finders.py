@@ -141,16 +141,49 @@ def candidate_positions(longitude: float):
     yield from offer(expanded_radii, expanded_shifts)
 
 
-def route(anchor: tuple[float, float], center: tuple[float, float], obstacles: list[Box]) -> list[tuple[float, float]] | None:
-    """Prefer a straight leader; otherwise try deterministic radial elbows."""
-    if all(not segment_hits_box(anchor, center, b, 8) for b in obstacles):
+def route(anchor: tuple[float, float], center: tuple[float, float], obstacles: list[Box], diagnostic=None) -> list[tuple[float, float]] | None:
+    """Prefer a straight leader; otherwise try deterministic radial elbows.
+
+    When diagnostic is supplied, record which obstacle indices block the
+    straight route and each elbow leg. This is instrumentation only and does
+    not change route acceptance or search order.
+    """
+    straight_blockers = [
+        i for i, b in enumerate(obstacles)
+        if segment_hits_box(anchor, center, b, 8)
+    ]
+    if not straight_blockers:
         return [anchor, center]
+    if diagnostic is not None:
+        diagnostic["straight_blocked"] = diagnostic.get("straight_blocked", 0) + 1
+        for i in straight_blockers:
+            key = f"obstacle_{i}"
+            diagnostic["straight_blockers"][key] = diagnostic["straight_blockers"].get(key, 0) + 1
+
     ax, ay = anchor
     for r in (395, 365, 335, 305, 275, 245, 215, 185, 155):
         lon = math.degrees(math.atan2(-(ay - CY), ax - CX)) - 180
         ex, ey = xy(lon, r)
-        if all(not segment_hits_box(anchor, (ex, ey), b, 8) for b in obstacles) and all(not segment_hits_box((ex, ey), center, b, 8) for b in obstacles):
+        first_blockers = [
+            i for i, b in enumerate(obstacles)
+            if segment_hits_box(anchor, (ex, ey), b, 8)
+        ]
+        second_blockers = [
+            i for i, b in enumerate(obstacles)
+            if segment_hits_box((ex, ey), center, b, 8)
+        ]
+        if not first_blockers and not second_blockers:
             return [anchor, (ex, ey), center]
+        if diagnostic is not None:
+            elbow = diagnostic["elbows"].setdefault(r, {"first": {}, "second": {}})
+            for i in first_blockers:
+                key = f"obstacle_{i}"
+                elbow["first"][key] = elbow["first"].get(key, 0) + 1
+            for i in second_blockers:
+                key = f"obstacle_{i}"
+                elbow["second"][key] = elbow["second"].get(key, 0) + 1
+    if diagnostic is not None:
+        diagnostic["route_failed"] = diagnostic.get("route_failed", 0) + 1
     return None
 
 
@@ -172,6 +205,7 @@ def _solve_order(mode: str, bodies, order, budget):
     deepest = 0
     current_body = "-"
     diagnostic_stats = {}
+    route_diagnostics = {}
 
     def viable_candidates(item, depth):
         """Materialize currently viable placements for one remaining body."""
@@ -203,7 +237,13 @@ def _solve_order(mode: str, bodies, order, budget):
                 rejected_leader += 1
                 stats["leader"] += 1
                 continue
-            path = route(anchor, (x, y), reserved + placed)
+            route_diag = route_diagnostics.setdefault((depth, name), {
+                "straight_blocked": 0,
+                "route_failed": 0,
+                "straight_blockers": {},
+                "elbows": {},
+            })
+            path = route(anchor, (x, y), reserved + placed, route_diag)
             if path is None:
                 rejected_route += 1
                 stats["route"] += 1
@@ -299,6 +339,26 @@ def _solve_order(mode: str, bodies, order, budget):
             f"accounted={accounted:,}/{s['generated']:,}",
             flush=True,
         )
+    for (depth, name), d in sorted(route_diagnostics.items()):
+        if d["route_failed"] == 0:
+            continue
+        straight = ",".join(
+            f"{k}:{v}" for k, v in sorted(d["straight_blockers"].items())
+        ) or "-"
+        print(
+            f"Planet Finder {mode}: route diagnostic depth={depth} body={name} "
+            f"straight_blocked={d['straight_blocked']:,} route_failed={d['route_failed']:,} "
+            f"straight_blockers[{straight}]",
+            flush=True,
+        )
+        for r, legs in d["elbows"].items():
+            first = ",".join(f"{k}:{v}" for k, v in sorted(legs["first"].items())) or "-"
+            second = ",".join(f"{k}:{v}" for k, v in sorted(legs["second"].items())) or "-"
+            print(
+                f"Planet Finder {mode}: route elbow depth={depth} body={name} r={r} "
+                f"first[{first}] second[{second}]",
+                flush=True,
+            )
     if not solved:
         return False, None
     return True, [staged[i] for i in range(len(bodies))]
