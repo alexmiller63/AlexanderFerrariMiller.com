@@ -849,13 +849,30 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 original_index, (_, name, _) = item
                 current_body = name
                 s = diagnostic_stats[(position, name)]
+                # When a child is impossible, expose the two selected
+                # ancestors that define the prefix. This lets us distinguish
+                # a bad parent candidate from a grandparent state under which
+                # every parent candidate is doomed, without changing pruning.
+                ancestor_text = ""
+                if position >= 2:
+                    ancestor_parts = []
+                    for ancestor_depth in (position - 2, position - 1):
+                        ancestor = stack[ancestor_depth].get("selected")
+                        if ancestor is not None:
+                            _, (_, ancestor_name, _, ancestor_box, _) = ancestor
+                            ancestor_parts.append(
+                                f"d{ancestor_depth}={ancestor_name}@"
+                                f"({ancestor_box.x:.1f},{ancestor_box.y:.1f})"
+                            )
+                    if ancestor_parts:
+                        ancestor_text = " ancestors[" + ",".join(ancestor_parts) + "]"
                 print(
                     f"Planet Finder {mode}: dead end order={order_index} "
                     f"depth={position}/{len(order)} body={name} "
                     f"status={'evaluated' if s.get('started') else 'not-evaluated'} "
                     f"generated={s['generated']:,} viable={s['viable']:,} "
                     f"rejects[overlap={s['overlap']:,},leader={s['leader']:,},"
-                    f"route={s['route']:,}]",
+                    f"route={s['route']:,}]" + ancestor_text,
                     flush=True,
                 )
                 stack.pop()
