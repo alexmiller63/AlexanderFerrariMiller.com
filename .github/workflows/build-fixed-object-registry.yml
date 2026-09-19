@@ -26,6 +26,9 @@ jobs:
       - name: Acquire Roman VI/42 constellation lookup once
         run: python tools/acquire_roman_constellation_lookup.py
 
+      - name: Acquire Hipparcos figure-star positions once
+        run: python tools/acquire_hipparcos_figure_stars.py
+
       - name: Audit fixed-object identity
         run: python tools/audit_fixed_object_identity.py
 
