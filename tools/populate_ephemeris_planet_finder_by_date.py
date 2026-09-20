@@ -3,8 +3,6 @@
 from __future__ import annotations
 
 from datetime import date
-import time
-
 import generate_planet_finders as finder
 import populate_ephemeris as ephemeris
 from almanack_sections import replace_section_inner
@@ -132,7 +130,7 @@ def main() -> None:
             )
     print(
         f"Planet Finder RUN COMPLETE: per-body-attempt-cap={budget['max_node_candidates']:,} "
-        f"across {total_weeks} weeks",
+        f"per mode across {total_weeks} weeks",
         flush=True,
     )
     print(f"Ephemeris + Planet Finder complete for {start.isoformat()} through {end.isoformat()}: {total} page copies updated")
