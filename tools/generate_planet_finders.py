@@ -547,6 +547,19 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
     current_body = "-"
     exhausted = False
     def dump_diagnostics(reason):
+        # A capped ordering is expected control flow, not a terminal failure.
+        # Emit one compact summary for it; full forensic dumps are reserved
+        # for genuinely terminal/exhausted searches. This keeps legitimate
+        # ordering exploration from exhausting the GitHub Actions log.
+        if reason.startswith("body-attempt-cap"):
+            order_names = " > ".join(item[1][1] for item in order)
+            print(
+                f"Planet Finder {mode}: CAPPED SUMMARY order={order_index} "
+                f"nodes={nodes:,} deepest={deepest}/{len(order)} "
+                f"current_body={current_body} sequence={order_names}",
+                flush=True,
+            )
+            return
         order_names = " > ".join(item[1][1] for item in order)
         print(
             f"Planet Finder {mode}: TERMINAL {context_label + ' ' if context_label else ''}reason={reason} order={order_index}"
