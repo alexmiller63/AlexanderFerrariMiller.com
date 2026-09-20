@@ -1359,7 +1359,6 @@ def layout(
                 total_orders=None,
                 context_label=context_label,
                 displacement_scale=refinement_scales[refinement_index],
-                body_attempts=body_attempts,
             )
         except DepthNodeBudgetExhausted as exc:
             # The fixed-order solver already emitted its detailed terminal
