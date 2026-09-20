@@ -465,10 +465,11 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
     # which descendant subtree consumes a parent's generator suspension time.
     depth_residence = {}
     depth_visits = {}
-    # Per-body viable-candidate accounting for this fixed ordering. This is the
-    # squeaky-wheel counter: it resets completely whenever layout() restarts
-    # with a promoted body.
-    body_candidate_counts = {}
+    # Per-body attempted-position accounting for this fixed ordering. This is
+    # the squeaky-wheel counter: rejected geometry counts too, so a pathological
+    # body cannot churn through thousands of raw positions. A promoted restart
+    # creates a new _solve_order() call and therefore resets this count to zero.
+    body_attempt_counts = {}
     diagnostic_stats = {}
     route_diagnostics = {}
     solutions = []
@@ -545,6 +546,17 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             stream_dt = time.monotonic() - stream_t0
             timing["stream_wait"] += stream_dt
             raw_positions += 1
+            body_attempts = body_attempt_counts.get(name, 0)
+            if body_attempts >= budget["max_node_candidates"]:
+                stats["blocked"] = "body-attempt-cap"
+                print(
+                    f"Planet Finder {mode}: BODY-ATTEMPT STOP order={order_index} "
+                    f"depth={depth}/{len(order)} body={name} "
+                    f"attempts={body_attempts:,}/{budget['max_node_candidates']:,}",
+                    flush=True,
+                )
+                raise DepthNodeBudgetExhausted(depth, name)
+            body_attempt_counts[name] = body_attempts + 1
 
             # Narrow instrumentation for pathological candidate generation.
             # Report any single stage that stalls for >= 1s immediately, rather
@@ -652,22 +664,6 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 rejected_leader += 1
                 stats["leader"] += 1
                 continue
-            # The squeaky-wheel ceiling counts viable choices for the body,
-            # not recursive entries at a depth. Count across every parent
-            # prefix in this fixed ordering. A promoted restart creates a new
-            # _solve_order() call, so this counter starts clean at zero.
-            body_total = body_candidate_counts.get(name, 0)
-            if body_total >= budget["max_node_candidates"]:
-                stats["blocked"] = "body-candidate-cap"
-                print(
-                    f"Planet Finder {mode}: BODY-CANDIDATE STOP order={order_index} "
-                    f"depth={depth}/{len(order)} body={name} "
-                    f"viable={body_total:,}/{budget['max_node_candidates']:,}",
-                    flush=True,
-                )
-                raise DepthNodeBudgetExhausted(depth, name)
-            body_candidate_counts[name] = body_total + 1
-
             # Yield immediately: DFS tries this legal geometry before asking
             # for another route. Rejected geometry never consumes candidate budget.
             body_candidates += 1
