@@ -1,0 +1,130 @@
+name: Calendar Generator
+
+on:
+  workflow_dispatch:
+    inputs:
+      start_year:
+        description: Start year
+        required: true
+        default: '2026'
+        type: string
+      start_week:
+        description: Start week
+        required: true
+        default: '36'
+        type: string
+      end_year:
+        description: End year
+        required: true
+        default: '2026'
+        type: string
+      end_week:
+        description: End week
+        required: true
+        default: '40'
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: calendar-generator
+  cancel-in-progress: false
+
+jobs:
+  populate:
+    runs-on: ubuntu-latest
+    env:
+      STAR_ALMANACK_EPHEMERIS_DIR: ${{ github.workspace }}/.cache/skyfield
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Restore DE440s source cache
+        uses: actions/cache@v4
+        with:
+          path: .cache/skyfield/de440s.bsp
+          key: star-almanack-de440s-v1
+
+      - name: Install astronomical calculation dependencies
+        run: python -m pip install --disable-pip-version-check skyfield==1.55 PyYAML
+
+      - name: Download DE440s only when cache is empty
+        run: |
+          mkdir -p .cache/skyfield
+          python - <<'PY'
+          from pathlib import Path
+          from skyfield.api import Loader
+          root = Path('.cache/skyfield')
+          kernel = root / 'de440s.bsp'
+          if kernel.exists():
+              print(f'Reusing cached {kernel} ({kernel.stat().st_size:,} bytes)')
+          else:
+              print('Downloading JPL/NAIF DE440s source kernel for local calculation')
+              Loader(str(root)).download('de440s.bsp')
+          PY
+
+      - name: Resolve ISO week range
+        id: range
+        run: |
+          read START_DATE END_DATE < <(python tools/resolve_iso_week_range.py \
+            '${{ inputs.start_year }}' '${{ inputs.start_week }}' \
+            '${{ inputs.end_year }}' '${{ inputs.end_week }}')
+          echo "start_date=$START_DATE" >> "$GITHUB_OUTPUT"
+          echo "end_date=$END_DATE" >> "$GITHUB_OUTPUT"
+          echo "Resolved $START_DATE through $END_DATE"
+
+      - name: Populate requested calendar dates
+        env:
+          START_DATE: ${{ steps.range.outputs.start_date }}
+          END_DATE: ${{ steps.range.outputs.end_date }}
+        run: python tools/populate_calendar_by_date.py "$START_DATE" "$END_DATE"
+
+      - name: Commit generated changes
+        run: |
+          if git diff --quiet; then
+            echo "No generated changes to commit."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          while read -r year week; do
+            git add -- "almanack/$year/W$(printf '%02d' "$week")" "site/$year/W$(printf '%02d' "$week")"
+          done < <(python - <<'PY'
+from datetime import date, timedelta
+start=date.fromisocalendar(int("${{ inputs.start_year }}"), int("${{ inputs.start_week }}"), 1)
+end=date.fromisocalendar(int("${{ inputs.end_year }}"), int("${{ inputs.end_week }}"), 1)
+while start <= end:
+    iso=start.isocalendar()
+    print(iso.year, iso.week)
+    start += timedelta(days=7)
+PY
+          )
+          git commit -m "Populate Almanack calendar ${{ inputs.start_year }}-W${{ inputs.start_week }}"
+          git pull --rebase origin main
+          git push
+
+      - name: Install Playwright Chromium
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install playwright
+          python -m playwright install --with-deps chromium
+
+      - name: Verify generated pages locally by fixed object ID
+        env:
+          START_DATE: ${{ steps.range.outputs.start_date }}
+          END_DATE: ${{ steps.range.outputs.end_date }}
+        run: |
+          python -m http.server 8765 >/tmp/calendar-http.log 2>&1 &
+          SERVER_PID=$!
+          trap 'kill $SERVER_PID' EXIT
+          python tools/verify_calendar_fixed_object_ids.py "$START_DATE" "$END_DATE" \
+            --base-url http://127.0.0.1:8765
