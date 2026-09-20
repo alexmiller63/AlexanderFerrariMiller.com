@@ -814,7 +814,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 print(
                     f"Planet Finder {mode}: PREFIX BACKTRACK "
                     f"depth={depth}/{len(order)} body={name} "
-                    f"candidate={body_candidates} "
+                    f"candidate={candidates} "
                     f"child-deepest={deepest}/{len(order)} "
                     f"new-depth={deepest > child_deepest_before} "
                     f"child-nodes={nodes - child_nodes_before} "
