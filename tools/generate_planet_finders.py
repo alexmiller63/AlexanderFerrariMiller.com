@@ -872,10 +872,9 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         """Return False only when a remaining body is already provably dead.
 
         This is a one-witness feasibility check and does not stage a placement.
-        Its candidate probes are nevertheless real search work, so they consume
-        the same per-body, per-ordering attempt budget as DFS generation.
-        Diagnostics record which future bodies receive witnesses so capped
-        look-ahead work remains visible.
+        Its probes are diagnostic look-ahead, not DFS contestants, so they do
+        not consume the per-body DFS candidate cap. Diagnostics still record
+        the amount of look-ahead work and which future bodies receive witnesses.
         """
         obstacles = [*reserved, *placed]
         immutable_count = len(reserved)
@@ -891,19 +890,9 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 future_longitude, w, h, reserved, displacement_scale
             ):
                 witness_raw += 1
-                # Forward look-ahead is real candidate-search work. Charge it
-                # to the same per-body explosion budget as DFS generation so
-                # repeated witness checks cannot bypass the 200-attempt cap.
-                body_attempts[future_name] += 1
-                if body_attempts[future_name] >= budget["max_node_candidates"]:
-                    print(
-                        f"Planet Finder {mode}: BODY-ATTEMPT STOP order={order_index} "
-                        f"depth={future_depth}/{len(order)} body={future_name} "
-                        f"attempts={body_attempts[future_name]:,}/{budget['max_node_candidates']:,} "
-                        f"during=forward-check",
-                        flush=True,
-                    )
-                    raise DepthNodeBudgetExhausted(future_depth, future_name)
+                # Look-ahead stops at the first witness. Count its raw probes
+                # only in forward_stats; the 200 cap belongs to actual DFS
+                # candidate generation, not speculative feasibility checks.
                 if any(boxes_overlap(future_box, other, 14) for other in placed):
                     continue
                 center = (future_box.x, future_box.y)
