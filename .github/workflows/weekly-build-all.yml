@@ -66,10 +66,12 @@ jobs:
           END_YEAR: ${{ inputs.end_year }}
           END_WEEK: ${{ inputs.end_week }}
         run: |
-          mapfile -t WEEKS < <(python - <<'PY'
+          mapfile -t WEEKS < <(
+            python - <<'PY'
+          import os
           from datetime import date, timedelta
-          start = date.fromisocalendar(int("${START_YEAR}"), int("${START_WEEK}"), 1)
-          end = date.fromisocalendar(int("${END_YEAR}"), int("${END_WEEK}"), 1)
+          start = date.fromisocalendar(int(os.environ["START_YEAR"]), int(os.environ["START_WEEK"]), 1)
+          end = date.fromisocalendar(int(os.environ["END_YEAR"]), int(os.environ["END_WEEK"]), 1)
           if start > end:
               raise SystemExit("Start ISO week must not be after end ISO week")
           current = start
@@ -79,6 +81,13 @@ jobs:
               current += timedelta(days=7)
           PY
           )
+
+          if [ "${#WEEKS[@]}" -eq 0 ]; then
+            echo "::error::No ISO weeks were resolved from the requested range."
+            exit 1
+          fi
+
+          echo "Resolved ${#WEEKS[@]} ISO week(s): ${WEEKS[*]}"
 
           for week in "${WEEKS[@]}"; do
             read -r year iso_week <<< "$week"
