@@ -117,8 +117,8 @@ def main() -> None:
     week_index = 0
     budget = finder.new_search_budget()
     print(
-        f"Planet Finder RUN BUDGET: {budget['max_node_candidates']:,} attempts per body; "
-        f"{budget['max_seconds']:.1f}s wall-clock shared across the run",
+        f"Planet Finder SEARCH LIMITS: {budget['max_node_candidates']:,} attempts per body; "
+        f"{budget['max_seconds']:.1f}s independently for each mode",
         flush=True,
     )
     for year, selected in grouped.items():
