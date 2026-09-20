@@ -1198,3 +1198,72 @@ def render(
     # Keep it deterministic and independent of body-label placement.
     aries_x, aries_y = xy(0, RI)
     out.append(
+        f'<text x="{aries_x - 12:.1f}" y="{aries_y + 7:.1f}" '
+        'text-anchor="end" font-size="20" class="sans">0° Aries</text>'
+    )
+
+    for symbol, name, _, box, path in placed:
+        out.append(polyline(path))
+        if mode == "greek":
+            out.append(f'<circle cx="{box.x:.1f}" cy="{box.y:.1f}" r="29" fill="white" stroke="#111"/>')
+            out.append(f'<text x="{box.x:.1f}" y="{box.y+13:.1f}" text-anchor="middle" font-size="44">{html.escape(symbol)}\ufe0e</text>')
+        else:
+            text = name if mode == "latin" else f"{symbol}\ufe0e {name}"
+            out.append(f'<rect x="{box.left:.1f}" y="{box.top:.1f}" width="{box.w:.1f}" height="{box.h:.1f}" rx="10" fill="white" stroke="#111"/>')
+            out.append(f'<text x="{box.x:.1f}" y="{box.y+7:.1f}" text-anchor="middle" font-size="18">{html.escape(text)}</text>')
+
+    out.extend([
+        f'<text x="{CX}" y="682" text-anchor="middle" font-size="28" font-weight="700">Tropical ecliptic longitude</text>',
+        f'<text x="{CX}" y="722" text-anchor="middle" font-size="22">0° Aries at 9:00 · zodiac increases counterclockwise</text>',
+        f'<text x="{CX}" y="757" text-anchor="middle" font-size="22">12 equal sectors · 30° each</text>',
+        '</svg>',
+    ])
+    return "\n".join(out) + "\n"
+
+
+def generate_week(year: int, week: int):
+    if not 1 <= week <= week_count(year):
+        raise ValueError(f"Invalid ISO week {year}-W{week:02d}")
+    monday = date.fromisocalendar(year, week, 1)
+    needed = {BODY_NAMES[name] for name in CANONICAL}
+    engine = StarAlmanackEphemeris()
+    generated = computed_ephemeris(year, engine)
+    values = {key: generated[key][week - 1][0] for key in needed}
+    bodies = [(BODY_SYMBOLS[BODY_NAMES[name]], name, values[BODY_NAMES[name]] % 360) for name in CANONICAL]
+    outdir = ROOT / "almanack" / str(year) / f"W{week:02d}" / "finders"
+    outdir.mkdir(parents=True, exist_ok=True)
+    filenames = {
+        FinderMode.GREEK: "planet-finder-greek-symbols.svg",
+        FinderMode.LATIN: "planet-finder-latin.svg",
+        FinderMode.MIXED: "planet-finder-mixed-learner.svg",
+    }
+    for mode, filename in filenames.items():
+        (outdir / filename).write_text(render(year, week, monday, mode, bodies), encoding="utf-8")
+    print(f"Generated collision-free Planet Finders for ISO {year}-W{week:02d} from internal calculations")
+
+
+def parse_args():
+    p = argparse.ArgumentParser()
+    g = p.add_mutually_exclusive_group(required=True)
+    g.add_argument("--current", action="store_true", help="generate the current UTC ISO week")
+    g.add_argument("--year", type=int, help="ISO week-year")
+    p.add_argument("--week", type=int, help="ISO week number; required with --year")
+    args = p.parse_args()
+    if args.year is not None and args.week is None:
+        p.error("--week is required with --year")
+    return args
+
+
+def main():
+    args = parse_args()
+    if args.current:
+        today = date.today()
+        iso = today.isocalendar()
+        year, week = iso.year, iso.week
+    else:
+        year, week = args.year, args.week
+    generate_week(year, week)
+
+
+if __name__ == "__main__":
+    main()
