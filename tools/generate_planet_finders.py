@@ -454,9 +454,6 @@ def route(
 
 
 
-class CandidateBudgetExhausted(RuntimeError):
-    """Signal that the run-wide viable-candidate budget is exhausted."""
-
 
 class DepthNodeBudgetExhausted(RuntimeError):
     """Signal that a body-depth node budget is exhausted for this DFS tree."""
@@ -512,8 +509,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             f"Planet Finder {mode}: TERMINAL {context_label + ' ' if context_label else ''}reason={reason} order={order_index}"
             f"{('/' + str(total_orders)) if total_orders else ''} "
             f"nodes={nodes:,} deepest={deepest}/{len(order)} current_body={current_body} "
-            f"candidates={candidates:,} global_candidates={budget['candidates']:,}/"
-            f"{budget['max_candidates']:,} rejects[overlap={rejected_overlap:,},"
+            f"candidates={candidates:,} rejects[overlap={rejected_overlap:,},"
             f"leader={rejected_leader:,},route={rejected_route:,}] "
             f"backtracks={backtracks:,}",
             flush=True,
@@ -627,12 +623,6 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                     flush=True,
                 )
                 candidate_last_heartbeat = now
-            # Candidate production is lazy. Geometry owns geometry; the search
-            # controller owns limits. The only run-wide limits checked here are
-            # the same hard safety limits used by DFS.
-            if budget["candidates"] >= budget["max_candidates"]:
-                stats["blocked"] = "global-budget"
-                raise CandidateBudgetExhausted("Planet Finder candidate budget exhausted")
             # Enforce the run-wide deadline inside candidate generation too.
             # Geometry/routing can otherwise keep one DFS iteration busy past the limit.
             run_elapsed = time.monotonic() - budget["started"]
@@ -784,11 +774,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
 
         for box, path in viable_candidates(item, depth):
             generated_here = True
-            if budget["candidates"] >= budget["max_candidates"]:
-                raise CandidateBudgetExhausted("Planet Finder candidate budget exhausted")
-
             candidates += 1
-            budget["candidates"] += 1
             placed.append(box)
             leaders.append(path)
             staged[original_index] = (symbol, name, longitude, box, path)
@@ -826,9 +812,6 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             f"node budget exhausted at depth={exc.depth}/{len(order)} body={exc.name}"
         )
         raise
-    except CandidateBudgetExhausted:
-        dump_diagnostics("run-wide candidate budget exhausted")
-        raise
     except RuntimeError as exc:
         dump_diagnostics(f"runtime failure: {exc}")
         raise
@@ -841,7 +824,6 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         f"Planet Finder {mode}: fixed-order summary order={order_index} "
         f"exhausted={exhausted} elapsed={elapsed:.2f}s nodes={nodes:,} "
         f"deepest={deepest}/{len(order)} candidates={candidates:,} "
-        f"global_candidates={budget['candidates']:,}/{budget['max_candidates']:,} "
         f"rejects[overlap={rejected_overlap:,},leader={rejected_leader:,},"
         f"route={rejected_route:,}] backtracks={backtracks:,} "
         f"solutions={len(solutions)}",
@@ -850,12 +832,8 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
     return solutions
 
 
-def new_search_budget(max_candidates: int | None = None):
-    """Create the shared run-wide candidate and wall-clock safety limits."""
-    if max_candidates is None:
-        max_candidates = int(os.environ.get("PLANET_FINDER_MAX_CANDIDATES", "1000000"))
-    if max_candidates <= 0:
-        raise ValueError("PLANET_FINDER_MAX_CANDIDATES must be positive")
+def new_search_budget():
+    """Create the per-body candidate and wall-clock safety limits."""
     max_node_candidates = int(os.environ.get("PLANET_FINDER_MAX_NODE_CANDIDATES", "200"))
     if max_node_candidates <= 0:
         raise ValueError("PLANET_FINDER_MAX_NODE_CANDIDATES must be positive")
@@ -863,8 +841,6 @@ def new_search_budget(max_candidates: int | None = None):
     # Start the wall-clock budget lazily at the first actual layout search.
     # Ephemeris setup/kernel work must not consume the Planet Finder search ceiling.
     return {
-        "candidates": 0,
-        "max_candidates": max_candidates,
         "max_node_candidates": max_node_candidates,
         "max_seconds": max_seconds,
         "started": None,
@@ -961,7 +937,6 @@ def layout(
             f"{context_label + ' ' if context_label else ''}"
             f"order={order_index} target={target_solutions} "
             f"max-node-candidates={budget['max_node_candidates']:,} "
-            f"max-candidates={budget['max_candidates']:,} "
             f"refinement={refinement_scales[refinement_index]:g} label-lengths "
             f"sequence=" + " > ".join(item[1][1] for item in order),
             flush=True,
@@ -1023,15 +998,11 @@ def layout(
                 flush=True,
             )
             continue
-        except CandidateBudgetExhausted:
-            all_solutions = []
-
         break
 
     if not all_solutions:
         raise RuntimeError(
-            f"No collision-free Planet Finder layout found in {mode} mode after "
-            f"{budget['candidates']:,} candidate evaluations"
+            f"No collision-free Planet Finder layout found in {mode} mode"
         )
 
     def score(result):
