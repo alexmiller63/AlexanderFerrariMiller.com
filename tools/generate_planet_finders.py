@@ -1274,13 +1274,10 @@ def layout(
             promoted_names = tuple(item[1][1] for item in promoted_order)
             promoted_key = (refinement_index, promoted_names)
             if promoted_key in attempted_orders:
-                # The cap is the explosion guard. Once squeaky-wheel promotion
-                # returns to an ordering already tried at this refinement, the
-                # controller has closed its evidence-based ordering cycle.
-                # Do not defeat the cap by enumerating arbitrary permutations:
-                # that simply starts a fresh 200-attempt budget for each of up
-                # to N! orderings. A capped cycle is inconclusive, so it also
-                # must not masquerade as geometric EXHAUSTED/refinement proof.
+                # The promoted body is already first. Resetting its cap and
+                # immediately repeating the identical deterministic ordering
+                # would reproduce the same bounded search, so this is a genuine
+                # capped cycle. Do not refine: a cap is incomplete evidence.
                 cycle_names = " > ".join(item[1][1] for item in promoted_order)
                 print(
                     f"Planet Finder {mode}: CAPPED CYCLE CLOSED body={promote_body}; "
@@ -1289,11 +1286,6 @@ def layout(
                     f"sequence={cycle_names}",
                     flush=True,
                 )
-                # This is a normal bounded-search terminal condition.
-                # The cap has done its job: the controller must stop rather
-                # than manufacture another ordering or replenish the body's
-                # safety budget. Return an explicit inconclusive outcome so
-                # the caller can report the distinction cleanly.
                 return SearchOutcome(
                     "INCONCLUSIVE",
                     [],
@@ -1301,9 +1293,15 @@ def layout(
                     promote_body,
                     None,
                 )
+            # A capped body gets a fresh 200-candidate budget when the state
+            # machine promotes it. The cap is therefore per-body/per-ordering
+            # search work, not a lifetime quota for the entire mode. Forward
+            # checking remains outside this accounting.
+            body_attempts[promote_body] = 0
             order = promoted_order
             print(
                 f"Planet Finder {mode}: CAPPED PROMOTE body={promote_body}; "
+                f"reset candidate budget to 0/{budget['max_node_candidates']:,}; "
                 "incomplete search, preserving refinement and restarting sequence="
                 + " > ".join(promoted_names),
                 flush=True,
