@@ -676,7 +676,11 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         # such as Neptune cannot receive a fresh allowance for every Uranus
         # parent. Once the depth has created the configured number of nodes,
         # close that level and let ordinary recursion backtrack upward.
-        if depth < len(order) and depth_visits.get(depth, 0) >= budget["max_node_candidates"]:
+        if (
+            depth < len(order)
+            and depth not in budget.get("uncapped_depths", set())
+            and depth_visits.get(depth, 0) >= budget["max_node_candidates"]
+        ):
             name = order[depth][1][1]
             print(
                 f"Planet Finder {mode}: NODE-BUDGET STOP order={order_index} "
@@ -816,6 +820,9 @@ def new_search_budget(max_candidates: int | None = None):
         "max_node_candidates": max_node_candidates,
         "max_seconds": max_seconds,
         "started": None,
+        # Depths in this set are exempt from the per-depth diagnostic cap.
+        # The run-wide candidate and wall-clock limits remain in force.
+        "uncapped_depths": set(),
     }
 
 def layout(
@@ -898,13 +905,20 @@ def layout(
             if squeaky_index is None:
                 raise
             if squeaky_index == 0:
+                # The squeaky body is already first. Do not mistake the
+                # diagnostic node cap for proof that the layout is impossible.
+                # Remove the artificial cap at this depth and resume the same
+                # DFS ordering. The run-wide candidate and wall-clock safety
+                # limits still bound the search.
+                budget.setdefault("uncapped_depths", set()).add(0)
+                attempted_orders.discard(order_key)
                 print(
                     f"Planet Finder {mode}: squeaky wheel {exc.name} already first; "
-                    "cannot promote further",
+                    "removing the per-depth cap at depth 0 and resuming under "
+                    "the run-wide safety limits",
                     flush=True,
                 )
-                all_solutions = []
-                break
+                continue
 
             order = [order[squeaky_index], *order[:squeaky_index], *order[squeaky_index + 1:]]
             print(
