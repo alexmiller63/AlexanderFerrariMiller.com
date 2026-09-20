@@ -14,6 +14,7 @@ import os
 import time
 from dataclasses import dataclass
 from datetime import date
+from enum import Enum, auto
 from pathlib import Path
 
 from populate_ephemeris import TARGETS, computed_ephemeris, week_count
@@ -39,6 +40,25 @@ CANONICAL = [
     "Sun", "Moon", "Mercury", "Venus", "Mars", "Jupiter", "Saturn",
     "Ceres", "Uranus", "Neptune", "Pluto",
 ]
+
+
+class Body(Enum):
+    """Solar-System bodies participating in Planet Finder layout search."""
+    SUN = auto()
+    MOON = auto()
+    MERCURY = auto()
+    VENUS = auto()
+    MARS = auto()
+    JUPITER = auto()
+    SATURN = auto()
+    CERES = auto()
+    URANUS = auto()
+    NEPTUNE = auto()
+    PLUTO = auto()
+
+    @classmethod
+    def from_name(cls, name: str) -> "Body":
+        return cls[name.upper()]
 
 
 @dataclass(frozen=True)
@@ -479,11 +499,11 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
     # which descendant subtree consumes a parent's generator suspension time.
     depth_residence = {}
     depth_visits = {}
-    # Per-body attempted-position accounting for this fixed ordering. This is
-    # the squeaky-wheel counter: rejected geometry counts too, so a pathological
-    # body cannot churn through thousands of raw positions. A promoted restart
-    # creates a new _solve_order() call and therefore resets this count to zero.
-    body_attempt_counts = {}
+    # Per-body attempted-position accounting persists across ordering restarts.
+    # Each body owns its own counter; promoting one body resets only that body.
+    # Rejected geometry counts too, so a pathological body cannot churn through
+    # thousands of raw positions while another body silently clears its history.
+    body_attempt_counts = budget["body_attempt_counts"]
     diagnostic_stats = {}
     route_diagnostics = {}
     solutions = []
@@ -576,7 +596,8 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             stream_dt = time.monotonic() - stream_t0
             timing["stream_wait"] += stream_dt
             raw_positions += 1
-            body_attempts = body_attempt_counts.get(name, 0)
+            body = Body.from_name(name)
+            body_attempts = body_attempt_counts.get(body, 0)
             if body_attempts >= budget["max_node_candidates"]:
                 stats["blocked"] = "body-attempt-cap"
                 print(
@@ -586,7 +607,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                     flush=True,
                 )
                 raise DepthNodeBudgetExhausted(depth, name)
-            body_attempt_counts[name] = body_attempts + 1
+            body_attempt_counts[body] = body_attempts + 1
 
             # Narrow instrumentation for pathological candidate generation.
             # Report any single stage that stalls for >= 1s immediately, rather
@@ -851,6 +872,7 @@ def new_search_budget(max_candidates: int | None = None):
         "max_node_candidates": max_node_candidates,
         "max_seconds": max_seconds,
         "started": None,
+        "body_attempt_counts": {body: 0 for body in Body},
     }
 
 def layout(
@@ -971,6 +993,9 @@ def layout(
                     f"{budget['max_node_candidates']:,}"
                 )
 
+            # Reset only the promoted body. Every other body keeps its own
+            # accumulated cap pressure across this fresh ordering.
+            budget["body_attempt_counts"][Body.from_name(exc.name)] = 0
             order = [order[squeaky_index], *order[:squeaky_index], *order[squeaky_index + 1:]]
             print(
                 f"Planet Finder {mode}: SQUEAKY-WHEEL PROMOTE body={exc.name} "
