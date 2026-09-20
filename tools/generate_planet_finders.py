@@ -915,41 +915,77 @@ def layout(
     )
 
     order = indexed
-    attempted_orders = set()
     all_solutions = []
+    contest_keys = []
     order_index = 0
     refinement_scales = (2.0, 1.5, 1.0, 0.5, 0.25)
     refinement_index = 0
-    promoted_this_refinement = set()
+    attempted_orders = set()
 
-    # Squeaky-wheel ordering: a body that hits the per-depth node cap is not
-    # merely stopped.  That cap identifies the body currently exploding the
-    # tree.  Throw away this fixed-order DFS state, promote that body to the
-    # front, and begin a completely fresh recursive search.
-    while True:
+    # Explicit search-controller state machine.
+    #
+    # SEARCH_ORDER -> SCORE    when N complete validated contestants are found
+    # SEARCH_ORDER -> PROMOTE  when one body reaches its fixed-order cap
+    # PROMOTE      -> SEARCH_ORDER for a new ordering
+    # PROMOTE      -> REFINE   when promotion closes an already-searched cycle
+    # SEARCH_ORDER -> REFINE   when a fixed ordering exhausts naturally
+    # REFINE       -> SEARCH_ORDER at the next placement scale
+    #
+    # The per-mode wall clock is never reset by promotion or refinement.
+    state = "SEARCH_ORDER"
+
+    while state != "SCORE":
+        if time.monotonic() - budget["started"] >= budget["max_seconds"]:
+            raise RuntimeError(
+                f"Planet Finder {mode} mode wall-clock budget exhausted "
+                f"(limit {budget['max_seconds']:.1f}s)"
+            )
+
+        if state == "REFINE":
+            if refinement_index + 1 >= len(refinement_scales):
+                raise RuntimeError(
+                    f"Planet Finder {mode}: exhausted all placement refinements "
+                    f"through {refinement_scales[refinement_index]:g} label-lengths"
+                )
+            refinement_index += 1
+            order = indexed
+            attempted_orders.clear()
+            print(
+                f"Planet Finder {mode}: REFINEMENT ADVANCE "
+                f"to {refinement_scales[refinement_index]:g} label-lengths; "
+                "restarting canonical sequence="
+                + " > ".join(item[1][1] for item in order),
+                flush=True,
+            )
+            state = "SEARCH_ORDER"
+            continue
+
+        if state != "SEARCH_ORDER":
+            raise RuntimeError(f"Planet Finder {mode}: invalid controller state {state}")
+
         order_names = tuple(item[1][1] for item in order)
         order_key = (refinement_index, order_names)
+
+        # Reaching an already searched ordering closes the promotion cycle for
+        # this refinement. That is a normal state transition, not a fatal error.
         if order_key in attempted_orders:
-            # A repeated ordering means squeaky-wheel promotion has cycled.
-            # It is not evidence that the geometry needs a finer candidate
-            # grid.  Stop this promotion path instead of manufacturing a
-            # denser search (and recreating the search explosion the cap is
-            # designed to prevent).
-            raise RuntimeError(
-                f"Planet Finder {mode}: squeaky-wheel promotion cycle at "
-                f"{refinement_scales[refinement_index]:g} label-lengths; "
-                "no new body ordering remains"
+            print(
+                f"Planet Finder {mode}: PROMOTION CYCLE CLOSED at "
+                f"{refinement_scales[refinement_index]:g} label-lengths; refining",
+                flush=True,
             )
+            state = "REFINE"
+            continue
+
         attempted_orders.add(order_key)
         order_index += 1
-
         print(
             f"Planet Finder {mode}: squeaky-wheel lazy DFS "
             f"{context_label + ' ' if context_label else ''}"
             f"order={order_index} target={target_solutions} "
             f"max-node-candidates={budget['max_node_candidates']:,} "
             f"refinement={refinement_scales[refinement_index]:g} label-lengths "
-            f"sequence=" + " > ".join(item[1][1] for item in order),
+            f"sequence=" + " > ".join(order_names),
             flush=True,
         )
 
@@ -971,66 +1007,53 @@ def layout(
                 None,
             )
             if squeaky_index is None:
-                raise
-            promoted_this_refinement.add(exc.name)
+                raise RuntimeError(
+                    f"Planet Finder {mode}: capped body {exc.name} is absent from ordering"
+                ) from exc
 
-            # If the squeaky wheel is already first, promotion would be a
-            # no-op and would simply replay the same fixed ordering. Advance
-            # the geometric refinement immediately instead.
-            if squeaky_index == 0:
-                if refinement_index + 1 >= len(refinement_scales):
-                    raise RuntimeError(
-                        f"Planet Finder {mode}: first-position body {exc.name} "
-                        f"still hit the candidate cap after exhausting placement "
-                        f"refinements through {refinement_scales[refinement_index]:g} "
-                        "label-lengths"
-                    )
-                refinement_index += 1
-                promoted_this_refinement.clear()
-                attempted_orders.clear()
-                order = indexed
+            # Promotion discards the complete fixed-order DFS state. _solve_order
+            # owns that state, so returning here already guarantees a clean tree.
+            promoted_order = [
+                order[squeaky_index],
+                *order[:squeaky_index],
+                *order[squeaky_index + 1:],
+            ]
+            promoted_names = tuple(item[1][1] for item in promoted_order)
+            promoted_key = (refinement_index, promoted_names)
+
+            if promoted_key in attempted_orders:
                 print(
-                    f"Planet Finder {mode}: SQUEAKY-WHEEL body={exc.name} already first; "
-                    f"refining placement to {refinement_scales[refinement_index]:g} "
-                    "label-lengths and restarting canonical sequence="
-                    + " > ".join(item[1][1] for item in order),
+                    f"Planet Finder {mode}: SQUEAKY-WHEEL body={exc.name} "
+                    f"after hitting {budget['max_node_candidates']:,}; "
+                    "promotion closes an already-searched ordering; refining",
                     flush=True,
                 )
-                continue
-
-            # A complete squeaky-wheel sweep is the signal to make the
-            # geometric search genuinely finer. Do not replay the same
-            # refinement indefinitely.
-            if len(promoted_this_refinement) == len(CANONICAL):
-                if refinement_index + 1 >= len(refinement_scales):
-                    raise RuntimeError(
-                        f"Planet Finder {mode}: exhausted all placement refinements "
-                        f"through {refinement_scales[refinement_index]:g} label-lengths"
-                    )
-                refinement_index += 1
-                promoted_this_refinement.clear()
+                state = "REFINE"
+            else:
+                order = promoted_order
                 print(
-                    f"Planet Finder {mode}: COMPLETE PROMOTION SWEEP; "
-                    f"refining placement to {refinement_scales[refinement_index]:g} "
-                    "label-lengths",
+                    f"Planet Finder {mode}: SQUEAKY-WHEEL PROMOTE body={exc.name} "
+                    f"after hitting {budget['max_node_candidates']:,}; "
+                    "discarding fixed-order search state and restarting with sequence="
+                    + " > ".join(promoted_names),
                     flush=True,
                 )
-
-            # The squeaky body gets the first position for the next recursive
-            # search. The cap limits one body's turn; DFS still owns backtracking.
-            squeaky_index = next(
-                i for i, item in enumerate(order) if item[1][1] == exc.name
-            )
-            order = [order[squeaky_index], *order[:squeaky_index], *order[squeaky_index + 1:]]
-            print(
-                f"Planet Finder {mode}: SQUEAKY-WHEEL PROMOTE body={exc.name} "
-                f"after hitting {budget['max_node_candidates']:,}; "
-                "discarding fixed-order search state and restarting with sequence="
-                + " > ".join(item[1][1] for item in order),
-                flush=True,
-            )
+                state = "SEARCH_ORDER"
             continue
-        break
+
+        if len(all_solutions) >= target_solutions:
+            state = "SCORE"
+            continue
+
+        # A complete fixed-order exhaustion without N contestants means this
+        # geometry cannot satisfy the contest under this ordering. Advance the
+        # deterministic refinement rather than inventing another ordering.
+        print(
+            f"Planet Finder {mode}: FIXED ORDER EXHAUSTED "
+            f"with {len(all_solutions)}/{target_solutions} contestants; refining",
+            flush=True,
+        )
+        state = "REFINE"
 
     if not all_solutions:
         raise RuntimeError(
