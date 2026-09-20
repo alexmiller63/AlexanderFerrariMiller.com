@@ -141,7 +141,7 @@ jobs:
           from pathlib import Path
           text=Path(sys.argv[1]).read_text(encoding="utf-8", errors="replace")
           week=sys.argv[2]
-          section=re.search(r'<div class="other-objects-listed-week"[^>]*>(.*?)</div>', text, re.S)
+          section=re.search(r'<section\b[^>]*\bid="other-objects-listed-this-week"[^>]*>(.*?)</section>', text, re.S)
           if not section:
               raise SystemExit(f"{week}: missing 'Other objects listed this week' section")
           links=re.findall(r'<a class="object-artwork-link" href="([^"]+)">([^<]+)</a>', section.group(1))
