@@ -95,18 +95,10 @@ def populate_week(
     outdir = ephemeris.ROOT / "almanack" / str(year) / f"W{week:02d}" / "finders"
     outdir.mkdir(parents=True, exist_ok=True)
     for mode, filename in FINDER_FILENAMES.items():
-        # Candidate evaluations are a per-layout resource: Greek, Latin, and
-        # mixed each receive the full configured allowance.  Only the
-        # wall-clock deadline is shared across the complete generator run.
-        if budget["started"] is None:
-            budget["started"] = time.monotonic()
-            print(
-                f"Planet Finder SEARCH CLOCK STARTED: limit={budget['max_seconds']:.1f}s",
-                flush=True,
-            )
+        # Each independently searched layout gets its own complete safety
+        # envelope. The per-body candidate cap and the wall-clock ceiling
+        # therefore apply independently to Greek, Latin, and Mixed.
         mode_budget = finder.new_search_budget()
-        mode_budget["started"] = budget["started"]
-        mode_budget["max_seconds"] = budget["max_seconds"]
         svg = finder.render(
             year, week, monday, mode, bodies,
             budget=mode_budget,
