@@ -503,7 +503,7 @@ class DepthNodeBudgetExhausted(RuntimeError):
         self.name = name
 
 
-def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_index=1, total_orders=None, context_label=None, displacement_scale=2.0):
+def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_index=1, total_orders=None, context_label=None, displacement_scale=2.0, body_attempts=None):
     """Solve one fixed body ordering with recursive depth-first search.
 
     The ordering is fixed for this pass. Each recursive call owns one body
@@ -535,10 +535,11 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
     # This is the second squeaky-wheel failure mode: a body can repeatedly
     # block the tree without any one prefix reaching its candidate cap.
     dead_end_visits = {}
-    # Explosion accounting is per body for this entire fixed ordering. A body
-    # that consumes the cap across multiple DFS prefixes is the squeaky wheel;
-    # layout() then discards this ordering, promotes that body, and starts fresh.
-    body_attempts = {name: 0 for _, (_, name, _) in order}
+    # Explosion accounting is owned by layout(), not by an ordering. Ordering
+    # changes are controller decisions and must never replenish a body's 200-attempt
+    # safety budget. A fresh map is retained only for direct/test callers.
+    if body_attempts is None:
+        body_attempts = {name: 0 for _, (_, name, _) in order}
     diagnostic_stats = {}
     route_diagnostics = {}
     solutions = []
@@ -1182,6 +1183,9 @@ def layout(
     refinement_scales = (2.0, 1.5, 1.0, 0.5, 0.25)
     refinement_index = 0
     attempted_orders = set()
+    # One persistent explosion budget per body for this mode. Reordering is not
+    # permission to buy another 200 attempts for the same body.
+    body_attempts = {name: 0 for _, (_, name, _) in indexed}
     # Preserve controller history across refinements for terminal diagnosis.
     refinement_history = []
 
@@ -1362,6 +1366,7 @@ def layout(
                 total_orders=None,
                 context_label=context_label,
                 displacement_scale=refinement_scales[refinement_index],
+                body_attempts=body_attempts,
             )
         except DepthNodeBudgetExhausted as exc:
             # The fixed-order solver already emitted its detailed terminal
