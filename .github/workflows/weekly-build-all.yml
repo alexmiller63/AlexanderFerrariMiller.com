@@ -23,6 +23,26 @@ on:
         required: true
         default: '40'
         type: string
+      candidate_layouts:
+        description: Planet Finder complete layouts to score per mode
+        required: true
+        default: '5'
+        type: string
+      max_node_candidates:
+        description: Planet Finder maximum DFS node visits per body depth
+        required: true
+        default: '200'
+        type: string
+      max_search_candidates:
+        description: Planet Finder maximum candidate evaluations
+        required: true
+        default: '10000'
+        type: string
+      max_search_seconds:
+        description: Planet Finder search time per mode
+        required: true
+        default: '90'
+        type: string
 
 permissions:
   contents: read
@@ -74,7 +94,11 @@ jobs:
 
             bash tools/run-workflow-and-wait.sh populate-ephemeris-planet-finder-by-date.yml \
               -f start_year="$year" -f start_week="$iso_week" \
-              -f end_year="$year" -f end_week="$iso_week"
+              -f end_year="$year" -f end_week="$iso_week" \
+              -f candidate_layouts='${{ inputs.candidate_layouts }}' \
+              -f max_node_candidates='${{ inputs.max_node_candidates }}' \
+              -f max_search_candidates='${{ inputs.max_search_candidates }}' \
+              -f max_search_seconds='${{ inputs.max_search_seconds }}'
 
             bash tools/run-workflow-and-wait.sh populate-sky-notes-by-date.yml \
               -f start_year="$year" -f start_week="$iso_week" \
