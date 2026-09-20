@@ -848,12 +848,11 @@ def new_search_budget():
     if max_node_candidates <= 0:
         raise ValueError("PLANET_FINDER_MAX_NODE_CANDIDATES must be positive")
     max_seconds = max(1.0, float(os.environ.get("PLANET_FINDER_MAX_SECONDS", "180")))
-    # Start the wall-clock budget lazily at the first actual layout search.
-    # Ephemeris setup/kernel work must not consume the Planet Finder search ceiling.
+    # This object contains limits only.  It deliberately contains no clock
+    # state: every notation mode starts its own clock inside layout().
     return {
         "max_node_candidates": max_node_candidates,
         "max_seconds": max_seconds,
-        "started": None,
     }
 
 def layout(
@@ -885,12 +884,17 @@ def layout(
 
     if budget is None:
         budget = new_search_budget()
-    if budget.get("started") is None:
-        budget["started"] = time.monotonic()
-        print(
-            f"Planet Finder SEARCH CLOCK STARTED: limit={budget['max_seconds']:.1f}s",
-            flush=True,
-        )
+
+    # One clock per mode, always.  Copy the limits so callers may safely reuse
+    # one configuration object without ever sharing elapsed time between Greek,
+    # Latin, and Mixed.
+    budget = dict(budget)
+    budget["started"] = time.monotonic()
+    print(
+        f"Planet Finder {mode}: MODE CLOCK STARTED: "
+        f"limit={budget['max_seconds']:.1f}s",
+        flush=True,
+    )
 
     order = indexed
     attempted_orders = set()
