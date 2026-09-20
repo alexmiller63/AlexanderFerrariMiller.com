@@ -1,0 +1,15 @@
+name: Calendar Generator Probe
+
+on:
+  workflow_dispatch:
+    inputs:
+      start_year:
+        required: true
+        default: '2026'
+        type: string
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Calendar Generator probe"
