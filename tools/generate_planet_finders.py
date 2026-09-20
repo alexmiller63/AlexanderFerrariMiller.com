@@ -252,15 +252,32 @@ def candidate_positions(longitude: float, displacement_scale: float = 2.0):
     yield from offer(expanded_radii, (-shift, shift))
 
 
-def legal_candidate_positions(longitude: float, w: float, h: float, reserved: list[Box], displacement_scale: float = 2.0):
+def legal_candidate_positions(
+    longitude: float,
+    w: float,
+    h: float,
+    reserved: list[Box],
+    displacement_scale: float = 2.0,
+    diagnostic: dict | None = None,
+):
     """Yield only proposals that are legal against immutable chart geometry.
-    Reserved center annotations and zodiac labels never move, so a candidate
-    that overlaps one can never become valid through DFS backtracking. Reject
-    it here, before it enters the search candidate pool or consumes budget.
+
+    When diagnostic is supplied, rejected raw proposals are classified here so
+    terminal search output can distinguish immutable-geometry impossibility
+    from DFS interactions between movable labels/leaders.
     """
     for x, y in candidate_positions(longitude, displacement_scale):
         box = Box(x, y, w, h)
-        if any(boxes_overlap(box, obstacle, 14) for obstacle in reserved):
+        reserved_hits = [
+            i for i, obstacle in enumerate(reserved)
+            if boxes_overlap(box, obstacle, 14)
+        ]
+        if reserved_hits:
+            if diagnostic is not None:
+                diagnostic["immutable_reserved"] = diagnostic.get("immutable_reserved", 0) + 1
+                by_obstacle = diagnostic.setdefault("immutable_reserved_by_obstacle", {})
+                for i in reserved_hits:
+                    by_obstacle[i] = by_obstacle.get(i, 0) + 1
             continue
         # Body labels live inside the inner zodiac rim.  A label touching or
         # crossing that border is rotten geometry, not a scoring preference.
@@ -271,6 +288,8 @@ def legal_candidate_positions(longitude: float, w: float, h: float, reserved: li
             for px in (box.left, box.right)
             for py in (box.top, box.bottom)
         ):
+            if diagnostic is not None:
+                diagnostic["immutable_rim"] = diagnostic.get("immutable_rim", 0) + 1
             continue
         yield x, y, box
 
@@ -539,11 +558,22 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         )
         print(f"Planet Finder {mode}: TERMINAL ORDER sequence={order_names}", flush=True)
         for (depth, name), s in sorted(diagnostic_stats.items()):
+            immutable_names = {
+                reserved_names[i] if i < len(reserved_names) else str(i): count
+                for i, count in sorted(s.get("immutable_reserved_by_obstacle", {}).items())
+            }
             print(
                 f"Planet Finder {mode}: TERMINAL BODY depth={depth}/{len(order)} body={name} "
                 f"status={'evaluated' if s.get('started') else ('blocked-' + s['blocked'] if s.get('blocked') else 'not-evaluated')} "
                 f"generated={s['generated']:,} viable={s['viable']:,} "
-                f"rejects[overlap={s['overlap']:,},leader={s['leader']:,},route={s['route']:,}]",
+                f"rejects[immutable-reserved={s.get('immutable_reserved', 0):,},"
+                f"immutable-rim={s.get('immutable_rim', 0):,},"
+                f"placed-overlap={s['overlap']:,},"
+                f"existing-leader={s.get('leader_existing', 0):,},"
+                f"route={s['route']:,},"
+                f"leader-rim={s.get('leader_rim', 0):,},"
+                f"leader-graze={s.get('leader_graze', 0):,}] "
+                f"immutable-obstacles={immutable_names}",
                 flush=True,
             )
         for depth in sorted(set(depth_residence) | set(depth_visits)):
@@ -570,6 +600,24 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 f"straight_blockers={named_blockers}",
                 flush=True,
             )
+        aggregate = {}
+        for s in diagnostic_stats.values():
+            for key in (
+                "immutable_reserved",
+                "immutable_rim",
+                "overlap",
+                "leader_existing",
+                "route",
+                "leader_rim",
+                "leader_graze",
+            ):
+                aggregate[key] = aggregate.get(key, 0) + s.get(key, 0)
+        ranked = sorted(aggregate.items(), key=lambda item: (-item[1], item[0]))
+        print(
+            f"Planet Finder {mode}: TERMINAL REJECTION CONSTRAINTS "
+            + " ".join(f"{key}={count:,}" for key, count in ranked),
+            flush=True,
+        )
         print(
             f"Planet Finder {mode}: TERMINAL BEST-PARTIAL deepest={deepest}/{len(order)}",
             flush=True,
@@ -578,7 +626,19 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         original_index, (symbol, name, longitude) = item
         key = (depth, name)
         stats = diagnostic_stats.setdefault(key, {
-            "generated": 0, "viable": 0, "overlap": 0, "leader": 0, "route": 0, "started": False, "blocked": None,
+            "generated": 0,
+            "viable": 0,
+            "overlap": 0,
+            "leader": 0,
+            "route": 0,
+            "immutable_reserved": 0,
+            "immutable_reserved_by_obstacle": {},
+            "immutable_rim": 0,
+            "leader_existing": 0,
+            "leader_rim": 0,
+            "leader_graze": 0,
+            "started": False,
+            "blocked": None,
         })
         nonlocal candidates, rejected_overlap, rejected_leader, rejected_route
         w, h = label_size(mode, name)
@@ -597,7 +657,16 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         last_yield_at = None
         suspended_total = 0.0
         timing = {"stream_wait": 0.0, "overlap": 0.0, "existing_leader": 0.0, "route": 0.0, "final_leader": 0.0}
-        legal_positions = iter(legal_candidate_positions(longitude, w, h, reserved, displacement_scale))
+        legal_positions = iter(
+            legal_candidate_positions(
+                longitude,
+                w,
+                h,
+                reserved,
+                displacement_scale,
+                diagnostic=stats,
+            )
+        )
         while True:
             resumed_at = time.monotonic()
             if last_yield_at is not None:
@@ -684,6 +753,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             if hit_existing_leader:
                 rejected_leader += 1
                 stats["leader"] += 1
+                stats["leader_existing"] += 1
                 continue
             route_diag = route_diagnostics.setdefault((depth, name), {
                 "straight_blocked": 0,
@@ -724,6 +794,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             if leader_hits_zodiac_rim(path):
                 rejected_leader += 1
                 stats["leader"] += 1
+                stats["leader_rim"] += 1
                 continue
             t0 = time.monotonic()
             too_close = leaders_too_close(path, leaders)
@@ -731,6 +802,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             if too_close:
                 rejected_leader += 1
                 stats["leader"] += 1
+                stats["leader_graze"] += 1
                 continue
             # Yield immediately: DFS tries this legal geometry before asking
             # for another route. Rejected geometry never consumes candidate budget.
