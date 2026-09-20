@@ -465,6 +465,15 @@ def route(
 
 
 
+@dataclass(frozen=True)
+class SearchOutcome:
+    """Result of one fixed-order DFS attempt."""
+    kind: str
+    solutions: list
+    contest_keys: list
+    blocker: str | None = None
+
+
 class DepthNodeBudgetExhausted(RuntimeError):
     """Signal that a body-depth node budget is exhausted for this DFS tree."""
 
@@ -874,7 +883,19 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         f"solutions={len(solutions)}",
         flush=True,
     )
-    return solutions, contest_keys
+    blocker = None
+    if exhausted:
+        # deepest is a reached DFS depth; the body at that depth is the first
+        # body that could not be placed. If the tree reached completion, use
+        # the final body as the ordering feedback.
+        blocker_depth = min(deepest, len(order) - 1)
+        blocker = order[blocker_depth][1][1]
+    return SearchOutcome(
+        "SOLVED" if len(solutions) >= target_solutions else "EXHAUSTED",
+        solutions,
+        contest_keys,
+        blocker,
+    )
 
 
 def new_search_budget():
@@ -939,17 +960,16 @@ def layout(
     refinement_index = 0
     attempted_orders = set()
 
-    # Explicit search-controller state machine.
+    # Explicit search-controller state machine. Search attempts report events;
+    # only the controller changes ordering or placement refinement.
     #
-    # SEARCH_ORDER -> SCORE    when N complete validated contestants are found
-    # SEARCH_ORDER -> PROMOTE  when one body reaches its fixed-order cap
-    # SEARCH_ORDER -> PROMOTE  when a fixed ordering exhausts naturally
-    # PROMOTE      -> SEARCH_ORDER for a new ordering
-    # PROMOTE      -> REFINE   when promotion closes an already-searched cycle
+    # SEARCH_ORDER -> SCORE    on SOLVED
+    # SEARCH_ORDER -> PROMOTE  on CAPPED(body) or EXHAUSTED(blocker)
+    # PROMOTE      -> SEARCH_ORDER when the promoted ordering is new
+    # PROMOTE      -> REFINE   when promotion closes an ordering cycle
     # REFINE       -> SEARCH_ORDER at the next placement scale
-    #
-    # The per-mode wall clock is never reset by promotion or refinement.
     state = "SEARCH_ORDER"
+    promote_body = None
 
     while state != "SCORE":
         if time.monotonic() - budget["started"] >= budget["max_seconds"]:
@@ -967,6 +987,7 @@ def layout(
             refinement_index += 1
             order = indexed
             attempted_orders.clear()
+            promote_body = None
             print(
                 f"Planet Finder {mode}: REFINEMENT ADVANCE "
                 f"to {refinement_scales[refinement_index]:g} label-lengths; "
@@ -977,23 +998,48 @@ def layout(
             state = "SEARCH_ORDER"
             continue
 
+        if state == "PROMOTE":
+            promote_index = next(
+                (i for i, item in enumerate(order) if item[1][1] == promote_body),
+                None,
+            )
+            if promote_index is None:
+                raise RuntimeError(
+                    f"Planet Finder {mode}: promotion body {promote_body} is absent from ordering"
+                )
+            promoted_order = [
+                order[promote_index],
+                *order[:promote_index],
+                *order[promote_index + 1:],
+            ]
+            promoted_names = tuple(item[1][1] for item in promoted_order)
+            promoted_key = (refinement_index, promoted_names)
+            if promoted_key in attempted_orders:
+                print(
+                    f"Planet Finder {mode}: PROMOTION CYCLE CLOSED body={promote_body} "
+                    f"at {refinement_scales[refinement_index]:g} label-lengths; refining",
+                    flush=True,
+                )
+                state = "REFINE"
+            else:
+                order = promoted_order
+                print(
+                    f"Planet Finder {mode}: PROMOTE body={promote_body}; "
+                    "discarding fixed-order search state and restarting with sequence="
+                    + " > ".join(promoted_names),
+                    flush=True,
+                )
+                state = "SEARCH_ORDER"
+            continue
+
         if state != "SEARCH_ORDER":
             raise RuntimeError(f"Planet Finder {mode}: invalid controller state {state}")
 
         order_names = tuple(item[1][1] for item in order)
         order_key = (refinement_index, order_names)
-
-        # Reaching an already searched ordering closes the promotion cycle for
-        # this refinement. That is a normal state transition, not a fatal error.
         if order_key in attempted_orders:
-            print(
-                f"Planet Finder {mode}: PROMOTION CYCLE CLOSED at "
-                f"{refinement_scales[refinement_index]:g} label-lengths; refining",
-                flush=True,
-            )
             state = "REFINE"
             continue
-
         attempted_orders.add(order_key)
         order_index += 1
         print(
@@ -1007,7 +1053,7 @@ def layout(
         )
 
         try:
-            all_solutions, contest_keys = _solve_order(
+            outcome = _solve_order(
                 mode,
                 bodies,
                 order,
@@ -1019,85 +1065,29 @@ def layout(
                 displacement_scale=refinement_scales[refinement_index],
             )
         except DepthNodeBudgetExhausted as exc:
-            squeaky_index = next(
-                (i for i, item in enumerate(order) if item[1][1] == exc.name),
-                None,
-            )
-            if squeaky_index is None:
-                raise RuntimeError(
-                    f"Planet Finder {mode}: capped body {exc.name} is absent from ordering"
-                ) from exc
+            outcome = SearchOutcome("CAPPED", [], [], exc.name)
 
-            # Promotion discards the complete fixed-order DFS state. _solve_order
-            # owns that state, so returning here already guarantees a clean tree.
-            promoted_order = [
-                order[squeaky_index],
-                *order[:squeaky_index],
-                *order[squeaky_index + 1:],
-            ]
-            promoted_names = tuple(item[1][1] for item in promoted_order)
-            promoted_key = (refinement_index, promoted_names)
-
-            if promoted_key in attempted_orders:
-                print(
-                    f"Planet Finder {mode}: SQUEAKY-WHEEL body={exc.name} "
-                    f"after hitting {budget['max_node_candidates']:,}; "
-                    "promotion closes an already-searched ordering; refining",
-                    flush=True,
-                )
-                state = "REFINE"
-            else:
-                order = promoted_order
-                print(
-                    f"Planet Finder {mode}: SQUEAKY-WHEEL PROMOTE body={exc.name} "
-                    f"after hitting {budget['max_node_candidates']:,}; "
-                    "discarding fixed-order search state and restarting with sequence="
-                    + " > ".join(promoted_names),
-                    flush=True,
-                )
-                state = "SEARCH_ORDER"
-            continue
-
-        if len(all_solutions) >= target_solutions:
+        if outcome.kind == "SOLVED":
+            all_solutions = outcome.solutions
+            contest_keys = outcome.contest_keys
             state = "SCORE"
             continue
 
-        # Natural exhaustion is also search feedback. Promote the deepest body
-        # reached by this ordering and retry from a clean DFS tree before
-        # changing placement geometry. This keeps ordering and refinement as
-        # separate state-machine concerns and lets attempted_orders close loops.
-        blocker_index = min(max(deepest - 1, 0), len(order) - 1)
-        blocker_name = order[blocker_index][1][1]
-        promoted_order = [
-            order[blocker_index],
-            *order[:blocker_index],
-            *order[blocker_index + 1:],
-        ]
-        promoted_names = tuple(item[1][1] for item in promoted_order)
-        promoted_key = (refinement_index, promoted_names)
+        if outcome.kind not in ("CAPPED", "EXHAUSTED") or not outcome.blocker:
+            raise RuntimeError(
+                f"Planet Finder {mode}: invalid search outcome "
+                f"kind={outcome.kind} blocker={outcome.blocker}"
+            )
+
+        all_solutions = outcome.solutions
+        contest_keys = outcome.contest_keys
+        promote_body = outcome.blocker
         print(
-            f"Planet Finder {mode}: FIXED ORDER EXHAUSTED "
-            f"with {len(all_solutions)}/{target_solutions} contestants; "
-            f"deepest={deepest}/{len(order)} blocker={blocker_name}",
+            f"Planet Finder {mode}: SEARCH OUTCOME {outcome.kind} "
+            f"body={promote_body} contestants={len(all_solutions)}/{target_solutions}",
             flush=True,
         )
-        if promoted_key in attempted_orders:
-            print(
-                f"Planet Finder {mode}: EXHAUSTION PROMOTION CYCLE CLOSED "
-                f"body={blocker_name} at "
-                f"{refinement_scales[refinement_index]:g} label-lengths; refining",
-                flush=True,
-            )
-            state = "REFINE"
-        else:
-            order = promoted_order
-            print(
-                f"Planet Finder {mode}: EXHAUSTION PROMOTE body={blocker_name}; "
-                "discarding fixed-order search state and restarting with sequence="
-                + " > ".join(promoted_names),
-                flush=True,
-            )
-            state = "SEARCH_ORDER"
+        state = "PROMOTE"
 
     if not all_solutions:
         raise RuntimeError(
