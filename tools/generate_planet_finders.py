@@ -491,6 +491,7 @@ class SearchOutcome:
     solutions: list
     contest_keys: list
     blocker: str | None = None
+    rejection_stats: dict | None = None
 
 
 class DepthNodeBudgetExhausted(RuntimeError):
@@ -962,11 +963,29 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         # the final body as the ordering feedback.
         blocker_depth = min(deepest, len(order) - 1)
         blocker = order[blocker_depth][1][1]
+    blocker_stats = None
+    if blocker is not None:
+        blocker_depth = next(
+            (depth for depth, item in enumerate(order) if item[1][1] == blocker),
+            None,
+        )
+        if blocker_depth is not None:
+            s = diagnostic_stats.get((blocker_depth, blocker), {})
+            blocker_stats = {
+                "immutable_reserved": s.get("immutable_reserved", 0),
+                "immutable_rim": s.get("immutable_rim", 0),
+                "placed_overlap": s.get("overlap", 0),
+                "existing_leader": s.get("leader_existing", 0),
+                "route": s.get("route", 0),
+                "leader_rim": s.get("leader_rim", 0),
+                "leader_graze": s.get("leader_graze", 0),
+            }
     return SearchOutcome(
         "SOLVED" if len(solutions) >= target_solutions else "EXHAUSTED",
         solutions,
         contest_keys,
         blocker,
+        blocker_stats,
     )
 
 
@@ -1066,6 +1085,7 @@ def layout(
                         f"Planet Finder {mode}: TERMINAL HISTORY attempt={i} "
                         f"refinement={event['scale']:g} outcome={event['kind']} "
                         f"blocker={event['blocker']} contestants={event['contestants']}/{target_solutions} "
+                        f"rejects={event.get('rejection_stats') or 'see fixed-order terminal diagnostic'} "
                         f"sequence={' > '.join(event['order'])}",
                         flush=True,
                     )
@@ -1158,7 +1178,10 @@ def layout(
                 displacement_scale=refinement_scales[refinement_index],
             )
         except DepthNodeBudgetExhausted as exc:
-            outcome = SearchOutcome("CAPPED", [], [], exc.name)
+            # The fixed-order solver already emitted its detailed terminal
+            # diagnostic. CAPPED currently has no structured stats payload;
+            # keep that distinction explicit rather than inventing counts.
+            outcome = SearchOutcome("CAPPED", [], [], exc.name, None)
 
         if outcome.kind == "SOLVED":
             all_solutions = outcome.solutions
@@ -1181,6 +1204,7 @@ def layout(
             "blocker": promote_body,
             "contestants": len(all_solutions),
             "order": order_names,
+            "rejection_stats": outcome.rejection_stats,
         })
         print(
             f"Planet Finder {mode}: SEARCH OUTCOME {outcome.kind} "
