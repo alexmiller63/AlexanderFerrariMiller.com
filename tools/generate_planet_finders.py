@@ -959,6 +959,8 @@ def layout(
     refinement_scales = (2.0, 1.5, 1.0, 0.5, 0.25)
     refinement_index = 0
     attempted_orders = set()
+    # Preserve controller history across refinements for terminal diagnosis.
+    refinement_history = []
 
     # Explicit search-controller state machine. Search attempts report events;
     # only the controller changes ordering or placement refinement.
@@ -980,9 +982,25 @@ def layout(
 
         if state == "REFINE":
             if refinement_index + 1 >= len(refinement_scales):
+                final_sequence = " > ".join(item[1][1] for item in order)
+                print(
+                    f"Planet Finder {mode}: TERMINAL SEARCH DIAGNOSTIC "
+                    f"refinements={len(refinement_scales)} attempts={len(refinement_history)} "
+                    f"final-sequence={final_sequence}",
+                    flush=True,
+                )
+                for i, event in enumerate(refinement_history, 1):
+                    print(
+                        f"Planet Finder {mode}: TERMINAL HISTORY attempt={i} "
+                        f"refinement={event['scale']:g} outcome={event['kind']} "
+                        f"blocker={event['blocker']} contestants={event['contestants']}/{target_solutions} "
+                        f"sequence={' > '.join(event['order'])}",
+                        flush=True,
+                    )
                 raise RuntimeError(
                     f"Planet Finder {mode}: exhausted all placement refinements "
-                    f"through {refinement_scales[refinement_index]:g} label-lengths"
+                    f"through {refinement_scales[refinement_index]:g} label-lengths; "
+                    f"see TERMINAL SEARCH DIAGNOSTIC above"
                 )
             refinement_index += 1
             # Refinement changes placement geometry, not ordering knowledge.
@@ -1085,6 +1103,13 @@ def layout(
         all_solutions = outcome.solutions
         contest_keys = outcome.contest_keys
         promote_body = outcome.blocker
+        refinement_history.append({
+            "scale": refinement_scales[refinement_index],
+            "kind": outcome.kind,
+            "blocker": promote_body,
+            "contestants": len(all_solutions),
+            "order": order_names,
+        })
         print(
             f"Planet Finder {mode}: SEARCH OUTCOME {outcome.kind} "
             f"body={promote_body} contestants={len(all_solutions)}/{target_solutions}",
