@@ -141,10 +141,10 @@ jobs:
           from pathlib import Path
           text=Path(sys.argv[1]).read_text(encoding="utf-8", errors="replace")
           week=sys.argv[2]
-          sky_notes=re.search(r'<div\\b[^>]*\\bid="almanack-section-5"[^>]*>(.*?)(?=<div\\b[^>]*\\bid="almanack-section-|$)', text, re.S)
+          sky_notes=re.search(r'<div\b[^>]*\bid="almanack-section-5"[^>]*>(.*?)(?=<div\b[^>]*\bid="almanack-section-|$)', text, re.S)
           if not sky_notes:
               raise SystemExit(f"{week}: missing Almanack section 5 (Sky Notes)")
-          component=re.search(r'<section\\b[^>]*\\bid="other-objects-listed-this-week"[^>]*>(.*?)</section>', sky_notes.group(1), re.S)
+          component=re.search(r'<section\b[^>]*\bid="other-objects-listed-this-week"[^>]*>(.*?)</section>', sky_notes.group(1), re.S)
           if not component:
               raise SystemExit(f"{week}: missing 'Other objects listed this week' component inside Sky Notes")
           links=re.findall(r'<a class="object-artwork-link" href="([^"]+)">([^<]+)</a>', component.group(1))
