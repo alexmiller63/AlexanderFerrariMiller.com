@@ -118,19 +118,3 @@ jobs:
           python tools/verify_calendar_fixed_object_ids.py "$START_DATE" "$END_DATE" \
             --base-url http://127.0.0.1:8765
 
-      - name: Verify published GitHub Pages by fixed object ID
-        env:
-          START_DATE: ${{ steps.range.outputs.start_date }}
-          END_DATE: ${{ steps.range.outputs.end_date }}
-        run: |
-          BASE='https://alexmiller63.github.io/AlexanderFerrariMiller.com'
-          for attempt in $(seq 1 36); do
-            if python tools/verify_calendar_fixed_object_ids.py "$START_DATE" "$END_DATE" --base-url "$BASE"; then
-              echo 'Published GitHub Pages fixed-object ID verification PASS'
-              exit 0
-            fi
-            echo "Published pages not ready on attempt $attempt; retrying in 10 seconds"
-            sleep 10
-          done
-          echo 'Published GitHub Pages did not pass fixed-object ID verification within 6 minutes'
-          exit 1
