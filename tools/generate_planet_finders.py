@@ -828,6 +828,45 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             last_yield_at = time.monotonic()
             yield box, path
 
+    def forward_check(next_depth):
+        """Return False only when a remaining body is already provably dead.
+
+        This is a one-witness feasibility check. It does not consume the
+        body's per-ordering attempt budget and does not stage a placement.
+        """
+        obstacles = [*reserved, *placed]
+        immutable_count = len(reserved)
+        for future_depth in range(next_depth, len(order)):
+            _, (_, future_name, future_longitude) = order[future_depth]
+            w, h = label_size(mode, future_name)
+            anchor = xy(future_longitude, RI - 5)
+            prefix_cache = {}
+            witness = False
+            for _, _, future_box in legal_candidate_positions(
+                future_longitude, w, h, reserved, displacement_scale
+            ):
+                if any(boxes_overlap(future_box, other, 14) for other in placed):
+                    continue
+                center = (future_box.x, future_box.y)
+                path = route(
+                    anchor,
+                    center,
+                    obstacles,
+                    allow_initial_escape_count=immutable_count,
+                    prefix_cache=prefix_cache,
+                )
+                if path is None:
+                    continue
+                if leader_hits_zodiac_rim(path):
+                    continue
+                if leaders_too_close(path, leaders):
+                    continue
+                witness = True
+                break
+            if not witness:
+                return False
+        return True
+
     def search(depth):
         """Recursive DFS: each call owns exactly one body depth.
 
@@ -894,7 +933,10 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             child_nodes_before = nodes
             child_backtracks_before = backtracks
             try:
-                if search(depth + 1):
+                # Forward checking asks only for one viable witness for every
+                # remaining body. Zero proves this prefix is dead; one is
+                # enough to preserve it for the real DFS.
+                if forward_check(depth + 1) and search(depth + 1):
                     return True
             finally:
                 staged.pop(original_index, None)
