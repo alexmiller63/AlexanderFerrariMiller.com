@@ -502,6 +502,10 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
     # which descendant subtree consumes a parent's generator suspension time.
     depth_residence = {}
     depth_visits = {}
+    # Count repeated zero-candidate visits across different parent states.
+    # This is the second squeaky-wheel failure mode: a body can repeatedly
+    # block the tree without any one prefix reaching its candidate cap.
+    dead_end_visits = {}
     # Candidate-attempt accounting is local to each viable_candidates() generator,
     # i.e. one body under one fixed DFS prefix. Attempts from unrelated recursion
     # branches must never accumulate into a false squeaky-wheel signal.
@@ -738,7 +742,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         run_elapsed = time.monotonic() - budget["started"]
         if run_elapsed >= budget["max_seconds"]:
             raise RuntimeError(
-                f"Planet Finder run-wide wall-clock budget exhausted in {mode} mode "
+                f"Planet Finder {mode} mode wall-clock budget exhausted "
                 f"after {run_elapsed:.1f}s (limit {budget['max_seconds']:.1f}s)"
             )
 
@@ -800,6 +804,18 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             backtracks += 1
 
         if not generated_here:
+            dead_key = (depth, name)
+            dead_end_visits[dead_key] = dead_end_visits.get(dead_key, 0) + 1
+            # Reuse the same per-body cap: too many candidates in one prefix
+            # or too many zero-candidate prefixes both identify a squeaky wheel.
+            if dead_end_visits[dead_key] >= budget["max_node_candidates"]:
+                print(
+                    f"Planet Finder {mode}: REPEATED-DEAD-END STOP order={order_index} "
+                    f"depth={depth}/{len(order)} body={name} "
+                    f"dead-ends={dead_end_visits[dead_key]:,}/{budget['max_node_candidates']:,}",
+                    flush=True,
+                )
+                raise DepthNodeBudgetExhausted(depth, name)
             stats = diagnostic_stats[(depth, name)]
             print(
                 f"Planet Finder {mode}: dead end order={order_index} "
