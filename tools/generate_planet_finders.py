@@ -903,29 +903,6 @@ def layout(
     refinement_index = 0
     promoted_this_refinement = set()
 
-    def next_untried_order(current_order):
-        """Return the next lexicographic body ordering not yet attempted.
-
-        Orders are generated lazily; no permutation table is materialized.
-        """
-        names = [item[1][1] for item in current_order]
-        by_name = {item[1][1]: item for item in indexed}
-        while True:
-            i = len(names) - 2
-            while i >= 0 and names[i] >= names[i + 1]:
-                i -= 1
-            if i < 0:
-                names.sort()
-            else:
-                j = len(names) - 1
-                while names[j] <= names[i]:
-                    j -= 1
-                names[i], names[j] = names[j], names[i]
-                names[i + 1:] = reversed(names[i + 1:])
-            key = (refinement_index, tuple(names))
-            if key not in attempted_orders:
-                return [by_name[name] for name in names]
-
     # Squeaky-wheel ordering: a body that hits the per-depth node cap is not
     # merely stopped.  That cap identifies the body currently exploding the
     # tree.  Throw away this fixed-order DFS state, promote that body to the
@@ -934,12 +911,29 @@ def layout(
         order_names = tuple(item[1][1] for item in order)
         order_key = (refinement_index, order_names)
         if order_key in attempted_orders:
-            order = next_untried_order(order)
+            # A repeated squeaky-wheel ordering means this refinement is
+            # cycling. Do not start a second search over arbitrary body
+            # permutations; DFS already owns the combinatorial search.
+            # Refine the geometric proposal spacing and restart cleanly.
+            if refinement_index + 1 >= len(refinement_scales):
+                raise RuntimeError(
+                    f"Planet Finder {mode}: repeated squeaky-wheel ordering after "
+                    f"exhausting placement refinements through "
+                    f"{refinement_scales[refinement_index]:g} label-lengths"
+                )
+            refinement_index += 1
+            promoted_this_refinement.clear()
+            attempted_orders.clear()
+            for body in Body:
+                budget["body_attempt_counts"][body] = 0
+            order = indexed
             order_names = tuple(item[1][1] for item in order)
             order_key = (refinement_index, order_names)
             print(
-                f"Planet Finder {mode}: repeated ordering; advancing lazily to "
-                "next untried sequence=" + " > ".join(order_names),
+                f"Planet Finder {mode}: repeated squeaky-wheel ordering; "
+                f"refining placement to {refinement_scales[refinement_index]:g} "
+                "label-lengths and restarting canonical sequence="
+                + " > ".join(order_names),
                 flush=True,
             )
         attempted_orders.add(order_key)
