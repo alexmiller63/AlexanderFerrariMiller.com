@@ -985,13 +985,16 @@ def layout(
                     f"through {refinement_scales[refinement_index]:g} label-lengths"
                 )
             refinement_index += 1
-            order = indexed
+            # Refinement changes placement geometry, not ordering knowledge.
+            # Carry the squeaky-wheel ordering learned at the coarser scale
+            # into the finer search; only the per-refinement visit history is
+            # reset so that this ordering can be tried under the new geometry.
             attempted_orders.clear()
             promote_body = None
             print(
                 f"Planet Finder {mode}: REFINEMENT ADVANCE "
                 f"to {refinement_scales[refinement_index]:g} label-lengths; "
-                "restarting canonical sequence="
+                "preserving learned sequence="
                 + " > ".join(item[1][1] for item in order),
                 flush=True,
             )
