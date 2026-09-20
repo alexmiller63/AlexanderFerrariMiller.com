@@ -25,6 +25,9 @@ W = H = 1400
 CX = CY = 700
 RO = 560
 RI = 430
+# Minimum visible separation between a rendered body label and the inner zodiac rim.
+# This is hard geometry: proposals inside this protected annulus never enter DFS.
+LABEL_RIM_CLEARANCE = 24
 SIGNS = [
     ("♈", "Aries"), ("♉", "Taurus"), ("♊", "Gemini"), ("♋", "Cancer"),
     ("♌", "Leo"), ("♍", "Virgo"), ("♎", "Libra"), ("♏", "Scorpio"),
@@ -283,7 +286,7 @@ def legal_candidate_positions(
         # Body labels live inside the inner zodiac rim.  A label touching or
         # crossing that border is rotten geometry, not a scoring preference.
         # Test all 4 corners with clearance before the proposal can enter DFS.
-        rim_limit = RI - 14
+        rim_limit = RI - LABEL_RIM_CLEARANCE
         if any(
             math.hypot(px - CX, py - CY) >= rim_limit
             for px in (box.left, box.right)
@@ -1552,7 +1555,7 @@ def validate_layout(mode: str, result) -> tuple[bool, list[str]]:
                 )
 
     # Recheck the hard inner-rim rule independently of candidate generation.
-    rim_limit = RI - 14
+    rim_limit = RI - LABEL_RIM_CLEARANCE
     for i, box in enumerate(boxes):
         if any(
             math.hypot(px - CX, py - CY) >= rim_limit
