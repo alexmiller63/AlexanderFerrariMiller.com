@@ -1266,36 +1266,27 @@ def layout(
             promoted_names = tuple(item[1][1] for item in promoted_order)
             promoted_key = (refinement_index, promoted_names)
             if promoted_key in attempted_orders:
-                # A capped cycle is inconclusive, but every distinct ordering
-                # is a legitimate new search. Keep the capped body first and
-                # deterministically enumerate untried tail permutations. The
-                # per-mode clock, not an ordering-count cap, is the global
-                # boundary for this exploration.
-                import itertools
-                head = promoted_order[0]
-                tail = promoted_order[1:]
-                alternate_order = None
-                for tail_order in itertools.permutations(tail):
-                    candidate = [head, *tail_order]
-                    candidate_names = tuple(item[1][1] for item in candidate)
-                    if (refinement_index, candidate_names) not in attempted_orders:
-                        alternate_order = candidate
-                        break
-                if alternate_order is None:
-                    raise RuntimeError(
-                        f"Planet Finder {mode}: all distinct orderings exhausted at "
-                        f"{refinement_scales[refinement_index]:g} label-lengths"
-                    )
-                order = alternate_order
-                alternate_names = tuple(item[1][1] for item in order)
+                # The cap is the explosion guard. Once squeaky-wheel promotion
+                # returns to an ordering already tried at this refinement, the
+                # controller has closed its evidence-based ordering cycle.
+                # Do not defeat the cap by enumerating arbitrary permutations:
+                # that simply starts a fresh 200-attempt budget for each of up
+                # to N! orderings. A capped cycle is inconclusive, so it also
+                # must not masquerade as geometric EXHAUSTED/refinement proof.
+                cycle_names = " > ".join(item[1][1] for item in promoted_order)
                 print(
                     f"Planet Finder {mode}: CAPPED CYCLE CLOSED body={promote_body}; "
-                    "trying next distinct ordering sequence="
-                    + " > ".join(alternate_names),
+                    f"stopping bounded ordering search after {len(attempted_orders)} "
+                    f"orderings at {refinement_scales[refinement_index]:g} label-lengths "
+                    f"sequence={cycle_names}",
                     flush=True,
                 )
-                state = "SEARCH_ORDER"
-                continue
+                raise RuntimeError(
+                    f"Planet Finder {mode}: candidate cap closed the ordering cycle "
+                    f"after {len(attempted_orders)} orderings at "
+                    f"{refinement_scales[refinement_index]:g} label-lengths; "
+                    "search is inconclusive, not geometrically exhausted"
+                )
             order = promoted_order
             print(
                 f"Planet Finder {mode}: CAPPED PROMOTE body={promote_body}; "
