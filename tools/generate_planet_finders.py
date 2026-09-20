@@ -1274,25 +1274,21 @@ def layout(
             promoted_names = tuple(item[1][1] for item in promoted_order)
             promoted_key = (refinement_index, promoted_names)
             if promoted_key in attempted_orders:
-                # The promoted body is already first. Resetting its cap and
-                # immediately repeating the identical deterministic ordering
-                # would reproduce the same bounded search, so this is a genuine
-                # capped cycle. Do not refine: a cap is incomplete evidence.
+                # The promoted body is already first. Repeating that same
+                # capped ordering is not a new contestant; it closes the
+                # bounded promotion cycle. The controller now advances the
+                # placement refinement instead of walking arbitrary tail
+                # permutations or returning a synthetic failure.
                 cycle_names = " > ".join(item[1][1] for item in promoted_order)
                 print(
                     f"Planet Finder {mode}: CAPPED CYCLE CLOSED body={promote_body}; "
-                    f"stopping bounded ordering search after {len(attempted_orders)} "
-                    f"orderings at {refinement_scales[refinement_index]:g} label-lengths "
-                    f"sequence={cycle_names}",
+                    f"promotions/orderings={len(attempted_orders)} "
+                    f"at {refinement_scales[refinement_index]:g} label-lengths "
+                    f"sequence={cycle_names}; refining",
                     flush=True,
                 )
-                return SearchOutcome(
-                    "INCONCLUSIVE",
-                    [],
-                    [],
-                    promote_body,
-                    None,
-                )
+                state = "REFINE"
+                continue
             # A capped body gets a fresh 200-candidate budget when the state
             # machine promotes it. The cap is therefore per-body/per-ordering
             # search work, not a lifetime quota for the entire mode. Forward
