@@ -621,7 +621,11 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 (x, y),
                 reserved + placed,
                 route_diag,
-                allow_initial_escape_count=len(reserved),
+                # Only the 3 fixed center annotations may contain an anchor and
+                # permit an initial escape. Zodiac labels are real rendered
+                # obstacles; allowing escape from them can hide a leader/zodiac
+                # collision in the first leader segment.
+                allow_initial_escape_count=3,
                 prefix_cache=route_prefix_cache,
             )
             route_dt = time.monotonic() - t0
