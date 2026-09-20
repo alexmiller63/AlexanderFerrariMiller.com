@@ -1147,19 +1147,36 @@ def layout(
             promoted_names = tuple(item[1][1] for item in promoted_order)
             promoted_key = (refinement_index, promoted_names)
             if promoted_key in attempted_orders:
-                # A node cap is deliberately local to one fixed ordering.
-                # Never multiply that safety limit by enumerating alternative
-                # permutations after a capped promotion cycle.  The cycle is
-                # inconclusive: refinement would falsely claim exhaustion, and
-                # further ordering search would turn the local cap into an
-                # unbounded global search.  Stop cleanly and preserve that
-                # distinction in the diagnostic.
-                raise RuntimeError(
-                    f"Planet Finder {mode}: bounded node-cap ordering cycle closed at "
-                    f"{refinement_scales[refinement_index]:g} label-lengths; "
-                    "search remains inconclusive; refusing both refinement and "
-                    "additional ordering expansion"
+                # A capped cycle is inconclusive, but every distinct ordering
+                # is a legitimate new search. Keep the capped body first and
+                # deterministically enumerate untried tail permutations. The
+                # per-mode clock, not an ordering-count cap, is the global
+                # boundary for this exploration.
+                import itertools
+                head = promoted_order[0]
+                tail = promoted_order[1:]
+                alternate_order = None
+                for tail_order in itertools.permutations(tail):
+                    candidate = [head, *tail_order]
+                    candidate_names = tuple(item[1][1] for item in candidate)
+                    if (refinement_index, candidate_names) not in attempted_orders:
+                        alternate_order = candidate
+                        break
+                if alternate_order is None:
+                    raise RuntimeError(
+                        f"Planet Finder {mode}: all distinct orderings exhausted at "
+                        f"{refinement_scales[refinement_index]:g} label-lengths"
+                    )
+                order = alternate_order
+                alternate_names = tuple(item[1][1] for item in order)
+                print(
+                    f"Planet Finder {mode}: CAPPED CYCLE CLOSED body={promote_body}; "
+                    "trying next distinct ordering sequence="
+                    + " > ".join(alternate_names),
+                    flush=True,
                 )
+                state = "SEARCH_ORDER"
+                continue
             order = promoted_order
             print(
                 f"Planet Finder {mode}: CAPPED PROMOTE body={promote_body}; "
