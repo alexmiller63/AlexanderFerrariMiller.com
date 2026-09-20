@@ -39,9 +39,9 @@ on:
         default: '10000'
         type: string
       max_search_seconds:
-        description: Maximum Planet Finder search time for the entire run
+        description: Maximum Planet Finder search time per mode
         required: true
-        default: '90'
+        default: '180'
         type: string
 
 permissions:
@@ -129,7 +129,7 @@ jobs:
           PLANET_FINDER_MAX_ORDER_SECONDS: '5'
           PLANET_FINDER_MAX_ORDER_NODES: '100000'
         run: |
-          # PLANET_FINDER_MAX_SECONDS is the generator's search-only budget.
+          # PLANET_FINDER_MAX_SECONDS is the search-only budget for each notation mode.
           # Setup and annual ephemeris calculation happen before that clock starts.
           # Keep a separate emergency process ceiling so a non-search hang still dies.
           PROCESS_TIMEOUT_SECONDS=$((PLANET_FINDER_MAX_SECONDS + 60))
@@ -139,7 +139,7 @@ jobs:
               "${{ steps.range.outputs.start_date }}" "${{ steps.range.outputs.end_date }}"
           status=$?
           if [ "$status" -eq 124 ] || [ "$status" -eq 137 ]; then
-            echo "::error::Planet Finder process exceeded the emergency ${PROCESS_TIMEOUT_SECONDS}-second ceiling (search budget: ${PLANET_FINDER_MAX_SECONDS}s)."
+            echo "::error::Planet Finder process exceeded the emergency ${PROCESS_TIMEOUT_SECONDS}-second ceiling (per-mode search budget: ${PLANET_FINDER_MAX_SECONDS}s)."
           fi
           exit "$status"
 
