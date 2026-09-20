@@ -706,6 +706,8 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             body_candidates += 1
             stats["generated"] += 1
             stats["viable"] += 1
+            if body_candidates >= budget["max_node_candidates"]:
+                raise DepthNodeBudgetExhausted(depth, name)
             last_yield_at = time.monotonic()
             yield box, path
 
