@@ -38,53 +38,58 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Scaffold
+      - name: Build each week through all 6 generators
         env:
           GH_TOKEN: ${{ github.token }}
+          START_YEAR: ${{ inputs.start_year }}
+          START_WEEK: ${{ inputs.start_week }}
+          END_YEAR: ${{ inputs.end_year }}
+          END_WEEK: ${{ inputs.end_week }}
         run: |
-          bash tools/run-workflow-and-wait.sh scaffold-almanack-weeks.yml \
-            -f start_year='${{ inputs.start_year }}' -f start_week='${{ inputs.start_week }}' \
-            -f end_year='${{ inputs.end_year }}' -f end_week='${{ inputs.end_week }}'
+          mapfile -t WEEKS < <(python - <<'PY'
+          from datetime import date, timedelta
+          start = date.fromisocalendar(int("${START_YEAR}"), int("${START_WEEK}"), 1)
+          end = date.fromisocalendar(int("${END_YEAR}"), int("${END_WEEK}"), 1)
+          if start > end:
+              raise SystemExit("Start ISO week must not be after end ISO week")
+          current = start
+          while current <= end:
+              iso = current.isocalendar()
+              print(f"{iso.year} {iso.week}")
+              current += timedelta(days=7)
+          PY
+          )
 
-      - name: Calendar
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          bash tools/run-workflow-and-wait.sh populate-calendar-by-date.yml \
-            -f start_year='${{ inputs.start_year }}' -f start_week='${{ inputs.start_week }}' \
-            -f end_year='${{ inputs.end_year }}' -f end_week='${{ inputs.end_week }}'
+          for week in "${WEEKS[@]}"; do
+            read -r year iso_week <<< "$week"
+            echo "::group::ISO ${year}-W$(printf '%02d' "$iso_week")"
 
-      - name: Ephemeris
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          bash tools/run-workflow-and-wait.sh populate-ephemeris-by-date.yml \
-            -f start_year='${{ inputs.start_year }}' -f start_week='${{ inputs.start_week }}' \
-            -f end_year='${{ inputs.end_year }}' -f end_week='${{ inputs.end_week }}'
+            bash tools/run-workflow-and-wait.sh scaffold-almanack-weeks.yml \
+              -f start_year="$year" -f start_week="$iso_week" \
+              -f end_year="$year" -f end_week="$iso_week"
 
-      - name: Planet Finder
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          bash tools/run-workflow-and-wait.sh populate-ephemeris-planet-finder-by-date.yml \
-            -f start_year='${{ inputs.start_year }}' -f start_week='${{ inputs.start_week }}' \
-            -f end_year='${{ inputs.end_year }}' -f end_week='${{ inputs.end_week }}'
+            bash tools/run-workflow-and-wait.sh populate-calendar-by-date.yml \
+              -f start_year="$year" -f start_week="$iso_week" \
+              -f end_year="$year" -f end_week="$iso_week"
 
-      - name: Sky Notes
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          bash tools/run-workflow-and-wait.sh populate-sky-notes-by-date.yml \
-            -f start_year='${{ inputs.start_year }}' -f start_week='${{ inputs.start_week }}' \
-            -f end_year='${{ inputs.end_year }}' -f end_week='${{ inputs.end_week }}'
+            bash tools/run-workflow-and-wait.sh populate-ephemeris-by-date.yml \
+              -f start_year="$year" -f start_week="$iso_week" \
+              -f end_year="$year" -f end_week="$iso_week"
 
-      - name: Artwork
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          bash tools/run-workflow-and-wait.sh populate-sky-notes-artwork-by-date.yml \
-            -f start_year='${{ inputs.start_year }}' -f start_week='${{ inputs.start_week }}' \
-            -f end_year='${{ inputs.end_year }}' -f end_week='${{ inputs.end_week }}'
+            bash tools/run-workflow-and-wait.sh populate-ephemeris-planet-finder-by-date.yml \
+              -f start_year="$year" -f start_week="$iso_week" \
+              -f end_year="$year" -f end_week="$iso_week"
+
+            bash tools/run-workflow-and-wait.sh populate-sky-notes-by-date.yml \
+              -f start_year="$year" -f start_week="$iso_week" \
+              -f end_year="$year" -f end_week="$iso_week"
+
+            bash tools/run-workflow-and-wait.sh populate-sky-notes-artwork-by-date.yml \
+              -f start_year="$year" -f start_week="$iso_week" \
+              -f end_year="$year" -f end_week="$iso_week"
+
+            echo "::endgroup::"
+          done
 
       - name: Legend
         env:
