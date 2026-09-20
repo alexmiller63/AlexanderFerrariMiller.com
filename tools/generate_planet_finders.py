@@ -505,6 +505,22 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 f"visits={depth_visits.get(depth, 0):,}",
                 flush=True,
             )
+        for (depth, name), r in sorted(route_diagnostics.items()):
+            blockers = r.get("straight_blockers", {})
+            obstacle_names = r.get("obstacle_names", [])
+            named_blockers = {
+                (obstacle_names[int(key.split("_", 1)[1])] if key.startswith("obstacle_") and int(key.split("_", 1)[1]) < len(obstacle_names) else key): count
+                for key, count in blockers.items()
+            }
+            print(
+                f"Planet Finder {mode}: TERMINAL ROUTE depth={depth}/{len(order)} body={name} "
+                f"straight_blocked={r.get('straight_blocked', 0):,} "
+                f"route_failed={r.get('route_failed', 0):,} "
+                f"anchor_blocked={r.get('anchor_blocked', 0):,} "
+                f"dogleg_failed={r.get('dogleg_failed', 0):,} "
+                f"straight_blockers={named_blockers}",
+                flush=True,
+            )
         print(
             f"Planet Finder {mode}: TERMINAL BEST-PARTIAL deepest={deepest}/{len(order)}",
             flush=True,
