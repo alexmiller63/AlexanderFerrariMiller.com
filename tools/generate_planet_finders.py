@@ -537,9 +537,10 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
     # This is the second squeaky-wheel failure mode: a body can repeatedly
     # block the tree without any one prefix reaching its candidate cap.
     dead_end_visits = {}
-    # Explosion accounting is owned by layout(), not by an ordering. Ordering
-    # changes are controller decisions and must never replenish a body's 200-attempt
-    # safety budget. A fresh map is retained only for direct/test callers.
+    # One authoritative cap for this fixed-order DFS. It counts viable
+    # candidates admitted to DFS for each body; rejected raw proposals do not
+    # consume it. A new fixed-order search gets a fresh budget, because it is a
+    # genuinely new search tree. Forward checking never touches this counter.
     if body_attempts is None:
         body_attempts = {name: 0 for _, (_, name, _) in order}
     diagnostic_stats = {}
@@ -707,30 +708,6 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             stream_dt = time.monotonic() - stream_t0
             timing["stream_wait"] += stream_dt
             raw_positions += 1
-            body_attempts[name] += 1
-            # The explosion cap belongs to the body across this entire fixed
-            # ordering, not to one parent prefix. Backtracking therefore does
-            # not erase evidence that this body is exploding the search tree.
-            if body_attempts[name] >= budget["max_node_candidates"]:
-                stats["blocked"] = "body-attempt-cap"
-                print(
-                    f"Planet Finder {mode}: BODY-ATTEMPT STOP order={order_index} "
-                    f"depth={depth}/{len(order)} body={name} "
-                    f"attempts={body_attempts[name]:,}/{budget['max_node_candidates']:,}",
-                    flush=True,
-                )
-                body_forward = forward_stats["by_body"].get(name, {})
-                print(
-                    f"Planet Finder {mode}: FORWARD-AUDIT capped-body={name} "
-                    f"checks={body_forward.get('checks', 0):,} "
-                    f"witnesses={body_forward.get('witnesses', 0):,} "
-                    f"dead={body_forward.get('dead', 0):,} "
-                    f"witness-raw={body_forward.get('raw', 0):,} "
-                    f"total-checks={forward_stats['checks']:,} "
-                    f"total-pruned={forward_stats['pruned']:,}",
-                    flush=True,
-                )
-                raise DepthNodeBudgetExhausted(depth, name)
 
             # Narrow instrumentation for pathological candidate generation.
             # Report any single stage that stalls for >= 1s immediately, rather
@@ -868,15 +845,23 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 stats["leader"] += 1
                 stats["leader_graze"] += 1
                 continue
-            # Yield immediately: DFS tries this legal geometry before asking
-            # for another route. Rejected geometry never consumes candidate budget.
+            # This is the single cap point: only a fully viable candidate
+            # admitted to DFS consumes the body's candidate budget.
             body_candidates += 1
+            body_attempts[name] += 1
             stats["generated"] += 1
             stats["viable"] += 1
-            if body_candidates >= budget["max_node_candidates"]:
-                raise DepthNodeBudgetExhausted(depth, name)
             last_yield_at = time.monotonic()
             yield box, path
+            if body_attempts[name] >= budget["max_node_candidates"]:
+                stats["blocked"] = "body-candidate-cap"
+                print(
+                    f"Planet Finder {mode}: BODY-CANDIDATE CAP order={order_index} "
+                    f"depth={depth}/{len(order)} body={name} "
+                    f"viable={body_attempts[name]:,}/{budget['max_node_candidates']:,}",
+                    flush=True,
+                )
+                raise DepthNodeBudgetExhausted(depth, name)
 
     forward_stats = {"checks": 0, "pruned": 0, "witnesses": 0, "by_body": {}}
 
@@ -889,7 +874,9 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         the amount of look-ahead work and which future bodies receive witnesses.
         """
         obstacles = [*reserved, *placed]
-        immutable_count = len(reserved)
+        # Match real DFS exactly: only the 3 fixed center annotations may
+        # contain an anchor and permit an initial escape. Zodiac labels never do.
+        immutable_count = 3
         forward_stats["checks"] += 1
         for future_depth in range(next_depth, len(order)):
             _, (_, future_name, future_longitude) = order[future_depth]
@@ -1184,9 +1171,8 @@ def layout(
     refinement_scales = (2.0, 1.5, 1.0, 0.5, 0.25)
     refinement_index = 0
     attempted_orders = set()
-    # One persistent explosion budget per body for this mode. Reordering is not
-    # permission to buy another 200 attempts for the same body.
-    body_attempts = {name: 0 for _, (_, name, _) in indexed}
+    # Each fixed-order DFS owns its own candidate cap. Reordering starts a new
+    # search tree; it does not inherit candidate counts from another tree.
     # Preserve controller history across refinements for terminal diagnosis.
     refinement_history = []
 
@@ -1367,7 +1353,7 @@ def layout(
                 total_orders=None,
                 context_label=context_label,
                 displacement_scale=refinement_scales[refinement_index],
-                body_attempts=body_attempts,
+                body_attempts={name: 0 for _, (_, name, _) in indexed},
             )
         except DepthNodeBudgetExhausted as exc:
             # The fixed-order solver already emitted its detailed terminal
