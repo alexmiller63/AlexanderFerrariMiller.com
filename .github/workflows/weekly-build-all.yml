@@ -72,10 +72,6 @@ jobs:
               -f start_year="$year" -f start_week="$iso_week" \
               -f end_year="$year" -f end_week="$iso_week"
 
-            bash tools/run-workflow-and-wait.sh populate-ephemeris-by-date.yml \
-              -f start_year="$year" -f start_week="$iso_week" \
-              -f end_year="$year" -f end_week="$iso_week"
-
             bash tools/run-workflow-and-wait.sh populate-ephemeris-planet-finder-by-date.yml \
               -f start_year="$year" -f start_week="$iso_week" \
               -f end_year="$year" -f end_week="$iso_week"
