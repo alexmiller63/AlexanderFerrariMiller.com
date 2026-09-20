@@ -157,13 +157,15 @@ def reserved_boxes(mode: str) -> list[Box]:
             # font bearings/antialiasing are included.
             boxes.append(Box(x, y, 76, 76))
         elif mode == "latin":
-            # Rendered at 24 px Georgia.  Use a conservative text envelope
-            # rather than the former narrow character-count estimate.
-            boxes.append(Box(x, y, max(108, 16 * len(name)), 58))
+            # Rendered at 24 px Georgia.  Approximate the visible text envelope
+            # from the font size rather than inflating it to a large minimum.
+            boxes.append(Box(x, y, max(62, 13 * len(name) + 12), 36))
         else:
-            # Mixed mode renders "<glyph> <name>" at 22 px.  The zodiac glyph
-            # is substantially wider than an ordinary Latin character.
-            boxes.append(Box(x, y, max(148, 16 * len(name) + 58), 58))
+            # Mixed mode renders "<glyph> <name>" at 22 px.  The obstacle should
+            # follow that visible label, not an oversized invisible rectangle.
+            # Allow about one em for the glyph/space plus Georgia's average
+            # lowercase advance for the Latin name.
+            boxes.append(Box(x, y, max(78, 12 * len(name) + 38), 34))
     return boxes
 
 
