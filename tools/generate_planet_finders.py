@@ -134,6 +134,18 @@ def leaders_too_close(path, existing_paths, clearance: float = 8.0) -> bool:
     )
 
 
+def leader_hits_zodiac_rim(path, clearance: float = 2.0) -> bool:
+    """Reject a leader that touches or crosses the inner zodiac rim.
+
+    The inner chart is a convex disk, so a polyline remains clear of the
+    circular rim exactly when every vertex remains inside the protected
+    radius.  The body's anchor is at RI-5 and is therefore legal; elbows that
+    wander out to the rim are not.
+    """
+    limit = RI - clearance
+    return any(math.hypot(x - CX, y - CY) >= limit for x, y in path)
+
+
 def label_size(mode: str, name: str) -> tuple[float, float]:
     if mode == "greek":
         return 64, 64
@@ -675,6 +687,13 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 rejected_route += 1
                 stats["route"] += 1
                 continue
+            # The inner zodiac rim is protected geometry, not a scoring
+            # preference. Reject the route and let ordinary DFS/backtracking
+            # try the next candidate; never special-case a body or week.
+            if leader_hits_zodiac_rim(path):
+                rejected_leader += 1
+                stats["leader"] += 1
+                continue
             t0 = time.monotonic()
             too_close = leaders_too_close(path, leaders)
             timing["final_leader"] += time.monotonic() - t0
@@ -1008,6 +1027,13 @@ def validate_layout(mode: str, result) -> tuple[bool, list[str]]:
                 if segment_hits_box(a, b, obstacle, 8):
                     errors.append(f"{name}: leader crosses reserved obstacle {j}")
                     break
+
+    # The inner zodiac rim is protected geometry. Recheck this independently
+    # after search so no stale/future routing bug can render a leader touching
+    # or crossing the circle.
+    for i, path in enumerate(paths):
+        if leader_hits_zodiac_rim(path):
+            errors.append(f"{result[i][1]}: leader collides with inner zodiac border")
 
     # Leaders are mutually exclusive geometry.  This is intentionally a
     # second, independent check after proposal-time rejection so a stale or
