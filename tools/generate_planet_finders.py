@@ -42,6 +42,16 @@ CANONICAL = [
 ]
 
 
+class FinderMode(str, Enum):
+    """Presentation modes for Planet Finder charts."""
+    GREEK = "greek"
+    LATIN = "latin"
+    MIXED = "mixed"
+
+    def __str__(self) -> str:
+        return self.value
+
+
 class Body(Enum):
     """Solar-System bodies participating in Planet Finder layout search."""
     SUN = auto()
@@ -848,7 +858,7 @@ def new_search_budget():
     }
 
 def layout(
-    mode: str,
+    mode: FinderMode,
     bodies: list[tuple[str, str, float]],
     target_solutions: int | None = None,
     budget: dict | None = None,
@@ -859,6 +869,7 @@ def layout(
     Candidate generation is lazy. Geometry rejects impossible proposals before
     they enter DFS. Search limits are safety ceilings, not placement policy.
     """
+    mode = FinderMode(mode)
     canonical_index = {name: i for i, name in enumerate(CANONICAL)}
     indexed = list(enumerate(bodies))
     indexed.sort(key=lambda item: canonical_index[item[1][1]])
@@ -1112,12 +1123,17 @@ def render(
     year: int,
     week: int,
     monday: date,
-    mode: str,
+    mode: FinderMode,
     bodies: list[tuple[str, str, float]],
     budget: dict | None = None,
     context_label: str | None = None,
 ) -> str:
-    labels = {"greek": "Greek / Symbols", "latin": "Latin", "mixed": "Mixed / Learner"}
+    mode = FinderMode(mode)
+    labels = {
+        FinderMode.GREEK: "Greek / Symbols",
+        FinderMode.LATIN: "Latin",
+        FinderMode.MIXED: "Mixed / Learner",
+    }
     title = labels[mode]
     placed = layout(mode, bodies, budget=budget, context_label=context_label)
     out = [
@@ -1181,9 +1197,9 @@ def generate_week(year: int, week: int):
     outdir = ROOT / "almanack" / str(year) / f"W{week:02d}" / "finders"
     outdir.mkdir(parents=True, exist_ok=True)
     filenames = {
-        "greek": "planet-finder-greek-symbols.svg",
-        "latin": "planet-finder-latin.svg",
-        "mixed": "planet-finder-mixed-learner.svg",
+        FinderMode.GREEK: "planet-finder-greek-symbols.svg",
+        FinderMode.LATIN: "planet-finder-latin.svg",
+        FinderMode.MIXED: "planet-finder-mixed-learner.svg",
     }
     for mode, filename in filenames.items():
         (outdir / filename).write_text(render(year, week, monday, mode, bodies), encoding="utf-8")
