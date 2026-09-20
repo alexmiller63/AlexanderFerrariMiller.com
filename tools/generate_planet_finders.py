@@ -1134,40 +1134,19 @@ def layout(
             promoted_names = tuple(item[1][1] for item in promoted_order)
             promoted_key = (refinement_index, promoted_names)
             if promoted_key in attempted_orders:
-                # Move-to-front promotion has closed a CAPPED cycle.  The cap
-                # is incomplete evidence, so refinement remains forbidden, but
-                # repeating the same promotion is equally uninformative.  Keep
-                # the capped body first and deterministically rotate the tail
-                # until we find an ordering not yet searched at this scale.
-                #
-                # This preserves the squeaky-wheel lesson while exploring a
-                # genuinely different interaction among the remaining bodies.
-                head = promoted_order[0]
-                tail = promoted_order[1:]
-                alternate_order = None
-                for shift in range(1, len(tail)):
-                    candidate = [head, *tail[shift:], *tail[:shift]]
-                    candidate_names = tuple(item[1][1] for item in candidate)
-                    candidate_key = (refinement_index, candidate_names)
-                    if candidate_key not in attempted_orders:
-                        alternate_order = candidate
-                        break
-                if alternate_order is None:
-                    raise RuntimeError(
-                        f"Planet Finder {mode}: node-cap ordering space closed at "
-                        f"{refinement_scales[refinement_index]:g} label-lengths; "
-                        "search remains inconclusive, so refinement is forbidden"
-                    )
-                order = alternate_order
-                alternate_names = tuple(item[1][1] for item in order)
-                print(
-                    f"Planet Finder {mode}: CAPPED CYCLE CLOSED body={promote_body}; "
-                    "trying deterministic tail rotation without refinement sequence="
-                    + " > ".join(alternate_names),
-                    flush=True,
+                # A node cap is deliberately local to one fixed ordering.
+                # Never multiply that safety limit by enumerating alternative
+                # permutations after a capped promotion cycle.  The cycle is
+                # inconclusive: refinement would falsely claim exhaustion, and
+                # further ordering search would turn the local cap into an
+                # unbounded global search.  Stop cleanly and preserve that
+                # distinction in the diagnostic.
+                raise RuntimeError(
+                    f"Planet Finder {mode}: bounded node-cap ordering cycle closed at "
+                    f"{refinement_scales[refinement_index]:g} label-lengths; "
+                    "search remains inconclusive; refusing both refinement and "
+                    "additional ordering expansion"
                 )
-                state = "SEARCH_ORDER"
-                continue
             order = promoted_order
             print(
                 f"Planet Finder {mode}: CAPPED PROMOTE body={promote_body}; "
