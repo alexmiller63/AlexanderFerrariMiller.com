@@ -11,15 +11,14 @@ dispatch_time="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
 before="$(gh run list --repo "$repo" --workflow "$workflow" --event workflow_dispatch --limit 1 --json databaseId --jq '.[0].databaseId // 0')"
 before="${before:-0}"
 
-# Resolve the workflow by its current path/name before dispatching. This avoids
-# GitHub CLI silently using an obsolete workflow registration after workflow
-# files have been replaced or renamed.
-workflow_json="$(gh workflow list --repo "$repo" --all --json id,path,state,name --jq \
-  --arg wanted ".github/workflows/$workflow" \
-  'map(select(.path == $wanted)) | if length == 1 then .[0] else empty end')"
+# Resolve the workflow by its current path/name before dispatching. gh workflow
+# list does not accept jq --arg parameters, so select the path in jq separately.
+wanted=".github/workflows/$workflow"
+workflow_json="$(gh workflow list --repo "$repo" --all --json id,path,state,name | \
+  jq -c --arg wanted "$wanted" 'map(select(.path == $wanted)) | if length == 1 then .[0] else empty end')"
 
 if [[ -z "$workflow_json" ]]; then
-  echo "ERROR: could not uniquely resolve current workflow path .github/workflows/$workflow" >&2
+  echo "ERROR: could not uniquely resolve current workflow path $wanted" >&2
   gh workflow list --repo "$repo" --all >&2
   exit 1
 fi
