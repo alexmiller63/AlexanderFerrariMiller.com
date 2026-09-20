@@ -1057,9 +1057,12 @@ def layout(
     # only the controller changes ordering or placement refinement.
     #
     # SEARCH_ORDER -> SCORE    on SOLVED
-    # SEARCH_ORDER -> PROMOTE  on CAPPED(body) or EXHAUSTED(blocker)
-    # PROMOTE      -> SEARCH_ORDER when the promoted ordering is new
-    # PROMOTE      -> REFINE   when promotion closes an ordering cycle
+    # SEARCH_ORDER -> CAPPED   on CAPPED(body)
+    # SEARCH_ORDER -> PROMOTE  on EXHAUSTED(blocker)
+    # CAPPED       -> SEARCH_ORDER after promoting the capped body
+    #                 (a cap is incomplete evidence and may never refine)
+    # PROMOTE      -> SEARCH_ORDER when the exhausted blocker ordering is new
+    # PROMOTE      -> REFINE   when EXHAUSTED promotion closes an ordering cycle
     # REFINE       -> SEARCH_ORDER at the next placement scale
     state = "SEARCH_ORDER"
     promote_body = None
@@ -1106,6 +1109,41 @@ def layout(
                 f"to {refinement_scales[refinement_index]:g} label-lengths; "
                 "preserving learned sequence="
                 + " > ".join(item[1][1] for item in order),
+                flush=True,
+            )
+            state = "SEARCH_ORDER"
+            continue
+
+        if state == "CAPPED":
+            # A node cap means only that this ordering was not searched to
+            # completion. It is not evidence that the geometry is exhausted,
+            # so it must never advance placement refinement.
+            promote_index = next(
+                (i for i, item in enumerate(order) if item[1][1] == promote_body),
+                None,
+            )
+            if promote_index is None:
+                raise RuntimeError(
+                    f"Planet Finder {mode}: capped body {promote_body} is absent from ordering"
+                )
+            promoted_order = [
+                order[promote_index],
+                *order[:promote_index],
+                *order[promote_index + 1:],
+            ]
+            promoted_names = tuple(item[1][1] for item in promoted_order)
+            promoted_key = (refinement_index, promoted_names)
+            if promoted_key in attempted_orders:
+                raise RuntimeError(
+                    f"Planet Finder {mode}: node-cap ordering cycle closed at "
+                    f"{refinement_scales[refinement_index]:g} label-lengths; "
+                    "search remains inconclusive, so refinement is forbidden"
+                )
+            order = promoted_order
+            print(
+                f"Planet Finder {mode}: CAPPED PROMOTE body={promote_body}; "
+                "incomplete search, preserving refinement and restarting sequence="
+                + " > ".join(promoted_names),
                 flush=True,
             )
             state = "SEARCH_ORDER"
@@ -1211,7 +1249,10 @@ def layout(
             f"body={promote_body} contestants={len(all_solutions)}/{target_solutions}",
             flush=True,
         )
-        state = "PROMOTE"
+        # EXHAUSTED is proof about the complete fixed-order search and may
+        # participate in the refinement state machine. CAPPED is only a safety
+        # interruption and gets its own non-refining transition.
+        state = "CAPPED" if outcome.kind == "CAPPED" else "PROMOTE"
 
     if not all_solutions:
         raise RuntimeError(
