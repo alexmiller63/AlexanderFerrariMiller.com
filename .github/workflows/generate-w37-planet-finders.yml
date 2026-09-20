@@ -8,6 +8,12 @@ on:
       - 'tools/generate_planet_finders.py'
       - 'tools/populate_ephemeris.py'
   workflow_dispatch:
+    inputs:
+      planet_finder_max_seconds:
+        description: 'Maximum search time per Planet Finder mode (seconds)'
+        required: true
+        default: '180'
+        type: string
 
 permissions:
   contents: write
@@ -70,7 +76,7 @@ jobs:
           STAR_ALMANACK_EPHEMERIS_DIR: ${{ github.workspace }}/.cache/skyfield
           PLANET_FINDER_CANDIDATES: '2'
           PLANET_FINDER_MAX_CANDIDATES: '1000'
-          PLANET_FINDER_MAX_SECONDS: '90'
+          PLANET_FINDER_MAX_SECONDS: ${{ inputs.planet_finder_max_seconds || '180' }}
           PLANET_FINDER_MAX_ORDER_SECONDS: '5'
           PLANET_FINDER_MAX_ORDER_NODES: '100000'
         run: |
