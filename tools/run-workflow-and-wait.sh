@@ -32,11 +32,13 @@ if [[ "$workflow_state" != "active" ]]; then
   exit 1
 fi
 
-gh workflow run "$workflow_id" --repo "$repo" --ref main "$@"
+dispatch_ref="${GITHUB_SHA:?GITHUB_SHA is required}"
+echo "Dispatching $workflow_path at the same commit as this build: $dispatch_ref"
+gh workflow run "$workflow_id" --repo "$repo" --ref "$dispatch_ref" "$@"
 
 run_id=""
 for attempt in $(seq 1 60); do
-  run_id="$(gh run list --repo "$repo" --workflow "$workflow_id" --event workflow_dispatch --limit 20 --json databaseId,createdAt,headBranch,status --jq "map(select(.databaseId > $before and .createdAt >= \"$dispatch_time\" and .headBranch == \"main\")) | sort_by(.createdAt) | last | .databaseId // empty")"
+  run_id="$(gh run list --repo "$repo" --workflow "$workflow_id" --event workflow_dispatch --limit 20 --json databaseId,createdAt,headSha,status --jq "map(select(.databaseId > $before and .createdAt >= \"$dispatch_time\" and .headSha == \"$dispatch_ref\")) | sort_by(.createdAt) | last | .databaseId // empty")"
   if [[ -n "$run_id" ]]; then
     echo "Found dispatched $workflow run $run_id (created at/after $dispatch_time)"
     gh run watch "$run_id" --repo "$repo" --exit-status
