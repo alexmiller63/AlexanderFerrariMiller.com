@@ -50,7 +50,3 @@ jobs:
             git commit -m "Rebuild Almanack week scaffolds ${{ inputs.start_year }}-W${{ inputs.start_week }} through ${{ inputs.end_year }}-W${{ inputs.end_week }}"
             git push origin HEAD:main
           fi
-      - name: Deploy generated site
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: gh workflow run deploy.yml --ref main
