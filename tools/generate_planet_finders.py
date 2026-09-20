@@ -1522,7 +1522,10 @@ def validate_layout(mode: str, result) -> tuple[bool, list[str]]:
             # containing the body's anchor. Do not reinterpret that legal
             # escape as a post-layout collision; later segments must be clear.
             for seg_index, (a, b) in enumerate(zip(path, path[1:])):
-                if seg_index == 0 and (
+                # Match route() exactly: only the 3 fixed center annotations
+                # may permit an initial escape. Zodiac labels are never escape
+                # obstacles, even when the body anchor lies inside their box.
+                if seg_index == 0 and j < 3 and (
                     obstacle.left - 8 <= a[0] <= obstacle.right + 8 and
                     obstacle.top - 8 <= a[1] <= obstacle.bottom + 8
                 ):
@@ -1648,8 +1651,17 @@ def generate_week(year: int, week: int):
         FinderMode.LATIN: "planet-finder-latin.svg",
         FinderMode.MIXED: "planet-finder-mixed-learner.svg",
     }
+    # Generate the complete 3-mode set in memory first. A failure in any mode
+    # must leave the week's published finder set untouched; never publish a
+    # partial Greek/Latin/Mixed result.
+    rendered = {}
     for mode, filename in filenames.items():
-        (outdir / filename).write_text(render(year, week, monday, mode, bodies), encoding="utf-8")
+        rendered[filename] = render(year, week, monday, mode, bodies)
+
+    # render()/layout() independently validates every selected layout before it
+    # returns. Only after all 3 modes succeed do we replace the week's files.
+    for filename, svg in rendered.items():
+        (outdir / filename).write_text(svg, encoding="utf-8")
     print(f"Generated collision-free Planet Finders for ISO {year}-W{week:02d} from internal calculations")
 
 
