@@ -671,9 +671,9 @@ def decorate_note_html(rendered_html: str, records: list[dict], weekly_fixed_ids
                 f'</span>'
             )
         decorated += (
-            '<div class="other-objects-listed-week" data-other-objects-listed-week="true">'
+            '<section id="other-objects-listed-this-week" class="other-objects-listed-week" data-other-objects-listed-week="true">'
             '<p><strong>Other objects listed this week:</strong> '
-            + ", ".join(links) + '</p></div>'
+            + ", ".join(links) + '</p></section>'
         )
 
     return decorated
