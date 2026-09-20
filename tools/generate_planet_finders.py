@@ -971,6 +971,32 @@ def layout(
             promoted_this_refinement.add(exc.name)
             budget["body_attempt_counts"][Body.from_name(exc.name)] = 0
 
+            # If the squeaky wheel is already first, promotion would be a
+            # no-op and would simply replay the same fixed ordering. Advance
+            # the geometric refinement immediately instead.
+            if squeaky_index == 0:
+                if refinement_index + 1 >= len(refinement_scales):
+                    raise RuntimeError(
+                        f"Planet Finder {mode}: first-position body {exc.name} "
+                        f"still hit the candidate cap after exhausting placement "
+                        f"refinements through {refinement_scales[refinement_index]:g} "
+                        "label-lengths"
+                    )
+                refinement_index += 1
+                promoted_this_refinement.clear()
+                attempted_orders.clear()
+                for body in Body:
+                    budget["body_attempt_counts"][body] = 0
+                order = indexed
+                print(
+                    f"Planet Finder {mode}: SQUEAKY-WHEEL body={exc.name} already first; "
+                    f"refining placement to {refinement_scales[refinement_index]:g} "
+                    "label-lengths and restarting canonical sequence="
+                    + " > ".join(item[1][1] for item in order),
+                    flush=True,
+                )
+                continue
+
             # A complete squeaky-wheel sweep is the signal to make the
             # geometric search genuinely finer. Do not replay the same
             # refinement indefinitely.
