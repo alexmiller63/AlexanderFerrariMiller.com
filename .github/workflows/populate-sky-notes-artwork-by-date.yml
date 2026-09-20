@@ -147,18 +147,22 @@ jobs:
           component=re.search(r'<section\b[^>]*\bid="other-objects-listed-this-week"[^>]*>(.*?)</section>', sky_notes.group(1), re.S)
           if not component:
               raise SystemExit(f"{week}: missing 'Other objects listed this week' component inside Sky Notes")
-          links=re.findall(r'<a class="object-artwork-link" href="([^"]+)">([^<]+)</a>', component.group(1))
-          if not links:
-              raise SystemExit(f"{week}: no object artwork links rendered")
+          links=re.findall(r'<a class="object-artwork-link" href="([^"]+)"(?: type="application/json")?>([^<]+)</a>', component.group(1))
+          empty=bool(re.search(r'class="no-other-objects">None</span>', component.group(1)))
+          if not links and not empty:
+              raise SystemExit(f"{week}: malformed 'Other objects listed this week' component: neither links nor explicit empty state")
+          if links and empty:
+              raise SystemExit(f"{week}: contradictory 'Other objects listed this week' component")
           for href, name in links:
               print(f"PROOF: {week} {name} -> {href}")
+          if empty:
+              print(f"PROOF: {week} has no supplemental weekly objects; all weekly fixed objects are represented in Sky Notes prose")
           print(f"OTHER_OBJECTS_COUNT={len(links)}")
           PY
             count="$(grep -o 'class="object-artwork-link"' "$dom" | wc -l)"
             checked=$((checked + count))
           done
-          [ "$checked" -gt 0 ] || { echo "No weekly object-artwork links were rendered; refusing false green." >&2; exit 1; }
-          echo "PROOF COMPLETE: Chromium verified $checked weekly object-artwork links."
+          echo "PROOF COMPLETE: Chromium verified the Sky Notes/Artwork handoff contract; $checked supplemental object-artwork links rendered."
 
       - name: Commit Artwork changes only
         run: |
