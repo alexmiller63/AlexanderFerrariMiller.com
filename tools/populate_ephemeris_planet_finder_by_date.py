@@ -90,8 +90,16 @@ def populate_week(
         patch_planet_finder_layout(path)
 
     bodies = finder_bodies(generated, week)
-    outdir = ephemeris.ROOT / "almanack" / str(year) / f"W{week:02d}" / "finders"
-    outdir.mkdir(parents=True, exist_ok=True)
+    # The week is the publication unit. Keep finder assets beneath the week
+    # in both canonical and published trees so each weekly page is a complete,
+    # self-contained package and its relative finders/... links are valid.
+    outdirs = (
+        ephemeris.ROOT / "almanack" / str(year) / f"W{week:02d}" / "finders",
+        ephemeris.ROOT / "site" / str(year) / f"W{week:02d}" / "finders",
+    )
+    for outdir in outdirs:
+        outdir.mkdir(parents=True, exist_ok=True)
+
     for mode, filename in FINDER_FILENAMES.items():
         # Each independently searched layout gets its own complete safety
         # envelope. The per-body candidate cap and the wall-clock ceiling
@@ -102,7 +110,16 @@ def populate_week(
             budget=mode_budget,
             context_label=context_label,
         )
-        (outdir / filename).write_text(svg, encoding="utf-8")
+        for outdir in outdirs:
+            (outdir / filename).write_text(svg, encoding="utf-8")
+
+    for outdir in outdirs:
+        missing = [filename for filename in FINDER_FILENAMES.values() if not (outdir / filename).is_file()]
+        if missing:
+            raise RuntimeError(
+                f"Planet Finder publication incomplete in {outdir.relative_to(ephemeris.ROOT)}: "
+                + ", ".join(missing)
+            )
 
     print(f"Generated Ephemeris + Planet Finder for ISO {year}-W{week:02d}", flush=True)
     return changed
