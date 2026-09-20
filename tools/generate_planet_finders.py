@@ -465,6 +465,10 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
     # which descendant subtree consumes a parent's generator suspension time.
     depth_residence = {}
     depth_visits = {}
+    # Per-body viable-candidate accounting for this fixed ordering. This is the
+    # squeaky-wheel counter: it resets completely whenever layout() restarts
+    # with a promoted body.
+    body_candidate_counts = {}
     diagnostic_stats = {}
     route_diagnostics = {}
     solutions = []
@@ -648,6 +652,22 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 rejected_leader += 1
                 stats["leader"] += 1
                 continue
+            # The squeaky-wheel ceiling counts viable choices for the body,
+            # not recursive entries at a depth. Count across every parent
+            # prefix in this fixed ordering. A promoted restart creates a new
+            # _solve_order() call, so this counter starts clean at zero.
+            body_total = body_candidate_counts.get(name, 0)
+            if body_total >= budget["max_node_candidates"]:
+                stats["blocked"] = "body-candidate-cap"
+                print(
+                    f"Planet Finder {mode}: BODY-CANDIDATE STOP order={order_index} "
+                    f"depth={depth}/{len(order)} body={name} "
+                    f"viable={body_total:,}/{budget['max_node_candidates']:,}",
+                    flush=True,
+                )
+                raise DepthNodeBudgetExhausted(depth, name)
+            body_candidate_counts[name] = body_total + 1
+
             # Yield immediately: DFS tries this legal geometry before asking
             # for another route. Rejected geometry never consumes candidate budget.
             body_candidates += 1
@@ -670,30 +690,6 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 f"Planet Finder run-wide wall-clock budget exhausted in {mode} mode "
                 f"after {run_elapsed:.1f}s (limit {budget['max_seconds']:.1f}s)"
             )
-
-        # Bound the search-tree explosion at each body depth. This counter is
-        # shared across every recursive re-entry at the same depth, so a body
-        # such as Neptune cannot receive a fresh allowance for every Uranus
-        # parent. Once the depth has created the configured number of nodes,
-        # close that level and let ordinary recursion backtrack upward.
-        if (
-            depth < len(order)
-            and depth not in budget.get("uncapped_depths", set())
-            and depth_visits.get(depth, 0) >= budget["max_node_candidates"]
-        ):
-            name = order[depth][1][1]
-            print(
-                f"Planet Finder {mode}: NODE-BUDGET STOP order={order_index} "
-                f"depth={depth}/{len(order)} body={name} "
-                f"visits={depth_visits.get(depth, 0):,}/{budget['max_node_candidates']:,}",
-                flush=True,
-            )
-            # This cap is shared across the whole depth, not one parent prefix.
-            # Once it is exhausted, no remaining ancestor sibling can produce a
-            # complete layout without crossing this closed level. Propagate the
-            # stop through the recursive stack instead of manufacturing doomed
-            # siblings at shallower depths.
-            raise DepthNodeBudgetExhausted(depth, name)
 
         nodes += 1
         deepest = max(deepest, depth)
@@ -820,9 +816,6 @@ def new_search_budget(max_candidates: int | None = None):
         "max_node_candidates": max_node_candidates,
         "max_seconds": max_seconds,
         "started": None,
-        # Depths in this set are exempt from the per-depth diagnostic cap.
-        # The run-wide candidate and wall-clock limits remain in force.
-        "uncapped_depths": set(),
     }
 
 def layout(
@@ -905,20 +898,14 @@ def layout(
             if squeaky_index is None:
                 raise
             if squeaky_index == 0:
-                # The squeaky body is already first. Do not mistake the
-                # diagnostic node cap for proof that the layout is impossible.
-                # Remove the artificial cap at this depth and resume the same
-                # DFS ordering. The run-wide candidate and wall-clock safety
-                # limits still bound the search.
-                budget.setdefault("uncapped_depths", set()).add(0)
-                attempted_orders.discard(order_key)
-                print(
-                    f"Planet Finder {mode}: squeaky wheel {exc.name} already first; "
-                    "removing the per-depth cap at depth 0 and resuming under "
-                    "the run-wide safety limits",
-                    flush=True,
+                # A deterministic restart with the same body already first
+                # would simply replay the same capped search. Keep the cap
+                # meaningful: never silently uncap it and never loop.
+                raise RuntimeError(
+                    f"Planet Finder {mode}: squeaky wheel {exc.name} is already first "
+                    f"and reached the per-body viable-candidate cap of "
+                    f"{budget['max_node_candidates']:,}"
                 )
-                continue
 
             order = [order[squeaky_index], *order[:squeaky_index], *order[squeaky_index + 1:]]
             print(
