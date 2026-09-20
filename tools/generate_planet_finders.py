@@ -795,6 +795,9 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             leaders.append(path)
             staged[original_index] = (symbol, name, longitude, box, path)
 
+            child_deepest_before = deepest
+            child_nodes_before = nodes
+            child_backtracks_before = backtracks
             try:
                 if search(depth + 1):
                     return True
@@ -804,6 +807,20 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 placed.pop()
 
             backtracks += 1
+            # Prefix diagnostic: when an individually legal candidate cannot
+            # extend to a complete layout, report how far its child subtree
+            # actually reached. This observes DFS behavior without changing it.
+            if mode == FinderMode.MIXED and depth <= 1:
+                print(
+                    f"Planet Finder {mode}: PREFIX BACKTRACK "
+                    f"depth={depth}/{len(order)} body={name} "
+                    f"candidate={body_candidates} "
+                    f"child-deepest={deepest}/{len(order)} "
+                    f"new-depth={deepest > child_deepest_before} "
+                    f"child-nodes={nodes - child_nodes_before} "
+                    f"child-backtracks={backtracks - child_backtracks_before}",
+                    flush=True,
+                )
 
         if not generated_here:
             dead_key = (depth, name)
