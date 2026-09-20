@@ -502,11 +502,9 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
     # which descendant subtree consumes a parent's generator suspension time.
     depth_residence = {}
     depth_visits = {}
-    # Per-body attempted-position accounting persists across ordering restarts.
-    # Each body owns its own counter; promoting one body resets only that body.
-    # Rejected geometry counts too, so a pathological body cannot churn through
-    # thousands of raw positions while another body silently clears its history.
-    body_attempt_counts = budget["body_attempt_counts"]
+    # Candidate-attempt accounting is local to each viable_candidates() generator,
+    # i.e. one body under one fixed DFS prefix. Attempts from unrelated recursion
+    # branches must never accumulate into a false squeaky-wheel signal.
     diagnostic_stats = {}
     route_diagnostics = {}
     solutions = []
@@ -599,18 +597,18 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             stream_dt = time.monotonic() - stream_t0
             timing["stream_wait"] += stream_dt
             raw_positions += 1
-            body = Body.from_name(name)
-            body_attempts = body_attempt_counts.get(body, 0)
-            if body_attempts >= budget["max_node_candidates"]:
-                stats["blocked"] = "body-attempt-cap"
+            # The raw-attempt ceiling belongs to this body at this exact DFS
+            # prefix. Backtracking into a different parent placement creates a
+            # fresh generator and therefore a fresh ceiling.
+            if raw_positions > budget["max_node_candidates"]:
+                stats["blocked"] = "prefix-attempt-cap"
                 print(
-                    f"Planet Finder {mode}: BODY-ATTEMPT STOP order={order_index} "
+                    f"Planet Finder {mode}: PREFIX-ATTEMPT STOP order={order_index} "
                     f"depth={depth}/{len(order)} body={name} "
-                    f"attempts={body_attempts:,}/{budget['max_node_candidates']:,}",
+                    f"attempts={raw_positions - 1:,}/{budget['max_node_candidates']:,}",
                     flush=True,
                 )
                 raise DepthNodeBudgetExhausted(depth, name)
-            body_attempt_counts[body] = body_attempts + 1
 
             # Narrow instrumentation for pathological candidate generation.
             # Report any single stage that stalls for >= 1s immediately, rather
@@ -856,7 +854,6 @@ def new_search_budget():
         "max_node_candidates": max_node_candidates,
         "max_seconds": max_seconds,
         "started": None,
-        "body_attempt_counts": {body: 0 for body in Body},
     }
 
 def layout(
@@ -924,8 +921,6 @@ def layout(
             refinement_index += 1
             promoted_this_refinement.clear()
             attempted_orders.clear()
-            for body in Body:
-                budget["body_attempt_counts"][body] = 0
             order = indexed
             order_names = tuple(item[1][1] for item in order)
             order_key = (refinement_index, order_names)
@@ -969,7 +964,6 @@ def layout(
             if squeaky_index is None:
                 raise
             promoted_this_refinement.add(exc.name)
-            budget["body_attempt_counts"][Body.from_name(exc.name)] = 0
 
             # If the squeaky wheel is already first, promotion would be a
             # no-op and would simply replay the same fixed ordering. Advance
@@ -985,8 +979,6 @@ def layout(
                 refinement_index += 1
                 promoted_this_refinement.clear()
                 attempted_orders.clear()
-                for body in Body:
-                    budget["body_attempt_counts"][body] = 0
                 order = indexed
                 print(
                     f"Planet Finder {mode}: SQUEAKY-WHEEL body={exc.name} already first; "
@@ -1008,8 +1000,6 @@ def layout(
                     )
                 refinement_index += 1
                 promoted_this_refinement.clear()
-                for body in Body:
-                    budget["body_attempt_counts"][body] = 0
                 print(
                     f"Planet Finder {mode}: COMPLETE PROMOTION SWEEP; "
                     f"refining placement to {refinement_scales[refinement_index]:g} "
