@@ -278,6 +278,7 @@ def legal_candidate_positions(
                 by_obstacle = diagnostic.setdefault("immutable_reserved_by_obstacle", {})
                 for i in reserved_hits:
                     by_obstacle[i] = by_obstacle.get(i, 0) + 1
+                diagnostic.setdefault("immutable_candidate_audit", []).append((x, y, "reserved", tuple(reserved_hits)))
             continue
         # Body labels live inside the inner zodiac rim.  A label touching or
         # crossing that border is rotten geometry, not a scoring preference.
@@ -290,6 +291,7 @@ def legal_candidate_positions(
         ):
             if diagnostic is not None:
                 diagnostic["immutable_rim"] = diagnostic.get("immutable_rim", 0) + 1
+                diagnostic.setdefault("immutable_candidate_audit", []).append((x, y, "rim", ()))
             continue
         yield x, y, box
 
@@ -591,6 +593,16 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 f"immutable-obstacles={immutable_names}",
                 flush=True,
             )
+        for (depth, name), s in sorted(diagnostic_stats.items()):
+            for candidate_index, audit in enumerate(s.get("immutable_candidate_audit", []), 1):
+                x, y, rejection, obstacle_ids = audit
+                obstacle_labels = [reserved_names[i] if i < len(reserved_names) else str(i) for i in obstacle_ids]
+                print(
+                    f"Planet Finder {mode}: TERMINAL IMMUTABLE-CANDIDATE "
+                    f"depth={depth}/{len(order)} body={name} candidate={candidate_index} "
+                    f"center=({x:.1f},{y:.1f}) reason={rejection} obstacles={obstacle_labels}",
+                    flush=True,
+                )
         for depth in sorted(set(depth_residence) | set(depth_visits)):
             body_name = order[depth][1][1] if depth < len(order) else "complete-layout"
             print(
