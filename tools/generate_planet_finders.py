@@ -915,6 +915,7 @@ def layout(
     all_solutions = []
     order_index = 0
     promoted_names = []
+    promotion_pass = 1
 
     def next_untried_order(current_order):
         """Return the next lexicographic body ordering not yet attempted.
@@ -985,17 +986,24 @@ def layout(
             if squeaky_index is None:
                 raise
             if exc.name in promoted_names:
-                # This body already owns a slot in the promoted prefix. Moving
-                # it again would create a promotion carousel. Its fixed
-                # priority has already been established, so this ordering is
-                # genuinely exhausted at the per-body cap.
-                raise RuntimeError(
-                    f"Planet Finder {mode}: promoted squeaky wheel {exc.name} "
-                    f"reached the per-body viable-candidate cap of "
-                    f"{budget['max_node_candidates']:,} again"
+                # Reaching an already-promoted body means this promotion pass
+                # has come back around to established priority. Start a clean
+                # pass from the ordering learned so far: keep that ordering,
+                # clear promotion membership, and reset every body's local
+                # cap counter. The run-wide time and candidate budgets remain.
+                promotion_pass += 1
+                promoted_names.clear()
+                for body in Body:
+                    budget["body_attempt_counts"][body] = 0
+                print(
+                    f"Planet Finder {mode}: PROMOTION PASS {promotion_pass} "
+                    "starting from learned sequence="
+                    + " > ".join(item[1][1] for item in order),
+                    flush=True,
                 )
+                continue
 
-            # Promotion is monotonic. Each newly squeaky body is appended to a
+            # Promotion is monotonic within a pass. Each newly squeaky body is appended to a
             # stable promoted prefix; previously promoted bodies never lose
             # their relative priority. Reset only the newly promoted body's
             # counter and restart with the remaining bodies after the prefix.
