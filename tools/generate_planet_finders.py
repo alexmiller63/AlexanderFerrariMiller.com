@@ -1272,11 +1272,17 @@ def layout(
                     f"sequence={cycle_names}",
                     flush=True,
                 )
-                raise RuntimeError(
-                    f"Planet Finder {mode}: candidate cap closed the ordering cycle "
-                    f"after {len(attempted_orders)} orderings at "
-                    f"{refinement_scales[refinement_index]:g} label-lengths; "
-                    "search is inconclusive, not geometrically exhausted"
+                # This is a normal bounded-search terminal condition.
+                # The cap has done its job: the controller must stop rather
+                # than manufacture another ordering or replenish the body's
+                # safety budget. Return an explicit inconclusive outcome so
+                # the caller can report the distinction cleanly.
+                return SearchOutcome(
+                    "INCONCLUSIVE",
+                    [],
+                    [],
+                    promote_body,
+                    None,
                 )
             order = promoted_order
             print(
@@ -1353,7 +1359,7 @@ def layout(
                 total_orders=None,
                 context_label=context_label,
                 displacement_scale=refinement_scales[refinement_index],
-                body_attempts={name: 0 for _, (_, name, _) in indexed},
+                body_attempts=body_attempts,
             )
         except DepthNodeBudgetExhausted as exc:
             # The fixed-order solver already emitted its detailed terminal
