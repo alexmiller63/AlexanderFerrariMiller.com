@@ -849,7 +849,7 @@ def new_search_budget():
     max_node_candidates = int(os.environ.get("PLANET_FINDER_MAX_NODE_CANDIDATES", "200"))
     if max_node_candidates <= 0:
         raise ValueError("PLANET_FINDER_MAX_NODE_CANDIDATES must be positive")
-    max_seconds = max(1.0, float(os.environ.get("PLANET_FINDER_MAX_SECONDS", "90")))
+    max_seconds = max(1.0, float(os.environ.get("PLANET_FINDER_MAX_SECONDS", "180")))
     # Start the wall-clock budget lazily at the first actual layout search.
     # Ephemeris setup/kernel work must not consume the Planet Finder search ceiling.
     return {
