@@ -1373,6 +1373,19 @@ def layout(
             state = "SCORE"
             continue
 
+        if outcome.kind == "INCONCLUSIVE":
+            print(
+                f"Planet Finder {mode}: SEARCH INCONCLUSIVE "
+                f"body={outcome.blocker} refinement={refinement_scales[refinement_index]:g} "
+                f"orders={len(attempted_orders)}; bounded search closed without "
+                f"establishing {target_solutions} contestants",
+                flush=True,
+            )
+            raise RuntimeError(
+                f"Planet Finder {mode}: bounded search inconclusive; "
+                f"no valid {target_solutions}-contestant contest was established"
+            )
+
         if outcome.kind not in ("CAPPED", "EXHAUSTED") or not outcome.blocker:
             raise RuntimeError(
                 f"Planet Finder {mode}: invalid search outcome "
