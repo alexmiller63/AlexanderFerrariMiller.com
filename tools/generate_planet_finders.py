@@ -930,28 +930,15 @@ def layout(
         order_names = tuple(item[1][1] for item in order)
         order_key = (refinement_index, order_names)
         if order_key in attempted_orders:
-            # A repeated squeaky-wheel ordering means this refinement is
-            # cycling. Do not start a second search over arbitrary body
-            # permutations; DFS already owns the combinatorial search.
-            # Refine the geometric proposal spacing and restart cleanly.
-            if refinement_index + 1 >= len(refinement_scales):
-                raise RuntimeError(
-                    f"Planet Finder {mode}: repeated squeaky-wheel ordering after "
-                    f"exhausting placement refinements through "
-                    f"{refinement_scales[refinement_index]:g} label-lengths"
-                )
-            refinement_index += 1
-            promoted_this_refinement.clear()
-            attempted_orders.clear()
-            order = indexed
-            order_names = tuple(item[1][1] for item in order)
-            order_key = (refinement_index, order_names)
-            print(
-                f"Planet Finder {mode}: repeated squeaky-wheel ordering; "
-                f"refining placement to {refinement_scales[refinement_index]:g} "
-                "label-lengths and restarting canonical sequence="
-                + " > ".join(order_names),
-                flush=True,
+            # A repeated ordering means squeaky-wheel promotion has cycled.
+            # It is not evidence that the geometry needs a finer candidate
+            # grid.  Stop this promotion path instead of manufacturing a
+            # denser search (and recreating the search explosion the cap is
+            # designed to prevent).
+            raise RuntimeError(
+                f"Planet Finder {mode}: squeaky-wheel promotion cycle at "
+                f"{refinement_scales[refinement_index]:g} label-lengths; "
+                "no new body ordering remains"
             )
         attempted_orders.add(order_key)
         order_index += 1
