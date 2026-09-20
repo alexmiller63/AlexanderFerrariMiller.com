@@ -11,21 +11,20 @@ dispatch_time="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
 before="$(gh run list --repo "$repo" --workflow "$workflow" --event workflow_dispatch --limit 1 --json databaseId --jq '.[0].databaseId // 0')"
 before="${before:-0}"
 
-# Resolve the workflow by its current path/name before dispatching. gh workflow
-# list does not accept jq --arg parameters, so select the path in jq separately.
-wanted=".github/workflows/$workflow"
-workflow_json="$(gh workflow list --repo "$repo" --all --json id,path,state,name | \
-  jq -c --arg wanted "$wanted" 'map(select(.path == $wanted)) | if length == 1 then .[0] else empty end')"
-
-if [[ -z "$workflow_json" ]]; then
-  echo "ERROR: could not uniquely resolve current workflow path $wanted" >&2
-  gh workflow list --repo "$repo" --all >&2
-  exit 1
-fi
-
+# Resolve the exact workflow filename through GitHub's Actions API. The
+# /actions/workflows/{workflow_id} endpoint accepts a workflow filename, so
+# this avoids trying to infer paths from the human-oriented workflow list.
+workflow_json="$(gh api "repos/$repo/actions/workflows/$workflow")"
 workflow_id="$(jq -r '.id' <<<"$workflow_json")"
 workflow_state="$(jq -r '.state' <<<"$workflow_json")"
 workflow_path="$(jq -r '.path' <<<"$workflow_json")"
+
+wanted=".github/workflows/$workflow"
+if [[ "$workflow_path" != "$wanted" ]]; then
+  echo "ERROR: workflow filename $workflow resolved to unexpected path $workflow_path" >&2
+  exit 1
+fi
+
 echo "Resolved $workflow_path to workflow id $workflow_id ($workflow_state)"
 
 if [[ "$workflow_state" != "active" ]]; then
@@ -37,7 +36,7 @@ gh workflow run "$workflow_id" --repo "$repo" --ref main "$@"
 
 run_id=""
 for attempt in $(seq 1 60); do
-  run_id="$(gh run list --repo "$repo" --workflow "$workflow" --event workflow_dispatch --limit 20 --json databaseId,createdAt,headBranch,status --jq "map(select(.databaseId > $before and .createdAt >= \"$dispatch_time\" and .headBranch == \"main\")) | sort_by(.createdAt) | last | .databaseId // empty")"
+  run_id="$(gh run list --repo "$repo" --workflow "$workflow_id" --event workflow_dispatch --limit 20 --json databaseId,createdAt,headBranch,status --jq "map(select(.databaseId > $before and .createdAt >= \"$dispatch_time\" and .headBranch == \"main\")) | sort_by(.createdAt) | last | .databaseId // empty")"
   if [[ -n "$run_id" ]]; then
     echo "Found dispatched $workflow run $run_id (created at/after $dispatch_time)"
     gh run watch "$run_id" --repo "$repo" --exit-status
