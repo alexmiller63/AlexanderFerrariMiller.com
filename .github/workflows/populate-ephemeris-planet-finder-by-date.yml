@@ -126,8 +126,6 @@ jobs:
           PLANET_FINDER_MAX_NODE_CANDIDATES: ${{ inputs.max_node_candidates }}
           PLANET_FINDER_MAX_CANDIDATES: ${{ inputs.max_search_candidates }}
           PLANET_FINDER_MAX_SECONDS: ${{ inputs.max_search_seconds }}
-          PLANET_FINDER_MAX_ORDER_SECONDS: '5'
-          PLANET_FINDER_MAX_ORDER_NODES: '100000'
         run: |
           # PLANET_FINDER_MAX_SECONDS is the one user-controlled search clock:
           # each Greek, Latin, and Mixed layout receives this full budget.
