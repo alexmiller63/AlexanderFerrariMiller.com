@@ -201,7 +201,7 @@ def reserved_boxes(mode: str) -> list[Box]:
     return boxes
 
 
-def candidate_positions(longitude: float):
+def candidate_positions(longitude: float, displacement_scale: float = 2.0):
     """Yield deterministic geometric proposals from coarse to fine.
 
     Candidate ordering is geometry only. DFS owns all backtracking and the
@@ -216,7 +216,6 @@ def candidate_positions(longitude: float):
     # Search coarse-to-fine: exhaust all siblings at each displacement before
     # allowing recursion to consider a smaller movement.
     label_length = 105.0
-    displacement_scales = (2.0, 1.5, 1.0, 0.5, 0.25)
     offered: list[tuple[float, float]] = []
 
     def offer(radii, shifts):
@@ -235,24 +234,21 @@ def candidate_positions(longitude: float):
     # Preserve the natural position first, then explore increasingly finer
     # displacement rings. Within a ring, both tangential directions are peers.
     yield from offer(preferred_radii, (0.0,))
-    for scale in displacement_scales:
-        shift = label_length * scale
-        yield from offer(preferred_radii, (-shift, shift))
+    shift = label_length * displacement_scale
+    yield from offer(preferred_radii, (-shift, shift))
 
     expanded_radii = tuple(range(400, 79, -20))
     yield from offer(expanded_radii, (0.0,))
-    for scale in displacement_scales:
-        shift = label_length * scale
-        yield from offer(expanded_radii, (-shift, shift))
+    yield from offer(expanded_radii, (-shift, shift))
 
 
-def legal_candidate_positions(longitude: float, w: float, h: float, reserved: list[Box]):
+def legal_candidate_positions(longitude: float, w: float, h: float, reserved: list[Box], displacement_scale: float = 2.0):
     """Yield only proposals that are legal against immutable chart geometry.
     Reserved center annotations and zodiac labels never move, so a candidate
     that overlaps one can never become valid through DFS backtracking. Reject
     it here, before it enters the search candidate pool or consumes budget.
     """
-    for x, y in candidate_positions(longitude):
+    for x, y in candidate_positions(longitude, displacement_scale):
         box = Box(x, y, w, h)
         if any(boxes_overlap(box, obstacle, 14) for obstacle in reserved):
             continue
@@ -471,7 +467,7 @@ class DepthNodeBudgetExhausted(RuntimeError):
         self.name = name
 
 
-def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_index=1, total_orders=None, context_label=None):
+def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_index=1, total_orders=None, context_label=None, displacement_scale=2.0):
     """Solve one fixed body ordering with recursive depth-first search.
 
     The ordering is fixed for this pass. Each recursive call owns one body
@@ -582,7 +578,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         last_yield_at = None
         suspended_total = 0.0
         timing = {"stream_wait": 0.0, "overlap": 0.0, "existing_leader": 0.0, "route": 0.0, "final_leader": 0.0}
-        legal_positions = iter(legal_candidate_positions(longitude, w, h, reserved))
+        legal_positions = iter(legal_candidate_positions(longitude, w, h, reserved, displacement_scale))
         while True:
             resumed_at = time.monotonic()
             if last_yield_at is not None:
@@ -914,8 +910,9 @@ def layout(
     attempted_orders = set()
     all_solutions = []
     order_index = 0
-    promoted_names = []
-    promotion_pass = 1
+    refinement_scales = (2.0, 1.5, 1.0, 0.5, 0.25)
+    refinement_index = 0
+    promoted_this_refinement = set()
 
     def next_untried_order(current_order):
         """Return the next lexicographic body ordering not yet attempted.
@@ -936,7 +933,7 @@ def layout(
                     j -= 1
                 names[i], names[j] = names[j], names[i]
                 names[i + 1:] = reversed(names[i + 1:])
-            key = tuple(names)
+            key = (refinement_index, tuple(names))
             if key not in attempted_orders:
                 return [by_name[name] for name in names]
 
@@ -945,13 +942,15 @@ def layout(
     # tree.  Throw away this fixed-order DFS state, promote that body to the
     # front, and begin a completely fresh recursive search.
     while True:
-        order_key = tuple(item[1][1] for item in order)
+        order_names = tuple(item[1][1] for item in order)
+        order_key = (refinement_index, order_names)
         if order_key in attempted_orders:
             order = next_untried_order(order)
-            order_key = tuple(item[1][1] for item in order)
+            order_names = tuple(item[1][1] for item in order)
+            order_key = (refinement_index, order_names)
             print(
                 f"Planet Finder {mode}: repeated ordering; advancing lazily to "
-                "next untried sequence=" + " > ".join(order_key),
+                "next untried sequence=" + " > ".join(order_names),
                 flush=True,
             )
         attempted_orders.add(order_key)
@@ -963,6 +962,7 @@ def layout(
             f"order={order_index} target={target_solutions} "
             f"max-node-candidates={budget['max_node_candidates']:,} "
             f"max-candidates={budget['max_candidates']:,} "
+            f"refinement={refinement_scales[refinement_index]:g} label-lengths "
             f"sequence=" + " > ".join(item[1][1] for item in order),
             flush=True,
         )
@@ -977,6 +977,7 @@ def layout(
                 order_index=order_index,
                 total_orders=None,
                 context_label=context_label,
+                displacement_scale=refinement_scales[refinement_index],
             )
         except DepthNodeBudgetExhausted as exc:
             squeaky_index = next(
@@ -985,36 +986,35 @@ def layout(
             )
             if squeaky_index is None:
                 raise
-            if exc.name in promoted_names:
-                # Reaching an already-promoted body means this promotion pass
-                # has come back around to established priority. Start a clean
-                # pass from the ordering learned so far: keep that ordering,
-                # clear promotion membership, and reset every body's local
-                # cap counter. The run-wide time and candidate budgets remain.
-                promotion_pass += 1
-                promoted_names.clear()
+            promoted_this_refinement.add(exc.name)
+            budget["body_attempt_counts"][Body.from_name(exc.name)] = 0
+
+            # A complete squeaky-wheel sweep is the signal to make the
+            # geometric search genuinely finer. Do not replay the same
+            # refinement indefinitely.
+            if len(promoted_this_refinement) == len(CANONICAL):
+                if refinement_index + 1 >= len(refinement_scales):
+                    raise RuntimeError(
+                        f"Planet Finder {mode}: exhausted all placement refinements "
+                        f"through {refinement_scales[refinement_index]:g} label-lengths"
+                    )
+                refinement_index += 1
+                promoted_this_refinement.clear()
                 for body in Body:
                     budget["body_attempt_counts"][body] = 0
                 print(
-                    f"Planet Finder {mode}: PROMOTION PASS {promotion_pass} "
-                    "starting from learned sequence="
-                    + " > ".join(item[1][1] for item in order),
+                    f"Planet Finder {mode}: COMPLETE PROMOTION SWEEP; "
+                    f"refining placement to {refinement_scales[refinement_index]:g} "
+                    "label-lengths",
                     flush=True,
                 )
-                continue
 
-            # Promotion is monotonic within a pass. Each newly squeaky body is appended to a
-            # stable promoted prefix; previously promoted bodies never lose
-            # their relative priority. Reset only the newly promoted body's
-            # counter and restart with the remaining bodies after the prefix.
-            promoted_names.append(exc.name)
-            budget["body_attempt_counts"][Body.from_name(exc.name)] = 0
-            by_name = {item[1][1]: item for item in order}
-            promoted = [by_name[name] for name in promoted_names]
-            remainder = [
-                item for item in order if item[1][1] not in promoted_names
-            ]
-            order = [*promoted, *remainder]
+            # The squeaky body gets the first position for the next recursive
+            # search. The cap limits one body's turn; DFS still owns backtracking.
+            squeaky_index = next(
+                i for i, item in enumerate(order) if item[1][1] == exc.name
+            )
+            order = [order[squeaky_index], *order[:squeaky_index], *order[squeaky_index + 1:]]
             print(
                 f"Planet Finder {mode}: SQUEAKY-WHEEL PROMOTE body={exc.name} "
                 f"after hitting {budget['max_node_candidates']:,}; "
