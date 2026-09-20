@@ -537,10 +537,11 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
     # This is the second squeaky-wheel failure mode: a body can repeatedly
     # block the tree without any one prefix reaching its candidate cap.
     dead_end_visits = {}
-    # One authoritative cap for this fixed-order DFS. It counts viable
-    # candidates admitted to DFS for each body; rejected raw proposals do not
-    # consume it. A new fixed-order search gets a fresh budget, because it is a
-    # genuinely new search tree. Forward checking never touches this counter.
+    # One authoritative cap per body for this mode. It counts viable
+    # candidates admitted to DFS for each body; rejected raw proposals and
+    # forward-check witnesses do not consume it. The count persists when the
+    # controller changes ordering, so reordering can never replenish a body's
+    # 200-candidate safety budget.
     if body_attempts is None:
         body_attempts = {name: 0 for _, (_, name, _) in order}
     diagnostic_stats = {}
@@ -696,6 +697,20 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             )
         )
         while True:
+            # The cap is owned by the body, not by this generator instance or
+            # this ordering. A body already at its persistent limit must not
+            # receive one additional candidate merely because its ordering
+            # changed.
+            if body_attempts[name] >= budget["max_node_candidates"]:
+                stats["blocked"] = "body-candidate-cap"
+                print(
+                    f"Planet Finder {mode}: BODY-CANDIDATE CAP order={order_index} "
+                    f"depth={depth}/{len(order)} body={name} "
+                    f"viable={body_attempts[name]:,}/{budget['max_node_candidates']:,}",
+                    flush=True,
+                )
+                raise DepthNodeBudgetExhausted(depth, name)
+
             resumed_at = time.monotonic()
             if last_yield_at is not None:
                 suspended_total += max(0.0, resumed_at - last_yield_at)
@@ -1171,8 +1186,10 @@ def layout(
     refinement_scales = (2.0, 1.5, 1.0, 0.5, 0.25)
     refinement_index = 0
     attempted_orders = set()
-    # Each fixed-order DFS owns its own candidate cap. Reordering starts a new
-    # search tree; it does not inherit candidate counts from another tree.
+    # One persistent per-body candidate cap for this mode. Reordering changes
+    # the search tree, but never replenishes a body's 200-candidate budget.
+    # Forward-check probes are deliberately outside this accounting.
+    body_attempts = {name: 0 for _, (_, name, _) in indexed}
     # Preserve controller history across refinements for terminal diagnosis.
     refinement_history = []
 
@@ -1359,6 +1376,7 @@ def layout(
                 total_orders=None,
                 context_label=context_label,
                 displacement_scale=refinement_scales[refinement_index],
+                body_attempts=body_attempts,
             )
         except DepthNodeBudgetExhausted as exc:
             # The fixed-order solver already emitted its detailed terminal
