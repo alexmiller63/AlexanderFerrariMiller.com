@@ -506,9 +506,10 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
     # This is the second squeaky-wheel failure mode: a body can repeatedly
     # block the tree without any one prefix reaching its candidate cap.
     dead_end_visits = {}
-    # Candidate-attempt accounting is local to each viable_candidates() generator,
-    # i.e. one body under one fixed DFS prefix. Attempts from unrelated recursion
-    # branches must never accumulate into a false squeaky-wheel signal.
+    # Explosion accounting is per body for this entire fixed ordering. A body
+    # that consumes the cap across multiple DFS prefixes is the squeaky wheel;
+    # layout() then discards this ordering, promotes that body, and starts fresh.
+    body_attempts = {name: 0 for _, (_, name, _) in order}
     diagnostic_stats = {}
     route_diagnostics = {}
     solutions = []
@@ -601,15 +602,16 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             stream_dt = time.monotonic() - stream_t0
             timing["stream_wait"] += stream_dt
             raw_positions += 1
-            # The raw-attempt ceiling belongs to this body at this exact DFS
-            # prefix. Backtracking into a different parent placement creates a
-            # fresh generator and therefore a fresh ceiling.
-            if raw_positions > budget["max_node_candidates"]:
-                stats["blocked"] = "prefix-attempt-cap"
+            body_attempts[name] += 1
+            # The explosion cap belongs to the body across this entire fixed
+            # ordering, not to one parent prefix. Backtracking therefore does
+            # not erase evidence that this body is exploding the search tree.
+            if body_attempts[name] >= budget["max_node_candidates"]:
+                stats["blocked"] = "body-attempt-cap"
                 print(
-                    f"Planet Finder {mode}: PREFIX-ATTEMPT STOP order={order_index} "
+                    f"Planet Finder {mode}: BODY-ATTEMPT STOP order={order_index} "
                     f"depth={depth}/{len(order)} body={name} "
-                    f"attempts={raw_positions - 1:,}/{budget['max_node_candidates']:,}",
+                    f"attempts={body_attempts[name]:,}/{budget['max_node_candidates']:,}",
                     flush=True,
                 )
                 raise DepthNodeBudgetExhausted(depth, name)
