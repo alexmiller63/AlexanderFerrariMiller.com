@@ -80,9 +80,9 @@ jobs:
           PLANET_FINDER_MAX_ORDER_SECONDS: '5'
           PLANET_FINDER_MAX_ORDER_NODES: '100000'
         run: |
-          timeout --signal=TERM --kill-after=5s 150s \
-            python tools/populate_ephemeris_planet_finder_by_date.py \
-              2026-09-07 2026-09-07
+          # Each notation mode gets the full user-selected search budget.
+          python tools/populate_ephemeris_planet_finder_by_date.py \
+            2026-09-07 2026-09-07
       - name: Commit W37 finder SVGs
         shell: bash
         run: |
