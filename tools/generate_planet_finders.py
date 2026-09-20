@@ -706,6 +706,17 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                     f"attempts={body_attempts[name]:,}/{budget['max_node_candidates']:,}",
                     flush=True,
                 )
+                body_forward = forward_stats["by_body"].get(name, {})
+                print(
+                    f"Planet Finder {mode}: FORWARD-AUDIT capped-body={name} "
+                    f"checks={body_forward.get('checks', 0):,} "
+                    f"witnesses={body_forward.get('witnesses', 0):,} "
+                    f"dead={body_forward.get('dead', 0):,} "
+                    f"witness-raw={body_forward.get('raw', 0):,} "
+                    f"total-checks={forward_stats['checks']:,} "
+                    f"total-pruned={forward_stats['pruned']:,}",
+                    flush=True,
+                )
                 raise DepthNodeBudgetExhausted(depth, name)
 
             # Narrow instrumentation for pathological candidate generation.
@@ -828,23 +839,30 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             last_yield_at = time.monotonic()
             yield box, path
 
+    forward_stats = {"checks": 0, "pruned": 0, "witnesses": 0, "by_body": {}}
+
     def forward_check(next_depth):
         """Return False only when a remaining body is already provably dead.
 
         This is a one-witness feasibility check. It does not consume the
         body's per-ordering attempt budget and does not stage a placement.
+        Diagnostics record which future bodies receive witnesses so a later
+        capped DFS body can be compared with the look-ahead that admitted it.
         """
         obstacles = [*reserved, *placed]
         immutable_count = len(reserved)
+        forward_stats["checks"] += 1
         for future_depth in range(next_depth, len(order)):
             _, (_, future_name, future_longitude) = order[future_depth]
             w, h = label_size(mode, future_name)
             anchor = xy(future_longitude, RI - 5)
             prefix_cache = {}
             witness = False
+            witness_raw = 0
             for _, _, future_box in legal_candidate_positions(
                 future_longitude, w, h, reserved, displacement_scale
             ):
+                witness_raw += 1
                 if any(boxes_overlap(future_box, other, 14) for other in placed):
                     continue
                 center = (future_box.x, future_box.y)
@@ -863,7 +881,17 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                     continue
                 witness = True
                 break
-            if not witness:
+            body_stat = forward_stats["by_body"].setdefault(
+                future_name, {"checks": 0, "witnesses": 0, "dead": 0, "raw": 0}
+            )
+            body_stat["checks"] += 1
+            body_stat["raw"] += witness_raw
+            if witness:
+                body_stat["witnesses"] += 1
+                forward_stats["witnesses"] += 1
+            else:
+                body_stat["dead"] += 1
+                forward_stats["pruned"] += 1
                 return False
         return True
 
