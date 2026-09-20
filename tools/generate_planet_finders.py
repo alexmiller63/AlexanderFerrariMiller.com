@@ -511,6 +511,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
     route_diagnostics = {}
     solutions = []
     solution_keys = set()
+    contest_keys = []
     current_body = "-"
     exhausted = False
     def dump_diagnostics(reason):
@@ -762,6 +763,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 valid, errors = validate_layout(mode, result)
                 if valid:
                     solutions.append(result)
+                    contest_keys.append(key)
                     print(
                         f"Planet Finder {mode}: complete valid candidate "
                         f"{len(solutions)}/{target_solutions} "
@@ -1034,6 +1036,40 @@ def layout(
 
     scored = sorted((score(result), i, result) for i, result in enumerate(all_solutions))
     best_score, best_index, best = scored[0]
+
+    # Contest-validity diagnostic: a configured N-contestant competition must
+    # actually contain N distinct, independently validated complete layouts.
+    # Viability is established before a result enters all_solutions; the
+    # uniqueness key prevents duplicate layouts from becoming contestants.
+    contest_count = len(all_solutions)
+    unique_count = len(set(contest_keys))
+    contest_valid = (
+        contest_count == target_solutions
+        and unique_count == contest_count
+        and contest_count == len(scored)
+    )
+    print(
+        f"Planet Finder {mode}: CONTEST AUDIT "
+        f"requested={target_solutions} contestants={contest_count} "
+        f"unique={unique_count} scored={len(scored)} "
+        f"status={'VALID' if contest_valid else 'INVALID'}",
+        flush=True,
+    )
+    for rank, (candidate_score, candidate_index, _) in enumerate(scored, 1):
+        print(
+            f"Planet Finder {mode}: CONTESTANT rank={rank} "
+            f"candidate={candidate_index + 1} "
+            f"score[elbows={candidate_score[0]},length={candidate_score[1]:.1f},"
+            f"displacement={candidate_score[2]:.1f},radial={candidate_score[3]:.1f}]",
+            flush=True,
+        )
+    if not contest_valid:
+        raise RuntimeError(
+            f"Planet Finder {mode}: contest validity failure "
+            f"requested={target_solutions} contestants={contest_count} "
+            f"unique={unique_count} scored={len(scored)}"
+        )
+
     print(
         f"Planet Finder {mode}: selected candidate {best_index + 1}/{len(all_solutions)} "
         f"{context_label + ' ' if context_label else ''}"
