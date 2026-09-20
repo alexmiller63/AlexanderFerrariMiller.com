@@ -5,10 +5,11 @@ workflow="$1"
 shift
 repo="${GITHUB_REPOSITORY:?GITHUB_REPOSITORY is required}"
 
-# Resolve the exact workflow filename through GitHub's Actions API before using
-# its numeric ID for run-list matching or dispatch.
+# Resolve the exact workflow filename and verify that GitHub has registered it.
+# Use the filename itself for dispatch and run matching. This avoids coupling
+# orchestration to a numeric workflow ID that can become stale across workflow
+# file replacement/re-registration.
 workflow_json="$(gh api "repos/$repo/actions/workflows/$workflow")"
-workflow_id="$(jq -r '.id' <<<"$workflow_json")"
 workflow_state="$(jq -r '.state' <<<"$workflow_json")"
 workflow_path="$(jq -r '.path' <<<"$workflow_json")"
 
@@ -18,7 +19,7 @@ if [[ "$workflow_path" != "$wanted" ]]; then
   exit 1
 fi
 
-echo "Resolved $workflow_path to workflow id $workflow_id ($workflow_state)"
+echo "Resolved $workflow_path ($workflow_state)"
 
 if [[ "$workflow_state" != "active" ]]; then
   echo "ERROR: workflow $workflow_path is not active (state=$workflow_state)" >&2
@@ -28,14 +29,14 @@ fi
 # Record the dispatch time and current latest run before sending the request.
 # This prevents attaching to an older or simultaneous manual dispatch.
 dispatch_time="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
-before="$(gh run list --repo "$repo" --workflow "$workflow_id" --event workflow_dispatch --limit 1 --json databaseId --jq '.[0].databaseId // 0')"
+before="$(gh run list --repo "$repo" --workflow "$workflow" --event workflow_dispatch --limit 1 --json databaseId --jq '.[0].databaseId // 0')"
 before="${before:-0}"
 
 # workflow_dispatch accepts a branch or tag ref. In Actions, GITHUB_SHA can be
 # a detached commit SHA, which GitHub rejects here with HTTP 422.
 dispatch_ref="${GITHUB_REF_NAME:?GITHUB_REF_NAME is required}"
 echo "Dispatching $workflow_path on ref: $dispatch_ref"
-gh workflow run "$workflow_id" --repo "$repo" --ref "$dispatch_ref" "$@"
+gh workflow run "$workflow" --repo "$repo" --ref "$dispatch_ref" "$@"
 
 # Resolve the branch/tag to its commit SHA so we can identify the exact child
 # run without confusing another simultaneous manual dispatch.
@@ -43,7 +44,7 @@ dispatch_sha="$(gh api "repos/$repo/commits/$dispatch_ref" --jq '.sha')"
 
 run_id=""
 for attempt in $(seq 1 60); do
-  run_id="$(gh run list --repo "$repo" --workflow "$workflow_id" --event workflow_dispatch --limit 20 --json databaseId,createdAt,headSha,status --jq "map(select(.databaseId > $before and .createdAt >= \"$dispatch_time\" and .headSha == \"$dispatch_sha\")) | sort_by(.createdAt) | last | .databaseId // empty")"
+  run_id="$(gh run list --repo "$repo" --workflow "$workflow" --event workflow_dispatch --limit 20 --json databaseId,createdAt,headSha,status --jq "map(select(.databaseId > $before and .createdAt >= \"$dispatch_time\" and .headSha == \"$dispatch_sha\")) | sort_by(.createdAt) | last | .databaseId // empty")"
   if [[ -n "$run_id" ]]; then
     echo "Found dispatched $workflow run $run_id (created at/after $dispatch_time)"
     gh run watch "$run_id" --repo "$repo" --exit-status
