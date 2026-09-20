@@ -34,7 +34,7 @@ fi
 # a detached commit SHA, which GitHub rejects here with HTTP 422.
 dispatch_ref="${GITHUB_REF_NAME:?GITHUB_REF_NAME is required}"
 echo "Dispatching $workflow_path on ref: $dispatch_ref"
-gh workflow run "$workflow_id" --repo "$repo" --ref "$dispatch_ref" "$@"
+gh workflow run "$workflow" --repo "$repo" --ref "$dispatch_ref" "$@"
 
 # Resolve the branch/tag to its commit SHA so we can identify the exact child
 # run without confusing another simultaneous manual dispatch.
@@ -42,7 +42,7 @@ dispatch_sha="$(gh api "repos/$repo/commits/$dispatch_ref" --jq '.sha')"
 
 run_id=""
 for attempt in $(seq 1 60); do
-  run_id="$(gh run list --repo "$repo" --workflow "$workflow_id" --event workflow_dispatch --limit 20 --json databaseId,createdAt,headSha,status --jq "map(select(.databaseId > $before and .createdAt >= \"$dispatch_time\" and .headSha == \"$dispatch_sha\")) | sort_by(.createdAt) | last | .databaseId // empty")"
+  run_id="$(gh run list --repo "$repo" --workflow "$workflow" --event workflow_dispatch --limit 20 --json databaseId,createdAt,headSha,status --jq "map(select(.databaseId > $before and .createdAt >= \"$dispatch_time\" and .headSha == \"$dispatch_sha\")) | sort_by(.createdAt) | last | .databaseId // empty")"
   if [[ -n "$run_id" ]]; then
     echo "Found dispatched $workflow run $run_id (created at/after $dispatch_time)"
     gh run watch "$run_id" --repo "$repo" --exit-status
