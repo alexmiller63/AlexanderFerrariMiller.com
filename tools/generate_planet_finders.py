@@ -893,6 +893,29 @@ def layout(
     all_solutions = []
     order_index = 0
 
+    def next_untried_order(current_order):
+        """Return the next lexicographic body ordering not yet attempted.
+
+        Orders are generated lazily; no permutation table is materialized.
+        """
+        names = [item[1][1] for item in current_order]
+        by_name = {item[1][1]: item for item in indexed}
+        while True:
+            i = len(names) - 2
+            while i >= 0 and names[i] >= names[i + 1]:
+                i -= 1
+            if i < 0:
+                names.sort()
+            else:
+                j = len(names) - 1
+                while names[j] <= names[i]:
+                    j -= 1
+                names[i], names[j] = names[j], names[i]
+                names[i + 1:] = reversed(names[i + 1:])
+            key = tuple(names)
+            if key not in attempted_orders:
+                return [by_name[name] for name in names]
+
     # Squeaky-wheel ordering: a body that hits the per-depth node cap is not
     # merely stopped.  That cap identifies the body currently exploding the
     # tree.  Throw away this fixed-order DFS state, promote that body to the
@@ -900,7 +923,13 @@ def layout(
     while True:
         order_key = tuple(item[1][1] for item in order)
         if order_key in attempted_orders:
-            break
+            order = next_untried_order(order)
+            order_key = tuple(item[1][1] for item in order)
+            print(
+                f"Planet Finder {mode}: repeated ordering; advancing lazily to "
+                "next untried sequence=" + " > ".join(order_key),
+                flush=True,
+            )
         attempted_orders.add(order_key)
         order_index += 1
 
