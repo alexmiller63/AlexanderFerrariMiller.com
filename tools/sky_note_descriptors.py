@@ -660,20 +660,31 @@ def decorate_note_html(rendered_html: str, records: list[dict], weekly_fixed_ids
         and record["id"] not in used_ids
         and record.get("type") in {"star", "deep-sky-object"}
     ]
-    if other_objects:
-        links = []
-        for record in other_objects:
-            fixed_id = str(record["id"])
-            prose = _linked_name(record)
-            links.append(
-                f'<span class="other-object-links" data-fixed-object-id="{fixed_id}">'
-                f'{prose}'
-                f'</span>'
-            )
-        decorated += (
-            '<section id="other-objects-listed-this-week" class="other-objects-listed-week" data-other-objects-listed-week="true">'
-            '<p><strong>Other objects listed this week:</strong> '
-            + ", ".join(links) + '</p></section>'
+    links = []
+    for record in other_objects:
+        fixed_id = str(record["id"])
+        # This component is the hand-off contract to Artwork.  Preserve the
+        # canonical descriptor/story href, but give these supplemental object
+        # links an explicit class that Artwork can verify without confusing
+        # them with ordinary inline descriptor links.
+        prose = _linked_name(record).replace(
+            'class="descriptor-link"', 'class="object-artwork-link"', 1
         )
+        links.append(
+            f'<span class="other-object-links" data-fixed-object-id="{fixed_id}">'
+            f'{prose}'
+            f'</span>'
+        )
+
+    # The component itself is structural and therefore always exists.  An empty
+    # list is valid when every weekly fixed object is already represented in
+    # the observing prose; absence of the component is not equivalent to an
+    # empty list.
+    body = ", ".join(links) if links else '<span class="no-other-objects">None</span>'
+    decorated += (
+        '<section id="other-objects-listed-this-week" class="other-objects-listed-week" data-other-objects-listed-week="true">'
+        '<p><strong>Other objects listed this week:</strong> '
+        + body + '</p></section>'
+    )
 
     return decorated
