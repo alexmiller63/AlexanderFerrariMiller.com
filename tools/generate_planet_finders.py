@@ -914,6 +914,7 @@ def layout(
     attempted_orders = set()
     all_solutions = []
     order_index = 0
+    promoted_names = []
 
     def next_untried_order(current_order):
         """Return the next lexicographic body ordering not yet attempted.
@@ -983,20 +984,29 @@ def layout(
             )
             if squeaky_index is None:
                 raise
-            if squeaky_index == 0:
-                # A deterministic restart with the same body already first
-                # would simply replay the same capped search. Keep the cap
-                # meaningful: never silently uncap it and never loop.
+            if exc.name in promoted_names:
+                # This body already owns a slot in the promoted prefix. Moving
+                # it again would create a promotion carousel. Its fixed
+                # priority has already been established, so this ordering is
+                # genuinely exhausted at the per-body cap.
                 raise RuntimeError(
-                    f"Planet Finder {mode}: squeaky wheel {exc.name} is already first "
-                    f"and reached the per-body viable-candidate cap of "
-                    f"{budget['max_node_candidates']:,}"
+                    f"Planet Finder {mode}: promoted squeaky wheel {exc.name} "
+                    f"reached the per-body viable-candidate cap of "
+                    f"{budget['max_node_candidates']:,} again"
                 )
 
-            # Reset only the promoted body. Every other body keeps its own
-            # accumulated cap pressure across this fresh ordering.
+            # Promotion is monotonic. Each newly squeaky body is appended to a
+            # stable promoted prefix; previously promoted bodies never lose
+            # their relative priority. Reset only the newly promoted body's
+            # counter and restart with the remaining bodies after the prefix.
+            promoted_names.append(exc.name)
             budget["body_attempt_counts"][Body.from_name(exc.name)] = 0
-            order = [order[squeaky_index], *order[:squeaky_index], *order[squeaky_index + 1:]]
+            by_name = {item[1][1]: item for item in order}
+            promoted = [by_name[name] for name in promoted_names]
+            remainder = [
+                item for item in order if item[1][1] not in promoted_names
+            ]
+            order = [*promoted, *remainder]
             print(
                 f"Planet Finder {mode}: SQUEAKY-WHEEL PROMOTE body={exc.name} "
                 f"after hitting {budget['max_node_candidates']:,}; "
