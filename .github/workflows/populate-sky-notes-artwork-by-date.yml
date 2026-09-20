@@ -159,7 +159,7 @@ jobs:
               print(f"PROOF: {week} has no supplemental weekly objects; all weekly fixed objects are represented in Sky Notes prose")
           print(f"OTHER_OBJECTS_COUNT={len(links)}")
           PY
-            count="$(grep -o 'class="object-artwork-link"' "$dom" | wc -l)"
+            count="$(grep -o 'class="object-artwork-link"' "$dom" | wc -l || true)"
             checked=$((checked + count))
           done
           echo "PROOF COMPLETE: Chromium verified the Sky Notes/Artwork handoff contract; $checked supplemental object-artwork links rendered."
