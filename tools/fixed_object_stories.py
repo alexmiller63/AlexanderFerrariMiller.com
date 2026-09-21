@@ -166,7 +166,13 @@ def write_public_story(story: Story) -> Path:
         f"<p>{html.escape(' '.join(part.splitlines()))}</p>"
         for part in re.split(r"\n\s*\n", story.body.strip()) if part.strip()
     )
-    artwork_path = ROOT / "sky-notes-artwork" / "objects" / str(story.fixed_object_id) / "finder.svg"\n    artwork_version = str(artwork_path.stat().st_mtime_ns) if artwork_path.exists() else None\n    artwork_url = (f"../../sky-notes-artwork/objects/{story.fixed_object_id}/finder.svg?v={artwork_version}"\n                   if artwork_version is not None else None)\n    document = (
+    artwork_path = ROOT / "sky-notes-artwork" / "objects" / str(story.fixed_object_id) / "finder.svg"
+    artwork_version = str(artwork_path.stat().st_mtime_ns) if artwork_path.exists() else None
+    artwork_url = (
+        f"../../sky-notes-artwork/objects/{story.fixed_object_id}/finder.svg?v={artwork_version}"
+        if artwork_version is not None else None
+    )
+    document = (
         "<!doctype html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n"
         "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n"
         f"<title>{html.escape(story.hed)} — Star Almanack Sky Notes</title>\n</head>\n"
