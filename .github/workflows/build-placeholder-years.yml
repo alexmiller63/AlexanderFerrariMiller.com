@@ -37,7 +37,6 @@ jobs:
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           for year in $ALMANACK_YEARS; do
-            git add "site/$year"
           done
           if git diff --cached --quiet; then
             echo 'Requested placeholder source years already current.'
