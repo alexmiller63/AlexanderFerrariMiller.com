@@ -9,7 +9,7 @@ from almanack_calendar import ensure_calendar_metadata,get_events,set_events
 from star_almanack_astronomy import declination_band, season_for
 from star_almanack_objects import HTML_AID, observing_aid_for_magnitude
 ROOT=Path(__file__).resolve().parents[1]; SRC=ROOT; GENERATED=SRC/"generated"
-PUBLIC=ROOT/"almanack"; SOURCE_SITE=SRC/"site"; FIXED=SRC/"fixed-objects.yaml"
+PUBLIC=ROOT/"almanack"; FIXED=SRC/"fixed-objects.yaml"
 EDITORIAL=json.loads((SRC/"messier-editorial.json").read_text(encoding="utf-8"))
 ASTERISM_OVERLAP=SRC/"asterism-catalog-overlap.csv"; DEFAULT_YEARS=(2025,2026,2027)
 def requested_years():
@@ -97,5 +97,5 @@ def inject(root,by_date):
 def main():
  catalog=load_catalog()
  for year in requested_years():
-  by_date=events(catalog,year); s=inject(SOURCE_SITE,by_date); p=inject(PUBLIC,by_date); print(f"{year}: standardized 110 Messier events; updated {s} source + {p} public pages")
+  by_date=events(catalog,year); s=inject(SOURCE_SITE,by_date); p=inject(PUBLIC,by_date); print(f"{year}: standardized 110 Messier events; updated {p} public pages")
 if __name__=="__main__": main()
