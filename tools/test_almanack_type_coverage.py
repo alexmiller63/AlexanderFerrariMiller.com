@@ -23,8 +23,13 @@ def week_from_iso(value):
  m=re.search(r'-(W\d{2})-',value)
  if not m:raise AssertionError(f'cannot parse ISO week from {value!r}')
  return m.group(1)
+def page_for(week, page_type='calendar'):
+ typed=SITE/week/page_type/'index.html'
+ if typed.exists(): return typed
+ legacy=SITE/week/'index.html'
+ return legacy if legacy.exists() else typed
 def html_for(week):
- p=SITE/week/'calendar'/'index.html'; return p.read_text(encoding='utf-8') if p.exists() else ''
+ p=page_for(week); return p.read_text(encoding='utf-8') if p.exists() else ''
 def close_together(html,left,right,radius=1200):
  pos=html.find(left)
  if pos<0:return False
@@ -58,7 +63,7 @@ def build_cases():
  Case('Hyades asterism identity',hyades_week,'Hyades C41 says also an asterism inline.',('C41','Hyades','also an asterism'),(('Hyades','also an asterism'),)),
  ]
 def extended_ephemeris_contract():
- p=SITE/'W01'/'ephemeris'/'index.html'; html=p.read_text(encoding='utf-8') if p.exists() else ''; reasons=[]
+ p=page_for('W01','ephemeris'); html=p.read_text(encoding='utf-8') if p.exists() else ''; reasons=[]
  match=re.search(r'<table class="ephemeris extended-ephemeris">(.*?)</table>',html,re.S)
  if not match:return ['missing explicit extended-ephemeris table class']
  table=match.group(1)
