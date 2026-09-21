@@ -70,20 +70,24 @@ def point_segment_distance(point, start, end):
 def place_label(ax, label, point, occupied_labels, color=TEXT, fontsize=9, zorder=6,
                 obstacle_segments=()):
     """Place a label away from existing labels and constellation figure segments."""
-    offsets = ((5, 5), (7, -9), (-7, 7), (-7, -9), (12, 0), (0, 12),
-               (16, 8), (16, -10), (-16, 8), (-16, -10), (0, 18), (0, -18))
+    # Search near the owning star first.  A Bayer label must never drift so far
+    # that it appears to identify a different star.
+    offsets = ((5, 5), (7, -7), (-7, 7), (-7, -7),
+               (10, 0), (0, 10), (-10, 0), (0, -10))
     clearance = max(0.32, fontsize * 0.035)
+    best = None
     for dx, dy in offsets:
         candidate = (point[0] + dx * 0.02, point[1] + dy * 0.02)
         labels_clear = all((candidate[0]-x)**2 + (candidate[1]-y)**2 > 0.55**2
                            for x, y in occupied_labels)
         figure_clear = all(point_segment_distance(candidate, start, end) > clearance
                            for start, end in obstacle_segments)
-        if labels_clear and figure_clear:
-            occupied_labels.append(candidate)
-            ax.annotate(label, point, xytext=(dx, dy), textcoords="offset points",
-                        fontsize=fontsize, color=color, zorder=zorder)
-            return
+        score = (0 if labels_clear else 1) + (0 if figure_clear else 1)
+        if best is None or score < best[0]:
+            best = (score, dx, dy, candidate)
+        if score == 0:
+            break
+    _, dx, dy, candidate = best
     occupied_labels.append(candidate)
     ax.annotate(label, point, xytext=(dx, dy), textcoords="offset points",
                 fontsize=fontsize, color=color, zorder=zorder)
