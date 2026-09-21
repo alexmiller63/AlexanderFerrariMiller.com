@@ -6,7 +6,7 @@ import datetime as dt
 import html
 from pathlib import Path
 
-from almanack_sections import section_open
+from almanack_sections import section_open, type_page, week_dir
 
 ROOT = Path(__file__).resolve().parents[1]
 PUBLIC_ROOT = ROOT / "almanack"
@@ -96,7 +96,13 @@ def main():
     for year,week,monday in selected_weeks(a.start_year,a.start_week,ey,ew):
         rendered=page(year,week,monday)
         for root in OUTPUT_ROOTS:
-            out=root/str(year)/f'W{week:02d}'; out.mkdir(parents=True,exist_ok=True); (out/'index.html').write_text(rendered,encoding='utf-8')
+            legacy = week_dir(root, year, week) / "index.html"
+            legacy.parent.mkdir(parents=True, exist_ok=True)
+            legacy.write_text(rendered, encoding="utf-8")
+            for content_type in ("calendar", "ephemeris", "planet-finder", "sky-notes"):
+                target = type_page(root, year, week, content_type)
+                target.parent.mkdir(parents=True, exist_ok=True)
+                target.write_text(rendered, encoding="utf-8")
         count+=1
     print(f'Rebuilt {count} clean Almanack week scaffold(s) in both page roots.')
 
