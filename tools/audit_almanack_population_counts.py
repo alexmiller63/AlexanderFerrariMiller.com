@@ -13,12 +13,12 @@ from __future__ import annotations
 import csv
 import re
 from pathlib import Path
-from almanack_paths import ALMANACK_ROOT, calendar_pages
+from almanack_paths import ALMANACK_ROOT, calendar_pages, year_dir
 
 ROOT = Path(__file__).resolve().parents[1]
 YEAR = 2026
 SRC = ROOT
-SITE = ROOT / "almanack" / str(YEAR)
+SITE = year_dir(YEAR)
 
 
 def read_csv(path: Path) -> list[dict[str, str]]:
