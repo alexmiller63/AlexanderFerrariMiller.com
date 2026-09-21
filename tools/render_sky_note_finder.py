@@ -55,18 +55,37 @@ def path_hits_view(points, xmin, xmax, ymin, ymax):
     return any(xmin <= x <= xmax and ymin <= y <= ymax for x, y in points)
 
 
-def place_label(ax, label, point, occupied_labels, color=TEXT, fontsize=9, zorder=6):
-    """Place a label at the first simple offset that does not overlap another label anchor."""
-    offsets = ((5, 5), (7, -9), (-7, 7), (-7, -9), (12, 0), (0, 12))
+def point_segment_distance(point, start, end):
+    """Euclidean distance from a projected point to a projected line segment."""
+    px, py = point
+    x1, y1 = start
+    x2, y2 = end
+    dx, dy = x2 - x1, y2 - y1
+    if dx == 0 and dy == 0:
+        return math.hypot(px - x1, py - y1)
+    t = max(0.0, min(1.0, ((px - x1) * dx + (py - y1) * dy) / (dx * dx + dy * dy)))
+    return math.hypot(px - (x1 + t * dx), py - (y1 + t * dy))
+
+
+def place_label(ax, label, point, occupied_labels, color=TEXT, fontsize=9, zorder=6,
+                obstacle_segments=()):
+    """Place a label away from existing labels and constellation figure segments."""
+    offsets = ((5, 5), (7, -9), (-7, 7), (-7, -9), (12, 0), (0, 12),
+               (16, 8), (16, -10), (-16, 8), (-16, -10), (0, 18), (0, -18))
+    clearance = max(0.32, fontsize * 0.035)
     for dx, dy in offsets:
         candidate = (point[0] + dx * 0.02, point[1] + dy * 0.02)
-        if all((candidate[0]-x)**2 + (candidate[1]-y)**2 > 0.55**2 for x, y in occupied_labels):
+        labels_clear = all((candidate[0]-x)**2 + (candidate[1]-y)**2 > 0.55**2
+                           for x, y in occupied_labels)
+        figure_clear = all(point_segment_distance(candidate, start, end) > clearance
+                           for start, end in obstacle_segments)
+        if labels_clear and figure_clear:
             occupied_labels.append(candidate)
             ax.annotate(label, point, xytext=(dx, dy), textcoords="offset points",
                         fontsize=fontsize, color=color, zorder=zorder)
             return
-    occupied_labels.append(point)
-    ax.annotate(label, point, xytext=(5, 5), textcoords="offset points",
+    occupied_labels.append(candidate)
+    ax.annotate(label, point, xytext=(dx, dy), textcoords="offset points",
                 fontsize=fontsize, color=color, zorder=zorder)
 
 
@@ -296,6 +315,11 @@ def render(spec: dict, stars, output: Path) -> None:
 
     occupied_labels = []
     figure_points = []
+    figure_segments = []
+    for path in figure_paths:
+        path_points = [project(idx[ref].ra_deg, idx[ref].dec_deg, *center) for ref in path]
+        path_points = [point for point in path_points if point is not None]
+        figure_segments.extend(zip(path_points, path_points[1:]))
     for ref in figure_refs:
         star = idx[ref]
         identity = identities_by_ref[ref]
@@ -308,13 +332,14 @@ def render(spec: dict, stars, output: Path) -> None:
             continue
         label = chart_bayer_label(identity, star, figure_abbreviation)
         if label:
-            place_label(ax, label, point, occupied_labels)
+            place_label(ax, label, point, occupied_labels, obstacle_segments=figure_segments)
 
     if figure_constellation and figure_points:
         constellation_point = (sum(x for x, _ in figure_points) / len(figure_points),
                                sum(y for _, y in figure_points) / len(figure_points))
         place_label(ax, figure_constellation, constellation_point, occupied_labels,
-                    color=FIGURE_BLUE, fontsize=16, zorder=5)
+                    color=FIGURE_BLUE, fontsize=16, zorder=5,
+                    obstacle_segments=figure_segments)
 
     # Candidate asterisms are accepted curated geometry. Render only those
     # whose projected paths enter this already-established chart field.
