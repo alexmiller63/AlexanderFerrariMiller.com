@@ -97,7 +97,7 @@ jobs:
               -f start_year="$year" -f start_week="$iso_week" \
               -f end_year="$year" -f end_week="$iso_week"
 
-            bash tools/run-workflow-and-wait.sh populate-calendar-by-date.yml \
+            bash tools/run-workflow-and-wait.sh calendar-generator.yml \
               -f start_year="$year" -f start_week="$iso_week" \
               -f end_year="$year" -f end_week="$iso_week"
 
