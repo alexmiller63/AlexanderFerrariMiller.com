@@ -5,10 +5,11 @@ import csv,datetime as dt,re,sys
 from collections import defaultdict
 from pathlib import Path
 from almanack_sections import type_page
+from almanack_paths import ALMANACK_ROOT, calendar_pages
 from almanack_calendar import ensure_calendar_metadata,get_events,set_events
 from star_almanack_astronomy import best_visibility_occurrences_for_iso_year,declination_band,season_for
 from star_almanack_objects import HTML_AID, ObservingAid
-ROOT=Path(__file__).resolve().parents[1]; SRC=ROOT; PUBLIC=ROOT/"almanack"; CATALOG=SRC/"finest-ngc-catalog.csv"; CALDWELL=SRC/"finest-ngc-caldwell-overlap.csv"
+ROOT=Path(__file__).resolve().parents[1]; SRC=ROOT; PUBLIC=ALMANACK_ROOT; CATALOG=SRC/"finest-ngc-catalog.csv"; CALDWELL=SRC/"finest-ngc-caldwell-overlap.csv"
 CONSTELLATIONS={"And":"Andromeda","Aqr":"Aquarius","Ari":"Aries","Aur":"Auriga","Boo":"Boötes","CMa":"Canis Major","Cam":"Camelopardalis","Cas":"Cassiopeia","Cet":"Cetus","Com":"Coma Berenices","Crv":"Corvus","CVn":"Canes Venatici","Cyg":"Cygnus","Dra":"Draco","Eri":"Eridanus","Gem":"Gemini","Her":"Hercules","Hya":"Hydra","Leo":"Leo","LMi":"Leo Minor","Mon":"Monoceros","Ori":"Orion","Peg":"Pegasus","Per":"Perseus","Pup":"Puppis","Scl":"Sculptor","Sex":"Sextans","Sgr":"Sagittarius","Tau":"Taurus","UMa":"Ursa Major","Vir":"Virgo"}
 TYPE_LABELS={"OC":"open cluster","GC":"globular cluster","PN":"planetary nebula","EN":"emission nebula","RN":"reflection nebula","E/RN":"emission/reflection nebula","Gal":"galaxy"}
 TELESCOPE_GLYPH=HTML_AID[ObservingAid.TELESCOPE]
@@ -47,7 +48,7 @@ def events_for(data):
  return events
 def pages_for_events(root,events):
  pages=[]
- for y in sorted({d.isocalendar().year for d in events}):pages.extend(sorted((root/str(y)).glob("W??/calendar/index.html")))
+ for y in sorted({d.isocalendar().year for d in events}):pages.extend(calendar_pages(y))
  return pages
 def inject(root,events):
  changed=0
