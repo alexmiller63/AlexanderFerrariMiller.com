@@ -380,7 +380,7 @@ def update_year(year, engine=None):
                 "horizon_deg": -0.8333 if key == "sun" else -0.5667,
             }
         replacement = render_ephemeris(monday, values)
-        for base in (ROOT / "almanack", ROOT / "site"):
+        for base in (ROOT / "almanack",):
             path = base / str(year) / f"W{week:02d}" / "index.html"
             text = path.read_text(encoding="utf-8")
             new = put_ephemeris(text, replacement, path)
