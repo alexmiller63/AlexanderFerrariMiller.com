@@ -24,7 +24,6 @@ from pathlib import Path
 
 from iso_date_range import group_by_year, parse_range_args
 from almanack_paths import calendar_page
-from almanack_sections import type_page
 from star_almanack_planets import PLANET_COLUMNS, load_weekly_longitudes
 
 ROOT = Path(__file__).resolve().parents[1]
