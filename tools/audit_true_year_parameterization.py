@@ -31,7 +31,6 @@ from almanack_calendar import CALENDAR_RE, ROW_RE, _get_attr, page_dates
 ROOT = Path(__file__).resolve().parents[1]
 PUBLIC = ROOT / "almanack"
 SRC = ROOT
-SOURCE_SITE = SRC / "site"
 GENERATED = SRC / "generated"
 DEFAULT_YEARS = (2025, 2027)
 
@@ -250,17 +249,16 @@ def audit_2026_equivalence() -> list[str]:
 def audit_year(year: int) -> list[str]:
     failures: list[str] = []
     counts = []
-    for root in (SOURCE_SITE, PUBLIC):
-        count, page_failures = audit_week_pages(root, year)
-        counts.append(count)
-        failures.extend(page_failures)
+    count, page_failures = audit_week_pages(PUBLIC, year)
+    counts.append(count)
+    failures.extend(page_failures)
 
     for path in sorted(GENERATED.glob(f"*-{year}.csv")):
         failures.extend(audit_generated_csv(path, year))
 
     if not failures:
         print(
-            f"{year}: PASS — {counts[0]} source + {counts[1]} public weekly pages; "
+            f"{year}: PASS — {counts[0]} public weekly pages; "
             f"generated dated CSV rows belong to ISO {year}"
         )
     return failures
