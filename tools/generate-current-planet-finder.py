@@ -4,6 +4,8 @@
 Usage: python tools/generate-current-planet-finder.py 2026 37
 """
 from pathlib import Path
+
+from almanack_paths import week_dir
 import csv, datetime as dt, heapq, math, sys
 
 ROOT=Path(__file__).resolve().parents[1]
@@ -276,7 +278,7 @@ def main():
     parsed=[]
     for sym,name,col in BODIES:
         sign,d,m,L=parse_pos(row[col]); parsed.append((sym,name,sign,d,m,L))
-    out=ROOT/'almanack'/str(year)/f'W{week:02d}'/'finders'; out.mkdir(parents=True,exist_ok=True)
+    out=week_dir(year, week)/'finders'; out.mkdir(parents=True,exist_ok=True)
     for mode,fn in [('symbols','planet-finder-greek-symbols.svg'),('latin','planet-finder-latin.svg'),('mixed','planet-finder-mixed-learner.svg')]: (out/fn).write_text(build(mode,year,week,row['monday_utc'],parsed),encoding='utf-8')
     print(f'Generated collision-safe Planet Finder for {key}')
 
