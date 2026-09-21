@@ -177,7 +177,6 @@ jobs:
             for year in $ALMANACK_YEARS; do
               git add \
                 "almanack/$year" \
-                "site/$year" \
                 "weekly-ephemeris-$year.csv" \
                 "generated/calendar-$year.json" \
                 "generated/meteor-showers-$year.json" \
