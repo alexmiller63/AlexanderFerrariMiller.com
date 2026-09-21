@@ -13,6 +13,7 @@ from __future__ import annotations
 import csv
 import re
 from pathlib import Path
+from almanack_paths import ALMANACK_ROOT, calendar_pages
 
 ROOT = Path(__file__).resolve().parents[1]
 YEAR = 2026
@@ -27,7 +28,7 @@ def read_csv(path: Path) -> list[dict[str, str]]:
 
 def calendar_html() -> str:
     chunks: list[str] = []
-    for page in sorted(SITE.glob("W??/calendar/index.html")):
+    for page in calendar_pages(YEAR):
         text = page.read_text(encoding="utf-8")
         chunks.extend(
             re.findall(
