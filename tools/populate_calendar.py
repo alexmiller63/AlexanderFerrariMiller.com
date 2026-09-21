@@ -32,7 +32,7 @@ from almanack_calendar import (
     set_zodiac,
 )
 from almanack_time import AstroInstant, interpolate_instant
-from almanack_sections import type_page
+from almanack_paths import typed_page
 from star_almanack_ephemeris import StarAlmanackEphemeris
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -395,7 +395,7 @@ def populate_year(year):
     weeks = date(year, 12, 28).isocalendar().week
     for base in (PUBLIC_ROOT,):
         for week in range(1, weeks + 1):
-            if patch_page(type_page(base, year, week, "calendar"), ingresses, events):
+            if patch_page(typed_page(year, week, "calendar"), ingresses, events):
                 changed += 1
     print(
         f"{year}: {len(ingresses)} ingresses in query window, "
