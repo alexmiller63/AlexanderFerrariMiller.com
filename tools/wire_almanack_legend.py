@@ -15,6 +15,8 @@ from pathlib import Path
 import re
 import sys
 
+from almanack_paths import typed_page
+
 ROOT = Path(__file__).resolve().parents[1]
 BASES = (ROOT / "almanack",)
 GLYPH_ROOT = "/assets/almanack/visibility-glyphs/masters/"
@@ -172,7 +174,7 @@ def main() -> None:
     for base in BASES:
         for year, week in weeks:
             for content_type in CONTENT_TYPES:
-                path = base / str(year) / f"W{week:02d}" / content_type / "index.html"
+                path = typed_page(year, week, content_type)
                 if not path.is_file():
                     continue
                 if wire_page(path):
