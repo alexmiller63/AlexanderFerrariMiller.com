@@ -6,7 +6,7 @@ from datetime import timedelta
 
 import populate_calendar as calendar
 import populate_fixed_sky as fixed_sky
-from almanack_sections import require_section
+from almanack_sections import require_section, type_page
 from calendar_fixed_object_ids import patch_file as patch_fixed_object_ids
 from calendar_mobile_layout import patch_file as patch_mobile_layout
 from iso_date_range import group_by_year, parse_range_args
@@ -35,7 +35,7 @@ def populate_selected_year(year: int, selected_weeks: list[int]) -> int:
         monday = __import__('datetime').date.fromisocalendar(year, week, 1)
         week_dates = {monday + timedelta(days=i) for i in range(7)}
         for base in (calendar.SOURCE_ROOT, calendar.PUBLIC_ROOT):
-            path = base / str(year) / f"W{week:02d}" / "index.html"
+            path = type_page(base, year, week, "calendar")
             if not path.exists():
                 raise RuntimeError(f"Missing weekly page: {path.relative_to(calendar.ROOT)}")
             before = path.read_text(encoding="utf-8")
