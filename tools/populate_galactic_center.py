@@ -26,7 +26,6 @@ from almanack_time import AstroInstant, interpolate_instant
 from populate_calendar import iso_bounds, source_longitudes
 
 ROOT = Path(__file__).resolve().parents[1]
-SOURCE_ROOT = ROOT / "site"
 PUBLIC_ROOT = ROOT / "almanack"
 
 # Sagittarius A* J2000 radio position from Reid & Brunthaler (2004),
@@ -151,11 +150,11 @@ def populate_year(year: int) -> int:
     events = expected_for_year(year)
     changed = 0
     weeks = date(year, 12, 28).isocalendar().week
-    for base in (SOURCE_ROOT, PUBLIC_ROOT):
+    for base in (PUBLIC_ROOT,):
         for week in range(1, weeks + 1):
             if patch_page(base / str(year) / f"W{week:02d}" / "index.html", events):
                 changed += 1
-    for base in (SOURCE_ROOT, PUBLIC_ROOT):
+    for base in (PUBLIC_ROOT,):
         count = count_occurrences(base, year)
         if count != 1:
             raise RuntimeError(
@@ -172,13 +171,13 @@ def populate_year(year: int) -> int:
 
 def verify_year(year: int) -> None:
     expected_for_year(year)
-    for base in (SOURCE_ROOT, PUBLIC_ROOT):
+    for base in (PUBLIC_ROOT,):
         count = count_occurrences(base, year)
         if count != 1:
             raise RuntimeError(
                 f"{base}: expected exactly one Galactic Center event for {year}, found {count}"
             )
-    print(f"{year}: Galactic Center event verified in source and public calendars")
+    print(f"{year}: Galactic Center event verified in canonical Almanack calendar")
 
 
 def parse_args() -> tuple[list[int], bool]:
