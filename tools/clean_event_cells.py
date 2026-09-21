@@ -8,7 +8,7 @@ from pathlib import Path
 from almanack_calendar import clear_events, ensure_calendar_metadata
 
 ROOT = Path(__file__).resolve().parents[1]
-BASES = (ROOT / "site", ROOT / "almanack")
+BASES = (ROOT / "almanack",)
 
 
 def parse_years() -> list[int]:
