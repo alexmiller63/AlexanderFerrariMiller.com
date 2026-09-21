@@ -181,7 +181,7 @@ def page_date_map(year):
     return events
 def pages_for_events(root,events):
     pages=[]
-    for iso_year in sorted({d.isocalendar().year for d in events}):pages.extend(sorted((root/str(iso_year)).glob("W??/index.html")))
+    for iso_year in sorted({d.isocalendar().year for d in events}):pages.extend(sorted((root/str(iso_year)).glob("W??/calendar/index.html")))
     return pages
 def inject(root,year,events):
     changed=0
