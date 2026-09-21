@@ -179,6 +179,7 @@ def observer_note(year: int, week: int, page_path, fixed: list[dict], relations:
         if substantial else
         "No fixed-sky Calendar object is classified as requiring a substantial telescope this week."
     )
+    deep_sky_notice = "" if any(item["type"] == "deep-sky" for item in fixed) else "No deep-sky objects are featured this week."
     planet_paragraph = (
         " ".join(base.relation_sentence(item) for item in relations)
         if relations else
@@ -191,6 +192,7 @@ def observer_note(year: int, week: int, page_path, fixed: list[dict], relations:
         f"**Binoculars:** {binocular_guidance}",
         f"**Small telescope:** {telescope_guidance}",
         f"**Substantial telescope:** {substantial_guidance}",
+        deep_sky_notice,
     ))
 
 
