@@ -11,10 +11,11 @@ from pathlib import Path
 import yaml
 
 from almanack_calendar import CalendarEvent, ensure_calendar_metadata, get_events, set_events
+from almanack_paths import ALMANACK_ROOT, calendar_pages
 from star_almanack_astronomy import apparent_sun_ra_hours,best_visibility_occurrences_for_iso_year,solar_ra_occurrences_for_iso_year
 from star_almanack_objects import AlmanackObject,ObservingAid,observing_aid_for_magnitude,render_html
 
-ROOT=Path(__file__).resolve().parents[1]; SRC=ROOT; PUBLIC=ROOT/"almanack"; DEFAULT_YEARS=(2025,2026,2027)
+ROOT=Path(__file__).resolve().parents[1]; SRC=ROOT; PUBLIC=ALMANACK_ROOT; DEFAULT_YEARS=(2025,2026,2027)
 REGIONS=SRC/"fixed-object-regions.yaml"
 FIXED_OBJECTS=SRC/"fixed-objects.yaml"
 FIXED_OBJECT_REGISTRY=SRC/"database"/"fixed-object-registry.json"
@@ -181,7 +182,7 @@ def page_date_map(year):
     return events
 def pages_for_events(root,events):
     pages=[]
-    for iso_year in sorted({d.isocalendar().year for d in events}):pages.extend(sorted((root/str(iso_year)).glob("W??/calendar/index.html")))
+    for iso_year in sorted({d.isocalendar().year for d in events}):pages.extend(calendar_pages(iso_year))
     return pages
 def inject(root,year,events):
     changed=0
