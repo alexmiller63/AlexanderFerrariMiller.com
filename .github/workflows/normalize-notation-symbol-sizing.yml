@@ -79,7 +79,7 @@ jobs:
           set -euo pipefail
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add tools/wire_ephemeris_notation.py tools/wire_almanack_legend.py almanack/2025 almanack/2026 almanack/2027 site/2025 site/2026 site/2027
+          git add tools/wire_ephemeris_notation.py tools/wire_almanack_legend.py almanack/2025 almanack/2026 almanack/2027
           if git diff --cached --quiet; then
             echo 'No notation sizing changes needed.'
             exit 0
