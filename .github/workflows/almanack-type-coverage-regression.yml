@@ -39,6 +39,23 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Generate 2026 Almanack pages for regression
+        run: |
+          python tools/clean_event_cells.py 2026
+          python tools/populate_calendar.py 2026
+          python tools/populate_meteor_showers.py 2026
+          python tools/populate_ephemeris.py 2026
+          python tools/wire_ephemeris_notation.py 2026
+          python tools/populate_fixed_sky.py 2026
+          python tools/standardize_messier_calendar.py 2026
+          python tools/populate_constellations.py 2026
+          python tools/populate_asterisms.py 2026
+          python tools/populate_caldwell.py 2026
+          python tools/populate_finest_ngc.py 2026
+          python tools/reconcile_catalog_common_names.py 2026
       - name: Run permanent type coverage regression
         run: python tools/test_almanack_type_coverage.py
       - name: Report Almanack population counts
