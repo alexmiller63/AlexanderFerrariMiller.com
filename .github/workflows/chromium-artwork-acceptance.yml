@@ -82,7 +82,7 @@ jobs:
               page = context.new_page()
               for n in range(start, end + 1):
                   week = f'W{n:02d}'
-                  url = f'{base}/site/{year}/{week}/index.html'
+                  url = f'{base}/almanack/{year}/{week}/index.html'
                   print(f'WEEK PAGE URL: {url}')
                   response = page.goto(url, wait_until='networkidle')
                   status = None if response is None else response.status
