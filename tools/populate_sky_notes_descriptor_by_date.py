@@ -6,7 +6,8 @@ import html
 import json
 import re
 
-from almanack_sections import replace_section_inner, type_page
+from almanack_sections import replace_section_inner
+from almanack_paths import typed_page
 from iso_date_range import group_by_year, parse_range_args
 from star_almanack_planets import load_weekly_longitudes
 import populate_sky_notes_by_date as base
@@ -344,7 +345,7 @@ def main() -> None:
 
     for item in weeks:
         week_key = f"W{item.week:02d}"
-        public_page = type_page(base.ROOT / "almanack", item.year, item.week, "calendar")
+        public_page = typed_page(item.year, item.week, "calendar")
         if not public_page.exists():
             raise RuntimeError(f"Missing weekly page: {public_page.relative_to(base.ROOT)}")
 
@@ -376,7 +377,7 @@ def main() -> None:
         source = base.write_generated_source(item.year, item.week, payload)
 
         for root in base.PAGE_ROOTS:
-            path = type_page(root, item.year, item.week, "sky-notes")
+            path = typed_page(item.year, item.week, "sky-notes")
             if not path.exists():
                 raise RuntimeError(f"Missing weekly page: {path.relative_to(base.ROOT)}")
             if patch_page(path, payload):
