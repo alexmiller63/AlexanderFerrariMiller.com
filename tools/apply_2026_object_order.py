@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 from pathlib import Path
+from almanack_paths import ALMANACK_ROOT, calendar_pages
 import csv
 import json
 import re
@@ -77,7 +78,7 @@ def parse_years() -> list[int]:
 def targets(years: list[int]) -> list[Path]:
     paths = [ROOT / "almanack-expanded.md"]
     for year in years:
-        paths.extend(sorted((ROOT / "almanack" / str(year)).glob("W??/calendar/index.html")))
+        paths.extend(calendar_pages(year))
     return paths
 
 
