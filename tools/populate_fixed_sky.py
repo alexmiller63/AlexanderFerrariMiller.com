@@ -14,7 +14,7 @@ from almanack_calendar import CalendarEvent, ensure_calendar_metadata, get_event
 from star_almanack_astronomy import apparent_sun_ra_hours,best_visibility_occurrences_for_iso_year,solar_ra_occurrences_for_iso_year
 from star_almanack_objects import AlmanackObject,ObservingAid,observing_aid_for_magnitude,render_html
 
-ROOT=Path(__file__).resolve().parents[1]; SRC=ROOT; PUBLIC=ROOT/"almanack"; SOURCE_SITE=SRC/"site"; DEFAULT_YEARS=(2025,2026,2027)
+ROOT=Path(__file__).resolve().parents[1]; SRC=ROOT; PUBLIC=ROOT/"almanack"; DEFAULT_YEARS=(2025,2026,2027)
 REGIONS=SRC/"fixed-object-regions.yaml"
 FIXED_OBJECTS=SRC/"fixed-objects.yaml"
 FIXED_OBJECT_REGISTRY=SRC/"database"/"fixed-object-registry.json"
@@ -203,5 +203,5 @@ def inject(root,year,events):
     return changed
 def main():
     for year in requested_years():
-        events=page_date_map(year); c1=inject(SOURCE_SITE,year,events); c2=inject(PUBLIC,year,events); print(f"{year}: canonical fixed-sky entries with observing glyph, magnitude, declination band, season and Milky Way membership; updated {c1} source + {c2} public pages")
+        events=page_date_map(year); c2=inject(PUBLIC,year,events); print(f"{year}: canonical fixed-sky entries with observing glyph, magnitude, declination band, season and Milky Way membership; updated {c2} public pages")
 if __name__=="__main__":main()
