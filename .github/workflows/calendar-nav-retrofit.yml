@@ -49,7 +49,6 @@ jobs:
             fi
 
             for year in $ALMANACK_YEARS; do
-              git add "almanack/$year" "site/$year"
             done
             git commit -m "Standardize Almanack navigation for $ALMANACK_YEARS"
 
