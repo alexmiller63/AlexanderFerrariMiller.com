@@ -74,8 +74,13 @@ jobs:
                   ceres,
               )
           PY
-      - name: Scaffold 2026 Almanack pages for regression
-        run: python tools/scaffold_almanack_weeks.py 2026 1 2026 53
+      - name: Scaffold representative Almanack weeks for regression
+        run: |
+          python tools/scaffold_almanack_weeks.py 2026 1 2026 2
+          python tools/scaffold_almanack_weeks.py 2026 10 2026 10
+          python tools/scaffold_almanack_weeks.py 2026 33 2026 33
+          python tools/scaffold_almanack_weeks.py 2026 40 2026 41
+          python tools/scaffold_almanack_weeks.py 2026 49 2026 49
       - name: Download pinned constellation source data
         run: |
           curl -fL \
