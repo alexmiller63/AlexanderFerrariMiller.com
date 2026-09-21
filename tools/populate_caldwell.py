@@ -4,6 +4,7 @@ from __future__ import annotations
 import csv,datetime as dt,re,sys
 from collections import defaultdict
 from pathlib import Path
+from almanack_sections import type_page
 from almanack_calendar import ensure_calendar_metadata,get_events,set_events
 from star_almanack_astronomy import best_visibility_occurrences_for_iso_year,declination_band,season_for
 from star_almanack_objects import HTML_AID,observing_aid_for_magnitude
@@ -17,7 +18,7 @@ def years_present():
  for root in (PUBLIC,SOURCE_SITE):
   if root.exists():
    for p in root.iterdir():
-    if p.is_dir() and re.fullmatch(r"20\d{2}",p.name) and any(p.glob("W??/index.html")):years.add(int(p.name))
+    if p.is_dir() and re.fullmatch(r"20\d{2}",p.name) and any(p.glob("W??/calendar/index.html")):years.add(int(p.name))
  return tuple(sorted(years))
 def requested_years():
  if len(sys.argv)==1:return years_present()
@@ -61,7 +62,7 @@ def events_for(rows,finest_ids,asterism_ids):
  return events
 def pages_for_events(root,events):
  pages=[]
- for y in sorted({d.isocalendar().year for d in events}):pages.extend(sorted((root/str(y)).glob("W??/index.html")))
+ for y in sorted({d.isocalendar().year for d in events}):pages.extend(sorted((root/str(y)).glob("W??/calendar/index.html")))
  return pages
 def inject(root,events):
  changed=0
