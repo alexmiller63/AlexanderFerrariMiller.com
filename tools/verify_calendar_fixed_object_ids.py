@@ -10,6 +10,7 @@ from __future__ import annotations
 import argparse
 import datetime as dt
 from pathlib import Path
+from almanack_paths import calendar_page
 
 from playwright.sync_api import sync_playwright
 
@@ -116,7 +117,7 @@ def main():
         browser = p.chromium.launch()
         page = browser.new_page(viewport={'width': 390, 'height': 844})
         for year, week in weeks_between(args.start_date, args.end_date):
-            rel = f'almanack/{year}/W{week:02d}/calendar/index.html'
+            rel = calendar_page(year, week).relative_to(root).as_posix()
             if args.base_url:
                 url = f"{args.base_url.rstrip('/')}/{rel}"
             else:
