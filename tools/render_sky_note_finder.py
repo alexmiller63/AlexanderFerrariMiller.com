@@ -29,7 +29,7 @@ STAR = "#f7f7f2"
 TEXT = "#f3f5f7"
 FIGURE_BLUE = "#5c8fe8"
 ASTERISM_GREEN = "#59c86d"
-TARGET_YELLOW = "#ffd84d"
+TARGET_YELLOW = "#ffd84d"\nBOUNDARY_WHITE = "#ffffff"\nBOUNDARY_ROOT = REPO_ROOT / "reference-data" / "iau-constellation-boundaries"
 
 GREEK_SYMBOL_ORDER = "αβγδεζηθικλμνξοπρστυφχψω"
 GREEK_ORDER = {symbol: rank for rank, symbol in enumerate(GREEK_SYMBOL_ORDER)}
