@@ -49,7 +49,7 @@ def resolve(fixed_id: int, current: set[int], merges: dict[int, int]) -> tuple[i
 
 
 def calendar_pages() -> list[Path]:
-    return sorted(CALENDAR_ROOT.glob("[0-9][0-9][0-9][0-9]/W[0-9][0-9]/index.html"))
+    return sorted(CALENDAR_ROOT.glob("[0-9][0-9][0-9][0-9]/W[0-9][0-9]/calendar/index.html"))
 
 
 def main() -> None:
