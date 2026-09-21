@@ -195,7 +195,9 @@ def legend_label(identity, star=None):
     greek = full.split()[0]
     proper = str(identity.get("proper_name") or (star.proper if star else "") or "").strip()
     constellation = str(identity.get("constellation_abbreviation") or (star.con if star else "") or "").strip()
-    return f"{greek} — {proper}" if proper else " ".join(part for part in (greek, constellation) if part)
+    # The legend is for Bayer/proper-name identification, not constellation
+    # membership.  A star without a proper name therefore shows Bayer only.
+    return f"{greek} — {proper}" if proper else greek
 
 
 def greek_sort_key(identity, star=None):
