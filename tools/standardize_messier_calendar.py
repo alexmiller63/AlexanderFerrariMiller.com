@@ -80,7 +80,7 @@ def is_messier_event(item):
  plain=re.sub(r"<[^>]+>","",item).strip(); return bool(re.match(r"^(?:Messier\s+\d+\s+\(M\d+\)|M\d+\b|[^—]+\s+\(M\d+\),)",plain))
 def pages_for_events(root,by_date):
  pages=[]
- for y in sorted({d.isocalendar().year for d in by_date}): pages.extend(sorted((root/str(y)).glob("W??/index.html")))
+ for y in sorted({d.isocalendar().year for d in by_date}): pages.extend(sorted((root/str(y)).glob("W??/calendar/index.html")))
  return pages
 def inject(root,by_date):
  changed=0
