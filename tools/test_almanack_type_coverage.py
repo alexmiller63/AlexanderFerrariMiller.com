@@ -24,7 +24,7 @@ def week_from_iso(value):
  if not m:raise AssertionError(f'cannot parse ISO week from {value!r}')
  return m.group(1)
 def html_for(week):
- p=SITE/week/'index.html'; return p.read_text(encoding='utf-8') if p.exists() else ''
+ p=SITE/week/'calendar'/'index.html'; return p.read_text(encoding='utf-8') if p.exists() else ''
 def close_together(html,left,right,radius=1200):
  pos=html.find(left)
  if pos<0:return False
@@ -58,7 +58,7 @@ def build_cases():
  Case('Hyades asterism identity',hyades_week,'Hyades C41 says also an asterism inline.',('C41','Hyades','also an asterism'),(('Hyades','also an asterism'),)),
  ]
 def extended_ephemeris_contract():
- html=html_for('W01'); reasons=[]
+ p=SITE/'W01'/'ephemeris'/'index.html'; html=p.read_text(encoding='utf-8') if p.exists() else ''; reasons=[]
  match=re.search(r'<table class="ephemeris extended-ephemeris">(.*?)</table>',html,re.S)
  if not match:return ['missing explicit extended-ephemeris table class']
  table=match.group(1)
@@ -73,7 +73,7 @@ def extended_ephemeris_contract():
  return reasons
 def glyph_path_contract():
  bad=[]
- for page in sorted(SITE.glob('W??/index.html')):
+ for page in sorted(SITE.glob('W??/*/index.html')):
   html=page.read_text(encoding='utf-8')
   if 'src="/assets/almanack/visibility-glyphs/masters/' in html:bad.append(page.parent.name)
  return [f'root-absolute observing glyph paths remain in: {", ".join(bad)}'] if bad else []
@@ -81,7 +81,7 @@ def run():
  cases=build_cases(); passed=failed=0
  print('Star Almanack Type Coverage Regression'); print('='*40)
  for i,case in enumerate(cases,1):
-  html=html_for(case.week); url=f'{BASE_URL}/{case.week}/'; reasons=[]
+  html=html_for(case.week); url=f'{BASE_URL}/{case.week}/calendar/'; reasons=[]
   if not html:reasons.append('generated week page is missing')
   else:
    for token in case.checks:
