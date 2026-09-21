@@ -8,7 +8,7 @@ from almanack_sections import type_page
 from almanack_calendar import ensure_calendar_metadata,get_events,set_events
 from star_almanack_astronomy import declination_band, season_for
 from star_almanack_objects import HTML_AID, observing_aid_for_magnitude
-ROOT=Path(__file__).resolve().parents[1]; SRC=ROOT; PUBLIC=ROOT/"almanack"; SOURCE_SITE=SRC/"site"; MEMBER_COORDS=SRC/"asterism-member-coordinates.csv"; CATALOG_OVERLAP=SRC/"asterism-catalog-overlap.csv"
+ROOT=Path(__file__).resolve().parents[1]; SRC=ROOT; PUBLIC=ROOT/"almanack"; MEMBER_COORDS=SRC/"asterism-member-coordinates.csv"; CATALOG_OVERLAP=SRC/"asterism-catalog-overlap.csv"
 def requested_years():
  p=argparse.ArgumentParser(description="Populate Star Almanack core asterism centers"); p.add_argument("years",metavar="YEAR",type=int,nargs="+"); a=p.parse_args(); years=list(dict.fromkeys(a.years))
  for y in years:
@@ -79,5 +79,5 @@ def validate(root,events):
    if count!=1:raise SystemExit(f"{root}: expected {v!r} exactly once on {d} in {page}, found {count}")
 def main():
  for year in requested_years():
-  rows=read_rows(year); events=event_map(rows); overlaps=catalog_overlaps(); expected=len(rows)-len(overlaps); c1,i1=inject(SOURCE_SITE,events); c2,i2=inject(PUBLIC,events); validate(SOURCE_SITE,events); validate(PUBLIC,events); print(f"{year}: verified {expected} independent asterism centers; {len(overlaps)} catalog overlaps represented inline; inserted source={i1}, public={i2}; updated {c1} source + {c2} public pages")
+  rows=read_rows(year); events=event_map(rows); overlaps=catalog_overlaps(); expected=len(rows)-len(overlaps); c2,i2=inject(PUBLIC,events); validate(PUBLIC,events); print(f"{year}: verified {expected} independent asterism centers; {len(overlaps)} catalog overlaps represented inline; inserted public={i2}; updated {c2} public pages")
 if __name__=="__main__":main()
