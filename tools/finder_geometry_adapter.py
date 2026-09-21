@@ -57,3 +57,35 @@ def asterism_spec(registry: dict, asterism_id: str, fallback_name: str = "") -> 
         "name": record.get("name") or fallback_name or asterism_id,
         "paths": paths,
     }
+
+
+def all_constellation_specs(registry: dict) -> list[dict]:
+    """Return every accepted constellation figure without inventing geometry."""
+    result = []
+    for abbreviation, record in (registry.get("constellations") or {}).items():
+        if not record.get("has_figure"):
+            continue
+        paths = renderer_paths(record)
+        if paths:
+            result.append({
+                "abbreviation": abbreviation,
+                "name": record.get("name") or abbreviation,
+                "paths": paths,
+            })
+    return result
+
+
+def all_asterism_specs(registry: dict) -> list[dict]:
+    """Return every accepted drawable asterism."""
+    result = []
+    for asterism_id, record in (registry.get("asterisms") or {}).items():
+        if record.get("geometry_status") != "accepted-paths":
+            continue
+        paths = renderer_paths(record)
+        if paths:
+            result.append({
+                "id": asterism_id,
+                "name": record.get("name") or asterism_id,
+                "paths": paths,
+            })
+    return result
