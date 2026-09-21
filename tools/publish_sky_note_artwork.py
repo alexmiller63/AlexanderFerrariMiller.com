@@ -8,7 +8,7 @@ from pathlib import Path
 from iso_date_range import parse_range_args
 
 ROOT = Path(__file__).resolve().parents[1]
-PAGE_ROOTS = (ROOT / "site", ROOT / "almanack")
+PAGE_ROOT = ROOT / "almanack"
 ARTWORK_ROOT = ROOT / "sky-notes-artwork" / "objects"
 DESCRIPTOR_ROOT = ROOT / "generated-sky-notes"
 
