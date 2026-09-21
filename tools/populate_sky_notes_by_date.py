@@ -23,6 +23,7 @@ from datetime import date
 from pathlib import Path
 
 from iso_date_range import group_by_year, parse_range_args
+from almanack_paths import calendar_page
 from almanack_sections import type_page
 from star_almanack_planets import PLANET_COLUMNS, load_weekly_longitudes
 
@@ -383,7 +384,7 @@ def main() -> None:
     changed = 0
     for item in weeks:
         week_key = f"W{item.week:02d}"
-        public_page = type_page(ROOT / "almanack", item.year, item.week, "calendar")
+        public_page = calendar_page(item.year, item.week)
         if not public_page.exists():
             raise RuntimeError(f"Missing weekly page: {public_page.relative_to(ROOT)}")
         payload = generated_note(item.year, item.week, public_page, yearly[item.year], stars)
