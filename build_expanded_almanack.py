@@ -197,8 +197,7 @@ for idx, row in enumerate(bright_new_rows):
     bayer = display_bayer_code(row.get("bayer") or "")
     con = (row.get("con") or "").strip()
     name = proper or (f"{bayer} {con}".strip())
-    mag_class = (row.get("mag_class") or "").strip()
-    label = f"{name} — V{mag_class}" if mag_class else name
+    label = name
     ident = f"Bright:{idx}:{row.get('hyg_id','')}"
     aliases = tuple(x for x in (proper, bayer) if x)
     fixed.setdefault(row["best_date"], []).append((ident, f"Best visibility: {label}", aliases, ident))
@@ -294,7 +293,7 @@ objects = (
     "The complete generated Bayer catalog for 2026 follows. Best-visibility dates are computed by the Star Almanack visibility rule.\n\n"
     + bayer_text
     + "\n\n## Second-Magnitude Bright-Star Catalog\n\n"
-    "The reconciled naked-eye stellar-system catalog follows. Decimal V values are retained here for provenance; Almanack calendar entries use whole-number V classes.\n\n"
+    "The reconciled naked-eye stellar-system catalog follows. Decimal V values are retained here for provenance; magnitudes are suppressed in reader-facing Almanack calendar entries.\n\n"
     + bright_text
 )
 out = header + calendar.rstrip() + "\n\n" + objects
