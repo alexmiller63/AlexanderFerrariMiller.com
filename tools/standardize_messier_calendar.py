@@ -97,5 +97,5 @@ def inject(root,by_date):
 def main():
  catalog=load_catalog()
  for year in requested_years():
-  by_date=events(catalog,year); s=inject(SOURCE_SITE,by_date); p=inject(PUBLIC,by_date); print(f"{year}: standardized 110 Messier events; updated {p} public pages")
+  by_date=events(catalog,year); p=inject(PUBLIC,by_date); print(f"{year}: standardized 110 Messier events; updated {p} public pages")
 if __name__=="__main__": main()
