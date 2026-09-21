@@ -11,6 +11,7 @@ from zoneinfo import ZoneInfo
 
 ROOT = Path(__file__).resolve().parents[1]
 BASES = (ROOT / "almanack",)
+CONTENT_TYPES = ("calendar", "ephemeris", "planet-finder", "sky-notes")
 BOTTOM_ID = "almanack-bottom-nav"
 LOCAL_ZONE = ZoneInfo("America/Los_Angeles")
 
@@ -112,13 +113,13 @@ def build_year_nav(year: int, weekly_page: bool, bottom: bool = False) -> str:
     following = adjacent_published_year(year, 1)
 
     def href(target: int) -> str:
-        base = f"../../{target}/" if weekly_page else f"../{target}/"
+        base = f"../../../{target}/" if weekly_page else f"../{target}/"
         return base + (f"#{BOTTOM_ID}" if bottom else "")
 
     left = f'<a href="{href(previous)}">← {previous}</a>' if previous is not None else '<span class="nav-spacer" aria-hidden="true">—</span>'
     right = f'<a href="{href(following)}">{following} →</a>' if following is not None else '<span class="nav-spacer" aria-hidden="true">—</span>'
     if weekly_page:
-        center_href = "../" + (f"#{BOTTOM_ID}" if bottom else "")
+        center_href = "../../" + (f"#{BOTTOM_ID}" if bottom else "")
         center = f'<a href="{center_href}">{year}</a>'
     else:
         center = f'<span aria-current="page">{year}</span>'
@@ -151,9 +152,9 @@ def adjacent_week_link(year: int, week: int, days: int, bottom: bool = False) ->
         return f'<span class="disabled">{arrow}{label}</span>' if days < 0 else f'<span class="disabled">{label}{arrow}</span>'
 
     if target_year == year:
-        href = f'../W{target_week:02d}/'
+        href = f'../../W{target_week:02d}/'
     else:
-        href = f'../../{target_year}/W{target_week:02d}/'
+        href = f'../../../{target_year}/W{target_week:02d}/'
     if bottom:
         href += f'#{BOTTOM_ID}'
     label = f'ISO {target_year}-W{target_week:02d}'
@@ -253,16 +254,20 @@ def main() -> None:
     years = requested_years()
     for base in BASES:
         for year in years:
-            for path in sorted((base / str(year)).glob('W??/index.html')):
-                week = int(path.parent.name[1:])
-                original = path.read_text(encoding='utf-8')
-                updated = rewrite_year_nav(original, year, weekly_page=True)
-                updated = rewrite_week_nav(updated, year, week)
-                updated = place_bottom_navigation(updated, year, week)
-                updated = ensure_style(updated)
-                if updated != original:
-                    path.write_text(updated, encoding='utf-8')
-                    changed += 1
+            for week_dir in sorted((base / str(year)).glob('W??')):
+                week = int(week_dir.name[1:])
+                for content_type in CONTENT_TYPES:
+                    path = week_dir / content_type / "index.html"
+                    if not path.exists():
+                        continue
+                    original = path.read_text(encoding='utf-8')
+                    updated = rewrite_year_nav(original, year, weekly_page=True)
+                    updated = rewrite_week_nav(updated, year, week)
+                    updated = place_bottom_navigation(updated, year, week)
+                    updated = ensure_style(updated)
+                    if updated != original:
+                        path.write_text(updated, encoding='utf-8')
+                        changed += 1
 
             index_path = base / str(year) / 'index.html'
             if index_path.exists():
