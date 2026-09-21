@@ -9,6 +9,8 @@ from datetime import date, datetime, timedelta
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
+from almanack_paths import typed_page, year_dir
+
 ROOT = Path(__file__).resolve().parents[1]
 BASES = (ROOT / "almanack",)
 CONTENT_TYPES = ("calendar", "ephemeris", "planet-finder", "sky-notes")
@@ -257,7 +259,7 @@ def main() -> None:
             for week_dir in sorted((base / str(year)).glob('W??')):
                 week = int(week_dir.name[1:])
                 for content_type in CONTENT_TYPES:
-                    path = week_dir / content_type / "index.html"
+                    path = typed_page(year, week, content_type)
                     if not path.exists():
                         continue
                     original = path.read_text(encoding='utf-8')
@@ -269,7 +271,7 @@ def main() -> None:
                         path.write_text(updated, encoding='utf-8')
                         changed += 1
 
-            index_path = base / str(year) / 'index.html'
+            index_path = year_dir(year) / 'index.html'
             if index_path.exists():
                 original = index_path.read_text(encoding='utf-8')
                 updated = ensure_style(rewrite_year_nav(original, year, weekly_page=False))
@@ -282,7 +284,7 @@ def main() -> None:
     current_year, current_week = today.year, today.week
     if current_year in years:
         for base in BASES:
-            index_path = base / str(current_year) / 'index.html'
+            index_path = year_dir(current_year) / 'index.html'
             if index_path.exists():
                 original = index_path.read_text(encoding='utf-8')
                 updated = highlight_current_week_on_index(original, current_year, current_week)
