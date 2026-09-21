@@ -11,7 +11,7 @@ import re
 from pathlib import Path
 
 from almanack_calendar import CALENDAR_RE, ROW_RE, civil_date_text, page_dates
-from almanack_sections import type_page
+from almanack_paths import typed_page
 
 ROOT = Path(__file__).resolve().parents[1]
 ROOTS = (ROOT / "almanack",)
@@ -66,9 +66,9 @@ def main() -> None:
         count = 0
         for root in ROOTS:
             pages = [
-                type_page(root, year, week, "calendar")
+                typed_page(year, week, "calendar")
                 for week in range(1, __import__("datetime").date(year, 12, 28).isocalendar().week + 1)
-                if type_page(root, year, week, "calendar").exists()
+                if typed_page(year, week, "calendar").exists()
             ]
             if not pages:
                 failures.append(f"{root}/{year}: no weekly pages")
