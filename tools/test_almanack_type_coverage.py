@@ -74,7 +74,7 @@ def extended_ephemeris_contract():
  if not first_row or first_row.group(1).count('<td')!=4:reasons.append('extended position row is not exactly four columns')
  if 'colspan="4"' not in table:reasons.append('Observing rowgroup does not span exactly four columns')
  if not observing or observing.group(1).count('<td')!=4:reasons.append('extended observing row is not exactly four columns')
- if 'table.extended-ephemeris' not in html:reasons.append('fixed-grid extended-ephemeris CSS is missing')
+ if 'table.ephemeris.extended-ephemeris' not in html:reasons.append('extended-ephemeris CSS is missing')
  return reasons
 def glyph_path_contract():
  bad=[]
