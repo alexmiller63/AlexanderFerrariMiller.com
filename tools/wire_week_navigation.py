@@ -256,7 +256,7 @@ def main() -> None:
     years = requested_years()
     for base in BASES:
         for year in years:
-            for week_dir in sorted((base / str(year)).glob('W??')):
+            for week_dir in sorted(year_dir(year).glob('W??')):
                 week = int(week_dir.name[1:])
                 for content_type in CONTENT_TYPES:
                     path = typed_page(year, week, content_type)
