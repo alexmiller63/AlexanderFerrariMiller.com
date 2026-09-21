@@ -10,7 +10,7 @@ from pathlib import Path
 from zoneinfo import ZoneInfo
 
 ROOT = Path(__file__).resolve().parents[1]
-BASES = (ROOT / "almanack", ROOT / "site")
+BASES = (ROOT / "almanack",)
 BOTTOM_ID = "almanack-bottom-nav"
 LOCAL_ZONE = ZoneInfo("America/Los_Angeles")
 
