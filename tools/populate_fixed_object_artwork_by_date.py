@@ -10,7 +10,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from finder_geometry_adapter import constellation_paths
+from finder_geometry_adapter import all_asterism_specs, all_constellation_specs, constellation_paths
 from iso_date_range import parse_range_args
 import populate_sky_notes_artwork_by_date as legacy
 
