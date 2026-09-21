@@ -170,8 +170,10 @@ def bayer_label(identity, star=None):
         return greek_bayer_symbol(stored)
     if star is None:
         return ""
-    greek = greek_bayer_symbol(star.bayer)
-    return " ".join(part for part in (greek, star.con) if part)
+    # Return the Bayer designation only.  Constellation membership is handled
+    # explicitly by chart_bayer_label; mixing it in here created stray labels
+    # such as "Aql" when HYG supplied an abbreviation without a Bayer letter.
+    return greek_bayer_symbol(star.bayer)
 
 
 def chart_bayer_label(identity, star, figure_abbreviation):
