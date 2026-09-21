@@ -13,10 +13,11 @@ import re
 import sys
 from pathlib import Path
 
+from almanack_paths import calendar_pages as canonical_calendar_pages
+
 ROOT = Path(__file__).resolve().parents[1]
 OBJECTS = ROOT / "database" / "fixed-objects.json"
 MERGES = ROOT / "database" / "fixed-object-id-merges.json"
-CALENDAR_ROOT = ROOT / "almanack"
 ID_RE = re.compile(r'\bdata-fixed-object-id="(\d+)"')
 
 
@@ -49,7 +50,7 @@ def resolve(fixed_id: int, current: set[int], merges: dict[int, int]) -> tuple[i
 
 
 def calendar_pages() -> list[Path]:
-    return sorted(CALENDAR_ROOT.glob("[0-9][0-9][0-9][0-9]/W[0-9][0-9]/calendar/index.html"))
+    return canonical_calendar_pages()
 
 
 def main() -> None:
