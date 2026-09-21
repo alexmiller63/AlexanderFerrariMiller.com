@@ -18,7 +18,8 @@ import sys
 ROOT = Path(__file__).resolve().parents[1]
 BASES = (ROOT / "almanack",)
 GLYPH_ROOT = "/assets/almanack/visibility-glyphs/masters/"
-WEEKLY_GLYPH_ROOT = "../../../assets/almanack/visibility-glyphs/masters/"
+WEEKLY_GLYPH_ROOT = "/assets/almanack/visibility-glyphs/masters/"
+CONTENT_TYPES = ("calendar", "ephemeris", "planet-finder", "sky-notes")
 
 STYLE = """<style id="almanack-legend-css">
 .notation-legend {
@@ -155,10 +156,8 @@ def wire_page(path: Path) -> bool:
     else:
         text = text.replace("</body>", LEGEND + "</body>", 1)
 
-    # Weekly pages live at YEAR/WEEK/index.html. A root-absolute /assets URL
-    # works on the custom domain but misses the repository prefix on GitHub
-    # Pages. This relative path resolves to the same checked-in asset directory
-    # in both deployments, so every observing/event glyph uses one portable path.
+    # Typed weekly pages live at YEAR/WEEK/TYPE/index.html. Keep asset URLs root-relative
+    # so the extra type-directory depth cannot break glyph resolution.
     text = text.replace(f'src="{GLYPH_ROOT}', f'src="{WEEKLY_GLYPH_ROOT}')
 
     if text != original:
@@ -172,11 +171,12 @@ def main() -> None:
     changed = 0
     for base in BASES:
         for year, week in weeks:
-            path = base / str(year) / f"W{week:02d}" / "index.html"
-            if not path.is_file():
-                continue
-            if wire_page(path):
-                changed += 1
+            for content_type in CONTENT_TYPES:
+                path = base / str(year) / f"W{week:02d}" / content_type / "index.html"
+                if not path.is_file():
+                    continue
+                if wire_page(path):
+                    changed += 1
 
     first_year, first_week = weeks[0]
     last_year, last_week = weeks[-1]
