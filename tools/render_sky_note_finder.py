@@ -29,7 +29,9 @@ STAR = "#f7f7f2"
 TEXT = "#f3f5f7"
 FIGURE_BLUE = "#5c8fe8"
 ASTERISM_GREEN = "#59c86d"
-TARGET_YELLOW = "#ffd84d"\nBOUNDARY_WHITE = "#ffffff"\nBOUNDARY_ROOT = REPO_ROOT / "reference-data" / "iau-constellation-boundaries"
+TARGET_YELLOW = "#ffd84d"
+BOUNDARY_WHITE = "#ffffff"
+BOUNDARY_ROOT = REPO_ROOT / "reference-data" / "iau-constellation-boundaries"
 
 GREEK_SYMBOL_ORDER = "αβγδεζηθικλμνξοπρστυφχψω"
 GREEK_ORDER = {symbol: rank for rank, symbol in enumerate(GREEK_SYMBOL_ORDER)}
@@ -136,7 +138,8 @@ def legend_label(identity, star=None):
         return ""
     greek = full.split()[0]
     proper = str(identity.get("proper_name") or (star.proper if star else "") or "").strip()
-    constellation = str(identity.get("constellation_abbreviation") or (star.con if star else "") or "").strip()\n    return f"{greek} — {proper}" if proper else " ".join(part for part in (greek, constellation) if part)
+    constellation = str(identity.get("constellation_abbreviation") or (star.con if star else "") or "").strip()
+    return f"{greek} — {proper}" if proper else " ".join(part for part in (greek, constellation) if part)
 
 
 def greek_sort_key(identity, star=None):
@@ -292,7 +295,8 @@ def render(spec: dict, stars, output: Path) -> None:
     if target_star_identity and target_star is not None:
         full = bayer_label(target_star_identity, target_star)
         target_greek = full.split()[0] if full else ""
-    target_const = str(target_meta.get("constellation_abbreviation") or "").strip()\n    target_chart_label = " ".join(part for part in (target_greek, target_const, target_name) if part)
+    target_const = str(target_meta.get("constellation_abbreviation") or "").strip()
+    target_chart_label = " ".join(part for part in (target_greek, target_const, target_name) if part)
     if not target_chart_label:
         target_chart_label = str(target_identity.get("name") or "Target")
     ax.annotate(target_chart_label, target_point, xytext=(14, 0), textcoords="offset points",
@@ -323,7 +327,8 @@ def render(spec: dict, stars, output: Path) -> None:
     legend = [legend_label(identity, star) for identity, star in legend_entries]
     legend = [item for item in legend if item]
     if legend:
-        ax.text(0.5, -0.075, "\\n".join(legend), transform=ax.transAxes,
+        ax.text(0.5, -0.075, "\
+".join(legend), transform=ax.transAxes,
                 ha="center", va="top", fontsize=7, color=TEXT, wrap=True)
 
     ax.set_xticks([])
