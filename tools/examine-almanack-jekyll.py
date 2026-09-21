@@ -6,7 +6,7 @@ from datetime import date
 from pathlib import Path
 import re
 
-from almanack_paths import PAGE_TYPES
+from almanack_paths import PAGE_TYPES, typed_page, year_dir
 
 ALMANACK_ROOT = Path("_site/almanack")
 DAY_ONE_NAME = re.compile(
@@ -34,10 +34,6 @@ def weeks_in_iso_year(year: int) -> int:
     return date(year, 12, 28).isocalendar().week
 
 
-def canonical_relative_typed_page(week: int, content_type: str) -> Path:
-    return Path(f"W{week:02d}") / content_type / "index.html"
-
-
 def main() -> None:
     parser = ArgumentParser()
     parser.add_argument("years", nargs="*", type=int, default=[2026])
@@ -45,11 +41,11 @@ def main() -> None:
 
     all_pages = []
     for year in args.years:
-        root = ALMANACK_ROOT / str(year)
+        root = ALMANACK_ROOT / year_dir(year).relative_to(year_dir(year).parent)
         week_count = weeks_in_iso_year(year)
         index = root / "index.html"
         pages = [
-            root / canonical_relative_typed_page(week, content_type)
+            ALMANACK_ROOT / typed_page(year, week, content_type).relative_to(year_dir(year).parent)
             for week in range(1, week_count + 1)
             for content_type in PAGE_TYPES if content_type != "artwork"
         ]
