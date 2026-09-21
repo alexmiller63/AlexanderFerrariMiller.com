@@ -145,7 +145,7 @@ def star_event(r):
     proper=r.get("proper","").strip(); bayer=display_bayer(r); base=f"{proper} ({bayer})" if proper and bayer else (proper or bayer or f"{r.get('con','').strip()} star"); source_mag=(r.get("representative_vmax") or r.get("catalog_v") or r.get("mag") or "").strip()
     aid=observing_aid_for_magnitude(source_mag)
     catalog_id=(r.get("hyg_id") or r.get("hip") or r.get("hd") or bayer or "").strip()
-    record=AlmanackObject(label=base,object_type="fixed_star",dec_deg=r["dec_deg"],best_date=dt.date.fromisoformat(r["best_date"]),observing_aid=aid,magnitude=source_mag,magnitude_display="whole",catalog_id=catalog_id,provenance=(r.get("brightness_basis") or "").strip())
+    record=AlmanackObject(label=base,object_type="fixed_star",dec_deg=r["dec_deg"],best_date=dt.date.fromisoformat(r["best_date"]),observing_aid=aid,magnitude=source_mag,magnitude_display="none",catalog_id=catalog_id,provenance=(r.get("brightness_basis") or "").strip())
     label=render_html(record)+(" — in the Milky Way" if in_milky_way(r) else "")
     identifiers=[("hip",(r.get("hip") or "").strip()),("hd",(r.get("hd") or "").strip()),("bayer",bayer)]
     for namespace,value in identifiers:
@@ -204,5 +204,5 @@ def inject(root,year,events):
     return changed
 def main():
     for year in requested_years():
-        events=page_date_map(year); c2=inject(PUBLIC,year,events); print(f"{year}: canonical fixed-sky entries with observing glyph, magnitude, declination band, season and Milky Way membership; updated {c2} public pages")
+        events=page_date_map(year); c2=inject(PUBLIC,year,events); print(f"{year}: canonical fixed-sky entries with observing glyph, declination band, season and Milky Way membership; updated {c2} public pages")
 if __name__=="__main__":main()
