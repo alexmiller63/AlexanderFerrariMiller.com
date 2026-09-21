@@ -18,8 +18,8 @@ def read_rows(year):
  path=SRC/f"asterism-geometry-{year}.csv"
  if not path.exists():raise SystemExit(f"Missing asterism geometry source for {year}: {path}")
  with path.open(newline="",encoding="utf-8") as f:rows=list(csv.DictReader(f))
- if len(rows)!=25:raise SystemExit(f"Expected 25 asterism rows for {year}, got {len(rows)}")
- if len({r['asterism'] for r in rows})!=25:raise SystemExit(f"Duplicate/missing asterism names for {year}")
+ if len(rows)!=28:raise SystemExit(f"Expected 28 asterism rows for {year}, got {len(rows)}")
+ if len({r['asterism'] for r in rows})!=28:raise SystemExit(f"Duplicate/missing asterism names for {year}")
  return rows
 def catalog_overlaps():
  with CATALOG_OVERLAP.open(newline="",encoding="utf-8") as f:rows=list(csv.DictReader(f))
