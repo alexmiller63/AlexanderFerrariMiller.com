@@ -171,14 +171,14 @@ jobs:
           while read -r year week; do
             git add -- "almanack/$year/W$(printf '%02d' "$week")" "site/$year/W$(printf '%02d' "$week")"
           done < <(python - <<'PY'
-from datetime import date, timedelta
-start=date.fromisocalendar(int("${{ inputs.start_year }}"), int("${{ inputs.start_week }}"), 1)
-end=date.fromisocalendar(int("${{ inputs.end_year }}"), int("${{ inputs.end_week }}"), 1)
-while start <= end:
-    iso=start.isocalendar()
-    print(iso.year, iso.week)
-    start += timedelta(days=7)
-PY
+          from datetime import date, timedelta
+          start=date.fromisocalendar(int("${{ inputs.start_year }}"), int("${{ inputs.start_week }}"), 1)
+          end=date.fromisocalendar(int("${{ inputs.end_year }}"), int("${{ inputs.end_week }}"), 1)
+          while start <= end:
+              iso=start.isocalendar()
+              print(iso.year, iso.week)
+              start += timedelta(days=7)
+          PY
           )
           git add -A -- tools/publish_sky_note_artwork.py tools/populate_fixed_object_artwork_by_date.py sky-notes-artwork stories
           if git diff --cached --quiet; then
