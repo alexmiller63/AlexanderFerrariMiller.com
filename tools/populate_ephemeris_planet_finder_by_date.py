@@ -77,7 +77,7 @@ def populate_week(
     ephemeris_html, finder_html = split_rendered_sections(rendered)
 
     changed = 0
-    for base in (ephemeris.ROOT / "almanack", ephemeris.ROOT / "site"):
+    for base in (ephemeris.ROOT / "almanack",):
         path = base / str(year) / f"W{week:02d}" / "index.html"
         if not path.exists():
             raise RuntimeError(f"Missing weekly page: {path.relative_to(ephemeris.ROOT)}")
