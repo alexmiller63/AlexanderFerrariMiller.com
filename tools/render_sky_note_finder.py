@@ -37,6 +37,39 @@ GREEK_SYMBOL_ORDER = "αβγδεζηθικλμνξοπρστυφχψω"
 GREEK_ORDER = {symbol: rank for rank, symbol in enumerate(GREEK_SYMBOL_ORDER)}
 
 
+def load_iau_boundaries():
+    """Load repository-owned IAU boundary polygons keyed by abbreviation."""
+    from compute_constellation_observance_2026 import CONSTELLATIONS, boundary_filenames, fetch_boundary, parse_boundary
+    result = []
+    for name, abbreviation in CONSTELLATIONS:
+        for filename in boundary_filenames(abbreviation):
+            result.append((name, abbreviation, parse_boundary(fetch_boundary(filename, BOUNDARY_ROOT))))
+    return result
+
+
+def projected_path(points, center):
+    return [p for p in (project(ra, dec, *center) for ra, dec in points) if p is not None]
+
+
+def path_hits_view(points, xmin, xmax, ymin, ymax):
+    return any(xmin <= x <= xmax and ymin <= y <= ymax for x, y in points)
+
+
+def place_label(ax, label, point, occupied_labels, color=TEXT, fontsize=9, zorder=6):
+    """Place a label at the first simple offset that does not overlap another label anchor."""
+    offsets = ((5, 5), (7, -9), (-7, 7), (-7, -9), (12, 0), (0, 12))
+    for dx, dy in offsets:
+        candidate = (point[0] + dx * 0.02, point[1] + dy * 0.02)
+        if all((candidate[0]-x)**2 + (candidate[1]-y)**2 > 0.55**2 for x, y in occupied_labels):
+            occupied_labels.append(candidate)
+            ax.annotate(label, point, xytext=(dx, dy), textcoords="offset points",
+                        fontsize=fontsize, color=color, zorder=zorder)
+            return
+    occupied_labels.append(point)
+    ax.annotate(label, point, xytext=(5, 5), textcoords="offset points",
+                fontsize=fontsize, color=color, zorder=zorder)
+
+
 def complete_index(stars):
     idx = star_index(stars)
     for star in sorted(stars, key=lambda item: item.mag):
@@ -183,6 +216,39 @@ def render(spec: dict, stars, output: Path) -> None:
     refs = refs_from_paths(figure_paths)
     if target_ref:
         refs.add(target_ref)
+    # Draw every IAU boundary that enters the displayed field and label
+    # neighboring constellations once, using canonical full names.
+    home_abbreviation = str(spec.get("constellation_abbreviation") or "").strip()
+    neighbor_points = {}
+    for boundary_name, boundary_abbreviation, boundary in load_iau_boundaries():
+        points = projected_path(boundary, center)
+        if len(points) < 2 or not path_hits_view(points, xmin, xmax, ymin, ymax):
+            continue
+        ax.plot([p[0] for p in points], [p[1] for p in points],
+                color=BOUNDARY_WHITE, linewidth=0.8, alpha=0.8,
+                linestyle="--", zorder=3)
+        visible_points = [p for p in points if xmin <= p[0] <= xmax and ymin <= p[1] <= ymax]
+        if visible_points and boundary_abbreviation != home_abbreviation:
+            neighbor_points.setdefault(boundary_abbreviation, (boundary_name, visible_points))
+
+    for _, (neighbor_name, points) in neighbor_points.items():
+        point = (sum(x for x, _ in points) / len(points), sum(y for _, y in points) / len(points))
+        place_label(ax, neighbor_name, point, occupied_labels, color=BOUNDARY_WHITE, fontsize=10, zorder=5)
+
+    # Candidate asterisms are accepted curated geometry. Render only those
+    # whose projected paths enter this chart.
+    asterisms = list(asterisms)
+    for candidate in spec.get("candidate_asterisms") or []:
+        visible_paths = []
+        for path in candidate.get("paths") or []:
+            points = [project(idx[ref].ra_deg, idx[ref].dec_deg, *center)
+                      for ref in path if ref in idx]
+            points = [point for point in points if point is not None]
+            if path_hits_view(points, xmin, xmax, ymin, ymax):
+                visible_paths.append(path)
+        if visible_paths:
+            asterisms.append(dict(candidate, paths=visible_paths))
+
     for asterism in asterisms:
         refs |= refs_from_paths(asterism.get("paths") or [])
     missing_identities = sorted(ref for ref in refs if ref not in identities_by_ref)
@@ -259,6 +325,7 @@ def render(spec: dict, stars, output: Path) -> None:
     figure_constellation = spec.get("name") or ""
     figure_abbreviation = str(target_meta.get("constellation_abbreviation") or "").strip()
 
+    occupied_labels = []
     figure_points = []
     for ref in figure_refs:
         star = idx[ref]
@@ -272,14 +339,13 @@ def render(spec: dict, stars, output: Path) -> None:
             continue
         label = chart_bayer_label(identity, star, figure_abbreviation)
         if label:
-            ax.annotate(label, point, xytext=(5, 5), textcoords="offset points",
-                        fontsize=9, color=TEXT, zorder=6)
+            place_label(ax, label, point, occupied_labels)
 
     if figure_constellation and figure_points:
-        ax.text(sum(x for x, _ in figure_points) / len(figure_points),
-                sum(y for _, y in figure_points) / len(figure_points),
-                figure_constellation, color=FIGURE_BLUE, fontsize=16,
-                fontweight="bold", ha="center", va="center", zorder=5)
+        constellation_point = (sum(x for x, _ in figure_points) / len(figure_points),
+                               sum(y for _, y in figure_points) / len(figure_points))
+        place_label(ax, figure_constellation, constellation_point, occupied_labels,
+                    color=FIGURE_BLUE, fontsize=16, zorder=5)
 
     for asterism in asterisms:
         for path in asterism.get("paths") or []:
