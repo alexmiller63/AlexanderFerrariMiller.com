@@ -5,7 +5,7 @@ from __future__ import annotations
 import re
 from pathlib import Path
 
-from almanack_paths import PAGE_TYPES, typed_dir, typed_page, week_dir as canonical_week_dir
+from almanack_paths import PAGE_TYPES
 
 SECTION_ID_PREFIX = "almanack-section-"
 ALMANACK_TYPES = PAGE_TYPES
@@ -56,20 +56,3 @@ def replace_section_inner(text: str, number: int, replacement: str, path: Path |
 
 def require_section(text: str, number: int, path: Path | None = None) -> None:
     section_bounds(text, number, path)
-
-
-def week_dir(root: Path, year: int, week: int) -> Path:
-    """Canonical directory for one ISO week."""
-    return canonical_week_dir(year, week)
-
-
-def type_dir(root: Path, year: int, week: int, content_type: str) -> Path:
-    """Canonical directory for one published weekly content type."""
-    if content_type not in ALMANACK_TYPES:
-        raise ValueError(f"Unknown Almanack content type: {content_type}")
-    return typed_dir(year, week, content_type)
-
-
-def type_page(root: Path, year: int, week: int, content_type: str) -> Path:
-    """Canonical week/type/index.html publication path."""
-    return typed_page(year, week, content_type)
