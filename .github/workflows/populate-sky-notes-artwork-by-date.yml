@@ -131,7 +131,6 @@ jobs:
           checked=0
           for ((week_value=10#${{ inputs.start_week }}; week_value<=10#${{ inputs.end_week }}; week_value++)); do
             week="W$(printf '%02d' "$week_value")"
-            page="site/${{ inputs.start_year }}/$week/index.html"
             [ -f "$page" ] || continue
             url="http://127.0.0.1:8766/$page"
             dom="/tmp/$week-object-story-dom.html"
@@ -169,7 +168,6 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           while read -r year week; do
-            git add -- "almanack/$year/W$(printf '%02d' "$week")" "site/$year/W$(printf '%02d' "$week")"
           done < <(python - <<'PY'
           from datetime import date, timedelta
           start=date.fromisocalendar(int("${{ inputs.start_year }}"), int("${{ inputs.start_week }}"), 1)
