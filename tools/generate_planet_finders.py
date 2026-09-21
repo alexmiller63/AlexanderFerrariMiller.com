@@ -19,6 +19,7 @@ from pathlib import Path
 
 from populate_ephemeris import TARGETS, computed_ephemeris, week_count
 from star_almanack_ephemeris import StarAlmanackEphemeris
+from almanack_paths import week_dir
 
 ROOT = Path(__file__).resolve().parents[1]
 W = H = 1400
@@ -1647,7 +1648,7 @@ def generate_week(year: int, week: int):
     generated = computed_ephemeris(year, engine)
     values = {key: generated[key][week - 1][0] for key in needed}
     bodies = [(BODY_SYMBOLS[BODY_NAMES[name]], name, values[BODY_NAMES[name]] % 360) for name in CANONICAL]
-    outdir = ROOT / "almanack" / str(year) / f"W{week:02d}" / "finders"
+    outdir = week_dir(year, week) / "finders"
     outdir.mkdir(parents=True, exist_ok=True)
     filenames = {
         FinderMode.GREEK: "planet-finder-greek-symbols.svg",
