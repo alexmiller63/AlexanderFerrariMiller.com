@@ -43,12 +43,16 @@ def main() -> None:
         root = ALMANACK_ROOT / str(year)
         week_count = weeks_in_iso_year(year)
         index = root / "index.html"
-        pages = [root / f"W{week:02d}" / "index.html" for week in range(1, week_count + 1)]
+        pages = [
+            root / f"W{week:02d}" / content_type / "index.html"
+            for week in range(1, week_count + 1)
+            for content_type in ("calendar", "ephemeris", "planet-finder", "sky-notes")
+        ]
         missing = [str(path) for path in [index, *pages] if not path.is_file()]
         if missing:
             raise SystemExit(f"Missing rendered Almanack pages for {year}: {missing}")
         all_pages.extend(pages)
-        print(f"PASS: Jekyll rendered the canonical {year} index and all {week_count} weekly pages")
+        print(f"PASS: Jekyll rendered the canonical {year} index and all {week_count} weeks × 4 typed pages")
 
     legacy_files = sorted(ALMANACK_ROOT.glob("ISO*-W*.html"))
     legacy_tree = ALMANACK_ROOT / "weeks"
