@@ -1,0 +1,63 @@
+name: Python source preflight
+
+on:
+  push:
+    paths:
+      - '**/*.py'
+  pull_request:
+    paths:
+      - '**/*.py'
+  workflow_dispatch:
+
+jobs:
+  validate-python:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Compile all Python source
+        run: python -m compileall -q .
+
+      - name: Reject suspicious literal newline escapes
+        shell: python
+        run: |
+          from pathlib import Path
+          import io
+          import tokenize
+
+          failures = []
+          for path in Path(".").rglob("*.py"):
+              if ".git" in path.parts:
+                  continue
+              raw = path.read_bytes()
+              # Tokenize so legitimate backslash-n sequences inside strings are allowed.
+              string_ranges = []
+              try:
+                  tokens = tokenize.tokenize(io.BytesIO(raw).readline)
+                  for tok in tokens:
+                      if tok.type == tokenize.STRING:
+                          string_ranges.append((tok.start, tok.end))
+              except (tokenize.TokenError, IndentationError, SyntaxError):
+                  # compileall reports the syntax error more clearly.
+                  continue
+
+              lines = raw.decode("utf-8").splitlines()
+              for lineno, line in enumerate(lines, 1):
+                  start = 0
+                  while True:
+                      col = line.find(r"\n", start)
+                      if col < 0:
+                          break
+                      inside_string = any(
+                          (sline < lineno < eline)
+                          or (sline == eline == lineno and scol <= col < ecol)
+                          or (sline == lineno < eline and col >= scol)
+                          or (sline < lineno == eline and col < ecol)
+                          for (sline, scol), (eline, ecol) in string_ranges
+                      )
+                      if not inside_string:
+                          failures.append(f"{path}:{lineno}:{col + 1}: literal \\n outside string")
+                      start = col + 2
+
+          if failures:
+              raise SystemExit("\n".join(failures))
