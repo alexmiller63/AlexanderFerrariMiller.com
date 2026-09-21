@@ -7,6 +7,7 @@ on:
       - '.github/workflows/almanack-type-coverage-regression.yml'
       - 'tools/test_almanack_type_coverage.py'
       - 'tools/audit_almanack_population_counts.py'
+      - 'tools/scaffold_almanack_weeks.py'
       - 'tools/populate_calendar.py'
       - 'tools/populate_meteor_showers.py'
       - 'tools/populate_ephemeris.py'
@@ -34,6 +35,9 @@ on:
 permissions:
   contents: read
 
+env:
+  STAR_ALMANACK_EPHEMERIS_DIR: ${{ github.workspace }}/.cache/skyfield
+
 jobs:
   type-coverage:
     runs-on: ubuntu-latest
@@ -42,8 +46,36 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+      - name: Restore astronomical source cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            .cache/skyfield/de440s.bsp
+            .cache/skyfield/ceres_1900_2100.bsp
+          key: star-almanack-source-kernels-v1
       - name: Install astronomical calculation dependencies
         run: python -m pip install --disable-pip-version-check skyfield==1.55 PyYAML
+      - name: Download source kernels only when cache is empty
+        run: |
+          mkdir -p .cache/skyfield
+          python - <<'PY'
+          from pathlib import Path
+          from urllib.request import urlretrieve
+          from skyfield.api import Loader
+
+          root = Path('.cache/skyfield')
+          de440s = root / 'de440s.bsp'
+          ceres = root / 'ceres_1900_2100.bsp'
+          if not de440s.exists():
+              Loader(str(root)).download('de440s.bsp')
+          if not ceres.exists():
+              urlretrieve(
+                  'https://naif.jpl.nasa.gov/pub/naif/generic_kernels/spk/asteroids/a_old_versions/ceres_1900_2100.bsp',
+                  ceres,
+              )
+          PY
+      - name: Scaffold 2026 Almanack pages for regression
+        run: python tools/scaffold_almanack_weeks.py 2026 1 2026 53
       - name: Generate 2026 Almanack pages for regression
         run: |
           python tools/clean_event_cells.py 2026
