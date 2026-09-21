@@ -27,7 +27,7 @@ from pathlib import Path
 
 import populate_fixed_sky as fixed
 from almanack_calendar import CALENDAR_RE, ROW_RE, _get_attr, page_dates, page_iso_week
-from almanack_paths import ALMANACK_ROOT, calendar_pages
+from almanack_paths import ALMANACK_ROOT, calendar_pages, year_dir
 
 ROOT = Path(__file__).resolve().parents[1]
 PUBLIC = ALMANACK_ROOT
@@ -72,7 +72,7 @@ def audit_week_pages(root: Path, year: int) -> tuple[int, list[str]]:
     pages = calendar_pages(year)
     failures: list[str] = []
     if not pages:
-        return 0, [f"no weekly pages under {root / str(year)}"]
+        return 0, [f"no weekly pages under {year_dir(year)}"]
 
     for page in pages:
         page_year, week = page_iso_week(page)
