@@ -8,7 +8,12 @@ independent story finders without collapsing them onto one owner.
 from __future__ import annotations
 
 import json
+import sys
 from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
 
 from compute_constellation_observance_2026 import CONSTELLATIONS
 
@@ -16,7 +21,6 @@ from finder_geometry_adapter import all_asterism_specs, all_constellation_specs,
 from iso_date_range import parse_range_args
 import populate_sky_notes_artwork_by_date as legacy
 
-ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "sky-notes-artwork" / "specs" / "objects"
 
 
