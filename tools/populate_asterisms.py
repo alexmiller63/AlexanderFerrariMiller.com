@@ -4,6 +4,7 @@ from __future__ import annotations
 import argparse,csv,datetime as dt
 from collections import defaultdict
 from pathlib import Path
+from almanack_sections import type_page
 from almanack_calendar import ensure_calendar_metadata,get_events,set_events
 from star_almanack_astronomy import declination_band, season_for
 from star_almanack_objects import HTML_AID, observing_aid_for_magnitude
@@ -50,7 +51,7 @@ def event_map(rows):
  return e
 def pages_for_events(root,events):
  pages=[]
- for y in sorted({d.isocalendar().year for d in events}):pages.extend(sorted((root/str(y)).glob("W??/index.html")))
+ for y in sorted({d.isocalendar().year for d in events}):pages.extend(sorted((root/str(y)).glob("W??/calendar/index.html")))
  return pages
 def inject(root,events):
  changed=inserted=0
@@ -70,7 +71,7 @@ def inject(root,events):
  return changed,inserted
 def validate(root,events):
  for d,vals in events.items():
-  page=root/str(d.isocalendar().year)/f"W{d.isocalendar().week:02d}"/"index.html"
+  page=type_page(root, d.isocalendar().year, d.isocalendar().week, "calendar")
   text=ensure_calendar_metadata(page.read_text(encoding="utf-8"),page); cell=get_events(text,d)
   if cell is None:raise SystemExit(f"{root}: missing canonical calendar row for {d}")
   for v in vals:
