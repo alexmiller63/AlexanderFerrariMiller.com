@@ -111,7 +111,7 @@ def bayer_label(identity, star=None):
     """Return a Greek Bayer designation, falling back to the pinned HYG star record."""
     stored = str(identity.get("bayer") or "").strip()
     if stored:
-        return stored
+        return greek_bayer_symbol(stored)
     if star is None:
         return ""
     greek = greek_bayer_symbol(star.bayer)
@@ -304,12 +304,7 @@ def render(spec: dict, stars, output: Path) -> None:
                 bbox=dict(facecolor=NIGHT, edgecolor="none", pad=0.8), zorder=9)
 
     title_const = str(target_meta.get("constellation_abbreviation") or "").strip()
-    title_parts = [" ".join(part for part in (target_greek, title_const) if part)]
-    if target_name:
-        title_parts.append(target_name)
-    title = ", ".join(part for part in title_parts if part)
-    if figure_constellation:
-        title += f", in {figure_constellation}"
+    title = f"{target_name} in {figure_constellation}" if target_name and figure_constellation else (target_name or figure_constellation)
     if not title:
         title = spec.get("chart_title") or "Stellar Finder"
     ax.set_title(title, color=TEXT, fontsize=14, pad=12)
@@ -327,8 +322,7 @@ def render(spec: dict, stars, output: Path) -> None:
     legend = [legend_label(identity, star) for identity, star in legend_entries]
     legend = [item for item in legend if item]
     if legend:
-        ax.text(0.5, -0.075, "\
-".join(legend), transform=ax.transAxes,
+        ax.text(0.5, -0.075, "\n".join(legend), transform=ax.transAxes,
                 ha="center", va="top", fontsize=7, color=TEXT, wrap=True)
 
     ax.set_xticks([])
