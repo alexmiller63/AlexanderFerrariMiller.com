@@ -27,7 +27,7 @@ def read_csv(path: Path) -> list[dict[str, str]]:
 
 def calendar_html() -> str:
     chunks: list[str] = []
-    for page in sorted(SITE.glob("W??/index.html")):
+    for page in sorted(SITE.glob("W??/calendar/index.html")):
         text = page.read_text(encoding="utf-8")
         chunks.extend(
             re.findall(
