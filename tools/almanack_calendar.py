@@ -135,14 +135,17 @@ def _ensure_event_style(text: str) -> str:
 
 
 def page_iso_week(path: Path) -> tuple[int, int]:
-    week_name = path.parent.name
-    year_name = path.parent.parent.name
-    if not re.fullmatch(r'W\d{2}', week_name) or not re.fullmatch(r'\d{4}', year_name):
-        raise ValueError(f"Weekly Almanack page is not under YEAR/Www: {path}")
-    year, week = int(year_name), int(week_name[1:])
-    dt.date.fromisocalendar(year, week, 1)
-    return year, week
-
+    """Return the ISO year/week for root and typed Almanack pages."""
+    for parent in path.parents:
+        if not re.fullmatch(r'W\d{2}', parent.name):
+            continue
+        year_name = parent.parent.name
+        if not re.fullmatch(r'\d{4}', year_name):
+            continue
+        year, week = int(year_name), int(parent.name[1:])
+        dt.date.fromisocalendar(year, week, 1)
+        return year, week
+    raise ValueError(f"Weekly Almanack page is not under YEAR/Www: {path}")
 
 def page_dates(path: Path) -> list[dt.date]:
     year, week = page_iso_week(path)
