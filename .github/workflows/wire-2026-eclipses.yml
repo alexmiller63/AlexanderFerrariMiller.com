@@ -35,7 +35,7 @@ jobs:
               '2026-08-28': ('W35', 'Partial lunar eclipse'),
           }
           for day, (week, phrase) in checks.items():
-              for path in (Path('almanack/2026')/week/'index.html', Path('site/2026')/week/'index.html'):
+              for path in (Path('almanack/2026')/week/'index.html',):
                   text = path.read_text(encoding='utf-8')
                   assert phrase in text, f'{phrase} missing from {path}'
           page = Path('star-almanack/eclipses.html').read_text(encoding='utf-8')
@@ -49,7 +49,7 @@ jobs:
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add almanack-expanded.md site/2026 almanack/2026 star-almanack/eclipses.html
+          git add almanack-expanded.md almanack/2026 star-almanack/eclipses.html
           if git diff --cached --quiet; then
             echo 'No eclipse wiring changes.'
             exit 0
