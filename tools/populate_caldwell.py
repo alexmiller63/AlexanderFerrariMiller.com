@@ -8,14 +8,14 @@ from almanack_sections import type_page
 from almanack_calendar import ensure_calendar_metadata,get_events,set_events
 from star_almanack_astronomy import best_visibility_occurrences_for_iso_year,declination_band,season_for
 from star_almanack_objects import HTML_AID,observing_aid_for_magnitude
-ROOT=Path(__file__).resolve().parents[1]; SRC=ROOT; PUBLIC=ROOT/"almanack"; SOURCE_SITE=SRC/"site"
+ROOT=Path(__file__).resolve().parents[1]; SRC=ROOT; PUBLIC=ROOT/"almanack"
 CATALOG=SRC/"caldwell-catalog.csv"; FINEST_OVERLAP=SRC/"finest-ngc-caldwell-overlap.csv"; ASTERISM_OVERLAP=SRC/"asterism-catalog-overlap.csv"
 CONSTELLATIONS={"And":"Andromeda","Aps":"Apus","Aqr":"Aquarius","Ara":"Ara","Aur":"Auriga","Boo":"Boötes","CMa":"Canis Major","Cam":"Camelopardalis","Car":"Carina","Cas":"Cassiopeia","Cen":"Centaurus","Cep":"Cepheus","Cet":"Cetus","Cha":"Chamaeleon","Cir":"Circinus","Cnc":"Cancer","Col":"Columba","Com":"Coma Berenices","CrA":"Corona Australis","Cru":"Crux","Crv":"Corvus","CVn":"Canes Venatici","Cyg":"Cygnus","Del":"Delphinus","Dor":"Dorado","Dra":"Draco","For":"Fornax","Gem":"Gemini","Hor":"Horologium","Hya":"Hydra","Lac":"Lacerta","Leo":"Leo","Lyn":"Lynx","Mon":"Monoceros","Mus":"Musca","Nor":"Norma","Pav":"Pavo","Peg":"Pegasus","Per":"Perseus","Pup":"Puppis","Sco":"Scorpius","Scl":"Sculptor","Sex":"Sextans","Sgr":"Sagittarius","Tau":"Taurus","TrA":"Triangulum Australe","Tuc":"Tucana","Vel":"Vela","Vir":"Virgo","Vul":"Vulpecula"}
 TYPE_LABELS={"OC":"open cluster","GC":"globular cluster","PN":"planetary nebula","BN":"bright nebula","DN":"dark nebula","SN":"supernova remnant","IG":"irregular galaxy","SG":"spiral galaxy","SaG":"spiral galaxy","SbG":"spiral galaxy","ScG":"spiral galaxy","SdG":"spiral galaxy","SBG":"barred spiral galaxy","SBbG":"barred spiral galaxy","SBcG":"barred spiral galaxy","E4G":"elliptical galaxy","E6G":"elliptical galaxy","dE4G":"dwarf elliptical galaxy","dE0G":"dwarf elliptical galaxy","PecG":"peculiar galaxy","SeyfertG":"Seyfert galaxy"}
 def iso_label(day):y,w,d=day.isocalendar(); return f"{y}-W{w:02d}-{d}"
 def years_present():
  years=set()
- for root in (PUBLIC,SOURCE_SITE):
+ for root in (PUBLIC,):
   if root.exists():
    for p in root.iterdir():
     if p.is_dir() and re.fullmatch(r"20\d{2}",p.name) and any(p.glob("W??/calendar/index.html")):years.add(int(p.name))
@@ -85,5 +85,5 @@ def main():
  catalog=read_catalog(); finest_ids=finest_caldwell_ids(); asterism_ids=asterism_catalog_ids(); years=requested_years()
  if not years:raise RuntimeError("No generated Almanack years found")
  for year in years:
-  rows=visibility_rows(catalog,year); write_visibility(rows,year); events=events_for(rows,finest_ids,asterism_ids); s=inject(SOURCE_SITE,events); p=inject(PUBLIC,events); print(f"{year}: Caldwell C1-C109 ISO-year occurrences; {len(finest_ids)} overlap memberships preserved as source data only; updated {s} source + {p} public pages")
+  rows=visibility_rows(catalog,year); write_visibility(rows,year); events=events_for(rows,finest_ids,asterism_ids); p=inject(PUBLIC,events); print(f"{year}: Caldwell C1-C109 ISO-year occurrences; {len(finest_ids)} overlap memberships preserved as source data only; updated {p} public pages")
 if __name__=="__main__":main()
