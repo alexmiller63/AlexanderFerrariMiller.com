@@ -35,7 +35,6 @@ from almanack_time import AstroInstant, interpolate_instant
 from star_almanack_ephemeris import StarAlmanackEphemeris
 
 ROOT = Path(__file__).resolve().parents[1]
-SOURCE_ROOT = ROOT / "site"
 PUBLIC_ROOT = ROOT / "almanack"
 DATA_ROOT = ROOT / "generated"
 SIGNS = "♈♉♊♋♌♍♎♏♐♑♒♓"
@@ -393,7 +392,7 @@ def populate_year(year):
     write_data(year, ingresses, phases, wheel)
     changed = 0
     weeks = date(year, 12, 28).isocalendar().week
-    for base in (SOURCE_ROOT, PUBLIC_ROOT):
+    for base in (PUBLIC_ROOT,):
         for week in range(1, weeks + 1):
             if patch_page(base / str(year) / f"W{week:02d}" / "index.html", ingresses, events):
                 changed += 1
