@@ -78,7 +78,6 @@ def targets(years: list[int]) -> list[Path]:
     paths = [ROOT / "almanack-expanded.md"]
     for year in years:
         paths.extend(sorted((ROOT / "almanack" / str(year)).glob("W??/index.html")))
-        paths.extend(sorted((ROOT / "site" / str(year)).glob("W??/index.html")))
     return paths
 
 
