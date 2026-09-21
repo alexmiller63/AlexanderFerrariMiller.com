@@ -69,7 +69,7 @@ def page_title_iso(text: str) -> tuple[int, int] | None:
 
 
 def audit_week_pages(root: Path, year: int) -> tuple[int, list[str]]:
-    pages = sorted((root / str(year)).glob("W??/index.html"))
+    pages = sorted((root / str(year)).glob("W??/calendar/index.html"))
     failures: list[str] = []
     if not pages:
         return 0, [f"no weekly pages under {root / str(year)}"]
