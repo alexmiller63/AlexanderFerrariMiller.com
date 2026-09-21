@@ -116,7 +116,7 @@ def main():
         browser = p.chromium.launch()
         page = browser.new_page(viewport={'width': 390, 'height': 844})
         for year, week in weeks_between(args.start_date, args.end_date):
-            rel = f'almanack/{year}/W{week:02d}/index.html'
+            rel = f'almanack/{year}/W{week:02d}/calendar/index.html'
             if args.base_url:
                 url = f"{args.base_url.rstrip('/')}/{rel}"
             else:
