@@ -15,7 +15,7 @@ from datetime import date
 from pathlib import Path
 
 from star_almanack_ephemeris import StarAlmanackEphemeris
-from almanack_sections import type_page
+from almanack_paths import typed_page
 
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_LATITUDE_DEG = 45.0
@@ -382,7 +382,7 @@ def update_year(year, engine=None):
             }
         replacement = render_ephemeris(monday, values)
         for base in (ROOT / "almanack",):
-            path = type_page(base, year, week, "ephemeris")
+            path = typed_page(year, week, "ephemeris")
             text = path.read_text(encoding="utf-8")
             new = put_ephemeris(text, replacement, path)
             if new != text:
