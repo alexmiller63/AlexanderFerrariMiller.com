@@ -5,10 +5,11 @@ import argparse,csv,datetime as dt
 from collections import defaultdict
 from pathlib import Path
 from almanack_sections import type_page
+from almanack_paths import ALMANACK_ROOT, calendar_pages
 from almanack_calendar import ensure_calendar_metadata,get_events,set_events
 from star_almanack_astronomy import declination_band, season_for
 from star_almanack_objects import HTML_AID, observing_aid_for_magnitude
-ROOT=Path(__file__).resolve().parents[1]; SRC=ROOT; PUBLIC=ROOT/"almanack"; MEMBER_COORDS=SRC/"asterism-member-coordinates.csv"; CATALOG_OVERLAP=SRC/"asterism-catalog-overlap.csv"
+ROOT=Path(__file__).resolve().parents[1]; SRC=ROOT; PUBLIC=ALMANACK_ROOT; MEMBER_COORDS=SRC/"asterism-member-coordinates.csv"; CATALOG_OVERLAP=SRC/"asterism-catalog-overlap.csv"
 def requested_years():
  p=argparse.ArgumentParser(description="Populate Star Almanack core asterism centers"); p.add_argument("years",metavar="YEAR",type=int,nargs="+"); a=p.parse_args(); years=list(dict.fromkeys(a.years))
  for y in years:
@@ -51,7 +52,7 @@ def event_map(rows):
  return e
 def pages_for_events(root,events):
  pages=[]
- for y in sorted({d.isocalendar().year for d in events}):pages.extend(sorted((root/str(y)).glob("W??/calendar/index.html")))
+ for y in sorted({d.isocalendar().year for d in events}):pages.extend(calendar_pages(y))
  return pages
 def inject(root,events):
  changed=inserted=0
