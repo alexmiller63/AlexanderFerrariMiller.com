@@ -3,6 +3,8 @@
 from pathlib import Path
 import re
 
+from almanack_paths import week_index
+
 ROOT = Path(__file__).resolve().parents[1]
 WEEKS = ROOT / "almanack" / "2026"
 
@@ -69,7 +71,7 @@ def migrate(path: Path) -> bool:
 def main() -> None:
     changed = []
     for week in range(1, 54):
-        path = WEEKS / f"W{week:02d}" / "index.html"
+        path = week_index(2026, week)
         if not path.exists():
             raise RuntimeError(f"missing {path}")
         if migrate(path):
