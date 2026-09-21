@@ -4,7 +4,6 @@ from __future__ import annotations
 import csv,datetime as dt,re,sys
 from collections import defaultdict
 from pathlib import Path
-from almanack_sections import type_page
 from almanack_paths import ALMANACK_ROOT, calendar_pages
 from almanack_calendar import ensure_calendar_metadata,get_events,set_events
 from star_almanack_astronomy import best_visibility_occurrences_for_iso_year,declination_band,season_for
