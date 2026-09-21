@@ -1,0 +1,161 @@
+name: Planet Finder Generator
+
+# Refresh GitHub Actions workflow registration.
+
+on:
+  workflow_dispatch:
+    inputs:
+      start_year:
+        description: Start year
+        required: true
+        default: '2026'
+        type: string
+      start_week:
+        description: Start week
+        required: true
+        default: '36'
+        type: string
+      end_year:
+        description: End year
+        required: true
+        default: '2026'
+        type: string
+      end_week:
+        description: End week
+        required: true
+        default: '36'
+        type: string
+      candidate_layouts:
+        description: Complete layouts to score per mode
+        required: true
+        default: '5'
+        type: string
+      max_node_candidates:
+        description: Maximum DFS node visits per body depth
+        required: true
+        default: '200'
+        type: string
+      max_search_candidates:
+        description: Maximum candidate evaluations for the entire run
+        required: true
+        default: '10000'
+        type: string
+      max_search_seconds:
+        description: Maximum Planet Finder search time per mode
+        required: true
+        default: '180'
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: planet-finder-generator
+  cancel-in-progress: true
+
+jobs:
+  populate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Restore JPL/NAIF ephemeris source cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            .cache/skyfield/de440s.bsp
+            .cache/skyfield/ceres_1900_2100.bsp
+          key: star-almanack-source-kernels-v1
+
+      - name: Install pinned calculation dependency
+        run: python -m pip install --disable-pip-version-check 'skyfield==1.55'
+
+      - name: Download source kernels only when cache is empty
+        run: |
+          mkdir -p .cache/skyfield
+          python - <<'PY'
+          from pathlib import Path
+          from urllib.request import urlretrieve
+          from skyfield.api import Loader
+
+          root = Path('.cache/skyfield')
+          de440s = root / 'de440s.bsp'
+          ceres = root / 'ceres_1900_2100.bsp'
+
+          if de440s.exists():
+              print(f'Reusing cached {de440s} ({de440s.stat().st_size:,} bytes)')
+          else:
+              print('Downloading JPL DE440s source kernel under NAIF distribution rules')
+              Loader(str(root)).download('de440s.bsp')
+
+          if ceres.exists():
+              print(f'Reusing cached {ceres} ({ceres.stat().st_size:,} bytes)')
+          else:
+              print('Downloading JPL/NAIF Ceres source kernel under NAIF distribution rules')
+              urlretrieve(
+                  'https://naif.jpl.nasa.gov/pub/naif/generic_kernels/spk/asteroids/a_old_versions/ceres_1900_2100.bsp',
+                  ceres,
+              )
+          PY
+
+      - name: Compile-check Planet Finder Python
+        run: |
+          python -m py_compile \
+            tools/generate_planet_finders.py \
+            tools/populate_ephemeris_planet_finder_by_date.py
+
+      - name: Resolve ISO week range
+        id: range
+        run: |
+          read START_DATE END_DATE < <(python tools/resolve_iso_week_range.py \
+            '${{ inputs.start_year }}' '${{ inputs.start_week }}' \
+            '${{ inputs.end_year }}' '${{ inputs.end_week }}')
+          echo "start_date=$START_DATE" >> "$GITHUB_OUTPUT"
+          echo "end_date=$END_DATE" >> "$GITHUB_OUTPUT"
+          echo "$START_DATE through $END_DATE"
+
+      - name: Generate Ephemeris and Planet Finder from local calculations
+        env:
+          STAR_ALMANACK_EPHEMERIS_DIR: ${{ github.workspace }}/.cache/skyfield
+          PLANET_FINDER_CANDIDATES: ${{ inputs.candidate_layouts }}
+          PLANET_FINDER_MAX_NODE_CANDIDATES: ${{ inputs.max_node_candidates }}
+          PLANET_FINDER_MAX_CANDIDATES: ${{ inputs.max_search_candidates }}
+          PLANET_FINDER_MAX_SECONDS: ${{ inputs.max_search_seconds }}
+        run: |
+          # PLANET_FINDER_MAX_SECONDS is the one user-controlled search clock:
+          # each Greek, Latin, and Mixed layout receives this full budget.
+          # Do not wrap the process in a second wall clock; the job-level timeout
+          # remains the emergency guard for non-search hangs.
+          python tools/populate_ephemeris_planet_finder_by_date.py \
+            "${{ steps.range.outputs.start_date }}" "${{ steps.range.outputs.end_date }}"
+
+      - name: Commit Planet Finder changes only
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          while read -r year week; do
+            git add -- "almanack/$year/W$(printf '%02d' "$week")" "site/$year/W$(printf '%02d' "$week")"
+          done < <(python - <<'PY'
+from datetime import date, timedelta
+start=date.fromisocalendar(int("${{ inputs.start_year }}"), int("${{ inputs.start_week }}"), 1)
+end=date.fromisocalendar(int("${{ inputs.end_year }}"), int("${{ inputs.end_week }}"), 1)
+while start <= end:
+    iso=start.isocalendar()
+    print(iso.year, iso.week)
+    start += timedelta(days=7)
+PY
+          )
+          if git diff --cached --quiet; then
+            echo "No Planet Finder changes in requested ISO week range."
+            exit 0
+          fi
+          git commit -m "Generate Planet Finder ${{ inputs.start_year }}-W${{ inputs.start_week }}"
+          git pull --rebase origin main
+          git push
