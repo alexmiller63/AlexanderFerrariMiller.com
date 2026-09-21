@@ -166,7 +166,7 @@ def write_public_story(story: Story) -> Path:
         f"<p>{html.escape(' '.join(part.splitlines()))}</p>"
         for part in re.split(r"\n\s*\n", story.body.strip()) if part.strip()
     )
-    document = (
+    artwork_path = ROOT / "sky-notes-artwork" / "objects" / str(story.fixed_object_id) / "finder.svg"\n    artwork_version = str(artwork_path.stat().st_mtime_ns) if artwork_path.exists() else None\n    artwork_url = (f"../../sky-notes-artwork/objects/{story.fixed_object_id}/finder.svg?v={artwork_version}"\n                   if artwork_version is not None else None)\n    document = (
         "<!doctype html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n"
         "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n"
         f"<title>{html.escape(story.hed)} — Star Almanack Sky Notes</title>\n</head>\n"
@@ -175,10 +175,10 @@ def write_public_story(story: Story) -> Path:
         f"<p class=\"sky-note-story-dek story-dek\" data-story-field=\"dek\">{html.escape(story.dek)}</p>\n"
         f"<section class=\"sky-note-story-body\" data-story-field=\"body\">{paragraphs}</section>\n"
         + (f"<figure class=\"sky-note-story-artwork\" data-story-field=\"artwork\">"
-           f"<a href=\"../../sky-notes-artwork/objects/{story.fixed_object_id}/finder.svg\">"
-           f"<img src=\"../../sky-notes-artwork/objects/{story.fixed_object_id}/finder.svg\" "
+           f"<a href=\"{artwork_url}\">"
+           f"<img src=\"{artwork_url}\" "
            f"alt=\"Stellar finder for {html.escape(story.hed, quote=True)}\" loading=\"lazy\"></a></figure>\n"
-           if (ROOT / "sky-notes-artwork" / "objects" / str(story.fixed_object_id) / "finder.svg").exists() else "")
+           if artwork_url is not None else "")
         + f"<p class=\"sky-note-story-descriptor\" data-story-field=\"descriptor\">"
         f"<a class=\"descriptor-link\" data-descriptor-id=\"{story.fixed_object_id}\" "
         f"href=\"../../almanack/descriptors/{story.fixed_object_id}.json\" type=\"application/json\">Descriptor</a></p>\n"
