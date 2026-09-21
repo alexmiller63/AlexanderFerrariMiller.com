@@ -16,7 +16,7 @@ import re
 import sys
 
 ROOT = Path(__file__).resolve().parents[1]
-BASES = (ROOT / "almanack", ROOT / "site")
+BASES = (ROOT / "almanack",)
 GLYPH_ROOT = "/assets/almanack/visibility-glyphs/masters/"
 WEEKLY_GLYPH_ROOT = "../../../assets/almanack/visibility-glyphs/masters/"
 
