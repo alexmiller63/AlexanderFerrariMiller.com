@@ -5,7 +5,7 @@ import html,re,sys
 from datetime import date
 from pathlib import Path
 from almanack_calendar import ensure_calendar_metadata,get_events,set_events
-from almanack_sections import type_page
+from almanack_paths import calendar_page
 ROOT=Path(__file__).resolve().parents[1]; DEFAULT_ECLIPSE_SOURCE=ROOT/"eclipse.yaml"; ALMANACK_SOURCE=ROOT/"almanack-expanded.md"; ECLIPSE_PAGE=ROOT/"star-almanack"/"eclipses.html"
 GLYPHS={"solar":'<img class="visibility-glyph" src="/assets/almanack/visibility-glyphs/masters/solar-eclipse.svg" alt="Solar eclipse" aria-label="Solar eclipse">',"lunar":'<img class="visibility-glyph" src="/assets/almanack/visibility-glyphs/masters/lunar-eclipse.svg" alt="Lunar eclipse" aria-label="Lunar eclipse">'}
 def parse_year(text):
@@ -68,8 +68,8 @@ def publish(source_path):
   ALMANACK_SOURCE.write_text(source,encoding="utf-8")
  for e in eclipses:
   iso_year,week,_=date.fromisoformat(e["date"]).isocalendar()
-  for root in (ROOT/"site",ROOT/"almanack"):
-   page=type_page(root,iso_year,week,"calendar")
+  for root in (ROOT/"almanack",):
+   page=calendar_page(iso_year,week)
    if not page.exists():raise SystemExit(f"Missing Almanack week page: {page}")
    page.write_text(update_html(page.read_text(encoding="utf-8"),e,page),encoding="utf-8")
  page_text=ECLIPSE_PAGE.read_text(encoding="utf-8"); ECLIPSE_PAGE.write_text(update_eclipse_page(page_text,year,eclipses),encoding="utf-8"); print(f"{year}: wired {len(eclipses)} eclipses with magnitude, visibility, and observing details; PASS"); return year,len(eclipses)
