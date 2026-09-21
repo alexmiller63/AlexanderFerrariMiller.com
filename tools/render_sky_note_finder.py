@@ -390,7 +390,7 @@ def render(spec: dict, stars, output: Path) -> None:
         full = bayer_label(target_star_identity, target_star)
         target_greek = full.split()[0] if full else ""
     target_const = str(target_meta.get("constellation_abbreviation") or "").strip()
-    target_chart_label = " ".join(part for part in (target_greek, target_const, target_name) if part)
+    target_bayer = " ".join(part for part in (target_greek, target_const) if part)\n    target_chart_label = ", ".join(part for part in (target_bayer, target_name) if part)
     if not target_chart_label:
         target_chart_label = str(target_identity.get("name") or "Target")
     ax.annotate(target_chart_label, target_point, xytext=(14, 0), textcoords="offset points",
@@ -416,7 +416,7 @@ def render(spec: dict, stars, output: Path) -> None:
     legend = [legend_label(identity, star) for identity, star in legend_entries]
     legend = [item for item in legend if item]
     if legend:
-        ax.text(0.5, -0.075, "\n".join(legend), transform=ax.transAxes,
+        ax.text(0.5, -0.075, "   ·   ".join(legend), transform=ax.transAxes,
                 ha="center", va="top", fontsize=7, color=TEXT, wrap=True)
 
     ax.set_xticks([])
