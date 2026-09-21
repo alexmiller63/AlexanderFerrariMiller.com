@@ -10,6 +10,8 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+from compute_constellation_observance_2026 import CONSTELLATIONS
+
 from finder_geometry_adapter import all_asterism_specs, all_constellation_specs, constellation_paths
 from iso_date_range import parse_range_args
 import populate_sky_notes_artwork_by_date as legacy
@@ -74,9 +76,13 @@ def make_spec(item: dict, registry: dict, by_hip: dict[str, int], metadata: dict
     if owner.get("renderer_ref") and owner["renderer_ref"] not in seen:
         identities.append(dict(owner, identifiers={"hip": legacy.hip_number(owner["renderer_ref"])}))
 
+    full_name = dict((abbr, name) for name, abbr in CONSTELLATIONS).get(con, con)
     return {
-        "name": con,
+        "name": full_name,
+        "constellation_abbreviation": con,
         "figure_paths": paths,
+        "candidate_constellations": all_constellation_specs(registry),
+        "candidate_asterisms": all_asterism_specs(registry),
         "asterisms": [],
         "deep_sky_objects": [],
         "fixed_object_identities": identities,
