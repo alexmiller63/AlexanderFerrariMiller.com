@@ -6,10 +6,11 @@ from collections import defaultdict
 from pathlib import Path
 import catalog_common_names as names
 from almanack_calendar import ensure_calendar_metadata,get_events,set_events
+from almanack_paths import ALMANACK_ROOT, calendar_pages
 from star_almanack_astronomy import declination_band, season_for
 from star_almanack_objects import HTML_AID, observing_aid_for_magnitude
 ROOT=Path(__file__).resolve().parents[1]; SRC=ROOT; GENERATED=SRC/"generated"
-PUBLIC=ROOT/"almanack"; FIXED=SRC/"fixed-objects.yaml"
+PUBLIC=ALMANACK_ROOT; FIXED=SRC/"fixed-objects.yaml"
 EDITORIAL=json.loads((SRC/"messier-editorial.json").read_text(encoding="utf-8"))
 ASTERISM_OVERLAP=SRC/"asterism-catalog-overlap.csv"; DEFAULT_YEARS=(2025,2026,2027)
 def requested_years():
@@ -80,7 +81,7 @@ def is_messier_event(item):
  plain=re.sub(r"<[^>]+>","",item).strip(); return bool(re.match(r"^(?:Messier\s+\d+\s+\(M\d+\)|M\d+\b|[^—]+\s+\(M\d+\),)",plain))
 def pages_for_events(root,by_date):
  pages=[]
- for y in sorted({d.isocalendar().year for d in by_date}): pages.extend(sorted((root/str(y)).glob("W??/calendar/index.html")))
+ for y in sorted({d.isocalendar().year for d in by_date}): pages.extend(calendar_pages(y))
  return pages
 def inject(root,by_date):
  changed=0
