@@ -1,10 +1,12 @@
 #!/usr/bin/env python3
 """Assemble the W41 visual layer after the canonical weekly page is copied."""
 from pathlib import Path
+
+from almanack_paths import week_dir, week_index
 import math, shutil
 
 ROOT = Path(__file__).resolve().parents[1]
-OUT = ROOT / "almanack" / "2026" / "W41"
+OUT = week_dir(2026, 41)
 FINDERS = OUT / "finders"
 SOURCE_FINDERS = ROOT / "observer-views" / "W41"
 
@@ -63,7 +65,7 @@ def main():
         shutil.copy2(SOURCE_FINDERS/src,FINDERS/name)
     for mode,fn in (("Greek / Symbols","planet-finder-greek-symbols.svg"),("Latin","planet-finder-latin.svg"),("Mixed / Learner","planet-finder-mixed-learner.svg")):
         (FINDERS/fn).write_text(chart(mode),encoding='utf-8')
-    page=OUT/'index.html'; text=page.read_text(encoding='utf-8')
+    page=week_index(2026, 41); text=page.read_text(encoding='utf-8')
     css='''<style>.w41-finder-strip{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem;margin:1.25rem 0 2rem}.w41-finder-strip figure,.w41-star-finder{margin:0}.w41-finder-strip img,.w41-star-finder img{display:block;width:100%;height:auto}.w41-finder-strip figcaption,.w41-star-finder figcaption{text-align:center;font-family:system-ui,sans-serif;font-size:.82rem;color:var(--muted);margin-top:.35rem}.w41-star-finder{max-width:820px;margin:1.1rem auto 1.6rem}.w41-star-finder img{border:1px solid var(--rule);border-radius:.4rem}@media(max-width:760px){.w41-finder-strip{grid-template-columns:1fr}.w41-star-finder{max-width:none}}</style>'''
     text=text.replace('</head>',css+'</head>',1)
     strip='''<div class="w41-finder-strip"><figure><img src="finders/planet-finder-greek-symbols.svg" alt="Planet Finder — Greek / Symbols"><figcaption>Greek / Symbols</figcaption></figure><figure><img src="finders/planet-finder-latin.svg" alt="Planet Finder — Latin"><figcaption>Latin</figcaption></figure><figure><img src="finders/planet-finder-mixed-learner.svg" alt="Planet Finder — Mixed / Learner"><figcaption>Mixed / Learner</figcaption></figure></div>'''
