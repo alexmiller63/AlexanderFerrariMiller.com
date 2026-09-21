@@ -27,7 +27,7 @@ from star_almanack_planets import PLANET_COLUMNS, load_weekly_longitudes
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE_ROOT = ROOT
-PAGE_ROOTS = (ROOT / "site", ROOT / "almanack")
+PAGE_ROOTS = (ROOT / "almanack",)
 BRIGHT_STARS = SOURCE_ROOT / "bright-stars-2mag.csv"
 GEOMETRY_REGISTRY = ROOT / "finder-geometry" / "martz-macrobert.json"
 
