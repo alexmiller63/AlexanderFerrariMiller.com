@@ -5,7 +5,8 @@ from __future__ import annotations
 from datetime import date
 import generate_planet_finders as finder
 import populate_ephemeris as ephemeris
-from almanack_sections import replace_section_inner, type_dir, type_page
+from almanack_sections import replace_section_inner
+from almanack_paths import typed_dir, typed_page
 from iso_date_range import group_by_year, parse_range_args
 from planet_finder_layout import patch_file as patch_planet_finder_layout
 from star_almanack_ephemeris import StarAlmanackEphemeris
@@ -77,8 +78,8 @@ def populate_week(
     ephemeris_html, finder_html = split_rendered_sections(rendered)
 
     changed = 0
-    ephemeris_path = type_page(ephemeris.ROOT / "almanack", year, week, "ephemeris")
-    finder_path = type_page(ephemeris.ROOT / "almanack", year, week, "planet-finder")
+    ephemeris_path = typed_page(year, week, "ephemeris")
+    finder_path = typed_page(year, week, "planet-finder")
     for path, section, body in (
         (ephemeris_path, 3, ephemeris_html),
         (finder_path, 4, finder_html),
@@ -97,7 +98,7 @@ def populate_week(
     # in both canonical and published trees so each weekly page is a complete,
     # self-contained package and its relative finders/... links are valid.
     outdirs = (
-        type_dir(ephemeris.ROOT / "almanack", year, week, "planet-finder") / "finders",
+        typed_dir(year, week, "planet-finder") / "finders",
         type_dir(ephemeris.ROOT / "site", year, week, "planet-finder") / "finders",
     )
     for outdir in outdirs:
