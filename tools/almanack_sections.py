@@ -6,6 +6,8 @@ import re
 from pathlib import Path
 
 SECTION_ID_PREFIX = "almanack-section-"
+ALMANACK_TYPES = ("calendar", "ephemeris", "planet-finder", "sky-notes", "artwork")
+
 SECTION_NAMES = {
     1: "top-navigation",
     2: "calendar",
@@ -52,3 +54,20 @@ def replace_section_inner(text: str, number: int, replacement: str, path: Path |
 
 def require_section(text: str, number: int, path: Path | None = None) -> None:
     section_bounds(text, number, path)
+
+
+def week_dir(root: Path, year: int, week: int) -> Path:
+    """Canonical directory for one ISO week."""
+    return root / str(year) / f"W{week:02d}"
+
+
+def type_dir(root: Path, year: int, week: int, content_type: str) -> Path:
+    """Canonical directory for one published weekly content type."""
+    if content_type not in ALMANACK_TYPES:
+        raise ValueError(f"Unknown Almanack content type: {content_type}")
+    return week_dir(root, year, week) / content_type
+
+
+def type_page(root: Path, year: int, week: int, content_type: str) -> Path:
+    """Canonical week/type/index.html publication path."""
+    return type_dir(root, year, week, content_type) / "index.html"
