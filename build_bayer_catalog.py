@@ -153,7 +153,8 @@ def main() -> None:
     systems = {(r["greek"], r["con"]) for r in rows}
     exact_designations = {(r["bayer_code"], r["con"]) for r in rows}
     print(f"Wrote {len(rows)} source rows: {alpha} α, {beta} β")
-    print(f"Audited supplement rows added: {supplement_count}")\n    print(f"Existing HYG rows enriched from supplement: {supplement_enrichment_count}")
+    print(f"Audited supplement rows added: {supplement_count}")
+    print(f"Existing HYG rows enriched from supplement: {supplement_enrichment_count}")
     print(f"Constellation-letter systems represented: {len(systems)}")
     print(f"Distinct Bayer designations represented: {len(exact_designations)}")
 
