@@ -6,9 +6,10 @@ import re
 from pathlib import Path
 
 from iso_date_range import parse_range_args
+from almanack_sections import type_page
 
 ROOT = Path(__file__).resolve().parents[1]
-PAGE_ROOT = ROOT / "almanack"
+PAGE_ROOTS = (ROOT / "almanack",)
 ARTWORK_ROOT = ROOT / "sky-notes-artwork" / "objects"
 DESCRIPTOR_ROOT = ROOT / "generated-sky-notes"
 
@@ -42,7 +43,7 @@ def main() -> None:
             continue
         published += 1
         for root in PAGE_ROOTS:
-            page = root / str(item.year) / week_key / "index.html"
+            page = type_page(root, item.year, item.week, "sky-notes")
             if not page.exists():
                 raise RuntimeError(f"Weekly page is missing: {page.relative_to(ROOT)}")
             if publish_page(page):
