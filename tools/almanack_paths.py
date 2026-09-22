@@ -11,7 +11,7 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parents[1]
 ALMANACK_ROOT = REPO_ROOT / "almanack"
 GENERATED_ROOT = REPO_ROOT / "generated"
-VISIBILITY_GLYPH_ROOT = "../../../../assets/almanack/visibility-glyphs/masters"
+VISIBILITY_GLYPH_ROOT = "../../../assets/almanack/visibility-glyphs/masters"
 
 # One canonical weekly page. Generators own numbered sections within it.
 PAGE_TYPES = ("index",)
