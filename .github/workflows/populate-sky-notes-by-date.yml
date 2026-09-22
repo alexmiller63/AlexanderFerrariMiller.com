@@ -84,6 +84,16 @@ jobs:
             exit 0
           fi
           git commit -m "Generate descriptor-first Sky Notes ${{ inputs.start_year }}-W${{ inputs.start_week }}"
-          git pull --rebase origin main
-          git push
+          # main can move between pull and push when another generator finishes.
+          # Rebase and retry instead of failing Build All on that harmless race.
+          for attempt in 1 2 3 4 5; do
+            git pull --rebase origin main
+            if git push origin HEAD:main; then
+              exit 0
+            fi
+            echo "main moved during push; retrying ($attempt/5)..."
+            sleep $((attempt * 2))
+          done
+          echo "::error::Could not push Sky Notes after 5 rebase/retry attempts."
+          exit 1
 
