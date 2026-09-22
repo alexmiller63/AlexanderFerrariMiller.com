@@ -77,19 +77,6 @@ jobs:
           END_DATE: ${{ steps.range.outputs.end_date }}
         run: python tools/populate_calendar_by_date.py "$START_DATE" "$END_DATE"
 
-      - name: Commit generated changes
-        run: |
-          if git diff --quiet; then
-            echo "No generated changes to commit."
-            exit 0
-          fi
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add almanack/
-          git commit -m "Populate Almanack calendar ${{ inputs.start_year }}-W${{ inputs.start_week }}"
-          git pull --rebase origin main
-          git push
-
       - name: Install Playwright Chromium
         run: |
           python -m pip install --upgrade pip
@@ -106,3 +93,16 @@ jobs:
           trap 'kill $SERVER_PID' EXIT
           python tools/verify_calendar_fixed_object_ids.py "$START_DATE" "$END_DATE" \
             --base-url http://127.0.0.1:8765
+
+      - name: Commit generated changes
+        run: |
+          if git diff --quiet; then
+            echo "No generated changes to commit."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add almanack/
+          git commit -m "Populate Almanack calendar ${{ inputs.start_year }}-W${{ inputs.start_week }}"
+          git pull --rebase origin main
+          git push
