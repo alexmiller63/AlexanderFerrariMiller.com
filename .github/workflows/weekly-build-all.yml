@@ -53,7 +53,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Build each week through all 6 generators
+      - name: Build each week through all 6 stages
         env:
           GH_TOKEN: ${{ github.token }}
           START_YEAR: ${{ inputs.start_year }}
