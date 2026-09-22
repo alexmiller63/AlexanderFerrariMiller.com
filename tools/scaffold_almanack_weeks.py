@@ -75,14 +75,20 @@ def ephemeris_tables():
         return f'<h3>{label}</h3><div class="ephemeris-wrap"><table class="ephemeris"><thead><tr>{headers}</tr></thead><tbody><tr>{cells}</tr></tbody></table></div>'
     return table('Naked Eye Bodies',primary)+table('Extended Bodies',extended)
 
-def page(year,week,monday):
+def page(year,week,monday,content_type=None):
     title=f'ISO {year}-W{week:02d}'; rows=calendar_rows(monday); top=nav_stack(year,week); bottom=f'<div class="almanack-bottom-nav-wrap" id="{BOTTOM_ID}">{nav_stack(year,week,True)}</div>'
+    sections = {
+        "calendar": f'{section_open(2)}{notation_toggle("calendar")}<h3>Calendar</h3><table class="calendar"><thead><tr><th>Date</th><th>Zodiac day</th><th>Events</th></tr></thead><tbody>{rows}</tbody></table></div>\n',
+        "ephemeris": f'{section_open(3)}<h3>Weekly Solar-System Ephemeris</h3><p><strong>Snapshot:</strong> pending</p>{notation_toggle("ephemeris")}{ephemeris_tables()}</div>\n',
+        "planet-finder": f'{section_open(4)}{notation_toggle("finder")}<h3>Planet Finder</h3><div class="planet-finder-block"><p>Planet finder pending.</p></div></div>\n',
+        "sky-notes": f'{section_open(5)}<h3>Sky Notes</h3><div class="sky-note"><p>Sky notes pending.</p></div></div>',
+    }
+    if content_type is not None and content_type not in sections:
+        raise ValueError(f"unsupported Almanack page type: {content_type}")
+    content = ''.join(sections.values()) if content_type is None else sections[content_type]
     body=(
         f'{section_open(1)}{top}</div><h1>{title}</h1><p><strong>Week begins:</strong> {monday.strftime("Monday, %B")} {monday.day}, {monday.year}</p>\n'
-        f'{section_open(2)}{notation_toggle("calendar")}<h3>Calendar</h3><table class="calendar"><thead><tr><th>Date</th><th>Zodiac day</th><th>Events</th></tr></thead><tbody>{rows}</tbody></table></div>\n'
-        f'{section_open(3)}<h3>Weekly Solar-System Ephemeris</h3><p><strong>Snapshot:</strong> pending</p>{notation_toggle("ephemeris")}{ephemeris_tables()}</div>\n'
-        f'{section_open(4)}{notation_toggle("finder")}<h3>Planet Finder</h3><div class="planet-finder-block"><p>Planet finder pending.</p></div></div>\n'
-        f'{section_open(5)}<h3>Sky Notes</h3><div class="sky-note"><p>Sky notes pending.</p></div></div>{bottom}'
+        f'{content}{bottom}'
     )
     return f'''<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>{html.escape(title)} · Star Almanack</title><style>{CSS}</style></head><body><header><div class="wrap"><div class="brand"><a href="/star-almanack/">Star Almanack</a></div><div class="subtitle">Alexander Ferrari Miller</div></div></header><main class="wrap">{body}</main><footer><div class="wrap">© 2026 Alexander Ferrari Miller. All rights reserved.</div></footer><script src="../../js/notation.js"></script></body></html>'''
 
@@ -98,7 +104,7 @@ def main():
         for content_type in SCAFFOLD_PAGE_TYPES:
             target = typed_page(year, week, content_type)
             target.parent.mkdir(parents=True, exist_ok=True)
-            target.write_text(rendered, encoding="utf-8")
+            target.write_text(page(year, week, monday, content_type), encoding="utf-8")
         count+=1
     print(f'Rebuilt {count} clean Almanack week scaffold(s).')
 
