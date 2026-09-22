@@ -273,3 +273,19 @@ This entry preserves the known fixes and architectural decisions accumulated dur
 **Verification:** Pending.
 
 **Resolution:** Pending.
+
+### 2026-09-22 — Observer time should be an explicit Local Apparent Time input
+
+**State:** Open
+**Discovered:** 2026-09-22
+**Component:** Planetary observing status / observer controls
+
+**Observed:** The website has an observer-latitude input but the observing calculation uses a fixed 21:00 Local Apparent Time snapshot. Observer time should also be explicitly represented as Local Apparent Time so observing status can be evaluated for the observer's selected time.
+
+**Diagnosis:** Current specification hard-codes 21:00 LAT for the website observing snapshot.
+
+**Fix:** Pending.
+
+**Verification:** Pending.
+
+**Resolution:** Pending.
