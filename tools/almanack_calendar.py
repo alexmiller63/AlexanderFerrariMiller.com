@@ -126,8 +126,13 @@ def _legacy_events(events_html: str) -> str:
 
 
 def _ensure_event_style(text: str) -> str:
-    if f'id="{EVENT_STYLE_ID}"' in text:
-        return text
+    """Install the canonical Calendar event CSS, replacing stale generated copies."""
+    pattern = re.compile(
+        rf'<style\s+id="{re.escape(EVENT_STYLE_ID)}">.*?</style>',
+        re.DOTALL,
+    )
+    if pattern.search(text):
+        return pattern.sub(EVENT_STYLE, text, count=1)
     pos = text.lower().find("</head>")
     if pos < 0:
         return text
