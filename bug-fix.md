@@ -257,3 +257,19 @@ This entry preserves the known fixes and architectural decisions accumulated dur
 **Verification:** Pending.
 
 **Resolution:** Pending.
+
+### 2026-09-22 — Legend sentences run together
+
+**State:** Open
+**Discovered:** 2026-09-22
+**Component:** Legend / presentation
+
+**Observed:** Each legend sentence currently runs together as a single paragraph. Each sentence should appear on its own line.
+
+**Diagnosis:** Pending.
+
+**Fix:** Pending.
+
+**Verification:** Pending.
+
+**Resolution:** Pending.
