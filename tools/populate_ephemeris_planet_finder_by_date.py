@@ -6,7 +6,7 @@ from datetime import date
 import generate_planet_finders as finder
 import populate_ephemeris as ephemeris
 from almanack_sections import replace_section_inner
-from almanack_paths import typed_dir, typed_page
+from almanack_paths import typed_dir, week_index
 from iso_date_range import group_by_year, parse_range_args
 from planet_finder_layout import patch_file as patch_planet_finder_layout
 from star_almanack_ephemeris import StarAlmanackEphemeris
@@ -78,8 +78,8 @@ def populate_week(
     ephemeris_html, finder_html = split_rendered_sections(rendered)
 
     changed = 0
-    ephemeris_path = typed_page(year, week, "ephemeris")
-    finder_path = typed_page(year, week, "planet-finder")
+    ephemeris_path = week_index(year, week)
+    finder_path = week_index(year, week)
     for path, section, body in (
         (ephemeris_path, 3, ephemeris_html),
         (finder_path, 4, finder_html),
