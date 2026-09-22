@@ -137,5 +137,4 @@ jobs:
           ], check=True)
           PY
 
-          git pull --rebase origin main
-          git push
+          # Ephemeris refreshes are intentionally left uncommitted by this workflow.\n          # Stash them while rebasing the Planet Finder commit, then restore them.\n          git stash push --include-untracked --keep-index -m "planet-finder-non-pf-generated-changes"\n          git pull --rebase origin main\n          git push\n          git stash pop || true\n
