@@ -23,7 +23,7 @@ from pathlib import Path
 
 from almanack_calendar import ensure_calendar_metadata, get_events, page_dates, set_events
 from almanack_time import AstroInstant, interpolate_instant
-from almanack_paths import typed_page
+from almanack_paths import week_index
 from populate_calendar import iso_bounds, source_longitudes
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -140,7 +140,7 @@ def count_occurrences(base: Path, year: int) -> int:
     weeks = date(year, 12, 28).isocalendar().week
     count = 0
     for week in range(1, weeks + 1):
-        page = typed_page(year, week, "calendar")
+        page = week_index(year, week)
         if not page.exists():
             continue
         count += page.read_text(encoding="utf-8").count("Galactic Center conjunction")
@@ -153,11 +153,11 @@ def populate_year(year: int) -> int:
     weeks = date(year, 12, 28).isocalendar().week
     for base in (PUBLIC_ROOT,):
         for week in range(1, weeks + 1):
-            if patch_page(typed_page(year, week, "calendar"), events):
+            if patch_page(week_index(year, week), events):
                 changed += 1
     for base in (PUBLIC_ROOT,):
         target_pages = [
-            typed_page(year, ts.publication_date().isocalendar().week, "calendar")
+            week_index(year, ts.publication_date().isocalendar().week)
             for ts in events.values()
         ]
         if not any(page.exists() for page in target_pages):
@@ -182,7 +182,7 @@ def verify_year(year: int) -> None:
     for base in (PUBLIC_ROOT,):
         page_count = sum(
             1 for week in range(1, weeks + 1)
-            if typed_page(year, week, "calendar").exists()
+            if week_index(year, week).exists()
         )
         count = count_occurrences(base, year)
         if page_count == 0:
