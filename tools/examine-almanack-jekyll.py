@@ -46,8 +46,9 @@ def main() -> None:
         if not index.is_file():
             raise SystemExit(f"Missing rendered Almanack index for {year}: {index}")
 
+        source_year = Path("almanack") / str(year)
         week_dirs = sorted(
-            path for path in root.glob("W[0-9][0-9]")
+            path for path in source_year.glob("W[0-9][0-9]")
             if path.is_dir()
         )
         pages = [
