@@ -201,6 +201,8 @@ def ensure_coverage(start_year: int, eph: StarAlmanackEphemeris | None = None) -
             ),
             ra_h,
         )
+        publication = instant.publication_utc()
+        best_day = (publication + dt.timedelta(hours=12)).date()
         objects.append({
             "source": source,
             "key": key,
@@ -208,11 +210,8 @@ def ensure_coverage(start_year: int, eph: StarAlmanackEphemeris | None = None) -
             "ra_h": ra_h,
             "best_jd_tdb": instant.jd_tdb,
             "best_utc": instant.utc_datetime().isoformat().replace("+00:00", "Z"),
-            "best_date": instant.publication_date().isoformat(),
-            "iso": (
-                f"{instant.publication_date().isocalendar().year}-"
-                f"W{instant.publication_date().isocalendar().week:02d}"
-            ),
+            "best_date": best_day.isoformat(),
+            "iso": f"{best_day.isocalendar().year}-W{best_day.isocalendar().week:02d}",
         })
 
     interval["object_count"] = len(objects)
