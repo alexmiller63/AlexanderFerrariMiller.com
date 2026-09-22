@@ -9,7 +9,7 @@ from datetime import date, datetime, timedelta
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
-from almanack_paths import typed_page, year_dir
+from almanack_paths import year_dir, week_index
 
 ROOT = Path(__file__).resolve().parents[1]
 BASES = (ROOT / "almanack",)
