@@ -30,7 +30,8 @@ permissions:
   contents: write
 
 concurrency:
-  group: calendar-generator
+  # All active Almanack generators write to main; serialize them to prevent push races.
+  group: almanack-generator-main-writer
   cancel-in-progress: false
 
 jobs:
