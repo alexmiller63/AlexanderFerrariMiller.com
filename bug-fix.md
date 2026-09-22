@@ -193,3 +193,19 @@ This entry preserves the known fixes and architectural decisions accumulated dur
 **Verification:** Pending.
 
 **Resolution:** Pending.
+
+### 2026-09-22 — Greek/Symbols solar-glare display includes text
+
+**State:** Open
+**Discovered:** 2026-09-22
+**Component:** Ephemeris observing display / Greek/Symbols mode
+
+**Observed:** In Greek/Symbols mode, a solar-glare condition displays both the solar-glare symbol and the words “Solar Glare”. The Greek/Symbols mode should display the symbol only.
+
+**Diagnosis:** Pending.
+
+**Fix:** Pending.
+
+**Verification:** Pending.
+
+**Resolution:** Pending.
