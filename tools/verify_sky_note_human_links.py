@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import json
-import re
 import sys
 from pathlib import Path
 
@@ -21,16 +20,33 @@ for week in range(start_week, end_week + 1):
 
     text = page.read_text(encoding="utf-8")
     pages_checked += 1
-    page_deep_sky = 0
 
-    for fixed_id in dict.fromkeys(re.findall(r'data-fixed-object-id="(\d+)"', text)):
+    source = Path("generated-sky-notes") / str(year) / f"W{week:02d}.json"
+    if not source.exists():
+        raise SystemExit(f"{page}: missing generated Sky Notes source {source}")
+
+    payload = json.loads(source.read_text(encoding="utf-8"))
+    deep_sky_ids = [
+        str(item["fixed_object_id"])
+        for item in payload.get("fixed_sky") or []
+        if item.get("type") == "deep-sky"
+    ]
+
+    if not deep_sky_ids:
+        empty_state = "No deep-sky objects are featured this week."
+        if empty_state not in text:
+            raise SystemExit(f"{page}: no deep-sky objects found and reader-facing empty state is missing")
+        empty_states += 1
+        continue
+
+    for fixed_id in dict.fromkeys(deep_sky_ids):
         descriptor = Path("almanack/descriptors") / f"{fixed_id}.json"
         if not descriptor.exists():
-            continue
+            raise SystemExit(f"{page}: missing deep-sky descriptor {fixed_id}")
 
         record = json.loads(descriptor.read_text(encoding="utf-8"))
         if record.get("type") != "deep-sky-object":
-            continue
+            raise SystemExit(f"{page}: descriptor {fixed_id} is not a deep-sky-object")
 
         human = (record.get("representation") or {}).get("human")
         if not human:
@@ -40,21 +56,14 @@ for week in range(start_week, end_week + 1):
         if not target.exists():
             raise SystemExit(f"{page}: missing human target {human}")
 
+        reader_human = "../../../" + human.lstrip("/") if human.startswith("/stories/") else human
+        if f'href="{reader_human}"' not in text:
+            raise SystemExit(f"{page}: missing reader-facing link {reader_human} for deep-sky object {fixed_id}")
+
         if f'href="/almanack/descriptors/{fixed_id}.json"' in text:
             raise SystemExit(f"{page}: reader-facing link still points to JSON for {fixed_id}")
 
-        reader_human = "../../../" + human.lstrip("/") if human.startswith("/stories/") else human
-        if f'href="{reader_human}"' not in text:
-            raise SystemExit(f"{page}: missing reader-facing link {reader_human}")
-
         checked += 1
-        page_deep_sky += 1
-
-    if page_deep_sky == 0:
-        empty_state = "No deep-sky objects are featured this week."
-        if empty_state not in text:
-            raise SystemExit(f"{page}: no deep-sky objects found and reader-facing empty state is missing")
-        empty_states += 1
 
 if pages_checked == 0:
     raise SystemExit("No weekly Sky Notes pages were verified")
