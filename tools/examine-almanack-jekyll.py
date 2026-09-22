@@ -42,18 +42,27 @@ def main() -> None:
     all_pages = []
     for year in args.years:
         root = ALMANACK_ROOT / year_dir(year).relative_to(year_dir(year).parent)
-        week_count = weeks_in_iso_year(year)
         index = root / "index.html"
+        if not index.is_file():
+            raise SystemExit(f"Missing rendered Almanack index for {year}: {index}")
+
+        week_dirs = sorted(
+            path for path in root.glob("W[0-9][0-9]")
+            if path.is_dir()
+        )
         pages = [
-            ALMANACK_ROOT / typed_page(year, week, content_type).relative_to(year_dir(year).parent)
-            for week in range(1, week_count + 1)
+            path / f"{content_type}/index.html"
+            for path in week_dirs
             for content_type in PAGE_TYPES if content_type != "artwork"
         ]
-        missing = [str(path) for path in [index, *pages] if not path.is_file()]
+        missing = [str(path) for path in pages if not path.is_file()]
         if missing:
-            raise SystemExit(f"Missing rendered Almanack pages for {year}: {missing}")
+            raise SystemExit(f"Missing rendered Almanack pages for published weeks in {year}: {missing}")
         all_pages.extend(pages)
-        print(f"PASS: Jekyll rendered the canonical {year} index and all {week_count} weeks × 4 typed pages")
+        print(
+            f"PASS: Jekyll rendered the canonical {year} index and "
+            f"all {len(week_dirs)} published weeks × 4 typed pages"
+        )
 
     legacy_files = sorted(ALMANACK_ROOT.glob("ISO*-W*.html"))
     legacy_tree = ALMANACK_ROOT / "weeks"
