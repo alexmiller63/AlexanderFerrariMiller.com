@@ -433,3 +433,21 @@ This entry preserves the known fixes and architectural decisions accumulated dur
 **Verification:** Pending.
 
 **Resolution:** Pending.
+
+### 2026-09-22 — Bottom legend does not appear
+
+**State:** Open
+**Discovered:** 2026-09-22
+**Component:** Sky Notes / fixed-object charts / legend
+
+**Observed:** The bottom legend does not appear on the displayed chart/page.
+
+**Expected:** The bottom legend should be rendered wherever the chart specification calls for it, matching the top legend content and presentation rules.
+
+**Diagnosis:** Pending.
+
+**Fix:** Pending.
+
+**Verification:** Pending.
+
+**Resolution:** Pending.
