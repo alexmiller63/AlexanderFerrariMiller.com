@@ -104,20 +104,33 @@ BETA_NOTE_RE = re.compile(r'(<strong>)β(?=</strong>)')
 
 
 def requested_weeks() -> tuple[tuple[int, int], ...]:
+    # Foundation workflows pass ISO years; only touch week directories that
+    # actually exist.  The legacy four-number interface remains available for
+    # an explicit START_YEAR START_WEEK END_YEAR END_WEEK range.
     if len(sys.argv) == 1:
-        values = (2026, 36, 2026, 40)
-    elif len(sys.argv) == 5:
-        try:
-            values = tuple(int(arg) for arg in sys.argv[1:5])
-        except ValueError as exc:
-            raise SystemExit("ISO year/week arguments must be integers") from exc
-    else:
-        raise SystemExit(
-            "usage: wire_almanack_legend.py START_YEAR START_WEEK END_YEAR END_WEEK"
-        )
+        years = (2026,)
+        weeks = []
+        for year in years:
+            for path in sorted((ROOT / "almanack" / str(year)).glob("W??")):
+                if path.is_dir():
+                    weeks.append((year, int(path.name[1:])))
+        return tuple(weeks)
 
-    start_year, start_week, end_year, end_week = values
+    args = sys.argv[1:]
+    if all(re.fullmatch(r"\\d{4}", arg) for arg in args):
+        weeks = []
+        for year in dict.fromkeys(map(int, args)):
+            for path in sorted((ROOT / "almanack" / str(year)).glob("W??")):
+                if path.is_dir():
+                    weeks.append((year, int(path.name[1:])))
+        return tuple(weeks)
+
+    if len(args) != 4:
+        raise SystemExit(
+            "usage: wire_almanack_legend.py YEAR [YEAR ...] or START_YEAR START_WEEK END_YEAR END_WEEK"
+        )
     try:
+        start_year, start_week, end_year, end_week = map(int, args)
         start = date.fromisocalendar(start_year, start_week, 1)
         end = date.fromisocalendar(end_year, end_week, 1)
     except ValueError as exc:
@@ -172,6 +185,9 @@ def main() -> None:
             if wire_page(path):
                 changed += 1
 
+    if not weeks:
+        print("No generated Almanack weeks found; legend unchanged")
+        return
     first_year, first_week = weeks[0]
     last_year, last_week = weeks[-1]
     print(
