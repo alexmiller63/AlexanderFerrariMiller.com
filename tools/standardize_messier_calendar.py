@@ -44,7 +44,14 @@ def load_visibility(year):
  if not path.exists(): raise RuntimeError(f"Missing {path.relative_to(ROOT)}; run populate_fixed_sky.py before Messier standardization")
  with path.open(newline="",encoding="utf-8") as h: rows=list(csv.DictReader(h))
  grouped=defaultdict(list)
- for r in rows: grouped[r["messier"].strip().upper()].append(r)
+ for r in rows:
+  designation=(r.get("messier") or r.get("id") or "").strip().upper()
+  if not designation:
+   raise RuntimeError(
+    f"{path.relative_to(ROOT)} row is missing Messier identity; "
+    f"expected 'messier' or 'id' column"
+   )
+  grouped[designation].append(r)
  if len(grouped)!=110: raise RuntimeError(f"Expected 110 Messier IDs for {year}, found {len(grouped)}")
  by_id={}
  for designation,candidates in grouped.items():
