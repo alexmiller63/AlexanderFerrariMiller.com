@@ -361,3 +361,21 @@ This entry preserves the known fixes and architectural decisions accumulated dur
 **Verification:** Pending.
 
 **Resolution:** Pending.
+
+### 2026-09-22 — Aquila constellation title collides with constellation lines
+
+**State:** Open
+**Discovered:** 2026-09-22
+**Component:** Sky Notes / fixed-object charts / constellation labels
+
+**Observed:** The constellation title “Aquila” overlaps or collides with the constellation linework.
+
+**Expected:** The constellation title should be positioned clear of the constellation lines.
+
+**Diagnosis:** Pending.
+
+**Fix:** Pending.
+
+**Verification:** Pending.
+
+**Resolution:** Pending.
