@@ -9,7 +9,7 @@ from __future__ import annotations
 import csv,re,sys
 from dataclasses import dataclass
 from pathlib import Path
-from almanack_paths import typed_page, week_index, year_dir
+from almanack_paths import week_index, year_dir
 ROOT=Path(__file__).resolve().parents[1]; YEAR=2026; SITE=year_dir(YEAR); SRC=ROOT; GENERATED=SRC/'generated'; BASE_URL=f'https://AlexanderFerrariMiller.com/almanack/{YEAR}'
 @dataclass(frozen=True)
 class Case:
