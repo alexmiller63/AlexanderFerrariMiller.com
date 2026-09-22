@@ -75,7 +75,7 @@ def ephemeris_tables():
 def page(year,week,monday,content_type=None):
     title=f'ISO {year}-W{week:02d}'; top=nav_stack(year,week,content_type); bottom=f'<div class="almanack-bottom-nav-wrap" id="{BOTTOM_ID}">{nav_stack(year,week,content_type,True)}</div>'
     sections = {
-        "calendar": f'{section_open(2)}{notation_toggle("calendar")}<h3>Calendar</h3><table class="calendar"><thead><tr><th>Date</th><th>Zodiac day</th><th>Events</th></tr></thead><tbody>{rows}</tbody></table></div>\n',
+        "calendar": f'{section_open(2)}{notation_toggle("calendar")}<h3>Calendar</h3><table class="calendar"><thead><tr><th>Date</th><th>Zodiac day</th><th>Events</th></tr></thead><tbody></tbody></table></div>\n',
         "ephemeris": f'{section_open(3)}<h3>Weekly Solar-System Ephemeris</h3><p><strong>Snapshot:</strong> pending</p>{notation_toggle("ephemeris")}{ephemeris_tables()}</div>\n',
         "planet-finder": f'{section_open(4)}{notation_toggle("finder")}<h3>Planet Finder</h3><div class="planet-finder-block"><p>Planet finder pending.</p></div></div>\n',
         "sky-notes": f'{section_open(5)}<h3>Sky Notes</h3><div class="sky-note"><p>Sky notes pending.</p></div></div>',
