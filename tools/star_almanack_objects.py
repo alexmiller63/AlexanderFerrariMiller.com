@@ -31,9 +31,9 @@ TEXT_AID = {
 # HTML observing aids have exactly one source of presentation: the shared
 # .visibility-glyph CSS.  Do not put per-renderer dimensions or alignment here.
 HTML_AID = {
-    ObservingAid.NAKED_EYE: '<img class="visibility-glyph" src="/assets/almanack/visibility-glyphs/masters/eye.svg" alt="Naked eye" aria-label="Naked eye">',
-    ObservingAid.BINOCULARS: '<img class="visibility-glyph" src="/assets/almanack/visibility-glyphs/masters/binoculars.svg" alt="Binoculars" aria-label="Binoculars">',
-    ObservingAid.TELESCOPE: '<img class="visibility-glyph" src="/assets/almanack/visibility-glyphs/masters/telescope.svg" alt="Telescope" aria-label="Telescope">',
+    ObservingAid.NAKED_EYE: '<img class="visibility-glyph" src="../../../assets/almanack/visibility-glyphs/masters/eye.svg" alt="Naked eye" aria-label="Naked eye">',
+    ObservingAid.BINOCULARS: '<img class="visibility-glyph" src="../../../assets/almanack/visibility-glyphs/masters/binoculars.svg" alt="Binoculars" aria-label="Binoculars">',
+    ObservingAid.TELESCOPE: '<img class="visibility-glyph" src="../../../assets/almanack/visibility-glyphs/masters/telescope.svg" alt="Telescope" aria-label="Telescope">',
 }
 
 
