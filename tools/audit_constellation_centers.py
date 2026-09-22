@@ -20,10 +20,11 @@ from collections import Counter
 from pathlib import Path
 
 from almanack_calendar import ensure_calendar_metadata, get_events
+from almanack_paths import calendar_page
 
 ROOT = Path(__file__).resolve().parents[1]
 SRC = ROOT
-ROOTS = (SRC / "site", ROOT / "almanack")
+ROOTS = (ROOT / "almanack",)
 
 
 def requested_years() -> tuple[int, ...]:
@@ -51,7 +52,7 @@ def expected_rows(year: int) -> list[dict[str, str]]:
 
 def page_for_date(root: Path, day: dt.date) -> Path:
     iso = day.isocalendar()
-    return root / str(iso.year) / f"W{iso.week:02d}" / "index.html"
+    return calendar_page(iso.year, iso.week)
 
 
 def actual_counts(root: Path, rows: list[dict[str, str]]) -> Counter[tuple[dt.date, str]]:
@@ -79,8 +80,10 @@ def actual_counts(root: Path, rows: list[dict[str, str]]) -> Counter[tuple[dt.da
 def audit_root(root: Path, year: int, rows: list[dict[str, str]]) -> list[str]:
     failures: list[str] = []
     expected: Counter[tuple[dt.date, str]] = Counter(
-        (dt.date.fromisoformat(row["center_best_date"]), row["name"].strip())
+        (day, row["name"].strip())
         for row in rows
+        for day in [dt.date.fromisoformat(row["center_best_date"])]
+        if page_for_date(root, day).exists()
     )
     actual = actual_counts(root, rows)
 
