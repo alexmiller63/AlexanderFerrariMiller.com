@@ -386,9 +386,14 @@ def render(spec: dict, stars, output: Path) -> None:
         if visible_points and boundary_abbreviation != home_abbreviation:
             neighbor_points.setdefault(boundary_abbreviation, (boundary_name, visible_points))
 
-    for _, (neighbor_name, points) in neighbor_points.items():
+    for neighbor_abbreviation, (neighbor_name, points) in neighbor_points.items():
         point = (sum(x for x, _ in points) / len(points), sum(y for _, y in points) / len(points))
-        place_label(ax, neighbor_name, point, occupied_labels,
+        # Prefer the full IAU name, but use the compact three-letter designation
+        # when the visible boundary fragment is too narrow for the full label.
+        visible_width = max(x for x, _ in points) - min(x for x, _ in points)
+        full_name_width = max(1.0, len(neighbor_name) * 0.16)
+        boundary_label = neighbor_name if visible_width >= full_name_width else neighbor_abbreviation.upper()
+        place_label(ax, boundary_label, point, occupied_labels,
                     color=BOUNDARY_WHITE, fontsize=10, zorder=5)
 
     for asterism in asterisms:
