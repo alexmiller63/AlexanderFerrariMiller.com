@@ -117,7 +117,7 @@ def requested_weeks() -> tuple[tuple[int, int], ...]:
         return tuple(weeks)
 
     args = sys.argv[1:]
-    if all(re.fullmatch(r"\\d{4}", arg) for arg in args):
+    if all(re.fullmatch(r"\d{4}", arg) for arg in args):
         weeks = []
         for year in dict.fromkeys(map(int, args)):
             for path in sorted((ROOT / "almanack" / str(year)).glob("W??")):
