@@ -50,6 +50,8 @@ def main() -> None:
         week_dirs = sorted(
             path for path in source_year.glob("W[0-9][0-9]")
             if path.is_dir()
+            and any((path / content_type / "index.html").is_file()
+                    for content_type in PAGE_TYPES if content_type != "artwork")
         )
         pages = [
             path / f"{content_type}/index.html"
