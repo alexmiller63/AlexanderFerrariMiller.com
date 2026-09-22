@@ -164,6 +164,14 @@ jobs:
           regenerate() {
             python tools/test_almanack_time.py
             regression
+            set -- $ALMANACK_YEARS
+            min=$1
+            max=$1
+            for year in "$@"; do
+              (( year < min )) && min=$year
+              (( year > max )) && max=$year
+            done
+            python tools/fixed_sky_annual.py $((min - 1)) "$max"
             python tools/clean_event_cells.py $ALMANACK_YEARS
             python tools/populate_calendar.py $ALMANACK_YEARS
             python tools/populate_galactic_center.py $ALMANACK_YEARS
