@@ -95,7 +95,7 @@ def visibility_text(record: AlmanackObject) -> str:
     if record.variability_type:
         parts.append("V")
     if record.magnitude_display == "whole" and record.magnitude:
-        parts.append(f"V {whole_magnitude(record.magnitude)}")
+        parts.append(whole_magnitude(record.magnitude))
     elif record.magnitude_display == "literal" and record.magnitude:
         parts.append(record.magnitude)
     return " ".join(parts)
@@ -108,7 +108,7 @@ def visibility_html(record: AlmanackObject) -> str:
     if record.variability_type:
         parts.append('<span class="variable-star-marker" title="Variable star">V</span>')
     if record.magnitude_display == "whole" and record.magnitude:
-        parts.append(f"V {whole_magnitude(record.magnitude)}")
+        parts.append(whole_magnitude(record.magnitude))
     elif record.magnitude_display == "literal" and record.magnitude:
         parts.append(record.magnitude)
     return " ".join(parts)
