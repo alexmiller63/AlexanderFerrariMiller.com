@@ -153,8 +153,6 @@ def _source_records():
         if row.get("id") and row.get("ra_h"):
             identity = str(row["id"]).strip()
             fixed_id = fixed.catalog_target_fixed_object_id("messier", identity)
-            if fixed_id is None:
-                continue
             records.append(("messier", identity, float(row["ra_h"]), fixed_id))
 
     return records
