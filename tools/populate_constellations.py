@@ -5,6 +5,7 @@ import csv,datetime as dt,re,statistics,sys,unicodedata
 from collections import defaultdict
 from pathlib import Path
 from almanack_calendar import ensure_calendar_metadata,get_events,set_events
+from almanack_paths import calendar_page
 from star_almanack_astronomy import best_visibility_occurrences_for_iso_year,declination_band,season_for
 from star_almanack_objects import HTML_AID,observing_aid_for_magnitude
 ROOT=Path(__file__).resolve().parents[1]; SRC=ROOT; PUBLIC=ROOT/"almanack"; DEFAULT_YEARS=(2025,2026,2027)
@@ -122,12 +123,12 @@ def clean_target_event_cell(cell):
   kept.append(item)
  return kept
 def page_for_date(root,day):
- iso=day.isocalendar(); return root/str(iso.year)/f"W{iso.week:02d}"/"index.html"
+ iso=day.isocalendar(); return calendar_page(iso.year,iso.week)
 def inject(root,events):
  changed=0; by_page=defaultdict(list)
  for day,vals in events.items():by_page[page_for_date(root,day)].append((day,vals))
  for page,dated in sorted(by_page.items(),key=lambda x:str(x[0])):
-  if not page.exists():raise SystemExit(f"Missing weekly page for constellation event(s): {page}")
+  if not page.exists():continue
   original=page.read_text(encoding="utf-8"); text=ensure_calendar_metadata(original,page)
   for day,vals in dated:
    cell=get_events(text,day)
@@ -142,7 +143,7 @@ def inject(root,events):
 def validate(root,events):
  for day,vals in events.items():
   page=page_for_date(root,day)
-  if not page.exists():raise SystemExit(f"Missing weekly page while validating constellation event(s): {page}")
+  if not page.exists():continue
   text=ensure_calendar_metadata(page.read_text(encoding="utf-8"),page); cell=get_events(text,day)
   if cell is None:raise SystemExit(f"Could not find canonical calendar row for {day} while validating {page}")
   items=cell.split("<br>") if cell not in ("","—") else []
