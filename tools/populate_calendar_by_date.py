@@ -19,14 +19,7 @@ ASTRONOMY_QUERY_PADDING_DAYS = 45
 
 def populate_selected_year(year: int, selected_weeks: list[int]) -> int:
     first, last = calendar.iso_bounds(year)
-    query_start, query_stop = first - timedelta(days=ASTRONOMY_QUERY_PADDING_DAYS), last + timedelta(days=ASTRONOMY_QUERY_PADDING_DAYS)
-
-    print(f"Calculating {year} Sun and Moon calendar astronomy from cached SPK source data")
-    sun = calendar.source_longitudes("sun", query_start, query_stop)
-    moon = calendar.source_longitudes("moon", query_start, query_stop)
-    ingresses = calendar.solar_ingresses(sun)
-    wheel = calendar.wheel_of_year(sun)
-    phases = calendar.lunar_phases(sun, moon)
+    ingresses, phases, wheel = calendar.annual_calendar(year)
     events = calendar.build_events(first, last, ingresses, phases, wheel)
 
     # Fixed-sky dates are calculated from the same canonical annual sources,
