@@ -18,7 +18,7 @@ def years_present():
  for root in (PUBLIC,):
   if root.exists():
    for p in root.iterdir():
-    if p.is_dir() and re.fullmatch(r"20\d{2}",p.name) and any(p.glob("W??/calendar/index.html")):years.add(int(p.name))
+    if p.is_dir() and re.fullmatch(r"20\d{2}",p.name) and any(p.glob("W??/index.html")):years.add(int(p.name))
  return tuple(sorted(years))
 def requested_years():
  if len(sys.argv)==1:return years_present()
