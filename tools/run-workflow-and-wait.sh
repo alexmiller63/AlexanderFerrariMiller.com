@@ -60,4 +60,9 @@ done
 
 wait_seconds=$((MAX_POLL_ATTEMPTS * POLL_INTERVAL_SECONDS))
 echo "ERROR: exact dispatched $workflow run did not appear within $wait_seconds seconds" >&2
+echo "  workflow=$workflow_path" >&2
+echo "  ref=$dispatch_ref" >&2
+echo "  expected_sha=$dispatch_sha" >&2
+echo "  dispatch_time=$dispatch_time" >&2
+echo "  previous_run_id=$before" >&2
 exit 1
