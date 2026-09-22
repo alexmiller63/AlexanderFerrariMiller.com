@@ -68,7 +68,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          python tools/verify_sky_note_human_links.py '${{ inputs.start_year }}' '${{ inputs.start_week }}' '${{ inputs.end_week }}'
+          python tools/verify_sky_note_human_links.py "${{ steps.range.outputs.start_date }}" "${{ steps.range.outputs.end_date }}"
       - name: Commit Sky Notes, JSON descriptors, artwork descriptors, and generated sources only
         run: |
           git config user.name "github-actions[bot]"
