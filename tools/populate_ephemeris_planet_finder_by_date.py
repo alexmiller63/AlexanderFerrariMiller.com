@@ -6,7 +6,7 @@ from datetime import date
 import generate_planet_finders as finder
 import populate_ephemeris as ephemeris
 from almanack_sections import replace_section_inner
-from almanack_paths import typed_dir, week_index
+from almanack_paths import week_dir, week_index
 from iso_date_range import group_by_year, parse_range_args
 from planet_finder_layout import patch_file as patch_planet_finder_layout
 from star_almanack_ephemeris import StarAlmanackEphemeris
@@ -45,11 +45,11 @@ def populate_week(
     week: int,
     generated,
     budget: dict,
-    week_index: int,
+    week_number: int,
     total_weeks: int,
 ) -> int:
     monday = date.fromisocalendar(year, week, 1)
-    context_label = f"week={week_index}/{total_weeks} ISO={year}-W{week:02d}"
+    context_label = f"week={week_number}/{total_weeks} ISO={year}-W{week:02d}"
     print(
         f"Starting ISO {year}-W{week:02d} (Monday {monday.isoformat()}) "
         f"per-body-attempt-cap={budget['max_node_candidates']:,}",
@@ -98,7 +98,7 @@ def populate_week(
     # in both canonical and published trees so each weekly page is a complete,
     # self-contained package and its relative finders/... links are valid.
     outdirs = (
-        typed_dir(year, week, "planet-finder") / "finders",
+        week_dir(year, week) / "finders",
         ephemeris.ROOT / "site" / str(year) / f"W{week:02d}" / "planet-finder" / "finders",
     )
     for outdir in outdirs:
@@ -135,7 +135,7 @@ def main() -> None:
     engine = StarAlmanackEphemeris()
     total = 0
     total_weeks = len(weeks)
-    week_index = 0
+    week_number = 0
     budget = finder.new_search_budget()
     print(
         f"Planet Finder SEARCH LIMITS: {budget['max_node_candidates']:,} attempts per body; "
@@ -145,9 +145,9 @@ def main() -> None:
     for year, selected in grouped.items():
         generated = calculate_year(year, engine)
         for week in selected:
-            week_index += 1
+            week_number += 1
             total += populate_week(
-                year, week, generated, budget, week_index, total_weeks
+                year, week, generated, budget, week_number, total_weeks
             )
     print(
         f"Planet Finder RUN COMPLETE: per-body-attempt-cap={budget['max_node_candidates']:,} "
