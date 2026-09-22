@@ -321,6 +321,14 @@ def render(spec: dict, stars, output: Path) -> None:
     figure_constellation = spec.get("name") or ""
     figure_abbreviation = str(target_meta.get("constellation_abbreviation") or "").strip()
 
+    # Collect accepted asterism segments before placing labels so Bayer labels avoid them too.
+    asterism_segments = []
+    for asterism in asterisms:
+        for path in asterism.get("paths") or []:
+            path_points = [project(idx[ref].ra_deg, idx[ref].dec_deg, *center) for ref in path if ref in idx]
+            path_points = [point for point in path_points if point is not None]
+            asterism_segments.extend(zip(path_points, path_points[1:]))
+
     occupied_labels = []
     figure_points = []
     figure_segments = []
@@ -340,7 +348,7 @@ def render(spec: dict, stars, output: Path) -> None:
             continue
         label = chart_bayer_label(identity, star, figure_abbreviation)
         if label:
-            place_label(ax, label, point, occupied_labels, obstacle_segments=figure_segments)
+            place_label(ax, label, point, occupied_labels, obstacle_segments=figure_segments + asterism_segments)
 
     if figure_constellation and figure_points:
         constellation_point = (sum(x for x, _ in figure_points) / len(figure_points),
