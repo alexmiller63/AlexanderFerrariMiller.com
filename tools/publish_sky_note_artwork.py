@@ -9,7 +9,6 @@ from iso_date_range import parse_range_args
 from almanack_paths import typed_page
 
 ROOT = Path(__file__).resolve().parents[1]
-PAGE_ROOTS = (ROOT / "almanack",)
 ARTWORK_ROOT = ROOT / "sky-notes-artwork" / "objects"
 DESCRIPTOR_ROOT = ROOT / "generated-sky-notes"
 
@@ -42,12 +41,11 @@ def main() -> None:
         if not payload_path.exists():
             continue
         published += 1
-        for root in PAGE_ROOTS:
-            page = typed_page(item.year, item.week, "sky-notes")
-            if not page.exists():
-                raise RuntimeError(f"Weekly page is missing: {page.relative_to(ROOT)}")
-            if publish_page(page):
-                changed += 1
+        page = typed_page(item.year, item.week, "sky-notes")
+        if not page.exists():
+            raise RuntimeError(f"Weekly page is missing: {page.relative_to(ROOT)}")
+        if publish_page(page):
+            changed += 1
     print(f"Published object-owned artwork for {start.isoformat()} through {end.isoformat()}: {published} weeks, {changed} page copies updated")
 
 
