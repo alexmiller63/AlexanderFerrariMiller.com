@@ -335,7 +335,9 @@ def _utc_iso(ts: AstroInstant) -> str:
 def _instant_from_cache(row: dict) -> AstroInstant:
     """Recreate the canonical instant stored in an annual calendar cache row."""
     utc = datetime.fromisoformat(row["utc"].replace("Z", "+00:00")).astimezone(timezone.utc)
-    return AstroInstant(float(row["jd_tdb"]), utc)
+    jd_tdb = float(row["jd_tdb"])
+    jd_utc = (utc - datetime(1970, 1, 1, tzinfo=timezone.utc)).total_seconds() / 86400.0 + 2440587.5
+    return AstroInstant(jd_tdb, (jd_tdb - jd_utc) * 86400.0)
 
 
 def read_data(year: int):
