@@ -65,18 +65,18 @@ STYLE = """<style id="almanack-legend-css">
 LEGEND = """<aside class="notation-legend" aria-label="Astronomical notation legend">
   <p><strong>Observing aid</strong> — these glyphs say how the target is intended to be observed; they do not identify the kind of astronomical object.</p>
   <div class="legend-line">
-    <span class="legend-item"><img class="legend-glyph" src="/assets/almanack/visibility-glyphs/masters/eye.svg" alt="Naked-eye glyph"> Naked eye</span>
-    <span class="legend-item"><img class="legend-glyph" src="/assets/almanack/visibility-glyphs/masters/binoculars.svg" alt="Binoculars glyph"> Binoculars</span>
-    <span class="legend-item"><img class="legend-glyph" src="/assets/almanack/visibility-glyphs/masters/telescope.svg" alt="Telescope glyph"> Telescope</span>
-    <span class="legend-item"><img class="legend-glyph" src="/assets/almanack/visibility-glyphs/masters/telescope.svg" alt="Telescope glyph"><img class="legend-glyph" src="/assets/almanack/visibility-glyphs/masters/telescope.svg" alt="Telescope glyph"> Substantial telescope</span>
+    <span class="legend-item"><img class="legend-glyph" src="../../../../assets/almanack/visibility-glyphs/masters/eye.svg" alt="Naked-eye glyph"> Naked eye</span>
+    <span class="legend-item"><img class="legend-glyph" src="../../../../assets/almanack/visibility-glyphs/masters/binoculars.svg" alt="Binoculars glyph"> Binoculars</span>
+    <span class="legend-item"><img class="legend-glyph" src="../../../../assets/almanack/visibility-glyphs/masters/telescope.svg" alt="Telescope glyph"> Telescope</span>
+    <span class="legend-item"><img class="legend-glyph" src="../../../../assets/almanack/visibility-glyphs/masters/telescope.svg" alt="Telescope glyph"><img class="legend-glyph" src="../../../../assets/almanack/visibility-glyphs/masters/telescope.svg" alt="Telescope glyph"> Substantial telescope</span>
   </div>
   <p class="legend-explanation"><strong>V</strong> followed by a number is visual magnitude; smaller or more negative numbers are brighter. If no observing-aid glyph is shown, the Almanack is not assigning an observing aid for that entry.</p>
 
   <p><strong>Events</strong></p>
   <div class="legend-line">
-    <span class="legend-item"><img class="legend-glyph" src="/assets/almanack/visibility-glyphs/masters/meteor-shower.svg" alt="Meteor-shower glyph"> Meteor shower</span>
-    <span class="legend-item"><img class="legend-glyph" src="/assets/almanack/visibility-glyphs/masters/solar-eclipse.svg" alt="Solar-eclipse glyph"> Solar eclipse</span>
-    <span class="legend-item"><img class="legend-glyph" src="/assets/almanack/visibility-glyphs/masters/lunar-eclipse.svg" alt="Lunar-eclipse glyph"> Lunar eclipse</span>
+    <span class="legend-item"><img class="legend-glyph" src="../../../../assets/almanack/visibility-glyphs/masters/meteor-shower.svg" alt="Meteor-shower glyph"> Meteor shower</span>
+    <span class="legend-item"><img class="legend-glyph" src="../../../../assets/almanack/visibility-glyphs/masters/solar-eclipse.svg" alt="Solar-eclipse glyph"> Solar eclipse</span>
+    <span class="legend-item"><img class="legend-glyph" src="../../../../assets/almanack/visibility-glyphs/masters/lunar-eclipse.svg" alt="Lunar-eclipse glyph"> Lunar eclipse</span>
   </div>
 
   <p><strong>Greek alphabet</strong> — Bayer letters used to identify stars within a constellation.</p>
