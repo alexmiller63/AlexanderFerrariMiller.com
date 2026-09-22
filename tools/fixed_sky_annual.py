@@ -227,8 +227,14 @@ def coverage_years_for_iso_year(iso_year: int) -> tuple[int, int]:
 
 
 def occurrences_for_iso_year(iso_year: int):
+    """Return every fixed-object occurrence falling in an ISO year.
+
+    An ISO year can intersect two Aries-to-Aries intervals, so the same object
+    may legitimately occur twice. Preserve both records rather than keying only
+    by object identity.
+    """
     data = _load_table()
-    result = {}
+    result = []
     available = {
         int(row["coverage_year"]): row
         for row in data.get("coverage", [])
@@ -242,9 +248,8 @@ def occurrences_for_iso_year(iso_year: int):
             )
         for obj in interval["objects"]:
             day = dt.date.fromisoformat(obj["best_date"])
-            if day.isocalendar().year != iso_year:
-                continue
-            result[(obj["source"], obj["key"])] = obj
+            if day.isocalendar().year == iso_year:
+                result.append(obj)
     return result
 
 
