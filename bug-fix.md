@@ -241,3 +241,19 @@ This entry preserves the known fixes and architectural decisions accumulated dur
 **Verification:** Pending.
 
 **Resolution:** Pending.
+
+### 2026-09-22 — Legend sentences run together
+
+**State:** Open
+**Discovered:** 2026-09-22
+**Component:** Legend / explanatory text
+
+**Observed:** Each sentence in the legend should appear on its own line. The current presentation runs multiple sentences together instead of giving each sentence its own line.
+
+**Diagnosis:** Pending.
+
+**Fix:** Pending.
+
+**Verification:** Pending.
+
+**Resolution:** Pending.
