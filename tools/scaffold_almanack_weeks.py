@@ -4,13 +4,9 @@ from __future__ import annotations
 import argparse
 import datetime as dt
 import html
-from pathlib import Path
-
 from almanack_sections import section_open
-from almanack_paths import typed_page, week_dir
+from almanack_paths import ALMANACK_ROOT, typed_page, week_dir
 
-ROOT = Path(__file__).resolve().parents[1]
-PUBLIC_ROOT = ROOT / "almanack"
 BOTTOM_ID = "almanack-bottom-nav"
 SCAFFOLD_PAGE_TYPES = ("calendar", "ephemeris", "planet-finder", "sky-notes")
 
@@ -30,8 +26,8 @@ def selected_weeks(sy,sw,ey,ew):
         y,w,_=d.isocalendar(); yield y,w,d; d+=dt.timedelta(days=7)
 
 def published_years():
-    if not PUBLIC_ROOT.exists(): return ()
-    return tuple(sorted(int(p.name) for p in PUBLIC_ROOT.iterdir() if p.is_dir() and p.name.isdigit() and (p/'index.html').exists()))
+    if not ALMANACK_ROOT.exists(): return ()
+    return tuple(sorted(int(p.name) for p in ALMANACK_ROOT.iterdir() if p.is_dir() and p.name.isdigit() and (p/'index.html').exists()))
 
 def year_nav(year,bottom=False):
     ys=published_years(); previous=max((y for y in ys if y<year),default=None); following=min((y for y in ys if y>year),default=None); suffix=f'#{BOTTOM_ID}' if bottom else ''
