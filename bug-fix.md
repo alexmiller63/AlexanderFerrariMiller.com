@@ -289,3 +289,21 @@ This entry preserves the known fixes and architectural decisions accumulated dur
 **Verification:** Pending.
 
 **Resolution:** Pending.
+
+### 2026-09-22 — Aries zero-degree label encroaches on chart rim
+
+**State:** Open
+**Discovered:** 2026-09-22
+**Component:** Planet Finder chart / zodiac labels
+
+**Observed:** The “Aries 0°” label, positioned between Pisces and Aries, encroaches on the chart rim.
+
+**Expected:** The label should be positioned to the left of the chart, clear of the rim.
+
+**Diagnosis:** Pending.
+
+**Fix:** Pending.
+
+**Verification:** Pending.
+
+**Resolution:** Pending.
