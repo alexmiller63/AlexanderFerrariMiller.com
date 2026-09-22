@@ -355,7 +355,7 @@ def render(spec: dict, stars, output: Path) -> None:
                                sum(y for _, y in figure_points) / len(figure_points))
         place_label(ax, figure_constellation, constellation_point, occupied_labels,
                     color=FIGURE_BLUE, fontsize=16, zorder=5,
-                    obstacle_segments=figure_segments)
+                    obstacle_segments=figure_segments + asterism_segments)
 
     # Candidate asterisms are accepted curated geometry. Render only those
     # whose projected paths enter this already-established chart field.
