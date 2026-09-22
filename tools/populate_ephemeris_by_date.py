@@ -6,7 +6,7 @@ from datetime import date
 
 import populate_ephemeris as ephemeris
 from almanack_sections import replace_section_inner
-from almanack_paths import typed_page
+from almanack_paths import week_index
 from iso_date_range import group_by_year, parse_range_args
 
 
@@ -41,7 +41,7 @@ def populate_week(year: int, week: int, generated) -> int:
     ephemeris_html = rendered.split(finder_marker, 1)[0]
 
     changed = 0
-    path = typed_page(year, week, "ephemeris")
+    path = week_index(year, week)
     if not path.exists():
         raise RuntimeError(f"Missing weekly page: {path.relative_to(ephemeris.ROOT)}")
     text = path.read_text(encoding="utf-8")
