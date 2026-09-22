@@ -39,9 +39,9 @@ def year_nav(year,bottom=False):
 def adjacent_week(year,week,days):
     t=(dt.date.fromisocalendar(year,week,1)+dt.timedelta(days=days)).isocalendar(); return t.year,t.week
 
-def week_link(year,week,days,content_type,bottom=False):
+def week_link(year,week,days,content_type=None,bottom=False):
     ty,tw=adjacent_week(year,week,days)
-    href=f'../../W{tw:02d}/{content_type}/' if ty==year else f'../../../{ty}/W{tw:02d}/{content_type}/'
+    href=f'../W{tw:02d}/' if ty==year else f'../../{ty}/W{tw:02d}/'
     href += f'#{BOTTOM_ID}' if bottom else ''
     label=f'ISO {ty}-W{tw:02d}'
     return f'<a href="{href}">← {label}</a>' if days<0 else f'<a href="{href}">{label} →</a>'
