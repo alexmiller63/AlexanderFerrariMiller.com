@@ -125,3 +125,23 @@ This entry preserves the known fixes and architectural decisions accumulated dur
 **Verification:** Pending a generator run and inspection of generated JSON.
 
 **Resolution:** Pending.
+
+
+### 2026-09-22 — BUG-003 observing modes omit magnitude and misuse visibility marker
+
+**State:** Open
+**Discovered:** 2026-09-22
+**Component:** Observing modes / fixed-object observing presentation
+
+**Observed:** The observing-mode display does not show the object's magnitude. The “V” visibility marker is also displayed regardless of whether the star is actually visible.
+
+**Diagnosis:** Pending.
+
+**Fix:** Pending. The observing-mode output must include the magnitude, and the “V” marker must be conditional on actual visibility.
+
+**Verification:** Pending.
+
+**Resolution:** Pending.
+
+**History:**
+- 2026-09-22 — Reported during W36 visual review.
