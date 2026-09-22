@@ -35,6 +35,15 @@ jobs:
           python-version: '3.12'
       - name: Rebuild clean week scaffolds
         run: python tools/scaffold_almanack_weeks.py "${{ inputs.start_year }}" "${{ inputs.start_week }}" "${{ inputs.end_year }}" "${{ inputs.end_week }}"
+      - name: Diagnose scaffold output
+        run: |
+          echo "=== git status ==="
+          git status --short
+          echo "=== requested week output ==="
+          target="almanack/${{ inputs.start_year }}/W$(printf '%02d' ${{ inputs.start_week }})/index.html"
+          echo "$target"
+          ls -l "$target"
+
       - name: Commit scaffolded weeks
         run: |
           if git diff --quiet; then
