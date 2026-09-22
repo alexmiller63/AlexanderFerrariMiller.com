@@ -123,10 +123,12 @@ jobs:
 
           paths = []
           for iso_week in weeks_in_range(start, end):
-              paths.append(str(week_dir(iso_week.year, iso_week.week) / "finders"))
+              week = week_dir(iso_week.year, iso_week.week)
+              paths.append(str(week / "index.html"))
+              paths.append(str(week / "finders"))
 
-          # Stage only Planet Finder outputs. The generator also refreshes
-          # Ephemeris, but this workflow must not commit those changes.
+          # Stage the canonical weekly page plus its Planet Finder assets. Sections 3 and 4
+          # are generated together, so discarding index.html would discard the Finder.
           subprocess.run(["git", "add", "--", *paths], check=True)
 
           if subprocess.run(["git", "diff", "--cached", "--quiet"]).returncode == 0:
