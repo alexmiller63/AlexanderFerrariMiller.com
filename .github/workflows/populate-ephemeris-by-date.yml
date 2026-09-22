@@ -87,7 +87,7 @@ jobs:
           for iso_week in weeks_in_range(start, end):
               path = typed_page(iso_week.year, iso_week.week, 'ephemeris')
               text = path.read_text(encoding='utf-8')
-              section = re.search(r'<h3>Weekly Solar-System Ephemeris</h3>.*?(?=<h3>Planet Finder</h3>)', text, re.S)
+              section = re.search(r'<h3>Weekly Solar-System Ephemeris</h3>.*', text, re.S)
               if not section:
                   raise SystemExit(f'Missing Ephemeris section: {path}')
               html = section.group(0)
