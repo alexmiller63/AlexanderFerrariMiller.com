@@ -209,3 +209,19 @@ This entry preserves the known fixes and architectural decisions accumulated dur
 **Verification:** Pending.
 
 **Resolution:** Pending.
+
+### 2026-09-22 — Latin mode renders naked-eye as a glyph
+
+**State:** Open
+**Discovered:** 2026-09-22
+**Component:** Observing modes / Latin mode
+
+**Observed:** In Latin mode, the naked-eye observing classification is rendered as a glyph. It should use the Latin/text representation instead.
+
+**Diagnosis:** Pending.
+
+**Fix:** Pending.
+
+**Verification:** Pending.
+
+**Resolution:** Pending.
