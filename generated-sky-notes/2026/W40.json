@@ -35,14 +35,14 @@
       "constellation": "Aqr"
     },
     {
-      "fixed_object_id": 400,
-      "type": "deep-sky",
-      "name": "M2"
-    },
-    {
       "fixed_object_id": 401,
       "type": "deep-sky",
       "name": "M39"
+    },
+    {
+      "fixed_object_id": 400,
+      "type": "deep-sky",
+      "name": "M2"
     },
     {
       "fixed_object_id": 402,
@@ -74,7 +74,7 @@
       "basis": "Star Almanack preserved geocentric tropical ecliptic longitude"
     }
   ],
-  "note": "ISO 2026-W40 runs from September 28 through October 4. Mercury is about 2.8° in ecliptic longitude from Spica in Virgo. Uranus is about 4.2° in ecliptic longitude from Aldebaran in Taurus.\n\n**Naked eye:** 🌗 Last Quarter — 13:25:04 UTC. Moderate moonlight makes timing and local sky position important for faint targets. Use Alderamin, Alfirk, Sadalsuud as the week’s fixed-sky framework.\n\n**Planets:** Mercury is about 2.8° in ecliptic longitude from Spica in Virgo. Uranus is about 4.2° in ecliptic longitude from Aldebaran in Taurus.\n\n**Binoculars:** Favor β Equ; wide fields help connect the charted geometry to the real sky.\n\n**Small telescope:** Concentrate on Great Pegasus Globular, M2, M39, M30. Increase magnification only after the target and surrounding pattern are secure.\n\n**Substantial telescope:** No fixed-sky Calendar object is classified as requiring a substantial telescope this week.\n\n",
+  "note": "ISO 2026-W40 runs from September 28 through October 4. Mercury is about 2.8° in ecliptic longitude from Spica in Virgo. Uranus is about 4.2° in ecliptic longitude from Aldebaran in Taurus.\n\n**Naked eye:** 🌗 Last Quarter — 13:25:04 UTC. Moderate moonlight makes timing and local sky position important for faint targets. Use Alderamin, Alfirk, Sadalsuud as the week’s fixed-sky framework.\n\n**Planets:** Mercury is about 2.8° in ecliptic longitude from Spica in Virgo. Uranus is about 4.2° in ecliptic longitude from Aldebaran in Taurus.\n\n**Binoculars:** Favor β Equ; wide fields help connect the charted geometry to the real sky.\n\n**Small telescope:** Concentrate on Great Pegasus Globular, M39, M2, M30. Increase magnification only after the target and surrounding pattern are secure.\n\n**Substantial telescope:** No fixed-sky Calendar object is classified as requiring a substantial telescope this week.\n\n",
   "descriptors": [
     {
       "schema_version": 1,
@@ -413,21 +413,6 @@
     },
     {
       "schema_version": 1,
-      "id": "400",
-      "type": "deep-sky-object",
-      "name": "M2",
-      "summary": "deep-sky object selected as a weekly fixed-sky observing target",
-      "representation": {
-        "machine": "./400.json",
-        "human_source": "summary",
-        "human": "/stories/messier/400.html"
-      },
-      "catalog_name": "M2",
-      "object_type": "deep-sky object",
-      "source_label": "M2"
-    },
-    {
-      "schema_version": 1,
       "id": "401",
       "type": "deep-sky-object",
       "name": "M39",
@@ -440,6 +425,21 @@
       "catalog_name": "M39",
       "object_type": "deep-sky object",
       "source_label": "M39"
+    },
+    {
+      "schema_version": 1,
+      "id": "400",
+      "type": "deep-sky-object",
+      "name": "M2",
+      "summary": "deep-sky object selected as a weekly fixed-sky observing target",
+      "representation": {
+        "machine": "./400.json",
+        "human_source": "summary",
+        "human": "/stories/messier/400.html"
+      },
+      "catalog_name": "M2",
+      "object_type": "deep-sky object",
+      "source_label": "M2"
     },
     {
       "schema_version": 1,
@@ -667,8 +667,8 @@
     1177,
     399,
     1178,
-    400,
     401,
+    400,
     402
   ],
   "story_candidates": [
@@ -718,21 +718,21 @@
       "artwork": null
     },
     {
-      "fixed_object_id": 400,
-      "collection": "messier",
-      "hed": "A comet hunter found a city of 150,000 stars",
-      "dek": "M2 can look like a small misty ball, but the haze is the unresolved light of more than 150,000 stars bound together by gravity.",
-      "body": "Jean-Dominique Maraldi discovered the cluster in 1746 while observing a comet. Messier later added it to his catalog of objects that could be confused with comets—the practical observing list that accidentally became one of astronomy’s most famous tours of the deep sky.\n\nM2 lies roughly 37,000 light-years away in Aquarius and spans more than 150 light-years. Like other globular clusters, its stars crowd much more densely toward the center, producing the bright core and fading halo that observers can compare directly with other globulars.\n\nThe contrast between discovery and reality is part of the pleasure. To an 18th-century comet hunter it was a persistent fuzzy nuisance. To us it is an ancient gravitational system containing a stellar population on a scale no single glance through the telescope can resolve.\n\nSources: NASA Hubble Messier Catalog, “Messier 2.”",
-      "url": "/stories/messier/400.html",
-      "artwork": null
-    },
-    {
       "fixed_object_id": 401,
       "collection": "messier",
       "hed": "A cluster that wants a wide field",
       "dek": "M39 is an open cluster whose loose bright stars make more sense together than they do one at a time.",
       "body": "Unlike a globular cluster, M39 is not a compact ball of ancient stars. It is a comparatively sparse stellar family in Cygnus, spread broadly enough across the sky that binoculars or a low-power telescope often show its character better than high magnification does.\n\nThat makes M39 a useful reminder that more magnification is not automatically more astronomy. An object has a natural scale. Push too close and a broad cluster can dissolve into unrelated-looking stars; step back and the pattern reappears.\n\nOpen clusters are temporary by astronomical standards. Their stars formed together, but interactions among the stars and the gravitational influence of the Milky Way gradually disperse them. The recognizable cluster is therefore a phase in the life of a stellar family, not a permanent arrangement.\n\nM39 rewards the observer who gives it room.\n\nSources: standard Messier catalog and open-cluster references.",
       "url": "/stories/messier/401.html",
+      "artwork": null
+    },
+    {
+      "fixed_object_id": 400,
+      "collection": "messier",
+      "hed": "A comet hunter found a city of 150,000 stars",
+      "dek": "M2 can look like a small misty ball, but the haze is the unresolved light of more than 150,000 stars bound together by gravity.",
+      "body": "Jean-Dominique Maraldi discovered the cluster in 1746 while observing a comet. Messier later added it to his catalog of objects that could be confused with comets—the practical observing list that accidentally became one of astronomy’s most famous tours of the deep sky.\n\nM2 lies roughly 37,000 light-years away in Aquarius and spans more than 150 light-years. Like other globular clusters, its stars crowd much more densely toward the center, producing the bright core and fading halo that observers can compare directly with other globulars.\n\nThe contrast between discovery and reality is part of the pleasure. To an 18th-century comet hunter it was a persistent fuzzy nuisance. To us it is an ancient gravitational system containing a stellar population on a scale no single glance through the telescope can resolve.\n\nSources: NASA Hubble Messier Catalog, “Messier 2.”",
+      "url": "/stories/messier/400.html",
       "artwork": null
     },
     {
@@ -794,21 +794,21 @@
       "artwork": null
     },
     {
-      "fixed_object_id": 400,
-      "collection": "messier",
-      "hed": "A comet hunter found a city of 150,000 stars",
-      "dek": "M2 can look like a small misty ball, but the haze is the unresolved light of more than 150,000 stars bound together by gravity.",
-      "body": "Jean-Dominique Maraldi discovered the cluster in 1746 while observing a comet. Messier later added it to his catalog of objects that could be confused with comets—the practical observing list that accidentally became one of astronomy’s most famous tours of the deep sky.\n\nM2 lies roughly 37,000 light-years away in Aquarius and spans more than 150 light-years. Like other globular clusters, its stars crowd much more densely toward the center, producing the bright core and fading halo that observers can compare directly with other globulars.\n\nThe contrast between discovery and reality is part of the pleasure. To an 18th-century comet hunter it was a persistent fuzzy nuisance. To us it is an ancient gravitational system containing a stellar population on a scale no single glance through the telescope can resolve.\n\nSources: NASA Hubble Messier Catalog, “Messier 2.”",
-      "url": "/stories/messier/400.html",
-      "artwork": null
-    },
-    {
       "fixed_object_id": 401,
       "collection": "messier",
       "hed": "A cluster that wants a wide field",
       "dek": "M39 is an open cluster whose loose bright stars make more sense together than they do one at a time.",
       "body": "Unlike a globular cluster, M39 is not a compact ball of ancient stars. It is a comparatively sparse stellar family in Cygnus, spread broadly enough across the sky that binoculars or a low-power telescope often show its character better than high magnification does.\n\nThat makes M39 a useful reminder that more magnification is not automatically more astronomy. An object has a natural scale. Push too close and a broad cluster can dissolve into unrelated-looking stars; step back and the pattern reappears.\n\nOpen clusters are temporary by astronomical standards. Their stars formed together, but interactions among the stars and the gravitational influence of the Milky Way gradually disperse them. The recognizable cluster is therefore a phase in the life of a stellar family, not a permanent arrangement.\n\nM39 rewards the observer who gives it room.\n\nSources: standard Messier catalog and open-cluster references.",
       "url": "/stories/messier/401.html",
+      "artwork": null
+    },
+    {
+      "fixed_object_id": 400,
+      "collection": "messier",
+      "hed": "A comet hunter found a city of 150,000 stars",
+      "dek": "M2 can look like a small misty ball, but the haze is the unresolved light of more than 150,000 stars bound together by gravity.",
+      "body": "Jean-Dominique Maraldi discovered the cluster in 1746 while observing a comet. Messier later added it to his catalog of objects that could be confused with comets—the practical observing list that accidentally became one of astronomy’s most famous tours of the deep sky.\n\nM2 lies roughly 37,000 light-years away in Aquarius and spans more than 150 light-years. Like other globular clusters, its stars crowd much more densely toward the center, producing the bright core and fading halo that observers can compare directly with other globulars.\n\nThe contrast between discovery and reality is part of the pleasure. To an 18th-century comet hunter it was a persistent fuzzy nuisance. To us it is an ancient gravitational system containing a stellar population on a scale no single glance through the telescope can resolve.\n\nSources: NASA Hubble Messier Catalog, “Messier 2.”",
+      "url": "/stories/messier/400.html",
       "artwork": null
     },
     {
@@ -821,7 +821,6 @@
       "artwork": null
     }
   ],
-  "artwork": null,
   "descriptor_policy": {
     "source_of_truth": "machine-readable JSON",
     "candidate_pool": "complete; presentation never limits discovery",
