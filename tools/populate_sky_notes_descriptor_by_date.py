@@ -365,7 +365,8 @@ def main() -> None:
         payload["linked_stories"] = linked
         payload["stories"] = candidates
         # Artwork is owned by immutable fixed objects, never by an ISO week.
-        payload["artwork"] = None
+        # Do not emit a week-owned artwork field when none exists.
+        payload.pop("artwork", None)
         payload["descriptor_policy"] = descriptor_policy()
         descriptor_ids = {str(record["id"]) for record in payload["descriptors"]}
         missing_descriptor_ids = [str(fixed_id) for fixed_id in fixed_ids if str(fixed_id) not in descriptor_ids]
