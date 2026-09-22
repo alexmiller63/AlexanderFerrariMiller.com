@@ -145,3 +145,35 @@ This entry preserves the known fixes and architectural decisions accumulated dur
 
 **History:**
 - 2026-09-22 — Reported during W36 visual review.
+
+### 2026-09-22 — Observing mode omits stellar magnitude
+
+**State:** Open
+**Discovered:** 2026-09-22
+**Component:** Observing modes / fixed-object display
+
+**Observed:** The observing-mode display does not show the star's magnitude.
+
+**Diagnosis:** Pending.
+
+**Fix:** Pending.
+
+**Verification:** Pending.
+
+**Resolution:** Pending.
+
+### 2026-09-22 — V marker shown when star is not visible
+
+**State:** Open
+**Discovered:** 2026-09-22
+**Component:** Observing modes / visibility display
+
+**Observed:** The V visibility marker is displayed all the time. It should appear only when the star is actually visible.
+
+**Diagnosis:** Pending.
+
+**Fix:** Pending.
+
+**Verification:** Pending.
+
+**Resolution:** Pending.
