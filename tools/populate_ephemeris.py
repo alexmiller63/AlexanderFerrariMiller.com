@@ -367,9 +367,10 @@ def write_preserved_weekly_table(year, generated):
 def update_year(year, engine=None):
     generated = computed_ephemeris(year, engine)
     write_preserved_weekly_table(year, generated)
-    count = week_count(year)
     changed = 0
-    for week in range(1, count + 1):
+    pages = sorted((ROOT / "almanack" / str(year)).glob("W??/ephemeris/index.html"))
+    for path in pages:
+        week = int(path.parents[1].name[1:])
         monday = date.fromisocalendar(year, week, 1)
         values = {}
         for _, key, _ in TARGETS:
@@ -391,13 +392,11 @@ def update_year(year, engine=None):
                 "horizon_deg": SUN_HORIZON_DEG if key == "sun" else STANDARD_HORIZON_DEG,
             }
         replacement = render_ephemeris(monday, values)
-        for base in (ROOT / "almanack",):
-            path = typed_page(year, week, "ephemeris")
-            text = path.read_text(encoding="utf-8")
-            new = put_ephemeris(text, replacement, path)
-            if new != text:
-                path.write_text(new, encoding="utf-8")
-                changed += 1
+        text = path.read_text(encoding="utf-8")
+        new = put_ephemeris(text, replacement, path)
+        if new != text:
+            path.write_text(new, encoding="utf-8")
+            changed += 1
     return changed
 
 
