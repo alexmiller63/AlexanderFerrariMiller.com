@@ -397,3 +397,21 @@ This entry preserves the known fixes and architectural decisions accumulated dur
 **Verification:** Pending.
 
 **Resolution:** Pending.
+
+### 2026-09-22 — Boundary label should fall back to three-letter designation
+
+**State:** Open
+**Discovered:** 2026-09-22
+**Component:** Sky Notes / fixed-object charts / IAU boundary labels
+
+**Observed:** In the Altair chart, the full constellation name “Delphinus” does not fit within its own IAU boundary and encroaches into the neighboring Aquila boundary.
+
+**Expected:** When a full constellation name cannot fit within its own boundary without encroachment, fall back to the three-letter IAU designation. For this case, use **DEL** within the Delphinus boundary.
+
+**Diagnosis:** Pending.
+
+**Fix:** Pending.
+
+**Verification:** Pending.
+
+**Resolution:** Pending.
