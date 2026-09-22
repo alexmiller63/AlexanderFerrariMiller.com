@@ -156,7 +156,14 @@ def populate_year(year: int) -> int:
             if patch_page(typed_page(year, week, "calendar"), events):
                 changed += 1
     for base in (PUBLIC_ROOT,):
+        page_count = sum(
+            1 for week in range(1, weeks + 1)
+            if typed_page(year, week, "calendar").exists()
+        )
         count = count_occurrences(base, year)
+        if page_count == 0:
+            print(f"{year}: no calendar pages exist yet; event retained as annual source result")
+            continue
         if count != 1:
             raise RuntimeError(
                 f"{base}: expected exactly one Galactic Center event for {year}, found {count}"
@@ -173,7 +180,14 @@ def populate_year(year: int) -> int:
 def verify_year(year: int) -> None:
     expected_for_year(year)
     for base in (PUBLIC_ROOT,):
+        page_count = sum(
+            1 for week in range(1, weeks + 1)
+            if typed_page(year, week, "calendar").exists()
+        )
         count = count_occurrences(base, year)
+        if page_count == 0:
+            print(f"{year}: no calendar pages exist yet; nothing to verify")
+            continue
         if count != 1:
             raise RuntimeError(
                 f"{base}: expected exactly one Galactic Center event for {year}, found {count}"
