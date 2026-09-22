@@ -6,54 +6,13 @@ on:
       years:
         description: 'Space-separated ISO years to regenerate'
         required: true
-        default: '2025 2026 2027'
+        default: '2026'
   push:
     paths:
-      - '.github/workflows/populate-2025-2027-ephemeris.yml'
-      - 'tools/almanack_calendar.py'
-      - 'tools/almanack_time.py'
-      - 'tools/star_almanack_ephemeris.py'
-      - 'tools/test_almanack_time.py'
-      - 'tools/audit_calendar_contract.py'
-      - 'tools/audit_true_year_parameterization.py'
-      - 'tools/audit_constellation_centers.py'
-      - 'tools/clean_event_cells.py'
-      - 'tools/populate_calendar.py'
-      - 'tools/populate_galactic_center.py'
-      - 'tools/populate_meteor_showers.py'
-      - 'tools/populate_ephemeris.py'
-      - 'tools/wire_2026_eclipses.py'
-      - 'tools/wire_week_navigation.py'
-      - 'tools/wire_almanack_legend.py'
-      - 'tools/populate_fixed_sky.py'
-      - 'tools/fixed_sky_annual.py'
-      - 'tools/standardize_messier_calendar.py'
-      - 'tools/catalog_common_names.py'
-      - 'tools/reconcile_catalog_common_names.py'
-      - 'tools/populate_constellations.py'
-      - 'tools/populate_asterisms.py'
-      - 'tools/populate_caldwell.py'
-      - 'tools/populate_finest_ngc.py'
       - 'tools/populate-2025-2027-ephemeris-trigger.txt'
-      - 'EPHEMERIS-PROVENANCE.md'
-      - 'eclipse.yaml'
-      - 'compute_bayer_visibility_2026.py'
-      - 'expanded-bayer-stars.csv'
-      - 'compute_constellation_observance_2026.py'
-      - 'fixed-objects.yaml'
-      - 'messier-editorial.json'
-      - 'messier-common-names-nasa.yaml'
-      - 'expanded-bayer-visibility-2026.csv'
-      - 'caldwell-catalog.csv'
-      - 'finest-ngc-catalog.csv'
-      - 'finest-ngc-caldwell-overlap.csv'
-      - 'asterism-geometry-2025.csv'
-      - 'asterism-geometry-2026.csv'
-      - 'asterism-geometry-2027.csv'
-      - 'database/fixed-sky-annual-coverage.json'
 
 env:
-  ALMANACK_YEARS: ${{ github.event_name == 'workflow_dispatch' && inputs.years || '2025 2026 2027' }}
+  ALMANACK_YEARS: ${{ github.event_name == 'workflow_dispatch' && inputs.years || '2026' }}
   STAR_ALMANACK_EPHEMERIS_DIR: ${{ github.workspace }}/.cache/skyfield
 
 permissions:
@@ -121,6 +80,16 @@ jobs:
             -o /tmp/hygdata_v41.csv
       - name: Verify preserved 2026 best-visibility regression
         run: python compute_bayer_visibility_2026.py expanded-bayer-stars.csv /tmp/expanded-bayer-visibility-2026-regression.csv
+      - name: Build missing Aries-to-Aries fixed-sky coverage rows
+        run: |
+          set -- $ALMANACK_YEARS
+          min=$1
+          max=$1
+          for year in "$@"; do
+            (( year < min )) && min=$year
+            (( year > max )) && max=$year
+          done
+          python tools/fixed_sky_annual.py $((min - 1)) "$max"
       - name: Normalize calendar keys and clear requested event cells
         run: python tools/clean_event_cells.py $ALMANACK_YEARS
       - name: Populate Zodiac Days, ingresses, solar stations, and named lunar phases
