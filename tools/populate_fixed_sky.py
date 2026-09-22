@@ -15,7 +15,7 @@ from almanack_calendar import CalendarEvent, ensure_calendar_metadata, get_event
 from almanack_paths import ALMANACK_ROOT, calendar_pages
 from star_almanack_astronomy import apparent_sun_ra_hours,best_visibility_occurrences_for_iso_year,solar_ra_occurrences_for_iso_year
 from star_almanack_objects import AlmanackObject,ObservingAid,observing_aid_for_magnitude,render_html
-from fixed_sky_annual import records_for_iso_year
+from fixed_sky_annual import occurrences_for_iso_year
 
 ROOT=Path(__file__).resolve().parents[1]; SRC=ROOT; PUBLIC=ALMANACK_ROOT; DEFAULT_YEARS=(2025,2026,2027)
 REGIONS=SRC/"fixed-object-regions.yaml"
@@ -164,34 +164,55 @@ def _messier_catalog_rows_for_annual_use():
     return [dict(zip(fields,row)) for row in data.get("messier") or []]
 
 def page_date_map(year):
-    """Read the annual fixed-sky crib sheet; do not recalculate source objects."""
-    records = records_for_iso_year(year)
-    events = defaultdict(list)
-    csv_rows = defaultdict(list)
-    for record in records:
-        row = dict(record["source_row"])
-        row["best_date"] = record["best_date"]
-        row["best_instant_utc"] = record["best_visibility"]["utc"].replace("Z", "")[:16]
-        row["iso"] = record["iso"]
-        csv_rows[record["source"]].append(row)
-        day = dt.date.fromisoformat(record["best_date"])
-        source = record["source"]
-        if source in {"bayer", "bright_star"}:
-            identity = (
-                display_bayer(row) if source == "bayer"
-                else (row.get("proper") or row.get("bayer") or "")
-            ).strip().lower()
-            if not identity:
-                continue
-            events[day].append(star_event(row, record["fixed_object_id"]))
+    """Read annual Aries-to-Aries coverage; do not recalculate fixed objects."""
+    occurrences = occurrences_for_iso_year(year)
+    bayer_rows = read_csv("expanded-bayer-visibility-2026.csv")
+    bright_rows = read_csv("bright-star-visibility-2026.csv")
+    bayer_by_key = {
+        f"{row.get('bayer', '').strip()}:{row.get('con', '').strip()}": row
+        for row in bayer_rows
+    }
+    bright_by_key = {}
+    for row in bright_rows:
+        if row.get("new_non_alpha_beta", "").lower() != "yes":
             continue
-        if source == "messier":
-            identity = row["messier"].strip()
+        key = (row.get("proper") or "").strip() or (
+            f"{row.get('bayer', '').strip()}:{row.get('con', '').strip()}"
+        )
+        bright_by_key[key] = row
+    events = defaultdict(list)
+    generated = {"expanded-bayer": [], "bright-star": [], "messier": []}
+    for (source, key), occurrence in sorted(
+        occurrences.items(), key=lambda item: item[1]["best_jd_tdb"]
+    ):
+        day = dt.date.fromisoformat(occurrence["best_date"])
+        if source == "expanded-bayer":
+            row = dict(bayer_by_key[key])
+            row["best_instant_utc"] = occurrence["best_utc"].replace("Z", "")[:16]
+            row["best_date"] = occurrence["best_date"]
+            row["iso"] = occurrence["iso"]
+            generated["expanded-bayer"].append(row)
+            events[day].append(star_event(row, occurrence["fixed_object_id"]))
+        elif source == "bright-star":
+            row = dict(bright_by_key[key])
+            row["best_instant_utc"] = occurrence["best_utc"].replace("Z", "")[:16]
+            row["best_date"] = occurrence["best_date"]
+            row["iso"] = occurrence["iso"]
+            generated["bright-star"].append(row)
+            events[day].append(star_event(row, occurrence["fixed_object_id"]))
+        elif source == "messier":
+            identity = key.strip()
             catalog = MESSIER_CATALOG.get(identity)
             if catalog is None:
                 raise RuntimeError(f"Missing {identity} from {FIXED_OBJECTS.name} Messier catalog")
             if catalog.get("dec_deg") is None:
                 raise RuntimeError(f"Missing declination for {identity} in {FIXED_OBJECTS.name}")
+            generated["messier"].append({
+                **dict(catalog),
+                "best_instant_utc": occurrence["best_utc"].replace("Z", "")[:16],
+                "best_date": occurrence["best_date"],
+                "iso": occurrence["iso"],
+            })
             events[day].append(
                 CalendarEvent(
                     render_html(
@@ -203,20 +224,17 @@ def page_date_map(year):
                             observing_aid=ObservingAid.TELESCOPE,
                         )
                     ),
-                    int(record["fixed_object_id"]),
+                    int(occurrence["fixed_object_id"]),
                     ObservingAid.TELESCOPE.value,
                 )
             )
-            continue
-        raise RuntimeError(f"Unknown fixed-sky annual source: {source}")
-    if not records:
-        raise RuntimeError(
-            f"No annual fixed-sky records found for ISO {year}; "
-            "build the required Aries-to-Aries coverage first"
-        )
-    write_csv(SRC / "generated" / f"expanded-bayer-visibility-{year}.csv", csv_rows["bayer"])
-    write_csv(SRC / "generated" / f"bright-star-visibility-{year}.csv", csv_rows["bright_star"])
-    write_csv(SRC / "generated" / f"messier-visibility-{year}.csv", csv_rows["messier"])
+        else:
+            raise RuntimeError(f"Unknown annual fixed-sky source: {source}")
+    if not occurrences:
+        raise RuntimeError(f"No annual fixed-sky records found for ISO {year}")
+    write_csv(SRC / "generated" / f"expanded-bayer-visibility-{year}.csv", generated["expanded-bayer"])
+    write_csv(SRC / "generated" / f"bright-star-visibility-{year}.csv", generated["bright-star"])
+    write_csv(SRC / "generated" / f"messier-visibility-{year}.csv", generated["messier"])
     return events
 
 def pages_for_events(root,events):
