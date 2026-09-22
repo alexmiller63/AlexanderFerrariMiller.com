@@ -35,45 +35,44 @@ def populate_selected_year(year: int, selected_weeks: list[int]) -> int:
     for week in selected_weeks:
         monday = __import__('datetime').date.fromisocalendar(year, week, 1)
         week_dates = {monday + timedelta(days=i) for i in range(7)}
-        for base in (calendar.SOURCE_ROOT, calendar.PUBLIC_ROOT):
-            path = typed_page(year, week, "calendar")
-            if not path.exists():
-                raise RuntimeError(f"Missing weekly page: {path.relative_to(calendar.ROOT)}")
-            before = path.read_text(encoding="utf-8")
-            require_section(before, 2, path)
-            calendar.patch_page(path, ingresses, events)
+        path = typed_page(year, week, "calendar")
+        if not path.exists():
+            raise RuntimeError(f"Missing weekly page: {path.relative_to(calendar.ROOT)}")
+        before = path.read_text(encoding="utf-8")
+        require_section(before, 2, path)
+        calendar.patch_page(path, ingresses, events)
 
-            # Merge canonical fixed-sky events without touching other event types.
-            text = path.read_text(encoding="utf-8")
-            text = fixed_sky.ensure_calendar_metadata(text, path)
-            for day in week_dates:
-                vals = fixed_events.get(day, [])
-                if not vals:
-                    continue
-                cell = fixed_sky.get_events(text, day)
-                if cell is None:
-                    raise RuntimeError(f"Could not find Calendar row {day} in {path}")
-                keep = [] if cell == "—" else [x for x in cell.split("<br>") if x]
-                for value in vals:
-                    base_label = value.html.split(" — ", 1)[0]
-                    keep = [
-                        x for x in keep
-                        if not (
-                            (x.html if isinstance(x, fixed_sky.CalendarEvent) else x) == base_label
-                            or (x.html if isinstance(x, fixed_sky.CalendarEvent) else x).startswith(base_label + " — ")
-                        )
-                    ]
-                    keep.append(value)
-                records = [fixed_sky.CalendarEvent(x) for x in keep if isinstance(x, str)] + [x for x in keep if isinstance(x, fixed_sky.CalendarEvent)]
-                text, found = fixed_sky.set_events(text, day, records if records else "—")
-                if not found:
-                    raise RuntimeError(f"Could not update Calendar row {day} in {path}")
-            path.write_text(text, encoding="utf-8")
-            patch_fixed_object_ids(path)
-            patch_mobile_layout(path)
-            patch_planet_finder_layout(path)
-            if path.read_text(encoding="utf-8") != before:
-                changed += 1
+        # Merge canonical fixed-sky events without touching other event types.
+        text = path.read_text(encoding="utf-8")
+        text = fixed_sky.ensure_calendar_metadata(text, path)
+        for day in week_dates:
+            vals = fixed_events.get(day, [])
+            if not vals:
+                continue
+            cell = fixed_sky.get_events(text, day)
+            if cell is None:
+                raise RuntimeError(f"Could not find Calendar row {day} in {path}")
+            keep = [] if cell == "—" else [x for x in cell.split("<br>") if x]
+            for value in vals:
+                base_label = value.html.split(" — ", 1)[0]
+                keep = [
+                    x for x in keep
+                    if not (
+                        (x.html if isinstance(x, fixed_sky.CalendarEvent) else x) == base_label
+                        or (x.html if isinstance(x, fixed_sky.CalendarEvent) else x).startswith(base_label + " — ")
+                    )
+                ]
+                keep.append(value)
+            records = [fixed_sky.CalendarEvent(x) for x in keep if isinstance(x, str)] + [x for x in keep if isinstance(x, fixed_sky.CalendarEvent)]
+            text, found = fixed_sky.set_events(text, day, records if records else "—")
+            if not found:
+                raise RuntimeError(f"Could not update Calendar row {day} in {path}")
+        path.write_text(text, encoding="utf-8")
+        patch_fixed_object_ids(path)
+        patch_mobile_layout(path)
+        patch_planet_finder_layout(path)
+        if path.read_text(encoding="utf-8") != before:
+            changed += 1
     return changed
 
 
