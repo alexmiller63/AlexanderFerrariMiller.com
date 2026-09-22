@@ -18,9 +18,6 @@ import sys
 from almanack_paths import typed_page
 
 ROOT = Path(__file__).resolve().parents[1]
-BASES = (ROOT / "almanack",)
-GLYPH_ROOT = "/assets/almanack/visibility-glyphs/masters/"
-WEEKLY_GLYPH_ROOT = "/assets/almanack/visibility-glyphs/masters/"
 CONTENT_TYPES = ("calendar", "ephemeris", "planet-finder", "sky-notes")
 
 STYLE = """<style id="almanack-legend-css">
@@ -158,10 +155,6 @@ def wire_page(path: Path) -> bool:
     else:
         text = text.replace("</body>", LEGEND + "</body>", 1)
 
-    # Typed weekly pages live at YEAR/WEEK/TYPE/index.html. Keep asset URLs root-relative
-    # so the extra type-directory depth cannot break glyph resolution.
-    text = text.replace(f'src="{GLYPH_ROOT}', f'src="{WEEKLY_GLYPH_ROOT}')
-
     if text != original:
         path.write_text(text, encoding="utf-8")
         return True
@@ -171,14 +164,13 @@ def wire_page(path: Path) -> bool:
 def main() -> None:
     weeks = requested_weeks()
     changed = 0
-    for base in BASES:
-        for year, week in weeks:
-            for content_type in CONTENT_TYPES:
-                path = typed_page(year, week, content_type)
-                if not path.is_file():
-                    continue
-                if wire_page(path):
-                    changed += 1
+    for year, week in weeks:
+        for content_type in CONTENT_TYPES:
+            path = typed_page(year, week, content_type)
+            if not path.is_file():
+                continue
+            if wire_page(path):
+                changed += 1
 
     first_year, first_week = weeks[0]
     last_year, last_week = weeks[-1]
