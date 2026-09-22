@@ -107,17 +107,11 @@ jobs:
         run: python tools/populate_ephemeris.py $ALMANACK_YEARS
       - name: Populate fixed-sky visibility events from annual coverage
         run: python tools/populate_fixed_sky.py $ALMANACK_YEARS
-      - name: Standardize Messier labels, instruments, magnitudes, declination bands, and seasons
-        run: python tools/standardize_messier_calendar.py $ALMANACK_YEARS
       - name: Populate constellation centers
         run: python tools/populate_constellations.py $ALMANACK_YEARS
       - name: Populate core asterism centers
         run: python tools/populate_asterisms.py $ALMANACK_YEARS
-      - name: Populate Caldwell C1-C109 in requested years
-        run: python tools/populate_caldwell.py $ALMANACK_YEARS
-      - name: Populate Finest NGC objects not already represented by Caldwell
-        run: python tools/populate_finest_ngc.py $ALMANACK_YEARS
-      - name: Reconcile common names across Messier, Caldwell, and Finest NGC
+      - name: Populate and reconcile Messier, Caldwell, and Finest NGC
         run: python tools/reconcile_catalog_common_names.py $ALMANACK_YEARS
       - name: Wire highlighted current-week navigation
         run: python tools/wire_week_navigation.py $ALMANACK_YEARS
@@ -179,11 +173,8 @@ jobs:
             python tools/populate_meteor_showers.py $ALMANACK_YEARS
             python tools/populate_ephemeris.py $ALMANACK_YEARS
             python tools/populate_fixed_sky.py $ALMANACK_YEARS
-            python tools/standardize_messier_calendar.py $ALMANACK_YEARS
             python tools/populate_constellations.py $ALMANACK_YEARS
             python tools/populate_asterisms.py $ALMANACK_YEARS
-            python tools/populate_caldwell.py $ALMANACK_YEARS
-            python tools/populate_finest_ngc.py $ALMANACK_YEARS
             python tools/reconcile_catalog_common_names.py $ALMANACK_YEARS
             python tools/wire_week_navigation.py $ALMANACK_YEARS
             python tools/wire_almanack_legend.py $ALMANACK_YEARS
