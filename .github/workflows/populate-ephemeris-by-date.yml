@@ -78,7 +78,7 @@ jobs:
           from datetime import date
           import re
 
-          from tools.almanack_paths import typed_page
+          from tools.almanack_paths import week_index
           from tools.iso_date_range import weeks_in_range
 
           start = date.fromisoformat('${{ steps.range.outputs.start_date }}')
