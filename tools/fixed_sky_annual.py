@@ -179,6 +179,10 @@ def ensure_coverage(start_year: int, eph: StarAlmanackEphemeris | None = None) -
             "best_jd_tdb": instant.jd_tdb,
             "best_utc": instant.utc_datetime().isoformat().replace("+00:00", "Z"),
             "best_date": instant.publication_date().isoformat(),
+            "iso": (
+                f"{instant.publication_date().isocalendar().year}-"
+                f"W{instant.publication_date().isocalendar().week:02d}"
+            ),
         })
 
     interval["object_count"] = len(objects)
@@ -194,11 +198,19 @@ def coverage_years_for_iso_year(iso_year: int) -> tuple[int, int]:
 
 
 def occurrences_for_iso_year(iso_year: int):
-    eph = StarAlmanackEphemeris()
     data = _load_table()
     result = {}
+    available = {
+        int(row["coverage_year"]): row
+        for row in data.get("coverage", [])
+    }
     for coverage_year in coverage_years_for_iso_year(iso_year):
-        interval = ensure_coverage(coverage_year, eph)
+        interval = available.get(coverage_year)
+        if interval is None:
+            raise RuntimeError(
+                f"Missing fixed-sky Aries-to-Aries coverage row {coverage_year}; "
+                "run tools/fixed_sky_annual.py before the weekly generator"
+            )
         for obj in interval["objects"]:
             day = dt.date.fromisoformat(obj["best_date"])
             if day.isocalendar().year != iso_year:
