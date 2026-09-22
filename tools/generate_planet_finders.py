@@ -54,6 +54,11 @@ CANONICAL = [
     "Ceres", "Uranus", "Neptune", "Pluto",
 ]
 
+# Standalone defaults. GitHub Actions may override these through environment variables.
+DEFAULT_CANDIDATE_LAYOUTS = 5
+DEFAULT_MAX_NODE_CANDIDATES = 200
+DEFAULT_MAX_SEARCH_SECONDS = 180
+
 
 class FinderMode(str, Enum):
     """Presentation modes for Planet Finder charts."""
@@ -1137,10 +1142,10 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
 
 def new_search_budget():
     """Create the per-body candidate and wall-clock safety limits."""
-    max_node_candidates = int(os.environ.get("PLANET_FINDER_MAX_NODE_CANDIDATES", "200"))
+    max_node_candidates = int(os.environ.get("PLANET_FINDER_MAX_NODE_CANDIDATES", str(DEFAULT_MAX_NODE_CANDIDATES)))
     if max_node_candidates <= 0:
         raise ValueError("PLANET_FINDER_MAX_NODE_CANDIDATES must be positive")
-    max_seconds = max(1.0, float(os.environ.get("PLANET_FINDER_MAX_SECONDS", "180")))
+    max_seconds = max(1.0, float(os.environ.get("PLANET_FINDER_MAX_SECONDS", str(DEFAULT_MAX_SEARCH_SECONDS))))
     # This object contains limits only.  It deliberately contains no clock
     # state: every notation mode starts its own clock inside layout().
     return {
@@ -1173,7 +1178,7 @@ def layout(
         raise RuntimeError("Planet Finder body set does not match the canonical Solar-System objects")
 
     if target_solutions is None:
-        target_solutions = max(1, int(os.environ.get("PLANET_FINDER_CANDIDATES", "5")))
+        target_solutions = max(1, int(os.environ.get("PLANET_FINDER_CANDIDATES", str(DEFAULT_CANDIDATE_LAYOUTS))))
 
     if budget is None:
         budget = new_search_budget()
