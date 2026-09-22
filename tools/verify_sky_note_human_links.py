@@ -7,13 +7,16 @@ import sys
 from pathlib import Path
 
 from almanack_paths import sky_notes_page
+from iso_date_range import parse_iso_date, weeks_in_range
 
-year, start_week, end_week = int(sys.argv[1]), int(sys.argv[2]), int(sys.argv[3])
+start = parse_iso_date(sys.argv[1])
+end = parse_iso_date(sys.argv[2])
 checked = 0
 empty_states = 0
 pages_checked = 0
 
-for week in range(start_week, end_week + 1):
+for iso_week in weeks_in_range(start, end):
+    year, week = iso_week.year, iso_week.week
     page = sky_notes_page(year, week)
     if not page.exists():
         raise SystemExit(f"Missing weekly Sky Notes page: {page}")
