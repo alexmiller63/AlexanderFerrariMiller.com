@@ -102,9 +102,6 @@ def catalog_target_fixed_object_id(catalog, designation):
         raise RuntimeError(f"Multiple direct fixed-object targets for {catalog}:{designation}: {direct}")
     if direct:
         return direct[0]
-    # Most catalog entries are ordinary physical objects and are represented
-    # directly in the permanent fixed-object registry.  The catalog-entry
-    # target table is only needed for exceptional structured/region targets.
     return FIXED_OBJECT_IDS.get((catalog.strip().lower(), designation.strip().lower()))
 
 def load_fixed_object_ids():
@@ -125,20 +122,10 @@ def fixed_object_id(namespace,value):
     if fixed_id is None:raise RuntimeError(f"Permanent fixed-object ID not found for {namespace}:{value}")
     return fixed_id
 def canonical_occurrence(occurrences,year,identity):
-    """Select the single annual event represented by one ISO week-year.
-
-    ISO week-years legitimately contain a few dates from adjacent civil years.
-    A single occurrence on one of those dates is valid and must be retained.
-    The ambiguity arises only when an annual solar-RA crossing occurs twice in
-    the same ISO-year page set (for example near both ends of a 53-week year).
-    In that case, prefer the occurrence in the matching civil year.
-    """
     occurrences=list(occurrences)
-    if len(occurrences)==1:
-        return occurrences[0]
+    if len(occurrences)==1:return occurrences[0]
     preferred=[pair for pair in occurrences if pair[1].year==year]
-    if len(preferred)==1:
-        return preferred[0]
+    if len(preferred)==1:return preferred[0]
     dates=", ".join(day.isoformat() for _,day in occurrences)
     raise RuntimeError(f"Could not select one canonical visibility occurrence for {identity} in ISO {year}; matching-civil-year={len(preferred)} among [{dates}]")
 def redated(rows,iso_year):
@@ -173,11 +160,10 @@ def star_event(r, fixed_id_override=None):
     proper=r.get("proper","").strip(); bayer=display_bayer(r); base=f"{proper} ({bayer})" if proper and bayer else (proper or bayer or f"{r.get('con','').strip()} star"); source_mag=(r.get("representative_vmax") or r.get("catalog_v") or r.get("mag") or "").strip()
     aid=observing_aid_for_magnitude(source_mag)
     catalog_id=(r.get("hyg_id") or r.get("hip") or r.get("hd") or bayer or "").strip()
-    record=AlmanackObject(label=base,object_type="fixed_star",dec_deg=r["dec_deg"],best_date=dt.date.fromisoformat(r["best_date"]),observing_aid=aid,magnitude=source_mag,magnitude_display="none",catalog_id=catalog_id,provenance=(r.get("brightness_basis") or "").strip(),variability_type=variable_type_for_row(r))
+    record=AlmanackObject(label=base,object_type="fixed_star",dec_deg=r["dec_deg"],best_date=dt.date.fromisoformat(r["best_date"]),observing_aid=aid,magnitude=source_mag,magnitude_display="whole",catalog_id=catalog_id,provenance=(r.get("brightness_basis") or "").strip(),variability_type=variable_type_for_row(r))
     label=render_html(record)+(" — in the Milky Way" if in_milky_way(r) else "")
     identifiers=[("hip",(r.get("hip") or "").strip()),("hd",(r.get("hd") or "").strip()),("bayer",bayer)]
-    if fixed_id_override is not None:
-        return CalendarEvent(label, int(fixed_id_override), aid.value if aid else None)
+    if fixed_id_override is not None:return CalendarEvent(label, int(fixed_id_override), aid.value if aid else None)
     for namespace,value in identifiers:
         if not value:continue
         fixed_id=FIXED_OBJECT_IDS.get((namespace.strip().lower(),value.strip().lower()))
@@ -190,79 +176,30 @@ def _messier_catalog_rows_for_annual_use():
     return [dict(zip(fields,row)) for row in data.get("messier") or []]
 
 def page_date_map(year):
-    """Read annual Aries-to-Aries coverage; do not recalculate fixed objects."""
-    ensure_coverage(year - 1)
-    ensure_coverage(year)
-    occurrences = occurrences_for_iso_year(year)
-    bayer_rows = read_csv("expanded-bayer-visibility-2026.csv")
-    bright_rows = read_csv("bright-star-visibility-2026.csv")
-    bayer_by_key = {
-        f"{row.get('bayer', '').strip()}:{row.get('con', '').strip()}": row
-        for row in bayer_rows
-    }
-    bright_by_key = {}
+    ensure_coverage(year - 1); ensure_coverage(year)
+    occurrences=occurrences_for_iso_year(year)
+    bayer_rows=read_csv("expanded-bayer-visibility-2026.csv"); bright_rows=read_csv("bright-star-visibility-2026.csv")
+    bayer_by_key={f"{row.get('bayer','').strip()}:{row.get('con','').strip()}":row for row in bayer_rows}
+    bright_by_key={}
     for row in bright_rows:
-        if row.get("new_non_alpha_beta", "").lower() != "yes":
-            continue
-        key = (row.get("proper") or "").strip() or (
-            f"{row.get('bayer', '').strip()}:{row.get('con', '').strip()}"
-        )
-        bright_by_key[key] = row
-    events = defaultdict(list)
-    generated = {"expanded-bayer": [], "bright-star": [], "messier": []}
-    for occurrence in sorted(occurrences, key=lambda item: item["best_jd_tdb"]):
-        source = occurrence["source"]
-        key = occurrence["key"]
-        day = dt.date.fromisoformat(occurrence["best_date"])
-        if source == "expanded-bayer":
-            row = dict(bayer_by_key[key])
-            row["best_instant_utc"] = occurrence["best_utc"].replace("Z", "")[:16]
-            row["best_date"] = occurrence["best_date"]
-            row["iso"] = occurrence["iso"]
-            generated["expanded-bayer"].append(row)
-            events[day].append(star_event(row, occurrence["fixed_object_id"]))
-        elif source == "bright-star":
-            row = dict(bright_by_key[key])
-            row["best_instant_utc"] = occurrence["best_utc"].replace("Z", "")[:16]
-            row["best_date"] = occurrence["best_date"]
-            row["iso"] = occurrence["iso"]
-            generated["bright-star"].append(row)
-            events[day].append(star_event(row, occurrence["fixed_object_id"]))
-        elif source == "messier":
-            identity = key.strip()
-            catalog = MESSIER_CATALOG.get(identity)
-            if catalog is None:
-                raise RuntimeError(f"Missing {identity} from {FIXED_OBJECTS.name} Messier catalog")
-            if catalog.get("dec_deg") is None:
-                raise RuntimeError(f"Missing declination for {identity} in {FIXED_OBJECTS.name}")
-            generated["messier"].append({
-                **dict(catalog),
-                "best_instant_utc": occurrence["best_utc"].replace("Z", "")[:16],
-                "best_date": occurrence["best_date"],
-                "iso": occurrence["iso"],
-            })
-            events[day].append(
-                CalendarEvent(
-                    render_html(
-                        AlmanackObject(
-                            label=identity,
-                            object_type="deep_sky",
-                            dec_deg=catalog["dec_deg"],
-                            best_date=day,
-                            observing_aid=ObservingAid.TELESCOPE,
-                        )
-                    ),
-                    (int(occurrence["fixed_object_id"]) if occurrence.get("fixed_object_id") is not None else None),
-                    ObservingAid.TELESCOPE.value,
-                )
-            )
-        else:
-            raise RuntimeError(f"Unknown annual fixed-sky source: {source}")
-    if not occurrences:
-        raise RuntimeError(f"No annual fixed-sky records found for ISO {year}")
-    write_csv(SRC / "generated" / f"expanded-bayer-visibility-{year}.csv", generated["expanded-bayer"])
-    write_csv(SRC / "generated" / f"bright-star-visibility-{year}.csv", generated["bright-star"])
-    write_csv(SRC / "generated" / f"messier-visibility-{year}.csv", generated["messier"])
+        if row.get("new_non_alpha_beta","").lower()!="yes":continue
+        key=(row.get("proper") or "").strip() or f"{row.get('bayer','').strip()}:{row.get('con','').strip()}"; bright_by_key[key]=row
+    events=defaultdict(list); generated={"expanded-bayer":[],"bright-star":[],"messier":[]}
+    for occurrence in sorted(occurrences,key=lambda item:item["best_jd_tdb"]):
+        source=occurrence["source"]; key=occurrence["key"]; day=dt.date.fromisoformat(occurrence["best_date"])
+        if source=="expanded-bayer":
+            row=dict(bayer_by_key[key]); row["best_instant_utc"]=occurrence["best_utc"].replace("Z","")[:16]; row["best_date"]=occurrence["best_date"]; row["iso"]=occurrence["iso"]; generated["expanded-bayer"].append(row); events[day].append(star_event(row,occurrence["fixed_object_id"]))
+        elif source=="bright-star":
+            row=dict(bright_by_key[key]); row["best_instant_utc"]=occurrence["best_utc"].replace("Z","")[:16]; row["best_date"]=occurrence["best_date"]; row["iso"]=occurrence["iso"]; generated["bright-star"].append(row); events[day].append(star_event(row,occurrence["fixed_object_id"]))
+        elif source=="messier":
+            identity=key.strip(); catalog=MESSIER_CATALOG.get(identity)
+            if catalog is None:raise RuntimeError(f"Missing {identity} from {FIXED_OBJECTS.name} Messier catalog")
+            if catalog.get("dec_deg") is None:raise RuntimeError(f"Missing declination for {identity} in {FIXED_OBJECTS.name}")
+            generated["messier"].append({**dict(catalog),"best_instant_utc":occurrence["best_utc"].replace("Z","")[:16],"best_date":occurrence["best_date"],"iso":occurrence["iso"]})
+            events[day].append(CalendarEvent(render_html(AlmanackObject(label=identity,object_type="deep_sky",dec_deg=catalog["dec_deg"],best_date=day,observing_aid=ObservingAid.TELESCOPE)),(int(occurrence["fixed_object_id"]) if occurrence.get("fixed_object_id") is not None else None),ObservingAid.TELESCOPE.value))
+        else:raise RuntimeError(f"Unknown annual fixed-sky source: {source}")
+    if not occurrences:raise RuntimeError(f"No annual fixed-sky records found for ISO {year}")
+    write_csv(SRC/"generated"/f"expanded-bayer-visibility-{year}.csv",generated["expanded-bayer"]); write_csv(SRC/"generated"/f"bright-star-visibility-{year}.csv",generated["bright-star"]); write_csv(SRC/"generated"/f"messier-visibility-{year}.csv",generated["messier"])
     return events
 
 def pages_for_events(root,events):
@@ -270,10 +207,8 @@ def pages_for_events(root,events):
     for iso_year in sorted({d.isocalendar().year for d in events}):pages.extend(weekly_pages(iso_year))
     return pages
 def _event_identity(value):
-    """Return a stable visible-text identity, ignoring HTML markup."""
-    base = value.split(" — ", 1)[0]
-    return re.sub(r"\\s+", " ", re.sub(r"<[^>]+>", "", base)).strip().lower()
-
+    base=value.split(" — ",1)[0]
+    return re.sub(r"\s+"," ",re.sub(r"<[^>]+>","",base)).strip().lower()
 def inject(root,year,events):
     changed=0
     for page in pages_for_events(root,events):
@@ -284,9 +219,7 @@ def inject(root,year,events):
             keep=[] if cell=="—" else [x for x in cell.split("<br>") if x]
             semantic=[]
             for v in vals:
-                identity=_event_identity(v.html)
-                keep=[x for x in keep if _event_identity(x) != identity]
-                semantic.append(v)
+                identity=_event_identity(v.html); keep=[x for x in keep if _event_identity(x)!=identity]; semantic.append(v)
             records=[CalendarEvent(x) for x in keep]+semantic
             text,found=set_events(text,d,records)
             if not found:raise RuntimeError(f"Could not update {d} in {page}")
