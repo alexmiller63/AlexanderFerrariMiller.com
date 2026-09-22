@@ -129,11 +129,12 @@ jobs:
           chromium_bin="$(command -v chromium || command -v chromium-browser || command -v google-chrome || true)"
           [ -n "$chromium_bin" ] || { echo "Chromium/Chrome is not available." >&2; exit 1; }
           checked=0
-          for ((week_value=10#${{ inputs.start_week }}; week_value<=10#${{ inputs.end_week }}; week_value++)); do
+          while read -r year week_value; do
             week="W$(printf '%02d' "$week_value")"
+            page="almanack/$year/$week/sky-notes/index.html"
             [ -f "$page" ] || continue
             url="http://127.0.0.1:8766/$page"
-            dom="/tmp/$week-object-story-dom.html"
+            dom="/tmp/$year-$week-object-story-dom.html"
             "$chromium_bin" --headless --no-sandbox --disable-gpu --virtual-time-budget=3000 --dump-dom "$url" > "$dom"
             python - "$dom" "$week" <<'PY'
           import re, sys
@@ -160,7 +161,16 @@ jobs:
           PY
             count="$(grep -o 'class="object-artwork-link"' "$dom" | wc -l || true)"
             checked=$((checked + count))
-          done
+          done < <(python - <<'PY'
+          from datetime import date, timedelta
+          start=date.fromisocalendar(int("${{ inputs.start_year }}"), int("${{ inputs.start_week }}"), 1)
+          end=date.fromisocalendar(int("${{ inputs.end_year }}"), int("${{ inputs.end_week }}"), 1)
+          while start <= end:
+              iso=start.isocalendar()
+              print(iso.year, iso.week)
+              start += timedelta(days=7)
+          PY
+          )
           echo "PROOF COMPLETE: Chromium verified the Sky Notes/Artwork handoff contract; $checked supplemental object-artwork links rendered."
 
       - name: Commit Artwork changes only
