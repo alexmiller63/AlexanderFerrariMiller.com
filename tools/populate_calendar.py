@@ -295,7 +295,14 @@ def patch_page(path, ingresses, events):
     if not path.exists():
         return False
     original = path.read_text(encoding="utf-8")
-    text = ensure_calendar_metadata(original, path)
+    text = original
+    if "<tbody></tbody>" in text:
+        rows = "".join(
+            "<tr><td>—</td><td>—</td><td>—</td></tr>"
+            for _ in page_dates(path)
+        )
+        text = text.replace("<tbody></tbody>", f"<tbody>{rows}</tbody>", 1)
+    text = ensure_calendar_metadata(text, path)
     calendar_prefixes = ("🌑 New Moon", "🌓 First Quarter", "🌕 Full Moon", "🌗 Last Quarter")
     for d in page_dates(path):
         existing_html = get_events(text, d)
