@@ -85,7 +85,7 @@ jobs:
           end = date.fromisoformat('${{ steps.range.outputs.end_date }}')
           checked = 0
           for iso_week in weeks_in_range(start, end):
-              path = typed_page(iso_week.year, iso_week.week, 'ephemeris')
+              path = week_index(iso_week.year, iso_week.week)
               text = path.read_text(encoding='utf-8')
               section = re.search(r'<h3>Weekly Solar-System Ephemeris</h3>.*', text, re.S)
               if not section:
