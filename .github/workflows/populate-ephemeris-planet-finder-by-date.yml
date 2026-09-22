@@ -115,7 +115,7 @@ jobs:
           from datetime import date
           import subprocess
 
-          from tools.almanack_paths import typed_dir
+          from tools.almanack_paths import week_dir
           from tools.iso_date_range import weeks_in_range
 
           start = date.fromisoformat("${{ steps.range.outputs.start_date }}")
@@ -123,7 +123,7 @@ jobs:
 
           paths = []
           for iso_week in weeks_in_range(start, end):
-              paths.append(str(typed_dir(iso_week.year, iso_week.week, "planet-finder")))
+              paths.append(str(week_dir(iso_week.year, iso_week.week) / "finders"))
 
           # Stage only Planet Finder outputs. The generator also refreshes
           # Ephemeris, but this workflow must not commit those changes.
