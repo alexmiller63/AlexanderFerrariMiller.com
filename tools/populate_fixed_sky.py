@@ -22,7 +22,28 @@ REGIONS=SRC/"fixed-object-regions.yaml"
 FIXED_OBJECTS=SRC/"fixed-objects.yaml"
 FIXED_OBJECT_REGISTRY=SRC/"database"/"fixed-object-registry.json"
 CATALOG_ENTRY_TARGETS=SRC/"database"/"catalog-entry-targets.json"
+BRIGHT_VARIABLES=SRC/"bright-variable-reconciliation.csv"
 GREEK_BAYER={"Alp":"α","Bet":"β","Gam":"γ","Del":"δ","Eps":"ε","Zet":"ζ","Eta":"η","The":"θ","Iot":"ι","Kap":"κ","Lam":"λ","Mu":"μ","Nu":"ν","Xi":"ξ","Omi":"ο","Pi":"π","Rho":"ρ","Sig":"σ","Tau":"τ","Ups":"υ","Phi":"φ","Chi":"χ","Psi":"ψ","Ome":"ω"}
+GCVS_BAYER={"Alp":"alf","Bet":"bet","Gam":"gam","Del":"del","Eps":"eps","Zet":"zet","Eta":"eta","The":"the","Iot":"iot","Kap":"kap","Lam":"lam","Mu":"mu","Nu":"nu","Xi":"xi","Omi":"omi","Pi":"pi","Rho":"rho","Sig":"sig","Tau":"tau","Ups":"ups","Phi":"phi","Chi":"chi","Psi":"psi","Ome":"ome"}
+
+def load_variable_stars():
+    if not BRIGHT_VARIABLES.exists():
+        raise RuntimeError(f"Missing {BRIGHT_VARIABLES.relative_to(ROOT)}")
+    with BRIGHT_VARIABLES.open(newline="",encoding="utf-8") as f:
+        return {row["name"].strip().lower(): row for row in csv.DictReader(f) if row.get("name")}
+VARIABLE_STARS=load_variable_stars()
+
+def variable_type_for_row(r):
+    code=(r.get("bayer_code") or r.get("bayer") or "").strip()
+    con=(r.get("con") or "").strip()
+    match=re.fullmatch(r"([A-Za-z]{3})[- ]?(\d*)",code)
+    if not match or not con:return ""
+    stem=GCVS_BAYER.get(match.group(1).title())
+    if not stem:return ""
+    suffix=match.group(2)
+    key=f"{stem}{(' ' + suffix) if suffix else ''} {con}".lower()
+    row=VARIABLE_STARS.get(key)
+    return (row.get("variability_type") or "").strip() if row else ""
 
 def requested_years():
     if len(sys.argv)==1:return DEFAULT_YEARS
@@ -152,7 +173,7 @@ def star_event(r, fixed_id_override=None):
     proper=r.get("proper","").strip(); bayer=display_bayer(r); base=f"{proper} ({bayer})" if proper and bayer else (proper or bayer or f"{r.get('con','').strip()} star"); source_mag=(r.get("representative_vmax") or r.get("catalog_v") or r.get("mag") or "").strip()
     aid=observing_aid_for_magnitude(source_mag)
     catalog_id=(r.get("hyg_id") or r.get("hip") or r.get("hd") or bayer or "").strip()
-    record=AlmanackObject(label=base,object_type="fixed_star",dec_deg=r["dec_deg"],best_date=dt.date.fromisoformat(r["best_date"]),observing_aid=aid,magnitude=source_mag,magnitude_display="none",catalog_id=catalog_id,provenance=(r.get("brightness_basis") or "").strip())
+    record=AlmanackObject(label=base,object_type="fixed_star",dec_deg=r["dec_deg"],best_date=dt.date.fromisoformat(r["best_date"]),observing_aid=aid,magnitude=source_mag,magnitude_display="none",catalog_id=catalog_id,provenance=(r.get("brightness_basis") or "").strip(),variability_type=variable_type_for_row(r))
     label=render_html(record)+(" — in the Milky Way" if in_milky_way(r) else "")
     identifiers=[("hip",(r.get("hip") or "").strip()),("hd",(r.get("hd") or "").strip()),("bayer",bayer)]
     if fixed_id_override is not None:
