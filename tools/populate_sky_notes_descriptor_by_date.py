@@ -7,7 +7,7 @@ import json
 import re
 
 from almanack_sections import replace_section_inner
-from almanack_paths import typed_page
+from almanack_paths import week_index
 from iso_date_range import group_by_year, parse_range_args
 from star_almanack_planets import load_weekly_longitudes
 import populate_sky_notes_by_date as base
@@ -345,7 +345,7 @@ def main() -> None:
 
     for item in weeks:
         week_key = f"W{item.week:02d}"
-        public_page = typed_page(item.year, item.week, "calendar")
+        public_page = week_index(item.year, item.week)
         if not public_page.exists():
             raise RuntimeError(f"Missing weekly page: {public_page.relative_to(base.ROOT)}")
 
@@ -376,7 +376,7 @@ def main() -> None:
         write_descriptor_records(payload["descriptors"])
         source = base.write_generated_source(item.year, item.week, payload)
 
-        path = typed_page(item.year, item.week, "sky-notes")
+        path = week_index(item.year, item.week)
         if not path.exists():
             raise RuntimeError(f"Missing weekly page: {path.relative_to(base.ROOT)}")
         if patch_page(path, payload):
