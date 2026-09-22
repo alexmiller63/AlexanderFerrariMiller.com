@@ -325,3 +325,21 @@ This entry preserves the known fixes and architectural decisions accumulated dur
 **Verification:** Pending.
 
 **Resolution:** Pending.
+
+### 2026-09-22 — Altair chart title format is incorrect
+
+**State:** Open
+**Discovered:** 2026-09-22
+**Component:** Sky Notes / fixed-object chart titles
+
+**Observed:** The Altair in Aquila chart title does not use the required target-title format.
+
+**Expected:** The title should read **“Alpha AQL, Altair in Aquila”**.
+
+**Diagnosis:** Pending.
+
+**Fix:** Pending.
+
+**Verification:** Pending.
+
+**Resolution:** Pending.
