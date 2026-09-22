@@ -407,7 +407,15 @@ def render(spec: dict, stars, output: Path) -> None:
                 bbox=dict(facecolor=NIGHT, edgecolor="none", pad=0.8), zorder=9)
 
     title_const = str(target_meta.get("constellation_abbreviation") or "").strip()
-    title = f"{target_name} in {figure_constellation}" if target_name and figure_constellation else (target_name or figure_constellation)
+    # Stellar titles identify the Bayer target first, then its proper name and constellation.
+    # Example: Alpha AQL, Altair in Aquila.
+    if target_star is not None and target_bayer and target_name and figure_constellation:
+        bayer_name = str((target_star_identity or {}).get("bayer") or target_star.bayer or "").strip()
+        greek_to_name = {"Alp": "Alpha", "Bet": "Beta", "Gam": "Gamma", "Del": "Delta", "Eps": "Epsilon", "Zet": "Zeta", "Eta": "Eta", "The": "Theta", "Iot": "Iota", "Kap": "Kappa", "Lam": "Lambda", "Mu": "Mu", "Nu": "Nu", "Xi": "Xi", "Omi": "Omicron", "Pi": "Pi", "Rho": "Rho", "Sig": "Sigma", "Tau": "Tau", "Ups": "Upsilon", "Phi": "Phi", "Chi": "Chi", "Psi": "Psi", "Ome": "Omega"}
+        bayer_word = greek_to_name.get(bayer_name[:3].title(), bayer_name)
+        title = f"{bayer_word} {title_const.upper()}, {target_name} in {figure_constellation}"
+    else:
+        title = f"{target_name} in {figure_constellation}" if target_name and figure_constellation else (target_name or figure_constellation)
     if not title:
         title = spec.get("chart_title") or "Stellar Finder"
     ax.set_title(title, color=TEXT, fontsize=14, pad=12)
