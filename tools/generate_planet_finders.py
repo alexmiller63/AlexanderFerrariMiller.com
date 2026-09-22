@@ -416,7 +416,7 @@ def route(
             return None
 
     ax, ay = anchor
-    for r in ROUTE_RADII
+    for r in ROUTE_RADII:
         lon = math.degrees(math.atan2(-(ay - CY), ax - CX)) - 180
         ex, ey = xy(lon, r)
         first_blockers = [
