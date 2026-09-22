@@ -14,9 +14,12 @@ from iso_date_range import group_by_year, parse_range_args
 from planet_finder_layout import patch_file as patch_planet_finder_layout
 
 
+ASTRONOMY_QUERY_PADDING_DAYS = 45
+
+
 def populate_selected_year(year: int, selected_weeks: list[int]) -> int:
     first, last = calendar.iso_bounds(year)
-    query_start, query_stop = first - timedelta(days=45), last + timedelta(days=45)
+    query_start, query_stop = first - timedelta(days=ASTRONOMY_QUERY_PADDING_DAYS), last + timedelta(days=ASTRONOMY_QUERY_PADDING_DAYS)
 
     print(f"Calculating {year} Sun and Moon calendar astronomy from cached SPK source data")
     sun = calendar.source_longitudes("sun", query_start, query_stop)
