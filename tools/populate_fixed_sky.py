@@ -2,6 +2,7 @@
 """Populate fixed-sky visibility events for requested Almanack years."""
 from __future__ import annotations
 import csv
+import re
 import datetime as dt
 import json
 import sys
@@ -184,6 +185,11 @@ def pages_for_events(root,events):
     pages=[]
     for iso_year in sorted({d.isocalendar().year for d in events}):pages.extend(calendar_pages(iso_year))
     return pages
+def _event_identity(value):
+    """Return a stable visible-text identity, ignoring HTML markup."""
+    base = value.split(" — ", 1)[0]
+    return re.sub(r"\\s+", " ", re.sub(r"<[^>]+>", "", base)).strip().lower()
+
 def inject(root,year,events):
     changed=0
     for page in pages_for_events(root,events):
@@ -194,8 +200,8 @@ def inject(root,year,events):
             keep=[] if cell=="—" else [x for x in cell.split("<br>") if x]
             semantic=[]
             for v in vals:
-                base=v.html.split(" — ",1)[0]
-                keep=[x for x in keep if not (x==base or x.startswith(base+" — "))]
+                identity=_event_identity(v.html)
+                keep=[x for x in keep if _event_identity(x) != identity]
                 semantic.append(v)
             records=[CalendarEvent(x) for x in keep]+semantic
             text,found=set_events(text,d,records)
