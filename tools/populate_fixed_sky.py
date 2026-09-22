@@ -12,7 +12,7 @@ from pathlib import Path
 import yaml
 
 from almanack_calendar import CalendarEvent, ensure_calendar_metadata, get_events, set_events
-from almanack_paths import ALMANACK_ROOT, calendar_pages
+from almanack_paths import ALMANACK_ROOT, weekly_pages
 from star_almanack_astronomy import apparent_sun_ra_hours,best_visibility_occurrences_for_iso_year,solar_ra_occurrences_for_iso_year
 from star_almanack_objects import AlmanackObject,ObservingAid,observing_aid_for_magnitude,render_html
 from fixed_sky_annual import ensure_coverage, occurrences_for_iso_year
@@ -246,7 +246,7 @@ def page_date_map(year):
 
 def pages_for_events(root,events):
     pages=[]
-    for iso_year in sorted({d.isocalendar().year for d in events}):pages.extend(calendar_pages(iso_year))
+    for iso_year in sorted({d.isocalendar().year for d in events}):pages.extend(weekly_pages(iso_year))
     return pages
 def _event_identity(value):
     """Return a stable visible-text identity, ignoring HTML markup."""
