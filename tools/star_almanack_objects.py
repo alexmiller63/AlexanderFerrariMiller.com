@@ -77,6 +77,7 @@ class AlmanackObject:
     magnitude_display: str = "none"  # none | whole | literal
     catalog_id: str = ""
     provenance: str = ""
+    variability_type: str = ""
 
     @property
     def band(self) -> str:
@@ -91,6 +92,8 @@ def visibility_text(record: AlmanackObject) -> str:
     if record.observing_aid is None:
         return ""
     parts = [TEXT_AID[record.observing_aid]]
+    if record.variability_type:
+        parts.append("V")
     if record.magnitude_display == "whole" and record.magnitude:
         parts.append(f"V {whole_magnitude(record.magnitude)}")
     elif record.magnitude_display == "literal" and record.magnitude:
@@ -102,6 +105,8 @@ def visibility_html(record: AlmanackObject) -> str:
     if record.observing_aid is None:
         return ""
     parts = [HTML_AID[record.observing_aid]]
+    if record.variability_type:
+        parts.append('<span class="variable-star-marker" title="Variable star">V</span>')
     if record.magnitude_display == "whole" and record.magnitude:
         parts.append(f"V {whole_magnitude(record.magnitude)}")
     elif record.magnitude_display == "literal" and record.magnitude:
