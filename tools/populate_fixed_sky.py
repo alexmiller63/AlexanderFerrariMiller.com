@@ -182,9 +182,9 @@ def page_date_map(year):
         bright_by_key[key] = row
     events = defaultdict(list)
     generated = {"expanded-bayer": [], "bright-star": [], "messier": []}
-    for (source, key), occurrence in sorted(
-        occurrences.items(), key=lambda item: item[1]["best_jd_tdb"]
-    ):
+    for occurrence in sorted(occurrences, key=lambda item: item["best_jd_tdb"]):
+        source = occurrence["source"]
+        key = occurrence["key"]
         day = dt.date.fromisoformat(occurrence["best_date"])
         if source == "expanded-bayer":
             row = dict(bayer_by_key[key])
