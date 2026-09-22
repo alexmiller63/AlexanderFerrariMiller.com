@@ -121,10 +121,7 @@ jobs:
 
           paths = []
           for iso_week in weeks_in_range(start, end):
-              paths.extend([
-                  str(typed_dir(iso_week.year, iso_week.week, "planet-finder")),
-                  f"site/{iso_week.year}/W{iso_week.week:02d}/planet-finder",
-              ])
+              paths.append(str(typed_dir(iso_week.year, iso_week.week, "planet-finder")))
 
           # Stage only Planet Finder outputs. The generator also refreshes
           # Ephemeris, but this workflow must not commit those changes.
