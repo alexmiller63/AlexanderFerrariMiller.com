@@ -415,3 +415,21 @@ This entry preserves the known fixes and architectural decisions accumulated dur
 **Verification:** Pending.
 
 **Resolution:** Pending.
+
+### 2026-09-22 — Display Messier, Caldwell, and Herschel objects on charts
+
+**State:** Open
+**Discovered:** 2026-09-22
+**Component:** Sky Notes / fixed-object charts / catalog objects
+
+**Observed:** Charts do not consistently display all applicable catalog objects.
+
+**Expected:** As a general chart-display rule, **Messier, Caldwell, and Herschel objects** that fall within the displayed chart should appear on the chart.
+
+**Diagnosis:** Pending.
+
+**Fix:** Pending.
+
+**Verification:** Pending.
+
+**Resolution:** Pending.
