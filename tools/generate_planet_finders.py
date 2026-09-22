@@ -29,6 +29,15 @@ RI = 430
 # Minimum visible separation between a rendered body label and the inner zodiac rim.
 # This is hard geometry: proposals inside this protected annulus never enter DFS.
 LABEL_RIM_CLEARANCE = 24
+LABEL_COLLISION_PADDING = 14
+IMMUTABLE_LEADER_CLEARANCE = 8
+PLACED_LABEL_LEADER_CLEARANCE = 10
+LEADER_TO_LEADER_CLEARANCE = 8.0
+LEADER_RIM_CLEARANCE = 2.0
+LABEL_LENGTH = 105.0
+PREFERRED_LABEL_RADII = (345, 300, 255, 210, 390, 165, 120)
+EXPANDED_LABEL_RADII = tuple(range(400, 79, -20))
+ROUTE_RADII = (395, 365, 335, 305, 275, 245, 215, 185, 155)
 SIGNS = [
     ("♈", "Aries"), ("♉", "Taurus"), ("♊", "Gemini"), ("♋", "Cancer"),
     ("♌", "Leo"), ("♍", "Virgo"), ("♎", "Libra"), ("♏", "Scorpio"),
@@ -142,7 +151,7 @@ def point_segment_distance(p, a, b) -> float:
     return math.hypot(p[0] - q[0], p[1] - q[1])
 
 
-def segments_too_close(a, b, c, d, clearance: float = 8.0) -> bool:
+def segments_too_close(a, b, c, d, clearance: float = LEADER_TO_LEADER_CLEARANCE) -> bool:
     """Return whether two leader segments intersect or come within clearance."""
     def orient(p, q, r):
         return (q[0] - p[0]) * (r[1] - p[1]) - (q[1] - p[1]) * (r[0] - p[0])
@@ -158,7 +167,7 @@ def segments_too_close(a, b, c, d, clearance: float = 8.0) -> bool:
     ) < clearance
 
 
-def leaders_too_close(path, existing_paths, clearance: float = 8.0) -> bool:
+def leaders_too_close(path, existing_paths, clearance: float = LEADER_TO_LEADER_CLEARANCE) -> bool:
     """Reject a proposed leader that grazes or crosses an existing leader."""
     return any(
         segments_too_close(path[i], path[i + 1], other[j], other[j + 1], clearance)
@@ -168,7 +177,7 @@ def leaders_too_close(path, existing_paths, clearance: float = 8.0) -> bool:
     )
 
 
-def leader_hits_zodiac_rim(path, clearance: float = 2.0) -> bool:
+def leader_hits_zodiac_rim(path, clearance: float = LEADER_RIM_CLEARANCE) -> bool:
     """Reject a leader that touches or crosses the inner zodiac rim.
 
     The inner chart is a convex disk, so a polyline remains clear of the
@@ -222,14 +231,12 @@ def candidate_positions(longitude: float, displacement_scale: float = 2.0):
     viability rules decide whether each proposal is legal. Explore every
     position at a large displacement before introducing closer siblings.
     """
-    preferred_radii = (345, 300, 255, 210, 390, 165, 120)
     theta = math.radians(180 + longitude)
     tx, ty = -math.sin(theta), -math.cos(theta)
 
     # One label-length is the established 105 px tangential placement step.
     # Search coarse-to-fine: exhaust all siblings at each displacement before
     # allowing recursion to consider a smaller movement.
-    label_length = 105.0
     offered: list[tuple[float, float]] = []
 
     def offer(radii, shifts):
@@ -247,13 +254,12 @@ def candidate_positions(longitude: float, displacement_scale: float = 2.0):
 
     # Preserve the natural position first, then explore increasingly finer
     # displacement rings. Within a ring, both tangential directions are peers.
-    yield from offer(preferred_radii, (0.0,))
-    shift = label_length * displacement_scale
-    yield from offer(preferred_radii, (-shift, shift))
+    yield from offer(PREFERRED_LABEL_RADII, (0.0,))
+    shift = LABEL_LENGTH * displacement_scale
+    yield from offer(PREFERRED_LABEL_RADII, (-shift, shift))
 
-    expanded_radii = tuple(range(400, 79, -20))
-    yield from offer(expanded_radii, (0.0,))
-    yield from offer(expanded_radii, (-shift, shift))
+    yield from offer(EXPANDED_LABEL_RADII, (0.0,))
+    yield from offer(EXPANDED_LABEL_RADII, (-shift, shift))
 
 
 def legal_candidate_positions(
@@ -274,7 +280,7 @@ def legal_candidate_positions(
         box = Box(x, y, w, h)
         reserved_hits = [
             i for i, obstacle in enumerate(reserved)
-            if boxes_overlap(box, obstacle, 14)
+            if boxes_overlap(box, obstacle, LABEL_COLLISION_PADDING)
         ]
         if reserved_hits:
             if diagnostic is not None:
@@ -367,7 +373,7 @@ def route(
         # Match final validation exactly: immutable chart obstacles use 8 px
         # clearance; placed body labels use 10 px. Candidate admission must
         # never be more permissive than final validation.
-        return 8 if i < allow_initial_escape_count else 10
+        return IMMUTABLE_LEADER_CLEARANCE if i < allow_initial_escape_count else PLACED_LABEL_LEADER_CLEARANCE
 
     straight_blockers = [
         i for i, b in enumerate(obstacles)
@@ -405,7 +411,7 @@ def route(
             return None
 
     ax, ay = anchor
-    for r in (395, 365, 335, 305, 275, 245, 215, 185, 155):
+    for r in ROUTE_RADII
         lon = math.degrees(math.atan2(-(ay - CY), ax - CX)) - 180
         ex, ey = xy(lon, r)
         first_blockers = [
@@ -1518,7 +1524,7 @@ def validate_layout(mode: str, result) -> tuple[bool, list[str]]:
             if i == j:
                 continue
             for a, b in zip(path, path[1:]):
-                if segment_hits_box(a, b, box, 10):
+                if segment_hits_box(a, b, box, PLACED_LABEL_LEADER_CLEARANCE):
                     errors.append(f"{name}: leader crosses {result[j][1]} label")
                     break
         for j, obstacle in enumerate(reserved):
@@ -1530,11 +1536,11 @@ def validate_layout(mode: str, result) -> tuple[bool, list[str]]:
                 # may permit an initial escape. Zodiac labels are never escape
                 # obstacles, even when the body anchor lies inside their box.
                 if seg_index == 0 and j < 3 and (
-                    obstacle.left - 8 <= a[0] <= obstacle.right + 8 and
-                    obstacle.top - 8 <= a[1] <= obstacle.bottom + 8
+                    obstacle.left - IMMUTABLE_LEADER_CLEARANCE <= a[0] <= obstacle.right + IMMUTABLE_LEADER_CLEARANCE and
+                    obstacle.top - IMMUTABLE_LEADER_CLEARANCE <= a[1] <= obstacle.bottom + IMMUTABLE_LEADER_CLEARANCE
                 ):
                     continue
-                if segment_hits_box(a, b, obstacle, 8):
+                if segment_hits_box(a, b, obstacle, IMMUTABLE_LEADER_CLEARANCE):
                     errors.append(f"{name}: leader crosses reserved obstacle {j}")
                     break
 
