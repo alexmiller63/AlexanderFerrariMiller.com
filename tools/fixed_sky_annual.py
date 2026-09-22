@@ -16,7 +16,6 @@ import json
 from pathlib import Path
 
 import yaml
-import populate_fixed_sky as fixed
 from skyfield import almanac
 from skyfield.searchlib import find_minima
 
@@ -108,6 +107,7 @@ def _messier_rows():
 
 
 def _source_records():
+    import populate_fixed_sky as fixed
     records = []
 
     for row in _read_csv("expanded-bayer-visibility-2026.csv"):
