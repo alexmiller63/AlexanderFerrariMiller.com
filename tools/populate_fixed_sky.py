@@ -79,7 +79,12 @@ def catalog_target_fixed_object_id(catalog, designation):
         if fixed_id is not None:direct.append(int(fixed_id))
     if len(set(direct))>1:
         raise RuntimeError(f"Multiple direct fixed-object targets for {catalog}:{designation}: {direct}")
-    return direct[0] if direct else None
+    if direct:
+        return direct[0]
+    # Most catalog entries are ordinary physical objects and are represented
+    # directly in the permanent fixed-object registry.  The catalog-entry
+    # target table is only needed for exceptional structured/region targets.
+    return FIXED_OBJECT_IDS.get((catalog.strip().lower(), designation.strip().lower()))
 
 def load_fixed_object_ids():
     data=json.loads(FIXED_OBJECT_REGISTRY.read_text(encoding="utf-8"))
@@ -226,7 +231,7 @@ def page_date_map(year):
                             observing_aid=ObservingAid.TELESCOPE,
                         )
                     ),
-                    int(occurrence["fixed_object_id"]),
+                    (int(occurrence["fixed_object_id"]) if occurrence.get("fixed_object_id") is not None else None),
                     ObservingAid.TELESCOPE.value,
                 )
             )
