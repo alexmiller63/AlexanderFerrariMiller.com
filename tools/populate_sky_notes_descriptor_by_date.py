@@ -321,10 +321,11 @@ def patch_page(path, payload: dict) -> bool:
     # only authored mode; Highlights will later be derived from the same
     # structured Sky Notes data rather than maintained as separate content.
     mode_toggle = (
-        '<div class="sky-note-mode-toggle" role="group" aria-label="Sky Notes presentation">'
-        '<span class="sky-note-mode-label">View:</span>'
-        '<button type="button" data-sky-note-mode="highlights" aria-pressed="false">Highlights</button>'
-        '<button type="button" data-sky-note-mode="wordy" aria-pressed="true">Wordy</button>'
+        '<div class="sky-note-mode-toggle" role="group" aria-label="Sky Notes presentation" '
+        'style="display:inline-flex;align-items:center;gap:.35rem;padding:.2rem;border:1px solid currentColor;border-radius:999px">'
+        '<span class="sky-note-mode-label" style="padding-left:.35rem">View:</span>'
+        '<button type="button" data-sky-note-mode="highlights" aria-pressed="false" style="border-radius:999px">Highlights</button>'
+        '<button type="button" data-sky-note-mode="wordy" aria-pressed="true" style="border-radius:999px;font-weight:700">Wordy</button>'
         '</div>'
     )
     section_html = '<h3>Sky Notes</h3>' + mode_toggle + '<div class="sky-note" data-sky-note-mode="wordy">\n' + body + '</div>'
