@@ -379,3 +379,21 @@ This entry preserves the known fixes and architectural decisions accumulated dur
 **Verification:** Pending.
 
 **Resolution:** Pending.
+
+### 2026-09-22 — Encroaching constellation label crosses into neighboring boundary
+
+**State:** Open
+**Discovered:** 2026-09-22
+**Component:** Sky Notes / fixed-object charts / constellation boundary labels
+
+**Observed:** In the Altair in Aquila chart, the Delphinus constellation label does not fit within its own IAU boundary and encroaches into the neighboring Aquila boundary.
+
+**Expected:** A constellation label should remain visually contained within its own boundary; when there is insufficient room, the rendering system should use an appropriate alternative placement rather than crossing the neighboring boundary.
+
+**Diagnosis:** Pending.
+
+**Fix:** Pending.
+
+**Verification:** Pending.
+
+**Resolution:** Pending.
