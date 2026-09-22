@@ -376,12 +376,11 @@ def main() -> None:
         write_descriptor_records(payload["descriptors"])
         source = base.write_generated_source(item.year, item.week, payload)
 
-        for root in base.PAGE_ROOTS:
-            path = typed_page(item.year, item.week, "sky-notes")
-            if not path.exists():
-                raise RuntimeError(f"Missing weekly page: {path.relative_to(base.ROOT)}")
-            if patch_page(path, payload):
-                changed += 1
+        path = typed_page(item.year, item.week, "sky-notes")
+        if not path.exists():
+            raise RuntimeError(f"Missing weekly page: {path.relative_to(base.ROOT)}")
+        if patch_page(path, payload):
+            changed += 1
 
         art_state = "fixed-object-owned artwork only; no week-owned artwork field"
         print(
