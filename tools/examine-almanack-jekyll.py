@@ -6,7 +6,7 @@ from datetime import date
 from pathlib import Path
 import re
 
-from almanack_paths import PAGE_TYPES, typed_page, year_dir
+from almanack_paths import year_dir
 
 ALMANACK_ROOT = Path("_site/almanack")
 DAY_ONE_NAME = re.compile(
@@ -49,22 +49,16 @@ def main() -> None:
         source_year = Path("almanack") / str(year)
         week_dirs = sorted(
             path for path in source_year.glob("W[0-9][0-9]")
-            if path.is_dir()
-            and any((path / content_type / "index.html").is_file()
-                    for content_type in PAGE_TYPES if content_type != "artwork")
+            if path.is_dir() and (path / "index.html").is_file()
         )
-        pages = [
-            path / f"{content_type}/index.html"
-            for path in week_dirs
-            for content_type in PAGE_TYPES if content_type != "artwork"
-        ]
+        pages = [path / "index.html" for path in week_dirs]
         missing = [str(path) for path in pages if not path.is_file()]
         if missing:
             raise SystemExit(f"Missing rendered Almanack pages for published weeks in {year}: {missing}")
         all_pages.extend(pages)
         print(
             f"PASS: Jekyll rendered the canonical {year} index and "
-            f"all {len(week_dirs)} published weeks × 4 typed pages"
+            f"all {len(week_dirs)} canonical published week pages"
         )
 
     legacy_files = sorted(ALMANACK_ROOT.glob("ISO*-W*.html"))
