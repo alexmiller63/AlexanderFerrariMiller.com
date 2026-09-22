@@ -6,7 +6,7 @@ import re
 from pathlib import Path
 
 from iso_date_range import parse_range_args
-from almanack_paths import typed_page
+from almanack_paths import week_index
 
 ROOT = Path(__file__).resolve().parents[1]
 ARTWORK_ROOT = ROOT / "sky-notes-artwork" / "objects"
@@ -41,7 +41,7 @@ def main() -> None:
         if not payload_path.exists():
             continue
         published += 1
-        page = typed_page(item.year, item.week, "sky-notes")
+        page = week_index(item.year, item.week)
         if not page.exists():
             raise RuntimeError(f"Weekly page is missing: {page.relative_to(ROOT)}")
         if publish_page(page):
