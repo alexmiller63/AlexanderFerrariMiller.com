@@ -225,3 +225,19 @@ This entry preserves the known fixes and architectural decisions accumulated dur
 **Verification:** Pending.
 
 **Resolution:** Pending.
+
+### 2026-09-22 — Mixed Learner naked-eye glyph lacks text
+
+**State:** Open
+**Discovered:** 2026-09-22
+**Component:** Observing modes / Mixed Learner mode
+
+**Observed:** In Mixed Learner mode, the naked-eye observing classification shows the eye glyph without its accompanying text.
+
+**Diagnosis:** Pending.
+
+**Fix:** Pending.
+
+**Verification:** Pending.
+
+**Resolution:** Pending.
