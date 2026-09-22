@@ -20,7 +20,7 @@ from pathlib import Path
 
 from almanack_calendar import ensure_calendar_metadata, get_events, page_dates, set_events
 from almanack_time import AstroInstant
-from almanack_paths import typed_page
+from almanack_paths import week_index
 from populate_calendar import interpolate_time, source_longitudes, unwrap
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -192,7 +192,7 @@ def populate_year(year):
     changed = 0
     for base in (PUBLIC_ROOT,):
         for week in range(1, date(year, 12, 28).isocalendar().week + 1):
-            path = typed_page(year, week, "calendar")
+            path = week_index(year, week)
             changed += int(patch_page(path, additions))
     print(
         f"{year}: {len(maxima)} shower maxima with radiant/ZHR/Moon/guidance details, "
