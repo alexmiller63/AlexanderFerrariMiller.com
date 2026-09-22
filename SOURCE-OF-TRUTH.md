@@ -46,6 +46,13 @@ Generated 2026 placement:
 
 Authoritative/generated fixed-object data are carried in the repository Messier source and `messier-visibility-2026.csv`; the latter supplies the 2026 best-visibility placement used by the expanded Almanack builder.
 
+## Annual fixed-sky coverage
+
+- `database/fixed-sky-annual-coverage.json` — calculated fixed-object visibility by tropical coverage interval.
+- Each coverage row runs from one First Point of Aries (March equinox) to the next and stores canonical JDTDB boundary instants plus UTC publication metadata.
+- Fixed-object best-visibility occurrences are calculated once per coverage row and reused by weekly Calendar generation.
+- ISO weeks are an indexing/presentation layer; an ISO year normally intersects two Aries-to-Aries coverage rows.
+
 ## Almanack integration
 
 `build_expanded_almanack.py` combines the calendar and fixed-object catalogs into `almanack-expanded.md`.
