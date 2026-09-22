@@ -142,29 +142,21 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
           python - <<'PY'
-          from datetime import date, timedelta
+          from datetime import date
           import subprocess
 
-          start = date.fromisocalendar(
-              int("${{ inputs.start_year }}"),
-              int("${{ inputs.start_week }}"),
-              1,
-          )
-          end = date.fromisocalendar(
-              int("${{ inputs.end_year }}"),
-              int("${{ inputs.end_week }}"),
-              1,
-          )
+          from tools.almanack_paths import typed_dir
+          from tools.iso_date_range import weeks_in_range
+
+          start = date.fromisoformat("${{ steps.range.outputs.start_date }}")
+          end = date.fromisoformat("${{ steps.range.outputs.end_date }}")
 
           paths = []
-          while start <= end:
-              iso = start.isocalendar()
-              week = f"W{iso.week:02d}"
+          for iso_week in weeks_in_range(start, end):
               paths.extend([
-                  f"almanack/{iso.year}/{week}/planet-finder",
-                  f"site/{iso.year}/{week}/planet-finder",
+                  str(typed_dir(iso_week.year, iso_week.week, "planet-finder")),
+                  f"site/{iso_week.year}/W{iso_week.week:02d}/planet-finder",
               ])
-              start += timedelta(days=7)
 
           # Stage only Planet Finder outputs. The generator also refreshes
           # Ephemeris, but this workflow must not commit those changes.
