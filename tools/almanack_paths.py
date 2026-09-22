@@ -13,6 +13,8 @@ ALMANACK_ROOT = REPO_ROOT / "almanack"
 GENERATED_ROOT = REPO_ROOT / "generated"
 VISIBILITY_GLYPH_ROOT = "../../../../assets/almanack/visibility-glyphs/masters"
 
+# One canonical weekly page. Generators own numbered sections within it.
+PAGE_TYPES = ("index",)
 
 
 def year_dir(year: int) -> Path:
@@ -25,7 +27,6 @@ def week_dir(year: int, week: int) -> Path:
 
 def week_index(year: int, week: int) -> Path:
     return week_dir(year, week) / "index.html"
-
 
 
 def weekly_pages(year: int | None = None) -> list[Path]:
