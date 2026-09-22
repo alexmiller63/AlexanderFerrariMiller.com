@@ -87,14 +87,20 @@ jobs:
             bash tools/run-workflow-and-wait.sh scaffold-almanack-weeks.yml \
               -f start_year="$year" -f start_week="$iso_week" \
               -f end_year="$year" -f end_week="$iso_week"
+            git fetch origin main
+            git reset --hard origin/main
 
             bash tools/run-workflow-and-wait.sh calendar-generator.yml \
               -f start_year="$year" -f start_week="$iso_week" \
               -f end_year="$year" -f end_week="$iso_week"
+            git fetch origin main
+            git reset --hard origin/main
 
             bash tools/run-workflow-and-wait.sh populate-ephemeris-by-date.yml \
               -f start_year="$year" -f start_week="$iso_week" \
               -f end_year="$year" -f end_week="$iso_week"
+            git fetch origin main
+            git reset --hard origin/main
 
             bash tools/run-workflow-and-wait.sh populate-ephemeris-planet-finder-by-date.yml \
               -f start_year="$year" -f start_week="$iso_week" \
@@ -102,14 +108,20 @@ jobs:
               -f candidate_layouts='${{ inputs.candidate_layouts }}' \
               -f max_node_candidates='${{ inputs.max_node_candidates }}' \
               -f max_search_seconds='${{ inputs.max_search_seconds }}'
+            git fetch origin main
+            git reset --hard origin/main
 
             bash tools/run-workflow-and-wait.sh populate-sky-notes-by-date.yml \
               -f start_year="$year" -f start_week="$iso_week" \
               -f end_year="$year" -f end_week="$iso_week"
+            git fetch origin main
+            git reset --hard origin/main
 
             bash tools/run-workflow-and-wait.sh populate-sky-notes-artwork-by-date.yml \
               -f start_year="$year" -f start_week="$iso_week" \
               -f end_year="$year" -f end_week="$iso_week"
+            git fetch origin main
+            git reset --hard origin/main
 
             echo "::endgroup::"
           done
