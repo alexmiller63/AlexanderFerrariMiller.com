@@ -26,6 +26,7 @@ on:
       - 'tools/wire_week_navigation.py'
       - 'tools/wire_almanack_legend.py'
       - 'tools/populate_fixed_sky.py'
+      - 'tools/fixed_sky_annual.py'
       - 'tools/standardize_messier_calendar.py'
       - 'tools/catalog_common_names.py'
       - 'tools/reconcile_catalog_common_names.py'
@@ -49,6 +50,7 @@ on:
       - 'asterism-geometry-2025.csv'
       - 'asterism-geometry-2026.csv'
       - 'asterism-geometry-2027.csv'
+      - 'database/fixed-sky-annual-coverage.json'
 
 env:
   ALMANACK_YEARS: ${{ github.event_name == 'workflow_dispatch' && inputs.years || '2025 2026 2027' }}
@@ -134,7 +136,16 @@ jobs:
         run: python tools/populate_meteor_showers.py $ALMANACK_YEARS
       - name: Populate weekly Solar-System ephemerides
         run: python tools/populate_ephemeris.py $ALMANACK_YEARS
-      - name: Populate fixed-sky visibility events
+      - name: Build missing Aries-to-Aries fixed-sky coverage rows
+        run: |
+          set -euo pipefail
+          read -r MIN_YEAR MAX_YEAR <<< "$(python - <<'PY'
+          years = sorted({int(x) for x in "$ALMANACK_YEARS".split()})
+          print(min(years), max(years))
+          PY
+          )"
+          python tools/fixed_sky_annual.py "$((MIN_YEAR - 1))" "$MAX_YEAR"
+      - name: Populate fixed-sky visibility events from annual coverage
         run: python tools/populate_fixed_sky.py $ALMANACK_YEARS
       - name: Standardize Messier labels, instruments, magnitudes, declination bands, and seasons
         run: python tools/standardize_messier_calendar.py $ALMANACK_YEARS
@@ -184,6 +195,7 @@ jobs:
                 "generated/caldwell-visibility-$year.csv" \
                 "generated/finest-ngc-visibility-$year.csv"
             done
+            git add database/fixed-sky-annual-coverage.json
             if [[ " $ALMANACK_YEARS " == *" 2026 "* ]]; then
               git add almanack-expanded.md star-almanack/eclipses.html
             fi
@@ -197,6 +209,12 @@ jobs:
             if [[ " $ALMANACK_YEARS " == *" 2026 "* ]]; then python tools/wire_2026_eclipses.py; fi
             python tools/populate_meteor_showers.py $ALMANACK_YEARS
             python tools/populate_ephemeris.py $ALMANACK_YEARS
+            read -r MIN_YEAR MAX_YEAR <<< "$(python - <<'PY'
+          years = sorted({int(x) for x in "$ALMANACK_YEARS".split()})
+          print(min(years), max(years))
+          PY
+          )"
+            python tools/fixed_sky_annual.py "$((MIN_YEAR - 1))" "$MAX_YEAR"
             python tools/populate_fixed_sky.py $ALMANACK_YEARS
             python tools/standardize_messier_calendar.py $ALMANACK_YEARS
             python tools/populate_constellations.py $ALMANACK_YEARS
