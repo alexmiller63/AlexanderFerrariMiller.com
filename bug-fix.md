@@ -343,3 +343,21 @@ This entry preserves the known fixes and architectural decisions accumulated dur
 **Verification:** Pending.
 
 **Resolution:** Pending.
+
+### 2026-09-22 — Fixed-star labels collide with constellation and asterism lines
+
+**State:** Open
+**Discovered:** 2026-09-22
+**Component:** Sky Notes / fixed-object charts / label placement
+
+**Observed:** Greek-letter star labels in the chart encroach on or collide with constellation lines and asterism lines.
+
+**Expected:** Star labels should remain clear of both constellation and asterism linework.
+
+**Diagnosis:** Pending.
+
+**Fix:** Pending.
+
+**Verification:** Pending.
+
+**Resolution:** Pending.
