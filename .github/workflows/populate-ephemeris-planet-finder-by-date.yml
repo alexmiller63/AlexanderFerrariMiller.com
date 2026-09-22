@@ -70,7 +70,9 @@ jobs:
           key: star-almanack-source-kernels-v1
 
       - name: Install pinned calculation dependency
-        run: |\n          python -m pip install --disable-pip-version-check --upgrade pip\n          python -m pip install --disable-pip-version-check 'numpy==1.26.4' 'skyfield==1.55'
+        run: |
+          python -m pip install --disable-pip-version-check --upgrade pip
+          python -m pip install --disable-pip-version-check 'numpy==1.26.4' 'skyfield==1.55'
 
       - name: Ensure cached DE440s and Ceres source kernels
         run: python tools/ensure_ephemeris_kernels.py --ceres
@@ -137,4 +139,9 @@ jobs:
           ], check=True)
           PY
 
-          # Ephemeris refreshes are intentionally left uncommitted by this workflow.\n          # Stash them while rebasing the Planet Finder commit, then restore them.\n          git stash push --include-untracked --keep-index -m "planet-finder-non-pf-generated-changes"\n          git pull --rebase origin main\n          git push\n          git stash pop || true\n
+          # Ephemeris refreshes are intentionally left uncommitted by this workflow.
+          # Stash them while rebasing the Planet Finder commit, then restore them.
+          git stash push --include-untracked --keep-index -m "planet-finder-non-pf-generated-changes"
+          git pull --rebase origin main
+          git push
+          git stash pop || true
