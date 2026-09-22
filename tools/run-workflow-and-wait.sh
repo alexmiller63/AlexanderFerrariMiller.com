@@ -5,6 +5,10 @@ workflow="$1"
 shift
 repo="${GITHUB_REPOSITORY:?GITHUB_REPOSITORY is required}"
 
+MAX_POLL_ATTEMPTS=60
+POLL_INTERVAL_SECONDS=2
+RUN_LIST_LIMIT=20
+
 # Resolve the exact workflow filename and verify that GitHub has registered it.
 # Use the filename itself for dispatch and run matching. This avoids coupling
 # orchestration to a numeric workflow ID that can become stale across workflow
@@ -43,16 +47,17 @@ gh workflow run "$workflow" --repo "$repo" --ref "$dispatch_ref" "$@"
 dispatch_sha="$(gh api "repos/$repo/commits/$dispatch_ref" --jq '.sha')"
 
 run_id=""
-for attempt in $(seq 1 60); do
-  run_id="$(gh run list --repo "$repo" --workflow "$workflow" --event workflow_dispatch --limit 20 --json databaseId,createdAt,headSha,status --jq "map(select(.databaseId > $before and .createdAt >= \"$dispatch_time\" and .headSha == \"$dispatch_sha\")) | sort_by(.createdAt) | last | .databaseId // empty")"
+for attempt in $(seq 1 "$MAX_POLL_ATTEMPTS"); do
+  run_id="$(gh run list --repo "$repo" --workflow "$workflow" --event workflow_dispatch --limit "$RUN_LIST_LIMIT" --json databaseId,createdAt,headSha,status --jq "map(select(.databaseId > $before and .createdAt >= \"$dispatch_time\" and .headSha == \"$dispatch_sha\")) | sort_by(.createdAt) | last | .databaseId // empty")"
   if [[ -n "$run_id" ]]; then
     echo "Found dispatched $workflow run $run_id (created at/after $dispatch_time)"
     gh run watch "$run_id" --repo "$repo" --exit-status
     exit $?
   fi
-  echo "Waiting for exact dispatched $workflow run to appear ($attempt/60)..."
-  sleep 2
+  echo "Waiting for exact dispatched $workflow run to appear ($attempt/$MAX_POLL_ATTEMPTS)..."
+  sleep "$POLL_INTERVAL_SECONDS"
 done
 
-echo "ERROR: exact dispatched $workflow run did not appear within 120 seconds" >&2
+wait_seconds=$((MAX_POLL_ATTEMPTS * POLL_INTERVAL_SECONDS))
+echo "ERROR: exact dispatched $workflow run did not appear within $wait_seconds seconds" >&2
 exit 1
