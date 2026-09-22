@@ -33,7 +33,7 @@ env:
   ALMANACK_START_YEAR: ${{ github.event_name == 'workflow_dispatch' && inputs.start_year || '2026' }}
   ALMANACK_START_WEEK: ${{ github.event_name == 'workflow_dispatch' && inputs.start_week || '36' }}
   ALMANACK_END_YEAR: ${{ github.event_name == 'workflow_dispatch' && inputs.end_year || '2026' }}
-  ALMANACK_END_WEEK: ${{ github.event_name == 'workflow_dispatch' && inputs.end_week || '40' }}
+  ALMANACK_END_WEEK: ${{ github.event_name == 'workflow_dispatch' && inputs.end_week || '36' }}
 
 permissions:
   contents: write
