@@ -27,6 +27,9 @@ on:
       - 'tools/wire_almanack_legend.py'
       - 'tools/populate_fixed_sky.py'
       - 'tools/fixed_sky_annual.py'
+      - 'tools/build_fixed_sky_annual.py'
+      - 'generated/fixed-sky-annual.json'
+      - 'tools/fixed_sky_annual.py'
       - 'tools/standardize_messier_calendar.py'
       - 'tools/catalog_common_names.py'
       - 'tools/reconcile_catalog_common_names.py'
@@ -216,6 +219,7 @@ jobs:
           PY
           )"
             python tools/fixed_sky_annual.py "$((MIN_YEAR - 1))" "$MAX_YEAR"
+            python tools/build_fixed_sky_annual.py $ALMANACK_YEARS
             python tools/populate_fixed_sky.py $ALMANACK_YEARS
             python tools/standardize_messier_calendar.py $ALMANACK_YEARS
             python tools/populate_constellations.py $ALMANACK_YEARS
