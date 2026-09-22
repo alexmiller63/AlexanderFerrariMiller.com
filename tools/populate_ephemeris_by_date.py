@@ -15,15 +15,6 @@ def calculate_year(year: int):
     return ephemeris.computed_ephemeris(year)
 
 
-def split_rendered_sections(rendered: str) -> tuple[str, str]:
-    finder_marker = ephemeris.notation_toggle("finder") + "<h3>Planet Finder</h3>"
-    if finder_marker not in rendered:
-        raise RuntimeError("Rendered Ephemeris is missing its Planet Finder boundary")
-    ephemeris_html, finder_body = rendered.split(finder_marker, 1)
-    finder_html = finder_marker + finder_body
-    return ephemeris_html, finder_html
-
-
 def populate_week(year: int, week: int, generated) -> int:
     monday = date.fromisocalendar(year, week, 1)
     values = {}
@@ -46,7 +37,8 @@ def populate_week(year: int, week: int, generated) -> int:
             "horizon_deg": -0.8333 if key == "sun" else -0.5667,
         }
     rendered = ephemeris.render_ephemeris(monday, values)
-    ephemeris_html, finder_html = split_rendered_sections(rendered)
+    finder_marker = ephemeris.notation_toggle("finder") + "<h3>Planet Finder</h3>"
+    ephemeris_html = rendered.split(finder_marker, 1)[0]
 
     changed = 0
     path = typed_page(year, week, "ephemeris")
@@ -54,7 +46,6 @@ def populate_week(year: int, week: int, generated) -> int:
         raise RuntimeError(f"Missing weekly page: {path.relative_to(ephemeris.ROOT)}")
     text = path.read_text(encoding="utf-8")
     new = replace_section_inner(text, 3, ephemeris_html, path)
-    new = replace_section_inner(new, 4, finder_html, path)
     runtime = '<script src="../../js/ephemeris.js"></script>'
     if runtime not in new:
         if '</body>' not in new:
