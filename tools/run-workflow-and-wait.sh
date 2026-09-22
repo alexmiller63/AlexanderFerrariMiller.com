@@ -1,6 +1,11 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+if [[ $# -lt 1 ]]; then
+  echo "usage: $0 WORKFLOW [gh workflow run arguments...]" >&2
+  exit 2
+fi
+
 workflow="$1"
 shift
 repo="${GITHUB_REPOSITORY:?GITHUB_REPOSITORY is required}"
