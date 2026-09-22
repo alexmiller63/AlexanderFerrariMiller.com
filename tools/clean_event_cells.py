@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import argparse
 from pathlib import Path
-from almanack_paths import typed_page
+from almanack_paths import week_index
 
 from almanack_calendar import clear_events, ensure_calendar_metadata
 
@@ -30,7 +30,7 @@ def clear_year(year: int) -> int:
         # production calendar contract.  Test/sandbox directories such as
         # W22-glyph-test are deliberately excluded.
         for week in range(1, __import__("datetime").date(year, 12, 28).isocalendar().week + 1):
-            page = typed_page(year, week, "calendar")
+            page = week_index(year, week)
             if not page.exists():
                 continue
             text = page.read_text(encoding="utf-8")
