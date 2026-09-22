@@ -307,3 +307,21 @@ This entry preserves the known fixes and architectural decisions accumulated dur
 **Verification:** Pending.
 
 **Resolution:** Pending.
+
+### 2026-09-22 — Highlights/Wordy control does not look like a toggle
+
+**State:** Open
+**Discovered:** 2026-09-22
+**Component:** Sky Notes / Highlights–Wordy control
+
+**Observed:** The Highlights/Wordy control does not visually communicate that it is a toggle.
+
+**Expected:** It should have clear toggle affordance and state indication.
+
+**Diagnosis:** Pending.
+
+**Fix:** Pending.
+
+**Verification:** Pending.
+
+**Resolution:** Pending.
