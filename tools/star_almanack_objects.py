@@ -13,6 +13,7 @@ from datetime import date
 from decimal import Decimal, InvalidOperation, ROUND_HALF_UP
 from enum import Enum
 
+from almanack_paths import VISIBILITY_GLYPH_ROOT
 from star_almanack_astronomy import declination_band, season_for
 
 
@@ -31,9 +32,9 @@ TEXT_AID = {
 # HTML observing aids have exactly one source of presentation: the shared
 # .visibility-glyph CSS.  Do not put per-renderer dimensions or alignment here.
 HTML_AID = {
-    ObservingAid.NAKED_EYE: '<img class="visibility-glyph" src="../../../assets/almanack/visibility-glyphs/masters/eye.svg" alt="Naked eye" aria-label="Naked eye">',
-    ObservingAid.BINOCULARS: '<img class="visibility-glyph" src="../../../assets/almanack/visibility-glyphs/masters/binoculars.svg" alt="Binoculars" aria-label="Binoculars">',
-    ObservingAid.TELESCOPE: '<img class="visibility-glyph" src="../../../assets/almanack/visibility-glyphs/masters/telescope.svg" alt="Telescope" aria-label="Telescope">',
+    ObservingAid.NAKED_EYE: f'<img class="visibility-glyph" src="{VISIBILITY_GLYPH_ROOT}/eye.svg" alt="Naked eye" aria-label="Naked eye">',
+    ObservingAid.BINOCULARS: f'<img class="visibility-glyph" src="{VISIBILITY_GLYPH_ROOT}/binoculars.svg" alt="Binoculars" aria-label="Binoculars">',
+    ObservingAid.TELESCOPE: f'<img class="visibility-glyph" src="{VISIBILITY_GLYPH_ROOT}/telescope.svg" alt="Telescope" aria-label="Telescope">',
 }
 
 
