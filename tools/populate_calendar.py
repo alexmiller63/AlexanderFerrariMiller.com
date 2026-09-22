@@ -21,7 +21,7 @@ from __future__ import annotations
 
 import argparse
 import json
-from datetime import date, timedelta
+from datetime import date, datetime, timezone, timedelta
 from pathlib import Path
 
 from almanack_calendar import (
@@ -332,6 +332,60 @@ def _utc_iso(ts: AstroInstant) -> str:
     return ts.publication_utc().isoformat().replace("+00:00", "Z")
 
 
+def _instant_from_cache(row: dict) -> AstroInstant:
+    """Recreate the canonical instant stored in an annual calendar cache row."""
+    utc = datetime.fromisoformat(row["utc"].replace("Z", "+00:00")).astimezone(timezone.utc)
+    return AstroInstant(float(row["jd_tdb"]), utc)
+
+
+def read_data(year: int):
+    """Read a previously calculated annual Sun/Moon calendar crib sheet."""
+    path = DATA_ROOT / f"calendar-{year}.json"
+    if not path.exists():
+        return None
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    if payload.get("year") != year:
+        raise RuntimeError(f"Calendar cache year mismatch in {path}")
+
+    ingresses = [
+        (_instant_from_cache(row), SIGN_NAMES.index(row["name"]))
+        for row in payload["solar_ingresses"]
+    ]
+    wheel = [
+        (
+            _instant_from_cache(row),
+            float(row["longitude_deg"]),
+            row["astronomical_name"],
+            row["traditional_name"],
+        )
+        for row in payload["wheel_of_the_year"]
+    ]
+    phases = [
+        (_instant_from_cache(row), row["phase"])
+        for row in payload["lunar_phases"]
+    ]
+    return ingresses, phases, wheel
+
+
+def annual_calendar(year: int):
+    """Return annual calendar astronomy, calculating it only when not cached."""
+    cached = read_data(year)
+    if cached is not None:
+        print(f"Using annual Sun/Moon calendar crib sheet: generated/calendar-{year}.json")
+        return cached
+
+    first, last = iso_bounds(year)
+    query_start, query_stop = first - timedelta(days=45), last + timedelta(days=45)
+    print(f"Calculating {year} Sun and Moon calendar astronomy from cached SPK source data")
+    sun = source_longitudes("sun", query_start, query_stop)
+    moon = source_longitudes("moon", query_start, query_stop)
+    ingresses = solar_ingresses(sun)
+    wheel = wheel_of_year(sun)
+    phases = lunar_phases(sun, moon)
+    write_data(year, ingresses, phases, wheel)
+    return ingresses, phases, wheel
+
+
 def write_data(year, ingresses, phases, wheel):
     DATA_ROOT.mkdir(parents=True, exist_ok=True)
     names = full_moon_names(phases, wheel)
@@ -383,12 +437,7 @@ def write_data(year, ingresses, phases, wheel):
 
 def populate_year(year):
     first, last = iso_bounds(year)
-    query_start, query_stop = first - timedelta(days=45), last + timedelta(days=45)
-    sun = source_longitudes("sun", query_start, query_stop)
-    moon = source_longitudes("moon", query_start, query_stop)
-    ingresses = solar_ingresses(sun)
-    wheel = wheel_of_year(sun)
-    phases = lunar_phases(sun, moon)
+    ingresses, phases, wheel = annual_calendar(year)
     events = build_events(first, last, ingresses, phases, wheel)
     write_data(year, ingresses, phases, wheel)
     changed = 0
