@@ -35,6 +35,11 @@ env:
   ALMANACK_END_YEAR: ${{ github.event_name == 'workflow_dispatch' && inputs.end_year || '2026' }}
   ALMANACK_END_WEEK: ${{ github.event_name == 'workflow_dispatch' && inputs.end_week || '36' }}
 
+concurrency:
+  # All active Almanack generators write to main; serialize them to prevent push races.
+  group: almanack-generator-main-writer
+  cancel-in-progress: false
+
 permissions:
   contents: write
 
