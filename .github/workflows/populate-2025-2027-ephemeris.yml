@@ -139,13 +139,9 @@ jobs:
       - name: Build missing Aries-to-Aries fixed-sky coverage rows
         run: |
           set -euo pipefail
-          read -r MIN_YEAR MAX_YEAR <<< "$(python - <<'PY'
-          import os
-          years = sorted({int(x) for x in os.environ["ALMANACK_YEARS"].split()})
-          print(min(years), max(years))
-          PY
-          )"
-          python tools/fixed_sky_annual.py "$((MIN_YEAR - 1))" "$MAX_YEAR"
+          RANGE="$(python -c 'import os; y=sorted({int(x) for x in os.environ["ALMANACK_YEARS"].split()}); print(y[0]-1, y[-1])')"
+          set -- $RANGE
+          python tools/fixed_sky_annual.py "$1" "$2"
       - name: Populate fixed-sky visibility events from annual coverage
         run: python tools/populate_fixed_sky.py $ALMANACK_YEARS
       - name: Standardize Messier labels, instruments, magnitudes, declination bands, and seasons
@@ -210,13 +206,9 @@ jobs:
             if [[ " $ALMANACK_YEARS " == *" 2026 "* ]]; then python tools/wire_2026_eclipses.py; fi
             python tools/populate_meteor_showers.py $ALMANACK_YEARS
             python tools/populate_ephemeris.py $ALMANACK_YEARS
-            read -r MIN_YEAR MAX_YEAR <<< "$(python - <<'PY'
-import os
-values = sorted({int(x) for x in os.environ["ALMANACK_YEARS"].split()})
-print(min(values), max(values))
-PY
-            )"
-            python tools/fixed_sky_annual.py "$((MIN_YEAR - 1))" "$MAX_YEAR"
+            RANGE="$(python -c 'import os; y=sorted({int(x) for x in os.environ["ALMANACK_YEARS"].split()}); print(y[0]-1, y[-1])')"
+            set -- $RANGE
+            python tools/fixed_sky_annual.py "$1" "$2"
             python tools/populate_fixed_sky.py $ALMANACK_YEARS
             python tools/standardize_messier_calendar.py $ALMANACK_YEARS
             python tools/populate_constellations.py $ALMANACK_YEARS
