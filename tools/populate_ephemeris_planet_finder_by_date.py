@@ -99,7 +99,7 @@ def populate_week(
     # self-contained package and its relative finders/... links are valid.
     outdirs = (
         typed_dir(year, week, "planet-finder") / "finders",
-        type_dir(ephemeris.ROOT / "site", year, week, "planet-finder") / "finders",
+        typed_dir(ephemeris.ROOT / "site", year, week, "planet-finder") / "finders",
     )
     for outdir in outdirs:
         outdir.mkdir(parents=True, exist_ok=True)
