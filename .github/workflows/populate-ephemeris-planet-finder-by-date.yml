@@ -140,21 +140,45 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          while read -r year week; do
-          done < <(python - <<'PY'
+
+          python - <<'PY'
           from datetime import date, timedelta
-          start=date.fromisocalendar(int("${{ inputs.start_year }}"), int("${{ inputs.start_week }}"), 1)
-          end=date.fromisocalendar(int("${{ inputs.end_year }}"), int("${{ inputs.end_week }}"), 1)
-          while start <= end:
-              iso=start.isocalendar()
-              print(iso.year, iso.week)
-              start += timedelta(days=7)
-          PY
+          import subprocess
+
+          start = date.fromisocalendar(
+              int("${{ inputs.start_year }}"),
+              int("${{ inputs.start_week }}"),
+              1,
           )
-          if git diff --cached --quiet; then
-            echo "No Planet Finder changes in requested ISO week range."
-            exit 0
-          fi
-          git commit -m "Generate Planet Finder ${{ inputs.start_year }}-W${{ inputs.start_week }}"
+          end = date.fromisocalendar(
+              int("${{ inputs.end_year }}"),
+              int("${{ inputs.end_week }}"),
+              1,
+          )
+
+          paths = []
+          while start <= end:
+              iso = start.isocalendar()
+              week = f"W{iso.week:02d}"
+              paths.extend([
+                  f"almanack/{iso.year}/{week}/planet-finder",
+                  f"site/{iso.year}/{week}/planet-finder",
+              ])
+              start += timedelta(days=7)
+
+          # Stage only Planet Finder outputs. The generator also refreshes
+          # Ephemeris, but this workflow must not commit those changes.
+          subprocess.run(["git", "add", "--", *paths], check=True)
+
+          if subprocess.run(["git", "diff", "--cached", "--quiet"]).returncode == 0:
+              print("No Planet Finder changes in requested ISO week range.")
+              raise SystemExit(0)
+
+          subprocess.run([
+              "git", "commit", "-m",
+              f"Generate Planet Finder ${{ inputs.start_year }}-W${{ inputs.start_week }} through ${{ inputs.end_year }}-W${{ inputs.end_week }}",
+          ], check=True)
+          PY
+
           git pull --rebase origin main
           git push
