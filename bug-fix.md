@@ -109,3 +109,19 @@ This entry preserves the known fixes and architectural decisions accumulated dur
 - Star-hops/guiding routes are curated established routes and should be represented as prose plus machine-readable relationships; do not invent or scrape arbitrary routes.
 - Milky Way visibility uses named regions rather than a single generic “in Milky Way” classification; region geometry is machine-readable and validated.
 - Constellation identity comprises all 89 IAU constellations; Serpens is represented as Caput and Cauda where applicable.
+
+
+### 2026-09-22 — #2 artwork null placeholder
+
+**State:** Fixed — awaiting verification
+**Component:** Sky Notes descriptor-first generator
+
+**Observed:** The descriptor-first generator wrote a week-owned `artwork: null` field when no artwork existed.
+
+**Diagnosis:** `main()` explicitly assigned `payload["artwork"] = None`, contradicting the object-owned artwork contract. The generator's `generated_note()` path already removed the field correctly.
+
+**Fix:** Replaced the explicit null assignment with `payload.pop("artwork", None)`. Commit: `3fa3df9030ee9152dfb8b659754cb739abe40ac2`.
+
+**Verification:** Pending a generator run and inspection of generated JSON.
+
+**Resolution:** Pending.
