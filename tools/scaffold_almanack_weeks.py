@@ -11,7 +11,6 @@ from almanack_paths import typed_page, week_dir
 
 ROOT = Path(__file__).resolve().parents[1]
 PUBLIC_ROOT = ROOT / "almanack"
-OUTPUT_ROOTS = (PUBLIC_ROOT,)
 BOTTOM_ID = "almanack-bottom-nav"
 
 CSS = r""":root{color-scheme:light dark;--ink:#202833;--muted:#66717d;--navy:#102a43;--link:#245c86;--paper:#fffdf8;--page:#eee9df;--rule:#d8d2c8}*{box-sizing:border-box}html{font-size:17px}body{margin:0;font-family:Georgia,'Times New Roman',serif;line-height:1.65;background:var(--page);color:var(--ink)}a,a:visited{color:var(--link)}header,footer{background:var(--navy);color:#fff}header{border-bottom:4px solid #c5a45c}header a,header a:visited,footer a,footer a:visited{color:#eef7ff}.wrap{max-width:1080px;margin:0 auto;padding:1.15rem 1.5rem}main.wrap{background:var(--paper);min-height:76vh;padding:2rem 2.4rem 3.25rem}.brand{font-size:1.35rem;font-weight:700}.subtitle{opacity:.86;font-size:.94rem}.weeknav,.yearnav{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:.8rem;margin:.4rem 0 1rem;font-family:system-ui,sans-serif;font-size:.9rem}.weeknav>:last-child,.yearnav>:last-child{justify-self:end}.weeknav a,.weeknav span,.yearnav a,.yearnav span{display:inline-block;min-width:5.5rem;padding:.58rem .8rem;border:1px solid #c8d3dc;border-radius:.45rem;text-decoration:none;text-align:center;background:#fff;color:var(--link)}.weeknav span[aria-current="page"],.yearnav span[aria-current="page"]{font-weight:700;background:var(--navy);color:#fff;border-color:var(--navy)}.nav-spacer{visibility:hidden}.almanack-bottom-nav-wrap{margin-top:2rem}h1,h2,h3{line-height:1.2;color:#17344d}h1{font-size:clamp(2rem,5vw,2.75rem)}h3{margin-top:2rem}table{width:100%;border-collapse:separate;border-spacing:0;margin:1rem 0 2rem;font-family:system-ui,sans-serif;font-size:.93rem;border:1px solid #cbd3da;border-radius:.5rem;overflow:hidden}th,td{padding:.7rem .8rem;border-right:1px solid #d6dde3;border-bottom:1px solid #d6dde3;vertical-align:top}th:last-child,td:last-child{border-right:0}tbody tr:last-child td{border-bottom:0}th{background:#e8f0f5;text-align:left;color:#17344d}.calendar{table-layout:fixed}.calendar th:first-child,.calendar td:first-child{width:28%}.calendar th:nth-child(2),.calendar td:nth-child(2){width:20%;text-align:center}.calendar th:nth-child(3),.calendar td:nth-child(3){width:52%}.ephemeris{display:table;table-layout:fixed;min-width:max-content;overflow:visible}.ephemeris-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}.ephemeris th,.ephemeris td{text-align:center;white-space:nowrap;min-width:6.5rem}.bayer-toggle-wrap{margin:.75rem 0;font-family:system-ui,sans-serif;overflow-x:auto;-webkit-overflow-scrolling:touch}.bayer-toggle{display:flex;align-items:center;justify-content:flex-end;gap:.35rem;flex-wrap:nowrap;min-width:max-content;font-size:.86rem}.bayer-toggle-label{margin-right:.2rem;color:var(--muted)}.bayer-toggle button{appearance:none;border:1px solid #c8d3dc;background:#fff;color:var(--link);padding:.35rem .62rem;border-radius:.4rem;font:inherit;cursor:pointer;white-space:nowrap}.bayer-toggle button[aria-pressed=true]{background:var(--navy);color:#fff;border-color:var(--navy)}.sky-note{border-left:3px solid #c8d3dc;padding-left:1rem}footer{font-family:system-ui,sans-serif;font-size:.88rem}@media(max-width:760px){html{font-size:16px}.wrap{padding-left:1rem;padding-right:1rem}main.wrap{padding:1.35rem 1rem 2.5rem}.weeknav,.yearnav{gap:.4rem}.weeknav a,.weeknav span,.yearnav a,.yearnav span{min-width:0;padding:.6rem .45rem}}@media(prefers-color-scheme:dark){:root{--ink:#dce6ef;--muted:#a7b4c0;--link:#9fd0ff;--paper:#17212b;--page:#10171f;--rule:#394957}h1,h2,h3{color:#f1f7fb}th{background:#223444;color:#eef7ff}th,td,table{border-color:#40505e}.weeknav a,.weeknav span,.yearnav a,.yearnav span,.bayer-toggle button{background:#1c2a36;border-color:#405567;color:#b6dcff}.weeknav span[aria-current="page"],.yearnav span[aria-current="page"],.bayer-toggle button[aria-pressed=true]{background:#eef7ff;color:#102a43;border-color:#eef7ff}}"""
@@ -96,15 +95,14 @@ def main():
     count=0
     for year,week,monday in selected_weeks(a.start_year,a.start_week,ey,ew):
         rendered=page(year,week,monday)
-        for root in OUTPUT_ROOTS:
-            legacy = week_dir(year, week) / "index.html"
-            legacy.parent.mkdir(parents=True, exist_ok=True)
-            legacy.write_text(rendered, encoding="utf-8")
-            for content_type in ("calendar", "ephemeris", "planet-finder", "sky-notes"):
-                target = typed_page(year, week, content_type)
-                target.parent.mkdir(parents=True, exist_ok=True)
-                target.write_text(rendered, encoding="utf-8")
+        legacy = week_dir(year, week) / "index.html"
+        legacy.parent.mkdir(parents=True, exist_ok=True)
+        legacy.write_text(rendered, encoding="utf-8")
+        for content_type in ("calendar", "ephemeris", "planet-finder", "sky-notes"):
+            target = typed_page(year, week, content_type)
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_text(rendered, encoding="utf-8")
         count+=1
-    print(f'Rebuilt {count} clean Almanack week scaffold(s) in both page roots.')
+    print(f'Rebuilt {count} clean Almanack week scaffold(s).')
 
 if __name__=='__main__': main()
