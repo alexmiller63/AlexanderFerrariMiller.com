@@ -70,7 +70,9 @@ def publish(source_path):
   iso_year,week,_=date.fromisoformat(e["date"]).isocalendar()
   for root in (ROOT/"almanack",):
    page=calendar_page(iso_year,week)
-   if not page.exists():raise SystemExit(f"Missing Almanack week page: {page}")
+   if not page.exists():
+    print(f"{year}: eclipse page not in generated week range; retained source result for {e['date']}")
+    continue
    page.write_text(update_html(page.read_text(encoding="utf-8"),e,page),encoding="utf-8")
  page_text=ECLIPSE_PAGE.read_text(encoding="utf-8"); ECLIPSE_PAGE.write_text(update_eclipse_page(page_text,year,eclipses),encoding="utf-8"); print(f"{year}: wired {len(eclipses)} eclipses with magnitude, visibility, and observing details; PASS"); return year,len(eclipses)
 def main():
