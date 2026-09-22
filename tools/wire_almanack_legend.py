@@ -18,7 +18,6 @@ import sys
 from almanack_paths import week_index
 
 ROOT = Path(__file__).resolve().parents[1]
-CONTENT_TYPES = ("calendar", "ephemeris", "planet-finder", "sky-notes")
 
 STYLE = """<style id="almanack-legend-css">
 .notation-legend {
@@ -178,12 +177,9 @@ def main() -> None:
     weeks = requested_weeks()
     changed = 0
     for year, week in weeks:
-        for content_type in CONTENT_TYPES:
-            path = typed_page(year, week, content_type)
-            if not path.is_file():
-                continue
-            if wire_page(path):
-                changed += 1
+        path = week_index(year, week)
+        if path.is_file() and wire_page(path):
+            changed += 1
 
     if not weeks:
         print("No generated Almanack weeks found; legend unchanged")
