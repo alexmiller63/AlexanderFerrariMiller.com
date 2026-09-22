@@ -59,21 +59,8 @@ jobs:
       - name: Install astronomical calculation dependencies
         run: python -m pip install --disable-pip-version-check skyfield==1.55 PyYAML
 
-      - name: Download DE440s only when cache is empty
-        run: |
-          mkdir -p .cache/skyfield
-          python - <<'PY'
-          from pathlib import Path
-          from skyfield.api import Loader
-          root = Path('.cache/skyfield')
-          kernel = root / 'de440s.bsp'
-          if kernel.exists():
-              print(f'Reusing cached {kernel} ({kernel.stat().st_size:,} bytes)')
-          else:
-              print('Downloading JPL/NAIF DE440s source kernel for local calculation')
-              Loader(str(root)).download('de440s.bsp')
-          PY
-
+      - name: Ensure cached DE440s source kernel
+        run: python tools/ensure_ephemeris_kernels.py
       - name: Resolve ISO week range
         id: range
         run: |
