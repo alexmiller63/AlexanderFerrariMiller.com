@@ -15,7 +15,6 @@ from datetime import date
 from pathlib import Path
 
 from star_almanack_ephemeris import StarAlmanackEphemeris
-from almanack_paths import typed_page
 
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_LATITUDE_DEG = 45.0
@@ -368,9 +367,9 @@ def update_year(year, engine=None):
     generated = computed_ephemeris(year, engine)
     write_preserved_weekly_table(year, generated)
     changed = 0
-    pages = sorted((ROOT / "almanack" / str(year)).glob("W??/ephemeris/index.html"))
+    pages = sorted((ROOT / "almanack" / str(year)).glob("W??/index.html"))
     for path in pages:
-        week = int(path.parents[1].name[1:])
+        week = int(path.parent.name[1:])
         monday = date.fromisocalendar(year, week, 1)
         values = {}
         for _, key, _ in TARGETS:
