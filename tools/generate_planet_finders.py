@@ -1627,7 +1627,7 @@ def render(
     # Keep it deterministic and independent of body-label placement.
     aries_x, aries_y = xy(0, RI)
     out.append(
-        f'<text x="{aries_x - 12:.1f}" y="{aries_y + 7:.1f}" '
+        f'<text x="{aries_x - 28:.1f}" y="{aries_y + 7:.1f}" '
         'text-anchor="end" font-size="20" class="sans">0° Aries</text>'
     )
 
