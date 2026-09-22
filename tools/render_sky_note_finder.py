@@ -446,7 +446,12 @@ def render(spec: dict, stars, output: Path) -> None:
     legend = [legend_label(identity, star) for identity, star in legend_entries]
     legend = [item for item in legend if item]
     if legend:
-        ax.text(0.5, -0.075, "   ·   ".join(legend), transform=ax.transAxes,
+        legend_text = "   ·   ".join(legend)
+        # Repeat the identification legend at both edges of the chart so it
+        # remains available before and after the finder graphic.
+        ax.text(0.5, 1.035, legend_text, transform=ax.transAxes,
+                ha="center", va="bottom", fontsize=7, color=TEXT, wrap=True)
+        ax.text(0.5, -0.075, legend_text, transform=ax.transAxes,
                 ha="center", va="top", fontsize=7, color=TEXT, wrap=True)
 
     ax.set_xticks([])
@@ -456,7 +461,7 @@ def render(spec: dict, stars, output: Path) -> None:
         spine.set_visible(False)
 
     output.parent.mkdir(parents=True, exist_ok=True)
-    fig.tight_layout(rect=(0, 0.08, 1, 1))
+    fig.tight_layout(rect=(0, 0.08, 1, 0.96))
     fig.savefig(output, format="svg", bbox_inches="tight", facecolor=fig.get_facecolor())
     plt.close(fig)
 
