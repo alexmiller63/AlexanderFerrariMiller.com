@@ -19,6 +19,16 @@ from almanack_paths import typed_page
 
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_LATITUDE_DEG = 45.0
+MIN_LATITUDE_DEG = -90.0
+MAX_LATITUDE_DEG = 90.0
+MIN_SUPPORTED_YEAR = 1900
+MAX_SUPPORTED_YEAR = 2100
+SOLAR_GLARE_MAX_ELONGATION_DEG = 20.0
+NAKED_EYE_MAX_MAGNITUDE = 3.5
+BINOCULARS_MAX_MAGNITUDE = 7.5
+TELESCOPE_MAX_MAGNITUDE = 12.0
+SUN_HORIZON_DEG = -0.8333
+STANDARD_HORIZON_DEG = -0.5667
 SIGNS = "♈♉♊♋♌♍♎♏♐♑♒♓"
 
 TARGETS = [
@@ -194,13 +204,13 @@ def beta(latitude):
 def current_visibility(key, magnitude, elongation, daylight=False):
     if key == "sun":
         return "visible"
-    if elongation is not None and elongation < 20.0:
+    if elongation is not None and elongation < SOLAR_GLARE_MAX_ELONGATION_DEG:
         return "solar_glare"
     if magnitude is not None and elongation is not None:
-        if magnitude <= 3.5:
+        if magnitude <= NAKED_EYE_MAX_MAGNITUDE:
             return "daylight" if daylight else "naked_eye"
-        if magnitude <= 7.5: return "binoculars"
-        if magnitude <= 12.0: return "telescope"
+        if magnitude <= BINOCULARS_MAX_MAGNITUDE: return "binoculars"
+        if magnitude <= TELESCOPE_MAX_MAGNITUDE: return "telescope"
         return "substantial_telescope"
     if key == "moon": return "daylight" if daylight else "naked_eye"
     if key == "ceres": return "telescope"
@@ -308,7 +318,7 @@ def render_ephemeris(monday, values):
         "<h3>Weekly Solar-System Ephemeris</h3>"
         + EPHEMERIS_STYLE
         + f'<p><strong>Snapshot:</strong> {monday.strftime("%B")} {monday.day}, {monday.year} · 00:00 UTC</p>'
-        + '<p class="ephemeris-latitude-control"><label for="ephemeris-latitude"><strong>Observer latitude:</strong> <input id="ephemeris-latitude" name="ephemeris-latitude" type="text" inputmode="text" value="45" data-ephemeris-latitude aria-describedby="ephemeris-latitude-range">°</label> <button type="button" data-ephemeris-apply>Apply</button> <span id="ephemeris-latitude-range">(−90° to +90°; default +45°)</span></p>'
+        + '<p class="ephemeris-latitude-control"><label for="ephemeris-latitude"><strong>Observer latitude:</strong> <input id="ephemeris-latitude" name="ephemeris-latitude" type="text" inputmode="text" value="{DEFAULT_LATITUDE_DEG:g}" data-ephemeris-latitude aria-describedby="ephemeris-latitude-range">°</label> <button type="button" data-ephemeris-apply>Apply</button> <span id="ephemeris-latitude-range">({MIN_LATITUDE_DEG:g}° to +{MAX_LATITUDE_DEG:g}°; default +{DEFAULT_LATITUDE_DEG:g}°)</span></p>'
         + notation_toggle("ephemeris")
         + table(primary)
         + "<p><strong>Extended targets:</strong></p>"
@@ -378,7 +388,7 @@ def update_year(year, engine=None):
                 "dec_deg": sample[8],
                 "sun_ra_hours": sample[9],
                 "sun_dec_deg": sample[10],
-                "horizon_deg": -0.8333 if key == "sun" else -0.5667,
+                "horizon_deg": SUN_HORIZON_DEG if key == "sun" else STANDARD_HORIZON_DEG,
             }
         replacement = render_ephemeris(monday, values)
         for base in (ROOT / "almanack",):
@@ -397,8 +407,8 @@ def parse_years():
     args = parser.parse_args()
     years = list(dict.fromkeys(args.years))
     for year in years:
-        if not 1900 <= year <= 2100:
-            parser.error(f"YEAR must be between 1900 and 2100: {year}")
+        if not MIN_SUPPORTED_YEAR <= year <= MAX_SUPPORTED_YEAR:
+            parser.error(f"YEAR must be between {MIN_SUPPORTED_YEAR} and {MAX_SUPPORTED_YEAR}: {year}")
     return years
 
 
