@@ -70,10 +70,15 @@ jobs:
           set -euo pipefail
           ids="$(python - <<'PY'
           import json
+          from datetime import date
           from pathlib import Path
+          from tools.iso_date_range import weeks_in_range
           seen=[]
-          for week in range(int("${{ inputs.start_week }}"), int("${{ inputs.end_week }}")+1):
-              p=Path("generated-sky-notes")/"${{ inputs.start_year }}"/f"W{week:02d}.json"
+          for iso_week in weeks_in_range(
+              date.fromisoformat("${{ steps.range.outputs.start_date }}"),
+              date.fromisoformat("${{ steps.range.outputs.end_date }}"),
+          ):
+              p=Path("generated-sky-notes")/str(iso_week.year)/f"W{iso_week.week:02d}.json"
               if not p.exists(): continue
               payload=json.loads(p.read_text(encoding="utf-8"))
               for item in payload.get("fixed_sky") or []:
@@ -100,11 +105,16 @@ jobs:
         run: |
           python - <<'PY'
           import json
+          from datetime import date
           from pathlib import Path
           from tools.fixed_object_stories import available_stories, write_public_story
+          from tools.iso_date_range import weeks_in_range
           seen=set()
-          for week in range(int("${{ inputs.start_week }}"), int("${{ inputs.end_week }}")+1):
-              p=Path("generated-sky-notes")/"${{ inputs.start_year }}"/f"W{week:02d}.json"
+          for iso_week in weeks_in_range(
+              date.fromisoformat("${{ steps.range.outputs.start_date }}"),
+              date.fromisoformat("${{ steps.range.outputs.end_date }}"),
+          ):
+              p=Path("generated-sky-notes")/str(iso_week.year)/f"W{iso_week.week:02d}.json"
               if not p.exists(): continue
               for item in json.loads(p.read_text(encoding="utf-8")).get("fixed_sky") or []:
                   fid=item.get("fixed_object_id")
