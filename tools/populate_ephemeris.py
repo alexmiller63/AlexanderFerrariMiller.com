@@ -318,7 +318,7 @@ def render_ephemeris(monday, values):
         "<h3>Weekly Solar-System Ephemeris</h3>"
         + EPHEMERIS_STYLE
         + f'<p><strong>Snapshot:</strong> {monday.strftime("%B")} {monday.day}, {monday.year} · 00:00 UTC</p>'
-        + '<p class="ephemeris-latitude-control"><label for="ephemeris-latitude"><strong>Observer latitude:</strong> <input id="ephemeris-latitude" name="ephemeris-latitude" type="text" inputmode="text" value="{DEFAULT_LATITUDE_DEG:g}" data-ephemeris-latitude aria-describedby="ephemeris-latitude-range">°</label> <button type="button" data-ephemeris-apply>Apply</button> <span id="ephemeris-latitude-range">({MIN_LATITUDE_DEG:g}° to +{MAX_LATITUDE_DEG:g}°; default +{DEFAULT_LATITUDE_DEG:g}°)</span></p>'
+        + f'<p class="ephemeris-latitude-control"><label for="ephemeris-latitude"><strong>Observer latitude:</strong> <input id="ephemeris-latitude" name="ephemeris-latitude" type="text" inputmode="text" value="{DEFAULT_LATITUDE_DEG:g}" data-ephemeris-latitude aria-describedby="ephemeris-latitude-range">°</label> <button type="button" data-ephemeris-apply>Apply</button> <span id="ephemeris-latitude-range">({MIN_LATITUDE_DEG:g}° to +{MAX_LATITUDE_DEG:g}°; default +{DEFAULT_LATITUDE_DEG:g}°)</span></p>'
         + notation_toggle("ephemeris")
         + table(primary)
         + "<p><strong>Extended targets:</strong></p>"
