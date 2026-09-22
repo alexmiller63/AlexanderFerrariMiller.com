@@ -454,7 +454,7 @@ def route(
     dogleg_prefixes = prefix_cache.get(cache_key) if prefix_cache is not None else None
     if dogleg_prefixes is None:
         dogleg_prefixes = []
-        for r in (395, 365, 335, 305, 275, 245, 215, 185, 155):
+        for r in ROUTE_RADII:
             e1 = xy(lon, r)
             first_blocked = any(
                 hits(
@@ -1511,10 +1511,10 @@ def validate_layout(mode: str, result) -> tuple[bool, list[str]]:
     for i, box in enumerate(boxes):
         name = result[i][1]
         for j, obstacle in enumerate(reserved):
-            if boxes_overlap(box, obstacle, 14):
+            if boxes_overlap(box, obstacle, LABEL_COLLISION_PADDING):
                 errors.append(f"{name}: label overlaps reserved obstacle {j}")
         for j in range(i):
-            if boxes_overlap(box, boxes[j], 14):
+            if boxes_overlap(box, boxes[j], LABEL_COLLISION_PADDING):
                 errors.append(f"{name}: label overlaps {result[j][1]}")
 
     # Every leader must remain clear of every label except its own endpoint.
