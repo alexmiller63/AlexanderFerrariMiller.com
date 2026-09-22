@@ -20,6 +20,11 @@ on:
         required: true
         default: '36'
 
+concurrency:
+  # All active Almanack generators write to main; serialize them to prevent push races.
+  group: almanack-generator-main-writer
+  cancel-in-progress: false
+
 permissions:
   contents: write
 
