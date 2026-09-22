@@ -81,8 +81,8 @@ def _best_visibility(eph: StarAlmanackEphemeris, start, end, ra_h: float):
         return _hour_distance(ra.hours, target)
 
     distance.step_days = 30.0
-    t0 = eph.ts.tdb(jd=start.jd_tdb)
-    t1 = eph.ts.tdb(jd=end.jd_tdb)
+    t0 = eph.ts.tdb_jd(start.jd_tdb)
+    t1 = eph.ts.tdb_jd(end.jd_tdb)
     times, values = find_minima(t0, t1, distance)
     if len(times) != 1:
         raise RuntimeError(
