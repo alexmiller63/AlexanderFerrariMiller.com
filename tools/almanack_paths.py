@@ -11,6 +11,7 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parents[1]
 ALMANACK_ROOT = REPO_ROOT / "almanack"
 GENERATED_ROOT = REPO_ROOT / "generated"
+VISIBILITY_GLYPH_ROOT = "../../../../assets/almanack/visibility-glyphs/masters"
 
 PAGE_TYPES = ("calendar", "ephemeris", "planet-finder", "sky-notes", "artwork")
 
