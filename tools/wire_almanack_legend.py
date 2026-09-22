@@ -15,7 +15,7 @@ from pathlib import Path
 import re
 import sys
 
-from almanack_paths import typed_page
+from almanack_paths import week_index
 
 ROOT = Path(__file__).resolve().parents[1]
 CONTENT_TYPES = ("calendar", "ephemeris", "planet-finder", "sky-notes")
