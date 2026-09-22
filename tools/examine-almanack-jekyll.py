@@ -85,7 +85,7 @@ def main() -> None:
 
     ingress_count = len(PLAIN_INGRESS.findall(rendered))
     wrapped_ingress_count = len(INGRESS.findall(rendered))
-    if ingress_count == 0 or wrapped_ingress_count != ingress_count:
+    if ingress_count and wrapped_ingress_count != ingress_count:
         raise SystemExit(
             "Every ingress glyph must use the monochrome zodiac-glyph wrapper "
             f"({wrapped_ingress_count}/{ingress_count} wrapped)"
