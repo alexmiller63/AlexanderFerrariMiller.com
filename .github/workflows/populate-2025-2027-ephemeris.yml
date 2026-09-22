@@ -27,7 +27,6 @@ on:
       - 'tools/wire_almanack_legend.py'
       - 'tools/populate_fixed_sky.py'
       - 'tools/fixed_sky_annual.py'
-      - 'tools/fixed_sky_annual.py'
       - 'tools/standardize_messier_calendar.py'
       - 'tools/catalog_common_names.py'
       - 'tools/reconcile_catalog_common_names.py'
@@ -211,11 +210,6 @@ jobs:
             if [[ " $ALMANACK_YEARS " == *" 2026 "* ]]; then python tools/wire_2026_eclipses.py; fi
             python tools/populate_meteor_showers.py $ALMANACK_YEARS
             python tools/populate_ephemeris.py $ALMANACK_YEARS
-            read -r MIN_YEAR MAX_YEAR <<< "$(python - <<'PY'
-          years = sorted({int(x) for x in "$ALMANACK_YEARS".split()})
-          print(min(years), max(years))
-          PY
-          )"
             read -r MIN_YEAR MAX_YEAR <<< "$(python - <<'PY'
 import os
 values = sorted({int(x) for x in os.environ["ALMANACK_YEARS"].split()})
