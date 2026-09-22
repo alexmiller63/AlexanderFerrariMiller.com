@@ -63,12 +63,6 @@ def notation_toggle(target):
         '</div></div>'
     )
 
-def calendar_rows(monday):
-    rows=[]
-    for offset in range(7):
-        d=monday+dt.timedelta(days=offset); label=f'{d.strftime("%a, %b")} {d.day}, {d.year}'; rows.append(f'<tr data-date="{d.isoformat()}"><td>{label}</td><td data-zodiac-day="">—</td><td data-events>—</td></tr>')
-    return ''.join(rows)
-
 def ephemeris_tables():
     primary=('Sun','Moon','Mercury','Venus','Mars','Jupiter','Saturn')
     extended=('Ceres','Uranus','Neptune','Pluto')
@@ -79,7 +73,7 @@ def ephemeris_tables():
     return table('Naked Eye Bodies',primary)+table('Extended Bodies',extended)
 
 def page(year,week,monday,content_type=None):
-    title=f'ISO {year}-W{week:02d}'; rows=calendar_rows(monday); top=nav_stack(year,week,content_type); bottom=f'<div class="almanack-bottom-nav-wrap" id="{BOTTOM_ID}">{nav_stack(year,week,content_type,True)}</div>'
+    title=f'ISO {year}-W{week:02d}'; top=nav_stack(year,week,content_type); bottom=f'<div class="almanack-bottom-nav-wrap" id="{BOTTOM_ID}">{nav_stack(year,week,content_type,True)}</div>'
     sections = {
         "calendar": f'{section_open(2)}{notation_toggle("calendar")}<h3>Calendar</h3><table class="calendar"><thead><tr><th>Date</th><th>Zodiac day</th><th>Events</th></tr></thead><tbody>{rows}</tbody></table></div>\n',
         "ephemeris": f'{section_open(3)}<h3>Weekly Solar-System Ephemeris</h3><p><strong>Snapshot:</strong> pending</p>{notation_toggle("ephemeris")}{ephemeris_tables()}</div>\n',
