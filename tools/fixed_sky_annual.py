@@ -16,6 +16,7 @@ import json
 from pathlib import Path
 
 import yaml
+import populate_fixed_sky as fixed
 from skyfield import almanac
 from skyfield.searchlib import find_minima
 
@@ -25,7 +26,7 @@ from star_almanack_ephemeris import StarAlmanackEphemeris
 ROOT = Path(__file__).resolve().parents[1]
 TABLE = ROOT / "database" / "fixed-sky-annual-coverage.json"
 FIXED_OBJECTS = ROOT / "fixed-objects.yaml"
-SCHEMA_VERSION = 1
+SCHEMA_VERSION = 2
 OBSERVING_HOUR_ANGLE_HOURS = 9.0
 
 
@@ -113,7 +114,22 @@ def _source_records():
         bayer = (row.get("bayer") or "").strip()
         con = (row.get("con") or "").strip()
         if bayer and con and row.get("ra_h"):
-            records.append(("expanded-bayer", f"{bayer}:{con}", float(row["ra_h"])))
+            fixed_id = None
+            for namespace, value in (
+                ("hip", row.get("hip")),
+                ("hd", row.get("hd")),
+                ("bayer", fixed.display_bayer(row)),
+            ):
+                value = (value or "").strip()
+                if value:
+                    fixed_id = fixed.FIXED_OBJECT_IDS.get((namespace, value.lower()))
+                    if fixed_id is not None:
+                        break
+            if fixed_id is None:
+                raise RuntimeError(
+                    f"No permanent fixed-object ID for expanded Bayer {bayer}:{con}"
+                )
+            records.append(("expanded-bayer", f"{bayer}:{con}", float(row["ra_h"]), fixed_id))
 
     for row in _read_csv("bright-star-visibility-2026.csv"):
         if (row.get("new_non_alpha_beta") or "").lower() != "yes":
@@ -122,11 +138,24 @@ def _source_records():
             (row.get("bayer") or "").strip() + ":" + (row.get("con") or "").strip()
         )
         if key and row.get("ra_h"):
-            records.append(("bright-star", key, float(row["ra_h"])))
+            fixed_id = None
+        for namespace, value in (("hip", row.get("hip")), ("hd", row.get("hd"))):
+            value = (value or "").strip()
+            if value:
+                fixed_id = fixed.FIXED_OBJECT_IDS.get((namespace, value.lower()))
+                if fixed_id is not None:
+                    break
+        if fixed_id is None:
+            raise RuntimeError(f"No permanent fixed-object ID for bright star {key}")
+        records.append(("bright-star", key, float(row["ra_h"]), fixed_id))
 
     for row in _messier_rows():
         if row.get("id") and row.get("ra_h"):
-            records.append(("messier", str(row["id"]).strip(), float(row["ra_h"])))
+            identity = str(row["id"]).strip()
+            fixed_id = fixed.catalog_target_fixed_object_id("messier", identity)
+            if fixed_id is None:
+                continue
+            records.append(("messier", identity, float(row["ra_h"]), fixed_id))
 
     return records
 
@@ -160,7 +189,7 @@ def ensure_coverage(start_year: int, eph: StarAlmanackEphemeris | None = None) -
 
     interval = coverage_interval(eph, start_year)
     objects = []
-    for source, key, ra_h in _source_records():
+    for source, key, ra_h, fixed_id in _source_records():
         instant = _best_visibility(eph, 
             AstroInstant(
                 interval["start_jd_tdb"],
@@ -175,6 +204,7 @@ def ensure_coverage(start_year: int, eph: StarAlmanackEphemeris | None = None) -
         objects.append({
             "source": source,
             "key": key,
+            "fixed_object_id": fixed_id,
             "ra_h": ra_h,
             "best_jd_tdb": instant.jd_tdb,
             "best_utc": instant.utc_datetime().isoformat().replace("+00:00", "Z"),
