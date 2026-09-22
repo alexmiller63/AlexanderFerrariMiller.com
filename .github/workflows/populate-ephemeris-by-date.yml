@@ -75,18 +75,17 @@ jobs:
       - name: Verify observing notation markup
         run: |
           python - <<'PY'
-          from datetime import date, timedelta
+          from datetime import date
           import re
 
           from tools.almanack_paths import typed_page
+          from tools.iso_date_range import weeks_in_range
 
           start = date.fromisoformat('${{ steps.range.outputs.start_date }}')
           end = date.fromisoformat('${{ steps.range.outputs.end_date }}')
-          day = start
           checked = 0
-          while day <= end:
-              iso = day.isocalendar()
-              path = typed_page(iso.year, iso.week, 'ephemeris')
+          for iso_week in weeks_in_range(start, end):
+              path = typed_page(iso_week.year, iso_week.week, 'ephemeris')
               text = path.read_text(encoding='utf-8')
               section = re.search(r'<h3>Weekly Solar-System Ephemeris</h3>.*?(?=<h3>Planet Finder</h3>)', text, re.S)
               if not section:
@@ -125,7 +124,6 @@ jobs:
                   if label not in valid_labels:
                       raise SystemExit(f'Observing aid lacks valid Latin notation: {path}')
               checked += 1
-              day += timedelta(days=7)
           print(f'PASS: {checked} Ephemeris week(s) have notation-aware observing aids')
           PY
 
