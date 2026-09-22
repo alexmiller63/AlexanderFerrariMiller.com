@@ -35,11 +35,6 @@ on:
         required: true
         default: '200'
         type: string
-      max_search_candidates:
-        description: Maximum candidate evaluations for the entire run
-        required: true
-        default: '10000'
-        type: string
       max_search_seconds:
         description: Maximum Planet Finder search time per mode
         required: true
@@ -100,7 +95,6 @@ jobs:
           STAR_ALMANACK_EPHEMERIS_DIR: ${{ github.workspace }}/.cache/skyfield
           PLANET_FINDER_CANDIDATES: ${{ inputs.candidate_layouts }}
           PLANET_FINDER_MAX_NODE_CANDIDATES: ${{ inputs.max_node_candidates }}
-          PLANET_FINDER_MAX_CANDIDATES: ${{ inputs.max_search_candidates }}
           PLANET_FINDER_MAX_SECONDS: ${{ inputs.max_search_seconds }}
         run: |
           # PLANET_FINDER_MAX_SECONDS is the one user-controlled search clock:
