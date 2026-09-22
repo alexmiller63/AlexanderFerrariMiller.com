@@ -23,7 +23,7 @@ from datetime import date
 from pathlib import Path
 
 from iso_date_range import group_by_year, parse_range_args
-from almanack_paths import calendar_page
+from almanack_paths import week_index
 from star_almanack_planets import PLANET_COLUMNS, load_weekly_longitudes
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -383,13 +383,13 @@ def main() -> None:
     changed = 0
     for item in weeks:
         week_key = f"W{item.week:02d}"
-        public_page = calendar_page(item.year, item.week)
+        public_page = week_index(item.year, item.week)
         if not public_page.exists():
             raise RuntimeError(f"Missing weekly page: {public_page.relative_to(ROOT)}")
         payload = generated_note(item.year, item.week, public_page, yearly[item.year], stars)
         source = write_generated_source(item.year, item.week, payload)
         for root in PAGE_ROOTS:
-            path = type_page(root, item.year, item.week, "sky-notes")
+            path = week_index(item.year, item.week)
             if not path.exists():
                 raise RuntimeError(f"Missing weekly page: {path.relative_to(ROOT)}")
             if patch_page(path, payload):
