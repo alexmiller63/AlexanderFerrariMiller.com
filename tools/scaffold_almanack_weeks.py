@@ -5,7 +5,7 @@ import argparse
 import datetime as dt
 import html
 from almanack_sections import section_open
-from almanack_paths import ALMANACK_ROOT, typed_page, week_dir
+from almanack_paths import ALMANACK_ROOT, typed_page
 
 BOTTOM_ID = "almanack-bottom-nav"
 SCAFFOLD_PAGE_TYPES = ("calendar", "ephemeris", "planet-finder", "sky-notes")
@@ -39,15 +39,18 @@ def year_nav(year,bottom=False):
 def adjacent_week(year,week,days):
     t=(dt.date.fromisocalendar(year,week,1)+dt.timedelta(days=days)).isocalendar(); return t.year,t.week
 
-def week_link(year,week,days,bottom=False):
-    ty,tw=adjacent_week(year,week,days); href=f'../W{tw:02d}/' if ty==year else f'../../{ty}/W{tw:02d}/'; href += f'#{BOTTOM_ID}' if bottom else ''; label=f'ISO {ty}-W{tw:02d}'
+def week_link(year,week,days,content_type,bottom=False):
+    ty,tw=adjacent_week(year,week,days)
+    href=f'../../W{tw:02d}/{content_type}/' if ty==year else f'../../../{ty}/W{tw:02d}/{content_type}/'
+    href += f'#{BOTTOM_ID}' if bottom else ''
+    label=f'ISO {ty}-W{tw:02d}'
     return f'<a href="{href}">← {label}</a>' if days<0 else f'<a href="{href}">{label} →</a>'
 
-def week_nav(year,week,bottom=False):
-    return '<nav class="weeknav week-position" aria-label="Week navigation">'+week_link(year,week,-7,bottom)+f'<span aria-current="page">ISO {year}-W{week:02d}</span>'+week_link(year,week,7,bottom)+'</nav>'
+def week_nav(year,week,content_type,bottom=False):
+    return '<nav class="weeknav week-position" aria-label="Week navigation">'+week_link(year,week,-7,content_type,bottom)+f'<span aria-current="page">ISO {year}-W{week:02d}</span>'+week_link(year,week,7,content_type,bottom)+'</nav>'
 
 def site_nav(): return '<nav class="weeknav sitenav"><a href="/star-almanack/">Almanack Home</a><a href="/projects.html">All Projects</a><a href="/index.html">Main Site</a></nav>'
-def nav_stack(y,w,bottom=False): return site_nav()+year_nav(y,bottom)+week_nav(y,w,bottom)
+def nav_stack(y,w,content_type,bottom=False): return site_nav()+year_nav(y,bottom)+week_nav(y,w,content_type,bottom)
 
 def notation_toggle(target):
     return (
@@ -76,7 +79,7 @@ def ephemeris_tables():
     return table('Naked Eye Bodies',primary)+table('Extended Bodies',extended)
 
 def page(year,week,monday,content_type=None):
-    title=f'ISO {year}-W{week:02d}'; rows=calendar_rows(monday); top=nav_stack(year,week); bottom=f'<div class="almanack-bottom-nav-wrap" id="{BOTTOM_ID}">{nav_stack(year,week,True)}</div>'
+    title=f'ISO {year}-W{week:02d}'; rows=calendar_rows(monday); top=nav_stack(year,week,content_type); bottom=f'<div class="almanack-bottom-nav-wrap" id="{BOTTOM_ID}">{nav_stack(year,week,content_type,True)}</div>'
     sections = {
         "calendar": f'{section_open(2)}{notation_toggle("calendar")}<h3>Calendar</h3><table class="calendar"><thead><tr><th>Date</th><th>Zodiac day</th><th>Events</th></tr></thead><tbody>{rows}</tbody></table></div>\n',
         "ephemeris": f'{section_open(3)}<h3>Weekly Solar-System Ephemeris</h3><p><strong>Snapshot:</strong> pending</p>{notation_toggle("ephemeris")}{ephemeris_tables()}</div>\n',
@@ -97,10 +100,6 @@ def main():
     if (a.end_year is None)!=(a.end_week is None): p.error('end_year and end_week must be supplied together')
     count=0
     for year,week,monday in selected_weeks(a.start_year,a.start_week,ey,ew):
-        rendered=page(year,week,monday)
-        legacy = week_dir(year, week) / "index.html"
-        legacy.parent.mkdir(parents=True, exist_ok=True)
-        legacy.write_text(rendered, encoding="utf-8")
         for content_type in SCAFFOLD_PAGE_TYPES:
             target = typed_page(year, week, content_type)
             target.parent.mkdir(parents=True, exist_ok=True)
