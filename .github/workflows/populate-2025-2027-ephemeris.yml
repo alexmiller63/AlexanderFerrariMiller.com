@@ -140,7 +140,8 @@ jobs:
         run: |
           set -euo pipefail
           read -r MIN_YEAR MAX_YEAR <<< "$(python - <<'PY'
-          years = sorted({int(x) for x in "$ALMANACK_YEARS".split()})
+          import os
+          years = sorted({int(x) for x in os.environ["ALMANACK_YEARS"].split()})
           print(min(years), max(years))
           PY
           )"
