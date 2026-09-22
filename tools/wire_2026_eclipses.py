@@ -5,9 +5,9 @@ import html,re,sys
 from datetime import date
 from pathlib import Path
 from almanack_calendar import ensure_calendar_metadata,get_events,set_events
-from almanack_paths import calendar_page
+from almanack_paths import VISIBILITY_GLYPH_ROOT, calendar_page
 ROOT=Path(__file__).resolve().parents[1]; DEFAULT_ECLIPSE_SOURCE=ROOT/"eclipse.yaml"; ALMANACK_SOURCE=ROOT/"almanack-expanded.md"; ECLIPSE_PAGE=ROOT/"star-almanack"/"eclipses.html"
-GLYPHS={"solar":'<img class="visibility-glyph" src="/assets/almanack/visibility-glyphs/masters/solar-eclipse.svg" alt="Solar eclipse" aria-label="Solar eclipse">',"lunar":'<img class="visibility-glyph" src="/assets/almanack/visibility-glyphs/masters/lunar-eclipse.svg" alt="Lunar eclipse" aria-label="Lunar eclipse">'}
+GLYPHS={"solar":f'<img class="visibility-glyph" src="{VISIBILITY_GLYPH_ROOT}/solar-eclipse.svg" alt="Solar eclipse" aria-label="Solar eclipse">', "lunar":f'<img class="visibility-glyph" src="{VISIBILITY_GLYPH_ROOT}/lunar-eclipse.svg" alt="Lunar eclipse" aria-label="Lunar eclipse">'}
 def parse_year(text):
  m=re.search(r"(?m)^year:\s*(\d{4})\s*$",text)
  if not m:raise SystemExit("Eclipse source is missing a top-level year: value")
