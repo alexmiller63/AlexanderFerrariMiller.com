@@ -242,12 +242,21 @@ def observing_html(key, magnitude, elongation, daylight=False):
         return ""
     glyph = VISIBILITY_GLYPHS[aid]
     label = observing_label(key, magnitude, elongation, daylight)
+    # Magnitude is part of the observing assessment and should remain visible
+    # in every presentation mode when a numeric magnitude is available.
+    try:
+        magnitude_text = f" (mag {float(magnitude):+.1f})"
+    except (TypeError, ValueError):
+        magnitude_text = ""
+    greek = glyph + magnitude_text
+    latin = label + magnitude_text
+    mixed = glyph + " " + label + magnitude_text
     return (
         '<span class="observing-notation-item" '
-        f'data-greek-html="{html.escape(glyph, quote=True)}" '
-        f'data-latin="{html.escape(label, quote=True)}" '
-        f'data-mixed-html="{html.escape(glyph + " " + label, quote=True)}">'
-        f'{glyph}</span>'
+        f'data-greek-html="{html.escape(greek, quote=True)}" '
+        f'data-latin="{html.escape(latin, quote=True)}" '
+        f'data-mixed-html="{html.escape(mixed, quote=True)}">'
+        f'{greek}</span>'
     )
 
 
