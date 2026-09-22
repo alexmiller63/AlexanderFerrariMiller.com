@@ -32,7 +32,7 @@ jobs:
           ref: main
       - uses: actions/setup-python@v5
         with:
-          python-version: '3.x'
+          python-version: '3.12'
       - name: Rebuild clean week scaffolds
         run: python tools/scaffold_almanack_weeks.py "${{ inputs.start_year }}" "${{ inputs.start_week }}" "${{ inputs.end_year }}" "${{ inputs.end_week }}"
       - name: Commit scaffolded weeks
