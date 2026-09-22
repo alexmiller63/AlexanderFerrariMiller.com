@@ -167,10 +167,13 @@ def page_date_map(year):
     """Read the annual fixed-sky crib sheet; do not recalculate source objects."""
     records = records_for_iso_year(year)
     events = defaultdict(list)
+    csv_rows = defaultdict(list)
     for record in records:
         row = dict(record["source_row"])
         row["best_date"] = record["best_date"]
         row["best_instant_utc"] = record["best_visibility"]["utc"].replace("Z", "")[:16]
+        row["iso"] = record["iso"]
+        csv_rows[record["source"]].append(row)
         day = dt.date.fromisoformat(record["best_date"])
         source = record["source"]
         if source in {"bayer", "bright_star"}:
@@ -206,6 +209,14 @@ def page_date_map(year):
             )
             continue
         raise RuntimeError(f"Unknown fixed-sky annual source: {source}")
+    if not records:
+        raise RuntimeError(
+            f"No annual fixed-sky records found for ISO {year}; "
+            "build the required Aries-to-Aries coverage first"
+        )
+    write_csv(SRC / "generated" / f"expanded-bayer-visibility-{year}.csv", csv_rows["bayer"])
+    write_csv(SRC / "generated" / f"bright-star-visibility-{year}.csv", csv_rows["bright_star"])
+    write_csv(SRC / "generated" / f"messier-visibility-{year}.csv", csv_rows["messier"])
     return events
 
 def pages_for_events(root,events):
