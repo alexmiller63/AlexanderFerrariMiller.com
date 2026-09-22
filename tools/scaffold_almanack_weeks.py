@@ -5,7 +5,7 @@ import argparse
 import datetime as dt
 import html
 from almanack_sections import section_open
-from almanack_paths import ALMANACK_ROOT, typed_page
+from almanack_paths import ALMANACK_ROOT, week_index
 
 BOTTOM_ID = "almanack-bottom-nav"
 SCAFFOLD_PAGE_TYPES = ("calendar", "ephemeris", "planet-finder", "sky-notes")
