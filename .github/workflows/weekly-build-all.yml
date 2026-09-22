@@ -67,18 +67,14 @@ jobs:
           END_WEEK: ${{ inputs.end_week }}
         run: |
           mapfile -t WEEKS < <(
-            python - <<'PY'
-          import os
-          from datetime import date, timedelta
-          start = date.fromisocalendar(int(os.environ["START_YEAR"]), int(os.environ["START_WEEK"]), 1)
-          end = date.fromisocalendar(int(os.environ["END_YEAR"]), int(os.environ["END_WEEK"]), 1)
-          if start > end:
-              raise SystemExit("Start ISO week must not be after end ISO week")
-          current = start
-          while current <= end:
-              iso = current.isocalendar()
-              print(f"{iso.year} {iso.week}")
-              current += timedelta(days=7)
+            read START_DATE END_DATE < <(python tools/resolve_iso_week_range.py \
+              "$START_YEAR" "$START_WEEK" "$END_YEAR" "$END_WEEK")
+            python - "$START_DATE" "$END_DATE" <<'PY'
+          import sys
+          from datetime import date
+          from tools.iso_date_range import weeks_in_range
+          for iso_week in weeks_in_range(date.fromisoformat(sys.argv[1]), date.fromisoformat(sys.argv[2])):
+              print(iso_week.year, iso_week.week)
           PY
           )
 
