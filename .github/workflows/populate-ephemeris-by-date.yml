@@ -102,8 +102,9 @@ jobs:
         run: |
           python - <<'PY'
           from datetime import date, timedelta
-          from pathlib import Path
           import re
+
+          from tools.almanack_paths import typed_page
 
           start = date.fromisoformat('${{ steps.range.outputs.start_date }}')
           end = date.fromisoformat('${{ steps.range.outputs.end_date }}')
@@ -111,7 +112,7 @@ jobs:
           checked = 0
           while day <= end:
               iso = day.isocalendar()
-              path = Path(f'almanack/{iso.year}/W{iso.week:02d}/index.html')
+              path = typed_page(iso.year, iso.week, 'ephemeris')
               text = path.read_text(encoding='utf-8')
               section = re.search(r'<h3>Weekly Solar-System Ephemeris</h3>.*?(?=<h3>Planet Finder</h3>)', text, re.S)
               if not section:
