@@ -172,13 +172,13 @@ jobs:
             count="$(grep -o 'class="object-artwork-link"' "$dom" | wc -l || true)"
             checked=$((checked + count))
           done < <(python - <<'PY'
-          from datetime import date, timedelta
-          start=date.fromisocalendar(int("${{ inputs.start_year }}"), int("${{ inputs.start_week }}"), 1)
-          end=date.fromisocalendar(int("${{ inputs.end_year }}"), int("${{ inputs.end_week }}"), 1)
-          while start <= end:
-              iso=start.isocalendar()
-              print(iso.year, iso.week)
-              start += timedelta(days=7)
+          from datetime import date
+          from tools.iso_date_range import weeks_in_range
+          for iso_week in weeks_in_range(
+              date.fromisoformat("${{ steps.range.outputs.start_date }}"),
+              date.fromisoformat("${{ steps.range.outputs.end_date }}"),
+          ):
+              print(iso_week.year, iso_week.week)
           PY
           )
           echo "PROOF COMPLETE: Chromium verified the Sky Notes/Artwork handoff contract; $checked supplemental object-artwork links rendered."
