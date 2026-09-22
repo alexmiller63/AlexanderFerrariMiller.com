@@ -13,7 +13,6 @@ from almanack_paths import year_dir, week_index
 
 ROOT = Path(__file__).resolve().parents[1]
 BASES = (ROOT / "almanack",)
-CONTENT_TYPES = ("calendar", "ephemeris", "planet-finder", "sky-notes")
 BOTTOM_ID = "almanack-bottom-nav"
 LOCAL_ZONE = ZoneInfo("America/Los_Angeles")
 
@@ -258,18 +257,17 @@ def main() -> None:
         for year in years:
             for week_dir in sorted(year_dir(year).glob('W??')):
                 week = int(week_dir.name[1:])
-                for content_type in CONTENT_TYPES:
-                    path = typed_page(year, week, content_type)
-                    if not path.exists():
-                        continue
-                    original = path.read_text(encoding='utf-8')
-                    updated = rewrite_year_nav(original, year, weekly_page=True)
-                    updated = rewrite_week_nav(updated, year, week)
-                    updated = place_bottom_navigation(updated, year, week)
-                    updated = ensure_style(updated)
-                    if updated != original:
-                        path.write_text(updated, encoding='utf-8')
-                        changed += 1
+                path = week_index(year, week)
+                if not path.exists():
+                    continue
+                original = path.read_text(encoding='utf-8')
+                updated = rewrite_year_nav(original, year, weekly_page=True)
+                updated = rewrite_week_nav(updated, year, week)
+                updated = place_bottom_navigation(updated, year, week)
+                updated = ensure_style(updated)
+                if updated != original:
+                    path.write_text(updated, encoding='utf-8')
+                    changed += 1
 
             index_path = year_dir(year) / 'index.html'
             if index_path.exists():
