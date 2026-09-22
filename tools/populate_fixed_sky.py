@@ -15,7 +15,7 @@ from almanack_calendar import CalendarEvent, ensure_calendar_metadata, get_event
 from almanack_paths import ALMANACK_ROOT, calendar_pages
 from star_almanack_astronomy import apparent_sun_ra_hours,best_visibility_occurrences_for_iso_year,solar_ra_occurrences_for_iso_year
 from star_almanack_objects import AlmanackObject,ObservingAid,observing_aid_for_magnitude,render_html
-from fixed_sky_annual import occurrences_for_iso_year
+from fixed_sky_annual import ensure_coverage, occurrences_for_iso_year
 
 ROOT=Path(__file__).resolve().parents[1]; SRC=ROOT; PUBLIC=ALMANACK_ROOT; DEFAULT_YEARS=(2025,2026,2027)
 REGIONS=SRC/"fixed-object-regions.yaml"
@@ -165,6 +165,8 @@ def _messier_catalog_rows_for_annual_use():
 
 def page_date_map(year):
     """Read annual Aries-to-Aries coverage; do not recalculate fixed objects."""
+    ensure_coverage(year - 1)
+    ensure_coverage(year)
     occurrences = occurrences_for_iso_year(year)
     bayer_rows = read_csv("expanded-bayer-visibility-2026.csv")
     bright_rows = read_csv("bright-star-visibility-2026.csv")
