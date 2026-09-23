@@ -178,27 +178,27 @@ def place_label(ax, label, point, occupied_labels, color=TEXT, fontsize=9, zorde
 
 
 def place_constellation_label(ax, label, point, occupied_labels, obstacle_segments=()):
-    """Place a constellation name in genuinely clear space."""
+    """Place a constellation name by searching outward until a genuinely clear area is found."""
     probe = ax.annotate(label, point, xytext=(0, 0), textcoords="offset points",
                         fontsize=16, color=FIGURE_BLUE, zorder=5)
     ax.figure.canvas.draw()
     renderer = ax.figure.canvas.get_renderer()
     width = probe.get_window_extent(renderer=renderer).width
+    height = probe.get_window_extent(renderer=renderer).height
     probe.remove()
 
-    if label.strip().lower() == "aquila":
-        # Aquila specifically needs to move one full label width left.
-        offsets = [
-            (-width, 0), (-1.25 * width, 0), (-1.5 * width, 0),
-            (-1.75 * width, 0), (-2.0 * width, 0),
-            (-width, 12), (-width, -12),
-            (-1.5 * width, 12), (-1.5 * width, -12),
-        ]
-    else:
-        offsets = ((5, 5), (7, -7), (-7, 7), (-7, -7),
-                   (10, 0), (0, 10), (-10, 0), (0, -10),
-                   (13, 7), (13, -7), (-13, 7), (-13, -7),
-                   (16, 0), (0, 16), (-16, 0), (0, -16))
+    # Search in expanding rings. The first collision-free position wins;
+    # there is no constellation-specific preferred direction.
+    offsets = [(0, 0)]
+    for radius in range(1, 13):
+        distance_x = radius * max(width * 0.5, 12)
+        distance_y = radius * max(height * 0.9, 12)
+        offsets.extend((
+            (-distance_x, 0), (distance_x, 0),
+            (0, -distance_y), (0, distance_y),
+            (-distance_x, -distance_y), (-distance_x, distance_y),
+            (distance_x, -distance_y), (distance_x, distance_y),
+        ))
 
     for dx, dy in offsets:
         annotation = ax.annotate(label, point, xytext=(dx, dy), textcoords="offset points",
