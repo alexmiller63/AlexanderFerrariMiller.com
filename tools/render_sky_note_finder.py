@@ -252,11 +252,15 @@ def place_target_label(ax, label, point, occupied_labels, obstacle_segments=()):
         nearest_y = min(max(anchor_y, bbox.y0), bbox.y1)
         anchor_distance = math.hypot(nearest_x - anchor_x, nearest_y - anchor_y)
         annotation.remove()
-        candidate = (score, anchor_distance, rank, dx, dy)
+        if score != 0:
+            continue
+        candidate = (anchor_distance, rank, dx, dy)
         if best is None or candidate < best:
             best = candidate
 
-    _, _, _, dx, dy = best
+    if best is None:
+        raise RuntimeError(f"No collision-free target-label position found for {label!r}")
+    _, _, dx, dy = best
     annotation = ax.annotate(label, point, xytext=(dx, dy), textcoords="offset points", **style)
     ax.figure.canvas.draw()
     renderer = ax.figure.canvas.get_renderer()
