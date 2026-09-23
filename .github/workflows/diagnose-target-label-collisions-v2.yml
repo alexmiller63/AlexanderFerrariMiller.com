@@ -32,6 +32,33 @@ jobs:
           grep -nE '<title>|<desc>|Target:|target|Altair|Aquila|Aql|AQL|α|Alpha' "$TARGET" | head -n 300 || true
           echo '=== Nearby SVG geometry ==='
           grep -nE '(Altair|Aquila|Aql|AQL|α|Alpha)' "$TARGET" -B 5 -A 5 | head -n 500 || true
+          echo '=== Altair target-label and star-marker coordinates ==='
+          python - <<'PY'
+          from pathlib import Path
+          import re
+
+          p = Path('sky-notes-artwork/objects/109/finder.svg')
+          lines = p.read_text().splitlines()
+
+          hits = [i for i, line in enumerate(lines)
+                  if ('α Aql, Altair' in line or 'Altair in Aquila' in line)]
+          print('target-label references:', [i + 1 for i in hits])
+
+          for i in hits:
+              print(f'--- context around line {i + 1} ---')
+              for j in range(max(0, i - 12), min(len(lines), i + 20)):
+                  line = lines[j]
+                  if ('transform=' in line or '<path' in line or '<use' in line
+                          or '<g ' in line or 'Altair' in line):
+                      print(f'{j + 1}: {line}')
+
+          print('=== transforms near Altair references ===')
+          for i in hits:
+              lo, hi = max(0, i - 40), min(len(lines), i + 80)
+              for j in range(lo, hi):
+                  if re.search(r'transform="(?:translate|matrix)\(', lines[j]):
+                      print(f'{j + 1}: {lines[j]}')
+          PY
 
       - name: Inspect Altair spec
         shell: bash
