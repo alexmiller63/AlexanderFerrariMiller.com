@@ -111,7 +111,7 @@ jobs:
               if glyphs and wrapped == 0:
                   raise SystemExit(f'Raw observing glyphs are not notation-aware: {path}')
 
-              labels = re.findall(
+              latin_values = re.findall(
                   r'<span class="observing-notation-item"\s+'
                   r'data-greek-html=".*?"\s+'
                   r'data-latin="([^"]+)"',
@@ -119,9 +119,10 @@ jobs:
                   re.S,
               )
               valid_labels = ('Naked eye', 'Binoculars', 'Telescope', 'Substantial telescope', 'Daylight', 'Solar Glare', 'Visible')
-              if len(labels) != wrapped:
+              if len(latin_values) != wrapped:
                   raise SystemExit(f'Observing aid lacks Latin notation markup: {path}')
-              for label in labels:
+              for value in latin_values:
+                  label = re.sub(r' \(mag [+-]\d+(?:\.\d+)?\)$', '', value)
                   if label not in valid_labels:
                       raise SystemExit(f'Observing aid lacks valid Latin notation: {path}')
               checked += 1
