@@ -407,6 +407,18 @@ def render(spec: dict, stars, output: Path) -> None:
                    s=[marker_area(item[2].mag, 7) for item in visible], color=STAR, zorder=1)
     for path in figure_paths:
         draw_path(ax, path, idx, center, FIGURE_BLUE, 2.7)
+    # Project all IAU boundaries before label placement so constellation names
+    # avoid the complete rendered geometry, not just figure/asterism lines.
+    projected_boundaries = []
+    for boundary_name, boundary_abbreviation, boundary in load_iau_boundaries():
+        boundary_points = projected_path(boundary, center)
+        if len(boundary_points) >= 2:
+            projected_boundaries.append(
+                (boundary_name, boundary_abbreviation, boundary_points)
+            )
+    boundary_segments = []
+    for _, _, boundary_points in projected_boundaries:
+        boundary_segments.extend(zip(boundary_points, boundary_points[1:]))
     figure_refs = []
     seen = set()
     for path in figure_paths:
@@ -446,7 +458,7 @@ def render(spec: dict, stars, output: Path) -> None:
                                sum(y for _, y in figure_points) / len(figure_points))
         place_constellation_label(
             ax, figure_constellation, constellation_point, occupied_labels,
-            obstacle_segments=figure_segments + asterism_segments,
+            obstacle_segments=figure_segments + asterism_segments + boundary_segments,
         )
     for candidate in spec.get("candidate_asterisms") or []:
         visible_paths = []
@@ -461,8 +473,8 @@ def render(spec: dict, stars, output: Path) -> None:
             asterisms.append(dict(candidate, paths=visible_paths))
     home_abbreviation = str(spec.get("constellation_abbreviation") or "").strip()
     neighbor_points = {}
-    for boundary_name, boundary_abbreviation, boundary in load_iau_boundaries():
-        points = projected_path(boundary, center)
+    for boundary_name, boundary_abbreviation, boundary_points in projected_boundaries:
+        points = boundary_points
         if len(points) < 2 or not path_hits_view(points, xmin, xmax, ymin, ymax):
             continue
         ax.plot([p[0] for p in points], [p[1] for p in points],
