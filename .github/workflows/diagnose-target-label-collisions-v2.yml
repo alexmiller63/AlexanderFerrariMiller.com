@@ -10,10 +10,20 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v4
 
-      - name: Locate W36 Altair artwork SVG
+      - name: Inventory W36 artwork candidates
         shell: bash
         run: |
-          find . -type f -iname '*.svg' \
-            | grep -Ei 'W36|36' \
-            | grep -Ei 'Altair|Aquila' \
-            | sort
+          echo '=== W36 directories ==='
+          find . -type d -iname '*W36*' -print | sort || true
+
+          echo '=== Files mentioning W36 / Altair / Aquila in path ==='
+          find . -type f -print \
+            | grep -Ei 'W36|Altair|Aquila' \
+            | sort \
+            | head -n 500 || true
+
+          echo '=== All SVG files ==='
+          find . -type f -iname '*.svg' -print | sort | head -n 500 || true
+
+          echo '=== References to Altair or Aquila in likely generated content ==='
+          grep -RIlE 'Altair|Aquila' almanack 2>/dev/null | sort | head -n 500 || true
