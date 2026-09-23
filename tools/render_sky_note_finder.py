@@ -229,7 +229,7 @@ def place_target_label(ax, label, point, occupied_labels, obstacle_segments=()):
     # collision-free choices.  This preserves nearest-clear placement without
     # redrawing hundreds of farther candidates that cannot win.
     gap = 4
-    x_step = max(width * 0.125, 4)
+    x_step = max(width * 0.0625, 2)
     y_step = max(height * 0.25, 3)
     offset_rings = []
     for ring in range(0, 17):
