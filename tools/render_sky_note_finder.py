@@ -76,12 +76,18 @@ def segment_hits_display_bbox(ax, start, end, bbox):
 
 
 def place_label(ax, label, point, occupied_labels, color=TEXT, fontsize=9, zorder=6,
-                obstacle_segments=()):
+                obstacle_segments=(), strict=False):
     """Place a label using its true rendered bounds for collision rejection."""
     offsets = ((5, 5), (7, -7), (-7, 7), (-7, -7),
                (10, 0), (0, 10), (-10, 0), (0, -10),
                (13, 7), (13, -7), (-13, 7), (-13, -7),
                (16, 0), (0, 16), (-16, 0), (0, -16))
+    if strict:
+        offsets = offsets + tuple(
+            (distance * math.cos(angle), distance * math.sin(angle))
+            for distance in range(20, 181, 10)
+            for angle in (i * math.pi / 8 for i in range(16))
+        )
     renderer = ax.figure.canvas.get_renderer()
     best = None
     for rank, (dx, dy) in enumerate(offsets):
@@ -100,6 +106,8 @@ def place_label(ax, label, point, occupied_labels, color=TEXT, fontsize=9, zorde
             best = candidate
         if score == 0:
             break
+    if strict and (best is None or best[0] != 0):
+        raise RuntimeError(f"No collision-free rendered position for label {label!r}")
     _, _, dx, dy = best
     annotation = ax.annotate(label, point, xytext=(dx, dy), textcoords="offset points",
                              fontsize=fontsize, color=color, zorder=zorder)
@@ -178,7 +186,6 @@ def bayer_label(identity, star=None):
     if star is None:
         return ""
     return greek_bayer_symbol(star.bayer)
-
 
 def chart_bayer_label(identity, star, figure_abbreviation):
     full = bayer_label(identity, star)
@@ -333,7 +340,7 @@ def render(spec: dict, stars, output: Path) -> None:
                                sum(y for _, y in figure_points) / len(figure_points))
         place_label(ax, figure_constellation, constellation_point, occupied_labels,
                     color=FIGURE_BLUE, fontsize=16, zorder=5,
-                    obstacle_segments=figure_segments + asterism_segments)
+                    obstacle_segments=figure_segments + asterism_segments, strict=True)
     for candidate in spec.get("candidate_asterisms") or []:
         visible_paths = []
         for path in candidate.get("paths") or []:
@@ -357,8 +364,7 @@ def render(spec: dict, stars, output: Path) -> None:
         visible_points = [p for p in points if xmin <= p[0] <= xmax and ymin <= p[1] <= ymax]
         if visible_points and boundary_abbreviation != home_abbreviation:
             neighbor_points.setdefault(boundary_abbreviation, (boundary_name, visible_points))
-    for neighbor_abbreviation, (neighbor_name, points) in neighbor_points.items():
-        point = (sum(x for x, _ in points) / len(points), sum(y for _, y in points) / len(points))
+    for neighbor_abbreviation, (neighbor_name, points) in neighbor_points.items():        point = (sum(x for x, _ in points) / len(points), sum(y for _, y in points) / len(points))
         visible_width = max(x for x, _ in points) - min(x for x, _ in points)
         full_name_width = max(1.0, len(neighbor_name) * 0.16)
         boundary_label = neighbor_name if visible_width >= full_name_width else neighbor_abbreviation.upper()
