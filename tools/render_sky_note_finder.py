@@ -105,7 +105,6 @@ def segment_hits_display_bbox(ax, start, end, bbox):
 
 
 
-
 def boundary_bbox_contains(ax, bbox, boundary_points):
     """Return True when a rendered label box stays inside a projected IAU boundary."""
     display_points = [ax.transData.transform(point) for point in boundary_points]
@@ -206,6 +205,59 @@ def place_label(ax, label, point, occupied_labels, color=TEXT, fontsize=9, zorde
     _, _, dx, dy = best
     annotation = ax.annotate(label, point, xytext=(dx, dy), textcoords="offset points",
                              fontsize=fontsize, color=color, zorder=zorder)
+    ax.figure.canvas.draw()
+    renderer = ax.figure.canvas.get_renderer()
+    occupied_labels.append(annotation.get_window_extent(renderer=renderer).expanded(1.08, 1.16))
+    return annotation
+
+
+def place_target_label(ax, label, point, occupied_labels, obstacle_segments=()):
+    """Place the target label in a genuinely clear area, including full-width moves."""
+    style = dict(
+        ha="left", va="center", fontsize=10, color=TARGET_YELLOW,
+        bbox=dict(facecolor=NIGHT, edgecolor="none", pad=0.8), zorder=9,
+    )
+    probe = ax.annotate(label, point, xytext=(14, 0), textcoords="offset points", **style)
+    ax.figure.canvas.draw()
+    renderer = ax.figure.canvas.get_renderer()
+    probe_bbox = probe.get_window_extent(renderer=renderer)
+    width = probe_bbox.width
+    height = probe_bbox.height
+    probe.remove()
+
+    # Include the familiar right-of-target position first, then explicitly try
+    # one complete rendered label width to the left before expanding outward.
+    offsets = [
+        (14, 0), (-width - 14, 0),
+        (14, height), (-width - 14, height),
+        (14, -height), (-width - 14, -height),
+    ]
+    for radius in range(2, 7):
+        dx = radius * max(width * 0.5, 18)
+        dy = radius * max(height, 12)
+        offsets.extend(((dx, 0), (-width - dx, 0),
+                        (dx, dy), (-width - dx, dy),
+                        (dx, -dy), (-width - dx, -dy)))
+
+    best = None
+    for rank, (dx, dy) in enumerate(offsets):
+        annotation = ax.annotate(label, point, xytext=(dx, dy), textcoords="offset points", **style)
+        ax.figure.canvas.draw()
+        renderer = ax.figure.canvas.get_renderer()
+        bbox = annotation.get_window_extent(renderer=renderer).expanded(1.08, 1.16)
+        label_hits = sum(bbox.overlaps(other) for other in occupied_labels)
+        geometry_hits = sum(segment_hits_display_bbox(ax, start, end, bbox)
+                            for start, end in obstacle_segments)
+        score = label_hits + geometry_hits
+        annotation.remove()
+        candidate = (score, rank, dx, dy)
+        if best is None or candidate < best:
+            best = candidate
+        if score == 0:
+            break
+
+    _, _, dx, dy = best
+    annotation = ax.annotate(label, point, xytext=(dx, dy), textcoords="offset points", **style)
     ax.figure.canvas.draw()
     renderer = ax.figure.canvas.get_renderer()
     occupied_labels.append(annotation.get_window_extent(renderer=renderer).expanded(1.08, 1.16))
@@ -563,9 +615,10 @@ def render(spec: dict, stars, output: Path) -> None:
     target_chart_label = ", ".join(part for part in (target_bayer, target_name) if part)
     if not target_chart_label:
         target_chart_label = str(target_identity.get("name") or "Target")
-    ax.annotate(target_chart_label, target_point, xytext=(14, 0), textcoords="offset points",
-                ha="left", va="center", fontsize=10, color=TARGET_YELLOW,
-                bbox=dict(facecolor=NIGHT, edgecolor="none", pad=0.8), zorder=9)
+    place_target_label(
+        ax, target_chart_label, target_point, occupied_labels,
+        obstacle_segments=figure_segments + asterism_segments + boundary_segments,
+    )
     # Stellar titles use the same Greek Bayer symbol as the chart label.
     if target_star is not None and target_bayer and target_name and figure_constellation:
         title = f"{target_bayer}, {target_name} in {figure_constellation}"
