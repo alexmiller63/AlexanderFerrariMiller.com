@@ -81,6 +81,9 @@ jobs:
         run: |
           python -m py_compile \
             tools/generate_planet_finders.py \
+            tools/planet_finder_geometry.py \
+            tools/planet_finder_search.py \
+            tools/planet_finder_render.py \
             tools/populate_ephemeris_planet_finder_by_date.py
 
       - name: Resolve ISO week range
