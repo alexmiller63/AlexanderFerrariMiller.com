@@ -37,15 +37,26 @@ jobs:
         run: |
           python tools/generate_planet_finders.py --help || true
 
-      - name: Show forward-check implementation
+      - name: Instrument forward-check dead body
         run: |
           python - <<'PY'
           from pathlib import Path
           p = Path('tools/generate_planet_finders.py')
           text = p.read_text()
-          start = text.index('    def forward_check(')
-          end = text.index('    def search(', start)
-          print(text[start:end])
+          old = '''            else:
+                body_stat["dead"] += 1
+                forward_stats["pruned"] += 1
+                return False
+'''
+          new = '''            else:
+                body_stat["dead"] += 1
+                forward_stats["pruned"] += 1
+                print(f"FORWARD-CHECK DEAD future_body={future_name} future_depth={future_depth} next_depth={next_depth} raw_probes={witness_raw}", flush=True)
+                return False
+'''
+          if old not in text:
+              raise SystemExit('forward-check return block not found')
+          p.write_text(text.replace(old, new, 1))
           PY
 
       - name: Run W02 Planet Finder diagnostic
