@@ -47,26 +47,31 @@
   document.querySelectorAll('[data-bayer-mode]').forEach(function(button){button.addEventListener('click',function(){applyMode(button.dataset.bayerMode);});});
   let initial='greek';try{const saved=localStorage.getItem('star-almanack-bayer-mode');if(saved==='greek'||saved==='latin'||saved==='mixed')initial=saved;}catch(_){}applyMode(initial);
 
-  /* Variable-star display is independent of notation. Significant is the normal
-     Almanack view (V-band span >= 1.0 mag). All reveals every catalogued variable
-     and replaces the representative whole magnitude with its one-decimal range. */
+  /* Detail is independent of notation. Standard uses whole magnitudes and marks
+     only variables spanning at least 1.0 V magnitude. All uses one-decimal
+     magnitudes for every object and reveals every catalogued variable; variables
+     with a known range display that one-decimal range instead of one value. */
   const calendar=document.querySelector('table.calendar');
-  if(calendar&&calendar.querySelector('.variable-star-marker')){
+  if(calendar&&calendar.querySelector('.magnitude-normal')){
     const notationControl=document.querySelector('.section-notation-toggle[data-notation-target="calendar"]');
-    const host=notationControl||calendar;
-    const wrap=document.createElement('div');wrap.className='bayer-toggle-wrap variability-toggle-wrap';
-    const group=document.createElement('div');group.className='bayer-toggle';group.setAttribute('role','group');group.setAttribute('aria-label','Variable stars');
-    const label=document.createElement('span');label.className='bayer-toggle-label';label.textContent='Variability:';
-    const significant=document.createElement('button');significant.type='button';significant.dataset.variabilityMode='significant';significant.textContent='Significant';
-    const all=document.createElement('button');all.type='button';all.dataset.variabilityMode='all';all.textContent='All';
-    group.append(label,significant,all);wrap.append(group);if(notationControl)notationControl.insertAdjacentElement('afterend',wrap);else calendar.insertAdjacentElement('beforebegin',wrap);
-    function applyVariability(mode){
-      calendar.querySelectorAll('.variable-star-marker').forEach(function(marker){marker.hidden=mode==='significant'&&marker.dataset.significant!=='true';});
-      calendar.querySelectorAll('.visibility-magnitude').forEach(function(block){const normal=block.querySelector('.magnitude-normal'),range=block.querySelector('.magnitude-variable-range');if(!range)return;if(normal)normal.hidden=mode==='all';range.hidden=mode!=='all';});
-      group.querySelectorAll('[data-variability-mode]').forEach(function(button){button.setAttribute('aria-pressed',button.dataset.variabilityMode===mode?'true':'false');});
-      try{localStorage.setItem('star-almanack-variability-mode',mode);}catch(_){}
+    const wrap=document.createElement('div');wrap.className='bayer-toggle-wrap detail-toggle-wrap';
+    const group=document.createElement('div');group.className='bayer-toggle';group.setAttribute('role','group');group.setAttribute('aria-label','Detail');
+    const label=document.createElement('span');label.className='bayer-toggle-label';label.textContent='Detail:';
+    const standard=document.createElement('button');standard.type='button';standard.dataset.detailMode='standard';standard.textContent='Standard';
+    const all=document.createElement('button');all.type='button';all.dataset.detailMode='all';all.textContent='All';
+    group.append(label,standard,all);wrap.append(group);if(notationControl)notationControl.insertAdjacentElement('afterend',wrap);else calendar.insertAdjacentElement('beforebegin',wrap);
+    function applyDetail(mode){
+      calendar.querySelectorAll('.variable-star-marker').forEach(function(marker){marker.hidden=mode==='standard'&&marker.dataset.significant!=='true';});
+      calendar.querySelectorAll('.visibility-magnitude').forEach(function(block){
+        const normal=block.querySelector('.magnitude-normal'),detail=block.querySelector('.magnitude-detail'),range=block.querySelector('.magnitude-variable-range');
+        if(normal)normal.hidden=mode==='all';
+        if(detail)detail.hidden=mode!=='all'||!!range;
+        if(range)range.hidden=mode!=='all';
+      });
+      group.querySelectorAll('[data-detail-mode]').forEach(function(button){button.setAttribute('aria-pressed',button.dataset.detailMode===mode?'true':'false');});
+      try{localStorage.setItem('star-almanack-detail-mode',mode);}catch(_){}
     }
-    group.querySelectorAll('[data-variability-mode]').forEach(function(button){button.addEventListener('click',function(){applyVariability(button.dataset.variabilityMode);});});
-    let variability='significant';try{if(localStorage.getItem('star-almanack-variability-mode')==='all')variability='all';}catch(_){}applyVariability(variability);
+    group.querySelectorAll('[data-detail-mode]').forEach(function(button){button.addEventListener('click',function(){applyDetail(button.dataset.detailMode);});});
+    let detail='standard';try{if(localStorage.getItem('star-almanack-detail-mode')==='all'||localStorage.getItem('star-almanack-variability-mode')==='all')detail='all';}catch(_){}applyDetail(detail);
   }
 })();
