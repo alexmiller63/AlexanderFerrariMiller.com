@@ -34,6 +34,10 @@ TARGET_YELLOW = "#ffd84d"
 BOUNDARY_WHITE = "#ffffff"
 BOUNDARY_ROOT = REPO_ROOT / "reference-data" / "iau-constellation-boundaries"
 
+CONSTELLATION_DISPLAY_NAMES = {
+    "Capricornus": "Capricorn",
+}
+
 GREEK_SYMBOL_ORDER = "αβγδεζηθικλμνξοπρστυφχψω"
 GREEK_ORDER = {symbol: rank for rank, symbol in enumerate(GREEK_SYMBOL_ORDER)}
 
@@ -520,7 +524,7 @@ def render(spec: dict, stars, output: Path) -> None:
         point = (sum(x for x, _ in visible_points) / len(visible_points),
                  sum(y for _, y in visible_points) / len(visible_points))
         place_boundary_label(
-            ax, neighbor_name, neighbor_abbreviation, point, occupied_labels,
+            ax, CONSTELLATION_DISPLAY_NAMES.get(neighbor_name, neighbor_name), neighbor_abbreviation, point, occupied_labels,
             points,
             obstacle_segments=boundary_segments,
             color=BOUNDARY_WHITE, fontsize=10, zorder=5,
