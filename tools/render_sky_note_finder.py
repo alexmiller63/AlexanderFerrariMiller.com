@@ -212,7 +212,7 @@ def place_label(ax, label, point, occupied_labels, color=TEXT, fontsize=9, zorde
 
 
 def place_target_label(ax, label, point, occupied_labels, obstacle_segments=()):
-    """Place the target label in a genuinely clear area, including full-width moves."""
+    """Place the target label in the nearest genuinely clear area."""
     style = dict(
         ha="left", va="center", fontsize=10, color=TARGET_YELLOW,
         bbox=dict(facecolor=NIGHT, edgecolor="none", pad=0.8), zorder=9,
@@ -225,8 +225,6 @@ def place_target_label(ax, label, point, occupied_labels, obstacle_segments=()):
     height = probe_bbox.height
     probe.remove()
 
-    # Include the familiar right-of-target position first, then explicitly try
-    # one complete rendered label width to the left before expanding outward.
     offsets = [
         (14, 0), (-width - 14, 0),
         (14, height), (-width - 14, height),
@@ -240,6 +238,7 @@ def place_target_label(ax, label, point, occupied_labels, obstacle_segments=()):
                         (dx, -dy), (-width - dx, -dy)))
 
     best = None
+    anchor_x, anchor_y = ax.transData.transform(point)
     for rank, (dx, dy) in enumerate(offsets):
         annotation = ax.annotate(label, point, xytext=(dx, dy), textcoords="offset points", **style)
         ax.figure.canvas.draw()
@@ -249,14 +248,15 @@ def place_target_label(ax, label, point, occupied_labels, obstacle_segments=()):
         geometry_hits = sum(segment_hits_display_bbox(ax, start, end, bbox)
                             for start, end in obstacle_segments)
         score = label_hits + geometry_hits
+        nearest_x = min(max(anchor_x, bbox.x0), bbox.x1)
+        nearest_y = min(max(anchor_y, bbox.y0), bbox.y1)
+        anchor_distance = math.hypot(nearest_x - anchor_x, nearest_y - anchor_y)
         annotation.remove()
-        candidate = (score, rank, dx, dy)
+        candidate = (score, anchor_distance, rank, dx, dy)
         if best is None or candidate < best:
             best = candidate
-        if score == 0:
-            break
 
-    _, _, dx, dy = best
+    _, _, _, dx, dy = best
     annotation = ax.annotate(label, point, xytext=(dx, dy), textcoords="offset points", **style)
     ax.figure.canvas.draw()
     renderer = ax.figure.canvas.get_renderer()
@@ -494,15 +494,11 @@ def render(spec: dict, stars, output: Path) -> None:
                    s=[marker_area(item[2].mag, 7) for item in visible], color=STAR, zorder=1)
     for path in figure_paths:
         draw_path(ax, path, idx, center, FIGURE_BLUE, 2.7)
-    # Project all IAU boundaries before label placement so constellation names
-    # avoid the complete rendered geometry, not just figure/asterism lines.
     projected_boundaries = []
     for boundary_name, boundary_abbreviation, boundary in load_iau_boundaries():
         boundary_points = projected_path(boundary, center)
         if len(boundary_points) >= 2:
-            projected_boundaries.append(
-                (boundary_name, boundary_abbreviation, boundary_points)
-            )
+            projected_boundaries.append((boundary_name, boundary_abbreviation, boundary_points))
     boundary_segments = []
     for _, _, boundary_points in projected_boundaries:
         boundary_segments.extend(zip(boundary_points, boundary_points[1:]))
@@ -515,12 +511,6 @@ def render(spec: dict, stars, output: Path) -> None:
                 figure_refs.append(ref)
     figure_constellation = spec.get("name") or ""
     figure_abbreviation = str(target_meta.get("constellation_abbreviation") or "").strip()
-    asterism_segments = []
-    for asterism in asterisms:
-        for path in asterism.get("paths") or []:
-            path_points = [project(idx[ref].ra_deg, idx[ref].dec_deg, *center) for ref in path if ref in idx]
-            path_points = [point for point in path_points if point is not None]
-            asterism_segments.extend(zip(path_points, path_points[1:]))
     occupied_labels = []
     figure_points = []
     figure_segments = []
@@ -530,11 +520,9 @@ def render(spec: dict, stars, output: Path) -> None:
         figure_segments.extend(zip(path_points, path_points[1:]))
     for ref in figure_refs:
         star = idx[ref]
-        identity = identities_by_ref[ref]
         point = project(star.ra_deg, star.dec_deg, *center)
-        if point is None:
-            continue
-        figure_points.append(point)
+        if point is not None:
+            figure_points.append(point)
     for candidate in spec.get("candidate_asterisms") or []:
         visible_paths = []
         for path in candidate.get("paths") or []:
@@ -546,9 +534,6 @@ def render(spec: dict, stars, output: Path) -> None:
                 visible_paths.append(path)
         if visible_paths:
             asterisms.append(dict(candidate, paths=visible_paths))
-    # Candidate asterisms are part of the rendered geometry, so they must be
-    # known before any star/constellation label is accepted. Otherwise a label
-    # can be placed in a location that is later occupied by a candidate path.
     asterism_segments = []
     for asterism in asterisms:
         for path in asterism.get("paths") or []:
@@ -594,8 +579,7 @@ def render(spec: dict, stars, output: Path) -> None:
                  sum(y for _, y in visible_points) / len(visible_points))
         place_boundary_label(
             ax, CONSTELLATION_DISPLAY_NAMES.get(neighbor_name, neighbor_name), neighbor_abbreviation, point, occupied_labels,
-            points,
-            obstacle_segments=boundary_segments,
+            points, obstacle_segments=boundary_segments,
             color=BOUNDARY_WHITE, fontsize=10, zorder=5,
         )
     for asterism in asterisms:
@@ -619,7 +603,6 @@ def render(spec: dict, stars, output: Path) -> None:
         ax, target_chart_label, target_point, occupied_labels,
         obstacle_segments=figure_segments + asterism_segments + boundary_segments,
     )
-    # Stellar titles use the same Greek Bayer symbol as the chart label.
     if target_star is not None and target_bayer and target_name and figure_constellation:
         title = f"{target_bayer}, {target_name} in {figure_constellation}"
     else:
