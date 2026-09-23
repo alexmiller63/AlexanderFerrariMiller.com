@@ -1,6 +1,8 @@
 name: Diagnose W02 Forward Check
 
 on:
+  push:
+    branches: [diagnose-w02-forward-check]
   workflow_dispatch:
 
 permissions:
@@ -17,16 +19,13 @@ jobs:
       - name: Locate Planet Finder CLI
         run: |
           python tools/generate_planet_finders.py --help || true
-      - name: Show forward-check implementation
+      - name: Compile all Planet Finder modules
         run: |
-          python - <<'PY'
-          from pathlib import Path
-          p = Path('tools/generate_planet_finders.py')
-          text = p.read_text()
-          start = text.index('    def forward_check(')
-          end = text.index('    def search(', start)
-          print(text[start:end])
-          PY
+          python -m py_compile             tools/generate_planet_finders.py             tools/planet_finder_geometry.py             tools/planet_finder_search.py             tools/planet_finder_render.py             tools/populate_ephemeris_planet_finder_by_date.py
+      - name: Run Planet Finder unit tests
+        run: |
+          pip install pytest skyfield==1.55
+          pytest -q tests/test_planet_finder_candidate_generation.py
       - name: Run W02 Planet Finder diagnostic
         shell: bash
         run: |
