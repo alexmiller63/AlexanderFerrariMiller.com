@@ -137,7 +137,7 @@ def place_boundary_label(ax, full_label, abbreviation, point, occupied_labels,
                (10, 0), (0, 10), (-10, 0), (0, -10),
                (13, 7), (13, -7), (-13, 7), (-13, -7),
                (16, 0), (0, 16), (-16, 0), (0, -16))
-    for label in (full_label, abbreviation.upper()):
+    for label in (full_label, abbreviation):
         if not label:
             continue
         best = None
