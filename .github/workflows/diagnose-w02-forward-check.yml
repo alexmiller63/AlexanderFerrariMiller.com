@@ -1,0 +1,34 @@
+name: Diagnose W02 Forward Check
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      - name: Locate Planet Finder CLI
+        run: |
+          python tools/generate_planet_finders.py --help || true
+      - name: Show forward-check implementation
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('tools/generate_planet_finders.py')
+          text = p.read_text()
+          start = text.index('    def forward_check(')
+          end = text.index('    def search(', start)
+          print(text[start:end])
+          PY
+      - name: Run W02 Planet Finder diagnostic
+        shell: bash
+        run: |
+          set -o pipefail
+          python tools/generate_planet_finders.py --year 2026 --week 2 2>&1 | tee w02-forward-check.log
