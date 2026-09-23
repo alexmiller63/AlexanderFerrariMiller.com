@@ -225,17 +225,19 @@ def place_target_label(ax, label, point, occupied_labels, obstacle_segments=()):
     height = probe_bbox.height
     probe.remove()
 
-    offsets = [
-        (14, 0), (-width - 14, 0),
-        (14, height), (-width - 14, height),
-        (14, -height), (-width - 14, -height),
-    ]
-    for radius in range(2, 7):
-        dx = radius * max(width * 0.5, 18)
-        dy = radius * max(height, 12)
-        offsets.extend(((dx, 0), (-width - dx, 0),
-                        (dx, dy), (-width - dx, dy),
-                        (dx, -dy), (-width - dx, -dy)))
+    # Search a dense grid around the target.  The old sparse six-direction
+    # rings could skip much nearer clear positions and then correctly choose
+    # the nearest position only from that incomplete candidate set.
+    gap = 4
+    x_step = max(width * 0.125, 4)
+    y_step = max(height * 0.25, 3)
+    offsets = []
+    for ring in range(0, 17):
+        for iy in range(-ring, ring + 1):
+            for side in (-1, 1):
+                dx = gap + ring * x_step if side > 0 else -width - gap - ring * x_step
+                dy = iy * y_step
+                offsets.append((dx, dy))
 
     best = None
     anchor_x, anchor_y = ax.transData.transform(point)
