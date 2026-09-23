@@ -1,0 +1,44 @@
+name: Test W02 No Forward Check
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: test-w02-no-forward-check
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/cache@v4
+        with:
+          path: |
+            .cache/skyfield/de440s.bsp
+            .cache/skyfield/ceres_1900_2100.bsp
+          key: star-almanack-source-kernels-v1
+      - name: Install dependencies
+        run: |
+          python -m pip install --disable-pip-version-check --upgrade pip
+          python -m pip install --disable-pip-version-check 'numpy==1.26.4' 'skyfield==1.55'
+      - name: Ensure ephemeris kernels
+        run: python tools/ensure_ephemeris_kernels.py --ceres
+      - name: Disable forward check for this run only
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('tools/generate_planet_finders.py')
+          s = p.read_text()
+          old = 'if forward_check(depth + 1) and search(depth + 1):'
+          new = 'if search(depth + 1):'
+          if s.count(old) != 1:
+              raise SystemExit(f'expected exactly one forward-check call, found {s.count(old)}')
+          p.write_text(s.replace(old, new))
+          print('Forward check disabled in runner working tree only.')
+          PY
+      - name: Generate W02
+        env:
+          STAR_ALMANACK_EPHEMERIS_DIR: ${{ github.workspace }}/.cache/skyfield
+        run: python tools/generate_planet_finders.py --year 2026 --week 2
