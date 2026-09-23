@@ -1032,9 +1032,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 # Forward checking asks only for one viable witness for every
                 # remaining body. Zero proves this prefix is dead; one is
                 # enough to preserve it for the real DFS.
-                if forward_check(depth + 1) and search(depth + 1):
-                    return True
-            finally:
+                if search(depth + 1):
                 staged.pop(original_index, None)
                 leaders.pop()
                 placed.pop()
