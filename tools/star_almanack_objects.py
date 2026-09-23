@@ -69,6 +69,22 @@ def one_decimal(value: str) -> str:
     except InvalidOperation: return (value or "").strip()
 
 
+def adaptive_variable_range(bright: str, faint: str) -> tuple[str, str]:
+    """Format a variable-star range compactly without rounding away variability."""
+    try:
+        a = Decimal((bright or "").strip())
+        b = Decimal((faint or "").strip())
+    except InvalidOperation:
+        return (bright or "").strip(), (faint or "").strip()
+    for places in (1, 2, 3):
+        quantum = Decimal(1).scaleb(-places)
+        qa = a.quantize(quantum, rounding=ROUND_HALF_UP)
+        qb = b.quantize(quantum, rounding=ROUND_HALF_UP)
+        if qa != qb or a == b or places == 3:
+            return f"{qa:.{places}f}", f"{qb:.{places}f}"
+    return str(a), str(b)
+
+
 def _variable_row_for_label(label: str):
     match = re.search(r"([αβγδεζηθικλμνξοπρστυφχψω])(\d*)\s+([A-Z][A-Za-z]{2})", label or "")
     if not match: return None
@@ -142,7 +158,8 @@ def visibility_html(record: AlmanackObject) -> str:
         parts.append(f'<span class="magnitude-normal">{escape(record.magnitude)}</span>')
         parts.append(f'<span class="magnitude-detail" hidden>{escape(one_decimal(record.magnitude))}</span>')
     if record.variability_type and record.variability_span is not None:
-        parts.append(f'<span class="magnitude-variable-range" hidden>{escape(one_decimal(bright))}–{escape(one_decimal(faint))}</span>')
+        range_bright, range_faint = adaptive_variable_range(bright, faint)
+        parts.append(f'<span class="magnitude-variable-range" hidden>{escape(range_bright)}–{escape(range_faint)}</span>')
     return " ".join(parts)
 
 
