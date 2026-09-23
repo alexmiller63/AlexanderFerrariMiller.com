@@ -70,33 +70,35 @@ def point_segment_distance(point, start, end):
 
 def segment_hits_display_bbox(ax, start, end, bbox):
     """Test a data-coordinate segment against a rendered display-coordinate box."""
-    start_display = ax.transData.transform(start)
-    end_display = ax.transData.transform(end)
-    return MplPath([start_display, end_display]).intersects_bbox(bbox, filled=False)
-
-
-def boundary_bbox_contains(ax, bbox, boundary_points):
-    """Return True when a rendered label box stays inside a projected IAU boundary."""
-    display_points = [ax.transData.transform(point) for point in boundary_points]
-    if len(display_points) < 3:
-        return False
-    boundary_path = MplPath(display_points, closed=True)
+    x1, y1 = ax.transData.transform(start)
+    x2, y2 = ax.transData.transform(end)
     left, bottom, right, top = bbox.x0, bbox.y0, bbox.x1, bbox.y1
-    samples = []
-    for fraction in [index / 8 for index in range(9)]:
-        samples.extend([
-            (left + (right - left) * fraction, bottom),
-            (left + (right - left) * fraction, top),
-            (left, bottom + (top - bottom) * fraction),
-            (right, bottom + (top - bottom) * fraction),
-        ])
-    if not all(boundary_path.contains_point(point) for point in samples):
-        return False
-    box_path = MplPath(
-        [(left, bottom), (right, bottom), (right, top), (left, top)],
-        closed=True,
+
+    def inside(x, y):
+        return left <= x <= right and bottom <= y <= top
+
+    if inside(x1, y1) or inside(x2, y2):
+        return True
+
+    dx, dy = x2 - x1, y2 - y1
+    edges = (
+        (left, bottom, right, bottom),
+        (right, bottom, right, top),
+        (right, top, left, top),
+        (left, top, left, bottom),
     )
-    return not boundary_path.intersects_path(box_path, filled=False)
+    for ex1, ey1, ex2, ey2 in edges:
+        edx, edy = ex2 - ex1, ey2 - ey1
+        denominator = dx * edy - dy * edx
+        if abs(denominator) < 1e-12:
+            continue
+        t = ((ex1 - x1) * edy - (ey1 - y1) * edx) / denominator
+        u = ((ex1 - x1) * dy - (ey1 - y1) * dx) / denominator
+        if 0 <= t <= 1 and 0 <= u <= 1:
+            return True
+    return False
+
+
 
 
 def place_boundary_label(ax, full_label, abbreviation, point, occupied_labels,
