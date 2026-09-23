@@ -177,6 +177,47 @@ def place_label(ax, label, point, occupied_labels, color=TEXT, fontsize=9, zorde
     return annotation
 
 
+def place_constellation_label(ax, label, point, occupied_labels, obstacle_segments=()):
+    """Place a constellation name in genuinely clear space, starting one label-width left."""
+    probe = ax.annotate(label, point, xytext=(0, 0), textcoords="offset points",
+                        fontsize=16, color=FIGURE_BLUE, zorder=5)
+    ax.figure.canvas.draw()
+    renderer = ax.figure.canvas.get_renderer()
+    width = probe.get_window_extent(renderer=renderer).width
+    probe.remove()
+    offsets = [
+        (-width, 0), (-1.25 * width, 0), (-1.5 * width, 0),
+        (-1.75 * width, 0), (-2.0 * width, 0),
+        (-width, 12), (-width, -12),
+        (-1.5 * width, 12), (-1.5 * width, -12),
+    ]
+    best = None
+    for rank, (dx, dy) in enumerate(offsets):
+        annotation = ax.annotate(label, point, xytext=(dx, dy), textcoords="offset points",
+                                 fontsize=16, color=FIGURE_BLUE, zorder=5)
+        ax.figure.canvas.draw()
+        renderer = ax.figure.canvas.get_renderer()
+        bbox = annotation.get_window_extent(renderer=renderer).expanded(1.08, 1.16)
+        label_hits = sum(bbox.overlaps(other) for other in occupied_labels)
+        geometry_hits = sum(segment_hits_display_bbox(ax, start, end, bbox)
+                            for start, end in obstacle_segments)
+        score = label_hits + geometry_hits
+        annotation.remove()
+        if score == 0:
+            annotation = ax.annotate(label, point, xytext=(dx, dy), textcoords="offset points",
+                                     fontsize=16, color=FIGURE_BLUE, zorder=5)
+            ax.figure.canvas.draw()
+            renderer = ax.figure.canvas.get_renderer()
+            occupied_labels.append(
+                annotation.get_window_extent(renderer=renderer).expanded(1.08, 1.16)
+            )
+            return annotation
+        candidate = (score, rank)
+        if best is None or candidate < best:
+            best = candidate
+    return None
+
+
 def complete_index(stars):
     idx = star_index(stars)
     for star in sorted(stars, key=lambda item: item.mag):
@@ -399,10 +440,10 @@ def render(spec: dict, stars, output: Path) -> None:
     if figure_constellation and figure_points:
         constellation_point = (sum(x for x, _ in figure_points) / len(figure_points),
                                sum(y for _, y in figure_points) / len(figure_points))
-        place_label(ax, figure_constellation, constellation_point, occupied_labels,
-                    color=FIGURE_BLUE, fontsize=16, zorder=5,
-                    obstacle_segments=figure_segments + asterism_segments,
-                    require_clear=True)
+        place_constellation_label(
+            ax, figure_constellation, constellation_point, occupied_labels,
+            obstacle_segments=figure_segments + asterism_segments,
+        )
     for candidate in spec.get("candidate_asterisms") or []:
         visible_paths = []
         for path in candidate.get("paths") or []:
