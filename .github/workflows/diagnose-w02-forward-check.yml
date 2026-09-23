@@ -10,10 +10,8 @@ jobs:
   diagnose:
     runs-on: ubuntu-latest
     steps:
-      - name: Check out diagnostic branch
+      - name: Check out selected branch
         uses: actions/checkout@v4
-        with:
-          ref: diagnose-w02-forward-check
 
       - uses: actions/setup-python@v5
         with:
