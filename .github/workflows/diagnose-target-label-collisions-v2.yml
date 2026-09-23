@@ -9,3 +9,11 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
+
+      - name: Locate W36 Altair artwork SVG
+        shell: bash
+        run: |
+          find . -type f -iname '*.svg' \
+            | grep -Ei 'W36|36' \
+            | grep -Ei 'Altair|Aquila' \
+            | sort
