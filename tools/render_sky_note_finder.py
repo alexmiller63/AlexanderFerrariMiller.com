@@ -126,7 +126,7 @@ def boundary_bbox_contains(ax, bbox, boundary_points):
 
 
 def place_boundary_label(ax, full_label, abbreviation, point, occupied_labels,
-                         boundary_points, color=BOUNDARY_WHITE, fontsize=10, zorder=5):
+                         boundary_points, obstacle_segments=(), color=BOUNDARY_WHITE, fontsize=10, zorder=5):
     """Place a boundary label without allowing its rendered box to leave the boundary."""
     offsets = ((0, 0), (5, 5), (7, -7), (-7, 7), (-7, -7),
                (10, 0), (0, 10), (-10, 0), (0, -10),
@@ -147,6 +147,10 @@ def place_boundary_label(ax, full_label, abbreviation, point, occupied_labels,
             label_hits = sum(bbox.overlaps(other) for other in occupied_labels)
             if not boundary_bbox_contains(ax, bbox, boundary_points):
                 label_hits += 1
+            label_hits += sum(
+                segment_hits_display_bbox(ax, start, end, bbox)
+                for start, end in obstacle_segments
+            )
             annotation.remove()
             candidate = (label_hits, rank, dx, dy)
             if best is None or candidate < best:
@@ -517,7 +521,9 @@ def render(spec: dict, stars, output: Path) -> None:
                  sum(y for _, y in visible_points) / len(visible_points))
         place_boundary_label(
             ax, neighbor_name, neighbor_abbreviation, point, occupied_labels,
-            points, color=BOUNDARY_WHITE, fontsize=10, zorder=5,
+            points,
+            obstacle_segments=boundary_segments,
+            color=BOUNDARY_WHITE, fontsize=10, zorder=5,
         )
     for asterism in asterisms:
         for path in asterism.get("paths") or []:
