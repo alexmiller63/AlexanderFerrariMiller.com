@@ -14,12 +14,31 @@ jobs:
         uses: actions/checkout@v4
         with:
           ref: diagnose-w02-forward-check
+
       - uses: actions/setup-python@v5
         with:
-          python-version: '3.x'
+          python-version: '3.12'
+
+      - name: Restore JPL/NAIF ephemeris source cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            .cache/skyfield/de440s.bsp
+            .cache/skyfield/ceres_1900_2100.bsp
+          key: star-almanack-source-kernels-v1
+
+      - name: Install pinned calculation dependency
+        run: |
+          python -m pip install --disable-pip-version-check --upgrade pip
+          python -m pip install --disable-pip-version-check 'numpy==1.26.4' 'skyfield==1.55'
+
+      - name: Ensure cached DE440s and Ceres source kernels
+        run: python tools/ensure_ephemeris_kernels.py --ceres
+
       - name: Locate Planet Finder CLI
         run: |
           python tools/generate_planet_finders.py --help || true
+
       - name: Show forward-check implementation
         run: |
           python - <<'PY'
@@ -30,8 +49,11 @@ jobs:
           end = text.index('    def search(', start)
           print(text[start:end])
           PY
+
       - name: Run W02 Planet Finder diagnostic
         shell: bash
+        env:
+          STAR_ALMANACK_EPHEMERIS_DIR: ${{ github.workspace }}/.cache/skyfield
         run: |
           set -o pipefail
           python tools/generate_planet_finders.py --year 2026 --week 2 2>&1 | tee w02-forward-check.log
