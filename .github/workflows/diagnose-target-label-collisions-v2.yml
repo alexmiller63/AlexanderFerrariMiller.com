@@ -83,6 +83,25 @@ jobs:
           print('=== END ALTAIR COORDINATE REPORT ===')
           PY
 
+      - name: Inspect exact Altair label geometry
+        shell: bash
+        run: |
+          set -euo pipefail
+          TARGET='sky-notes-artwork/objects/109/finder.svg'
+          python - <<'PY'
+          from pathlib import Path
+
+          lines = Path('sky-notes-artwork/objects/109/finder.svg').read_text().splitlines()
+          hits = [i for i, line in enumerate(lines) if 'α Aql, Altair -->' in line]
+          print('=== EXACT ALTAIR TARGET-LABEL GEOMETRY ===')
+          for i in hits:
+              print(f'--- reference line {i + 1}: {lines[i].strip()} ---')
+              lo, hi = max(0, i - 25), min(len(lines), i + 90)
+              for j in range(lo, hi):
+                  print(f'{j + 1}: {lines[j]}')
+          print('=== END EXACT ALTAIR TARGET-LABEL GEOMETRY ===')
+          PY
+
       - name: Inspect Altair spec
         shell: bash
         run: |
