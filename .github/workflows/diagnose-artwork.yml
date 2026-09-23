@@ -1,0 +1,12 @@
+name: Diagnose Artwork
+
+on:
+  workflow_dispatch:
+
+jobs:
+  diagnostic:
+    name: Artwork diagnostic no-op
+    runs-on: ubuntu-latest
+    steps:
+      - name: Confirm artwork diagnostic workflow
+        run: echo "Artwork diagnostic workflow is available and runnable."
