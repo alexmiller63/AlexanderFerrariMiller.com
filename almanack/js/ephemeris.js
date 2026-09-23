@@ -75,14 +75,19 @@
     return symbol + ' ' + label;
   }
 
+  function observingNotation(cell) {
+    return cell.querySelector('.observing-notation-item, .notation-rendered');
+  }
+
   function renderNormalObserving(cell, mode) {
-    const greek = cell.dataset.greekHtml;
-    const latin = cell.dataset.latin;
-    const mixed = cell.dataset.mixedHtml;
-    if (mode === 'greek' && greek) cell.innerHTML = greek;
-    else if (mode === 'latin' && latin) cell.textContent = latin;
-    else if (mode === 'mixed' && mixed) cell.innerHTML = mixed;
-    else cell.innerHTML = cell._normalHTML || cell.innerHTML;
+    const item = observingNotation(cell);
+    if (!item) return;
+    const greek = item.dataset.greek;
+    const latin = item.dataset.latin;
+    const mixed = item.dataset.mixed;
+    if (mode === 'greek' && greek) item.innerHTML = greek;
+    else if (mode === 'latin' && latin) item.textContent = latin;
+    else if (mode === 'mixed' && mixed) item.innerHTML = mixed;
   }
 
   function update(root) {
@@ -109,11 +114,11 @@
     });
     const mode = currentNotationMode();
     root.querySelectorAll('td.ephemeris-observing').forEach(function (cell) {
-      if (cell.dataset.sunSpecial === 'true') return;
-      if (!cell._normalHTML) cell._normalHTML = cell.innerHTML;
       const status = observingStatus(cell, latitude);
-      if (status === 'Daylight' || status === 'Solar Glare') {
-        cell.innerHTML = specialHtml(status, mode);
+      if (status === 'Visible' || status === 'Daylight' || status === 'Solar Glare') {
+        const item = observingNotation(cell);
+        if (item) item.innerHTML = specialHtml(status, mode);
+        else cell.innerHTML = specialHtml(status, mode);
       } else {
         renderNormalObserving(cell, mode);
       }
