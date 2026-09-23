@@ -16,6 +16,9 @@ on:
   push:
     paths:
       - 'tools/generate_planet_finders.py'
+      - 'tools/planet_finder_geometry.py'
+      - 'tools/planet_finder_search.py'
+      - 'tools/planet_finder_render.py'
       - 'tools/populate_ephemeris.py'
       - 'tools/star_almanack_ephemeris.py'
       - 'EPHEMERIS-PROVENANCE.md'
