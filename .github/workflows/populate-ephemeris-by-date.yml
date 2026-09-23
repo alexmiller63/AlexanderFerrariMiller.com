@@ -107,20 +107,21 @@ jobs:
                   raise SystemExit(f'Missing Ephemeris observing row: {path}')
               observing = ''.join(raw)
               glyphs = observing.count('class="visibility-glyph"')
-              wrapped = observing.count('class="observing-notation-item"')
+              wrapped = observing.count('class="notation-item observing-notation-item"')
               if glyphs and wrapped == 0:
                   raise SystemExit(f'Raw observing glyphs are not notation-aware: {path}')
 
               latin_values = re.findall(
-                  r'<span class="observing-notation-item"\s+'
-                  r'data-greek-html=".*?"\s+'
-                  r'data-latin="([^"]+)"',
+                  r'<span class="notation-item observing-notation-item"\s+'
+                  r'data-greek=".*?"\s+'
+                  r'data-latin="([^"]+)"\s+'
+                  r'data-mixed="[^"]+"',
                   observing,
                   re.S,
               )
               valid_labels = ('Naked eye', 'Binoculars', 'Telescope', 'Substantial telescope', 'Daylight', 'Solar Glare', 'Visible')
               if len(latin_values) != wrapped:
-                  raise SystemExit(f'Observing aid lacks Latin notation markup: {path}')
+                  raise SystemExit(f'Observing aid lacks centralized notation markup: {path}')
               for value in latin_values:
                   label = re.sub(r' \(mag [+-]\d+(?:\.\d+)?\)$', '', value)
                   if label not in valid_labels:
