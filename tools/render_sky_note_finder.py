@@ -225,40 +225,48 @@ def place_target_label(ax, label, point, occupied_labels, obstacle_segments=()):
     height = probe_bbox.height
     probe.remove()
 
-    # Search a dense grid around the target.  The old sparse six-direction
-    # rings could skip much nearer clear positions and then correctly choose
-    # the nearest position only from that incomplete candidate set.
+    # Search outward in small rings and stop after the first ring that has
+    # collision-free choices.  This preserves nearest-clear placement without
+    # redrawing hundreds of farther candidates that cannot win.
     gap = 4
     x_step = max(width * 0.125, 4)
     y_step = max(height * 0.25, 3)
-    offsets = []
+    offset_rings = []
     for ring in range(0, 17):
+        offsets = []
         for iy in range(-ring, ring + 1):
             for side in (-1, 1):
                 dx = gap + ring * x_step if side > 0 else -width - gap - ring * x_step
                 dy = iy * y_step
                 offsets.append((dx, dy))
+        offset_rings.append(offsets)
 
     best = None
     anchor_x, anchor_y = ax.transData.transform(point)
-    for rank, (dx, dy) in enumerate(offsets):
-        annotation = ax.annotate(label, point, xytext=(dx, dy), textcoords="offset points", **style)
-        ax.figure.canvas.draw()
-        renderer = ax.figure.canvas.get_renderer()
-        bbox = annotation.get_window_extent(renderer=renderer).expanded(1.08, 1.16)
-        label_hits = sum(bbox.overlaps(other) for other in occupied_labels)
-        geometry_hits = sum(segment_hits_display_bbox(ax, start, end, bbox)
-                            for start, end in obstacle_segments)
-        score = label_hits + geometry_hits
-        nearest_x = min(max(anchor_x, bbox.x0), bbox.x1)
-        nearest_y = min(max(anchor_y, bbox.y0), bbox.y1)
-        anchor_distance = math.hypot(nearest_x - anchor_x, nearest_y - anchor_y)
-        annotation.remove()
-        if score != 0:
-            continue
-        candidate = (anchor_distance, rank, dx, dy)
-        if best is None or candidate < best:
-            best = candidate
+    rank = 0
+    for offsets in offset_rings:
+        ring_best = None
+        for dx, dy in offsets:
+            annotation = ax.annotate(label, point, xytext=(dx, dy), textcoords="offset points", **style)
+            ax.figure.canvas.draw()
+            renderer = ax.figure.canvas.get_renderer()
+            bbox = annotation.get_window_extent(renderer=renderer).expanded(1.08, 1.16)
+            label_hits = sum(bbox.overlaps(other) for other in occupied_labels)
+            geometry_hits = sum(segment_hits_display_bbox(ax, start, end, bbox)
+                                for start, end in obstacle_segments)
+            score = label_hits + geometry_hits
+            nearest_x = min(max(anchor_x, bbox.x0), bbox.x1)
+            nearest_y = min(max(anchor_y, bbox.y0), bbox.y1)
+            anchor_distance = math.hypot(nearest_x - anchor_x, nearest_y - anchor_y)
+            annotation.remove()
+            if score == 0:
+                candidate = (anchor_distance, rank, dx, dy)
+                if ring_best is None or candidate < ring_best:
+                    ring_best = candidate
+            rank += 1
+        if ring_best is not None:
+            best = ring_best
+            break
 
     if best is None:
         raise RuntimeError(f"No collision-free target-label position found for {label!r}")
