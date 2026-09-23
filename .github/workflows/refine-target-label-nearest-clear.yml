@@ -1,0 +1,62 @@
+name: Refine target label nearest clear
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  refine:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Prefer nearest collision-free target-label position
+        shell: python
+        run: |
+          from pathlib import Path
+
+          p = Path("tools/render_sky_note_finder.py")
+          text = p.read_text(encoding="utf-8")
+
+          old = '''        candidate = (score, rank, dx, dy)
+        if best is None or candidate < best:
+            best = candidate
+        if score == 0:
+            break
+
+    _, _, dx, dy = best
+    annotation = ax.annotate(label, point, xytext=(dx, dy), textcoords="offset points", **style)
+'''
+          new = '''        # A clear label is mandatory.  Among clear candidates, prefer the
+        # one whose rendered box is nearest the target anchor rather than the
+        # first clear candidate in search order.
+        anchor_x, anchor_y = ax.transData.transform(point)
+        nearest_x = min(max(anchor_x, bbox.x0), bbox.x1)
+        nearest_y = min(max(anchor_y, bbox.y0), bbox.y1)
+        anchor_distance = math.hypot(nearest_x - anchor_x, nearest_y - anchor_y)
+        candidate = (score, anchor_distance, rank, dx, dy)
+        if best is None or candidate < best:
+            best = candidate
+
+    _, _, _, dx, dy = best
+    annotation = ax.annotate(label, point, xytext=(dx, dy), textcoords="offset points", **style)
+'''
+
+          # Restrict replacement to place_target_label: the exact block occurs
+          # there once in the current renderer.
+          if text.count(old) != 1:
+              raise SystemExit(f"Expected one target-label scoring block, found {text.count(old)}")
+          p.write_text(text.replace(old, new), encoding="utf-8")
+      - name: Verify syntax and finder contract
+        run: |
+          python -m py_compile tools/render_sky_note_finder.py
+          python tools/verify_sky_note_finder_contract.py
+      - name: Commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add tools/render_sky_note_finder.py
+          git diff --cached --quiet && exit 0
+          git commit -m "Prefer nearest clear target label placement"
+          git push
