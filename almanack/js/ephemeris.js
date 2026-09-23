@@ -56,8 +56,33 @@
       : (cell.dataset.solarGlare === 'true' ? 'Solar Glare' : cell.dataset.normalLabel);
   }
 
-  function specialHtml(label) {
-    return '<span class="text-symbol" role="img" aria-label="' + label + '" title="' + label + '">☉︎</span> ' + label;
+  function currentNotationMode() {
+    const pressed = document.querySelector('[data-bayer-mode][aria-pressed="true"]');
+    if (pressed && (pressed.dataset.bayerMode === 'greek' || pressed.dataset.bayerMode === 'latin' || pressed.dataset.bayerMode === 'mixed')) {
+      return pressed.dataset.bayerMode;
+    }
+    try {
+      const saved = localStorage.getItem('star-almanack-bayer-mode');
+      if (saved === 'greek' || saved === 'latin' || saved === 'mixed') return saved;
+    } catch (_) {}
+    return 'greek';
+  }
+
+  function specialHtml(label, mode) {
+    const symbol = '<span class="text-symbol" role="img" aria-label="' + label + '" title="' + label + '">☉︎</span>';
+    if (mode === 'greek') return symbol;
+    if (mode === 'latin') return label;
+    return symbol + ' ' + label;
+  }
+
+  function renderNormalObserving(cell, mode) {
+    const greek = cell.dataset.greekHtml;
+    const latin = cell.dataset.latin;
+    const mixed = cell.dataset.mixedHtml;
+    if (mode === 'greek' && greek) cell.innerHTML = greek;
+    else if (mode === 'latin' && latin) cell.textContent = latin;
+    else if (mode === 'mixed' && mixed) cell.innerHTML = mixed;
+    else cell.innerHTML = cell._normalHTML || cell.innerHTML;
   }
 
   function update(root) {
@@ -82,14 +107,15 @@
     root.querySelectorAll('td.ephemeris-set').forEach(function (cell) {
       cell.textContent = riseSet(cell, latitude)[1];
     });
+    const mode = currentNotationMode();
     root.querySelectorAll('td.ephemeris-observing').forEach(function (cell) {
       if (cell.dataset.sunSpecial === 'true') return;
       if (!cell._normalHTML) cell._normalHTML = cell.innerHTML;
       const status = observingStatus(cell, latitude);
       if (status === 'Daylight' || status === 'Solar Glare') {
-        cell.innerHTML = specialHtml(status);
+        cell.innerHTML = specialHtml(status, mode);
       } else {
-        cell.innerHTML = cell._normalHTML;
+        renderNormalObserving(cell, mode);
       }
     });
   }
@@ -104,6 +130,9 @@
         event.preventDefault();
         update(root);
       }
+    });
+    document.querySelectorAll('[data-bayer-mode]').forEach(function (button) {
+      button.addEventListener('click', function () { setTimeout(function () { update(root); }, 0); });
     });
     update(root);
   });
