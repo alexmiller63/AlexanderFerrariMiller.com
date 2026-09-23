@@ -43,7 +43,7 @@ jobs:
         run: |
           python - <<'PY'
           from pathlib import Path
-          p = Path('tools/generate_planet_finders.py')
+          p = Path('tools/planet_finder_search.py')
           text = p.read_text()
           start = text.index('    def forward_check(')
           end = text.index('    def search(', start)
