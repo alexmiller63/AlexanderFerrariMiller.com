@@ -5,7 +5,7 @@ Astronomical/source data owns identity, type, magnitude data, provenance, and th
 semantic observing aid. Derived astronomy and reader-facing presentation are
 centralized here. Detail: Standard uses whole magnitudes and marks only variables
 spanning at least 1.0 V magnitude. Detail: All exposes one-decimal magnitudes for
-all objects and reveals every catalogued variable with its one-decimal range.
+all objects and reveals every catalogued variable with its adaptively formatted range.
 """
 from __future__ import annotations
 
@@ -85,6 +85,24 @@ def adaptive_variable_range(bright: str, faint: str) -> tuple[str, str]:
     return str(a), str(b)
 
 
+def _gcvs_range(max_v: str, min_v: str) -> tuple[str, str]:
+    """Return bright/faint V magnitudes from GCVS reconciliation values.
+
+    GCVS Min I can be an amplitude rather than a minimum magnitude.  A value
+    numerically brighter than Max cannot be the faint endpoint; in that case
+    interpret it as amplitude and add it to the maximum magnitude.
+    """
+    max_v = (max_v or "").strip()
+    min_v = (min_v or "").strip()
+    try:
+        bright = Decimal(max_v)
+        raw_min = Decimal(min_v)
+    except InvalidOperation:
+        return max_v, min_v
+    faint = bright + raw_min if raw_min < bright else raw_min
+    return str(bright), str(faint)
+
+
 def _variable_row_for_label(label: str):
     match = re.search(r"([αβγδεζηθικλμνξοπρστυφχψω])(\d*)\s+([A-Z][A-Za-z]{2})", label or "")
     if not match: return None
@@ -118,9 +136,9 @@ class AlmanackObject:
     @property
     def variability_values(self) -> tuple[str, str]:
         if self.variability_max_v and self.variability_min_v:
-            return self.variability_max_v, self.variability_min_v
+            return _gcvs_range(self.variability_max_v, self.variability_min_v)
         row = _variable_row_for_label(self.label) if self.variability_type else None
-        return ((row.get("gcvs_max_v") or "").strip(), (row.get("gcvs_min_v") or "").strip()) if row else ("", "")
+        return _gcvs_range(row.get("gcvs_max_v") or "", row.get("gcvs_min_v") or "") if row else ("", "")
 
     @property
     def variability_span(self) -> float | None:
