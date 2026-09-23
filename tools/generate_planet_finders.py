@@ -653,6 +653,7 @@ def layout(mode: FinderMode,bodies,target_solutions=None,budget=None,context_lab
         promote_body=outcome.blocker
         idx=next(i for i,item in enumerate(order) if item[1][1]==promote_body)
         order=[order[idx],*order[:idx],*order[idx+1:]]
+        body_attempts[promote_body]=0
     def score(result):
         total=0; elbows=0; radial=0; tang=0
         for _,_,longitude,box,path in result:
