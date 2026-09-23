@@ -483,6 +483,33 @@ def render(spec: dict, stars, output: Path) -> None:
         if point is None:
             continue
         figure_points.append(point)
+    for candidate in spec.get("candidate_asterisms") or []:
+        visible_paths = []
+        for path in candidate.get("paths") or []:
+            if any(ref not in idx for ref in path):
+                continue
+            points = [project(idx[ref].ra_deg, idx[ref].dec_deg, *center) for ref in path]
+            points = [point for point in points if point is not None]
+            if path_hits_view(points, xmin, xmax, ymin, ymax):
+                visible_paths.append(path)
+        if visible_paths:
+            asterisms.append(dict(candidate, paths=visible_paths))
+    # Candidate asterisms are part of the rendered geometry, so they must be
+    # known before any star/constellation label is accepted. Otherwise a label
+    # can be placed in a location that is later occupied by a candidate path.
+    asterism_segments = []
+    for asterism in asterisms:
+        for path in asterism.get("paths") or []:
+            path_points = [project(idx[ref].ra_deg, idx[ref].dec_deg, *center) for ref in path if ref in idx]
+            path_points = [point for point in path_points if point is not None]
+            asterism_segments.extend(zip(path_points, path_points[1:]))
+
+    for ref in figure_refs:
+        star = idx[ref]
+        identity = identities_by_ref[ref]
+        point = project(star.ra_deg, star.dec_deg, *center)
+        if point is None:
+            continue
         if identity.get("fixed_object_id") == target_id:
             continue
         label = chart_bayer_label(identity, star, figure_abbreviation)
@@ -495,17 +522,6 @@ def render(spec: dict, stars, output: Path) -> None:
             ax, figure_constellation, constellation_point, occupied_labels,
             obstacle_segments=figure_segments + asterism_segments + boundary_segments,
         )
-    for candidate in spec.get("candidate_asterisms") or []:
-        visible_paths = []
-        for path in candidate.get("paths") or []:
-            if any(ref not in idx for ref in path):
-                continue
-            points = [project(idx[ref].ra_deg, idx[ref].dec_deg, *center) for ref in path]
-            points = [point for point in points if point is not None]
-            if path_hits_view(points, xmin, xmax, ymin, ymax):
-                visible_paths.append(path)
-        if visible_paths:
-            asterisms.append(dict(candidate, paths=visible_paths))
     home_abbreviation = str(spec.get("constellation_abbreviation") or "").strip()
     neighbor_points = {}
     for boundary_name, boundary_abbreviation, boundary_points in projected_boundaries:
