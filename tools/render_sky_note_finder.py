@@ -140,12 +140,14 @@ def place_boundary_label(ax, full_label, abbreviation, point, occupied_labels,
 
 
 def place_label(ax, label, point, occupied_labels, color=TEXT, fontsize=9, zorder=6,
-                obstacle_segments=()):
+                obstacle_segments=(), require_clear=False):
     """Place a label using its true rendered bounds for collision rejection."""
-    offsets = ((5, 5), (7, -7), (-7, 7), (-7, -7),
-               (10, 0), (0, 10), (-10, 0), (0, -10),
-               (13, 7), (13, -7), (-13, 7), (-13, -7),
-               (16, 0), (0, 16), (-16, 0), (0, -16))
+    offsets = []
+    for radius in range(5, 46, 5):
+        offsets.extend(((radius, 0), (-radius, 0), (0, radius), (0, -radius),
+                        (radius, radius), (radius, -radius),
+                        (-radius, radius), (-radius, -radius)))
+    offsets.insert(0, (0, 0))
     renderer = ax.figure.canvas.get_renderer()
     best = None
     for rank, (dx, dy) in enumerate(offsets):
@@ -164,6 +166,8 @@ def place_label(ax, label, point, occupied_labels, color=TEXT, fontsize=9, zorde
             best = candidate
         if score == 0:
             break
+    if require_clear and best[0] != 0:
+        return None
     _, _, dx, dy = best
     annotation = ax.annotate(label, point, xytext=(dx, dy), textcoords="offset points",
                              fontsize=fontsize, color=color, zorder=zorder)
@@ -397,7 +401,8 @@ def render(spec: dict, stars, output: Path) -> None:
                                sum(y for _, y in figure_points) / len(figure_points))
         place_label(ax, figure_constellation, constellation_point, occupied_labels,
                     color=FIGURE_BLUE, fontsize=16, zorder=5,
-                    obstacle_segments=figure_segments + asterism_segments)
+                    obstacle_segments=figure_segments + asterism_segments,
+                    require_clear=True)
     for candidate in spec.get("candidate_asterisms") or []:
         visible_paths = []
         for path in candidate.get("paths") or []:
