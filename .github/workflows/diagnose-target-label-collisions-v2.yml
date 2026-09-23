@@ -10,34 +10,59 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v4
 
-      - name: Locate W36 artwork
+      - name: Locate Altair fixed-object artwork
         shell: bash
         run: |
           set -euo pipefail
-          TARGET='sky-notes-artwork/2026/W36/finder.svg'
+          TARGET='sky-notes-artwork/objects/109/finder.svg'
+          SPEC='sky-notes-artwork/specs/objects/109.json'
           echo "Canonical target: $TARGET"
+          echo "Canonical spec:   $SPEC"
           test -f "$TARGET"
-          echo '=== Current W36 artwork ==='
-          find sky-notes-artwork/2026/W36 -maxdepth 1 -type f -print | sort
+          test -f "$SPEC"
+          echo '=== Fixed object 109 files ==='
+          find sky-notes-artwork/objects/109 -maxdepth 1 -type f -print | sort
 
-      - name: Inspect target label geometry
+      - name: Inspect Altair artwork identity
         shell: bash
         run: |
           set -euo pipefail
-          TARGET='sky-notes-artwork/2026/W36/finder.svg'
-          echo '=== SVG identity ==='
-          grep -nE '<title>|<desc>|Target:|target|Altair|Aquila|Sham|Sagitta' "$TARGET" | head -n 200 || true
-          echo '=== Text elements of interest ==='
-          grep -nE '<text[^>]*>.*(Altair|Aquila|Sham|Sagitta|Aql|AQL|Sge|SGE|α|Alpha)' "$TARGET" | head -n 200 || true
+          TARGET='sky-notes-artwork/objects/109/finder.svg'
+          echo '=== SVG identity / Altair references ==='
+          grep -nE '<title>|<desc>|Target:|target|Altair|Aquila|Aql|AQL|α|Alpha' "$TARGET" | head -n 300 || true
           echo '=== Nearby SVG geometry ==='
-          grep -nE '(Altair|Aquila|Sham|Sagitta|Aql|AQL|Sge|SGE|α|Alpha)' "$TARGET" -B 3 -A 3 | head -n 400 || true
+          grep -nE '(Altair|Aquila|Aql|AQL|α|Alpha)' "$TARGET" -B 5 -A 5 | head -n 500 || true
 
-      - name: Trace artwork generator references
+      - name: Inspect Altair spec
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p = Path('sky-notes-artwork/specs/objects/109.json')
+          d = json.loads(p.read_text())
+          print('top-level keys:', sorted(d))
+          for k, v in d.items():
+              text = repr(v)
+              if any(word.lower() in text.lower() for word in ('altair','target','109','aql','aquila')):
+                  print(f'{k}: {text[:5000]}')
+          PY
+
+      - name: Trace target-label placement algorithm
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo '=== place_target_label and call sites ==='
+          grep -n -A 100 -B 10 'def place_target_label' tools/render_sky_note_finder.py || true
+          grep -n -A 25 -B 25 'place_target_label(' tools/render_sky_note_finder.py || true
+
+      - name: Trace Altair source references
         shell: bash
         run: |
           set -euo pipefail
           echo '=== Active source references only ==='
           grep -RInE --exclude='finder.svg' --exclude-dir='.git' --exclude-dir='Historical' \
-            '(target.*label|label.*target|Altair|Aquila|Sham|Sagitta)' \
-            generators scripts tools sky-notes-artwork .github/workflows 2>/dev/null \
-            | head -n 500 || true
+            '(Altair|fixed_object_id.{0,20}109|target.*label|label.*target)' \
+            generators scripts tools sky-notes-artwork database descriptors .github/workflows 2>/dev/null \
+            | head -n 800 || true
