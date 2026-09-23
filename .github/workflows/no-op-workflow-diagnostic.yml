@@ -1,0 +1,15 @@
+name: No-Op Workflow Diagnostic
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  diagnostic:
+    name: Confirm GitHub Actions workflow discovery
+    runs-on: ubuntu-latest
+    steps:
+      - name: No-op diagnostic passed
+        run: echo "GitHub Actions discovered and ran this workflow."
