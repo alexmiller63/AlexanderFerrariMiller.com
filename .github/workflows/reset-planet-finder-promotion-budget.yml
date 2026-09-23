@@ -1,0 +1,60 @@
+name: Reset Planet Finder Promotion Budget
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: test-w02-no-forward-check
+          fetch-depth: 0
+
+      - name: Reset promoted body candidate budget
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          path = Path('tools/generate_planet_finders.py')
+          data = path.read_bytes()
+          if b'\\n' in data:
+              raise SystemExit('Literal backslash-n sequence already exists; refusing to patch')
+
+          old = b'''            order = promoted_order
+            print(
+                f"Planet Finder {mode}: CAPPED PROMOTE body={promote_body}; "'''
+          new = b'''            order = promoted_order
+            body_attempts[promote_body] = 0
+            print(
+                f"Planet Finder {mode}: CAPPED PROMOTE body={promote_body}; "'''
+
+          count = data.count(old)
+          if count != 1:
+              raise SystemExit(f'Expected exactly one CAPPED promotion block, found {count}')
+
+          patched = data.replace(old, new, 1)
+          if b'\\n' in patched:
+              raise SystemExit('Patch introduced a literal backslash-n sequence; refusing to write')
+          path.write_bytes(patched)
+          PY
+
+      - name: Verify exact diff and syntax
+        run: |
+          python -m py_compile tools/generate_planet_finders.py
+          git diff --check
+          git diff --unified=3 -- tools/generate_planet_finders.py
+          test "$(git diff --numstat -- tools/generate_planet_finders.py)" = $'1\t0\ttools/generate_planet_finders.py'
+          git diff -- tools/generate_planet_finders.py | grep -F '+            body_attempts[promote_body] = 0'
+
+      - name: Commit one-line fix
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add tools/generate_planet_finders.py
+          git commit -m 'Reset Planet Finder budget on promotion'
+          git push origin HEAD:test-w02-no-forward-check
