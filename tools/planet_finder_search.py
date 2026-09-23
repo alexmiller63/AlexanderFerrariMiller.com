@@ -8,7 +8,7 @@ import time
 from dataclasses import dataclass
 
 from planet_finder_geometry import (
-    CANONICAL, CX, CY, FinderMode, Box, LABEL_COLLISION_PADDING,
+    CANONICAL, CX, CY, FinderMode, Box, LABEL_COLLISION_PADDING, LABEL_RIM_CLEARANCE,
     IMMUTABLE_LEADER_CLEARANCE, LEADER_RIM_CLEARANCE, LEADER_TO_LEADER_CLEARANCE,
     PLACED_LABEL_LEADER_CLEARANCE, RI, SIGNS, boxes_overlap,
     label_size, legal_candidate_positions, leader_hits_zodiac_rim,
