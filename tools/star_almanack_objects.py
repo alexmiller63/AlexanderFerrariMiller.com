@@ -3,9 +3,9 @@
 
 Astronomical/source data owns identity, type, magnitude data, provenance, and the
 semantic observing aid. Derived astronomy and reader-facing presentation are
-centralized here. Variable-star policy is also centralized: the normal view marks
-only variables spanning at least 1.0 V magnitude; Variability: All may reveal all
-catalogued variables and their one-decimal ranges.
+centralized here. Detail: Standard uses whole magnitudes and marks only variables
+spanning at least 1.0 V magnitude. Detail: All exposes one-decimal magnitudes for
+all objects and reveals every catalogued variable with its one-decimal range.
 """
 from __future__ import annotations
 
@@ -137,8 +137,10 @@ def visibility_html(record: AlmanackObject) -> str:
         parts.append(f'<span class="variable-star-marker" data-variable-star="true" data-significant="{str(record.significant_variable).lower()}" title="{title}"{hidden}>V</span>')
     if record.magnitude_display == "whole" and record.magnitude:
         parts.append(f'<span class="magnitude-normal">{whole_magnitude(record.magnitude)}</span>')
+        parts.append(f'<span class="magnitude-detail" hidden>{escape(one_decimal(record.magnitude))}</span>')
     elif record.magnitude_display == "literal" and record.magnitude:
         parts.append(f'<span class="magnitude-normal">{escape(record.magnitude)}</span>')
+        parts.append(f'<span class="magnitude-detail" hidden>{escape(one_decimal(record.magnitude))}</span>')
     if record.variability_type and record.variability_span is not None:
         parts.append(f'<span class="magnitude-variable-range" hidden>{escape(one_decimal(bright))}–{escape(one_decimal(faint))}</span>')
     return " ".join(parts)
