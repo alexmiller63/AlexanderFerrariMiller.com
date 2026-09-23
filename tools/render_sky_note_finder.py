@@ -75,6 +75,70 @@ def segment_hits_display_bbox(ax, start, end, bbox):
     return MplPath([start_display, end_display]).intersects_bbox(bbox, filled=False)
 
 
+def boundary_bbox_contains(ax, bbox, boundary_points):
+    """Return True when a rendered label box stays inside a projected IAU boundary."""
+    display_points = [ax.transData.transform(point) for point in boundary_points]
+    if len(display_points) < 3:
+        return False
+    boundary_path = MplPath(display_points, closed=True)
+    left, bottom, right, top = bbox.x0, bbox.y0, bbox.x1, bbox.y1
+    samples = []
+    for fraction in [index / 8 for index in range(9)]:
+        samples.extend([
+            (left + (right - left) * fraction, bottom),
+            (left + (right - left) * fraction, top),
+            (left, bottom + (top - bottom) * fraction),
+            (right, bottom + (top - bottom) * fraction),
+        ])
+    if not all(boundary_path.contains_point(point) for point in samples):
+        return False
+    box_path = MplPath(
+        [(left, bottom), (right, bottom), (right, top), (left, top)],
+        closed=True,
+    )
+    return not boundary_path.intersects_path(box_path, filled=False)
+
+
+def place_boundary_label(ax, full_label, abbreviation, point, occupied_labels,
+                         boundary_points, color=BOUNDARY_WHITE, fontsize=10, zorder=5):
+    """Place a boundary label without allowing its rendered box to leave the boundary."""
+    offsets = ((0, 0), (5, 5), (7, -7), (-7, 7), (-7, -7),
+               (10, 0), (0, 10), (-10, 0), (0, -10),
+               (13, 7), (13, -7), (-13, 7), (-13, -7),
+               (16, 0), (0, 16), (-16, 0), (0, -16))
+    for label in (full_label, abbreviation.upper()):
+        if not label:
+            continue
+        best = None
+        for rank, (dx, dy) in enumerate(offsets):
+            annotation = ax.annotate(
+                label, point, xytext=(dx, dy), textcoords="offset points",
+                fontsize=fontsize, color=color, zorder=zorder,
+            )
+            ax.figure.canvas.draw()
+            renderer = ax.figure.canvas.get_renderer()
+            bbox = annotation.get_window_extent(renderer=renderer).expanded(1.08, 1.16)
+            label_hits = sum(bbox.overlaps(other) for other in occupied_labels)
+            if not boundary_bbox_contains(ax, bbox, boundary_points):
+                label_hits += 1
+            annotation.remove()
+            candidate = (label_hits, rank, dx, dy)
+            if best is None or candidate < best:
+                best = candidate
+            if label_hits == 0:
+                annotation = ax.annotate(
+                    label, point, xytext=(dx, dy), textcoords="offset points",
+                    fontsize=fontsize, color=color, zorder=zorder,
+                )
+                ax.figure.canvas.draw()
+                renderer = ax.figure.canvas.get_renderer()
+                occupied_labels.append(
+                    annotation.get_window_extent(renderer=renderer).expanded(1.08, 1.16)
+                )
+                return annotation
+    return None
+
+
 def place_label(ax, label, point, occupied_labels, color=TEXT, fontsize=9, zorder=6,
                 obstacle_segments=()):
     """Place a label using its true rendered bounds for collision rejection."""
@@ -359,11 +423,10 @@ def render(spec: dict, stars, output: Path) -> None:
             neighbor_points.setdefault(boundary_abbreviation, (boundary_name, visible_points))
     for neighbor_abbreviation, (neighbor_name, points) in neighbor_points.items():
         point = (sum(x for x, _ in points) / len(points), sum(y for _, y in points) / len(points))
-        visible_width = max(x for x, _ in points) - min(x for x, _ in points)
-        full_name_width = max(1.0, len(neighbor_name) * 0.16)
-        boundary_label = neighbor_name if visible_width >= full_name_width else neighbor_abbreviation.upper()
-        place_label(ax, boundary_label, point, occupied_labels,
-                    color=BOUNDARY_WHITE, fontsize=10, zorder=5)
+        place_boundary_label(
+            ax, neighbor_name, neighbor_abbreviation, point, occupied_labels,
+            points, color=BOUNDARY_WHITE, fontsize=10, zorder=5,
+        )
     for asterism in asterisms:
         for path in asterism.get("paths") or []:
             draw_path(ax, path, idx, center, ASTERISM_GREEN, 3.2)
