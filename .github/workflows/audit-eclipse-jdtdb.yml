@@ -1,12 +1,12 @@
 name: Audit Eclipse JDTDB Migration
 
-on:
+'on':
   workflow_dispatch:
   push:
     paths:
       - '.github/workflows/audit-eclipse-jdtdb.yml'
-      - 'besselian_eclipse_engine.py'
-      - 'eclipse-validation-cases.yaml'
+      - 'Historical/besselian_eclipse_engine.py'
+      - 'Historical/eclipse-validation-cases.yaml'
 
 permissions:
   contents: write
@@ -15,7 +15,6 @@ jobs:
   compare-before-after:
     runs-on: ubuntu-latest
     timeout-minutes: 20
-
     steps:
       - name: Check out Star Almanack with history
         uses: actions/checkout@v4
@@ -46,7 +45,6 @@ jobs:
           python - <<'PY'
           from pathlib import Path
           from skyfield.api import Loader
-
           root = Path('.cache/skyfield')
           kernel = root / 'de440s.bsp'
           if kernel.exists():
@@ -62,31 +60,24 @@ jobs:
         run: |
           set -o pipefail
           git show "$PRE_JDTDB_COMMIT:besselian_eclipse_engine.py" > /tmp/besselian_before.py
-
           python - <<'PY' | tee eclipse-jdtdb-audit.txt
           from datetime import datetime
           import importlib.util
           from pathlib import Path
           import sys
-
           import numpy as np
           import yaml
-
           from besselian_eclipse_engine import BesselianEclipseEngine as CurrentEngine
-
           spec = importlib.util.spec_from_file_location('besselian_before', '/tmp/besselian_before.py')
           before_module = importlib.util.module_from_spec(spec)
           sys.modules[spec.name] = before_module
           spec.loader.exec_module(before_module)
           BeforeEngine = before_module.BesselianEclipseEngine
-
           kernel = Path('..') / '.cache' / 'skyfield' / 'de440s.bsp'
           before = BeforeEngine(kernel)
           current = CurrentEngine(kernel)
-
           with open('eclipse-validation-cases.yaml', 'r', encoding='utf-8') as f:
               suite = yaml.safe_load(f)
-
           cases = []
           for case in suite['historical']:
               if case.get('expected_exists'):
@@ -94,21 +85,15 @@ jobs:
           for case in suite['future_jello']['cases']:
               if case.get('expected_exists'):
                   cases.append((case['label'], case['date_utc'], case['nasa_greatest_utc']))
-
           def parse(text):
               return datetime.fromisoformat(text.replace('Z', '+00:00'))
-
           print('STAR ALMANACK — JDTDB ECLIPSE MIGRATION BEFORE/AFTER AUDIT')
           print('Before: 0c64439dc222f2be35bc616da0fc4f5ce0bc5a00')
           print('After: current besselian_eclipse_engine.py')
           print('Reference: frozen eclipse-validation-cases.yaml targets')
           print()
-          print(
-              f"{'Case':38s} {'Before':>11s} {'After':>11s} "
-              f"{'|Before|':>11s} {'|After|':>11s} {'Improvement':>12s}"
-          )
+          print(f"{'Case':38s} {'Before':>11s} {'After':>11s} {'|Before|':>11s} {'|After|':>11s} {'Improvement':>12s}")
           print('-' * 102)
-
           before_residuals = []
           after_residuals = []
           for label, day, reference in cases:
@@ -120,16 +105,11 @@ jobs:
               improvement = abs(old_residual) - abs(new_residual)
               before_residuals.append(old_residual)
               after_residuals.append(new_residual)
-              print(
-                  f'{label:38.38s} {old_residual:+10.3f}s {new_residual:+10.3f}s '
-                  f'{abs(old_residual):10.3f}s {abs(new_residual):10.3f}s {improvement:+11.3f}s'
-              )
-
+              print(f'{label:38.38s} {old_residual:+10.3f}s {new_residual:+10.3f}s {abs(old_residual):10.3f}s {abs(new_residual):10.3f}s {improvement:+11.3f}s')
           old = np.asarray(before_residuals, dtype=float)
           new = np.asarray(after_residuals, dtype=float)
           old_abs = np.abs(old)
           new_abs = np.abs(new)
-
           print()
           print('SUMMARY')
           print('-' * 72)
@@ -141,24 +121,20 @@ jobs:
           print(f'before max absolute error   = {old_abs.max():.3f} s')
           print(f'after  max absolute error   = {new_abs.max():.3f} s')
           print(f'mean absolute improvement   = {(old_abs - new_abs).mean():+.3f} s')
-
           improved = int(np.sum(new_abs < old_abs - 0.0005))
           unchanged = int(np.sum(np.abs(new_abs - old_abs) <= 0.0005))
           worsened = int(np.sum(new_abs > old_abs + 0.0005))
           print(f'cases improved/unchanged/worsened = {improved}/{unchanged}/{worsened}')
-
           modern = new_abs[2:]
           if modern.max() > 10.0:
-              raise SystemExit(
-                  f'JDTDB migration regression: modern max error {modern.max():.3f}s > 10s'
-              )
+              raise SystemExit(f'JDTDB migration regression: modern max error {modern.max():.3f}s > 10s')
           PY
 
       - name: Commit audit report
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add eclipse-jdtdb-audit.txt
+          git add Historical/eclipse-jdtdb-audit.txt
           if git diff --cached --quiet; then
             echo 'Audit report unchanged.'
           else
