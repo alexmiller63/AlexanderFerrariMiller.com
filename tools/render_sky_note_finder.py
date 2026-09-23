@@ -17,6 +17,7 @@ from pathlib import Path
 from types import SimpleNamespace
 
 import matplotlib.pyplot as plt
+from matplotlib.path import Path as MplPath
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 if str(REPO_ROOT) not in sys.path:
@@ -67,28 +68,45 @@ def point_segment_distance(point, start, end):
     return math.hypot(px - (x1 + t * dx), py - (y1 + t * dy))
 
 
+def segment_hits_display_bbox(ax, start, end, bbox):
+    """Test a data-coordinate segment against a rendered display-coordinate box."""
+    start_display = ax.transData.transform(start)
+    end_display = ax.transData.transform(end)
+    return MplPath([start_display, end_display]).intersects_bbox(bbox, filled=False)
+
+
 def place_label(ax, label, point, occupied_labels, color=TEXT, fontsize=9, zorder=6,
                 obstacle_segments=()):
-    """Place a label away from existing labels and constellation figure segments."""
+    """Place a label using its true rendered bounds for collision rejection."""
     offsets = ((5, 5), (7, -7), (-7, 7), (-7, -7),
-               (10, 0), (0, 10), (-10, 0), (0, -10))
-    clearance = max(0.32, fontsize * 0.035)
+               (10, 0), (0, 10), (-10, 0), (0, -10),
+               (13, 7), (13, -7), (-13, 7), (-13, -7),
+               (16, 0), (0, 16), (-16, 0), (0, -16))
+    renderer = ax.figure.canvas.get_renderer()
     best = None
-    for dx, dy in offsets:
-        candidate = (point[0] + dx * 0.02, point[1] + dy * 0.02)
-        labels_clear = all((candidate[0]-x)**2 + (candidate[1]-y)**2 > 0.55**2
-                           for x, y in occupied_labels)
-        figure_clear = all(point_segment_distance(candidate, start, end) > clearance
-                           for start, end in obstacle_segments)
-        score = (0 if labels_clear else 1) + (0 if figure_clear else 1)
-        if best is None or score < best[0]:
-            best = (score, dx, dy, candidate)
+    for rank, (dx, dy) in enumerate(offsets):
+        annotation = ax.annotate(label, point, xytext=(dx, dy), textcoords="offset points",
+                                 fontsize=fontsize, color=color, zorder=zorder)
+        ax.figure.canvas.draw()
+        renderer = ax.figure.canvas.get_renderer()
+        bbox = annotation.get_window_extent(renderer=renderer).expanded(1.08, 1.16)
+        label_hits = sum(bbox.overlaps(other) for other in occupied_labels)
+        geometry_hits = sum(segment_hits_display_bbox(ax, start, end, bbox)
+                            for start, end in obstacle_segments)
+        score = label_hits + geometry_hits
+        annotation.remove()
+        candidate = (score, rank, dx, dy)
+        if best is None or candidate < best:
+            best = candidate
         if score == 0:
             break
-    _, dx, dy, candidate = best
-    occupied_labels.append(candidate)
-    ax.annotate(label, point, xytext=(dx, dy), textcoords="offset points",
-                fontsize=fontsize, color=color, zorder=zorder)
+    _, _, dx, dy = best
+    annotation = ax.annotate(label, point, xytext=(dx, dy), textcoords="offset points",
+                             fontsize=fontsize, color=color, zorder=zorder)
+    ax.figure.canvas.draw()
+    renderer = ax.figure.canvas.get_renderer()
+    occupied_labels.append(annotation.get_window_extent(renderer=renderer).expanded(1.08, 1.16))
+    return annotation
 
 
 def complete_index(stars):
