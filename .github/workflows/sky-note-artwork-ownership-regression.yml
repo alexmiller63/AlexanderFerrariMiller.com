@@ -1,0 +1,39 @@
+name: Sky Note Artwork Ownership Regression
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'sky-notes-artwork/**'
+      - 'tools/populate_fixed_object_artwork_by_date.py'
+      - 'tools/publish_sky_note_artwork.py'
+      - '.github/workflows/populate-sky-notes-artwork-by-date.yml'
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Reject week-owned artwork
+        shell: bash
+        run: |
+          set -euo pipefail
+          bad="$(find sky-notes-artwork -type f -path 'sky-notes-artwork/[0-9][0-9][0-9][0-9]/W*/*' -print || true)"
+          if [ -n "$bad" ]; then
+            echo 'ERROR: Artwork belongs to fixed sky objects, never ISO weeks.' >&2
+            echo "$bad" >&2
+            exit 1
+          fi
+          echo 'PASS: no week-owned Sky Notes artwork exists.'
+
+      - name: Require canonical fixed-object artwork path
+        shell: bash
+        run: |
+          set -euo pipefail
+          if find sky-notes-artwork/objects -type f -name 'finder.svg' -print -quit 2>/dev/null | grep -q .; then
+            echo 'PASS: canonical fixed-object artwork tree exists.'
+          else
+            echo 'ERROR: no canonical sky-notes-artwork/objects/<fixed_object_id>/finder.svg found.' >&2
+            exit 1
+          fi
