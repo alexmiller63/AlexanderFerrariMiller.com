@@ -10,20 +10,34 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v4
 
-      - name: Inventory W36 artwork candidates
+      - name: Locate W36 artwork
         shell: bash
         run: |
-          echo '=== W36 directories ==='
-          find . -type d -iname '*W36*' -print | sort || true
+          set -euo pipefail
+          TARGET='sky-notes-artwork/2026/W36/finder.svg'
+          echo "Canonical target: $TARGET"
+          test -f "$TARGET"
+          echo '=== Current W36 artwork ==='
+          find sky-notes-artwork/2026/W36 -maxdepth 1 -type f -print | sort
 
-          echo '=== Files mentioning W36 / Altair / Aquila in path ==='
-          find . -type f -print \
-            | grep -Ei 'W36|Altair|Aquila' \
-            | sort \
+      - name: Inspect target label geometry
+        shell: bash
+        run: |
+          set -euo pipefail
+          TARGET='sky-notes-artwork/2026/W36/finder.svg'
+          echo '=== SVG identity ==='
+          grep -nE '<title>|<desc>|Target:|target|Altair|Aquila|Sham|Sagitta' "$TARGET" | head -n 200 || true
+          echo '=== Text elements of interest ==='
+          grep -nE '<text[^>]*>.*(Altair|Aquila|Sham|Sagitta|Aql|AQL|Sge|SGE|α|Alpha)' "$TARGET" | head -n 200 || true
+          echo '=== Nearby SVG geometry ==='
+          grep -nE '(Altair|Aquila|Sham|Sagitta|Aql|AQL|Sge|SGE|α|Alpha)' "$TARGET" -B 3 -A 3 | head -n 400 || true
+
+      - name: Trace artwork generator references
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo '=== Active source references only ==='
+          grep -RInE --exclude='finder.svg' --exclude-dir='.git' --exclude-dir='Historical' \
+            '(target.*label|label.*target|Altair|Aquila|Sham|Sagitta)' \
+            generators scripts tools sky-notes-artwork .github/workflows 2>/dev/null \
             | head -n 500 || true
-
-          echo '=== All SVG files ==='
-          find . -type f -iname '*.svg' -print | sort | head -n 500 || true
-
-          echo '=== References to Altair or Aquila in likely generated content ==='
-          grep -RIlE 'Altair|Aquila' almanack 2>/dev/null | sort | head -n 500 || true
