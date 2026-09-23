@@ -101,6 +101,30 @@ def segment_hits_display_bbox(ax, start, end, bbox):
 
 
 
+def boundary_bbox_contains(ax, bbox, boundary_points):
+    """Return True when a rendered label box stays inside a projected IAU boundary."""
+    display_points = [ax.transData.transform(point) for point in boundary_points]
+    if len(display_points) < 3:
+        return False
+    boundary_path = MplPath(display_points, closed=True)
+    left, bottom, right, top = bbox.x0, bbox.y0, bbox.x1, bbox.y1
+    samples = []
+    for fraction in [index / 8 for index in range(9)]:
+        samples.extend([
+            (left + (right - left) * fraction, bottom),
+            (left + (right - left) * fraction, top),
+            (left, bottom + (top - bottom) * fraction),
+            (right, bottom + (top - bottom) * fraction),
+        ])
+    if not all(boundary_path.contains_point(point) for point in samples):
+        return False
+    box_path = MplPath(
+        [(left, bottom), (right, bottom), (right, top), (left, top)],
+        closed=True,
+    )
+    return not boundary_path.intersects_path(box_path, filled=False)
+
+
 def place_boundary_label(ax, full_label, abbreviation, point, occupied_labels,
                          boundary_points, color=BOUNDARY_WHITE, fontsize=10, zorder=5):
     """Place a boundary label without allowing its rendered box to leave the boundary."""
