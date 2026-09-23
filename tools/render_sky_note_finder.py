@@ -420,9 +420,13 @@ def render(spec: dict, stars, output: Path) -> None:
                 linestyle="--", zorder=3)
         visible_points = [p for p in points if xmin <= p[0] <= xmax and ymin <= p[1] <= ymax]
         if visible_points and boundary_abbreviation != home_abbreviation:
-            neighbor_points.setdefault(boundary_abbreviation, (boundary_name, visible_points))
+            neighbor_points.setdefault(boundary_abbreviation, (boundary_name, points))
     for neighbor_abbreviation, (neighbor_name, points) in neighbor_points.items():
-        point = (sum(x for x, _ in points) / len(points), sum(y for _, y in points) / len(points))
+        visible_points = [p for p in points if xmin <= p[0] <= xmax and ymin <= p[1] <= ymax]
+        if not visible_points:
+            continue
+        point = (sum(x for x, _ in visible_points) / len(visible_points),
+                 sum(y for _, y in visible_points) / len(visible_points))
         place_boundary_label(
             ax, neighbor_name, neighbor_abbreviation, point, occupied_labels,
             points, color=BOUNDARY_WHITE, fontsize=10, zorder=5,
