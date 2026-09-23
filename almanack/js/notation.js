@@ -4,210 +4,69 @@
     'ι':'Iota','κ':'Kappa','λ':'Lambda','μ':'Mu','ν':'Nu','ξ':'Xi','ο':'Omicron','π':'Pi',
     'ρ':'Rho','σ':'Sigma','τ':'Tau','υ':'Upsilon','φ':'Phi','χ':'Chi','ψ':'Psi','ω':'Omega'
   };
-
   const constellationNames = {
     And:'Andromedae',Ant:'Antliae',Aps:'Apodis',Aqr:'Aquarii',Aql:'Aquilae',Ara:'Arae',Ari:'Arietis',Aur:'Aurigae',Boo:'Bootis',Cae:'Caeli',Cam:'Camelopardalis',Cnc:'Cancri',CVn:'Canum Venaticorum',CMa:'Canis Majoris',CMi:'Canis Minoris',Cap:'Capricorni',Car:'Carinae',Cas:'Cassiopeiae',Cen:'Centauri',Cep:'Cephei',Cet:'Ceti',Cha:'Chamaeleontis',Cir:'Circini',Col:'Columbae',Com:'Comae Berenices',CrA:'Coronae Australis',CrB:'Coronae Borealis',Crv:'Corvi',Crt:'Crateris',Cru:'Crucis',Cyg:'Cygni',Del:'Delphini',Dor:'Doradus',Dra:'Draconis',Equ:'Equulei',Eri:'Eridani',For:'Fornacis',Gem:'Geminorum',Gru:'Gruis',Her:'Herculis',Hor:'Horologii',Hya:'Hydrae',Hyi:'Hydri',Ind:'Indi',Lac:'Lacertae',Leo:'Leonis',LMi:'Leonis Minoris',Lep:'Leporis',Lib:'Librae',Lup:'Lupi',Lyn:'Lyncis',Lyr:'Lyrae',Men:'Mensae',Mic:'Microscopii',Mon:'Monocerotis',Mus:'Muscae',Nor:'Normae',Oct:'Octantis',Oph:'Ophiuchi',Ori:'Orionis',Pav:'Pavonis',Peg:'Pegasi',Per:'Persei',Phe:'Phoenicis',Pic:'Pictoris',Psc:'Piscium',PsA:'Piscis Austrini',Pup:'Puppis',Pyx:'Pyxidis',Ret:'Reticuli',Sge:'Sagittae',Sgr:'Sagittarii',Sco:'Scorpii',Scl:'Sculptoris',Sct:'Scuti',Ser:'Serpentis',Sex:'Sextantis',Tau:'Tauri',Tel:'Telescopii',Tri:'Trianguli',TrA:'Trianguli Australis',Tuc:'Tucanae',UMa:'Ursae Majoris',UMi:'Ursae Minoris',Vel:'Velorum',Vir:'Virginis',Vol:'Volantis',Vul:'Vulpeculae'
   };
-
-  const zodiacNames = {
-    '♈':'Aries','♉':'Taurus','♊':'Gemini','♋':'Cancer','♌':'Leo','♍':'Virgo',
-    '♎':'Libra','♏':'Scorpio','♐':'Sagittarius','♑':'Capricorn','♒':'Aquarius','♓':'Pisces'
-  };
-
+  const zodiacNames = {'♈':'Aries','♉':'Taurus','♊':'Gemini','♋':'Cancer','♌':'Leo','♍':'Virgo','♎':'Libra','♏':'Scorpio','♐':'Sagittarius','♑':'Capricorn','♒':'Aquarius','♓':'Pisces'};
   const bodyNames = {'☉':'Sun','☽':'Moon','☿':'Mercury','♀':'Venus','♂':'Mars','♃':'Jupiter','♄':'Saturn','⚳':'Ceres','♅':'Uranus','♆':'Neptune','♇':'Pluto'};
   const VS = '\ufe0e';
   const LEADING_SYMBOL = /^[αβγδεζηθικλμνξοπρστυφχψω♈♉♊♋♌♍♎♏♐♑♒♓☉☽☿♀♂♃♄⚳♅♆♇]/;
 
-  function notationSpan(greek, latin, mixed) {
-    const span = document.createElement('span');
-    span.className = 'notation-item';
-    span.dataset.greek = greek;
-    span.dataset.latin = latin;
-    span.dataset.mixed = mixed;
-    span.textContent = greek;
-    return span;
-  }
-
+  function notationSpan(greek, latin, mixed) { const span=document.createElement('span'); span.className='notation-item'; span.dataset.greek=greek; span.dataset.latin=latin; span.dataset.mixed=mixed; span.textContent=greek; return span; }
   function renderNotation(item, value) {
-    item.classList.add('notation-rendered');
-    item.classList.remove('notation-item');
-    item.replaceChildren();
-    const match = value.match(LEADING_SYMBOL);
-    if (!match) { item.textContent = value; return; }
-    const symbol = document.createElement('span');
-    symbol.className = 'notation-leading-symbol';
-    let consumed = match[0].length;
-    symbol.textContent = match[0];
-    if (value.charAt(consumed) === VS) { symbol.textContent += VS; consumed += 1; }
-    symbol.style.display = 'inline-block';
-    symbol.style.fontFamily = "'Apple Symbols','Arial Unicode MS','Segoe UI Symbol','Noto Sans Symbols 2',serif";
-    symbol.style.fontVariantEmoji = 'text';
-    symbol.style.fontSize = item.closest('table.ephemeris') ? '1.5em' : '2em';
-    symbol.style.lineHeight = '.75';
-    symbol.style.verticalAlign = '-.12em';
-    item.append(symbol, document.createTextNode(value.slice(consumed)));
+    item.classList.add('notation-rendered'); item.classList.remove('notation-item'); item.replaceChildren();
+    const match=value.match(LEADING_SYMBOL); if(!match){item.textContent=value;return;}
+    const symbol=document.createElement('span'); symbol.className='notation-leading-symbol'; let consumed=match[0].length; symbol.textContent=match[0];
+    if(value.charAt(consumed)===VS){symbol.textContent+=VS;consumed+=1;}
+    symbol.style.display='inline-block'; symbol.style.fontFamily="'Apple Symbols','Arial Unicode MS','Segoe UI Symbol','Noto Sans Symbols 2',serif"; symbol.style.fontVariantEmoji='text'; symbol.style.fontSize=item.closest('table.ephemeris')?'1.5em':'2em'; symbol.style.lineHeight='.75'; symbol.style.verticalAlign='-.12em'; item.append(symbol,document.createTextNode(value.slice(consumed)));
   }
 
-  document.querySelectorAll('.zodiac-glyph').forEach(function (item) {
-    const glyph = item.textContent.charAt(0);
-    if (!zodiacNames[glyph]) return;
-    if (item.closest('table.calendar tbody td:nth-child(2)')) { item.textContent = glyph + VS; return; }
-    item.classList.add('notation-item');
-    item.dataset.greek = glyph + VS;
-    item.dataset.latin = zodiacNames[glyph];
-    item.dataset.mixed = glyph + VS + '\n' + zodiacNames[glyph];
-  });
+  document.querySelectorAll('.zodiac-glyph').forEach(function(item){const glyph=item.textContent.charAt(0);if(!zodiacNames[glyph])return;if(item.closest('table.calendar tbody td:nth-child(2)')){item.textContent=glyph+VS;return;}item.classList.add('notation-item');item.dataset.greek=glyph+VS;item.dataset.latin=zodiacNames[glyph];item.dataset.mixed=glyph+VS+'\n'+zodiacNames[glyph];});
 
-  const main = document.querySelector('main');
-  if (main) {
-    main.querySelectorAll('table.calendar tbody td:nth-child(3) .greek-letter').forEach(function (el) {
-      if (el.closest('.notation-item,.notation-rendered')) return;
-      const letter = el.textContent.replace(/\ufe0e/g, '').trim();
-      if (!greekNames[letter]) return;
-      const next = el.nextSibling;
-      if (!next || next.nodeType !== Node.TEXT_NODE) return;
-      const match = next.nodeValue.match(/^(\d+)?\s+([A-Z][A-Za-z]{2})\b/);
-      if (!match) return;
-      const suffix = match[1] || '';
-      const abbr = match[2];
-      const constellation = constellationNames[abbr] || abbr;
-      const span = notationSpan(letter + suffix + ' ' + abbr, greekNames[letter] + suffix + ' ' + constellation, letter + suffix + ' ' + greekNames[letter] + suffix + ' ' + constellation);
-      next.nodeValue = next.nodeValue.slice(match[0].length);
-      el.replaceWith(span);
-    });
-    const pattern = /([αβγδεζηθικλμνξοπρστυφχψω])(\d+)?\s+([A-Z][A-Za-z]{2})\b|[☉☽☿♀♂♃♄]|([αβγδεζηθικλμνξοπρστυφχψω])(\d+)?/g;
-    const nodes = [];
-    const walker = document.createTreeWalker(main, NodeFilter.SHOW_TEXT);
-    while (walker.nextNode()) {
-      const parent = walker.currentNode.parentElement;
-      if (parent && !parent.closest('.notation-item') && !parent.closest('table.ephemeris') && pattern.test(walker.currentNode.nodeValue)) nodes.push(walker.currentNode);
-      pattern.lastIndex = 0;
+  const main=document.querySelector('main');
+  if(main){
+    main.querySelectorAll('table.calendar tbody td:nth-child(3) .greek-letter').forEach(function(el){if(el.closest('.notation-item,.notation-rendered'))return;const letter=el.textContent.replace(/\ufe0e/g,'').trim();if(!greekNames[letter])return;const next=el.nextSibling;if(!next||next.nodeType!==Node.TEXT_NODE)return;const match=next.nodeValue.match(/^(\d+)?\s+([A-Z][A-Za-z]{2})\b/);if(!match)return;const suffix=match[1]||'',abbr=match[2],constellation=constellationNames[abbr]||abbr;const span=notationSpan(letter+suffix+' '+abbr,greekNames[letter]+suffix+' '+constellation,letter+suffix+' '+greekNames[letter]+suffix+' '+constellation);next.nodeValue=next.nodeValue.slice(match[0].length);el.replaceWith(span);});
+    const pattern=/([αβγδεζηθικλμνξοπρστυφχψω])(\d+)?\s+([A-Z][A-Za-z]{2})\b|[☉☽☿♀♂♃♄]|([αβγδεζηθικλμνξοπρστυφχψω])(\d+)?/g,nodes=[],walker=document.createTreeWalker(main,NodeFilter.SHOW_TEXT);
+    while(walker.nextNode()){const parent=walker.currentNode.parentElement;if(parent&&!parent.closest('.notation-item')&&!parent.closest('table.ephemeris')&&pattern.test(walker.currentNode.nodeValue))nodes.push(walker.currentNode);pattern.lastIndex=0;}
+    nodes.forEach(function(node){const text=node.nodeValue,fragment=document.createDocumentFragment();let last=0,match;pattern.lastIndex=0;while((match=pattern.exec(text))){fragment.append(document.createTextNode(text.slice(last,match.index)));const token=match[0];let greek=token,latin=token,mixed=token;const bayer=token.match(/^([αβγδεζηθικλμνξοπρστυφχψω])(\d+)?\s+([A-Z][A-Za-z]{2})$/),greekOnly=token.match(/^([αβγδεζηθικλμνξοπρστυφχψω])(\d+)?$/);if(bayer){const suffix=bayer[2]||'',constellation=constellationNames[bayer[3]]||bayer[3];greek=bayer[1]+suffix+' '+bayer[3];latin=greekNames[bayer[1]]+suffix+' '+constellation;mixed=bayer[1]+suffix+' '+greekNames[bayer[1]]+suffix+' '+constellation;}else if(bodyNames[token]){greek=token+VS;latin=bodyNames[token];mixed=token+VS+' '+bodyNames[token];}else if(greekOnly){greek=greekOnly[1]+(greekOnly[2]||'');latin=greekNames[greekOnly[1]]+(greekOnly[2]||'');mixed=greek+' '+latin;}fragment.append(notationSpan(greek,latin,mixed));last=match.index+token.length;}fragment.append(document.createTextNode(text.slice(last)));node.replaceWith(fragment);});
+  }
+
+  document.querySelectorAll('table.calendar tbody td:nth-child(3)').forEach(function(cell){const visibilityPattern=/(?:👁|B|🔭)\s+V\s+\d+(?:\.\d+)?/g,nodes=[],walker=document.createTreeWalker(cell,NodeFilter.SHOW_TEXT);while(walker.nextNode()){if(visibilityPattern.test(walker.currentNode.nodeValue))nodes.push(walker.currentNode);visibilityPattern.lastIndex=0;}nodes.forEach(function(node){const text=node.nodeValue,fragment=document.createDocumentFragment();let last=0,match;visibilityPattern.lastIndex=0;while((match=visibilityPattern.exec(text))){fragment.append(document.createTextNode(text.slice(last,match.index)));const span=document.createElement('span');span.className='visibility-magnitude';span.style.whiteSpace='nowrap';span.textContent=match[0];fragment.append(span);last=match.index+match[0].length;}fragment.append(document.createTextNode(text.slice(last)));node.replaceWith(fragment);});});
+
+  const observingImages=Array.from(document.querySelectorAll('table.calendar img.visibility-glyph'));
+  observingImages.forEach(function(image){if(!image.isConnected||image.closest('.observing-aid-notation'))return;const source=image.getAttribute('src')||'',isTelescope=/telescope\.svg(?:$|[?#])/.test(source),sibling=image.nextElementSibling,siblingSource=sibling&&sibling.matches('img.visibility-glyph')?(sibling.getAttribute('src')||''):'',substantial=isTelescope&&sibling&&sibling.matches('img.visibility-glyph')&&/telescope\.svg(?:$|[?#])/.test(siblingSource);let label=null;if(substantial)label='Substantial telescope';else if(/eye\.svg(?:$|[?#])/.test(source))label='Naked eye';else if(/binoculars\.svg(?:$|[?#])/.test(source))label='Binoculars';else if(isTelescope)label='Telescope';if(!label)return;const wrapper=document.createElement('span');wrapper.className='observing-aid-notation';wrapper.dataset.label=label;wrapper.style.whiteSpace='nowrap';const symbol=document.createElement('span');symbol.className='observing-aid-symbol';image.replaceWith(wrapper);symbol.append(image);if(substantial&&sibling.isConnected)symbol.append(sibling);const word=document.createElement('span');word.className='observing-aid-word';word.textContent=label;wrapper.append(symbol,word);});
+
+  document.querySelectorAll('table.calendar tbody td:nth-child(2)').forEach(function(cell){const text=cell.textContent.trim(),match=text.match(/^([^\d]*?)(\d+)$/);if(!match)return;const number=match[2];cell.classList.add('zodiac-day');Array.from(cell.childNodes).forEach(function(node){if(node.nodeType===3)node.nodeValue=node.nodeValue.replace(/\s*\d+\s*$/,'');});const day=document.createElement('span');day.className='zodiac-day-number';day.textContent=number;cell.append(day);});
+
+  function toggleScope(button){const wrapper=button.closest('.section-notation-toggle');if(wrapper&&wrapper.dataset.notationTarget)return wrapper.dataset.notationTarget;if(!wrapper)return'page';let next=wrapper.nextElementSibling;if(next&&next.matches('h3')){if(next.textContent.trim()==='Calendar')return'calendar';if(next.textContent.trim()==='Planet Finder')return'finder';if(next.textContent.trim()==='Weekly Solar-System Ephemeris')return'ephemeris';}let previous=wrapper.previousElementSibling;while(previous){if(previous.matches('h3')){if(previous.textContent.trim()==='Weekly Solar-System Ephemeris')return'ephemeris';break;}previous=previous.previousElementSibling;}return'page';}
+  function scopeRoot(scope){if(scope==='calendar')return document.querySelector('table.calendar');if(scope==='ephemeris')return document.querySelector('table.ephemeris')?document.querySelector('main'):null;if(scope==='finder')return document.querySelector('.planet-finder-strip, .w15-finder-strip');return document;}
+  function itemBelongsToScope(item,scope){if(scope==='calendar')return!!item.closest('table.calendar');if(scope==='ephemeris')return!!item.closest('table.ephemeris')||!!item.closest('.ephemeris-note');if(scope==='page')return true;return false;}
+  function updateTarget(scope,mode){const root=scopeRoot(scope);if(!root)return;root.querySelectorAll('.notation-item, .notation-rendered').forEach(function(item){if(!itemBelongsToScope(item,scope))return;renderNotation(item,item.dataset[mode]||item.dataset.greek||item.textContent);});if(scope==='calendar'||scope==='page'){root.querySelectorAll('.observing-aid-notation').forEach(function(item){const symbol=item.querySelector('.observing-aid-symbol'),word=item.querySelector('.observing-aid-word');if(!symbol||!word)return;symbol.hidden=mode==='latin';word.hidden=mode==='greek';item.classList.toggle('is-mixed',mode==='mixed');});}if(scope==='finder'||scope==='page'){root.querySelectorAll('[data-finder-mode], [data-finder-image]').forEach(function(figure){const figureMode=figure.dataset.finderMode||figure.dataset.finderImage,active=figureMode===mode;figure.hidden=!active;figure.style.display=active?'':'none';figure.classList.toggle('is-active',active);});}}
+  function syncButtons(mode){document.querySelectorAll('[data-bayer-mode]').forEach(function(button){button.setAttribute('aria-pressed',button.dataset.bayerMode===mode?'true':'false');});}
+  function applyMode(mode){const scopes=new Set();document.querySelectorAll('.bayer-toggle [data-bayer-mode]').forEach(function(button){scopes.add(toggleScope(button));});scopes.forEach(function(scope){updateTarget(scope,mode);});syncButtons(mode);try{localStorage.setItem('star-almanack-bayer-mode',mode);}catch(_){}}
+  document.querySelectorAll('[data-bayer-mode]').forEach(function(button){button.addEventListener('click',function(){applyMode(button.dataset.bayerMode);});});
+  let initial='greek';try{const saved=localStorage.getItem('star-almanack-bayer-mode');if(saved==='greek'||saved==='latin'||saved==='mixed')initial=saved;}catch(_){}applyMode(initial);
+
+  /* Variable-star display is independent of notation. Significant is the normal
+     Almanack view (V-band span >= 1.0 mag). All reveals every catalogued variable
+     and replaces the representative whole magnitude with its one-decimal range. */
+  const calendar=document.querySelector('table.calendar');
+  if(calendar&&calendar.querySelector('.variable-star-marker')){
+    const notationControl=document.querySelector('.section-notation-toggle[data-notation-target="calendar"]');
+    const host=notationControl||calendar;
+    const wrap=document.createElement('div');wrap.className='bayer-toggle-wrap variability-toggle-wrap';
+    const group=document.createElement('div');group.className='bayer-toggle';group.setAttribute('role','group');group.setAttribute('aria-label','Variable stars');
+    const label=document.createElement('span');label.className='bayer-toggle-label';label.textContent='Variability:';
+    const significant=document.createElement('button');significant.type='button';significant.dataset.variabilityMode='significant';significant.textContent='Significant';
+    const all=document.createElement('button');all.type='button';all.dataset.variabilityMode='all';all.textContent='All';
+    group.append(label,significant,all);wrap.append(group);if(notationControl)notationControl.insertAdjacentElement('afterend',wrap);else calendar.insertAdjacentElement('beforebegin',wrap);
+    function applyVariability(mode){
+      calendar.querySelectorAll('.variable-star-marker').forEach(function(marker){marker.hidden=mode==='significant'&&marker.dataset.significant!=='true';});
+      calendar.querySelectorAll('.visibility-magnitude').forEach(function(block){const normal=block.querySelector('.magnitude-normal'),range=block.querySelector('.magnitude-variable-range');if(!range)return;if(normal)normal.hidden=mode==='all';range.hidden=mode!=='all';});
+      group.querySelectorAll('[data-variability-mode]').forEach(function(button){button.setAttribute('aria-pressed',button.dataset.variabilityMode===mode?'true':'false');});
+      try{localStorage.setItem('star-almanack-variability-mode',mode);}catch(_){}
     }
-    nodes.forEach(function (node) {
-      const text = node.nodeValue;
-      const fragment = document.createDocumentFragment();
-      let last = 0, match;
-      pattern.lastIndex = 0;
-      while ((match = pattern.exec(text))) {
-        fragment.append(document.createTextNode(text.slice(last, match.index)));
-        const token = match[0];
-        let greek = token, latin = token, mixed = token;
-        const bayer = token.match(/^([αβγδεζηθικλμνξοπρστυφχψω])(\d+)?\s+([A-Z][A-Za-z]{2})$/);
-        const greekOnly = token.match(/^([αβγδεζηθικλμνξοπρστυφχψω])(\d+)?$/);
-        if (bayer) {
-          const suffix = bayer[2] || '', constellation = constellationNames[bayer[3]] || bayer[3];
-          greek = bayer[1] + suffix + ' ' + bayer[3];
-          latin = greekNames[bayer[1]] + suffix + ' ' + constellation;
-          mixed = bayer[1] + suffix + ' ' + greekNames[bayer[1]] + suffix + ' ' + constellation;
-        } else if (bodyNames[token]) {
-          greek = token + VS; latin = bodyNames[token]; mixed = token + VS + ' ' + bodyNames[token];
-        } else if (greekOnly) {
-          greek = greekOnly[1] + (greekOnly[2] || ''); latin = greekNames[greekOnly[1]] + (greekOnly[2] || ''); mixed = greek + ' ' + latin;
-        }
-        fragment.append(notationSpan(greek, latin, mixed));
-        last = match.index + token.length;
-      }
-      fragment.append(document.createTextNode(text.slice(last)));
-      node.replaceWith(fragment);
-    });
+    group.querySelectorAll('[data-variability-mode]').forEach(function(button){button.addEventListener('click',function(){applyVariability(button.dataset.variabilityMode);});});
+    let variability='significant';try{if(localStorage.getItem('star-almanack-variability-mode')==='all')variability='all';}catch(_){}applyVariability(variability);
   }
-
-  document.querySelectorAll('table.calendar tbody td:nth-child(3)').forEach(function (cell) {
-    const visibilityPattern = /(?:👁|B|🔭)\s+V\s+\d+(?:\.\d+)?/g;
-    const nodes = [], walker = document.createTreeWalker(cell, NodeFilter.SHOW_TEXT);
-    while (walker.nextNode()) { if (visibilityPattern.test(walker.currentNode.nodeValue)) nodes.push(walker.currentNode); visibilityPattern.lastIndex = 0; }
-    nodes.forEach(function (node) {
-      const text = node.nodeValue, fragment = document.createDocumentFragment();
-      let last = 0, match; visibilityPattern.lastIndex = 0;
-      while ((match = visibilityPattern.exec(text))) {
-        fragment.append(document.createTextNode(text.slice(last, match.index)));
-        const span = document.createElement('span'); span.className = 'visibility-magnitude'; span.style.whiteSpace = 'nowrap'; span.textContent = match[0]; fragment.append(span);
-        last = match.index + match[0].length;
-      }
-      fragment.append(document.createTextNode(text.slice(last))); node.replaceWith(fragment);
-    });
-  });
-
-  /* Process every actual generated observing-aid glyph in the Calendar, regardless
-     of whether the event is rendered in the legacy third column or a nested event
-     cell.  This prevents raw eye/binocular/telescope images from surviving Latin. */
-  const observingImages = Array.from(document.querySelectorAll('table.calendar img.visibility-glyph'));
-  observingImages.forEach(function (image) {
-    if (!image.isConnected || image.closest('.observing-aid-notation')) return;
-    const source = image.getAttribute('src') || '';
-    const isTelescope = /telescope\.svg(?:$|[?#])/.test(source);
-    const sibling = image.nextElementSibling;
-    const siblingSource = sibling && sibling.matches('img.visibility-glyph') ? (sibling.getAttribute('src') || '') : '';
-    const substantial = isTelescope && sibling && sibling.matches('img.visibility-glyph') && /telescope\.svg(?:$|[?#])/.test(siblingSource);
-    let label = null;
-    if (substantial) label = 'Substantial telescope';
-    else if (/eye\.svg(?:$|[?#])/.test(source)) label = 'Naked eye';
-    else if (/binoculars\.svg(?:$|[?#])/.test(source)) label = 'Binoculars';
-    else if (isTelescope) label = 'Telescope';
-    if (!label) return;
-    const wrapper = document.createElement('span'); wrapper.className = 'observing-aid-notation'; wrapper.dataset.label = label; wrapper.style.whiteSpace = 'nowrap';
-    const symbol = document.createElement('span'); symbol.className = 'observing-aid-symbol';
-    image.replaceWith(wrapper); symbol.append(image);
-    if (substantial && sibling.isConnected) symbol.append(sibling);
-    const word = document.createElement('span'); word.className = 'observing-aid-word'; word.textContent = label;
-    wrapper.append(symbol, word);
-  });
-
-  document.querySelectorAll('table.calendar tbody td:nth-child(2)').forEach(function (cell) {
-    const text = cell.textContent.trim(), match = text.match(/^([^\d]*?)(\d+)$/);
-    if (!match) return;
-    const number = match[2]; cell.classList.add('zodiac-day');
-    Array.from(cell.childNodes).forEach(function (node) { if (node.nodeType === 3) node.nodeValue = node.nodeValue.replace(/\s*\d+\s*$/, ''); });
-    const day = document.createElement('span'); day.className = 'zodiac-day-number'; day.textContent = number; cell.append(day);
-  });
-
-  function toggleScope(button) {
-    const wrapper = button.closest('.section-notation-toggle');
-    if (wrapper && wrapper.dataset.notationTarget) return wrapper.dataset.notationTarget;
-    if (!wrapper) return 'page';
-    let next = wrapper.nextElementSibling;
-    if (next && next.matches('h3')) { if (next.textContent.trim() === 'Calendar') return 'calendar'; if (next.textContent.trim() === 'Planet Finder') return 'finder'; if (next.textContent.trim() === 'Weekly Solar-System Ephemeris') return 'ephemeris'; }
-    let previous = wrapper.previousElementSibling;
-    while (previous) { if (previous.matches('h3')) { if (previous.textContent.trim() === 'Weekly Solar-System Ephemeris') return 'ephemeris'; break; } previous = previous.previousElementSibling; }
-    return 'page';
-  }
-
-  function scopeRoot(scope) {
-    if (scope === 'calendar') return document.querySelector('table.calendar');
-    if (scope === 'ephemeris') return document.querySelector('table.ephemeris') ? document.querySelector('main') : null;
-    if (scope === 'finder') return document.querySelector('.planet-finder-strip, .w15-finder-strip');
-    return document;
-  }
-
-  function itemBelongsToScope(item, scope) {
-    if (scope === 'calendar') return !!item.closest('table.calendar');
-    if (scope === 'ephemeris') return !!item.closest('table.ephemeris') || !!item.closest('.ephemeris-note');
-    if (scope === 'page') return true;
-    return false;
-  }
-
-  function updateTarget(scope, mode) {
-    const root = scopeRoot(scope); if (!root) return;
-    root.querySelectorAll('.notation-item, .notation-rendered').forEach(function (item) { if (!itemBelongsToScope(item, scope)) return; renderNotation(item, item.dataset[mode] || item.dataset.greek || item.textContent); });
-    if (scope === 'calendar' || scope === 'page') {
-      root.querySelectorAll('.observing-aid-notation').forEach(function (item) {
-        const symbol = item.querySelector('.observing-aid-symbol'), word = item.querySelector('.observing-aid-word'); if (!symbol || !word) return;
-        symbol.hidden = mode === 'latin'; word.hidden = mode === 'greek'; item.classList.toggle('is-mixed', mode === 'mixed');
-      });
-    }
-    if (scope === 'finder' || scope === 'page') {
-      root.querySelectorAll('[data-finder-mode], [data-finder-image]').forEach(function (figure) { const figureMode = figure.dataset.finderMode || figure.dataset.finderImage, active = figureMode === mode; figure.hidden = !active; figure.style.display = active ? '' : 'none'; figure.classList.toggle('is-active', active); });
-    }
-  }
-
-  function syncButtons(mode) { document.querySelectorAll('[data-bayer-mode]').forEach(function (button) { button.setAttribute('aria-pressed', button.dataset.bayerMode === mode ? 'true' : 'false'); }); }
-  function applyMode(mode) {
-    const scopes = new Set(); document.querySelectorAll('.bayer-toggle [data-bayer-mode]').forEach(function (button) { scopes.add(toggleScope(button)); });
-    scopes.forEach(function (scope) { updateTarget(scope, mode); }); syncButtons(mode);
-    try { localStorage.setItem('star-almanack-bayer-mode', mode); } catch (_) {}
-  }
-  document.querySelectorAll('[data-bayer-mode]').forEach(function (button) { button.addEventListener('click', function () { applyMode(button.dataset.bayerMode); }); });
-  let initial = 'greek';
-  try { const saved = localStorage.getItem('star-almanack-bayer-mode'); if (saved === 'greek' || saved === 'latin' || saved === 'mixed') initial = saved; } catch (_) {}
-  applyMode(initial);
 })();
