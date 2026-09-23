@@ -5,6 +5,9 @@ on:
     branches: [main]
     paths:
       - 'tools/generate_planet_finders.py'
+      - 'tools/planet_finder_geometry.py'
+      - 'tools/planet_finder_search.py'
+      - 'tools/planet_finder_render.py'
       - 'tests/test_planet_finder_candidate_generation.py'
       - '.github/workflows/test-planet-finder.yml'
   workflow_dispatch:
