@@ -60,6 +60,29 @@ jobs:
                       print(f'{j + 1}: {lines[j]}')
           PY
 
+      - name: Write concise Altair coordinate report
+        shell: bash
+        run: |
+          set -euo pipefail
+          TARGET='sky-notes-artwork/objects/109/finder.svg'
+          python - <<'PY'
+          from pathlib import Path
+          import re
+
+          lines = Path('sky-notes-artwork/objects/109/finder.svg').read_text().splitlines()
+          hits = [i for i, line in enumerate(lines) if 'α Aql, Altair' in line]
+          print('=== ALTAIR COORDINATE REPORT ===')
+          print('Altair label references:', [i + 1 for i in hits])
+          for i in hits:
+              print(f'\nREFERENCE line {i + 1}: {lines[i].strip()}')
+              lo, hi = max(0, i - 8), min(len(lines), i + 35)
+              for j in range(lo, hi):
+                  line = lines[j]
+                  if ('transform=' in line or '<use ' in line or '<path ' in line or '<circle ' in line):
+                      print(f'{j + 1}: {line.strip()}')
+          print('=== END ALTAIR COORDINATE REPORT ===')
+          PY
+
       - name: Inspect Altair spec
         shell: bash
         run: |
