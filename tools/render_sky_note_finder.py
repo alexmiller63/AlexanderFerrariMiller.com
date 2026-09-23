@@ -70,8 +70,6 @@ def point_segment_distance(point, start, end):
 def place_label(ax, label, point, occupied_labels, color=TEXT, fontsize=9, zorder=6,
                 obstacle_segments=()):
     """Place a label away from existing labels and constellation figure segments."""
-    # Search near the owning star first.  A Bayer label must never drift so far
-    # that it appears to identify a different star.
     offsets = ((5, 5), (7, -7), (-7, 7), (-7, -7),
                (10, 0), (0, 10), (-10, 0), (0, -10))
     clearance = max(0.32, fontsize * 0.035)
@@ -106,7 +104,6 @@ def refs_from_paths(paths):
 
 
 def identity_index(spec):
-    """Index hidden database identities by renderer alias and immutable ID."""
     by_ref = {}
     by_id = {}
     for identity in spec.get("fixed_object_identities") or []:
@@ -122,7 +119,6 @@ def identity_index(spec):
 
 
 def fixed_object_database_record(fixed_id):
-    """Return the authoritative normalized fixed-object record for an immutable ID."""
     path = REPO_ROOT / "database" / "fixed-objects.json"
     if not path.exists():
         raise RuntimeError(f"Fixed-object database is missing at {path.relative_to(REPO_ROOT)}")
@@ -134,12 +130,6 @@ def fixed_object_database_record(fixed_id):
 
 
 def fixed_object_metadata(fixed_id, fallback=None):
-    """Resolve display metadata and catalog position for any fixed object.
-
-    Stellar guides come from the HYG renderer catalog. Deep-sky targets do not,
-    so their canonical coordinates are taken from the normalized fixed-object
-    database instead of being mistaken for one of the guide stars.
-    """
     meta = dict(fallback or {})
     record = fixed_object_database_record(fixed_id)
     for source_record in record.get("source_records") or []:
@@ -164,20 +154,15 @@ def fixed_object_metadata(fixed_id, fallback=None):
 
 
 def bayer_label(identity, star=None):
-    """Return a Greek Bayer designation, falling back to the pinned HYG star record."""
     stored = str(identity.get("bayer") or "").strip()
     if stored:
         return greek_bayer_symbol(stored)
     if star is None:
         return ""
-    # Return the Bayer designation only.  Constellation membership is handled
-    # explicitly by chart_bayer_label; mixing it in here created stray labels
-    # such as "Aql" when HYG supplied an abbreviation without a Bayer letter.
     return greek_bayer_symbol(star.bayer)
 
 
 def chart_bayer_label(identity, star, figure_abbreviation):
-    """Figure labels are Greek only; external-constellation stars add the IAU abbreviation."""
     full = bayer_label(identity, star)
     if not full:
         return ""
@@ -190,15 +175,11 @@ def chart_bayer_label(identity, star, figure_abbreviation):
 
 
 def legend_label(identity, star=None):
-    """Legend is Greek letter plus proper name, when one exists."""
     full = bayer_label(identity, star)
     if not full:
         return ""
     greek = full.split()[0]
     proper = str(identity.get("proper_name") or (star.proper if star else "") or "").strip()
-    constellation = str(identity.get("constellation_abbreviation") or (star.con if star else "") or "").strip()
-    # The legend is for Bayer/proper-name identification, not constellation
-    # membership.  A star without a proper name therefore shows Bayer only.
     return f"{greek} — {proper}" if proper else greek
 
 
@@ -226,24 +207,17 @@ def render(spec: dict, stars, output: Path) -> None:
     identities_by_ref, identities_by_id = identity_index(spec)
     figure_paths = spec.get("figure_paths") or []
     asterisms = spec.get("asterisms") or []
-
-    # Artwork ownership is keyed by immutable fixed_object_id.  A stellar
-    # owner also has a renderer_ref; a deep-sky owner deliberately does not.
     target_identity = spec.get("target_identity") or spec.get("artwork_owner_identity") or {}
     target_id = target_identity.get("fixed_object_id")
     if target_id is None:
         raise RuntimeError("Finder target must resolve through hidden fixed_object_id")
-
     target_star_identity = identities_by_id.get(target_id)
     target_ref = target_identity.get("renderer_ref") or (target_star_identity or {}).get("renderer_ref")
     if target_ref and target_ref not in idx:
         raise RuntimeError(f"Target renderer_ref {target_ref} is not present in coordinate catalog")
-
-    # Guide-star geometry is independent of the fixed object being located.
     refs = refs_from_paths(figure_paths)
     if target_ref:
         refs.add(target_ref)
-    # Include accepted asterism geometry in validation and chart extent.
     asterisms = list(asterisms)
     for asterism in asterisms:
         refs |= refs_from_paths(asterism.get("paths") or [])
@@ -253,7 +227,6 @@ def render(spec: dict, stars, output: Path) -> None:
     missing = sorted(ref for ref in refs if ref not in idx)
     if missing:
         raise RuntimeError("Configured stars not found in coordinate catalog: " + ", ".join(missing))
-
     target_meta = fixed_object_metadata(target_id, target_identity)
     if target_ref:
         target_star = idx[target_ref]
@@ -267,14 +240,12 @@ def render(spec: dict, stars, output: Path) -> None:
             raise RuntimeError(f"Target fixed_object_id {target_id} has no authoritative sky coordinates")
         target_ra = target_meta["ra_deg"]
         target_dec = target_meta["dec_deg"]
-
     center_stars = [idx[ref] for ref in refs_from_paths(figure_paths)]
     if target_star is not None:
         center_stars.append(target_star)
     else:
         center_stars.append(SimpleNamespace(ra_deg=target_ra, dec_deg=target_dec))
     center = spherical_center(center_stars)
-
     projected_geometry = [project(idx[ref].ra_deg, idx[ref].dec_deg, *center) for ref in refs]
     target_point = project(target_ra, target_dec, *center)
     if target_point is not None:
@@ -282,14 +253,12 @@ def render(spec: dict, stars, output: Path) -> None:
     projected_geometry = [point for point in projected_geometry if point is not None]
     if not projected_geometry:
         raise RuntimeError("Accepted geometry produced no visible projected points")
-
     xs = [point[0] for point in projected_geometry]
     ys = [point[1] for point in projected_geometry]
     span = max(max(xs) - min(xs), max(ys) - min(ys), 8.0)
     pad = max(2.5, span * 0.18)
     xmin, xmax = min(xs) - pad, max(xs) + pad
     ymin, ymax = min(ys) - pad, max(ys) + pad
-
     visible = []
     for star in stars:
         if star.mag > 7:
@@ -297,20 +266,16 @@ def render(spec: dict, stars, output: Path) -> None:
         point = project(star.ra_deg, star.dec_deg, *center)
         if point and xmin <= point[0] <= xmax and ymin <= point[1] <= ymax:
             visible.append((point[0], point[1], star))
-
     fig, ax = plt.subplots(figsize=(8.2, 8.2), facecolor=NIGHT)
     ax.set_facecolor(NIGHT)
     ax.set_xlim(xmax, xmin)
     ax.set_ylim(ymin, ymax)
     ax.set_aspect("equal")
-
     if visible:
         ax.scatter([item[0] for item in visible], [item[1] for item in visible],
                    s=[marker_area(item[2].mag, 7) for item in visible], color=STAR, zorder=1)
-
     for path in figure_paths:
         draw_path(ax, path, idx, center, FIGURE_BLUE, 2.7)
-
     figure_refs = []
     seen = set()
     for path in figure_paths:
@@ -320,15 +285,12 @@ def render(spec: dict, stars, output: Path) -> None:
                 figure_refs.append(ref)
     figure_constellation = spec.get("name") or ""
     figure_abbreviation = str(target_meta.get("constellation_abbreviation") or "").strip()
-
-    # Collect accepted asterism segments before placing labels so Bayer labels avoid them too.
     asterism_segments = []
     for asterism in asterisms:
         for path in asterism.get("paths") or []:
             path_points = [project(idx[ref].ra_deg, idx[ref].dec_deg, *center) for ref in path if ref in idx]
             path_points = [point for point in path_points if point is not None]
             asterism_segments.extend(zip(path_points, path_points[1:]))
-
     occupied_labels = []
     figure_points = []
     figure_segments = []
@@ -343,22 +305,17 @@ def render(spec: dict, stars, output: Path) -> None:
         if point is None:
             continue
         figure_points.append(point)
-        # A stellar target receives its yellow target label below; do not label it twice.
         if identity.get("fixed_object_id") == target_id:
             continue
         label = chart_bayer_label(identity, star, figure_abbreviation)
         if label:
             place_label(ax, label, point, occupied_labels, obstacle_segments=figure_segments + asterism_segments)
-
     if figure_constellation and figure_points:
         constellation_point = (sum(x for x, _ in figure_points) / len(figure_points),
                                sum(y for _, y in figure_points) / len(figure_points))
         place_label(ax, figure_constellation, constellation_point, occupied_labels,
                     color=FIGURE_BLUE, fontsize=16, zorder=5,
                     obstacle_segments=figure_segments + asterism_segments)
-
-    # Candidate asterisms are accepted curated geometry. Render only those
-    # whose projected paths enter this already-established chart field.
     for candidate in spec.get("candidate_asterisms") or []:
         visible_paths = []
         for path in candidate.get("paths") or []:
@@ -370,9 +327,6 @@ def render(spec: dict, stars, output: Path) -> None:
                 visible_paths.append(path)
         if visible_paths:
             asterisms.append(dict(candidate, paths=visible_paths))
-
-    # Draw every IAU boundary that enters the displayed field and label
-    # neighboring constellations once, using canonical full names.
     home_abbreviation = str(spec.get("constellation_abbreviation") or "").strip()
     neighbor_points = {}
     for boundary_name, boundary_abbreviation, boundary in load_iau_boundaries():
@@ -385,26 +339,20 @@ def render(spec: dict, stars, output: Path) -> None:
         visible_points = [p for p in points if xmin <= p[0] <= xmax and ymin <= p[1] <= ymax]
         if visible_points and boundary_abbreviation != home_abbreviation:
             neighbor_points.setdefault(boundary_abbreviation, (boundary_name, visible_points))
-
     for neighbor_abbreviation, (neighbor_name, points) in neighbor_points.items():
         point = (sum(x for x, _ in points) / len(points), sum(y for _, y in points) / len(points))
-        # Prefer the full IAU name, but use the compact three-letter designation
-        # when the visible boundary fragment is too narrow for the full label.
         visible_width = max(x for x, _ in points) - min(x for x, _ in points)
         full_name_width = max(1.0, len(neighbor_name) * 0.16)
         boundary_label = neighbor_name if visible_width >= full_name_width else neighbor_abbreviation.upper()
         place_label(ax, boundary_label, point, occupied_labels,
                     color=BOUNDARY_WHITE, fontsize=10, zorder=5)
-
     for asterism in asterisms:
         for path in asterism.get("paths") or []:
             draw_path(ax, path, idx, center, ASTERISM_GREEN, 3.2)
-
     if target_point is None:
         raise RuntimeError(f"Target fixed_object_id {target_id} is outside the projection")
     ax.scatter([target_point[0]], [target_point[1]], s=210, facecolors="none",
                edgecolors=TARGET_YELLOW, linewidths=2.6, zorder=8)
-
     target_name = str(target_meta.get("proper_name") or target_identity.get("name") or "").strip()
     target_greek = ""
     if target_star_identity and target_star is not None:
@@ -418,24 +366,16 @@ def render(spec: dict, stars, output: Path) -> None:
     ax.annotate(target_chart_label, target_point, xytext=(14, 0), textcoords="offset points",
                 ha="left", va="center", fontsize=10, color=TARGET_YELLOW,
                 bbox=dict(facecolor=NIGHT, edgecolor="none", pad=0.8), zorder=9)
-
-    title_const = str(target_meta.get("constellation_abbreviation") or "").strip()
-    # Stellar titles identify the Bayer target first, then its proper name and constellation.
-    # Example: Alpha AQL, Altair in Aquila.
+    # Stellar titles use the same Greek Bayer symbol as the chart label.
     if target_star is not None and target_bayer and target_name and figure_constellation:
-        bayer_name = str((target_star_identity or {}).get("bayer") or target_star.bayer or "").strip()
-        greek_to_name = {"Alp": "Alpha", "Bet": "Beta", "Gam": "Gamma", "Del": "Delta", "Eps": "Epsilon", "Zet": "Zeta", "Eta": "Eta", "The": "Theta", "Iot": "Iota", "Kap": "Kappa", "Lam": "Lambda", "Mu": "Mu", "Nu": "Nu", "Xi": "Xi", "Omi": "Omicron", "Pi": "Pi", "Rho": "Rho", "Sig": "Sigma", "Tau": "Tau", "Ups": "Upsilon", "Phi": "Phi", "Chi": "Chi", "Psi": "Psi", "Ome": "Omega"}
-        bayer_word = greek_to_name.get(bayer_name[:3].title(), bayer_name)
-        title = f"{bayer_word} {title_const.upper()}, {target_name} in {figure_constellation}"
+        title = f"{target_bayer}, {target_name} in {figure_constellation}"
     else:
         title = f"{target_name} in {figure_constellation}" if target_name and figure_constellation else (target_name or figure_constellation)
     if not title:
         title = spec.get("chart_title") or "Stellar Finder"
     ax.set_title(title, color=TEXT, fontsize=14, pad=12)
-
     ax.text(0.5, -0.035, "East ←                                      → West",
             transform=ax.transAxes, ha="center", va="top", fontsize=8, color=TEXT)
-
     legend_entries = []
     for ref in figure_refs:
         identity = identities_by_ref[ref]
@@ -447,19 +387,15 @@ def render(spec: dict, stars, output: Path) -> None:
     legend = [item for item in legend if item]
     if legend:
         legend_text = "   ·   ".join(legend)
-        # Repeat the identification legend at both edges of the chart so it
-        # remains available before and after the finder graphic.
         ax.text(0.5, 1.035, legend_text, transform=ax.transAxes,
                 ha="center", va="bottom", fontsize=7, color=TEXT, wrap=True)
         ax.text(0.5, -0.075, legend_text, transform=ax.transAxes,
                 ha="center", va="top", fontsize=7, color=TEXT, wrap=True)
-
     ax.set_xticks([])
     ax.set_yticks([])
     ax.grid(False)
     for spine in ax.spines.values():
         spine.set_visible(False)
-
     output.parent.mkdir(parents=True, exist_ok=True)
     fig.tight_layout(rect=(0, 0.08, 1, 0.96))
     fig.savefig(output, format="svg", bbox_inches="tight", facecolor=fig.get_facecolor())
@@ -472,7 +408,6 @@ def main() -> None:
     parser.add_argument("spec", type=Path)
     parser.add_argument("output", type=Path)
     args = parser.parse_args()
-
     spec = json.loads(args.spec.read_text(encoding="utf-8"))
     render(spec, load_hyg(args.hyg_catalog), args.output)
     print(f"wrote {args.output}")
