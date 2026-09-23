@@ -36,6 +36,7 @@ BOUNDARY_ROOT = REPO_ROOT / "reference-data" / "iau-constellation-boundaries"
 
 CONSTELLATION_DISPLAY_NAMES = {
     "Capricornus": "Capricorn",
+    "Delphinus": "Dolphin",
 }
 
 GREEK_SYMBOL_ORDER = "αβγδεζηθικλμνξοπρστυφχψω"
