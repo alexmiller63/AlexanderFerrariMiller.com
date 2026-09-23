@@ -1304,10 +1304,11 @@ def layout(
                 )
                 state = "REFINE"
                 continue
-            # The per-body candidate cap persists for the entire notation
-            # mode. Promotion changes the ordering only; it must not replenish
-            # a body's viable-candidate budget. Forward checking remains
-            # outside this accounting.
+            # A capped body gets a fresh 200-candidate budget when the state
+            # machine promotes it. The cap is therefore per-body/per-ordering
+            # search work, not a lifetime quota for the entire mode. Forward
+            # checking remains outside this accounting.
+            body_attempts[promote_body] = 0
             order = promoted_order
             print(
                 f"Planet Finder {mode}: CAPPED PROMOTE body={promote_body}; "
