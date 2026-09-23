@@ -6,6 +6,9 @@ on:
     paths:
       - '.github/workflows/generate-w37-planet-finders.yml'
       - 'tools/generate_planet_finders.py'
+      - 'tools/planet_finder_geometry.py'
+      - 'tools/planet_finder_search.py'
+      - 'tools/planet_finder_render.py'
       - 'tools/populate_ephemeris.py'
   workflow_dispatch:
     inputs:
