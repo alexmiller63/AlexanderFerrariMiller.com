@@ -41,7 +41,7 @@ CONSTELLATION_NAMES = {
     "Aql": "Aquila", "Ara": "Ara", "Ari": "Aries", "Aur": "Auriga",
     "Boo": "Boötes", "Cae": "Caelum", "Cam": "Camelopardalis", "Cnc": "Cancer",
     "CVn": "Canes Venatici", "CMa": "Canis Major", "CMi": "Canis Minor",
-    "Cap": "Capricornus", "Car": "Carina", "Cas": "Cassiopeia", "Cen": "Centaurus",
+    "Cap": "Capricorn", "Car": "Carina", "Cas": "Cassiopeia", "Cen": "Centaurus",
     "Cep": "Cepheus", "Cet": "Cetus", "Cha": "Chamaeleon", "Cir": "Circinus",
     "Col": "Columba", "Com": "Coma Berenices", "CrA": "Corona Australis",
     "CrB": "Corona Borealis", "Crv": "Corvus", "Crt": "Crater", "Cru": "Crux",
