@@ -50,16 +50,17 @@ def main() -> None:
     env["PLANET_FINDER_MAX_NODE_CANDIDATES"] = positive_int("PLANET_FINDER_MAX_NODE_CANDIDATES", "200")
     env["PLANET_FINDER_MAX_SECONDS"] = positive_int("PLANET_FINDER_MAX_SECONDS", "180")
     env["PLANET_FINDER_DIAGNOSTIC_LEVEL"] = nonnegative_int("PLANET_FINDER_DIAGNOSTIC_LEVEL", "1")
-    print(
-        "Planet Finder launcher: "
-        f"{start.isocalendar().year}-W{start.isocalendar().week:02d} through "
-        f"{end.isocalendar().year}-W{end.isocalendar().week:02d}; "
-        f"candidates={env['PLANET_FINDER_CANDIDATES']}; "
-        f"body-cap={env['PLANET_FINDER_MAX_NODE_CANDIDATES']}; "
-        f"seconds/mode={env['PLANET_FINDER_MAX_SECONDS']}; "
-        f"diagnostic={env['PLANET_FINDER_DIAGNOSTIC_LEVEL']}",
-        flush=True,
-    )
+    if int(env["PLANET_FINDER_DIAGNOSTIC_LEVEL"]) > 0:
+        print(
+            "Planet Finder launcher: "
+            f"{start.isocalendar().year}-W{start.isocalendar().week:02d} through "
+            f"{end.isocalendar().year}-W{end.isocalendar().week:02d}; "
+            f"candidates={env['PLANET_FINDER_CANDIDATES']}; "
+            f"body-cap={env['PLANET_FINDER_MAX_NODE_CANDIDATES']}; "
+            f"seconds/mode={env['PLANET_FINDER_MAX_SECONDS']}; "
+            f"diagnostic={env['PLANET_FINDER_DIAGNOSTIC_LEVEL']}",
+            flush=True,
+        )
     subprocess.run(
         [sys.executable, "tools/populate_ephemeris_planet_finder_by_date.py",
          start.isoformat(), end.isoformat()],
