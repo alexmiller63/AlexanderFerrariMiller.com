@@ -35,8 +35,8 @@ def named_counts(d):
     return out
 
 
-def isolated_sun_audit(mode, bodies, scale=2.0, sample_limit=12):
-    """Audit Sun as move 1 only: no DFS, no other bodies, no caps or forward checking."""
+def isolated_sun_audit(mode, bodies, scale=2.0, sample_limit=None):
+    """Audit every Sun proposal as move 1, before DFS or movable-body interactions."""
     sun = next((b for b in bodies if b[1] == "Sun"), None)
     if sun is None:
         print("SUN-FIRST AUDIT: no Sun in body list", flush=True); return
@@ -47,18 +47,24 @@ def isolated_sun_audit(mode, bodies, scale=2.0, sample_limit=12):
     raw = list(candidate_positions(lon, scale))
     counts = {"raw": len(raw), "reserved": 0, "rim": 0, "route": 0, "leader_rim": 0, "accepted": 0}
     reserved_hits = {}; route_diag={"elbows": {}}
-    samples = []
     limit = RI-LABEL_RIM_CLEARANCE
-    for x, y in raw:
+    print("WHITE BOX SUN-FIRST ISOLATED AUDIT", flush=True)
+    print(f"SUN-FIRST mode={mode.value} lon={lon:.3f} anchor=({anchor[0]:.1f},{anchor[1]:.1f}) label=({w:.1f}x{h:.1f}) immutable={immutable_count}", flush=True)
+    for candidate_index,(x, y) in enumerate(raw,1):
         box = Box(x, y, w, h)
-        hit_index = next((i for i,o in enumerate(reserved) if boxes_overlap(box, o, LABEL_COLLISION_PADDING)), None)
-        if hit_index is not None:
+        hits=[i for i,o in enumerate(reserved) if boxes_overlap(box, o, LABEL_COLLISION_PADDING)]
+        detail=""
+        if hits:
             counts["reserved"] += 1; reason = "reserved"
-            key=reserved_name(hit_index); reserved_hits[key]=reserved_hits.get(key,0)+1
+            names=[reserved_name(i) for i in hits]
+            for key in names: reserved_hits[key]=reserved_hits.get(key,0)+1
+            detail=" obstacles="+",".join(names)
         else:
             corners=((box.left,box.top),(box.right,box.top),(box.left,box.bottom),(box.right,box.bottom))
-            if max(math.hypot(px-CX,py-CY) for px,py in corners) >= limit:
+            corner_radii=tuple(math.hypot(px-CX,py-CY) for px,py in corners); worst=max(corner_radii)
+            if worst >= limit:
                 counts["rim"] += 1; reason = "rim"
+                detail=f" worst_corner_r={worst:.2f} rim_limit={limit:.2f} excess={worst-limit:+.2f}"
             else:
                 path = route(anchor, (box.x,box.y), reserved, diagnostic=route_diag, allow_initial_escape_count=immutable_count, prefix_cache={})
                 if path is None:
@@ -67,11 +73,10 @@ def isolated_sun_audit(mode, bodies, scale=2.0, sample_limit=12):
                     counts["leader_rim"] += 1; reason = "leader_rim"
                 else:
                     counts["accepted"] += 1; reason = "accepted"
-        if len(samples) < sample_limit:
-            samples.append((x,y,reason))
+                    detail=f" path_vertices={len(path)}"
+        if sample_limit is None or candidate_index <= sample_limit:
+            print(f"SUN-CANDIDATE #{candidate_index:03d} center=({x:.1f},{y:.1f}) result={reason}{detail}", flush=True)
     reconciled = counts["reserved"]+counts["rim"]+counts["route"]+counts["leader_rim"]+counts["accepted"]
-    print("WHITE BOX SUN-FIRST ISOLATED AUDIT", flush=True)
-    print(f"SUN-FIRST mode={mode.value} lon={lon:.3f} anchor=({anchor[0]:.1f},{anchor[1]:.1f}) label=({w:.1f}x{h:.1f}) immutable={immutable_count}", flush=True)
     print("SUN-FIRST COUNTS " + " ".join(f"{k}={v}" for k,v in counts.items()) + f" reconciled={reconciled}", flush=True)
     print("SUN-FIRST RESERVED BREAKDOWN " + (" ".join(f"{k}={v}" for k,v in sorted(reserved_hits.items(), key=lambda kv:(-kv[1],kv[0]))) or "none"), flush=True)
     print(f"SUN-ROUTE SUMMARY straight_blocked={route_diag.get('straight_blocked',0)} anchor_blocked={route_diag.get('anchor_blocked',0)} route_failed={route_diag.get('route_failed',0)}",flush=True)
@@ -83,7 +88,6 @@ def isolated_sun_audit(mode, bodies, scale=2.0, sample_limit=12):
     for key,value in sorted(route_diag.items()):
         if key not in {"elbows","straight_blockers","straight_blocked","anchor_blocked","route_failed"}:
             print(f"SUN-ROUTE EXTRA {key}={value}",flush=True)
-    for i,(x,y,reason) in enumerate(samples,1): print(f"  SUN-FIRST sample#{i} center=({x:.1f},{y:.1f}) first_gate={reason}", flush=True)
     if reconciled != counts["raw"]: raise AssertionError(f"Sun-first audit does not reconcile: {counts} reconciled={reconciled}")
 
 
