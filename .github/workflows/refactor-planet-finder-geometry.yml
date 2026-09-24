@@ -23,6 +23,14 @@ jobs:
           ref: refactor/planet-finder-search
           fetch-depth: 0
 
+      - name: Install pinned calculation dependencies
+        run: |
+          python -m pip install --disable-pip-version-check --upgrade pip
+          python -m pip install --disable-pip-version-check 'numpy==1.26.4' 'skyfield==1.55'
+
+      - name: Ensure cached DE440s and Ceres source kernels
+        run: python tools/ensure_ephemeris_kernels.py --ceres
+
       - name: Generate W36 baseline
         shell: bash
         run: |
@@ -43,7 +51,9 @@ jobs:
 
       - name: Compile refactored modules
         run: |
-          python -m py_compile             tools/planet_finder_geometry.py             tools/planet_finder_search.py             tools/generate_planet_finders.py
+          python -m py_compile tools/planet_finder_geometry.py
+          python -m py_compile tools/planet_finder_search.py
+          python -m py_compile tools/generate_planet_finders.py
 
       - name: Verify imported support surface
         env:
