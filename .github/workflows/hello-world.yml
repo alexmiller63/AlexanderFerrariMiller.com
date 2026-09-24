@@ -1,4 +1,4 @@
-name: W36 Diagnostic Test
+name: W36 Refactor Equivalence Test
 
 on:
   workflow_dispatch:
@@ -7,11 +7,19 @@ permissions:
   contents: read
 
 jobs:
-  diagnose:
+  compare:
     runs-on: ubuntu-latest
     steps:
-      - name: Check out repository
+      - name: Check out current refactored repository
         uses: actions/checkout@v4
+        with:
+          path: refactored
+
+      - name: Check out pre-extraction monolithic repository
+        uses: actions/checkout@v4
+        with:
+          ref: 9304a31469172046f2844578662d1900bda61105
+          path: monolithic
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -31,10 +39,31 @@ jobs:
           python -m pip install --disable-pip-version-check --upgrade pip
           python -m pip install --disable-pip-version-check 'numpy==1.26.4' 'skyfield==1.55'
 
-      - name: Ensure cached DE440s and Ceres source kernels
-        run: python tools/ensure_ephemeris_kernels.py --ceres
-
-      - name: Run W36 diagnostic
+      - name: Ensure cached source kernels
+        working-directory: refactored
         env:
           STAR_ALMANACK_EPHEMERIS_DIR: ${{ github.workspace }}/.cache/skyfield
-        run: python tools/diagnose_w02_forward_check.py
+        run: python tools/ensure_ephemeris_kernels.py --ceres
+
+      - name: Run monolithic W36
+        working-directory: monolithic
+        env:
+          STAR_ALMANACK_EPHEMERIS_DIR: ${{ github.workspace }}/.cache/skyfield
+        run: python tools/generate_planet_finders.py --start-week 2026-W36 --end-week 2026-W36
+
+      - name: Run refactored W36
+        working-directory: refactored
+        env:
+          STAR_ALMANACK_EPHEMERIS_DIR: ${{ github.workspace }}/.cache/skyfield
+        run: python tools/generate_planet_finders.py --start-week 2026-W36 --end-week 2026-W36
+
+      - name: Compare W36 Planet Finder output
+        run: |
+          set -e
+          echo '=== Comparing generated W36 tree ==='
+          if diff -ru --exclude='.git' monolithic/almanack/2026/W36 refactored/almanack/2026/W36; then
+            echo 'PASS: W36 outputs are byte-for-byte identical.'
+          else
+            echo 'FAIL: W36 outputs differ.'
+            exit 1
+          fi
