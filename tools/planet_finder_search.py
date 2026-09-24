@@ -10,7 +10,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 
-@dataclass
+@dataclass(frozen=True)
 class SearchOutcome:
     """Result of one fixed-order DFS attempt."""
 
