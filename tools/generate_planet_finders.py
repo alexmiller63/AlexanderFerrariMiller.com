@@ -53,6 +53,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                       *[f"zodiac_{name}" for _, name in SIGNS]]
     placed: list[Box] = []
     leaders: list[list[tuple[float, float]]] = []
+    leader_names: list[str] = []
     staged = {}
     nodes = 0
     started = time.monotonic()
@@ -479,6 +480,18 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                     continue
                 if leaders_too_close(path, paths):
                     reasons["leader-graze"] += 1
+                    if len(paths) == 1 and future_name in {"Moon", "Mercury"}:
+                        min_dist, pair = minimum_leader_separation(path, paths)
+                        if pair is not None:
+                            diagnostic_print(
+                                f"Planet Finder {mode}: LEADER-GRAZE "
+                                f"proposed={future_name} existing={leader_names[pair[0]]} "
+                                f"distance={min_dist:.3f} clearance={LEADER_TO_LEADER_CLEARANCE:.3f} "
+                                f"candidate=({future_box.x:.1f},{future_box.y:.1f}) "
+                                f"segments={pair[1]}/{pair[2]}",
+                                level=3,
+                                flush=True,
+                            )
                     continue
                 return future_box, path, witness_raw, reasons
             return None, None, witness_raw, reasons
@@ -669,6 +682,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             candidates += 1
             placed.append(box)
             leaders.append(path)
+            leader_names.append(name)
             staged[original_index] = (symbol, name, longitude, box, path)
 
             child_deepest_before = deepest
@@ -683,6 +697,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             finally:
                 staged.pop(original_index, None)
                 leaders.pop()
+                leader_names.pop()
                 placed.pop()
 
             backtracks += 1
