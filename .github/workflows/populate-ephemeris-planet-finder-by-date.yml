@@ -40,6 +40,11 @@ on:
         required: true
         default: '180'
         type: string
+      diagnostic_level:
+        description: 'Planet Finder diagnostic verbosity: 0=silent, 1=major events, 2=search detail, 3=forensic detail'
+        required: true
+        default: '1'
+        type: string
 
 permissions:
   contents: write
@@ -98,7 +103,8 @@ jobs:
           STAR_ALMANACK_EPHEMERIS_DIR: ${{ github.workspace }}/.cache/skyfield
           PLANET_FINDER_CANDIDATES: ${{ inputs.candidate_layouts }}
           PLANET_FINDER_MAX_NODE_CANDIDATES: ${{ inputs.max_node_candidates }}
-          PLANET_FINDER_MAX_SECONDS: ${{ inputs.max_search_seconds }}
+          PLANET_FINDER_MAX_SECONDS: ${{ inputs.max_search_seconds }}          PLANET_FINDER_DIAGNOSTIC_LEVEL: ${{ inputs.diagnostic_level || '1' }}
+
         run: |
           # PLANET_FINDER_MAX_SECONDS is the one user-controlled search clock:
           # each Greek, Latin, and Mixed layout receives this full budget.
