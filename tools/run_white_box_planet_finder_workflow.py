@@ -31,7 +31,7 @@ def main() -> None:
     ensure_dependencies()
     command = [
         sys.executable,
-        "tools/white_box_planet_finder.py",
+        "tools/white_box_planet_finder_entry.py",
         "--mode", os.environ.get("WHITE_BOX_MODE", "greek"),
         "--center", os.environ.get("WHITE_BOX_CENTER", "15"),
         "--span", os.environ.get("WHITE_BOX_SPAN", "6"),
