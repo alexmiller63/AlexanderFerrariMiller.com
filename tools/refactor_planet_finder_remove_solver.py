@@ -1,23 +1,25 @@
 #!/usr/bin/env python3
-"""Safely remove the now-extracted Planet Finder DFS implementation."""
+"""Safely migrate the Planet Finder DFS solver into search support."""
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
 GEN=ROOT/"tools"/"generate_planet_finders.py"
+MOD=ROOT/"tools"/"planet_finder_search.py"
 START="def _solve_order("
 END="\ndef generate_week(year: int, week: int):"
-IMPORT="from planet_finder_search import DepthNodeBudgetExhausted, SearchOutcome, new_search_budget, layout\n"
 def main():
-    t=GEN.read_text(encoding="utf-8")
-    if START not in t:
-        print("DFS solver already removed"); return
-    a=t.find(START); b=t.find(END,a)
-    if a<0 or b<0: raise SystemExit("solver boundaries not found")
-    block=t[a:b]
-    if "def _solve_order(" not in block or "return SearchOutcome(" not in block:
+    gen=GEN.read_text(encoding="utf-8")
+    mod=MOD.read_text(encoding="utf-8")
+    if "def _solve_order(" in mod:
+        raise SystemExit("solver already present in search module")
+    a=gen.find(START); b=gen.find(END,a)
+    if a<0 or b<0: raise SystemExit("solver boundaries not found in generator")
+    block=gen[a:b]
+    if "return SearchOutcome(" not in block or "DepthNodeBudgetExhausted" not in block:
         raise SystemExit("solver block incomplete")
-    nt=t[:a]+t[b+1:]
-    if IMPORT not in nt:
-        raise SystemExit("search controller import missing")
-    GEN.write_text(nt,encoding="utf-8")
-    print(f"removed {block.count(chr(10))+1} extracted DFS lines")
+    # The extracted solver deliberately keeps the generator's geometry imports
+    # available through the same module namespace; preserve them while moving
+    # only the function itself.
+    MOD.write_text(mod.rstrip()+"\n\n"+block+"\n",encoding="utf-8")
+    GEN.write_text(gen[:a]+gen[b+1:],encoding="utf-8")
+    print(f"migrated {block.count(chr(10))+1} DFS lines")
 if __name__=="__main__": main()
