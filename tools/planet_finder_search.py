@@ -33,6 +33,33 @@ import math
 import os
 import time
 
+
+
+_DIAGNOSTIC_LEVEL = int(os.environ.get("PLANET_FINDER_DIAGNOSTIC_LEVEL", "1"))
+
+
+def diagnostic_print(*args, level=None, **kwargs):
+    """Print Planet Finder diagnostics at the configured verbosity level.
+
+    Level 0 is silent. Level 1 shows major controller events. Level 2 adds
+    search-order and contest detail. Level 3 adds forensic terminal detail.
+    Higher levels currently include all diagnostics.
+    """
+    try:
+        configured = max(0, int(os.environ.get("PLANET_FINDER_DIAGNOSTIC_LEVEL", str(_DIAGNOSTIC_LEVEL))))
+    except ValueError:
+        configured = 1
+    if level is None:
+        text = " ".join(str(arg) for arg in args)
+        if any(token in text for token in ("TERMINAL BODY", "IMMUTABLE-CANDIDATE", "HEARTBEAT")):
+            level = 3
+        elif any(token in text for token in ("CONTESTANT", "squeaky-wheel", "PROMOTE", "CAPPED", "REFINEMENT", "SEARCH OUTCOME")):
+            level = 2
+        else:
+            level = 1
+    if configured >= level:
+        diagnostic_print(*args, **kwargs)
+
 from planet_finder_geometry import (
     CANONICAL, FinderMode, CX, CY, xy,
     DEFAULT_CANDIDATE_LAYOUTS, DEFAULT_MAX_NODE_CANDIDATES,
@@ -87,7 +114,7 @@ def layout(
     # Latin, and Mixed.
     budget = dict(budget)
     budget["started"] = time.monotonic()
-    print(
+    diagnostic_print(
         f"Planet Finder {mode}: MODE CLOCK STARTED: "
         f"limit={budget['max_seconds']:.1f}s",
         flush=True,
@@ -131,14 +158,14 @@ def layout(
         if state == "REFINE":
             if refinement_index + 1 >= len(refinement_scales):
                 final_sequence = " > ".join(item[1][1] for item in order)
-                print(
+                diagnostic_print(
                     f"Planet Finder {mode}: TERMINAL SEARCH DIAGNOSTIC "
                     f"refinements={len(refinement_scales)} attempts={len(refinement_history)} "
                     f"final-sequence={final_sequence}",
                     flush=True,
                 )
                 for i, event in enumerate(refinement_history, 1):
-                    print(
+                    diagnostic_print(
                         f"Planet Finder {mode}: TERMINAL HISTORY attempt={i} "
                         f"refinement={event['scale']:g} outcome={event['kind']} "
                         f"blocker={event['blocker']} contestants={event['contestants']}/{target_solutions} "
@@ -158,7 +185,7 @@ def layout(
             # reset so that this ordering can be tried under the new geometry.
             attempted_orders.clear()
             promote_body = None
-            print(
+            diagnostic_print(
                 f"Planet Finder {mode}: REFINEMENT ADVANCE "
                 f"to {refinement_scales[refinement_index]:g} label-lengths; "
                 "preserving learned sequence="
@@ -194,7 +221,7 @@ def layout(
                 # placement refinement instead of walking arbitrary tail
                 # permutations or returning a synthetic failure.
                 cycle_names = " > ".join(item[1][1] for item in promoted_order)
-                print(
+                diagnostic_print(
                     f"Planet Finder {mode}: CAPPED CYCLE CLOSED body={promote_body}; "
                     f"promotions/orderings={len(attempted_orders)} "
                     f"at {refinement_scales[refinement_index]:g} label-lengths "
@@ -209,7 +236,7 @@ def layout(
             # checking remains outside this accounting.
             body_attempts[promote_body] = 0
             order = promoted_order
-            print(
+            diagnostic_print(
                 f"Planet Finder {mode}: CAPPED PROMOTE body={promote_body}; "
                 f"reset candidate budget to 0/{budget['max_node_candidates']:,}; "
                 "incomplete search, preserving refinement and restarting sequence="
@@ -236,7 +263,7 @@ def layout(
             promoted_names = tuple(item[1][1] for item in promoted_order)
             promoted_key = (refinement_index, promoted_names)
             if promoted_key in attempted_orders:
-                print(
+                diagnostic_print(
                     f"Planet Finder {mode}: PROMOTION CYCLE CLOSED body={promote_body} "
                     f"at {refinement_scales[refinement_index]:g} label-lengths; refining",
                     flush=True,
@@ -244,7 +271,7 @@ def layout(
                 state = "REFINE"
             else:
                 order = promoted_order
-                print(
+                diagnostic_print(
                     f"Planet Finder {mode}: PROMOTE body={promote_body}; "
                     "discarding fixed-order search state and restarting with sequence="
                     + " > ".join(promoted_names),
@@ -263,7 +290,7 @@ def layout(
             continue
         attempted_orders.add(order_key)
         order_index += 1
-        print(
+        diagnostic_print(
             f"Planet Finder {mode}: squeaky-wheel lazy DFS "
             f"{context_label + ' ' if context_label else ''}"
             f"order={order_index} target={target_solutions} "
@@ -303,7 +330,7 @@ def layout(
             continue
 
         if outcome.kind == "INCONCLUSIVE":
-            print(
+            diagnostic_print(
                 f"Planet Finder {mode}: SEARCH INCONCLUSIVE "
                 f"body={outcome.blocker} refinement={refinement_scales[refinement_index]:g} "
                 f"orders={len(attempted_orders)}; bounded search closed without "
@@ -332,7 +359,7 @@ def layout(
             "order": order_names,
             "rejection_stats": outcome.rejection_stats,
         })
-        print(
+        diagnostic_print(
             f"Planet Finder {mode}: SEARCH OUTCOME {outcome.kind} "
             f"body={promote_body} contestants={len(all_solutions)}/{target_solutions}",
             flush=True,
@@ -377,7 +404,7 @@ def layout(
         and unique_count == contest_count
         and contest_count == len(scored)
     )
-    print(
+    diagnostic_print(
         f"Planet Finder {mode}: CONTEST AUDIT "
         f"requested={target_solutions} contestants={contest_count} "
         f"unique={unique_count} scored={len(scored)} "
@@ -385,7 +412,7 @@ def layout(
         flush=True,
     )
     for rank, (candidate_score, candidate_index, _) in enumerate(scored, 1):
-        print(
+        diagnostic_print(
             f"Planet Finder {mode}: CONTESTANT rank={rank} "
             f"candidate={candidate_index + 1} "
             f"score[elbows={candidate_score[0]},length={candidate_score[1]:.1f},"
@@ -399,7 +426,7 @@ def layout(
             f"unique={unique_count} scored={len(scored)}"
         )
 
-    print(
+    diagnostic_print(
         f"Planet Finder {mode}: selected candidate {best_index + 1}/{len(all_solutions)} "
         f"{context_label + ' ' if context_label else ''}"
         f"score[elbows={best_score[0]},length={best_score[1]:.1f},"
