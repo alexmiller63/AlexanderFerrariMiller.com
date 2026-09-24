@@ -20,7 +20,7 @@ from pathlib import Path
 from populate_ephemeris import TARGETS, computed_ephemeris, week_count
 from star_almanack_ephemeris import StarAlmanackEphemeris
 from almanack_paths import week_dir
-from planet_finder_search import DepthNodeBudgetExhausted, SearchOutcome, new_search_budget, layout
+from planet_finder_search import DepthNodeBudgetExhausted, SearchOutcome, new_search_budget, layout, diagnostic_print
 from planet_finder_validation import validate_layout
 from planet_finder_rendering import polyline, render
 from planet_finder_geometry import (
@@ -93,7 +93,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         # ordering exploration from exhausting the GitHub Actions log.
         if reason.startswith("body-attempt-cap"):
             order_names = " > ".join(item[1][1] for item in order)
-            print(
+            diagnostic_print(
                 f"Planet Finder {mode}: CAPPED SUMMARY order={order_index} "
                 f"nodes={nodes:,} deepest={deepest}/{len(order)} "
                 f"current_body={current_body} sequence={order_names}",
@@ -101,7 +101,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             )
             return
         order_names = " > ".join(item[1][1] for item in order)
-        print(
+        diagnostic_print(
             f"Planet Finder {mode}: TERMINAL {context_label + ' ' if context_label else ''}reason={reason} order={order_index}"
             f"{('/' + str(total_orders)) if total_orders else ''} "
             f"nodes={nodes:,} deepest={deepest}/{len(order)} current_body={current_body} "
@@ -110,13 +110,13 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             f"backtracks={backtracks:,}",
             flush=True,
         )
-        print(f"Planet Finder {mode}: TERMINAL ORDER sequence={order_names}", flush=True)
+        diagnostic_print(f"Planet Finder {mode}: TERMINAL ORDER sequence={order_names}", flush=True)
         for (depth, name), s in sorted(diagnostic_stats.items()):
             immutable_names = {
                 reserved_names[i] if i < len(reserved_names) else str(i): count
                 for i, count in sorted(s.get("immutable_reserved_by_obstacle", {}).items())
             }
-            print(
+            diagnostic_print(
                 f"Planet Finder {mode}: TERMINAL BODY depth={depth}/{len(order)} body={name} "
                 f"status={'evaluated' if s.get('started') else ('blocked-' + s['blocked'] if s.get('blocked') else 'not-evaluated')} "
                 f"generated={s['generated']:,} viable={s['viable']:,} "
@@ -134,7 +134,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             for candidate_index, audit in enumerate(s.get("immutable_candidate_audit", []), 1):
                 x, y, rejection, obstacle_ids = audit
                 obstacle_labels = [reserved_names[i] if i < len(reserved_names) else str(i) for i in obstacle_ids]
-                print(
+                diagnostic_print(
                     f"Planet Finder {mode}: TERMINAL IMMUTABLE-CANDIDATE "
                     f"depth={depth}/{len(order)} body={name} candidate={candidate_index} "
                     f"center=({x:.1f},{y:.1f}) reason={rejection} obstacles={obstacle_labels}",
@@ -142,7 +142,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 )
         for depth in sorted(set(depth_residence) | set(depth_visits)):
             body_name = order[depth][1][1] if depth < len(order) else "complete-layout"
-            print(
+            diagnostic_print(
                 f"Planet Finder {mode}: TERMINAL DFS-TIME depth={depth}/{len(order)} "
                 f"body={body_name} residence={depth_residence.get(depth, 0.0):.3f}s "
                 f"visits={depth_visits.get(depth, 0):,}",
@@ -155,7 +155,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 (obstacle_names[int(key.split("_", 1)[1])] if key.startswith("obstacle_") and int(key.split("_", 1)[1]) < len(obstacle_names) else key): count
                 for key, count in blockers.items()
             }
-            print(
+            diagnostic_print(
                 f"Planet Finder {mode}: TERMINAL ROUTE depth={depth}/{len(order)} body={name} "
                 f"straight_blocked={r.get('straight_blocked', 0):,} "
                 f"route_failed={r.get('route_failed', 0):,} "
@@ -177,12 +177,12 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             ):
                 aggregate[key] = aggregate.get(key, 0) + s.get(key, 0)
         ranked = sorted(aggregate.items(), key=lambda item: (-item[1], item[0]))
-        print(
+        diagnostic_print(
             f"Planet Finder {mode}: TERMINAL REJECTION CONSTRAINTS "
             + " ".join(f"{key}={count:,}" for key, count in ranked),
             flush=True,
         )
-        print(
+        diagnostic_print(
             f"Planet Finder {mode}: TERMINAL BEST-PARTIAL deepest={deepest}/{len(order)}",
             flush=True,
         )
@@ -238,7 +238,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             # changed.
             if body_attempts[name] >= budget["max_node_candidates"]:
                 stats["blocked"] = "body-candidate-cap"
-                print(
+                diagnostic_print(
                     f"Planet Finder {mode}: BODY-CANDIDATE CAP order={order_index} "
                     f"depth={depth}/{len(order)} body={name} "
                     f"viable={body_attempts[name]:,}/{budget['max_node_candidates']:,}",
@@ -263,14 +263,14 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             # Report any single stage that stalls for >= 1s immediately, rather
             # than waiting for the 5s aggregate heartbeat.
             if stream_dt >= 1.0:
-                print(
+                diagnostic_print(
                     f"Planet Finder {mode}: SLOW candidate-position body={name} "
                     f"depth={depth}/{len(order)} raw={raw_positions:,} dt={stream_dt:.3f}s",
                     flush=True,
                 )
             now = time.monotonic()
             if now - candidate_last_heartbeat >= 5.0:
-                print(
+                diagnostic_print(
                     f"Planet Finder {mode}: CANDIDATE HEARTBEAT order={order_index} "
                     f"depth={depth}/{len(order)} body={name} elapsed={now-candidate_started:.1f}s "
                     f"raw={raw_positions:,} viable={body_candidates:,} "
@@ -286,7 +286,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             run_elapsed = time.monotonic() - budget["started"]
             if run_elapsed >= budget["max_seconds"]:
                 stats["blocked"] = "wall-clock"
-                print(
+                diagnostic_print(
                     f"Planet Finder {mode}: CANDIDATE-GENERATION STOP wall-clock budget exhausted "
                     f"order={order_index} depth={depth}/{len(order)} body={name} "
                     f"after {run_elapsed:.1f}s/{budget['max_seconds']:.1f}s "
@@ -294,7 +294,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                     flush=True,
                 )
                 body_forward = forward_stats["by_body"].get(name, {})
-                print(
+                diagnostic_print(
                     f"Planet Finder {mode}: TIMEOUT-AUDIT order={order_index} "
                     f"body={name} body-attempts={body_attempts.get(name, 0):,} "
                     f"forward[checks={body_forward.get('checks', 0):,},"
@@ -308,7 +308,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                     f"candidates={candidates:,},backtracks={backtracks:,}]",
                     flush=True,
                 )
-                print(
+                diagnostic_print(
                     f"Planet Finder {mode}: TIMEOUT-BODIES "
                     + " ".join(
                         f"{body}:a={body_attempts.get(body, 0)},"
@@ -369,7 +369,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             route_dt = time.monotonic() - t0
             timing["route"] += route_dt
             if route_dt >= 1.0:
-                print(
+                diagnostic_print(
                     f"Planet Finder {mode}: SLOW route body={name} "
                     f"depth={depth}/{len(order)} raw={raw_positions:,} dt={route_dt:.3f}s "
                     f"result={'none' if path is None else 'ok'}",
@@ -405,7 +405,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             yield box, path
             if body_attempts[name] >= budget["max_node_candidates"]:
                 stats["blocked"] = "body-candidate-cap"
-                print(
+                diagnostic_print(
                     f"Planet Finder {mode}: BODY-CANDIDATE CAP order={order_index} "
                     f"depth={depth}/{len(order)} body={name} "
                     f"viable={body_attempts[name]:,}/{budget['max_node_candidates']:,}",
@@ -484,7 +484,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
 
         run_elapsed = time.monotonic() - budget["started"]
         if run_elapsed >= budget["max_seconds"]:
-            print(
+            diagnostic_print(
                 f"Planet Finder {mode}: TIMEOUT-AUDIT order={order_index} "
                 f"body={current_body} totals[checks={forward_stats['checks']:,},"
                 f"witnesses={forward_stats['witnesses']:,},"
@@ -518,7 +518,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 if valid:
                     solutions.append(result)
                     contest_keys.append(key)
-                    print(
+                    diagnostic_print(
                         f"Planet Finder {mode}: complete valid candidate "
                         f"{len(solutions)}/{target_solutions} "
                         f"order={order_index} placement-order=" +
@@ -526,7 +526,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                         flush=True,
                     )
                 else:
-                    print(
+                    diagnostic_print(
                         f"Planet Finder {mode}: rejected complete layout "
                         f"order={order_index} errors=" + "; ".join(errors),
                         flush=True,
@@ -564,7 +564,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             # extend to a complete layout, report how far its child subtree
             # actually reached. This observes DFS behavior without changing it.
             if mode == FinderMode.MIXED and depth <= 1:
-                print(
+                diagnostic_print(
                     f"Planet Finder {mode}: PREFIX BACKTRACK "
                     f"depth={depth}/{len(order)} body={name} "
                     f"candidate={candidates} "
@@ -581,7 +581,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             # Reuse the same per-body cap: too many candidates in one prefix
             # or too many zero-candidate prefixes both identify a squeaky wheel.
             if dead_end_visits[dead_key] >= budget["max_node_candidates"]:
-                print(
+                diagnostic_print(
                     f"Planet Finder {mode}: REPEATED-DEAD-END STOP order={order_index} "
                     f"depth={depth}/{len(order)} body={name} "
                     f"dead-ends={dead_end_visits[dead_key]:,}/{budget['max_node_candidates']:,}",
@@ -589,7 +589,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 )
                 raise DepthNodeBudgetExhausted(depth, name)
             stats = diagnostic_stats[(depth, name)]
-            print(
+            diagnostic_print(
                 f"Planet Finder {mode}: dead end order={order_index} "
                 f"depth={depth}/{len(order)} body={name} "
                 f"status={'evaluated' if stats.get('started') else 'not-evaluated'} "
@@ -618,7 +618,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         dump_diagnostics("search exhausted without a complete solution")
 
     elapsed = time.monotonic() - started
-    print(
+    diagnostic_print(
         f"Planet Finder {mode}: fixed-order summary order={order_index} "
         f"exhausted={exhausted} elapsed={elapsed:.2f}s nodes={nodes:,} "
         f"deepest={deepest}/{len(order)} candidates={candidates:,} "
@@ -687,7 +687,7 @@ def generate_week(year: int, week: int):
     # returns. Only after all 3 modes succeed do we replace the week's files.
     for filename, svg in rendered.items():
         (outdir / filename).write_text(svg, encoding="utf-8")
-    print(f"Generated collision-free Planet Finders for ISO {year}-W{week:02d} from internal calculations")
+    diagnostic_print(f"Generated collision-free Planet Finders for ISO {year}-W{week:02d} from internal calculations")
 
 
 def parse_args():
