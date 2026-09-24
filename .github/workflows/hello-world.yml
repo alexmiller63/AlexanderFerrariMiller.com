@@ -34,7 +34,7 @@ jobs:
       - name: Ensure cached DE440s and Ceres source kernels
         run: python tools/ensure_ephemeris_kernels.py --ceres
 
-      - name: Diagnostic skeleton
-        run: |
-          echo "Python dependencies and ephemeris kernels are ready."
-          echo "W02 solver diagnostic will go here."
+      - name: Run W02 diagnostic
+        env:
+          STAR_ALMANACK_EPHEMERIS_DIR: ${{ github.workspace }}/.cache/skyfield
+        run: python tools/diagnose_w02_forward_check.py
