@@ -40,17 +40,19 @@ jobs:
           from pathlib import Path
           p = Path('tools/generate_planet_finders.py')
           text = p.read_text()
-          old = '''            else:
-                body_stat["dead"] += 1
-                forward_stats["pruned"] += 1
-                return False
-'''
-          new = '''            else:
-                body_stat["dead"] += 1
-                forward_stats["pruned"] += 1
-                print(f"FORWARD-CHECK DEAD future_body={future_name} future_depth={future_depth} next_depth={next_depth} raw_probes={witness_raw}", flush=True)
-                return False
-'''
+          old = (
+              '            else:\n'
+              '                body_stat["dead"] += 1\n'
+              '                forward_stats["pruned"] += 1\n'
+              '                return False\n'
+          )
+          new = (
+              '            else:\n'
+              '                body_stat["dead"] += 1\n'
+              '                forward_stats["pruned"] += 1\n'
+              '                print(f"FORWARD-CHECK DEAD future_body={future_name} future_depth={future_depth} next_depth={next_depth} raw_probes={witness_raw}", flush=True)\n'
+              '                return False\n'
+          )
           if old not in text:
               raise SystemExit('forward-check return block not found')
           p.write_text(text.replace(old, new, 1))
