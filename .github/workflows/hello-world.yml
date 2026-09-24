@@ -1,4 +1,4 @@
-name: W02 Diagnostic Test
+name: W36 Diagnostic Test
 
 on:
   workflow_dispatch:
@@ -34,7 +34,7 @@ jobs:
       - name: Ensure cached DE440s and Ceres source kernels
         run: python tools/ensure_ephemeris_kernels.py --ceres
 
-      - name: Run W02 diagnostic
+      - name: Run W36 diagnostic
         env:
           STAR_ALMANACK_EPHEMERIS_DIR: ${{ github.workspace }}/.cache/skyfield
         run: python tools/diagnose_w02_forward_check.py
