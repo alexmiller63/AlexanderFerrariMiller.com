@@ -1,0 +1,34 @@
+name: Apply Planet Finder Refinement Clock Patch
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Apply guarded source patch
+        run: python tools/patch_planet_finder_refinement_clock.py
+
+      - name: Verify Python syntax
+        run: python -m py_compile tools/planet_finder_search.py
+
+      - name: Show diff
+        run: git diff --check && git diff -- tools/planet_finder_search.py
+
+      - name: Commit patched controller
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add tools/planet_finder_search.py
+          git diff --cached --quiet && { echo "No source change produced"; exit 1; }
+          git commit -m "Reserve Planet Finder time for each refinement"
+          git push origin HEAD:main
