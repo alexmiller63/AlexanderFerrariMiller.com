@@ -1,0 +1,45 @@
+name: Split Planet Finder Source
+
+on:
+  workflow_dispatch:
+    inputs:
+      lines_per_chunk:
+        description: Maximum source lines per chunk
+        required: false
+        default: '250'
+  push:
+    branches: [main]
+    paths:
+      - 'tools/split_planet_finder_source.py'
+      - '.github/workflows/split-planet-finder-source.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  split:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Split source losslessly
+        run: python tools/split_planet_finder_source.py --lines "${{ inputs.lines_per_chunk || '250' }}"
+
+      - name: Verify generated manifest exists
+        run: test -f tools/planet_finder_chunks/manifest.json
+
+      - name: Commit generated chunks
+        run: |
+          if git diff --quiet -- tools/planet_finder_chunks && [ -z "$(git status --porcelain -- tools/planet_finder_chunks)" ]; then
+            echo "Chunks already current."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add tools/planet_finder_chunks
+          git commit -m "Generate Planet Finder source chunks"
+          git push
