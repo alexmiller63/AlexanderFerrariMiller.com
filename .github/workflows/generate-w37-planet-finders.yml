@@ -14,6 +14,11 @@ on:
         required: true
         default: '180'
         type: string
+      diagnostic_level:
+        description: 'Planet Finder diagnostic verbosity: 0=silent, 1=major events, 2=search detail, 3=forensic detail'
+        required: true
+        default: '1'
+        type: string
 
 permissions:
   contents: write
@@ -76,7 +81,8 @@ jobs:
           STAR_ALMANACK_EPHEMERIS_DIR: ${{ github.workspace }}/.cache/skyfield
           PLANET_FINDER_CANDIDATES: '2'
           PLANET_FINDER_MAX_CANDIDATES: '1000'
-          PLANET_FINDER_MAX_SECONDS: ${{ inputs.planet_finder_max_seconds || '180' }}
+          PLANET_FINDER_MAX_SECONDS: ${{ inputs.planet_finder_max_seconds || '180' }}          PLANET_FINDER_DIAGNOSTIC_LEVEL: ${{ inputs.diagnostic_level || '1' }}
+
           PLANET_FINDER_MAX_ORDER_SECONDS: '5'
           PLANET_FINDER_MAX_ORDER_NODES: '100000'
         run: |
