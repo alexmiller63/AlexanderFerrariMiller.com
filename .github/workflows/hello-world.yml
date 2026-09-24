@@ -34,34 +34,7 @@ jobs:
       - name: Ensure cached DE440s and Ceres source kernels
         run: python tools/ensure_ephemeris_kernels.py --ceres
 
-      - name: Instrument forward-check dead body
+      - name: Diagnostic skeleton
         run: |
-          python - <<'PY'
-          from pathlib import Path
-          p = Path('tools/generate_planet_finders.py')
-          text = p.read_text()
-          old = (
-              '            else:\n'
-              '                body_stat["dead"] += 1\n'
-              '                forward_stats["pruned"] += 1\n'
-              '                return False\n'
-          )
-          new = (
-              '            else:\n'
-              '                body_stat["dead"] += 1\n'
-              '                forward_stats["pruned"] += 1\n'
-              '                print(f"FORWARD-CHECK DEAD future_body={future_name} future_depth={future_depth} next_depth={next_depth} raw_probes={witness_raw}", flush=True)\n'
-              '                return False\n'
-          )
-          if old not in text:
-              raise SystemExit('forward-check return block not found')
-          p.write_text(text.replace(old, new, 1))
-          PY
-
-      - name: Run W02 Planet Finder diagnostic
-        shell: bash
-        env:
-          STAR_ALMANACK_EPHEMERIS_DIR: ${{ github.workspace }}/.cache/skyfield
-        run: |
-          set -o pipefail
-          python tools/generate_planet_finders.py --year 2026 --week 2 2>&1 | tee w02-forward-check.log
+          echo "Python dependencies and ephemeris kernels are ready."
+          echo "W02 solver diagnostic will go here."
