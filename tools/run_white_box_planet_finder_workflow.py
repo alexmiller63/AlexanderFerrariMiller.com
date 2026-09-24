@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import importlib.util
 import os
+from pathlib import Path
 import subprocess
 import sys
 
@@ -40,7 +41,26 @@ def main() -> None:
         "--diagnostic", os.environ.get("WHITE_BOX_DIAGNOSTIC", "3"),
     ]
     print("White-box Planet Finder launcher:", " ".join(command), flush=True)
-    subprocess.run(command, check=True)
+
+    report = Path("white-box-diagnostic.txt")
+    with report.open("w", encoding="utf-8") as out:
+        process = subprocess.Popen(
+            command,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            text=True,
+            bufsize=1,
+        )
+        assert process.stdout is not None
+        for line in process.stdout:
+            out.write(line)
+            out.flush()
+            print(line, end="", flush=True)
+        returncode = process.wait()
+
+    print(f"Full White Box diagnostic saved to {report}", flush=True)
+    if returncode:
+        raise subprocess.CalledProcessError(returncode, command)
 
 
 if __name__ == "__main__":
