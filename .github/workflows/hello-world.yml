@@ -1,11 +1,21 @@
-name: Hello World
+name: W02 Diagnostic Test
 
 on:
   workflow_dispatch:
 
 jobs:
-  hello:
+  diagnose:
     runs-on: ubuntu-latest
     steps:
-      - name: Say hello
-        run: echo "Hello, world!"
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Diagnostic skeleton
+        run: |
+          echo "W02 diagnostic workflow is visible and runnable."
+          echo "Diagnostic steps will go here."
