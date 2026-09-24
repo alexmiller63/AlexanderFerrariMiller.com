@@ -1,0 +1,250 @@
+                x, y = bx + shift * tx, by + shift * ty
+                if any(
+                    math.hypot(x - ox, y - oy) < 1e-9
+                    for ox, oy in offered
+                ):
+                    continue
+                offered.append((x, y))
+                yield x, y
+
+    # Preserve the natural position first, then explore increasingly finer
+    # displacement rings. Within a ring, both tangential directions are peers.
+    yield from offer(PREFERRED_LABEL_RADII, (0.0,))
+    shift = LABEL_LENGTH * displacement_scale
+    yield from offer(PREFERRED_LABEL_RADII, (-shift, shift))
+
+    yield from offer(EXPANDED_LABEL_RADII, (0.0,))
+    yield from offer(EXPANDED_LABEL_RADII, (-shift, shift))
+
+
+def legal_candidate_positions(
+    longitude: float,
+    w: float,
+    h: float,
+    reserved: list[Box],
+    displacement_scale: float = 2.0,
+    diagnostic: dict | None = None,
+):
+    """Yield only proposals that are legal against immutable chart geometry.
+
+    When diagnostic is supplied, rejected raw proposals are classified here so
+    terminal search output can distinguish immutable-geometry impossibility
+    from DFS interactions between movable labels/leaders.
+    """
+    for x, y in candidate_positions(longitude, displacement_scale):
+        box = Box(x, y, w, h)
+        reserved_hits = [
+            i for i, obstacle in enumerate(reserved)
+            if boxes_overlap(box, obstacle, LABEL_COLLISION_PADDING)
+        ]
+        if reserved_hits:
+            if diagnostic is not None:
+                diagnostic["immutable_reserved"] = diagnostic.get("immutable_reserved", 0) + 1
+                by_obstacle = diagnostic.setdefault("immutable_reserved_by_obstacle", {})
+                for i in reserved_hits:
+                    by_obstacle[i] = by_obstacle.get(i, 0) + 1
+                diagnostic.setdefault("immutable_candidate_audit", []).append((x, y, "reserved", tuple(reserved_hits)))
+            continue
+        # Body labels live inside the inner zodiac rim.  A label touching or
+        # crossing that border is rotten geometry, not a scoring preference.
+        # Test all 4 corners with clearance before the proposal can enter DFS.
+        rim_limit = RI - LABEL_RIM_CLEARANCE
+        if any(
+            math.hypot(px - CX, py - CY) >= rim_limit
+            for px in (box.left, box.right)
+            for py in (box.top, box.bottom)
+        ):
+            if diagnostic is not None:
+                diagnostic["immutable_rim"] = diagnostic.get("immutable_rim", 0) + 1
+                diagnostic.setdefault("immutable_candidate_audit", []).append((x, y, "rim", ()))
+            continue
+        yield x, y, box
+
+
+def route(
+    anchor: tuple[float, float],
+    center: tuple[float, float],
+    obstacles: list[Box],
+    diagnostic=None,
+    allow_initial_escape_count: int = 0,
+    prefix_cache: dict | None = None,
+) -> list[tuple[float, float]] | None:
+    """Prefer a straight leader; otherwise try deterministic radial elbows.
+
+    A leader is allowed to leave an obstacle that contains its anchor.  This
+    is the correct geometry for a body marker lying beneath/adjacent to a
+    zodiac label: the leader may escape that local label, but after it has
+    exited it may not cross that obstacle again.
+    """
+    def hits(a, b, obstacle, allow_initial_escape=False, pad=8):
+        # Only an immutable chart obstacle containing the body's anchor may
+        # permit the initial escape. A placed label belonging to another body
+        # must never become an escape obstacle merely because this body's
+        # anchor happens to fall inside it. The final validator enforces the
+        # same rule; route generation must agree with it.
+        inside = (
+            obstacle.left - pad <= a[0] <= obstacle.right + pad and
+            obstacle.top - pad <= a[1] <= obstacle.bottom + pad
+        )
+        if not inside:
+            return segment_hits_box(a, b, obstacle, pad)
+        # Starting inside an obstacle is legal only for the explicitly
+        # permitted immutable obstacle containing the body's own anchor.
+        # A placed body label is never an escape obstacle: if the anchor is
+        # already inside another body's label, this route is rotten before
+        # routing begins and must be rejected immediately.
+        if not allow_initial_escape:
+            return True
+        dx, dy = b[0] - a[0], b[1] - a[1]
+        if abs(dx) < 1e-12 and abs(dy) < 1e-12:
+            return False
+        ts = []
+        if abs(dx) >= 1e-12:
+            ts.extend([
+                (obstacle.left - pad - a[0]) / dx,
+                (obstacle.right + pad - a[0]) / dx,
+            ])
+        if abs(dy) >= 1e-12:
+            ts.extend([
+                (obstacle.top - pad - a[1]) / dy,
+                (obstacle.bottom + pad - a[1]) / dy,
+            ])
+        exits = []
+        for t in ts:
+            if 0 < t < 1:
+                p = (a[0] + dx * (t + 1e-7), a[1] + dy * (t + 1e-7))
+                if not (
+                    obstacle.left - pad <= p[0] <= obstacle.right + pad and
+                    obstacle.top - pad <= p[1] <= obstacle.bottom + pad
+                ):
+                    exits.append(t)
+        if not exits:
+            return False
+        t = min(exits) + 1e-6
+        escaped = (a[0] + dx * t, a[1] + dy * t)
+        return segment_hits_box(escaped, b, obstacle, pad)
+
+    def obstacle_pad(i: int) -> int:
+        # Match final validation exactly: immutable chart obstacles use 8 px
+        # clearance; placed body labels use 10 px. Candidate admission must
+        # never be more permissive than final validation.
+        return IMMUTABLE_LEADER_CLEARANCE if i < allow_initial_escape_count else PLACED_LABEL_LEADER_CLEARANCE
+
+    straight_blockers = [
+        i for i, b in enumerate(obstacles)
+        if hits(
+            anchor,
+            center,
+            b,
+            allow_initial_escape=(i < allow_initial_escape_count),
+            pad=obstacle_pad(i),
+        )    ]
+    if not straight_blockers:
+        return [anchor, center]
+    if diagnostic is not None:
+        diagnostic["straight_blocked"] = diagnostic.get("straight_blocked", 0) + 1
+        for i in straight_blockers:
+            key = f"obstacle_{i}"
+            blockers = diagnostic.setdefault("straight_blockers", {})
+            blockers[key] = blockers.get(key, 0) + 1
+
+    # Rotten-cake preflight: a placed body label containing this body's
+    # anchor is an immutable dead end for the current DFS state. No straight,
+    # elbow, or dogleg route may legally escape another body's label, so reject
+    # the candidate before entering the expensive route-shape search.
+    for i, obstacle in enumerate(obstacles):
+        if i < allow_initial_escape_count:
+            continue
+        pad = obstacle_pad(i)
+        if (
+            obstacle.left - pad <= anchor[0] <= obstacle.right + pad and
+            obstacle.top - pad <= anchor[1] <= obstacle.bottom + pad
+        ):
+            if diagnostic is not None:
+                diagnostic["anchor_blocked"] = diagnostic.get("anchor_blocked", 0) + 1
+                diagnostic["route_failed"] = diagnostic.get("route_failed", 0) + 1
+            return None
+
+    ax, ay = anchor
+    for r in ROUTE_RADII:
+        lon = math.degrees(math.atan2(-(ay - CY), ax - CX)) - 180
+        ex, ey = xy(lon, r)
+        first_blockers = [
+            i for i, b in enumerate(obstacles)
+            if hits(
+                anchor,
+                (ex, ey),
+                b,
+                allow_initial_escape=(i < allow_initial_escape_count),
+                pad=obstacle_pad(i),
+            )
+        ]
+        second_blockers = [
+            i for i, b in enumerate(obstacles)
+            if hits((ex, ey), center, b, pad=obstacle_pad(i))
+        ]
+        if not first_blockers and not second_blockers:
+            return [anchor, (ex, ey), center]
+        if diagnostic is not None:
+            elbow = diagnostic["elbows"].setdefault(r, {"first": {}, "second": {}})
+            for i in first_blockers:
+                key = f"obstacle_{i}"
+                elbow["first"][key] = elbow["first"].get(key, 0) + 1
+            for i in second_blockers:
+                key = f"obstacle_{i}"
+                elbow["second"][key] = elbow["second"].get(key, 0) + 1
+
+    # A single radial elbow can still force the final leg through the wide
+    # center annotations.  Try deterministic two-elbow doglegs next: leave
+    # the body radially, move tangentially around the center text, then enter
+    # the label.  Straight and one-elbow routes remain preferred.
+    lon = math.degrees(math.atan2(-(ay - CY), ax - CX)) - 180
+    theta = math.radians(180 + lon)
+    tx, ty = -math.sin(theta), -math.cos(theta)
+    # The first 2 dogleg legs depend only on the body's anchor and the
+    # current DFS obstacle state, not on the candidate label position. Build
+    # those legal prefixes once for this frame and reuse them for every label
+    # candidate; only the final e2->label leg is candidate-specific.
+    cache_key = "dogleg_prefixes"
+    dogleg_prefixes = prefix_cache.get(cache_key) if prefix_cache is not None else None
+    if dogleg_prefixes is None:
+        dogleg_prefixes = []
+        for r in ROUTE_RADII:
+            e1 = xy(lon, r)
+            first_blocked = any(
+                hits(
+                    anchor,
+                    e1,
+                    b,
+                    allow_initial_escape=(i < allow_initial_escape_count),
+                    pad=obstacle_pad(i),
+                )
+                for i, b in enumerate(obstacles)
+            )
+            if first_blocked:
+                continue
+            for shift in (70, -70, 105, -105, 140, -140, 175, -175, 210, -210, 245, -245, 280, -280, 315, -315):
+                e2 = (e1[0] + shift * tx, e1[1] + shift * ty)
+                second_blocked = any(
+                    hits(e1, e2, b, pad=obstacle_pad(i))
+                    for i, b in enumerate(obstacles)
+                )
+                if not second_blocked:
+                    dogleg_prefixes.append((e1, e2))
+        if prefix_cache is not None:
+            prefix_cache[cache_key] = dogleg_prefixes
+
+    for e1, e2 in dogleg_prefixes:
+        third_blocked = any(
+            hits(e2, center, b, pad=obstacle_pad(i))
+            for i, b in enumerate(obstacles)
+        )
+        if not third_blocked:
+            if diagnostic is not None:
+                diagnostic["dogleg_success"] = diagnostic.get("dogleg_success", 0) + 1
+            return [anchor, e1, e2, center]
+    if diagnostic is not None:
+        diagnostic["dogleg_failed"] = diagnostic.get("dogleg_failed", 0) + 1
+        diagnostic["route_failed"] = diagnostic.get("route_failed", 0) + 1
+    return None
+
