@@ -1,0 +1,38 @@
+name: Apply Planet Finder DFS Refinement Deadline
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Apply guarded patch
+        run: python tools/patch_planet_finder_dfs_refinement_deadline.py
+
+      - name: Verify Python syntax
+        run: |
+          python -m py_compile tools/planet_finder_search.py
+          python -m py_compile tools/generate_planet_finders.py
+
+      - name: Show and validate diff
+        run: |
+          git diff --check
+          git diff -- tools/planet_finder_search.py tools/generate_planet_finders.py
+
+      - name: Commit patched solver
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add tools/planet_finder_search.py tools/generate_planet_finders.py
+          git diff --cached --quiet && { echo "No source change produced"; exit 1; }
+          git commit -m "Enforce Planet Finder refinement deadline inside DFS"
+          git push origin HEAD:main
