@@ -274,7 +274,6 @@ def layout(
         )
 
         try:
-            from generate_planet_finders import _solve_order
             outcome = _solve_order(
                 mode,
                 bodies,
