@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Instrument Planet Finder forward-check behavior, then run W02.
+"""Instrument Planet Finder forward-check behavior, then run W36.
 
 This diagnostic modifies only the checked-out runner copy of the generator.
 It does not modify the repository generator.
@@ -38,7 +38,7 @@ def main() -> int:
 
     env = os.environ.copy()
     return subprocess.call(
-        [sys.executable, str(generator), "--year", "2026", "--week", "2"],
+        [sys.executable, str(generator), "--year", "2026", "--week", "36"],
         env=env,
     )
 
