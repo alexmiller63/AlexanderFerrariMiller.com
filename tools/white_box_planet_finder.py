@@ -4,10 +4,18 @@ from __future__ import annotations
 import argparse, math, os, time
 from planet_finder_geometry import (
     BODY_SYMBOLS, CANONICAL, CX, CY, FinderMode, LABEL_RIM_CLEARANCE, RI,
+    LEADER_TO_LEADER_CLEARANCE, minimum_leader_separation,
     candidate_positions, boxes_overlap, label_size, legal_candidate_positions,
     leader_hits_zodiac_rim, leaders_too_close, reserved_boxes, route, xy,
 )
 from planet_finder_search import layout, new_search_budget
+import generate_planet_finders as _gpf
+
+# The white-box harness deliberately injects these diagnostic-only helpers into
+# the solver module so production imports remain unchanged while we measure the
+# exact leader-to-leader separation causing the repeated graze rejection.
+_gpf.minimum_leader_separation = minimum_leader_separation
+_gpf.LEADER_TO_LEADER_CLEARANCE = LEADER_TO_LEADER_CLEARANCE
 
 
 def crowded_bodies(center=15.0, span=6.0):
