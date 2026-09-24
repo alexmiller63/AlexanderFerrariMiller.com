@@ -274,7 +274,11 @@ def layout(
         )
 
         try:
-            outcome = _solve_order(
+            try:
+                solver = _solve_order
+            except NameError:
+                from generate_planet_finders import _solve_order as solver
+            outcome = solver(
                 mode,
                 bodies,
                 order,
