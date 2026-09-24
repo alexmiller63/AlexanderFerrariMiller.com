@@ -23,8 +23,11 @@ def main():
     if "def render(" not in block or "</svg>" not in block:
         raise SystemExit("render block incomplete")
     # render calls layout; inject it to avoid a circular import at module import time.
-    block = block.replace("    placed = layout(mode, bodies, budget=budget, context_label=context_label)\n",
-                          "    from generate_planet_finders import layout\n    placed = layout(mode, bodies, budget=budget, context_label=context_label)\n", 1)
+    needle = "    placed = layout(mode, bodies, budget=budget, context_label=context_label)\n"
+    if needle not in block:
+        raise SystemExit("render layout call not found")
+    block = block.replace(needle,
+                          "    from generate_planet_finders import layout\n" + needle, 1)
     MOD.write_text(PRELUDE + block + "\n", encoding="utf-8")
     rewritten = text[:a] + text[b + 2:]
     if ANCHOR not in rewritten: raise SystemExit("import anchor missing")
