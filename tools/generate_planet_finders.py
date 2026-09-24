@@ -448,17 +448,20 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             anchor = xy(future_longitude, RI - 5)
             prefix_cache = {}
             witness_raw = 0
+            reasons = {"placed-overlap": 0, "existing-leader": 0, "route": 0, "leader-rim": 0, "leader-graze": 0}
             for _, _, future_box in legal_candidate_positions(
                 future_longitude, w, h, reserved, displacement_scale
             ):
                 witness_raw += 1
                 if any(boxes_overlap(future_box, other, 14) for other in boxes):
+                    reasons["placed-overlap"] += 1
                     continue
                 if any(
                     segment_hits_box(seg[i], seg[i + 1], future_box, 10)
                     for seg in paths
                     for i in range(len(seg) - 1)
                 ):
+                    reasons["existing-leader"] += 1
                     continue
                 center = (future_box.x, future_box.y)
                 path = route(
@@ -469,27 +472,34 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                     prefix_cache=prefix_cache,
                 )
                 if path is None:
+                    reasons["route"] += 1
                     continue
                 if leader_hits_zodiac_rim(path):
+                    reasons["leader-rim"] += 1
                     continue
                 if leaders_too_close(path, paths):
+                    reasons["leader-graze"] += 1
                     continue
-                return future_box, path, witness_raw
-            return None, None, witness_raw
+                return future_box, path, witness_raw, reasons
+            return None, None, witness_raw, reasons
 
         # Existing individual feasibility test for every future body.
         for future_depth in range(next_depth, len(order)):
             item = order[future_depth]
             _, (_, future_name, _) = item
-            future_box, future_path, witness_raw = witness_for(
+            future_box, future_path, witness_raw, witness_reasons = witness_for(
                 item, placed, leaders, obstacles
             )
             witness = future_box is not None
             body_stat = forward_stats["by_body"].setdefault(
-                future_name, {"checks": 0, "witnesses": 0, "dead": 0, "raw": 0}
+                future_name, {"checks": 0, "witnesses": 0, "dead": 0, "raw": 0,
+                               "reasons": {"placed-overlap": 0, "existing-leader": 0,
+                                          "route": 0, "leader-rim": 0, "leader-graze": 0}}
             )
             body_stat["checks"] += 1
             body_stat["raw"] += witness_raw
+            for reason, count in witness_reasons.items():
+                body_stat["reasons"][reason] += count
             if witness:
                 body_stat["witnesses"] += 1
                 forward_stats["witnesses"] += 1
@@ -783,6 +793,24 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 "leader_rim": s.get("leader_rim", 0),
                 "leader_graze": s.get("leader_graze", 0),
             }
+    if exhausted and forward_stats["by_body"]:
+        diagnostic_print(
+            f"Planet Finder {mode}: FORWARD REJECTION BREAKDOWN",
+            flush=True,
+        )
+        for body, stat in sorted(forward_stats["by_body"].items()):
+            reasons = stat.get("reasons", {})
+            diagnostic_print(
+                f"Planet Finder {mode}: FORWARD BODY body={body} "
+                f"checks={stat['checks']:,} dead={stat['dead']:,} raw={stat['raw']:,} "
+                f"placed-overlap={reasons.get('placed-overlap', 0):,} "
+                f"existing-leader={reasons.get('existing-leader', 0):,} "
+                f"route={reasons.get('route', 0):,} "
+                f"leader-rim={reasons.get('leader-rim', 0):,} "
+                f"leader-graze={reasons.get('leader-graze', 0):,}",
+                flush=True,
+            )
+
     return SearchOutcome(
         "SOLVED" if len(solutions) >= target_solutions else "EXHAUSTED",
         solutions,
