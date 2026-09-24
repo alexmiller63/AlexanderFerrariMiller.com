@@ -3,13 +3,23 @@ name: Weekly Planet Finder
 on:
   workflow_dispatch:
     inputs:
-      year:
-        description: ISO week-year
+      start_year:
+        description: Start ISO week-year
         required: true
         default: '2026'
         type: string
-      week:
-        description: ISO week number
+      start_week:
+        description: Start ISO week
+        required: true
+        default: '1'
+        type: string
+      end_year:
+        description: End ISO week-year
+        required: true
+        default: '2026'
+        type: string
+      end_week:
+        description: End ISO week
         required: true
         default: '1'
         type: string
@@ -18,11 +28,22 @@ on:
         required: true
         default: '1'
         type: choice
-        options:
-          - '0'
-          - '1'
-          - '2'
-          - '3'
+        options: ['0', '1', '2', '3']
+      candidate_count:
+        description: Candidate layouts per mode
+        required: true
+        default: '5'
+        type: string
+      per_body_cap:
+        description: Viable candidates allowed per body
+        required: true
+        default: '200'
+        type: string
+      timeout_seconds:
+        description: Seconds per notation mode
+        required: true
+        default: '180'
+        type: string
 
 permissions:
   contents: write
@@ -30,7 +51,11 @@ permissions:
 jobs:
   generate:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 360
+    env:
+      PLANET_FINDER_CANDIDATES: ${{ inputs.candidate_count }}
+      PLANET_FINDER_MAX_NODE_CANDIDATES: ${{ inputs.per_body_cap }}
+      PLANET_FINDER_MAX_SECONDS: ${{ inputs.timeout_seconds }}
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
@@ -40,12 +65,53 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: Generate weekly Planet Finder
-        run: >-
-          python tools/generate_planet_finders.py
-          --year "${{ inputs.year }}"
-          --week "${{ inputs.week }}"
-          --diagnostic-level "${{ inputs.diagnostic_level }}"
+      - name: Cache source kernels
+        uses: actions/cache@v4
+        with:
+          path: .cache/skyfield
+          key: star-almanack-source-kernels-v1
+
+      - name: Install pinned calculation dependency
+        run: python -m pip install --disable-pip-version-check 'skyfield==1.55'
+
+      - name: Ensure cached DE440s and Ceres source kernels
+        run: python tools/ensure_ephemeris_kernels.py --ceres
+
+      - name: Generate requested week range
+        env:
+          START_YEAR: ${{ inputs.start_year }}
+          START_WEEK: ${{ inputs.start_week }}
+          END_YEAR: ${{ inputs.end_year }}
+          END_WEEK: ${{ inputs.end_week }}
+          DIAGNOSTIC_LEVEL: ${{ inputs.diagnostic_level }}
+        run: |
+          python - <<'PY'
+          import os
+          import subprocess
+          from datetime import date, timedelta
+
+          sy = int(os.environ['START_YEAR'])
+          sw = int(os.environ['START_WEEK'])
+          ey = int(os.environ['END_YEAR'])
+          ew = int(os.environ['END_WEEK'])
+          level = os.environ['DIAGNOSTIC_LEVEL']
+
+          start = date.fromisocalendar(sy, sw, 1)
+          end = date.fromisocalendar(ey, ew, 1)
+          if end < start:
+              raise SystemExit('End week must not precede start week')
+
+          monday = start
+          while monday <= end:
+              iso = monday.isocalendar()
+              print(f'=== Planet Finder {iso.year}-W{iso.week:02d} ===', flush=True)
+              subprocess.run([
+                  'python', 'tools/generate_planet_finders.py',
+                  '--year', str(iso.year), '--week', str(iso.week),
+                  '--diagnostic-level', level,
+              ], check=True)
+              monday += timedelta(days=7)
+          PY
 
       - name: Commit generated finder files
         run: |
@@ -55,6 +121,6 @@ jobs:
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add "almanack/${{ inputs.year }}/W$(printf '%02d' '${{ inputs.week }}')/finders" || git add -A
-          git commit -m "Generate Planet Finder ${{ inputs.year }}-W$(printf '%02d' '${{ inputs.week }}')"
+          git add almanack/
+          git commit -m "Generate weekly Planet Finders ${{ inputs.start_year }}-W${{ inputs.start_week }} through ${{ inputs.end_year }}-W${{ inputs.end_week }}"
           git push
