@@ -1,0 +1,91 @@
+name: Refactor Planet Finder Geometry
+
+on:
+  push:
+    branches:
+      - refactor/planet-finder-search
+    paths:
+      - tools/refactor_planet_finder_geometry.py
+      - .github/workflows/refactor-planet-finder-geometry.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  extract-validate-commit:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: refactor/planet-finder-search
+          fetch-depth: 0
+
+      - name: Generate W36 baseline
+        shell: bash
+        run: |
+          set -euo pipefail
+          FINDERS_DIR="$(PYTHONPATH=tools python - <<'PY'
+          from almanack_paths import week_dir
+          print(week_dir(2026, 36) / "finders")
+          PY
+          )"
+          echo "FINDERS_DIR=$FINDERS_DIR" >> "$GITHUB_ENV"
+          python tools/generate_planet_finders.py --year 2026 --week 36
+          rm -rf /tmp/planet-finder-baseline
+          cp -a "$FINDERS_DIR" /tmp/planet-finder-baseline
+          git checkout -- "$FINDERS_DIR" 2>/dev/null || true
+
+      - name: Extract geometry support module
+        run: python tools/refactor_planet_finder_geometry.py
+
+      - name: Compile refactored modules
+        run: |
+          python -m py_compile             tools/planet_finder_geometry.py             tools/planet_finder_search.py             tools/generate_planet_finders.py
+
+      - name: Verify imported support surface
+        env:
+          PYTHONPATH: tools
+        run: |
+          python - <<'PY'
+          import generate_planet_finders as g
+          import planet_finder_geometry as p
+
+          names = [
+              "FinderMode", "Body", "Box", "xy", "boxes_overlap",
+              "segment_hits_box", "point_segment_distance",
+              "segments_too_close", "leaders_too_close",
+              "leader_hits_zodiac_rim", "label_size", "reserved_boxes",
+              "candidate_positions", "legal_candidate_positions", "route",
+          ]
+          for name in names:
+              assert getattr(g, name) is getattr(p, name), name
+          assert g.CX == p.CX and g.CY == p.CY
+          assert g.SIGNS == p.SIGNS
+          PY
+
+      - name: Regenerate W36 after extraction
+        run: python tools/generate_planet_finders.py --year 2026 --week 36
+
+      - name: Verify byte-for-byte W36 equivalence
+        shell: bash
+        run: |
+          set -euo pipefail
+          diff -ru /tmp/planet-finder-baseline "$FINDERS_DIR"
+          git checkout -- "$FINDERS_DIR" 2>/dev/null || true
+
+      - name: Commit extraction atomically
+        shell: bash
+        run: |
+          set -euo pipefail
+          if git diff --quiet -- tools/generate_planet_finders.py tools/planet_finder_geometry.py; then
+            echo "No extraction changes needed."
+            exit 0
+          fi
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add tools/generate_planet_finders.py tools/planet_finder_geometry.py
+          git commit -m "Extract Planet Finder geometry support"
+          git push origin HEAD:refactor/planet-finder-search
