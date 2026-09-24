@@ -1,0 +1,77 @@
+name: Refactor Planet Finder Search
+
+on:
+  push:
+    branches:
+      - refactor/planet-finder-search
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  extract-and-check:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: refactor/planet-finder-search
+
+      - name: Extract search support types from generator
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          path = Path('tools/generate_planet_finders.py')
+          text = path.read_text(encoding='utf-8')
+          import_line = 'from planet_finder_search import DepthNodeBudgetExhausted, SearchOutcome\n'
+          anchor = 'from almanack_paths import week_dir\n'
+          if import_line not in text:
+              if anchor not in text:
+                  raise SystemExit('import anchor not found')
+              text = text.replace(anchor, anchor + import_line, 1)
+
+          block = '''@dataclass(frozen=True)\nclass SearchOutcome:\n    """Result of one fixed-order DFS attempt."""\n    kind: str\n    solutions: list\n    contest_keys: list\n    blocker: str | None = None\n    rejection_stats: dict | None = None\n\n\nclass DepthNodeBudgetExhausted(RuntimeError):\n    """Signal that a body-depth node budget is exhausted for this DFS tree."""\n\n    def __init__(self, depth: int, name: str):\n        super().__init__(f"node budget exhausted at depth {depth} for {name}")\n        self.depth = depth\n        self.name = name\n\n\n'''
+          if block in text:
+              text = text.replace(block, '', 1)
+          elif 'class SearchOutcome:' in text or 'class DepthNodeBudgetExhausted' in text:
+              raise SystemExit('search support block differs from expected source; refusing mechanical edit')
+
+          path.write_text(text, encoding='utf-8')
+          PY
+
+      - name: Compile extracted modules
+        run: |
+          python -m py_compile tools/planet_finder_search.py tools/generate_planet_finders.py
+
+      - name: Verify support type semantics
+        run: |
+          PYTHONPATH=tools python - <<'PY'
+          from dataclasses import FrozenInstanceError
+          from planet_finder_search import DepthNodeBudgetExhausted, SearchOutcome
+
+          outcome = SearchOutcome('SOLVED', [], [], None, None)
+          assert outcome.kind == 'SOLVED'
+          try:
+              outcome.kind = 'EXHAUSTED'
+          except FrozenInstanceError:
+              pass
+          else:
+              raise AssertionError('SearchOutcome must remain frozen')
+
+          exc = DepthNodeBudgetExhausted(3, 'Mercury')
+          assert exc.depth == 3 and exc.name == 'Mercury'
+          PY
+
+      - name: Commit extraction if needed
+        run: |
+          if git diff --quiet; then
+            echo 'No extraction changes needed.'
+            exit 0
+          fi
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add tools/generate_planet_finders.py
+          git commit -m 'Wire Planet Finder search support module'
+          git push origin HEAD:refactor/planet-finder-search
