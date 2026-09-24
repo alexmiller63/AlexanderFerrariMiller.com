@@ -34,7 +34,7 @@ def main():
         1,
     )
     MOD.write_text(MOD.read_text(encoding="utf-8")+PRELUDE+block+"\n",encoding="utf-8")
-    nt=t[:a]+t[b+2:]
+    nt=t[:a]+t[b+1:]
     nt=nt.replace(IMPORT_ANCHOR,IMPORT,1)
     GEN.write_text(nt,encoding="utf-8")
     print(f"extracted {block.count(chr(10))+1} controller/scoring lines")
