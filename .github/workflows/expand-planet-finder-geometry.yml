@@ -1,0 +1,62 @@
+name: Expand Planet Finder Geometry
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  expand:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: planet-finder-child-grandchild
+      - name: Expand candidate space in current geometry module
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          p = Path('tools/planet_finder_geometry.py')
+          text = p.read_text()
+          old = '''    quarter_step = LABEL_LENGTH * 0.25
+    quarter_shifts = tuple(i * quarter_step for i in range(-8, 9))
+    yield from offer(PREFERRED_LABEL_RADII, quarter_shifts)
+    yield from offer(EXPANDED_LABEL_RADII, quarter_shifts)
+'''
+          new = '''    quarter_step = LABEL_LENGTH * 0.25
+    quarter_shifts = tuple(i * quarter_step for i in range(-8, 9))
+    yield from offer(PREFERRED_LABEL_RADII, quarter_shifts)
+    yield from offer(EXPANDED_LABEL_RADII, quarter_shifts)
+
+    # Emergency crowded-chart expansion. Preserve all collision/rim/routing
+    # rules; only make progressively longer tangential placements available.
+    # Nearby candidates remain first, so ordinary weeks keep compact leaders.
+    for label_lengths in (2.5, 3.0, 3.5, 4.0, 4.5, 5.0, 5.5, 6.0):
+        emergency_shift = LABEL_LENGTH * label_lengths
+        yield from offer(PREFERRED_LABEL_RADII, (-emergency_shift, emergency_shift))
+        yield from offer(EXPANDED_LABEL_RADII, (-emergency_shift, emergency_shift))
+'''
+          if old not in text:
+              raise SystemExit('Current candidate_positions block not found; refusing blind edit')
+          updated = text.replace(old, new, 1)
+          if updated.count('Emergency crowded-chart expansion') != 1:
+              raise SystemExit('Expansion insertion verification failed')
+          p.write_text(updated)
+          PY
+          python -m py_compile tools/planet_finder_geometry.py
+          git diff --check
+      - name: Commit
+        shell: bash
+        run: |
+          if git diff --quiet; then
+            echo 'No change needed.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add tools/planet_finder_geometry.py
+          git commit -m 'Expand Planet Finder emergency candidate space'
+          git push origin HEAD:planet-finder-child-grandchild
