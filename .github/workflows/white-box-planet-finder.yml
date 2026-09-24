@@ -2,6 +2,12 @@ name: White Box Planet Finder
 
 on:
   workflow_dispatch:
+    inputs:
+      diagnostic_level:
+        description: "Diagnostic level (0=silent, 1=summary, 2=per-body, 3=candidate detail, 4+=deep geometry)"
+        required: true
+        default: "1"
+        type: string
 
 jobs:
   test:
@@ -12,4 +18,6 @@ jobs:
         with:
           python-version: "3.12"
       - name: Run white-box test
+        env:
+          WHITE_BOX_DIAGNOSTIC: ${{ inputs.diagnostic_level }}
         run: python tools/run_white_box_planet_finder_workflow.py
