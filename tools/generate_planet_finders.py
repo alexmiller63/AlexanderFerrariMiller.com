@@ -497,6 +497,15 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 body_stat["dead"] += 1
                 forward_stats["pruned"] += 1
                 forward_blockers[future_name] = forward_blockers.get(future_name, 0) + 1
+                if next_depth == 1 and order[0][1][1] == "Sun":
+                    diagnostic_print(
+                        f"Planet Finder {mode}: SUN-PREFIX DEAD-GATE "
+                        f"sun-check={forward_stats['checks']:,} "
+                        f"future-body={future_name} raw={witness_raw:,} "
+                        f"prefix-obstacles={len(obstacles):,}",
+                        level=3,
+                        flush=True,
+                    )
                 return False
 
         # Paired Child -> Grandchild look-ahead. An individually viable Child
