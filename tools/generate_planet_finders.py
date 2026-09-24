@@ -428,37 +428,38 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
     def forward_check(next_depth):
         """Return False only when a remaining body is already provably dead.
 
-        This is a one-witness feasibility check and does not stage a placement.
-        Its probes are diagnostic look-ahead, not DFS contestants, so they do
-        not consume the per-body DFS candidate cap. Diagnostics still record
-        the amount of look-ahead work and which future bodies receive witnesses.
+        First require one individually viable witness for every remaining body.
+        Then, when both exist, require at least one viable Child placement that
+        leaves at least one compatible Grandchild placement. Look-ahead probes
+        do not consume the per-body DFS candidate cap.
         """
         obstacles = [*reserved, *placed]
-        # Match real DFS exactly: only the 3 fixed center annotations may
-        # contain an anchor and permit an initial escape. Zodiac labels never do.
         immutable_count = 3
         forward_stats["checks"] += 1
-        for future_depth in range(next_depth, len(order)):
-            _, (_, future_name, future_longitude) = order[future_depth]
+
+        def witness_for(item, boxes, paths, obstacles_now):
+            _, (_, future_name, future_longitude) = item
             w, h = label_size(mode, future_name)
             anchor = xy(future_longitude, RI - 5)
             prefix_cache = {}
-            witness = False
             witness_raw = 0
             for _, _, future_box in legal_candidate_positions(
                 future_longitude, w, h, reserved, displacement_scale
             ):
                 witness_raw += 1
-                # Look-ahead stops at the first witness. Count its raw probes
-                # only in forward_stats; the 200 cap belongs to actual DFS
-                # candidate generation, not speculative feasibility checks.
-                if any(boxes_overlap(future_box, other, 14) for other in placed):
+                if any(boxes_overlap(future_box, other, 14) for other in boxes):
+                    continue
+                if any(
+                    segment_hits_box(seg[i], seg[i + 1], future_box, 10)
+                    for seg in paths
+                    for i in range(len(seg) - 1)
+                ):
                     continue
                 center = (future_box.x, future_box.y)
                 path = route(
                     anchor,
                     center,
-                    obstacles,
+                    obstacles_now,
                     allow_initial_escape_count=immutable_count,
                     prefix_cache=prefix_cache,
                 )
@@ -466,10 +467,19 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                     continue
                 if leader_hits_zodiac_rim(path):
                     continue
-                if leaders_too_close(path, leaders):
+                if leaders_too_close(path, paths):
                     continue
-                witness = True
-                break
+                return future_box, path, witness_raw
+            return None, None, witness_raw
+
+        # Existing individual feasibility test for every future body.
+        for future_depth in range(next_depth, len(order)):
+            item = order[future_depth]
+            _, (_, future_name, _) = item
+            future_box, future_path, witness_raw = witness_for(
+                item, placed, leaders, obstacles
+            )
+            witness = future_box is not None
             body_stat = forward_stats["by_body"].setdefault(
                 future_name, {"checks": 0, "witnesses": 0, "dead": 0, "raw": 0}
             )
@@ -482,6 +492,78 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 body_stat["dead"] += 1
                 forward_stats["pruned"] += 1
                 return False
+
+        # Paired Child -> Grandchild look-ahead. An individually viable Child
+        # is not enough if every Child placement makes the Grandchild impossible.
+        if next_depth + 1 < len(order):
+            child_item = order[next_depth]
+            grandchild_item = order[next_depth + 1]
+            _, (_, child_name, child_longitude) = child_item
+            _, (_, grandchild_name, _) = grandchild_item
+            child_w, child_h = label_size(mode, child_name)
+            child_anchor = xy(child_longitude, RI - 5)
+            child_prefix_cache = {}
+            pair_found = False
+            child_raw = 0
+            grandchild_raw_total = 0
+
+            for _, _, child_box in legal_candidate_positions(
+                child_longitude, child_w, child_h, reserved, displacement_scale
+            ):
+                child_raw += 1
+                if any(boxes_overlap(child_box, other, 14) for other in placed):
+                    continue
+                if any(
+                    segment_hits_box(seg[i], seg[i + 1], child_box, 10)
+                    for seg in leaders
+                    for i in range(len(seg) - 1)
+                ):
+                    continue
+                child_path = route(
+                    child_anchor,
+                    (child_box.x, child_box.y),
+                    obstacles,
+                    allow_initial_escape_count=immutable_count,
+                    prefix_cache=child_prefix_cache,
+                )
+                if child_path is None:
+                    continue
+                if leader_hits_zodiac_rim(child_path):
+                    continue
+                if leaders_too_close(child_path, leaders):
+                    continue
+
+                grandchild_box, grandchild_path, grandchild_raw = witness_for(
+                    grandchild_item,
+                    [*placed, child_box],
+                    [*leaders, child_path],
+                    [*obstacles, child_box],
+                )
+                grandchild_raw_total += grandchild_raw
+                if grandchild_box is not None:
+                    pair_found = True
+                    break
+
+            pair_stat = forward_stats["by_body"].setdefault(
+                grandchild_name, {"checks": 0, "witnesses": 0, "dead": 0, "raw": 0}
+            )
+            pair_stat["checks"] += 1
+            pair_stat["raw"] += child_raw + grandchild_raw_total
+            if pair_found:
+                pair_stat["witnesses"] += 1
+                forward_stats["witnesses"] += 1
+            else:
+                pair_stat["dead"] += 1
+                forward_stats["pruned"] += 1
+                diagnostic_print(
+                    f"Planet Finder {mode}: CHILD-GRANDCHILD PRUNE "
+                    f"depth={next_depth}/{len(order)} child={child_name} "
+                    f"grandchild={grandchild_name}",
+                    level=2,
+                    flush=True,
+                )
+                return False
+
         return True
 
     def search(depth):
