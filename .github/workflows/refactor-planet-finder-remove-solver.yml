@@ -39,7 +39,8 @@ jobs:
           python -m py_compile tools/planet_finder_search.py
           python - <<'PY'
           import generate_planet_finders as g, planet_finder_search as s
-          assert g._solve_order is s._solve_order
+          assert not hasattr(g, '_solve_order')
+          assert s._solve_order is not None
           PY
       - run: python tools/generate_planet_finders.py --year 2026 --week 36
       - name: Verify byte equivalence
