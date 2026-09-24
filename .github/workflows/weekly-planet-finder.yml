@@ -1,0 +1,60 @@
+name: Weekly Planet Finder
+
+on:
+  workflow_dispatch:
+    inputs:
+      year:
+        description: ISO week-year
+        required: true
+        default: '2026'
+        type: string
+      week:
+        description: ISO week number
+        required: true
+        default: '1'
+        type: string
+      diagnostic_level:
+        description: 'Diagnostic level: 0=silent, 1=major, 2=detail, 3=forensic'
+        required: true
+        default: '1'
+        type: choice
+        options:
+          - '0'
+          - '1'
+          - '2'
+          - '3'
+
+permissions:
+  contents: write
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Generate weekly Planet Finder
+        run: >-
+          python tools/generate_planet_finders.py
+          --year "${{ inputs.year }}"
+          --week "${{ inputs.week }}"
+          --diagnostic-level "${{ inputs.diagnostic_level }}"
+
+      - name: Commit generated finder files
+        run: |
+          if git diff --quiet; then
+            echo "No generated changes to commit."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "almanack/${{ inputs.year }}/W$(printf '%02d' '${{ inputs.week }}')/finders" || git add -A
+          git commit -m "Generate Planet Finder ${{ inputs.year }}-W$(printf '%02d' '${{ inputs.week }}')"
+          git push
