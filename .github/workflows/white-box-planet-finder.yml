@@ -21,3 +21,10 @@ jobs:
         env:
           WHITE_BOX_DIAGNOSTIC: ${{ inputs.diagnostic_level }}
         run: python tools/run_white_box_planet_finder_workflow.py
+      - name: Upload White Box diagnostic
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: white-box-diagnostic-level-${{ inputs.diagnostic_level }}
+          path: white-box-diagnostic.txt
+          if-no-files-found: warn
