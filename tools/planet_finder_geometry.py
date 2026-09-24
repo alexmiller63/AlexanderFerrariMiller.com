@@ -256,6 +256,17 @@ def candidate_positions(longitude: float, displacement_scale: float = 2.0):
     yield from offer(EXPANDED_LABEL_RADII, (0.0,))
     yield from offer(EXPANDED_LABEL_RADII, (-shift, shift))
 
+    # Final refinement: search the complete quarter-label displacement grid
+    # within the established +/-2 label-length envelope. The earlier scales
+    # sample only their own displacement, which leaves gaps such as 0.75 and
+    # 1.25 label-lengths. Those gaps can matter when the chart is crowded (for
+    # example when Pluto is added to an otherwise valid 11-body layout).
+    # This adds candidates without changing any collision or routing rules.
+    quarter_step = LABEL_LENGTH * 0.25
+    quarter_shifts = tuple(i * quarter_step for i in range(-8, 9))
+    yield from offer(PREFERRED_LABEL_RADII, quarter_shifts)
+    yield from offer(EXPANDED_LABEL_RADII, quarter_shifts)
+
 
 def legal_candidate_positions(
     longitude: float,
