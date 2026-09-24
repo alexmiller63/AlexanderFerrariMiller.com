@@ -126,6 +126,13 @@ def layout(
     order_index = 0
     refinement_scales = (2.0, 1.5, 1.0, 0.5, 0.25)
     refinement_index = 0
+    # Keep one wall clock per notation mode, but reserve an equal cumulative
+    # share for each refinement so a coarse geometry cannot consume time that
+    # belongs to the finer fallback geometries.
+    refinement_deadlines = tuple(
+        budget["started"] + budget["max_seconds"] * (i + 1) / len(refinement_scales)
+        for i in range(len(refinement_scales))
+    )
     attempted_orders = set()
     # A body may be promoted at most once at each placement refinement.
     # Seeing the same squeaky wheel again closes that refinement's bounded
@@ -153,11 +160,26 @@ def layout(
     promote_body = None
 
     while state != "SCORE":
-        if time.monotonic() - budget["started"] >= budget["max_seconds"]:
+        now = time.monotonic()
+        if now - budget["started"] >= budget["max_seconds"]:
             raise RuntimeError(
                 f"Planet Finder {mode} mode wall-clock budget exhausted "
                 f"(limit {budget['max_seconds']:.1f}s)"
             )
+        if now >= refinement_deadlines[refinement_index]:
+            if refinement_index + 1 >= len(refinement_scales):
+                raise RuntimeError(
+                    f"Planet Finder {mode} mode wall-clock budget exhausted "
+                    f"(limit {budget['max_seconds']:.1f}s)"
+                )
+            diagnostic_print(
+                f"Planet Finder {mode}: REFINEMENT TIME SLICE EXHAUSTED "
+                f"at {refinement_scales[refinement_index]:g} label-lengths; "
+                f"elapsed={now - budget['started']:.1f}s; advancing",
+                flush=True,
+            )
+            state = "REFINE"
+            continue
 
         if state == "REFINE":
             if refinement_index + 1 >= len(refinement_scales):
