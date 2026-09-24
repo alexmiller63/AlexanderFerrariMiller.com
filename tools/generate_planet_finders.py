@@ -424,6 +424,11 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 raise DepthNodeBudgetExhausted(depth, name)
 
     forward_stats = {"checks": 0, "pruned": 0, "witnesses": 0, "by_body": {}}
+    # Bodies that actually make a forward check fail.  Without this, a prefix
+    # whose every candidate is pruned before recursion leaves `deepest` at the
+    # parent depth, causing the controller to blame/promote the parent instead
+    # of the future body that is the real squeaky wheel.
+    forward_blockers = {}
 
     def forward_check(next_depth):
         """Return False only when a remaining body is already provably dead.
@@ -491,6 +496,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             else:
                 body_stat["dead"] += 1
                 forward_stats["pruned"] += 1
+                forward_blockers[future_name] = forward_blockers.get(future_name, 0) + 1
                 return False
 
         # Paired Child -> Grandchild look-ahead. An individually viable Child
@@ -555,6 +561,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             else:
                 pair_stat["dead"] += 1
                 forward_stats["pruned"] += 1
+                forward_blockers[grandchild_name] = forward_blockers.get(grandchild_name, 0) + 1
                 diagnostic_print(
                     f"Planet Finder {mode}: CHILD-GRANDCHILD PRUNE "
                     f"depth={next_depth}/{len(order)} child={child_name} "
@@ -731,11 +738,25 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
     )
     blocker = None
     if exhausted:
-        # deepest is a reached DFS depth; the body at that depth is the first
-        # body that could not be placed. If the tree reached completion, use
-        # the final body as the ordering feedback.
-        blocker_depth = min(deepest, len(order) - 1)
-        blocker = order[blocker_depth][1][1]
+        # Prefer the body that actually caused forward-check pruning.  A
+        # forward-pruned child is never entered by DFS, so `deepest` otherwise
+        # misidentifies the parent as the blocker and the controller repeatedly
+        # promotes the wrong body.
+        if forward_blockers:
+            order_rank = {item[1][1]: depth for depth, item in enumerate(order)}
+            blocker = min(
+                forward_blockers,
+                key=lambda name: (-forward_blockers[name], order_rank.get(name, len(order))),
+            )
+            diagnostic_print(
+                f"Planet Finder {mode}: FORWARD BLOCKER body={blocker} "
+                f"prunes={forward_blockers[blocker]:,} all={forward_blockers}",
+                flush=True,
+            )
+        else:
+            # No forward-pruning evidence: fall back to the deepest DFS body.
+            blocker_depth = min(deepest, len(order) - 1)
+            blocker = order[blocker_depth][1][1]
     blocker_stats = None
     if blocker is not None:
         blocker_depth = next(
