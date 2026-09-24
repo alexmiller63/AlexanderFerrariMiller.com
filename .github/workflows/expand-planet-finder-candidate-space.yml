@@ -1,0 +1,28 @@
+name: Expand Planet Finder Candidate Space
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  expand:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Expand candidate space
+        run: python tools/expand_planet_finder_candidate_space.py
+      - name: Commit change
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add tools/planet_finder_geometry.py
+          git diff --cached --quiet && exit 0
+          git commit -m "Expand Planet Finder candidate space for extreme crowding"
+          git push
