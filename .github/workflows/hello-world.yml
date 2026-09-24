@@ -3,6 +3,9 @@ name: W02 Diagnostic Test
 on:
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   diagnose:
     runs-on: ubuntu-latest
@@ -15,7 +18,23 @@ jobs:
         with:
           python-version: '3.12'
 
+      - name: Restore JPL/NAIF ephemeris source cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            .cache/skyfield/de440s.bsp
+            .cache/skyfield/ceres_1900_2100.bsp
+          key: star-almanack-source-kernels-v1
+
+      - name: Install pinned calculation dependencies
+        run: |
+          python -m pip install --disable-pip-version-check --upgrade pip
+          python -m pip install --disable-pip-version-check 'numpy==1.26.4' 'skyfield==1.55'
+
+      - name: Ensure cached DE440s and Ceres source kernels
+        run: python tools/ensure_ephemeris_kernels.py --ceres
+
       - name: Diagnostic skeleton
         run: |
-          echo "W02 diagnostic workflow is visible and runnable."
-          echo "Diagnostic steps will go here."
+          echo "Python dependencies and ephemeris kernels are ready."
+          echo "W02 solver diagnostic will go here."
