@@ -1,17 +1,19 @@
 #!/usr/bin/env python3
-"""Split generate_planet_finders.py into manageable, lossless source chunks.
+"""Split or reassemble generate_planet_finders.py losslessly.
 
 This is deliberately a mechanical source-management tool, not a refactor.
-It never changes the generator. It copies contiguous line ranges into numbered
-text chunks plus a manifest, and verifies that concatenating the chunks exactly
-reproduces the original bytes.
+Split mode copies contiguous line ranges into numbered text chunks plus a
+manifest and verifies that concatenating the chunks reproduces the source.
+Reassemble mode concatenates the manifest-listed chunks back into the canonical
+source and verifies each chunk against its manifest hash before writing.
 
 Usage:
     python tools/split_planet_finder_source.py
     python tools/split_planet_finder_source.py --lines 250
+    python tools/split_planet_finder_source.py --reassemble
 
-Generated files live under tools/planet_finder_chunks/ and are safe to inspect
-individually. The canonical executable remains tools/generate_planet_finders.py.
+Generated files live under tools/planet_finder_chunks/. The canonical executable
+remains tools/generate_planet_finders.py.
 """
 from __future__ import annotations
 
@@ -37,7 +39,6 @@ def split_source(source: Path, output: Path, lines_per_chunk: int) -> None:
     lines = original.splitlines(keepends=True)
     output.mkdir(parents=True, exist_ok=True)
 
-    # Remove only files owned by this utility so stale chunks cannot survive.
     for old in output.glob("chunk-*.txt"):
         old.unlink()
 
@@ -75,14 +76,53 @@ def split_source(source: Path, output: Path, lines_per_chunk: int) -> None:
     )
 
 
+def reassemble_source(source: Path, output: Path) -> None:
+    manifest_path = output / "manifest.json"
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    rebuilt = bytearray()
+    line_count = 0
+
+    for entry in manifest["chunks"]:
+        chunk_path = output / entry["file"]
+        payload = chunk_path.read_bytes()
+        actual_hash = sha256(payload)
+        if actual_hash != entry["sha256"]:
+            raise RuntimeError(
+                f"chunk hash mismatch for {entry['file']}: "
+                f"manifest={entry['sha256']} actual={actual_hash}. "
+                "Update the manifest deliberately after editing a chunk."
+            )
+        rebuilt.extend(payload)
+        line_count += len(payload.splitlines(keepends=True))
+
+    if line_count != manifest["line_count"]:
+        raise RuntimeError(
+            f"line-count mismatch: manifest={manifest['line_count']} actual={line_count}"
+        )
+
+    source.write_bytes(bytes(rebuilt))
+    actual_source_hash = sha256(bytes(rebuilt))
+    print(
+        f"Reassembled {source.relative_to(ROOT).as_posix()} from "
+        f"{len(manifest['chunks'])} verified chunks; SHA-256={actual_source_hash}."
+    )
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--source", type=Path, default=DEFAULT_SOURCE)
     parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
     parser.add_argument("--lines", type=int, default=250,
                         help="maximum source lines per chunk (default: 250)")
+    parser.add_argument("--reassemble", action="store_true",
+                        help="rebuild canonical source from manifest-listed chunks")
     args = parser.parse_args()
-    split_source(args.source.resolve(), args.output.resolve(), args.lines)
+    source = args.source.resolve()
+    output = args.output.resolve()
+    if args.reassemble:
+        reassemble_source(source, output)
+    else:
+        split_source(source, output, args.lines)
     return 0
 
 
