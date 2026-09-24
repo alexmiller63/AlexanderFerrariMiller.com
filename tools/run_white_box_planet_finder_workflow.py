@@ -28,6 +28,14 @@ def ensure_dependencies() -> None:
 
 def main() -> None:
     ensure_dependencies()
+
+    # Diagnostic only: expose the exact gate that removes Saturn's forward
+    # witnesses after each of the first routable Sun placements.  Run it first
+    # so its evidence survives even when the stress search intentionally fails.
+    audit = [sys.executable, "tools/diagnose_white_box_saturn.py"]
+    print("Saturn forward-witness audit:", " ".join(audit), flush=True)
+    subprocess.run(audit, check=True)
+
     command = [
         sys.executable,
         "tools/white_box_planet_finder.py",
