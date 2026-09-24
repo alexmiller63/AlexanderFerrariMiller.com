@@ -159,6 +159,33 @@ def layout(
     state = "SEARCH_ORDER"
     promote_body = None
 
+    def next_promotion_order(current_order, body_name):
+        """Return the next bounded ordering for a squeaky-wheel body.
+
+        Try the body at the zero position first, then immediately to its
+        right, then at the opposite side of the linearized order.  Relative
+        order of every other body is preserved.  This explores the two sides
+        of a crowded front position without opening arbitrary permutations.
+        """
+        body_index = next(
+            (i for i, item in enumerate(current_order) if item[1][1] == body_name),
+            None,
+        )
+        if body_index is None:
+            return None
+        body_item = current_order[body_index]
+        rest = [item for i, item in enumerate(current_order) if i != body_index]
+        candidate_orders = [
+            [body_item, *rest],
+            [rest[0], body_item, *rest[1:]],
+            [*rest, body_item],
+        ]
+        for candidate in candidate_orders:
+            names = tuple(item[1][1] for item in candidate)
+            if (refinement_index, names) not in attempted_orders:
+                return candidate
+        return None
+
     while state != "SCORE":
         now = time.monotonic()
         if now - budget["started"] >= budget["max_seconds"]:
@@ -237,30 +264,11 @@ def layout(
                 state = "REFINE"
                 continue
             promoted_bodies.add(promote_body)
-            promote_index = next(
-                (i for i, item in enumerate(order) if item[1][1] == promote_body),
-                None,
-            )
-            if promote_index is None:
-                raise RuntimeError(
-                    f"Planet Finder {mode}: capped body {promote_body} is absent from ordering"
-                )
-            promoted_order = [
-                order[promote_index],
-                *order[:promote_index],
-                *order[promote_index + 1:],
-            ]
-            promoted_names = tuple(item[1][1] for item in promoted_order)
-            promoted_key = (refinement_index, promoted_names)
-            if promoted_key in attempted_orders:
-                # The promoted body is already first. Repeating that same
-                # capped ordering is not a new contestant; it closes the
-                # bounded promotion cycle. The controller now advances the
-                # placement refinement instead of walking arbitrary tail
-                # permutations or returning a synthetic failure.
-                cycle_names = " > ".join(item[1][1] for item in promoted_order)
+            promoted_order = next_promotion_order(order, promote_body)
+            if promoted_order is None:
+                cycle_names = " > ".join(item[1][1] for item in order)
                 diagnostic_print(
-                    f"Planet Finder {mode}: CAPPED CYCLE CLOSED body={promote_body}; "
+                    f"Planet Finder {mode}: CAPPED SIDEWAYS CYCLE CLOSED body={promote_body}; "
                     f"promotions/orderings={len(attempted_orders)} "
                     f"at {refinement_scales[refinement_index]:g} label-lengths "
                     f"sequence={cycle_names}; refining",
@@ -268,6 +276,7 @@ def layout(
                 )
                 state = "REFINE"
                 continue
+            promoted_names = tuple(item[1][1] for item in promoted_order)
             # A capped body gets a fresh 200-candidate budget when the state
             # machine promotes it. The cap is therefore per-body/per-ordering
             # search work, not a lifetime quota for the entire mode. Forward
@@ -295,32 +304,19 @@ def layout(
                 state = "REFINE"
                 continue
             promoted_bodies.add(promote_body)
-            promote_index = next(
-                (i for i, item in enumerate(order) if item[1][1] == promote_body),
-                None,
-            )
-            if promote_index is None:
-                raise RuntimeError(
-                    f"Planet Finder {mode}: promotion body {promote_body} is absent from ordering"
-                )
-            promoted_order = [
-                order[promote_index],
-                *order[:promote_index],
-                *order[promote_index + 1:],
-            ]
-            promoted_names = tuple(item[1][1] for item in promoted_order)
-            promoted_key = (refinement_index, promoted_names)
-            if promoted_key in attempted_orders:
+            promoted_order = next_promotion_order(order, promote_body)
+            if promoted_order is None:
                 diagnostic_print(
-                    f"Planet Finder {mode}: PROMOTION CYCLE CLOSED body={promote_body} "
+                    f"Planet Finder {mode}: PROMOTION SIDEWAYS CYCLE CLOSED body={promote_body} "
                     f"at {refinement_scales[refinement_index]:g} label-lengths; refining",
                     flush=True,
                 )
                 state = "REFINE"
             else:
+                promoted_names = tuple(item[1][1] for item in promoted_order)
                 order = promoted_order
                 diagnostic_print(
-                    f"Planet Finder {mode}: PROMOTE body={promote_body}; "
+                    f"Planet Finder {mode}: PROMOTE/SIDEWAYS body={promote_body}; "
                     "discarding fixed-order search state and restarting with sequence="
                     + " > ".join(promoted_names),
                     flush=True,
