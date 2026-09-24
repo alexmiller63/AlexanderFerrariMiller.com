@@ -40,7 +40,7 @@ from planet_finder_geometry import (
 )
 
 ROOT = Path(__file__).resolve().parents[1]
-def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_index=1, total_orders=None, context_label=None, displacement_scale=2.0, body_attempts=None):
+def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_index=1, total_orders=None, context_label=None, displacement_scale=2.0, body_attempts=None, refinement_deadline=None):
     """Solve one fixed body ordering with recursive depth-first search.
 
     The ordering is fixed for this pass. Each recursive call owns one body
@@ -283,7 +283,17 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 candidate_last_heartbeat = now
             # Enforce the run-wide deadline inside candidate generation too.
             # Geometry/routing can otherwise keep one DFS iteration busy past the limit.
-            run_elapsed = time.monotonic() - budget["started"]
+            now = time.monotonic()
+            if refinement_deadline is not None and now >= refinement_deadline:
+                stats["blocked"] = "refinement-deadline"
+                diagnostic_print(
+                    f"Planet Finder {mode}: CANDIDATE REFINEMENT DEADLINE "
+                    f"order={order_index} depth={depth}/{len(order)} body={name}; "
+                    f"returning to controller",
+                    flush=True,
+                )
+                return
+            run_elapsed = now - budget["started"]
             if run_elapsed >= budget["max_seconds"]:
                 stats["blocked"] = "wall-clock"
                 diagnostic_print(
@@ -482,7 +492,15 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         """
         nonlocal nodes, deepest, candidates, backtracks, current_body
 
-        run_elapsed = time.monotonic() - budget["started"]
+        now = time.monotonic()
+        if refinement_deadline is not None and now >= refinement_deadline:
+            diagnostic_print(
+                f"Planet Finder {mode}: DFS REFINEMENT DEADLINE order={order_index} "
+                f"depth={depth}/{len(order)} body={current_body}; returning to controller",
+                flush=True,
+            )
+            return False
+        run_elapsed = now - budget["started"]
         if run_elapsed >= budget["max_seconds"]:
             diagnostic_print(
                 f"Planet Finder {mode}: TIMEOUT-AUDIT order={order_index} "
