@@ -13,9 +13,9 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v4
 
-      - name: Split Planet Finder source
+      - name: Split Planet Finder search source
         run: |
-          python tools/split_large_file.py tools/generate_planet_finders.py \
+          python tools/split_large_file.py tools/planet_finder_search.py \
             --output tmp/file_chunks \
             --lines 200
 
@@ -25,6 +25,6 @@ jobs:
       - name: Upload chunks
         uses: actions/upload-artifact@v4
         with:
-          name: planet-finder-source-chunks
+          name: planet-finder-search-source-chunks
           path: tmp/file_chunks/
           if-no-files-found: error
