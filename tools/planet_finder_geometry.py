@@ -171,6 +171,19 @@ def leaders_too_close(path, existing_paths, clearance: float = LEADER_TO_LEADER_
         for j in range(len(other) - 1)
     )
 
+def minimum_leader_separation(path, existing_paths):
+    """Return the minimum segment-to-segment distance to existing leaders."""
+    best = math.inf
+    best_pair = None
+    for oi, other in enumerate(existing_paths):
+        for i in range(len(path) - 1):
+            for j in range(len(other) - 1):
+                d = segment_distance(path[i], path[i + 1], other[j], other[j + 1])
+                if d < best:
+                    best = d
+                    best_pair = (oi, i, j)
+    return best, best_pair
+
 
 def leader_hits_zodiac_rim(path, clearance: float = LEADER_RIM_CLEARANCE) -> bool:
     """Reject a leader that touches or crosses the inner zodiac rim.
