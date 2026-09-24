@@ -1,0 +1,64 @@
+name: Refactor Planet Finder Search Core
+on:
+  push:
+    branches: [refactor/planet-finder-search]
+    paths:
+      - tools/refactor_planet_finder_search.py
+      - .github/workflows/refactor-planet-finder-search-core.yml
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  extract-validate-commit:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with: {ref: refactor/planet-finder-search, fetch-depth: 0}
+      - run: python -m pip install --disable-pip-version-check 'numpy==1.26.4' 'skyfield==1.55'
+      - run: python tools/ensure_ephemeris_kernels.py --ceres
+      - name: Baseline W36
+        shell: bash
+        run: |
+          set -euo pipefail
+          FINDERS_DIR="$(PYTHONPATH=tools python - <<'PY'
+          from almanack_paths import week_dir
+          print(week_dir(2026,36)/'finders')
+          PY
+          )"
+          echo "FINDERS_DIR=$FINDERS_DIR" >> "$GITHUB_ENV"
+          python tools/generate_planet_finders.py --year 2026 --week 36
+          rm -rf /tmp/pf-baseline && cp -a "$FINDERS_DIR" /tmp/pf-baseline
+          git checkout -- "$FINDERS_DIR" 2>/dev/null || true
+      - run: python tools/refactor_planet_finder_search.py
+      - name: Compile
+        run: |
+          python -m py_compile tools/planet_finder_search.py
+          python -m py_compile tools/generate_planet_finders.py
+      - name: Verify generator uses extracted solver
+        env: {PYTHONPATH: tools}
+        run: |
+          python - <<'PY'
+          import generate_planet_finders as g, planet_finder_search as s
+          assert g._solve_order is s._solve_order
+          assert g.DepthNodeBudgetExhausted is s.DepthNodeBudgetExhausted
+          assert g.SearchOutcome is s.SearchOutcome
+          PY
+      - run: python tools/generate_planet_finders.py --year 2026 --week 36
+      - name: Verify byte equivalence
+        shell: bash
+        run: |
+          set -euo pipefail
+          diff -ru /tmp/pf-baseline "$FINDERS_DIR"
+          git checkout -- "$FINDERS_DIR" 2>/dev/null || true
+      - name: Commit atomically
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add tools/generate_planet_finders.py tools/planet_finder_search.py
+          git diff --cached --quiet && exit 0
+          git commit -m "Extract Planet Finder DFS search core"
+          git push origin HEAD:refactor/planet-finder-search
