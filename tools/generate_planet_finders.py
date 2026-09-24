@@ -572,6 +572,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                     f"new-depth={deepest > child_deepest_before} "
                     f"child-nodes={nodes - child_nodes_before} "
                     f"child-backtracks={backtracks - child_backtracks_before}",
+                    level=2,
                     flush=True,
                 )
 
@@ -596,6 +597,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 f"generated={stats['generated']:,} viable={stats['viable']:,} "
                 f"rejects[overlap={stats['overlap']:,},leader={stats['leader']:,},"
                 f"route={stats['route']:,}]",
+                level=2,
                 flush=True,
             )
         return False
