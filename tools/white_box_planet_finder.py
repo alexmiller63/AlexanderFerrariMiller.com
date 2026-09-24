@@ -17,6 +17,15 @@ def crowded_bodies(center=15.0, span=6.0):
     return [(BODY_SYMBOLS[name.lower()], name, (start+i*step)%360.0) for i,name in enumerate(CANONICAL)]
 
 
+def reserved_name(index):
+    if index == 0: return "center-title"
+    if index == 1: return "center-subtitle"
+    if index == 2: return "center-footer"
+    signs=("Aries","Taurus","Gemini","Cancer","Leo","Virgo","Libra","Scorpio","Sagittarius","Capricorn","Aquarius","Pisces")
+    j=index-3
+    return f"zodiac:{signs[j]}" if 0 <= j < len(signs) else f"reserved#{index}"
+
+
 def isolated_sun_audit(mode, bodies, scale=2.0, sample_limit=12):
     """Audit Sun as move 1 only: no DFS, no other bodies, no caps or forward checking."""
     sun = next((b for b in bodies if b[1] == "Sun"), None)
@@ -28,13 +37,15 @@ def isolated_sun_audit(mode, bodies, scale=2.0, sample_limit=12):
     w, h = label_size(mode, name); anchor = xy(lon, RI-5)
     raw = list(candidate_positions(lon, scale))
     counts = {"raw": len(raw), "reserved": 0, "rim": 0, "route": 0, "leader_rim": 0, "accepted": 0}
+    reserved_hits = {}
     samples = []
     limit = RI-LABEL_RIM_CLEARANCE
     for x, y in raw:
         box = Box(x, y, w, h)
-        hit = next((o for o in reserved if boxes_overlap(box, o, LABEL_COLLISION_PADDING)), None)
-        if hit is not None:
+        hit_index = next((i for i,o in enumerate(reserved) if boxes_overlap(box, o, LABEL_COLLISION_PADDING)), None)
+        if hit_index is not None:
             counts["reserved"] += 1; reason = "reserved"
+            key=reserved_name(hit_index); reserved_hits[key]=reserved_hits.get(key,0)+1
         else:
             corners=((box.left,box.top),(box.right,box.top),(box.left,box.bottom),(box.right,box.bottom))
             if max(math.hypot(px-CX,py-CY) for px,py in corners) >= limit:
@@ -53,6 +64,7 @@ def isolated_sun_audit(mode, bodies, scale=2.0, sample_limit=12):
     print("WHITE BOX SUN-FIRST ISOLATED AUDIT", flush=True)
     print(f"SUN-FIRST mode={mode.value} lon={lon:.3f} anchor=({anchor[0]:.1f},{anchor[1]:.1f}) label=({w:.1f}x{h:.1f}) immutable={immutable_count}", flush=True)
     print("SUN-FIRST COUNTS " + " ".join(f"{k}={v}" for k,v in counts.items()) + f" reconciled={reconciled}", flush=True)
+    print("SUN-FIRST RESERVED BREAKDOWN " + (" ".join(f"{k}={v}" for k,v in sorted(reserved_hits.items(), key=lambda kv:(-kv[1],kv[0]))) or "none"), flush=True)
     for i,(x,y,reason) in enumerate(samples,1): print(f"  SUN-FIRST sample#{i} center=({x:.1f},{y:.1f}) first_gate={reason}", flush=True)
     if reconciled != counts["raw"]: raise AssertionError(f"Sun-first audit does not reconcile: {counts} reconciled={reconciled}")
 
