@@ -65,11 +65,12 @@ def candidate_generation_audit(mode, bodies, scale=2.0):
 
 
 def first_level_forward_audit(mode,bodies,displacement_scale=2.0,first_limit=12):
-    reserved=reserved_boxes(mode); print("WHITE BOX FORWARD AUDIT: first-level pruning",flush=True)
+    reserved=reserved_boxes(mode); immutable_count=len(reserved); print("WHITE BOX FORWARD AUDIT: first-level pruning",flush=True)
+    print(f"WHITE BOX ROUTING: initial escape permitted only from an immutable obstacle containing the body anchor; immutable_count={immutable_count}",flush=True)
     for _,first_name,first_lon in bodies:
         fw,fh=label_size(mode,first_name); anchor=xy(first_lon,RI-5); tested=0; print(f"FORWARD-AUDIT FIRST body={first_name}",flush=True)
         for _,_,first_box in legal_candidate_positions(first_lon,fw,fh,reserved,displacement_scale):
-            first_path=route(anchor,(first_box.x,first_box.y),reserved,allow_initial_escape_count=3,prefix_cache={})
+            first_path=route(anchor,(first_box.x,first_box.y),reserved,allow_initial_escape_count=immutable_count,prefix_cache={})
             if first_path is None or leader_hits_zodiac_rim(first_path): continue
             tested+=1; dead=None; counts=None
             for _,future_name,future_lon in bodies:
@@ -78,7 +79,7 @@ def first_level_forward_audit(mode,bodies,displacement_scale=2.0,first_limit=12)
                 for _,_,box in legal_candidate_positions(future_lon,w,h,reserved,displacement_scale):
                     c["raw"]+=1
                     if boxes_overlap(box,first_box,14): c["overlap"]+=1; continue
-                    path=route(a,(box.x,box.y),[*reserved,first_box],allow_initial_escape_count=3,prefix_cache={})
+                    path=route(a,(box.x,box.y),[*reserved,first_box],allow_initial_escape_count=immutable_count,prefix_cache={})
                     if path is None: c["route"]+=1; continue
                     if leader_hits_zodiac_rim(path): c["rim"]+=1; continue
                     if leaders_too_close(path,[first_path]): c["leader"]+=1; continue
