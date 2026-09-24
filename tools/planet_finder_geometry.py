@@ -162,6 +162,17 @@ def segments_too_close(a, b, c, d, clearance: float = LEADER_TO_LEADER_CLEARANCE
     ) < clearance
 
 
+def segment_distance(a, b, c, d):
+    """Minimum Euclidean distance between two line segments."""
+    if segments_intersect(a, b, c, d):
+        return 0.0
+    return min(
+        point_segment_distance(a, c, d),
+        point_segment_distance(b, c, d),
+        point_segment_distance(c, a, b),
+        point_segment_distance(d, a, b),
+    )
+
 def leaders_too_close(path, existing_paths, clearance: float = LEADER_TO_LEADER_CLEARANCE) -> bool:
     """Reject a proposed leader that grazes or crosses an existing leader."""
     return any(
