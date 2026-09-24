@@ -58,7 +58,7 @@ def diagnostic_print(*args, level=None, **kwargs):
         else:
             level = 1
     if configured >= level:
-        diagnostic_print(*args, **kwargs)
+        print(*args, **kwargs)
 
 from planet_finder_geometry import (
     CANONICAL, FinderMode, CX, CY, xy,
