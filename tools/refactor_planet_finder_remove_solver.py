@@ -19,7 +19,7 @@ def main():
     # The extracted solver deliberately keeps the generator's geometry imports
     # available through the same module namespace; preserve them while moving
     # only the function itself.
-    MOD.write_text(mod.rstrip()+"\n\n"+block+"\n",encoding="utf-8")
+    imports = """\nfrom planet_finder_geometry import (\n    SIGNS, W, H, RO, RI,\n    label_size, reserved_boxes, xy, legal_candidate_positions,\n    boxes_overlap, segment_hits_box, route, leader_hits_zodiac_rim,\n    leaders_too_close,\n)\nfrom planet_finder_validation import validate_layout\n"""\n    MOD.write_text(mod.rstrip()+"\\n"+imports+"\\n"+block+"\\n",encoding="utf-8")
     GEN.write_text(gen[:a]+gen[b+1:],encoding="utf-8")
     print(f"migrated {block.count(chr(10))+1} DFS lines")
 if __name__=="__main__": main()
