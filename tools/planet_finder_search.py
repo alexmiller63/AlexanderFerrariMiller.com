@@ -127,6 +127,10 @@ def layout(
     refinement_scales = (2.0, 1.5, 1.0, 0.5, 0.25)
     refinement_index = 0
     attempted_orders = set()
+    # A body may be promoted at most once at each placement refinement.
+    # Seeing the same squeaky wheel again closes that refinement's bounded
+    # promotion cycle instead of generating another tail permutation.
+    promoted_bodies = set()
     # One persistent per-body candidate cap for this mode. Reordering changes
     # the search tree, but never replenishes a body's 200-candidate budget.
     # Forward-check probes are deliberately outside this accounting.
@@ -184,6 +188,7 @@ def layout(
             # into the finer search; only the per-refinement visit history is
             # reset so that this ordering can be tried under the new geometry.
             attempted_orders.clear()
+            promoted_bodies.clear()
             promote_body = None
             diagnostic_print(
                 f"Planet Finder {mode}: REFINEMENT ADVANCE "
@@ -196,9 +201,20 @@ def layout(
             continue
 
         if state == "CAPPED":
-            # A node cap means only that this ordering was not searched to
-            # completion. It is not evidence that the geometry is exhausted,
-            # so it must never advance placement refinement.
+            # A node cap means this ordering was not searched to completion.
+            # Promote a squeaky wheel only once at this refinement. If the
+            # same body becomes the squeaky wheel again, the bounded promotion
+            # cycle is closed and the controller advances placement refinement.
+            if promote_body in promoted_bodies:
+                diagnostic_print(
+                    f"Planet Finder {mode}: CAPPED PROMOTION REPEAT body={promote_body}; "
+                    f"promoted={len(promoted_bodies)}/{len(indexed)} "
+                    f"at {refinement_scales[refinement_index]:g} label-lengths; refining",
+                    flush=True,
+                )
+                state = "REFINE"
+                continue
+            promoted_bodies.add(promote_body)
             promote_index = next(
                 (i for i, item in enumerate(order) if item[1][1] == promote_body),
                 None,
@@ -247,6 +263,16 @@ def layout(
             continue
 
         if state == "PROMOTE":
+            if promote_body in promoted_bodies:
+                diagnostic_print(
+                    f"Planet Finder {mode}: PROMOTION REPEAT body={promote_body}; "
+                    f"promoted={len(promoted_bodies)}/{len(indexed)} "
+                    f"at {refinement_scales[refinement_index]:g} label-lengths; refining",
+                    flush=True,
+                )
+                state = "REFINE"
+                continue
+            promoted_bodies.add(promote_body)
             promote_index = next(
                 (i for i, item in enumerate(order) if item[1][1] == promote_body),
                 None,
