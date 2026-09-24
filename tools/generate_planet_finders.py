@@ -20,6 +20,7 @@ from pathlib import Path
 from populate_ephemeris import TARGETS, computed_ephemeris, week_count
 from star_almanack_ephemeris import StarAlmanackEphemeris
 from almanack_paths import week_dir
+from planet_finder_search import DepthNodeBudgetExhausted, SearchOutcome
 
 ROOT = Path(__file__).resolve().parents[1]
 W = H = 1400
@@ -499,25 +500,6 @@ def route(
     return None
 
 
-
-
-@dataclass(frozen=True)
-class SearchOutcome:
-    """Result of one fixed-order DFS attempt."""
-    kind: str
-    solutions: list
-    contest_keys: list
-    blocker: str | None = None
-    rejection_stats: dict | None = None
-
-
-class DepthNodeBudgetExhausted(RuntimeError):
-    """Signal that a body-depth node budget is exhausted for this DFS tree."""
-
-    def __init__(self, depth: int, name: str):
-        super().__init__(f"node budget exhausted at depth {depth} for {name}")
-        self.depth = depth
-        self.name = name
 
 
 def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_index=1, total_orders=None, context_label=None, displacement_scale=2.0, body_attempts=None):
