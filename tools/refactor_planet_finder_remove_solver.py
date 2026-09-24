@@ -28,7 +28,7 @@ from planet_finder_geometry import (
 )
 from planet_finder_validation import validate_layout
 """
-    MOD.write_text(mod.rstrip() + "\\n" + imports + "\\n" + block + "\\n", encoding="utf-8")
+    MOD.write_text(mod.rstrip() + "\n" + imports + "\n" + block + "\n", encoding="utf-8")
     GEN.write_text(gen[:a]+gen[b+1:],encoding="utf-8")
     print(f"migrated {block.count(chr(10))+1} DFS lines")
 if __name__=="__main__": main()
