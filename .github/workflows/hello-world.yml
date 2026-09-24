@@ -55,7 +55,7 @@ jobs:
         working-directory: refactored
         env:
           STAR_ALMANACK_EPHEMERIS_DIR: ${{ github.workspace }}/.cache/skyfield
-        run: python tools/generate_planet_finders.py --start-week 2026-W36 --end-week 2026-W36
+        run: python tools/generate_planet_finders.py --year 2026 --week 36
 
       - name: Compare W36 Planet Finder output
         run: |
