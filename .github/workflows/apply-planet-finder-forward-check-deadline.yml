@@ -1,0 +1,30 @@
+name: Apply Planet Finder Forward-Check Deadline
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Apply guarded repair
+        run: python tools/patch_planet_finder_forward_check_deadline.py
+      - name: Verify syntax
+        run: python -m py_compile tools/generate_planet_finders.py
+      - name: Commit repair
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add tools/generate_planet_finders.py
+          git diff --cached --quiet && exit 0
+          git commit -m "Enforce Planet Finder deadline during forward checking"
+          git push
