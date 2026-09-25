@@ -1,5 +1,6 @@
 from pathlib import Path
 
+# Guarded one-shot repair for the shared forward-check probe budget.
 path = Path("tools/planet_finder_search_core.py")
 text = path.read_text(encoding="utf-8")
 
