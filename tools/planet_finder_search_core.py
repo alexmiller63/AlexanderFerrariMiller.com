@@ -861,26 +861,25 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         return False
 
     def solve_final_four(first_depth):
-        """Couple the final four bodies so neither pair is committed in isolation."""
+        """Solve the final four bodies as two pair units, then pair x pair."""
         nonlocal candidates, backtracks, current_body
         items = order[first_depth:first_depth + 4]
         names = [item[1][1] for item in items]
         diagnostic_print(
             f"Planet Finder {mode}: FOUR-BODY ENDGAME "
             f"pairs={names[0]}+{names[1]} / {names[2]}+{names[3]} "
-            f"depth={first_depth}/{len(order)} coupled-search",
+            f"depth={first_depth}/{len(order)} pair-x-pair",
             level=1,
             flush=True,
         )
 
-        def place_item(slot, continuation):
-            nonlocal candidates, backtracks, current_body
-            item = items[slot]
+        def push(item, depth):
+            nonlocal candidates, current_body
             original_index, (symbol, name, longitude) = item
             current_body = name
             for box, leader_path in viable_candidates(
                 item,
-                first_depth + slot,
+                depth,
                 consume_body_budget=False,
             ):
                 candidates += 1
@@ -888,30 +887,47 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 leaders.append(leader_path)
                 leader_names.append(name)
                 staged[original_index] = (symbol, name, longitude, box, leader_path)
-                try:
-                    if continuation():
-                        return True
-                finally:
-                    staged.pop(original_index, None)
-                    leader_names.pop()
-                    leaders.pop()
-                    placed.pop()
+                yield original_index
+                staged.pop(original_index, None)
+                leader_names.pop()
+                leaders.pop()
+                placed.pop()
+
+        pair1_attempts = 0
+        pair2_attempts = 0
+
+        # Pair 1 is a unit: enumerate only complete A+B configurations.
+        for first_index in push(items[0], first_depth):
+            for second_index in push(items[1], first_depth + 1):
+                pair1_attempts += 1
+
+                # Pair 2 is independently completed against the same pre-endgame
+                # geometry plus this complete Pair 1 configuration.  We do not
+                # recurse into ordinary DFS between members of either pair.
+                for third_index in push(items[2], first_depth + 2):
+                    for fourth_index in push(items[3], first_depth + 3):
+                        pair2_attempts += 1
+                        if search(first_depth + 4):
+                            diagnostic_print(
+                                f"Planet Finder {mode}: FOUR-BODY SUCCESS "
+                                f"pair1-tested={pair1_attempts} "
+                                f"pair2-tested={pair2_attempts}",
+                                level=1,
+                                flush=True,
+                            )
+                            return True
+                        backtracks += 1
+                    backtracks += 1
                 backtracks += 1
-            return False
+            backtracks += 1
 
-        # Enumerate the first pair, but for every complete first-pair geometry
-        # immediately enumerate the second pair before abandoning that geometry.
-        # This gives Ceres+Uranus and Sun+Venus one coupled four-body search tree.
-        def fourth():
-            return place_item(3, lambda: search(first_depth + 4))
-
-        def third():
-            return place_item(2, fourth)
-
-        def second():
-            return place_item(1, third)
-
-        return place_item(0, second)
+        diagnostic_print(
+            f"Planet Finder {mode}: FOUR-BODY EXHAUSTED "
+            f"pair1-tested={pair1_attempts} pair2-tested={pair2_attempts}",
+            level=1,
+            flush=True,
+        )
+        return False
 
     def search(depth):
         """Recursive DFS: each call owns exactly one body depth.
