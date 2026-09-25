@@ -660,95 +660,9 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                     )
                 return False
 
-        # Paired Child -> Grandchild look-ahead. An individually viable Child
-        # is not enough if every Child placement makes the Grandchild impossible.
-        if next_depth + 1 < len(order):
-            child_item = order[next_depth]
-            grandchild_item = order[next_depth + 1]
-            _, (_, child_name, child_longitude) = child_item
-            _, (_, grandchild_name, _) = grandchild_item
-            child_w, child_h = label_size(mode, child_name)
-            child_anchor = xy(child_longitude, RI - 5)
-            child_prefix_cache = {}
-            pair_found = False
-            child_raw = 0
-            grandchild_raw_total = 0
-
-            for _, _, child_box in legal_candidate_positions(
-                child_longitude, child_w, child_h, reserved, displacement_scale
-            ):
-                if not consume_forward_probe():
-                    pair_found = True
-                    diagnostic_print(
-                        f"Planet Finder {mode}: FORWARD PAIR PROBE CAP child={child_name} "
-                        f"used={forward_probe_used:,}/{forward_probe_cap:,}; treating as unknown",
-                        level=2,
-                        flush=True,
-                    )
-                    break
-                child_raw += 1
-                if any(boxes_overlap(child_box, other, 14) for other in placed):
-                    continue
-                if any(
-                    segment_hits_box(seg[i], seg[i + 1], child_box, 10)
-                    for seg in leaders
-                    for i in range(len(seg) - 1)
-                ):
-                    continue
-                child_path = route(
-                    child_anchor,
-                    (child_box.x, child_box.y),
-                    obstacles,
-                    allow_initial_escape_count=immutable_count,
-                    prefix_cache=child_prefix_cache,
-                )
-                if child_path is None:
-                    continue
-                if leader_hits_zodiac_rim(child_path):
-                    continue
-                if leaders_too_close(child_path, leaders):
-                    continue
-
-                grandchild_box, grandchild_path, grandchild_raw, grandchild_reasons = witness_for(
-                    grandchild_item,
-                    [*placed, child_box],
-                    [*leaders, child_path],
-                    [*obstacles, child_box],
-                )
-                grandchild_raw_total += grandchild_raw
-                if grandchild_box is PROBE_LIMITED:
-                    pair_found = True
-                    diagnostic_print(
-                        f"Planet Finder {mode}: FORWARD PROBE CAP body={grandchild_name} "
-                        f"raw={grandchild_raw:,}/{forward_probe_cap:,}; treating as unknown",
-                        level=2,
-                        flush=True,
-                    )
-                    break
-                if grandchild_box is not None:
-                    pair_found = True
-                    break
-
-            pair_stat = forward_stats["by_body"].setdefault(
-                grandchild_name, {"checks": 0, "witnesses": 0, "dead": 0, "raw": 0}
-            )
-            pair_stat["checks"] += 1
-            pair_stat["raw"] += child_raw + grandchild_raw_total
-            if pair_found:
-                pair_stat["witnesses"] += 1
-                forward_stats["witnesses"] += 1
-            else:
-                pair_stat["dead"] += 1
-                forward_stats["pruned"] += 1
-                forward_blockers[grandchild_name] = forward_blockers.get(grandchild_name, 0) + 1
-                diagnostic_print(
-                    f"Planet Finder {mode}: CHILD-GRANDCHILD PRUNE "
-                    f"depth={next_depth}/{len(order)} child={child_name} "
-                    f"grandchild={grandchild_name}",
-                    level=2,
-                    flush=True,
-                )
-                return False
+        # Child -> Grandchild look-ahead intentionally disabled.
+        # Individual future-body witness checks remain active above.
+        # Ordinary DFS now owns all multi-body compatibility decisions.
 
         return True
 
