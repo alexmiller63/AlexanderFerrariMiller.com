@@ -118,9 +118,9 @@ def layout(
         for i in range(len(refinement_scales))
     )
     attempted_orders = set()
-    # A body may be promoted at most once at each placement refinement.
-    # Seeing the same squeaky wheel again closes that refinement's bounded
-    # promotion cycle instead of generating another tail permutation.
+    # Exhausted searches use this to bound squeaky-wheel promotion cycles.
+    # CAPPED searches instead use attempted_orders to exhaust the three
+    # explicitly bounded positions for that body before refinement.
     promoted_bodies = set()
     # One per-body candidate cap for the current placement refinement.
     # Reordering may reset a promoted body's budget; changing refinement resets
@@ -136,8 +136,8 @@ def layout(
     # SEARCH_ORDER -> SCORE    on SOLVED
     # SEARCH_ORDER -> CAPPED   on CAPPED(body)
     # SEARCH_ORDER -> PROMOTE  on EXHAUSTED(blocker)
-    # CAPPED       -> SEARCH_ORDER after promoting the capped body
-    #                 (a cap is incomplete evidence and may never refine)
+    # CAPPED       -> SEARCH_ORDER while another bounded sideways position exists
+    # CAPPED       -> REFINE when all three bounded positions are exhausted
     # PROMOTE      -> SEARCH_ORDER when the exhausted blocker ordering is new
     # PROMOTE      -> REFINE   when EXHAUSTED promotion closes an ordering cycle
     # REFINE       -> SEARCH_ORDER at the next placement scale
@@ -238,26 +238,15 @@ def layout(
             continue
 
         if state == "CAPPED":
-            # A node cap means this ordering was not searched to completion.
-            # Promote a squeaky wheel only once at this refinement. If the
-            # same body becomes the squeaky wheel again, the bounded promotion
-            # cycle is closed and the controller advances placement refinement.
-            if promote_body in promoted_bodies:
-                diagnostic_print(
-                    f"Planet Finder {mode}: CAPPED PROMOTION REPEAT body={promote_body}; "
-                    f"promoted={len(promoted_bodies)}/{len(indexed)} "
-                    f"at {refinement_scales[refinement_index]:g} label-lengths; refining",
-                    flush=True,
-                )
-                state = "REFINE"
-                continue
-            promoted_bodies.add(promote_body)
+            # A node cap is incomplete evidence. Exhaust the three explicitly
+            # bounded positions for this body (front, one step right, far side)
+            # before allowing the controller to change placement refinement.
             promoted_order = next_promotion_order(order, promote_body)
             if promoted_order is None:
                 cycle_names = " > ".join(item[1][1] for item in order)
                 diagnostic_print(
                     f"Planet Finder {mode}: CAPPED SIDEWAYS CYCLE CLOSED body={promote_body}; "
-                    f"promotions/orderings={len(attempted_orders)} "
+                    f"orderings={len(attempted_orders)} "
                     f"at {refinement_scales[refinement_index]:g} label-lengths "
                     f"sequence={cycle_names}; refining",
                     flush=True,
@@ -265,16 +254,14 @@ def layout(
                 state = "REFINE"
                 continue
             promoted_names = tuple(item[1][1] for item in promoted_order)
-            # A capped body gets a fresh 200-candidate budget when the state
-            # machine promotes it. The cap is therefore per-body/per-ordering
-            # search work, not a lifetime quota for the entire mode. Forward
-            # checking remains outside this accounting.
+            # Each bounded ordering gets a fresh 200-candidate budget for the
+            # capped body. Forward checking remains outside this accounting.
             body_attempts[promote_body] = 0
             order = promoted_order
             diagnostic_print(
-                f"Planet Finder {mode}: CAPPED PROMOTE body={promote_body}; "
+                f"Planet Finder {mode}: CAPPED SIDEWAYS body={promote_body}; "
                 f"reset candidate budget to 0/{budget['max_node_candidates']:,}; "
-                "incomplete search, preserving refinement and restarting sequence="
+                "trying next bounded position sequence="
                 + " > ".join(promoted_names),
                 flush=True,
             )
