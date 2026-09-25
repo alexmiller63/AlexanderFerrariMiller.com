@@ -8,8 +8,13 @@ import populate_ephemeris as ephemeris
 from almanack_sections import replace_section_inner
 from almanack_paths import week_dir, week_index
 from iso_date_range import group_by_year, parse_range_args
+from planet_finder_geometry import minimum_leader_separation
 from planet_finder_layout import patch_file as patch_planet_finder_layout
 from star_almanack_ephemeris import StarAlmanackEphemeris
+
+# generate_planet_finders still owns the DFS while geometry helpers are being
+# extracted. Keep its diagnostic witness lookup wired to the canonical helper.
+finder.minimum_leader_separation = minimum_leader_separation
 
 FINDER_FILENAMES = {
     "greek": "planet-finder-greek-symbols.svg",
