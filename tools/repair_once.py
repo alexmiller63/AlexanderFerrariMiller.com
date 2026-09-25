@@ -1,6 +1,6 @@
 from pathlib import Path
 
-ENABLED = False
+ENABLED = True
 
 if not ENABLED:
     print("Repair Once is OFF; nothing to do.")
@@ -9,21 +9,26 @@ if not ENABLED:
 path = Path("tools/planet_finder_search_core.py")
 text = path.read_text()
 
-old = '''            sun = next(item for item in sun_venus if item[1][1] == "Sun")
-            venus = next(item for item in sun_venus if item[1][1] == "Venus")
-            items = [sun, venus, others[0], others[1]]
+pair_start = text.find("    def solve_final_pair(first_depth):\n")
+search_start = text.find("    def search(depth):\n", pair_start)
+if pair_start < 0 or search_start < 0:
+    raise SystemExit("Safety stop: special-endgame block boundary not found")
+
+text = text[:pair_start] + text[search_start:]
+
+special = '''        if depth == len(order) - 4:
+            return solve_final_four(depth)
+
+        if depth == len(order) - 2:
+            return solve_final_pair(depth)
+
 '''
 
-new = '''            sun = next(item for item in sun_venus if item[1][1] == "Sun")
-            venus = next(item for item in sun_venus if item[1][1] == "Venus")
-            items = [venus, sun, others[0], others[1]]
-'''
-
-count = text.count(old)
-if count != 1:
+if text.count(special) != 1:
     raise SystemExit(
-        f"Safety stop: expected Sun+Venus ordering exactly once; found {count}"
+        f"Safety stop: expected special-endgame dispatch exactly once; found {text.count(special)}"
     )
 
-path.write_text(text.replace(old, new, 1))
-print("Venus+Sun-first four-body endgame repair installed successfully.")
+text = text.replace(special, "", 1)
+path.write_text(text)
+print("Removed two-body and four-body special endgames; ordinary recursive DFS restored.")
