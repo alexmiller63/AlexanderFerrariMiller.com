@@ -1,5 +1,11 @@
 from pathlib import Path
 
+ENABLED = True
+
+if not ENABLED:
+    print("Repair Once is OFF; nothing to do.")
+    raise SystemExit(0)
+
 path = Path("tools/planet_finder_search_core.py")
 text = path.read_text()
 
