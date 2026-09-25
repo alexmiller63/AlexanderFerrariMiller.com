@@ -34,7 +34,7 @@ from planet_finder_geometry import (
     DEFAULT_MAX_SEARCH_SECONDS,
     FinderMode, Body, Box,
     xy, boxes_overlap, segment_hits_box, point_segment_distance,
-    segments_too_close, leaders_too_close, leader_hits_zodiac_rim,
+    segments_too_close, leaders_too_close, leader_hits_zodiac_rim, minimum_leader_separation,
     label_size, reserved_boxes, candidate_positions,
     legal_candidate_positions, route,
 )
