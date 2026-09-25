@@ -785,7 +785,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                         second_box, second_path,
                     )
                     try:
-                        if search(len(order)):
+                        if search(first_depth + 2):
                             return True
                     finally:
                         staged.pop(second_index, None)
