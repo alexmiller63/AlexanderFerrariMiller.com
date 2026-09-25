@@ -108,6 +108,52 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
     The ordering is fixed for this pass. Each recursive call owns one body
     depth; returning from a child restores the parent placement and tries the
     
+    deliberately distant ordering.
+    """
+    reserved = reserved_boxes(mode)
+    reserved_names = ["center_title", "center_direction", "center_sector_note",
+                      *[f"zodiac_{name}" for _, name in SIGNS]]
+    placed: list[Box] = []
+    leaders: list[list[tuple[float, float]]] = []
+    leader_names: list[str] = []
+    staged = {}
+    nodes = 0
+    started = time.monotonic()
+    last_heartbeat = started
+    candidates = 0
+    rejected_overlap = 0
+    rejected_leader = 0
+    rejected_route = 0
+    backtracks = 0
+    deepest = 0
+
+    # Diagnostic-only DFS residence accounting. Charge elapsed controller time
+    # to the depth/body that owned control between loop iterations; this shows
+    # which descendant subtree consumes a parent's generator suspension time.
+    depth_residence = {}
+    depth_visits = {}
+
+    # Count repeated zero-candidate visits across different parent states.
+    # This is the second squeaky-wheel failure mode: a body can repeatedly
+    # block the tree without any one prefix reaching its candidate cap.
+    dead_end_visits = {}
+
+    # One authoritative cap per body for this mode. It counts viable
+    # candidates admitted to DFS for each body; rejected raw proposals and
+    # forward-check witnesses do not consume it. The count persists when the
+    # controller changes ordering, so reordering can never replenish a body's
+    # 200-candidate safety budget.
+    if body_attempts is None:
+        body_attempts = {name: 0 for _, (_, name, _) in order}
+
+    diagnostic_stats = {}
+    route_diagnostics = {}
+    solutions = []
+    solution_keys = set()
+    contest_keys = []
+    current_body = "-"
+    exhausted = False
+    
 
 
     
