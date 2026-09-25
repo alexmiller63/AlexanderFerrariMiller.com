@@ -154,6 +154,82 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
     current_body = "-"
     exhausted = False
     
+                f"current_body={current_body} sequence={order_names}",
+                flush=True,
+            )
+            return
+        order_names = " > ".join(item[1][1] for item in order)
+        diagnostic_print(
+            f"Planet Finder {mode}: TERMINAL {context_label + ' ' if context_label else ''}reason={reason} order={order_index}"
+            f"{('/' + str(total_orders)) if total_orders else ''} "
+            f"nodes={nodes:,} deepest={deepest}/{len(order)} current_body={current_body} "
+            f"candidates={candidates:,} rejects[overlap={rejected_overlap:,},"
+            f"leader={rejected_leader:,},route={rejected_route:,}] "
+            f"backtracks={backtracks:,}",
+            flush=True,
+        )
+        diagnostic_print(f"Planet Finder {mode}: TERMINAL ORDER sequence={order_names}", flush=True)
+        for (depth, name), s in sorted(diagnostic_stats.items()):
+            immutable_names = {
+                reserved_names[i] if i < len(reserved_names) else str(i): count
+                for i, count in sorted(s.get("immutable_reserved_by_obstacle", {}).items())
+            }
+            diagnostic_print(
+                f"Planet Finder {mode}: TERMINAL BODY depth={depth}/{len(order)} body={name} "
+                f"status={'evaluated' if s.get('started') else ('blocked-' + s['blocked'] if s.get('blocked') else 'not-evaluated')} "
+                f"generated={s['generated']:,} viable={s['viable']:,} "
+                f"rejects[immutable-reserved={s.get('immutable_reserved', 0):,},"
+                f"immutable-rim={s.get('immutable_rim', 0):,},"
+                f"placed-overlap={s['overlap']:,},"
+                f"existing-leader={s.get('leader_existing', 0):,},"
+                f"route={s['route']:,},"
+                f"leader-rim={s.get('leader_rim', 0):,},"
+                f"leader-graze={s.get('leader_graze', 0):,}] "
+                f"immutable-obstacles={immutable_names}",
+                flush=True,
+            )
+        for (depth, name), s in sorted(diagnostic_stats.items()):
+            for candidate_index, audit in enumerate(s.get("immutable_candidate_audit", []), 1):
+                x, y, rejection, obstacle_ids = audit
+                obstacle_labels = [reserved_names[i] if i < len(reserved_names) else str(i) for i in obstacle_ids]
+                diagnostic_print(
+                    f"Planet Finder {mode}: TERMINAL IMMUTABLE-CANDIDATE "
+                    f"depth={depth}/{len(order)} body={name} candidate={candidate_index} "
+                    f"center=({x:.1f},{y:.1f}) reason={rejection} obstacles={obstacle_labels}",
+                    flush=True,
+                )
+        for depth in sorted(set(depth_residence) | set(depth_visits)):
+            body_name = order[depth][1][1] if depth < len(order) else "complete-layout"
+            diagnostic_print(
+                f"Planet Finder {mode}: TERMINAL DFS-TIME depth={depth}/{len(order)} "
+                f"body={body_name} residence={depth_residence.get(depth, 0.0):.3f}s "
+                f"visits={depth_visits.get(depth, 0):,}",
+                flush=True,
+            )
+        for (depth, name), r in sorted(route_diagnostics.items()):
+            blockers = r.get("straight_blockers", {})
+            obstacle_names = r.get("obstacle_names", [])
+            named_blockers = {
+                (obstacle_names[int(key.split("_", 1)[1])] if key.startswith("obstacle_") and int(key.split("_", 1)[1]) < len(obstacle_names) else key): count
+                for key, count in blockers.items()
+            }
+            diagnostic_print(
+                f"Planet Finder {mode}: TERMINAL ROUTE depth={depth}/{len(order)} body={name} "
+                f"straight_blocked={r.get('straight_blocked', 0):,} "
+                f"route_failed={r.get('route_failed', 0):,} "
+                f"anchor_blocked={r.get('anchor_blocked', 0):,} "
+                f"dogleg_failed={r.get('dogleg_failed', 0):,} "
+                f"straight_blockers={named_blockers}",
+                flush=True,
+            )
+        aggregate = {}
+        for s in diagnostic_stats.values():
+            for key in (
+                "immutable_reserved",
+                "immutable_rim",
+                "overlap",
+                "leader_existing",
+                
 
 
     
