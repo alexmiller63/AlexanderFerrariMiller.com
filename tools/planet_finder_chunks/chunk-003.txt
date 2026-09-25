@@ -1,0 +1,250 @@
+            if consume_body_budget and body_attempts[name] >= budget["max_node_candidates"]:
+                stats["blocked"] = "body-candidate-cap"
+                diagnostic_print(
+                    f"Planet Finder {mode}: BODY-CANDIDATE CAP order={order_index} "
+                    f"depth={depth}/{len(order)} body={name} "
+                    f"viable={body_attempts[name]:,}/{budget['max_node_candidates']:,}",
+                    flush=True,
+                )
+                raise DepthNodeBudgetExhausted(depth, name)
+
+    forward_stats = {"checks": 0, "pruned": 0, "witnesses": 0, "by_body": {}}
+    # Bodies that actually make a forward check fail.  Without this, a prefix
+    # whose every candidate is pruned before recursion leaves `deepest` at the
+    # parent depth, causing the controller to blame/promote the parent instead
+    # of the future body that is the real squeaky wheel.
+    forward_blockers = {}
+    # Forward checking is only a pruning hint.  Bound raw look-ahead work so
+    # a difficult body cannot monopolize the mode clock.  Hitting this cap is
+    # UNKNOWN, never proof that the branch is dead.
+    forward_probe_cap = max(
+        1, int(os.environ.get("PLANET_FINDER_FORWARD_PROBE_CAP", "1000"))
+    )
+    PROBE_LIMITED = object()
+
+    def forward_check(next_depth):
+        """Return False only when a remaining body is already provably dead.
+
+        First require one individually viable witness for every remaining body.
+        Then, when both exist, require at least one viable Child placement that
+        leaves at least one compatible Grandchild placement. Look-ahead probes
+        do not consume the per-body DFS candidate cap.
+        """
+        obstacles = [*reserved, *placed]
+        immutable_count = 3
+        forward_stats["checks"] += 1
+        # One raw-probe budget is shared by this entire forward-check call,
+        # including every individual-body witness and all child/grandchild
+        # look-ahead.  Reaching the cap means UNKNOWN, never dead.
+        forward_probe_used = 0
+
+        def consume_forward_probe():
+            nonlocal forward_probe_used
+            if forward_probe_used >= forward_probe_cap:
+                return False
+            forward_probe_used += 1
+            return True
+
+        def witness_for(item, boxes, paths, obstacles_now):
+            _, (_, future_name, future_longitude) = item
+            w, h = label_size(mode, future_name)
+            anchor = xy(future_longitude, RI - 5)
+            prefix_cache = {}
+            witness_raw = 0
+            reasons = {"placed-overlap": 0, "existing-leader": 0, "route": 0, "leader-rim": 0, "leader-graze": 0}
+            for _, _, future_box in legal_candidate_positions(
+                future_longitude, w, h, reserved, displacement_scale
+            ):
+                if not consume_forward_probe():
+                    return PROBE_LIMITED, None, witness_raw, reasons
+                witness_raw += 1
+                if any(boxes_overlap(future_box, other, 14) for other in boxes):
+                    reasons["placed-overlap"] += 1
+                    continue
+                if any(
+                    segment_hits_box(seg[i], seg[i + 1], future_box, 10)
+                    for seg in paths
+                    for i in range(len(seg) - 1)
+                ):
+                    reasons["existing-leader"] += 1
+                    continue
+                center = (future_box.x, future_box.y)
+                path = route(
+                    anchor,
+                    center,
+                    obstacles_now,
+                    allow_initial_escape_count=immutable_count,
+                    prefix_cache=prefix_cache,
+                )
+                if path is None:
+                    reasons["route"] += 1
+                    continue
+                if leader_hits_zodiac_rim(path):
+                    reasons["leader-rim"] += 1
+                    continue
+                if leaders_too_close(path, paths):
+                    reasons["leader-graze"] += 1
+                    if len(paths) == 1 and future_name in {"Moon", "Mercury"}:
+                        min_dist, pair = minimum_leader_separation(path, paths)
+                        if pair is not None:
+                            diagnostic_print(
+                                f"Planet Finder {mode}: LEADER-GRAZE "
+                                f"proposed={future_name} existing={leader_names[pair[0]]} "
+                                f"distance={min_dist:.3f} clearance={LEADER_TO_LEADER_CLEARANCE:.3f} "
+                                f"candidate=({future_box.x:.1f},{future_box.y:.1f}) "
+                                f"segments={pair[1]}/{pair[2]}",
+                                level=3,
+                                flush=True,
+                            )
+                    continue
+                return future_box, path, witness_raw, reasons
+            return None, None, witness_raw, reasons
+
+        # Existing individual feasibility test for every future body.
+        for future_depth in range(next_depth, len(order)):
+            item = order[future_depth]
+            _, (_, future_name, _) = item
+            future_box, future_path, witness_raw, witness_reasons = witness_for(
+                item, placed, leaders, obstacles
+            )
+            if future_box is PROBE_LIMITED:
+                diagnostic_print(
+                    f"Planet Finder {mode}: FORWARD PROBE CAP body={future_name} "
+                    f"raw={witness_raw:,}/{forward_probe_cap:,}; treating as unknown",
+                    level=2,
+                    flush=True,
+                )
+                continue
+            witness = future_box is not None
+            body_stat = forward_stats["by_body"].setdefault(
+                future_name, {"checks": 0, "witnesses": 0, "dead": 0, "raw": 0,
+                               "reasons": {"placed-overlap": 0, "existing-leader": 0,
+                                          "route": 0, "leader-rim": 0, "leader-graze": 0}}
+            )
+            body_stat["checks"] += 1
+            body_stat["raw"] += witness_raw
+            for reason, count in witness_reasons.items():
+                body_stat["reasons"][reason] += count
+            if witness:
+                body_stat["witnesses"] += 1
+                forward_stats["witnesses"] += 1
+            else:
+                body_stat["dead"] += 1
+                forward_stats["pruned"] += 1
+                forward_blockers[future_name] = forward_blockers.get(future_name, 0) + 1
+                if next_depth == 1 and order[0][1][1] == "Sun":
+                    diagnostic_print(
+                        f"Planet Finder {mode}: SUN-PREFIX DEAD-GATE "
+                        f"sun-check={forward_stats['checks']:,} "
+                        f"future-body={future_name} raw={witness_raw:,} "
+                        f"prefix-obstacles={len(obstacles):,}",
+                        level=3,
+                        flush=True,
+                    )
+                return False
+
+        # Paired Child -> Grandchild look-ahead. An individually viable Child
+        # is not enough if every Child placement makes the Grandchild impossible.
+        if next_depth + 1 < len(order):
+            child_item = order[next_depth]
+            grandchild_item = order[next_depth + 1]
+            _, (_, child_name, child_longitude) = child_item
+            _, (_, grandchild_name, _) = grandchild_item
+            child_w, child_h = label_size(mode, child_name)
+            child_anchor = xy(child_longitude, RI - 5)
+            child_prefix_cache = {}
+            pair_found = False
+            child_raw = 0
+            grandchild_raw_total = 0
+
+            for _, _, child_box in legal_candidate_positions(
+                child_longitude, child_w, child_h, reserved, displacement_scale
+            ):
+                if not consume_forward_probe():
+                    pair_found = True
+                    diagnostic_print(
+                        f"Planet Finder {mode}: FORWARD PAIR PROBE CAP child={child_name} "
+                        f"used={forward_probe_used:,}/{forward_probe_cap:,}; treating as unknown",
+                        level=2,
+                        flush=True,
+                    )
+                    break
+                child_raw += 1
+                if any(boxes_overlap(child_box, other, 14) for other in placed):
+                    continue
+                if any(
+                    segment_hits_box(seg[i], seg[i + 1], child_box, 10)
+                    for seg in leaders
+                    for i in range(len(seg) - 1)
+                ):
+                    continue
+                child_path = route(
+                    child_anchor,
+                    (child_box.x, child_box.y),
+                    obstacles,
+                    allow_initial_escape_count=immutable_count,
+                    prefix_cache=child_prefix_cache,
+                )
+                if child_path is None:
+                    continue
+                if leader_hits_zodiac_rim(child_path):
+                    continue
+                if leaders_too_close(child_path, leaders):
+                    continue
+
+                grandchild_box, grandchild_path, grandchild_raw, grandchild_reasons = witness_for(
+                    grandchild_item,
+                    [*placed, child_box],
+                    [*leaders, child_path],
+                    [*obstacles, child_box],
+                )
+                grandchild_raw_total += grandchild_raw
+                if grandchild_box is PROBE_LIMITED:
+                    pair_found = True
+                    diagnostic_print(
+                        f"Planet Finder {mode}: FORWARD PROBE CAP body={grandchild_name} "
+                        f"raw={grandchild_raw:,}/{forward_probe_cap:,}; treating as unknown",
+                        level=2,
+                        flush=True,
+                    )
+                    break
+                if grandchild_box is not None:
+                    pair_found = True
+                    break
+
+            pair_stat = forward_stats["by_body"].setdefault(
+                grandchild_name, {"checks": 0, "witnesses": 0, "dead": 0, "raw": 0}
+            )
+            pair_stat["checks"] += 1
+            pair_stat["raw"] += child_raw + grandchild_raw_total
+            if pair_found:
+                pair_stat["witnesses"] += 1
+                forward_stats["witnesses"] += 1
+            else:
+                pair_stat["dead"] += 1
+                forward_stats["pruned"] += 1
+                forward_blockers[grandchild_name] = forward_blockers.get(grandchild_name, 0) + 1
+                diagnostic_print(
+                    f"Planet Finder {mode}: CHILD-GRANDCHILD PRUNE "
+                    f"depth={next_depth}/{len(order)} child={child_name} "
+                    f"grandchild={grandchild_name}",
+                    level=2,
+                    flush=True,
+                )
+                return False
+
+        return True
+
+    def solve_final_pair(first_depth):
+        """Solve the final two bodies until success, exhaustion, or mode deadline.
+
+        Neither member consumes the ordinary per-body DFS budget. The existing
+        mode/refinement deadline remains authoritative, so the endgame is not
+        cut short by a separate raw-probe limit.
+        """
+        nonlocal candidates, backtracks, current_body
+        first_item = order[first_depth]
+        second_item = order[first_depth + 1]
+        first_index, (first_symbol, first_name, first_longitude) = first_item
+        second_index, (second_symbol, second_name, second_longitude) = second_item
+        pair_attempts = 0
