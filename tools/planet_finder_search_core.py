@@ -475,6 +475,21 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 rejected_route += 1
                 stats["route"] += 1
                 continue
+
+            # A new leader must not cross any label already placed by DFS.
+            # The opposite direction is checked earlier: a new label may not
+            # cross an existing leader. Both directions are required because
+            # placement order must not change collision legality.
+            if any(
+                segment_hits_box(path[i], path[i + 1], placed_box, 10)
+                for placed_box in placed
+                for i in range(len(path) - 1)
+            ):
+                rejected_leader += 1
+                stats["leader"] += 1
+                stats["leader_existing"] += 1
+                continue
+
             # The inner zodiac rim is protected geometry, not a scoring
             # preference. Reject the route and let ordinary DFS/backtracking
             # try the next candidate; never special-case a body or week.
