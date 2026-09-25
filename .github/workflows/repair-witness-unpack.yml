@@ -1,0 +1,32 @@
+name: Repair witness unpack
+
+on:
+  push:
+    branches:
+      - fix/planet-finder-witness-unpack
+    paths:
+      - .github/workflows/repair-witness-unpack.yml
+
+permissions:
+  contents: write
+
+jobs:
+  repair:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Repair
+        run: python tools/repair_witness_unpack.py
+      - name: Syntax check
+        run: python -m py_compile tools/generate_planet_finders.py
+      - name: Commit repair and remove one-shot files
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git rm tools/repair_witness_unpack.py .github/workflows/repair-witness-unpack.yml
+          git add tools/generate_planet_finders.py
+          git commit -m "Fix Planet Finder witness unpacking"
+          git push
