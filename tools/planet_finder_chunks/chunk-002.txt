@@ -1,250 +1,203 @@
-            "viable": 0,
-            "overlap": 0,
-            "leader": 0,
-            "route": 0,
-            "immutable_reserved": 0,
-            "immutable_reserved_by_obstacle": {},
-            "immutable_rim": 0,
-            "leader_existing": 0,
-            "leader_rim": 0,
-            "leader_graze": 0,
-            "started": False,
-            "blocked": None,
-        })
-        nonlocal candidates, rejected_overlap, rejected_leader, rejected_route
-        w, h = label_size(mode, name)
-        anchor = xy(longitude, RI - 5)
-        # This generator is created for one fixed DFS prefix. The placed
-        # obstacles therefore remain stable for its lifetime, so anchor-side
-        # routing work can be safely reused across all candidate labels.
-        route_prefix_cache = {}
-        body_candidates = 0
-        raw_positions = 0
-        # Proposal work is local to this fixed DFS prefix. A pathological child
-        # may exhaust its own stream, but must never consume the parent's
-        # ability to generate the next sibling during backtracking.
-        candidate_started = time.monotonic()
-        candidate_last_heartbeat = candidate_started
-        last_yield_at = None
-        suspended_total = 0.0
-        timing = {"stream_wait": 0.0, "overlap": 0.0, "existing_leader": 0.0, "route": 0.0, "final_leader": 0.0}
-        legal_positions = iter(
-            legal_candidate_positions(
-                longitude,
-                w,
-                h,
-                reserved,
-                displacement_scale,
-                diagnostic=stats,
+                    f"sequence={cycle_names}; refining",
+                    flush=True,
+                )
+                state = "REFINE"
+                continue
+            promoted_names = tuple(item[1][1] for item in promoted_order)
+            # Each bounded ordering gets a fresh 200-candidate budget for the
+            # capped body. Forward checking remains outside this accounting.
+            body_attempts[promote_body] = 0
+            order = promoted_order
+            diagnostic_print(
+                f"Planet Finder {mode}: CAPPED SIDEWAYS body={promote_body}; "
+                f"reset candidate budget to 0/{budget['max_node_candidates']:,}; "
+                "trying next bounded position sequence="
+                + " > ".join(promoted_names),
+                flush=True,
             )
+            state = "SEARCH_ORDER"
+            continue
+
+        if state == "PROMOTE":
+            if promote_body in promoted_bodies:
+                diagnostic_print(
+                    f"Planet Finder {mode}: PROMOTION REPEAT body={promote_body}; "
+                    f"promoted={len(promoted_bodies)}/{len(indexed)} "
+                    f"at {refinement_scales[refinement_index]:g} label-lengths; refining",
+                    flush=True,
+                )
+                state = "REFINE"
+                continue
+            promoted_bodies.add(promote_body)
+            promoted_order = next_promotion_order(order, promote_body)
+            if promoted_order is None:
+                diagnostic_print(
+                    f"Planet Finder {mode}: PROMOTION SIDEWAYS CYCLE CLOSED body={promote_body} "
+                    f"at {refinement_scales[refinement_index]:g} label-lengths; refining",
+                    flush=True,
+                )
+                state = "REFINE"
+            else:
+                promoted_names = tuple(item[1][1] for item in promoted_order)
+                order = promoted_order
+                diagnostic_print(
+                    f"Planet Finder {mode}: PROMOTE/SIDEWAYS body={promote_body}; "
+                    "discarding fixed-order search state and restarting with sequence="
+                    + " > ".join(promoted_names),
+                    flush=True,
+                )
+                state = "SEARCH_ORDER"
+            continue
+
+        if state != "SEARCH_ORDER":
+            raise RuntimeError(f"Planet Finder {mode}: invalid controller state {state}")
+
+        order_names = tuple(item[1][1] for item in order)
+        order_key = (refinement_index, order_names)
+        if order_key in attempted_orders:
+            state = "REFINE"
+            continue
+        attempted_orders.add(order_key)
+        order_index += 1
+        diagnostic_print(
+            f"Planet Finder {mode}: squeaky-wheel lazy DFS "
+            f"{context_label + ' ' if context_label else ''}"
+            f"order={order_index} target={target_solutions} "
+            f"max-node-candidates={budget['max_node_candidates']:,} "
+            f"refinement={refinement_scales[refinement_index]:g} label-lengths "
+            f"sequence=" + " > ".join(order_names),
+            flush=True,
         )
-        while True:
-            # The cap is owned by the body, not by this generator instance or
-            # this ordering. A body already at its persistent limit must not
-            # receive one additional candidate merely because its ordering
-            # changed.
-            if body_attempts[name] >= budget["max_node_candidates"]:
-                stats["blocked"] = "body-candidate-cap"
-                diagnostic_print(
-                    f"Planet Finder {mode}: BODY-CANDIDATE CAP order={order_index} "
-                    f"depth={depth}/{len(order)} body={name} "
-                    f"viable={body_attempts[name]:,}/{budget['max_node_candidates']:,}",
-                    flush=True,
-                )
-                raise DepthNodeBudgetExhausted(depth, name)
 
-            resumed_at = time.monotonic()
-            if last_yield_at is not None:
-                suspended_total += max(0.0, resumed_at - last_yield_at)
-                last_yield_at = None
-            stream_t0 = time.monotonic()
-            try:
-                x, y, box = next(legal_positions)
-            except StopIteration:
-                break
-            stream_dt = time.monotonic() - stream_t0
-            timing["stream_wait"] += stream_dt
-            raw_positions += 1
-
-            # Narrow instrumentation for pathological candidate generation.
-            # Report any single stage that stalls for >= 1s immediately, rather
-            # than waiting for the 5s aggregate heartbeat.
-            if stream_dt >= 1.0:
-                diagnostic_print(
-                    f"Planet Finder {mode}: SLOW candidate-position body={name} "
-                    f"depth={depth}/{len(order)} raw={raw_positions:,} dt={stream_dt:.3f}s",
-                    flush=True,
-                )
-            now = time.monotonic()
-            if now - candidate_last_heartbeat >= 5.0:
-                diagnostic_print(
-                    f"Planet Finder {mode}: CANDIDATE HEARTBEAT order={order_index} "
-                    f"depth={depth}/{len(order)} body={name} elapsed={now-candidate_started:.1f}s "
-                    f"raw={raw_positions:,} viable={body_candidates:,} "
-                    f"rejects[overlap={stats['overlap']:,},leader={stats['leader']:,},route={stats['route']:,}] "
-                    f"time[stream-wait={timing['stream_wait']:.3f}s,overlap={timing['overlap']:.3f}s,"
-                    f"existing-leader={timing['existing_leader']:.3f}s,route={timing['route']:.3f}s,"
-                    f"final-leader={timing['final_leader']:.3f}s,suspended={suspended_total:.3f}s]",
-                    flush=True,
-                )
-                candidate_last_heartbeat = now
-            # Enforce the run-wide deadline inside candidate generation too.
-            # Geometry/routing can otherwise keep one DFS iteration busy past the limit.
-            now = time.monotonic()
-            if refinement_deadline is not None and now >= refinement_deadline:
-                stats["blocked"] = "refinement-deadline"
-                diagnostic_print(
-                    f"Planet Finder {mode}: CANDIDATE REFINEMENT DEADLINE "
-                    f"order={order_index} depth={depth}/{len(order)} body={name}; "
-                    f"returning to controller",
-                    flush=True,
-                )
-                return
-            run_elapsed = now - budget["started"]
-            if run_elapsed >= budget["max_seconds"]:
-                stats["blocked"] = "wall-clock"
-                diagnostic_print(
-                    f"Planet Finder {mode}: CANDIDATE-GENERATION STOP wall-clock budget exhausted "
-                    f"order={order_index} depth={depth}/{len(order)} body={name} "
-                    f"after {run_elapsed:.1f}s/{budget['max_seconds']:.1f}s "
-                    f"viable={body_candidates:,}",
-                    flush=True,
-                )
-                body_forward = forward_stats["by_body"].get(name, {})
-                diagnostic_print(
-                    f"Planet Finder {mode}: TIMEOUT-AUDIT order={order_index} "
-                    f"body={name} body-attempts={body_attempts.get(name, 0):,} "
-                    f"forward[checks={body_forward.get('checks', 0):,},"
-                    f"witnesses={body_forward.get('witnesses', 0):,},"
-                    f"dead={body_forward.get('dead', 0):,},"
-                    f"raw={body_forward.get('raw', 0):,}] "
-                    f"totals[checks={forward_stats['checks']:,},"
-                    f"witnesses={forward_stats['witnesses']:,},"
-                    f"pruned={forward_stats['pruned']:,}] "
-                    f"dfs[nodes={nodes:,},deepest={deepest}/{len(order)},"
-                    f"candidates={candidates:,},backtracks={backtracks:,}]",
-                    flush=True,
-                )
-                diagnostic_print(
-                    f"Planet Finder {mode}: TIMEOUT-BODIES "
-                    + " ".join(
-                        f"{body}:a={body_attempts.get(body, 0)},"
-                        f"fc={forward_stats['by_body'].get(body, {}).get('checks', 0)},"
-                        f"fw={forward_stats['by_body'].get(body, {}).get('witnesses', 0)},"
-                        f"fd={forward_stats['by_body'].get(body, {}).get('dead', 0)}"
-                        for _, (_, body, _) in order
-                    ),
-                    flush=True,
-                )
-                raise RuntimeError(
-                    f"Planet Finder {mode} mode wall-clock budget exhausted "
-                    f"during candidate generation for {name} after {run_elapsed:.1f}s "
-                    f"(limit {budget['max_seconds']:.1f}s)"
-                )
-            stats["started"] = True
-            # Reject geometry that is already impossible in the current DFS
-            # state before admitting the proposal to the candidate pool. A
-            # label overlapping an already placed label, or crossing an
-            # existing leader, cannot become valid without backtracking, so it
-            # must not consume candidate/search budget.
-            t0 = time.monotonic()
-            overlaps_placed = any(boxes_overlap(box, b, 14) for b in placed)
-            timing["overlap"] += time.monotonic() - t0
-            if overlaps_placed:
-                rejected_overlap += 1
-                stats["overlap"] += 1
-                continue
-            t0 = time.monotonic()
-            hit_existing_leader = any(segment_hits_box(seg[i], seg[i + 1], box, 10)
-                                      for seg in leaders for i in range(len(seg) - 1))
-            timing["existing_leader"] += time.monotonic() - t0
-            if hit_existing_leader:
-                rejected_leader += 1
-                stats["leader"] += 1
-                stats["leader_existing"] += 1
-                continue
-            route_diag = route_diagnostics.setdefault((depth, name), {
-                "straight_blocked": 0,
-                "route_failed": 0,
-                "straight_blockers": {},
-                "elbows": {},
-            })
-            route_diag["obstacle_names"] = reserved_names + [f"placed_{i}" for i in range(len(placed))]
-            t0 = time.monotonic()
-            path = route(
-                anchor,
-                (x, y),
-                reserved + placed,
-                route_diag,
-                # Only the 3 fixed center annotations may contain an anchor and
-                # permit an initial escape. Zodiac labels are real rendered
-                # obstacles; allowing escape from them can hide a leader/zodiac
-                # collision in the first leader segment.
-                allow_initial_escape_count=3,
-                prefix_cache=route_prefix_cache,
+        try:
+            outcome = _solve_order(
+                mode,
+                bodies,
+                order,
+                budget,
+                target_solutions=target_solutions,
+                order_index=order_index,
+                total_orders=None,
+                context_label=context_label,
+                displacement_scale=refinement_scales[refinement_index],
+                body_attempts=body_attempts,
+                refinement_deadline=refinement_deadlines[refinement_index],
             )
-            route_dt = time.monotonic() - t0
-            timing["route"] += route_dt
-            if route_dt >= 1.0:
-                diagnostic_print(
-                    f"Planet Finder {mode}: SLOW route body={name} "
-                    f"depth={depth}/{len(order)} raw={raw_positions:,} dt={route_dt:.3f}s "
-                    f"result={'none' if path is None else 'ok'}",
-                    flush=True,
-                )
-            if path is None:
-                rejected_route += 1
-                stats["route"] += 1
-                continue
-            # The inner zodiac rim is protected geometry, not a scoring
-            # preference. Reject the route and let ordinary DFS/backtracking
-            # try the next candidate; never special-case a body or week.
-            if leader_hits_zodiac_rim(path):
-                rejected_leader += 1
-                stats["leader"] += 1
-                stats["leader_rim"] += 1
-                continue
-            t0 = time.monotonic()
-            too_close = leaders_too_close(path, leaders)
-            timing["final_leader"] += time.monotonic() - t0
-            if too_close:
-                rejected_leader += 1
-                stats["leader"] += 1
-                stats["leader_graze"] += 1
-                continue
-            # This is the single cap point: only a fully viable candidate
-            # admitted to DFS consumes the body's candidate budget.
-            body_candidates += 1
-            body_attempts[name] += 1
-            stats["generated"] += 1
-            stats["viable"] += 1
-            last_yield_at = time.monotonic()
-            yield box, path
-            if body_attempts[name] >= budget["max_node_candidates"]:
-                stats["blocked"] = "body-candidate-cap"
-                diagnostic_print(
-                    f"Planet Finder {mode}: BODY-CANDIDATE CAP order={order_index} "
-                    f"depth={depth}/{len(order)} body={name} "
-                    f"viable={body_attempts[name]:,}/{budget['max_node_candidates']:,}",
-                    flush=True,
-                )
-                raise DepthNodeBudgetExhausted(depth, name)
+        except DepthNodeBudgetExhausted as exc:
+            # The fixed-order solver already emitted its detailed terminal
+            # diagnostic. CAPPED currently has no structured stats payload;
+            # keep that distinction explicit rather than inventing counts.
+            outcome = SearchOutcome("CAPPED", [], [], exc.name, None)
 
-    forward_stats = {"checks": 0, "pruned": 0, "witnesses": 0, "by_body": {}}
-    # Bodies that actually make a forward check fail.  Without this, a prefix
-    # whose every candidate is pruned before recursion leaves `deepest` at the
-    # parent depth, causing the controller to blame/promote the parent instead
-    # of the future body that is the real squeaky wheel.
-    forward_blockers = {}
+        if outcome.kind == "SOLVED":
+            all_solutions = outcome.solutions
+            contest_keys = outcome.contest_keys
+            state = "SCORE"
+            continue
 
-    def forward_check(next_depth):
-        """Return False only when a remaining body is already provably dead.
+        if outcome.kind == "INCONCLUSIVE":
+            diagnostic_print(
+                f"Planet Finder {mode}: SEARCH INCONCLUSIVE "
+                f"body={outcome.blocker} refinement={refinement_scales[refinement_index]:g} "
+                f"orders={len(attempted_orders)}; bounded search closed without "
+                f"establishing {target_solutions} contestants",
+                flush=True,
+            )
+            raise RuntimeError(
+                f"Planet Finder {mode}: bounded search inconclusive; "
+                f"no valid {target_solutions}-contestant contest was established"
+            )
 
-        First require one individually viable witness for every remaining body.
-        Then, when both exist, require at least one viable Child placement that
-        leaves at least one compatible Grandchild placement. Look-ahead probes
-        do not consume the per-body DFS candidate cap.
-        """
-        obstacles = [*reserved, *placed]
-        immutable_count = 3
-        forward_stats["checks"] += 1
+        if outcome.kind not in ("CAPPED", "EXHAUSTED") or not outcome.blocker:
+            raise RuntimeError(
+                f"Planet Finder {mode}: invalid search outcome "
+                f"kind={outcome.kind} blocker={outcome.blocker}"
+            )
+
+        all_solutions = outcome.solutions
+        contest_keys = outcome.contest_keys
+        promote_body = outcome.blocker
+        refinement_history.append({
+            "scale": refinement_scales[refinement_index],
+            "kind": outcome.kind,
+            "blocker": promote_body,
+            "contestants": len(all_solutions),
+            "order": order_names,
+            "rejection_stats": outcome.rejection_stats,
+        })
+        diagnostic_print(
+            f"Planet Finder {mode}: SEARCH OUTCOME {outcome.kind} "
+            f"body={promote_body} contestants={len(all_solutions)}/{target_solutions}",
+            flush=True,
+        )
+        # EXHAUSTED is proof about the complete fixed-order search and may
+        # participate in the refinement state machine. CAPPED is only a safety
+        # interruption and gets its own non-refining transition.
+        state = "CAPPED" if outcome.kind == "CAPPED" else "PROMOTE"
+
+    if not all_solutions:
+        raise RuntimeError(
+            f"No collision-free Planet Finder layout found in {mode} mode"
+        )
+
+    def score(result):
+        total_length = 0.0
+        elbows = 0
+        radial_error = 0.0
+        tangential_error = 0.0
+        for _, _, longitude, box, path in result:
+            total_length += sum(
+                math.hypot(b[0]-a[0], b[1]-a[1])
+                for a, b in zip(path, path[1:])
+            )
+            elbows += max(0, len(path) - 2)
+            natural = xy(longitude, 345)
+            radial_error += abs(math.hypot(box.x-CX, box.y-CY) - 345)
+            tangential_error += math.hypot(box.x-natural[0], box.y-natural[1])
+        return (elbows, total_length, tangential_error, radial_error)
+
+    scored = sorted((score(result), i, result) for i, result in enumerate(all_solutions))
+    best_score, best_index, best = scored[0]
+
+    # Contest-validity diagnostic: a configured N-contestant competition must
+    # actually contain N distinct, independently validated complete layouts.
+    # Viability is established before a result enters all_solutions; the
+
+    # uniqueness key prevents duplicate layouts from becoming contestants.
+    contest_count = len(all_solutions)
+    unique_count = len(set(contest_keys))
+    contest_valid = (
+        contest_count == target_solutions
+        and unique_count == contest_count
+        and contest_count == len(scored)
+    )
+    diagnostic_print(
+        f"Planet Finder {mode}: CONTEST AUDIT "
+        f"requested={target_solutions} contestants={contest_count} "
+        f"unique={unique_count} scored={len(scored)} "
+        f"status={'VALID' if contest_valid else 'INVALID'}",
+        flush=True,
+    )
+    for rank, (candidate_score, candidate_index, _) in enumerate(scored, 1):
+        diagnostic_print(
+            f"Planet Finder {mode}: CONTESTANT rank={rank} "
+            f"candidate={candidate_index + 1} "
+            f"score[elbows={candidate_score[0]},length={candidate_score[1]:.1f},"
+            f"displacement={candidate_score[2]:.1f},radial={candidate_score[3]:.1f}]",
+            flush=True,
+        )
+    if not contest_valid:
+        raise RuntimeError(
+            f"Planet Finder {mode}: contest validity failure "
+            f"requested={target_solutions} contestants={contest_count} "
+            f"unique={unique_count} scored={len(scored)}"
+        )
+
+    diagnostic_print(
+        f"Planet Finder {mode}: selected candidate {best_index + 1}/{len(all_solutions)} "
+        f"{context_label + ' ' if context_label else ''}"
+        f"score[elbows={best_score[0]},length={best_score[1]:.1f},"
+        f"displacement={best_score[2]:.1f},radial={best_score[3]:.1f}]",
+        flush=True,
+    )
+    return best
