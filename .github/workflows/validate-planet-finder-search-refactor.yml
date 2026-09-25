@@ -1,0 +1,29 @@
+name: Validate Planet Finder Search Refactor
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'tools/planet_finder_search.py'
+      - 'tools/planet_finder_search_core.py'
+      - 'tools/planet_finder_geometry.py'
+      - 'tools/planet_finder_validation.py'
+      - '.github/workflows/validate-planet-finder-search-refactor.yml'
+  workflow_dispatch:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Compile extracted modules
+        run: python -m py_compile tools/planet_finder_search.py tools/planet_finder_search_core.py tools/planet_finder_geometry.py tools/planet_finder_validation.py
+      - name: Verify source chunk manifest
+        run: python tools/split_planet_finder_source.py --lines 250
+      - name: Run Planet Finder candidate tests
+        run: |
+          pip install pytest skyfield==1.55
+          pytest -q tests/test_planet_finder_candidate_generation.py
