@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Split or reassemble planet_finder_search.py losslessly.
+"""Split or reassemble planet_finder_search_core.py losslessly.
 
 This is deliberately a mechanical source-management tool, not a refactor.
 Split mode copies contiguous line ranges into numbered text chunks plus a
@@ -23,7 +23,7 @@ import json
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-DEFAULT_SOURCE = ROOT / "tools" / "planet_finder_search.py"
+DEFAULT_SOURCE = ROOT / "tools" / "planet_finder_search_core.py"
 DEFAULT_OUTPUT = ROOT / "tools" / "planet_finder_chunks"
 
 
