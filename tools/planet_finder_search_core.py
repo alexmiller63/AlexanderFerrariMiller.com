@@ -487,6 +487,13 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
     # parent depth, causing the controller to blame/promote the parent instead
     # of the future body that is the real squeaky wheel.
     forward_blockers = {}
+    # Forward checking is only a pruning hint.  Bound raw look-ahead work so
+    # a difficult body cannot monopolize the mode clock.  Hitting this cap is
+    # UNKNOWN, never proof that the branch is dead.
+    forward_probe_cap = max(
+        1, int(os.environ.get("PLANET_FINDER_FORWARD_PROBE_CAP", "1000"))
+    )
+    PROBE_LIMITED = object()
 
     def forward_check(next_depth):
         """Return False only when a remaining body is already provably dead.
@@ -511,6 +518,8 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             for _, _, future_box in legal_candidate_positions(
                 future_longitude, w, h, reserved, displacement_scale
             ):
+                if witness_raw >= forward_probe_cap:
+                    return PROBE_LIMITED, None, witness_raw, reasons
                 witness_raw += 1
                 if any(boxes_overlap(future_box, other, 14) for other in boxes):
                     reasons["placed-overlap"] += 1
@@ -561,6 +570,14 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             future_box, future_path, witness_raw, witness_reasons = witness_for(
                 item, placed, leaders, obstacles
             )
+            if future_box is PROBE_LIMITED:
+                diagnostic_print(
+                    f"Planet Finder {mode}: FORWARD PROBE CAP body={future_name} "
+                    f"raw={witness_raw:,}/{forward_probe_cap:,}; treating as unknown",
+                    level=2,
+                    flush=True,
+                )
+                continue
             witness = future_box is not None
             body_stat = forward_stats["by_body"].setdefault(
                 future_name, {"checks": 0, "witnesses": 0, "dead": 0, "raw": 0,
@@ -606,6 +623,15 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             for _, _, child_box in legal_candidate_positions(
                 child_longitude, child_w, child_h, reserved, displacement_scale
             ):
+                if child_raw >= forward_probe_cap:
+                    pair_found = True
+                    diagnostic_print(
+                        f"Planet Finder {mode}: FORWARD PAIR PROBE CAP child={child_name} "
+                        f"raw={child_raw:,}/{forward_probe_cap:,}; treating as unknown",
+                        level=2,
+                        flush=True,
+                    )
+                    break
                 child_raw += 1
                 if any(boxes_overlap(child_box, other, 14) for other in placed):
                     continue
@@ -636,6 +662,15 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                     [*obstacles, child_box],
                 )
                 grandchild_raw_total += grandchild_raw
+                if grandchild_box is PROBE_LIMITED:
+                    pair_found = True
+                    diagnostic_print(
+                        f"Planet Finder {mode}: FORWARD PROBE CAP body={grandchild_name} "
+                        f"raw={grandchild_raw:,}/{forward_probe_cap:,}; treating as unknown",
+                        level=2,
+                        flush=True,
+                    )
+                    break
                 if grandchild_box is not None:
                     pair_found = True
                     break
