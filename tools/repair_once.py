@@ -1,6 +1,6 @@
 from pathlib import Path
 
-ENABLED = False
+ENABLED = True
 
 if not ENABLED:
     print("Repair Once is OFF; nothing to do.")
@@ -9,25 +9,19 @@ if not ENABLED:
 path = Path("tools/planet_finder_search_core.py")
 text = path.read_text()
 
-start_marker = '''        # Paired Child -> Grandchild look-ahead. An individually viable Child
+old = '''                if forward_check(depth + 1) and search(depth + 1):
+                    return True
 '''
-end_marker = '''        return True
-
-    def search(depth):
-'''
-
-start = text.find(start_marker)
-end = text.find(end_marker, start)
-
-if start < 0 or end < 0:
-    raise SystemExit("Safety stop: Child -> Grandchild forward-check block not found")
-
-replacement = '''        # Child -> Grandchild look-ahead intentionally disabled.
-        # Individual future-body witness checks remain active above.
-        # Ordinary DFS now owns all multi-body compatibility decisions.
-
+new = '''                if search(depth + 1):
+                    return True
 '''
 
-text = text[:start] + replacement + text[end:]
+count = text.count(old)
+if count != 1:
+    raise SystemExit(
+        f"Safety stop: expected forward-check DFS call exactly once; found {count}"
+    )
+
+text = text.replace(old, new, 1)
 path.write_text(text)
-print("Disabled Child -> Grandchild forward look-ahead; individual forward checks remain.")
+print("Disabled forward checking; ordinary recursive DFS now owns future-body compatibility.")
