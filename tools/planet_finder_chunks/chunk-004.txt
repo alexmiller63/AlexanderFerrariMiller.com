@@ -1,0 +1,250 @@
+                if forward_check(depth + 1) and search(depth + 1):
+                    return True
+            finally:
+                staged.pop(original_index, None)
+                leaders.pop()
+                leader_names.pop()
+                placed.pop()
+
+            backtracks += 1
+            # Prefix diagnostic: when an individually legal candidate cannot
+            # extend to a complete layout, report how far its child subtree
+            # actually reached. This observes DFS behavior without changing it.
+            if mode == FinderMode.MIXED and depth <= 1:
+                diagnostic_print(
+                    f"Planet Finder {mode}: PREFIX BACKTRACK "
+                    f"depth={depth}/{len(order)} body={name} "
+                    f"candidate={candidates} "
+                    f"child-deepest={deepest}/{len(order)} "
+                    f"new-depth={deepest > child_deepest_before} "
+                    f"child-nodes={nodes - child_nodes_before} "
+                    f"child-backtracks={backtracks - child_backtracks_before}",
+                    level=2,
+                    flush=True,
+                )
+
+        if not generated_here:
+            dead_key = (depth, name)
+            dead_end_visits[dead_key] = dead_end_visits.get(dead_key, 0) + 1
+            # Reuse the same per-body cap: too many candidates in one prefix
+            # or too many zero-candidate prefixes both identify a squeaky wheel.
+            if dead_end_visits[dead_key] >= budget["max_node_candidates"]:
+                diagnostic_print(
+                    f"Planet Finder {mode}: REPEATED-DEAD-END STOP order={order_index} "
+                    f"depth={depth}/{len(order)} body={name} "
+                    f"dead-ends={dead_end_visits[dead_key]:,}/{budget['max_node_candidates']:,}",
+                    flush=True,
+                )
+                raise DepthNodeBudgetExhausted(depth, name)
+            stats = diagnostic_stats[(depth, name)]
+            diagnostic_print(
+                f"Planet Finder {mode}: dead end order={order_index} "
+                f"depth={depth}/{len(order)} body={name} "
+                f"status={'evaluated' if stats.get('started') else 'not-evaluated'} "
+                f"generated={stats['generated']:,} viable={stats['viable']:,} "
+                f"rejects[overlap={stats['overlap']:,},leader={stats['leader']:,},"
+                f"route={stats['route']:,}]",
+                level=2,
+                flush=True,
+            )
+        return False
+
+    try:
+        exhausted = not search(0)
+    except DepthNodeBudgetExhausted as exc:
+        # Hitting the per-body/depth cap is the squeaky-wheel signal.  Report
+        # this fixed ordering, then let layout() discard the whole DFS napkin
+        # and retry from a clean state with that body promoted to first.
+        dump_diagnostics(
+            f"node budget exhausted at depth={exc.depth}/{len(order)} body={exc.name}"
+        )
+        raise
+    except RuntimeError as exc:
+        dump_diagnostics(f"runtime failure: {exc}")
+        raise
+
+    if exhausted:
+        dump_diagnostics("search exhausted without a complete solution")
+
+    elapsed = time.monotonic() - started
+    diagnostic_print(
+        f"Planet Finder {mode}: fixed-order summary order={order_index} "
+        f"exhausted={exhausted} elapsed={elapsed:.2f}s nodes={nodes:,} "
+        f"deepest={deepest}/{len(order)} candidates={candidates:,} "
+        f"rejects[overlap={rejected_overlap:,},leader={rejected_leader:,},"
+        f"route={rejected_route:,}] backtracks={backtracks:,} "
+        f"solutions={len(solutions)}",
+        flush=True,
+    )
+    blocker = None
+    if exhausted:
+        # Prefer the body that actually caused forward-check pruning.  A
+        # forward-pruned child is never entered by DFS, so `deepest` otherwise
+        # misidentifies the parent as the blocker and the controller repeatedly
+        # promotes the wrong body.
+        if forward_blockers:
+            order_rank = {item[1][1]: depth for depth, item in enumerate(order)}
+            blocker = min(
+                forward_blockers,
+                key=lambda name: (-forward_blockers[name], order_rank.get(name, len(order))),
+            )
+            diagnostic_print(
+                f"Planet Finder {mode}: FORWARD BLOCKER body={blocker} "
+                f"prunes={forward_blockers[blocker]:,} all={forward_blockers}",
+                flush=True,
+            )
+        else:
+            # No forward-pruning evidence: fall back to the deepest DFS body.
+            blocker_depth = min(deepest, len(order) - 1)
+            blocker = order[blocker_depth][1][1]
+    blocker_stats = None
+    if blocker is not None:
+        blocker_depth = next(
+            (depth for depth, item in enumerate(order) if item[1][1] == blocker),
+            None,
+        )
+        if blocker_depth is not None:
+            s = diagnostic_stats.get((blocker_depth, blocker), {})
+            blocker_stats = {
+                "immutable_reserved": s.get("immutable_reserved", 0),
+                "immutable_rim": s.get("immutable_rim", 0),
+                "placed_overlap": s.get("overlap", 0),
+                "existing_leader": s.get("leader_existing", 0),
+                "route": s.get("route", 0),
+                "leader_rim": s.get("leader_rim", 0),
+                "leader_graze": s.get("leader_graze", 0),
+            }
+    if exhausted and forward_stats["by_body"]:
+        diagnostic_print(
+            f"Planet Finder {mode}: FORWARD REJECTION BREAKDOWN",
+            flush=True,
+        )
+        for body, stat in sorted(forward_stats["by_body"].items()):
+            reasons = stat.get("reasons", {})
+            diagnostic_print(
+                f"Planet Finder {mode}: FORWARD BODY body={body} "
+                f"checks={stat['checks']:,} dead={stat['dead']:,} raw={stat['raw']:,} "
+                f"placed-overlap={reasons.get('placed-overlap', 0):,} "
+                f"existing-leader={reasons.get('existing-leader', 0):,} "
+                f"route={reasons.get('route', 0):,} "
+                f"leader-rim={reasons.get('leader-rim', 0):,} "
+                f"leader-graze={reasons.get('leader-graze', 0):,}",
+                flush=True,
+            )
+
+    return SearchOutcome(
+        "SOLVED" if len(solutions) >= target_solutions else "EXHAUSTED",
+        solutions,
+        contest_keys,
+        blocker,
+        blocker_stats,
+    )
+
+def layout(
+    mode: FinderMode,
+    bodies: list[tuple[str, str, float]],
+    target_solutions: int | None = None,
+    budget: dict | None = None,
+    context_label: str | None = None,
+):
+    """Find collision-free layouts with deterministic canonical-order DFS.
+
+    Candidate generation is lazy. Geometry rejects impossible proposals before
+    they enter DFS. Search limits are safety ceilings, not placement policy.
+    """
+    mode = FinderMode(mode)
+    canonical_index = {name: i for i, name in enumerate(CANONICAL)}
+    indexed = list(enumerate(bodies))
+    indexed.sort(key=lambda item: canonical_index[item[1][1]])
+
+    if len(indexed) != len(CANONICAL):
+        raise RuntimeError(
+            f"Planet Finder body set has {len(indexed)} bodies; expected {len(CANONICAL)}"
+        )
+    if {name for _, (_, name, _) in indexed} != set(CANONICAL):
+        raise RuntimeError("Planet Finder body set does not match the canonical Solar-System objects")
+
+    if target_solutions is None:
+        target_solutions = max(1, int(os.environ.get("PLANET_FINDER_CANDIDATES", str(DEFAULT_CANDIDATE_LAYOUTS))))
+
+    if budget is None:
+        budget = new_search_budget()
+
+    # One clock per mode, always.  Copy the limits so callers may safely reuse
+    # one configuration object without ever sharing elapsed time between Greek,
+    # Latin, and Mixed.
+    budget = dict(budget)
+    budget["started"] = time.monotonic()
+    diagnostic_print(
+        f"Planet Finder {mode}: MODE CLOCK STARTED: "
+        f"limit={budget['max_seconds']:.1f}s",
+        flush=True,
+    )
+
+    order = indexed
+    all_solutions = []
+    contest_keys = []
+    order_index = 0
+    refinement_scales = (2.0, 1.5, 1.0, 0.5, 0.25)
+    refinement_index = 0
+    # Keep one wall clock per notation mode, but reserve an equal cumulative
+    # share for each refinement so a coarse geometry cannot consume time that
+    # belongs to the finer fallback geometries.
+    refinement_deadlines = tuple(
+        budget["started"] + budget["max_seconds"] * (i + 1) / len(refinement_scales)
+        for i in range(len(refinement_scales))
+    )
+    attempted_orders = set()
+    # A body may be promoted at most once at each placement refinement.
+    # Seeing the same squeaky wheel again closes that refinement's bounded
+    # promotion cycle instead of generating another tail permutation.
+    promoted_bodies = set()
+    # One persistent per-body candidate cap for this mode. Reordering changes
+    # the search tree, but never replenishes a body's 200-candidate budget.
+    # Forward-check probes are deliberately outside this accounting.
+    body_attempts = {name: 0 for _, (_, name, _) in indexed}
+    # Preserve controller history across refinements for terminal diagnosis.
+    refinement_history = []
+
+    # Explicit search-controller state machine. Search attempts report events;
+    # only the controller changes ordering or placement refinement.
+    #
+    # SEARCH_ORDER -> SCORE    on SOLVED
+    # SEARCH_ORDER -> CAPPED   on CAPPED(body)
+    # SEARCH_ORDER -> PROMOTE  on EXHAUSTED(blocker)
+    # CAPPED       -> SEARCH_ORDER after promoting the capped body
+    #                 (a cap is incomplete evidence and may never refine)
+    # PROMOTE      -> SEARCH_ORDER when the exhausted blocker ordering is new
+    # PROMOTE      -> REFINE   when EXHAUSTED promotion closes an ordering cycle
+    # REFINE       -> SEARCH_ORDER at the next placement scale
+    state = "SEARCH_ORDER"
+    promote_body = None
+
+    def next_promotion_order(current_order, body_name):
+        """Return the next bounded ordering for a squeaky-wheel body.
+
+        Try the body at the zero position first, then immediately to its
+        right, then at the opposite side of the linearized order.  Relative
+        order of every other body is preserved.  This explores the two sides
+        of a crowded front position without opening arbitrary permutations.
+        """
+        body_index = next(
+            (i for i, item in enumerate(current_order) if item[1][1] == body_name),
+            None,
+        )
+        if body_index is None:
+            return None
+        body_item = current_order[body_index]
+        rest = [item for i, item in enumerate(current_order) if i != body_index]
+        candidate_orders = [
+            [body_item, *rest],
+            [rest[0], body_item, *rest[1:]],
+            [*rest, body_item],
+        ]
+        for candidate in candidate_orders:
+            names = tuple(item[1][1] for item in candidate)
+            if (refinement_index, names) not in attempted_orders:
+                return candidate
+        return None
+
+    while state != "SCORE":
