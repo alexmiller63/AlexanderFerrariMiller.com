@@ -53,6 +53,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                       *[f"zodiac_{name}" for _, name in SIGNS]]
     placed: list[Box] = []
     leaders: list[list[tuple[float, float]]] = []
+    leader_names: list[str] = []
     staged = {}
     nodes = 0
     started = time.monotonic()
@@ -247,4 +248,3 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 raise DepthNodeBudgetExhausted(depth, name)
 
             resumed_at = time.monotonic()
-            if last_yield_at is not None:

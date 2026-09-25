@@ -1,3 +1,124 @@
+            item = order[future_depth]
+            _, (_, future_name, _) = item
+            future_box, future_path, witness_raw, witness_reasons = witness_for(
+                item, placed, leaders, obstacles
+            )
+            witness = future_box is not None
+            body_stat = forward_stats["by_body"].setdefault(
+                future_name, {"checks": 0, "witnesses": 0, "dead": 0, "raw": 0,
+                               "reasons": {"placed-overlap": 0, "existing-leader": 0,
+                                          "route": 0, "leader-rim": 0, "leader-graze": 0}}
+            )
+            body_stat["checks"] += 1
+            body_stat["raw"] += witness_raw
+            for reason, count in witness_reasons.items():
+                body_stat["reasons"][reason] += count
+            if witness:
+                body_stat["witnesses"] += 1
+                forward_stats["witnesses"] += 1
+            else:
+                body_stat["dead"] += 1
+                forward_stats["pruned"] += 1
+                forward_blockers[future_name] = forward_blockers.get(future_name, 0) + 1
+                if next_depth == 1 and order[0][1][1] == "Sun":
+                    diagnostic_print(
+                        f"Planet Finder {mode}: SUN-PREFIX DEAD-GATE "
+                        f"sun-check={forward_stats['checks']:,} "
+                        f"future-body={future_name} raw={witness_raw:,} "
+                        f"prefix-obstacles={len(obstacles):,}",
+                        level=3,
+                        flush=True,
+                    )
+                return False
+
+        # Paired Child -> Grandchild look-ahead. An individually viable Child
+        # is not enough if every Child placement makes the Grandchild impossible.
+        if next_depth + 1 < len(order):
+            child_item = order[next_depth]
+            grandchild_item = order[next_depth + 1]
+            _, (_, child_name, child_longitude) = child_item
+            _, (_, grandchild_name, _) = grandchild_item
+            child_w, child_h = label_size(mode, child_name)
+            child_anchor = xy(child_longitude, RI - 5)
+            child_prefix_cache = {}
+            pair_found = False
+            child_raw = 0
+            grandchild_raw_total = 0
+
+            for _, _, child_box in legal_candidate_positions(
+                child_longitude, child_w, child_h, reserved, displacement_scale
+            ):
+                child_raw += 1
+                if any(boxes_overlap(child_box, other, 14) for other in placed):
+                    continue
+                if any(
+                    segment_hits_box(seg[i], seg[i + 1], child_box, 10)
+                    for seg in leaders
+                    for i in range(len(seg) - 1)
+                ):
+                    continue
+                child_path = route(
+                    child_anchor,
+                    (child_box.x, child_box.y),
+                    obstacles,
+                    allow_initial_escape_count=immutable_count,
+                    prefix_cache=child_prefix_cache,
+                )
+                if child_path is None:
+                    continue
+                if leader_hits_zodiac_rim(child_path):
+                    continue
+                if leaders_too_close(child_path, leaders):
+                    continue
+
+                grandchild_box, grandchild_path, grandchild_raw = witness_for(
+                    grandchild_item,
+                    [*placed, child_box],
+                    [*leaders, child_path],
+                    [*obstacles, child_box],
+                )
+                grandchild_raw_total += grandchild_raw
+                if grandchild_box is not None:
+                    pair_found = True
+                    break
+
+            pair_stat = forward_stats["by_body"].setdefault(
+                grandchild_name, {"checks": 0, "witnesses": 0, "dead": 0, "raw": 0}
+            )
+            pair_stat["checks"] += 1
+            pair_stat["raw"] += child_raw + grandchild_raw_total
+            if pair_found:
+                pair_stat["witnesses"] += 1
+                forward_stats["witnesses"] += 1
+            else:
+                pair_stat["dead"] += 1
+                forward_stats["pruned"] += 1
+                forward_blockers[grandchild_name] = forward_blockers.get(grandchild_name, 0) + 1
+                diagnostic_print(
+                    f"Planet Finder {mode}: CHILD-GRANDCHILD PRUNE "
+                    f"depth={next_depth}/{len(order)} child={child_name} "
+                    f"grandchild={grandchild_name}",
+                    level=2,
+                    flush=True,
+                )
+                return False
+
+        return True
+
+    def search(depth):
+        """Recursive DFS: each call owns exactly one body depth.
+
+        Geometry rejects bad proposals before they enter this function.
+        Returning from a child is the only backtracking mechanism.
+        """
+        nonlocal nodes, deepest, candidates, backtracks, current_body
+
+        now = time.monotonic()
+        if refinement_deadline is not None and now >= refinement_deadline:
+            diagnostic_print(
+                f"Planet Finder {mode}: DFS REFINEMENT DEADLINE order={order_index} "
+                f"depth={depth}/{len(order)} body={current_body}; returning to controller",
+                flush=True,
             )
             return False
         run_elapsed = now - budget["started"]
@@ -61,6 +182,7 @@
             candidates += 1
             placed.append(box)
             leaders.append(path)
+            leader_names.append(name)
             staged[original_index] = (symbol, name, longitude, box, path)
 
             child_deepest_before = deepest
@@ -75,6 +197,7 @@
             finally:
                 staged.pop(original_index, None)
                 leaders.pop()
+                leader_names.pop()
                 placed.pop()
 
             backtracks += 1
@@ -125,118 +248,3 @@
     except DepthNodeBudgetExhausted as exc:
         # Hitting the per-body/depth cap is the squeaky-wheel signal.  Report
         # this fixed ordering, then let layout() discard the whole DFS napkin
-        # and retry from a clean state with that body promoted to first.
-        dump_diagnostics(
-            f"node budget exhausted at depth={exc.depth}/{len(order)} body={exc.name}"
-        )
-        raise
-    except RuntimeError as exc:
-        dump_diagnostics(f"runtime failure: {exc}")
-        raise
-
-    if exhausted:
-        dump_diagnostics("search exhausted without a complete solution")
-
-    elapsed = time.monotonic() - started
-    diagnostic_print(
-        f"Planet Finder {mode}: fixed-order summary order={order_index} "
-        f"exhausted={exhausted} elapsed={elapsed:.2f}s nodes={nodes:,} "
-        f"deepest={deepest}/{len(order)} candidates={candidates:,} "
-        f"rejects[overlap={rejected_overlap:,},leader={rejected_leader:,},"
-        f"route={rejected_route:,}] backtracks={backtracks:,} "
-        f"solutions={len(solutions)}",
-        flush=True,
-    )
-    blocker = None
-    if exhausted:
-        # deepest is a reached DFS depth; the body at that depth is the first
-        # body that could not be placed. If the tree reached completion, use
-        # the final body as the ordering feedback.
-        blocker_depth = min(deepest, len(order) - 1)
-        blocker = order[blocker_depth][1][1]
-    blocker_stats = None
-    if blocker is not None:
-        blocker_depth = next(
-            (depth for depth, item in enumerate(order) if item[1][1] == blocker),
-            None,
-        )
-        if blocker_depth is not None:
-            s = diagnostic_stats.get((blocker_depth, blocker), {})
-            blocker_stats = {
-                "immutable_reserved": s.get("immutable_reserved", 0),
-                "immutable_rim": s.get("immutable_rim", 0),
-                "placed_overlap": s.get("overlap", 0),
-                "existing_leader": s.get("leader_existing", 0),
-                "route": s.get("route", 0),
-                "leader_rim": s.get("leader_rim", 0),
-                "leader_graze": s.get("leader_graze", 0),
-            }
-    return SearchOutcome(
-        "SOLVED" if len(solutions) >= target_solutions else "EXHAUSTED",
-        solutions,
-        contest_keys,
-        blocker,
-        blocker_stats,
-    )
-
-
-def generate_week(year: int, week: int):
-    if not 1 <= week <= week_count(year):
-        raise ValueError(f"Invalid ISO week {year}-W{week:02d}")
-    monday = date.fromisocalendar(year, week, 1)
-    needed = {BODY_NAMES[name] for name in CANONICAL}
-    engine = StarAlmanackEphemeris()
-    generated = computed_ephemeris(year, engine)
-    values = {key: generated[key][week - 1][0] for key in needed}
-    bodies = [(BODY_SYMBOLS[BODY_NAMES[name]], name, values[BODY_NAMES[name]] % 360) for name in CANONICAL]
-    outdir = week_dir(year, week) / "finders"
-    outdir.mkdir(parents=True, exist_ok=True)
-    filenames = {
-        FinderMode.GREEK: "planet-finder-greek-symbols.svg",
-        FinderMode.LATIN: "planet-finder-latin.svg",
-        FinderMode.MIXED: "planet-finder-mixed-learner.svg",
-    }
-    # Generate the complete 3-mode set in memory first. A failure in any mode
-    # must leave the week's published finder set untouched; never publish a
-    # partial Greek/Latin/Mixed result.
-    rendered = {}
-    for mode, filename in filenames.items():
-        rendered[filename] = render(year, week, monday, mode, bodies)
-
-    # render()/layout() independently validates every selected layout before it
-    # returns. Only after all 3 modes succeed do we replace the week's files.
-    for filename, svg in rendered.items():
-        (outdir / filename).write_text(svg, encoding="utf-8")
-    diagnostic_print(f"Generated collision-free Planet Finders for ISO {year}-W{week:02d} from internal calculations")
-
-
-def parse_args():
-    p = argparse.ArgumentParser()
-    g = p.add_mutually_exclusive_group(required=True)
-    g.add_argument("--current", action="store_true", help="generate the current UTC ISO week")
-    g.add_argument("--year", type=int, help="ISO week-year")
-    p.add_argument("--week", type=int, help="ISO week number; required with --year")
-    p.add_argument("--diagnostic-level", type=int, default=None, metavar="N", help="diagnostic verbosity: 0=silent, 1=major events, 2=search detail, 3=forensic detail")
-    args = p.parse_args()
-    if args.year is not None and args.week is None:
-        p.error("--week is required with --year")
-    return args
-
-
-def main():
-    args = parse_args()
-    if args.diagnostic_level is not None:
-        if args.diagnostic_level < 0:
-            raise SystemExit("--diagnostic-level must be zero or greater")
-        os.environ["PLANET_FINDER_DIAGNOSTIC_LEVEL"] = str(args.diagnostic_level)
-    if args.current:
-        today = date.today()
-        iso = today.isocalendar()
-        year, week = iso.year, iso.week
-    else:
-        year, week = args.year, args.week
-    generate_week(year, week)
-
-
-if __name__ == "__main__":
-    main()

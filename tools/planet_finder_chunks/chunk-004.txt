@@ -1,0 +1,147 @@
+        # and retry from a clean state with that body promoted to first.
+        dump_diagnostics(
+            f"node budget exhausted at depth={exc.depth}/{len(order)} body={exc.name}"
+        )
+        raise
+    except RuntimeError as exc:
+        dump_diagnostics(f"runtime failure: {exc}")
+        raise
+
+    if exhausted:
+        dump_diagnostics("search exhausted without a complete solution")
+
+    elapsed = time.monotonic() - started
+    diagnostic_print(
+        f"Planet Finder {mode}: fixed-order summary order={order_index} "
+        f"exhausted={exhausted} elapsed={elapsed:.2f}s nodes={nodes:,} "
+        f"deepest={deepest}/{len(order)} candidates={candidates:,} "
+        f"rejects[overlap={rejected_overlap:,},leader={rejected_leader:,},"
+        f"route={rejected_route:,}] backtracks={backtracks:,} "
+        f"solutions={len(solutions)}",
+        flush=True,
+    )
+    blocker = None
+    if exhausted:
+        # Prefer the body that actually caused forward-check pruning.  A
+        # forward-pruned child is never entered by DFS, so `deepest` otherwise
+        # misidentifies the parent as the blocker and the controller repeatedly
+        # promotes the wrong body.
+        if forward_blockers:
+            order_rank = {item[1][1]: depth for depth, item in enumerate(order)}
+            blocker = min(
+                forward_blockers,
+                key=lambda name: (-forward_blockers[name], order_rank.get(name, len(order))),
+            )
+            diagnostic_print(
+                f"Planet Finder {mode}: FORWARD BLOCKER body={blocker} "
+                f"prunes={forward_blockers[blocker]:,} all={forward_blockers}",
+                flush=True,
+            )
+        else:
+            # No forward-pruning evidence: fall back to the deepest DFS body.
+            blocker_depth = min(deepest, len(order) - 1)
+            blocker = order[blocker_depth][1][1]
+    blocker_stats = None
+    if blocker is not None:
+        blocker_depth = next(
+            (depth for depth, item in enumerate(order) if item[1][1] == blocker),
+            None,
+        )
+        if blocker_depth is not None:
+            s = diagnostic_stats.get((blocker_depth, blocker), {})
+            blocker_stats = {
+                "immutable_reserved": s.get("immutable_reserved", 0),
+                "immutable_rim": s.get("immutable_rim", 0),
+                "placed_overlap": s.get("overlap", 0),
+                "existing_leader": s.get("leader_existing", 0),
+                "route": s.get("route", 0),
+                "leader_rim": s.get("leader_rim", 0),
+                "leader_graze": s.get("leader_graze", 0),
+            }
+    if exhausted and forward_stats["by_body"]:
+        diagnostic_print(
+            f"Planet Finder {mode}: FORWARD REJECTION BREAKDOWN",
+            flush=True,
+        )
+        for body, stat in sorted(forward_stats["by_body"].items()):
+            reasons = stat.get("reasons", {})
+            diagnostic_print(
+                f"Planet Finder {mode}: FORWARD BODY body={body} "
+                f"checks={stat['checks']:,} dead={stat['dead']:,} raw={stat['raw']:,} "
+                f"placed-overlap={reasons.get('placed-overlap', 0):,} "
+                f"existing-leader={reasons.get('existing-leader', 0):,} "
+                f"route={reasons.get('route', 0):,} "
+                f"leader-rim={reasons.get('leader-rim', 0):,} "
+                f"leader-graze={reasons.get('leader-graze', 0):,}",
+                flush=True,
+            )
+
+    return SearchOutcome(
+        "SOLVED" if len(solutions) >= target_solutions else "EXHAUSTED",
+        solutions,
+        contest_keys,
+        blocker,
+        blocker_stats,
+    )
+
+
+def generate_week(year: int, week: int):
+    if not 1 <= week <= week_count(year):
+        raise ValueError(f"Invalid ISO week {year}-W{week:02d}")
+    monday = date.fromisocalendar(year, week, 1)
+    needed = {BODY_NAMES[name] for name in CANONICAL}
+    engine = StarAlmanackEphemeris()
+    generated = computed_ephemeris(year, engine)
+    values = {key: generated[key][week - 1][0] for key in needed}
+    bodies = [(BODY_SYMBOLS[BODY_NAMES[name]], name, values[BODY_NAMES[name]] % 360) for name in CANONICAL]
+    outdir = week_dir(year, week) / "finders"
+    outdir.mkdir(parents=True, exist_ok=True)
+    filenames = {
+        FinderMode.GREEK: "planet-finder-greek-symbols.svg",
+        FinderMode.LATIN: "planet-finder-latin.svg",
+        FinderMode.MIXED: "planet-finder-mixed-learner.svg",
+    }
+    # Generate the complete 3-mode set in memory first. A failure in any mode
+    # must leave the week's published finder set untouched; never publish a
+    # partial Greek/Latin/Mixed result.
+    rendered = {}
+    for mode, filename in filenames.items():
+        rendered[filename] = render(year, week, monday, mode, bodies)
+
+    # render()/layout() independently validates every selected layout before it
+    # returns. Only after all 3 modes succeed do we replace the week's files.
+    for filename, svg in rendered.items():
+        (outdir / filename).write_text(svg, encoding="utf-8")
+    diagnostic_print(f"Generated collision-free Planet Finders for ISO {year}-W{week:02d} from internal calculations")
+
+
+def parse_args():
+    p = argparse.ArgumentParser()
+    g = p.add_mutually_exclusive_group(required=True)
+    g.add_argument("--current", action="store_true", help="generate the current UTC ISO week")
+    g.add_argument("--year", type=int, help="ISO week-year")
+    p.add_argument("--week", type=int, help="ISO week number; required with --year")
+    p.add_argument("--diagnostic-level", type=int, default=None, metavar="N", help="diagnostic verbosity: 0=silent, 1=major events, 2=search detail, 3=forensic detail")
+    args = p.parse_args()
+    if args.year is not None and args.week is None:
+        p.error("--week is required with --year")
+    return args
+
+
+def main():
+    args = parse_args()
+    if args.diagnostic_level is not None:
+        if args.diagnostic_level < 0:
+            raise SystemExit("--diagnostic-level must be zero or greater")
+        os.environ["PLANET_FINDER_DIAGNOSTIC_LEVEL"] = str(args.diagnostic_level)
+    if args.current:
+        today = date.today()
+        iso = today.isocalendar()
+        year, week = iso.year, iso.week
+    else:
+        year, week = args.year, args.week
+    generate_week(year, week)
+
+
+if __name__ == "__main__":
+    main()
