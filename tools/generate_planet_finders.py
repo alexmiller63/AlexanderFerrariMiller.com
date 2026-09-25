@@ -571,7 +571,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 if leaders_too_close(child_path, leaders):
                     continue
 
-                grandchild_box, grandchild_path, grandchild_raw = witness_for(
+                grandchild_box, grandchild_path, grandchild_raw, grandchild_reasons = witness_for(
                     grandchild_item,
                     [*placed, child_box],
                     [*leaders, child_path],
