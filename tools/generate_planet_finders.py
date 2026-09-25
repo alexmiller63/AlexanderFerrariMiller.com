@@ -8,38 +8,20 @@ not query Horizons or another answer service.
 from __future__ import annotations
 
 import argparse
-import html
-import math
 import os
-import time
-from dataclasses import dataclass
 from datetime import date
-from enum import Enum, auto
 from pathlib import Path
 
-from populate_ephemeris import TARGETS, computed_ephemeris, week_count
+from populate_ephemeris import computed_ephemeris, week_count
 from star_almanack_ephemeris import StarAlmanackEphemeris
 from almanack_paths import week_dir
-from planet_finder_search import DepthNodeBudgetExhausted, SearchOutcome, new_search_budget, layout, diagnostic_print
-from planet_finder_validation import validate_layout
-from planet_finder_rendering import polyline, render
-from planet_finder_geometry import (
-    W, H, CX, CY, RO, RI,
-    LABEL_RIM_CLEARANCE, LABEL_COLLISION_PADDING,
-    IMMUTABLE_LEADER_CLEARANCE, PLACED_LABEL_LEADER_CLEARANCE,
-    LEADER_TO_LEADER_CLEARANCE, LEADER_RIM_CLEARANCE,
-    LABEL_LENGTH, PREFERRED_LABEL_RADII, EXPANDED_LABEL_RADII, ROUTE_RADII,
-    SIGNS, BODY_SYMBOLS, BODY_NAMES, CANONICAL,
-    DEFAULT_CANDIDATE_LAYOUTS, DEFAULT_MAX_NODE_CANDIDATES,
-    DEFAULT_MAX_SEARCH_SECONDS,
-    FinderMode, Body, Box,
-    xy, boxes_overlap, segment_hits_box, point_segment_distance,
-    segments_too_close, leaders_too_close, leader_hits_zodiac_rim, minimum_leader_separation,
-    label_size, reserved_boxes, candidate_positions,
-    legal_candidate_positions, route,
-)
+from planet_finder_search import diagnostic_print
+from planet_finder_rendering import render
+from planet_finder_geometry import BODY_SYMBOLS, BODY_NAMES, CANONICAL, FinderMode
 
 ROOT = Path(__file__).resolve().parents[1]
+
+
 def generate_week(year: int, week: int):
     if not 1 <= week <= week_count(year):
         raise ValueError(f"Invalid ISO week {year}-W{week:02d}")
