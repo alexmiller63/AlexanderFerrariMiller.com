@@ -19,7 +19,7 @@ from planet_finder_search import diagnostic_print, new_search_budget, layout
 from planet_finder_rendering import render
 from planet_finder_geometry import (
     BODY_SYMBOLS, BODY_NAMES, CANONICAL, FinderMode,
-    Box, boxes_overlap, legal_candidate_positions, route, reserved_boxes, RI,
+    Box, boxes_overlap, legal_candidate_positions, route, reserved_boxes, RI, CX, CY,
 )
 
 ROOT = Path(__file__).resolve().parents[1]
