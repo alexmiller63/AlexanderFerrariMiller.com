@@ -3,12 +3,14 @@
 from __future__ import annotations
 
 from datetime import date
-import generate_planet_finders as finder
 import populate_ephemeris as ephemeris
 from almanack_sections import replace_section_inner
 from almanack_paths import week_dir, week_index
 from iso_date_range import group_by_year, parse_range_args
+from planet_finder_geometry import BODY_NAMES, BODY_SYMBOLS, CANONICAL
 from planet_finder_layout import patch_file as patch_planet_finder_layout
+from planet_finder_rendering import render
+from planet_finder_search import new_search_budget
 from star_almanack_ephemeris import StarAlmanackEphemeris
 
 FINDER_FILENAMES = {
@@ -25,10 +27,10 @@ def calculate_year(year: int, engine: StarAlmanackEphemeris):
 
 def finder_bodies(generated, week: int):
     result = []
-    for name in finder.CANONICAL:
-        key = finder.BODY_NAMES[name]
+    for name in CANONICAL:
+        key = BODY_NAMES[name]
         longitude = generated[key][week - 1][0] % 360.0
-        result.append((finder.BODY_SYMBOLS[key], name, longitude))
+        result.append((BODY_SYMBOLS[key], name, longitude))
     return result
 
 
@@ -108,8 +110,8 @@ def populate_week(
         # Each independently searched layout gets its own complete safety
         # envelope. The per-body candidate cap and the wall-clock ceiling
         # therefore apply independently to Greek, Latin, and Mixed.
-        mode_budget = finder.new_search_budget()
-        svg = finder.render(
+        mode_budget = new_search_budget()
+        svg = render(
             year, week, monday, mode, bodies,
             budget=mode_budget,
             context_label=context_label,
@@ -136,7 +138,7 @@ def main() -> None:
     total = 0
     total_weeks = len(weeks)
     week_number = 0
-    budget = finder.new_search_budget()
+    budget = new_search_budget()
     print(
         f"Planet Finder SEARCH LIMITS: {budget['max_node_candidates']:,} attempts per body; "
         f"{budget['max_seconds']:.1f}s independently for each mode",
