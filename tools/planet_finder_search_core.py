@@ -506,7 +506,17 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         obstacles = [*reserved, *placed]
         immutable_count = 3
         forward_stats["checks"] += 1
+        # One raw-probe budget is shared by this entire forward-check call,
+        # including every individual-body witness and all child/grandchild
+        # look-ahead.  Reaching the cap means UNKNOWN, never dead.
+        forward_probe_used = 0
 
+        def consume_forward_probe():
+            nonlocal forward_probe_used
+            if forward_probe_used >= forward_probe_cap:
+                return False
+            forward_probe_used += 1
+            return True
 
         def witness_for(item, boxes, paths, obstacles_now):
             _, (_, future_name, future_longitude) = item
@@ -518,7 +528,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             for _, _, future_box in legal_candidate_positions(
                 future_longitude, w, h, reserved, displacement_scale
             ):
-                if witness_raw >= forward_probe_cap:
+                if not consume_forward_probe():
                     return PROBE_LIMITED, None, witness_raw, reasons
                 witness_raw += 1
                 if any(boxes_overlap(future_box, other, 14) for other in boxes):
@@ -623,11 +633,11 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             for _, _, child_box in legal_candidate_positions(
                 child_longitude, child_w, child_h, reserved, displacement_scale
             ):
-                if child_raw >= forward_probe_cap:
+                if not consume_forward_probe():
                     pair_found = True
                     diagnostic_print(
                         f"Planet Finder {mode}: FORWARD PAIR PROBE CAP child={child_name} "
-                        f"raw={child_raw:,}/{forward_probe_cap:,}; treating as unknown",
+                        f"used={forward_probe_used:,}/{forward_probe_cap:,}; treating as unknown",
                         level=2,
                         flush=True,
                     )
