@@ -122,8 +122,9 @@ def layout(
     # Seeing the same squeaky wheel again closes that refinement's bounded
     # promotion cycle instead of generating another tail permutation.
     promoted_bodies = set()
-    # One persistent per-body candidate cap for this mode. Reordering changes
-    # the search tree, but never replenishes a body's 200-candidate budget.
+    # One per-body candidate cap for the current placement refinement.
+    # Reordering may reset a promoted body's budget; changing refinement resets
+    # every body's budget because the candidate geometry has changed.
     # Forward-check probes are deliberately outside this accounting.
     body_attempts = {name: 0 for _, (_, name, _) in indexed}
     # Preserve controller history across refinements for terminal diagnosis.
@@ -219,15 +220,17 @@ def layout(
             refinement_index += 1
             # Refinement changes placement geometry, not ordering knowledge.
             # Carry the squeaky-wheel ordering learned at the coarser scale
-            # into the finer search; only the per-refinement visit history is
-            # reset so that this ordering can be tried under the new geometry.
+            # into the finer search, while resetting all search-work budgets
+            # because the candidate geometry has changed.
             attempted_orders.clear()
             promoted_bodies.clear()
+            for name in body_attempts:
+                body_attempts[name] = 0
             promote_body = None
             diagnostic_print(
                 f"Planet Finder {mode}: REFINEMENT ADVANCE "
                 f"to {refinement_scales[refinement_index]:g} label-lengths; "
-                "preserving learned sequence="
+                "resetting candidate budgets; preserving learned sequence="
                 + " > ".join(item[1][1] for item in order),
                 flush=True,
             )
