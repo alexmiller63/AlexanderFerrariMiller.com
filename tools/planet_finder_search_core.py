@@ -320,6 +320,41 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             timing["stream_wait"] += stream_dt
             raw_positions += 1
             
+            # Narrow instrumentation for pathological candidate generation.
+            # Report any single stage that stalls for >= 1s immediately, rather
+            # than waiting for the 5s aggregate heartbeat.
+            if stream_dt >= 1.0:
+                diagnostic_print(
+                    f"Planet Finder {mode}: SLOW candidate-position body={name} "
+                    f"depth={depth}/{len(order)} raw={raw_positions:,} dt={stream_dt:.3f}s",
+                    flush=True,
+                )
+            now = time.monotonic()
+            if now - candidate_last_heartbeat >= 5.0:
+                diagnostic_print(
+                    f"Planet Finder {mode}: CANDIDATE HEARTBEAT order={order_index} "
+                    f"depth={depth}/{len(order)} body={name} elapsed={now-candidate_started:.1f}s "
+                    f"raw={raw_positions:,} viable={body_candidates:,} "
+                    f"rejects[overlap={stats['overlap']:,},leader={stats['leader']:,},route={stats['route']:,}] "
+                    f"time[stream-wait={timing['stream_wait']:.3f}s,overlap={timing['overlap']:.3f}s,"
+                    f"existing-leader={timing['existing_leader']:.3f}s,route={timing['route']:.3f}s,"
+                    f"final-leader={timing['final_leader']:.3f}s,suspended={suspended_total:.3f}s]",
+                    flush=True,
+                )
+                candidate_last_heartbeat = now
+            # Enforce the run-wide deadline inside candidate generation too.
+            # Geometry/routing can otherwise keep one DFS iteration busy past the limit.
+            now = time.monotonic()
+            if refinement_deadline is not None and now >= refinement_deadline:
+                stats["blocked"] = "refinement-deadline"
+                diagnostic_print(
+                    f"Planet Finder {mode}: CANDIDATE REFINEMENT DEADLINE "
+                    f"order={order_index} depth={depth}/{len(order)} body={name}; "
+                    f"returning to controller",
+                    flush=True,
+                )
+                return
+                
 
 
     
