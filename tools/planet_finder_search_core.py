@@ -10,7 +10,6 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 from planet_finder_validation import validate_layout
-
 from planet_finder_geometry import (
     W, H, CX, CY, RO, RI,
     LABEL_RIM_CLEARANCE, LABEL_COLLISION_PADDING,
@@ -47,10 +46,10 @@ class DepthNodeBudgetExhausted(RuntimeError):
         self.depth = depth
         self.name = name
 
-
 import math
 import os
 import time
+
 
 
 _DIAGNOSTIC_LEVEL = int(os.environ.get("PLANET_FINDER_DIAGNOSTIC_LEVEL", "1"))
@@ -62,7 +61,6 @@ def diagnostic_print(*args, level=None, **kwargs):
     Level 0 is silent. Level 1 shows major controller events. Level 2 adds
     search-order and contest detail. Level 3 adds forensic terminal detail.
     Higher levels currently include all diagnostics.
-    
     """
     try:
         configured = max(0, int(os.environ.get("PLANET_FINDER_DIAGNOSTIC_LEVEL", str(_DIAGNOSTIC_LEVEL))))
@@ -79,13 +77,11 @@ def diagnostic_print(*args, level=None, **kwargs):
     if configured >= level:
         print(*args, **kwargs)
 
-
 from planet_finder_geometry import (
     CANONICAL, FinderMode, CX, CY, xy,
     DEFAULT_CANDIDATE_LAYOUTS, DEFAULT_MAX_NODE_CANDIDATES,
     DEFAULT_MAX_SEARCH_SECONDS,
 )
-
 
 def new_search_budget():
     """Create the per-body candidate and wall-clock safety limits."""
@@ -93,21 +89,19 @@ def new_search_budget():
     if max_node_candidates <= 0:
         raise ValueError("PLANET_FINDER_MAX_NODE_CANDIDATES must be positive")
     max_seconds = max(1.0, float(os.environ.get("PLANET_FINDER_MAX_SECONDS", str(DEFAULT_MAX_SEARCH_SECONDS))))
-
-    # This object contains limits only. It deliberately contains no clock
+    # This object contains limits only.  It deliberately contains no clock
     # state: every notation mode starts its own clock inside layout().
     return {
         "max_node_candidates": max_node_candidates,
         "max_seconds": max_seconds,
     }
 
-
 def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_index=1, total_orders=None, context_label=None, displacement_scale=2.0, body_attempts=None, refinement_deadline=None):
     """Solve one fixed body ordering with recursive depth-first search.
 
     The ordering is fixed for this pass. Each recursive call owns one body
     depth; returning from a child restores the parent placement and tries the
-    
+    next sibling. When the ordering is exhausted, the caller selects a
     deliberately distant ordering.
     """
     reserved = reserved_boxes(mode)
@@ -126,18 +120,15 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
     rejected_route = 0
     backtracks = 0
     deepest = 0
-
     # Diagnostic-only DFS residence accounting. Charge elapsed controller time
     # to the depth/body that owned control between loop iterations; this shows
     # which descendant subtree consumes a parent's generator suspension time.
     depth_residence = {}
     depth_visits = {}
-
     # Count repeated zero-candidate visits across different parent states.
     # This is the second squeaky-wheel failure mode: a body can repeatedly
     # block the tree without any one prefix reaching its candidate cap.
     dead_end_visits = {}
-
     # One authoritative cap per body for this mode. It counts viable
     # candidates admitted to DFS for each body; rejected raw proposals and
     # forward-check witnesses do not consume it. The count persists when the
@@ -145,7 +136,6 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
     # 200-candidate safety budget.
     if body_attempts is None:
         body_attempts = {name: 0 for _, (_, name, _) in order}
-
     diagnostic_stats = {}
     route_diagnostics = {}
     solutions = []
@@ -153,7 +143,17 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
     contest_keys = []
     current_body = "-"
     exhausted = False
-    
+
+    def dump_diagnostics(reason):
+        # A capped ordering is expected control flow, not a terminal failure.
+        # Emit one compact summary for it; full forensic dumps are reserved
+        # for genuinely terminal/exhausted searches. This keeps legitimate
+        # ordering exploration from exhausting the GitHub Actions log.
+        if reason.startswith("body-attempt-cap"):
+            order_names = " > ".join(item[1][1] for item in order)
+            diagnostic_print(
+                f"Planet Finder {mode}: CAPPED SUMMARY order={order_index} "
+                f"nodes={nodes:,} deepest={deepest}/{len(order)} "
                 f"current_body={current_body} sequence={order_names}",
                 flush=True,
             )
@@ -189,13 +189,39 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 flush=True,
             )
         for (depth, name), s in sorted(diagnostic_stats.items()):
-            for candidate_index, audit in enumerate(s.get("immutable_candidate_audit", []), 1):
-                x, y, rejection, obstacle_ids = audit
-                obstacle_labels = [reserved_names[i] if i < len(reserved_names) else str(i) for i in obstacle_ids]
+            audits = s.get("immutable_candidate_audit", [])
+            if not audits:
+                continue
+            by_reason = {}
+            by_obstacles = {}
+            for _, _, rejection, obstacle_ids in audits:
+                by_reason[rejection] = by_reason.get(rejection, 0) + 1
+                if obstacle_ids:
+                    labels = tuple(
+                        reserved_names[i] if i < len(reserved_names) else str(i)
+                        for i in obstacle_ids
+                    )
+                    by_obstacles[labels] = by_obstacles.get(labels, 0) + 1
+            diagnostic_print(
+                f"Planet Finder {mode}: TERMINAL IMMUTABLE-SUMMARY "
+                f"depth={depth}/{len(order)} body={name} total={len(audits):,} "
+                + " ".join(
+                    f"{reason}={count:,}"
+                    for reason, count in sorted(by_reason.items())
+                ),
+                flush=True,
+            )
+            if by_obstacles:
                 diagnostic_print(
-                    f"Planet Finder {mode}: TERMINAL IMMUTABLE-CANDIDATE "
-                    f"depth={depth}/{len(order)} body={name} candidate={candidate_index} "
-                    f"center=({x:.1f},{y:.1f}) reason={rejection} obstacles={obstacle_labels}",
+                    f"Planet Finder {mode}: TERMINAL IMMUTABLE-OBSTACLES "
+                    f"depth={depth}/{len(order)} body={name} "
+                    + " ".join(
+                        f"{'/'.join(labels)}={count:,}"
+                        for labels, count in sorted(
+                            by_obstacles.items(),
+                            key=lambda item: (-item[1], item[0]),
+                        )[:12]
+                    ),
                     flush=True,
                 )
         for depth in sorted(set(depth_residence) | set(depth_visits)):
@@ -229,7 +255,6 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 "immutable_rim",
                 "overlap",
                 "leader_existing",
-                
                 "route",
                 "leader_rim",
                 "leader_graze",
@@ -245,12 +270,12 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             f"Planet Finder {mode}: TERMINAL BEST-PARTIAL deepest={deepest}/{len(order)}",
             flush=True,
         )
+
     def viable_candidates(item, depth, *, consume_body_budget=True):
         original_index, (symbol, name, longitude) = item
         key = (depth, name)
         stats = diagnostic_stats.setdefault(key, {
             "generated": 0,
-
             "viable": 0,
             "overlap": 0,
             "leader": 0,
@@ -273,7 +298,6 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         route_prefix_cache = {}
         body_candidates = 0
         raw_positions = 0
-        
         # Proposal work is local to this fixed DFS prefix. A pathological child
         # may exhaust its own stream, but must never consume the parent's
         # ability to generate the next sibling during backtracking.
@@ -319,7 +343,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             stream_dt = time.monotonic() - stream_t0
             timing["stream_wait"] += stream_dt
             raw_positions += 1
-            
+
             # Narrow instrumentation for pathological candidate generation.
             # Report any single stage that stalls for >= 1s immediately, rather
             # than waiting for the 5s aggregate heartbeat.
@@ -354,9 +378,8 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                     flush=True,
                 )
                 return
-                
 
-            run_elapsed = now - budget["started"]
+            run_elapsed = now - started
             if run_elapsed >= budget["max_seconds"]:
                 stats["blocked"] = "wall-clock"
                 diagnostic_print(
@@ -397,7 +420,661 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                     f"during candidate generation for {name} after {run_elapsed:.1f}s "
                     f"(limit {budget['max_seconds']:.1f}s)"
                 )
-                
-                
+            stats["started"] = True
+            # Reject geometry that is already impossible in the current DFS
+            # state before admitting the proposal to the candidate pool. A
+            # label overlapping an already placed label, or crossing an
+            # existing leader, cannot become valid without backtracking, so it
+            # must not consume candidate/search budget.
+            t0 = time.monotonic()
+            overlaps_placed = any(boxes_overlap(box, b, 14) for b in placed)
+            timing["overlap"] += time.monotonic() - t0
+            if overlaps_placed:
+                rejected_overlap += 1
+                stats["overlap"] += 1
+                continue
+            t0 = time.monotonic()
+            hit_existing_leader = any(segment_hits_box(seg[i], seg[i + 1], box, 10)
+                                      for seg in leaders for i in range(len(seg) - 1))
+            timing["existing_leader"] += time.monotonic() - t0
+            if hit_existing_leader:
+                rejected_leader += 1
+                stats["leader"] += 1
+                stats["leader_existing"] += 1
+                continue
+            route_diag = route_diagnostics.setdefault((depth, name), {
+                "straight_blocked": 0,
+                "route_failed": 0,
+                "straight_blockers": {},
+                "elbows": {},
+            })
+            route_diag["obstacle_names"] = reserved_names + [f"placed_{i}" for i in range(len(placed))]
+            t0 = time.monotonic()
+            path = route(
+                anchor,
+                (x, y),
+                reserved + placed,
+                route_diag,
+                # Only the 3 fixed center annotations may contain an anchor and
+                # permit an initial escape. Zodiac labels are real rendered
+                # obstacles; allowing escape from them can hide a leader/zodiac
+                # collision in the first leader segment.
+                allow_initial_escape_count=3,
+                prefix_cache=route_prefix_cache,
+            )
+            route_dt = time.monotonic() - t0
+            timing["route"] += route_dt
+            if route_dt >= 1.0:
+                diagnostic_print(
+                    f"Planet Finder {mode}: SLOW route body={name} "
+                    f"depth={depth}/{len(order)} raw={raw_positions:,} dt={route_dt:.3f}s "
+                    f"result={'none' if path is None else 'ok'}",
+                    flush=True,
+                )
+            if path is None:
+                rejected_route += 1
+                stats["route"] += 1
+                continue
+            # The inner zodiac rim is protected geometry, not a scoring
+            # preference. Reject the route and let ordinary DFS/backtracking
+            # try the next candidate; never special-case a body or week.
+            if leader_hits_zodiac_rim(path):
+                rejected_leader += 1
+                stats["leader"] += 1
+                stats["leader_rim"] += 1
+                continue
+            t0 = time.monotonic()
+            too_close = leaders_too_close(path, leaders)
+            timing["final_leader"] += time.monotonic() - t0
+            if too_close:
+                rejected_leader += 1
+                stats["leader"] += 1
+                stats["leader_graze"] += 1
+                continue
+            # This is the single cap point: only a fully viable candidate
+            # admitted to DFS consumes the body's candidate budget.
+            body_candidates += 1
+            if consume_body_budget:
+                body_attempts[name] += 1
+            stats["generated"] += 1
+            stats["viable"] += 1
+            last_yield_at = time.monotonic()
+            yield box, path
+            if consume_body_budget and body_attempts[name] >= budget["max_node_candidates"]:
+                stats["blocked"] = "body-candidate-cap"
+                diagnostic_print(
+                    f"Planet Finder {mode}: BODY-CANDIDATE CAP order={order_index} "
+                    f"depth={depth}/{len(order)} body={name} "
+                    f"viable={body_attempts[name]:,}/{budget['max_node_candidates']:,}",
+                    flush=True,
+                )
+                raise DepthNodeBudgetExhausted(depth, name)
 
-    
+    forward_stats = {"checks": 0, "pruned": 0, "witnesses": 0, "by_body": {}}
+    # Bodies that actually make a forward check fail.  Without this, a prefix
+    # whose every candidate is pruned before recursion leaves `deepest` at the
+    # parent depth, causing the controller to blame/promote the parent instead
+    # of the future body that is the real squeaky wheel.
+    forward_blockers = {}
+    # Forward checking is only a pruning hint.  Bound raw look-ahead work so
+    # a difficult body cannot monopolize the mode clock.  Hitting this cap is
+    # UNKNOWN, never proof that the branch is dead.
+    forward_probe_cap = max(
+        1, int(os.environ.get("PLANET_FINDER_FORWARD_PROBE_CAP", "1000"))
+    )
+    PROBE_LIMITED = object()
+
+    def forward_check(next_depth):
+        """Return False only when a remaining body is already provably dead.
+
+        First require one individually viable witness for every remaining body.
+        Then, when both exist, require at least one viable Child placement that
+        leaves at least one compatible Grandchild placement. Look-ahead probes
+        do not consume the per-body DFS candidate cap.
+        """
+        obstacles = [*reserved, *placed]
+        immutable_count = 3
+        forward_stats["checks"] += 1
+        # One raw-probe budget is shared by this entire forward-check call,
+        # including every individual-body witness and all child/grandchild
+        # look-ahead.  Reaching the cap means UNKNOWN, never dead.
+        forward_probe_used = 0
+
+        def consume_forward_probe():
+            nonlocal forward_probe_used
+            if forward_probe_used >= forward_probe_cap:
+                return False
+            forward_probe_used += 1
+            return True
+
+        def witness_for(item, boxes, paths, obstacles_now):
+            _, (_, future_name, future_longitude) = item
+            w, h = label_size(mode, future_name)
+            anchor = xy(future_longitude, RI - 5)
+            prefix_cache = {}
+            witness_raw = 0
+            reasons = {"placed-overlap": 0, "existing-leader": 0, "route": 0, "leader-rim": 0, "leader-graze": 0}
+            for _, _, future_box in legal_candidate_positions(
+                future_longitude, w, h, reserved, displacement_scale
+            ):
+                if not consume_forward_probe():
+                    return PROBE_LIMITED, None, witness_raw, reasons
+                witness_raw += 1
+                if any(boxes_overlap(future_box, other, 14) for other in boxes):
+                    reasons["placed-overlap"] += 1
+                    continue
+                if any(
+                    segment_hits_box(seg[i], seg[i + 1], future_box, 10)
+                    for seg in paths
+                    for i in range(len(seg) - 1)
+                ):
+                    reasons["existing-leader"] += 1
+                    continue
+                center = (future_box.x, future_box.y)
+                path = route(
+                    anchor,
+                    center,
+                    obstacles_now,
+                    allow_initial_escape_count=immutable_count,
+                    prefix_cache=prefix_cache,
+                )
+                if path is None:
+                    reasons["route"] += 1
+                    continue
+                if leader_hits_zodiac_rim(path):
+                    reasons["leader-rim"] += 1
+                    continue
+                if leaders_too_close(path, paths):
+                    reasons["leader-graze"] += 1
+                    if len(paths) == 1 and future_name in {"Moon", "Mercury"}:
+                        min_dist, pair = minimum_leader_separation(path, paths)
+                        if pair is not None:
+                            diagnostic_print(
+                                f"Planet Finder {mode}: LEADER-GRAZE "
+                                f"proposed={future_name} existing={leader_names[pair[0]]} "
+                                f"distance={min_dist:.3f} clearance={LEADER_TO_LEADER_CLEARANCE:.3f} "
+                                f"candidate=({future_box.x:.1f},{future_box.y:.1f}) "
+                                f"segments={pair[1]}/{pair[2]}",
+                                level=3,
+                                flush=True,
+                            )
+                    continue
+                return future_box, path, witness_raw, reasons
+            return None, None, witness_raw, reasons
+
+        # Existing individual feasibility test for every future body.
+        for future_depth in range(next_depth, len(order)):
+            item = order[future_depth]
+            _, (_, future_name, _) = item
+            future_box, future_path, witness_raw, witness_reasons = witness_for(
+                item, placed, leaders, obstacles
+            )
+            if future_box is PROBE_LIMITED:
+                diagnostic_print(
+                    f"Planet Finder {mode}: FORWARD PROBE CAP body={future_name} "
+                    f"raw={witness_raw:,}/{forward_probe_cap:,}; treating as unknown",
+                    level=2,
+                    flush=True,
+                )
+                continue
+            witness = future_box is not None
+            body_stat = forward_stats["by_body"].setdefault(
+                future_name, {"checks": 0, "witnesses": 0, "dead": 0, "raw": 0,
+                               "reasons": {"placed-overlap": 0, "existing-leader": 0,
+                                          "route": 0, "leader-rim": 0, "leader-graze": 0}}
+            )
+            body_stat["checks"] += 1
+            body_stat["raw"] += witness_raw
+            for reason, count in witness_reasons.items():
+                body_stat["reasons"][reason] += count
+            if witness:
+                body_stat["witnesses"] += 1
+                forward_stats["witnesses"] += 1
+            else:
+                body_stat["dead"] += 1
+                forward_stats["pruned"] += 1
+                forward_blockers[future_name] = forward_blockers.get(future_name, 0) + 1
+                if next_depth == 1 and order[0][1][1] == "Sun":
+                    diagnostic_print(
+                        f"Planet Finder {mode}: SUN-PREFIX DEAD-GATE "
+                        f"sun-check={forward_stats['checks']:,} "
+                        f"future-body={future_name} raw={witness_raw:,} "
+                        f"prefix-obstacles={len(obstacles):,}",
+                        level=3,
+                        flush=True,
+                    )
+                return False
+
+        # Paired Child -> Grandchild look-ahead. An individually viable Child
+        # is not enough if every Child placement makes the Grandchild impossible.
+        if next_depth + 1 < len(order):
+            child_item = order[next_depth]
+            grandchild_item = order[next_depth + 1]
+            _, (_, child_name, child_longitude) = child_item
+            _, (_, grandchild_name, _) = grandchild_item
+            child_w, child_h = label_size(mode, child_name)
+            child_anchor = xy(child_longitude, RI - 5)
+            child_prefix_cache = {}
+            pair_found = False
+            child_raw = 0
+            grandchild_raw_total = 0
+
+            for _, _, child_box in legal_candidate_positions(
+                child_longitude, child_w, child_h, reserved, displacement_scale
+            ):
+                if not consume_forward_probe():
+                    pair_found = True
+                    diagnostic_print(
+                        f"Planet Finder {mode}: FORWARD PAIR PROBE CAP child={child_name} "
+                        f"used={forward_probe_used:,}/{forward_probe_cap:,}; treating as unknown",
+                        level=2,
+                        flush=True,
+                    )
+                    break
+                child_raw += 1
+                if any(boxes_overlap(child_box, other, 14) for other in placed):
+                    continue
+                if any(
+                    segment_hits_box(seg[i], seg[i + 1], child_box, 10)
+                    for seg in leaders
+                    for i in range(len(seg) - 1)
+                ):
+                    continue
+                child_path = route(
+                    child_anchor,
+                    (child_box.x, child_box.y),
+                    obstacles,
+                    allow_initial_escape_count=immutable_count,
+                    prefix_cache=child_prefix_cache,
+                )
+                if child_path is None:
+                    continue
+                if leader_hits_zodiac_rim(child_path):
+                    continue
+                if leaders_too_close(child_path, leaders):
+                    continue
+
+                grandchild_box, grandchild_path, grandchild_raw, grandchild_reasons = witness_for(
+                    grandchild_item,
+                    [*placed, child_box],
+                    [*leaders, child_path],
+                    [*obstacles, child_box],
+                )
+                grandchild_raw_total += grandchild_raw
+                if grandchild_box is PROBE_LIMITED:
+                    pair_found = True
+                    diagnostic_print(
+                        f"Planet Finder {mode}: FORWARD PROBE CAP body={grandchild_name} "
+                        f"raw={grandchild_raw:,}/{forward_probe_cap:,}; treating as unknown",
+                        level=2,
+                        flush=True,
+                    )
+                    break
+                if grandchild_box is not None:
+                    pair_found = True
+                    break
+
+            pair_stat = forward_stats["by_body"].setdefault(
+                grandchild_name, {"checks": 0, "witnesses": 0, "dead": 0, "raw": 0}
+            )
+            pair_stat["checks"] += 1
+            pair_stat["raw"] += child_raw + grandchild_raw_total
+            if pair_found:
+                pair_stat["witnesses"] += 1
+                forward_stats["witnesses"] += 1
+            else:
+                pair_stat["dead"] += 1
+                forward_stats["pruned"] += 1
+                forward_blockers[grandchild_name] = forward_blockers.get(grandchild_name, 0) + 1
+                diagnostic_print(
+                    f"Planet Finder {mode}: CHILD-GRANDCHILD PRUNE "
+                    f"depth={next_depth}/{len(order)} child={child_name} "
+                    f"grandchild={grandchild_name}",
+                    level=2,
+                    flush=True,
+                )
+                return False
+
+        return True
+
+    def solve_final_pair(first_depth):
+        """Solve the final two bodies until success, exhaustion, or mode deadline.
+
+        Neither member consumes the ordinary per-body DFS budget. The existing
+        mode/refinement deadline remains authoritative, so the endgame is not
+        cut short by a separate raw-probe limit.
+        """
+        nonlocal candidates, backtracks, current_body
+        first_item = order[first_depth]
+        second_item = order[first_depth + 1]
+        first_index, (first_symbol, first_name, first_longitude) = first_item
+        second_index, (second_symbol, second_name, second_longitude) = second_item
+        pair_attempts = 0
+        first_attempts = 0
+        current_body = first_name
+        diagnostic_print(
+            f"Planet Finder {mode}: TWO-BODY ENDGAME pair={first_name}+{second_name} "
+            f"depth={first_depth}/{len(order)} deadline-controlled",
+            level=1,
+            flush=True,
+        )
+
+        for first_box, first_path in viable_candidates(
+            first_item,
+            first_depth,
+            consume_body_budget=False,
+        ):
+            first_attempts += 1
+            second_tested = 0
+            second_key = (first_depth + 1, second_name)
+            tracked = (
+                "generated",
+                "viable",
+                "immutable_reserved",
+                "immutable_rim",
+                "overlap",
+                "leader_existing",
+                "route",
+                "leader_rim",
+                "leader_graze",
+            )
+            before = diagnostic_stats.get(second_key, {})
+            before_counts = {key: before.get(key, 0) for key in tracked}
+            pair_started = time.monotonic()
+
+            candidates += 1
+            placed.append(first_box)
+            leaders.append(first_path)
+            leader_names.append(first_name)
+            staged[first_index] = (
+                first_symbol, first_name, first_longitude, first_box, first_path
+            )
+            try:
+                current_body = second_name
+                for second_box, second_path in viable_candidates(
+                    second_item,
+                    first_depth + 1,
+                    consume_body_budget=False,
+                ):
+                    second_tested += 1
+                    pair_attempts += 1
+                    candidates += 1
+                    placed.append(second_box)
+                    leaders.append(second_path)
+                    leader_names.append(second_name)
+                    staged[second_index] = (
+                        second_symbol, second_name, second_longitude,
+                        second_box, second_path,
+                    )
+                    try:
+                        if search(first_depth + 2):
+                            return True
+                    finally:
+                        staged.pop(second_index, None)
+                        leaders.pop()
+                        leader_names.pop()
+                        placed.pop()
+                    backtracks += 1
+            finally:
+                after = diagnostic_stats.get(second_key, {})
+                delta = {
+                    key: after.get(key, 0) - before_counts[key]
+                    for key in tracked
+                }
+                diagnostic_print(
+                    f"Planet Finder {mode}: TWO-BODY PAIR-AUDIT "
+                    f"first={first_name} candidate={first_attempts} "
+                    f"second={second_name} tested={second_tested} "
+                    f"generated={delta['generated']} viable={delta['viable']} "
+                    f"rejects[immutable-reserved={delta['immutable_reserved']},"
+                    f"immutable-rim={delta['immutable_rim']},"
+                    f"placed-overlap={delta['overlap']},"
+                    f"existing-leader={delta['leader_existing']},"
+                    f"route={delta['route']},"
+                    f"leader-rim={delta['leader_rim']},"
+                    f"leader-graze={delta['leader_graze']}] "
+                    f"elapsed={time.monotonic() - pair_started:.3f}s "
+                    f"pair-tested-total={pair_attempts}",
+                    level=3,
+                    flush=True,
+                )
+                staged.pop(first_index, None)
+                leaders.pop()
+                leader_names.pop()
+                placed.pop()
+            backtracks += 1
+        return False
+
+    def search(depth):
+        """Recursive DFS: each call owns exactly one body depth.
+
+        Geometry rejects bad proposals before they enter this function.
+        Returning from a child is the only backtracking mechanism.
+        """
+        nonlocal nodes, deepest, candidates, backtracks, current_body
+
+        now = time.monotonic()
+        if refinement_deadline is not None and now >= refinement_deadline:
+            diagnostic_print(
+                f"Planet Finder {mode}: DFS REFINEMENT DEADLINE order={order_index} "
+                f"depth={depth}/{len(order)} body={current_body}; returning to controller",
+                flush=True,
+            )
+            return False
+
+        run_elapsed = now - started
+        if run_elapsed >= budget["max_seconds"]:
+            diagnostic_print(
+                f"Planet Finder {mode}: TIMEOUT-AUDIT order={order_index} "
+                f"body={current_body} totals[checks={forward_stats['checks']:,},"
+                f"witnesses={forward_stats['witnesses']:,},"
+                f"pruned={forward_stats['pruned']:,}] "
+                f"dfs[nodes={nodes:,},deepest={deepest}/{len(order)},"
+                f"candidates={candidates:,},backtracks={backtracks:,}]",
+                flush=True,
+            )
+            raise RuntimeError(
+                f"Planet Finder {mode} mode wall-clock budget exhausted "
+                f"after {run_elapsed:.1f}s (limit {budget['max_seconds']:.1f}s)"
+            )
+
+        nodes += 1
+        deepest = max(deepest, depth)
+        depth_visits[depth] = depth_visits.get(depth, 0) + 1
+
+        if depth == len(order):
+            result = [staged[i] for i in range(len(bodies))]
+            key = tuple(
+                (
+                    round(row[3].x, 3),
+                    round(row[3].y, 3),
+                    tuple((round(x, 3), round(y, 3)) for x, y in row[4]),
+                )
+                for row in result
+            )
+            if key not in solution_keys:
+                solution_keys.add(key)
+                valid, errors = validate_layout(mode, result)
+                if valid:
+                    solutions.append(result)
+                    contest_keys.append(key)
+                    diagnostic_print(
+                        f"Planet Finder {mode}: complete valid candidate "
+                        f"{len(solutions)}/{target_solutions} "
+                        f"order={order_index} placement-order=" +
+                        " > ".join(row[1] for row in result),
+                        flush=True,
+                    )
+                else:
+                    diagnostic_print(
+                        f"Planet Finder {mode}: rejected complete layout "
+                        f"order={order_index} errors=" + "; ".join(errors),
+                        flush=True,
+                    )
+            return len(solutions) >= target_solutions
+
+        if depth == len(order) - 2:
+            return solve_final_pair(depth)
+
+        item = order[depth]
+        original_index, (symbol, name, longitude) = item
+        current_body = name
+        generated_here = False
+
+        for box, path in viable_candidates(item, depth):
+            generated_here = True
+            candidates += 1
+            placed.append(box)
+            leaders.append(path)
+            leader_names.append(name)
+            staged[original_index] = (symbol, name, longitude, box, path)
+
+            child_deepest_before = deepest
+            child_nodes_before = nodes
+            child_backtracks_before = backtracks
+            try:
+                # Forward checking asks only for one viable witness for every
+                # remaining body. Zero proves this prefix is dead; one is
+                # enough to preserve it for the real DFS.
+
+                if forward_check(depth + 1) and search(depth + 1):
+                    return True
+            finally:
+                staged.pop(original_index, None)
+                leaders.pop()
+                leader_names.pop()
+                placed.pop()
+
+            backtracks += 1
+            # Prefix diagnostic: when an individually legal candidate cannot
+            # extend to a complete layout, report how far its child subtree
+            # actually reached. This observes DFS behavior without changing it.
+            if mode == FinderMode.MIXED and depth <= 1:
+                diagnostic_print(
+                    f"Planet Finder {mode}: PREFIX BACKTRACK "
+                    f"depth={depth}/{len(order)} body={name} "
+                    f"candidate={candidates} "
+                    f"child-deepest={deepest}/{len(order)} "
+                    f"new-depth={deepest > child_deepest_before} "
+                    f"child-nodes={nodes - child_nodes_before} "
+                    f"child-backtracks={backtracks - child_backtracks_before}",
+                    level=2,
+                    flush=True,
+                )
+
+        if not generated_here:
+            dead_key = (depth, name)
+            dead_end_visits[dead_key] = dead_end_visits.get(dead_key, 0) + 1
+            # Reuse the same per-body cap: too many candidates in one prefix
+            # or too many zero-candidate prefixes both identify a squeaky wheel.
+            if dead_end_visits[dead_key] >= budget["max_node_candidates"]:
+                diagnostic_print(
+                    f"Planet Finder {mode}: REPEATED-DEAD-END STOP order={order_index} "
+                    f"depth={depth}/{len(order)} body={name} "
+                    f"dead-ends={dead_end_visits[dead_key]:,}/{budget['max_node_candidates']:,}",
+                    flush=True,
+                )
+                raise DepthNodeBudgetExhausted(depth, name)
+            stats = diagnostic_stats[(depth, name)]
+            diagnostic_print(
+                f"Planet Finder {mode}: dead end order={order_index} "
+                f"depth={depth}/{len(order)} body={name} "
+                f"status={'evaluated' if stats.get('started') else 'not-evaluated'} "
+                f"generated={stats['generated']:,} viable={stats['viable']:,} "
+                f"rejects[overlap={stats['overlap']:,},leader={stats['leader']:,},"
+                f"route={stats['route']:,}]",
+                level=2,
+                flush=True,
+            )
+        return False
+
+    try:
+        exhausted = not search(0)
+    except DepthNodeBudgetExhausted as exc:
+        # Hitting the per-body/depth cap is the squeaky-wheel signal.  Report
+        # this fixed ordering, then let layout() discard the whole DFS napkin
+        # and retry from a clean state with that body promoted to first.
+        dump_diagnostics(
+            f"node budget exhausted at depth={exc.depth}/{len(order)} body={exc.name}"
+        )
+        raise
+    except RuntimeError as exc:
+        dump_diagnostics(f"runtime failure: {exc}")
+        raise
+
+    if exhausted:
+        dump_diagnostics("search exhausted without a complete solution")
+
+    elapsed = time.monotonic() - started
+    diagnostic_print(
+        f"Planet Finder {mode}: fixed-order summary order={order_index} "
+        f"exhausted={exhausted} elapsed={elapsed:.2f}s nodes={nodes:,} "
+        f"deepest={deepest}/{len(order)} candidates={candidates:,} "
+        f"rejects[overlap={rejected_overlap:,},leader={rejected_leader:,},"
+        f"route={rejected_route:,}] backtracks={backtracks:,} "
+        f"solutions={len(solutions)}",
+        flush=True,
+    )
+    blocker = None
+    if exhausted:
+        # Prefer the body that actually caused forward-check pruning.  A
+        # forward-pruned child is never entered by DFS, so `deepest` otherwise
+        # misidentifies the parent as the blocker and the controller repeatedly
+        # promotes the wrong body.
+        if forward_blockers:
+            order_rank = {item[1][1]: depth for depth, item in enumerate(order)}
+            blocker = min(
+                forward_blockers,
+                key=lambda name: (-forward_blockers[name], order_rank.get(name, len(order))),
+            )
+            diagnostic_print(
+                f"Planet Finder {mode}: FORWARD BLOCKER body={blocker} "
+                f"prunes={forward_blockers[blocker]:,} all={forward_blockers}",
+                flush=True,
+            )
+        else:
+            # No forward-pruning evidence: fall back to the deepest DFS body.
+            blocker_depth = min(deepest, len(order) - 1)
+            blocker = order[blocker_depth][1][1]
+    blocker_stats = None
+    if blocker is not None:
+        blocker_depth = next(
+            (depth for depth, item in enumerate(order) if item[1][1] == blocker),
+            None,
+        )
+        if blocker_depth is not None:
+            s = diagnostic_stats.get((blocker_depth, blocker), {})
+            blocker_stats = {
+                "immutable_reserved": s.get("immutable_reserved", 0),
+                "immutable_rim": s.get("immutable_rim", 0),
+                "placed_overlap": s.get("overlap", 0),
+                "existing_leader": s.get("leader_existing", 0),
+                "route": s.get("route", 0),
+                "leader_rim": s.get("leader_rim", 0),
+                "leader_graze": s.get("leader_graze", 0),
+            }
+    if exhausted and forward_stats["by_body"]:
+        diagnostic_print(
+            f"Planet Finder {mode}: FORWARD REJECTION BREAKDOWN",
+            flush=True,
+        )
+        for body, stat in sorted(forward_stats["by_body"].items()):
+            reasons = stat.get("reasons", {})
+            diagnostic_print(
+                f"Planet Finder {mode}: FORWARD BODY body={body} "
+                f"checks={stat['checks']:,} dead={stat['dead']:,} raw={stat['raw']:,} "
+                f"placed-overlap={reasons.get('placed-overlap', 0):,} "
+                f"existing-leader={reasons.get('existing-leader', 0):,} "
+                f"route={reasons.get('route', 0):,} "
+                f"leader-rim={reasons.get('leader-rim', 0):,} "
+                f"leader-graze={reasons.get('leader-graze', 0):,}",
+                flush=True,
+            )
+
+    return SearchOutcome(
+        "SOLVED" if len(solutions) >= target_solutions else "EXHAUSTED",
+        solutions,
+        contest_keys,
+        blocker,
+        blocker_stats,
+    )
