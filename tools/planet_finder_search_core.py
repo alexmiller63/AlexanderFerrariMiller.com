@@ -188,13 +188,39 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 flush=True,
             )
         for (depth, name), s in sorted(diagnostic_stats.items()):
-            for candidate_index, audit in enumerate(s.get("immutable_candidate_audit", []), 1):
-                x, y, rejection, obstacle_ids = audit
-                obstacle_labels = [reserved_names[i] if i < len(reserved_names) else str(i) for i in obstacle_ids]
+            audits = s.get("immutable_candidate_audit", [])
+            if not audits:
+                continue
+            by_reason = {}
+            by_obstacles = {}
+            for _, _, rejection, obstacle_ids in audits:
+                by_reason[rejection] = by_reason.get(rejection, 0) + 1
+                if obstacle_ids:
+                    labels = tuple(
+                        reserved_names[i] if i < len(reserved_names) else str(i)
+                        for i in obstacle_ids
+                    )
+                    by_obstacles[labels] = by_obstacles.get(labels, 0) + 1
+            diagnostic_print(
+                f"Planet Finder {mode}: TERMINAL IMMUTABLE-SUMMARY "
+                f"depth={depth}/{len(order)} body={name} total={len(audits):,} "
+                + " ".join(
+                    f"{reason}={count:,}"
+                    for reason, count in sorted(by_reason.items())
+                ),
+                flush=True,
+            )
+            if by_obstacles:
                 diagnostic_print(
-                    f"Planet Finder {mode}: TERMINAL IMMUTABLE-CANDIDATE "
-                    f"depth={depth}/{len(order)} body={name} candidate={candidate_index} "
-                    f"center=({x:.1f},{y:.1f}) reason={rejection} obstacles={obstacle_labels}",
+                    f"Planet Finder {mode}: TERMINAL IMMUTABLE-OBSTACLES "
+                    f"depth={depth}/{len(order)} body={name} "
+                    + " ".join(
+                        f"{'/'.join(labels)}={count:,}"
+                        for labels, count in sorted(
+                            by_obstacles.items(),
+                            key=lambda item: (-item[1], item[0]),
+                        )[:12]
+                    ),
                     flush=True,
                 )
         for depth in sorted(set(depth_residence) | set(depth_visits)):
