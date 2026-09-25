@@ -230,6 +230,50 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 "overlap",
                 "leader_existing",
                 
+                "route",
+                "leader_rim",
+                "leader_graze",
+            ):
+                aggregate[key] = aggregate.get(key, 0) + s.get(key, 0)
+        ranked = sorted(aggregate.items(), key=lambda item: (-item[1], item[0]))
+        diagnostic_print(
+            f"Planet Finder {mode}: TERMINAL REJECTION CONSTRAINTS "
+            + " ".join(f"{key}={count:,}" for key, count in ranked),
+            flush=True,
+        )
+        diagnostic_print(
+            f"Planet Finder {mode}: TERMINAL BEST-PARTIAL deepest={deepest}/{len(order)}",
+            flush=True,
+        )
+    def viable_candidates(item, depth, *, consume_body_budget=True):
+        original_index, (symbol, name, longitude) = item
+        key = (depth, name)
+        stats = diagnostic_stats.setdefault(key, {
+            "generated": 0,
+
+            "viable": 0,
+            "overlap": 0,
+            "leader": 0,
+            "route": 0,
+            "immutable_reserved": 0,
+            "immutable_reserved_by_obstacle": {},
+            "immutable_rim": 0,
+            "leader_existing": 0,
+            "leader_rim": 0,
+            "leader_graze": 0,
+            "started": False,
+            "blocked": None,
+        })
+        nonlocal candidates, rejected_overlap, rejected_leader, rejected_route
+        w, h = label_size(mode, name)
+        anchor = xy(longitude, RI - 5)
+        # This generator is created for one fixed DFS prefix. The placed
+        # obstacles therefore remain stable for its lifetime, so anchor-side
+        # routing work can be safely reused across all candidate labels.
+        route_prefix_cache = {}
+        body_candidates = 0
+        raw_positions = 0
+        
 
 
     
