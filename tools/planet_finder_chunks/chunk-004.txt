@@ -35,7 +35,7 @@
                         second_box, second_path,
                     )
                     try:
-                        if search(first_depth + 2):
+                        if search(len(order)):
                             return True
                     finally:
                         staged.pop(second_index, None)
@@ -118,7 +118,7 @@
                     )
             return len(solutions) >= target_solutions
 
-        if depth == len(order) - 4 or depth == len(order) - 2:
+        if depth == len(order) - 2:
             return solve_final_pair(depth)
 
         item = order[depth]
