@@ -178,7 +178,7 @@ def layout(
                 f"Planet Finder {mode} mode wall-clock budget exhausted "
                 f"(limit {budget['max_seconds']:.1f}s)"
             )
-        if now >= refinement_deadlines[refinement_index]:
+        if state != "REFINE" and now >= refinement_deadlines[refinement_index]:
             if refinement_index + 1 >= len(refinement_scales):
                 raise RuntimeError(
                     f"Planet Finder {mode} mode wall-clock budget exhausted "
@@ -461,4 +461,3 @@ def layout(
         flush=True,
     )
     return best
-
