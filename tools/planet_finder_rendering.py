@@ -8,6 +8,7 @@ from planet_finder_geometry import (
     W, H, CX, CY, RO, RI, SIGNS, BODY_SYMBOLS, BODY_NAMES,
     FinderMode, xy, label_size,
 )
+from planet_finder_search import layout
 
 def polyline(points):
     pts = " ".join(f"{x:.1f},{y:.1f}" for x, y in points)
@@ -30,7 +31,6 @@ def render(
         FinderMode.MIXED: "Mixed / Learner",
     }
     title = labels[mode]
-    from generate_planet_finders import layout
     placed = layout(mode, bodies, budget=budget, context_label=context_label)
     out = [
         f'<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="1400" viewBox="0 0 {W} {H}">',
@@ -79,4 +79,3 @@ def render(
         '</svg>',
     ])
     return "\n".join(out) + "\n"
-
