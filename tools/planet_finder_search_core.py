@@ -875,7 +875,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         if len(sun_venus) == 2 and len(others) == 2:
             sun = next(item for item in sun_venus if item[1][1] == "Sun")
             venus = next(item for item in sun_venus if item[1][1] == "Venus")
-            items = [sun, venus, others[0], others[1]]
+            items = [venus, sun, others[0], others[1]]
 
         names = [item[1][1] for item in items]
         diagnostic_print(
