@@ -356,5 +356,48 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 return
                 
 
+            run_elapsed = now - budget["started"]
+            if run_elapsed >= budget["max_seconds"]:
+                stats["blocked"] = "wall-clock"
+                diagnostic_print(
+                    f"Planet Finder {mode}: CANDIDATE-GENERATION STOP wall-clock budget exhausted "
+                    f"order={order_index} depth={depth}/{len(order)} body={name} "
+                    f"after {run_elapsed:.1f}s/{budget['max_seconds']:.1f}s "
+                    f"viable={body_candidates:,}",
+                    flush=True,
+                )
+                body_forward = forward_stats["by_body"].get(name, {})
+                diagnostic_print(
+                    f"Planet Finder {mode}: TIMEOUT-AUDIT order={order_index} "
+                    f"body={name} body-attempts={body_attempts.get(name, 0):,} "
+                    f"forward[checks={body_forward.get('checks', 0):,},"
+                    f"witnesses={body_forward.get('witnesses', 0):,},"
+                    f"dead={body_forward.get('dead', 0):,},"
+                    f"raw={body_forward.get('raw', 0):,}] "
+                    f"totals[checks={forward_stats['checks']:,},"
+                    f"witnesses={forward_stats['witnesses']:,},"
+                    f"pruned={forward_stats['pruned']:,}] "
+                    f"dfs[nodes={nodes:,},deepest={deepest}/{len(order)},"
+                    f"candidates={candidates:,},backtracks={backtracks:,}]",
+                    flush=True,
+                )
+                diagnostic_print(
+                    f"Planet Finder {mode}: TIMEOUT-BODIES "
+                    + " ".join(
+                        f"{body}:a={body_attempts.get(body, 0)},"
+                        f"fc={forward_stats['by_body'].get(body, {}).get('checks', 0)},"
+                        f"fw={forward_stats['by_body'].get(body, {}).get('witnesses', 0)},"
+                        f"fd={forward_stats['by_body'].get(body, {}).get('dead', 0)}"
+                        for _, (_, body, _) in order
+                    ),
+                    flush=True,
+                )
+                raise RuntimeError(
+                    f"Planet Finder {mode} mode wall-clock budget exhausted "
+                    f"during candidate generation for {name} after {run_elapsed:.1f}s "
+                    f"(limit {budget['max_seconds']:.1f}s)"
+                )
+                
+                
 
     
