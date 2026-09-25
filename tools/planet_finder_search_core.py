@@ -31,5 +31,38 @@ from planet_finder_geometry import (
 @dataclass(frozen=True)
 class SearchOutcome:
     """Result of one fixed-order DFS attempt."""
+
+    kind: str
+    solutions: list
+    contest_keys: list
+    blocker: str | None = None
+    rejection_stats: dict | None = None
+
+
+class DepthNodeBudgetExhausted(RuntimeError):
+    """Signal that a body-depth node budget is exhausted for this DFS tree."""
+
+    def __init__(self, depth: int, name: str):
+        super().__init__(f"node budget exhausted at depth {depth} for {name}")
+        self.depth = depth
+        self.name = name
+
+
+import math
+import os
+import time
+
+
+_DIAGNOSTIC_LEVEL = int(os.environ.get("PLANET_FINDER_DIAGNOSTIC_LEVEL", "1"))
+
+
+def diagnostic_print(*args, level=None, **kwargs):
+    """Print Planet Finder diagnostics at the configured verbosity level.
+
+    Level 0 is silent. Level 1 shows major controller events. Level 2 adds
+    search-order and contest detail. Level 3 adds forensic terminal detail.
+    Higher levels currently include all diagnostics.
     
+
+
     
