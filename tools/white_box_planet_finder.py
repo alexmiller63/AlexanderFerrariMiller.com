@@ -9,13 +9,13 @@ from planet_finder_geometry import (
     leader_hits_zodiac_rim, leaders_too_close, reserved_boxes, route, xy,
 )
 from planet_finder_search import layout, new_search_budget
-import generate_planet_finders as _gpf
+import planet_finder_search as _search
 
 # The white-box harness deliberately injects these diagnostic-only helpers into
 # the solver module so production imports remain unchanged while we measure the
 # exact leader-to-leader separation causing the repeated graze rejection.
-_gpf.minimum_leader_separation = minimum_leader_separation
-_gpf.LEADER_TO_LEADER_CLEARANCE = LEADER_TO_LEADER_CLEARANCE
+_search.minimum_leader_separation = minimum_leader_separation
+_search.LEADER_TO_LEADER_CLEARANCE = LEADER_TO_LEADER_CLEARANCE
 
 
 def crowded_bodies(center=15.0, span=6.0):
