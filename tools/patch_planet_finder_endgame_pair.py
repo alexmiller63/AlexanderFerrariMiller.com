@@ -11,8 +11,8 @@ text = text.replace(old_sig, new_sig, 1)
 
 old_pre_cap = '''            if body_attempts[name] >= budget["max_node_candidates"]:\n                stats["blocked"] = "body-candidate-cap"\n                diagnostic_print(\n                    f"Planet Finder {mode}: BODY-CANDIDATE CAP order={order_index} "\n                    f"depth={depth}/{len(order)} body={name} "\n                    f"viable={body_attempts[name]:,}/{budget['max_node_candidates']:,}",\n                    flush=True,\n                )\n                raise DepthNodeBudgetExhausted(depth, name)\n'''
 new_pre_cap = '''            if consume_body_budget and body_attempts[name] >= budget["max_node_candidates"]:\n                stats["blocked"] = "body-candidate-cap"\n                diagnostic_print(\n                    f"Planet Finder {mode}: BODY-CANDIDATE CAP order={order_index} "\n                    f"depth={depth}/{len(order)} body={name} "\n                    f"viable={body_attempts[name]:,}/{budget['max_node_candidates']:,}",\n                    flush=True,\n                )\n                raise DepthNodeBudgetExhausted(depth, name)\n'''
-if text.count(old_pre_cap) != 1:
-    raise SystemExit(f"expected one pre-yield body cap block, found {text.count(old_pre_cap)}")
+if old_pre_cap not in text:
+    raise SystemExit("pre-yield body cap guard not found")
 text = text.replace(old_pre_cap, new_pre_cap, 1)
 
 old_count = '''            body_candidates += 1\n            body_attempts[name] += 1\n            stats["generated"] += 1\n            stats["viable"] += 1\n            last_yield_at = time.monotonic()\n            yield box, path\n            if body_attempts[name] >= budget["max_node_candidates"]:\n                stats["blocked"] = "body-candidate-cap"\n                diagnostic_print(\n                    f"Planet Finder {mode}: BODY-CANDIDATE CAP order={order_index} "\n                    f"depth={depth}/{len(order)} body={name} "\n                    f"viable={body_attempts[name]:,}/{budget['max_node_candidates']:,}",\n                    flush=True,\n                )\n                raise DepthNodeBudgetExhausted(depth, name)\n'''
