@@ -243,7 +243,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             f"Planet Finder {mode}: TERMINAL BEST-PARTIAL deepest={deepest}/{len(order)}",
             flush=True,
         )
-    def viable_candidates(item, depth):
+    def viable_candidates(item, depth, *, consume_body_budget=True):
         original_index, (symbol, name, longitude) = item
         key = (depth, name)
         stats = diagnostic_stats.setdefault(key, {
@@ -294,7 +294,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             # this ordering. A body already at its persistent limit must not
             # receive one additional candidate merely because its ordering
             # changed.
-            if body_attempts[name] >= budget["max_node_candidates"]:
+            if consume_body_budget and body_attempts[name] >= budget["max_node_candidates"]:
                 stats["blocked"] = "body-candidate-cap"
                 diagnostic_print(
                     f"Planet Finder {mode}: BODY-CANDIDATE CAP order={order_index} "
@@ -466,12 +466,13 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             # This is the single cap point: only a fully viable candidate
             # admitted to DFS consumes the body's candidate budget.
             body_candidates += 1
-            body_attempts[name] += 1
+            if consume_body_budget:
+                body_attempts[name] += 1
             stats["generated"] += 1
             stats["viable"] += 1
             last_yield_at = time.monotonic()
             yield box, path
-            if body_attempts[name] >= budget["max_node_candidates"]:
+            if consume_body_budget and body_attempts[name] >= budget["max_node_candidates"]:
                 stats["blocked"] = "body-candidate-cap"
                 diagnostic_print(
                     f"Planet Finder {mode}: BODY-CANDIDATE CAP order={order_index} "
@@ -708,6 +709,42 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
 
         return True
 
+    def solve_final_body(last_depth):
+        """Solve the final body directly against the placed penultimate body.
+
+        The ordinary per-body cap is deliberately not charged here. At this
+        point the task is a bounded compatibility join between the final two
+        bodies, not a new ordering search. This avoids repeatedly exhausting
+        Sun/Venus-style endgames after the first nine bodies are already fixed.
+        """
+        nonlocal candidates, backtracks, current_body
+        item = order[last_depth]
+        original_index, (symbol, name, longitude) = item
+        current_body = name
+        diagnostic_print(
+            f"Planet Finder {mode}: TWO-BODY ENDGAME penultimate={order[last_depth - 1][1][1]} "
+            f"final={name} depth={last_depth}/{len(order)}",
+            level=2,
+            flush=True,
+        )
+
+        for box, path in viable_candidates(item, last_depth, consume_body_budget=False):
+            candidates += 1
+            placed.append(box)
+            leaders.append(path)
+            leader_names.append(name)
+            staged[original_index] = (symbol, name, longitude, box, path)
+            try:
+                if search(len(order)):
+                    return True
+            finally:
+                staged.pop(original_index, None)
+                leaders.pop()
+                leader_names.pop()
+                placed.pop()
+            backtracks += 1
+        return False
+
     def search(depth):
         """Recursive DFS: each call owns exactly one body depth.
 
@@ -796,7 +833,10 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 # remaining body. Zero proves this prefix is dead; one is
                 # enough to preserve it for the real DFS.
 
-                if forward_check(depth + 1) and search(depth + 1):
+                if depth == len(order) - 2:
+                    if solve_final_body(depth + 1):
+                        return True
+                elif forward_check(depth + 1) and search(depth + 1):
                     return True
             finally:
                 staged.pop(original_index, None)
