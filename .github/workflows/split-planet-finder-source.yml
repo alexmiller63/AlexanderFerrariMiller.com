@@ -7,6 +7,11 @@ on:
         description: Maximum source lines per chunk
         required: false
         default: '250'
+      reassemble:
+        description: Reassemble canonical source from verified chunks
+        required: false
+        type: boolean
+        default: false
   push:
     branches: [main]
     paths:
@@ -27,12 +32,18 @@ jobs:
           python-version: '3.12'
 
       - name: Split source losslessly
+        if: ${{ github.event_name != 'workflow_dispatch' || !inputs.reassemble }}
         run: python tools/split_planet_finder_source.py --lines "${{ inputs.lines_per_chunk || '250' }}"
+
+      - name: Reassemble source from verified chunks
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.reassemble }}
+        run: python tools/split_planet_finder_source.py --reassemble
 
       - name: Verify generated manifest exists
         run: test -f tools/planet_finder_chunks/manifest.json
 
       - name: Commit generated chunks
+        if: ${{ github.event_name != 'workflow_dispatch' || !inputs.reassemble }}
         run: |
           if git diff --quiet -- tools/planet_finder_chunks && [ -z "$(git status --porcelain -- tools/planet_finder_chunks)" ]; then
             echo "Chunks already current."
@@ -42,4 +53,17 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add tools/planet_finder_chunks
           git commit -m "Generate Planet Finder source chunks"
+          git push
+
+      - name: Commit reassembled source
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.reassemble }}
+        run: |
+          if git diff --quiet -- tools/planet_finder_search_core.py; then
+            echo "Canonical source already current."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add tools/planet_finder_search_core.py
+          git commit -m "Reassemble Planet Finder search core"
           git push
