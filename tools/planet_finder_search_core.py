@@ -748,6 +748,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         first_index, (first_symbol, first_name, first_longitude) = first_item
         second_index, (second_symbol, second_name, second_longitude) = second_item
         pair_attempts = 0
+        first_attempts = 0
         current_body = first_name
         diagnostic_print(
             f"Planet Finder {mode}: TWO-BODY ENDGAME pair={first_name}+{second_name} "
@@ -761,6 +762,24 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             first_depth,
             consume_body_budget=False,
         ):
+            first_attempts += 1
+            second_tested = 0
+            second_key = (first_depth + 1, second_name)
+            tracked = (
+                "generated",
+                "viable",
+                "immutable_reserved",
+                "immutable_rim",
+                "overlap",
+                "leader_existing",
+                "route",
+                "leader_rim",
+                "leader_graze",
+            )
+            before = diagnostic_stats.get(second_key, {})
+            before_counts = {key: before.get(key, 0) for key in tracked}
+            pair_started = time.monotonic()
+
             candidates += 1
             placed.append(first_box)
             leaders.append(first_path)
@@ -775,6 +794,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                     first_depth + 1,
                     consume_body_budget=False,
                 ):
+                    second_tested += 1
                     pair_attempts += 1
                     candidates += 1
                     placed.append(second_box)
@@ -794,6 +814,28 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                         placed.pop()
                     backtracks += 1
             finally:
+                after = diagnostic_stats.get(second_key, {})
+                delta = {
+                    key: after.get(key, 0) - before_counts[key]
+                    for key in tracked
+                }
+                diagnostic_print(
+                    f"Planet Finder {mode}: TWO-BODY PAIR-AUDIT "
+                    f"first={first_name} candidate={first_attempts} "
+                    f"second={second_name} tested={second_tested} "
+                    f"generated={delta['generated']} viable={delta['viable']} "
+                    f"rejects[immutable-reserved={delta['immutable_reserved']},"
+                    f"immutable-rim={delta['immutable_rim']},"
+                    f"placed-overlap={delta['overlap']},"
+                    f"existing-leader={delta['leader_existing']},"
+                    f"route={delta['route']},"
+                    f"leader-rim={delta['leader_rim']},"
+                    f"leader-graze={delta['leader_graze']}] "
+                    f"elapsed={time.monotonic() - pair_started:.3f}s "
+                    f"pair-tested-total={pair_attempts}",
+                    level=3,
+                    flush=True,
+                )
                 staged.pop(first_index, None)
                 leaders.pop()
                 leader_names.pop()
