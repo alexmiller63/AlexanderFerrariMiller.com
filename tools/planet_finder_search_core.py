@@ -243,7 +243,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             f"Planet Finder {mode}: TERMINAL BEST-PARTIAL deepest={deepest}/{len(order)}",
             flush=True,
         )
-    def viable_candidates(item, depth, *, consume_body_budget=True):
+    def viable_candidates(item, depth, *, consume_body_budget=True, raw_probe_state=None, raw_probe_cap=None):
         original_index, (symbol, name, longitude) = item
         key = (depth, name)
         stats = diagnostic_stats.setdefault(key, {
@@ -316,6 +316,19 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             stream_dt = time.monotonic() - stream_t0
             timing["stream_wait"] += stream_dt
             raw_positions += 1
+            if raw_probe_state is not None:
+                raw_probe_state["used"] = raw_probe_state.get("used", 0) + 1
+                if raw_probe_cap is not None and raw_probe_state["used"] > raw_probe_cap:
+                    blocker = raw_probe_state.get("blocker", name)
+                    label = raw_probe_state.get("label", name)
+                    diagnostic_print(
+                        f"Planet Finder {mode}: TWO-BODY ENDGAME RAW CAP "
+                        f"pair={label} used={raw_probe_cap:,}/{raw_probe_cap:,}; "
+                        "treating as capped/unknown",
+                        level=1,
+                        flush=True,
+                    )
+                    raise DepthNodeBudgetExhausted(depth, blocker)
 
             # Narrow instrumentation for pathological candidate generation.
             # Report any single stage that stalls for >= 1s immediately, rather
@@ -710,30 +723,41 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         return True
 
     def solve_final_pair(first_depth):
-        """Solve the final two bodies as one bounded compatibility join.
+        """Solve the final two bodies under one shared raw-probe budget.
 
-        Neither member of the pair consumes the ordinary per-body DFS budget.
-        The pair has its own bounded viable-pair budget so Sun/Venus-style
-        endgames can be explored together without turning into an unbounded
-        nested search.
+        Neither member consumes the ordinary per-body DFS budget. Every raw
+        legal candidate pulled for either body consumes this pair budget, so
+        geometry rejection work is bounded too. Reaching the cap is incomplete
+        evidence and is reported as CAPPED/unknown through the normal controller.
         """
         nonlocal candidates, backtracks, current_body
         first_item = order[first_depth]
         second_item = order[first_depth + 1]
         first_index, (first_symbol, first_name, first_longitude) = first_item
         second_index, (second_symbol, second_name, second_longitude) = second_item
-        pair_cap = max(1, int(os.environ.get("PLANET_FINDER_ENDGAME_PAIR_CAP", "2000")))
+        pair_raw_cap = max(
+            1, int(os.environ.get("PLANET_FINDER_ENDGAME_PAIR_RAW_CAP", "2000"))
+        )
+        pair_probe_state = {
+            "used": 0,
+            "blocker": first_name,
+            "label": f"{first_name}+{second_name}",
+        }
         pair_attempts = 0
         current_body = first_name
         diagnostic_print(
             f"Planet Finder {mode}: TWO-BODY ENDGAME pair={first_name}+{second_name} "
-            f"depth={first_depth}/{len(order)} cap={pair_cap}",
+            f"depth={first_depth}/{len(order)} raw-cap={pair_raw_cap}",
             level=1,
             flush=True,
         )
 
         for first_box, first_path in viable_candidates(
-            first_item, first_depth, consume_body_budget=False
+            first_item,
+            first_depth,
+            consume_body_budget=False,
+            raw_probe_state=pair_probe_state,
+            raw_probe_cap=pair_raw_cap,
         ):
             candidates += 1
             placed.append(first_box)
@@ -745,17 +769,13 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             try:
                 current_body = second_name
                 for second_box, second_path in viable_candidates(
-                    second_item, first_depth + 1, consume_body_budget=False
+                    second_item,
+                    first_depth + 1,
+                    consume_body_budget=False,
+                    raw_probe_state=pair_probe_state,
+                    raw_probe_cap=pair_raw_cap,
                 ):
                     pair_attempts += 1
-                    if pair_attempts > pair_cap:
-                        diagnostic_print(
-                            f"Planet Finder {mode}: TWO-BODY ENDGAME CAP "
-                            f"pair={first_name}+{second_name} attempts={pair_cap}",
-                            level=1,
-                            flush=True,
-                        )
-                        return False
                     candidates += 1
                     placed.append(second_box)
                     leaders.append(second_path)
