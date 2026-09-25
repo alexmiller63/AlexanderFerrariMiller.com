@@ -290,6 +290,14 @@ def route(anchor: tuple[float, float], center: tuple[float, float], obstacles: l
     if prefix_cache is None:
         prefix_cache = {}
 
+    # A leader may not originate inside another placed label. Record this
+    # explicit rejection for diagnostics before attempting any route.
+    if any(box.left <= anchor[0] <= box.right and box.top <= anchor[1] <= box.bottom
+           for box in obstacles[:allow_initial_escape_count + 1]):
+        if diagnostic is not None:
+            diagnostic["anchor_blocked"] = diagnostic.get("anchor_blocked", 0) + 1
+        return None
+
     def segment_clear(a, b, skip_start_escape=False) -> bool:
         for obstacle_index, box in enumerate(obstacles):
             if skip_start_escape and obstacle_index < allow_initial_escape_count and box.left <= a[0] <= box.right and box.top <= a[1] <= box.bottom:
