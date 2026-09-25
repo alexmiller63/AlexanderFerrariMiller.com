@@ -274,6 +274,52 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         body_candidates = 0
         raw_positions = 0
         
+        # Proposal work is local to this fixed DFS prefix. A pathological child
+        # may exhaust its own stream, but must never consume the parent's
+        # ability to generate the next sibling during backtracking.
+        candidate_started = time.monotonic()
+        candidate_last_heartbeat = candidate_started
+        last_yield_at = None
+        suspended_total = 0.0
+        timing = {"stream_wait": 0.0, "overlap": 0.0, "existing_leader": 0.0, "route": 0.0, "final_leader": 0.0}
+        legal_positions = iter(
+            legal_candidate_positions(
+                longitude,
+                w,
+                h,
+                reserved,
+                displacement_scale,
+                diagnostic=stats,
+            )
+        )
+        while True:
+            # The cap is owned by the body, not by this generator instance or
+            # this ordering. A body already at its persistent limit must not
+            # receive one additional candidate merely because its ordering
+            # changed.
+            if consume_body_budget and body_attempts[name] >= budget["max_node_candidates"]:
+                stats["blocked"] = "body-candidate-cap"
+                diagnostic_print(
+                    f"Planet Finder {mode}: BODY-CANDIDATE CAP order={order_index} "
+                    f"depth={depth}/{len(order)} body={name} "
+                    f"viable={body_attempts[name]:,}/{budget['max_node_candidates']:,}",
+                    flush=True,
+                )
+                raise DepthNodeBudgetExhausted(depth, name)
+
+            resumed_at = time.monotonic()
+            if last_yield_at is not None:
+                suspended_total += max(0.0, resumed_at - last_yield_at)
+                last_yield_at = None
+            stream_t0 = time.monotonic()
+            try:
+                x, y, box = next(legal_positions)
+            except StopIteration:
+                break
+            stream_dt = time.monotonic() - stream_t0
+            timing["stream_wait"] += stream_dt
+            raw_positions += 1
+            
 
 
     
