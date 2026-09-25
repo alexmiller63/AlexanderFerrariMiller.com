@@ -63,6 +63,51 @@ def diagnostic_print(*args, level=None, **kwargs):
     search-order and contest detail. Level 3 adds forensic terminal detail.
     Higher levels currently include all diagnostics.
     
+    """
+    try:
+        configured = max(0, int(os.environ.get("PLANET_FINDER_DIAGNOSTIC_LEVEL", str(_DIAGNOSTIC_LEVEL))))
+    except ValueError:
+        configured = 1
+    if level is None:
+        text = " ".join(str(arg) for arg in args)
+        if any(token in text for token in ("TERMINAL BODY", "IMMUTABLE-CANDIDATE", "HEARTBEAT")):
+            level = 3
+        elif any(token in text for token in ("CONTESTANT", "squeaky-wheel", "PROMOTE", "CAPPED", "REFINEMENT", "SEARCH OUTCOME")):
+            level = 2
+        else:
+            level = 1
+    if configured >= level:
+        print(*args, **kwargs)
+
+
+from planet_finder_geometry import (
+    CANONICAL, FinderMode, CX, CY, xy,
+    DEFAULT_CANDIDATE_LAYOUTS, DEFAULT_MAX_NODE_CANDIDATES,
+    DEFAULT_MAX_SEARCH_SECONDS,
+)
+
+
+def new_search_budget():
+    """Create the per-body candidate and wall-clock safety limits."""
+    max_node_candidates = int(os.environ.get("PLANET_FINDER_MAX_NODE_CANDIDATES", str(DEFAULT_MAX_NODE_CANDIDATES)))
+    if max_node_candidates <= 0:
+        raise ValueError("PLANET_FINDER_MAX_NODE_CANDIDATES must be positive")
+    max_seconds = max(1.0, float(os.environ.get("PLANET_FINDER_MAX_SECONDS", str(DEFAULT_MAX_SEARCH_SECONDS))))
+
+    # This object contains limits only. It deliberately contains no clock
+    # state: every notation mode starts its own clock inside layout().
+    return {
+        "max_node_candidates": max_node_candidates,
+        "max_seconds": max_seconds,
+    }
+
+
+def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_index=1, total_orders=None, context_label=None, displacement_scale=2.0, body_attempts=None, refinement_deadline=None):
+    """Solve one fixed body ordering with recursive depth-first search.
+
+    The ordering is fixed for this pass. Each recursive call owns one body
+    depth; returning from a child restores the parent placement and tries the
+    
 
 
     
