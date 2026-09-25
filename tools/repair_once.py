@@ -3,42 +3,35 @@ from pathlib import Path
 path = Path("tools/planet_finder_search_core.py")
 text = path.read_text()
 
-old = '''            if path is None:
-                rejected_route += 1
-                stats["route"] += 1
-                continue
-            # The inner zodiac rim is protected geometry, not a scoring
+old = '''        if depth == len(order) - 2:
+            return solve_final_pair(depth)
 '''
 
-new = '''            if path is None:
-                rejected_route += 1
-                stats["route"] += 1
-                continue
+new = '''        # Start the coupled endgame with four bodies remaining.
+        # Solve them as two consecutive pairs instead of allowing ordinary DFS
+        # to commit the first two bodies and leave only the final pair to fight
+        # over the remaining geometry.
+        if depth == len(order) - 4:
+            diagnostic_print(
+                f"Planet Finder {mode}: FOUR-BODY ENDGAME "
+                f"pairs={order[depth][1][1]}+{order[depth + 1][1][1]} / "
+                f"{order[depth + 2][1][1]}+{order[depth + 3][1][1]} "
+                f"depth={depth}/{len(order)}",
+                level=1,
+                flush=True,
+            )
 
-            # A new leader must not cross any label already placed by DFS.
-            # The opposite direction is checked earlier: a new label may not
-            # cross an existing leader. Both directions are required because
-            # placement order must not change collision legality.
-            if any(
-                segment_hits_box(path[i], path[i + 1], placed_box, 10)
-                for placed_box in placed
-                for i in range(len(path) - 1)
-            ):
-                rejected_leader += 1
-                stats["leader"] += 1
-                stats["leader_existing"] += 1
-                continue
-
-            # The inner zodiac rim is protected geometry, not a scoring
+        if depth == len(order) - 2:
+            return solve_final_pair(depth)
 '''
 
 count = text.count(old)
 
 if count != 1:
     raise SystemExit(
-        f"Safety stop: expected old block exactly once; found {count}"
+        f"Safety stop: expected endgame trigger exactly once; found {count}"
     )
 
 path.write_text(text.replace(old, new, 1))
 
-print("Repair applied successfully.")
+print("Four-body endgame instrumentation installed successfully.")
