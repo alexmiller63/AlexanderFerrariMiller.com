@@ -107,9 +107,21 @@ W01_EXACT = {
     "Pluto": 302.62909367404063,
 }
 
-# Keep non-target bodies outside 30 degrees of the five-body laboratory.  The
-# previous fixture accidentally put Jupiter at 240 degrees, so it joined the
-# Mercury-to-Pluto alignment and turned a five-body test into a six-body test.
+W02_EXACT = {
+    "Sun": 284.6440014763892,
+    "Moon": 126.1796456120117,
+    "Mercury": 274.8007325297467,
+    "Venus": 284.23931723550777,
+    "Mars": 285.7588826483691,
+    "Jupiter": 110.82906185524807,
+    "Saturn": 356.41276254486604,
+    "Ceres": 7.9496046464005525,
+    "Uranus": 57.84492478754409,
+    "Neptune": 359.5610441804245,
+    "Pluto": 302.8404789942358,
+}
+
+# Keep non-target bodies outside 30 degrees of the five-body laboratory.
 ISOLATED_OTHERS = {
     "Saturn": 20,
     "Neptune": 60,
@@ -123,30 +135,20 @@ ISOLATED_OTHERS = {
 def five_body_stage(mercury, venus, sun, mars, pluto):
     values = dict(ISOLATED_OTHERS)
     values.update({
-        "Mercury": mercury,
-        "Venus": venus,
-        "Sun": sun,
-        "Mars": mars,
-        "Pluto": pluto,
+        "Mercury": mercury, "Venus": venus, "Sun": sun,
+        "Mars": mars, "Pluto": pluto,
     })
     return values
 
 
-# Tighten only the real five-body group.  Stages preserve ordering while moving
-# from comfortable spacing toward the captured W01 geometry.  The final stage
-# is exact for those five bodies; ordinary bodies remain isolated.
 TIGHT_FIVE_LADDER = [
     ("five-easy", five_body_stage(260, 270, 280, 290, 300)),
     ("five-medium", five_body_stage(264.1023447351197, 273, 280, 287, 302.62909367404063)),
     ("five-tight-venus-sun", five_body_stage(264.1023447351197, 275.4313050776394, 277.511945972904, 287, 302.62909367404063)),
     ("five-tight-inner-three", five_body_stage(264.1023447351197, 275.4313050776394, 277.511945972904, 280.39213202805865, 302.62909367404063)),
-    ("five-exact", five_body_stage(
-        W01_EXACT["Mercury"], W01_EXACT["Venus"], W01_EXACT["Sun"],
-        W01_EXACT["Mars"], W01_EXACT["Pluto"]
-    )),
+    ("five-exact", five_body_stage(W01_EXACT["Mercury"], W01_EXACT["Venus"], W01_EXACT["Sun"], W01_EXACT["Mars"], W01_EXACT["Pluto"])),
 ]
 
-# Broader system ladder retained after the isolated five-body laboratory.
 W01_LADDER = [
     ("easy", {
         "Sun": 0, "Mercury": 5, "Venus": 10, "Mars": 15, "Pluto": 20,
@@ -170,26 +172,61 @@ W01_LADDER = [
     ("exact-W01", W01_EXACT),
 ]
 
+# W02 is deliberately decomposed from simple to exact.  This is the production
+# week that exhausted the Greek mode clock before recursive search began.
+W02_LADDER = [
+    ("separated", {
+        "Sun": 0, "Mercury": 40, "Venus": 80, "Mars": 120, "Pluto": 160,
+        "Saturn": 200, "Neptune": 240, "Ceres": 280, "Moon": 320,
+        "Uranus": 60, "Jupiter": 180,
+    }),
+    ("venus-sun-conjunction", {
+        "Venus": 100.0, "Sun": 100.405, "Mercury": 20, "Mars": 150,
+        "Pluto": 190, "Saturn": 230, "Neptune": 270, "Ceres": 310,
+        "Moon": 350, "Uranus": 50, "Jupiter": 200,
+    }),
+    ("inner-alignment", {
+        "Mercury": 274.8007325297467, "Venus": 284.23931723550777,
+        "Sun": 284.6440014763892, "Mars": 285.7588826483691,
+        "Pluto": 302.8404789942358, "Saturn": 20, "Neptune": 60,
+        "Ceres": 100, "Moon": 140, "Uranus": 180, "Jupiter": 220,
+    }),
+    ("outer-wrap-alignment", {
+        "Saturn": 356.41276254486604, "Neptune": 359.5610441804245,
+        "Ceres": 7.9496046464005525, "Mercury": 60, "Venus": 100,
+        "Sun": 140, "Mars": 180, "Pluto": 220, "Moon": 260,
+        "Uranus": 300, "Jupiter": 100,
+    }),
+    ("jupiter-moon-alignment", {
+        "Jupiter": 110.82906185524807, "Moon": 126.1796456120117,
+        "Mercury": 10, "Venus": 50, "Sun": 90, "Mars": 170,
+        "Pluto": 210, "Saturn": 250, "Neptune": 290, "Ceres": 330,
+        "Uranus": 200,
+    }),
+    ("all-W02-groups", {
+        "Mercury": W02_EXACT["Mercury"], "Venus": W02_EXACT["Venus"],
+        "Sun": W02_EXACT["Sun"], "Mars": W02_EXACT["Mars"],
+        "Pluto": W02_EXACT["Pluto"], "Saturn": W02_EXACT["Saturn"],
+        "Neptune": W02_EXACT["Neptune"], "Ceres": W02_EXACT["Ceres"],
+        "Jupiter": W02_EXACT["Jupiter"], "Moon": W02_EXACT["Moon"],
+        "Uranus": 180,
+    }),
+    ("exact-W02", W02_EXACT),
+]
+
 
 def test_level_10_w1_shaped_classification_has_two_large_alignments():
     bodies = w1_shaped_bodies()
     assert conjunction_groups(bodies) == []
     groups = group_names(alignment_groups(bodies))
-    assert groups == [
-        ["Sun", "Mercury", "Venus", "Mars", "Pluto"],
-        ["Saturn", "Neptune", "Ceres", "Moon"],
-    ]
+    assert groups == [["Sun", "Mercury", "Venus", "Mars", "Pluto"], ["Saturn", "Neptune", "Ceres", "Moon"]]
 
 
 @pytest.mark.parametrize("mode", MODES)
 def test_level_11_w1_shaped_full_state_machine_completes(monkeypatch, mode):
     monkeypatch.setenv("PLANET_FINDER_DIAGNOSTIC_LEVEL", "0")
     bodies = w1_shaped_bodies()
-    result = layout(
-        mode, bodies, target_solutions=1,
-        budget={"max_node_candidates": 200, "max_seconds": 30.0},
-        context_label=f"synthetic-W01-{mode.value}",
-    )
+    result = layout(mode, bodies, target_solutions=1, budget={"max_node_candidates": 200, "max_seconds": 30.0}, context_label=f"synthetic-W01-{mode.value}")
     assert_complete_valid_layout(result, bodies, mode)
 
 
@@ -208,19 +245,13 @@ def test_level_12_w1_shaped_full_state_machine_is_deterministic(monkeypatch, mod
 @pytest.mark.parametrize("level,longitudes", TIGHT_FIVE_LADDER, ids=[item[0] for item in TIGHT_FIVE_LADDER])
 @pytest.mark.parametrize("mode", MODES)
 def test_level_15_isolated_tight_five_breakpoint(monkeypatch, mode, level, longitudes):
-    """Locate the first failing geometry inside the real W01 five-body group."""
     monkeypatch.setenv("PLANET_FINDER_DIAGNOSTIC_LEVEL", "0")
     bodies = synthetic_bodies(longitudes)
     groups = group_names(alignment_groups(bodies))
     target = {"Mercury", "Venus", "Sun", "Mars", "Pluto"}
     matching = [group for group in groups if set(group) == target]
     assert len(matching) == 1, groups
-    result = layout(
-        mode, bodies, target_solutions=1,
-        budget={"max_node_candidates": 2000,
-                "max_seconds": 15.0 if mode == FinderMode.GREEK else 60.0},
-        context_label=f"tight-five-{level}-{mode.value}",
-    )
+    result = layout(mode, bodies, target_solutions=1, budget={"max_node_candidates": 2000, "max_seconds": 15.0 if mode == FinderMode.GREEK else 60.0}, context_label=f"tight-five-{level}-{mode.value}")
     assert_complete_valid_layout(result, bodies, mode)
 
 
@@ -229,12 +260,20 @@ def test_level_15_isolated_tight_five_breakpoint(monkeypatch, mode, level, longi
 def test_level_20_progressive_real_w01_geometry(monkeypatch, mode, level, longitudes):
     monkeypatch.setenv("PLANET_FINDER_DIAGNOSTIC_LEVEL", "0")
     bodies = synthetic_bodies(longitudes)
-    result = layout(
-        mode, bodies, target_solutions=1,
-        budget={"max_node_candidates": 2000,
-                "max_seconds": 15.0 if mode == FinderMode.GREEK else 60.0},
-        context_label=f"regression-{level}-{mode.value}",
-    )
+    result = layout(mode, bodies, target_solutions=1, budget={"max_node_candidates": 2000, "max_seconds": 15.0 if mode == FinderMode.GREEK else 60.0}, context_label=f"regression-{level}-{mode.value}")
     assert_complete_valid_layout(result, bodies, mode)
     if level in ("both-real-alignments", "exact-W01") and mode != FinderMode.GREEK:
         assert_alignment_labels_follow_lambda(result, bodies)
+
+
+@pytest.mark.parametrize("level,longitudes", W02_LADDER, ids=[item[0] for item in W02_LADDER])
+def test_level_30_progressive_real_w02_greek_breakpoint(monkeypatch, level, longitudes):
+    """Find the first W02 geometry that makes Greek preplacement explode."""
+    monkeypatch.setenv("PLANET_FINDER_DIAGNOSTIC_LEVEL", "0")
+    bodies = synthetic_bodies(longitudes)
+    result = layout(
+        FinderMode.GREEK, bodies, target_solutions=1,
+        budget={"max_node_candidates": 2000, "max_seconds": 15.0},
+        context_label=f"W02-ladder-{level}",
+    )
+    assert_complete_valid_layout(result, bodies, FinderMode.GREEK)
