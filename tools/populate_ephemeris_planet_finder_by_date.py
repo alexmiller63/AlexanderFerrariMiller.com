@@ -96,6 +96,16 @@ def populate_week(
     patch_planet_finder_layout(finder_path)
 
     bodies = finder_bodies(generated, week)
+    # Diagnostic fixture capture: print the exact production inputs so any
+    # real-week failure can be reproduced by a deterministic regression test
+    # without depending on the ephemeris engine.
+    print(
+        "PLANET_FINDER_FIXTURE "
+        + context_label
+        + " "
+        + repr({name: longitude for _, name, longitude in bodies}),
+        flush=True,
+    )
     # The week is the publication unit. Keep finder assets beneath the week
     # in both canonical and published trees so each weekly page is a complete,
     # self-contained package and its relative finders/... links are valid.
