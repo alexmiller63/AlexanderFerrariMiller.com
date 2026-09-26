@@ -5,11 +5,48 @@ A green classifier suite is not sufficient: the production state machine must
 complete the same conjunction/alignment/general-search phases used by a week.
 """
 
+import math
+
 import pytest
 
-from planet_finder_geometry import CANONICAL, FinderMode, alignment_groups, conjunction_groups
+from planet_finder_geometry import CANONICAL, CX, CY, FinderMode, alignment_groups, conjunction_groups
 from planet_finder_search import layout
+from planet_finder_search_core import _search_alignment_fallback
 from planet_finder_validation import validate_layout
+
+
+MODES = [FinderMode.GREEK, FinderMode.LATIN, FinderMode.MIXED]
+
+
+def test_blocked_preplacement_restores_alignment_before_recursive_retry():
+    """A dead ordinary-body search must release its planned alignment."""
+    placed = ["conjunction", "planned box"]
+    leaders = ["conjunction path", "planned path"]
+    leader_names = ["conjunction name", "aligned name"]
+    staged = {0: "conjunction row", 1: "planned row"}
+    groups = [[(1, ("symbol", "aligned name", 30.0))]]
+    calls = []
+
+    def search(depth):
+        assert depth == 0
+        calls.append("planned search")
+        assert staged[1] == "planned row"
+        return False
+
+    def recursive(group_index):
+        assert group_index == 0
+        calls.append("recursive retry")
+        assert placed == ["conjunction"]
+        assert leaders == ["conjunction path"]
+        assert leader_names == ["conjunction name"]
+        assert staged == {0: "conjunction row"}
+        return True
+
+    assert _search_alignment_fallback(
+        ({"aligned name": "planned box"}, {"aligned name": "planned path"}),
+        groups, placed, leaders, leader_names, staged, search, recursive,
+    )
+    assert calls == ["planned search", "recursive retry"]
 
 
 def synthetic_bodies(longitudes):
@@ -30,6 +67,19 @@ def assert_complete_valid_layout(result, bodies, mode=FinderMode.GREEK):
     assert set(actual) == expected
     valid, errors = validate_layout(mode, result)
     assert valid, errors
+
+
+def assert_alignment_labels_follow_lambda(result, bodies):
+    """The text labels in a planned alignment retain their circular order."""
+    boxes = {name: box for _, name, _, box, _ in result}
+    for group in alignment_groups(bodies):
+        reference = group[0][2] - 90.0
+        angles = []
+        for _, name, _ in group:
+            box = boxes[name]
+            longitude = (math.degrees(math.atan2(CY - box.y, box.x - CX)) - 180.0) % 360.0
+            angles.append((longitude - reference) % 360.0)
+        assert angles == sorted(angles), [item[1] for item in group]
 
 
 def w1_shaped_bodies():
@@ -131,30 +181,33 @@ def test_level_10_w1_shaped_classification_has_two_large_alignments():
     ]
 
 
-def test_level_11_w1_shaped_full_state_machine_completes(monkeypatch):
+@pytest.mark.parametrize("mode", MODES)
+def test_level_11_w1_shaped_full_state_machine_completes(monkeypatch, mode):
     monkeypatch.setenv("PLANET_FINDER_DIAGNOSTIC_LEVEL", "0")
     bodies = w1_shaped_bodies()
     result = layout(
-        FinderMode.GREEK, bodies, target_solutions=1,
+        mode, bodies, target_solutions=1,
         budget={"max_node_candidates": 200, "max_seconds": 30.0},
-        context_label="synthetic-W01",
+        context_label=f"synthetic-W01-{mode.value}",
     )
-    assert_complete_valid_layout(result, bodies)
+    assert_complete_valid_layout(result, bodies, mode)
 
 
-def test_level_12_w1_shaped_full_state_machine_is_deterministic(monkeypatch):
+@pytest.mark.parametrize("mode", MODES)
+def test_level_12_w1_shaped_full_state_machine_is_deterministic(monkeypatch, mode):
     monkeypatch.setenv("PLANET_FINDER_DIAGNOSTIC_LEVEL", "0")
     bodies = w1_shaped_bodies()
     budget = {"max_node_candidates": 200, "max_seconds": 30.0}
-    first = layout(FinderMode.GREEK, bodies, target_solutions=1, budget=budget, context_label="determinism-A")
-    second = layout(FinderMode.GREEK, bodies, target_solutions=1, budget=budget, context_label="determinism-B")
-    assert_complete_valid_layout(first, bodies)
-    assert_complete_valid_layout(second, bodies)
+    first = layout(mode, bodies, target_solutions=1, budget=budget, context_label=f"determinism-{mode.value}-A")
+    second = layout(mode, bodies, target_solutions=1, budget=budget, context_label=f"determinism-{mode.value}-B")
+    assert_complete_valid_layout(first, bodies, mode)
+    assert_complete_valid_layout(second, bodies, mode)
     assert first == second
 
 
 @pytest.mark.parametrize("level,longitudes", TIGHT_FIVE_LADDER, ids=[item[0] for item in TIGHT_FIVE_LADDER])
-def test_level_15_isolated_tight_five_breakpoint(monkeypatch, level, longitudes):
+@pytest.mark.parametrize("mode", MODES)
+def test_level_15_isolated_tight_five_breakpoint(monkeypatch, mode, level, longitudes):
     """Locate the first failing geometry inside the real W01 five-body group."""
     monkeypatch.setenv("PLANET_FINDER_DIAGNOSTIC_LEVEL", "0")
     bodies = synthetic_bodies(longitudes)
@@ -163,20 +216,25 @@ def test_level_15_isolated_tight_five_breakpoint(monkeypatch, level, longitudes)
     matching = [group for group in groups if set(group) == target]
     assert len(matching) == 1, groups
     result = layout(
-        FinderMode.GREEK, bodies, target_solutions=1,
-        budget={"max_node_candidates": 2000, "max_seconds": 15.0},
-        context_label=f"tight-five-{level}",
+        mode, bodies, target_solutions=1,
+        budget={"max_node_candidates": 2000,
+                "max_seconds": 15.0 if mode == FinderMode.GREEK else 60.0},
+        context_label=f"tight-five-{level}-{mode.value}",
     )
-    assert_complete_valid_layout(result, bodies)
+    assert_complete_valid_layout(result, bodies, mode)
 
 
 @pytest.mark.parametrize("level,longitudes", W01_LADDER, ids=[item[0] for item in W01_LADDER])
-def test_level_20_progressive_real_w01_geometry(monkeypatch, level, longitudes):
+@pytest.mark.parametrize("mode", MODES)
+def test_level_20_progressive_real_w01_geometry(monkeypatch, mode, level, longitudes):
     monkeypatch.setenv("PLANET_FINDER_DIAGNOSTIC_LEVEL", "0")
     bodies = synthetic_bodies(longitudes)
     result = layout(
-        FinderMode.GREEK, bodies, target_solutions=1,
-        budget={"max_node_candidates": 2000, "max_seconds": 15.0},
-        context_label=f"regression-{level}",
+        mode, bodies, target_solutions=1,
+        budget={"max_node_candidates": 2000,
+                "max_seconds": 15.0 if mode == FinderMode.GREEK else 60.0},
+        context_label=f"regression-{level}-{mode.value}",
     )
-    assert_complete_valid_layout(result, bodies)
+    assert_complete_valid_layout(result, bodies, mode)
+    if level in ("both-real-alignments", "exact-W01") and mode != FinderMode.GREEK:
+        assert_alignment_labels_follow_lambda(result, bodies)

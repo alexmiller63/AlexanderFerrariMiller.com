@@ -23,7 +23,7 @@ from planet_finder_geometry import (
     xy, boxes_overlap, segment_hits_box, point_segment_distance,
     segments_too_close, leaders_too_close, leader_hits_zodiac_rim, minimum_leader_separation,
     label_size, reserved_boxes, candidate_positions,
-    legal_candidate_positions, route,
+    legal_candidate_positions, route, alignment_groups, conjunction_groups, conjunction_glyph_radii,
 )
 
 
@@ -96,6 +96,27 @@ def new_search_budget():
         "max_seconds": max_seconds,
     }
 
+
+def _search_alignment_fallback(preplacement, groups, placed, leaders, leader_names,
+                               staged, search, solve_alignment_group):
+    """Try a planned layer, then restore it before recursive backtracking."""
+    if preplacement:
+        if search(0):
+            return True
+        planned, _ = preplacement
+        for group in groups:
+            for original_index, _ in group:
+                staged.pop(original_index)
+        del placed[-len(planned):]
+        del leaders[-len(planned):]
+        del leader_names[-len(planned):]
+        diagnostic_print("Planet Finder: ALIGNMENT PREPLACEMENT BLOCKED; "
+                         "retrying recursive alignment layer", flush=True)
+    if groups:
+        return solve_alignment_group(0)
+    return search(0)
+
+
 def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_index=1, total_orders=None, context_label=None, displacement_scale=2.0, body_attempts=None, refinement_deadline=None):
     """Solve one fixed body ordering with recursive depth-first search.
 
@@ -143,6 +164,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
     contest_keys = []
     current_body = "-"
     exhausted = False
+
     def dump_diagnostics(reason):
         # A capped ordering is expected control flow, not a terminal failure.
         # Emit one compact summary for it; full forensic dumps are reserved
@@ -168,6 +190,13 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             flush=True,
         )
         diagnostic_print(f"Planet Finder {mode}: TERMINAL ORDER sequence={order_names}", flush=True)
+        # Diagnostics may contain conjunction/alignment bodies that were
+        # solved and removed from the ordinary DFS order.  Longitudes therefore
+        # come from the authoritative full input, not the reduced DFS order.
+        longitude_by_name = {
+            name: longitude
+            for _, name, longitude in bodies
+        }
         for (depth, name), s in sorted(diagnostic_stats.items()):
             immutable_names = {
                 reserved_names[i] if i < len(reserved_names) else str(i): count
@@ -175,6 +204,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             }
             diagnostic_print(
                 f"Planet Finder {mode}: TERMINAL BODY depth={depth}/{len(order)} body={name} "
+                f"lambda={longitude_by_name[name]:.3f}deg "
                 f"status={'evaluated' if s.get('started') else ('blocked-' + s['blocked'] if s.get('blocked') else 'not-evaluated')} "
                 f"generated={s['generated']:,} viable={s['viable']:,} "
                 f"rejects[immutable-reserved={s.get('immutable_reserved', 0):,},"
@@ -218,33 +248,3 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                         f"{'/'.join(labels)}={count:,}"
                         for labels, count in sorted(
                             by_obstacles.items(),
-                            key=lambda item: (-item[1], item[0]),
-                        )[:12]
-                    ),
-                    flush=True,
-                )
-        for depth in sorted(set(depth_residence) | set(depth_visits)):
-            body_name = order[depth][1][1] if depth < len(order) else "complete-layout"
-            diagnostic_print(
-                f"Planet Finder {mode}: TERMINAL DFS-TIME depth={depth}/{len(order)} "
-                f"body={body_name} residence={depth_residence.get(depth, 0.0):.3f}s "
-                f"visits={depth_visits.get(depth, 0):,}",
-                flush=True,
-            )
-        for (depth, name), r in sorted(route_diagnostics.items()):
-            blockers = r.get("straight_blockers", {})
-            obstacle_names = r.get("obstacle_names", [])
-            named_blockers = {
-                (obstacle_names[int(key.split("_", 1)[1])] if key.startswith("obstacle_") and int(key.split("_", 1)[1]) < len(obstacle_names) else key): count
-                for key, count in blockers.items()
-            }
-            diagnostic_print(
-                f"Planet Finder {mode}: TERMINAL ROUTE depth={depth}/{len(order)} body={name} "
-                f"straight_blocked={r.get('straight_blocked', 0):,} "
-                f"route_failed={r.get('route_failed', 0):,} "
-                f"anchor_blocked={r.get('anchor_blocked', 0):,} "
-                f"dogleg_failed={r.get('dogleg_failed', 0):,} "
-                f"straight_blockers={named_blockers}",
-                flush=True,
-            )
-        aggregate = {}

@@ -96,6 +96,27 @@ def new_search_budget():
         "max_seconds": max_seconds,
     }
 
+
+def _search_alignment_fallback(preplacement, groups, placed, leaders, leader_names,
+                               staged, search, solve_alignment_group):
+    """Try a planned layer, then restore it before recursive backtracking."""
+    if preplacement:
+        if search(0):
+            return True
+        planned, _ = preplacement
+        for group in groups:
+            for original_index, _ in group:
+                staged.pop(original_index)
+        del placed[-len(planned):]
+        del leaders[-len(planned):]
+        del leader_names[-len(planned):]
+        diagnostic_print("Planet Finder: ALIGNMENT PREPLACEMENT BLOCKED; "
+                         "retrying recursive alignment layer", flush=True)
+    if groups:
+        return solve_alignment_group(0)
+    return search(0)
+
+
 def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_index=1, total_orders=None, context_label=None, displacement_scale=2.0, body_attempts=None, refinement_deadline=None):
     """Solve one fixed body ordering with recursive depth-first search.
 
@@ -593,6 +614,134 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         for group in alignment_groups(bodies)
     ]
 
+    def plan_alignment_layer():
+        """Preplace the alignment as one ordered, route-compatible layer.
+
+        A bounded constraint search starts with nearby labels, keeps each
+        group's circular lambda order, and checks routes while adding labels.
+        The recursive alignment search below remains the fallback if this
+        preferred pool cannot supply a complete layer.
+        """
+        items = [item for group in alignment_group_items for item in group]
+        if not items:
+            return None
+        # Ordinary recursive placement already handles broader alignments.
+        # Reserve the group planner for the close pairs that make sequential
+        # first-fit placement expensive in the wider text modes.
+        close_gap = min(
+            (right[1][2] - left[1][2]) % 360.0
+            for group in alignment_group_items
+            for left, right in zip(group, group[1:])
+        )
+        if close_gap >= 3.0:
+            return None
+        pools = {}
+        order_names = [item[1][1] for item in items]
+        longitudes = {item[1][1]: item[1][2] for item in items}
+        anchors = {name: xy(longitude, glyph_radii[name])
+                   for name, longitude in longitudes.items()}
+        group_names = [[item[1][1] for item in group] for group in alignment_group_items]
+
+        def label_angle(row, reference):
+            x, y, _ = row
+            angle = (math.degrees(math.atan2(CY - y, x - CX)) - 180.0) % 360.0
+            return (angle - reference) % 360.0
+
+        def ordered(chosen):
+            for names in group_names:
+                reference = longitudes[names[0]] - 90.0
+                present = [name for name in names if name in chosen]
+                if any(label_angle(chosen[a], reference) >= label_angle(chosen[b], reference)
+                       for a, b in zip(present, present[1:])):
+                    return False
+            return True
+
+        def planned_paths(chosen):
+            paths = {}
+            for name in order_names:
+                if name not in chosen:
+                    continue
+                x, y, _ = chosen[name]
+                other_boxes = [row[2] for other, row in chosen.items() if other != name]
+                path = route(
+                    anchors[name], (x, y), reserved + placed + other_boxes,
+                    allow_initial_escape_count=3,
+                )
+                if path is None or any(
+                    segment_hits_box(path[i], path[i + 1], box, PLACED_LABEL_LEADER_CLEARANCE)
+                    for box in other_boxes for i in range(len(path) - 1)
+                ) or leader_hits_zodiac_rim(path) or leaders_too_close(
+                    path, leaders + list(paths.values())
+                ):
+                    return None
+                paths[name] = path
+            return paths
+
+        for _, (_, name, longitude) in items:
+            w, h = label_size(mode, name)
+            natural = xy(longitude, PREFERRED_LABEL_RADII[0])
+            options = [
+                row for row in legal_candidate_positions(
+                    longitude, w, h, reserved, displacement_scale
+                )
+                if not any(boxes_overlap(row[2], box, LABEL_COLLISION_PADDING) for box in placed)
+                and not any(segment_hits_box(path[i], path[i + 1], row[2], 10)
+                            for path in leaders for i in range(len(path) - 1))
+            ]
+            options.sort(key=lambda row: math.hypot(row[0] - natural[0], row[1] - natural[1]))
+            pools[name] = options[:80]
+            if not pools[name]:
+                return None
+
+        nodes = 0
+
+        def assign(remaining, available, chosen):
+            nonlocal nodes
+            if not remaining:
+                return (chosen, planned_paths(chosen))
+            name = min(remaining, key=lambda candidate: (len(available[candidate]), order_names.index(candidate)))
+            others = [candidate for candidate in remaining if candidate != name]
+            for row in available[name]:
+                nodes += 1
+                if nodes > 50000 or (refinement_deadline is not None and
+                                     time.monotonic() >= refinement_deadline):
+                    return None
+                next_available = {
+                    candidate: [option for option in available[candidate]
+                                if not boxes_overlap(row[2], option[2], LABEL_COLLISION_PADDING)]
+                    for candidate in others
+                }
+                if any(not next_available[candidate] for candidate in others):
+                    continue
+                trial = {**chosen, name: row}
+                if not ordered(trial) or planned_paths(trial) is None:
+                    continue
+                result = assign(others, next_available, trial)
+                if result is not None:
+                    return result
+            return None
+
+        result = assign(order_names, pools, {})
+        planned = result[0] if result else {}
+        diagnostic_print(
+            f"Planet Finder {mode}: ALIGNMENT PREPLACEMENT "
+            f"planned={len(planned)}/{len(order_names)} nodes={nodes}",
+            flush=True,
+        )
+        return result
+
+    alignment_preplacement = plan_alignment_layer()
+    if alignment_preplacement:
+        planned, paths = alignment_preplacement
+        for group in alignment_group_items:
+            for original_index, (symbol, name, longitude) in group:
+                box = planned[name][2]
+                path = paths[name]
+                placed.append(box)
+                leaders.append(path)
+                leader_names.append(name)
+                staged[original_index] = (symbol, name, longitude, box, path)
+
     def solve_alignment_members(group_index, remaining_items):
         if not remaining_items:
             return solve_alignment_group(group_index + 1)
@@ -637,7 +786,10 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
 
     def solve_alignment_group(group_index):
         if group_index == len(alignment_group_items):
-            return True
+            # An alignment is viable only if the ordinary bodies can finish
+            # the layout. Let a dead ordinary-body subtree backtrack into the
+            # alignment layer instead of freezing its first complete plan.
+            return search(0)
         group_items = alignment_group_items[group_index]
         placed_mark = len(placed)
         leaders_mark = len(leaders)
@@ -662,21 +814,6 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             if key not in staged_before:
                 staged.pop(key, None)
         return False
-
-    if alignment_group_items and not solve_alignment_group(0):
-        names = " | ".join(
-            " > ".join(item[1][1] for item in group_items)
-            for group_items in alignment_group_items
-        )
-        raise RuntimeError(
-            f"Planet Finder {mode}: unable to solve recursive alignment layer: {names}"
-        )
-
-    if alignment_group_items:
-        diagnostic_print(
-            f"Planet Finder {mode}: FIXED ALIGNMENT LAYER groups={len(alignment_group_items)}",
-            flush=True,
-        )
 
     forward_stats = {"checks": 0, "pruned": 0, "witnesses": 0, "by_body": {}}
     # Bodies that actually make a forward check fail.  Without this, a prefix
@@ -960,7 +1097,11 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         return False
 
     try:
-        exhausted = not search(0)
+        solved = _search_alignment_fallback(
+            alignment_preplacement, alignment_group_items, placed, leaders,
+            leader_names, staged, search, solve_alignment_group,
+        )
+        exhausted = not solved
     except DepthNodeBudgetExhausted as exc:
         # Hitting the per-body/depth cap is the squeaky-wheel signal.  Report
         # this fixed ordering, then let layout() discard the whole DFS napkin

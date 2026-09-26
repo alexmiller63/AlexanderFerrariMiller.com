@@ -1,3 +1,160 @@
+                    round(row[3].y, 3),
+                    tuple((round(x, 3), round(y, 3)) for x, y in row[4]),
+                )
+                for row in result
+            )
+            if key not in solution_keys:
+                solution_keys.add(key)
+                valid, errors = validate_layout(mode, result)
+                if valid:
+                    solutions.append(result)
+                    contest_keys.append(key)
+                    diagnostic_print(
+                        f"Planet Finder {mode}: complete valid candidate "
+                        f"{len(solutions)}/{target_solutions} "
+                        f"order={order_index} placement-order=" +
+                        " > ".join(row[1] for row in result),
+                        flush=True,
+                    )
+                else:
+                    diagnostic_print(
+                        f"Planet Finder {mode}: rejected complete layout "
+                        f"order={order_index} errors=" + "; ".join(errors),
+                        flush=True,
+                    )
+            return len(solutions) >= target_solutions
+
+        item = order[depth]
+        original_index, (symbol, name, longitude) = item
+        current_body = name
+        generated_here = False
+
+        for box, path in viable_candidates(item, depth):
+            generated_here = True
+            candidates += 1
+            placed.append(box)
+            leaders.append(path)
+            leader_names.append(name)
+            staged[original_index] = (symbol, name, longitude, box, path)
+
+            child_deepest_before = deepest
+            child_nodes_before = nodes
+            child_backtracks_before = backtracks
+            try:
+                # Forward checking asks only for one viable witness for every
+                # remaining body. Zero proves this prefix is dead; one is
+                # enough to preserve it for the real DFS.
+
+                if search(depth + 1):
+                    return True
+            finally:
+                staged.pop(original_index, None)
+                leaders.pop()
+                leader_names.pop()
+                placed.pop()
+
+            backtracks += 1
+            # Prefix diagnostic: when an individually legal candidate cannot
+            # extend to a complete layout, report how far its child subtree
+            # actually reached. This observes DFS behavior without changing it.
+            if mode == FinderMode.MIXED and depth <= 1:
+                diagnostic_print(
+                    f"Planet Finder {mode}: PREFIX BACKTRACK "
+                    f"depth={depth}/{len(order)} body={name} "
+                    f"candidate={candidates} "
+                    f"child-deepest={deepest}/{len(order)} "
+                    f"new-depth={deepest > child_deepest_before} "
+                    f"child-nodes={nodes - child_nodes_before} "
+                    f"child-backtracks={backtracks - child_backtracks_before}",
+                    level=2,
+                    flush=True,
+                )
+
+        if not generated_here:
+            dead_key = (depth, name)
+            dead_end_visits[dead_key] = dead_end_visits.get(dead_key, 0) + 1
+            # Reuse the same per-body cap: too many candidates in one prefix
+            # or too many zero-candidate prefixes both identify a squeaky wheel.
+            if dead_end_visits[dead_key] >= budget["max_node_candidates"]:
+                diagnostic_print(
+                    f"Planet Finder {mode}: REPEATED-DEAD-END STOP order={order_index} "
+                    f"depth={depth}/{len(order)} body={name} "
+                    f"dead-ends={dead_end_visits[dead_key]:,}/{budget['max_node_candidates']:,}",
+                    flush=True,
+                )
+                raise DepthNodeBudgetExhausted(depth, name)
+            stats = diagnostic_stats[(depth, name)]
+            diagnostic_print(
+                f"Planet Finder {mode}: dead end order={order_index} "
+                f"depth={depth}/{len(order)} body={name} "
+                f"status={'evaluated' if stats.get('started') else 'not-evaluated'} "
+                f"generated={stats['generated']:,} viable={stats['viable']:,} "
+                f"rejects[overlap={stats['overlap']:,},leader={stats['leader']:,},"
+                f"route={stats['route']:,}]",
+                level=2,
+                flush=True,
+            )
+        return False
+
+    try:
+        solved = _search_alignment_fallback(
+            alignment_preplacement, alignment_group_items, placed, leaders,
+            leader_names, staged, search, solve_alignment_group,
+        )
+        exhausted = not solved
+    except DepthNodeBudgetExhausted as exc:
+        # Hitting the per-body/depth cap is the squeaky-wheel signal.  Report
+        # this fixed ordering, then let layout() discard the whole DFS napkin
+        # and retry from a clean state with that body promoted to first.
+        dump_diagnostics(
+            f"node budget exhausted at depth={exc.depth}/{len(order)} body={exc.name}"
+        )
+        raise
+    except RuntimeError as exc:
+        dump_diagnostics(f"runtime failure: {exc}")
+        raise
+
+    if exhausted:
+        dump_diagnostics("search exhausted without a complete solution")
+
+    elapsed = time.monotonic() - started
+    diagnostic_print(
+        f"Planet Finder {mode}: fixed-order summary order={order_index} "
+        f"exhausted={exhausted} elapsed={elapsed:.2f}s nodes={nodes:,} "
+        f"deepest={deepest}/{len(order)} candidates={candidates:,} "
+        f"rejects[overlap={rejected_overlap:,},leader={rejected_leader:,},"
+        f"route={rejected_route:,}] backtracks={backtracks:,} "
+        f"solutions={len(solutions)}",
+        flush=True,
+    )
+    blocker = None
+    if exhausted:
+        # Prefer the body that actually caused forward-check pruning.  A
+        # forward-pruned child is never entered by DFS, so `deepest` otherwise
+        # misidentifies the parent as the blocker and the controller repeatedly
+        # promotes the wrong body.
+        if forward_blockers:
+            order_rank = {item[1][1]: depth for depth, item in enumerate(order)}
+            blocker = min(
+                forward_blockers,
+                key=lambda name: (-forward_blockers[name], order_rank.get(name, len(order))),
+            )
+            diagnostic_print(
+                f"Planet Finder {mode}: FORWARD BLOCKER body={blocker} "
+                f"prunes={forward_blockers[blocker]:,} all={forward_blockers}",
+                flush=True,
+            )
+        else:
+            # No forward-pruning evidence: fall back to the deepest DFS body.
+            blocker_depth = min(deepest, len(order) - 1)
+            blocker = order[blocker_depth][1][1]
+    blocker_stats = None
+    if blocker is not None:
+        blocker_depth = next(
+            (depth for depth, item in enumerate(order) if item[1][1] == blocker),
+            None,
+        )
+        if blocker_depth is not None:
             s = diagnostic_stats.get((blocker_depth, blocker), {})
             blocker_stats = {
                 "immutable_reserved": s.get("immutable_reserved", 0),
