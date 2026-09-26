@@ -22,7 +22,7 @@ def test_separate_bodies_are_not_groups():
 
 def test_conjunction_glyph_radii_follow_lambda_order():
     bodies = [("sun", "Sun", 284.644), ("venus", "Venus", 284.239), ("mars", "Mars", 10.0)]
-    radii = conjunction_glyph_radii(bodies, base_radius=425.0, step=34.0)
-    assert radii["Venus"] == 408.0
-    assert radii["Sun"] == 442.0
+    radii = conjunction_glyph_radii(bodies, base_radius=425.0, step=48.0)
+    assert radii["Venus"] == 401.0
+    assert radii["Sun"] == 449.0
     assert radii["Mars"] == 425.0

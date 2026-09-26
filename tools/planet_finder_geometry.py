@@ -58,7 +58,7 @@ def angular_separation_degrees(a: float, b: float) -> float:
     return abs((a - b + 180.0) % 360.0 - 180.0)
 
 
-CONJUNCTION_GLYPH_RADIUS_STEP = 34.0
+CONJUNCTION_GLYPH_RADIUS_STEP = 48.0
 
 
 def conjunction_glyph_radii(bodies, base_radius: float = RI - 5, step: float = CONJUNCTION_GLYPH_RADIUS_STEP):
