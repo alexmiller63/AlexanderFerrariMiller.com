@@ -136,17 +136,17 @@ def layout(
     # Preserve controller history across refinements for terminal diagnosis.
     refinement_history = []
 
-    # Explicit search-controller state machine. Search attempts report events;
+    # Explicit search-controller state machine. Search attempts report facts;
     # only the controller changes ordering or placement refinement.
     #
     # SEARCH_ORDER -> SCORE    on SOLVED
-    # SEARCH_ORDER -> CAPPED   on CAPPED(body)
-    # SEARCH_ORDER -> PROMOTE  on EXHAUSTED(blocker)
-    # CAPPED       -> SEARCH_ORDER while another bounded sideways position exists
-    # CAPPED       -> REFINE when all three bounded positions are exhausted
-    # PROMOTE      -> SEARCH_ORDER when the exhausted blocker ordering is new
-    # PROMOTE      -> REFINE   when EXHAUSTED promotion closes an ordering cycle
+    # SEARCH_ORDER -> PROMOTE  on BLOCKED(body), whether CAPPED or EXHAUSTED
+    # PROMOTE      -> SEARCH_ORDER after moving the sticky blocker left one step
+    # PROMOTE      -> REFINE   when that blocker has reached position 0
     # REFINE       -> SEARCH_ORDER at the next placement scale
+    #
+    # CAPPED versus EXHAUSTED remains diagnostic information only.  It does
+    # not select a second reordering policy.
     state = "SEARCH_ORDER"
     promote_body = None
     sticky_promote_body = None
@@ -222,37 +222,6 @@ def layout(
                 f"to {refinement_scales[refinement_index]:g} label-lengths; "
                 "resetting candidate budgets; preserving learned sequence="
                 + " > ".join(item[1][1] for item in order),
-                flush=True,
-            )
-            state = "SEARCH_ORDER"
-            continue
-
-        if state == "CAPPED":
-            # A node cap is incomplete evidence. Exhaust the three explicitly
-            # bounded positions for this body (front, one step right, far side)
-            # before allowing the controller to change placement refinement.
-            promoted_order = next_promotion_order(order, promote_body)
-            if promoted_order is None:
-                cycle_names = " > ".join(item[1][1] for item in order)
-                diagnostic_print(
-                    f"Planet Finder {mode}: CAPPED SIDEWAYS CYCLE CLOSED body={promote_body}; "
-                    f"orderings={len(attempted_orders)} "
-                    f"at {refinement_scales[refinement_index]:g} label-lengths "
-                    f"sequence={cycle_names}; refining",
-                    flush=True,
-                )
-                state = "REFINE"
-                continue
-            promoted_names = tuple(item[1][1] for item in promoted_order)
-            # Each bounded ordering gets a fresh 200-candidate budget for the
-            # capped body. Forward checking remains outside this accounting.
-            body_attempts[promote_body] = 0
-            order = promoted_order
-            diagnostic_print(
-                f"Planet Finder {mode}: CAPPED SIDEWAYS body={promote_body}; "
-                f"reset candidate budget to 0/{budget['max_node_candidates']:,}; "
-                "trying next bounded position sequence="
-                + " > ".join(promoted_names),
                 flush=True,
             )
             state = "SEARCH_ORDER"
@@ -355,9 +324,13 @@ def layout(
 
         all_solutions = outcome.solutions
         contest_keys = outcome.contest_keys
-        promote_body = outcome.blocker
-        if sticky_promote_body is not None and outcome.kind == "EXHAUSTED":
-            promote_body = sticky_promote_body
+        # Once promotion starts, the selected blocker remains sticky regardless
+        # of whether a subsequent fixed-order attempt reports CAPPED or
+        # EXHAUSTED for another body.  Finish learning this body's ordering
+        # before changing refinement or selecting another blocker.
+        if sticky_promote_body is None:
+            sticky_promote_body = outcome.blocker
+        promote_body = sticky_promote_body
         refinement_history.append({
             "scale": refinement_scales[refinement_index],
             "kind": outcome.kind,
@@ -371,10 +344,10 @@ def layout(
             f"body={promote_body} contestants={len(all_solutions)}/{target_solutions}",
             flush=True,
         )
-        # EXHAUSTED is proof about the complete fixed-order search and may
-        # participate in the refinement state machine. CAPPED is only a safety
-        # interruption and gets its own non-refining transition.
-        state = "CAPPED" if outcome.kind == "CAPPED" else "PROMOTE"
+        # CAPPED and EXHAUSTED are different diagnostic facts, but both mean
+        # this fixed ordering did not produce the requested contest.  Ordering
+        # policy is unified: both enter the same sticky promotion state.
+        state = "PROMOTE"
 
     if not all_solutions:
         raise RuntimeError(
