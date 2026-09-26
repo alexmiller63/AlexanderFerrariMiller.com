@@ -1,6 +1,6 @@
 from pathlib import Path
 
-ENABLED = False
+ENABLED = True
 
 if not ENABLED:
     print("Repair Once is OFF; nothing to do.")
@@ -9,23 +9,36 @@ if not ENABLED:
 path = Path("tools/planet_finder_search_core.py")
 text = path.read_text()
 
-needle = '''                raise RuntimeError(
-                    f"Planet Finder {mode} mode wall-clock budget exhausted "
-                    f"during candidate generation for {name} after {run_elapsed:.1f}s "
+needle = '''        for (depth, name), s in sorted(diagnostic_stats.items()):
+            immutable_names = {
 '''
-
-replacement = '''                dump_diagnostics("wall-clock")
-                raise RuntimeError(
-                    f"Planet Finder {mode} mode wall-clock budget exhausted "
-                    f"during candidate generation for {name} after {run_elapsed:.1f}s "
+replacement = '''        longitude_by_name = {
+            item[1][1]: item[1][2]
+            for item in order
+        }
+        for (depth, name), s in sorted(diagnostic_stats.items()):
+            immutable_names = {
 '''
 
 if text.count(needle) != 1:
     raise SystemExit(
-        f"Safety stop: expected candidate-generation timeout once; found {text.count(needle)}"
+        f"Safety stop: expected terminal body loop once; found {text.count(needle)}"
     )
-
 text = text.replace(needle, replacement, 1)
-path.write_text(text)
 
-print("Added full terminal diagnostic before candidate-generation wall-clock exception.")
+needle = '''                f"Planet Finder {mode}: TERMINAL BODY depth={depth}/{len(order)} body={name} "
+                f"status={'evaluated' if s.get('started') else ('blocked-' + s['blocked'] if s.get('blocked') else 'not-evaluated')} "
+'''
+replacement = '''                f"Planet Finder {mode}: TERMINAL BODY depth={depth}/{len(order)} body={name} "
+                f"lambda={longitude_by_name[name]:.3f}deg "
+                f"status={'evaluated' if s.get('started') else ('blocked-' + s['blocked'] if s.get('blocked') else 'not-evaluated')} "
+'''
+
+if text.count(needle) != 1:
+    raise SystemExit(
+        f"Safety stop: expected TERMINAL BODY format once; found {text.count(needle)}"
+    )
+text = text.replace(needle, replacement, 1)
+
+path.write_text(text)
+print("Added ecliptic longitude to every TERMINAL BODY diagnostic.")
