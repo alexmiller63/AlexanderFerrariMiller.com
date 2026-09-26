@@ -23,7 +23,7 @@ from planet_finder_geometry import (
     xy, boxes_overlap, segment_hits_box, point_segment_distance,
     segments_too_close, leaders_too_close, leader_hits_zodiac_rim, minimum_leader_separation,
     label_size, reserved_boxes, candidate_positions,
-    legal_candidate_positions, route, conjunction_groups,
+    legal_candidate_positions, route, alignment_groups, conjunction_groups,
 )
 
 
@@ -117,6 +117,26 @@ def layout(
                 item[1]
                 for group in conjunction_groups(bodies)
                 for item in group
+            )
+            + "; remaining after conjunctions=" + str(len(indexed)),
+            flush=True,
+        )
+
+    # Broad alignments are the second placement phase.  Their members are
+    # solved and frozen inside _solve_order after conjunctions, so the general
+    # squeaky-wheel controller must never promote or recursively reconsider them.
+    alignment_names = {
+        item[1]
+        for group in alignment_groups(bodies)
+        for item in group
+    }
+    indexed = [item for item in indexed if item[1][1] not in alignment_names]
+    if alignment_names:
+        diagnostic_print(
+            f"Planet Finder {mode}: FIXED ALIGNMENTS "
+            + " | ".join(
+                " > ".join(item[1] for item in group)
+                for group in alignment_groups(bodies)
             )
             + "; recursive bodies=" + str(len(indexed)),
             flush=True,

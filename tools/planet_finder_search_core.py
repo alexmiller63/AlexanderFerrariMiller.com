@@ -23,7 +23,7 @@ from planet_finder_geometry import (
     xy, boxes_overlap, segment_hits_box, point_segment_distance,
     segments_too_close, leaders_too_close, leader_hits_zodiac_rim, minimum_leader_separation,
     label_size, reserved_boxes, candidate_positions,
-    legal_candidate_positions, route, conjunction_groups, conjunction_glyph_radii,
+    legal_candidate_positions, route, alignment_groups, conjunction_groups, conjunction_glyph_radii,
 )
 
 
@@ -580,6 +580,49 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 f"lambda={longitude % 360.0:.3f}deg radius={glyph_radii[name]:.1f}",
                 flush=True,
             )
+
+    # Second deterministic phase: solve each broad alignment against immutable
+    # geometry and all already-frozen conjunction/alignment placements.  Unlike
+    # conjunctions, alignment siblings use ordinary label/leader collision
+    # rules.  A small local DFS solves the entire group before it is frozen;
+    # failure backtracks only within the group, never into a conjunction.
+    for group_index, group in enumerate(alignment_groups(bodies)):
+        group_items = [by_name[item[1]] for item in group]
+
+        def place_alignment_member(member_index):
+            if member_index == len(group_items):
+                return True
+            item = group_items[member_index]
+            original_index, (symbol, name, longitude) = item
+            # Negative diagnostic depths keep this pre-pass visibly distinct
+            # from the ordinary recursive body's 0..N search depths.
+            diagnostic_depth = -(group_index + 1)
+            for box, path in viable_candidates(
+                item, diagnostic_depth, consume_body_budget=False
+            ):
+                placed.append(box)
+                leaders.append(path)
+                leader_names.append(name)
+                staged[original_index] = (symbol, name, longitude, box, path)
+                if place_alignment_member(member_index + 1):
+                    return True
+                staged.pop(original_index, None)
+                leader_names.pop()
+                leaders.pop()
+                placed.pop()
+            return False
+
+        if not place_alignment_member(0):
+            names = " > ".join(item[1][1] for item in group_items)
+            raise RuntimeError(
+                f"Planet Finder {mode}: unable to place alignment group "
+                f"{group_index + 1}: {names}"
+            )
+        diagnostic_print(
+            f"Planet Finder {mode}: FIXED ALIGNMENT PLACED group={group_index + 1} "
+            + " > ".join(item[1][1] for item in group_items),
+            flush=True,
+        )
 
     forward_stats = {"checks": 0, "pruned": 0, "witnesses": 0, "by_body": {}}
     # Bodies that actually make a forward check fail.  Without this, a prefix
