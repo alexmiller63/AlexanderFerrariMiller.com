@@ -643,10 +643,11 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             leader_names.append(name)
             staged[original_index] = (symbol, name, longitude, box, path)
             solved = solve_alignment_members(group_index, next_remaining)
-            staged.pop(original_index, None)
-            leader_names.pop()
-            leaders.pop()
-            placed.pop()
+            if not solved:
+                staged.pop(original_index, None)
+                leader_names.pop()
+                leaders.pop()
+                placed.pop()
             return solved
 
         try:
