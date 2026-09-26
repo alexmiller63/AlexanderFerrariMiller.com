@@ -15,28 +15,61 @@ def polyline(points):
     return f'<polyline points="{pts}" fill="none" stroke="#777" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/>'
 
 
-def label_edge_point(box, source):
-    """Return the intersection of source->label-center with the label boundary.
+def segment_box_entry(a, b, box):
+    """Return the first point where segment a->b enters the label rectangle.
 
-    Search routes terminate at the label center because that is convenient for
-    routing.  Rendering must not draw that final segment through the label.
+    None means the segment never reaches the rectangle.  This is deliberately
+    independent of which route segment was intended to be the final approach:
+    rendering stops at the *first* contact with the body's own label.
     """
-    dx = source[0] - box.x
-    dy = source[1] - box.y
-    if abs(dx) < 1e-12 and abs(dy) < 1e-12:
-        return box.x, box.y
-    scale = min(
-        box.w / (2.0 * abs(dx)) if abs(dx) >= 1e-12 else float("inf"),
-        box.h / (2.0 * abs(dy)) if abs(dy) >= 1e-12 else float("inf"),
-    )
-    return box.x + dx * scale, box.y + dy * scale
+    x0, y0 = a
+    dx = b[0] - x0
+    dy = b[1] - y0
+    t_enter = 0.0
+    t_exit = 1.0
+
+    for p, q in (
+        (-dx, x0 - box.left),
+        ( dx, box.right - x0),
+        (-dy, y0 - box.top),
+        ( dy, box.bottom - y0),
+    ):
+        if abs(p) < 1e-12:
+            if q < 0:
+                return None
+            continue
+        r = q / p
+        if p < 0:
+            t_enter = max(t_enter, r)
+        else:
+            t_exit = min(t_exit, r)
+        if t_enter > t_exit:
+            return None
+
+    if t_exit < 0.0 or t_enter > 1.0:
+        return None
+    t = max(0.0, t_enter)
+    return x0 + t * dx, y0 + t * dy
 
 
 def rendered_leader(path, box):
-    """Clip a routed leader to its own label boundary."""
+    """Clip a routed leader at its first contact with its own label.
+
+    A route normally ends at the label center, but a dogleg can encounter the
+    label on an earlier segment.  Clipping only the nominal final segment lets
+    that earlier segment penetrate the label.  First-contact clipping makes
+    own-label penetration impossible in the rendered SVG.
+    """
     if len(path) < 2:
         return path
-    return [*path[:-1], label_edge_point(box, path[-2])]
+    rendered = [path[0]]
+    for a, b in zip(path, path[1:]):
+        hit = segment_box_entry(a, b, box)
+        if hit is not None:
+            rendered.append(hit)
+            return rendered
+        rendered.append(b)
+    return rendered
 
 
 def render(
@@ -101,9 +134,8 @@ def render(
                 f"box=center({box.x:.6f},{box.y:.6f}) size({box.w:.6f},{box.h:.6f}) "
                 f"search_path={path!r} rendered_path={rendered!r}"
             )
-        # route() deliberately ends at the label center. Clip that final
-        # segment to the label boundary so a leader can never enter its own
-        # rendered label (W01 Mixed Saturn exposed this rendering defect).
+        # Stop at the first contact with this label, even when a dogleg reaches
+        # it before the route's nominal final approach.
         out.append(polyline(rendered_leader(path, box)))
         if mode == "greek":
             out.append(f'<circle cx="{box.x:.1f}" cy="{box.y:.1f}" r="29" fill="white" stroke="#111"/>')
