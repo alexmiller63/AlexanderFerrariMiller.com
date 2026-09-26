@@ -110,6 +110,12 @@ def conjunction_groups(bodies, threshold: float = NEAR_CONJUNCTION_DEGREES):
             current = [item]
     if len(current) > 1:
         groups.append(current)
+
+    # Keep members of each conjunction in circular lambda order, but make the
+    # list of independent conjunctions deterministic by the first member's
+    # normalized longitude.  This prevents the arbitrary circular scan break
+    # from rotating otherwise independent groups.
+    groups.sort(key=lambda group: group[0][2] % 360.0)
     return groups
 
 
