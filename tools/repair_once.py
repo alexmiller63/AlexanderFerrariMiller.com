@@ -1,30 +1,41 @@
 from pathlib import Path
 
-ENABLED = False
+ENABLED = True
 
 if not ENABLED:
     print("Repair Once is OFF; nothing to do.")
     raise SystemExit(0)
 
-path = Path("tools/planet_finder_geometry.py")
+path = Path("tools/planet_finder_search_core.py")
 text = path.read_text()
-old = "CONJUNCTION_GLYPH_RADIUS_STEP = 34.0"
-new = "CONJUNCTION_GLYPH_RADIUS_STEP = 48.0"
-if text.count(old) != 1:
-    raise SystemExit(f"Safety stop: expected conjunction glyph step once; found {text.count(old)}")
-path.write_text(text.replace(old, new, 1))
+start = text.index("        # Snapshot only geometry frozen before this conjunction.")
+end = text.index("    forward_stats =", start)
+old = text[start:end]
+new = '''        # Build the whole conjunction directly rather than asking the ordinary
+        # recursive candidate generator to place its members independently.
+        group_rows = []
+        for original_index, (symbol, name, longitude) in group_items:
+            gx, gy = xy(longitude, glyph_radii[name])
+            w, h = label_size(mode, name)
+            label_radius = max(80.0, glyph_radii[name] - 92.0)
+            lx, ly = xy(longitude, label_radius)
+            box = Box(lx, ly, w, h)
+            leader = [(gx, gy), (lx, ly)]
+            group_rows.append((original_index, symbol, name, longitude, box, leader))
 
-# Keep the unit test synchronized with the production default and verify the
-# two glyph circles have positive clearance at the W2-like separation.
-path = Path("tests/test_planet_finder_conjunctions.py")
-text = path.read_text()
-text = text.replace(
-    'radii = conjunction_glyph_radii(bodies, base_radius=425.0, step=34.0)',
-    'radii = conjunction_glyph_radii(bodies, base_radius=425.0, step=48.0)',
-    1,
-)
-text = text.replace('assert radii["Venus"] == 408.0', 'assert radii["Venus"] == 401.0', 1)
-text = text.replace('assert radii["Sun"] == 442.0', 'assert radii["Sun"] == 449.0', 1)
-path.write_text(text)
+        # Commit the complete conjunction at once. It now becomes fixed
+        # collision geometry for every remaining recursive body.
+        for original_index, symbol, name, longitude, box, leader in group_rows:
+            placed.append(box)
+            leaders.append(leader)
+            leader_names.append(name)
+            staged[original_index] = (symbol, name, longitude, box, leader)
+            diagnostic_print(
+                f"Planet Finder {mode}: FIXED CONJUNCTION PLACED body={name} "
+                f"lambda={longitude % 360.0:.3f}deg radius={glyph_radii[name]:.1f}",
+                flush=True,
+            )
 
-print("Conjunction glyph radial spacing set to 48 px.")
+'''
+path.write_text(text[:start] + new + text[end:])
+print("Conjunctions now use direct deterministic geometry and then freeze as collisions.")
