@@ -8,6 +8,7 @@ on:
       - 'tools/planet_finder_*.py'
       - 'tests/test_planet_finder_candidate_generation.py'
       - 'tests/test_planet_finder_system.py'
+      - 'tests/test_planet_finder_w02_conjunction.py'
       - '.github/workflows/test-planet-finder.yml'
   workflow_dispatch:
 
@@ -22,4 +23,4 @@ jobs:
       - name: Install test dependencies
         run: pip install pytest skyfield==1.55
       - name: Run Planet Finder unit and system tests
-        run: pytest -q tests/test_planet_finder_candidate_generation.py tests/test_planet_finder_system.py
+        run: pytest -q tests/test_planet_finder_candidate_generation.py tests/test_planet_finder_system.py tests/test_planet_finder_w02_conjunction.py
