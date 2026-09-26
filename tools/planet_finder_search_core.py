@@ -598,68 +598,49 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         # small prefix of each member's viable stream; exhaustively enumerating
         # every candidate merely to choose the next body can consume the whole
         # mode clock before recursion does useful work.
-        ALIGNMENT_PROBE_LIMIT = 5
+        # Build one bounded candidate set for each remaining member at this
+        # DFS prefix.  The old probe/batch controller repeatedly regenerated
+        # the same stream, so tight alignments spent their clock replaying
+        # prefixes instead of advancing recursion.
+        alignment_candidate_limit = budget["max_node_candidates"]
         choices = []
         diagnostic_depth = -(group_index + 1)
         for item in remaining_items:
-            probe = []
+            materialized = []
             candidate_stream = viable_candidates(
                 item, diagnostic_depth, consume_body_budget=False
             )
-            for candidate in candidate_stream:
-                probe.append(candidate)
-                if len(probe) >= ALIGNMENT_PROBE_LIMIT:
-                    break
-            choices.append((len(probe), item[1][1], item))
+            try:
+                for candidate in candidate_stream:
+                    materialized.append(candidate)
+                    if len(materialized) >= alignment_candidate_limit:
+                        break
+            finally:
+                candidate_stream.close()
+            choices.append((len(materialized), item[1][1], item, materialized))
+
         choices.sort(key=lambda row: (row[0], row[1]))
-        count, _, item = choices[0]
+        count, _, item, materialized = choices[0]
         if count == 0:
             return False
 
         original_index, (symbol, name, longitude) = item
         next_remaining = [other for other in remaining_items if other is not item]
 
-        # Never suspend a live candidate generator across child recursion.  A
-        # suspended generator's refinement clock includes all time spent in its
-        # descendants, so the parent can falsely hit its deadline while doing
-        # no candidate work.  Materialize a bounded batch, close the generator,
-        # then recurse over ordinary data.  If the batch fails, request the next
-        # batch from a fresh stream and skip the already-considered prefix.
-        ALIGNMENT_BATCH_SIZE = 25
-        batch_start = 0
-        while True:
-            batch = []
-            candidate_stream = viable_candidates(
-                item, diagnostic_depth, consume_body_budget=False
-            )
-            try:
-                for candidate_index, candidate in enumerate(candidate_stream):
-                    if candidate_index < batch_start:
-                        continue
-                    batch.append(candidate)
-                    if len(batch) >= ALIGNMENT_BATCH_SIZE:
-                        break
-            finally:
-                candidate_stream.close()
-
-            if not batch:
-                return False
-
-            for box, path in batch:
-                placed.append(box)
-                leaders.append(path)
-                leader_names.append(name)
-                staged[original_index] = (symbol, name, longitude, box, path)
-                if solve_alignment_members(group_index, next_remaining):
-                    return True
-                staged.pop(original_index, None)
-                leader_names.pop()
-                leaders.pop()
-                placed.pop()
-
-            if len(batch) < ALIGNMENT_BATCH_SIZE:
-                return False
-            batch_start += len(batch)
+        # Recursion owns ordinary data, never a suspended generator.  Each
+        # candidate is generated once for this prefix and tried once.
+        for box, path in materialized:
+            placed.append(box)
+            leaders.append(path)
+            leader_names.append(name)
+            staged[original_index] = (symbol, name, longitude, box, path)
+            if solve_alignment_members(group_index, next_remaining):
+                return True
+            staged.pop(original_index, None)
+            leader_names.pop()
+            leaders.pop()
+            placed.pop()
+        return False
 
     def solve_alignment_group(group_index):
         if group_index == len(alignment_group_items):
