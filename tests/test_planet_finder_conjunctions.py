@@ -1,4 +1,4 @@
-from planet_finder_geometry import conjunction_groups, conjunction_glyph_radii
+from planet_finder_geometry import alignment_groups, conjunction_groups, conjunction_glyph_radii
 
 
 def names(groups):
@@ -72,3 +72,36 @@ def test_w2_venus_sun_glyph_slots_are_distinct():
     assert radii["Sun"] == 449.0
     assert radii["Mars"] == 425.0
     assert radii["Pluto"] == 425.0
+
+
+# Broad alignment classification (<=30 degrees), separate from <=1 degree conjunctions.
+def test_alignment_classifier_widely_separated_bodies_are_independent():
+    sky = bodies([("Sun", 0.0), ("Mercury", 60.0), ("Venus", 120.0), ("Mars", 180.0)])
+    assert alignment_groups(sky) == []
+
+
+def test_alignment_classifier_one_broad_alignment():
+    sky = bodies([("Sun", 10.0), ("Venus", 25.0), ("Mars", 100.0)])
+    assert names(alignment_groups(sky)) == [["Sun", "Venus"]]
+
+
+def test_alignment_classifier_two_independent_alignments():
+    sky = bodies([("Sun", 10.0), ("Venus", 25.0), ("Mars", 160.0), ("Jupiter", 180.0)])
+    assert names(alignment_groups(sky)) == [["Sun", "Venus"], ["Mars", "Jupiter"]]
+
+
+def test_alignment_classifier_excludes_frozen_conjunction_members():
+    sky = bodies([("Venus", 10.0), ("Sun", 10.4), ("Mars", 20.0), ("Jupiter", 100.0)])
+    assert names(conjunction_groups(sky)) == [["Venus", "Sun"]]
+    assert alignment_groups(sky) == []
+
+
+def test_alignment_classifier_wraps_across_zero():
+    sky = bodies([("A", 350.0), ("B", 10.0), ("C", 100.0)])
+    assert names(alignment_groups(sky)) == [["A", "B"]]
+
+
+def test_w1_sun_venus_is_broad_alignment_not_conjunction():
+    sky = bodies([("Venus", 0.0), ("Sun", 2.081), ("Mars", 100.0)])
+    assert conjunction_groups(sky) == []
+    assert names(alignment_groups(sky)) == [["Venus", "Sun"]]

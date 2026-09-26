@@ -53,6 +53,10 @@ DEFAULT_MAX_SEARCH_SECONDS = 180
 # near-conjunction group before any presentation-mode search begins.
 NEAR_CONJUNCTION_DEGREES = 1.0
 
+# After conjunction members are frozen, remaining bodies within this angular
+# neighborhood form broader alignment groups for the second placement phase.
+ALIGNMENT_DEGREES = 30.0
+
 
 def angular_separation_degrees(a: float, b: float) -> float:
     return abs((a - b + 180.0) % 360.0 - 180.0)
@@ -117,6 +121,23 @@ def conjunction_groups(bodies, threshold: float = NEAR_CONJUNCTION_DEGREES):
     # from rotating otherwise independent groups.
     groups.sort(key=lambda group: group[0][2] % 360.0)
     return groups
+
+
+def alignment_groups(bodies, threshold: float = ALIGNMENT_DEGREES):
+    """Return deterministic broad alignment groups after conjunction removal.
+
+    Near-conjunction members are deliberately excluded: they belong to the
+    earlier, more constrained placement phase and will already be frozen before
+    alignment placement begins. Remaining connected circular-lambda neighbors
+    within ``threshold`` form an alignment group.
+    """
+    conjunction_names = {
+        item[1]
+        for group in conjunction_groups(bodies)
+        for item in group
+    }
+    remaining = [item for item in bodies if item[1] not in conjunction_names]
+    return conjunction_groups(remaining, threshold=threshold)
 
 
 class FinderMode(str, Enum):
