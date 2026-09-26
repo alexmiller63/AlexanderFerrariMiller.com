@@ -597,42 +597,13 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         if not remaining_items:
             return solve_alignment_group(group_index + 1)
 
-        # Probe a small prefix for squeaky-wheel ordering, then keep the chosen
-        # body's generator alive while recursion consumes it incrementally.
-        # Unlike the old batch controller, we never restart the generator or
-        # replay an already-considered prefix.  Unlike full materialization, we
-        # do not spend the mode clock enumerating thousands of unused choices.
-        ALIGNMENT_PROBE_LIMIT = 5
+        # Place members in the circular lambda order supplied by
+        # alignment_groups().  Keep one stream alive while recursion consumes
+        # its candidates, so backtracking never replays a prefix.
         diagnostic_depth = -(group_index + 1)
-        choices = []
-        for item in remaining_items:
-            candidate_stream = viable_candidates(
-                item, diagnostic_depth, consume_body_budget=False
-            )
-            probe = []
-            exhausted = False
-            try:
-                for _ in range(ALIGNMENT_PROBE_LIMIT):
-                    try:
-                        probe.append(next(candidate_stream))
-                    except StopIteration:
-                        exhausted = True
-                        break
-            except Exception:
-                candidate_stream.close()
-                raise
-            choices.append((len(probe), item[1][1], item, probe, candidate_stream, exhausted))
-
-        choices.sort(key=lambda row: (row[0], row[1]))
-        count, _, item, probe, chosen_stream, exhausted = choices[0]
-        for _, _, other_item, _, other_stream, _ in choices[1:]:
-            other_stream.close()
-        if count == 0:
-            chosen_stream.close()
-            return False
-
+        item = remaining_items[0]
         original_index, (symbol, name, longitude) = item
-        next_remaining = [other for other in remaining_items if other is not item]
+        next_remaining = remaining_items[1:]
         tried = 0
         candidate_limit = budget["max_node_candidates"]
 
@@ -643,24 +614,23 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             leader_names.append(name)
             staged[original_index] = (symbol, name, longitude, box, path)
             solved = solve_alignment_members(group_index, next_remaining)
-            staged.pop(original_index, None)
-            leader_names.pop()
-            leaders.pop()
-            placed.pop()
+            if not solved:
+                staged.pop(original_index, None)
+                leader_names.pop()
+                leaders.pop()
+                placed.pop()
             return solved
 
+        chosen_stream = viable_candidates(
+            item, diagnostic_depth, consume_body_budget=False
+        )
         try:
-            for candidate in probe:
+            for candidate in chosen_stream:
                 tried += 1
                 if try_candidate(candidate):
                     return True
-            if not exhausted:
-                for candidate in chosen_stream:
-                    tried += 1
-                    if try_candidate(candidate):
-                        return True
-                    if tried >= candidate_limit:
-                        break
+                if tried >= candidate_limit:
+                    break
         finally:
             chosen_stream.close()
         return False
