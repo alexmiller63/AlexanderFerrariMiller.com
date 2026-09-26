@@ -169,6 +169,10 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             flush=True,
         )
         diagnostic_print(f"Planet Finder {mode}: TERMINAL ORDER sequence={order_names}", flush=True)
+        longitude_by_name = {
+            item[1][1]: item[1][2]
+            for item in order
+        }
         for (depth, name), s in sorted(diagnostic_stats.items()):
             immutable_names = {
                 reserved_names[i] if i < len(reserved_names) else str(i): count
@@ -176,6 +180,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             }
             diagnostic_print(
                 f"Planet Finder {mode}: TERMINAL BODY depth={depth}/{len(order)} body={name} "
+                f"lambda={longitude_by_name[name]:.3f}deg "
                 f"status={'evaluated' if s.get('started') else ('blocked-' + s['blocked'] if s.get('blocked') else 'not-evaluated')} "
                 f"generated={s['generated']:,} viable={s['viable']:,} "
                 f"rejects[immutable-reserved={s.get('immutable_reserved', 0):,},"
