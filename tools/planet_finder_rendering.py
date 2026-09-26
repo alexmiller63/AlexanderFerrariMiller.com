@@ -15,6 +15,30 @@ def polyline(points):
     return f'<polyline points="{pts}" fill="none" stroke="#777" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/>'
 
 
+def label_edge_point(box, source):
+    """Return the intersection of source->label-center with the label boundary.
+
+    Search routes terminate at the label center because that is convenient for
+    routing.  Rendering must not draw that final segment through the label.
+    """
+    dx = source[0] - box.x
+    dy = source[1] - box.y
+    if abs(dx) < 1e-12 and abs(dy) < 1e-12:
+        return box.x, box.y
+    scale = min(
+        box.w / (2.0 * abs(dx)) if abs(dx) >= 1e-12 else float("inf"),
+        box.h / (2.0 * abs(dy)) if abs(dy) >= 1e-12 else float("inf"),
+    )
+    return box.x + dx * scale, box.y + dy * scale
+
+
+def rendered_leader(path, box):
+    """Clip a routed leader to its own label boundary."""
+    if len(path) < 2:
+        return path
+    return [*path[:-1], label_edge_point(box, path[-2])]
+
+
 def render(
     year: int,
     week: int,
@@ -69,7 +93,10 @@ def render(
     # second glyph at the astronomical anchor; the visible glyph belongs to
     # the displaced label at the end of its leader.
     for symbol, name, _, box, path in placed:
-        out.append(polyline(path))
+        # route() deliberately ends at the label center. Clip that final
+        # segment to the label boundary so a leader can never enter its own
+        # rendered label (W01 Mixed Saturn exposed this rendering defect).
+        out.append(polyline(rendered_leader(path, box)))
         if mode == "greek":
             out.append(f'<circle cx="{box.x:.1f}" cy="{box.y:.1f}" r="29" fill="white" stroke="#111"/>')
             out.append(f'<text x="{box.x:.1f}" y="{box.y+13:.1f}" text-anchor="middle" font-size="44">{html.escape(symbol)}\ufe0e</text>')
