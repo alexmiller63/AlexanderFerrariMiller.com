@@ -93,10 +93,11 @@ def render(
     # second glyph at the astronomical anchor; the visible glyph belongs to
     # the displaced label at the end of its leader.
     for symbol, name, _, box, path in placed:
-        if year == 2026 and week == 1 and mode == FinderMode.MIXED and name == "Saturn":
+        if year == 2026 and week == 1 and mode == FinderMode.MIXED:
             rendered = rendered_leader(path, box)
             print(
-                "PF_TRACE W01 MIXED SATURN "
+                "PF_TRACE W01 MIXED BODY "
+                f"symbol={symbol!r} name={name!r} "
                 f"box=center({box.x:.6f},{box.y:.6f}) size({box.w:.6f},{box.h:.6f}) "
                 f"search_path={path!r} rendered_path={rendered!r}"
             )
