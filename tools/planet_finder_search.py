@@ -210,6 +210,15 @@ def layout(
                     f"final-sequence={final_sequence}",
                     flush=True,
                 )
+                if closest_pair is not None:
+                    separation, left_name, right_name, left_lambda, right_lambda = closest_pair
+                    diagnostic_print(
+                        f"Planet Finder {mode}: TERMINAL CLOSEST ECLIPTIC PAIR "
+                        f"{left_name} lambda={left_lambda:.3f} deg; "
+                        f"{right_name} lambda={right_lambda:.3f} deg; "
+                        f"separation={separation:.3f} deg",
+                        flush=True,
+                    )
                 for i, event in enumerate(refinement_history, 1):
                     diagnostic_print(
                         f"Planet Finder {mode}: TERMINAL HISTORY attempt={i} "
