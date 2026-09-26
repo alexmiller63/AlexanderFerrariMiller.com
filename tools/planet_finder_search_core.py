@@ -415,6 +415,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                     ),
                     flush=True,
                 )
+                dump_diagnostics("wall-clock")
                 raise RuntimeError(
                     f"Planet Finder {mode} mode wall-clock budget exhausted "
                     f"during candidate generation for {name} after {run_elapsed:.1f}s "
