@@ -123,13 +123,6 @@ def layout(
     order_index = 0
     refinement_scales = (2.0, 1.5, 1.0, 0.5, 0.25)
     refinement_index = 0
-    # Keep one wall clock per notation mode, but reserve an equal cumulative
-    # share for each refinement so a coarse geometry cannot consume time that
-    # belongs to the finer fallback geometries.
-    refinement_deadlines = tuple(
-        budget["started"] + budget["max_seconds"] * (i + 1) / len(refinement_scales)
-        for i in range(len(refinement_scales))
-    )
     attempted_orders = set()
     # Exhausted searches use this to bound squeaky-wheel promotion cycles.
     # CAPPED searches instead use attempted_orders to exhaust the three
@@ -190,21 +183,6 @@ def layout(
                 f"Planet Finder {mode} mode wall-clock budget exhausted "
                 f"(limit {budget['max_seconds']:.1f}s)"
             )
-        if state != "REFINE" and now >= refinement_deadlines[refinement_index]:
-            if refinement_index + 1 >= len(refinement_scales):
-                raise RuntimeError(
-                    f"Planet Finder {mode} mode wall-clock budget exhausted "
-                    f"(limit {budget['max_seconds']:.1f}s)"
-                )
-            diagnostic_print(
-                f"Planet Finder {mode}: REFINEMENT TIME SLICE EXHAUSTED "
-                f"at {refinement_scales[refinement_index]:g} label-lengths; "
-                f"elapsed={now - budget['started']:.1f}s; advancing",
-                flush=True,
-            )
-            state = "REFINE"
-            continue
-
         if state == "REFINE":
             if refinement_index + 1 >= len(refinement_scales):
                 final_sequence = " > ".join(item[1][1] for item in order)
@@ -342,7 +320,7 @@ def layout(
                 context_label=context_label,
                 displacement_scale=refinement_scales[refinement_index],
                 body_attempts=body_attempts,
-                refinement_deadline=refinement_deadlines[refinement_index],
+                refinement_deadline=budget["started"] + budget["max_seconds"],
             )
         except DepthNodeBudgetExhausted as exc:
             # The fixed-order solver already emitted its detailed terminal
