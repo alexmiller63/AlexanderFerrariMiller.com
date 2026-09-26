@@ -58,20 +58,16 @@ def render(
             text, fs = f'{symbol}\ufe0e {name}', 22
         out.append(f'<text x="{x:.1f}" y="{y+10:.1f}" text-anchor="middle" font-size="{fs}">{html.escape(text)}</text>')
     # Fixed geometric annotation: 0° Aries is the 9-o'clock boundary.
-    # Keep it deterministic and independent of body-label placement.
-    aries_x, aries_y = xy(0, RI)
+    # Put the annotation beyond the outer rim, not inside the zodiac band.
+    aries_x, aries_y = xy(0, RO)
     out.append(
         f'<text x="{aries_x - 28:.1f}" y="{aries_y + 7:.1f}" '
         'text-anchor="end" font-size="20" class="sans">0° Aries</text>'
     )
 
-    # Body glyphs are a separate astronomical layer.  Longitude is never
-    # altered; only radius changes for deterministic near-conjunction spacing.
-    for symbol, name, longitude in bodies:
-        gx, gy = xy(longitude, glyph_radii[name])
-        out.append(f'<circle cx="{gx:.1f}" cy="{gy:.1f}" r="22" fill="white" stroke="#111" stroke-width="1.5"/>')
-        out.append(f'<text x="{gx:.1f}" y="{gy+10:.1f}" text-anchor="middle" font-size="32">{html.escape(symbol)}\ufe0e</text>')
-
+    # Body anchors are geometric attachment points only.  Do not render a
+    # second glyph at the astronomical anchor; the visible glyph belongs to
+    # the displaced label at the end of its leader.
     for symbol, name, _, box, path in placed:
         out.append(polyline(path))
         if mode == "greek":
