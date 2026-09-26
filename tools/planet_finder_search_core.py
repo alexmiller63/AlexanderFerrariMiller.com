@@ -507,6 +507,21 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 stats["route"] += 1
                 continue
 
+            # route() deliberately aims at the label center.  Rendering later
+            # clips only that final segment to the label boundary.  Candidate
+            # viability must therefore judge the same renderable geometry:
+            # earlier leader segments may never enter or graze their own label.
+            # The final segment is exempt because its center endpoint is the
+            # intentional clipping target.
+            if any(
+                segment_hits_box(path[i], path[i + 1], box, 0)
+                for i in range(max(0, len(path) - 2))
+            ):
+                rejected_leader += 1
+                stats["leader"] += 1
+                stats["leader_graze"] += 1
+                continue
+
             # A new leader must not cross any label already placed by DFS.
             # The opposite direction is checked earlier: a new label may not
             # cross an existing leader. Both directions are required because
