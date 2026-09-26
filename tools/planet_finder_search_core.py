@@ -23,7 +23,7 @@ from planet_finder_geometry import (
     xy, boxes_overlap, segment_hits_box, point_segment_distance,
     segments_too_close, leaders_too_close, leader_hits_zodiac_rim, minimum_leader_separation,
     label_size, reserved_boxes, candidate_positions,
-    legal_candidate_positions, route,
+    legal_candidate_positions, route, conjunction_groups, conjunction_glyph_radii,
 )
 
 
@@ -296,7 +296,8 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         })
         nonlocal candidates, rejected_overlap, rejected_leader, rejected_route
         w, h = label_size(mode, name)
-        anchor = xy(longitude, RI - 5)
+        glyph_radii = conjunction_glyph_radii(bodies)
+        anchor = xy(longitude, glyph_radii.get(name, RI - 5))
         # This generator is created for one fixed DFS prefix. The placed
         # obstacles therefore remain stable for its lifetime, so anchor-side
         # routing work can be safely reused across all candidate labels.
@@ -530,6 +531,32 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                     flush=True,
                 )
                 raise DepthNodeBudgetExhausted(depth, name)
+
+    # Deterministic conjunction pre-pass.  No recursion: each member is taken
+    # in circular lambda order and receives the first legal placement against
+    # immutable geometry plus previously frozen conjunction members.  After
+    # this loop these boxes/leaders stay in the collision sets for all DFS.
+    conjunction_items = []
+    by_name = {name: (i, (symbol, name, longitude)) for i, (symbol, name, longitude) in enumerate(bodies)}
+    for group in conjunction_groups(bodies):
+        conjunction_items.extend(by_name[item[1]] for item in group)
+    for fixed_depth, item in enumerate(conjunction_items):
+        original_index, (symbol, name, longitude) = item
+        try:
+            box, path = next(viable_candidates(item, -(fixed_depth + 1), consume_body_budget=False))
+        except StopIteration:
+            raise RuntimeError(
+                f"Planet Finder {mode}: deterministic conjunction placement failed for {name}"
+            )
+        placed.append(box)
+        leaders.append(path)
+        leader_names.append(name)
+        staged[original_index] = (symbol, name, longitude, box, path)
+        diagnostic_print(
+            f"Planet Finder {mode}: FIXED CONJUNCTION PLACED body={name} "
+            f"lambda={longitude % 360.0:.3f}deg radius={conjunction_glyph_radii(bodies)[name]:.1f}",
+            flush=True,
+        )
 
     forward_stats = {"checks": 0, "pruned": 0, "witnesses": 0, "by_body": {}}
     # Bodies that actually make a forward check fail.  Without this, a prefix

@@ -23,7 +23,7 @@ from planet_finder_geometry import (
     xy, boxes_overlap, segment_hits_box, point_segment_distance,
     segments_too_close, leaders_too_close, leader_hits_zodiac_rim, minimum_leader_separation,
     label_size, reserved_boxes, candidate_positions,
-    legal_candidate_positions, route,
+    legal_candidate_positions, route, conjunction_groups,
 )
 
 
@@ -99,6 +99,28 @@ def layout(
         gaps.append(gap)
     seam_after = max(range(len(gaps)), key=gaps.__getitem__)
     indexed = lambda_sorted[seam_after + 1:] + lambda_sorted[:seam_after + 1]
+
+    # Near-conjunction members are resolved deterministically before DFS.
+    # They remain in `bodies` and therefore in the final rendered result, but
+    # are absent from the squeaky-wheel order: once placed, they are collisions
+    # only and can never be promoted or recursively reconsidered.
+    conjunction_names = {
+        item[1]
+        for group in conjunction_groups(bodies)
+        for item in group
+    }
+    indexed = [item for item in indexed if item[1][1] not in conjunction_names]
+    if conjunction_names:
+        diagnostic_print(
+            f"Planet Finder {mode}: FIXED CONJUNCTIONS "
+            + " > ".join(
+                item[1]
+                for group in conjunction_groups(bodies)
+                for item in group
+            )
+            + "; recursive bodies=" + str(len(indexed)),
+            flush=True,
+        )
 
     # Diagnostic: report the closest pair on the circular ecliptic.  This is
     # observational only; it does not change search order or placement policy.
