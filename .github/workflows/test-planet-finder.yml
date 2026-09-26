@@ -5,7 +5,9 @@ on:
     branches: [main]
     paths:
       - 'tools/generate_planet_finders.py'
+      - 'tools/planet_finder_*.py'
       - 'tests/test_planet_finder_candidate_generation.py'
+      - 'tests/test_planet_finder_system.py'
       - '.github/workflows/test-planet-finder.yml'
   workflow_dispatch:
 
@@ -19,5 +21,5 @@ jobs:
           python-version: '3.x'
       - name: Install test dependencies
         run: pip install pytest skyfield==1.55
-      - name: Run current Planet Finder unit tests
-        run: pytest -q tests/test_planet_finder_candidate_generation.py
+      - name: Run Planet Finder unit and system tests
+        run: pytest -q tests/test_planet_finder_candidate_generation.py tests/test_planet_finder_system.py
