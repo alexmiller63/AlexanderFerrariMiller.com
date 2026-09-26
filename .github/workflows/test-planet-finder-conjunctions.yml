@@ -8,6 +8,7 @@ on:
       - "tools/planet_finder_search.py"
       - "tools/planet_finder_search_core.py"
       - "tests/test_planet_finder_conjunctions.py"
+      - "tests/test_planet_finder_system.py"
       - ".github/workflows/test-planet-finder-conjunctions.yml"
 
 jobs:
@@ -28,7 +29,7 @@ jobs:
       - name: Compile Planet Finder search controller
         run: python -m py_compile tools/planet_finder_search.py tools/planet_finder_search_core.py
 
-      - name: Run conjunction unit tests
+      - name: Run Planet Finder QA ladder
         env:
           PYTHONPATH: tools
-        run: python -m pytest -q tests/test_planet_finder_conjunctions.py
+        run: python -m pytest -q tests/test_planet_finder_conjunctions.py tests/test_planet_finder_system.py
