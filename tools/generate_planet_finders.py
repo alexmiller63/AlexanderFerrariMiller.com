@@ -20,6 +20,7 @@ from planet_finder_rendering import render
 from planet_finder_geometry import (
     BODY_SYMBOLS, BODY_NAMES, CANONICAL, FinderMode,
     Box, boxes_overlap, legal_candidate_positions, route, reserved_boxes, RI, CX, CY,
+    conjunction_glyph_radii,
 )
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -34,6 +35,9 @@ def generate_week(year: int, week: int):
     generated = computed_ephemeris(year, engine)
     values = {key: generated[key][week - 1][0] for key in needed}
     bodies = [(BODY_SYMBOLS[BODY_NAMES[name]], name, values[BODY_NAMES[name]] % 360) for name in CANONICAL]
+    # Shared astronomical presentation geometry: compute conjunction glyph
+    # displacement once, then give the identical result to every mode.
+    glyph_radii = conjunction_glyph_radii(bodies)
     outdir = week_dir(year, week) / "finders"
     outdir.mkdir(parents=True, exist_ok=True)
     filenames = {
@@ -46,7 +50,7 @@ def generate_week(year: int, week: int):
     # partial Greek/Latin/Mixed result.
     rendered = {}
     for mode, filename in filenames.items():
-        rendered[filename] = render(year, week, monday, mode, bodies)
+        rendered[filename] = render(year, week, monday, mode, bodies, glyph_radii=glyph_radii)
 
     # render()/layout() independently validates every selected layout before it
     # returns. Only after all 3 modes succeed do we replace the week's files.

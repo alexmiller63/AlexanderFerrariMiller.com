@@ -58,6 +58,25 @@ def angular_separation_degrees(a: float, b: float) -> float:
     return abs((a - b + 180.0) % 360.0 - 180.0)
 
 
+CONJUNCTION_GLYPH_RADIUS_STEP = 34.0
+
+
+def conjunction_glyph_radii(bodies, base_radius: float = RI - 5, step: float = CONJUNCTION_GLYPH_RADIUS_STEP):
+    """Return per-body glyph radii shared by every presentation mode.
+
+    Ordinary bodies remain at base_radius.  Members of each near-conjunction
+    group are already in circular lambda order; assign distinct radial slots in
+    that same order so no recursive search is needed to separate their glyphs.
+    """
+    radii = {item[1]: base_radius for item in bodies}
+    for group in conjunction_groups(bodies):
+        n = len(group)
+        center = (n - 1) / 2.0
+        for i, item in enumerate(group):
+            radii[item[1]] = base_radius + (i - center) * step
+    return radii
+
+
 def conjunction_groups(bodies, threshold: float = NEAR_CONJUNCTION_DEGREES):
     """Return deterministic near-conjunction groups in circular lambda order.
 

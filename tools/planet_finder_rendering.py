@@ -21,6 +21,7 @@ def render(
     monday: date,
     mode: FinderMode,
     bodies: list[tuple[str, str, float]],
+    glyph_radii: dict[str, float] | None = None,
     budget: dict | None = None,
     context_label: str | None = None,
 ) -> str:
@@ -32,6 +33,8 @@ def render(
     }
     title = labels[mode]
     placed = layout(mode, bodies, budget=budget, context_label=context_label)
+    if glyph_radii is None:
+        glyph_radii = {name: RI - 5 for _, name, _ in bodies}
     out = [
         f'<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="1400" viewBox="0 0 {W} {H}">',
         '<rect width="100%" height="100%" fill="white"/>',
@@ -61,6 +64,13 @@ def render(
         f'<text x="{aries_x - 28:.1f}" y="{aries_y + 7:.1f}" '
         'text-anchor="end" font-size="20" class="sans">0° Aries</text>'
     )
+
+    # Body glyphs are a separate astronomical layer.  Longitude is never
+    # altered; only radius changes for deterministic near-conjunction spacing.
+    for symbol, name, longitude in bodies:
+        gx, gy = xy(longitude, glyph_radii[name])
+        out.append(f'<circle cx="{gx:.1f}" cy="{gy:.1f}" r="22" fill="white" stroke="#111" stroke-width="1.5"/>')
+        out.append(f'<text x="{gx:.1f}" y="{gy+10:.1f}" text-anchor="middle" font-size="32">{html.escape(symbol)}\ufe0e</text>')
 
     for symbol, name, _, box, path in placed:
         out.append(polyline(path))
