@@ -181,39 +181,38 @@ def layout(
     #
     # SEARCH_ORDER -> SCORE    on SOLVED
     # SEARCH_ORDER -> PROMOTE  on BLOCKED(body), whether CAPPED or EXHAUSTED
-    # PROMOTE      -> SEARCH_ORDER after moving the sticky blocker left one step
-    # PROMOTE      -> REFINE   when that blocker has reached position 0
+    # PROMOTE      -> SEARCH_ORDER after moving the current blocker left one step
+    # PROMOTE      -> REFINE   only when the current blocker is already position 0
     # REFINE       -> SEARCH_ORDER at the next placement scale
     #
     # CAPPED versus EXHAUSTED remains diagnostic information only.  It does
     # not select a second reordering policy.
     state = "SEARCH_ORDER"
     promote_body = None
-    sticky_promote_body = None
 
     def next_promotion_order(current_order, body_name):
-        """Move a blocker left through its local circular-lambda neighborhood.
+        """Return an explicit transition for promoting the current blocker.
 
-        The initial order is geometric, so preserve that information.  A body
-        that cannot be placed after its immediate predecessors is tried one
-        position earlier at a time, allowing DFS to choose the blocker before
-        the nearby bodies that constrained it.  This is bounded: once the body
-        reaches the front, there is no further promotion for this cycle.
+        ``AT_FRONT`` is the only transition that permits refinement.  A
+        previously attempted candidate is a controller cycle, not successful
+        completion of promotion, and is reported separately.
         """
         body_index = next(
             (i for i, item in enumerate(current_order) if item[1][1] == body_name),
             None,
         )
-        if body_index is None or body_index == 0:
-            return None
+        if body_index is None:
+            return "MISSING", None
+        if body_index == 0:
+            return "AT_FRONT", None
         candidate = list(current_order)
         candidate[body_index - 1], candidate[body_index] = (
             candidate[body_index], candidate[body_index - 1]
         )
         names = tuple(item[1][1] for item in candidate)
         if (refinement_index, names) in attempted_orders:
-            return None
-        return candidate
+            return "CYCLE", candidate
+        return "PROMOTE", candidate
 
     while state != "SCORE":
 
@@ -264,7 +263,6 @@ def layout(
             for name in body_attempts:
                 body_attempts[name] = 0
             promote_body = None
-            sticky_promote_body = None
             diagnostic_print(
                 f"Planet Finder {mode}: REFINEMENT ADVANCE "
                 f"to {refinement_scales[refinement_index]:g} label-lengths; "
@@ -276,33 +274,39 @@ def layout(
             continue
 
         if state == "PROMOTE":
-            # Promotion is sticky within a refinement.  Once a blocker starts
-            # moving left through the lambda order, keep moving that same body
-            # one neighbor at a time.  A newly exposed blocker must not undo
-            # the ordering knowledge we just learned.
-            if sticky_promote_body is None:
-                sticky_promote_body = promote_body
-            promoted_order = next_promotion_order(order, sticky_promote_body)
-            if promoted_order is None:
+            transition, promoted_order = next_promotion_order(order, promote_body)
+            if transition == "AT_FRONT":
                 diagnostic_print(
-                    f"Planet Finder {mode}: STICKY PROMOTION COMPLETE body={sticky_promote_body} "
+                    f"Planet Finder {mode}: PROMOTION COMPLETE body={promote_body} "
                     f"at position 0; refinement={refinement_scales[refinement_index]:g} "
                     "label-lengths; refining",
                     flush=True,
                 )
-                sticky_promote_body = None
+                promote_body = None
                 state = "REFINE"
-            else:
+            elif transition == "PROMOTE":
                 promoted_names = tuple(item[1][1] for item in promoted_order)
                 order = promoted_order
-                body_attempts[sticky_promote_body] = 0
+                body_attempts[promote_body] = 0
                 diagnostic_print(
-                    f"Planet Finder {mode}: STICKY PROMOTE body={sticky_promote_body}; "
+                    f"Planet Finder {mode}: PROMOTE body={promote_body}; "
                     "moved left one lambda neighbor; restarting sequence="
                     + " > ".join(promoted_names),
                     flush=True,
                 )
                 state = "SEARCH_ORDER"
+            elif transition == "CYCLE":
+                cycle_names = tuple(item[1][1] for item in promoted_order)
+                raise RuntimeError(
+                    f"Planet Finder {mode}: controller cycle detected while promoting "
+                    f"{promote_body}; refinement={refinement_scales[refinement_index]:g} "
+                    f"candidate={' > '.join(cycle_names)}"
+                )
+            else:
+                raise RuntimeError(
+                    f"Planet Finder {mode}: controller invariant violated: blocker "
+                    f"{promote_body!r} is absent from the recursive search order"
+                )
             continue
 
         if state != "SEARCH_ORDER":
@@ -376,11 +380,9 @@ def layout(
 
         all_solutions = outcome.solutions
         contest_keys = outcome.contest_keys
-        # Once promotion starts, the selected blocker remains sticky regardless
-        # of whether a subsequent fixed-order attempt reports CAPPED or
-        # EXHAUSTED for another body.  Finish learning this body's ordering
-        # before changing refinement or selecting another blocker.
-        sticky_promote_body = outcome.blocker
+        # Squeaky-wheel feedback: each failed search names the blocker for the
+        # next single promotion step.  The next search may identify a different
+        # blocker; no blocker remains sticky across searches.
         promote_body = outcome.blocker
         refinement_history.append({
             "scale": refinement_scales[refinement_index],
