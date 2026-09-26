@@ -526,7 +526,24 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 return box.x + dx * scale, box.y + dy * scale
 
             rendered_path = [*path[:-1], own_label_edge(path[-2])]
-            own_label_bad = any(
+
+            # A routed leader must make monotonic progress toward its rendered
+            # label endpoint.  Reject overshoot/backtracking doglegs where an
+            # intermediate waypoint gets closer to the endpoint and a later
+            # waypoint moves away again.  W01 Mixed Saturn measured as
+            # (306.0,672.4) -> (350.0,516.8) -> label edge near (362.1,523.1):
+            # the route overshoots above the label and reverses on approach.
+            endpoint = rendered_path[-1]
+            distances = [
+                math.hypot(point[0] - endpoint[0], point[1] - endpoint[1])
+                for point in rendered_path
+            ]
+            route_backtracks = any(
+                distances[i + 1] > distances[i] + 1e-6
+                for i in range(len(distances) - 1)
+            )
+
+            own_label_bad = route_backtracks or any(
                 segment_hits_box(rendered_path[i], rendered_path[i + 1], box, 0.5)
                 for i in range(max(0, len(rendered_path) - 2))
             )
