@@ -100,6 +100,28 @@ def layout(
     seam_after = max(range(len(gaps)), key=gaps.__getitem__)
     indexed = lambda_sorted[seam_after + 1:] + lambda_sorted[:seam_after + 1]
 
+    # Diagnostic: report the closest pair on the circular ecliptic.  This is
+    # observational only; it does not change search order or placement policy.
+    closest_pair = None
+    for i, left in enumerate(lambda_sorted):
+        right = lambda_sorted[(i + 1) % len(lambda_sorted)]
+        left_name = left[1][1]
+        right_name = right[1][1]
+        left_lambda = left[1][2] % 360.0
+        right_lambda = right[1][2] % 360.0
+        separation = (right_lambda - left_lambda) % 360.0
+        if closest_pair is None or separation < closest_pair[0]:
+            closest_pair = (separation, left_name, right_name, left_lambda, right_lambda)
+    if closest_pair is not None:
+        separation, left_name, right_name, left_lambda, right_lambda = closest_pair
+        diagnostic_print(
+            f"Planet Finder {mode}: CLOSEST ECLIPTIC PAIR "
+            f"{left_name} lambda={left_lambda:.3f} deg; "
+            f"{right_name} lambda={right_lambda:.3f} deg; "
+            f"separation={separation:.3f} deg",
+            flush=True,
+        )
+
     if target_solutions is None:
         target_solutions = max(1, int(os.environ.get("PLANET_FINDER_CANDIDATES", str(DEFAULT_CANDIDATE_LAYOUTS))))
 
