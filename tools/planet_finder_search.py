@@ -380,9 +380,8 @@ def layout(
         # of whether a subsequent fixed-order attempt reports CAPPED or
         # EXHAUSTED for another body.  Finish learning this body's ordering
         # before changing refinement or selecting another blocker.
-        if sticky_promote_body is None:
-            sticky_promote_body = outcome.blocker
-        promote_body = sticky_promote_body
+        sticky_promote_body = outcome.blocker
+        promote_body = outcome.blocker
         refinement_history.append({
             "scale": refinement_scales[refinement_index],
             "kind": outcome.kind,
