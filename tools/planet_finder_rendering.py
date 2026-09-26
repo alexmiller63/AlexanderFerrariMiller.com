@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import html
+import math
 from datetime import date
 
 from planet_finder_geometry import (
@@ -52,13 +53,29 @@ def segment_box_entry(a, b, box):
     return x0 + t * dx, y0 + t * dy
 
 
+def leader_endpoint_before_box(a, hit, clearance=2.0):
+    """Move a clipped leader endpoint slightly outside the label boundary.
+
+    SVG round line caps extend beyond the mathematical endpoint.  Stopping
+    exactly on the rectangle edge can therefore still paint into the label.
+    Backing off by a small geometric clearance keeps the visible stroke out.
+    """
+    dx = hit[0] - a[0]
+    dy = hit[1] - a[1]
+    length = math.hypot(dx, dy)
+    if length <= clearance or length < 1e-12:
+        return a
+    scale = (length - clearance) / length
+    return a[0] + dx * scale, a[1] + dy * scale
+
+
 def rendered_leader(path, box):
-    """Clip a routed leader at its first contact with its own label.
+    """Clip a routed leader just before first contact with its own label.
 
     A route normally ends at the label center, but a dogleg can encounter the
     label on an earlier segment.  Clipping only the nominal final segment lets
-    that earlier segment penetrate the label.  First-contact clipping makes
-    own-label penetration impossible in the rendered SVG.
+    that earlier segment penetrate the label.  First-contact clipping plus a
+    small stroke clearance keeps own-label penetration out of the rendered SVG.
     """
     if len(path) < 2:
         return path
@@ -66,7 +83,7 @@ def rendered_leader(path, box):
     for a, b in zip(path, path[1:]):
         hit = segment_box_entry(a, b, box)
         if hit is not None:
-            rendered.append(hit)
+            rendered.append(leader_endpoint_before_box(a, hit))
             return rendered
         rendered.append(b)
     return rendered
@@ -134,8 +151,8 @@ def render(
                 f"box=center({box.x:.6f},{box.y:.6f}) size({box.w:.6f},{box.h:.6f}) "
                 f"search_path={path!r} rendered_path={rendered!r}"
             )
-        # Stop at the first contact with this label, even when a dogleg reaches
-        # it before the route's nominal final approach.
+        # Stop just before first contact with this label, even when a dogleg
+        # reaches it before the route's nominal final approach.
         out.append(polyline(rendered_leader(path, box)))
         if mode == "greek":
             out.append(f'<circle cx="{box.x:.1f}" cy="{box.y:.1f}" r="29" fill="white" stroke="#111"/>')
