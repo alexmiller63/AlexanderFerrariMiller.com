@@ -30,13 +30,23 @@ def assert_complete_valid_layout(result, bodies, mode=FinderMode.GREEK):
     assert valid, errors
 
 
-def test_level_10_w1_shaped_classification_has_two_large_alignments():
-    """Five aligned + four aligned + three ordinary bodies, like W01's shape."""
-    bodies = synthetic_bodies({
+def w1_shaped_bodies():
+    """Five aligned + four aligned + two ordinary canonical bodies."""
+    longitudes = {
         "Sun": 0, "Mercury": 5, "Venus": 10, "Mars": 15, "Pluto": 20,
         "Saturn": 100, "Neptune": 107, "Ceres": 114, "Moon": 121,
-        "Uranus": 180, "Jupiter": 240, "Earth": 300,
-    })
+        "Uranus": 180, "Jupiter": 240,
+    }
+    # Keep the fixture tied to production's rendered-body contract.  If the
+    # canonical set changes, this assertion forces the test data to be reviewed
+    # instead of silently inventing or omitting a body.
+    assert set(longitudes) == set(CANONICAL)
+    return synthetic_bodies(longitudes)
+
+
+def test_level_10_w1_shaped_classification_has_two_large_alignments():
+    """Five aligned + four aligned + two ordinary bodies, like W01's shape."""
+    bodies = w1_shaped_bodies()
     assert conjunction_groups(bodies) == []
     groups = group_names(alignment_groups(bodies))
     assert groups == [
@@ -48,11 +58,7 @@ def test_level_10_w1_shaped_classification_has_two_large_alignments():
 def test_level_11_w1_shaped_full_state_machine_completes(monkeypatch):
     """Acceptance gate: recursive alignment layer must coexist with general DFS."""
     monkeypatch.setenv("PLANET_FINDER_DIAGNOSTIC_LEVEL", "0")
-    bodies = synthetic_bodies({
-        "Sun": 0, "Mercury": 5, "Venus": 10, "Mars": 15, "Pluto": 20,
-        "Saturn": 100, "Neptune": 107, "Ceres": 114, "Moon": 121,
-        "Uranus": 180, "Jupiter": 240, "Earth": 300,
-    })
+    bodies = w1_shaped_bodies()
     result = layout(
         FinderMode.GREEK,
         bodies,
@@ -66,11 +72,7 @@ def test_level_11_w1_shaped_full_state_machine_completes(monkeypatch):
 def test_level_12_w1_shaped_full_state_machine_is_deterministic(monkeypatch):
     """Identical inputs must select identical complete geometry."""
     monkeypatch.setenv("PLANET_FINDER_DIAGNOSTIC_LEVEL", "0")
-    bodies = synthetic_bodies({
-        "Sun": 0, "Mercury": 5, "Venus": 10, "Mars": 15, "Pluto": 20,
-        "Saturn": 100, "Neptune": 107, "Ceres": 114, "Moon": 121,
-        "Uranus": 180, "Jupiter": 240, "Earth": 300,
-    })
+    bodies = w1_shaped_bodies()
     budget = {"max_node_candidates": 200, "max_seconds": 30.0}
     first = layout(FinderMode.GREEK, bodies, target_solutions=1, budget=budget, context_label="determinism-A")
     second = layout(FinderMode.GREEK, bodies, target_solutions=1, budget=budget, context_label="determinism-B")
