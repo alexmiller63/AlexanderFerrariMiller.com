@@ -556,40 +556,25 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 )
             glyph_centers.append(center)
 
-        # Snapshot only geometry frozen before this conjunction. Each sibling
-        # is selected against that same snapshot, making the group atomic.
-        base_placed_len = len(placed)
-        base_leaders_len = len(leaders)
+        # Build the whole conjunction directly rather than asking the ordinary
+        # recursive candidate generator to place its members independently.
         group_rows = []
-        for fixed_depth, item in enumerate(group_items):
-            original_index, (symbol, name, longitude) = item
-            del placed[base_placed_len:]
-            del leaders[base_leaders_len:]
-            del leader_names[base_leaders_len:]
-            try:
-                box, path = next(
-                    viable_candidates(
-                        item,
-                        -(group_index * 100 + fixed_depth + 1),
-                        consume_body_budget=False,
-                    )
-                )
-            except StopIteration:
-                raise RuntimeError(
-                    f"Planet Finder {mode}: atomic conjunction placement failed for {name}"
-                )
-            group_rows.append((original_index, symbol, name, longitude, box, path))
+        for original_index, (symbol, name, longitude) in group_items:
+            gx, gy = xy(longitude, glyph_radii[name])
+            w, h = label_size(mode, name)
+            label_radius = max(80.0, glyph_radii[name] - 92.0)
+            lx, ly = xy(longitude, label_radius)
+            box = Box(lx, ly, w, h)
+            leader = [(gx, gy), (lx, ly)]
+            group_rows.append((original_index, symbol, name, longitude, box, leader))
 
-        # Restore the frozen-before-group snapshot, then commit the complete
-        # conjunction at once. From here on it is collision geometry only.
-        del placed[base_placed_len:]
-        del leaders[base_leaders_len:]
-        del leader_names[base_leaders_len:]
-        for original_index, symbol, name, longitude, box, path in group_rows:
+        # Commit the complete conjunction at once. It now becomes fixed
+        # collision geometry for every remaining recursive body.
+        for original_index, symbol, name, longitude, box, leader in group_rows:
             placed.append(box)
-            leaders.append(path)
+            leaders.append(leader)
             leader_names.append(name)
-            staged[original_index] = (symbol, name, longitude, box, path)
+            staged[original_index] = (symbol, name, longitude, box, leader)
             diagnostic_print(
                 f"Planet Finder {mode}: FIXED CONJUNCTION PLACED body={name} "
                 f"lambda={longitude % 360.0:.3f}deg radius={glyph_radii[name]:.1f}",
