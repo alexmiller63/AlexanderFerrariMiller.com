@@ -156,6 +156,7 @@ def layout(
     # REFINE       -> SEARCH_ORDER at the next placement scale
     state = "SEARCH_ORDER"
     promote_body = None
+    sticky_promote_body = None
 
     def next_promotion_order(current_order, body_name):
         """Move a blocker left through its local circular-lambda neighborhood.
@@ -237,6 +238,7 @@ def layout(
             for name in body_attempts:
                 body_attempts[name] = 0
             promote_body = None
+            sticky_promote_body = None
             diagnostic_print(
                 f"Planet Finder {mode}: REFINEMENT ADVANCE "
                 f"to {refinement_scales[refinement_index]:g} label-lengths; "
@@ -279,30 +281,29 @@ def layout(
             continue
 
         if state == "PROMOTE":
-            if promote_body in promoted_bodies:
-                diagnostic_print(
-                    f"Planet Finder {mode}: PROMOTION REPEAT body={promote_body}; "
-                    f"promoted={len(promoted_bodies)}/{len(indexed)} "
-                    f"at {refinement_scales[refinement_index]:g} label-lengths; refining",
-                    flush=True,
-                )
-                state = "REFINE"
-                continue
-            promoted_bodies.add(promote_body)
-            promoted_order = next_promotion_order(order, promote_body)
+            # Promotion is sticky within a refinement.  Once a blocker starts
+            # moving left through the lambda order, keep moving that same body
+            # one neighbor at a time.  A newly exposed blocker must not undo
+            # the ordering knowledge we just learned.
+            if sticky_promote_body is None:
+                sticky_promote_body = promote_body
+            promoted_order = next_promotion_order(order, sticky_promote_body)
             if promoted_order is None:
                 diagnostic_print(
-                    f"Planet Finder {mode}: PROMOTION SIDEWAYS CYCLE CLOSED body={promote_body} "
-                    f"at {refinement_scales[refinement_index]:g} label-lengths; refining",
+                    f"Planet Finder {mode}: STICKY PROMOTION COMPLETE body={sticky_promote_body} "
+                    f"at position 0; refinement={refinement_scales[refinement_index]:g} "
+                    "label-lengths; refining",
                     flush=True,
                 )
+                sticky_promote_body = None
                 state = "REFINE"
             else:
                 promoted_names = tuple(item[1][1] for item in promoted_order)
                 order = promoted_order
+                body_attempts[sticky_promote_body] = 0
                 diagnostic_print(
-                    f"Planet Finder {mode}: PROMOTE/SIDEWAYS body={promote_body}; "
-                    "discarding fixed-order search state and restarting with sequence="
+                    f"Planet Finder {mode}: STICKY PROMOTE body={sticky_promote_body}; "
+                    "moved left one lambda neighbor; restarting sequence="
                     + " > ".join(promoted_names),
                     flush=True,
                 )
@@ -377,6 +378,8 @@ def layout(
         all_solutions = outcome.solutions
         contest_keys = outcome.contest_keys
         promote_body = outcome.blocker
+        if sticky_promote_body is not None and outcome.kind == "EXHAUSTED":
+            promote_body = sticky_promote_body
         refinement_history.append({
             "scale": refinement_scales[refinement_index],
             "kind": outcome.kind,
