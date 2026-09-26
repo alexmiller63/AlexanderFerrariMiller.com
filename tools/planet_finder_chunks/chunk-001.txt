@@ -23,7 +23,7 @@ from planet_finder_geometry import (
     xy, boxes_overlap, segment_hits_box, point_segment_distance,
     segments_too_close, leaders_too_close, leader_hits_zodiac_rim, minimum_leader_separation,
     label_size, reserved_boxes, candidate_positions,
-    legal_candidate_positions, route,
+    legal_candidate_positions, route, alignment_groups, conjunction_groups, conjunction_glyph_radii,
 )
 
 
@@ -143,6 +143,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
     contest_keys = []
     current_body = "-"
     exhausted = False
+
     def dump_diagnostics(reason):
         # A capped ordering is expected control flow, not a terminal failure.
         # Emit one compact summary for it; full forensic dumps are reserved
@@ -168,6 +169,13 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             flush=True,
         )
         diagnostic_print(f"Planet Finder {mode}: TERMINAL ORDER sequence={order_names}", flush=True)
+        # Diagnostics may contain conjunction/alignment bodies that were
+        # solved and removed from the ordinary DFS order.  Longitudes therefore
+        # come from the authoritative full input, not the reduced DFS order.
+        longitude_by_name = {
+            name: longitude
+            for _, name, longitude in bodies
+        }
         for (depth, name), s in sorted(diagnostic_stats.items()):
             immutable_names = {
                 reserved_names[i] if i < len(reserved_names) else str(i): count
@@ -175,6 +183,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             }
             diagnostic_print(
                 f"Planet Finder {mode}: TERMINAL BODY depth={depth}/{len(order)} body={name} "
+                f"lambda={longitude_by_name[name]:.3f}deg "
                 f"status={'evaluated' if s.get('started') else ('blocked-' + s['blocked'] if s.get('blocked') else 'not-evaluated')} "
                 f"generated={s['generated']:,} viable={s['viable']:,} "
                 f"rejects[immutable-reserved={s.get('immutable_reserved', 0):,},"
@@ -239,12 +248,3 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 for key, count in blockers.items()
             }
             diagnostic_print(
-                f"Planet Finder {mode}: TERMINAL ROUTE depth={depth}/{len(order)} body={name} "
-                f"straight_blocked={r.get('straight_blocked', 0):,} "
-                f"route_failed={r.get('route_failed', 0):,} "
-                f"anchor_blocked={r.get('anchor_blocked', 0):,} "
-                f"dogleg_failed={r.get('dogleg_failed', 0):,} "
-                f"straight_blockers={named_blockers}",
-                flush=True,
-            )
-        aggregate = {}

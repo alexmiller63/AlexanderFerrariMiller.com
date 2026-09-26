@@ -1,3 +1,12 @@
+                f"Planet Finder {mode}: TERMINAL ROUTE depth={depth}/{len(order)} body={name} "
+                f"straight_blocked={r.get('straight_blocked', 0):,} "
+                f"route_failed={r.get('route_failed', 0):,} "
+                f"anchor_blocked={r.get('anchor_blocked', 0):,} "
+                f"dogleg_failed={r.get('dogleg_failed', 0):,} "
+                f"straight_blockers={named_blockers}",
+                flush=True,
+            )
+        aggregate = {}
         for s in diagnostic_stats.values():
             for key in (
                 "immutable_reserved",
@@ -19,12 +28,12 @@
             f"Planet Finder {mode}: TERMINAL BEST-PARTIAL deepest={deepest}/{len(order)}",
             flush=True,
         )
+
     def viable_candidates(item, depth, *, consume_body_budget=True):
         original_index, (symbol, name, longitude) = item
         key = (depth, name)
         stats = diagnostic_stats.setdefault(key, {
             "generated": 0,
-
             "viable": 0,
             "overlap": 0,
             "leader": 0,
@@ -40,7 +49,8 @@
         })
         nonlocal candidates, rejected_overlap, rejected_leader, rejected_route
         w, h = label_size(mode, name)
-        anchor = xy(longitude, RI - 5)
+        glyph_radii = conjunction_glyph_radii(bodies)
+        anchor = xy(longitude, glyph_radii.get(name, RI - 5))
         # This generator is created for one fixed DFS prefix. The placed
         # obstacles therefore remain stable for its lifetime, so anchor-side
         # routing work can be safely reused across all candidate labels.
@@ -127,7 +137,8 @@
                     flush=True,
                 )
                 return
-            run_elapsed = now - budget["started"]
+
+            run_elapsed = now - started
             if run_elapsed >= budget["max_seconds"]:
                 stats["blocked"] = "wall-clock"
                 diagnostic_print(
@@ -163,6 +174,7 @@
                     ),
                     flush=True,
                 )
+                dump_diagnostics("wall-clock")
                 raise RuntimeError(
                     f"Planet Finder {mode} mode wall-clock budget exhausted "
                     f"during candidate generation for {name} after {run_elapsed:.1f}s "
@@ -223,28 +235,16 @@
                 rejected_route += 1
                 stats["route"] += 1
                 continue
-            # The inner zodiac rim is protected geometry, not a scoring
-            # preference. Reject the route and let ordinary DFS/backtracking
-            # try the next candidate; never special-case a body or week.
-            if leader_hits_zodiac_rim(path):
+
+            # A new leader must not cross any label already placed by DFS.
+            # The opposite direction is checked earlier: a new label may not
+            # cross an existing leader. Both directions are required because
+            # placement order must not change collision legality.
+            if any(
+                segment_hits_box(path[i], path[i + 1], placed_box, 10)
+                for placed_box in placed
+                for i in range(len(path) - 1)
+            ):
                 rejected_leader += 1
                 stats["leader"] += 1
-                stats["leader_rim"] += 1
-                continue
-            t0 = time.monotonic()
-            too_close = leaders_too_close(path, leaders)
-            timing["final_leader"] += time.monotonic() - t0
-            if too_close:
-                rejected_leader += 1
-                stats["leader"] += 1
-                stats["leader_graze"] += 1
-                continue
-            # This is the single cap point: only a fully viable candidate
-            # admitted to DFS consumes the body's candidate budget.
-            body_candidates += 1
-            if consume_body_budget:
-                body_attempts[name] += 1
-            stats["generated"] += 1
-            stats["viable"] += 1
-            last_yield_at = time.monotonic()
-            yield box, path
+                stats["leader_existing"] += 1

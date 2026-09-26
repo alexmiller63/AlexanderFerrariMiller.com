@@ -5,9 +5,11 @@ A green classifier suite is not sufficient: the production state machine must
 complete the same conjunction/alignment/general-search phases used by a week.
 """
 
+import math
+
 import pytest
 
-from planet_finder_geometry import CANONICAL, FinderMode, alignment_groups, conjunction_groups
+from planet_finder_geometry import CANONICAL, CX, CY, FinderMode, alignment_groups, conjunction_groups
 from planet_finder_search import layout
 from planet_finder_validation import validate_layout
 
@@ -33,6 +35,19 @@ def assert_complete_valid_layout(result, bodies, mode=FinderMode.GREEK):
     assert set(actual) == expected
     valid, errors = validate_layout(mode, result)
     assert valid, errors
+
+
+def assert_alignment_labels_follow_lambda(result, bodies):
+    """The text labels in a planned alignment retain their circular order."""
+    boxes = {name: box for _, name, _, box, _ in result}
+    for group in alignment_groups(bodies):
+        reference = group[0][2] - 90.0
+        angles = []
+        for _, name, _ in group:
+            box = boxes[name]
+            longitude = (math.degrees(math.atan2(CY - box.y, box.x - CX)) - 180.0) % 360.0
+            angles.append((longitude - reference) % 360.0)
+        assert angles == sorted(angles), [item[1] for item in group]
 
 
 def w1_shaped_bodies():
@@ -187,3 +202,5 @@ def test_level_20_progressive_real_w01_geometry(monkeypatch, mode, level, longit
         context_label=f"regression-{level}-{mode.value}",
     )
     assert_complete_valid_layout(result, bodies, mode)
+    if level in ("both-real-alignments", "exact-W01") and mode != FinderMode.GREEK:
+        assert_alignment_labels_follow_lambda(result, bodies)

@@ -1,3 +1,30 @@
+                continue
+
+            # The inner zodiac rim is protected geometry, not a scoring
+            # preference. Reject the route and let ordinary DFS/backtracking
+            # try the next candidate; never special-case a body or week.
+            if leader_hits_zodiac_rim(path):
+                rejected_leader += 1
+                stats["leader"] += 1
+                stats["leader_rim"] += 1
+                continue
+            t0 = time.monotonic()
+            too_close = leaders_too_close(path, leaders)
+            timing["final_leader"] += time.monotonic() - t0
+            if too_close:
+                rejected_leader += 1
+                stats["leader"] += 1
+                stats["leader_graze"] += 1
+                continue
+            # This is the single cap point: only a fully viable candidate
+            # admitted to DFS consumes the body's candidate budget.
+            body_candidates += 1
+            if consume_body_budget:
+                body_attempts[name] += 1
+            stats["generated"] += 1
+            stats["viable"] += 1
+            last_yield_at = time.monotonic()
+            yield box, path
             if consume_body_budget and body_attempts[name] >= budget["max_node_candidates"]:
                 stats["blocked"] = "body-candidate-cap"
                 diagnostic_print(
@@ -8,243 +35,216 @@
                 )
                 raise DepthNodeBudgetExhausted(depth, name)
 
-    forward_stats = {"checks": 0, "pruned": 0, "witnesses": 0, "by_body": {}}
-    # Bodies that actually make a forward check fail.  Without this, a prefix
-    # whose every candidate is pruned before recursion leaves `deepest` at the
-    # parent depth, causing the controller to blame/promote the parent instead
-    # of the future body that is the real squeaky wheel.
-    forward_blockers = {}
-    # Forward checking is only a pruning hint.  Bound raw look-ahead work so
-    # a difficult body cannot monopolize the mode clock.  Hitting this cap is
-    # UNKNOWN, never proof that the branch is dead.
-    forward_probe_cap = max(
-        1, int(os.environ.get("PLANET_FINDER_FORWARD_PROBE_CAP", "1000"))
-    )
-    PROBE_LIMITED = object()
+    # Deterministic conjunction pre-pass. Each group is an atomic unit:
+    # choose its member placements against immutable geometry and previously
+    # frozen groups, but do not let siblings in the same conjunction reject
+    # one another through ordinary label/leader collision rules. Glyph overlap
+    # is checked explicitly from the shared radial/longitude geometry.
+    by_name = {name: (i, (symbol, name, longitude)) for i, (symbol, name, longitude) in enumerate(bodies)}
+    glyph_radii = conjunction_glyph_radii(bodies)
+    glyph_radius = 22.0
 
-    def forward_check(next_depth):
-        """Return False only when a remaining body is already provably dead.
+    for group_index, group in enumerate(conjunction_groups(bodies)):
+        group_items = [by_name[item[1]] for item in group]
 
-        First require one individually viable witness for every remaining body.
-        Then, when both exist, require at least one viable Child placement that
-        leaves at least one compatible Grandchild placement. Look-ahead probes
-        do not consume the per-body DFS candidate cap.
+        # The glyph layer is the hard intra-conjunction constraint. Exact
+        # lambda is preserved; radial slots must keep glyph circles disjoint.
+        glyph_centers = []
+        for _, (_, name, longitude) in group_items:
+            center = xy(longitude, glyph_radii[name])
+            if any(math.hypot(center[0] - other[0], center[1] - other[1]) < 2.0 * glyph_radius
+                   for other in glyph_centers):
+                raise RuntimeError(
+                    f"Planet Finder {mode}: conjunction glyph overlap in group {group_index + 1} at {name}"
+                )
+            glyph_centers.append(center)
+
+        # Build the whole conjunction directly rather than asking the ordinary
+        # recursive candidate generator to place its members independently.
+        group_rows = []
+        for original_index, (symbol, name, longitude) in group_items:
+            gx, gy = xy(longitude, glyph_radii[name])
+            w, h = label_size(mode, name)
+            label_radius = max(80.0, glyph_radii[name] - 92.0)
+            lx, ly = xy(longitude, label_radius)
+            box = Box(lx, ly, w, h)
+            leader = [(gx, gy), (lx, ly)]
+            group_rows.append((original_index, symbol, name, longitude, box, leader))
+
+        # Commit the complete conjunction at once. It now becomes fixed
+        # collision geometry for every remaining recursive body.
+        for original_index, symbol, name, longitude, box, leader in group_rows:
+            placed.append(box)
+            leaders.append(leader)
+            leader_names.append(name)
+            staged[original_index] = (symbol, name, longitude, box, leader)
+            diagnostic_print(
+                f"Planet Finder {mode}: FIXED CONJUNCTION PLACED body={name} "
+                f"lambda={longitude % 360.0:.3f}deg radius={glyph_radii[name]:.1f}",
+                flush=True,
+            )
+
+    # Second phase: solve the entire alignment layer recursively.  There are
+    # two levels of backtracking: members within a group, and groups within the
+    # alignment layer.  Nothing in this layer is truly frozen until every
+    # alignment group has a mutually compatible complete placement.
+    alignment_group_items = [
+        [by_name[item[1]] for item in group]
+        for group in alignment_groups(bodies)
+    ]
+
+    def plan_alignment_layer():
+        """Preplace the alignment as one ordered, route-compatible layer.
+
+        A bounded constraint search starts with nearby labels, keeps each
+        group's circular lambda order, and checks routes while adding labels.
+        The recursive alignment search below remains the fallback if this
+        preferred pool cannot supply a complete layer.
         """
-        obstacles = [*reserved, *placed]
-        immutable_count = 3
-        forward_stats["checks"] += 1
-        # One raw-probe budget is shared by this entire forward-check call,
-        # including every individual-body witness and all child/grandchild
-        # look-ahead.  Reaching the cap means UNKNOWN, never dead.
-        forward_probe_used = 0
+        items = [item for group in alignment_group_items for item in group]
+        if not items:
+            return None
+        # Ordinary recursive placement already handles broader alignments.
+        # Reserve the group planner for the close pairs that make sequential
+        # first-fit placement expensive in the wider text modes.
+        close_gap = min(
+            (right[1][2] - left[1][2]) % 360.0
+            for group in alignment_group_items
+            for left, right in zip(group, group[1:])
+        )
+        if close_gap >= 3.0:
+            return None
+        pools = {}
+        order_names = [item[1][1] for item in items]
+        longitudes = {item[1][1]: item[1][2] for item in items}
+        anchors = {name: xy(longitude, glyph_radii[name])
+                   for name, longitude in longitudes.items()}
+        group_names = [[item[1][1] for item in group] for group in alignment_group_items]
 
-        def consume_forward_probe():
-            nonlocal forward_probe_used
-            if forward_probe_used >= forward_probe_cap:
-                return False
-            forward_probe_used += 1
+        def label_angle(row, reference):
+            x, y, _ = row
+            angle = (math.degrees(math.atan2(CY - y, x - CX)) - 180.0) % 360.0
+            return (angle - reference) % 360.0
+
+        def ordered(chosen):
+            for names in group_names:
+                reference = longitudes[names[0]] - 90.0
+                present = [name for name in names if name in chosen]
+                if any(label_angle(chosen[a], reference) >= label_angle(chosen[b], reference)
+                       for a, b in zip(present, present[1:])):
+                    return False
             return True
 
-        def witness_for(item, boxes, paths, obstacles_now):
-            _, (_, future_name, future_longitude) = item
-            w, h = label_size(mode, future_name)
-            anchor = xy(future_longitude, RI - 5)
-            prefix_cache = {}
-            witness_raw = 0
-            reasons = {"placed-overlap": 0, "existing-leader": 0, "route": 0, "leader-rim": 0, "leader-graze": 0}
-            for _, _, future_box in legal_candidate_positions(
-                future_longitude, w, h, reserved, displacement_scale
-            ):
-                if not consume_forward_probe():
-                    return PROBE_LIMITED, None, witness_raw, reasons
-                witness_raw += 1
-                if any(boxes_overlap(future_box, other, 14) for other in boxes):
-                    reasons["placed-overlap"] += 1
+        def planned_paths(chosen):
+            paths = {}
+            for name in order_names:
+                if name not in chosen:
                     continue
-                if any(
-                    segment_hits_box(seg[i], seg[i + 1], future_box, 10)
-                    for seg in paths
-                    for i in range(len(seg) - 1)
-                ):
-                    reasons["existing-leader"] += 1
-                    continue
-                center = (future_box.x, future_box.y)
+                x, y, _ = chosen[name]
+                other_boxes = [row[2] for other, row in chosen.items() if other != name]
                 path = route(
-                    anchor,
-                    center,
-                    obstacles_now,
-                    allow_initial_escape_count=immutable_count,
-                    prefix_cache=prefix_cache,
+                    anchors[name], (x, y), reserved + placed + other_boxes,
+                    allow_initial_escape_count=3,
                 )
-                if path is None:
-                    reasons["route"] += 1
-                    continue
-                if leader_hits_zodiac_rim(path):
-                    reasons["leader-rim"] += 1
-                    continue
-                if leaders_too_close(path, paths):
-                    reasons["leader-graze"] += 1
-                    if len(paths) == 1 and future_name in {"Moon", "Mercury"}:
-                        min_dist, pair = minimum_leader_separation(path, paths)
-                        if pair is not None:
-                            diagnostic_print(
-                                f"Planet Finder {mode}: LEADER-GRAZE "
-                                f"proposed={future_name} existing={leader_names[pair[0]]} "
-                                f"distance={min_dist:.3f} clearance={LEADER_TO_LEADER_CLEARANCE:.3f} "
-                                f"candidate=({future_box.x:.1f},{future_box.y:.1f}) "
-                                f"segments={pair[1]}/{pair[2]}",
-                                level=3,
-                                flush=True,
-                            )
-                    continue
-                return future_box, path, witness_raw, reasons
-            return None, None, witness_raw, reasons
-
-        # Existing individual feasibility test for every future body.
-        for future_depth in range(next_depth, len(order)):
-            item = order[future_depth]
-            _, (_, future_name, _) = item
-            future_box, future_path, witness_raw, witness_reasons = witness_for(
-                item, placed, leaders, obstacles
-            )
-            if future_box is PROBE_LIMITED:
-                diagnostic_print(
-                    f"Planet Finder {mode}: FORWARD PROBE CAP body={future_name} "
-                    f"raw={witness_raw:,}/{forward_probe_cap:,}; treating as unknown",
-                    level=2,
-                    flush=True,
-                )
-                continue
-            witness = future_box is not None
-            body_stat = forward_stats["by_body"].setdefault(
-                future_name, {"checks": 0, "witnesses": 0, "dead": 0, "raw": 0,
-                               "reasons": {"placed-overlap": 0, "existing-leader": 0,
-                                          "route": 0, "leader-rim": 0, "leader-graze": 0}}
-            )
-            body_stat["checks"] += 1
-            body_stat["raw"] += witness_raw
-            for reason, count in witness_reasons.items():
-                body_stat["reasons"][reason] += count
-            if witness:
-                body_stat["witnesses"] += 1
-                forward_stats["witnesses"] += 1
-            else:
-                body_stat["dead"] += 1
-                forward_stats["pruned"] += 1
-                forward_blockers[future_name] = forward_blockers.get(future_name, 0) + 1
-                if next_depth == 1 and order[0][1][1] == "Sun":
-                    diagnostic_print(
-                        f"Planet Finder {mode}: SUN-PREFIX DEAD-GATE "
-                        f"sun-check={forward_stats['checks']:,} "
-                        f"future-body={future_name} raw={witness_raw:,} "
-                        f"prefix-obstacles={len(obstacles):,}",
-                        level=3,
-                        flush=True,
-                    )
-                return False
-
-        # Paired Child -> Grandchild look-ahead. An individually viable Child
-        # is not enough if every Child placement makes the Grandchild impossible.
-        if next_depth + 1 < len(order):
-            child_item = order[next_depth]
-            grandchild_item = order[next_depth + 1]
-            _, (_, child_name, child_longitude) = child_item
-            _, (_, grandchild_name, _) = grandchild_item
-            child_w, child_h = label_size(mode, child_name)
-            child_anchor = xy(child_longitude, RI - 5)
-            child_prefix_cache = {}
-            pair_found = False
-            child_raw = 0
-            grandchild_raw_total = 0
-
-            for _, _, child_box in legal_candidate_positions(
-                child_longitude, child_w, child_h, reserved, displacement_scale
-            ):
-                if not consume_forward_probe():
-                    pair_found = True
-                    diagnostic_print(
-                        f"Planet Finder {mode}: FORWARD PAIR PROBE CAP child={child_name} "
-                        f"used={forward_probe_used:,}/{forward_probe_cap:,}; treating as unknown",
-                        level=2,
-                        flush=True,
-                    )
-                    break
-                child_raw += 1
-                if any(boxes_overlap(child_box, other, 14) for other in placed):
-                    continue
-                if any(
-                    segment_hits_box(seg[i], seg[i + 1], child_box, 10)
-                    for seg in leaders
-                    for i in range(len(seg) - 1)
+                if path is None or any(
+                    segment_hits_box(path[i], path[i + 1], box, PLACED_LABEL_LEADER_CLEARANCE)
+                    for box in other_boxes for i in range(len(path) - 1)
+                ) or leader_hits_zodiac_rim(path) or leaders_too_close(
+                    path, leaders + list(paths.values())
                 ):
-                    continue
-                child_path = route(
-                    child_anchor,
-                    (child_box.x, child_box.y),
-                    obstacles,
-                    allow_initial_escape_count=immutable_count,
-                    prefix_cache=child_prefix_cache,
+                    return None
+                paths[name] = path
+            return paths
+
+        for _, (_, name, longitude) in items:
+            w, h = label_size(mode, name)
+            natural = xy(longitude, PREFERRED_LABEL_RADII[0])
+            options = [
+                row for row in legal_candidate_positions(
+                    longitude, w, h, reserved, displacement_scale
                 )
-                if child_path is None:
+                if not any(boxes_overlap(row[2], box, LABEL_COLLISION_PADDING) for box in placed)
+                and not any(segment_hits_box(path[i], path[i + 1], row[2], 10)
+                            for path in leaders for i in range(len(path) - 1))
+            ]
+            options.sort(key=lambda row: math.hypot(row[0] - natural[0], row[1] - natural[1]))
+            pools[name] = options[:80]
+            if not pools[name]:
+                return None
+
+        nodes = 0
+
+        def assign(remaining, available, chosen):
+            nonlocal nodes
+            if not remaining:
+                return (chosen, planned_paths(chosen))
+            name = min(remaining, key=lambda candidate: (len(available[candidate]), order_names.index(candidate)))
+            others = [candidate for candidate in remaining if candidate != name]
+            for row in available[name]:
+                nodes += 1
+                if nodes > 50000 or (refinement_deadline is not None and
+                                     time.monotonic() >= refinement_deadline):
+                    return None
+                next_available = {
+                    candidate: [option for option in available[candidate]
+                                if not boxes_overlap(row[2], option[2], LABEL_COLLISION_PADDING)]
+                    for candidate in others
+                }
+                if any(not next_available[candidate] for candidate in others):
                     continue
-                if leader_hits_zodiac_rim(child_path):
+                trial = {**chosen, name: row}
+                if not ordered(trial) or planned_paths(trial) is None:
                     continue
-                if leaders_too_close(child_path, leaders):
-                    continue
+                result = assign(others, next_available, trial)
+                if result is not None:
+                    return result
+            return None
 
-                grandchild_box, grandchild_path, grandchild_raw, grandchild_reasons = witness_for(
-                    grandchild_item,
-                    [*placed, child_box],
-                    [*leaders, child_path],
-                    [*obstacles, child_box],
-                )
-                grandchild_raw_total += grandchild_raw
-                if grandchild_box is PROBE_LIMITED:
-                    pair_found = True
-                    diagnostic_print(
-                        f"Planet Finder {mode}: FORWARD PROBE CAP body={grandchild_name} "
-                        f"raw={grandchild_raw:,}/{forward_probe_cap:,}; treating as unknown",
-                        level=2,
-                        flush=True,
-                    )
-                    break
-                if grandchild_box is not None:
-                    pair_found = True
-                    break
+        result = assign(order_names, pools, {})
+        planned = result[0] if result else {}
+        diagnostic_print(
+            f"Planet Finder {mode}: ALIGNMENT PREPLACEMENT "
+            f"planned={len(planned)}/{len(order_names)} nodes={nodes}",
+            flush=True,
+        )
+        return result
 
-            pair_stat = forward_stats["by_body"].setdefault(
-                grandchild_name, {"checks": 0, "witnesses": 0, "dead": 0, "raw": 0}
-            )
-            pair_stat["checks"] += 1
-            pair_stat["raw"] += child_raw + grandchild_raw_total
-            if pair_found:
-                pair_stat["witnesses"] += 1
-                forward_stats["witnesses"] += 1
-            else:
-                pair_stat["dead"] += 1
-                forward_stats["pruned"] += 1
-                forward_blockers[grandchild_name] = forward_blockers.get(grandchild_name, 0) + 1
-                diagnostic_print(
-                    f"Planet Finder {mode}: CHILD-GRANDCHILD PRUNE "
-                    f"depth={next_depth}/{len(order)} child={child_name} "
-                    f"grandchild={grandchild_name}",
-                    level=2,
-                    flush=True,
-                )
-                return False
+    alignment_preplacement = plan_alignment_layer()
+    if alignment_preplacement:
+        planned, paths = alignment_preplacement
+        for group in alignment_group_items:
+            for original_index, (symbol, name, longitude) in group:
+                box = planned[name][2]
+                path = paths[name]
+                placed.append(box)
+                leaders.append(path)
+                leader_names.append(name)
+                staged[original_index] = (symbol, name, longitude, box, path)
 
-        return True
+    def solve_alignment_members(group_index, remaining_items):
+        if not remaining_items:
+            return solve_alignment_group(group_index + 1)
 
-    def solve_final_pair(first_depth):
-        """Solve the final two bodies until success, exhaustion, or mode deadline.
+        # Place members in the circular lambda order supplied by
+        # alignment_groups().  Keep one stream alive while recursion consumes
+        # its candidates, so backtracking never replays a prefix.
+        diagnostic_depth = -(group_index + 1)
+        item = remaining_items[0]
+        original_index, (symbol, name, longitude) = item
+        next_remaining = remaining_items[1:]
+        tried = 0
+        candidate_limit = budget["max_node_candidates"]
 
-        Neither member consumes the ordinary per-body DFS budget. The existing
-        mode/refinement deadline remains authoritative, so the endgame is not
-        cut short by a separate raw-probe limit.
-        """
-        nonlocal candidates, backtracks, current_body
-        first_item = order[first_depth]
-        second_item = order[first_depth + 1]
-        first_index, (first_symbol, first_name, first_longitude) = first_item
-        second_index, (second_symbol, second_name, second_longitude) = second_item
-        pair_attempts = 0
+        def try_candidate(candidate):
+            box, path = candidate
+            placed.append(box)
+            leaders.append(path)
+            leader_names.append(name)
+            staged[original_index] = (symbol, name, longitude, box, path)
+            solved = solve_alignment_members(group_index, next_remaining)
+            if not solved:
+                staged.pop(original_index, None)
+                leader_names.pop()
+                leaders.pop()
+                placed.pop()
+            return solved
