@@ -1,6 +1,6 @@
 from pathlib import Path
 
-ENABLED = False
+ENABLED = True
 
 if not ENABLED:
     print("Repair Once is OFF; nothing to do.")
@@ -9,41 +9,62 @@ if not ENABLED:
 path = Path("tools/planet_finder_search.py")
 text = path.read_text()
 
-old = '''    canonical_index = {name: i for i, name in enumerate(CANONICAL)}
-    indexed = list(enumerate(bodies))
-    indexed.sort(key=lambda item: canonical_index[item[1][1]])
+old = '''    def next_promotion_order(current_order, body_name):
+        """Return the next bounded ordering for a squeaky-wheel body.
+
+        Try the body at the zero position first, then immediately to its
+        right, then at the opposite side of the linearized order.  Relative
+        order of every other body is preserved.  This explores the two sides
+        of a crowded front position without opening arbitrary permutations.
+        """
+        body_index = next(
+            (i for i, item in enumerate(current_order) if item[1][1] == body_name),
+            None,
+        )
+        if body_index is None:
+            return None
+        body_item = current_order[body_index]
+        rest = [item for i, item in enumerate(current_order) if i != body_index]
+        candidate_orders = [
+            [body_item, *rest],
+            [rest[0], body_item, *rest[1:]],
+            [*rest, body_item],
+        ]
+        for candidate in candidate_orders:
+            names = tuple(item[1][1] for item in candidate)
+            if (refinement_index, names) not in attempted_orders:
+                return candidate
+        return None
 '''
 
-new = '''    canonical_index = {name: i for i, name in enumerate(CANONICAL)}
-    indexed = list(enumerate(bodies))
-    indexed.sort(key=lambda item: canonical_index[item[1][1]])
-'''
+new = '''    def next_promotion_order(current_order, body_name):
+        """Move a blocker left through its local circular-lambda neighborhood.
 
-anchor = '''    if {name for _, (_, name, _) in indexed} != set(CANONICAL):
-        raise RuntimeError("Planet Finder body set does not match the canonical Solar-System objects")
-
-'''
-
-addition = '''    # First search order follows the bodies around the ecliptic.  Because
-    # longitude is circular, place the linearization seam in the largest empty
-    # angular gap so close neighbors across 0/360 degrees remain adjacent.
-    lambda_sorted = sorted(indexed, key=lambda item: item[1][2] % 360.0)
-    gaps = []
-    for i, item in enumerate(lambda_sorted):
-        current_lambda = item[1][2] % 360.0
-        next_lambda = lambda_sorted[(i + 1) % len(lambda_sorted)][1][2] % 360.0
-        gap = (next_lambda - current_lambda) % 360.0
-        gaps.append(gap)
-    seam_after = max(range(len(gaps)), key=gaps.__getitem__)
-    indexed = lambda_sorted[seam_after + 1:] + lambda_sorted[:seam_after + 1]
-
+        The initial order is geometric, so preserve that information.  A body
+        that cannot be placed after its immediate predecessors is tried one
+        position earlier at a time, allowing DFS to choose the blocker before
+        the nearby bodies that constrained it.  This is bounded: once the body
+        reaches the front, there is no further promotion for this cycle.
+        """
+        body_index = next(
+            (i for i, item in enumerate(current_order) if item[1][1] == body_name),
+            None,
+        )
+        if body_index is None or body_index == 0:
+            return None
+        candidate = list(current_order)
+        candidate[body_index - 1], candidate[body_index] = (
+            candidate[body_index], candidate[body_index - 1]
+        )
+        names = tuple(item[1][1] for item in candidate)
+        if (refinement_index, names) in attempted_orders:
+            return None
+        return candidate
 '''
 
 if text.count(old) != 1:
-    raise SystemExit(f"Safety stop: expected canonical initialization once; found {text.count(old)}")
-if text.count(anchor) != 1:
-    raise SystemExit(f"Safety stop: expected body-set validation anchor once; found {text.count(anchor)}")
+    raise SystemExit(f"Safety stop: expected promotion function once; found {text.count(old)}")
 
-text = text.replace(anchor, anchor + addition, 1)
+text = text.replace(old, new, 1)
 path.write_text(text)
-print("Set first Planet Finder order to circular lambda order with seam in largest angular gap.")
+print("Changed squeaky-wheel promotion to one-step local lambda promotion.")
