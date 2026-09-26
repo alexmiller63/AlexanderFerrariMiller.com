@@ -169,9 +169,12 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             flush=True,
         )
         diagnostic_print(f"Planet Finder {mode}: TERMINAL ORDER sequence={order_names}", flush=True)
+        # Diagnostics may contain conjunction/alignment bodies that were
+        # solved and removed from the ordinary DFS order.  Longitudes therefore
+        # come from the authoritative full input, not the reduced DFS order.
         longitude_by_name = {
-            item[1][1]: item[1][2]
-            for item in order
+            name: longitude
+            for _, name, longitude in bodies
         }
         for (depth, name), s in sorted(diagnostic_stats.items()):
             immutable_names = {
