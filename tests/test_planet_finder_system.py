@@ -12,6 +12,9 @@ from planet_finder_search import layout
 from planet_finder_validation import validate_layout
 
 
+MODES = [FinderMode.GREEK, FinderMode.LATIN, FinderMode.MIXED]
+
+
 def synthetic_bodies(longitudes):
     """Return all canonical bodies with deterministic synthetic longitudes."""
     assert set(longitudes) == set(CANONICAL)
@@ -131,30 +134,33 @@ def test_level_10_w1_shaped_classification_has_two_large_alignments():
     ]
 
 
-def test_level_11_w1_shaped_full_state_machine_completes(monkeypatch):
+@pytest.mark.parametrize("mode", MODES)
+def test_level_11_w1_shaped_full_state_machine_completes(monkeypatch, mode):
     monkeypatch.setenv("PLANET_FINDER_DIAGNOSTIC_LEVEL", "0")
     bodies = w1_shaped_bodies()
     result = layout(
-        FinderMode.GREEK, bodies, target_solutions=1,
+        mode, bodies, target_solutions=1,
         budget={"max_node_candidates": 200, "max_seconds": 30.0},
-        context_label="synthetic-W01",
+        context_label=f"synthetic-W01-{mode.value}",
     )
-    assert_complete_valid_layout(result, bodies)
+    assert_complete_valid_layout(result, bodies, mode)
 
 
-def test_level_12_w1_shaped_full_state_machine_is_deterministic(monkeypatch):
+@pytest.mark.parametrize("mode", MODES)
+def test_level_12_w1_shaped_full_state_machine_is_deterministic(monkeypatch, mode):
     monkeypatch.setenv("PLANET_FINDER_DIAGNOSTIC_LEVEL", "0")
     bodies = w1_shaped_bodies()
     budget = {"max_node_candidates": 200, "max_seconds": 30.0}
-    first = layout(FinderMode.GREEK, bodies, target_solutions=1, budget=budget, context_label="determinism-A")
-    second = layout(FinderMode.GREEK, bodies, target_solutions=1, budget=budget, context_label="determinism-B")
-    assert_complete_valid_layout(first, bodies)
-    assert_complete_valid_layout(second, bodies)
+    first = layout(mode, bodies, target_solutions=1, budget=budget, context_label=f"determinism-{mode.value}-A")
+    second = layout(mode, bodies, target_solutions=1, budget=budget, context_label=f"determinism-{mode.value}-B")
+    assert_complete_valid_layout(first, bodies, mode)
+    assert_complete_valid_layout(second, bodies, mode)
     assert first == second
 
 
 @pytest.mark.parametrize("level,longitudes", TIGHT_FIVE_LADDER, ids=[item[0] for item in TIGHT_FIVE_LADDER])
-def test_level_15_isolated_tight_five_breakpoint(monkeypatch, level, longitudes):
+@pytest.mark.parametrize("mode", MODES)
+def test_level_15_isolated_tight_five_breakpoint(monkeypatch, mode, level, longitudes):
     """Locate the first failing geometry inside the real W01 five-body group."""
     monkeypatch.setenv("PLANET_FINDER_DIAGNOSTIC_LEVEL", "0")
     bodies = synthetic_bodies(longitudes)
@@ -163,20 +169,21 @@ def test_level_15_isolated_tight_five_breakpoint(monkeypatch, level, longitudes)
     matching = [group for group in groups if set(group) == target]
     assert len(matching) == 1, groups
     result = layout(
-        FinderMode.GREEK, bodies, target_solutions=1,
+        mode, bodies, target_solutions=1,
         budget={"max_node_candidates": 2000, "max_seconds": 15.0},
-        context_label=f"tight-five-{level}",
+        context_label=f"tight-five-{level}-{mode.value}",
     )
-    assert_complete_valid_layout(result, bodies)
+    assert_complete_valid_layout(result, bodies, mode)
 
 
 @pytest.mark.parametrize("level,longitudes", W01_LADDER, ids=[item[0] for item in W01_LADDER])
-def test_level_20_progressive_real_w01_geometry(monkeypatch, level, longitudes):
+@pytest.mark.parametrize("mode", MODES)
+def test_level_20_progressive_real_w01_geometry(monkeypatch, mode, level, longitudes):
     monkeypatch.setenv("PLANET_FINDER_DIAGNOSTIC_LEVEL", "0")
     bodies = synthetic_bodies(longitudes)
     result = layout(
-        FinderMode.GREEK, bodies, target_solutions=1,
+        mode, bodies, target_solutions=1,
         budget={"max_node_candidates": 2000, "max_seconds": 15.0},
-        context_label=f"regression-{level}",
+        context_label=f"regression-{level}-{mode.value}",
     )
-    assert_complete_valid_layout(result, bodies)
+    assert_complete_valid_layout(result, bodies, mode)
