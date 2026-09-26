@@ -1,6 +1,6 @@
 from pathlib import Path
 
-ENABLED = False
+ENABLED = True
 
 if not ENABLED:
     print("Repair Once is OFF; nothing to do.")
@@ -9,101 +9,49 @@ if not ENABLED:
 path = Path("tools/planet_finder_search.py")
 text = path.read_text()
 
-old_init = '''    state = "SEARCH_ORDER"
-    promote_body = None
-'''
-new_init = '''    state = "SEARCH_ORDER"
-    promote_body = None
-    sticky_promote_body = None
-'''
-
-old_promote = '''        if state == "PROMOTE":
-            if promote_body in promoted_bodies:
-                diagnostic_print(
-                    f"Planet Finder {mode}: PROMOTION REPEAT body={promote_body}; "
-                    f"promoted={len(promoted_bodies)}/{len(indexed)} "
-                    f"at {refinement_scales[refinement_index]:g} label-lengths; refining",
-                    flush=True,
-                )
-                state = "REFINE"
-                continue
-            promoted_bodies.add(promote_body)
-            promoted_order = next_promotion_order(order, promote_body)
-            if promoted_order is None:
-                diagnostic_print(
-                    f"Planet Finder {mode}: PROMOTION SIDEWAYS CYCLE CLOSED body={promote_body} "
-                    f"at {refinement_scales[refinement_index]:g} label-lengths; refining",
-                    flush=True,
-                )
-                state = "REFINE"
-            else:
-                promoted_names = tuple(item[1][1] for item in promoted_order)
-                order = promoted_order
-                diagnostic_print(
-                    f"Planet Finder {mode}: PROMOTE/SIDEWAYS body={promote_body}; "
-                    "discarding fixed-order search state and restarting with sequence="
-                    + " > ".join(promoted_names),
-                    flush=True,
-                )
-                state = "SEARCH_ORDER"
-            continue
+old_deadlines = '''    # Keep one wall clock per notation mode, but reserve an equal cumulative
+    # share for each refinement so a coarse geometry cannot consume time that
+    # belongs to the finer fallback geometries.
+    refinement_deadlines = tuple(
+        budget["started"] + budget["max_seconds"] * (i + 1) / len(refinement_scales)
+        for i in range(len(refinement_scales))
+    )
 '''
 
-new_promote = '''        if state == "PROMOTE":
-            # Promotion is sticky within a refinement.  Once a blocker starts
-            # moving left through the lambda order, keep moving that same body
-            # one neighbor at a time.  A newly exposed blocker must not undo
-            # the ordering knowledge we just learned.
-            if sticky_promote_body is None:
-                sticky_promote_body = promote_body
-            promoted_order = next_promotion_order(order, sticky_promote_body)
-            if promoted_order is None:
-                diagnostic_print(
-                    f"Planet Finder {mode}: STICKY PROMOTION COMPLETE body={sticky_promote_body} "
-                    f"at position 0; refinement={refinement_scales[refinement_index]:g} "
-                    "label-lengths; refining",
-                    flush=True,
+old_slice_guard = '''        if state != "REFINE" and now >= refinement_deadlines[refinement_index]:
+            if refinement_index + 1 >= len(refinement_scales):
+                raise RuntimeError(
+                    f"Planet Finder {mode} mode wall-clock budget exhausted "
+                    f"(limit {budget['max_seconds']:.1f}s)"
                 )
-                sticky_promote_body = None
-                state = "REFINE"
-            else:
-                promoted_names = tuple(item[1][1] for item in promoted_order)
-                order = promoted_order
-                body_attempts[sticky_promote_body] = 0
-                diagnostic_print(
-                    f"Planet Finder {mode}: STICKY PROMOTE body={sticky_promote_body}; "
-                    "moved left one lambda neighbor; restarting sequence="
-                    + " > ".join(promoted_names),
-                    flush=True,
-                )
-                state = "SEARCH_ORDER"
-            continue
-'''
-
-old_assignment = '''        promote_body = outcome.blocker
-        refinement_history.append({
-'''
-new_assignment = '''        promote_body = outcome.blocker
-        if sticky_promote_body is not None and outcome.kind == "EXHAUSTED":
-            promote_body = sticky_promote_body
-        refinement_history.append({
-'''
-
-old_refine_reset = '''            promote_body = None
             diagnostic_print(
-'''
-new_refine_reset = '''            promote_body = None
-            sticky_promote_body = None
-            diagnostic_print(
+                f"Planet Finder {mode}: REFINEMENT TIME SLICE EXHAUSTED "
+                f"at {refinement_scales[refinement_index]:g} label-lengths; "
+                f"elapsed={now - budget['started']:.1f}s; advancing",
+                flush=True,
+            )
+            state = "REFINE"
+            continue
+
 '''
 
-for label, old in (("controller init", old_init), ("PROMOTE state", old_promote), ("outcome assignment", old_assignment), ("refinement reset", old_refine_reset)):
+old_solver_arg = '''                body_attempts=body_attempts,
+                refinement_deadline=refinement_deadlines[refinement_index],
+'''
+new_solver_arg = '''                body_attempts=body_attempts,
+                refinement_deadline=budget["started"] + budget["max_seconds"],
+'''
+
+for label, old in (
+    ("refinement deadline allocation", old_deadlines),
+    ("refinement time-slice guard", old_slice_guard),
+    ("solver refinement deadline argument", old_solver_arg),
+):
     if text.count(old) != 1:
         raise SystemExit(f"Safety stop: expected {label} once; found {text.count(old)}")
 
-text = text.replace(old_init, new_init, 1)
-text = text.replace(old_promote, new_promote, 1)
-text = text.replace(old_assignment, new_assignment, 1)
-text = text.replace(old_refine_reset, new_refine_reset, 1)
+text = text.replace(old_deadlines, "", 1)
+text = text.replace(old_slice_guard, "", 1)
+text = text.replace(old_solver_arg, new_solver_arg, 1)
 path.write_text(text)
-print("Installed sticky one-neighbor lambda promotion before refinement.")
+print("Removed per-refinement time slices; all searches now share the single mode clock.")
