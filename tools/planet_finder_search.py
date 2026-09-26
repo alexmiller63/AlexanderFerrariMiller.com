@@ -297,11 +297,14 @@ def layout(
                 state = "SEARCH_ORDER"
             elif transition == "CYCLE":
                 cycle_names = tuple(item[1][1] for item in promoted_order)
-                raise RuntimeError(
-                    f"Planet Finder {mode}: controller cycle detected while promoting "
+                diagnostic_print(
+                    f"Planet Finder {mode}: ORDERING CYCLE EXHAUSTED while promoting "
                     f"{promote_body}; refinement={refinement_scales[refinement_index]:g} "
-                    f"candidate={' > '.join(cycle_names)}"
+                    f"candidate={' > '.join(cycle_names)}; refining",
+                    flush=True,
                 )
+                promote_body = None
+                state = "REFINE"
             else:
                 raise RuntimeError(
                     f"Planet Finder {mode}: controller invariant violated: blocker "
