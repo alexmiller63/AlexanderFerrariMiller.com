@@ -124,10 +124,6 @@ def layout(
     refinement_scales = (2.0, 1.5, 1.0, 0.5, 0.25)
     refinement_index = 0
     attempted_orders = set()
-    # Exhausted searches use this to bound squeaky-wheel promotion cycles.
-    # CAPPED searches instead use attempted_orders to exhaust the three
-    # explicitly bounded positions for that body before refinement.
-    promoted_bodies = set()
     # One per-body candidate cap for the current placement refinement.
     # Reordering may reset a promoted body's budget; changing refinement resets
     # every body's budget because the candidate geometry has changed.
@@ -212,7 +208,6 @@ def layout(
             # into the finer search, while resetting all search-work budgets
             # because the candidate geometry has changed.
             attempted_orders.clear()
-            promoted_bodies.clear()
             for name in body_attempts:
                 body_attempts[name] = 0
             promote_body = None
@@ -263,8 +258,12 @@ def layout(
         order_names = tuple(item[1][1] for item in order)
         order_key = (refinement_index, order_names)
         if order_key in attempted_orders:
-            state = "REFINE"
-            continue
+            raise RuntimeError(
+                f"Planet Finder {mode}: controller invariant violated: "
+                "repeated an ordering before sticky promotion reached position 0; "
+                f"refinement={refinement_scales[refinement_index]:g} "
+                f"sequence={' > '.join(order_names)}"
+            )
         attempted_orders.add(order_key)
         order_index += 1
         diagnostic_print(
