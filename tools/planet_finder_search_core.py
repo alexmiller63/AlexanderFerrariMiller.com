@@ -594,24 +594,35 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         if not remaining_items:
             return solve_alignment_group(group_index + 1)
 
-        # Squeaky-wheel ordering inside the group: try the member with the
-        # fewest currently viable placements first.  Cache its candidates so
-        # counting them does not change geometry or consume body budgets.
+        # Squeaky-wheel ordering inside the group must be cheap.  Probe only a
+        # small prefix of each member's viable stream; exhaustively enumerating
+        # every candidate merely to choose the next body can consume the whole
+        # mode clock before recursion does useful work.
+        ALIGNMENT_PROBE_LIMIT = 5
         choices = []
         diagnostic_depth = -(group_index + 1)
         for item in remaining_items:
-            candidates = list(viable_candidates(
+            probe = []
+            candidate_stream = viable_candidates(
                 item, diagnostic_depth, consume_body_budget=False
-            ))
-            choices.append((len(candidates), item[1][1], item, candidates))
+            )
+            for candidate in candidate_stream:
+                probe.append(candidate)
+                if len(probe) >= ALIGNMENT_PROBE_LIMIT:
+                    break
+            choices.append((len(probe), item[1][1], item))
         choices.sort(key=lambda row: (row[0], row[1]))
-        count, _, item, candidates = choices[0]
+        count, _, item = choices[0]
         if count == 0:
             return False
 
         original_index, (symbol, name, longitude) = item
         next_remaining = [other for other in remaining_items if other is not item]
-        for box, path in candidates:
+        # Now search the selected member's full viable stream.  The bounded
+        # probe above affects ordering only; it never removes legal placements.
+        for box, path in viable_candidates(
+            item, diagnostic_depth, consume_body_budget=False
+        ):
             placed.append(box)
             leaders.append(path)
             leader_names.append(name)
