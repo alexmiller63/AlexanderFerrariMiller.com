@@ -1,6 +1,6 @@
 from pathlib import Path
 
-ENABLED = False
+ENABLED = True
 
 if not ENABLED:
     print("Repair Once is OFF; nothing to do.")
@@ -9,65 +9,7 @@ if not ENABLED:
 path = Path("tools/planet_finder_search_core.py")
 text = path.read_text()
 
-old = '''    # Second deterministic phase: solve each broad alignment against immutable
-    # geometry and all already-frozen conjunction/alignment placements.  Unlike
-    # conjunctions, alignment siblings use ordinary label/leader collision
-    # rules.  A small local DFS solves the entire group before it is frozen;
-    # failure backtracks only within the group, never into a conjunction.
-    for group_index, group in enumerate(alignment_groups(bodies)):
-        group_items = [by_name[item[1]] for item in group]
-
-        def place_alignment_member(member_index):
-            if member_index == len(group_items):
-                return True
-            item = group_items[member_index]
-            original_index, (symbol, name, longitude) = item
-            # Negative diagnostic depths keep this pre-pass visibly distinct
-            # from the ordinary recursive body's 0..N search depths.
-            diagnostic_depth = -(group_index + 1)
-            for box, path in viable_candidates(
-                item, diagnostic_depth, consume_body_budget=False
-            ):
-                placed.append(box)
-                leaders.append(path)
-                leader_names.append(name)
-                staged[original_index] = (symbol, name, longitude, box, path)
-                if place_alignment_member(member_index + 1):
-                    return True
-                staged.pop(original_index, None)
-                leader_names.pop()
-                leaders.pop()
-                placed.pop()
-            return False
-
-        if not place_alignment_member(0):
-            names = " > ".join(item[1][1] for item in group_items)
-            raise RuntimeError(
-                f"Planet Finder {mode}: unable to place alignment group "
-                f"{group_index + 1}: {names}"
-            )
-        diagnostic_print(
-            f"Planet Finder {mode}: FIXED ALIGNMENT PLACED group={group_index + 1} "
-            + " > ".join(item[1][1] for item in group_items),
-            flush=True,
-        )
-
-'''
-
-new = '''    # Second phase: solve the entire alignment layer recursively.  There are
-    # two levels of backtracking: members within a group, and groups within the
-    # alignment layer.  Nothing in this layer is truly frozen until every
-    # alignment group has a mutually compatible complete placement.
-    alignment_group_items = [
-        [by_name[item[1]] for item in group]
-        for group in alignment_groups(bodies)
-    ]
-
-    def solve_alignment_members(group_index, remaining_items):
-        if not remaining_items:
-            return solve_alignment_group(group_index + 1)
-
-        # Squeaky-wheel ordering inside the group: try the member with the
+old = '''        # Squeaky-wheel ordering inside the group: try the member with the
         # fewest currently viable placements first.  Cache its candidates so
         # counting them does not change geometry or consume body budgets.
         choices = []
@@ -85,65 +27,41 @@ new = '''    # Second phase: solve the entire alignment layer recursively.  Ther
         original_index, (symbol, name, longitude) = item
         next_remaining = [other for other in remaining_items if other is not item]
         for box, path in candidates:
-            placed.append(box)
-            leaders.append(path)
-            leader_names.append(name)
-            staged[original_index] = (symbol, name, longitude, box, path)
-            if solve_alignment_members(group_index, next_remaining):
-                return True
-            staged.pop(original_index, None)
-            leader_names.pop()
-            leaders.pop()
-            placed.pop()
-        return False
+'''
 
-    def solve_alignment_group(group_index):
-        if group_index == len(alignment_group_items):
-            return True
-        group_items = alignment_group_items[group_index]
-        placed_mark = len(placed)
-        leaders_mark = len(leaders)
-        names_mark = len(leader_names)
-        staged_before = set(staged)
-
-        if solve_alignment_members(group_index, list(group_items)):
-            diagnostic_print(
-                f"Planet Finder {mode}: ALIGNMENT LAYER group={group_index + 1} compatible "
-                + " > ".join(item[1][1] for item in group_items),
-                flush=True,
+new = '''        # Squeaky-wheel ordering inside the group must be cheap.  Probe only a
+        # small prefix of each member's viable stream; exhaustively enumerating
+        # every candidate merely to choose the next body can consume the whole
+        # mode clock before recursion does useful work.
+        ALIGNMENT_PROBE_LIMIT = 5
+        choices = []
+        diagnostic_depth = -(group_index + 1)
+        for item in remaining_items:
+            probe = []
+            candidate_stream = viable_candidates(
+                item, diagnostic_depth, consume_body_budget=False
             )
-            return True
+            for candidate in candidate_stream:
+                probe.append(candidate)
+                if len(probe) >= ALIGNMENT_PROBE_LIMIT:
+                    break
+            choices.append((len(probe), item[1][1], item))
+        choices.sort(key=lambda row: (row[0], row[1]))
+        count, _, item = choices[0]
+        if count == 0:
+            return False
 
-        # A later group can force reconsideration of every placement made by
-        # this group.  Restore exactly the geometry/staging state that existed
-        # when the group was entered before its caller tries another branch.
-        del placed[placed_mark:]
-        del leaders[leaders_mark:]
-        del leader_names[names_mark:]
-        for key in list(staged):
-            if key not in staged_before:
-                staged.pop(key, None)
-        return False
-
-    if alignment_group_items and not solve_alignment_group(0):
-        names = " | ".join(
-            " > ".join(item[1][1] for item in group_items)
-            for group_items in alignment_group_items
-        )
-        raise RuntimeError(
-            f"Planet Finder {mode}: unable to solve recursive alignment layer: {names}"
-        )
-
-    if alignment_group_items:
-        diagnostic_print(
-            f"Planet Finder {mode}: FIXED ALIGNMENT LAYER groups={len(alignment_group_items)}",
-            flush=True,
-        )
-
+        original_index, (symbol, name, longitude) = item
+        next_remaining = [other for other in remaining_items if other is not item]
+        # Now search the selected member's full viable stream.  The bounded
+        # probe above affects ordering only; it never removes legal placements.
+        for box, path in viable_candidates(
+            item, diagnostic_depth, consume_body_budget=False
+        ):
 '''
 
 if text.count(old) != 1:
-    raise SystemExit(f"Safety stop: expected old alignment phase once; found {text.count(old)}")
+    raise SystemExit(f"Safety stop: expected exhaustive alignment heuristic once; found {text.count(old)}")
 
 path.write_text(text.replace(old, new, 1))
-print("Replaced sequential alignment freezing with recursive group/member alignment layer.")
+print("Bounded alignment squeaky-wheel probes at 5 candidates; full search remains unchanged.")
