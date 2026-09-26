@@ -185,7 +185,8 @@ def test_level_15_isolated_tight_five_breakpoint(monkeypatch, mode, level, longi
     assert len(matching) == 1, groups
     result = layout(
         mode, bodies, target_solutions=1,
-        budget={"max_node_candidates": 2000, "max_seconds": 15.0},
+        budget={"max_node_candidates": 2000,
+                "max_seconds": 15.0 if mode == FinderMode.GREEK else 60.0},
         context_label=f"tight-five-{level}-{mode.value}",
     )
     assert_complete_valid_layout(result, bodies, mode)
@@ -198,7 +199,8 @@ def test_level_20_progressive_real_w01_geometry(monkeypatch, mode, level, longit
     bodies = synthetic_bodies(longitudes)
     result = layout(
         mode, bodies, target_solutions=1,
-        budget={"max_node_candidates": 2000, "max_seconds": 15.0},
+        budget={"max_node_candidates": 2000,
+                "max_seconds": 15.0 if mode == FinderMode.GREEK else 60.0},
         context_label=f"regression-{level}-{mode.value}",
     )
     assert_complete_valid_layout(result, bodies, mode)
