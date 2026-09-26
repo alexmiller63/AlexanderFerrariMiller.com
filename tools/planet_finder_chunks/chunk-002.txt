@@ -1,3 +1,24 @@
+                            key=lambda item: (-item[1], item[0]),
+                        )[:12]
+                    ),
+                    flush=True,
+                )
+        for depth in sorted(set(depth_residence) | set(depth_visits)):
+            body_name = order[depth][1][1] if depth < len(order) else "complete-layout"
+            diagnostic_print(
+                f"Planet Finder {mode}: TERMINAL DFS-TIME depth={depth}/{len(order)} "
+                f"body={body_name} residence={depth_residence.get(depth, 0.0):.3f}s "
+                f"visits={depth_visits.get(depth, 0):,}",
+                flush=True,
+            )
+        for (depth, name), r in sorted(route_diagnostics.items()):
+            blockers = r.get("straight_blockers", {})
+            obstacle_names = r.get("obstacle_names", [])
+            named_blockers = {
+                (obstacle_names[int(key.split("_", 1)[1])] if key.startswith("obstacle_") and int(key.split("_", 1)[1]) < len(obstacle_names) else key): count
+                for key, count in blockers.items()
+            }
+            diagnostic_print(
                 f"Planet Finder {mode}: TERMINAL ROUTE depth={depth}/{len(order)} body={name} "
                 f"straight_blocked={r.get('straight_blocked', 0):,} "
                 f"route_failed={r.get('route_failed', 0):,} "
@@ -227,24 +248,3 @@
             if route_dt >= 1.0:
                 diagnostic_print(
                     f"Planet Finder {mode}: SLOW route body={name} "
-                    f"depth={depth}/{len(order)} raw={raw_positions:,} dt={route_dt:.3f}s "
-                    f"result={'none' if path is None else 'ok'}",
-                    flush=True,
-                )
-            if path is None:
-                rejected_route += 1
-                stats["route"] += 1
-                continue
-
-            # A new leader must not cross any label already placed by DFS.
-            # The opposite direction is checked earlier: a new label may not
-            # cross an existing leader. Both directions are required because
-            # placement order must not change collision legality.
-            if any(
-                segment_hits_box(path[i], path[i + 1], placed_box, 10)
-                for placed_box in placed
-                for i in range(len(path) - 1)
-            ):
-                rejected_leader += 1
-                stats["leader"] += 1
-                stats["leader_existing"] += 1

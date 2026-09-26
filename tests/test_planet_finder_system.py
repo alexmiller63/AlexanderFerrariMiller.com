@@ -11,10 +11,42 @@ import pytest
 
 from planet_finder_geometry import CANONICAL, CX, CY, FinderMode, alignment_groups, conjunction_groups
 from planet_finder_search import layout
+from planet_finder_search_core import _search_alignment_fallback
 from planet_finder_validation import validate_layout
 
 
 MODES = [FinderMode.GREEK, FinderMode.LATIN, FinderMode.MIXED]
+
+
+def test_blocked_preplacement_restores_alignment_before_recursive_retry():
+    """A dead ordinary-body search must release its planned alignment."""
+    placed = ["conjunction", "planned box"]
+    leaders = ["conjunction path", "planned path"]
+    leader_names = ["conjunction name", "aligned name"]
+    staged = {0: "conjunction row", 1: "planned row"}
+    groups = [[(1, ("symbol", "aligned name", 30.0))]]
+    calls = []
+
+    def search(depth):
+        assert depth == 0
+        calls.append("planned search")
+        assert staged[1] == "planned row"
+        return False
+
+    def recursive(group_index):
+        assert group_index == 0
+        calls.append("recursive retry")
+        assert placed == ["conjunction"]
+        assert leaders == ["conjunction path"]
+        assert leader_names == ["conjunction name"]
+        assert staged == {0: "conjunction row"}
+        return True
+
+    assert _search_alignment_fallback(
+        ({"aligned name": "planned box"}, {"aligned name": "planned path"}),
+        groups, placed, leaders, leader_names, staged, search, recursive,
+    )
+    assert calls == ["planned search", "recursive retry"]
 
 
 def synthetic_bodies(longitudes):

@@ -1,3 +1,24 @@
+                    f"depth={depth}/{len(order)} raw={raw_positions:,} dt={route_dt:.3f}s "
+                    f"result={'none' if path is None else 'ok'}",
+                    flush=True,
+                )
+            if path is None:
+                rejected_route += 1
+                stats["route"] += 1
+                continue
+
+            # A new leader must not cross any label already placed by DFS.
+            # The opposite direction is checked earlier: a new label may not
+            # cross an existing leader. Both directions are required because
+            # placement order must not change collision legality.
+            if any(
+                segment_hits_box(path[i], path[i + 1], placed_box, 10)
+                for placed_box in placed
+                for i in range(len(path) - 1)
+            ):
+                rejected_leader += 1
+                stats["leader"] += 1
+                stats["leader_existing"] += 1
                 continue
 
             # The inner zodiac rim is protected geometry, not a scoring
@@ -227,24 +248,3 @@
 
         # Place members in the circular lambda order supplied by
         # alignment_groups().  Keep one stream alive while recursion consumes
-        # its candidates, so backtracking never replays a prefix.
-        diagnostic_depth = -(group_index + 1)
-        item = remaining_items[0]
-        original_index, (symbol, name, longitude) = item
-        next_remaining = remaining_items[1:]
-        tried = 0
-        candidate_limit = budget["max_node_candidates"]
-
-        def try_candidate(candidate):
-            box, path = candidate
-            placed.append(box)
-            leaders.append(path)
-            leader_names.append(name)
-            staged[original_index] = (symbol, name, longitude, box, path)
-            solved = solve_alignment_members(group_index, next_remaining)
-            if not solved:
-                staged.pop(original_index, None)
-                leader_names.pop()
-                leaders.pop()
-                placed.pop()
-            return solved

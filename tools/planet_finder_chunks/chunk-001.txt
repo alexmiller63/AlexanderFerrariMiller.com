@@ -96,6 +96,27 @@ def new_search_budget():
         "max_seconds": max_seconds,
     }
 
+
+def _search_alignment_fallback(preplacement, groups, placed, leaders, leader_names,
+                               staged, search, solve_alignment_group):
+    """Try a planned layer, then restore it before recursive backtracking."""
+    if preplacement:
+        if search(0):
+            return True
+        planned, _ = preplacement
+        for group in groups:
+            for original_index, _ in group:
+                staged.pop(original_index)
+        del placed[-len(planned):]
+        del leaders[-len(planned):]
+        del leader_names[-len(planned):]
+        diagnostic_print("Planet Finder: ALIGNMENT PREPLACEMENT BLOCKED; "
+                         "retrying recursive alignment layer", flush=True)
+    if groups:
+        return solve_alignment_group(0)
+    return search(0)
+
+
 def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_index=1, total_orders=None, context_label=None, displacement_scale=2.0, body_attempts=None, refinement_deadline=None):
     """Solve one fixed body ordering with recursive depth-first search.
 
@@ -227,24 +248,3 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                         f"{'/'.join(labels)}={count:,}"
                         for labels, count in sorted(
                             by_obstacles.items(),
-                            key=lambda item: (-item[1], item[0]),
-                        )[:12]
-                    ),
-                    flush=True,
-                )
-        for depth in sorted(set(depth_residence) | set(depth_visits)):
-            body_name = order[depth][1][1] if depth < len(order) else "complete-layout"
-            diagnostic_print(
-                f"Planet Finder {mode}: TERMINAL DFS-TIME depth={depth}/{len(order)} "
-                f"body={body_name} residence={depth_residence.get(depth, 0.0):.3f}s "
-                f"visits={depth_visits.get(depth, 0):,}",
-                flush=True,
-            )
-        for (depth, name), r in sorted(route_diagnostics.items()):
-            blockers = r.get("straight_blockers", {})
-            obstacle_names = r.get("obstacle_names", [])
-            named_blockers = {
-                (obstacle_names[int(key.split("_", 1)[1])] if key.startswith("obstacle_") and int(key.split("_", 1)[1]) < len(obstacle_names) else key): count
-                for key, count in blockers.items()
-            }
-            diagnostic_print(

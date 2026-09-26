@@ -96,6 +96,27 @@ def new_search_budget():
         "max_seconds": max_seconds,
     }
 
+
+def _search_alignment_fallback(preplacement, groups, placed, leaders, leader_names,
+                               staged, search, solve_alignment_group):
+    """Try a planned layer, then restore it before recursive backtracking."""
+    if preplacement:
+        if search(0):
+            return True
+        planned, _ = preplacement
+        for group in groups:
+            for original_index, _ in group:
+                staged.pop(original_index)
+        del placed[-len(planned):]
+        del leaders[-len(planned):]
+        del leader_names[-len(planned):]
+        diagnostic_print("Planet Finder: ALIGNMENT PREPLACEMENT BLOCKED; "
+                         "retrying recursive alignment layer", flush=True)
+    if groups:
+        return solve_alignment_group(0)
+    return search(0)
+
+
 def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_index=1, total_orders=None, context_label=None, displacement_scale=2.0, body_attempts=None, refinement_deadline=None):
     """Solve one fixed body ordering with recursive depth-first search.
 
@@ -765,7 +786,10 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
 
     def solve_alignment_group(group_index):
         if group_index == len(alignment_group_items):
-            return True
+            # An alignment is viable only if the ordinary bodies can finish
+            # the layout. Let a dead ordinary-body subtree backtrack into the
+            # alignment layer instead of freezing its first complete plan.
+            return search(0)
         group_items = alignment_group_items[group_index]
         placed_mark = len(placed)
         leaders_mark = len(leaders)
@@ -790,21 +814,6 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             if key not in staged_before:
                 staged.pop(key, None)
         return False
-
-    if alignment_group_items and not alignment_preplacement and not solve_alignment_group(0):
-        names = " | ".join(
-            " > ".join(item[1][1] for item in group_items)
-            for group_items in alignment_group_items
-        )
-        raise RuntimeError(
-            f"Planet Finder {mode}: unable to solve recursive alignment layer: {names}"
-        )
-
-    if alignment_group_items:
-        diagnostic_print(
-            f"Planet Finder {mode}: FIXED ALIGNMENT LAYER groups={len(alignment_group_items)}",
-            flush=True,
-        )
 
     forward_stats = {"checks": 0, "pruned": 0, "witnesses": 0, "by_body": {}}
     # Bodies that actually make a forward check fail.  Without this, a prefix
@@ -1088,7 +1097,11 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         return False
 
     try:
-        exhausted = not search(0)
+        solved = _search_alignment_fallback(
+            alignment_preplacement, alignment_group_items, placed, leaders,
+            leader_names, staged, search, solve_alignment_group,
+        )
+        exhausted = not solved
     except DepthNodeBudgetExhausted as exc:
         # Hitting the per-body/depth cap is the squeaky-wheel signal.  Report
         # this fixed ordering, then let layout() discard the whole DFS napkin

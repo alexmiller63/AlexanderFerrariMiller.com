@@ -1,3 +1,12 @@
+                    round(row[3].y, 3),
+                    tuple((round(x, 3), round(y, 3)) for x, y in row[4]),
+                )
+                for row in result
+            )
+            if key not in solution_keys:
+                solution_keys.add(key)
+                valid, errors = validate_layout(mode, result)
+                if valid:
                     solutions.append(result)
                     contest_keys.append(key)
                     diagnostic_print(
@@ -88,7 +97,11 @@
         return False
 
     try:
-        exhausted = not search(0)
+        solved = _search_alignment_fallback(
+            alignment_preplacement, alignment_group_items, placed, leaders,
+            leader_names, staged, search, solve_alignment_group,
+        )
+        exhausted = not solved
     except DepthNodeBudgetExhausted as exc:
         # Hitting the per-body/depth cap is the squeaky-wheel signal.  Report
         # this fixed ordering, then let layout() discard the whole DFS napkin

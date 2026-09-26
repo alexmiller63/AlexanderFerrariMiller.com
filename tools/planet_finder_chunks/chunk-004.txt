@@ -1,3 +1,24 @@
+        # its candidates, so backtracking never replays a prefix.
+        diagnostic_depth = -(group_index + 1)
+        item = remaining_items[0]
+        original_index, (symbol, name, longitude) = item
+        next_remaining = remaining_items[1:]
+        tried = 0
+        candidate_limit = budget["max_node_candidates"]
+
+        def try_candidate(candidate):
+            box, path = candidate
+            placed.append(box)
+            leaders.append(path)
+            leader_names.append(name)
+            staged[original_index] = (symbol, name, longitude, box, path)
+            solved = solve_alignment_members(group_index, next_remaining)
+            if not solved:
+                staged.pop(original_index, None)
+                leader_names.pop()
+                leaders.pop()
+                placed.pop()
+            return solved
 
         chosen_stream = viable_candidates(
             item, diagnostic_depth, consume_body_budget=False
@@ -15,7 +36,10 @@
 
     def solve_alignment_group(group_index):
         if group_index == len(alignment_group_items):
-            return True
+            # An alignment is viable only if the ordinary bodies can finish
+            # the layout. Let a dead ordinary-body subtree backtrack into the
+            # alignment layer instead of freezing its first complete plan.
+            return search(0)
         group_items = alignment_group_items[group_index]
         placed_mark = len(placed)
         leaders_mark = len(leaders)
@@ -40,21 +64,6 @@
             if key not in staged_before:
                 staged.pop(key, None)
         return False
-
-    if alignment_group_items and not alignment_preplacement and not solve_alignment_group(0):
-        names = " | ".join(
-            " > ".join(item[1][1] for item in group_items)
-            for group_items in alignment_group_items
-        )
-        raise RuntimeError(
-            f"Planet Finder {mode}: unable to solve recursive alignment layer: {names}"
-        )
-
-    if alignment_group_items:
-        diagnostic_print(
-            f"Planet Finder {mode}: FIXED ALIGNMENT LAYER groups={len(alignment_group_items)}",
-            flush=True,
-        )
 
     forward_stats = {"checks": 0, "pruned": 0, "witnesses": 0, "by_body": {}}
     # Bodies that actually make a forward check fail.  Without this, a prefix
@@ -239,12 +248,3 @@
             key = tuple(
                 (
                     round(row[3].x, 3),
-                    round(row[3].y, 3),
-                    tuple((round(x, 3), round(y, 3)) for x, y in row[4]),
-                )
-                for row in result
-            )
-            if key not in solution_keys:
-                solution_keys.add(key)
-                valid, errors = validate_layout(mode, result)
-                if valid:
