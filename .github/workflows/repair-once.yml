@@ -1,4 +1,4 @@
-name: Repair Once
+name: AA-Repair Once
 
 on:
   workflow_dispatch:
@@ -9,47 +9,6 @@ permissions:
 jobs:
   repair:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Check out repository
-        uses: actions/checkout@v4
-
-      - name: Run repair
-        run: python tools/repair_once.py
-
-      - name: Verify Python syntax
-        run: python -m py_compile tools/planet_finder_search_core.py
-
-      - name: Switch Repair Once off
-        run: |
-          python - <<'PY'
-          from pathlib import Path
-
-          path = Path("tools/repair_once.py")
-          text = path.read_text()
-          old = "ENABLED = True"
-          new = "ENABLED = False"
-
-          if text.count(old) != 1:
-              raise SystemExit(
-                  f"Safety stop: expected ENABLED = True exactly once; found {text.count(old)}"
-              )
-
-          path.write_text(text.replace(old, new, 1))
-          print("Repair Once switched OFF.")
-          PY
-
-      - name: Commit repair
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-
-          git add -A
-
-          if git diff --cached --quiet; then
-            echo "No changes to commit."
-            exit 0
-          fi
-
-          git commit -m "Apply one-time repair and switch it off"
-          git push
+      - uses: actions/checkout@v4
+      - run: python tools/repair_once.py
