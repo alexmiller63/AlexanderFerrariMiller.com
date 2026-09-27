@@ -743,8 +743,9 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         if not assign(0):
             diagnostic_print(
                 f"Planet Finder {mode}: conjunction diagnostics group {group_index + 1} "
-                f"{' > '.join(item[1] for item in group_items)} "
+                f"{' > '.join(item[1][1] for item in group_items)} "
                 f"rejections={diagnostic_rejections}",
+                level=1,
                 flush=True,
             )
             return None
