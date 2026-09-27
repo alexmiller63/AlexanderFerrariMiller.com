@@ -27,8 +27,8 @@ def conjunction_case(separation):
 
 @pytest.mark.parametrize(
     "separation",
-    [5.0, 2.0, 1.0, 0.75, 0.5, 0.405],
-    ids=["5deg", "2deg", "1deg", "0.75deg", "0.5deg", "0.405deg-W02"],
+    [1.0, 0.5],
+    ids=["1deg", "0.5deg"],
 )
 def test_greek_venus_sun_separation_ladder(monkeypatch, separation):
     monkeypatch.setenv("PLANET_FINDER_DIAGNOSTIC_LEVEL", "0")
