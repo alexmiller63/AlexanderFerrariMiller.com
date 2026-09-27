@@ -11,14 +11,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Install conjunction barrier diagnostics
+      - name: Run one-shot repair
         run: python tools/repair_once.py
       - name: Syntax check
-        run: python -m py_compile tools/planet_finder_search_core.py tools/repair_once.py
+        run: python -m py_compile tools/planet_finder_geometry.py tools/planet_finder_search_core.py tools/repair_once.py
       - name: Commit repair
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add tools/planet_finder_search_core.py tools/repair_once.py
-          git commit -m "Instrument conjunction blob barrier diagnostics"
+          git add tools/planet_finder_geometry.py tools/planet_finder_search_core.py tools/repair_once.py
+          git commit -m "Apply Repair Once"
           git push
