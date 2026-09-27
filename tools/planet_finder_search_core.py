@@ -730,9 +730,15 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
 
         blob_candidates = 0
         downstream_rejections = 0
+        # A descendant body cap is local evidence against the current blob,
+        # not permission to jump across the conjunction recursion.  Remember
+        # one such cap so it can reach the outer controller only after every
+        # blob candidate has had its own downstream search budget.
+        pending_budget_exhaustion = None
 
         def assign(depth):
             nonlocal blob_candidates, downstream_rejections
+            nonlocal pending_budget_exhaustion
             if depth == len(group_items):
                 blob_candidates += 1
                 diagnostic_print(
@@ -749,6 +755,21 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 leaders_mark = len(leaders)
                 names_mark = len(leader_names)
                 staged_before = set(staged)
+                # Downstream candidate counts belong to this blob branch.  A
+                # rejected blob must not poison its sibling by consuming the
+                # sibling's 200-candidate allowance.
+                body_attempts_before = dict(body_attempts)
+
+                def restore_blob_branch():
+                    del placed[placed_mark:]
+                    del leaders[leaders_mark:]
+                    del leader_names[names_mark:]
+                    for key in list(staged):
+                        if key not in staged_before:
+                            staged.pop(key, None)
+                    body_attempts.clear()
+                    body_attempts.update(body_attempts_before)
+
                 for original_index, (symbol, name, longitude) in group_items:
                     box = chosen[name][2]
                     leader = chosen_paths[name]
@@ -756,7 +777,31 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                     leaders.append(leader)
                     leader_names.append(name)
                     staged[original_index] = (symbol, name, longitude, box, leader)
-                if downstream():
+                try:
+                    downstream_solved = downstream()
+                except DepthNodeBudgetExhausted as exc:
+                    # This blob exhausted a descendant search allowance.  That
+                    # is a failed child branch: restore it and let assign()
+                    # continue to the next complete conjunction blob.
+                    restore_blob_branch()
+                    if pending_budget_exhaustion is None:
+                        pending_budget_exhaustion = exc
+                    downstream_rejections += 1
+                    diagnostic_print(
+                        f"Planet Finder {mode}: CONJUNCTION BLOB DOWNSTREAM CAP "
+                        f"group={group_index + 1} candidate={blob_candidates} "
+                        f"body={exc.name} depth={exc.depth}; "
+                        f"restoring whole blob and trying next blob",
+                        flush=True,
+                    )
+                    return False
+                except Exception:
+                    # Wall-clock and other true controller aborts still escape,
+                    # but never leave a half-staged conjunction behind.
+                    restore_blob_branch()
+                    raise
+
+                if downstream_solved:
                     diagnostic_print(
                         f"Planet Finder {mode}: CONJUNCTION BLOB COMPATIBLE "
                         f"group={group_index + 1} candidate={blob_candidates} "
@@ -772,12 +817,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                     f"bodies={' > '.join(ordered_names)}; restoring whole blob",
                     flush=True,
                 )
-                del placed[placed_mark:]
-                del leaders[leaders_mark:]
-                del leader_names[names_mark:]
-                for key in list(staged):
-                    if key not in staged_before:
-                        staged.pop(key, None)
+                restore_blob_branch()
                 return False
             _, (_, name, longitude) = group_items[depth]
             anchor = anchors[name]
@@ -872,6 +912,18 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             return False
 
         if not assign(0):
+            # All sibling blobs have now been tried.  Only at this point may a
+            # descendant cap become a squeaky-wheel signal for the outer
+            # ordering controller.
+            if pending_budget_exhaustion is not None:
+                diagnostic_print(
+                    f"Planet Finder {mode}: CONJUNCTION BLOBS EXHAUSTED AFTER CAPS "
+                    f"group={group_index + 1} candidates={blob_candidates}; "
+                    f"returning cap body={pending_budget_exhaustion.name} "
+                    f"to outer controller",
+                    flush=True,
+                )
+                raise pending_budget_exhaustion
             raw_escape_blockers = conjunction_route_diagnostics.get("escape_blocked_by", {})
             blocker_counts = {}
             for obstacle_index, count in raw_escape_blockers.items():
