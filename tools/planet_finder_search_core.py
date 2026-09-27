@@ -693,6 +693,13 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             "leader_rim_or_external": 0,
             "sibling_leader_label": 0,
         }
+        # Diagnostic only: count rejections by conjunction depth/body so the
+        # first hard barrier is visible without changing search semantics.
+        conjunction_rejections_by_body = {
+            name: {key: 0 for key in diagnostic_rejections}
+            for name in ordered_names
+        }
+        conjunction_attempts_by_body = {name: 0 for name in ordered_names}
         conjunction_route_diagnostics = {}
 
         def label_angle(row):
@@ -763,14 +770,17 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             _, (_, name, longitude) = group_items[depth]
             anchor = anchors[name]
             for row in pools[name]:
+                conjunction_attempts_by_body[name] += 1
                 x, y, box = row
                 if any(boxes_overlap(box, other[2], LABEL_COLLISION_PADDING)
                        for other in chosen.values()):
                     diagnostic_rejections["label_overlap"] += 1
+                    conjunction_rejections_by_body[name]["label_overlap"] += 1
                     continue
                 chosen[name] = row
                 if not preserves_lambda_order():
                     diagnostic_rejections["lambda_order"] += 1
+                    conjunction_rejections_by_body[name]["lambda_order"] += 1
                     chosen.pop(name, None)
                     continue
                 other_boxes = [other[2] for other_name, other in chosen.items() if other_name != name]
@@ -788,12 +798,14 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 )
                 if path_candidate is None:
                     diagnostic_rejections["route"] += 1
+                    conjunction_rejections_by_body[name]["route"] += 1
                     chosen.pop(name, None)
                     continue
                 if any(segment_hits_box(path_candidate[i], path_candidate[i + 1], other_box,
                                         PLACED_LABEL_LEADER_CLEARANCE)
                        for other_box in other_boxes for i in range(len(path_candidate) - 1)):
                     diagnostic_rejections["leader_label"] += 1
+                    conjunction_rejections_by_body[name]["leader_label"] += 1
                     chosen.pop(name, None)
                     continue
                 # Conjunction siblings intentionally originate at nearly the
@@ -804,6 +816,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 if leader_hits_zodiac_rim(path_candidate) or leaders_too_close(
                         path_candidate, leaders):
                     diagnostic_rejections["leader_rim_or_external"] += 1
+                    conjunction_rejections_by_body[name]["leader_rim_or_external"] += 1
                     chosen.pop(name, None)
                     continue
                 # Symmetric collision check: an already chosen sibling leader
@@ -812,6 +825,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                                         PLACED_LABEL_LEADER_CLEARANCE)
                        for old_path in chosen_paths.values() for i in range(len(old_path) - 1)):
                     diagnostic_rejections["sibling_leader_label"] += 1
+                    conjunction_rejections_by_body[name]["sibling_leader_label"] += 1
                     chosen.pop(name, None)
                     continue
                 chosen_paths[name] = path_candidate
@@ -846,6 +860,8 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 f"internally_valid_blobs={blob_candidates} "
                 f"downstream_rejections={downstream_rejections} "
                 f"barrier={'internal' if blob_candidates == 0 else 'downstream'} "
+                f"attempts_by_body={conjunction_attempts_by_body} "
+                f"rejections_by_body={conjunction_rejections_by_body} "
                 f"rejections={diagnostic_rejections} "
                 f"route_detail={route_summary} "
                 f"escape_blockers={top_escape_blockers}",
