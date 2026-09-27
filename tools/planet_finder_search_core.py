@@ -167,6 +167,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
     terminal_validation_checks = 0
     terminal_validation_rejections = 0
     terminal_validation_errors = {}
+    terminal_validation_sun_leaders = {}
 
     def dump_diagnostics(reason):
         # A capped ordering is expected control flow, not a terminal failure.
@@ -206,6 +207,18 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                     + ",".join(f"{error}={count:,}" for error, count in ranked_validation)
                     + "]"
                 )
+                if terminal_validation_sun_leaders:
+                    ranked_sun_leaders = sorted(
+                        terminal_validation_sun_leaders.items(),
+                        key=lambda item: (-item[1], item[0]),
+                    )
+                    validation_summary += (
+                        " sun_label_hit_by["
+                        + ",".join(
+                            f"{name}={count:,}" for name, count in ranked_sun_leaders
+                        )
+                        + "]"
+                    )
             diagnostic_print(
                 f"Planet Finder {mode}: CAPPED SUMMARY order={order_index} "
                 f"nodes={nodes:,} deepest={deepest}/{len(order)} "
@@ -1172,6 +1185,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         """
         nonlocal nodes, deepest, candidates, backtracks, current_body
         nonlocal terminal_validation_checks, terminal_validation_rejections
+        nonlocal terminal_validation_sun_leaders
 
         now = time.monotonic()
         if refinement_deadline is not None and now >= refinement_deadline:
@@ -1230,6 +1244,12 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                     terminal_validation_rejections += 1
                     for error in errors:
                         terminal_validation_errors[error] = terminal_validation_errors.get(error, 0) + 1
+                        suffix = ": leader crosses Sun label"
+                        if error.endswith(suffix):
+                            leader_name = error[:-len(suffix)]
+                            terminal_validation_sun_leaders[leader_name] = (
+                                terminal_validation_sun_leaders.get(leader_name, 0) + 1
+                            )
                     diagnostic_print(
                         f"Planet Finder {mode}: rejected complete layout "
                         f"order={order_index} errors=" + "; ".join(errors),
