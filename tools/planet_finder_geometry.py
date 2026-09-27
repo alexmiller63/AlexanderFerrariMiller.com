@@ -311,30 +311,26 @@ def reserved_boxes(mode: str) -> list[Box]:
 
 
 def candidate_positions(longitude: float, displacement_scale: float = 2.0):
+    """Yield each canonical label candidate once, cheapest geometry first.
+
+    displacement_scale remains temporarily for API compatibility, but the
+    complete lattice is always 0, +/-0.25, ... +/-2.00 label lengths.
+    """
     theta = math.radians(180 + longitude)
     tx, ty = -math.sin(theta), -math.cos(theta)
     offered: list[tuple[float, float]] = []
-
-    def offer(radii, shifts):
-        for r in radii:
-            bx, by = xy(longitude, r)
-            for shift in shifts:
+    radii = (*PREFERRED_LABEL_RADII, *EXPANDED_LABEL_RADII)
+    quarter_step = LABEL_LENGTH * 0.25
+    for shell in range(9):
+        shifts = (0.0,) if shell == 0 else (-shell * quarter_step, shell * quarter_step)
+        for shift in shifts:
+            for r in radii:
+                bx, by = xy(longitude, r)
                 x, y = bx + shift * tx, by + shift * ty
                 if any(math.hypot(x - ox, y - oy) < 1e-9 for ox, oy in offered):
                     continue
                 offered.append((x, y))
                 yield x, y
-
-    yield from offer(PREFERRED_LABEL_RADII, (0.0,))
-    shift = LABEL_LENGTH * displacement_scale
-    yield from offer(PREFERRED_LABEL_RADII, (-shift, shift))
-    yield from offer(EXPANDED_LABEL_RADII, (0.0,))
-    yield from offer(EXPANDED_LABEL_RADII, (-shift, shift))
-    quarter_step = LABEL_LENGTH * 0.25
-    quarter_shifts = tuple(i * quarter_step for i in range(-8, 9))
-    yield from offer(PREFERRED_LABEL_RADII, quarter_shifts)
-    yield from offer(EXPANDED_LABEL_RADII, quarter_shifts)
-
 
 def legal_candidate_positions(longitude: float, w: float, h: float, reserved: list[Box], displacement_scale: float = 2.0, diagnostic: dict | None = None):
     for x, y in candidate_positions(longitude, displacement_scale):

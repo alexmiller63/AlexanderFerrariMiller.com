@@ -185,146 +185,60 @@ def layout(
     all_solutions = []
     contest_keys = []
     order_index = 0
-    refinement_scales = (2.0, 1.5, 1.0, 0.5, 0.25)
-    refinement_index = 0
     attempted_orders = set()
-    # One per-body candidate cap for the current placement refinement.
-    # Reordering may reset a promoted body's budget; changing refinement resets
-    # every body's budget because the candidate geometry has changed.
-    # Forward-check probes are deliberately outside this accounting.
     body_attempts = {name: 0 for _, (_, name, _) in indexed}
-    # Preserve controller history across refinements for terminal diagnosis.
-    refinement_history = []
-
-    # Explicit search-controller state machine. Search attempts report facts;
-    # only the controller changes ordering or placement refinement.
-    #
-    # SEARCH_ORDER -> SCORE    on SOLVED
-    # SEARCH_ORDER -> PROMOTE  on BLOCKED(body), whether CAPPED or EXHAUSTED
-    # PROMOTE      -> SEARCH_ORDER after moving the current blocker left one step
-    # PROMOTE      -> REFINE   only when the current blocker is already position 0
-    # REFINE       -> SEARCH_ORDER at the next placement scale
-    #
-    # CAPPED versus EXHAUSTED remains diagnostic information only.  It does
-    # not select a second reordering policy.
+    search_history = []
     state = "SEARCH_ORDER"
     promote_body = None
 
-    def next_promotion_order(current_order, body_name):
-        """Return an explicit transition for promoting the current blocker.
-
-        ``AT_FRONT`` is the only transition that permits refinement.  A
-        previously attempted candidate is a controller cycle, not successful
-        completion of promotion, and is reported separately.
-        """
-        body_index = next(
-            (i for i, item in enumerate(current_order) if item[1][1] == body_name),
-            None,
+    def terminal_search(reason):
+        final_sequence = " > ".join(item[1][1] for item in order)
+        diagnostic_print(
+            f"Planet Finder {mode}: TERMINAL SEARCH DIAGNOSTIC "
+            f"reason={reason} attempts={len(search_history)} final-sequence={final_sequence}",
+            flush=True,
         )
+        raise RuntimeError(
+            f"Planet Finder {mode}: canonical candidate lattice exhausted; {reason}; "
+            "see TERMINAL SEARCH DIAGNOSTIC above"
+        )
+
+    def next_promotion_order(current_order, body_name):
+        body_index = next((i for i, item in enumerate(current_order) if item[1][1] == body_name), None)
         if body_index is None:
             return "MISSING", None
         if body_index == 0:
             return "AT_FRONT", None
         candidate = list(current_order)
-        candidate[body_index - 1], candidate[body_index] = (
-            candidate[body_index], candidate[body_index - 1]
-        )
+        candidate[body_index - 1], candidate[body_index] = candidate[body_index], candidate[body_index - 1]
         names = tuple(item[1][1] for item in candidate)
-        if (refinement_index, names) in attempted_orders:
+        if names in attempted_orders:
             return "CYCLE", candidate
         return "PROMOTE", candidate
 
     while state != "SCORE":
-
         now = time.monotonic()
         if now - budget["started"] >= budget["max_seconds"]:
             raise RuntimeError(
                 f"Planet Finder {mode} mode wall-clock budget exhausted "
                 f"(limit {budget['max_seconds']:.1f}s)"
             )
-        if state == "REFINE":
-            if refinement_index + 1 >= len(refinement_scales):
-                final_sequence = " > ".join(item[1][1] for item in order)
-                diagnostic_print(
-                    f"Planet Finder {mode}: TERMINAL SEARCH DIAGNOSTIC "
-                    f"refinements={len(refinement_scales)} attempts={len(refinement_history)} "
-                    f"final-sequence={final_sequence}",
-                    flush=True,
-                )
-                if closest_pair is not None:
-                    separation, left_name, right_name, left_lambda, right_lambda = closest_pair
-                    diagnostic_print(
-                        f"Planet Finder {mode}: TERMINAL CLOSEST ECLIPTIC PAIR "
-                        f"{left_name} lambda={left_lambda:.3f} deg; "
-                        f"{right_name} lambda={right_lambda:.3f} deg; "
-                        f"separation={separation:.3f} deg",
-                        flush=True,
-                    )
-                for i, event in enumerate(refinement_history, 1):
-                    diagnostic_print(
-                        f"Planet Finder {mode}: TERMINAL HISTORY attempt={i} "
-                        f"refinement={event['scale']:g} outcome={event['kind']} "
-                        f"blocker={event['blocker']} contestants={event['contestants']}/{target_solutions} "
-                        f"rejects={event.get('rejection_stats') or 'see fixed-order terminal diagnostic'} "
-                        f"sequence={' > '.join(event['order'])}",
-                        flush=True,
-                    )
-                raise RuntimeError(
-                    f"Planet Finder {mode}: exhausted all placement refinements "
-                    f"through {refinement_scales[refinement_index]:g} label-lengths; "
-                    f"see TERMINAL SEARCH DIAGNOSTIC above"
-                )
-            refinement_index += 1
-            # Refinement changes placement geometry, not ordering knowledge.
-            # Carry the squeaky-wheel ordering learned at the coarser scale
-            # into the finer search, while resetting all search-work budgets
-            # because the candidate geometry has changed.
-            attempted_orders.clear()
-            for name in body_attempts:
-                body_attempts[name] = 0
-            promote_body = None
-            diagnostic_print(
-                f"Planet Finder {mode}: REFINEMENT ADVANCE "
-                f"to {refinement_scales[refinement_index]:g} label-lengths; "
-                "resetting candidate budgets; preserving learned sequence="
-                + " > ".join(item[1][1] for item in order),
-                flush=True,
-            )
-            state = "SEARCH_ORDER"
-            continue
 
         if state == "PROMOTE":
             transition, promoted_order = next_promotion_order(order, promote_body)
             if transition == "AT_FRONT":
-                diagnostic_print(
-                    f"Planet Finder {mode}: PROMOTION COMPLETE body={promote_body} "
-                    f"at position 0; refinement={refinement_scales[refinement_index]:g} "
-                    "label-lengths; refining",
-                    flush=True,
-                )
-                promote_body = None
-                state = "REFINE"
+                terminal_search(f"blocker {promote_body} already promoted to position 0")
             elif transition == "PROMOTE":
                 promoted_names = tuple(item[1][1] for item in promoted_order)
                 order = promoted_order
                 body_attempts[promote_body] = 0
                 diagnostic_print(
-                    f"Planet Finder {mode}: PROMOTE body={promote_body}; "
-                    "moved left one lambda neighbor; restarting sequence="
-                    + " > ".join(promoted_names),
-                    flush=True,
+                    f"Planet Finder {mode}: PROMOTE body={promote_body}; moved left one lambda neighbor; "
+                    "restarting sequence=" + " > ".join(promoted_names), flush=True,
                 )
                 state = "SEARCH_ORDER"
             elif transition == "CYCLE":
-                cycle_names = tuple(item[1][1] for item in promoted_order)
-                diagnostic_print(
-                    f"Planet Finder {mode}: ORDERING CYCLE EXHAUSTED while promoting "
-                    f"{promote_body}; refinement={refinement_scales[refinement_index]:g} "
-                    f"candidate={' > '.join(cycle_names)}; refining",
-                    flush=True,
-                )
-                promote_body = None
-                state = "REFINE"
+                terminal_search(f"ordering cycle while promoting {promote_body}")
             else:
                 raise RuntimeError(
                     f"Planet Finder {mode}: controller invariant violated: blocker "
@@ -336,44 +250,31 @@ def layout(
             raise RuntimeError(f"Planet Finder {mode}: invalid controller state {state}")
 
         order_names = tuple(item[1][1] for item in order)
-        order_key = (refinement_index, order_names)
-        if order_key in attempted_orders:
-            raise RuntimeError(
-                f"Planet Finder {mode}: controller invariant violated: "
-                "repeated an ordering before sticky promotion reached position 0; "
-                f"refinement={refinement_scales[refinement_index]:g} "
-                f"sequence={' > '.join(order_names)}"
-            )
-        attempted_orders.add(order_key)
+        if order_names in attempted_orders:
+            terminal_search("repeated ordering in single canonical lattice")
+        attempted_orders.add(order_names)
         order_index += 1
         diagnostic_print(
             f"Planet Finder {mode}: squeaky-wheel lazy DFS "
             f"{context_label + ' ' if context_label else ''}"
             f"order={order_index} target={target_solutions} "
             f"max-node-candidates={budget['max_node_candidates']:,} "
-            f"refinement={refinement_scales[refinement_index]:g} label-lengths "
-            f"sequence=" + " > ".join(order_names),
-            flush=True,
+            f"candidate-lattice=0,+/-0.25,...,+/-2.00 label-lengths sequence="
+            + " > ".join(order_names), flush=True,
         )
 
         try:
             outcome = _solve_order(
-                mode,
-                bodies,
-                order,
-                budget,
+                mode, bodies, order, budget,
                 target_solutions=target_solutions,
                 order_index=order_index,
                 total_orders=None,
                 context_label=context_label,
-                displacement_scale=refinement_scales[refinement_index],
+                displacement_scale=0.25,
                 body_attempts=body_attempts,
                 refinement_deadline=budget["started"] + budget["max_seconds"],
             )
         except DepthNodeBudgetExhausted as exc:
-            # The fixed-order solver already emitted its detailed terminal
-            # diagnostic. CAPPED currently has no structured stats payload;
-            # keep that distinction explicit rather than inventing counts.
             outcome = SearchOutcome("CAPPED", [], [], exc.name, None)
 
         if outcome.kind == "SOLVED":
@@ -383,46 +284,23 @@ def layout(
             continue
 
         if outcome.kind == "INCONCLUSIVE":
-            diagnostic_print(
-                f"Planet Finder {mode}: SEARCH INCONCLUSIVE "
-                f"body={outcome.blocker} refinement={refinement_scales[refinement_index]:g} "
-                f"orders={len(attempted_orders)}; bounded search closed without "
-                f"establishing {target_solutions} contestants",
-                flush=True,
-            )
             raise RuntimeError(
                 f"Planet Finder {mode}: bounded search inconclusive; "
                 f"no valid {target_solutions}-contestant contest was established"
             )
-
         if outcome.kind not in ("CAPPED", "EXHAUSTED") or not outcome.blocker:
             raise RuntimeError(
-                f"Planet Finder {mode}: invalid search outcome "
-                f"kind={outcome.kind} blocker={outcome.blocker}"
+                f"Planet Finder {mode}: invalid search outcome kind={outcome.kind} blocker={outcome.blocker}"
             )
 
         all_solutions = outcome.solutions
         contest_keys = outcome.contest_keys
-        # Squeaky-wheel feedback: each failed search names the blocker for the
-        # next single promotion step.  The next search may identify a different
-        # blocker; no blocker remains sticky across searches.
         promote_body = outcome.blocker
-        refinement_history.append({
-            "scale": refinement_scales[refinement_index],
-            "kind": outcome.kind,
-            "blocker": promote_body,
-            "contestants": len(all_solutions),
-            "order": order_names,
-            "rejection_stats": outcome.rejection_stats,
-        })
+        search_history.append({"kind": outcome.kind, "blocker": promote_body, "order": order_names})
         diagnostic_print(
             f"Planet Finder {mode}: SEARCH OUTCOME {outcome.kind} "
-            f"body={promote_body} contestants={len(all_solutions)}/{target_solutions}",
-            flush=True,
+            f"body={promote_body} contestants={len(all_solutions)}/{target_solutions}", flush=True,
         )
-        # CAPPED and EXHAUSTED are different diagnostic facts, but both mean
-        # this fixed ordering did not produce the requested contest.  Ordering
-        # policy is unified: both enter the same sticky promotion state.
         state = "PROMOTE"
 
     if not all_solutions:
