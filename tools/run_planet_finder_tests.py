@@ -25,8 +25,12 @@ FULL_TESTS = [
 SUMMARY_RE = re.compile(r"(?:\d+ failed|\d+ passed|\d+ error|\d+ skipped)")
 
 
-def run_pytest(tests: list[str], *, maxfail: int | None = None) -> subprocess.CompletedProcess[str]:
+def run_pytest(
+    tests: list[str], *, maxfail: int | None = None, capture: bool = True
+) -> subprocess.CompletedProcess[str]:
     command = [sys.executable, "-m", "pytest", "-q"]
+    if not capture:
+        command.append("-s")
     if maxfail is not None:
         command.append(f"--maxfail={maxfail}")
     command.extend(tests)
@@ -79,7 +83,7 @@ def print_failure_summary(output: str, *, heading: str = "PLANET FINDER TEST FAI
 
 
 def main() -> None:
-    preflight = run_pytest(PREFLIGHT, maxfail=1)
+    preflight = run_pytest(PREFLIGHT, maxfail=1, capture=False)
     if preflight.returncode != 0:
         if preflight.returncode == 2:
             print("PLANET FINDER PRECHECK COLLECTION ERROR — FULL SUITE SKIPPED")
