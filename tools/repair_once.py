@@ -2,7 +2,7 @@
 """One-shot diagnostic: expose conjunction lambda-order angle behavior."""
 from pathlib import Path
 
-ENABLED = False
+ENABLED = True
 if not ENABLED:
     print("Repair Once is OFF; nothing to do.")
     raise SystemExit(0)
