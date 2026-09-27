@@ -1,6 +1,6 @@
 from pathlib import Path
 
-ENABLED = False
+ENABLED = True
 
 if not ENABLED:
     print("Repair Once is OFF; nothing to do.")
@@ -8,22 +8,21 @@ if not ENABLED:
 
 path = Path("tools/planet_finder_search_core.py")
 text = path.read_text()
-old = '''                if leader_hits_zodiac_rim(path_candidate) or leaders_too_close(
-                        path_candidate, leaders + list(chosen_paths.values())):
-                    chosen.pop(name, None)
-                    continue
-'''
-new = '''                # Conjunction siblings intentionally originate at nearly the
-                # same lambda, so their leaders may be close near the anchors.
-                # Keep the ordinary clearance rule against leaders outside this
-                # atomic conjunction, while sibling leader/label collisions are
-                # checked explicitly above and below.
-                if leader_hits_zodiac_rim(path_candidate) or leaders_too_close(
-                        path_candidate, leaders):
-                    chosen.pop(name, None)
-                    continue
-'''
+
+old = """            for x, y, box in legal_candidate_positions(
+                    longitude, w, h, reserved, displacement_scale):
+"""
+new = """            # Tight conjunctions get the finest existing label-displacement
+            # refinement.  This applies only to the atomic conjunction solver;
+            # ordinary DFS retains the caller's refinement scale.
+            conjunction_displacement_scale = 0.25
+            for x, y, box in legal_candidate_positions(
+                    longitude, w, h, reserved, conjunction_displacement_scale):
+"""
 if text.count(old) != 1:
-    raise SystemExit(f"Safety stop: expected conjunction leader check exactly once; found {text.count(old)}")
+    raise SystemExit(
+        f"Safety stop: expected exactly one conjunction candidate-pool call; found {text.count(old)}"
+    )
+
 path.write_text(text.replace(old, new, 1))
-print("Conjunction atomic solver now exempts sibling leader proximity only; external leader checks preserved.")
+print("Conjunction candidate pools now use the finest 0.25 refinement scale; ordinary DFS unchanged.")
