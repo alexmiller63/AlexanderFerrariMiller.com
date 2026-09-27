@@ -1,7 +1,7 @@
 from pathlib import Path
 import subprocess
 
-ENABLED = False
+ENABLED = True
 
 if not ENABLED:
     print("Repair Once is OFF; nothing to do.")
