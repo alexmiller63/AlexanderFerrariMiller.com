@@ -744,12 +744,30 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             return False
 
         if not assign(0):
+            raw_escape_blockers = conjunction_route_diagnostics.get("escape_blocked_by", {})
+            blocker_counts = {}
+            for obstacle_index, count in raw_escape_blockers.items():
+                if obstacle_index < len(reserved_names):
+                    label = reserved_names[obstacle_index]
+                elif obstacle_index < len(reserved) + len(placed):
+                    label = f"placed_{obstacle_index - len(reserved)}"
+                else:
+                    label = "conjunction_sibling_label"
+                blocker_counts[label] = blocker_counts.get(label, 0) + count
+            top_escape_blockers = dict(sorted(
+                blocker_counts.items(), key=lambda item: (-item[1], item[0])
+            )[:4])
+            route_summary = {
+                key: value for key, value in conjunction_route_diagnostics.items()
+                if key != "escape_blocked_by"
+            }
             print(
                 f"CONJUNCTION FAILURE mode={mode} group={group_index + 1} "
                 f"bodies={' > '.join(item[1][1] for item in group_items)} "
                 f"pool_sizes={{{', '.join(f'{name!r}: {len(rows)}' for name, rows in pools.items())}}} "
                 f"rejections={diagnostic_rejections} "
-                f"route_detail={conjunction_route_diagnostics}",
+                f"route_detail={route_summary} "
+                f"escape_blockers={top_escape_blockers}",
                 flush=True,
             )
             return None

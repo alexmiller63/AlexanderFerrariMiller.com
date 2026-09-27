@@ -396,6 +396,14 @@ def route(anchor: tuple[float, float], center: tuple[float, float], obstacles: l
                 return False
         return True
 
+    def first_blocker(a, b, skip_start_escape=False):
+        for obstacle_index, box in enumerate(obstacles):
+            if skip_start_escape and obstacle_index < allow_initial_escape_count and box.left <= a[0] <= box.right and box.top <= a[1] <= box.bottom:
+                continue
+            if segment_hits_box(a, b, box, IMMUTABLE_LEADER_CLEARANCE):
+                return obstacle_index
+        return None
+
     def route_clear_of_target(path) -> bool:
         # The target label is the final obstacle. Earlier leader segments may
         # neither enter nor graze its protected rectangle. The final segment
@@ -439,6 +447,10 @@ def route(anchor: tuple[float, float], center: tuple[float, float], obstacles: l
         if not prefix_cache[key1]:
             if diagnostic is not None:
                 diagnostic["escape_blocked"] = diagnostic.get("escape_blocked", 0) + 1
+                blocker = first_blocker(anchor, elbow1, skip_start_escape=True)
+                if blocker is not None:
+                    by_obstacle = diagnostic.setdefault("escape_blocked_by", {})
+                    by_obstacle[blocker] = by_obstacle.get(blocker, 0) + 1
             continue
         if not segment_clear(elbow1, elbow2):
             if diagnostic is not None:
