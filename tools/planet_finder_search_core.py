@@ -650,7 +650,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
     # collision calculation belongs in the search model.
     by_name = {name: (i, (symbol, name, longitude)) for i, (symbol, name, longitude) in enumerate(bodies)}
 
-    def solve_conjunction_group(group, group_index):
+    def solve_conjunction_group(group, group_index, downstream):
         group_items = [by_name[item[1]] for item in group]
         anchors = {
             name: xy(longitude, RI - 5)
@@ -711,7 +711,35 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
 
         def assign(depth):
             if depth == len(group_items):
-                return True
+                # A complete conjunction is one atomic outer-search candidate.
+                # Stage the whole blob, search everything beneath it, and if
+                # downstream fails restore the entire blob before trying the
+                # next internally valid conjunction arrangement.
+                placed_mark = len(placed)
+                leaders_mark = len(leaders)
+                names_mark = len(leader_names)
+                staged_before = set(staged)
+                for original_index, (symbol, name, longitude) in group_items:
+                    box = chosen[name][2]
+                    leader = chosen_paths[name]
+                    placed.append(box)
+                    leaders.append(leader)
+                    leader_names.append(name)
+                    staged[original_index] = (symbol, name, longitude, box, leader)
+                if downstream():
+                    diagnostic_print(
+                        f"Planet Finder {mode}: CONJUNCTION BLOB COMPATIBLE "
+                        f"group={group_index + 1} bodies={' > '.join(ordered_names)}",
+                        flush=True,
+                    )
+                    return True
+                del placed[placed_mark:]
+                del leaders[leaders_mark:]
+                del leader_names[names_mark:]
+                for key in list(staged):
+                    if key not in staged_before:
+                        staged.pop(key, None)
+                return False
             _, (_, name, longitude) = group_items[depth]
             anchor = anchors[name]
             for row in pools[name]:
@@ -800,30 +828,10 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 f"escape_blockers={top_escape_blockers}",
                 flush=True,
             )
-            return None
-        return [
-            (original_index, symbol, name, longitude, chosen[name][2], chosen_paths[name])
-            for original_index, (symbol, name, longitude) in group_items
-        ]
+            return False
+        return True
 
-    for group_index, group in enumerate(conjunction_groups(bodies)):
-        solved = solve_conjunction_group(group, group_index)
-        if solved is None:
-            names = " > ".join(item[1] for item in group)
-            raise RuntimeError(
-                f"Planet Finder {mode}: no atomic conjunction layout for group {group_index + 1}: {names}"
-            )
-        # Freeze only a complete, mutually valid conjunction solution.
-        for original_index, symbol, name, longitude, box, leader in solved:
-            placed.append(box)
-            leaders.append(leader)
-            leader_names.append(name)
-            staged[original_index] = (symbol, name, longitude, box, leader)
-            diagnostic_print(
-                f"Planet Finder {mode}: SOLVED CONJUNCTION FROZEN body={name} "
-                f"lambda={longitude % 360.0:.3f}deg anchor_radius={RI - 5:.1f}",
-                flush=True,
-            )
+    conjunction_group_list = conjunction_groups(bodies)
 
     # Second phase: solve the entire alignment layer recursively.  There are
     # two levels of backtracking: members within a group, and groups within the
@@ -951,8 +959,9 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         )
         return result
 
-    alignment_preplacement = plan_alignment_layer()
-    if alignment_preplacement:
+    def stage_alignment_preplacement(alignment_preplacement):
+        if not alignment_preplacement:
+            return
         planned, paths = alignment_preplacement
         for group in alignment_group_items:
             for original_index, (symbol, name, longitude) in group:
@@ -1329,11 +1338,29 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             )
         return False
 
-    try:
-        solved = _search_alignment_fallback(
+    def search_below_conjunctions():
+        # Alignment planning depends on the currently staged conjunction blob,
+        # so rebuild it for every blob candidate rather than carrying geometry
+        # from a failed conjunction branch into the next one.
+        alignment_preplacement = plan_alignment_layer()
+        stage_alignment_preplacement(alignment_preplacement)
+        return _search_alignment_fallback(
             alignment_preplacement, alignment_group_items, placed, leaders,
             leader_names, staged, search, solve_alignment_group,
         )
+
+    def solve_conjunction_layer(group_index):
+        if group_index == len(conjunction_group_list):
+            return search_below_conjunctions()
+        group = conjunction_group_list[group_index]
+        return solve_conjunction_group(
+            group,
+            group_index,
+            lambda: solve_conjunction_layer(group_index + 1),
+        )
+
+    try:
+        solved = solve_conjunction_layer(0)
         exhausted = not solved
     except DepthNodeBudgetExhausted as exc:
         # Hitting the per-body/depth cap is the squeaky-wheel signal.  Report
