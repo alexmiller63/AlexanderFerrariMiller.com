@@ -52,7 +52,11 @@ def print_failure_summary(output: str, *, heading: str = "PLANET FINDER TEST FAI
 
     diagnostic_lines = [
         line for line in lines
-        if "TERMINAL SEARCH DIAGNOSTIC" in line or "CAPPED SUMMARY" in line
+        if (
+            "TERMINAL SEARCH DIAGNOSTIC" in line
+            or "CAPPED SUMMARY" in line
+            or "OUTCOME TRACE" in line
+        )
     ]
     for line in diagnostic_lines:
         print(line.strip())
