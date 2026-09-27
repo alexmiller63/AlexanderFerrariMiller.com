@@ -376,9 +376,16 @@ def legal_candidate_positions(longitude: float, w: float, h: float, reserved: li
         yield x, y, box
 
 
-def route(anchor: tuple[float, float], center: tuple[float, float], obstacles: list[Box], diagnostic=None, allow_initial_escape_count: int = 0, prefix_cache: dict | None = None) -> list[tuple[float, float]] | None:
+def route(anchor: tuple[float, float], center: tuple[float, float], obstacles: list[Box], diagnostic=None, allow_initial_escape_count: int = 0, prefix_cache: dict | None = None, allow_initial_escape_indices: set[int] | None = None) -> list[tuple[float, float]] | None:
     if prefix_cache is None:
         prefix_cache = {}
+    # Ordinary callers keep the historical contiguous prefix behavior. Atomic
+    # conjunctions may instead name exactly which local obstacles are escapable
+    # on the first segment, so placed labels never become escapable by accident.
+    if allow_initial_escape_indices is None:
+        initial_escape_indices = set(range(allow_initial_escape_count))
+    else:
+        initial_escape_indices = set(allow_initial_escape_indices)
 
     def inside_escape_zone(point, box) -> bool:
         # Initial escape is allowed only when the leader actually starts inside
@@ -390,11 +397,15 @@ def route(anchor: tuple[float, float], center: tuple[float, float], obstacles: l
             and box.top - IMMUTABLE_LEADER_CLEARANCE <= point[1] <= box.bottom + IMMUTABLE_LEADER_CLEARANCE
         )
 
-    # A leader may not originate inside a non-escapable obstacle such as an
-    # already placed body label. The first allow_initial_escape_count obstacles
-    # are explicitly reserved for first-segment escape handling below.
-    if any(box.left <= anchor[0] <= box.right and box.top <= anchor[1] <= box.bottom
-           for box in obstacles[allow_initial_escape_count:]):
+    # A leader may not originate inside a non-escapable obstacle. Explicitly
+    # escapable obstacles are ignored only for the first segment and only when
+    # the anchor really starts inside their protected footprint.
+    if any(
+        obstacle_index not in initial_escape_indices
+        and box.left <= anchor[0] <= box.right
+        and box.top <= anchor[1] <= box.bottom
+        for obstacle_index, box in enumerate(obstacles)
+    ):
         if diagnostic is not None:
             diagnostic["anchor_blocked"] = diagnostic.get("anchor_blocked", 0) + 1
         return None
@@ -402,7 +413,7 @@ def route(anchor: tuple[float, float], center: tuple[float, float], obstacles: l
     def segment_clear(a, b, skip_start_escape=False) -> bool:
         for obstacle_index, box in enumerate(obstacles):
             if (skip_start_escape
-                    and obstacle_index < allow_initial_escape_count
+                    and obstacle_index in initial_escape_indices
                     and inside_escape_zone(a, box)):
                 continue
             if segment_hits_box(a, b, box, IMMUTABLE_LEADER_CLEARANCE):
@@ -412,7 +423,7 @@ def route(anchor: tuple[float, float], center: tuple[float, float], obstacles: l
     def first_blocker(a, b, skip_start_escape=False):
         for obstacle_index, box in enumerate(obstacles):
             if (skip_start_escape
-                    and obstacle_index < allow_initial_escape_count
+                    and obstacle_index in initial_escape_indices
                     and inside_escape_zone(a, box)):
                 continue
             if segment_hits_box(a, b, box, IMMUTABLE_LEADER_CLEARANCE):

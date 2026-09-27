@@ -703,16 +703,20 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                     chosen.pop(name, None)
                     continue
                 other_boxes = [other[2] for other_name, other in chosen.items() if other_name != name]
+                conjunction_obstacles = reserved + placed + other_boxes
+                sibling_start = len(reserved) + len(placed)
+                conjunction_escape_indices = (
+                    set(range(len(reserved)))
+                    | set(range(sibling_start, sibling_start + len(other_boxes)))
+                )
                 path_candidate = route(
-                    anchor, (x, y), reserved + placed + other_boxes,
+                    anchor, (x, y), conjunction_obstacles,
                     diagnostic=conjunction_route_diagnostics,
-                    # Atomic conjunction glyphs can be radially staggered under
-                    # a zodiac label. Permit first-segment escape from any
-                    # reserved box only when the anchor starts inside that
-                    # box's protected footprint. Placed/sibling labels remain
-                    # hard obstacles, and later leader segments still cannot
-                    # cross zodiac labels.
-                    allow_initial_escape_count=len(reserved),
+                    # Conjunction-local escape rule: reserved labels and sibling
+                    # conjunction labels may be escaped on the first segment
+                    # only when the anchor starts inside their protected box.
+                    # Previously placed non-conjunction labels remain hard.
+                    allow_initial_escape_indices=conjunction_escape_indices,
                 )
                 if path_candidate is None:
                     diagnostic_rejections["route"] += 1
