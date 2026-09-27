@@ -209,8 +209,13 @@ def layout(
             return "MISSING", None
         if body_index == 0:
             return "AT_FRONT", None
+        # Squeaky-wheel promotion is a direct move to position 0, not a
+        # bubble-sort step.  The exhausted blocker gets first choice on the
+        # next DFS restart while preserving the relative order of every other
+        # body.
         candidate = list(current_order)
-        candidate[body_index - 1], candidate[body_index] = candidate[body_index], candidate[body_index - 1]
+        blocker = candidate.pop(body_index)
+        candidate.insert(0, blocker)
         names = tuple(item[1][1] for item in candidate)
         if names in attempted_orders:
             return "CYCLE", candidate
@@ -233,7 +238,7 @@ def layout(
                 order = promoted_order
                 body_attempts[promote_body] = 0
                 diagnostic_print(
-                    f"Planet Finder {mode}: PROMOTE body={promote_body}; moved left one lambda neighbor; "
+                    f"Planet Finder {mode}: PROMOTE body={promote_body}; moved directly to position 0; "
                     "restarting sequence=" + " > ".join(promoted_names), flush=True,
                 )
                 state = "SEARCH_ORDER"
@@ -330,7 +335,6 @@ def layout(
     # Contest-validity diagnostic: a configured N-contestant competition must
     # actually contain N distinct, independently validated complete layouts.
     # Viability is established before a result enters all_solutions; the
-
     # uniqueness key prevents duplicate layouts from becoming contestants.
     contest_count = len(all_solutions)
     unique_count = len(set(contest_keys))
