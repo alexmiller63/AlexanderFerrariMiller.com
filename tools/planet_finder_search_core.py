@@ -642,8 +642,11 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             w, h = label_size(mode, name)
             natural = xy(longitude, PREFERRED_LABEL_RADII[0])
             rows = []
+            # Tight conjunctions use the finest existing refinement.
+            # Ordinary DFS remains on its caller-supplied scale.
+            conjunction_displacement_scale = 0.25
             for x, y, box in legal_candidate_positions(
-                    longitude, w, h, reserved, displacement_scale):
+                    longitude, w, h, reserved, conjunction_displacement_scale):
                 if any(boxes_overlap(box, old, LABEL_COLLISION_PADDING) for old in placed):
                     continue
                 if any(segment_hits_box(path[i], path[i + 1], box, PLACED_LABEL_LEADER_CLEARANCE)
@@ -660,6 +663,14 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         chosen = {}
         chosen_paths = {}
         ordered_names = [item[1][1] for item in group_items]
+        diagnostic_rejections = {
+            "label_overlap": 0,
+            "lambda_order": 0,
+            "route": 0,
+            "leader_label": 0,
+            "leader_rim_or_external": 0,
+            "sibling_leader_label": 0,
+        }
 
         def label_angle(row):
             x, y, _ = row
@@ -682,9 +693,11 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 x, y, box = row
                 if any(boxes_overlap(box, other[2], LABEL_COLLISION_PADDING)
                        for other in chosen.values()):
+                    diagnostic_rejections["label_overlap"] += 1
                     continue
                 chosen[name] = row
                 if not preserves_lambda_order():
+                    diagnostic_rejections["lambda_order"] += 1
                     chosen.pop(name, None)
                     continue
                 other_boxes = [other[2] for other_name, other in chosen.items() if other_name != name]
@@ -693,11 +706,13 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                     allow_initial_escape_count=3,
                 )
                 if path_candidate is None:
+                    diagnostic_rejections["route"] += 1
                     chosen.pop(name, None)
                     continue
                 if any(segment_hits_box(path_candidate[i], path_candidate[i + 1], other_box,
                                         PLACED_LABEL_LEADER_CLEARANCE)
                        for other_box in other_boxes for i in range(len(path_candidate) - 1)):
+                    diagnostic_rejections["leader_label"] += 1
                     chosen.pop(name, None)
                     continue
                 # Conjunction siblings intentionally originate at nearly the
@@ -707,6 +722,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 # checked explicitly above and below.
                 if leader_hits_zodiac_rim(path_candidate) or leaders_too_close(
                         path_candidate, leaders):
+                    diagnostic_rejections["leader_rim_or_external"] += 1
                     chosen.pop(name, None)
                     continue
                 # Symmetric collision check: an already chosen sibling leader
@@ -714,6 +730,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 if any(segment_hits_box(old_path[i], old_path[i + 1], box,
                                         PLACED_LABEL_LEADER_CLEARANCE)
                        for old_path in chosen_paths.values() for i in range(len(old_path) - 1)):
+                    diagnostic_rejections["sibling_leader_label"] += 1
                     chosen.pop(name, None)
                     continue
                 chosen_paths[name] = path_candidate
@@ -724,6 +741,12 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             return False
 
         if not assign(0):
+            diagnostic_print(
+                f"Planet Finder {mode}: conjunction diagnostics group {group_index + 1} "
+                f"{' > '.join(item[1] for item in group_items)} "
+                f"rejections={diagnostic_rejections}",
+                flush=True,
+            )
             return None
         return [
             (original_index, symbol, name, longitude, chosen[name][2], chosen_paths[name])
