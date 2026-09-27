@@ -41,22 +41,6 @@ def print_failure_summary(output: str, *, heading: str = "PLANET FINDER TEST FAI
     lines = output.splitlines()
     print(heading)
 
-    # Collection/import errors happen before pytest can emit a normal FAILED
-    # line. Preserve the compact report, but include that error block verbatim
-    # so the actual exception is never hidden again.
-    collecting_error = any(line.startswith("ERROR collecting ") for line in lines)
-    if collecting_error:
-        start = next(
-            (i for i, line in enumerate(lines) if line.startswith("ERROR collecting ")),
-            0,
-        )
-        end = next(
-            (i for i in range(start, len(lines)) if lines[i].startswith("short test summary info")),
-            len(lines),
-        )
-        for line in lines[start:end]:
-            print(line)
-
     conjunction_lines = [line for line in lines if "CONJUNCTION FAILURE" in line]
     for line in conjunction_lines:
         print(line.strip())
@@ -83,15 +67,18 @@ def print_failure_summary(output: str, *, heading: str = "PLANET FINDER TEST FAI
 
 
 def main() -> None:
-    # Structural canary: stop after the first W02 conjunction failure. This is
-    # intentionally ahead of the full suite because promotion cycles and
-    # canonical-lattice exhaustion make the later long searches non-actionable.
     preflight = run_pytest(PREFLIGHT, maxfail=1)
     if preflight.returncode != 0:
-        print_failure_summary(
-            preflight.stdout,
-            heading="PLANET FINDER PRECHECK FAILURE — FULL SUITE SKIPPED",
-        )
+        # Pytest exit code 2 is an interruption/collection failure. These are
+        # short and diagnostic, so never summarize away the underlying error.
+        if preflight.returncode == 2:
+            print("PLANET FINDER PRECHECK COLLECTION ERROR — FULL SUITE SKIPPED")
+            print(preflight.stdout, end="" if preflight.stdout.endswith("\n") else "\n")
+        else:
+            print_failure_summary(
+                preflight.stdout,
+                heading="PLANET FINDER PRECHECK FAILURE — FULL SUITE SKIPPED",
+            )
         raise SystemExit(preflight.returncode)
 
     result = run_pytest(FULL_TESTS)
