@@ -423,6 +423,10 @@ def route(anchor: tuple[float, float], center: tuple[float, float], obstacles: l
         candidate = [anchor, center]
         if route_clear_of_target(candidate):
             return candidate
+        if diagnostic is not None:
+            diagnostic["target_approach"] = diagnostic.get("target_approach", 0) + 1
+    elif diagnostic is not None:
+        diagnostic["direct_blocked"] = diagnostic.get("direct_blocked", 0) + 1
 
     anchor_theta = math.atan2(anchor[1] - CY, anchor[0] - CX)
     center_theta = math.atan2(center[1] - CY, center[0] - CX)
@@ -433,9 +437,20 @@ def route(anchor: tuple[float, float], center: tuple[float, float], obstacles: l
         if key1 not in prefix_cache:
             prefix_cache[key1] = segment_clear(anchor, elbow1, skip_start_escape=True)
         if not prefix_cache[key1]:
+            if diagnostic is not None:
+                diagnostic["escape_blocked"] = diagnostic.get("escape_blocked", 0) + 1
             continue
-        if segment_clear(elbow1, elbow2) and segment_clear(elbow2, center):
-            candidate = [anchor, elbow1, elbow2, center]
-            if route_clear_of_target(candidate):
-                return candidate
+        if not segment_clear(elbow1, elbow2):
+            if diagnostic is not None:
+                diagnostic["arc_blocked"] = diagnostic.get("arc_blocked", 0) + 1
+            continue
+        if not segment_clear(elbow2, center):
+            if diagnostic is not None:
+                diagnostic["final_blocked"] = diagnostic.get("final_blocked", 0) + 1
+            continue
+        candidate = [anchor, elbow1, elbow2, center]
+        if route_clear_of_target(candidate):
+            return candidate
+        if diagnostic is not None:
+            diagnostic["target_approach"] = diagnostic.get("target_approach", 0) + 1
     return None

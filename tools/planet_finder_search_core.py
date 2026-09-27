@@ -670,6 +670,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             "leader_rim_or_external": 0,
             "sibling_leader_label": 0,
         }
+        conjunction_route_diagnostics = {}
 
         def label_angle(row):
             x, y, _ = row
@@ -704,6 +705,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 other_boxes = [other[2] for other_name, other in chosen.items() if other_name != name]
                 path_candidate = route(
                     anchor, (x, y), reserved + placed + other_boxes,
+                    diagnostic=conjunction_route_diagnostics,
                     allow_initial_escape_count=3,
                 )
                 if path_candidate is None:
@@ -746,7 +748,8 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 f"CONJUNCTION FAILURE mode={mode} group={group_index + 1} "
                 f"bodies={' > '.join(item[1][1] for item in group_items)} "
                 f"pool_sizes={{{', '.join(f'{name!r}: {len(rows)}' for name, rows in pools.items())}}} "
-                f"rejections={diagnostic_rejections}",
+                f"rejections={diagnostic_rejections} "
+                f"route_detail={conjunction_route_diagnostics}",
                 flush=True,
             )
             return None
