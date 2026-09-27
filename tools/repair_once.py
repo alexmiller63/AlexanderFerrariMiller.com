@@ -10,25 +10,16 @@ if not ENABLED:
 path = Path("tools/planet_finder_search_core.py")
 text = path.read_text()
 
-old = '''                rows.append((x, y, box))
-                if len(rows) >= 80:
-                    break
-            rows.sort(key=lambda row: math.hypot(row[0] - natural[0], row[1] - natural[1]))
-            if not rows:
-                return None
-            pools[name] = rows
+old = '''            return all(a < b for a, b in zip(angles, angles[1:]))
 '''
-new = '''                rows.append((x, y, box))
-            rows.sort(key=lambda row: math.hypot(row[0] - natural[0], row[1] - natural[1]))
-            rows = rows[:80]
-            if not rows:
-                return None
-            pools[name] = rows
+new = '''            # Preserve circular lambda order, but allow conjunction siblings
+            # to share the same label-center angle at different radii.
+            return all(a <= b for a, b in zip(angles, angles[1:]))
 '''
 
 if text.count(old) != 1:
     raise SystemExit(
-        "Safety stop: expected exactly one conjunction candidate-cap block; "
+        "Safety stop: expected exactly one strict conjunction lambda-order check; "
         f"found {text.count(old)}"
     )
 
@@ -44,7 +35,7 @@ script.write_text(script_text.replace("ENABLED = True", "ENABLED = False", 1))
 subprocess.run(["git", "config", "user.name", "github-actions[bot]"], check=True)
 subprocess.run(["git", "config", "user.email", "41898282+github-actions[bot]@users.noreply.github.com"], check=True)
 subprocess.run(["git", "add", "tools/planet_finder_search_core.py", "tools/repair_once.py"], check=True)
-subprocess.run(["git", "commit", "-m", "Rank conjunction candidates before applying cap"], check=True)
+subprocess.run(["git", "commit", "-m", "Allow tied conjunction label angles"], check=True)
 subprocess.run(["git", "push", "origin", "HEAD"], check=True)
 
-print("Conjunction candidates now all generate and sort before the best 80 are kept; 0.25 refinement unchanged; switch OFF.")
+print("Conjunction label centers may now tie in angle without reversing circular lambda order; 0.25 refinement unchanged; switch OFF.")
