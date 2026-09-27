@@ -87,9 +87,6 @@ def layout(
     if {name for _, (_, name, _) in indexed} != set(CANONICAL):
         raise RuntimeError("Planet Finder body set does not match the canonical Solar-System objects")
 
-    # First search order follows the bodies around the ecliptic.  Because
-    # longitude is circular, place the linearization seam in the largest empty
-    # angular gap so close neighbors across 0/360 degrees remain adjacent.
     lambda_sorted = sorted(indexed, key=lambda item: item[1][2] % 360.0)
     gaps = []
     for i, item in enumerate(lambda_sorted):
@@ -100,10 +97,6 @@ def layout(
     seam_after = max(range(len(gaps)), key=gaps.__getitem__)
     indexed = lambda_sorted[seam_after + 1:] + lambda_sorted[:seam_after + 1]
 
-    # Near-conjunction members are resolved deterministically before DFS.
-    # They remain in `bodies` and therefore in the final rendered result, but
-    # are absent from the squeaky-wheel order: once placed, they are collisions
-    # only and can never be promoted or recursively reconsidered.
     conjunction_names = {
         item[1]
         for group in conjunction_groups(bodies)
@@ -113,18 +106,10 @@ def layout(
     if conjunction_names:
         diagnostic_print(
             f"Planet Finder {mode}: FIXED CONJUNCTIONS "
-            + " > ".join(
-                item[1]
-                for group in conjunction_groups(bodies)
-                for item in group
-            )
-            + "; remaining after conjunctions=" + str(len(indexed)),
-            flush=True,
+            + " > ".join(item[1] for group in conjunction_groups(bodies) for item in group)
+            + "; remaining after conjunctions=" + str(len(indexed)), flush=True,
         )
 
-    # Broad alignments are the second placement phase.  Their members are
-    # solved and frozen inside _solve_order after conjunctions, so the general
-    # squeaky-wheel controller must never promote or recursively reconsider them.
     alignment_names = {
         item[1]
         for group in alignment_groups(bodies)
@@ -134,16 +119,10 @@ def layout(
     if alignment_names:
         diagnostic_print(
             f"Planet Finder {mode}: FIXED ALIGNMENTS "
-            + " | ".join(
-                " > ".join(item[1] for item in group)
-                for group in alignment_groups(bodies)
-            )
-            + "; recursive bodies=" + str(len(indexed)),
-            flush=True,
+            + " | ".join(" > ".join(item[1] for item in group) for group in alignment_groups(bodies))
+            + "; recursive bodies=" + str(len(indexed)), flush=True,
         )
 
-    # Diagnostic: report the closest pair on the circular ecliptic.  This is
-    # observational only; it does not change search order or placement policy.
     closest_pair = None
     for i, left in enumerate(lambda_sorted):
         right = lambda_sorted[(i + 1) % len(lambda_sorted)]
@@ -157,29 +136,17 @@ def layout(
     if closest_pair is not None:
         separation, left_name, right_name, left_lambda, right_lambda = closest_pair
         diagnostic_print(
-            f"Planet Finder {mode}: CLOSEST ECLIPTIC PAIR "
-            f"{left_name} lambda={left_lambda:.3f} deg; "
-            f"{right_name} lambda={right_lambda:.3f} deg; "
-            f"separation={separation:.3f} deg",
-            flush=True,
+            f"Planet Finder {mode}: CLOSEST ECLIPTIC PAIR {left_name} lambda={left_lambda:.3f} deg; "
+            f"{right_name} lambda={right_lambda:.3f} deg; separation={separation:.3f} deg", flush=True,
         )
 
     if target_solutions is None:
         target_solutions = max(1, int(os.environ.get("PLANET_FINDER_CANDIDATES", str(DEFAULT_CANDIDATE_LAYOUTS))))
-
     if budget is None:
         budget = new_search_budget()
-
-    # One clock per mode, always.  Copy the limits so callers may safely reuse
-    # one configuration object without ever sharing elapsed time between Greek,
-    # Latin, and Mixed.
     budget = dict(budget)
     budget["started"] = time.monotonic()
-    diagnostic_print(
-        f"Planet Finder {mode}: MODE CLOCK STARTED: "
-        f"limit={budget['max_seconds']:.1f}s",
-        flush=True,
-    )
+    diagnostic_print(f"Planet Finder {mode}: MODE CLOCK STARTED: limit={budget['max_seconds']:.1f}s", flush=True)
 
     order = indexed
     all_solutions = []
@@ -194,9 +161,8 @@ def layout(
     def terminal_search(reason):
         final_sequence = " > ".join(item[1][1] for item in order)
         diagnostic_print(
-            f"Planet Finder {mode}: TERMINAL SEARCH DIAGNOSTIC "
-            f"reason={reason} attempts={len(search_history)} final-sequence={final_sequence}",
-            flush=True,
+            f"Planet Finder {mode}: TERMINAL SEARCH DIAGNOSTIC reason={reason} "
+            f"attempts={len(search_history)} final-sequence={final_sequence}", flush=True,
         )
         raise RuntimeError(
             f"Planet Finder {mode}: canonical candidate lattice exhausted; {reason}; "
@@ -219,10 +185,7 @@ def layout(
     while state != "SCORE":
         now = time.monotonic()
         if now - budget["started"] >= budget["max_seconds"]:
-            raise RuntimeError(
-                f"Planet Finder {mode} mode wall-clock budget exhausted "
-                f"(limit {budget['max_seconds']:.1f}s)"
-            )
+            raise RuntimeError(f"Planet Finder {mode} mode wall-clock budget exhausted (limit {budget['max_seconds']:.1f}s)")
 
         if state == "PROMOTE":
             transition, promoted_order = next_promotion_order(order, promote_body)
@@ -241,8 +204,7 @@ def layout(
                 terminal_search(f"ordering cycle while promoting {promote_body}")
             else:
                 raise RuntimeError(
-                    f"Planet Finder {mode}: controller invariant violated: blocker "
-                    f"{promote_body!r} is absent from the recursive search order"
+                    f"Planet Finder {mode}: controller invariant violated: blocker {promote_body!r} is absent from the recursive search order"
                 )
             continue
 
@@ -255,58 +217,50 @@ def layout(
         attempted_orders.add(order_names)
         order_index += 1
         diagnostic_print(
-            f"Planet Finder {mode}: squeaky-wheel lazy DFS "
-            f"{context_label + ' ' if context_label else ''}"
-            f"order={order_index} target={target_solutions} "
-            f"max-node-candidates={budget['max_node_candidates']:,} "
-            f"candidate-lattice=0,+/-0.25,...,+/-2.00 label-lengths sequence="
-            + " > ".join(order_names), flush=True,
+            f"Planet Finder {mode}: squeaky-wheel lazy DFS {context_label + ' ' if context_label else ''}"
+            f"order={order_index} target={target_solutions} max-node-candidates={budget['max_node_candidates']:,} "
+            f"candidate-lattice=0,+/-0.25,...,+/-2.00 label-lengths sequence=" + " > ".join(order_names), flush=True,
         )
 
         try:
             outcome = _solve_order(
-                mode, bodies, order, budget,
-                target_solutions=target_solutions,
-                order_index=order_index,
-                total_orders=None,
-                context_label=context_label,
-                displacement_scale=0.25,
-                body_attempts=body_attempts,
+                mode, bodies, order, budget, target_solutions=target_solutions,
+                order_index=order_index, total_orders=None, context_label=context_label,
+                displacement_scale=0.25, body_attempts=body_attempts,
                 refinement_deadline=budget["started"] + budget["max_seconds"],
             )
         except DepthNodeBudgetExhausted as exc:
             outcome = SearchOutcome("CAPPED", [], [], exc.name, None)
+
+        diagnostic_print(
+            f"Planet Finder {mode}: OUTCOME TRACE attempt={order_index} kind={outcome.kind} "
+            f"blocker={outcome.blocker} rejection_stats={outcome.rejection_stats!r}", flush=True,
+        )
 
         if outcome.kind == "SOLVED":
             all_solutions = outcome.solutions
             contest_keys = outcome.contest_keys
             state = "SCORE"
             continue
-
         if outcome.kind == "INCONCLUSIVE":
             raise RuntimeError(
-                f"Planet Finder {mode}: bounded search inconclusive; "
-                f"no valid {target_solutions}-contestant contest was established"
+                f"Planet Finder {mode}: bounded search inconclusive; no valid {target_solutions}-contestant contest was established"
             )
         if outcome.kind not in ("CAPPED", "EXHAUSTED") or not outcome.blocker:
-            raise RuntimeError(
-                f"Planet Finder {mode}: invalid search outcome kind={outcome.kind} blocker={outcome.blocker}"
-            )
+            raise RuntimeError(f"Planet Finder {mode}: invalid search outcome kind={outcome.kind} blocker={outcome.blocker}")
 
         all_solutions = outcome.solutions
         contest_keys = outcome.contest_keys
         promote_body = outcome.blocker
         search_history.append({"kind": outcome.kind, "blocker": promote_body, "order": order_names})
         diagnostic_print(
-            f"Planet Finder {mode}: SEARCH OUTCOME {outcome.kind} "
-            f"body={promote_body} contestants={len(all_solutions)}/{target_solutions}", flush=True,
+            f"Planet Finder {mode}: SEARCH OUTCOME {outcome.kind} body={promote_body} "
+            f"contestants={len(all_solutions)}/{target_solutions}", flush=True,
         )
         state = "PROMOTE"
 
     if not all_solutions:
-        raise RuntimeError(
-            f"No collision-free Planet Finder layout found in {mode} mode"
-        )
+        raise RuntimeError(f"No collision-free Planet Finder layout found in {mode} mode")
 
     def score(result):
         total_length = 0.0
@@ -314,10 +268,7 @@ def layout(
         radial_error = 0.0
         tangential_error = 0.0
         for _, _, longitude, box, path in result:
-            total_length += sum(
-                math.hypot(b[0]-a[0], b[1]-a[1])
-                for a, b in zip(path, path[1:])
-            )
+            total_length += sum(math.hypot(b[0]-a[0], b[1]-a[1]) for a, b in zip(path, path[1:]))
             elbows += max(0, len(path) - 2)
             natural = xy(longitude, 345)
             radial_error += abs(math.hypot(box.x-CX, box.y-CY) - 345)
@@ -326,45 +277,28 @@ def layout(
 
     scored = sorted((score(result), i, result) for i, result in enumerate(all_solutions))
     best_score, best_index, best = scored[0]
-
-    # Contest-validity diagnostic: a configured N-contestant competition must
-    # actually contain N distinct, independently validated complete layouts.
-    # Viability is established before a result enters all_solutions; the
-    # uniqueness key prevents duplicate layouts from becoming contestants.
     contest_count = len(all_solutions)
     unique_count = len(set(contest_keys))
-    contest_valid = (
-        contest_count == target_solutions
-        and unique_count == contest_count
-        and contest_count == len(scored)
-    )
+    contest_valid = contest_count == target_solutions and unique_count == contest_count and contest_count == len(scored)
     diagnostic_print(
-        f"Planet Finder {mode}: CONTEST AUDIT "
-        f"requested={target_solutions} contestants={contest_count} "
-        f"unique={unique_count} scored={len(scored)} "
-        f"status={'VALID' if contest_valid else 'INVALID'}",
-        flush=True,
+        f"Planet Finder {mode}: CONTEST AUDIT requested={target_solutions} contestants={contest_count} "
+        f"unique={unique_count} scored={len(scored)} status={'VALID' if contest_valid else 'INVALID'}", flush=True,
     )
     for rank, (candidate_score, candidate_index, _) in enumerate(scored, 1):
         diagnostic_print(
-            f"Planet Finder {mode}: CONTESTANT rank={rank} "
-            f"candidate={candidate_index + 1} "
+            f"Planet Finder {mode}: CONTESTANT rank={rank} candidate={candidate_index + 1} "
             f"score[elbows={candidate_score[0]},length={candidate_score[1]:.1f},"
-            f"displacement={candidate_score[2]:.1f},radial={candidate_score[3]:.1f}]",
-            flush=True,
+            f"displacement={candidate_score[2]:.1f},radial={candidate_score[3]:.1f}]", flush=True,
         )
     if not contest_valid:
         raise RuntimeError(
-            f"Planet Finder {mode}: contest validity failure "
-            f"requested={target_solutions} contestants={contest_count} "
+            f"Planet Finder {mode}: contest validity failure requested={target_solutions} contestants={contest_count} "
             f"unique={unique_count} scored={len(scored)}"
         )
-
     diagnostic_print(
         f"Planet Finder {mode}: selected candidate {best_index + 1}/{len(all_solutions)} "
         f"{context_label + ' ' if context_label else ''}"
         f"score[elbows={best_score[0]},length={best_score[1]:.1f},"
-        f"displacement={best_score[2]:.1f},radial={best_score[3]:.1f}]",
-        flush=True,
+        f"displacement={best_score[2]:.1f},radial={best_score[3]:.1f}]", flush=True,
     )
     return best
