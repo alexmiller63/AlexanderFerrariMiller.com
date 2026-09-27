@@ -653,9 +653,8 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                        for path in leaders for i in range(len(path) - 1)):
                     continue
                 rows.append((x, y, box))
-                if len(rows) >= 80:
-                    break
             rows.sort(key=lambda row: math.hypot(row[0] - natural[0], row[1] - natural[1]))
+            rows = rows[:80]
             if not rows:
                 return None
             pools[name] = rows
