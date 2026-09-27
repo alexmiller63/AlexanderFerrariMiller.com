@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 """Stable launcher for the Planet Finder unit and system tests.
 
-Run the small W02 conjunction regression first. A promotion-cycle/lattice
-failure there is structural, so there is no value spending many minutes on the
-larger timeout-heavy suite before reporting it.
+Run the W02 ordering diagnostic first, then the small W02 conjunction
+regression. A promotion-cycle/lattice failure there is structural, so there is
+no value spending many minutes on the larger timeout-heavy suite before
+reporting it.
 """
 from __future__ import annotations
 
@@ -11,6 +12,10 @@ import os
 import re
 import subprocess
 import sys
+
+ORDER_DIAGNOSTIC = [
+    "tests/test_planet_finder_w02_order_permutations.py",
+]
 
 PREFLIGHT = [
     "tests/test_planet_finder_w02_conjunction.py",
@@ -56,6 +61,7 @@ def print_failure_summary(output: str, *, heading: str = "PLANET FINDER TEST FAI
             "TERMINAL SEARCH DIAGNOSTIC" in line
             or "CAPPED SUMMARY" in line
             or "OUTCOME TRACE" in line
+            or "W02 PERMUTATION RESULT" in line
         )
     ]
     for line in diagnostic_lines:
@@ -87,6 +93,11 @@ def print_failure_summary(output: str, *, heading: str = "PLANET FINDER TEST FAI
 
 
 def main() -> None:
+    diagnostic = run_pytest(ORDER_DIAGNOSTIC, capture=False)
+    print(diagnostic.stdout, end="" if diagnostic.stdout.endswith("\n") else "\n")
+    if diagnostic.returncode != 0:
+        raise SystemExit(diagnostic.returncode)
+
     preflight = run_pytest(PREFLIGHT, maxfail=1, capture=False)
     if preflight.returncode != 0:
         if preflight.returncode == 2:
