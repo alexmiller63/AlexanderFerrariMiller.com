@@ -7,6 +7,7 @@ larger timeout-heavy suite before reporting it.
 """
 from __future__ import annotations
 
+import os
 import re
 import subprocess
 import sys
@@ -29,11 +30,15 @@ def run_pytest(tests: list[str], *, maxfail: int | None = None) -> subprocess.Co
     if maxfail is not None:
         command.append(f"--maxfail={maxfail}")
     command.extend(tests)
+    env = os.environ.copy()
+    existing = env.get("PYTHONPATH")
+    env["PYTHONPATH"] = "tools" if not existing else f"tools{os.pathsep}{existing}"
     return subprocess.run(
         command,
         text=True,
         stdout=subprocess.PIPE,
         stderr=subprocess.STDOUT,
+        env=env,
     )
 
 
@@ -69,8 +74,6 @@ def print_failure_summary(output: str, *, heading: str = "PLANET FINDER TEST FAI
 def main() -> None:
     preflight = run_pytest(PREFLIGHT, maxfail=1)
     if preflight.returncode != 0:
-        # Pytest exit code 2 is an interruption/collection failure. These are
-        # short and diagnostic, so never summarize away the underlying error.
         if preflight.returncode == 2:
             print("PLANET FINDER PRECHECK COLLECTION ERROR — FULL SUITE SKIPPED")
             print(preflight.stdout, end="" if preflight.stdout.endswith("\n") else "\n")
