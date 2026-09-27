@@ -3,7 +3,7 @@
 from pathlib import Path
 import runpy
 
-ENABLED = False
+ENABLED = True
 if not ENABLED:
     print("Repair Once is OFF; nothing to do.")
     raise SystemExit(0)
