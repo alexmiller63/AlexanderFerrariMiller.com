@@ -700,8 +700,13 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                        for other_box in other_boxes for i in range(len(path_candidate) - 1)):
                     chosen.pop(name, None)
                     continue
+                # Conjunction siblings intentionally originate at nearly the
+                # same lambda, so their leaders may be close near the anchors.
+                # Keep the ordinary clearance rule against leaders outside this
+                # atomic conjunction, while sibling leader/label collisions are
+                # checked explicitly above and below.
                 if leader_hits_zodiac_rim(path_candidate) or leaders_too_close(
-                        path_candidate, leaders + list(chosen_paths.values())):
+                        path_candidate, leaders):
                     chosen.pop(name, None)
                     continue
                 # Symmetric collision check: an already chosen sibling leader
