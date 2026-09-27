@@ -709,8 +709,19 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             # to share the same label-center angle at different radii.
             return all(a <= b for a, b in zip(angles, angles[1:]))
 
+        blob_candidates = 0
+        downstream_rejections = 0
+
         def assign(depth):
+            nonlocal blob_candidates, downstream_rejections
             if depth == len(group_items):
+                blob_candidates += 1
+                diagnostic_print(
+                    f"Planet Finder {mode}: CONJUNCTION BLOB INTERNALLY VALID "
+                    f"group={group_index + 1} candidate={blob_candidates} "
+                    f"bodies={' > '.join(ordered_names)}",
+                    flush=True,
+                )
                 # A complete conjunction is one atomic outer-search candidate.
                 # Stage the whole blob, search everything beneath it, and if
                 # downstream fails restore the entire blob before trying the
@@ -729,10 +740,19 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 if downstream():
                     diagnostic_print(
                         f"Planet Finder {mode}: CONJUNCTION BLOB COMPATIBLE "
-                        f"group={group_index + 1} bodies={' > '.join(ordered_names)}",
+                        f"group={group_index + 1} candidate={blob_candidates} "
+                        f"bodies={' > '.join(ordered_names)}",
                         flush=True,
                     )
                     return True
+                downstream_rejections += 1
+                diagnostic_print(
+                    f"Planet Finder {mode}: CONJUNCTION BLOB DOWNSTREAM BARRIER "
+                    f"group={group_index + 1} candidate={blob_candidates} "
+                    f"downstream_rejections={downstream_rejections} "
+                    f"bodies={' > '.join(ordered_names)}; restoring whole blob",
+                    flush=True,
+                )
                 del placed[placed_mark:]
                 del leaders[leaders_mark:]
                 del leader_names[names_mark:]
@@ -823,6 +843,9 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 f"CONJUNCTION FAILURE mode={mode} group={group_index + 1} "
                 f"bodies={' > '.join(item[1][1] for item in group_items)} "
                 f"pool_sizes={{{', '.join(f'{name!r}: {len(rows)}' for name, rows in pools.items())}}} "
+                f"internally_valid_blobs={blob_candidates} "
+                f"downstream_rejections={downstream_rejections} "
+                f"barrier={'internal' if blob_candidates == 0 else 'downstream'} "
                 f"rejections={diagnostic_rejections} "
                 f"route_detail={route_summary} "
                 f"escape_blockers={top_escape_blockers}",
