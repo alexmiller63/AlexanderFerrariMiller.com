@@ -706,7 +706,13 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 path_candidate = route(
                     anchor, (x, y), reserved + placed + other_boxes,
                     diagnostic=conjunction_route_diagnostics,
-                    allow_initial_escape_count=3,
+                    # Atomic conjunction glyphs can be radially staggered under
+                    # a zodiac label. Permit first-segment escape from any
+                    # reserved box only when the anchor starts inside that
+                    # box's protected footprint. Placed/sibling labels remain
+                    # hard obstacles, and later leader segments still cannot
+                    # cross zodiac labels.
+                    allow_initial_escape_count=len(reserved),
                 )
                 if path_candidate is None:
                     diagnostic_rejections["route"] += 1

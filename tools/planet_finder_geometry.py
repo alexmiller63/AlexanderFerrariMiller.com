@@ -380,17 +380,30 @@ def route(anchor: tuple[float, float], center: tuple[float, float], obstacles: l
     if prefix_cache is None:
         prefix_cache = {}
 
-    # A leader may not originate inside another placed label. Record this
-    # explicit rejection for diagnostics before attempting any route.
+    def inside_escape_zone(point, box) -> bool:
+        # Initial escape is allowed only when the leader actually starts inside
+        # the protected footprint of an explicitly escapable reserved label.
+        # This exception applies to the first segment only; all later segments
+        # still treat the label as a hard obstacle.
+        return (
+            box.left - IMMUTABLE_LEADER_CLEARANCE <= point[0] <= box.right + IMMUTABLE_LEADER_CLEARANCE
+            and box.top - IMMUTABLE_LEADER_CLEARANCE <= point[1] <= box.bottom + IMMUTABLE_LEADER_CLEARANCE
+        )
+
+    # A leader may not originate inside a non-escapable obstacle such as an
+    # already placed body label. The first allow_initial_escape_count obstacles
+    # are explicitly reserved for first-segment escape handling below.
     if any(box.left <= anchor[0] <= box.right and box.top <= anchor[1] <= box.bottom
-           for box in obstacles[:allow_initial_escape_count + 1]):
+           for box in obstacles[allow_initial_escape_count:]):
         if diagnostic is not None:
             diagnostic["anchor_blocked"] = diagnostic.get("anchor_blocked", 0) + 1
         return None
 
     def segment_clear(a, b, skip_start_escape=False) -> bool:
         for obstacle_index, box in enumerate(obstacles):
-            if skip_start_escape and obstacle_index < allow_initial_escape_count and box.left <= a[0] <= box.right and box.top <= a[1] <= box.bottom:
+            if (skip_start_escape
+                    and obstacle_index < allow_initial_escape_count
+                    and inside_escape_zone(a, box)):
                 continue
             if segment_hits_box(a, b, box, IMMUTABLE_LEADER_CLEARANCE):
                 return False
@@ -398,7 +411,9 @@ def route(anchor: tuple[float, float], center: tuple[float, float], obstacles: l
 
     def first_blocker(a, b, skip_start_escape=False):
         for obstacle_index, box in enumerate(obstacles):
-            if skip_start_escape and obstacle_index < allow_initial_escape_count and box.left <= a[0] <= box.right and box.top <= a[1] <= box.bottom:
+            if (skip_start_escape
+                    and obstacle_index < allow_initial_escape_count
+                    and inside_escape_zone(a, box)):
                 continue
             if segment_hits_box(a, b, box, IMMUTABLE_LEADER_CLEARANCE):
                 return obstacle_index
