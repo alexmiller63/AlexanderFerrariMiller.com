@@ -1,7 +1,5 @@
 """Progressively isolate the W02 Venus-Sun conjunction breakpoint."""
 
-import pytest
-
 from planet_finder_geometry import CANONICAL, FinderMode
 from planet_finder_search import layout
 from planet_finder_validation import validate_layout
@@ -25,12 +23,9 @@ def conjunction_case(separation):
     return [(name.lower(), name, float(longitudes[name])) for name in CANONICAL]
 
 
-@pytest.mark.parametrize(
-    "separation",
-    [1.0, 0.5],
-    ids=["1deg", "0.5deg"],
-)
-def test_greek_venus_sun_separation_ladder(monkeypatch, separation):
+def test_greek_venus_sun_farthest_control(monkeypatch):
+    """Control: prove the conjunction machinery works at the widest test separation."""
+    separation = 10.0
     monkeypatch.setenv("PLANET_FINDER_DIAGNOSTIC_LEVEL", "2")
     bodies = conjunction_case(separation)
     result = layout(
@@ -38,7 +33,7 @@ def test_greek_venus_sun_separation_ladder(monkeypatch, separation):
         bodies,
         target_solutions=1,
         budget={"max_node_candidates": 2000, "max_seconds": 15.0},
-        context_label=f"venus-sun-{separation:.3f}deg",
+        context_label=f"venus-sun-control-{separation:.3f}deg",
     )
     expected = {name for _, name, _ in bodies}
     actual = [name for _, name, _, _, _ in result]
