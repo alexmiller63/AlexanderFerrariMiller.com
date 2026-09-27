@@ -23,7 +23,7 @@ from planet_finder_geometry import (
     xy, boxes_overlap, segment_hits_box, point_segment_distance,
     segments_too_close, leaders_too_close, leader_hits_zodiac_rim, minimum_leader_separation,
     label_size, reserved_boxes, candidate_positions,
-    legal_candidate_positions, route, alignment_groups, conjunction_groups, conjunction_glyph_radii,
+    legal_candidate_positions, route, alignment_groups, conjunction_groups,
 )
 
 
@@ -320,8 +320,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         })
         nonlocal candidates, rejected_overlap, rejected_leader, rejected_route
         w, h = label_size(mode, name)
-        glyph_radii = conjunction_glyph_radii(bodies)
-        anchor = xy(longitude, glyph_radii.get(name, RI - 5))
+        anchor = xy(longitude, RI - 5)
         # This generator is created for one fixed DFS prefix. The placed
         # obstacles therefore remain stable for its lifetime, so anchor-side
         # routing work can be safely reused across all candidate labels.
@@ -492,6 +491,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 # collision in the first leader segment.
                 allow_initial_escape_count=3,
                 prefix_cache=route_prefix_cache,
+                target_box=box,
             )
             route_dt = time.monotonic() - t0
             timing["route"] += route_dt
@@ -507,25 +507,10 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 stats["route"] += 1
                 continue
 
-            # Judge the geometry that will actually be rendered. route()
-            # terminates at the label center, but the renderer clips that last
-            # segment to the first label-boundary intersection.  No earlier
-            # segment may enter or graze the label, and the clipped final
-            # approach may touch the label only at its terminating boundary
-            # point.  W01 Mixed Saturn exposed a dogleg whose previous segment
-            # passed through the label before the nominal final approach.
-            def own_label_edge(source):
-                dx = source[0] - box.x
-                dy = source[1] - box.y
-                if abs(dx) < 1e-12 and abs(dy) < 1e-12:
-                    return box.x, box.y
-                scale = min(
-                    box.w / (2.0 * abs(dx)) if abs(dx) >= 1e-12 else float("inf"),
-                    box.h / (2.0 * abs(dy)) if abs(dy) >= 1e-12 else float("inf"),
-                )
-                return box.x + dx * scale, box.y + dy * scale
-
-            rendered_path = [*path[:-1], own_label_edge(path[-2])]
+            # route() now returns the exact drawable path, including the
+            # final 2 px label-boundary clearance.  Validate that path directly;
+            # do not calculate a second presentation geometry here.
+            rendered_path = path
 
             # A routed leader must make monotonic progress toward its rendered
             # label endpoint.  Reject overshoot/backtracking doglegs where an
@@ -611,28 +596,18 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 )
                 raise DepthNodeBudgetExhausted(depth, name)
 
-    # Deterministic conjunction pre-pass.  Conjunction classification fixes
-    # exact lambda and radial glyph slots, but it must not freeze an arbitrary
-    # label arrangement.  Solve every conjunction as one atomic constraint
-    # group, validate the complete group, and only then freeze it.
+    # Deterministic conjunction pre-pass.  Anchors are geometric attachment
+    # points only: exact lambda at the common RI-5 radius.  The visible glyph is
+    # in the displaced label, so no invisible anchor-glyph staggering or glyph
+    # collision calculation belongs in the search model.
     by_name = {name: (i, (symbol, name, longitude)) for i, (symbol, name, longitude) in enumerate(bodies)}
-    glyph_radii = conjunction_glyph_radii(bodies)
-    glyph_radius = 22.0
 
     def solve_conjunction_group(group, group_index):
         group_items = [by_name[item[1]] for item in group]
-
-        # Exact lambda is observational data.  Only radius changes to separate
-        # coincident glyphs; these positions are immutable during label search.
-        glyph_centers = {}
-        for _, (_, name, longitude) in group_items:
-            center = xy(longitude, glyph_radii[name])
-            if any(math.hypot(center[0] - other[0], center[1] - other[1]) < 2.0 * glyph_radius
-                   for other in glyph_centers.values()):
-                raise RuntimeError(
-                    f"Planet Finder {mode}: conjunction glyph overlap in group {group_index + 1} at {name}"
-                )
-            glyph_centers[name] = center
+        anchors = {
+            name: xy(longitude, RI - 5)
+            for _, (_, name, longitude) in group_items
+        }
 
         # Build bounded candidate pools near each body's natural label
         # position.  The group search is deliberately local and deterministic;
@@ -690,7 +665,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             if depth == len(group_items):
                 return True
             _, (_, name, longitude) = group_items[depth]
-            anchor = glyph_centers[name]
+            anchor = anchors[name]
             for row in pools[name]:
                 x, y, box = row
                 if any(boxes_overlap(box, other[2], LABEL_COLLISION_PADDING)
@@ -798,7 +773,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             staged[original_index] = (symbol, name, longitude, box, leader)
             diagnostic_print(
                 f"Planet Finder {mode}: SOLVED CONJUNCTION FROZEN body={name} "
-                f"lambda={longitude % 360.0:.3f}deg radius={glyph_radii[name]:.1f}",
+                f"lambda={longitude % 360.0:.3f}deg anchor_radius={RI - 5:.1f}",
                 flush=True,
             )
 
@@ -835,7 +810,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         pools = {}
         order_names = [item[1][1] for item in items]
         longitudes = {item[1][1]: item[1][2] for item in items}
-        anchors = {name: xy(longitude, glyph_radii[name])
+        anchors = {name: xy(longitude, RI - 5)
                    for name, longitude in longitudes.items()}
         group_names = [[item[1][1] for item in group] for group in alignment_group_items]
 
@@ -863,6 +838,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 path = route(
                     anchors[name], (x, y), reserved + placed + other_boxes,
                     allow_initial_escape_count=3,
+                    target_box=chosen[name][2],
                 )
                 if path is None or any(
                     segment_hits_box(path[i], path[i + 1], box, PLACED_LABEL_LEADER_CLEARANCE)

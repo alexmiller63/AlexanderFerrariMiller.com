@@ -62,25 +62,6 @@ def angular_separation_degrees(a: float, b: float) -> float:
     return abs((a - b + 180.0) % 360.0 - 180.0)
 
 
-CONJUNCTION_GLYPH_RADIUS_STEP = 48.0
-
-
-def conjunction_glyph_radii(bodies, base_radius: float = RI - 5, step: float = CONJUNCTION_GLYPH_RADIUS_STEP):
-    """Return per-body glyph radii shared by every presentation mode.
-
-    Ordinary bodies remain at base_radius.  Members of each near-conjunction
-    group are already in circular lambda order; assign distinct radial slots in
-    that same order so no recursive search is needed to separate their glyphs.
-    """
-    radii = {item[1]: base_radius for item in bodies}
-    for group in conjunction_groups(bodies):
-        n = len(group)
-        center = (n - 1) / 2.0
-        for i, item in enumerate(group):
-            radii[item[1]] = base_radius + (i - center) * step
-    return radii
-
-
 def conjunction_groups(bodies, threshold: float = NEAR_CONJUNCTION_DEGREES):
     """Return deterministic near-conjunction groups in circular lambda order.
 
@@ -455,7 +436,16 @@ def route(anchor: tuple[float, float], center: tuple[float, float], obstacles: l
                 return None
         if t_exit < 0.0 or t_enter > 1.0:
             return None
-        return source[0] + t_enter * dx, source[1] + t_enter * dy
+        hit = (source[0] + t_enter * dx, source[1] + t_enter * dy)
+        # Return the endpoint that can be rendered directly.  Back off 2 px
+        # from the label boundary so the SVG round line cap cannot paint into
+        # the label.  Rendering must not recalculate or clip this path later.
+        hx, hy = hit[0] - source[0], hit[1] - source[1]
+        distance = math.hypot(hx, hy)
+        if distance <= 2.0 or distance < 1e-12:
+            return source
+        scale = (distance - 2.0) / distance
+        return source[0] + hx * scale, source[1] + hy * scale
 
     def route_clear_of_target(path) -> bool:
         if target_box is None:

@@ -1,4 +1,4 @@
-from planet_finder_geometry import alignment_groups, conjunction_groups, conjunction_glyph_radii
+from planet_finder_geometry import RI, alignment_groups, conjunction_groups, xy
 
 
 def names(groups):
@@ -44,11 +44,11 @@ def test_level_4_three_body_alignment_is_lambda_ordered():
     assert names(conjunction_groups(sky)) == [["Mercury", "Venus", "Sun"]]
 
 
-def test_level_4_three_body_alignment_gets_three_distinct_radial_slots():
+def test_level_4_three_body_alignment_keeps_fixed_anchor_radius():
     sky = bodies([("Mercury", 75.0), ("Venus", 75.4), ("Sun", 75.8), ("Mars", 200.0)])
-    radii = conjunction_glyph_radii(sky, base_radius=425.0, step=48.0)
-    assert len({radii["Mercury"], radii["Venus"], radii["Sun"]}) == 3
-    assert radii["Mars"] == 425.0
+    for _, _, longitude in sky:
+        x, y = xy(longitude, RI - 5)
+        assert abs(((x - 700.0) ** 2 + (y - 700.0) ** 2) ** 0.5 - (RI - 5)) < 1e-9
 
 
 # Geometry edge case: an alignment crossing lambda=0 still orders circularly.
@@ -65,13 +65,11 @@ def test_w2_venus_sun_is_alignment_and_mars_pluto_is_not():
     assert not any("Mars" in group and "Pluto" in group for group in groups)
 
 
-def test_w2_venus_sun_glyph_slots_are_distinct():
+def test_w2_venus_sun_use_same_fixed_anchor_radius():
     sky = bodies([("Venus", 284.239), ("Sun", 284.644), ("Mars", 285.759), ("Pluto", 302.840)])
-    radii = conjunction_glyph_radii(sky, base_radius=425.0, step=48.0)
-    assert radii["Venus"] == 401.0
-    assert radii["Sun"] == 449.0
-    assert radii["Mars"] == 425.0
-    assert radii["Pluto"] == 425.0
+    for _, _, longitude in sky:
+        x, y = xy(longitude, RI - 5)
+        assert abs(((x - 700.0) ** 2 + (y - 700.0) ** 2) ** 0.5 - (RI - 5)) < 1e-9
 
 
 # Broad alignment classification (<=30 degrees), separate from <=1 degree conjunctions.
