@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""One-shot diagnostic: distinguish internal conjunction rejection from downstream barriers."""
+"""One-shot diagnostic: expose which internal conjunction constraint is the barrier."""
 from pathlib import Path
 
-ENABLED = False
+ENABLED = True
 if not ENABLED:
     print("Repair Once is OFF; nothing to do.")
     raise SystemExit(0)
@@ -10,74 +10,109 @@ if not ENABLED:
 p = Path("tools/planet_finder_search_core.py")
 s = p.read_text()
 
-old = '''        def assign(depth):
-            if depth == len(group_items):
-                # A complete conjunction is one atomic outer-search candidate.
+old = '''        diagnostic_rejections = {
+            "label_overlap": 0,
+            "lambda_order": 0,
+            "route": 0,
+            "leader_label": 0,
+            "leader_rim_or_external": 0,
+            "sibling_leader_label": 0,
+        }
+        conjunction_route_diagnostics = {}
 '''
-new = '''        blob_candidates = 0
-        downstream_rejections = 0
-
-        def assign(depth):
-            nonlocal blob_candidates, downstream_rejections
-            if depth == len(group_items):
-                blob_candidates += 1
-                diagnostic_print(
-                    f"Planet Finder {mode}: CONJUNCTION BLOB INTERNALLY VALID "
-                    f"group={group_index + 1} candidate={blob_candidates} "
-                    f"bodies={' > '.join(ordered_names)}",
-                    flush=True,
-                )
-                # A complete conjunction is one atomic outer-search candidate.
-'''
-if s.count(old) != 1:
-    raise SystemExit(f"Safety stop: expected conjunction assign marker once; found {s.count(old)}")
-s = s.replace(old, new, 1)
-
-old = '''                if downstream():
-                    diagnostic_print(
-                        f"Planet Finder {mode}: CONJUNCTION BLOB COMPATIBLE "
-                        f"group={group_index + 1} bodies={' > '.join(ordered_names)}",
-                        flush=True,
-                    )
-                    return True
-                del placed[placed_mark:]
-'''
-new = '''                if downstream():
-                    diagnostic_print(
-                        f"Planet Finder {mode}: CONJUNCTION BLOB COMPATIBLE "
-                        f"group={group_index + 1} candidate={blob_candidates} "
-                        f"bodies={' > '.join(ordered_names)}",
-                        flush=True,
-                    )
-                    return True
-                downstream_rejections += 1
-                diagnostic_print(
-                    f"Planet Finder {mode}: CONJUNCTION BLOB DOWNSTREAM BARRIER "
-                    f"group={group_index + 1} candidate={blob_candidates} "
-                    f"downstream_rejections={downstream_rejections} "
-                    f"bodies={' > '.join(ordered_names)}; restoring whole blob",
-                    flush=True,
-                )
-                del placed[placed_mark:]
+new = '''        diagnostic_rejections = {
+            "label_overlap": 0,
+            "lambda_order": 0,
+            "route": 0,
+            "leader_label": 0,
+            "leader_rim_or_external": 0,
+            "sibling_leader_label": 0,
+        }
+        # Diagnostic only: count rejections by conjunction depth/body so the
+        # first hard barrier is visible without changing search semantics.
+        conjunction_rejections_by_body = {
+            name: {key: 0 for key in diagnostic_rejections}
+            for name in ordered_names
+        }
+        conjunction_attempts_by_body = {name: 0 for name in ordered_names}
+        conjunction_route_diagnostics = {}
 '''
 if s.count(old) != 1:
-    raise SystemExit(f"Safety stop: expected downstream marker once; found {s.count(old)}")
+    raise SystemExit(f"Safety stop: expected rejection-dict marker once; found {s.count(old)}")
 s = s.replace(old, new, 1)
 
-old = '''                f"rejections={diagnostic_rejections} "
+old = '''            for row in pools[name]:
+                x, y, box = row
+                if any(boxes_overlap(box, other[2], LABEL_COLLISION_PADDING)
+                       for other in chosen.values()):
+                    diagnostic_rejections["label_overlap"] += 1
+                    continue
+'''
+new = '''            for row in pools[name]:
+                conjunction_attempts_by_body[name] += 1
+                x, y, box = row
+                if any(boxes_overlap(box, other[2], LABEL_COLLISION_PADDING)
+                       for other in chosen.values()):
+                    diagnostic_rejections["label_overlap"] += 1
+                    conjunction_rejections_by_body[name]["label_overlap"] += 1
+                    continue
+'''
+if s.count(old) != 1:
+    raise SystemExit(f"Safety stop: expected candidate-loop marker once; found {s.count(old)}")
+s = s.replace(old, new, 1)
+
+replacements = [
+('''                    diagnostic_rejections["lambda_order"] += 1
+                    chosen.pop(name, None)
+''', '''                    diagnostic_rejections["lambda_order"] += 1
+                    conjunction_rejections_by_body[name]["lambda_order"] += 1
+                    chosen.pop(name, None)
+'''),
+('''                    diagnostic_rejections["route"] += 1
+                    chosen.pop(name, None)
+''', '''                    diagnostic_rejections["route"] += 1
+                    conjunction_rejections_by_body[name]["route"] += 1
+                    chosen.pop(name, None)
+'''),
+('''                    diagnostic_rejections["leader_label"] += 1
+                    chosen.pop(name, None)
+''', '''                    diagnostic_rejections["leader_label"] += 1
+                    conjunction_rejections_by_body[name]["leader_label"] += 1
+                    chosen.pop(name, None)
+'''),
+('''                    diagnostic_rejections["leader_rim_or_external"] += 1
+                    chosen.pop(name, None)
+''', '''                    diagnostic_rejections["leader_rim_or_external"] += 1
+                    conjunction_rejections_by_body[name]["leader_rim_or_external"] += 1
+                    chosen.pop(name, None)
+'''),
+('''                    diagnostic_rejections["sibling_leader_label"] += 1
+                    chosen.pop(name, None)
+''', '''                    diagnostic_rejections["sibling_leader_label"] += 1
+                    conjunction_rejections_by_body[name]["sibling_leader_label"] += 1
+                    chosen.pop(name, None)
+'''),
+]
+for old_piece, new_piece in replacements:
+    if s.count(old_piece) != 1:
+        raise SystemExit(f"Safety stop: expected rejection marker once; found {s.count(old_piece)} for {old_piece!r}")
+    s = s.replace(old_piece, new_piece, 1)
+
+old = '''                f"barrier={'internal' if blob_candidates == 0 else 'downstream'} "
+                f"rejections={diagnostic_rejections} "
                 f"route_detail={route_summary} "
 '''
-new = '''                f"internally_valid_blobs={blob_candidates} "
-                f"downstream_rejections={downstream_rejections} "
-                f"barrier={'internal' if blob_candidates == 0 else 'downstream'} "
+new = '''                f"barrier={'internal' if blob_candidates == 0 else 'downstream'} "
+                f"attempts_by_body={conjunction_attempts_by_body} "
+                f"rejections_by_body={conjunction_rejections_by_body} "
                 f"rejections={diagnostic_rejections} "
                 f"route_detail={route_summary} "
 '''
 if s.count(old) != 1:
-    raise SystemExit(f"Safety stop: expected conjunction failure summary once; found {s.count(old)}")
+    raise SystemExit(f"Safety stop: expected failure-summary marker once; found {s.count(old)}")
 s = s.replace(old, new, 1)
 
 p.write_text(s)
 me = Path(__file__)
 me.write_text(me.read_text().replace("ENABLED = True", "ENABLED = False", 1))
-print("Installed conjunction barrier diagnostics; Repair Once is now OFF.")
+print("Installed per-body conjunction rejection diagnostics; Repair Once is now OFF.")
