@@ -474,7 +474,15 @@ def route(anchor: tuple[float, float], center: tuple[float, float], obstacles: l
         angular_step = (LABEL_LENGTH * 0.25) / max(radius, 1.0)
         offsets = (0.0,)
         if allow_angular_escape:
-            offsets = (0.0, -angular_step, angular_step, -2.0 * angular_step, 2.0 * angular_step)
+            # Conjunction leaders use the full canonical quarter-label escape
+            # lattice: 0, +/-0.25, ... +/-2.00 label lengths.  This belongs in
+            # route(), where the first elbow is chosen; expanding label
+            # candidate positions does not widen this escape corridor.
+            offsets = (0.0,) + tuple(
+                sign * shell * angular_step
+                for shell in range(1, 9)
+                for sign in (-1.0, 1.0)
+            )
         for offset in offsets:
             elbow1_theta = anchor_theta + offset
             elbow1 = (CX + radius * math.cos(elbow1_theta), CY + radius * math.sin(elbow1_theta))
