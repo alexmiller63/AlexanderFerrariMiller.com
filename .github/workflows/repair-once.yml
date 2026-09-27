@@ -11,14 +11,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Make conjunction blobs backtrackable
-        run: python tools/patch_planet_finder_canonical_lattice.py
+      - name: Install conjunction barrier diagnostics
+        run: python tools/repair_once.py
       - name: Syntax check
-        run: python -m py_compile tools/planet_finder_search_core.py
+        run: python -m py_compile tools/planet_finder_search_core.py tools/repair_once.py
       - name: Commit repair
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add tools/planet_finder_search_core.py
-          git commit -m "Backtrack complete conjunction blobs through downstream search"
+          git add tools/planet_finder_search_core.py tools/repair_once.py
+          git commit -m "Instrument conjunction blob barrier diagnostics"
           git push
