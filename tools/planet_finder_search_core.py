@@ -681,7 +681,9 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 return True
             reference = group_items[0][1][2] - 90.0
             angles = [((label_angle(chosen[name]) - reference) % 360.0) for name in present]
-            return all(a < b for a, b in zip(angles, angles[1:]))
+            # Preserve circular lambda order, but allow conjunction siblings
+            # to share the same label-center angle at different radii.
+            return all(a <= b for a, b in zip(angles, angles[1:]))
 
         def assign(depth):
             if depth == len(group_items):
