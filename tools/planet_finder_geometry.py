@@ -430,32 +430,46 @@ def route(anchor: tuple[float, float], center: tuple[float, float], obstacles: l
                 return obstacle_index
         return None
 
-    def route_clear_of_target(path) -> bool:
-        # The caller may provide the actual label being routed to. Older
-        # callers keep the historical fallback until they are migrated, but
-        # conjunction routing never infers its target from obstacle ordering.
-        target = target_box
-        if target is None:
-            target = obstacles[-1] if obstacles else None
-        if target is None or len(path) < 2:
-            return True
-        for i in range(len(path) - 2):
-            if segment_hits_box(path[i], path[i + 1], target, IMMUTABLE_LEADER_CLEARANCE):
-                return False
-        a, b = path[-2], path[-1]
-        dx, dy = b[0] - a[0], b[1] - a[1]
-        length = math.hypot(dx, dy)
-        if length < 1e-12:
-            return False
-        epsilon = min(1.0, length / 2.0)
-        before = (b[0] - dx / length * epsilon, b[1] - dy / length * epsilon)
-        return not (
-            target.left - IMMUTABLE_LEADER_CLEARANCE <= before[0] <= target.right + IMMUTABLE_LEADER_CLEARANCE
-            and target.top - IMMUTABLE_LEADER_CLEARANCE <= before[1] <= target.bottom + IMMUTABLE_LEADER_CLEARANCE
-        )
+    def target_landing(source, target):
+        dx = target.x - source[0]
+        dy = target.y - source[1]
+        if abs(dx) < 1e-12 and abs(dy) < 1e-12:
+            return None
+        t_enter, t_exit = 0.0, 1.0
+        for p0, q0 in (
+            (-dx, source[0] - target.left),
+            ( dx, target.right - source[0]),
+            (-dy, source[1] - target.top),
+            ( dy, target.bottom - source[1]),
+        ):
+            if abs(p0) < 1e-12:
+                if q0 < 0:
+                    return None
+                continue
+            r = q0 / p0
+            if p0 < 0:
+                t_enter = max(t_enter, r)
+            else:
+                t_exit = min(t_exit, r)
+            if t_enter > t_exit:
+                return None
+        if t_exit < 0.0 or t_enter > 1.0:
+            return None
+        return source[0] + t_enter * dx, source[1] + t_enter * dy
 
-    if segment_clear(anchor, center, skip_start_escape=True):
-        candidate = [anchor, center]
+    def route_clear_of_target(path) -> bool:
+        if target_box is None:
+            return True
+        if len(path) < 2:
+            return False
+        for i in range(len(path) - 2):
+            if segment_hits_box(path[i], path[i + 1], target_box, IMMUTABLE_LEADER_CLEARANCE):
+                return False
+        return not segment_hits_box(path[-2], path[-1], target_box, -0.5)
+
+    direct_endpoint = target_landing(anchor, target_box) if target_box is not None else center
+    if direct_endpoint is not None and segment_clear(anchor, direct_endpoint, skip_start_escape=True):
+        candidate = [anchor, direct_endpoint]
         if route_clear_of_target(candidate):
             return candidate
         if diagnostic is not None:
@@ -494,11 +508,12 @@ def route(anchor: tuple[float, float], center: tuple[float, float], obstacles: l
                 if diagnostic is not None:
                     diagnostic["arc_blocked"] = diagnostic.get("arc_blocked", 0) + 1
                 continue
-            if not segment_clear(elbow2, center):
+            final_endpoint = target_landing(elbow2, target_box) if target_box is not None else center
+            if final_endpoint is None or not segment_clear(elbow2, final_endpoint):
                 if diagnostic is not None:
                     diagnostic["final_blocked"] = diagnostic.get("final_blocked", 0) + 1
                 continue
-            candidate = [anchor, elbow1, elbow2, center]
+            candidate = [anchor, elbow1, elbow2, final_endpoint]
             if route_clear_of_target(candidate):
                 return candidate
             if diagnostic is not None:
