@@ -1300,7 +1300,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         # this fixed ordering, then let layout() discard the whole DFS napkin
         # and retry from a clean state with that body promoted to first.
         dump_diagnostics(
-            f"node budget exhausted at depth={exc.depth}/{len(order)} body={exc.name}"
+            f"body-attempt-cap depth={exc.depth}/{len(order)} body={exc.name}"
         )
         raise
     except RuntimeError as exc:
