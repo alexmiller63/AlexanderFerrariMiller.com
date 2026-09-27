@@ -741,11 +741,11 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             return False
 
         if not assign(0):
-            diagnostic_print(
-                f"Planet Finder {mode}: conjunction diagnostics group {group_index + 1} "
-                f"{' > '.join(item[1][1] for item in group_items)} "
+            print(
+                f"CONJUNCTION FAILURE mode={mode} group={group_index + 1} "
+                f"bodies={' > '.join(item[1][1] for item in group_items)} "
+                f"pool_sizes={{{', '.join(f'{name!r}: {len(rows)}' for name, rows in pools.items())}}} "
                 f"rejections={diagnostic_rejections}",
-                level=1,
                 flush=True,
             )
             return None
