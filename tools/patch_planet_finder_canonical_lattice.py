@@ -1,12 +1,14 @@
 #!/usr/bin/env python3
-"""Repair-once patch: make conjunction blobs backtrack through downstream search.
+"""Repair-once patch: let conjunction blobs own downstream backtracking.
 
-A conjunction remains atomic internally, but its first locally valid layout is
-no longer frozen permanently.  Complete blobs are staged as one outer-search
-candidate; if alignment/ordinary DFS cannot finish beneath that blob, its whole
-state is restored and the conjunction solver tries the next blob.
+A complete conjunction blob is a real DFS node.  If downstream ordinary search
+hits its per-body candidate cap, restore the whole blob *and* the downstream
+body-attempt budget, then try the next internally valid blob.  Only after every
+blob candidate has failed may the cap escape to the outer squeaky-wheel
+controller.  A true wall-clock/runtime abort still propagates immediately,
+but only after restoring blob state.
 
-No geometry, routing, collision, candidate-pool, or budget rule is changed.
+No geometry, routing, collision, candidate-pool, or cap value is changed.
 Refuse to write unless every exact target occurs once.
 """
 from pathlib import Path
@@ -26,25 +28,29 @@ def replace_once(old, new, label):
 
 
 replace_once(
-'''    def solve_conjunction_group(group, group_index):
+'''        blob_candidates = 0
+        downstream_rejections = 0
+
+        def assign(depth):
+            nonlocal blob_candidates, downstream_rejections
 ''',
-'''    def solve_conjunction_group(group, group_index, downstream):
+'''        blob_candidates = 0
+        downstream_rejections = 0
+        # A descendant body cap is local evidence against the current blob,
+        # not permission to jump across the conjunction recursion.  Remember
+        # one such cap so it can reach the outer controller only after every
+        # blob candidate has had its own downstream search budget.
+        pending_budget_exhaustion = None
+
+        def assign(depth):
+            nonlocal blob_candidates, downstream_rejections
+            nonlocal pending_budget_exhaustion
 ''',
-"conjunction solver signature",
+"blob recursion state",
 )
 
 replace_once(
-'''        def assign(depth):
-            if depth == len(group_items):
-                return True
-''',
-'''        def assign(depth):
-            if depth == len(group_items):
-                # A complete conjunction is one atomic outer-search candidate.
-                # Stage the whole blob, search everything beneath it, and if
-                # downstream fails restore the entire blob before trying the
-                # next internally valid conjunction arrangement.
-                placed_mark = len(placed)
+'''                placed_mark = len(placed)
                 leaders_mark = len(leaders)
                 names_mark = len(leader_names)
                 staged_before = set(staged)
@@ -58,10 +64,19 @@ replace_once(
                 if downstream():
                     diagnostic_print(
                         f"Planet Finder {mode}: CONJUNCTION BLOB COMPATIBLE "
-                        f"group={group_index + 1} bodies={' > '.join(ordered_names)}",
+                        f"group={group_index + 1} candidate={blob_candidates} "
+                        f"bodies={' > '.join(ordered_names)}",
                         flush=True,
                     )
                     return True
+                downstream_rejections += 1
+                diagnostic_print(
+                    f"Planet Finder {mode}: CONJUNCTION BLOB DOWNSTREAM BARRIER "
+                    f"group={group_index + 1} candidate={blob_candidates} "
+                    f"downstream_rejections={downstream_rejections} "
+                    f"bodies={' > '.join(ordered_names)}; restoring whole blob",
+                    flush=True,
+                )
                 del placed[placed_mark:]
                 del leaders[leaders_mark:]
                 del leader_names[names_mark:]
@@ -70,121 +85,99 @@ replace_once(
                         staged.pop(key, None)
                 return False
 ''',
-"conjunction terminal staging",
+'''                placed_mark = len(placed)
+                leaders_mark = len(leaders)
+                names_mark = len(leader_names)
+                staged_before = set(staged)
+                # Downstream candidate counts belong to this blob branch.  A
+                # rejected blob must not poison its sibling by consuming the
+                # sibling's 200-candidate allowance.
+                body_attempts_before = dict(body_attempts)
+
+                def restore_blob_branch():
+                    del placed[placed_mark:]
+                    del leaders[leaders_mark:]
+                    del leader_names[names_mark:]
+                    for key in list(staged):
+                        if key not in staged_before:
+                            staged.pop(key, None)
+                    body_attempts.clear()
+                    body_attempts.update(body_attempts_before)
+
+                for original_index, (symbol, name, longitude) in group_items:
+                    box = chosen[name][2]
+                    leader = chosen_paths[name]
+                    placed.append(box)
+                    leaders.append(leader)
+                    leader_names.append(name)
+                    staged[original_index] = (symbol, name, longitude, box, leader)
+                try:
+                    downstream_solved = downstream()
+                except DepthNodeBudgetExhausted as exc:
+                    # This blob exhausted a descendant search allowance.  That
+                    # is a failed child branch: restore it and let assign()
+                    # continue to the next complete conjunction blob.
+                    restore_blob_branch()
+                    if pending_budget_exhaustion is None:
+                        pending_budget_exhaustion = exc
+                    downstream_rejections += 1
+                    diagnostic_print(
+                        f"Planet Finder {mode}: CONJUNCTION BLOB DOWNSTREAM CAP "
+                        f"group={group_index + 1} candidate={blob_candidates} "
+                        f"body={exc.name} depth={exc.depth}; "
+                        f"restoring whole blob and trying next blob",
+                        flush=True,
+                    )
+                    return False
+                except Exception:
+                    # Wall-clock and other true controller aborts still escape,
+                    # but never leave a half-staged conjunction behind.
+                    restore_blob_branch()
+                    raise
+
+                if downstream_solved:
+                    diagnostic_print(
+                        f"Planet Finder {mode}: CONJUNCTION BLOB COMPATIBLE "
+                        f"group={group_index + 1} candidate={blob_candidates} "
+                        f"bodies={' > '.join(ordered_names)}",
+                        flush=True,
+                    )
+                    return True
+                downstream_rejections += 1
+                diagnostic_print(
+                    f"Planet Finder {mode}: CONJUNCTION BLOB DOWNSTREAM BARRIER "
+                    f"group={group_index + 1} candidate={blob_candidates} "
+                    f"downstream_rejections={downstream_rejections} "
+                    f"bodies={' > '.join(ordered_names)}; restoring whole blob",
+                    flush=True,
+                )
+                restore_blob_branch()
+                return False
+''',
+"atomic blob downstream boundary",
 )
 
 replace_once(
 '''        if not assign(0):
+            raw_escape_blockers = conjunction_route_diagnostics.get("escape_blocked_by", {})
 ''',
 '''        if not assign(0):
+            # All sibling blobs have now been tried.  Only at this point may a
+            # descendant cap become a squeaky-wheel signal for the outer
+            # ordering controller.
+            if pending_budget_exhaustion is not None:
+                diagnostic_print(
+                    f"Planet Finder {mode}: CONJUNCTION BLOBS EXHAUSTED AFTER CAPS "
+                    f"group={group_index + 1} candidates={blob_candidates}; "
+                    f"returning cap body={pending_budget_exhaustion.name} "
+                    f"to outer controller",
+                    flush=True,
+                )
+                raise pending_budget_exhaustion
+            raw_escape_blockers = conjunction_route_diagnostics.get("escape_blocked_by", {})
 ''',
-"conjunction assignment guard",
-)
-
-replace_once(
-'''            return None
-        return [
-            (original_index, symbol, name, longitude, chosen[name][2], chosen_paths[name])
-            for original_index, (symbol, name, longitude) in group_items
-        ]
-
-    for group_index, group in enumerate(conjunction_groups(bodies)):
-        solved = solve_conjunction_group(group, group_index)
-        if solved is None:
-            names = " > ".join(item[1] for item in group)
-            raise RuntimeError(
-                f"Planet Finder {mode}: no atomic conjunction layout for group {group_index + 1}: {names}"
-            )
-        # Freeze only a complete, mutually valid conjunction solution.
-        for original_index, symbol, name, longitude, box, leader in solved:
-            placed.append(box)
-            leaders.append(leader)
-            leader_names.append(name)
-            staged[original_index] = (symbol, name, longitude, box, leader)
-            diagnostic_print(
-                f"Planet Finder {mode}: SOLVED CONJUNCTION FROZEN body={name} "
-                f"lambda={longitude % 360.0:.3f}deg anchor_radius={RI - 5:.1f}",
-                flush=True,
-            )
-
-    # Second phase: solve the entire alignment layer recursively.  There are
-''',
-'''            return False
-        return True
-
-    conjunction_group_list = conjunction_groups(bodies)
-
-    # Second phase: solve the entire alignment layer recursively.  There are
-''',
-"frozen conjunction outer loop",
-)
-
-replace_once(
-'''    alignment_preplacement = plan_alignment_layer()
-    if alignment_preplacement:
-        planned, paths = alignment_preplacement
-        for group in alignment_group_items:
-            for original_index, (symbol, name, longitude) in group:
-                box = planned[name][2]
-                path = paths[name]
-                placed.append(box)
-                leaders.append(path)
-                leader_names.append(name)
-                staged[original_index] = (symbol, name, longitude, box, path)
-
-''',
-'''    def stage_alignment_preplacement(alignment_preplacement):
-        if not alignment_preplacement:
-            return
-        planned, paths = alignment_preplacement
-        for group in alignment_group_items:
-            for original_index, (symbol, name, longitude) in group:
-                box = planned[name][2]
-                path = paths[name]
-                placed.append(box)
-                leaders.append(path)
-                leader_names.append(name)
-                staged[original_index] = (symbol, name, longitude, box, path)
-
-''',
-"eager alignment preplacement",
-)
-
-replace_once(
-'''    try:
-        solved = _search_alignment_fallback(
-            alignment_preplacement, alignment_group_items, placed, leaders,
-            leader_names, staged, search, solve_alignment_group,
-        )
-        exhausted = not solved
-''',
-'''    def search_below_conjunctions():
-        # Alignment planning depends on the currently staged conjunction blob,
-        # so rebuild it for every blob candidate rather than carrying geometry
-        # from a failed conjunction branch into the next one.
-        alignment_preplacement = plan_alignment_layer()
-        stage_alignment_preplacement(alignment_preplacement)
-        return _search_alignment_fallback(
-            alignment_preplacement, alignment_group_items, placed, leaders,
-            leader_names, staged, search, solve_alignment_group,
-        )
-
-    def solve_conjunction_layer(group_index):
-        if group_index == len(conjunction_group_list):
-            return search_below_conjunctions()
-        group = conjunction_group_list[group_index]
-        return solve_conjunction_group(
-            group,
-            group_index,
-            lambda: solve_conjunction_layer(group_index + 1),
-        )
-
-    try:
-        solved = solve_conjunction_layer(0)
-        exhausted = not solved
-''',
-"top-level alignment invocation",
+"deferred cap propagation",
 )
 
 TARGET.write_text(text, encoding="utf-8")
-print("Conjunction blobs are now backtrackable outer-search candidates.")
+print("Conjunction blob recursion now backtracks across downstream body caps.")
