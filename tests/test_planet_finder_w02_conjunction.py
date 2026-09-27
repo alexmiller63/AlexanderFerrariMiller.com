@@ -31,7 +31,7 @@ def conjunction_case(separation):
     ids=["1deg", "0.5deg"],
 )
 def test_greek_venus_sun_separation_ladder(monkeypatch, separation):
-    monkeypatch.setenv("PLANET_FINDER_DIAGNOSTIC_LEVEL", "0")
+    monkeypatch.setenv("PLANET_FINDER_DIAGNOSTIC_LEVEL", "2")
     bodies = conjunction_case(separation)
     result = layout(
         FinderMode.GREEK,
