@@ -11,4 +11,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: python tools/repair_once.py
+      - name: Apply canonical candidate lattice
+        run: python tools/patch_planet_finder_canonical_lattice.py
+      - name: Syntax check
+        run: python -m py_compile tools/planet_finder_geometry.py tools/planet_finder_search.py
+      - name: Commit repair
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add tools/planet_finder_geometry.py tools/planet_finder_search.py
+          git commit -m "Use one canonical Planet Finder candidate lattice"
+          git push
