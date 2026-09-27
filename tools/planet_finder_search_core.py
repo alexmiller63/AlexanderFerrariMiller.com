@@ -704,19 +704,16 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                     continue
                 other_boxes = [other[2] for other_name, other in chosen.items() if other_name != name]
                 conjunction_obstacles = reserved + placed + other_boxes
-                sibling_start = len(reserved) + len(placed)
-                conjunction_escape_indices = (
-                    set(range(len(reserved)))
-                    | set(range(sibling_start, sibling_start + len(other_boxes)))
-                )
                 path_candidate = route(
                     anchor, (x, y), conjunction_obstacles,
                     diagnostic=conjunction_route_diagnostics,
-                    # Conjunction-local escape rule: reserved labels and sibling
-                    # conjunction labels may be escaped on the first segment
-                    # only when the anchor starts inside their protected box.
-                    # Previously placed non-conjunction labels remain hard.
-                    allow_initial_escape_indices=conjunction_escape_indices,
+                    # Reserved chart annotations may still be escaped only when
+                    # the anchor begins inside their protected footprint.
+                    # Sibling labels are hard obstacles; angular first elbows
+                    # route around them instead of exempting collisions.
+                    allow_initial_escape_indices=set(range(len(reserved))),
+                    target_box=box,
+                    allow_angular_escape=True,
                 )
                 if path_candidate is None:
                     diagnostic_rejections["route"] += 1

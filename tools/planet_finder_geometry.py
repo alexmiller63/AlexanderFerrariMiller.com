@@ -376,7 +376,7 @@ def legal_candidate_positions(longitude: float, w: float, h: float, reserved: li
         yield x, y, box
 
 
-def route(anchor: tuple[float, float], center: tuple[float, float], obstacles: list[Box], diagnostic=None, allow_initial_escape_count: int = 0, prefix_cache: dict | None = None, allow_initial_escape_indices: set[int] | None = None) -> list[tuple[float, float]] | None:
+def route(anchor: tuple[float, float], center: tuple[float, float], obstacles: list[Box], diagnostic=None, allow_initial_escape_count: int = 0, prefix_cache: dict | None = None, allow_initial_escape_indices: set[int] | None = None, target_box: Box | None = None, allow_angular_escape: bool = False) -> list[tuple[float, float]] | None:
     if prefix_cache is None:
         prefix_cache = {}
     # Ordinary callers keep the historical contiguous prefix behavior. Atomic
@@ -431,13 +431,14 @@ def route(anchor: tuple[float, float], center: tuple[float, float], obstacles: l
         return None
 
     def route_clear_of_target(path) -> bool:
-        # The target label is the final obstacle. Earlier leader segments may
-        # neither enter nor graze its protected rectangle. The final segment
-        # is allowed to terminate at the label center, but must approach it
-        # from outside rather than travel through the label first.
-        if not obstacles or len(path) < 2:
+        # The caller may provide the actual label being routed to. Older
+        # callers keep the historical fallback until they are migrated, but
+        # conjunction routing never infers its target from obstacle ordering.
+        target = target_box
+        if target is None:
+            target = obstacles[-1] if obstacles else None
+        if target is None or len(path) < 2:
             return True
-        target = obstacles[-1]
         for i in range(len(path) - 2):
             if segment_hits_box(path[i], path[i + 1], target, IMMUTABLE_LEADER_CLEARANCE):
                 return False
@@ -465,30 +466,41 @@ def route(anchor: tuple[float, float], center: tuple[float, float], obstacles: l
     anchor_theta = math.atan2(anchor[1] - CY, anchor[0] - CX)
     center_theta = math.atan2(center[1] - CY, center[0] - CX)
     for radius in ROUTE_RADII:
-        elbow1 = (CX + radius * math.cos(anchor_theta), CY + radius * math.sin(anchor_theta))
-        elbow2 = (CX + radius * math.cos(center_theta), CY + radius * math.sin(center_theta))
-        key1 = (round(elbow1[0], 6), round(elbow1[1], 6))
-        if key1 not in prefix_cache:
-            prefix_cache[key1] = segment_clear(anchor, elbow1, skip_start_escape=True)
-        if not prefix_cache[key1]:
+        # Preserve the historical radial route first. For conjunctions only,
+        # add bounded left/right first elbows using the existing quarter-label
+        # refinement distance as the angular step. Every segment is still
+        # collision checked; this routes around a sibling label rather than
+        # declaring that label escapable.
+        angular_step = (LABEL_LENGTH * 0.25) / max(radius, 1.0)
+        offsets = (0.0,)
+        if allow_angular_escape:
+            offsets = (0.0, -angular_step, angular_step, -2.0 * angular_step, 2.0 * angular_step)
+        for offset in offsets:
+            elbow1_theta = anchor_theta + offset
+            elbow1 = (CX + radius * math.cos(elbow1_theta), CY + radius * math.sin(elbow1_theta))
+            elbow2 = (CX + radius * math.cos(center_theta), CY + radius * math.sin(center_theta))
+            key1 = (round(elbow1[0], 6), round(elbow1[1], 6))
+            if key1 not in prefix_cache:
+                prefix_cache[key1] = segment_clear(anchor, elbow1, skip_start_escape=True)
+            if not prefix_cache[key1]:
+                if diagnostic is not None:
+                    diagnostic["escape_blocked"] = diagnostic.get("escape_blocked", 0) + 1
+                    blocker = first_blocker(anchor, elbow1, skip_start_escape=True)
+                    if blocker is not None:
+                        by_obstacle = diagnostic.setdefault("escape_blocked_by", {})
+                        by_obstacle[blocker] = by_obstacle.get(blocker, 0) + 1
+                continue
+            if not segment_clear(elbow1, elbow2):
+                if diagnostic is not None:
+                    diagnostic["arc_blocked"] = diagnostic.get("arc_blocked", 0) + 1
+                continue
+            if not segment_clear(elbow2, center):
+                if diagnostic is not None:
+                    diagnostic["final_blocked"] = diagnostic.get("final_blocked", 0) + 1
+                continue
+            candidate = [anchor, elbow1, elbow2, center]
+            if route_clear_of_target(candidate):
+                return candidate
             if diagnostic is not None:
-                diagnostic["escape_blocked"] = diagnostic.get("escape_blocked", 0) + 1
-                blocker = first_blocker(anchor, elbow1, skip_start_escape=True)
-                if blocker is not None:
-                    by_obstacle = diagnostic.setdefault("escape_blocked_by", {})
-                    by_obstacle[blocker] = by_obstacle.get(blocker, 0) + 1
-            continue
-        if not segment_clear(elbow1, elbow2):
-            if diagnostic is not None:
-                diagnostic["arc_blocked"] = diagnostic.get("arc_blocked", 0) + 1
-            continue
-        if not segment_clear(elbow2, center):
-            if diagnostic is not None:
-                diagnostic["final_blocked"] = diagnostic.get("final_blocked", 0) + 1
-            continue
-        candidate = [anchor, elbow1, elbow2, center]
-        if route_clear_of_target(candidate):
-            return candidate
-        if diagnostic is not None:
-            diagnostic["target_approach"] = diagnostic.get("target_approach", 0) + 1
+                diagnostic["target_approach"] = diagnostic.get("target_approach", 0) + 1
     return None
