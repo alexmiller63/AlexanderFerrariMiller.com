@@ -66,7 +66,6 @@ old_assign = '''        def assign(depth):
             for original_index, (symbol, name, longitude) in group_items
         ]
 '''
-
 new_assign = '''        def assign(depth):
             if depth == len(group_items):
                 yield [
@@ -137,25 +136,41 @@ old_freeze = '''    for group_index, group in enumerate(conjunction_groups(bodie
 
     # Second phase: solve the entire alignment layer recursively.  There are
 '''
-
 new_freeze = '''    conjunction_group_items = list(enumerate(conjunction_groups(bodies)))
 
-    # Conjunctions are atomic, but not frozen.  Each complete internally valid
-    # group layout is one DFS choice.  If the downstream alignment/ordinary
-    # search fails, remove the whole group and try its next layout.
+    # Conjunction groups are atomic choices, not permanent preplacements.
+    # The actual downstream search entry is supplied later, after search() and
+    # the alignment fallback helper are available.
+
+    # Second phase: solve the entire alignment layer recursively.  There are
+'''
+
+old_entry = '''    try:
+        solved = _search_alignment_fallback(
+            alignment_preplacement, alignment_group_items, placed, leaders,
+            leader_names, staged, search, solve_alignment_group,
+        )
+        exhausted = not solved
+'''
+new_entry = '''    def search_after_conjunctions():
+        return _search_alignment_fallback(
+            alignment_preplacement, alignment_group_items, placed, leaders,
+            leader_names, staged, search, solve_alignment_group,
+        )
+
     def solve_conjunction_layer(group_position):
         if group_position == len(conjunction_group_items):
-            return solve_alignment_group(0)
+            return search_after_conjunctions()
 
         group_index, group = conjunction_group_items[group_position]
         found_candidate = False
-        for solved in solve_conjunction_group(group, group_index):
+        for solved_group in solve_conjunction_group(group, group_index):
             found_candidate = True
             placed_mark = len(placed)
             leaders_mark = len(leaders)
             names_mark = len(leader_names)
             staged_before = set(staged)
-            for original_index, symbol, name, longitude, box, leader in solved:
+            for original_index, symbol, name, longitude, box, leader in solved_group:
                 placed.append(box)
                 leaders.append(leader)
                 leader_names.append(name)
@@ -177,35 +192,20 @@ new_freeze = '''    conjunction_group_items = list(enumerate(conjunction_groups(
             )
         return False
 
-    # Second phase: solve the entire alignment layer recursively.  There are
+    try:
+        solved = solve_conjunction_layer(0)
+        exhausted = not solved
 '''
 
-old_entry = '''    if alignment_preplacement:
-        planned, paths = alignment_preplacement
-        for group in alignment_group_items:
-            for original_index, (symbol, name, longitude) in group:
-                box = planned[name][2]
-                path = paths[name]
-                placed.append(box)
-                leaders.append(path)
-                leader_names.append(name)
-                staged[original_index] = (symbol, name, longitude, box, path)
-'''
-
-# Leave alignment preplacement untouched; change only the final entry into the
-# recursive layers later in the file.
-old_final = '''    if not solve_alignment_group(0):
-'''
-new_final = '''    if not solve_conjunction_layer(0):
-'''
-
-for label, old in (("conjunction assign", old_assign), ("frozen conjunction loop", old_freeze), ("final search entry", old_final)):
+for label, old in (("conjunction assign", old_assign),
+                   ("frozen conjunction loop", old_freeze),
+                   ("actual downstream search entry", old_entry)):
     count = text.count(old)
     if count != 1:
         raise SystemExit(f"Safety stop: expected {label} exactly once; found {count}")
 
 text = text.replace(old_assign, new_assign, 1)
 text = text.replace(old_freeze, new_freeze, 1)
-text = text.replace(old_final, new_final, 1)
+text = text.replace(old_entry, new_entry, 1)
 path.write_text(text)
-print("Conjunction layouts are now atomic backtrackable choices; downstream failure can budge the whole group.")
+print("Conjunction layouts are now atomic backtrackable choices around the real downstream search entry.")
