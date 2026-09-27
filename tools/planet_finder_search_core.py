@@ -675,7 +675,12 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
 
         def assign(depth):
             if depth == len(group_items):
-                return True
+                yield [
+                    (original_index, symbol, name, longitude,
+                     chosen[name][2], chosen_paths[name])
+                    for original_index, (symbol, name, longitude) in group_items
+                ]
+                return
             _, (_, name, longitude) = group_items[depth]
             anchor = glyph_centers[name]
             for row in pools[name]:
@@ -700,54 +705,27 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                        for other_box in other_boxes for i in range(len(path_candidate) - 1)):
                     chosen.pop(name, None)
                     continue
-                # Conjunction siblings intentionally originate at nearly the
-                # same lambda, so their leaders may be close near the anchors.
-                # Keep the ordinary clearance rule against leaders outside this
-                # atomic conjunction, while sibling leader/label collisions are
-                # checked explicitly above and below.
                 if leader_hits_zodiac_rim(path_candidate) or leaders_too_close(
                         path_candidate, leaders):
                     chosen.pop(name, None)
                     continue
-                # Symmetric collision check: an already chosen sibling leader
-                # may not pass through this newly chosen label.
                 if any(segment_hits_box(old_path[i], old_path[i + 1], box,
                                         PLACED_LABEL_LEADER_CLEARANCE)
                        for old_path in chosen_paths.values() for i in range(len(old_path) - 1)):
                     chosen.pop(name, None)
                     continue
                 chosen_paths[name] = path_candidate
-                if assign(depth + 1):
-                    return True
+                yield from assign(depth + 1)
                 chosen_paths.pop(name, None)
                 chosen.pop(name, None)
-            return False
 
-        if not assign(0):
-            return None
-        return [
-            (original_index, symbol, name, longitude, chosen[name][2], chosen_paths[name])
-            for original_index, (symbol, name, longitude) in group_items
-        ]
+        yield from assign(0)
 
-    for group_index, group in enumerate(conjunction_groups(bodies)):
-        solved = solve_conjunction_group(group, group_index)
-        if solved is None:
-            names = " > ".join(item[1] for item in group)
-            raise RuntimeError(
-                f"Planet Finder {mode}: no atomic conjunction layout for group {group_index + 1}: {names}"
-            )
-        # Freeze only a complete, mutually valid conjunction solution.
-        for original_index, symbol, name, longitude, box, leader in solved:
-            placed.append(box)
-            leaders.append(leader)
-            leader_names.append(name)
-            staged[original_index] = (symbol, name, longitude, box, leader)
-            diagnostic_print(
-                f"Planet Finder {mode}: SOLVED CONJUNCTION FROZEN body={name} "
-                f"lambda={longitude % 360.0:.3f}deg radius={glyph_radii[name]:.1f}",
-                flush=True,
-            )
+    conjunction_group_items = list(enumerate(conjunction_groups(bodies)))
+
+    # Conjunction groups are atomic choices, not permanent preplacements.
+    # The actual downstream search entry is supplied later, after search() and
+    # the alignment fallback helper are available.
 
     # Second phase: solve the entire alignment layer recursively.  There are
     # two levels of backtracking: members within a group, and groups within the
@@ -1240,11 +1218,48 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             )
         return False
 
-    try:
-        solved = _search_alignment_fallback(
+    def search_after_conjunctions():
+        return _search_alignment_fallback(
             alignment_preplacement, alignment_group_items, placed, leaders,
             leader_names, staged, search, solve_alignment_group,
         )
+
+    def solve_conjunction_layer(group_position):
+        if group_position == len(conjunction_group_items):
+            return search_after_conjunctions()
+
+        group_index, group = conjunction_group_items[group_position]
+        found_candidate = False
+        for solved_group in solve_conjunction_group(group, group_index):
+            found_candidate = True
+            placed_mark = len(placed)
+            leaders_mark = len(leaders)
+            names_mark = len(leader_names)
+            staged_before = set(staged)
+            for original_index, symbol, name, longitude, box, leader in solved_group:
+                placed.append(box)
+                leaders.append(leader)
+                leader_names.append(name)
+                staged[original_index] = (symbol, name, longitude, box, leader)
+            if solve_conjunction_layer(group_position + 1):
+                return True
+            del placed[placed_mark:]
+            del leaders[leaders_mark:]
+            del leader_names[names_mark:]
+            for key in list(staged):
+                if key not in staged_before:
+                    staged.pop(key, None)
+
+        if not found_candidate:
+            names = " > ".join(item[1] for item in group)
+            diagnostic_print(
+                f"Planet Finder {mode}: no atomic conjunction candidate for "
+                f"group {group_index + 1}: {names}", flush=True
+            )
+        return False
+
+    try:
+        solved = solve_conjunction_layer(0)
         exhausted = not solved
     except DepthNodeBudgetExhausted as exc:
         # Hitting the per-body/depth cap is the squeaky-wheel signal.  Report
