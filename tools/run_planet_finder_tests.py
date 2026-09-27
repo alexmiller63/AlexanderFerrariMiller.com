@@ -46,6 +46,13 @@ def print_failure_summary(output: str, *, heading: str = "PLANET FINDER TEST FAI
     lines = output.splitlines()
     print(heading)
 
+    diagnostic_lines = [
+        line for line in lines
+        if "TERMINAL SEARCH DIAGNOSTIC" in line or "CAPPED SUMMARY" in line
+    ]
+    for line in diagnostic_lines:
+        print(line.strip())
+
     conjunction_lines = [line for line in lines if "CONJUNCTION FAILURE" in line]
     for line in conjunction_lines:
         print(line.strip())
