@@ -904,6 +904,15 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                     conjunction_rejections_by_body[name]["sibling_leader_label"] += 1
                     chosen.pop(name, None)
                     continue
+                # A conjunction blob must satisfy the same leader-to-leader
+                # clearance required by terminal validation.  Reject sibling
+                # crossings/grazes here, before an impossible blob is handed
+                # to the downstream DFS.
+                if leaders_too_close(path_candidate, list(chosen_paths.values())):
+                    diagnostic_rejections["leader_rim_or_external"] += 1
+                    conjunction_rejections_by_body[name]["leader_rim_or_external"] += 1
+                    chosen.pop(name, None)
+                    continue
                 chosen_paths[name] = path_candidate
                 if assign(depth + 1):
                     return True
