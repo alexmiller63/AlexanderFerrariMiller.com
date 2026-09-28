@@ -224,7 +224,7 @@ def test_level_10_w1_shaped_classification_has_two_large_alignments():
 def test_level_11_w1_shaped_full_state_machine_completes(monkeypatch, mode):
     monkeypatch.setenv("PLANET_FINDER_DIAGNOSTIC_LEVEL", "0")
     bodies = w1_shaped_bodies()
-    seconds = 180.0 if mode == FinderMode.GREEK else 30.0
+    seconds = 45.0 if mode == FinderMode.GREEK else 30.0
     result = layout(mode, bodies, target_solutions=1, budget={"max_node_candidates": 200, "max_seconds": seconds}, context_label=f"synthetic-W01-{mode.value}")
     assert_complete_valid_layout(result, bodies, mode)
 
