@@ -32,5 +32,5 @@ jobs:
       - name: Run isolated Greek W2 Venus-Sun conjunction regression
         env:
           PYTHONPATH: tools
-          PLANET_FINDER_DIAGNOSTIC_LEVEL: "2"
+          PLANET_FINDER_DIAGNOSTIC_LEVEL: "3"
         run: python -m pytest -q -s 'tests/test_planet_finder_system.py::test_level_30_progressive_real_w02_greek_breakpoint[venus-sun-conjunction]'
