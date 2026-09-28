@@ -163,6 +163,9 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
     # from repeated/equivalent viable candidates.  This never filters or
     # reorders candidates and therefore cannot change search behavior.
     viable_geometry_seen = {}
+    # Diagnostic only: summarize how Mercury's admitted candidates traverse
+    # label-position space.  This does not filter, reorder, or score anything.
+    mercury_candidate_stream = []
     solutions = []
     solution_keys = set()
     contest_keys = []
@@ -455,6 +458,32 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                     f"lineage={cap_lineage(depth)}",
                     flush=True,
                 )
+                if name == "Mercury" and mercury_candidate_stream:
+                    # Use cumulative doubling bands so the output lines map
+                    # directly onto the W1 200/400/800/1600/3200 ladder.
+                    bounds = (200, 400, 800, 1600, 3200)
+                    start = 0
+                    for stop in bounds:
+                        if start >= len(mercury_candidate_stream):
+                            break
+                        band = mercury_candidate_stream[start:min(stop, len(mercury_candidate_stream))]
+                        radii = [row[0] for row in band]
+                        angles = [row[1] for row in band]
+                        xs = [row[2] for row in band]
+                        ys = [row[3] for row in band]
+                        sectors = [0] * 8
+                        for angle in angles:
+                            sectors[min(7, int(angle // 45.0))] += 1
+                        diagnostic_print(
+                            f"Planet Finder {mode}: MERCURY-CANDIDATE-BAND "
+                            f"range={start + 1}-{start + len(band)} "
+                            f"radius[min={min(radii):.1f},max={max(radii):.1f},mean={sum(radii)/len(radii):.1f}] "
+                            f"x[min={min(xs):.1f},max={max(xs):.1f}] "
+                            f"y[min={min(ys):.1f},max={max(ys):.1f}] "
+                            f"sectors45={','.join(str(value) for value in sectors)}",
+                            flush=True,
+                        )
+                        start = stop
                 raise DepthNodeBudgetExhausted(depth, name)
 
             resumed_at = time.monotonic()
@@ -687,6 +716,19 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             seen = viable_geometry_seen.setdefault(name, set())
             seen.add(geometry_signature)
 
+            if name == "Mercury" and consume_body_budget:
+                # Polar coordinates around the exact Mercury anchor expose
+                # whether enumeration explores broadly or marches through one
+                # sector/radius before reaching the rest of the lattice.
+                dx = box.x - anchor[0]
+                dy = box.y - anchor[1]
+                mercury_candidate_stream.append((
+                    math.hypot(dx, dy),
+                    math.degrees(math.atan2(dy, dx)) % 360.0,
+                    box.x,
+                    box.y,
+                ))
+
             # This is the single cap point: only a fully viable candidate
             # admitted to DFS consumes the body's candidate budget.
             body_candidates += 1
@@ -707,6 +749,32 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                     f"lineage={cap_lineage(depth)}",
                     flush=True,
                 )
+                if name == "Mercury" and mercury_candidate_stream:
+                    # Use cumulative doubling bands so the output lines map
+                    # directly onto the W1 200/400/800/1600/3200 ladder.
+                    bounds = (200, 400, 800, 1600, 3200)
+                    start = 0
+                    for stop in bounds:
+                        if start >= len(mercury_candidate_stream):
+                            break
+                        band = mercury_candidate_stream[start:min(stop, len(mercury_candidate_stream))]
+                        radii = [row[0] for row in band]
+                        angles = [row[1] for row in band]
+                        xs = [row[2] for row in band]
+                        ys = [row[3] for row in band]
+                        sectors = [0] * 8
+                        for angle in angles:
+                            sectors[min(7, int(angle // 45.0))] += 1
+                        diagnostic_print(
+                            f"Planet Finder {mode}: MERCURY-CANDIDATE-BAND "
+                            f"range={start + 1}-{start + len(band)} "
+                            f"radius[min={min(radii):.1f},max={max(radii):.1f},mean={sum(radii)/len(radii):.1f}] "
+                            f"x[min={min(xs):.1f},max={max(xs):.1f}] "
+                            f"y[min={min(ys):.1f},max={max(ys):.1f}] "
+                            f"sectors45={','.join(str(value) for value in sectors)}",
+                            flush=True,
+                        )
+                        start = stop
                 raise DepthNodeBudgetExhausted(depth, name)
 
     # Deterministic conjunction pre-pass.  Anchors are geometric attachment
