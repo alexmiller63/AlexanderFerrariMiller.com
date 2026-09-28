@@ -833,10 +833,23 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             anchor = anchors[name]
             candidate_rows = pools[name]
             if chosen:
-                # Once one sibling has been placed, explicitly maximize the
-                # separation between conjunction labels first.  Stable sorting
-                # preserves the outer-to-inner pool order for ties.  Recursive
-                # failure naturally walks toward progressively narrower blobs.
+                # Circular lambda order is a construction constraint, not a
+                # high-volume rejection gate.  The conjunction members arrive
+                # in authoritative circular lambda order, so discard sibling
+                # positions that would invert that order before optimizing
+                # their separation.  preserves_lambda_order() remains below as
+                # an invariant/backstop.
+                reference = group_items[0][1][2] - 90.0
+                previous_name = ordered_names[depth - 1]
+                previous_angle = (label_angle(chosen[previous_name]) - reference) % 360.0
+                candidate_rows = [
+                    row for row in candidate_rows
+                    if ((label_angle(row) - reference) % 360.0) >= previous_angle
+                ]
+
+                # Among only order-preserving positions, try the widest blob
+                # first.  Recursive failure naturally walks toward narrower
+                # legal blobs without spending search on known lambda inversions.
                 chosen_centers = [(row[0], row[1]) for row in chosen.values()]
                 candidate_rows = sorted(
                     candidate_rows,
