@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""One-shot repair: apply the prepared conjunction wide-to-narrow patch."""
+"""One-shot repair: install the prepared widest-conjunction validator diagnostic."""
 from pathlib import Path
 import runpy
 
-ENABLED = False
+ENABLED = True
 if not ENABLED:
     print("Repair Once is OFF; nothing to do.")
     raise SystemExit(0)
@@ -20,4 +20,4 @@ arming_line = "ENABLED = " + "True"
 if text.count(arming_line) != 1:
     raise SystemExit("Safety stop: Repair Once arming marker is not unique")
 me.write_text(text.replace(arming_line, "ENABLED = False", 1), encoding="utf-8")
-print("Applied conjunction wide-to-narrow search patch; Repair Once is now OFF.")
+print("Installed widest conjunction diagnostic; Repair Once is now OFF.")
