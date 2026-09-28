@@ -374,6 +374,22 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             flush=True,
         )
 
+    def cap_lineage(depth):
+        """Diagnostic-only viable counts for grandparent -> parent -> current."""
+        parts = []
+        for lineage_depth, role in (
+            (depth - 2, "grandparent"),
+            (depth - 1, "parent"),
+            (depth, "current"),
+        ):
+            if 0 <= lineage_depth < len(order):
+                lineage_name = order[lineage_depth][1][1]
+                parts.append(
+                    f"{role}[{lineage_name} depth={lineage_depth} "
+                    f"viable={body_attempts.get(lineage_name, 0):,}]"
+                )
+        return " ".join(parts)
+
     def viable_candidates(item, depth, *, consume_body_budget=True):
         original_index, (symbol, name, longitude) = item
         key = (depth, name)
@@ -429,7 +445,8 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 diagnostic_print(
                     f"Planet Finder {mode}: BODY-CANDIDATE CAP order={order_index} "
                     f"depth={depth}/{len(order)} body={name} "
-                    f"viable={body_attempts[name]:,}/{budget['max_node_candidates']:,}",
+                    f"viable={body_attempts[name]:,}/{budget['max_node_candidates']:,} "
+                    f"lineage={cap_lineage(depth)}",
                     flush=True,
                 )
                 raise DepthNodeBudgetExhausted(depth, name)
@@ -665,7 +682,8 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 diagnostic_print(
                     f"Planet Finder {mode}: BODY-CANDIDATE CAP order={order_index} "
                     f"depth={depth}/{len(order)} body={name} "
-                    f"viable={body_attempts[name]:,}/{budget['max_node_candidates']:,}",
+                    f"viable={body_attempts[name]:,}/{budget['max_node_candidates']:,} "
+                    f"lineage={cap_lineage(depth)}",
                     flush=True,
                 )
                 raise DepthNodeBudgetExhausted(depth, name)
