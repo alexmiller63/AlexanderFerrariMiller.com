@@ -272,15 +272,30 @@ def minimum_leader_separation(path, existing_paths):
 
 
 def leader_hits_zodiac_rim(path, clearance: float = LEADER_RIM_CLEARANCE) -> bool:
-    """Reject a leader that touches or crosses the inner zodiac rim.
+    """Reject a leader that returns to/crosses the protected zodiac rim.
 
-    The inner chart is a convex disk, so a polyline remains clear of the
-    circular rim exactly when every vertex remains inside the protected
-    radius.  The body's anchor is at RI-5 and is therefore legal; elbows that
-    wander out to the rim are not.
+    Body anchors intentionally start near the inner zodiac rim and may lie
+    inside its clearance band.  Permit that contiguous initial band only while
+    the leader escapes inward.  After the path first reaches the protected
+    interior, it may never leave it again.  Because the protected interior is
+    a convex disk, endpoints inside it imply the whole intervening segment is
+    inside it as well.
     """
     limit = RI - clearance
-    return any(math.hypot(x - CX, y - CY) >= limit for x, y in path)
+    radii = [math.hypot(x - CX, y - CY) for x, y in path]
+    entered_interior = False
+    previous_radius = None
+    for radius in radii:
+        if radius < limit:
+            entered_interior = True
+        elif entered_interior:
+            return True
+        elif previous_radius is not None and radius > previous_radius + 1e-9:
+            # Before entering the protected interior, the initial escape must
+            # move monotonically inward rather than wander outward along/rimward.
+            return True
+        previous_radius = radius
+    return False
 
 
 def label_size(mode: str, name: str) -> tuple[float, float]:
