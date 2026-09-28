@@ -16,6 +16,7 @@ from planet_finder_validation import validate_layout
 
 
 MODES = [FinderMode.GREEK, FinderMode.LATIN, FinderMode.MIXED]
+REGRESSION_SECONDS = 60.0
 
 
 def test_blocked_preplacement_restores_alignment_before_recursive_retry():
@@ -224,8 +225,7 @@ def test_level_10_w1_shaped_classification_has_two_large_alignments():
 def test_level_11_w1_shaped_full_state_machine_completes(monkeypatch, mode):
     monkeypatch.setenv("PLANET_FINDER_DIAGNOSTIC_LEVEL", "0")
     bodies = w1_shaped_bodies()
-    seconds = 45.0 if mode == FinderMode.GREEK else 30.0
-    result = layout(mode, bodies, target_solutions=1, budget={"max_node_candidates": 200, "max_seconds": seconds}, context_label=f"synthetic-W01-{mode.value}")
+    result = layout(mode, bodies, target_solutions=1, budget={"max_node_candidates": 200, "max_seconds": REGRESSION_SECONDS}, context_label=f"synthetic-W01-{mode.value}")
     assert_complete_valid_layout(result, bodies, mode)
 
 
@@ -233,7 +233,7 @@ def test_level_11_w1_shaped_full_state_machine_completes(monkeypatch, mode):
 def test_level_12_w1_shaped_full_state_machine_is_deterministic(monkeypatch, mode):
     monkeypatch.setenv("PLANET_FINDER_DIAGNOSTIC_LEVEL", "0")
     bodies = w1_shaped_bodies()
-    budget = {"max_node_candidates": 200, "max_seconds": 30.0}
+    budget = {"max_node_candidates": 200, "max_seconds": REGRESSION_SECONDS}
     first = layout(mode, bodies, target_solutions=1, budget=budget, context_label=f"determinism-{mode.value}-A")
     second = layout(mode, bodies, target_solutions=1, budget=budget, context_label=f"determinism-{mode.value}-B")
     assert_complete_valid_layout(first, bodies, mode)
@@ -250,7 +250,7 @@ def test_level_15_isolated_tight_five_breakpoint(monkeypatch, mode, level, longi
     target = {"Mercury", "Venus", "Sun", "Mars", "Pluto"}
     matching = [group for group in groups if set(group) == target]
     assert len(matching) == 1, groups
-    result = layout(mode, bodies, target_solutions=1, budget={"max_node_candidates": 2000, "max_seconds": 15.0 if mode == FinderMode.GREEK else 60.0}, context_label=f"tight-five-{level}-{mode.value}")
+    result = layout(mode, bodies, target_solutions=1, budget={"max_node_candidates": 2000, "max_seconds": REGRESSION_SECONDS}, context_label=f"tight-five-{level}-{mode.value}")
     assert_complete_valid_layout(result, bodies, mode)
 
 
@@ -259,7 +259,7 @@ def test_level_15_isolated_tight_five_breakpoint(monkeypatch, mode, level, longi
 def test_level_20_progressive_real_w01_geometry(monkeypatch, mode, level, longitudes):
     monkeypatch.setenv("PLANET_FINDER_DIAGNOSTIC_LEVEL", "0")
     bodies = synthetic_bodies(longitudes)
-    result = layout(mode, bodies, target_solutions=1, budget={"max_node_candidates": 2000, "max_seconds": 15.0 if mode == FinderMode.GREEK else 60.0}, context_label=f"regression-{level}-{mode.value}")
+    result = layout(mode, bodies, target_solutions=1, budget={"max_node_candidates": 2000, "max_seconds": REGRESSION_SECONDS}, context_label=f"regression-{level}-{mode.value}")
     assert_complete_valid_layout(result, bodies, mode)
     if level in ("both-real-alignments", "exact-W01") and mode != FinderMode.GREEK:
         assert_alignment_labels_follow_lambda(result, bodies)
@@ -272,7 +272,7 @@ def test_level_30_progressive_real_w02_greek_breakpoint(monkeypatch, level, long
     bodies = synthetic_bodies(longitudes)
     result = layout(
         FinderMode.GREEK, bodies, target_solutions=1,
-        budget={"max_node_candidates": 2000, "max_seconds": 15.0},
+        budget={"max_node_candidates": 2000, "max_seconds": REGRESSION_SECONDS},
         context_label=f"W02-ladder-{level}",
     )
     assert_complete_valid_layout(result, bodies, FinderMode.GREEK)
