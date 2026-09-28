@@ -1,16 +1,14 @@
-"""Narrow the W1 Sun/Venus/Mars search-performance boundary.
+"""Focused W1 conjunction-to-DFS handoff diagnostic.
 
-Only Mars changes. All other synthetic bodies stay away from the target cluster.
-Stop at the first failure so we identify the smallest Mars approach that makes
-the search pathological.
+Mars=275 is the smallest currently demonstrated pathological case.  Keep the
+geometry fixed and turn on forensic diagnostics so the existing search-core
+instrumentation reports which downstream body/constraint consumes each blob
+branch.  This intentionally changes no solver behavior.
 """
-
-import pytest
 
 from planet_finder_geometry import CANONICAL, FinderMode
 from planet_finder_search import layout
 from planet_finder_validation import validate_layout
-
 
 SUN = 277.511945972904
 VENUS = 275.4313050776394
@@ -30,12 +28,12 @@ def validate(result, source):
     assert valid, errors
 
 
-def geometry(mars):
+def geometry():
     return {
         "Sun": SUN,
         "Mercury": 35,
         "Venus": VENUS,
-        "Mars": mars,
+        "Mars": 275.0,
         "Jupiter": 140,
         "Saturn": 175,
         "Uranus": 210,
@@ -46,18 +44,17 @@ def geometry(mars):
     }
 
 
-MARS_APPROACH = [275.0, 276.0, 277.0, 277.5, 278.0]
-
-
-@pytest.mark.parametrize("mars", MARS_APPROACH, ids=[f"mars-{m:g}" for m in MARS_APPROACH])
-def test_mars_approach_boundary(monkeypatch, mars):
-    monkeypatch.setenv("PLANET_FINDER_DIAGNOSTIC_LEVEL", "0")
-    source = bodies(geometry(mars))
+def test_mars_275_downstream_handoff(monkeypatch):
+    # Existing level-3 diagnostics include capped-body summaries, terminal
+    # rejection constraints, best partial depth, and conjunction branch events.
+    # Use them as a probe before changing conjunction/DFS semantics.
+    monkeypatch.setenv("PLANET_FINDER_DIAGNOSTIC_LEVEL", "3")
+    source = bodies(geometry())
     result = layout(
         FinderMode.GREEK,
         source,
         target_solutions=1,
         budget={"max_node_candidates": 2000, "max_seconds": 60.0},
-        context_label=f"W01-mars-boundary-{mars:g}",
+        context_label="W01-mars-275-handoff-diagnostic",
     )
     validate(result, source)
