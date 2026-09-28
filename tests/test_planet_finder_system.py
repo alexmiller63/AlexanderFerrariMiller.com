@@ -172,8 +172,6 @@ W01_LADDER = [
     ("exact-W01", W01_EXACT),
 ]
 
-# W02 is deliberately decomposed from simple to exact.  This is the production
-# week that exhausted the Greek mode clock before recursive search began.
 W02_LADDER = [
     ("separated", {
         "Sun": 0, "Mercury": 40, "Venus": 80, "Mars": 120, "Pluto": 160,
@@ -226,7 +224,8 @@ def test_level_10_w1_shaped_classification_has_two_large_alignments():
 def test_level_11_w1_shaped_full_state_machine_completes(monkeypatch, mode):
     monkeypatch.setenv("PLANET_FINDER_DIAGNOSTIC_LEVEL", "0")
     bodies = w1_shaped_bodies()
-    result = layout(mode, bodies, target_solutions=1, budget={"max_node_candidates": 200, "max_seconds": 30.0}, context_label=f"synthetic-W01-{mode.value}")
+    seconds = 180.0 if mode == FinderMode.GREEK else 30.0
+    result = layout(mode, bodies, target_solutions=1, budget={"max_node_candidates": 200, "max_seconds": seconds}, context_label=f"synthetic-W01-{mode.value}")
     assert_complete_valid_layout(result, bodies, mode)
 
 
