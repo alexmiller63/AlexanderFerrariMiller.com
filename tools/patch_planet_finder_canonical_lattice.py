@@ -1,16 +1,9 @@
 #!/usr/bin/env python3
-"""Repair-once patch: search conjunction label geometry wide-to-narrow.
+"""Repair-once diagnostic: identify the first validator rejecting the widest conjunction pair.
 
-For conjunction bodies, keep the real astronomical longitudes unchanged.
-Change only the ordering of candidate label placements inside the conjunction
-blob search: begin with labels maximally displaced from their natural positions,
-and for each later sibling try positions farthest from already chosen sibling
-labels first.  The existing collision, lambda-order, routing, rim, and leader
-checks remain authoritative.  If a wide blob is invalid, recursion continues
-inward through progressively narrower alternatives.
-
-This is deliberately an ordering change, not a relaxation of geometry.
-Refuse to write unless every exact target occurs once.
+This patch changes no search decisions.  It records the first (widest-first)
+candidate attempted for each conjunction depth and, for the second sibling,
+reports the exact gate that rejects that widest pair.
 """
 from pathlib import Path
 
@@ -22,57 +15,142 @@ def replace_once(old, new, label):
     global text
     count = text.count(old)
     if count != 1:
-        raise SystemExit(
-            f"Refusing repair: expected {label} exactly once, found {count}"
-        )
+        raise SystemExit(f"Refusing repair: expected {label} exactly once, found {count}")
     text = text.replace(old, new, 1)
 
 
 replace_once(
-'''            rows.sort(key=lambda row: math.hypot(row[0] - natural[0], row[1] - natural[1]))
-            rows = rows[:80]
+'''        conjunction_attempts_by_body = {name: 0 for name in ordered_names}
+        conjunction_route_diagnostics = {}
 ''',
-'''            # Conjunctions are hardest when their labels begin crowded near
-            # nearly coincident anchors.  Search from the easy outside inward:
-            # retain the same bounded pool, but try the most displaced label
-            # positions first.  No candidate is made legal by this ordering.
-            rows.sort(
-                key=lambda row: math.hypot(row[0] - natural[0], row[1] - natural[1]),
-                reverse=True,
-            )
-            rows = rows[:80]
+'''        conjunction_attempts_by_body = {name: 0 for name in ordered_names}
+        conjunction_route_diagnostics = {}
+        # Forensic trace only: the conjunction pools are ordered widest-first.
+        # Record exactly why the first widest sibling pair is rejected.
+        widest_pair_trace = {"reported": False}
 ''',
-"conjunction pool ordering",
+"widest trace state",
 )
 
 replace_once(
-'''            _, (_, name, longitude) = group_items[depth]
-            anchor = anchors[name]
-            for row in pools[name]:
+'''            for row in candidate_rows:
                 conjunction_attempts_by_body[name] += 1
+                x, y, box = row
+                if any(boxes_overlap(box, other[2], LABEL_COLLISION_PADDING)
+                       for other in chosen.values()):
 ''',
-'''            _, (_, name, longitude) = group_items[depth]
-            anchor = anchors[name]
-            candidate_rows = pools[name]
-            if chosen:
-                # Once one sibling has been placed, explicitly maximize the
-                # separation between conjunction labels first.  Stable sorting
-                # preserves the outer-to-inner pool order for ties.  Recursive
-                # failure naturally walks toward progressively narrower blobs.
-                chosen_centers = [(row[0], row[1]) for row in chosen.values()]
-                candidate_rows = sorted(
-                    candidate_rows,
-                    key=lambda row: min(
-                        math.hypot(row[0] - cx, row[1] - cy)
-                        for cx, cy in chosen_centers
-                    ),
-                    reverse=True,
-                )
-            for row in candidate_rows:
+'''            for row_index, row in enumerate(candidate_rows):
                 conjunction_attempts_by_body[name] += 1
+                x, y, box = row
+                tracing_widest_pair = depth == 1 and row_index == 0 and not widest_pair_trace["reported"]
+
+                def report_widest_pair(gate):
+                    if not tracing_widest_pair or widest_pair_trace["reported"]:
+                        return
+                    first_name = ordered_names[0]
+                    first_row = chosen.get(first_name)
+                    separation = None
+                    if first_row is not None:
+                        separation = math.hypot(x - first_row[0], y - first_row[1])
+                    print(
+                        f"CONJUNCTION WIDEST PAIR mode={mode} group={group_index + 1} "
+                        f"bodies={first_name} > {name} gate={gate} "
+                        f"center_separation={separation if separation is not None else 'unknown'}",
+                        flush=True,
+                    )
+                    widest_pair_trace["reported"] = True
+
+                if any(boxes_overlap(box, other[2], LABEL_COLLISION_PADDING)
+                       for other in chosen.values()):
+                    report_widest_pair("label_overlap")
 ''',
-"conjunction sibling ordering",
+"widest pair loop",
+)
+
+for old, new, label in [
+    (
+'''                if not lambda_ok:
+                    diagnostic_rejections["lambda_order"] += 1
+''',
+'''                if not lambda_ok:
+                    report_widest_pair("lambda_order")
+                    diagnostic_rejections["lambda_order"] += 1
+''',
+"lambda gate",
+    ),
+    (
+'''                if path_candidate is None:
+                    diagnostic_rejections["route"] += 1
+''',
+'''                if path_candidate is None:
+                    report_widest_pair("route")
+                    diagnostic_rejections["route"] += 1
+''',
+"route gate",
+    ),
+    (
+'''                if any(segment_hits_box(path_candidate[i], path_candidate[i + 1], other_box,
+                                        PLACED_LABEL_LEADER_CLEARANCE)
+                       for other_box in other_boxes for i in range(len(path_candidate) - 1)):
+                    diagnostic_rejections["leader_label"] += 1
+''',
+'''                if any(segment_hits_box(path_candidate[i], path_candidate[i + 1], other_box,
+                                        PLACED_LABEL_LEADER_CLEARANCE)
+                       for other_box in other_boxes for i in range(len(path_candidate) - 1)):
+                    report_widest_pair("leader_label")
+                    diagnostic_rejections["leader_label"] += 1
+''',
+"leader-label gate",
+    ),
+    (
+'''                if leader_hits_zodiac_rim(path_candidate) or leaders_too_close(
+                        path_candidate, leaders):
+                    diagnostic_rejections["leader_rim_or_external"] += 1
+''',
+'''                if leader_hits_zodiac_rim(path_candidate) or leaders_too_close(
+                        path_candidate, leaders):
+                    report_widest_pair("leader_rim_or_external")
+                    diagnostic_rejections["leader_rim_or_external"] += 1
+''',
+"external leader gate",
+    ),
+    (
+'''                if any(segment_hits_box(old_path[i], old_path[i + 1], box,
+                                        PLACED_LABEL_LEADER_CLEARANCE)
+                       for old_path in chosen_paths.values() for i in range(len(old_path) - 1)):
+                    diagnostic_rejections["sibling_leader_label"] += 1
+''',
+'''                if any(segment_hits_box(old_path[i], old_path[i + 1], box,
+                                        PLACED_LABEL_LEADER_CLEARANCE)
+                       for old_path in chosen_paths.values() for i in range(len(old_path) - 1)):
+                    report_widest_pair("sibling_leader_label")
+                    diagnostic_rejections["sibling_leader_label"] += 1
+''',
+"sibling leader-label gate",
+    ),
+    (
+'''                if leaders_too_close(path_candidate, list(chosen_paths.values())):
+                    diagnostic_rejections["leader_rim_or_external"] += 1
+''',
+'''                if leaders_too_close(path_candidate, list(chosen_paths.values())):
+                    report_widest_pair("sibling_leaders_too_close")
+                    diagnostic_rejections["leader_rim_or_external"] += 1
+''',
+"sibling leader gate",
+    ),
+]:
+    replace_once(old, new, label)
+
+replace_once(
+'''                chosen_paths[name] = path_candidate
+                if assign(depth + 1):
+''',
+'''                report_widest_pair("accepted_internal_pair")
+                chosen_paths[name] = path_candidate
+                if assign(depth + 1):
+''',
+"accepted pair trace",
 )
 
 TARGET.write_text(text, encoding="utf-8")
-print("Conjunction blob search now tries maximum label separation first, then narrows.")
+print("Installed widest conjunction-pair validator diagnostic; search semantics unchanged.")
