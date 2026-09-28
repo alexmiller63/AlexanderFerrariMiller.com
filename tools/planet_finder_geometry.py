@@ -336,12 +336,7 @@ def candidate_positions(longitude: float, displacement_scale: float = 2.0):
     offered: list[tuple[float, float]] = []
     radii = (*PREFERRED_LABEL_RADII, *EXPANDED_LABEL_RADII)
     quarter_step = LABEL_LENGTH * 0.25
-    # Cover the full legal tangential interval before filling it in.  This is
-    # a deterministic coarse-to-fine ordering of exactly the same 0..8 shells:
-    # endpoints, center, half points, quarter points, then remaining eighths.
-    # The +/- order remains symmetric.  No candidate is added or removed.
-    shell_order = (8, 0, 4, 2, 6, 1, 3, 5, 7)
-    for shell in shell_order:
+    for shell in range(9):
         shifts = (0.0,) if shell == 0 else (-shell * quarter_step, shell * quarter_step)
         for shift in shifts:
             for r in radii:
