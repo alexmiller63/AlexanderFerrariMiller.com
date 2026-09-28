@@ -1,8 +1,8 @@
 """Progressive W1 Planet Finder regression ladder.
 
-Each rung adds one controlled source of W1 difficulty.  The suite is intended
-to stop at the first failing rung so that a production failure is reduced to
-the smallest geometry that reproduces it.
+Each rung adds one controlled source of W1 difficulty. The suite stops at the
+first failing rung so that a production failure is reduced to the smallest
+geometry that reproduces it.
 """
 
 import pytest
@@ -52,19 +52,32 @@ def isolated(**changes):
     return values
 
 
-# Ordered from simplest to exact W1.  Keep each transition small.
+def w1_pair_with_mars(mars):
+    # When Venus/Sun move to W1, move synthetic Ceres out of the 275-280 degree
+    # neighborhood too. Otherwise approaching Mars accidentally creates a
+    # synthetic Ceres-Mars conjunction that does not exist in W1.
+    return isolated(
+        Ceres=70,
+        Venus=W01_EXACT["Venus"],
+        Sun=W01_EXACT["Sun"],
+        Mars=mars,
+    )
+
+
+# First isolate the exact transition from the known-good W1 Venus/Sun pair to
+# the real W1 Mars longitude. Only Mars changes across the approach rungs.
 LADDER = [
     ("00-separated", isolated()),
     ("01-simple-pair", isolated(Venus=100, Sun=110)),
-    ("02-w1-venus-sun", isolated(Venus=W01_EXACT["Venus"], Sun=W01_EXACT["Sun"])),
-    ("03-w1-inner-three", isolated(Venus=W01_EXACT["Venus"], Sun=W01_EXACT["Sun"], Mars=W01_EXACT["Mars"])),
-    ("04-w1-inner-four", isolated(Mercury=W01_EXACT["Mercury"], Venus=W01_EXACT["Venus"], Sun=W01_EXACT["Sun"], Mars=W01_EXACT["Mars"])),
-    ("05-w1-inner-five", isolated(Mercury=W01_EXACT["Mercury"], Venus=W01_EXACT["Venus"], Sun=W01_EXACT["Sun"], Mars=W01_EXACT["Mars"], Pluto=W01_EXACT["Pluto"])),
-    ("06-add-wrap-pair", isolated(Mercury=W01_EXACT["Mercury"], Venus=W01_EXACT["Venus"], Sun=W01_EXACT["Sun"], Mars=W01_EXACT["Mars"], Pluto=W01_EXACT["Pluto"], Saturn=W01_EXACT["Saturn"], Neptune=W01_EXACT["Neptune"])),
-    ("07-add-wrap-ceres", isolated(Mercury=W01_EXACT["Mercury"], Venus=W01_EXACT["Venus"], Sun=W01_EXACT["Sun"], Mars=W01_EXACT["Mars"], Pluto=W01_EXACT["Pluto"], Saturn=W01_EXACT["Saturn"], Neptune=W01_EXACT["Neptune"], Ceres=W01_EXACT["Ceres"])),
-    ("08-add-wrap-moon", isolated(Mercury=W01_EXACT["Mercury"], Venus=W01_EXACT["Venus"], Sun=W01_EXACT["Sun"], Mars=W01_EXACT["Mars"], Pluto=W01_EXACT["Pluto"], Saturn=W01_EXACT["Saturn"], Neptune=W01_EXACT["Neptune"], Ceres=W01_EXACT["Ceres"], Moon=W01_EXACT["Moon"])),
-    ("09-add-uranus", {**W01_EXACT, "Jupiter": 140}),
-    ("10-exact-w1", W01_EXACT),
+    ("02-w1-venus-sun-clean", w1_pair_with_mars(105.0)),
+    ("03-mars-240", w1_pair_with_mars(240.0)),
+    ("04-mars-255", w1_pair_with_mars(255.0)),
+    ("05-mars-265", w1_pair_with_mars(265.0)),
+    ("06-mars-270", w1_pair_with_mars(270.0)),
+    ("07-mars-274", w1_pair_with_mars(274.0)),
+    ("08-mars-278", w1_pair_with_mars(278.0)),
+    ("09-mars-280", w1_pair_with_mars(280.0)),
+    ("10-mars-w1-exact", w1_pair_with_mars(W01_EXACT["Mars"])),
 ]
 
 
