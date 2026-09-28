@@ -1,61 +1,27 @@
 #!/usr/bin/env python3
-"""Repair-once: replace the W1 single-cap test with a dynamic doubling ladder."""
+"""Repair-once: add diagnostic-only viable candidate uniqueness accounting."""
 from pathlib import Path
 
-TARGET = Path("tests/test_planet_finder_w01_ladder.py")
+TARGET = Path("tools/planet_finder_search_core.py")
 text = TARGET.read_text(encoding="utf-8")
 
-start = text.index("def test_mars_275_chronological_dfs_trace(monkeypatch):")
-old = text[start:]
-new = '''def test_mars_275_dynamic_cap_ladder(monkeypatch):
-    """Run the same W1 case at successively doubled safety caps in one test.
+old_init = '''    diagnostic_stats = {}\n    route_diagnostics = {}\n'''
+new_init = '''    diagnostic_stats = {}\n    route_diagnostics = {}\n    # Diagnostic only: distinguish genuinely different admitted geometries\n    # from repeated/equivalent viable candidates.  This never filters or\n    # reorders candidates and therefore cannot change search behavior.\n    viable_geometry_seen = {}\n'''
+if text.count(old_init) != 1:
+    raise SystemExit(f"Safety stop: diagnostic init block count={text.count(old_init)}; expected 1")
+text = text.replace(old_init, new_init, 1)
 
-    Every rung starts from a fresh layout() call, so no solver state is carried
-    forward.  Geometry, ordering, and candidate policy are unchanged.  The
-    ladder stops at the first success; otherwise the final rung fails normally.
-    """
-    monkeypatch.setenv("PLANET_FINDER_DIAGNOSTIC_LEVEL", "1")
-    source = bodies(geometry())
-    caps = (200, 400, 800, 1600, 3200)
-    per_rung_seconds = 60.0
-    failures = []
+old_admit = '''            # This is the single cap point: only a fully viable candidate\n            # admitted to DFS consumes the body's candidate budget.\n            body_candidates += 1\n            if consume_body_budget:\n                body_attempts[name] += 1\n'''
+new_admit = '''            # Diagnostic-only geometry signature.  Round below rendering\n            # precision so numerically insignificant float noise does not make\n            # equivalent candidates appear distinct.  Include the routed leader\n            # because the same label box with a different route is a materially\n            # different search choice.\n            geometry_signature = (\n                round(box.x, 6), round(box.y, 6),\n                round(box.w, 6), round(box.h, 6),\n                tuple((round(px, 6), round(py, 6)) for px, py in path),\n            )\n            seen = viable_geometry_seen.setdefault(name, set())\n            seen.add(geometry_signature)\n\n            # This is the single cap point: only a fully viable candidate\n            # admitted to DFS consumes the body's candidate budget.\n            body_candidates += 1\n            if consume_body_budget:\n                body_attempts[name] += 1\n'''
+if text.count(old_admit) != 1:
+    raise SystemExit(f"Safety stop: viable admission block count={text.count(old_admit)}; expected 1")
+text = text.replace(old_admit, new_admit, 1)
 
-    print("W1-CAP-LADDER start caps=" + ",".join(map(str, caps)), flush=True)
-    for cap in caps:
-        print(f"W1-CAP-LADDER rung cap={cap} START", flush=True)
-        started = __import__("time").monotonic()
-        try:
-            result = layout(
-                FinderMode.GREEK,
-                source,
-                target_solutions=1,
-                budget={"max_node_candidates": cap, "max_seconds": per_rung_seconds},
-                context_label=f"W01-mars-275-cap-{cap}",
-            )
-            elapsed = __import__("time").monotonic() - started
-            validate(result, source)
-            print(
-                f"W1-CAP-LADDER rung cap={cap} SUCCESS elapsed={elapsed:.3f}s",
-                flush=True,
-            )
-            print(
-                "W1-CAP-LADDER SUMMARY "
-                + " | ".join(failures + [f"cap={cap}:SUCCESS:{elapsed:.3f}s"]),
-                flush=True,
-            )
-            return
-        except RuntimeError as exc:
-            elapsed = __import__("time").monotonic() - started
-            reason = " ".join(str(exc).split())
-            failures.append(f"cap={cap}:FAIL:{elapsed:.3f}s:{reason}")
-            print(
-                f"W1-CAP-LADDER rung cap={cap} FAIL elapsed={elapsed:.3f}s reason={reason}",
-                flush=True,
-            )
+old_cap = '''                    f"viable={body_attempts[name]:,}/{budget['max_node_candidates']:,} "\n                    f"lineage={cap_lineage(depth)}",\n'''
+new_cap = '''                    f"viable={body_attempts[name]:,}/{budget['max_node_candidates']:,} "\n                    f"unique_geometry={len(viable_geometry_seen.get(name, ())):,} "\n                    f"duplicates={max(0, body_attempts[name] - len(viable_geometry_seen.get(name, ()))):,} "\n                    f"lineage={cap_lineage(depth)}",\n'''
+if text.count(old_cap) != 2:
+    raise SystemExit(f"Safety stop: cap diagnostic block count={text.count(old_cap)}; expected 2")
+text = text.replace(old_cap, new_cap)
 
-    print("W1-CAP-LADDER SUMMARY " + " | ".join(failures), flush=True)
-    raise AssertionError("W1 cap ladder exhausted without a valid layout")
-'''
-
-TARGET.write_text(text[:start] + new, encoding="utf-8")
-print("Installed dynamic W1 cap ladder: 200 -> 400 -> 800 -> 1600 -> 3200.")
+TARGET.write_text(text, encoding="utf-8")
+print("Added diagnostic-only viable candidate uniqueness accounting.")
