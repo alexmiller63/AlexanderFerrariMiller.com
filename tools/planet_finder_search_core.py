@@ -195,6 +195,29 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                     f"leader-rim={stats.get('leader_rim', 0):,},"
                     f"leader-graze={stats.get('leader_graze', 0):,}]"
                 )
+                # Diagnostic only: when a parent body consumes its viable
+                # candidate allowance because every child subtree fails, show
+                # the immediate descendant's aggregate behavior.  This makes
+                # the actual squeaky wheel visible without changing search,
+                # candidate accounting, ordering, geometry, or budgets.
+                child_depth = depth + 1
+                if child_depth < len(order):
+                    child_name = order[child_depth][1][1]
+                    child_stats = diagnostic_stats.get((child_depth, child_name), {})
+                    rejection_summary += (
+                        f" child[{child_name} depth={child_depth}/{len(order)} "
+                        f"visits={depth_visits.get(child_depth, 0):,} "
+                        f"dead_ends={dead_end_visits.get((child_depth, child_name), 0):,} "
+                        f"generated={child_stats.get('generated', 0):,} "
+                        f"viable={child_stats.get('viable', 0):,} "
+                        f"rejects[immutable-reserved={child_stats.get('immutable_reserved', 0):,},"
+                        f"immutable-rim={child_stats.get('immutable_rim', 0):,},"
+                        f"placed-overlap={child_stats.get('overlap', 0):,},"
+                        f"existing-leader={child_stats.get('leader_existing', 0):,},"
+                        f"route={child_stats.get('route', 0):,},"
+                        f"leader-rim={child_stats.get('leader_rim', 0):,},"
+                        f"leader-graze={child_stats.get('leader_graze', 0):,}]]"
+                    )
             validation_summary = ""
             if terminal_validation_checks:
                 ranked_validation = sorted(
