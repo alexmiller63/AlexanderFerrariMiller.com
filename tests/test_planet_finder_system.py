@@ -268,7 +268,6 @@ def test_level_20_progressive_real_w01_geometry(monkeypatch, mode, level, longit
 @pytest.mark.parametrize("level,longitudes", W02_LADDER, ids=[item[0] for item in W02_LADDER])
 def test_level_30_progressive_real_w02_greek_breakpoint(monkeypatch, level, longitudes):
     """Find the first W02 geometry that makes Greek preplacement explode."""
-    monkeypatch.setenv("PLANET_FINDER_DIAGNOSTIC_LEVEL", "0")
     bodies = synthetic_bodies(longitudes)
     result = layout(
         FinderMode.GREEK, bodies, target_solutions=1,
