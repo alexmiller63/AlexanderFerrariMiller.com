@@ -2,7 +2,7 @@
 """One-shot diagnostic: restore sequential candidate ordering for 2-body conjunctions."""
 from pathlib import Path
 
-ENABLED = True
+ENABLED = False
 if not ENABLED:
     print("Repair Once is OFF; nothing to do.")
     raise SystemExit(0)

@@ -813,10 +813,14 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             # nearly coincident anchors.  Search from the easy outside inward:
             # retain the same bounded pool, but try the most displaced label
             # positions first.  No candidate is made legal by this ordering.
-            rows.sort(
-                key=lambda row: math.hypot(row[0] - natural[0], row[1] - natural[1]),
-                reverse=True,
-            )
+            # Diagnostic canary: for a 2-body conjunction only, retain the
+            # original sequential legal_candidate_positions() order. Larger
+            # conjunctions keep the current outside-in ordering unchanged.
+            if len(group_items) != 2:
+                rows.sort(
+                    key=lambda row: math.hypot(row[0] - natural[0], row[1] - natural[1]),
+                    reverse=True,
+                )
             rows = rows[:80]
             if not rows:
                 return None
@@ -965,11 +969,10 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             _, (_, name, longitude) = group_items[depth]
             anchor = anchors[name]
             candidate_rows = pools[name]
-            if chosen:
-                # Once one sibling has been placed, explicitly maximize the
-                # separation between conjunction labels first.  Stable sorting
-                # preserves the outer-to-inner pool order for ties.  Recursive
-                # failure naturally walks toward progressively narrower blobs.
+            if chosen and len(group_items) != 2:
+                # Larger conjunctions keep the current widest-first sibling
+                # ordering. The 2-body diagnostic canary deliberately keeps
+                # the sequential pool order so we can isolate ordering itself.
                 chosen_centers = [(row[0], row[1]) for row in chosen.values()]
                 candidate_rows = sorted(
                     candidate_rows,
