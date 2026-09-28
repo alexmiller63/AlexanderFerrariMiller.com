@@ -936,9 +936,14 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 # Keep the ordinary clearance rule against leaders outside this
                 # atomic conjunction, while sibling leader/label collisions are
                 # checked explicitly above and below.
-                if leader_hits_zodiac_rim(path_candidate) or leaders_too_close(
-                        path_candidate, leaders):
-                    report_widest_pair("leader_rim_or_external")
+                if leader_hits_zodiac_rim(path_candidate):
+                    report_widest_pair("leader_hits_zodiac_rim")
+                    diagnostic_rejections["leader_rim_or_external"] += 1
+                    conjunction_rejections_by_body[name]["leader_rim_or_external"] += 1
+                    chosen.pop(name, None)
+                    continue
+                if leaders_too_close(path_candidate, leaders):
+                    report_widest_pair("leaders_too_close_external")
                     diagnostic_rejections["leader_rim_or_external"] += 1
                     conjunction_rejections_by_body[name]["leader_rim_or_external"] += 1
                     chosen.pop(name, None)
