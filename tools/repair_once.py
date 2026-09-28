@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""One-shot repair: extend body-cap diagnostics across all descendants."""
+"""One-shot repair: add grandparent/parent/current body cap diagnostics."""
 from pathlib import Path
 import runpy
 
-ENABLED = False
+ENABLED = True
 if not ENABLED:
     print("Repair Once is OFF; nothing to do.")
     raise SystemExit(0)
@@ -20,4 +20,4 @@ arming_line = "ENABLED = " + "True"
 if text.count(arming_line) != 1:
     raise SystemExit("Safety stop: Repair Once arming marker is not unique")
 me.write_text(text.replace(arming_line, "ENABLED = False", 1), encoding="utf-8")
-print("Extended descendant-depth diagnostics; Repair Once is now OFF.")
+print("Added three-generation cap diagnostic; Repair Once is now OFF.")
