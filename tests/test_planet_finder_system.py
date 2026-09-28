@@ -95,50 +95,29 @@ def w1_shaped_bodies():
 
 
 W01_EXACT = {
-    "Sun": 277.511945972904,
-    "Moon": 22.937571430229294,
-    "Mercury": 264.1023447351197,
-    "Venus": 275.4313050776394,
-    "Mars": 280.39213202805865,
-    "Jupiter": 111.74481470549088,
-    "Saturn": 355.99936587038286,
-    "Ceres": 6.453439627692317,
-    "Uranus": 58.03460466327627,
-    "Neptune": 359.4721293482971,
+    "Sun": 277.511945972904, "Moon": 22.937571430229294,
+    "Mercury": 264.1023447351197, "Venus": 275.4313050776394,
+    "Mars": 280.39213202805865, "Jupiter": 111.74481470549088,
+    "Saturn": 355.99936587038286, "Ceres": 6.453439627692317,
+    "Uranus": 58.03460466327627, "Neptune": 359.4721293482971,
     "Pluto": 302.62909367404063,
 }
 
 W02_EXACT = {
-    "Sun": 284.6440014763892,
-    "Moon": 126.1796456120117,
-    "Mercury": 274.8007325297467,
-    "Venus": 284.23931723550777,
-    "Mars": 285.7588826483691,
-    "Jupiter": 110.82906185524807,
-    "Saturn": 356.41276254486604,
-    "Ceres": 7.9496046464005525,
-    "Uranus": 57.84492478754409,
-    "Neptune": 359.5610441804245,
+    "Sun": 284.6440014763892, "Moon": 126.1796456120117,
+    "Mercury": 274.8007325297467, "Venus": 284.23931723550777,
+    "Mars": 285.7588826483691, "Jupiter": 110.82906185524807,
+    "Saturn": 356.41276254486604, "Ceres": 7.9496046464005525,
+    "Uranus": 57.84492478754409, "Neptune": 359.5610441804245,
     "Pluto": 302.8404789942358,
 }
 
-# Keep non-target bodies outside 30 degrees of the five-body laboratory.
-ISOLATED_OTHERS = {
-    "Saturn": 20,
-    "Neptune": 60,
-    "Ceres": 100,
-    "Moon": 140,
-    "Uranus": 180,
-    "Jupiter": 220,
-}
+ISOLATED_OTHERS = {"Saturn": 20, "Neptune": 60, "Ceres": 100, "Moon": 140, "Uranus": 180, "Jupiter": 220}
 
 
 def five_body_stage(mercury, venus, sun, mars, pluto):
     values = dict(ISOLATED_OTHERS)
-    values.update({
-        "Mercury": mercury, "Venus": venus, "Sun": sun,
-        "Mars": mars, "Pluto": pluto,
-    })
+    values.update({"Mercury": mercury, "Venus": venus, "Sun": sun, "Mars": mars, "Pluto": pluto})
     return values
 
 
@@ -151,65 +130,19 @@ TIGHT_FIVE_LADDER = [
 ]
 
 W01_LADDER = [
-    ("easy", {
-        "Sun": 0, "Mercury": 5, "Venus": 10, "Mars": 15, "Pluto": 20,
-        "Saturn": 100, "Neptune": 107, "Ceres": 114, "Moon": 121,
-        "Uranus": 180, "Jupiter": 240,
-    }),
-    ("wrap-four", {
-        "Sun": 180, "Mercury": 185, "Venus": 190, "Mars": 195, "Pluto": 200,
-        "Saturn": 355.99936587038286, "Neptune": 359.4721293482971,
-        "Ceres": 6.453439627692317, "Moon": 22.937571430229294,
-        "Uranus": 80, "Jupiter": 120,
-    }),
-    ("both-real-alignments", {
-        "Mercury": 264.1023447351197, "Venus": 275.4313050776394,
-        "Sun": 277.511945972904, "Mars": 280.39213202805865,
-        "Pluto": 302.62909367404063,
-        "Saturn": 355.99936587038286, "Neptune": 359.4721293482971,
-        "Ceres": 6.453439627692317, "Moon": 22.937571430229294,
-        "Uranus": 80, "Jupiter": 120,
-    }),
+    ("easy", {"Sun": 0, "Mercury": 5, "Venus": 10, "Mars": 15, "Pluto": 20, "Saturn": 100, "Neptune": 107, "Ceres": 114, "Moon": 121, "Uranus": 180, "Jupiter": 240}),
+    ("wrap-four", {"Sun": 180, "Mercury": 185, "Venus": 190, "Mars": 195, "Pluto": 200, "Saturn": 355.99936587038286, "Neptune": 359.4721293482971, "Ceres": 6.453439627692317, "Moon": 22.937571430229294, "Uranus": 80, "Jupiter": 120}),
+    ("both-real-alignments", {"Mercury": 264.1023447351197, "Venus": 275.4313050776394, "Sun": 277.511945972904, "Mars": 280.39213202805865, "Pluto": 302.62909367404063, "Saturn": 355.99936587038286, "Neptune": 359.4721293482971, "Ceres": 6.453439627692317, "Moon": 22.937571430229294, "Uranus": 80, "Jupiter": 120}),
     ("exact-W01", W01_EXACT),
 ]
 
 W02_LADDER = [
-    ("separated", {
-        "Sun": 0, "Mercury": 40, "Venus": 80, "Mars": 120, "Pluto": 160,
-        "Saturn": 200, "Neptune": 240, "Ceres": 280, "Moon": 320,
-        "Uranus": 60, "Jupiter": 180,
-    }),
-    ("venus-sun-conjunction", {
-        "Venus": 100.0, "Sun": 100.405, "Mercury": 20, "Mars": 150,
-        "Pluto": 190, "Saturn": 230, "Neptune": 270, "Ceres": 310,
-        "Moon": 350, "Uranus": 50, "Jupiter": 200,
-    }),
-    ("inner-alignment", {
-        "Mercury": 274.8007325297467, "Venus": 284.23931723550777,
-        "Sun": 284.6440014763892, "Mars": 285.7588826483691,
-        "Pluto": 302.8404789942358, "Saturn": 20, "Neptune": 60,
-        "Ceres": 100, "Moon": 140, "Uranus": 180, "Jupiter": 220,
-    }),
-    ("outer-wrap-alignment", {
-        "Saturn": 356.41276254486604, "Neptune": 359.5610441804245,
-        "Ceres": 7.9496046464005525, "Mercury": 60, "Venus": 100,
-        "Sun": 140, "Mars": 180, "Pluto": 220, "Moon": 260,
-        "Uranus": 300, "Jupiter": 100,
-    }),
-    ("jupiter-moon-alignment", {
-        "Jupiter": 110.82906185524807, "Moon": 126.1796456120117,
-        "Mercury": 10, "Venus": 50, "Sun": 90, "Mars": 170,
-        "Pluto": 210, "Saturn": 250, "Neptune": 290, "Ceres": 330,
-        "Uranus": 200,
-    }),
-    ("all-W02-groups", {
-        "Mercury": W02_EXACT["Mercury"], "Venus": W02_EXACT["Venus"],
-        "Sun": W02_EXACT["Sun"], "Mars": W02_EXACT["Mars"],
-        "Pluto": W02_EXACT["Pluto"], "Saturn": W02_EXACT["Saturn"],
-        "Neptune": W02_EXACT["Neptune"], "Ceres": W02_EXACT["Ceres"],
-        "Jupiter": W02_EXACT["Jupiter"], "Moon": W02_EXACT["Moon"],
-        "Uranus": 180,
-    }),
+    ("separated", {"Sun": 0, "Mercury": 40, "Venus": 80, "Mars": 120, "Pluto": 160, "Saturn": 200, "Neptune": 240, "Ceres": 280, "Moon": 320, "Uranus": 60, "Jupiter": 180}),
+    ("venus-sun-conjunction", {"Venus": 100.0, "Sun": 100.405, "Mercury": 20, "Mars": 150, "Pluto": 190, "Saturn": 230, "Neptune": 270, "Ceres": 310, "Moon": 350, "Uranus": 50, "Jupiter": 200}),
+    ("inner-alignment", {"Mercury": 274.8007325297467, "Venus": 284.23931723550777, "Sun": 284.6440014763892, "Mars": 285.7588826483691, "Pluto": 302.8404789942358, "Saturn": 20, "Neptune": 60, "Ceres": 100, "Moon": 140, "Uranus": 180, "Jupiter": 220}),
+    ("outer-wrap-alignment", {"Saturn": 356.41276254486604, "Neptune": 359.5610441804245, "Ceres": 7.9496046464005525, "Mercury": 60, "Venus": 100, "Sun": 140, "Mars": 180, "Pluto": 220, "Moon": 260, "Uranus": 300, "Jupiter": 100}),
+    ("jupiter-moon-alignment", {"Jupiter": 110.82906185524807, "Moon": 126.1796456120117, "Mercury": 10, "Venus": 50, "Sun": 90, "Mars": 170, "Pluto": 210, "Saturn": 250, "Neptune": 290, "Ceres": 330, "Uranus": 200}),
+    ("all-W02-groups", {"Mercury": W02_EXACT["Mercury"], "Venus": W02_EXACT["Venus"], "Sun": W02_EXACT["Sun"], "Mars": W02_EXACT["Mars"], "Pluto": W02_EXACT["Pluto"], "Saturn": W02_EXACT["Saturn"], "Neptune": W02_EXACT["Neptune"], "Ceres": W02_EXACT["Ceres"], "Jupiter": W02_EXACT["Jupiter"], "Moon": W02_EXACT["Moon"], "Uranus": 180}),
     ("exact-W02", W02_EXACT),
 ]
 
@@ -269,9 +202,13 @@ def test_level_20_progressive_real_w01_geometry(monkeypatch, mode, level, longit
 def test_level_30_progressive_real_w02_greek_breakpoint(monkeypatch, level, longitudes):
     """Find the first W02 geometry that makes Greek preplacement explode."""
     bodies = synthetic_bodies(longitudes)
+    # For the isolated diagnostic workflow, a one-candidate body cap makes the
+    # first conjunction blob report its first downstream barrier immediately.
+    # Production clocks and production search limits are unchanged.
+    diagnostic_cap = 1 if level == "venus-sun-conjunction" else 2000
     result = layout(
         FinderMode.GREEK, bodies, target_solutions=1,
-        budget={"max_node_candidates": 2000, "max_seconds": REGRESSION_SECONDS},
+        budget={"max_node_candidates": diagnostic_cap, "max_seconds": REGRESSION_SECONDS},
         context_label=f"W02-ladder-{level}",
     )
     assert_complete_valid_layout(result, bodies, FinderMode.GREEK)
