@@ -957,8 +957,19 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 # clearance required by terminal validation.  Reject sibling
                 # crossings/grazes here, before an impossible blob is handed
                 # to the downstream DFS.
-                if leaders_too_close(path_candidate, list(chosen_paths.values())):
-                    report_widest_pair("sibling_leaders_too_close")
+                sibling_leaders_too_close = any(
+                    segments_too_close(
+                        path_candidate[i], path_candidate[i + 1],
+                        old_path[j], old_path[j + 1],
+                        LEADER_TO_LEADER_CLEARANCE,
+                    )
+                    for old_path in chosen_paths.values()
+                    for i in range(len(path_candidate) - 1)
+                    for j in range(len(old_path) - 1)
+                    if not (i == 0 and j == 0)
+                )
+                if sibling_leaders_too_close:
+                    report_widest_pair("sibling_leaders_too_close_after_initial_escape")
                     diagnostic_rejections["leader_rim_or_external"] += 1
                     conjunction_rejections_by_body[name]["leader_rim_or_external"] += 1
                     chosen.pop(name, None)
