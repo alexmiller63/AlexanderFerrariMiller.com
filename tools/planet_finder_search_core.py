@@ -676,7 +676,14 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                        for path in leaders for i in range(len(path) - 1)):
                     continue
                 rows.append((x, y, box))
-            rows.sort(key=lambda row: math.hypot(row[0] - natural[0], row[1] - natural[1]))
+            # Conjunctions are hardest when their labels begin crowded near
+            # nearly coincident anchors.  Search from the easy outside inward:
+            # retain the same bounded pool, but try the most displaced label
+            # positions first.  No candidate is made legal by this ordering.
+            rows.sort(
+                key=lambda row: math.hypot(row[0] - natural[0], row[1] - natural[1]),
+                reverse=True,
+            )
             rows = rows[:80]
             if not rows:
                 return None
@@ -821,7 +828,22 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 return False
             _, (_, name, longitude) = group_items[depth]
             anchor = anchors[name]
-            for row in pools[name]:
+            candidate_rows = pools[name]
+            if chosen:
+                # Once one sibling has been placed, explicitly maximize the
+                # separation between conjunction labels first.  Stable sorting
+                # preserves the outer-to-inner pool order for ties.  Recursive
+                # failure naturally walks toward progressively narrower blobs.
+                chosen_centers = [(row[0], row[1]) for row in chosen.values()]
+                candidate_rows = sorted(
+                    candidate_rows,
+                    key=lambda row: min(
+                        math.hypot(row[0] - cx, row[1] - cy)
+                        for cx, cy in chosen_centers
+                    ),
+                    reverse=True,
+                )
+            for row in candidate_rows:
                 conjunction_attempts_by_body[name] += 1
                 x, y, box = row
                 if any(boxes_overlap(box, other[2], LABEL_COLLISION_PADDING)
