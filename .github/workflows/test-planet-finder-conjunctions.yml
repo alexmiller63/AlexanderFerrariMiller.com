@@ -30,8 +30,7 @@ jobs:
       - name: Compile Planet Finder search controller
         run: python -m py_compile tools/planet_finder_search.py tools/planet_finder_search_core.py
 
-      - name: Run progressive W1 regression ladder
+      - name: Run original Planet Finder QA ladder
         env:
           PYTHONPATH: tools
-          PLANET_FINDER_DIAGNOSTIC_LEVEL: "1"
-        run: python -m pytest -q -s -x tests/test_planet_finder_w01_ladder.py
+        run: python -m pytest -q -s tests/test_planet_finder_conjunctions.py tests/test_planet_finder_system.py
