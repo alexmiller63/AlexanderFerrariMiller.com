@@ -1,27 +1,18 @@
 #!/usr/bin/env python3
-"""Repair-once: add diagnostic-only Mercury candidate stream distribution accounting."""
+"""Repair-once: make ordinary label candidate enumeration broad-to-fine.
+
+This changes ordering only.  The canonical candidate set, legality tests, circular
+lambda constraints, routing, collision rules, scoring, and caps are unchanged.
+"""
 from pathlib import Path
 
-TARGET = Path("tools/planet_finder_search_core.py")
+TARGET = Path("tools/planet_finder_geometry.py")
 text = TARGET.read_text(encoding="utf-8")
 
-old_init = '''    viable_geometry_seen = {}\n    solutions = []\n'''
-new_init = '''    viable_geometry_seen = {}\n    # Diagnostic only: summarize how Mercury's admitted candidates traverse\n    # label-position space.  This does not filter, reorder, or score anything.\n    mercury_candidate_stream = []\n    solutions = []\n'''
-if text.count(old_init) != 1:
-    raise SystemExit(f"Safety stop: uniqueness init block count={text.count(old_init)}; expected 1")
-text = text.replace(old_init, new_init, 1)
-
-old_seen = '''            seen = viable_geometry_seen.setdefault(name, set())\n            seen.add(geometry_signature)\n\n            # This is the single cap point: only a fully viable candidate\n'''
-new_seen = '''            seen = viable_geometry_seen.setdefault(name, set())\n            seen.add(geometry_signature)\n\n            if name == "Mercury" and consume_body_budget:\n                # Polar coordinates around the exact Mercury anchor expose\n                # whether enumeration explores broadly or marches through one\n                # sector/radius before reaching the rest of the lattice.\n                dx = box.x - anchor[0]\n                dy = box.y - anchor[1]\n                mercury_candidate_stream.append((\n                    math.hypot(dx, dy),\n                    math.degrees(math.atan2(dy, dx)) % 360.0,\n                    box.x,\n                    box.y,\n                ))\n\n            # This is the single cap point: only a fully viable candidate\n'''
-if text.count(old_seen) != 1:
-    raise SystemExit(f"Safety stop: uniqueness admission block count={text.count(old_seen)}; expected 1")
-text = text.replace(old_seen, new_seen, 1)
-
-old_cap = '''                    f"lineage={cap_lineage(depth)}",\n                    flush=True,\n                )\n                raise DepthNodeBudgetExhausted(depth, name)\n'''
-new_cap = '''                    f"lineage={cap_lineage(depth)}",\n                    flush=True,\n                )\n                if name == "Mercury" and mercury_candidate_stream:\n                    # Use cumulative doubling bands so the output lines map\n                    # directly onto the W1 200/400/800/1600/3200 ladder.\n                    bounds = (200, 400, 800, 1600, 3200)\n                    start = 0\n                    for stop in bounds:\n                        if start >= len(mercury_candidate_stream):\n                            break\n                        band = mercury_candidate_stream[start:min(stop, len(mercury_candidate_stream))]\n                        radii = [row[0] for row in band]\n                        angles = [row[1] for row in band]\n                        xs = [row[2] for row in band]\n                        ys = [row[3] for row in band]\n                        sectors = [0] * 8\n                        for angle in angles:\n                            sectors[min(7, int(angle // 45.0))] += 1\n                        diagnostic_print(\n                            f"Planet Finder {mode}: MERCURY-CANDIDATE-BAND "\n                            f"range={start + 1}-{start + len(band)} "\n                            f"radius[min={min(radii):.1f},max={max(radii):.1f},mean={sum(radii)/len(radii):.1f}] "\n                            f"x[min={min(xs):.1f},max={max(xs):.1f}] "\n                            f"y[min={min(ys):.1f},max={max(ys):.1f}] "\n                            f"sectors45={','.join(str(value) for value in sectors)}",\n                            flush=True,\n                        )\n                        start = stop\n                raise DepthNodeBudgetExhausted(depth, name)\n'''
-if text.count(old_cap) != 2:
-    raise SystemExit(f"Safety stop: cap block count={text.count(old_cap)}; expected 2")
-text = text.replace(old_cap, new_cap)
-
+old = '''    quarter_step = LABEL_LENGTH * 0.25\n    for shell in range(9):\n        shifts = (0.0,) if shell == 0 else (-shell * quarter_step, shell * quarter_step)\n        for shift in shifts:\n            for r in radii:\n                bx, by = xy(longitude, r)\n                x, y = bx + shift * tx, by + shift * ty\n                if any(math.hypot(x - ox, y - oy) < 1e-9 for ox, oy in offered):\n                    continue\n                offered.append((x, y))\n                yield x, y\n'''
+new = '''    quarter_step = LABEL_LENGTH * 0.25\n    # Cover the full legal tangential interval before filling it in.  This is\n    # a deterministic coarse-to-fine ordering of exactly the same 0..8 shells:\n    # endpoints, center, half points, quarter points, then remaining eighths.\n    # The +/- order remains symmetric.  No candidate is added or removed.\n    shell_order = (8, 0, 4, 2, 6, 1, 3, 5, 7)\n    for shell in shell_order:\n        shifts = (0.0,) if shell == 0 else (-shell * quarter_step, shell * quarter_step)\n        for shift in shifts:\n            for r in radii:\n                bx, by = xy(longitude, r)\n                x, y = bx + shift * tx, by + shift * ty\n                if any(math.hypot(x - ox, y - oy) < 1e-9 for ox, oy in offered):\n                    continue\n                offered.append((x, y))\n                yield x, y\n'''
+if text.count(old) != 1:
+    raise SystemExit(f"Safety stop: canonical lattice loop count={text.count(old)}; expected 1")
+text = text.replace(old, new, 1)
 TARGET.write_text(text, encoding="utf-8")
-print("Added diagnostic-only Mercury candidate stream distribution accounting.")
+print("Reordered canonical candidate lattice broad-to-fine; candidate set and lambda legality unchanged.")
