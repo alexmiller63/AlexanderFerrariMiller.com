@@ -1,18 +1,19 @@
-"""Isolated timing test for the first failing W1-approach geometry.
+"""Narrow the W1 Sun/Venus/Mars search-performance boundary.
 
-Mars=278 degrees is the first case that exceeded the 60 second regression
-clock. Give exactly that geometry 180 seconds before changing solver logic.
+Only Mars changes. All other synthetic bodies stay away from the target cluster.
+Stop at the first failure so we identify the smallest Mars approach that makes
+the search pathological.
 """
+
+import pytest
 
 from planet_finder_geometry import CANONICAL, FinderMode
 from planet_finder_search import layout
 from planet_finder_validation import validate_layout
 
 
-W01_EXACT = {
-    "Sun": 277.511945972904,
-    "Venus": 275.4313050776394,
-}
+SUN = 277.511945972904
+VENUS = 275.4313050776394
 
 
 def bodies(longitudes):
@@ -29,13 +30,12 @@ def validate(result, source):
     assert valid, errors
 
 
-def mars_278_geometry():
-    # Keep all non-target bodies well away from the W1 Venus/Sun/Mars cluster.
+def geometry(mars):
     return {
-        "Sun": W01_EXACT["Sun"],
+        "Sun": SUN,
         "Mercury": 35,
-        "Venus": W01_EXACT["Venus"],
-        "Mars": 278.0,
+        "Venus": VENUS,
+        "Mars": mars,
         "Jupiter": 140,
         "Saturn": 175,
         "Uranus": 210,
@@ -46,14 +46,18 @@ def mars_278_geometry():
     }
 
 
-def test_mars_278_with_180_second_clock(monkeypatch):
+MARS_APPROACH = [275.0, 276.0, 277.0, 277.5, 278.0]
+
+
+@pytest.mark.parametrize("mars", MARS_APPROACH, ids=[f"mars-{m:g}" for m in MARS_APPROACH])
+def test_mars_approach_boundary(monkeypatch, mars):
     monkeypatch.setenv("PLANET_FINDER_DIAGNOSTIC_LEVEL", "0")
-    source = bodies(mars_278_geometry())
+    source = bodies(geometry(mars))
     result = layout(
         FinderMode.GREEK,
         source,
         target_solutions=1,
-        budget={"max_node_candidates": 2000, "max_seconds": 180.0},
-        context_label="W01-mars-278-180s",
+        budget={"max_node_candidates": 2000, "max_seconds": 60.0},
+        context_label=f"W01-mars-boundary-{mars:g}",
     )
     validate(result, source)
