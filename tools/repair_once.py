@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""One-shot repair: install the split conjunction external-leader diagnostic."""
+"""One-shot repair: apply the global leader/rim geometry correction."""
 from pathlib import Path
 import runpy
 
-ENABLED = False
+ENABLED = True
 if not ENABLED:
     print("Repair Once is OFF; nothing to do.")
     raise SystemExit(0)
@@ -20,4 +20,4 @@ arming_line = "ENABLED = " + "True"
 if text.count(arming_line) != 1:
     raise SystemExit("Safety stop: Repair Once arming marker is not unique")
 me.write_text(text.replace(arming_line, "ENABLED = False", 1), encoding="utf-8")
-print("Installed split conjunction external-leader diagnostic; Repair Once is now OFF.")
+print("Applied global leader/rim geometry correction; Repair Once is now OFF.")
