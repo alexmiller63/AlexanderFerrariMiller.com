@@ -9,6 +9,7 @@ on:
       - "tools/planet_finder_search_core.py"
       - "tests/test_planet_finder_conjunctions.py"
       - "tests/test_planet_finder_system.py"
+      - "tests/test_planet_finder_w01_ladder.py"
       - ".github/workflows/test-planet-finder-conjunctions.yml"
 
 jobs:
@@ -29,8 +30,8 @@ jobs:
       - name: Compile Planet Finder search controller
         run: python -m py_compile tools/planet_finder_search.py tools/planet_finder_search_core.py
 
-      - name: Run isolated Greek W2 Venus-Sun conjunction regression
+      - name: Run progressive W1 regression ladder
         env:
           PYTHONPATH: tools
-          PLANET_FINDER_DIAGNOSTIC_LEVEL: "3"
-        run: python -m pytest -q -s 'tests/test_planet_finder_system.py::test_level_30_progressive_real_w02_greek_breakpoint[venus-sun-conjunction]'
+          PLANET_FINDER_DIAGNOSTIC_LEVEL: "1"
+        run: python -m pytest -q -s -x tests/test_planet_finder_w01_ladder.py
