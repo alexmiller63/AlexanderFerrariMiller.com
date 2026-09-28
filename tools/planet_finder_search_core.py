@@ -159,6 +159,10 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         body_attempts = {name: 0 for _, (_, name, _) in order}
     diagnostic_stats = {}
     route_diagnostics = {}
+    # Diagnostic only: distinguish genuinely different admitted geometries
+    # from repeated/equivalent viable candidates.  This never filters or
+    # reorders candidates and therefore cannot change search behavior.
+    viable_geometry_seen = {}
     solutions = []
     solution_keys = set()
     contest_keys = []
@@ -446,6 +450,8 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                     f"Planet Finder {mode}: BODY-CANDIDATE CAP order={order_index} "
                     f"depth={depth}/{len(order)} body={name} "
                     f"viable={body_attempts[name]:,}/{budget['max_node_candidates']:,} "
+                    f"unique_geometry={len(viable_geometry_seen.get(name, ())):,} "
+                    f"duplicates={max(0, body_attempts[name] - len(viable_geometry_seen.get(name, ()))):,} "
                     f"lineage={cap_lineage(depth)}",
                     flush=True,
                 )
@@ -668,6 +674,19 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 stats["leader"] += 1
                 stats["leader_graze"] += 1
                 continue
+            # Diagnostic-only geometry signature.  Round below rendering
+            # precision so numerically insignificant float noise does not make
+            # equivalent candidates appear distinct.  Include the routed leader
+            # because the same label box with a different route is a materially
+            # different search choice.
+            geometry_signature = (
+                round(box.x, 6), round(box.y, 6),
+                round(box.w, 6), round(box.h, 6),
+                tuple((round(px, 6), round(py, 6)) for px, py in path),
+            )
+            seen = viable_geometry_seen.setdefault(name, set())
+            seen.add(geometry_signature)
+
             # This is the single cap point: only a fully viable candidate
             # admitted to DFS consumes the body's candidate budget.
             body_candidates += 1
@@ -683,6 +702,8 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                     f"Planet Finder {mode}: BODY-CANDIDATE CAP order={order_index} "
                     f"depth={depth}/{len(order)} body={name} "
                     f"viable={body_attempts[name]:,}/{budget['max_node_candidates']:,} "
+                    f"unique_geometry={len(viable_geometry_seen.get(name, ())):,} "
+                    f"duplicates={max(0, body_attempts[name] - len(viable_geometry_seen.get(name, ()))):,} "
                     f"lineage={cap_lineage(depth)}",
                     flush=True,
                 )
