@@ -981,13 +981,10 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                     ),
                     reverse=True,
                 )
-            # candidate_rows is widest-first. For conjunction siblings, a
-            # failure of the maximum-separation geometry means this outer blob
-            # placement/orientation cannot support the conjunction. Narrower
-            # sibling geometry cannot repair that geometric failure, so return
-            # to the parent blob search instead of squeezing inward.
-            if chosen:
-                candidate_rows = candidate_rows[:1]
+            # candidate_rows is widest-first. Do not prune merely because the
+            # widest candidate fails: routing, lambda order, and leader geometry
+            # can improve at a narrower sibling position. Only monotonic space
+            # failures may prune the remaining narrower candidates.
             for row_index, row in enumerate(candidate_rows):
                 conjunction_attempts_by_body[name] += 1
                 x, y, box = row
@@ -1014,6 +1011,11 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                     report_widest_pair("label_overlap")
                     diagnostic_rejections["label_overlap"] += 1
                     conjunction_rejections_by_body[name]["label_overlap"] += 1
+                    # Rows are ordered maximum-separation first. If even the
+                    # widest sibling labels overlap, every narrower candidate
+                    # is geometrically no better for this parent placement.
+                    if chosen and row_index == 0:
+                        return False
                     continue
                 chosen[name] = row
                 lambda_ok = preserves_lambda_order()
