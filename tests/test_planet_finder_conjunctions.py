@@ -19,10 +19,10 @@ def test_level_0_widely_separated_bodies_have_no_alignments():
     assert conjunction_groups(sky) == []
 
 
-# Level 1: a full ordinary system, still deliberately uncrowded.
+# Level 1: the full Planet Finder system, still deliberately uncrowded.
 def test_level_1_full_system_has_no_alignments():
-    names12 = ["Sun", "Mercury", "Venus", "Earth", "Moon", "Mars", "Ceres", "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto"]
-    sky = bodies([(name, i * 30.0) for i, name in enumerate(names12)])
+    names11 = ["Sun", "Mercury", "Venus", "Moon", "Mars", "Ceres", "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto"]
+    sky = bodies([(name, i * (360.0 / len(names11))) for i, name in enumerate(names11)])
     assert conjunction_groups(sky) == []
 
 
