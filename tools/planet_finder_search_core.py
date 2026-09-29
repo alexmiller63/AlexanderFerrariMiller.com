@@ -855,12 +855,21 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                     allow_initial_escape_count=3,
                     target_box=chosen[name][2],
                 )
-                if path is None or any(
+                label_hit = path is not None and any(
                     segment_hits_box(path[i], path[i + 1], box, PLACED_LABEL_LEADER_CLEARANCE)
                     for box in other_boxes for i in range(len(path) - 1)
-                ) or leader_hits_zodiac_rim(path) or leaders_too_close(
-                    path, leaders + list(paths.values())
-                ):
+                )
+                rim_hit = path is not None and leader_hits_zodiac_rim(path)
+                prior_paths = leaders + list(paths.values())
+                graze = path is not None and leaders_too_close(path, prior_paths)
+                if path is None or label_hit or rim_hit or graze:
+                    if os.environ.get("PLANET_FINDER_TRACE_ALIGNMENT_CLIFF") == "1":
+                        diagnostic_print(
+                            f"Planet Finder {mode}: ALIGNMENT CLIFF TRACE body={name} "
+                            f"route_none={path is None} label_hit={label_hit} rim_hit={rim_hit} "
+                            f"leader_graze={graze} chosen={','.join(chosen.keys())}",
+                            level=1, flush=True,
+                        )
                     return None
                 paths[name] = path
             return paths

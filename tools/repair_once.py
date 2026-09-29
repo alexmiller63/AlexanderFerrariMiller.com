@@ -2,7 +2,7 @@
 """One-shot diagnostic: trace the 1.08 -> 1.07 Venus-Sun alignment cliff."""
 from pathlib import Path
 
-ENABLED = True
+ENABLED = False
 if not ENABLED:
     print("Repair Once is OFF; nothing to do.")
     raise SystemExit(0)
