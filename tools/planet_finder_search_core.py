@@ -1009,6 +1009,25 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             _, (_, name, longitude) = group_items[depth]
             anchor = anchors[name]
             candidate_rows = pools[name]
+            if depth == 0 and len(group_items) == 2:
+                # A conjunction is a pair-placement problem.  Do not freeze
+                # body 1 merely because its own candidate is far from its
+                # natural position.  Order body 1 by the widest pair it can
+                # form with body 2.  The recursive sibling ordering below then
+                # makes the very first attempted pair the GLOBAL widest pair.
+                # This is deliberately limited to the current 2-body handler;
+                # all legality, lambda-order, routing, caps, clocks, and
+                # downstream backtracking remain unchanged.
+                sibling_name = group_items[1][1][1]
+                sibling_rows = pools[sibling_name]
+                candidate_rows = sorted(
+                    candidate_rows,
+                    key=lambda row: max(
+                        math.hypot(row[0] - sibling[0], row[1] - sibling[1])
+                        for sibling in sibling_rows
+                    ),
+                    reverse=True,
+                )
             if chosen:
                 # Once a sibling is chosen, try the remaining label positions
                 # in maximum-separation-first order. Recursive failure then

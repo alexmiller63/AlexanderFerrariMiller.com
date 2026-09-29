@@ -2,7 +2,7 @@
 """One-shot repair: make a 2-body conjunction start with the globally widest pair."""
 from pathlib import Path
 
-ENABLED = True
+ENABLED = False
 if not ENABLED:
     print("Repair Once is OFF; nothing to do.")
     raise SystemExit(0)
