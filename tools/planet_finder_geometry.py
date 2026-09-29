@@ -243,13 +243,26 @@ def segment_distance(a, b, c, d):
     )
 
 def leaders_too_close(path, existing_paths, clearance: float = LEADER_TO_LEADER_CLEARANCE) -> bool:
-    """Reject a proposed leader that grazes or crosses an existing leader."""
-    return any(
-        segments_too_close(path[i], path[i + 1], other[j], other[j + 1], clearance)
-        for other in existing_paths
-        for i in range(len(path) - 1)
-        for j in range(len(other) - 1)
-    )
+    """Reject leader crossings/grazes after unavoidable close-anchor escape.
+
+    Two astronomical anchors can legitimately be closer than the rendered
+    leader clearance (or coincide in the conjunction limit).  Their leaders
+    must be allowed to fan apart from that common neighborhood.  Once the
+    corresponding first segments have escaped beyond the initial close-anchor
+    condition, ordinary leader-to-leader clearance applies unchanged.
+    """
+    for other in existing_paths:
+        close_anchors = math.hypot(path[0][0] - other[0][0], path[0][1] - other[0][1]) < clearance
+        for i in range(len(path) - 1):
+            for j in range(len(other) - 1):
+                if close_anchors and i == 0 and j == 0:
+                    # Shared/nearby origins are imposed by the sky geometry.
+                    # Do not mistake that unavoidable initial proximity for a
+                    # layout collision; all later segment pairs remain strict.
+                    continue
+                if segments_too_close(path[i], path[i + 1], other[j], other[j + 1], clearance):
+                    return True
+    return False
 
 def minimum_leader_separation(path, existing_paths):
     """Return the minimum segment-to-segment distance to existing leaders."""
