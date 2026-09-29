@@ -2,7 +2,7 @@
 """One-shot repair: make conjunctions use ordinary placement as an atomic blob."""
 from pathlib import Path
 
-ENABLED = True
+ENABLED = False
 if not ENABLED:
     print("Repair Once is OFF; nothing to do.")
     raise SystemExit(0)

@@ -784,460 +784,87 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
     by_name = {name: (i, (symbol, name, longitude)) for i, (symbol, name, longitude) in enumerate(bodies)}
 
     def solve_conjunction_group(group, group_index, downstream):
+        """Solve a conjunction with ordinary geometry, but backtrack it atomically.
+
+        Crossing the conjunction threshold changes only the unit of recursion:
+        every member is placed by viable_candidates(), exactly like an ordinary
+        body.  A complete group is then handed downstream as one transaction;
+        downstream failure restores/backtracks the whole group and tries the
+        next ordinary candidate combination.
+        """
         group_items = [by_name[item[1]] for item in group]
-        anchors = {
-            name: xy(longitude, RI - 5)
-            for _, (_, name, longitude) in group_items
-        }
-
-        # Build bounded candidate pools near each body's natural label
-        # position.  The group search is deliberately local and deterministic;
-        # ordinary DFS never sees these bodies once a complete group is frozen.
-        pools = {}
-        for _, (_, name, longitude) in group_items:
-            w, h = label_size(mode, name)
-            natural = xy(longitude, PREFERRED_LABEL_RADII[0])
-            rows = []
-            # Tight conjunctions use the finest existing refinement.
-            # Ordinary DFS remains on its caller-supplied scale.
-            conjunction_displacement_scale = 0.25
-            for x, y, box in legal_candidate_positions(
-                    longitude, w, h, reserved, conjunction_displacement_scale):
-                if any(boxes_overlap(box, old, LABEL_COLLISION_PADDING) for old in placed):
-                    continue
-                if any(segment_hits_box(path[i], path[i + 1], box, PLACED_LABEL_LEADER_CLEARANCE)
-                       for path in leaders for i in range(len(path) - 1)):
-                    continue
-                rows.append((x, y, box))
-            # Conjunctions are hardest when their labels begin crowded near
-            # nearly coincident anchors.  Search from the easy outside inward:
-            # retain the same bounded pool, but try the most displaced label
-            # positions first.  No candidate is made legal by this ordering.
-            # Conjunction feasibility is tested from maximum displacement
-            # inward. If wide geometry cannot work, tighter geometry must not
-            # be preferred merely because it appeared earlier in the lattice.
-            rows.sort(
-                key=lambda row: math.hypot(row[0] - natural[0], row[1] - natural[1]),
-                reverse=True,
-            )
-            rows = rows[:80]
-            if not rows:
-                return None
-            pools[name] = rows
-
-        chosen = {}
-        chosen_paths = {}
         ordered_names = [item[1][1] for item in group_items]
-        diagnostic_rejections = {
-            "label_overlap": 0,
-            "lambda_order": 0,
-            "route": 0,
-            "leader_label": 0,
-            "leader_rim_or_external": 0,
-            "sibling_leader_label": 0,
-        }
-        # Diagnostic only: count rejections by conjunction depth/body so the
-        # first hard barrier is visible without changing search semantics.
-        conjunction_rejections_by_body = {
-            name: {key: 0 for key in diagnostic_rejections}
-            for name in ordered_names
-        }
-        conjunction_attempts_by_body = {name: 0 for name in ordered_names}
-        conjunction_route_diagnostics = {}
-        # Forensic trace only: the conjunction pools are ordered widest-first.
-        # Record exactly why the first widest sibling pair is rejected.
-        widest_pair_trace = {"reported": False}
-        # Diagnostic only: characterize the circular-angle relation that the
-        # lambda-order gate accepts/rejects.  Do not alter solver decisions.
-        lambda_order_diag = {
-            "accepted": 0,
-            "rejected": 0,
-            "accepted_delta_min": None,
-            "accepted_delta_max": None,
-            "rejected_delta_min": None,
-            "rejected_delta_max": None,
-            "accepted_samples": [],
-            "rejected_samples": [],
-        }
-
-        def label_angle(row):
-            x, y, _ = row
-            return (math.degrees(math.atan2(CY - y, x - CX)) - 180.0) % 360.0
-
-        def preserves_lambda_order():
-            present = [name for name in ordered_names if name in chosen]
-            if len(present) < 2:
-                return True
-            reference = group_items[0][1][2] - 90.0
-            angles = [((label_angle(chosen[name]) - reference) % 360.0) for name in present]
-            # Preserve circular lambda order, but allow conjunction siblings
-            # to share the same label-center angle at different radii.
-            return all(a <= b for a, b in zip(angles, angles[1:]))
-
         blob_candidates = 0
         downstream_rejections = 0
-        # A descendant body cap is local evidence against the current blob,
-        # not permission to jump across the conjunction recursion.  Remember
-        # one such cap so it can reach the outer controller only after every
-        # blob candidate has had its own downstream search budget.
         pending_budget_exhaustion = None
 
         def assign(depth):
             nonlocal blob_candidates, downstream_rejections
             nonlocal pending_budget_exhaustion
+
             if depth == len(group_items):
                 blob_candidates += 1
                 diagnostic_print(
-                    f"Planet Finder {mode}: CONJUNCTION BLOB INTERNALLY VALID "
+                    f"Planet Finder {mode}: CONJUNCTION BLOB ORDINARY-GEOMETRY "
                     f"group={group_index + 1} candidate={blob_candidates} "
                     f"bodies={' > '.join(ordered_names)}",
                     flush=True,
                 )
-                # A complete conjunction is one atomic outer-search candidate.
-                # Stage the whole blob, search everything beneath it, and if
-                # downstream fails restore the entire blob before trying the
-                # next internally valid conjunction arrangement.
-                placed_mark = len(placed)
-                leaders_mark = len(leaders)
-                names_mark = len(leader_names)
-                staged_before = set(staged)
-                # Downstream candidate counts belong to this blob branch.  A
-                # rejected blob must not poison its sibling by consuming the
-                # sibling's 200-candidate allowance.
-                body_attempts_before = dict(body_attempts)
 
-                def restore_blob_branch():
-                    del placed[placed_mark:]
-                    del leaders[leaders_mark:]
-                    del leader_names[names_mark:]
-                    for key in list(staged):
-                        if key not in staged_before:
-                            staged.pop(key, None)
+                # Downstream search belongs to this complete blob candidate.
+                # If it fails, restore its body budgets before trying the next
+                # conjunction arrangement so sibling blobs are independent.
+                body_attempts_before = dict(body_attempts)
+                try:
+                    if downstream():
+                        return True
+                except DepthNodeBudgetExhausted as exc:
+                    if pending_budget_exhaustion is None:
+                        pending_budget_exhaustion = exc
+                finally:
                     body_attempts.clear()
                     body_attempts.update(body_attempts_before)
 
-                for original_index, (symbol, name, longitude) in group_items:
-                    box = chosen[name][2]
-                    leader = chosen_paths[name]
-                    placed.append(box)
-                    leaders.append(leader)
-                    leader_names.append(name)
-                    staged[original_index] = (symbol, name, longitude, box, leader)
-                # Diagnostic-only snapshot for this complete conjunction blob.
-                # It lets a downstream failure report what the ordinary DFS
-                # actually reached, without changing geometry, ordering, caps,
-                # clocks, or backtracking behavior.
-                branch_nodes_before = nodes
-                branch_backtracks_before = backtracks
-                branch_deepest_before = deepest
-                branch_attempts_before = dict(body_attempts)
-                try:
-                    downstream_solved = downstream()
-                except DepthNodeBudgetExhausted as exc:
-                    branch_attempt_deltas = {
-                        body: body_attempts.get(body, 0) - branch_attempts_before.get(body, 0)
-                        for body in body_attempts
-                        if body_attempts.get(body, 0) != branch_attempts_before.get(body, 0)
-                    }
-                    diagnostic_print(
-                        f"Planet Finder {mode}: CONJUNCTION DOWNSTREAM TRACE "
-                        f"group={group_index + 1} candidate={blob_candidates} outcome=cap "
-                        f"cap_body={exc.name} cap_depth={exc.depth} "
-                        f"deepest_before={branch_deepest_before}/{len(order)} "
-                        f"deepest_after={deepest}/{len(order)} "
-                        f"nodes={nodes - branch_nodes_before} "
-                        f"backtracks={backtracks - branch_backtracks_before} "
-                        f"attempt_deltas={branch_attempt_deltas}",
-                        level=2,
-                        flush=True,
-                    )
-                    # This blob exhausted a descendant search allowance.  That
-                    # is a failed child branch: restore it and let assign()
-                    # continue to the next complete conjunction blob.
-                    restore_blob_branch()
-                    if pending_budget_exhaustion is None:
-                        pending_budget_exhaustion = exc
-                    downstream_rejections += 1
-                    diagnostic_print(
-                        f"Planet Finder {mode}: CONJUNCTION BLOB DOWNSTREAM CAP "
-                        f"group={group_index + 1} candidate={blob_candidates} "
-                        f"body={exc.name} depth={exc.depth}; "
-                        f"restoring whole blob and trying next blob",
-                        flush=True,
-                    )
-                    return False
-                except Exception:
-                    # Wall-clock and other true controller aborts still escape,
-                    # but never leave a half-staged conjunction behind.
-                    restore_blob_branch()
-                    raise
-
-                if downstream_solved:
-                    diagnostic_print(
-                        f"Planet Finder {mode}: CONJUNCTION BLOB COMPATIBLE "
-                        f"group={group_index + 1} candidate={blob_candidates} "
-                        f"bodies={' > '.join(ordered_names)}",
-                        flush=True,
-                    )
-                    return True
                 downstream_rejections += 1
-                branch_attempt_deltas = {
-                    body: body_attempts.get(body, 0) - branch_attempts_before.get(body, 0)
-                    for body in body_attempts
-                    if body_attempts.get(body, 0) != branch_attempts_before.get(body, 0)
-                }
-                diagnostic_print(
-                    f"Planet Finder {mode}: CONJUNCTION BLOB DOWNSTREAM BARRIER "
-                    f"group={group_index + 1} candidate={blob_candidates} "
-                    f"downstream_rejections={downstream_rejections} "
-                    f"bodies={' > '.join(ordered_names)}; restoring whole blob",
-                    flush=True,
-                )
-                diagnostic_print(
-                    f"Planet Finder {mode}: CONJUNCTION DOWNSTREAM TRACE "
-                    f"group={group_index + 1} candidate={blob_candidates} outcome=barrier "
-                    f"deepest_before={branch_deepest_before}/{len(order)} "
-                    f"deepest_after={deepest}/{len(order)} "
-                    f"nodes={nodes - branch_nodes_before} "
-                    f"backtracks={backtracks - branch_backtracks_before} "
-                    f"attempt_deltas={branch_attempt_deltas}",
-                    level=2,
-                    flush=True,
-                )
-                restore_blob_branch()
                 return False
-            _, (_, name, longitude) = group_items[depth]
-            anchor = anchors[name]
-            candidate_rows = pools[name]
-            if depth == 0 and len(group_items) == 2:
-                # A conjunction is a pair-placement problem.  Do not freeze
-                # body 1 merely because its own candidate is far from its
-                # natural position.  Order body 1 by the widest pair it can
-                # form with body 2.  The recursive sibling ordering below then
-                # makes the very first attempted pair the GLOBAL widest pair.
-                # This is deliberately limited to the current 2-body handler;
-                # all legality, lambda-order, routing, caps, clocks, and
-                # downstream backtracking remain unchanged.
-                sibling_name = group_items[1][1][1]
-                sibling_rows = pools[sibling_name]
-                candidate_rows = sorted(
-                    candidate_rows,
-                    key=lambda row: max(
-                        math.hypot(row[0] - sibling[0], row[1] - sibling[1])
-                        for sibling in sibling_rows
-                    ),
-                    reverse=True,
-                )
-            if chosen:
-                # Once a sibling is chosen, try the remaining label positions
-                # in maximum-separation-first order. Recursive failure then
-                # moves inward only after wider alternatives have been tested.
-                chosen_centers = [(row[0], row[1]) for row in chosen.values()]
-                candidate_rows = sorted(
-                    candidate_rows,
-                    key=lambda row: min(
-                        math.hypot(row[0] - cx, row[1] - cy)
-                        for cx, cy in chosen_centers
-                    ),
-                    reverse=True,
-                )
-            # candidate_rows is widest-first. Do not prune merely because the
-            # widest candidate fails: routing, lambda order, and leader geometry
-            # can improve at a narrower sibling position. Only monotonic space
-            # failures may prune the remaining narrower candidates.
-            for row_index, row in enumerate(candidate_rows):
-                conjunction_attempts_by_body[name] += 1
-                x, y, box = row
-                tracing_widest_pair = depth == 1 and row_index == 0 and not widest_pair_trace["reported"]
 
-                def report_widest_pair(gate):
-                    if not tracing_widest_pair or widest_pair_trace["reported"]:
-                        return
-                    first_name = ordered_names[0]
-                    first_row = chosen.get(first_name)
-                    separation = None
-                    if first_row is not None:
-                        separation = math.hypot(x - first_row[0], y - first_row[1])
-                    print(
-                        f"CONJUNCTION WIDEST PAIR mode={mode} group={group_index + 1} "
-                        f"bodies={first_name} > {name} gate={gate} "
-                        f"center_separation={separation if separation is not None else 'unknown'}",
-                        flush=True,
-                    )
-                    widest_pair_trace["reported"] = True
+            item = group_items[depth]
+            original_index, (symbol, name, longitude) = item
 
-                if any(boxes_overlap(box, other[2], LABEL_COLLISION_PADDING)
-                       for other in chosen.values()):
-                    report_widest_pair("label_overlap")
-                    diagnostic_rejections["label_overlap"] += 1
-                    conjunction_rejections_by_body[name]["label_overlap"] += 1
-                    # Rows are ordered maximum-separation first. If even the
-                    # widest sibling labels overlap, every narrower candidate
-                    # is geometrically no better for this parent placement.
-                    if chosen and row_index == 0:
-                        return False
-                    continue
-                chosen[name] = row
-                lambda_ok = preserves_lambda_order()
-                if len(chosen) >= 2:
-                    present = [n for n in ordered_names if n in chosen]
-                    reference = group_items[0][1][2] - 90.0
-                    normalized = [((label_angle(chosen[n]) - reference) % 360.0) for n in present]
-                    # For the current two-body barrier this is the signed
-                    # normalized separation tested by the monotonic gate.
-                    delta = normalized[-1] - normalized[-2]
-                    bucket = "accepted" if lambda_ok else "rejected"
-                    lambda_order_diag[bucket] += 1
-                    lo_key = f"{bucket}_delta_min"
-                    hi_key = f"{bucket}_delta_max"
-                    old_lo = lambda_order_diag[lo_key]
-                    old_hi = lambda_order_diag[hi_key]
-                    lambda_order_diag[lo_key] = delta if old_lo is None else min(old_lo, delta)
-                    lambda_order_diag[hi_key] = delta if old_hi is None else max(old_hi, delta)
-                    samples = lambda_order_diag[f"{bucket}_samples"]
-                    if len(samples) < 8:
-                        samples.append({
-                            "names": tuple(present),
-                            "raw_angles": tuple(round(label_angle(chosen[n]), 3) for n in present),
-                            "normalized": tuple(round(v, 3) for v in normalized),
-                            "delta": round(delta, 3),
-                        })
-                if not lambda_ok:
-                    report_widest_pair("lambda_order")
-                    diagnostic_rejections["lambda_order"] += 1
-                    conjunction_rejections_by_body[name]["lambda_order"] += 1
-                    chosen.pop(name, None)
-                    continue
-                other_boxes = [other[2] for other_name, other in chosen.items() if other_name != name]
-                conjunction_obstacles = reserved + placed + other_boxes
-                path_candidate = route(
-                    anchor, (x, y), conjunction_obstacles,
-                    diagnostic=conjunction_route_diagnostics,
-                    # Reserved chart annotations may still be escaped only when
-                    # the anchor begins inside their protected footprint.
-                    # Sibling labels are hard obstacles; angular first elbows
-                    # route around them instead of exempting collisions.
-                    allow_initial_escape_indices=set(range(len(reserved))),
-                    target_box=box,
-                    allow_angular_escape=True,
-                )
-                if path_candidate is None:
-                    report_widest_pair("route")
-                    diagnostic_rejections["route"] += 1
-                    conjunction_rejections_by_body[name]["route"] += 1
-                    chosen.pop(name, None)
-                    continue
-                if any(segment_hits_box(path_candidate[i], path_candidate[i + 1], other_box,
-                                        PLACED_LABEL_LEADER_CLEARANCE)
-                       for other_box in other_boxes for i in range(len(path_candidate) - 1)):
-                    report_widest_pair("leader_label")
-                    diagnostic_rejections["leader_label"] += 1
-                    conjunction_rejections_by_body[name]["leader_label"] += 1
-                    chosen.pop(name, None)
-                    continue
-                # Conjunction siblings intentionally originate at nearly the
-                # same lambda, so their leaders may be close near the anchors.
-                # Keep the ordinary clearance rule against leaders outside this
-                # atomic conjunction, while sibling leader/label collisions are
-                # checked explicitly above and below.
-                if leader_hits_zodiac_rim(path_candidate):
-                    report_widest_pair("leader_hits_zodiac_rim")
-                    diagnostic_rejections["leader_rim_or_external"] += 1
-                    conjunction_rejections_by_body[name]["leader_rim_or_external"] += 1
-                    chosen.pop(name, None)
-                    continue
-                if leaders_too_close(path_candidate, leaders):
-                    report_widest_pair("leaders_too_close_external")
-                    diagnostic_rejections["leader_rim_or_external"] += 1
-                    conjunction_rejections_by_body[name]["leader_rim_or_external"] += 1
-                    chosen.pop(name, None)
-                    continue
-                # Symmetric collision check: an already chosen sibling leader
-                # may not pass through this newly chosen label.
-                if any(segment_hits_box(old_path[i], old_path[i + 1], box,
-                                        PLACED_LABEL_LEADER_CLEARANCE)
-                       for old_path in chosen_paths.values() for i in range(len(old_path) - 1)):
-                    report_widest_pair("sibling_leader_label")
-                    diagnostic_rejections["sibling_leader_label"] += 1
-                    conjunction_rejections_by_body[name]["sibling_leader_label"] += 1
-                    chosen.pop(name, None)
-                    continue
-                # A conjunction blob must satisfy the same leader-to-leader
-                # clearance required by terminal validation.  Reject sibling
-                # crossings/grazes here, before an impossible blob is handed
-                # to the downstream DFS.
-                sibling_leaders_too_close = any(
-                    segments_too_close(
-                        path_candidate[i], path_candidate[i + 1],
-                        old_path[j], old_path[j + 1],
-                        LEADER_TO_LEADER_CLEARANCE,
-                    )
-                    for old_path in chosen_paths.values()
-                    for i in range(len(path_candidate) - 1)
-                    for j in range(len(old_path) - 1)
-                    if not (i == 0 and j == 0)
-                )
-                if sibling_leaders_too_close:
-                    report_widest_pair("sibling_leaders_too_close_after_initial_escape")
-                    diagnostic_rejections["leader_rim_or_external"] += 1
-                    conjunction_rejections_by_body[name]["leader_rim_or_external"] += 1
-                    chosen.pop(name, None)
-                    continue
-                report_widest_pair("accepted_internal_pair")
-                chosen_paths[name] = path_candidate
+            # This is deliberately the SAME candidate generator used by the
+            # ordinary DFS.  No conjunction-only pool, displacement scale,
+            # lambda gate, routing rule, or collision rule belongs here.
+            for box, path in viable_candidates(
+                    item, depth, consume_body_budget=False):
+                placed.append(box)
+                leaders.append(path)
+                leader_names.append(name)
+                staged[original_index] = (symbol, name, longitude, box, path)
+
                 if assign(depth + 1):
                     return True
-                chosen_paths.pop(name, None)
-                chosen.pop(name, None)
+
+                staged.pop(original_index, None)
+                leader_names.pop()
+                leaders.pop()
+                placed.pop()
+
             return False
 
-        if not assign(0):
-            # All sibling blobs have now been tried.  Only at this point may a
-            # descendant cap become a squeaky-wheel signal for the outer
-            # ordering controller.
-            if pending_budget_exhaustion is not None:
-                diagnostic_print(
-                    f"Planet Finder {mode}: CONJUNCTION BLOBS EXHAUSTED AFTER CAPS "
-                    f"group={group_index + 1} candidates={blob_candidates}; "
-                    f"returning cap body={pending_budget_exhaustion.name} "
-                    f"to outer controller",
-                    flush=True,
-                )
-                raise pending_budget_exhaustion
-            raw_escape_blockers = conjunction_route_diagnostics.get("escape_blocked_by", {})
-            blocker_counts = {}
-            for obstacle_index, count in raw_escape_blockers.items():
-                if obstacle_index < len(reserved_names):
-                    label = reserved_names[obstacle_index]
-                elif obstacle_index < len(reserved) + len(placed):
-                    label = f"placed_{obstacle_index - len(reserved)}"
-                else:
-                    label = "conjunction_sibling_label"
-                blocker_counts[label] = blocker_counts.get(label, 0) + count
-            top_escape_blockers = dict(sorted(
-                blocker_counts.items(), key=lambda item: (-item[1], item[0])
-            )[:4])
-            route_summary = {
-                key: value for key, value in conjunction_route_diagnostics.items()
-                if key != "escape_blocked_by"
-            }
-            print(
-                f"CONJUNCTION FAILURE mode={mode} group={group_index + 1} "
-                f"bodies={' > '.join(item[1][1] for item in group_items)} "
-                f"pool_sizes={{{', '.join(f'{name!r}: {len(rows)}' for name, rows in pools.items())}}} "
-                f"internally_valid_blobs={blob_candidates} "
-                f"downstream_rejections={downstream_rejections} "
-                f"barrier={'internal' if blob_candidates == 0 else 'downstream'} "
-                f"attempts_by_body={conjunction_attempts_by_body} "
-                f"rejections_by_body={conjunction_rejections_by_body} "
-                f"rejections={diagnostic_rejections} "
-                f"lambda_order_detail={lambda_order_diag} "
-                f"route_detail={route_summary} "
-                f"escape_blockers={top_escape_blockers}",
-                flush=True,
-            )
-            return False
-        return True
+        solved = assign(0)
+        if solved:
+            return True
+
+        diagnostic_print(
+            f"Planet Finder {mode}: CONJUNCTION ORDINARY-GEOMETRY EXHAUSTED "
+            f"group={group_index + 1} bodies={' > '.join(ordered_names)} "
+            f"blob_candidates={blob_candidates} "
+            f"downstream_rejections={downstream_rejections}",
+            flush=True,
+        )
+        if pending_budget_exhaustion is not None:
+            raise pending_budget_exhaustion
+        return False
 
     conjunction_group_list = conjunction_groups(bodies)
 
