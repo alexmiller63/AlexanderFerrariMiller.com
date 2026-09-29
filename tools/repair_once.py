@@ -2,7 +2,7 @@
 """One-shot repair: stop a conjunction sibling branch when its widest geometry fails."""
 from pathlib import Path
 
-ENABLED = True
+ENABLED = False
 if not ENABLED:
     print("Repair Once is OFF; nothing to do.")
     raise SystemExit(0)

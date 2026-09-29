@@ -981,6 +981,13 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                     ),
                     reverse=True,
                 )
+            # candidate_rows is widest-first. For conjunction siblings, a
+            # failure of the maximum-separation geometry means this outer blob
+            # placement/orientation cannot support the conjunction. Narrower
+            # sibling geometry cannot repair that geometric failure, so return
+            # to the parent blob search instead of squeezing inward.
+            if chosen:
+                candidate_rows = candidate_rows[:1]
             for row_index, row in enumerate(candidate_rows):
                 conjunction_attempts_by_body[name] += 1
                 x, y, box = row
