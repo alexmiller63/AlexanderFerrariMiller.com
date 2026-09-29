@@ -63,6 +63,22 @@ def group_names(groups):
 def assert_complete_valid_layout(result, bodies, mode=FinderMode.GREEK):
     expected = {name for _, name, _ in bodies}
     actual = [name for _, name, _, _, _ in result]
+    if len(actual) != len(expected) or set(actual) != expected:
+        longitude_by_name = {name: longitude for _, name, longitude in bodies}
+        missing = sorted(expected - set(actual))
+        unexpected = sorted(set(actual) - expected)
+        missing_detail = ", ".join(
+            f"{name}@{longitude_by_name[name]:.12f}deg" for name in missing
+        ) or "none"
+        print(
+            "Planet Finder TEST FAILURE SUMMARY: "
+            f"mode={mode.value} expected={len(expected)} placed={len(actual)} "
+            f"missing=[{missing_detail}] unexpected={unexpected} "
+            f"placed_order={actual} "
+            f"conjunction_groups={group_names(conjunction_groups(bodies))} "
+            f"alignment_groups={group_names(alignment_groups(bodies))}",
+            flush=True,
+        )
     assert len(actual) == len(expected)
     assert len(actual) == len(set(actual))
     assert set(actual) == expected
@@ -190,7 +206,10 @@ def test_level_15_isolated_tight_five_breakpoint(monkeypatch, mode, level, longi
 @pytest.mark.parametrize("level,longitudes", W01_LADDER, ids=[item[0] for item in W01_LADDER])
 @pytest.mark.parametrize("mode", MODES)
 def test_level_20_progressive_real_w01_geometry(monkeypatch, mode, level, longitudes):
-    monkeypatch.setenv("PLANET_FINDER_DIAGNOSTIC_LEVEL", "0")
+    # Exact W01 is the active forensic case. Level 2 exposes controller stage,
+    # promotion/cap, search-outcome, and rejection summaries without changing
+    # geometry or search behavior. Earlier ladder stages remain quiet.
+    monkeypatch.setenv("PLANET_FINDER_DIAGNOSTIC_LEVEL", "2" if level == "exact-W01" else "0")
     bodies = synthetic_bodies(longitudes)
     result = layout(mode, bodies, target_solutions=1, budget={"max_node_candidates": 2000, "max_seconds": REGRESSION_SECONDS}, context_label=f"regression-{level}-{mode.value}")
     assert_complete_valid_layout(result, bodies, mode)
