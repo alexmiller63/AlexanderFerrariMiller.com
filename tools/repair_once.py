@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""One-shot repair: restore maximum-separation-first ordering for all conjunctions."""
+"""One-shot repair: stop a conjunction sibling branch when its widest geometry fails."""
 from pathlib import Path
 
-ENABLED = False
+ENABLED = True
 if not ENABLED:
     print("Repair Once is OFF; nothing to do.")
     raise SystemExit(0)
@@ -10,64 +10,30 @@ if not ENABLED:
 TARGET = Path("tools/planet_finder_search_core.py")
 text = TARGET.read_text(encoding="utf-8")
 
-old_pool_sort = '''            # Diagnostic canary: for a 2-body conjunction only, retain the
-            # original sequential legal_candidate_positions() order. Larger
-            # conjunctions keep the current outside-in ordering unchanged.
-            if len(group_items) != 2:
-                rows.sort(
-                    key=lambda row: math.hypot(row[0] - natural[0], row[1] - natural[1]),
-                    reverse=True,
-                )
+old = '''            for row_index, row in enumerate(candidate_rows):
+                conjunction_attempts_by_body[name] += 1
+                x, y, box = row
+                tracing_widest_pair = depth == 1 and row_index == 0 and not widest_pair_trace["reported"]
 '''
-new_pool_sort = '''            # Conjunction feasibility is tested from maximum displacement
-            # inward. If wide geometry cannot work, tighter geometry must not
-            # be preferred merely because it appeared earlier in the lattice.
-            rows.sort(
-                key=lambda row: math.hypot(row[0] - natural[0], row[1] - natural[1]),
-                reverse=True,
-            )
-'''
-
-old_pair_sort = '''            if chosen and len(group_items) != 2:
-                # Larger conjunctions keep the current widest-first sibling
-                # ordering. The 2-body diagnostic canary deliberately keeps
-                # the sequential pool order so we can isolate ordering itself.
-                chosen_centers = [(row[0], row[1]) for row in chosen.values()]
-                candidate_rows = sorted(
-                    candidate_rows,
-                    key=lambda row: min(
-                        math.hypot(row[0] - cx, row[1] - cy)
-                        for cx, cy in chosen_centers
-                    ),
-                    reverse=True,
-                )
-'''
-new_pair_sort = '''            if chosen:
-                # Once a sibling is chosen, try the remaining label positions
-                # in maximum-separation-first order. Recursive failure then
-                # moves inward only after wider alternatives have been tested.
-                chosen_centers = [(row[0], row[1]) for row in chosen.values()]
-                candidate_rows = sorted(
-                    candidate_rows,
-                    key=lambda row: min(
-                        math.hypot(row[0] - cx, row[1] - cy)
-                        for cx, cy in chosen_centers
-                    ),
-                    reverse=True,
-                )
+new = '''            # candidate_rows is widest-first. For conjunction siblings, a
+            # failure of the maximum-separation geometry means this outer blob
+            # placement/orientation cannot support the conjunction. Narrower
+            # sibling geometry cannot repair that geometric failure, so return
+            # to the parent blob search instead of squeezing inward.
+            if chosen:
+                candidate_rows = candidate_rows[:1]
+            for row_index, row in enumerate(candidate_rows):
+                conjunction_attempts_by_body[name] += 1
+                x, y, box = row
+                tracing_widest_pair = depth == 1 and row_index == 0 and not widest_pair_trace["reported"]
 '''
 
-if text.count(old_pool_sort) != 1:
+if text.count(old) != 1:
     raise SystemExit(
-        f"Safety stop: 2-body canary pool-sort block count={text.count(old_pool_sort)}; expected 1"
-    )
-if text.count(old_pair_sort) != 1:
-    raise SystemExit(
-        f"Safety stop: 2-body canary sibling-sort block count={text.count(old_pair_sort)}; expected 1"
+        f"Safety stop: conjunction candidate loop count={text.count(old)}; expected 1"
     )
 
-text = text.replace(old_pool_sort, new_pool_sort, 1)
-text = text.replace(old_pair_sort, new_pair_sort, 1)
+text = text.replace(old, new, 1)
 TARGET.write_text(text, encoding="utf-8")
 
 me = Path(__file__)
@@ -78,6 +44,6 @@ if self_text.count(arming_line) != 1:
 me.write_text(self_text.replace(arming_line, "ENABLED = False", 1), encoding="utf-8")
 
 print(
-    "All conjunctions now search maximum separation first, including 2-body groups; "
-    "Repair Once is now OFF."
+    "Conjunction sibling search now stops after the widest geometry fails and "
+    "backtracks to the outer blob search; Repair Once is now OFF."
 )
