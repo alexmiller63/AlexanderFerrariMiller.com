@@ -1,60 +1,45 @@
 #!/usr/bin/env python3
-"""One-shot repair: remove obsolete conjunction placement recursion."""
+"""One-shot repair: conjunction classification must not alter alignment geometry."""
 from pathlib import Path
 
-ENABLED = False
+ENABLED = True
 if not ENABLED:
     print("Repair Once is OFF; nothing to do.")
     raise SystemExit(0)
 
-TARGET = Path("tools/planet_finder_search_core.py")
+TARGET = Path("tools/planet_finder_geometry.py")
 text = TARGET.read_text(encoding="utf-8")
 
-old = '''    def search_below_conjunctions():
-        # Alignment planning depends on the currently staged conjunction blob,
-        # so rebuild it for every blob candidate rather than carrying geometry
-        # from a failed conjunction branch into the next one.
-        alignment_preplacement = plan_alignment_layer()
-        stage_alignment_preplacement(alignment_preplacement)
-        return _search_alignment_fallback(
-            alignment_preplacement, alignment_group_items, placed, leaders,
-            leader_names, staged, search, solve_alignment_group,
-        )
+old = '''def alignment_groups(bodies, threshold: float = ALIGNMENT_DEGREES):
+    """Return deterministic broad alignment groups after conjunction removal.
 
-    def solve_conjunction_layer(group_index):
-        if group_index == len(conjunction_group_list):
-            return search_below_conjunctions()
-        group = conjunction_group_list[group_index]
-        return solve_conjunction_group(
-            group,
-            group_index,
-            lambda: solve_conjunction_layer(group_index + 1),
-        )
-
-    try:
-        solved = solve_conjunction_layer(0)
-        exhausted = not solved
+    Near-conjunction members are deliberately excluded: they belong to the
+    earlier, more constrained placement phase and will already be frozen before
+    alignment placement begins. Remaining connected circular-lambda neighbors
+    within ``threshold`` form an alignment group.
+    """
+    conjunction_names = {
+        item[1]
+        for group in conjunction_groups(bodies)
+        for item in group
+    }
+    remaining = [item for item in bodies if item[1] not in conjunction_names]
+    return conjunction_groups(remaining, threshold=threshold)
 '''
-new = '''    def search_coordinated_geometry():
-        # Conjunctions have no placement path of their own.  Every body enters
-        # the ordinary coordinated alignment planner; conjunction metadata is
-        # consulted only by downstream backtracking to keep a conjunction
-        # atomic when it must be reconsidered.
-        alignment_preplacement = plan_alignment_layer()
-        stage_alignment_preplacement(alignment_preplacement)
-        return _search_alignment_fallback(
-            alignment_preplacement, alignment_group_items, placed, leaders,
-            leader_names, staged, search, solve_alignment_group,
-        )
+new = '''def alignment_groups(bodies, threshold: float = ALIGNMENT_DEGREES):
+    """Return deterministic broad alignment groups.
 
-    try:
-        solved = search_coordinated_geometry()
-        exhausted = not solved
+    Conjunction status changes backtracking granularity only. It must never
+    remove bodies from, split, or otherwise alter the ordinary coordinated
+    alignment geometry. Therefore alignment grouping is computed directly
+    from the complete body population at the alignment threshold.
+    """
+    return conjunction_groups(bodies, threshold=threshold)
 '''
+
 if text.count(old) != 1:
-    raise SystemExit("Safety stop: obsolete conjunction recursion did not match exactly once")
+    raise SystemExit("Safety stop: conjunction-removing alignment_groups did not match exactly once")
 text = text.replace(old, new, 1)
-
 TARGET.write_text(text, encoding="utf-8")
 
 me = Path(__file__)
@@ -65,7 +50,8 @@ if self_text.count(arming_line) != 1:
 me.write_text(self_text.replace(arming_line, "ENABLED = False", 1), encoding="utf-8")
 
 print(
-    "Removed the dangling conjunction-placement recursion. There is now one "
-    "coordinated placement path; conjunction metadata remains only for atomic "
-    "backtracking. Repair Once is now OFF."
+    "alignment_groups no longer removes conjunction members. Conjunctions now "
+    "participate in the same ordinary alignment geometry at every separation; "
+    "conjunction classification is reserved for backtracking atomicity. "
+    "Repair Once is now OFF."
 )
