@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Temporary diagnostic launcher: run only the 1.7-degree Venus-Sun forensic case."""
+"""Temporary diagnostic launcher: sweep Venus-Sun from 2.0 to 0.1 degrees."""
 from __future__ import annotations
 
 import os
@@ -7,7 +7,7 @@ import subprocess
 import sys
 
 CONTROL = [
-    "tests/test_planet_finder_w02_conjunction.py::test_greek_venus_sun_1_7_degree_forensic",
+    "tests/test_planet_finder_w02_conjunction.py::test_greek_venus_sun_separation_sweep",
 ]
 
 
