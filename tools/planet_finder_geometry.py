@@ -51,7 +51,7 @@ DEFAULT_MAX_SEARCH_SECONDS = 180
 
 # Bodies closer than this in ecliptic longitude form one deterministic
 # near-conjunction group before any presentation-mode search begins.
-NEAR_CONJUNCTION_DEGREES = 1.0
+NEAR_CONJUNCTION_DEGREES = 0.1
 
 # After conjunction members are frozen, remaining bodies within this angular
 # neighborhood form broader alignment groups for the second placement phase.

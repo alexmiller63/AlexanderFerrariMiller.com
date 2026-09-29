@@ -2,7 +2,7 @@
 """One-shot diagnostic: lower conjunction threshold to 0.1 degree."""
 from pathlib import Path
 
-ENABLED = True
+ENABLED = False
 if not ENABLED:
     print("Repair Once is OFF; nothing to do.")
     raise SystemExit(0)
