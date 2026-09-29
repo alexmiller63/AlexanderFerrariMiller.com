@@ -950,9 +950,15 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 return None
 
         nodes = 0
+        assign_visits = {}
+        assign_rejects = {"empty_future": 0, "order_or_path": 0}
+        deepest_alignment_choice = 0
 
         def assign(remaining, available, chosen):
-            nonlocal nodes
+            nonlocal nodes, deepest_alignment_choice
+            depth_here = len(chosen)
+            deepest_alignment_choice = max(deepest_alignment_choice, depth_here)
+            assign_visits[depth_here] = assign_visits.get(depth_here, 0) + 1
             if not remaining:
                 return (chosen, planned_paths(chosen))
             name = min(remaining, key=lambda candidate: (len(available[candidate]), order_names.index(candidate)))
@@ -961,6 +967,14 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 nodes += 1
                 if nodes > 50000 or (refinement_deadline is not None and
                                      time.monotonic() >= refinement_deadline):
+                    if os.environ.get("PLANET_FINDER_TRACE_ALIGNMENT_CLIFF") == "1":
+                        diagnostic_print(
+                            f"Planet Finder {mode}: ALIGNMENT SEARCH EXPLOSION nodes={nodes} "
+                            f"depth={depth_here}/{len(order_names)} next={name} "
+                            f"chosen={','.join(chosen.keys()) or '-'} "
+                            f"visits={assign_visits} rejects={assign_rejects}",
+                            level=1, flush=True,
+                        )
                     return None
                 next_available = {
                     candidate: [option for option in available[candidate]
@@ -968,9 +982,11 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                     for candidate in others
                 }
                 if any(not next_available[candidate] for candidate in others):
+                    assign_rejects["empty_future"] += 1
                     continue
                 trial = {**chosen, name: row}
                 if not ordered(trial) or planned_paths(trial) is None:
+                    assign_rejects["order_or_path"] += 1
                     continue
                 result = assign(others, next_available, trial)
                 if result is not None:
@@ -998,7 +1014,9 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         planned = result[0] if result else {}
         diagnostic_print(
             f"Planet Finder {mode}: ALIGNMENT PREPLACEMENT "
-            f"planned={len(planned)}/{len(order_names)} nodes={nodes}",
+            f"planned={len(planned)}/{len(order_names)} nodes={nodes} "
+            f"deepest={deepest_alignment_choice}/{len(order_names)} "
+            f"visits={assign_visits} rejects={assign_rejects}",
             flush=True,
         )
         if result is not None and "Venus" in planned and "Sun" in planned:

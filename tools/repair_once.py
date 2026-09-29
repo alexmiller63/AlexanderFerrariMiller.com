@@ -2,7 +2,7 @@
 """One-shot diagnostic: expose the 1.7-degree alignment search explosion."""
 from pathlib import Path
 
-ENABLED = True
+ENABLED = False
 if not ENABLED:
     print("Repair Once is OFF; nothing to do.")
     raise SystemExit(0)
