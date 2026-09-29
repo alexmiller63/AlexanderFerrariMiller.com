@@ -2,13 +2,47 @@
 from __future__ import annotations
 
 import math
+import os
 
 from planet_finder_geometry import (
     CX, CY, RI, LABEL_RIM_CLEARANCE, LABEL_COLLISION_PADDING,
     IMMUTABLE_LEADER_CLEARANCE, PLACED_LABEL_LEADER_CLEARANCE,
+    LEADER_TO_LEADER_CLEARANCE,
     reserved_boxes, boxes_overlap, segment_hits_box,
-    leader_hits_zodiac_rim, leaders_too_close,
+    leader_hits_zodiac_rim, leaders_too_close, minimum_leader_separation,
 )
+
+# Diagnostic-only throttle.  A pathological search can validate thousands of
+# rejected layouts; a few concrete segment examples are enough to expose the
+# geometry without flooding the Actions log.
+_LEADER_PAIR_TRACE_LIMIT = 8
+_leader_pair_traces = 0
+
+
+def _trace_leader_pair(mode: str, proposed_name: str, proposed_path,
+                       existing_name: str, existing_path) -> None:
+    """Print a bounded forensic trace for terminal leader/leader rejection."""
+    global _leader_pair_traces
+    try:
+        diagnostic_level = int(os.environ.get("PLANET_FINDER_DIAGNOSTIC_LEVEL", "1"))
+    except ValueError:
+        diagnostic_level = 1
+    if diagnostic_level < 2 or _leader_pair_traces >= _LEADER_PAIR_TRACE_LIMIT:
+        return
+    minimum, pair = minimum_leader_separation(proposed_path, [existing_path])
+    proposed_segment = pair[1] if pair is not None else None
+    existing_segment = pair[2] if pair is not None else None
+    print(
+        f"TERMINAL LEADER-PAIR GEOMETRY mode={mode} "
+        f"proposed={proposed_name} existing={existing_name} "
+        f"minimum={minimum:.3f} clearance={LEADER_TO_LEADER_CLEARANCE:.3f} "
+        f"segments={proposed_segment}/{existing_segment} "
+        f"proposed_path={[(round(x, 3), round(y, 3)) for x, y in proposed_path]} "
+        f"existing_path={[(round(x, 3), round(y, 3)) for x, y in existing_path]}",
+        flush=True,
+    )
+    _leader_pair_traces += 1
+
 
 def validate_layout(mode: str, result) -> tuple[bool, list[str]]:
     """Recheck a completed layout independently before rendering it."""
@@ -67,6 +101,7 @@ def validate_layout(mode: str, result) -> tuple[bool, list[str]]:
     for i, path in enumerate(paths):
         for j in range(i):
             if leaders_too_close(path, [paths[j]]):
+                _trace_leader_pair(mode, result[i][1], path, result[j][1], paths[j])
                 errors.append(
                     f"{result[i][1]}: leader crosses or grazes {result[j][1]} leader"
                 )
@@ -82,4 +117,3 @@ def validate_layout(mode: str, result) -> tuple[bool, list[str]]:
             errors.append(f"{result[i][1]}: label collides with inner zodiac border")
 
     return not errors, errors
-
