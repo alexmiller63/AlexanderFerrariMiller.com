@@ -1,5 +1,41 @@
 # Star Almanack Notes — Finders
 
+## 2026-09-29 — Conjunction stress-test boundary
+
+### Status: tabled after 4–8 body focused stress test
+
+A focused full-solver Greek-mode stress ladder tested 4, 5, 6, 7, and 8 bodies in one conjunction, using 0.08° adjacent spacing and the current 0.1° conjunction rule.
+
+Results:
+
+- 4 bodies: PASS, 23.255 s. Alignment preplacement itself succeeded in 454 nodes, but was subsequently blocked and the recursive alignment layer consumed most of the runtime. Treat this timing as anomalous and potentially worth revisiting separately.
+- 5 bodies: PASS, 0.092 s; alignment planner 427 nodes.
+- 6 bodies: PASS, 0.148 s; alignment planner 1,217 nodes.
+- 7 bodies: PASS, 0.200 s; alignment planner 1,372 nodes.
+- 8 bodies: FAIL at the 30 s mode clock. Alignment planner reached depth 7/8 and hit its 50,000-node ceiling at 50,007 nodes.
+
+The 8-body alignment rejection summary was:
+
+- circular-order rejects: 29,972
+- empty-future prunes: 11,368
+- planned-path rejects: 1,501
+  - route: 978
+  - label hit: 278
+  - leader graze: 245
+  - rim: 0
+
+Interpretation:
+
+- Conjunction handling is not fundamentally broken. It successfully solves through a 7-body conjunction, and 5–7 bodies solve very quickly.
+- The 8-body case is a torture-test boundary, not a normal Planet Finder astronomical requirement.
+- Leader graze is not the dominant remaining cause at the 8-body cliff. The search explosion is dominated by circular-order rejection and branches that leave no legal future placement.
+- Do not increase clocks or node limits merely to force the 8-body torture case through.
+- Do not contort production geometry solely to guarantee an 8-body 0.1° conjunction. The test has served its purpose by identifying the architectural boundary.
+
+If this is revisited, the next diagnostic should instrument the depth-7/8 transition: identify the 8th member, enumerate its remaining candidate positions, and summarize why each candidate is rejected. This would determine whether earlier blob placements prematurely box in the final member and whether the conjunction should be searched more explicitly as a coordinated unit.
+
+For now, the 8-body conjunction problem is TABLED. Production-confidence regression coverage should preserve the successful conjunction cases through 7 bodies.
+
 ## 2026-09-27 — Planet Finder architecture cleanup and search redesign
 
 ### Obsolete anchor-glyph geometry
