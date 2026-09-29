@@ -915,6 +915,23 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                     return result
             return None
 
+        # Diagnostic fingerprint for the Venus/Sun threshold ladder.  Report
+        # the widest generated candidates before DFS so 2deg and 1deg can be
+        # compared without changing candidate generation or search order.
+        if "Venus" in pools and "Sun" in pools:
+            for diagnostic_name in ("Venus", "Sun"):
+                natural = xy(longitudes[diagnostic_name], PREFERRED_LABEL_RADII[0])
+                diagnostic_rows = pools[diagnostic_name][:5]
+                diagnostic_print(
+                    f"Planet Finder {mode}: ALIGNMENT POOL {diagnostic_name} "
+                    f"count={len(pools[diagnostic_name])} widest=" + ";".join(
+                        f"x={row[0]:.3f},y={row[1]:.3f},"
+                        f"d={math.hypot(row[0]-natural[0], row[1]-natural[1]):.3f}"
+                        for row in diagnostic_rows
+                    ),
+                    flush=True,
+                )
+
         result = assign(order_names, pools, {})
         planned = result[0] if result else {}
         diagnostic_print(
@@ -922,6 +939,16 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             f"planned={len(planned)}/{len(order_names)} nodes={nodes}",
             flush=True,
         )
+        if result is not None and "Venus" in planned and "Sun" in planned:
+            for diagnostic_name in ("Venus", "Sun"):
+                row = planned[diagnostic_name]
+                path = result[1].get(diagnostic_name, ())
+                diagnostic_print(
+                    f"Planet Finder {mode}: ALIGNMENT WINNER {diagnostic_name} "
+                    f"x={row[0]:.3f} y={row[1]:.3f} "
+                    f"path=" + "->".join(f"({px:.3f},{py:.3f})" for px, py in path),
+                    flush=True,
+                )
         return result
 
     def stage_alignment_preplacement(alignment_preplacement):
