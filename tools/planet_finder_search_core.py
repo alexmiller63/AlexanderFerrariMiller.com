@@ -918,7 +918,13 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 and not any(segment_hits_box(path[i], path[i + 1], row[2], 10)
                             for path in leaders for i in range(len(path) - 1))
             ]
-            options.sort(key=lambda row: math.hypot(row[0] - natural[0], row[1] - natural[1]))
+            # Wide-first is a planner invariant, not conjunction-specific
+            # behavior.  Keep the widest legal alternatives in the bounded
+            # pool and try them before progressively narrower placements.
+            options.sort(
+                key=lambda row: math.hypot(row[0] - natural[0], row[1] - natural[1]),
+                reverse=True,
+            )
             pools[name] = options[:80]
             if not pools[name]:
                 return None
