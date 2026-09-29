@@ -2,7 +2,7 @@
 """One-shot diagnostic: trace Sun's missing widest candidate at the 1-degree boundary."""
 from pathlib import Path
 
-ENABLED = True
+ENABLED = False
 if not ENABLED:
     print("Repair Once is OFF; nothing to do.")
     raise SystemExit(0)
