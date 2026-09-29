@@ -668,14 +668,6 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 own_label_bad = True
 
             if own_label_bad:
-                if os.environ.get("PLANET_FINDER_TRACE_ALIGNMENT_CLIFF") == "1" and name in ("Venus", "Sun"):
-                    diagnostic_print(
-                        f"Planet Finder {mode}: CANDIDATE LEGALITY body={name} "
-                        f"stage=own-label result=REJECT route_backtracks={route_backtracks} "
-                        f"box=({box.x:.1f},{box.y:.1f},{box.w:.1f},{box.h:.1f}) "
-                        f"path={[(round(px,1), round(py,1)) for px,py in rendered_path]}",
-                        level=1, flush=True,
-                    )
                 rejected_leader += 1
                 stats["leader"] += 1
                 stats["leader_graze"] += 1
@@ -707,26 +699,10 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             too_close = leaders_too_close(path, leaders)
             timing["final_leader"] += time.monotonic() - t0
             if too_close:
-                if os.environ.get("PLANET_FINDER_TRACE_ALIGNMENT_CLIFF") == "1" and name in ("Venus", "Sun"):
-                    diagnostic_print(
-                        f"Planet Finder {mode}: CANDIDATE LEGALITY body={name} "
-                        f"stage=leader-to-leader result=REJECT "
-                        f"box=({box.x:.1f},{box.y:.1f},{box.w:.1f},{box.h:.1f}) "
-                        f"path={[(round(px,1), round(py,1)) for px,py in path]} "
-                        f"prior_paths={[[ (round(px,1), round(py,1)) for px,py in prior] for prior in leaders]}",
-                        level=1, flush=True,
-                    )
                 rejected_leader += 1
                 stats["leader"] += 1
                 stats["leader_graze"] += 1
                 continue
-            if os.environ.get("PLANET_FINDER_TRACE_ALIGNMENT_CLIFF") == "1" and name in ("Venus", "Sun"):
-                diagnostic_print(
-                    f"Planet Finder {mode}: CANDIDATE LEGALITY body={name} stage=viability result=ACCEPT "
-                    f"box=({box.x:.1f},{box.y:.1f},{box.w:.1f},{box.h:.1f}) "
-                    f"path={[(round(px,1), round(py,1)) for px,py in path]}",
-                    level=1, flush=True,
-                )
             # Diagnostic-only geometry signature.  Round below rendering
             # precision so numerically insignificant float noise does not make
             # equivalent candidates appear distinct.  Include the routed leader
@@ -852,6 +828,8 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         anchors = {name: xy(longitude, RI - 5)
                    for name, longitude in longitudes.items()}
         group_names = [[item[1][1] for item in group] for group in groups]
+        alignment_path_rejects = {"route": 0, "label_hit": 0, "rim_hit": 0, "leader_graze": 0}
+        alignment_samples = {}
 
         def label_angle(row, reference):
             x, y, _ = row
@@ -887,20 +865,22 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 prior_paths = leaders + list(paths.values())
                 graze = path is not None and leaders_too_close(path, prior_paths)
                 if path is None or label_hit or rim_hit or graze:
-                    if os.environ.get("PLANET_FINDER_TRACE_ALIGNMENT_CLIFF") == "1":
-                        prior_summary = [
-                            [(round(px, 1), round(py, 1)) for px, py in prior]
-                            for prior in prior_paths
-                        ]
-                        path_summary = None if path is None else [
-                            (round(px, 1), round(py, 1)) for px, py in path
-                        ]
-                        diagnostic_print(
-                            f"Planet Finder {mode}: ALIGNMENT CLIFF TRACE body={name} "
-                            f"route_none={path is None} label_hit={label_hit} rim_hit={rim_hit} "
-                            f"leader_graze={graze} chosen={','.join(chosen.keys())} "
-                            f"path={path_summary} prior_paths={prior_summary}",
-                            level=1, flush=True,
+                    if path is None:
+                        alignment_path_rejects["route"] += 1
+                        sample_key = "route"
+                    elif label_hit:
+                        alignment_path_rejects["label_hit"] += 1
+                        sample_key = "label_hit"
+                    elif rim_hit:
+                        alignment_path_rejects["rim_hit"] += 1
+                        sample_key = "rim_hit"
+                    else:
+                        alignment_path_rejects["leader_graze"] += 1
+                        sample_key = "leader_graze"
+                    if sample_key not in alignment_samples:
+                        alignment_samples[sample_key] = (
+                            f"body={name} chosen={','.join(chosen.keys())} "
+                            f"path={None if path is None else [(round(px,1), round(py,1)) for px,py in path]}"
                         )
                     return None
                 paths[name] = path
@@ -951,11 +931,12 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
 
         nodes = 0
         assign_visits = {}
-        assign_rejects = {"empty_future": 0, "order_or_path": 0}
+        assign_rejects = {"empty_future": 0, "circular_order": 0, "planned_path": 0}
         deepest_alignment_choice = 0
+        termination_reason = "exhausted"
 
         def assign(remaining, available, chosen):
-            nonlocal nodes, deepest_alignment_choice
+            nonlocal nodes, deepest_alignment_choice, termination_reason
             depth_here = len(chosen)
             deepest_alignment_choice = max(deepest_alignment_choice, depth_here)
             assign_visits[depth_here] = assign_visits.get(depth_here, 0) + 1
@@ -967,13 +948,11 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 nodes += 1
                 if nodes > 50000 or (refinement_deadline is not None and
                                      time.monotonic() >= refinement_deadline):
-                    if os.environ.get("PLANET_FINDER_TRACE_ALIGNMENT_CLIFF") == "1":
-                        diagnostic_print(
-                            f"Planet Finder {mode}: ALIGNMENT SEARCH EXPLOSION nodes={nodes} "
+                    termination_reason = "node-limit" if nodes > 50000 else "deadline"
+                    if "termination" not in alignment_samples:
+                        alignment_samples["termination"] = (
                             f"depth={depth_here}/{len(order_names)} next={name} "
-                            f"chosen={','.join(chosen.keys()) or '-'} "
-                            f"visits={assign_visits} rejects={assign_rejects}",
-                            level=1, flush=True,
+                            f"chosen={','.join(chosen.keys()) or '-'}"
                         )
                     return None
                 next_available = {
@@ -985,50 +964,63 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                     assign_rejects["empty_future"] += 1
                     continue
                 trial = {**chosen, name: row}
-                if not ordered(trial) or planned_paths(trial) is None:
-                    assign_rejects["order_or_path"] += 1
+                if not ordered(trial):
+                    assign_rejects["circular_order"] += 1
+                    if "circular_order" not in alignment_samples:
+                        alignment_samples["circular_order"] = (
+                            f"chosen={','.join(trial.keys())} "
+                            + " angles=" + ",".join(
+                                f"{member}:{label_angle(trial[member], longitudes[group_names[0][0]] - 90.0):.3f}"
+                                for member in group_names[0] if member in trial
+                            )
+                        )
+                    continue
+                if planned_paths(trial) is None:
+                    assign_rejects["planned_path"] += 1
                     continue
                 result = assign(others, next_available, trial)
                 if result is not None:
                     return result
             return None
 
-        # Diagnostic fingerprint for the Venus/Sun threshold ladder.  Report
-        # the widest generated candidates before DFS so 2deg and 1deg can be
-        # compared without changing candidate generation or search order.
-        if "Venus" in pools and "Sun" in pools:
-            for diagnostic_name in ("Venus", "Sun"):
-                natural = xy(longitudes[diagnostic_name], PREFERRED_LABEL_RADII[0])
-                diagnostic_rows = pools[diagnostic_name][:5]
-                diagnostic_print(
-                    f"Planet Finder {mode}: ALIGNMENT POOL {diagnostic_name} "
-                    f"count={len(pools[diagnostic_name])} widest=" + ";".join(
-                        f"x={row[0]:.3f},y={row[1]:.3f},"
-                        f"d={math.hypot(row[0]-natural[0], row[1]-natural[1]):.3f}"
-                        for row in diagnostic_rows
-                    ),
-                    flush=True,
-                )
-
         result = assign(order_names, pools, {})
         planned = result[0] if result else {}
+        if result is not None:
+            termination_reason = "success"
+        summary_lines = [
+            f"### Planet Finder alignment diagnostic — {mode}",
+            "",
+            f"- Members: {', '.join(order_names)}",
+            f"- Result: {termination_reason}",
+            f"- Nodes: {nodes:,}",
+            f"- Deepest: {deepest_alignment_choice}/{len(order_names)}",
+            f"- Complete alignment constructed: {'yes' if result is not None else 'no'}",
+            f"- Visits by depth: {assign_visits}",
+            f"- Empty-future prunes: {assign_rejects['empty_future']:,}",
+            f"- Circular-order rejects: {assign_rejects['circular_order']:,}",
+            f"- Planned-path rejects: {assign_rejects['planned_path']:,}",
+            f"- Path causes: route={alignment_path_rejects['route']:,}, "
+            f"label_hit={alignment_path_rejects['label_hit']:,}, "
+            f"rim_hit={alignment_path_rejects['rim_hit']:,}, "
+            f"leader_graze={alignment_path_rejects['leader_graze']:,}",
+        ]
+        if alignment_samples:
+            summary_lines += ["", "Representative first failures:"]
+            summary_lines += [f"- {key}: {value}" for key, value in alignment_samples.items()]
+        summary = "\n".join(summary_lines)
+        summary_path = os.environ.get("GITHUB_STEP_SUMMARY")
+        if summary_path:
+            with open(summary_path, "a", encoding="utf-8") as summary_file:
+                summary_file.write(summary + "\n\n")
         diagnostic_print(
-            f"Planet Finder {mode}: ALIGNMENT PREPLACEMENT "
-            f"planned={len(planned)}/{len(order_names)} nodes={nodes} "
-            f"deepest={deepest_alignment_choice}/{len(order_names)} "
-            f"visits={assign_visits} rejects={assign_rejects}",
+            f"Planet Finder {mode}: ALIGNMENT SUMMARY result={termination_reason} "
+            f"nodes={nodes:,} deepest={deepest_alignment_choice}/{len(order_names)} "
+            f"rejects[empty={assign_rejects['empty_future']:,},order={assign_rejects['circular_order']:,},"
+            f"path={assign_rejects['planned_path']:,}] "
+            f"path-causes[route={alignment_path_rejects['route']:,},label={alignment_path_rejects['label_hit']:,},"
+            f"rim={alignment_path_rejects['rim_hit']:,},graze={alignment_path_rejects['leader_graze']:,}]",
             flush=True,
         )
-        if result is not None and "Venus" in planned and "Sun" in planned:
-            for diagnostic_name in ("Venus", "Sun"):
-                row = planned[diagnostic_name]
-                path = result[1].get(diagnostic_name, ())
-                diagnostic_print(
-                    f"Planet Finder {mode}: ALIGNMENT WINNER {diagnostic_name} "
-                    f"x={row[0]:.3f} y={row[1]:.3f} "
-                    f"path=" + "->".join(f"({px:.3f},{py:.3f})" for px, py in path),
-                    flush=True,
-                )
         return result
 
     def stage_alignment_preplacement(alignment_preplacement):
