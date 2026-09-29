@@ -39,7 +39,7 @@ old_close = '''            if too_close:
                 stats["leader"] += 1
                 stats["leader_graze"] += 1
                 continue
-            # Diagnostic-only geometry signature.
+            # Diagnostic-only geometry signature.  Round below rendering
 '''
 new_close = '''            if too_close:
                 if os.environ.get("PLANET_FINDER_TRACE_ALIGNMENT_CLIFF") == "1" and name in ("Venus", "Sun"):
@@ -62,7 +62,7 @@ new_close = '''            if too_close:
                     f"path={[(round(px,1), round(py,1)) for px,py in path]}",
                     level=1, flush=True,
                 )
-            # Diagnostic-only geometry signature.
+            # Diagnostic-only geometry signature.  Round below rendering
 '''
 if text.count(old_close) != 1:
     raise SystemExit("Safety stop: leader-too-close rejection block did not match exactly once")
