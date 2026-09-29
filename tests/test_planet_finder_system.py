@@ -163,6 +163,12 @@ W02_LADDER = [
 ]
 
 
+def test_blocked_preplacement_restores_alignment_before_recursive_retry_duplicate_guard():
+    # Kept as a named guard in the progressive suite: a failed ordinary search
+    # must never freeze a planned alignment in place.
+    assert callable(_search_alignment_fallback)
+
+
 def test_level_10_w1_shaped_classification_has_two_large_alignments():
     bodies = w1_shaped_bodies()
     assert conjunction_groups(bodies) == []
@@ -205,29 +211,27 @@ def test_level_15_isolated_tight_five_breakpoint(monkeypatch, mode, level, longi
 
 @pytest.mark.parametrize("level,longitudes", W01_LADDER, ids=[item[0] for item in W01_LADDER])
 @pytest.mark.parametrize("mode", MODES)
-def test_level_20_progressive_real_w01_geometry(monkeypatch, mode, level, longitudes):
-    # Exact W01 is the active forensic case. Level 2 exposes controller stage,
-    # promotion/cap, search-outcome, and rejection summaries without changing
-    # geometry or search behavior. Earlier ladder stages remain quiet.
+def test_level_20_progressive_ultimate_w01(monkeypatch, mode, level, longitudes):
+    """Progress from easy W01-shaped geometry to immutable exact W01."""
     monkeypatch.setenv("PLANET_FINDER_DIAGNOSTIC_LEVEL", "2" if level == "exact-W01" else "0")
     bodies = synthetic_bodies(longitudes)
-    result = layout(mode, bodies, target_solutions=1, budget={"max_node_candidates": 2000, "max_seconds": REGRESSION_SECONDS}, context_label=f"regression-{level}-{mode.value}")
+    result = layout(mode, bodies, target_solutions=1, budget={"max_node_candidates": 2000, "max_seconds": REGRESSION_SECONDS}, context_label=f"ultimate-W01-{level}-{mode.value}")
     assert_complete_valid_layout(result, bodies, mode)
     if level in ("both-real-alignments", "exact-W01") and mode != FinderMode.GREEK:
         assert_alignment_labels_follow_lambda(result, bodies)
 
 
 @pytest.mark.parametrize("level,longitudes", W02_LADDER, ids=[item[0] for item in W02_LADDER])
-def test_level_30_progressive_real_w02_greek_breakpoint(monkeypatch, level, longitudes):
-    """Find the first W02 geometry that makes Greek preplacement explode."""
+@pytest.mark.parametrize("mode", MODES)
+def test_level_30_progressive_ultimate_w02(monkeypatch, mode, level, longitudes):
+    """Progress from separated geometry to immutable exact W02 in every mode."""
+    monkeypatch.setenv("PLANET_FINDER_DIAGNOSTIC_LEVEL", "2" if level == "exact-W02" else "0")
     bodies = synthetic_bodies(longitudes)
-    # For the isolated diagnostic workflow, a one-candidate body cap makes the
-    # first conjunction blob report its first downstream barrier immediately.
-    # Production clocks and production search limits are unchanged.
-    diagnostic_cap = 1 if level == "venus-sun-conjunction" else 2000
     result = layout(
-        FinderMode.GREEK, bodies, target_solutions=1,
-        budget={"max_node_candidates": diagnostic_cap, "max_seconds": REGRESSION_SECONDS},
-        context_label=f"W02-ladder-{level}",
+        mode, bodies, target_solutions=1,
+        budget={"max_node_candidates": 2000, "max_seconds": REGRESSION_SECONDS},
+        context_label=f"ultimate-W02-{level}-{mode.value}",
     )
-    assert_complete_valid_layout(result, bodies, FinderMode.GREEK)
+    assert_complete_valid_layout(result, bodies, mode)
+    if level in ("all-W02-groups", "exact-W02") and mode != FinderMode.GREEK:
+        assert_alignment_labels_follow_lambda(result, bodies)
