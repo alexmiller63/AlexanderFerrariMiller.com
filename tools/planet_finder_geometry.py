@@ -105,20 +105,14 @@ def conjunction_groups(bodies, threshold: float = NEAR_CONJUNCTION_DEGREES):
 
 
 def alignment_groups(bodies, threshold: float = ALIGNMENT_DEGREES):
-    """Return deterministic broad alignment groups after conjunction removal.
+    """Return deterministic broad alignment groups.
 
-    Near-conjunction members are deliberately excluded: they belong to the
-    earlier, more constrained placement phase and will already be frozen before
-    alignment placement begins. Remaining connected circular-lambda neighbors
-    within ``threshold`` form an alignment group.
+    Conjunction status changes backtracking granularity only. It must never
+    remove bodies from, split, or otherwise alter the ordinary coordinated
+    alignment geometry. Therefore alignment grouping is computed directly
+    from the complete body population at the alignment threshold.
     """
-    conjunction_names = {
-        item[1]
-        for group in conjunction_groups(bodies)
-        for item in group
-    }
-    remaining = [item for item in bodies if item[1] not in conjunction_names]
-    return conjunction_groups(remaining, threshold=threshold)
+    return conjunction_groups(bodies, threshold=threshold)
 
 
 class FinderMode(str, Enum):
