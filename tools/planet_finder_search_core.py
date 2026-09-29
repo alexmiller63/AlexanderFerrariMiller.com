@@ -783,64 +783,22 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
     # collision calculation belongs in the search model.
     by_name = {name: (i, (symbol, name, longitude)) for i, (symbol, name, longitude) in enumerate(bodies)}
 
-    def solve_conjunction_group(group, group_index, downstream):
-        """Place a conjunction with ordinary coordinated geometry, atomically."""
-        group_items = [by_name[item[1]] for item in group]
-        ordered_names = [item[1][1] for item in group_items]
-
-        # Critical invariant: 1 degree uses the same coordinated placement
-        # algorithm as the close ordinary alignment case. The threshold changes
-        # only the recursion unit: this completed group is committed/backtracked
-        # as one blob.
-        preplacement = plan_alignment_layer([group_items])
-        if not preplacement:
-            diagnostic_print(
-                f"Planet Finder {mode}: CONJUNCTION COORDINATED-GEOMETRY EXHAUSTED "
-                f"group={group_index + 1} bodies={' > '.join(ordered_names)}",
-                flush=True,
-            )
-            return False
-
-        planned, paths = preplacement
-        staged_indices = []
-        for original_index, (symbol, name, longitude) in group_items:
-            box = planned[name][2]
-            path = paths[name]
-            placed.append(box)
-            leaders.append(path)
-            leader_names.append(name)
-            staged[original_index] = (symbol, name, longitude, box, path)
-            staged_indices.append(original_index)
-
-        diagnostic_print(
-            f"Planet Finder {mode}: CONJUNCTION BLOB COORDINATED-GEOMETRY "
-            f"group={group_index + 1} bodies={' > '.join(ordered_names)}",
-            flush=True,
-        )
-
-        try:
-            if downstream():
-                return True
-        finally:
-            # A solved layout deliberately keeps staged geometry for collection.
-            # Restore only when downstream did not complete the whole search.
-            if len(staged) < len(bodies):
-                for original_index in staged_indices:
-                    staged.pop(original_index, None)
-                del leader_names[-len(group_items):]
-                del leaders[-len(group_items):]
-                del placed[-len(group_items):]
-        return False
-
     conjunction_group_list = conjunction_groups(bodies)
+    conjunction_names = {
+        item[1]
+        for group in conjunction_group_list
+        for item in group
+    }
 
-    # Second phase: solve the entire alignment layer recursively.  There are
-    # two levels of backtracking: members within a group, and groups within the
-    # alignment layer.  Nothing in this layer is truly frozen until every
-    # alignment group has a mutually compatible complete placement.
+    # Placement geometry is independent of conjunction status.  Build the
+    # coordinated alignment layer from a view in which conjunction members are
+    # restored to the ordinary alignment population.  Conjunction metadata is
+    # retained separately and is used only to make those members atomic when
+    # backtracking.
+    alignment_source = list(bodies)
     alignment_group_items = [
         [by_name[item[1]] for item in group]
-        for group in alignment_groups(bodies)
+        for group in alignment_groups(alignment_source)
     ]
 
     def plan_alignment_layer(groups=None):
