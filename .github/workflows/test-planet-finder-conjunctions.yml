@@ -5,8 +5,10 @@ on:
   push:
     paths:
       - "tools/planet_finder_geometry.py"
+      - "tools/planet_finder_search*.py"
       - "tests/test_planet_finder_conjunctions.py"
       - "tests/test_planet_finder_leader_geometry.py"
+      - "tests/test_planet_finder_progressive_conjunctions.py"
       - ".github/workflows/test-planet-finder-conjunctions.yml"
 
 jobs:
@@ -24,10 +26,11 @@ jobs:
       - name: Install test dependencies
         run: python -m pip install pytest skyfield
 
-      - name: Run conjunction and leader-geometry QA
+      - name: Run progressive Planet Finder conjunction QA
         env:
           PYTHONPATH: tools
         run: >-
           python -m pytest -q -s
           tests/test_planet_finder_conjunctions.py
           tests/test_planet_finder_leader_geometry.py
+          tests/test_planet_finder_progressive_conjunctions.py
