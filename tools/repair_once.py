@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""One-shot repair: make conjunctions use ordinary placement as an atomic blob."""
+"""One-shot repair: make conjunctions use the alignment layer's coordinated planner."""
 from pathlib import Path
 
-ENABLED = False
+ENABLED = True
 if not ENABLED:
     print("Repair Once is OFF; nothing to do.")
     raise SystemExit(0)
@@ -10,106 +10,113 @@ if not ENABLED:
 TARGET = Path("tools/planet_finder_search_core.py")
 text = TARGET.read_text(encoding="utf-8")
 
+# 1. Generalize the existing alignment planner so the exact same coordinated
+# geometry can plan either the ordinary alignment layer or one conjunction blob.
+old = '''    def plan_alignment_layer():
+        """Preplace the alignment as one ordered, route-compatible layer.
+
+        A bounded constraint search starts with nearby labels, keeps each
+        group's circular lambda order, and checks routes while adding labels.
+        The recursive alignment search below remains the fallback if this
+        preferred pool cannot supply a complete layer.
+        """
+        items = [item for group in alignment_group_items for item in group]
+'''
+new = '''    def plan_alignment_layer(groups=None):
+        """Preplace groups as one ordered, route-compatible layer.
+
+        This is the shared coordinated-placement algorithm for both ordinary
+        close alignments and conjunction blobs. Crossing the conjunction
+        threshold changes atomicity only; it does not change placement geometry.
+        """
+        groups = alignment_group_items if groups is None else groups
+        items = [item for group in groups for item in group]
+'''
+if text.count(old) != 1:
+    raise SystemExit("Safety stop: alignment planner header did not match exactly once")
+text = text.replace(old, new, 1)
+
+# Within the planner only, use its selected groups rather than the outer
+# ordinary-alignment list.
+planner_start = text.index("    def plan_alignment_layer(groups=None):\n")
+planner_end = text.index("    def stage_alignment_preplacement", planner_start)
+planner = text[planner_start:planner_end]
+planner = planner.replace(
+    "for group in alignment_group_items\n            for left, right in zip(group, group[1:])",
+    "for group in groups\n            for left, right in zip(group, group[1:])",
+)
+planner = planner.replace(
+    "group_names = [[item[1][1] for item in group] for group in alignment_group_items]",
+    "group_names = [[item[1][1] for item in group] for group in groups]",
+)
+text = text[:planner_start] + planner + text[planner_end:]
+
+# 2. Replace the conjunction-only sequential member DFS.  The blob is first
+# planned by the SAME coordinated planner that handles the known-good 2-degree
+# case, then staged as one transaction. If downstream fails, the entire blob is
+# restored together.
 start_marker = "    def solve_conjunction_group(group, group_index, downstream):\n"
 end_marker = "    conjunction_group_list = conjunction_groups(bodies)\n"
-
 if text.count(start_marker) != 1 or text.count(end_marker) != 1:
-    raise SystemExit(
-        "Safety stop: expected exactly one conjunction solver and one conjunction-list marker"
-    )
-
+    raise SystemExit("Safety stop: conjunction solver markers are not unique")
 start = text.index(start_marker)
 end = text.index(end_marker, start)
 
-new = '''    def solve_conjunction_group(group, group_index, downstream):
-        """Solve a conjunction with ordinary geometry, but backtrack it atomically.
-
-        Crossing the conjunction threshold changes only the unit of recursion:
-        every member is placed by viable_candidates(), exactly like an ordinary
-        body.  A complete group is then handed downstream as one transaction;
-        downstream failure restores/backtracks the whole group and tries the
-        next ordinary candidate combination.
-        """
+replacement = '''    def solve_conjunction_group(group, group_index, downstream):
+        """Place a conjunction with ordinary coordinated geometry, atomically."""
         group_items = [by_name[item[1]] for item in group]
         ordered_names = [item[1][1] for item in group_items]
-        blob_candidates = 0
-        downstream_rejections = 0
-        pending_budget_exhaustion = None
 
-        def assign(depth):
-            nonlocal blob_candidates, downstream_rejections
-            nonlocal pending_budget_exhaustion
-
-            if depth == len(group_items):
-                blob_candidates += 1
-                diagnostic_print(
-                    f"Planet Finder {mode}: CONJUNCTION BLOB ORDINARY-GEOMETRY "
-                    f"group={group_index + 1} candidate={blob_candidates} "
-                    f"bodies={' > '.join(ordered_names)}",
-                    flush=True,
-                )
-
-                # Downstream search belongs to this complete blob candidate.
-                # If it fails, restore its body budgets before trying the next
-                # conjunction arrangement so sibling blobs are independent.
-                body_attempts_before = dict(body_attempts)
-                try:
-                    if downstream():
-                        return True
-                except DepthNodeBudgetExhausted as exc:
-                    if pending_budget_exhaustion is None:
-                        pending_budget_exhaustion = exc
-                finally:
-                    body_attempts.clear()
-                    body_attempts.update(body_attempts_before)
-
-                downstream_rejections += 1
-                return False
-
-            item = group_items[depth]
-            original_index, (symbol, name, longitude) = item
-
-            # This is deliberately the SAME candidate generator used by the
-            # ordinary DFS.  No conjunction-only pool, displacement scale,
-            # lambda gate, routing rule, or collision rule belongs here.
-            for box, path in viable_candidates(
-                    item, depth, consume_body_budget=False):
-                placed.append(box)
-                leaders.append(path)
-                leader_names.append(name)
-                staged[original_index] = (symbol, name, longitude, box, path)
-
-                if assign(depth + 1):
-                    return True
-
-                staged.pop(original_index, None)
-                leader_names.pop()
-                leaders.pop()
-                placed.pop()
-
+        # Critical invariant: 1 degree uses the same coordinated placement
+        # algorithm as the close ordinary alignment case. The threshold changes
+        # only the recursion unit: this completed group is committed/backtracked
+        # as one blob.
+        preplacement = plan_alignment_layer([group_items])
+        if not preplacement:
+            diagnostic_print(
+                f"Planet Finder {mode}: CONJUNCTION COORDINATED-GEOMETRY EXHAUSTED "
+                f"group={group_index + 1} bodies={' > '.join(ordered_names)}",
+                flush=True,
+            )
             return False
 
-        solved = assign(0)
-        if solved:
-            return True
+        planned, paths = preplacement
+        staged_indices = []
+        for original_index, (symbol, name, longitude) in group_items:
+            box = planned[name][2]
+            path = paths[name]
+            placed.append(box)
+            leaders.append(path)
+            leader_names.append(name)
+            staged[original_index] = (symbol, name, longitude, box, path)
+            staged_indices.append(original_index)
 
         diagnostic_print(
-            f"Planet Finder {mode}: CONJUNCTION ORDINARY-GEOMETRY EXHAUSTED "
-            f"group={group_index + 1} bodies={' > '.join(ordered_names)} "
-            f"blob_candidates={blob_candidates} "
-            f"downstream_rejections={downstream_rejections}",
+            f"Planet Finder {mode}: CONJUNCTION BLOB COORDINATED-GEOMETRY "
+            f"group={group_index + 1} bodies={' > '.join(ordered_names)}",
             flush=True,
         )
-        if pending_budget_exhaustion is not None:
-            raise pending_budget_exhaustion
+
+        try:
+            if downstream():
+                return True
+        finally:
+            # A solved layout deliberately keeps staged geometry for collection.
+            # Restore only when downstream did not complete the whole search.
+            if len(staged) < len(bodies):
+                for original_index in staged_indices:
+                    staged.pop(original_index, None)
+                del leader_names[-len(group_items):]
+                del leaders[-len(group_items):]
+                del placed[-len(group_items):]
         return False
 
 '''
+text = text[:start] + replacement + text[end:]
 
-text = text[:start] + new + text[end:]
 TARGET.write_text(text, encoding="utf-8")
 
-# Self-disarm after the successful one-shot rewrite.
+# Self-disarm after successful rewrite.
 me = Path(__file__)
 self_text = me.read_text(encoding="utf-8")
 arming_line = "ENABLED = " + "True"
@@ -118,8 +125,7 @@ if self_text.count(arming_line) != 1:
 me.write_text(self_text.replace(arming_line, "ENABLED = False", 1), encoding="utf-8")
 
 print(
-    "Replaced the special conjunction placement algorithm with the ordinary "
-    "viable-candidate solver wrapped in atomic conjunction backtracking. "
-    "The 1-degree threshold now changes grouping only, not placement geometry. "
+    "Conjunctions now use the same coordinated placement planner as close "
+    "ordinary alignments, while remaining atomic for downstream backtracking. "
     "Repair Once is now OFF."
 )
