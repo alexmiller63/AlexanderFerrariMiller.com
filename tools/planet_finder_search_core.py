@@ -864,10 +864,18 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 graze = path is not None and leaders_too_close(path, prior_paths)
                 if path is None or label_hit or rim_hit or graze:
                     if os.environ.get("PLANET_FINDER_TRACE_ALIGNMENT_CLIFF") == "1":
+                        prior_summary = [
+                            [(round(px, 1), round(py, 1)) for px, py in prior]
+                            for prior in prior_paths
+                        ]
+                        path_summary = None if path is None else [
+                            (round(px, 1), round(py, 1)) for px, py in path
+                        ]
                         diagnostic_print(
                             f"Planet Finder {mode}: ALIGNMENT CLIFF TRACE body={name} "
                             f"route_none={path is None} label_hit={label_hit} rim_hit={rim_hit} "
-                            f"leader_graze={graze} chosen={','.join(chosen.keys())}",
+                            f"leader_graze={graze} chosen={','.join(chosen.keys())} "
+                            f"path={path_summary} prior_paths={prior_summary}",
                             level=1, flush=True,
                         )
                     return None

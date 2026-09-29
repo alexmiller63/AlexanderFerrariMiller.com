@@ -29,6 +29,36 @@ def _names(groups):
     return [[item[1] for item in group] for group in groups]
 
 
+def test_greek_venus_sun_1_8_vs_1_7_forensic(monkeypatch):
+    """Compare the last passing and first failing ordinary-alignment cases."""
+    monkeypatch.setenv("PLANET_FINDER_DIAGNOSTIC_LEVEL", "3")
+    monkeypatch.setenv("PLANET_FINDER_TRACE_ALIGNMENT_CLIFF", "1")
+
+    expected_names = {name for _, name, _ in conjunction_case(2.0)}
+    for separation in (1.8, 1.7):
+        bodies = conjunction_case(separation)
+        print(f"ALIGNMENT CLIFF CASE START separation={separation:.1f}deg", flush=True)
+        started = time.monotonic()
+        result = layout(
+            FinderMode.GREEK,
+            bodies,
+            target_solutions=1,
+            budget={"max_node_candidates": 2000, "max_seconds": 15.0},
+            context_label=f"venus-sun-{separation:.1f}deg-forensic",
+        )
+        elapsed = time.monotonic() - started
+        actual = [name for _, name, _, _, _ in result]
+        print(
+            f"ALIGNMENT CLIFF CASE RESULT separation={separation:.1f}deg "
+            f"elapsed={elapsed:.3f}s placed={len(actual)}/{len(expected_names)} order={actual}",
+            flush=True,
+        )
+        if separation == 1.8:
+            assert set(actual) == expected_names
+        else:
+            assert set(actual) != expected_names, "1.7deg unexpectedly passed; cliff moved"
+
+
 def test_greek_venus_sun_separation_sweep(monkeypatch):
     """Walk downward by tenths and stop immediately at the first failure."""
     monkeypatch.setenv("PLANET_FINDER_DIAGNOSTIC_LEVEL", "3")

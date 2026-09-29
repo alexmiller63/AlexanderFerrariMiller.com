@@ -2,7 +2,7 @@
 """One-shot diagnostic: compare 1.8 vs 1.7 Venus-Sun alignment leader paths."""
 from pathlib import Path
 
-ENABLED = True
+ENABLED = False
 if not ENABLED:
     print("Repair Once is OFF; nothing to do.")
     raise SystemExit(0)
