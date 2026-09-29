@@ -923,9 +923,34 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                     leaders.append(leader)
                     leader_names.append(name)
                     staged[original_index] = (symbol, name, longitude, box, leader)
+                # Diagnostic-only snapshot for this complete conjunction blob.
+                # It lets a downstream failure report what the ordinary DFS
+                # actually reached, without changing geometry, ordering, caps,
+                # clocks, or backtracking behavior.
+                branch_nodes_before = nodes
+                branch_backtracks_before = backtracks
+                branch_deepest_before = deepest
+                branch_attempts_before = dict(body_attempts)
                 try:
                     downstream_solved = downstream()
                 except DepthNodeBudgetExhausted as exc:
+                    branch_attempt_deltas = {
+                        body: body_attempts.get(body, 0) - branch_attempts_before.get(body, 0)
+                        for body in body_attempts
+                        if body_attempts.get(body, 0) != branch_attempts_before.get(body, 0)
+                    }
+                    diagnostic_print(
+                        f"Planet Finder {mode}: CONJUNCTION DOWNSTREAM TRACE "
+                        f"group={group_index + 1} candidate={blob_candidates} outcome=cap "
+                        f"cap_body={exc.name} cap_depth={exc.depth} "
+                        f"deepest_before={branch_deepest_before}/{len(order)} "
+                        f"deepest_after={deepest}/{len(order)} "
+                        f"nodes={nodes - branch_nodes_before} "
+                        f"backtracks={backtracks - branch_backtracks_before} "
+                        f"attempt_deltas={branch_attempt_deltas}",
+                        level=2,
+                        flush=True,
+                    )
                     # This blob exhausted a descendant search allowance.  That
                     # is a failed child branch: restore it and let assign()
                     # continue to the next complete conjunction blob.
@@ -956,11 +981,27 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                     )
                     return True
                 downstream_rejections += 1
+                branch_attempt_deltas = {
+                    body: body_attempts.get(body, 0) - branch_attempts_before.get(body, 0)
+                    for body in body_attempts
+                    if body_attempts.get(body, 0) != branch_attempts_before.get(body, 0)
+                }
                 diagnostic_print(
                     f"Planet Finder {mode}: CONJUNCTION BLOB DOWNSTREAM BARRIER "
                     f"group={group_index + 1} candidate={blob_candidates} "
                     f"downstream_rejections={downstream_rejections} "
                     f"bodies={' > '.join(ordered_names)}; restoring whole blob",
+                    flush=True,
+                )
+                diagnostic_print(
+                    f"Planet Finder {mode}: CONJUNCTION DOWNSTREAM TRACE "
+                    f"group={group_index + 1} candidate={blob_candidates} outcome=barrier "
+                    f"deepest_before={branch_deepest_before}/{len(order)} "
+                    f"deepest_after={deepest}/{len(order)} "
+                    f"nodes={nodes - branch_nodes_before} "
+                    f"backtracks={backtracks - branch_backtracks_before} "
+                    f"attempt_deltas={branch_attempt_deltas}",
+                    level=2,
                     flush=True,
                 )
                 restore_blob_branch()
