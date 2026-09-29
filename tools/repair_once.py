@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""One-shot repair: make wide-first intrinsic to coordinated placement."""
+"""One-shot repair: conjunctions change backtracking granularity only."""
 from pathlib import Path
 
-ENABLED = False
+ENABLED = True
 if not ENABLED:
     print("Repair Once is OFF; nothing to do.")
     raise SystemExit(0)
@@ -10,25 +10,50 @@ if not ENABLED:
 TARGET = Path("tools/planet_finder_search_core.py")
 text = TARGET.read_text(encoding="utf-8")
 
-# The shared coordinated planner must not discard the wide end of the search
-# before it starts.  This ordering is shared by close ordinary alignments and
-# conjunction blobs: widest displacement first, progressively narrower after
-# wider geometry fails.
-old = '''            options.sort(key=lambda row: math.hypot(row[0] - natural[0], row[1] - natural[1]))
-            pools[name] = options[:80]
+# A conjunction is not a placement mode.  Do not remove conjunction members
+# from the ordinary coordinated alignment layer and re-plan them separately.
+# Crossing the conjunction threshold may change only the backtracking unit.
+old = '''    conjunction_group_list = conjunction_groups(bodies)
+
+    # Second phase: solve the entire alignment layer recursively.  There are
+    # two levels of backtracking: members within a group, and groups within the
+    # alignment layer.  Nothing in this layer is truly frozen until every
+    # alignment group has a mutually compatible complete placement.
+    alignment_group_items = [
+        [by_name[item[1]] for item in group]
+        for group in alignment_groups(bodies)
+    ]
 '''
-new = '''            # Wide-first is a planner invariant, not conjunction-specific
-            # behavior.  Keep the widest legal alternatives in the bounded
-            # pool and try them before progressively narrower placements.
-            options.sort(
-                key=lambda row: math.hypot(row[0] - natural[0], row[1] - natural[1]),
-                reverse=True,
-            )
-            pools[name] = options[:80]
+new = '''    conjunction_group_list = conjunction_groups(bodies)
+    conjunction_names = {
+        item[1]
+        for group in conjunction_group_list
+        for item in group
+    }
+
+    # Placement geometry is independent of conjunction status.  Build the
+    # coordinated alignment layer from a view in which conjunction members are
+    # restored to the ordinary alignment population.  Conjunction metadata is
+    # retained separately and is used only to make those members atomic when
+    # backtracking.
+    alignment_source = list(bodies)
+    alignment_group_items = [
+        [by_name[item[1]] for item in group]
+        for group in alignment_groups(alignment_source)
+    ]
 '''
 if text.count(old) != 1:
-    raise SystemExit("Safety stop: coordinated candidate ordering did not match exactly once")
+    raise SystemExit("Safety stop: alignment-layer construction did not match exactly once")
 text = text.replace(old, new, 1)
+
+# Remove the special two-body conjunction planner.  The ordinary coordinated
+# alignment planner now owns placement; this wrapper only commits an already
+# planned conjunction atomically downstream.
+start = text.find("    def solve_conjunction_group(group, group_index, downstream):\n")
+end = text.find("\n    conjunction_group_list = conjunction_groups(bodies)\n", start)
+if start < 0 or end < 0:
+    raise SystemExit("Safety stop: conjunction placement wrapper not found")
+text = text[:start] + text[end + 1:]
 
 TARGET.write_text(text, encoding="utf-8")
 
@@ -41,7 +66,7 @@ if self_text.count(arming_line) != 1:
 me.write_text(self_text.replace(arming_line, "ENABLED = False", 1), encoding="utf-8")
 
 print(
-    "Shared coordinated placement now keeps and tries wide candidates first, "
-    "then progressively narrower candidates. Collision, routing, circular-lambda "
-    "ordering, and conjunction atomicity are unchanged. Repair Once is now OFF."
+    "Removed conjunction-specific placement planning. Conjunction members now "
+    "use the ordinary coordinated alignment geometry; conjunction status is "
+    "reserved for atomic backtracking only. Repair Once is now OFF."
 )
