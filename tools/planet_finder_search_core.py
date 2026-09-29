@@ -1303,10 +1303,11 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             )
         return False
 
-    def search_below_conjunctions():
-        # Alignment planning depends on the currently staged conjunction blob,
-        # so rebuild it for every blob candidate rather than carrying geometry
-        # from a failed conjunction branch into the next one.
+    def search_coordinated_geometry():
+        # Conjunctions have no placement path of their own.  Every body enters
+        # the ordinary coordinated alignment planner; conjunction metadata is
+        # consulted only by downstream backtracking to keep a conjunction
+        # atomic when it must be reconsidered.
         alignment_preplacement = plan_alignment_layer()
         stage_alignment_preplacement(alignment_preplacement)
         return _search_alignment_fallback(
@@ -1314,18 +1315,8 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             leader_names, staged, search, solve_alignment_group,
         )
 
-    def solve_conjunction_layer(group_index):
-        if group_index == len(conjunction_group_list):
-            return search_below_conjunctions()
-        group = conjunction_group_list[group_index]
-        return solve_conjunction_group(
-            group,
-            group_index,
-            lambda: solve_conjunction_layer(group_index + 1),
-        )
-
     try:
-        solved = solve_conjunction_layer(0)
+        solved = search_coordinated_geometry()
         exhausted = not solved
     except DepthNodeBudgetExhausted as exc:
         # Hitting the per-body/depth cap is the squeaky-wheel signal.  Report
