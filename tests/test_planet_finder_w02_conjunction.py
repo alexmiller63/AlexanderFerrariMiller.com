@@ -1,6 +1,8 @@
-"""Focused diagnostic for the Venus-Sun 1.7 degree ordinary-placement case."""
+"""Diagnostic sweep for Venus-Sun separation from 2.0 down to 0.1 degrees."""
 
 import time
+
+import pytest
 
 from planet_finder_geometry import CANONICAL, FinderMode, alignment_groups, conjunction_groups
 from planet_finder_search import layout
@@ -29,29 +31,31 @@ def _names(groups):
     return [[item[1] for item in group] for group in groups]
 
 
-def test_greek_venus_sun_1_7_degree_forensic(monkeypatch):
-    """Trace the 1.7 degree case through the ordinary Planet Finder path."""
+@pytest.mark.parametrize("tenths", range(20, 0, -1))
+def test_greek_venus_sun_separation_sweep(monkeypatch, tenths):
+    """Run each tenth-degree separation independently from 2.0 through 0.1."""
     monkeypatch.setenv("PLANET_FINDER_DIAGNOSTIC_LEVEL", "3")
     monkeypatch.setenv("PLANET_FINDER_TRACE_ALIGNMENT_CLIFF", "1")
 
-    separation = 1.70
+    separation = tenths / 10.0
     bodies = conjunction_case(separation)
     conjunctions = _names(conjunction_groups(bodies))
     alignments = _names(alignment_groups(bodies))
 
     print(
-        "VENUS-SUN 1.700 FORENSIC INPUT: "
-        f"Venus=100.000000deg Sun=101.700000deg separation={separation:.3f}deg "
+        "VENUS-SUN SWEEP INPUT: "
+        f"separation={separation:.1f}deg "
         f"conjunction_groups={conjunctions} alignment_groups={alignments}",
         flush=True,
     )
 
-    # 1.7 degrees must not enter conjunction-specific handling.  Make that
-    # assumption explicit in the diagnostic so a threshold regression is
-    # immediately visible instead of being mistaken for a geometry failure.
-    assert not any("Venus" in group and "Sun" in group for group in conjunctions), (
-        f"1.700deg incorrectly classified as conjunction: {conjunctions}"
-    )
+    # Above 0.1 degrees the ordinary path must be used.  At exactly 0.1 the
+    # conjunction-unit path is expected to become eligible.
+    venus_sun_conjunction = any("Venus" in group and "Sun" in group for group in conjunctions)
+    if separation > 0.1:
+        assert not venus_sun_conjunction, (
+            f"{separation:.1f}deg incorrectly classified as conjunction: {conjunctions}"
+        )
 
     started = time.monotonic()
     result = layout(
@@ -59,7 +63,7 @@ def test_greek_venus_sun_1_7_degree_forensic(monkeypatch):
         bodies,
         target_solutions=1,
         budget={"max_node_candidates": 2000, "max_seconds": 60.0},
-        context_label="venus-sun-1.700deg-forensic",
+        context_label=f"venus-sun-{separation:.1f}deg-sweep",
     )
     elapsed = time.monotonic() - started
 
@@ -67,15 +71,18 @@ def test_greek_venus_sun_1_7_degree_forensic(monkeypatch):
     actual = [name for _, name, _, _, _ in result]
     missing = sorted(expected - set(actual))
     print(
-        "VENUS-SUN 1.700 FORENSIC RESULT: "
-        f"elapsed={elapsed:.3f}s placed={len(actual)}/{len(expected)} "
-        f"missing={missing} order={actual}",
+        "VENUS-SUN SWEEP RESULT: "
+        f"separation={separation:.1f}deg elapsed={elapsed:.3f}s "
+        f"placed={len(actual)}/{len(expected)} missing={missing} order={actual}",
         flush=True,
     )
 
-    assert len(actual) == len(expected), f"missing={missing}"
+    assert len(actual) == len(expected), f"separation={separation:.1f}deg missing={missing}"
     assert set(actual) == expected
     valid, errors = validate_layout(FinderMode.GREEK, result)
     if not valid:
-        print(f"VENUS-SUN 1.700 VALIDATION ERRORS: {errors}", flush=True)
+        print(
+            f"VENUS-SUN SWEEP VALIDATION ERRORS separation={separation:.1f}deg: {errors}",
+            flush=True,
+        )
     assert valid, errors
