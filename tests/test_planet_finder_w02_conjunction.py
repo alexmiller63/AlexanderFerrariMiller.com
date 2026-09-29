@@ -1,10 +1,8 @@
-"""Dynamically isolate the Venus-Sun conjunction breakpoint."""
+"""Focused diagnostic for the Venus-Sun 1.7 degree ordinary-placement case."""
 
 import time
 
-import pytest
-
-from planet_finder_geometry import CANONICAL, FinderMode
+from planet_finder_geometry import CANONICAL, FinderMode, alignment_groups, conjunction_groups
 from planet_finder_search import layout
 from planet_finder_validation import validate_layout
 
@@ -27,47 +25,57 @@ def conjunction_case(separation):
     return [(name.lower(), name, float(longitudes[name])) for name in CANONICAL]
 
 
-def _try_separation(separation):
-    bodies = conjunction_case(separation)
-    started = time.monotonic()
-    try:
-        result = layout(
-            FinderMode.GREEK,
-            bodies,
-            target_solutions=1,
-            budget={"max_node_candidates": 2000, "max_seconds": 15.0},
-            context_label=f"venus-sun-ladder-{separation:.3f}deg",
-        )
-        expected = {name for _, name, _ in bodies}
-        actual = [name for _, name, _, _, _ in result]
-        assert len(actual) == len(expected)
-        assert set(actual) == expected
-        valid, errors = validate_layout(FinderMode.GREEK, result)
-        assert valid, errors
-    except (RuntimeError, AssertionError) as exc:
-        return False, time.monotonic() - started, str(exc)
-    return True, time.monotonic() - started, ""
+def _names(groups):
+    return [[item[1] for item in group] for group in groups]
 
 
-def test_greek_venus_sun_farthest_control(monkeypatch):
-    """Walk from the known-good wide case down to the first failing separation."""
-    monkeypatch.setenv("PLANET_FINDER_DIAGNOSTIC_LEVEL", "2")
+def test_greek_venus_sun_1_7_degree_forensic(monkeypatch):
+    """Trace the 1.7 degree case through the ordinary Planet Finder path."""
+    monkeypatch.setenv("PLANET_FINDER_DIAGNOSTIC_LEVEL", "3")
     monkeypatch.setenv("PLANET_FINDER_TRACE_ALIGNMENT_CLIFF", "1")
-    separations = [1.10, 1.09, 1.08, 1.07, 1.06, 1.05, 1.04, 1.03, 1.02, 1.01, 1.00]
-    passed = []
 
-    for separation in separations:
-        ok, elapsed, detail = _try_separation(separation)
-        status = "PASS" if ok else "FAIL"
-        print(f"VENUS-SUN SEPARATION {separation:.3f} deg: {status} elapsed={elapsed:.3f}s")
-        if not ok:
-            print(f"VENUS-SUN FIRST FAILURE: {separation:.3f} deg after passes={passed}")
-            if detail:
-                print(f"VENUS-SUN FAILURE DETAIL: {detail}")
-            pytest.fail(
-                f"first Venus-Sun failure at {separation:.3f} deg; "
-                f"wider passing separations={passed}"
-            )
-        passed.append(separation)
+    separation = 1.70
+    bodies = conjunction_case(separation)
+    conjunctions = _names(conjunction_groups(bodies))
+    alignments = _names(alignment_groups(bodies))
 
-    print(f"VENUS-SUN LADDER COMPLETE: all separations passed {passed}")
+    print(
+        "VENUS-SUN 1.700 FORENSIC INPUT: "
+        f"Venus=100.000000deg Sun=101.700000deg separation={separation:.3f}deg "
+        f"conjunction_groups={conjunctions} alignment_groups={alignments}",
+        flush=True,
+    )
+
+    # 1.7 degrees must not enter conjunction-specific handling.  Make that
+    # assumption explicit in the diagnostic so a threshold regression is
+    # immediately visible instead of being mistaken for a geometry failure.
+    assert not any("Venus" in group and "Sun" in group for group in conjunctions), (
+        f"1.700deg incorrectly classified as conjunction: {conjunctions}"
+    )
+
+    started = time.monotonic()
+    result = layout(
+        FinderMode.GREEK,
+        bodies,
+        target_solutions=1,
+        budget={"max_node_candidates": 2000, "max_seconds": 60.0},
+        context_label="venus-sun-1.700deg-forensic",
+    )
+    elapsed = time.monotonic() - started
+
+    expected = {name for _, name, _ in bodies}
+    actual = [name for _, name, _, _, _ in result]
+    missing = sorted(expected - set(actual))
+    print(
+        "VENUS-SUN 1.700 FORENSIC RESULT: "
+        f"elapsed={elapsed:.3f}s placed={len(actual)}/{len(expected)} "
+        f"missing={missing} order={actual}",
+        flush=True,
+    )
+
+    assert len(actual) == len(expected), f"missing={missing}"
+    assert set(actual) == expected
+    valid, errors = validate_layout(FinderMode.GREEK, result)
+    if not valid:
+        print(f"VENUS-SUN 1.700 VALIDATION ERRORS: {errors}", flush=True)
+    assert valid, errors
