@@ -52,7 +52,7 @@ def _try_separation(separation):
 def test_greek_venus_sun_farthest_control(monkeypatch):
     """Walk from the known-good wide case down to the first failing separation."""
     monkeypatch.setenv("PLANET_FINDER_DIAGNOSTIC_LEVEL", "2")
-    separations = [2.0, 1.9, 1.8, 1.7, 1.6, 1.5, 1.4, 1.3, 1.2, 1.1, 1.0]
+    separations = [1.10, 1.09, 1.08, 1.07, 1.06, 1.05, 1.04, 1.03, 1.02, 1.01, 1.00]
     passed = []
 
     for separation in separations:

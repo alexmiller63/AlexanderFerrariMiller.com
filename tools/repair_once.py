@@ -2,7 +2,7 @@
 """One-shot diagnostic: zoom in on the Venus-Sun 1-degree transition."""
 from pathlib import Path
 
-ENABLED = True
+ENABLED = False
 if not ENABLED:
     print("Repair Once is OFF; nothing to do.")
     raise SystemExit(0)
