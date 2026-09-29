@@ -19,6 +19,6 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add tools/planet_finder_geometry.py tools/planet_finder_search_core.py tools/repair_once.py
+          git add tools/planet_finder_geometry.py tools/planet_finder_search_core.py tools/repair_once.py tests/test_planet_finder_w02_conjunction.py
           git commit -m "Apply Repair Once"
           git push
