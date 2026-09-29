@@ -2,7 +2,7 @@
 """One-shot diagnostic: split candidate rejection causes at the 1.8/1.7 cliff."""
 from pathlib import Path
 
-ENABLED = True
+ENABLED = False
 if not ENABLED:
     print("Repair Once is OFF; nothing to do.")
     raise SystemExit(0)

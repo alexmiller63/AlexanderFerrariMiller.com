@@ -668,6 +668,14 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 own_label_bad = True
 
             if own_label_bad:
+                if os.environ.get("PLANET_FINDER_TRACE_ALIGNMENT_CLIFF") == "1" and name in ("Venus", "Sun"):
+                    diagnostic_print(
+                        f"Planet Finder {mode}: CANDIDATE LEGALITY body={name} "
+                        f"stage=own-label result=REJECT route_backtracks={route_backtracks} "
+                        f"box=({box.x:.1f},{box.y:.1f},{box.w:.1f},{box.h:.1f}) "
+                        f"path={[(round(px,1), round(py,1)) for px,py in rendered_path]}",
+                        level=1, flush=True,
+                    )
                 rejected_leader += 1
                 stats["leader"] += 1
                 stats["leader_graze"] += 1
@@ -699,10 +707,26 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             too_close = leaders_too_close(path, leaders)
             timing["final_leader"] += time.monotonic() - t0
             if too_close:
+                if os.environ.get("PLANET_FINDER_TRACE_ALIGNMENT_CLIFF") == "1" and name in ("Venus", "Sun"):
+                    diagnostic_print(
+                        f"Planet Finder {mode}: CANDIDATE LEGALITY body={name} "
+                        f"stage=leader-to-leader result=REJECT "
+                        f"box=({box.x:.1f},{box.y:.1f},{box.w:.1f},{box.h:.1f}) "
+                        f"path={[(round(px,1), round(py,1)) for px,py in path]} "
+                        f"prior_paths={[[ (round(px,1), round(py,1)) for px,py in prior] for prior in leaders]}",
+                        level=1, flush=True,
+                    )
                 rejected_leader += 1
                 stats["leader"] += 1
                 stats["leader_graze"] += 1
                 continue
+            if os.environ.get("PLANET_FINDER_TRACE_ALIGNMENT_CLIFF") == "1" and name in ("Venus", "Sun"):
+                diagnostic_print(
+                    f"Planet Finder {mode}: CANDIDATE LEGALITY body={name} stage=viability result=ACCEPT "
+                    f"box=({box.x:.1f},{box.y:.1f},{box.w:.1f},{box.h:.1f}) "
+                    f"path={[(round(px,1), round(py,1)) for px,py in path]}",
+                    level=1, flush=True,
+                )
             # Diagnostic-only geometry signature.  Round below rendering
             # precision so numerically insignificant float noise does not make
             # equivalent candidates appear distinct.  Include the routed leader
