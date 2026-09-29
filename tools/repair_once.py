@@ -2,7 +2,7 @@
 """One-shot diagnostic: refine the Venus-Sun ladder from 2.0 to 1.0 degrees."""
 from pathlib import Path
 
-ENABLED = False
+ENABLED = True
 if not ENABLED:
     print("Repair Once is OFF; nothing to do.")
     raise SystemExit(0)
