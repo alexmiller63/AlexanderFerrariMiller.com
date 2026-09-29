@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""One-shot repair: make widest conjunction pruning failure-specific."""
+"""One-shot repair: add focused diagnostics for conjunction downstream branches."""
 from pathlib import Path
 
-ENABLED = False
+ENABLED = True
 if not ENABLED:
     print("Repair Once is OFF; nothing to do.")
     raise SystemExit(0)
@@ -10,49 +10,82 @@ if not ENABLED:
 TARGET = Path("tools/planet_finder_search_core.py")
 text = TARGET.read_text(encoding="utf-8")
 
-old_slice = '''            # candidate_rows is widest-first. For conjunction siblings, a
-            # failure of the maximum-separation geometry means this outer blob
-            # placement/orientation cannot support the conjunction. Narrower
-            # sibling geometry cannot repair that geometric failure, so return
-            # to the parent blob search instead of squeezing inward.
-            if chosen:
-                candidate_rows = candidate_rows[:1]
-            for row_index, row in enumerate(candidate_rows):
+old = '''                try:
+                    downstream_solved = downstream()
+                except DepthNodeBudgetExhausted as exc:
 '''
-new_slice = '''            # candidate_rows is widest-first. Do not prune merely because the
-            # widest candidate fails: routing, lambda order, and leader geometry
-            # can improve at a narrower sibling position. Only monotonic space
-            # failures may prune the remaining narrower candidates.
-            for row_index, row in enumerate(candidate_rows):
-'''
-
-old_overlap = '''                if any(boxes_overlap(box, other[2], LABEL_COLLISION_PADDING)
-                       for other in chosen.values()):
-                    report_widest_pair("label_overlap")
-                    diagnostic_rejections["label_overlap"] += 1
-                    conjunction_rejections_by_body[name]["label_overlap"] += 1
-                    continue
-'''
-new_overlap = '''                if any(boxes_overlap(box, other[2], LABEL_COLLISION_PADDING)
-                       for other in chosen.values()):
-                    report_widest_pair("label_overlap")
-                    diagnostic_rejections["label_overlap"] += 1
-                    conjunction_rejections_by_body[name]["label_overlap"] += 1
-                    # Rows are ordered maximum-separation first. If even the
-                    # widest sibling labels overlap, every narrower candidate
-                    # is geometrically no better for this parent placement.
-                    if chosen and row_index == 0:
-                        return False
-                    continue
+new = '''                # Diagnostic-only snapshot for this complete conjunction blob.
+                # It lets a downstream failure report what the ordinary DFS
+                # actually reached, without changing geometry, ordering, caps,
+                # clocks, or backtracking behavior.
+                branch_nodes_before = nodes
+                branch_backtracks_before = backtracks
+                branch_deepest_before = deepest
+                branch_attempts_before = dict(body_attempts)
+                try:
+                    downstream_solved = downstream()
+                except DepthNodeBudgetExhausted as exc:
+                    branch_attempt_deltas = {
+                        body: body_attempts.get(body, 0) - branch_attempts_before.get(body, 0)
+                        for body in body_attempts
+                        if body_attempts.get(body, 0) != branch_attempts_before.get(body, 0)
+                    }
+                    diagnostic_print(
+                        f"Planet Finder {mode}: CONJUNCTION DOWNSTREAM TRACE "
+                        f"group={group_index + 1} candidate={blob_candidates} outcome=cap "
+                        f"cap_body={exc.name} cap_depth={exc.depth} "
+                        f"deepest_before={branch_deepest_before}/{len(order)} "
+                        f"deepest_after={deepest}/{len(order)} "
+                        f"nodes={nodes - branch_nodes_before} "
+                        f"backtracks={backtracks - branch_backtracks_before} "
+                        f"attempt_deltas={branch_attempt_deltas}",
+                        level=2,
+                        flush=True,
+                    )
 '''
 
-if text.count(old_slice) != 1:
-    raise SystemExit(f"Safety stop: widest-only block count={text.count(old_slice)}; expected 1")
-if text.count(old_overlap) != 1:
-    raise SystemExit(f"Safety stop: label-overlap gate count={text.count(old_overlap)}; expected 1")
+old_barrier = '''                downstream_rejections += 1
+                diagnostic_print(
+                    f"Planet Finder {mode}: CONJUNCTION BLOB DOWNSTREAM BARRIER "
+                    f"group={group_index + 1} candidate={blob_candidates} "
+                    f"downstream_rejections={downstream_rejections} "
+                    f"bodies={' > '.join(ordered_names)}; restoring whole blob",
+                    flush=True,
+                )
+'''
+new_barrier = '''                downstream_rejections += 1
+                branch_attempt_deltas = {
+                    body: body_attempts.get(body, 0) - branch_attempts_before.get(body, 0)
+                    for body in body_attempts
+                    if body_attempts.get(body, 0) != branch_attempts_before.get(body, 0)
+                }
+                diagnostic_print(
+                    f"Planet Finder {mode}: CONJUNCTION BLOB DOWNSTREAM BARRIER "
+                    f"group={group_index + 1} candidate={blob_candidates} "
+                    f"downstream_rejections={downstream_rejections} "
+                    f"bodies={' > '.join(ordered_names)}; restoring whole blob",
+                    flush=True,
+                )
+                diagnostic_print(
+                    f"Planet Finder {mode}: CONJUNCTION DOWNSTREAM TRACE "
+                    f"group={group_index + 1} candidate={blob_candidates} outcome=barrier "
+                    f"deepest_before={branch_deepest_before}/{len(order)} "
+                    f"deepest_after={deepest}/{len(order)} "
+                    f"nodes={nodes - branch_nodes_before} "
+                    f"backtracks={backtracks - branch_backtracks_before} "
+                    f"attempt_deltas={branch_attempt_deltas}",
+                    level=2,
+                    flush=True,
+                )
+'''
 
-text = text.replace(old_slice, new_slice, 1)
-text = text.replace(old_overlap, new_overlap, 1)
+if text.count(old) != 1:
+    raise SystemExit(f"Safety stop: downstream try block count={text.count(old)}; expected 1")
+if text.count(old_barrier) != 1:
+    raise SystemExit(f"Safety stop: downstream barrier block count={text.count(old_barrier)}; expected 1")
+
+text = text.replace(old, new, 1)
+text = text.replace(old_barrier, new_barrier, 1)
 TARGET.write_text(text, encoding="utf-8")
 
 me = Path(__file__)
@@ -63,7 +96,7 @@ if self_text.count(arming_line) != 1:
 me.write_text(self_text.replace(arming_line, "ENABLED = False", 1), encoding="utf-8")
 
 print(
-    "Conjunction widest pruning is now failure-specific: widest label overlap "
-    "backtracks, while lambda/routing/leader failures may try narrower rows; "
-    "Repair Once is now OFF."
+    "Added diagnostic-only conjunction downstream traces: per blob, report "
+    "deepest DFS reach, node/backtrack cost, body-attempt deltas, and cap body; "
+    "solver behavior is unchanged; Repair Once is now OFF."
 )
