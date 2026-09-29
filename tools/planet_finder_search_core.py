@@ -813,14 +813,13 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             # nearly coincident anchors.  Search from the easy outside inward:
             # retain the same bounded pool, but try the most displaced label
             # positions first.  No candidate is made legal by this ordering.
-            # Diagnostic canary: for a 2-body conjunction only, retain the
-            # original sequential legal_candidate_positions() order. Larger
-            # conjunctions keep the current outside-in ordering unchanged.
-            if len(group_items) != 2:
-                rows.sort(
-                    key=lambda row: math.hypot(row[0] - natural[0], row[1] - natural[1]),
-                    reverse=True,
-                )
+            # Conjunction feasibility is tested from maximum displacement
+            # inward. If wide geometry cannot work, tighter geometry must not
+            # be preferred merely because it appeared earlier in the lattice.
+            rows.sort(
+                key=lambda row: math.hypot(row[0] - natural[0], row[1] - natural[1]),
+                reverse=True,
+            )
             rows = rows[:80]
             if not rows:
                 return None
@@ -969,10 +968,10 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             _, (_, name, longitude) = group_items[depth]
             anchor = anchors[name]
             candidate_rows = pools[name]
-            if chosen and len(group_items) != 2:
-                # Larger conjunctions keep the current widest-first sibling
-                # ordering. The 2-body diagnostic canary deliberately keeps
-                # the sequential pool order so we can isolate ordering itself.
+            if chosen:
+                # Once a sibling is chosen, try the remaining label positions
+                # in maximum-separation-first order. Recursive failure then
+                # moves inward only after wider alternatives have been tested.
                 chosen_centers = [(row[0], row[1]) for row in chosen.values()]
                 candidate_rows = sorted(
                     candidate_rows,
