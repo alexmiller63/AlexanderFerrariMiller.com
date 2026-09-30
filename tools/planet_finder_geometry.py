@@ -521,6 +521,10 @@ def route(anchor: tuple[float, float], center: tuple[float, float], obstacles: l
             diagnostic["target_approach"] = diagnostic.get("target_approach", 0) + 1
     elif diagnostic is not None:
         diagnostic["direct_blocked"] = diagnostic.get("direct_blocked", 0) + 1
+        blocker = first_blocker(anchor, direct_endpoint if direct_endpoint is not None else center, skip_start_escape=True)
+        if blocker is not None:
+            by_obstacle = diagnostic.setdefault("direct_blocked_by", {})
+            by_obstacle[blocker] = by_obstacle.get(blocker, 0) + 1
 
     anchor_theta = math.atan2(anchor[1] - CY, anchor[0] - CX)
     center_theta = math.atan2(center[1] - CY, center[0] - CX)
@@ -560,11 +564,20 @@ def route(anchor: tuple[float, float], center: tuple[float, float], obstacles: l
             if not segment_clear(elbow1, elbow2):
                 if diagnostic is not None:
                     diagnostic["arc_blocked"] = diagnostic.get("arc_blocked", 0) + 1
+                    blocker = first_blocker(elbow1, elbow2)
+                    if blocker is not None:
+                        by_obstacle = diagnostic.setdefault("arc_blocked_by", {})
+                        by_obstacle[blocker] = by_obstacle.get(blocker, 0) + 1
                 continue
             final_endpoint = target_landing(elbow2, target_box) if target_box is not None else center
             if final_endpoint is None or not segment_clear(elbow2, final_endpoint):
                 if diagnostic is not None:
                     diagnostic["final_blocked"] = diagnostic.get("final_blocked", 0) + 1
+                    if final_endpoint is not None:
+                        blocker = first_blocker(elbow2, final_endpoint)
+                        if blocker is not None:
+                            by_obstacle = diagnostic.setdefault("final_blocked_by", {})
+                            by_obstacle[blocker] = by_obstacle.get(blocker, 0) + 1
                 continue
             candidate = [anchor, elbow1, elbow2, final_endpoint]
             if route_clear_of_target(candidate):

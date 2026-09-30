@@ -1343,6 +1343,12 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         return False
 
     forward_stats = {"checks": 0, "pruned": 0, "witnesses": 0, "by_body": {}}
+    # Diagnostic only: blocker identities inside Ceres forward viability.
+    forward_ceres_blockers = {
+        "overlap": {}, "existing-leader": {}, "leader-graze": {},
+        "route-direct": {}, "route-escape": {}, "route-arc": {}, "route-final": {},
+    }
+    forward_ceres_route_other = {}
     # Bodies that actually make a forward check fail.  Without this, a prefix
     # whose every candidate is pruned before recursion leaves `deepest` at the
     # parent depth, causing the controller to blame/promote the parent instead
@@ -1392,32 +1398,69 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 if not consume_forward_probe():
                     return PROBE_LIMITED, None, witness_raw, reasons
                 witness_raw += 1
-                if any(boxes_overlap(future_box, other, 14) for other in boxes):
+                overlap_hits = [i for i, other in enumerate(boxes) if boxes_overlap(future_box, other, 14)]
+                if overlap_hits:
                     reasons["placed-overlap"] += 1
+                    if future_name == "Ceres":
+                        for i in overlap_hits:
+                            blocker = leader_names[i] if i < len(leader_names) else f"placed_{i}"
+                            counts = forward_ceres_blockers["overlap"]
+                            counts[blocker] = counts.get(blocker, 0) + 1
                     continue
-                if any(
-                    segment_hits_box(seg[i], seg[i + 1], future_box, 10)
-                    for seg in paths
-                    for i in range(len(seg) - 1)
-                ):
+                leader_hits = [
+                    j for j, seg in enumerate(paths)
+                    if any(segment_hits_box(seg[i], seg[i + 1], future_box, 10)
+                           for i in range(len(seg) - 1))
+                ]
+                if leader_hits:
                     reasons["existing-leader"] += 1
+                    if future_name == "Ceres":
+                        for j in leader_hits:
+                            blocker = leader_names[j] if j < len(leader_names) else f"leader_{j}"
+                            counts = forward_ceres_blockers["existing-leader"]
+                            counts[blocker] = counts.get(blocker, 0) + 1
                     continue
                 center = (future_box.x, future_box.y)
+                forward_route_diag = {} if future_name == "Ceres" else None
                 path = route(
                     anchor,
                     center,
                     obstacles_now,
+                    forward_route_diag,
                     allow_initial_escape_count=immutable_count,
                     prefix_cache=prefix_cache,
                 )
                 if path is None:
                     reasons["route"] += 1
+                    if future_name == "Ceres":
+                        obstacle_names = reserved_names + list(leader_names)
+                        for diag_key, bucket in (
+                            ("direct_blocked_by", "route-direct"),
+                            ("escape_blocked_by", "route-escape"),
+                            ("arc_blocked_by", "route-arc"),
+                            ("final_blocked_by", "route-final"),
+                        ):
+                            for obstacle_index, count in forward_route_diag.get(diag_key, {}).items():
+                                blocker = obstacle_names[obstacle_index] if obstacle_index < len(obstacle_names) else f"obstacle_{obstacle_index}"
+                                counts = forward_ceres_blockers[bucket]
+                                counts[blocker] = counts.get(blocker, 0) + count
+                        for diag_key in ("anchor_blocked", "target_approach"):
+                            count = forward_route_diag.get(diag_key, 0)
+                            if count:
+                                forward_ceres_route_other[diag_key] = forward_ceres_route_other.get(diag_key, 0) + count
                     continue
                 if leader_hits_zodiac_rim(path):
                     reasons["leader-rim"] += 1
                     continue
                 if leaders_too_close(path, paths):
                     reasons["leader-graze"] += 1
+                    if future_name == "Ceres":
+                        _, blocker_pair = minimum_leader_separation(path, paths)
+                        if blocker_pair is not None:
+                            j = blocker_pair[0]
+                            blocker = leader_names[j] if j < len(leader_names) else f"leader_{j}"
+                            counts = forward_ceres_blockers["leader-graze"]
+                            counts[blocker] = counts.get(blocker, 0) + 1
                     if len(paths) == 1 and future_name in {"Moon", "Mercury"}:
                         min_dist, pair = minimum_leader_separation(path, paths)
                         if pair is not None:
@@ -1808,6 +1851,21 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 f"leader-graze={reasons.get('leader-graze', 0):,}",
                 flush=True,
             )
+
+    if exhausted and forward_ceres_blockers:
+        for kind, counts in forward_ceres_blockers.items():
+            top = sorted(counts.items(), key=lambda item: (-item[1], item[0]))[:12]
+            diagnostic_print(
+                f"Planet Finder {mode}: FORWARD CERES BLOCKERS kind={kind} "
+                + (" ".join(f"{name}={count:,}" for name, count in top) if top else "none"),
+                flush=True,
+            )
+        diagnostic_print(
+            f"Planet Finder {mode}: FORWARD CERES ROUTE-OTHER "
+            + (" ".join(f"{name}={count:,}" for name, count in sorted(forward_ceres_route_other.items()))
+               if forward_ceres_route_other else "none"),
+            flush=True,
+        )
 
     return SearchOutcome(
         "SOLVED" if len(solutions) >= target_solutions else "EXHAUSTED",
