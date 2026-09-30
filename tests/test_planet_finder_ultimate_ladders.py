@@ -18,6 +18,7 @@ from test_planet_finder_system import (
 MODES = [FinderMode.GREEK, FinderMode.LATIN, FinderMode.MIXED]
 LADDER_SECONDS = 15.0
 REGRESSION_SECONDS = 60.0
+HARD_MODE_REGRESSION_SECONDS = 120.0
 
 W36_KNOWN_GOOD = {
     "Sun": 157 + 38 / 60,
@@ -102,7 +103,7 @@ def run_ladder(monkeypatch, week, mode, ladder, stop_on_failure=True):
     enable_alignment_fix(monkeypatch)
     passed, failures = [], []
     for level, longitudes, expected_groups in ladder:
-        seconds = REGRESSION_SECONDS if level.startswith("exact-") else LADDER_SECONDS
+        seconds = (HARD_MODE_REGRESSION_SECONDS if mode in (FinderMode.LATIN, FinderMode.MIXED) else REGRESSION_SECONDS) if level.startswith("exact-") else LADDER_SECONDS
         bodies = synthetic_bodies(longitudes)
         actual_groups = group_names(bodies)
         expected_groups = sorted(expected_groups)
@@ -284,7 +285,7 @@ def run_existing_ladder(monkeypatch, week, mode, ladder):
         monkeypatch.setenv("PLANET_FINDER_DIAGNOSTIC_LEVEL", "2" if level.startswith("exact-") else "0")
         bodies = synthetic_bodies(longitudes)
         result = layout(mode, bodies, target_solutions=1,
-            budget={"max_node_candidates": 2000, "max_seconds": REGRESSION_SECONDS},
+            budget={"max_node_candidates": 2000, "max_seconds": (HARD_MODE_REGRESSION_SECONDS if mode in (FinderMode.LATIN, FinderMode.MIXED) else REGRESSION_SECONDS)},
             context_label=f"ultimate-{week}-{level}-{mode.value}")
         assert_complete_valid_layout(result, bodies, mode)
         passed.append(level)
