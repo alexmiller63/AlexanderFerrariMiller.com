@@ -1450,11 +1450,11 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 uranus_venus_prefixes.append(delta)
                 if os.environ.get("PLANET_FINDER_FAST_VENUS_PROBE") == "1":
                     immutable = delta["immutable_reserved"] + delta["immutable_rim"]
-                    placed = (delta["overlap"] + delta["leader_existing"] +
-                              delta["route"] + delta["leader_rim"] + delta["leader_graze"])
+                    placed_rejections = (delta["overlap"] + delta["leader_existing"] +
+                                         delta["route"] + delta["leader_rim"] + delta["leader_graze"])
                     summary = (
                         f"FAST W36 VENUS PROBE: generated={delta['generated']} "
-                        f"viable={delta['viable']} immutable={immutable} placed={placed} "
+                        f"viable={delta['viable']} immutable={immutable} placed={placed_rejections} "
                         f"detail[reserved={delta['immutable_reserved']},rim={delta['immutable_rim']},"
                         f"overlap={delta['overlap']},leader={delta['leader_existing']},"
                         f"route={delta['route']},leader-rim={delta['leader_rim']},"
