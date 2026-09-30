@@ -1349,6 +1349,11 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         "route-direct": {}, "route-escape": {}, "route-arc": {}, "route-final": {},
     }
     forward_ceres_route_other = {}
+    # Diagnostic only: correlate the currently placed Mercury geometry with
+    # Ceres forward-check success/failure. This answers whether backtracking is
+    # exploring materially different Mercury placements or repeatedly
+    # stranding Ceres with equivalent geometry.
+    mercury_ceres_trials = {}
     # Bodies that actually make a forward check fail.  Without this, a prefix
     # whose every candidate is pruned before recursion leaves `deepest` at the
     # parent depth, causing the controller to blame/promote the parent instead
@@ -1502,6 +1507,28 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             body_stat["raw"] += witness_raw
             for reason, count in witness_reasons.items():
                 body_stat["reasons"][reason] += count
+            if future_name == "Ceres":
+                mercury_index = next(
+                    (i for i, placed_name in enumerate(leader_names) if placed_name == "Mercury"),
+                    None,
+                )
+                if mercury_index is not None and mercury_index < len(placed):
+                    mercury_box = placed[mercury_index]
+                    mercury_path = leaders[mercury_index]
+                    mercury_signature = (
+                        round(mercury_box.x, 1), round(mercury_box.y, 1),
+                        round(mercury_box.w, 1), round(mercury_box.h, 1),
+                        tuple((round(px, 1), round(py, 1)) for px, py in mercury_path),
+                    )
+                    trial = mercury_ceres_trials.setdefault(
+                        mercury_signature,
+                        {"checks": 0, "witnesses": 0, "dead": 0, "raw": 0},
+                    )
+                    trial["checks"] += 1
+                    trial["raw"] += witness_raw
+                    trial["witnesses"] += int(witness)
+                    trial["dead"] += int(not witness)
+
             if witness:
                 body_stat["witnesses"] += 1
                 forward_stats["witnesses"] += 1
@@ -1873,6 +1900,27 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 f"leader-graze={reasons.get('leader-graze', 0):,}",
                 flush=True,
             )
+
+    if exhausted and mercury_ceres_trials:
+        ranked_trials = sorted(
+            mercury_ceres_trials.items(),
+            key=lambda item: (-item[1]["checks"], item[0]),
+        )
+        distinct = len(ranked_trials)
+        successful = sum(1 for _, row in ranked_trials if row["witnesses"])
+        total_checks = sum(row["checks"] for _, row in ranked_trials)
+        total_dead = sum(row["dead"] for _, row in ranked_trials)
+        samples = "; ".join(
+            f"box={sig[:4]} path={sig[4]} checks={row['checks']} "
+            f"witnesses={row['witnesses']} dead={row['dead']} raw={row['raw']}"
+            for sig, row in ranked_trials[:12]
+        )
+        diagnostic_print(
+            f"Planet Finder {mode}: MERCURY->CERES GEOMETRY "
+            f"distinct={distinct} checks={total_checks} dead={total_dead} "
+            f"ceres-positive={successful} samples={samples}",
+            flush=True,
+        )
 
     if exhausted and forward_ceres_blockers:
         for kind, counts in forward_ceres_blockers.items():
