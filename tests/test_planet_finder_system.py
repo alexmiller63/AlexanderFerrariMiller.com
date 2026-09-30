@@ -17,6 +17,7 @@ from planet_finder_validation import validate_layout
 
 MODES = [FinderMode.GREEK, FinderMode.LATIN, FinderMode.MIXED]
 REGRESSION_SECONDS = 60.0
+LADDER_SECONDS = 15.0
 
 
 def test_blocked_preplacement_restores_alignment_before_recursive_retry():
@@ -148,6 +149,8 @@ TIGHT_FIVE_LADDER = [
 W01_LADDER = [
     ("easy", {"Sun": 0, "Mercury": 20, "Venus": 40, "Mars": 60, "Pluto": 80, "Saturn": 140, "Neptune": 160, "Ceres": 180, "Moon": 200, "Uranus": 260, "Jupiter": 320}),
     ("wrap-four", {"Sun": 180, "Mercury": 185, "Venus": 190, "Mars": 195, "Pluto": 200, "Saturn": 355.99936587038286, "Neptune": 359.4721293482971, "Ceres": 6.453439627692317, "Moon": 22.937571430229294, "Uranus": 80, "Jupiter": 120}),
+    ("real-five-plus-wide-wrap", {"Mercury": 264.1023447351197, "Venus": 275.4313050776394, "Sun": 277.511945972904, "Mars": 280.39213202805865, "Pluto": 302.62909367404063, "Saturn": 345, "Neptune": 355, "Ceres": 5, "Moon": 15, "Uranus": 80, "Jupiter": 120}),
+    ("real-five-plus-medium-wrap", {"Mercury": 264.1023447351197, "Venus": 275.4313050776394, "Sun": 277.511945972904, "Mars": 280.39213202805865, "Pluto": 302.62909367404063, "Saturn": 350, "Neptune": 358, "Ceres": 6, "Moon": 18, "Uranus": 80, "Jupiter": 120}),
     ("both-real-alignments", {"Mercury": 264.1023447351197, "Venus": 275.4313050776394, "Sun": 277.511945972904, "Mars": 280.39213202805865, "Pluto": 302.62909367404063, "Saturn": 355.99936587038286, "Neptune": 359.4721293482971, "Ceres": 6.453439627692317, "Moon": 22.937571430229294, "Uranus": 80, "Jupiter": 120}),
     ("exact-W01", W01_EXACT),
 ]
@@ -155,6 +158,9 @@ W01_LADDER = [
 W02_LADDER = [
     ("separated", {"Sun": 0, "Mercury": 40, "Venus": 80, "Mars": 120, "Pluto": 160, "Saturn": 200, "Neptune": 240, "Ceres": 280, "Moon": 320, "Uranus": 60, "Jupiter": 180}),
     ("venus-sun-conjunction", {"Venus": 100.0, "Sun": 100.405, "Mercury": 20, "Mars": 150, "Pluto": 190, "Saturn": 230, "Neptune": 270, "Ceres": 310, "Moon": 350, "Uranus": 50, "Jupiter": 200}),
+    ("inner-wide", {"Mercury": 270, "Venus": 282, "Sun": 284.6440014763892, "Mars": 290, "Pluto": 306, "Saturn": 20, "Neptune": 60, "Ceres": 100, "Moon": 140, "Uranus": 180, "Jupiter": 220}),
+    ("inner-medium", {"Mercury": 272.5, "Venus": 283, "Sun": 284.6440014763892, "Mars": 288, "Pluto": 304.5, "Saturn": 20, "Neptune": 60, "Ceres": 100, "Moon": 140, "Uranus": 180, "Jupiter": 220}),
+    ("inner-near", {"Mercury": 274, "Venus": 283.8, "Sun": 284.6440014763892, "Mars": 286.5, "Pluto": 303.5, "Saturn": 20, "Neptune": 60, "Ceres": 100, "Moon": 140, "Uranus": 180, "Jupiter": 220}),
     ("inner-alignment", {"Mercury": 274.8007325297467, "Venus": 284.23931723550777, "Sun": 284.6440014763892, "Mars": 285.7588826483691, "Pluto": 302.8404789942358, "Saturn": 20, "Neptune": 60, "Ceres": 100, "Moon": 140, "Uranus": 180, "Jupiter": 220}),
     ("outer-wrap-alignment", {"Saturn": 356.41276254486604, "Neptune": 359.5610441804245, "Ceres": 7.9496046464005525, "Mercury": 60, "Venus": 100, "Sun": 140, "Mars": 180, "Pluto": 220, "Moon": 260, "Uranus": 300, "Jupiter": 100}),
     ("jupiter-moon-alignment", {"Jupiter": 110.82906185524807, "Moon": 126.1796456120117, "Mercury": 10, "Venus": 50, "Sun": 90, "Mars": 170, "Pluto": 210, "Saturn": 250, "Neptune": 290, "Ceres": 330, "Uranus": 200}),
@@ -215,7 +221,7 @@ def test_level_20_progressive_ultimate_w01(monkeypatch, mode, level, longitudes)
     """Progress from easy W01-shaped geometry to immutable exact W01."""
     monkeypatch.setenv("PLANET_FINDER_DIAGNOSTIC_LEVEL", "2" if level == "exact-W01" else "0")
     bodies = synthetic_bodies(longitudes)
-    result = layout(mode, bodies, target_solutions=1, budget={"max_node_candidates": 2000, "max_seconds": REGRESSION_SECONDS}, context_label=f"ultimate-W01-{level}-{mode.value}")
+    result = layout(mode, bodies, target_solutions=1, budget={"max_node_candidates": 2000, "max_seconds": LADDER_SECONDS}, context_label=f"ultimate-W01-{level}-{mode.value}")
     assert_complete_valid_layout(result, bodies, mode)
     if level in ("both-real-alignments", "exact-W01") and mode != FinderMode.GREEK:
         assert_alignment_labels_follow_lambda(result, bodies)
@@ -229,7 +235,7 @@ def test_level_30_progressive_ultimate_w02(monkeypatch, mode, level, longitudes)
     bodies = synthetic_bodies(longitudes)
     result = layout(
         mode, bodies, target_solutions=1,
-        budget={"max_node_candidates": 2000, "max_seconds": REGRESSION_SECONDS},
+        budget={"max_node_candidates": 2000, "max_seconds": LADDER_SECONDS},
         context_label=f"ultimate-W02-{level}-{mode.value}",
     )
     assert_complete_valid_layout(result, bodies, mode)
