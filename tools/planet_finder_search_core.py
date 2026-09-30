@@ -465,6 +465,12 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             "leader_existing": 0,
             "leader_rim": 0,
             "leader_graze": 0,
+            # Diagnostic-only attribution for the W36 Venus dead end.
+            # These maps never affect candidate legality or ordering.
+            "overlap_by_label": {},
+            "existing_leader_by_name": {},
+            "leader_graze_by_name": {},
+            "own_label_graze": 0,
             "started": False,
             "blocked": None,
         })
@@ -636,20 +642,34 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             # existing leader, cannot become valid without backtracking, so it
             # must not consume candidate/search budget.
             t0 = time.monotonic()
-            overlaps_placed = any(boxes_overlap(box, b, 14) for b in placed)
+            overlap_indices = [i for i, b in enumerate(placed) if boxes_overlap(box, b, 14)]
+            overlaps_placed = bool(overlap_indices)
             timing["overlap"] += time.monotonic() - t0
             if overlaps_placed:
                 rejected_overlap += 1
                 stats["overlap"] += 1
+                if name == "Venus":
+                    for i in overlap_indices:
+                        blocker = leader_names[i] if i < len(leader_names) else f"placed_{i}"
+                        stats["overlap_by_label"][blocker] = stats["overlap_by_label"].get(blocker, 0) + 1
                 continue
             t0 = time.monotonic()
-            hit_existing_leader = any(segment_hits_box(seg[i], seg[i + 1], box, 10)
-                                      for seg in leaders for i in range(len(seg) - 1))
+            existing_leader_hits = [
+                leader_index
+                for leader_index, seg in enumerate(leaders)
+                if any(segment_hits_box(seg[i], seg[i + 1], box, 10)
+                       for i in range(len(seg) - 1))
+            ]
+            hit_existing_leader = bool(existing_leader_hits)
             timing["existing_leader"] += time.monotonic() - t0
             if hit_existing_leader:
                 rejected_leader += 1
                 stats["leader"] += 1
                 stats["leader_existing"] += 1
+                if name == "Venus":
+                    for leader_index in existing_leader_hits:
+                        blocker = leader_names[leader_index] if leader_index < len(leader_names) else f"leader_{leader_index}"
+                        stats["existing_leader_by_name"][blocker] = stats["existing_leader_by_name"].get(blocker, 0) + 1
                 continue
             route_diag = route_diagnostics.setdefault((depth, name), {
                 "straight_blocked": 0,
@@ -724,6 +744,8 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 rejected_leader += 1
                 stats["leader"] += 1
                 stats["leader_graze"] += 1
+                if name == "Venus":
+                    stats["own_label_graze"] += 1
                 continue
 
             # A new leader must not cross any label already placed by DFS.
@@ -755,6 +777,12 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 rejected_leader += 1
                 stats["leader"] += 1
                 stats["leader_graze"] += 1
+                if name == "Venus":
+                    _, closest_pair = minimum_leader_separation(path, leaders)
+                    if closest_pair is not None:
+                        leader_index = closest_pair[0]
+                        blocker = leader_names[leader_index] if leader_index < len(leader_names) else f"leader_{leader_index}"
+                        stats["leader_graze_by_name"][blocker] = stats["leader_graze_by_name"].get(blocker, 0) + 1
                 continue
             # Diagnostic-only geometry signature.  Round below rendering
             # precision so numerically insignificant float noise does not make
@@ -1452,6 +1480,15 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                     immutable = delta["immutable_reserved"] + delta["immutable_rim"]
                     placed_rejections = (delta["overlap"] + delta["leader_existing"] +
                                          delta["route"] + delta["leader_rim"] + delta["leader_graze"])
+                    venus_stats = diagnostic_stats.get((depth + 1, "Venus"), {})
+                    def ranked_blockers(key):
+                        return ",".join(
+                            f"{blocker}={count}"
+                            for blocker, count in sorted(
+                                venus_stats.get(key, {}).items(),
+                                key=lambda item: (-item[1], item[0]),
+                            )
+                        ) or "-"
                     summary = (
                         f"FAST W36 VENUS PROBE: generated={delta['generated']} "
                         f"viable={delta['viable']} immutable={immutable} placed={placed_rejections} "
@@ -1459,6 +1496,10 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                         f"overlap={delta['overlap']},leader={delta['leader_existing']},"
                         f"route={delta['route']},leader-rim={delta['leader_rim']},"
                         f"graze={delta['leader_graze']}] "
+                        f"blockers[overlap={ranked_blockers('overlap_by_label')};"
+                        f"existing-leader={ranked_blockers('existing_leader_by_name')};"
+                        f"leader-graze={ranked_blockers('leader_graze_by_name')};"
+                        f"own-label-graze={venus_stats.get('own_label_graze', 0)}] "
                         f"uranus_box={delta['uranus_box']} uranus_path={delta['uranus_path']}"
                     )
                     print(summary, flush=True)
