@@ -163,9 +163,11 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
     # from repeated/equivalent viable candidates.  This never filters or
     # reorders candidates and therefore cannot change search behavior.
     viable_geometry_seen = {}
-    # Diagnostic only: record what happens to Venus under each individually
-    # viable Pluto parent placement. This does not alter search behavior.
+    # Diagnostic only: record what happens to Venus under individually viable
+    # parent placements. The Uranus form exposes the exact W36
+    # Pluto > Uranus > Venus terminal chain without altering search behavior.
     pluto_venus_prefixes = []
+    uranus_venus_prefixes = []
     # Diagnostic only: summarize how Mercury's admitted candidates traverse
     # label-position space.  This does not filter, reorder, or score anything.
     mercury_candidate_stream = []
@@ -279,6 +281,37 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                     f"leader-graze={totals['leader_graze']:,}]",
                     flush=True,
                 )
+            if uranus_venus_prefixes:
+                keys = ("generated", "viable", "immutable_reserved", "immutable_rim",
+                        "overlap", "leader_existing", "route", "leader_rim", "leader_graze")
+                totals = {key: sum(row[key] for row in uranus_venus_prefixes) for key in keys}
+                zero_viable = sum(1 for row in uranus_venus_prefixes if row["viable"] == 0)
+                worst = sorted(
+                    uranus_venus_prefixes,
+                    key=lambda row: (row["viable"], -sum(row[key] for key in keys[2:])),
+                )[:5]
+                samples = "; ".join(
+                    f"box={row['uranus_box']} path={row['uranus_path']} "
+                    f"V[gen={row['generated']},ok={row['viable']},res={row['immutable_reserved']},"
+                    f"rim={row['immutable_rim']},ov={row['overlap']},lead={row['leader_existing']},"
+                    f"route={row['route']},lrim={row['leader_rim']},graze={row['leader_graze']}]"
+                    for row in worst
+                )
+                summary = (
+                    f"Planet Finder {mode}: W36 URANUS-VENUS DEAD-END SUMMARY "
+                    f"prefixes={len(uranus_venus_prefixes):,} zero-viable={zero_viable:,} "
+                    f"venus-generated={totals['generated']:,} venus-viable={totals['viable']:,} "
+                    f"rejects[immutable-reserved={totals['immutable_reserved']:,},"
+                    f"immutable-rim={totals['immutable_rim']:,},placed-overlap={totals['overlap']:,},"
+                    f"existing-leader={totals['leader_existing']:,},route={totals['route']:,},"
+                    f"leader-rim={totals['leader_rim']:,},leader-graze={totals['leader_graze']:,}] "
+                    f"samples={samples}"
+                )
+                diagnostic_print(summary, flush=True)
+                summary_path = os.environ.get("GITHUB_STEP_SUMMARY")
+                if summary_path:
+                    with open(summary_path, "a", encoding="utf-8") as summary_file:
+                        summary_file.write("### W36 Uranus → Venus dead-end diagnostic\n\n" + summary + "\n\n")
             return
         order_names = " > ".join(item[1][1] for item in order)
         diagnostic_print(
@@ -1367,9 +1400,17 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             child_nodes_before = nodes
             child_backtracks_before = backtracks
             pv_before = None
+            uv_before = None
             if name == "Pluto" and depth + 1 < len(order) and order[depth + 1][1][1] == "Venus":
                 venus_stats = diagnostic_stats.get((depth + 1, "Venus"), {})
                 pv_before = {
+                    key: venus_stats.get(key, 0)
+                    for key in ("generated", "viable", "immutable_reserved", "immutable_rim",
+                                "overlap", "leader_existing", "route", "leader_rim", "leader_graze")
+                }
+            if name == "Uranus" and depth + 1 < len(order) and order[depth + 1][1][1] == "Venus":
+                venus_stats = diagnostic_stats.get((depth + 1, "Venus"), {})
+                uv_before = {
                     key: venus_stats.get(key, 0)
                     for key in ("generated", "viable", "immutable_reserved", "immutable_rim",
                                 "overlap", "leader_existing", "route", "leader_rim", "leader_graze")
@@ -1394,6 +1435,19 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                     for key in pv_before
                 }
                 pluto_venus_prefixes.append(delta)
+            if uv_before is not None:
+                venus_stats = diagnostic_stats.get((depth + 1, "Venus"), {})
+                delta = {
+                    key: venus_stats.get(key, 0) - uv_before.get(key, 0)
+                    for key in uv_before
+                }
+                # Keep just enough parent geometry to distinguish whether the
+                # same Uranus region repeatedly strands Venus. Pluto is still
+                # present in placed[] at this point and is represented by the
+                # enclosing DFS prefix; no search state is changed.
+                delta["uranus_box"] = (round(box.x, 1), round(box.y, 1), round(box.w, 1), round(box.h, 1))
+                delta["uranus_path"] = tuple((round(px, 1), round(py, 1)) for px, py in path)
+                uranus_venus_prefixes.append(delta)
 
             backtracks += 1
             # Prefix diagnostic: when an individually legal candidate cannot
