@@ -8,6 +8,7 @@ on:
       - "tools/planet_finder_search*.py"
       - "tools/planet_finder_validation.py"
       - "tests/test_planet_finder_system.py"
+      - "tests/test_planet_finder_ultimate_ladders.py"
       - ".github/workflows/test-planet-finder-conjunctions.yml"
 
 jobs:
@@ -25,10 +26,7 @@ jobs:
       - name: Install test dependencies
         run: python -m pip install pytest skyfield
 
-      - name: Run W1 and W2 ultimate progressive regression ladders
+      - name: Run stop-on-first-failure W1 and W2 ultimate ladders
         env:
           PYTHONPATH: tools
-        run: >-
-          python -m pytest -q -s
-          tests/test_planet_finder_system.py
-          -k "progressive_ultimate_w01 or progressive_ultimate_w02"
+        run: python -m pytest -q -s tests/test_planet_finder_ultimate_ladders.py
