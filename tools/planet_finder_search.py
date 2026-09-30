@@ -219,7 +219,7 @@ def layout(
         diagnostic_print(
             f"Planet Finder {mode}: squeaky-wheel lazy DFS {context_label + ' ' if context_label else ''}"
             f"order={order_index} target={target_solutions} max-node-candidates={budget['max_node_candidates']:,} "
-            f"candidate-lattice=0,+/-0.25,...,+/-2.00 label-lengths sequence=" + " > ".join(order_names), flush=True,
+            f"candidate-lattice=+/-2.00,...,+/-0.25,0 label-lengths sequence=" + " > ".join(order_names), flush=True,
         )
 
         try:
