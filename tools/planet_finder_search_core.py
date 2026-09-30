@@ -523,6 +523,19 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         for kind, counts in ceres_attribution.items():
             top = sorted(counts.items(), key=lambda item: (-item[1], item[0]))[:12]
             diagnostic_print(f"Planet Finder {mode}: CERES BLOCKERS kind={kind} " + (" ".join(f"{name}={count:,}" for name, count in top) if top else "none"), flush=True)
+        ceres_attribution = {"overlap": {}, "existing-leader": {}, "leader-graze": {}}
+        for (d, n), ds in diagnostic_stats.items():
+            if n != "Ceres":
+                continue
+            for label, count in ds.get("overlap_by_label", {}).items():
+                ceres_attribution["overlap"][label] = ceres_attribution["overlap"].get(label, 0) + count
+            for label, count in ds.get("existing_leader_by_name", {}).items():
+                ceres_attribution["existing-leader"][label] = ceres_attribution["existing-leader"].get(label, 0) + count
+            for label, count in ds.get("leader_graze_by_name", {}).items():
+                ceres_attribution["leader-graze"][label] = ceres_attribution["leader-graze"].get(label, 0) + count
+        for kind, counts in ceres_attribution.items():
+            top = sorted(counts.items(), key=lambda item: (-item[1], item[0]))[:12]
+            diagnostic_print(f"Planet Finder {mode}: CERES BLOCKERS kind={kind} " + (" ".join(f"{name}={count:,}" for name, count in top) if top else "none"), flush=True)
         diagnostic_print(
             f"Planet Finder {mode}: TERMINAL BEST-PARTIAL deepest={deepest}/{len(order)}",
             flush=True,
