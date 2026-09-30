@@ -5,13 +5,9 @@ progressive W01/W02 stress ladders matter. Exact W01/W02 remain immutable
 endpoints.
 """
 
-from datetime import date
-
 import pytest
 
-from populate_ephemeris import computed_ephemeris
-from star_almanack_ephemeris import StarAlmanackEphemeris
-from planet_finder_geometry import BODY_NAMES, BODY_SYMBOLS, CANONICAL, FinderMode
+from planet_finder_geometry import FinderMode
 from planet_finder_search import layout
 from test_planet_finder_system import (
     W01_LADDER,
@@ -24,24 +20,31 @@ from test_planet_finder_system import (
 MODES = [FinderMode.GREEK, FinderMode.LATIN, FinderMode.MIXED]
 REGRESSION_SECONDS = 60.0
 
-
-def production_week_bodies(year, week):
-    """Build the exact body set used by the production weekly generator."""
-    date.fromisocalendar(year, week, 1)  # validate the ISO week
-    needed = {BODY_NAMES[name] for name in CANONICAL}
-    generated = computed_ephemeris(year, StarAlmanackEphemeris())
-    values = {key: generated[key][week - 1][0] for key in needed}
-    return [
-        (BODY_SYMBOLS[BODY_NAMES[name]], name, values[BODY_NAMES[name]] % 360)
-        for name in CANONICAL
-    ]
+# Frozen 2026-W36 production geometry.  Keep this fixture independent of
+# Skyfield kernels: its purpose is to catch Planet Finder regressions, not to
+# retest ephemeris generation.  Sun through Neptune/Ceres are the repository's
+# published 2026-W36 Monday 00:00 UTC ephemeris values.  Pluto is frozen from
+# the known-good W36 finder geometry already published by the generator.
+W36_KNOWN_GOOD = {
+    "Sun": 157 + 38 / 60,
+    "Moon": 11 + 53 / 60,
+    "Mercury": 160 + 48 / 60,
+    "Venus": 180 + 22 + 22 / 60,
+    "Mars": 90 + 12 + 46 / 60,
+    "Jupiter": 120 + 13 + 29 / 60,
+    "Saturn": 13 + 44 / 60,
+    "Ceres": 90 + 6 + 33 / 60,
+    "Uranus": 60 + 5 + 39 / 60,
+    "Neptune": 3 + 41 / 60,
+    "Pluto": 303.5330419654775,
+}
 
 
 @pytest.mark.parametrize("mode", MODES)
 def test_w36_known_good_regression_gate(monkeypatch, mode):
     """Never improve W01/W02 by sacrificing the hard-won W36 baseline."""
     monkeypatch.setenv("PLANET_FINDER_DIAGNOSTIC_LEVEL", "1")
-    bodies = production_week_bodies(2026, 36)
+    bodies = synthetic_bodies(W36_KNOWN_GOOD)
     print(f"REGRESSION GATE W36 {mode.value}: START", flush=True)
     try:
         result = layout(
