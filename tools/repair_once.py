@@ -1,62 +1,176 @@
 #!/usr/bin/env python3
-"""One-shot repair: make the W01/W02 diagnostic ladders faster and finer.
+"""One-shot repair: instrument the W36 Pluto > Uranus > Venus dead end.
 
-Production Planet Finder code and exact W01/W02 endpoints are untouched.
-This changes only the progressive test ladder: 15-second rung budgets and
-extra synthetic rungs immediately around the currently observed cliffs.
+Diagnostic only. Solver ordering, candidate geometry, legality, routing, caps,
+and backtracking are unchanged. The added compact summary records each viable
+Uranus prefix under the already-placed Pluto parent and the Venus rejection
+mix beneath it.
 """
 from pathlib import Path
 
-ENABLED = False
+ENABLED = True
 if not ENABLED:
     print("Repair Once is OFF; nothing to do.")
     raise SystemExit(0)
 
-TARGET = Path("tests/test_planet_finder_system.py")
+TARGET = Path("tools/planet_finder_search_core.py")
 text = TARGET.read_text(encoding="utf-8")
 
-marker = "REGRESSION_SECONDS = 60.0\n"
-if text.count(marker) != 1:
-    raise SystemExit(f"Safety stop: regression clock marker count={text.count(marker)}; expected 1")
-text = text.replace(marker, marker + "LADDER_SECONDS = 15.0\n", 1)
+old = '''    # Diagnostic only: record what happens to Venus under each individually
+    # viable Pluto parent placement. This does not alter search behavior.
+    pluto_venus_prefixes = []
+'''
+new = '''    # Diagnostic only: record what happens to Venus under individually viable
+    # parent placements. The Uranus form exposes the exact W36
+    # Pluto > Uranus > Venus terminal chain without altering search behavior.
+    pluto_venus_prefixes = []
+    uranus_venus_prefixes = []
+'''
+if text.count(old) != 1:
+    raise SystemExit(f"Safety stop: diagnostic-list anchor count={text.count(old)}; expected 1")
+text = text.replace(old, new, 1)
 
-w01_old = '''    ("wrap-four", {"Sun": 180, "Mercury": 185, "Venus": 190, "Mars": 195, "Pluto": 200, "Saturn": 355.99936587038286, "Neptune": 359.4721293482971, "Ceres": 6.453439627692317, "Moon": 22.937571430229294, "Uranus": 80, "Jupiter": 120}),
-    ("both-real-alignments", {"Mercury": 264.1023447351197, "Venus": 275.4313050776394, "Sun": 277.511945972904, "Mars": 280.39213202805865, "Pluto": 302.62909367404063, "Saturn": 355.99936587038286, "Neptune": 359.4721293482971, "Ceres": 6.453439627692317, "Moon": 22.937571430229294, "Uranus": 80, "Jupiter": 120}),'''
-w01_new = '''    ("wrap-four", {"Sun": 180, "Mercury": 185, "Venus": 190, "Mars": 195, "Pluto": 200, "Saturn": 355.99936587038286, "Neptune": 359.4721293482971, "Ceres": 6.453439627692317, "Moon": 22.937571430229294, "Uranus": 80, "Jupiter": 120}),
-    ("real-five-plus-wide-wrap", {"Mercury": 264.1023447351197, "Venus": 275.4313050776394, "Sun": 277.511945972904, "Mars": 280.39213202805865, "Pluto": 302.62909367404063, "Saturn": 345, "Neptune": 355, "Ceres": 5, "Moon": 15, "Uranus": 80, "Jupiter": 120}),
-    ("real-five-plus-medium-wrap", {"Mercury": 264.1023447351197, "Venus": 275.4313050776394, "Sun": 277.511945972904, "Mars": 280.39213202805865, "Pluto": 302.62909367404063, "Saturn": 350, "Neptune": 358, "Ceres": 6, "Moon": 18, "Uranus": 80, "Jupiter": 120}),
-    ("both-real-alignments", {"Mercury": 264.1023447351197, "Venus": 275.4313050776394, "Sun": 277.511945972904, "Mars": 280.39213202805865, "Pluto": 302.62909367404063, "Saturn": 355.99936587038286, "Neptune": 359.4721293482971, "Ceres": 6.453439627692317, "Moon": 22.937571430229294, "Uranus": 80, "Jupiter": 120}),'''
-if text.count(w01_old) != 1:
-    raise SystemExit(f"Safety stop: W01 boundary match count={text.count(w01_old)}; expected 1")
-text = text.replace(w01_old, w01_new, 1)
+old = '''            child_backtracks_before = backtracks
+            pv_before = None
+            if name == "Pluto" and depth + 1 < len(order) and order[depth + 1][1][1] == "Venus":
+                venus_stats = diagnostic_stats.get((depth + 1, "Venus"), {})
+                pv_before = {
+                    key: venus_stats.get(key, 0)
+                    for key in ("generated", "viable", "immutable_reserved", "immutable_rim",
+                                "overlap", "leader_existing", "route", "leader_rim", "leader_graze")
+                }
+'''
+new = '''            child_backtracks_before = backtracks
+            pv_before = None
+            uv_before = None
+            if name == "Pluto" and depth + 1 < len(order) and order[depth + 1][1][1] == "Venus":
+                venus_stats = diagnostic_stats.get((depth + 1, "Venus"), {})
+                pv_before = {
+                    key: venus_stats.get(key, 0)
+                    for key in ("generated", "viable", "immutable_reserved", "immutable_rim",
+                                "overlap", "leader_existing", "route", "leader_rim", "leader_graze")
+                }
+            if name == "Uranus" and depth + 1 < len(order) and order[depth + 1][1][1] == "Venus":
+                venus_stats = diagnostic_stats.get((depth + 1, "Venus"), {})
+                uv_before = {
+                    key: venus_stats.get(key, 0)
+                    for key in ("generated", "viable", "immutable_reserved", "immutable_rim",
+                                "overlap", "leader_existing", "route", "leader_rim", "leader_graze")
+                }
+'''
+if text.count(old) != 1:
+    raise SystemExit(f"Safety stop: prefix-before anchor count={text.count(old)}; expected 1")
+text = text.replace(old, new, 1)
 
-w02_old = '''    ("venus-sun-conjunction", {"Venus": 100.0, "Sun": 100.405, "Mercury": 20, "Mars": 150, "Pluto": 190, "Saturn": 230, "Neptune": 270, "Ceres": 310, "Moon": 350, "Uranus": 50, "Jupiter": 200}),
-    ("inner-alignment", {"Mercury": 274.8007325297467, "Venus": 284.23931723550777, "Sun": 284.6440014763892, "Mars": 285.7588826483691, "Pluto": 302.8404789942358, "Saturn": 20, "Neptune": 60, "Ceres": 100, "Moon": 140, "Uranus": 180, "Jupiter": 220}),'''
-w02_new = '''    ("venus-sun-conjunction", {"Venus": 100.0, "Sun": 100.405, "Mercury": 20, "Mars": 150, "Pluto": 190, "Saturn": 230, "Neptune": 270, "Ceres": 310, "Moon": 350, "Uranus": 50, "Jupiter": 200}),
-    ("inner-wide", {"Mercury": 270, "Venus": 282, "Sun": 284.6440014763892, "Mars": 290, "Pluto": 306, "Saturn": 20, "Neptune": 60, "Ceres": 100, "Moon": 140, "Uranus": 180, "Jupiter": 220}),
-    ("inner-medium", {"Mercury": 272.5, "Venus": 283, "Sun": 284.6440014763892, "Mars": 288, "Pluto": 304.5, "Saturn": 20, "Neptune": 60, "Ceres": 100, "Moon": 140, "Uranus": 180, "Jupiter": 220}),
-    ("inner-near", {"Mercury": 274, "Venus": 283.8, "Sun": 284.6440014763892, "Mars": 286.5, "Pluto": 303.5, "Saturn": 20, "Neptune": 60, "Ceres": 100, "Moon": 140, "Uranus": 180, "Jupiter": 220}),
-    ("inner-alignment", {"Mercury": 274.8007325297467, "Venus": 284.23931723550777, "Sun": 284.6440014763892, "Mars": 285.7588826483691, "Pluto": 302.8404789942358, "Saturn": 20, "Neptune": 60, "Ceres": 100, "Moon": 140, "Uranus": 180, "Jupiter": 220}),'''
-if text.count(w02_old) != 1:
-    raise SystemExit(f"Safety stop: W02 boundary match count={text.count(w02_old)}; expected 1")
-text = text.replace(w02_old, w02_new, 1)
+old = '''            if pv_before is not None:
+                venus_stats = diagnostic_stats.get((depth + 1, "Venus"), {})
+                delta = {
+                    key: venus_stats.get(key, 0) - pv_before.get(key, 0)
+                    for key in pv_before
+                }
+                pluto_venus_prefixes.append(delta)
 
-# W01 budget is on one line; W02 is formatted across lines.
-w01_budget = 'budget={"max_node_candidates": 2000, "max_seconds": REGRESSION_SECONDS}, context_label=f"ultimate-W01-'
-if text.count(w01_budget) != 1:
-    raise SystemExit(f"Safety stop: W01 budget match count={text.count(w01_budget)}; expected 1")
-text = text.replace(w01_budget, 'budget={"max_node_candidates": 2000, "max_seconds": LADDER_SECONDS}, context_label=f"ultimate-W01-', 1)
+            backtracks += 1
+'''
+new = '''            if pv_before is not None:
+                venus_stats = diagnostic_stats.get((depth + 1, "Venus"), {})
+                delta = {
+                    key: venus_stats.get(key, 0) - pv_before.get(key, 0)
+                    for key in pv_before
+                }
+                pluto_venus_prefixes.append(delta)
+            if uv_before is not None:
+                venus_stats = diagnostic_stats.get((depth + 1, "Venus"), {})
+                delta = {
+                    key: venus_stats.get(key, 0) - uv_before.get(key, 0)
+                    for key in uv_before
+                }
+                # Keep just enough parent geometry to distinguish whether the
+                # same Uranus region repeatedly strands Venus. Pluto is still
+                # present in placed[] at this point and is represented by the
+                # enclosing DFS prefix; no search state is changed.
+                delta["uranus_box"] = (round(box.x, 1), round(box.y, 1), round(box.w, 1), round(box.h, 1))
+                delta["uranus_path"] = tuple((round(px, 1), round(py, 1)) for px, py in path)
+                uranus_venus_prefixes.append(delta)
 
-w02_budget = 'budget={"max_node_candidates": 2000, "max_seconds": REGRESSION_SECONDS},'
-w02_anchor = 'context_label=f"ultimate-W02-'
-pos = text.find(w02_anchor)
-if pos < 0:
-    raise SystemExit("Safety stop: W02 context anchor missing")
-before = text[:pos]
-budget_pos = before.rfind(w02_budget)
-if budget_pos < 0 or pos - budget_pos > 300:
-    raise SystemExit("Safety stop: W02 nearby budget not found")
-text = text[:budget_pos] + text[budget_pos:].replace(w02_budget, 'budget={"max_node_candidates": 2000, "max_seconds": LADDER_SECONDS},', 1)
+            backtracks += 1
+'''
+if text.count(old) != 1:
+    raise SystemExit(f"Safety stop: prefix-after anchor count={text.count(old)}; expected 1")
+text = text.replace(old, new, 1)
+
+old = '''            if pluto_venus_prefixes:
+                keys = ("generated", "viable", "immutable_reserved", "immutable_rim",
+                        "overlap", "leader_existing", "route", "leader_rim", "leader_graze")
+                totals = {key: sum(row[key] for row in pluto_venus_prefixes) for key in keys}
+                zero_viable = sum(1 for row in pluto_venus_prefixes if row["viable"] == 0)
+                diagnostic_print(
+                    f"Planet Finder {mode}: PLUTO-VENUS PREFIX SUMMARY "
+                    f"parents={len(pluto_venus_prefixes):,} zero-viable={zero_viable:,} "
+                    f"venus-generated={totals['generated']:,} venus-viable={totals['viable']:,} "
+                    f"rejects[immutable-reserved={totals['immutable_reserved']:,},"
+                    f"immutable-rim={totals['immutable_rim']:,},"
+                    f"placed-overlap={totals['overlap']:,},"
+                    f"existing-leader={totals['leader_existing']:,},"
+                    f"route={totals['route']:,},leader-rim={totals['leader_rim']:,},"
+                    f"leader-graze={totals['leader_graze']:,}]",
+                    flush=True,
+                )
+            return
+'''
+new = '''            if pluto_venus_prefixes:
+                keys = ("generated", "viable", "immutable_reserved", "immutable_rim",
+                        "overlap", "leader_existing", "route", "leader_rim", "leader_graze")
+                totals = {key: sum(row[key] for row in pluto_venus_prefixes) for key in keys}
+                zero_viable = sum(1 for row in pluto_venus_prefixes if row["viable"] == 0)
+                diagnostic_print(
+                    f"Planet Finder {mode}: PLUTO-VENUS PREFIX SUMMARY "
+                    f"parents={len(pluto_venus_prefixes):,} zero-viable={zero_viable:,} "
+                    f"venus-generated={totals['generated']:,} venus-viable={totals['viable']:,} "
+                    f"rejects[immutable-reserved={totals['immutable_reserved']:,},"
+                    f"immutable-rim={totals['immutable_rim']:,},"
+                    f"placed-overlap={totals['overlap']:,},"
+                    f"existing-leader={totals['leader_existing']:,},"
+                    f"route={totals['route']:,},leader-rim={totals['leader_rim']:,},"
+                    f"leader-graze={totals['leader_graze']:,}]",
+                    flush=True,
+                )
+            if uranus_venus_prefixes:
+                keys = ("generated", "viable", "immutable_reserved", "immutable_rim",
+                        "overlap", "leader_existing", "route", "leader_rim", "leader_graze")
+                totals = {key: sum(row[key] for row in uranus_venus_prefixes) for key in keys}
+                zero_viable = sum(1 for row in uranus_venus_prefixes if row["viable"] == 0)
+                worst = sorted(
+                    uranus_venus_prefixes,
+                    key=lambda row: (row["viable"], -sum(row[key] for key in keys[2:])),
+                )[:5]
+                samples = "; ".join(
+                    f"box={row['uranus_box']} path={row['uranus_path']} "
+                    f"V[gen={row['generated']},ok={row['viable']},res={row['immutable_reserved']},"
+                    f"rim={row['immutable_rim']},ov={row['overlap']},lead={row['leader_existing']},"
+                    f"route={row['route']},lrim={row['leader_rim']},graze={row['leader_graze']}]"
+                    for row in worst
+                )
+                summary = (
+                    f"Planet Finder {mode}: W36 URANUS-VENUS DEAD-END SUMMARY "
+                    f"prefixes={len(uranus_venus_prefixes):,} zero-viable={zero_viable:,} "
+                    f"venus-generated={totals['generated']:,} venus-viable={totals['viable']:,} "
+                    f"rejects[immutable-reserved={totals['immutable_reserved']:,},"
+                    f"immutable-rim={totals['immutable_rim']:,},placed-overlap={totals['overlap']:,},"
+                    f"existing-leader={totals['leader_existing']:,},route={totals['route']:,},"
+                    f"leader-rim={totals['leader_rim']:,},leader-graze={totals['leader_graze']:,}] "
+                    f"samples={samples}"
+                )
+                diagnostic_print(summary, flush=True)
+                summary_path = os.environ.get("GITHUB_STEP_SUMMARY")
+                if summary_path:
+                    with open(summary_path, "a", encoding="utf-8") as summary_file:
+                        summary_file.write("### W36 Uranus → Venus dead-end diagnostic\\n\\n" + summary + "\\n\\n")
+            return
+'''
+if text.count(old) != 1:
+    raise SystemExit(f"Safety stop: capped-summary anchor count={text.count(old)}; expected 1")
+text = text.replace(old, new, 1)
 
 TARGET.write_text(text, encoding="utf-8")
 
@@ -67,4 +181,4 @@ if self_text.count(arming_line) != 1:
     raise SystemExit("Safety stop: Repair Once arming marker is not unique")
 me.write_text(self_text.replace(arming_line, "ENABLED = False", 1), encoding="utf-8")
 
-print("Progressive W01/W02 ladders: 15-second rung budget plus finer W01/W02 boundary rungs. Exact endpoints and production solver unchanged. Repair Once is now OFF.")
+print("Added diagnostic-only W36 Uranus -> Venus dead-end summary; solver behavior unchanged. Repair Once is now OFF.")
