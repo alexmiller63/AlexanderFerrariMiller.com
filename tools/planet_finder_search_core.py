@@ -1483,8 +1483,16 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             return None, None, witness_raw, reasons
 
         # Existing individual feasibility test for every future body.
-        for future_depth in range(next_depth, len(order)):
-            item = order[future_depth]
+        # Squeaky-wheel ordering applies here too: once a future body has
+        # actually killed prefixes, test that body first on subsequent
+        # prefixes. This preserves the exact feasibility test and DFS search;
+        # it only avoids spending look-ahead time on easier bodies before the
+        # known blocker. Stable order_rank keeps the original order for ties.
+        future_items = list(enumerate(order[next_depth:], start=next_depth))
+        future_items.sort(
+            key=lambda row: (-forward_blockers.get(row[1][1][1], 0), row[0])
+        )
+        for future_depth, item in future_items:
             _, (_, future_name, _) = item
             future_box, future_path, witness_raw, witness_reasons = witness_for(
                 item, placed, leaders, obstacles
