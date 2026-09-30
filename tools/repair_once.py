@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
-"""One-shot diagnostic: isolate Mixed JSM 0% versus 25% search divergence.
+"""One-shot diagnostic: identify Ceres blockers inside Mixed JSM 25%.
 
 Adds a focused test only; production Planet Finder code is unchanged.
 Repair Once self-disables after installing the diagnostic.
 """
 from pathlib import Path
 
-ENABLED = False
+ENABLED = True
 if not ENABLED:
     print("Repair Once is OFF; nothing to do.")
     raise SystemExit(0)
@@ -20,7 +20,7 @@ anchor = '''def test_w36_mixed_jsm_breakpoint(monkeypatch):
 addition = anchor + '''\n\ndef test_02_w36_mixed_jsm_zero_vs_25_forensic(monkeypatch):
     """Compare the passing 0% JSM state directly with the failing 25% state."""
     enable_alignment_fix(monkeypatch)
-    monkeypatch.setenv("PLANET_FINDER_DIAGNOSTIC_LEVEL", "3")
+    monkeypatch.setenv("PLANET_FINDER_DIAGNOSTIC_LEVEL", "4")
     for level, fraction in (("jsm-0pct", 0.0), ("jsm-25pct", 0.25)):
         longitudes, expected_groups = jsm_case(fraction)
         print(f"JSM FORENSIC {level} LONGITUDES " +
@@ -52,4 +52,4 @@ if self_text.count(arming_line) != 1:
     raise SystemExit("Safety stop: Repair Once arming marker is not unique")
 me.write_text(self_text.replace(arming_line, "ENABLED = False", 1), encoding="utf-8")
 
-print("Installed focused Mixed JSM 0%-vs-25% forensic test. Production code unchanged. Repair Once is now OFF.")
+print("Raised focused JSM forensic diagnostics to blocker-identity level 4. Production code unchanged. Repair Once is now OFF.")
