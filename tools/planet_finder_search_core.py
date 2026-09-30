@@ -186,6 +186,9 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
     # Diagnostic only: summarize how Mercury's admitted candidates traverse
     # label-position space.  This does not filter, reorder, or score anything.
     mercury_candidate_stream = []
+    # Diagnostic only: recursive alignment Mercury placement -> Venus work.
+    # Never consulted by candidate generation or search decisions.
+    alignment_mercury_trials = []
     solutions = []
     solution_keys = set()
     contest_keys = []
@@ -296,6 +299,37 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                     f"leader-graze={totals['leader_graze']:,}]",
                     flush=True,
                 )
+            if alignment_mercury_trials:
+                distinct = {}
+                for row in alignment_mercury_trials:
+                    sig = row["signature"]
+                    aggregate = distinct.setdefault(sig, {
+                        "box": row["box"], "visits": 0,
+                        "venus_generated": 0, "venus_viable": 0,
+                    })
+                    aggregate["visits"] += 1
+                    aggregate["venus_generated"] += row["venus_generated"]
+                    aggregate["venus_viable"] += row["venus_viable"]
+                ranked = sorted(
+                    distinct.values(),
+                    key=lambda row: (-row["venus_viable"], -row["venus_generated"], row["box"]),
+                )
+                samples = "; ".join(
+                    f"box={row['box']} visits={row['visits']} "
+                    f"V[gen={row['venus_generated']},ok={row['venus_viable']}]"
+                    for row in ranked[:20]
+                )
+                mercury_summary = (
+                    f"Planet Finder {mode}: ALIGNMENT MERCURY->VENUS SUMMARY "
+                    f"trials={len(alignment_mercury_trials):,} distinct={len(distinct):,} "
+                    f"venus-positive={sum(1 for row in distinct.values() if row['venus_viable'] > 0):,} "
+                    f"samples={samples}"
+                )
+                diagnostic_print(mercury_summary, flush=True)
+                summary_path = os.environ.get("GITHUB_STEP_SUMMARY")
+                if summary_path:
+                    with open(summary_path, "a", encoding="utf-8") as summary_file:
+                        summary_file.write("### Mercury alignment → Venus viability diagnostic\n\n" + mercury_summary + "\n\n")
             if uranus_venus_prefixes:
                 keys = ("generated", "viable", "immutable_reserved", "immutable_rim",
                         "overlap", "leader_existing", "route", "leader_rim", "leader_graze")
@@ -1152,7 +1186,39 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             leaders.append(path)
             leader_names.append(name)
             staged[original_index] = (symbol, name, longitude, box, path)
-            solved = solve_alignment_members(group_index, next_remaining)
+            mercury_before = None
+            mercury_signature = None
+            if name == "Mercury":
+                mercury_signature = (
+                    round(box.x, 3), round(box.y, 3), round(box.w, 3), round(box.h, 3),
+                    tuple((round(px, 3), round(py, 3)) for px, py in path),
+                )
+                mercury_before = {
+                    key: sum(
+                        stats.get(key, 0)
+                        for (diag_depth, diag_name), stats in diagnostic_stats.items()
+                        if diag_name == "Venus"
+                    )
+                    for key in ("generated", "viable")
+                }
+            try:
+                solved = solve_alignment_members(group_index, next_remaining)
+            finally:
+                if name == "Mercury":
+                    mercury_after = {
+                        key: sum(
+                            stats.get(key, 0)
+                            for (diag_depth, diag_name), stats in diagnostic_stats.items()
+                            if diag_name == "Venus"
+                        )
+                        for key in ("generated", "viable")
+                    }
+                    alignment_mercury_trials.append({
+                        "signature": mercury_signature,
+                        "box": (round(box.x, 2), round(box.y, 2), round(box.w, 2), round(box.h, 2)),
+                        "venus_generated": mercury_after["generated"] - mercury_before["generated"],
+                        "venus_viable": mercury_after["viable"] - mercury_before["viable"],
+                    })
             if not solved:
                 staged.pop(original_index, None)
                 leader_names.pop()

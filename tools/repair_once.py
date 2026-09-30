@@ -8,7 +8,7 @@ Do not filter, reorder, score, or otherwise change search behavior.
 """
 from pathlib import Path
 
-ENABLED = True
+ENABLED = False
 if not ENABLED:
     print("Repair Once is OFF; nothing to do.")
     raise SystemExit(0)
