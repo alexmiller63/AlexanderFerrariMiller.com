@@ -146,7 +146,7 @@ TIGHT_FIVE_LADDER = [
 ]
 
 W01_LADDER = [
-    ("easy", {"Sun": 0, "Mercury": 5, "Venus": 10, "Mars": 15, "Pluto": 20, "Saturn": 100, "Neptune": 107, "Ceres": 114, "Moon": 121, "Uranus": 180, "Jupiter": 240}),
+    ("easy", {"Sun": 0, "Mercury": 20, "Venus": 40, "Mars": 60, "Pluto": 80, "Saturn": 140, "Neptune": 160, "Ceres": 180, "Moon": 200, "Uranus": 260, "Jupiter": 320}),
     ("wrap-four", {"Sun": 180, "Mercury": 185, "Venus": 190, "Mars": 195, "Pluto": 200, "Saturn": 355.99936587038286, "Neptune": 359.4721293482971, "Ceres": 6.453439627692317, "Moon": 22.937571430229294, "Uranus": 80, "Jupiter": 120}),
     ("both-real-alignments", {"Mercury": 264.1023447351197, "Venus": 275.4313050776394, "Sun": 277.511945972904, "Mars": 280.39213202805865, "Pluto": 302.62909367404063, "Saturn": 355.99936587038286, "Neptune": 359.4721293482971, "Ceres": 6.453439627692317, "Moon": 22.937571430229294, "Uranus": 80, "Jupiter": 120}),
     ("exact-W01", W01_EXACT),
