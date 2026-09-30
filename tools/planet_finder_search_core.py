@@ -1533,12 +1533,20 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                     )
                     trial = mercury_ceres_trials.setdefault(
                         mercury_signature,
-                        {"checks": 0, "witnesses": 0, "dead": 0, "raw": 0},
+                        {
+                            "checks": 0, "witnesses": 0, "dead": 0, "raw": 0,
+                            "reasons": {
+                                "placed-overlap": 0, "existing-leader": 0,
+                                "route": 0, "leader-rim": 0, "leader-graze": 0,
+                            },
+                        },
                     )
                     trial["checks"] += 1
                     trial["raw"] += witness_raw
                     trial["witnesses"] += int(witness)
                     trial["dead"] += int(not witness)
+                    for reason, count in witness_reasons.items():
+                        trial["reasons"][reason] += count
 
             if witness:
                 body_stat["witnesses"] += 1
@@ -1925,6 +1933,24 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             f"box={sig[:4]} path={sig[4]} checks={row['checks']} "
             f"witnesses={row['witnesses']} dead={row['dead']} raw={row['raw']}"
             for sig, row in ranked_trials[:12]
+        )
+        # The candidate lattice is deliberately widest-first.  The first
+        # distinct Mercury geometry observed is therefore the critical
+        # forensic case: it should leave Ceres a witness if the geometry
+        # implementation is behaving as designed.
+        widest_sig, widest_row = next(iter(mercury_ceres_trials.items()))
+        widest_reasons = widest_row["reasons"]
+        diagnostic_print(
+            f"Planet Finder {mode}: MERCURY->CERES WIDEST-FIRST "
+            f"box={widest_sig[:4]} path={widest_sig[4]} "
+            f"checks={widest_row['checks']} witnesses={widest_row['witnesses']} "
+            f"dead={widest_row['dead']} raw={widest_row['raw']} "
+            f"reasons[placed-overlap={widest_reasons['placed-overlap']},"
+            f"existing-leader={widest_reasons['existing-leader']},"
+            f"route={widest_reasons['route']},"
+            f"leader-rim={widest_reasons['leader-rim']},"
+            f"leader-graze={widest_reasons['leader-graze']}]",
+            flush=True,
         )
         diagnostic_print(
             f"Planet Finder {mode}: MERCURY->CERES GEOMETRY "
