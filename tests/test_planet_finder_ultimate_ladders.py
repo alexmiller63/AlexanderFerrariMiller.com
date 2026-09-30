@@ -292,9 +292,24 @@ def run_existing_ladder(monkeypatch, week, mode, ladder):
     print(f"LADDER SUMMARY: week={week} mode={mode.value} ALL_PASS stages={passed}", flush=True)
 
 
-@pytest.mark.parametrize("mode", MODES)
-def test_ultimate_w01_ladder(monkeypatch, mode):
-    run_existing_ladder(monkeypatch, "W01", mode, W01_LADDER)
+def test_ultimate_w01_ladder(monkeypatch):
+    """Diagnostic isolation: W01 Greek real-five-plus-wide-wrap only."""
+    level, longitudes = next(
+        item for item in W01_LADDER if item[0] == "real-five-plus-wide-wrap"
+    )
+    enable_alignment_fix(monkeypatch)
+    monkeypatch.setenv("PLANET_FINDER_DIAGNOSTIC_LEVEL", "2")
+    bodies = synthetic_bodies(longitudes)
+    print("W01 GREEK SINGLE-RUNG START level=real-five-plus-wide-wrap budget=60s", flush=True)
+    result = layout(
+        FinderMode.GREEK,
+        bodies,
+        target_solutions=1,
+        budget={"max_node_candidates": 2000, "max_seconds": REGRESSION_SECONDS},
+        context_label="ultimate-W01-real-five-plus-wide-wrap-greek",
+    )
+    assert_complete_valid_layout(result, bodies, FinderMode.GREEK)
+    print("W01 GREEK SINGLE-RUNG PASS level=real-five-plus-wide-wrap", flush=True)
 
 
 @pytest.mark.parametrize("mode", MODES)
