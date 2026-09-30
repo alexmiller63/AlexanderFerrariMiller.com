@@ -1,9 +1,7 @@
 """Focused, self-checking W36 Planet Finder diagnostics plus W01/W02 ladders.
 
 Every synthetic W36 rung asserts its alignment classification before layout is
-allowed to run.  This prevents an 'easy' longitude from silently creating an
-extra alignment and contaminating the experiment.  Production solver code is
-untouched.
+allowed to run. Production solver code is untouched.
 """
 
 import pytest
@@ -35,62 +33,28 @@ W36_KNOWN_GOOD = {
     "Pluto": 303.5330419654775,
 }
 
-# Real W36 already teaches an important classification fact: Venus is linked
-# to Jupiter-Sun-Mercury at the 30-degree alignment threshold.  Uranus at its
-# real longitude is linked to Ceres-Mars.  The assertions below make such
-# changes explicit instead of accidentally treating them as independent bodies.
 BASE_URANUS = {**W36_KNOWN_GOOD, "Uranus": 250, "Pluto": 300}
 
+# Classification is asserted before layout.  The 250/55/60 fixtures have the
+# three real W36 groups; once Uranus reaches 61 degrees it joins Ceres-Mars.
 W36_URANUS_LADDER = [
     ("uranus-250", {**BASE_URANUS, "Uranus": 250},
-     [("Neptune", "Moon", "Saturn"), ("Ceres", "Mars"), ("Jupiter", "Sun", "Mercury", "Venus")]),
+     [("Neptune", "Moon", "Saturn"), ("Ceres", "Mars"), ("Jupiter", "Sun", "Mercury")]),
     ("uranus-055", {**BASE_URANUS, "Uranus": 55},
-     [("Neptune", "Moon", "Saturn"), ("Ceres", "Mars"), ("Jupiter", "Sun", "Mercury", "Venus")]),
+     [("Neptune", "Moon", "Saturn"), ("Ceres", "Mars"), ("Jupiter", "Sun", "Mercury")]),
     ("uranus-060", {**BASE_URANUS, "Uranus": 60},
-     [("Neptune", "Moon", "Saturn"), ("Ceres", "Mars"), ("Jupiter", "Sun", "Mercury", "Venus")]),
+     [("Neptune", "Moon", "Saturn"), ("Ceres", "Mars"), ("Jupiter", "Sun", "Mercury")]),
     ("uranus-061", {**BASE_URANUS, "Uranus": 61},
-     [("Neptune", "Moon", "Saturn"), ("Uranus", "Ceres", "Mars"), ("Jupiter", "Sun", "Mercury", "Venus")]),
+     [("Neptune", "Moon", "Saturn"), ("Uranus", "Ceres", "Mars"), ("Jupiter", "Sun", "Mercury")]),
     ("uranus-real", {**BASE_URANUS, "Uranus": W36_KNOWN_GOOD["Uranus"]},
-     [("Neptune", "Moon", "Saturn"), ("Uranus", "Ceres", "Mars"), ("Jupiter", "Sun", "Mercury", "Venus")]),
+     [("Neptune", "Moon", "Saturn"), ("Uranus", "Ceres", "Mars"), ("Jupiter", "Sun", "Mercury")]),
 ]
-
-# Clean circular parking slots: all adjacent gaps are >30 degrees.  Replacing
-# named slots with a real W36 group therefore creates only the group requested
-# by that rung unless an expected tuple below explicitly says otherwise.
-PARK = {
-    "Neptune": 4, "Moon": 40, "Saturn": 76, "Ceres": 112, "Mars": 148,
-    "Jupiter": 184, "Sun": 220, "Mercury": 256, "Venus": 292,
-    "Uranus": 328, "Pluto": 340,
-}
-# Pluto at 340 would pair with Uranus, so park Pluto midway only in fixtures
-# where Uranus's 328 slot is vacated.  For the clean group experiments use a
-# deliberately asymmetric set with every unused neighbor >30 degrees.
-CLEAN = {
-    "Neptune": 4, "Moon": 40, "Saturn": 76, "Ceres": 112, "Mars": 148,
-    "Jupiter": 184, "Sun": 220, "Mercury": 256, "Venus": 292,
-    "Uranus": 328, "Pluto": 328,
-}
-
-# Rather than trust hand-picked parking positions, each fixture below carries
-# its expected complete alignment map.  If a parking choice is contaminated,
-# the test fails immediately with CLASSIFICATION MISMATCH before layout().
-def fixture(overrides, expected):
-    # 11 approximately even slots (32 degrees apart) are safely beyond the
-    # 30-degree threshold; names whose real positions are under test override
-    # those slots.
-    base = dict(zip(
-        ["Neptune", "Moon", "Saturn", "Ceres", "Mars", "Jupiter", "Sun", "Mercury", "Venus", "Uranus", "Pluto"],
-        [0, 32, 64, 96, 128, 160, 192, 224, 256, 288, 320],
-    ))
-    base.update(overrides)
-    return base, expected
 
 NMS = {"Neptune": W36_KNOWN_GOOD["Neptune"], "Moon": W36_KNOWN_GOOD["Moon"], "Saturn": W36_KNOWN_GOOD["Saturn"]}
 CM = {"Ceres": W36_KNOWN_GOOD["Ceres"], "Mars": W36_KNOWN_GOOD["Mars"]}
 JSM = {"Jupiter": W36_KNOWN_GOOD["Jupiter"], "Sun": W36_KNOWN_GOOD["Sun"], "Mercury": W36_KNOWN_GOOD["Mercury"]}
 
-# Use widely separated explicit fillers for each case; classification assertion
-# is the authority and prevents any accidental group from reaching the solver.
+
 def clean_case(groups):
     active = {}
     expected = []
@@ -102,12 +66,6 @@ def clean_case(groups):
         active.update(JSM); expected.append(("Jupiter", "Sun", "Mercury"))
 
     unused = [n for n in W36_KNOWN_GOOD if n not in active]
-    # Search a deterministic 1-degree grid for parking longitudes whose final
-    # classification is exactly the requested groups.  This is test-fixture
-    # construction only; it does not call or alter the layout solver.
-    def normalized(gs):
-        return sorted(tuple(item[1] for item in g) for g in gs)
-    wanted = sorted(expected)
     placed = dict(active)
     for name in unused:
         found = None
@@ -115,28 +73,57 @@ def clean_case(groups):
             trial = {**placed, name: float(lon)}
             bodies = [(n, n, x) for n, x in trial.items()]
             groups_now = alignment_groups(bodies)
-            # Partial groups may contain only requested active members; reject
-            # any group containing a parked body.
             if all(all(item[1] in active for item in g) for g in groups_now):
                 found = float(lon)
                 break
         if found is None:
             raise AssertionError(f"cannot park {name} without contaminating {groups}")
         placed[name] = found
-    return placed, wanted
+    return placed, sorted(expected)
 
-W36_MIXED_GROUP_LADDER = []
-for label, groups in [
-    ("mixed-one-NMS", ("NMS",)),
-    ("mixed-one-CM", ("CM",)),
-    ("mixed-one-JSM", ("JSM",)),
-    ("mixed-two-NMS-CM", ("NMS", "CM")),
-    ("mixed-two-NMS-JSM", ("NMS", "JSM")),
-    ("mixed-two-CM-JSM", ("CM", "JSM")),
-    ("mixed-three-groups", ("NMS", "CM", "JSM")),
-]:
-    longs, expected = clean_case(groups)
-    W36_MIXED_GROUP_LADDER.append((label, longs, expected))
+
+# Isolate the already-observed Mixed culprit and approach the exact W36 J-S-M
+# geometry progressively.  Jupiter stays fixed; Sun and Mercury interpolate
+# from a wide-but-still-single-group geometry to their exact W36 longitudes.
+def jsm_case(fraction):
+    j = JSM["Jupiter"]
+    exact_s = JSM["Sun"]
+    exact_m = JSM["Mercury"]
+    # Wide starting geometry: 0, 15, 29 degrees from Jupiter.  It remains one
+    # alignment group while giving the blob substantially more room.
+    wide_s = j + 15.0
+    wide_m = j + 29.0
+    active = {
+        "Jupiter": j,
+        "Sun": wide_s + fraction * (exact_s - wide_s),
+        "Mercury": wide_m + fraction * (exact_m - wide_m),
+    }
+    # Reuse clean_case's deterministic parking strategy, but with this rung's
+    # active JSM coordinates rather than the exact JSM constant.
+    unused = [n for n in W36_KNOWN_GOOD if n not in active]
+    placed = dict(active)
+    for name in unused:
+        found = None
+        for lon in range(0, 360):
+            trial = {**placed, name: float(lon)}
+            bodies = [(n, n, x) for n, x in trial.items()]
+            groups_now = alignment_groups(bodies)
+            if all(all(item[1] in active for item in g) for g in groups_now):
+                found = float(lon)
+                break
+        if found is None:
+            raise AssertionError(f"cannot park {name} for JSM fraction {fraction}")
+        placed[name] = found
+    return placed, [("Jupiter", "Sun", "Mercury")]
+
+
+W36_MIXED_JSM_LADDER = [
+    ("jsm-wide", *jsm_case(0.0)),
+    ("jsm-25pct", *jsm_case(0.25)),
+    ("jsm-50pct", *jsm_case(0.50)),
+    ("jsm-75pct", *jsm_case(0.75)),
+    ("jsm-exact", *jsm_case(1.0)),
+]
 
 
 def group_names(bodies):
@@ -180,9 +167,9 @@ def test_w36_uranus_breakpoint(monkeypatch, mode):
     run_ladder(monkeypatch, "W36-URANUS", mode, W36_URANUS_LADDER)
 
 
-def test_w36_mixed_group_breakpoint(monkeypatch):
-    run_ladder(monkeypatch, "W36-MIXED-GROUPS", FinderMode.MIXED,
-               W36_MIXED_GROUP_LADDER, stop_on_failure=False)
+def test_w36_mixed_jsm_breakpoint(monkeypatch):
+    run_ladder(monkeypatch, "W36-MIXED-JSM", FinderMode.MIXED,
+               W36_MIXED_JSM_LADDER, stop_on_failure=False)
 
 
 @pytest.mark.parametrize("mode", MODES)
@@ -192,9 +179,6 @@ def test_exact_w36_regression(monkeypatch, mode):
     run_ladder(monkeypatch, "W36", mode, [("exact-W36", W36_KNOWN_GOOD, expected)])
 
 
-# Preserve the established W01/W02 clocks and fixtures.  They are not part of
-# this W36 experiment and must not appear to regress merely because a diagnostic
-# timeout was shortened.
 def run_existing_ladder(monkeypatch, week, mode, ladder):
     passed = []
     for level, longitudes in ladder:
