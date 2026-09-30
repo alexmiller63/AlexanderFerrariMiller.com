@@ -163,6 +163,9 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
     # from repeated/equivalent viable candidates.  This never filters or
     # reorders candidates and therefore cannot change search behavior.
     viable_geometry_seen = {}
+    # Diagnostic only: record what happens to Venus under each individually
+    # viable Pluto parent placement. This does not alter search behavior.
+    pluto_venus_prefixes = []
     # Diagnostic only: summarize how Mercury's admitted candidates traverse
     # label-position space.  This does not filter, reorder, or score anything.
     mercury_candidate_stream = []
@@ -259,6 +262,23 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 f"{rejection_summary}{validation_summary}",
                 flush=True,
             )
+            if pluto_venus_prefixes:
+                keys = ("generated", "viable", "immutable_reserved", "immutable_rim",
+                        "overlap", "leader_existing", "route", "leader_rim", "leader_graze")
+                totals = {key: sum(row[key] for row in pluto_venus_prefixes) for key in keys}
+                zero_viable = sum(1 for row in pluto_venus_prefixes if row["viable"] == 0)
+                diagnostic_print(
+                    f"Planet Finder {mode}: PLUTO-VENUS PREFIX SUMMARY "
+                    f"parents={len(pluto_venus_prefixes):,} zero-viable={zero_viable:,} "
+                    f"venus-generated={totals['generated']:,} venus-viable={totals['viable']:,} "
+                    f"rejects[immutable-reserved={totals['immutable_reserved']:,},"
+                    f"immutable-rim={totals['immutable_rim']:,},"
+                    f"placed-overlap={totals['overlap']:,},"
+                    f"existing-leader={totals['leader_existing']:,},"
+                    f"route={totals['route']:,},leader-rim={totals['leader_rim']:,},"
+                    f"leader-graze={totals['leader_graze']:,}]",
+                    flush=True,
+                )
             return
         order_names = " > ".join(item[1][1] for item in order)
         diagnostic_print(
@@ -1346,6 +1366,14 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             child_deepest_before = deepest
             child_nodes_before = nodes
             child_backtracks_before = backtracks
+            pv_before = None
+            if name == "Pluto" and depth + 1 < len(order) and order[depth + 1][1][1] == "Venus":
+                venus_stats = diagnostic_stats.get((depth + 1, "Venus"), {})
+                pv_before = {
+                    key: venus_stats.get(key, 0)
+                    for key in ("generated", "viable", "immutable_reserved", "immutable_rim",
+                                "overlap", "leader_existing", "route", "leader_rim", "leader_graze")
+                }
             try:
                 # Forward checking asks only for one viable witness for every
                 # remaining body. Zero proves this prefix is dead; one is
@@ -1358,6 +1386,14 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 leaders.pop()
                 leader_names.pop()
                 placed.pop()
+
+            if pv_before is not None:
+                venus_stats = diagnostic_stats.get((depth + 1, "Venus"), {})
+                delta = {
+                    key: venus_stats.get(key, 0) - pv_before.get(key, 0)
+                    for key in pv_before
+                }
+                pluto_venus_prefixes.append(delta)
 
             backtracks += 1
             # Prefix diagnostic: when an individually legal candidate cannot
