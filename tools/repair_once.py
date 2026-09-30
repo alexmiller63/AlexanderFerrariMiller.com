@@ -1,99 +1,220 @@
 #!/usr/bin/env python3
-"""One-shot diagnostic: identify Ceres blockers inside Mixed JSM 25%.
+"""One-shot forensic instrumentation for Ceres forward-check blockers.
 
-Adds a focused test only; production Planet Finder code is unchanged.
-Repair Once self-disables after installing the diagnostic.
+Diagnostic only: records blocker identities for every major rejection class
+seen in the W36 Mixed JSM 25% forward viability gate. Solver legality,
+candidate ordering, and budgets are unchanged. Self-disables after running.
 """
 from pathlib import Path
 
-ENABLED = False
+ENABLED = True
 if not ENABLED:
     print("Repair Once is OFF; nothing to do.")
     raise SystemExit(0)
 
 CORE = Path("tools/planet_finder_search_core.py")
 core = CORE.read_text(encoding="utf-8")
-core = core.replace('if name == "Venus":\n                    for i in overlap_indices:', 'if name in ("Venus", "Ceres"):\n                    for i in overlap_indices:')
-core = core.replace('if name == "Venus":\n                    for leader_index in existing_leader_hits:', 'if name in ("Venus", "Ceres"):\n                    for leader_index in existing_leader_hits:')
-core = core.replace('if name == "Venus":\n                    _, closest_pair = minimum_leader_separation(path, leaders)', 'if name in ("Venus", "Ceres"):\n                    _, closest_pair = minimum_leader_separation(path, leaders)')
-needle = '        diagnostic_print(\n            f"Planet Finder {mode}: TERMINAL BEST-PARTIAL deepest={deepest}/{len(order)}",'
-lines = [
-'        ceres_attribution = {"overlap": {}, "existing-leader": {}, "leader-graze": {}}',
-'        for (d, n), ds in diagnostic_stats.items():',
-'            if n != "Ceres":',
-'                continue',
-'            for label, count in ds.get("overlap_by_label", {}).items():',
-'                ceres_attribution["overlap"][label] = ceres_attribution["overlap"].get(label, 0) + count',
-'            for label, count in ds.get("existing_leader_by_name", {}).items():',
-'                ceres_attribution["existing-leader"][label] = ceres_attribution["existing-leader"].get(label, 0) + count',
-'            for label, count in ds.get("leader_graze_by_name", {}).items():',
-'                ceres_attribution["leader-graze"][label] = ceres_attribution["leader-graze"].get(label, 0) + count',
-'        for kind, counts in ceres_attribution.items():',
-'            top = sorted(counts.items(), key=lambda item: (-item[1], item[0]))[:12]',
-'            diagnostic_print(f"Planet Finder {mode}: CERES BLOCKERS kind={kind} " + (" ".join(f"{name}={count:,}" for name, count in top) if top else "none"), flush=True)',
-''];
-block = "\n".join(lines) + needle
-if needle not in core:
-    raise SystemExit("Safety stop: Ceres diagnostic insertion anchor missing")
-core = core.replace(needle, block, 1)
-# Forward-check attribution: record which already-placed JSM label/leader rejects Ceres.
-core = core.replace(
-    'reasons = {"placed-overlap": 0, "existing-leader": 0, "route": 0, "leader-rim": 0, "leader-graze": 0}\\n            for _, _, future_box',
-    'reasons = {"placed-overlap": 0, "existing-leader": 0, "route": 0, "leader-rim": 0, "leader-graze": 0, "overlap-by-name": {}, "existing-leader-by-name": {}, "leader-graze-by-name": {}}\\n            for _, _, future_box', 1)
-core = core.replace(
-    'if any(boxes_overlap(future_box, other, 14) for other in boxes):\\n                    reasons["placed-overlap"] += 1\\n                    continue',
-    'overlap_hits = [i for i, other in enumerate(boxes) if boxes_overlap(future_box, other, 14)]\\n                if overlap_hits:\\n                    reasons["placed-overlap"] += 1\\n                    if future_name == "Ceres":\\n                        for i in overlap_hits:\\n                            blocker = leader_names[i] if i < len(leader_names) else f"obstacle_{i}"\\n                            reasons["overlap-by-name"][blocker] = reasons["overlap-by-name"].get(blocker, 0) + 1\\n                    continue', 1)
-core = core.replace(
-    'if any(\\n                    segment_hits_box(seg[i], seg[i + 1], future_box, 10)\\n                    for seg in paths\\n                    for i in range(len(seg) - 1)\\n                ):\\n                    reasons["existing-leader"] += 1\\n                    continue',
-    'leader_hits = [j for j, seg in enumerate(paths) if any(segment_hits_box(seg[i], seg[i + 1], future_box, 10) for i in range(len(seg) - 1))]\\n                if leader_hits:\\n                    reasons["existing-leader"] += 1\\n                    if future_name == "Ceres":\\n                        for j in leader_hits:\\n                            blocker = leader_names[j] if j < len(leader_names) else f"leader_{j}"\\n                            reasons["existing-leader-by-name"][blocker] = reasons["existing-leader-by-name"].get(blocker, 0) + 1\\n                    continue', 1)
-core = core.replace(
-    'if leaders_too_close(path, paths):\\n                    reasons["leader-graze"] += 1',
-    'if leaders_too_close(path, paths):\\n                    reasons["leader-graze"] += 1\\n                    if future_name == "Ceres":\\n                        _, blocker_pair = minimum_leader_separation(path, paths)\\n                        if blocker_pair is not None:\\n                            j = blocker_pair[0]\\n                            blocker = leader_names[j] if j < len(leader_names) else f"leader_{j}"\\n                            reasons["leader-graze-by-name"][blocker] = reasons["leader-graze-by-name"].get(blocker, 0) + 1', 1)
-# Print attribution immediately for each dead Ceres witness, but only aggregated enough to keep logs compact.
-core = core.replace(
-    'if witness:\\n                body_stat["witnesses"] += 1',
-    'if future_name == "Ceres" and not witness:\\n                named = []\\n                for kind in ("overlap-by-name", "existing-leader-by-name", "leader-graze-by-name"):\\n                    counts = witness_reasons.get(kind, {})\\n                    if counts:\\n                        named.append(kind + ":" + ",".join(f"{n}={v}" for n, v in sorted(counts.items(), key=lambda kv: (-kv[1], kv[0]))))\\n                if forward_stats["by_body"].get("Ceres", {}).get("dead", 0) < 3:\\n                    diagnostic_print(f"Planet Finder {mode}: FORWARD CERES BLOCKERS " + (" ".join(named) if named else "none"), level=4, flush=True)\\n            if witness:\\n                body_stat["witnesses"] += 1', 1)
+
+anchor = '    forward_stats = {"checks": 0, "pruned": 0, "witnesses": 0, "by_body": {}}\n'
+addition = anchor + '''    # Diagnostic only: blocker identities inside Ceres forward viability.
+    forward_ceres_blockers = {
+        "overlap": {}, "existing-leader": {}, "leader-graze": {},
+        "route-direct": {}, "route-escape": {}, "route-arc": {}, "route-final": {},
+    }
+    forward_ceres_route_other = {}
+'''
+if core.count(anchor) != 1:
+    raise SystemExit(f"Safety stop: forward_stats anchor count={core.count(anchor)}")
+core = core.replace(anchor, addition, 1)
+
+old = '''                if any(boxes_overlap(future_box, other, 14) for other in boxes):
+                    reasons["placed-overlap"] += 1
+                    continue
+'''
+new = '''                overlap_hits = [i for i, other in enumerate(boxes) if boxes_overlap(future_box, other, 14)]
+                if overlap_hits:
+                    reasons["placed-overlap"] += 1
+                    if future_name == "Ceres":
+                        for i in overlap_hits:
+                            blocker = leader_names[i] if i < len(leader_names) else f"placed_{i}"
+                            counts = forward_ceres_blockers["overlap"]
+                            counts[blocker] = counts.get(blocker, 0) + 1
+                    continue
+'''
+if core.count(old) != 1:
+    raise SystemExit(f"Safety stop: overlap anchor count={core.count(old)}")
+core = core.replace(old, new, 1)
+
+old = '''                if any(
+                    segment_hits_box(seg[i], seg[i + 1], future_box, 10)
+                    for seg in paths
+                    for i in range(len(seg) - 1)
+                ):
+                    reasons["existing-leader"] += 1
+                    continue
+'''
+new = '''                leader_hits = [
+                    j for j, seg in enumerate(paths)
+                    if any(segment_hits_box(seg[i], seg[i + 1], future_box, 10)
+                           for i in range(len(seg) - 1))
+                ]
+                if leader_hits:
+                    reasons["existing-leader"] += 1
+                    if future_name == "Ceres":
+                        for j in leader_hits:
+                            blocker = leader_names[j] if j < len(leader_names) else f"leader_{j}"
+                            counts = forward_ceres_blockers["existing-leader"]
+                            counts[blocker] = counts.get(blocker, 0) + 1
+                    continue
+'''
+if core.count(old) != 1:
+    raise SystemExit(f"Safety stop: existing-leader anchor count={core.count(old)}")
+core = core.replace(old, new, 1)
+
+old = '''                path = route(
+                    anchor,
+                    center,
+                    obstacles_now,
+                    allow_initial_escape_count=immutable_count,
+                    prefix_cache=prefix_cache,
+                )
+                if path is None:
+                    reasons["route"] += 1
+                    continue
+'''
+new = '''                forward_route_diag = {} if future_name == "Ceres" else None
+                path = route(
+                    anchor,
+                    center,
+                    obstacles_now,
+                    forward_route_diag,
+                    allow_initial_escape_count=immutable_count,
+                    prefix_cache=prefix_cache,
+                )
+                if path is None:
+                    reasons["route"] += 1
+                    if future_name == "Ceres":
+                        obstacle_names = reserved_names + list(leader_names)
+                        for diag_key, bucket in (
+                            ("direct_blocked_by", "route-direct"),
+                            ("escape_blocked_by", "route-escape"),
+                            ("arc_blocked_by", "route-arc"),
+                            ("final_blocked_by", "route-final"),
+                        ):
+                            for obstacle_index, count in forward_route_diag.get(diag_key, {}).items():
+                                blocker = obstacle_names[obstacle_index] if obstacle_index < len(obstacle_names) else f"obstacle_{obstacle_index}"
+                                counts = forward_ceres_blockers[bucket]
+                                counts[blocker] = counts.get(blocker, 0) + count
+                        for diag_key in ("anchor_blocked", "target_approach"):
+                            count = forward_route_diag.get(diag_key, 0)
+                            if count:
+                                forward_ceres_route_other[diag_key] = forward_ceres_route_other.get(diag_key, 0) + count
+                    continue
+'''
+if core.count(old) != 1:
+    raise SystemExit(f"Safety stop: route anchor count={core.count(old)}")
+core = core.replace(old, new, 1)
+
+old = '''                if leaders_too_close(path, paths):
+                    reasons["leader-graze"] += 1
+'''
+new = '''                if leaders_too_close(path, paths):
+                    reasons["leader-graze"] += 1
+                    if future_name == "Ceres":
+                        _, blocker_pair = minimum_leader_separation(path, paths)
+                        if blocker_pair is not None:
+                            j = blocker_pair[0]
+                            blocker = leader_names[j] if j < len(leader_names) else f"leader_{j}"
+                            counts = forward_ceres_blockers["leader-graze"]
+                            counts[blocker] = counts.get(blocker, 0) + 1
+'''
+if core.count(old) != 1:
+    raise SystemExit(f"Safety stop: leader-graze anchor count={core.count(old)}")
+core = core.replace(old, new, 1)
+
+anchor = '''    return SearchOutcome(
+        "SOLVED" if len(solutions) >= target_solutions else "EXHAUSTED",
+'''
+diag = '''    if exhausted and forward_ceres_blockers:
+        for kind, counts in forward_ceres_blockers.items():
+            top = sorted(counts.items(), key=lambda item: (-item[1], item[0]))[:12]
+            diagnostic_print(
+                f"Planet Finder {mode}: FORWARD CERES BLOCKERS kind={kind} "
+                + (" ".join(f"{name}={count:,}" for name, count in top) if top else "none"),
+                flush=True,
+            )
+        diagnostic_print(
+            f"Planet Finder {mode}: FORWARD CERES ROUTE-OTHER "
+            + (" ".join(f"{name}={count:,}" for name, count in sorted(forward_ceres_route_other.items()))
+               if forward_ceres_route_other else "none"),
+            flush=True,
+        )
+
+''' + anchor
+if core.count(anchor) != 1:
+    raise SystemExit(f"Safety stop: terminal anchor count={core.count(anchor)}")
+core = core.replace(anchor, diag, 1)
 CORE.write_text(core, encoding="utf-8")
 
-TEST = Path("tests/test_planet_finder_ultimate_ladders.py")
-test = TEST.read_text(encoding="utf-8")
-anchor = '''def test_w36_mixed_jsm_breakpoint(monkeypatch):
-    run_ladder(monkeypatch, "W36-MIXED-JSM", FinderMode.MIXED,
-               W36_MIXED_JSM_LADDER, stop_on_failure=False)
+GEOM = Path("tools/planet_finder_geometry.py")
+geom = GEOM.read_text(encoding="utf-8")
+
+old = '''    elif diagnostic is not None:
+        diagnostic["direct_blocked"] = diagnostic.get("direct_blocked", 0) + 1
 '''
-addition = anchor + '''\n\ndef test_02_w36_mixed_jsm_zero_vs_25_forensic(monkeypatch):
-    """Compare the passing 0% JSM state directly with the failing 25% state."""
-    enable_alignment_fix(monkeypatch)
-    monkeypatch.setenv("PLANET_FINDER_DIAGNOSTIC_LEVEL", "4")
-    for level, fraction in (("jsm-0pct", 0.0), ("jsm-25pct", 0.25)):
-        longitudes, expected_groups = jsm_case(fraction)
-        print(f"JSM FORENSIC {level} LONGITUDES " +
-              " ".join(f"{name}={lon:.6f}" for name, lon in longitudes.items()), flush=True)
-        bodies = synthetic_bodies(longitudes)
-        actual_groups = group_names(bodies)
-        print(f"JSM FORENSIC {level} GROUPS={actual_groups}", flush=True)
-        assert actual_groups == sorted(expected_groups)
-        try:
-            result = layout(
-                FinderMode.MIXED, bodies, target_solutions=1,
-                budget={"max_node_candidates": 2000, "max_seconds": 15.0},
-                context_label=f"forensic-W36-{level}-mixed",
-            )
-            assert_complete_valid_layout(result, bodies, FinderMode.MIXED)
-        except Exception as exc:
-            print(f"JSM FORENSIC {level} RESULT=FAIL {type(exc).__name__}: {exc}", flush=True)
-        else:
-            print(f"JSM FORENSIC {level} RESULT=PASS", flush=True)
+new = '''    elif diagnostic is not None:
+        diagnostic["direct_blocked"] = diagnostic.get("direct_blocked", 0) + 1
+        blocker = first_blocker(anchor, direct_endpoint if direct_endpoint is not None else center, skip_start_escape=True)
+        if blocker is not None:
+            by_obstacle = diagnostic.setdefault("direct_blocked_by", {})
+            by_obstacle[blocker] = by_obstacle.get(blocker, 0) + 1
 '''
-if test.count(anchor) != 1:
-    raise SystemExit(f"Safety stop: JSM test anchor count={test.count(anchor)}; expected 1")
-TEST.write_text(test.replace(anchor, addition, 1), encoding="utf-8")
+if geom.count(old) != 1:
+    raise SystemExit(f"Safety stop: direct-route anchor count={geom.count(old)}")
+geom = geom.replace(old, new, 1)
+
+old = '''            if not segment_clear(elbow1, elbow2):
+                if diagnostic is not None:
+                    diagnostic["arc_blocked"] = diagnostic.get("arc_blocked", 0) + 1
+                continue
+'''
+new = '''            if not segment_clear(elbow1, elbow2):
+                if diagnostic is not None:
+                    diagnostic["arc_blocked"] = diagnostic.get("arc_blocked", 0) + 1
+                    blocker = first_blocker(elbow1, elbow2)
+                    if blocker is not None:
+                        by_obstacle = diagnostic.setdefault("arc_blocked_by", {})
+                        by_obstacle[blocker] = by_obstacle.get(blocker, 0) + 1
+                continue
+'''
+if geom.count(old) != 1:
+    raise SystemExit(f"Safety stop: arc-route anchor count={geom.count(old)}")
+geom = geom.replace(old, new, 1)
+
+old = '''            if final_endpoint is None or not segment_clear(elbow2, final_endpoint):
+                if diagnostic is not None:
+                    diagnostic["final_blocked"] = diagnostic.get("final_blocked", 0) + 1
+                continue
+'''
+new = '''            if final_endpoint is None or not segment_clear(elbow2, final_endpoint):
+                if diagnostic is not None:
+                    diagnostic["final_blocked"] = diagnostic.get("final_blocked", 0) + 1
+                    if final_endpoint is not None:
+                        blocker = first_blocker(elbow2, final_endpoint)
+                        if blocker is not None:
+                            by_obstacle = diagnostic.setdefault("final_blocked_by", {})
+                            by_obstacle[blocker] = by_obstacle.get(blocker, 0) + 1
+                continue
+'''
+if geom.count(old) != 1:
+    raise SystemExit(f"Safety stop: final-route anchor count={geom.count(old)}")
+geom = geom.replace(old, new, 1)
+GEOM.write_text(geom, encoding="utf-8")
 
 me = Path(__file__)
 self_text = me.read_text(encoding="utf-8")
-arming_line = "ENABLED = " + "True"
-if self_text.count(arming_line) != 1:
-    raise SystemExit("Safety stop: Repair Once arming marker is not unique")
-me.write_text(self_text.replace(arming_line, "ENABLED = False", 1), encoding="utf-8")
+if self_text.count("ENABLED = True") != 1:
+    raise SystemExit("Safety stop: arming marker not unique")
+me.write_text(self_text.replace("ENABLED = True", "ENABLED = False", 1), encoding="utf-8")
 
-print("Raised focused JSM forensic diagnostics to blocker-identity level 4. Production code unchanged. Repair Once is now OFF.")
+print("Installed complete Ceres forward-blocker attribution (overlap, existing leader, route segments, leader graze). Solver behavior unchanged. Repair Once is now OFF.")
