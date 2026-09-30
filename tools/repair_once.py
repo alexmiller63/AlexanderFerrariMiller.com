@@ -6,10 +6,37 @@ Repair Once self-disables after installing the diagnostic.
 """
 from pathlib import Path
 
-ENABLED = False
+ENABLED = True
 if not ENABLED:
     print("Repair Once is OFF; nothing to do.")
     raise SystemExit(0)
+
+CORE = Path("tools/planet_finder_search_core.py")
+core = CORE.read_text(encoding="utf-8")
+core = core.replace('if name == "Venus":\n                    for i in overlap_indices:', 'if name in ("Venus", "Ceres"):\n                    for i in overlap_indices:')
+core = core.replace('if name == "Venus":\n                    for leader_index in existing_leader_hits:', 'if name in ("Venus", "Ceres"):\n                    for leader_index in existing_leader_hits:')
+core = core.replace('if name == "Venus":\n                    _, closest_pair = minimum_leader_separation(path, leaders)', 'if name in ("Venus", "Ceres"):\n                    _, closest_pair = minimum_leader_separation(path, leaders)')
+needle = '        diagnostic_print(\n            f"Planet Finder {mode}: TERMINAL BEST-PARTIAL deepest={deepest}/{len(order)}",'
+lines = [
+'        ceres_attribution = {"overlap": {}, "existing-leader": {}, "leader-graze": {}}',
+'        for (d, n), ds in diagnostic_stats.items():',
+'            if n != "Ceres":',
+'                continue',
+'            for label, count in ds.get("overlap_by_label", {}).items():',
+'                ceres_attribution["overlap"][label] = ceres_attribution["overlap"].get(label, 0) + count',
+'            for label, count in ds.get("existing_leader_by_name", {}).items():',
+'                ceres_attribution["existing-leader"][label] = ceres_attribution["existing-leader"].get(label, 0) + count',
+'            for label, count in ds.get("leader_graze_by_name", {}).items():',
+'                ceres_attribution["leader-graze"][label] = ceres_attribution["leader-graze"].get(label, 0) + count',
+'        for kind, counts in ceres_attribution.items():',
+'            top = sorted(counts.items(), key=lambda item: (-item[1], item[0]))[:12]',
+'            diagnostic_print(f"Planet Finder {mode}: CERES BLOCKERS kind={kind} " + (" ".join(f"{name}={count:,}" for name, count in top) if top else "none"), flush=True)',
+''];
+block = lines.join("\n") + needle
+if needle not in core:
+    raise SystemExit("Safety stop: Ceres diagnostic insertion anchor missing")
+core = core.replace(needle, block, 1)
+CORE.write_text(core, encoding="utf-8")
 
 TEST = Path("tests/test_planet_finder_ultimate_ladders.py")
 test = TEST.read_text(encoding="utf-8")
