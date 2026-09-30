@@ -6,7 +6,7 @@ Repair Once self-disables after installing the diagnostic.
 """
 from pathlib import Path
 
-ENABLED = False
+ENABLED = True
 if not ENABLED:
     print("Repair Once is OFF; nothing to do.")
     raise SystemExit(0)
@@ -36,6 +36,23 @@ block = "\n".join(lines) + needle
 if needle not in core:
     raise SystemExit("Safety stop: Ceres diagnostic insertion anchor missing")
 core = core.replace(needle, block, 1)
+# Forward-check attribution: record which already-placed JSM label/leader rejects Ceres.
+core = core.replace(
+    'reasons = {"placed-overlap": 0, "existing-leader": 0, "route": 0, "leader-rim": 0, "leader-graze": 0}\\n            for _, _, future_box',
+    'reasons = {"placed-overlap": 0, "existing-leader": 0, "route": 0, "leader-rim": 0, "leader-graze": 0, "overlap-by-name": {}, "existing-leader-by-name": {}, "leader-graze-by-name": {}}\\n            for _, _, future_box', 1)
+core = core.replace(
+    'if any(boxes_overlap(future_box, other, 14) for other in boxes):\\n                    reasons["placed-overlap"] += 1\\n                    continue',
+    'overlap_hits = [i for i, other in enumerate(boxes) if boxes_overlap(future_box, other, 14)]\\n                if overlap_hits:\\n                    reasons["placed-overlap"] += 1\\n                    if future_name == "Ceres":\\n                        for i in overlap_hits:\\n                            blocker = leader_names[i] if i < len(leader_names) else f"obstacle_{i}"\\n                            reasons["overlap-by-name"][blocker] = reasons["overlap-by-name"].get(blocker, 0) + 1\\n                    continue', 1)
+core = core.replace(
+    'if any(\\n                    segment_hits_box(seg[i], seg[i + 1], future_box, 10)\\n                    for seg in paths\\n                    for i in range(len(seg) - 1)\\n                ):\\n                    reasons["existing-leader"] += 1\\n                    continue',
+    'leader_hits = [j for j, seg in enumerate(paths) if any(segment_hits_box(seg[i], seg[i + 1], future_box, 10) for i in range(len(seg) - 1))]\\n                if leader_hits:\\n                    reasons["existing-leader"] += 1\\n                    if future_name == "Ceres":\\n                        for j in leader_hits:\\n                            blocker = leader_names[j] if j < len(leader_names) else f"leader_{j}"\\n                            reasons["existing-leader-by-name"][blocker] = reasons["existing-leader-by-name"].get(blocker, 0) + 1\\n                    continue', 1)
+core = core.replace(
+    'if leaders_too_close(path, paths):\\n                    reasons["leader-graze"] += 1',
+    'if leaders_too_close(path, paths):\\n                    reasons["leader-graze"] += 1\\n                    if future_name == "Ceres":\\n                        _, blocker_pair = minimum_leader_separation(path, paths)\\n                        if blocker_pair is not None:\\n                            j = blocker_pair[0]\\n                            blocker = leader_names[j] if j < len(leader_names) else f"leader_{j}"\\n                            reasons["leader-graze-by-name"][blocker] = reasons["leader-graze-by-name"].get(blocker, 0) + 1', 1)
+# Print attribution immediately for each dead Ceres witness, but only aggregated enough to keep logs compact.
+core = core.replace(
+    'if witness:\\n                body_stat["witnesses"] += 1',
+    'if future_name == "Ceres" and not witness:\\n                named = []\\n                for kind in ("overlap-by-name", "existing-leader-by-name", "leader-graze-by-name"):\\n                    counts = witness_reasons.get(kind, {})\\n                    if counts:\\n                        named.append(kind + ":" + ",".join(f"{n}={v}" for n, v in sorted(counts.items(), key=lambda kv: (-kv[1], kv[0]))))\\n                if forward_stats["by_body"].get("Ceres", {}).get("dead", 0) < 3:\\n                    diagnostic_print(f"Planet Finder {mode}: FORWARD CERES BLOCKERS " + (" ".join(named) if named else "none"), level=4, flush=True)\\n            if witness:\\n                body_stat["witnesses"] += 1', 1)
 CORE.write_text(core, encoding="utf-8")
 
 TEST = Path("tests/test_planet_finder_ultimate_ladders.py")
