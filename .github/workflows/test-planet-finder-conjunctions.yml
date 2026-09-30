@@ -26,7 +26,7 @@ jobs:
       - name: Install test dependencies
         run: python -m pip install pytest skyfield
 
-      - name: Run stop-on-first-failure W1 and W2 ultimate ladders
+      - name: Run focused JSM forensic diagnostic only
         env:
           PYTHONPATH: tools
-        run: python -m pytest -q -s tests/test_planet_finder_ultimate_ladders.py
+        run: python -m pytest -q -s tests/test_planet_finder_ultimate_ladders.py::test_02_w36_mixed_jsm_zero_vs_25_forensic
