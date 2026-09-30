@@ -1357,6 +1357,11 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
     # exploring materially different Mercury placements or repeatedly
     # stranding Ceres with equivalent geometry.
     mercury_ceres_trials = {}
+    # Diagnostic only: capture a compact trace for the first Mercury geometry
+    # tested against Ceres. Candidate generation is widest-first, so this is
+    # the geometry that should succeed before any narrowing is necessary.
+    mercury_ceres_first_signature = [None]
+    mercury_ceres_first_candidates = []
     # Bodies that actually make a forward check fail.  Without this, a prefix
     # whose every candidate is pruned before recursion leaves `deepest` at the
     # parent depth, causing the controller to blame/promote the parent instead
@@ -1406,6 +1411,25 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 if not consume_forward_probe():
                     return PROBE_LIMITED, None, witness_raw, reasons
                 witness_raw += 1
+                first_mercury_index = next(
+                    (i for i, placed_name in enumerate(leader_names) if placed_name == "Mercury"),
+                    None,
+                ) if future_name == "Ceres" else None
+                first_mercury_signature = None
+                if first_mercury_index is not None and first_mercury_index < len(boxes):
+                    mb = boxes[first_mercury_index]
+                    mp = paths[first_mercury_index]
+                    first_mercury_signature = (
+                        round(mb.x, 1), round(mb.y, 1), round(mb.w, 1), round(mb.h, 1),
+                        tuple((round(px, 1), round(py, 1)) for px, py in mp),
+                    )
+                    if mercury_ceres_first_signature[0] is None:
+                        mercury_ceres_first_signature[0] = first_mercury_signature
+                trace_first = (
+                    future_name == "Ceres"
+                    and first_mercury_signature == mercury_ceres_first_signature[0]
+                    and len(mercury_ceres_first_candidates) < 12
+                )
                 overlap_hits = [i for i, other in enumerate(boxes) if boxes_overlap(future_box, other, 14)]
                 if overlap_hits:
                     reasons["placed-overlap"] += 1
@@ -1414,6 +1438,11 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                             blocker = leader_names[i] if i < len(leader_names) else f"placed_{i}"
                             counts = forward_ceres_blockers["overlap"]
                             counts[blocker] = counts.get(blocker, 0) + 1
+                    if trace_first:
+                        mercury_ceres_first_candidates.append(
+                            f"box=({future_box.x:.1f},{future_box.y:.1f},{future_box.w:.1f},{future_box.h:.1f}) "
+                            f"reject=overlap blockers={','.join(leader_names[i] if i < len(leader_names) else f'placed_{i}' for i in overlap_hits)}"
+                        )
                     continue
                 leader_hits = [
                     j for j, seg in enumerate(paths)
@@ -1427,6 +1456,11 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                             blocker = leader_names[j] if j < len(leader_names) else f"leader_{j}"
                             counts = forward_ceres_blockers["existing-leader"]
                             counts[blocker] = counts.get(blocker, 0) + 1
+                    if trace_first:
+                        mercury_ceres_first_candidates.append(
+                            f"box=({future_box.x:.1f},{future_box.y:.1f},{future_box.w:.1f},{future_box.h:.1f}) "
+                            f"reject=existing-leader blockers={','.join(leader_names[j] if j < len(leader_names) else f'leader_{j}' for j in leader_hits)}"
+                        )
                     continue
                 center = (future_box.x, future_box.y)
                 forward_route_diag = {} if future_name == "Ceres" else None
@@ -1940,6 +1974,12 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         # implementation is behaving as designed.
         widest_sig, widest_row = next(iter(mercury_ceres_trials.items()))
         widest_reasons = widest_row["reasons"]
+        if mercury_ceres_first_candidates:
+            diagnostic_print(
+                f"Planet Finder {mode}: MERCURY->CERES WIDEST CANDIDATES "
+                + " ; ".join(mercury_ceres_first_candidates),
+                flush=True,
+            )
         diagnostic_print(
             f"Planet Finder {mode}: MERCURY->CERES WIDEST-FIRST "
             f"box={widest_sig[:4]} path={widest_sig[4]} "
