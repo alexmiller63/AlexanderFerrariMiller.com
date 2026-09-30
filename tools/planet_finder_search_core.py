@@ -510,6 +510,19 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             f"Planet Finder {mode}: VENUS BLOCKERS kind=own-label-graze count={venus_own_graze:,}",
             flush=True,
         )
+        ceres_attribution = {"overlap": {}, "existing-leader": {}, "leader-graze": {}}
+        for (d, n), ds in diagnostic_stats.items():
+            if n != "Ceres":
+                continue
+            for label, count in ds.get("overlap_by_label", {}).items():
+                ceres_attribution["overlap"][label] = ceres_attribution["overlap"].get(label, 0) + count
+            for label, count in ds.get("existing_leader_by_name", {}).items():
+                ceres_attribution["existing-leader"][label] = ceres_attribution["existing-leader"].get(label, 0) + count
+            for label, count in ds.get("leader_graze_by_name", {}).items():
+                ceres_attribution["leader-graze"][label] = ceres_attribution["leader-graze"].get(label, 0) + count
+        for kind, counts in ceres_attribution.items():
+            top = sorted(counts.items(), key=lambda item: (-item[1], item[0]))[:12]
+            diagnostic_print(f"Planet Finder {mode}: CERES BLOCKERS kind={kind} " + (" ".join(f"{name}={count:,}" for name, count in top) if top else "none"), flush=True)
         diagnostic_print(
             f"Planet Finder {mode}: TERMINAL BEST-PARTIAL deepest={deepest}/{len(order)}",
             flush=True,
@@ -729,7 +742,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             if overlaps_placed:
                 rejected_overlap += 1
                 stats["overlap"] += 1
-                if name == "Venus":
+                if name in ("Venus", "Ceres"):
                     for i in overlap_indices:
                         blocker = leader_names[i] if i < len(leader_names) else f"placed_{i}"
                         stats["overlap_by_label"][blocker] = stats["overlap_by_label"].get(blocker, 0) + 1
@@ -747,7 +760,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 rejected_leader += 1
                 stats["leader"] += 1
                 stats["leader_existing"] += 1
-                if name == "Venus":
+                if name in ("Venus", "Ceres"):
                     for leader_index in existing_leader_hits:
                         blocker = leader_names[leader_index] if leader_index < len(leader_names) else f"leader_{leader_index}"
                         stats["existing_leader_by_name"][blocker] = stats["existing_leader_by_name"].get(blocker, 0) + 1
@@ -858,7 +871,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 rejected_leader += 1
                 stats["leader"] += 1
                 stats["leader_graze"] += 1
-                if name == "Venus":
+                if name in ("Venus", "Ceres"):
                     _, closest_pair = minimum_leader_separation(path, leaders)
                     if closest_pair is not None:
                         leader_index = closest_pair[0]
