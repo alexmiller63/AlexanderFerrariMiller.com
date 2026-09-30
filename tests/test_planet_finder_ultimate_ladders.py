@@ -162,6 +162,17 @@ def run_ladder(monkeypatch, week, mode, ladder, stop_on_failure=True):
     assert not failures, failures
 
 
+def test_00_fast_w36_venus_dead_end(monkeypatch):
+    """Fast diagnostic: stop at the first exact-W36 Greek Uranus->Venus dead end."""
+    monkeypatch.setenv("PLANET_FINDER_DIAGNOSTIC_LEVEL", "0")
+    monkeypatch.setenv("PLANET_FINDER_FAST_VENUS_PROBE", "1")
+    bodies = synthetic_bodies(W36_KNOWN_GOOD)
+    with pytest.raises(RuntimeError, match="FAST_W36_VENUS_PROBE_COMPLETE"):
+        layout(FinderMode.GREEK, bodies, target_solutions=1,
+               budget={"max_node_candidates": 2000, "max_seconds": 15.0},
+               context_label="fast-W36-Venus-probe")
+
+
 @pytest.mark.parametrize("mode", [FinderMode.GREEK, FinderMode.LATIN])
 def test_w36_uranus_breakpoint(monkeypatch, mode):
     run_ladder(monkeypatch, "W36-URANUS", mode, W36_URANUS_LADDER)

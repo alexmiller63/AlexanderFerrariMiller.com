@@ -1448,6 +1448,21 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 delta["uranus_box"] = (round(box.x, 1), round(box.y, 1), round(box.w, 1), round(box.h, 1))
                 delta["uranus_path"] = tuple((round(px, 1), round(py, 1)) for px, py in path)
                 uranus_venus_prefixes.append(delta)
+                if os.environ.get("PLANET_FINDER_FAST_VENUS_PROBE") == "1":
+                    immutable = delta["immutable_reserved"] + delta["immutable_rim"]
+                    placed = (delta["overlap"] + delta["leader_existing"] +
+                              delta["route"] + delta["leader_rim"] + delta["leader_graze"])
+                    summary = (
+                        f"FAST W36 VENUS PROBE: generated={delta['generated']} "
+                        f"viable={delta['viable']} immutable={immutable} placed={placed} "
+                        f"detail[reserved={delta['immutable_reserved']},rim={delta['immutable_rim']},"
+                        f"overlap={delta['overlap']},leader={delta['leader_existing']},"
+                        f"route={delta['route']},leader-rim={delta['leader_rim']},"
+                        f"graze={delta['leader_graze']}] "
+                        f"uranus_box={delta['uranus_box']} uranus_path={delta['uranus_path']}"
+                    )
+                    print(summary, flush=True)
+                    raise RuntimeError("FAST_W36_VENUS_PROBE_COMPLETE")
 
             backtracks += 1
             # Prefix diagnostic: when an individually legal candidate cannot

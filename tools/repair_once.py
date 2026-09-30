@@ -6,7 +6,7 @@ only when the test sets PLANET_FINDER_FAST_VENUS_PROBE=1.
 """
 from pathlib import Path
 
-ENABLED = True
+ENABLED = False
 if not ENABLED:
     print("Repair Once is OFF; nothing to do.")
     raise SystemExit(0)
