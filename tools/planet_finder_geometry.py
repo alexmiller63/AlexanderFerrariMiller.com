@@ -333,17 +333,19 @@ def reserved_boxes(mode: str) -> list[Box]:
 
 
 def candidate_positions(longitude: float, displacement_scale: float = 2.0):
-    """Yield each canonical label candidate once, cheapest geometry first.
+    """Yield each canonical label candidate once, widest geometry first.
 
-    displacement_scale remains temporarily for API compatibility, but the
-    complete lattice is always 0, +/-0.25, ... +/-2.00 label lengths.
+    The complete lattice is +/-2.00, +/-1.75, ... +/-0.25, then 0 label
+    lengths.  This preserves the full candidate set while honoring the Planet
+    Finder strategy: try maximum separation before progressively narrowing.
+    displacement_scale remains temporarily for API compatibility.
     """
     theta = math.radians(180 + longitude)
     tx, ty = -math.sin(theta), -math.cos(theta)
     offered: list[tuple[float, float]] = []
     radii = (*PREFERRED_LABEL_RADII, *EXPANDED_LABEL_RADII)
     quarter_step = LABEL_LENGTH * 0.25
-    for shell in range(9):
+    for shell in range(8, -1, -1):
         shifts = (0.0,) if shell == 0 else (-shell * quarter_step, shell * quarter_step)
         for shift in shifts:
             for r in radii:
