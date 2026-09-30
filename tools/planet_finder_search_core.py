@@ -1630,6 +1630,19 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         return False
 
     def search_coordinated_geometry():
+        # Diagnostic-only escape hatch: skip the speculative alignment
+        # preplanner and give recursive alignment backtracking the full mode
+        # clock. Default is OFF, so production behavior is unchanged.
+        if os.environ.get("PLANET_FINDER_SKIP_ALIGNMENT_PREPLANNER", "0") == "1":
+            diagnostic_print(
+                f"Planet Finder {mode}: ALIGNMENT PREPLANNER BYPASSED; "
+                "starting recursive alignment layer directly",
+                flush=True,
+            )
+            if alignment_group_items:
+                return solve_alignment_group(0)
+            return search(0)
+
         # Conjunctions have no placement path of their own.  Every body enters
         # the ordinary coordinated alignment planner; conjunction metadata is
         # consulted only by downstream backtracking to keep a conjunction

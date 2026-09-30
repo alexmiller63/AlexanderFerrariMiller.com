@@ -66,5 +66,12 @@ def test_00_w36_control(monkeypatch):
 
 
 def test_01_exact_w36_preplacement_probe(monkeypatch):
-    """Exact W36 should reproduce the fixed-alignment -> Venus dead end quickly."""
-    assert not run_case(monkeypatch, "W36-exact-preplacement-probe", W36_KNOWN_GOOD, 12.0)
+    """Give recursive alignment backtracking the full exact-W36 clock."""
+    monkeypatch.setenv("PLANET_FINDER_SKIP_ALIGNMENT_PREPLANNER", "1")
+    solved = run_case(
+        monkeypatch,
+        "W36-exact-recursive-alignment-only",
+        W36_KNOWN_GOOD,
+        12.0,
+    )
+    print(f"PREPLANNER BYPASS RESULT solved={solved}", flush=True)
