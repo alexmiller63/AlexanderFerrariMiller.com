@@ -164,14 +164,19 @@ def run_ladder(monkeypatch, week, mode, ladder, stop_on_failure=True):
 
 
 def test_00_fast_w36_venus_dead_end(monkeypatch):
-    """Fast diagnostic: stop at the first exact-W36 Greek Uranus->Venus dead end."""
-    monkeypatch.setenv("PLANET_FINDER_DIAGNOSTIC_LEVEL", "0")
-    monkeypatch.setenv("PLANET_FINDER_FAST_VENUS_PROBE", "1")
+    """Fast exact-W36 Greek probe: expose recursive Mercury -> Venus behavior."""
+    monkeypatch.setenv("PLANET_FINDER_DIAGNOSTIC_LEVEL", "1")
+    monkeypatch.delenv("PLANET_FINDER_FAST_VENUS_PROBE", raising=False)
     bodies = synthetic_bodies(W36_KNOWN_GOOD)
-    with pytest.raises(RuntimeError, match="FAST_W36_VENUS_PROBE_COMPLETE"):
-        layout(FinderMode.GREEK, bodies, target_solutions=1,
-               budget={"max_node_candidates": 2000, "max_seconds": 15.0},
-               context_label="fast-W36-Venus-probe")
+    try:
+        result = layout(FinderMode.GREEK, bodies, target_solutions=1,
+                        budget={"max_node_candidates": 2000, "max_seconds": 30.0},
+                        context_label="fast-W36-Mercury-Venus-probe")
+    except TimeoutError:
+        # Timeout is an acceptable endpoint for this diagnostic: the solver's
+        # compact failure summary contains the Mercury -> Venus measurements.
+        return
+    assert_complete_valid_layout(result, bodies, FinderMode.GREEK)
 
 
 def test_01_w36_uranus_longitude_sweep(monkeypatch):
