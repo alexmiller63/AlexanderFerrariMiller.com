@@ -1,60 +1,49 @@
 #!/usr/bin/env python3
-"""One-shot diagnostic repair: reuse ordinary forward check after Mercury alignment.
+"""One-shot diagnostic: isolate Mixed JSM 0% versus 25% search divergence.
 
-The experiment is opt-in via PLANET_FINDER_ALIGNMENT_FORWARD_CHECK=1, so normal
-production behavior remains unchanged. Repair Once self-disables.
+Adds a focused test only; production Planet Finder code is unchanged.
+Repair Once self-disables after installing the diagnostic.
 """
 from pathlib import Path
 
-ENABLED = False
+ENABLED = True
 if not ENABLED:
     print("Repair Once is OFF; nothing to do.")
     raise SystemExit(0)
 
-CORE = Path("tools/planet_finder_search_core.py")
-core = CORE.read_text(encoding="utf-8")
-
-old_core = '''            try:
-                solved = solve_alignment_members(group_index, next_remaining)
-            finally:
-'''
-new_core = '''            try:
-                # Diagnostic experiment: alignment members normally bypass the
-                # ordinary DFS forward checker.  Once Mercury (the final member
-                # of W36's final alignment group) is staged, reuse that exact
-                # checker against the ordinary-body order before descending.
-                # This is look-ahead pruning only; it does not choose or freeze
-                # any ordinary-body placement.
-                if (
-                    name == "Mercury"
-                    and os.environ.get("PLANET_FINDER_ALIGNMENT_FORWARD_CHECK", "0") == "1"
-                    and not forward_check(0)
-                ):
-                    solved = False
-                else:
-                    solved = solve_alignment_members(group_index, next_remaining)
-            finally:
-'''
-if core.count(old_core) != 1:
-    raise SystemExit(f"Safety stop: alignment recursion anchor count={core.count(old_core)}; expected 1")
-CORE.write_text(core.replace(old_core, new_core, 1), encoding="utf-8")
-
 TEST = Path("tests/test_planet_finder_ultimate_ladders.py")
 test = TEST.read_text(encoding="utf-8")
-old_test = '''def test_01_exact_w36_preplacement_probe(monkeypatch):
-    """Give recursive alignment backtracking the full exact-W36 clock."""
-    monkeypatch.setenv("PLANET_FINDER_SKIP_ALIGNMENT_PREPLANNER", "1")
-    solved = run_case(
+anchor = '''def test_w36_mixed_jsm_breakpoint(monkeypatch):
+    run_ladder(monkeypatch, "W36-MIXED-JSM", FinderMode.MIXED,
+               W36_MIXED_JSM_LADDER, stop_on_failure=False)
 '''
-new_test = '''def test_01_exact_w36_preplacement_probe(monkeypatch):
-    """Give recursive alignment backtracking the full clock plus shared forward check."""
-    monkeypatch.setenv("PLANET_FINDER_SKIP_ALIGNMENT_PREPLANNER", "1")
-    monkeypatch.setenv("PLANET_FINDER_ALIGNMENT_FORWARD_CHECK", "1")
-    solved = run_case(
+addition = anchor + '''\n\ndef test_02_w36_mixed_jsm_zero_vs_25_forensic(monkeypatch):
+    """Compare the passing 0% JSM state directly with the failing 25% state."""
+    enable_alignment_fix(monkeypatch)
+    monkeypatch.setenv("PLANET_FINDER_DIAGNOSTIC_LEVEL", "3")
+    for level, fraction in (("jsm-0pct", 0.0), ("jsm-25pct", 0.25)):
+        longitudes, expected_groups = jsm_case(fraction)
+        print(f"JSM FORENSIC {level} LONGITUDES " +
+              " ".join(f"{name}={lon:.6f}" for name, lon in longitudes.items()), flush=True)
+        bodies = synthetic_bodies(longitudes)
+        actual_groups = group_names(bodies)
+        print(f"JSM FORENSIC {level} GROUPS={actual_groups}", flush=True)
+        assert actual_groups == sorted(expected_groups)
+        try:
+            result = layout(
+                FinderMode.MIXED, bodies, target_solutions=1,
+                budget={"max_node_candidates": 2000, "max_seconds": 15.0},
+                context_label=f"forensic-W36-{level}-mixed",
+            )
+            assert_complete_valid_layout(result, bodies, FinderMode.MIXED)
+        except Exception as exc:
+            print(f"JSM FORENSIC {level} RESULT=FAIL {type(exc).__name__}: {exc}", flush=True)
+        else:
+            print(f"JSM FORENSIC {level} RESULT=PASS", flush=True)
 '''
-if test.count(old_test) != 1:
-    raise SystemExit(f"Safety stop: W36 test anchor count={test.count(old_test)}; expected 1")
-TEST.write_text(test.replace(old_test, new_test, 1), encoding="utf-8")
+if test.count(anchor) != 1:
+    raise SystemExit(f"Safety stop: JSM test anchor count={test.count(anchor)}; expected 1")
+TEST.write_text(test.replace(anchor, addition, 1), encoding="utf-8")
 
 me = Path(__file__)
 self_text = me.read_text(encoding="utf-8")
@@ -63,4 +52,4 @@ if self_text.count(arming_line) != 1:
     raise SystemExit("Safety stop: Repair Once arming marker is not unique")
 me.write_text(self_text.replace(arming_line, "ENABLED = False", 1), encoding="utf-8")
 
-print("Added opt-in alignment reuse of existing forward_check after Mercury. Repair Once is now OFF.")
+print("Installed focused Mixed JSM 0%-vs-25% forensic test. Production code unchanged. Repair Once is now OFF.")
