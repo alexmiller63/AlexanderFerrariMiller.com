@@ -32,7 +32,7 @@ lines = [
 '            top = sorted(counts.items(), key=lambda item: (-item[1], item[0]))[:12]',
 '            diagnostic_print(f"Planet Finder {mode}: CERES BLOCKERS kind={kind} " + (" ".join(f"{name}={count:,}" for name, count in top) if top else "none"), flush=True)',
 ''];
-block = lines.join("\n") + needle
+block = "\n".join(lines) + needle
 if needle not in core:
     raise SystemExit("Safety stop: Ceres diagnostic insertion anchor missing")
 core = core.replace(needle, block, 1)
