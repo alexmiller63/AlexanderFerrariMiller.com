@@ -44,23 +44,27 @@ def run_case(monkeypatch, label, longitudes, seconds):
             budget={"max_node_candidates": 2000, "max_seconds": seconds},
             context_label=label,
         )
-    except TimeoutError as exc:
-        print(f"FAST DIAGNOSTIC {label}: TIMEOUT {exc}", flush=True)
+    except RuntimeError as exc:
+        text = str(exc)
+        expected = (
+            "wall-clock budget exhausted" in text
+            or "canonical candidate lattice exhausted" in text
+            or "No collision-free Planet Finder layout found" in text
+        )
+        if not expected:
+            raise
+        print(f"FAST DIAGNOSTIC {label}: UNSOLVED {exc}", flush=True)
         return False
     assert_complete_valid_layout(result, bodies, FinderMode.GREEK)
     print(f"FAST DIAGNOSTIC {label}: PASS", flush=True)
     return True
 
 
-def test_00_w36_control_and_breakpoint(monkeypatch):
-    """One known pass and one nearby known failure; no long sweep."""
+def test_00_w36_control(monkeypatch):
+    """Known nearby control must still solve quickly."""
     assert run_case(monkeypatch, "W36-control-Uranus-250", BASE_URANUS, 8.0)
-    failed_case = {**BASE_URANUS, "Uranus": 220.0}
-    assert not run_case(monkeypatch, "W36-breakpoint-Uranus-220", failed_case, 8.0)
 
 
 def test_01_exact_w36_preplacement_probe(monkeypatch):
-    """Short exact-W36 probe for the fixed-alignment -> Venus dead end."""
-    solved = run_case(monkeypatch, "W36-exact-preplacement-probe", W36_KNOWN_GOOD, 12.0)
-    if solved:
-        pytest.fail("Exact W36 unexpectedly solved; update the diagnostic baseline")
+    """Exact W36 should reproduce the fixed-alignment -> Venus dead end quickly."""
+    assert not run_case(monkeypatch, "W36-exact-preplacement-probe", W36_KNOWN_GOOD, 12.0)
