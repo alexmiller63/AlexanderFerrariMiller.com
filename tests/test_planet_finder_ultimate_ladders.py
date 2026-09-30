@@ -50,6 +50,14 @@ W36_URANUS_LADDER = [
      [("Neptune", "Moon", "Saturn"), ("Uranus", "Ceres", "Mars"), ("Jupiter", "Sun", "Mercury")]),
 ]
 
+# Fast diagnostic sweep.  These are absolute Uranus longitudes, not angular
+# separations.  The earlier 250-pass / 55-fail observation was easy to misread
+# as 2.50 / 0.55 degrees.  Sweep the actual longitude while reporting whatever
+# alignment classification each point really has.  Stop on the first layout
+# failure so the Actions log gives us a small bracket instead of a 13-minute
+# regression run.
+W36_URANUS_SWEEP = [250, 220, 190, 160, 130, 110, 100, 90, 80, 70, 65, 62, 61, 60, 58, 55]
+
 NMS = {"Neptune": W36_KNOWN_GOOD["Neptune"], "Moon": W36_KNOWN_GOOD["Moon"], "Saturn": W36_KNOWN_GOOD["Saturn"]}
 CM = {"Ceres": W36_KNOWN_GOOD["Ceres"], "Mars": W36_KNOWN_GOOD["Mars"]}
 JSM = {"Jupiter": W36_KNOWN_GOOD["Jupiter"], "Sun": W36_KNOWN_GOOD["Sun"], "Mercury": W36_KNOWN_GOOD["Mercury"]}
@@ -82,15 +90,10 @@ def clean_case(groups):
     return placed, sorted(expected)
 
 
-# Isolate the already-observed Mixed culprit and approach the exact W36 J-S-M
-# geometry progressively.  Jupiter stays fixed; Sun and Mercury interpolate
-# from a wide-but-still-single-group geometry to their exact W36 longitudes.
 def jsm_case(fraction):
     j = JSM["Jupiter"]
     exact_s = JSM["Sun"]
     exact_m = JSM["Mercury"]
-    # Wide starting geometry: 0, 15, 29 degrees from Jupiter.  It remains one
-    # alignment group while giving the blob substantially more room.
     wide_s = j + 15.0
     wide_m = j + 29.0
     active = {
@@ -98,8 +101,6 @@ def jsm_case(fraction):
         "Sun": wide_s + fraction * (exact_s - wide_s),
         "Mercury": wide_m + fraction * (exact_m - wide_m),
     }
-    # Reuse clean_case's deterministic parking strategy, but with this rung's
-    # active JSM coordinates rather than the exact JSM constant.
     unused = [n for n in W36_KNOWN_GOOD if n not in active]
     placed = dict(active)
     for name in unused:
@@ -171,6 +172,34 @@ def test_00_fast_w36_venus_dead_end(monkeypatch):
         layout(FinderMode.GREEK, bodies, target_solutions=1,
                budget={"max_node_candidates": 2000, "max_seconds": 15.0},
                context_label="fast-W36-Venus-probe")
+
+
+def test_01_w36_uranus_longitude_sweep(monkeypatch):
+    """Find the first Uranus longitude where the W36 layout stops solving."""
+    monkeypatch.setenv("PLANET_FINDER_DIAGNOSTIC_LEVEL", "0")
+    passed = []
+    for longitude in W36_URANUS_SWEEP:
+        longitudes = {**BASE_URANUS, "Uranus": float(longitude)}
+        bodies = synthetic_bodies(longitudes)
+        groups = group_names(bodies)
+        print(f"URANUS SWEEP longitude={longitude:.1f} groups={groups} START", flush=True)
+        try:
+            result = layout(FinderMode.GREEK, bodies, target_solutions=1,
+                            budget={"max_node_candidates": 2000, "max_seconds": 15.0},
+                            context_label=f"W36-uranus-sweep-{longitude}")
+            assert_complete_valid_layout(result, bodies, FinderMode.GREEK)
+        except Exception as exc:
+            previous = passed[-1] if passed else None
+            print(
+                f"URANUS SWEEP FIRST_FAILURE longitude={longitude:.1f} "
+                f"previous_pass={previous} groups={groups} "
+                f"error={type(exc).__name__}: {exc}",
+                flush=True,
+            )
+            raise
+        passed.append(longitude)
+        print(f"URANUS SWEEP longitude={longitude:.1f} PASS", flush=True)
+    print(f"URANUS SWEEP ALL_PASS={passed}", flush=True)
 
 
 @pytest.mark.parametrize("mode", [FinderMode.GREEK, FinderMode.LATIN])
