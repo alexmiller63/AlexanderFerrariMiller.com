@@ -1,90 +1,116 @@
 #!/usr/bin/env python3
-"""One-shot repair: allow close leader anchors to fan apart without weakening downstream clearance."""
+"""One-shot repair: add diagnostic-only Pluto -> Venus DFS boundary accounting."""
 from pathlib import Path
 
-ENABLED = False
+ENABLED = True
 if not ENABLED:
     print("Repair Once is OFF; nothing to do.")
     raise SystemExit(0)
 
-TARGET = Path("tools/planet_finder_geometry.py")
+TARGET = Path("tools/planet_finder_search_core.py")
 text = TARGET.read_text(encoding="utf-8")
 
-old = '''def leaders_too_close(path, existing_paths, clearance: float = LEADER_TO_LEADER_CLEARANCE) -> bool:
-    """Reject a proposed leader that grazes or crosses an existing leader."""
-    return any(
-        segments_too_close(path[i], path[i + 1], other[j], other[j + 1], clearance)
-        for other in existing_paths
-        for i in range(len(path) - 1)
-        for j in range(len(other) - 1)
-    )
+old = '''    viable_geometry_seen = {}
+    # Diagnostic only: summarize how Mercury's admitted candidates traverse
 '''
-new = '''def leaders_too_close(path, existing_paths, clearance: float = LEADER_TO_LEADER_CLEARANCE) -> bool:
-    """Reject leader crossings/grazes after unavoidable close-anchor escape.
-
-    Two astronomical anchors can legitimately be closer than the rendered
-    leader clearance (or coincide in the conjunction limit).  Their leaders
-    must be allowed to fan apart from that common neighborhood.  Once the
-    corresponding first segments have escaped beyond the initial close-anchor
-    condition, ordinary leader-to-leader clearance applies unchanged.
-    """
-    for other in existing_paths:
-        close_anchors = math.hypot(path[0][0] - other[0][0], path[0][1] - other[0][1]) < clearance
-        for i in range(len(path) - 1):
-            for j in range(len(other) - 1):
-                if close_anchors and i == 0 and j == 0:
-                    # Shared/nearby origins are imposed by the sky geometry.
-                    # Do not mistake that unavoidable initial proximity for a
-                    # layout collision; all later segment pairs remain strict.
-                    continue
-                if segments_too_close(path[i], path[i + 1], other[j], other[j + 1], clearance):
-                    return True
-    return False
+new = '''    viable_geometry_seen = {}
+    # Diagnostic only: record what happens to Venus under each individually
+    # viable Pluto parent placement. This does not alter search behavior.
+    pluto_venus_prefixes = []
+    # Diagnostic only: summarize how Mercury's admitted candidates traverse
 '''
 if text.count(old) != 1:
-    raise SystemExit("Safety stop: leaders_too_close block did not match exactly once")
+    raise SystemExit("Safety stop: viable_geometry_seen insertion point did not match exactly once")
 text = text.replace(old, new, 1)
-TARGET.write_text(text, encoding="utf-8")
 
-TEST = Path("tests/test_planet_finder_leader_geometry.py")
-test_text = '''import sys
-from pathlib import Path
-
-sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "tools"))
-
-from planet_finder_geometry import leaders_too_close
-
-
-def test_nearby_anchors_may_fan_apart():
-    first = [(0.0, 0.0), (20.0, 10.0)]
-    second = [(4.0, 0.0), (20.0, -10.0)]
-    assert not leaders_too_close(second, [first], clearance=8.0)
-
-
-def test_coincident_anchors_may_fan_apart():
-    first = [(0.0, 0.0), (20.0, 10.0)]
-    second = [(0.0, 0.0), (20.0, -10.0)]
-    assert not leaders_too_close(second, [first], clearance=8.0)
-
-
-def test_downstream_crossing_remains_illegal_after_close_anchor_escape():
-    first = [(0.0, 0.0), (20.0, 10.0), (40.0, -10.0)]
-    second = [(4.0, 0.0), (20.0, -10.0), (40.0, 10.0)]
-    assert leaders_too_close(second, [first], clearance=8.0)
-
-
-def test_downstream_graze_remains_illegal_after_close_anchor_escape():
-    first = [(0.0, 0.0), (20.0, 10.0), (40.0, 10.0)]
-    second = [(4.0, 0.0), (20.0, -10.0), (40.0, 4.0)]
-    assert leaders_too_close(second, [first], clearance=8.0)
-
-
-def test_separate_anchors_keep_normal_first_segment_clearance():
-    first = [(0.0, 0.0), (20.0, 0.0)]
-    second = [(9.0, 0.0), (20.0, 1.0)]
-    assert leaders_too_close(second, [first], clearance=8.0)
+old = '''            child_deepest_before = deepest
+            child_nodes_before = nodes
+            child_backtracks_before = backtracks
+            try:
 '''
-TEST.write_text(test_text, encoding="utf-8")
+new = '''            child_deepest_before = deepest
+            child_nodes_before = nodes
+            child_backtracks_before = backtracks
+            pv_before = None
+            if name == "Pluto" and depth + 1 < len(order) and order[depth + 1][1][1] == "Venus":
+                venus_stats = diagnostic_stats.get((depth + 1, "Venus"), {})
+                pv_before = {
+                    key: venus_stats.get(key, 0)
+                    for key in ("generated", "viable", "immutable_reserved", "immutable_rim",
+                                "overlap", "leader_existing", "route", "leader_rim", "leader_graze")
+                }
+            try:
+'''
+if text.count(old) != 1:
+    raise SystemExit("Safety stop: child DFS snapshot insertion point did not match exactly once")
+text = text.replace(old, new, 1)
+
+old = '''                staged.pop(original_index, None)
+                leaders.pop()
+                leader_names.pop()
+                placed.pop()
+
+            backtracks += 1
+'''
+new = '''                staged.pop(original_index, None)
+                leaders.pop()
+                leader_names.pop()
+                placed.pop()
+
+            if pv_before is not None:
+                venus_stats = diagnostic_stats.get((depth + 1, "Venus"), {})
+                delta = {
+                    key: venus_stats.get(key, 0) - pv_before.get(key, 0)
+                    for key in pv_before
+                }
+                pluto_venus_prefixes.append(delta)
+
+            backtracks += 1
+'''
+if text.count(old) != 1:
+    raise SystemExit("Safety stop: child DFS delta insertion point did not match exactly once")
+text = text.replace(old, new, 1)
+
+old = '''            diagnostic_print(
+                f"Planet Finder {mode}: CAPPED SUMMARY order={order_index} "
+                f"nodes={nodes:,} deepest={deepest}/{len(order)} "
+                f"current_body={current_body} sequence={order_names}"
+                f"{rejection_summary}{validation_summary}",
+                flush=True,
+            )
+            return
+'''
+new = '''            diagnostic_print(
+                f"Planet Finder {mode}: CAPPED SUMMARY order={order_index} "
+                f"nodes={nodes:,} deepest={deepest}/{len(order)} "
+                f"current_body={current_body} sequence={order_names}"
+                f"{rejection_summary}{validation_summary}",
+                flush=True,
+            )
+            if pluto_venus_prefixes:
+                keys = ("generated", "viable", "immutable_reserved", "immutable_rim",
+                        "overlap", "leader_existing", "route", "leader_rim", "leader_graze")
+                totals = {key: sum(row[key] for row in pluto_venus_prefixes) for key in keys}
+                zero_viable = sum(1 for row in pluto_venus_prefixes if row["viable"] == 0)
+                diagnostic_print(
+                    f"Planet Finder {mode}: PLUTO-VENUS PREFIX SUMMARY "
+                    f"parents={len(pluto_venus_prefixes):,} zero-viable={zero_viable:,} "
+                    f"venus-generated={totals['generated']:,} venus-viable={totals['viable']:,} "
+                    f"rejects[immutable-reserved={totals['immutable_reserved']:,},"
+                    f"immutable-rim={totals['immutable_rim']:,},"
+                    f"placed-overlap={totals['overlap']:,},"
+                    f"existing-leader={totals['leader_existing']:,},"
+                    f"route={totals['route']:,},leader-rim={totals['leader_rim']:,},"
+                    f"leader-graze={totals['leader_graze']:,}]",
+                    flush=True,
+                )
+            return
+'''
+if text.count(old) != 1:
+    raise SystemExit("Safety stop: capped summary insertion point did not match exactly once")
+text = text.replace(old, new, 1)
+
+TARGET.write_text(text, encoding="utf-8")
 
 me = Path(__file__)
 self_text = me.read_text(encoding="utf-8")
@@ -94,7 +120,6 @@ if self_text.count(arming_line) != 1:
 me.write_text(self_text.replace(arming_line, "ENABLED = False", 1), encoding="utf-8")
 
 print(
-    "Made leader clearance anchor-aware: only the first-segment pair is exempt when anchors "
-    "are already closer than clearance; all downstream crossing/graze checks remain strict. "
-    "Added focused regression tests. Repair Once is now OFF."
+    "Added diagnostic-only Pluto -> Venus per-parent rejection accounting and compact capped summary. "
+    "No geometry, ordering, candidate budgets, or DFS behavior changed. Repair Once is now OFF."
 )
