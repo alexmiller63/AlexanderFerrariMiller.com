@@ -1125,6 +1125,13 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         assign_rejects = {"empty_future": 0, "circular_order": 0, "planned_path": 0}
         deepest_alignment_choice = 0
         termination_reason = "exhausted"
+        depth89 = {
+            "depth8_entries": 0,
+            "depth8_body": {},
+            "depth8_candidate_tries": 0,
+            "depth7_entries": 0,
+            "depth7_parent_signatures": set(),
+        }
 
         def assign(remaining, available, chosen):
             nonlocal nodes, deepest_alignment_choice, termination_reason
@@ -1134,8 +1141,20 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             if not remaining:
                 return (chosen, planned_paths(chosen))
             name = min(remaining, key=lambda candidate: (len(available[candidate]), order_names.index(candidate)))
+            if depth_here == 8:
+                depth89["depth8_entries"] += 1
+                depth89["depth8_body"][name] = depth89["depth8_body"].get(name, 0) + 1
+            elif depth_here == 7:
+                depth89["depth7_entries"] += 1
+                signature = tuple(
+                    (member, round(chosen[member][0], 3), round(chosen[member][1], 3))
+                    for member in sorted(chosen)
+                )
+                depth89["depth7_parent_signatures"].add(signature)
             others = [candidate for candidate in remaining if candidate != name]
             for row in available[name]:
+                if depth_here == 8:
+                    depth89["depth8_candidate_tries"] += 1
                 nodes += 1
                 if nodes > 50000 or (refinement_deadline is not None and
                                      time.monotonic() >= refinement_deadline):
@@ -1190,6 +1209,11 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             f"- Empty-future prunes: {assign_rejects['empty_future']:,}",
             f"- Circular-order rejects: {assign_rejects['circular_order']:,}",
             f"- Planned-path rejects: {assign_rejects['planned_path']:,}",
+            f"- Depth 8/9 entries: {depth89['depth8_entries']:,}",
+            f"- Depth 8/9 selected body: {depth89['depth8_body']}",
+            f"- Depth 8/9 candidate tries: {depth89['depth8_candidate_tries']:,}",
+            f"- Depth 7/9 entries: {depth89['depth7_entries']:,}",
+            f"- Distinct depth 7 parent placements: {len(depth89['depth7_parent_signatures']):,}",
             f"- Path causes: route={alignment_path_rejects['route']:,}, "
             f"label_hit={alignment_path_rejects['label_hit']:,}, "
             f"rim_hit={alignment_path_rejects['rim_hit']:,}, "
@@ -1209,7 +1233,11 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             f"rejects[empty={assign_rejects['empty_future']:,},order={assign_rejects['circular_order']:,},"
             f"path={assign_rejects['planned_path']:,}] "
             f"path-causes[route={alignment_path_rejects['route']:,},label={alignment_path_rejects['label_hit']:,},"
-            f"rim={alignment_path_rejects['rim_hit']:,},graze={alignment_path_rejects['leader_graze']:,}]",
+            f"rim={alignment_path_rejects['rim_hit']:,},graze={alignment_path_rejects['leader_graze']:,}] "
+            f"depth8[entries={depth89['depth8_entries']:,},body={depth89['depth8_body']},"
+            f"tries={depth89['depth8_candidate_tries']:,}] "
+            f"depth7[entries={depth89['depth7_entries']:,},"
+            f"distinct-parents={len(depth89['depth7_parent_signatures']):,}]",
             flush=True,
         )
         return result
