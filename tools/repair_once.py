@@ -213,8 +213,12 @@ GEOM.write_text(geom, encoding="utf-8")
 
 me = Path(__file__)
 self_text = me.read_text(encoding="utf-8")
-if self_text.count("ENABLED = True") != 1:
-    raise SystemExit("Safety stop: arming marker not unique")
-me.write_text(self_text.replace("ENABLED = True", "ENABLED = False", 1), encoding="utf-8")
+arming_line = "ENABLED" + " = True"
+matching_lines = [i for i, line in enumerate(self_text.splitlines()) if line.strip() == arming_line]
+if len(matching_lines) != 1:
+    raise SystemExit(f"Safety stop: arming line count={len(matching_lines)}")
+self_lines = self_text.splitlines()
+self_lines[matching_lines[0]] = "ENABLED = False"
+me.write_text("\n".join(self_lines) + "\n", encoding="utf-8")
 
 print("Installed complete Ceres forward-blocker attribution (overlap, existing leader, route segments, leader graze). Solver behavior unchanged. Repair Once is now OFF.")
