@@ -1819,21 +1819,43 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             blocker = order[blocker_depth][1][1]
     blocker_stats = None
     if blocker is not None:
-        blocker_depth = next(
-            (depth for depth, item in enumerate(order) if item[1][1] == blocker),
-            None,
-        )
-        if blocker_depth is not None:
-            s = diagnostic_stats.get((blocker_depth, blocker), {})
+        # Report rejection evidence from the mechanism that actually selected
+        # the blocker. A body killed by forward checking may never be entered
+        # by DFS, so its ordinary diagnostic_stats are legitimately all zero.
+        # In that case the forward witness reasons are the authoritative
+        # explanation for why the body had no contestant.
+        if blocker in forward_blockers:
+            fs = forward_stats["by_body"].get(blocker, {})
+            reasons = fs.get("reasons", {})
             blocker_stats = {
-                "immutable_reserved": s.get("immutable_reserved", 0),
-                "immutable_rim": s.get("immutable_rim", 0),
-                "placed_overlap": s.get("overlap", 0),
-                "existing_leader": s.get("leader_existing", 0),
-                "route": s.get("route", 0),
-                "leader_rim": s.get("leader_rim", 0),
-                "leader_graze": s.get("leader_graze", 0),
+                "source": "forward-check",
+                "checks": fs.get("checks", 0),
+                "witnesses": fs.get("witnesses", 0),
+                "dead": fs.get("dead", 0),
+                "raw": fs.get("raw", 0),
+                "placed_overlap": reasons.get("placed-overlap", 0),
+                "existing_leader": reasons.get("existing-leader", 0),
+                "route": reasons.get("route", 0),
+                "leader_rim": reasons.get("leader-rim", 0),
+                "leader_graze": reasons.get("leader-graze", 0),
             }
+        else:
+            blocker_depth = next(
+                (depth for depth, item in enumerate(order) if item[1][1] == blocker),
+                None,
+            )
+            if blocker_depth is not None:
+                ds = diagnostic_stats.get((blocker_depth, blocker), {})
+                blocker_stats = {
+                    "source": "dfs",
+                    "immutable_reserved": ds.get("immutable_reserved", 0),
+                    "immutable_rim": ds.get("immutable_rim", 0),
+                    "placed_overlap": ds.get("overlap", 0),
+                    "existing_leader": ds.get("leader_existing", 0),
+                    "route": ds.get("route", 0),
+                    "leader_rim": ds.get("leader_rim", 0),
+                    "leader_graze": ds.get("leader_graze", 0),
+                }
     if exhausted and forward_stats["by_body"]:
         diagnostic_print(
             f"Planet Finder {mode}: FORWARD REJECTION BREAKDOWN",
