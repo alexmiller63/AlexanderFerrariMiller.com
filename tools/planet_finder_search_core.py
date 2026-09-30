@@ -1113,7 +1113,10 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 key=lambda row: math.hypot(row[0] - natural[0], row[1] - natural[1]),
                 reverse=True,
             )
-            pools[name] = options[:80]
+            # Wide-first is an ordering policy, not a truncation policy.  Keep
+            # every legal alternative so progressively narrower placements remain
+            # available when the widest coordinated placements cannot finish.
+            pools[name] = options
             if not pools[name]:
                 return None
 
