@@ -101,8 +101,16 @@ def _search_alignment_fallback(preplacement, groups, placed, leaders, leader_nam
                                staged, search, solve_alignment_group):
     """Try a planned layer, then restore it before recursive backtracking."""
     if preplacement:
-        if search(0):
-            return True
+        capped_preplacement = None
+        try:
+            if search(0):
+                return True
+        except DepthNodeBudgetExhausted as exc:
+            # A cap reached under the planner's first complete alignment is
+            # evidence that this preplacement is a dead/expensive branch, not
+            # proof that the alignment layer itself is exhausted. Restore it
+            # and let recursive alignment backtracking try sibling placements.
+            capped_preplacement = exc
         planned, _ = preplacement
         for group in groups:
             for original_index, _ in group:
@@ -110,8 +118,15 @@ def _search_alignment_fallback(preplacement, groups, placed, leaders, leader_nam
         del placed[-len(planned):]
         del leaders[-len(planned):]
         del leader_names[-len(planned):]
-        diagnostic_print("Planet Finder: ALIGNMENT PREPLACEMENT BLOCKED; "
-                         "retrying recursive alignment layer", flush=True)
+        diagnostic_print(
+            "Planet Finder: ALIGNMENT PREPLACEMENT "
+            + (
+                f"CAPPED body={capped_preplacement.name}; "
+                if capped_preplacement is not None else "BLOCKED; "
+            )
+            + "retrying recursive alignment layer",
+            flush=True,
+        )
     if groups:
         return solve_alignment_group(0)
     return search(0)
