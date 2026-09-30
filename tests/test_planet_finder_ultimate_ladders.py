@@ -66,8 +66,9 @@ def test_00_w36_control(monkeypatch):
 
 
 def test_01_exact_w36_preplacement_probe(monkeypatch):
-    """Give recursive alignment backtracking the full exact-W36 clock."""
+    """Give recursive alignment backtracking the full clock plus shared forward check."""
     monkeypatch.setenv("PLANET_FINDER_SKIP_ALIGNMENT_PREPLANNER", "1")
+    monkeypatch.setenv("PLANET_FINDER_ALIGNMENT_FORWARD_CHECK", "1")
     solved = run_case(
         monkeypatch,
         "W36-exact-recursive-alignment-only",

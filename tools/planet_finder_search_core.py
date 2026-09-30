@@ -1234,7 +1234,20 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                     for key in ("generated", "viable")
                 }
             try:
-                solved = solve_alignment_members(group_index, next_remaining)
+                # Diagnostic experiment: alignment members normally bypass the
+                # ordinary DFS forward checker.  Once Mercury (the final member
+                # of W36's final alignment group) is staged, reuse that exact
+                # checker against the ordinary-body order before descending.
+                # This is look-ahead pruning only; it does not choose or freeze
+                # any ordinary-body placement.
+                if (
+                    name == "Mercury"
+                    and os.environ.get("PLANET_FINDER_ALIGNMENT_FORWARD_CHECK", "0") == "1"
+                    and not forward_check(0)
+                ):
+                    solved = False
+                else:
+                    solved = solve_alignment_members(group_index, next_remaining)
             finally:
                 if name == "Mercury":
                     mercury_after = {
