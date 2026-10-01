@@ -1953,6 +1953,10 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                     continue
                 center = (future_box.x, future_box.y)
                 forward_route_diag = {} if future_name == "Ceres" else None
+                # Forward checking must test the same drawable leader
+                # geometry as ordinary DFS.  Routing to the label center makes
+                # the probe segment artificially longer and can create false
+                # leader-graze/dead results for close conjunctions.
                 path = route(
                     anchor,
                     center,
@@ -1960,6 +1964,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                     forward_route_diag,
                     allow_initial_escape_count=immutable_count,
                     prefix_cache=prefix_cache,
+                    target_box=future_box,
                 )
                 if path is None:
                     reasons["route"] += 1
