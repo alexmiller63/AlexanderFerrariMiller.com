@@ -1235,10 +1235,9 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         if not remaining_items:
             return solve_alignment_group(group_index + 1)
 
-        # Inner DFS for the alignment blob: choose the remaining member
-        # with the fewest currently viable placements, then recurse.  The
-        # alignment remains atomic to the outer search, but its members are
-        # ordinary backtrackable DFS choices rather than a fixed lambda order.
+        # Inner DFS for an alignment: choose the remaining member with the
+        # fewest currently viable placements, then recurse. Alignment members
+        # are ordinary backtrackable DFS choices; the alignment is not atomic.
         diagnostic_depth = -(group_index + 1)
         ranked = []
         for candidate_item in remaining_items:
@@ -1376,15 +1375,33 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
 
     def solve_alignment_group(group_index):
         if group_index == len(alignment_group_items):
-            # An alignment is viable only if the ordinary bodies can finish
-            # the layout. A parent-independent ordinary blocker invalidates
-            # this alignment geometry, so consume that signal here and let
-            # recursive alignment DFS try the next blob placement.
+            # This is a DFS continuation, not an atomic alignment boundary.
+            # Before entering ordinary DFS, require one existential witness
+            # for every ordinary body under the current alignment prefix.
+            # If any body is already dead here, unwind the individual
+            # alignment-member choices immediately; do not first place an
+            # unrelated ordinary parent and rediscover the same proof.
+            for ordinary_item in order:
+                ordinary_name = ordinary_item[1][1]
+                witness_stream = viable_candidates(
+                    ordinary_item, len(order), consume_body_budget=False
+                )
+                try:
+                    next(witness_stream)
+                except StopIteration:
+                    diagnostic_print(
+                        f"Planet Finder {mode}: ALIGNMENT PREFIX BACKTRACK "
+                        f"ordinary-blocker={ordinary_name}",
+                        level=1, flush=True,
+                    )
+                    return False
+                finally:
+                    witness_stream.close()
             try:
                 return search(0)
             except ForwardBlockerExhausted as exc:
                 diagnostic_print(
-                    f"Planet Finder {mode}: ALIGNMENT BLOB BACKTRACK "
+                    f"Planet Finder {mode}: ALIGNMENT PREFIX BACKTRACK "
                     f"ordinary-blocker={exc.name}",
                     level=1, flush=True,
                 )
