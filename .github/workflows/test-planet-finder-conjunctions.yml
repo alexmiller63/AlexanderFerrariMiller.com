@@ -31,6 +31,6 @@ jobs:
           PYTHONPATH: tools
         run: |
           python -m pytest -q -s \
-            'tests/test_planet_finder_ultimate_ladders.py::test_ultimate_w01_ladder' \\
-            'tests/test_planet_finder_ultimate_ladders.py::test_ultimate_w02_ladder' \\
+            'tests/test_planet_finder_ultimate_ladders.py::test_ultimate_w01_ladder' \
+            'tests/test_planet_finder_ultimate_ladders.py::test_ultimate_w02_ladder' \
             'tests/test_planet_finder_ultimate_ladders.py::test_exact_w36_regression'
