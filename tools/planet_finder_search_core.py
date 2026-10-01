@@ -1332,10 +1332,14 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                     for key in ("generated", "viable")
                 }
             try:
-                # Inner-DFS forward gate: after staging this candidate, every
-                # still-unplaced member of the same alignment blob must retain
-                # at least one viable witness.  This is existential look-ahead
-                # only; DFS still owns the actual choices and backtracking.
+                # Forensic: the final Group-1 Mercury choice has no remaining
+                # blob members. Track whether it reaches the ordinary-body
+                # witness gate and, if rejected, which ordinary body proves it
+                # dead. Diagnostic only; search behavior is unchanged.
+                final_mercury = (
+                    group_index == 0 and name == "Mercury" and not next_remaining
+                )
+                mercury_final_blocker = None
                 alignment_forward_ok = True
                 for future_item in next_remaining:
                     witness_stream = viable_candidates(
@@ -1364,6 +1368,8 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                         try:
                             next(witness_stream)
                         except StopIteration:
+                            if final_mercury:
+                                mercury_final_blocker = ordinary_name
                             diagnostic_print(
                                 f"Planet Finder {mode}: ALIGNMENT MEMBER BACKTRACK "
                                 f"member={name} ordinary-blocker={ordinary_name}",
@@ -1375,8 +1381,20 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                         if not alignment_forward_ok:
                             break
                 if not alignment_forward_ok:
+                    if final_mercury:
+                        diagnostic_print(
+                            f"Planet Finder {mode}: FINAL MERCURY FORENSIC "
+                            f"result=REJECT ordinary-blocker={mercury_final_blocker or 'same-blob'}",
+                            level=1, flush=True,
+                        )
                     solved = False
                 else:
+                    if final_mercury:
+                        diagnostic_print(
+                            f"Planet Finder {mode}: FINAL MERCURY FORENSIC "
+                            f"result=PASS ordinary-witness-gate",
+                            level=1, flush=True,
+                        )
                     solved = solve_alignment_members(group_index, next_remaining, on_complete)
             finally:
                 if name == "Mercury":
