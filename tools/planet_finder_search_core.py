@@ -1304,6 +1304,11 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 placed.pop()
             return solved
 
+        diagnostic_print(
+            f"Planet Finder {mode}: ALIGNMENT DFS ENTER group={group_index + 1} "
+            f"member={name} remaining={len(remaining_items)}",
+            level=1, flush=True,
+        )
         chosen_stream = viable_candidates(
             item, diagnostic_depth, consume_body_budget=False
         )
@@ -1316,6 +1321,11 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                     break
         finally:
             chosen_stream.close()
+        diagnostic_print(
+            f"Planet Finder {mode}: ALIGNMENT DFS EXHAUSTED group={group_index + 1} "
+            f"member={name} tried={tried}",
+            level=1, flush=True,
+        )
         return False
 
     def solve_alignment_group(group_index):
