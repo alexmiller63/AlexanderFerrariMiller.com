@@ -212,6 +212,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
     contest_keys = []
     current_body = "-"
     exhausted = False
+    refinement_timed_out = False
     terminal_validation_checks = 0
     terminal_validation_rejections = 0
     terminal_validation_errors = {}
@@ -2009,10 +2010,11 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         """
         nonlocal nodes, deepest, candidates, backtracks, current_body
         nonlocal terminal_validation_checks, terminal_validation_rejections
-        nonlocal terminal_validation_sun_leaders
+        nonlocal terminal_validation_sun_leaders, refinement_timed_out
 
         now = time.monotonic()
         if refinement_deadline is not None and now >= refinement_deadline:
+            refinement_timed_out = True
             diagnostic_print(
                 f"Planet Finder {mode}: DFS REFINEMENT DEADLINE order={order_index} "
                 f"depth={depth}/{len(order)} body={current_body}; returning to controller",
@@ -2228,7 +2230,10 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
 
     try:
         solved = search_coordinated_geometry()
-        exhausted = not solved
+        if (refinement_deadline is not None and time.monotonic() >= refinement_deadline
+                and not solved):
+            refinement_timed_out = True
+        exhausted = not solved and not refinement_timed_out
     except ForwardBlockerExhausted as exc:
         dump_diagnostics(f"early forward blocker body={exc.name}")
         return SearchOutcome("EXHAUSTED", [], [], exc.name, {
@@ -2246,7 +2251,9 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         dump_diagnostics(f"runtime failure: {exc}")
         raise
 
-    if exhausted:
+    if refinement_timed_out:
+        dump_diagnostics("refinement deadline reached before search completed")
+    elif exhausted:
         dump_diagnostics("search exhausted without a complete solution")
 
     elapsed = time.monotonic() - started
@@ -2411,7 +2418,8 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         )
 
     return SearchOutcome(
-        "SOLVED" if len(solutions) >= target_solutions else "EXHAUSTED",
+        ("SOLVED" if len(solutions) >= target_solutions
+         else "DEADLINE" if refinement_timed_out else "EXHAUSTED"),
         solutions,
         contest_keys,
         blocker,
