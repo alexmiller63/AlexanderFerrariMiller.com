@@ -38,6 +38,14 @@ class SearchOutcome:
     rejection_stats: dict | None = None
 
 
+class ForwardBlockerExhausted(RuntimeError):
+    """Signal that forward checking proved a child dead without its current parent."""
+
+    def __init__(self, name: str):
+        super().__init__(f"forward blocker exhausted for {name}")
+        self.name = name
+
+
 class DepthNodeBudgetExhausted(RuntimeError):
     """Signal that a body-depth node budget is exhausted for this DFS tree."""
 
@@ -1612,13 +1620,17 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                         level=3,
                         flush=True,
                     )
-                if future_name == "Uranus" and leader_names and leader_names[-1] == "Pluto":
-                    diagnostic_print(
-                        f"Planet Finder {mode}: URANUS-PARENT-SUMMARY checks={forward_parent_effect['checks']:,} "
-                        f"raw={forward_parent_effect['raw']:,} Pluto-box={forward_parent_effect['parent_box']:,} "
-                        f"Pluto-leader={forward_parent_effect['parent_leader']:,} other={forward_parent_effect['other']:,}",
-                        level=1, flush=True,
+                if leader_names:
+                    parentless_box, _, _, _ = witness_for(
+                        item, placed[:-1], leaders[:-1], [*reserved, *placed[:-1]]
                     )
+                    if parentless_box is None:
+                        diagnostic_print(
+                            f"Planet Finder {mode}: EARLY FORWARD BLOCKER body={future_name}; "
+                            f"dead without parent={leader_names[-1]}",
+                            level=1, flush=True,
+                        )
+                        raise ForwardBlockerExhausted(future_name)
                 return False
 
         if forward_parent_effect["checks"] and forward_parent_effect["checks"] % 100 == 0:
@@ -1863,6 +1875,11 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
     try:
         solved = search_coordinated_geometry()
         exhausted = not solved
+    except ForwardBlockerExhausted as exc:
+        dump_diagnostics(f"early forward blocker body={exc.name}")
+        return SearchOutcome("EXHAUSTED", [], [], exc.name, {
+            "source": "forward-check-parent-independent",
+        })
     except DepthNodeBudgetExhausted as exc:
         # Hitting the per-body/depth cap is the squeaky-wheel signal.  Report
         # this fixed ordering, then let layout() discard the whole DFS napkin
