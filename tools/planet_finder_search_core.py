@@ -1218,6 +1218,26 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         )
         return result
 
+    def predfs_rejection_snapshot():
+        """Diagnostic-only aggregate of candidate work before ordinary DFS."""
+        keys = (
+            "generated", "viable", "immutable_reserved", "immutable_rim",
+            "overlap", "leader_existing", "route", "leader_rim", "leader_graze",
+        )
+        return {
+            key: sum(stats.get(key, 0) for stats in diagnostic_stats.values())
+            for key in keys
+        }
+
+    def report_predfs_phase(label, before):
+        after = predfs_rejection_snapshot()
+        delta = {key: after[key] - before[key] for key in before}
+        diagnostic_print(
+            f"Planet Finder {mode}: PRE-DFS PHASE {label} "
+            + " ".join(f"{key}={value:,}" for key, value in delta.items()),
+            level=1, flush=True,
+        )
+
     def stage_alignment_preplacement(alignment_preplacement):
         if not alignment_preplacement:
             return
@@ -1507,9 +1527,16 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         if group_index != 0:
             return False
 
-        blob_sets = [
-            collect_group_candidates(i) for i in range(len(alignment_group_items))
-        ]
+        blob_sets = []
+        for i in range(len(alignment_group_items)):
+            group_names = ">".join(item[1][1] for item in alignment_group_items[i])
+            phase_before = predfs_rejection_snapshot()
+            rows = collect_group_candidates(i)
+            blob_sets.append(rows)
+            report_predfs_phase(
+                f"alignment-group={i + 1}[{group_names}] completed={len(rows)}",
+                phase_before,
+            )
         diagnostic_print(
             f"Planet Finder {mode}: ALIGNMENT BLOB SETS "
             + " ".join(f"group={i + 1}:{len(rows)}" for i, rows in enumerate(blob_sets)),
@@ -1594,16 +1621,27 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 # Only a fully compatible alignment layer may enter ordinary
                 # DFS.  Ordinary blocker promotion therefore remains truthful.
                 for ordinary_item in order:
+                    ordinary_name = ordinary_item[1][1]
+                    phase_before = predfs_rejection_snapshot()
                     witness_stream = viable_candidates(
                         ordinary_item, len(order), consume_body_budget=False
                     )
+                    witness_found = True
                     try:
                         next(witness_stream)
                     except StopIteration:
-                        restore_base()
-                        return False
+                        witness_found = False
                     finally:
                         witness_stream.close()
+                    report_predfs_phase(
+                        f"compatible-layer ordinary={ordinary_name} "
+                        f"witness={'yes' if witness_found else 'NO'} "
+                        f"preplaced={'|'.join(leader_names)}",
+                        phase_before,
+                    )
+                    if not witness_found:
+                        restore_base()
+                        return False
                 try:
                     solved = search(0)
                 except ForwardBlockerExhausted:
