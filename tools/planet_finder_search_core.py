@@ -1231,9 +1231,17 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 leader_names.append(name)
                 staged[original_index] = (symbol, name, longitude, box, path)
 
-    def solve_alignment_members(group_index, remaining_items):
+    def solve_alignment_members(group_index, remaining_items, on_complete):
         if not remaining_items:
-            return solve_alignment_group(group_index + 1)
+            # Atomic boundary: member DFS constructs one complete blob, then
+            # hands that completed geometry to the outer group continuation.
+            # A later-group failure returns here for the next COMPLETE blob
+            # alternative; it never becomes a member of the later group's DFS.
+            diagnostic_print(
+                f"Planet Finder {mode}: ALIGNMENT BLOB CANDIDATE group={group_index + 1} complete",
+                level=2, flush=True,
+            )
+            return on_complete()
 
         # Inner DFS for an alignment: choose the remaining member with the
         # fewest currently viable placements, then recurse. Alignment members
@@ -1334,7 +1342,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 if not alignment_forward_ok:
                     solved = False
                 else:
-                    solved = solve_alignment_members(group_index, next_remaining)
+                    solved = solve_alignment_members(group_index, next_remaining, on_complete)
             finally:
                 if name == "Mercury":
                     mercury_after = {
@@ -1431,7 +1439,12 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         names_mark = len(leader_names)
         staged_before = set(staged)
 
-        if solve_alignment_members(group_index, list(group_items)):
+        def continue_after_complete_blob():
+            return solve_alignment_group(group_index + 1)
+
+        if solve_alignment_members(
+            group_index, list(group_items), continue_after_complete_blob
+        ):
             diagnostic_print(
                 f"Planet Finder {mode}: ALIGNMENT LAYER group={group_index + 1} compatible "
                 + " > ".join(item[1][1] for item in group_items),
