@@ -315,9 +315,18 @@ def test_w01_wide_wrap_greek_forensic(monkeypatch):
         for index, body in enumerate(bodies)
         for name in (body[1],)
     }
+    # Geometric invariant under test: the wide-wrap pair is already the
+    # maximum-separation geometry. Do not narrow it as a fallback. Instead,
+    # keep that geometry fixed and prove that ordinary DFS backtracks through
+    # the remaining bodies around it.
+    pair = [by_name["Uranus"], by_name["Jupiter"]]
+    remaining = [
+        (index, body) for index, body in enumerate(bodies)
+        if body[1] not in {"Uranus", "Jupiter"}
+    ]
     orders = [
-        ("URANUS-FIRST", [by_name["Uranus"], by_name["Jupiter"]]),
-        ("JUPITER-FIRST", [by_name["Jupiter"], by_name["Uranus"]]),
+        ("WIDEST-FIXED-URANUS-FIRST", pair + remaining),
+        ("WIDEST-FIXED-JUPITER-FIRST", list(reversed(pair)) + remaining),
     ]
 
     results = {}
@@ -328,7 +337,7 @@ def test_w01_wide_wrap_greek_forensic(monkeypatch):
             "started": time.monotonic(),
         }
         deadline = budget["started"] + budget["max_seconds"]
-        body_attempts = {"Uranus": 0, "Jupiter": 0}
+        body_attempts = {body[1]: 0 for _, body in order}
         print(
             f"W01 ORDER FORENSIC {label} START sequence="
             + " > ".join(item[1][1] for item in order),
