@@ -2,14 +2,6 @@ name: AA- Test Planet Finder Conjunctions
 
 on:
   workflow_dispatch:
-  push:
-    paths:
-      - "tools/planet_finder_geometry.py"
-      - "tools/planet_finder_search*.py"
-      - "tools/planet_finder_validation.py"
-      - "tests/test_planet_finder_system.py"
-      - "tests/test_planet_finder_ultimate_ladders.py"
-      - ".github/workflows/test-planet-finder-conjunctions.yml"
 
 jobs:
   test:
