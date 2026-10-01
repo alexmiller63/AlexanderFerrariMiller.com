@@ -1550,6 +1550,14 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                     placed.append(root_box)
                     leaders.append(root_path)
                     leader_names.append(root_name)
+                    if candidate_group_index == 0 and roots_tried == 1:
+                        diagnostic_print(
+                            f"Planet Finder {mode}: FIRST PLUTO ROOT TRACE START "
+                            f"root={root_name} box=({root_box.x:.2f},{root_box.y:.2f},"
+                            f"{root_box.w:.2f},{root_box.h:.2f}) "
+                            f"path={tuple((round(x,2), round(y,2)) for x,y in root_path)}",
+                            level=1, flush=True,
+                        )
                     staged[root_index] = (
                         root_symbol, root_name, root_longitude, root_box, root_path
                     )
@@ -1578,6 +1586,13 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
 
                     after = predfs_rejection_snapshot()
                     delta = {key: after[key] - before[key] for key in before}
+                    if candidate_group_index == 0 and roots_tried == 1:
+                        diagnostic_print(
+                            f"Planet Finder {mode}: FIRST PLUTO ROOT TRACE END "
+                            f"completed={len(collected) > completed_before} "
+                            + " ".join(f"{key}={value:,}" for key, value in delta.items()),
+                            level=1, flush=True,
+                        )
                     reject_keys = (
                         "overlap", "leader_existing", "route",
                         "leader_rim", "leader_graze",
