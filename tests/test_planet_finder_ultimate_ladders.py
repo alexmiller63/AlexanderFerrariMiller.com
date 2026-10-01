@@ -299,6 +299,7 @@ def test_w01_wide_wrap_greek_forensic(monkeypatch):
     """Compare both recursive orders at the first failing W01 ladder boundary."""
     enable_alignment_fix(monkeypatch)
     monkeypatch.setenv("PLANET_FINDER_DIAGNOSTIC_LEVEL", "4")
+    # For this forensic, bypass the speculative alignment preplanner so the\n    # entire 60-second budget observes the ordinary recursive DFS/backtracking\n    # tree under the fixed widest-wrap geometry.\n    monkeypatch.setenv("PLANET_FINDER_SKIP_ALIGNMENT_PREPLANNER", "1")
 
     level, longitudes = next(
         item for item in W01_LADDER if item[0] == "real-five-plus-wide-wrap"
