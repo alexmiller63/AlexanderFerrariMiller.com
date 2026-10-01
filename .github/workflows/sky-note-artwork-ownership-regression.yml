@@ -2,12 +2,6 @@ name: Sky Note Artwork Ownership Regression
 
 on:
   workflow_dispatch:
-  push:
-    paths:
-      - 'sky-notes-artwork/**'
-      - 'tools/populate_fixed_object_artwork_by_date.py'
-      - 'tools/publish_sky_note_artwork.py'
-      - '.github/workflows/populate-sky-notes-artwork-by-date.yml'
 
 jobs:
   verify:
