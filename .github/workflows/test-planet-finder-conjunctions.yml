@@ -26,9 +26,11 @@ jobs:
       - name: Install test dependencies
         run: python -m pip install pytest skyfield
 
-      - name: Run W36 all modes
+      - name: Run W01 W02 W36 ultimate regressions
         env:
           PYTHONPATH: tools
         run: |
           python -m pytest -q -s \
+            'tests/test_planet_finder_ultimate_ladders.py::test_ultimate_w01_ladder' \\
+            'tests/test_planet_finder_ultimate_ladders.py::test_ultimate_w02_ladder' \\
             'tests/test_planet_finder_ultimate_ladders.py::test_exact_w36_regression'
