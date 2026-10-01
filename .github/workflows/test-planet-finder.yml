@@ -1,16 +1,6 @@
 name: AA-Planet Finder Unit Tests
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - 'tools/generate_planet_finders.py'
-      - 'tools/planet_finder_*.py'
-      - 'tools/run_planet_finder_tests.py'
-      - 'tests/test_planet_finder_candidate_generation.py'
-      - 'tests/test_planet_finder_system.py'
-      - 'tests/test_planet_finder_w02_conjunction.py'
-      - '.github/workflows/test-planet-finder.yml'
   workflow_dispatch:
 
 jobs:
