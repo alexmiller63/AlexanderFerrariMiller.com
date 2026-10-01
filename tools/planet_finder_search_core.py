@@ -1235,15 +1235,38 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         if not remaining_items:
             return solve_alignment_group(group_index + 1)
 
-        # Place members in the circular lambda order supplied by
-        # alignment_groups().  Keep one stream alive while recursion consumes
-        # its candidates, so backtracking never replays a prefix.
+        # Inner DFS for the alignment blob: choose the remaining member
+        # with the fewest currently viable placements, then recurse.  The
+        # alignment remains atomic to the outer search, but its members are
+        # ordinary backtrackable DFS choices rather than a fixed lambda order.
         diagnostic_depth = -(group_index + 1)
-        item = remaining_items[0]
+        ranked = []
+        for candidate_item in remaining_items:
+            probe = viable_candidates(
+                candidate_item, diagnostic_depth, consume_body_budget=False
+            )
+            count = 0
+            try:
+                for _ in probe:
+                    count += 1
+                    if count >= budget["max_node_candidates"]:
+                        break
+            finally:
+                probe.close()
+            ranked.append((count, candidate_item))
+        ranked.sort(key=lambda row: (row[0], row[1][0]))
+        viable_count, item = ranked[0]
         original_index, (symbol, name, longitude) = item
-        next_remaining = remaining_items[1:]
+        next_remaining = [candidate_item for candidate_item in remaining_items if candidate_item is not item]
         tried = 0
         candidate_limit = budget["max_node_candidates"]
+        diagnostic_print(
+            f"Planet Finder {mode}: ALIGNMENT INNER DFS CHOOSE group={group_index + 1} "
+            f"member={name} viable={viable_count} remaining={len(remaining_items)}",
+            level=1, flush=True,
+        )
+        if viable_count == 0:
+            return False
 
         def try_candidate(candidate):
             box, path = candidate
