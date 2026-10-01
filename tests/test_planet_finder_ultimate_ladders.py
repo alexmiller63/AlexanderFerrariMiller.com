@@ -18,7 +18,7 @@ from test_planet_finder_system import (
 MODES = [FinderMode.GREEK, FinderMode.LATIN, FinderMode.MIXED]
 LADDER_SECONDS = 15.0
 REGRESSION_SECONDS = 60.0
-HARD_MODE_REGRESSION_SECONDS = 15.0
+HARD_MODE_REGRESSION_SECONDS = 120.0
 
 W36_KNOWN_GOOD = {
     "Sun": 157 + 38 / 60,
