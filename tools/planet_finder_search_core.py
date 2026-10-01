@@ -1467,6 +1467,48 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
 
         compatible_pairs = 0
 
+        # Forensic diversity summary: prove whether the bounded pools contain
+        # materially different whole-blob geometry or merely adjacent variants.
+        for set_index, candidates in enumerate(blob_sets):
+            body_signatures = {}
+            for rows in candidates:
+                for _symbol, name, _longitude, box, path in rows:
+                    signature = (
+                        round(box.x, 1), round(box.y, 1),
+                        tuple((round(x, 1), round(y, 1)) for x, y in path),
+                    )
+                    body_signatures.setdefault(name, set()).add(signature)
+            diagnostic_print(
+                f"Planet Finder {mode}: ALIGNMENT BLOB DIVERSITY group={set_index + 1} "
+                + " ".join(
+                    f"{name}={len(signatures)}"
+                    for name, signatures in sorted(body_signatures.items())
+                ),
+                level=1, flush=True,
+            )
+
+        pair_rejects = {}
+        pair_examples = {}
+
+        def record_pair_reject(errors):
+            if not errors:
+                return
+            # validate_layout messages already identify the concrete geometry.
+            # Count every reason, while retaining one representative example.
+            for reason in errors:
+                if "leader crosses or grazes" in reason:
+                    key = "leader-pair"
+                elif "leader crosses" in reason and "label" in reason:
+                    key = "leader-label"
+                elif "label overlaps" in reason:
+                    key = "label-overlap"
+                elif "inner zodiac border" in reason:
+                    key = "rim"
+                else:
+                    key = "other"
+                pair_rejects[key] = pair_rejects.get(key, 0) + 1
+                pair_examples.setdefault(key, reason)
+
         def stage_rows(rows):
             for symbol, name, longitude, box, path in rows:
                 original_index = next(
@@ -1488,6 +1530,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 combined = [row for rows in chosen_rows for row in rows]
                 valid, _errors = validate_layout(mode, combined)
                 if not valid:
+                    record_pair_reject(_errors)
                     return False
                 compatible_pairs += 1
                 restore_base()
@@ -1528,7 +1571,8 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         solved = compatible_blob_dfs(0, [])
         diagnostic_print(
             f"Planet Finder {mode}: ALIGNMENT BLOB COMPATIBILITY "
-            f"tested={compatible_pairs} solved={solved}",
+            f"tested={compatible_pairs} solved={solved} "
+            f"rejects={pair_rejects} examples={pair_examples}",
             level=1, flush=True,
         )
         if not solved:
