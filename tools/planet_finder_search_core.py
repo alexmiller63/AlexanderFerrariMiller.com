@@ -1425,50 +1425,86 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         def collect_group_candidates(candidate_group_index):
             group_items = alignment_group_items[candidate_group_index]
             collected = []
-            collected_signatures = []
+            diagnostic_depth = -(candidate_group_index + 1)
 
-            def capture_complete_blob():
-                rows = tuple(staged[item[0]] for item in group_items)
-
-                # Coarse geometry suppresses tiny numerical variants.  More
-                # importantly, a new pool entry must differ from EVERY prior
-                # entry in at least two members.  Thus Mercury-only or
-                # Ceres-only churn cannot consume the bounded blob pool.
-                signatures = {
-                    name: (
-                        round(box.x / 8.0), round(box.y / 8.0),
-                        tuple((round(x / 8.0), round(y / 8.0)) for x, y in path),
-                    )
-                    for _symbol, name, _longitude, box, path in rows
-                }
-                for previous in collected_signatures:
-                    changed = sum(
-                        signatures.get(name) != previous.get(name)
-                        for name in signatures
-                    )
-                    if changed < 2:
-                        return False
-
-                collected.append(rows)
-                collected_signatures.append(signatures)
-                diagnostic_print(
-                    f"Planet Finder {mode}: ALIGNMENT BLOB COLLECT "
-                    f"group={candidate_group_index + 1} candidate={len(collected)}/{blob_limit} "
-                    f"multi-member-diverse",
-                    level=1, flush=True,
+            # Choose the same squeaky-wheel root the inner DFS would choose,
+            # but enumerate that root OUTSIDE the descendant DFS.  Each root
+            # placement may contribute at most one completed blob, so a bounded
+            # pool represents distinct top-level geometries.
+            ranked = []
+            for candidate_item in group_items:
+                probe = viable_candidates(
+                    candidate_item, diagnostic_depth, consume_body_budget=False
                 )
-                if len(collected) >= blob_limit:
-                    raise BlobCollectionComplete()
-                return False
+                count = 0
+                try:
+                    for _ in probe:
+                        count += 1
+                        if count >= budget["max_node_candidates"]:
+                            break
+                finally:
+                    probe.close()
+                ranked.append((count, candidate_item))
+            ranked.sort(key=lambda row: (row[0], row[1][0]))
+            viable_count, root_item = ranked[0]
+            root_index, (root_symbol, root_name, root_longitude) = root_item
+            remaining = [item for item in group_items if item is not root_item]
 
-            try:
-                solve_alignment_members(
-                    candidate_group_index, list(group_items), capture_complete_blob
-                )
-            except BlobCollectionComplete:
+            class RootBlobComplete(Exception):
                 pass
+
+            root_stream = viable_candidates(
+                root_item, diagnostic_depth, consume_body_budget=False
+            )
+            roots_tried = 0
+            try:
+                for root_box, root_path in root_stream:
+                    roots_tried += 1
+                    placed.append(root_box)
+                    leaders.append(root_path)
+                    leader_names.append(root_name)
+                    staged[root_index] = (
+                        root_symbol, root_name, root_longitude, root_box, root_path
+                    )
+
+                    def capture_one_from_root():
+                        rows = tuple(staged[item[0]] for item in group_items)
+                        collected.append(rows)
+                        diagnostic_print(
+                            f"Planet Finder {mode}: ALIGNMENT BLOB COLLECT "
+                            f"group={candidate_group_index + 1} "
+                            f"candidate={len(collected)}/{blob_limit} "
+                            f"root={root_name} root-choice={roots_tried}",
+                            level=1, flush=True,
+                        )
+                        raise RootBlobComplete()
+
+                    try:
+                        solve_alignment_members(
+                            candidate_group_index, list(remaining), capture_one_from_root
+                        )
+                    except RootBlobComplete:
+                        pass
+                    finally:
+                        staged.pop(root_index, None)
+                        leader_names.pop()
+                        leaders.pop()
+                        placed.pop()
+
+                    if len(collected) >= blob_limit:
+                        break
+                    if roots_tried >= budget["max_node_candidates"]:
+                        break
             finally:
+                root_stream.close()
                 restore_base()
+
+            diagnostic_print(
+                f"Planet Finder {mode}: ALIGNMENT BLOB ROOTS "
+                f"group={candidate_group_index + 1} root={root_name} "
+                f"viable={viable_count} tried={roots_tried} completed={len(collected)}",
+                level=1, flush=True,
+            )
             return collected
 
         # This routine owns the complete alignment layer, so group_index is
