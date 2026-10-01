@@ -1955,6 +1955,19 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             )
             if blocker_depth is not None:
                 ds = diagnostic_stats.get((blocker_depth, blocker), {})
+                if blocker == "Uranus":
+                    def top_blockers(key):
+                        return sorted(
+                            ds.get(key, {}).items(),
+                            key=lambda pair: (-pair[1], pair[0]),
+                        )[:8]
+                    diagnostic_print(
+                        f"Planet Finder {mode}: URANUS PREPLACED BLOCKERS "
+                        f"labels={top_blockers('overlap_by_label')} "
+                        f"leaders={top_blockers('existing_leader_by_name')} "
+                        f"leader-graze={top_blockers('leader_graze_by_name')}",
+                        level=1, flush=True,
+                    )
                 blocker_stats = {
                     "source": "dfs",
                     "immutable_reserved": ds.get("immutable_reserved", 0),
