@@ -2,19 +2,6 @@ name: Audit Timed Event Publication
 
 on:
   workflow_dispatch:
-  push:
-    paths:
-      - 'tools/almanack_time.py'
-      - 'tools/test_almanack_time.py'
-      - 'tools/audit_timed_event_publication.py'
-      - 'tools/populate_calendar.py'
-      - 'tools/populate_galactic_center.py'
-      - 'tools/populate_meteor_showers.py'
-      - 'tools/wire_2026_eclipses.py'
-      - 'besselian_eclipse_engine.py'
-      - 'eclipse.yaml'
-      - 'generated/*.json'
-      - '.github/workflows/audit-timed-event-publication.yml'
 
 permissions:
   contents: read
