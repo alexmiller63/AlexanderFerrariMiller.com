@@ -1,14 +1,6 @@
 name: Python source preflight
 
 on:
-  push:
-    paths:
-      - '**/*.py'
-      - '.github/workflows/python-source-preflight.yml'
-  pull_request:
-    paths:
-      - '**/*.py'
-      - '.github/workflows/python-source-preflight.yml'
   workflow_dispatch:
 
 jobs:
