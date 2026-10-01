@@ -1708,7 +1708,16 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                     stage_rows(rows)
 
                 # Only a fully compatible alignment layer may enter ordinary
-                # DFS.  Ordinary blocker promotion therefore remains truthful.
+                # DFS. Trace this exact handoff: if the run spends its clock
+                # before HANDOFF SEARCH ENTER, the pre-DFS witness gate is the
+                # culprit; if SEARCH ENTER appears, ordinary DFS really owns
+                # the subsequent failure/backtracking.
+                diagnostic_print(
+                    f"Planet Finder {mode}: HANDOFF COMPATIBLE BLOB "
+                    f"pair={compatible_pairs} preplaced={'|'.join(leader_names)} "
+                    f"ordinary={len(order)}",
+                    level=1, flush=True,
+                )
                 for ordinary_item in order:
                     ordinary_name = ordinary_item[1][1]
                     phase_before = predfs_rejection_snapshot()
@@ -1731,10 +1740,23 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                     if not witness_found:
                         restore_base()
                         return False
+                diagnostic_print(
+                    f"Planet Finder {mode}: HANDOFF SEARCH ENTER "
+                    f"pair={compatible_pairs} preplaced={'|'.join(leader_names)}",
+                    level=1, flush=True,
+                )
+                search_started = time.monotonic()
                 try:
                     solved = search(0)
                 except ForwardBlockerExhausted:
                     solved = False
+                diagnostic_print(
+                    f"Planet Finder {mode}: HANDOFF SEARCH RETURN "
+                    f"pair={compatible_pairs} solved={solved} "
+                    f"elapsed={time.monotonic() - search_started:.3f}s "
+                    f"preplaced={'|'.join(leader_names)}",
+                    level=1, flush=True,
+                )
                 if solved:
                     return True
                 restore_base()
