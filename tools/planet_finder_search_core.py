@@ -1361,6 +1361,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         1, int(os.environ.get("PLANET_FINDER_FORWARD_PROBE_CAP", "1000"))
     )
     PROBE_LIMITED = object()
+    uranus_without_pluto_done = [False]
 
     def forward_check(next_depth):
         """Return False only when a remaining body is already provably dead.
@@ -1532,6 +1533,21 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             future_box, future_path, witness_raw, witness_reasons = witness_for(
                 item, placed, leaders, obstacles
             )
+            if (
+                future_name == "Uranus"
+                and leader_names and leader_names[-1] == "Pluto"
+                and not uranus_without_pluto_done[0]
+            ):
+                uranus_without_pluto_done[0] = True
+                cf_box, _, cf_raw, cf_reasons = witness_for(
+                    item, placed[:-1], leaders[:-1], [*reserved, *placed[:-1]]
+                )
+                cf_state = "PROBE-LIMITED" if cf_box is PROBE_LIMITED else ("WITNESS" if cf_box is not None else "DEAD")
+                diagnostic_print(
+                    f"Planet Finder {mode}: URANUS-WITHOUT-PLUTO {cf_state} raw={cf_raw:,} "
+                    f"reasons={cf_reasons}",
+                    level=1, flush=True,
+                )
             if future_box is PROBE_LIMITED:
                 diagnostic_print(
                     f"Planet Finder {mode}: FORWARD PROBE CAP body={future_name} "
