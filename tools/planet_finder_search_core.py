@@ -1398,7 +1398,14 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                     # can only remove placements, never create one, so zero
                     # witnesses here proves this member choice is dead.
                     for ordinary_item in order:
+                        ordinary_index = ordinary_item[0]
                         ordinary_name = ordinary_item[1][1]
+                        # A member already staged by this alignment prefix is
+                        # satisfied by that placement. Requiring a second witness
+                        # for the same body falsely rejects the prefix against its
+                        # own label/leader (for example Mars blocking Mars).
+                        if ordinary_index in staged:
+                            continue
                         witness_stream = viable_candidates(
                             ordinary_item, len(order), consume_body_budget=False
                         )
@@ -1747,7 +1754,10 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                     level=1, flush=True,
                 )
                 for ordinary_item in order:
+                    ordinary_index = ordinary_item[0]
                     ordinary_name = ordinary_item[1][1]
+                    if ordinary_index in staged:
+                        continue
                     phase_before = predfs_rejection_snapshot()
                     witness_stream = viable_candidates(
                         ordinary_item, len(order), consume_body_budget=False
@@ -2185,6 +2195,14 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
 
         item = order[depth]
         original_index, (symbol, name, longitude) = item
+
+        # Alignment/conjunction members may already be staged by the coordinated
+        # preplacement layer. They are complete DFS choices, not ordinary bodies
+        # to place a second time. Advance past them while preserving their staged
+        # geometry so backtracking remains owned by the alignment layer.
+        if original_index in staged:
+            return search(depth + 1)
+
         current_body = name
         generated_here = False
         forensic = dfs_forensics.setdefault(depth, {
