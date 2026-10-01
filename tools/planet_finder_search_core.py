@@ -113,6 +113,16 @@ def _search_alignment_fallback(preplacement, groups, placed, leaders, leader_nam
         try:
             if search(0):
                 return True
+        except ForwardBlockerExhausted as exc:
+            # A dead ordinary body under this complete alignment is evidence
+            # against this alignment placement, not against the body globally.
+            # Restore the planned blob and let recursive alignment DFS try a
+            # sibling geometry.
+            diagnostic_print(
+                f"Planet Finder: ALIGNMENT PREPLACEMENT BLOCKED body={exc.name}; "
+                "backtracking alignment blob",
+                flush=True,
+            )
         except DepthNodeBudgetExhausted as exc:
             # A cap reached under the planner's first complete alignment is
             # evidence that this preplacement is a dead/expensive branch, not
@@ -1311,9 +1321,18 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
     def solve_alignment_group(group_index):
         if group_index == len(alignment_group_items):
             # An alignment is viable only if the ordinary bodies can finish
-            # the layout. Let a dead ordinary-body subtree backtrack into the
-            # alignment layer instead of freezing its first complete plan.
-            return search(0)
+            # the layout. A parent-independent ordinary blocker invalidates
+            # this alignment geometry, so consume that signal here and let
+            # recursive alignment DFS try the next blob placement.
+            try:
+                return search(0)
+            except ForwardBlockerExhausted as exc:
+                diagnostic_print(
+                    f"Planet Finder {mode}: ALIGNMENT BLOB BACKTRACK "
+                    f"ordinary-blocker={exc.name}",
+                    level=1, flush=True,
+                )
+                return False
         group_items = alignment_group_items[group_index]
         placed_mark = len(placed)
         leaders_mark = len(leaders)
