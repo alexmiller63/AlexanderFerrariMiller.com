@@ -7,7 +7,7 @@ hard wall-clock fuse protects CI from a genuinely runaway process.
 """
 from pathlib import Path
 
-ENABLED = True
+ENABLED = False
 if not ENABLED:
     print("Repair Once is OFF; nothing to do.")
     raise SystemExit(0)
