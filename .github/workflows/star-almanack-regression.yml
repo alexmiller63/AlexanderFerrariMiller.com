@@ -2,13 +2,6 @@ name: Star Almanack Regression
 
 on:
   workflow_dispatch:
-  push:
-    paths:
-      - 'tools/star_almanack_*.py'
-      - 'tools/populate_fixed_sky.py'
-      - 'enrich_stellar_entries.py'
-      - 'audit_stellar_entries.py'
-      - '.github/workflows/star-almanack-regression.yml'
 
 permissions:
   contents: read
