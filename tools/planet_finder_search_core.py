@@ -1474,9 +1474,12 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 root_item, diagnostic_depth, consume_body_budget=False
             )
             roots_tried = 0
+            root_forensics = []
             try:
                 for root_box, root_path in root_stream:
                     roots_tried += 1
+                    before = predfs_rejection_snapshot()
+                    completed_before = len(collected)
                     placed.append(root_box)
                     leaders.append(root_path)
                     leader_names.append(root_name)
@@ -1506,6 +1509,19 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                         leaders.pop()
                         placed.pop()
 
+                    after = predfs_rejection_snapshot()
+                    delta = {key: after[key] - before[key] for key in before}
+                    reject_keys = (
+                        "overlap", "leader_existing", "route",
+                        "leader_rim", "leader_graze",
+                        "immutable_reserved", "immutable_rim",
+                    )
+                    dominant_key = max(reject_keys, key=lambda key: delta[key])
+                    root_forensics.append(
+                        f"{roots_tried}:{'OK' if len(collected) > completed_before else 'NO'}"
+                        f":{dominant_key}={delta[dominant_key]}"
+                    )
+
                     if len(collected) >= blob_limit:
                         break
                     if roots_tried >= budget["max_node_candidates"]:
@@ -1514,6 +1530,12 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 root_stream.close()
                 restore_base()
 
+            diagnostic_print(
+                f"Planet Finder {mode}: ALIGNMENT ROOT FORENSIC "
+                f"group={candidate_group_index + 1} root={root_name} "
+                + " ".join(root_forensics),
+                level=1, flush=True,
+            )
             diagnostic_print(
                 f"Planet Finder {mode}: ALIGNMENT BLOB ROOTS "
                 f"group={candidate_group_index + 1} root={root_name} "
