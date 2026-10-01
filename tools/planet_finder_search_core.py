@@ -2215,6 +2215,17 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             generated_here = True
             candidates += 1
             forensic["admitted"] += 1
+            if os.environ.get("PLANET_FINDER_SKIP_ALIGNMENT_PREPLANNER", "0") == "1":
+                admitted_here = forensic["admitted"]
+                if admitted_here <= 3 or admitted_here in (10, 25, 50, 100, 200, 500, 1000, 2000):
+                    diagnostic_print(
+                        f"Planet Finder {mode}: FORENSIC DFS ADMIT "
+                        f"depth={depth}/{len(order)} body={name} "
+                        f"body_candidate={admitted_here:,} global_candidate={candidates:,} "
+                        f"box=({box.x:.2f},{box.y:.2f},{box.w:.2f},{box.h:.2f}) "
+                        f"path={tuple((round(px,2), round(py,2)) for px,py in path)}",
+                        flush=True,
+                    )
             placed.append(box)
             leaders.append(path)
             leader_names.append(name)
@@ -2248,6 +2259,15 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 if forward_ok:
                     forensic["forward_pass"] += 1
                     forensic["child_calls"] += 1
+                    if os.environ.get("PLANET_FINDER_SKIP_ALIGNMENT_PREPLANNER", "0") == "1" and (
+                        forensic["forward_pass"] <= 3 or forensic["forward_pass"] in (10, 25, 50, 100, 200)
+                    ):
+                        diagnostic_print(
+                            f"Planet Finder {mode}: FORENSIC FORWARD PASS "
+                            f"depth={depth}/{len(order)} body={name} "
+                            f"passes={forensic['forward_pass']:,} fails={forensic['forward_fail']:,}",
+                            flush=True,
+                        )
                     child_ok = search(depth + 1)
                     forensic["max_child_depth"] = max(forensic["max_child_depth"], deepest)
                     if child_ok:
@@ -2255,6 +2275,16 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                         return True
                 else:
                     forensic["forward_fail"] += 1
+                    if os.environ.get("PLANET_FINDER_SKIP_ALIGNMENT_PREPLANNER", "0") == "1" and (
+                        forensic["forward_fail"] <= 3 or forensic["forward_fail"] in (10, 25, 50, 100, 200, 500, 1000)
+                    ):
+                        diagnostic_print(
+                            f"Planet Finder {mode}: FORENSIC FORWARD FAIL "
+                            f"depth={depth}/{len(order)} body={name} "
+                            f"passes={forensic['forward_pass']:,} fails={forensic['forward_fail']:,} "
+                            f"deepest={deepest}/{len(order)}",
+                            flush=True,
+                        )
             finally:
                 forensic["subtree_time"] += time.monotonic() - branch_started
                 staged.pop(original_index, None)
@@ -2361,14 +2391,32 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         # preplanner and give recursive alignment backtracking the full mode
         # clock. Default is OFF, so production behavior is unchanged.
         if os.environ.get("PLANET_FINDER_SKIP_ALIGNMENT_PREPLANNER", "0") == "1":
+            # Forensic escape hatch: bypass the ENTIRE coordinated alignment
+            # layer so the caller's fixed order owns the experiment and
+            # ordinary DFS/backtracking is actually exercised.
+            order_names = " > ".join(item[1][1] for item in order)
+            alignment_names = [[item[1][1] for item in group] for group in alignment_group_items]
             diagnostic_print(
-                f"Planet Finder {mode}: ALIGNMENT PREPLANNER BYPASSED; "
-                "starting recursive alignment layer directly",
+                f"Planet Finder {mode}: FORENSIC ORDINARY-DFS BYPASS "
+                f"alignment_groups={alignment_names} sequence={order_names} "
+                f"staged={len(staged)} placed={len(placed)} leaders={len(leaders)}",
                 flush=True,
             )
-            if alignment_group_items:
-                return solve_alignment_group(0)
-            return search(0)
+            diagnostic_print(
+                f"Planet Finder {mode}: FORENSIC DFS ENTRY "
+                f"depth=0/{len(order)} first={order[0][1][1] if order else '-'} "
+                f"body_attempts={body_attempts}",
+                flush=True,
+            )
+            result = search(0)
+            diagnostic_print(
+                f"Planet Finder {mode}: FORENSIC DFS EXIT result={result} "
+                f"nodes={nodes:,} deepest={deepest}/{len(order)} "
+                f"candidates={candidates:,} backtracks={backtracks:,} "
+                f"body_attempts={body_attempts}",
+                flush=True,
+            )
+            return result
 
         # Conjunctions have no placement path of their own.  Every body enters
         # the ordinary coordinated alignment planner; conjunction metadata is
