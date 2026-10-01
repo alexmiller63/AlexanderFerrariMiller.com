@@ -1,14 +1,6 @@
 name: Validate Planet Finder Search Refactor
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - 'tools/planet_finder_search.py'
-      - 'tools/planet_finder_search_core.py'
-      - 'tools/planet_finder_geometry.py'
-      - 'tools/planet_finder_validation.py'
-      - '.github/workflows/validate-planet-finder-search-refactor.yml'
   workflow_dispatch:
 
 jobs:
