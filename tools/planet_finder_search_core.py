@@ -1306,13 +1306,32 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                         witness_stream.close()
                     if not alignment_forward_ok:
                         break
+                if alignment_forward_ok:
+                    # Necessary-condition gate across the DFS boundary: after
+                    # each individual alignment-member choice, every ordinary
+                    # body must still have at least one placement under this
+                    # partial alignment prefix. Adding later alignment members
+                    # can only remove placements, never create one, so zero
+                    # witnesses here proves this member choice is dead.
+                    for ordinary_item in order:
+                        ordinary_name = ordinary_item[1][1]
+                        witness_stream = viable_candidates(
+                            ordinary_item, len(order), consume_body_budget=False
+                        )
+                        try:
+                            next(witness_stream)
+                        except StopIteration:
+                            diagnostic_print(
+                                f"Planet Finder {mode}: ALIGNMENT MEMBER BACKTRACK "
+                                f"member={name} ordinary-blocker={ordinary_name}",
+                                level=1, flush=True,
+                            )
+                            alignment_forward_ok = False
+                        finally:
+                            witness_stream.close()
+                        if not alignment_forward_ok:
+                            break
                 if not alignment_forward_ok:
-                    solved = False
-                elif (
-                    name == "Mercury"
-                    and os.environ.get("PLANET_FINDER_ALIGNMENT_FORWARD_CHECK", "0") == "1"
-                    and not forward_check(0)
-                ):
                     solved = False
                 else:
                     solved = solve_alignment_members(group_index, next_remaining)
