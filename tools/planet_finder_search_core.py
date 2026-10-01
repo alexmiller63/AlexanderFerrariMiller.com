@@ -1401,99 +1401,139 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         return False
 
     def solve_alignment_group(group_index):
-        if group_index == len(alignment_group_items):
-            # This is a DFS continuation, not an atomic alignment boundary.
-            # Before entering ordinary DFS, require one existential witness
-            # for every ordinary body under the current alignment prefix.
-            # If any body is already dead here, unwind the individual
-            # alignment-member choices immediately; do not first place an
-            # unrelated ordinary parent and rediscover the same proof.
-            for ordinary_item in order:
-                ordinary_name = ordinary_item[1][1]
-                witness_stream = viable_candidates(
-                    ordinary_item, len(order), consume_body_budget=False
-                )
-                try:
-                    next(witness_stream)
-                except StopIteration:
-                    diagnostic_print(
-                        f"Planet Finder {mode}: ALIGNMENT PREFIX BACKTRACK "
-                        f"ordinary-blocker={ordinary_name}",
-                        level=1, flush=True,
-                    )
-                    return False
-                finally:
-                    witness_stream.close()
-            try:
-                return search(0)
-            except ForwardBlockerExhausted as exc:
-                diagnostic_print(
-                    f"Planet Finder {mode}: ALIGNMENT PREFIX BACKTRACK "
-                    f"ordinary-blocker={exc.name}",
-                    level=1, flush=True,
-                )
-                return False
-        group_items = alignment_group_items[group_index]
-        placed_mark = len(placed)
-        leaders_mark = len(leaders)
-        names_mark = len(leader_names)
-        staged_before = set(staged)
-
-        # A blob is a search unit at this level.  Do not allow one alignment
-        # to enumerate an effectively unbounded Cartesian product before its
-        # sibling gets reconsidered.  Each outer visit may expose only a small,
-        # deterministic batch of COMPLETE blob candidates.
+        # Build bounded COMPLETE candidates for each alignment independently,
+        # then search compatibility between whole blobs.  Alignment failure is
+        # therefore resolved entirely inside this layer and can never be
+        # misreported as an ordinary-body blocker.
         blob_limit = max(1, int(os.environ.get("PLANET_FINDER_BLOB_CANDIDATES", "12")))
-        blob_count = 0
+        base_placed = len(placed)
+        base_leaders = len(leaders)
+        base_names = len(leader_names)
+        base_staged = set(staged)
 
-        class BlobBatchExhausted(Exception):
+        class BlobCollectionComplete(Exception):
             pass
 
-        def continue_after_complete_blob():
-            nonlocal blob_count
-            blob_count += 1
-            diagnostic_print(
-                f"Planet Finder {mode}: ALIGNMENT BLOB OUTER group={group_index + 1} "
-                f"candidate={blob_count}/{blob_limit}",
-                level=1, flush=True,
-            )
-            solved = solve_alignment_group(group_index + 1)
-            if solved:
-                return True
-            if blob_count >= blob_limit:
-                raise BlobBatchExhausted()
+        def restore_base():
+            del placed[base_placed:]
+            del leaders[base_leaders:]
+            del leader_names[base_names:]
+            for key in list(staged):
+                if key not in base_staged:
+                    staged.pop(key, None)
+
+        def collect_group_candidates(candidate_group_index):
+            group_items = alignment_group_items[candidate_group_index]
+            collected = []
+
+            def capture_complete_blob():
+                rows = tuple(staged[item[0]] for item in group_items)
+                collected.append(rows)
+                diagnostic_print(
+                    f"Planet Finder {mode}: ALIGNMENT BLOB COLLECT "
+                    f"group={candidate_group_index + 1} candidate={len(collected)}/{blob_limit}",
+                    level=1, flush=True,
+                )
+                if len(collected) >= blob_limit:
+                    raise BlobCollectionComplete()
+                return False
+
+            try:
+                solve_alignment_members(
+                    candidate_group_index, list(group_items), capture_complete_blob
+                )
+            except BlobCollectionComplete:
+                pass
+            finally:
+                restore_base()
+            return collected
+
+        # This routine owns the complete alignment layer, so group_index is
+        # intentionally ignored after the initial call.
+        if group_index != 0:
             return False
 
-        try:
-            solved_group = solve_alignment_members(
-                group_index, list(group_items), continue_after_complete_blob
-            )
-        except BlobBatchExhausted:
-            solved_group = False
-            diagnostic_print(
-                f"Planet Finder {mode}: ALIGNMENT BLOB BATCH group={group_index + 1} "
-                f"exhausted={blob_count}",
-                level=1, flush=True,
-            )
+        blob_sets = [
+            collect_group_candidates(i) for i in range(len(alignment_group_items))
+        ]
+        diagnostic_print(
+            f"Planet Finder {mode}: ALIGNMENT BLOB SETS "
+            + " ".join(f"group={i + 1}:{len(rows)}" for i, rows in enumerate(blob_sets)),
+            level=1, flush=True,
+        )
+        if any(not rows for rows in blob_sets):
+            restore_base()
+            return False
 
-        if solved_group:
-            diagnostic_print(
-                f"Planet Finder {mode}: ALIGNMENT LAYER group={group_index + 1} compatible "
-                + " > ".join(item[1][1] for item in group_items),
-                flush=True,
-            )
-            return True
+        compatible_pairs = 0
 
-        # A later group can force reconsideration of every placement made by
-        # this group.  Restore exactly the geometry/staging state that existed
-        # when the group was entered before its caller tries another branch.
-        del placed[placed_mark:]
-        del leaders[leaders_mark:]
-        del leader_names[names_mark:]
-        for key in list(staged):
-            if key not in staged_before:
-                staged.pop(key, None)
-        return False
+        def stage_rows(rows):
+            for symbol, name, longitude, box, path in rows:
+                original_index = next(
+                    item[0]
+                    for group in alignment_group_items
+                    for item in group
+                    if item[1][1] == name
+                )
+                placed.append(box)
+                leaders.append(path)
+                leader_names.append(name)
+                staged[original_index] = (symbol, name, longitude, box, path)
+
+        # Current real cases have two alignment blobs.  Keep the compatibility
+        # DFS recursive so the same architecture naturally handles more.
+        def compatible_blob_dfs(set_index, chosen_rows):
+            nonlocal compatible_pairs
+            if set_index == len(blob_sets):
+                combined = [row for rows in chosen_rows for row in rows]
+                valid, _errors = validate_layout(mode, combined)
+                if not valid:
+                    return False
+                compatible_pairs += 1
+                restore_base()
+                for rows in chosen_rows:
+                    stage_rows(rows)
+
+                # Only a fully compatible alignment layer may enter ordinary
+                # DFS.  Ordinary blocker promotion therefore remains truthful.
+                for ordinary_item in order:
+                    witness_stream = viable_candidates(
+                        ordinary_item, len(order), consume_body_budget=False
+                    )
+                    try:
+                        next(witness_stream)
+                    except StopIteration:
+                        restore_base()
+                        return False
+                    finally:
+                        witness_stream.close()
+                try:
+                    solved = search(0)
+                except ForwardBlockerExhausted:
+                    solved = False
+                if solved:
+                    return True
+                restore_base()
+                return False
+
+            for rows in blob_sets[set_index]:
+                partial = [row for selected in chosen_rows for row in selected] + list(rows)
+                valid, _errors = validate_layout(mode, partial)
+                if not valid:
+                    continue
+                if compatible_blob_dfs(set_index + 1, chosen_rows + [rows]):
+                    return True
+            return False
+
+        solved = compatible_blob_dfs(0, [])
+        diagnostic_print(
+            f"Planet Finder {mode}: ALIGNMENT BLOB COMPATIBILITY "
+            f"tested={compatible_pairs} solved={solved}",
+            level=1, flush=True,
+        )
+        if not solved:
+            restore_base()
+        return solved
 
     forward_stats = {"checks": 0, "pruned": 0, "witnesses": 0, "by_body": {}}
     # Diagnostic only: blocker identities inside Ceres forward viability.
