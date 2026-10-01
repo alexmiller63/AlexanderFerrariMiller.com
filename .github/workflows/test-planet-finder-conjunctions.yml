@@ -26,9 +26,9 @@ jobs:
       - name: Install test dependencies
         run: python -m pip install pytest skyfield
 
-      - name: Run focused W36 Latin diagnostic
+      - name: Run W36 all modes
         env:
           PYTHONPATH: tools
         run: |
           python -m pytest -q -s \
-            'tests/test_planet_finder_ultimate_ladders.py::test_exact_w36_regression[latin]'
+            'tests/test_planet_finder_ultimate_ladders.py::test_exact_w36_regression'
