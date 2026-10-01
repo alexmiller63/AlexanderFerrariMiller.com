@@ -1290,13 +1290,26 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                     for key in ("generated", "viable")
                 }
             try:
-                # Diagnostic experiment: alignment members normally bypass the
-                # ordinary DFS forward checker.  Once Mercury (the final member
-                # of W36's final alignment group) is staged, reuse that exact
-                # checker against the ordinary-body order before descending.
-                # This is look-ahead pruning only; it does not choose or freeze
-                # any ordinary-body placement.
-                if (
+                # Inner-DFS forward gate: after staging this candidate, every
+                # still-unplaced member of the same alignment blob must retain
+                # at least one viable witness.  This is existential look-ahead
+                # only; DFS still owns the actual choices and backtracking.
+                alignment_forward_ok = True
+                for future_item in next_remaining:
+                    witness_stream = viable_candidates(
+                        future_item, diagnostic_depth, consume_body_budget=False
+                    )
+                    try:
+                        next(witness_stream)
+                    except StopIteration:
+                        alignment_forward_ok = False
+                    finally:
+                        witness_stream.close()
+                    if not alignment_forward_ok:
+                        break
+                if not alignment_forward_ok:
+                    solved = False
+                elif (
                     name == "Mercury"
                     and os.environ.get("PLANET_FINDER_ALIGNMENT_FORWARD_CHECK", "0") == "1"
                     and not forward_check(0)
