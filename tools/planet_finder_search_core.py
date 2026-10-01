@@ -1439,12 +1439,44 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         names_mark = len(leader_names)
         staged_before = set(staged)
 
-        def continue_after_complete_blob():
-            return solve_alignment_group(group_index + 1)
+        # A blob is a search unit at this level.  Do not allow one alignment
+        # to enumerate an effectively unbounded Cartesian product before its
+        # sibling gets reconsidered.  Each outer visit may expose only a small,
+        # deterministic batch of COMPLETE blob candidates.
+        blob_limit = max(1, int(os.environ.get("PLANET_FINDER_BLOB_CANDIDATES", "12")))
+        blob_count = 0
 
-        if solve_alignment_members(
-            group_index, list(group_items), continue_after_complete_blob
-        ):
+        class BlobBatchExhausted(Exception):
+            pass
+
+        def continue_after_complete_blob():
+            nonlocal blob_count
+            blob_count += 1
+            diagnostic_print(
+                f"Planet Finder {mode}: ALIGNMENT BLOB OUTER group={group_index + 1} "
+                f"candidate={blob_count}/{blob_limit}",
+                level=1, flush=True,
+            )
+            solved = solve_alignment_group(group_index + 1)
+            if solved:
+                return True
+            if blob_count >= blob_limit:
+                raise BlobBatchExhausted()
+            return False
+
+        try:
+            solved_group = solve_alignment_members(
+                group_index, list(group_items), continue_after_complete_blob
+            )
+        except BlobBatchExhausted:
+            solved_group = False
+            diagnostic_print(
+                f"Planet Finder {mode}: ALIGNMENT BLOB BATCH group={group_index + 1} "
+                f"exhausted={blob_count}",
+                level=1, flush=True,
+            )
+
+        if solved_group:
             diagnostic_print(
                 f"Planet Finder {mode}: ALIGNMENT LAYER group={group_index + 1} compatible "
                 + " > ".join(item[1][1] for item in group_items),
