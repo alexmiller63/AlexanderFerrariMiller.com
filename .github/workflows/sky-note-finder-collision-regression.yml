@@ -2,11 +2,6 @@ name: Sky Notes Finder Collision Regression
 
 on:
   workflow_dispatch:
-  push:
-    paths:
-      - 'tools/render_sky_note_finder.py'
-      - 'tools/test_sky_note_finder_collisions.py'
-      - '.github/workflows/sky-note-finder-collision-regression.yml'
 
 jobs:
   collision-regression:
