@@ -2588,7 +2588,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                     "leader_rim": ds.get("leader_rim", 0),
                     "leader_graze": ds.get("leader_graze", 0),
                 }
-    if exhausted and forward_stats["by_body"]:
+    if (exhausted or refinement_timed_out) and forward_stats["by_body"]:
         diagnostic_print(
             f"Planet Finder {mode}: FORWARD REJECTION BREAKDOWN",
             flush=True,
