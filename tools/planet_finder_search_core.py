@@ -631,14 +631,14 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             # this ordering. A body already at its persistent limit must not
             # receive one additional candidate merely because its ordering
             # changed.
-            if consume_body_budget and body_attempts[name] >= budget["max_node_candidates"]:
+            if consume_body_budget and body_candidates >= budget["max_node_candidates"]:
                 stats["blocked"] = "body-candidate-cap"
                 diagnostic_print(
                     f"Planet Finder {mode}: BODY-CANDIDATE CAP order={order_index} "
                     f"depth={depth}/{len(order)} body={name} "
-                    f"viable={body_attempts[name]:,}/{budget['max_node_candidates']:,} "
+                    f"viable={body_candidates:,}/{budget['max_node_candidates']:,} "
                     f"unique_geometry={len(viable_geometry_seen.get(name, ())):,} "
-                    f"duplicates={max(0, body_attempts[name] - len(viable_geometry_seen.get(name, ()))):,} "
+                    f"cumulative_attempts={body_attempts[name]:,} "
                     f"lineage={cap_lineage(depth)}",
                     flush=True,
                 )
@@ -902,14 +902,14 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             stats["viable"] += 1
             last_yield_at = time.monotonic()
             yield box, path
-            if consume_body_budget and body_attempts[name] >= budget["max_node_candidates"]:
+            if consume_body_budget and body_candidates >= budget["max_node_candidates"]:
                 stats["blocked"] = "body-candidate-cap"
                 diagnostic_print(
                     f"Planet Finder {mode}: BODY-CANDIDATE CAP order={order_index} "
                     f"depth={depth}/{len(order)} body={name} "
-                    f"viable={body_attempts[name]:,}/{budget['max_node_candidates']:,} "
+                    f"viable={body_candidates:,}/{budget['max_node_candidates']:,} "
                     f"unique_geometry={len(viable_geometry_seen.get(name, ())):,} "
-                    f"duplicates={max(0, body_attempts[name] - len(viable_geometry_seen.get(name, ()))):,} "
+                    f"cumulative_attempts={body_attempts[name]:,} "
                     f"lineage={cap_lineage(depth)}",
                     flush=True,
                 )
