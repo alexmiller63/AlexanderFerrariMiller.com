@@ -1450,9 +1450,6 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             root_index, (root_symbol, root_name, root_longitude) = root_item
             remaining = [item for item in group_items if item is not root_item]
 
-            class RootBlobComplete(Exception):
-                pass
-
             root_stream = viable_candidates(
                 root_item, diagnostic_depth, consume_body_budget=False
             )
@@ -1477,14 +1474,12 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                             f"root={root_name} root-choice={roots_tried}",
                             level=1, flush=True,
                         )
-                        raise RootBlobComplete()
+                        return True
 
                     try:
                         solve_alignment_members(
                             candidate_group_index, list(remaining), capture_one_from_root
                         )
-                    except RootBlobComplete:
-                        pass
                     finally:
                         staged.pop(root_index, None)
                         leader_names.pop()
