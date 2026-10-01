@@ -1596,6 +1596,13 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                         level=3,
                         flush=True,
                     )
+                if future_name == "Uranus" and leader_names and leader_names[-1] == "Pluto":
+                    diagnostic_print(
+                        f"Planet Finder {mode}: URANUS-PARENT-SUMMARY checks={forward_parent_effect['checks']:,} "
+                        f"raw={forward_parent_effect['raw']:,} Pluto-box={forward_parent_effect['parent_box']:,} "
+                        f"Pluto-leader={forward_parent_effect['parent_leader']:,} other={forward_parent_effect['other']:,}",
+                        level=1, flush=True,
+                    )
                 return False
 
         if forward_parent_effect["checks"] and forward_parent_effect["checks"] % 100 == 0:
