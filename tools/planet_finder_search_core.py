@@ -1821,6 +1821,8 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         return solved
 
     forward_stats = {"checks": 0, "pruned": 0, "witnesses": 0, "by_body": {}}
+    # Diagnostic only: blocker identities for forward candidate rejection.
+    forward_blocker_names = {}
     # Diagnostic only: blocker identities inside Ceres forward viability.
     forward_ceres_blockers = {
         "overlap": {}, "existing-leader": {}, "leader-graze": {},
@@ -1875,7 +1877,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             forward_probe_used += 1
             return True
 
-        def witness_for(item, boxes, paths, obstacles_now):
+        def witness_for(item, boxes, paths, obstacles_now, collect_blockers=True):
             _, (_, future_name, future_longitude) = item
             w, h = label_size(mode, future_name)
             anchor = xy(future_longitude, RI - 5)
@@ -1910,6 +1912,12 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 overlap_hits = [i for i, other in enumerate(boxes) if boxes_overlap(future_box, other, 14)]
                 if overlap_hits:
                     reasons["placed-overlap"] += 1
+                    if collect_blockers:
+                        buckets = forward_blocker_names.setdefault(future_name, {"placed-overlap": {}, "existing-leader": {}, "leader-graze": {}})
+                        for i in overlap_hits:
+                            blocker = leader_names[i] if i < len(leader_names) else f"placed_{i}"
+                            counts = buckets["placed-overlap"]
+                            counts[blocker] = counts.get(blocker, 0) + 1
                     if future_name == "Uranus" and leader_names and leader_names[-1] == "Pluto":
                         forward_parent_effect["raw"] += 1
                         if (len(boxes) - 1) in overlap_hits:
@@ -1934,6 +1942,12 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 ]
                 if leader_hits:
                     reasons["existing-leader"] += 1
+                    if collect_blockers:
+                        buckets = forward_blocker_names.setdefault(future_name, {"placed-overlap": {}, "existing-leader": {}, "leader-graze": {}})
+                        for j in leader_hits:
+                            blocker = leader_names[j] if j < len(leader_names) else f"leader_{j}"
+                            counts = buckets["existing-leader"]
+                            counts[blocker] = counts.get(blocker, 0) + 1
                     if future_name == "Uranus" and leader_names and leader_names[-1] == "Pluto":
                         forward_parent_effect["raw"] += 1
                         if (len(paths) - 1) in leader_hits:
@@ -1990,6 +2004,14 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                     continue
                 if leaders_too_close(path, paths):
                     reasons["leader-graze"] += 1
+                    if collect_blockers:
+                        _, blocker_pair = minimum_leader_separation(path, paths)
+                        if blocker_pair is not None:
+                            j = blocker_pair[0]
+                            blocker = leader_names[j] if j < len(leader_names) else f"leader_{j}"
+                            buckets = forward_blocker_names.setdefault(future_name, {"placed-overlap": {}, "existing-leader": {}, "leader-graze": {}})
+                            counts = buckets["leader-graze"]
+                            counts[blocker] = counts.get(blocker, 0) + 1
                     if future_name == "Ceres":
                         _, blocker_pair = minimum_leader_separation(path, paths)
                         if blocker_pair is not None:
@@ -2114,7 +2136,8 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                     # whole-order exception -- ordinary DFS must unwind and try
                     # those siblings.
                     parentless_box, _, _, _ = witness_for(
-                        item, placed[:-1], leaders[:-1], [*reserved, *placed[:-1]]
+                        item, placed[:-1], leaders[:-1], [*reserved, *placed[:-1]],
+                        collect_blockers=False,
                     )
                     if parentless_box is None:
                         diagnostic_print(
@@ -2605,6 +2628,23 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 f"leader-graze={reasons.get('leader-graze', 0):,}",
                 flush=True,
             )
+            blocker_buckets = forward_blocker_names.get(body, {})
+            if blocker_buckets:
+                def ranked_forward_blockers(kind):
+                    return ",".join(
+                        f"{name}={count:,}"
+                        for name, count in sorted(
+                            blocker_buckets.get(kind, {}).items(),
+                            key=lambda item: (-item[1], item[0]),
+                        )
+                    ) or "-"
+                diagnostic_print(
+                    f"Planet Finder {mode}: FORWARD BODY BLOCKERS body={body} "
+                    f"placed-overlap=[{ranked_forward_blockers('placed-overlap')}] "
+                    f"existing-leader=[{ranked_forward_blockers('existing-leader')}] "
+                    f"leader-graze=[{ranked_forward_blockers('leader-graze')}]",
+                    flush=True,
+                )
 
     if exhausted and mercury_ceres_trials:
         ranked_trials = sorted(
