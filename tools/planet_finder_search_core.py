@@ -998,6 +998,9 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                     continue
                 x, y, _ = chosen[name]
                 other_boxes = [row[2] for other, row in chosen.items() if other != name]
+                if future_name == "Uranus" and leader_names and leader_names[-1] == "Pluto":
+                    forward_parent_effect["raw"] += 1
+                    forward_parent_effect["other"] += 1
                 path = route(
                     anchors[name], (x, y), reserved + placed + other_boxes,
                     allow_initial_escape_count=3,
@@ -1353,6 +1356,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
     # parent depth, causing the controller to blame/promote the parent instead
     # of the future body that is the real squeaky wheel.
     forward_blockers = {}
+    forward_parent_effect = {"checks": 0, "raw": 0, "parent_box": 0, "parent_leader": 0, "other": 0}
     # Forward checking is only a pruning hint.  Bound raw look-ahead work so
     # a difficult body cannot monopolize the mode clock.  Hitting this cap is
     # UNKNOWN, never proof that the branch is dead.
@@ -1419,6 +1423,12 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 overlap_hits = [i for i, other in enumerate(boxes) if boxes_overlap(future_box, other, 14)]
                 if overlap_hits:
                     reasons["placed-overlap"] += 1
+                    if future_name == "Uranus" and leader_names and leader_names[-1] == "Pluto":
+                        forward_parent_effect["raw"] += 1
+                        if (len(boxes) - 1) in overlap_hits:
+                            forward_parent_effect["parent_box"] += 1
+                        else:
+                            forward_parent_effect["other"] += 1
                     if future_name == "Ceres":
                         for i in overlap_hits:
                             blocker = leader_names[i] if i < len(leader_names) else f"placed_{i}"
@@ -1437,6 +1447,12 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 ]
                 if leader_hits:
                     reasons["existing-leader"] += 1
+                    if future_name == "Uranus" and leader_names and leader_names[-1] == "Pluto":
+                        forward_parent_effect["raw"] += 1
+                        if (len(paths) - 1) in leader_hits:
+                            forward_parent_effect["parent_leader"] += 1
+                        else:
+                            forward_parent_effect["other"] += 1
                     if future_name == "Ceres":
                         for j in leader_hits:
                             blocker = leader_names[j] if j < len(leader_names) else f"leader_{j}"
@@ -1514,6 +1530,8 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         future_items = [(next_depth, order[next_depth])]
         for future_depth, item in future_items:
             _, (_, future_name, _) = item
+            if future_name == "Uranus" and leader_names and leader_names[-1] == "Pluto":
+                forward_parent_effect["checks"] += 1
             future_box, future_path, witness_raw, witness_reasons = witness_for(
                 item, placed, leaders, obstacles
             )
@@ -1582,6 +1600,14 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                         flush=True,
                     )
                 return False
+
+        if forward_parent_effect["checks"] and forward_parent_effect["checks"] % 100 == 0:
+            diagnostic_print(
+                f"Planet Finder {mode}: URANUS-PARENT-SUMMARY checks={forward_parent_effect[\'checks\']:,} "
+                f"raw={forward_parent_effect[\'raw\']:,} Pluto-box={forward_parent_effect[\'parent_box\']:,} "
+                f"Pluto-leader={forward_parent_effect[\'parent_leader\']:,} other={forward_parent_effect[\'other\']:,}",
+                level=1, flush=True,
+            )
 
         # Child -> Grandchild look-ahead intentionally disabled.
         # Individual future-body witness checks remain active above.
