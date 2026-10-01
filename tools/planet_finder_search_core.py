@@ -2102,16 +2102,22 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                         flush=True,
                     )
                 if leader_names:
+                    # Diagnostic only.  Being dead after removing the immediate
+                    # parent proves only that THIS prefix is dead; earlier
+                    # ancestors may still have sibling placements that free the
+                    # future body.  Never promote this observation into a
+                    # whole-order exception -- ordinary DFS must unwind and try
+                    # those siblings.
                     parentless_box, _, _, _ = witness_for(
                         item, placed[:-1], leaders[:-1], [*reserved, *placed[:-1]]
                     )
                     if parentless_box is None:
                         diagnostic_print(
-                            f"Planet Finder {mode}: EARLY FORWARD BLOCKER body={future_name}; "
-                            f"dead without parent={leader_names[-1]}",
+                            f"Planet Finder {mode}: FORWARD PREFIX DEAD body={future_name}; "
+                            f"still dead without immediate parent={leader_names[-1]}; "
+                            "returning False for normal DFS backtracking",
                             level=1, flush=True,
                         )
-                        raise ForwardBlockerExhausted(future_name)
                 return False
 
         if forward_parent_effect["checks"] and forward_parent_effect["checks"] % 100 == 0:
