@@ -5,6 +5,7 @@ W01/W02 retain their progressive ultimate ladders in all three modes.
 """
 
 import pytest
+import planet_finder_search_core as search_core
 
 from planet_finder_geometry import FinderMode, alignment_groups
 from planet_finder_search import layout
@@ -296,6 +297,16 @@ def test_w01_wide_wrap_greek_forensic(monkeypatch):
     """Forensic trace for the first failing W01 ladder boundary only."""
     enable_alignment_fix(monkeypatch)
     monkeypatch.setenv("PLANET_FINDER_DIAGNOSTIC_LEVEL", "3")
+
+    # Whole-group squeaky-wheel experiment: solve the constrained wrap group
+    # before the much broader inner-five group. This changes only group order,
+    # not candidate geometry or intra-group DFS.
+    original_alignment_groups = search_core.alignment_groups
+    monkeypatch.setattr(
+        search_core,
+        "alignment_groups",
+        lambda bodies: list(reversed(original_alignment_groups(bodies))),
+    )
     level, longitudes = next(
         item for item in W01_LADDER if item[0] == "real-five-plus-wide-wrap"
     )
