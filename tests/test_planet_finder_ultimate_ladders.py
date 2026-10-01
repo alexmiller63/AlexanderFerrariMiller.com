@@ -4,10 +4,13 @@ W36 retains its self-checking breakpoint ladders and exact weekly geometry;
 W01/W02 retain their progressive ultimate ladders in all three modes.
 """
 
+import time
+
 import pytest
 
 from planet_finder_geometry import FinderMode, alignment_groups
 from planet_finder_search import layout
+from planet_finder_search_core import _solve_order
 from test_planet_finder_system import (
     W01_LADDER,
     W02_LADDER,
@@ -293,7 +296,7 @@ def run_existing_ladder(monkeypatch, week, mode, ladder):
 
 
 def test_w01_wide_wrap_greek_forensic(monkeypatch):
-    """Forensic trace for the first failing W01 ladder boundary only."""
+    """Compare both recursive orders at the first failing W01 ladder boundary."""
     enable_alignment_fix(monkeypatch)
     monkeypatch.setenv("PLANET_FINDER_DIAGNOSTIC_LEVEL", "3")
 
@@ -306,14 +309,63 @@ def test_w01_wide_wrap_greek_forensic(monkeypatch):
         + repr(group_names(bodies)),
         flush=True,
     )
-    result = layout(
-        FinderMode.GREEK,
-        bodies,
-        target_solutions=1,
-        budget={"max_node_candidates": 2000, "max_seconds": REGRESSION_SECONDS},
-        context_label="forensic-W01-real-five-plus-wide-wrap-greek",
+
+    by_name = {
+        name: (index, body)
+        for index, body in enumerate(bodies)
+        for name in (body[1],)
+    }
+    orders = [
+        ("URANUS-FIRST", [by_name["Uranus"], by_name["Jupiter"]]),
+        ("JUPITER-FIRST", [by_name["Jupiter"], by_name["Uranus"]]),
+    ]
+
+    results = {}
+    for label, order in orders:
+        budget = {
+            "max_node_candidates": 2000,
+            "max_seconds": REGRESSION_SECONDS,
+            "started": time.monotonic(),
+        }
+        deadline = budget["started"] + budget["max_seconds"]
+        body_attempts = {"Uranus": 0, "Jupiter": 0}
+        print(
+            f"W01 ORDER FORENSIC {label} START sequence="
+            + " > ".join(item[1][1] for item in order),
+            flush=True,
+        )
+        outcome = _solve_order(
+            FinderMode.GREEK,
+            bodies,
+            order,
+            budget,
+            target_solutions=1,
+            order_index=1,
+            total_orders=2,
+            context_label=f"forensic-W01-{label.lower()}",
+            displacement_scale=0.25,
+            body_attempts=body_attempts,
+            refinement_deadline=deadline,
+        )
+        results[label] = outcome
+        print(
+            f"W01 ORDER FORENSIC {label} RESULT kind={outcome.kind} "
+            f"blocker={outcome.blocker} solutions={len(outcome.solutions)} "
+            f"attempts={body_attempts}",
+            flush=True,
+        )
+        if outcome.solutions:
+            assert_complete_valid_layout(
+                outcome.solutions[0], bodies, FinderMode.GREEK
+            )
+
+    assert any(outcome.solutions for outcome in results.values()), (
+        "Neither Uranus-first nor Jupiter-first produced a complete layout: "
+        + repr({
+            label: (outcome.kind, outcome.blocker)
+            for label, outcome in results.items()
+        })
     )
-    assert_complete_valid_layout(result, bodies, FinderMode.GREEK)
 
 
 @pytest.mark.parametrize("mode", MODES)
