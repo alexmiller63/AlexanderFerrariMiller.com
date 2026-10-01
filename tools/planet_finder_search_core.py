@@ -721,7 +721,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             if overlaps_placed:
                 rejected_overlap += 1
                 stats["overlap"] += 1
-                if name in ("Venus", "Ceres"):
+                if name in ("Venus", "Ceres", "Uranus"):
                     for i in overlap_indices:
                         blocker = leader_names[i] if i < len(leader_names) else f"placed_{i}"
                         stats["overlap_by_label"][blocker] = stats["overlap_by_label"].get(blocker, 0) + 1
@@ -739,7 +739,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 rejected_leader += 1
                 stats["leader"] += 1
                 stats["leader_existing"] += 1
-                if name in ("Venus", "Ceres"):
+                if name in ("Venus", "Ceres", "Uranus"):
                     for leader_index in existing_leader_hits:
                         blocker = leader_names[leader_index] if leader_index < len(leader_names) else f"leader_{leader_index}"
                         stats["existing_leader_by_name"][blocker] = stats["existing_leader_by_name"].get(blocker, 0) + 1
@@ -850,7 +850,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 rejected_leader += 1
                 stats["leader"] += 1
                 stats["leader_graze"] += 1
-                if name in ("Venus", "Ceres"):
+                if name in ("Venus", "Ceres", "Uranus"):
                     _, closest_pair = minimum_leader_separation(path, leaders)
                     if closest_pair is not None:
                         leader_index = closest_pair[0]
