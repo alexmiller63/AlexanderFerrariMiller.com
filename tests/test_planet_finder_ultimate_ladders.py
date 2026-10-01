@@ -292,6 +292,29 @@ def run_existing_ladder(monkeypatch, week, mode, ladder):
     print(f"LADDER SUMMARY: week={week} mode={mode.value} ALL_PASS stages={passed}", flush=True)
 
 
+def test_w01_wide_wrap_greek_forensic(monkeypatch):
+    """Forensic trace for the first failing W01 ladder boundary only."""
+    enable_alignment_fix(monkeypatch)
+    monkeypatch.setenv("PLANET_FINDER_DIAGNOSTIC_LEVEL", "3")
+    level, longitudes = next(
+        item for item in W01_LADDER if item[0] == "real-five-plus-wide-wrap"
+    )
+    bodies = synthetic_bodies(longitudes)
+    print(
+        "W01 WIDE-WRAP FORENSIC groups="
+        + repr(group_names(bodies)),
+        flush=True,
+    )
+    result = layout(
+        FinderMode.GREEK,
+        bodies,
+        target_solutions=1,
+        budget={"max_node_candidates": 2000, "max_seconds": REGRESSION_SECONDS},
+        context_label="forensic-W01-real-five-plus-wide-wrap-greek",
+    )
+    assert_complete_valid_layout(result, bodies, FinderMode.GREEK)
+
+
 @pytest.mark.parametrize("mode", MODES)
 def test_ultimate_w01_ladder(monkeypatch, mode):
     run_existing_ladder(monkeypatch, "W01", mode, W01_LADDER)
