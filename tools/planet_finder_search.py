@@ -146,13 +146,12 @@ def layout(
         budget = new_search_budget()
     budget = dict(budget)
     budget["started"] = time.monotonic()
-    # Deterministic node/candidate limits decide the search.  Wall time is only
-    # an emergency CI fuse, deliberately well above the performance target so
-    # runner-speed variation cannot normally change PASS/FAIL.
-    hard_wall_seconds = max(300.0, budget["max_seconds"] * 5.0)
+    # One absolute wall clock owns the entire notation-mode search.  Do not
+    # reset or multiply it for retries, promotions, refinements, or DFS calls.
+    hard_wall_seconds = budget["max_seconds"]
+    mode_deadline = budget["started"] + hard_wall_seconds
     diagnostic_print(
-        f"Planet Finder {mode}: MODE CLOCK STARTED: performance-target={budget['max_seconds']:.1f}s "
-        f"hard-fuse={hard_wall_seconds:.1f}s",
+        f"Planet Finder {mode}: MODE CLOCK STARTED: hard-limit={hard_wall_seconds:.1f}s",
         flush=True,
     )
 
@@ -238,7 +237,7 @@ def layout(
                 mode, bodies, order, budget, target_solutions=target_solutions,
                 order_index=order_index, total_orders=None, context_label=context_label,
                 displacement_scale=0.25, body_attempts=body_attempts,
-                refinement_deadline=None,
+                refinement_deadline=mode_deadline,
             )
         except DepthNodeBudgetExhausted as exc:
             outcome = SearchOutcome("CAPPED", [], [], exc.name, None)
