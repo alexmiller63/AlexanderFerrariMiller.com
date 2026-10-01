@@ -998,9 +998,6 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                     continue
                 x, y, _ = chosen[name]
                 other_boxes = [row[2] for other, row in chosen.items() if other != name]
-                if future_name == "Uranus" and leader_names and leader_names[-1] == "Pluto":
-                    forward_parent_effect["raw"] += 1
-                    forward_parent_effect["other"] += 1
                 path = route(
                     anchors[name], (x, y), reserved + placed + other_boxes,
                     allow_initial_escape_count=3,
