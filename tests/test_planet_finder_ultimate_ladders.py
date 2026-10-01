@@ -298,7 +298,7 @@ def run_existing_ladder(monkeypatch, week, mode, ladder):
 def test_w01_wide_wrap_greek_forensic(monkeypatch):
     """Compare both recursive orders at the first failing W01 ladder boundary."""
     enable_alignment_fix(monkeypatch)
-    monkeypatch.setenv("PLANET_FINDER_DIAGNOSTIC_LEVEL", "3")
+    monkeypatch.setenv("PLANET_FINDER_DIAGNOSTIC_LEVEL", "4")
 
     level, longitudes = next(
         item for item in W01_LADDER if item[0] == "real-five-plus-wide-wrap"
