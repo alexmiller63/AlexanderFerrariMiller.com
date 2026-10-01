@@ -1321,6 +1321,16 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                     break
         finally:
             chosen_stream.close()
+        if name == "Mercury" and tried == 0:
+            ds = diagnostic_stats.get((diagnostic_depth, name), {})
+            diagnostic_print(
+                f"Planet Finder {mode}: ALIGNMENT MERCURY ZERO "
+                f"reserved={ds.get('immutable_reserved', 0)} rim={ds.get('immutable_rim', 0)} "
+                f"overlap={ds.get('overlap', 0)} existing-leader={ds.get('leader_existing', 0)} "
+                f"route={ds.get('route', 0)} leader-rim={ds.get('leader_rim', 0)} "
+                f"leader-graze={ds.get('leader_graze', 0)}",
+                level=1, flush=True,
+            )
         diagnostic_print(
             f"Planet Finder {mode}: ALIGNMENT DFS EXHAUSTED group={group_index + 1} "
             f"member={name} tried={tried}",
