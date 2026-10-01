@@ -2,7 +2,7 @@
 """One-shot: remove the two legacy inner max_seconds termination blocks."""
 from pathlib import Path
 
-ENABLED = True
+ENABLED = False
 if not ENABLED:
     print("Repair Once is OFF; nothing to do.")
     raise SystemExit(0)
