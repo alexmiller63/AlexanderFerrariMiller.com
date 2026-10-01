@@ -179,6 +179,10 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
     # which descendant subtree consumes a parent's generator suspension time.
     depth_residence = {}
     depth_visits = {}
+    # Diagnostic-only ordinary DFS accounting.  This is intentionally separate
+    # from candidate legality and budgets: it observes where the fixed-order
+    # search spends its work without changing search order or pruning.
+    dfs_forensics = {}
     # Count repeated zero-candidate visits across different parent states.
     # This is the second squeaky-wheel failure mode: a body can repeatedly
     # block the tree without any one prefix reaching its candidate cap.
@@ -455,12 +459,21 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                     ),
                     flush=True,
                 )
-        for depth in sorted(set(depth_residence) | set(depth_visits)):
+        for depth in sorted(set(depth_residence) | set(depth_visits) | set(dfs_forensics)):
             body_name = order[depth][1][1] if depth < len(order) else "complete-layout"
+            forensic = dfs_forensics.get(depth, {})
             diagnostic_print(
                 f"Planet Finder {mode}: TERMINAL DFS-TIME depth={depth}/{len(order)} "
                 f"body={body_name} residence={depth_residence.get(depth, 0.0):.3f}s "
-                f"visits={depth_visits.get(depth, 0):,}",
+                f"visits={depth_visits.get(depth, 0):,} "
+                f"admitted={forensic.get('admitted', 0):,} "
+                f"forward-pass={forensic.get('forward_pass', 0):,} "
+                f"forward-fail={forensic.get('forward_fail', 0):,} "
+                f"child-calls={forensic.get('child_calls', 0):,} "
+                f"child-success={forensic.get('child_success', 0):,} "
+                f"backtracks={forensic.get('backtracks', 0):,} "
+                f"subtree-time={forensic.get('subtree_time', 0.0):.3f}s "
+                f"max-child-depth={forensic.get('max_child_depth', depth)}/{len(order)}",
                 flush=True,
             )
         for (depth, name), r in sorted(route_diagnostics.items()):
@@ -2174,10 +2187,16 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         original_index, (symbol, name, longitude) = item
         current_body = name
         generated_here = False
+        forensic = dfs_forensics.setdefault(depth, {
+            "admitted": 0, "forward_pass": 0, "forward_fail": 0,
+            "child_calls": 0, "child_success": 0, "backtracks": 0,
+            "subtree_time": 0.0, "max_child_depth": depth,
+        })
 
         for box, path in viable_candidates(item, depth):
             generated_here = True
             candidates += 1
+            forensic["admitted"] += 1
             placed.append(box)
             leaders.append(path)
             leader_names.append(name)
@@ -2186,6 +2205,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             child_deepest_before = deepest
             child_nodes_before = nodes
             child_backtracks_before = backtracks
+            branch_started = time.monotonic()
             pv_before = None
             uv_before = None
             if name == "Pluto" and depth + 1 < len(order) and order[depth + 1][1][1] == "Venus":
@@ -2206,9 +2226,19 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 # Forward checking asks only for one viable witness for every
                 # remaining body. Zero proves this prefix is dead; one is
                 # enough to preserve it for the real DFS.
-                if forward_check(depth + 1) and search(depth + 1):
-                    return True
+                forward_ok = forward_check(depth + 1)
+                if forward_ok:
+                    forensic["forward_pass"] += 1
+                    forensic["child_calls"] += 1
+                    child_ok = search(depth + 1)
+                    forensic["max_child_depth"] = max(forensic["max_child_depth"], deepest)
+                    if child_ok:
+                        forensic["child_success"] += 1
+                        return True
+                else:
+                    forensic["forward_fail"] += 1
             finally:
+                forensic["subtree_time"] += time.monotonic() - branch_started
                 staged.pop(original_index, None)
                 leaders.pop()
                 leader_names.pop()
@@ -2264,6 +2294,8 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                     raise RuntimeError("FAST_W36_VENUS_PROBE_COMPLETE")
 
             backtracks += 1
+            forensic["backtracks"] += 1
+            forensic["max_child_depth"] = max(forensic["max_child_depth"], deepest)
             # Prefix diagnostic: when an individually legal candidate cannot
             # extend to a complete layout, report how far its child subtree
             # actually reached. This observes DFS behavior without changing it.
