@@ -1282,6 +1282,15 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         diagnostic_depth = -(group_index + 1)
         ranked = []
         for candidate_item in remaining_items:
+            probe_name = candidate_item[1][1]
+            probe_before = predfs_rejection_snapshot()
+            probe_started = time.monotonic()
+            diagnostic_print(
+                f"Planet Finder {mode}: ALIGNMENT RANK PROBE START "
+                f"group={group_index + 1} depth={depth_in_blob}/{group_size} "
+                f"body={probe_name} remaining={len(remaining_items)}",
+                level=1, flush=True,
+            )
             probe = viable_candidates(
                 candidate_item, diagnostic_depth, consume_body_budget=False
             )
@@ -1293,6 +1302,21 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                         break
             finally:
                 probe.close()
+            probe_elapsed = time.monotonic() - probe_started
+            probe_after = predfs_rejection_snapshot()
+            probe_delta = {
+                key: probe_after[key] - probe_before[key]
+                for key in probe_before
+            }
+            diagnostic_print(
+                f"Planet Finder {mode}: ALIGNMENT RANK PROBE END "
+                f"group={group_index + 1} depth={depth_in_blob}/{group_size} "
+                f"body={probe_name} viable={count:,} elapsed={probe_elapsed:.3f}s "
+                + " ".join(
+                    f"{key}={value:,}" for key, value in probe_delta.items()
+                ),
+                level=1, flush=True,
+            )
             ranked.append((count, candidate_item))
         ranked.sort(key=lambda row: (row[0], row[1][0]))
         viable_count, item = ranked[0]
