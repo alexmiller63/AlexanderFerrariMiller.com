@@ -1252,8 +1252,20 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 leader_names.append(name)
                 staged[original_index] = (symbol, name, longitude, box, path)
 
+    alignment_depth_forensics = {}
+
     def solve_alignment_members(group_index, remaining_items, on_complete):
+        group_size = len(alignment_group_items[group_index])
+        depth_in_blob = group_size - len(remaining_items)
+        if group_index == 0:
+            key = (depth_in_blob, tuple(item[1][1] for item in remaining_items))
+            row = alignment_depth_forensics.setdefault(
+                key, {"entries": 0, "chosen": {}, "tries": 0, "forward_rejects": 0, "completions": 0}
+            )
+            row["entries"] += 1
         if not remaining_items:
+            if group_index == 0:
+                row["completions"] += 1
             # Atomic boundary: member DFS constructs one complete blob, then
             # hands that completed geometry to the outer group continuation.
             # A later-group failure returns here for the next COMPLETE blob
@@ -1285,6 +1297,8 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         ranked.sort(key=lambda row: (row[0], row[1][0]))
         viable_count, item = ranked[0]
         original_index, (symbol, name, longitude) = item
+        if group_index == 0:
+            row["chosen"][name] = row["chosen"].get(name, 0) + 1
         next_remaining = [candidate_item for candidate_item in remaining_items if candidate_item is not item]
         tried = 0
         candidate_limit = budget["max_node_candidates"]
@@ -1398,12 +1412,22 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         try:
             for candidate in chosen_stream:
                 tried += 1
+                if group_index == 0:
+                    row["tries"] += 1
                 if try_candidate(candidate):
                     return True
                 if tried >= candidate_limit:
                     break
         finally:
             chosen_stream.close()
+        if group_index == 0 and tried > 0:
+            diagnostic_print(
+                f"Planet Finder {mode}: ALIGNMENT DEPTH FORENSIC "
+                f"group=1 depth={depth_in_blob}/{group_size} member={name} "
+                f"entries={row['entries']:,} tries={row['tries']:,} "
+                f"completions={row['completions']:,}",
+                level=1, flush=True,
+            )
         if name == "Mercury" and tried == 0:
             ds = diagnostic_stats.get((diagnostic_depth, name), {})
             diagnostic_print(
