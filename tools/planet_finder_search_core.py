@@ -2221,12 +2221,49 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         # the ordinary coordinated alignment planner; conjunction metadata is
         # consulted only by downstream backtracking to keep a conjunction
         # atomic when it must be reconsidered.
+        phase_started = time.monotonic()
+        before = predfs_rejection_snapshot()
+        diagnostic_print(
+            f"Planet Finder {mode}: PRE-DFS TIMING alignment-plan START",
+            level=1, flush=True,
+        )
         alignment_preplacement = plan_alignment_layer()
+        diagnostic_print(
+            f"Planet Finder {mode}: PRE-DFS TIMING alignment-plan END "
+            f"elapsed={time.monotonic() - phase_started:.3f}s "
+            f"result={'success' if alignment_preplacement is not None else 'none'}",
+            level=1, flush=True,
+        )
+        report_predfs_phase("alignment-plan", before)
+
+        phase_started = time.monotonic()
+        before = predfs_rejection_snapshot()
         stage_alignment_preplacement(alignment_preplacement)
-        return _search_alignment_fallback(
+        diagnostic_print(
+            f"Planet Finder {mode}: PRE-DFS TIMING alignment-stage END "
+            f"elapsed={time.monotonic() - phase_started:.3f}s "
+            f"staged={len(staged)}",
+            level=1, flush=True,
+        )
+        report_predfs_phase("alignment-stage", before)
+
+        phase_started = time.monotonic()
+        before = predfs_rejection_snapshot()
+        diagnostic_print(
+            f"Planet Finder {mode}: PRE-DFS TIMING alignment-fallback START",
+            level=1, flush=True,
+        )
+        fallback_result = _search_alignment_fallback(
             alignment_preplacement, alignment_group_items, placed, leaders,
             leader_names, staged, search, solve_alignment_group,
         )
+        diagnostic_print(
+            f"Planet Finder {mode}: PRE-DFS TIMING alignment-fallback END "
+            f"elapsed={time.monotonic() - phase_started:.3f}s result={fallback_result}",
+            level=1, flush=True,
+        )
+        report_predfs_phase("alignment-fallback", before)
+        return fallback_result
 
     try:
         solved = search_coordinated_geometry()
