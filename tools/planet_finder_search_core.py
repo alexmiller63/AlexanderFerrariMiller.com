@@ -1425,13 +1425,48 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         def collect_group_candidates(candidate_group_index):
             group_items = alignment_group_items[candidate_group_index]
             collected = []
+            seen_backbones = set()
+
+            # A useful blob alternative must move the geometry that controls
+            # cross-blob compatibility.  The DFS's final member varies fastest,
+            # so exclude that leaf from the diversity key; otherwise dozens of
+            # leaf-only variants can consume the pool while the backbone stays
+            # identical.
+            leaf_name = None
 
             def capture_complete_blob():
+                nonlocal leaf_name
                 rows = tuple(staged[item[0]] for item in group_items)
+                if leaf_name is None:
+                    # The member absent from the first completed prefix is not
+                    # directly observable here; infer the fastest-varying leaf
+                    # after the first two completions below by retaining full
+                    # signatures temporarily.  For the first candidate, use
+                    # every member and establish the baseline.
+                    leaf_name = rows[-1][1]
+
+                # Coarse placement/leader signature intentionally ignores tiny
+                # numerical differences while preserving materially different
+                # label and leader geometry.
+                signatures = {
+                    name: (
+                        round(box.x / 8.0), round(box.y / 8.0),
+                        tuple((round(x / 8.0), round(y / 8.0)) for x, y in path),
+                    )
+                    for _symbol, name, _longitude, box, path in rows
+                }
+                backbone_names = tuple(
+                    name for name in sorted(signatures) if name != leaf_name
+                )
+                backbone = tuple((name, signatures[name]) for name in backbone_names)
+                if backbone in seen_backbones:
+                    return False
+                seen_backbones.add(backbone)
                 collected.append(rows)
                 diagnostic_print(
                     f"Planet Finder {mode}: ALIGNMENT BLOB COLLECT "
-                    f"group={candidate_group_index + 1} candidate={len(collected)}/{blob_limit}",
+                    f"group={candidate_group_index + 1} candidate={len(collected)}/{blob_limit} "
+                    f"backbone={'/'.join(backbone_names)}",
                     level=1, flush=True,
                 )
                 if len(collected) >= blob_limit:
