@@ -234,6 +234,18 @@ def _transform_row(text: str, day: dt.date, transform: Callable[[dict[str, str]]
     return text, False
 
 
+def get_event_records(text: str, day: dt.date) -> list[CalendarEvent] | None:
+    """Return structured Calendar events, preserving permanent identity."""
+    iso = day.isoformat()
+    match = CALENDAR_RE.search(text)
+    if not match:
+        return None
+    for row_match in ROW_RE.finditer(match.group("body")):
+        if _get_attr(row_match.group("trattrs"), "data-date") == iso:
+            return _event_records(row_match.group("events"))
+    return None
+
+
 def get_events(text: str, day: dt.date) -> str | None:
     iso = day.isoformat()
     match = CALENDAR_RE.search(text)
