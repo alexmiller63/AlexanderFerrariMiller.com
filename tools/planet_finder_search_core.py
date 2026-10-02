@@ -1918,7 +1918,6 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 trace_venus = (
                     future_name == "Venus"
                     and first_mercury_signature == mercury_venus_first_signature[0]
-                    and len(mercury_venus_first_candidates) < 12
                 )
                 overlap_hits = [i for i, other in enumerate(boxes) if boxes_overlap(future_box, other, 14)]
                 if overlap_hits:
@@ -1942,11 +1941,6 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                             counts[blocker] = counts.get(blocker, 0) + 1
                     if trace_first:
                         mercury_ceres_first_candidates.append(
-                            f"box=({future_box.x:.1f},{future_box.y:.1f},{future_box.w:.1f},{future_box.h:.1f}) "
-                            f"reject=overlap blockers={','.join(leader_names[i] if i < len(leader_names) else f'placed_{i}' for i in overlap_hits)}"
-                        )
-                    if trace_venus:
-                        mercury_venus_first_candidates.append(
                             f"box=({future_box.x:.1f},{future_box.y:.1f},{future_box.w:.1f},{future_box.h:.1f}) "
                             f"reject=overlap blockers={','.join(leader_names[i] if i < len(leader_names) else f'placed_{i}' for i in overlap_hits)}"
                         )
@@ -1980,11 +1974,6 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                             f"box=({future_box.x:.1f},{future_box.y:.1f},{future_box.w:.1f},{future_box.h:.1f}) "
                             f"reject=existing-leader blockers={','.join(leader_names[j] if j < len(leader_names) else f'leader_{j}' for j in leader_hits)}"
                         )
-                    if trace_venus:
-                        mercury_venus_first_candidates.append(
-                            f"box=({future_box.x:.1f},{future_box.y:.1f},{future_box.w:.1f},{future_box.h:.1f}) "
-                            f"reject=existing-leader blockers={','.join(leader_names[j] if j < len(leader_names) else f'leader_{j}' for j in leader_hits)}"
-                        )
                     continue
                 center = (future_box.x, future_box.y)
                 forward_route_diag = {} if future_name == "Ceres" else None
@@ -2003,10 +1992,6 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 )
                 if path is None:
                     reasons["route"] += 1
-                    if trace_venus:
-                        mercury_venus_first_candidates.append(
-                            f"box=({future_box.x:.1f},{future_box.y:.1f},{future_box.w:.1f},{future_box.h:.1f}) reject=route"
-                        )
                     if future_name == "Ceres":
                         obstacle_names = reserved_names + list(leader_names)
                         for diag_key, bucket in (
@@ -2026,10 +2011,6 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                     continue
                 if leader_hits_zodiac_rim(path):
                     reasons["leader-rim"] += 1
-                    if trace_venus:
-                        mercury_venus_first_candidates.append(
-                            f"box=({future_box.x:.1f},{future_box.y:.1f},{future_box.w:.1f},{future_box.h:.1f}) reject=leader-rim"
-                        )
                     continue
                 if leaders_too_close(path, paths):
                     reasons["leader-graze"] += 1
@@ -2048,7 +2029,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                             blocker = leader_names[j] if j < len(leader_names) else f"leader_{j}"
                             counts = forward_ceres_blockers["leader-graze"]
                             counts[blocker] = counts.get(blocker, 0) + 1
-                    if trace_venus:
+                    if trace_venus and len(mercury_venus_first_candidates) < 12:
                         min_dist, blocker_pair = minimum_leader_separation(path, paths)
                         blocker = "-"
                         segment_pair = "-/-"
