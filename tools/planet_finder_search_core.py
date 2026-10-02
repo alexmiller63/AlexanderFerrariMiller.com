@@ -1447,6 +1447,56 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         if viable_count == 0:
             return False
 
+        # Arc-consistency gate inside the alignment blob.  When the chosen MRV
+        # member has a small exhaustive domain, every one of its candidates
+        # must have support in every remaining blob member.  If none does, the
+        # chosen member's effective domain is zero and this upstream prefix is
+        # proven dead before expensive ordinary-body propagation.
+        chosen_count, chosen_capped = rank_viable_counts.get(name, (viable_count, True))
+        support_limit = max(
+            1, int(os.environ.get("PLANET_FINDER_ALIGNMENT_SUPPORT_LIMIT", "8"))
+        )
+        if next_remaining and not chosen_capped and chosen_count <= support_limit:
+            support_stream = alignment_profiled_candidates(
+                item, diagnostic_depth, "alignment-support"
+            )
+            supported = False
+            try:
+                for support_candidate in support_stream:
+                    support_box, support_path = support_candidate
+                    placed.append(support_box)
+                    leaders.append(support_path)
+                    leader_names.append(name)
+                    staged[original_index] = (
+                        symbol, name, longitude, support_box, support_path
+                    )
+                    try:
+                        candidate_supported = True
+                        for future_item in next_remaining:
+                            witness_stream = alignment_profiled_candidates(
+                                future_item, diagnostic_depth, "alignment-support-witness"
+                            )
+                            try:
+                                next(witness_stream)
+                            except StopIteration:
+                                candidate_supported = False
+                            finally:
+                                witness_stream.close()
+                            if not candidate_supported:
+                                break
+                        if candidate_supported:
+                            supported = True
+                            break
+                    finally:
+                        staged.pop(original_index, None)
+                        leader_names.pop()
+                        leaders.pop()
+                        placed.pop()
+            finally:
+                support_stream.close()
+            if not supported:
+                return False
+
         def alignment_pair_compatible():
             """Safely reject a prefix only from a cheap exhaustive pair proof.
 
