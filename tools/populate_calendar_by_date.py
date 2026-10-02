@@ -48,12 +48,13 @@ def populate_selected_year(year: int, selected_weeks: list[int]) -> int:
             cell = fixed_sky.get_events(text, day)
             if cell is None:
                 raise RuntimeError(f"Could not find Calendar row {day} in {path}")
+            # The canonical fixed-sky records already carry permanent identity.
+            # Replace any legacy presentation-only copy of the same event before
+            # rendering so a later text resolver cannot discard that identity.
             keep = [] if cell == "—" else [x for x in cell.split("<br>") if x]
-            for value in vals:
-                identity=fixed_sky._event_identity(value.html)
-                keep=[x for x in keep if fixed_sky._event_identity(x.html if isinstance(x,fixed_sky.CalendarEvent) else x)!=identity]
-                keep.append(value)
-            records = [fixed_sky.CalendarEvent(x) for x in keep if isinstance(x, str)] + [x for x in keep if isinstance(x, fixed_sky.CalendarEvent)]
+            fixed_identities = {fixed_sky._event_identity(value.html) for value in vals}
+            keep = [x for x in keep if fixed_sky._event_identity(x) not in fixed_identities]
+            records = [fixed_sky.CalendarEvent(x) for x in keep] + list(vals)
             text, found = fixed_sky.set_events(text, day, records if records else "—")
             if not found:
                 raise RuntimeError(f"Could not update Calendar row {day} in {path}")
