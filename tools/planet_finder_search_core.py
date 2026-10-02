@@ -1423,7 +1423,10 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 1, int(os.environ.get("PLANET_FINDER_ALIGNMENT_PAIR_PROOF_LIMIT", "64"))
             )
             ranked_ordinary = []
+            pair_probe_started = time.monotonic()
+            pair_probe_body_times = []
             for ordinary_item in ordinary:
+                ordinary_probe_started = time.monotonic()
                 probe = viable_candidates(
                     ordinary_item, len(order), consume_body_budget=False
                 )
@@ -1437,16 +1440,22 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                             break
                 finally:
                     probe.close()
+                ordinary_probe_elapsed = time.monotonic() - ordinary_probe_started
+                pair_probe_body_times.append((ordinary_item[1][1], ordinary_probe_elapsed))
                 ranked_ordinary.append((
                     len(candidates), not exhausted_probe, ordinary_item, candidates
                 ))
+            pair_probe_elapsed = time.monotonic() - pair_probe_started
 
             diagnostic_print(
                 f"Planet Finder {mode}: ALIGNMENT PAIR PROBE "
                 + " ".join(
                     f"{row[2][1][1]}=count:{row[0]},capped:{row[1]}"
                     for row in ranked_ordinary
-                ),
+                )
+                + f" probe_elapsed={pair_probe_elapsed:.3f}s"
+                + " body_times="
+                + ",".join(f"{body}:{elapsed:.3f}s" for body, elapsed in pair_probe_body_times),
                 level=1, flush=True,
             )
             ranked_ordinary.sort(key=lambda row: (row[0], row[2][0]))
@@ -1465,6 +1474,9 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 level=1, flush=True,
             )
             tested = 0
+            pair_witness_started = time.monotonic()
+            pair_witness_calls = 0
+            pair_witness_elapsed = 0.0
             exhausted_first = not ranked_ordinary[0][1]
             for first_box, first_path in first_candidates:
                 tested += 1
@@ -1479,6 +1491,8 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                     second_stream = viable_candidates(
                         second, len(order), consume_body_budget=False
                     )
+                    witness_started = time.monotonic()
+                    pair_witness_calls += 1
                     try:
                         next(second_stream)
                     except StopIteration:
@@ -1486,11 +1500,15 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                     else:
                         diagnostic_print(
                             f"Planet Finder {mode}: ALIGNMENT PAIR WITNESS "
-                            f"first={first_name} second={second_name} tested={tested}",
+                            f"first={first_name} second={second_name} tested={tested} "
+                            f"probe_elapsed={pair_probe_elapsed:.3f}s "
+                            f"witness_calls={pair_witness_calls} witness_elapsed={pair_witness_elapsed:.3f}s "
+                            f"pair_elapsed={time.monotonic() - pair_probe_started:.3f}s",
                             level=2, flush=True,
                         )
                         return True
                     finally:
+                        pair_witness_elapsed += time.monotonic() - witness_started
                         second_stream.close()
                 finally:
                     staged.pop(first_index, None)
@@ -1501,7 +1519,10 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 diagnostic_print(
                     f"Planet Finder {mode}: ALIGNMENT PAIR UNKNOWN "
                     f"first={first_name} second={second_name} "
-                    f"proof-limit={proof_limit}; preserving prefix",
+                    f"proof-limit={proof_limit}; preserving prefix "
+                    f"probe_elapsed={pair_probe_elapsed:.3f}s "
+                    f"witness_calls={pair_witness_calls} witness_elapsed={pair_witness_elapsed:.3f}s "
+                    f"pair_elapsed={time.monotonic() - pair_probe_started:.3f}s",
                     level=2, flush=True,
                 )
                 return True
@@ -1511,6 +1532,9 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 f"first={first_name} second={second_name} "
                 f"tested={tested} probe-count={ranked_ordinary[0][0]} "
                 f"probe-capped={ranked_ordinary[0][1]} "
+                f"probe_elapsed={pair_probe_elapsed:.3f}s "
+                f"witness_calls={pair_witness_calls} witness_elapsed={pair_witness_elapsed:.3f}s "
+                f"pair_elapsed={time.monotonic() - pair_probe_started:.3f}s "
                 f"reason=no-compatible-pair",
                 level=1, flush=True,
             )
