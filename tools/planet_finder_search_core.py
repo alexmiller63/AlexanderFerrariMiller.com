@@ -1367,6 +1367,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         # are ordinary backtrackable DFS choices; the alignment is not atomic.
         diagnostic_depth = -(group_index + 1)
         ranked = []
+        rank_viable_counts = {}
         best_count = None
         for candidate_item in remaining_items:
             probe_name = candidate_item[1][1]
@@ -1415,6 +1416,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 level=1, flush=True,
             )
             ranked.append((count, candidate_item))
+            rank_viable_counts[probe_name] = (count, cutoff)
             if not cutoff and (best_count is None or count < best_count):
                 best_count = count
             if best_count == 0:
@@ -1644,11 +1646,25 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                         if future_name == "Sun":
                             fingerprint = alignment_state_fingerprint()
                             count = same_blob_failure_states.get(fingerprint, 0) + 1
+                            sun_rank_count, sun_rank_cutoff = rank_viable_counts.get(
+                                "Sun", (None, False)
+                            )
+                            candidate_signature = (
+                                round(box.x, 3), round(box.y, 3),
+                                round(box.w, 3), round(box.h, 3),
+                                tuple(
+                                    (round(px, 3), round(py, 3))
+                                    for px, py in path
+                                ),
+                            )
                             same_blob_failure_states[fingerprint] = count
                             diagnostic_print(
                                 f"Planet Finder {mode}: SAME-BLOB SUN DEAD "
                                 f"occurrence={count} repeat={count > 1} "
                                 f"unique_states={len(same_blob_failure_states)} "
+                                f"killer={name} killer_candidate={candidate_signature!r} "
+                                f"sun_rank_viable={sun_rank_count}"
+                                f"{'+' if sun_rank_cutoff else ''} "
                                 f"staged={','.join(item[1] for _, item in sorted(staged.items()))} "
                                 f"fingerprint={fingerprint!r}",
                                 level=1, flush=True,
