@@ -553,7 +553,10 @@ def route(anchor: tuple[float, float], center: tuple[float, float], obstacles: l
     max_depth = 4
     node_cap = 128
     nodes = 0
+    deepest_route_depth = 0
     dead = set()
+    if diagnostic is not None:
+        diagnostic["route_calls"] = diagnostic.get("route_calls", 0) + 1
 
     def partial_legal(path):
         if leader_hits_zodiac_rim(path):
@@ -563,17 +566,28 @@ def route(anchor: tuple[float, float], center: tuple[float, float], obstacles: l
         return True
 
     def solve(path, depth):
-        nonlocal nodes
+        nonlocal nodes, deepest_route_depth
         nodes += 1
-        if nodes > node_cap or depth > max_depth:
+        deepest_route_depth = max(deepest_route_depth, depth)
+        if nodes > node_cap:
+            if diagnostic is not None:
+                diagnostic["node_cap_hits"] = diagnostic.get("node_cap_hits", 0) + 1
+            return None
+        if depth > max_depth:
+            if diagnostic is not None:
+                diagnostic["depth_cap_hits"] = diagnostic.get("depth_cap_hits", 0) + 1
             return None
         source = path[-1]
         landing = target_landing(source)
         if landing is None:
+            if diagnostic is not None:
+                diagnostic["landing_failed"] = diagnostic.get("landing_failed", 0) + 1
             return None
 
         state = (round(source[0], 3), round(source[1], 3), depth)
         if state in dead:
+            if diagnostic is not None:
+                diagnostic["dead_state_hits"] = diagnostic.get("dead_state_hits", 0) + 1
             return None
 
         blocker = first_blocker(source, landing, len(path) == 1)
@@ -587,6 +601,10 @@ def route(anchor: tuple[float, float], center: tuple[float, float], obstacles: l
         if diagnostic is not None:
             key = "directed_box_blocked" if blocker[1] == "box" else "directed_leader_blocked"
             diagnostic[key] = diagnostic.get(key, 0) + 1
+            detail_key = "directed_box_by_index" if blocker[1] == "box" else "directed_leader_by_index"
+            detail = diagnostic.setdefault(detail_key, {})
+            blocker_index = blocker[2] if blocker[1] == "box" else blocker[2][0]
+            detail[blocker_index] = detail.get(blocker_index, 0) + 1
 
         for waypoint in bypass_points(source, landing, blocker):
             # The segment to the bypass itself must be legal; if it has another
@@ -595,9 +613,13 @@ def route(anchor: tuple[float, float], center: tuple[float, float], obstacles: l
             # prune it and try the opposite side; subsequent recursion resumes
             # aiming at the real label.
             if first_blocker(source, waypoint, len(path) == 1) is not None:
+                if diagnostic is not None:
+                    diagnostic["bypass_blocked"] = diagnostic.get("bypass_blocked", 0) + 1
                 continue
             partial = path + [waypoint]
             if not partial_legal(partial):
+                if diagnostic is not None:
+                    diagnostic["bypass_illegal"] = diagnostic.get("bypass_illegal", 0) + 1
                 continue
             result = solve(partial, depth + 1)
             if result is not None:
@@ -609,6 +631,10 @@ def route(anchor: tuple[float, float], center: tuple[float, float], obstacles: l
     result = solve([anchor], 0)
     if diagnostic is not None:
         diagnostic["recursive_nodes"] = diagnostic.get("recursive_nodes", 0) + nodes
+        diagnostic["max_recursive_nodes"] = max(diagnostic.get("max_recursive_nodes", 0), nodes)
+        diagnostic["max_route_depth"] = max(diagnostic.get("max_route_depth", 0), deepest_route_depth)
         if result is None:
             diagnostic["route_failed"] = diagnostic.get("route_failed", 0) + 1
+        else:
+            diagnostic["route_succeeded"] = diagnostic.get("route_succeeded", 0) + 1
     return result
