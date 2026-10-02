@@ -1671,6 +1671,94 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         )
         return False
 
+    def forensic_uranus_venus_boundary():
+        """Diagnostic-only compatibility snapshot for the W36 Uranus/Venus boundary."""
+        if "uranus-venus" not in context_label:
+            return
+        by_name = {item[1][1]: item for item in order}
+        if "Uranus" not in by_name or "Venus" not in by_name:
+            return
+
+        def probe(body_name, limit=32):
+            item = by_name[body_name]
+            before = {}
+            for (diag_depth, diag_name), ds in diagnostic_stats.items():
+                if diag_name == body_name:
+                    for key in ("overlap", "leader_existing", "route", "leader_graze"):
+                        before[key] = before.get(key, 0) + ds.get(key, 0)
+            stream = viable_candidates(item, len(order), consume_body_budget=False)
+            rows = []
+            exhausted = True
+            try:
+                for box, path in stream:
+                    rows.append((box, path))
+                    if len(rows) >= limit:
+                        exhausted = False
+                        break
+            finally:
+                stream.close()
+            after = {}
+            blockers = {"overlap": {}, "existing": {}, "graze": {}}
+            for (diag_depth, diag_name), ds in diagnostic_stats.items():
+                if diag_name != body_name:
+                    continue
+                for key in ("overlap", "leader_existing", "route", "leader_graze"):
+                    after[key] = after.get(key, 0) + ds.get(key, 0)
+                for src, dst in (
+                    ("overlap_by_label", blockers["overlap"]),
+                    ("existing_leader_by_name", blockers["existing"]),
+                    ("leader_graze_by_name", blockers["graze"]),
+                ):
+                    for name, count in ds.get(src, {}).items():
+                        dst[name] = dst.get(name, 0) + count
+            delta = {key: after.get(key, 0) - before.get(key, 0) for key in ("overlap", "leader_existing", "route", "leader_graze")}
+            top = lambda d: ",".join(f"{name}:{count}" for name, count in sorted(d.items(), key=lambda row: (-row[1], row[0]))[:4]) or "none"
+            diagnostic_print(
+                f"Planet Finder {mode}: UV BOUNDARY body={body_name} viable={len(rows)}"
+                f"{'' if exhausted else '+'} rejects[overlap={delta['overlap']},existing={delta['leader_existing']},route={delta['route']},graze={delta['leader_graze']}] "
+                f"blockers[overlap={top(blockers['overlap'])};existing={top(blockers['existing'])};graze={top(blockers['graze'])}]",
+                level=1, flush=True,
+            )
+            return rows, exhausted
+
+        u_rows, _ = probe("Uranus")
+        v_rows, _ = probe("Venus")
+
+        def directional(first_name, first_rows, second_name):
+            first_item = by_name[first_name]
+            first_index, (symbol, name, longitude) = first_item
+            compatible = 0
+            tested = 0
+            for box, path in first_rows:
+                tested += 1
+                placed.append(box)
+                leaders.append(path)
+                leader_names.append(name)
+                staged[first_index] = (symbol, name, longitude, box, path)
+                try:
+                    stream = viable_candidates(by_name[second_name], len(order), consume_body_budget=False)
+                    try:
+                        next(stream)
+                    except StopIteration:
+                        pass
+                    else:
+                        compatible += 1
+                    finally:
+                        stream.close()
+                finally:
+                    staged.pop(first_index, None)
+                    leader_names.pop()
+                    leaders.pop()
+                    placed.pop()
+            diagnostic_print(
+                f"Planet Finder {mode}: UV COMPAT first={first_name} second={second_name} "
+                f"tested={tested} compatible={compatible} incompatible={tested-compatible}",
+                level=1, flush=True,
+            )
+
+        directional("Uranus", u_rows, "Venus")
+        directional("Venus", v_rows, "Uranus")
+
     def solve_alignment_group(group_index):
         """Recursively solve alignment blobs as provisional DFS choices.
 
@@ -1704,6 +1792,8 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                     level=1, flush=True,
                 )
                 return False
+
+            forensic_uranus_venus_boundary()
 
             diagnostic_print(
                 f"Planet Finder {mode}: ALIGNMENT RECURSIVE HANDOFF "
