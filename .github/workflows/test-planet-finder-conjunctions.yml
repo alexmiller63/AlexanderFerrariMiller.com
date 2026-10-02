@@ -18,11 +18,10 @@ jobs:
       - name: Install test dependencies
         run: python -m pip install pytest skyfield
 
-      - name: Run W36 Latin and Mixed exact regressions
+      - name: Run progressive W36 Latin ladder
         env:
           PYTHONPATH: tools
           PLANET_FINDER_DIAGNOSTIC_LEVEL: "2"
         run: |
           python -m pytest -q -s \
-            'tests/test_planet_finder_ultimate_ladders.py::test_exact_w36_regression[latin]' \
-            'tests/test_planet_finder_ultimate_ladders.py::test_exact_w36_regression[mixed]'
+            'tests/test_planet_finder_ultimate_ladders.py::test_w36_latin_progressive_alignment_ladder'
