@@ -1436,78 +1436,100 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             return False
 
         def alignment_pair_compatible():
-            """Safely reject an alignment prefix only when an ordinary-body pair is provably incompatible.
+            """Safely reject a prefix only from a cheap exhaustive pair proof.
 
-            Pick the two most constrained unstaged ordinary bodies. Explore the
-            first body's candidate stream exhaustively up to a bounded proof
-            limit. If the limit is reached, return UNKNOWN/True rather than
-            pruning. For each candidate, temporarily stage it and ask whether
-            the second body has one legal witness. Thus False is a proof; True
-            means either compatible or not cheaply provable dead.
+            First screen each unstaged ordinary body only far enough to discover
+            genuinely small candidate sets. If no body exhausts within the
+            screen, preserve the prefix (UNKNOWN) instead of spending time on
+            exact ranking. If a body does exhaust, every one of its candidates
+            is tested against a second ordinary body. False therefore remains
+            an exhaustive incompatibility proof; all uncertain cases return True.
             """
             ordinary = [item for item in order if item[0] not in staged]
             if len(ordinary) < 2:
                 return True
 
-            proof_limit = max(
-                1, int(os.environ.get("PLANET_FINDER_ALIGNMENT_PAIR_PROOF_LIMIT", "64"))
+            screen_limit = max(
+                1, int(os.environ.get("PLANET_FINDER_ALIGNMENT_PAIR_SCREEN_LIMIT", "8"))
             )
-            ranked_ordinary = []
+            screened = []
             pair_probe_started = time.monotonic()
             pair_probe_body_times = []
+
             for ordinary_item in ordinary:
                 ordinary_probe_started = time.monotonic()
                 probe = alignment_profiled_candidates(
                     ordinary_item, len(order), "pair-probe"
                 )
                 candidates = []
-                exhausted_probe = True
+                capped = False
                 try:
                     for candidate in probe:
-                        candidates.append(candidate)
-                        if len(candidates) >= proof_limit:
-                            exhausted_probe = False
+                        if len(candidates) >= screen_limit:
+                            capped = True
                             break
+                        candidates.append(candidate)
                 finally:
                     probe.close()
                 ordinary_probe_elapsed = time.monotonic() - ordinary_probe_started
                 pair_probe_body_times.append((ordinary_item[1][1], ordinary_probe_elapsed))
-                ranked_ordinary.append((
-                    len(candidates), not exhausted_probe, ordinary_item, candidates
-                ))
-            pair_probe_elapsed = time.monotonic() - pair_probe_started
+                screened.append((len(candidates), capped, ordinary_item, candidates))
 
+            pair_probe_elapsed = time.monotonic() - pair_probe_started
             diagnostic_print(
-                f"Planet Finder {mode}: ALIGNMENT PAIR PROBE "
+                f"Planet Finder {mode}: ALIGNMENT PAIR SCREEN "
                 + " ".join(
                     f"{row[2][1][1]}=count:{row[0]},capped:{row[1]}"
-                    for row in ranked_ordinary
+                    for row in screened
                 )
+                + f" screen_limit={screen_limit}"
                 + f" probe_elapsed={pair_probe_elapsed:.3f}s"
                 + " body_times="
                 + ",".join(f"{body}:{elapsed:.3f}s" for body, elapsed in pair_probe_body_times),
                 level=1, flush=True,
             )
-            ranked_ordinary.sort(key=lambda row: (row[0], row[2][0]))
-            first = ranked_ordinary[0][2]
-            second = ranked_ordinary[1][2]
-            first_candidates = ranked_ordinary[0][3]
+
+            exact = [row for row in screened if not row[1]]
+            if not exact:
+                diagnostic_print(
+                    f"Planet Finder {mode}: ALIGNMENT PAIR UNKNOWN "
+                    f"reason=no-small-exhaustive-body screen_limit={screen_limit} "
+                    f"probe_elapsed={pair_probe_elapsed:.3f}s",
+                    level=2, flush=True,
+                )
+                return True
+
+            exact.sort(key=lambda row: (row[0], row[2][0]))
+            first_row = exact[0]
+            first = first_row[2]
+            first_candidates = first_row[3]
+
+            # Pair selection is only a heuristic. Prefer another exact small
+            # body when available; otherwise choose the earliest deterministic
+            # remaining body. Correctness comes from exhaustively testing every
+            # first-body candidate, not from how the second body is selected.
+            remaining_rows = [row for row in screened if row[2] is not first]
+            exact_seconds = [row for row in remaining_rows if not row[1]]
+            if exact_seconds:
+                exact_seconds.sort(key=lambda row: (row[0], row[2][0]))
+                second = exact_seconds[0][2]
+            else:
+                remaining_rows.sort(key=lambda row: row[2][0])
+                second = remaining_rows[0][2]
+
             first_index, (first_symbol, first_name, first_longitude) = first
             second_name = second[1][1]
-
             diagnostic_print(
-                f"Planet Finder {mode}: ALIGNMENT PAIR REUSE "
+                f"Planet Finder {mode}: ALIGNMENT PAIR PROOF "
                 f"first={first_name} second={second_name} "
-                f"probe-count={ranked_ordinary[0][0]} "
-                f"probe-capped={ranked_ordinary[0][1]} "
+                f"first-count={len(first_candidates)} "
                 f"placed={len(placed)} leaders={len(leaders)} staged={len(staged)}",
                 level=1, flush=True,
             )
+
             tested = 0
-            pair_witness_started = time.monotonic()
             pair_witness_calls = 0
             pair_witness_elapsed = 0.0
-            exhausted_first = not ranked_ordinary[0][1]
             for first_box, first_path in first_candidates:
                 tested += 1
                 placed.append(first_box)
@@ -1532,7 +1554,8 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                             f"Planet Finder {mode}: ALIGNMENT PAIR WITNESS "
                             f"first={first_name} second={second_name} tested={tested} "
                             f"probe_elapsed={pair_probe_elapsed:.3f}s "
-                            f"witness_calls={pair_witness_calls} witness_elapsed={pair_witness_elapsed:.3f}s "
+                            f"witness_calls={pair_witness_calls} "
+                            f"witness_elapsed={pair_witness_elapsed:.3f}s "
                             f"pair_elapsed={time.monotonic() - pair_probe_started:.3f}s",
                             level=2, flush=True,
                         )
@@ -1545,25 +1568,14 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                     leader_names.pop()
                     leaders.pop()
                     placed.pop()
-            if not exhausted_first:
-                diagnostic_print(
-                    f"Planet Finder {mode}: ALIGNMENT PAIR UNKNOWN "
-                    f"first={first_name} second={second_name} "
-                    f"proof-limit={proof_limit}; preserving prefix "
-                    f"probe_elapsed={pair_probe_elapsed:.3f}s "
-                    f"witness_calls={pair_witness_calls} witness_elapsed={pair_witness_elapsed:.3f}s "
-                    f"pair_elapsed={time.monotonic() - pair_probe_started:.3f}s",
-                    level=2, flush=True,
-                )
-                return True
 
             diagnostic_print(
                 f"Planet Finder {mode}: ALIGNMENT PAIR BACKTRACK "
-                f"first={first_name} second={second_name} "
-                f"tested={tested} probe-count={ranked_ordinary[0][0]} "
-                f"probe-capped={ranked_ordinary[0][1]} "
+                f"first={first_name} second={second_name} tested={tested} "
+                f"first-count={len(first_candidates)} "
                 f"probe_elapsed={pair_probe_elapsed:.3f}s "
-                f"witness_calls={pair_witness_calls} witness_elapsed={pair_witness_elapsed:.3f}s "
+                f"witness_calls={pair_witness_calls} "
+                f"witness_elapsed={pair_witness_elapsed:.3f}s "
                 f"pair_elapsed={time.monotonic() - pair_probe_started:.3f}s "
                 f"reason=no-compatible-pair",
                 level=1, flush=True,
