@@ -2112,30 +2112,13 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             def witness_members(remaining_items):
                 if not remaining_items:
                     return True
-                ranked = []
-                for candidate_item in remaining_items:
-                    stream = alignment_profiled_candidates(
-                        candidate_item,
-                        -(candidate_group_index + 1),
-                        "alignment-blob-forward-rank",
-                    )
-                    count = 0
-                    try:
-                        for _ in stream:
-                            count += 1
-                            if count >= budget["max_node_candidates"]:
-                                break
-                    finally:
-                        stream.close()
-                    if count == 0:
-                        return False
-                    ranked.append((count, candidate_item))
-                _, item = min(ranked, key=lambda row: (row[0], row[1][0]))
+
+                # This is an existence query, not an MRV/domain measurement.
+                # Preserve the blob's established member order and search
+                # lazily; candidate generation is already widest-first.
+                item = remaining_items[0]
                 original_index, (symbol, name, longitude) = item
-                next_remaining = [
-                    candidate_item for candidate_item in remaining_items
-                    if candidate_item is not item
-                ]
+                next_remaining = remaining_items[1:]
                 stream = alignment_profiled_candidates(
                     item,
                     -(candidate_group_index + 1),
