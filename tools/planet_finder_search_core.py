@@ -1421,8 +1421,14 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 best_count = count
             if best_count == 0:
                 break
-        ranked.sort(key=lambda row: (row[0], row[1][0]))
-        viable_count, item = ranked[0]
+        # Near-tied MRV counts are not meaningfully different constraints.
+        # Prefer the later member in the alignment sequence within a one-candidate
+        # band so a fragile downstream member (notably Sun) is placed before a
+        # one-choice predecessor can repeatedly destroy its last placements.
+        min_viable = min(row[0] for row in ranked)
+        near_tied = [row for row in ranked if row[0] <= min_viable + 1]
+        near_tied.sort(key=lambda row: (row[0] == 0, row[1][0]), reverse=True)
+        viable_count, item = near_tied[0]
         original_index, (symbol, name, longitude) = item
         if group_index == 0:
             row["chosen"][name] = row["chosen"].get(name, 0) + 1
