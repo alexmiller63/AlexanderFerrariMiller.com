@@ -80,7 +80,7 @@ def main() -> None:
     env = os.environ.copy()
     env["PLANET_FINDER_CANDIDATES"] = positive_int("PLANET_FINDER_CANDIDATES", "5")
     env["PLANET_FINDER_MAX_NODE_CANDIDATES"] = positive_int("PLANET_FINDER_MAX_NODE_CANDIDATES", "200")
-    env["PLANET_FINDER_MAX_SECONDS"] = positive_int("PLANET_FINDER_MAX_SECONDS", "180")
+    env["PLANET_FINDER_MAX_SECONDS"] = positive_int("PLANET_FINDER_MAX_SECONDS", "360")
     env["PLANET_FINDER_DIAGNOSTIC_LEVEL"] = nonnegative_int("PLANET_FINDER_DIAGNOSTIC_LEVEL", "1")
 
     run_with_failure_trace(
