@@ -414,7 +414,7 @@ def legal_candidate_positions(longitude: float, w: float, h: float, reserved: li
         yield x, y, box
 
 
-def route(anchor: tuple[float, float], center: tuple[float, float], obstacles: list[Box], diagnostic=None, allow_initial_escape_count: int = 0, prefix_cache: dict | None = None, allow_initial_escape_indices: set[int] | None = None, target_box: Box | None = None, allow_angular_escape: bool = False) -> list[tuple[float, float]] | None:
+def route(anchor: tuple[float, float], center: tuple[float, float], obstacles: list[Box], diagnostic=None, allow_initial_escape_count: int = 0, prefix_cache: dict | None = None, allow_initial_escape_indices: set[int] | None = None, target_box: Box | None = None, allow_angular_escape: bool = False, existing_paths: list[list[tuple[float, float]]] | None = None) -> list[tuple[float, float]] | None:
     if prefix_cache is None:
         prefix_cache = {}
     # Ordinary callers keep the historical contiguous prefix behavior. Atomic
@@ -514,10 +514,25 @@ def route(anchor: tuple[float, float], center: tuple[float, float], obstacles: l
                 return False
         return not segment_hits_box(path[-2], path[-1], target_box, -0.5)
 
+    # A route is not successful merely because it clears label obstacles.
+    # Existing leader geometry is part of routing legality.  If a candidate
+    # route crosses/grazes a leader, keep searching this SAME label position
+    # for another route instead of throwing the label position away.
+    def route_acceptable(path) -> bool:
+        if not route_clear_of_target(path):
+            return False
+        if existing_paths and leaders_too_close(path, existing_paths):
+            if diagnostic is not None:
+                diagnostic["existing_leader_blocked"] = diagnostic.get(
+                    "existing_leader_blocked", 0
+                ) + 1
+            return False
+        return True
+
     direct_endpoint = target_landing(anchor, target_box) if target_box is not None else center
     if direct_endpoint is not None and segment_clear(anchor, direct_endpoint, skip_start_escape=True):
         candidate = [anchor, direct_endpoint]
-        if route_clear_of_target(candidate):
+        if route_acceptable(candidate):
             return candidate
         if diagnostic is not None:
             diagnostic["target_approach"] = diagnostic.get("target_approach", 0) + 1
@@ -538,7 +553,7 @@ def route(anchor: tuple[float, float], center: tuple[float, float], obstacles: l
         # declaring that label escapable.
         angular_step = (LABEL_LENGTH * 0.25) / max(radius, 1.0)
         offsets = (0.0,)
-        if allow_angular_escape:
+        if allow_angular_escape or existing_paths:
             # Conjunction leaders use the full canonical quarter-label escape
             # lattice: 0, +/-0.25, ... +/-2.00 label lengths.  This belongs in
             # route(), where the first elbow is chosen; expanding label
@@ -582,7 +597,7 @@ def route(anchor: tuple[float, float], center: tuple[float, float], obstacles: l
                             by_obstacle[blocker] = by_obstacle.get(blocker, 0) + 1
                 continue
             candidate = [anchor, elbow1, elbow2, final_endpoint]
-            if route_clear_of_target(candidate):
+            if route_acceptable(candidate):
                 return candidate
             if diagnostic is not None:
                 diagnostic["target_approach"] = diagnostic.get("target_approach", 0) + 1

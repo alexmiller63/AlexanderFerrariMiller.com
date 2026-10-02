@@ -788,6 +788,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 allow_initial_escape_count=3,
                 prefix_cache=route_prefix_cache,
                 target_box=box,
+                existing_paths=leaders,
             )
             route_dt = time.monotonic() - t0
             timing["route"] += route_dt
@@ -1030,17 +1031,18 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                     continue
                 x, y, _ = chosen[name]
                 other_boxes = [row[2] for other, row in chosen.items() if other != name]
+                prior_paths = leaders + list(paths.values())
                 path = route(
                     anchors[name], (x, y), reserved + placed + other_boxes,
                     allow_initial_escape_count=3,
                     target_box=chosen[name][2],
+                    existing_paths=prior_paths,
                 )
                 label_hit = path is not None and any(
                     segment_hits_box(path[i], path[i + 1], box, PLACED_LABEL_LEADER_CLEARANCE)
                     for box in other_boxes for i in range(len(path) - 1)
                 )
                 rim_hit = path is not None and leader_hits_zodiac_rim(path)
-                prior_paths = leaders + list(paths.values())
                 graze = path is not None and leaders_too_close(path, prior_paths)
                 if path is None or label_hit or rim_hit or graze:
                     if path is None:
@@ -1989,6 +1991,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                     allow_initial_escape_count=immutable_count,
                     prefix_cache=prefix_cache,
                     target_box=future_box,
+                    existing_paths=paths,
                 )
                 if path is None:
                     reasons["route"] += 1
