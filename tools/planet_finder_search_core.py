@@ -1297,6 +1297,28 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
     alignment_depth_forensics = {}
     alignment_phase_profile = {}
 
+    def alignment_geometry_candidates(item):
+        """Cheap necessary-condition candidates for alignment look-ahead.
+
+        This deliberately stops before leader routing.  It may admit geometries
+        that the exact router later rejects, so it is safe only as a witness
+        screen: absence proves impossibility; presence does not prove viability.
+        """
+        _, (_, name, longitude) = item
+        w, h = label_size(mode, name)
+        for x, y, box in legal_candidate_positions(
+            longitude, w, h, reserved, displacement_scale
+        ):
+            if any(boxes_overlap(box, other, 14) for other in placed):
+                continue
+            if any(
+                segment_hits_box(seg[i], seg[i + 1], box, 10)
+                for seg in leaders
+                for i in range(len(seg) - 1)
+            ):
+                continue
+            yield box
+
     def alignment_profiled_candidates(item, depth, phase):
         """Diagnostic-only timing wrapper around viable_candidates."""
         body = item[1][1]
@@ -1473,9 +1495,13 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                     try:
                         candidate_supported = True
                         for future_item in next_remaining:
-                            witness_stream = alignment_profiled_candidates(
-                                future_item, diagnostic_depth, "alignment-support-witness"
-                            )
+                            # First ask only the cheap necessary-condition
+                            # geometry question.  No geometric witness means the
+                            # routed domain is certainly empty.  A witness is
+                            # intentionally not treated as proof of routed
+                            # viability; exact routing remains authoritative
+                            # when DFS actually admits the candidate.
+                            witness_stream = alignment_geometry_candidates(future_item)
                             try:
                                 next(witness_stream)
                             except StopIteration:
