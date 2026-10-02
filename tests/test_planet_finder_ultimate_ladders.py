@@ -384,11 +384,23 @@ def test_w01_wide_wrap_greek_forensic(monkeypatch):
             )
             if blocker_index is None or blocker_index <= fixed_prefix:
                 break
-            promoted = list(order)
-            promoted[blocker_index - 1], promoted[blocker_index] = (
-                promoted[blocker_index],
-                promoted[blocker_index - 1],
-            )
+
+            # Promote past as many neighbors as necessary to reach the nearest
+            # ordering we have not already searched.  A single adjacent swap
+            # can oscillate (for example Neptune <-> Saturn); that is search
+            # history, not new geometric information.
+            promoted = None
+            for target_index in range(blocker_index - 1, fixed_prefix - 1, -1):
+                candidate = list(order)
+                blocker_item = candidate.pop(blocker_index)
+                candidate.insert(target_index, blocker_item)
+                candidate_names = tuple(item[1][1] for item in candidate)
+                if candidate_names not in attempted_orders:
+                    promoted = candidate
+                    break
+            if promoted is None:
+                break
+
             print(
                 f"W01 ORDER FORENSIC {label} PROMOTE body={outcome.blocker} "
                 f"attempt={attempt} sequence="
