@@ -1518,427 +1518,98 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         return False
 
     def solve_alignment_group(group_index):
-        # Build bounded COMPLETE candidates for each alignment independently,
-        # then search compatibility between whole blobs.  Alignment failure is
-        # therefore resolved entirely inside this layer and can never be
-        # misreported as an ordinary-body blocker.
-        blob_limit = max(1, int(os.environ.get("PLANET_FINDER_BLOB_CANDIDATES", "12")))
-        base_placed = len(placed)
-        base_leaders = len(leaders)
-        base_names = len(leader_names)
-        base_staged = set(staged)
+        """Recursively solve alignment blobs as provisional DFS choices.
 
-        class BlobCollectionComplete(Exception):
-            pass
-
-        def restore_base():
-            del placed[base_placed:]
-            del leaders[base_leaders:]
-            del leader_names[base_names:]
-            for key in list(staged):
-                if key not in base_staged:
-                    staged.pop(key, None)
-
-        def collect_group_candidates(candidate_group_index):
-            group_items = alignment_group_items[candidate_group_index]
-            collected = []
-            diagnostic_depth = -(candidate_group_index + 1)
-
-            # Choose the same squeaky-wheel root the inner DFS would choose,
-            # but enumerate that root OUTSIDE the descendant DFS.  Each root
-            # placement may contribute at most one completed blob, so a bounded
-            # pool represents distinct top-level geometries.
-            ranked = []
-            for candidate_item in group_items:
-                probe = viable_candidates(
-                    candidate_item, diagnostic_depth, consume_body_budget=False
-                )
-                count = 0
-                try:
-                    for _ in probe:
-                        count += 1
-                        if count >= budget["max_node_candidates"]:
-                            break
-                finally:
-                    probe.close()
-                ranked.append((count, candidate_item))
-            ranked.sort(key=lambda row: (row[0], row[1][0]))
-            viable_count, root_item = ranked[0]
-            root_index, (root_symbol, root_name, root_longitude) = root_item
-            remaining = [item for item in group_items if item is not root_item]
-
-            root_stream = viable_candidates(
-                root_item, diagnostic_depth, consume_body_budget=False
-            )
-            roots_tried = 0
-            root_forensics = []
-            try:
-                for root_box, root_path in root_stream:
-                    roots_tried += 1
-                    before = predfs_rejection_snapshot()
-                    completed_before = len(collected)
-                    placed.append(root_box)
-                    leaders.append(root_path)
-                    leader_names.append(root_name)
-                    if candidate_group_index == 0 and roots_tried == 1:
-                        diagnostic_print(
-                            f"Planet Finder {mode}: FIRST PLUTO ROOT TRACE START "
-                            f"root={root_name} box=({root_box.x:.2f},{root_box.y:.2f},"
-                            f"{root_box.w:.2f},{root_box.h:.2f}) "
-                            f"path={tuple((round(x,2), round(y,2)) for x,y in root_path)}",
-                            level=1, flush=True,
-                        )
-                    staged[root_index] = (
-                        root_symbol, root_name, root_longitude, root_box, root_path
-                    )
-
-                    # Diagnostic only: group 3 is the final Sun/Mercury/Jupiter
-                    # alignment in the W36 control.  Record whether each
-                    # distinct root geometry even leaves candidates for its
-                    # siblings before the descendant DFS/gates can discard it.
-                    if candidate_group_index == 2:
-                        sibling_counts = []
-                        for sibling_item in remaining:
-                            sibling_name = sibling_item[1][1]
-                            sibling_stream = viable_candidates(
-                                sibling_item, diagnostic_depth,
-                                consume_body_budget=False,
-                            )
-                            sibling_count = 0
-                            try:
-                                for _ in sibling_stream:
-                                    sibling_count += 1
-                                    if sibling_count >= budget["max_node_candidates"]:
-                                        break
-                            finally:
-                                sibling_stream.close()
-                            sibling_counts.append(
-                                f"{sibling_name}={sibling_count}"
-                            )
-                        diagnostic_print(
-                            f"Planet Finder {mode}: GROUP3 ROOT VIABILITY "
-                            f"choice={roots_tried} root={root_name} "
-                            f"box=({root_box.x:.1f},{root_box.y:.1f},"
-                            f"{root_box.w:.1f},{root_box.h:.1f}) "
-                            + " ".join(sibling_counts),
-                            level=1, flush=True,
-                        )
-
-                    def capture_one_from_root():
-                        rows = tuple(staged[item[0]] for item in group_items)
-
-                        # Diagnostic only: observe every completed Ceres/Mars
-                        # blob at the exact point it is discovered, before the
-                        # bounded blob pool/compatibility layer can discard it.
-                        # Probe Uranus against this blob alone so W36 tells us
-                        # whether the needed geometry is generated at all.
-                        if candidate_group_index == 1:
-                            uranus_item = next(
-                                (candidate_item for candidate_item in order
-                                 if candidate_item[1][1] == "Uranus"),
-                                None,
-                            )
-                            if uranus_item is not None:
-                                witness_stream = viable_candidates(
-                                    uranus_item, len(order),
-                                    consume_body_budget=False,
-                                )
-                                witness = None
-                                try:
-                                    witness = next(witness_stream, None)
-                                finally:
-                                    witness_stream.close()
-                                diagnostic_print(
-                                    f"Planet Finder {mode}: CERES-MARS COMPLETION "
-                                    f"root={root_name} root-choice={roots_tried} "
-                                    f"uranus={'YES' if witness is not None else 'NO'} "
-                                    f"members="
-                                    + "|".join(
-                                        f"{row[1]}@({row[3].x:.1f},{row[3].y:.1f})"
-                                        for row in rows
-                                    ),
-                                    level=1, flush=True,
-                                )
-
-                        collected.append(rows)
-                        diagnostic_print(
-                            f"Planet Finder {mode}: ALIGNMENT BLOB COLLECT "
-                            f"group={candidate_group_index + 1} "
-                            f"candidate={len(collected)}/{blob_limit} "
-                            f"root={root_name} root-choice={roots_tried}",
-                            level=1, flush=True,
-                        )
-                        return True
-
-                    try:
-                        solve_alignment_members(
-                            candidate_group_index, list(remaining), capture_one_from_root
-                        )
-                    finally:
-                        staged.pop(root_index, None)
-                        leader_names.pop()
-                        leaders.pop()
-                        placed.pop()
-
-                    after = predfs_rejection_snapshot()
-                    delta = {key: after[key] - before[key] for key in before}
-                    if candidate_group_index == 0 and roots_tried == 1:
-                        diagnostic_print(
-                            f"Planet Finder {mode}: FIRST PLUTO ROOT TRACE END "
-                            f"completed={len(collected) > completed_before} "
-                            + " ".join(f"{key}={value:,}" for key, value in delta.items()),
-                            level=1, flush=True,
-                        )
-                    reject_keys = (
-                        "overlap", "leader_existing", "route",
-                        "leader_rim", "leader_graze",
-                        "immutable_reserved", "immutable_rim",
-                    )
-                    dominant_key = max(reject_keys, key=lambda key: delta[key])
-                    root_forensics.append(
-                        f"{roots_tried}:{'OK' if len(collected) > completed_before else 'NO'}"
-                        f":{dominant_key}={delta[dominant_key]}"
-                    )
-
-                    if len(collected) >= blob_limit:
-                        break
-                    if roots_tried >= budget["max_node_candidates"]:
-                        break
-            finally:
-                root_stream.close()
-                restore_base()
-
-            diagnostic_print(
-                f"Planet Finder {mode}: ALIGNMENT ROOT FORENSIC "
-                f"group={candidate_group_index + 1} root={root_name} "
-                + " ".join(root_forensics),
-                level=1, flush=True,
-            )
-            diagnostic_print(
-                f"Planet Finder {mode}: ALIGNMENT BLOB ROOTS "
-                f"group={candidate_group_index + 1} root={root_name} "
-                f"viable={viable_count} tried={roots_tried} completed={len(collected)}",
-                level=1, flush=True,
-            )
-            return collected
-
-        # This routine owns the complete alignment layer, so group_index is
-        # intentionally ignored after the initial call.
-        if group_index != 0:
-            return False
-
-        blob_sets = []
-        for i in range(len(alignment_group_items)):
-            group_names = ">".join(item[1][1] for item in alignment_group_items[i])
-            phase_before = predfs_rejection_snapshot()
-            rows = collect_group_candidates(i)
-            blob_sets.append(rows)
-            report_predfs_phase(
-                f"alignment-group={i + 1}[{group_names}] completed={len(rows)}",
-                phase_before,
-            )
-        diagnostic_print(
-            f"Planet Finder {mode}: ALIGNMENT BLOB SETS "
-            + " ".join(f"group={i + 1}:{len(rows)}" for i, rows in enumerate(blob_sets)),
-            level=1, flush=True,
-        )
-        if any(not rows for rows in blob_sets):
-            restore_base()
-            return False
-
-        compatible_pairs = 0
-
-        # Forensic diversity summary: prove whether the bounded pools contain
-        # materially different whole-blob geometry or merely adjacent variants.
-        for set_index, candidates in enumerate(blob_sets):
-            body_signatures = {}
-            for rows in candidates:
-                for _symbol, name, _longitude, box, path in rows:
-                    signature = (
-                        round(box.x, 1), round(box.y, 1),
-                        tuple((round(x, 1), round(y, 1)) for x, y in path),
-                    )
-                    body_signatures.setdefault(name, set()).add(signature)
-            diagnostic_print(
-                f"Planet Finder {mode}: ALIGNMENT BLOB DIVERSITY group={set_index + 1} "
-                + " ".join(
-                    f"{name}={len(signatures)}"
-                    for name, signatures in sorted(body_signatures.items())
-                ),
-                level=1, flush=True,
-            )
-
-        pair_rejects = {}
-        pair_examples = {}
-
-        def record_pair_reject(errors):
-            if not errors:
-                return
-            # validate_layout messages already identify the concrete geometry.
-            # Count every reason, while retaining one representative example.
-            for reason in errors:
-                if "leader crosses or grazes" in reason:
-                    key = "leader-pair"
-                elif "leader crosses" in reason and "label" in reason:
-                    key = "leader-label"
-                elif "label overlaps" in reason:
-                    key = "label-overlap"
-                elif "inner zodiac border" in reason:
-                    key = "rim"
-                else:
-                    key = "other"
-                pair_rejects[key] = pair_rejects.get(key, 0) + 1
-                pair_examples.setdefault(key, reason)
-
-        def stage_rows(rows):
-            for symbol, name, longitude, box, path in rows:
-                original_index = next(
-                    item[0]
-                    for group in alignment_group_items
-                    for item in group
-                    if item[1][1] == name
-                )
-                placed.append(box)
-                leaders.append(path)
-                leader_names.append(name)
-                staged[original_index] = (symbol, name, longitude, box, path)
-
-        # Diagnostic only: W36 is a known-good control.  Probe Uranus after
-        # each alignment blob is staged so we can identify the first blob (or
-        # blob combination) that removes every otherwise-valid Uranus choice.
-        # This never changes candidate legality, ordering, or search state.
-        uranus_item = next(
-            (candidate_item for candidate_item in order if candidate_item[1][1] == "Uranus"),
-            None,
-        )
-
-        def trace_uranus_after_alignment(label):
-            if uranus_item is None:
-                return
-            before = predfs_rejection_snapshot()
-            witness_stream = viable_candidates(
-                uranus_item, len(order), consume_body_budget=False
-            )
-            witness = None
-            try:
-                witness = next(witness_stream, None)
-            finally:
-                witness_stream.close()
-            after = predfs_rejection_snapshot()
-            delta = {key: after[key] - before[key] for key in before}
-            diagnostic_print(
-                f"Planet Finder {mode}: ALIGNMENT->URANUS {label} "
-                f"witness={'YES' if witness is not None else 'NO'} "
-                f"preplaced={'|'.join(leader_names) or 'none'} "
-                + " ".join(f"{key}={value:,}" for key, value in delta.items()),
-                level=1, flush=True,
-            )
-
-        # Current real cases have two alignment blobs.  Keep the compatibility
-        # DFS recursive so the same architecture naturally handles more.
-        def compatible_blob_dfs(set_index, chosen_rows):
-            nonlocal compatible_pairs
-            if set_index == len(blob_sets):
-                combined = [row for rows in chosen_rows for row in rows]
-                valid, _errors = validate_layout(mode, combined)
-                if not valid:
-                    record_pair_reject(_errors)
-                    return False
-                compatible_pairs += 1
-                restore_base()
-                for rows in chosen_rows:
-                    stage_rows(rows)
-
-                # Only a fully compatible alignment layer may enter ordinary
-                # DFS. Trace this exact handoff: if the run spends its clock
-                # before HANDOFF SEARCH ENTER, the pre-DFS witness gate is the
-                # culprit; if SEARCH ENTER appears, ordinary DFS really owns
-                # the subsequent failure/backtracking.
+        A completed blob is not committed to a bounded pool.  Its completion
+        callback immediately recurses into the next blob while the current
+        geometry remains staged.  Any downstream failure therefore returns
+        False through the callback, causing solve_alignment_members() to
+        discard that blob geometry and continue with its next candidate.
+        """
+        if group_index >= len(alignment_group_items):
+            # Every alignment blob is staged.  The member-level witness gates
+            # have already proved that each unstaged ordinary body has at least
+            # one candidate under every prefix.  Validate the complete staged
+            # alignment once, then hand the provisional prefix to ordinary DFS.
+            alignment_indices = {
+                item[0]
+                for group in alignment_group_items
+                for item in group
+            }
+            rows = [
+                staged[index]
+                for index in alignment_indices
+                if index in staged
+            ]
+            valid, errors = validate_layout(mode, rows)
+            if not valid:
                 diagnostic_print(
-                    f"Planet Finder {mode}: HANDOFF COMPATIBLE BLOB "
-                    f"pair={compatible_pairs} preplaced={'|'.join(leader_names)} "
-                    f"ordinary={len(order)}",
+                    f"Planet Finder {mode}: ALIGNMENT RECURSIVE BACKTRACK "
+                    f"group=complete reason=layout "
+                    f"example={errors[0] if errors else 'unknown'}",
                     level=1, flush=True,
                 )
-                for ordinary_item in order:
-                    ordinary_index = ordinary_item[0]
-                    ordinary_name = ordinary_item[1][1]
-                    if ordinary_index in staged:
-                        continue
-                    phase_before = predfs_rejection_snapshot()
-                    witness_stream = viable_candidates(
-                        ordinary_item, len(order), consume_body_budget=False
-                    )
-                    witness_found = True
-                    try:
-                        next(witness_stream)
-                    except StopIteration:
-                        witness_found = False
-                    finally:
-                        witness_stream.close()
-                    report_predfs_phase(
-                        f"compatible-layer ordinary={ordinary_name} "
-                        f"witness={'yes' if witness_found else 'NO'} "
-                        f"preplaced={'|'.join(leader_names)}",
-                        phase_before,
-                    )
-                    if not witness_found:
-                        restore_base()
-                        return False
-                diagnostic_print(
-                    f"Planet Finder {mode}: HANDOFF SEARCH ENTER "
-                    f"pair={compatible_pairs} preplaced={'|'.join(leader_names)}",
-                    level=1, flush=True,
-                )
-                search_started = time.monotonic()
-                try:
-                    solved = search(0)
-                except ForwardBlockerExhausted:
-                    solved = False
-                diagnostic_print(
-                    f"Planet Finder {mode}: HANDOFF SEARCH RETURN "
-                    f"pair={compatible_pairs} solved={solved} "
-                    f"elapsed={time.monotonic() - search_started:.3f}s "
-                    f"preplaced={'|'.join(leader_names)}",
-                    level=1, flush=True,
-                )
-                if solved:
-                    return True
-                restore_base()
                 return False
 
-            for rows in blob_sets[set_index]:
-                partial = [row for selected in chosen_rows for row in selected] + list(rows)
-                valid, _errors = validate_layout(mode, partial)
-                if not valid:
-                    continue
+            diagnostic_print(
+                f"Planet Finder {mode}: ALIGNMENT RECURSIVE HANDOFF "
+                f"preplaced={'|'.join(leader_names)} ordinary={len(order)}",
+                level=1, flush=True,
+            )
+            search_started = time.monotonic()
+            try:
+                solved = search(0)
+            except ForwardBlockerExhausted:
+                solved = False
+            diagnostic_print(
+                f"Planet Finder {mode}: ALIGNMENT RECURSIVE RETURN "
+                f"solved={solved} elapsed={time.monotonic() - search_started:.3f}s "
+                f"preplaced={'|'.join(leader_names)}",
+                level=1, flush=True,
+            )
+            return solved
 
-                # Temporarily stage exactly this compatible partial prefix,
-                # probe Uranus, then restore.  This tells us whether a single
-                # blob or only a later combination kills Uranus.
-                restore_base()
-                for selected_rows in chosen_rows:
-                    stage_rows(selected_rows)
-                stage_rows(rows)
-                trace_uranus_after_alignment(
-                    f"set={set_index + 1} choice-prefix="
-                    + ",".join(str(i + 1) for i in range(len(chosen_rows) + 1))
-                )
-                restore_base()
-
-                if compatible_blob_dfs(set_index + 1, chosen_rows + [rows]):
-                    return True
-            return False
-
-        solved = compatible_blob_dfs(0, [])
+        group_items = alignment_group_items[group_index]
+        group_names = ">".join(item[1][1] for item in group_items)
         diagnostic_print(
-            f"Planet Finder {mode}: ALIGNMENT BLOB COMPATIBILITY "
-            f"tested={compatible_pairs} solved={solved} "
-            f"rejects={pair_rejects} examples={pair_examples}",
+            f"Planet Finder {mode}: ALIGNMENT RECURSIVE ENTER "
+            f"group={group_index + 1}/{len(alignment_group_items)} "
+            f"members={group_names} preplaced={'|'.join(leader_names) or 'none'}",
             level=1, flush=True,
         )
-        if not solved:
-            restore_base()
+
+        completions = 0
+
+        def recurse_after_blob():
+            nonlocal completions
+            completions += 1
+            diagnostic_print(
+                f"Planet Finder {mode}: ALIGNMENT RECURSIVE BLOB "
+                f"group={group_index + 1} completion={completions} "
+                f"preplaced={'|'.join(leader_names)}",
+                level=1, flush=True,
+            )
+            solved = solve_alignment_group(group_index + 1)
+            if not solved:
+                diagnostic_print(
+                    f"Planet Finder {mode}: ALIGNMENT RECURSIVE DISCARD "
+                    f"group={group_index + 1} completion={completions}",
+                    level=1, flush=True,
+                )
+            return solved
+
+        # The inner solver is itself recursive.  Crucially, its completion
+        # callback now represents the REST of the layout search.  False from a
+        # later blob or ordinary DFS propagates back here and makes the inner
+        # solver try another geometry instead of committing this blob.
+        solved = solve_alignment_members(
+            group_index, list(group_items), recurse_after_blob
+        )
+        diagnostic_print(
+            f"Planet Finder {mode}: ALIGNMENT RECURSIVE EXIT "
+            f"group={group_index + 1} solved={solved} completions={completions}",
+            level=1, flush=True,
+        )
         return solved
 
     forward_stats = {"checks": 0, "pruned": 0, "witnesses": 0, "by_body": {}}
