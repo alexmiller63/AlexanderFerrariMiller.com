@@ -491,13 +491,31 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 (obstacle_names[int(key.split("_", 1)[1])] if key.startswith("obstacle_") and int(key.split("_", 1)[1]) < len(obstacle_names) else key): count
                 for key, count in blockers.items()
             }
+            leader_names_diag = r.get("leader_names", [])
+            directed_boxes = {
+                (obstacle_names[i] if isinstance(i, int) and i < len(obstacle_names) else f"obstacle_{i}"): count
+                for i, count in r.get("directed_box_by_index", {}).items()
+            }
+            directed_leaders = {
+                (leader_names_diag[i] if isinstance(i, int) and i < len(leader_names_diag) else f"leader_{i}"): count
+                for i, count in r.get("directed_leader_by_index", {}).items()
+            }
             diagnostic_print(
                 f"Planet Finder {mode}: TERMINAL ROUTE depth={depth}/{len(order)} body={name} "
-                f"straight_blocked={r.get('straight_blocked', 0):,} "
-                f"route_failed={r.get('route_failed', 0):,} "
-                f"anchor_blocked={r.get('anchor_blocked', 0):,} "
-                f"dogleg_failed={r.get('dogleg_failed', 0):,} "
-                f"straight_blockers={named_blockers}",
+                f"calls={r.get('route_calls', 0):,} success={r.get('route_succeeded', 0):,} "
+                f"route_failed={r.get('route_failed', 0):,} recursive_nodes={r.get('recursive_nodes', 0):,} "
+                f"max_nodes={r.get('max_recursive_nodes', 0):,} max_depth={r.get('max_route_depth', 0)} "
+                f"node_cap={r.get('node_cap_hits', 0):,} depth_cap={r.get('depth_cap_hits', 0):,} "
+                f"dead_hits={r.get('dead_state_hits', 0):,} landing_failed={r.get('landing_failed', 0):,} "
+                f"bypass_blocked={r.get('bypass_blocked', 0):,} bypass_illegal={r.get('bypass_illegal', 0):,} "
+                f"straight_blocked={r.get('straight_blocked', 0):,} anchor_blocked={r.get('anchor_blocked', 0):,} "
+                f"dogleg_failed={r.get('dogleg_failed', 0):,} straight_blockers={named_blockers}",
+                flush=True,
+            )
+            diagnostic_print(
+                f"Planet Finder {mode}: TERMINAL ROUTE BLOCKERS depth={depth}/{len(order)} body={name} "
+                f"directed_boxes={dict(sorted(directed_boxes.items(), key=lambda item: (-item[1], item[0]))[:12])} "
+                f"directed_leaders={dict(sorted(directed_leaders.items(), key=lambda item: (-item[1], item[0]))[:12])}",
                 flush=True,
             )
         aggregate = {}
@@ -783,6 +801,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 "elbows": {},
             })
             route_diag["obstacle_names"] = reserved_names + [f"placed_{i}" for i in range(len(placed))]
+            route_diag["leader_names"] = list(leader_names)
             t0 = time.monotonic()
             path = route(
                 anchor,
