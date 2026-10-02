@@ -314,6 +314,46 @@ def test_w36_latin_progressive_alignment_ladder(monkeypatch):
             ],
             30.0,
         ),
+        # Split the last jump into ordinary-body deltas. The previous
+        # rung already restores all real W36 alignment interactions; these
+        # stages identify the smallest remaining real longitude that makes
+        # Latin pathological.
+        (
+            "plus-real-uranus",
+            {**isolated_exact, **CM, **NMS, "Uranus": W36_KNOWN_GOOD["Uranus"]},
+            group_names(synthetic_bodies({**isolated_exact, **CM, **NMS, "Uranus": W36_KNOWN_GOOD["Uranus"]})),
+            30.0,
+        ),
+        (
+            "plus-real-pluto",
+            {**isolated_exact, **CM, **NMS, "Pluto": W36_KNOWN_GOOD["Pluto"]},
+            group_names(synthetic_bodies({**isolated_exact, **CM, **NMS, "Pluto": W36_KNOWN_GOOD["Pluto"]})),
+            30.0,
+        ),
+        (
+            "plus-real-venus",
+            {**isolated_exact, **CM, **NMS, "Venus": W36_KNOWN_GOOD["Venus"]},
+            group_names(synthetic_bodies({**isolated_exact, **CM, **NMS, "Venus": W36_KNOWN_GOOD["Venus"]})),
+            30.0,
+        ),
+        (
+            "plus-real-uranus-pluto",
+            {**isolated_exact, **CM, **NMS, "Uranus": W36_KNOWN_GOOD["Uranus"], "Pluto": W36_KNOWN_GOOD["Pluto"]},
+            group_names(synthetic_bodies({**isolated_exact, **CM, **NMS, "Uranus": W36_KNOWN_GOOD["Uranus"], "Pluto": W36_KNOWN_GOOD["Pluto"]})),
+            45.0,
+        ),
+        (
+            "plus-real-uranus-venus",
+            {**isolated_exact, **CM, **NMS, "Uranus": W36_KNOWN_GOOD["Uranus"], "Venus": W36_KNOWN_GOOD["Venus"]},
+            group_names(synthetic_bodies({**isolated_exact, **CM, **NMS, "Uranus": W36_KNOWN_GOOD["Uranus"], "Venus": W36_KNOWN_GOOD["Venus"]})),
+            45.0,
+        ),
+        (
+            "plus-real-pluto-venus",
+            {**isolated_exact, **CM, **NMS, "Pluto": W36_KNOWN_GOOD["Pluto"], "Venus": W36_KNOWN_GOOD["Venus"]},
+            group_names(synthetic_bodies({**isolated_exact, **CM, **NMS, "Pluto": W36_KNOWN_GOOD["Pluto"], "Venus": W36_KNOWN_GOOD["Venus"]})),
+            45.0,
+        ),
         (
             "exact-W36",
             W36_KNOWN_GOOD,
