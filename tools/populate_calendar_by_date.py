@@ -45,42 +45,25 @@ def populate_selected_year(year: int, selected_weeks: list[int]) -> int:
             vals = fixed_events.get(day, [])
             if not vals:
                 continue
-            cell = fixed_sky.get_events(text, day)
-            if cell is None:
+            records = fixed_sky.get_event_records(text, day)
+            if records is None:
                 raise RuntimeError(f"Could not find Calendar row {day} in {path}")
-            # The canonical fixed-sky records already carry permanent identity.
-            # Replace any legacy presentation-only copy of the same event before
-            # rendering so a later text resolver cannot discard that identity.
-            keep = [] if cell == "—" else [x for x in cell.split("<br>") if x]
+            # Keep events structured from read through render.  Permanent identity
+            # is metadata, not presentation text, and must never be rediscovered
+            # from HTML during normal generation.
             fixed_identities = {fixed_sky._event_identity(value.html) for value in vals}
-            keep = [x for x in keep if fixed_sky._event_identity(x) not in fixed_identities]
-            records = [fixed_sky.CalendarEvent(x) for x in keep] + list(vals)
+            records = [
+                event for event in records
+                if fixed_sky._event_identity(event.html) not in fixed_identities
+            ] + list(vals)
             text, found = fixed_sky.set_events(text, day, records if records else "—")
             if not found:
                 raise RuntimeError(f"Could not update Calendar row {day} in {path}")
         path.write_text(text, encoding="utf-8")
 
-        def trace_bellatrix(stage: str) -> None:
-            current = path.read_text(encoding="utf-8")
-            match = __import__('re').search(
-                r'<div\\b[^>]*class="[^"]*\\bevent-cell\\b[^"]*"[^>]*>[^<]*(?:<[^>]+>[^<]*)*?Bellatrix.*?</div>',
-                current,
-                __import__('re').S,
-            )
-            if match:
-                print(f"BELLATRIX TRACE [{stage}]: {match.group(0)}")
-            elif "Bellatrix" in current:
-                print(f"BELLATRIX TRACE [{stage}]: present, event-cell match not found")
-            else:
-                print(f"BELLATRIX TRACE [{stage}]: absent")
-
-        trace_bellatrix("after set_events")
         patch_fixed_object_ids(path)
-        trace_bellatrix("after patch_fixed_object_ids")
         patch_mobile_layout(path)
-        trace_bellatrix("after patch_mobile_layout")
         patch_planet_finder_layout(path)
-        trace_bellatrix("after patch_planet_finder_layout")
         if path.read_text(encoding="utf-8") != before:
             changed += 1
     return changed
