@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""One-shot: replace fixed leader enumeration with bounded recursive routing."""
+"""One-shot: install blocker-directed recursive leader routing."""
 
 from pathlib import Path
 
-ENABLED = False
+ENABLED = True
 
 if not ENABLED:
     print("Repair Once is OFF; nothing to do.")
@@ -12,283 +12,203 @@ if not ENABLED:
 P = Path("tools/planet_finder_geometry.py")
 text = P.read_text(encoding="utf-8")
 start = text.find("\ndef route(")
-if start < 0:
-    raise SystemExit("Safety stop: route() not found")
-if text.find("\ndef route(", start + 1) >= 0:
-    raise SystemExit("Safety stop: route() is not unique")
+if start < 0 or text.find("\ndef route(", start + 1) >= 0:
+    raise SystemExit("Safety stop: route() missing or non-unique")
 
 new_route = r'''
 def route(anchor: tuple[float, float], center: tuple[float, float], obstacles: list[Box], diagnostic=None, allow_initial_escape_count: int = 0, prefix_cache: dict | None = None, allow_initial_escape_indices: set[int] | None = None, target_box: Box | None = None, allow_angular_escape: bool = False, existing_paths: list[list[tuple[float, float]]] | None = None) -> list[tuple[float, float]] | None:
-    """Find the simplest legal leader with a bounded recursive local search.
+    """Blocker-directed recursive leader routing for one fixed label position.
 
-    Planet Finder chooses the label position.  This routine owns leader
-    geometry for that fixed position.  A failed segment therefore backtracks
-    inside the leader router before the outer layout DFS is allowed to reject
-    the label candidate.
-
-    Search order is deterministic and visually conservative:
-      1. direct leader;
-      2. one-elbow routes;
-      3. two-elbow routes.
-
-    Waypoints live on the existing canonical route radii and quarter-label
-    angular lattice.  The recursion is deliberately shallow and memoized:
-    this is constrained geometric routing, not an unrestricted maze search.
+    Aim directly at the label.  When the desired segment is blocked, branch
+    only around the blocking geometry (left/right), then recurse.  The outer
+    Planet Finder DFS sees failure only after this small local search is
+    exhausted.
     """
-    if prefix_cache is None:
-        prefix_cache = {}
     existing_paths = existing_paths or []
-
     if allow_initial_escape_indices is None:
         initial_escape_indices = set(range(allow_initial_escape_count))
     else:
         initial_escape_indices = set(allow_initial_escape_indices)
 
-    def inside_escape_zone(point, box) -> bool:
+    def inside_escape_zone(point, box):
         return (
             box.left - IMMUTABLE_LEADER_CLEARANCE <= point[0] <= box.right + IMMUTABLE_LEADER_CLEARANCE
             and box.top - IMMUTABLE_LEADER_CLEARANCE <= point[1] <= box.bottom + IMMUTABLE_LEADER_CLEARANCE
         )
 
     if any(
-        obstacle_index not in initial_escape_indices
-        and box.left <= anchor[0] <= box.right
-        and box.top <= anchor[1] <= box.bottom
-        for obstacle_index, box in enumerate(obstacles)
+        i not in initial_escape_indices
+        and b.left <= anchor[0] <= b.right
+        and b.top <= anchor[1] <= b.bottom
+        for i, b in enumerate(obstacles)
     ):
         if diagnostic is not None:
             diagnostic["anchor_blocked"] = diagnostic.get("anchor_blocked", 0) + 1
         return None
 
-    def segment_clear(a, b, *, first_segment=False) -> bool:
-        for obstacle_index, box in enumerate(obstacles):
-            if (
-                first_segment
-                and obstacle_index in initial_escape_indices
-                and inside_escape_zone(a, box)
-            ):
-                continue
-            if segment_hits_box(a, b, box, IMMUTABLE_LEADER_CLEARANCE):
-                return False
-        return True
-
-    def first_blocker(a, b, *, first_segment=False):
-        for obstacle_index, box in enumerate(obstacles):
-            if (
-                first_segment
-                and obstacle_index in initial_escape_indices
-                and inside_escape_zone(a, box)
-            ):
-                continue
-            if segment_hits_box(a, b, box, IMMUTABLE_LEADER_CLEARANCE):
-                return obstacle_index
-        return None
-
-    def target_landing(source, target):
-        if target is None:
+    def target_landing(source):
+        if target_box is None:
             return center
-        dx = target.x - source[0]
-        dy = target.y - source[1]
+        dx, dy = target_box.x - source[0], target_box.y - source[1]
         if abs(dx) < 1e-12 and abs(dy) < 1e-12:
             return None
-        t_enter, t_exit = 0.0, 1.0
-        for p0, q0 in (
-            (-dx, source[0] - target.left),
-            ( dx, target.right - source[0]),
-            (-dy, source[1] - target.top),
-            ( dy, target.bottom - source[1]),
+        t0, t1 = 0.0, 1.0
+        for p, q in (
+            (-dx, source[0] - target_box.left),
+            ( dx, target_box.right - source[0]),
+            (-dy, source[1] - target_box.top),
+            ( dy, target_box.bottom - source[1]),
         ):
-            if abs(p0) < 1e-12:
-                if q0 < 0:
+            if abs(p) < 1e-12:
+                if q < 0:
                     return None
                 continue
-            r = q0 / p0
-            if p0 < 0:
-                t_enter = max(t_enter, r)
+            r = q / p
+            if p < 0:
+                t0 = max(t0, r)
             else:
-                t_exit = min(t_exit, r)
-            if t_enter > t_exit:
+                t1 = min(t1, r)
+            if t0 > t1:
                 return None
-        if t_exit < 0.0 or t_enter > 1.0:
-            return None
-        hit = (source[0] + t_enter * dx, source[1] + t_enter * dy)
-        hx, hy = hit[0] - source[0], hit[1] - source[1]
-        distance = math.hypot(hx, hy)
-        if distance <= 2.0 or distance < 1e-12:
+        hit = (source[0] + t0 * dx, source[1] + t0 * dy)
+        vx, vy = hit[0] - source[0], hit[1] - source[1]
+        d = math.hypot(vx, vy)
+        if d <= 2.0:
             return source
-        scale = (distance - 2.0) / distance
-        return source[0] + hx * scale, source[1] + hy * scale
+        s = (d - 2.0) / d
+        return source[0] + vx * s, source[1] + vy * s
 
-    def target_clear(path) -> bool:
-        if target_box is None:
-            return True
-        if len(path) < 2:
-            return False
-        for i in range(len(path) - 2):
-            if segment_hits_box(
-                path[i], path[i + 1], target_box, IMMUTABLE_LEADER_CLEARANCE
-            ):
-                return False
-        return not segment_hits_box(path[-2], path[-1], target_box, -0.5)
+    def obstacle_blocker(a, b, first):
+        best = None
+        seglen = math.hypot(b[0] - a[0], b[1] - a[1]) or 1.0
+        for i, box in enumerate(obstacles):
+            if first and i in initial_escape_indices and inside_escape_zone(a, box):
+                continue
+            if not segment_hits_box(a, b, box, IMMUTABLE_LEADER_CLEARANCE):
+                continue
+            # Rank approximately by distance from source to box center.
+            rank = math.hypot(box.x - a[0], box.y - a[1]) / seglen
+            if best is None or rank < best[0]:
+                best = (rank, "box", i, box)
+        return best
 
-    def path_legal(path) -> bool:
-        if not target_clear(path):
-            return False
+    def leader_blocker(a, b):
+        best = None
+        for pi, other in enumerate(existing_paths):
+            close_anchors = math.hypot(anchor[0] - other[0][0], anchor[1] - other[0][1]) < LEADER_TO_LEADER_CLEARANCE
+            for si in range(len(other) - 1):
+                if close_anchors and a == anchor and si == 0:
+                    continue
+                c, d = other[si], other[si + 1]
+                dist = segment_distance(a, b, c, d)
+                if dist >= LEADER_TO_LEADER_CLEARANCE:
+                    continue
+                # Rank by projection of blocker midpoint along desired segment.
+                vx, vy = b[0] - a[0], b[1] - a[1]
+                denom = vx * vx + vy * vy or 1.0
+                mx, my = (c[0] + d[0]) / 2, (c[1] + d[1]) / 2
+                t = ((mx - a[0]) * vx + (my - a[1]) * vy) / denom
+                if best is None or t < best[0]:
+                    best = (t, "leader", (pi, si), (c, d))
+        return best
+
+    def first_blocker(a, b, first):
+        candidates = [x for x in (obstacle_blocker(a, b, first), leader_blocker(a, b)) if x is not None]
+        return min(candidates, key=lambda x: x[0]) if candidates else None
+
+    def bypass_points(a, b, blocker):
+        kind = blocker[1]
+        clearance = max(IMMUTABLE_LEADER_CLEARANCE, LEADER_TO_LEADER_CLEARANCE) + 6.0
+        if kind == "box":
+            box = blocker[3]
+            corners = (
+                (box.left - clearance, box.top - clearance),
+                (box.right + clearance, box.top - clearance),
+                (box.right + clearance, box.bottom + clearance),
+                (box.left - clearance, box.bottom + clearance),
+            )
+            # Pick one corner on each side of the desired segment, nearest first.
+            vx, vy = b[0] - a[0], b[1] - a[1]
+            sides = {1: [], -1: []}
+            for p in corners:
+                cross = vx * (p[1] - a[1]) - vy * (p[0] - a[0])
+                side = 1 if cross >= 0 else -1
+                sides[side].append((math.hypot(p[0] - a[0], p[1] - a[1]), p))
+            out = []
+            for side in (1, -1):
+                if sides[side]:
+                    out.append(min(sides[side])[1])
+            return out
+
+        c, d = blocker[3]
+        mx, my = (c[0] + d[0]) / 2, (c[1] + d[1]) / 2
+        dx, dy = d[0] - c[0], d[1] - c[1]
+        length = math.hypot(dx, dy) or 1.0
+        nx, ny = -dy / length, dx / length
+        # Bypass just beyond either side of the blocking leader segment.
+        reach = clearance + 0.5 * length
+        return [
+            (mx + nx * reach, my + ny * reach),
+            (mx - nx * reach, my - ny * reach),
+        ]
+
+    max_depth = 4
+    node_cap = 128
+    nodes = 0
+    dead = set()
+
+    def partial_legal(path):
         if leader_hits_zodiac_rim(path):
             return False
         if existing_paths and leaders_too_close(path, existing_paths):
-            if diagnostic is not None:
-                diagnostic["existing_leader_blocked"] = diagnostic.get(
-                    "existing_leader_blocked", 0
-                ) + 1
             return False
-        # A leader may not cross itself.  With at most two elbows this is cheap,
-        # but keeping the invariant here makes future extension safe.
-        if len(path) >= 4:
-            for i in range(len(path) - 1):
-                for j in range(i + 2, len(path) - 1):
-                    if i == 0 and j == len(path) - 2:
-                        continue
-                    if segments_too_close(
-                        path[i], path[i + 1], path[j], path[j + 1], 0.5
-                    ):
-                        return False
         return True
 
-    def angular_offsets(radius):
-        step = (LABEL_LENGTH * 0.25) / max(radius, 1.0)
-        # Zero first, then symmetric quarter-label shells.
-        yield 0.0
-        for shell in range(1, 9):
-            yield -shell * step
-            yield shell * step
-
-    anchor_theta = math.atan2(anchor[1] - CY, anchor[0] - CX)
-    target_theta = math.atan2(center[1] - CY, center[0] - CX)
-
-    def waypoint_family(theta):
-        # Prefer smaller angular deflection before changing radius.  This keeps
-        # leaders visually simple while still exposing the complete canonical
-        # bounded lattice.
-        for shell in range(0, 9):
-            signs = (0.0,) if shell == 0 else (-1.0, 1.0)
-            for sign in signs:
-                for radius in ROUTE_RADII:
-                    step = (LABEL_LENGTH * 0.25) / max(radius, 1.0)
-                    angle = theta + sign * shell * step
-                    yield (
-                        CX + radius * math.cos(angle),
-                        CY + radius * math.sin(angle),
-                    )
-
-    escape_waypoints = tuple(waypoint_family(anchor_theta))
-    approach_waypoints = tuple(waypoint_family(target_theta))
-
-    # Bound the recursive search independently of the outer Planet Finder
-    # budget.  Memoization normally keeps this far below the cap; the cap is a
-    # hard guard against accidental combinatorial growth.
-    node_cap = 2048
-    nodes = 0
-    dead_states = set()
-
-    def record_block(kind, a=None, b=None, *, first_segment=False):
-        if diagnostic is None:
-            return
-        diagnostic[kind] = diagnostic.get(kind, 0) + 1
-        if a is not None and b is not None:
-            blocker = first_blocker(a, b, first_segment=first_segment)
-            if blocker is not None:
-                bucket = diagnostic.setdefault(kind + "_by", {})
-                bucket[blocker] = bucket.get(blocker, 0) + 1
-
-    def try_finish(path):
-        source = path[-1]
-        landing = target_landing(source, target_box)
-        if landing is None:
-            return None
-        first = len(path) == 1
-        if not segment_clear(source, landing, first_segment=first):
-            record_block("final_blocked", source, landing, first_segment=first)
-            return None
-        candidate = path + [landing]
-        if path_legal(candidate):
-            return candidate
-        if diagnostic is not None:
-            diagnostic["target_approach"] = diagnostic.get("target_approach", 0) + 1
-        return None
-
-    def search(path, stage):
+    def solve(path, depth):
         nonlocal nodes
         nodes += 1
-        if nodes > node_cap:
-            if diagnostic is not None:
-                diagnostic["recursive_node_cap"] = diagnostic.get(
-                    "recursive_node_cap", 0
-                ) + 1
+        if nodes > node_cap or depth > max_depth:
             return None
-
-        state = (
-            stage,
-            round(path[-1][0], 4),
-            round(path[-1][1], 4),
-        )
-        if state in dead_states:
-            return None
-
-        # Every state first tries to finish directly.  Thus a one-elbow route
-        # wins over every two-elbow route, and direct wins over both.
-        finished = try_finish(path)
-        if finished is not None:
-            return finished
-
-        if stage >= 2:
-            dead_states.add(state)
-            return None
-
-        family = escape_waypoints if stage == 0 else approach_waypoints
         source = path[-1]
-        for waypoint in family:
-            if math.hypot(waypoint[0] - source[0], waypoint[1] - source[1]) < 1e-6:
-                continue
+        landing = target_landing(source)
+        if landing is None:
+            return None
 
-            first = len(path) == 1
-            cache_key = (
-                round(source[0], 4), round(source[1], 4),
-                round(waypoint[0], 4), round(waypoint[1], 4),
-                first,
-            )
-            clear = prefix_cache.get(cache_key)
-            if clear is None:
-                clear = segment_clear(source, waypoint, first_segment=first)
-                prefix_cache[cache_key] = clear
-            if not clear:
-                record_block(
-                    "escape_blocked" if stage == 0 else "arc_blocked",
-                    source, waypoint, first_segment=first,
-                )
-                continue
+        state = (round(source[0], 3), round(source[1], 3), depth)
+        if state in dead:
+            return None
 
+        blocker = first_blocker(source, landing, len(path) == 1)
+        if blocker is None:
+            candidate = path + [landing]
+            if partial_legal(candidate):
+                return candidate
+            dead.add(state)
+            return None
+
+        if diagnostic is not None:
+            key = "directed_box_blocked" if blocker[1] == "box" else "directed_leader_blocked"
+            diagnostic[key] = diagnostic.get(key, 0) + 1
+
+        for waypoint in bypass_points(source, landing, blocker):
+            # The segment to the bypass itself must be legal; if it has another
+            # blocker, recurse toward the bypass by treating it as the next
+            # local destination would recreate a general maze search. Instead
+            # prune it and try the opposite side; subsequent recursion resumes
+            # aiming at the real label.
+            if first_blocker(source, waypoint, len(path) == 1) is not None:
+                continue
             partial = path + [waypoint]
-            # Reject bad partial geometry immediately.  This is the essential
-            # recursive pruning: do not construct the rest of a leader whose
-            # prefix already violates rim or existing-leader geometry.
-            if leader_hits_zodiac_rim(partial):
+            if not partial_legal(partial):
                 continue
-            if existing_paths and leaders_too_close(partial, existing_paths):
-                if diagnostic is not None:
-                    diagnostic["existing_leader_blocked"] = diagnostic.get(
-                        "existing_leader_blocked", 0
-                    ) + 1
-                continue
-
-            result = search(partial, stage + 1)
+            result = solve(partial, depth + 1)
             if result is not None:
                 return result
 
-        dead_states.add(state)
+        dead.add(state)
         return None
 
-    result = search([anchor], 0)
+    result = solve([anchor], 0)
     if diagnostic is not None:
         diagnostic["recursive_nodes"] = diagnostic.get("recursive_nodes", 0) + nodes
         if result is None:
@@ -296,18 +216,12 @@ def route(anchor: tuple[float, float], center: tuple[float, float], obstacles: l
     return result
 '''
 
-new_text = text[:start] + "\n" + new_route.lstrip("\n")
-P.write_text(new_text, encoding="utf-8")
+P.write_text(text[:start] + "\n" + new_route.lstrip("\n"), encoding="utf-8")
 
 me = Path(__file__)
 source = me.read_text(encoding="utf-8")
 needle = "\nENABLED = True\n"
 if source.count(needle) != 1:
-    raise SystemExit("Safety stop: ENABLED assignment not uniquely identifiable")
-source = source.replace(needle, "\nENABLED = False\n", 1)
-me.write_text(source, encoding="utf-8")
-
-print(
-    "Installed bounded recursive leader solver with local backtracking, "
-    "memoized routing states, and a 2048-node safety cap; Repair Once is OFF."
-)
+    raise SystemExit("Safety stop: ENABLED assignment not unique")
+me.write_text(source.replace(needle, "\nENABLED = False\n", 1), encoding="utf-8")
+print("Installed blocker-directed recursive leader solver (depth 4, 128-node cap); Repair Once is OFF.")
