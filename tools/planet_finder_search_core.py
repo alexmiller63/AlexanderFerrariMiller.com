@@ -2054,7 +2054,21 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         return True
 
     def search(depth):
-        """Recursive DFS: each call owns exactly one body depth.
+        """Run one DFS frame with its ordering mutation scoped to that frame.
+
+        Fail-first selection below temporarily reorders the shared order list.
+        Every recursive frame must restore the ordering it inherited when it
+        returns, otherwise a child's MRV choice leaks into its parent's next
+        sibling and the search revisits a drifting permutation space.
+        """
+        inherited_order = list(order)
+        try:
+            return search_frame(depth)
+        finally:
+            order[:] = inherited_order
+
+    def search_frame(depth):
+        """Recursive DFS body: each call owns exactly one body depth.
 
         Geometry rejects bad proposals before they enter this function.
         Returning from a child is the only backtracking mechanism.
