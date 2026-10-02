@@ -2346,6 +2346,56 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         if original_index in staged:
             return search(depth + 1)
 
+        # Fail-first / squeaky-wheel selection belongs INSIDE the recursion.
+        # At this prefix, probe every still-unplaced body and recurse on the one
+        # with the fewest currently viable placements.  The probe is bounded:
+        # once a body has enough witnesses to lose the fail-first contest, exact
+        # counting is unnecessary.  Probes never consume the body's DFS cap.
+        fixed_prefix = max(
+            0, int(os.environ.get("PLANET_FINDER_DFS_FIXED_PREFIX", "0"))
+        )
+        mrv_probe_limit = max(
+            1, int(os.environ.get("PLANET_FINDER_MRV_PROBE_LIMIT", "25"))
+        )
+        if depth >= fixed_prefix:
+            ranked = []
+            for candidate_index in range(depth, len(order)):
+                candidate_item = order[candidate_index]
+                if candidate_item[0] in staged:
+                    continue
+                probe = viable_candidates(
+                    candidate_item, depth, consume_body_budget=False
+                )
+                viable_count = 0
+                try:
+                    for _ in probe:
+                        viable_count += 1
+                        if viable_count >= mrv_probe_limit:
+                            break
+                finally:
+                    probe.close()
+                ranked.append((viable_count, candidate_index))
+                if viable_count == 0:
+                    break
+
+            if ranked:
+                viable_count, chosen_index = min(
+                    ranked, key=lambda row: (row[0], row[1])
+                )
+                if chosen_index != depth:
+                    chosen_name = order[chosen_index][1][1]
+                    displaced_name = order[depth][1][1]
+                    chosen_item = order.pop(chosen_index)
+                    order.insert(depth, chosen_item)
+                    diagnostic_print(
+                        f"Planet Finder {mode}: DFS SQUEAKY-WHEEL "
+                        f"depth={depth}/{len(order)} choose={chosen_name} "
+                        f"viable<={viable_count} displaced={displaced_name}",
+                        level=1, flush=True,
+                    )
+                item = order[depth]
+                original_index, (symbol, name, longitude) = item
+
         current_body = name
         generated_here = False
         forensic = dfs_forensics.setdefault(depth, {
