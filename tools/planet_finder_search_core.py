@@ -2170,6 +2170,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         # one complete candidate for each tied blob and ask how many of the
         # other blobs immediately become impossible.  This is ordering only;
         # the authoritative DFS below still explores every legal alternative.
+        preferred_blob_snapshot = None
         zero_blobs = [row for row in blob_ranked if row[0] == 0 and not row[1]]
         if zero_blobs:
             _, _, group_index = min(zero_blobs, key=lambda row: row[2])
