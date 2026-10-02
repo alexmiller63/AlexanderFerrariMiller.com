@@ -2010,6 +2010,11 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         directional("Uranus", u_rows, "Venus")
         directional("Venus", v_rows, "Uranus")
 
+    # Cache bounded blob-domain probes by exact staged geometry. Look-ahead
+    # and authoritative recursion frequently ask the identical question; the
+    # answer is deterministic for a fixed staged state and probe limit.
+    blob_completion_cache = {}
+
     def solve_alignment_group(remaining_group_indices):
         """Solve alignment blobs with fail-first ordering at every recursion level.
 
@@ -2067,6 +2072,15 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         )
 
         def count_blob_completions(group_index):
+            cache_key = (
+                group_index,
+                blob_probe_limit,
+                alignment_state_signature(),
+            )
+            cached = blob_completion_cache.get(cache_key)
+            if cached is not None:
+                return cached
+
             group_items = list(alignment_group_items[group_index])
             completion_count = 0
 
@@ -2141,7 +2155,9 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                     stream.close()
 
             probe_members(group_items)
-            return completion_count, completion_count >= blob_probe_limit
+            result = (completion_count, completion_count >= blob_probe_limit)
+            blob_completion_cache[cache_key] = result
+            return result
 
         blob_ranked = []
         for candidate_group_index in remaining_group_indices:
