@@ -2800,6 +2800,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
     elif exhausted:
         dump_diagnostics("search exhausted without a complete solution")
 
+    report_alignment_phase_profile()
     elapsed = time.monotonic() - started
     diagnostic_print(
         f"Planet Finder {mode}: fixed-order summary order={order_index} "
