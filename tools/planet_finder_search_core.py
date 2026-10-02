@@ -2058,41 +2058,99 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             )
             return solved
 
-        # MRV at the blob level.  A blob cannot have more completions than its
-        # tightest member has placements, so the minimum current member domain
-        # is a safe fail-first ranking proxy.  Counts use the same fixed cap as
-        # member MRV, making blobs comparable without enumerating completions.
-        blob_ranked = []
-        for candidate_group_index in remaining_group_indices:
-            member_counts = []
-            for candidate_item in alignment_group_items[candidate_group_index]:
-                probe = alignment_profiled_candidates(
-                    candidate_item,
-                    -(candidate_group_index + 1),
-                    "alignment-group-rank",
+        # MRV at the blob level must measure the domain of the WHOLE blob,
+        # not use one member's domain as a proxy.  Count complete compatible
+        # blob placements only up to a small cap: 0, 1, 2, ... are meaningful
+        # fail-first distinctions; reaching the cap means merely "not tight".
+        blob_probe_limit = max(
+            1, int(os.environ.get("PLANET_FINDER_ALIGNMENT_BLOB_PROBE_LIMIT", "8"))
+        )
+
+        def count_blob_completions(group_index):
+            group_items = list(alignment_group_items[group_index])
+            completion_count = 0
+
+            def probe_members(remaining_items):
+                nonlocal completion_count
+                if completion_count >= blob_probe_limit:
+                    return
+                if not remaining_items:
+                    completion_count += 1
+                    return
+
+                # Use the same fail-first idea inside the probe, but this is
+                # deliberately only a bounded ranking probe.  The authoritative
+                # solve_alignment_members() below still performs the exact DFS.
+                ranked = []
+                for candidate_item in remaining_items:
+                    stream = alignment_profiled_candidates(
+                        candidate_item,
+                        -(group_index + 1),
+                        "alignment-group-completion-rank",
+                    )
+                    count = 0
+                    capped = False
+                    try:
+                        for _ in stream:
+                            count += 1
+                            if count >= budget["max_node_candidates"]:
+                                capped = True
+                                break
+                    finally:
+                        stream.close()
+                    ranked.append((count, capped, candidate_item))
+                    if count == 0 and not capped:
+                        break
+
+                zero_rows = [row for row in ranked if row[0] == 0 and not row[1]]
+                if zero_rows:
+                    return
+                _, _, item = min(
+                    ranked,
+                    key=lambda row: (row[0], row[1], row[2][0]),
                 )
-                count = 0
-                cutoff = False
+                original_index, (symbol, name, longitude) = item
+                next_remaining = [
+                    candidate_item
+                    for candidate_item in remaining_items
+                    if candidate_item is not item
+                ]
+                stream = alignment_profiled_candidates(
+                    item,
+                    -(group_index + 1),
+                    "alignment-group-completion",
+                )
                 try:
-                    for _ in probe:
-                        count += 1
-                        if count >= budget["max_node_candidates"]:
-                            cutoff = True
+                    for box, path in stream:
+                        placed.append(box)
+                        leaders.append(path)
+                        leader_names.append(name)
+                        staged[original_index] = (
+                            symbol, name, longitude, box, path
+                        )
+                        try:
+                            probe_members(next_remaining)
+                        finally:
+                            staged.pop(original_index, None)
+                            leader_names.pop()
+                            leaders.pop()
+                            placed.pop()
+                        if completion_count >= blob_probe_limit:
                             break
                 finally:
-                    probe.close()
-                member_counts.append((count, cutoff))
-                if count == 0:
-                    break
-            tightest_count, tightest_capped = min(
-                member_counts, key=lambda value: value[0]
-            )
-            blob_ranked.append(
-                (tightest_count, tightest_capped, candidate_group_index)
-            )
+                    stream.close()
 
-        # Proven zero always wins.  Otherwise prefer the smallest measured
-        # domain; original group index is only a deterministic tie-breaker.
+            probe_members(group_items)
+            return completion_count, completion_count >= blob_probe_limit
+
+        blob_ranked = []
+        for candidate_group_index in remaining_group_indices:
+            count, capped = count_blob_completions(candidate_group_index)
+            blob_ranked.append((count, capped, candidate_group_index))
+
+        # Proven zero always wins. Otherwise prefer the blob with the fewest
+        # measured complete placements. A capped count is intentionally less
+        # attractive than an exact count of the same size.
         zero_blobs = [row for row in blob_ranked if row[0] == 0 and not row[1]]
         if zero_blobs:
             _, _, group_index = min(zero_blobs, key=lambda row: row[2])
