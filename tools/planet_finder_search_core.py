@@ -1427,8 +1427,14 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         # one-choice predecessor can repeatedly destroy its last placements.
         min_viable = min(row[0] for row in ranked)
         near_tied = [row for row in ranked if row[0] <= min_viable + 1]
-        near_tied.sort(key=lambda row: (row[0] == 0, row[1][0]), reverse=True)
-        viable_count, item = near_tied[0]
+        # Zero is a proof of failure and must always win. Otherwise all
+        # members inside the one-candidate MRV band are deliberately treated as
+        # tied, so choose the later alignment member first.
+        zero_rows = [row for row in near_tied if row[0] == 0]
+        if zero_rows:
+            viable_count, item = min(zero_rows, key=lambda row: row[1][0])
+        else:
+            viable_count, item = max(near_tied, key=lambda row: row[1][0])
         original_index, (symbol, name, longitude) = item
         if group_index == 0:
             row["chosen"][name] = row["chosen"].get(name, 0) + 1
