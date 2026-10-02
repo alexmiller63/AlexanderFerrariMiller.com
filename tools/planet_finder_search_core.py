@@ -1439,6 +1439,14 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                     probe.close()
                 ranked_ordinary.append((count, not exhausted_probe, ordinary_item))
 
+            diagnostic_print(
+                f"Planet Finder {mode}: ALIGNMENT PAIR PROBE "
+                + " ".join(
+                    f"{row[2][1][1]}=count:{row[0]},capped:{row[1]}"
+                    for row in ranked_ordinary
+                ),
+                level=1, flush=True,
+            )
             ranked_ordinary.sort(key=lambda row: (row[0], row[2][0]))
             first = ranked_ordinary[0][2]
             second = ranked_ordinary[1][2]
@@ -1447,6 +1455,14 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
 
             first_stream = viable_candidates(
                 first, len(order), consume_body_budget=False
+            )
+            diagnostic_print(
+                f"Planet Finder {mode}: ALIGNMENT PAIR REGENERATE "
+                f"first={first_name} second={second_name} "
+                f"probe-count={ranked_ordinary[0][0]} "
+                f"probe-capped={ranked_ordinary[0][1]} "
+                f"placed={len(placed)} leaders={len(leaders)} staged={len(staged)}",
+                level=1, flush=True,
             )
             tested = 0
             exhausted_first = True
@@ -1500,7 +1516,9 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             diagnostic_print(
                 f"Planet Finder {mode}: ALIGNMENT PAIR BACKTRACK "
                 f"first={first_name} second={second_name} "
-                f"tested={tested} reason=no-compatible-pair",
+                f"tested={tested} probe-count={ranked_ordinary[0][0]} "
+                f"probe-capped={ranked_ordinary[0][1]} "
+                f"reason=no-compatible-pair",
                 level=1, flush=True,
             )
             return False
