@@ -154,7 +154,7 @@ def _search_alignment_fallback(preplacement, groups, placed, leaders, leader_nam
             flush=True,
         )
     if groups:
-        return solve_alignment_group(0)
+        return solve_alignment_group(tuple(range(len(alignment_group_items))))
     return search(0)
 
 
@@ -2010,20 +2010,15 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         directional("Uranus", u_rows, "Venus")
         directional("Venus", v_rows, "Uranus")
 
-    def solve_alignment_group(group_index):
-        """Recursively solve alignment blobs as provisional DFS choices.
+    def solve_alignment_group(remaining_group_indices):
+        """Solve alignment blobs with fail-first ordering at every recursion level.
 
-        A completed blob is not committed to a bounded pool.  Its completion
-        callback immediately recurses into the next blob while the current
-        geometry remains staged.  Any downstream failure therefore returns
-        False through the callback, causing solve_alignment_members() to
-        discard that blob geometry and continue with its next candidate.
+        Blob identity remains its original index, but recursion order is dynamic:
+        rank every remaining blob by the smallest current member domain and solve
+        the tightest blob first.  Member placement then applies the same MRV rule
+        recursively inside that blob.  All choices remain fully backtrackable.
         """
-        if group_index >= len(alignment_group_items):
-            # Every alignment blob is staged.  The member-level witness gates
-            # have already proved that each unstaged ordinary body has at least
-            # one candidate under every prefix.  Validate the complete staged
-            # alignment once, then hand the provisional prefix to ordinary DFS.
+        if not remaining_group_indices:
             alignment_indices = {
                 item[0]
                 for group in alignment_group_items
@@ -2045,7 +2040,6 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 return False
 
             forensic_uranus_venus_boundary()
-
             diagnostic_print(
                 f"Planet Finder {mode}: ALIGNMENT RECURSIVE HANDOFF "
                 f"preplaced={'|'.join(leader_names)} ordinary={len(order)}",
@@ -2064,8 +2058,61 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             )
             return solved
 
+        # MRV at the blob level.  A blob cannot have more completions than its
+        # tightest member has placements, so the minimum current member domain
+        # is a safe fail-first ranking proxy.  Counts use the same fixed cap as
+        # member MRV, making blobs comparable without enumerating completions.
+        blob_ranked = []
+        for candidate_group_index in remaining_group_indices:
+            member_counts = []
+            for candidate_item in alignment_group_items[candidate_group_index]:
+                probe = alignment_profiled_candidates(
+                    candidate_item,
+                    -(candidate_group_index + 1),
+                    "alignment-group-rank",
+                )
+                count = 0
+                cutoff = False
+                try:
+                    for _ in probe:
+                        count += 1
+                        if count >= budget["max_node_candidates"]:
+                            cutoff = True
+                            break
+                finally:
+                    probe.close()
+                member_counts.append((count, cutoff))
+                if count == 0:
+                    break
+            tightest_count, tightest_capped = min(
+                member_counts, key=lambda value: value[0]
+            )
+            blob_ranked.append(
+                (tightest_count, tightest_capped, candidate_group_index)
+            )
+
+        # Proven zero always wins.  Otherwise prefer the smallest measured
+        # domain; original group index is only a deterministic tie-breaker.
+        zero_blobs = [row for row in blob_ranked if row[0] == 0 and not row[1]]
+        if zero_blobs:
+            _, _, group_index = min(zero_blobs, key=lambda row: row[2])
+        else:
+            _, _, group_index = min(
+                blob_ranked, key=lambda row: (row[0], row[1], row[2])
+            )
+
         group_items = alignment_group_items[group_index]
         group_names = ">".join(item[1][1] for item in group_items)
+        next_groups = tuple(
+            index for index in remaining_group_indices if index != group_index
+        )
+        diagnostic_print(
+            f"Planet Finder {mode}: ALIGNMENT GROUP MRV "
+            f"chosen={group_index + 1} members={group_names} "
+            f"remaining={len(remaining_group_indices)} "
+            f"ranks={[(index + 1, count, capped) for count, capped, index in blob_ranked]}",
+            level=1, flush=True,
+        )
         diagnostic_print(
             f"Planet Finder {mode}: ALIGNMENT RECURSIVE ENTER "
             f"group={group_index + 1}/{len(alignment_group_items)} "
@@ -2084,7 +2131,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 f"preplaced={'|'.join(leader_names)}",
                 level=1, flush=True,
             )
-            solved = solve_alignment_group(group_index + 1)
+            solved = solve_alignment_group(next_groups)
             if not solved:
                 diagnostic_print(
                     f"Planet Finder {mode}: ALIGNMENT RECURSIVE DISCARD "
@@ -2093,10 +2140,6 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 )
             return solved
 
-        # The inner solver is itself recursive.  Crucially, its completion
-        # callback now represents the REST of the layout search.  False from a
-        # later blob or ordinary DFS propagates back here and makes the inner
-        # solver try another geometry instead of committing this blob.
         solved = solve_alignment_members(
             group_index, list(group_items), recurse_after_blob
         )
