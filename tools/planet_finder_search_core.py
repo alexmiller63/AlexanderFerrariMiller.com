@@ -2105,6 +2105,64 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
 
         completions = 0
 
+        def remaining_blob_has_witness(candidate_group_index):
+            """Cheap forward check: stop at the first complete blob witness."""
+            candidate_items = list(alignment_group_items[candidate_group_index])
+
+            def witness_members(remaining_items):
+                if not remaining_items:
+                    return True
+                ranked = []
+                for candidate_item in remaining_items:
+                    stream = alignment_profiled_candidates(
+                        candidate_item,
+                        -(candidate_group_index + 1),
+                        "alignment-blob-forward-rank",
+                    )
+                    count = 0
+                    try:
+                        for _ in stream:
+                            count += 1
+                            if count >= budget["max_node_candidates"]:
+                                break
+                    finally:
+                        stream.close()
+                    if count == 0:
+                        return False
+                    ranked.append((count, candidate_item))
+                _, item = min(ranked, key=lambda row: (row[0], row[1][0]))
+                original_index, (symbol, name, longitude) = item
+                next_remaining = [
+                    candidate_item for candidate_item in remaining_items
+                    if candidate_item is not item
+                ]
+                stream = alignment_profiled_candidates(
+                    item,
+                    -(candidate_group_index + 1),
+                    "alignment-blob-forward-witness",
+                )
+                try:
+                    for box, path in stream:
+                        placed.append(box)
+                        leaders.append(path)
+                        leader_names.append(name)
+                        staged[original_index] = (
+                            symbol, name, longitude, box, path
+                        )
+                        try:
+                            if witness_members(next_remaining):
+                                return True
+                        finally:
+                            staged.pop(original_index, None)
+                            leader_names.pop()
+                            leaders.pop()
+                            placed.pop()
+                finally:
+                    stream.close()
+                return False
+
+            return witness_members(candidate_items)
+
         def recurse_after_blob():
             nonlocal completions
             completions += 1
@@ -2114,6 +2172,15 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 f"preplaced={'|'.join(leader_names)}",
                 level=1, flush=True,
             )
+            for remaining_group_index in next_groups:
+                if not remaining_blob_has_witness(remaining_group_index):
+                    diagnostic_print(
+                        f"Planet Finder {mode}: ALIGNMENT BLOB FORWARD REJECT "
+                        f"group={group_index + 1} completion={completions} "
+                        f"blocked_group={remaining_group_index + 1}",
+                        level=1, flush=True,
+                    )
+                    return False
             solved = solve_alignment_group(next_groups)
             if not solved:
                 diagnostic_print(
