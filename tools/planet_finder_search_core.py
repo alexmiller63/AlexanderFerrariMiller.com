@@ -2014,6 +2014,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
     # and authoritative recursion frequently ask the identical question; the
     # answer is deterministic for a fixed staged state and probe limit.
     blob_completion_cache = {}
+    blob_completion_snapshots = {}
 
     def solve_alignment_group(remaining_group_indices):
         """Solve alignment blobs with fail-first ordering at every recursion level.
@@ -2083,12 +2084,17 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
 
             group_items = list(alignment_group_items[group_index])
             completion_count = 0
+            snapshots = []
 
             def probe_members(remaining_items):
                 nonlocal completion_count
                 if completion_count >= blob_probe_limit:
                     return
                 if not remaining_items:
+                    snapshots.append(tuple(
+                        (index, staged[index])
+                        for index, _ in alignment_group_items[group_index]
+                    ))
                     completion_count += 1
                     return
 
@@ -2157,6 +2163,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             probe_members(group_items)
             result = (completion_count, completion_count >= blob_probe_limit)
             blob_completion_cache[cache_key] = result
+            blob_completion_snapshots[cache_key] = tuple(snapshots)
             return result
 
         blob_ranked = []
@@ -2330,8 +2337,27 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             return solved
 
         solved = False
+
+        # The bounded domain probe above already generated complete legal blob
+        # geometries. Consume those exact geometries as the first authoritative
+        # DFS alternatives instead of throwing them away and regenerating them.
+        chosen_probe_key = (
+            group_index,
+            blob_probe_limit,
+            alignment_state_signature(),
+        )
+        probed_snapshots = list(
+            blob_completion_snapshots.get(chosen_probe_key, ())
+        )
         if preferred_blob_snapshot:
-            for original_index, row in preferred_blob_snapshot:
+            preferred_tuple = tuple(preferred_blob_snapshot)
+            probed_snapshots = [
+                preferred_tuple,
+                *[row for row in probed_snapshots if row != preferred_tuple],
+            ]
+
+        for snapshot in probed_snapshots:
+            for original_index, row in snapshot:
                 symbol, name, longitude, box, path = row
                 placed.append(box)
                 leaders.append(path)
@@ -2340,13 +2366,20 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             try:
                 solved = recurse_after_blob()
             finally:
-                for original_index, _ in reversed(preferred_blob_snapshot):
+                for original_index, _ in reversed(snapshot):
                     staged.pop(original_index, None)
                     leader_names.pop()
                     leaders.pop()
                     placed.pop()
+            if solved:
+                break
 
-        if not solved:
+        # An uncapped probe enumerated the complete blob domain, so failure of
+        # every retained geometry is an exact failure. Only a capped probe can
+        # have untried alternatives that require the full member DFS fallback.
+        probe_result = blob_completion_cache.get(chosen_probe_key)
+        probe_exhaustive = probe_result is not None and not probe_result[1]
+        if not solved and not probe_exhaustive:
             solved = solve_alignment_members(
                 group_index, list(group_items), recurse_after_blob
             )
