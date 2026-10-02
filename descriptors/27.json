@@ -1,0 +1,34 @@
+{
+  "schema_version": 1,
+  "id": "27",
+  "type": "star",
+  "name": "Capella",
+  "summary": "bright star in Auriga used as a fixed-sky reference",
+  "representation": {
+    "machine": "./27.json",
+    "human_source": "summary",
+    "human": "/stories/baseline/27.html"
+  },
+  "constellation_abbreviation": "Aur",
+  "constellation": "Auriga",
+  "position": {
+    "ra_deg": 79.17225,
+    "dec_deg": 45.997991,
+    "ecliptic_longitude_deg": 81.857861,
+    "ecliptic_latitude_deg": 22.86427
+  },
+  "representative_visual_magnitude": 0.08,
+  "guiding_asterisms": [
+    {
+      "id": "asterism-winter-hexagon-winter-circle",
+      "name": "Winter Hexagon / Winter Circle",
+      "relationship": "visual-member",
+      "provenance": {
+        "source": "NASA",
+        "source_url": "https://science.nasa.gov/solar-system/skywatching/night-sky-network/connecting-the-dots-with-asterisms/",
+        "source_role": "verification",
+        "supports": "visual-membership"
+      }
+    }
+  ]
+}
