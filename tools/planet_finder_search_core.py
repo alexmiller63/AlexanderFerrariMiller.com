@@ -1626,6 +1626,40 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
 
                     def capture_one_from_root():
                         rows = tuple(staged[item[0]] for item in group_items)
+
+                        # Diagnostic only: observe every completed Ceres/Mars
+                        # blob at the exact point it is discovered, before the
+                        # bounded blob pool/compatibility layer can discard it.
+                        # Probe Uranus against this blob alone so W36 tells us
+                        # whether the needed geometry is generated at all.
+                        if candidate_group_index == 1:
+                            uranus_item = next(
+                                (candidate_item for candidate_item in order
+                                 if candidate_item[1][1] == "Uranus"),
+                                None,
+                            )
+                            if uranus_item is not None:
+                                witness_stream = viable_candidates(
+                                    uranus_item, len(order),
+                                    consume_body_budget=False,
+                                )
+                                witness = None
+                                try:
+                                    witness = next(witness_stream, None)
+                                finally:
+                                    witness_stream.close()
+                                diagnostic_print(
+                                    f"Planet Finder {mode}: CERES-MARS COMPLETION "
+                                    f"root={root_name} root-choice={roots_tried} "
+                                    f"uranus={'YES' if witness is not None else 'NO'} "
+                                    f"members="
+                                    + "|".join(
+                                        f"{row[1]}@({row[3].x:.1f},{row[3].y:.1f})"
+                                        for row in rows
+                                    ),
+                                    level=1, flush=True,
+                                )
+
                         collected.append(rows)
                         diagnostic_print(
                             f"Planet Finder {mode}: ALIGNMENT BLOB COLLECT "
