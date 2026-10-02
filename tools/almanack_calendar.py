@@ -91,15 +91,40 @@ def _ensure_class(attrs: str, class_name: str) -> str:
     return attrs[:m.start(1)] + " ".join(classes) + attrs[m.end(1):]
 
 
-def _event_items(events_html: str) -> list[str]:
-    """Return canonical event items from either old or new event markup."""
+def _event_records(events_html: str) -> list[CalendarEvent]:
+    """Parse Calendar markup while preserving semantic event metadata."""
     raw = events_html.strip()
     grid = EVENT_GRID_RE.match(raw)
     if grid:
-        return [m.group("event").strip() for m in EVENT_CELL_RE.finditer(grid.group("body")) if m.group("event").strip()]
+        records: list[CalendarEvent] = []
+        cell_re = re.compile(
+            r'<div\\b(?P<attrs>[^>]*)class="[^"]*\\bevent-cell\\b[^"]*"(?P<tailattrs>[^>]*)>(?P<event>.*?)</div>',
+            re.DOTALL,
+        )
+        for match in cell_re.finditer(grid.group("body")):
+            event_html = match.group("event").strip()
+            if not event_html:
+                continue
+            attrs = match.group("attrs") + match.group("tailattrs")
+            fixed_id = _get_attr(attrs, "data-fixed-object-id")
+            records.append(CalendarEvent(
+                event_html,
+                int(fixed_id) if fixed_id else None,
+                _get_attr(attrs, "data-observing-aid"),
+            ))
+        return records
     if not raw or raw == "—":
         return []
-    return [item.strip() for item in re.split(r'<br\s*/?>', raw, flags=re.IGNORECASE) if item.strip() and item.strip() != "—"]
+    return [
+        CalendarEvent(item.strip())
+        for item in re.split(r'<br\\s*/?>', raw, flags=re.IGNORECASE)
+        if item.strip() and item.strip() != "—"
+    ]
+
+
+def _event_items(events_html: str) -> list[str]:
+    """Compatibility view for callers that need presentation HTML only."""
+    return [event.html for event in _event_records(events_html)]
 
 
 def _render_event(event: CalendarEvent) -> str:
