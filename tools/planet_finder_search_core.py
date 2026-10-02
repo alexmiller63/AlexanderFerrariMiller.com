@@ -1390,13 +1390,11 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             try:
                 for _ in probe:
                     count += 1
-                    # Ranking only needs to know whether this body can beat the
-                    # best exact count already seen. Once it has strictly more
-                    # viable candidates, it cannot win the squeaky-wheel choice.
-                    if best_count is not None and count > best_count:
-                        cutoff = True
-                        break
+                    # Compare every alignment member against the same fixed
+                    # bound. Cross-body early cutoff makes later domain counts
+                    # incomparable and can choose the wrong MRV member.
                     if count >= budget["max_node_candidates"]:
+                        cutoff = True
                         break
             finally:
                 probe.close()
