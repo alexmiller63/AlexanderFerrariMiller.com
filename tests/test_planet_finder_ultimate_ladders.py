@@ -308,7 +308,7 @@ def test_w36_latin_progressive_alignment_ladder(monkeypatch):
             "restore-real-neptune-moon-saturn",
             {**isolated_exact, **CM, **NMS},
             [
-                ("Neptune", "Moon", "Saturn"),
+                ("Neptune", "Moon", "Saturn", "Venus"),
                 ("Ceres", "Mars"),
                 ("Jupiter", "Sun", "Mercury"),
             ],
