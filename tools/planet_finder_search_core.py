@@ -1582,6 +1582,25 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             )
             return False
 
+        same_blob_failure_states = {}
+
+        def alignment_state_fingerprint():
+            """Stable geometric identity for diagnostic comparison of staged prefixes."""
+            return tuple(
+                (
+                    staged_item[1],
+                    round(staged_item[3].x, 3),
+                    round(staged_item[3].y, 3),
+                    round(staged_item[3].w, 3),
+                    round(staged_item[3].h, 3),
+                    tuple(
+                        (round(px, 3), round(py, 3))
+                        for px, py in staged_item[4]
+                    ),
+                )
+                for _, staged_item in sorted(staged.items())
+            )
+
         def try_candidate(candidate):
             box, path = candidate
             placed.append(box)
@@ -1621,6 +1640,19 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                         next(witness_stream)
                     except StopIteration:
                         alignment_forward_ok = False
+                        future_name = future_item[1][1]
+                        if future_name == "Sun":
+                            fingerprint = alignment_state_fingerprint()
+                            count = same_blob_failure_states.get(fingerprint, 0) + 1
+                            same_blob_failure_states[fingerprint] = count
+                            diagnostic_print(
+                                f"Planet Finder {mode}: SAME-BLOB SUN DEAD "
+                                f"occurrence={count} repeat={count > 1} "
+                                f"unique_states={len(same_blob_failure_states)} "
+                                f"staged={','.join(item[1] for _, item in sorted(staged.items()))} "
+                                f"fingerprint={fingerprint!r}",
+                                level=1, flush=True,
+                            )
                     finally:
                         witness_stream.close()
                     if not alignment_forward_ok:
