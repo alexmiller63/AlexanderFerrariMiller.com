@@ -10,6 +10,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 from planet_finder_validation import validate_layout
+from planet_finder_makeup import aesthetic_score, refine_candidate
 from planet_finder_geometry import (
     W, H, CX, CY, RO, RI,
     LABEL_RIM_CLEARANCE, LABEL_COLLISION_PADDING,
@@ -277,22 +278,24 @@ def layout(
     if not all_solutions:
         raise RuntimeError(f"No collision-free Planet Finder layout found in {mode} mode")
 
-    def score(result):
-        total_length = 0.0
-        elbows = 0
-        radial_error = 0.0
-        tangential_error = 0.0
-        for _, _, longitude, box, path in result:
-            total_length += sum(math.hypot(b[0]-a[0], b[1]-a[1]) for a, b in zip(path, path[1:]))
-            elbows += max(0, len(path) - 2)
-            natural = xy(longitude, 345)
-            radial_error += abs(math.hypot(box.x-CX, box.y-CY) - 345)
-            tangential_error += math.hypot(box.x-natural[0], box.y-natural[1])
-        return (elbows, total_length, tangential_error, radial_error)
+    # Makeup is deliberately post-search.  Refine copies of every valid
+    # contestant; DFS discovery and its preserved fallback geometries remain
+    # untouched.
+    refined_solutions = []
+    for i, result in enumerate(all_solutions):
+        before = aesthetic_score(result)
+        refined = refine_candidate(mode, result)
+        after = aesthetic_score(refined)
+        refined_solutions.append(refined)
+        diagnostic_print(
+            f"Planet Finder {mode}: MAKEUP candidate={i + 1} "
+            f"changed={'yes' if refined != result else 'no'} "
+            f"before={before} after={after}", level=2, flush=True,
+        )
 
-    scored = sorted((score(result), i, result) for i, result in enumerate(all_solutions))
+    scored = sorted((aesthetic_score(result), i, result) for i, result in enumerate(refined_solutions))
     best_score, best_index, best = scored[0]
-    contest_count = len(all_solutions)
+    contest_count = len(refined_solutions)
     unique_count = len(set(contest_keys))
     contest_valid = contest_count == target_solutions and unique_count == contest_count and contest_count == len(scored)
     diagnostic_print(
@@ -311,7 +314,7 @@ def layout(
             f"unique={unique_count} scored={len(scored)}"
         )
     diagnostic_print(
-        f"Planet Finder {mode}: selected candidate {best_index + 1}/{len(all_solutions)} "
+        f"Planet Finder {mode}: selected candidate {best_index + 1}/{len(refined_solutions)} "
         f"{context_label + ' ' if context_label else ''}"
         f"score[elbows={best_score[0]},length={best_score[1]:.1f},"
         f"displacement={best_score[2]:.1f},radial={best_score[3]:.1f}]", flush=True,
