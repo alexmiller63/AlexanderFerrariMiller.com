@@ -1,0 +1,34 @@
+{
+  "schema_version": 1,
+  "id": "32",
+  "type": "star",
+  "name": "Alnilam",
+  "summary": "bright star in Orion used as a fixed-sky reference",
+  "representation": {
+    "machine": "./32.json",
+    "human_source": "summary",
+    "human": "/stories/baseline/32.html"
+  },
+  "constellation_abbreviation": "Ori",
+  "constellation": "Orion",
+  "position": {
+    "ra_deg": 84.053385,
+    "dec_deg": -1.20192,
+    "ecliptic_longitude_deg": 83.463642,
+    "ecliptic_latitude_deg": -24.506385
+  },
+  "representative_visual_magnitude": 1.69,
+  "guiding_asterisms": [
+    {
+      "id": "asterism-orion-s-belt",
+      "name": "Orion's Belt",
+      "relationship": "visual-member",
+      "provenance": {
+        "source": "NASA",
+        "source_url": "https://science.nasa.gov/image-article/apod-2025-november-20-alnitak-alnilam-mintaka/",
+        "source_role": "verification",
+        "supports": "visual-membership"
+      }
+    }
+  ]
+}
