@@ -1846,8 +1846,48 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         chosen_stream = alignment_profiled_candidates(
             item, diagnostic_depth, "alignment-dfs"
         )
+        chosen_count, chosen_capped = rank_viable_counts.get(
+            name, (viable_count, True)
+        )
+        exact_support_filter = (
+            bool(next_remaining)
+            and not chosen_capped
+            and chosen_count <= support_limit
+        )
         try:
             for candidate in chosen_stream:
+                if exact_support_filter:
+                    box, path = candidate
+                    placed.append(box)
+                    leaders.append(path)
+                    leader_names.append(name)
+                    staged[original_index] = (
+                        symbol, name, longitude, box, path
+                    )
+                    try:
+                        has_exact_support = True
+                        for future_item in next_remaining:
+                            witness_stream = alignment_profiled_candidates(
+                                future_item,
+                                diagnostic_depth,
+                                "alignment-exact-support",
+                            )
+                            try:
+                                next(witness_stream)
+                            except StopIteration:
+                                has_exact_support = False
+                            finally:
+                                witness_stream.close()
+                            if not has_exact_support:
+                                break
+                    finally:
+                        staged.pop(original_index, None)
+                        leader_names.pop()
+                        leaders.pop()
+                        placed.pop()
+                    if not has_exact_support:
+                        continue
+
                 tried += 1
                 if group_index == 0:
                     row["tries"] += 1
