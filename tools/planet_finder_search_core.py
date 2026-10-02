@@ -154,7 +154,7 @@ def _search_alignment_fallback(preplacement, groups, placed, leaders, leader_nam
             flush=True,
         )
     if groups:
-        return solve_alignment_group(tuple(range(len(alignment_group_items))))
+        return solve_alignment_group(tuple(range(len(groups))))
     return search(0)
 
 
