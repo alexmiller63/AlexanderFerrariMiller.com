@@ -1427,17 +1427,19 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 probe = viable_candidates(
                     ordinary_item, len(order), consume_body_budget=False
                 )
-                count = 0
+                candidates = []
                 exhausted_probe = True
                 try:
-                    for _ in probe:
-                        count += 1
-                        if count >= proof_limit:
+                    for candidate in probe:
+                        candidates.append(candidate)
+                        if len(candidates) >= proof_limit:
                             exhausted_probe = False
                             break
                 finally:
                     probe.close()
-                ranked_ordinary.append((count, not exhausted_probe, ordinary_item))
+                ranked_ordinary.append((
+                    len(candidates), not exhausted_probe, ordinary_item, candidates
+                ))
 
             diagnostic_print(
                 f"Planet Finder {mode}: ALIGNMENT PAIR PROBE "
@@ -1450,14 +1452,12 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             ranked_ordinary.sort(key=lambda row: (row[0], row[2][0]))
             first = ranked_ordinary[0][2]
             second = ranked_ordinary[1][2]
+            first_candidates = ranked_ordinary[0][3]
             first_index, (first_symbol, first_name, first_longitude) = first
             second_name = second[1][1]
 
-            first_stream = viable_candidates(
-                first, len(order), consume_body_budget=False
-            )
             diagnostic_print(
-                f"Planet Finder {mode}: ALIGNMENT PAIR REGENERATE "
+                f"Planet Finder {mode}: ALIGNMENT PAIR REUSE "
                 f"first={first_name} second={second_name} "
                 f"probe-count={ranked_ordinary[0][0]} "
                 f"probe-capped={ranked_ordinary[0][1]} "
@@ -1465,13 +1465,9 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 level=1, flush=True,
             )
             tested = 0
-            exhausted_first = True
-            try:
-                for first_box, first_path in first_stream:
-                    tested += 1
-                    if tested > proof_limit:
-                        exhausted_first = False
-                        break
+            exhausted_first = not ranked_ordinary[0][1]
+            for first_box, first_path in first_candidates:
+                tested += 1
                     placed.append(first_box)
                     leaders.append(first_path)
                     leader_names.append(first_name)
@@ -1501,9 +1497,6 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                         leader_names.pop()
                         leaders.pop()
                         placed.pop()
-            finally:
-                first_stream.close()
-
             if not exhausted_first:
                 diagnostic_print(
                     f"Planet Finder {mode}: ALIGNMENT PAIR UNKNOWN "
