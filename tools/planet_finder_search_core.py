@@ -1337,6 +1337,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         # are ordinary backtrackable DFS choices; the alignment is not atomic.
         diagnostic_depth = -(group_index + 1)
         ranked = []
+        best_count = None
         for candidate_item in remaining_items:
             probe_name = candidate_item[1][1]
             probe_state = (group_index, depth_in_blob, probe_name, alignment_state_signature())
@@ -1346,16 +1347,24 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             diagnostic_print(
                 f"Planet Finder {mode}: ALIGNMENT RANK PROBE START "
                 f"group={group_index + 1} depth={depth_in_blob}/{group_size} "
-                f"body={probe_name} remaining={len(remaining_items)}",
+                f"body={probe_name} remaining={len(remaining_items)} "
+                f"beat={best_count if best_count is not None else 'none'}",
                 level=1, flush=True,
             )
             probe = viable_candidates(
                 candidate_item, diagnostic_depth, consume_body_budget=False
             )
             count = 0
+            cutoff = False
             try:
                 for _ in probe:
                     count += 1
+                    # Ranking only needs to know whether this body can beat the
+                    # best exact count already seen. Once it has strictly more
+                    # viable candidates, it cannot win the squeaky-wheel choice.
+                    if best_count is not None and count > best_count:
+                        cutoff = True
+                        break
                     if count >= budget["max_node_candidates"]:
                         break
             finally:
@@ -1369,13 +1378,17 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             diagnostic_print(
                 f"Planet Finder {mode}: ALIGNMENT RANK PROBE END "
                 f"group={group_index + 1} depth={depth_in_blob}/{group_size} "
-                f"body={probe_name} viable={count:,} elapsed={probe_elapsed:.3f}s "
+                f"body={probe_name} viable={count:,}{'+' if cutoff else ''} elapsed={probe_elapsed:.3f}s "
                 + " ".join(
                     f"{key}={value:,}" for key, value in probe_delta.items()
                 ),
                 level=1, flush=True,
             )
             ranked.append((count, candidate_item))
+            if not cutoff and (best_count is None or count < best_count):
+                best_count = count
+            if best_count == 0:
+                break
         ranked.sort(key=lambda row: (row[0], row[1][0]))
         viable_count, item = ranked[0]
         original_index, (symbol, name, longitude) = item
