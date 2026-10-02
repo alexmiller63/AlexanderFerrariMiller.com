@@ -2072,10 +2072,12 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             1, int(os.environ.get("PLANET_FINDER_ALIGNMENT_BLOB_PROBE_LIMIT", "8"))
         )
 
-        def count_blob_completions(group_index):
+        def count_blob_completions(group_index, support_groups=()):
+            support_groups = tuple(support_groups)
             cache_key = (
                 group_index,
                 blob_probe_limit,
+                support_groups,
                 alignment_state_signature(),
             )
             cached = blob_completion_cache.get(cache_key)
@@ -2091,6 +2093,15 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 if completion_count >= blob_probe_limit:
                     return
                 if not remaining_items:
+                    # Blob-level arc consistency: this complete geometry is in
+                    # the effective domain only when every requested remaining
+                    # blob has at least one compatible complete geometry.
+                    for support_group_index in support_groups:
+                        support_count, _ = count_blob_completions(
+                            support_group_index, ()
+                        )
+                        if support_count == 0:
+                            return
                     snapshots.append(tuple(
                         (index, staged[index])
                         for index, _ in alignment_group_items[group_index]
@@ -2168,7 +2179,13 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
 
         blob_ranked = []
         for candidate_group_index in remaining_group_indices:
-            count, capped = count_blob_completions(candidate_group_index)
+            support_groups = tuple(
+                index for index in remaining_group_indices
+                if index != candidate_group_index
+            )
+            count, capped = count_blob_completions(
+                candidate_group_index, support_groups
+            )
             blob_ranked.append((count, capped, candidate_group_index))
 
         # Proven zero always wins.  Exact domains beat capped domains.  When
@@ -2344,6 +2361,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         chosen_probe_key = (
             group_index,
             blob_probe_limit,
+            tuple(index for index in remaining_group_indices if index != group_index),
             alignment_state_signature(),
         )
         probed_snapshots = list(
