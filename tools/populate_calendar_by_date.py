@@ -7,6 +7,7 @@ from datetime import timedelta
 import populate_calendar as calendar
 import populate_fixed_sky as fixed_sky
 from almanack_sections import require_section
+from almanack_calendar import get_event_records
 from almanack_paths import week_index
 from calendar_fixed_object_ids import patch_file as patch_fixed_object_ids
 from calendar_mobile_layout import patch_file as patch_mobile_layout
@@ -45,7 +46,7 @@ def populate_selected_year(year: int, selected_weeks: list[int]) -> int:
             vals = fixed_events.get(day, [])
             if not vals:
                 continue
-            records = fixed_sky.get_event_records(text, day)
+            records = get_event_records(text, day)
             if records is None:
                 raise RuntimeError(f"Could not find Calendar row {day} in {path}")
             # Keep events structured from read through render.  Permanent identity
