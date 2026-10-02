@@ -1,0 +1,598 @@
+{
+  "week": "W03",
+  "title": "Observer’s guide for ISO 2026-W03",
+  "status": "generated",
+  "planetary_source": "weekly-ephemeris-2026.csv",
+  "planetary_coordinate": "geocentric tropical ecliptic longitude; Monday 00:00 UTC",
+  "fixed_sky": [
+    {
+      "fixed_object_id": 727,
+      "type": "star",
+      "name": "α Dor",
+      "constellation": "Dor"
+    },
+    {
+      "fixed_object_id": 25,
+      "type": "star",
+      "name": "Aldebaran",
+      "constellation": "Tau"
+    },
+    {
+      "fixed_object_id": 730,
+      "type": "star",
+      "name": "α Cae",
+      "constellation": "Cae"
+    },
+    {
+      "fixed_object_id": 731,
+      "type": "star",
+      "name": "β Cae",
+      "constellation": "Cae"
+    },
+    {
+      "fixed_object_id": 737,
+      "type": "star",
+      "name": "α Cam",
+      "constellation": "Cam"
+    }
+  ],
+  "planet_relations": [
+    {
+      "kind": "planet-planet-longitude",
+      "planet": "Venus",
+      "other_planet": "Mars",
+      "planet_longitude_deg": 293.05,
+      "other_longitude_deg": 291.15,
+      "longitude_separation_deg": 1.9,
+      "basis": "Star Almanack preserved geocentric tropical ecliptic longitude"
+    },
+    {
+      "kind": "planet-planet-longitude",
+      "planet": "Saturn",
+      "other_planet": "Neptune",
+      "planet_longitude_deg": 356.9,
+      "other_longitude_deg": 359.683,
+      "longitude_separation_deg": 2.8,
+      "basis": "Star Almanack preserved geocentric tropical ecliptic longitude"
+    },
+    {
+      "kind": "planet-star-longitude",
+      "planet": "Mercury",
+      "planet_longitude_deg": 285.8,
+      "star": "Nunki",
+      "constellation": "Sgr",
+      "star_ecliptic_longitude_deg": 282.385,
+      "star_ecliptic_latitude_deg": -3.45,
+      "longitude_separation_deg": 3.4,
+      "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+      "asterism": "Teapot"
+    }
+  ],
+  "note": "ISO 2026-W03 runs from January 12 through January 18. Venus and Mars are separated by about 1.9° in geocentric ecliptic longitude at the Monday 00:00 UTC snapshot. Saturn and Neptune are separated by about 2.8° in geocentric ecliptic longitude at the Monday 00:00 UTC snapshot.\n\n**Naked eye:** 🌑 New Moon — 19:51:59 UTC. The dark Moon favors faint targets and extended star fields. Use α Dor, Aldebaran as the week’s fixed-sky framework.\n\n**Planets:** Venus and Mars are separated by about 1.9° in geocentric ecliptic longitude at the Monday 00:00 UTC snapshot. Saturn and Neptune are separated by about 2.8° in geocentric ecliptic longitude at the Monday 00:00 UTC snapshot. Mercury is about 3.4° in ecliptic longitude from Nunki, one of the stars used to orient Teapot in Sagittarius.\n\n**Binoculars:** Favor α Cae, β Cae, α Cam; wide fields help connect the charted geometry to the real sky.\n\n**Small telescope:** No fixed-sky Calendar object is classified for telescope observing this week.\n\n**Substantial telescope:** No fixed-sky Calendar object is classified as requiring a substantial telescope this week.\n\nNo deep-sky objects are featured this week.",
+  "descriptors": [
+    {
+      "schema_version": 1,
+      "id": "1249",
+      "type": "solar-system-object",
+      "name": "Sun",
+      "summary": "Solar-System object tracked by the Star Almanack weekly ephemeris and Planet Finder",
+      "representation": {
+        "machine": "./1249.json",
+        "human_source": "summary"
+      }
+    },
+    {
+      "schema_version": 1,
+      "id": "1250",
+      "type": "planet",
+      "name": "Mercury",
+      "summary": "Solar-System object tracked by the Star Almanack weekly ephemeris and Planet Finder",
+      "representation": {
+        "machine": "./1250.json",
+        "human_source": "summary"
+      }
+    },
+    {
+      "schema_version": 1,
+      "id": "1251",
+      "type": "planet",
+      "name": "Venus",
+      "summary": "Solar-System object tracked by the Star Almanack weekly ephemeris and Planet Finder",
+      "representation": {
+        "machine": "./1251.json",
+        "human_source": "summary"
+      }
+    },
+    {
+      "schema_version": 1,
+      "id": "1252",
+      "type": "planet",
+      "name": "Earth",
+      "summary": "Solar-System object tracked by the Star Almanack weekly ephemeris and Planet Finder",
+      "representation": {
+        "machine": "./1252.json",
+        "human_source": "summary"
+      }
+    },
+    {
+      "schema_version": 1,
+      "id": "1253",
+      "type": "solar-system-object",
+      "name": "Moon",
+      "summary": "Solar-System object tracked by the Star Almanack weekly ephemeris and Planet Finder",
+      "representation": {
+        "machine": "./1253.json",
+        "human_source": "summary"
+      }
+    },
+    {
+      "schema_version": 1,
+      "id": "1254",
+      "type": "planet",
+      "name": "Mars",
+      "summary": "Solar-System object tracked by the Star Almanack weekly ephemeris and Planet Finder",
+      "representation": {
+        "machine": "./1254.json",
+        "human_source": "summary"
+      }
+    },
+    {
+      "schema_version": 1,
+      "id": "1255",
+      "type": "solar-system-object",
+      "name": "Ceres",
+      "summary": "Solar-System object tracked by the Star Almanack weekly ephemeris and Planet Finder",
+      "representation": {
+        "machine": "./1255.json",
+        "human_source": "summary"
+      }
+    },
+    {
+      "schema_version": 1,
+      "id": "1256",
+      "type": "planet",
+      "name": "Jupiter",
+      "summary": "Solar-System object tracked by the Star Almanack weekly ephemeris and Planet Finder",
+      "representation": {
+        "machine": "./1256.json",
+        "human_source": "summary"
+      }
+    },
+    {
+      "schema_version": 1,
+      "id": "1257",
+      "type": "planet",
+      "name": "Saturn",
+      "summary": "Solar-System object tracked by the Star Almanack weekly ephemeris and Planet Finder",
+      "representation": {
+        "machine": "./1257.json",
+        "human_source": "summary"
+      }
+    },
+    {
+      "schema_version": 1,
+      "id": "1258",
+      "type": "planet",
+      "name": "Uranus",
+      "summary": "Solar-System object tracked by the Star Almanack weekly ephemeris and Planet Finder",
+      "representation": {
+        "machine": "./1258.json",
+        "human_source": "summary"
+      }
+    },
+    {
+      "schema_version": 1,
+      "id": "1259",
+      "type": "planet",
+      "name": "Neptune",
+      "summary": "Solar-System object tracked by the Star Almanack weekly ephemeris and Planet Finder",
+      "representation": {
+        "machine": "./1259.json",
+        "human_source": "summary"
+      }
+    },
+    {
+      "schema_version": 1,
+      "id": "1260",
+      "type": "solar-system-object",
+      "name": "Pluto",
+      "summary": "Solar-System object tracked by the Star Almanack weekly ephemeris and Planet Finder",
+      "representation": {
+        "machine": "./1260.json",
+        "human_source": "summary"
+      }
+    },
+    {
+      "schema_version": 1,
+      "id": "727",
+      "type": "star",
+      "name": "α Dor",
+      "summary": "bright star in Dorado used as a fixed-sky reference",
+      "representation": {
+        "machine": "./727.json",
+        "human_source": "summary",
+        "human": "/stories/baseline/727.html"
+      },
+      "constellation_abbreviation": "Dor",
+      "constellation": "Dorado"
+    },
+    {
+      "schema_version": 1,
+      "id": "1305",
+      "type": "constellation",
+      "name": "Dorado",
+      "summary": "constellation used by Star Almanack to organize fixed-sky objects and finder geometry",
+      "representation": {
+        "machine": "./1305.json",
+        "human_source": "summary"
+      },
+      "abbreviation": "Dor"
+    },
+    {
+      "schema_version": 1,
+      "id": "25",
+      "type": "star",
+      "name": "Aldebaran",
+      "summary": "bright star in Taurus used as a fixed-sky reference",
+      "representation": {
+        "machine": "./25.json",
+        "human_source": "summary",
+        "human": "/stories/baseline/25.html"
+      },
+      "constellation_abbreviation": "Tau",
+      "constellation": "Taurus",
+      "position": {
+        "ra_deg": 68.980155,
+        "dec_deg": 16.509301,
+        "ecliptic_longitude_deg": 69.789181,
+        "ecliptic_latitude_deg": -5.467327
+      },
+      "representative_visual_magnitude": 0.87,
+      "guiding_asterisms": [
+        {
+          "id": "asterism-hyades-v-of-taurus",
+          "name": "Hyades / V of Taurus",
+          "relationship": "visual-member",
+          "provenance": {
+            "source": "Astronomy Magazine",
+            "source_url": "https://www.astronomy.com/astronomy-for-beginners/asterisms-hunt-the-night-skys-faux-constellations/",
+            "source_role": "verification",
+            "supports": "visual-membership"
+          }
+        },
+        {
+          "id": "asterism-winter-hexagon-winter-circle",
+          "name": "Winter Hexagon / Winter Circle",
+          "relationship": "visual-member",
+          "provenance": {
+            "source": "NASA",
+            "source_url": "https://science.nasa.gov/solar-system/skywatching/night-sky-network/connecting-the-dots-with-asterisms/",
+            "source_role": "verification",
+            "supports": "visual-membership"
+          }
+        },
+        {
+          "id": "asterism-orion-s-belt",
+          "name": "Orion's Belt",
+          "relationship": "star-hop-anchor",
+          "relationship_route_ids": [
+            "orions-belt-aldebaran"
+          ],
+          "provenance": {
+            "source": "NASA",
+            "source_url": "https://science.nasa.gov/image-article/apod-2025-november-20-alnitak-alnilam-mintaka/",
+            "source_role": "verification",
+            "supports": "asterism-definition"
+          }
+        }
+      ],
+      "star_hops": [
+        {
+          "id": "orions-belt-aldebaran",
+          "target_type": "star",
+          "target": "Aldebaran",
+          "steps": [
+            "Orion's Belt",
+            "Aldebaran",
+            "Hyades / V of Taurus"
+          ],
+          "instruction": "Use Orion's three Belt stars as a pointer westward toward orange Aldebaran and the Hyades V.",
+          "instruction_authorship": "Star Almanack original wording",
+          "provenance": {
+            "source": "NASA Night Sky Network",
+            "source_url": "https://science.nasa.gov/solar-system/skywatching/night-sky-network/spot-the-young-stars-of-the-hyades-and-pleiades/",
+            "source_role": "verification",
+            "supports": "star-hop-method"
+          }
+        }
+      ]
+    },
+    {
+      "schema_version": 1,
+      "id": "1351",
+      "type": "constellation",
+      "name": "Taurus",
+      "summary": "constellation used by Star Almanack to organize fixed-sky objects and finder geometry",
+      "representation": {
+        "machine": "./1351.json",
+        "human_source": "summary"
+      },
+      "abbreviation": "Tau"
+    },
+    {
+      "schema_version": 1,
+      "id": "730",
+      "type": "star",
+      "name": "α Cae",
+      "summary": "bright star in Caelum used as a fixed-sky reference",
+      "representation": {
+        "machine": "./730.json",
+        "human_source": "summary",
+        "human": "/stories/baseline/730.html"
+      },
+      "constellation_abbreviation": "Cae",
+      "constellation": "Caelum"
+    },
+    {
+      "schema_version": 1,
+      "id": "1282",
+      "type": "constellation",
+      "name": "Caelum",
+      "summary": "constellation used by Star Almanack to organize fixed-sky objects and finder geometry",
+      "representation": {
+        "machine": "./1282.json",
+        "human_source": "summary"
+      },
+      "abbreviation": "Cae"
+    },
+    {
+      "schema_version": 1,
+      "id": "731",
+      "type": "star",
+      "name": "β Cae",
+      "summary": "bright star in Caelum used as a fixed-sky reference",
+      "representation": {
+        "machine": "./731.json",
+        "human_source": "summary",
+        "human": "/stories/baseline/731.html"
+      },
+      "constellation_abbreviation": "Cae",
+      "constellation": "Caelum"
+    },
+    {
+      "schema_version": 1,
+      "id": "737",
+      "type": "star",
+      "name": "α Cam",
+      "summary": "bright star in Camelopardalis used as a fixed-sky reference",
+      "representation": {
+        "machine": "./737.json",
+        "human_source": "summary",
+        "human": "/stories/baseline/737.html"
+      },
+      "constellation_abbreviation": "Cam",
+      "constellation": "Camelopardalis"
+    },
+    {
+      "schema_version": 1,
+      "id": "1283",
+      "type": "constellation",
+      "name": "Camelopardalis",
+      "summary": "constellation used by Star Almanack to organize fixed-sky objects and finder geometry",
+      "representation": {
+        "machine": "./1283.json",
+        "human_source": "summary"
+      },
+      "abbreviation": "Cam"
+    },
+    {
+      "schema_version": 1,
+      "id": "94",
+      "type": "star",
+      "name": "Nunki",
+      "summary": "bright star in Sagittarius used as a fixed-sky reference",
+      "representation": {
+        "machine": "./94.json",
+        "human_source": "summary",
+        "human": "/stories/baseline/94.html"
+      },
+      "constellation_abbreviation": "Sgr",
+      "constellation": "Sagittarius",
+      "position": {
+        "ra_deg": 283.81635,
+        "dec_deg": -26.296722,
+        "ecliptic_longitude_deg": 282.385321,
+        "ecliptic_latitude_deg": -3.449516
+      },
+      "representative_visual_magnitude": 2.05,
+      "guiding_asterisms": [
+        {
+          "id": "asterism-teapot-of-sagittarius",
+          "name": "Teapot of Sagittarius",
+          "relationship": "visual-member",
+          "provenance": {
+            "source": "Astronomical League",
+            "source_url": "https://www.astroleague.org/wp-content/uploads/2025/12/Asterism_List_20251223.pdf",
+            "source_role": "verification",
+            "supports": "visual-membership"
+          }
+        }
+      ]
+    },
+    {
+      "schema_version": 1,
+      "id": "1344",
+      "type": "constellation",
+      "name": "Sagittarius",
+      "summary": "constellation used by Star Almanack to organize fixed-sky objects and finder geometry",
+      "representation": {
+        "machine": "./1344.json",
+        "human_source": "summary"
+      },
+      "abbreviation": "Sgr"
+    },
+    {
+      "schema_version": 1,
+      "id": "asterism-teapot",
+      "type": "asterism",
+      "name": "Teapot",
+      "summary": "observer-facing star pattern in Sagittarius",
+      "representation": {
+        "machine": "./asterism-teapot.json",
+        "human_source": "summary"
+      },
+      "constellation_abbreviation": "Sgr",
+      "members": [
+        "Kaus Australis",
+        "Kaus Media",
+        "Kaus Borealis",
+        "Nunki",
+        "Ascella"
+      ]
+    },
+    {
+      "schema_version": 1,
+      "id": "ecliptic-longitude",
+      "type": "observing-concept",
+      "name": "ecliptic longitude",
+      "summary": "angular position measured along the ecliptic, used here for conservative weekly Solar-System comparisons",
+      "representation": {
+        "machine": "./ecliptic-longitude.json",
+        "human_source": "summary"
+      }
+    },
+    {
+      "schema_version": 1,
+      "id": "zodiac",
+      "type": "observing-concept",
+      "name": "zodiac",
+      "summary": "the band of constellations along the ecliptic used to orient Solar-System objects",
+      "representation": {
+        "machine": "./zodiac.json",
+        "human_source": "summary"
+      }
+    }
+  ],
+  "calendar_fixed_object_ids": [
+    727,
+    25,
+    730,
+    731,
+    737
+  ],
+  "story_candidates": [
+    {
+      "fixed_object_id": 727,
+      "collection": "baseline",
+      "hed": "α Dor",
+      "dek": "α Dor is a charted star in Dor selected by the Calendar as part of this week’s fixed-sky observing framework.",
+      "body": "Why it is here: α Dor is a charted star in Dor selected by the Calendar as part of this week’s fixed-sky observing framework.\n\nHow to find it: Use its charted position in Dor and the surrounding figure stars to identify the field.",
+      "url": "/stories/baseline/727.html",
+      "artwork": null
+    },
+    {
+      "fixed_object_id": 25,
+      "collection": "baseline",
+      "hed": "Aldebaran",
+      "dek": "Aldebaran is a charted star in Tau selected by the Calendar as part of this week’s fixed-sky observing framework.",
+      "body": "Why it is here: Aldebaran is a charted star in Tau selected by the Calendar as part of this week’s fixed-sky observing framework.\n\nHow to find it: Use Orion's three Belt stars as a pointer westward toward orange Aldebaran and the Hyades V.",
+      "url": "/stories/baseline/25.html",
+      "artwork": null
+    },
+    {
+      "fixed_object_id": 730,
+      "collection": "baseline",
+      "hed": "α Cae",
+      "dek": "α Cae is a charted star in Cae selected by the Calendar as part of this week’s fixed-sky observing framework.",
+      "body": "Why it is here: α Cae is a charted star in Cae selected by the Calendar as part of this week’s fixed-sky observing framework.\n\nHow to find it: Use its charted position in Cae and the surrounding figure stars to identify the field.",
+      "url": "/stories/baseline/730.html",
+      "artwork": null
+    },
+    {
+      "fixed_object_id": 731,
+      "collection": "baseline",
+      "hed": "β Cae",
+      "dek": "β Cae is a charted star in Cae selected by the Calendar as part of this week’s fixed-sky observing framework.",
+      "body": "Why it is here: β Cae is a charted star in Cae selected by the Calendar as part of this week’s fixed-sky observing framework.\n\nHow to find it: Use its charted position in Cae and the surrounding figure stars to identify the field.",
+      "url": "/stories/baseline/731.html",
+      "artwork": null
+    },
+    {
+      "fixed_object_id": 737,
+      "collection": "baseline",
+      "hed": "α Cam",
+      "dek": "α Cam is a charted star in Cam selected by the Calendar as part of this week’s fixed-sky observing framework.",
+      "body": "Why it is here: α Cam is a charted star in Cam selected by the Calendar as part of this week’s fixed-sky observing framework.\n\nHow to find it: Use its charted position in Cam and the surrounding figure stars to identify the field.",
+      "url": "/stories/baseline/737.html",
+      "artwork": null
+    }
+  ],
+  "inline_stories": [],
+  "linked_stories": [],
+  "stories": [
+    {
+      "fixed_object_id": 727,
+      "collection": "baseline",
+      "hed": "α Dor",
+      "dek": "α Dor is a charted star in Dor selected by the Calendar as part of this week’s fixed-sky observing framework.",
+      "body": "Why it is here: α Dor is a charted star in Dor selected by the Calendar as part of this week’s fixed-sky observing framework.\n\nHow to find it: Use its charted position in Dor and the surrounding figure stars to identify the field.",
+      "url": "/stories/baseline/727.html",
+      "artwork": null
+    },
+    {
+      "fixed_object_id": 25,
+      "collection": "baseline",
+      "hed": "Aldebaran",
+      "dek": "Aldebaran is a charted star in Tau selected by the Calendar as part of this week’s fixed-sky observing framework.",
+      "body": "Why it is here: Aldebaran is a charted star in Tau selected by the Calendar as part of this week’s fixed-sky observing framework.\n\nHow to find it: Use Orion's three Belt stars as a pointer westward toward orange Aldebaran and the Hyades V.",
+      "url": "/stories/baseline/25.html",
+      "artwork": null
+    },
+    {
+      "fixed_object_id": 730,
+      "collection": "baseline",
+      "hed": "α Cae",
+      "dek": "α Cae is a charted star in Cae selected by the Calendar as part of this week’s fixed-sky observing framework.",
+      "body": "Why it is here: α Cae is a charted star in Cae selected by the Calendar as part of this week’s fixed-sky observing framework.\n\nHow to find it: Use its charted position in Cae and the surrounding figure stars to identify the field.",
+      "url": "/stories/baseline/730.html",
+      "artwork": null
+    },
+    {
+      "fixed_object_id": 731,
+      "collection": "baseline",
+      "hed": "β Cae",
+      "dek": "β Cae is a charted star in Cae selected by the Calendar as part of this week’s fixed-sky observing framework.",
+      "body": "Why it is here: β Cae is a charted star in Cae selected by the Calendar as part of this week’s fixed-sky observing framework.\n\nHow to find it: Use its charted position in Cae and the surrounding figure stars to identify the field.",
+      "url": "/stories/baseline/731.html",
+      "artwork": null
+    },
+    {
+      "fixed_object_id": 737,
+      "collection": "baseline",
+      "hed": "α Cam",
+      "dek": "α Cam is a charted star in Cam selected by the Calendar as part of this week’s fixed-sky observing framework.",
+      "body": "Why it is here: α Cam is a charted star in Cam selected by the Calendar as part of this week’s fixed-sky observing framework.\n\nHow to find it: Use its charted position in Cam and the surrounding figure stars to identify the field.",
+      "url": "/stories/baseline/737.html",
+      "artwork": null
+    }
+  ],
+  "descriptor_policy": {
+    "source_of_truth": "machine-readable JSON",
+    "candidate_pool": "complete; presentation never limits discovery",
+    "presentation": "Wordy",
+    "story_limit": null,
+    "wordy_policy": "rich weekly observing prose; link to complete object stories rather than embedding them",
+    "future_presentations": [
+      "Highlights"
+    ],
+    "link_target": "/almanack/descriptors/<fixed_object_id>.json for fixed-object descriptors",
+    "artwork_descriptor_is_separate": true,
+    "artwork_source": "explicit story front matter only",
+    "fixed_sky_identity_source": "Calendar data-fixed-object-id + data-observing-aid + database/fixed-objects.json",
+    "story_identity_source": "Calendar data-fixed-object-id only",
+    "story_source": "stories/<collection>/<fixed_object_id>.md",
+    "inline_story_content": "hed + dek + body",
+    "linked_story_content": "reserved for Highlights presentation",
+    "annual_note_is_separate_from_evergreen_story": true
+  }
+}
