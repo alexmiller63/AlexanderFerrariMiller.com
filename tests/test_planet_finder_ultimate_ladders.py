@@ -138,6 +138,9 @@ def test_00_fast_exact_w36(monkeypatch):
     """Exact W36 Greek must now solve, not merely produce a diagnostic timeout."""
     enable_alignment_fix(monkeypatch)
     monkeypatch.setenv("PLANET_FINDER_SKIP_ALIGNMENT_PREPLANNER", "1")
+    # Preserve the forensic's widest Uranus/Jupiter geometry while allowing
+    # fail-first selection among every remaining recursive body.
+    monkeypatch.setenv("PLANET_FINDER_DFS_FIXED_PREFIX", "2")
     monkeypatch.setenv("PLANET_FINDER_DIAGNOSTIC_LEVEL", "1")
     bodies = synthetic_bodies(W36_KNOWN_GOOD)
     result = layout(FinderMode.GREEK, bodies, target_solutions=1,
