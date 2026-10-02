@@ -645,7 +645,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             # this ordering. A body already at its persistent limit must not
             # receive one additional candidate merely because its ordering
             # changed.
-            if consume_body_budget and body_candidates >= budget["max_node_candidates"]:
+            if consume_body_budget and body_attempts[name] >= budget["max_node_candidates"]:
                 stats["blocked"] = "body-candidate-cap"
                 diagnostic_print(
                     f"Planet Finder {mode}: BODY-CANDIDATE CAP order={order_index} "
@@ -916,7 +916,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             stats["viable"] += 1
             last_yield_at = time.monotonic()
             yield box, path
-            if consume_body_budget and body_candidates >= budget["max_node_candidates"]:
+            if consume_body_budget and body_attempts[name] >= budget["max_node_candidates"]:
                 stats["blocked"] = "body-candidate-cap"
                 diagnostic_print(
                     f"Planet Finder {mode}: BODY-CANDIDATE CAP order={order_index} "
