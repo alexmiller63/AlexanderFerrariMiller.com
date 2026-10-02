@@ -415,29 +415,37 @@ def legal_candidate_positions(longitude: float, w: float, h: float, reserved: li
 
 
 def route(anchor: tuple[float, float], center: tuple[float, float], obstacles: list[Box], diagnostic=None, allow_initial_escape_count: int = 0, prefix_cache: dict | None = None, allow_initial_escape_indices: set[int] | None = None, target_box: Box | None = None, allow_angular_escape: bool = False, existing_paths: list[list[tuple[float, float]]] | None = None) -> list[tuple[float, float]] | None:
+    """Find the simplest legal leader with a bounded recursive local search.
+
+    Planet Finder chooses the label position.  This routine owns leader
+    geometry for that fixed position.  A failed segment therefore backtracks
+    inside the leader router before the outer layout DFS is allowed to reject
+    the label candidate.
+
+    Search order is deterministic and visually conservative:
+      1. direct leader;
+      2. one-elbow routes;
+      3. two-elbow routes.
+
+    Waypoints live on the existing canonical route radii and quarter-label
+    angular lattice.  The recursion is deliberately shallow and memoized:
+    this is constrained geometric routing, not an unrestricted maze search.
+    """
     if prefix_cache is None:
         prefix_cache = {}
-    # Ordinary callers keep the historical contiguous prefix behavior. Atomic
-    # conjunctions may instead name exactly which local obstacles are escapable
-    # on the first segment, so placed labels never become escapable by accident.
+    existing_paths = existing_paths or []
+
     if allow_initial_escape_indices is None:
         initial_escape_indices = set(range(allow_initial_escape_count))
     else:
         initial_escape_indices = set(allow_initial_escape_indices)
 
     def inside_escape_zone(point, box) -> bool:
-        # Initial escape is allowed only when the leader actually starts inside
-        # the protected footprint of an explicitly escapable reserved label.
-        # This exception applies to the first segment only; all later segments
-        # still treat the label as a hard obstacle.
         return (
             box.left - IMMUTABLE_LEADER_CLEARANCE <= point[0] <= box.right + IMMUTABLE_LEADER_CLEARANCE
             and box.top - IMMUTABLE_LEADER_CLEARANCE <= point[1] <= box.bottom + IMMUTABLE_LEADER_CLEARANCE
         )
 
-    # A leader may not originate inside a non-escapable obstacle. Explicitly
-    # escapable obstacles are ignored only for the first segment and only when
-    # the anchor really starts inside their protected footprint.
     if any(
         obstacle_index not in initial_escape_indices
         and box.left <= anchor[0] <= box.right
@@ -448,27 +456,33 @@ def route(anchor: tuple[float, float], center: tuple[float, float], obstacles: l
             diagnostic["anchor_blocked"] = diagnostic.get("anchor_blocked", 0) + 1
         return None
 
-    def segment_clear(a, b, skip_start_escape=False) -> bool:
+    def segment_clear(a, b, *, first_segment=False) -> bool:
         for obstacle_index, box in enumerate(obstacles):
-            if (skip_start_escape
-                    and obstacle_index in initial_escape_indices
-                    and inside_escape_zone(a, box)):
+            if (
+                first_segment
+                and obstacle_index in initial_escape_indices
+                and inside_escape_zone(a, box)
+            ):
                 continue
             if segment_hits_box(a, b, box, IMMUTABLE_LEADER_CLEARANCE):
                 return False
         return True
 
-    def first_blocker(a, b, skip_start_escape=False):
+    def first_blocker(a, b, *, first_segment=False):
         for obstacle_index, box in enumerate(obstacles):
-            if (skip_start_escape
-                    and obstacle_index in initial_escape_indices
-                    and inside_escape_zone(a, box)):
+            if (
+                first_segment
+                and obstacle_index in initial_escape_indices
+                and inside_escape_zone(a, box)
+            ):
                 continue
             if segment_hits_box(a, b, box, IMMUTABLE_LEADER_CLEARANCE):
                 return obstacle_index
         return None
 
     def target_landing(source, target):
+        if target is None:
+            return center
         dx = target.x - source[0]
         dy = target.y - source[1]
         if abs(dx) < 1e-12 and abs(dy) < 1e-12:
@@ -494,9 +508,6 @@ def route(anchor: tuple[float, float], center: tuple[float, float], obstacles: l
         if t_exit < 0.0 or t_enter > 1.0:
             return None
         hit = (source[0] + t_enter * dx, source[1] + t_enter * dy)
-        # Return the endpoint that can be rendered directly.  Back off 2 px
-        # from the label boundary so the SVG round line cap cannot paint into
-        # the label.  Rendering must not recalculate or clip this path later.
         hx, hy = hit[0] - source[0], hit[1] - source[1]
         distance = math.hypot(hx, hy)
         if distance <= 2.0 or distance < 1e-12:
@@ -504,22 +515,22 @@ def route(anchor: tuple[float, float], center: tuple[float, float], obstacles: l
         scale = (distance - 2.0) / distance
         return source[0] + hx * scale, source[1] + hy * scale
 
-    def route_clear_of_target(path) -> bool:
+    def target_clear(path) -> bool:
         if target_box is None:
             return True
         if len(path) < 2:
             return False
         for i in range(len(path) - 2):
-            if segment_hits_box(path[i], path[i + 1], target_box, IMMUTABLE_LEADER_CLEARANCE):
+            if segment_hits_box(
+                path[i], path[i + 1], target_box, IMMUTABLE_LEADER_CLEARANCE
+            ):
                 return False
         return not segment_hits_box(path[-2], path[-1], target_box, -0.5)
 
-    # A route is not successful merely because it clears label obstacles.
-    # Existing leader geometry is part of routing legality.  If a candidate
-    # route crosses/grazes a leader, keep searching this SAME label position
-    # for another route instead of throwing the label position away.
-    def route_acceptable(path) -> bool:
-        if not route_clear_of_target(path):
+    def path_legal(path) -> bool:
+        if not target_clear(path):
+            return False
+        if leader_hits_zodiac_rim(path):
             return False
         if existing_paths and leaders_too_close(path, existing_paths):
             if diagnostic is not None:
@@ -527,78 +538,155 @@ def route(anchor: tuple[float, float], center: tuple[float, float], obstacles: l
                     "existing_leader_blocked", 0
                 ) + 1
             return False
+        # A leader may not cross itself.  With at most two elbows this is cheap,
+        # but keeping the invariant here makes future extension safe.
+        if len(path) >= 4:
+            for i in range(len(path) - 1):
+                for j in range(i + 2, len(path) - 1):
+                    if i == 0 and j == len(path) - 2:
+                        continue
+                    if segments_too_close(
+                        path[i], path[i + 1], path[j], path[j + 1], 0.5
+                    ):
+                        return False
         return True
 
-    direct_endpoint = target_landing(anchor, target_box) if target_box is not None else center
-    if direct_endpoint is not None and segment_clear(anchor, direct_endpoint, skip_start_escape=True):
-        candidate = [anchor, direct_endpoint]
-        if route_acceptable(candidate):
+    def angular_offsets(radius):
+        step = (LABEL_LENGTH * 0.25) / max(radius, 1.0)
+        # Zero first, then symmetric quarter-label shells.
+        yield 0.0
+        for shell in range(1, 9):
+            yield -shell * step
+            yield shell * step
+
+    anchor_theta = math.atan2(anchor[1] - CY, anchor[0] - CX)
+    target_theta = math.atan2(center[1] - CY, center[0] - CX)
+
+    def waypoint_family(theta):
+        # Prefer smaller angular deflection before changing radius.  This keeps
+        # leaders visually simple while still exposing the complete canonical
+        # bounded lattice.
+        for shell in range(0, 9):
+            signs = (0.0,) if shell == 0 else (-1.0, 1.0)
+            for sign in signs:
+                for radius in ROUTE_RADII:
+                    step = (LABEL_LENGTH * 0.25) / max(radius, 1.0)
+                    angle = theta + sign * shell * step
+                    yield (
+                        CX + radius * math.cos(angle),
+                        CY + radius * math.sin(angle),
+                    )
+
+    escape_waypoints = tuple(waypoint_family(anchor_theta))
+    approach_waypoints = tuple(waypoint_family(target_theta))
+
+    # Bound the recursive search independently of the outer Planet Finder
+    # budget.  Memoization normally keeps this far below the cap; the cap is a
+    # hard guard against accidental combinatorial growth.
+    node_cap = 2048
+    nodes = 0
+    dead_states = set()
+
+    def record_block(kind, a=None, b=None, *, first_segment=False):
+        if diagnostic is None:
+            return
+        diagnostic[kind] = diagnostic.get(kind, 0) + 1
+        if a is not None and b is not None:
+            blocker = first_blocker(a, b, first_segment=first_segment)
+            if blocker is not None:
+                bucket = diagnostic.setdefault(kind + "_by", {})
+                bucket[blocker] = bucket.get(blocker, 0) + 1
+
+    def try_finish(path):
+        source = path[-1]
+        landing = target_landing(source, target_box)
+        if landing is None:
+            return None
+        first = len(path) == 1
+        if not segment_clear(source, landing, first_segment=first):
+            record_block("final_blocked", source, landing, first_segment=first)
+            return None
+        candidate = path + [landing]
+        if path_legal(candidate):
             return candidate
         if diagnostic is not None:
             diagnostic["target_approach"] = diagnostic.get("target_approach", 0) + 1
-    elif diagnostic is not None:
-        diagnostic["direct_blocked"] = diagnostic.get("direct_blocked", 0) + 1
-        blocker = first_blocker(anchor, direct_endpoint if direct_endpoint is not None else center, skip_start_escape=True)
-        if blocker is not None:
-            by_obstacle = diagnostic.setdefault("direct_blocked_by", {})
-            by_obstacle[blocker] = by_obstacle.get(blocker, 0) + 1
+        return None
 
-    anchor_theta = math.atan2(anchor[1] - CY, anchor[0] - CX)
-    center_theta = math.atan2(center[1] - CY, center[0] - CX)
-    for radius in ROUTE_RADII:
-        # Preserve the historical radial route first. For conjunctions only,
-        # add bounded left/right first elbows using the existing quarter-label
-        # refinement distance as the angular step. Every segment is still
-        # collision checked; this routes around a sibling label rather than
-        # declaring that label escapable.
-        angular_step = (LABEL_LENGTH * 0.25) / max(radius, 1.0)
-        offsets = (0.0,)
-        if allow_angular_escape or existing_paths:
-            # Conjunction leaders use the full canonical quarter-label escape
-            # lattice: 0, +/-0.25, ... +/-2.00 label lengths.  This belongs in
-            # route(), where the first elbow is chosen; expanding label
-            # candidate positions does not widen this escape corridor.
-            offsets = (0.0,) + tuple(
-                sign * shell * angular_step
-                for shell in range(1, 9)
-                for sign in (-1.0, 1.0)
-            )
-        for offset in offsets:
-            elbow1_theta = anchor_theta + offset
-            elbow1 = (CX + radius * math.cos(elbow1_theta), CY + radius * math.sin(elbow1_theta))
-            elbow2 = (CX + radius * math.cos(center_theta), CY + radius * math.sin(center_theta))
-            key1 = (round(elbow1[0], 6), round(elbow1[1], 6))
-            if key1 not in prefix_cache:
-                prefix_cache[key1] = segment_clear(anchor, elbow1, skip_start_escape=True)
-            if not prefix_cache[key1]:
-                if diagnostic is not None:
-                    diagnostic["escape_blocked"] = diagnostic.get("escape_blocked", 0) + 1
-                    blocker = first_blocker(anchor, elbow1, skip_start_escape=True)
-                    if blocker is not None:
-                        by_obstacle = diagnostic.setdefault("escape_blocked_by", {})
-                        by_obstacle[blocker] = by_obstacle.get(blocker, 0) + 1
-                continue
-            if not segment_clear(elbow1, elbow2):
-                if diagnostic is not None:
-                    diagnostic["arc_blocked"] = diagnostic.get("arc_blocked", 0) + 1
-                    blocker = first_blocker(elbow1, elbow2)
-                    if blocker is not None:
-                        by_obstacle = diagnostic.setdefault("arc_blocked_by", {})
-                        by_obstacle[blocker] = by_obstacle.get(blocker, 0) + 1
-                continue
-            final_endpoint = target_landing(elbow2, target_box) if target_box is not None else center
-            if final_endpoint is None or not segment_clear(elbow2, final_endpoint):
-                if diagnostic is not None:
-                    diagnostic["final_blocked"] = diagnostic.get("final_blocked", 0) + 1
-                    if final_endpoint is not None:
-                        blocker = first_blocker(elbow2, final_endpoint)
-                        if blocker is not None:
-                            by_obstacle = diagnostic.setdefault("final_blocked_by", {})
-                            by_obstacle[blocker] = by_obstacle.get(blocker, 0) + 1
-                continue
-            candidate = [anchor, elbow1, elbow2, final_endpoint]
-            if route_acceptable(candidate):
-                return candidate
+    def search(path, stage):
+        nonlocal nodes
+        nodes += 1
+        if nodes > node_cap:
             if diagnostic is not None:
-                diagnostic["target_approach"] = diagnostic.get("target_approach", 0) + 1
-    return None
+                diagnostic["recursive_node_cap"] = diagnostic.get(
+                    "recursive_node_cap", 0
+                ) + 1
+            return None
+
+        state = (
+            stage,
+            round(path[-1][0], 4),
+            round(path[-1][1], 4),
+        )
+        if state in dead_states:
+            return None
+
+        # Every state first tries to finish directly.  Thus a one-elbow route
+        # wins over every two-elbow route, and direct wins over both.
+        finished = try_finish(path)
+        if finished is not None:
+            return finished
+
+        if stage >= 2:
+            dead_states.add(state)
+            return None
+
+        family = escape_waypoints if stage == 0 else approach_waypoints
+        source = path[-1]
+        for waypoint in family:
+            if math.hypot(waypoint[0] - source[0], waypoint[1] - source[1]) < 1e-6:
+                continue
+
+            first = len(path) == 1
+            cache_key = (
+                round(source[0], 4), round(source[1], 4),
+                round(waypoint[0], 4), round(waypoint[1], 4),
+                first,
+            )
+            clear = prefix_cache.get(cache_key)
+            if clear is None:
+                clear = segment_clear(source, waypoint, first_segment=first)
+                prefix_cache[cache_key] = clear
+            if not clear:
+                record_block(
+                    "escape_blocked" if stage == 0 else "arc_blocked",
+                    source, waypoint, first_segment=first,
+                )
+                continue
+
+            partial = path + [waypoint]
+            # Reject bad partial geometry immediately.  This is the essential
+            # recursive pruning: do not construct the rest of a leader whose
+            # prefix already violates rim or existing-leader geometry.
+            if leader_hits_zodiac_rim(partial):
+                continue
+            if existing_paths and leaders_too_close(partial, existing_paths):
+                if diagnostic is not None:
+                    diagnostic["existing_leader_blocked"] = diagnostic.get(
+                        "existing_leader_blocked", 0
+                    ) + 1
+                continue
+
+            result = search(partial, stage + 1)
+            if result is not None:
+                return result
+
+        dead_states.add(state)
+        return None
+
+    result = search([anchor], 0)
+    if diagnostic is not None:
+        diagnostic["recursive_nodes"] = diagnostic.get("recursive_nodes", 0) + nodes
+        if result is None:
+            diagnostic["route_failed"] = diagnostic.get("route_failed", 0) + 1
+    return result
