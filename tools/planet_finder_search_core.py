@@ -2148,16 +2148,124 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             count, capped = count_blob_completions(candidate_group_index)
             blob_ranked.append((count, capped, candidate_group_index))
 
-        # Proven zero always wins. Otherwise prefer the blob with the fewest
-        # measured complete placements. A capped count is intentionally less
-        # attractive than an exact count of the same size.
+        # Proven zero always wins.  Exact domains beat capped domains.  When
+        # several blobs merely hit the same cap, use a bounded constraint
+        # look-ahead instead of an arbitrary original-index tie-break: place
+        # one complete candidate for each tied blob and ask how many of the
+        # other blobs immediately become impossible.  This is ordering only;
+        # the authoritative DFS below still explores every legal alternative.
         zero_blobs = [row for row in blob_ranked if row[0] == 0 and not row[1]]
         if zero_blobs:
             _, _, group_index = min(zero_blobs, key=lambda row: row[2])
         else:
-            _, _, group_index = min(
-                blob_ranked, key=lambda row: (row[0], row[1], row[2])
-            )
+            best_key = min((row[0], row[1]) for row in blob_ranked)
+            tied = [row for row in blob_ranked if (row[0], row[1]) == best_key]
+
+            def first_blob_completion(group_index):
+                snapshot = None
+
+                def probe_members(remaining_items):
+                    nonlocal snapshot
+                    if snapshot is not None:
+                        return
+                    if not remaining_items:
+                        snapshot = [
+                            (index, staged[index])
+                            for index, _ in alignment_group_items[group_index]
+                        ]
+                        return
+                    ranked = []
+                    for candidate_item in remaining_items:
+                        stream = alignment_profiled_candidates(
+                            candidate_item,
+                            -(group_index + 1),
+                            "alignment-group-lookahead-rank",
+                        )
+                        count = 0
+                        try:
+                            for _ in stream:
+                                count += 1
+                                if count >= budget["max_node_candidates"]:
+                                    break
+                        finally:
+                            stream.close()
+                        ranked.append((count, candidate_item))
+                        if count == 0:
+                            break
+                    count, item = min(ranked, key=lambda row: (row[0], row[1][0]))
+                    if count == 0:
+                        return
+                    original_index, (symbol, name, longitude) = item
+                    next_remaining = [
+                        candidate_item for candidate_item in remaining_items
+                        if candidate_item is not item
+                    ]
+                    stream = alignment_profiled_candidates(
+                        item,
+                        -(group_index + 1),
+                        "alignment-group-lookahead",
+                    )
+                    try:
+                        for box, path in stream:
+                            placed.append(box)
+                            leaders.append(path)
+                            leader_names.append(name)
+                            staged[original_index] = (
+                                symbol, name, longitude, box, path
+                            )
+                            try:
+                                probe_members(next_remaining)
+                            finally:
+                                staged.pop(original_index, None)
+                                leader_names.pop()
+                                leaders.pop()
+                                placed.pop()
+                            if snapshot is not None:
+                                break
+                    finally:
+                        stream.close()
+
+                probe_members(list(alignment_group_items[group_index]))
+                return snapshot
+
+            def lookahead_score(candidate_group_index):
+                snapshot = first_blob_completion(candidate_group_index)
+                if snapshot is None:
+                    return (len(remaining_group_indices), 0)
+                for original_index, row in snapshot:
+                    symbol, name, longitude, box, path = row
+                    placed.append(box)
+                    leaders.append(path)
+                    leader_names.append(name)
+                    staged[original_index] = row
+                try:
+                    zeros = 0
+                    residual = 0
+                    for other_group_index in remaining_group_indices:
+                        if other_group_index == candidate_group_index:
+                            continue
+                        count, capped = count_blob_completions(other_group_index)
+                        if count == 0 and not capped:
+                            zeros += 1
+                        residual += count
+                    return (zeros, -residual)
+                finally:
+                    for original_index, _ in reversed(snapshot):
+                        staged.pop(original_index, None)
+                        leader_names.pop()
+                        leaders.pop()
+                        placed.pop()
+
+            if len(tied) > 1 and tied[0][1]:
+                scored = [
+                    (lookahead_score(index), index)
+                    for _, _, index in tied
+                ]
+                _, group_index = max(scored, key=lambda row: (row[0], -row[1]))
+            else:
+                _, _, group_index = min(
+                    tied, key=lambda row: row[2]
+                )
 
         group_items = alignment_group_items[group_index]
         group_names = ">".join(item[1][1] for item in group_items)
