@@ -54,6 +54,14 @@ class DepthNodeBudgetExhausted(RuntimeError):
         self.depth = depth
         self.name = name
 
+class ForwardBlockerRepeated(RuntimeError):
+    """Signal that one future body repeatedly kills otherwise viable prefixes."""
+
+    def __init__(self, name: str, count: int):
+        super().__init__(f"repeated forward blocker {name}: {count} dead prefixes")
+        self.name = name
+        self.count = count
+
 import math
 import os
 import time
@@ -1850,6 +1858,13 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
     # parent depth, causing the controller to blame/promote the parent instead
     # of the future body that is the real squeaky wheel.
     forward_blockers = {}
+    # A future body can be the true squeaky wheel without ever reaching its
+    # own DFS depth: forward checking may repeatedly prove it dead first.
+    # After enough independent dead prefixes, hand that evidence to the outer
+    # controller so the same generic promotion machinery can move it earlier.
+    forward_blocker_promotion_threshold = max(
+        1, int(os.environ.get("PLANET_FINDER_FORWARD_BLOCKER_PROMOTION", "25"))
+    )
     forward_parent_effect = {"checks": 0, "raw": 0, "parent_box": 0, "parent_leader": 0, "other": 0}
     # Forward checking is only a pruning hint.  Bound raw look-ahead work so
     # a difficult body cannot monopolize the mode clock.  Hitting this cap is
@@ -2203,6 +2218,16 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 body_stat["dead"] += 1
                 forward_stats["pruned"] += 1
                 forward_blockers[future_name] = forward_blockers.get(future_name, 0) + 1
+                if forward_blockers[future_name] >= forward_blocker_promotion_threshold:
+                    diagnostic_print(
+                        f"Planet Finder {mode}: FORWARD SQUEAKY-WHEEL "
+                        f"body={future_name} dead-prefixes={forward_blockers[future_name]:,}/"
+                        f"{forward_blocker_promotion_threshold:,}; requesting promotion",
+                        flush=True,
+                    )
+                    raise ForwardBlockerRepeated(
+                        future_name, forward_blockers[future_name]
+                    )
                 if next_depth == 1 and order[0][1][1] == "Sun":
                     diagnostic_print(
                         f"Planet Finder {mode}: SUN-PREFIX DEAD-GATE "
@@ -2575,6 +2600,15 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         dump_diagnostics(f"early forward blocker body={exc.name}")
         return SearchOutcome("EXHAUSTED", [], [], exc.name, {
             "source": "forward-check-parent-independent",
+        })
+    except ForwardBlockerRepeated as exc:
+        dump_diagnostics(
+            f"repeated forward blocker body={exc.name} dead-prefixes={exc.count}"
+        )
+        return SearchOutcome("CAPPED", [], [], exc.name, {
+            "source": "forward-check-repeated",
+            "dead_prefixes": exc.count,
+            "threshold": forward_blocker_promotion_threshold,
         })
     except DepthNodeBudgetExhausted as exc:
         # Hitting the per-body/depth cap is the squeaky-wheel signal.  Report
