@@ -1592,6 +1592,38 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                         root_symbol, root_name, root_longitude, root_box, root_path
                     )
 
+                    # Diagnostic only: group 3 is the final Sun/Mercury/Jupiter
+                    # alignment in the W36 control.  Record whether each
+                    # distinct root geometry even leaves candidates for its
+                    # siblings before the descendant DFS/gates can discard it.
+                    if candidate_group_index == 2:
+                        sibling_counts = []
+                        for sibling_item in remaining:
+                            sibling_name = sibling_item[1][1]
+                            sibling_stream = viable_candidates(
+                                sibling_item, diagnostic_depth,
+                                consume_body_budget=False,
+                            )
+                            sibling_count = 0
+                            try:
+                                for _ in sibling_stream:
+                                    sibling_count += 1
+                                    if sibling_count >= budget["max_node_candidates"]:
+                                        break
+                            finally:
+                                sibling_stream.close()
+                            sibling_counts.append(
+                                f"{sibling_name}={sibling_count}"
+                            )
+                        diagnostic_print(
+                            f"Planet Finder {mode}: GROUP3 ROOT VIABILITY "
+                            f"choice={roots_tried} root={root_name} "
+                            f"box=({root_box.x:.1f},{root_box.y:.1f},"
+                            f"{root_box.w:.1f},{root_box.h:.1f}) "
+                            + " ".join(sibling_counts),
+                            level=1, flush=True,
+                        )
+
                     def capture_one_from_root():
                         rows = tuple(staged[item[0]] for item in group_items)
                         collected.append(rows)
