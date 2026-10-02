@@ -2013,17 +2013,8 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
     # Cache bounded blob-domain probes by exact staged geometry. Look-ahead
     # and authoritative recursion frequently ask the identical question; the
     # answer is deterministic for a fixed staged state and probe limit.
-    blob_completion_cache = {}
-    blob_completion_snapshots = {}
-
     def solve_alignment_group(remaining_group_indices):
-        """Solve alignment blobs with fail-first ordering at every recursion level.
-
-        Blob identity remains its original index, but recursion order is dynamic:
-        rank every remaining blob by the smallest current member domain and solve
-        the tightest blob first.  Member placement then applies the same MRV rule
-        recursively inside that blob.  All choices remain fully backtrackable.
-        """
+        """Solve alignment blobs with cheap fail-first ordering and exact DFS."""
         if not remaining_group_indices:
             alignment_indices = {
                 item[0]
@@ -2064,311 +2055,35 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             )
             return solved
 
-        # MRV at the blob level must measure the domain of the WHOLE blob,
-        # not use one member's domain as a proxy.  Count complete compatible
-        # blob placements only up to a small cap: 0, 1, 2, ... are meaningful
-        # fail-first distinctions; reaching the cap means merely "not tight".
-        blob_probe_limit = max(
-            1, int(os.environ.get("PLANET_FINDER_ALIGNMENT_BLOB_PROBE_LIMIT", "8"))
-        )
-
-        def blob_has_completion(group_index):
-            """Return on the first complete compatible geometry for one blob."""
-            group_items = list(alignment_group_items[group_index])
-
-            def witness_members(remaining_items):
-                if not remaining_items:
-                    return True
-                ranked = []
-                for candidate_item in remaining_items:
-                    stream = alignment_profiled_candidates(
-                        candidate_item,
-                        -(group_index + 1),
-                        "alignment-group-support-rank",
-                    )
-                    count = 0
-                    try:
-                        for _ in stream:
-                            count += 1
-                            if count >= budget["max_node_candidates"]:
-                                break
-                    finally:
-                        stream.close()
-                    ranked.append((count, candidate_item))
-                    if count == 0:
-                        return False
-                _, item = min(ranked, key=lambda row: (row[0], row[1][0]))
-                original_index, (symbol, name, longitude) = item
-                next_remaining = [
-                    candidate_item for candidate_item in remaining_items
-                    if candidate_item is not item
-                ]
-                stream = alignment_profiled_candidates(
-                    item,
-                    -(group_index + 1),
-                    "alignment-group-support-witness",
-                )
-                try:
-                    for box, path in stream:
-                        placed.append(box)
-                        leaders.append(path)
-                        leader_names.append(name)
-                        staged[original_index] = (
-                            symbol, name, longitude, box, path
-                        )
-                        try:
-                            if witness_members(next_remaining):
-                                return True
-                        finally:
-                            staged.pop(original_index, None)
-                            leader_names.pop()
-                            leaders.pop()
-                            placed.pop()
-                finally:
-                    stream.close()
-                return False
-
-            return witness_members(group_items)
-
-        def count_blob_completions(group_index, support_groups=()):
-            support_groups = tuple(support_groups)
-            cache_key = (
-                group_index,
-                blob_probe_limit,
-                support_groups,
-                alignment_state_signature(),
-            )
-            cached = blob_completion_cache.get(cache_key)
-            if cached is not None:
-                return cached
-
-            group_items = list(alignment_group_items[group_index])
-            completion_count = 0
-            snapshots = []
-
-            def probe_members(remaining_items):
-                nonlocal completion_count
-                if completion_count >= blob_probe_limit:
-                    return
-                if not remaining_items:
-                    # Blob-level arc consistency: this complete geometry is in
-                    # the effective domain only when every requested remaining
-                    # blob has at least one compatible complete geometry.
-                    for support_group_index in support_groups:
-                        if not blob_has_completion(support_group_index):
-                            return
-                    snapshots.append(tuple(
-                        (index, staged[index])
-                        for index, _ in alignment_group_items[group_index]
-                    ))
-                    completion_count += 1
-                    return
-
-                # Use the same fail-first idea inside the probe, but this is
-                # deliberately only a bounded ranking probe.  The authoritative
-                # solve_alignment_members() below still performs the exact DFS.
-                ranked = []
-                for candidate_item in remaining_items:
-                    stream = alignment_profiled_candidates(
-                        candidate_item,
-                        -(group_index + 1),
-                        "alignment-group-completion-rank",
-                    )
-                    count = 0
-                    capped = False
-                    try:
-                        for _ in stream:
-                            count += 1
-                            if count >= budget["max_node_candidates"]:
-                                capped = True
-                                break
-                    finally:
-                        stream.close()
-                    ranked.append((count, capped, candidate_item))
-                    if count == 0 and not capped:
-                        break
-
-                zero_rows = [row for row in ranked if row[0] == 0 and not row[1]]
-                if zero_rows:
-                    return
-                _, _, item = min(
-                    ranked,
-                    key=lambda row: (row[0], row[1], row[2][0]),
-                )
-                original_index, (symbol, name, longitude) = item
-                next_remaining = [
-                    candidate_item
-                    for candidate_item in remaining_items
-                    if candidate_item is not item
-                ]
-                stream = alignment_profiled_candidates(
-                    item,
-                    -(group_index + 1),
-                    "alignment-group-completion",
-                )
-                try:
-                    for box, path in stream:
-                        placed.append(box)
-                        leaders.append(path)
-                        leader_names.append(name)
-                        staged[original_index] = (
-                            symbol, name, longitude, box, path
-                        )
-                        try:
-                            probe_members(next_remaining)
-                        finally:
-                            staged.pop(original_index, None)
-                            leader_names.pop()
-                            leaders.pop()
-                            placed.pop()
-                        if completion_count >= blob_probe_limit:
-                            break
-                finally:
-                    stream.close()
-
-            probe_members(group_items)
-            result = (completion_count, completion_count >= blob_probe_limit)
-            blob_completion_cache[cache_key] = result
-            blob_completion_snapshots[cache_key] = tuple(snapshots)
-            return result
-
+        # Cheap blob MRV: estimate each blob by its tightest member in the
+        # current geometry. This is ordering only; it never proves or prunes a
+        # whole blob. Exact member DFS below remains authoritative.
         blob_ranked = []
         for candidate_group_index in remaining_group_indices:
-            support_groups = tuple(
-                index for index in remaining_group_indices
-                if index != candidate_group_index
-            )
-            count, capped = count_blob_completions(
-                candidate_group_index, support_groups
-            )
-            blob_ranked.append((count, capped, candidate_group_index))
-
-        # Proven zero always wins.  Exact domains beat capped domains.  When
-        # several blobs merely hit the same cap, use a bounded constraint
-        # look-ahead instead of an arbitrary original-index tie-break: place
-        # one complete candidate for each tied blob and ask how many of the
-        # other blobs immediately become impossible.  This is ordering only;
-        # the authoritative DFS below still explores every legal alternative.
-        preferred_blob_snapshot = None
-        zero_blobs = [row for row in blob_ranked if row[0] == 0 and not row[1]]
-        if zero_blobs:
-            _, _, group_index = min(zero_blobs, key=lambda row: row[2])
-        else:
-            best_key = min((row[0], row[1]) for row in blob_ranked)
-            tied = [row for row in blob_ranked if (row[0], row[1]) == best_key]
-
-            def first_blob_completion(group_index):
-                snapshot = None
-
-                def probe_members(remaining_items):
-                    nonlocal snapshot
-                    if snapshot is not None:
-                        return
-                    if not remaining_items:
-                        snapshot = [
-                            (index, staged[index])
-                            for index, _ in alignment_group_items[group_index]
-                        ]
-                        return
-                    ranked = []
-                    for candidate_item in remaining_items:
-                        stream = alignment_profiled_candidates(
-                            candidate_item,
-                            -(group_index + 1),
-                            "alignment-group-lookahead-rank",
-                        )
-                        count = 0
-                        try:
-                            for _ in stream:
-                                count += 1
-                                if count >= budget["max_node_candidates"]:
-                                    break
-                        finally:
-                            stream.close()
-                        ranked.append((count, candidate_item))
-                        if count == 0:
-                            break
-                    count, item = min(ranked, key=lambda row: (row[0], row[1][0]))
-                    if count == 0:
-                        return
-                    original_index, (symbol, name, longitude) = item
-                    next_remaining = [
-                        candidate_item for candidate_item in remaining_items
-                        if candidate_item is not item
-                    ]
-                    stream = alignment_profiled_candidates(
-                        item,
-                        -(group_index + 1),
-                        "alignment-group-lookahead",
-                    )
-                    try:
-                        for box, path in stream:
-                            placed.append(box)
-                            leaders.append(path)
-                            leader_names.append(name)
-                            staged[original_index] = (
-                                symbol, name, longitude, box, path
-                            )
-                            try:
-                                probe_members(next_remaining)
-                            finally:
-                                staged.pop(original_index, None)
-                                leader_names.pop()
-                                leaders.pop()
-                                placed.pop()
-                            if snapshot is not None:
-                                break
-                    finally:
-                        stream.close()
-
-                probe_members(list(alignment_group_items[group_index]))
-                return snapshot
-
-            def lookahead_score(candidate_group_index):
-                snapshot = first_blob_completion(candidate_group_index)
-                if snapshot is None:
-                    return (len(remaining_group_indices), 0)
-                for original_index, row in snapshot:
-                    symbol, name, longitude, box, path = row
-                    placed.append(box)
-                    leaders.append(path)
-                    leader_names.append(name)
-                    staged[original_index] = row
-                try:
-                    zeros = 0
-                    residual = 0
-                    for other_group_index in remaining_group_indices:
-                        if other_group_index == candidate_group_index:
-                            continue
-                        count, capped = count_blob_completions(other_group_index)
-                        if count == 0 and not capped:
-                            zeros += 1
-                        residual += count
-                    return (zeros, -residual)
-                finally:
-                    for original_index, _ in reversed(snapshot):
-                        staged.pop(original_index, None)
-                        leader_names.pop()
-                        leaders.pop()
-                        placed.pop()
-
-            preferred_blob_snapshot = None
-            if len(tied) > 1 and tied[0][1]:
-                scored = [
-                    (lookahead_score(index), index)
-                    for _, _, index in tied
-                ]
-                _, group_index = max(scored, key=lambda row: (row[0], -row[1]))
-                # Reuse the exact geometry already generated by look-ahead.
-                # This avoids paying to regenerate an equivalent first blob
-                # before authoritative recursion can test the remaining blobs.
-                preferred_blob_snapshot = first_blob_completion(group_index)
-            else:
-                _, _, group_index = min(
-                    tied, key=lambda row: row[2]
+            member_counts = []
+            for item in alignment_group_items[candidate_group_index]:
+                stream = alignment_profiled_candidates(
+                    item,
+                    -(candidate_group_index + 1),
+                    "alignment-group-rank",
                 )
-                preferred_blob_snapshot = None
+                count = 0
+                try:
+                    for _ in stream:
+                        count += 1
+                        if count >= budget["max_node_candidates"]:
+                            break
+                finally:
+                    stream.close()
+                member_counts.append(count)
+                if count == 0:
+                    break
+            blob_ranked.append((
+                min(member_counts) if member_counts else 0,
+                candidate_group_index,
+            ))
 
+        _, group_index = min(blob_ranked, key=lambda row: (row[0], row[1]))
         group_items = alignment_group_items[group_index]
         group_names = ">".join(item[1][1] for item in group_items)
         next_groups = tuple(
@@ -2378,7 +2093,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             f"Planet Finder {mode}: ALIGNMENT GROUP MRV "
             f"chosen={group_index + 1} members={group_names} "
             f"remaining={len(remaining_group_indices)} "
-            f"ranks={[(index + 1, count, capped) for count, capped, index in blob_ranked]}",
+            f"ranks={[(index + 1, count) for count, index in blob_ranked]}",
             level=1, flush=True,
         )
         diagnostic_print(
@@ -2408,54 +2123,9 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 )
             return solved
 
-        solved = False
-
-        # The bounded domain probe above already generated complete legal blob
-        # geometries. Consume those exact geometries as the first authoritative
-        # DFS alternatives instead of throwing them away and regenerating them.
-        chosen_probe_key = (
-            group_index,
-            blob_probe_limit,
-            tuple(index for index in remaining_group_indices if index != group_index),
-            alignment_state_signature(),
+        solved = solve_alignment_members(
+            group_index, list(group_items), recurse_after_blob
         )
-        probed_snapshots = list(
-            blob_completion_snapshots.get(chosen_probe_key, ())
-        )
-        if preferred_blob_snapshot:
-            preferred_tuple = tuple(preferred_blob_snapshot)
-            probed_snapshots = [
-                preferred_tuple,
-                *[row for row in probed_snapshots if row != preferred_tuple],
-            ]
-
-        for snapshot in probed_snapshots:
-            for original_index, row in snapshot:
-                symbol, name, longitude, box, path = row
-                placed.append(box)
-                leaders.append(path)
-                leader_names.append(name)
-                staged[original_index] = row
-            try:
-                solved = recurse_after_blob()
-            finally:
-                for original_index, _ in reversed(snapshot):
-                    staged.pop(original_index, None)
-                    leader_names.pop()
-                    leaders.pop()
-                    placed.pop()
-            if solved:
-                break
-
-        # An uncapped probe enumerated the complete blob domain, so failure of
-        # every retained geometry is an exact failure. Only a capped probe can
-        # have untried alternatives that require the full member DFS fallback.
-        probe_result = blob_completion_cache.get(chosen_probe_key)
-        probe_exhaustive = probe_result is not None and not probe_result[1]
-        if not solved and not probe_exhaustive:
-            solved = solve_alignment_members(
-                group_index, list(group_items), recurse_after_blob
-            )
         diagnostic_print(
             f"Planet Finder {mode}: ALIGNMENT RECURSIVE EXIT "
             f"group={group_index + 1} solved={solved} completions={completions}",
