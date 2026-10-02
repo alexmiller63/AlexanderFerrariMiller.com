@@ -2083,7 +2083,10 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 candidate_group_index,
             ))
 
-        _, group_index = min(blob_ranked, key=lambda row: (row[0], row[1]))
+        # At blob level, prefer the larger constraint footprint: placing
+        # the broader blob first exposes its restrictions to the remaining
+        # blobs instead of repeatedly embedding it under a narrow blob.
+        _, group_index = max(blob_ranked, key=lambda row: (row[0], -row[1]))
         group_items = alignment_group_items[group_index]
         group_names = ">".join(item[1][1] for item in group_items)
         next_groups = tuple(
