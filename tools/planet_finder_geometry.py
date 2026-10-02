@@ -47,7 +47,7 @@ CANONICAL = [
 # Standalone defaults. GitHub Actions may override these through environment variables.
 DEFAULT_CANDIDATE_LAYOUTS = 5
 DEFAULT_MAX_NODE_CANDIDATES = 200
-DEFAULT_MAX_SEARCH_SECONDS = 180
+DEFAULT_MAX_SEARCH_SECONDS = 360
 
 # Bodies closer than this in ecliptic longitude form one deterministic
 # near-conjunction group before any presentation-mode search begins.
