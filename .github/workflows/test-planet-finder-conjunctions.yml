@@ -21,7 +21,6 @@ jobs:
       - name: Run W36 Latin and Mixed exact regressions
         env:
           PYTHONPATH: tools
-          PLANET_FINDER_SKIP_ALIGNMENT_PREPLANNER: "1"
           PLANET_FINDER_DIAGNOSTIC_LEVEL: "2"
         run: |
           python -m pytest -q -s \
