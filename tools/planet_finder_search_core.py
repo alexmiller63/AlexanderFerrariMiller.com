@@ -2072,6 +2072,64 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             1, int(os.environ.get("PLANET_FINDER_ALIGNMENT_BLOB_PROBE_LIMIT", "8"))
         )
 
+        def blob_has_completion(group_index):
+            """Return on the first complete compatible geometry for one blob."""
+            group_items = list(alignment_group_items[group_index])
+
+            def witness_members(remaining_items):
+                if not remaining_items:
+                    return True
+                ranked = []
+                for candidate_item in remaining_items:
+                    stream = alignment_profiled_candidates(
+                        candidate_item,
+                        -(group_index + 1),
+                        "alignment-group-support-rank",
+                    )
+                    count = 0
+                    try:
+                        for _ in stream:
+                            count += 1
+                            if count >= budget["max_node_candidates"]:
+                                break
+                    finally:
+                        stream.close()
+                    ranked.append((count, candidate_item))
+                    if count == 0:
+                        return False
+                _, item = min(ranked, key=lambda row: (row[0], row[1][0]))
+                original_index, (symbol, name, longitude) = item
+                next_remaining = [
+                    candidate_item for candidate_item in remaining_items
+                    if candidate_item is not item
+                ]
+                stream = alignment_profiled_candidates(
+                    item,
+                    -(group_index + 1),
+                    "alignment-group-support-witness",
+                )
+                try:
+                    for box, path in stream:
+                        placed.append(box)
+                        leaders.append(path)
+                        leader_names.append(name)
+                        staged[original_index] = (
+                            symbol, name, longitude, box, path
+                        )
+                        try:
+                            if witness_members(next_remaining):
+                                return True
+                        finally:
+                            staged.pop(original_index, None)
+                            leader_names.pop()
+                            leaders.pop()
+                            placed.pop()
+                finally:
+                    stream.close()
+                return False
+
+            return witness_members(group_items)
+
         def count_blob_completions(group_index, support_groups=()):
             support_groups = tuple(support_groups)
             cache_key = (
@@ -2097,10 +2155,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                     # the effective domain only when every requested remaining
                     # blob has at least one compatible complete geometry.
                     for support_group_index in support_groups:
-                        support_count, _ = count_blob_completions(
-                            support_group_index, ()
-                        )
-                        if support_count == 0:
+                        if not blob_has_completion(support_group_index):
                             return
                     snapshots.append(tuple(
                         (index, staged[index])
