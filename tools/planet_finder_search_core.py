@@ -2259,20 +2259,20 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             candidates += 1
             forensic["admitted"] += 1
             if os.environ.get("PLANET_FINDER_SKIP_ALIGNMENT_PREPLANNER", "0") == "1":
-            # Forensic escape hatch: bypass only the speculative preplanner.
-            # Preserve the recursive alignment DFS/backtracking layer; that is
-            # the mechanism that coordinates close alignment members.
-            alignment_names = [[item[1][1] for item in group] for group in alignment_group_items]
-            diagnostic_print(
-                f"Planet Finder {mode}: FORENSIC ALIGNMENT-PREPLANNER BYPASS "
-                f"alignment_groups={alignment_names} "
-                f"staged={len(staged)} placed={len(placed)} leaders={len(leaders)}",
-                flush=True,
-            )
-            if alignment_group_items:
-                return solve_alignment_group(0)
-            return search(0)
-
+                # Forensic escape hatch: bypass only the speculative preplanner.
+                # Preserve the recursive alignment DFS/backtracking layer; that is
+                # the mechanism that coordinates close alignment members.
+                alignment_names = [[item[1][1] for item in group] for group in alignment_group_items]
+                diagnostic_print(
+                    f"Planet Finder {mode}: FORENSIC ALIGNMENT-PREPLANNER BYPASS "
+                    f"alignment_groups={alignment_names} "
+                    f"staged={len(staged)} placed={len(placed)} leaders={len(leaders)}",
+                    flush=True,
+                )
+                if alignment_group_items:
+                    return solve_alignment_group(0)
+                return search(0)
+    
         # Conjunctions have no placement path of their own.  Every body enters
         # the ordinary coordinated alignment planner; conjunction metadata is
         # consulted only by downstream backtracking to keep a conjunction
