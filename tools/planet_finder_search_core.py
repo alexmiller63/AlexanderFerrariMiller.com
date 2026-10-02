@@ -1468,35 +1468,35 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             exhausted_first = not ranked_ordinary[0][1]
             for first_box, first_path in first_candidates:
                 tested += 1
-                    placed.append(first_box)
-                    leaders.append(first_path)
-                    leader_names.append(first_name)
-                    staged[first_index] = (
-                        first_symbol, first_name, first_longitude,
-                        first_box, first_path,
+                placed.append(first_box)
+                leaders.append(first_path)
+                leader_names.append(first_name)
+                staged[first_index] = (
+                    first_symbol, first_name, first_longitude,
+                    first_box, first_path,
+                )
+                try:
+                    second_stream = viable_candidates(
+                        second, len(order), consume_body_budget=False
                     )
                     try:
-                        second_stream = viable_candidates(
-                            second, len(order), consume_body_budget=False
+                        next(second_stream)
+                    except StopIteration:
+                        pass
+                    else:
+                        diagnostic_print(
+                            f"Planet Finder {mode}: ALIGNMENT PAIR WITNESS "
+                            f"first={first_name} second={second_name} tested={tested}",
+                            level=2, flush=True,
                         )
-                        try:
-                            next(second_stream)
-                        except StopIteration:
-                            pass
-                        else:
-                            diagnostic_print(
-                                f"Planet Finder {mode}: ALIGNMENT PAIR WITNESS "
-                                f"first={first_name} second={second_name} tested={tested}",
-                                level=2, flush=True,
-                            )
-                            return True
-                        finally:
-                            second_stream.close()
+                        return True
                     finally:
-                        staged.pop(first_index, None)
-                        leader_names.pop()
-                        leaders.pop()
-                        placed.pop()
+                        second_stream.close()
+                finally:
+                    staged.pop(first_index, None)
+                    leader_names.pop()
+                    leaders.pop()
+                    placed.pop()
             if not exhausted_first:
                 diagnostic_print(
                     f"Planet Finder {mode}: ALIGNMENT PAIR UNKNOWN "
