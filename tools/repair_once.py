@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""One-shot: restore the search tail and coordinated-geometry wrapper."""
+"""One-shot: restore the coordinated-geometry function boundary."""
 
 from pathlib import Path
 
@@ -11,11 +11,6 @@ if not ENABLED:
 
 P = Path("tools/planet_finder_search_core.py")
 text = P.read_text(encoding="utf-8")
-
-# The damaged file currently has the coordinated-alignment planning block
-# sitting directly at the end of search(), followed by a call to the missing
-# search_coordinated_geometry().  Restore the function boundary without
-# changing the current coordinated-alignment code.
 
 start_marker = (
     "        # Conjunctions have no placement path of their own.  Every body enters\n"
@@ -46,7 +41,8 @@ if "    def search_coordinated_geometry():" in text:
 
 misplaced_body = text[start:end]
 
-# Move the existing coordinated-alignment block under its proper function.
+# Move the existing coordinated-alignment block beneath its proper
+# function boundary without otherwise changing that block.
 indented_body = "".join(
     ("    " + line) if line.strip() else line
     for line in misplaced_body.splitlines(True)
@@ -79,22 +75,28 @@ wrapper = (
 )
 
 text = text[:start] + wrapper + text[end:]
-
 P.write_text(text, encoding="utf-8")
 
-# Self-disable only after the repair has succeeded.
+# Self-disable after a successful repair.  Match the assignment including
+# its surrounding newlines so text elsewhere in this script cannot count.
 me = Path(__file__)
 source = me.read_text(encoding="utf-8")
 
-if source.count("ENABLED = True") != 1:
+enabled_assignment = "\nENABLED = " + "True\n"
+disabled_assignment = "\nENABLED = False\n"
+
+if source.count(enabled_assignment) != 1:
     raise SystemExit(
-        "Safety stop: unexpected ENABLED marker count"
+        "Safety stop: ENABLED assignment not uniquely identifiable"
     )
 
-me.write_text(
-    source.replace("ENABLED = True", "ENABLED = False", 1),
-    encoding="utf-8",
+source = source.replace(
+    enabled_assignment,
+    disabled_assignment,
+    1,
 )
+
+me.write_text(source, encoding="utf-8")
 
 print(
     "Restored search_coordinated_geometry(); "
