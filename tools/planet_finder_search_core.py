@@ -1924,7 +1924,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
 
     def forensic_uranus_venus_boundary():
         """Diagnostic-only compatibility snapshot for the W36 Uranus/Venus boundary."""
-        if "uranus-venus" not in context_label:
+        if not context_label or "uranus-venus" not in context_label:
             return
         by_name = {item[1][1]: item for item in order}
         if "Uranus" not in by_name or "Venus" not in by_name:
