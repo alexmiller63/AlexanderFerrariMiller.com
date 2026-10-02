@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
-"""One-shot: add blocker identities to forward-check terminal diagnostics."""
+"""One-shot: restore the search tail and coordinated-geometry wrapper."""
+
 from pathlib import Path
 
-ENABLED = False
+ENABLED = True
+
 if not ENABLED:
     print("Repair Once is OFF; nothing to do.")
     raise SystemExit(0)
@@ -10,116 +12,91 @@ if not ENABLED:
 P = Path("tools/planet_finder_search_core.py")
 text = P.read_text(encoding="utf-8")
 
-def replace_once(old, new, label):
-    global text
-    count = text.count(old)
-    if count != 1:
-        raise SystemExit(f"Safety stop: {label} anchor count={count}")
-    text = text.replace(old, new, 1)
+# The damaged file currently has the coordinated-alignment planning block
+# sitting directly at the end of search(), followed by a call to the missing
+# search_coordinated_geometry().  Restore the function boundary without
+# changing the current coordinated-alignment code.
 
-replace_once(
-    '    forward_stats = {"checks": 0, "pruned": 0, "witnesses": 0, "by_body": {}}\n',
-    '    forward_stats = {"checks": 0, "pruned": 0, "witnesses": 0, "by_body": {}}\n'
-    '    # Diagnostic only: blocker identities for forward candidate rejection.\n'
-    '    forward_blocker_names = {}\n',
-    "forward blocker store",
+start_marker = (
+    "        # Conjunctions have no placement path of their own.  Every body enters\n"
 )
 
-replace_once(
-    '        def witness_for(item, boxes, paths, obstacles_now):\n',
-    '        def witness_for(item, boxes, paths, obstacles_now, collect_blockers=True):\n',
-    "witness signature",
+end_marker = (
+    "\n    try:\n"
+    "        solved = search_coordinated_geometry()"
 )
 
-replace_once(
-    '                if overlap_hits:\n'
-    '                    reasons["placed-overlap"] += 1\n',
-    '                if overlap_hits:\n'
-    '                    reasons["placed-overlap"] += 1\n'
-    '                    if collect_blockers:\n'
-    '                        buckets = forward_blocker_names.setdefault(future_name, {"placed-overlap": {}, "existing-leader": {}, "leader-graze": {}})\n'
-    '                        for i in overlap_hits:\n'
-    '                            blocker = leader_names[i] if i < len(leader_names) else f"placed_{i}"\n'
-    '                            counts = buckets["placed-overlap"]\n'
-    '                            counts[blocker] = counts.get(blocker, 0) + 1\n',
-    "overlap blockers",
+search_start = text.find("    def search(depth):")
+if search_start < 0:
+    raise SystemExit("Safety stop: def search(depth) not found")
+
+start = text.find(start_marker, search_start)
+end = text.find(end_marker, start)
+
+if start < 0 or end < 0:
+    raise SystemExit(
+        f"Safety stop: coordinated-geometry anchors not found "
+        f"(start={start}, end={end})"
+    )
+
+if "    def search_coordinated_geometry():" in text:
+    raise SystemExit(
+        "Safety stop: search_coordinated_geometry() already exists"
+    )
+
+misplaced_body = text[start:end]
+
+# Move the existing coordinated-alignment block under its proper function.
+indented_body = "".join(
+    ("    " + line) if line.strip() else line
+    for line in misplaced_body.splitlines(True)
 )
 
-replace_once(
-    '                if leader_hits:\n'
-    '                    reasons["existing-leader"] += 1\n',
-    '                if leader_hits:\n'
-    '                    reasons["existing-leader"] += 1\n'
-    '                    if collect_blockers:\n'
-    '                        buckets = forward_blocker_names.setdefault(future_name, {"placed-overlap": {}, "existing-leader": {}, "leader-graze": {}})\n'
-    '                        for j in leader_hits:\n'
-    '                            blocker = leader_names[j] if j < len(leader_names) else f"leader_{j}"\n'
-    '                            counts = buckets["existing-leader"]\n'
-    '                            counts[blocker] = counts.get(blocker, 0) + 1\n',
-    "existing leader blockers",
+wrapper = (
+    "    def search_coordinated_geometry():\n"
+    "        # Forensic mode bypasses only the speculative preplanner.\n"
+    "        # Recursive alignment DFS/backtracking remains active.\n"
+    "        if os.environ.get("
+    "\"PLANET_FINDER_SKIP_ALIGNMENT_PREPLANNER\", \"0\""
+    ") == \"1\":\n"
+    "            alignment_names = [\n"
+    "                [item[1][1] for item in group]\n"
+    "                for group in alignment_group_items\n"
+    "            ]\n"
+    "            diagnostic_print(\n"
+    "                f\"Planet Finder {mode}: "
+    "FORENSIC ALIGNMENT-PREPLANNER BYPASS \"\n"
+    "                f\"alignment_groups={alignment_names} \"\n"
+    "                f\"staged={len(staged)} placed={len(placed)} "
+    "leaders={len(leaders)}\",\n"
+    "                flush=True,\n"
+    "            )\n"
+    "            if alignment_group_items:\n"
+    "                return solve_alignment_group(0)\n"
+    "            return search(0)\n"
+    "\n"
+    + indented_body
 )
 
-replace_once(
-    '                if leaders_too_close(path, paths):\n'
-    '                    reasons["leader-graze"] += 1\n'
-    '                    if future_name == "Ceres":\n',
-    '                if leaders_too_close(path, paths):\n'
-    '                    reasons["leader-graze"] += 1\n'
-    '                    if collect_blockers:\n'
-    '                        _, blocker_pair = minimum_leader_separation(path, paths)\n'
-    '                        if blocker_pair is not None:\n'
-    '                            j = blocker_pair[0]\n'
-    '                            blocker = leader_names[j] if j < len(leader_names) else f"leader_{j}"\n'
-    '                            buckets = forward_blocker_names.setdefault(future_name, {"placed-overlap": {}, "existing-leader": {}, "leader-graze": {}})\n'
-    '                            counts = buckets["leader-graze"]\n'
-    '                            counts[blocker] = counts.get(blocker, 0) + 1\n'
-    '                    if future_name == "Ceres":\n',
-    "leader graze blockers",
-)
-
-replace_once(
-    '                    parentless_box, _, _, _ = witness_for(\n'
-    '                        item, placed[:-1], leaders[:-1], [*reserved, *placed[:-1]]\n'
-    '                    )\n',
-    '                    parentless_box, _, _, _ = witness_for(\n'
-    '                        item, placed[:-1], leaders[:-1], [*reserved, *placed[:-1]],\n'
-    '                        collect_blockers=False,\n'
-    '                    )\n',
-    "parentless diagnostic isolation",
-)
-
-needle = '''            diagnostic_print(
-                f"Planet Finder {mode}: FORWARD BODY body={body} "
-                f"checks={stat['checks']:,} dead={stat['dead']:,} raw={stat['raw']:,} "
-                f"placed-overlap={reasons.get('placed-overlap', 0):,} "
-                f"existing-leader={reasons.get('existing-leader', 0):,} "
-                f"route={reasons.get('route', 0):,} "
-                f"leader-rim={reasons.get('leader-rim', 0):,} "
-                f"leader-graze={reasons.get('leader-graze', 0):,}",
-                flush=True,
-            )
-'''
-replacement = needle + '''            blocker_buckets = forward_blocker_names.get(body, {})
-            if blocker_buckets:
-                def ranked_forward_blockers(kind):
-                    return ",".join(
-                        f"{name}={count:,}"
-                        for name, count in sorted(
-                            blocker_buckets.get(kind, {}).items(),
-                            key=lambda item: (-item[1], item[0]),
-                        )
-                    ) or "-"
-                diagnostic_print(
-                    f"Planet Finder {mode}: FORWARD BODY BLOCKERS body={body} "
-                    f"placed-overlap=[{ranked_forward_blockers('placed-overlap')}] "
-                    f"existing-leader=[{ranked_forward_blockers('existing-leader')}] "
-                    f"leader-graze=[{ranked_forward_blockers('leader-graze')}]",
-                    flush=True,
-                )
-'''
-replace_once(needle, replacement, "terminal blocker report")
+text = text[:start] + wrapper + text[end:]
 
 P.write_text(text, encoding="utf-8")
+
+# Self-disable only after the repair has succeeded.
 me = Path(__file__)
-me.write_text(me.read_text(encoding="utf-8").replace("ENABLED = True", "ENABLED = False", 1), encoding="utf-8")
-print("Added forward blocker identity diagnostics; Repair Once is now OFF.")
+source = me.read_text(encoding="utf-8")
+
+if source.count("ENABLED = True") != 1:
+    raise SystemExit(
+        "Safety stop: unexpected ENABLED marker count"
+    )
+
+me.write_text(
+    source.replace("ENABLED = True", "ENABLED = False", 1),
+    encoding="utf-8",
+)
+
+print(
+    "Restored search_coordinated_geometry(); "
+    "Repair Once is now OFF."
+)
