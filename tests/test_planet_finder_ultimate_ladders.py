@@ -347,19 +347,57 @@ def test_w01_wide_wrap_greek_forensic(monkeypatch):
             + " > ".join(item[1][1] for item in order),
             flush=True,
         )
-        outcome = _solve_order(
-            FinderMode.GREEK,
-            bodies,
-            order,
-            budget,
-            target_solutions=1,
-            order_index=1,
-            total_orders=2,
-            context_label=f"forensic-W01-{label.lower()}",
-            displacement_scale=0.25,
-            body_attempts=body_attempts,
-            refinement_deadline=deadline,
-        )
+        # The first two bodies are the fixed widest Uranus/Jupiter geometry.
+        # Exercise the same squeaky-wheel promotion contract as layout(): a
+        # repeated forward blocker may move left among the remaining recursive
+        # bodies, but it must never displace or narrow the fixed pair.
+        fixed_prefix = 2
+        attempted_orders = set()
+        attempt = 0
+        while True:
+            attempt += 1
+            order_names = tuple(item[1][1] for item in order)
+            if order_names in attempted_orders:
+                raise AssertionError(
+                    f"{label} promotion cycle: " + " > ".join(order_names)
+                )
+            attempted_orders.add(order_names)
+            outcome = _solve_order(
+                FinderMode.GREEK,
+                bodies,
+                order,
+                budget,
+                target_solutions=1,
+                order_index=attempt,
+                total_orders=None,
+                context_label=f"forensic-W01-{label.lower()}",
+                displacement_scale=0.25,
+                body_attempts=body_attempts,
+                refinement_deadline=deadline,
+            )
+            if outcome.solutions or outcome.kind not in ("CAPPED", "EXHAUSTED") or not outcome.blocker:
+                break
+
+            blocker_index = next(
+                (i for i, item in enumerate(order) if item[1][1] == outcome.blocker),
+                None,
+            )
+            if blocker_index is None or blocker_index <= fixed_prefix:
+                break
+            promoted = list(order)
+            promoted[blocker_index - 1], promoted[blocker_index] = (
+                promoted[blocker_index],
+                promoted[blocker_index - 1],
+            )
+            print(
+                f"W01 ORDER FORENSIC {label} PROMOTE body={outcome.blocker} "
+                f"attempt={attempt} sequence="
+                + " > ".join(item[1][1] for item in promoted),
+                flush=True,
+            )
+            order = promoted
+            body_attempts[outcome.blocker] = 0
+
         results[label] = outcome
         print(
             f"W01 ORDER FORENSIC {label} RESULT kind={outcome.kind} "
