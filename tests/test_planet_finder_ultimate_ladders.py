@@ -299,13 +299,13 @@ def test_w36_latin_progressive_alignment_ladder(monkeypatch):
     isolated_exact, _ = jsm_case(1.0)
     stages.extend([
         (
-            "plus-ceres-mars",
+            "plus-saturn-ceres-mars",
             {**isolated_exact, **CM},
-            [("Ceres", "Mars"), ("Jupiter", "Sun", "Mercury")],
+            [("Saturn", "Ceres", "Mars"), ("Jupiter", "Sun", "Mercury")],
             20.0,
         ),
         (
-            "plus-neptune-moon-saturn",
+            "restore-real-neptune-moon-saturn",
             {**isolated_exact, **CM, **NMS},
             [
                 ("Neptune", "Moon", "Saturn"),
