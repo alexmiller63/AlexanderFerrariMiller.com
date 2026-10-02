@@ -59,9 +59,28 @@ def populate_selected_year(year: int, selected_weeks: list[int]) -> int:
             if not found:
                 raise RuntimeError(f"Could not update Calendar row {day} in {path}")
         path.write_text(text, encoding="utf-8")
+
+        def trace_bellatrix(stage: str) -> None:
+            current = path.read_text(encoding="utf-8")
+            match = __import__('re').search(
+                r'<div\\b[^>]*class="[^"]*\\bevent-cell\\b[^"]*"[^>]*>[^<]*(?:<[^>]+>[^<]*)*?Bellatrix.*?</div>',
+                current,
+                __import__('re').S,
+            )
+            if match:
+                print(f"BELLATRIX TRACE [{stage}]: {match.group(0)}")
+            elif "Bellatrix" in current:
+                print(f"BELLATRIX TRACE [{stage}]: present, event-cell match not found")
+            else:
+                print(f"BELLATRIX TRACE [{stage}]: absent")
+
+        trace_bellatrix("after set_events")
         patch_fixed_object_ids(path)
+        trace_bellatrix("after patch_fixed_object_ids")
         patch_mobile_layout(path)
+        trace_bellatrix("after patch_mobile_layout")
         patch_planet_finder_layout(path)
+        trace_bellatrix("after patch_planet_finder_layout")
         if path.read_text(encoding="utf-8") != before:
             changed += 1
     return changed
