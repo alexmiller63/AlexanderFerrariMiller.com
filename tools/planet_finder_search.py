@@ -256,6 +256,11 @@ def layout(
             raise RuntimeError(
                 f"Planet Finder {mode}: bounded search inconclusive; no valid {target_solutions}-contestant contest was established"
             )
+        if outcome.kind == "DEADLINE":
+            raise RuntimeError(
+                f"Planet Finder {mode}: mode search deadline exhausted "
+                f"(limit {hard_wall_seconds:.1f}s)"
+            )
         if outcome.kind not in ("CAPPED", "EXHAUSTED") or not outcome.blocker:
             raise RuntimeError(f"Planet Finder {mode}: invalid search outcome kind={outcome.kind} blocker={outcome.blocker}")
 
