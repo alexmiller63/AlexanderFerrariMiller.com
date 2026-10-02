@@ -1295,6 +1295,36 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 staged[original_index] = (symbol, name, longitude, box, path)
 
     alignment_depth_forensics = {}
+    alignment_phase_profile = {}
+
+    def alignment_profiled_candidates(item, depth, phase):
+        """Diagnostic-only timing wrapper around viable_candidates."""
+        body = item[1][1]
+        key = (phase, body)
+        row = alignment_phase_profile.setdefault(
+            key, {"calls": 0, "elapsed": 0.0, "yielded": 0}
+        )
+        row["calls"] += 1
+        started = time.monotonic()
+        stream = viable_candidates(item, depth, consume_body_budget=False)
+        try:
+            for candidate in stream:
+                row["yielded"] += 1
+                yield candidate
+        finally:
+            row["elapsed"] += time.monotonic() - started
+            stream.close()
+
+    def report_alignment_phase_profile():
+        diagnostic_print(
+            f"Planet Finder {mode}: ALIGNMENT PHASE PROFILE "
+            + " | ".join(
+                f"{phase}:{body}[calls={row['calls']:,},yielded={row['yielded']:,},elapsed={row['elapsed']:.3f}s]"
+                for (phase, body), row in sorted(alignment_phase_profile.items())
+            ),
+            level=1, flush=True,
+        )
+
     # Diagnostic only: measure how often alignment ranking re-evaluates the
     # same effective geometry. Never used to prune, cache, or reorder search.
     alignment_probe_signatures = {}
@@ -1351,8 +1381,8 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 f"beat={best_count if best_count is not None else 'none'}",
                 level=1, flush=True,
             )
-            probe = viable_candidates(
-                candidate_item, diagnostic_depth, consume_body_budget=False
+            probe = alignment_profiled_candidates(
+                candidate_item, diagnostic_depth, "alignment-rank"
             )
             count = 0
             cutoff = False
@@ -1427,8 +1457,8 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             pair_probe_body_times = []
             for ordinary_item in ordinary:
                 ordinary_probe_started = time.monotonic()
-                probe = viable_candidates(
-                    ordinary_item, len(order), consume_body_budget=False
+                probe = alignment_profiled_candidates(
+                    ordinary_item, len(order), "pair-probe"
                 )
                 candidates = []
                 exhausted_probe = True
@@ -1488,8 +1518,8 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                     first_box, first_path,
                 )
                 try:
-                    second_stream = viable_candidates(
-                        second, len(order), consume_body_budget=False
+                    second_stream = alignment_profiled_candidates(
+                        second, len(order), "pair-witness"
                     )
                     witness_started = time.monotonic()
                     pair_witness_calls += 1
@@ -1572,8 +1602,8 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 mercury_final_blocker = None
                 alignment_forward_ok = True
                 for future_item in next_remaining:
-                    witness_stream = viable_candidates(
-                        future_item, diagnostic_depth, consume_body_budget=False
+                    witness_stream = alignment_profiled_candidates(
+                        future_item, diagnostic_depth, "same-blob-forward"
                     )
                     try:
                         next(witness_stream)
@@ -1599,8 +1629,8 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                         # own label/leader (for example Mars blocking Mars).
                         if ordinary_index in staged:
                             continue
-                        witness_stream = viable_candidates(
-                            ordinary_item, len(order), consume_body_budget=False
+                        witness_stream = alignment_profiled_candidates(
+                            ordinary_item, len(order), "ordinary-forward"
                         )
                         try:
                             next(witness_stream)
@@ -1667,8 +1697,8 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             f"member={name} remaining={len(remaining_items)}",
             level=1, flush=True,
         )
-        chosen_stream = viable_candidates(
-            item, diagnostic_depth, consume_body_budget=False
+        chosen_stream = alignment_profiled_candidates(
+            item, diagnostic_depth, "alignment-dfs"
         )
         try:
             for candidate in chosen_stream:
