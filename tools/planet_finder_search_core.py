@@ -1295,6 +1295,20 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 staged[original_index] = (symbol, name, longitude, box, path)
 
     alignment_depth_forensics = {}
+    # Diagnostic only: measure how often alignment ranking re-evaluates the
+    # same effective geometry. Never used to prune, cache, or reorder search.
+    alignment_probe_signatures = {}
+
+    def alignment_state_signature():
+        def box_sig(box):
+            return (round(box.x, 2), round(box.y, 2), round(box.w, 2), round(box.h, 2))
+        def path_sig(path):
+            return tuple((round(x, 2), round(y, 2)) for x, y in path)
+        return (
+            tuple(box_sig(box) for box in placed),
+            tuple(path_sig(path) for path in leaders),
+            tuple(leader_names),
+        )
 
     def solve_alignment_members(group_index, remaining_items, on_complete):
         group_size = len(alignment_group_items[group_index])
@@ -1325,6 +1339,8 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         ranked = []
         for candidate_item in remaining_items:
             probe_name = candidate_item[1][1]
+            probe_state = (group_index, depth_in_blob, probe_name, alignment_state_signature())
+            alignment_probe_signatures[probe_state] = alignment_probe_signatures.get(probe_state, 0) + 1
             probe_before = predfs_rejection_snapshot()
             probe_started = time.monotonic()
             diagnostic_print(
@@ -2450,6 +2466,24 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         diagnostic_print(
             f"Planet Finder {mode}: PRE-DFS TIMING alignment-fallback END "
             f"elapsed={time.monotonic() - phase_started:.3f}s result={fallback_result}",
+            level=1, flush=True,
+        )
+        probe_total = sum(alignment_probe_signatures.values())
+        probe_unique = len(alignment_probe_signatures)
+        probe_repeated = probe_total - probe_unique
+        top_repeats = sorted(
+            (
+                (count, key[0] + 1, key[1], key[2])
+                for key, count in alignment_probe_signatures.items()
+                if count > 1
+            ),
+            reverse=True,
+        )[:12]
+        diagnostic_print(
+            f"Planet Finder {mode}: ALIGNMENT STATE REPETITION "
+            f"evaluations={probe_total:,} unique={probe_unique:,} repeated={probe_repeated:,} "
+            f"repeat_pct={(100.0 * probe_repeated / probe_total if probe_total else 0.0):.1f}% "
+            f"top={top_repeats}",
             level=1, flush=True,
         )
         report_predfs_phase("alignment-fallback", before)
