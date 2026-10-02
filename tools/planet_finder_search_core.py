@@ -2051,12 +2051,42 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                     if trace_venus:
                         min_dist, blocker_pair = minimum_leader_separation(path, paths)
                         blocker = "-"
+                        segment_pair = "-/-"
+                        anchor_sep = float("nan")
+                        proposed_path = tuple(
+                            (round(px, 1), round(py, 1)) for px, py in path
+                        )
+                        existing_path = ()
                         if blocker_pair is not None:
                             j = blocker_pair[0]
-                            blocker = leader_names[j] if j < len(leader_names) else f"leader_{j}"
+                            blocker = (
+                                leader_names[j]
+                                if j < len(leader_names)
+                                else f"leader_{j}"
+                            )
+                            segment_pair = f"{blocker_pair[1]}/{blocker_pair[2]}"
+                            if j < len(paths):
+                                other = paths[j]
+                                anchor_sep = math.hypot(
+                                    path[0][0] - other[0][0],
+                                    path[0][1] - other[0][1],
+                                )
+                                existing_path = tuple(
+                                    (round(px, 1), round(py, 1))
+                                    for px, py in other
+                                )
                         mercury_venus_first_candidates.append(
-                            f"box=({future_box.x:.1f},{future_box.y:.1f},{future_box.w:.1f},{future_box.h:.1f}) "
-                            f"reject=leader-graze blocker={blocker} distance={min_dist:.3f}"
+                            f"box=({future_box.x:.1f},{future_box.y:.1f},"
+                            f"{future_box.w:.1f},{future_box.h:.1f}) "
+                            f"reject=leader-graze blocker={blocker} "
+                            f"distance={min_dist:.3f} "
+                            f"clearance={LEADER_TO_LEADER_CLEARANCE:.3f} "
+                            f"segments={segment_pair} "
+                            f"anchor-separation={anchor_sep:.3f} "
+                            f"close-anchors="
+                            f"{anchor_sep < LEADER_TO_LEADER_CLEARANCE} "
+                            f"venus-path={proposed_path} "
+                            f"blocker-path={existing_path}"
                         )
                     if len(paths) == 1 and future_name in {"Moon", "Mercury"}:
                         min_dist, pair = minimum_leader_separation(path, paths)
