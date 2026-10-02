@@ -1737,6 +1737,37 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 leader_names.append(name)
                 staged[original_index] = (symbol, name, longitude, box, path)
 
+        # Diagnostic only: W36 is a known-good control.  Probe Uranus after
+        # each alignment blob is staged so we can identify the first blob (or
+        # blob combination) that removes every otherwise-valid Uranus choice.
+        # This never changes candidate legality, ordering, or search state.
+        uranus_item = next(
+            (candidate_item for candidate_item in order if candidate_item[1][1] == "Uranus"),
+            None,
+        )
+
+        def trace_uranus_after_alignment(label):
+            if uranus_item is None:
+                return
+            before = predfs_rejection_snapshot()
+            witness_stream = viable_candidates(
+                uranus_item, len(order), consume_body_budget=False
+            )
+            witness = None
+            try:
+                witness = next(witness_stream, None)
+            finally:
+                witness_stream.close()
+            after = predfs_rejection_snapshot()
+            delta = {key: after[key] - before[key] for key in before}
+            diagnostic_print(
+                f"Planet Finder {mode}: ALIGNMENT->URANUS {label} "
+                f"witness={'YES' if witness is not None else 'NO'} "
+                f"preplaced={'|'.join(leader_names) or 'none'} "
+                + " ".join(f"{key}={value:,}" for key, value in delta.items()),
+                level=1, flush=True,
+            )
+
         # Current real cases have two alignment blobs.  Keep the compatibility
         # DFS recursive so the same architecture naturally handles more.
         def compatible_blob_dfs(set_index, chosen_rows):
@@ -1815,6 +1846,20 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 valid, _errors = validate_layout(mode, partial)
                 if not valid:
                     continue
+
+                # Temporarily stage exactly this compatible partial prefix,
+                # probe Uranus, then restore.  This tells us whether a single
+                # blob or only a later combination kills Uranus.
+                restore_base()
+                for selected_rows in chosen_rows:
+                    stage_rows(selected_rows)
+                stage_rows(rows)
+                trace_uranus_after_alignment(
+                    f"set={set_index + 1} choice-prefix="
+                    + ",".join(str(i + 1) for i in range(len(chosen_rows) + 1))
+                )
+                restore_base()
+
                 if compatible_blob_dfs(set_index + 1, chosen_rows + [rows]):
                     return True
             return False
