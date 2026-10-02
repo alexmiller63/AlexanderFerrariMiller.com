@@ -2274,70 +2274,65 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 return search(0)
     
     def search_coordinated_geometry():
-        # Forensic mode bypasses only the speculative preplanner.
-        # Recursive alignment DFS/backtracking remains active.
+        # Diagnostic-only escape hatch: bypass the coordinated alignment
+        # layer so this forensic exercises ordinary recursive DFS/backtracking.
         if os.environ.get("PLANET_FINDER_SKIP_ALIGNMENT_PREPLANNER", "0") == "1":
-            alignment_names = [
-                [item[1][1] for item in group]
-                for group in alignment_group_items
-            ]
+            order_names = " > ".join(item[1][1] for item in order)
             diagnostic_print(
-                f"Planet Finder {mode}: FORENSIC ALIGNMENT-PREPLANNER BYPASS "
-                f"alignment_groups={alignment_names} "
-                f"staged={len(staged)} placed={len(placed)} leaders={len(leaders)}",
+                f"Planet Finder {mode}: FORENSIC ORDINARY-DFS BYPASS "
+                f"sequence={order_names} staged={len(staged)} "
+                f"placed={len(placed)} leaders={len(leaders)}",
                 flush=True,
             )
-            if alignment_group_items:
-                return solve_alignment_group(0)
             return search(0)
 
-            # Conjunctions have no placement path of their own.  Every body enters
-            # the ordinary coordinated alignment planner; conjunction metadata is
-            # consulted only by downstream backtracking to keep a conjunction
-            # atomic when it must be reconsidered.
-            phase_started = time.monotonic()
-            before = predfs_rejection_snapshot()
-            diagnostic_print(
-                f"Planet Finder {mode}: PRE-DFS TIMING alignment-plan START",
-                level=1, flush=True,
-            )
-            alignment_preplacement = plan_alignment_layer()
-            diagnostic_print(
-                f"Planet Finder {mode}: PRE-DFS TIMING alignment-plan END "
-                f"elapsed={time.monotonic() - phase_started:.3f}s "
-                f"result={'success' if alignment_preplacement is not None else 'none'}",
-                level=1, flush=True,
-            )
-            report_predfs_phase("alignment-plan", before)
+        # Conjunctions have no placement path of their own.  Every body enters
+        # the ordinary coordinated alignment planner; conjunction metadata is
+        # consulted only by downstream backtracking to keep a conjunction
+        # atomic when it must be reconsidered.
+        phase_started = time.monotonic()
+        before = predfs_rejection_snapshot()
+        diagnostic_print(
+            f"Planet Finder {mode}: PRE-DFS TIMING alignment-plan START",
+            level=1, flush=True,
+        )
+        alignment_preplacement = plan_alignment_layer()
+        diagnostic_print(
+            f"Planet Finder {mode}: PRE-DFS TIMING alignment-plan END "
+            f"elapsed={time.monotonic() - phase_started:.3f}s "
+            f"result={'success' if alignment_preplacement is not None else 'none'}",
+            level=1, flush=True,
+        )
+        report_predfs_phase("alignment-plan", before)
 
-            phase_started = time.monotonic()
-            before = predfs_rejection_snapshot()
-            stage_alignment_preplacement(alignment_preplacement)
-            diagnostic_print(
-                f"Planet Finder {mode}: PRE-DFS TIMING alignment-stage END "
-                f"elapsed={time.monotonic() - phase_started:.3f}s "
-                f"staged={len(staged)}",
-                level=1, flush=True,
-            )
-            report_predfs_phase("alignment-stage", before)
+        phase_started = time.monotonic()
+        before = predfs_rejection_snapshot()
+        stage_alignment_preplacement(alignment_preplacement)
+        diagnostic_print(
+            f"Planet Finder {mode}: PRE-DFS TIMING alignment-stage END "
+            f"elapsed={time.monotonic() - phase_started:.3f}s "
+            f"staged={len(staged)}",
+            level=1, flush=True,
+        )
+        report_predfs_phase("alignment-stage", before)
 
-            phase_started = time.monotonic()
-            before = predfs_rejection_snapshot()
-            diagnostic_print(
-                f"Planet Finder {mode}: PRE-DFS TIMING alignment-fallback START",
-                level=1, flush=True,
-            )
-            fallback_result = _search_alignment_fallback(
-                alignment_preplacement, alignment_group_items, placed, leaders,
-                leader_names, staged, search, solve_alignment_group,
-            )
-            diagnostic_print(
-                f"Planet Finder {mode}: PRE-DFS TIMING alignment-fallback END "
-                f"elapsed={time.monotonic() - phase_started:.3f}s result={fallback_result}",
-                level=1, flush=True,
-            )
-            report_predfs_phase("alignment-fallback", before)
-            return fallback_result
+        phase_started = time.monotonic()
+        before = predfs_rejection_snapshot()
+        diagnostic_print(
+            f"Planet Finder {mode}: PRE-DFS TIMING alignment-fallback START",
+            level=1, flush=True,
+        )
+        fallback_result = _search_alignment_fallback(
+            alignment_preplacement, alignment_group_items, placed, leaders,
+            leader_names, staged, search, solve_alignment_group,
+        )
+        diagnostic_print(
+            f"Planet Finder {mode}: PRE-DFS TIMING alignment-fallback END "
+            f"elapsed={time.monotonic() - phase_started:.3f}s result={fallback_result}",
+            level=1, flush=True,
+        )
+        report_predfs_phase("alignment-fallback", before)
+        return fallback_result
 
     try:
         solved = search_coordinated_geometry()
