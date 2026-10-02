@@ -116,6 +116,38 @@ def append_bayer_cross_id_candidates(cs):
             elif suffix: key_parts.append(f"suffix {suffix}")
             else: key_parts.append(f"row {row_number}")
             add_candidate(cs,source_name," | ".join(key_parts),ids,row.get("proper"),con,row.get("ra_h"),row.get("dec_deg"),"star",f"bayer_code={row.get('bayer_code','')}; suffix={suffix}")
+def append_bright_star_cross_id_candidates(cs):
+    """Bridge bright-star Calendar records to permanent catalog identities.
+
+    Bright stars outside the alpha/beta layer still need their HIP/HD/Bayer
+    aliases in the physical identity audit.  Without this source, a star can
+    exist in the permanent registry by HIP alone while Calendar knows it by
+    proper/Bayer presentation, leaving an avoidable identity coverage hole.
+    """
+    greek = {
+        "Alp": "α", "Bet": "β", "Gam": "γ", "Del": "δ", "Eps": "ε",
+        "Zet": "ζ", "Eta": "η", "The": "θ", "Iot": "ι", "Kap": "κ",
+        "Lam": "λ", "Mu": "μ", "Nu": "ν", "Xi": "ξ", "Omi": "ο",
+        "Pi": "π", "Rho": "ρ", "Sig": "σ", "Tau": "τ", "Ups": "υ",
+        "Phi": "φ", "Chi": "χ", "Psi": "ψ", "Ome": "ω",
+    }
+    for row_number, row in enumerate(read_csv(SRC/"bright-stars-2mag.csv"), 1):
+        hip=str(row.get("hip") or "").strip(); hd=str(row.get("hd") or "").strip()
+        bayer_code=str(row.get("bayer") or "").strip(); con=str(row.get("con") or "").strip()
+        ids=[]
+        if hip: ids.append(("hip", hip))
+        if hd: ids.append(("hd", hd))
+        if bayer_code and con:
+            symbol=greek.get(bayer_code)
+            if symbol: ids.append(("bayer", f"{symbol} {con}"))
+        if not ids: continue
+        proper=str(row.get("proper") or "").strip()
+        key = f"HIP {hip}" if hip else (f"HD {hd}" if hd else f"row {row_number}")
+        add_candidate(cs, "bright-stars-2mag.csv", key, ids, proper or None, con or None,
+                      row.get("ra_h"), row.get("dec_deg"), "star",
+                      f"bright-star cross-identifiers; HYG {str(row.get('hyg_id') or '').strip()}")
+
+
 def load_source_candidates():
     cs=[]; fixed=parse_fixed_simple_yaml(SRC/"fixed-objects.yaml")
     for section,rows in fixed.items():
@@ -132,7 +164,7 @@ def load_source_candidates():
         ids=[("finest_ngc",row.get("finest_ngc"))]; ident=catalog_identifier(row.get("catalog")); ids += [ident] if ident else []; add_candidate(cs,"finest-ngc-catalog.csv",row.get("finest_ngc",""),ids,row.get("name"),row.get("con"),row.get("ra_h"),row.get("dec_deg"),row.get("type"))
     for n,row in enumerate(read_csv(SRC/"asterism-member-coordinates.csv"),1):
         ids=[]; hip=HIP_RE.match((row.get("coordinate_source_id") or "").strip()); ids += [("hip",str(int(hip.group(1))))] if hip else []; ids.append(("asterism_member_label",row.get("member"))); add_candidate(cs,"asterism-member-coordinates.csv",f"row:{n}",ids,row.get("resolved_object"),None,row.get("ra_h"),row.get("dec_deg"),"star",f"asterism={row.get('asterism','')}")
-    append_bayer_cross_id_candidates(cs); return cs
+    append_bayer_cross_id_candidates(cs); append_bright_star_cross_id_candidates(cs); return cs
 
 def append_hipparcos_reference_candidates(cs):
     """Add cached Hipparcos positions for every HIP used by accepted geometry."""
