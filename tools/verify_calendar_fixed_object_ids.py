@@ -48,13 +48,20 @@ def verify_page(page, rel: str):
 
     # Every observing-aid presentation belonging to a fixed-object event must
     # remain inside the event carrying the permanent database identity.
-    orphan_aids = page.locator(
+    orphan_locator = page.locator(
         'table.calendar .event-cell:not([data-fixed-object-id]) '
         '.observing-aid-notation, '
         'table.calendar .event-cell:not([data-fixed-object-id]) '
         '.observing-notation-item'
-    ).count()
+    )
+    orphan_aids = orphan_locator.count()
     if orphan_aids:
+        print(f'Observing-aid presentation without fixed-object ID in {rel}: {orphan_aids}')
+        for index in range(orphan_aids):
+            aid = orphan_locator.nth(index)
+            event = aid.locator('xpath=ancestor::*[contains(concat(" ", normalize-space(@class), " "), " event-cell ")][1]')
+            print(f'ORPHAN {index + 1} event text: {event.inner_text()!r}')
+            print(f'ORPHAN {index + 1} event HTML: {event.evaluate("el => el.outerHTML")}')
         raise SystemExit(
             f'Observing-aid presentation without fixed-object ID in {rel}: {orphan_aids}'
         )
