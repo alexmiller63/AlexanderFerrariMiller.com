@@ -1405,6 +1405,106 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         if viable_count == 0:
             return False
 
+        def alignment_pair_compatible():
+            """Safely reject an alignment prefix only when an ordinary-body pair is provably incompatible.
+
+            Pick the two most constrained unstaged ordinary bodies. Explore the
+            first body's candidate stream exhaustively up to a bounded proof
+            limit. If the limit is reached, return UNKNOWN/True rather than
+            pruning. For each candidate, temporarily stage it and ask whether
+            the second body has one legal witness. Thus False is a proof; True
+            means either compatible or not cheaply provable dead.
+            """
+            ordinary = [item for item in order if item[0] not in staged]
+            if len(ordinary) < 2:
+                return True
+
+            proof_limit = max(
+                1, int(os.environ.get("PLANET_FINDER_ALIGNMENT_PAIR_PROOF_LIMIT", "64"))
+            )
+            ranked_ordinary = []
+            for ordinary_item in ordinary:
+                probe = viable_candidates(
+                    ordinary_item, len(order), consume_body_budget=False
+                )
+                count = 0
+                exhausted_probe = True
+                try:
+                    for _ in probe:
+                        count += 1
+                        if count >= proof_limit:
+                            exhausted_probe = False
+                            break
+                finally:
+                    probe.close()
+                ranked_ordinary.append((count, not exhausted_probe, ordinary_item))
+
+            ranked_ordinary.sort(key=lambda row: (row[0], row[2][0]))
+            first = ranked_ordinary[0][2]
+            second = ranked_ordinary[1][2]
+            first_index, (first_symbol, first_name, first_longitude) = first
+            second_name = second[1][1]
+
+            first_stream = viable_candidates(
+                first, len(order), consume_body_budget=False
+            )
+            tested = 0
+            exhausted_first = True
+            try:
+                for first_box, first_path in first_stream:
+                    tested += 1
+                    if tested > proof_limit:
+                        exhausted_first = False
+                        break
+                    placed.append(first_box)
+                    leaders.append(first_path)
+                    leader_names.append(first_name)
+                    staged[first_index] = (
+                        first_symbol, first_name, first_longitude,
+                        first_box, first_path,
+                    )
+                    try:
+                        second_stream = viable_candidates(
+                            second, len(order), consume_body_budget=False
+                        )
+                        try:
+                            next(second_stream)
+                        except StopIteration:
+                            pass
+                        else:
+                            diagnostic_print(
+                                f"Planet Finder {mode}: ALIGNMENT PAIR WITNESS "
+                                f"first={first_name} second={second_name} tested={tested}",
+                                level=2, flush=True,
+                            )
+                            return True
+                        finally:
+                            second_stream.close()
+                    finally:
+                        staged.pop(first_index, None)
+                        leader_names.pop()
+                        leaders.pop()
+                        placed.pop()
+            finally:
+                first_stream.close()
+
+            if not exhausted_first:
+                diagnostic_print(
+                    f"Planet Finder {mode}: ALIGNMENT PAIR UNKNOWN "
+                    f"first={first_name} second={second_name} "
+                    f"proof-limit={proof_limit}; preserving prefix",
+                    level=2, flush=True,
+                )
+                return True
+
+            diagnostic_print(
+                f"Planet Finder {mode}: ALIGNMENT PAIR BACKTRACK "
+                f"first={first_name} second={second_name} "
+                f"tested={tested} reason=no-compatible-pair",
+                level=1, flush=True,
+            )
+            return False
+
         def try_candidate(candidate):
             box, path = candidate
             placed.append(box)
@@ -1482,6 +1582,12 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                             witness_stream.close()
                         if not alignment_forward_ok:
                             break
+                if alignment_forward_ok:
+                    # One safe compatibility level across the alignment/ordinary
+                    # boundary. False is returned only after exhaustive bounded
+                    # proof that the two most constrained ordinary bodies have
+                    # no mutually compatible placement.
+                    alignment_forward_ok = alignment_pair_compatible()
                 if not alignment_forward_ok:
                     if final_mercury:
                         diagnostic_print(
