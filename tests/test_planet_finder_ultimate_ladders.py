@@ -277,6 +277,77 @@ def test_02_w36_mixed_jsm_zero_vs_25_forensic(monkeypatch):
             print(f"JSM FORENSIC {level} RESULT=PASS", flush=True)
 
 
+def test_w36_latin_progressive_alignment_ladder(monkeypatch):
+    """Approach exact W36 Latin from isolated, solvable alignment geometry."""
+    enable_alignment_fix(monkeypatch)
+    monkeypatch.setenv("PLANET_FINDER_DIAGNOSTIC_LEVEL", "1")
+
+    stages = []
+    for label, fraction in (
+        ("jsm-wide", 0.0),
+        ("jsm-25pct", 0.25),
+        ("jsm-50pct", 0.50),
+        ("jsm-75pct", 0.75),
+        ("jsm-exact-isolated", 1.0),
+    ):
+        longitudes, expected_groups = jsm_case(fraction)
+        stages.append((label, longitudes, expected_groups, 15.0))
+
+    # Then restore the other real W36 alignment interactions one group at a
+    # time while keeping the real JSM geometry. This identifies the first
+    # interaction that turns the isolated Latin case pathological.
+    isolated_exact, _ = jsm_case(1.0)
+    stages.extend([
+        (
+            "plus-ceres-mars",
+            {**isolated_exact, **CM},
+            [("Ceres", "Mars"), ("Jupiter", "Sun", "Mercury")],
+            20.0,
+        ),
+        (
+            "plus-neptune-moon-saturn",
+            {**isolated_exact, **CM, **NMS},
+            [
+                ("Neptune", "Moon", "Saturn"),
+                ("Ceres", "Mars"),
+                ("Jupiter", "Sun", "Mercury"),
+            ],
+            30.0,
+        ),
+        (
+            "exact-W36",
+            W36_KNOWN_GOOD,
+            group_names(synthetic_bodies(W36_KNOWN_GOOD)),
+            HARD_MODE_REGRESSION_SECONDS,
+        ),
+    ])
+
+    passed = []
+    for label, longitudes, expected_groups, seconds in stages:
+        bodies = synthetic_bodies(longitudes)
+        actual_groups = group_names(bodies)
+        expected_groups = sorted(expected_groups)
+        print(
+            f"LATIN PROGRESSIVE {label}: groups={actual_groups} budget={seconds}s START",
+            flush=True,
+        )
+        assert actual_groups == expected_groups, (
+            f"CLASSIFICATION MISMATCH {label}: expected={expected_groups} actual={actual_groups}"
+        )
+        result = layout(
+            FinderMode.LATIN,
+            bodies,
+            target_solutions=1,
+            budget={"max_node_candidates": 2000, "max_seconds": seconds},
+            context_label=f"W36-latin-progressive-{label}",
+        )
+        assert_complete_valid_layout(result, bodies, FinderMode.LATIN)
+        passed.append(label)
+        print(f"LATIN PROGRESSIVE {label}: PASS", flush=True)
+
+    print(f"LATIN PROGRESSIVE SUMMARY passed={passed}", flush=True)
+
+
 @pytest.mark.parametrize("mode", MODES)
 def test_exact_w36_regression(monkeypatch, mode):
     bodies = synthetic_bodies(W36_KNOWN_GOOD)
