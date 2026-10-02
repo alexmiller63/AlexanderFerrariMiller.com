@@ -225,21 +225,28 @@ def place_target_label(ax, label, point, occupied_labels, obstacle_segments=()):
     height = probe_bbox.height
     probe.remove()
 
-    # Search outward in small rings and stop after the first ring that has
-    # collision-free choices.  This preserves nearest-clear placement without
-    # redrawing hundreds of farther candidates that cannot win.
+    # Search a genuine two-dimensional expanding perimeter around the target.
+    # The old search coupled horizontal distance to vertical ring number, so it
+    # could miss clear positions that were farther vertically but still close
+    # horizontally (or vice versa).  Keep nearest-clear semantics, but explore
+    # every perimeter combination before moving farther out.
     gap = 4
     x_step = max(width * 0.0625, 2)
     y_step = max(height * 0.25, 3)
+    max_ring = 32
     offset_rings = []
-    for ring in range(0, 17):
+    for ring in range(0, max_ring + 1):
         offsets = []
-        for iy in range(-ring, ring + 1):
-            for side in (-1, 1):
-                dx = gap + ring * x_step if side > 0 else -width - gap - ring * x_step
-                dy = iy * y_step
-                offsets.append((dx, dy))
-        offset_rings.append(offsets)
+        for ix in range(0, ring + 1):
+            for iy in range(-ring, ring + 1):
+                if max(ix, abs(iy)) != ring:
+                    continue
+                for side in (-1, 1):
+                    dx = gap + ix * x_step if side > 0 else -width - gap - ix * x_step
+                    offsets.append((dx, iy * y_step))
+        # De-duplicate the ring-zero left/right repetitions while preserving
+        # deterministic search order.
+        offset_rings.append(list(dict.fromkeys(offsets)))
 
     best = None
     anchor_x, anchor_y = ax.transData.transform(point)
