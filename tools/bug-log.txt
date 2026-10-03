@@ -115,3 +115,13 @@ Desired: Use one fixed Sun legend sentence for Mixed Learner, Latin, and Greek s
 Category: Legend / presentation
 Likely scope: Legend generator/template; remove mode-dependent Sun sentence construction.
 
+
+FEATURE 001 — Settable observer time within Monday
+Status: OPEN
+Found during: 2026-W01 review
+Request: Allow the weekly Almanack observer reference time to be selected within Monday rather than fixed at 9:00 PM.
+Default: 9:00 PM local apparent solar time on Monday.
+Scope: Weekly Almanack remains Monday-based. This feature changes the observer time within Monday; it does not add arbitrary weekdays. The future interactive app may support any date, time, and location.
+Category: Ephemeris / observer settings
+Likely scope: Parameterize observer time through the relevant generators and presentation instead of hard-coding 9:00 PM.
+
