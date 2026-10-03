@@ -13,7 +13,7 @@ from iso_date_range import group_by_year, parse_range_args
 from star_almanack_planets import load_weekly_longitudes
 import populate_sky_notes_by_date as base
 from fixed_object_stories import available_stories, reader_story_url
-from sky_note_descriptors import build_descriptors, decorate_note_html, write_descriptor_records
+from sky_note_descriptors import build_descriptors, decorate_note_html, lunar_highlight_descriptors, write_descriptor_records
 
 FIXED_OBJECT_DATABASE = base.ROOT / "database" / "fixed-objects.json"
 FIXED_OBJECT_REGISTRY = base.ROOT / "database" / "fixed-object-registry.json"
@@ -323,6 +323,7 @@ def generated_note(year: int, week: int, page_path, yearly, stars: list[dict]) -
         fixed, payload["planet_relations"], stars,
         base.CONSTELLATION_NAMES, base.ASTERISMS,
     )
+    payload["descriptors"].extend(lunar_highlight_descriptors(page_path))
     candidates = story_candidates(fixed_ids)
     inline, linked = story_presentations(candidates)
     payload["calendar_fixed_object_ids"] = fixed_ids
@@ -414,6 +415,7 @@ def main() -> None:
         payload["descriptors"] = build_descriptors(
             fixed, payload["planet_relations"], stars, base.CONSTELLATION_NAMES, base.ASTERISMS
         )
+        payload["descriptors"].extend(lunar_highlight_descriptors(public_page))
         candidates = story_candidates(fixed_ids)
         inline, linked = story_presentations(candidates)
         payload["calendar_fixed_object_ids"] = fixed_ids
