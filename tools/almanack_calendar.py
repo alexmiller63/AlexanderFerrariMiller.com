@@ -98,7 +98,7 @@ def _event_records(events_html: str) -> list[CalendarEvent]:
     if grid:
         records: list[CalendarEvent] = []
         cell_re = re.compile(
-            r'<div\\b(?P<attrs>[^>]*)class="[^"]*\\bevent-cell\\b[^"]*"(?P<tailattrs>[^>]*)>(?P<event>.*?)</div>',
+            r'<div\b(?P<attrs>[^>]*)class="[^"]*\bevent-cell\b[^"]*"(?P<tailattrs>[^>]*)>(?P<event>.*?)</div>',
             re.DOTALL,
         )
         for match in cell_re.finditer(grid.group("body")):
@@ -117,7 +117,7 @@ def _event_records(events_html: str) -> list[CalendarEvent]:
         return []
     return [
         CalendarEvent(item.strip())
-        for item in re.split(r'<br\\s*/?>', raw, flags=re.IGNORECASE)
+        for item in re.split(r'<br\s*/?>', raw, flags=re.IGNORECASE)
         if item.strip() and item.strip() != "—"
     ]
 
