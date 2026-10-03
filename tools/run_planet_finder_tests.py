@@ -7,7 +7,7 @@ import subprocess
 import sys
 
 CONTROL = [
-    "tests/test_planet_finder_w17_ladder.py::test_w17_greek_five_candidate_progressive_ladder",
+    "tests/test_planet_finder_w17_ladder.py::test_w17_greek_venus_transition_five_candidate_ladder",
 ]
 
 
