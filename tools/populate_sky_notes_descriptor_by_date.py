@@ -366,7 +366,25 @@ def patch_page(path, payload: dict) -> bool:
         '<button type="button" data-sky-note-mode="wordy" aria-pressed="true" style="border-radius:999px;font-weight:700">Wordy</button>'
         '</div>'
     )
-    section_html = '<h3>Sky Notes</h3>' + mode_toggle + '<div class="sky-note" data-sky-note-mode="wordy">\n' + body + '</div>'
+    highlights = render_linked_stories(payload.get("linked_stories", []))
+    if not highlights:
+        highlights = '<p class="sky-note-highlights-empty">No linked Sky Note stories are available for this week.</p>'
+    script = '''<script id="sky-note-mode-script">(function(){
+const root=document.querySelector('.sky-note');
+const buttons=document.querySelectorAll('[data-sky-note-mode]');
+if(!root||!buttons.length)return;
+const wordy=root.querySelector('.sky-note-wordy');
+const highlights=root.querySelector('.sky-note-highlights');
+function setMode(mode){
+  const isHighlights=mode==='highlights';
+  if(wordy)wordy.hidden=isHighlights;
+  if(highlights)highlights.hidden=!isHighlights;
+  buttons.forEach(b=>b.setAttribute('aria-pressed',b.dataset.skyNoteMode===mode?'true':'false'));
+}
+buttons.forEach(b=>b.addEventListener('click',()=>setMode(b.dataset.skyNoteMode)));
+setMode('wordy');
+})();</script>'''
+    section_html = '<h3>Sky Notes</h3>' + mode_toggle + '<div class="sky-note">\n' + '<div class="sky-note-wordy">' + body + '</div>\n' + '<div class="sky-note-highlights" hidden><h4>Highlights</h4>' + highlights + '</div>\n' + script + '</div>'
     new = replace_section_inner(text, 5, section_html, path)
     if new == text:
         return False
