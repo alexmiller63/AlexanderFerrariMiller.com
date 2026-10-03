@@ -106,3 +106,12 @@ Desired: Simplify the Sun legend wording so it explains only the meaningful mode
 Category: Legend / wording
 Likely scope: Legend generator/template.
 
+
+BUG 006 — Sun legend sentence should not vary by symbol mode
+Status: OPEN
+Found on: 2026-W01 legend
+Observed: The legend says wording such as “The Sun uses [Sun glyph] and text ‘Visible’ in Latin mode.” Although technically descriptive, the mode-specific wording is confusing and unnecessary.
+Desired: Use one fixed Sun legend sentence for Mixed Learner, Latin, and Greek symbol modes. The sentence should not change when the symbol mode changes.
+Category: Legend / presentation
+Likely scope: Legend generator/template; remove mode-dependent Sun sentence construction.
+
