@@ -1356,6 +1356,37 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             level=1, flush=True,
         )
 
+    def report_alignment_route_forensics():
+        """Diagnostic-only attribution for pre-DFS routing failures."""
+        rows = []
+        aggregate = {}
+        for (depth, body), diag in route_diagnostics.items():
+            if depth >= 0:
+                continue
+            blockers = diag.get("straight_blockers", {})
+            ranked = sorted(blockers.items(), key=lambda item: (-item[1], str(item[0])))
+            rows.append(
+                (diag.get("route_failed", 0), body, depth,
+                 diag.get("straight_blocked", 0), diag.get("elbows", {}), ranked[:12],
+                 diag.get("obstacle_names", []), diag.get("leader_names", []))
+            )
+            for blocker, count in blockers.items():
+                aggregate[blocker] = aggregate.get(blocker, 0) + count
+        for failed, body, depth, straight, elbows, blockers, obstacles, active_leaders in sorted(rows, reverse=True):
+            diagnostic_print(
+                f"Planet Finder {mode}: ALIGNMENT ROUTE FORENSIC "
+                f"body={body} depth={depth} route_failed={failed:,} "
+                f"straight_blocked={straight:,} blockers={blockers!r} "
+                f"elbows={elbows!r} active_leaders={active_leaders!r} "
+                f"obstacles={obstacles!r}",
+                level=1, flush=True,
+            )
+        diagnostic_print(
+            f"Planet Finder {mode}: ALIGNMENT ROUTE BLOCKERS AGGREGATE "
+            + repr(sorted(aggregate.items(), key=lambda item: (-item[1], str(item[0])))[:30]),
+            level=1, flush=True,
+        )
+
     # Diagnostic only: measure how often alignment ranking re-evaluates the
     # same effective geometry. Never used to prune, cache, or reorder search.
     alignment_probe_signatures = {}
@@ -3092,6 +3123,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             level=1, flush=True,
         )
         report_alignment_phase_profile()
+        report_alignment_route_forensics()
         dump_diagnostics("refinement deadline reached before search completed")
     elif exhausted:
         dump_diagnostics("search exhausted without a complete solution")
