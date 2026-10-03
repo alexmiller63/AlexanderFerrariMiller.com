@@ -1365,20 +1365,44 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 continue
             blockers = diag.get("straight_blockers", {})
             ranked = sorted(blockers.items(), key=lambda item: (-item[1], str(item[0])))
+            obstacle_names = diag.get("obstacle_names", [])
+            active_leaders = diag.get("leader_names", [])
+            box_by_index = diag.get("directed_box_by_index", {})
+            leader_by_index = diag.get("directed_leader_by_index", {})
+            box_named = sorted(
+                ((obstacle_names[i] if i < len(obstacle_names) else f"box_{i}", count)
+                 for i, count in box_by_index.items()),
+                key=lambda item: (-item[1], item[0]),
+            )[:20]
+            leader_named = sorted(
+                ((active_leaders[i] if i < len(active_leaders) else f"leader_{i}", count)
+                 for i, count in leader_by_index.items()),
+                key=lambda item: (-item[1], item[0]),
+            )[:20]
+            failure_reasons = {
+                key: diag.get(key, 0)
+                for key in (
+                    "anchor_blocked", "landing_failed", "directed_box_blocked",
+                    "directed_leader_blocked", "bypass_blocked", "bypass_illegal",
+                    "node_cap_hits", "depth_cap_hits", "dead_state_hits",
+                    "recursive_nodes", "max_recursive_nodes", "max_route_depth",
+                )
+            }
             rows.append(
                 (diag.get("route_failed", 0), body, depth,
                  diag.get("straight_blocked", 0), diag.get("elbows", {}), ranked[:12],
-                 diag.get("obstacle_names", []), diag.get("leader_names", []))
+                 obstacle_names, active_leaders, box_named, leader_named, failure_reasons)
             )
             for blocker, count in blockers.items():
                 aggregate[blocker] = aggregate.get(blocker, 0) + count
-        for failed, body, depth, straight, elbows, blockers, obstacles, active_leaders in sorted(rows, reverse=True):
+        for failed, body, depth, straight, elbows, blockers, obstacles, active_leaders, box_named, leader_named, failure_reasons in sorted(rows, reverse=True):
             diagnostic_print(
                 f"Planet Finder {mode}: ALIGNMENT ROUTE FORENSIC "
                 f"body={body} depth={depth} route_failed={failed:,} "
                 f"straight_blocked={straight:,} blockers={blockers!r} "
-                f"elbows={elbows!r} active_leaders={active_leaders!r} "
-                f"obstacles={obstacles!r}",
+                f"directed_boxes={box_named!r} directed_leaders={leader_named!r} "
+                f"failure_reasons={failure_reasons!r} elbows={elbows!r} "
+                f"active_leaders={active_leaders!r} obstacles={obstacles!r}",
                 level=1, flush=True,
             )
         diagnostic_print(
