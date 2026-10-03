@@ -27,3 +27,12 @@ Desired wording: “Snapshot: Week begins December 29, 2025, 00:00 UTC.”
 Category: Almanack labeling / presentation
 Likely scope: Change the generator/template so weekly pages clearly distinguish the canonical week-start snapshot from the 9:00 PM observer-facing ephemeris time.
 
+
+BUG 004 — Ephemeris magnitude display redundantly says “mag”
+Status: OPEN
+Found on: 2026-W01
+Observed: In the ephemeris, the naked-eye entry displays magnitude in parentheses as “mag −2.7”.
+Desired display: Remove “mag”; show only the value, e.g. “(−2.7)”.
+Category: Ephemeris / presentation
+Likely scope: Fix magnitude formatting in the ephemeris generator/template; do not patch W01.
+
