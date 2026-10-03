@@ -119,7 +119,7 @@ def beta(latitude):
 
 
 def current_visibility(key, magnitude, elongation, daylight=False):
-    if key == "sun": return "visible"
+    if key == "sun": return "daylight" if daylight else "solar_glare"
     if elongation is not None and elongation < SOLAR_GLARE_MAX_ELONGATION_DEG: return "solar_glare"
     if magnitude is not None and elongation is not None:
         if magnitude <= NAKED_EYE_MAX_MAGNITUDE: return "daylight" if daylight else "naked_eye"
@@ -148,7 +148,7 @@ def observing_html(key, magnitude, elongation, daylight=False):
     if not aid: return ""
     glyph = VISIBILITY_GLYPHS[aid]
     label = observing_label(key, magnitude, elongation, daylight)
-    try: magnitude_text = f" (mag {float(magnitude):+.1f})"
+    try: magnitude_text = f" ({float(magnitude):+.1f})"
     except (TypeError, ValueError): magnitude_text = ""
     greek = glyph + magnitude_text
     latin = label + magnitude_text
@@ -190,7 +190,7 @@ def render_ephemeris(monday, values):
             rows.append(f'<tr><th scope="row">{label}</th>{"".join(cells)}</tr>')
         classes = "ephemeris" + (f" {extra_class}" if extra_class else "")
         return f'<div class="ephemeris-scroll"><table class="{classes}"><thead><tr>{headers}</tr></thead><tbody>{"".join(rows)}</tbody></table></div>'
-    return ("<h3>Weekly Solar-System Ephemeris</h3>" + EPHEMERIS_STYLE + f'<p><strong>Snapshot:</strong> {monday.strftime("%B")} {monday.day}, {monday.year} · 00:00 UTC</p>' + f'<p class="ephemeris-latitude-control"><label for="ephemeris-latitude"><strong>Observer latitude:</strong> <input id="ephemeris-latitude" name="ephemeris-latitude" type="text" inputmode="text" value="{DEFAULT_LATITUDE_DEG:g}" data-ephemeris-latitude aria-describedby="ephemeris-latitude-range">°</label> <button type="button" data-ephemeris-apply>Apply</button> <span id="ephemeris-latitude-range">({MIN_LATITUDE_DEG:g}° to +{MAX_LATITUDE_DEG:g}°; default +{DEFAULT_LATITUDE_DEG:g}°)</span></p>' + notation_toggle("ephemeris") + table(primary) + "<p><strong>Extended targets:</strong></p>" + table(extended, "extended-ephemeris") + '<p class="ephemeris-note"><strong>β</strong> = ecliptic latitude (+ north, − south). Rise and set are Local Apparent Time for the selected latitude. Naked-eye classification becomes <strong>Daylight</strong> when the Sun is above the horizon at 21:00 LAT, and <strong>Solar Glare</strong> when the Sun is below the horizon but the body is too close to the Sun. The Sun uses glyph <span class="text-symbol">☉</span> and text <strong>Visible</strong>.</p>' + notation_toggle("finder") + "<h3>Planet Finder</h3>" + planet_finder(monday.year, week))
+    return ("<h3>Weekly Solar-System Ephemeris</h3>" + EPHEMERIS_STYLE + f'<p><strong>Snapshot:</strong> Week begins {monday.strftime("%B")} {monday.day}, {monday.year}, 00:00 UTC.</p>' + f'<p class="ephemeris-latitude-control"><label for="ephemeris-latitude"><strong>Observer latitude:</strong> <input id="ephemeris-latitude" name="ephemeris-latitude" type="text" inputmode="text" value="{DEFAULT_LATITUDE_DEG:g}" data-ephemeris-latitude aria-describedby="ephemeris-latitude-range">°</label> <button type="button" data-ephemeris-apply>Apply</button> <span id="ephemeris-latitude-range">({MIN_LATITUDE_DEG:g}° to +{MAX_LATITUDE_DEG:g}°; default +{DEFAULT_LATITUDE_DEG:g}°)</span></p>' + notation_toggle("ephemeris") + table(primary) + "<p><strong>Extended targets:</strong></p>" + table(extended, "extended-ephemeris") + '<p class="ephemeris-note"><strong>β</strong> = ecliptic latitude (+ north, − south).<br>Rise and set are Local Apparent Time for the selected latitude.<br>Naked-eye classification becomes <strong>Daylight</strong> when the Sun is above the horizon at 21:00 LAT, and <strong>Solar Glare</strong> when the Sun is below the horizon but the body is too close to the Sun.<br>The Sun is classified by whether it is above or below the horizon at the observer reference time.</p>' + notation_toggle("finder") + "<h3>Planet Finder</h3>" + planet_finder(monday.year, week))
 
 
 EPHEMERIS_SECTION = re.compile(r'<h3>Weekly Solar-System Ephemeris</h3>.*?' r'(?=<h3>(?!Weekly Solar-System Ephemeris</h3>|Planet Finder</h3>)|<h2>|</main>)', re.DOTALL)
