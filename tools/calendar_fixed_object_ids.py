@@ -141,7 +141,7 @@ def patch_text(text: str) -> tuple[str, int]:
         body = match.group("body")
         # Preserve semantic identity already supplied by the generator. Visible
         # Calendar wording is presentation and must not erase a canonical ID.
-        existing = re.search(r'\\bdata-fixed-object-id="(\\d+)"', attrs)
+        existing = re.search(r'\bdata-fixed-object-id="(\d+)"', attrs)
         fixed_id = (
             canonical_fixed_object_id(int(existing.group(1)), merge_map())
             if existing
