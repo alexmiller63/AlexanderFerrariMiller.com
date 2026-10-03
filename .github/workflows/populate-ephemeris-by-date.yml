@@ -119,13 +119,22 @@ jobs:
                   observing,
                   re.S,
               )
-              valid_labels = ('Naked eye', 'Binoculars', 'Telescope', 'Substantial telescope', 'Daylight', 'Solar Glare', 'Visible')
+              valid_labels = ('Naked eye', 'Binoculars', 'Telescope', 'Substantial telescope', 'Daylight', 'Solar Glare')
               if len(latin_values) != wrapped:
                   raise SystemExit(f'Observing aid lacks centralized notation markup: {path}')
               for value in latin_values:
                   label = re.sub(r' \(mag [+-]\d+(?:\.\d+)?\)$', '', value)
                   if label not in valid_labels:
                       raise SystemExit(f'Observing aid lacks valid Latin notation: {path}')
+              if '(mag ' in html:
+                  raise SystemExit(f'Ephemeris magnitude must not include mag: {path}')
+              if '<strong>Snapshot:</strong> Week begins ' not in html or ', 00:00 UTC.</p>' not in html:
+                  raise SystemExit(f'Ephemeris snapshot must identify the week boundary: {path}')
+              if '>Visible<' in html or '&gt;Visible&lt;' in html:
+                  raise SystemExit(f'Sun must not use the legacy Visible status: {path}')
+              note = re.search(r'<p class="ephemeris-note">(.*?)</p>', html, re.S)
+              if not note or note.group(1).count('<br>') < 3:
+                  raise SystemExit(f'Ephemeris explanatory legend must put each sentence on its own line: {path}')
               checked += 1
           print(f'PASS: {checked} Ephemeris week(s) have notation-aware observing aids')
           PY
