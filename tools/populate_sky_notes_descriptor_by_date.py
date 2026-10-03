@@ -2,6 +2,7 @@
 """Populate descriptor-first Sky Notes and story presentations from Calendar IDs."""
 from __future__ import annotations
 
+import csv
 import html
 import json
 import re
@@ -15,8 +16,17 @@ from fixed_object_stories import available_stories, reader_story_url
 from sky_note_descriptors import build_descriptors, decorate_note_html, write_descriptor_records
 
 FIXED_OBJECT_DATABASE = base.ROOT / "database" / "fixed-objects.json"
+FIXED_OBJECT_REGISTRY = base.ROOT / "database" / "fixed-object-registry.json"
+STELLAR_CATALOG = base.ROOT / "bright-stars-2mag.csv"
 
 BAYER_NAMES = {"Alp":"Alpha","Bet":"Beta","Gam":"Gamma","Del":"Delta","Eps":"Epsilon","Zet":"Zeta","Eta":"Eta","The":"Theta","Iot":"Iota","Kap":"Kappa","Lam":"Lambda","Mu":"Mu","Nu":"Nu","Xi":"Xi","Omi":"Omicron","Pi":"Pi","Rho":"Rho","Sig":"Sigma","Tau":"Tau","Ups":"Upsilon","Phi":"Phi","Chi":"Chi","Psi":"Psi","Ome":"Omega"}
+
+def _bayer_display_name(code: str, constellation: str) -> str:
+    """Render a catalogued Bayer code as a reader-facing stellar name."""
+    match = re.match(r"([A-Za-z]+)(.*)", code)
+    stem, suffix = (match.group(1), match.group(2)) if match else (code, "")
+    return f"{BAYER_NAMES.get(stem, stem)}{suffix} {constellation}"
+
 
 def _bayer_fallback_name(facts: dict) -> str | None:
     """Recover an unnamed Bayer star from database facts, never Calendar display text."""
@@ -80,6 +90,34 @@ def fixed_object_metadata() -> dict[int, dict]:
                 if facts.get("constellation"):
                     meta["constellation"] = facts["constellation"]
         result[fixed_id] = meta
+
+    # Some bright stars intentionally have no proper name (for example
+    # Gamma-2 Velorum).  Resolve their Bayer identity through the permanent
+    # HIP identifier, exactly as the Sky Notes artwork generator does.
+    registry = json.loads(FIXED_OBJECT_REGISTRY.read_text(encoding="utf-8"))
+    registry_hip: dict[str, int] = {}
+    for obj in registry.get("fixed_objects") or []:
+        fixed_id = obj.get("fixed_object_id")
+        for identifier in obj.get("identifiers") or []:
+            if str(identifier.get("namespace", "")).lower() == "hip":
+                registry_hip[str(identifier.get("value"))] = fixed_id
+
+    with STELLAR_CATALOG.open(newline="", encoding="utf-8") as fh:
+        for row in csv.DictReader(fh):
+            fixed_id = registry_hip.get(str(row.get("hip") or "").strip())
+            if fixed_id is None or fixed_id not in result:
+                continue
+            bayer = str(row.get("bayer") or "").strip()
+            constellation = str(row.get("con") or "").strip()
+            proper = str(row.get("proper") or row.get("name") or "").strip()
+            if constellation:
+                result[fixed_id]["constellation"] = constellation
+            if proper:
+                result[fixed_id]["name"] = proper
+            elif bayer and constellation and not result[fixed_id].get("name"):
+                result[fixed_id]["name"] = _bayer_display_name(bayer, constellation)
+            if bayer:
+                result[fixed_id]["object_type_family"] = "star"
     return result
 
 
