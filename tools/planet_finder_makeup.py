@@ -56,7 +56,7 @@ def aesthetic_score(result):
     return (elbows, direction_cost, length_cost, displacement_cost, radial_cost)
 
 
-def refine_candidate(mode, result, passes: int = 8):
+def refine_candidate(mode, result, passes: int = 50):
     """Apply deterministic local makeup to one complete valid candidate."""
     current = list(result)
     ok, _ = validate_layout(mode, current)
