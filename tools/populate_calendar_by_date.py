@@ -53,6 +53,17 @@ def populate_selected_year(year: int, selected_weeks: list[int]) -> int:
             # is metadata, not presentation text, and must never be rediscovered
             # from HTML during normal generation.
             fixed_identities = {fixed_sky._event_identity(value.html) for value in vals}
+            for value in vals:
+                if value.fixed_object_id is None:
+                    raise RuntimeError(
+                        f"Canonical fixed-sky event lost fixed-object ID before Calendar merge "
+                        f"for {day}: {fixed_sky._event_identity(value.html)!r}"
+                    )
+                print(
+                    f"CALENDAR-ID-TRACE {day} "
+                    f"{fixed_sky._event_identity(value.html)!r} "
+                    f"fixed_object_id={value.fixed_object_id}"
+                )
             records = [
                 event for event in records
                 if fixed_sky._event_identity(event.html) not in fixed_identities
