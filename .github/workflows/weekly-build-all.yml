@@ -36,7 +36,12 @@ on:
       max_search_seconds:
         description: Planet Finder search time per mode
         required: true
-        default: '180'
+        default: '360'
+        type: string
+      diagnostic_level:
+        description: Planet Finder diagnostic verbosity (0=silent, 1=major, 2=search, 3=forensic)
+        required: true
+        default: '1'
         type: string
 
 permissions:
@@ -120,7 +125,8 @@ jobs:
               -f end_year="$year" -f end_week="$iso_week" \
               -f candidate_layouts='${{ inputs.candidate_layouts }}' \
               -f max_node_candidates='${{ inputs.max_node_candidates }}' \
-              -f max_search_seconds='${{ inputs.max_search_seconds }}'
+              -f max_search_seconds='${{ inputs.max_search_seconds }}' \
+              -f diagnostic_level='${{ inputs.diagnostic_level }}'
             git fetch origin main
             git reset --hard origin/main
 
