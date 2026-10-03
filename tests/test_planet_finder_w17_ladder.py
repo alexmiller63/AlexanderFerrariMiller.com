@@ -44,7 +44,7 @@ EXPECTED_CONJUNCTION = [["Saturn", "Mars"]]
 
 def bodies_for(names):
     selected = set(names)
-    parked = {"Neptune": 120.0, "Mercury": 145.0, "Saturn": 170.0, "Mars": 195.0, "Sun": 220.0, "Ceres": 245.0, "Venus": 270.0, "Uranus": 295.0, "Moon": 320.0, "Jupiter": 345.0, "Pluto": 95.0}
+    parked = {"Neptune": 0.0, "Mercury": 31.0, "Saturn": 62.0, "Mars": 93.0, "Sun": 124.0, "Ceres": 155.0, "Venus": 186.0, "Uranus": 217.0, "Moon": 248.0, "Jupiter": 279.0, "Pluto": 310.0}
     return [(name.lower(), name, W17[name] if name in selected else parked[name]) for name in W17]
 
 
