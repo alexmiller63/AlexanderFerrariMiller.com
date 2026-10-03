@@ -73,9 +73,22 @@ def populate_selected_year(year: int, selected_weeks: list[int]) -> int:
                 raise RuntimeError(f"Could not update Calendar row {day} in {path}")
         path.write_text(text, encoding="utf-8")
 
+        def trace_gamma(stage: str) -> None:
+            current = path.read_text(encoding="utf-8")
+            marker = "Gam-2"
+            pos = current.find(marker)
+            if pos >= 0:
+                cell_start = current.rfind('<div class="event-cell', 0, pos)
+                cell_end = current.find("</div>", pos)
+                print(f"CALENDAR-STAGE-TRACE {stage}: {current[cell_start:cell_end + 6]}")
+
+        trace_gamma("after-merge")
         patch_fixed_object_ids(path)
+        trace_gamma("after-fixed-object-patch")
         patch_mobile_layout(path)
+        trace_gamma("after-mobile-layout")
         patch_planet_finder_layout(path)
+        trace_gamma("after-planet-finder-layout")
         if path.read_text(encoding="utf-8") != before:
             changed += 1
     return changed
