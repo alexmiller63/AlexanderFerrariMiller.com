@@ -70,14 +70,14 @@ CATALOG_ENTRY_TARGETS_DATA=load_catalog_entry_targets()
 
 def catalog_target_fixed_object_id(catalog,designation):
     entry=CATALOG_ENTRY_TARGETS_DATA.get(f"{catalog.lower()}:{designation}")
-    if not entry:return None
-    direct=[]
-    for target in entry.get("targets") or []:
-        if target.get("target_kind")!="fixed_object" or target.get("relationship") not in {"designates"}:continue
-        fixed_id=target.get("fixed_object_id")
-        if fixed_id is not None:direct.append(int(fixed_id))
-    if len(set(direct))>1:raise RuntimeError(f"Multiple direct fixed-object targets for {catalog}:{designation}: {direct}")
-    if direct:return direct[0]
+    if entry:
+        direct=[]
+        for target in entry.get("targets") or []:
+            if target.get("target_kind")!="fixed_object" or target.get("relationship") not in {"designates"}:continue
+            fixed_id=target.get("fixed_object_id")
+            if fixed_id is not None:direct.append(int(fixed_id))
+        if len(set(direct))>1:raise RuntimeError(f"Multiple direct fixed-object targets for {catalog}:{designation}: {direct}")
+        if direct:return direct[0]
     return FIXED_OBJECT_IDS.get((catalog.strip().lower(),designation.strip().lower()))
 
 def load_fixed_object_ids():
