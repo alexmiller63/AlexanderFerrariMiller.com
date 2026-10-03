@@ -222,3 +222,12 @@ Desired: Descriptor generation should actively draw from available object-specif
 Category: Sky Notes / descriptor prose / descriptor data
 Likely scope: Fix the descriptor generator, data enrichment, and fallback logic globally rather than hand-editing Beta Reticuli or any generated weekly page.
 
+
+BUG 013 — Observing-aid legend should not show glyphs
+Status: OPEN
+Found on: 2026-W01 legend
+Observed: The observing-aid legend displays the observing glyphs.
+Desired: Do not show the observing-aid glyphs in the legend; use text only there.
+Category: Legend / presentation
+Likely scope: Legend generator/template; remove observing-aid glyph rendering from the legend without changing their use elsewhere.
+
