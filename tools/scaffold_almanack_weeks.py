@@ -49,7 +49,7 @@ def week_link(year,week,days,content_type=None,bottom=False):
 def week_nav(year,week,content_type,bottom=False):
     return '<nav class="weeknav week-position" aria-label="Week navigation">'+week_link(year,week,-7,content_type,bottom)+f'<span aria-current="page">ISO {year}-W{week:02d}</span>'+week_link(year,week,7,content_type,bottom)+'</nav>'
 
-def site_nav(): return '<nav class="weeknav sitenav"><a href="/star-almanack/">Almanack Home</a><a href="/projects.html">All Projects</a><a href="/index.html">Main Site</a></nav>'
+def site_nav(): return '<nav class="weeknav sitenav"><a href="../../">Almanack Home</a><a href="../../../projects.html">All Projects</a><a href="../../../index.html">Main Site</a></nav>'
 def nav_stack(y,w,content_type,bottom=False): return site_nav()+year_nav(y,bottom)+week_nav(y,w,content_type,bottom)
 
 def notation_toggle(target):
