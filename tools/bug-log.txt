@@ -231,3 +231,10 @@ Desired: Meaningfully show each observing-aid glyph together with what it means 
 Category: Legend / presentation / glyph rendering
 Likely scope: Shared legend generator/template, glyph source, font/Unicode support, and HTML encoding; preserve observing-aid glyph use elsewhere.
 
+BUG 014 — Legacy Sky Notes can lack current human-facing hyperlinks
+Status: OPEN
+Found on: 2026-W19 Sky Notes
+Observed: W19 is stale historical output from before the current descriptor-first Sky Notes pipeline. Its Sky Notes do not contain the expected human-facing hyperlinks, and its current generated source file is absent.
+Desired: Regenerating any week through the current Sky Notes pipeline must persist generated-sky-notes/<year>/W<week>.json and render every available human story target as a reader-facing hyperlink. Verification must fail when either contract is broken.
+Category: Sky Notes / generation / hyperlink verification
+Likely scope: Current Sky Notes generator plus verify_sky_note_human_links.py; broaden verification beyond deep-sky objects so stale or incomplete weekly output cannot pass.
