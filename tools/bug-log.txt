@@ -231,3 +231,12 @@ Desired: Do not show the observing-aid glyphs in the legend; use text only there
 Category: Legend / presentation
 Likely scope: Legend generator/template; remove observing-aid glyph rendering from the legend without changing their use elsewhere.
 
+
+BUG 013 — Observing-aid glyphs render as question marks in legend
+Status: OPEN
+Found on: 2026-W01 legend
+Observed: The observing-aid entries in the legend show question marks instead of the intended observing glyphs.
+Desired: Render the proper observing glyphs consistently for the observing-aid legend entries (for example naked eye, binoculars, and telescope categories) rather than missing-glyph/question-mark placeholders.
+Category: Legend / glyph rendering
+Likely scope: Inspect glyph source, font/Unicode support, HTML encoding, and shared legend generator; fix the generator/shared assets rather than W01 output.
+
