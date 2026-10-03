@@ -143,3 +143,12 @@ Desired: Mars content should primarily tell the observer where to find Mars in t
 Category: Sky Notes / object-location prose
 Likely scope: Sky Notes/location-text generator logic for Solar System objects; inspect generator rather than patching W01.
 
+
+BUG 008 — Planet descriptor should visually locate the planet
+Status: OPEN
+Found on: 2026-W01, Mars descriptor
+Observed: Mars text says it is about 2° in ecliptic longitude from Nunki, a star used to orient the Teapot in Sagittarius, but the descriptor does not provide the corresponding locating artwork.
+Desired: A planet descriptor should include an illustration/chart that actually shows the planet in relation to the reference star or asterism described in the locating sentence. For this case, show Mars relative to Nunki and the Teapot/Sagittarius context so the prose can be used to find Mars in the sky.
+Category: Sky Notes / descriptor artwork
+Likely scope: Descriptor/artwork generator should derive a locating chart from the descriptor’s positional reference rather than providing prose alone.
+
