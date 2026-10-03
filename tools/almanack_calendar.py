@@ -138,7 +138,8 @@ def _render_event(event: CalendarEvent) -> str:
 
 def _render_event_cells(events: str | list[CalendarEvent]) -> str:
     if isinstance(events, str):
-        records = [CalendarEvent(item) for item in _event_items(events)]
+        # Preserve any semantic metadata already present in canonical event cells.
+        records = _event_records(events)
     else:
         records = events
     return f'<div class="calendar-events">{"".join(_render_event(event) for event in records)}</div>'
