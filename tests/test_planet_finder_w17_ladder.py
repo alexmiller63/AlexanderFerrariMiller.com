@@ -201,3 +201,69 @@ def test_w17_greek_five_candidate_progressive_ladder(monkeypatch):
             print(f"W17 FIVE-CANDIDATE LADDER {level} PASS", flush=True)
 
     print(f"W17 FIVE-CANDIDATE LADDER SUMMARY ALL_PASS={passed}", flush=True)
+
+
+def test_w17_greek_venus_transition_five_candidate_ladder(monkeypatch):
+    """Zoom into the alignment-6 -> alignment-7 cliff by moving Venus inward."""
+    monkeypatch.setenv("PLANET_FINDER_DIAGNOSTIC_LEVEL", "2")
+    passed = []
+    base_selected = ALIGNMENT_CHAIN[:6]
+    venus_rungs = [
+        ("venus-74.000", 74.000),
+        ("venus-69.000", 69.000),
+        ("venus-64.000", 64.000),
+        ("venus-59.000", 59.000),
+        ("venus-exact-54.923", W17["Venus"]),
+    ]
+    expected_alignments = [ALIGNMENT_CHAIN[:7]]
+
+    for level, venus_longitude in venus_rungs:
+        source = bodies_for(base_selected)
+        source = [
+            (key, name, venus_longitude if name == "Venus" else longitude)
+            for key, name, longitude in source
+        ]
+
+        actual_alignments = names(alignment_groups(source))
+        actual_conjunctions = names(conjunction_groups(source))
+        print(
+            f"W17 VENUS-TRANSITION FIVE-CANDIDATE {level} CLASSIFY "
+            f"venus={venus_longitude:.3f} alignments={actual_alignments} "
+            f"conjunctions={actual_conjunctions}",
+            flush=True,
+        )
+
+        assert actual_alignments == expected_alignments, (
+            f"ACCIDENTAL/UNEXPECTED ALIGNMENT at {level}: "
+            f"expected={expected_alignments} actual={actual_alignments}"
+        )
+        assert actual_conjunctions == EXPECTED_CONJUNCTION, (
+            f"ACCIDENTAL/UNEXPECTED CONJUNCTION at {level}: "
+            f"expected={EXPECTED_CONJUNCTION} actual={actual_conjunctions}"
+        )
+
+        print(f"W17 VENUS-TRANSITION FIVE-CANDIDATE {level} START", flush=True)
+        try:
+            result = layout(
+                FinderMode.GREEK,
+                source,
+                target_solutions=5,
+                budget={"max_node_candidates": 200, "max_seconds": 30.0},
+                context_label=f"W17-venus-transition-five-{level}",
+            )
+            assert_valid(result, source)
+        except Exception as exc:
+            print(
+                f"W17 VENUS-TRANSITION FIVE-CANDIDATE SUMMARY passed={passed} "
+                f"FIRST_FAILURE={level} {type(exc).__name__}: {exc}",
+                flush=True,
+            )
+            raise
+        else:
+            passed.append(level)
+            print(f"W17 VENUS-TRANSITION FIVE-CANDIDATE {level} PASS", flush=True)
+
+    print(
+        f"W17 VENUS-TRANSITION FIVE-CANDIDATE SUMMARY ALL_PASS={passed}",
+        flush=True,
+    )
