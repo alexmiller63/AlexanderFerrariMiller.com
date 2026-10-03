@@ -87,7 +87,7 @@ jobs:
 
             git fetch origin main
             git reset --hard origin/main
-            printf 'BUILDING %s\n' "$week_label" > build-status.txt
+            week_started_at="$(date -u '+%Y-%m-%dT%H:%M:%SZ')"\n            printf 'BUILDING %s STARTED %s\n' "$week_label" "$week_started_at" > build-status.txt
             git add build-status.txt
             if ! git diff --cached --quiet; then
               git -c user.name='github-actions[bot]' \
@@ -141,7 +141,7 @@ jobs:
             git fetch origin main
             git reset --hard origin/main
 
-            printf 'COMPLETE %s\n' "$week_label" > build-status.txt
+            week_completed_at="$(date -u '+%Y-%m-%dT%H:%M:%SZ')"\n            printf 'COMPLETE %s STARTED %s COMPLETED %s\n' "$week_label" "$week_started_at" "$week_completed_at" > build-status.txt
             git add build-status.txt
             if ! git diff --cached --quiet; then
               git -c user.name='github-actions[bot]' \
