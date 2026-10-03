@@ -134,3 +134,12 @@ Desired: The view controls should have clear, consistent toggle behavior and vis
 Category: UI / view controls
 Likely scope: Inspect generated page control markup and shared JavaScript/CSS; fix the generator/shared implementation rather than W01 output.
 
+
+BUG 008 — Mars “Why is it here?” content should locate Mars, not merely provide a descriptor
+Status: OPEN
+Found on: 2026-W01 Mars entry
+Observed: The Mars text says, “Mars is about two degrees in ecliptic longitude from Nunki, one of the stars used to orient the Teapot in Sagittarius.” This reads as a descriptor/reference fact rather than directly showing the observer where Mars is.
+Desired: Mars content should primarily tell the observer where to find Mars in the sky, using nearby recognizable stars/asterisms as practical orientation. Descriptor material can support that purpose but should not replace the location guidance.
+Category: Sky Notes / object-location prose
+Likely scope: Sky Notes/location-text generator logic for Solar System objects; inspect generator rather than patching W01.
+
