@@ -205,3 +205,20 @@ Desired: Replace boilerplate with distinct, object-specific prose. The descripti
 Category: Sky Notes / descriptor prose
 Likely scope: Descriptor/Sky Notes prose generator and fallback logic; generic fallback text should not masquerade as object-specific content.
 
+
+BUG 011 — Descriptor artwork legend appears twice / at top
+Status: OPEN
+Found on: 2026-W01 Beta Reticuli descriptor image
+Observed: A legend appears at the top of the generated descriptor image.
+Desired: Descriptor artwork should have its legend only at the bottom; no duplicate/top legend.
+Category: Descriptor artwork / layout
+Likely scope: Artwork generator legend placement.
+
+BUG 012 — Beta Reticuli descriptor prose is repetitive boilerplate
+Status: OPEN
+Found on: 2026-W01 Beta Reticuli descriptor
+Observed: The main description and “Why is it here?” repeat the same generic sentence, and “How to find it” gives generic instructions instead of object-specific guidance.
+Desired: Generate substantive, non-repetitive object-specific prose. For Beta Reticuli, explain what is actually interesting about the star and Reticulum, then give a concrete finder route using Reticulum’s recognizable diamond and Beta Reticuli’s place in it. Each section should add distinct information.
+Category: Sky Notes / descriptor prose
+Likely scope: Descriptor prose generator and fallback logic; generic fallback text should not populate multiple semantic sections unchanged.
+
