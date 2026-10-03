@@ -2981,11 +2981,14 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             f"Planet Finder {mode}: PRE-DFS TIMING alignment-plan START",
             level=1, flush=True,
         )
-        alignment_preplacement = plan_alignment_layer()
+        # Forensic experiment: bypass the legacy exhaustive alignment
+        # preplanner and give the full clock to the recursive alignment solver.
+        # Keep plan_alignment_layer() intact so this is trivially reversible.
+        alignment_preplacement = None
         diagnostic_print(
             f"Planet Finder {mode}: PRE-DFS TIMING alignment-plan END "
             f"elapsed={time.monotonic() - phase_started:.3f}s "
-            f"result={'success' if alignment_preplacement is not None else 'none'}",
+            f"result=bypassed-forensic",
             level=1, flush=True,
         )
         report_predfs_phase("alignment-plan", before)
