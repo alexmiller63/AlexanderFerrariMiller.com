@@ -480,10 +480,35 @@ def _linked_name(record: dict) -> str:
     )
 
 
+def lunar_highlight_descriptors(page_path) -> list[dict]:
+    """Create distinct descriptors for astronomical lunar phase and named lunar traditions."""
+    text = page_path.read_text(encoding="utf-8")
+    records = []
+    seen = set()
+    for raw in re.findall(r'>([^<>]*?(?:Full Moon|Moon After Yule)[^<>]*?)<', text, flags=re.I):
+        match = re.search(r'\b(Full Moon|Moon After Yule)\b', raw, flags=re.I)
+        if not match:
+            continue
+        name = "Full Moon" if match.group(1).casefold() == "full moon" else "Moon After Yule"
+        if name.casefold() in seen:
+            continue
+        seen.add(name.casefold())
+        if name == "Full Moon":
+            summary = "astronomical lunar phase at 180° solar elongation"
+            body = "Full Moon is the lunar phase in which the Moon and Sun are approximately opposite in geocentric ecliptic longitude, so the lunar disk is fully illuminated as seen from Earth."
+        else:
+            summary = "traditional name for the first Full Moon after the December solstice"
+            body = "Moon After Yule is the Almanack's traditional designation for the first Full Moon after the December solstice. It names a seasonal lunar occurrence; it is distinct from the astronomical phase itself."
+        records.append({"schema_version": 1, "id": f"lunar-{slugify(name)}", "type": "lunar-highlight", "name": name, "summary": summary, "representation": {"machine": f"./lunar-{slugify(name)}.json", "human_source": "summary"}, "body": body})
+    return records
+
 def human_sentence(record: dict) -> str:
     """Render useful prose strictly from fields in the machine-readable record."""
     name = _linked_name(record)
     kind = record.get("type")
+
+    if kind == "lunar-highlight":
+        return f"<strong>{name}</strong>: {html.escape(str(record.get('body') or record.get('summary') or ''))}"
 
     if kind == "star":
         constellation = record.get("constellation")
