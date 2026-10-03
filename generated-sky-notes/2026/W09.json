@@ -1,0 +1,668 @@
+{
+  "week": "W09",
+  "title": "Observer’s guide for ISO 2026-W09",
+  "status": "generated",
+  "planetary_source": "weekly-ephemeris-2026.csv",
+  "planetary_coordinate": "geocentric tropical ecliptic longitude; Monday 00:00 UTC",
+  "fixed_sky": [
+    {
+      "fixed_object_id": 824,
+      "type": "star",
+      "name": "Aludra",
+      "constellation": "CMa"
+    },
+    {
+      "fixed_object_id": 827,
+      "type": "star",
+      "name": "Gomeisa",
+      "constellation": "CMi"
+    },
+    {
+      "fixed_object_id": 828,
+      "type": "star",
+      "name": "Castor",
+      "constellation": "Gem"
+    },
+    {
+      "fixed_object_id": 196,
+      "type": "deep-sky",
+      "name": "M47"
+    },
+    {
+      "fixed_object_id": 36,
+      "type": "star",
+      "name": "Procyon",
+      "constellation": "CMi"
+    },
+    {
+      "fixed_object_id": 832,
+      "type": "star",
+      "name": "α Mon",
+      "constellation": "Mon"
+    },
+    {
+      "fixed_object_id": 197,
+      "type": "deep-sky",
+      "name": "M46"
+    },
+    {
+      "fixed_object_id": 199,
+      "type": "deep-sky",
+      "name": "M93"
+    },
+    {
+      "fixed_object_id": 37,
+      "type": "star",
+      "name": "Pollux",
+      "constellation": "Gem"
+    }
+  ],
+  "planet_relations": [
+    {
+      "kind": "planet-planet-longitude",
+      "planet": "Saturn",
+      "other_planet": "Neptune",
+      "planet_longitude_deg": 1.017,
+      "other_longitude_deg": 0.833,
+      "longitude_separation_deg": 0.2,
+      "basis": "Star Almanack preserved geocentric tropical ecliptic longitude"
+    }
+  ],
+  "note": "ISO 2026-W09 runs from February 23 through March 1. Saturn and Neptune are separated by about 0.2° in geocentric ecliptic longitude at the Monday 00:00 UTC snapshot.\n\n**Naked eye:** No principal lunar phase is listed this week. Check the Moon's position each night and favor darker hours for low-contrast targets. Use Aludra, Gomeisa, Castor, Procyon, Pollux as the week’s fixed-sky framework.\n\n**Planets:** Saturn and Neptune are separated by about 0.2° in geocentric ecliptic longitude at the Monday 00:00 UTC snapshot.\n\n**Binoculars:** Favor α Mon; wide fields help connect the charted geometry to the real sky.\n\n**Small telescope:** Concentrate on M47, M46, M93. Increase magnification only after the target and surrounding pattern are secure.\n\n**Substantial telescope:** No fixed-sky Calendar object is classified as requiring a substantial telescope this week.\n\n",
+  "descriptors": [
+    {
+      "schema_version": 1,
+      "id": "1249",
+      "type": "solar-system-object",
+      "name": "Sun",
+      "summary": "Solar-System object tracked by the Star Almanack weekly ephemeris and Planet Finder",
+      "representation": {
+        "machine": "./1249.json",
+        "human_source": "summary"
+      }
+    },
+    {
+      "schema_version": 1,
+      "id": "1250",
+      "type": "planet",
+      "name": "Mercury",
+      "summary": "Solar-System object tracked by the Star Almanack weekly ephemeris and Planet Finder",
+      "representation": {
+        "machine": "./1250.json",
+        "human_source": "summary"
+      }
+    },
+    {
+      "schema_version": 1,
+      "id": "1251",
+      "type": "planet",
+      "name": "Venus",
+      "summary": "Solar-System object tracked by the Star Almanack weekly ephemeris and Planet Finder",
+      "representation": {
+        "machine": "./1251.json",
+        "human_source": "summary"
+      }
+    },
+    {
+      "schema_version": 1,
+      "id": "1252",
+      "type": "planet",
+      "name": "Earth",
+      "summary": "Solar-System object tracked by the Star Almanack weekly ephemeris and Planet Finder",
+      "representation": {
+        "machine": "./1252.json",
+        "human_source": "summary"
+      }
+    },
+    {
+      "schema_version": 1,
+      "id": "1253",
+      "type": "solar-system-object",
+      "name": "Moon",
+      "summary": "Solar-System object tracked by the Star Almanack weekly ephemeris and Planet Finder",
+      "representation": {
+        "machine": "./1253.json",
+        "human_source": "summary"
+      }
+    },
+    {
+      "schema_version": 1,
+      "id": "1254",
+      "type": "planet",
+      "name": "Mars",
+      "summary": "Solar-System object tracked by the Star Almanack weekly ephemeris and Planet Finder",
+      "representation": {
+        "machine": "./1254.json",
+        "human_source": "summary"
+      }
+    },
+    {
+      "schema_version": 1,
+      "id": "1255",
+      "type": "solar-system-object",
+      "name": "Ceres",
+      "summary": "Solar-System object tracked by the Star Almanack weekly ephemeris and Planet Finder",
+      "representation": {
+        "machine": "./1255.json",
+        "human_source": "summary"
+      }
+    },
+    {
+      "schema_version": 1,
+      "id": "1256",
+      "type": "planet",
+      "name": "Jupiter",
+      "summary": "Solar-System object tracked by the Star Almanack weekly ephemeris and Planet Finder",
+      "representation": {
+        "machine": "./1256.json",
+        "human_source": "summary"
+      }
+    },
+    {
+      "schema_version": 1,
+      "id": "1257",
+      "type": "planet",
+      "name": "Saturn",
+      "summary": "Solar-System object tracked by the Star Almanack weekly ephemeris and Planet Finder",
+      "representation": {
+        "machine": "./1257.json",
+        "human_source": "summary"
+      }
+    },
+    {
+      "schema_version": 1,
+      "id": "1258",
+      "type": "planet",
+      "name": "Uranus",
+      "summary": "Solar-System object tracked by the Star Almanack weekly ephemeris and Planet Finder",
+      "representation": {
+        "machine": "./1258.json",
+        "human_source": "summary"
+      }
+    },
+    {
+      "schema_version": 1,
+      "id": "1259",
+      "type": "planet",
+      "name": "Neptune",
+      "summary": "Solar-System object tracked by the Star Almanack weekly ephemeris and Planet Finder",
+      "representation": {
+        "machine": "./1259.json",
+        "human_source": "summary"
+      }
+    },
+    {
+      "schema_version": 1,
+      "id": "1260",
+      "type": "solar-system-object",
+      "name": "Pluto",
+      "summary": "Solar-System object tracked by the Star Almanack weekly ephemeris and Planet Finder",
+      "representation": {
+        "machine": "./1260.json",
+        "human_source": "summary"
+      }
+    },
+    {
+      "schema_version": 1,
+      "id": "824",
+      "type": "star",
+      "name": "Aludra",
+      "summary": "bright star in Canis Major used as a fixed-sky reference",
+      "representation": {
+        "machine": "./824.json",
+        "human_source": "summary",
+        "human": "/stories/baseline/824.html"
+      },
+      "constellation_abbreviation": "CMa",
+      "constellation": "Canis Major",
+      "position": {
+        "ra_deg": 111.02376,
+        "dec_deg": -29.303104,
+        "ecliptic_longitude_deg": 119.536483,
+        "ecliptic_latitude_deg": -50.608754
+      },
+      "representative_visual_magnitude": 2.45
+    },
+    {
+      "schema_version": 1,
+      "id": "1286",
+      "type": "constellation",
+      "name": "Canis Major",
+      "summary": "constellation used by Star Almanack to organize fixed-sky objects and finder geometry",
+      "representation": {
+        "machine": "./1286.json",
+        "human_source": "summary"
+      },
+      "abbreviation": "CMa"
+    },
+    {
+      "schema_version": 1,
+      "id": "827",
+      "type": "star",
+      "name": "Gomeisa",
+      "summary": "bright star in Canis Minor used as a fixed-sky reference",
+      "representation": {
+        "machine": "./827.json",
+        "human_source": "summary",
+        "human": "/stories/baseline/827.html"
+      },
+      "constellation_abbreviation": "CMi",
+      "constellation": "Canis Minor"
+    },
+    {
+      "schema_version": 1,
+      "id": "1287",
+      "type": "constellation",
+      "name": "Canis Minor",
+      "summary": "constellation used by Star Almanack to organize fixed-sky objects and finder geometry",
+      "representation": {
+        "machine": "./1287.json",
+        "human_source": "summary"
+      },
+      "abbreviation": "CMi"
+    },
+    {
+      "schema_version": 1,
+      "id": "828",
+      "type": "star",
+      "name": "Castor",
+      "summary": "bright star in Gemini used as a fixed-sky reference",
+      "representation": {
+        "machine": "./828.json",
+        "human_source": "summary",
+        "human": "/stories/baseline/828.html"
+      },
+      "constellation_abbreviation": "Gem",
+      "constellation": "Gemini",
+      "position": {
+        "ra_deg": 113.64951,
+        "dec_deg": 31.888276,
+        "ecliptic_longitude_deg": 110.240239,
+        "ecliptic_latitude_deg": 10.095752
+      },
+      "representative_visual_magnitude": 1.58
+    },
+    {
+      "schema_version": 1,
+      "id": "1310",
+      "type": "constellation",
+      "name": "Gemini",
+      "summary": "constellation used by Star Almanack to organize fixed-sky objects and finder geometry",
+      "representation": {
+        "machine": "./1310.json",
+        "human_source": "summary"
+      },
+      "abbreviation": "Gem"
+    },
+    {
+      "schema_version": 1,
+      "id": "196",
+      "type": "deep-sky-object",
+      "name": "M47",
+      "summary": "deep-sky object selected as a weekly fixed-sky observing target",
+      "representation": {
+        "machine": "./196.json",
+        "human_source": "summary",
+        "human": "/stories/baseline/196.html"
+      },
+      "catalog_name": "M47",
+      "object_type": "deep-sky object",
+      "source_label": "M47"
+    },
+    {
+      "schema_version": 1,
+      "id": "36",
+      "type": "star",
+      "name": "Procyon",
+      "summary": "bright star in Canis Minor used as a fixed-sky reference",
+      "representation": {
+        "machine": "./36.json",
+        "human_source": "summary",
+        "human": "/stories/baseline/36.html"
+      },
+      "constellation_abbreviation": "CMi",
+      "constellation": "Canis Minor",
+      "position": {
+        "ra_deg": 114.825495,
+        "dec_deg": 5.224993,
+        "ecliptic_longitude_deg": 115.785533,
+        "ecliptic_latitude_deg": -16.019615
+      },
+      "representative_visual_magnitude": 0.4,
+      "guiding_asterisms": [
+        {
+          "id": "asterism-winter-triangle",
+          "name": "Winter Triangle",
+          "relationship": "visual-member",
+          "provenance": {
+            "source": "NASA",
+            "source_url": "https://science.nasa.gov/solar-system/what-are-asterisms/",
+            "source_role": "verification",
+            "supports": "visual-membership"
+          }
+        },
+        {
+          "id": "asterism-winter-hexagon-winter-circle",
+          "name": "Winter Hexagon / Winter Circle",
+          "relationship": "visual-member",
+          "provenance": {
+            "source": "NASA",
+            "source_url": "https://science.nasa.gov/solar-system/skywatching/night-sky-network/connecting-the-dots-with-asterisms/",
+            "source_role": "verification",
+            "supports": "visual-membership"
+          }
+        }
+      ]
+    },
+    {
+      "schema_version": 1,
+      "id": "832",
+      "type": "star",
+      "name": "α Mon",
+      "summary": "bright star in Monoceros used as a fixed-sky reference",
+      "representation": {
+        "machine": "./832.json",
+        "human_source": "summary",
+        "human": "/stories/baseline/832.html"
+      },
+      "constellation_abbreviation": "Mon",
+      "constellation": "Monoceros"
+    },
+    {
+      "schema_version": 1,
+      "id": "1327",
+      "type": "constellation",
+      "name": "Monoceros",
+      "summary": "constellation used by Star Almanack to organize fixed-sky objects and finder geometry",
+      "representation": {
+        "machine": "./1327.json",
+        "human_source": "summary"
+      },
+      "abbreviation": "Mon"
+    },
+    {
+      "schema_version": 1,
+      "id": "197",
+      "type": "deep-sky-object",
+      "name": "M46",
+      "summary": "deep-sky object selected as a weekly fixed-sky observing target",
+      "representation": {
+        "machine": "./197.json",
+        "human_source": "summary",
+        "human": "/stories/baseline/197.html"
+      },
+      "catalog_name": "M46",
+      "object_type": "deep-sky object",
+      "source_label": "M46"
+    },
+    {
+      "schema_version": 1,
+      "id": "199",
+      "type": "deep-sky-object",
+      "name": "M93",
+      "summary": "deep-sky object selected as a weekly fixed-sky observing target",
+      "representation": {
+        "machine": "./199.json",
+        "human_source": "summary",
+        "human": "/stories/baseline/199.html"
+      },
+      "catalog_name": "M93",
+      "object_type": "deep-sky object",
+      "source_label": "M93"
+    },
+    {
+      "schema_version": 1,
+      "id": "37",
+      "type": "star",
+      "name": "Pollux",
+      "summary": "bright star in Gemini used as a fixed-sky reference",
+      "representation": {
+        "machine": "./37.json",
+        "human_source": "summary",
+        "human": "/stories/baseline/37.html"
+      },
+      "constellation_abbreviation": "Gem",
+      "constellation": "Gemini",
+      "position": {
+        "ra_deg": 116.329155,
+        "dec_deg": 28.026199,
+        "ecliptic_longitude_deg": 113.215813,
+        "ecliptic_latitude_deg": 6.684219
+      },
+      "representative_visual_magnitude": 1.16,
+      "guiding_asterisms": [
+        {
+          "id": "asterism-winter-hexagon-winter-circle",
+          "name": "Winter Hexagon / Winter Circle",
+          "relationship": "visual-member",
+          "provenance": {
+            "source": "NASA",
+            "source_url": "https://science.nasa.gov/solar-system/skywatching/night-sky-network/connecting-the-dots-with-asterisms/",
+            "source_role": "verification",
+            "supports": "visual-membership"
+          }
+        }
+      ]
+    },
+    {
+      "schema_version": 1,
+      "id": "ecliptic-longitude",
+      "type": "observing-concept",
+      "name": "ecliptic longitude",
+      "summary": "angular position measured along the ecliptic, used here for conservative weekly Solar-System comparisons",
+      "representation": {
+        "machine": "./ecliptic-longitude.json",
+        "human_source": "summary"
+      }
+    },
+    {
+      "schema_version": 1,
+      "id": "zodiac",
+      "type": "observing-concept",
+      "name": "zodiac",
+      "summary": "the band of constellations along the ecliptic used to orient Solar-System objects",
+      "representation": {
+        "machine": "./zodiac.json",
+        "human_source": "summary"
+      }
+    }
+  ],
+  "calendar_fixed_object_ids": [
+    824,
+    827,
+    828,
+    196,
+    36,
+    832,
+    197,
+    199,
+    37
+  ],
+  "story_candidates": [
+    {
+      "fixed_object_id": 824,
+      "collection": "baseline",
+      "hed": "Aludra",
+      "dek": "Aludra is a charted star in CMa selected by the Calendar as part of this week’s fixed-sky observing framework.",
+      "body": "Why it is here: Aludra is a charted star in CMa selected by the Calendar as part of this week’s fixed-sky observing framework.\n\nHow to find it: Use its charted position in CMa and the surrounding figure stars to identify the field.",
+      "url": "/stories/baseline/824.html",
+      "artwork": null
+    },
+    {
+      "fixed_object_id": 827,
+      "collection": "baseline",
+      "hed": "Gomeisa",
+      "dek": "Gomeisa is a charted star in CMi selected by the Calendar as part of this week’s fixed-sky observing framework.",
+      "body": "Why it is here: Gomeisa is a charted star in CMi selected by the Calendar as part of this week’s fixed-sky observing framework.\n\nHow to find it: Use its charted position in CMi and the surrounding figure stars to identify the field.",
+      "url": "/stories/baseline/827.html",
+      "artwork": null
+    },
+    {
+      "fixed_object_id": 828,
+      "collection": "baseline",
+      "hed": "Castor",
+      "dek": "Castor is a charted star in Gem selected by the Calendar as part of this week’s fixed-sky observing framework.",
+      "body": "Why it is here: Castor is a charted star in Gem selected by the Calendar as part of this week’s fixed-sky observing framework.\n\nHow to find it: Use its charted position in Gem and the surrounding figure stars to identify the field.",
+      "url": "/stories/baseline/828.html",
+      "artwork": null
+    },
+    {
+      "fixed_object_id": 196,
+      "collection": "baseline",
+      "hed": "M47",
+      "dek": "M47 is a charted deep-sky object selected by the Calendar as one of this week’s fixed-sky observing targets.",
+      "body": "Why it is here: M47 is a charted deep-sky object selected by the Calendar as one of this week’s fixed-sky observing targets.\n\nHow to find it: Use its charted position in Pup and the surrounding figure stars to identify the field.",
+      "url": "/stories/baseline/196.html",
+      "artwork": null
+    },
+    {
+      "fixed_object_id": 36,
+      "collection": "baseline",
+      "hed": "Procyon",
+      "dek": "Procyon is a charted star in CMi selected by the Calendar as part of this week’s fixed-sky observing framework.",
+      "body": "Why it is here: Procyon is a charted star in CMi selected by the Calendar as part of this week’s fixed-sky observing framework.\n\nHow to find it: Use its charted position in CMi and the surrounding figure stars to identify the field.",
+      "url": "/stories/baseline/36.html",
+      "artwork": null
+    },
+    {
+      "fixed_object_id": 832,
+      "collection": "baseline",
+      "hed": "α Mon",
+      "dek": "α Mon is a charted star in Mon selected by the Calendar as part of this week’s fixed-sky observing framework.",
+      "body": "Why it is here: α Mon is a charted star in Mon selected by the Calendar as part of this week’s fixed-sky observing framework.\n\nHow to find it: Use its charted position in Mon and the surrounding figure stars to identify the field.",
+      "url": "/stories/baseline/832.html",
+      "artwork": null
+    },
+    {
+      "fixed_object_id": 197,
+      "collection": "baseline",
+      "hed": "M46",
+      "dek": "M46 is a charted deep-sky object selected by the Calendar as one of this week’s fixed-sky observing targets.",
+      "body": "Why it is here: M46 is a charted deep-sky object selected by the Calendar as one of this week’s fixed-sky observing targets.\n\nHow to find it: Use its charted position in Pup and the surrounding figure stars to identify the field.",
+      "url": "/stories/baseline/197.html",
+      "artwork": null
+    },
+    {
+      "fixed_object_id": 199,
+      "collection": "baseline",
+      "hed": "M93",
+      "dek": "M93 is a charted deep-sky object selected by the Calendar as one of this week’s fixed-sky observing targets.",
+      "body": "Why it is here: M93 is a charted deep-sky object selected by the Calendar as one of this week’s fixed-sky observing targets.\n\nHow to find it: Use its charted position in Pup and the surrounding figure stars to identify the field.",
+      "url": "/stories/baseline/199.html",
+      "artwork": null
+    },
+    {
+      "fixed_object_id": 37,
+      "collection": "baseline",
+      "hed": "Pollux",
+      "dek": "Pollux is a charted star in Gem selected by the Calendar as part of this week’s fixed-sky observing framework.",
+      "body": "Why it is here: Pollux is a charted star in Gem selected by the Calendar as part of this week’s fixed-sky observing framework.\n\nHow to find it: Use its charted position in Gem and the surrounding figure stars to identify the field.",
+      "url": "/stories/baseline/37.html",
+      "artwork": null
+    }
+  ],
+  "inline_stories": [],
+  "linked_stories": [],
+  "stories": [
+    {
+      "fixed_object_id": 824,
+      "collection": "baseline",
+      "hed": "Aludra",
+      "dek": "Aludra is a charted star in CMa selected by the Calendar as part of this week’s fixed-sky observing framework.",
+      "body": "Why it is here: Aludra is a charted star in CMa selected by the Calendar as part of this week’s fixed-sky observing framework.\n\nHow to find it: Use its charted position in CMa and the surrounding figure stars to identify the field.",
+      "url": "/stories/baseline/824.html",
+      "artwork": null
+    },
+    {
+      "fixed_object_id": 827,
+      "collection": "baseline",
+      "hed": "Gomeisa",
+      "dek": "Gomeisa is a charted star in CMi selected by the Calendar as part of this week’s fixed-sky observing framework.",
+      "body": "Why it is here: Gomeisa is a charted star in CMi selected by the Calendar as part of this week’s fixed-sky observing framework.\n\nHow to find it: Use its charted position in CMi and the surrounding figure stars to identify the field.",
+      "url": "/stories/baseline/827.html",
+      "artwork": null
+    },
+    {
+      "fixed_object_id": 828,
+      "collection": "baseline",
+      "hed": "Castor",
+      "dek": "Castor is a charted star in Gem selected by the Calendar as part of this week’s fixed-sky observing framework.",
+      "body": "Why it is here: Castor is a charted star in Gem selected by the Calendar as part of this week’s fixed-sky observing framework.\n\nHow to find it: Use its charted position in Gem and the surrounding figure stars to identify the field.",
+      "url": "/stories/baseline/828.html",
+      "artwork": null
+    },
+    {
+      "fixed_object_id": 196,
+      "collection": "baseline",
+      "hed": "M47",
+      "dek": "M47 is a charted deep-sky object selected by the Calendar as one of this week’s fixed-sky observing targets.",
+      "body": "Why it is here: M47 is a charted deep-sky object selected by the Calendar as one of this week’s fixed-sky observing targets.\n\nHow to find it: Use its charted position in Pup and the surrounding figure stars to identify the field.",
+      "url": "/stories/baseline/196.html",
+      "artwork": null
+    },
+    {
+      "fixed_object_id": 36,
+      "collection": "baseline",
+      "hed": "Procyon",
+      "dek": "Procyon is a charted star in CMi selected by the Calendar as part of this week’s fixed-sky observing framework.",
+      "body": "Why it is here: Procyon is a charted star in CMi selected by the Calendar as part of this week’s fixed-sky observing framework.\n\nHow to find it: Use its charted position in CMi and the surrounding figure stars to identify the field.",
+      "url": "/stories/baseline/36.html",
+      "artwork": null
+    },
+    {
+      "fixed_object_id": 832,
+      "collection": "baseline",
+      "hed": "α Mon",
+      "dek": "α Mon is a charted star in Mon selected by the Calendar as part of this week’s fixed-sky observing framework.",
+      "body": "Why it is here: α Mon is a charted star in Mon selected by the Calendar as part of this week’s fixed-sky observing framework.\n\nHow to find it: Use its charted position in Mon and the surrounding figure stars to identify the field.",
+      "url": "/stories/baseline/832.html",
+      "artwork": null
+    },
+    {
+      "fixed_object_id": 197,
+      "collection": "baseline",
+      "hed": "M46",
+      "dek": "M46 is a charted deep-sky object selected by the Calendar as one of this week’s fixed-sky observing targets.",
+      "body": "Why it is here: M46 is a charted deep-sky object selected by the Calendar as one of this week’s fixed-sky observing targets.\n\nHow to find it: Use its charted position in Pup and the surrounding figure stars to identify the field.",
+      "url": "/stories/baseline/197.html",
+      "artwork": null
+    },
+    {
+      "fixed_object_id": 199,
+      "collection": "baseline",
+      "hed": "M93",
+      "dek": "M93 is a charted deep-sky object selected by the Calendar as one of this week’s fixed-sky observing targets.",
+      "body": "Why it is here: M93 is a charted deep-sky object selected by the Calendar as one of this week’s fixed-sky observing targets.\n\nHow to find it: Use its charted position in Pup and the surrounding figure stars to identify the field.",
+      "url": "/stories/baseline/199.html",
+      "artwork": null
+    },
+    {
+      "fixed_object_id": 37,
+      "collection": "baseline",
+      "hed": "Pollux",
+      "dek": "Pollux is a charted star in Gem selected by the Calendar as part of this week’s fixed-sky observing framework.",
+      "body": "Why it is here: Pollux is a charted star in Gem selected by the Calendar as part of this week’s fixed-sky observing framework.\n\nHow to find it: Use its charted position in Gem and the surrounding figure stars to identify the field.",
+      "url": "/stories/baseline/37.html",
+      "artwork": null
+    }
+  ],
+  "descriptor_policy": {
+    "source_of_truth": "machine-readable JSON",
+    "candidate_pool": "complete; presentation never limits discovery",
+    "presentation": "Wordy",
+    "story_limit": null,
+    "wordy_policy": "rich weekly observing prose; link to complete object stories rather than embedding them",
+    "future_presentations": [
+      "Highlights"
+    ],
+    "link_target": "/almanack/descriptors/<fixed_object_id>.json for fixed-object descriptors",
+    "artwork_descriptor_is_separate": true,
+    "artwork_source": "explicit story front matter only",
+    "fixed_sky_identity_source": "Calendar data-fixed-object-id + data-observing-aid + database/fixed-objects.json",
+    "story_identity_source": "Calendar data-fixed-object-id only",
+    "story_source": "stories/<collection>/<fixed_object_id>.md",
+    "inline_story_content": "hed + dek + body",
+    "linked_story_content": "reserved for Highlights presentation",
+    "annual_note_is_separate_from_evergreen_story": true
+  }
+}

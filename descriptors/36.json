@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "id": "36",
+  "type": "star",
+  "name": "Procyon",
+  "summary": "bright star in Canis Minor used as a fixed-sky reference",
+  "representation": {
+    "machine": "./36.json",
+    "human_source": "summary",
+    "human": "/stories/baseline/36.html"
+  },
+  "constellation_abbreviation": "CMi",
+  "constellation": "Canis Minor",
+  "position": {
+    "ra_deg": 114.825495,
+    "dec_deg": 5.224993,
+    "ecliptic_longitude_deg": 115.785533,
+    "ecliptic_latitude_deg": -16.019615
+  },
+  "representative_visual_magnitude": 0.4,
+  "guiding_asterisms": [
+    {
+      "id": "asterism-winter-triangle",
+      "name": "Winter Triangle",
+      "relationship": "visual-member",
+      "provenance": {
+        "source": "NASA",
+        "source_url": "https://science.nasa.gov/solar-system/what-are-asterisms/",
+        "source_role": "verification",
+        "supports": "visual-membership"
+      }
+    },
+    {
+      "id": "asterism-winter-hexagon-winter-circle",
+      "name": "Winter Hexagon / Winter Circle",
+      "relationship": "visual-member",
+      "provenance": {
+        "source": "NASA",
+        "source_url": "https://science.nasa.gov/solar-system/skywatching/night-sky-network/connecting-the-dots-with-asterisms/",
+        "source_role": "verification",
+        "supports": "visual-membership"
+      }
+    }
+  ]
+}
