@@ -3061,6 +3061,25 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         raise
 
     if refinement_timed_out:
+        probe_total = sum(alignment_probe_signatures.values())
+        probe_unique = len(alignment_probe_signatures)
+        probe_repeated = probe_total - probe_unique
+        top_repeats = sorted(
+            (
+                (count, key[0] + 1, key[1], key[2])
+                for key, count in alignment_probe_signatures.items()
+                if count > 1
+            ),
+            reverse=True,
+        )[:12]
+        diagnostic_print(
+            f"Planet Finder {mode}: ALIGNMENT STATE REPETITION DEADLINE "
+            f"evaluations={probe_total:,} unique={probe_unique:,} repeated={probe_repeated:,} "
+            f"repeat_pct={(100.0 * probe_repeated / probe_total if probe_total else 0.0):.1f}% "
+            f"top={top_repeats}",
+            level=1, flush=True,
+        )
+        report_alignment_phase_profile()
         dump_diagnostics("refinement deadline reached before search completed")
     elif exhausted:
         dump_diagnostics("search exhausted without a complete solution")
