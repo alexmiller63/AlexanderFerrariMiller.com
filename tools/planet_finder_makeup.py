@@ -56,6 +56,22 @@ def aesthetic_score(result):
     return (elbows, direction_cost, length_cost, displacement_cost, radial_cost)
 
 
+def _is_straight_radial(path, tolerance_degrees: float = 0.5):
+    """True when a leader is a single, essentially radial segment."""
+    if len(path) != 2:
+        return False
+    ax, ay = path[0]
+    bx, by = path[1]
+    vx, vy = bx - ax, by - ay
+    rx, ry = ax - CX, ay - CY
+    vlen = math.hypot(vx, vy)
+    rlen = math.hypot(rx, ry)
+    if not vlen or not rlen:
+        return False
+    cosine = max(-1.0, min(1.0, (vx * rx + vy * ry) / (vlen * rlen)))
+    return math.degrees(math.acos(cosine)) <= tolerance_degrees
+
+
 def refine_candidate(mode, result, passes: int = 50):
     """Apply deterministic local makeup to one complete valid candidate."""
     current = list(result)
@@ -81,8 +97,7 @@ def refine_candidate(mode, result, passes: int = 50):
             obstacles = reserved_boxes(mode) + other_boxes
             anchor = xy(longitude, RI - 5)
             baseline = aesthetic_score(current)
-            best = current
-            best_score = baseline
+            legal_trials = []
 
             # The canonical legal lattice is finite and deterministic.  Makeup
             # may move a label, but it may not invent new geometry.
@@ -100,13 +115,25 @@ def refine_candidate(mode, result, passes: int = 50):
                 trial = list(current)
                 trial[i] = (symbol, name, longitude, box, path)
                 valid, _ = validate_layout(mode, trial)
-                if not valid:
-                    continue
-                score = aesthetic_score(trial)
-                if score < best_score:
-                    best, best_score = trial, score
+                if valid:
+                    legal_trials.append((trial, path, aesthetic_score(trial)))
 
-            if best is not current:
+            # Makeup invariant: if this body has any valid straight radial
+            # leader, diagonal/elbowed alternatives are not eligible.  This is
+            # deliberately stronger than a score bonus: straight wins whenever
+            # geometry permits it.  Aesthetic scoring then chooses the nicest
+            # member of that straight-only class.
+            straight_trials = [row for row in legal_trials if _is_straight_radial(row[1])]
+            if straight_trials:
+                best, _, best_score = min(straight_trials, key=lambda row: row[2])
+            else:
+                best = current
+                best_score = baseline
+                for trial, _, score in legal_trials:
+                    if score < best_score:
+                        best, best_score = trial, score
+
+            if best is not current and best != current:
                 current = best
                 changed = True
         if not changed:
