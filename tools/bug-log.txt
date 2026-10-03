@@ -125,3 +125,12 @@ Scope: Weekly Almanack remains Monday-based. This feature changes the observer t
 Category: Ephemeris / observer settings
 Likely scope: Parameterize observer time through the relevant generators and presentation instead of hard-coding 9:00 PM.
 
+
+BUG 007 — Highlights / Wordy view controls do not behave as toggles
+Status: OPEN
+Found on: 2026-W01
+Observed: The View controls “Highlights” and “Wordy” do not appear to behave as toggles as intended.
+Desired: The view controls should have clear, consistent toggle behavior and visibly reflect the active view state.
+Category: UI / view controls
+Likely scope: Inspect generated page control markup and shared JavaScript/CSS; fix the generator/shared implementation rather than W01 output.
+
