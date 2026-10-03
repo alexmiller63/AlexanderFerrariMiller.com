@@ -54,3 +54,12 @@ Desired display: “Naked eye (-2.7)”.
 Category: Ephemeris / presentation
 Likely scope: Change the ephemeris generator/template; do not patch W01.
 
+
+BUG 004 — Remove “mag” from ephemeris Naked eye magnitude display
+Status: OPEN
+Found on: 2026-W01
+Observed: Ephemeris displays “Naked eye (mag −2.7)”.
+Desired: Display “Naked eye (−2.7)” — retain the numeric magnitude value but remove the redundant “mag” label.
+Category: Ephemeris / presentation
+Likely scope: Fix ephemeris generator/template; do not patch W01.
+
