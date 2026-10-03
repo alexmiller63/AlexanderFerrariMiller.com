@@ -191,11 +191,12 @@ def ensure_coverage(start_year: int, eph: StarAlmanackEphemeris | None = None) -
         changed = False
         for obj in interval.get("objects", []):
             expected_id = source_ids.get((obj.get("source"), obj.get("key")))
+            # Some catalog entries intentionally model regions/composites rather
+            # than a single fixed object (for example M24, the Sagittarius Star
+            # Cloud).  Preserve their null fixed-object ID; the catalog-target
+            # relationship is their canonical identity.
             if expected_id is None:
-                raise RuntimeError(
-                    f"No permanent fixed-object ID for persisted annual coverage "
-                    f"{obj.get('source')}:{obj.get('key')}"
-                )
+                continue
             if obj.get("fixed_object_id") != expected_id:
                 obj["fixed_object_id"] = expected_id
                 changed = True
