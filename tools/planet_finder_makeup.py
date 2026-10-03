@@ -56,10 +56,10 @@ def aesthetic_score(result):
     return (elbows, direction_cost, length_cost, displacement_cost, radial_cost)
 
 
-def _is_straight_radial(path, tolerance_degrees: float = 0.5):
-    """True when a leader is a single, essentially radial segment."""
+def _radial_deviation(path):
+    """Angular deviation from the anchor's radial direction, in degrees."""
     if len(path) != 2:
-        return False
+        return math.inf
     ax, ay = path[0]
     bx, by = path[1]
     vx, vy = bx - ax, by - ay
@@ -67,9 +67,14 @@ def _is_straight_radial(path, tolerance_degrees: float = 0.5):
     vlen = math.hypot(vx, vy)
     rlen = math.hypot(rx, ry)
     if not vlen or not rlen:
-        return False
+        return math.inf
     cosine = max(-1.0, min(1.0, (vx * rx + vy * ry) / (vlen * rlen)))
-    return math.degrees(math.acos(cosine)) <= tolerance_degrees
+    return math.degrees(math.acos(cosine))
+
+
+def _is_straight_radial(path, tolerance_degrees: float = 0.5):
+    """True when a leader is a single, essentially radial segment."""
+    return _radial_deviation(path) <= tolerance_degrees
 
 
 def refine_candidate(mode, result, passes: int = 50):
@@ -127,11 +132,22 @@ def refine_candidate(mode, result, passes: int = 50):
             if straight_trials:
                 best, _, best_score = min(straight_trials, key=lambda row: row[2])
             else:
-                best = current
-                best_score = baseline
-                for trial, _, score in legal_trials:
-                    if score < best_score:
-                        best, best_score = trial, score
+                # If exact radial is unavailable, prefer the least-diagonal
+                # single-segment leader before considering its ordinary
+                # aesthetic score.  This makes near-straight progressively
+                # preferable to more diagonal straight leaders.
+                direct_trials = [row for row in legal_trials if len(row[1]) == 2]
+                if direct_trials:
+                    best, _, best_score = min(
+                        direct_trials,
+                        key=lambda row: (_radial_deviation(row[1]), row[2]),
+                    )
+                else:
+                    best = current
+                    best_score = baseline
+                    for trial, _, score in legal_trials:
+                        if score < best_score:
+                            best, best_score = trial, score
 
             if best is not current and best != current:
                 current = best
