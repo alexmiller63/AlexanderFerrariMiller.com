@@ -188,3 +188,20 @@ Desired: Descriptor image legends should appear only at the bottom. Remove the d
 Category: Descriptor artwork / layout
 Likely scope: Artwork generator layout; verify whether this affects all generated descriptor images, not only Beta Reticuli.
 
+
+BUG 011 — Descriptor image legend duplicated at top
+Status: OPEN
+Found on: 2026-W01 Beta Reticuli descriptor image
+Observed: A legend appears at the top of the generated Beta Reticuli image as well as in the intended bottom location.
+Desired: Descriptor image legend should appear only at the bottom; remove the top legend.
+Category: Descriptor artwork / layout
+Likely scope: Shared descriptor/artwork generator layout, not a Beta Reticuli-only patch.
+
+BUG 012 — Beta Reticuli descriptor prose is repetitive boilerplate
+Status: OPEN
+Found on: 2026-W01 Beta Reticuli descriptor
+Observed: The main description and “Why is it here?” repeat the same generic sentence: “Beta Reticuli is a charted star in Reticulum, selected by the calendar as part of this week's fixed sky observing framework.” “How to find it” is likewise generic: “use its charted position in Reticulum and the surrounding brighter stars to identify the field.”
+Desired: Replace boilerplate with distinct, object-specific prose. The description should explain Beta Reticuli itself and useful observing context; “Why is it here?” should explain the actual reason it was selected this week; “How to find it” should give a concrete star-finding route using Reticulum’s diamond-shaped pattern and identifiable neighboring stars. Do not repeat the same sentence across sections.
+Category: Sky Notes / descriptor prose
+Likely scope: Descriptor/Sky Notes prose generator and fallback logic; generic fallback text should not masquerade as object-specific content.
+
