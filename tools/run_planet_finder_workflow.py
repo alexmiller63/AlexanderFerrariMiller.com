@@ -61,7 +61,12 @@ def run_with_failure_trace(command: list[str], env: dict[str, str]) -> None:
     )
     assert process.stdout is not None
     for line in process.stdout:
-        trace.append(line.rstrip("\n"))
+        clean = line.rstrip("\n")
+        trace.append(clean)
+        # Preserve the bounded failure trace, but do not hide successful
+        # generator diagnostics.  In particular, PLANET_FINDER_DIAGNOSTIC_LEVEL
+        # controls detailed [MAKEUP] output that must remain visible in Actions.
+        print(clean, flush=True)
     returncode = process.wait()
     if returncode == 0:
         return
