@@ -149,3 +149,55 @@ def test_w17_greek_progressive_ladder(monkeypatch):
             print(f"W17 LADDER {level} PASS", flush=True)
 
     print(f"W17 LADDER SUMMARY ALL_PASS={passed}", flush=True)
+
+
+def test_w17_greek_five_candidate_progressive_ladder(monkeypatch):
+    """Repeat the simple-to-hard W17 alignment ladder at production target=5."""
+    monkeypatch.setenv("PLANET_FINDER_DIAGNOSTIC_LEVEL", "2")
+    passed = []
+
+    # Keep this diagnostic ladder focused on the alignment chain.  The
+    # one-candidate ladder separately continues through Jupiter and exact W17.
+    for level, selected, expected_alignments, expected_conjunctions in W17_GREEK_LADDER[: len(ALIGNMENT_CHAIN) - 1]:
+        source = bodies_for(selected)
+
+        actual_alignments = names(alignment_groups(source))
+        actual_conjunctions = names(conjunction_groups(source))
+
+        print(
+            f"W17 FIVE-CANDIDATE LADDER {level} CLASSIFY "
+            f"alignments={actual_alignments} conjunctions={actual_conjunctions}",
+            flush=True,
+        )
+
+        assert actual_alignments == expected_alignments, (
+            f"ACCIDENTAL/UNEXPECTED ALIGNMENT at {level}: "
+            f"expected={expected_alignments} actual={actual_alignments}"
+        )
+        assert actual_conjunctions == expected_conjunctions, (
+            f"ACCIDENTAL/UNEXPECTED CONJUNCTION at {level}: "
+            f"expected={expected_conjunctions} actual={actual_conjunctions}"
+        )
+
+        print(f"W17 FIVE-CANDIDATE LADDER {level} START", flush=True)
+        try:
+            result = layout(
+                FinderMode.GREEK,
+                source,
+                target_solutions=5,
+                budget={"max_node_candidates": 200, "max_seconds": 30.0},
+                context_label=f"W17-five-candidate-ladder-{level}",
+            )
+            assert_valid(result, source)
+        except Exception as exc:
+            print(
+                f"W17 FIVE-CANDIDATE LADDER SUMMARY passed={passed} FIRST_FAILURE={level} "
+                f"{type(exc).__name__}: {exc}",
+                flush=True,
+            )
+            raise
+        else:
+            passed.append(level)
+            print(f"W17 FIVE-CANDIDATE LADDER {level} PASS", flush=True)
+
+    print(f"W17 FIVE-CANDIDATE LADDER SUMMARY ALL_PASS={passed}", flush=True)
