@@ -11,3 +11,19 @@ Observed: Clicking “Almanac Home” from the W01 page returns a 404 instead of
 Category: Navigation / path handling
 Likely scope: GitHub Pages base-path handling; investigate generator/template rather than patching W01.
 
+
+BUG 002 — Sun incorrectly shown as “Visible” in ephemeris
+Status: OPEN
+Found on: 2026-W01
+Observed: The observer-facing ephemeris is geared to 9:00 PM local apparent solar time, but the Sun is labeled “Visible.”
+Category: Ephemeris / observing-status logic
+Likely scope: Inspect Sun-specific status logic in the ephemeris generator; do not patch W01.
+
+BUG 003 — Snapshot label does not clearly identify the week boundary
+Status: OPEN
+Found on: 2026-W01
+Observed: The snapshot wording can be mistaken for the ephemeris observing time.
+Desired wording: “Snapshot: Week begins December 29, 2025, 00:00 UTC.”
+Category: Almanack labeling / presentation
+Likely scope: Change the generator/template so weekly pages clearly distinguish the canonical week-start snapshot from the 9:00 PM observer-facing ephemeris time.
+
