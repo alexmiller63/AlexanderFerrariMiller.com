@@ -1,0 +1,34 @@
+{
+  "schema_version": 1,
+  "id": "40",
+  "type": "star",
+  "name": "Aspidiske",
+  "summary": "bright star in Carina used as a fixed-sky reference",
+  "representation": {
+    "machine": "./40.json",
+    "human_source": "summary",
+    "human": "/stories/baseline/40.html"
+  },
+  "constellation_abbreviation": "Car",
+  "constellation": "Carina",
+  "position": {
+    "ra_deg": 139.27257,
+    "dec_deg": -59.275229,
+    "ecliptic_longitude_deg": 185.326328,
+    "ecliptic_latitude_deg": -67.116328
+  },
+  "representative_visual_magnitude": 2.21,
+  "guiding_asterisms": [
+    {
+      "id": "asterism-false-cross",
+      "name": "False Cross",
+      "relationship": "visual-member",
+      "provenance": {
+        "source": "Sky & Telescope",
+        "source_url": "https://skyandtelescope.org/astronomy-blogs/southern-stargazing-jonathan-nally/the-stars-of-the-carina-constellation/",
+        "source_role": "verification",
+        "supports": "visual-membership"
+      }
+    }
+  ]
+}
