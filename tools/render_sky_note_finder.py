@@ -644,8 +644,9 @@ def render(spec: dict, stars, output: Path) -> None:
     legend = [item for item in legend if item]
     if legend:
         legend_text = "   ·   ".join(legend)
-        ax.text(0.5, 1.035, legend_text, transform=ax.transAxes,
-                ha="center", va="bottom", fontsize=7, color=TEXT, wrap=True)
+        # Finder legends belong only in the bottom legend area.  A prior
+        # renderer emitted the same legend at the top and bottom, which made
+        # descriptor artwork appear to have a duplicated legend.
         ax.text(0.5, -0.075, legend_text, transform=ax.transAxes,
                 ha="center", va="top", fontsize=7, color=TEXT, wrap=True)
     ax.set_xticks([])
