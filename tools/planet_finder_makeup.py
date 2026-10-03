@@ -22,6 +22,7 @@ def aesthetic_score(result):
     length_cost = 0.0
     displacement_cost = 0.0
     radial_cost = 0.0
+    direction_cost = 0.0
     preferred_leader = 95.0
     for _, _, longitude, box, path in result:
         leader_length = sum(
@@ -38,11 +39,24 @@ def aesthetic_score(result):
             length_cost += 0.18 * (preferred_leader - leader_length) ** 2
         natural = xy(longitude, 345)
         displacement_cost += math.hypot(box.x - natural[0], box.y - natural[1])
+        # Prefer a leader that continues straight outward from its anchor.
+        # A diagonal/slanting leader can still win when geometry requires it,
+        # but not merely because it is a little shorter.
+        if len(path) >= 2:
+            ax, ay = path[0]
+            bx, by = path[-1]
+            vx, vy = bx - ax, by - ay
+            rx, ry = ax - CX, ay - CY
+            vlen = math.hypot(vx, vy)
+            rlen = math.hypot(rx, ry)
+            if vlen and rlen:
+                cosine = max(-1.0, min(1.0, (vx * rx + vy * ry) / (vlen * rlen)))
+                direction_cost += math.degrees(math.acos(cosine))
         radial_cost += abs(math.hypot(box.x - CX, box.y - CY) - 345)
-    return (elbows, length_cost, displacement_cost, radial_cost)
+    return (elbows, direction_cost, length_cost, displacement_cost, radial_cost)
 
 
-def refine_candidate(mode, result, passes: int = 2):
+def refine_candidate(mode, result, passes: int = 8):
     """Apply deterministic local makeup to one complete valid candidate."""
     current = list(result)
     ok, _ = validate_layout(mode, current)
