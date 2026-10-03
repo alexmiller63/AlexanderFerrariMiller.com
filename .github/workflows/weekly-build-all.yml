@@ -40,7 +40,7 @@ on:
         type: string
 
 permissions:
-  contents: read
+  contents: write
   actions: write
 
 concurrency:
@@ -82,7 +82,19 @@ jobs:
 
           for week in "${WEEKS[@]}"; do
             read -r year iso_week <<< "$week"
-            echo "::group::ISO ${year}-W$(printf '%02d' "$iso_week")"
+            week_label="${year}-W$(printf '%02d' "$iso_week")"
+            echo "::group::ISO ${week_label}"
+
+            git fetch origin main
+            git reset --hard origin/main
+            printf 'BUILDING %s\n' "$week_label" > build-status.txt
+            git add build-status.txt
+            if ! git diff --cached --quiet; then
+              git -c user.name='github-actions[bot]' \
+                  -c user.email='41898282+github-actions[bot]@users.noreply.github.com' \
+                  commit -m "Build All: starting $week_label"
+              git push origin HEAD:main
+            fi
 
             bash tools/run-workflow-and-wait.sh scaffold-almanack-weeks.yml \
               -f start_year="$year" -f start_week="$iso_week" \
@@ -128,6 +140,15 @@ jobs:
               -f end_year="$year" -f end_week="$iso_week"
             git fetch origin main
             git reset --hard origin/main
+
+            printf 'COMPLETE %s\n' "$week_label" > build-status.txt
+            git add build-status.txt
+            if ! git diff --cached --quiet; then
+              git -c user.name='github-actions[bot]' \
+                  -c user.email='41898282+github-actions[bot]@users.noreply.github.com' \
+                  commit -m "Build All: completed $week_label"
+              git push origin HEAD:main
+            fi
 
             echo "::endgroup::"
           done
