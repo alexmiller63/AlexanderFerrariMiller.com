@@ -8,12 +8,33 @@ passes and the aesthetic cost improves.
 from __future__ import annotations
 
 import math
+import os
+from collections import Counter
 
 from planet_finder_geometry import (
     CX, CY, RI, Box, LABEL_LENGTH,
     label_size, legal_candidate_positions, reserved_boxes, route, xy,
 )
 from planet_finder_validation import validate_layout
+
+
+def _diagnostic_level():
+    try:
+        return int(os.environ.get("PLANET_FINDER_DIAGNOSTIC_LEVEL", "0"))
+    except ValueError:
+        return 0
+
+
+def _leader_length(path):
+    return sum(
+        math.hypot(b[0] - a[0], b[1] - a[1])
+        for a, b in zip(path, path[1:])
+    )
+
+
+def _trace(level, message):
+    if _diagnostic_level() >= level:
+        print(f"[MAKEUP] {message}", flush=True)
 
 
 def aesthetic_score(result):
@@ -84,8 +105,10 @@ def refine_candidate(mode, result, passes: int = 50):
     if not ok:
         return result
 
-    for _ in range(max(1, passes)):
+    _trace(1, f"START mode={mode} bodies={len(current)} score={aesthetic_score(current)}")
+    for pass_index in range(max(1, passes)):
         changed = False
+        _trace(2, f"PASS mode={mode} pass={pass_index + 1} score={aesthetic_score(current)}")
         # Work longest leaders first: they have the most visible makeup to gain.
         order = sorted(
             range(len(current)),
@@ -102,13 +125,26 @@ def refine_candidate(mode, result, passes: int = 50):
             obstacles = reserved_boxes(mode) + other_boxes
             anchor = xy(longitude, RI - 5)
             baseline = aesthetic_score(current)
+            old_length = _leader_length(old_path)
+            old_deviation = _radial_deviation(old_path)
             legal_trials = []
+            lattice_count = 0
+            route_failures = 0
+            validation_failures = Counter()
+
+            _trace(
+                2,
+                f"BODY mode={mode} pass={pass_index + 1} name={name} "
+                f"old_segments={max(0, len(old_path)-1)} old_length={old_length:.2f} "
+                f"old_radial_dev={old_deviation:.3f} old_box=({old_box.x:.2f},{old_box.y:.2f})",
+            )
 
             # The canonical legal lattice is finite and deterministic.  Makeup
             # may move a label, but it may not invent new geometry.
             for x, y, box in legal_candidate_positions(
                 longitude, w, h, reserved_boxes(mode), displacement_scale=0.25
             ):
+                lattice_count += 1
                 path = route(
                     anchor, (x, y), obstacles,
                     allow_initial_escape_count=3,
@@ -116,12 +152,55 @@ def refine_candidate(mode, result, passes: int = 50):
                     existing_paths=other_paths,
                 )
                 if path is None:
+                    route_failures += 1
+                    if _diagnostic_level() >= 3:
+                        _trace(3, f"REJECT_ROUTE mode={mode} name={name} target=({x:.2f},{y:.2f})")
                     continue
                 trial = list(current)
                 trial[i] = (symbol, name, longitude, box, path)
-                valid, _ = validate_layout(mode, trial)
+                valid, reason = validate_layout(mode, trial)
                 if valid:
-                    legal_trials.append((trial, path, aesthetic_score(trial)))
+                    score = aesthetic_score(trial)
+                    legal_trials.append((trial, path, score))
+                    if _diagnostic_level() >= 3:
+                        _trace(
+                            3,
+                            f"VALID mode={mode} name={name} target=({x:.2f},{y:.2f}) "
+                            f"segments={max(0, len(path)-1)} length={_leader_length(path):.2f} "
+                            f"radial_dev={_radial_deviation(path):.3f} score={score}",
+                        )
+                else:
+                    key = str(reason)
+                    validation_failures[key] += 1
+                    if _diagnostic_level() >= 3:
+                        _trace(
+                            3,
+                            f"REJECT_VALIDATE mode={mode} name={name} target=({x:.2f},{y:.2f}) "
+                            f"segments={max(0, len(path)-1)} length={_leader_length(path):.2f} "
+                            f"radial_dev={_radial_deviation(path):.3f} reason={key}",
+                        )
+
+            radial_count = sum(_is_straight_radial(row[1]) for row in legal_trials)
+            direct_count = sum(len(row[1]) == 2 for row in legal_trials)
+            routed_count = len(legal_trials) - direct_count
+            _trace(
+                2,
+                f"SUMMARY mode={mode} name={name} lattice={lattice_count} "
+                f"route_fail={route_failures} validation_fail={sum(validation_failures.values())} "
+                f"valid={len(legal_trials)} radial={radial_count} direct={direct_count} routed={routed_count}",
+            )
+            if validation_failures:
+                _trace(2, f"VALIDATION_REASONS mode={mode} name={name} reasons={dict(validation_failures)}")
+            direct_ranked = sorted(
+                (row for row in legal_trials if len(row[1]) == 2),
+                key=lambda row: (_radial_deviation(row[1]), row[2]),
+            )
+            for rank, (_, path, score) in enumerate(direct_ranked[:10], 1):
+                _trace(
+                    2,
+                    f"DIRECT_RANK mode={mode} name={name} rank={rank} "
+                    f"radial_dev={_radial_deviation(path):.3f} length={_leader_length(path):.2f} score={score}",
+                )
 
             # Makeup invariant: if this body has any valid straight radial
             # leader, diagonal/elbowed alternatives are not eligible.  This is
@@ -150,8 +229,25 @@ def refine_candidate(mode, result, passes: int = 50):
                             best, best_score = trial, score
 
             if best is not current and best != current:
+                new_path = best[i][4]
+                _trace(
+                    1,
+                    f"ACCEPT mode={mode} pass={pass_index + 1} name={name} "
+                    f"segments={max(0, len(old_path)-1)}->{max(0, len(new_path)-1)} "
+                    f"length={old_length:.2f}->{_leader_length(new_path):.2f} "
+                    f"radial_dev={old_deviation:.3f}->{_radial_deviation(new_path):.3f} "
+                    f"score={baseline}->{best_score}",
+                )
                 current = best
                 changed = True
+            else:
+                _trace(
+                    2,
+                    f"KEEP mode={mode} pass={pass_index + 1} name={name} "
+                    f"legal={len(legal_trials)} score={baseline}",
+                )
         if not changed:
+            _trace(1, f"STABLE mode={mode} pass={pass_index + 1}")
             break
+    _trace(1, f"END mode={mode} score={aesthetic_score(current)}")
     return current
