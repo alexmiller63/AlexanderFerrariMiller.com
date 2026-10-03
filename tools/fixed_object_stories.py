@@ -148,12 +148,37 @@ def baseline_story(fixed_object_id: int) -> Story:
     else:
         reason = f"{name} is a charted deep-sky object selected by the Calendar as one of this week’s fixed-sky observing targets."
     routes = _routes_for(name)
-    if routes:
-        route_text = " ".join(route.get("instruction", "").strip() for route in routes if route.get("instruction"))
-        body = f"Why it is here: {reason}\n\nHow to find it: {route_text}"
+    route_texts = [str(route.get("instruction") or "").strip() for route in routes if str(route.get("instruction") or "").strip()]
+    if route_texts:
+        context = " ".join(route_texts)
     else:
-        context = f"Use its charted position in {constellation} and the surrounding figure stars to identify the field." if constellation else "Use the surrounding charted stars and finder geometry to identify the field before increasing magnification."
-        body = f"Why it is here: {reason}\n\nHow to find it: {context}"
+        # Use structured asterism membership before falling back to generic
+        # field-identification prose. This keeps the baseline story useful even
+        # when no curated star-hop route exists.
+        aliases = {name.casefold()}
+        con_abbr = None
+        if constellation:
+            for record in json.loads(FIXED_OBJECT_DATABASE.read_text(encoding="utf-8")).get("fixed_objects") or []:
+                if any(str(src.get("facts", {}).get("name") or "").casefold() == name.casefold()
+                       for src in record.get("source_records") or []):
+                    con_abbr = next((src.get("facts", {}).get("constellation") for src in record.get("source_records") or []
+                                     if src.get("facts", {}).get("constellation")), None)
+                    break
+        asterism_names = []
+        if STAR_HOPS.exists():
+            # The curated route catalog is authoritative for named asterism
+            # waypoints as well as route instructions.
+            for route in _routes_for(name):
+                for step in route.get("steps") or []:
+                    if step and step not in asterism_names:
+                        asterism_names.append(step)
+        if asterism_names:
+            context = "Use the charted " + ", ".join(asterism_names) + " as the named landmark(s), then follow the finder to the target."
+        elif constellation:
+            context = f"Use the charted figure of {constellation} and its labeled reference stars to identify the field."
+        else:
+            context = "Use the surrounding charted stars and finder geometry to identify the field before increasing magnification."
+    body = f"Why it is here: {reason}\n\nHow to find it: {context}"
     return Story("baseline", fixed_object_id, FIXED_OBJECT_DATABASE, name, reason, body,
                  url_override=f"/stories/baseline/{fixed_object_id}.html")
 
