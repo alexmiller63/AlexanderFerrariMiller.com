@@ -53,7 +53,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Build each week through all 6 stages
+      - name: Build each week through all 7 stages
         env:
           GH_TOKEN: ${{ github.token }}
           START_YEAR: ${{ inputs.start_year }}
@@ -123,13 +123,11 @@ jobs:
             git fetch origin main
             git reset --hard origin/main
 
+            bash tools/run-workflow-and-wait.sh wire-almanack-legend.yml \
+              -f start_year="$year" -f start_week="$iso_week" \
+              -f end_year="$year" -f end_week="$iso_week"
+            git fetch origin main
+            git reset --hard origin/main
+
             echo "::endgroup::"
           done
-
-      - name: Legend
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          bash tools/run-workflow-and-wait.sh wire-almanack-legend.yml \
-            -f start_year='${{ inputs.start_year }}' -f start_week='${{ inputs.start_week }}' \
-            -f end_year='${{ inputs.end_year }}' -f end_week='${{ inputs.end_week }}'
