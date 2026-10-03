@@ -114,7 +114,7 @@ jobs:
             git fetch origin main
             git reset --hard origin/main
 
-            bash tools/run-workflow-and-wait.sh populate-ephemeris-by-date.yml \
+            bash tools/run-workflow-and-wait.sh ephemeris-generator-by-date.yml \
               -f start_year="$year" -f start_week="$iso_week" \
               -f end_year="$year" -f end_week="$iso_week"
             git fetch origin main
