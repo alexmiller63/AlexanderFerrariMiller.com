@@ -11,10 +11,10 @@ if not ENABLED:
 
 P = Path("tools/planet_finder_search_core.py")
 text = P.read_text(encoding="utf-8")
-needle = '''        if refinement_timed_out:
+needle = '''    if refinement_timed_out:
         dump_diagnostics("refinement deadline reached before search completed")
 '''
-replacement = '''        if refinement_timed_out:
+replacement = '''    if refinement_timed_out:
         probe_total = sum(alignment_probe_signatures.values())
         probe_unique = len(alignment_probe_signatures)
         probe_repeated = probe_total - probe_unique
