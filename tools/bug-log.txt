@@ -179,3 +179,12 @@ Desired: The descriptor should use Reticulum’s distinctive diamond-shaped patt
 Category: Sky Notes / descriptor artwork / binocular finder
 Likely scope: Descriptor prose and artwork generation for binocular targets; derive finder context from the target’s constellation geometry.
 
+
+BUG 011 — Descriptor image legend duplicated at top
+Status: OPEN
+Found on: 2026-W01 Beta Reticuli descriptor image
+Observed: A legend appears at the top of the generated Beta Reticuli image as well as in the intended legend area.
+Desired: Descriptor image legends should appear only at the bottom. Remove the duplicate/top legend.
+Category: Descriptor artwork / layout
+Likely scope: Artwork generator layout; verify whether this affects all generated descriptor images, not only Beta Reticuli.
+
