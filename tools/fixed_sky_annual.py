@@ -183,7 +183,27 @@ def ensure_coverage(start_year: int, eph: StarAlmanackEphemeris | None = None) -
         for row in data.get("coverage", [])
     }
     if start_year in existing:
-        return existing[start_year]
+        interval = existing[start_year]
+        source_ids = {
+            (source, key): fixed_id
+            for source, key, _ra_h, fixed_id in _source_records()
+        }
+        changed = False
+        for obj in interval.get("objects", []):
+            expected_id = source_ids.get((obj.get("source"), obj.get("key")))
+            if expected_id is None:
+                raise RuntimeError(
+                    f"No permanent fixed-object ID for persisted annual coverage "
+                    f"{obj.get('source')}:{obj.get('key')}"
+                )
+            if obj.get("fixed_object_id") != expected_id:
+                obj["fixed_object_id"] = expected_id
+                changed = True
+        if changed:
+            existing[start_year] = interval
+            data["coverage"] = [existing[key] for key in sorted(existing)]
+            _write_table(data)
+        return interval
 
     interval = coverage_interval(eph, start_year)
     objects = []
