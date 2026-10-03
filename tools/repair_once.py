@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""One-shot forensic: bypass the legacy alignment preplanner."""
+"""One-shot: make same-blob forward checking geometry-only."""
 
 from pathlib import Path
 
-ENABLED = False
+ENABLED = True
 
 if not ENABLED:
     print("Repair Once is OFF; nothing to do.")
@@ -12,28 +12,31 @@ if not ENABLED:
 P = Path("tools/planet_finder_search_core.py")
 text = P.read_text(encoding="utf-8")
 
-old = '''        alignment_preplacement = plan_alignment_layer()
-        diagnostic_print(
-            f"Planet Finder {mode}: PRE-DFS TIMING alignment-plan END "
-            f"elapsed={time.monotonic() - phase_started:.3f}s "
-            f"result={'success' if alignment_preplacement is not None else 'none'}",
-            level=1, flush=True,
-        )
+old = '''                for future_item in next_remaining:
+                    witness_stream = alignment_profiled_candidates(
+                        future_item, diagnostic_depth, "same-blob-forward"
+                    )
+                    try:
+                        next(witness_stream)
+                    except StopIteration:
+                        alignment_forward_ok = False
+                        future_name = future_item[1][1]
 '''
-new = '''        # Forensic experiment: bypass the legacy exhaustive alignment
-        # preplanner and give the full clock to the recursive alignment solver.
-        # Keep plan_alignment_layer() intact so this is trivially reversible.
-        alignment_preplacement = None
-        diagnostic_print(
-            f"Planet Finder {mode}: PRE-DFS TIMING alignment-plan END "
-            f"elapsed={time.monotonic() - phase_started:.3f}s "
-            f"result=bypassed-forensic",
-            level=1, flush=True,
-        )
+new = '''                for future_item in next_remaining:
+                    # Forward checking needs only a necessary-condition witness.
+                    # Absence of a collision-free geometry proves this prefix
+                    # dead; presence merely defers exact leader routing until
+                    # that member is actually explored by DFS.
+                    witness_stream = alignment_geometry_candidates(future_item)
+                    try:
+                        next(witness_stream)
+                    except StopIteration:
+                        alignment_forward_ok = False
+                        future_name = future_item[1][1]
 '''
 
 if text.count(old) != 1:
-    raise SystemExit("Safety stop: alignment preplanner call missing or non-unique")
+    raise SystemExit("Safety stop: same-blob forward witness block missing or non-unique")
 P.write_text(text.replace(old, new, 1), encoding="utf-8")
 
 me = Path(__file__)
@@ -42,4 +45,4 @@ needle = "\nENABLED = True\n"
 if source.count(needle) != 1:
     raise SystemExit("Safety stop: ENABLED assignment not unique")
 me.write_text(source.replace(needle, "\nENABLED = False\n", 1), encoding="utf-8")
-print("Bypassed legacy alignment preplanner for forensic test; Repair Once is OFF.")
+print("Installed geometry-only same-blob forward checking; Repair Once is OFF.")
