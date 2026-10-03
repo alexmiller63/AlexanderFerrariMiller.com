@@ -139,8 +139,7 @@ def patch_text(text: str) -> tuple[str, int]:
         nonlocal count
         attrs = match.group("attrs")
         body = match.group("body")
-        fixed_id = resolve(body, names, messier, bayer)
-        attrs = re.sub(r'\s+data-fixed-object-id="[^"]*"', '', attrs)
+        # Preserve semantic identity already supplied by the generator. Visible\n        # Calendar wording is presentation and must not erase a canonical ID.\n        existing = re.search(r\'\\bdata-fixed-object-id="(\\d+)"\', attrs)\n        fixed_id = (\n            canonical_fixed_object_id(int(existing.group(1)), merge_map())\n            if existing\n            else resolve(body, names, messier, bayer)\n        )\n        attrs = re.sub(r'\s+data-fixed-object-id="[^"]*"', '', attrs)
         attrs = re.sub(r'\s+data-observing-aid="[^"]*"', '', attrs)
         if fixed_id is not None:
             attrs = attrs[:-1] + f' data-fixed-object-id="{fixed_id}">'
