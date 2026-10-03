@@ -1,0 +1,536 @@
+{
+  "week": "W11",
+  "title": "Observer’s guide for ISO 2026-W11",
+  "status": "generated",
+  "planetary_source": "weekly-ephemeris-2026.csv",
+  "planetary_coordinate": "geocentric tropical ecliptic longitude; Monday 00:00 UTC",
+  "fixed_sky": [
+    {
+      "fixed_object_id": 844,
+      "type": "star",
+      "name": "Tarf",
+      "constellation": "Cnc"
+    },
+    {
+      "fixed_object_id": 845,
+      "type": "star",
+      "name": "α Cha",
+      "constellation": "Cha"
+    },
+    {
+      "fixed_object_id": 38,
+      "type": "star",
+      "name": "Avior",
+      "constellation": "Car"
+    },
+    {
+      "fixed_object_id": 847,
+      "type": "star",
+      "name": "β Vol",
+      "constellation": "Vol"
+    },
+    {
+      "fixed_object_id": 205,
+      "type": "deep-sky",
+      "name": "Beehive Cluster"
+    },
+    {
+      "fixed_object_id": 851,
+      "type": "star",
+      "name": "β Pyx",
+      "constellation": "Pyx"
+    }
+  ],
+  "planet_relations": [
+    {
+      "kind": "planet-planet-longitude",
+      "planet": "Venus",
+      "other_planet": "Saturn",
+      "planet_longitude_deg": 3.167,
+      "other_longitude_deg": 2.683,
+      "longitude_separation_deg": 0.5,
+      "basis": "Star Almanack preserved geocentric tropical ecliptic longitude"
+    },
+    {
+      "kind": "planet-planet-longitude",
+      "planet": "Saturn",
+      "other_planet": "Neptune",
+      "planet_longitude_deg": 2.683,
+      "other_longitude_deg": 1.333,
+      "longitude_separation_deg": 1.3,
+      "basis": "Star Almanack preserved geocentric tropical ecliptic longitude"
+    },
+    {
+      "kind": "planet-planet-longitude",
+      "planet": "Venus",
+      "other_planet": "Neptune",
+      "planet_longitude_deg": 3.167,
+      "other_longitude_deg": 1.333,
+      "longitude_separation_deg": 1.8,
+      "basis": "Star Almanack preserved geocentric tropical ecliptic longitude"
+    }
+  ],
+  "note": "ISO 2026-W11 runs from March 9 through March 15. Venus and Saturn are separated by about 0.5° in geocentric ecliptic longitude at the Monday 00:00 UTC snapshot. Saturn and Neptune are separated by about 1.3° in geocentric ecliptic longitude at the Monday 00:00 UTC snapshot.\n\n**Naked eye:** 🌗 Last Quarter — 09:38:31 UTC. Moderate moonlight makes timing and local sky position important for faint targets. Use Avior as the week’s fixed-sky framework.\n\n**Planets:** Venus and Saturn are separated by about 0.5° in geocentric ecliptic longitude at the Monday 00:00 UTC snapshot. Saturn and Neptune are separated by about 1.3° in geocentric ecliptic longitude at the Monday 00:00 UTC snapshot. Venus and Neptune are separated by about 1.8° in geocentric ecliptic longitude at the Monday 00:00 UTC snapshot.\n\n**Binoculars:** Favor Tarf, α Cha, β Vol, β Pyx; wide fields help connect the charted geometry to the real sky.\n\n**Small telescope:** Concentrate on Beehive Cluster. Increase magnification only after the target and surrounding pattern are secure.\n\n**Substantial telescope:** No fixed-sky Calendar object is classified as requiring a substantial telescope this week.\n\n",
+  "descriptors": [
+    {
+      "schema_version": 1,
+      "id": "1249",
+      "type": "solar-system-object",
+      "name": "Sun",
+      "summary": "Solar-System object tracked by the Star Almanack weekly ephemeris and Planet Finder",
+      "representation": {
+        "machine": "./1249.json",
+        "human_source": "summary"
+      }
+    },
+    {
+      "schema_version": 1,
+      "id": "1250",
+      "type": "planet",
+      "name": "Mercury",
+      "summary": "Solar-System object tracked by the Star Almanack weekly ephemeris and Planet Finder",
+      "representation": {
+        "machine": "./1250.json",
+        "human_source": "summary"
+      }
+    },
+    {
+      "schema_version": 1,
+      "id": "1251",
+      "type": "planet",
+      "name": "Venus",
+      "summary": "Solar-System object tracked by the Star Almanack weekly ephemeris and Planet Finder",
+      "representation": {
+        "machine": "./1251.json",
+        "human_source": "summary"
+      }
+    },
+    {
+      "schema_version": 1,
+      "id": "1252",
+      "type": "planet",
+      "name": "Earth",
+      "summary": "Solar-System object tracked by the Star Almanack weekly ephemeris and Planet Finder",
+      "representation": {
+        "machine": "./1252.json",
+        "human_source": "summary"
+      }
+    },
+    {
+      "schema_version": 1,
+      "id": "1253",
+      "type": "solar-system-object",
+      "name": "Moon",
+      "summary": "Solar-System object tracked by the Star Almanack weekly ephemeris and Planet Finder",
+      "representation": {
+        "machine": "./1253.json",
+        "human_source": "summary"
+      }
+    },
+    {
+      "schema_version": 1,
+      "id": "1254",
+      "type": "planet",
+      "name": "Mars",
+      "summary": "Solar-System object tracked by the Star Almanack weekly ephemeris and Planet Finder",
+      "representation": {
+        "machine": "./1254.json",
+        "human_source": "summary"
+      }
+    },
+    {
+      "schema_version": 1,
+      "id": "1255",
+      "type": "solar-system-object",
+      "name": "Ceres",
+      "summary": "Solar-System object tracked by the Star Almanack weekly ephemeris and Planet Finder",
+      "representation": {
+        "machine": "./1255.json",
+        "human_source": "summary"
+      }
+    },
+    {
+      "schema_version": 1,
+      "id": "1256",
+      "type": "planet",
+      "name": "Jupiter",
+      "summary": "Solar-System object tracked by the Star Almanack weekly ephemeris and Planet Finder",
+      "representation": {
+        "machine": "./1256.json",
+        "human_source": "summary"
+      }
+    },
+    {
+      "schema_version": 1,
+      "id": "1257",
+      "type": "planet",
+      "name": "Saturn",
+      "summary": "Solar-System object tracked by the Star Almanack weekly ephemeris and Planet Finder",
+      "representation": {
+        "machine": "./1257.json",
+        "human_source": "summary"
+      }
+    },
+    {
+      "schema_version": 1,
+      "id": "1258",
+      "type": "planet",
+      "name": "Uranus",
+      "summary": "Solar-System object tracked by the Star Almanack weekly ephemeris and Planet Finder",
+      "representation": {
+        "machine": "./1258.json",
+        "human_source": "summary"
+      }
+    },
+    {
+      "schema_version": 1,
+      "id": "1259",
+      "type": "planet",
+      "name": "Neptune",
+      "summary": "Solar-System object tracked by the Star Almanack weekly ephemeris and Planet Finder",
+      "representation": {
+        "machine": "./1259.json",
+        "human_source": "summary"
+      }
+    },
+    {
+      "schema_version": 1,
+      "id": "1260",
+      "type": "solar-system-object",
+      "name": "Pluto",
+      "summary": "Solar-System object tracked by the Star Almanack weekly ephemeris and Planet Finder",
+      "representation": {
+        "machine": "./1260.json",
+        "human_source": "summary"
+      }
+    },
+    {
+      "schema_version": 1,
+      "id": "844",
+      "type": "star",
+      "name": "Tarf",
+      "summary": "bright star in Cancer used as a fixed-sky reference",
+      "representation": {
+        "machine": "./844.json",
+        "human_source": "summary",
+        "human": "/stories/baseline/844.html"
+      },
+      "constellation_abbreviation": "Cnc",
+      "constellation": "Cancer"
+    },
+    {
+      "schema_version": 1,
+      "id": "1284",
+      "type": "constellation",
+      "name": "Cancer",
+      "summary": "constellation used by Star Almanack to organize fixed-sky objects and finder geometry",
+      "representation": {
+        "machine": "./1284.json",
+        "human_source": "summary"
+      },
+      "abbreviation": "Cnc"
+    },
+    {
+      "schema_version": 1,
+      "id": "845",
+      "type": "star",
+      "name": "α Cha",
+      "summary": "bright star in Chamaeleon used as a fixed-sky reference",
+      "representation": {
+        "machine": "./845.json",
+        "human_source": "summary",
+        "human": "/stories/baseline/845.html"
+      },
+      "constellation_abbreviation": "Cha",
+      "constellation": "Chamaeleon"
+    },
+    {
+      "schema_version": 1,
+      "id": "1294",
+      "type": "constellation",
+      "name": "Chamaeleon",
+      "summary": "constellation used by Star Almanack to organize fixed-sky objects and finder geometry",
+      "representation": {
+        "machine": "./1294.json",
+        "human_source": "summary"
+      },
+      "abbreviation": "Cha"
+    },
+    {
+      "schema_version": 1,
+      "id": "38",
+      "type": "star",
+      "name": "Avior",
+      "summary": "bright star in Carina used as a fixed-sky reference",
+      "representation": {
+        "machine": "./38.json",
+        "human_source": "summary",
+        "human": "/stories/baseline/38.html"
+      },
+      "constellation_abbreviation": "Car",
+      "constellation": "Carina",
+      "position": {
+        "ra_deg": 125.62854,
+        "dec_deg": -59.509483,
+        "ecliptic_longitude_deg": 173.129243,
+        "ecliptic_latitude_deg": -72.679877
+      },
+      "representative_visual_magnitude": 1.86,
+      "guiding_asterisms": [
+        {
+          "id": "asterism-false-cross",
+          "name": "False Cross",
+          "relationship": "visual-member",
+          "provenance": {
+            "source": "Sky & Telescope",
+            "source_url": "https://skyandtelescope.org/astronomy-blogs/southern-stargazing-jonathan-nally/the-stars-of-the-carina-constellation/",
+            "source_role": "verification",
+            "supports": "visual-membership"
+          }
+        }
+      ]
+    },
+    {
+      "schema_version": 1,
+      "id": "1289",
+      "type": "constellation",
+      "name": "Carina",
+      "summary": "constellation used by Star Almanack to organize fixed-sky objects and finder geometry",
+      "representation": {
+        "machine": "./1289.json",
+        "human_source": "summary"
+      },
+      "abbreviation": "Car"
+    },
+    {
+      "schema_version": 1,
+      "id": "847",
+      "type": "star",
+      "name": "β Vol",
+      "summary": "bright star in Volans used as a fixed-sky reference",
+      "representation": {
+        "machine": "./847.json",
+        "human_source": "summary",
+        "human": "/stories/baseline/847.html"
+      },
+      "constellation_abbreviation": "Vol",
+      "constellation": "Volans"
+    },
+    {
+      "schema_version": 1,
+      "id": "1360",
+      "type": "constellation",
+      "name": "Volans",
+      "summary": "constellation used by Star Almanack to organize fixed-sky objects and finder geometry",
+      "representation": {
+        "machine": "./1360.json",
+        "human_source": "summary"
+      },
+      "abbreviation": "Vol"
+    },
+    {
+      "schema_version": 1,
+      "id": "205",
+      "type": "deep-sky-object",
+      "name": "Beehive Cluster",
+      "summary": "deep-sky object selected as a weekly fixed-sky observing target",
+      "representation": {
+        "machine": "./205.json",
+        "human_source": "summary",
+        "human": "/stories/baseline/205.html"
+      },
+      "catalog_name": "Beehive Cluster",
+      "object_type": "deep-sky object",
+      "source_label": "Beehive Cluster"
+    },
+    {
+      "schema_version": 1,
+      "id": "851",
+      "type": "star",
+      "name": "β Pyx",
+      "summary": "bright star in Pyxis used as a fixed-sky reference",
+      "representation": {
+        "machine": "./851.json",
+        "human_source": "summary",
+        "human": "/stories/baseline/851.html"
+      },
+      "constellation_abbreviation": "Pyx",
+      "constellation": "Pyxis"
+    },
+    {
+      "schema_version": 1,
+      "id": "1341",
+      "type": "constellation",
+      "name": "Pyxis",
+      "summary": "constellation used by Star Almanack to organize fixed-sky objects and finder geometry",
+      "representation": {
+        "machine": "./1341.json",
+        "human_source": "summary"
+      },
+      "abbreviation": "Pyx"
+    },
+    {
+      "schema_version": 1,
+      "id": "ecliptic-longitude",
+      "type": "observing-concept",
+      "name": "ecliptic longitude",
+      "summary": "angular position measured along the ecliptic, used here for conservative weekly Solar-System comparisons",
+      "representation": {
+        "machine": "./ecliptic-longitude.json",
+        "human_source": "summary"
+      }
+    },
+    {
+      "schema_version": 1,
+      "id": "zodiac",
+      "type": "observing-concept",
+      "name": "zodiac",
+      "summary": "the band of constellations along the ecliptic used to orient Solar-System objects",
+      "representation": {
+        "machine": "./zodiac.json",
+        "human_source": "summary"
+      }
+    }
+  ],
+  "calendar_fixed_object_ids": [
+    844,
+    845,
+    38,
+    847,
+    205,
+    851
+  ],
+  "story_candidates": [
+    {
+      "fixed_object_id": 844,
+      "collection": "baseline",
+      "hed": "Tarf",
+      "dek": "Tarf is a charted star in Cnc selected by the Calendar as part of this week’s fixed-sky observing framework.",
+      "body": "Why it is here: Tarf is a charted star in Cnc selected by the Calendar as part of this week’s fixed-sky observing framework.\n\nHow to find it: Use its charted position in Cnc and the surrounding figure stars to identify the field.",
+      "url": "/stories/baseline/844.html",
+      "artwork": null
+    },
+    {
+      "fixed_object_id": 845,
+      "collection": "baseline",
+      "hed": "α Cha",
+      "dek": "α Cha is a charted star in Cha selected by the Calendar as part of this week’s fixed-sky observing framework.",
+      "body": "Why it is here: α Cha is a charted star in Cha selected by the Calendar as part of this week’s fixed-sky observing framework.\n\nHow to find it: Use its charted position in Cha and the surrounding figure stars to identify the field.",
+      "url": "/stories/baseline/845.html",
+      "artwork": null
+    },
+    {
+      "fixed_object_id": 38,
+      "collection": "baseline",
+      "hed": "Avior",
+      "dek": "Avior is a charted star in Car selected by the Calendar as part of this week’s fixed-sky observing framework.",
+      "body": "Why it is here: Avior is a charted star in Car selected by the Calendar as part of this week’s fixed-sky observing framework.\n\nHow to find it: Use its charted position in Car and the surrounding figure stars to identify the field.",
+      "url": "/stories/baseline/38.html",
+      "artwork": null
+    },
+    {
+      "fixed_object_id": 847,
+      "collection": "baseline",
+      "hed": "β Vol",
+      "dek": "β Vol is a charted star in Vol selected by the Calendar as part of this week’s fixed-sky observing framework.",
+      "body": "Why it is here: β Vol is a charted star in Vol selected by the Calendar as part of this week’s fixed-sky observing framework.\n\nHow to find it: Use its charted position in Vol and the surrounding figure stars to identify the field.",
+      "url": "/stories/baseline/847.html",
+      "artwork": null
+    },
+    {
+      "fixed_object_id": 205,
+      "collection": "baseline",
+      "hed": "Beehive Cluster",
+      "dek": "Beehive Cluster is a charted deep-sky object selected by the Calendar as one of this week’s fixed-sky observing targets.",
+      "body": "Why it is here: Beehive Cluster is a charted deep-sky object selected by the Calendar as one of this week’s fixed-sky observing targets.\n\nHow to find it: Use its charted position in Cnc and the surrounding figure stars to identify the field.",
+      "url": "/stories/baseline/205.html",
+      "artwork": null
+    },
+    {
+      "fixed_object_id": 851,
+      "collection": "baseline",
+      "hed": "β Pyx",
+      "dek": "β Pyx is a charted star in Pyx selected by the Calendar as part of this week’s fixed-sky observing framework.",
+      "body": "Why it is here: β Pyx is a charted star in Pyx selected by the Calendar as part of this week’s fixed-sky observing framework.\n\nHow to find it: Use its charted position in Pyx and the surrounding figure stars to identify the field.",
+      "url": "/stories/baseline/851.html",
+      "artwork": null
+    }
+  ],
+  "inline_stories": [],
+  "linked_stories": [],
+  "stories": [
+    {
+      "fixed_object_id": 844,
+      "collection": "baseline",
+      "hed": "Tarf",
+      "dek": "Tarf is a charted star in Cnc selected by the Calendar as part of this week’s fixed-sky observing framework.",
+      "body": "Why it is here: Tarf is a charted star in Cnc selected by the Calendar as part of this week’s fixed-sky observing framework.\n\nHow to find it: Use its charted position in Cnc and the surrounding figure stars to identify the field.",
+      "url": "/stories/baseline/844.html",
+      "artwork": null
+    },
+    {
+      "fixed_object_id": 845,
+      "collection": "baseline",
+      "hed": "α Cha",
+      "dek": "α Cha is a charted star in Cha selected by the Calendar as part of this week’s fixed-sky observing framework.",
+      "body": "Why it is here: α Cha is a charted star in Cha selected by the Calendar as part of this week’s fixed-sky observing framework.\n\nHow to find it: Use its charted position in Cha and the surrounding figure stars to identify the field.",
+      "url": "/stories/baseline/845.html",
+      "artwork": null
+    },
+    {
+      "fixed_object_id": 38,
+      "collection": "baseline",
+      "hed": "Avior",
+      "dek": "Avior is a charted star in Car selected by the Calendar as part of this week’s fixed-sky observing framework.",
+      "body": "Why it is here: Avior is a charted star in Car selected by the Calendar as part of this week’s fixed-sky observing framework.\n\nHow to find it: Use its charted position in Car and the surrounding figure stars to identify the field.",
+      "url": "/stories/baseline/38.html",
+      "artwork": null
+    },
+    {
+      "fixed_object_id": 847,
+      "collection": "baseline",
+      "hed": "β Vol",
+      "dek": "β Vol is a charted star in Vol selected by the Calendar as part of this week’s fixed-sky observing framework.",
+      "body": "Why it is here: β Vol is a charted star in Vol selected by the Calendar as part of this week’s fixed-sky observing framework.\n\nHow to find it: Use its charted position in Vol and the surrounding figure stars to identify the field.",
+      "url": "/stories/baseline/847.html",
+      "artwork": null
+    },
+    {
+      "fixed_object_id": 205,
+      "collection": "baseline",
+      "hed": "Beehive Cluster",
+      "dek": "Beehive Cluster is a charted deep-sky object selected by the Calendar as one of this week’s fixed-sky observing targets.",
+      "body": "Why it is here: Beehive Cluster is a charted deep-sky object selected by the Calendar as one of this week’s fixed-sky observing targets.\n\nHow to find it: Use its charted position in Cnc and the surrounding figure stars to identify the field.",
+      "url": "/stories/baseline/205.html",
+      "artwork": null
+    },
+    {
+      "fixed_object_id": 851,
+      "collection": "baseline",
+      "hed": "β Pyx",
+      "dek": "β Pyx is a charted star in Pyx selected by the Calendar as part of this week’s fixed-sky observing framework.",
+      "body": "Why it is here: β Pyx is a charted star in Pyx selected by the Calendar as part of this week’s fixed-sky observing framework.\n\nHow to find it: Use its charted position in Pyx and the surrounding figure stars to identify the field.",
+      "url": "/stories/baseline/851.html",
+      "artwork": null
+    }
+  ],
+  "descriptor_policy": {
+    "source_of_truth": "machine-readable JSON",
+    "candidate_pool": "complete; presentation never limits discovery",
+    "presentation": "Wordy",
+    "story_limit": null,
+    "wordy_policy": "rich weekly observing prose; link to complete object stories rather than embedding them",
+    "future_presentations": [
+      "Highlights"
+    ],
+    "link_target": "/almanack/descriptors/<fixed_object_id>.json for fixed-object descriptors",
+    "artwork_descriptor_is_separate": true,
+    "artwork_source": "explicit story front matter only",
+    "fixed_sky_identity_source": "Calendar data-fixed-object-id + data-observing-aid + database/fixed-objects.json",
+    "story_identity_source": "Calendar data-fixed-object-id only",
+    "story_source": "stories/<collection>/<fixed_object_id>.md",
+    "inline_story_content": "hed + dek + body",
+    "linked_story_content": "reserved for Highlights presentation",
+    "annual_note_is_separate_from_evergreen_story": true
+  }
+}

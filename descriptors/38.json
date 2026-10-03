@@ -1,0 +1,34 @@
+{
+  "schema_version": 1,
+  "id": "38",
+  "type": "star",
+  "name": "Avior",
+  "summary": "bright star in Carina used as a fixed-sky reference",
+  "representation": {
+    "machine": "./38.json",
+    "human_source": "summary",
+    "human": "/stories/baseline/38.html"
+  },
+  "constellation_abbreviation": "Car",
+  "constellation": "Carina",
+  "position": {
+    "ra_deg": 125.62854,
+    "dec_deg": -59.509483,
+    "ecliptic_longitude_deg": 173.129243,
+    "ecliptic_latitude_deg": -72.679877
+  },
+  "representative_visual_magnitude": 1.86,
+  "guiding_asterisms": [
+    {
+      "id": "asterism-false-cross",
+      "name": "False Cross",
+      "relationship": "visual-member",
+      "provenance": {
+        "source": "Sky & Telescope",
+        "source_url": "https://skyandtelescope.org/astronomy-blogs/southern-stargazing-jonathan-nally/the-stars-of-the-carina-constellation/",
+        "source_role": "verification",
+        "supports": "visual-membership"
+      }
+    }
+  ]
+}
