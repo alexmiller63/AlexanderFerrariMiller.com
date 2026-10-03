@@ -214,11 +214,11 @@ Desired: Descriptor artwork should have its legend only at the bottom; no duplic
 Category: Descriptor artwork / layout
 Likely scope: Artwork generator legend placement.
 
-BUG 012 — Beta Reticuli descriptor prose is repetitive boilerplate
+BUG 012 — Descriptor generation falls back to repetitive boilerplate instead of object-specific material
 Status: OPEN
 Found on: 2026-W01 Beta Reticuli descriptor
-Observed: The main description and “Why is it here?” repeat the same generic sentence, and “How to find it” gives generic instructions instead of object-specific guidance.
-Desired: Generate substantive, non-repetitive object-specific prose. For Beta Reticuli, explain what is actually interesting about the star and Reticulum, then give a concrete finder route using Reticulum’s recognizable diamond and Beta Reticuli’s place in it. Each section should add distinct information.
-Category: Sky Notes / descriptor prose
-Likely scope: Descriptor prose generator and fallback logic; generic fallback text should not populate multiple semantic sections unchanged.
+Observed: Beta Reticuli exposed a general generator defect: the main description and “Why is it here?” can repeat generic fallback text, while “How to find it” can give generic instructions rather than a real finder route.
+Desired: Descriptor generation should actively draw from available object-specific astronomical, historical, cultural, constellation/asterism, and finder information. Each semantic section should contribute different useful information rather than reuse a fallback. Finder prose and artwork should show a concrete locating route. Beta Reticuli is the test case: its descriptor can draw on Reticulum’s distinctive figure, the star’s place within it, the constellation’s reticle history, and verified stellar facts.
+Category: Sky Notes / descriptor prose / descriptor data
+Likely scope: Fix the descriptor generator, data enrichment, and fallback logic globally rather than hand-editing Beta Reticuli or any generated weekly page.
 
