@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "id": "35",
+  "type": "star",
+  "name": "Sirius",
+  "summary": "bright star in Canis Major used as a fixed-sky reference",
+  "representation": {
+    "machine": "./35.json",
+    "human_source": "summary",
+    "human": "/stories/baseline/35.html"
+  },
+  "constellation_abbreviation": "CMa",
+  "constellation": "Canis Major",
+  "position": {
+    "ra_deg": 101.287215,
+    "dec_deg": -16.716116,
+    "ecliptic_longitude_deg": 104.081738,
+    "ecliptic_latitude_deg": -39.605243
+  },
+  "representative_visual_magnitude": -1.44,
+  "guiding_asterisms": [
+    {
+      "id": "asterism-winter-triangle",
+      "name": "Winter Triangle",
+      "relationship": "visual-member",
+      "provenance": {
+        "source": "NASA",
+        "source_url": "https://science.nasa.gov/solar-system/what-are-asterisms/",
+        "source_role": "verification",
+        "supports": "visual-membership"
+      }
+    },
+    {
+      "id": "asterism-winter-hexagon-winter-circle",
+      "name": "Winter Hexagon / Winter Circle",
+      "relationship": "visual-member",
+      "provenance": {
+        "source": "NASA",
+        "source_url": "https://science.nasa.gov/solar-system/skywatching/night-sky-network/connecting-the-dots-with-asterisms/",
+        "source_role": "verification",
+        "supports": "visual-membership"
+      }
+    }
+  ]
+}
