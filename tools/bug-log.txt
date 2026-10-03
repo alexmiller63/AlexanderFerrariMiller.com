@@ -80,3 +80,20 @@ Desired wording: “Naked eye (-2.7)”.
 Category: Ephemeris / presentation
 Likely scope: Change the ephemeris generator/template globally; do not patch W01.
 
+
+BUG 004 — Remove “mag” from naked-eye magnitude display
+Status: OPEN
+Found on: 2026-W01 ephemeris
+Observed: The ephemeris displays values such as “Naked eye (mag −2.7).”
+Desired: Display “Naked eye (−2.7)” — retain the numeric magnitude value but remove the word “mag.”
+Category: Ephemeris / presentation
+Likely scope: Ephemeris generator/template formatting.
+
+BUG 005 — Ephemeris legend sentences need separate lines
+Status: OPEN
+Found on: 2026-W01 ephemeris legend
+Observed: The explanatory legend beginning “β = ecliptic latitude; + north, − south.” runs sentences together.
+Desired: Each sentence in the legend should begin on a new line.
+Category: Ephemeris / presentation
+Likely scope: Ephemeris generator/template legend formatting.
+
