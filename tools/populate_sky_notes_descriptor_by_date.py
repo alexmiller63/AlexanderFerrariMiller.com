@@ -166,8 +166,8 @@ def story_candidates(fixed_ids: list[int]) -> list[dict]:
 
 
 def story_presentations(candidates: list[dict]) -> tuple[list[dict], list[dict]]:
-    """Weekly pages link to object stories; story prose is owned by story pages."""
-    return [], []
+    """Keep prose on canonical story pages; expose every story as a weekly reader link."""
+    return [], list(candidates)
 
 
 def observer_note(year: int, week: int, page_path, fixed: list[dict], relations: list[dict]) -> str:
@@ -300,7 +300,7 @@ def descriptor_policy() -> dict:
         "presentation": "Wordy",
         "story_limit": None,
         "wordy_policy": "rich weekly observing prose; link to complete object stories rather than embedding them",
-        "future_presentations": ["Highlights"],
+        "future_presentations": [],
         "link_target": "/almanack/descriptors/<fixed_object_id>.json for fixed-object descriptors",
         "artwork_descriptor_is_separate": True,
         "artwork_source": "explicit story front matter only",
@@ -308,7 +308,7 @@ def descriptor_policy() -> dict:
         "story_identity_source": "Calendar data-fixed-object-id only",
         "story_source": "stories/<collection>/<fixed_object_id>.md",
         "inline_story_content": "hed + dek + body",
-        "linked_story_content": "reserved for Highlights presentation",
+        "linked_story_content": "reader-facing links to every available canonical object story",
         "annual_note_is_separate_from_evergreen_story": True,
     }
 
@@ -343,8 +343,8 @@ def patch_page(path, payload: dict) -> bool:
     rendered = decorate_note_html(rendered, payload["descriptors"], payload.get("calendar_fixed_object_ids", []))
     # Object-story prose is not embedded in weekly pages.  The observing guide
     # links to canonical story pages, which own the prose and artwork.
-    inline = ""
-    linked = ""
+    inline = render_inline_stories(payload.get("inline_stories", []))
+    linked = render_linked_stories(payload.get("linked_stories", []))
     # Legacy week-owned artwork is deliberately removed. Fixed-object artwork
     # belongs on the object story/package and is published independently.
     artwork_slot = ""
