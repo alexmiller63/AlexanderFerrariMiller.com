@@ -72,7 +72,8 @@ def aesthetic_score(result):
             rlen = math.hypot(rx, ry)
             if vlen and rlen:
                 cosine = max(-1.0, min(1.0, (vx * rx + vy * ry) / (vlen * rlen)))
-                direction_cost += math.degrees(math.acos(cosine))
+                angle = math.degrees(math.acos(cosine))
+                direction_cost += min(angle, 180.0 - angle)
         radial_cost += abs(math.hypot(box.x - CX, box.y - CY) - 345)
     return (elbows, direction_cost, length_cost, displacement_cost, radial_cost)
 
@@ -90,7 +91,8 @@ def _radial_deviation(path):
     if not vlen or not rlen:
         return math.inf
     cosine = max(-1.0, min(1.0, (vx * rx + vy * ry) / (vlen * rlen)))
-    return math.degrees(math.acos(cosine))
+    angle = math.degrees(math.acos(cosine))
+    return min(angle, 180.0 - angle)
 
 
 def _is_straight_radial(path, tolerance_degrees: float = 0.5):
