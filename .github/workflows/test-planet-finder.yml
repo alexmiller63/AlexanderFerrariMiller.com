@@ -14,38 +14,70 @@ jobs:
         with:
           python-version: '3.x'
       - run: pip install pytest skyfield==1.55
-      - name: Save current tight-5 test
-        run: cp tests/test_planet_finder_ultimate_ladders.py /tmp/tight5_test.py
+      - name: Create standalone tight-5 regression
+        run: |
+          cat > /tmp/test_tight5_ab.py <<'PY'
+          import os
+          from planet_finder_geometry import CANONICAL, FinderMode
+          from planet_finder_search import layout
+          from planet_finder_validation import validate_layout
+
+          W01 = {
+              "Sun": 277.511945972904,
+              "Mercury": 264.1023447351197,
+              "Venus": 275.4313050776394,
+              "Mars": 280.39213202805865,
+              "Pluto": 302.62909367404063,
+          }
+          ISOLATED = {
+              "Saturn": 20, "Neptune": 60, "Ceres": 100,
+              "Moon": 140, "Uranus": 180, "Jupiter": 220,
+          }
+
+          def test_tight5():
+              os.environ["PLANET_FINDER_ALIGNMENT_FIX"] = "1"
+              os.environ["PLANET_FINDER_DIAGNOSTIC_LEVEL"] = "1"
+              longitudes = dict(ISOLATED)
+              longitudes.update(W01)
+              assert set(longitudes) == set(CANONICAL)
+              bodies = [(name.lower(), name, float(longitudes[name])) for name in CANONICAL]
+              result = layout(
+                  FinderMode.GREEK,
+                  bodies,
+                  target_solutions=5,
+                  budget={"max_node_candidates": 2000, "max_seconds": 60.0},
+                  context_label="W01-tight5-historical-AB",
+              )
+              expected = {name for _, name, _ in bodies}
+              actual = [name for _, name, _, _, _ in result]
+              assert len(actual) == len(expected)
+              assert set(actual) == expected
+              valid, errors = validate_layout(FinderMode.GREEK, result)
+              assert valid, errors
+          PY
 
       - name: BEFORE suspected regression
-        continue-on-error: true
         run: |
           git checkout --detach 6896c1aebc2438bdf424cceb8ec15a0bd6badb60
-          cp /tmp/tight5_test.py tests/test_planet_finder_ultimate_ladders.py
           echo "===== BEFORE 6896c1a ====="
           set +e
-          PYTHONPATH=tools pytest -q -s tests/test_planet_finder_ultimate_ladders.py::test_w01_tight_alignment_five_only
-          STATUS=$?
-          echo "$STATUS" > /tmp/before_status
+          PYTHONPATH=tools pytest -q -s /tmp/test_tight5_ab.py
+          echo $? > /tmp/before_status
           exit 0
 
       - name: AFTER suspected regression
-        continue-on-error: true
         run: |
           git checkout --detach c6f960995932d1c8ad85584678abd13db68e04d0
-          cp /tmp/tight5_test.py tests/test_planet_finder_ultimate_ladders.py
           echo "===== AFTER c6f960995 ====="
           set +e
-          PYTHONPATH=tools pytest -q -s tests/test_planet_finder_ultimate_ladders.py::test_w01_tight_alignment_five_only
-          STATUS=$?
-          echo "$STATUS" > /tmp/after_status
+          PYTHONPATH=tools pytest -q -s /tmp/test_tight5_ab.py
+          echo $? > /tmp/after_status
           exit 0
 
       - name: Regression verdict
-        if: always()
         run: |
-          BEFORE=$(cat /tmp/before_status 2>/dev/null || echo 99)
-          AFTER=$(cat /tmp/after_status 2>/dev/null || echo 99)
+          BEFORE=$(cat /tmp/before_status)
+          AFTER=$(cat /tmp/after_status)
           echo "BEFORE exit=$BEFORE"
           echo "AFTER  exit=$AFTER"
           if [ "$BEFORE" = 0 ] && [ "$AFTER" != 0 ]; then
