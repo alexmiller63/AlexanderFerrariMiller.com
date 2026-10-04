@@ -179,6 +179,17 @@ def segment_hits_box(a: tuple[float, float], b: tuple[float, float], box: Box, p
     x1, y1 = b
     left, right = box.left - pad, box.right + pad
     top, bottom = box.top - pad, box.bottom + pad
+    # Exact AABB reject before Liang-Barsky clipping. If the segment's
+    # bounding box does not overlap the already-padded rectangle, the segment
+    # cannot intersect it. This changes no geometry; it only avoids needless
+    # clipping arithmetic on obviously distant obstacles.
+    if (
+        max(x0, x1) < left
+        or min(x0, x1) > right
+        or max(y0, y1) < top
+        or min(y0, y1) > bottom
+    ):
+        return False
     dx, dy = x1 - x0, y1 - y0
     p = (-dx, dx, -dy, dy)
     q = (x0 - left, right - x0, y0 - top, bottom - y0)
@@ -213,6 +224,16 @@ def point_segment_distance(p, a, b) -> float:
 
 def segments_too_close(a, b, c, d, clearance: float = LEADER_TO_LEADER_CLEARANCE) -> bool:
     """Return whether two leader segments intersect or come within clearance."""
+    # Exact AABB reject before intersection and distance calculations. If the
+    # segment bounding boxes are separated by at least the required clearance
+    # on either axis, Euclidean separation cannot violate that clearance.
+    if (
+        max(a[0], b[0]) + clearance <= min(c[0], d[0])
+        or max(c[0], d[0]) + clearance <= min(a[0], b[0])
+        or max(a[1], b[1]) + clearance <= min(c[1], d[1])
+        or max(c[1], d[1]) + clearance <= min(a[1], b[1])
+    ):
+        return False
     def orient(p, q, r):
         return (q[0] - p[0]) * (r[1] - p[1]) - (q[1] - p[1]) * (r[0] - p[0])
 
