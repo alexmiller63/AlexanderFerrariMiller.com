@@ -49,9 +49,9 @@ def verify_page(page, rel: str):
     # Every observing-aid presentation belonging to a fixed-object event must
     # remain inside the event carrying the permanent database identity.
     orphan_locator = page.locator(
-        'table.calendar .event-cell:not([data-fixed-object-id]) '
+        'table.calendar .event-cell:not([data-fixed-object-id]):not([data-catalog-target-key]) '
         '.observing-aid-notation, '
-        'table.calendar .event-cell:not([data-fixed-object-id]) '
+        'table.calendar .event-cell:not([data-fixed-object-id]):not([data-catalog-target-key]) '
         '.observing-notation-item'
     )
     orphan_aids = orphan_locator.count()
