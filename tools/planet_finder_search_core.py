@@ -2027,63 +2027,12 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 # redundant parent-pair proof consumed nearly the entire wall
                 # clock after the analogous triple proof was removed.
 
-                # Conservative same-blob forward checking.  After this
-                # candidate is staged, every remaining alignment member must
-                # still have at least one authoritative routed placement.
-                # Stop at the first witness; only an exhausted zero domain
-                # rejects the candidate, so capped/partial searches are never
-                # treated as contradictions.  Check the tightest parent-state
-                # domains first to find cheap contradictions early.
-                # At the final pair, do not run a separate existence probe.
-                # The recursive call immediately below performs the same routed
-                # proof authoritatively for the last member. Skipping that
-                # duplicate positive probe is body-agnostic and changes neither
-                # candidate order nor legality.
-                if alignment_forward_ok and len(next_remaining) > 1:
-                    forward_items = sorted(
-                        next_remaining,
-                        key=lambda future_item: (
-                            rank_viable_counts.get(
-                                future_item[1][1],
-                                (budget["max_node_candidates"] + 1, True),
-                            )[0],
-                            future_item[0],
-                        ),
-                    )
-                    child_state_signature = alignment_state_signature()
-                    for future_item in forward_items:
-                        future_name = future_item[1][1]
-                        existence_key = (future_item[0], child_state_signature)
-                        has_witness = alignment_routed_existence_cache.get(existence_key)
-                        if has_witness is None:
-                            # A complete routed domain, when already available,
-                            # answers the existence question for free. Never put
-                            # existence-only prefixes into the domain cache.
-                            cached_domain = alignment_routed_domain_cache.get(existence_key)
-                            if cached_domain is not None and not cached_domain[1]:
-                                has_witness = bool(cached_domain[0])
-                            else:
-                                witness_stream = alignment_profiled_candidates(
-                                    future_item, diagnostic_depth, "alignment-forward"
-                                )
-                                try:
-                                    next(witness_stream)
-                                except StopIteration:
-                                    has_witness = False
-                                else:
-                                    has_witness = True
-                                finally:
-                                    witness_stream.close()
-                            alignment_routed_existence_cache[existence_key] = has_witness
-                        if not has_witness:
-                            diagnostic_print(
-                                f"Planet Finder {mode}: ALIGNMENT FORWARD ZERO "
-                                f"group={group_index + 1} member={name} "
-                                f"future={future_name}",
-                                level=1, flush=True,
-                            )
-                            alignment_forward_ok = False
-                            break
+                # Do not speculatively forward-probe remaining alignment
+                # members here. The recursive alignment DFS immediately below
+                # performs the same routed continuation authoritatively. W17
+                # diagnostics showed these redundant existence probes dominated
+                # the mode clock (especially Moon alignment-forward). Removing
+                # them changes pruning only, not geometry or accepted layouts.
                 # Do not run the ordinary-body pair proof here.  It is a
                 # speculative look-ahead across the alignment/ordinary boundary;
                 # the exact DFS below will test those ordinary placements when
