@@ -1306,6 +1306,25 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
 
     alignment_depth_forensics = {}
     alignment_phase_profile = {}
+    # Candidate-position geometry depends only on the body, mode, immutable
+    # reserved geometry, and displacement scale.  DFS prefixes affect the
+    # filtering/routing that follows, not this proposal lattice.  Materialize
+    # that invariant lattice once per body so repeated W17 final-pair probes
+    # do not regenerate identical trigonometric/Box work.
+    alignment_position_cache = {}
+
+    def alignment_base_positions(item):
+        _, (_, name, longitude) = item
+        cached = alignment_position_cache.get(name)
+        if cached is None:
+            w, h = label_size(mode, name)
+            cached = tuple(
+                legal_candidate_positions(
+                    longitude, w, h, reserved, displacement_scale
+                )
+            )
+            alignment_position_cache[name] = cached
+        return cached
 
     def alignment_geometry_candidates(item, pressure=None):
         """Cheap necessary-condition candidates for alignment look-ahead.
@@ -1315,10 +1334,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         screen: absence proves impossibility; presence does not prove viability.
         """
         _, (_, name, longitude) = item
-        w, h = label_size(mode, name)
-        for x, y, box in legal_candidate_positions(
-            longitude, w, h, reserved, displacement_scale
-        ):
+        for x, y, box in alignment_base_positions(item):
             if any(boxes_overlap(box, other, 14) for other in placed):
                 continue
             if any(
