@@ -2,6 +2,11 @@ name: AA-Planet Finder Unit Tests
 
 on:
   workflow_dispatch:
+    inputs:
+      solver_ref:
+        description: 'Solver commit/ref to A/B; blank uses current checkout'
+        required: false
+        default: ''
 
 jobs:
   test:
@@ -12,5 +17,12 @@ jobs:
         with:
           python-version: '3.x'
       - run: pip install pytest skyfield==1.55
+      - name: Overlay historical solver for regression A/B
+        if: ${{ inputs.solver_ref != '' }}
+        env:
+          SOLVER_REF: ${{ inputs.solver_ref }}
+        run: |
+          git show "${SOLVER_REF}:tools/planet_finder_search_core.py" > tools/planet_finder_search_core.py
+          echo "Testing solver from ${SOLVER_REF} with the current tight-5 fixture"
       - name: Run focused W01 tight-5 regression
         run: PYTHONPATH=tools pytest -q -s tests/test_planet_finder_ultimate_ladders.py::test_w01_tight_alignment_five_only
