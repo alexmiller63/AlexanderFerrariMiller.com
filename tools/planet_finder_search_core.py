@@ -1424,6 +1424,11 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
     # Diagnostic only: measure how often alignment ranking re-evaluates the
     # same effective geometry. Never used to prune, cache, or reorder search.
     alignment_probe_signatures = {}
+    # Exact routed domains are deterministic for a fixed staged geometry. MRV
+    # ranking and the immediately following DFS used to regenerate the same
+    # expensive routed domain; retain exhaustive domains so DFS can reuse the
+    # proof it just paid for. Capped domains are deliberately not cached.
+    alignment_routed_domain_cache = {}
 
     def alignment_state_signature():
         def box_sig(box):
@@ -1486,22 +1491,36 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             # Use authoritative routed viability at that final binary choice
             # so the actual squeaky wheel is selected.
             routed_rank = len(remaining_items) <= 2
+            cached_rows = None
+            cache_key = None
             if routed_rank:
-                probe = alignment_profiled_candidates(
-                    candidate_item, diagnostic_depth, "alignment-rank-routed"
-                )
+                cache_key = (candidate_item[0], alignment_state_signature())
+                cached_rows = alignment_routed_domain_cache.get(cache_key)
+            if cached_rows is not None:
+                count = len(cached_rows)
+                cutoff = False
             else:
-                probe = alignment_geometry_candidates(candidate_item)
-            count = 0
-            cutoff = False
-            try:
-                for _ in probe:
-                    count += 1
-                    if count >= budget["max_node_candidates"]:
-                        cutoff = True
-                        break
-            finally:
-                probe.close()
+                if routed_rank:
+                    probe = alignment_profiled_candidates(
+                        candidate_item, diagnostic_depth, "alignment-rank-routed"
+                    )
+                else:
+                    probe = alignment_geometry_candidates(candidate_item)
+                count = 0
+                cutoff = False
+                collected = [] if routed_rank else None
+                try:
+                    for candidate in probe:
+                        count += 1
+                        if collected is not None:
+                            collected.append(candidate)
+                        if count >= budget["max_node_candidates"]:
+                            cutoff = True
+                            break
+                finally:
+                    probe.close()
+                if routed_rank and not cutoff:
+                    alignment_routed_domain_cache[cache_key] = tuple(collected)
             probe_elapsed = time.monotonic() - probe_started
             probe_after = predfs_rejection_snapshot()
             probe_delta = {
@@ -1910,8 +1929,12 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             f"member={name} remaining={len(remaining_items)}",
             level=1, flush=True,
         )
-        chosen_stream = alignment_profiled_candidates(
-            item, diagnostic_depth, "alignment-dfs"
+        chosen_cache_key = (item[0], alignment_state_signature())
+        chosen_cached_rows = alignment_routed_domain_cache.get(chosen_cache_key)
+        chosen_stream = (
+            iter(chosen_cached_rows)
+            if chosen_cached_rows is not None
+            else alignment_profiled_candidates(item, diagnostic_depth, "alignment-dfs")
         )
         chosen_count, chosen_capped = rank_viable_counts.get(
             name, (viable_count, True)
@@ -1973,7 +1996,9 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 if tried >= candidate_limit:
                     break
         finally:
-            chosen_stream.close()
+            close_chosen = getattr(chosen_stream, "close", None)
+            if close_chosen is not None:
+                close_chosen()
         if group_index == 0 and tried > 0:
             diagnostic_print(
                 f"Planet Finder {mode}: ALIGNMENT DEPTH FORENSIC "
