@@ -55,6 +55,7 @@ class CalendarEvent:
     html: str
     fixed_object_id: int | None = None
     observing_aid: str | None = None
+    catalog_target_key: str | None = None
 
 
 EVENT_STYLE_ID = "calendar-event-cells-css"
@@ -111,6 +112,7 @@ def _event_records(events_html: str) -> list[CalendarEvent]:
                 event_html,
                 int(fixed_id) if fixed_id else None,
                 _get_attr(attrs, "data-observing-aid"),
+                _get_attr(attrs, "data-catalog-target-key"),
             ))
         return records
     if not raw or raw == "—":
@@ -133,6 +135,8 @@ def _render_event(event: CalendarEvent) -> str:
         attrs.append(f'data-fixed-object-id="{int(event.fixed_object_id)}"')
     if event.observing_aid:
         attrs.append(f'data-observing-aid="{html.escape(event.observing_aid, quote=True)}"')
+    if event.catalog_target_key:
+        attrs.append(f'data-catalog-target-key="{html.escape(event.catalog_target_key, quote=True)}"')
     return f'<div {" ".join(attrs)}>{event.html}</div>'
 
 
