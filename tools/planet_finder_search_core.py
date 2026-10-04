@@ -2104,7 +2104,15 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                     )
                     try:
                         has_exact_support = True
-                        for future_item in next_remaining:
+                        support_items = list(next_remaining)
+                        # Diagnostic A/B: routed Sun support is now the dominant
+                        # proof cost in W20. Check it last so cheaper unsupported
+                        # future members can reject the candidate before we pay
+                        # for Sun's authoritative witness search. This changes
+                        # only proof order, not validity or search semantics.
+                        if int(os.environ.get("PLANET_FINDER_DIAGNOSTIC_LEVEL", "0")) >= 4:
+                            support_items.sort(key=lambda future_item: future_item[1][1] == "Sun")
+                        for future_item in support_items:
                             witness_stream = alignment_profiled_candidates(
                                 future_item,
                                 diagnostic_depth,
