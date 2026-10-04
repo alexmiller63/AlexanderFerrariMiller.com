@@ -1,4 +1,4 @@
-name: AA- Test Planet Finder W17 Ladder
+name: AA- Test Planet Finder W17 Alignment-8
 
 on:
   workflow_dispatch:
@@ -18,10 +18,32 @@ jobs:
       - name: Install test dependencies
         run: python -m pip install pytest skyfield
 
-      - name: Run progressive W17 Greek ladder
+      - name: Run focused W17 alignment-8
         env:
           PYTHONPATH: tools
-          PLANET_FINDER_DIAGNOSTIC_LEVEL: "2"
+          PLANET_FINDER_DIAGNOSTIC_LEVEL: "3"
         run: |
-          python -m pytest -q -s \
-            'tests/test_planet_finder_w17_ladder.py::test_w17_greek_progressive_ladder'
+          python - <<'PY'
+          import os
+          from tests.test_planet_finder_w17_ladder import (
+              ALIGNMENT_CHAIN, bodies_for, names, expected_alignment,
+              expected_conjunction, assert_valid,
+          )
+          from planet_finder_geometry import FinderMode, alignment_groups, conjunction_groups
+          from planet_finder_search import layout
+
+          selected = ALIGNMENT_CHAIN[:8]
+          source = bodies_for(selected)
+          assert names(alignment_groups(source)) == expected_alignment(8)
+          assert names(conjunction_groups(source)) == expected_conjunction(8)
+          print("W17 ALIGNMENT-8 START", flush=True)
+          result = layout(
+              FinderMode.GREEK,
+              source,
+              target_solutions=1,
+              budget={"max_node_candidates": 200, "max_seconds": 30.0},
+              context_label="W17-focused-alignment-8",
+          )
+          assert_valid(result, source)
+          print("W17 ALIGNMENT-8 PASS", flush=True)
+          PY
