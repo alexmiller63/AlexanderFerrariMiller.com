@@ -1525,6 +1525,15 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 geometry_probe.close()
             geometry_ranked_items.append((geometry_count, candidate_item))
         geometry_ranked_items.sort(key=lambda row: (row[0], row[1][0]))
+        # W20 routed-MRV propagation A/B: the previous experiment proved that
+        # Uranus repeatedly has an empty routed domain that cheap geometry
+        # misses.  At diagnostic level 4, probe Uranus first so a zero domain
+        # becomes the MRV proof immediately, before ranking/branching Ceres or
+        # Mercury.  Production ordering is unchanged at lower diagnostic levels.
+        if int(os.environ.get("PLANET_FINDER_DIAGNOSTIC_LEVEL", "0")) >= 4:
+            geometry_ranked_items.sort(
+                key=lambda row: (0 if row[1][1][1] == "Uranus" else 1, row[0], row[1][0])
+            )
         for _, candidate_item in geometry_ranked_items:
             check_deadline()
             probe_name = candidate_item[1][1]
