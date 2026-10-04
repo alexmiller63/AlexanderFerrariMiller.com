@@ -1399,6 +1399,23 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 ),
                 level=1, flush=True,
             )
+        if alignment_final_pair_dependency_stats:
+            diagnostic_print(
+                f"Planet Finder {mode}: ALIGNMENT FINAL-PAIR DEPENDENCIES "
+                + " | ".join(
+                    f"{body}["
+                    + ";".join(
+                        f"{kind}=" + ",".join(
+                            f"{name}:{count}" for name, count in sorted(values.items())
+                            if name in ("Mercury", "Ceres")
+                        )
+                        for kind, values in stats.items()
+                    )
+                    + "]"
+                    for body, stats in sorted(alignment_final_pair_dependency_stats.items())
+                ),
+                level=1, flush=True,
+            )
         for body, stats in sorted(alignment_final_pair_domain_stats.items()):
             varying_by_domain = []
             for domain_sig, states in stats["domain_states"].items():
@@ -1505,6 +1522,12 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
     # the upstream state. This measures whether Venus/Uranus candidate geometry
     # actually repeats across distinct prefixes; it never changes search.
     alignment_final_pair_domain_stats = {}
+    alignment_final_pair_dependency_stats = {}
+
+    def final_pair_dependency_stat(body):
+        return alignment_final_pair_dependency_stats.setdefault(
+            body, {"overlap": {}, "existing_leader": {}, "route_box": {}, "route_leader": {}}
+        )
 
     def candidate_geometry_signature(candidate):
         box, path = candidate
@@ -1704,6 +1727,20 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                         )
                         cache_stat["stored"] += 1
             probe_elapsed = time.monotonic() - probe_started
+            if len(remaining_items) == 2 and routed_rank:
+                dep = final_pair_dependency_stat(probe_name)
+                diag = route_diagnostics.get((diagnostic_depth, probe_name), {})
+                obstacle_names = diag.get("obstacle_names", [])
+                active_names = diag.get("leader_names", [])
+                for idx, value in diag.get("directed_box_by_index", {}).items():
+                    blocker = obstacle_names[idx] if idx < len(obstacle_names) else f"box_{idx}"
+                    dep["route_box"][blocker] = value
+                for idx, value in diag.get("directed_leader_by_index", {}).items():
+                    blocker = active_names[idx] if idx < len(active_names) else f"leader_{idx}"
+                    dep["route_leader"][blocker] = value
+                body_diag = diagnostic_stats.get((diagnostic_depth, probe_name), {})
+                dep["overlap"] = dict(body_diag.get("overlap_by_label", {}))
+                dep["existing_leader"] = dict(body_diag.get("existing_leader_by_name", {}))
             probe_after = predfs_rejection_snapshot()
             probe_delta = {
                 key: probe_after[key] - probe_before[key]
