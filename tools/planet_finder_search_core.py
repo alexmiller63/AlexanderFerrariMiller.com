@@ -1525,15 +1525,6 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 geometry_probe.close()
             geometry_ranked_items.append((geometry_count, candidate_item))
         geometry_ranked_items.sort(key=lambda row: (row[0], row[1][0]))
-        # W20 routed-MRV propagation A/B: the previous experiment proved that
-        # Uranus repeatedly has an empty routed domain that cheap geometry
-        # misses.  At diagnostic level 4, probe Uranus first so a zero domain
-        # becomes the MRV proof immediately, before ranking/branching Ceres or
-        # Mercury.  Production ordering is unchanged at lower diagnostic levels.
-        if int(os.environ.get("PLANET_FINDER_DIAGNOSTIC_LEVEL", "0")) >= 4:
-            geometry_ranked_items.sort(
-                key=lambda row: (0 if row[1][1][1] == "Uranus" else 1, row[0], row[1][0])
-            )
         for _, candidate_item in geometry_ranked_items:
             check_deadline()
             probe_name = candidate_item[1][1]
@@ -2082,15 +2073,8 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         exact_support_filter = (
             bool(next_remaining)
             and not final_pair
-            and (
-                (not chosen_capped and chosen_count <= support_limit)
-                # Tight-5 diagnostic: Mercury is the depth-2 fan-out point.
-                # Before admitting each Mercury child, require at least one
-                # authoritative routed witness for every remaining alignment
-                # member. This rejects unsupported Mercury branches before
-                # Venus/Sun repeatedly prove them dead downstream.
-                or (name == "Mercury" and len(next_remaining) >= 2)
-            )
+            and not chosen_capped
+            and chosen_count <= support_limit
         )
         try:
             for candidate in chosen_stream:
@@ -2105,13 +2089,21 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                     try:
                         has_exact_support = True
                         support_items = list(next_remaining)
-                        # Diagnostic A/B: routed Sun support is now the dominant
-                        # proof cost in W20. Check it last so cheaper unsupported
-                        # future members can reject the candidate before we pay
-                        # for Sun's authoritative witness search. This changes
-                        # only proof order, not validity or search semantics.
-                        if int(os.environ.get("PLANET_FINDER_DIAGNOSTIC_LEVEL", "0")) >= 4:
-                            support_items.sort(key=lambda future_item: future_item[1][1] == "Sun")
+                        # Body-agnostic support ordering: use the routed MRV
+                        # information already computed for this state.  A future
+                        # member with the smallest known domain is the likeliest
+                        # cheap contradiction, so test it first.  This changes
+                        # proof order only; every required support witness is
+                        # still checked before the candidate is admitted.
+                        support_items.sort(
+                            key=lambda future_item: (
+                                rank_viable_counts.get(
+                                    future_item[1][1],
+                                    (budget["max_node_candidates"] + 1, True),
+                                )[0],
+                                future_item[0],
+                            )
+                        )
                         for future_item in support_items:
                             witness_stream = alignment_profiled_candidates(
                                 future_item,
