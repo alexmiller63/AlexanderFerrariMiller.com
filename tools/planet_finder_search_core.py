@@ -1996,21 +1996,6 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                     try:
                         has_exact_support = True
                         for future_item in next_remaining:
-                            # Cheap necessary-condition screen first.  Most
-                            # Mercury->Venus children die before routing; if
-                            # Venus has no legal label geometry at all, there
-                            # cannot be a routed witness.  Only invoke the
-                            # expensive router after geometry proves the state
-                            # is still potentially viable.
-                            geometry_witness = alignment_geometry_candidates(future_item)
-                            try:
-                                next(geometry_witness)
-                            except StopIteration:
-                                has_exact_support = False
-                            finally:
-                                geometry_witness.close()
-                            if not has_exact_support:
-                                break
                             witness_stream = alignment_profiled_candidates(
                                 future_item,
                                 diagnostic_depth,
