@@ -1525,6 +1525,25 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 geometry_probe.close()
             geometry_ranked_items.append((geometry_count, candidate_item))
         geometry_ranked_items.sort(key=lambda row: (row[0], row[1][0]))
+
+        # General zero-domain propagation.  A cheap geometric zero is already
+        # an exact impossibility because routed candidates are a subset of the
+        # geometric domain.  Kill the prefix before paying for any routed MRV.
+        geometric_zero = next(
+            (candidate_item for geometry_count, candidate_item in geometry_ranked_items
+             if geometry_count == 0),
+            None,
+        )
+        if geometric_zero is not None:
+            zero_name = geometric_zero[1][1]
+            diagnostic_print(
+                f"Planet Finder {mode}: ALIGNMENT MRV ZERO "
+                f"group={group_index + 1} depth={depth_in_blob}/{group_size} "
+                f"body={zero_name} source=geometry",
+                level=1, flush=True,
+            )
+            return False
+
         for _, candidate_item in geometry_ranked_items:
             check_deadline()
             probe_name = candidate_item[1][1]
@@ -1651,6 +1670,18 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             )
             ranked.append((count, candidate_item))
             rank_viable_counts[probe_name] = (count, cutoff)
+            # An exhausted routed domain of zero is a complete proof that this
+            # partial alignment prefix cannot be extended.  Propagate it here,
+            # immediately, instead of carrying the zero through tie-breaking
+            # and a later support/DFS layer.
+            if count == 0 and not cutoff:
+                diagnostic_print(
+                    f"Planet Finder {mode}: ALIGNMENT MRV ZERO "
+                    f"group={group_index + 1} depth={depth_in_blob}/{group_size} "
+                    f"body={probe_name} source=routed",
+                    level=1, flush=True,
+                )
+                return False
             if not cutoff and (best_count is None or count < best_count):
                 best_count = count
                 # Once an exact domain is known, restart ranking for the
