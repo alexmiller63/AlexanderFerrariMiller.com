@@ -1815,38 +1815,14 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 if len(next_remaining) == 3:
                     support_items = list(next_remaining)
 
-                    # Squeaky wheel first, but do not fully regenerate all
-                    # three routed domains merely to rank them.  Probe only up
-                    # to the existing support limit: exact small domains sort
-                    # first; larger domains are all "large enough" and are
-                    # tie-broken deterministically by name.  The joint-support
-                    # proof below remains exact.
-                    ranked_support = []
-                    for support_item in support_items:
-                        support_name = support_item[1][1]
-                        support_count = 0
-                        support_stream = alignment_profiled_candidates(
-                            support_item,
-                            diagnostic_depth,
-                            "alignment-triple-rank",
-                        )
-                        try:
-                            for _ in support_stream:
-                                support_count += 1
-                                if support_count > support_limit:
-                                    break
-                        finally:
-                            support_stream.close()
-                        ranked_support.append(
-                            (
-                                support_count > support_limit,
-                                support_count,
-                                support_name,
-                                support_item,
-                            )
-                        )
-                    ranked_support.sort(key=lambda row: (row[0], row[1], row[2]))
-                    support_items = [row[3] for row in ranked_support]
+                    # triple_support() immediately performs routed dynamic MRV
+                    # on this exact prefix and retains the winner's probed
+                    # candidates for recursion.  A separate routed pre-rank
+                    # here duplicated that same expensive work (about 11s in
+                    # the W01 tight-5 forensic) without adding any pruning.
+                    # Let the authoritative dynamic MRV below do the ranking
+                    # once; correctness and candidate ordering inside the
+                    # selected domain are unchanged.
 
                     def triple_support(remaining_support, depth=0):
                         if not remaining_support:
