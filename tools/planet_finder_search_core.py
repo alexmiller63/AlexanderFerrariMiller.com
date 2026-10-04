@@ -1594,10 +1594,23 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                     cache_stat["misses"] += 1
                 else:
                     cache_stat["hits"] += 1
+            # Beat-limited prefixes are lower bounds, never exact domains.
+            full_rank_limit = budget["max_node_candidates"]
+            rank_limit = full_rank_limit
+            beat_limited = False
+            if best_count is not None:
+                rank_limit = min(full_rank_limit, best_count + 2)
+                beat_limited = rank_limit < full_rank_limit
             if cached_rows is not None:
-                cached_rows, cutoff = cached_rows
-                count = len(cached_rows)
-            else:
+                cached_values, cutoff, cached_prefix = cached_rows
+                if cached_prefix and len(cached_values) < rank_limit:
+                    cached_rows = None
+                    cache_stat["hits"] -= 1
+                    cache_stat["misses"] += 1
+                else:
+                    cached_rows = cached_values
+                    count = min(len(cached_values), rank_limit) if cached_prefix else len(cached_values)
+            if cached_rows is None:
                 if routed_rank:
                     probe = alignment_profiled_candidates(
                         candidate_item, diagnostic_depth, "alignment-rank-routed"
@@ -1615,12 +1628,6 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 # lattice proving an exact count that cannot change the choice.
                 # A beat-limited prefix is intentionally not cached: if the
                 # best count later changes, DFS may need the full domain.
-                full_rank_limit = budget["max_node_candidates"]
-                rank_limit = full_rank_limit
-                beat_limited = False
-                if best_count is not None:
-                    rank_limit = min(full_rank_limit, best_count + 2)
-                    beat_limited = rank_limit < full_rank_limit
                 try:
                     for candidate in probe:
                         count += 1
@@ -1642,8 +1649,14 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                         cache_stat["state_shapes"][state_shape] = (
                             cache_stat["state_shapes"].get(state_shape, 0) + 1
                         )
+                        alignment_routed_domain_cache[cache_key] = (
+                            tuple(collected), cutoff, True
+                        )
+                        cache_stat["stored"] += 1
                     else:
-                        alignment_routed_domain_cache[cache_key] = (tuple(collected), cutoff)
+                        alignment_routed_domain_cache[cache_key] = (
+                            tuple(collected), cutoff, False
+                        )
                         cache_stat["stored"] += 1
             probe_elapsed = time.monotonic() - probe_started
             probe_after = predfs_rejection_snapshot()
