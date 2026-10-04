@@ -1813,60 +1813,11 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 # real DFS could advance.  Removing the redundant proof changes only
                 # pruning/order, not the set of layouts accepted by the exact DFS.
 
-                # Arc consistency one level earlier: when this candidate leaves
-                # exactly two members in the same alignment blob, prove that
-                # those two have at least one JOINT routed placement.  Separate
-                # one-member witnesses are insufficient: each member can be
-                # routable against this prefix while every A/B combination is
-                # impossible.  Adding later placements cannot repair such a
-                # zero joint domain, so rejecting the parent candidate is safe.
-                if len(next_remaining) == 2:
-                    pair_left, pair_right = next_remaining
-                    left_index = pair_left[0]
-                    left_symbol, left_name, left_longitude = pair_left[1]
-                    joint_support = False
-                    left_stream = alignment_profiled_candidates(
-                        pair_left, diagnostic_depth, "alignment-parent-pair-left"
-                    )
-                    try:
-                        for left_candidate in left_stream:
-                            left_box, left_path = left_candidate
-                            placed.append(left_box)
-                            leaders.append(left_path)
-                            leader_names.append(left_name)
-                            staged[left_index] = (
-                                left_symbol, left_name, left_longitude,
-                                left_box, left_path,
-                            )
-                            try:
-                                right_stream = alignment_profiled_candidates(
-                                    pair_right,
-                                    diagnostic_depth,
-                                    "alignment-parent-pair-right",
-                                )
-                                try:
-                                    next(right_stream)
-                                    joint_support = True
-                                except StopIteration:
-                                    pass
-                                finally:
-                                    right_stream.close()
-                            finally:
-                                staged.pop(left_index, None)
-                                leader_names.pop()
-                                leaders.pop()
-                                placed.pop()
-                            if joint_support:
-                                break
-                    finally:
-                        left_stream.close()
-                    if not joint_support:
-                        alignment_forward_ok = False
-                        diagnostic_print(
-                            f"Planet Finder {mode}: ALIGNMENT PARENT PAIR DEAD "
-                            f"parent={name} pair={left_name}+{pair_right[1][1]}",
-                            level=1, flush=True,
-                        )
+                # Likewise, do not exhaustively prove the final two-member
+                # continuation before descending.  The exact member DFS below
+                # performs that same routed pair search.  In W01 tight-5 this
+                # redundant parent-pair proof consumed nearly the entire wall
+                # clock after the analogous triple proof was removed.
 
                 for future_item in next_remaining if alignment_forward_ok else []:
                     future_name = future_item[1][1]
