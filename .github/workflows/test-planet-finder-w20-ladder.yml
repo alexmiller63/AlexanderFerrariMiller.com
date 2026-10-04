@@ -1,0 +1,27 @@
+name: AA- Test Planet Finder W20 Ladder
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install test dependencies
+        run: python -m pip install pytest skyfield
+
+      - name: Run progressive W20 Latin ladder
+        env:
+          PYTHONPATH: tools
+          PLANET_FINDER_DIAGNOSTIC_LEVEL: "2"
+        run: |
+          python -m pytest -q -s \
+            'tests/test_planet_finder_ultimate_ladders.py::test_w20_latin_progressive_alignment_ladder'
