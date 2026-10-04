@@ -1954,10 +1954,17 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         # for B) and prevents an upstream prefix from descending through a
         # pair whose joint routed domain is empty.
         final_pair = len(remaining_items) == 2
+        # With three members left, one-step routed forward checking is
+        # cheaper than descending into the final-pair MRV just to prove that a
+        # remaining member has no route.  We ask only for the first routed
+        # witness; exhaustion is an authoritative zero-domain proof.  This
+        # changes pruning time, not the set of accepted geometries.
+        three_member_forward_check = len(remaining_items) == 3
         exact_support_filter = (
             bool(next_remaining)
             and (
                 final_pair
+                or three_member_forward_check
                 or (not chosen_capped and chosen_count <= support_limit)
             )
         )
