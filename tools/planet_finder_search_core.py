@@ -54,6 +54,10 @@ class DepthNodeBudgetExhausted(RuntimeError):
         self.depth = depth
         self.name = name
 
+class SearchDeadlineExhausted(RuntimeError):
+    """Signal that the absolute notation-mode wall clock has expired."""
+
+
 class ForwardBlockerRepeated(RuntimeError):
     """Signal that one future body repeatedly kills otherwise viable prefixes."""
 
@@ -229,6 +233,11 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
     terminal_validation_rejections = 0
     terminal_validation_errors = {}
     terminal_validation_sun_leaders = {}
+
+    def check_deadline():
+        """Interrupt any nested search work when the absolute mode clock expires."""
+        if refinement_deadline is not None and time.monotonic() >= refinement_deadline:
+            raise SearchDeadlineExhausted()
 
     def dump_diagnostics(reason):
         # A capped ordering is expected control flow, not a terminal failure.
@@ -667,6 +676,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             )
         )
         while True:
+            check_deadline()
             # The cap is owned by the body, not by this generator instance or
             # this ordering. A body already at its persistent limit must not
             # receive one additional candidate merely because its ordering
@@ -1456,6 +1466,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         rank_viable_counts = {}
         best_count = None
         for candidate_item in remaining_items:
+            check_deadline()
             probe_name = candidate_item[1][1]
             probe_state = (group_index, depth_in_blob, probe_name, alignment_state_signature())
             alignment_probe_signatures[probe_state] = alignment_probe_signatures.get(probe_state, 0) + 1
@@ -1549,6 +1560,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             supported = False
             try:
                 for support_candidate in support_stream:
+                    check_deadline()
                     support_box, support_path = support_candidate
                     placed.append(support_box)
                     leaders.append(support_path)
@@ -1609,6 +1621,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             pair_probe_body_times = []
 
             for ordinary_item in ordinary:
+                check_deadline()
                 ordinary_probe_started = time.monotonic()
                 probe = alignment_profiled_candidates(
                     ordinary_item, len(order), "pair-probe"
@@ -1683,6 +1696,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             pair_witness_calls = 0
             pair_witness_elapsed = 0.0
             for first_box, first_path in first_candidates:
+                check_deadline()
                 tested += 1
                 placed.append(first_box)
                 leaders.append(first_path)
@@ -2124,6 +2138,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         # whole blob. Exact member DFS below remains authoritative.
         blob_ranked = []
         for candidate_group_index in remaining_group_indices:
+            check_deadline()
             member_counts = []
             for item in alignment_group_items[candidate_group_index]:
                 stream = alignment_profiled_candidates(
@@ -2134,6 +2149,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 count = 0
                 try:
                     for _ in stream:
+                        check_deadline()
                         count += 1
                         if count >= budget["max_node_candidates"]:
                             break
@@ -2177,6 +2193,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             candidate_items = list(alignment_group_items[candidate_group_index])
 
             def witness_members(remaining_items):
+                check_deadline()
                 if not remaining_items:
                     return True
 
@@ -3101,6 +3118,10 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 and not solved):
             refinement_timed_out = True
         exhausted = not solved and not refinement_timed_out
+    except SearchDeadlineExhausted:
+        refinement_timed_out = True
+        solved = False
+        exhausted = False
     except ForwardBlockerExhausted as exc:
         dump_diagnostics(f"early forward blocker body={exc.name}")
         return SearchOutcome("EXHAUSTED", [], [], exc.name, {
