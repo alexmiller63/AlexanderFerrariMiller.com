@@ -54,15 +54,16 @@ def populate_selected_year(year: int, selected_weeks: list[int]) -> int:
             # from HTML during normal generation.
             fixed_identities = {fixed_sky._event_identity(value.html) for value in vals}
             for value in vals:
-                if value.fixed_object_id is None:
+                if value.fixed_object_id is None and value.catalog_target_key is None:
                     raise RuntimeError(
-                        f"Canonical fixed-sky event lost fixed-object ID before Calendar merge "
+                        f"Canonical fixed-sky event lost semantic identity before Calendar merge "
                         f"for {day}: {fixed_sky._event_identity(value.html)!r}"
                     )
                 print(
                     f"CALENDAR-ID-TRACE {day} "
                     f"{fixed_sky._event_identity(value.html)!r} "
-                    f"fixed_object_id={value.fixed_object_id}"
+                    f"fixed_object_id={value.fixed_object_id} "
+                    f"catalog_target_key={value.catalog_target_key}"
                 )
             records = [
                 event for event in records
