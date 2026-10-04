@@ -1852,54 +1852,70 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                         if not remaining_support:
                             return True
 
-                        # Recompute routed MRV after every provisional placement.
-                        # A placement can collapse another member's domain to
-                        # zero; detect that immediately instead of continuing in
-                        # the order chosen at the parent prefix.
+                        # Dynamic routed MRV with reuse.  Ranking must inspect
+                        # candidates, but the winner should not immediately
+                        # regenerate the same prefix.  Retain the probed
+                        # candidates and search them first; only continue the
+                        # winner's stream if the probe stopped at support_limit.
                         ranked_remaining = []
                         for support_item in remaining_support:
                             support_name = support_item[1][1]
-                            support_count = 0
+                            probed = []
                             support_stream = alignment_profiled_candidates(
                                 support_item,
                                 diagnostic_depth,
                                 f"alignment-triple-dynamic-rank-{depth + 1}",
                             )
+                            exhausted = False
                             try:
-                                for _ in support_stream:
-                                    support_count += 1
-                                    if support_count > support_limit:
+                                while len(probed) <= support_limit:
+                                    try:
+                                        probed.append(next(support_stream))
+                                    except StopIteration:
+                                        exhausted = True
                                         break
-                            finally:
+                            except BaseException:
                                 support_stream.close()
-                            if support_count == 0:
+                                raise
+                            if not probed:
+                                support_stream.close()
+                                for row in ranked_remaining:
+                                    row[5].close()
                                 return False
                             ranked_remaining.append(
-                                (
-                                    support_count > support_limit,
-                                    support_count,
+                                [
+                                    not exhausted,
+                                    len(probed),
                                     support_name,
                                     support_item,
-                                )
+                                    probed,
+                                    support_stream,
+                                ]
                             )
 
                         ranked_remaining.sort(
                             key=lambda row: (row[0], row[1], row[2])
                         )
-                        support_item = ranked_remaining[0][3]
+                        winner = ranked_remaining[0]
+                        for row in ranked_remaining[1:]:
+                            row[5].close()
+
+                        _, _, support_name, support_item, probed, support_stream = winner
                         support_index = support_item[0]
                         support_symbol, support_name, support_longitude = support_item[1]
                         next_support = [
                             item for item in remaining_support
                             if item[0] != support_index
                         ]
-                        support_stream = alignment_profiled_candidates(
-                            support_item,
-                            diagnostic_depth,
-                            f"alignment-triple-support-{depth + 1}",
-                        )
+
+                        def candidate_stream():
+                            for candidate in probed:
+                                yield candidate
+                            if not exhausted:
+                                yield from support_stream
+
                         try:
-                            for support_candidate in support_stream:
+                            for support_candidate in candidate_stream():
                                 support_box, support_path = support_candidate
                                 placed.append(support_box)
                                 leaders.append(support_path)
