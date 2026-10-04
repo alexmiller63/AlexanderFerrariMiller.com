@@ -1953,10 +1953,20 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         chosen_count, chosen_capped = rank_viable_counts.get(
             name, (viable_count, True)
         )
+        # At the final binary alignment choice, independent routed domain
+        # sizes are still only an optimistic MRV estimate: a placement for A
+        # may leave no routed placement for B.  Require exact pair support for
+        # every chosen candidate, regardless of the size of A's domain.  This
+        # is safe constraint propagation (adding A cannot create placements
+        # for B) and prevents an upstream prefix from descending through a
+        # pair whose joint routed domain is empty.
+        final_pair = len(remaining_items) == 2
         exact_support_filter = (
             bool(next_remaining)
-            and not chosen_capped
-            and chosen_count <= support_limit
+            and (
+                final_pair
+                or (not chosen_capped and chosen_count <= support_limit)
+            )
         )
         try:
             for candidate in chosen_stream:
