@@ -151,7 +151,7 @@ def page_date_map(year):
             if catalog.get("dec_deg") is None:raise RuntimeError(f"Missing declination for {identity} in {FIXED_OBJECTS.name}")
             generated["messier"].append({**dict(catalog),"best_instant_utc":occurrence["best_utc"].replace("Z","")[:16],"best_date":occurrence["best_date"],"iso":occurrence["iso"]})
             messier_mag=str(catalog.get("mag") or "").strip()
-            events[day].append(CalendarEvent(render_html(AlmanackObject(label=identity,object_type="deep_sky",dec_deg=catalog["dec_deg"],best_date=day,observing_aid=ObservingAid.TELESCOPE,magnitude=messier_mag,magnitude_display="whole")),(int(occurrence["fixed_object_id"]) if occurrence.get("fixed_object_id") is not None else None),ObservingAid.TELESCOPE.value))
+            fixed_id=(int(occurrence["fixed_object_id"]) if occurrence.get("fixed_object_id") is not None else None); target_key=None if fixed_id is not None else f"messier:{identity}"; events[day].append(CalendarEvent(render_html(AlmanackObject(label=identity,object_type="deep_sky",dec_deg=catalog["dec_deg"],best_date=day,observing_aid=ObservingAid.TELESCOPE,magnitude=messier_mag,magnitude_display="whole")),fixed_id,ObservingAid.TELESCOPE.value,target_key))
         else:raise RuntimeError(f"Unknown annual fixed-sky source: {source}")
     if not occurrences:raise RuntimeError(f"No annual fixed-sky records found for ISO {year}")
     write_csv(SRC/"generated"/f"expanded-bayer-visibility-{year}.csv",generated["expanded-bayer"]); write_csv(SRC/"generated"/f"bright-star-visibility-{year}.csv",generated["bright-star"]); write_csv(SRC/"generated"/f"messier-visibility-{year}.csv",generated["messier"]); return events
