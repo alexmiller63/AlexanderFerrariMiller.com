@@ -1973,8 +1973,15 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         exact_support_filter = (
             bool(next_remaining)
             and not final_pair
-            and not chosen_capped
-            and chosen_count <= support_limit
+            and (
+                (not chosen_capped and chosen_count <= support_limit)
+                # Tight-5 diagnostic: Mercury is the depth-2 fan-out point.
+                # Before admitting each Mercury child, require at least one
+                # authoritative routed witness for every remaining alignment
+                # member. This rejects unsupported Mercury branches before
+                # Venus/Sun repeatedly prove them dead downstream.
+                or (name == "Mercury" and len(next_remaining) >= 2)
+            )
         )
         try:
             for candidate in chosen_stream:
