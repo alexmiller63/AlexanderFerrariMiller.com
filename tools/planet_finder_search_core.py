@@ -1434,10 +1434,12 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
     # Diagnostic only: measure how often alignment ranking re-evaluates the
     # same effective geometry. Never used to prune, cache, or reorder search.
     alignment_probe_signatures = {}
-    # Exact routed domains are deterministic for a fixed staged geometry. MRV
-    # ranking and the immediately following DFS used to regenerate the same
-    # expensive routed domain; retain exhaustive domains so DFS can reuse the
-    # proof it just paid for. Capped domains are deliberately not cached.
+    # Routed domains are deterministic for a fixed staged geometry.  MRV only
+    # needs to distinguish an exact small domain from "at least the per-node
+    # cap", while the immediately following DFS will try at most that same cap.
+    # Cache both exhaustive domains and capped prefixes together with the cutoff
+    # bit so repeated MRV probes never mistake a capped prefix for an exact
+    # domain, and DFS can reuse the routed work ranking already paid for.
     alignment_routed_domain_cache = {}
 
     def alignment_state_signature():
@@ -1510,8 +1512,8 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 cache_key = (candidate_item[0], alignment_state_signature())
                 cached_rows = alignment_routed_domain_cache.get(cache_key)
             if cached_rows is not None:
+                cached_rows, cutoff = cached_rows
                 count = len(cached_rows)
-                cutoff = False
             else:
                 if routed_rank:
                     probe = alignment_profiled_candidates(
@@ -1534,8 +1536,8 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                             break
                 finally:
                     probe.close()
-                if routed_rank and not cutoff:
-                    alignment_routed_domain_cache[cache_key] = tuple(collected)
+                if routed_rank:
+                    alignment_routed_domain_cache[cache_key] = (tuple(collected), cutoff)
             probe_elapsed = time.monotonic() - probe_started
             probe_after = predfs_rejection_snapshot()
             probe_delta = {
@@ -1976,10 +1978,10 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             level=1, flush=True,
         )
         chosen_cache_key = (item[0], alignment_state_signature())
-        chosen_cached_rows = alignment_routed_domain_cache.get(chosen_cache_key)
+        chosen_cached = alignment_routed_domain_cache.get(chosen_cache_key)
         chosen_stream = (
-            iter(chosen_cached_rows)
-            if chosen_cached_rows is not None
+            iter(chosen_cached[0])
+            if chosen_cached is not None
             else alignment_profiled_candidates(item, diagnostic_depth, "alignment-dfs")
         )
         chosen_count, chosen_capped = rank_viable_counts.get(
