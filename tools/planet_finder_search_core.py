@@ -2283,11 +2283,25 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         # Cheap blob MRV: estimate each blob by its tightest member in the
         # current geometry. This is ordering only; it never proves or prunes a
         # whole blob. Exact member DFS below remains authoritative.
+        #
+        # Level-4 forensics time this pre-DFS ranking separately. W20's
+        # seven-member cliff can otherwise consume the entire mode clock here
+        # while the ordinary DFS correctly reports nodes=0, obscuring which
+        # group/member owns the candidate-generation cost.
         blob_ranked = []
+        rank_started = time.monotonic()
+        diagnostic_print(
+            f"Planet Finder {mode}: ALIGNMENT GROUP RANK START "
+            f"remaining={tuple(index + 1 for index in remaining_group_indices)} "
+            f"preplaced={'|'.join(leader_names) or 'none'}",
+            level=4, flush=True,
+        )
         for candidate_group_index in remaining_group_indices:
             check_deadline()
             member_counts = []
+            group_rank_started = time.monotonic()
             for item in alignment_group_items[candidate_group_index]:
+                member_started = time.monotonic()
                 stream = alignment_profiled_candidates(
                     item,
                     -(candidate_group_index + 1),
@@ -2303,12 +2317,30 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 finally:
                     stream.close()
                 member_counts.append(count)
+                diagnostic_print(
+                    f"Planet Finder {mode}: ALIGNMENT GROUP RANK MEMBER "
+                    f"group={candidate_group_index + 1} body={item[1][1]} "
+                    f"candidates={count} elapsed={time.monotonic() - member_started:.3f}s",
+                    level=4, flush=True,
+                )
                 if count == 0:
                     break
+            diagnostic_print(
+                f"Planet Finder {mode}: ALIGNMENT GROUP RANK GROUP "
+                f"group={candidate_group_index + 1} counts={member_counts} "
+                f"elapsed={time.monotonic() - group_rank_started:.3f}s",
+                level=4, flush=True,
+            )
             blob_ranked.append((
                 min(member_counts) if member_counts else 0,
                 candidate_group_index,
             ))
+        diagnostic_print(
+            f"Planet Finder {mode}: ALIGNMENT GROUP RANK END "
+            f"elapsed={time.monotonic() - rank_started:.3f}s "
+            f"ranks={[(index + 1, count) for count, index in blob_ranked]}",
+            level=4, flush=True,
+        )
 
         # At blob level, prefer the larger constraint footprint: placing
         # the broader blob first exposes its restrictions to the remaining
