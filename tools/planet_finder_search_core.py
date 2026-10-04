@@ -1399,6 +1399,27 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 ),
                 level=1, flush=True,
             )
+        for body, stats in sorted(alignment_final_pair_domain_stats.items()):
+            varying_by_domain = []
+            for domain_sig, states in stats["domain_states"].items():
+                if len(states) < 2:
+                    continue
+                names = sorted(set().union(*(state.keys() for state in states)))
+                varying = [
+                    name for name in names
+                    if len({state.get(name) for state in states}) > 1
+                ]
+                varying_by_domain.append((len(states), varying))
+            if varying_by_domain:
+                diagnostic_print(
+                    f"Planet Finder {mode}: ALIGNMENT FINAL-PAIR STATE VARIATION "
+                    f"{body} "
+                    + " | ".join(
+                        f"repeats={repeats}:varying={','.join(varying) if varying else 'none'}"
+                        for repeats, varying in sorted(varying_by_domain, reverse=True)
+                    ),
+                    level=1, flush=True,
+                )
         diagnostic_print(
             f"Planet Finder {mode}: ALIGNMENT PHASE PROFILE "
             + " | ".join(
@@ -1729,7 +1750,8 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             rank_viable_counts[probe_name] = (count, cutoff)
             if len(remaining_items) == 2 and routed_rank and cached_rows is None:
                 pair_stats = alignment_final_pair_domain_stats.setdefault(
-                    probe_name, {"calls": 0, "domains": {}, "candidates": {}}
+                    probe_name, {"calls": 0, "domains": {}, "candidates": {},
+                                 "domain_states": {}}
                 )
                 pair_stats["calls"] += 1
                 domain_sig = tuple(
@@ -1737,6 +1759,14 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                     for candidate in (collected or ())
                 )
                 pair_stats["domains"][domain_sig] = pair_stats["domains"].get(domain_sig, 0) + 1
+                state_by_name = {}
+                for idx, placed_name in enumerate(leader_names):
+                    state_by_name[placed_name] = (
+                        (round(placed[idx].x, 2), round(placed[idx].y, 2),
+                         round(placed[idx].w, 2), round(placed[idx].h, 2)),
+                        tuple((round(x, 2), round(y, 2)) for x, y in leaders[idx]),
+                    )
+                pair_stats["domain_states"].setdefault(domain_sig, []).append(state_by_name)
                 for candidate_sig in domain_sig:
                     pair_stats["candidates"][candidate_sig] = (
                         pair_stats["candidates"].get(candidate_sig, 0) + 1
