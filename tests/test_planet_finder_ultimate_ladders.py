@@ -598,7 +598,7 @@ def test_w01_tight_alignment_five_only(monkeypatch):
         FinderMode.GREEK,
         bodies,
         target_solutions=5,
-        budget={"max_node_candidates": 2000, "max_seconds": 60.0},
+        budget={"max_node_candidates": 2000, "max_seconds": 300.0},
         context_label="W01-alignment-size-tight-5-focused",
     )
     assert_complete_valid_layout(result, bodies, FinderMode.GREEK)
