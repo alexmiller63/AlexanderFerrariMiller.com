@@ -1367,6 +1367,17 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             stream.close()
 
     def report_alignment_phase_profile():
+        if alignment_routed_cache_stats:
+            diagnostic_print(
+                f"Planet Finder {mode}: ALIGNMENT ROUTED CACHE "
+                + " | ".join(
+                    f"{body}[lookups={stats['lookups']:,},hits={stats['hits']:,},"
+                    f"misses={stats['misses']:,},unique={len(stats['unique_states']):,},"
+                    f"stored={stats['stored']:,},beat-limited={stats['beat_limited']:,}]"
+                    for body, stats in sorted(alignment_routed_cache_stats.items())
+                ),
+                level=1, flush=True,
+            )
         diagnostic_print(
             f"Planet Finder {mode}: ALIGNMENT PHASE PROFILE "
             + " | ".join(
@@ -1441,6 +1452,16 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
     # bit so repeated MRV probes never mistake a capped prefix for an exact
     # domain, and DFS can reuse the routed work ranking already paid for.
     alignment_routed_domain_cache = {}
+    # Diagnostic only: expose whether routed MRV work is genuinely reusable.
+    # These counters never affect ranking, pruning, caching, or candidate order.
+    alignment_routed_cache_stats = {}
+
+    def routed_cache_stat(body):
+        return alignment_routed_cache_stats.setdefault(
+            body, {"lookups": 0, "hits": 0, "misses": 0,
+                   "stored": 0, "beat_limited": 0,
+                   "unique_states": set()}
+        )
 
     def alignment_state_signature():
         def box_sig(box):
@@ -1529,8 +1550,16 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             cached_rows = None
             cache_key = None
             if routed_rank:
-                cache_key = (candidate_item[0], alignment_state_signature())
+                state_signature = alignment_state_signature()
+                cache_key = (candidate_item[0], state_signature)
+                cache_stat = routed_cache_stat(probe_name)
+                cache_stat["lookups"] += 1
+                cache_stat["unique_states"].add(state_signature)
                 cached_rows = alignment_routed_domain_cache.get(cache_key)
+                if cached_rows is None:
+                    cache_stat["misses"] += 1
+                else:
+                    cache_stat["hits"] += 1
             if cached_rows is not None:
                 cached_rows, cutoff = cached_rows
                 count = len(cached_rows)
@@ -1568,8 +1597,13 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                             break
                 finally:
                     probe.close()
-                if routed_rank and not beat_limited:
-                    alignment_routed_domain_cache[cache_key] = (tuple(collected), cutoff)
+                if routed_rank:
+                    cache_stat = routed_cache_stat(probe_name)
+                    if beat_limited:
+                        cache_stat["beat_limited"] += 1
+                    else:
+                        alignment_routed_domain_cache[cache_key] = (tuple(collected), cutoff)
+                        cache_stat["stored"] += 1
             probe_elapsed = time.monotonic() - probe_started
             probe_after = predfs_rejection_snapshot()
             probe_delta = {
