@@ -1848,12 +1848,51 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                     ranked_support.sort(key=lambda row: (row[0], row[1], row[2]))
                     support_items = [row[3] for row in ranked_support]
 
-                    def triple_support(depth):
-                        if depth >= len(support_items):
+                    def triple_support(remaining_support, depth=0):
+                        if not remaining_support:
                             return True
-                        support_item = support_items[depth]
+
+                        # Recompute routed MRV after every provisional placement.
+                        # A placement can collapse another member's domain to
+                        # zero; detect that immediately instead of continuing in
+                        # the order chosen at the parent prefix.
+                        ranked_remaining = []
+                        for support_item in remaining_support:
+                            support_name = support_item[1][1]
+                            support_count = 0
+                            support_stream = alignment_profiled_candidates(
+                                support_item,
+                                diagnostic_depth,
+                                f"alignment-triple-dynamic-rank-{depth + 1}",
+                            )
+                            try:
+                                for _ in support_stream:
+                                    support_count += 1
+                                    if support_count > support_limit:
+                                        break
+                            finally:
+                                support_stream.close()
+                            if support_count == 0:
+                                return False
+                            ranked_remaining.append(
+                                (
+                                    support_count > support_limit,
+                                    support_count,
+                                    support_name,
+                                    support_item,
+                                )
+                            )
+
+                        ranked_remaining.sort(
+                            key=lambda row: (row[0], row[1], row[2])
+                        )
+                        support_item = ranked_remaining[0][3]
                         support_index = support_item[0]
                         support_symbol, support_name, support_longitude = support_item[1]
+                        next_support = [
+                            item for item in remaining_support
+                            if item[0] != support_index
+                        ]
                         support_stream = alignment_profiled_candidates(
                             support_item,
                             diagnostic_depth,
@@ -1870,7 +1909,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                                     support_box, support_path,
                                 )
                                 try:
-                                    if triple_support(depth + 1):
+                                    if triple_support(next_support, depth + 1):
                                         return True
                                 finally:
                                     staged.pop(support_index, None)
@@ -1881,7 +1920,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                             support_stream.close()
                         return False
 
-                    if not triple_support(0):
+                    if not triple_support(support_items):
                         alignment_forward_ok = False
                         diagnostic_print(
                             f"Planet Finder {mode}: ALIGNMENT TRIPLE DEAD "
