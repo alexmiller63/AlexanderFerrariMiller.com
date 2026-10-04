@@ -1806,120 +1806,12 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 mercury_final_blocker = None
                 alignment_forward_ok = True
 
-                # General forward consistency for a tight 3-member remainder.
-                # Individual witnesses are too weak here: A, B, and C can each
-                # be routable against the prefix while no A+B+C combination is.
-                # Prove one complete routed continuation before descending.
-                # This is sound pruning: later placements can only remove
-                # options, never create a missing joint continuation.
-                if len(next_remaining) == 3:
-                    support_items = list(next_remaining)
-
-                    # triple_support() immediately performs routed dynamic MRV
-                    # on this exact prefix and retains the winner's probed
-                    # candidates for recursion.  A separate routed pre-rank
-                    # here duplicated that same expensive work (about 11s in
-                    # the W01 tight-5 forensic) without adding any pruning.
-                    # Let the authoritative dynamic MRV below do the ranking
-                    # once; correctness and candidate ordering inside the
-                    # selected domain are unchanged.
-
-                    def triple_support(remaining_support, depth=0):
-                        if not remaining_support:
-                            return True
-
-                        # Dynamic routed MRV with reuse.  Ranking must inspect
-                        # candidates, but the winner should not immediately
-                        # regenerate the same prefix.  Retain the probed
-                        # candidates and search them first; only continue the
-                        # winner's stream if the probe stopped at support_limit.
-                        ranked_remaining = []
-                        for support_item in remaining_support:
-                            support_name = support_item[1][1]
-                            probed = []
-                            support_stream = alignment_profiled_candidates(
-                                support_item,
-                                diagnostic_depth,
-                                f"alignment-triple-dynamic-rank-{depth + 1}",
-                            )
-                            exhausted = False
-                            try:
-                                while len(probed) <= support_limit:
-                                    try:
-                                        probed.append(next(support_stream))
-                                    except StopIteration:
-                                        exhausted = True
-                                        break
-                            except BaseException:
-                                support_stream.close()
-                                raise
-                            if not probed:
-                                support_stream.close()
-                                for row in ranked_remaining:
-                                    row[5].close()
-                                return False
-                            ranked_remaining.append(
-                                [
-                                    not exhausted,
-                                    len(probed),
-                                    support_name,
-                                    support_item,
-                                    probed,
-                                    support_stream,
-                                ]
-                            )
-
-                        ranked_remaining.sort(
-                            key=lambda row: (row[0], row[1], row[2])
-                        )
-                        winner = ranked_remaining[0]
-                        for row in ranked_remaining[1:]:
-                            row[5].close()
-
-                        _, _, support_name, support_item, probed, support_stream = winner
-                        support_index = support_item[0]
-                        support_symbol, support_name, support_longitude = support_item[1]
-                        next_support = [
-                            item for item in remaining_support
-                            if item[0] != support_index
-                        ]
-
-                        def candidate_stream():
-                            for candidate in probed:
-                                yield candidate
-                            if not exhausted:
-                                yield from support_stream
-
-                        try:
-                            for support_candidate in candidate_stream():
-                                support_box, support_path = support_candidate
-                                placed.append(support_box)
-                                leaders.append(support_path)
-                                leader_names.append(support_name)
-                                staged[support_index] = (
-                                    support_symbol, support_name, support_longitude,
-                                    support_box, support_path,
-                                )
-                                try:
-                                    if triple_support(next_support, depth + 1):
-                                        return True
-                                finally:
-                                    staged.pop(support_index, None)
-                                    leader_names.pop()
-                                    leaders.pop()
-                                    placed.pop()
-                        finally:
-                            support_stream.close()
-                        return False
-
-                    if not triple_support(support_items):
-                        alignment_forward_ok = False
-                        diagnostic_print(
-                            f"Planet Finder {mode}: ALIGNMENT TRIPLE DEAD "
-                            f"parent={name} remainder="
-                            f"{'+'.join(item[1][1] for item in support_items)}",
-                            level=1, flush=True,
-                        )
+                # Do not run a separate exhaustive three-member forward proof here.
+                # The alignment member DFS immediately below searches the same routed
+                # continuation exactly.  On W01 tight-5 this look-ahead consumed the
+                # entire 60s wall clock proving 100+ Mars prefixes dead before the
+                # real DFS could advance.  Removing the redundant proof changes only
+                # pruning/order, not the set of layouts accepted by the exact DFS.
 
                 # Arc consistency one level earlier: when this candidate leaves
                 # exactly two members in the same alignment blob, prove that
