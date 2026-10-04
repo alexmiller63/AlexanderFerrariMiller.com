@@ -1480,9 +1480,11 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         if group_index == 0:
             key = (depth_in_blob, tuple(item[1][1] for item in remaining_items))
             row = alignment_depth_forensics.setdefault(
-                key, {"entries": 0, "chosen": {}, "tries": 0, "forward_rejects": 0, "completions": 0}
+                key, {"entries": 0, "chosen": {}, "tries": 0, "forward_rejects": 0, "completions": 0,
+                      "rank_seconds": 0.0, "chosen_viable": {}, "max_remaining": 0}
             )
             row["entries"] += 1
+            row["max_remaining"] = max(row["max_remaining"], len(remaining_items))
         if not remaining_items:
             if group_index == 0:
                 row["completions"] += 1
@@ -1662,6 +1664,11 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         # Prefer the later member in the alignment sequence within a one-candidate
         # band so a fragile downstream member (notably Sun) is placed before a
         # one-choice predecessor can repeatedly destroy its last placements.
+        if group_index == 0:
+            row["rank_seconds"] += sum(
+                alignment_phase_profile.get(("alignment-rank-routed", candidate_item[1][1]), {}).get("elapsed", 0.0)
+                for candidate_item in ()
+            )
         min_viable = min(row[0] for row in ranked)
         near_tied = [row for row in ranked if row[0] <= min_viable + 1]
         # Zero is a proof of failure and must always win. Otherwise all
@@ -1675,6 +1682,8 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         original_index, (symbol, name, longitude) = item
         if group_index == 0:
             row["chosen"][name] = row["chosen"].get(name, 0) + 1
+            viable_key = f"{name}:{viable_count}{'+' if rank_viable_counts.get(name, (0, False))[1] else ''}"
+            row["chosen_viable"][viable_key] = row["chosen_viable"].get(viable_key, 0) + 1
         next_remaining = [candidate_item for candidate_item in remaining_items if candidate_item is not item]
         tried = 0
         # Keep a dead final alignment member from monopolizing the mode clock.
