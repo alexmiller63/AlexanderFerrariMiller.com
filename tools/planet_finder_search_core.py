@@ -2026,19 +2026,39 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                         (next_remaining[0], next_remaining[1]),
                         (next_remaining[1], next_remaining[0]),
                     ):
-                        first_stream = alignment_profiled_candidates(
-                            first_future, diagnostic_depth, "alignment-triple-screen"
+                        first_cache_key = (
+                            first_future[0], alignment_state_signature()
+                        )
+                        cached_first = alignment_routed_domain_cache.get(
+                            first_cache_key
                         )
                         first_candidates = []
-                        first_exhaustive = True
-                        try:
-                            for first_candidate in first_stream:
-                                first_candidates.append(first_candidate)
-                                if len(first_candidates) > support_limit:
-                                    first_exhaustive = False
-                                    break
-                        finally:
-                            first_stream.close()
+                        first_exhaustive = False
+                        if cached_first is not None:
+                            cached_values, cached_cutoff, cached_prefix = cached_first
+                            if (
+                                not cached_prefix
+                                and not cached_cutoff
+                                and len(cached_values) <= support_limit
+                            ):
+                                first_candidates = list(cached_values)
+                                first_exhaustive = True
+                        if not first_exhaustive:
+                            first_stream = alignment_profiled_candidates(
+                                first_future,
+                                diagnostic_depth,
+                                "alignment-triple-screen",
+                            )
+                            try:
+                                for first_candidate in first_stream:
+                                    first_candidates.append(first_candidate)
+                                    if len(first_candidates) > support_limit:
+                                        first_exhaustive = False
+                                        break
+                                else:
+                                    first_exhaustive = True
+                            finally:
+                                first_stream.close()
                         if not first_exhaustive:
                             continue
 
