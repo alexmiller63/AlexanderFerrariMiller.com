@@ -590,7 +590,7 @@ def test_w01_five_candidate_deep_forensic(monkeypatch):
             FinderMode.GREEK,
             bodies,
             target_solutions=5,
-            budget={"max_node_candidates": 2000, "max_seconds": 180.0},
+            budget={"max_node_candidates": 2000, "max_seconds": 60.0},
             context_label="W01-five-candidate-deep-forensic",
         )
         assert_complete_valid_layout(result, bodies, FinderMode.GREEK)
