@@ -1,4 +1,4 @@
-name: AA-Planet Finder Regression A-B
+name: AA-Planet Finder Regression Bisect
 
 on:
   workflow_dispatch:
@@ -56,33 +56,19 @@ jobs:
               assert valid, errors
           PY
 
-      - name: BEFORE suspected regression
+      - name: Create bisect runner
         run: |
-          git checkout --detach 6896c1aebc2438bdf424cceb8ec15a0bd6badb60
-          echo "===== BEFORE 6896c1a ====="
-          set +e
+          cat > /tmp/run_tight5.sh <<'SH'
+          #!/usr/bin/env bash
           PYTHONPATH=tools pytest -q -s /tmp/test_tight5_ab.py
-          echo $? > /tmp/before_status
-          exit 0
+          SH
+          chmod +x /tmp/run_tight5.sh
 
-      - name: AFTER suspected regression
+      - name: Bisect first bad solver commit
         run: |
-          git checkout --detach c6f960995932d1c8ad85584678abd13db68e04d0
-          echo "===== AFTER c6f960995 ====="
-          set +e
-          PYTHONPATH=tools pytest -q -s /tmp/test_tight5_ab.py
-          echo $? > /tmp/after_status
-          exit 0
-
-      - name: Regression verdict
-        run: |
-          BEFORE=$(cat /tmp/before_status)
-          AFTER=$(cat /tmp/after_status)
-          echo "BEFORE exit=$BEFORE"
-          echo "AFTER  exit=$AFTER"
-          if [ "$BEFORE" = 0 ] && [ "$AFTER" != 0 ]; then
-            echo "REGRESSION PINNED: c6f960995 introduced the tight-5 failure."
-            exit 0
-          fi
-          echo "NOT PINNED: this boundary does not show pass-before/fail-after."
-          exit 1
+          git bisect start
+          git bisect bad ebc2e56ef97b1357481daa8dda3f9dbed345e386
+          git bisect good c6f960995932d1c8ad85584678abd13db68e04d0
+          git bisect run /tmp/run_tight5.sh
+          echo "===== BISECT RESULT ====="
+          git bisect log
