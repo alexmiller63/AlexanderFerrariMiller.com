@@ -580,6 +580,31 @@ def test_five_candidate_exact_w01_w02_regression(monkeypatch, week, ladder):
 
 
 
+def test_w01_tight_alignment_five_only(monkeypatch):
+    """Focused regression for the known W01 five-member alignment complexity cliff."""
+    enable_alignment_fix(monkeypatch)
+    monkeypatch.setenv("PLANET_FINDER_DIAGNOSTIC_LEVEL", "1")
+
+    exact = W01_LADDER[-1][1]
+    isolated = {"Saturn": 20, "Neptune": 60, "Ceres": 100, "Moon": 140, "Uranus": 180, "Jupiter": 220}
+    active = {"Mercury", "Venus", "Sun", "Mars", "Pluto"}
+    longitudes = dict(isolated)
+    for name in active:
+        longitudes[name] = exact[name]
+
+    bodies = synthetic_bodies(longitudes)
+    print(f"W01 TIGHT-5 FOCUSED groups={group_names(bodies)} START", flush=True)
+    result = layout(
+        FinderMode.GREEK,
+        bodies,
+        target_solutions=5,
+        budget={"max_node_candidates": 2000, "max_seconds": 60.0},
+        context_label="W01-alignment-size-tight-5-focused",
+    )
+    assert_complete_valid_layout(result, bodies, FinderMode.GREEK)
+    print("W01 TIGHT-5 FOCUSED PASS", flush=True)
+
+
 def test_w01_tight_alignment_size_ladder(monkeypatch):
     """Isolate the complexity jump as the real W01 inner alignment grows to five members."""
     enable_alignment_fix(monkeypatch)
