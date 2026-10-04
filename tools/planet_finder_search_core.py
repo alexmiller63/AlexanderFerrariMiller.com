@@ -1799,11 +1799,16 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 mercury_final_blocker = None
                 alignment_forward_ok = True
                 for future_item in next_remaining:
+                    future_name = future_item[1][1]
+                    witness_started = time.monotonic()
+                    witness_before = predfs_rejection_snapshot()
+                    witness_found = False
                     witness_stream = alignment_profiled_candidates(
                         future_item, diagnostic_depth, "same-blob-forward"
                     )
                     try:
                         next(witness_stream)
+                        witness_found = True
                     except StopIteration:
                         alignment_forward_ok = False
                         future_name = future_item[1][1]
@@ -1835,6 +1840,20 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                             )
                     finally:
                         witness_stream.close()
+                    if name == "Ceres" and future_name == "Venus":
+                        witness_after = predfs_rejection_snapshot()
+                        witness_delta = {
+                            key: witness_after[key] - witness_before[key]
+                            for key in witness_before
+                        }
+                        diagnostic_print(
+                            f"Planet Finder {mode}: CERES->VENUS WITNESS "
+                            f"found={witness_found} elapsed={time.monotonic() - witness_started:.4f}s "
+                            + " ".join(
+                                f"{key}={value:,}" for key, value in witness_delta.items()
+                            ),
+                            level=1, flush=True,
+                        )
                     if not alignment_forward_ok:
                         break
                 if alignment_forward_ok:
