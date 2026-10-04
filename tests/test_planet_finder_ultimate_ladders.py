@@ -14,6 +14,7 @@ from planet_finder_search_core import _solve_order
 from test_planet_finder_system import (
     W01_LADDER,
     W02_LADDER,
+    TIGHT_FIVE_LADDER,
     assert_complete_valid_layout,
     synthetic_bodies,
 )
@@ -576,6 +577,42 @@ def test_five_candidate_exact_w01_w02_regression(monkeypatch, week, ladder):
     assert_complete_valid_layout(result, bodies, FinderMode.GREEK)
     print(f"FIVE-CANDIDATE REGRESSION {week} {level} PASS", flush=True)
 
+
+
+
+def test_w01_tight_alignment_size_ladder(monkeypatch):
+    """Isolate the complexity jump as the real W01 inner alignment grows to five members."""
+    enable_alignment_fix(monkeypatch)
+    monkeypatch.setenv("PLANET_FINDER_DIAGNOSTIC_LEVEL", "1")
+
+    exact = W01_LADDER[-1][1]
+    isolated = {"Saturn": 20, "Neptune": 60, "Ceres": 100, "Moon": 140, "Uranus": 180, "Jupiter": 220}
+    stages = [
+        ("tight-2", {"Venus", "Sun"}),
+        ("tight-3", {"Venus", "Sun", "Mars"}),
+        ("tight-4", {"Mercury", "Venus", "Sun", "Mars"}),
+        ("tight-5", {"Mercury", "Venus", "Sun", "Mars", "Pluto"}),
+    ]
+    parking = {"Mercury": 240.0, "Venus": 250.0, "Sun": 260.0, "Mars": 270.0, "Pluto": 320.0}
+
+    passed = []
+    for level, active in stages:
+        longitudes = dict(isolated)
+        for name in ("Mercury", "Venus", "Sun", "Mars", "Pluto"):
+            longitudes[name] = exact[name] if name in active else parking[name]
+        bodies = synthetic_bodies(longitudes)
+        print(f"W01 ALIGNMENT-SIZE LADDER {level} groups={group_names(bodies)} START", flush=True)
+        result = layout(
+            FinderMode.GREEK,
+            bodies,
+            target_solutions=5,
+            budget={"max_node_candidates": 2000, "max_seconds": 60.0},
+            context_label=f"W01-alignment-size-{level}",
+        )
+        assert_complete_valid_layout(result, bodies, FinderMode.GREEK)
+        passed.append(level)
+        print(f"W01 ALIGNMENT-SIZE LADDER {level} PASS", flush=True)
+    print(f"W01 ALIGNMENT-SIZE LADDER COMPLETE passed={passed}", flush=True)
 
 
 def test_w01_five_candidate_breakpoint_ladder(monkeypatch):
