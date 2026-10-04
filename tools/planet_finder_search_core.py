@@ -1307,7 +1307,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
     alignment_depth_forensics = {}
     alignment_phase_profile = {}
 
-    def alignment_geometry_candidates(item):
+    def alignment_geometry_candidates(item, pressure=None):
         """Cheap necessary-condition candidates for alignment look-ahead.
 
         This deliberately stops before leader routing.  It may admit geometries
@@ -1327,6 +1327,16 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 for i in range(len(seg) - 1)
             ):
                 continue
+            if pressure is not None:
+                pressure["geometry"] = pressure.get("geometry", 0) + 1
+                anchor = xy(longitude, RI - 5)
+                # Diagnostic only: a straight anchor-to-label segment that is
+                # already too close to an existing leader is a cheap signal
+                # that this apparent geometry choice will require routing.
+                if leaders_too_close([anchor, (x, y)], leaders):
+                    pressure["straight_conflict"] = pressure.get("straight_conflict", 0) + 1
+                else:
+                    pressure["straight_clear"] = pressure.get("straight_clear", 0) + 1
             yield box
 
     def alignment_profiled_candidates(item, depth, phase):
@@ -1504,7 +1514,8 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                         candidate_item, diagnostic_depth, "alignment-rank-routed"
                     )
                 else:
-                    probe = alignment_geometry_candidates(candidate_item)
+                    pressure = {}
+                    probe = alignment_geometry_candidates(candidate_item, pressure)
                 count = 0
                 cutoff = False
                 collected = [] if routed_rank else None
@@ -1527,10 +1538,21 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 key: probe_after[key] - probe_before[key]
                 for key in probe_before
             }
+            pressure_text = ""
+            if not routed_rank:
+                geometry_count = pressure.get("geometry", 0)
+                straight_conflict = pressure.get("straight_conflict", 0)
+                straight_clear = pressure.get("straight_clear", 0)
+                pressure_text = (
+                    f" route-pressure[straight-clear={straight_clear:,},"
+                    f"straight-conflict={straight_conflict:,},"
+                    f"conflict-pct={(100.0 * straight_conflict / geometry_count) if geometry_count else 0.0:.1f}]"
+                )
             diagnostic_print(
                 f"Planet Finder {mode}: ALIGNMENT RANK PROBE END "
                 f"group={group_index + 1} depth={depth_in_blob}/{group_size} "
-                f"body={probe_name} viable={count:,}{'+' if cutoff else ''} elapsed={probe_elapsed:.3f}s "
+                f"body={probe_name} viable={count:,}{'+' if cutoff else ''} elapsed={probe_elapsed:.3f}s"
+                f"{pressure_text} "
                 + " ".join(
                     f"{key}={value:,}" for key, value in probe_delta.items()
                 ),
