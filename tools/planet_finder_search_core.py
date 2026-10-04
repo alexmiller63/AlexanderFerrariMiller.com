@@ -1806,94 +1806,80 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 mercury_final_blocker = None
                 alignment_forward_ok = True
 
-                # W01 forensic only: identify the exact Pluto/Mars prefix where
-                # the Mercury/Sun/Venus remainder becomes dead.  Probe only the
-                # first few routed candidates at each level; this is diagnostic
-                # attribution, not a pruning rule.
-                if (
-                    context_label
-                    and "W01-five-candidate-deep-forensic" in context_label
-                    and len(next_remaining) == 3
-                ):
-                    remainder_names = [item[1][1] for item in next_remaining]
-                    diagnostic_print(
-                        f"Planet Finder {mode}: W01 THREE-BODY PREFIX "
-                        f"parent={name} remainder={'+'.join(remainder_names)} "
-                        f"fingerprint={alignment_state_fingerprint()!r}",
-                        level=1, flush=True,
-                    )
-                    first_item = next_remaining[0]
-                    second_item = next_remaining[1]
-                    third_item = next_remaining[2]
-                    first_index = first_item[0]
-                    first_symbol, first_name, first_longitude = first_item[1]
-                    probe_first = probe_second = probe_joint = 0
-                    first_stream = alignment_profiled_candidates(
-                        first_item, diagnostic_depth, "w01-three-probe-first"
-                    )
-                    try:
-                        for first_candidate in first_stream:
-                            probe_first += 1
-                            first_box, first_path = first_candidate
-                            placed.append(first_box)
-                            leaders.append(first_path)
-                            leader_names.append(first_name)
-                            staged[first_index] = (
-                                first_symbol, first_name, first_longitude,
-                                first_box, first_path,
-                            )
-                            try:
-                                second_stream = alignment_profiled_candidates(
-                                    second_item, diagnostic_depth, "w01-three-probe-second"
+                # General forward consistency for a tight 3-member remainder.
+                # Individual witnesses are too weak here: A, B, and C can each
+                # be routable against the prefix while no A+B+C combination is.
+                # Prove one complete routed continuation before descending.
+                # This is sound pruning: later placements can only remove
+                # options, never create a missing joint continuation.
+                if len(next_remaining) == 3:
+                    support_items = list(next_remaining)
+
+                    # Squeaky wheel first: cheaply rank the three routed domains
+                    # under the staged parent, then enumerate the tightest first.
+                    ranked_support = []
+                    for support_item in support_items:
+                        support_name = support_item[1][1]
+                        support_count = 0
+                        support_stream = alignment_profiled_candidates(
+                            support_item,
+                            diagnostic_depth,
+                            "alignment-triple-rank",
+                        )
+                        try:
+                            for _ in support_stream:
+                                support_count += 1
+                                if support_count >= budget["max_node_candidates"]:
+                                    break
+                        finally:
+                            support_stream.close()
+                        ranked_support.append(
+                            (support_count, support_name, support_item)
+                        )
+                    ranked_support.sort(key=lambda row: (row[0], row[1]))
+                    support_items = [row[2] for row in ranked_support]
+
+                    def triple_support(depth):
+                        if depth >= len(support_items):
+                            return True
+                        support_item = support_items[depth]
+                        support_index = support_item[0]
+                        support_symbol, support_name, support_longitude = support_item[1]
+                        support_stream = alignment_profiled_candidates(
+                            support_item,
+                            diagnostic_depth,
+                            f"alignment-triple-support-{depth + 1}",
+                        )
+                        try:
+                            for support_candidate in support_stream:
+                                support_box, support_path = support_candidate
+                                placed.append(support_box)
+                                leaders.append(support_path)
+                                leader_names.append(support_name)
+                                staged[support_index] = (
+                                    support_symbol, support_name, support_longitude,
+                                    support_box, support_path,
                                 )
                                 try:
-                                    for second_candidate in second_stream:
-                                        probe_second += 1
-                                        second_index = second_item[0]
-                                        second_symbol, second_name, second_longitude = second_item[1]
-                                        second_box, second_path = second_candidate
-                                        placed.append(second_box)
-                                        leaders.append(second_path)
-                                        leader_names.append(second_name)
-                                        staged[second_index] = (
-                                            second_symbol, second_name, second_longitude,
-                                            second_box, second_path,
-                                        )
-                                        try:
-                                            third_stream = alignment_profiled_candidates(
-                                                third_item, diagnostic_depth, "w01-three-probe-third"
-                                            )
-                                            try:
-                                                next(third_stream)
-                                                probe_joint += 1
-                                            except StopIteration:
-                                                pass
-                                            finally:
-                                                third_stream.close()
-                                        finally:
-                                            staged.pop(second_index, None)
-                                            leader_names.pop()
-                                            leaders.pop()
-                                            placed.pop()
-                                        if probe_joint or probe_second >= 32:
-                                            break
+                                    if triple_support(depth + 1):
+                                        return True
                                 finally:
-                                    second_stream.close()
-                            finally:
-                                staged.pop(first_index, None)
-                                leader_names.pop()
-                                leaders.pop()
-                                placed.pop()
-                            if probe_joint or probe_first >= 16 or probe_second >= 32:
-                                break
-                    finally:
-                        first_stream.close()
-                    diagnostic_print(
-                        f"Planet Finder {mode}: W01 THREE-BODY PROBE "
-                        f"parent={name} remainder={'+'.join(remainder_names)} "
-                        f"first={probe_first} second={probe_second} joint={probe_joint}",
-                        level=1, flush=True,
-                    )
+                                    staged.pop(support_index, None)
+                                    leader_names.pop()
+                                    leaders.pop()
+                                    placed.pop()
+                        finally:
+                            support_stream.close()
+                        return False
+
+                    if not triple_support(0):
+                        alignment_forward_ok = False
+                        diagnostic_print(
+                            f"Planet Finder {mode}: ALIGNMENT TRIPLE DEAD "
+                            f"parent={name} remainder="
+                            f"{'+'.join(item[1][1] for item in support_items)}",
+                            level=1, flush=True,
+                        )
 
                 # Arc consistency one level earlier: when this candidate leaves
                 # exactly two members in the same alignment blob, prove that
