@@ -1806,6 +1806,95 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 mercury_final_blocker = None
                 alignment_forward_ok = True
 
+                # W01 forensic only: identify the exact Pluto/Mars prefix where
+                # the Mercury/Sun/Venus remainder becomes dead.  Probe only the
+                # first few routed candidates at each level; this is diagnostic
+                # attribution, not a pruning rule.
+                if (
+                    context_label
+                    and "W01-five-candidate-deep-forensic" in context_label
+                    and len(next_remaining) == 3
+                ):
+                    remainder_names = [item[1][1] for item in next_remaining]
+                    diagnostic_print(
+                        f"Planet Finder {mode}: W01 THREE-BODY PREFIX "
+                        f"parent={name} remainder={'+'.join(remainder_names)} "
+                        f"fingerprint={alignment_state_fingerprint()!r}",
+                        level=1, flush=True,
+                    )
+                    first_item = next_remaining[0]
+                    second_item = next_remaining[1]
+                    third_item = next_remaining[2]
+                    first_index = first_item[0]
+                    first_symbol, first_name, first_longitude = first_item[1]
+                    probe_first = probe_second = probe_joint = 0
+                    first_stream = alignment_profiled_candidates(
+                        first_item, diagnostic_depth, "w01-three-probe-first"
+                    )
+                    try:
+                        for first_candidate in first_stream:
+                            probe_first += 1
+                            first_box, first_path = first_candidate
+                            placed.append(first_box)
+                            leaders.append(first_path)
+                            leader_names.append(first_name)
+                            staged[first_index] = (
+                                first_symbol, first_name, first_longitude,
+                                first_box, first_path,
+                            )
+                            try:
+                                second_stream = alignment_profiled_candidates(
+                                    second_item, diagnostic_depth, "w01-three-probe-second"
+                                )
+                                try:
+                                    for second_candidate in second_stream:
+                                        probe_second += 1
+                                        second_index = second_item[0]
+                                        second_symbol, second_name, second_longitude = second_item[1]
+                                        second_box, second_path = second_candidate
+                                        placed.append(second_box)
+                                        leaders.append(second_path)
+                                        leader_names.append(second_name)
+                                        staged[second_index] = (
+                                            second_symbol, second_name, second_longitude,
+                                            second_box, second_path,
+                                        )
+                                        try:
+                                            third_stream = alignment_profiled_candidates(
+                                                third_item, diagnostic_depth, "w01-three-probe-third"
+                                            )
+                                            try:
+                                                next(third_stream)
+                                                probe_joint += 1
+                                            except StopIteration:
+                                                pass
+                                            finally:
+                                                third_stream.close()
+                                        finally:
+                                            staged.pop(second_index, None)
+                                            leader_names.pop()
+                                            leaders.pop()
+                                            placed.pop()
+                                        if probe_joint or probe_second >= 32:
+                                            break
+                                finally:
+                                    second_stream.close()
+                            finally:
+                                staged.pop(first_index, None)
+                                leader_names.pop()
+                                leaders.pop()
+                                placed.pop()
+                            if probe_joint or probe_first >= 16 or probe_second >= 32:
+                                break
+                    finally:
+                        first_stream.close()
+                    diagnostic_print(
+                        f"Planet Finder {mode}: W01 THREE-BODY PROBE "
+                        f"parent={name} remainder={'+'.join(remainder_names)} "
+                        f"first={probe_first} second={probe_second} joint={probe_joint}",
+                        level=1, flush=True,
+                    )
+
                 # Arc consistency one level earlier: when this candidate leaves
                 # exactly two members in the same alignment blob, prove that
                 # those two have at least one JOINT routed placement.  Separate
