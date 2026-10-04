@@ -1,28 +1,51 @@
-name: AA-Planet Finder Unit Tests
+name: AA-Planet Finder Regression A-B
 
 on:
   workflow_dispatch:
-    inputs:
-      solver_ref:
-        description: 'Solver commit/ref to A/B; blank uses current checkout'
-        required: false
-        default: ''
 
 jobs:
-  test:
+  regression-ab:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: actions/setup-python@v5
         with:
           python-version: '3.x'
       - run: pip install pytest skyfield==1.55
-      - name: Overlay historical solver for regression A/B
-        if: ${{ inputs.solver_ref != '' }}
-        env:
-          SOLVER_REF: ${{ inputs.solver_ref }}
+      - name: Save current solver
+        run: cp tools/planet_finder_search_core.py /tmp/current_search_core.py
+      - name: BEFORE suspected regression
+        continue-on-error: true
         run: |
-          git show "${SOLVER_REF}:tools/planet_finder_search_core.py" > tools/planet_finder_search_core.py
-          echo "Testing solver from ${SOLVER_REF} with the current tight-5 fixture"
-      - name: Run focused W01 tight-5 regression
-        run: PYTHONPATH=tools pytest -q -s tests/test_planet_finder_ultimate_ladders.py::test_w01_tight_alignment_five_only
+          git show 6896c1aebc2438bdf424cceb8ec15a0bd6badb60:tools/planet_finder_search_core.py > tools/planet_finder_search_core.py
+          echo "===== BEFORE 6896c1a ====="
+          PYTHONPATH=tools pytest -q -s tests/test_planet_finder_ultimate_ladders.py::test_w01_tight_alignment_five_only
+          echo $? > /tmp/before_status
+      - name: Record BEFORE status
+        if: always()
+        run: test -f /tmp/before_status || echo 1 > /tmp/before_status
+      - name: AFTER suspected regression
+        continue-on-error: true
+        run: |
+          git show c6f960995932d1c8ad85584678abd13db68e04d0:tools/planet_finder_search_core.py > tools/planet_finder_search_core.py
+          echo "===== AFTER c6f960995 ====="
+          PYTHONPATH=tools pytest -q -s tests/test_planet_finder_ultimate_ladders.py::test_w01_tight_alignment_five_only
+          echo $? > /tmp/after_status
+      - name: Record AFTER status
+        if: always()
+        run: test -f /tmp/after_status || echo 1 > /tmp/after_status
+      - name: Regression verdict
+        if: always()
+        run: |
+          BEFORE=$(cat /tmp/before_status)
+          AFTER=$(cat /tmp/after_status)
+          echo "BEFORE exit=$BEFORE"
+          echo "AFTER  exit=$AFTER"
+          if [ "$BEFORE" = 0 ] && [ "$AFTER" != 0 ]; then
+            echo "REGRESSION PINNED: c6f960995 introduced the tight-5 failure."
+            exit 0
+          fi
+          echo "NOT PINNED: this commit boundary does not show pass-before/fail-after."
+          exit 1
