@@ -1734,34 +1734,14 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                     try:
                         candidate_supported = True
                         for future_item in next_remaining:
-                            # W20 6v7 A/B forensic: Uranus is repeatedly left
-                            # until the final alignment member, where routed
-                            # viability is zero even though cheap geometry has a
-                            # witness.  At diagnostic level 4 only, ask the
-                            # authoritative routed question for Uranus here.
-                            # This is deliberately experimental: lower diagnostic
-                            # levels retain the production geometry-only gate.
-                            future_name = future_item[1][1]
-                            routed_ab = (
-                                int(os.environ.get("PLANET_FINDER_DIAGNOSTIC_LEVEL", "0")) >= 4
-                                and future_name == "Uranus"
-                            )
-                            if routed_ab:
-                                witness_stream = alignment_profiled_candidates(
-                                    future_item, diagnostic_depth, "alignment-support-routed-ab"
-                                )
-                            else:
-                                witness_stream = alignment_geometry_candidates(future_item)
+                            # Cheap necessary-condition support remains sufficient
+                            # here. Authoritative routed viability is already computed
+                            # by MRV; do not pay for the same routed proof twice.
+                            witness_stream = alignment_geometry_candidates(future_item)
                             try:
                                 next(witness_stream)
                             except StopIteration:
                                 candidate_supported = False
-                                if routed_ab:
-                                    diagnostic_print(
-                                        f"Planet Finder {mode}: ALIGNMENT ROUTED SUPPORT A/B REJECT "
-                                        f"chosen={name} future={future_name} depth={depth_in_blob}/{group_size}",
-                                        level=4, flush=True,
-                                    )
                             finally:
                                 witness_stream.close()
                             if not candidate_supported:
