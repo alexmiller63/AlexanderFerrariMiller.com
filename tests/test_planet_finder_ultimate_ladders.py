@@ -409,7 +409,12 @@ def w20_ladder_case(active_names):
     """Keep selected W20 bodies exact and park every other body without creating alignments."""
     active_names = tuple(active_names)
     placed = {name: W20_KNOWN_GOOD[name] for name in active_names}
-    expected = group_names(synthetic_bodies(placed))
+    # alignment_groups() accepts a partial body set; synthetic_bodies() does
+    # not, because it deliberately asserts that all canonical bodies exist.
+    expected = sorted(
+        tuple(item[1] for item in group)
+        for group in alignment_groups([(name, name, lon) for name, lon in placed.items()])
+    )
 
     # Park inactive bodies by proof, not by assumption. A candidate parking
     # longitude is accepted only when it leaves the active alignment
@@ -422,7 +427,11 @@ def w20_ladder_case(active_names):
         for half_degree in range(720):
             lon = half_degree / 2.0
             trial = {**placed, name: lon}
-            if group_names(synthetic_bodies(trial)) == expected:
+            trial_groups = sorted(
+                tuple(item[1] for item in group)
+                for group in alignment_groups([(n, n, x) for n, x in trial.items()])
+            )
+            if trial_groups == expected:
                 found = lon
                 break
         if found is None:
