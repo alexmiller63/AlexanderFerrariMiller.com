@@ -46,7 +46,7 @@ jobs:
               FinderMode.GREEK,
               source,
               target_solutions=5,
-              budget={"max_node_candidates": 200, "max_seconds": 30.0},
+              budget={"max_node_candidates": 200, "max_seconds": 60.0},
               context_label="W17-bisect-venus-exact-54.923",
           )
           assert_valid(result, source)
@@ -58,7 +58,7 @@ jobs:
           ref="$(git rev-parse HEAD)"
           echo "::group::Testing $ref"
           log="$HARNESS_DIR/$ref.log"
-          PLANET_FINDER_DIAGNOSTIC_LEVEL=1 timeout 40s python "$HARNESS_DIR/oracle.py" "$HARNESS_DIR" 2>&1 | tee "$log"
+          PLANET_FINDER_DIAGNOSTIC_LEVEL=1 timeout 70s python "$HARNESS_DIR/oracle.py" "$HARNESS_DIR" 2>&1 | tee "$log"
           rc=${PIPESTATUS[0]}
           # Search success is the regression oracle. Historical versions can
           # spend substantial time in makeup after already finding solution 5.
