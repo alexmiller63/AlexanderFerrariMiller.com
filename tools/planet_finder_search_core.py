@@ -1386,6 +1386,19 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                         f"state-shapes={dict(sorted(stats['state_shapes'].items()))}",
                         level=1, flush=True,
                     )
+        if alignment_final_pair_domain_stats:
+            diagnostic_print(
+                f"Planet Finder {mode}: ALIGNMENT FINAL-PAIR REUSE "
+                + " | ".join(
+                    f"{body}[calls={stats['calls']:,},"
+                    f"unique-domains={len(stats['domains']):,},"
+                    f"repeated-domains={sum(count - 1 for count in stats['domains'].values() if count > 1):,},"
+                    f"unique-candidates={len(stats['candidates']):,},"
+                    f"candidate-reuses={sum(count - 1 for count in stats['candidates'].values() if count > 1):,}]"
+                    for body, stats in sorted(alignment_final_pair_domain_stats.items())
+                ),
+                level=1, flush=True,
+            )
         diagnostic_print(
             f"Planet Finder {mode}: ALIGNMENT PHASE PROFILE "
             + " | ".join(
@@ -1467,6 +1480,17 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
     # Diagnostic only: expose whether routed MRV work is genuinely reusable.
     # These counters never affect ranking, pruning, caching, or candidate order.
     alignment_routed_cache_stats = {}
+    # Diagnostic only: fingerprint final-two routed domains independently of
+    # the upstream state. This measures whether Venus/Uranus candidate geometry
+    # actually repeats across distinct prefixes; it never changes search.
+    alignment_final_pair_domain_stats = {}
+
+    def candidate_geometry_signature(candidate):
+        box, path = candidate
+        return (
+            (round(box.x, 2), round(box.y, 2), round(box.w, 2), round(box.h, 2)),
+            tuple((round(x, 2), round(y, 2)) for x, y in path),
+        )
 
     def routed_cache_stat(body):
         return alignment_routed_cache_stats.setdefault(
@@ -1703,6 +1727,20 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             )
             ranked.append((count, candidate_item))
             rank_viable_counts[probe_name] = (count, cutoff)
+            if len(remaining_items) == 2 and routed_rank and cached_rows is None:
+                pair_stats = alignment_final_pair_domain_stats.setdefault(
+                    probe_name, {"calls": 0, "domains": {}, "candidates": {}}
+                )
+                pair_stats["calls"] += 1
+                domain_sig = tuple(
+                    candidate_geometry_signature(candidate)
+                    for candidate in (collected or ())
+                )
+                pair_stats["domains"][domain_sig] = pair_stats["domains"].get(domain_sig, 0) + 1
+                for candidate_sig in domain_sig:
+                    pair_stats["candidates"][candidate_sig] = (
+                        pair_stats["candidates"].get(candidate_sig, 0) + 1
+                    )
             # An exhausted routed domain of zero is a complete proof that this
             # partial alignment prefix cannot be extended.  Propagate it here,
             # immediately, instead of carrying the zero through tie-breaking
