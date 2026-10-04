@@ -577,6 +577,31 @@ def test_five_candidate_exact_w01_w02_regression(monkeypatch, week, ladder):
     print(f"FIVE-CANDIDATE REGRESSION {week} {level} PASS", flush=True)
 
 
+def test_w01_five_candidate_deep_forensic(monkeypatch):
+    """Single exact W01 run with full search attribution; diagnostic only."""
+    enable_alignment_fix(monkeypatch)
+    monkeypatch.setenv("PLANET_FINDER_DIAGNOSTIC_LEVEL", "4")
+    level, longitudes = W01_LADDER[-1]
+    bodies = synthetic_bodies(longitudes)
+    print(f"W01 FIVE-CANDIDATE DEEP FORENSIC {level} START", flush=True)
+    started = time.monotonic()
+    try:
+        result = layout(
+            FinderMode.GREEK,
+            bodies,
+            target_solutions=5,
+            budget={"max_node_candidates": 2000, "max_seconds": 180.0},
+            context_label="W01-five-candidate-deep-forensic",
+        )
+        assert_complete_valid_layout(result, bodies, FinderMode.GREEK)
+    finally:
+        print(
+            f"W01 FIVE-CANDIDATE DEEP FORENSIC {level} END "
+            f"elapsed={time.monotonic() - started:.3f}s",
+            flush=True,
+        )
+
+
 def test_five_candidate_exact_w36_regression(monkeypatch):
     """Exact W36 Greek regression using the production five-candidate target."""
     enable_alignment_fix(monkeypatch)
