@@ -2,50 +2,36 @@ name: AA- Bisect W17 Historical Solver
 
 on:
   workflow_dispatch:
-    inputs:
-      solver_ref:
-        description: Historical commit SHA to test
-        required: true
-        type: string
 
 jobs:
-  w17:
+  w17-bisect:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 45
     steps:
-      - name: Check out current harness
+      - name: Check out repository history
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Overlay historical Planet Finder solver
-        shell: bash
-        run: |
-          set -euo pipefail
-          ref="${{ inputs.solver_ref }}"
-          git cat-file -e "$ref^{commit}"
-          for path in \
-            tools/planet_finder_search.py \
-            tools/planet_finder_search_core.py \
-            tools/planet_finder_geometry.py
-          do
-            if git cat-file -e "$ref:$path" 2>/dev/null; then
-              git show "$ref:$path" > "$path"
-            fi
-          done
-          echo "Testing historical solver ref $ref"
-          git diff --stat
-
       - name: Install test dependencies
         run: python -m pip install pytest skyfield
 
-      - name: Run fixed W17 alignment-8 oracle
+      - name: Automatically bisect W17 alignment-8 regression
+        shell: bash
         env:
-          PYTHONPATH: tools
-          PLANET_FINDER_DIAGNOSTIC_LEVEL: "1"
+          GOOD_REF: "01485d100e8ed3a09048b8c251d6f2674ad0057c"
+          BAD_REF: "07d9eb72d8ff8198fd793d6b28fac1d40b7eb1cb"
         run: |
-          python - <<'PY'
-          from tests.test_planet_finder_w17_ladder import (
+          set -euo pipefail
+          HARNESS_DIR="$RUNNER_TEMP/w17-bisect-harness"
+          mkdir -p "$HARNESS_DIR"
+          cp tests/test_planet_finder_w17_ladder.py "$HARNESS_DIR/test_planet_finder_w17_ladder.py"
+
+          cat > "$HARNESS_DIR/oracle.py" <<'PY'
+          import sys
+          sys.path.insert(0, "tools")
+          sys.path.insert(0, sys.argv[1])
+          from test_planet_finder_w17_ladder import (
               ALIGNMENT_CHAIN, bodies_for, names, expected_alignment,
               expected_conjunction, assert_valid,
           )
@@ -56,7 +42,6 @@ jobs:
           source = bodies_for(selected)
           assert names(alignment_groups(source)) == expected_alignment(8)
           assert names(conjunction_groups(source)) == expected_conjunction(8)
-          print("W17 HISTORICAL ALIGNMENT-8 START", flush=True)
           result = layout(
               FinderMode.GREEK,
               source,
@@ -65,5 +50,50 @@ jobs:
               context_label="W17-historical-alignment-8",
           )
           assert_valid(result, source)
-          print("W17 HISTORICAL ALIGNMENT-8 PASS", flush=True)
           PY
+
+          cat > "$HARNESS_DIR/test-one.sh" <<'SH'
+          #!/usr/bin/env bash
+          set -uo pipefail
+          ref="$(git rev-parse HEAD)"
+          echo "::group::Testing $ref"
+          PLANET_FINDER_DIAGNOSTIC_LEVEL=1 timeout 40s python "$HARNESS_DIR/oracle.py" "$HARNESS_DIR"
+          rc=$?
+          echo "::endgroup::"
+          if [ "$rc" -eq 0 ]; then
+            echo "PASS $ref"
+            exit 0
+          fi
+          echo "FAIL $ref (rc=$rc)"
+          exit 1
+          SH
+          chmod +x "$HARNESS_DIR/test-one.sh"
+          export HARNESS_DIR
+
+          echo "Verifying known-good endpoint $GOOD_REF"
+          git checkout --detach "$GOOD_REF"
+          "$HARNESS_DIR/test-one.sh"
+
+          echo "Verifying known-bad endpoint $BAD_REF"
+          git checkout --detach "$BAD_REF"
+          if "$HARNESS_DIR/test-one.sh"; then
+            echo "::error::BAD_REF unexpectedly passes; refusing to report a false boundary."
+            exit 2
+          fi
+
+          git bisect reset || true
+          git bisect start "$BAD_REF" "$GOOD_REF"
+          git bisect run "$HARNESS_DIR/test-one.sh" || rc=$?
+          rc=${rc:-0}
+
+          echo "===== BISECT RESULT ====="
+          git bisect log
+          first_bad="$(git rev-parse HEAD)"
+          echo "First bad commit candidate: $first_bad"
+          git show --no-patch --format='%H%n%ci%n%s' "$first_bad"
+
+          # git bisect run returns 0 when it identifies the boundary.
+          if [ "$rc" -ne 0 ]; then
+            echo "::warning::git bisect run exited $rc; inspect the bisect log above."
+            exit "$rc"
+          fi
