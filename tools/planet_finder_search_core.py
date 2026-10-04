@@ -1484,13 +1484,12 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 f"beat={best_count if best_count is not None else 'none'}",
                 level=1, flush=True,
             )
-            # MRV is only a search-order heuristic. Early in a wide
-            # alignment blob, rank on cheap necessary-condition geometry.
-            # Once only two members remain, however, geometry can badly
-            # mis-rank the true constraint because leader routing dominates.
-            # Use authoritative routed viability at that final binary choice
-            # so the actual squeaky wheel is selected.
-            routed_rank = len(remaining_items) <= 2
+            # MRV is only a search-order heuristic.  Keep ranking cheap:
+            # routed domain enumeration at the final pair was spending most of
+            # the W01 clock re-proving Venus route failures.  Exact routed
+            # legality remains authoritative in the DFS and pair-support gate;
+            # ranking itself needs only a deterministic geometry estimate.
+            routed_rank = False
             cached_rows = None
             cache_key = None
             if routed_rank:
@@ -1954,17 +1953,10 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         # for B) and prevents an upstream prefix from descending through a
         # pair whose joint routed domain is empty.
         final_pair = len(remaining_items) == 2
-        # With three members left, one-step routed forward checking is
-        # cheaper than descending into the final-pair MRV just to prove that a
-        # remaining member has no route.  We ask only for the first routed
-        # witness; exhaustion is an authoritative zero-domain proof.  This
-        # changes pruning time, not the set of accepted geometries.
-        three_member_forward_check = len(remaining_items) == 3
         exact_support_filter = (
             bool(next_remaining)
             and (
                 final_pair
-                or three_member_forward_check
                 or (not chosen_capped and chosen_count <= support_limit)
             )
         )
