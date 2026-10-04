@@ -1499,7 +1499,11 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             # geometry-only estimate. Tight-5 showed geometry claiming ~120
             # Venus choices while routed DFS had zero; this isolates whether
             # that false MRV signal is the complexity cliff.
-            routed_rank = len(remaining_items) <= 2
+            # MRV ranking must use the authoritative routed domain at every
+            # alignment depth. The search is budgeted, so a cheaper
+            # geometry-only ranking can change branch order and therefore
+            # change which solution is reached before the budget expires.
+            routed_rank = True
             cached_rows = None
             cache_key = None
             if routed_rank:
