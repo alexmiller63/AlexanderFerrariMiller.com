@@ -19,8 +19,8 @@ jobs:
       - name: Bisect exact W17 five-candidate regression
         shell: bash
         env:
-          GOOD_REF: "740665fc8821a3b2af149009cd9538a263761572"
-          BAD_REF: "4bff68f7a735785857fa2c7579f3571d310174d2"
+          GOOD_REF: "4bff68f7a735785857fa2c7579f3571d310174d2"
+          BAD_REF: "2e96878e4011101317ce8ccfd8c5a5844da7b388"
         run: |
           set -euo pipefail
           HARNESS_DIR="$RUNNER_TEMP/w17-bisect-harness"
