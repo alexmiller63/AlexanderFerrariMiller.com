@@ -1994,12 +1994,43 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 # redundant parent-pair proof consumed nearly the entire wall
                 # clock after the analogous triple proof was removed.
 
-                # Do not probe every remaining member for a one-candidate
-                # same-blob witness before descending.  The exact alignment DFS
-                # immediately searches those members with the same routed
-                # viability rules.  On W01 tight-5 this forward witness layer
-                # became the dominant cost (especially Venus) while duplicating
-                # work the DFS must perform anyway.
+                # Conservative same-blob forward checking.  After this
+                # candidate is staged, every remaining alignment member must
+                # still have at least one authoritative routed placement.
+                # Stop at the first witness; only an exhausted zero domain
+                # rejects the candidate, so capped/partial searches are never
+                # treated as contradictions.  Check the tightest parent-state
+                # domains first to find cheap contradictions early.
+                if alignment_forward_ok and next_remaining:
+                    forward_items = sorted(
+                        next_remaining,
+                        key=lambda future_item: (
+                            rank_viable_counts.get(
+                                future_item[1][1],
+                                (budget["max_node_candidates"] + 1, True),
+                            )[0],
+                            future_item[0],
+                        ),
+                    )
+                    for future_item in forward_items:
+                        future_name = future_item[1][1]
+                        witness_stream = alignment_profiled_candidates(
+                            future_item, diagnostic_depth, "alignment-forward"
+                        )
+                        try:
+                            next(witness_stream)
+                        except StopIteration:
+                            diagnostic_print(
+                                f"Planet Finder {mode}: ALIGNMENT FORWARD ZERO "
+                                f"group={group_index + 1} member={name} "
+                                f"future={future_name}",
+                                level=1, flush=True,
+                            )
+                            alignment_forward_ok = False
+                        finally:
+                            witness_stream.close()
+                        if not alignment_forward_ok:
+                            break
 
                 if alignment_forward_ok:
                     # Necessary-condition gate across the DFS boundary: after
