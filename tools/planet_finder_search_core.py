@@ -1452,6 +1452,10 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
     # bit so repeated MRV probes never mistake a capped prefix for an exact
     # domain, and DFS can reuse the routed work ranking already paid for.
     alignment_routed_domain_cache = {}
+    # Forward checking needs only an exact existence fact. Keep that fact
+    # separate from routed domains so a one-witness probe can never truncate
+    # the candidate stream later consumed by MRV/DFS.
+    alignment_routed_existence_cache = {}
     # Diagnostic only: expose whether routed MRV work is genuinely reusable.
     # These counters never affect ranking, pruning, caching, or candidate order.
     alignment_routed_cache_stats = {}
@@ -2012,14 +2016,32 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                             future_item[0],
                         ),
                     )
+                    child_state_signature = alignment_state_signature()
                     for future_item in forward_items:
                         future_name = future_item[1][1]
-                        witness_stream = alignment_profiled_candidates(
-                            future_item, diagnostic_depth, "alignment-forward"
-                        )
-                        try:
-                            next(witness_stream)
-                        except StopIteration:
+                        existence_key = (future_item[0], child_state_signature)
+                        has_witness = alignment_routed_existence_cache.get(existence_key)
+                        if has_witness is None:
+                            # A complete routed domain, when already available,
+                            # answers the existence question for free. Never put
+                            # existence-only prefixes into the domain cache.
+                            cached_domain = alignment_routed_domain_cache.get(existence_key)
+                            if cached_domain is not None and not cached_domain[1]:
+                                has_witness = bool(cached_domain[0])
+                            else:
+                                witness_stream = alignment_profiled_candidates(
+                                    future_item, diagnostic_depth, "alignment-forward"
+                                )
+                                try:
+                                    next(witness_stream)
+                                except StopIteration:
+                                    has_witness = False
+                                else:
+                                    has_witness = True
+                                finally:
+                                    witness_stream.close()
+                            alignment_routed_existence_cache[existence_key] = has_witness
+                        if not has_witness:
                             diagnostic_print(
                                 f"Planet Finder {mode}: ALIGNMENT FORWARD ZERO "
                                 f"group={group_index + 1} member={name} "
@@ -2027,9 +2049,6 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                                 level=1, flush=True,
                             )
                             alignment_forward_ok = False
-                        finally:
-                            witness_stream.close()
-                        if not alignment_forward_ok:
                             break
                 # Do not run the ordinary-body pair proof here.  It is a
                 # speculative look-ahead across the alignment/ordinary boundary;
