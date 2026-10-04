@@ -45,6 +45,37 @@ def star_index(stars):
         if s.bayer and s.con:
             d.setdefault(s.ref,s);p=s.bayer[:3].title()
             if p in GREEK_BAYER:d.setdefault(f"{p} {s.con}",s)
+
+    # HYG occasionally omits a Hipparcos identifier even though the star itself
+    # is present.  Reuse the repository-owned Hipparcos figure-star coordinates
+    # to recover those identities without duplicating or inventing star data.
+    figure_stars=Path(__file__).resolve().parent/"reference-data"/"hipparcos"/"figure-stars.csv"
+    if figure_stars.exists():
+        with figure_stars.open("r",encoding="utf-8-sig",newline="") as h:
+            for r in csv.DictReader(h):
+                hip=(r.get("hip") or "").strip()
+                if not hip or f"HIP {hip}" in d:continue
+                try:
+                    ra=float(r["ra_h"])*15.0
+                    dec=float(r["dec_deg"])
+                except (KeyError,TypeError,ValueError):
+                    continue
+                cos_dec=max(abs(math.cos(math.radians(dec))),1e-6)
+                nearest=min(
+                    stars,
+                    key=lambda s:math.hypot(
+                        ((s.ra_deg-ra+180)%360-180)*cos_dec,
+                        s.dec_deg-dec,
+                    ),
+                    default=None,
+                )
+                if nearest is None:continue
+                distance=math.hypot(
+                    ((nearest.ra_deg-ra+180)%360-180)*cos_dec,
+                    nearest.dec_deg-dec,
+                )
+                if distance<=1/60:
+                    d[f"HIP {hip}"]=nearest
     return d
 
 def sep(s,ra,dec):
