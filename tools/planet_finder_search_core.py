@@ -1805,7 +1805,63 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 )
                 mercury_final_blocker = None
                 alignment_forward_ok = True
-                for future_item in next_remaining:
+
+                # Arc consistency one level earlier: when this candidate leaves
+                # exactly two members in the same alignment blob, prove that
+                # those two have at least one JOINT routed placement.  Separate
+                # one-member witnesses are insufficient: each member can be
+                # routable against this prefix while every A/B combination is
+                # impossible.  Adding later placements cannot repair such a
+                # zero joint domain, so rejecting the parent candidate is safe.
+                if len(next_remaining) == 2:
+                    pair_left, pair_right = next_remaining
+                    left_index = pair_left[0]
+                    left_symbol, left_name, left_longitude = pair_left[1]
+                    joint_support = False
+                    left_stream = alignment_profiled_candidates(
+                        pair_left, diagnostic_depth, "alignment-parent-pair-left"
+                    )
+                    try:
+                        for left_candidate in left_stream:
+                            left_box, left_path = left_candidate
+                            placed.append(left_box)
+                            leaders.append(left_path)
+                            leader_names.append(left_name)
+                            staged[left_index] = (
+                                left_symbol, left_name, left_longitude,
+                                left_box, left_path,
+                            )
+                            try:
+                                right_stream = alignment_profiled_candidates(
+                                    pair_right,
+                                    diagnostic_depth,
+                                    "alignment-parent-pair-right",
+                                )
+                                try:
+                                    next(right_stream)
+                                    joint_support = True
+                                except StopIteration:
+                                    pass
+                                finally:
+                                    right_stream.close()
+                            finally:
+                                staged.pop(left_index, None)
+                                leader_names.pop()
+                                leaders.pop()
+                                placed.pop()
+                            if joint_support:
+                                break
+                    finally:
+                        left_stream.close()
+                    if not joint_support:
+                        alignment_forward_ok = False
+                        diagnostic_print(
+                            f"Planet Finder {mode}: ALIGNMENT PARENT PAIR DEAD "
+                            f"parent={name} pair={left_name}+{pair_right[1][1]}",
+                            level=1, flush=True,
+                        )
+
+                for future_item in next_remaining if alignment_forward_ok else []:
                     future_name = future_item[1][1]
                     witness_started = time.monotonic()
                     witness_before = predfs_rejection_snapshot()
