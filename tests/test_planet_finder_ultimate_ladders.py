@@ -38,6 +38,22 @@ W36_KNOWN_GOOD = {
     "Pluto": 303.5330419654775,
 }
 
+W20_KNOWN_GOOD = {
+    "Sun": 50.32908119471463,
+    "Moon": 333.38280082377736,
+    "Mercury": 46.0328197375976,
+    "Venus": 80.3537734274882,
+    "Mars": 24.000974454504245,
+    "Jupiter": 110.40411742463687,
+    "Saturn": 10.238716950485333,
+    "Ceres": 52.61678572857855,
+    "Uranus": 60.84139480860535,
+    "Neptune": 3.5588479429594253,
+    "Pluto": 305.50506059111865,
+}
+
+W20_ALIGNMENT = ("Neptune", "Saturn", "Mars", "Mercury", "Sun", "Ceres", "Uranus", "Venus")
+
 BASE_URANUS = {**W36_KNOWN_GOOD, "Uranus": 250, "Pluto": 300}
 
 W36_URANUS_LADDER = [
@@ -387,6 +403,93 @@ def test_w36_latin_progressive_alignment_ladder(monkeypatch):
         print(f"LATIN PROGRESSIVE {label}: PASS", flush=True)
 
     print(f"LATIN PROGRESSIVE SUMMARY passed={passed}", flush=True)
+
+
+def w20_ladder_case(active_names):
+    """Keep selected W20 bodies exact and park every other body without creating alignments."""
+    active_names = tuple(active_names)
+    placed = {name: W20_KNOWN_GOOD[name] for name in active_names}
+    expected = group_names(synthetic_bodies(placed))
+
+    # Park inactive bodies by proof, not by assumption. A candidate parking
+    # longitude is accepted only when it leaves the active alignment
+    # classification exactly unchanged, so accidental alignments cannot enter
+    # a ladder rung.
+    for name in W20_KNOWN_GOOD:
+        if name in placed:
+            continue
+        found = None
+        for half_degree in range(720):
+            lon = half_degree / 2.0
+            trial = {**placed, name: lon}
+            if group_names(synthetic_bodies(trial)) == expected:
+                found = lon
+                break
+        if found is None:
+            raise AssertionError(
+                f"cannot park {name} without changing W20 active groups {expected}"
+            )
+        placed[name] = found
+
+    actual = group_names(synthetic_bodies(placed))
+    assert actual == expected, (
+        f"W20 parking created accidental alignment: expected={expected} actual={actual}"
+    )
+    return placed, expected
+
+
+def test_w20_latin_progressive_alignment_ladder(monkeypatch):
+    """Grow the exact W20 alignment until the Latin search complexity cliff appears."""
+    enable_alignment_fix(monkeypatch)
+    monkeypatch.setenv("PLANET_FINDER_DIAGNOSTIC_LEVEL", "2")
+
+    stages = []
+    for size in range(2, len(W20_ALIGNMENT) + 1):
+        active = W20_ALIGNMENT[:size]
+        longitudes, expected = w20_ladder_case(active)
+        stages.append((f"alignment-{size}", longitudes, expected, 20.0 if size < 6 else 45.0))
+
+    # Once the eight-body chain is exact, restore the independent Pluto-Moon
+    # pair. Jupiter remains safely parked for this rung.
+    active = W20_ALIGNMENT + ("Pluto", "Moon")
+    longitudes, expected = w20_ladder_case(active)
+    stages.append(("plus-pluto-moon", longitudes, expected, 90.0))
+
+    # Final rung is the production W20 geometry that exhausted 360 seconds.
+    stages.append((
+        "exact-W20",
+        W20_KNOWN_GOOD,
+        group_names(synthetic_bodies(W20_KNOWN_GOOD)),
+        360.0,
+    ))
+
+    passed = []
+    for label, longitudes, expected_groups, seconds in stages:
+        bodies = synthetic_bodies(longitudes)
+        actual_groups = group_names(bodies)
+        expected_groups = sorted(expected_groups)
+        print(
+            f"W20 LATIN LADDER {label}: groups={actual_groups} budget={seconds}s START",
+            flush=True,
+        )
+        # This is deliberately before layout(): a malformed rung must fail as
+        # a fixture error instead of producing a misleading solver result.
+        assert actual_groups == expected_groups, (
+            f"W20 ACCIDENTAL ALIGNMENT {label}: "
+            f"expected={expected_groups} actual={actual_groups}"
+        )
+        result = layout(
+            FinderMode.LATIN,
+            bodies,
+            target_solutions=1,
+            budget={"max_node_candidates": 200, "max_seconds": seconds},
+            context_label=f"W20-latin-progressive-{label}",
+        )
+        assert_complete_valid_layout(result, bodies, FinderMode.LATIN)
+        passed.append(label)
+        print(f"W20 LATIN LADDER {label}: PASS", flush=True)
+
+    print(f"W20 LATIN LADDER COMPLETE passed={passed}", flush=True)
 
 
 @pytest.mark.parametrize("mode", MODES)
