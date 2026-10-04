@@ -1552,10 +1552,27 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                     f"straight-conflict={straight_conflict:,},"
                     f"conflict-pct={(100.0 * straight_conflict / geometry_count) if geometry_count else 0.0:.1f}]"
                 )
+            # Shadow the pre-fix geometry-only MRV estimate without changing
+            # the authoritative routed ranking.  This tells a focused regression
+            # run exactly where the restored routed-MRV fix changes the choice.
+            shadow_pressure = {}
+            shadow_probe = alignment_geometry_candidates(candidate_item, shadow_pressure)
+            shadow_count = 0
+            shadow_cutoff = False
+            try:
+                for _shadow_candidate in shadow_probe:
+                    shadow_count += 1
+                    if shadow_count >= budget["max_node_candidates"]:
+                        shadow_cutoff = True
+                        break
+            finally:
+                shadow_probe.close()
             diagnostic_print(
                 f"Planet Finder {mode}: ALIGNMENT RANK PROBE END "
                 f"group={group_index + 1} depth={depth_in_blob}/{group_size} "
-                f"body={probe_name} viable={count:,}{'+' if cutoff else ''} elapsed={probe_elapsed:.3f}s"
+                f"body={probe_name} viable={count:,}{'+' if cutoff else ''} "
+                f"pre-fix-geometry={shadow_count:,}{'+' if shadow_cutoff else ''} "
+                f"delta={shadow_count - count:+,} elapsed={probe_elapsed:.3f}s"
                 f"{pressure_text} "
                 + " ".join(
                     f"{key}={value:,}" for key, value in probe_delta.items()
