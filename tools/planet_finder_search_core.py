@@ -1734,17 +1734,12 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 for candidate_item in ()
             )
         min_viable = min(row[0] for row in ranked)
-        # In the final three alignment members, a one-candidate MRV band can
-        # overcommit to an upstream member whose exact domain is only barely
-        # smaller than two beat-limited downstream domains.  W17 showed that
-        # choosing that upstream member (Ceres 15 versus Venus/Uranus 17+)
-        # creates hundreds of prefixes before the downstream pair contradiction
-        # is exposed.  Treat the branch-and-bound edge (best + 2) as tied only
-        # at this final-three boundary; elsewhere preserve the established
-        # one-candidate band.
-        near_tie_margin = 2 if len(remaining_items) == 3 else 1
+        # Counts within one candidate are deliberately treated as tied.
+        # Keep this narrow: widening the band at the final-three boundary made
+        # W17 choose Uranus before Ceres and forced Ceres to be rerouted for
+        # every Uranus sibling (about 15s versus about 1.2s with Ceres first).
         near_tied = [
-            row for row in ranked if row[0] <= min_viable + near_tie_margin
+            row for row in ranked if row[0] <= min_viable + 1
         ]
         # Zero is a proof of failure and must always win. Otherwise all
         # members inside the near-tie band are deliberately treated as tied,
