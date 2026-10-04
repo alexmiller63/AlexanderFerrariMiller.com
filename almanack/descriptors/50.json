@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "id": "50",
+  "type": "star",
+  "name": "Denebola",
+  "summary": "bright star in Leo used as a fixed-sky reference",
+  "representation": {
+    "machine": "./50.json",
+    "human_source": "summary",
+    "human": "/stories/baseline/50.html"
+  },
+  "constellation_abbreviation": "Leo",
+  "constellation": "Leo",
+  "position": {
+    "ra_deg": 177.264945,
+    "dec_deg": 14.57206,
+    "ecliptic_longitude_deg": 171.617562,
+    "ecliptic_latitude_deg": 12.26689
+  },
+  "representative_visual_magnitude": 2.14,
+  "guiding_asterisms": [
+    {
+      "id": "asterism-spring-triangle",
+      "name": "Spring Triangle",
+      "relationship": "visual-member",
+      "provenance": {
+        "source": "Sky & Telescope",
+        "source_url": "https://skyandtelescope.org/astronomy-news/observing-news/this-weeks-sky-at-a-glance-may-1-9-3/",
+        "source_role": "verification",
+        "supports": "visual-membership"
+      }
+    },
+    {
+      "id": "asterism-great-diamond",
+      "name": "Great Diamond",
+      "relationship": "visual-member",
+      "provenance": {
+        "source": "NASA",
+        "source_url": "https://science.nasa.gov/solar-system/skywatching/night-sky-network/connecting-the-dots-with-asterisms/",
+        "source_role": "verification",
+        "supports": "visual-membership"
+      }
+    }
+  ]
+}

@@ -1,0 +1,695 @@
+{
+  "week": "W19",
+  "title": "Observer’s guide for ISO 2026-W19",
+  "status": "generated",
+  "planetary_source": "weekly-ephemeris-2026.csv",
+  "planetary_coordinate": "geocentric tropical ecliptic longitude; Monday 00:00 UTC",
+  "fixed_sky": [
+    {
+      "fixed_object_id": 50,
+      "type": "star",
+      "name": "Denebola",
+      "constellation": "Leo"
+    },
+    {
+      "fixed_object_id": 934,
+      "type": "star",
+      "name": "Zavijava",
+      "constellation": "Vir"
+    },
+    {
+      "fixed_object_id": 935,
+      "type": "star",
+      "name": "β Hya",
+      "constellation": "Hya"
+    },
+    {
+      "fixed_object_id": 51,
+      "type": "star",
+      "name": "Phecda",
+      "constellation": "UMa"
+    },
+    {
+      "fixed_object_id": 242,
+      "type": "deep-sky",
+      "name": "M109"
+    },
+    {
+      "fixed_object_id": 940,
+      "type": "star",
+      "name": "Alchiba",
+      "constellation": "Crv"
+    }
+  ],
+  "planet_relations": [
+    {
+      "kind": "planet-star-longitude",
+      "planet": "Venus",
+      "planet_longitude_deg": 71.917,
+      "star": "Aldebaran",
+      "constellation": "Tau",
+      "star_ecliptic_longitude_deg": 69.789,
+      "star_ecliptic_latitude_deg": -5.467,
+      "longitude_separation_deg": 2.1,
+      "basis": "Star Almanack preserved geocentric tropical ecliptic longitude"
+    }
+  ],
+  "note": "ISO 2026-W19 runs from May 4 through May 10. Venus is about 2.1° in ecliptic longitude from Aldebaran in Taurus.\n\n**Naked eye:** 🌗 Last Quarter — 21:10:28 UTC. Moderate moonlight makes timing and local sky position important for faint targets. Use Denebola, Phecda as the week’s fixed-sky framework.\n\n**Planets:** Venus is about 2.1° in ecliptic longitude from Aldebaran in Taurus.\n\n**Binoculars:** Favor Zavijava, β Hya, Alchiba; wide fields help connect the charted geometry to the real sky.\n\n**Small telescope:** Concentrate on M109. Increase magnification only after the target and surrounding pattern are secure.\n\n**Substantial telescope:** No fixed-sky Calendar object is classified as requiring a substantial telescope this week.\n\n",
+  "descriptors": [
+    {
+      "schema_version": 1,
+      "id": "1249",
+      "type": "solar-system-object",
+      "name": "Sun",
+      "summary": "Solar-System object tracked by the Star Almanack weekly ephemeris and Planet Finder",
+      "representation": {
+        "machine": "./1249.json",
+        "human_source": "summary"
+      }
+    },
+    {
+      "schema_version": 1,
+      "id": "1250",
+      "type": "planet",
+      "name": "Mercury",
+      "summary": "Solar-System object tracked by the Star Almanack weekly ephemeris and Planet Finder",
+      "representation": {
+        "machine": "./1250.json",
+        "human_source": "summary"
+      }
+    },
+    {
+      "schema_version": 1,
+      "id": "1251",
+      "type": "planet",
+      "name": "Venus",
+      "summary": "Solar-System object tracked by the Star Almanack weekly ephemeris and Planet Finder",
+      "representation": {
+        "machine": "./1251.json",
+        "human_source": "summary"
+      }
+    },
+    {
+      "schema_version": 1,
+      "id": "1252",
+      "type": "planet",
+      "name": "Earth",
+      "summary": "Solar-System object tracked by the Star Almanack weekly ephemeris and Planet Finder",
+      "representation": {
+        "machine": "./1252.json",
+        "human_source": "summary"
+      }
+    },
+    {
+      "schema_version": 1,
+      "id": "1253",
+      "type": "solar-system-object",
+      "name": "Moon",
+      "summary": "Solar-System object tracked by the Star Almanack weekly ephemeris and Planet Finder",
+      "representation": {
+        "machine": "./1253.json",
+        "human_source": "summary"
+      }
+    },
+    {
+      "schema_version": 1,
+      "id": "1254",
+      "type": "planet",
+      "name": "Mars",
+      "summary": "Solar-System object tracked by the Star Almanack weekly ephemeris and Planet Finder",
+      "representation": {
+        "machine": "./1254.json",
+        "human_source": "summary"
+      }
+    },
+    {
+      "schema_version": 1,
+      "id": "1255",
+      "type": "solar-system-object",
+      "name": "Ceres",
+      "summary": "Solar-System object tracked by the Star Almanack weekly ephemeris and Planet Finder",
+      "representation": {
+        "machine": "./1255.json",
+        "human_source": "summary"
+      }
+    },
+    {
+      "schema_version": 1,
+      "id": "1256",
+      "type": "planet",
+      "name": "Jupiter",
+      "summary": "Solar-System object tracked by the Star Almanack weekly ephemeris and Planet Finder",
+      "representation": {
+        "machine": "./1256.json",
+        "human_source": "summary"
+      }
+    },
+    {
+      "schema_version": 1,
+      "id": "1257",
+      "type": "planet",
+      "name": "Saturn",
+      "summary": "Solar-System object tracked by the Star Almanack weekly ephemeris and Planet Finder",
+      "representation": {
+        "machine": "./1257.json",
+        "human_source": "summary"
+      }
+    },
+    {
+      "schema_version": 1,
+      "id": "1258",
+      "type": "planet",
+      "name": "Uranus",
+      "summary": "Solar-System object tracked by the Star Almanack weekly ephemeris and Planet Finder",
+      "representation": {
+        "machine": "./1258.json",
+        "human_source": "summary"
+      }
+    },
+    {
+      "schema_version": 1,
+      "id": "1259",
+      "type": "planet",
+      "name": "Neptune",
+      "summary": "Solar-System object tracked by the Star Almanack weekly ephemeris and Planet Finder",
+      "representation": {
+        "machine": "./1259.json",
+        "human_source": "summary"
+      }
+    },
+    {
+      "schema_version": 1,
+      "id": "1260",
+      "type": "solar-system-object",
+      "name": "Pluto",
+      "summary": "Solar-System object tracked by the Star Almanack weekly ephemeris and Planet Finder",
+      "representation": {
+        "machine": "./1260.json",
+        "human_source": "summary"
+      }
+    },
+    {
+      "schema_version": 1,
+      "id": "50",
+      "type": "star",
+      "name": "Denebola",
+      "summary": "bright star in Leo used as a fixed-sky reference",
+      "representation": {
+        "machine": "./50.json",
+        "human_source": "summary",
+        "human": "/stories/baseline/50.html"
+      },
+      "constellation_abbreviation": "Leo",
+      "constellation": "Leo",
+      "position": {
+        "ra_deg": 177.264945,
+        "dec_deg": 14.57206,
+        "ecliptic_longitude_deg": 171.617562,
+        "ecliptic_latitude_deg": 12.26689
+      },
+      "representative_visual_magnitude": 2.14,
+      "guiding_asterisms": [
+        {
+          "id": "asterism-spring-triangle",
+          "name": "Spring Triangle",
+          "relationship": "visual-member",
+          "provenance": {
+            "source": "Sky & Telescope",
+            "source_url": "https://skyandtelescope.org/astronomy-news/observing-news/this-weeks-sky-at-a-glance-may-1-9-3/",
+            "source_role": "verification",
+            "supports": "visual-membership"
+          }
+        },
+        {
+          "id": "asterism-great-diamond",
+          "name": "Great Diamond",
+          "relationship": "visual-member",
+          "provenance": {
+            "source": "NASA",
+            "source_url": "https://science.nasa.gov/solar-system/skywatching/night-sky-network/connecting-the-dots-with-asterisms/",
+            "source_role": "verification",
+            "supports": "visual-membership"
+          }
+        }
+      ]
+    },
+    {
+      "schema_version": 1,
+      "id": "1318",
+      "type": "constellation",
+      "name": "Leo",
+      "summary": "constellation used by Star Almanack to organize fixed-sky objects and finder geometry",
+      "representation": {
+        "machine": "./1318.json",
+        "human_source": "summary"
+      },
+      "abbreviation": "Leo"
+    },
+    {
+      "schema_version": 1,
+      "id": "934",
+      "type": "star",
+      "name": "Zavijava",
+      "summary": "bright star in Virgo used as a fixed-sky reference",
+      "representation": {
+        "machine": "./934.json",
+        "human_source": "summary",
+        "human": "/stories/baseline/934.html"
+      },
+      "constellation_abbreviation": "Vir",
+      "constellation": "Virgo"
+    },
+    {
+      "schema_version": 1,
+      "id": "1359",
+      "type": "constellation",
+      "name": "Virgo",
+      "summary": "constellation used by Star Almanack to organize fixed-sky objects and finder geometry",
+      "representation": {
+        "machine": "./1359.json",
+        "human_source": "summary"
+      },
+      "abbreviation": "Vir"
+    },
+    {
+      "schema_version": 1,
+      "id": "935",
+      "type": "star",
+      "name": "β Hya",
+      "summary": "bright star in Hydra used as a fixed-sky reference",
+      "representation": {
+        "machine": "./935.json",
+        "human_source": "summary",
+        "human": "/stories/baseline/935.html"
+      },
+      "constellation_abbreviation": "Hya",
+      "constellation": "Hydra"
+    },
+    {
+      "schema_version": 1,
+      "id": "1314",
+      "type": "constellation",
+      "name": "Hydra",
+      "summary": "constellation used by Star Almanack to organize fixed-sky objects and finder geometry",
+      "representation": {
+        "machine": "./1314.json",
+        "human_source": "summary"
+      },
+      "abbreviation": "Hya"
+    },
+    {
+      "schema_version": 1,
+      "id": "51",
+      "type": "star",
+      "name": "Phecda",
+      "summary": "bright star in Ursa Major used as a fixed-sky reference",
+      "representation": {
+        "machine": "./51.json",
+        "human_source": "summary",
+        "human": "/stories/baseline/51.html"
+      },
+      "constellation_abbreviation": "UMa",
+      "constellation": "Ursa Major",
+      "position": {
+        "ra_deg": 178.45752,
+        "dec_deg": 53.69476,
+        "ecliptic_longitude_deg": 150.47685,
+        "ecliptic_latitude_deg": 47.141465
+      },
+      "representative_visual_magnitude": 2.41,
+      "guiding_asterisms": [
+        {
+          "id": "asterism-big-dipper",
+          "name": "Big Dipper",
+          "relationship": "visual-member",
+          "provenance": {
+            "source": "Astronomical League",
+            "source_url": "https://www.astroleague.org/wp-content/uploads/2025/12/Asterism_List_20251223.pdf",
+            "source_role": "verification",
+            "supports": "visual-membership"
+          }
+        }
+      ]
+    },
+    {
+      "schema_version": 1,
+      "id": "1356",
+      "type": "constellation",
+      "name": "Ursa Major",
+      "summary": "constellation used by Star Almanack to organize fixed-sky objects and finder geometry",
+      "representation": {
+        "machine": "./1356.json",
+        "human_source": "summary"
+      },
+      "abbreviation": "UMa"
+    },
+    {
+      "schema_version": 1,
+      "id": "242",
+      "type": "deep-sky-object",
+      "name": "M109",
+      "summary": "deep-sky object selected as a weekly fixed-sky observing target",
+      "representation": {
+        "machine": "./242.json",
+        "human_source": "summary",
+        "human": "/stories/baseline/242.html"
+      },
+      "catalog_name": "M109",
+      "object_type": "deep-sky object",
+      "source_label": "M109"
+    },
+    {
+      "schema_version": 1,
+      "id": "940",
+      "type": "star",
+      "name": "Alchiba",
+      "summary": "bright star in Corvus used as a fixed-sky reference",
+      "representation": {
+        "machine": "./940.json",
+        "human_source": "summary",
+        "human": "/stories/baseline/940.html"
+      },
+      "constellation_abbreviation": "Crv",
+      "constellation": "Corvus"
+    },
+    {
+      "schema_version": 1,
+      "id": "1300",
+      "type": "constellation",
+      "name": "Corvus",
+      "summary": "constellation used by Star Almanack to organize fixed-sky objects and finder geometry",
+      "representation": {
+        "machine": "./1300.json",
+        "human_source": "summary"
+      },
+      "abbreviation": "Crv"
+    },
+    {
+      "schema_version": 1,
+      "id": "25",
+      "type": "star",
+      "name": "Aldebaran",
+      "summary": "bright star in Taurus used as a fixed-sky reference",
+      "representation": {
+        "machine": "./25.json",
+        "human_source": "summary",
+        "human": "/stories/baseline/25.html"
+      },
+      "constellation_abbreviation": "Tau",
+      "constellation": "Taurus",
+      "position": {
+        "ra_deg": 68.980155,
+        "dec_deg": 16.509301,
+        "ecliptic_longitude_deg": 69.789181,
+        "ecliptic_latitude_deg": -5.467327
+      },
+      "representative_visual_magnitude": 0.87,
+      "guiding_asterisms": [
+        {
+          "id": "asterism-hyades-v-of-taurus",
+          "name": "Hyades / V of Taurus",
+          "relationship": "visual-member",
+          "provenance": {
+            "source": "Astronomy Magazine",
+            "source_url": "https://www.astronomy.com/astronomy-for-beginners/asterisms-hunt-the-night-skys-faux-constellations/",
+            "source_role": "verification",
+            "supports": "visual-membership"
+          }
+        },
+        {
+          "id": "asterism-winter-hexagon-winter-circle",
+          "name": "Winter Hexagon / Winter Circle",
+          "relationship": "visual-member",
+          "provenance": {
+            "source": "NASA",
+            "source_url": "https://science.nasa.gov/solar-system/skywatching/night-sky-network/connecting-the-dots-with-asterisms/",
+            "source_role": "verification",
+            "supports": "visual-membership"
+          }
+        },
+        {
+          "id": "asterism-orion-s-belt",
+          "name": "Orion's Belt",
+          "relationship": "star-hop-anchor",
+          "relationship_route_ids": [
+            "orions-belt-aldebaran"
+          ],
+          "provenance": {
+            "source": "NASA",
+            "source_url": "https://science.nasa.gov/image-article/apod-2025-november-20-alnitak-alnilam-mintaka/",
+            "source_role": "verification",
+            "supports": "asterism-definition"
+          }
+        }
+      ],
+      "star_hops": [
+        {
+          "id": "orions-belt-aldebaran",
+          "target_type": "star",
+          "target": "Aldebaran",
+          "steps": [
+            "Orion's Belt",
+            "Aldebaran",
+            "Hyades / V of Taurus"
+          ],
+          "instruction": "Use Orion's three Belt stars as a pointer westward toward orange Aldebaran and the Hyades V.",
+          "instruction_authorship": "Star Almanack original wording",
+          "provenance": {
+            "source": "NASA Night Sky Network",
+            "source_url": "https://science.nasa.gov/solar-system/skywatching/night-sky-network/spot-the-young-stars-of-the-hyades-and-pleiades/",
+            "source_role": "verification",
+            "supports": "star-hop-method"
+          }
+        }
+      ]
+    },
+    {
+      "schema_version": 1,
+      "id": "1351",
+      "type": "constellation",
+      "name": "Taurus",
+      "summary": "constellation used by Star Almanack to organize fixed-sky objects and finder geometry",
+      "representation": {
+        "machine": "./1351.json",
+        "human_source": "summary"
+      },
+      "abbreviation": "Tau"
+    },
+    {
+      "schema_version": 1,
+      "id": "ecliptic-longitude",
+      "type": "observing-concept",
+      "name": "ecliptic longitude",
+      "summary": "angular position measured along the ecliptic, used here for conservative weekly Solar-System comparisons",
+      "representation": {
+        "machine": "./ecliptic-longitude.json",
+        "human_source": "summary"
+      }
+    },
+    {
+      "schema_version": 1,
+      "id": "zodiac",
+      "type": "observing-concept",
+      "name": "zodiac",
+      "summary": "the band of constellations along the ecliptic used to orient Solar-System objects",
+      "representation": {
+        "machine": "./zodiac.json",
+        "human_source": "summary"
+      }
+    }
+  ],
+  "calendar_fixed_object_ids": [
+    50,
+    934,
+    935,
+    51,
+    242,
+    940
+  ],
+  "story_candidates": [
+    {
+      "fixed_object_id": 50,
+      "collection": "baseline",
+      "hed": "Denebola",
+      "dek": "Denebola is a charted star in Leo selected by the Calendar as part of this week’s fixed-sky observing framework.",
+      "body": "Why it is here: Denebola is a charted star in Leo selected by the Calendar as part of this week’s fixed-sky observing framework.\n\nHow to find it: Use the charted figure of Leo and its labeled reference stars to identify the field.",
+      "url": "/stories/baseline/50.html",
+      "artwork": null
+    },
+    {
+      "fixed_object_id": 934,
+      "collection": "baseline",
+      "hed": "Zavijava",
+      "dek": "Zavijava is a charted star in Vir selected by the Calendar as part of this week’s fixed-sky observing framework.",
+      "body": "Why it is here: Zavijava is a charted star in Vir selected by the Calendar as part of this week’s fixed-sky observing framework.\n\nHow to find it: Use the charted figure of Vir and its labeled reference stars to identify the field.",
+      "url": "/stories/baseline/934.html",
+      "artwork": null
+    },
+    {
+      "fixed_object_id": 935,
+      "collection": "baseline",
+      "hed": "β Hya",
+      "dek": "β Hya is a charted star in Hya selected by the Calendar as part of this week’s fixed-sky observing framework.",
+      "body": "Why it is here: β Hya is a charted star in Hya selected by the Calendar as part of this week’s fixed-sky observing framework.\n\nHow to find it: Use the charted figure of Hya and its labeled reference stars to identify the field.",
+      "url": "/stories/baseline/935.html",
+      "artwork": null
+    },
+    {
+      "fixed_object_id": 51,
+      "collection": "baseline",
+      "hed": "Phecda",
+      "dek": "Phecda is a charted star in UMa selected by the Calendar as part of this week’s fixed-sky observing framework.",
+      "body": "Why it is here: Phecda is a charted star in UMa selected by the Calendar as part of this week’s fixed-sky observing framework.\n\nHow to find it: Use the charted figure of UMa and its labeled reference stars to identify the field.",
+      "url": "/stories/baseline/51.html",
+      "artwork": null
+    },
+    {
+      "fixed_object_id": 242,
+      "collection": "baseline",
+      "hed": "M109",
+      "dek": "M109 is a charted deep-sky object selected by the Calendar as one of this week’s fixed-sky observing targets.",
+      "body": "Why it is here: M109 is a charted deep-sky object selected by the Calendar as one of this week’s fixed-sky observing targets.\n\nHow to find it: Use the charted figure of UMa and its labeled reference stars to identify the field.",
+      "url": "/stories/baseline/242.html",
+      "artwork": null
+    },
+    {
+      "fixed_object_id": 940,
+      "collection": "baseline",
+      "hed": "Alchiba",
+      "dek": "Alchiba is a charted star in Crv selected by the Calendar as part of this week’s fixed-sky observing framework.",
+      "body": "Why it is here: Alchiba is a charted star in Crv selected by the Calendar as part of this week’s fixed-sky observing framework.\n\nHow to find it: Use the charted figure of Crv and its labeled reference stars to identify the field.",
+      "url": "/stories/baseline/940.html",
+      "artwork": null
+    }
+  ],
+  "inline_stories": [],
+  "linked_stories": [
+    {
+      "fixed_object_id": 50,
+      "collection": "baseline",
+      "hed": "Denebola",
+      "dek": "Denebola is a charted star in Leo selected by the Calendar as part of this week’s fixed-sky observing framework.",
+      "body": "Why it is here: Denebola is a charted star in Leo selected by the Calendar as part of this week’s fixed-sky observing framework.\n\nHow to find it: Use the charted figure of Leo and its labeled reference stars to identify the field.",
+      "url": "/stories/baseline/50.html",
+      "artwork": null
+    },
+    {
+      "fixed_object_id": 934,
+      "collection": "baseline",
+      "hed": "Zavijava",
+      "dek": "Zavijava is a charted star in Vir selected by the Calendar as part of this week’s fixed-sky observing framework.",
+      "body": "Why it is here: Zavijava is a charted star in Vir selected by the Calendar as part of this week’s fixed-sky observing framework.\n\nHow to find it: Use the charted figure of Vir and its labeled reference stars to identify the field.",
+      "url": "/stories/baseline/934.html",
+      "artwork": null
+    },
+    {
+      "fixed_object_id": 935,
+      "collection": "baseline",
+      "hed": "β Hya",
+      "dek": "β Hya is a charted star in Hya selected by the Calendar as part of this week’s fixed-sky observing framework.",
+      "body": "Why it is here: β Hya is a charted star in Hya selected by the Calendar as part of this week’s fixed-sky observing framework.\n\nHow to find it: Use the charted figure of Hya and its labeled reference stars to identify the field.",
+      "url": "/stories/baseline/935.html",
+      "artwork": null
+    },
+    {
+      "fixed_object_id": 51,
+      "collection": "baseline",
+      "hed": "Phecda",
+      "dek": "Phecda is a charted star in UMa selected by the Calendar as part of this week’s fixed-sky observing framework.",
+      "body": "Why it is here: Phecda is a charted star in UMa selected by the Calendar as part of this week’s fixed-sky observing framework.\n\nHow to find it: Use the charted figure of UMa and its labeled reference stars to identify the field.",
+      "url": "/stories/baseline/51.html",
+      "artwork": null
+    },
+    {
+      "fixed_object_id": 242,
+      "collection": "baseline",
+      "hed": "M109",
+      "dek": "M109 is a charted deep-sky object selected by the Calendar as one of this week’s fixed-sky observing targets.",
+      "body": "Why it is here: M109 is a charted deep-sky object selected by the Calendar as one of this week’s fixed-sky observing targets.\n\nHow to find it: Use the charted figure of UMa and its labeled reference stars to identify the field.",
+      "url": "/stories/baseline/242.html",
+      "artwork": null
+    },
+    {
+      "fixed_object_id": 940,
+      "collection": "baseline",
+      "hed": "Alchiba",
+      "dek": "Alchiba is a charted star in Crv selected by the Calendar as part of this week’s fixed-sky observing framework.",
+      "body": "Why it is here: Alchiba is a charted star in Crv selected by the Calendar as part of this week’s fixed-sky observing framework.\n\nHow to find it: Use the charted figure of Crv and its labeled reference stars to identify the field.",
+      "url": "/stories/baseline/940.html",
+      "artwork": null
+    }
+  ],
+  "stories": [
+    {
+      "fixed_object_id": 50,
+      "collection": "baseline",
+      "hed": "Denebola",
+      "dek": "Denebola is a charted star in Leo selected by the Calendar as part of this week’s fixed-sky observing framework.",
+      "body": "Why it is here: Denebola is a charted star in Leo selected by the Calendar as part of this week’s fixed-sky observing framework.\n\nHow to find it: Use the charted figure of Leo and its labeled reference stars to identify the field.",
+      "url": "/stories/baseline/50.html",
+      "artwork": null
+    },
+    {
+      "fixed_object_id": 934,
+      "collection": "baseline",
+      "hed": "Zavijava",
+      "dek": "Zavijava is a charted star in Vir selected by the Calendar as part of this week’s fixed-sky observing framework.",
+      "body": "Why it is here: Zavijava is a charted star in Vir selected by the Calendar as part of this week’s fixed-sky observing framework.\n\nHow to find it: Use the charted figure of Vir and its labeled reference stars to identify the field.",
+      "url": "/stories/baseline/934.html",
+      "artwork": null
+    },
+    {
+      "fixed_object_id": 935,
+      "collection": "baseline",
+      "hed": "β Hya",
+      "dek": "β Hya is a charted star in Hya selected by the Calendar as part of this week’s fixed-sky observing framework.",
+      "body": "Why it is here: β Hya is a charted star in Hya selected by the Calendar as part of this week’s fixed-sky observing framework.\n\nHow to find it: Use the charted figure of Hya and its labeled reference stars to identify the field.",
+      "url": "/stories/baseline/935.html",
+      "artwork": null
+    },
+    {
+      "fixed_object_id": 51,
+      "collection": "baseline",
+      "hed": "Phecda",
+      "dek": "Phecda is a charted star in UMa selected by the Calendar as part of this week’s fixed-sky observing framework.",
+      "body": "Why it is here: Phecda is a charted star in UMa selected by the Calendar as part of this week’s fixed-sky observing framework.\n\nHow to find it: Use the charted figure of UMa and its labeled reference stars to identify the field.",
+      "url": "/stories/baseline/51.html",
+      "artwork": null
+    },
+    {
+      "fixed_object_id": 242,
+      "collection": "baseline",
+      "hed": "M109",
+      "dek": "M109 is a charted deep-sky object selected by the Calendar as one of this week’s fixed-sky observing targets.",
+      "body": "Why it is here: M109 is a charted deep-sky object selected by the Calendar as one of this week’s fixed-sky observing targets.\n\nHow to find it: Use the charted figure of UMa and its labeled reference stars to identify the field.",
+      "url": "/stories/baseline/242.html",
+      "artwork": null
+    },
+    {
+      "fixed_object_id": 940,
+      "collection": "baseline",
+      "hed": "Alchiba",
+      "dek": "Alchiba is a charted star in Crv selected by the Calendar as part of this week’s fixed-sky observing framework.",
+      "body": "Why it is here: Alchiba is a charted star in Crv selected by the Calendar as part of this week’s fixed-sky observing framework.\n\nHow to find it: Use the charted figure of Crv and its labeled reference stars to identify the field.",
+      "url": "/stories/baseline/940.html",
+      "artwork": null
+    }
+  ],
+  "descriptor_policy": {
+    "source_of_truth": "machine-readable JSON",
+    "candidate_pool": "complete; presentation never limits discovery",
+    "presentation": "Wordy",
+    "story_limit": null,
+    "wordy_policy": "rich weekly observing prose; link to complete object stories rather than embedding them",
+    "future_presentations": [],
+    "link_target": "/almanack/descriptors/<fixed_object_id>.json for fixed-object descriptors",
+    "artwork_descriptor_is_separate": true,
+    "artwork_source": "explicit story front matter only",
+    "fixed_sky_identity_source": "Calendar data-fixed-object-id + data-observing-aid + database/fixed-objects.json",
+    "story_identity_source": "Calendar data-fixed-object-id only",
+    "story_source": "stories/<collection>/<fixed_object_id>.md",
+    "inline_story_content": "hed + dek + body",
+    "linked_story_content": "reader-facing links to every available canonical object story",
+    "annual_note_is_separate_from_evergreen_story": true
+  }
+}
