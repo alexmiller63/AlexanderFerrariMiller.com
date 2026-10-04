@@ -1,4 +1,4 @@
-name: AA- Bisect W17 Historical Solver
+name: AA- Bisect Exact W17 Five-Candidate Regression
 
 on:
   workflow_dispatch:
@@ -16,11 +16,11 @@ jobs:
       - name: Install test dependencies
         run: python -m pip install pytest skyfield
 
-      - name: Automatically bisect W17 alignment-8 regression
+      - name: Bisect exact W17 five-candidate regression
         shell: bash
         env:
-          GOOD_REF: "01485d100e8ed3a09048b8c251d6f2674ad0057c"
-          BAD_REF: "07d9eb72d8ff8198fd793d6b28fac1d40b7eb1cb"
+          GOOD_REF: "e9cd89e7dd5e3f4d20fa22be6ef17b6a2a4b75e5"
+          BAD_REF: "95a9dd78fce7dd4044bee20a012b4ae88db8bfaa"
         run: |
           set -euo pipefail
           HARNESS_DIR="$RUNNER_TEMP/w17-bisect-harness"
@@ -38,16 +38,16 @@ jobs:
           from planet_finder_geometry import FinderMode, alignment_groups, conjunction_groups
           from planet_finder_search import layout
 
-          selected = ALIGNMENT_CHAIN[:8]
+          selected = ALIGNMENT_CHAIN[:6] + ["Venus"]
           source = bodies_for(selected)
-          assert names(alignment_groups(source)) == expected_alignment(8)
-          assert names(conjunction_groups(source)) == expected_conjunction(8)
+          assert names(alignment_groups(source)) == expected_alignment(7)
+          assert names(conjunction_groups(source)) == expected_conjunction(7)
           result = layout(
               FinderMode.GREEK,
               source,
-              target_solutions=1,
+              target_solutions=5,
               budget={"max_node_candidates": 200, "max_seconds": 30.0},
-              context_label="W17-historical-alignment-8",
+              context_label="W17-bisect-venus-exact-54.923",
           )
           assert_valid(result, source)
           PY
@@ -89,7 +89,7 @@ jobs:
           echo "===== BISECT RESULT ====="
           git bisect log
           first_bad="$(git rev-parse HEAD)"
-          echo "First bad commit candidate: $first_bad"
+          echo "First bad W17 commit: $first_bad"
           git show --no-patch --format='%H%n%ci%n%s' "$first_bad"
 
           # git bisect run returns 0 when it identifies the boundary.
