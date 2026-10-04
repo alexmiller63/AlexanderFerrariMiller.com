@@ -1494,12 +1494,12 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 f"beat={best_count if best_count is not None else 'none'}",
                 level=1, flush=True,
             )
-            # MRV is only a search-order heuristic.  Keep ranking cheap:
-            # routed domain enumeration at the final pair was spending most of
-            # the W01 clock re-proving Venus route failures.  Exact routed
-            # legality remains authoritative in the DFS and pair-support gate;
-            # ranking itself needs only a deterministic geometry estimate.
-            routed_rank = False
+            # A/B diagnostic: at the final two-member alignment boundary,
+            # rank with the authoritative routed domain instead of the cheap
+            # geometry-only estimate. Tight-5 showed geometry claiming ~120
+            # Venus choices while routed DFS had zero; this isolates whether
+            # that false MRV signal is the complexity cliff.
+            routed_rank = len(remaining_items) == 2
             cached_rows = None
             cache_key = None
             if routed_rank:
