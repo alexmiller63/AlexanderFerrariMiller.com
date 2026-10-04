@@ -1882,22 +1882,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         support_limit = max(
             1, int(os.environ.get("PLANET_FINDER_ALIGNMENT_SUPPORT_LIMIT", "8"))
         )
-        # At the final-three boundary, W17 can have a small exact chosen
-        # domain just above the ordinary support limit (notably Ceres=15).
-        # Screening each chosen candidate for an *individual routed witness*
-        # in each of the two remaining members is a safe necessary-condition
-        # proof and avoids descending into expensive pair ranking when a
-        # candidate's leader already makes Venus or Uranus impossible.  This
-        # deliberately does NOT require a joint two-member continuation (the
-        # historical triple-pruning regression did, at much greater cost).
-        effective_support_limit = (
-            max(support_limit, 16) if len(next_remaining) == 2 else support_limit
-        )
-        if (
-            next_remaining
-            and not chosen_capped
-            and chosen_count <= effective_support_limit
-        ):
+        if next_remaining and not chosen_capped and chosen_count <= support_limit:
             support_stream = alignment_profiled_candidates(
                 item, diagnostic_depth, "alignment-support"
             )
@@ -1918,18 +1903,14 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                             # Cheap necessary-condition support remains sufficient
                             # here. Authoritative routed viability is already computed
                             # by MRV; do not pay for the same routed proof twice.
-                            routed_support = len(next_remaining) <= 2
+                            final_pair_support = len(next_remaining) == 1
                             witness_stream = (
                                 alignment_profiled_candidates(
                                     future_item,
                                     diagnostic_depth,
-                                    (
-                                        "alignment-final-three-support"
-                                        if len(next_remaining) == 2
-                                        else "alignment-final-pair-support"
-                                    ),
+                                    "alignment-final-pair-support",
                                 )
-                                if routed_support
+                                if final_pair_support
                                 else alignment_geometry_candidates(future_item)
                             )
                             try:
