@@ -2034,7 +2034,12 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 # rejects the candidate, so capped/partial searches are never
                 # treated as contradictions.  Check the tightest parent-state
                 # domains first to find cheap contradictions early.
-                if alignment_forward_ok and next_remaining:
+                # At the final pair, do not run a separate existence probe.
+                # The recursive call immediately below performs the same routed
+                # proof authoritatively for the last member. Skipping that
+                # duplicate positive probe is body-agnostic and changes neither
+                # candidate order nor legality.
+                if alignment_forward_ok and len(next_remaining) > 1:
                     forward_items = sorted(
                         next_remaining,
                         key=lambda future_item: (
