@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""One-shot: make same-blob forward checking geometry-only."""
+"""One-shot: repair literal newline escapes in the alignment cap edit."""
 
 from pathlib import Path
 
@@ -12,37 +12,30 @@ if not ENABLED:
 P = Path("tools/planet_finder_search_core.py")
 text = P.read_text(encoding="utf-8")
 
-old = '''                for future_item in next_remaining:
-                    witness_stream = alignment_profiled_candidates(
-                        future_item, diagnostic_depth, "same-blob-forward"
-                    )
-                    try:
-                        next(witness_stream)
-                    except StopIteration:
-                        alignment_forward_ok = False
-                        future_name = future_item[1][1]
-'''
-new = '''                for future_item in next_remaining:
-                    # Forward checking needs only a necessary-condition witness.
-                    # Absence of a collision-free geometry proves this prefix
-                    # dead; presence merely defers exact leader routing until
-                    # that member is actually explored by DFS.
-                    witness_stream = alignment_geometry_candidates(future_item)
-                    try:
-                        next(witness_stream)
-                    except StopIteration:
-                        alignment_forward_ok = False
-                        future_name = future_item[1][1]
-'''
+marker = "        # Keep a dead final alignment member from monopolizing the mode clock."
+start = text.find(marker)
+end = text.find("        diagnostic_print(", start)
+if start < 0 or end < 0 or text.find(marker, start + 1) >= 0:
+    raise SystemExit("Safety stop: malformed alignment-cap block missing or non-unique")
 
-if text.count(old) != 1:
-    raise SystemExit("Safety stop: same-blob forward witness block missing or non-unique")
-P.write_text(text.replace(old, new, 1), encoding="utf-8")
+block = text[start:end]
+if "\\n" not in block:
+    raise SystemExit("Safety stop: expected literal newline escapes are absent")
+
+fixed = block.replace("\\n", "\n")
+if 'candidate_limit = min(budget["max_node_candidates"], 200)' not in fixed:
+    raise SystemExit("Safety stop: 200-choice cap missing from repaired block")
+
+P.write_text(text[:start] + fixed + text[end:], encoding="utf-8")
 
 me = Path(__file__)
 source = me.read_text(encoding="utf-8")
-needle = "\nENABLED = True\n"
-if source.count(needle) != 1:
-    raise SystemExit("Safety stop: ENABLED assignment not unique")
-me.write_text(source.replace(needle, "\nENABLED = False\n", 1), encoding="utf-8")
-print("Installed geometry-only same-blob forward checking; Repair Once is OFF.")
+arming_line = "ENABLED" + " = True"
+lines = source.splitlines()
+matches = [i for i, line in enumerate(lines) if line.strip() == arming_line]
+if len(matches) != 1:
+    raise SystemExit(f"Safety stop: arming line count={len(matches)}")
+lines[matches[0]] = "ENABLED = False"
+me.write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+print("Repaired literal newline escapes in alignment cap edit; Repair Once is OFF.")
