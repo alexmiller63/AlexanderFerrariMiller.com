@@ -1378,6 +1378,14 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 ),
                 level=1, flush=True,
             )
+            for body, stats in sorted(alignment_routed_cache_stats.items()):
+                if stats["beat_limited"]:
+                    diagnostic_print(
+                        f"Planet Finder {mode}: ALIGNMENT BEAT FORENSICS {body} "
+                        f"limits={dict(sorted(stats['beat_limits'].items()))} "
+                        f"state-shapes={dict(sorted(stats['state_shapes'].items()))}",
+                        level=1, flush=True,
+                    )
         diagnostic_print(
             f"Planet Finder {mode}: ALIGNMENT PHASE PROFILE "
             + " | ".join(
@@ -1464,7 +1472,8 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         return alignment_routed_cache_stats.setdefault(
             body, {"lookups": 0, "hits": 0, "misses": 0,
                    "stored": 0, "beat_limited": 0,
-                   "unique_states": set()}
+                   "unique_states": set(), "beat_limits": {},
+                   "state_shapes": {}}
         )
 
     def alignment_state_signature():
@@ -1626,6 +1635,13 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                     cache_stat = routed_cache_stat(probe_name)
                     if beat_limited:
                         cache_stat["beat_limited"] += 1
+                        cache_stat["beat_limits"][rank_limit] = (
+                            cache_stat["beat_limits"].get(rank_limit, 0) + 1
+                        )
+                        state_shape = (len(placed), len(leaders), len(leader_names))
+                        cache_stat["state_shapes"][state_shape] = (
+                            cache_stat["state_shapes"].get(state_shape, 0) + 1
+                        )
                     else:
                         alignment_routed_domain_cache[cache_key] = (tuple(collected), cutoff)
                         cache_stat["stored"] += 1
