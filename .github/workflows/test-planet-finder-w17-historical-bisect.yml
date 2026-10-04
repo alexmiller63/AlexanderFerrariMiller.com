@@ -80,26 +80,12 @@ jobs:
           git checkout --detach "$GOOD_REF"
           "$HARNESS_DIR/test-one.sh"
 
-          echo "Verifying known-bad endpoint $BAD_REF"
+          echo "Measuring comparison endpoint $BAD_REF"
           git checkout --detach "$BAD_REF"
-          if "$HARNESS_DIR/test-one.sh"; then
-            echo "::error::BAD_REF unexpectedly passes; refusing to report a false boundary."
-            exit 2
-          fi
+          "$HARNESS_DIR/test-one.sh"
 
-          git bisect reset || true
-          git bisect start "$BAD_REF" "$GOOD_REF"
-          git bisect run "$HARNESS_DIR/test-one.sh" || rc=$?
-          rc=${rc:-0}
-
-          echo "===== BISECT RESULT ====="
-          git bisect log
-          first_bad="$(git rev-parse HEAD)"
-          echo "First bad W17 commit: $first_bad"
-          git show --no-patch --format='%H%n%ci%n%s' "$first_bad"
-
-          # git bisect run returns 0 when it identifies the boundary.
-          if [ "$rc" -ne 0 ]; then
-            echo "::warning::git bisect run exited $rc; inspect the bisect log above."
-            exit "$rc"
-          fi
+          echo "===== DETERMINISTIC COMPARISON COMPLETE ====="
+          echo "Historical endpoint: $GOOD_REF"
+          echo "Current endpoint:    $BAD_REF"
+          echo "Both endpoint logs are retained above at diagnostic level 3."
+          echo "::notice::Do not bisect yet. First derive a deterministic work threshold from these two endpoint traces."
