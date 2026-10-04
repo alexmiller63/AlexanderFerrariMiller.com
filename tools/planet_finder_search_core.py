@@ -1819,64 +1819,13 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 # redundant parent-pair proof consumed nearly the entire wall
                 # clock after the analogous triple proof was removed.
 
-                for future_item in next_remaining if alignment_forward_ok else []:
-                    future_name = future_item[1][1]
-                    witness_started = time.monotonic()
-                    witness_before = predfs_rejection_snapshot()
-                    witness_found = False
-                    witness_stream = alignment_profiled_candidates(
-                        future_item, diagnostic_depth, "same-blob-forward"
-                    )
-                    try:
-                        next(witness_stream)
-                        witness_found = True
-                    except StopIteration:
-                        alignment_forward_ok = False
-                        future_name = future_item[1][1]
-                        if future_name == "Sun":
-                            fingerprint = alignment_state_fingerprint()
-                            count = same_blob_failure_states.get(fingerprint, 0) + 1
-                            sun_rank_count, sun_rank_cutoff = rank_viable_counts.get(
-                                "Sun", (None, False)
-                            )
-                            candidate_signature = (
-                                round(box.x, 3), round(box.y, 3),
-                                round(box.w, 3), round(box.h, 3),
-                                tuple(
-                                    (round(px, 3), round(py, 3))
-                                    for px, py in path
-                                ),
-                            )
-                            same_blob_failure_states[fingerprint] = count
-                            diagnostic_print(
-                                f"Planet Finder {mode}: SAME-BLOB SUN DEAD "
-                                f"occurrence={count} repeat={count > 1} "
-                                f"unique_states={len(same_blob_failure_states)} "
-                                f"killer={name} killer_candidate={candidate_signature!r} "
-                                f"sun_rank_viable={sun_rank_count}"
-                                f"{'+' if sun_rank_cutoff else ''} "
-                                f"staged={','.join(item[1] for _, item in sorted(staged.items()))} "
-                                f"fingerprint={fingerprint!r}",
-                                level=1, flush=True,
-                            )
-                    finally:
-                        witness_stream.close()
-                    if name == "Ceres" and future_name == "Venus":
-                        witness_after = predfs_rejection_snapshot()
-                        witness_delta = {
-                            key: witness_after[key] - witness_before[key]
-                            for key in witness_before
-                        }
-                        diagnostic_print(
-                            f"Planet Finder {mode}: CERES->VENUS WITNESS "
-                            f"found={witness_found} elapsed={time.monotonic() - witness_started:.4f}s "
-                            + " ".join(
-                                f"{key}={value:,}" for key, value in witness_delta.items()
-                            ),
-                            level=1, flush=True,
-                        )
-                    if not alignment_forward_ok:
-                        break
+                # Do not probe every remaining member for a one-candidate
+                # same-blob witness before descending.  The exact alignment DFS
+                # immediately searches those members with the same routed
+                # viability rules.  On W01 tight-5 this forward witness layer
+                # became the dominant cost (especially Venus) while duplicating
+                # work the DFS must perform anyway.
+
                 if alignment_forward_ok:
                     # Necessary-condition gate across the DFS boundary: after
                     # each individual alignment-member choice, every ordinary
