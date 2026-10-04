@@ -1860,12 +1860,12 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                             witness_stream.close()
                         if not alignment_forward_ok:
                             break
-                if alignment_forward_ok:
-                    # One safe compatibility level across the alignment/ordinary
-                    # boundary. False is returned only after exhaustive bounded
-                    # proof that the two most constrained ordinary bodies have
-                    # no mutually compatible placement.
-                    alignment_forward_ok = alignment_pair_compatible()
+                # Do not run the ordinary-body pair proof here.  It is a
+                # speculative look-ahead across the alignment/ordinary boundary;
+                # the exact DFS below will test those ordinary placements when
+                # the alignment prefix completes.  In W01 tight-5 its bounded
+                # probes (especially Jupiter and Saturn) became a major wall-clock
+                # cost without changing which complete layouts are accepted.
                 if not alignment_forward_ok:
                     if final_mercury:
                         diagnostic_print(
