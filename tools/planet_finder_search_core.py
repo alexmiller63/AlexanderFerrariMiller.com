@@ -1525,7 +1525,19 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 count = 0
                 cutoff = False
                 collected = [] if routed_rank else None
-                rank_limit = budget["max_node_candidates"]
+                # Branch-and-bound MRV: once an earlier member has an
+                # exhaustive domain of N, this member only needs N+2 routed
+                # witnesses to prove it lies outside the one-candidate
+                # near-tie band.  Do not spend the rest of the 200-candidate
+                # lattice proving an exact count that cannot change the choice.
+                # A beat-limited prefix is intentionally not cached: if the
+                # best count later changes, DFS may need the full domain.
+                full_rank_limit = budget["max_node_candidates"]
+                rank_limit = full_rank_limit
+                beat_limited = False
+                if best_count is not None:
+                    rank_limit = min(full_rank_limit, best_count + 2)
+                    beat_limited = rank_limit < full_rank_limit
                 try:
                     for candidate in probe:
                         count += 1
@@ -1536,7 +1548,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                             break
                 finally:
                     probe.close()
-                if routed_rank:
+                if routed_rank and not beat_limited:
                     alignment_routed_domain_cache[cache_key] = (tuple(collected), cutoff)
             probe_elapsed = time.monotonic() - probe_started
             probe_after = predfs_rejection_snapshot()
