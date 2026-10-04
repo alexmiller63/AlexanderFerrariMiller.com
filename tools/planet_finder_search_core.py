@@ -1479,12 +1479,19 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 f"beat={best_count if best_count is not None else 'none'}",
                 level=1, flush=True,
             )
-            # MRV is only a search-order heuristic. Rank on the cheap
-            # necessary-condition geometry domain instead of exhaustively
-            # routing every candidate for every remaining member. Exact routed
-            # viability is still authoritative when the chosen member is
-            # explored below, so this changes cost/order but not correctness.
-            probe = alignment_geometry_candidates(candidate_item)
+            # MRV is only a search-order heuristic. Early in a wide
+            # alignment blob, rank on cheap necessary-condition geometry.
+            # Once only two members remain, however, geometry can badly
+            # mis-rank the true constraint because leader routing dominates.
+            # Use authoritative routed viability at that final binary choice
+            # so the actual squeaky wheel is selected.
+            routed_rank = len(remaining_items) <= 2
+            if routed_rank:
+                probe = alignment_profiled_candidates(
+                    candidate_item, diagnostic_depth, "alignment-rank-routed"
+                )
+            else:
+                probe = alignment_geometry_candidates(candidate_item)
             count = 0
             cutoff = False
             try:
