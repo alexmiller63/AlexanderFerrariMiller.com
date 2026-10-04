@@ -19,7 +19,7 @@ jobs:
       - name: Bisect exact W17 five-candidate regression
         shell: bash
         env:
-          GOOD_REF: "4bff68f7a735785857fa2c7579f3571d310174d2"
+          GOOD_REF: "e9cd89e7dd5e3f4d20fa22be6ef17b6a2a4b75e5"
           BAD_REF: "2e96878e4011101317ce8ccfd8c5a5844da7b388"
         run: |
           set -euo pipefail
@@ -58,7 +58,7 @@ jobs:
           ref="$(git rev-parse HEAD)"
           echo "::group::Testing $ref"
           log="$HARNESS_DIR/$ref.log"
-          PLANET_FINDER_DIAGNOSTIC_LEVEL=1 timeout 70s python "$HARNESS_DIR/oracle.py" "$HARNESS_DIR" 2>&1 | tee "$log"
+          PLANET_FINDER_DIAGNOSTIC_LEVEL=3 timeout 70s python "$HARNESS_DIR/oracle.py" "$HARNESS_DIR" 2>&1 | tee "$log"
           rc=${PIPESTATUS[0]}
           # Search success is the regression oracle. Historical versions can
           # spend substantial time in makeup after already finding solution 5.
