@@ -1,9 +1,14 @@
 #!/usr/bin/env python3
-"""One-shot: avoid duplicate routed forward proof at the final alignment pair."""
+"""One-shot: remove redundant same-blob alignment forward look-ahead.
+
+The authoritative recursive alignment DFS already proves these continuations.
+Removing the speculative existence probes changes pruning only, not placement
+legality, candidate order, or the set of accepted complete layouts.
+"""
 
 from pathlib import Path
 
-ENABLED = False
+ENABLED = True
 
 if not ENABLED:
     print("Repair Once is OFF; nothing to do.")
@@ -12,22 +17,27 @@ if not ENABLED:
 P = Path("tools/planet_finder_search_core.py")
 text = P.read_text(encoding="utf-8")
 
-old = """                if alignment_forward_ok and next_remaining:
-                    forward_items = sorted(
+start_marker = """                # Conservative same-blob forward checking.  After this
 """
-new = """                # At the final pair, do not run a separate existence probe.
-                # The recursive call immediately below performs the same routed
-                # proof authoritatively for the last member. Skipping that
-                # duplicate positive probe is body-agnostic and changes neither
-                # candidate order nor legality.
-                if alignment_forward_ok and len(next_remaining) > 1:
-                    forward_items = sorted(
+end_marker = """                # Do not run the ordinary-body pair proof here.  It is a
 """
-if text.count(old) != 1:
+
+if text.count(start_marker) != 1 or text.count(end_marker) != 1:
     raise SystemExit(
-        f"Safety stop: expected alignment-forward gate count={text.count(old)}"
+        "Safety stop: expected one same-blob forward-check block "
+        f"(start={text.count(start_marker)}, end={text.count(end_marker)})"
     )
-text = text.replace(old, new, 1)
+
+start = text.index(start_marker)
+end = text.index(end_marker, start)
+replacement = """                # Do not speculatively forward-probe remaining alignment
+                # members here. The recursive alignment DFS immediately below
+                # performs the same routed continuation authoritatively. W17
+                # diagnostics showed these redundant existence probes dominated
+                # the mode clock (especially Moon alignment-forward). Removing
+                # them changes pruning only, not geometry or accepted layouts.
+"""
+text = text[:start] + replacement + text[end:]
 P.write_text(text, encoding="utf-8")
 
 me = Path(__file__)
@@ -40,4 +50,4 @@ if len(matches) != 1:
 lines[matches[0]] = "ENABLED = False"
 me.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
-print("Skipped duplicate final-pair alignment forward proof; Repair Once is OFF.")
+print("Removed redundant alignment-forward look-ahead; Repair Once is OFF.")
