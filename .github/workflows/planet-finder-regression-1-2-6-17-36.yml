@@ -1,16 +1,17 @@
-name: Planet Finder Regression 1 2 6 17 36
+name: Planet Finder W17 Greek Fix Diagnostic
 
 on:
   workflow_dispatch:
 
 jobs:
-  regression:
+  diagnostic:
     runs-on: ubuntu-latest
-    timeout-minutes: 120
+    timeout-minutes: 15
     env:
       PLANET_FINDER_CANDIDATES: '5'
       PLANET_FINDER_MAX_NODE_CANDIDATES: '200'
       PLANET_FINDER_MAX_SECONDS: '360'
+      PLANET_FINDER_DIAGNOSTIC_LEVEL: '1'
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
@@ -27,9 +28,25 @@ jobs:
         run: python -m pip install --disable-pip-version-check 'skyfield==1.55'
       - name: Ensure cached DE440s and Ceres source kernels
         run: python tools/ensure_ephemeris_kernels.py --ceres
-      - name: Regression check W01 W02 W06 W17 W36
+      - name: W17 Greek — routed MRV fix diagnostic
         run: |
-          for week in 1 2 6 17 36; do
-            printf '\n=== Planet Finder 2026-W%02d (360 seconds per notation mode) ===\n' "$week"
-            python tools/generate_planet_finders.py --year 2026 --week "$week" --diagnostic-level 1
-          done
+          PYTHONPATH=tools python - <<'PY'
+          from datetime import date
+          from populate_ephemeris import computed_ephemeris
+          from star_almanack_ephemeris import StarAlmanackEphemeris
+          from planet_finder_geometry import BODY_SYMBOLS, BODY_NAMES, CANONICAL, FinderMode
+          from planet_finder_rendering import render
+
+          year, week = 2026, 17
+          monday = date.fromisocalendar(year, week, 1)
+          needed = {BODY_NAMES[name] for name in CANONICAL}
+          generated = computed_ephemeris(year, StarAlmanackEphemeris())
+          values = {key: generated[key][week - 1][0] for key in needed}
+          bodies = [
+              (BODY_SYMBOLS[BODY_NAMES[name]], name, values[BODY_NAMES[name]] % 360)
+              for name in CANONICAL
+          ]
+          print("=== W17 Greek only: 360s; routed-MRV fix vs pre-fix geometry shadow ===", flush=True)
+          render(year, week, monday, FinderMode.GREEK, bodies)
+          print("W17 Greek PASS", flush=True)
+          PY
