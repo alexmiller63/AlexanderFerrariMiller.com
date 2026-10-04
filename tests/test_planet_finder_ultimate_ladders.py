@@ -577,6 +577,28 @@ def test_five_candidate_exact_w01_w02_regression(monkeypatch, week, ladder):
     print(f"FIVE-CANDIDATE REGRESSION {week} {level} PASS", flush=True)
 
 
+
+def test_w01_five_candidate_breakpoint_ladder(monkeypatch):
+    """Find the first W01-shaped geometry that cannot produce five candidates quickly."""
+    enable_alignment_fix(monkeypatch)
+    monkeypatch.setenv("PLANET_FINDER_DIAGNOSTIC_LEVEL", "1")
+    passed = []
+    for level, longitudes in W01_LADDER:
+        bodies = synthetic_bodies(longitudes)
+        print(f"W01 FIVE-CANDIDATE LADDER {level} START", flush=True)
+        result = layout(
+            FinderMode.GREEK,
+            bodies,
+            target_solutions=5,
+            budget={"max_node_candidates": 2000, "max_seconds": 60.0},
+            context_label=f"W01-five-candidate-ladder-{level}",
+        )
+        assert_complete_valid_layout(result, bodies, FinderMode.GREEK)
+        passed.append(level)
+        print(f"W01 FIVE-CANDIDATE LADDER {level} PASS", flush=True)
+    print(f"W01 FIVE-CANDIDATE LADDER COMPLETE passed={passed}", flush=True)
+
+
 def test_w01_five_candidate_deep_forensic(monkeypatch):
     """Single exact W01 run with full search attribution; diagnostic only."""
     enable_alignment_fix(monkeypatch)
