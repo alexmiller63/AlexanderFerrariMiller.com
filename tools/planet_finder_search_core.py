@@ -1583,8 +1583,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             row["chosen"][name] = row["chosen"].get(name, 0) + 1
         next_remaining = [candidate_item for candidate_item in remaining_items if candidate_item is not item]
         tried = 0
-        candidate_limit = budget["max_node_candidates"]
-        diagnostic_print(
+        # Keep a dead final alignment member from monopolizing the mode clock.\n        # After 200 sibling choices, return to its parent so the blob geometry\n        # itself can move; this restores the intended per-body squeaky-wheel cap.\n        candidate_limit = min(budget["max_node_candidates"], 200)\n        diagnostic_print(
             f"Planet Finder {mode}: ALIGNMENT INNER DFS CHOOSE group={group_index + 1} "
             f"member={name} viable={viable_count} remaining={len(remaining_items)}",
             level=1, flush=True,
