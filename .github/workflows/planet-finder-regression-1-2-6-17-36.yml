@@ -1,0 +1,35 @@
+name: Planet Finder Regression 1 2 6 17 36
+
+on:
+  workflow_dispatch:
+
+jobs:
+  regression:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    env:
+      PLANET_FINDER_CANDIDATES: '5'
+      PLANET_FINDER_MAX_NODE_CANDIDATES: '200'
+      PLANET_FINDER_MAX_SECONDS: '360'
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Cache source kernels
+        uses: actions/cache@v4
+        with:
+          path: .cache/skyfield
+          key: star-almanack-source-kernels-v1
+      - name: Install pinned calculation dependency
+        run: python -m pip install --disable-pip-version-check 'skyfield==1.55'
+      - name: Ensure cached DE440s and Ceres source kernels
+        run: python tools/ensure_ephemeris_kernels.py --ceres
+      - name: Regression check W01 W02 W06 W17 W36
+        run: |
+          for week in 1 2 6 17 36; do
+            printf '\n=== Planet Finder 2026-W%02d (360 seconds per notation mode) ===\n' "$week"
+            python tools/generate_planet_finders.py --year 2026 --week "$week" --diagnostic-level 1
+          done
