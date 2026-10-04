@@ -19,3 +19,7 @@ jobs:
         run: |
           pip install pytest skyfield==1.55
           pytest -q tests/test_planet_finder_candidate_generation.py
+      - name: Run W01 tight alignment five focused regression
+        run: |
+          pip install pytest skyfield==1.55
+          pytest -q -s tests/test_planet_finder_ultimate_ladders.py::test_w01_tight_alignment_five_only
