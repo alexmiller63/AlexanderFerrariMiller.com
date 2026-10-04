@@ -2012,80 +2012,18 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                             future_item[0],
                         ),
                     )
-                    child_state_signature = alignment_state_signature()
                     for future_item in forward_items:
                         future_name = future_item[1][1]
-                        cache_key = (future_item[0], child_state_signature)
-                        cache_stat = routed_cache_stat(future_name)
-                        cache_stat["lookups"] += 1
-                        cache_stat["unique_states"].add(child_state_signature)
-                        cached_domain = alignment_routed_domain_cache.get(cache_key)
-                        if cached_domain is not None:
-                            cache_stat["hits"] += 1
-                            cached_rows, cached_cutoff = cached_domain
-                            has_witness = bool(cached_rows)
-                            # Any cached row is an authoritative routed witness.
-                            # An empty cached domain is usable only when exhaustive.
-                            if not has_witness and cached_cutoff:
-                                cached_domain = None
-                        if cached_domain is None:
-                            cache_stat["misses"] += 1
-                            witness_stream = alignment_profiled_candidates(
-                                future_item, diagnostic_depth, "alignment-forward"
-                            )
-                            try:
-                                witness = next(witness_stream)
-                            except StopIteration:
-                                has_witness = False
-                                # Exhaustive zero: cache the proof for MRV/DFS.
-                                alignment_routed_domain_cache[cache_key] = (tuple(), False)
-                                cache_stat["stored"] += 1
-                            else:
-                                has_witness = True
-                                # A single witness is only a prefix, not a complete
-                                # domain. Cache it as capped so it can prove
-                                # nonzero without ever masquerading as an exact count.
-                                alignment_routed_domain_cache[cache_key] = ((witness,), True)
-                                cache_stat["stored"] += 1
-                            finally:
-                                witness_stream.close()
-                        if not has_witness:
-                            diagnostic_print(
-                                f"Planet Finder {mode}: ALIGNMENT FORWARD ZERO "
-                                f"group={group_index + 1} member={name} "
-                                f"future={future_name}",
-                                level=1, flush=True,
-                            )
-                            alignment_forward_ok = False
-                            break
-
-                if alignment_forward_ok:
-                    # Necessary-condition gate across the DFS boundary: after
-                    # each individual alignment-member choice, every ordinary
-                    # body must still have at least one placement under this
-                    # partial alignment prefix. Adding later alignment members
-                    # can only remove placements, never create one, so zero
-                    # witnesses here proves this member choice is dead.
-                    for ordinary_item in order:
-                        ordinary_index = ordinary_item[0]
-                        ordinary_name = ordinary_item[1][1]
-                        # A member already staged by this alignment prefix is
-                        # satisfied by that placement. Requiring a second witness
-                        # for the same body falsely rejects the prefix against its
-                        # own label/leader (for example Mars blocking Mars).
-                        if ordinary_index in staged:
-                            continue
                         witness_stream = alignment_profiled_candidates(
-                            ordinary_item, len(order), "ordinary-forward"
+                            future_item, diagnostic_depth, "alignment-forward"
                         )
                         try:
                             next(witness_stream)
                         except StopIteration:
-                            if final_mercury:
-                                mercury_final_blocker = ordinary_name
                             diagnostic_print(
-                                f"Planet Finder {mode}: ALIGNMENT MEMBER BACKTRACK "
-                                f"member={name} ordinary-blocker={ordinary_name}",
+                                f"Planet Finder {mode}: ALIGNMENT FORWARD ZERO "
+                                f"group={group_index + 1} member={name} "
+                                f"future={future_name}",
                                 level=1, flush=True,
                             )
                             alignment_forward_ok = False
