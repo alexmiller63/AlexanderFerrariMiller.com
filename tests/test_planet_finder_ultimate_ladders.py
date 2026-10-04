@@ -447,6 +447,51 @@ def w20_ladder_case(active_names):
     return placed, expected
 
 
+def test_w20_latin_6_vs_7_forensic(monkeypatch):
+    """Compare the passing six-body chain with the Uranus-triggered seven-body cliff."""
+    enable_alignment_fix(monkeypatch)
+    monkeypatch.setenv("PLANET_FINDER_DIAGNOSTIC_LEVEL", "4")
+
+    for size, seconds in ((6, 30.0), (7, 60.0)):
+        active = W20_ALIGNMENT[:size]
+        longitudes, expected_groups = w20_ladder_case(active)
+        bodies = synthetic_bodies(longitudes)
+        actual_groups = group_names(bodies)
+        assert actual_groups == sorted(expected_groups), (
+            f"W20 ACCIDENTAL ALIGNMENT forensic-{size}: "
+            f"expected={sorted(expected_groups)} actual={actual_groups}"
+        )
+        print(
+            f"W20 6V7 FORENSIC size={size} active={active} "
+            f"groups={actual_groups} budget={seconds}s START",
+            flush=True,
+        )
+        started = time.monotonic()
+        try:
+            result = layout(
+                FinderMode.LATIN,
+                bodies,
+                target_solutions=1,
+                budget={"max_node_candidates": 200, "max_seconds": seconds},
+                context_label=f"W20-latin-6v7-{size}",
+            )
+            assert_complete_valid_layout(result, bodies, FinderMode.LATIN)
+        except RuntimeError as exc:
+            print(
+                f"W20 6V7 FORENSIC size={size} RESULT=DEADLINE "
+                f"elapsed={time.monotonic() - started:.3f}s error={exc}",
+                flush=True,
+            )
+            if size == 6:
+                raise
+        else:
+            print(
+                f"W20 6V7 FORENSIC size={size} RESULT=PASS "
+                f"elapsed={time.monotonic() - started:.3f}s",
+                flush=True,
+            )
+
+
 def test_w20_latin_progressive_alignment_ladder(monkeypatch):
     """Grow the exact W20 alignment until the Latin search complexity cliff appears."""
     enable_alignment_fix(monkeypatch)
