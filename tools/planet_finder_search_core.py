@@ -1509,12 +1509,19 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 count = 0
                 cutoff = False
                 collected = [] if routed_rank else None
+                # MRV only needs enough information to decide whether this
+                # domain can beat the best exhaustive domain already seen.
+                # Once it exceeds best_count it cannot win, so stop paying for
+                # routed candidates that cannot affect the ordering decision.
+                rank_limit = budget["max_node_candidates"]
+                if routed_rank and best_count is not None:
+                    rank_limit = min(rank_limit, best_count + 1)
                 try:
                     for candidate in probe:
                         count += 1
                         if collected is not None:
                             collected.append(candidate)
-                        if count >= budget["max_node_candidates"]:
+                        if count >= rank_limit:
                             cutoff = True
                             break
                 finally:
