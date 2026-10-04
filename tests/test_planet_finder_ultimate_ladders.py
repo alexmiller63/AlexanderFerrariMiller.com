@@ -553,3 +553,42 @@ def test_ultimate_w01_ladder(monkeypatch, mode):
 @pytest.mark.parametrize("mode", MODES)
 def test_ultimate_w02_ladder(monkeypatch, mode):
     run_existing_ladder(monkeypatch, "W02", mode, W02_LADDER)
+
+
+@pytest.mark.parametrize("week,ladder", [
+    ("W01", W01_LADDER),
+    ("W02", W02_LADDER),
+])
+def test_five_candidate_exact_w01_w02_regression(monkeypatch, week, ladder):
+    """Exact W01/W02 Greek regression using the production five-candidate target."""
+    enable_alignment_fix(monkeypatch)
+    monkeypatch.setenv("PLANET_FINDER_DIAGNOSTIC_LEVEL", "1")
+    level, longitudes = ladder[-1]
+    bodies = synthetic_bodies(longitudes)
+    print(f"FIVE-CANDIDATE REGRESSION {week} {level} START", flush=True)
+    result = layout(
+        FinderMode.GREEK,
+        bodies,
+        target_solutions=5,
+        budget={"max_node_candidates": 2000, "max_seconds": 120.0},
+        context_label=f"five-candidate-regression-{week}",
+    )
+    assert_complete_valid_layout(result, bodies, FinderMode.GREEK)
+    print(f"FIVE-CANDIDATE REGRESSION {week} {level} PASS", flush=True)
+
+
+def test_five_candidate_exact_w36_regression(monkeypatch):
+    """Exact W36 Greek regression using the production five-candidate target."""
+    enable_alignment_fix(monkeypatch)
+    monkeypatch.setenv("PLANET_FINDER_DIAGNOSTIC_LEVEL", "1")
+    bodies = synthetic_bodies(W36_KNOWN_GOOD)
+    print("FIVE-CANDIDATE REGRESSION W36 exact-W36 START", flush=True)
+    result = layout(
+        FinderMode.GREEK,
+        bodies,
+        target_solutions=5,
+        budget={"max_node_candidates": 2000, "max_seconds": 120.0},
+        context_label="five-candidate-regression-W36",
+    )
+    assert_complete_valid_layout(result, bodies, FinderMode.GREEK)
+    print("FIVE-CANDIDATE REGRESSION W36 exact-W36 PASS", flush=True)
