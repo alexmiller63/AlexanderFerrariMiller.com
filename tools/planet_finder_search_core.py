@@ -1482,7 +1482,27 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         ranked = []
         rank_viable_counts = {}
         best_count = None
+        # Cheap geometry is a necessary-condition superset and costs almost
+        # nothing compared with routing.  Use it only to decide which member
+        # gets the first authoritative routed count.  Starting with the
+        # smallest geometric domain usually establishes a tight beat before
+        # expensive members such as Uranus are routed, allowing the routed
+        # branch-and-bound below to stop them early.  Routed counts remain the
+        # authoritative MRV values.
+        geometry_ranked_items = []
         for candidate_item in remaining_items:
+            geometry_probe = alignment_geometry_candidates(candidate_item)
+            geometry_count = 0
+            try:
+                for _ in geometry_probe:
+                    geometry_count += 1
+                    if geometry_count >= budget["max_node_candidates"]:
+                        break
+            finally:
+                geometry_probe.close()
+            geometry_ranked_items.append((geometry_count, candidate_item))
+        geometry_ranked_items.sort(key=lambda row: (row[0], row[1][0]))
+        for _, candidate_item in geometry_ranked_items:
             check_deadline()
             probe_name = candidate_item[1][1]
             probe_state = (group_index, depth_in_blob, probe_name, alignment_state_signature())
@@ -1597,8 +1617,13 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             rank_viable_counts[probe_name] = (count, cutoff)
             if not cutoff and (best_count is None or count < best_count):
                 best_count = count
-            if best_count == 0:
-                break
+                # Once an exact domain is known, restart ranking for the
+                # remaining members under that beat.  The loop used to pay an
+                # unbounded routed count for every member encountered before
+                # the first tight domain (notably Uranus in W17).  A second
+                # pass lets branch-and-bound cap those earlier probes too.
+                if best_count == 0:
+                    break
         # Near-tied MRV counts are not meaningfully different constraints.
         # Prefer the later member in the alignment sequence within a one-candidate
         # band so a fragile downstream member (notably Sun) is placed before a
