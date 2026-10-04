@@ -1792,7 +1792,16 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                             # Cheap necessary-condition support remains sufficient
                             # here. Authoritative routed viability is already computed
                             # by MRV; do not pay for the same routed proof twice.
-                            witness_stream = alignment_geometry_candidates(future_item)
+                            final_pair_support = len(next_remaining) == 1
+                            witness_stream = (
+                                alignment_profiled_candidates(
+                                    future_item,
+                                    diagnostic_depth,
+                                    "alignment-final-pair-support",
+                                )
+                                if final_pair_support
+                                else alignment_geometry_candidates(future_item)
+                            )
                             try:
                                 next(witness_stream)
                             except StopIteration:
