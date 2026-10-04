@@ -1815,8 +1815,12 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 if len(next_remaining) == 3:
                     support_items = list(next_remaining)
 
-                    # Squeaky wheel first: cheaply rank the three routed domains
-                    # under the staged parent, then enumerate the tightest first.
+                    # Squeaky wheel first, but do not fully regenerate all
+                    # three routed domains merely to rank them.  Probe only up
+                    # to the existing support limit: exact small domains sort
+                    # first; larger domains are all "large enough" and are
+                    # tie-broken deterministically by name.  The joint-support
+                    # proof below remains exact.
                     ranked_support = []
                     for support_item in support_items:
                         support_name = support_item[1][1]
@@ -1829,15 +1833,20 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                         try:
                             for _ in support_stream:
                                 support_count += 1
-                                if support_count >= budget["max_node_candidates"]:
+                                if support_count > support_limit:
                                     break
                         finally:
                             support_stream.close()
                         ranked_support.append(
-                            (support_count, support_name, support_item)
+                            (
+                                support_count > support_limit,
+                                support_count,
+                                support_name,
+                                support_item,
+                            )
                         )
-                    ranked_support.sort(key=lambda row: (row[0], row[1]))
-                    support_items = [row[2] for row in ranked_support]
+                    ranked_support.sort(key=lambda row: (row[0], row[1], row[2]))
+                    support_items = [row[3] for row in ranked_support]
 
                     def triple_support(depth):
                         if depth >= len(support_items):
