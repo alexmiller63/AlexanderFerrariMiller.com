@@ -14,38 +14,43 @@ jobs:
         with:
           python-version: '3.x'
       - run: pip install pytest skyfield==1.55
-      - name: Save current solver
-        run: cp tools/planet_finder_search_core.py /tmp/current_search_core.py
+      - name: Save current tight-5 test
+        run: cp tests/test_planet_finder_ultimate_ladders.py /tmp/tight5_test.py
+
       - name: BEFORE suspected regression
         continue-on-error: true
         run: |
-          git show 6896c1aebc2438bdf424cceb8ec15a0bd6badb60:tools/planet_finder_search_core.py > tools/planet_finder_search_core.py
+          git checkout --detach 6896c1aebc2438bdf424cceb8ec15a0bd6badb60
+          cp /tmp/tight5_test.py tests/test_planet_finder_ultimate_ladders.py
           echo "===== BEFORE 6896c1a ====="
+          set +e
           PYTHONPATH=tools pytest -q -s tests/test_planet_finder_ultimate_ladders.py::test_w01_tight_alignment_five_only
-          echo $? > /tmp/before_status
-      - name: Record BEFORE status
-        if: always()
-        run: test -f /tmp/before_status || echo 1 > /tmp/before_status
+          STATUS=$?
+          echo "$STATUS" > /tmp/before_status
+          exit 0
+
       - name: AFTER suspected regression
         continue-on-error: true
         run: |
-          git show c6f960995932d1c8ad85584678abd13db68e04d0:tools/planet_finder_search_core.py > tools/planet_finder_search_core.py
+          git checkout --detach c6f960995932d1c8ad85584678abd13db68e04d0
+          cp /tmp/tight5_test.py tests/test_planet_finder_ultimate_ladders.py
           echo "===== AFTER c6f960995 ====="
+          set +e
           PYTHONPATH=tools pytest -q -s tests/test_planet_finder_ultimate_ladders.py::test_w01_tight_alignment_five_only
-          echo $? > /tmp/after_status
-      - name: Record AFTER status
-        if: always()
-        run: test -f /tmp/after_status || echo 1 > /tmp/after_status
+          STATUS=$?
+          echo "$STATUS" > /tmp/after_status
+          exit 0
+
       - name: Regression verdict
         if: always()
         run: |
-          BEFORE=$(cat /tmp/before_status)
-          AFTER=$(cat /tmp/after_status)
+          BEFORE=$(cat /tmp/before_status 2>/dev/null || echo 99)
+          AFTER=$(cat /tmp/after_status 2>/dev/null || echo 99)
           echo "BEFORE exit=$BEFORE"
           echo "AFTER  exit=$AFTER"
           if [ "$BEFORE" = 0 ] && [ "$AFTER" != 0 ]; then
             echo "REGRESSION PINNED: c6f960995 introduced the tight-5 failure."
             exit 0
           fi
-          echo "NOT PINNED: this commit boundary does not show pass-before/fail-after."
+          echo "NOT PINNED: this boundary does not show pass-before/fail-after."
           exit 1
