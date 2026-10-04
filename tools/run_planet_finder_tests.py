@@ -7,8 +7,7 @@ import subprocess
 import sys
 
 CONTROL = [
-    "tests/test_planet_finder_ultimate_ladders.py::test_five_candidate_exact_w01_w02_regression",
-    "tests/test_planet_finder_ultimate_ladders.py::test_five_candidate_exact_w36_regression",
+    "tests/test_planet_finder_ultimate_ladders.py::test_w01_five_candidate_deep_forensic",
 ]
 
 
