@@ -1734,10 +1734,21 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 for candidate_item in ()
             )
         min_viable = min(row[0] for row in ranked)
-        near_tied = [row for row in ranked if row[0] <= min_viable + 1]
+        # In the final three alignment members, a one-candidate MRV band can
+        # overcommit to an upstream member whose exact domain is only barely
+        # smaller than two beat-limited downstream domains.  W17 showed that
+        # choosing that upstream member (Ceres 15 versus Venus/Uranus 17+)
+        # creates hundreds of prefixes before the downstream pair contradiction
+        # is exposed.  Treat the branch-and-bound edge (best + 2) as tied only
+        # at this final-three boundary; elsewhere preserve the established
+        # one-candidate band.
+        near_tie_margin = 2 if len(remaining_items) == 3 else 1
+        near_tied = [
+            row for row in ranked if row[0] <= min_viable + near_tie_margin
+        ]
         # Zero is a proof of failure and must always win. Otherwise all
-        # members inside the one-candidate MRV band are deliberately treated as
-        # tied, so choose the later alignment member first.
+        # members inside the near-tie band are deliberately treated as tied,
+        # so choose the later alignment member first.
         zero_rows = [row for row in near_tied if row[0] == 0]
         if zero_rows:
             viable_count, item = min(zero_rows, key=lambda row: row[1][0])
@@ -2013,106 +2024,6 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                     for key in ("generated", "viable")
                 }
             try:
-                # When exactly two alignment members remain, propagate their
-                # mutual routed compatibility one level earlier.  This is a
-                # bounded proof: only prune when one remaining member's routed
-                # domain exhausts within the small support limit and every one
-                # of those candidates leaves the other member with no routed
-                # witness.  Otherwise preserve the prefix as UNKNOWN.
-                if len(next_remaining) == 2:
-                    pair_proven_dead = False
-                    pair_proven_live = False
-                    for first_future, second_future in (
-                        (next_remaining[0], next_remaining[1]),
-                        (next_remaining[1], next_remaining[0]),
-                    ):
-                        first_cache_key = (
-                            first_future[0], alignment_state_signature()
-                        )
-                        cached_first = alignment_routed_domain_cache.get(
-                            first_cache_key
-                        )
-                        first_candidates = []
-                        first_exhaustive = False
-                        if cached_first is not None:
-                            cached_values, cached_cutoff, cached_prefix = cached_first
-                            if (
-                                not cached_prefix
-                                and not cached_cutoff
-                                and len(cached_values) <= support_limit
-                            ):
-                                first_candidates = list(cached_values)
-                                first_exhaustive = True
-                        if not first_exhaustive:
-                            first_stream = alignment_profiled_candidates(
-                                first_future,
-                                diagnostic_depth,
-                                "alignment-triple-screen",
-                            )
-                            try:
-                                for first_candidate in first_stream:
-                                    first_candidates.append(first_candidate)
-                                    if len(first_candidates) > support_limit:
-                                        first_exhaustive = False
-                                        break
-                                else:
-                                    first_exhaustive = True
-                            finally:
-                                first_stream.close()
-                        if not first_exhaustive:
-                            continue
-
-                        first_index, (first_symbol, first_name, first_longitude) = first_future
-                        compatible = False
-                        for first_box, first_path in first_candidates:
-                            placed.append(first_box)
-                            leaders.append(first_path)
-                            leader_names.append(first_name)
-                            staged[first_index] = (
-                                first_symbol, first_name, first_longitude,
-                                first_box, first_path,
-                            )
-                            try:
-                                witness_stream = alignment_profiled_candidates(
-                                    second_future,
-                                    diagnostic_depth,
-                                    "alignment-triple-witness",
-                                )
-                                try:
-                                    next(witness_stream)
-                                except StopIteration:
-                                    pass
-                                else:
-                                    compatible = True
-                                finally:
-                                    witness_stream.close()
-                            finally:
-                                staged.pop(first_index, None)
-                                leader_names.pop()
-                                leaders.pop()
-                                placed.pop()
-                            if compatible:
-                                break
-                        if compatible:
-                            pair_proven_live = True
-                            break
-                        pair_proven_dead = True
-                        diagnostic_print(
-                            f"Planet Finder {mode}: ALIGNMENT TRIPLE BACKTRACK "
-                            f"depth={depth_in_blob}/{group_size} "
-                            f"first={first_future[1][1]} second={second_future[1][1]} "
-                            f"first-count={len(first_candidates)} reason=no-compatible-pair",
-                            level=1, flush=True,
-                        )
-                        break
-                    if pair_proven_dead and not pair_proven_live:
-                        solved = False
-                        staged.pop(original_index, None)
-                        leader_names.pop()
-                        leaders.pop()
-                        placed.pop()
-                        return False
-
                 # Forensic: the final Group-1 Mercury choice has no remaining
                 # blob members. Track whether it reaches the ordinary-body
                 # witness gate and, if rejected, which ordinary body proves it
