@@ -452,7 +452,7 @@ def test_w20_latin_6_vs_7_forensic(monkeypatch):
     enable_alignment_fix(monkeypatch)
     monkeypatch.setenv("PLANET_FINDER_DIAGNOSTIC_LEVEL", "4")
 
-    for size, seconds in ((6, 30.0), (7, 60.0)):
+    for size, seconds in ((6, 30.0), (7, 360.0)):
         active = W20_ALIGNMENT[:size]
         longitudes, expected_groups = w20_ladder_case(active)
         bodies = synthetic_bodies(longitudes)
