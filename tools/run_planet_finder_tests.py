@@ -7,7 +7,7 @@ import subprocess
 import sys
 
 CONTROL = [
-    "tests/test_planet_finder_ultimate_ladders.py::test_w01_five_candidate_deep_forensic",
+    "tests/test_planet_finder_ultimate_ladders.py::test_w01_five_candidate_breakpoint_ladder",
 ]
 
 
