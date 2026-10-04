@@ -2013,6 +2013,86 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                     for key in ("generated", "viable")
                 }
             try:
+                # When exactly two alignment members remain, propagate their
+                # mutual routed compatibility one level earlier.  This is a
+                # bounded proof: only prune when one remaining member's routed
+                # domain exhausts within the small support limit and every one
+                # of those candidates leaves the other member with no routed
+                # witness.  Otherwise preserve the prefix as UNKNOWN.
+                if len(next_remaining) == 2:
+                    pair_proven_dead = False
+                    pair_proven_live = False
+                    for first_future, second_future in (
+                        (next_remaining[0], next_remaining[1]),
+                        (next_remaining[1], next_remaining[0]),
+                    ):
+                        first_stream = alignment_profiled_candidates(
+                            first_future, diagnostic_depth, "alignment-triple-screen"
+                        )
+                        first_candidates = []
+                        first_exhaustive = True
+                        try:
+                            for first_candidate in first_stream:
+                                first_candidates.append(first_candidate)
+                                if len(first_candidates) > support_limit:
+                                    first_exhaustive = False
+                                    break
+                        finally:
+                            first_stream.close()
+                        if not first_exhaustive:
+                            continue
+
+                        first_index, (first_symbol, first_name, first_longitude) = first_future
+                        compatible = False
+                        for first_box, first_path in first_candidates:
+                            placed.append(first_box)
+                            leaders.append(first_path)
+                            leader_names.append(first_name)
+                            staged[first_index] = (
+                                first_symbol, first_name, first_longitude,
+                                first_box, first_path,
+                            )
+                            try:
+                                witness_stream = alignment_profiled_candidates(
+                                    second_future,
+                                    diagnostic_depth,
+                                    "alignment-triple-witness",
+                                )
+                                try:
+                                    next(witness_stream)
+                                except StopIteration:
+                                    pass
+                                else:
+                                    compatible = True
+                                finally:
+                                    witness_stream.close()
+                            finally:
+                                staged.pop(first_index, None)
+                                leader_names.pop()
+                                leaders.pop()
+                                placed.pop()
+                            if compatible:
+                                break
+                        if compatible:
+                            pair_proven_live = True
+                            break
+                        pair_proven_dead = True
+                        diagnostic_print(
+                            f"Planet Finder {mode}: ALIGNMENT TRIPLE BACKTRACK "
+                            f"depth={depth_in_blob}/{group_size} "
+                            f"first={first_future[1][1]} second={second_future[1][1]} "
+                            f"first-count={len(first_candidates)} reason=no-compatible-pair",
+                            level=1, flush=True,
+                        )
+                        break
+                    if pair_proven_dead and not pair_proven_live:
+                        solved = False
+                        staged.pop(original_index, None)
+                        leader_names.pop()
+                        leaders.pop()
+                        placed.pop()
+                        return False
+
                 # Forensic: the final Group-1 Mercury choice has no remaining
                 # blob members. Track whether it reaches the ordinary-body
                 # witness gate and, if rejected, which ordinary body proves it
