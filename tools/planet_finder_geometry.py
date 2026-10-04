@@ -498,8 +498,22 @@ def route(anchor: tuple[float, float], center: tuple[float, float], obstacles: l
                 if close_anchors and a == anchor and si == 0:
                     continue
                 c, d = other[si], other[si + 1]
+                # Exact cheap reject before the comparatively expensive
+                # segment-distance calculation.  If the two segment AABBs are
+                # separated by at least the required leader clearance on
+                # either axis, their Euclidean separation cannot violate the
+                # clearance.  This is geometry-preserving: only provably
+                # distant segment pairs are skipped.
+                clearance = LEADER_TO_LEADER_CLEARANCE
+                if (
+                    max(a[0], b[0]) + clearance <= min(c[0], d[0])
+                    or max(c[0], d[0]) + clearance <= min(a[0], b[0])
+                    or max(a[1], b[1]) + clearance <= min(c[1], d[1])
+                    or max(c[1], d[1]) + clearance <= min(a[1], b[1])
+                ):
+                    continue
                 dist = segment_distance(a, b, c, d)
-                if dist >= LEADER_TO_LEADER_CLEARANCE:
+                if dist >= clearance:
                     continue
                 # Rank by projection of blocker midpoint along desired segment.
                 vx, vy = b[0] - a[0], b[1] - a[1]
