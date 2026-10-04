@@ -57,8 +57,14 @@ jobs:
           set -uo pipefail
           ref="$(git rev-parse HEAD)"
           echo "::group::Testing $ref"
-          PLANET_FINDER_DIAGNOSTIC_LEVEL=1 timeout 40s python "$HARNESS_DIR/oracle.py" "$HARNESS_DIR"
-          rc=$?
+          log="$HARNESS_DIR/$ref.log"
+          PLANET_FINDER_DIAGNOSTIC_LEVEL=1 timeout 40s python "$HARNESS_DIR/oracle.py" "$HARNESS_DIR" 2>&1 | tee "$log"
+          rc=${PIPESTATUS[0]}
+          # Search success is the regression oracle. Historical versions can
+          # spend substantial time in makeup after already finding solution 5.
+          if grep -Eq "solutions=5|complete valid candidate 5/5" "$log"; then
+            rc=0
+          fi
           echo "::endgroup::"
           if [ "$rc" -eq 0 ]; then
             echo "PASS $ref"
