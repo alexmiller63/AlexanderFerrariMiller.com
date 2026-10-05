@@ -359,53 +359,67 @@ def identity_index(spec):
 
 
 def deep_sky_catalog_objects():
-    """Load repository-owned Messier and Caldwell objects for finder overlays."""
+    """Load curated Messier, Caldwell, and Finest NGC finder overlays."""
     objects = []
 
-    # Messier is repository-owned structured YAML.  PyYAML is already used by
-    # the Star Almanack toolchain; keep this source authoritative rather than
-    # duplicating coordinates in the renderer.
     import yaml
-    messier_path = REPO_ROOT / "fixed-objects.yaml"
-    payload = yaml.safe_load(messier_path.read_text(encoding="utf-8"))
+    payload = yaml.safe_load((REPO_ROOT / "fixed-objects.yaml").read_text(encoding="utf-8"))
     columns = payload["schema"]["messier"]
     for values in payload.get("messier") or []:
         row = dict(zip(columns, values))
         if row.get("ra_h") is None or row.get("dec_deg") is None:
             continue
+        ngc = row.get("ngc")
+        physical_key = f"NGC {ngc}" if ngc and str(ngc).isdigit() else (str(ngc) if ngc else str(row["id"]))
         objects.append({
-            "key": str(row["id"]),
             "label": str(row["id"]),
             "ra_deg": float(row["ra_h"]) * 15.0,
             "dec_deg": float(row["dec_deg"]),
-            "catalog": "Messier",
-            "physical_key": f"NGC {row['ngc']}" if row.get("ngc") else str(row["id"]),
+            "physical_key": physical_key,
         })
 
-    caldwell_path = REPO_ROOT / "caldwell-catalog.csv"
-    with caldwell_path.open(encoding="utf-8", newline="") as handle:
+    with (REPO_ROOT / "caldwell-catalog.csv").open(encoding="utf-8", newline="") as handle:
         for row in csv.DictReader(handle):
             if not row.get("ra_h") or not row.get("dec_deg"):
                 continue
             objects.append({
-                "key": row["caldwell"],
                 "label": row["caldwell"],
                 "ra_deg": float(row["ra_h"]) * 15.0,
                 "dec_deg": float(row["dec_deg"]),
-                "catalog": "Caldwell",
                 "physical_key": row.get("catalog") or row["caldwell"],
+            })
+
+    # Finest NGC is a curated observing list, not a substitute name for NGC.
+    # Keep its membership visible even when the same physical object is also
+    # Messier or Caldwell.
+    with (REPO_ROOT / "finest-ngc-catalog.csv").open(encoding="utf-8", newline="") as handle:
+        for row in csv.DictReader(handle):
+            if not row.get("ra_h") or not row.get("dec_deg"):
+                continue
+            objects.append({
+                "label": f"Finest {row['finest_ngc']}",
+                "ra_deg": float(row["ra_h"]) * 15.0,
+                "dec_deg": float(row["dec_deg"]),
+                "physical_key": row.get("catalog") or f"Finest {row['finest_ngc']}",
             })
     return objects
 
 
+def normalized_catalog_identity(value):
+    """Normalize simple NGC/IC identities without collapsing composite regions."""
+    text = re.sub(r"\\s+", " ", str(value or "").strip().upper())
+    match = re.fullmatch(r"(NGC|IC)\\s*(\\d+)", text)
+    return f"{match.group(1)} {match.group(2)}" if match else text
+
+
 def visible_deep_sky_objects(center, xmin, xmax, ymin, ymax):
-    """Project catalog objects and combine duplicate physical targets."""
+    """Project curated catalog objects and combine duplicate physical targets."""
     grouped = {}
     for obj in deep_sky_catalog_objects():
         point = project(obj["ra_deg"], obj["dec_deg"], *center)
         if point is None or not (xmin <= point[0] <= xmax and ymin <= point[1] <= ymax):
             continue
-        key = obj["physical_key"].strip().upper()
+        key = normalized_catalog_identity(obj["physical_key"])
         item = grouped.setdefault(key, {"point": point, "labels": []})
         if obj["label"] not in item["labels"]:
             item["labels"].append(obj["label"])
