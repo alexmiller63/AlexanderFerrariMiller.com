@@ -61,7 +61,7 @@ def parse_args():
     g.add_argument("--current", action="store_true", help="generate the current UTC ISO week")
     g.add_argument("--year", type=int, help="ISO week-year")
     p.add_argument("--week", type=int, help="ISO week number; required with --year")
-    p.add_argument("--diagnostic-level", type=int, default=None, metavar="N", help="diagnostic verbosity: 0=silent, 1=major events, 2=search detail, 3=forensic detail")
+    p.add_argument("--diagnostic-level", type=int, default=None, metavar="N", help="diagnostic verbosity: 0=silent, 1=major events, 2=search detail, 3=forensic detail, 4=sparse solver trace")
     args = p.parse_args()
     if args.year is not None and args.week is None:
         p.error("--week is required with --year")
