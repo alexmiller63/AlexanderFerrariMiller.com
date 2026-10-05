@@ -744,6 +744,91 @@
       "url": "/stories/messier/380.html"
     }
   ],
+  "planet_finder_artwork": {
+    "schema_version": 1,
+    "id": "2026-W36-stellar-finder",
+    "week": "2026-W36",
+    "kind": "stellar-finder",
+    "geometry": {
+      "constellation_system": "Martz/MacRobert",
+      "constellation_abbreviation": "Vir",
+      "on_missing_geometry": "fail",
+      "invent_geometry": false
+    },
+    "style": {
+      "background": "night-sky",
+      "constellation": {
+        "stroke": "#5c8fe8",
+        "role": "ordinary constellation figure"
+      },
+      "asterism": {
+        "stroke": "#59c86d",
+        "role": "orienting asterism"
+      },
+      "target": {
+        "stroke": "#ffd84d",
+        "fill": "none",
+        "role": "open target circle"
+      },
+      "target_arrows": false
+    },
+    "constellation": "Virgo",
+    "asterism": null,
+    "targets": [
+      {
+        "type": "planet",
+        "name": "Venus"
+      },
+      {
+        "type": "reference-star",
+        "name": "Spica"
+      }
+    ],
+    "finder_route": {
+      "sequence": [
+        "Virgo",
+        null,
+        "Spica",
+        "Venus"
+      ],
+      "reference_star": "Spica",
+      "planet": "Venus"
+    },
+    "planetary_context": [
+      {
+        "kind": "planet-star-longitude",
+        "planet": "Venus",
+        "planet_longitude_deg": 202.367,
+        "star": "Spica",
+        "constellation": "Vir",
+        "star_ecliptic_longitude_deg": 203.841,
+        "star_ecliptic_latitude_deg": -2.054,
+        "longitude_separation_deg": 1.5,
+        "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+        "planet_ra_deg": 199.09149,
+        "planet_dec_deg": -11.589473
+      },
+      {
+        "kind": "planet-star-longitude",
+        "planet": "Uranus",
+        "planet_longitude_deg": 65.65,
+        "star": "Aldebaran",
+        "constellation": "Tau",
+        "star_ecliptic_longitude_deg": 69.789,
+        "star_ecliptic_latitude_deg": -5.467,
+        "longitude_separation_deg": 4.1,
+        "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+        "planet_ra_deg": 63.375254,
+        "planet_dec_deg": 21.025256
+      }
+    ],
+    "planet_position": {
+      "ra_deg": 199.09149,
+      "dec_deg": -11.589473
+    },
+    "planet_plot_policy": "plot only from preserved 2-D Star Almanack ephemeris position data",
+    "reference_standard": "docs/finder-standard.md"
+  },
   "descriptor_policy": {
     "source_of_truth": "machine-readable JSON",
     "candidate_pool": "complete; presentation never limits discovery",
