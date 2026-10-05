@@ -3,6 +3,7 @@
 from pathlib import Path
 
 from almanack_paths import week_dir, week_index
+from almanack_sections import replace_section_inner, section_bounds
 import math, shutil
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -69,13 +70,25 @@ def main():
     css='''<style>.w41-finder-strip{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem;margin:1.25rem 0 2rem}.w41-finder-strip figure,.w41-star-finder{margin:0}.w41-finder-strip img,.w41-star-finder img{display:block;width:100%;height:auto}.w41-finder-strip figcaption,.w41-star-finder figcaption{text-align:center;font-family:system-ui,sans-serif;font-size:.82rem;color:var(--muted);margin-top:.35rem}.w41-star-finder{max-width:820px;margin:1.1rem auto 1.6rem}.w41-star-finder img{border:1px solid var(--rule);border-radius:.4rem}@media(max-width:760px){.w41-finder-strip{grid-template-columns:1fr}.w41-star-finder{max-width:none}}</style>'''
     text=text.replace('</head>',css+'</head>',1)
     strip='''<div class="w41-finder-strip"><figure><img src="finders/planet-finder-greek-symbols.svg" alt="Planet Finder — Greek / Symbols"><figcaption>Greek / Symbols</figcaption></figure><figure><img src="finders/planet-finder-latin.svg" alt="Planet Finder — Latin"><figcaption>Latin</figcaption></figure><figure><img src="finders/planet-finder-mixed-learner.svg" alt="Planet Finder — Mixed / Learner"><figcaption>Mixed / Learner</figcaption></figure></div>'''
-    text=text.replace('</table>\n<h3>Sky Note</h3>', '</table>\n'+strip+'\n<h3>Sky Note</h3>',1)
+    # Section 4 is the Planet Finder; section 5 is Sky Notes. Their visible
+    # headings are presentation only and are never used for placement.
+    start4, end4 = section_bounds(text, 4, page)
+    finder_section = text[start4:end4]
+    if strip not in finder_section:
+        finder_section = strip + '\n' + finder_section
+    text = replace_section_inner(text, 4, finder_section, page)
+
     nfm='''<figure class="w41-star-finder"><img src="finders/enif-finder.svg" alt="Enif and M15 finder"><figcaption>Enif and M15</figcaption></figure>'''
-    text=text.replace('</p>\n<p><strong>Naked eye:</strong>', '</p>\n'+nfm+'\n<p><strong>Naked eye:</strong>',1)
     aq='''<figure class="w41-star-finder"><img src="finders/sadalmelik-finder.svg" alt="Aquarius and Sadalmelik finder"><figcaption>Aquarius and Sadalmelik</figcaption></figure>'''
-    # Place the Aquarius finder at the end of the W41 Sky Note, before the next heading.
-    pos=text.find('<h3>', text.find('<h3>Sky Note</h3>')+len('<h3>Sky Note</h3>'))
-    if pos!=-1: text=text[:pos]+aq+'\n'+text[pos:]
+    start5, end5 = section_bounds(text, 5, page)
+    sky = text[start5:end5]
+    first_para = sky.find('</p>')
+    if first_para >= 0 and nfm not in sky:
+        pos = first_para + len('</p>')
+        sky = sky[:pos] + '\n' + nfm + sky[pos:]
+    if aq not in sky:
+        sky = sky.rstrip() + '\n' + aq + '\n'
+    text = replace_section_inner(text, 5, sky, page)
     page.write_text(text,encoding='utf-8')
     print('Assembled W41 artwork:', FINDERS)
 
