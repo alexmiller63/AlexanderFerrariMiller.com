@@ -109,7 +109,8 @@ Likely scope: Ephemeris generator/template legend formatting.
 
 
 BUG 006 — Sun legend wording unnecessarily describes the glyph
-Status: OPEN
+Status: RESOLVED
+Resolution: The generator now uses one fixed, mode-independent sentence: “The Sun’s observing status uses this same five-state sky classification.” It no longer describes the Sun glyph or refers to Latin/Greek/Mixed notation behavior. Fix commit: ee72295a87af689f6faf7682e68b2da82b13cb6d
 Found on: 2026-W01 legend
 Observed: The legend says the Sun uses the Sun glyph and that text is visible in Latin mode. Although technically correct, explicitly saying the Sun uses its glyph is unnecessary/confusing.
 Desired: Simplify the Sun legend wording so it explains only the meaningful mode behavior without stating the obvious glyph usage.
@@ -118,7 +119,8 @@ Likely scope: Legend generator/template.
 
 
 BUG 006 — Sun legend sentence should not vary by symbol mode
-Status: OPEN
+Status: RESOLVED
+Resolution: The generator now uses one fixed, mode-independent sentence: “The Sun’s observing status uses this same five-state sky classification.” It no longer describes the Sun glyph or refers to Latin/Greek/Mixed notation behavior. Fix commit: ee72295a87af689f6faf7682e68b2da82b13cb6d
 Found on: 2026-W01 legend
 Observed: The legend says wording such as “The Sun uses [Sun glyph] and text ‘Visible’ in Latin mode.” Although technically descriptive, the mode-specific wording is confusing and unnecessary.
 Desired: Use one fixed Sun legend sentence for Mixed Learner, Latin, and Greek symbol modes. The sentence should not change when the symbol mode changes.
