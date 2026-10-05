@@ -29,4 +29,4 @@ jobs:
             cd /var/www/AlexanderFerrariMiller
             git fetch origin main
             git reset --hard origin/main
-            ~/build-alex.sh
+            # Remove untracked files left by older deployments before rebuilding.\n            # Without this, obsolete Almanack subpages (for example W01/sky-notes/)\n            # can survive indefinitely even after they are removed from the repository.\n            git clean -fd\n            ~/build-alex.sh
