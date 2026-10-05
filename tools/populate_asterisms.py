@@ -39,7 +39,7 @@ def brightest_asterism_magnitudes():
 def visibility_html(mag):
  aid=observing_aid_for_magnitude(str(mag))
  if aid is None:raise SystemExit(f"Could not derive observing aid for magnitude {mag}")
- return f'<span class="visibility-magnitude">{HTML_AID[aid]} V {mag:.1f}</span>'
+ return f'<span class="visibility-magnitude">{HTML_AID[aid]} {mag:.1f}</span>'
 def event_map(rows):
  e=defaultdict(list); brightest=brightest_asterism_magnitudes(); overlaps=catalog_overlaps()
  for r in rows:
