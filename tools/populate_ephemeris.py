@@ -63,7 +63,7 @@ table.ephemeris, table.ephemeris thead, table.ephemeris tbody, table.ephemeris t
 table.ephemeris thead { display:table-header-group !important; }
 table.ephemeris tbody { display:table-row-group !important; }
 table.ephemeris tr { display:table-row !important; }
-table.ephemeris th, table.ephemeris td { display:table-cell !important; }
+table.ephemeris { border-collapse:collapse !important; }\ntable.ephemeris th, table.ephemeris td { display:table-cell !important; border:1px solid currentColor !important; }
 table.ephemeris.extended-ephemeris { grid-template-columns:none !important; grid-template-rows:none !important; }
 table.ephemeris th, table.ephemeris td { width:auto !important; min-width:0 !important; padding:.7rem .55rem !important; text-align:center; white-space:nowrap; overflow-wrap:normal; word-break:normal; }
 table.ephemeris small { white-space:nowrap; }
