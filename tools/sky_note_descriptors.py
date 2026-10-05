@@ -481,37 +481,42 @@ def _linked_name(record: dict) -> str:
 
 
 def lunar_highlight_descriptors(page_path) -> list[dict]:
-    """Create one descriptor for a lunar event carrying distinct phase/name meanings."""
+    """Create distinct descriptors for each highlighted lunar concept."""
     text = page_path.read_text(encoding="utf-8")
-    has_full = bool(re.search(r"\bFull Moon\b", text, flags=re.I))
-    has_yule = bool(re.search(r"\bMoon After Yule\b", text, flags=re.I))
-    if not (has_full or has_yule):
-        return []
-    names = ["Full Moon"] if has_full else []
-    if has_yule:
-        names.append("Moon After Yule")
-    display_name = " · ".join(names)
-    return [{
-        "schema_version": 1,
-        "id": "lunar-full-moon",
-        "type": "lunar-highlight",
-        "name": display_name,
-        "summary": "One lunar event with both its astronomical phase and seasonal designation.",
-        "representation": {
-            "machine": "./lunar-full-moon.json",
-            "human_source": "summary",
-        },
-        "body": (
-            "Full Moon is the lunar phase in which the Moon and Sun are approximately opposite "
-            "in geocentric ecliptic longitude, so the lunar disk is fully illuminated as seen from Earth."
-            + (
-                " Moon After Yule is the Almanack's traditional designation for the first Full Moon "
-                "after the December solstice; it is a seasonal name for this same lunar event."
-                if has_yule else ""
-            )
-        ),
-    }]
-
+    records: list[dict] = []
+    if re.search(r"\bFull Moon\b", text, flags=re.I):
+        records.append({
+            "schema_version": 1,
+            "id": "lunar-full-moon",
+            "type": "lunar-highlight",
+            "name": "Full Moon",
+            "summary": "Astronomical lunar phase near opposition to the Sun.",
+            "representation": {
+                "machine": "./lunar-full-moon.json",
+                "human_source": "summary",
+            },
+            "body": (
+                "Full Moon is the lunar phase in which the Moon and Sun are approximately opposite "
+                "in geocentric ecliptic longitude, so the lunar disk is fully illuminated as seen from Earth."
+            ),
+        })
+    if re.search(r"\bMoon After Yule\b", text, flags=re.I):
+        records.append({
+            "schema_version": 1,
+            "id": "lunar-moon-after-yule",
+            "type": "lunar-highlight",
+            "name": "Moon After Yule",
+            "summary": "Traditional seasonal designation for the first Full Moon after the December solstice.",
+            "representation": {
+                "machine": "./lunar-moon-after-yule.json",
+                "human_source": "summary",
+            },
+            "body": (
+                "Moon After Yule is the Almanack's traditional seasonal designation for the first Full Moon "
+                "after the December solstice. It names the seasonal context of the event rather than a separate lunar phase."
+            ),
+        })
+    return records
 
 def human_sentence(record: dict) -> str:
     """Render useful prose strictly from fields in the machine-readable record."""
