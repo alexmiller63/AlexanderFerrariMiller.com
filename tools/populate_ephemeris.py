@@ -150,9 +150,13 @@ def observing_html(key, magnitude, elongation, daylight=False):
     label = observing_label(key, magnitude, elongation, daylight)
     try: magnitude_text = f" ({float(magnitude):+.1f})"
     except (TypeError, ValueError): magnitude_text = ""
-    greek = glyph + magnitude_text
-    latin = label + magnitude_text
-    mixed = glyph + " " + label + magnitude_text
+    # Greek/Symbols is deliberately symbol-only for categorical sky states.
+    # Magnitude belongs to observing-aid classifications, not Daylight/Solar Glare.
+    categorical = aid in {"daylight", "solar_glare", "visible"}
+    shown_magnitude = "" if categorical else magnitude_text
+    greek = glyph + shown_magnitude
+    latin = label + shown_magnitude
+    mixed = glyph + " " + label + shown_magnitude
     # Use the same notation-item data contract as the centralized renderer.
     # The renderer assigns mode values through innerHTML, so glyph markup is preserved.
     return ('<span class="notation-item observing-notation-item" ' f'data-greek="{html.escape(greek, quote=True)}" ' f'data-latin="{html.escape(latin, quote=True)}" ' f'data-mixed="{html.escape(mixed, quote=True)}">' f'{greek}</span>')
