@@ -62,9 +62,14 @@ jobs:
           PLANET_FINDER_DIAGNOSTIC_LEVEL=3 timeout 70s python "$HARNESS_DIR/oracle.py" "$HARNESS_DIR" >"$log" 2>&1
           rc=$?
           cat "$log"
-          echo "RESULT $ref PASS"
           echo "::endgroup::"
-          exit 0
+          if [ "$rc" -eq 0 ]; then
+            echo "RESULT $ref PASS"
+            exit 0
+          else
+            echo "RESULT $ref FAIL (rc=$rc)"
+            exit 1
+          fi
           SH
           chmod +x "$HARNESS_DIR/test-one.sh"
           export HARNESS_DIR
@@ -76,7 +81,7 @@ jobs:
           echo "Verifying BAD endpoint"
           git checkout --detach "$BAD_REF"
           if "$HARNESS_DIR/test-one.sh"; then
-            echo "::error::BAD endpoint is at or below threshold; refusing false bisect."
+            echo "::error::BAD endpoint unexpectedly PASSED; refusing false bisect."
             exit 2
           fi
 
