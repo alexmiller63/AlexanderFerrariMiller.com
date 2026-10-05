@@ -356,15 +356,14 @@ def patch_page(path, payload: dict) -> bool:
         body += linked + "\n"
     if artwork_slot:
         body += artwork_slot + "\n"
-    # Presentation-mode control is intentionally inert for now.  Wordy is the
-    # only authored mode; Highlights will later be derived from the same
-    # structured Sky Notes data rather than maintained as separate content.
+    # Highlights and Wordy are two views of the same structured Sky Note.
+    # The toggle state is controlled entirely by setMode() below.
     mode_toggle = (
         '<div class="sky-note-mode-toggle" role="group" aria-label="Sky Notes presentation" '
         'style="display:inline-flex;align-items:center;gap:.35rem;padding:.2rem;border:1px solid currentColor;border-radius:999px">'
         '<span class="sky-note-mode-label" style="padding-left:.35rem">View:</span>'
         '<button type="button" data-sky-note-mode="highlights" aria-pressed="false" style="border-radius:999px">Highlights</button>'
-        '<button type="button" data-sky-note-mode="wordy" aria-pressed="true" style="border-radius:999px;font-weight:700">Wordy</button>'
+        '<button type="button" data-sky-note-mode="wordy" aria-pressed="true" style="border-radius:999px">Wordy</button>'
         '</div>'
     )
     highlights = render_linked_stories(payload.get("linked_stories", []))
@@ -380,7 +379,13 @@ function setMode(mode){
   const isHighlights=mode==='highlights';
   if(wordy)wordy.hidden=isHighlights;
   if(highlights)highlights.hidden=!isHighlights;
-  buttons.forEach(b=>b.setAttribute('aria-pressed',b.dataset.skyNoteMode===mode?'true':'false'));
+  buttons.forEach(b=>{
+    const active=b.dataset.skyNoteMode===mode;
+    b.setAttribute('aria-pressed',active?'true':'false');
+    b.classList.toggle('is-active',active);
+    b.style.fontWeight=active?'700':'400';
+    b.style.textDecoration=active?'underline':'none';
+  });
 }
 buttons.forEach(b=>b.addEventListener('click',()=>setMode(b.dataset.skyNoteMode)));
 setMode('wordy');
