@@ -1313,17 +1313,36 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
     # do not regenerate identical trigonometric/Box work.
     alignment_position_cache = {}
 
+    def alignment_max_label_lengths(name):
+        """Widen the candidate envelope only for crowded alignment groups."""
+        group_size = next(
+            (
+                len(group)
+                for group in alignment_group_items
+                if any(member[1][1] == name for member in group)
+            ),
+            0,
+        )
+        if group_size >= 8:
+            return 3.0
+        if group_size >= 5:
+            return 2.5
+        return 2.0
+
     def alignment_base_positions(item):
         _, (_, name, longitude) = item
-        cached = alignment_position_cache.get(name)
+        max_label_lengths = alignment_max_label_lengths(name)
+        cache_key = (name, max_label_lengths)
+        cached = alignment_position_cache.get(cache_key)
         if cached is None:
             w, h = label_size(mode, name)
             cached = tuple(
                 legal_candidate_positions(
-                    longitude, w, h, reserved, displacement_scale
+                    longitude, w, h, reserved, displacement_scale,
+                    max_label_lengths=max_label_lengths,
                 )
             )
-            alignment_position_cache[name] = cached
+            alignment_position_cache[cache_key] = cached
         return cached
 
     def alignment_geometry_candidates(item, pressure=None):
