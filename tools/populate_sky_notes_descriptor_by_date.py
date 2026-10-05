@@ -175,6 +175,40 @@ def story_presentations(candidates: list[dict]) -> tuple[list[dict], list[dict]]
     return [], list(candidates)
 
 
+def binocular_finder_guidance(items: list[dict]) -> str:
+    """Give binocular targets a concrete, source-backed finder instruction."""
+    instructions = []
+    for item in items:
+        fixed_id = item["fixed_object_id"]
+        spec_path = base.ROOT / "sky-notes-artwork" / "specs" / "objects" / f"{fixed_id}.json"
+        if spec_path.exists():
+            spec = json.loads(spec_path.read_text(encoding="utf-8"))
+            constellation = str(spec.get("name") or item.get("constellation") or "").strip()
+            target = str(
+                (spec.get("artwork_owner_identity") or {}).get("proper_name")
+                or item.get("name") or ""
+            ).strip()
+            paths = spec.get("figure_paths") or []
+            target_ref = (spec.get("artwork_owner_identity") or {}).get("renderer_ref")
+            closed = any(
+                len(path) >= 4 and path[0] == path[-1] and target_ref in path
+                for path in paths
+            )
+            if constellation and target:
+                shape = "closed figure" if closed else "charted figure"
+                instructions.append(
+                    f"Trace the {constellation} {shape} in the finder, then identify {target} at its charted position."
+                )
+                continue
+        constellation = str(item.get("constellation") or "").strip()
+        name = str(item.get("name") or "").strip()
+        if constellation:
+            instructions.append(f"Trace the charted figure of {constellation}, then identify {name} at its plotted position.")
+        else:
+            instructions.append(f"Use the object finder to identify {name} from the surrounding plotted stars.")
+    return " ".join(instructions)
+
+
 def observer_note(year: int, week: int, page_path, fixed: list[dict], relations: list[dict]) -> str:
     """Compose observer prose from identity-backed fixed-sky objects."""
     rows = base.calendar_events_from_page(page_path)
@@ -200,7 +234,8 @@ def observer_note(year: int, week: int, page_path, fixed: list[dict], relations:
     observing_aids = calendar_observing_aids(page_path)
     by_id = {item["fixed_object_id"]: item for item in fixed}
     naked = [by_id[i]["name"] for i, aid in observing_aids.items() if aid == "naked eye" and i in by_id]
-    binocular = [by_id[i]["name"] for i, aid in observing_aids.items() if aid == "binoculars" and i in by_id]
+    binocular_items = [by_id[i] for i, aid in observing_aids.items() if aid == "binoculars" and i in by_id]
+    binocular = [item["name"] for item in binocular_items]
     telescope = [by_id[i]["name"] for i, aid in observing_aids.items() if aid == "telescope" and i in by_id]
     substantial = [by_id[i]["name"] for i, aid in observing_aids.items() if aid == "substantial telescope" and i in by_id]
     naked_guidance = (
@@ -209,8 +244,8 @@ def observer_note(year: int, week: int, page_path, fixed: list[dict], relations:
         "No fixed-sky Calendar object is classified for naked-eye observing this week."
     )
     binocular_guidance = (
-        f"Favor {', '.join(binocular)}; wide fields help connect the charted geometry to the real sky."
-        if binocular else
+        binocular_finder_guidance(binocular_items)
+        if binocular_items else
         "No fixed-sky Calendar object is classified for binocular observing this week."
     )
     telescope_guidance = (
