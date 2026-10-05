@@ -240,12 +240,28 @@ def relation_sentence(item: dict) -> str:
         return f"{item['planet']} and {item['other_planet']} are separated by about {sep:.1f}° in geocentric ecliptic longitude at the Monday 00:00 UTC snapshot."
     constellation = CONSTELLATION_NAMES.get(item["constellation"], item["constellation"])
     if item.get("asterism"):
-        return f"{item['planet']} is about {sep:.1f}° in ecliptic longitude from {item['star']}, one of the stars used to orient {item['asterism']} in {constellation}."
+        return (
+            f"To find {item['planet']}, first identify {constellation}, trace the {item['asterism']}, "
+            f"and locate {item['star']} in that pattern. {item['planet']} lies about {sep:.1f}° away "
+            "in ecliptic longitude at the Monday 00:00 UTC snapshot; use the finder to transfer from "
+            f"{item['star']} to the planet."
+        )
     return f"{item['planet']} is about {sep:.1f}° in ecliptic longitude from {item['star']} in {constellation}."
 
 
 def artwork_descriptor(year: int, week: int, fixed: list[dict], relations: list[dict]) -> dict | None:
-    con, asterism = fixed_sky_context(fixed)
+    # A planet-star relation is itself a finder instruction.  Prefer its
+    # constellation/asterism over an unrelated weekly fixed-star context so
+    # prose and artwork describe the same route.
+    finder_relation = next((
+        item for item in relations
+        if item.get("kind") == "planet-star-longitude" and item.get("constellation")
+    ), None)
+    if finder_relation is not None:
+        con = finder_relation["constellation"]
+        asterism = ASTERISMS.get(con) if finder_relation.get("asterism") else None
+    else:
+        con, asterism = fixed_sky_context(fixed)
     if con is None:
         return None
     canonical = canonical_asterism(asterism) if asterism else None
@@ -262,7 +278,25 @@ def artwork_descriptor(year: int, week: int, fixed: list[dict], relations: list[
         },
         "constellation": CONSTELLATION_NAMES.get(con, con),
         "asterism": canonical,
-        "targets": [{"type": item["type"], "name": item["name"]} for item in fixed[:3]],
+        "targets": (
+            [{"type": "planet", "name": finder_relation["planet"]},
+             {"type": "reference-star", "name": finder_relation["star"]}]
+            if finder_relation is not None
+            else [{"type": item["type"], "name": item["name"]} for item in fixed[:3]]
+        ),
+        "finder_route": (
+            {
+                "sequence": [
+                    CONSTELLATION_NAMES.get(con, con),
+                    finder_relation.get("asterism"),
+                    finder_relation["star"],
+                    finder_relation["planet"],
+                ],
+                "reference_star": finder_relation["star"],
+                "planet": finder_relation["planet"],
+            }
+            if finder_relation is not None else None
+        ),
         "planetary_context": relations[:2],
         "planet_plot_policy": "do not plot from longitude alone; require preserved 2-D Star Almanack position data",
         "reference_standard": "docs/finder-standard.md",
