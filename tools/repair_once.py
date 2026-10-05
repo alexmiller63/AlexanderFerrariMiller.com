@@ -4,7 +4,7 @@
 from pathlib import Path
 import runpy
 
-ENABLED = True
+ENABLED = False
 
 if not ENABLED:
     print("Repair Once is OFF; nothing to do.")
