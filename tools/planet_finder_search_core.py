@@ -1178,6 +1178,59 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             if not pools[name]:
                 return None
 
+        # Preplan the whole crowded layer before DFS commits any one member.
+        # Each close group gets simultaneous tangential slots wide enough for
+        # the rendered labels plus the normal 14px inter-label clearance.
+        # Candidate generation is unchanged; this only orders each member's
+        # complete legal pool around its reserved slot, so ordinary
+        # backtracking can still contract away from the wide plan.
+        for names in group_names:
+            if len(names) < 2:
+                continue
+            reference = longitudes[names[0]] - 90.0
+            radius = max(1.0, float(RI - 5))
+            widths_deg = {}
+            for member in names:
+                w, h = label_size(mode, member)
+                tangential_px = max(float(w), float(h))
+                widths_deg[member] = math.degrees(
+                    2.0 * math.asin(min(1.0, tangential_px / (2.0 * radius)))
+                )
+            gap_deg = math.degrees(14.0 / radius)
+            packed_deg = sum(widths_deg.values()) + gap_deg * (len(names) - 1)
+            natural_angles = []
+            for member in names:
+                nx, ny = xy(longitudes[member], PREFERRED_LABEL_RADII[0])
+                natural_angles.append(label_angle((nx, ny, None), reference))
+            center = sum(natural_angles) / len(natural_angles)
+            cursor = center - packed_deg / 2.0
+            targets = {}
+            for member in names:
+                cursor += widths_deg[member] / 2.0
+                targets[member] = cursor
+                cursor += widths_deg[member] / 2.0 + gap_deg
+
+            def angular_distance(a, b):
+                return abs((a - b + 180.0) % 360.0 - 180.0)
+
+            for member in names:
+                target = targets[member]
+                pools[member].sort(
+                    key=lambda row: (
+                        angular_distance(label_angle(row, reference), target),
+                        -math.hypot(
+                            row[0] - xy(longitudes[member], PREFERRED_LABEL_RADII[0])[0],
+                            row[1] - xy(longitudes[member], PREFERRED_LABEL_RADII[0])[1],
+                        ),
+                    )
+                )
+            diagnostic_print(
+                f"Planet Finder {mode}: ALIGNMENT WIDE PREPLAN "
+                f"members={names} packed={packed_deg:.2f}deg "
+                f"targets={{{', '.join(f'{member}:{targets[member]:.2f}' for member in names)}}}",
+                level=1, flush=True,
+            )
+
         nodes = 0
         assign_visits = {}
         assign_rejects = {"empty_future": 0, "circular_order": 0, "planned_path": 0}
@@ -3664,14 +3717,13 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             f"Planet Finder {mode}: PRE-DFS TIMING alignment-plan START",
             level=1, flush=True,
         )
-        # Forensic experiment: bypass the legacy exhaustive alignment
-        # preplanner and give the full clock to the recursive alignment solver.
-        # Keep plan_alignment_layer() intact so this is trivially reversible.
-        alignment_preplacement = None
+        # Plan the crowded layer as a whole.  The planner now reserves wide
+        # tangential slots for all members before any one member is committed.
+        alignment_preplacement = plan_alignment_layer()
         diagnostic_print(
             f"Planet Finder {mode}: PRE-DFS TIMING alignment-plan END "
             f"elapsed={time.monotonic() - phase_started:.3f}s "
-            f"result=bypassed-forensic",
+            f"result={'planned' if alignment_preplacement else 'none'}",
             level=1, flush=True,
         )
         report_predfs_phase("alignment-plan", before)
