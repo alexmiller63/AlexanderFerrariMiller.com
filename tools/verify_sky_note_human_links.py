@@ -56,8 +56,14 @@ for iso_week in weeks_in_range(start, end):
         if f'href="{reader_human}"' not in text:
             raise SystemExit(f"{page}: missing reader-facing link {reader_human} for object {fixed_id}")
 
-        if f'href="/almanack/descriptors/{fixed_id}.json"' in text:
-            raise SystemExit(f"{page}: reader-facing link still points to JSON for {fixed_id}")
+        json_link_patterns = (
+            f'href="/almanack/descriptors/{fixed_id}.json"',
+            f'href="../../../almanack/descriptors/{fixed_id}.json"',
+            f'href="../../almanack/descriptors/{fixed_id}.json"',
+            f'href="../almanack/descriptors/{fixed_id}.json"',
+        )
+        if any(pattern in text for pattern in json_link_patterns):
+            raise SystemExit(f"{page}: reader-facing fixed-object link still points to JSON for {fixed_id}")
 
         checked += 1
 
