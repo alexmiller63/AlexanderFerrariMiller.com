@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""One-shot: remove redundant final-pair alignment support probing."""
+"""One-shot: avoid exhaustive routed MRV at the final alignment pair."""
 
 from pathlib import Path
 
-ENABLED = False
+ENABLED = True
 
 if not ENABLED:
     print("Repair Once is OFF; nothing to do.")
@@ -12,23 +12,30 @@ if not ENABLED:
 target = Path("tools/planet_finder_search_core.py")
 source = target.read_text(encoding="utf-8")
 
-old = '''        if next_remaining and not chosen_capped and chosen_count <= support_limit:
-            support_stream = alignment_profiled_candidates(
-                item, diagnostic_depth, "alignment-support"
-            )'''
-new = '''        # Do not pre-prove support when exactly one alignment member remains.
-        # The recursive member DFS immediately performs that same authoritative
-        # routed search. W17 showed this duplicate final-pair proof being paid
-        # hundreds of times (especially Moon/Uranus) without opening new geometry.
-        if len(next_remaining) > 1 and not chosen_capped and chosen_count <= support_limit:
-            support_stream = alignment_profiled_candidates(
-                item, diagnostic_depth, "alignment-support"
-            )'''
+old = '''        for _, candidate_item in geometry_ranked_items:
+            check_deadline()
+            probe_name = candidate_item[1][1]'''
+new = '''        # At the final pair, exact routed MRV ranking can consume the whole
+        # mode clock before DFS visits a node. Geometry ranking is a safe
+        # ordering heuristic here; the recursive DFS still performs the full
+        # authoritative routed viability checks for both members.
+        final_pair_geometry_rank = len(remaining_items) == 2
+
+        for _, candidate_item in geometry_ranked_items:
+            check_deadline()
+            probe_name = candidate_item[1][1]'''
+
+old2 = '''            routed_rank = True
+            cached_rows = None'''
+new2 = '''            routed_rank = not final_pair_geometry_rank
+            cached_rows = None'''
 
 if source.count(old) != 1:
-    raise SystemExit(f"Safety stop: expected exactly one support-gate match, found {source.count(old)}")
+    raise SystemExit(f"Safety stop: final-pair loop anchor count={source.count(old)}")
+if source.count(old2) != 1:
+    raise SystemExit(f"Safety stop: routed-rank anchor count={source.count(old2)}")
 
-source = source.replace(old, new)
+source = source.replace(old, new).replace(old2, new2)
 target.write_text(source, encoding="utf-8")
 
 me = Path(__file__)
@@ -41,4 +48,4 @@ if len(matches) != 1:
 lines[matches[0]] = "ENABLED = False"
 me.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
-print("Removed redundant final-pair support probe; Repair Once is OFF.")
+print("Final pair now uses geometry for MRV ordering; Repair Once is OFF.")
