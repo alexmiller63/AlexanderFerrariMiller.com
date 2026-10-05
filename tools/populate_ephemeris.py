@@ -154,7 +154,7 @@ def observing_html(key, magnitude, elongation, daylight=False):
     if not aid: return ""
     glyph = VISIBILITY_GLYPHS[aid]
     label = observing_label(key, magnitude, elongation, daylight)
-    try: magnitude_text = f" ({float(magnitude):+.1f})"
+    try: magnitude_text = f" {float(magnitude):.1f}"
     except (TypeError, ValueError): magnitude_text = ""
     # Greek/Symbols is deliberately symbol-only for categorical sky states.
     # Magnitude belongs to observing-aid classifications, not Daylight/Solar Glare.
