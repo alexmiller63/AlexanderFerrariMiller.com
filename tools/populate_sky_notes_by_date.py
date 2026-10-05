@@ -288,6 +288,39 @@ def binocular_finder_sentence(fixed: list[dict]) -> str:
     )
 
 
+def ephemeris_planet_positions(page_path: Path) -> dict[str, dict[str, float]]:
+    """Read preserved Monday 00:00 UTC equatorial positions from the generated ephemeris."""
+    text = page_path.read_text(encoding="utf-8")
+    positions: dict[str, dict[str, float]] = {}
+    for table in re.findall(r'<table class="[^"]*ephemeris[^"]*">(.*?)</table>', text, flags=re.S | re.I):
+        head = re.search(r"<thead>.*?<tr>(.*?)</tr>.*?</thead>", table, flags=re.S | re.I)
+        rise = re.search(r'<tr><th scope="row">Rise</th>(.*?)</tr>', table, flags=re.S | re.I)
+        if not head or not rise:
+            continue
+        names = re.findall(r'data-latin="([^"]+)"', head.group(1))
+        cells = re.findall(r'<td[^>]*data-ra-hours="([^"]+)"[^>]*data-dec-deg="([^"]+)"[^>]*>', rise.group(1))
+        if len(names) != len(cells):
+            raise RuntimeError(f"Ephemeris heading/position mismatch in {page_path.relative_to(ROOT)}")
+        for name, (ra_hours, dec_deg) in zip(names, cells):
+            positions[html.unescape(name)] = {
+                "ra_deg": float(ra_hours) * 15.0,
+                "dec_deg": float(dec_deg),
+            }
+    return positions
+
+
+def attach_planet_positions(relations: list[dict], page_path: Path) -> None:
+    """Attach the ephemeris' preserved 2-D planet coordinates to finder relations."""
+    positions = ephemeris_planet_positions(page_path)
+    for relation in relations:
+        for field in ("planet", "other_planet"):
+            name = relation.get(field)
+            if name and name in positions:
+                prefix = "planet" if field == "planet" else "other"
+                relation[f"{prefix}_ra_deg"] = round(positions[name]["ra_deg"], 6)
+                relation[f"{prefix}_dec_deg"] = round(positions[name]["dec_deg"], 6)
+
+
 def relation_sentence(item: dict) -> str:
     sep = item["longitude_separation_deg"]
     if item["kind"] == "planet-planet-longitude":
@@ -352,7 +385,11 @@ def artwork_descriptor(year: int, week: int, fixed: list[dict], relations: list[
             if finder_relation is not None else None
         ),
         "planetary_context": relations[:2],
-        "planet_plot_policy": "do not plot from longitude alone; require preserved 2-D Star Almanack position data",
+        "planet_position": (
+            {"ra_deg": finder_relation.get("planet_ra_deg"), "dec_deg": finder_relation.get("planet_dec_deg")}
+            if finder_relation is not None else None
+        ),
+        "planet_plot_policy": "plot only from preserved 2-D Star Almanack ephemeris position data",
         "reference_standard": "docs/finder-standard.md",
     }
 
@@ -363,6 +400,7 @@ def generated_note(year: int, week: int, page_path: Path, yearly: dict[int, dict
     entries = [entry for _, items in rows for entry in items]
     fixed = featured_fixed_sky(entries, stars)
     relations = notable_planet_relations(week, yearly, stars)
+    attach_planet_positions(relations, page_path)
     moon = next((entry for entry in entries if re.search(r"\b(New Moon|First Quarter|Full Moon|Last Quarter)\b", entry, flags=re.I)), None)
     opening = f"ISO {year}-W{week:02d} runs from {monday.strftime('%B')} {monday.day} through {sunday.strftime('%B')} {sunday.day}."
     if relations:
