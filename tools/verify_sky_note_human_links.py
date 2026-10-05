@@ -31,6 +31,44 @@ for iso_week in weeks_in_range(start, end):
     payload = json.loads(source.read_text(encoding="utf-8"))
     fixed_ids = [str(item["fixed_object_id"]) for item in payload.get("fixed_sky") or [] if item.get("fixed_object_id")]
 
+    # The generated source is the contract between discovery and presentation.
+    # Every discovered human story must survive into linked_stories and into the
+    # rendered weekly page; checking only one descriptor representation can miss
+    # additional curated stories for the same fixed object.
+    candidates = payload.get("story_candidates")
+    linked_stories = payload.get("linked_stories")
+    if candidates is None or linked_stories is None:
+        raise SystemExit(f"{page}: generated source lacks story_candidates/linked_stories contract")
+
+    candidate_keys = {
+        (str(story.get("fixed_object_id")), str(story.get("collection")), str(story.get("url")))
+        for story in candidates
+    }
+    linked_keys = {
+        (str(story.get("fixed_object_id")), str(story.get("collection")), str(story.get("url")))
+        for story in linked_stories
+    }
+    if candidate_keys != linked_keys:
+        missing = sorted(candidate_keys - linked_keys)
+        extra = sorted(linked_keys - candidate_keys)
+        raise SystemExit(
+            f"{page}: linked story set differs from discovered candidates; missing={missing}, extra={extra}"
+        )
+
+    for story in linked_stories:
+        human = str(story.get("url") or "")
+        if not human:
+            raise SystemExit(f"{page}: linked story has no human URL: {story}")
+        target = Path(human.lstrip("/"))
+        if not target.exists():
+            raise SystemExit(f"{page}: missing linked human story target {human}")
+        reader_human = "../../../" + human.lstrip("/") if human.startswith("/stories/") else human
+        if f'href="{reader_human}"' not in text:
+            raise SystemExit(
+                f"{page}: missing reader-facing story link {reader_human} "
+                f"for object {story.get('fixed_object_id')}"
+            )
+
     if not fixed_ids:
         empty_state = "No deep-sky objects are featured this week."
         if empty_state not in text:
@@ -71,6 +109,6 @@ if pages_checked == 0:
     raise SystemExit("No weekly Sky Notes pages were verified")
 
 print(
-    f"Verified {checked} human Sky Note link(s) and {empty_states} explicit "
-    "no-deep-sky state(s), descriptor mappings, and materialized targets"
+    f"Verified {checked} descriptor human mapping(s), complete generated story-link sets, "
+    f"and {empty_states} explicit no-deep-sky state(s)"
 )
