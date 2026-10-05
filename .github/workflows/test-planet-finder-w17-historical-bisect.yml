@@ -59,7 +59,7 @@ jobs:
           ref="$(git rev-parse HEAD)"
           log="$HARNESS_DIR/$ref.log"
           echo "::group::Testing $ref"
-          PLANET_FINDER_DIAGNOSTIC_LEVEL=3 timeout 70s python "$HARNESS_DIR/oracle.py" "$HARNESS_DIR" >"$log" 2>&1
+          PLANET_FINDER_DIAGNOSTIC_LEVEL=0 timeout 70s python "$HARNESS_DIR/oracle.py" "$HARNESS_DIR" >"$log" 2>&1
           rc=$?
           cat "$log"
           echo "::endgroup::"
