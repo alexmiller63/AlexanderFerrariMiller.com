@@ -19,7 +19,7 @@ jobs:
       - name: Install test dependencies
         run: python -m pip install pytest skyfield
 
-      - name: Repeat exact W17 oracle three times
+      - name: Bisect exact W17 oracle
         shell: bash
         env:
           GOOD_REF: "95a9dd78fce7dd4044bee20a012b4ae88db8bfaa"
@@ -74,17 +74,24 @@ jobs:
           chmod +x "$HARNESS_DIR/test-one.sh"
           export HARNESS_DIR
 
-          TEST_REF="$GOOD_REF"
-          git checkout --detach "$TEST_REF"
-          failures=0
-          for trial in 1 2 3; do
-            echo "===== TRIAL $trial ====="
-            if "$HARNESS_DIR/test-one.sh"; then
-              echo "TRIAL $trial PASS"
-            else
-              echo "TRIAL $trial FAIL"
-              failures=$((failures + 1))
-            fi
-          done
-          echo "REPRODUCIBILITY: $((3-failures)) PASS / $failures FAIL"
-          test "$failures" -eq 0
+          echo "Verifying GOOD endpoint $GOOD_REF"
+          git checkout --detach "$GOOD_REF"
+          "$HARNESS_DIR/test-one.sh"
+
+          echo "Verifying BAD endpoint $BAD_REF"
+          git checkout --detach "$BAD_REF"
+          if "$HARNESS_DIR/test-one.sh"; then
+            echo "Safety stop: BAD_REF unexpectedly passed"
+            exit 1
+          fi
+
+          echo "Starting binary bisect"
+          git bisect reset || true
+          git bisect start "$BAD_REF" "$GOOD_REF"
+          set +e
+          git bisect run "$HARNESS_DIR/test-one.sh"
+          rc=$?
+          set -e
+          git bisect log
+          git bisect reset
+          exit "$rc"
