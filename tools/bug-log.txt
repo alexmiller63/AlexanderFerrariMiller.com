@@ -4,7 +4,8 @@ Build under review: 2026 W01-W25
 Started: 2026-10-03
 
 BUG 001 — Almanac Home link returns 404 on GitHub Pages
-Status: OPEN
+Status: RESOLVED
+Resolution: Weekly pages were linking ../../, which resolves to /almanack/ rather than the Star Almanack minisite home. The scaffold generator now emits ../../../star-almanack/ for Almanack Home, resolving correctly from /almanack/<year>/W##/ on both the custom domain and GitHub Pages project path. Fix commit: f947585056aca59478a4fe11cd982fba2191c792
 Found on: 2026-W01
 Page: GitHub Pages weekly Almanack page
 Observed: Clicking “Almanac Home” from the W01 page returns a 404 instead of opening the Almanack home page.
