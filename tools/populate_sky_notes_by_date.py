@@ -24,6 +24,7 @@ from pathlib import Path
 
 from iso_date_range import group_by_year, parse_range_args
 from almanack_paths import week_index
+from almanack_sections import replace_section_inner
 from star_almanack_planets import PLANET_COLUMNS, load_weekly_longitudes
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -484,27 +485,13 @@ def render_artwork_placeholder(descriptor: dict | None) -> str:
     )
 
 
-def sky_note_bounds(text: str, path: Path) -> tuple[int, int]:
-    marker = "<h3>Sky Note</h3>"
-    start = text.find(marker)
-    if start < 0:
-        raise RuntimeError(f"Missing Sky Note heading in {path.relative_to(ROOT)}")
-    body_start = start + len(marker)
-    match = re.search(r"<h[23]>.*?</h[23]>", text[body_start:], flags=re.S)
-    end = body_start + match.start() if match else text.find("</main>", body_start)
-    if end < 0:
-        end = len(text)
-    return body_start, end
-
-
 def patch_page(path: Path, payload: dict) -> bool:
     text = path.read_text(encoding="utf-8")
-    body_start, end = sky_note_bounds(text, path)
     placeholder = render_artwork_placeholder(payload["artwork"])
-    new_body = "\n" + render_note(payload["note"]) + "\n"
+    new_body = "<h3>Sky Notes</h3>\n" + render_note(payload["note"]) + "\n"
     if placeholder:
         new_body += placeholder + "\n"
-    new = text[:body_start] + new_body + text[end:]
+    new = replace_section_inner(text, 5, new_body, path)
     if new == text:
         return False
     path.write_text(new, encoding="utf-8")
