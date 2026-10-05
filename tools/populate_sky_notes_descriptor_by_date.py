@@ -379,9 +379,11 @@ def generated_note(year: int, week: int, page_path, yearly, stars: list[dict]) -
     payload["inline_stories"] = inline
     payload["linked_stories"] = linked
     payload["stories"] = candidates
-    # Artwork is owned by immutable fixed objects, never by an ISO week.
-    # Do not emit a week-owned artwork field when none exists.
-    payload.pop("artwork", None)
+    # Fixed-object artwork remains immutable/object-owned. A planet finder is
+    # intrinsically time-varying, so preserve that weekly descriptor separately.
+    weekly_artwork = payload.pop("artwork", None)
+    if weekly_artwork and (weekly_artwork.get("finder_route") or {}).get("planet"):
+        payload["planet_finder_artwork"] = weekly_artwork
     payload["descriptor_policy"] = descriptor_policy()
     return payload
 
@@ -480,9 +482,11 @@ def main() -> None:
         payload["inline_stories"] = inline
         payload["linked_stories"] = linked
         payload["stories"] = candidates
-        # Artwork is owned by immutable fixed objects, never by an ISO week.
-        # Do not emit a week-owned artwork field when none exists.
-        payload.pop("artwork", None)
+        # Fixed-object artwork remains immutable/object-owned. A planet finder is
+        # intrinsically time-varying, so preserve that weekly descriptor separately.
+        weekly_artwork = payload.pop("artwork", None)
+        if weekly_artwork and (weekly_artwork.get("finder_route") or {}).get("planet"):
+            payload["planet_finder_artwork"] = weekly_artwork
         payload["descriptor_policy"] = descriptor_policy()
         descriptor_ids = {str(record["id"]) for record in payload["descriptors"]}
         missing_descriptor_ids = [str(fixed_id) for fixed_id in fixed_ids if str(fixed_id) not in descriptor_ids]
@@ -499,7 +503,7 @@ def main() -> None:
         if patch_page(path, payload):
             changed += 1
 
-        art_state = "fixed-object-owned artwork only; no week-owned artwork field"
+        art_state = "fixed-object artwork plus weekly planet finder when applicable"
         print(
             f"Generated descriptor-first Sky Note for ISO {item.year}-{week_key}: "
             f"{source.relative_to(base.ROOT)} ({len(payload['descriptors'])} descriptors; "
