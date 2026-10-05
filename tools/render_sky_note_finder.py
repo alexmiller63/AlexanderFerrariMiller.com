@@ -9,6 +9,7 @@ consumed exactly as supplied by the generated spec; it is never inferred.
 from __future__ import annotations
 
 import argparse
+import csv
 import json
 import math
 import re
@@ -357,6 +358,60 @@ def identity_index(spec):
     return by_ref, by_id
 
 
+def deep_sky_catalog_objects():
+    """Load repository-owned Messier and Caldwell objects for finder overlays."""
+    objects = []
+
+    # Messier is repository-owned structured YAML.  PyYAML is already used by
+    # the Star Almanack toolchain; keep this source authoritative rather than
+    # duplicating coordinates in the renderer.
+    import yaml
+    messier_path = REPO_ROOT / "fixed-objects.yaml"
+    payload = yaml.safe_load(messier_path.read_text(encoding="utf-8"))
+    columns = payload["schema"]["messier"]
+    for values in payload.get("messier") or []:
+        row = dict(zip(columns, values))
+        if row.get("ra_h") is None or row.get("dec_deg") is None:
+            continue
+        objects.append({
+            "key": str(row["id"]),
+            "label": str(row["id"]),
+            "ra_deg": float(row["ra_h"]) * 15.0,
+            "dec_deg": float(row["dec_deg"]),
+            "catalog": "Messier",
+            "physical_key": f"NGC {row['ngc']}" if row.get("ngc") else str(row["id"]),
+        })
+
+    caldwell_path = REPO_ROOT / "caldwell-catalog.csv"
+    with caldwell_path.open(encoding="utf-8", newline="") as handle:
+        for row in csv.DictReader(handle):
+            if not row.get("ra_h") or not row.get("dec_deg"):
+                continue
+            objects.append({
+                "key": row["caldwell"],
+                "label": row["caldwell"],
+                "ra_deg": float(row["ra_h"]) * 15.0,
+                "dec_deg": float(row["dec_deg"]),
+                "catalog": "Caldwell",
+                "physical_key": row.get("catalog") or row["caldwell"],
+            })
+    return objects
+
+
+def visible_deep_sky_objects(center, xmin, xmax, ymin, ymax):
+    """Project catalog objects and combine duplicate physical targets."""
+    grouped = {}
+    for obj in deep_sky_catalog_objects():
+        point = project(obj["ra_deg"], obj["dec_deg"], *center)
+        if point is None or not (xmin <= point[0] <= xmax and ymin <= point[1] <= ymax):
+            continue
+        key = obj["physical_key"].strip().upper()
+        item = grouped.setdefault(key, {"point": point, "labels": []})
+        if obj["label"] not in item["labels"]:
+            item["labels"].append(obj["label"])
+    return list(grouped.values())
+
+
 def fixed_object_database_record(fixed_id):
     path = REPO_ROOT / "database" / "fixed-objects.json"
     if not path.exists():
@@ -515,6 +570,17 @@ def render(spec: dict, stars, output: Path) -> None:
                    s=[marker_area(item[2].mag, 7) for item in visible], color=STAR, zorder=1)
     for path in figure_paths:
         draw_path(ax, path, idx, center, FIGURE_BLUE, 2.7)
+
+    # Deep-sky catalog objects are selected geometrically from the actual
+    # displayed field.  Messier/Caldwell aliases for one physical object share
+    # a marker and label; no constellation- or week-specific exceptions.
+    deep_sky = visible_deep_sky_objects(center, xmin, xmax, ymin, ymax)
+    if deep_sky:
+        ax.scatter(
+            [item["point"][0] for item in deep_sky],
+            [item["point"][1] for item in deep_sky],
+            s=42, facecolors="none", edgecolors=TEXT, linewidths=1.1, zorder=4,
+        )
     projected_boundaries = []
     for boundary_name, boundary_abbreviation, boundary in load_iau_boundaries():
         boundary_points = projected_path(boundary, center)
@@ -573,6 +639,13 @@ def render(spec: dict, stars, output: Path) -> None:
         label = chart_bayer_label(identity, star, figure_abbreviation)
         if label:
             place_label(ax, label, point, occupied_labels, obstacle_segments=figure_segments + asterism_segments)
+    for item in deep_sky:
+        place_label(
+            ax, " / ".join(item["labels"]), item["point"], occupied_labels,
+            color=TEXT, fontsize=8, zorder=6,
+            obstacle_segments=figure_segments + asterism_segments,
+            require_clear=True,
+        )
     if figure_constellation and figure_points:
         constellation_point = (sum(x for x, _ in figure_points) / len(figure_points),
                                sum(y for _, y in figure_points) / len(figure_points))
