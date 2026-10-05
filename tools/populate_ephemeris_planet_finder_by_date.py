@@ -34,13 +34,6 @@ def finder_bodies(generated, week: int):
     return result
 
 
-def split_rendered_sections(rendered: str) -> tuple[str, str]:
-    finder_marker = ephemeris.notation_toggle("finder") + "<h3>Planet Finder</h3>"
-    if finder_marker not in rendered:
-        raise RuntimeError("Rendered Ephemeris is missing its Planet Finder boundary")
-    ephemeris_html, finder_body = rendered.split(finder_marker, 1)
-    return ephemeris_html, finder_marker + finder_body
-
 
 def populate_week(
     year: int,
@@ -76,8 +69,7 @@ def populate_week(
             "sun_dec_deg": sample[10],
             "horizon_deg": -0.8333 if key == "sun" else -0.5667,
         }
-    rendered = ephemeris.render_ephemeris(monday, values)
-    ephemeris_html, finder_html = split_rendered_sections(rendered)
+    ephemeris_html, finder_html = ephemeris.render_sections(monday, values)
 
     changed = 0
     ephemeris_path = week_index(year, week)
