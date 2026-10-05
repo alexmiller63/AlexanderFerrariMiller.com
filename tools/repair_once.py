@@ -10,8 +10,8 @@ if not ENABLED:
     raise SystemExit(0)
 
 runner = Path("tools/w17_bisect.sh")
-if runner.exists():
-    raise SystemExit("Safety stop: tools/w17_bisect.sh already exists")
+if runner.read_text(encoding="utf-8").strip():
+    raise SystemExit("Safety stop: tools/w17_bisect.sh is not empty")
 
 runner.write_text(r'''#!/usr/bin/env bash
 set -uo pipefail
