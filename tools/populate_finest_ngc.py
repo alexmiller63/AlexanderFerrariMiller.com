@@ -39,7 +39,7 @@ def write_visibility(data,year):
  if not data:raise RuntimeError(f"No Finest NGC visibility rows generated for ISO year {year}")
  with path.open("w",newline="",encoding="utf-8") as h:w=csv.DictWriter(h,fieldnames=list(data[0])); w.writeheader(); w.writerows(data)
 def label(record):
- catalog=record["catalog"].strip(); name=record.get("name","").strip(); object_type=TYPE_LABELS.get(record.get("type","").strip(),"deep-sky object"); code=record.get("con","").strip(); constellation=CONSTELLATIONS.get(code,code); head=f"{catalog}, {name}, {object_type} in {constellation}" if name else f"{catalog}, {object_type} in {constellation}"; day=dt.date.fromisoformat(record["best_date"]); magnitude=record.get("mag","").strip(); observing=f"{TELESCOPE_GLYPH} V {magnitude}" if magnitude else TELESCOPE_GLYPH
+ catalog=record["catalog"].strip(); name=record.get("name","").strip(); object_type=TYPE_LABELS.get(record.get("type","").strip(),"deep-sky object"); code=record.get("con","").strip(); constellation=CONSTELLATIONS.get(code,code); head=f"{catalog}, {name}, {object_type} in {constellation}" if name else f"{catalog}, {object_type} in {constellation}"; day=dt.date.fromisoformat(record["best_date"]); magnitude=record.get("mag","").strip(); observing=f"{TELESCOPE_GLYPH} {magnitude}" if magnitude else TELESCOPE_GLYPH
  return f"{head} — {observing} — Finest NGC — {declination_band(record['dec_deg'])} {season_for(day)}"
 def events_for(data):
  events=defaultdict(list)
