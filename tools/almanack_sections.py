@@ -10,18 +10,9 @@ from almanack_paths import PAGE_TYPES
 SECTION_ID_PREFIX = "almanack-section-"
 ALMANACK_TYPES = PAGE_TYPES
 
-SECTION_NAMES = {
-    1: "top-navigation",
-    2: "calendar",
-    3: "ephemeris",
-    4: "planet-finder",
-    5: "sky-notes",
-}
-
 
 def section_open(number: int) -> str:
-    name = SECTION_NAMES[number]
-    return f'<div id="{SECTION_ID_PREFIX}{number}" data-almanack-section="{number}" data-almanack-section-name="{name}">'
+    return f'<div id="{SECTION_ID_PREFIX}{number}" data-almanack-section="{number}">'
 
 
 def section_bounds(text: str, number: int, path: Path | None = None) -> tuple[int, int]:
