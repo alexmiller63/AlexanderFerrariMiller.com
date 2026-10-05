@@ -2,7 +2,7 @@
   'use strict';
 
   const SUN_HORIZON_DEG = -0.8333;
-  const OBSERVING_HOUR_ANGLE_DEG = 135.0;
+  const DEFAULT_OBSERVER_TIME_HOURS = 21;
 
   function formatLat(hours) {
     const totalMinutes = ((Math.round(((hours % 24) + 24) % 24 * 60) % 1440) + 1440) % 1440;
@@ -38,10 +38,20 @@
     ];
   }
 
-  function sunAboveHorizon(cell, latitude) {
+  function observerHourAngleDeg(root) {
+    const input = root.querySelector('[data-ephemeris-observer-time]');
+    const value = input ? input.value.trim() : '';
+    const match = /^(\d{1,2}):(\d{2})$/.exec(value);
+    if (!match) return (DEFAULT_OBSERVER_TIME_HOURS - 12) * 15;
+    const hour = Number(match[1]), minute = Number(match[2]);
+    if (hour > 23 || minute > 59) return (DEFAULT_OBSERVER_TIME_HOURS - 12) * 15;
+    return ((hour + minute / 60) - 12) * 15;
+  }
+
+  function sunAboveHorizon(cell, latitude, hourAngleDeg) {
     const dec = Number(cell.dataset.sunDecDeg) * Math.PI / 180;
     const phi = latitude * Math.PI / 180;
-    const hourAngle = OBSERVING_HOUR_ANGLE_DEG * Math.PI / 180;
+    const hourAngle = hourAngleDeg * Math.PI / 180;
     const altitude = Math.asin(
       Math.sin(phi) * Math.sin(dec)
       + Math.cos(phi) * Math.cos(dec) * Math.cos(hourAngle)
@@ -49,9 +59,10 @@
     return altitude > SUN_HORIZON_DEG;
   }
 
-  function observingStatus(cell, latitude) {
-    if (cell.dataset.sunSpecial === 'true') return 'Visible';
-    return sunAboveHorizon(cell, latitude) && cell.dataset.normalLabel === 'Naked eye'
+  function observingStatus(cell, latitude, hourAngleDeg) {
+    const sunUp = sunAboveHorizon(cell, latitude, hourAngleDeg);
+    if (cell.dataset.sunSpecial === 'true') return sunUp ? 'Daylight' : 'Below horizon';
+    return sunUp && cell.dataset.normalLabel === 'Naked eye'
       ? 'Daylight'
       : (cell.dataset.solarGlare === 'true' ? 'Solar Glare' : cell.dataset.normalLabel);
   }
@@ -113,9 +124,10 @@
       cell.textContent = riseSet(cell, latitude)[1];
     });
     const mode = currentNotationMode();
+    const hourAngleDeg = observerHourAngleDeg(root);
     root.querySelectorAll('td.ephemeris-observing').forEach(function (cell) {
-      const status = observingStatus(cell, latitude);
-      if (status === 'Visible' || status === 'Daylight' || status === 'Solar Glare') {
+      const status = observingStatus(cell, latitude, hourAngleDeg);
+      if (status === 'Visible' || status === 'Daylight' || status === 'Below horizon' || status === 'Solar Glare') {
         const item = observingNotation(cell);
         if (item) item.innerHTML = specialHtml(status, mode);
         else cell.innerHTML = specialHtml(status, mode);
@@ -128,8 +140,10 @@
   document.querySelectorAll('main').forEach(function (root) {
     const input = root.querySelector('[data-ephemeris-latitude]');
     if (!input) return;
+    const timeInput = root.querySelector('[data-ephemeris-observer-time]');
     const apply = root.querySelector('[data-ephemeris-apply]');
     if (apply) apply.addEventListener('click', function () { update(root); });
+    if (timeInput) timeInput.addEventListener('change', function () { update(root); });
     input.addEventListener('keydown', function (event) {
       if (event.key === 'Enter') {
         event.preventDefault();
