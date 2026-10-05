@@ -362,15 +362,35 @@ def deep_sky_catalog_objects():
     """Load curated Messier, Caldwell, and Finest NGC finder overlays."""
     objects = []
 
-    import yaml
-    payload = yaml.safe_load((REPO_ROOT / "fixed-objects.yaml").read_text(encoding="utf-8"))
-    columns = payload["schema"]["messier"]
-    for values in payload.get("messier") or []:
-        row = dict(zip(columns, values))
+    # fixed-objects.yaml deliberately uses a simple list schema. Parse only
+    # its Messier rows here so this renderer does not add a PyYAML dependency
+    # to the Artwork workflow.
+    messier_columns = [
+        "id", "ngc", "name", "type", "con", "ra_h", "dec_deg",
+        "mag", "size_arcmin", "best", "iso",
+    ]
+    in_messier = False
+    for raw in (REPO_ROOT / "fixed-objects.yaml").read_text(encoding="utf-8").splitlines():
+        if raw == "messier:":
+            in_messier = True
+            continue
+        if in_messier and raw and not raw.startswith(" "):
+            break
+        text = raw.strip()
+        if not in_messier or not (text.startswith("- [") and text.endswith("]")):
+            continue
+        values = next(csv.reader([text[3:-1]], skipinitialspace=True))
+        values = [None if value.strip().lower() == "null" else value.strip() for value in values]
+        row = dict(zip(messier_columns, values))
         if row.get("ra_h") is None or row.get("dec_deg") is None:
             continue
-        ngc = row.get("ngc")
-        physical_key = f"NGC {ngc}" if ngc and str(ngc).isdigit() else (str(ngc) if ngc else str(row["id"]))
+        ngc = str(row.get("ngc") or "").strip()
+        if ngc.isdigit():
+            physical_key = f"NGC {int(ngc)}"
+        elif re.fullmatch(r"(?:NGC|IC)\\s*\\d+", ngc, re.I):
+            physical_key = ngc
+        else:
+            physical_key = str(row["id"])
         objects.append({
             "label": str(row["id"]),
             "ra_deg": float(row["ra_h"]) * 15.0,
