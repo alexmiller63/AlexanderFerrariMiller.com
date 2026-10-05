@@ -58,16 +58,18 @@ STYLE = """<style id="almanack-legend-css">
 }
 .visibility-glyph { height:3em !important; width:auto !important; vertical-align:-.78em !important; }
 .legend-glyph { height:3em; width:auto; vertical-align:-.78em; margin-right:.2rem; }
+.observing-aid-glyphs { display:inline-flex; align-items:center; gap:.08rem; vertical-align:middle; }
+.observing-aid-glyphs .legend-glyph { margin-right:0; }
 .legend-explanation { white-space:normal; }
 </style>"""
 
 LEGEND = """<aside class="notation-legend" aria-label="Astronomical notation legend">
   <p><strong>Observing aid</strong> — these glyphs say how the target is intended to be observed; they do not identify the kind of astronomical object.</p>
   <div class="legend-line">
-    <span class="legend-item"><img class="legend-glyph" src="../../../../assets/almanack/visibility-glyphs/masters/eye.svg" alt="Naked-eye glyph"> Naked eye</span>
-    <span class="legend-item"><img class="legend-glyph" src="../../../../assets/almanack/visibility-glyphs/masters/binoculars.svg" alt="Binoculars glyph"> Binoculars</span>
-    <span class="legend-item"><img class="legend-glyph" src="../../../../assets/almanack/visibility-glyphs/masters/telescope.svg" alt="Telescope glyph"> Telescope</span>
-    <span class="legend-item"><img class="legend-glyph" src="../../../../assets/almanack/visibility-glyphs/masters/telescope.svg" alt="Telescope glyph"><img class="legend-glyph" src="../../../../assets/almanack/visibility-glyphs/masters/telescope.svg" alt="Telescope glyph"> Substantial telescope</span>
+    <span class="legend-item"><span class="observing-aid-glyphs" role="img" aria-label="Naked eye"><img class="legend-glyph" src="../../../../assets/almanack/visibility-glyphs/masters/eye.svg" alt="" aria-hidden="true"></span> Naked eye</span>
+    <span class="legend-item"><span class="observing-aid-glyphs" role="img" aria-label="Binoculars"><img class="legend-glyph" src="../../../../assets/almanack/visibility-glyphs/masters/binoculars.svg" alt="" aria-hidden="true"></span> Binoculars</span>
+    <span class="legend-item"><span class="observing-aid-glyphs" role="img" aria-label="Telescope"><img class="legend-glyph" src="../../../../assets/almanack/visibility-glyphs/masters/telescope.svg" alt="" aria-hidden="true"></span> Telescope</span>
+    <span class="legend-item"><span class="observing-aid-glyphs" role="img" aria-label="Substantial telescope"><img class="legend-glyph" src="../../../../assets/almanack/visibility-glyphs/masters/telescope.svg" alt="" aria-hidden="true"><img class="legend-glyph" src="../../../../assets/almanack/visibility-glyphs/masters/telescope.svg" alt="" aria-hidden="true"></span> Substantial telescope</span>
   </div>
   <p class="legend-explanation"><strong>Var</strong> marks a variable star. The following number is its visual magnitude; smaller or more negative numbers are brighter. If no observing-aid glyph is shown, the Almanack is not assigning an observing aid for that entry.</p>
 
