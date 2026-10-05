@@ -165,7 +165,8 @@ Likely scope: Descriptor/artwork generator should derive and render the contextu
 
 
 BUG 009 — Full Moon and Moon after Yule each need their own descriptor
-Status: OPEN
+Status: RESOLVED
+Resolution: The descriptor generator now creates separate lunar-highlight descriptors and distinct explanatory prose for Full Moon and Moon After Yule. Fix commit: b8a3f6be5d9638f956bb27b06506d2f577668398
 Found on: 2026-W01
 Observed: “Full Moon” and “Moon after Yule” are both highlighted, but neither highlight has the distinct descriptor treatment it needs.
 Desired: Each highlighted lunar item should have its own description and descriptor. “Full Moon” should explain the astronomical lunar phase; “Moon after Yule” should separately explain the named/traditional lunar designation and its context. They may refer to the same Moon, but they represent different highlighted concepts and should not collapse into one generic Moon descriptor.
