@@ -19,7 +19,7 @@ jobs:
       - name: Install test dependencies
         run: python -m pip install pytest skyfield
 
-      - name: Binary-search W17 regression
+      - name: Repeat exact W17 oracle three times
         shell: bash
         env:
           GOOD_REF: "e9cd89e7dd5e3f4d20fa22be6ef17b6a2a4b75e5"
@@ -74,22 +74,17 @@ jobs:
           chmod +x "$HARNESS_DIR/test-one.sh"
           export HARNESS_DIR
 
-          echo "Verifying GOOD endpoint"
-          git checkout --detach "$GOOD_REF"
-          "$HARNESS_DIR/test-one.sh"
-
-          echo "Verifying BAD endpoint"
-          git checkout --detach "$BAD_REF"
-          if "$HARNESS_DIR/test-one.sh"; then
-            echo "::error::BAD endpoint unexpectedly PASSED; refusing false bisect."
-            exit 2
-          fi
-
-          git bisect reset || true
-          git bisect start "$BAD_REF" "$GOOD_REF"
-          git bisect run "$HARNESS_DIR/test-one.sh"
-          first_bad="$(git rev-parse HEAD)"
-          echo "===== BINARY BISECT RESULT ====="
-          git bisect log
-          echo "First bad commit: $first_bad"
-          git show --no-patch --format="%H%n%ci%n%s" "$first_bad"
+          TEST_REF="$GOOD_REF"
+          git checkout --detach "$TEST_REF"
+          failures=0
+          for trial in 1 2 3; do
+            echo "===== TRIAL $trial ====="
+            if "$HARNESS_DIR/test-one.sh"; then
+              echo "TRIAL $trial PASS"
+            else
+              echo "TRIAL $trial FAIL"
+              failures=$((failures + 1))
+            fi
+          done
+          echo "REPRODUCIBILITY: $((3-failures)) PASS / $failures FAIL"
+          test "$failures" -eq 0
