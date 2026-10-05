@@ -69,7 +69,7 @@ LEGEND = """<aside class="notation-legend" aria-label="Astronomical notation leg
     <span class="legend-item"><img class="legend-glyph" src="../../../../assets/almanack/visibility-glyphs/masters/telescope.svg" alt="Telescope glyph"> Telescope</span>
     <span class="legend-item"><img class="legend-glyph" src="../../../../assets/almanack/visibility-glyphs/masters/telescope.svg" alt="Telescope glyph"><img class="legend-glyph" src="../../../../assets/almanack/visibility-glyphs/masters/telescope.svg" alt="Telescope glyph"> Substantial telescope</span>
   </div>
-  <p class="legend-explanation"><strong>V</strong> followed by a number is visual magnitude; smaller or more negative numbers are brighter. If no observing-aid glyph is shown, the Almanack is not assigning an observing aid for that entry.</p>
+  <p class="legend-explanation"><strong>Var</strong> marks a variable star. The following number is its visual magnitude; smaller or more negative numbers are brighter. If no observing-aid glyph is shown, the Almanack is not assigning an observing aid for that entry.</p>
 
   <p><strong>Events</strong></p>
   <div class="legend-line">
