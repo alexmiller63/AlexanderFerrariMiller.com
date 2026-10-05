@@ -109,6 +109,7 @@ def diagnostic_print(*args, level=None, **kwargs):
             "SOLUTION",
             "ALIGNMENT STATE REPETITION",
             "ALIGNMENT LAYER SHAPE",
+            "ALIGNMENT LAST-MEMBER ZERO",
             "PRE-DFS TIMING alignment-fallback END",
         )
         if any(token in text for token in sparse_tokens):
@@ -2015,6 +2016,23 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             level=1, flush=True,
         )
         if viable_count == 0:
+            if len(remaining_items) == 1:
+                ds = diagnostic_stats.get((diagnostic_depth, name), {})
+                diagnostic_print(
+                    f"Planet Finder {mode}: ALIGNMENT LAST-MEMBER ZERO "
+                    f"group={group_index + 1} depth={depth_in_blob}/{group_size} body={name} "
+                    f"rejects[immutable-reserved={ds.get('immutable_reserved', 0):,},"
+                    f"immutable-rim={ds.get('immutable_rim', 0):,},"
+                    f"placed-overlap={ds.get('overlap', 0):,},"
+                    f"existing-leader={ds.get('leader_existing', 0):,},"
+                    f"route={ds.get('route', 0):,},"
+                    f"leader-rim={ds.get('leader_rim', 0):,},"
+                    f"leader-graze={ds.get('leader_graze', 0):,}] "
+                    f"overlap_by={sorted(ds.get('overlap_by_label', {}).items(), key=lambda x: (-x[1], x[0]))[:8]} "
+                    f"leader_by={sorted(ds.get('existing_leader_by_name', {}).items(), key=lambda x: (-x[1], x[0]))[:8]} "
+                    f"graze_by={sorted(ds.get('leader_graze_by_name', {}).items(), key=lambda x: (-x[1], x[0]))[:8]}",
+                    level=1, flush=True,
+                )
             return False
 
         # Arc-consistency gate inside the alignment blob.  When the chosen MRV
