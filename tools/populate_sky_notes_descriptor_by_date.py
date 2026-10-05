@@ -400,10 +400,12 @@ def patch_page(path, payload: dict) -> bool:
     # The toggle state is controlled entirely by setMode() below.
     mode_toggle = (
         '<div class="sky-note-mode-toggle" role="group" aria-label="Sky Notes presentation" '
-        'style="display:inline-flex;align-items:center;gap:.35rem;padding:.2rem;border:1px solid currentColor;border-radius:999px">'
-        '<span class="sky-note-mode-label" style="padding-left:.35rem">View:</span>'
-        '<button type="button" data-sky-note-mode="highlights" aria-pressed="false" style="border-radius:999px">Highlights</button>'
-        '<button type="button" data-sky-note-mode="wordy" aria-pressed="true" style="border-radius:999px">Wordy</button>'
+        'style="display:inline-flex;align-items:center;gap:0;padding:.18rem;border:1px solid currentColor;border-radius:999px">'
+        '<span class="sky-note-mode-label" style="padding:0 .55rem 0 .35rem">View:</span>'
+        '<button type="button" data-sky-note-mode="highlights" aria-pressed="false" '
+        'style="border:0;border-radius:999px 0 0 999px;padding:.35rem .7rem">Highlights</button>'
+        '<button type="button" data-sky-note-mode="wordy" aria-pressed="true" '
+        'style="border:0;border-left:1px solid currentColor;border-radius:0 999px 999px 0;padding:.35rem .7rem">Wordy</button>'
         '</div>'
     )
     highlights = render_linked_stories(payload.get("linked_stories", []))
@@ -424,7 +426,9 @@ function setMode(mode){
     b.setAttribute('aria-pressed',active?'true':'false');
     b.classList.toggle('is-active',active);
     b.style.fontWeight=active?'700':'400';
-    b.style.textDecoration=active?'underline':'none';
+    b.style.textDecoration='none';
+    b.style.boxShadow=active?'inset 0 0 0 2px currentColor':'none';
+    b.style.opacity=active?'1':'.72';
   });
 }
 buttons.forEach(b=>b.addEventListener('click',()=>setMode(b.dataset.skyNoteMode)));
