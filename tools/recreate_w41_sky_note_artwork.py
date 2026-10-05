@@ -11,6 +11,8 @@ import re
 import shutil
 from pathlib import Path
 
+from almanack_sections import replace_section_inner, section_bounds
+
 ROOT = Path(__file__).resolve().parents[1]
 PAGE = ROOT / "almanack" / "2026" / "W41" / "index.html"
 FINDERS = PAGE.parent / "finders"
@@ -26,19 +28,6 @@ CSS = """<style id=\"w41-sky-note-artwork-css\">\n.w41-star-finder{margin:1.1rem
 ENIF = '<figure class="w41-star-finder" data-sky-note-artwork="enif-m15"><img src="finders/enif-finder.svg" alt="Enif and M15 finder"><figcaption>Enif and M15</figcaption></figure>'
 SADALMELIK = '<figure class="w41-star-finder" data-sky-note-artwork="sadalmelik-aquarius"><img src="finders/sadalmelik-finder.svg" alt="Aquarius and Sadalmelik finder"><figcaption>Aquarius and Sadalmelik</figcaption></figure>'
 
-
-def sky_note_bounds(text: str) -> tuple[int, int]:
-    start = text.find("<h3>Sky Note</h3>")
-    if start < 0:
-        raise RuntimeError("W41 Sky Note heading not found")
-    next_heading = re.search(r"<h[23]>.*?</h[23]>", text[start + len("<h3>Sky Note</h3>"):], re.S)
-    if next_heading:
-        end = start + len("<h3>Sky Note</h3>") + next_heading.start()
-    else:
-        end = text.find("</main>", start)
-        if end < 0:
-            end = len(text)
-    return start, end
 
 
 def strip_owned_artwork(section: str) -> str:
@@ -56,7 +45,7 @@ def strip_owned_artwork(section: str) -> str:
 
 def insert_artwork(section: str) -> str:
     # Enif/M15 belongs directly after the opening prose paragraph.
-    opening = re.search(r'(<h3>Sky Note</h3>\s*<p>.*?</p>)', section, re.S)
+    opening = re.search(r'(<h[23]>[^<]*</h[23]>\s*<p>.*?</p>)', section, re.S)
     if not opening:
         raise RuntimeError("Could not locate W41 Sky Note opening paragraph")
     section = section[:opening.end()] + "\n" + ENIF + section[opening.end():]
@@ -85,10 +74,10 @@ def main() -> None:
         raise SystemExit("W41 page has no </head>")
     text = text.replace("</head>", CSS + "</head>", 1)
 
-    start, end = sky_note_bounds(text)
+    start, end = section_bounds(text, 5, PAGE)
     section = strip_owned_artwork(text[start:end])
     section = insert_artwork(section)
-    text = text[:start] + section + text[end:]
+    text = replace_section_inner(text, 5, section, PAGE)
 
     PAGE.write_text(text, encoding="utf-8")
     print("Recreated ISO 2026-W41 Sky Note artwork without touching Calendar, Ephemeris, Planet Finder, or Sky Note prose")
