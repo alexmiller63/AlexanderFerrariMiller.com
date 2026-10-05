@@ -47,6 +47,7 @@ VISIBILITY_GLYPHS = {
     "daylight": '<span class="text-symbol" role="img" aria-label="Daylight" title="Daylight">☉︎</span>',
     "solar_glare": '<span class="text-symbol" role="img" aria-label="Solar Glare" title="Solar Glare">☉︎</span>',
     "visible": '<span class="text-symbol" role="img" aria-label="Visible" title="Visible">☉︎</span>',
+    "night": '<span class="text-symbol" role="img" aria-label="Night" title="Night">☉︎</span>',
 }
 
 EPHEMERIS_STYLE = """<style id="ephemeris-css">
@@ -119,7 +120,11 @@ def beta(latitude):
 
 
 def current_visibility(key, magnitude, elongation, daylight=False):
-    if key == "sun": return "daylight" if daylight else "solar_glare"
+    # The Sun's observer-facing state is computed from solar altitude at the
+    # selected Monday observer time in almanack/js/ephemeris.js.  Seed the
+    # generated page with the default 21:00 LAT state rather than the old
+    # generic Visible/Solar-Glare classification.
+    if key == "sun": return "daylight" if daylight else "night"
     if elongation is not None and elongation < SOLAR_GLARE_MAX_ELONGATION_DEG: return "solar_glare"
     if magnitude is not None and elongation is not None:
         if magnitude <= NAKED_EYE_MAX_MAGNITUDE: return "daylight" if daylight else "naked_eye"
@@ -138,7 +143,7 @@ def visibility_html(key, magnitude, elongation, daylight=False):
 
 
 def observing_label(key, magnitude, elongation, daylight=False):
-    labels = {"naked_eye":"Naked eye", "binoculars":"Binoculars", "telescope":"Telescope", "substantial_telescope":"Substantial telescope", "daylight":"Daylight", "solar_glare":"Solar Glare", "visible":"Visible"}
+    labels = {"naked_eye":"Naked eye", "binoculars":"Binoculars", "telescope":"Telescope", "substantial_telescope":"Substantial telescope", "daylight":"Daylight", "solar_glare":"Solar Glare", "visible":"Visible", "night":"Night"}
     aid = current_visibility(key, magnitude, elongation, daylight)
     return labels.get(aid, "")
 
@@ -152,7 +157,7 @@ def observing_html(key, magnitude, elongation, daylight=False):
     except (TypeError, ValueError): magnitude_text = ""
     # Greek/Symbols is deliberately symbol-only for categorical sky states.
     # Magnitude belongs to observing-aid classifications, not Daylight/Solar Glare.
-    categorical = aid in {"daylight", "solar_glare", "visible"}
+    categorical = aid in {"daylight", "solar_glare", "visible", "night"}
     shown_magnitude = "" if categorical else magnitude_text
     greek = glyph + shown_magnitude
     latin = label + shown_magnitude
