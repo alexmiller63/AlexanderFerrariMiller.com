@@ -48,23 +48,29 @@
     return ((hour + minute / 60) - 12) * 15;
   }
 
-  function sunAboveHorizon(cell, latitude, hourAngleDeg) {
+  function solarAltitudeDeg(cell, latitude, hourAngleDeg) {
     const dec = Number(cell.dataset.sunDecDeg) * Math.PI / 180;
     const phi = latitude * Math.PI / 180;
     const hourAngle = hourAngleDeg * Math.PI / 180;
-    const altitude = Math.asin(
+    return Math.asin(
       Math.sin(phi) * Math.sin(dec)
       + Math.cos(phi) * Math.cos(dec) * Math.cos(hourAngle)
     ) * 180 / Math.PI;
-    return altitude > SUN_HORIZON_DEG;
+  }
+
+  function skyState(altitudeDeg) {
+    if (altitudeDeg >= SUN_HORIZON_DEG) return 'Daylight';
+    if (altitudeDeg >= -6) return 'Civil twilight';
+    if (altitudeDeg >= -12) return 'Nautical twilight';
+    if (altitudeDeg >= -18) return 'Astronomical twilight';
+    return 'Night';
   }
 
   function observingStatus(cell, latitude, hourAngleDeg) {
-    const sunUp = sunAboveHorizon(cell, latitude, hourAngleDeg);
-    if (cell.dataset.sunSpecial === 'true') return sunUp ? 'Daylight' : 'Below horizon';
-    return sunUp && cell.dataset.normalLabel === 'Naked eye'
-      ? 'Daylight'
-      : (cell.dataset.solarGlare === 'true' ? 'Solar Glare' : cell.dataset.normalLabel);
+    const state = skyState(solarAltitudeDeg(cell, latitude, hourAngleDeg));
+    if (cell.dataset.sunSpecial === 'true') return state;
+    if (state !== 'Night' && cell.dataset.normalLabel === 'Naked eye') return state;
+    return cell.dataset.solarGlare === 'true' ? 'Solar Glare' : cell.dataset.normalLabel;
   }
 
   function currentNotationMode() {
@@ -127,7 +133,7 @@
     const hourAngleDeg = observerHourAngleDeg(root);
     root.querySelectorAll('td.ephemeris-observing').forEach(function (cell) {
       const status = observingStatus(cell, latitude, hourAngleDeg);
-      if (status === 'Visible' || status === 'Daylight' || status === 'Below horizon' || status === 'Solar Glare') {
+      if (status === 'Daylight' || status === 'Civil twilight' || status === 'Nautical twilight' || status === 'Astronomical twilight' || status === 'Night' || status === 'Solar Glare') {
         const item = observingNotation(cell);
         if (item) item.innerHTML = specialHtml(status, mode);
         else cell.innerHTML = specialHtml(status, mode);
