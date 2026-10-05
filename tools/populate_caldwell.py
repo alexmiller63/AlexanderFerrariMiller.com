@@ -55,6 +55,7 @@ def calendar_label(record,finest_ids,asterism_ids):
  if cid in asterism_ids:head+=" (also an asterism)"
  head+=f" in {constellation}"; day=dt.date.fromisoformat(record["best_date"]); magnitude=record.get("mag","").strip(); aid=observing_aid_for_magnitude(magnitude); glyph=HTML_AID[aid] if aid is not None else ""; observing=" ".join(p for p in (glyph,f"V {magnitude}" if magnitude else "") if p); parts=[head]
  if observing:parts.append(f'<span class="visibility-magnitude">{observing}</span>')
+ if cid in finest_ids:parts.append("Finest NGC")
  parts.append(f"{declination_band(record['dec_deg'])} {season_for(day)}"); return " — ".join(parts)
 def events_for(rows,finest_ids,asterism_ids):
  events=defaultdict(list)
@@ -85,5 +86,5 @@ def main():
  catalog=read_catalog(); finest_ids=finest_caldwell_ids(); asterism_ids=asterism_catalog_ids(); years=requested_years()
  if not years:raise RuntimeError("No generated Almanack years found")
  for year in years:
-  rows=visibility_rows(catalog,year); write_visibility(rows,year); events=events_for(rows,finest_ids,asterism_ids); p=inject(PUBLIC,events); print(f"{year}: Caldwell C1-C109 ISO-year occurrences; {len(finest_ids)} overlap memberships preserved as source data only; updated {p} public pages")
+  rows=visibility_rows(catalog,year); write_visibility(rows,year); events=events_for(rows,finest_ids,asterism_ids); p=inject(PUBLIC,events); print(f"{year}: Caldwell C1-C109 ISO-year occurrences; {len(finest_ids)} overlap memberships labeled Finest NGC; updated {p} public pages")
 if __name__=="__main__":main()
