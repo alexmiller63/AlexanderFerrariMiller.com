@@ -259,11 +259,13 @@ def attach_fixed_object_ids(spec: dict) -> dict:
 def build_renderer_spec(descriptor: dict, registry: dict, owner_identity: dict) -> dict:
     abbreviation = descriptor["geometry"]["constellation_abbreviation"]
     targets = descriptor.get("targets") or []
-    guides = [item for item in targets if item.get("type") == "star" and item.get("name")]
+    guides = [item for item in targets if item.get("type") in {"star", "reference-star"} and item.get("name")]
     if not guides:
         raise RuntimeError(f"{descriptor['week']}: stellar finder requires at least one named stellar guide")
     spec = {"name": descriptor.get("constellation") or abbreviation,
             "target": guides[0]["name"],
+            "finder_relation": descriptor.get("finder_route") or {},
+            "planet_position": descriptor.get("planet_position"),
             "figure_paths": constellation_paths(registry, abbreviation),
             "asterisms": [], "deep_sky_objects": [],
             "artwork_owner_identity": owner_identity,
@@ -272,6 +274,36 @@ def build_renderer_spec(descriptor: dict, registry: dict, owner_identity: dict) 
     if requested:
         spec["asterisms"].append(asterism_spec(registry, requested["id"], requested.get("name", "")))
     return attach_fixed_object_ids(spec)
+
+
+
+
+
+def build_weekly_planet_renderer_spec(descriptor: dict, registry: dict) -> dict:
+    """Build a time-varying planet finder without assigning fixed-object ownership."""
+    abbreviation = descriptor["geometry"]["constellation_abbreviation"]
+    targets = descriptor.get("targets") or []
+    guides = [item for item in targets if item.get("type") == "reference-star" and item.get("name")]
+    if len(guides) != 1:
+        raise RuntimeError(f"{descriptor['week']}: planet finder requires exactly one reference star")
+    spec = {
+        "name": descriptor.get("constellation") or abbreviation,
+        "target": guides[0]["name"],
+        "figure_paths": constellation_paths(registry, abbreviation),
+        "asterisms": [],
+        "deep_sky_objects": [],
+        "finder_relation": descriptor.get("finder_route") or {},
+        "planet_position": descriptor.get("planet_position"),
+        "guide_objects": guides,
+    }
+    requested = descriptor.get("asterism")
+    if requested:
+        spec["asterisms"].append(asterism_spec(registry, requested["id"], requested.get("name", "")))
+    # Resolve the reference star through immutable identity, but do not make the
+    # moving planet or the week an owner of fixed-object artwork.
+    spec = attach_fixed_object_ids(spec)
+    spec["target_identity"] = spec["guide_anchor_identity"]
+    return spec
 
 
 def write_renderer_spec(year: int, week: int, spec: dict) -> Path:
@@ -286,17 +318,22 @@ def write_renderer_spec(year: int, week: int, spec: dict) -> Path:
 def generate_week(year: int, week: int) -> bool:
     key = f"{year}-W{week:02d}"
     payload = load_generated_source(year, week)
-    descriptor = payload.get("artwork")
+    descriptor = payload.get("planet_finder_artwork") or payload.get("artwork")
     if descriptor is None:
         print(f"ISO {key}: Sky Note has no artwork descriptor; no artwork needed"); return False
     if not isinstance(descriptor, dict):
         raise RuntimeError(f"ISO {key}: invalid artwork descriptor")
     validate_descriptor(descriptor, year, week)
     registry = accepted_geometry(descriptor)
-    owner = artwork_owner_identity(payload, descriptor)
-    spec = build_renderer_spec(descriptor, registry, owner)
-    out = write_renderer_spec(year, week, spec)
-    print(f"ISO {key}: fixed object {owner['fixed_object_id']} owns finder; accepted guide geometry prepared at {out.relative_to(ROOT)}")
+    if payload.get("planet_finder_artwork") is descriptor:
+        spec = build_weekly_planet_renderer_spec(descriptor, registry)
+        out = write_renderer_spec(year, week, spec)
+        print(f"ISO {key}: weekly planet finder prepared at {out.relative_to(ROOT)}")
+    else:
+        owner = artwork_owner_identity(payload, descriptor)
+        spec = build_renderer_spec(descriptor, registry, owner)
+        out = write_renderer_spec(year, week, spec)
+        print(f"ISO {key}: fixed object {owner['fixed_object_id']} owns finder; accepted guide geometry prepared at {out.relative_to(ROOT)}")
     return True
 
 
