@@ -38,7 +38,7 @@ def caldwell_label(r, finest_ids, asterism_ids):
     mag = r.get("mag", "").strip()
     aid = caldwell.observing_aid_for_magnitude(mag)
     glyph = caldwell.HTML_AID[aid] if aid is not None else ""
-    vis = " ".join(p for p in (glyph, f"V {mag}" if mag else "") if p)
+    vis = " ".join(p for p in (glyph, mag if mag else "") if p)
 
     parts = [head]
     if vis:
@@ -60,7 +60,7 @@ def finest_label(r):
     head = f"{catalog}, {name}, {typ} in {con}" if name else f"{catalog}, {typ} in {con}"
     day = dt.date.fromisoformat(r["best_date"])
     mag = r.get("mag", "").strip()
-    vis = f"{finest.TELESCOPE_GLYPH} V {mag}" if mag else finest.TELESCOPE_GLYPH
+    vis = f"{finest.TELESCOPE_GLYPH} {mag}" if mag else finest.TELESCOPE_GLYPH
     observing = f'<span class="visibility-magnitude">{vis}</span>'
     return f"{head} — {observing} — Finest NGC — {declination_band(r['dec_deg'])} {season_for(day)}"
 
