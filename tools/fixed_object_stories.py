@@ -149,6 +149,12 @@ def _figure_context(constellation: str | None) -> str | None:
         if not paths:
             return None
         closed = [path for path in paths if len(path) >= 4 and path[0] == path[-1]]
+        four_corner = any(len(set(path[:-1])) == 4 for path in closed)
+        if four_corner:
+            return (
+                f"Trace {figure_name}’s diamond-shaped four-star figure first, then identify the target "
+                "at its charted vertex before narrowing the field."
+            )
         if closed:
             return (
                 f"Trace the closed {figure_name} figure first, then identify the target at its charted "
