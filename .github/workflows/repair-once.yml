@@ -14,7 +14,7 @@ jobs:
       - name: Run one-shot repair
         run: python tools/repair_once.py
       - name: Syntax check
-        run: python -m py_compile tools/planet_finder_geometry.py tools/planet_finder_search_core.py tools/repair_once.py tests/test_planet_finder_ultimate_ladders.py
+        run: python -m py_compile tools/planet_finder_geometry.py tools/planet_finder_search_core.py tools/repair_once.py tools/w17_bisect.sh tests/test_planet_finder_ultimate_ladders.py
       - name: Commit repair
         run: |
           git config user.name "github-actions[bot]"
