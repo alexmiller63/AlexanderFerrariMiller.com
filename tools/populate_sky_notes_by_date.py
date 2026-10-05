@@ -71,6 +71,13 @@ ASTERISMS = {
     "Aqr": {"name": "Water Jar", "members": ("Sadalmelik", "Sadalsuud", "Sadachbia", "Skat")},
 }
 
+# Observer-facing constellation shape cues are data used by the generator, not
+# week-specific prose patches. Add cues only when the shape is a useful,
+# recognizable finder landmark.
+CONSTELLATION_FINDER_CUES = {
+    "Ret": "Reticulum’s compact diamond-shaped figure",
+}
+
 
 def canonical_asterism(asterism: dict) -> dict:
     """Resolve an observer-facing asterism to its canonical geometry-registry identity."""
@@ -234,6 +241,53 @@ def fixed_sky_context(features: list[dict]) -> tuple[str | None, dict | None]:
     return None, None
 
 
+def binocular_finder_sentence(fixed: list[dict]) -> str:
+    """Build practical binocular guidance from the selected fixed-sky objects."""
+    stars = [item for item in fixed if item.get("type") == "star"]
+    deep = [item for item in fixed if item.get("type") == "deep-sky"]
+
+    clauses = []
+    for item in stars[:3]:
+        name = item["name"]
+        con = item.get("constellation")
+        constellation = CONSTELLATION_NAMES.get(con, con or "its constellation")
+        asterism = ASTERISMS.get(con)
+        cue = CONSTELLATION_FINDER_CUES.get(con)
+        if asterism and name in asterism["members"]:
+            clauses.append(
+                f"{name}: identify {constellation}, trace the {asterism['name']}, "
+                f"then match {name} to its place in that pattern"
+            )
+        elif cue:
+            clauses.append(
+                f"{name}: identify {cue}, then match {name} to its marked place in the pattern"
+            )
+        else:
+            clauses.append(
+                f"{name}: hold the accepted {constellation} figure in the field "
+                f"and match {name} to its charted position"
+            )
+
+    if clauses:
+        sentence = "With binoculars, " + "; ".join(clauses) + "."
+        if deep:
+            names = ", ".join(item["name"] for item in deep[:2])
+            sentence += f" Once the field is secure, use the same reference stars to move to {names}."
+        return sentence
+
+    if deep:
+        names = ", ".join(item["name"] for item in deep[:3])
+        return (
+            f"With binoculars, use the finder chart for {names} and keep the surrounding "
+            "reference-star pattern in the field while confirming the target."
+        )
+
+    return (
+        "With binoculars, use the week’s finder chart as a field-matching guide rather than "
+        "relying on a generic wide-field view."
+    )
+
+
 def relation_sentence(item: dict) -> str:
     sep = item["longitude_separation_deg"]
     if item["kind"] == "planet-planet-longitude":
@@ -325,14 +379,14 @@ def generated_note(year: int, week: int, page_path: Path, yearly: dict[int, dict
     star_names = [item["name"] for item in fixed if item["type"] == "star"]
     deep_names = [item["name"] for item in fixed if item["type"] == "deep-sky"]
     naked_targets = ", ".join(star_names[:3]) if star_names else "the brightest seasonal stars and the zodiac"
-    binocular_targets = ", ".join((deep_names + star_names)[:3]) if (deep_names or star_names) else "the week’s richest fixed-star fields"
     telescope_targets = ", ".join(deep_names[:2]) if deep_names else "the compact fixed-sky targets selected for the week"
+    binocular_guidance = binocular_finder_sentence(fixed)
     planet_paragraph = " ".join(relation_sentence(item) for item in relations) if relations else "No close longitude relationship passes the conservative weekly selection threshold; use the Planet Finder for the broader Solar-System pattern."
     note = "\n\n".join((
         opening,
         f"**Naked eye:** {moon_text}. {condition} Use {naked_targets} as the week’s fixed-sky framework.",
         f"**Planets:** {planet_paragraph}",
-        f"**Binoculars:** Favor {binocular_targets}; wide fields help connect the charted geometry to the real sky.",
+        f"**Binoculars:** {binocular_guidance}",
         f"**Small telescope:** Concentrate on {telescope_targets}. Increase magnification only after the target and surrounding pattern are secure.",
     ))
     return {
