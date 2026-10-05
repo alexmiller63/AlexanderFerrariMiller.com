@@ -66,7 +66,7 @@ ASTERISMS = {
     "Peg": {"name": "Great Square of Pegasus", "members": ("Markab", "Scheat", "Algenib", "Alpheratz")},
     "UMa": {"name": "Big Dipper", "members": ("Dubhe", "Merak", "Phecda", "Megrez", "Alioth", "Mizar", "Alkaid")},
     "Cyg": {"name": "Northern Cross", "members": ("Deneb", "Sadr", "Gienah", "Albireo")},
-    "Sgr": {"name": "Teapot of Sagittarius", "members": ("Kaus Australis", "Kaus Media", "Kaus Borealis", "Nunki", "Ascella")},
+    "Sgr": {"id": "asterism-teapot-of-sagittarius", "name": "Teapot of Sagittarius", "members": ("Kaus Australis", "Kaus Media", "Kaus Borealis", "Nunki", "Ascella")},
     "Leo": {"name": "Sickle", "members": ("Regulus", "Algieba", "Adhafera")},
     "Aqr": {"name": "Water Jar", "members": ("Sadalmelik", "Sadalsuud", "Sadachbia", "Skat")},
 }
@@ -84,17 +84,27 @@ def canonical_asterism(asterism: dict) -> dict:
     if not GEOMETRY_REGISTRY.exists():
         raise RuntimeError(f"Accepted geometry registry is missing: {GEOMETRY_REGISTRY.relative_to(ROOT)}")
     registry = json.loads(GEOMETRY_REGISTRY.read_text(encoding="utf-8"))
-    wanted = str(asterism.get("name") or "").strip().casefold()
-    matches = [
-        (asterism_id, record)
-        for asterism_id, record in (registry.get("asterisms") or {}).items()
-        if str(record.get("name") or "").strip().casefold() == wanted
-    ]
-    if len(matches) != 1:
-        raise RuntimeError(
-            f"Asterism {asterism.get('name')!r} resolves to {len(matches)} canonical geometry records; expected exactly one"
-        )
-    asterism_id, record = matches[0]
+    records = registry.get("asterisms") or {}
+    requested_id = str(asterism.get("id") or "").strip()
+    if requested_id:
+        record = records.get(requested_id)
+        if record is None:
+            raise RuntimeError(f"Canonical asterism id {requested_id!r} is missing from the geometry registry")
+        asterism_id = requested_id
+    else:
+        # Compatibility path for older asterism declarations. New declarations
+        # should carry their canonical registry id explicitly.
+        wanted = str(asterism.get("name") or "").strip().casefold()
+        matches = [
+            (asterism_id, record)
+            for asterism_id, record in records.items()
+            if str(record.get("name") or "").strip().casefold() == wanted
+        ]
+        if len(matches) != 1:
+            raise RuntimeError(
+                f"Asterism {asterism.get('name')!r} resolves to {len(matches)} canonical geometry records; expected exactly one"
+            )
+        asterism_id, record = matches[0]
     if record.get("geometry_status") != "accepted-paths" or not record.get("paths"):
         raise RuntimeError(f"Canonical asterism {asterism_id!r} has no accepted drawable paths")
     members = [
