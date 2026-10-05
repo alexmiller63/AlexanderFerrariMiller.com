@@ -129,7 +129,8 @@ Likely scope: Legend generator/template; remove mode-dependent Sun sentence cons
 
 
 FEATURE 001 — Settable observer time within Monday
-Status: OPEN
+Status: RESOLVED
+Resolution: The current ephemeris pipeline already implements this feature globally. The generator renders a Monday observer-time <input type="time"> defaulting to 21:00 LAT, and almanack/js/ephemeris.js reads that value, converts it to the corresponding local apparent hour angle, and immediately recomputes the Sun’s altitude and observer-facing sky state when the time changes or Apply is pressed. The weekly reference remains Monday-only; arbitrary weekdays are not introduced. Stale weekly pages acquire the control on regeneration.
 Found during: 2026-W01 review
 Request: Allow the weekly Almanack observer reference time to be selected within Monday rather than fixed at 9:00 PM.
 Default: 9:00 PM local apparent solar time on Monday.
