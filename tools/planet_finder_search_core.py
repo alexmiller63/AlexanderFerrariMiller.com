@@ -80,14 +80,41 @@ def diagnostic_print(*args, level=None, **kwargs):
 
     Level 0 is silent. Level 1 shows major controller events. Level 2 adds
     search-order and contest detail. Level 3 adds forensic terminal detail.
-    Higher levels currently include all diagnostics.
+    Level 4 is a sparse solver trace: it suppresses the ordinary 1-3 stream
+    and emits only high-value search-shape summaries already produced by the
+    solver. It is diagnostic-only and never changes search behavior.
     """
     try:
         configured = max(0, int(os.environ.get("PLANET_FINDER_DIAGNOSTIC_LEVEL", str(_DIAGNOSTIC_LEVEL))))
     except ValueError:
         configured = 1
+
+    text = " ".join(str(arg) for arg in args)
+
+    if configured == 4:
+        sparse_tokens = (
+            "CAPPED SUMMARY",
+            "REPEATED-DEAD-END STOP",
+            "fixed-order summary",
+            "FORWARD BLOCKER",
+            "FORWARD REJECTION BREAKDOWN",
+            "FORWARD BODY body=",
+            "FORWARD BODY BLOCKERS",
+            "SEARCH OUTCOME",
+            "PROMOTE",
+            "REFINEMENT",
+            "deadline",
+            "DEADLINE",
+            "solution",
+            "SOLUTION",
+            "ALIGNMENT STATE REPETITION",
+            "PRE-DFS TIMING alignment-fallback END",
+        )
+        if any(token in text for token in sparse_tokens):
+            print(*args, **kwargs)
+        return
+
     if level is None:
-        text = " ".join(str(arg) for arg in args)
         if any(token in text for token in ("TERMINAL BODY", "IMMUTABLE-CANDIDATE", "HEARTBEAT")):
             level = 3
         elif any(token in text for token in ("CONTESTANT", "squeaky-wheel", "PROMOTE", "CAPPED", "REFINEMENT", "SEARCH OUTCOME")):
