@@ -164,19 +164,19 @@ This entry preserves the known fixes and architectural decisions accumulated dur
 
 ### 2026-09-22 — V marker shown when star is not visible
 
-**State:** Open
+**State:** Resolved
 **Discovered:** 2026-09-22
 **Component:** Observing modes / visibility display
 
 **Observed:** The V visibility marker is displayed all the time. It should appear only when the star is actually visible.
 
-**Diagnosis:** Pending.
+**Diagnosis:** The reported “V” was being interpreted as a visibility marker, but the generators use it as the standard V-band photometric magnitude designation (for example, “V 6.9”). It therefore does not encode whether an object is currently above the horizon or otherwise visible.
 
-**Fix:** Pending.
+**Fix:** No rendering change. Preserve V-band magnitude notation and keep actual observing-aid/visibility state separate.
 
-**Verification:** Pending.
+**Verification:** The fixed-object generators emit V immediately with the numeric magnitude while observing aid is independently represented by the eye/binocular/telescope classification.
 
-**Resolution:** Pending.
+**Resolution:** Closed as a terminology/semantics bug rather than suppressing valid magnitude data.
 
 ### 2026-09-22 — Greek/Symbols solar-glare display bug
 
