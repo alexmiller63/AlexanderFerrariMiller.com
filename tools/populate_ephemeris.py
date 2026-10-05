@@ -15,6 +15,7 @@ from datetime import date
 from pathlib import Path
 
 from star_almanack_ephemeris import StarAlmanackEphemeris
+from almanack_sections import replace_section_inner
 
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_LATITUDE_DEG = 45.0
@@ -177,7 +178,7 @@ def planet_finder(year, week):
     return ('<div class="planet-finder-strip w15-finder-strip">' f'<figure data-finder-mode="greek" class="is-active"><img src="{base}/planet-finder-greek-symbols.svg" alt="Planet Finder — Greek / Symbols"><figcaption>Greek / Symbols</figcaption></figure>' f'<figure data-finder-mode="latin"><img src="{base}/planet-finder-latin.svg" alt="Planet Finder — Latin"><figcaption>Latin</figcaption></figure>' f'<figure data-finder-mode="mixed"><img src="{base}/planet-finder-mixed-learner.svg" alt="Planet Finder — Mixed Learner"><figcaption>Mixed Learner</figcaption></figure>' '</div>')
 
 
-def render_ephemeris(monday, values):
+def render_sections(monday, values):
     primary, extended = TARGETS[:7], TARGETS[7:]
     week = monday.isocalendar().week
     def table(columns, extra_class=""):
@@ -199,19 +200,23 @@ def render_ephemeris(monday, values):
             rows.append(f'<tr><th scope="row">{label}</th>{"".join(cells)}</tr>')
         classes = "ephemeris" + (f" {extra_class}" if extra_class else "")
         return f'<div class="ephemeris-scroll"><table class="{classes}"><thead><tr>{headers}</tr></thead><tbody>{"".join(rows)}</tbody></table></div>'
-    return ("<h3>Weekly Solar-System Ephemeris</h3>" + EPHEMERIS_STYLE + f'<p><strong>Snapshot:</strong> Week begins {monday.strftime("%B")} {monday.day}, {monday.year}, 00:00 UTC.</p>' + f'<p class="ephemeris-latitude-control"><label for="ephemeris-latitude"><strong>Observer latitude:</strong> <input id="ephemeris-latitude" name="ephemeris-latitude" type="text" inputmode="text" value="{DEFAULT_LATITUDE_DEG:g}" data-ephemeris-latitude aria-describedby="ephemeris-latitude-range">°</label> <label for="ephemeris-observer-time"><strong>Monday observer time:</strong> <input id="ephemeris-observer-time" name="ephemeris-observer-time" type="time" value="21:00" data-ephemeris-observer-time></label> <button type="button" data-ephemeris-apply>Apply</button> <span id="ephemeris-latitude-range">({MIN_LATITUDE_DEG:g}° to +{MAX_LATITUDE_DEG:g}°; defaults +{DEFAULT_LATITUDE_DEG:g}°, 21:00 LAT)</span></p>' + notation_toggle("ephemeris") + table(primary) + "<p><strong>Extended targets:</strong></p>" + table(extended, "extended-ephemeris") + '<p class="ephemeris-note"><strong>β</strong> = ecliptic latitude (+ north, − south).<br>Rise and set are Local Apparent Time for the selected latitude.<br>Naked-eye observing uses the Sun’s altitude at the selected Monday observer time: <strong>Daylight</strong> (Sun ≥ −0.833°), <strong>Civil twilight</strong> (−0.833° to −6°), <strong>Nautical twilight</strong> (−6° to −12°), <strong>Astronomical twilight</strong> (−12° to −18°), and <strong>Night</strong> (below −18°).<br><strong>Solar Glare</strong> identifies a body too close to the Sun when the sky-state rule does not already supersede its naked-eye classification.<br>The Sun’s observing status uses this same five-state sky classification.</p>' + notation_toggle("finder") + "<h3>Planet Finder</h3>" + planet_finder(monday.year, week))
+    ephemeris_html = ("<h3>Weekly Solar-System Ephemeris</h3>" + EPHEMERIS_STYLE + f'<p><strong>Snapshot:</strong> Week begins {monday.strftime("%B")} {monday.day}, {monday.year}, 00:00 UTC.</p>' + f'<p class="ephemeris-latitude-control"><label for="ephemeris-latitude"><strong>Observer latitude:</strong> <input id="ephemeris-latitude" name="ephemeris-latitude" type="text" inputmode="text" value="{DEFAULT_LATITUDE_DEG:g}" data-ephemeris-latitude aria-describedby="ephemeris-latitude-range">°</label> <label for="ephemeris-observer-time"><strong>Monday observer time:</strong> <input id="ephemeris-observer-time" name="ephemeris-observer-time" type="time" value="21:00" data-ephemeris-observer-time></label> <button type="button" data-ephemeris-apply>Apply</button> <span id="ephemeris-latitude-range">({MIN_LATITUDE_DEG:g}° to +{MAX_LATITUDE_DEG:g}°; defaults +{DEFAULT_LATITUDE_DEG:g}°, 21:00 LAT)</span></p>' + notation_toggle("ephemeris") + table(primary) + "<p><strong>Extended targets:</strong></p>" + table(extended, "extended-ephemeris") + '<p class="ephemeris-note"><strong>β</strong> = ecliptic latitude (+ north, − south).<br>Rise and set are Local Apparent Time for the selected latitude.<br>Naked-eye observing uses the Sun’s altitude at the selected Monday observer time: <strong>Daylight</strong> (Sun ≥ −0.833°), <strong>Civil twilight</strong> (−0.833° to −6°), <strong>Nautical twilight</strong> (−6° to −12°), <strong>Astronomical twilight</strong> (−12° to −18°), and <strong>Night</strong> (below −18°).<br><strong>Solar Glare</strong> identifies a body too close to the Sun when the sky-state rule does not already supersede its naked-eye classification.<br>The Sun’s observing status uses this same five-state sky classification.</p>'
+    finder_html = notation_toggle("finder") + "<h3>Planet Finder</h3>" + planet_finder(monday.year, week)
+    return ephemeris_html, finder_html
 
 
-EPHEMERIS_SECTION = re.compile(r'<h3>Weekly Solar-System Ephemeris</h3>.*?' r'(?=<h3>(?!Weekly Solar-System Ephemeris</h3>|Planet Finder</h3>)|<h2>|</main>)', re.DOTALL)
-CALENDAR_BLOCK = re.compile(r'(<h3>Calendar</h3>\s*<table\s+class="calendar">.*?</table>)', re.DOTALL)
+def render_ephemeris(monday, values):
+    ephemeris_html, finder_html = render_sections(monday, values)
+    return ephemeris_html + finder_html
+
 
 
 def put_ephemeris(text, replacement, path):
-    new, count = EPHEMERIS_SECTION.subn(lambda _: replacement, text, count=1)
-    if count == 1: return new
-    new, count = CALENDAR_BLOCK.subn(lambda match: match.group(1) + replacement, text, count=1)
-    if count == 1: return new
-    raise RuntimeError(f"Could not locate either an ephemeris section or calendar insertion point in {path.relative_to(ROOT)}")
+    ephemeris_html, finder_html = replacement if isinstance(replacement, tuple) else (replacement, "")
+    new = replace_section_inner(text, 3, ephemeris_html, path)
+    if finder_html:
+        new = replace_section_inner(new, 4, finder_html, path)
+    return new
 
 
 def write_preserved_weekly_table(year, generated):
@@ -242,7 +247,7 @@ def update_year(year, engine=None):
             sample = generated[key][week - 1]
             aid = current_visibility(key, sample[2], sample[3], sample[6])
             values[key] = {"position":zodiac(sample[0]), "beta":beta(sample[1]), "observing":observing_html(key, sample[2], sample[3], sample[6]), "normal_label":observing_label(key, sample[2], sample[3], False), "solar_glare":aid == "solar_glare", "sun_special":key == "sun", "rise":sample[4], "set":sample[5], "ra_hours":sample[7], "dec_deg":sample[8], "sun_ra_hours":sample[9], "sun_dec_deg":sample[10], "horizon_deg":SUN_HORIZON_DEG if key == "sun" else STANDARD_HORIZON_DEG}
-        replacement = render_ephemeris(monday, values)
+        replacement = render_sections(monday, values)
         text = path.read_text(encoding="utf-8")
         new = put_ephemeris(text, replacement, path)
         if new != text:
