@@ -81,7 +81,7 @@ def constellation_magnitude(row,alpha_beta,figures,by_hip):
 def visibility_html(mag):
  aid=observing_aid_for_magnitude(str(mag))
  if aid is None:raise SystemExit(f"Could not derive observing aid for magnitude {mag}")
- return f'<span class="visibility-magnitude">{HTML_AID[aid]} V {mag:.1f}</span>'
+ return f'<span class="visibility-magnitude">{HTML_AID[aid]} {mag:.1f}</span>'
 def make_rows(source,iso_year):
  rows=[]
  for instant,day in best_visibility_occurrences_for_iso_year(float(source["centroid_ra_h"]),iso_year):
