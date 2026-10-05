@@ -14,7 +14,8 @@ Likely scope: GitHub Pages base-path handling; investigate generator/template ra
 
 
 BUG 002 — Sun incorrectly shown as “Visible” in ephemeris
-Status: OPEN
+Status: RESOLVED
+Resolution: The ephemeris no longer seeds the Sun with the legacy generic Visible state. Its generated default state is now tied to the 21:00 LAT sky-state contract (Daylight when above the solar horizon, Night otherwise), while the existing observer-control JavaScript computes the exact five-state solar-altitude classification—Daylight, Civil twilight, Nautical twilight, Astronomical twilight, or Night—for the selected latitude and Monday observer time. Fix commit: a635982f45cd88e002e430f997cbef1bebdcb382
 Found on: 2026-W01
 Observed: The observer-facing ephemeris is geared to 9:00 PM local apparent solar time, but the Sun is labeled “Visible.”
 Category: Ephemeris / observing-status logic
