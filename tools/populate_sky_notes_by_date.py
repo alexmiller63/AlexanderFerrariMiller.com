@@ -66,7 +66,7 @@ ASTERISMS = {
     "Peg": {"name": "Great Square of Pegasus", "members": ("Markab", "Scheat", "Algenib", "Alpheratz")},
     "UMa": {"name": "Big Dipper", "members": ("Dubhe", "Merak", "Phecda", "Megrez", "Alioth", "Mizar", "Alkaid")},
     "Cyg": {"name": "Northern Cross", "members": ("Deneb", "Sadr", "Gienah", "Albireo")},
-    "Sgr": {"name": "Teapot", "members": ("Kaus Australis", "Kaus Media", "Kaus Borealis", "Nunki", "Ascella")},
+    "Sgr": {"name": "Teapot of Sagittarius", "members": ("Kaus Australis", "Kaus Media", "Kaus Borealis", "Nunki", "Ascella")},
     "Leo": {"name": "Sickle", "members": ("Regulus", "Algieba", "Adhafera")},
     "Aqr": {"name": "Water Jar", "members": ("Sadalmelik", "Sadalsuud", "Sadachbia", "Skat")},
 }
