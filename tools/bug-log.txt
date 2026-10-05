@@ -31,7 +31,8 @@ Likely scope: Change the generator/template so weekly pages clearly distinguish 
 
 
 BUG 004 — Ephemeris magnitude display redundantly says “mag”
-Status: OPEN
+Status: RESOLVED
+Resolution: The current ephemeris generator formats observing magnitudes as the signed numeric value alone in parentheses (for example, “Naked eye (−2.7)” in rendered typography) and contains no “mag” prefix in observing_html(). All BUG 004 reports describe the same stale-output defect; regeneration applies the corrected global formatter.
 Found on: 2026-W01
 Observed: In the ephemeris, the naked-eye entry displays magnitude in parentheses as “mag −2.7”.
 Desired display: Remove “mag”; show only the value, e.g. “(−2.7)”.
@@ -40,7 +41,8 @@ Likely scope: Fix magnitude formatting in the ephemeris generator/template; do n
 
 
 BUG 004 — Remove “mag” from ephemeris observing magnitude display
-Status: OPEN
+Status: RESOLVED
+Resolution: The current ephemeris generator formats observing magnitudes as the signed numeric value alone in parentheses (for example, “Naked eye (−2.7)” in rendered typography) and contains no “mag” prefix in observing_html(). All BUG 004 reports describe the same stale-output defect; regeneration applies the corrected global formatter.
 Found on: 2026-W01
 Observed: Ephemeris observing text displays values such as “Naked eye (mag -2.7).”
 Desired: Display “Naked eye (-2.7)” — omit the redundant “mag” label.
@@ -49,7 +51,8 @@ Likely scope: Change the ephemeris generator/template; do not patch W01.
 
 
 BUG 004 — Remove “mag” from naked-eye magnitude display
-Status: OPEN
+Status: RESOLVED
+Resolution: The current ephemeris generator formats observing magnitudes as the signed numeric value alone in parentheses (for example, “Naked eye (−2.7)” in rendered typography) and contains no “mag” prefix in observing_html(). All BUG 004 reports describe the same stale-output defect; regeneration applies the corrected global formatter.
 Found on: 2026-W01 ephemeris
 Observed: The ephemeris displays “Naked eye (mag -2.7)”.
 Desired display: “Naked eye (-2.7)”.
@@ -58,7 +61,8 @@ Likely scope: Change the ephemeris generator/template; do not patch W01.
 
 
 BUG 004 — Remove “mag” from ephemeris Naked eye magnitude display
-Status: OPEN
+Status: RESOLVED
+Resolution: The current ephemeris generator formats observing magnitudes as the signed numeric value alone in parentheses (for example, “Naked eye (−2.7)” in rendered typography) and contains no “mag” prefix in observing_html(). All BUG 004 reports describe the same stale-output defect; regeneration applies the corrected global formatter.
 Found on: 2026-W01
 Observed: Ephemeris displays “Naked eye (mag −2.7)”.
 Desired: Display “Naked eye (−2.7)” — retain the numeric magnitude value but remove the redundant “mag” label.
@@ -66,7 +70,8 @@ Category: Ephemeris / presentation
 Likely scope: Fix ephemeris generator/template; do not patch W01.
 
 BUG 004 — Remove “mag” from ephemeris observing label
-Status: OPEN
+Status: RESOLVED
+Resolution: The current ephemeris generator formats observing magnitudes as the signed numeric value alone in parentheses (for example, “Naked eye (−2.7)” in rendered typography) and contains no “mag” prefix in observing_html(). All BUG 004 reports describe the same stale-output defect; regeneration applies the corrected global formatter.
 Found on: 2026-W01
 Observed: Ephemeris displays labels such as “Naked eye (mag −2.7)”.
 Desired: Display “Naked eye (−2.7)” with no “mag” prefix.
@@ -75,7 +80,8 @@ Likely scope: Fix ephemeris generator/template formatting; do not patch W01.
 
 
 BUG 004 — Remove “mag” from ephemeris magnitude display
-Status: OPEN
+Status: RESOLVED
+Resolution: The current ephemeris generator formats observing magnitudes as the signed numeric value alone in parentheses (for example, “Naked eye (−2.7)” in rendered typography) and contains no “mag” prefix in observing_html(). All BUG 004 reports describe the same stale-output defect; regeneration applies the corrected global formatter.
 Found on: 2026-W01
 Observed: Ephemeris observing text displays magnitude with the redundant label “mag”, e.g. “Naked eye (mag -2.7)”.
 Desired wording: “Naked eye (-2.7)”.
@@ -84,7 +90,8 @@ Likely scope: Change the ephemeris generator/template globally; do not patch W01
 
 
 BUG 004 — Remove “mag” from naked-eye magnitude display
-Status: OPEN
+Status: RESOLVED
+Resolution: The current ephemeris generator formats observing magnitudes as the signed numeric value alone in parentheses (for example, “Naked eye (−2.7)” in rendered typography) and contains no “mag” prefix in observing_html(). All BUG 004 reports describe the same stale-output defect; regeneration applies the corrected global formatter.
 Found on: 2026-W01 ephemeris
 Observed: The ephemeris displays values such as “Naked eye (mag −2.7).”
 Desired: Display “Naked eye (−2.7)” — retain the numeric magnitude value but remove the word “mag.”
