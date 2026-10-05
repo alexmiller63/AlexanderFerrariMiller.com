@@ -1620,6 +1620,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         diagnostic_depth = -(group_index + 1)
         ranked = []
         rank_viable_counts = {}
+        final_pair_route_pressure = {}
         best_count = None
         # Cheap geometry is a necessary-condition superset and costs almost
         # nothing compared with routing.  Use it only to decide which member
@@ -1792,10 +1793,13 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 geometry_count = pressure.get("geometry", 0)
                 straight_conflict = pressure.get("straight_conflict", 0)
                 straight_clear = pressure.get("straight_clear", 0)
+                conflict_pct = (100.0 * straight_conflict / geometry_count if geometry_count else 0.0)
+                if final_pair_geometry_rank:
+                    final_pair_route_pressure[probe_name] = conflict_pct
                 pressure_text = (
                     f" route-pressure[straight-clear={straight_clear:,},"
                     f"straight-conflict={straight_conflict:,},"
-                    f"conflict-pct={(100.0 * straight_conflict / geometry_count) if geometry_count else 0.0:.1f}]"
+                    f"conflict-pct={conflict_pct:.1f}]"
                 )
             # The geometry-only shadow is forensic instrumentation, not part of
             # the solver. Keep it available at diagnostic level 3, but do not
@@ -1897,6 +1901,23 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         zero_rows = [row for row in near_tied if row[0] == 0]
         if zero_rows:
             viable_count, item = min(zero_rows, key=lambda row: row[1][0])
+        elif final_pair_geometry_rank:
+            # Fail first on the harder-to-route member when the final two
+            # geometric domains are tied. This avoids rerouting that expensive
+            # member beneath every sibling of the easier member.
+            viable_count, item = max(
+                near_tied,
+                key=lambda row: (
+                    final_pair_route_pressure.get(row[1][1][1], 0.0),
+                    row[1][0],
+                ),
+            )
+            diagnostic_print(
+                f"Planet Finder {mode}: ALIGNMENT FINAL-PAIR PRESSURE CHOICE "
+                f"member={item[1][1]} geometry={viable_count} "
+                f"conflict-pct={final_pair_route_pressure.get(item[1][1], 0.0):.1f}",
+                level=1, flush=True,
+            )
         else:
             viable_count, item = max(near_tied, key=lambda row: row[1][0])
         original_index, (symbol, name, longitude) = item
