@@ -99,7 +99,8 @@ Category: Ephemeris / presentation
 Likely scope: Ephemeris generator/template formatting.
 
 BUG 005 — Ephemeris legend sentences need separate lines
-Status: OPEN
+Status: RESOLVED
+Resolution: The current ephemeris generator already separates every explanatory legend sentence with an explicit <br>, so β, rise/set, sky-state, Solar Glare, and Sun-state explanations each begin on their own line. The W01 report reflects stale generated output; regeneration applies the global formatting.
 Found on: 2026-W01 ephemeris legend
 Observed: The explanatory legend beginning “β = ecliptic latitude; + north, − south.” runs sentences together.
 Desired: Each sentence in the legend should begin on a new line.
