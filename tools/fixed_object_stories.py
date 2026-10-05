@@ -17,6 +17,7 @@ ROOT = Path(__file__).resolve().parents[1]
 STORIES_ROOT = ROOT / "stories"
 FIXED_OBJECT_DATABASE = ROOT / "database" / "fixed-objects.json"
 STAR_HOPS = ROOT / "guiding-star-hops.json"
+FIGURE_SOURCE = ROOT / "constellation-figures.json"
 
 COLLECTIONS = {"alpha-stars", "beta-stars", "special-stars", "messier", "caldwell", "finest"}
 ARTWORK_KINDS = {"stellar-finder"}
@@ -136,52 +137,76 @@ def _routes_for(name: str) -> list[dict]:
     return [route for route in payload.get("routes") or [] if route.get("target") == name]
 
 
+def _figure_context(constellation: str | None) -> str | None:
+    """Describe preserved finder geometry without inventing a named asterism."""
+    if not constellation or not FIGURE_SOURCE.exists():
+        return None
+    payload = json.loads(FIGURE_SOURCE.read_text(encoding="utf-8"))
+    for figure_name, record in payload.items():
+        if record.get("constellation") != constellation:
+            continue
+        paths = record.get("figure_paths") or []
+        if not paths:
+            return None
+        closed = [path for path in paths if len(path) >= 4 and path[0] == path[-1]]
+        if closed:
+            return (
+                f"Trace the closed {figure_name} figure first, then identify the target at its charted "
+                "vertex or along its charted segment before narrowing the field."
+            )
+        return (
+            f"Trace the preserved {figure_name} stick figure from its brighter labeled stars, then "
+            "identify the target on the corresponding charted segment."
+        )
+    return None
+
+
 def baseline_story(fixed_object_id: int) -> Story:
-    """Build the always-present baseline note for one permanent fixed-object ID."""
+    """Build a useful, non-repetitive baseline note from preserved object data."""
     meta = _fixed_object_meta(fixed_object_id)
     name = meta.get("name") or f"Fixed object {fixed_object_id}"
     family = meta.get("object_type_family") or "fixed-sky object"
     constellation = meta.get("constellation")
+
     if family == "star":
-        location = f" in {constellation}" if constellation else ""
-        reason = f"{name} is a charted star{location} selected by the Calendar as part of this week’s fixed-sky observing framework."
+        where = f" in {constellation}" if constellation else ""
+        dek = f"{name} is a fixed-sky stellar reference{where} used by the weekly observing calendar."
+        reason = (
+            f"Why it is here: The Calendar selected {name} for this week’s fixed-sky observing sequence; "
+            "its permanent object identity ties the weekly entry to the same star used by the finder."
+        )
     else:
-        reason = f"{name} is a charted deep-sky object selected by the Calendar as one of this week’s fixed-sky observing targets."
+        where = f" in {constellation}" if constellation else ""
+        dek = f"{name} is a fixed-sky observing target{where} carried by the weekly Calendar."
+        reason = (
+            f"Why it is here: The Calendar selected {name} as one of this week’s fixed-sky observing targets."
+        )
+
     routes = _routes_for(name)
-    route_texts = [str(route.get("instruction") or "").strip() for route in routes if str(route.get("instruction") or "").strip()]
+    route_texts = [
+        str(route.get("instruction") or "").strip()
+        for route in routes if str(route.get("instruction") or "").strip()
+    ]
     if route_texts:
         context = " ".join(route_texts)
     else:
-        # Use structured asterism membership before falling back to generic
-        # field-identification prose. This keeps the baseline story useful even
-        # when no curated star-hop route exists.
-        aliases = {name.casefold()}
-        con_abbr = None
-        if constellation:
-            for record in json.loads(FIXED_OBJECT_DATABASE.read_text(encoding="utf-8")).get("fixed_objects") or []:
-                if any(str(src.get("facts", {}).get("name") or "").casefold() == name.casefold()
-                       for src in record.get("source_records") or []):
-                    con_abbr = next((src.get("facts", {}).get("constellation") for src in record.get("source_records") or []
-                                     if src.get("facts", {}).get("constellation")), None)
-                    break
-        asterism_names = []
-        if STAR_HOPS.exists():
-            # The curated route catalog is authoritative for named asterism
-            # waypoints as well as route instructions.
-            for route in _routes_for(name):
-                for step in route.get("steps") or []:
-                    if step and step not in asterism_names:
-                        asterism_names.append(step)
-        if asterism_names:
-            context = "Use the charted " + ", ".join(asterism_names) + " as the named landmark(s), then follow the finder to the target."
-        elif constellation:
-            context = f"Use the charted figure of {constellation} and its labeled reference stars to identify the field."
-        else:
-            context = "Use the surrounding charted stars and finder geometry to identify the field before increasing magnification."
-    body = f"Why it is here: {reason}\n\nHow to find it: {context}"
-    return Story("baseline", fixed_object_id, FIXED_OBJECT_DATABASE, name, reason, body,
-                 url_override=f"/stories/baseline/{fixed_object_id}.html")
+        context = _figure_context(constellation)
+        if context is None and constellation:
+            context = (
+                f"Establish the preserved {constellation} constellation figure from its labeled reference "
+                "stars, then use the target’s plotted position rather than searching for an isolated star."
+            )
+        elif context is None:
+            context = (
+                "Establish the surrounding charted stars first, then use the target’s plotted position "
+                "before increasing magnification."
+            )
 
+    body = f"{reason}\n\nHow to find it: {context}"
+    return Story(
+        "baseline", fixed_object_id, FIXED_OBJECT_DATABASE, name, dek, body,
+        url_override=f"/stories/baseline/{fixed_object_id}.html"
+    )
 
 def write_public_story(story: Story) -> Path:
     """Materialize the human-readable HTML representation for any story."""
