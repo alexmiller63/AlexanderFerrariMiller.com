@@ -292,7 +292,7 @@ This entry preserves the known fixes and architectural decisions accumulated dur
 
 ### 2026-09-22 — Aries zero-degree label encroaches on chart rim
 
-**State:** Open
+**State:** Resolved
 **Discovered:** 2026-09-22
 **Component:** Planet Finder chart / zodiac labels
 
@@ -300,13 +300,13 @@ This entry preserves the known fixes and architectural decisions accumulated dur
 
 **Expected:** The label should be positioned to the left of the chart, clear of the rim.
 
-**Diagnosis:** Pending.
+**Diagnosis:** The 0° Aries annotation was previously positioned too close to or inside the zodiac rim.
 
-**Fix:** Pending.
+**Fix:** The shared Planet Finder renderer now anchors 0° Aries at the 9-o’clock boundary and offsets the text 28 px beyond the outer rim with end alignment.
 
-**Verification:** Pending.
+**Verification:** `tools/planet_finder_rendering.py` computes the outer-rim point with `xy(0, RO)` and renders the label at `aries_x - 28` outside the zodiac band.
 
-**Resolution:** Pending.
+**Resolution:** The annotation is generated outside the chart rim; generated weeks inherit the fix on rebuild.
 
 ### 2026-09-22 — Highlights/Wordy control does not look like a toggle
 
