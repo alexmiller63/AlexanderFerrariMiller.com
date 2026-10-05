@@ -74,7 +74,7 @@ Every observer-facing Almanack stellar entry SHALL display, when applicable:
 - proper name;
 - Bayer designation, using the Greek letter rather than the three-letter Latin code;
 - constellation via the Bayer constellation abbreviation;
-- variable-star magnitude as a whole number, prefixed by `V`;
+- variable-star magnitude as a whole number, prefixed by `Var`;
 - no magnitude for non-variable stars;
 - declination band derived consistently from declination;
 - observing season;
