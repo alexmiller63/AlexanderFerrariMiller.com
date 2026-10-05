@@ -1138,7 +1138,8 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             immutable_diag = {} if name == "Sun" and abs(longitude - 101.0) < 1e-9 else None
             options = [
                 row for row in legal_candidate_positions(
-                    longitude, w, h, reserved, displacement_scale, immutable_diag
+                    longitude, w, h, reserved, displacement_scale, immutable_diag,
+                    max_label_lengths=3.0,
                 )
                 if not any(boxes_overlap(row[2], box, LABEL_COLLISION_PADDING) for box in placed)
                 and not any(segment_hits_box(path[i], path[i + 1], row[2], 10)
@@ -1213,11 +1214,30 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             def angular_distance(a, b):
                 return abs((a - b + 180.0) % 360.0 - 180.0)
 
+            # Stagger the simultaneous wide plan across radial lanes instead
+            # of forcing every label onto one ring.  These are real legal
+            # candidates from the expanded +/-3-label-length planner lattice;
+            # the complete compatible selection is staged before ordinary DFS.
+            radial_lanes = tuple(PREFERRED_LABEL_RADII) + tuple(EXPANDED_LABEL_RADII)
+            if not radial_lanes:
+                radial_lanes = (RI - 90.0,)
+            lane_targets = {}
+            for index, member in enumerate(names):
+                # Alternate outer/inner lanes first, then use deeper lanes for
+                # larger groups.  This gives adjacent crowded labels different
+                # radii while preserving the left-to-right astronomical order.
+                lane_index = index % min(len(radial_lanes), 2)
+                if len(names) > 4 and len(radial_lanes) > 2 and index >= 4:
+                    lane_index = 2 + ((index - 4) % (len(radial_lanes) - 2))
+                lane_targets[member] = float(radial_lanes[lane_index])
+
             for member in names:
                 target = targets[member]
+                target_radius = lane_targets[member]
                 pools[member].sort(
                     key=lambda row: (
                         angular_distance(label_angle(row, reference), target),
+                        abs(math.hypot(row[0] - CX, row[1] - CY) - target_radius),
                         -math.hypot(
                             row[0] - xy(longitudes[member], PREFERRED_LABEL_RADII[0])[0],
                             row[1] - xy(longitudes[member], PREFERRED_LABEL_RADII[0])[1],
@@ -1225,9 +1245,9 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                     )
                 )
             diagnostic_print(
-                f"Planet Finder {mode}: ALIGNMENT WIDE PREPLAN "
+                f"Planet Finder {mode}: ALIGNMENT WIDE STAGGER PREPLAN "
                 f"members={names} packed={packed_deg:.2f}deg "
-                f"targets={{{', '.join(f'{member}:{targets[member]:.2f}' for member in names)}}}",
+                f"targets={{{', '.join(f'{member}:{targets[member]:.2f}@r{lane_targets[member]:.1f}' for member in names)}}}",
                 level=1, flush=True,
             )
 
