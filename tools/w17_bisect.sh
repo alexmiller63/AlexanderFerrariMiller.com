@@ -11,7 +11,7 @@ cat > "$HARNESS_DIR/test-one.sh" <<'SH'
 set -uo pipefail
 ref="$(git rev-parse HEAD)"
 echo "::group::Testing actual W17 at $ref"
-PLANET_FINDER_DIAGNOSTIC_LEVEL=0 timeout 400s python tools/generate_planet_finders.py --year 2026 --week 17
+STAR_ALMANACK_EPHEMERIS_DIR="$PWD/.cache/skyfield" PLANET_FINDER_DIAGNOSTIC_LEVEL=0 timeout 400s python tools/generate_planet_finders.py --year 2026 --week 17
 rc=$?
 echo "::endgroup::"
 if [ "$rc" -eq 0 ]; then
