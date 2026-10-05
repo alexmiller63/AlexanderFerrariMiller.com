@@ -1358,8 +1358,42 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             return 2.5
         return 2.0
 
+    alignment_span_reported = set()
+
+    def report_alignment_required_span(name):
+        group = next((g for g in alignment_group_items if any(m[1][1] == name for m in g)), None)
+        if not group or len(group) < 2:
+            return
+        key = tuple(m[1][1] for m in group)
+        if key in alignment_span_reported:
+            return
+        alignment_span_reported.add(key)
+        # Diagnostic only.  Convert each rendered label's tangential width at the
+        # label radius into angular span, then add the same 14px separation used
+        # by overlap checks between adjacent packed labels.
+        radius = max(1.0, float(RI - 5))
+        rows = []
+        total_radians = 0.0
+        for _, (_, member_name, _) in group:
+            w, h = label_size(mode, member_name)
+            tangential_px = max(float(w), float(h))
+            radians = 2.0 * math.asin(min(1.0, tangential_px / (2.0 * radius)))
+            rows.append((member_name, math.degrees(radians)))
+            total_radians += radians
+        total_radians += (len(group) - 1) * (14.0 / radius)
+        packed_deg = math.degrees(total_radians)
+        half_deg = packed_deg / 2.0
+        envelope = alignment_max_label_lengths(name)
+        diagnostic_print(
+            f"Planet Finder {mode}: ALIGNMENT REQUIRED SPAN group-size={len(group)} "
+            f"packed={packed_deg:.2f}deg half={half_deg:.2f}deg current-envelope={envelope:.2f} "
+            f"ratio={half_deg / envelope:.2f} labels={rows!r}",
+            level=1, flush=True,
+        )
+
     def alignment_base_positions(item):
         _, (_, name, longitude) = item
+        report_alignment_required_span(name)
         max_label_lengths = alignment_max_label_lengths(name)
         cache_key = (name, max_label_lengths)
         cached = alignment_position_cache.get(cache_key)
