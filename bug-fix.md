@@ -170,13 +170,13 @@ This entry preserves the known fixes and architectural decisions accumulated dur
 
 **Observed:** The V visibility marker is displayed all the time. It should appear only when the star is actually visible.
 
-**Diagnosis:** The reported “V” was being interpreted as a visibility marker, but the generators use it as the standard V-band photometric magnitude designation (for example, “V 6.9”). It therefore does not encode whether an object is currently above the horizon or otherwise visible.
+**Diagnosis:** Several fixed-object generators hard-coded `V` before every magnitude, incorrectly using it as a V-band label. The shared stellar renderer already implements the Almanack convention: `V` marks only catalogued variable stars with a variability span of at least 1.0 magnitude in Standard detail.
 
-**Fix:** No rendering change. Preserve V-band magnitude notation and keep actual observing-aid/visibility state separate.
+**Fix:** Removed the hard-coded `V` prefix from Caldwell, Finest NGC, constellation-center, asterism-center, and shared catalog-reconciliation magnitude rendering. Variable-star `V` remains controlled by `star_almanack_objects.py`.
 
-**Verification:** The fixed-object generators emit V immediately with the numeric magnitude while observing aid is independently represented by the eye/binocular/telescope classification.
+**Verification:** Non-variable fixed-object renderers now output observing glyph plus magnitude only; the canonical stellar renderer retains its significant-variable test before displaying `V`.
 
-**Resolution:** Closed as a terminology/semantics bug rather than suppressing valid magnitude data.
+**Resolution:** `V` is reserved for qualifying variable stars; it is no longer emitted as a generic photometric-band prefix.
 
 ### 2026-09-22 — Greek/Symbols solar-glare display bug
 
