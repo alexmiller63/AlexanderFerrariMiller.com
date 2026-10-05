@@ -204,7 +204,8 @@ Category: Descriptor artwork / layout
 Likely scope: Shared descriptor/artwork generator layout, not a Beta Reticuli-only patch.
 
 BUG 012 — Beta Reticuli descriptor prose is repetitive boilerplate
-Status: OPEN
+Status: RESOLVED
+Resolution: Baseline fixed-object stories now separate summary, weekly selection reason, and finder instructions instead of repeating one fallback sentence. Finder prose is derived from preserved star-hop/constellation geometry; four-star closed figures are described as diamond-shaped, giving β Ret a concrete Reticulum finder route. Fix commits: 158b93dd5eb9d344c56d2cd5db4cff9d187456bf, c2ea08cdc273d667095a4be24200067be4d70fe9
 Found on: 2026-W01 Beta Reticuli descriptor
 Observed: The main description and “Why is it here?” repeat the same generic sentence: “Beta Reticuli is a charted star in Reticulum, selected by the calendar as part of this week's fixed sky observing framework.” “How to find it” is likewise generic: “use its charted position in Reticulum and the surrounding brighter stars to identify the field.”
 Desired: Replace boilerplate with distinct, object-specific prose. The description should explain Beta Reticuli itself and useful observing context; “Why is it here?” should explain the actual reason it was selected this week; “How to find it” should give a concrete star-finding route using Reticulum’s diamond-shaped pattern and identifiable neighboring stars. Do not repeat the same sentence across sections.
@@ -222,7 +223,8 @@ Category: Descriptor artwork / layout
 Likely scope: Artwork generator legend placement.
 
 BUG 012 — Descriptor generation falls back to repetitive boilerplate instead of object-specific material
-Status: OPEN
+Status: RESOLVED
+Resolution: The baseline descriptor/story path now uses structured object identity plus available star-hop and preserved constellation-figure data to generate distinct observer-facing sections; generic repeated prose is no longer the baseline fallback. Four-corner closed finder geometry receives an explicit diamond-shaped description for cases such as β Reticuli. Fix commits: 158b93dd5eb9d344c56d2cd5db4cff9d187456bf, c2ea08cdc273d667095a4be24200067be4d70fe9
 Found on: 2026-W01 Beta Reticuli descriptor
 Observed: Beta Reticuli exposed a general generator defect: the main description and “Why is it here?” can repeat generic fallback text, while “How to find it” can give generic instructions rather than a real finder route.
 Desired: Descriptor generation should actively draw from available object-specific astronomical, historical, cultural, constellation/asterism, and finder information. Each semantic section should contribute different useful information rather than reuse a fallback. Finder prose and artwork should show a concrete locating route. Beta Reticuli is the test case: its descriptor can draw on Reticulum’s distinctive figure, the star’s place within it, the constellation’s reticle history, and verified stellar facts.
