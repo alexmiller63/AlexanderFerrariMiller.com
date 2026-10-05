@@ -127,7 +127,8 @@ Likely scope: Parameterize observer time through the relevant generators and pre
 
 
 BUG 007 — Highlights / Wordy view controls do not behave as toggles
-Status: OPEN
+Status: RESOLVED
+Resolution: Shared Sky Notes generator renders Highlights/Wordy as one segmented control with a visible divider and strong active-state outline while preserving aria-pressed behavior. Fix commit: 0d4cdda.
 Found on: 2026-W01
 Observed: The View controls “Highlights” and “Wordy” do not appear to behave as toggles as intended.
 Desired: The view controls should have clear, consistent toggle behavior and visibly reflect the active view state.
