@@ -1,0 +1,75 @@
+name: Build All 2026 — Extended
+
+on:
+  workflow_dispatch:
+    inputs:
+      candidate_layouts:
+        description: Planet Finder complete layouts to score per mode
+        required: true
+        default: '5'
+        type: string
+      max_node_candidates:
+        description: Planet Finder maximum DFS node visits per body depth
+        required: true
+        default: '200'
+        type: string
+      max_search_seconds:
+        description: Planet Finder search time per mode
+        required: true
+        default: '360'
+        type: string
+      diagnostic_level:
+        description: Planet Finder diagnostic verbosity
+        required: true
+        default: '1'
+        type: string
+
+permissions:
+  contents: write
+  actions: write
+
+concurrency:
+  group: build-all-2026-extended
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Build 2026 W${{ matrix.start }}–W${{ matrix.end }}
+    runs-on: ubuntu-latest
+    strategy:
+      max-parallel: 1
+      fail-fast: true
+      matrix:
+        include:
+          - { order: 1,  start: 20, end: 23 }
+          - { order: 2,  start: 24, end: 27 }
+          - { order: 3,  start: 28, end: 31 }
+          - { order: 4,  start: 32, end: 35 }
+          - { order: 5,  start: 36, end: 39 }
+          - { order: 6,  start: 40, end: 43 }
+          - { order: 7,  start: 44, end: 47 }
+          - { order: 8,  start: 48, end: 51 }
+          - { order: 9,  start: 52, end: 53 }
+          - { order: 10, start: 1,  end: 4 }
+          - { order: 11, start: 5,  end: 8 }
+          - { order: 12, start: 9,  end: 12 }
+          - { order: 13, start: 13, end: 16 }
+          - { order: 14, start: 17, end: 19 }
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Dispatch and wait for this Build All segment
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          echo "Segment ${{ matrix.order }}: 2026-W${{ matrix.start }} through 2026-W${{ matrix.end }}"
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
+            -f start_year='2026' \
+            -f start_week='${{ matrix.start }}' \
+            -f end_year='2026' \
+            -f end_week='${{ matrix.end }}' \
+            -f candidate_layouts='${{ inputs.candidate_layouts }}' \
+            -f max_node_candidates='${{ inputs.max_node_candidates }}' \
+            -f max_search_seconds='${{ inputs.max_search_seconds }}' \
+            -f diagnostic_level='${{ inputs.diagnostic_level }}'
