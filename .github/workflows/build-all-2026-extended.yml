@@ -32,44 +32,1012 @@ concurrency:
   group: build-all-2026-extended
   cancel-in-progress: false
 
+# One outer job per ISO week keeps every individual job well below GitHub's
+# six-hour ceiling.  Explicit needs links guarantee W20..W53, then W01..W19.
+# if: always() means a failed week is recorded but does not abort the year.
 jobs:
-  build:
-    name: Build 2026 W${{ matrix.start }}–W${{ matrix.end }}
+  w20_1:
+    name: Build 2026 W20
     runs-on: ubuntu-latest
-    strategy:
-      max-parallel: 1
-      fail-fast: true
-      matrix:
-        include:
-          - { order: 1,  start: 20, end: 23 }
-          - { order: 2,  start: 24, end: 27 }
-          - { order: 3,  start: 28, end: 31 }
-          - { order: 4,  start: 32, end: 35 }
-          - { order: 5,  start: 36, end: 39 }
-          - { order: 6,  start: 40, end: 43 }
-          - { order: 7,  start: 44, end: 47 }
-          - { order: 8,  start: 48, end: 51 }
-          - { order: 9,  start: 52, end: 53 }
-          - { order: 10, start: 1,  end: 4 }
-          - { order: 11, start: 5,  end: 8 }
-          - { order: 12, start: 9,  end: 12 }
-          - { order: 13, start: 13, end: 16 }
-          - { order: 14, start: 17, end: 19 }
-
     steps:
       - uses: actions/checkout@v4
-
-      - name: Dispatch and wait for this Build All segment
+      - name: Dispatch and wait for W20
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          echo "Segment ${{ matrix.order }}: 2026-W${{ matrix.start }} through 2026-W${{ matrix.end }}"
-          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
-            -f start_year='2026' \
-            -f start_week='${{ matrix.start }}' \
-            -f end_year='2026' \
-            -f end_week='${{ matrix.end }}' \
-            -f candidate_layouts='${{ inputs.candidate_layouts }}' \
-            -f max_node_candidates='${{ inputs.max_node_candidates }}' \
-            -f max_search_seconds='${{ inputs.max_search_seconds }}' \
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \\
+            -f start_year='2026' -f start_week='20' \\
+            -f end_year='2026' -f end_week='20' \\
+            -f candidate_layouts='${{ inputs.candidate_layouts }}' \\
+            -f max_node_candidates='${{ inputs.max_node_candidates }}' \\
+            -f max_search_seconds='${{ inputs.max_search_seconds }}' \\
             -f diagnostic_level='${{ inputs.diagnostic_level }}'
+
+  w21_2:
+    name: Build 2026 W21
+    runs-on: ubuntu-latest
+    needs: w20_1
+    if: always()
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch and wait for W21
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \\
+            -f start_year='2026' -f start_week='21' \\
+            -f end_year='2026' -f end_week='21' \\
+            -f candidate_layouts='${{ inputs.candidate_layouts }}' \\
+            -f max_node_candidates='${{ inputs.max_node_candidates }}' \\
+            -f max_search_seconds='${{ inputs.max_search_seconds }}' \\
+            -f diagnostic_level='${{ inputs.diagnostic_level }}'
+
+  w22_3:
+    name: Build 2026 W22
+    runs-on: ubuntu-latest
+    needs: w21_2
+    if: always()
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch and wait for W22
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \\
+            -f start_year='2026' -f start_week='22' \\
+            -f end_year='2026' -f end_week='22' \\
+            -f candidate_layouts='${{ inputs.candidate_layouts }}' \\
+            -f max_node_candidates='${{ inputs.max_node_candidates }}' \\
+            -f max_search_seconds='${{ inputs.max_search_seconds }}' \\
+            -f diagnostic_level='${{ inputs.diagnostic_level }}'
+
+  w23_4:
+    name: Build 2026 W23
+    runs-on: ubuntu-latest
+    needs: w22_3
+    if: always()
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch and wait for W23
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \\
+            -f start_year='2026' -f start_week='23' \\
+            -f end_year='2026' -f end_week='23' \\
+            -f candidate_layouts='${{ inputs.candidate_layouts }}' \\
+            -f max_node_candidates='${{ inputs.max_node_candidates }}' \\
+            -f max_search_seconds='${{ inputs.max_search_seconds }}' \\
+            -f diagnostic_level='${{ inputs.diagnostic_level }}'
+
+  w24_5:
+    name: Build 2026 W24
+    runs-on: ubuntu-latest
+    needs: w23_4
+    if: always()
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch and wait for W24
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \\
+            -f start_year='2026' -f start_week='24' \\
+            -f end_year='2026' -f end_week='24' \\
+            -f candidate_layouts='${{ inputs.candidate_layouts }}' \\
+            -f max_node_candidates='${{ inputs.max_node_candidates }}' \\
+            -f max_search_seconds='${{ inputs.max_search_seconds }}' \\
+            -f diagnostic_level='${{ inputs.diagnostic_level }}'
+
+  w25_6:
+    name: Build 2026 W25
+    runs-on: ubuntu-latest
+    needs: w24_5
+    if: always()
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch and wait for W25
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \\
+            -f start_year='2026' -f start_week='25' \\
+            -f end_year='2026' -f end_week='25' \\
+            -f candidate_layouts='${{ inputs.candidate_layouts }}' \\
+            -f max_node_candidates='${{ inputs.max_node_candidates }}' \\
+            -f max_search_seconds='${{ inputs.max_search_seconds }}' \\
+            -f diagnostic_level='${{ inputs.diagnostic_level }}'
+
+  w26_7:
+    name: Build 2026 W26
+    runs-on: ubuntu-latest
+    needs: w25_6
+    if: always()
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch and wait for W26
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \\
+            -f start_year='2026' -f start_week='26' \\
+            -f end_year='2026' -f end_week='26' \\
+            -f candidate_layouts='${{ inputs.candidate_layouts }}' \\
+            -f max_node_candidates='${{ inputs.max_node_candidates }}' \\
+            -f max_search_seconds='${{ inputs.max_search_seconds }}' \\
+            -f diagnostic_level='${{ inputs.diagnostic_level }}'
+
+  w27_8:
+    name: Build 2026 W27
+    runs-on: ubuntu-latest
+    needs: w26_7
+    if: always()
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch and wait for W27
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \\
+            -f start_year='2026' -f start_week='27' \\
+            -f end_year='2026' -f end_week='27' \\
+            -f candidate_layouts='${{ inputs.candidate_layouts }}' \\
+            -f max_node_candidates='${{ inputs.max_node_candidates }}' \\
+            -f max_search_seconds='${{ inputs.max_search_seconds }}' \\
+            -f diagnostic_level='${{ inputs.diagnostic_level }}'
+
+  w28_9:
+    name: Build 2026 W28
+    runs-on: ubuntu-latest
+    needs: w27_8
+    if: always()
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch and wait for W28
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \\
+            -f start_year='2026' -f start_week='28' \\
+            -f end_year='2026' -f end_week='28' \\
+            -f candidate_layouts='${{ inputs.candidate_layouts }}' \\
+            -f max_node_candidates='${{ inputs.max_node_candidates }}' \\
+            -f max_search_seconds='${{ inputs.max_search_seconds }}' \\
+            -f diagnostic_level='${{ inputs.diagnostic_level }}'
+
+  w29_10:
+    name: Build 2026 W29
+    runs-on: ubuntu-latest
+    needs: w28_9
+    if: always()
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch and wait for W29
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \\
+            -f start_year='2026' -f start_week='29' \\
+            -f end_year='2026' -f end_week='29' \\
+            -f candidate_layouts='${{ inputs.candidate_layouts }}' \\
+            -f max_node_candidates='${{ inputs.max_node_candidates }}' \\
+            -f max_search_seconds='${{ inputs.max_search_seconds }}' \\
+            -f diagnostic_level='${{ inputs.diagnostic_level }}'
+
+  w30_11:
+    name: Build 2026 W30
+    runs-on: ubuntu-latest
+    needs: w29_10
+    if: always()
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch and wait for W30
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \\
+            -f start_year='2026' -f start_week='30' \\
+            -f end_year='2026' -f end_week='30' \\
+            -f candidate_layouts='${{ inputs.candidate_layouts }}' \\
+            -f max_node_candidates='${{ inputs.max_node_candidates }}' \\
+            -f max_search_seconds='${{ inputs.max_search_seconds }}' \\
+            -f diagnostic_level='${{ inputs.diagnostic_level }}'
+
+  w31_12:
+    name: Build 2026 W31
+    runs-on: ubuntu-latest
+    needs: w30_11
+    if: always()
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch and wait for W31
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \\
+            -f start_year='2026' -f start_week='31' \\
+            -f end_year='2026' -f end_week='31' \\
+            -f candidate_layouts='${{ inputs.candidate_layouts }}' \\
+            -f max_node_candidates='${{ inputs.max_node_candidates }}' \\
+            -f max_search_seconds='${{ inputs.max_search_seconds }}' \\
+            -f diagnostic_level='${{ inputs.diagnostic_level }}'
+
+  w32_13:
+    name: Build 2026 W32
+    runs-on: ubuntu-latest
+    needs: w31_12
+    if: always()
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch and wait for W32
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \\
+            -f start_year='2026' -f start_week='32' \\
+            -f end_year='2026' -f end_week='32' \\
+            -f candidate_layouts='${{ inputs.candidate_layouts }}' \\
+            -f max_node_candidates='${{ inputs.max_node_candidates }}' \\
+            -f max_search_seconds='${{ inputs.max_search_seconds }}' \\
+            -f diagnostic_level='${{ inputs.diagnostic_level }}'
+
+  w33_14:
+    name: Build 2026 W33
+    runs-on: ubuntu-latest
+    needs: w32_13
+    if: always()
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch and wait for W33
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \\
+            -f start_year='2026' -f start_week='33' \\
+            -f end_year='2026' -f end_week='33' \\
+            -f candidate_layouts='${{ inputs.candidate_layouts }}' \\
+            -f max_node_candidates='${{ inputs.max_node_candidates }}' \\
+            -f max_search_seconds='${{ inputs.max_search_seconds }}' \\
+            -f diagnostic_level='${{ inputs.diagnostic_level }}'
+
+  w34_15:
+    name: Build 2026 W34
+    runs-on: ubuntu-latest
+    needs: w33_14
+    if: always()
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch and wait for W34
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \\
+            -f start_year='2026' -f start_week='34' \\
+            -f end_year='2026' -f end_week='34' \\
+            -f candidate_layouts='${{ inputs.candidate_layouts }}' \\
+            -f max_node_candidates='${{ inputs.max_node_candidates }}' \\
+            -f max_search_seconds='${{ inputs.max_search_seconds }}' \\
+            -f diagnostic_level='${{ inputs.diagnostic_level }}'
+
+  w35_16:
+    name: Build 2026 W35
+    runs-on: ubuntu-latest
+    needs: w34_15
+    if: always()
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch and wait for W35
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \\
+            -f start_year='2026' -f start_week='35' \\
+            -f end_year='2026' -f end_week='35' \\
+            -f candidate_layouts='${{ inputs.candidate_layouts }}' \\
+            -f max_node_candidates='${{ inputs.max_node_candidates }}' \\
+            -f max_search_seconds='${{ inputs.max_search_seconds }}' \\
+            -f diagnostic_level='${{ inputs.diagnostic_level }}'
+
+  w36_17:
+    name: Build 2026 W36
+    runs-on: ubuntu-latest
+    needs: w35_16
+    if: always()
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch and wait for W36
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \\
+            -f start_year='2026' -f start_week='36' \\
+            -f end_year='2026' -f end_week='36' \\
+            -f candidate_layouts='${{ inputs.candidate_layouts }}' \\
+            -f max_node_candidates='${{ inputs.max_node_candidates }}' \\
+            -f max_search_seconds='${{ inputs.max_search_seconds }}' \\
+            -f diagnostic_level='${{ inputs.diagnostic_level }}'
+
+  w37_18:
+    name: Build 2026 W37
+    runs-on: ubuntu-latest
+    needs: w36_17
+    if: always()
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch and wait for W37
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \\
+            -f start_year='2026' -f start_week='37' \\
+            -f end_year='2026' -f end_week='37' \\
+            -f candidate_layouts='${{ inputs.candidate_layouts }}' \\
+            -f max_node_candidates='${{ inputs.max_node_candidates }}' \\
+            -f max_search_seconds='${{ inputs.max_search_seconds }}' \\
+            -f diagnostic_level='${{ inputs.diagnostic_level }}'
+
+  w38_19:
+    name: Build 2026 W38
+    runs-on: ubuntu-latest
+    needs: w37_18
+    if: always()
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch and wait for W38
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \\
+            -f start_year='2026' -f start_week='38' \\
+            -f end_year='2026' -f end_week='38' \\
+            -f candidate_layouts='${{ inputs.candidate_layouts }}' \\
+            -f max_node_candidates='${{ inputs.max_node_candidates }}' \\
+            -f max_search_seconds='${{ inputs.max_search_seconds }}' \\
+            -f diagnostic_level='${{ inputs.diagnostic_level }}'
+
+  w39_20:
+    name: Build 2026 W39
+    runs-on: ubuntu-latest
+    needs: w38_19
+    if: always()
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch and wait for W39
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \\
+            -f start_year='2026' -f start_week='39' \\
+            -f end_year='2026' -f end_week='39' \\
+            -f candidate_layouts='${{ inputs.candidate_layouts }}' \\
+            -f max_node_candidates='${{ inputs.max_node_candidates }}' \\
+            -f max_search_seconds='${{ inputs.max_search_seconds }}' \\
+            -f diagnostic_level='${{ inputs.diagnostic_level }}'
+
+  w40_21:
+    name: Build 2026 W40
+    runs-on: ubuntu-latest
+    needs: w39_20
+    if: always()
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch and wait for W40
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \\
+            -f start_year='2026' -f start_week='40' \\
+            -f end_year='2026' -f end_week='40' \\
+            -f candidate_layouts='${{ inputs.candidate_layouts }}' \\
+            -f max_node_candidates='${{ inputs.max_node_candidates }}' \\
+            -f max_search_seconds='${{ inputs.max_search_seconds }}' \\
+            -f diagnostic_level='${{ inputs.diagnostic_level }}'
+
+  w41_22:
+    name: Build 2026 W41
+    runs-on: ubuntu-latest
+    needs: w40_21
+    if: always()
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch and wait for W41
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \\
+            -f start_year='2026' -f start_week='41' \\
+            -f end_year='2026' -f end_week='41' \\
+            -f candidate_layouts='${{ inputs.candidate_layouts }}' \\
+            -f max_node_candidates='${{ inputs.max_node_candidates }}' \\
+            -f max_search_seconds='${{ inputs.max_search_seconds }}' \\
+            -f diagnostic_level='${{ inputs.diagnostic_level }}'
+
+  w42_23:
+    name: Build 2026 W42
+    runs-on: ubuntu-latest
+    needs: w41_22
+    if: always()
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch and wait for W42
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \\
+            -f start_year='2026' -f start_week='42' \\
+            -f end_year='2026' -f end_week='42' \\
+            -f candidate_layouts='${{ inputs.candidate_layouts }}' \\
+            -f max_node_candidates='${{ inputs.max_node_candidates }}' \\
+            -f max_search_seconds='${{ inputs.max_search_seconds }}' \\
+            -f diagnostic_level='${{ inputs.diagnostic_level }}'
+
+  w43_24:
+    name: Build 2026 W43
+    runs-on: ubuntu-latest
+    needs: w42_23
+    if: always()
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch and wait for W43
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \\
+            -f start_year='2026' -f start_week='43' \\
+            -f end_year='2026' -f end_week='43' \\
+            -f candidate_layouts='${{ inputs.candidate_layouts }}' \\
+            -f max_node_candidates='${{ inputs.max_node_candidates }}' \\
+            -f max_search_seconds='${{ inputs.max_search_seconds }}' \\
+            -f diagnostic_level='${{ inputs.diagnostic_level }}'
+
+  w44_25:
+    name: Build 2026 W44
+    runs-on: ubuntu-latest
+    needs: w43_24
+    if: always()
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch and wait for W44
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \\
+            -f start_year='2026' -f start_week='44' \\
+            -f end_year='2026' -f end_week='44' \\
+            -f candidate_layouts='${{ inputs.candidate_layouts }}' \\
+            -f max_node_candidates='${{ inputs.max_node_candidates }}' \\
+            -f max_search_seconds='${{ inputs.max_search_seconds }}' \\
+            -f diagnostic_level='${{ inputs.diagnostic_level }}'
+
+  w45_26:
+    name: Build 2026 W45
+    runs-on: ubuntu-latest
+    needs: w44_25
+    if: always()
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch and wait for W45
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \\
+            -f start_year='2026' -f start_week='45' \\
+            -f end_year='2026' -f end_week='45' \\
+            -f candidate_layouts='${{ inputs.candidate_layouts }}' \\
+            -f max_node_candidates='${{ inputs.max_node_candidates }}' \\
+            -f max_search_seconds='${{ inputs.max_search_seconds }}' \\
+            -f diagnostic_level='${{ inputs.diagnostic_level }}'
+
+  w46_27:
+    name: Build 2026 W46
+    runs-on: ubuntu-latest
+    needs: w45_26
+    if: always()
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch and wait for W46
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \\
+            -f start_year='2026' -f start_week='46' \\
+            -f end_year='2026' -f end_week='46' \\
+            -f candidate_layouts='${{ inputs.candidate_layouts }}' \\
+            -f max_node_candidates='${{ inputs.max_node_candidates }}' \\
+            -f max_search_seconds='${{ inputs.max_search_seconds }}' \\
+            -f diagnostic_level='${{ inputs.diagnostic_level }}'
+
+  w47_28:
+    name: Build 2026 W47
+    runs-on: ubuntu-latest
+    needs: w46_27
+    if: always()
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch and wait for W47
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \\
+            -f start_year='2026' -f start_week='47' \\
+            -f end_year='2026' -f end_week='47' \\
+            -f candidate_layouts='${{ inputs.candidate_layouts }}' \\
+            -f max_node_candidates='${{ inputs.max_node_candidates }}' \\
+            -f max_search_seconds='${{ inputs.max_search_seconds }}' \\
+            -f diagnostic_level='${{ inputs.diagnostic_level }}'
+
+  w48_29:
+    name: Build 2026 W48
+    runs-on: ubuntu-latest
+    needs: w47_28
+    if: always()
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch and wait for W48
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \\
+            -f start_year='2026' -f start_week='48' \\
+            -f end_year='2026' -f end_week='48' \\
+            -f candidate_layouts='${{ inputs.candidate_layouts }}' \\
+            -f max_node_candidates='${{ inputs.max_node_candidates }}' \\
+            -f max_search_seconds='${{ inputs.max_search_seconds }}' \\
+            -f diagnostic_level='${{ inputs.diagnostic_level }}'
+
+  w49_30:
+    name: Build 2026 W49
+    runs-on: ubuntu-latest
+    needs: w48_29
+    if: always()
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch and wait for W49
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \\
+            -f start_year='2026' -f start_week='49' \\
+            -f end_year='2026' -f end_week='49' \\
+            -f candidate_layouts='${{ inputs.candidate_layouts }}' \\
+            -f max_node_candidates='${{ inputs.max_node_candidates }}' \\
+            -f max_search_seconds='${{ inputs.max_search_seconds }}' \\
+            -f diagnostic_level='${{ inputs.diagnostic_level }}'
+
+  w50_31:
+    name: Build 2026 W50
+    runs-on: ubuntu-latest
+    needs: w49_30
+    if: always()
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch and wait for W50
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \\
+            -f start_year='2026' -f start_week='50' \\
+            -f end_year='2026' -f end_week='50' \\
+            -f candidate_layouts='${{ inputs.candidate_layouts }}' \\
+            -f max_node_candidates='${{ inputs.max_node_candidates }}' \\
+            -f max_search_seconds='${{ inputs.max_search_seconds }}' \\
+            -f diagnostic_level='${{ inputs.diagnostic_level }}'
+
+  w51_32:
+    name: Build 2026 W51
+    runs-on: ubuntu-latest
+    needs: w50_31
+    if: always()
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch and wait for W51
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \\
+            -f start_year='2026' -f start_week='51' \\
+            -f end_year='2026' -f end_week='51' \\
+            -f candidate_layouts='${{ inputs.candidate_layouts }}' \\
+            -f max_node_candidates='${{ inputs.max_node_candidates }}' \\
+            -f max_search_seconds='${{ inputs.max_search_seconds }}' \\
+            -f diagnostic_level='${{ inputs.diagnostic_level }}'
+
+  w52_33:
+    name: Build 2026 W52
+    runs-on: ubuntu-latest
+    needs: w51_32
+    if: always()
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch and wait for W52
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \\
+            -f start_year='2026' -f start_week='52' \\
+            -f end_year='2026' -f end_week='52' \\
+            -f candidate_layouts='${{ inputs.candidate_layouts }}' \\
+            -f max_node_candidates='${{ inputs.max_node_candidates }}' \\
+            -f max_search_seconds='${{ inputs.max_search_seconds }}' \\
+            -f diagnostic_level='${{ inputs.diagnostic_level }}'
+
+  w53_34:
+    name: Build 2026 W53
+    runs-on: ubuntu-latest
+    needs: w52_33
+    if: always()
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch and wait for W53
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \\
+            -f start_year='2026' -f start_week='53' \\
+            -f end_year='2026' -f end_week='53' \\
+            -f candidate_layouts='${{ inputs.candidate_layouts }}' \\
+            -f max_node_candidates='${{ inputs.max_node_candidates }}' \\
+            -f max_search_seconds='${{ inputs.max_search_seconds }}' \\
+            -f diagnostic_level='${{ inputs.diagnostic_level }}'
+
+  w01_35:
+    name: Build 2026 W01
+    runs-on: ubuntu-latest
+    needs: w53_34
+    if: always()
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch and wait for W01
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \\
+            -f start_year='2026' -f start_week='1' \\
+            -f end_year='2026' -f end_week='1' \\
+            -f candidate_layouts='${{ inputs.candidate_layouts }}' \\
+            -f max_node_candidates='${{ inputs.max_node_candidates }}' \\
+            -f max_search_seconds='${{ inputs.max_search_seconds }}' \\
+            -f diagnostic_level='${{ inputs.diagnostic_level }}'
+
+  w02_36:
+    name: Build 2026 W02
+    runs-on: ubuntu-latest
+    needs: w01_35
+    if: always()
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch and wait for W02
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \\
+            -f start_year='2026' -f start_week='2' \\
+            -f end_year='2026' -f end_week='2' \\
+            -f candidate_layouts='${{ inputs.candidate_layouts }}' \\
+            -f max_node_candidates='${{ inputs.max_node_candidates }}' \\
+            -f max_search_seconds='${{ inputs.max_search_seconds }}' \\
+            -f diagnostic_level='${{ inputs.diagnostic_level }}'
+
+  w03_37:
+    name: Build 2026 W03
+    runs-on: ubuntu-latest
+    needs: w02_36
+    if: always()
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch and wait for W03
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \\
+            -f start_year='2026' -f start_week='3' \\
+            -f end_year='2026' -f end_week='3' \\
+            -f candidate_layouts='${{ inputs.candidate_layouts }}' \\
+            -f max_node_candidates='${{ inputs.max_node_candidates }}' \\
+            -f max_search_seconds='${{ inputs.max_search_seconds }}' \\
+            -f diagnostic_level='${{ inputs.diagnostic_level }}'
+
+  w04_38:
+    name: Build 2026 W04
+    runs-on: ubuntu-latest
+    needs: w03_37
+    if: always()
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch and wait for W04
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \\
+            -f start_year='2026' -f start_week='4' \\
+            -f end_year='2026' -f end_week='4' \\
+            -f candidate_layouts='${{ inputs.candidate_layouts }}' \\
+            -f max_node_candidates='${{ inputs.max_node_candidates }}' \\
+            -f max_search_seconds='${{ inputs.max_search_seconds }}' \\
+            -f diagnostic_level='${{ inputs.diagnostic_level }}'
+
+  w05_39:
+    name: Build 2026 W05
+    runs-on: ubuntu-latest
+    needs: w04_38
+    if: always()
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch and wait for W05
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \\
+            -f start_year='2026' -f start_week='5' \\
+            -f end_year='2026' -f end_week='5' \\
+            -f candidate_layouts='${{ inputs.candidate_layouts }}' \\
+            -f max_node_candidates='${{ inputs.max_node_candidates }}' \\
+            -f max_search_seconds='${{ inputs.max_search_seconds }}' \\
+            -f diagnostic_level='${{ inputs.diagnostic_level }}'
+
+  w06_40:
+    name: Build 2026 W06
+    runs-on: ubuntu-latest
+    needs: w05_39
+    if: always()
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch and wait for W06
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \\
+            -f start_year='2026' -f start_week='6' \\
+            -f end_year='2026' -f end_week='6' \\
+            -f candidate_layouts='${{ inputs.candidate_layouts }}' \\
+            -f max_node_candidates='${{ inputs.max_node_candidates }}' \\
+            -f max_search_seconds='${{ inputs.max_search_seconds }}' \\
+            -f diagnostic_level='${{ inputs.diagnostic_level }}'
+
+  w07_41:
+    name: Build 2026 W07
+    runs-on: ubuntu-latest
+    needs: w06_40
+    if: always()
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch and wait for W07
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \\
+            -f start_year='2026' -f start_week='7' \\
+            -f end_year='2026' -f end_week='7' \\
+            -f candidate_layouts='${{ inputs.candidate_layouts }}' \\
+            -f max_node_candidates='${{ inputs.max_node_candidates }}' \\
+            -f max_search_seconds='${{ inputs.max_search_seconds }}' \\
+            -f diagnostic_level='${{ inputs.diagnostic_level }}'
+
+  w08_42:
+    name: Build 2026 W08
+    runs-on: ubuntu-latest
+    needs: w07_41
+    if: always()
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch and wait for W08
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \\
+            -f start_year='2026' -f start_week='8' \\
+            -f end_year='2026' -f end_week='8' \\
+            -f candidate_layouts='${{ inputs.candidate_layouts }}' \\
+            -f max_node_candidates='${{ inputs.max_node_candidates }}' \\
+            -f max_search_seconds='${{ inputs.max_search_seconds }}' \\
+            -f diagnostic_level='${{ inputs.diagnostic_level }}'
+
+  w09_43:
+    name: Build 2026 W09
+    runs-on: ubuntu-latest
+    needs: w08_42
+    if: always()
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch and wait for W09
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \\
+            -f start_year='2026' -f start_week='9' \\
+            -f end_year='2026' -f end_week='9' \\
+            -f candidate_layouts='${{ inputs.candidate_layouts }}' \\
+            -f max_node_candidates='${{ inputs.max_node_candidates }}' \\
+            -f max_search_seconds='${{ inputs.max_search_seconds }}' \\
+            -f diagnostic_level='${{ inputs.diagnostic_level }}'
+
+  w10_44:
+    name: Build 2026 W10
+    runs-on: ubuntu-latest
+    needs: w09_43
+    if: always()
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch and wait for W10
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \\
+            -f start_year='2026' -f start_week='10' \\
+            -f end_year='2026' -f end_week='10' \\
+            -f candidate_layouts='${{ inputs.candidate_layouts }}' \\
+            -f max_node_candidates='${{ inputs.max_node_candidates }}' \\
+            -f max_search_seconds='${{ inputs.max_search_seconds }}' \\
+            -f diagnostic_level='${{ inputs.diagnostic_level }}'
+
+  w11_45:
+    name: Build 2026 W11
+    runs-on: ubuntu-latest
+    needs: w10_44
+    if: always()
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch and wait for W11
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \\
+            -f start_year='2026' -f start_week='11' \\
+            -f end_year='2026' -f end_week='11' \\
+            -f candidate_layouts='${{ inputs.candidate_layouts }}' \\
+            -f max_node_candidates='${{ inputs.max_node_candidates }}' \\
+            -f max_search_seconds='${{ inputs.max_search_seconds }}' \\
+            -f diagnostic_level='${{ inputs.diagnostic_level }}'
+
+  w12_46:
+    name: Build 2026 W12
+    runs-on: ubuntu-latest
+    needs: w11_45
+    if: always()
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch and wait for W12
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \\
+            -f start_year='2026' -f start_week='12' \\
+            -f end_year='2026' -f end_week='12' \\
+            -f candidate_layouts='${{ inputs.candidate_layouts }}' \\
+            -f max_node_candidates='${{ inputs.max_node_candidates }}' \\
+            -f max_search_seconds='${{ inputs.max_search_seconds }}' \\
+            -f diagnostic_level='${{ inputs.diagnostic_level }}'
+
+  w13_47:
+    name: Build 2026 W13
+    runs-on: ubuntu-latest
+    needs: w12_46
+    if: always()
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch and wait for W13
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \\
+            -f start_year='2026' -f start_week='13' \\
+            -f end_year='2026' -f end_week='13' \\
+            -f candidate_layouts='${{ inputs.candidate_layouts }}' \\
+            -f max_node_candidates='${{ inputs.max_node_candidates }}' \\
+            -f max_search_seconds='${{ inputs.max_search_seconds }}' \\
+            -f diagnostic_level='${{ inputs.diagnostic_level }}'
+
+  w14_48:
+    name: Build 2026 W14
+    runs-on: ubuntu-latest
+    needs: w13_47
+    if: always()
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch and wait for W14
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \\
+            -f start_year='2026' -f start_week='14' \\
+            -f end_year='2026' -f end_week='14' \\
+            -f candidate_layouts='${{ inputs.candidate_layouts }}' \\
+            -f max_node_candidates='${{ inputs.max_node_candidates }}' \\
+            -f max_search_seconds='${{ inputs.max_search_seconds }}' \\
+            -f diagnostic_level='${{ inputs.diagnostic_level }}'
+
+  w15_49:
+    name: Build 2026 W15
+    runs-on: ubuntu-latest
+    needs: w14_48
+    if: always()
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch and wait for W15
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \\
+            -f start_year='2026' -f start_week='15' \\
+            -f end_year='2026' -f end_week='15' \\
+            -f candidate_layouts='${{ inputs.candidate_layouts }}' \\
+            -f max_node_candidates='${{ inputs.max_node_candidates }}' \\
+            -f max_search_seconds='${{ inputs.max_search_seconds }}' \\
+            -f diagnostic_level='${{ inputs.diagnostic_level }}'
+
+  w16_50:
+    name: Build 2026 W16
+    runs-on: ubuntu-latest
+    needs: w15_49
+    if: always()
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch and wait for W16
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \\
+            -f start_year='2026' -f start_week='16' \\
+            -f end_year='2026' -f end_week='16' \\
+            -f candidate_layouts='${{ inputs.candidate_layouts }}' \\
+            -f max_node_candidates='${{ inputs.max_node_candidates }}' \\
+            -f max_search_seconds='${{ inputs.max_search_seconds }}' \\
+            -f diagnostic_level='${{ inputs.diagnostic_level }}'
+
+  w17_51:
+    name: Build 2026 W17
+    runs-on: ubuntu-latest
+    needs: w16_50
+    if: always()
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch and wait for W17
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \\
+            -f start_year='2026' -f start_week='17' \\
+            -f end_year='2026' -f end_week='17' \\
+            -f candidate_layouts='${{ inputs.candidate_layouts }}' \\
+            -f max_node_candidates='${{ inputs.max_node_candidates }}' \\
+            -f max_search_seconds='${{ inputs.max_search_seconds }}' \\
+            -f diagnostic_level='${{ inputs.diagnostic_level }}'
+
+  w18_52:
+    name: Build 2026 W18
+    runs-on: ubuntu-latest
+    needs: w17_51
+    if: always()
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch and wait for W18
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \\
+            -f start_year='2026' -f start_week='18' \\
+            -f end_year='2026' -f end_week='18' \\
+            -f candidate_layouts='${{ inputs.candidate_layouts }}' \\
+            -f max_node_candidates='${{ inputs.max_node_candidates }}' \\
+            -f max_search_seconds='${{ inputs.max_search_seconds }}' \\
+            -f diagnostic_level='${{ inputs.diagnostic_level }}'
+
+  w19_53:
+    name: Build 2026 W19
+    runs-on: ubuntu-latest
+    needs: w18_52
+    if: always()
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch and wait for W19
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \\
+            -f start_year='2026' -f start_week='19' \\
+            -f end_year='2026' -f end_week='19' \\
+            -f candidate_layouts='${{ inputs.candidate_layouts }}' \\
+            -f max_node_candidates='${{ inputs.max_node_candidates }}' \\
+            -f max_search_seconds='${{ inputs.max_search_seconds }}' \\
+            -f diagnostic_level='${{ inputs.diagnostic_level }}'
+
