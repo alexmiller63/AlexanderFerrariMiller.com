@@ -1,99 +1,44 @@
 #!/usr/bin/env python3
-"""One-shot: create a stable W17 bisect runner under tools/."""
+"""One-shot: remove redundant final-pair alignment support probing."""
 
 from pathlib import Path
 
-ENABLED = False
+ENABLED = True
 
 if not ENABLED:
     print("Repair Once is OFF; nothing to do.")
     raise SystemExit(0)
 
-runner = Path("tools/w17_bisect.sh")
-if runner.read_text(encoding="utf-8").strip():
-    raise SystemExit("Safety stop: tools/w17_bisect.sh is not empty")
+target = Path("tools/planet_finder_search_core.py")
+source = target.read_text(encoding="utf-8")
 
-runner.write_text(r'''#!/usr/bin/env bash
-set -uo pipefail
+old = '''        if next_remaining and not chosen_capped and chosen_count <= support_limit:
+            support_stream = alignment_profiled_candidates(
+                item, diagnostic_depth, "alignment-support"
+            )'''
+new = '''        # Do not pre-prove support when exactly one alignment member remains.
+        # The recursive member DFS immediately performs that same authoritative
+        # routed search. W17 showed this duplicate final-pair proof being paid
+        # hundreds of times (especially Moon/Uranus) without opening new geometry.
+        if len(next_remaining) > 1 and not chosen_capped and chosen_count <= support_limit:
+            support_stream = alignment_profiled_candidates(
+                item, diagnostic_depth, "alignment-support"
+            )'''
 
-GOOD_REF="95a9dd78fce7dd4044bee20a012b4ae88db8bfaa"
-BAD_REF="2e96878e4011101317ce8ccfd8c5a5844da7b388"
-HARNESS_DIR="${RUNNER_TEMP:-/tmp}/w17-bisect-harness"
-mkdir -p "$HARNESS_DIR"
-cp tests/test_planet_finder_w17_ladder.py "$HARNESS_DIR/test_planet_finder_w17_ladder.py"
+if source.count(old) != 1:
+    raise SystemExit(f"Safety stop: expected exactly one support-gate match, found {source.count(old)}")
 
-cat > "$HARNESS_DIR/oracle.py" <<'PY'
-import sys
-sys.path.insert(0, "tools")
-sys.path.insert(0, sys.argv[1])
-from test_planet_finder_w17_ladder import (
-    ALIGNMENT_CHAIN, bodies_for, names, expected_alignment,
-    expected_conjunction, assert_valid,
-)
-from planet_finder_geometry import FinderMode, alignment_groups, conjunction_groups
-from planet_finder_search import layout
-
-selected = ALIGNMENT_CHAIN[:6] + ["Venus"]
-source = bodies_for(selected)
-assert names(alignment_groups(source)) == expected_alignment(7)
-assert names(conjunction_groups(source)) == expected_conjunction(7)
-result = layout(
-    FinderMode.GREEK, source, target_solutions=5,
-    budget={"max_node_candidates": 200, "max_seconds": 120.0},
-    context_label="W17-bisect-venus-exact-54.923",
-)
-assert_valid(result, source)
-PY
-
-cat > "$HARNESS_DIR/test-one.sh" <<'SH'
-#!/usr/bin/env bash
-set -uo pipefail
-ref="$(git rev-parse HEAD)"
-echo "::group::Testing $ref"
-PLANET_FINDER_DIAGNOSTIC_LEVEL=0 timeout 130s python "$HARNESS_DIR/oracle.py" "$HARNESS_DIR"
-rc=$?
-echo "::endgroup::"
-if [ "$rc" -eq 0 ]; then
-  echo "RESULT $ref PASS"
-  exit 0
-fi
-echo "RESULT $ref FAIL (rc=$rc)"
-exit 1
-SH
-chmod +x "$HARNESS_DIR/test-one.sh"
-
-export HARNESS_DIR
-echo "Verifying GOOD endpoint $GOOD_REF"
-git checkout --detach "$GOOD_REF"
-"$HARNESS_DIR/test-one.sh"
-
-echo "Verifying BAD endpoint $BAD_REF"
-git checkout --detach "$BAD_REF"
-if "$HARNESS_DIR/test-one.sh"; then
-  echo "Safety stop: BAD_REF unexpectedly passed"
-  exit 1
-fi
-
-git bisect reset || true
-git bisect start "$BAD_REF" "$GOOD_REF"
-set +e
-git bisect run "$HARNESS_DIR/test-one.sh"
-rc=$?
-set -e
-git bisect log
-git bisect reset
-exit "$rc"
-''', encoding="utf-8")
-runner.chmod(0o755)
+source = source.replace(old, new)
+target.write_text(source, encoding="utf-8")
 
 me = Path(__file__)
-source = me.read_text(encoding="utf-8")
+self_source = me.read_text(encoding="utf-8")
 arming_line = "ENABLED" + " = True"
-lines = source.splitlines()
+lines = self_source.splitlines()
 matches = [i for i, line in enumerate(lines) if line.strip() == arming_line]
 if len(matches) != 1:
     raise SystemExit(f"Safety stop: arming line count={len(matches)}")
 lines[matches[0]] = "ENABLED = False"
 me.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
-print("Created tools/w17_bisect.sh with 120s solver / 130s wrapper; Repair Once is OFF.")
+print("Removed redundant final-pair support probe; Repair Once is OFF.")
