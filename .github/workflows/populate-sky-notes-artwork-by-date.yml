@@ -102,6 +102,31 @@ jobs:
             echo "fixed object $fixed_id -> $out"
           done
 
+      - name: Prepare and render weekly planet finders
+        shell: bash
+        run: |
+          set -euo pipefail
+          python tools/populate_sky_notes_artwork_by_date.py "${{ steps.range.outputs.start_date }}" "${{ steps.range.outputs.end_date }}"
+          python - <<'PY'
+          import json, subprocess
+          from datetime import date
+          from pathlib import Path
+          from tools.iso_date_range import weeks_in_range
+          for iso_week in weeks_in_range(
+              date.fromisoformat("${{ steps.range.outputs.start_date }}"),
+              date.fromisoformat("${{ steps.range.outputs.end_date }}"),
+          ):
+              payload_path=Path("generated-sky-notes")/str(iso_week.year)/f"W{iso_week.week:02d}.json"
+              if not payload_path.exists(): continue
+              payload=json.loads(payload_path.read_text(encoding="utf-8"))
+              if not payload.get("planet_finder_artwork"): continue
+              spec=Path("sky-notes-artwork/specs")/str(iso_week.year)/f"W{iso_week.week:02d}.json"
+              out=Path("sky-notes-artwork/weeks")/str(iso_week.year)/f"W{iso_week.week:02d}"/"planet-finder.svg"
+              out.parent.mkdir(parents=True, exist_ok=True)
+              subprocess.run(["python","tools/render_sky_note_finder.py","/tmp/hygdata_v41.csv",str(spec),str(out)],check=True)
+              print(f"planet finder {iso_week.year}-W{iso_week.week:02d} -> {out}")
+          PY
+
       - name: Rebuild fixed-object story pages with rendered Artwork
         run: |
           python - <<'PY'
@@ -126,7 +151,7 @@ jobs:
           print(f"Rebuilt {len(seen)} fixed-object story package(s) after Artwork rendering")
           PY
 
-      - name: Publish fixed-object Artwork into weekly pages
+      - name: Publish weekly planet finder Artwork into weekly pages
         run: python tools/publish_sky_note_artwork.py "${{ steps.range.outputs.start_date }}" "${{ steps.range.outputs.end_date }}"
 
       - name: Verify weekly object-story Artwork links
@@ -188,11 +213,11 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A -- tools/publish_sky_note_artwork.py tools/populate_fixed_object_artwork_by_date.py sky-notes-artwork stories
+          git add -A -- tools/publish_sky_note_artwork.py tools/populate_fixed_object_artwork_by_date.py tools/populate_sky_notes_artwork_by_date.py sky-notes-artwork stories almanack
           if git diff --cached --quiet; then
             echo "No Artwork changes in requested ISO week range."
             exit 0
           fi
-          git commit -m "Generate fixed-object Artwork ${{ inputs.start_year }}-W${{ inputs.start_week }}"
+          git commit -m "Generate Artwork ${{ inputs.start_year }}-W${{ inputs.start_week }}"
           git pull --rebase origin main
           git push
