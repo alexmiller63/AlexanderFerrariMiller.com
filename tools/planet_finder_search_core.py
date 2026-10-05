@@ -1660,6 +1660,12 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             )
             return False
 
+        # At the final pair, exact routed MRV ranking can consume the whole
+        # mode clock before DFS visits a node. Geometry ranking is a safe
+        # ordering heuristic here; the recursive DFS still performs the full
+        # authoritative routed viability checks for both members.
+        final_pair_geometry_rank = len(remaining_items) == 2
+
         for _, candidate_item in geometry_ranked_items:
             check_deadline()
             probe_name = candidate_item[1][1]
@@ -1683,7 +1689,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             # alignment depth. The search is budgeted, so a cheaper
             # geometry-only ranking can change branch order and therefore
             # change which solution is reached before the budget expires.
-            routed_rank = True
+            routed_rank = not final_pair_geometry_rank
             cached_rows = None
             cache_key = None
             if routed_rank:
