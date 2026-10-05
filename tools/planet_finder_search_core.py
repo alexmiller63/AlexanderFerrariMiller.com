@@ -1921,7 +1921,11 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         support_limit = max(
             1, int(os.environ.get("PLANET_FINDER_ALIGNMENT_SUPPORT_LIMIT", "8"))
         )
-        if next_remaining and not chosen_capped and chosen_count <= support_limit:
+        # Do not pre-prove support when exactly one alignment member remains.
+        # The recursive member DFS immediately performs that same authoritative
+        # routed search. W17 showed this duplicate final-pair proof being paid
+        # hundreds of times (especially Moon/Uranus) without opening new geometry.
+        if len(next_remaining) > 1 and not chosen_capped and chosen_count <= support_limit:
             support_stream = alignment_profiled_candidates(
                 item, diagnostic_depth, "alignment-support"
             )
