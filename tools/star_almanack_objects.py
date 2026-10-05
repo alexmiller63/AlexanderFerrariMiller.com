@@ -155,7 +155,7 @@ class AlmanackObject:
 def visibility_text(record: AlmanackObject) -> str:
     if record.observing_aid is None: return ""
     parts = [TEXT_AID[record.observing_aid]]
-    if record.significant_variable: parts.append("V")
+    if record.significant_variable: parts.append("Var")
     if record.magnitude_display == "whole" and record.magnitude: parts.append(whole_magnitude(record.magnitude))
     elif record.magnitude_display == "literal" and record.magnitude: parts.append(record.magnitude)
     return " ".join(parts)
@@ -168,7 +168,7 @@ def visibility_html(record: AlmanackObject) -> str:
     if record.variability_type and record.variability_span is not None:
         hidden = "" if record.significant_variable else " hidden"
         title = escape(f"Variable star: {record.variability_type}", quote=True)
-        parts.append(f'<span class="variable-star-marker" data-variable-star="true" data-significant="{str(record.significant_variable).lower()}" title="{title}"{hidden}>V</span>')
+        parts.append(f'<span class="variable-star-marker" data-variable-star="true" data-significant="{str(record.significant_variable).lower()}" title="{title}"{hidden}>Var</span>')
     if record.magnitude_display == "whole" and record.magnitude:
         parts.append(f'<span class="magnitude-normal">{whole_magnitude(record.magnitude)}</span>')
         parts.append(f'<span class="magnitude-detail" hidden>{escape(one_decimal(record.magnitude))}</span>')
