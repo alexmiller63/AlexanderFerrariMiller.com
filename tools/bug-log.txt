@@ -137,7 +137,8 @@ Likely scope: Inspect generated page control markup and shared JavaScript/CSS; f
 
 
 BUG 008 — Mars “Why is it here?” content should locate Mars, not merely provide a descriptor
-Status: OPEN
+Status: RESOLVED
+Resolution: The Sky Notes generator now turns a planet/star relation that belongs to a known asterism into an observer route (constellation → asterism → reference star → planet) instead of presenting the longitude comparison as a standalone descriptor fact. Fix commit: 9989e540dc66a4b15ff1872aca36453ff92cf6b1
 Found on: 2026-W01 Mars entry
 Observed: The Mars text says, “Mars is about two degrees in ecliptic longitude from Nunki, one of the stars used to orient the Teapot in Sagittarius.” This reads as a descriptor/reference fact rather than directly showing the observer where Mars is.
 Desired: Mars content should primarily tell the observer where to find Mars in the sky, using nearby recognizable stars/asterisms as practical orientation. Descriptor material can support that purpose but should not replace the location guidance.
@@ -182,7 +183,8 @@ Likely scope: Descriptor prose and artwork generation for binocular targets; der
 
 
 BUG 011 — Descriptor image legend duplicated at top
-Status: OPEN
+Status: RESOLVED
+Resolution: The shared Sky Note finder renderer now emits the Bayer/proper-name legend only in the bottom legend area; no top duplicate is rendered.
 Found on: 2026-W01 Beta Reticuli descriptor image
 Observed: A legend appears at the top of the generated Beta Reticuli image as well as in the intended legend area.
 Desired: Descriptor image legends should appear only at the bottom. Remove the duplicate/top legend.
@@ -191,7 +193,8 @@ Likely scope: Artwork generator layout; verify whether this affects all generate
 
 
 BUG 011 — Descriptor image legend duplicated at top
-Status: OPEN
+Status: RESOLVED
+Resolution: The shared Sky Note finder renderer now emits the Bayer/proper-name legend only in the bottom legend area; no top duplicate is rendered.
 Found on: 2026-W01 Beta Reticuli descriptor image
 Observed: A legend appears at the top of the generated Beta Reticuli image as well as in the intended bottom location.
 Desired: Descriptor image legend should appear only at the bottom; remove the top legend.
@@ -208,7 +211,8 @@ Likely scope: Descriptor/Sky Notes prose generator and fallback logic; generic f
 
 
 BUG 011 — Descriptor artwork legend appears twice / at top
-Status: OPEN
+Status: RESOLVED
+Resolution: The shared Sky Note finder renderer now emits the Bayer/proper-name legend only in the bottom legend area; no top duplicate is rendered.
 Found on: 2026-W01 Beta Reticuli descriptor image
 Observed: A legend appears at the top of the generated descriptor image.
 Desired: Descriptor artwork should have its legend only at the bottom; no duplicate/top legend.
