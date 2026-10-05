@@ -28,7 +28,9 @@
       "star_ecliptic_latitude_deg": -3.45,
       "longitude_separation_deg": 2.0,
       "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
-      "asterism": "Teapot"
+      "asterism": "Teapot of Sagittarius",
+      "planet_ra_deg": 280.980227,
+      "planet_dec_deg": -23.926617
     },
     {
       "kind": "planet-planet-longitude",
@@ -37,10 +39,14 @@
       "planet_longitude_deg": 356.0,
       "other_longitude_deg": 359.467,
       "longitude_separation_deg": 3.5,
-      "basis": "Star Almanack preserved geocentric tropical ecliptic longitude"
+      "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+      "planet_ra_deg": 356.895735,
+      "planet_dec_deg": -3.817176,
+      "other_ra_deg": 359.712127,
+      "other_dec_deg": -1.579445
     }
   ],
-  "note": "ISO 2026-W01 runs from December 29 through January 4. Mars is about 2.0° in ecliptic longitude from Nunki, one of the stars used to orient Teapot in Sagittarius. Saturn and Neptune are separated by about 3.5° in geocentric ecliptic longitude at the Monday 00:00 UTC snapshot.\n\n**Naked eye:** 🌕 Full Moon · Moon After Yule — 10:02:55 UTC. Bright moonlight favors prominent stars and planets while reducing contrast on faint deep-sky objects. No fixed-sky Calendar object is classified for naked-eye observing this week.\n\n**Planets:** Mars is about 2.0° in ecliptic longitude from Nunki, one of the stars used to orient Teapot in Sagittarius. Saturn and Neptune are separated by about 3.5° in geocentric ecliptic longitude at the Monday 00:00 UTC snapshot.\n\n**Binoculars:** Favor β Ret; wide fields help connect the charted geometry to the real sky.\n\n**Small telescope:** Concentrate on Pleiades. Increase magnification only after the target and surrounding pattern are secure.\n\n**Substantial telescope:** No fixed-sky Calendar object is classified as requiring a substantial telescope this week.\n\n",
+  "note": "ISO 2026-W01 runs from December 29 through January 4. To find Mars, first identify Sagittarius, trace the Teapot of Sagittarius, and locate Nunki in that pattern. Mars lies about 2.0° away in ecliptic longitude at the Monday 00:00 UTC snapshot; use the finder to transfer from Nunki to the planet. Saturn and Neptune are separated by about 3.5° in geocentric ecliptic longitude at the Monday 00:00 UTC snapshot.\n\n**Naked eye:** 🌕 Full Moon · Moon After Yule — 10:02:55 UTC. Bright moonlight favors prominent stars and planets while reducing contrast on faint deep-sky objects. No fixed-sky Calendar object is classified for naked-eye observing this week.\n\n**Planets:** To find Mars, first identify Sagittarius, trace the Teapot of Sagittarius, and locate Nunki in that pattern. Mars lies about 2.0° away in ecliptic longitude at the Monday 00:00 UTC snapshot; use the finder to transfer from Nunki to the planet. Saturn and Neptune are separated by about 3.5° in geocentric ecliptic longitude at the Monday 00:00 UTC snapshot.\n\n**Binoculars:** Trace Reticulum’s diamond-shaped figure in the finder, then identify β Ret at its charted position.\n\n**Small telescope:** Concentrate on Pleiades. Increase magnification only after the target and surrounding pattern are secure.\n\n**Substantial telescope:** No fixed-sky Calendar object is classified as requiring a substantial telescope this week.\n\n",
   "descriptors": [
     {
       "schema_version": 1,
@@ -263,12 +269,12 @@
     },
     {
       "schema_version": 1,
-      "id": "asterism-teapot",
+      "id": "asterism-asterism-teapot-of-sagittarius",
       "type": "asterism",
-      "name": "Teapot",
+      "name": "Teapot of Sagittarius",
       "summary": "observer-facing star pattern in Sagittarius",
       "representation": {
-        "machine": "./asterism-teapot.json",
+        "machine": "./asterism-asterism-teapot-of-sagittarius.json",
         "human_source": "summary"
       },
       "constellation_abbreviation": "Sgr",
@@ -301,6 +307,30 @@
         "machine": "./zodiac.json",
         "human_source": "summary"
       }
+    },
+    {
+      "schema_version": 1,
+      "id": "lunar-full-moon",
+      "type": "lunar-highlight",
+      "name": "Full Moon",
+      "summary": "Astronomical lunar phase near opposition to the Sun.",
+      "representation": {
+        "machine": "./lunar-full-moon.json",
+        "human_source": "summary"
+      },
+      "body": "Full Moon is the lunar phase in which the Moon and Sun are approximately opposite in geocentric ecliptic longitude, so the lunar disk is fully illuminated as seen from Earth."
+    },
+    {
+      "schema_version": 1,
+      "id": "lunar-moon-after-yule",
+      "type": "lunar-highlight",
+      "name": "Moon After Yule",
+      "summary": "Traditional seasonal designation for the first Full Moon after the December solstice.",
+      "representation": {
+        "machine": "./lunar-moon-after-yule.json",
+        "human_source": "summary"
+      },
+      "body": "Moon After Yule is the Almanack's traditional seasonal designation for the first Full Moon after the December solstice. It names the seasonal context of the event rather than a separate lunar phase."
     }
   ],
   "calendar_fixed_object_ids": [
@@ -312,52 +342,162 @@
       "fixed_object_id": 698,
       "collection": "baseline",
       "hed": "β Ret",
-      "dek": "β Ret is a charted star in Ret selected by the Calendar as part of this week’s fixed-sky observing framework.",
-      "body": "Why it is here: β Ret is a charted star in Ret selected by the Calendar as part of this week’s fixed-sky observing framework.\n\nHow to find it: Use its charted position in Ret and the surrounding figure stars to identify the field.",
-      "url": "/stories/baseline/698.html",
-      "artwork": null
+      "dek": "β Ret is a fixed-sky stellar reference in Ret used by the weekly observing calendar.",
+      "body": "Why it is here: The Calendar selected β Ret for this week’s fixed-sky observing sequence; its permanent object identity ties the weekly entry to the same star used by the finder.\n\nHow to find it: Establish the preserved Ret constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.",
+      "url": "/stories/baseline/698.html"
     },
     {
       "fixed_object_id": 594,
       "collection": "baseline",
       "hed": "Pleiades",
-      "dek": "Pleiades is a charted deep-sky object selected by the Calendar as one of this week’s fixed-sky observing targets.",
-      "body": "Why it is here: Pleiades is a charted deep-sky object selected by the Calendar as one of this week’s fixed-sky observing targets.\n\nHow to find it: Use its charted position in Tau and the surrounding figure stars to identify the field.",
-      "url": "/stories/baseline/594.html",
-      "artwork": null
+      "dek": "Pleiades is a fixed-sky observing target in Tau carried by the weekly Calendar.",
+      "body": "Why it is here: The Calendar selected Pleiades as one of this week’s fixed-sky observing targets.\n\nHow to find it: Establish the preserved Tau constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.",
+      "url": "/stories/baseline/594.html"
     }
   ],
   "inline_stories": [],
-  "linked_stories": [],
+  "linked_stories": [
+    {
+      "fixed_object_id": 698,
+      "collection": "baseline",
+      "hed": "β Ret",
+      "dek": "β Ret is a fixed-sky stellar reference in Ret used by the weekly observing calendar.",
+      "body": "Why it is here: The Calendar selected β Ret for this week’s fixed-sky observing sequence; its permanent object identity ties the weekly entry to the same star used by the finder.\n\nHow to find it: Establish the preserved Ret constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.",
+      "url": "/stories/baseline/698.html"
+    },
+    {
+      "fixed_object_id": 594,
+      "collection": "baseline",
+      "hed": "Pleiades",
+      "dek": "Pleiades is a fixed-sky observing target in Tau carried by the weekly Calendar.",
+      "body": "Why it is here: The Calendar selected Pleiades as one of this week’s fixed-sky observing targets.\n\nHow to find it: Establish the preserved Tau constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.",
+      "url": "/stories/baseline/594.html"
+    }
+  ],
   "stories": [
     {
       "fixed_object_id": 698,
       "collection": "baseline",
       "hed": "β Ret",
-      "dek": "β Ret is a charted star in Ret selected by the Calendar as part of this week’s fixed-sky observing framework.",
-      "body": "Why it is here: β Ret is a charted star in Ret selected by the Calendar as part of this week’s fixed-sky observing framework.\n\nHow to find it: Use its charted position in Ret and the surrounding figure stars to identify the field.",
-      "url": "/stories/baseline/698.html",
-      "artwork": null
+      "dek": "β Ret is a fixed-sky stellar reference in Ret used by the weekly observing calendar.",
+      "body": "Why it is here: The Calendar selected β Ret for this week’s fixed-sky observing sequence; its permanent object identity ties the weekly entry to the same star used by the finder.\n\nHow to find it: Establish the preserved Ret constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.",
+      "url": "/stories/baseline/698.html"
     },
     {
       "fixed_object_id": 594,
       "collection": "baseline",
       "hed": "Pleiades",
-      "dek": "Pleiades is a charted deep-sky object selected by the Calendar as one of this week’s fixed-sky observing targets.",
-      "body": "Why it is here: Pleiades is a charted deep-sky object selected by the Calendar as one of this week’s fixed-sky observing targets.\n\nHow to find it: Use its charted position in Tau and the surrounding figure stars to identify the field.",
-      "url": "/stories/baseline/594.html",
-      "artwork": null
+      "dek": "Pleiades is a fixed-sky observing target in Tau carried by the weekly Calendar.",
+      "body": "Why it is here: The Calendar selected Pleiades as one of this week’s fixed-sky observing targets.\n\nHow to find it: Establish the preserved Tau constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.",
+      "url": "/stories/baseline/594.html"
     }
   ],
+  "planet_finder_artwork": {
+    "schema_version": 1,
+    "id": "2026-W01-stellar-finder",
+    "week": "2026-W01",
+    "kind": "stellar-finder",
+    "geometry": {
+      "constellation_system": "Martz/MacRobert",
+      "constellation_abbreviation": "Sgr",
+      "on_missing_geometry": "fail",
+      "invent_geometry": false
+    },
+    "style": {
+      "background": "night-sky",
+      "constellation": {
+        "stroke": "#5c8fe8",
+        "role": "ordinary constellation figure"
+      },
+      "asterism": {
+        "stroke": "#59c86d",
+        "role": "orienting asterism"
+      },
+      "target": {
+        "stroke": "#ffd84d",
+        "fill": "none",
+        "role": "open target circle"
+      },
+      "target_arrows": false
+    },
+    "constellation": "Sagittarius",
+    "asterism": {
+      "id": "asterism-teapot-of-sagittarius",
+      "name": "Teapot of Sagittarius",
+      "members": [
+        "Kaus Media",
+        "Kaus Australis",
+        "Ascella",
+        "Phi Sagittarii",
+        "Kaus Borealis",
+        "Alnasl",
+        "Nunki",
+        "Tau Sagittarii"
+      ]
+    },
+    "targets": [
+      {
+        "type": "planet",
+        "name": "Mars"
+      },
+      {
+        "type": "reference-star",
+        "name": "Nunki"
+      }
+    ],
+    "finder_route": {
+      "sequence": [
+        "Sagittarius",
+        "Teapot of Sagittarius",
+        "Nunki",
+        "Mars"
+      ],
+      "reference_star": "Nunki",
+      "planet": "Mars"
+    },
+    "planetary_context": [
+      {
+        "kind": "planet-star-longitude",
+        "planet": "Mars",
+        "planet_longitude_deg": 280.4,
+        "star": "Nunki",
+        "constellation": "Sgr",
+        "star_ecliptic_longitude_deg": 282.385,
+        "star_ecliptic_latitude_deg": -3.45,
+        "longitude_separation_deg": 2.0,
+        "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+        "asterism": "Teapot of Sagittarius",
+        "planet_ra_deg": 280.980227,
+        "planet_dec_deg": -23.926617
+      },
+      {
+        "kind": "planet-planet-longitude",
+        "planet": "Saturn",
+        "other_planet": "Neptune",
+        "planet_longitude_deg": 356.0,
+        "other_longitude_deg": 359.467,
+        "longitude_separation_deg": 3.5,
+        "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+        "planet_ra_deg": 356.895735,
+        "planet_dec_deg": -3.817176,
+        "other_ra_deg": 359.712127,
+        "other_dec_deg": -1.579445
+      }
+    ],
+    "planet_position": {
+      "ra_deg": 280.980227,
+      "dec_deg": -23.926617
+    },
+    "planet_plot_policy": "plot only from preserved 2-D Star Almanack ephemeris position data",
+    "reference_standard": "docs/finder-standard.md"
+  },
   "descriptor_policy": {
     "source_of_truth": "machine-readable JSON",
     "candidate_pool": "complete; presentation never limits discovery",
     "presentation": "Wordy",
     "story_limit": null,
     "wordy_policy": "rich weekly observing prose; link to complete object stories rather than embedding them",
-    "future_presentations": [
-      "Highlights"
-    ],
+    "future_presentations": [],
     "link_target": "/almanack/descriptors/<fixed_object_id>.json for fixed-object descriptors",
     "artwork_descriptor_is_separate": true,
     "artwork_source": "explicit story front matter only",
@@ -365,7 +505,7 @@
     "story_identity_source": "Calendar data-fixed-object-id only",
     "story_source": "stories/<collection>/<fixed_object_id>.md",
     "inline_story_content": "hed + dek + body",
-    "linked_story_content": "reserved for Highlights presentation",
+    "linked_story_content": "reader-facing links to every available canonical object story",
     "annual_note_is_separate_from_evergreen_story": true
   }
 }
