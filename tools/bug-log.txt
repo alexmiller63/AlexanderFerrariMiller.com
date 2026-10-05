@@ -242,7 +242,8 @@ Category: Legend / presentation / glyph rendering
 Likely scope: Shared legend generator/template, glyph source, font/Unicode support, and HTML encoding; preserve observing-aid glyph use elsewhere.
 
 BUG 014 — Legacy Sky Notes can lack current human-facing hyperlinks
-Status: OPEN
+Status: RESOLVED
+Resolution: The current descriptor-first generator already persists generated-sky-notes/<year>/W<week>.json and renders the complete linked story candidate set. Verification now treats that generated source as a required discovery/presentation contract: story_candidates and linked_stories must match exactly, every human target must exist, and every linked story URL must appear on the rendered weekly page. A stale legacy week such as W19 therefore cannot pass regeneration verification without acquiring the current human-facing links. Fix commit: 0b1ffe1f571aca59925fdc46d36c7f3acd1b8d66
 Found on: 2026-W19 Sky Notes
 Observed: W19 is stale historical output from before the current descriptor-first Sky Notes pipeline. Its Sky Notes do not contain the expected human-facing hyperlinks, and its current generated source file is absent.
 Desired: Regenerating any week through the current Sky Notes pipeline must persist generated-sky-notes/<year>/W<week>.json and render every available human story target as a reader-facing hyperlink. Verification must fail when either contract is broken.
