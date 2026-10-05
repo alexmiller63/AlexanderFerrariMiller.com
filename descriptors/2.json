@@ -1,0 +1,34 @@
+{
+  "schema_version": 1,
+  "id": "2",
+  "type": "star",
+  "name": "Caph",
+  "summary": "bright star in Cassiopeia used as a fixed-sky reference",
+  "representation": {
+    "machine": "./2.json",
+    "human_source": "summary",
+    "human": "/stories/baseline/2.html"
+  },
+  "constellation_abbreviation": "Cas",
+  "constellation": "Cassiopeia",
+  "position": {
+    "ra_deg": 2.293305,
+    "dec_deg": 59.14978,
+    "ecliptic_longitude_deg": 35.115878,
+    "ecliptic_latitude_deg": 51.215369
+  },
+  "representative_visual_magnitude": 2.28,
+  "guiding_asterisms": [
+    {
+      "id": "asterism-cassiopeia-s-w",
+      "name": "Cassiopeia's W",
+      "relationship": "visual-member",
+      "provenance": {
+        "source": "Astronomical League",
+        "source_url": "https://www.astroleague.org/wp-content/uploads/2025/12/Asterism_List_20251223.pdf",
+        "source_role": "verification",
+        "supports": "visual-membership"
+      }
+    }
+  ]
+}
