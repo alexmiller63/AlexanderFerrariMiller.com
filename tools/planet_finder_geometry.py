@@ -353,12 +353,13 @@ def reserved_boxes(mode: str) -> list[Box]:
     return boxes
 
 
-def candidate_positions(longitude: float, displacement_scale: float = 2.0):
+def candidate_positions(longitude: float, displacement_scale: float = 2.0, max_label_lengths: float = 2.0):
     """Yield each canonical label candidate once, widest geometry first.
 
-    The complete lattice is +/-2.00, +/-1.75, ... +/-0.25, then 0 label
-    lengths.  This preserves the full candidate set while honoring the Planet
-    Finder strategy: try maximum separation before progressively narrowing.
+    The lattice starts at ``max_label_lengths`` and narrows in quarter-label
+    steps to +/-0.25, then 0.  Ordinary search defaults to +/-2.00 label
+    lengths; unusually large coordinated alignments may request a wider
+    starting envelope without weakening any geometry constraint.
     displacement_scale remains temporarily for API compatibility.
     """
     theta = math.radians(180 + longitude)
@@ -366,7 +367,8 @@ def candidate_positions(longitude: float, displacement_scale: float = 2.0):
     offered: list[tuple[float, float]] = []
     radii = (*PREFERRED_LABEL_RADII, *EXPANDED_LABEL_RADII)
     quarter_step = LABEL_LENGTH * 0.25
-    for shell in range(8, -1, -1):
+    max_shell = max(1, int(round(max_label_lengths / 0.25)))
+    for shell in range(max_shell, -1, -1):
         shifts = (0.0,) if shell == 0 else (-shell * quarter_step, shell * quarter_step)
         for shift in shifts:
             for r in radii:
@@ -377,7 +379,7 @@ def candidate_positions(longitude: float, displacement_scale: float = 2.0):
                 offered.append((x, y))
                 yield x, y
 
-def legal_candidate_positions(longitude: float, w: float, h: float, reserved: list[Box], displacement_scale: float = 2.0, diagnostic: dict | None = None):
+def legal_candidate_positions(longitude: float, w: float, h: float, reserved: list[Box], displacement_scale: float = 2.0, diagnostic: dict | None = None, max_label_lengths: float = 2.0):
     # Diagnostic only: for the Venus/Sun ladder, capture the first canonical
     # candidate before immutable filtering and its exact fate.  At 2deg the
     # Sun's first candidate survives; at 1deg it disappears from the legal
@@ -385,7 +387,7 @@ def legal_candidate_positions(longitude: float, w: float, h: float, reserved: li
     # changing candidate generation, legality, or ordering.
     trace_first = diagnostic is not None and abs(longitude - 101.0) < 1e-9
     first = True
-    for x, y in candidate_positions(longitude, displacement_scale):
+    for x, y in candidate_positions(longitude, displacement_scale, max_label_lengths=max_label_lengths):
         box = Box(x, y, w, h)
         reserved_hits = [i for i, obstacle in enumerate(reserved) if boxes_overlap(box, obstacle, LABEL_COLLISION_PADDING)]
         if reserved_hits:
