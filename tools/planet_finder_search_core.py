@@ -108,6 +108,7 @@ def diagnostic_print(*args, level=None, **kwargs):
             "solution",
             "SOLUTION",
             "ALIGNMENT STATE REPETITION",
+            "ALIGNMENT LAYER SHAPE",
             "PRE-DFS TIMING alignment-fallback END",
         )
         if any(token in text for token in sparse_tokens):
@@ -1566,6 +1567,36 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
     # Diagnostic only: measure how often alignment ranking re-evaluates the
     # same effective geometry. Never used to prune, cache, or reorder search.
     alignment_probe_signatures = {}
+    # Diagnostic only: keep the alignment/member recursion separate from the
+    # ordinary body DFS counters.  This makes a terminal nodes=0 unambiguous:
+    # it can coexist with substantial pre-DFS alignment work.
+    alignment_layer_entries = {}
+    alignment_layer_probes = {}
+    alignment_layer_tries = {}
+
+    def report_alignment_layer_shape():
+        keys = sorted(set(alignment_layer_entries) | set(alignment_layer_probes) | set(alignment_layer_tries))
+        if not keys:
+            diagnostic_print(
+                f"Planet Finder {mode}: ALIGNMENT LAYER SHAPE none; ordinary-dfs-nodes={nodes:,}",
+                level=1, flush=True,
+            )
+            return
+        parts = []
+        for group_index, depth_in_blob in keys:
+            parts.append(
+                f"g{group_index + 1}:d{depth_in_blob}["
+                f"entries={alignment_layer_entries.get((group_index, depth_in_blob), 0):,},"
+                f"probes={alignment_layer_probes.get((group_index, depth_in_blob), 0):,},"
+                f"tries={alignment_layer_tries.get((group_index, depth_in_blob), 0):,}]"
+            )
+        diagnostic_print(
+            f"Planet Finder {mode}: ALIGNMENT LAYER SHAPE "
+            + " ".join(parts)
+            + f" ordinary-dfs-nodes={nodes:,} ordinary-dfs-deepest={deepest}/{len(order)}",
+            level=1, flush=True,
+        )
+
     # Routed domains are deterministic for a fixed staged geometry.  MRV only
     # needs to distinguish an exact small domain from "at least the per-node
     # cap", while the immediately following DFS will try at most that same cap.
@@ -1620,6 +1651,8 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
     def solve_alignment_members(group_index, remaining_items, on_complete):
         group_size = len(alignment_group_items[group_index])
         depth_in_blob = group_size - len(remaining_items)
+        layer_key = (group_index, depth_in_blob)
+        alignment_layer_entries[layer_key] = alignment_layer_entries.get(layer_key, 0) + 1
         if group_index == 0:
             key = (depth_in_blob, tuple(item[1][1] for item in remaining_items))
             row = alignment_depth_forensics.setdefault(
@@ -1699,6 +1732,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             probe_name = candidate_item[1][1]
             probe_state = (group_index, depth_in_blob, probe_name, alignment_state_signature())
             alignment_probe_signatures[probe_state] = alignment_probe_signatures.get(probe_state, 0) + 1
+            alignment_layer_probes[layer_key] = alignment_layer_probes.get(layer_key, 0) + 1
             probe_before = predfs_rejection_snapshot()
             probe_started = time.monotonic()
             diagnostic_print(
@@ -2402,6 +2436,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                         continue
 
                 tried += 1
+                alignment_layer_tries[layer_key] = alignment_layer_tries.get(layer_key, 0) + 1
                 if group_index == 0:
                     row["tries"] += 1
                 if try_candidate(candidate):
@@ -3691,6 +3726,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             f"top={top_repeats}",
             level=1, flush=True,
         )
+        report_alignment_layer_shape()
         report_alignment_phase_profile()
         report_alignment_route_forensics()
         dump_diagnostics("refinement deadline reached before search completed")
