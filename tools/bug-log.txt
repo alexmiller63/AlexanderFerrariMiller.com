@@ -233,7 +233,8 @@ Likely scope: Fix the descriptor generator, data enrichment, and fallback logic 
 
 
 BUG 013 — Observing-aid legend glyphs must be meaningful and render correctly
-Status: OPEN
+Status: RESOLVED
+Resolution: The shared legend now uses the repository’s SVG observing-aid masters (eye, binoculars, telescope) rather than font/Unicode glyphs, groups each visual with an explicit accessible observing-aid label, and represents substantial telescope as a labeled two-telescope group. The canonical include is kept in sync. Fix commits: 9ee1916c67e2a74c27f58c671bcf280e3dbfa809, 3d01277e63bb89c6c3423a06764ea296e3aa518c
 Found on: 2026-W01 legend
 Observed: The observing-aid legend does not reliably communicate the observing symbols; glyphs may render as question marks/missing-glyph placeholders.
 Desired: Meaningfully show each observing-aid glyph together with what it means (for example naked eye, binoculars, and telescope categories). The actual glyphs must render correctly rather than as question marks.
