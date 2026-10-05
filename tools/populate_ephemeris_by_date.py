@@ -36,9 +36,7 @@ def populate_week(year: int, week: int, generated) -> int:
             "sun_dec_deg": sample[10],
             "horizon_deg": -0.8333 if key == "sun" else -0.5667,
         }
-    rendered = ephemeris.render_ephemeris(monday, values)
-    finder_marker = ephemeris.notation_toggle("finder") + "<h3>Planet Finder</h3>"
-    ephemeris_html = rendered.split(finder_marker, 1)[0]
+    ephemeris_html, _ = ephemeris.render_sections(monday, values)
 
     changed = 0
     path = week_index(year, week)
