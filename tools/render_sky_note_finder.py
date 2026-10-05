@@ -573,11 +573,21 @@ def render(spec: dict, stars, output: Path) -> None:
         center_stars.append(target_star)
     else:
         center_stars.append(SimpleNamespace(ra_deg=target_ra, dec_deg=target_dec))
+    planet_position = spec.get("planet_position") or {}
+    planet_name = str((spec.get("finder_relation") or {}).get("planet") or "").strip()
+    planet_ra = planet_position.get("ra_deg")
+    planet_dec = planet_position.get("dec_deg")
+    has_planet = planet_name and planet_ra is not None and planet_dec is not None
+    if has_planet:
+        center_stars.append(SimpleNamespace(ra_deg=float(planet_ra), dec_deg=float(planet_dec)))
     center = spherical_center(center_stars)
     projected_geometry = [project(idx[ref].ra_deg, idx[ref].dec_deg, *center) for ref in refs]
     target_point = project(target_ra, target_dec, *center)
+    planet_point = project(float(planet_ra), float(planet_dec), *center) if has_planet else None
     if target_point is not None:
         projected_geometry.append(target_point)
+    if planet_point is not None:
+        projected_geometry.append(planet_point)
     projected_geometry = [point for point in projected_geometry if point is not None]
     if not projected_geometry:
         raise RuntimeError("Accepted geometry produced no visible projected points")
@@ -731,6 +741,15 @@ def render(spec: dict, stars, output: Path) -> None:
         ax, target_chart_label, target_point, occupied_labels,
         obstacle_segments=figure_segments + asterism_segments + boundary_segments,
     )
+    if has_planet:
+        if planet_point is None:
+            raise RuntimeError(f"Planet {planet_name} is outside the finder projection")
+        ax.scatter([planet_point[0]], [planet_point[1]], s=115, marker="o",
+                   facecolors=TARGET_YELLOW, edgecolors=TARGET_YELLOW, linewidths=1.6, zorder=10)
+        place_target_label(
+            ax, planet_name, planet_point, occupied_labels,
+            obstacle_segments=figure_segments + asterism_segments + boundary_segments,
+        )
     if target_star is not None and target_bayer and target_name and figure_constellation:
         title = f"{target_bayer}, {target_name} in {figure_constellation}"
     else:
