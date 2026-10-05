@@ -153,15 +153,20 @@ def story_candidates(fixed_ids: list[int]) -> list[dict]:
             if key in seen:
                 continue
             seen.add(key)
-            candidates.append({
+            candidate = {
                 "fixed_object_id": story.fixed_object_id,
                 "collection": story.collection,
                 "hed": story.hed,
                 "dek": story.dek,
                 "body": story.body,
                 "url": story.public_url,
-                "artwork": story.artwork,
-            })
+            }
+            # Absence of artwork is represented by absence of the field, not a
+            # public null placeholder.  Curated stories add the field only
+            # when they actually declare an artwork kind.
+            if story.artwork is not None:
+                candidate["artwork"] = story.artwork
+            candidates.append(candidate)
     return candidates
 
 
