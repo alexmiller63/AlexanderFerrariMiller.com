@@ -190,14 +190,22 @@ def binocular_finder_guidance(items: list[dict]) -> str:
             ).strip()
             paths = spec.get("figure_paths") or []
             target_ref = (spec.get("artwork_owner_identity") or {}).get("renderer_ref")
-            closed = any(
-                len(path) >= 4 and path[0] == path[-1] and target_ref in path
-                for path in paths
-            )
+            target_paths = [path for path in paths if target_ref in path]
+            closed_paths = [
+                path for path in target_paths
+                if len(path) >= 4 and path[0] == path[-1]
+            ]
+            four_corner = any(len(set(path[:-1])) == 4 for path in closed_paths)
+            closed = bool(closed_paths)
             if constellation and target:
-                shape = "closed figure" if closed else "charted figure"
+                if four_corner:
+                    shape = "diamond-shaped figure"
+                elif closed:
+                    shape = "closed figure"
+                else:
+                    shape = "charted figure"
                 instructions.append(
-                    f"Trace the {constellation} {shape} in the finder, then identify {target} at its charted position."
+                    f"Trace {constellation}’s {shape} in the finder, then identify {target} at its charted position."
                 )
                 continue
         constellation = str(item.get("constellation") or "").strip()
