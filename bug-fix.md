@@ -129,7 +129,7 @@ This entry preserves the known fixes and architectural decisions accumulated dur
 
 ### 2026-09-22 — BUG-003 observing modes omit magnitude and misuse visibility marker
 
-**State:** Open
+**State:** Resolved
 **Discovered:** 2026-09-22
 **Component:** Observing modes / fixed-object observing presentation
 
@@ -148,7 +148,7 @@ This entry preserves the known fixes and architectural decisions accumulated dur
 
 ### 2026-09-22 — Observing mode omits stellar magnitude
 
-**State:** Open
+**State:** Resolved
 **Discovered:** 2026-09-22
 **Component:** Observing modes / fixed-object display
 
@@ -180,7 +180,7 @@ This entry preserves the known fixes and architectural decisions accumulated dur
 
 ### 2026-09-22 — Greek/Symbols solar-glare display bug
 
-**State:** Open
+**State:** Resolved
 **Discovered:** 2026-09-22
 **Component:** Greek/Symbols observing mode / solar-glare display
 
@@ -196,7 +196,7 @@ This entry preserves the known fixes and architectural decisions accumulated dur
 
 ### 2026-09-22 — Greek/Symbols solar-glare display includes text
 
-**State:** Open
+**State:** Resolved
 **Discovered:** 2026-09-22
 **Component:** Ephemeris observing display / Greek/Symbols mode
 
@@ -212,7 +212,7 @@ This entry preserves the known fixes and architectural decisions accumulated dur
 
 ### 2026-09-22 — Latin mode renders naked-eye as a glyph
 
-**State:** Open
+**State:** Resolved
 **Discovered:** 2026-09-22
 **Component:** Observing modes / Latin mode
 
@@ -228,7 +228,7 @@ This entry preserves the known fixes and architectural decisions accumulated dur
 
 ### 2026-09-22 — Mixed Learner naked-eye glyph lacks text
 
-**State:** Open
+**State:** Resolved
 **Discovered:** 2026-09-22
 **Component:** Observing modes / Mixed Learner mode
 
@@ -276,7 +276,7 @@ This entry preserves the known fixes and architectural decisions accumulated dur
 
 ### 2026-09-22 — Observer time should be an explicit Local Apparent Time input
 
-**State:** Open
+**State:** Resolved
 **Discovered:** 2026-09-22
 **Component:** Planetary observing status / observer controls
 
