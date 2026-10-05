@@ -1834,6 +1834,23 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             )
             ranked.append((count, candidate_item))
             rank_viable_counts[probe_name] = (count, cutoff)
+            # Diagnostic only: prove whether the routed MRV witness survives
+            # unchanged into the authoritative DFS for the chosen member.
+            # This is intentionally observational; it does not alter ranking,
+            # caching, candidate order, or pruning.
+            if routed_rank:
+                forensic_cached = alignment_routed_domain_cache.get(cache_key)
+                forensic_values = forensic_cached[0] if forensic_cached is not None else ()
+                diagnostic_print(
+                    f"Planet Finder {mode}: ALIGNMENT PROBE WITNESS "
+                    f"group={group_index + 1} depth={depth_in_blob}/{group_size} "
+                    f"body={probe_name} state={repr(cache_key[1])} "
+                    f"cache={'hit' if forensic_cached is not None else 'miss'} "
+                    f"cached={len(forensic_values)} "
+                    f"prefix={forensic_cached[2] if forensic_cached is not None else 'none'} "
+                    f"first={candidate_geometry_signature(forensic_values[0]) if forensic_values else 'none'}",
+                    level=1, flush=True,
+                )
             if len(remaining_items) == 2 and routed_rank and cached_rows is None:
                 pair_stats = alignment_final_pair_domain_stats.setdefault(
                     probe_name, {"calls": 0, "domains": {}, "candidates": {},
@@ -2275,6 +2292,18 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         )
         chosen_cache_key = (item[0], alignment_state_signature())
         chosen_cached = alignment_routed_domain_cache.get(chosen_cache_key)
+        chosen_values = chosen_cached[0] if chosen_cached is not None else ()
+        diagnostic_print(
+            f"Planet Finder {mode}: ALIGNMENT DFS WITNESS "
+            f"group={group_index + 1} depth={depth_in_blob}/{group_size} "
+            f"member={name} state={repr(chosen_cache_key[1])} "
+            f"ranked={rank_viable_counts.get(name)} "
+            f"cache={'hit' if chosen_cached is not None else 'miss'} "
+            f"cached={len(chosen_values)} "
+            f"prefix={chosen_cached[2] if chosen_cached is not None else 'none'} "
+            f"first={candidate_geometry_signature(chosen_values[0]) if chosen_values else 'none'}",
+            level=1, flush=True,
+        )
         chosen_stream = (
             iter(chosen_cached[0])
             if chosen_cached is not None
