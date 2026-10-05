@@ -175,7 +175,8 @@ Likely scope: Sky Notes descriptor generation and highlight-to-descriptor linkin
 
 
 BUG 010 — Beta Reticuli binocular descriptor is generic instead of a finder
-Status: OPEN
+Status: RESOLVED
+Resolution: Binocular guidance is now derived from the actual accepted finder geometry instead of generic wide-field boilerplate. Four-corner closed figures are described as diamond-shaped; Beta Reticuli’s object finder uses Reticulum’s accepted four-star closed figure and immutable target identity, so regeneration gives a concrete Reticulum → β Ret locating instruction and matching finder artwork. Fix commits: ee2eadd0712c095198f6317d5ccaa4d12342c674, f14e8d112a4518dc96d504e88639fd777f4bcd95
 Found on: 2026-W01 binoculars / Beta Reticuli
 Observed: The description says “Wide fields help connect the charted geometry to the real sky,” which is generic boilerplate and does not help locate Beta Reticuli.
 Desired: The descriptor should use Reticulum’s distinctive diamond-shaped pattern as the locating context, show the constellation pattern, identify Beta Reticuli within it, and provide useful binocular-specific guidance. The visual and prose should function as a finder rather than a generic observing note.
