@@ -53,7 +53,7 @@ def calendar_label(record,finest_ids,asterism_ids):
   if value and value.casefold() not in {x.casefold() for x in identity}:identity.append(value)
  head=", ".join(identity)+f", {object_type}"
  if cid in asterism_ids:head+=" (also an asterism)"
- head+=f" in {constellation}"; day=dt.date.fromisoformat(record["best_date"]); magnitude=record.get("mag","").strip(); aid=observing_aid_for_magnitude(magnitude); glyph=HTML_AID[aid] if aid is not None else ""; observing=" ".join(p for p in (glyph,f"V {magnitude}" if magnitude else "") if p); parts=[head]
+ head+=f" in {constellation}"; day=dt.date.fromisoformat(record["best_date"]); magnitude=record.get("mag","").strip(); aid=observing_aid_for_magnitude(magnitude); glyph=HTML_AID[aid] if aid is not None else ""; observing=" ".join(p for p in (glyph,magnitude if magnitude else "") if p); parts=[head]
  if observing:parts.append(f'<span class="visibility-magnitude">{observing}</span>')
  if cid in finest_ids:parts.append("Finest NGC")
  parts.append(f"{declination_band(record['dec_deg'])} {season_for(day)}"); return " — ".join(parts)
