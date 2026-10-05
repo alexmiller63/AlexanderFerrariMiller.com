@@ -51,7 +51,7 @@ def page_table(eclipses):
  rows=[]
  for e in eclipses:
   d=date.fromisoformat(e["date"]); visibility=html.escape(e.get("visibility", "")) or "—"; magnitude=html.escape(e.get("magnitude", "")) or "—"; observing=html.escape(e.get("observing_note", "")) or "—"; rows.append(f"<tr><td>{d.strftime('%B')} {d.day}, {d.year}</td><td>{e['type'].title()} {e['kind']}</td><td>{e['maximum'][:5]} UTC</td><td>{magnitude}</td><td>{visibility}</td><td>{observing}</td></tr>")
- return '<table class="eclipse-table"><thead><tr><th>Date</th><th>Eclipse</th><th>Greatest eclipse</th><th>Magnitude</th><th>Visibility</th><th>Observing note</th></tr></thead><tbody>"+"".join(rows)+"</tbody></table>"
+ return '<table class="eclipse-table"><thead><tr><th>Date</th><th>Eclipse</th><th>Greatest eclipse</th><th>Magnitude</th><th>Visibility</th><th>Observing note</th></tr></thead><tbody>'+''.join(rows)+'</tbody></table>'
 def update_eclipse_page(text,year,eclipses):
  table=page_table(eclipses); start=f"      <h2>{year} eclipses</h2>"; block=start+"\n      "+table
  if start in text:return re.sub(rf"      <h2>{year} eclipses</h2>.*?(?=\n\s*<h2>|\n\s*</section>)",block,text,count=1,flags=re.S)
