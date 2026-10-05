@@ -2,7 +2,7 @@
 set -uo pipefail
 
 GOOD_REF="95a9dd78fce7dd4044bee20a012b4ae88db8bfaa"
-BAD_REF="2e96878e4011101317ce8ccfd8c5a5844da7b388"
+BAD_REF="$(git rev-parse HEAD)"
 HARNESS_DIR="${RUNNER_TEMP:-/tmp}/w17-bisect-harness"
 mkdir -p "$HARNESS_DIR"
 cp tests/test_planet_finder_w17_ladder.py "$HARNESS_DIR/test_planet_finder_w17_ladder.py"
