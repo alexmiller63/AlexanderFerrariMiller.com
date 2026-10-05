@@ -244,35 +244,35 @@ This entry preserves the known fixes and architectural decisions accumulated dur
 
 ### 2026-09-22 — Legend sentences run together
 
-**State:** Open
+**State:** Resolved
 **Discovered:** 2026-09-22
 **Component:** Legend / explanatory text
 
 **Observed:** Each sentence in the legend should appear on its own line. The current presentation runs multiple sentences together instead of giving each sentence its own line.
 
-**Diagnosis:** Pending.
+**Diagnosis:** The older ephemeris legend was emitted as one paragraph with consecutive sentences and no explicit line breaks.
 
-**Fix:** Pending.
+**Fix:** The current ephemeris generator emits each legend sentence as a separate line using `<br>`.
 
-**Verification:** Pending.
+**Verification:** `tools/populate_ephemeris.py` now separates the β definition, rise/set explanation, sky-state rule, Solar Glare rule, and Sun rule with explicit `<br>` elements.
 
-**Resolution:** Pending.
+**Resolution:** Legend sentences are generated one per line; no generated-week patch is required.
 
 ### 2026-09-22 — Legend sentences run together
 
-**State:** Open
+**State:** Resolved
 **Discovered:** 2026-09-22
 **Component:** Legend / presentation
 
 **Observed:** Each legend sentence currently runs together as a single paragraph. Each sentence should appear on its own line.
 
-**Diagnosis:** Pending.
+**Diagnosis:** The older ephemeris legend was emitted as one paragraph with consecutive sentences and no explicit line breaks.
 
-**Fix:** Pending.
+**Fix:** The current ephemeris generator emits each legend sentence as a separate line using `<br>`.
 
-**Verification:** Pending.
+**Verification:** `tools/populate_ephemeris.py` now separates the β definition, rise/set explanation, sky-state rule, Solar Glare rule, and Sun rule with explicit `<br>` elements.
 
-**Resolution:** Pending.
+**Resolution:** Legend sentences are generated one per line; no generated-week patch is required.
 
 ### 2026-09-22 — Observer time should be an explicit Local Apparent Time input
 
