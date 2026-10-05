@@ -310,7 +310,7 @@ This entry preserves the known fixes and architectural decisions accumulated dur
 
 ### 2026-09-22 — Highlights/Wordy control does not look like a toggle
 
-**State:** Open
+**State:** Resolved
 **Discovered:** 2026-09-22
 **Component:** Sky Notes / Highlights–Wordy control
 
@@ -318,13 +318,13 @@ This entry preserves the known fixes and architectural decisions accumulated dur
 
 **Expected:** It should have clear toggle affordance and state indication.
 
-**Diagnosis:** Pending.
+**Diagnosis:** The generated control used two separate rounded buttons and indicated the active state mainly with font weight and underlining, so the pair did not clearly read as one mutually exclusive view selector.
 
-**Fix:** Pending.
+**Fix:** The shared Sky Notes generator now emits one segmented pill control with adjoining Highlights/Wordy segments, a visible divider, and a strong inset outline on the active segment. The existing aria-pressed state remains authoritative.
 
-**Verification:** Pending.
+**Verification:** The shared generator applies the visual active state inside setMode(), so every regenerated week inherits the same toggle behavior and presentation.
 
-**Resolution:** Pending.
+**Resolution:** Highlights and Wordy are now presented as two states of one segmented toggle; no generated-week patch is required.
 
 ### 2026-09-22 — Altair chart title format is incorrect
 
