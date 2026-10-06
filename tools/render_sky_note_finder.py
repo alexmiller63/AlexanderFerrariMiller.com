@@ -769,6 +769,7 @@ def render(spec: dict, stars, output: Path) -> None:
             points, obstacle_segments=boundary_segments,
             color=BOUNDARY_WHITE, fontsize=10, zorder=5,
         )
+    labeled_asterism_refs = set()
     for asterism in asterisms:
         asterism_points = []
         for path in asterism.get("paths") or []:
@@ -778,6 +779,20 @@ def render(spec: dict, stars, output: Path) -> None:
                     point = project(idx[ref].ra_deg, idx[ref].dec_deg, *center)
                     if point is not None:
                         asterism_points.append(point)
+                        # Asterisms are recognition landmarks, so their named
+                        # member stars must remain recognizable too.  This is a
+                        # general rule (for example Kaus Australis in the
+                        # Teapot), never a star-specific exception.
+                        identity = identities_by_ref.get(ref) or {}
+                        proper = str(identity.get("proper_name") or idx[ref].proper or "").strip()
+                        if proper and ref not in labeled_asterism_refs and identity.get("fixed_object_id") != target_id:
+                            place_label(
+                                ax, proper, point, occupied_labels,
+                                color=ASTERISM_GREEN, fontsize=9, zorder=7,
+                                obstacle_segments=figure_segments + asterism_segments + boundary_segments,
+                                require_clear=False,
+                            )
+                            labeled_asterism_refs.add(ref)
         name = str(asterism.get("name") or "")
         if name in labeled_asterism_names and asterism_points:
             label_point = (
