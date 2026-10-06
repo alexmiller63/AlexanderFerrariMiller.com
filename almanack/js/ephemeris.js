@@ -84,7 +84,7 @@
     if (cell.dataset.sunSpecial === 'true') return state;
     const targetAltitude = targetAltitudeDeg(cell, latitude, hourAngleDeg);
     if (targetAltitude !== null && targetAltitude < -0.5667) return 'Below horizon';
-    if (state !== 'Night' && cell.dataset.normalLabel === 'Naked eye') return state;
+    if (state !== 'Night') return state;
     return cell.dataset.solarGlare === 'true' ? 'Solar Glare' : cell.dataset.normalLabel;
   }
 
