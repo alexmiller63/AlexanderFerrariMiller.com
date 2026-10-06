@@ -51,7 +51,7 @@ def publish_page(path: Path, payload: dict, year: int, week: int) -> bool:
             '</figure>'
         )
         anchor = f'id="sky-note-object-{object_id}"'
-        match = re.search(rf'<(?P<tag>section|article|div)\\b[^>]*{re.escape(anchor)}[^>]*>', new)
+        match = re.search(rf'<(?P<tag>section|article|div)\b[^>]*{re.escape(anchor)}[^>]*>', new)
         if not match:
             raise RuntimeError(
                 f"{year}-W{week:02d}: missing Sky Notes destination sky-note-object-{object_id} for {planet}"
