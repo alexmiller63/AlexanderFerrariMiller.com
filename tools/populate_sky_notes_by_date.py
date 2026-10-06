@@ -260,6 +260,35 @@ def planetary_finder_relations(week: int, yearly: dict[int, dict[str, float]], s
             relation["asterism"] = asterism["name"]
         relations.append(relation)
     attach_planet_positions(relations, page_path)
+
+    # A famous landmark is useful only when it is genuinely local to the
+    # moving body.  Longitude alone can select a star that is far away on the
+    # sky and force an enormous, overcrowded finder.  Measure the real
+    # great-circle hop after the preserved equatorial planet position has been
+    # attached.  Distant asterisms are deliberately dropped; the renderer then
+    # uses the local constellation figure as the star-hop context and the prose
+    # can be candid that the target is not easy to find.
+    max_asterism_hop_deg = 12.0
+    for relation in relations:
+        pra = relation.get("planet_ra_deg")
+        pdec = relation.get("planet_dec_deg")
+        if pra is None or pdec is None:
+            continue
+        star = next((item for item in stars if item["name"] == relation["star"]), None)
+        if star is None:
+            continue
+        ra1, dec1 = math.radians(float(pra)), math.radians(float(pdec))
+        ra2, dec2 = math.radians(star["ra_deg"]), math.radians(star["dec_deg"])
+        cosine = (
+            math.sin(dec1) * math.sin(dec2)
+            + math.cos(dec1) * math.cos(dec2) * math.cos(ra1 - ra2)
+        )
+        hop = math.degrees(math.acos(max(-1.0, min(1.0, cosine))))
+        relation["sky_separation_deg"] = round(hop, 1)
+        if relation.get("asterism") and hop > max_asterism_hop_deg:
+            relation.pop("asterism", None)
+            relation["finder_difficulty"] = "difficult"
+            relation["finder_note"] = f"{relation['planet']} is not easy to find this week."
     return relations
 
 def featured_fixed_sky(entries: list[str], stars: list[dict]) -> list[dict]:
