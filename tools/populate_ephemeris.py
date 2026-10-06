@@ -194,7 +194,7 @@ def render_sections(monday, values):
                 if field in ("rise", "set"):
                     content = (f'<td class="ephemeris-{field.lower()}" ' f'data-ra-hours="{item["ra_hours"]:.9f}" ' f'data-dec-deg="{item["dec_deg"]:.9f}" ' f'data-sun-ra-hours="{item["sun_ra_hours"]:.9f}" ' f'data-horizon-deg="{item["horizon_deg"]:.4f}">{content}</td>')
                 elif field == "observing":
-                    content = (f'<td class="ephemeris-observing" ' f'data-normal-label="{html.escape(item["normal_label"], quote=True)}" ' f'data-solar-glare="{str(item["solar_glare"]).lower()}" ' f'data-sun-special="{str(item["sun_special"]).lower()}" ' f'data-sun-dec-deg="{item["sun_dec_deg"]:.9f}">{content}</td>')
+                    content = (f'<td class="ephemeris-observing" ' f'data-normal-label="{html.escape(item["normal_label"], quote=True)}" ' f'data-solar-glare="{str(item["solar_glare"]).lower()}" ' f'data-sun-special="{str(item["sun_special"]).lower()}" ' f'data-ra-hours="{item["ra_hours"]:.9f}" ' f'data-dec-deg="{item["dec_deg"]:.9f}" ' f'data-sun-ra-hours="{item["sun_ra_hours"]:.9f}" ' f'data-sun-dec-deg="{item["sun_dec_deg"]:.9f}">{content}</td>')
                 else: content = f"<td>{content}</td>"
                 cells.append(content)
             rows.append(f'<tr><th scope="row">{label}</th>{"".join(cells)}</tr>')
