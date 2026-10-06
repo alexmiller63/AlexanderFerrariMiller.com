@@ -332,8 +332,14 @@ def visible_stars(
 
 
 def marker_area(mag: float, limiting_mag: float) -> float:
-    """Map stellar magnitude to a restrained plotted disk area."""
-    return max(2.0, 5.0 + 5.0 * (limiting_mag - mag))
+    """Map magnitude to deliberately distinct chart-symbol areas.
+
+    Bright-star magnitude classes must read immediately in a finder: each
+    whole magnitude step is visibly smaller than the preceding one, while
+    faint field stars retain a practical minimum mark.
+    """
+    bright_reference = max(-1.5, min(float(mag), float(limiting_mag)))
+    return max(2.0, 72.0 * (0.62 ** (bright_reference + 1.0)))
 
 
 def render_view(
