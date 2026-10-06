@@ -17,6 +17,7 @@ DESCRIPTOR_ROOT = ROOT / "generated-sky-notes"
 PLACEHOLDER_RE = re.compile(r'<figure class="sky-note-artwork-placeholder"\s+data-sky-note-artwork-placeholder="true"\s+data-artwork-descriptor="[^"]*">.*?</figure>', flags=re.S)
 PUBLISHED_RE = re.compile(r'<figure class="sky-note-artwork"[^>]*>.*?</figure>', flags=re.S)
 RELATED_RE = re.compile(r'<div class="related-descriptor-artwork"\s+data-related-descriptor-artwork="true">.*?</div>', flags=re.S)
+PATHFINDER_LINK_RE = re.compile(r'<a class="planet-pathfinder-link"[^>]*>.*?</a>', flags=re.S)
 
 
 def publish_page(path: Path, payload: dict, year: int, week: int) -> bool:
