@@ -32,9 +32,10 @@ for iso_week in weeks_in_range(start, end):
     fixed_ids = [str(item["fixed_object_id"]) for item in payload.get("fixed_sky") or [] if item.get("fixed_object_id")]
 
     # The generated source is the contract between discovery and presentation.
-    # Every discovered human story must survive into linked_stories and into the
-    # rendered weekly page; checking only one descriptor representation can miss
-    # additional curated stories for the same fixed object.
+    # linked_stories is intentionally a presentation subset: stories for objects
+    # already named in the observing guide are suppressed from More Sky Notes.
+    # Every linked story must still be a discovered candidate and must resolve to
+    # a reader-facing human page.
     candidates = payload.get("story_candidates")
     linked_stories = payload.get("linked_stories")
     if candidates is None or linked_stories is None:
@@ -48,11 +49,10 @@ for iso_week in weeks_in_range(start, end):
         (str(story.get("fixed_object_id")), str(story.get("collection")), str(story.get("url")))
         for story in linked_stories
     }
-    if candidate_keys != linked_keys:
-        missing = sorted(candidate_keys - linked_keys)
+    if not linked_keys.issubset(candidate_keys):
         extra = sorted(linked_keys - candidate_keys)
         raise SystemExit(
-            f"{page}: linked story set differs from discovered candidates; missing={missing}, extra={extra}"
+            f"{page}: linked story set contains stories not discovered as candidates; extra={extra}"
         )
 
     for story in linked_stories:
@@ -109,6 +109,6 @@ if pages_checked == 0:
     raise SystemExit("No weekly Sky Notes pages were verified")
 
 print(
-    f"Verified {checked} descriptor human mapping(s), complete generated story-link sets, "
+    f"Verified {checked} descriptor human mapping(s), deduplicated generated story-link sets, "
     f"and {empty_states} explicit no-deep-sky state(s)"
 )
