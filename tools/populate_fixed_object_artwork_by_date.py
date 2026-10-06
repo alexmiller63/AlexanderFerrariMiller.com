@@ -92,6 +92,19 @@ def make_spec(item: dict, registry: dict, by_hip: dict[str, int], metadata: dict
         if candidate.get("abbreviation") in guide_constellation_abbreviations
     ]
     identity_refs = {identity["renderer_ref"] for identity in identities}
+    for guide_constellation in guiding_constellations:
+        for path in guide_constellation.get("paths") or []:
+            for ref in path:
+                if ref in identity_refs:
+                    continue
+                hip = legacy.hip_number(ref)
+                fid = by_hip.get(hip)
+                if fid is None:
+                    raise RuntimeError(f"fixed object {fixed_id}: guide constellation ref {ref} has no immutable fixed_object_id")
+                identity = {"fixed_object_id": fid, "renderer_ref": ref, "identifiers": {"hip": hip}}
+                identity.update({k: v for k, v in metadata.get(fid, {}).items() if k != "fixed_object_id" and v})
+                identities.append(identity)
+                identity_refs.add(ref)
     for asterism in guiding_asterisms:
         for path in asterism.get("paths") or []:
             for ref in path:
