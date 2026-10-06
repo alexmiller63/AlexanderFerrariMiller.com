@@ -389,7 +389,7 @@ def generated_note(year: int, week: int, page_path, yearly, stars: list[dict]) -
     # Fixed-object artwork remains immutable/object-owned. Planet finder
     # artwork is generated explicitly because base.generated_note() intentionally
     # does not emit legacy week-owned artwork.
-    weekly_artworks = base.planetary_artwork_descriptors(year, week, fixed, payload["planet_relations"])
+    weekly_artworks = base.planetary_artwork_descriptors(year, week, fixed, payload["planet_finder_relations"])
     payload["planet_finder_artworks"] = weekly_artworks
     payload.pop("planet_finder_artwork", None)
     payload.pop("artwork", None)
@@ -528,7 +528,7 @@ def main() -> None:
         # Fixed-object artwork remains immutable/object-owned. Planet finder
         # artwork is generated explicitly because base.generated_note() intentionally
         # does not emit legacy week-owned artwork.
-        weekly_artworks = base.planetary_artwork_descriptors(item.year, item.week, fixed, payload["planet_relations"])
+        weekly_artworks = base.planetary_artwork_descriptors(item.year, item.week, fixed, payload["planet_finder_relations"])
         payload["planet_finder_artworks"] = weekly_artworks
         payload.pop("planet_finder_artwork", None)
         payload.pop("artwork", None)
