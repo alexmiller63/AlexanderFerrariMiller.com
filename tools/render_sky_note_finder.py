@@ -581,10 +581,17 @@ def render(spec: dict, stars, output: Path) -> None:
     # but an unrelated distant arm of that figure must not force a needlessly
     # wide field.  A named asterism is the preferred recognition context.
     framing_paths = figure_paths + guide_paths
-    if has_planet and asterisms:
-        framing_paths = guide_paths + [
-            path for asterism in asterisms for path in (asterism.get("paths") or [])
-        ]
+    if has_planet:
+        # A moving-body finder is framed by the navigation route, never by the
+        # full extent of a constellation.  If a genuinely local asterism was
+        # selected upstream, include it.  Otherwise frame only the planet and
+        # its local hop star; the constellation figure may be clipped naturally
+        # at the edges instead of inflating the chart into a catalog plot.
+        framing_paths = guide_paths
+        if asterisms:
+            framing_paths += [
+                path for asterism in asterisms for path in (asterism.get("paths") or [])
+            ]
     framing_refs = refs_from_paths(framing_paths)
     if target_ref:
         framing_refs.add(target_ref)
