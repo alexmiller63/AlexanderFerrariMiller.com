@@ -470,14 +470,31 @@ def artwork_descriptor(year: int, week: int, fixed: list[dict], relations: list[
         },
         "finder_route": (
             {
-                "sequence": [
-                    CONSTELLATION_NAMES.get(con, con),
-                    finder_relation.get("asterism"),
-                    finder_relation["star"],
-                    finder_relation["planet"],
-                ],
+                # Asterisms are optional finder landmarks.  Never widen a
+                # Pathfinder merely to include one: when the selected relation
+                # has no genuinely nearby asterism, the accepted constellation
+                # stick figure is the orienting pattern.
+                "sequence": (
+                    [
+                        CONSTELLATION_NAMES.get(con, con),
+                        finder_relation["asterism"],
+                        finder_relation["star"],
+                        finder_relation["planet"],
+                    ]
+                    if finder_relation.get("asterism")
+                    else [
+                        CONSTELLATION_NAMES.get(con, con),
+                        finder_relation["star"],
+                        finder_relation["planet"],
+                    ]
+                ),
+                "orientation": (
+                    "asterism" if finder_relation.get("asterism")
+                    else "constellation-stick-figure"
+                ),
                 "reference_star": finder_relation["star"],
                 "planet": finder_relation["planet"],
+                "finder_note": finder_relation.get("finder_note"),
             }
             if finder_relation is not None else None
         ),
