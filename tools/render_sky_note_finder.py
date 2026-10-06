@@ -571,10 +571,6 @@ def render(spec: dict, stars, output: Path) -> None:
             raise RuntimeError(f"Target fixed_object_id {target_id} has no authoritative sky coordinates")
         target_ra = target_meta["ra_deg"]
         target_dec = target_meta["dec_deg"]
-    if target_star is not None:
-        center_stars.append(target_star)
-    else:
-        center_stars.append(SimpleNamespace(ra_deg=target_ra, dec_deg=target_dec))
     planet_position = spec.get("planet_position") or {}
     planet_name = str((spec.get("finder_relation") or {}).get("planet") or "").strip()
     planet_ra = planet_position.get("ra_deg")
@@ -593,6 +589,10 @@ def render(spec: dict, stars, output: Path) -> None:
     if target_ref:
         framing_refs.add(target_ref)
     center_stars = [idx[ref] for ref in framing_refs]
+    if target_star is not None:
+        center_stars.append(target_star)
+    else:
+        center_stars.append(SimpleNamespace(ra_deg=target_ra, dec_deg=target_dec))
     if has_planet:
         center_stars.append(SimpleNamespace(ra_deg=float(planet_ra), dec_deg=float(planet_dec)))
     center = spherical_center(center_stars)
