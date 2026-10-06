@@ -411,18 +411,18 @@ def render_planet_treatments(payload: dict) -> str:
         related = [item for item in relations if item.get("planet") == planet]
         prose = " ".join(base.relation_sentence(item) for item in related)
         if not prose:
-            reference = str(route.get("reference_star") or "").strip()
-            constellation = str(route.get("constellation") or "").strip()
-            if reference and constellation:
-                prose = f"Use {reference} in {constellation} as the finder reference for {planet} this week."
-            else:
-                prose = f"Use the weekly finder below to locate {planet} among the surrounding stars."
+            prose = (
+                f"No weekly orbital-condition narrative has been generated for {planet} yet. "
+                "This is missing reader content, not a substitute observing description."
+            )
         rendering_id = str(descriptor.get("id") or "")
+        finder_href = f"#sky-note-finder-{object_id}"
         blocks.append(
             f'<section class="sky-note-object-treatment" id="sky-note-object-{object_id}" '
             f'data-object-id="{object_id}" data-rendering-id="{html.escape(rendering_id, quote=True)}">'
             f'<h4>{html.escape(planet)}</h4>'
-            f'<p>{html.escape(prose)}</p>'
+            f'<p>{html.escape(prose)} '
+            f'<a class="planet-pathfinder-link" href="{finder_href}">Find {html.escape(planet)} with the Pathfinder.</a></p>'
             '</section>'
         )
     return "\n".join(blocks)
