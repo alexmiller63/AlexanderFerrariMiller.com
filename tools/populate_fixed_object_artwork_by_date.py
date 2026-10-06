@@ -86,6 +86,20 @@ def make_spec(item: dict, registry: dict, by_hip: dict[str, int], metadata: dict
     # canonical finding route.  Keep this in the spec so the renderer remains generic.
     guide_names = {"Pleiades": {"Orion's Belt", "Hyades / V of Taurus", "Pleiades"}}.get(str(item.get("name") or ""), set())
     guiding_asterisms = [a for a in candidate_asterisms if a.get("name") in guide_names]
+    identity_refs = {identity["renderer_ref"] for identity in identities}
+    for asterism in guiding_asterisms:
+        for path in asterism.get("paths") or []:
+            for ref in path:
+                if ref in identity_refs:
+                    continue
+                hip = legacy.hip_number(ref)
+                fid = by_hip.get(hip)
+                if fid is None:
+                    raise RuntimeError(f"fixed object {fixed_id}: guide ref {ref} has no immutable fixed_object_id")
+                identity = {"fixed_object_id": fid, "renderer_ref": ref, "identifiers": {"hip": hip}}
+                identity.update({k: v for k, v in metadata.get(fid, {}).items() if k != "fixed_object_id" and v})
+                identities.append(identity)
+                identity_refs.add(ref)
     return {
         "name": full_name,
         "constellation_abbreviation": con,
