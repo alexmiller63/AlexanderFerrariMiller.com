@@ -36,10 +36,11 @@ GEOMETRY_REGISTRY = ROOT / "finder-geometry" / "martz-macrobert.json"
 PLANET_DISPLAY = {
     "mercury": "Mercury", "venus": "Venus", "mars": "Mars", "jupiter": "Jupiter",
     "saturn": "Saturn", "uranus": "Uranus", "neptune": "Neptune",
+    "ceres": "Ceres", "pluto": "Pluto",
 }
 PLANET_OBJECT_IDS = {
     "Mercury": 1250, "Venus": 1251, "Mars": 1254, "Jupiter": 1256,
-    "Saturn": 1257, "Uranus": 1258, "Neptune": 1259,
+    "Saturn": 1257, "Uranus": 1258, "Neptune": 1259, "Ceres": 1255, "Pluto": 1260,
 }
 CONSTELLATION_NAMES = {
     "And": "Andromeda", "Ant": "Antlia", "Aps": "Apus", "Aqr": "Aquarius",
