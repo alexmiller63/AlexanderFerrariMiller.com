@@ -534,6 +534,8 @@ def render(spec: dict, stars, output: Path) -> None:
     idx = complete_index(stars)
     identities_by_ref, identities_by_id = identity_index(spec)
     figure_paths = spec.get("figure_paths") or []
+    guide_constellations = spec.get("guide_constellations") or []
+    guide_paths = [path for guide in guide_constellations for path in (guide.get("paths") or [])]
     asterisms = spec.get("asterisms") or []
     target_identity = spec.get("target_identity") or spec.get("artwork_owner_identity") or {}
     target_id = target_identity.get("fixed_object_id")
@@ -543,7 +545,7 @@ def render(spec: dict, stars, output: Path) -> None:
     target_ref = target_identity.get("renderer_ref") or (target_star_identity or {}).get("renderer_ref")
     if target_ref and target_ref not in idx:
         raise RuntimeError(f"Target renderer_ref {target_ref} is not present in coordinate catalog")
-    refs = refs_from_paths(figure_paths)
+    refs = refs_from_paths(figure_paths) | refs_from_paths(guide_paths)
     if target_ref:
         refs.add(target_ref)
     asterisms = list(asterisms)
@@ -569,7 +571,7 @@ def render(spec: dict, stars, output: Path) -> None:
             raise RuntimeError(f"Target fixed_object_id {target_id} has no authoritative sky coordinates")
         target_ra = target_meta["ra_deg"]
         target_dec = target_meta["dec_deg"]
-    center_stars = [idx[ref] for ref in refs_from_paths(figure_paths)]
+    center_stars = [idx[ref] for ref in refs_from_paths(figure_paths + guide_paths)]
     if target_star is not None:
         center_stars.append(target_star)
     else:
@@ -615,6 +617,8 @@ def render(spec: dict, stars, output: Path) -> None:
                    s=[marker_area(item[2].mag, 7) for item in visible], color=STAR, zorder=1)
     for path in figure_paths:
         draw_path(ax, path, idx, center, FIGURE_BLUE, 2.7)
+    for path in guide_paths:
+        draw_path(ax, path, idx, center, FIGURE_BLUE, 2.2)
 
     # Deep-sky catalog objects are selected geometrically from the actual
     # displayed field.  Messier/Caldwell aliases for one physical object share
@@ -673,7 +677,14 @@ def render(spec: dict, stars, output: Path) -> None:
             path_points = [point for point in path_points if point is not None]
             asterism_segments.extend(zip(path_points, path_points[1:]))
 
-    for ref in figure_refs:
+    guide_refs = []
+    seen_guides = set()
+    for path in guide_paths:
+        for ref in path:
+            if ref not in seen_guides:
+                seen_guides.add(ref)
+                guide_refs.append(ref)
+    for ref in figure_refs + guide_refs:
         star = idx[ref]
         identity = identities_by_ref[ref]
         point = project(star.ra_deg, star.dec_deg, *center)
@@ -698,6 +709,21 @@ def render(spec: dict, stars, output: Path) -> None:
             ax, figure_constellation, constellation_point, occupied_labels,
             obstacle_segments=figure_segments + asterism_segments + boundary_segments,
         )
+    for guide in guide_constellations:
+        guide_name = str(guide.get("name") or guide.get("abbreviation") or "").strip()
+        points = []
+        for path in guide.get("paths") or []:
+            for ref in path:
+                if ref in idx:
+                    point = project(idx[ref].ra_deg, idx[ref].dec_deg, *center)
+                    if point is not None:
+                        points.append(point)
+        if guide_name and points:
+            guide_point = (sum(x for x, _ in points) / len(points), sum(y for _, y in points) / len(points))
+            place_constellation_label(
+                ax, guide_name, guide_point, occupied_labels,
+                obstacle_segments=figure_segments + asterism_segments + boundary_segments,
+            )
     home_abbreviation = str(spec.get("constellation_abbreviation") or "").strip()
     neighbor_points = {}
     for boundary_name, boundary_abbreviation, boundary_points in projected_boundaries:
