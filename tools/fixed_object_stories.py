@@ -193,6 +193,31 @@ def baseline_story(fixed_object_id: int) -> Story:
             "People have watched and named this compact star group since antiquity, and its seasonal return "
             "has long made it a natural marker in the yearly sky."
         )
+    elif name == "Nunki":
+        # Nunki is a deliberately rich evergreen story.  Readers return to
+        # these entries year after year, so Wordy mode should reward them with
+        # real astronomy rather than Calendar boilerplate.  The dek doubles as
+        # the Highlights hook.
+        dek = (
+            "Nunki is a bright blue-white star in the Teapot of Sagittarius — "
+            "a star that makes its own smokescreen."
+        )
+        reason = (
+            "Nunki (Sigma Sagittarii) is a second-magnitude blue-white B-type star and one of the "
+            "most useful naked-eye landmarks in Sagittarius. It marks the upper-left corner of the "
+            "Teapot’s handle, making it easy to recognize even in the extraordinarily rich Milky Way "
+            "star fields toward the Galactic center. The name Nunki is ancient: it was inherited from "
+            "Mesopotamian star lore, making it one of the oldest star names still in everyday astronomical use.\n\n"
+            "The memorable physical story is the material around the star. Nunki is hot and luminous "
+            "enough to drive a strong stellar wind. Ultraviolet observations show absorbing material "
+            "associated with that outflow: in effect, a star that makes its own smokescreen. The phrase "
+            "does not mean a dark cloud that hides Nunki from naked-eye observers; it is a shorthand for "
+            "the circumstellar gas revealed spectroscopically against the star’s own brilliant light.\n\n"
+            "For an observer, Nunki is valuable twice over. It is bright enough to see without optical aid "
+            "under a reasonably dark sky, and its place in the Teapot makes it a dependable starting point "
+            "for exploring Sagittarius. Once the Teapot is recognized, Nunki is the bright star at the top "
+            "of the handle on the Teapot’s eastern side."
+        )
     elif family == "star":
         where = f" in {constellation_name}" if constellation_name else ""
         dek = f"{name} is a stellar reference{where} used by the weekly observing calendar."
