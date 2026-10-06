@@ -66,9 +66,24 @@
     return 'Night';
   }
 
+  function targetAltitudeDeg(cell, latitude, solarHourAngleDeg) {
+    const ra = Number(cell.dataset.raHours);
+    const dec = Number(cell.dataset.decDeg) * Math.PI / 180;
+    const sunRa = Number(cell.dataset.sunRaHours);
+    if (!Number.isFinite(ra) || !Number.isFinite(dec) || !Number.isFinite(sunRa)) return null;
+    const phi = latitude * Math.PI / 180;
+    const hourAngle = (solarHourAngleDeg + (sunRa - ra) * 15) * Math.PI / 180;
+    return Math.asin(
+      Math.sin(phi) * Math.sin(dec)
+      + Math.cos(phi) * Math.cos(dec) * Math.cos(hourAngle)
+    ) * 180 / Math.PI;
+  }
+
   function observingStatus(cell, latitude, hourAngleDeg) {
     const state = skyState(solarAltitudeDeg(cell, latitude, hourAngleDeg));
     if (cell.dataset.sunSpecial === 'true') return state;
+    const targetAltitude = targetAltitudeDeg(cell, latitude, hourAngleDeg);
+    if (targetAltitude !== null && targetAltitude < -0.5667) return 'Below horizon';
     if (state !== 'Night' && cell.dataset.normalLabel === 'Naked eye') return state;
     return cell.dataset.solarGlare === 'true' ? 'Solar Glare' : cell.dataset.normalLabel;
   }
@@ -133,7 +148,7 @@
     const hourAngleDeg = observerHourAngleDeg(root);
     root.querySelectorAll('td.ephemeris-observing').forEach(function (cell) {
       const status = observingStatus(cell, latitude, hourAngleDeg);
-      if (status === 'Daylight' || status === 'Civil twilight' || status === 'Nautical twilight' || status === 'Astronomical twilight' || status === 'Night' || status === 'Solar Glare') {
+      if (status === 'Daylight' || status === 'Civil twilight' || status === 'Nautical twilight' || status === 'Astronomical twilight' || status === 'Night' || status === 'Solar Glare' || status === 'Below horizon') {
         const item = observingNotation(cell);
         if (item) item.innerHTML = specialHtml(status, mode);
         else cell.innerHTML = specialHtml(status, mode);
