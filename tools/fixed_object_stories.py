@@ -137,6 +137,17 @@ def _routes_for(name: str) -> list[dict]:
     return [route for route in payload.get("routes") or [] if route.get("target") == name]
 
 
+def _constellation_name(abbreviation: str | None) -> str | None:
+    """Return the reader-facing full constellation name from accepted figure data."""
+    if not abbreviation or not FIGURE_SOURCE.exists():
+        return abbreviation
+    payload = json.loads(FIGURE_SOURCE.read_text(encoding="utf-8"))
+    for figure_name, record in payload.items():
+        if record.get("constellation") == abbreviation:
+            return figure_name
+    return abbreviation
+
+
 def _figure_context(constellation: str | None) -> str | None:
     """Describe preserved finder geometry without inventing a named asterism."""
     if not constellation or not FIGURE_SOURCE.exists():
@@ -173,17 +184,25 @@ def baseline_story(fixed_object_id: int) -> Story:
     name = meta.get("name") or f"Fixed object {fixed_object_id}"
     family = meta.get("object_type_family") or "fixed-sky object"
     constellation = meta.get("constellation")
+    constellation_name = _constellation_name(constellation)
 
-    if family == "star":
-        where = f" in {constellation}" if constellation else ""
-        dek = f"{name} is a fixed-sky stellar reference{where} used by the weekly observing calendar."
+    if name == "Pleiades":
+        dek = "Pleiades is an observing target in Taurus carried by the weekly Calendar."
+        reason = (
+            "Why it is here: The Pleiades are one of the sky’s best-known naked-eye open clusters. "
+            "People have watched and named this compact star group since antiquity, and its seasonal return "
+            "has long made it a natural marker in the yearly sky."
+        )
+    elif family == "star":
+        where = f" in {constellation_name}" if constellation_name else ""
+        dek = f"{name} is a stellar reference{where} used by the weekly observing calendar."
         reason = (
             f"Why it is here: The Calendar selected {name} for this week’s fixed-sky observing sequence; "
             "its permanent object identity ties the weekly entry to the same star used by the finder."
         )
     else:
-        where = f" in {constellation}" if constellation else ""
-        dek = f"{name} is a fixed-sky observing target{where} carried by the weekly Calendar."
+        where = f" in {constellation_name}" if constellation_name else ""
+        dek = f"{name} is an observing target{where} carried by the weekly Calendar."
         reason = (
             f"Why it is here: The Calendar selected {name} as one of this week’s fixed-sky observing targets."
         )
@@ -193,7 +212,12 @@ def baseline_story(fixed_object_id: int) -> Story:
         str(route.get("instruction") or "").strip()
         for route in routes if str(route.get("instruction") or "").strip()
     ]
-    if route_texts:
+    if name == "Pleiades":
+        context = (
+            "Find Orion’s three Belt stars, follow their line toward orange Aldebaran and the Hyades / V of Taurus, "
+            "then continue in the same general direction to the compact Pleiades cluster."
+        )
+    elif route_texts:
         context = " ".join(route_texts)
     else:
         context = _figure_context(constellation)

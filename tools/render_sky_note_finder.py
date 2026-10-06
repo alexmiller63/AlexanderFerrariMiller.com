@@ -547,6 +547,7 @@ def render(spec: dict, stars, output: Path) -> None:
     if target_ref:
         refs.add(target_ref)
     asterisms = list(asterisms)
+    labeled_asterism_names = {str(item.get("name") or "") for item in asterisms if item.get("name")}
     for asterism in asterisms:
         refs |= refs_from_paths(asterism.get("paths") or [])
     missing_identities = sorted(ref for ref in refs if ref not in identities_by_ref)
@@ -721,8 +722,26 @@ def render(spec: dict, stars, output: Path) -> None:
             color=BOUNDARY_WHITE, fontsize=10, zorder=5,
         )
     for asterism in asterisms:
+        asterism_points = []
         for path in asterism.get("paths") or []:
             draw_path(ax, path, idx, center, ASTERISM_GREEN, 3.2)
+            for ref in path:
+                if ref in idx:
+                    point = project(idx[ref].ra_deg, idx[ref].dec_deg, *center)
+                    if point is not None:
+                        asterism_points.append(point)
+        name = str(asterism.get("name") or "")
+        if name in labeled_asterism_names and asterism_points:
+            label_point = (
+                sum(point[0] for point in asterism_points) / len(asterism_points),
+                sum(point[1] for point in asterism_points) / len(asterism_points),
+            )
+            place_label(
+                ax, name, label_point, occupied_labels,
+                color=ASTERISM_GREEN, fontsize=9, zorder=7,
+                obstacle_segments=figure_segments + asterism_segments + boundary_segments,
+                require_clear=False,
+            )
     if target_point is None:
         raise RuntimeError(f"Target fixed_object_id {target_id} is outside the projection")
     ax.scatter([target_point[0]], [target_point[1]], s=210, facecolors="none",

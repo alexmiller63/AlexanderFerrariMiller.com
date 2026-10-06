@@ -81,13 +81,18 @@ def make_spec(item: dict, registry: dict, by_hip: dict[str, int], metadata: dict
         identities.append(dict(owner, identifiers={"hip": legacy.hip_number(owner["renderer_ref"])}))
 
     full_name = dict((abbr, name) for name, abbr in CONSTELLATIONS).get(con, con)
+    candidate_asterisms = all_asterism_specs(registry)
+    # Object-owned finders may promote the observer landmarks required by their
+    # canonical finding route.  Keep this in the spec so the renderer remains generic.
+    guide_names = {"Pleiades": {"Orion's Belt", "Hyades / V of Taurus", "Pleiades"}}.get(str(item.get("name") or ""), set())
+    guiding_asterisms = [a for a in candidate_asterisms if a.get("name") in guide_names]
     return {
         "name": full_name,
         "constellation_abbreviation": con,
         "figure_paths": paths,
         "candidate_constellations": all_constellation_specs(registry),
-        "candidate_asterisms": all_asterism_specs(registry),
-        "asterisms": [],
+        "candidate_asterisms": candidate_asterisms,
+        "asterisms": guiding_asterisms,
         "deep_sky_objects": [],
         "fixed_object_identities": identities,
         "artwork_owner_identity": owner,

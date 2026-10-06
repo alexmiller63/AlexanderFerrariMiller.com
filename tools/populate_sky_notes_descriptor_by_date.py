@@ -171,8 +171,14 @@ def story_candidates(fixed_ids: list[int]) -> list[dict]:
 
 
 def story_presentations(candidates: list[dict]) -> tuple[list[dict], list[dict]]:
-    """Keep prose on canonical story pages; expose every story as a weekly reader link."""
+    """Keep prose on canonical story pages; expose candidate stories as weekly reader links."""
     return [], list(candidates)
+
+
+def suppress_already_mentioned_stories(page_path, stories: list[dict]) -> list[dict]:
+    """Do not repeat Calendar objects already named in the observing guide under More Sky Notes."""
+    mentioned_ids = set(calendar_observing_aids(page_path))
+    return [story for story in stories if story["fixed_object_id"] not in mentioned_ids]
 
 
 def binocular_finder_guidance(items: list[dict]) -> str:
@@ -374,6 +380,7 @@ def generated_note(year: int, week: int, page_path, yearly, stars: list[dict]) -
     payload["descriptors"].extend(lunar_highlight_descriptors(page_path))
     candidates = story_candidates(fixed_ids)
     inline, linked = story_presentations(candidates)
+    linked = suppress_already_mentioned_stories(page_path, linked)
     payload["calendar_fixed_object_ids"] = fixed_ids
     payload["story_candidates"] = candidates
     payload["inline_stories"] = inline
@@ -479,6 +486,7 @@ def main() -> None:
         payload["descriptors"].extend(lunar_highlight_descriptors(public_page))
         candidates = story_candidates(fixed_ids)
         inline, linked = story_presentations(candidates)
+        linked = suppress_already_mentioned_stories(public_page, linked)
         payload["calendar_fixed_object_ids"] = fixed_ids
         payload["story_candidates"] = candidates
         payload["inline_stories"] = inline
