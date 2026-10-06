@@ -389,9 +389,9 @@ def generated_note(year: int, week: int, page_path, yearly, stars: list[dict]) -
     # Fixed-object artwork remains immutable/object-owned. Planet finder
     # artwork is generated explicitly because base.generated_note() intentionally
     # does not emit legacy week-owned artwork.
-    weekly_artwork = base.artwork_descriptor(year, week, fixed, payload["planet_relations"])
-    if weekly_artwork and (weekly_artwork.get("finder_route") or {}).get("planet"):
-        payload["planet_finder_artwork"] = weekly_artwork
+    weekly_artworks = base.planetary_artwork_descriptors(year, week, fixed, payload["planet_relations"])
+    payload["planet_finder_artworks"] = weekly_artworks
+    payload.pop("planet_finder_artwork", None)
     payload.pop("artwork", None)
     payload["descriptor_policy"] = descriptor_policy()
     return payload
@@ -495,9 +495,9 @@ def main() -> None:
         # Fixed-object artwork remains immutable/object-owned. Planet finder
         # artwork is generated explicitly because base.generated_note() intentionally
         # does not emit legacy week-owned artwork.
-        weekly_artwork = base.artwork_descriptor(item.year, item.week, fixed, payload["planet_relations"])
-        if weekly_artwork and (weekly_artwork.get("finder_route") or {}).get("planet"):
-            payload["planet_finder_artwork"] = weekly_artwork
+        weekly_artworks = base.planetary_artwork_descriptors(item.year, item.week, fixed, payload["planet_relations"])
+        payload["planet_finder_artworks"] = weekly_artworks
+        payload.pop("planet_finder_artwork", None)
         payload.pop("artwork", None)
         payload["descriptor_policy"] = descriptor_policy()
         descriptor_ids = {str(record["id"]) for record in payload["descriptors"]}
