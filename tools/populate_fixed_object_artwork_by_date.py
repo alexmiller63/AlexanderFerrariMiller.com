@@ -86,6 +86,11 @@ def make_spec(item: dict, registry: dict, by_hip: dict[str, int], metadata: dict
     # canonical finding route.  Keep this in the spec so the renderer remains generic.
     guide_names = {"Pleiades": {"Orion's Belt", "Hyades / V of Taurus", "Pleiades"}}.get(str(item.get("name") or ""), set())
     guiding_asterisms = [a for a in candidate_asterisms if a.get("name") in guide_names]
+    guide_constellation_abbreviations = {"Pleiades": {"Ori"}}.get(str(item.get("name") or ""), set())
+    guiding_constellations = [
+        candidate for candidate in all_constellation_specs(registry)
+        if candidate.get("abbreviation") in guide_constellation_abbreviations
+    ]
     identity_refs = {identity["renderer_ref"] for identity in identities}
     for asterism in guiding_asterisms:
         for path in asterism.get("paths") or []:
@@ -105,6 +110,7 @@ def make_spec(item: dict, registry: dict, by_hip: dict[str, int], metadata: dict
         "constellation_abbreviation": con,
         "figure_paths": paths,
         "candidate_constellations": all_constellation_specs(registry),
+        "guide_constellations": guiding_constellations,
         "candidate_asterisms": candidate_asterisms,
         "asterisms": guiding_asterisms,
         "deep_sky_objects": [],
