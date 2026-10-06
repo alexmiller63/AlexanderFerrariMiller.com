@@ -810,6 +810,26 @@ def render(spec: dict, stars, output: Path) -> None:
             ax, planet_name, planet_point, occupied_labels,
             obstacle_segments=figure_segments + asterism_segments + boundary_segments,
         )
+        # Add every other preserved weekly planet that genuinely lies in this
+        # Pathfinder's displayed field. These are context objects, not finder
+        # targets, so use smaller open markers and ordinary text.
+        for body in spec.get("solar_system_field") or []:
+            body_name = str(body.get("name") or "").strip()
+            if not body_name or body_name == planet_name:
+                continue
+            ra, dec = body.get("ra_deg"), body.get("dec_deg")
+            if ra is None or dec is None:
+                continue
+            point = project(float(ra), float(dec), *center)
+            if point is None or not (xmin <= point[0] <= xmax and ymin <= point[1] <= ymax):
+                continue
+            ax.scatter([point[0]], [point[1]], s=58, marker="o",
+                       facecolors="none", edgecolors=TEXT, linewidths=1.2, zorder=8)
+            place_label(
+                ax, body_name, point, occupied_labels, color=TEXT, fontsize=9, zorder=8,
+                obstacle_segments=figure_segments + asterism_segments + boundary_segments,
+                require_clear=True,
+            )
     if target_star is not None and target_bayer and target_name and figure_constellation:
         title = f"{target_bayer}, {target_name} in {figure_constellation}"
     else:
