@@ -119,12 +119,16 @@ jobs:
               payload_path=Path("generated-sky-notes")/str(iso_week.year)/f"W{iso_week.week:02d}.json"
               if not payload_path.exists(): continue
               payload=json.loads(payload_path.read_text(encoding="utf-8"))
-              if not payload.get("planet_finder_artwork"): continue
-              spec=Path("sky-notes-artwork/specs")/str(iso_week.year)/f"W{iso_week.week:02d}.json"
-              out=Path("sky-notes-artwork/weeks")/str(iso_week.year)/f"W{iso_week.week:02d}"/"planet-finder.svg"
-              out.parent.mkdir(parents=True, exist_ok=True)
-              subprocess.run(["python","tools/render_sky_note_finder.py","/tmp/hygdata_v41.csv",str(spec),str(out)],check=True)
-              print(f"planet finder {iso_week.year}-W{iso_week.week:02d} -> {out}")
+              descriptors=payload.get("planet_finder_artworks") or []
+              for descriptor in descriptors:
+                  object_id=descriptor.get("object_id")
+                  if not isinstance(object_id,int):
+                      raise RuntimeError(f"{iso_week.year}-W{iso_week.week:02d}: planetary finder missing numeric object_id")
+                  spec=Path("sky-notes-artwork/specs")/str(iso_week.year)/f"W{iso_week.week:02d}-{object_id}.json"
+                  out=Path("sky-notes-artwork/weeks")/str(iso_week.year)/f"W{iso_week.week:02d}"/f"{object_id}.svg"
+                  out.parent.mkdir(parents=True, exist_ok=True)
+                  subprocess.run(["python","tools/render_sky_note_finder.py","/tmp/hygdata_v41.csv",str(spec),str(out)],check=True)
+                  print(f"planet finder {iso_week.year}-W{iso_week.week:02d}-{object_id} -> {out}")
           PY
 
       - name: Rebuild fixed-object story pages with rendered Artwork
