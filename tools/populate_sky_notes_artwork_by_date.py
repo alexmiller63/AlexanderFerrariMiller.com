@@ -308,6 +308,14 @@ def build_weekly_planet_renderer_spec(descriptor: dict, registry: dict) -> dict:
     # inside this chart's field, rather than pretending the target planet is
     # alone.
     spec["solar_system_field"] = descriptor.get("solar_system_field") or []
+    # Preserve the descriptor's landmark policy for the renderer.  The primary
+    # reference star remains the hop anchor; other conspicuous named stars are
+    # contextual landmarks, not competing route anchors.
+    spec["landmark_policy"] = descriptor.get("landmark_policy") or {
+        "retain_named_field_stars": True,
+        "primary_reference_star": guides[0]["name"],
+        "magnitude_limit": 2.99,
+    }
     return spec
 
 
