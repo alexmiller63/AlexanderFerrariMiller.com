@@ -351,13 +351,15 @@ def relation_sentence(item: dict) -> str:
     return f"{item['planet']} is about {sep:.1f}° in ecliptic longitude from {item['star']} in {constellation}."
 
 
-def artwork_descriptor(year: int, week: int, fixed: list[dict], relations: list[dict]) -> dict | None:
+def artwork_descriptor(year: int, week: int, fixed: list[dict], relations: list[dict], planet: str | None = None) -> dict | None:
     # A planet-star relation is itself a finder instruction.  Prefer its
     # constellation/asterism over an unrelated weekly fixed-star context so
     # prose and artwork describe the same route.
     finder_relation = next((
         item for item in relations
-        if item.get("kind") == "planet-star-longitude" and item.get("constellation")
+        if item.get("kind") == "planet-star-longitude"
+        and item.get("constellation")
+        and (planet is None or item.get("planet") == planet)
     ), None)
     if finder_relation is not None:
         con = finder_relation["constellation"]
@@ -417,6 +419,23 @@ def artwork_descriptor(year: int, week: int, fixed: list[dict], relations: list[
         "reference_standard": "docs/finder-standard.md",
     }
 
+
+
+def planetary_artwork_descriptors(year: int, week: int, fixed: list[dict], relations: list[dict]) -> list[dict]:
+    """Return one independently identified finder descriptor per supported planet relation."""
+    planets = []
+    seen = set()
+    for relation in relations:
+        name = relation.get("planet")
+        if relation.get("kind") != "planet-star-longitude" or name not in PLANET_OBJECT_IDS or name in seen:
+            continue
+        seen.add(name)
+        planets.append(name)
+    return [
+        descriptor
+        for name in planets
+        if (descriptor := artwork_descriptor(year, week, fixed, relations, planet=name)) is not None
+    ]
 
 def generated_note(year: int, week: int, page_path: Path, yearly: dict[int, dict[str, float]], stars: list[dict]) -> dict:
     rows = calendar_events_from_page(page_path)
