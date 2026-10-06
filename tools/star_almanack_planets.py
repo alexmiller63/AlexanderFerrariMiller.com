@@ -26,7 +26,7 @@ SIGN_BASE = {
 POSITION_RE = re.compile(r"^\s*([♈♉♊♋♌♍♎♏♐♑♒♓])\s*(\d+)°(\d+)′\s*$")
 
 PLANET_COLUMNS = (
-    "mercury", "venus", "mars", "jupiter", "saturn", "uranus", "neptune"
+    "mercury", "venus", "mars", "ceres", "jupiter", "saturn", "uranus", "neptune", "pluto"
 )
 
 
