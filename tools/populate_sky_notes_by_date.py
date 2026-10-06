@@ -230,6 +230,34 @@ def notable_planet_relations(week: int, yearly: dict[int, dict[str, float]], sta
     return candidates[:4]
 
 
+
+def planetary_finder_relations(week: int, yearly: dict[int, dict[str, float]], stars: list[dict], page_path: Path) -> list[dict]:
+    """Give every supported planet one finder route, independent of notable-prose selection."""
+    positions = yearly[week]
+    ecliptic_stars = [star for star in stars if abs(star["ecliptic_lat_deg"]) <= 6.0 and star.get("con")]
+    if not ecliptic_stars:
+        raise RuntimeError("Bright-star catalog has no ecliptic finder stars")
+    relations = []
+    for key in PLANET_COLUMNS:
+        planet = PLANET_DISPLAY[key]
+        plon = positions[key]
+        star = min(ecliptic_stars, key=lambda item: longitude_distance(plon, item["ecliptic_lon_deg"]))
+        delta = longitude_distance(plon, star["ecliptic_lon_deg"])
+        relation = {
+            "kind": "planet-star-longitude", "planet": planet,
+            "planet_longitude_deg": round(plon, 3), "star": star["name"], "constellation": star["con"],
+            "star_ecliptic_longitude_deg": round(star["ecliptic_lon_deg"], 3),
+            "star_ecliptic_latitude_deg": round(star["ecliptic_lat_deg"], 3),
+            "longitude_separation_deg": round(delta, 1),
+            "basis": "Star Almanack preserved geocentric tropical ecliptic longitude", "finder_only": True,
+        }
+        asterism = ASTERISMS.get(star["con"])
+        if asterism and star["name"] in asterism["members"]:
+            relation["asterism"] = asterism["name"]
+        relations.append(relation)
+    attach_planet_positions(relations, page_path)
+    return relations
+
 def featured_fixed_sky(entries: list[str], stars: list[dict]) -> list[dict]:
     result = []
     joined = "\n".join(entries)
@@ -422,20 +450,18 @@ def artwork_descriptor(year: int, week: int, fixed: list[dict], relations: list[
 
 
 def planetary_artwork_descriptors(year: int, week: int, fixed: list[dict], relations: list[dict]) -> list[dict]:
-    """Return one independently identified finder descriptor per supported planet relation."""
-    planets = []
-    seen = set()
-    for relation in relations:
-        name = relation.get("planet")
-        if relation.get("kind") != "planet-star-longitude" or name not in PLANET_OBJECT_IDS or name in seen:
-            continue
-        seen.add(name)
-        planets.append(name)
-    return [
-        descriptor
-        for name in planets
-        if (descriptor := artwork_descriptor(year, week, fixed, relations, planet=name)) is not None
-    ]
+    """Return one independently identified finder descriptor for every supported planet."""
+    by_planet = {r.get("planet"): r for r in relations if r.get("kind") == "planet-star-longitude" and r.get("planet") in PLANET_OBJECT_IDS}
+    missing = [name for name in PLANET_OBJECT_IDS if name not in by_planet]
+    if missing:
+        raise RuntimeError(f"ISO {year}-W{week:02d}: missing planetary finder routes: {', '.join(missing)}")
+    result = []
+    for name in PLANET_OBJECT_IDS:
+        descriptor = artwork_descriptor(year, week, fixed, [by_planet[name]], planet=name)
+        if descriptor is None:
+            raise RuntimeError(f"ISO {year}-W{week:02d}: cannot build finder for {name}")
+        result.append(descriptor)
+    return result
 
 def generated_note(year: int, week: int, page_path: Path, yearly: dict[int, dict[str, float]], stars: list[dict]) -> dict:
     rows = calendar_events_from_page(page_path)
@@ -444,6 +470,7 @@ def generated_note(year: int, week: int, page_path: Path, yearly: dict[int, dict
     fixed = featured_fixed_sky(entries, stars)
     relations = notable_planet_relations(week, yearly, stars)
     attach_planet_positions(relations, page_path)
+    finder_relations = planetary_finder_relations(week, yearly, stars, page_path)
     moon = next((entry for entry in entries if re.search(r"\b(New Moon|First Quarter|Full Moon|Last Quarter)\b", entry, flags=re.I)), None)
     opening = f"ISO {year}-W{week:02d} runs from {monday.strftime('%B')} {monday.day} through {sunday.strftime('%B')} {sunday.day}."
     if relations:
@@ -475,6 +502,7 @@ def generated_note(year: int, week: int, page_path: Path, yearly: dict[int, dict
         "planetary_source": f"weekly-ephemeris-{year}.csv",
         "planetary_coordinate": "geocentric tropical ecliptic longitude; Monday 00:00 UTC",
         "fixed_sky": fixed, "planet_relations": relations,
+        "planet_finder_relations": finder_relations,
         "note": note,
     }
 
