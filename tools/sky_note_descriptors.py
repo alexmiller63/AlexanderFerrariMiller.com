@@ -455,7 +455,9 @@ def _linked_name(record: dict) -> str:
         # same-page destination that Sky Notes/Artwork can populate with prose
         # and its finder.
         name = str(record["name"])
-        anchor = f"sky-note-{slugify(name)}"
+        # Permanent numeric database identity; never use a presentation label
+        # (such as a planet name) as structural identity.
+        anchor = f"sky-note-object-{record['id']}"
         return (
             f'<a class="descriptor-link sky-note-object-name" href="#{anchor}">'
             f'{html.escape(name, quote=False)}</a>'
