@@ -42,14 +42,33 @@ def publish_page(path: Path, payload: dict, year: int, week: int) -> bool:
         if not svg.exists():
             raise RuntimeError(f"Planet finder SVG is missing: {svg.relative_to(ROOT)}")
         rendering_id = str(descriptor.get("id") or f"{year}-W{week:02d}-{object_id}")
+        constellation = str(descriptor.get("constellation") or "")
+        title = " ".join(part for part in (
+            planet,
+            f"near {reference}" if reference else "",
+            f"in {constellation}" if constellation else "",
+        ) if part)
+        finder_dir = path.parent / "finders"
+        finder_dir.mkdir(parents=True, exist_ok=True)
+        finder_path = finder_dir / f"{object_id}.html"
+        finder_html = (
+            '<!doctype html><html lang="en"><head><meta charset="utf-8">'
+            f'<meta name="viewport" content="width=device-width,initial-scale=1"><title>{html.escape(title)}</title>'
+            '</head><body><main>'
+            f'<h1>{html.escape(title)}</h1>'
+            f'<figure class="sky-note-artwork planet-finder-artwork" data-planet-finder="true" '
+            f'data-object-id="{object_id}" data-rendering-id="{html.escape(rendering_id, quote=True)}">'
+            f'<img src="../../../../sky-notes-artwork/weeks/{year}/W{week:02d}/{object_id}.svg" '
+            f'alt="{html.escape(title)} finder chart">'
+            f'<figcaption>{html.escape(title)}</figcaption></figure>'
+            f'<p><a href="../">Back to ISO {year}-W{week:02d}</a></p>'
+            '</main></body></html>\n'
+        )
+        if not finder_path.exists() or finder_path.read_text(encoding="utf-8") != finder_html:
+            finder_path.write_text(finder_html, encoding="utf-8")
         figure = (
-            f'<figure class="sky-note-artwork planet-finder-artwork" id="sky-note-finder-{object_id}" '
-            f'data-planet-finder="true" data-object-id="{object_id}" '
-            f'data-rendering-id="{html.escape(rendering_id, quote=True)}">'
-            f'<img src="../../../sky-notes-artwork/weeks/{year}/W{week:02d}/{object_id}.svg" '
-            f'alt="{html.escape(planet)} finder chart using {html.escape(reference)} as the reference star">'
-            f'<figcaption>Finder chart: {html.escape(planet)} from {html.escape(reference)}.</figcaption>'
-            '</figure>'
+            f'<p class="planet-pathfinder"><a class="planet-pathfinder-link" '
+            f'href="finders/{object_id}.html">Find {html.escape(planet)} with the Pathfinder.</a></p>'
         )
         anchor = f'id="sky-note-object-{object_id}"'
         match = re.search(rf'<(?P<tag>section|article|div)\b[^>]*{re.escape(anchor)}[^>]*>', new)
