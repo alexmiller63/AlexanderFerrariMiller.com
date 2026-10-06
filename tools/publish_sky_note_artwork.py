@@ -34,7 +34,7 @@ def publish_page(path: Path, payload: dict, year: int, week: int) -> bool:
             raise RuntimeError(f"Planet finder SVG is missing: {svg.relative_to(ROOT)}")
         figure = (
             '<figure class="sky-note-artwork planet-finder-artwork" data-planet-finder="true">'
-            f'<img src="/sky-notes-artwork/weeks/{year}/W{week:02d}/planet-finder.svg" '
+            f'<img src="../../../sky-notes-artwork/weeks/{year}/W{week:02d}/planet-finder.svg" '
             f'alt="{html.escape(planet)} finder chart using {html.escape(reference)} as the reference star">'
             f'<figcaption>Finder chart: {html.escape(planet)} from {html.escape(reference)}.</figcaption>'
             '</figure>'
