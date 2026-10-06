@@ -504,6 +504,7 @@ def generated_note(year: int, week: int, page_path: Path, yearly: dict[int, dict
         "planetary_coordinate": "geocentric tropical ecliptic longitude; Monday 00:00 UTC",
         "fixed_sky": fixed, "planet_relations": relations,
         "planet_finder_relations": finder_relations,
+        "artwork": planetary_artwork_descriptors(year, week, fixed, finder_relations),
         "note": note,
     }
 
