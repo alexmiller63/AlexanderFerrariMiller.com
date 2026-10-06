@@ -417,7 +417,7 @@ def render_planet_treatments(payload: dict) -> str:
             )
         rendering_id = str(descriptor.get("id") or "")
         week_key = str(descriptor.get("week") or "")
-        match = re.fullmatch(r"(\\d{4})-(W\\d{2})", week_key)
+        match = re.fullmatch(r"(\d{4})-(W\d{2})", week_key)
         if not match:
             raise RuntimeError(f"Planet finder {rendering_id!r} has invalid week key {week_key!r}")
         finder_href = (
@@ -441,7 +441,7 @@ def patch_page(path, payload: dict) -> bool:
     for descriptor in payload.get("planet_finder_artworks") or []:
         object_id = descriptor.get("object_id")
         week_key = str(descriptor.get("week") or "")
-        match = re.fullmatch(r"(\\d{4})-(W\\d{2})", week_key)
+        match = re.fullmatch(r"(\d{4})-(W\d{2})", week_key)
         if isinstance(object_id, int) and match:
             finder_hrefs[str(object_id)] = (
                 f"../../../sky-notes-artwork/weeks/{match.group(1)}/"
