@@ -64,6 +64,7 @@ def main() -> None:
     total = 0
     for year, selected in group_by_year(weeks).items():
         generated = calculate_year(year)
+        ephemeris.write_preserved_weekly_table(year, generated)
         for week in selected:
             total += populate_week(year, week, generated)
     print(
