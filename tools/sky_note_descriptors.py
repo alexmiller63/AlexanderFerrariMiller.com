@@ -451,16 +451,15 @@ def _linked_name(record: dict) -> str:
     """
     if record.get("type") in {"planet", "solar-system-object"}:
         # Moving Solar-System bodies belong to the reader-facing Sky Notes
-        # treatment, not the numerical ephemeris.  Each body gets a stable
-        # same-page destination that Sky Notes/Artwork can populate with prose
-        # and its finder.
+        # treatment, not the numerical ephemeris. Link body names directly to
+        # the week's Pathfinder/finder artwork rather than to an intermediate
+        # prose anchor. Permanent numeric database identity remains the
+        # structural key; never use a presentation label as identity.
         name = str(record["name"])
-        # Permanent numeric database identity; never use a presentation label
-        # (such as a planet name) as structural identity.
-        anchor = f"sky-note-object-{record['id']}"
+        finder_anchor = f"sky-note-finder-{record['id']}"
         return (
-            f'<a class="descriptor-link sky-note-object-name" href="#{anchor}">'
-            f'{html.escape(name, quote=False)}</a>'
+            f'<a class="descriptor-link sky-note-object-name planet-pathfinder-link" '
+            f'href="#{finder_anchor}">{html.escape(name, quote=False)}</a>'
         )
     representation = record.get("representation") or {}
     human_href = representation.get("human")
