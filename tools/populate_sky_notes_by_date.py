@@ -232,7 +232,10 @@ def notable_planet_relations(week: int, yearly: dict[int, dict[str, float]], sta
 
 
 
-FINDER_BODY_COLUMNS = ("moon", *PLANET_COLUMNS)\n\n\ndef planetary_finder_relations(week: int, yearly: dict[int, dict[str, float]], stars: list[dict], page_path: Path) -> list[dict]:
+FINDER_BODY_COLUMNS = ("moon", *PLANET_COLUMNS)
+
+
+def planetary_finder_relations(week: int, yearly: dict[int, dict[str, float]], stars: list[dict], page_path: Path) -> list[dict]:
     """Give every supported moving body one finder route, independent of notable-prose selection."""
     positions = yearly[week]
     ecliptic_stars = [star for star in stars if abs(star["ecliptic_lat_deg"]) <= 6.0 and star.get("con")]
