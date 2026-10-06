@@ -444,7 +444,16 @@ def artwork_descriptor(year: int, week: int, fixed: list[dict], relations: list[
             {"ra_deg": finder_relation.get("planet_ra_deg"), "dec_deg": finder_relation.get("planet_dec_deg")}
             if finder_relation is not None else None
         ),
-        "planet_plot_policy": "plot only from preserved 2-D Star Almanack ephemeris position data",
+        "solar_system_field": [
+            {
+                "name": relation["planet"],
+                "ra_deg": relation.get("planet_ra_deg"),
+                "dec_deg": relation.get("planet_dec_deg"),
+            }
+            for relation in relations
+            if relation.get("planet_ra_deg") is not None and relation.get("planet_dec_deg") is not None
+        ],
+        "planet_plot_policy": "plot all preserved 2-D Star Almanack Solar-System positions that fall inside the Pathfinder field",
         "reference_standard": "docs/finder-standard.md",
     }
 
