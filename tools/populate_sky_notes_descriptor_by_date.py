@@ -416,9 +416,13 @@ def render_planet_treatments(payload: dict) -> str:
                 "This is missing reader content, not a substitute observing description."
             )
         rendering_id = str(descriptor.get("id") or "")
+        week_key = str(descriptor.get("week") or "")
+        match = re.fullmatch(r"(\\d{4})-(W\\d{2})", week_key)
+        if not match:
+            raise RuntimeError(f"Planet finder {rendering_id!r} has invalid week key {week_key!r}")
         finder_href = (
-            f"../../../sky-notes-artwork/weeks/{payload['year']}/"
-            f"W{payload['week']:02d}/{object_id}.svg"
+            f"../../../sky-notes-artwork/weeks/{match.group(1)}/"
+            f"{match.group(2)}/{object_id}.svg"
         )
         blocks.append(
             f'<section class="sky-note-object-treatment" id="sky-note-object-{object_id}" '
@@ -433,14 +437,16 @@ def render_planet_treatments(payload: dict) -> str:
 def patch_page(path, payload: dict) -> bool:
     text = path.read_text(encoding="utf-8")
     rendered = base.render_note(payload["note"])
-    finder_hrefs = {
-        str(descriptor["object_id"]): (
-            f"../../../sky-notes-artwork/weeks/{payload['year']}/"
-            f"W{payload['week']:02d}/{descriptor['object_id']}.svg"
-        )
-        for descriptor in payload.get("planet_finder_artworks") or []
-        if isinstance(descriptor.get("object_id"), int)
-    }
+    finder_hrefs = {}
+    for descriptor in payload.get("planet_finder_artworks") or []:
+        object_id = descriptor.get("object_id")
+        week_key = str(descriptor.get("week") or "")
+        match = re.fullmatch(r"(\\d{4})-(W\\d{2})", week_key)
+        if isinstance(object_id, int) and match:
+            finder_hrefs[str(object_id)] = (
+                f"../../../sky-notes-artwork/weeks/{match.group(1)}/"
+                f"{match.group(2)}/{object_id}.svg"
+            )
     for record in payload["descriptors"]:
         finder_href = finder_hrefs.get(str(record.get("id")))
         if finder_href:
