@@ -456,10 +456,10 @@ def _linked_name(record: dict) -> str:
         # prose anchor. Permanent numeric database identity remains the
         # structural key; never use a presentation label as identity.
         name = str(record["name"])
-        finder_anchor = f"sky-note-finder-{record['id']}"
+        finder_href = str(record.get("finder_href") or f"#sky-note-finder-{record['id']}")
         return (
             f'<a class="descriptor-link sky-note-object-name planet-pathfinder-link" '
-            f'href="#{finder_anchor}">{html.escape(name, quote=False)}</a>'
+            f'href="{html.escape(finder_href, quote=True)}">{html.escape(name, quote=False)}</a>'
         )
     representation = record.get("representation") or {}
     human_href = representation.get("human")
