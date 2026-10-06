@@ -397,6 +397,36 @@ def generated_note(year: int, week: int, page_path, yearly, stars: list[dict]) -
     return payload
 
 
+
+def render_planet_treatments(payload: dict) -> str:
+    """Render reader-facing prose destinations owned by permanent numeric object identity."""
+    blocks = []
+    relations = payload.get("planet_relations") or []
+    for descriptor in payload.get("planet_finder_artworks") or []:
+        object_id = descriptor.get("object_id")
+        route = descriptor.get("finder_route") or {}
+        planet = str(route.get("planet") or "").strip()
+        if not isinstance(object_id, int) or not planet:
+            continue
+        related = [item for item in relations if item.get("planet") == planet]
+        prose = " ".join(base.relation_sentence(item) for item in related)
+        if not prose:
+            reference = str(route.get("reference_star") or "").strip()
+            constellation = str(route.get("constellation") or "").strip()
+            if reference and constellation:
+                prose = f"Use {reference} in {constellation} as the finder reference for {planet} this week."
+            else:
+                prose = f"Use the weekly finder below to locate {planet} among the surrounding stars."
+        rendering_id = str(descriptor.get("id") or "")
+        blocks.append(
+            f'<section class="sky-note-object-treatment" id="sky-note-object-{object_id}" '
+            f'data-object-id="{object_id}" data-rendering-id="{html.escape(rendering_id, quote=True)}">'
+            f'<h4>{html.escape(planet)}</h4>'
+            f'<p>{html.escape(prose)}</p>'
+            '</section>'
+        )
+    return "\n".join(blocks)
+
 def patch_page(path, payload: dict) -> bool:
     text = path.read_text(encoding="utf-8")
     rendered = base.render_note(payload["note"])
@@ -409,6 +439,9 @@ def patch_page(path, payload: dict) -> bool:
     # belongs on the object story/package and is published independently.
     artwork_slot = ""
     body = rendered + "\n"
+    planet_treatments = render_planet_treatments(payload)
+    if planet_treatments:
+        body += planet_treatments + "\n"
     if inline:
         body += inline + "\n"
     if linked:
