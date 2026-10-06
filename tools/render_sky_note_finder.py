@@ -571,7 +571,19 @@ def render(spec: dict, stars, output: Path) -> None:
             raise RuntimeError(f"Target fixed_object_id {target_id} has no authoritative sky coordinates")
         target_ra = target_meta["ra_deg"]
         target_dec = target_meta["dec_deg"]
-    center_stars = [idx[ref] for ref in refs_from_paths(figure_paths + guide_paths)]
+    # Frame planet finders around the useful navigation path rather than the
+    # entire parent constellation.  The full figure remains available to draw,
+    # but an unrelated distant arm of that figure must not force a needlessly
+    # wide field.  A named asterism is the preferred recognition context.
+    framing_paths = figure_paths + guide_paths
+    if has_planet and asterisms:
+        framing_paths = guide_paths + [
+            path for asterism in asterisms for path in (asterism.get("paths") or [])
+        ]
+    framing_refs = refs_from_paths(framing_paths)
+    if target_ref:
+        framing_refs.add(target_ref)
+    center_stars = [idx[ref] for ref in framing_refs]
     if target_star is not None:
         center_stars.append(target_star)
     else:
@@ -584,7 +596,10 @@ def render(spec: dict, stars, output: Path) -> None:
     if has_planet:
         center_stars.append(SimpleNamespace(ra_deg=float(planet_ra), dec_deg=float(planet_dec)))
     center = spherical_center(center_stars)
-    projected_geometry = [project(idx[ref].ra_deg, idx[ref].dec_deg, *center) for ref in refs]
+    projected_geometry = [
+        project(idx[ref].ra_deg, idx[ref].dec_deg, *center)
+        for ref in framing_refs
+    ]
     target_point = project(target_ra, target_dec, *center)
     planet_point = project(float(planet_ra), float(planet_dec), *center) if has_planet else None
     if target_point is not None:
