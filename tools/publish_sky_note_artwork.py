@@ -24,30 +24,45 @@ def publish_page(path: Path, payload: dict, year: int, week: int) -> bool:
     new = PUBLISHED_RE.sub("", text)
     new = RELATED_RE.sub("", new)
     new = PLACEHOLDER_RE.sub("", new)
-    descriptor = payload.get("planet_finder_artwork")
-    if descriptor:
+
+    descriptors = payload.get("planet_finder_artworks")
+    if descriptors is None:
+        legacy = payload.get("planet_finder_artwork")
+        descriptors = [legacy] if legacy else []
+    for descriptor in descriptors:
+        if not isinstance(descriptor, dict):
+            continue
         route = descriptor.get("finder_route") or {}
         planet = str(route.get("planet") or "Planet")
         reference = str(route.get("reference_star") or "")
-        svg = ARTWORK_ROOT / str(year) / f"W{week:02d}" / "planet-finder.svg"
+        object_id = descriptor.get("object_id")
+        if not isinstance(object_id, int):
+            raise RuntimeError(f"{year}-W{week:02d}: planetary finder for {planet} lacks numeric object_id")
+        svg = ARTWORK_ROOT / str(year) / f"W{week:02d}" / f"{object_id}.svg"
         if not svg.exists():
             raise RuntimeError(f"Planet finder SVG is missing: {svg.relative_to(ROOT)}")
+        rendering_id = str(descriptor.get("id") or f"{year}-W{week:02d}-{object_id}")
         figure = (
-            '<figure class="sky-note-artwork planet-finder-artwork" data-planet-finder="true">'
-            f'<img src="../../../sky-notes-artwork/weeks/{year}/W{week:02d}/planet-finder.svg" '
+            f'<figure class="sky-note-artwork planet-finder-artwork" data-planet-finder="true" '
+            f'data-object-id="{object_id}" data-rendering-id="{html.escape(rendering_id, quote=True)}">'
+            f'<img src="../../../sky-notes-artwork/weeks/{year}/W{week:02d}/{object_id}.svg" '
             f'alt="{html.escape(planet)} finder chart using {html.escape(reference)} as the reference star">'
             f'<figcaption>Finder chart: {html.escape(planet)} from {html.escape(reference)}.</figcaption>'
             '</figure>'
         )
-        marker = '<div class="sky-note-wordy">'
-        if marker not in new:
-            raise RuntimeError("Sky Notes Wordy container is missing")
-        new = new.replace(marker, marker + figure, 1)
+        anchor = f'id="sky-note-object-{object_id}"'
+        match = re.search(rf'<(?P<tag>section|article|div)\\b[^>]*{re.escape(anchor)}[^>]*>', new)
+        if not match:
+            raise RuntimeError(
+                f"{year}-W{week:02d}: missing Sky Notes destination sky-note-object-{object_id} for {planet}"
+            )
+        insert_at = match.end()
+        new = new[:insert_at] + figure + new[insert_at:]
+
     if new == text:
         return False
     path.write_text(new, encoding="utf-8")
     return True
-
 
 def main() -> None:
     start, end, weeks = parse_range_args("Publish object-owned Star Almanack Sky Note artwork")
