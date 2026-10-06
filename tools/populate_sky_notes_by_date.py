@@ -429,6 +429,16 @@ def artwork_descriptor(year: int, week: int, fixed: list[dict], relations: list[
             if finder_relation is not None
             else [{"type": item["type"], "name": item["name"]} for item in fixed[:3]]
         ),
+        # The route has one primary hop star, but the Pathfinder should retain
+        # other conspicuous named stars in the same field as landmarks.  The
+        # renderer derives these from the authoritative stellar catalog and
+        # accepted constellation/asterism geometry rather than inventing
+        # week-specific labels.
+        "landmark_policy": {
+            "retain_named_field_stars": True,
+            "primary_reference_star": finder_relation["star"] if finder_relation is not None else None,
+            "magnitude_limit": 2.99,
+        },
         "finder_route": (
             {
                 "sequence": [
