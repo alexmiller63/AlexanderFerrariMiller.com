@@ -34,12 +34,12 @@ BRIGHT_STARS = SOURCE_ROOT / "bright-stars-2mag.csv"
 GEOMETRY_REGISTRY = ROOT / "finder-geometry" / "martz-macrobert.json"
 
 PLANET_DISPLAY = {
-    "mercury": "Mercury", "venus": "Venus", "mars": "Mars", "jupiter": "Jupiter",
+    "moon": "Moon", "mercury": "Mercury", "venus": "Venus", "mars": "Mars", "jupiter": "Jupiter",
     "saturn": "Saturn", "uranus": "Uranus", "neptune": "Neptune",
     "ceres": "Ceres", "pluto": "Pluto",
 }
 PLANET_OBJECT_IDS = {
-    "Mercury": 1250, "Venus": 1251, "Mars": 1254, "Jupiter": 1256,
+    "Mercury": 1250, "Venus": 1251, "Moon": 1253, "Mars": 1254, "Jupiter": 1256,
     "Saturn": 1257, "Uranus": 1258, "Neptune": 1259, "Ceres": 1255, "Pluto": 1260,
 }
 CONSTELLATION_NAMES = {
@@ -232,14 +232,14 @@ def notable_planet_relations(week: int, yearly: dict[int, dict[str, float]], sta
 
 
 
-def planetary_finder_relations(week: int, yearly: dict[int, dict[str, float]], stars: list[dict], page_path: Path) -> list[dict]:
+FINDER_BODY_COLUMNS = ("moon", *PLANET_COLUMNS)\n\n\ndef planetary_finder_relations(week: int, yearly: dict[int, dict[str, float]], stars: list[dict], page_path: Path) -> list[dict]:
     """Give every supported planet one finder route, independent of notable-prose selection."""
     positions = yearly[week]
     ecliptic_stars = [star for star in stars if abs(star["ecliptic_lat_deg"]) <= 6.0 and star.get("con")]
     if not ecliptic_stars:
         raise RuntimeError("Bright-star catalog has no ecliptic finder stars")
     relations = []
-    for key in PLANET_COLUMNS:
+    for key in FINDER_BODY_COLUMNS:
         planet = PLANET_DISPLAY[key]
         plon = positions[key]
         star = min(ecliptic_stars, key=lambda item: longitude_distance(plon, item["ecliptic_lon_deg"]))
@@ -421,7 +421,7 @@ def artwork_descriptor(year: int, week: int, fixed: list[dict], relations: list[
         "constellation": CONSTELLATION_NAMES.get(con, con),
         "asterism": canonical,
         "targets": (
-            [{"type": "planet", "name": finder_relation["planet"]},
+            [{"type": "solar-system-object", "name": finder_relation["planet"]},
              {"type": "reference-star", "name": finder_relation["star"]}]
             if finder_relation is not None
             else [{"type": item["type"], "name": item["name"]} for item in fixed[:3]]
@@ -453,18 +453,18 @@ def artwork_descriptor(year: int, week: int, fixed: list[dict], relations: list[
             for relation in relations
             if relation.get("planet_ra_deg") is not None and relation.get("planet_dec_deg") is not None
         ],
-        "planet_plot_policy": "plot all preserved 2-D Star Almanack Solar-System positions that fall inside the Pathfinder field",
+        "planet_plot_policy": "plot all preserved 2-D Star Almanack Solar-System positions that fall inside the Pathfinder field; the Moon is a normal plotted body, with apparent-disk occultation handled only by rendering/collision logic",
         "reference_standard": "docs/finder-standard.md",
     }
 
 
 
 def planetary_artwork_descriptors(year: int, week: int, fixed: list[dict], relations: list[dict]) -> list[dict]:
-    """Return one independently identified finder descriptor for every supported planet."""
+    """Return one independently identified finder descriptor for every supported moving body."""
     by_planet = {r.get("planet"): r for r in relations if r.get("kind") == "planet-star-longitude" and r.get("planet") in PLANET_OBJECT_IDS}
     missing = [name for name in PLANET_OBJECT_IDS if name not in by_planet]
     if missing:
-        raise RuntimeError(f"ISO {year}-W{week:02d}: missing planetary finder routes: {', '.join(missing)}")
+        raise RuntimeError(f"ISO {year}-W{week:02d}: missing body finder routes: {', '.join(missing)}")
     result = []
     for name in PLANET_OBJECT_IDS:
         descriptor = artwork_descriptor(year, week, fixed, [by_planet[name]], planet=name)
