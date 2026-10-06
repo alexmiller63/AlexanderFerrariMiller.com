@@ -416,7 +416,10 @@ def render_planet_treatments(payload: dict) -> str:
                 "This is missing reader content, not a substitute observing description."
             )
         rendering_id = str(descriptor.get("id") or "")
-        finder_href = f"#sky-note-finder-{object_id}"
+        finder_href = (
+            f"../../../sky-notes-artwork/weeks/{payload['year']}/"
+            f"W{payload['week']:02d}/{object_id}.svg"
+        )
         blocks.append(
             f'<section class="sky-note-object-treatment" id="sky-note-object-{object_id}" '
             f'data-object-id="{object_id}" data-rendering-id="{html.escape(rendering_id, quote=True)}">'
@@ -430,6 +433,18 @@ def render_planet_treatments(payload: dict) -> str:
 def patch_page(path, payload: dict) -> bool:
     text = path.read_text(encoding="utf-8")
     rendered = base.render_note(payload["note"])
+    finder_hrefs = {
+        str(descriptor["object_id"]): (
+            f"../../../sky-notes-artwork/weeks/{payload['year']}/"
+            f"W{payload['week']:02d}/{descriptor['object_id']}.svg"
+        )
+        for descriptor in payload.get("planet_finder_artworks") or []
+        if isinstance(descriptor.get("object_id"), int)
+    }
+    for record in payload["descriptors"]:
+        finder_href = finder_hrefs.get(str(record.get("id")))
+        if finder_href:
+            record["finder_href"] = finder_href
     rendered = decorate_note_html(rendered, payload["descriptors"], payload.get("calendar_fixed_object_ids", []))
     # Object-story prose is not embedded in weekly pages.  The observing guide
     # links to canonical story pages, which own the prose and artwork.
