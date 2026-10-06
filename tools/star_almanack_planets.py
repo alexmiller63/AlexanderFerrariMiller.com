@@ -60,7 +60,7 @@ def load_weekly_longitudes(year: int) -> dict[int, dict[str, float]]:
     rows: dict[int, dict[str, float]] = {}
     with path.open(encoding="utf-8", newline="") as handle:
         reader = csv.DictReader(handle)
-        required = {"iso_week", *PLANET_COLUMNS}
+        required = {"iso_week", "moon", *PLANET_COLUMNS}
         missing = required.difference(reader.fieldnames or ())
         if missing:
             raise RuntimeError(
@@ -80,7 +80,7 @@ def load_weekly_longitudes(year: int) -> dict[int, dict[str, float]]:
                     f"Duplicate ISO week {key} in {path.relative_to(ROOT)}"
                 )
             rows[week] = {
-                body: parse_zodiac_longitude(row[body]) for body in PLANET_COLUMNS
+                body: parse_zodiac_longitude(row[body]) for body in ("moon", *PLANET_COLUMNS)
             }
 
     if not rows:
