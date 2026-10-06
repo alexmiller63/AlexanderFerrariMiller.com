@@ -303,6 +303,11 @@ def build_weekly_planet_renderer_spec(descriptor: dict, registry: dict) -> dict:
     # moving planet or the week an owner of fixed-object artwork.
     spec = attach_fixed_object_ids(spec)
     spec["target_identity"] = spec["guide_anchor_identity"]
+    # Carry the complete preserved weekly Solar-System field into every
+    # Pathfinder. The renderer will display whichever bodies actually fall
+    # inside this chart's field, rather than pretending the target planet is
+    # alone.
+    spec["solar_system_field"] = descriptor.get("solar_system_field") or []
     return spec
 
 
