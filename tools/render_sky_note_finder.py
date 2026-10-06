@@ -681,17 +681,22 @@ def render(spec: dict, stars, output: Path) -> None:
         point = project(star.ra_deg, star.dec_deg, *center)
         if point is not None:
             figure_points.append(point)
-    for candidate in spec.get("candidate_asterisms") or []:
-        visible_paths = []
-        for path in candidate.get("paths") or []:
-            if any(ref not in idx for ref in path):
-                continue
-            points = [project(idx[ref].ra_deg, idx[ref].dec_deg, *center) for ref in path]
-            points = [point for point in points if point is not None]
-            if path_hits_view(points, xmin, xmax, ymin, ymax):
-                visible_paths.append(path)
-        if visible_paths:
-            asterisms.append(dict(candidate, paths=visible_paths))
+    # Candidate asterisms are ambient context for fixed-object finders only.
+    # A moving-body finder must obey its selected finder route exactly: when
+    # upstream chose constellation-stick-figure, do not reintroduce a nearby
+    # asterism merely because some of its geometry intersects the field.
+    if not has_planet:
+        for candidate in spec.get("candidate_asterisms") or []:
+            visible_paths = []
+            for path in candidate.get("paths") or []:
+                if any(ref not in idx for ref in path):
+                    continue
+                points = [project(idx[ref].ra_deg, idx[ref].dec_deg, *center) for ref in path]
+                points = [point for point in points if point is not None]
+                if path_hits_view(points, xmin, xmax, ymin, ymax):
+                    visible_paths.append(path)
+            if visible_paths:
+                asterisms.append(dict(candidate, paths=visible_paths))
     asterism_segments = []
     for asterism in asterisms:
         for path in asterism.get("paths") or []:
