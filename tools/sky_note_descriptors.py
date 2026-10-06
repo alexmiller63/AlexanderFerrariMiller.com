@@ -442,12 +442,15 @@ def write_descriptor_records(records: list[dict]) -> None:
 
 
 def _linked_name(record: dict) -> str:
-    """Return a safe reader-facing link for a descriptor.
+    """Return reader-facing object text.
 
-    Curated story URLs are preferred, but a missing/invalid story URL must never
-    turn the Sky Note generator into an AttributeError inside html.escape().
-    The descriptor JSON remains the deterministic fallback.
+    Machine-readable descriptor JSON is an internal data contract, not a
+    reader destination. Solar-System objects are explained directly by the
+    weekly prose and artwork, so never expose their descriptor JSON as the
+    visible object link.
     """
+    if record.get("type") in {"planet", "solar-system-object"}:
+        return f'<span class="sky-note-object-name">{html.escape(str(record["name"]), quote=False)}</span>'
     representation = record.get("representation") or {}
     human_href = representation.get("human")
     href = None
