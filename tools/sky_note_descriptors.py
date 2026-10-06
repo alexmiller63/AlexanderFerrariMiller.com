@@ -450,11 +450,15 @@ def _linked_name(record: dict) -> str:
     visible object link.
     """
     if record.get("type") in {"planet", "solar-system-object"}:
-        # Keep moving Solar-System bodies useful to readers by linking them to
-        # the weekly ephemeris, their canonical context on the same page.
+        # Moving Solar-System bodies belong to the reader-facing Sky Notes
+        # treatment, not the numerical ephemeris.  Each body gets a stable
+        # same-page destination that Sky Notes/Artwork can populate with prose
+        # and its finder.
+        name = str(record["name"])
+        anchor = f"sky-note-{slugify(name)}"
         return (
-            f'<a class="descriptor-link sky-note-object-name" href="#almanack-section-3">'
-            f'{html.escape(str(record["name"]), quote=False)}</a>'
+            f'<a class="descriptor-link sky-note-object-name" href="#{anchor}">'
+            f'{html.escape(name, quote=False)}</a>'
         )
     representation = record.get("representation") or {}
     human_href = representation.get("human")
