@@ -222,7 +222,7 @@ def put_ephemeris(text, replacement, path):
 
 def write_preserved_weekly_table(year, generated):
     path = ROOT / f"weekly-ephemeris-{year}.csv"
-    fields = ["iso_week", "monday_utc", *[key for _, key, _ in TARGETS if key != "pluto"]]
+    fields = ["iso_week", "monday_utc", *[key for _, key, _ in TARGETS]]
     rows = []
     for week in range(1, week_count(year) + 1):
         monday = date.fromisocalendar(year, week, 1)
