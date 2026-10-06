@@ -24,7 +24,8 @@ def publish_page(path: Path, payload: dict, year: int, week: int) -> bool:
     text = path.read_text(encoding="utf-8")
     new = PUBLISHED_RE.sub("", text)
     new = RELATED_RE.sub("", new)
-    new = PLACEHOLDER_RE.sub("", new)\n    new = PATHFINDER_LINK_RE.sub("", new)
+    new = PLACEHOLDER_RE.sub("", new)
+    new = PATHFINDER_LINK_RE.sub("", new)
 
     descriptors = payload.get("planet_finder_artworks")
     if descriptors is None:
