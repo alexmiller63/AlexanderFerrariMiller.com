@@ -306,9 +306,10 @@ def build_weekly_planet_renderer_spec(descriptor: dict, registry: dict) -> dict:
     return spec
 
 
-def write_renderer_spec(year: int, week: int, spec: dict) -> Path:
+def write_renderer_spec(year: int, week: int, spec: dict, object_id: int | None = None) -> Path:
     out_dir = RENDER_SPECS_ROOT / str(year); out_dir.mkdir(parents=True, exist_ok=True)
-    out = out_dir / f"W{week:02d}.json"
+    suffix = f"-{object_id}" if object_id is not None else ""
+    out = out_dir / f"W{week:02d}{suffix}.json"
     text = json.dumps(spec, indent=2, ensure_ascii=False) + "\n"
     if not out.exists() or out.read_text(encoding="utf-8") != text:
         out.write_text(text, encoding="utf-8")
@@ -318,24 +319,37 @@ def write_renderer_spec(year: int, week: int, spec: dict) -> Path:
 def generate_week(year: int, week: int) -> bool:
     key = f"{year}-W{week:02d}"
     payload = load_generated_source(year, week)
-    descriptor = payload.get("planet_finder_artwork") or payload.get("artwork")
-    if descriptor is None:
+    descriptors = payload.get("planet_finder_artworks")
+    if descriptors is None:
+        legacy = payload.get("planet_finder_artwork") or payload.get("artwork")
+        descriptors = [legacy] if legacy else []
+    if not isinstance(descriptors, list):
+        raise RuntimeError(f"ISO {key}: invalid planetary artwork descriptor collection")
+    if not descriptors:
         print(f"ISO {key}: Sky Note has no artwork descriptor; no artwork needed"); return False
-    if not isinstance(descriptor, dict):
-        raise RuntimeError(f"ISO {key}: invalid artwork descriptor")
-    validate_descriptor(descriptor, year, week)
-    registry = accepted_geometry(descriptor)
-    if payload.get("planet_finder_artwork") is descriptor:
-        spec = build_weekly_planet_renderer_spec(descriptor, registry)
-        out = write_renderer_spec(year, week, spec)
-        print(f"ISO {key}: weekly planet finder prepared at {out.relative_to(ROOT)}")
-    else:
-        owner = artwork_owner_identity(payload, descriptor)
-        spec = build_renderer_spec(descriptor, registry, owner)
-        out = write_renderer_spec(year, week, spec)
-        print(f"ISO {key}: fixed object {owner['fixed_object_id']} owns finder; accepted guide geometry prepared at {out.relative_to(ROOT)}")
-    return True
 
+    prepared = 0
+    for descriptor in descriptors:
+        if not isinstance(descriptor, dict):
+            raise RuntimeError(f"ISO {key}: invalid artwork descriptor")
+        validate_descriptor(descriptor, year, week)
+        registry = accepted_geometry(descriptor)
+        object_id = descriptor.get("object_id")
+        if object_id is not None:
+            if not isinstance(object_id, int):
+                raise RuntimeError(f"ISO {key}: planet finder object_id must be numeric")
+            spec = build_weekly_planet_renderer_spec(descriptor, registry)
+            spec["object_id"] = object_id
+            spec["rendering_id"] = descriptor["id"]
+            out = write_renderer_spec(year, week, spec, object_id)
+            print(f"ISO {key}: object {object_id} planet finder prepared at {out.relative_to(ROOT)}")
+        else:
+            owner = artwork_owner_identity(payload, descriptor)
+            spec = build_renderer_spec(descriptor, registry, owner)
+            out = write_renderer_spec(year, week, spec)
+            print(f"ISO {key}: fixed object {owner['fixed_object_id']} owns finder; accepted guide geometry prepared at {out.relative_to(ROOT)}")
+        prepared += 1
+    return prepared > 0
 
 def main() -> None:
     start, end, weeks = parse_range_args("Populate Star Almanack Sky Notes artwork by inclusive ISO date range")
