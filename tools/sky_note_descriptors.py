@@ -450,7 +450,12 @@ def _linked_name(record: dict) -> str:
     visible object link.
     """
     if record.get("type") in {"planet", "solar-system-object"}:
-        return f'<span class="sky-note-object-name">{html.escape(str(record["name"]), quote=False)}</span>'
+        # Keep moving Solar-System bodies useful to readers by linking them to
+        # the weekly ephemeris, their canonical context on the same page.
+        return (
+            f'<a class="descriptor-link sky-note-object-name" href="#almanack-section-3">'
+            f'{html.escape(str(record["name"]), quote=False)}</a>'
+        )
     representation = record.get("representation") or {}
     human_href = representation.get("human")
     href = None
