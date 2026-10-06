@@ -37,6 +37,10 @@ PLANET_DISPLAY = {
     "mercury": "Mercury", "venus": "Venus", "mars": "Mars", "jupiter": "Jupiter",
     "saturn": "Saturn", "uranus": "Uranus", "neptune": "Neptune",
 }
+PLANET_OBJECT_IDS = {
+    "Mercury": 1250, "Venus": 1251, "Mars": 1254, "Jupiter": 1256,
+    "Saturn": 1257, "Uranus": 1258, "Neptune": 1259,
+}
 CONSTELLATION_NAMES = {
     "And": "Andromeda", "Ant": "Antlia", "Aps": "Apus", "Aqr": "Aquarius",
     "Aql": "Aquila", "Ara": "Ara", "Ari": "Aries", "Aur": "Auriga",
@@ -364,7 +368,16 @@ def artwork_descriptor(year: int, week: int, fixed: list[dict], relations: list[
         return None
     canonical = canonical_asterism(asterism) if asterism else None
     return {
-        "schema_version": 1, "id": f"{year}-W{week:02d}-stellar-finder",
+        "schema_version": 1,
+        "id": (
+            f"{year}-W{week:02d}-{PLANET_OBJECT_IDS[finder_relation['planet']]}"
+            if finder_relation is not None
+            else f"{year}-W{week:02d}-stellar-finder"
+        ),
+        "object_id": (
+            PLANET_OBJECT_IDS[finder_relation["planet"]]
+            if finder_relation is not None else None
+        ),
         "week": f"{year}-W{week:02d}", "kind": "stellar-finder",
         "geometry": {"constellation_system": "Martz/MacRobert", "constellation_abbreviation": con, "on_missing_geometry": "fail", "invent_geometry": False},
         "style": {
