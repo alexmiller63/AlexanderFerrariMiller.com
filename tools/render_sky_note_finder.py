@@ -837,7 +837,16 @@ def render(spec: dict, stars, output: Path) -> None:
                 obstacle_segments=figure_segments + asterism_segments + boundary_segments,
                 require_clear=True,
             )
-    if target_star is not None and target_bayer and target_name and figure_constellation:
+    if has_planet:
+        # A moving-body finder is named for the route the reader actually uses:
+        # body + useful landmark + full constellation.
+        reference_name = str((spec.get("finder_relation") or {}).get("reference_star") or target_name).strip()
+        title = " ".join(part for part in (
+            planet_name,
+            f"near {reference_name}" if reference_name else "",
+            f"in {figure_constellation}" if figure_constellation else "",
+        ) if part)
+    elif target_star is not None and target_bayer and target_name and figure_constellation:
         title = f"{target_bayer}, {target_name} in {figure_constellation}"
     else:
         title = f"{target_name} in {figure_constellation}" if target_name and figure_constellation else (target_name or figure_constellation)
