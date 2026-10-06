@@ -475,12 +475,11 @@ def _linked_name(record: dict) -> str:
             ) from exc
     if not href:
         descriptor_id = str(record["id"])
-        href = descriptor_href(descriptor_id)
-        # Descriptor JSON is the deterministic reader-facing fallback.
-        # A missing human story must never abort the Sky Note build.
-        if not isinstance(href, str) or not href.strip():
-            href = f"../../../almanack/descriptors/{descriptor_id}.json"
-        type_attr = ' type="application/json"'
+        # Keep missing reader content visibly clickable, but never expose the
+        # machine-readable descriptor as a substitute for prose.  The missing
+        # route is intentionally allowed to 404 so audits expose the gap.
+        href = f"../../../stories/missing/{descriptor_id}.html"
+        type_attr = ' data-missing-reader-content="true"'
     else:
         type_attr = ""
     if not isinstance(href, str) or not href.strip():
