@@ -108,7 +108,7 @@ def asterism_refs(a):
     r=set()
     for p in a.get("paths",[]):r.update(p)
     return r
-def marker_area(m,lim):return max(2,5+5*(lim-m))
+def marker_area(m, lim):\n    """Strong, immediately readable magnitude hierarchy for finder stars."""\n    bright_reference = max(-1.5, min(float(m), float(lim)))\n    return max(2.0, 72.0 * (0.62 ** (bright_reference + 1.0)))
 def draw_path(ax,path,index,center,lw,color):
     pts=[project(index[r].ra_deg,index[r].dec_deg,*center) for r in path];pts=[p for p in pts if p]
     if len(pts)>=2:ax.plot([p[0] for p in pts],[p[1] for p in pts],lw=lw,color=color,alpha=.95,zorder=2)
