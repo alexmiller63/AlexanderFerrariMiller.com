@@ -49,6 +49,20 @@
   "planet_finder_relations": [
     {
       "kind": "planet-star-longitude",
+      "planet": "Moon",
+      "planet_longitude_deg": 22.933,
+      "star": "Aldebaran",
+      "constellation": "Tau",
+      "star_ecliptic_longitude_deg": 69.789,
+      "star_ecliptic_latitude_deg": -5.467,
+      "longitude_separation_deg": 46.9,
+      "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+      "finder_only": true,
+      "planet_ra_deg": 19.594679,
+      "planet_dec_deg": 11.916785
+    },
+    {
+      "kind": "planet-star-longitude",
       "planet": "Mercury",
       "planet_longitude_deg": 264.1,
       "star": "Antares",
@@ -541,7 +555,7 @@
       "asterism": null,
       "targets": [
         {
-          "type": "planet",
+          "type": "solar-system-object",
           "name": "Mercury"
         },
         {
@@ -579,7 +593,14 @@
         "ra_deg": 263.168102,
         "dec_deg": -23.515701
       },
-      "planet_plot_policy": "plot only from preserved 2-D Star Almanack ephemeris position data",
+      "solar_system_field": [
+        {
+          "name": "Mercury",
+          "ra_deg": 263.168102,
+          "dec_deg": -23.515701
+        }
+      ],
+      "planet_plot_policy": "plot all preserved 2-D Star Almanack Solar-System positions that fall inside the Pathfinder field; the Moon is a normal plotted body, with apparent-disk occultation handled only by rendering/collision logic",
       "reference_standard": "docs/finder-standard.md"
     },
     {
@@ -628,7 +649,7 @@
       },
       "targets": [
         {
-          "type": "planet",
+          "type": "solar-system-object",
           "name": "Venus"
         },
         {
@@ -667,7 +688,95 @@
         "ra_deg": 275.535989,
         "dec_deg": -23.73001
       },
-      "planet_plot_policy": "plot only from preserved 2-D Star Almanack ephemeris position data",
+      "solar_system_field": [
+        {
+          "name": "Venus",
+          "ra_deg": 275.535989,
+          "dec_deg": -23.73001
+        }
+      ],
+      "planet_plot_policy": "plot all preserved 2-D Star Almanack Solar-System positions that fall inside the Pathfinder field; the Moon is a normal plotted body, with apparent-disk occultation handled only by rendering/collision logic",
+      "reference_standard": "docs/finder-standard.md"
+    },
+    {
+      "schema_version": 1,
+      "id": "2026-W01-1253",
+      "object_id": 1253,
+      "week": "2026-W01",
+      "kind": "stellar-finder",
+      "geometry": {
+        "constellation_system": "Martz/MacRobert",
+        "constellation_abbreviation": "Tau",
+        "on_missing_geometry": "fail",
+        "invent_geometry": false
+      },
+      "style": {
+        "background": "night-sky",
+        "constellation": {
+          "stroke": "#5c8fe8",
+          "role": "ordinary constellation figure"
+        },
+        "asterism": {
+          "stroke": "#59c86d",
+          "role": "orienting asterism"
+        },
+        "target": {
+          "stroke": "#ffd84d",
+          "fill": "none",
+          "role": "open target circle"
+        },
+        "target_arrows": false
+      },
+      "constellation": "Taurus",
+      "asterism": null,
+      "targets": [
+        {
+          "type": "solar-system-object",
+          "name": "Moon"
+        },
+        {
+          "type": "reference-star",
+          "name": "Aldebaran"
+        }
+      ],
+      "finder_route": {
+        "sequence": [
+          "Taurus",
+          null,
+          "Aldebaran",
+          "Moon"
+        ],
+        "reference_star": "Aldebaran",
+        "planet": "Moon"
+      },
+      "planetary_context": [
+        {
+          "kind": "planet-star-longitude",
+          "planet": "Moon",
+          "planet_longitude_deg": 22.933,
+          "star": "Aldebaran",
+          "constellation": "Tau",
+          "star_ecliptic_longitude_deg": 69.789,
+          "star_ecliptic_latitude_deg": -5.467,
+          "longitude_separation_deg": 46.9,
+          "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+          "finder_only": true,
+          "planet_ra_deg": 19.594679,
+          "planet_dec_deg": 11.916785
+        }
+      ],
+      "planet_position": {
+        "ra_deg": 19.594679,
+        "dec_deg": 11.916785
+      },
+      "solar_system_field": [
+        {
+          "name": "Moon",
+          "ra_deg": 19.594679,
+          "dec_deg": 11.916785
+        }
+      ],
+      "planet_plot_policy": "plot all preserved 2-D Star Almanack Solar-System positions that fall inside the Pathfinder field; the Moon is a normal plotted body, with apparent-disk occultation handled only by rendering/collision logic",
       "reference_standard": "docs/finder-standard.md"
     },
     {
@@ -716,7 +825,7 @@
       },
       "targets": [
         {
-          "type": "planet",
+          "type": "solar-system-object",
           "name": "Mars"
         },
         {
@@ -755,7 +864,14 @@
         "ra_deg": 280.980227,
         "dec_deg": -23.926617
       },
-      "planet_plot_policy": "plot only from preserved 2-D Star Almanack ephemeris position data",
+      "solar_system_field": [
+        {
+          "name": "Mars",
+          "ra_deg": 280.980227,
+          "dec_deg": -23.926617
+        }
+      ],
+      "planet_plot_policy": "plot all preserved 2-D Star Almanack Solar-System positions that fall inside the Pathfinder field; the Moon is a normal plotted body, with apparent-disk occultation handled only by rendering/collision logic",
       "reference_standard": "docs/finder-standard.md"
     },
     {
@@ -791,7 +907,7 @@
       "asterism": null,
       "targets": [
         {
-          "type": "planet",
+          "type": "solar-system-object",
           "name": "Jupiter"
         },
         {
@@ -829,7 +945,14 @@
         "ra_deg": 113.146913,
         "dec_deg": 21.966314
       },
-      "planet_plot_policy": "plot only from preserved 2-D Star Almanack ephemeris position data",
+      "solar_system_field": [
+        {
+          "name": "Jupiter",
+          "ra_deg": 113.146913,
+          "dec_deg": 21.966314
+        }
+      ],
+      "planet_plot_policy": "plot all preserved 2-D Star Almanack Solar-System positions that fall inside the Pathfinder field; the Moon is a normal plotted body, with apparent-disk occultation handled only by rendering/collision logic",
       "reference_standard": "docs/finder-standard.md"
     },
     {
@@ -878,7 +1001,7 @@
       },
       "targets": [
         {
-          "type": "planet",
+          "type": "solar-system-object",
           "name": "Saturn"
         },
         {
@@ -917,7 +1040,14 @@
         "ra_deg": 356.895735,
         "dec_deg": -3.817176
       },
-      "planet_plot_policy": "plot only from preserved 2-D Star Almanack ephemeris position data",
+      "solar_system_field": [
+        {
+          "name": "Saturn",
+          "ra_deg": 356.895735,
+          "dec_deg": -3.817176
+        }
+      ],
+      "planet_plot_policy": "plot all preserved 2-D Star Almanack Solar-System positions that fall inside the Pathfinder field; the Moon is a normal plotted body, with apparent-disk occultation handled only by rendering/collision logic",
       "reference_standard": "docs/finder-standard.md"
     },
     {
@@ -953,7 +1083,7 @@
       "asterism": null,
       "targets": [
         {
-          "type": "planet",
+          "type": "solar-system-object",
           "name": "Uranus"
         },
         {
@@ -991,7 +1121,14 @@
         "ra_deg": 55.449236,
         "dec_deg": 19.444093
       },
-      "planet_plot_policy": "plot only from preserved 2-D Star Almanack ephemeris position data",
+      "solar_system_field": [
+        {
+          "name": "Uranus",
+          "ra_deg": 55.449236,
+          "dec_deg": 19.444093
+        }
+      ],
+      "planet_plot_policy": "plot all preserved 2-D Star Almanack Solar-System positions that fall inside the Pathfinder field; the Moon is a normal plotted body, with apparent-disk occultation handled only by rendering/collision logic",
       "reference_standard": "docs/finder-standard.md"
     },
     {
@@ -1027,7 +1164,7 @@
       "asterism": null,
       "targets": [
         {
-          "type": "planet",
+          "type": "solar-system-object",
           "name": "Neptune"
         },
         {
@@ -1065,7 +1202,14 @@
         "ra_deg": 359.712127,
         "dec_deg": -1.579445
       },
-      "planet_plot_policy": "plot only from preserved 2-D Star Almanack ephemeris position data",
+      "solar_system_field": [
+        {
+          "name": "Neptune",
+          "ra_deg": 359.712127,
+          "dec_deg": -1.579445
+        }
+      ],
+      "planet_plot_policy": "plot all preserved 2-D Star Almanack Solar-System positions that fall inside the Pathfinder field; the Moon is a normal plotted body, with apparent-disk occultation handled only by rendering/collision logic",
       "reference_standard": "docs/finder-standard.md"
     },
     {
@@ -1101,7 +1245,7 @@
       "asterism": null,
       "targets": [
         {
-          "type": "planet",
+          "type": "solar-system-object",
           "name": "Ceres"
         },
         {
@@ -1139,7 +1283,14 @@
         "ra_deg": 9.195224,
         "dec_deg": -5.93037
       },
-      "planet_plot_policy": "plot only from preserved 2-D Star Almanack ephemeris position data",
+      "solar_system_field": [
+        {
+          "name": "Ceres",
+          "ra_deg": 9.195224,
+          "dec_deg": -5.93037
+        }
+      ],
+      "planet_plot_policy": "plot all preserved 2-D Star Almanack Solar-System positions that fall inside the Pathfinder field; the Moon is a normal plotted body, with apparent-disk occultation handled only by rendering/collision logic",
       "reference_standard": "docs/finder-standard.md"
     },
     {
@@ -1188,7 +1339,7 @@
       },
       "targets": [
         {
-          "type": "planet",
+          "type": "solar-system-object",
           "name": "Pluto"
         },
         {
@@ -1227,7 +1378,14 @@
         "ra_deg": 305.455387,
         "dec_deg": -23.321861
       },
-      "planet_plot_policy": "plot only from preserved 2-D Star Almanack ephemeris position data",
+      "solar_system_field": [
+        {
+          "name": "Pluto",
+          "ra_deg": 305.455387,
+          "dec_deg": -23.321861
+        }
+      ],
+      "planet_plot_policy": "plot all preserved 2-D Star Almanack Solar-System positions that fall inside the Pathfinder field; the Moon is a normal plotted body, with apparent-disk occultation handled only by rendering/collision logic",
       "reference_standard": "docs/finder-standard.md"
     }
   ],
