@@ -1,0 +1,32 @@
+name: Audit Ephemeris Observing Clock
+
+on:
+  workflow_dispatch:
+    inputs:
+      year:
+        description: Almanack year
+        required: true
+        default: "2026"
+      week:
+        description: ISO week
+        required: true
+        default: "1"
+      latitude:
+        description: Observer latitude
+        required: true
+        default: "45"
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Audit observing clock
+        run: python tools/audit_ephemeris_observing_clock.py "${{ inputs.year }}" "${{ inputs.week }}" --latitude "${{ inputs.latitude }}"
