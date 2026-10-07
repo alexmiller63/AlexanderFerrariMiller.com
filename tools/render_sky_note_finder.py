@@ -862,11 +862,15 @@ def render(spec: dict, stars, output: Path) -> None:
         # A moving-body finder is named for the route the reader actually uses:
         # body + useful landmark + full constellation.
         reference_name = str((spec.get("finder_relation") or {}).get("reference_star") or target_name).strip()
-        title = " ".join(part for part in (
-            planet_name,
-            f"near {reference_name}" if reference_name else "",
-            f"in {figure_constellation}" if figure_constellation else "",
-        ) if part)
+        separation = (spec.get("finder_relation") or {}).get("sky_separation_deg")
+        if separation is not None and float(separation) > 8:
+            title = f"{planet_name} in {figure_constellation} · {reference_name} {float(separation):.1f}° away"
+        else:
+            title = " ".join(part for part in (
+                planet_name,
+                f"near {reference_name}" if reference_name else "",
+                f"in {figure_constellation}" if figure_constellation else "",
+            ) if part)
     elif target_star is not None and target_bayer and target_name and figure_constellation:
         title = f"{target_bayer}, {target_name} in {figure_constellation}"
     else:
@@ -888,7 +892,19 @@ def render(spec: dict, stars, output: Path) -> None:
     legend = [legend_label(identity, star) for identity, star in legend_entries]
     legend = [item for item in legend if item]
     if legend:
-        legend_text = "   ·   ".join(legend)
+        # SVG text does not automatically wrap long Matplotlib legend strings.
+        # Keep complete entries together and bound the saved SVG's canvas.
+        legend_lines, current = [], ""
+        for entry in legend:
+            candidate = f"{current}   ·   {entry}" if current else entry
+            if current and len(candidate) > 70:
+                legend_lines.append(current)
+                current = entry
+            else:
+                current = candidate
+        if current:
+            legend_lines.append(current)
+        legend_text = "\n".join(legend_lines)
         # Finder legends belong only in the bottom legend area.  A prior
         # renderer emitted the same legend at the top and bottom, which made
         # descriptor artwork appear to have a duplicated legend.
