@@ -618,7 +618,8 @@ def render_artwork_placeholder(descriptor: dict | None) -> str:
 def patch_page(path: Path, payload: dict) -> bool:
     text = path.read_text(encoding="utf-8")
     placeholder = render_artwork_placeholder(payload["artwork"])
-    new_body = "<h3>Sky Notes</h3>\n" + render_note(payload["note"]) + "\n"
+    kilroy = datetime.now(timezone.utc).strftime("Kilroy: Sky Notes · %Y-%m-%d %H:%M:%S UTC")
+    new_body = "<h3>Sky Notes</h3>\n" + f'<p class="kilroy-build-stamp"><small>{html.escape(kilroy)}</small></p>\n' + render_note(payload["note"]) + "\n"
     if placeholder:
         new_body += placeholder + "\n"
     new = replace_section_inner(text, 5, new_body, path)
