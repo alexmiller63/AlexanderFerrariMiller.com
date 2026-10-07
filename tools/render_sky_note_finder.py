@@ -20,6 +20,7 @@ from types import SimpleNamespace
 
 import matplotlib.pyplot as plt
 from matplotlib.path import Path as MplPath
+from matplotlib.transforms import Bbox
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 if str(REPO_ROOT) not in sys.path:
@@ -862,6 +863,13 @@ def render(spec: dict, stars, output: Path) -> None:
             points for _, abbreviation, points in projected_boundaries
             if abbreviation == planet_abbreviation and MplPath(points).contains_point(planet_point)
         )
+        # Reserve the whole planetary marker, not just its central point.
+        px, py = ax.transData.transform(planet_point)
+        marker_radius = (math.sqrt(115) / 2 + 1.6 / 2 + 3) * fig.dpi / 72
+        occupied_labels.append(Bbox.from_extents(
+            px - marker_radius, py - marker_radius,
+            px + marker_radius, py + marker_radius,
+        ))
         place_constellation_label(
             ax, planet_constellation, planet_point, occupied_labels,
             obstacle_segments=figure_segments + asterism_segments + boundary_segments
