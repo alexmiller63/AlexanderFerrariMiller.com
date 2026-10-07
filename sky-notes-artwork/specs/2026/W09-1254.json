@@ -1,24 +1,56 @@
 {
-  "name": "Puppis",
-  "constellation_abbreviation": "Pup",
+  "name": "Aquarius",
+  "target": "Sadalsuud",
   "figure_paths": [
     [
-      "HIP 39953",
-      "HIP 39429",
-      "HIP 39757",
-      "HIP 38170",
-      "HIP 37229",
-      "HIP 36917",
-      "HIP 37677",
-      "HIP 38070",
-      "HIP 38170"
+      "HIP 109074",
+      "HIP 110395",
+      "HIP 110960",
+      "HIP 110672",
+      "HIP 109074",
+      "HIP 106278",
+      "HIP 102618"
     ],
     [
-      "HIP 36917",
-      "HIP 35264",
-      "HIP 31685",
-      "HIP 30438"
+      "HIP 111497",
+      "HIP 110960"
+    ],
+    [
+      "HIP 106278",
+      "HIP 109139"
+    ],
+    [
+      "HIP 109074",
+      "HIP 110003",
+      "HIP 112961",
+      "HIP 114724",
+      "HIP 114855",
+      "HIP 115438"
+    ],
+    [
+      "HIP 112961",
+      "HIP 112716",
+      "HIP 113136",
+      "HIP 114855",
+      "HIP 114341"
     ]
+  ],
+  "asterisms": [
+    {
+      "id": "asterism-water-jar",
+      "name": "Water Jar",
+      "paths": [
+        [
+          "HIP 110395",
+          "HIP 110960",
+          "HIP 110672"
+        ],
+        [
+          "HIP 111497",
+          "HIP 110960"
+        ]
+      ]
+    }
   ],
   "candidate_constellations": [
     {
@@ -1777,7 +1809,6 @@
       ]
     }
   ],
-  "guide_constellations": [],
   "candidate_asterisms": [
     {
       "id": "asterism-big-dipper",
@@ -2153,100 +2184,239 @@
       ]
     }
   ],
-  "asterisms": [],
   "deep_sky_objects": [],
-  "fixed_object_identities": [
+  "finder_relation": {
+    "sequence": [
+      "Aquarius",
+      "Water Jar",
+      "Sadalsuud",
+      "Mars"
+    ],
+    "orientation": "asterism",
+    "reference_star": "Sadalsuud",
+    "planet": "Mars",
+    "finder_note": null,
+    "sky_separation_deg": 9.7
+  },
+  "planet_position": {
+    "ra_deg": 326.343196,
+    "dec_deg": -14.665257
+  },
+  "guide_objects": [
     {
-      "fixed_object_id": 843,
-      "renderer_ref": "HIP 39953",
-      "identifiers": {
-        "hip": "39953"
-      },
-      "constellation_abbreviation": "Vel",
-      "bayer": "Gam-2"
-    },
-    {
-      "fixed_object_id": 839,
-      "renderer_ref": "HIP 39429",
-      "identifiers": {
-        "hip": "39429"
-      },
-      "proper_name": "Naos",
-      "constellation_abbreviation": "Pup",
-      "bayer": "Zet"
-    },
-    {
-      "fixed_object_id": 840,
-      "renderer_ref": "HIP 39757",
-      "identifiers": {
-        "hip": "39757"
-      }
-    },
-    {
-      "fixed_object_id": 837,
-      "renderer_ref": "HIP 38170",
-      "identifiers": {
-        "hip": "38170"
-      }
-    },
-    {
-      "fixed_object_id": 831,
-      "renderer_ref": "HIP 37229",
-      "identifiers": {
-        "hip": "37229"
-      }
-    },
-    {
-      "fixed_object_id": 829,
-      "renderer_ref": "HIP 36917",
-      "identifiers": {
-        "hip": "36917"
-      }
-    },
-    {
-      "fixed_object_id": 833,
-      "renderer_ref": "HIP 37677",
-      "identifiers": {
-        "hip": "37677"
-      }
-    },
-    {
-      "fixed_object_id": 835,
-      "renderer_ref": "HIP 38070",
-      "identifiers": {
-        "hip": "38070"
-      }
-    },
-    {
-      "fixed_object_id": 821,
-      "renderer_ref": "HIP 35264",
-      "identifiers": {
-        "hip": "35264"
-      }
-    },
-    {
-      "fixed_object_id": 801,
-      "renderer_ref": "HIP 31685",
-      "identifiers": {
-        "hip": "31685"
-      }
-    },
-    {
-      "fixed_object_id": 795,
-      "renderer_ref": "HIP 30438",
-      "identifiers": {
-        "hip": "30438"
-      },
-      "proper_name": "Canopus",
-      "constellation_abbreviation": "Car",
-      "bayer": "Alp"
+      "type": "reference-star",
+      "name": "Sadalsuud"
     }
   ],
-  "artwork_owner_identity": {
-    "fixed_object_id": 197,
-    "name": "M46",
-    "proper_name": "M46",
-    "constellation_abbreviation": "Pup"
+  "fixed_object_identities": [
+    {
+      "fixed_object_id": 1189,
+      "renderer_ref": "HIP 109074",
+      "identifiers": {
+        "hip": "109074"
+      },
+      "proper_name": "Sadalmelik",
+      "constellation_abbreviation": "Aqr",
+      "bayer": "α"
+    },
+    {
+      "fixed_object_id": 113,
+      "renderer_ref": "HIP 110395",
+      "identifiers": {
+        "hip": "110395"
+      },
+      "proper_name": "Sadachbia"
+    },
+    {
+      "fixed_object_id": 115,
+      "renderer_ref": "HIP 110960",
+      "identifiers": {
+        "hip": "110960"
+      },
+      "proper_name": "Zeta Aquarii"
+    },
+    {
+      "fixed_object_id": 114,
+      "renderer_ref": "HIP 110672",
+      "identifiers": {
+        "hip": "110672"
+      },
+      "proper_name": "Pi Aquarii"
+    },
+    {
+      "fixed_object_id": 1178,
+      "renderer_ref": "HIP 106278",
+      "identifiers": {
+        "hip": "106278"
+      },
+      "proper_name": "Sadalsuud",
+      "constellation_abbreviation": "Aqr",
+      "bayer": "β"
+    },
+    {
+      "fixed_object_id": 1165,
+      "renderer_ref": "HIP 102618",
+      "identifiers": {
+        "hip": "102618"
+      }
+    },
+    {
+      "fixed_object_id": 116,
+      "renderer_ref": "HIP 111497",
+      "identifiers": {
+        "hip": "111497"
+      },
+      "proper_name": "Eta Aquarii"
+    },
+    {
+      "fixed_object_id": 1191,
+      "renderer_ref": "HIP 109139",
+      "identifiers": {
+        "hip": "109139"
+      }
+    },
+    {
+      "fixed_object_id": 1202,
+      "renderer_ref": "HIP 110003",
+      "identifiers": {
+        "hip": "110003"
+      }
+    },
+    {
+      "fixed_object_id": 1226,
+      "renderer_ref": "HIP 112961",
+      "identifiers": {
+        "hip": "112961"
+      }
+    },
+    {
+      "fixed_object_id": 1233,
+      "renderer_ref": "HIP 114724",
+      "identifiers": {
+        "hip": "114724"
+      }
+    },
+    {
+      "fixed_object_id": 1234,
+      "renderer_ref": "HIP 114855",
+      "identifiers": {
+        "hip": "114855"
+      }
+    },
+    {
+      "fixed_object_id": 1237,
+      "renderer_ref": "HIP 115438",
+      "identifiers": {
+        "hip": "115438"
+      }
+    },
+    {
+      "fixed_object_id": 1222,
+      "renderer_ref": "HIP 112716",
+      "identifiers": {
+        "hip": "112716"
+      }
+    },
+    {
+      "fixed_object_id": 1227,
+      "renderer_ref": "HIP 113136",
+      "identifiers": {
+        "hip": "113136"
+      }
+    },
+    {
+      "fixed_object_id": 1232,
+      "renderer_ref": "HIP 114341",
+      "identifiers": {
+        "hip": "114341"
+      }
+    }
+  ],
+  "guide_anchor_identity": {
+    "fixed_object_id": 1178,
+    "renderer_ref": "HIP 106278",
+    "identifiers": {
+      "hip": "106278"
+    },
+    "proper_name": "Sadalsuud",
+    "constellation_abbreviation": "Aqr",
+    "bayer": "β"
   },
-  "guide_objects": []
+  "target_identity": {
+    "fixed_object_id": 1178,
+    "renderer_ref": "HIP 106278",
+    "identifiers": {
+      "hip": "106278"
+    },
+    "proper_name": "Sadalsuud",
+    "constellation_abbreviation": "Aqr",
+    "bayer": "β"
+  },
+  "solar_system_field": [
+    {
+      "name": "Moon",
+      "ra_deg": 40.018331,
+      "dec_deg": 20.619833
+    },
+    {
+      "name": "Mercury",
+      "ra_deg": 351.231354,
+      "dec_deg": -1.593145
+    },
+    {
+      "name": "Venus",
+      "ra_deg": 347.079476,
+      "dec_deg": -7.088526
+    },
+    {
+      "name": "Mars",
+      "ra_deg": 326.343196,
+      "dec_deg": -14.665257
+    },
+    {
+      "name": "Ceres",
+      "ra_deg": 22.807195,
+      "dec_deg": 3.024771
+    },
+    {
+      "name": "Jupiter",
+      "ra_deg": 106.47701,
+      "dec_deg": 22.911624
+    },
+    {
+      "name": "Saturn",
+      "ra_deg": 1.447084,
+      "dec_deg": -1.701918
+    },
+    {
+      "name": "Uranus",
+      "ra_deg": 55.011726,
+      "dec_deg": 19.365476
+    },
+    {
+      "name": "Neptune",
+      "ra_deg": 0.946709,
+      "dec_deg": -1.015437
+    },
+    {
+      "name": "Pluto",
+      "ra_deg": 307.304874,
+      "dec_deg": -22.988864
+    }
+  ],
+  "moon_disk": {
+    "snapshot_utc": "2026-02-23T00:00:00Z",
+    "angular_diameter_deg": 0.5365334674369071,
+    "phase_angle_deg": 109.80115647666405,
+    "illuminated_fraction": 0.33062154439000263,
+    "bright_limb_position_angle_deg": 250.45534789533923,
+    "distance_km": 371071.1710720874
+  },
+  "landmark_policy": {
+    "retain_named_field_stars": true,
+    "primary_reference_star": "Sadalsuud",
+    "magnitude_limit": 2.99
+  },
+  "object_id": 1254,
+  "rendering_id": "2026-W09-1254"
 }
