@@ -987,7 +987,7 @@ def render(spec: dict, stars, output: Path) -> None:
         full = bayer_label(target_star_identity, target_star)
         target_greek = full.split()[0] if full else ""
     target_const = str(target_meta.get("constellation_abbreviation") or "").strip()
-    target_bayer = " ".join(part for part in (target_greek, target_const) if part)
+    target_bayer = " ".join(part for part in (target_greek, target_const) if part) if target_greek else ""
     target_chart_label = ", ".join(part for part in (target_bayer, target_name) if part)
     # Split long guide-star names so their labels can sit next to the ring
     # without moving across the field to find room for one wide line.
