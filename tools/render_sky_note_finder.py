@@ -9,6 +9,7 @@ consumed exactly as supplied by the generated spec; it is never inferred.
 from __future__ import annotations
 
 import argparse
+from datetime import datetime, timezone
 import csv
 import json
 import math
@@ -873,6 +874,8 @@ def render(spec: dict, stars, output: Path) -> None:
     if not title:
         title = spec.get("chart_title") or "Stellar Finder"
     ax.set_title(title, color=TEXT, fontsize=14, pad=12)
+    kilroy = datetime.now(timezone.utc).strftime("Kilroy: Artwork · %Y-%m-%d %H:%M:%S UTC")
+    ax.text(0.995, 1.015, kilroy, transform=ax.transAxes, ha="right", va="bottom", fontsize=6, color=TEXT)
     ax.text(0.5, -0.035, "East ←                                      → West",
             transform=ax.transAxes, ha="center", va="top", fontsize=8, color=TEXT)
     legend_entries = []
