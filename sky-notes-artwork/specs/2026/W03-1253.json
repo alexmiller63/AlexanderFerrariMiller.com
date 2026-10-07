@@ -1,18 +1,21 @@
 {
-  "name": "Dorado",
-  "constellation_abbreviation": "Dor",
+  "name": "Libra",
+  "target": "Zubenelgenubi",
   "figure_paths": [
     [
-      "HIP 19893",
-      "HIP 21281",
-      "HIP 23693",
-      "HIP 26069",
-      "HIP 27100",
-      "HIP 27890",
-      "HIP 26069",
-      "HIP 21281"
+      "HIP 76600",
+      "HIP 76470",
+      "HIP 76333",
+      "HIP 74785",
+      "HIP 72622",
+      "HIP 76333"
+    ],
+    [
+      "HIP 72622",
+      "HIP 73714"
     ]
   ],
+  "asterisms": [],
   "candidate_constellations": [
     {
       "abbreviation": "And",
@@ -1770,7 +1773,6 @@
       ]
     }
   ],
-  "guide_constellations": [],
   "candidate_asterisms": [
     {
       "id": "asterism-big-dipper",
@@ -2146,65 +2148,162 @@
       ]
     }
   ],
-  "asterisms": [],
   "deep_sky_objects": [],
+  "finder_relation": {
+    "sequence": [
+      "Libra",
+      "Zubenelgenubi",
+      "Moon"
+    ],
+    "orientation": "constellation-stick-figure",
+    "reference_star": "Zubenelgenubi",
+    "planet": "Moon",
+    "finder_note": null,
+    "sky_separation_deg": 10.0
+  },
+  "planet_position": {
+    "ra_deg": 212.345401,
+    "dec_deg": -17.588321
+  },
+  "guide_objects": [
+    {
+      "type": "reference-star",
+      "name": "Zubenelgenubi"
+    }
+  ],
   "fixed_object_identities": [
     {
-      "fixed_object_id": 720,
-      "renderer_ref": "HIP 19893",
+      "fixed_object_id": 1020,
+      "renderer_ref": "HIP 76600",
       "identifiers": {
-        "hip": "19893"
+        "hip": "76600"
       }
     },
     {
-      "fixed_object_id": 727,
-      "renderer_ref": "HIP 21281",
+      "fixed_object_id": 1019,
+      "renderer_ref": "HIP 76470",
       "identifiers": {
-        "hip": "21281"
-      },
-      "proper_name": "α Dor",
-      "constellation_abbreviation": "Dor",
-      "bayer": "α"
-    },
-    {
-      "fixed_object_id": 750,
-      "renderer_ref": "HIP 23693",
-      "identifiers": {
-        "hip": "23693"
+        "hip": "76470"
       }
     },
     {
-      "fixed_object_id": 762,
-      "renderer_ref": "HIP 26069",
+      "fixed_object_id": 1017,
+      "renderer_ref": "HIP 76333",
       "identifiers": {
-        "hip": "26069"
+        "hip": "76333"
+      }
+    },
+    {
+      "fixed_object_id": 1004,
+      "renderer_ref": "HIP 74785",
+      "identifiers": {
+        "hip": "74785"
       },
-      "proper_name": "β Dor",
-      "constellation_abbreviation": "Dor",
+      "proper_name": "Zubeneschamali",
+      "constellation_abbreviation": "Lib",
       "bayer": "β"
     },
     {
-      "fixed_object_id": 767,
-      "renderer_ref": "HIP 27100",
+      "fixed_object_id": 600,
+      "renderer_ref": "HIP 72622",
       "identifiers": {
-        "hip": "27100"
-      }
+        "hip": "72622"
+      },
+      "proper_name": "Zubenelgenubi",
+      "constellation_abbreviation": "Lib"
     },
     {
-      "fixed_object_id": 774,
-      "renderer_ref": "HIP 27890",
+      "fixed_object_id": 66,
+      "renderer_ref": "HIP 73714",
       "identifiers": {
-        "hip": "27890"
-      }
+        "hip": "73714"
+      },
+      "proper_name": "Brachium"
     }
   ],
-  "artwork_owner_identity": {
-    "fixed_object_id": 727,
-    "name": "α Dor",
-    "proper_name": "α Dor",
-    "constellation_abbreviation": "Dor",
-    "bayer": "α",
-    "renderer_ref": "HIP 21281"
+  "guide_anchor_identity": {
+    "fixed_object_id": 600,
+    "renderer_ref": "HIP 72622",
+    "identifiers": {
+      "hip": "72622"
+    },
+    "proper_name": "Zubenelgenubi",
+    "constellation_abbreviation": "Lib"
   },
-  "guide_objects": []
+  "target_identity": {
+    "fixed_object_id": 600,
+    "renderer_ref": "HIP 72622",
+    "identifiers": {
+      "hip": "72622"
+    },
+    "proper_name": "Zubenelgenubi",
+    "constellation_abbreviation": "Lib"
+  },
+  "solar_system_field": [
+    {
+      "name": "Moon",
+      "ra_deg": 212.345401,
+      "dec_deg": -17.588321
+    },
+    {
+      "name": "Mercury",
+      "ra_deg": 286.953093,
+      "dec_deg": -24.119976
+    },
+    {
+      "name": "Venus",
+      "ra_deg": 294.645785,
+      "dec_deg": -22.403797
+    },
+    {
+      "name": "Mars",
+      "ra_deg": 292.639386,
+      "dec_deg": -22.771954
+    },
+    {
+      "name": "Ceres",
+      "ra_deg": 11.728092,
+      "dec_deg": -3.853366
+    },
+    {
+      "name": "Jupiter",
+      "ra_deg": 111.168559,
+      "dec_deg": 22.277988
+    },
+    {
+      "name": "Saturn",
+      "ra_deg": 357.703653,
+      "dec_deg": -3.419653
+    },
+    {
+      "name": "Uranus",
+      "ra_deg": 55.091104,
+      "dec_deg": 19.369598
+    },
+    {
+      "name": "Neptune",
+      "ra_deg": 359.895252,
+      "dec_deg": -1.490631
+    },
+    {
+      "name": "Pluto",
+      "ra_deg": 305.910949,
+      "dec_deg": -23.232957
+    }
+  ],
+  "moon_disk": {
+    "snapshot_utc": "2026-01-12T00:00:00Z",
+    "angular_diameter_deg": 0.49361715138857837,
+    "phase_angle_deg": 104.52917521208015,
+    "illuminated_fraction": 0.37456352212486693,
+    "bright_limb_position_angle_deg": 108.57057253804064,
+    "distance_km": 403332.80519859586
+  },
+  "landmark_policy": {
+    "retain_named_field_stars": true,
+    "primary_reference_star": "Zubenelgenubi",
+    "magnitude_limit": 2.99
+  },
+  "object_id": 1253,
+  "rendering_id": "2026-W03-1253"
 }

@@ -1,18 +1,30 @@
 {
-  "name": "Dorado",
-  "constellation_abbreviation": "Dor",
+  "name": "Pisces",
+  "target": "Fumalsamakah",
   "figure_paths": [
     [
-      "HIP 19893",
-      "HIP 21281",
-      "HIP 23693",
-      "HIP 26069",
-      "HIP 27100",
-      "HIP 27890",
-      "HIP 26069",
-      "HIP 21281"
+      "HIP 116771",
+      "HIP 115830",
+      "HIP 114971",
+      "HIP 115738",
+      "HIP 116928",
+      "HIP 116771",
+      "HIP 118268",
+      "HIP 3786",
+      "HIP 4906",
+      "HIP 5737",
+      "HIP 7007",
+      "HIP 7884",
+      "HIP 9487",
+      "HIP 8198",
+      "HIP 7097",
+      "HIP 5742",
+      "HIP 5586",
+      "HIP 6193",
+      "HIP 5742"
     ]
   ],
+  "asterisms": [],
   "candidate_constellations": [
     {
       "abbreviation": "And",
@@ -1770,7 +1782,6 @@
       ]
     }
   ],
-  "guide_constellations": [],
   "candidate_asterisms": [
     {
       "id": "asterism-big-dipper",
@@ -2146,65 +2157,253 @@
       ]
     }
   ],
-  "asterisms": [],
   "deep_sky_objects": [],
+  "finder_relation": {
+    "sequence": [
+      "Pisces",
+      "Fumalsamakah",
+      "Neptune"
+    ],
+    "orientation": "constellation-stick-figure",
+    "reference_star": "Fumalsamakah",
+    "planet": "Neptune",
+    "finder_note": "Neptune is not easy to find this week.",
+    "sky_separation_deg": 14.9
+  },
+  "planet_position": {
+    "ra_deg": 359.895252,
+    "dec_deg": -1.490631
+  },
+  "guide_objects": [
+    {
+      "type": "reference-star",
+      "name": "Fumalsamakah"
+    }
+  ],
   "fixed_object_identities": [
     {
-      "fixed_object_id": 720,
-      "renderer_ref": "HIP 19893",
+      "fixed_object_id": 123,
+      "renderer_ref": "HIP 116771",
       "identifiers": {
-        "hip": "19893"
+        "hip": "116771"
+      },
+      "proper_name": "Iota Piscium"
+    },
+    {
+      "fixed_object_id": 122,
+      "renderer_ref": "HIP 115830",
+      "identifiers": {
+        "hip": "115830"
+      },
+      "proper_name": "Theta Piscium"
+    },
+    {
+      "fixed_object_id": 119,
+      "renderer_ref": "HIP 114971",
+      "identifiers": {
+        "hip": "114971"
+      },
+      "proper_name": "Gamma Piscium"
+    },
+    {
+      "fixed_object_id": 121,
+      "renderer_ref": "HIP 115738",
+      "identifiers": {
+        "hip": "115738"
+      },
+      "proper_name": "Kappa Piscium"
+    },
+    {
+      "fixed_object_id": 124,
+      "renderer_ref": "HIP 116928",
+      "identifiers": {
+        "hip": "116928"
+      },
+      "proper_name": "Lambda Piscium"
+    },
+    {
+      "fixed_object_id": 1244,
+      "renderer_ref": "HIP 118268",
+      "identifiers": {
+        "hip": "118268"
       }
     },
     {
-      "fixed_object_id": 727,
-      "renderer_ref": "HIP 21281",
+      "fixed_object_id": 622,
+      "renderer_ref": "HIP 3786",
       "identifiers": {
-        "hip": "21281"
+        "hip": "3786"
+      }
+    },
+    {
+      "fixed_object_id": 627,
+      "renderer_ref": "HIP 4906",
+      "identifiers": {
+        "hip": "4906"
+      }
+    },
+    {
+      "fixed_object_id": 634,
+      "renderer_ref": "HIP 5737",
+      "identifiers": {
+        "hip": "5737"
+      }
+    },
+    {
+      "fixed_object_id": 639,
+      "renderer_ref": "HIP 7007",
+      "identifiers": {
+        "hip": "7007"
+      }
+    },
+    {
+      "fixed_object_id": 644,
+      "renderer_ref": "HIP 7884",
+      "identifiers": {
+        "hip": "7884"
+      }
+    },
+    {
+      "fixed_object_id": 654,
+      "renderer_ref": "HIP 9487",
+      "identifiers": {
+        "hip": "9487"
       },
-      "proper_name": "α Dor",
-      "constellation_abbreviation": "Dor",
+      "proper_name": "Alrescha",
+      "constellation_abbreviation": "Psc",
       "bayer": "α"
     },
     {
-      "fixed_object_id": 750,
-      "renderer_ref": "HIP 23693",
+      "fixed_object_id": 647,
+      "renderer_ref": "HIP 8198",
       "identifiers": {
-        "hip": "23693"
+        "hip": "8198"
       }
     },
     {
-      "fixed_object_id": 762,
-      "renderer_ref": "HIP 26069",
+      "fixed_object_id": 641,
+      "renderer_ref": "HIP 7097",
       "identifiers": {
-        "hip": "26069"
+        "hip": "7097"
+      }
+    },
+    {
+      "fixed_object_id": 635,
+      "renderer_ref": "HIP 5742",
+      "identifiers": {
+        "hip": "5742"
+      }
+    },
+    {
+      "fixed_object_id": 633,
+      "renderer_ref": "HIP 5586",
+      "identifiers": {
+        "hip": "5586"
+      }
+    },
+    {
+      "fixed_object_id": 636,
+      "renderer_ref": "HIP 6193",
+      "identifiers": {
+        "hip": "6193"
+      }
+    },
+    {
+      "fixed_object_id": 573,
+      "renderer_ref": "HIP 113889",
+      "identifiers": {
+        "hip": "113889"
       },
-      "proper_name": "β Dor",
-      "constellation_abbreviation": "Dor",
+      "proper_name": "Fumalsamakah",
+      "constellation_abbreviation": "Psc",
       "bayer": "β"
-    },
-    {
-      "fixed_object_id": 767,
-      "renderer_ref": "HIP 27100",
-      "identifiers": {
-        "hip": "27100"
-      }
-    },
-    {
-      "fixed_object_id": 774,
-      "renderer_ref": "HIP 27890",
-      "identifiers": {
-        "hip": "27890"
-      }
     }
   ],
-  "artwork_owner_identity": {
-    "fixed_object_id": 727,
-    "name": "α Dor",
-    "proper_name": "α Dor",
-    "constellation_abbreviation": "Dor",
-    "bayer": "α",
-    "renderer_ref": "HIP 21281"
+  "guide_anchor_identity": {
+    "fixed_object_id": 573,
+    "renderer_ref": "HIP 113889",
+    "identifiers": {
+      "hip": "113889"
+    },
+    "proper_name": "Fumalsamakah",
+    "constellation_abbreviation": "Psc",
+    "bayer": "β"
   },
-  "guide_objects": []
+  "target_identity": {
+    "fixed_object_id": 573,
+    "renderer_ref": "HIP 113889",
+    "identifiers": {
+      "hip": "113889"
+    },
+    "proper_name": "Fumalsamakah",
+    "constellation_abbreviation": "Psc",
+    "bayer": "β"
+  },
+  "solar_system_field": [
+    {
+      "name": "Moon",
+      "ra_deg": 212.345401,
+      "dec_deg": -17.588321
+    },
+    {
+      "name": "Mercury",
+      "ra_deg": 286.953093,
+      "dec_deg": -24.119976
+    },
+    {
+      "name": "Venus",
+      "ra_deg": 294.645785,
+      "dec_deg": -22.403797
+    },
+    {
+      "name": "Mars",
+      "ra_deg": 292.639386,
+      "dec_deg": -22.771954
+    },
+    {
+      "name": "Ceres",
+      "ra_deg": 11.728092,
+      "dec_deg": -3.853366
+    },
+    {
+      "name": "Jupiter",
+      "ra_deg": 111.168559,
+      "dec_deg": 22.277988
+    },
+    {
+      "name": "Saturn",
+      "ra_deg": 357.703653,
+      "dec_deg": -3.419653
+    },
+    {
+      "name": "Uranus",
+      "ra_deg": 55.091104,
+      "dec_deg": 19.369598
+    },
+    {
+      "name": "Neptune",
+      "ra_deg": 359.895252,
+      "dec_deg": -1.490631
+    },
+    {
+      "name": "Pluto",
+      "ra_deg": 305.910949,
+      "dec_deg": -23.232957
+    }
+  ],
+  "moon_disk": {
+    "snapshot_utc": "2026-01-12T00:00:00Z",
+    "angular_diameter_deg": 0.49361715138857837,
+    "phase_angle_deg": 104.52917521208015,
+    "illuminated_fraction": 0.37456352212486693,
+    "bright_limb_position_angle_deg": 108.57057253804064,
+    "distance_km": 403332.80519859586
+  },
+  "landmark_policy": {
+    "retain_named_field_stars": true,
+    "primary_reference_star": "Fumalsamakah",
+    "magnitude_limit": 2.99
+  },
+  "object_id": 1259,
+  "rendering_id": "2026-W03-1259"
 }

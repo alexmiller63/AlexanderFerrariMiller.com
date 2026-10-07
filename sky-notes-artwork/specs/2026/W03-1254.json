@@ -1,17 +1,54 @@
 {
-  "name": "Dorado",
-  "constellation_abbreviation": "Dor",
+  "name": "Sagittarius",
+  "target": "Nunki",
   "figure_paths": [
     [
-      "HIP 19893",
-      "HIP 21281",
-      "HIP 23693",
-      "HIP 26069",
-      "HIP 27100",
-      "HIP 27890",
-      "HIP 26069",
-      "HIP 21281"
+      "HIP 89341",
+      "HIP 90496",
+      "HIP 92041",
+      "HIP 92855",
+      "HIP 93864",
+      "HIP 93506",
+      "HIP 90185",
+      "HIP 88635",
+      "HIP 89931",
+      "HIP 90496"
+    ],
+    [
+      "HIP 93506",
+      "HIP 92041",
+      "HIP 89931",
+      "HIP 90185",
+      "HIP 89642"
     ]
+  ],
+  "asterisms": [
+    {
+      "id": "asterism-teapot-of-sagittarius",
+      "name": "Teapot of Sagittarius",
+      "paths": [
+        [
+          "HIP 90496",
+          "HIP 92041",
+          "HIP 93506",
+          "HIP 90185",
+          "HIP 89931",
+          "HIP 90496"
+        ],
+        [
+          "HIP 92041",
+          "HIP 93864",
+          "HIP 92855",
+          "HIP 93506"
+        ],
+        [
+          "HIP 90496",
+          "HIP 89931",
+          "HIP 88635",
+          "HIP 90185"
+        ]
+      ]
+    }
   ],
   "candidate_constellations": [
     {
@@ -1770,7 +1807,6 @@
       ]
     }
   ],
-  "guide_constellations": [],
   "candidate_asterisms": [
     {
       "id": "asterism-big-dipper",
@@ -2146,65 +2182,199 @@
       ]
     }
   ],
-  "asterisms": [],
   "deep_sky_objects": [],
+  "finder_relation": {
+    "sequence": [
+      "Sagittarius",
+      "Teapot of Sagittarius",
+      "Nunki",
+      "Mars"
+    ],
+    "orientation": "asterism",
+    "reference_star": "Nunki",
+    "planet": "Mars",
+    "finder_note": null,
+    "sky_separation_deg": 8.8
+  },
+  "planet_position": {
+    "ra_deg": 292.639386,
+    "dec_deg": -22.771954
+  },
+  "guide_objects": [
+    {
+      "type": "reference-star",
+      "name": "Nunki"
+    }
+  ],
   "fixed_object_identities": [
     {
-      "fixed_object_id": 720,
-      "renderer_ref": "HIP 19893",
+      "fixed_object_id": 1102,
+      "renderer_ref": "HIP 89341",
       "identifiers": {
-        "hip": "19893"
+        "hip": "89341"
       }
     },
     {
-      "fixed_object_id": 727,
-      "renderer_ref": "HIP 21281",
+      "fixed_object_id": 91,
+      "renderer_ref": "HIP 90496",
       "identifiers": {
-        "hip": "21281"
+        "hip": "90496"
       },
-      "proper_name": "α Dor",
-      "constellation_abbreviation": "Dor",
-      "bayer": "α"
+      "proper_name": "Kaus Borealis"
     },
     {
-      "fixed_object_id": 750,
-      "renderer_ref": "HIP 23693",
+      "fixed_object_id": 93,
+      "renderer_ref": "HIP 92041",
       "identifiers": {
-        "hip": "23693"
-      }
-    },
-    {
-      "fixed_object_id": 762,
-      "renderer_ref": "HIP 26069",
-      "identifiers": {
-        "hip": "26069"
+        "hip": "92041"
       },
-      "proper_name": "β Dor",
-      "constellation_abbreviation": "Dor",
-      "bayer": "β"
+      "proper_name": "Phi Sagittarii"
     },
     {
-      "fixed_object_id": 767,
-      "renderer_ref": "HIP 27100",
+      "fixed_object_id": 94,
+      "renderer_ref": "HIP 92855",
       "identifiers": {
-        "hip": "27100"
-      }
+        "hip": "92855"
+      },
+      "proper_name": "Nunki",
+      "constellation_abbreviation": "Sgr",
+      "bayer": "Sig"
     },
     {
-      "fixed_object_id": 774,
-      "renderer_ref": "HIP 27890",
+      "fixed_object_id": 96,
+      "renderer_ref": "HIP 93864",
       "identifiers": {
-        "hip": "27890"
+        "hip": "93864"
+      },
+      "proper_name": "Tau Sagittarii"
+    },
+    {
+      "fixed_object_id": 95,
+      "renderer_ref": "HIP 93506",
+      "identifiers": {
+        "hip": "93506"
+      },
+      "proper_name": "Ascella"
+    },
+    {
+      "fixed_object_id": 90,
+      "renderer_ref": "HIP 90185",
+      "identifiers": {
+        "hip": "90185"
+      },
+      "proper_name": "Kaus Australis",
+      "constellation_abbreviation": "Sgr",
+      "bayer": "Eps"
+    },
+    {
+      "fixed_object_id": 88,
+      "renderer_ref": "HIP 88635",
+      "identifiers": {
+        "hip": "88635"
+      },
+      "proper_name": "Alnasl"
+    },
+    {
+      "fixed_object_id": 89,
+      "renderer_ref": "HIP 89931",
+      "identifiers": {
+        "hip": "89931"
+      },
+      "proper_name": "Kaus Media"
+    },
+    {
+      "fixed_object_id": 1103,
+      "renderer_ref": "HIP 89642",
+      "identifiers": {
+        "hip": "89642"
       }
     }
   ],
-  "artwork_owner_identity": {
-    "fixed_object_id": 727,
-    "name": "α Dor",
-    "proper_name": "α Dor",
-    "constellation_abbreviation": "Dor",
-    "bayer": "α",
-    "renderer_ref": "HIP 21281"
+  "guide_anchor_identity": {
+    "fixed_object_id": 94,
+    "renderer_ref": "HIP 92855",
+    "identifiers": {
+      "hip": "92855"
+    },
+    "proper_name": "Nunki",
+    "constellation_abbreviation": "Sgr",
+    "bayer": "Sig"
   },
-  "guide_objects": []
+  "target_identity": {
+    "fixed_object_id": 94,
+    "renderer_ref": "HIP 92855",
+    "identifiers": {
+      "hip": "92855"
+    },
+    "proper_name": "Nunki",
+    "constellation_abbreviation": "Sgr",
+    "bayer": "Sig"
+  },
+  "solar_system_field": [
+    {
+      "name": "Moon",
+      "ra_deg": 212.345401,
+      "dec_deg": -17.588321
+    },
+    {
+      "name": "Mercury",
+      "ra_deg": 286.953093,
+      "dec_deg": -24.119976
+    },
+    {
+      "name": "Venus",
+      "ra_deg": 294.645785,
+      "dec_deg": -22.403797
+    },
+    {
+      "name": "Mars",
+      "ra_deg": 292.639386,
+      "dec_deg": -22.771954
+    },
+    {
+      "name": "Ceres",
+      "ra_deg": 11.728092,
+      "dec_deg": -3.853366
+    },
+    {
+      "name": "Jupiter",
+      "ra_deg": 111.168559,
+      "dec_deg": 22.277988
+    },
+    {
+      "name": "Saturn",
+      "ra_deg": 357.703653,
+      "dec_deg": -3.419653
+    },
+    {
+      "name": "Uranus",
+      "ra_deg": 55.091104,
+      "dec_deg": 19.369598
+    },
+    {
+      "name": "Neptune",
+      "ra_deg": 359.895252,
+      "dec_deg": -1.490631
+    },
+    {
+      "name": "Pluto",
+      "ra_deg": 305.910949,
+      "dec_deg": -23.232957
+    }
+  ],
+  "moon_disk": {
+    "snapshot_utc": "2026-01-12T00:00:00Z",
+    "angular_diameter_deg": 0.49361715138857837,
+    "phase_angle_deg": 104.52917521208015,
+    "illuminated_fraction": 0.37456352212486693,
+    "bright_limb_position_angle_deg": 108.57057253804064,
+    "distance_km": 403332.80519859586
+  },
+  "landmark_policy": {
+    "retain_named_field_stars": true,
+    "primary_reference_star": "Nunki",
+    "magnitude_limit": 2.99
+  },
+  "object_id": 1254,
+  "rendering_id": "2026-W03-1254"
 }
