@@ -16,6 +16,7 @@ GEOMETRY_REGISTRY = ROOT / "finder-geometry" / "martz-macrobert.json"
 FIXED_OBJECT_REGISTRY = ROOT / "database" / "fixed-object-registry.json"
 FIXED_OBJECT_DATABASE = ROOT / "database" / "fixed-objects.json"
 STELLAR_CATALOG = ROOT / "bright-stars-2mag.csv"
+FINDER_CATALOG = ROOT / "expanded-bayer-stars.csv"
 RENDER_SPECS_ROOT = ROOT / "sky-notes-artwork" / "specs"
 
 
@@ -156,34 +157,28 @@ def normalize_guide_name(value: str) -> str:
 
 
 def catalog_target_refs(target_name: str) -> list[str]:
-    """Resolve a finder guide through authoritative stellar-catalog identities.
-
-    Finder descriptors may use a proper name (for example Altair) or a
-    human-readable Bayer label (for example Alpha1 Cap).  The stellar catalog stores
-    those as separate fields, so both forms must resolve through the catalog
-    row's HIP identity rather than requiring the Bayer label to masquerade as
-    a proper name.
-    """
+    """Resolve a named guide to its HIP identity in the stellar catalogs."""
     wanted = normalize_guide_name(target_name)
     matches = []
-    with STELLAR_CATALOG.open(newline="", encoding="utf-8") as fh:
-        for row in csv.DictReader(fh):
-            hip = str(row.get("hip") or "").strip()
-            if not hip:
-                continue
-            aliases = {
-                str(row.get("proper") or row.get("name") or "").strip(),
-                str(row.get("bayer") or "").strip(),
-            }
-            code = str(row.get("bayer_code") or "").strip()
-            con = str(row.get("con") or "").strip()
-            match = re.fullmatch(r"([A-Za-z]+)(\d*)", code)
-            if match and con:
-                word = BAYER_GUIDE_WORDS.get(match.group(1))
-                if word:
-                    aliases.add(f"{word}{match.group(2)} {con}")
-            if wanted and any(normalize_guide_name(alias) == wanted for alias in aliases if alias):
-                matches.append(f"HIP {hip}")
+    for catalog in (STELLAR_CATALOG, FINDER_CATALOG):
+        with catalog.open(newline="", encoding="utf-8") as fh:
+            for row in csv.DictReader(fh):
+                hip = str(row.get("hip") or "").strip()
+                if not hip:
+                    continue
+                aliases = {
+                    str(row.get("proper") or row.get("name") or "").strip(),
+                    str(row.get("bayer") or "").strip(),
+                }
+                code = str(row.get("bayer_code") or "").strip()
+                con = str(row.get("con") or "").strip()
+                match = re.fullmatch(r"([A-Za-z]+)(\d*)", code)
+                if match and con:
+                    word = BAYER_GUIDE_WORDS.get(match.group(1))
+                    if word:
+                        aliases.add(f"{word}{match.group(2)} {con}")
+                if wanted and any(normalize_guide_name(alias) == wanted for alias in aliases if alias):
+                    matches.append(f"HIP {hip}")
     return list(dict.fromkeys(matches))
 
 
@@ -245,12 +240,14 @@ def attach_fixed_object_ids(spec: dict) -> dict:
     if unresolved:
         raise RuntimeError("Finder geometry/guides contain HIP stars with no Star Almanack fixed_object_id: " + ", ".join(unresolved))
 
-    candidate_ids = ids_by_name.get(guide_name.casefold(), []) if guide_name else []
     identity_by_id = {identity["fixed_object_id"]: identity for identity in identities}
     guide_hip = hip_number(guide_ref)
     guide_id = by_hip.get(guide_hip) if guide_hip else None
-    if guide_id is None or guide_id not in candidate_ids:
-        raise RuntimeError(f"Finder guide {guide_name!r} does not resolve consistently to an immutable fixed object")
+    if guide_id is None or guide_id not in identity_by_id:
+        raise RuntimeError(f"Finder guide {guide_name!r} has no immutable fixed-object identity")
+    # The catalog's name is validated against this exact HIP above. Some
+    # expanded Bayer names are absent from the fixed-object metadata index.
+    identity_by_id[guide_id]["proper_name"] = guide_name
     spec["fixed_object_identities"] = identities
     spec["guide_anchor_identity"] = identity_by_id[guide_id]
     return spec
