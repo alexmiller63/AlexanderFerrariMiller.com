@@ -601,6 +601,23 @@
       "planetary_context": [
         {
           "kind": "planet-star-longitude",
+          "planet": "Moon",
+          "planet_longitude_deg": 22.933,
+          "star": "Sheratan",
+          "constellation": "Ari",
+          "star_ecliptic_longitude_deg": 33.97,
+          "star_ecliptic_latitude_deg": 8.487,
+          "longitude_separation_deg": 11.0,
+          "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+          "finder_only": true,
+          "planet_ra_deg": 19.594679,
+          "planet_dec_deg": 11.916785,
+          "sky_separation_deg": 12.4,
+          "finder_difficulty": "difficult",
+          "finder_note": "Moon is not easy to find this week."
+        },
+        {
+          "kind": "planet-star-longitude",
           "planet": "Mercury",
           "planet_longitude_deg": 264.1,
           "star": "Sabik",
@@ -621,9 +638,54 @@
       },
       "solar_system_field": [
         {
+          "name": "Moon",
+          "ra_deg": 19.594679,
+          "dec_deg": 11.916785
+        },
+        {
           "name": "Mercury",
           "ra_deg": 263.168102,
           "dec_deg": -23.515701
+        },
+        {
+          "name": "Venus",
+          "ra_deg": 275.535989,
+          "dec_deg": -23.73001
+        },
+        {
+          "name": "Mars",
+          "ra_deg": 280.980227,
+          "dec_deg": -23.926617
+        },
+        {
+          "name": "Ceres",
+          "ra_deg": 9.195224,
+          "dec_deg": -5.93037
+        },
+        {
+          "name": "Jupiter",
+          "ra_deg": 113.146913,
+          "dec_deg": 21.966314
+        },
+        {
+          "name": "Saturn",
+          "ra_deg": 356.895735,
+          "dec_deg": -3.817176
+        },
+        {
+          "name": "Uranus",
+          "ra_deg": 55.449236,
+          "dec_deg": 19.444093
+        },
+        {
+          "name": "Neptune",
+          "ra_deg": 359.712127,
+          "dec_deg": -1.579445
+        },
+        {
+          "name": "Pluto",
+          "ra_deg": 305.455387,
+          "dec_deg": -23.321861
         }
       ],
       "planet_plot_policy": "plot all preserved 2-D Star Almanack Solar-System positions that fall inside the Pathfinder field; the Moon is a normal plotted body, with apparent-disk occultation handled only by rendering/collision logic",
@@ -704,19 +766,35 @@
       "planetary_context": [
         {
           "kind": "planet-star-longitude",
-          "planet": "Venus",
-          "planet_longitude_deg": 275.433,
-          "star": "Nunki",
-          "constellation": "Sgr",
-          "star_ecliptic_longitude_deg": 282.385,
-          "star_ecliptic_latitude_deg": -3.45,
-          "longitude_separation_deg": 7.0,
+          "planet": "Moon",
+          "planet_longitude_deg": 22.933,
+          "star": "Sheratan",
+          "constellation": "Ari",
+          "star_ecliptic_longitude_deg": 33.97,
+          "star_ecliptic_latitude_deg": 8.487,
+          "longitude_separation_deg": 11.0,
           "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
           "finder_only": true,
-          "planet_ra_deg": 275.535989,
-          "planet_dec_deg": -23.73001,
-          "sky_separation_deg": 7.9,
-          "asterism": "Teapot of Sagittarius"
+          "planet_ra_deg": 19.594679,
+          "planet_dec_deg": 11.916785,
+          "sky_separation_deg": 12.4,
+          "finder_difficulty": "difficult",
+          "finder_note": "Moon is not easy to find this week."
+        },
+        {
+          "kind": "planet-star-longitude",
+          "planet": "Mercury",
+          "planet_longitude_deg": 264.1,
+          "star": "Sabik",
+          "constellation": "Oph",
+          "star_ecliptic_longitude_deg": 257.97,
+          "star_ecliptic_latitude_deg": 7.198,
+          "longitude_separation_deg": 6.1,
+          "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+          "finder_only": true,
+          "planet_ra_deg": 263.168102,
+          "planet_dec_deg": -23.515701,
+          "sky_separation_deg": 9.4
         }
       ],
       "planet_position": {
@@ -725,9 +803,54 @@
       },
       "solar_system_field": [
         {
+          "name": "Moon",
+          "ra_deg": 19.594679,
+          "dec_deg": 11.916785
+        },
+        {
+          "name": "Mercury",
+          "ra_deg": 263.168102,
+          "dec_deg": -23.515701
+        },
+        {
           "name": "Venus",
           "ra_deg": 275.535989,
           "dec_deg": -23.73001
+        },
+        {
+          "name": "Mars",
+          "ra_deg": 280.980227,
+          "dec_deg": -23.926617
+        },
+        {
+          "name": "Ceres",
+          "ra_deg": 9.195224,
+          "dec_deg": -5.93037
+        },
+        {
+          "name": "Jupiter",
+          "ra_deg": 113.146913,
+          "dec_deg": 21.966314
+        },
+        {
+          "name": "Saturn",
+          "ra_deg": 356.895735,
+          "dec_deg": -3.817176
+        },
+        {
+          "name": "Uranus",
+          "ra_deg": 55.449236,
+          "dec_deg": 19.444093
+        },
+        {
+          "name": "Neptune",
+          "ra_deg": 359.712127,
+          "dec_deg": -1.579445
+        },
+        {
+          "name": "Pluto",
+          "ra_deg": 305.455387,
+          "dec_deg": -23.321861
         }
       ],
       "planet_plot_policy": "plot all preserved 2-D Star Almanack Solar-System positions that fall inside the Pathfinder field; the Moon is a normal plotted body, with apparent-disk occultation handled only by rendering/collision logic",
@@ -808,6 +931,21 @@
           "sky_separation_deg": 12.4,
           "finder_difficulty": "difficult",
           "finder_note": "Moon is not easy to find this week."
+        },
+        {
+          "kind": "planet-star-longitude",
+          "planet": "Mercury",
+          "planet_longitude_deg": 264.1,
+          "star": "Sabik",
+          "constellation": "Oph",
+          "star_ecliptic_longitude_deg": 257.97,
+          "star_ecliptic_latitude_deg": 7.198,
+          "longitude_separation_deg": 6.1,
+          "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+          "finder_only": true,
+          "planet_ra_deg": 263.168102,
+          "planet_dec_deg": -23.515701,
+          "sky_separation_deg": 9.4
         }
       ],
       "planet_position": {
@@ -819,6 +957,51 @@
           "name": "Moon",
           "ra_deg": 19.594679,
           "dec_deg": 11.916785
+        },
+        {
+          "name": "Mercury",
+          "ra_deg": 263.168102,
+          "dec_deg": -23.515701
+        },
+        {
+          "name": "Venus",
+          "ra_deg": 275.535989,
+          "dec_deg": -23.73001
+        },
+        {
+          "name": "Mars",
+          "ra_deg": 280.980227,
+          "dec_deg": -23.926617
+        },
+        {
+          "name": "Ceres",
+          "ra_deg": 9.195224,
+          "dec_deg": -5.93037
+        },
+        {
+          "name": "Jupiter",
+          "ra_deg": 113.146913,
+          "dec_deg": 21.966314
+        },
+        {
+          "name": "Saturn",
+          "ra_deg": 356.895735,
+          "dec_deg": -3.817176
+        },
+        {
+          "name": "Uranus",
+          "ra_deg": 55.449236,
+          "dec_deg": 19.444093
+        },
+        {
+          "name": "Neptune",
+          "ra_deg": 359.712127,
+          "dec_deg": -1.579445
+        },
+        {
+          "name": "Pluto",
+          "ra_deg": 305.455387,
+          "dec_deg": -23.321861
         }
       ],
       "planet_plot_policy": "plot all preserved 2-D Star Almanack Solar-System positions that fall inside the Pathfinder field; the Moon is a normal plotted body, with apparent-disk occultation handled only by rendering/collision logic",
@@ -899,19 +1082,35 @@
       "planetary_context": [
         {
           "kind": "planet-star-longitude",
-          "planet": "Mars",
-          "planet_longitude_deg": 280.4,
-          "star": "Nunki",
-          "constellation": "Sgr",
-          "star_ecliptic_longitude_deg": 282.385,
-          "star_ecliptic_latitude_deg": -3.45,
-          "longitude_separation_deg": 2.0,
+          "planet": "Moon",
+          "planet_longitude_deg": 22.933,
+          "star": "Sheratan",
+          "constellation": "Ari",
+          "star_ecliptic_longitude_deg": 33.97,
+          "star_ecliptic_latitude_deg": 8.487,
+          "longitude_separation_deg": 11.0,
           "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
           "finder_only": true,
-          "planet_ra_deg": 280.980227,
-          "planet_dec_deg": -23.926617,
-          "sky_separation_deg": 3.5,
-          "asterism": "Teapot of Sagittarius"
+          "planet_ra_deg": 19.594679,
+          "planet_dec_deg": 11.916785,
+          "sky_separation_deg": 12.4,
+          "finder_difficulty": "difficult",
+          "finder_note": "Moon is not easy to find this week."
+        },
+        {
+          "kind": "planet-star-longitude",
+          "planet": "Mercury",
+          "planet_longitude_deg": 264.1,
+          "star": "Sabik",
+          "constellation": "Oph",
+          "star_ecliptic_longitude_deg": 257.97,
+          "star_ecliptic_latitude_deg": 7.198,
+          "longitude_separation_deg": 6.1,
+          "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+          "finder_only": true,
+          "planet_ra_deg": 263.168102,
+          "planet_dec_deg": -23.515701,
+          "sky_separation_deg": 9.4
         }
       ],
       "planet_position": {
@@ -920,9 +1119,54 @@
       },
       "solar_system_field": [
         {
+          "name": "Moon",
+          "ra_deg": 19.594679,
+          "dec_deg": 11.916785
+        },
+        {
+          "name": "Mercury",
+          "ra_deg": 263.168102,
+          "dec_deg": -23.515701
+        },
+        {
+          "name": "Venus",
+          "ra_deg": 275.535989,
+          "dec_deg": -23.73001
+        },
+        {
           "name": "Mars",
           "ra_deg": 280.980227,
           "dec_deg": -23.926617
+        },
+        {
+          "name": "Ceres",
+          "ra_deg": 9.195224,
+          "dec_deg": -5.93037
+        },
+        {
+          "name": "Jupiter",
+          "ra_deg": 113.146913,
+          "dec_deg": 21.966314
+        },
+        {
+          "name": "Saturn",
+          "ra_deg": 356.895735,
+          "dec_deg": -3.817176
+        },
+        {
+          "name": "Uranus",
+          "ra_deg": 55.449236,
+          "dec_deg": 19.444093
+        },
+        {
+          "name": "Neptune",
+          "ra_deg": 359.712127,
+          "dec_deg": -1.579445
+        },
+        {
+          "name": "Pluto",
+          "ra_deg": 305.455387,
+          "dec_deg": -23.321861
         }
       ],
       "planet_plot_policy": "plot all preserved 2-D Star Almanack Solar-System positions that fall inside the Pathfinder field; the Moon is a normal plotted body, with apparent-disk occultation handled only by rendering/collision logic",
@@ -989,18 +1233,35 @@
       "planetary_context": [
         {
           "kind": "planet-star-longitude",
-          "planet": "Jupiter",
-          "planet_longitude_deg": 111.75,
-          "star": "Pollux",
-          "constellation": "Gem",
-          "star_ecliptic_longitude_deg": 113.216,
-          "star_ecliptic_latitude_deg": 6.684,
-          "longitude_separation_deg": 1.5,
+          "planet": "Moon",
+          "planet_longitude_deg": 22.933,
+          "star": "Sheratan",
+          "constellation": "Ari",
+          "star_ecliptic_longitude_deg": 33.97,
+          "star_ecliptic_latitude_deg": 8.487,
+          "longitude_separation_deg": 11.0,
           "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
           "finder_only": true,
-          "planet_ra_deg": 113.146913,
-          "planet_dec_deg": 21.966314,
-          "sky_separation_deg": 6.7
+          "planet_ra_deg": 19.594679,
+          "planet_dec_deg": 11.916785,
+          "sky_separation_deg": 12.4,
+          "finder_difficulty": "difficult",
+          "finder_note": "Moon is not easy to find this week."
+        },
+        {
+          "kind": "planet-star-longitude",
+          "planet": "Mercury",
+          "planet_longitude_deg": 264.1,
+          "star": "Sabik",
+          "constellation": "Oph",
+          "star_ecliptic_longitude_deg": 257.97,
+          "star_ecliptic_latitude_deg": 7.198,
+          "longitude_separation_deg": 6.1,
+          "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+          "finder_only": true,
+          "planet_ra_deg": 263.168102,
+          "planet_dec_deg": -23.515701,
+          "sky_separation_deg": 9.4
         }
       ],
       "planet_position": {
@@ -1009,9 +1270,54 @@
       },
       "solar_system_field": [
         {
+          "name": "Moon",
+          "ra_deg": 19.594679,
+          "dec_deg": 11.916785
+        },
+        {
+          "name": "Mercury",
+          "ra_deg": 263.168102,
+          "dec_deg": -23.515701
+        },
+        {
+          "name": "Venus",
+          "ra_deg": 275.535989,
+          "dec_deg": -23.73001
+        },
+        {
+          "name": "Mars",
+          "ra_deg": 280.980227,
+          "dec_deg": -23.926617
+        },
+        {
+          "name": "Ceres",
+          "ra_deg": 9.195224,
+          "dec_deg": -5.93037
+        },
+        {
           "name": "Jupiter",
           "ra_deg": 113.146913,
           "dec_deg": 21.966314
+        },
+        {
+          "name": "Saturn",
+          "ra_deg": 356.895735,
+          "dec_deg": -3.817176
+        },
+        {
+          "name": "Uranus",
+          "ra_deg": 55.449236,
+          "dec_deg": 19.444093
+        },
+        {
+          "name": "Neptune",
+          "ra_deg": 359.712127,
+          "dec_deg": -1.579445
+        },
+        {
+          "name": "Pluto",
+          "ra_deg": 305.455387,
+          "dec_deg": -23.321861
         }
       ],
       "planet_plot_policy": "plot all preserved 2-D Star Almanack Solar-System positions that fall inside the Pathfinder field; the Moon is a normal plotted body, with apparent-disk occultation handled only by rendering/collision logic",
@@ -1078,20 +1384,35 @@
       "planetary_context": [
         {
           "kind": "planet-star-longitude",
-          "planet": "Saturn",
-          "planet_longitude_deg": 356.0,
-          "star": "Fumalsamakah",
-          "constellation": "Psc",
-          "star_ecliptic_longitude_deg": 348.585,
-          "star_ecliptic_latitude_deg": 9.053,
-          "longitude_separation_deg": 7.4,
+          "planet": "Moon",
+          "planet_longitude_deg": 22.933,
+          "star": "Sheratan",
+          "constellation": "Ari",
+          "star_ecliptic_longitude_deg": 33.97,
+          "star_ecliptic_latitude_deg": 8.487,
+          "longitude_separation_deg": 11.0,
           "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
           "finder_only": true,
-          "planet_ra_deg": 356.895735,
-          "planet_dec_deg": -3.817176,
-          "sky_separation_deg": 13.3,
+          "planet_ra_deg": 19.594679,
+          "planet_dec_deg": 11.916785,
+          "sky_separation_deg": 12.4,
           "finder_difficulty": "difficult",
-          "finder_note": "Saturn is not easy to find this week."
+          "finder_note": "Moon is not easy to find this week."
+        },
+        {
+          "kind": "planet-star-longitude",
+          "planet": "Mercury",
+          "planet_longitude_deg": 264.1,
+          "star": "Sabik",
+          "constellation": "Oph",
+          "star_ecliptic_longitude_deg": 257.97,
+          "star_ecliptic_latitude_deg": 7.198,
+          "longitude_separation_deg": 6.1,
+          "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+          "finder_only": true,
+          "planet_ra_deg": 263.168102,
+          "planet_dec_deg": -23.515701,
+          "sky_separation_deg": 9.4
         }
       ],
       "planet_position": {
@@ -1100,9 +1421,54 @@
       },
       "solar_system_field": [
         {
+          "name": "Moon",
+          "ra_deg": 19.594679,
+          "dec_deg": 11.916785
+        },
+        {
+          "name": "Mercury",
+          "ra_deg": 263.168102,
+          "dec_deg": -23.515701
+        },
+        {
+          "name": "Venus",
+          "ra_deg": 275.535989,
+          "dec_deg": -23.73001
+        },
+        {
+          "name": "Mars",
+          "ra_deg": 280.980227,
+          "dec_deg": -23.926617
+        },
+        {
+          "name": "Ceres",
+          "ra_deg": 9.195224,
+          "dec_deg": -5.93037
+        },
+        {
+          "name": "Jupiter",
+          "ra_deg": 113.146913,
+          "dec_deg": 21.966314
+        },
+        {
           "name": "Saturn",
           "ra_deg": 356.895735,
           "dec_deg": -3.817176
+        },
+        {
+          "name": "Uranus",
+          "ra_deg": 55.449236,
+          "dec_deg": 19.444093
+        },
+        {
+          "name": "Neptune",
+          "ra_deg": 359.712127,
+          "dec_deg": -1.579445
+        },
+        {
+          "name": "Pluto",
+          "ra_deg": 305.455387,
+          "dec_deg": -23.321861
         }
       ],
       "planet_plot_policy": "plot all preserved 2-D Star Almanack Solar-System positions that fall inside the Pathfinder field; the Moon is a normal plotted body, with apparent-disk occultation handled only by rendering/collision logic",
@@ -1169,20 +1535,35 @@
       "planetary_context": [
         {
           "kind": "planet-star-longitude",
-          "planet": "Uranus",
-          "planet_longitude_deg": 58.033,
-          "star": "Aldebaran",
-          "constellation": "Tau",
-          "star_ecliptic_longitude_deg": 69.789,
-          "star_ecliptic_latitude_deg": -5.467,
-          "longitude_separation_deg": 11.8,
+          "planet": "Moon",
+          "planet_longitude_deg": 22.933,
+          "star": "Sheratan",
+          "constellation": "Ari",
+          "star_ecliptic_longitude_deg": 33.97,
+          "star_ecliptic_latitude_deg": 8.487,
+          "longitude_separation_deg": 11.0,
           "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
           "finder_only": true,
-          "planet_ra_deg": 55.449236,
-          "planet_dec_deg": 19.444093,
-          "sky_separation_deg": 13.2,
+          "planet_ra_deg": 19.594679,
+          "planet_dec_deg": 11.916785,
+          "sky_separation_deg": 12.4,
           "finder_difficulty": "difficult",
-          "finder_note": "Uranus is not easy to find this week."
+          "finder_note": "Moon is not easy to find this week."
+        },
+        {
+          "kind": "planet-star-longitude",
+          "planet": "Mercury",
+          "planet_longitude_deg": 264.1,
+          "star": "Sabik",
+          "constellation": "Oph",
+          "star_ecliptic_longitude_deg": 257.97,
+          "star_ecliptic_latitude_deg": 7.198,
+          "longitude_separation_deg": 6.1,
+          "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+          "finder_only": true,
+          "planet_ra_deg": 263.168102,
+          "planet_dec_deg": -23.515701,
+          "sky_separation_deg": 9.4
         }
       ],
       "planet_position": {
@@ -1191,9 +1572,54 @@
       },
       "solar_system_field": [
         {
+          "name": "Moon",
+          "ra_deg": 19.594679,
+          "dec_deg": 11.916785
+        },
+        {
+          "name": "Mercury",
+          "ra_deg": 263.168102,
+          "dec_deg": -23.515701
+        },
+        {
+          "name": "Venus",
+          "ra_deg": 275.535989,
+          "dec_deg": -23.73001
+        },
+        {
+          "name": "Mars",
+          "ra_deg": 280.980227,
+          "dec_deg": -23.926617
+        },
+        {
+          "name": "Ceres",
+          "ra_deg": 9.195224,
+          "dec_deg": -5.93037
+        },
+        {
+          "name": "Jupiter",
+          "ra_deg": 113.146913,
+          "dec_deg": 21.966314
+        },
+        {
+          "name": "Saturn",
+          "ra_deg": 356.895735,
+          "dec_deg": -3.817176
+        },
+        {
           "name": "Uranus",
           "ra_deg": 55.449236,
           "dec_deg": 19.444093
+        },
+        {
+          "name": "Neptune",
+          "ra_deg": 359.712127,
+          "dec_deg": -1.579445
+        },
+        {
+          "name": "Pluto",
+          "ra_deg": 305.455387,
+          "dec_deg": -23.321861
         }
       ],
       "planet_plot_policy": "plot all preserved 2-D Star Almanack Solar-System positions that fall inside the Pathfinder field; the Moon is a normal plotted body, with apparent-disk occultation handled only by rendering/collision logic",
@@ -1260,20 +1686,35 @@
       "planetary_context": [
         {
           "kind": "planet-star-longitude",
-          "planet": "Neptune",
-          "planet_longitude_deg": 359.467,
-          "star": "Fumalsamakah",
-          "constellation": "Psc",
-          "star_ecliptic_longitude_deg": 348.585,
-          "star_ecliptic_latitude_deg": 9.053,
-          "longitude_separation_deg": 10.9,
+          "planet": "Moon",
+          "planet_longitude_deg": 22.933,
+          "star": "Sheratan",
+          "constellation": "Ari",
+          "star_ecliptic_longitude_deg": 33.97,
+          "star_ecliptic_latitude_deg": 8.487,
+          "longitude_separation_deg": 11.0,
           "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
           "finder_only": true,
-          "planet_ra_deg": 359.712127,
-          "planet_dec_deg": -1.579445,
-          "sky_separation_deg": 14.8,
+          "planet_ra_deg": 19.594679,
+          "planet_dec_deg": 11.916785,
+          "sky_separation_deg": 12.4,
           "finder_difficulty": "difficult",
-          "finder_note": "Neptune is not easy to find this week."
+          "finder_note": "Moon is not easy to find this week."
+        },
+        {
+          "kind": "planet-star-longitude",
+          "planet": "Mercury",
+          "planet_longitude_deg": 264.1,
+          "star": "Sabik",
+          "constellation": "Oph",
+          "star_ecliptic_longitude_deg": 257.97,
+          "star_ecliptic_latitude_deg": 7.198,
+          "longitude_separation_deg": 6.1,
+          "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+          "finder_only": true,
+          "planet_ra_deg": 263.168102,
+          "planet_dec_deg": -23.515701,
+          "sky_separation_deg": 9.4
         }
       ],
       "planet_position": {
@@ -1282,9 +1723,54 @@
       },
       "solar_system_field": [
         {
+          "name": "Moon",
+          "ra_deg": 19.594679,
+          "dec_deg": 11.916785
+        },
+        {
+          "name": "Mercury",
+          "ra_deg": 263.168102,
+          "dec_deg": -23.515701
+        },
+        {
+          "name": "Venus",
+          "ra_deg": 275.535989,
+          "dec_deg": -23.73001
+        },
+        {
+          "name": "Mars",
+          "ra_deg": 280.980227,
+          "dec_deg": -23.926617
+        },
+        {
+          "name": "Ceres",
+          "ra_deg": 9.195224,
+          "dec_deg": -5.93037
+        },
+        {
+          "name": "Jupiter",
+          "ra_deg": 113.146913,
+          "dec_deg": 21.966314
+        },
+        {
+          "name": "Saturn",
+          "ra_deg": 356.895735,
+          "dec_deg": -3.817176
+        },
+        {
+          "name": "Uranus",
+          "ra_deg": 55.449236,
+          "dec_deg": 19.444093
+        },
+        {
           "name": "Neptune",
           "ra_deg": 359.712127,
           "dec_deg": -1.579445
+        },
+        {
+          "name": "Pluto",
+          "ra_deg": 305.455387,
+          "dec_deg": -23.321861
         }
       ],
       "planet_plot_policy": "plot all preserved 2-D Star Almanack Solar-System positions that fall inside the Pathfinder field; the Moon is a normal plotted body, with apparent-disk occultation handled only by rendering/collision logic",
@@ -1351,20 +1837,35 @@
       "planetary_context": [
         {
           "kind": "planet-star-longitude",
-          "planet": "Ceres",
-          "planet_longitude_deg": 6.45,
-          "star": "Diphda",
-          "constellation": "Cet",
-          "star_ecliptic_longitude_deg": 2.583,
-          "star_ecliptic_latitude_deg": -20.784,
-          "longitude_separation_deg": 3.9,
+          "planet": "Moon",
+          "planet_longitude_deg": 22.933,
+          "star": "Sheratan",
+          "constellation": "Ari",
+          "star_ecliptic_longitude_deg": 33.97,
+          "star_ecliptic_latitude_deg": 8.487,
+          "longitude_separation_deg": 11.0,
           "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
           "finder_only": true,
-          "planet_ra_deg": 9.195224,
-          "planet_dec_deg": -5.93037,
-          "sky_separation_deg": 12.2,
+          "planet_ra_deg": 19.594679,
+          "planet_dec_deg": 11.916785,
+          "sky_separation_deg": 12.4,
           "finder_difficulty": "difficult",
-          "finder_note": "Ceres is not easy to find this week."
+          "finder_note": "Moon is not easy to find this week."
+        },
+        {
+          "kind": "planet-star-longitude",
+          "planet": "Mercury",
+          "planet_longitude_deg": 264.1,
+          "star": "Sabik",
+          "constellation": "Oph",
+          "star_ecliptic_longitude_deg": 257.97,
+          "star_ecliptic_latitude_deg": 7.198,
+          "longitude_separation_deg": 6.1,
+          "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+          "finder_only": true,
+          "planet_ra_deg": 263.168102,
+          "planet_dec_deg": -23.515701,
+          "sky_separation_deg": 9.4
         }
       ],
       "planet_position": {
@@ -1373,9 +1874,54 @@
       },
       "solar_system_field": [
         {
+          "name": "Moon",
+          "ra_deg": 19.594679,
+          "dec_deg": 11.916785
+        },
+        {
+          "name": "Mercury",
+          "ra_deg": 263.168102,
+          "dec_deg": -23.515701
+        },
+        {
+          "name": "Venus",
+          "ra_deg": 275.535989,
+          "dec_deg": -23.73001
+        },
+        {
+          "name": "Mars",
+          "ra_deg": 280.980227,
+          "dec_deg": -23.926617
+        },
+        {
           "name": "Ceres",
           "ra_deg": 9.195224,
           "dec_deg": -5.93037
+        },
+        {
+          "name": "Jupiter",
+          "ra_deg": 113.146913,
+          "dec_deg": 21.966314
+        },
+        {
+          "name": "Saturn",
+          "ra_deg": 356.895735,
+          "dec_deg": -3.817176
+        },
+        {
+          "name": "Uranus",
+          "ra_deg": 55.449236,
+          "dec_deg": 19.444093
+        },
+        {
+          "name": "Neptune",
+          "ra_deg": 359.712127,
+          "dec_deg": -1.579445
+        },
+        {
+          "name": "Pluto",
+          "ra_deg": 305.455387,
+          "dec_deg": -23.321861
         }
       ],
       "planet_plot_policy": "plot all preserved 2-D Star Almanack Solar-System positions that fall inside the Pathfinder field; the Moon is a normal plotted body, with apparent-disk occultation handled only by rendering/collision logic",
@@ -1442,18 +1988,35 @@
       "planetary_context": [
         {
           "kind": "planet-star-longitude",
-          "planet": "Pluto",
-          "planet_longitude_deg": 302.633,
-          "star": "Dabih",
-          "constellation": "Cap",
-          "star_ecliptic_longitude_deg": 304.047,
-          "star_ecliptic_latitude_deg": 4.589,
-          "longitude_separation_deg": 1.4,
+          "planet": "Moon",
+          "planet_longitude_deg": 22.933,
+          "star": "Sheratan",
+          "constellation": "Ari",
+          "star_ecliptic_longitude_deg": 33.97,
+          "star_ecliptic_latitude_deg": 8.487,
+          "longitude_separation_deg": 11.0,
           "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
           "finder_only": true,
-          "planet_ra_deg": 305.455387,
-          "planet_dec_deg": -23.321861,
-          "sky_separation_deg": 8.5
+          "planet_ra_deg": 19.594679,
+          "planet_dec_deg": 11.916785,
+          "sky_separation_deg": 12.4,
+          "finder_difficulty": "difficult",
+          "finder_note": "Moon is not easy to find this week."
+        },
+        {
+          "kind": "planet-star-longitude",
+          "planet": "Mercury",
+          "planet_longitude_deg": 264.1,
+          "star": "Sabik",
+          "constellation": "Oph",
+          "star_ecliptic_longitude_deg": 257.97,
+          "star_ecliptic_latitude_deg": 7.198,
+          "longitude_separation_deg": 6.1,
+          "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+          "finder_only": true,
+          "planet_ra_deg": 263.168102,
+          "planet_dec_deg": -23.515701,
+          "sky_separation_deg": 9.4
         }
       ],
       "planet_position": {
@@ -1461,6 +2024,51 @@
         "dec_deg": -23.321861
       },
       "solar_system_field": [
+        {
+          "name": "Moon",
+          "ra_deg": 19.594679,
+          "dec_deg": 11.916785
+        },
+        {
+          "name": "Mercury",
+          "ra_deg": 263.168102,
+          "dec_deg": -23.515701
+        },
+        {
+          "name": "Venus",
+          "ra_deg": 275.535989,
+          "dec_deg": -23.73001
+        },
+        {
+          "name": "Mars",
+          "ra_deg": 280.980227,
+          "dec_deg": -23.926617
+        },
+        {
+          "name": "Ceres",
+          "ra_deg": 9.195224,
+          "dec_deg": -5.93037
+        },
+        {
+          "name": "Jupiter",
+          "ra_deg": 113.146913,
+          "dec_deg": 21.966314
+        },
+        {
+          "name": "Saturn",
+          "ra_deg": 356.895735,
+          "dec_deg": -3.817176
+        },
+        {
+          "name": "Uranus",
+          "ra_deg": 55.449236,
+          "dec_deg": 19.444093
+        },
+        {
+          "name": "Neptune",
+          "ra_deg": 359.712127,
+          "dec_deg": -1.579445
+        },
         {
           "name": "Pluto",
           "ra_deg": 305.455387,
