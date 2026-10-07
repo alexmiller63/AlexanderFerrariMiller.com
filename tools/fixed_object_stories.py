@@ -130,11 +130,11 @@ def _fixed_object_meta(fixed_object_id: int) -> dict:
     raise RuntimeError(f"Unknown fixed_object_id {fixed_object_id}")
 
 
-def _routes_for(name: str) -> list[dict]:
+def _routes_for(fixed_object_id: int) -> list[dict]:
     if not STAR_HOPS.exists():
         return []
     payload = json.loads(STAR_HOPS.read_text(encoding="utf-8"))
-    return [route for route in payload.get("routes") or [] if route.get("target") == name]
+    return [route for route in payload.get("routes") or [] if route["target_fixed_object_id"] == fixed_object_id]
 
 
 def _constellation_name(abbreviation: str | None) -> str | None:
@@ -283,7 +283,7 @@ def baseline_story(fixed_object_id: int) -> Story:
             f"Why it is here: The Calendar selected {name} as one of this week’s fixed-sky observing targets."
         )
 
-    routes = _routes_for(name)
+    routes = _routes_for(fixed_object_id)
     route_texts = [
         str(route.get("instruction") or "").strip()
         for route in routes if str(route.get("instruction") or "").strip()

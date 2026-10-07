@@ -63,8 +63,10 @@ jobs:
             tools/populate_sky_notes_descriptor_by_date.py \
             tools/populate_sky_notes_by_date.py \
             tools/fixed_object_stories.py \
-            tools/sky_note_descriptors.py
+            tools/sky_note_descriptors.py \
+            tools/object_identity.py
           echo "Sky Notes generator sources compile cleanly."
+          python tools/test_sky_note_identities.py
 
       - name: Generate descriptor-first Sky Notes
         run: python tools/populate_sky_notes_descriptor_by_date.py "${{ steps.range.outputs.start_date }}" "${{ steps.range.outputs.end_date }}"

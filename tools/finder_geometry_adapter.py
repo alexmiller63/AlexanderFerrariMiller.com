@@ -8,6 +8,8 @@ It never infers, completes, or invents geometry.
 """
 from __future__ import annotations
 
+from object_identity import asterism_identity
+
 
 def _vertex_ref(vertex: dict) -> str:
     catalog = str(vertex.get("catalog", "")).strip().upper()
@@ -53,7 +55,8 @@ def asterism_spec(registry: dict, asterism_id: str, fallback_name: str = "") -> 
     if not paths:
         raise RuntimeError(f"Asterism {asterism_id!r} has no drawable paths")
     return {
-        "id": asterism_id,
+        "id": asterism_identity(asterism_id)["id"],
+        "geometry_key": asterism_id,
         "name": record.get("name") or fallback_name or asterism_id,
         "paths": paths,
     }
@@ -84,7 +87,8 @@ def all_asterism_specs(registry: dict) -> list[dict]:
         paths = renderer_paths(record)
         if paths:
             result.append({
-                "id": asterism_id,
+                "id": asterism_identity(asterism_id)["id"],
+                "geometry_key": asterism_id,
                 "name": record.get("name") or asterism_id,
                 "paths": paths,
             })

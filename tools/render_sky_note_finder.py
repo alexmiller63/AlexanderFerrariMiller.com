@@ -892,10 +892,10 @@ def render(spec: dict, stars, output: Path) -> None:
         if item.get("name") not in drawn_names
     ]
     ambient_paths = [path for item in ambient_figures for path in item["paths"]]
-    asterism_keys = {item.get("id") or item.get("name") for item in asterisms}
+    asterism_keys = {item["id"] for item in asterisms}
     for item in visible_context(spec.get("candidate_asterisms") or [], idx, center,
                                 xmin, xmax, ymin, ymax):
-        key = item.get("id") or item.get("name")
+        key = item["id"]
         if key not in asterism_keys:
             asterisms.append(item)
             asterism_keys.add(key)

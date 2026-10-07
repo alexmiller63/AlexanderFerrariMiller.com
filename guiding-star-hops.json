@@ -6,7 +6,11 @@
       "id": "big-dipper-arcturus-spica",
       "target_type": "star",
       "target": "Spica",
-      "steps": ["Big Dipper", "Arcturus", "Spica"],
+      "steps": [
+        "Big Dipper",
+        "Arcturus",
+        "Spica"
+      ],
       "instruction": "Trace the curve of the Big Dipper's handle to Arcturus, then continue the same sweep to Spica.",
       "instruction_authorship": "Star Almanack original wording",
       "provenance": {
@@ -14,13 +18,32 @@
         "source_url": "https://www.jpl.nasa.gov/videos/whats-up-for-april-2011/",
         "source_role": "verification",
         "supports": "star-hop-method"
-      }
+      },
+      "target_fixed_object_id": 60,
+      "step_identities": [
+        {
+          "type": "asterism",
+          "id": 1362
+        },
+        {
+          "type": "fixed-object",
+          "id": 63
+        },
+        {
+          "type": "fixed-object",
+          "id": 60
+        }
+      ]
     },
     {
       "id": "orions-belt-aldebaran",
       "target_type": "star",
       "target": "Aldebaran",
-      "steps": ["Orion's Belt", "Aldebaran", "Hyades / V of Taurus"],
+      "steps": [
+        "Orion's Belt",
+        "Aldebaran",
+        "Hyades / V of Taurus"
+      ],
       "instruction": "Use Orion's three Belt stars as a pointer westward toward orange Aldebaran and the Hyades V.",
       "instruction_authorship": "Star Almanack original wording",
       "provenance": {
@@ -28,13 +51,31 @@
         "source_url": "https://science.nasa.gov/solar-system/skywatching/night-sky-network/spot-the-young-stars-of-the-hyades-and-pleiades/",
         "source_role": "verification",
         "supports": "star-hop-method"
-      }
+      },
+      "target_fixed_object_id": 25,
+      "step_identities": [
+        {
+          "type": "asterism",
+          "id": 1365
+        },
+        {
+          "type": "fixed-object",
+          "id": 25
+        },
+        {
+          "type": "asterism",
+          "id": 1376
+        }
+      ]
     },
     {
       "id": "great-square-enif",
       "target_type": "star",
       "target": "Enif",
-      "steps": ["Great Square of Pegasus", "Enif"],
+      "steps": [
+        "Great Square of Pegasus",
+        "Enif"
+      ],
       "instruction": "Start at the Great Square of Pegasus and work west to Enif, the only nearby 2nd-magnitude star; it sits near the lower-right corner of an imagined second square.",
       "instruction_authorship": "Star Almanack original wording",
       "provenance": {
@@ -42,13 +83,28 @@
         "source_url": "https://skyandtelescope.org/astronomy-news/meet-enif-the-nose-of-the-winged-horse/",
         "source_role": "verification",
         "supports": "star-hop-method"
-      }
+      },
+      "target_fixed_object_id": 1182,
+      "step_identities": [
+        {
+          "type": "asterism",
+          "id": 1368
+        },
+        {
+          "type": "fixed-object",
+          "id": 1182
+        }
+      ]
     },
     {
       "id": "northern-cross-sadr-m29",
       "target_type": "deep-sky-object",
       "target": "M29",
-      "steps": ["Northern Cross", "Sadr", "M29"],
+      "steps": [
+        "Northern Cross",
+        "Sadr",
+        "M29"
+      ],
       "instruction": "Find the Northern Cross, center on Sadr, then move about 1.8° south to M29.",
       "instruction_authorship": "Star Almanack original wording",
       "provenance": {
@@ -56,7 +112,22 @@
         "source_url": "https://www.astronomy.com/science/open-cluster-m29-spiral-galaxy-ngc-6951-and-the-egg-nebula/",
         "source_role": "verification",
         "supports": "star-hop-method"
-      }
+      },
+      "target_fixed_object_id": 384,
+      "step_identities": [
+        {
+          "type": "asterism",
+          "id": 1371
+        },
+        {
+          "type": "fixed-object",
+          "id": 110
+        },
+        {
+          "type": "fixed-object",
+          "id": 384
+        }
+      ]
     }
   ]
 }

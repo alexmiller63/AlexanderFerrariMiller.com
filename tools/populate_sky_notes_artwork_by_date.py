@@ -9,6 +9,7 @@ from pathlib import Path
 
 from finder_geometry_adapter import asterism_spec, constellation_paths, all_asterism_specs, all_constellation_specs
 from iso_date_range import parse_range_args
+from object_identity import asterism_identity, require_fixed_object_id
 
 ROOT = Path(__file__).resolve().parents[1]
 DESCRIPTOR_ROOT = ROOT / "generated-sky-notes"
@@ -62,7 +63,10 @@ def accepted_geometry(descriptor: dict) -> dict:
     asterism = descriptor.get("asterism")
     if asterism:
         asterisms = registry.get("asterisms") or {}
-        asterism_id = asterism.get("id")
+        identity = asterism_identity(asterism["id"])
+        asterism_id = identity["geometry_key"]
+        if asterism.get("geometry_key") != asterism_id:
+            raise RuntimeError("Asterism identity/geometry key mismatch")
         if asterism_id not in asterisms:
             raise RuntimeError(f"Accepted Star Almanack asterism {asterism_id!r} is undefined")
         accepted = asterisms[asterism_id]
@@ -146,42 +150,6 @@ def hip_number(ref: str) -> str | None:
     return match.group(1) if match else None
 
 
-BAYER_GUIDE_WORDS = {
-    "Alp": "Alpha", "Bet": "Beta",
-}
-
-
-def normalize_guide_name(value: str) -> str:
-    """Normalize renderer guide labels without confusing presentation with identity."""
-    return re.sub(r"[^a-z0-9]+", "", str(value).casefold())
-
-
-def catalog_target_refs(target_name: str) -> list[str]:
-    """Resolve a named guide to its HIP identity in the stellar catalogs."""
-    wanted = normalize_guide_name(target_name)
-    matches = []
-    for catalog in (STELLAR_CATALOG, FINDER_CATALOG):
-        with catalog.open(newline="", encoding="utf-8") as fh:
-            for row in csv.DictReader(fh):
-                hip = str(row.get("hip") or "").strip()
-                if not hip:
-                    continue
-                aliases = {
-                    str(row.get("proper") or row.get("name") or "").strip(),
-                    str(row.get("bayer") or "").strip(),
-                }
-                code = str(row.get("bayer_code") or "").strip()
-                con = str(row.get("con") or "").strip()
-                match = re.fullmatch(r"([A-Za-z]+)(\d*)", code)
-                if match and con:
-                    word = BAYER_GUIDE_WORDS.get(match.group(1))
-                    if word:
-                        aliases.add(f"{word}{match.group(2)} {con}")
-                if wanted and any(normalize_guide_name(alias) == wanted for alias in aliases if alias):
-                    matches.append(f"HIP {hip}")
-    return list(dict.fromkeys(matches))
-
-
 def artwork_owner_identity(payload: dict, descriptor: dict) -> dict:
     """Choose the object the finder locates, independently of its guide stars.
 
@@ -196,9 +164,10 @@ def artwork_owner_identity(payload: dict, descriptor: dict) -> dict:
     if len(deep) > 1:
         raise RuntimeError(f"{descriptor['week']}: finder has multiple deep-sky targets; artwork ownership must be explicit")
     owner = deep[0] if deep else (targets[0] if targets else None)
-    if not owner or not owner.get("name"):
+    if not owner or not owner.get("fixed_object_id"):
         raise RuntimeError(f"{descriptor['week']}: finder has no artwork target")
-    matches = [item for item in payload.get("fixed_sky") or [] if item.get("name") == owner["name"]]
+    owner_id = require_fixed_object_id(owner["fixed_object_id"])
+    matches = [item for item in payload.get("fixed_sky") or [] if item.get("fixed_object_id") == owner_id]
     if len(matches) != 1 or not isinstance(matches[0].get("fixed_object_id"), int):
         raise RuntimeError(f"{descriptor['week']}: artwork target {owner['name']!r} does not resolve to exactly one immutable fixed object")
     return dict(matches[0])
@@ -218,10 +187,12 @@ def attach_fixed_object_ids(spec: dict) -> dict:
                 if ref not in seen:
                     seen.add(ref); refs.append(ref)
 
-    guide_name = str(spec.get("target") or "").strip()
-    guide_refs = catalog_target_refs(guide_name) if guide_name else []
+    guide = spec["guide_objects"][0]
+    guide_id = require_fixed_object_id(guide["fixed_object_id"])
+    guide_name = str(guide.get("name") or "").strip()
+    guide_refs = [f"HIP {hip}" for hip, fid in by_hip.items() if fid == guide_id]
     if len(guide_refs) != 1:
-        raise RuntimeError(f"Finder guide {guide_name!r} resolves to authoritative catalog refs {guide_refs}; expected exactly one HIP renderer ref")
+        raise RuntimeError(f"Guide ID {guide_id} resolves to {guide_refs}; expected exactly one HIP renderer ref")
     guide_ref = guide_refs[0]
     if guide_ref not in seen:
         seen.add(guide_ref); refs.append(guide_ref)
@@ -245,8 +216,7 @@ def attach_fixed_object_ids(spec: dict) -> dict:
     guide_id = by_hip.get(guide_hip) if guide_hip else None
     if guide_id is None or guide_id not in identity_by_id:
         raise RuntimeError(f"Finder guide {guide_name!r} has no immutable fixed-object identity")
-    # The catalog's name is validated against this exact HIP above. Some
-    # expanded Bayer names are absent from the fixed-object metadata index.
+    # Display labels come from the guide; identity is the permanent ID/HIP mapping.
     identity_by_id[guide_id]["proper_name"] = guide_name
     spec["fixed_object_identities"] = identities
     spec["guide_anchor_identity"] = identity_by_id[guide_id]
@@ -271,7 +241,7 @@ def build_renderer_spec(descriptor: dict, registry: dict, owner_identity: dict) 
             "guide_objects": guides}
     requested = descriptor.get("asterism")
     if requested:
-        spec["asterisms"].append(asterism_spec(registry, requested["id"], requested.get("name", "")))
+        spec["asterisms"].append(asterism_spec(registry, asterism_identity(requested["id"])["geometry_key"], requested.get("name", "")))
     return attach_fixed_object_ids(spec)
 
 
@@ -299,7 +269,7 @@ def build_weekly_planet_renderer_spec(descriptor: dict, registry: dict) -> dict:
     }
     requested = descriptor.get("asterism")
     if requested:
-        spec["asterisms"].append(asterism_spec(registry, requested["id"], requested.get("name", "")))
+        spec["asterisms"].append(asterism_spec(registry, asterism_identity(requested["id"])["geometry_key"], requested.get("name", "")))
     # Resolve the reference star through immutable identity, but do not make the
     # moving planet or the week an owner of fixed-object artwork.
     spec = attach_fixed_object_ids(spec)

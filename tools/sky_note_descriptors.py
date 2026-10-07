@@ -12,6 +12,7 @@ import re
 from pathlib import Path
 
 from fixed_object_stories import available_stories, reader_story_url
+from object_identity import asterism_identity, require_fixed_object_id, resolve_source_name
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE_ROOT = ROOT
@@ -73,31 +74,9 @@ OBSERVING_CONCEPTS = {
 }
 
 
-def slugify(value: str) -> str:
-    value = value.lower().replace("’", "'")
-    value = re.sub(r"[^a-z0-9]+", "-", value).strip("-")
-    return value or "descriptor"
-
-
-def _fixed_object_identity(name: str, abbreviation: str | None = None) -> int | None:
+def _fixed_object_identity(name: str, abbreviation: str | None = None) -> int:
     """Resolve a physical fixed-sky object name to its permanent database ID."""
-    database = json.loads(FIXED_OBJECT_DATABASE.read_text(encoding="utf-8"))
-    matches = []
-    for obj in database.get("fixed_objects", []):
-        facts = [src.get("facts") or {} for src in obj.get("source_records", [])]
-        named = [fact for fact in facts if str(fact.get("name") or "").casefold() == name.casefold()]
-        if not named:
-            continue
-        if abbreviation and not any(
-            not fact.get("constellation") or str(fact.get("constellation")) == abbreviation
-            for fact in named
-        ):
-            continue
-        matches.append(int(obj["fixed_object_id"]))
-    matches = sorted(set(matches))
-    if len(matches) > 1:
-        raise RuntimeError(f"Ambiguous fixed-object identity for {name!r} ({abbreviation}): {matches}")
-    return matches[0] if matches else None
+    return resolve_source_name(name, abbreviation)
 
 
 def _constellation_identity(name: str, abbreviation: str) -> str:
@@ -105,7 +84,7 @@ def _constellation_identity(name: str, abbreviation: str) -> str:
     registry = json.loads(IDENTITY_REGISTRY.read_text(encoding="utf-8"))
     matches = [
         record for record in registry.get("constellations", [])
-        if record.get("name") == name and record.get("abbr") == abbreviation
+        if record.get("abbr") == abbreviation
     ]
     if len(matches) != 1:
         raise RuntimeError(
@@ -153,6 +132,10 @@ def _core_asterisms() -> list[dict]:
             if current is not None:
                 records.append(current)
             current = {"name": raw.split(":", 1)[1].strip()}
+        elif current is not None and raw.startswith("    id: "):
+            current["id"] = int(raw.split(":", 1)[1].strip())
+        elif current is not None and raw.startswith("    member_fixed_object_ids: "):
+            current["member_fixed_object_ids"] = json.loads(raw.split(":", 1)[1].strip())
         elif current is not None and raw.startswith("    status: "):
             current["status"] = raw.split(":", 1)[1].strip()
         elif current is not None and raw.startswith("    members: ["):
@@ -178,6 +161,17 @@ def _star_hops() -> list[dict]:
     if not isinstance(routes, list):
         raise RuntimeError("Guiding star-hop catalog has no routes list")
     for route in routes:
+        require_fixed_object_id(route["target_fixed_object_id"])
+        steps = route["step_identities"]
+        if len(steps) != len(route["steps"]):
+            raise RuntimeError(f"Star-hop route {route.get('id')} has incomplete step identities")
+        for step in steps:
+            if step["type"] == "asterism":
+                asterism_identity(step["id"])
+            elif step["type"] == "fixed-object":
+                require_fixed_object_id(step["id"])
+            else:
+                raise RuntimeError(f"Unknown star-hop step type: {step['type']}")
         provenance = route.get("provenance")
         if not isinstance(provenance, dict):
             raise RuntimeError(f"Star-hop route {route.get('id')} has no provenance")
@@ -190,32 +184,25 @@ def _star_hops() -> list[dict]:
     return routes
 
 
-def _star_aliases(star: dict | None, name: str) -> set[str]:
-    aliases = {name.casefold()}
-    if star:
-        word = BAYER_WORDS.get(star.get("bayer"))
-        genitive = CONSTELLATION_GENITIVES.get(star.get("con"))
-        if word and genitive:
-            aliases.add(f"{word} {genitive}".casefold())
-    return aliases
-
-
 def _guiding_asterisms(
     star: dict | None,
     name: str,
     hops: list[dict],
     *,
     include_memberships: bool = True,
+    fixed_object_id: int | None = None,
 ) -> list[dict]:
-    aliases = _star_aliases(star, name)
+    if include_memberships:
+        fixed_object_id = require_fixed_object_id(fixed_object_id or (star or {}).get("fixed_object_id"))
     guides = []
     catalog = _core_asterisms()
     if include_memberships:
         for record in catalog:
-            if not any(member.casefold() in aliases for member in record["members"]):
+            if fixed_object_id not in record["member_fixed_object_ids"]:
                 continue
             guides.append({
-                "id": f"asterism-{slugify(record['name'])}",
+                "id": str(asterism_identity(record["id"])["id"]),
+                "geometry_key": asterism_identity(record["id"])["geometry_key"],
                 "name": record["name"],
                 "relationship": "visual-member",
                 "provenance": {
@@ -225,19 +212,19 @@ def _guiding_asterisms(
                     "supports": "visual-membership",
                 },
             })
-    known = {guide["name"] for guide in guides}
-    steps = {str(step).casefold() for hop in hops for step in hop.get("steps", [])}
+    known = {guide["id"] for guide in guides}
+    steps = {str(step["id"]) for hop in hops for step in hop["step_identities"] if step["type"] == "asterism"}
     for record in catalog:
-        if record["name"].casefold() not in steps or record["name"] in known:
+        if str(record["id"]) not in steps or str(record["id"]) in known:
             continue
         route_ids = [
             str(hop["id"])
             for hop in hops
-            if record["name"].casefold()
-            in {str(step).casefold() for step in hop.get("steps", [])}
+            if any(step["type"] == "asterism" and step["id"] == record["id"] for step in hop["step_identities"])
         ]
         guides.append({
-            "id": f"asterism-{slugify(record['name'])}",
+            "id": str(asterism_identity(record["id"])["id"]),
+            "geometry_key": asterism_identity(record["id"])["geometry_key"],
             "name": record["name"],
             "relationship": "star-hop-anchor",
             "relationship_route_ids": route_ids,
@@ -251,10 +238,10 @@ def _guiding_asterisms(
     return guides
 
 
-def _guiding_star_hops(name: str, target_type: str = "star") -> list[dict]:
+def _guiding_star_hops(fixed_object_id: int, target_type: str = "star") -> list[dict]:
     return [
         dict(route) for route in _star_hops()
-        if route.get("target_type") == target_type and route.get("target") == name
+        if route.get("target_type") == target_type and route["target_fixed_object_id"] == fixed_object_id
     ]
 
 
@@ -274,7 +261,8 @@ def _deep_sky_descriptor(raw_name: str, fixed_object_id: int | None = None) -> d
         match = re.search(r"\bin\s+(.+)$", parts[2], flags=re.I)
         if match:
             constellation = match.group(1).strip()
-    descriptor_id = str(fixed_object_id) if fixed_object_id is not None else slugify(catalog_name)
+    fixed_object_id = require_fixed_object_id(fixed_object_id) if fixed_object_id is not None else resolve_source_name(catalog_name)
+    descriptor_id = str(fixed_object_id)
     summary = f"{object_type} selected as a weekly fixed-sky observing target"
     record = _base(descriptor_id, "deep-sky-object", catalog_name, summary)
     if fixed_object_id is not None:
@@ -285,7 +273,7 @@ def _deep_sky_descriptor(raw_name: str, fixed_object_id: int | None = None) -> d
     record["object_type"] = object_type
     if constellation:
         record["constellation"] = constellation
-    hops = _guiding_star_hops(catalog_name, "deep-sky-object")
+    hops = _guiding_star_hops(fixed_object_id, "deep-sky-object")
     if hops:
         record["guiding_asterisms"] = _guiding_asterisms(
             None, catalog_name, hops, include_memberships=False
@@ -305,7 +293,7 @@ def build_descriptors(
     """Build an ordered set of relevant descriptor records for one Sky Note."""
     records: list[dict] = []
     seen: set[str] = set()
-    stars_by_name = {star["name"].lower(): star for star in stars}
+    stars_by_id = {star["fixed_object_id"]: star for star in stars}
     figures = _figure_catalog()
 
     def add(record: dict | None) -> None:
@@ -343,12 +331,12 @@ def build_descriptors(
         add(record)
 
     def add_star(name: str, abbreviation: str | None = None, fixed_object_id: int | None = None) -> None:
-        star = stars_by_name.get(name.lower())
+        if fixed_object_id is None:
+            fixed_object_id = _fixed_object_identity(name, abbreviation)
+        star = stars_by_id.get(fixed_object_id)
         con = abbreviation or (star.get("con") if star else None)
         constellation = constellation_names.get(con, con) if con else None
-        if fixed_object_id is None:
-            fixed_object_id = _fixed_object_identity(name, con)
-        descriptor_id = str(fixed_object_id) if fixed_object_id is not None else f"star-{slugify(name)}"
+        descriptor_id = str(require_fixed_object_id(fixed_object_id))
         summary = f"bright star{f' in {constellation}' if constellation else ''} used as a fixed-sky reference"
         record = _base(descriptor_id, "star", name, summary)
         if fixed_object_id is not None:
@@ -366,8 +354,8 @@ def build_descriptors(
                 "ecliptic_latitude_deg": round(star["ecliptic_lat_deg"], 6),
             }
             record["representative_visual_magnitude"] = star["mag"]
-        hops = _guiding_star_hops(name)
-        guides = _guiding_asterisms(star, name, hops)
+        hops = _guiding_star_hops(fixed_object_id)
+        guides = _guiding_asterisms(star, name, hops, fixed_object_id=fixed_object_id)
         if guides:
             record["guiding_asterisms"] = guides
         if hops:
@@ -397,31 +385,27 @@ def build_descriptors(
         if relation.get("other_planet"):
             add_planet(relation["other_planet"])
         if relation.get("star"):
-            add_star(relation["star"], relation.get("constellation"))
+            add_star(relation["star"], relation.get("constellation"), relation.get("star_fixed_object_id"))
         con = relation.get("constellation")
         add_constellation(con)
         if relation.get("asterism"):
             asterism = asterisms.get(con, {})
-            descriptor_id = asterism.get("id", slugify(relation["asterism"]))
+            identity = asterism_identity(relation.get("asterism_id") or asterism["id"])
+            descriptor_id = str(identity["id"])
             record = _base(
-                f"asterism-{descriptor_id}",
+                descriptor_id,
                 "asterism",
                 relation["asterism"],
                 f"observer-facing star pattern in {constellation_names.get(con, con)}",
             )
+            record["geometry_key"] = identity["geometry_key"]
             record["constellation_abbreviation"] = con
-            record["members"] = list(asterism.get("members", ()))
-            _, figure = _figure_for_abbreviation(con, figures)
-            if figure:
-                for candidate in figure.get("asterisms", []):
-                    if candidate.get("name") == relation["asterism"]:
-                        record["geometry"] = {
-                            "system": "Star Almanack observer-facing asterism",
-                            "paths": candidate.get("paths", []),
-                            "label_offset": candidate.get("label_offset"),
-                            "inset": candidate.get("inset", False),
-                        }
-                        break
+            record["member_fixed_object_ids"] = list(asterism["member_fixed_object_ids"])
+            geometry_registry = json.loads((ROOT / "finder-geometry/martz-macrobert.json").read_text(encoding="utf-8"))
+            geometry = geometry_registry["asterisms"].get(identity["geometry_key"])
+            if geometry:
+                record["members"] = [member.get("display_name") or member.get("member") for member in geometry.get("members", [])]
+                record["geometry"] = {"system": "Star Almanack observer-facing asterism", "paths": geometry.get("paths", [])}
             add(record)
 
     for descriptor_id in ("ecliptic-longitude", "zodiac"):

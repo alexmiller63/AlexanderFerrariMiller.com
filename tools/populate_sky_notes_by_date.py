@@ -26,6 +26,7 @@ from iso_date_range import group_by_year, parse_range_args
 from almanack_paths import week_index
 from almanack_sections import replace_section_inner
 from star_almanack_planets import PLANET_COLUMNS, load_weekly_longitudes
+from object_identity import asterism_identity, fixed_id_for_hip, resolve_source_name
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE_ROOT = ROOT
@@ -69,13 +70,13 @@ CONSTELLATION_NAMES = {
     "Vir": "Virgo", "Vol": "Volans", "Vul": "Vulpecula",
 }
 ASTERISMS = {
-    "Ori": {"id": "asterism-orion-s-belt", "name": "Orion’s Belt", "members": ("Mintaka", "Alnilam", "Alnitak")},
-    "Peg": {"id": "asterism-great-square-of-pegasus", "name": "Great Square of Pegasus", "members": ("Markab", "Scheat", "Algenib", "Alpheratz")},
-    "UMa": {"id": "asterism-big-dipper", "name": "Big Dipper", "members": ("Dubhe", "Merak", "Phecda", "Megrez", "Alioth", "Mizar", "Alkaid")},
-    "Cyg": {"id": "asterism-northern-cross", "name": "Northern Cross", "members": ("Deneb", "Sadr", "Gienah", "Albireo")},
-    "Sgr": {"id": "asterism-teapot-of-sagittarius", "name": "Teapot of Sagittarius", "members": ("Kaus Australis", "Kaus Media", "Kaus Borealis", "Nunki", "Ascella")},
-    "Leo": {"id": "asterism-sickle-of-leo", "name": "Sickle", "members": ("Regulus", "Algieba", "Adhafera")},
-    "Aqr": {"id": "asterism-water-jar", "name": "Water Jar", "members": ("Sadalmelik", "Sadalsuud", "Sadachbia", "Skat")},
+    "Ori": {"id": 1365, "geometry_key": "asterism-orion-s-belt", "name": "Orion’s Belt", "members": ("Mintaka", "Alnilam", "Alnitak"), "member_fixed_object_ids": (33, 32, 28)},
+    "Peg": {"id": 1368, "geometry_key": "asterism-great-square-of-pegasus", "name": "Great Square of Pegasus", "members": ("Markab", "Scheat", "Algenib", "Alpheratz"), "member_fixed_object_ids": (117, 1, 118, 3)},
+    "UMa": {"id": 1362, "geometry_key": "asterism-big-dipper", "name": "Big Dipper", "members": ("Dubhe", "Merak", "Phecda", "Megrez", "Alioth", "Mizar", "Alkaid"), "member_fixed_object_ids": (49, 48, 51, 53, 57, 59, 61)},
+    "Cyg": {"id": 1371, "geometry_key": "asterism-northern-cross", "name": "Northern Cross", "members": ("Deneb", "Sadr", "Gienah", "Albireo"), "member_fixed_object_ids": (111, 107, 110, 108, 112)},
+    "Sgr": {"id": 1372, "geometry_key": "asterism-teapot-of-sagittarius", "name": "Teapot of Sagittarius", "members": ("Kaus Australis", "Kaus Media", "Kaus Borealis", "Nunki", "Ascella"), "member_fixed_object_ids": (89, 90, 95, 93, 91, 88, 94, 96)},
+    "Leo": {"id": 1369, "geometry_key": "asterism-sickle-of-leo", "name": "Sickle", "members": ("Regulus", "Algieba", "Adhafera"), "member_fixed_object_ids": (45, 44, 47, 46, 43, 42)},
+    "Aqr": {"id": 1367, "geometry_key": "asterism-water-jar", "name": "Water Jar", "members": ("Sadalmelik", "Sadalsuud", "Sadachbia", "Skat"), "member_fixed_object_ids": (115, 114, 116, 113)},
 }
 
 # Observer-facing constellation shape cues are data used by the generator, not
@@ -92,26 +93,11 @@ def canonical_asterism(asterism: dict) -> dict:
         raise RuntimeError(f"Accepted geometry registry is missing: {GEOMETRY_REGISTRY.relative_to(ROOT)}")
     registry = json.loads(GEOMETRY_REGISTRY.read_text(encoding="utf-8"))
     records = registry.get("asterisms") or {}
-    requested_id = str(asterism.get("id") or "").strip()
-    if requested_id:
-        record = records.get(requested_id)
-        if record is None:
-            raise RuntimeError(f"Canonical asterism id {requested_id!r} is missing from the geometry registry")
-        asterism_id = requested_id
-    else:
-        # Compatibility path for older asterism declarations. New declarations
-        # should carry their canonical registry id explicitly.
-        wanted = str(asterism.get("name") or "").strip().casefold()
-        matches = [
-            (asterism_id, record)
-            for asterism_id, record in records.items()
-            if str(record.get("name") or "").strip().casefold() == wanted
-        ]
-        if len(matches) != 1:
-            raise RuntimeError(
-                f"Asterism {asterism.get('name')!r} resolves to {len(matches)} canonical geometry records; expected exactly one"
-            )
-        asterism_id, record = matches[0]
+    identity = asterism_identity(asterism["id"])
+    asterism_id = identity["geometry_key"]
+    record = records.get(asterism_id)
+    if record is None:
+        raise RuntimeError(f"Canonical geometry key {asterism_id!r} is missing")
     if record.get("geometry_status") != "accepted-paths" or not record.get("paths"):
         raise RuntimeError(f"Canonical asterism {asterism_id!r} has no accepted drawable paths")
     members = [
@@ -119,7 +105,7 @@ def canonical_asterism(asterism: dict) -> dict:
         for member in (record.get("members") or [])
         if member.get("display_name") or member.get("member")
     ]
-    return {"id": asterism_id, "name": record.get("name") or asterism["name"], "members": members}
+    return {"id": identity["id"], "geometry_key": asterism_id, "name": record.get("name") or asterism["name"], "members": members}
 
 
 def plain_text(fragment: str) -> str:
@@ -177,6 +163,7 @@ def load_bright_stars() -> list[dict]:
             dec_deg = float(row["dec_deg"])
             lon_deg, lat_deg = equatorial_to_ecliptic(ra_deg, dec_deg)
             stars.append({
+                "fixed_object_id": fixed_id_for_hip(row["hip"]),
                 "name": row["proper"], "bayer": row["bayer"], "con": row["con"],
                 "ra_deg": ra_deg, "dec_deg": dec_deg,
                 "ecliptic_lon_deg": lon_deg, "ecliptic_lat_deg": lat_deg,
@@ -187,22 +174,26 @@ def load_bright_stars() -> list[dict]:
 
 def load_finder_stars(bright_stars: list[dict]) -> list[dict]:
     """Include named Bayer landmarks beyond the two-magnitude story catalog."""
-    by_name = {star["name"]: star for star in bright_stars}
+    by_id = {star["fixed_object_id"]: star for star in bright_stars}
     with FINDER_STARS.open(encoding="utf-8", newline="") as handle:
         for row in csv.DictReader(handle):
             name = (row.get("proper") or "").strip()
-            if not name or name in by_name:
+            if not name or not row.get("hip"):
+                continue
+            fixed_id = fixed_id_for_hip(row["hip"])
+            if fixed_id in by_id:
                 continue
             ra_deg = float(row["ra_h"]) * 15.0
             dec_deg = float(row["dec_deg"])
             lon_deg, lat_deg = equatorial_to_ecliptic(ra_deg, dec_deg)
-            by_name[name] = {
+            by_id[fixed_id] = {
+                "fixed_object_id": fixed_id,
                 "name": name, "bayer": row["bayer"], "con": row["con"],
                 "ra_deg": ra_deg, "dec_deg": dec_deg,
                 "ecliptic_lon_deg": lon_deg, "ecliptic_lat_deg": lat_deg,
                 "mag": float(row["mag"]),
             }
-    return list(by_name.values())
+    return list(by_id.values())
 
 
 def angular_distance(ra1: float, dec1: float, ra2: float, dec2: float) -> float:
@@ -233,15 +224,16 @@ def notable_planet_relations(week: int, yearly: dict[int, dict[str, float]], sta
             relation = {
                 "kind": "planet-star-longitude", "planet": PLANET_DISPLAY[planet],
                 "planet_longitude_deg": round(plon, 3), "star": star["name"],
-                "constellation": star["con"],
+                "constellation": star["con"], "star_fixed_object_id": star["fixed_object_id"],
                 "star_ecliptic_longitude_deg": round(star["ecliptic_lon_deg"], 3),
                 "star_ecliptic_latitude_deg": round(star["ecliptic_lat_deg"], 3),
                 "longitude_separation_deg": round(delta, 1),
                 "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
             }
             asterism = ASTERISMS.get(star["con"])
-            if asterism and star["name"] in asterism["members"]:
+            if asterism and star["fixed_object_id"] in asterism["member_fixed_object_ids"]:
                 relation["asterism"] = asterism["name"]
+                relation["asterism_id"] = asterism["id"]
             candidates.append(relation)
     planets = list(PLANET_COLUMNS)
     for i, first in enumerate(planets):
@@ -278,15 +270,16 @@ def planetary_finder_relations(week: int, yearly: dict[int, dict[str, float]], s
         delta = longitude_distance(plon, star["ecliptic_lon_deg"])
         relation = {
             "kind": "planet-star-longitude", "planet": planet,
-            "planet_longitude_deg": round(plon, 3), "star": star["name"], "constellation": star["con"],
+            "planet_longitude_deg": round(plon, 3), "star": star["name"], "constellation": star["con"], "star_fixed_object_id": star["fixed_object_id"],
             "star_ecliptic_longitude_deg": round(star["ecliptic_lon_deg"], 3),
             "star_ecliptic_latitude_deg": round(star["ecliptic_lat_deg"], 3),
             "longitude_separation_deg": round(delta, 1),
             "basis": "Star Almanack preserved geocentric tropical ecliptic longitude", "finder_only": True,
         }
         asterism = ASTERISMS.get(star["con"])
-        if asterism and star["name"] in asterism["members"]:
+        if asterism and star["fixed_object_id"] in asterism["member_fixed_object_ids"]:
             relation["asterism"] = asterism["name"]
+            relation["asterism_id"] = asterism["id"]
         relations.append(relation)
     attach_planet_positions(relations, page_path)
 
@@ -304,6 +297,7 @@ def planetary_finder_relations(week: int, yearly: dict[int, dict[str, float]], s
             item["mag"], item["name"],
         ))
         relation["star"] = star["name"]
+        relation["star_fixed_object_id"] = star["fixed_object_id"]
         relation["constellation"] = star["con"]
         relation["star_ecliptic_longitude_deg"] = round(star["ecliptic_lon_deg"], 3)
         relation["star_ecliptic_latitude_deg"] = round(star["ecliptic_lat_deg"], 3)
@@ -312,9 +306,11 @@ def planetary_finder_relations(week: int, yearly: dict[int, dict[str, float]], s
         relation["sky_separation_deg"] = round(
             angular_distance(float(pra), float(pdec), star["ra_deg"], star["dec_deg"]), 1)
         relation.pop("asterism", None)
+        relation.pop("asterism_id", None)
         asterism = ASTERISMS.get(star["con"])
-        if asterism and star["name"] in asterism["members"]:
+        if asterism and star["fixed_object_id"] in asterism["member_fixed_object_ids"]:
             relation["asterism"] = asterism["name"]
+            relation["asterism_id"] = asterism["id"]
 
     # A famous landmark is useful only when it is genuinely local to the
     # moving body.  Longitude alone can select a star that is far away on the
@@ -332,6 +328,7 @@ def planetary_finder_relations(week: int, yearly: dict[int, dict[str, float]], s
         hop = relation["sky_separation_deg"]
         if hop > max_asterism_hop_deg:
             relation.pop("asterism", None)
+            relation.pop("asterism_id", None)
             relation["finder_difficulty"] = "difficult"
             relation["finder_note"] = f"{relation['planet']} is not easy to find this week."
     return relations
@@ -499,9 +496,9 @@ def artwork_descriptor(year: int, week: int, fixed: list[dict], relations: list[
         "asterism": canonical,
         "targets": (
             [{"type": "solar-system-object", "name": finder_relation["planet"]},
-             {"type": "reference-star", "name": finder_relation["star"]}]
+             {"type": "reference-star", "name": finder_relation["star"], "fixed_object_id": finder_relation["star_fixed_object_id"]}]
             if finder_relation is not None
-            else [{"type": item["type"], "name": item["name"]} for item in fixed[:3]]
+            else [{"type": item["type"], "name": item["name"], "fixed_object_id": item.get("fixed_object_id") or resolve_source_name(item["name"], item.get("constellation"))} for item in fixed[:3]]
         ),
         # The route has one primary hop star, but the Pathfinder should retain
         # other conspicuous named stars in the same field as landmarks.  The
