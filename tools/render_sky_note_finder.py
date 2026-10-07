@@ -862,15 +862,11 @@ def render(spec: dict, stars, output: Path) -> None:
         # A moving-body finder is named for the route the reader actually uses:
         # body + useful landmark + full constellation.
         reference_name = str((spec.get("finder_relation") or {}).get("reference_star") or target_name).strip()
-        separation = (spec.get("finder_relation") or {}).get("sky_separation_deg")
-        if separation is not None and float(separation) > 8:
-            title = f"{planet_name} in {figure_constellation} · {reference_name} {float(separation):.1f}° away"
-        else:
-            title = " ".join(part for part in (
-                planet_name,
-                f"near {reference_name}" if reference_name else "",
-                f"in {figure_constellation}" if figure_constellation else "",
-            ) if part)
+        title = " ".join(part for part in (
+            planet_name,
+            f"near {reference_name}" if reference_name else "",
+            f"in {figure_constellation}" if figure_constellation else "",
+        ) if part)
     elif target_star is not None and target_bayer and target_name and figure_constellation:
         title = f"{target_bayer}, {target_name} in {figure_constellation}"
     else:
