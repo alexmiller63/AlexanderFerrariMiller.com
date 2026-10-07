@@ -85,6 +85,33 @@ jobs:
 
           echo "Resolved ${#WEEKS[@]} ISO week(s): ${WEEKS[*]}"
 
+          total_stages=$((${#WEEKS[@]} * 7))
+          completed_stages=0
+
+          report_progress() {
+            local state="$1" stage="$2" percent updated_at
+            percent=$((completed_stages * 100 / total_stages))
+            updated_at="$(date -u '+%Y-%m-%dT%H:%M:%SZ')"
+            printf '%s %s — %s%% complete (%s/%s stages) — %s — STARTED %s UPDATED %s\n' \
+              "$state" "$week_label" "$percent" "$completed_stages" "$total_stages" \
+              "$stage" "$week_started_at" "$updated_at" > build-status.txt
+            cat build-status.txt
+            {
+              printf '### Build All: %s%% complete\n\n' "$percent"
+              printf '%s of %s stages completed.\n\n' "$completed_stages" "$total_stages"
+              printf '**%s — %s:** %s\n\n' "$week_label" "$state" "$stage"
+              printf 'Week started: %s · Updated: %s\n\n' "$week_started_at" "$updated_at"
+              printf 'Percentage counts completed stages; stages take different amounts of time.\n'
+            } > "$GITHUB_STEP_SUMMARY"
+            git add build-status.txt
+            if ! git diff --cached --quiet; then
+              git -c user.name='github-actions[bot]' \
+                  -c user.email='41898282+github-actions[bot]@users.noreply.github.com' \
+                  commit -m "Build All: $week_label $percent% ($stage)"
+              git push origin HEAD:main
+            fi
+          }
+
           for week in "${WEEKS[@]}"; do
             read -r year iso_week <<< "$week"
             week_label="${year}-W$(printf '%02d' "$iso_week")"
@@ -93,32 +120,31 @@ jobs:
             git fetch origin main
             git reset --hard origin/main
             week_started_at="$(date -u '+%Y-%m-%dT%H:%M:%SZ')"
-            printf 'BUILDING %s STARTED %s\n' "$week_label" "$week_started_at" > build-status.txt
-            git add build-status.txt
-            if ! git diff --cached --quiet; then
-              git -c user.name='github-actions[bot]' \
-                  -c user.email='41898282+github-actions[bot]@users.noreply.github.com' \
-                  commit -m "Build All: starting $week_label"
-              git push origin HEAD:main
-            fi
+            report_progress BUILDING "Scaffold"
 
             bash tools/run-workflow-and-wait.sh scaffold-almanack-weeks.yml \
               -f start_year="$year" -f start_week="$iso_week" \
               -f end_year="$year" -f end_week="$iso_week"
             git fetch origin main
             git reset --hard origin/main
+            completed_stages=$((completed_stages + 1))
+            report_progress BUILDING "Calendar"
 
             bash tools/run-workflow-and-wait.sh calendar-generator.yml \
               -f start_year="$year" -f start_week="$iso_week" \
               -f end_year="$year" -f end_week="$iso_week"
             git fetch origin main
             git reset --hard origin/main
+            completed_stages=$((completed_stages + 1))
+            report_progress BUILDING "Ephemeris"
 
             bash tools/run-workflow-and-wait.sh ephemeris-generator-by-date.yml \
               -f start_year="$year" -f start_week="$iso_week" \
               -f end_year="$year" -f end_week="$iso_week"
             git fetch origin main
             git reset --hard origin/main
+            completed_stages=$((completed_stages + 1))
+            report_progress BUILDING "Planet Finder"
 
             bash tools/run-workflow-and-wait.sh populate-ephemeris-planet-finder-by-date.yml \
               -f start_year="$year" -f start_week="$iso_week" \
@@ -129,18 +155,24 @@ jobs:
               -f diagnostic_level='${{ inputs.diagnostic_level }}'
             git fetch origin main
             git reset --hard origin/main
+            completed_stages=$((completed_stages + 1))
+            report_progress BUILDING "Sky Notes"
 
             bash tools/run-workflow-and-wait.sh populate-sky-notes-by-date.yml \
               -f start_year="$year" -f start_week="$iso_week" \
               -f end_year="$year" -f end_week="$iso_week"
             git fetch origin main
             git reset --hard origin/main
+            completed_stages=$((completed_stages + 1))
+            report_progress BUILDING "Artwork"
 
             bash tools/run-workflow-and-wait.sh populate-sky-notes-artwork-by-date.yml \
               -f start_year="$year" -f start_week="$iso_week" \
               -f end_year="$year" -f end_week="$iso_week"
             git fetch origin main
             git reset --hard origin/main
+            completed_stages=$((completed_stages + 1))
+            report_progress BUILDING "Legend"
 
             bash tools/run-workflow-and-wait.sh wire-almanack-legend.yml \
               -f start_year="$year" -f start_week="$iso_week" \
@@ -148,15 +180,8 @@ jobs:
             git fetch origin main
             git reset --hard origin/main
 
-            week_completed_at="$(date -u '+%Y-%m-%dT%H:%M:%SZ')"
-            printf 'COMPLETE %s STARTED %s COMPLETED %s\n' "$week_label" "$week_started_at" "$week_completed_at" > build-status.txt
-            git add build-status.txt
-            if ! git diff --cached --quiet; then
-              git -c user.name='github-actions[bot]' \
-                  -c user.email='41898282+github-actions[bot]@users.noreply.github.com' \
-                  commit -m "Build All: completed $week_label"
-              git push origin HEAD:main
-            fi
+            completed_stages=$((completed_stages + 1))
+            report_progress COMPLETE "All seven stages finished"
 
             echo "::endgroup::"
           done
