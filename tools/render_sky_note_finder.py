@@ -677,6 +677,44 @@ def draw_lunar_disk(ax, ra_deg, dec_deg, center, snapshot):
                             display[:, 0].max() + clearance, display[:, 1].max() + clearance)
 
 
+def draw_moon_closeup(ax, snapshot, segments):
+    """Insert a clearly enlarged phase view in the least obstructed chart space."""
+    fig = ax.figure
+    fig.canvas.draw()
+    renderer = fig.canvas.get_renderer()
+    obstacles = [text.get_window_extent(renderer).expanded(1.08, 1.15)
+                 for text in ax.texts if text.get_visible()]
+    obstacles += [patch.get_window_extent(renderer).expanded(1.15, 1.15)
+                  for patch in ax.patches]
+    candidates = []
+    for y in (0.64, 0.49, 0.34, 0.19, 0.04):
+        for x in (0.65, 0.50, 0.35, 0.20, 0.05):
+            box = Bbox.from_bounds(x, y, 0.30, 0.32).transformed(ax.transAxes)
+            hits = sum(box.overlaps(other) for other in obstacles)
+            hits += sum(segment_hits_display_bbox(ax, start, end, box)
+                        for start, end in segments)
+            candidates.append((hits, x, y))
+    _, x, y = min(candidates, key=lambda candidate: candidate[0])
+    inset = ax.inset_axes([x, y, 0.30, 0.32], zorder=20)
+    inset.set_facecolor(ax.get_facecolor())
+    radius = float(snapshot["angular_diameter_deg"]) / 2
+    inset.set_xlim(radius * 1.5, -radius * 1.5)
+    inset.set_ylim(-radius * 1.5, radius * 1.5)
+    inset.set_aspect("equal")
+    draw_lunar_disk(inset, 0, 0, (0, 0), snapshot)
+    inset.text(0.5, 0.97, "Moon · enlarged", transform=inset.transAxes,
+               ha="center", va="top", color=TEXT, fontsize=8)
+    illumination = float(snapshot["illuminated_fraction"]) * 100
+    inset.text(0.5, 0.03, f"{illumination:.0f}% illuminated\nMonday 00:00 UTC",
+               transform=inset.transAxes, ha="center", va="bottom",
+               color=TEXT, fontsize=7)
+    inset.set_xticks([])
+    inset.set_yticks([])
+    for spine in inset.spines.values():
+        spine.set_edgecolor(TEXT)
+        spine.set_linewidth(1.2)
+
+
 def draw_finder_overview(ax, spec, stars, idx, target_ra, target_dec, target_name):
     """Show the supplied guide and target pattern without widening the close-up."""
     overview = spec["overview"]
@@ -1244,6 +1282,9 @@ def render(spec: dict, stars, output: Path) -> None:
             spine.set_linewidth(1.2)
     output.parent.mkdir(parents=True, exist_ok=True)
     fig.tight_layout(rect=(0, 0.08, 1, 0.96), h_pad=3.0 if spec.get("overview") else 1.08)
+    if has_planet and planet_name == "Moon" and moon_snapshot:
+        draw_moon_closeup(ax, moon_snapshot,
+                          figure_segments + asterism_segments + boundary_segments)
     fig.savefig(output, format="svg", bbox_inches="tight", facecolor=fig.get_facecolor())
     plt.close(fig)
 
