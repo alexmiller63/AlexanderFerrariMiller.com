@@ -309,6 +309,11 @@ def build_weekly_planet_renderer_spec(descriptor: dict, registry: dict) -> dict:
     # inside this chart's field, rather than pretending the target planet is
     # alone.
     spec["solar_system_field"] = descriptor.get("solar_system_field") or []
+    if (spec["finder_relation"].get("planet") == "Moon"
+            or any(body.get("name") == "Moon" for body in spec["solar_system_field"])):
+        from moon_finder_snapshot import lunar_disk_snapshot
+        year, week = descriptor["week"].split("-W")
+        spec["moon_disk"] = lunar_disk_snapshot(int(year), int(week))
     # Preserve the descriptor's landmark policy for the renderer.  The primary
     # reference star remains the hop anchor; other conspicuous named stars are
     # contextual landmarks, not competing route anchors.

@@ -20,6 +20,7 @@ from types import SimpleNamespace
 
 import matplotlib.pyplot as plt
 from matplotlib.path import Path as MplPath
+from matplotlib.patches import Polygon
 from matplotlib.transforms import Bbox
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
@@ -636,6 +637,46 @@ def draw_path(ax, path, idx, center, color, linewidth):
                 color=color, linewidth=linewidth, alpha=0.95, zorder=2)
 
 
+def lunar_disk_geometry(ra_deg, dec_deg, center, snapshot):
+    """Project the true angular disk and its sun-facing illuminated surface."""
+    radius = math.radians(float(snapshot["angular_diameter_deg"]) / 2)
+    phase = math.radians(float(snapshot["phase_angle_deg"]))
+    pa = math.radians(float(snapshot["bright_limb_position_angle_deg"]))
+    ra0, dec0 = math.radians(ra_deg), math.radians(dec_deg)
+
+    def surface_point(u, v):
+        east = u * math.sin(pa) + v * math.cos(pa)
+        north = u * math.cos(pa) - v * math.sin(pa)
+        separation = radius * math.hypot(east, north)
+        bearing = math.atan2(east, north)
+        dec = math.asin(math.sin(dec0) * math.cos(separation)
+                        + math.cos(dec0) * math.sin(separation) * math.cos(bearing))
+        ra = ra0 + math.atan2(math.sin(bearing) * math.sin(separation) * math.cos(dec0),
+                             math.cos(separation) - math.sin(dec0) * math.sin(dec))
+        return project(math.degrees(ra), math.degrees(dec), *center)
+
+    outline = [surface_point(math.cos(i * math.tau / 180), math.sin(i * math.tau / 180))
+               for i in range(180)]
+    limb, terminator = [], []
+    for i in range(181):
+        v = -math.cos(i * math.pi / 180)
+        u = math.sin(i * math.pi / 180)
+        limb.append(surface_point(u, v))
+        terminator.append(surface_point(-math.cos(phase) * u, v))
+    return outline, limb + list(reversed(terminator))
+
+
+def draw_lunar_disk(ax, ra_deg, dec_deg, center, snapshot):
+    outline, lit_surface = lunar_disk_geometry(ra_deg, dec_deg, center, snapshot)
+    ax.add_patch(Polygon(outline, closed=True, facecolor="#303844", edgecolor=TEXT,
+                         linewidth=0.6, zorder=10))
+    ax.add_patch(Polygon(lit_surface, closed=True, facecolor=STAR, edgecolor="none", zorder=11))
+    display = ax.transData.transform(outline)
+    clearance = 4 * ax.figure.dpi / 72
+    return Bbox.from_extents(display[:, 0].min() - clearance, display[:, 1].min() - clearance,
+                            display[:, 0].max() + clearance, display[:, 1].max() + clearance)
+
+
 def draw_finder_overview(ax, spec, stars, idx, target_ra, target_dec, target_name):
     """Show the supplied guide and target pattern without widening the close-up."""
     overview = spec["overview"]
@@ -896,6 +937,18 @@ def render(spec: dict, stars, output: Path) -> None:
     fig.canvas.draw()
     occupied_labels = [marker_obstacle_bbox(ax, item["point"], 42, 1.1)
                        for item in deep_sky]
+    moon_bbox = None
+    moon_snapshot = spec.get("moon_disk")
+    if has_planet and moon_snapshot:
+        moon_position = (planet_position if planet_name == "Moon" else next(
+            (body for body in spec.get("solar_system_field") or [] if body.get("name") == "Moon"), None,
+        ))
+        if moon_position:
+            moon_point = project(float(moon_position["ra_deg"]), float(moon_position["dec_deg"]), *center)
+            if moon_point and xmin <= moon_point[0] <= xmax and ymin <= moon_point[1] <= ymax:
+                moon_bbox = draw_lunar_disk(ax, float(moon_position["ra_deg"]),
+                                           float(moon_position["dec_deg"]), center, moon_snapshot)
+                occupied_labels.append(moon_bbox)
     figure_points = []
     figure_segments = []
     for path in figure_paths + guide_paths + ambient_paths:
@@ -1092,12 +1145,13 @@ def render(spec: dict, stars, output: Path) -> None:
     if has_planet:
         if planet_point is None:
             raise RuntimeError(f"Planet {planet_name} is outside the finder projection")
-        ax.scatter([planet_point[0]], [planet_point[1]], s=115, marker="o",
-                   facecolors=TARGET_YELLOW, edgecolors=TARGET_YELLOW, linewidths=1.6, zorder=10)
+        if planet_name != "Moon" or moon_bbox is None:
+            ax.scatter([planet_point[0]], [planet_point[1]], s=115, marker="o",
+                       facecolors=TARGET_YELLOW, edgecolors=TARGET_YELLOW, linewidths=1.6, zorder=10)
         place_target_label(
             ax, planet_name, planet_point, occupied_labels,
             obstacle_segments=figure_segments + asterism_segments + boundary_segments,
-            marker_radius_points=math.sqrt(115) / 2 + 1.6 / 2,
+            marker_radius_points=0 if planet_name == "Moon" and moon_bbox is not None else math.sqrt(115) / 2 + 1.6 / 2,
         )
         # Add every other preserved weekly planet that genuinely lies in this
         # Pathfinder's displayed field. These are context objects, not finder
@@ -1112,9 +1166,10 @@ def render(spec: dict, stars, output: Path) -> None:
             point = project(float(ra), float(dec), *center)
             if point is None or not (xmin <= point[0] <= xmax and ymin <= point[1] <= ymax):
                 continue
-            ax.scatter([point[0]], [point[1]], s=58, marker="o",
-                       facecolors="none", edgecolors=TEXT, linewidths=1.2, zorder=8)
-            occupied_labels.append(marker_obstacle_bbox(ax, point, 58, 1.2))
+            if body_name != "Moon" or moon_bbox is None:
+                ax.scatter([point[0]], [point[1]], s=58, marker="o",
+                           facecolors="none", edgecolors=TEXT, linewidths=1.2, zorder=8)
+                occupied_labels.append(marker_obstacle_bbox(ax, point, 58, 1.2))
             place_label(
                 ax, body_name, point, occupied_labels, color=TEXT, fontsize=9, zorder=8,
                 obstacle_segments=figure_segments + asterism_segments + boundary_segments,
