@@ -1,16 +1,19 @@
 {
-  "name": "Horologium",
-  "constellation_abbreviation": "Hor",
+  "name": "Cancer",
+  "target": "Acubens",
   "figure_paths": [
     [
-      "HIP 19747",
-      "HIP 12653",
-      "HIP 12225",
-      "HIP 12484",
-      "HIP 14240",
-      "HIP 13884"
+      "HIP 44066",
+      "HIP 42911",
+      "HIP 42806",
+      "HIP 43103"
+    ],
+    [
+      "HIP 42911",
+      "HIP 40526"
     ]
   ],
+  "asterisms": [],
   "candidate_constellations": [
     {
       "abbreviation": "And",
@@ -1768,7 +1771,6 @@
       ]
     }
   ],
-  "guide_constellations": [],
   "candidate_asterisms": [
     {
       "id": "asterism-big-dipper",
@@ -2144,65 +2146,157 @@
       ]
     }
   ],
-  "asterisms": [],
   "deep_sky_objects": [],
+  "finder_relation": {
+    "sequence": [
+      "Cancer",
+      "Acubens",
+      "Moon"
+    ],
+    "orientation": "constellation-stick-figure",
+    "reference_star": "Acubens",
+    "planet": "Moon",
+    "finder_note": null,
+    "sky_separation_deg": 11.1
+  },
+  "planet_position": {
+    "ra_deg": 128.942211,
+    "dec_deg": 21.591727
+  },
+  "guide_objects": [
+    {
+      "type": "reference-star",
+      "name": "Acubens"
+    }
+  ],
   "fixed_object_identities": [
     {
-      "fixed_object_id": 717,
-      "renderer_ref": "HIP 19747",
+      "fixed_object_id": 861,
+      "renderer_ref": "HIP 44066",
       "identifiers": {
-        "hip": "19747"
+        "hip": "44066"
       },
-      "proper_name": "α Hor",
-      "constellation_abbreviation": "Hor",
+      "proper_name": "Acubens",
+      "constellation_abbreviation": "Cnc",
       "bayer": "α"
     },
     {
-      "fixed_object_id": 667,
-      "renderer_ref": "HIP 12653",
+      "fixed_object_id": 855,
+      "renderer_ref": "HIP 42911",
       "identifiers": {
-        "hip": "12653"
+        "hip": "42911"
       }
     },
     {
-      "fixed_object_id": 662,
-      "renderer_ref": "HIP 12225",
+      "fixed_object_id": 853,
+      "renderer_ref": "HIP 42806",
       "identifiers": {
-        "hip": "12225"
+        "hip": "42806"
       }
     },
     {
-      "fixed_object_id": 665,
-      "renderer_ref": "HIP 12484",
+      "fixed_object_id": 856,
+      "renderer_ref": "HIP 43103",
       "identifiers": {
-        "hip": "12484"
+        "hip": "43103"
       }
     },
     {
-      "fixed_object_id": 679,
-      "renderer_ref": "HIP 14240",
+      "fixed_object_id": 844,
+      "renderer_ref": "HIP 40526",
       "identifiers": {
-        "hip": "14240"
-      }
-    },
-    {
-      "fixed_object_id": 677,
-      "renderer_ref": "HIP 13884",
-      "identifiers": {
-        "hip": "13884"
+        "hip": "40526"
       },
-      "proper_name": "β Hor",
-      "constellation_abbreviation": "Hor",
+      "proper_name": "Tarf",
+      "constellation_abbreviation": "Cnc",
       "bayer": "β"
     }
   ],
-  "artwork_owner_identity": {
-    "fixed_object_id": 717,
-    "name": "α Hor",
-    "proper_name": "α Hor",
-    "constellation_abbreviation": "Hor",
-    "bayer": "α",
-    "renderer_ref": "HIP 19747"
+  "guide_anchor_identity": {
+    "fixed_object_id": 861,
+    "renderer_ref": "HIP 44066",
+    "identifiers": {
+      "hip": "44066"
+    },
+    "proper_name": "Acubens",
+    "constellation_abbreviation": "Cnc",
+    "bayer": "α"
   },
-  "guide_objects": []
+  "target_identity": {
+    "fixed_object_id": 861,
+    "renderer_ref": "HIP 44066",
+    "identifiers": {
+      "hip": "44066"
+    },
+    "proper_name": "Acubens",
+    "constellation_abbreviation": "Cnc",
+    "bayer": "α"
+  },
+  "solar_system_field": [
+    {
+      "name": "Moon",
+      "ra_deg": 128.942211,
+      "dec_deg": 21.591727
+    },
+    {
+      "name": "Mercury",
+      "ra_deg": 274.868965,
+      "dec_deg": -24.348782
+    },
+    {
+      "name": "Venus",
+      "ra_deg": 285.140484,
+      "dec_deg": -23.361006
+    },
+    {
+      "name": "Mars",
+      "ra_deg": 286.817776,
+      "dec_deg": -23.45737
+    },
+    {
+      "name": "Ceres",
+      "ra_deg": 10.371086,
+      "dec_deg": -4.913865
+    },
+    {
+      "name": "Jupiter",
+      "ra_deg": 112.172827,
+      "dec_deg": 22.123586
+    },
+    {
+      "name": "Saturn",
+      "ra_deg": 357.265973,
+      "dec_deg": -3.632264
+    },
+    {
+      "name": "Uranus",
+      "ra_deg": 55.252274,
+      "dec_deg": 19.402974
+    },
+    {
+      "name": "Neptune",
+      "ra_deg": 359.791433,
+      "dec_deg": -1.540239
+    },
+    {
+      "name": "Pluto",
+      "ra_deg": 305.679383,
+      "dec_deg": -23.27767
+    }
+  ],
+  "moon_disk": {
+    "snapshot_utc": "2026-01-05T00:00:00Z",
+    "angular_diameter_deg": 0.540630490337745,
+    "phase_angle_deg": 21.657835020276554,
+    "illuminated_fraction": 0.9647022115522924,
+    "bright_limb_position_angle_deg": 97.27414226378579,
+    "distance_km": 368259.12853840477
+  },
+  "landmark_policy": {
+    "retain_named_field_stars": true,
+    "primary_reference_star": "Acubens",
+    "magnitude_limit": 2.99
+  },
+  "object_id": 1253,
+  "rendering_id": "2026-W02-1253"
 }

@@ -1,16 +1,26 @@
 {
-  "name": "Horologium",
-  "constellation_abbreviation": "Hor",
+  "name": "Cetus",
+  "target": "Diphda",
   "figure_paths": [
     [
-      "HIP 19747",
-      "HIP 12653",
-      "HIP 12225",
-      "HIP 12484",
-      "HIP 14240",
-      "HIP 13884"
+      "HIP 12706",
+      "HIP 14135",
+      "HIP 13954",
+      "HIP 12828",
+      "HIP 11484",
+      "HIP 12706",
+      "HIP 12387",
+      "HIP 10826",
+      "HIP 8645",
+      "HIP 6537",
+      "HIP 5364",
+      "HIP 1562",
+      "HIP 3419",
+      "HIP 8102",
+      "HIP 8645"
     ]
   ],
+  "asterisms": [],
   "candidate_constellations": [
     {
       "abbreviation": "And",
@@ -1768,7 +1778,6 @@
       ]
     }
   ],
-  "guide_constellations": [],
   "candidate_asterisms": [
     {
       "id": "asterism-big-dipper",
@@ -2144,65 +2153,217 @@
       ]
     }
   ],
-  "asterisms": [],
   "deep_sky_objects": [],
+  "finder_relation": {
+    "sequence": [
+      "Cetus",
+      "Diphda",
+      "Ceres"
+    ],
+    "orientation": "constellation-stick-figure",
+    "reference_star": "Diphda",
+    "planet": "Ceres",
+    "finder_note": "Ceres is not easy to find this week.",
+    "sky_separation_deg": 13.1
+  },
+  "planet_position": {
+    "ra_deg": 10.371086,
+    "dec_deg": -4.913865
+  },
+  "guide_objects": [
+    {
+      "type": "reference-star",
+      "name": "Diphda"
+    }
+  ],
   "fixed_object_identities": [
     {
-      "fixed_object_id": 717,
-      "renderer_ref": "HIP 19747",
+      "fixed_object_id": 10,
+      "renderer_ref": "HIP 12706",
       "identifiers": {
-        "hip": "19747"
+        "hip": "12706"
       },
-      "proper_name": "α Hor",
-      "constellation_abbreviation": "Hor",
+      "proper_name": "Kaffaljidhma"
+    },
+    {
+      "fixed_object_id": 13,
+      "renderer_ref": "HIP 14135",
+      "identifiers": {
+        "hip": "14135"
+      },
+      "proper_name": "Menkar",
+      "constellation_abbreviation": "Cet",
       "bayer": "α"
     },
     {
-      "fixed_object_id": 667,
-      "renderer_ref": "HIP 12653",
+      "fixed_object_id": 12,
+      "renderer_ref": "HIP 13954",
       "identifiers": {
-        "hip": "12653"
-      }
-    },
-    {
-      "fixed_object_id": 662,
-      "renderer_ref": "HIP 12225",
-      "identifiers": {
-        "hip": "12225"
-      }
-    },
-    {
-      "fixed_object_id": 665,
-      "renderer_ref": "HIP 12484",
-      "identifiers": {
-        "hip": "12484"
-      }
-    },
-    {
-      "fixed_object_id": 679,
-      "renderer_ref": "HIP 14240",
-      "identifiers": {
-        "hip": "14240"
-      }
-    },
-    {
-      "fixed_object_id": 677,
-      "renderer_ref": "HIP 13884",
-      "identifiers": {
-        "hip": "13884"
+        "hip": "13954"
       },
-      "proper_name": "β Hor",
-      "constellation_abbreviation": "Hor",
-      "bayer": "β"
+      "proper_name": "Lambda Ceti"
+    },
+    {
+      "fixed_object_id": 11,
+      "renderer_ref": "HIP 12828",
+      "identifiers": {
+        "hip": "12828"
+      },
+      "proper_name": "Mu Ceti"
+    },
+    {
+      "fixed_object_id": 8,
+      "renderer_ref": "HIP 11484",
+      "identifiers": {
+        "hip": "11484"
+      },
+      "proper_name": "Xi Ceti"
+    },
+    {
+      "fixed_object_id": 663,
+      "renderer_ref": "HIP 12387",
+      "identifiers": {
+        "hip": "12387"
+      }
+    },
+    {
+      "fixed_object_id": 660,
+      "renderer_ref": "HIP 10826",
+      "identifiers": {
+        "hip": "10826"
+      }
+    },
+    {
+      "fixed_object_id": 648,
+      "renderer_ref": "HIP 8645",
+      "identifiers": {
+        "hip": "8645"
+      }
+    },
+    {
+      "fixed_object_id": 637,
+      "renderer_ref": "HIP 6537",
+      "identifiers": {
+        "hip": "6537"
+      }
+    },
+    {
+      "fixed_object_id": 630,
+      "renderer_ref": "HIP 5364",
+      "identifiers": {
+        "hip": "5364"
+      }
+    },
+    {
+      "fixed_object_id": 613,
+      "renderer_ref": "HIP 1562",
+      "identifiers": {
+        "hip": "1562"
+      }
+    },
+    {
+      "fixed_object_id": 620,
+      "renderer_ref": "HIP 3419",
+      "identifiers": {
+        "hip": "3419"
+      },
+      "proper_name": "Diphda",
+      "constellation_abbreviation": "Cet",
+      "bayer": "Bet"
+    },
+    {
+      "fixed_object_id": 646,
+      "renderer_ref": "HIP 8102",
+      "identifiers": {
+        "hip": "8102"
+      }
     }
   ],
-  "artwork_owner_identity": {
-    "fixed_object_id": 717,
-    "name": "α Hor",
-    "proper_name": "α Hor",
-    "constellation_abbreviation": "Hor",
-    "bayer": "α",
-    "renderer_ref": "HIP 19747"
+  "guide_anchor_identity": {
+    "fixed_object_id": 620,
+    "renderer_ref": "HIP 3419",
+    "identifiers": {
+      "hip": "3419"
+    },
+    "proper_name": "Diphda",
+    "constellation_abbreviation": "Cet",
+    "bayer": "Bet"
   },
-  "guide_objects": []
+  "target_identity": {
+    "fixed_object_id": 620,
+    "renderer_ref": "HIP 3419",
+    "identifiers": {
+      "hip": "3419"
+    },
+    "proper_name": "Diphda",
+    "constellation_abbreviation": "Cet",
+    "bayer": "Bet"
+  },
+  "solar_system_field": [
+    {
+      "name": "Moon",
+      "ra_deg": 128.942211,
+      "dec_deg": 21.591727
+    },
+    {
+      "name": "Mercury",
+      "ra_deg": 274.868965,
+      "dec_deg": -24.348782
+    },
+    {
+      "name": "Venus",
+      "ra_deg": 285.140484,
+      "dec_deg": -23.361006
+    },
+    {
+      "name": "Mars",
+      "ra_deg": 286.817776,
+      "dec_deg": -23.45737
+    },
+    {
+      "name": "Ceres",
+      "ra_deg": 10.371086,
+      "dec_deg": -4.913865
+    },
+    {
+      "name": "Jupiter",
+      "ra_deg": 112.172827,
+      "dec_deg": 22.123586
+    },
+    {
+      "name": "Saturn",
+      "ra_deg": 357.265973,
+      "dec_deg": -3.632264
+    },
+    {
+      "name": "Uranus",
+      "ra_deg": 55.252274,
+      "dec_deg": 19.402974
+    },
+    {
+      "name": "Neptune",
+      "ra_deg": 359.791433,
+      "dec_deg": -1.540239
+    },
+    {
+      "name": "Pluto",
+      "ra_deg": 305.679383,
+      "dec_deg": -23.27767
+    }
+  ],
+  "moon_disk": {
+    "snapshot_utc": "2026-01-05T00:00:00Z",
+    "angular_diameter_deg": 0.540630490337745,
+    "phase_angle_deg": 21.657835020276554,
+    "illuminated_fraction": 0.9647022115522924,
+    "bright_limb_position_angle_deg": 97.27414226378579,
+    "distance_km": 368259.12853840477
+  },
+  "landmark_policy": {
+    "retain_named_field_stars": true,
+    "primary_reference_star": "Diphda",
+    "magnitude_limit": 2.99
+  },
+  "object_id": 1255,
+  "rendering_id": "2026-W02-1255"
 }
