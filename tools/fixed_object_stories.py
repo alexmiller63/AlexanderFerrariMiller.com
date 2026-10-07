@@ -185,38 +185,42 @@ def baseline_story(fixed_object_id: int) -> Story:
     family = meta.get("object_type_family") or "fixed-sky object"
     constellation = meta.get("constellation")
     constellation_name = _constellation_name(constellation)
+    hed = name
 
     if name == "Pleiades":
-        dek = "Pleiades is an observing target in Taurus carried by the weekly Calendar."
+        hed = "Pleiades — starlight reflected in passing dust"
+        dek = "The star cluster’s blue wisps are dust reflecting its stars’ light, rather than glowing on their own."
         reason = (
-            "Why it is here: The Pleiades are one of the sky’s best-known naked-eye open clusters. "
-            "People have watched and named this compact star group since antiquity, and its seasonal return "
-            "has long made it a natural marker in the yearly sky."
+            "The Pleiades are a naked-eye open cluster in Taurus. Their stars also illuminate "
+            "interstellar dust, producing the blue reflection nebulosity prominent in photographs. "
+            "This is scattered starlight: the dust redirects light toward us rather than generating "
+            "its own visible glow.\n\n"
+            "Around Merope, Hubble images show how the star’s radiation affects a passing cloud. "
+            "Radiation pressure pushes smaller dust particles more strongly, helping sculpt the "
+            "wispy structure. The attractive photographic haze therefore records an interaction "
+            "between starlight and material in the space between stars.\n\n"
+            "Binoculars show the cluster’s stars over a generous field; the faint dust is a much "
+            "harder visual target than those bright points.\n\n"
+            "Sources: NASA/Hubble, Ghostly Reflections in the Pleiades and Reflecting Merope."
         )
     elif name == "Nunki":
         # Nunki is a deliberately rich evergreen story.  Readers return to
         # these entries year after year, so Wordy mode should reward them with
         # real astronomy rather than Calendar boilerplate.  The dek doubles as
         # the Highlights hook.
-        dek = (
-            "Nunki is a bright blue-white star in the Teapot of Sagittarius — "
-            "a star that makes its own smokescreen."
-        )
+        hed = "Nunki — a bright guide on the Teapot’s handle"
+        dek = "Sigma Sagittarii helps you recognize Sagittarius’s Teapot and return to the same star-hop starting point."
         reason = (
-            "Nunki (Sigma Sagittarii) is a second-magnitude blue-white B-type star and one of the "
-            "most useful naked-eye landmarks in Sagittarius. It marks the upper-left corner of the "
-            "Teapot’s handle, making it easy to recognize even in the extraordinarily rich Milky Way "
-            "star fields toward the Galactic center. The name Nunki is ancient: it was inherited from "
-            "Mesopotamian star lore, making it one of the oldest star names still in everyday astronomical use.\n\n"
-            "The memorable physical story is the material around the star. Nunki is hot and luminous "
-            "enough to drive a strong stellar wind. Ultraviolet observations show absorbing material "
-            "associated with that outflow: in effect, a star that makes its own smokescreen. The phrase "
-            "does not mean a dark cloud that hides Nunki from naked-eye observers; it is a shorthand for "
-            "the circumstellar gas revealed spectroscopically against the star’s own brilliant light.\n\n"
-            "For an observer, Nunki is valuable twice over. It is bright enough to see without optical aid "
-            "under a reasonably dark sky, and its place in the Teapot makes it a dependable starting point "
-            "for exploring Sagittarius. Once the Teapot is recognized, Nunki is the bright star at the top "
-            "of the handle on the Teapot’s eastern side."
+            "Nunki is Sigma Sagittarii, one of the stars forming the handle of the Teapot. "
+            "The Teapot is an asterism within Sagittarius: its familiar outline provides a more "
+            "recognizable starting point than an isolated star in a crowded field.\n\n"
+            "Find the whole outline first — spout, body, lid and handle — then match Nunki to its "
+            "charted place on the handle. Returning to that same landmark makes a star hop "
+            "repeatable: recognize the pattern, identify the guide, then follow the finder chart "
+            "toward the target.\n\n"
+            "A planet near Nunki is a temporary visitor to this pattern. The planet’s position "
+            "changes from week to week, while the Teapot remains a useful reference at this scale. "
+            "Use the current week’s chart for the final hop."
         )
     elif family == "star":
         where = f" in {constellation_name}" if constellation_name else ""
@@ -259,7 +263,7 @@ def baseline_story(fixed_object_id: int) -> Story:
 
     body = f"{reason}\n\nHow to find it: {context}"
     return Story(
-        "baseline", fixed_object_id, FIXED_OBJECT_DATABASE, name, dek, body,
+        "baseline", fixed_object_id, FIXED_OBJECT_DATABASE, hed, dek, body,
         url_override=f"/stories/baseline/{fixed_object_id}.html"
     )
 
