@@ -5,18 +5,40 @@ on:
     branches:
       - main
   workflow_dispatch:
+  # Generator commits use GITHUB_TOKEN, so their pushes do not trigger this workflow.
+  workflow_run:
+    workflows:
+      - Calendar Generator
+      - Ephemeris Generator
+      - Weekly Planet Finder
+      - Sky Notes Generator
+      - Artwork Generator
+      - Legend Generator
+      - Weekly Build All
+    types: [completed]
+    branches: [main]
 
 permissions:
   contents: read
 
+# Each deployment updates and rebuilds the same server checkout.
+concurrency:
+  group: alexander-ferrari-miller-deploy
+  cancel-in-progress: false
+
 jobs:
   deploy:
+    if: >-
+      ${{ github.event_name != 'workflow_run' ||
+          (github.event.workflow_run.conclusion == 'success' &&
+           github.event.workflow_run.head_repository.full_name == github.repository) }}
     runs-on: ubuntu-latest
 
     steps:
       - name: Check out site
         uses: actions/checkout@v4
         with:
+          ref: main
           fetch-depth: 0
 
       - name: Deploy to AWS
