@@ -1114,6 +1114,7 @@ def render(spec: dict, stars, output: Path) -> None:
                 continue
             ax.scatter([point[0]], [point[1]], s=58, marker="o",
                        facecolors="none", edgecolors=TEXT, linewidths=1.2, zorder=8)
+            occupied_labels.append(marker_obstacle_bbox(ax, point, 58, 1.2))
             place_label(
                 ax, body_name, point, occupied_labels, color=TEXT, fontsize=9, zorder=8,
                 obstacle_segments=figure_segments + asterism_segments + boundary_segments,
