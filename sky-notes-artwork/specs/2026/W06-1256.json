@@ -1,6 +1,6 @@
 {
   "name": "Gemini",
-  "constellation_abbreviation": "Gem",
+  "target": "Pollux",
   "figure_paths": [
     [
       "HIP 37826",
@@ -34,6 +34,7 @@
       "HIP 30883"
     ]
   ],
+  "asterisms": [],
   "candidate_constellations": [
     {
       "abbreviation": "And",
@@ -1791,7 +1792,6 @@
       ]
     }
   ],
-  "guide_constellations": [],
   "candidate_asterisms": [
     {
       "id": "asterism-big-dipper",
@@ -2167,8 +2167,29 @@
       ]
     }
   ],
-  "asterisms": [],
   "deep_sky_objects": [],
+  "finder_relation": {
+    "sequence": [
+      "Gemini",
+      "Pollux",
+      "Jupiter"
+    ],
+    "orientation": "constellation-stick-figure",
+    "reference_star": "Pollux",
+    "planet": "Jupiter",
+    "finder_note": null,
+    "sky_separation_deg": 9.0
+  },
+  "planet_position": {
+    "ra_deg": 108.345754,
+    "dec_deg": 22.674198
+  },
+  "guide_objects": [
+    {
+      "type": "reference-star",
+      "name": "Pollux"
+    }
+  ],
   "fixed_object_identities": [
     {
       "fixed_object_id": 37,
@@ -2299,11 +2320,91 @@
       }
     }
   ],
-  "artwork_owner_identity": {
-    "fixed_object_id": 182,
-    "name": "M35",
-    "proper_name": "M35",
-    "constellation_abbreviation": "Gem"
+  "guide_anchor_identity": {
+    "fixed_object_id": 37,
+    "renderer_ref": "HIP 37826",
+    "identifiers": {
+      "hip": "37826"
+    },
+    "proper_name": "Pollux",
+    "constellation_abbreviation": "Gem",
+    "bayer": "Bet"
   },
-  "guide_objects": []
+  "target_identity": {
+    "fixed_object_id": 37,
+    "renderer_ref": "HIP 37826",
+    "identifiers": {
+      "hip": "37826"
+    },
+    "proper_name": "Pollux",
+    "constellation_abbreviation": "Gem",
+    "bayer": "Bet"
+  },
+  "solar_system_field": [
+    {
+      "name": "Moon",
+      "ra_deg": 136.914792,
+      "dec_deg": 18.799422
+    },
+    {
+      "name": "Mercury",
+      "ra_deg": 323.870313,
+      "dec_deg": -16.25633
+    },
+    {
+      "name": "Venus",
+      "ra_deg": 321.936065,
+      "dec_deg": -16.411981
+    },
+    {
+      "name": "Mars",
+      "ra_deg": 309.824582,
+      "dec_deg": -19.495424
+    },
+    {
+      "name": "Ceres",
+      "ra_deg": 16.723673,
+      "dec_deg": -0.483705
+    },
+    {
+      "name": "Jupiter",
+      "ra_deg": 108.345754,
+      "dec_deg": 22.674198
+    },
+    {
+      "name": "Saturn",
+      "ra_deg": 359.37138,
+      "dec_deg": -2.639141
+    },
+    {
+      "name": "Uranus",
+      "ra_deg": 54.853265,
+      "dec_deg": 19.323634
+    },
+    {
+      "name": "Neptune",
+      "ra_deg": 0.340809,
+      "dec_deg": -1.285661
+    },
+    {
+      "name": "Pluto",
+      "ra_deg": 306.623603,
+      "dec_deg": -23.101954
+    }
+  ],
+  "moon_disk": {
+    "snapshot_utc": "2026-02-02T00:00:00Z",
+    "angular_diameter_deg": 0.5356726200795395,
+    "phase_angle_deg": 2.4160101412880812,
+    "illuminated_fraction": 0.999555544896148,
+    "bright_limb_position_angle_deg": 41.448926946862706,
+    "distance_km": 371667.4929534779
+  },
+  "landmark_policy": {
+    "retain_named_field_stars": true,
+    "primary_reference_star": "Pollux",
+    "magnitude_limit": 2.99
+  },
+  "object_id": 1256,
+  "rendering_id": "2026-W06-1256"
 }
