@@ -103,6 +103,44 @@ def projected_path(points, center):
     return [p for p in (project(ra, dec, *center) for ra, dec in points) if p is not None]
 
 
+def sky_reference_segments(center, xmin, xmax, ymin, ymax):
+    """Clip J2000 equator/ecliptic to the existing finder frame."""
+    obliquity = math.radians(23.439291111)
+    result = []
+    for name, color, style in (("Celestial equator", "#71cbd1", "--"),
+                               ("Ecliptic", "#e6a36b", "-.")):
+        points = []
+        for degree in range(721):
+            longitude = math.radians(degree / 2)
+            if name == "Ecliptic":
+                ra = math.degrees(math.atan2(math.cos(obliquity) * math.sin(longitude),
+                                            math.cos(longitude))) % 360
+                dec = math.degrees(math.asin(math.sin(obliquity) * math.sin(longitude)))
+            else:
+                ra, dec = degree / 2, 0.0
+            points.append(project(ra, dec, *center))
+        segments = []
+        for start, end in zip(points, points[1:]):
+            if start is not None and end is not None:
+                segment = clip_view_segment(start, end, xmin, xmax, ymin, ymax)
+                if segment is not None:
+                    segments.append(segment)
+        result.append((name, color, style, segments))
+    return result
+
+
+def make_svg_responsive(output):
+    """Retain the SVG viewBox while filling a standalone browser's width."""
+    text = output.read_text(encoding="utf-8")
+    def resize(match):
+        root = match.group(0)
+        root = re.sub(r' width="[^"]*"', ' width="100%"', root)
+        root = re.sub(r' height="[^"]*"', '', root)
+        return root[:-1] + ' style="display:block;width:100%;height:auto" preserveAspectRatio="xMidYMid meet">'
+    text = re.sub(r'<svg\b[^>]*>', resize, text, count=1)
+    output.write_text(text, encoding="utf-8")
+
+
 def path_hits_view(points, xmin, xmax, ymin, ymax):
     if any(p is not None and xmin <= p[0] <= xmax and ymin <= p[1] <= ymax for p in points):
         return True
@@ -882,6 +920,13 @@ def render(spec: dict, stars, output: Path) -> None:
         pad = max(3.5, span * 0.24)
     xmin, xmax = min(xs) - pad, max(xs) + pad
     ymin, ymax = min(ys) - pad, max(ys) + pad
+    # Keep equal angular scale without squeezing a north/south route into a
+    # narrow strip. Expand only the shorter field dimension around its center.
+    if not spec.get("overview"):
+        field_span = max(xmax - xmin, ymax - ymin)
+        xmid, ymid = (xmin + xmax) / 2, (ymin + ymax) / 2
+        xmin, xmax = xmid - field_span / 2, xmid + field_span / 2
+        ymin, ymax = ymid - field_span / 2, ymid + field_span / 2
     # Ambient figures and asterisms enter only after framing. They supply
     # clipped context for every finder, including moving bodies, without
     # changing the navigation route, projection center, padding or bounds.
@@ -918,6 +963,11 @@ def render(spec: dict, stars, output: Path) -> None:
     ax.set_xlim(xmax, xmin)
     ax.set_ylim(ymin, ymax)
     ax.set_aspect("equal")
+    reference_lines = sky_reference_segments(center, xmin, xmax, ymin, ymax)
+    for name, color, style, segments in reference_lines:
+        for start, end in segments:
+            ax.plot([start[0], end[0]], [start[1], end[1]], color=color,
+                    linestyle=style, linewidth=0.9, alpha=0.8, zorder=1)
     if visible:
         ax.scatter([item[0] for item in visible], [item[1] for item in visible],
                    s=[marker_area(item[2].mag, 7) for item in visible], color=STAR,
@@ -959,6 +1009,7 @@ def render(spec: dict, stars, output: Path) -> None:
         if len(boundary_points) >= 2:
             projected_boundaries.append((boundary_name, boundary_abbreviation, boundary_points))
     boundary_segments = []
+    boundary_segments.extend(segment for _, _, _, segments in reference_lines for segment in segments)
     for _, _, boundary_points in projected_boundaries:
         boundary_segments.extend(zip(boundary_points, boundary_points[1:]))
     figure_refs = []
@@ -1213,6 +1264,13 @@ def render(spec: dict, stars, output: Path) -> None:
                 obstacle_segments=figure_segments + asterism_segments + boundary_segments,
                 require_clear=True,
             )
+    for name, color, _, segments in reference_lines:
+        if segments:
+            start, end = segments[len(segments) // 2]
+            point = ((start[0] + end[0]) / 2, (start[1] + end[1]) / 2)
+            place_label(ax, name, point, occupied_labels, color=color, fontsize=8,
+                        obstacle_segments=figure_segments + asterism_segments,
+                        require_clear=True)
     if has_planet:
         # A moving-body finder is named for the route the reader actually uses:
         # body + useful landmark + full constellation.
@@ -1287,6 +1345,7 @@ def render(spec: dict, stars, output: Path) -> None:
                           figure_segments + asterism_segments + boundary_segments)
     fig.savefig(output, format="svg", bbox_inches="tight", facecolor=fig.get_facecolor())
     plt.close(fig)
+    make_svg_responsive(output)
 
 
 def main() -> None:
@@ -1302,3 +1361,4 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+
