@@ -21,6 +21,7 @@ from types import SimpleNamespace
 import matplotlib.pyplot as plt
 from matplotlib.path import Path as MplPath
 from matplotlib.patches import Polygon
+from matplotlib.collections import LineCollection
 from matplotlib.transforms import Bbox
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
@@ -127,6 +128,63 @@ def sky_reference_segments(center, xmin, xmax, ymin, ymax):
                     segments.append(segment)
         result.append((name, color, style, segments))
     return result
+
+
+def coordinate_grid_segments(center, xmin, xmax, ymin, ymax):
+    """Sample J2000 hour meridians and ten-degree declination parallels."""
+    result = []
+    curves = [(f"{hour}h", "ra", [(hour * 15.0, step / 2) for step in range(-180, 181)])
+              for hour in range(24)]
+    # The poles are points. Dec 0 also carries the prominent equator overlay.
+    curves += [(f"{dec:+d}°" if dec else "0°", "dec", [(step / 2, float(dec)) for step in range(721)])
+               for dec in range(-80, 81, 10)]
+    for label, kind, coordinates in curves:
+        points = [project(ra, dec, *center) for ra, dec in coordinates]
+        segments = []
+        for start, end in zip(points, points[1:]):
+            if start is not None and end is not None:
+                clipped = clip_view_segment(start, end, xmin, xmax, ymin, ymax)
+                if clipped is not None:
+                    segments.append(clipped)
+        if segments:
+            result.append((label, kind, segments))
+    return result
+
+
+def label_coordinate_grid(ax, grid, occupied_labels):
+    """Label actual frame crossings, keeping text inside the chart edges."""
+    xmin, xmax = sorted(ax.get_xlim())
+    ymin, ymax = sorted(ax.get_ylim())
+    tolerance = max(xmax - xmin, ymax - ymin) * 1e-6
+    for label, kind, segments in grid:
+        endpoints = [point for segment in segments for point in segment]
+        crossings = []
+        for point in endpoints:
+            x, y = point
+            sides = [(abs(y - ymax), "top"), (abs(y - ymin), "bottom"),
+                     (abs(x - xmax), "left"), (abs(x - xmin), "right")]
+            distance, side = min(sides)
+            if distance <= tolerance:
+                preferred = side in ({"top", "bottom"} if kind == "ra" else {"left", "right"})
+                crossings.append((not preferred, point, side))
+        for _, point, side in sorted(crossings):
+            dx, dy, ha, va = {
+                "top": (0, -4, "center", "top"),
+                "bottom": (0, 4, "center", "bottom"),
+                "left": (4, 0, "left", "center"),
+                "right": (-4, 0, "right", "center"),
+            }[side]
+            annotation = ax.annotate(label, point, xytext=(dx, dy), textcoords="offset points",
+                                     ha=ha, va=va, fontsize=7, color="#9aa9b8", zorder=5)
+            ax.figure.canvas.draw()
+            bbox = annotation.get_window_extent(ax.figure.canvas.get_renderer()).expanded(1.1, 1.1)
+            if (not ax.bbox.contains(bbox.x0, bbox.y0)
+                    or not ax.bbox.contains(bbox.x1, bbox.y1)
+                    or any(bbox.overlaps(other) for other in occupied_labels)):
+                annotation.remove()
+                continue
+            occupied_labels.append(bbox)
+            break
 
 
 def make_svg_responsive(output):
@@ -964,6 +1022,11 @@ def render(spec: dict, stars, output: Path) -> None:
     ax.set_ylim(ymin, ymax)
     ax.set_aspect("equal")
     reference_lines = sky_reference_segments(center, xmin, xmax, ymin, ymax)
+    coordinate_grid = coordinate_grid_segments(center, xmin, xmax, ymin, ymax)
+    ax.add_collection(LineCollection(
+        [segment for _, _, segments in coordinate_grid for segment in segments],
+        colors="#71849a", linewidths=0.5, linestyles=":", alpha=0.35, zorder=0.5,
+    ))
     for name, color, style, segments in reference_lines:
         for start, end in segments:
             ax.plot([start[0], end[0]], [start[1], end[1]], color=color,
@@ -1264,6 +1327,7 @@ def render(spec: dict, stars, output: Path) -> None:
                 obstacle_segments=figure_segments + asterism_segments + boundary_segments,
                 require_clear=True,
             )
+    label_coordinate_grid(ax, coordinate_grid, occupied_labels)
     for name, color, _, segments in reference_lines:
         if segments:
             start, end = segments[len(segments) // 2]
