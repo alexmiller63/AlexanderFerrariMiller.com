@@ -572,7 +572,9 @@ def planetary_artwork_descriptors(year: int, week: int, fixed: list[dict], relat
         raise RuntimeError(f"ISO {year}-W{week:02d}: missing body finder routes: {', '.join(missing)}")
     result = []
     for name in PLANET_OBJECT_IDS:
-        descriptor = artwork_descriptor(year, week, fixed, [by_planet[name]], planet=name)
+        # Select this body's route by name while preserving the full weekly
+        # field, so neighboring bodies can appear in each other's charts.
+        descriptor = artwork_descriptor(year, week, fixed, list(by_planet.values()), planet=name)
         if descriptor is None:
             raise RuntimeError(f"ISO {year}-W{week:02d}: cannot build finder for {name}")
         result.append(descriptor)
