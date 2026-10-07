@@ -15,40 +15,17 @@ jobs:
         shell: python
         run: |
           from pathlib import Path
-
+          
           p = Path("tools/render_sky_note_finder.py")
           text = p.read_text(encoding="utf-8")
-          old = '''        geometry_hits = sum(segment_hits_display_bbox(ax, start, end, bbox)
-                            for start, end in obstacle_segments)
-        score = label_hits + geometry_hits
-        nearest_x = min(max(anchor_x, bbox.x0), bbox.x1)
-'''
-          new = '''        hit_segments = [
-            (index, start, end)
-            for index, (start, end) in enumerate(obstacle_segments)
-            if segment_hits_display_bbox(ax, start, end, bbox)
-        ]
-        geometry_hits = len(hit_segments)
-        score = label_hits + geometry_hits
-        nearest_x = min(max(anchor_x, bbox.x0), bbox.x1)
-'''
+          old = "            geometry_hits = sum(segment_hits_display_bbox(ax, start, end, bbox)\n                                for start, end in obstacle_segments)\n"
+          new = "            hit_segments = [\n                (index, start, end)\n                for index, (start, end) in enumerate(obstacle_segments)\n                if segment_hits_display_bbox(ax, start, end, bbox)\n            ]\n            geometry_hits = len(hit_segments)\n"
           if text.count(old) != 1:
               raise SystemExit(f"Expected one target-label scoring block, found {text.count(old)}")
           text = text.replace(old, new)
-
-          old2 = '''        anchor_distance = math.hypot(nearest_x - anchor_x, nearest_y - anchor_y)
-        annotation.remove()
-        candidate = (score, anchor_distance, rank, dx, dy)
-'''
-          new2 = '''        anchor_distance = math.hypot(nearest_x - anchor_x, nearest_y - anchor_y)
-        print(
-            f"TARGET_LABEL_DIAG label={label!r} rank={rank} offset=({dx:.2f},{dy:.2f}) "
-            f"distance={anchor_distance:.2f} label_hits={label_hits} "
-            f"geometry_hits={geometry_hits} hit_segments={hit_segments}"
-        )
-        annotation.remove()
-        candidate = (score, anchor_distance, rank, dx, dy)
-'''
+          
+          old2 = "            anchor_distance = math.hypot(nearest_x - anchor_x, nearest_y - anchor_y)\n            annotation.remove()\n"
+          new2 = "            anchor_distance = math.hypot(nearest_x - anchor_x, nearest_y - anchor_y)\n            print(\n                f\"TARGET_LABEL_DIAG label={label!r} rank={rank} offset=({dx:.2f},{dy:.2f}) \"\n                f\"distance={anchor_distance:.2f} label_hits={label_hits} \"\n                f\"geometry_hits={geometry_hits} marker_hits={marker_hits} hit_segments={hit_segments}\"\n            )\n            annotation.remove()\n"
           if text.count(old2) != 1:
               raise SystemExit(f"Expected one target-label distance block, found {text.count(old2)}")
           p.write_text(text.replace(old2, new2), encoding="utf-8")
