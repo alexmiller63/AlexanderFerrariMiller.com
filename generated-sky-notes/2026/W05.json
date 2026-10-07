@@ -105,12 +105,29 @@
   "planet_relations": [
     {
       "kind": "planet-planet-longitude",
+      "planet": "Mars",
+      "other_planet": "Pluto",
+      "planet_longitude_deg": 302.033,
+      "other_longitude_deg": 303.5,
+      "longitude_separation_deg": 1.5,
+      "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+      "planet_ra_deg": 304.159608,
+      "planet_dec_deg": -20.779754,
+      "other_ra_deg": 306.385946,
+      "other_dec_deg": -23.144454
+    },
+    {
+      "kind": "planet-planet-longitude",
       "planet": "Mercury",
       "other_planet": "Venus",
       "planet_longitude_deg": 309.0,
       "other_longitude_deg": 310.65,
       "longitude_separation_deg": 1.6,
-      "basis": "Star Almanack preserved geocentric tropical ecliptic longitude"
+      "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+      "planet_ra_deg": 311.636574,
+      "planet_dec_deg": -20.110768,
+      "other_ra_deg": 313.084457,
+      "other_dec_deg": -18.872308
     },
     {
       "kind": "planet-planet-longitude",
@@ -119,10 +136,174 @@
       "planet_longitude_deg": 358.067,
       "other_longitude_deg": 359.983,
       "longitude_separation_deg": 1.9,
-      "basis": "Star Almanack preserved geocentric tropical ecliptic longitude"
+      "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+      "planet_ra_deg": 358.762178,
+      "planet_dec_deg": -2.920351,
+      "other_ra_deg": 0.171679,
+      "other_dec_deg": -1.36251
     }
   ],
-  "note": "ISO 2026-W05 runs from January 26 through February 1. Mercury and Venus are separated by about 1.6° in geocentric ecliptic longitude at the Monday 00:00 UTC snapshot. Saturn and Neptune are separated by about 1.9° in geocentric ecliptic longitude at the Monday 00:00 UTC snapshot.\n\n**Naked eye:** 🌓 First Quarter — 04:47:23 UTC. Moderate moonlight makes timing and local sky position important for faint targets. Use Mintaka, Arneb, Alnilam, Phact, Alnitak, Saiph, Wazn, Betelgeuse, Menkalinan as the week’s fixed-sky framework.\n\n**Planets:** Mercury and Venus are separated by about 1.6° in geocentric ecliptic longitude at the Monday 00:00 UTC snapshot. Saturn and Neptune are separated by about 1.9° in geocentric ecliptic longitude at the Monday 00:00 UTC snapshot.\n\n**Binoculars:** Favor β Dor, β Pic; wide fields help connect the charted geometry to the real sky.\n\n**Small telescope:** Concentrate on Crab Nebula, Great Nebula in Orion, De Mairan's Nebula, M36, M78, M37. Increase magnification only after the target and surrounding pattern are secure.\n\n**Substantial telescope:** No fixed-sky Calendar object is classified as requiring a substantial telescope this week.\n\n",
+  "planet_finder_relations": [
+    {
+      "kind": "planet-star-longitude",
+      "planet": "Moon",
+      "planet_longitude_deg": 33.433,
+      "star": "Sheratan",
+      "constellation": "Ari",
+      "star_ecliptic_longitude_deg": 33.97,
+      "star_ecliptic_latitude_deg": 8.487,
+      "longitude_separation_deg": 0.5,
+      "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+      "finder_only": true,
+      "planet_ra_deg": 29.357098,
+      "planet_dec_deg": 16.492302,
+      "sky_separation_deg": 4.4
+    },
+    {
+      "kind": "planet-star-longitude",
+      "planet": "Mercury",
+      "planet_longitude_deg": 309.0,
+      "star": "Dabih",
+      "constellation": "Cap",
+      "star_ecliptic_longitude_deg": 304.047,
+      "star_ecliptic_latitude_deg": 4.589,
+      "longitude_separation_deg": 5.0,
+      "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+      "finder_only": true,
+      "planet_ra_deg": 311.636574,
+      "planet_dec_deg": -20.110768,
+      "sky_separation_deg": 8.1
+    },
+    {
+      "kind": "planet-star-longitude",
+      "planet": "Venus",
+      "planet_longitude_deg": 310.65,
+      "star": "Dabih",
+      "constellation": "Cap",
+      "star_ecliptic_longitude_deg": 304.047,
+      "star_ecliptic_latitude_deg": 4.589,
+      "longitude_separation_deg": 6.6,
+      "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+      "finder_only": true,
+      "planet_ra_deg": 313.084457,
+      "planet_dec_deg": -18.872308,
+      "sky_separation_deg": 8.5
+    },
+    {
+      "kind": "planet-star-longitude",
+      "planet": "Mars",
+      "planet_longitude_deg": 302.033,
+      "star": "Dabih",
+      "constellation": "Cap",
+      "star_ecliptic_longitude_deg": 304.047,
+      "star_ecliptic_latitude_deg": 4.589,
+      "longitude_separation_deg": 2.0,
+      "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+      "finder_only": true,
+      "planet_ra_deg": 304.159608,
+      "planet_dec_deg": -20.779754,
+      "sky_separation_deg": 6.1
+    },
+    {
+      "kind": "planet-star-longitude",
+      "planet": "Ceres",
+      "planet_longitude_deg": 13.467,
+      "star": "Alrescha",
+      "constellation": "Psc",
+      "star_ecliptic_longitude_deg": 29.379,
+      "star_ecliptic_latitude_deg": -9.061,
+      "longitude_separation_deg": 15.9,
+      "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+      "finder_only": true,
+      "planet_ra_deg": 14.920354,
+      "planet_dec_deg": -1.630621,
+      "sky_separation_deg": 16.2,
+      "finder_difficulty": "difficult",
+      "finder_note": "Ceres is not easy to find this week."
+    },
+    {
+      "kind": "planet-star-longitude",
+      "planet": "Jupiter",
+      "planet_longitude_deg": 108.067,
+      "star": "Pollux",
+      "constellation": "Gem",
+      "star_ecliptic_longitude_deg": 113.216,
+      "star_ecliptic_latitude_deg": 6.684,
+      "longitude_separation_deg": 5.1,
+      "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+      "finder_only": true,
+      "planet_ra_deg": 109.218214,
+      "planet_dec_deg": 22.557387,
+      "sky_separation_deg": 8.4
+    },
+    {
+      "kind": "planet-star-longitude",
+      "planet": "Saturn",
+      "planet_longitude_deg": 358.067,
+      "star": "Fumalsamakah",
+      "constellation": "Psc",
+      "star_ecliptic_longitude_deg": 348.585,
+      "star_ecliptic_latitude_deg": 9.053,
+      "longitude_separation_deg": 9.5,
+      "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+      "finder_only": true,
+      "planet_ra_deg": 358.762178,
+      "planet_dec_deg": -2.920351,
+      "sky_separation_deg": 14.5,
+      "finder_difficulty": "difficult",
+      "finder_note": "Saturn is not easy to find this week."
+    },
+    {
+      "kind": "planet-star-longitude",
+      "planet": "Uranus",
+      "planet_longitude_deg": 57.5,
+      "star": "Aldebaran",
+      "constellation": "Tau",
+      "star_ecliptic_longitude_deg": 69.789,
+      "star_ecliptic_latitude_deg": -5.467,
+      "longitude_separation_deg": 12.3,
+      "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+      "finder_only": true,
+      "planet_ra_deg": 54.889375,
+      "planet_dec_deg": 19.329396,
+      "sky_separation_deg": 13.7,
+      "finder_difficulty": "difficult",
+      "finder_note": "Uranus is not easy to find this week."
+    },
+    {
+      "kind": "planet-star-longitude",
+      "planet": "Neptune",
+      "planet_longitude_deg": 359.983,
+      "star": "Fumalsamakah",
+      "constellation": "Psc",
+      "star_ecliptic_longitude_deg": 348.585,
+      "star_ecliptic_latitude_deg": 9.053,
+      "longitude_separation_deg": 11.4,
+      "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+      "finder_only": true,
+      "planet_ra_deg": 0.171679,
+      "planet_dec_deg": -1.36251,
+      "sky_separation_deg": 15.1,
+      "finder_difficulty": "difficult",
+      "finder_note": "Neptune is not easy to find this week."
+    },
+    {
+      "kind": "planet-star-longitude",
+      "planet": "Pluto",
+      "planet_longitude_deg": 303.5,
+      "star": "Dabih",
+      "constellation": "Cap",
+      "star_ecliptic_longitude_deg": 304.047,
+      "star_ecliptic_latitude_deg": 4.589,
+      "longitude_separation_deg": 0.5,
+      "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+      "finder_only": true,
+      "planet_ra_deg": 306.385946,
+      "planet_dec_deg": -23.144454,
+      "sky_separation_deg": 8.4
+    }
+  ],
+  "note": "ISO 2026-W05 runs from January 26 through February 1. Mars and Pluto are separated by about 1.5° in geocentric ecliptic longitude at the Monday 00:00 UTC snapshot. Mercury and Venus are separated by about 1.6° in geocentric ecliptic longitude at the Monday 00:00 UTC snapshot.\n\n**Naked eye:** 🌓 First Quarter — 04:47:23 UTC. Moderate moonlight makes timing and local sky position important for faint targets. Use Mintaka, Arneb, Alnilam, Phact, Alnitak, Saiph, Wazn, Betelgeuse, Menkalinan as the week’s fixed-sky framework.\n\n**Planets:** Mars and Pluto are separated by about 1.5° in geocentric ecliptic longitude at the Monday 00:00 UTC snapshot. Mercury and Venus are separated by about 1.6° in geocentric ecliptic longitude at the Monday 00:00 UTC snapshot. Saturn and Neptune are separated by about 1.9° in geocentric ecliptic longitude at the Monday 00:00 UTC snapshot.\n\n**Binoculars:** Trace Dorado’s charted figure in the finder, then identify β Dor at its charted position. Trace Pictor’s charted figure in the finder, then identify β Pic at its charted position.\n\n**Small telescope:** Concentrate on Crab Nebula, Great Nebula in Orion, De Mairan's Nebula, M36, M78, M37. Increase magnification only after the target and surrounding pattern are secure.\n\n**Substantial telescope:** No fixed-sky Calendar object is classified as requiring a substantial telescope this week.\n\n",
   "descriptors": [
     {
       "schema_version": 1,
@@ -687,6 +868,18 @@
         "machine": "./zodiac.json",
         "human_source": "summary"
       }
+    },
+    {
+      "schema_version": 1,
+      "id": "lunar-full-moon",
+      "type": "lunar-highlight",
+      "name": "Full Moon",
+      "summary": "Astronomical lunar phase near opposition to the Sun.",
+      "representation": {
+        "machine": "./lunar-full-moon.json",
+        "human_source": "summary"
+      },
+      "body": "Full Moon is the lunar phase in which the Moon and Sun are approximately opposite in geocentric ecliptic longitude, so the lunar disk is fully illuminated as seen from Earth."
     }
   ],
   "calendar_fixed_object_ids": [
@@ -713,154 +906,137 @@
       "fixed_object_id": 28,
       "collection": "baseline",
       "hed": "Mintaka",
-      "dek": "Mintaka is a charted star in Ori selected by the Calendar as part of this week’s fixed-sky observing framework.",
-      "body": "Why it is here: Mintaka is a charted star in Ori selected by the Calendar as part of this week’s fixed-sky observing framework.\n\nHow to find it: Use its charted position in Ori and the surrounding figure stars to identify the field.",
-      "url": "/stories/baseline/28.html",
-      "artwork": null
+      "dek": "Mintaka is a stellar reference in Ori used by the weekly observing calendar.",
+      "body": "Why it is here: The Calendar selected Mintaka for this week’s fixed-sky observing sequence; its permanent object identity ties the weekly entry to the same star used by the finder.\n\nHow to find it: Establish the preserved Ori constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.",
+      "url": "/stories/baseline/28.html"
     },
     {
       "fixed_object_id": 761,
       "collection": "baseline",
       "hed": "Arneb",
-      "dek": "Arneb is a charted star in Lep selected by the Calendar as part of this week’s fixed-sky observing framework.",
-      "body": "Why it is here: Arneb is a charted star in Lep selected by the Calendar as part of this week’s fixed-sky observing framework.\n\nHow to find it: Use its charted position in Lep and the surrounding figure stars to identify the field.",
-      "url": "/stories/baseline/761.html",
-      "artwork": null
+      "dek": "Arneb is a stellar reference in Lep used by the weekly observing calendar.",
+      "body": "Why it is here: The Calendar selected Arneb for this week’s fixed-sky observing sequence; its permanent object identity ties the weekly entry to the same star used by the finder.\n\nHow to find it: Establish the preserved Lep constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.",
+      "url": "/stories/baseline/761.html"
     },
     {
       "fixed_object_id": 762,
       "collection": "baseline",
       "hed": "β Dor",
-      "dek": "β Dor is a charted star in Dor selected by the Calendar as part of this week’s fixed-sky observing framework.",
-      "body": "Why it is here: β Dor is a charted star in Dor selected by the Calendar as part of this week’s fixed-sky observing framework.\n\nHow to find it: Use its charted position in Dor and the surrounding figure stars to identify the field.",
-      "url": "/stories/baseline/762.html",
-      "artwork": null
+      "dek": "β Dor is a stellar reference in Dor used by the weekly observing calendar.",
+      "body": "Why it is here: The Calendar selected β Dor for this week’s fixed-sky observing sequence; its permanent object identity ties the weekly entry to the same star used by the finder.\n\nHow to find it: Establish the preserved Dor constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.",
+      "url": "/stories/baseline/762.html"
     },
     {
       "fixed_object_id": 172,
       "collection": "baseline",
       "hed": "Crab Nebula",
-      "dek": "Crab Nebula is a charted deep-sky object selected by the Calendar as one of this week’s fixed-sky observing targets.",
-      "body": "Why it is here: Crab Nebula is a charted deep-sky object selected by the Calendar as one of this week’s fixed-sky observing targets.\n\nHow to find it: Use its charted position in Tau and the surrounding figure stars to identify the field.",
-      "url": "/stories/baseline/172.html",
-      "artwork": null
+      "dek": "Crab Nebula is an observing target in Tau carried by the weekly Calendar.",
+      "body": "Why it is here: The Calendar selected Crab Nebula as one of this week’s fixed-sky observing targets.\n\nHow to find it: Establish the preserved Tau constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.",
+      "url": "/stories/baseline/172.html"
     },
     {
       "fixed_object_id": 175,
       "collection": "baseline",
       "hed": "Great Nebula in Orion",
-      "dek": "Great Nebula in Orion is a charted deep-sky object selected by the Calendar as one of this week’s fixed-sky observing targets.",
-      "body": "Why it is here: Great Nebula in Orion is a charted deep-sky object selected by the Calendar as one of this week’s fixed-sky observing targets.\n\nHow to find it: Use its charted position in Ori and the surrounding figure stars to identify the field.",
-      "url": "/stories/baseline/175.html",
-      "artwork": null
+      "dek": "Great Nebula in Orion is an observing target in Ori carried by the weekly Calendar.",
+      "body": "Why it is here: The Calendar selected Great Nebula in Orion as one of this week’s fixed-sky observing targets.\n\nHow to find it: Establish the preserved Ori constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.",
+      "url": "/stories/baseline/175.html"
     },
     {
       "fixed_object_id": 176,
       "collection": "baseline",
       "hed": "De Mairan's Nebula",
-      "dek": "De Mairan's Nebula is a charted deep-sky object selected by the Calendar as one of this week’s fixed-sky observing targets.",
-      "body": "Why it is here: De Mairan's Nebula is a charted deep-sky object selected by the Calendar as one of this week’s fixed-sky observing targets.\n\nHow to find it: Use its charted position in Ori and the surrounding figure stars to identify the field.",
-      "url": "/stories/baseline/176.html",
-      "artwork": null
+      "dek": "De Mairan's Nebula is an observing target in Ori carried by the weekly Calendar.",
+      "body": "Why it is here: The Calendar selected De Mairan's Nebula as one of this week’s fixed-sky observing targets.\n\nHow to find it: Establish the preserved Ori constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.",
+      "url": "/stories/baseline/176.html"
     },
     {
       "fixed_object_id": 173,
       "collection": "baseline",
       "hed": "M36",
-      "dek": "M36 is a charted deep-sky object selected by the Calendar as one of this week’s fixed-sky observing targets.",
-      "body": "Why it is here: M36 is a charted deep-sky object selected by the Calendar as one of this week’s fixed-sky observing targets.\n\nHow to find it: Use its charted position in Aur and the surrounding figure stars to identify the field.",
-      "url": "/stories/baseline/173.html",
-      "artwork": null
+      "dek": "M36 is an observing target in Aur carried by the weekly Calendar.",
+      "body": "Why it is here: The Calendar selected M36 as one of this week’s fixed-sky observing targets.\n\nHow to find it: Establish the preserved Aur constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.",
+      "url": "/stories/baseline/173.html"
     },
     {
       "fixed_object_id": 32,
       "collection": "baseline",
       "hed": "Alnilam",
-      "dek": "Alnilam is a charted star in Ori selected by the Calendar as part of this week’s fixed-sky observing framework.",
-      "body": "Why it is here: Alnilam is a charted star in Ori selected by the Calendar as part of this week’s fixed-sky observing framework.\n\nHow to find it: Use its charted position in Ori and the surrounding figure stars to identify the field.",
-      "url": "/stories/baseline/32.html",
-      "artwork": null
+      "dek": "Alnilam is a stellar reference in Ori used by the weekly observing calendar.",
+      "body": "Why it is here: The Calendar selected Alnilam for this week’s fixed-sky observing sequence; its permanent object identity ties the weekly entry to the same star used by the finder.\n\nHow to find it: Establish the preserved Ori constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.",
+      "url": "/stories/baseline/32.html"
     },
     {
       "fixed_object_id": 765,
       "collection": "baseline",
       "hed": "Phact",
-      "dek": "Phact is a charted star in Col selected by the Calendar as part of this week’s fixed-sky observing framework.",
-      "body": "Why it is here: Phact is a charted star in Col selected by the Calendar as part of this week’s fixed-sky observing framework.\n\nHow to find it: Use its charted position in Col and the surrounding figure stars to identify the field.",
-      "url": "/stories/baseline/765.html",
-      "artwork": null
+      "dek": "Phact is a stellar reference in Col used by the weekly observing calendar.",
+      "body": "Why it is here: The Calendar selected Phact for this week’s fixed-sky observing sequence; its permanent object identity ties the weekly entry to the same star used by the finder.\n\nHow to find it: Establish the preserved Col constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.",
+      "url": "/stories/baseline/765.html"
     },
     {
       "fixed_object_id": 33,
       "collection": "baseline",
       "hed": "Alnitak",
-      "dek": "Alnitak is a charted star in Ori selected by the Calendar as part of this week’s fixed-sky observing framework.",
-      "body": "Why it is here: Alnitak is a charted star in Ori selected by the Calendar as part of this week’s fixed-sky observing framework.\n\nHow to find it: Use its charted position in Ori and the surrounding figure stars to identify the field.",
-      "url": "/stories/baseline/33.html",
-      "artwork": null
+      "dek": "Alnitak is a stellar reference in Ori used by the weekly observing calendar.",
+      "body": "Why it is here: The Calendar selected Alnitak for this week’s fixed-sky observing sequence; its permanent object identity ties the weekly entry to the same star used by the finder.\n\nHow to find it: Establish the preserved Ori constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.",
+      "url": "/stories/baseline/33.html"
     },
     {
       "fixed_object_id": 179,
       "collection": "baseline",
       "hed": "M78",
-      "dek": "M78 is a charted deep-sky object selected by the Calendar as one of this week’s fixed-sky observing targets.",
-      "body": "Why it is here: M78 is a charted deep-sky object selected by the Calendar as one of this week’s fixed-sky observing targets.\n\nHow to find it: Use its charted position in Ori and the surrounding figure stars to identify the field.",
-      "url": "/stories/baseline/179.html",
-      "artwork": null
+      "dek": "M78 is an observing target in Ori carried by the weekly Calendar.",
+      "body": "Why it is here: The Calendar selected M78 as one of this week’s fixed-sky observing targets.\n\nHow to find it: Establish the preserved Ori constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.",
+      "url": "/stories/baseline/179.html"
     },
     {
       "fixed_object_id": 769,
       "collection": "baseline",
       "hed": "β Pic",
-      "dek": "β Pic is a charted star in Pic selected by the Calendar as part of this week’s fixed-sky observing framework.",
-      "body": "Why it is here: β Pic is a charted star in Pic selected by the Calendar as part of this week’s fixed-sky observing framework.\n\nHow to find it: Use its charted position in Pic and the surrounding figure stars to identify the field.",
-      "url": "/stories/baseline/769.html",
-      "artwork": null
+      "dek": "β Pic is a stellar reference in Pic used by the weekly observing calendar.",
+      "body": "Why it is here: The Calendar selected β Pic for this week’s fixed-sky observing sequence; its permanent object identity ties the weekly entry to the same star used by the finder.\n\nHow to find it: Establish the preserved Pic constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.",
+      "url": "/stories/baseline/769.html"
     },
     {
       "fixed_object_id": 770,
       "collection": "baseline",
       "hed": "Saiph",
-      "dek": "Saiph is a charted star in Ori selected by the Calendar as part of this week’s fixed-sky observing framework.",
-      "body": "Why it is here: Saiph is a charted star in Ori selected by the Calendar as part of this week’s fixed-sky observing framework.\n\nHow to find it: Use its charted position in Ori and the surrounding figure stars to identify the field.",
-      "url": "/stories/baseline/770.html",
-      "artwork": null
+      "dek": "Saiph is a stellar reference in Ori used by the weekly observing calendar.",
+      "body": "Why it is here: The Calendar selected Saiph for this week’s fixed-sky observing sequence; its permanent object identity ties the weekly entry to the same star used by the finder.\n\nHow to find it: Establish the preserved Ori constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.",
+      "url": "/stories/baseline/770.html"
     },
     {
       "fixed_object_id": 772,
       "collection": "baseline",
       "hed": "Wazn",
-      "dek": "Wazn is a charted star in Col selected by the Calendar as part of this week’s fixed-sky observing framework.",
-      "body": "Why it is here: Wazn is a charted star in Col selected by the Calendar as part of this week’s fixed-sky observing framework.\n\nHow to find it: Use its charted position in Col and the surrounding figure stars to identify the field.",
-      "url": "/stories/baseline/772.html",
-      "artwork": null
+      "dek": "Wazn is a stellar reference in Col used by the weekly observing calendar.",
+      "body": "Why it is here: The Calendar selected Wazn for this week’s fixed-sky observing sequence; its permanent object identity ties the weekly entry to the same star used by the finder.\n\nHow to find it: Establish the preserved Col constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.",
+      "url": "/stories/baseline/772.html"
     },
     {
       "fixed_object_id": 181,
       "collection": "baseline",
       "hed": "M37",
-      "dek": "M37 is a charted deep-sky object selected by the Calendar as one of this week’s fixed-sky observing targets.",
-      "body": "Why it is here: M37 is a charted deep-sky object selected by the Calendar as one of this week’s fixed-sky observing targets.\n\nHow to find it: Use its charted position in Aur and the surrounding figure stars to identify the field.",
-      "url": "/stories/baseline/181.html",
-      "artwork": null
+      "dek": "M37 is an observing target in Aur carried by the weekly Calendar.",
+      "body": "Why it is here: The Calendar selected M37 as one of this week’s fixed-sky observing targets.\n\nHow to find it: Establish the preserved Aur constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.",
+      "url": "/stories/baseline/181.html"
     },
     {
       "fixed_object_id": 34,
       "collection": "baseline",
       "hed": "Betelgeuse",
-      "dek": "Betelgeuse is a charted star in Ori selected by the Calendar as part of this week’s fixed-sky observing framework.",
-      "body": "Why it is here: Betelgeuse is a charted star in Ori selected by the Calendar as part of this week’s fixed-sky observing framework.\n\nHow to find it: Use its charted position in Ori and the surrounding figure stars to identify the field.",
-      "url": "/stories/baseline/34.html",
-      "artwork": null
+      "dek": "Betelgeuse is a stellar reference in Ori used by the weekly observing calendar.",
+      "body": "Why it is here: The Calendar selected Betelgeuse for this week’s fixed-sky observing sequence; its permanent object identity ties the weekly entry to the same star used by the finder.\n\nHow to find it: Establish the preserved Ori constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.",
+      "url": "/stories/baseline/34.html"
     },
     {
       "fixed_object_id": 779,
       "collection": "baseline",
       "hed": "Menkalinan",
-      "dek": "Menkalinan is a charted star in Aur selected by the Calendar as part of this week’s fixed-sky observing framework.",
-      "body": "Why it is here: Menkalinan is a charted star in Aur selected by the Calendar as part of this week’s fixed-sky observing framework.\n\nHow to find it: Use its charted position in Aur and the surrounding figure stars to identify the field.",
-      "url": "/stories/baseline/779.html",
-      "artwork": null
+      "dek": "Menkalinan is a stellar reference in Aur used by the weekly observing calendar.",
+      "body": "Why it is here: The Calendar selected Menkalinan for this week’s fixed-sky observing sequence; its permanent object identity ties the weekly entry to the same star used by the finder.\n\nHow to find it: Establish the preserved Aur constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.",
+      "url": "/stories/baseline/779.html"
     }
   ],
   "inline_stories": [],
@@ -870,154 +1046,1629 @@
       "fixed_object_id": 28,
       "collection": "baseline",
       "hed": "Mintaka",
-      "dek": "Mintaka is a charted star in Ori selected by the Calendar as part of this week’s fixed-sky observing framework.",
-      "body": "Why it is here: Mintaka is a charted star in Ori selected by the Calendar as part of this week’s fixed-sky observing framework.\n\nHow to find it: Use its charted position in Ori and the surrounding figure stars to identify the field.",
-      "url": "/stories/baseline/28.html",
-      "artwork": null
+      "dek": "Mintaka is a stellar reference in Ori used by the weekly observing calendar.",
+      "body": "Why it is here: The Calendar selected Mintaka for this week’s fixed-sky observing sequence; its permanent object identity ties the weekly entry to the same star used by the finder.\n\nHow to find it: Establish the preserved Ori constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.",
+      "url": "/stories/baseline/28.html"
     },
     {
       "fixed_object_id": 761,
       "collection": "baseline",
       "hed": "Arneb",
-      "dek": "Arneb is a charted star in Lep selected by the Calendar as part of this week’s fixed-sky observing framework.",
-      "body": "Why it is here: Arneb is a charted star in Lep selected by the Calendar as part of this week’s fixed-sky observing framework.\n\nHow to find it: Use its charted position in Lep and the surrounding figure stars to identify the field.",
-      "url": "/stories/baseline/761.html",
-      "artwork": null
+      "dek": "Arneb is a stellar reference in Lep used by the weekly observing calendar.",
+      "body": "Why it is here: The Calendar selected Arneb for this week’s fixed-sky observing sequence; its permanent object identity ties the weekly entry to the same star used by the finder.\n\nHow to find it: Establish the preserved Lep constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.",
+      "url": "/stories/baseline/761.html"
     },
     {
       "fixed_object_id": 762,
       "collection": "baseline",
       "hed": "β Dor",
-      "dek": "β Dor is a charted star in Dor selected by the Calendar as part of this week’s fixed-sky observing framework.",
-      "body": "Why it is here: β Dor is a charted star in Dor selected by the Calendar as part of this week’s fixed-sky observing framework.\n\nHow to find it: Use its charted position in Dor and the surrounding figure stars to identify the field.",
-      "url": "/stories/baseline/762.html",
-      "artwork": null
+      "dek": "β Dor is a stellar reference in Dor used by the weekly observing calendar.",
+      "body": "Why it is here: The Calendar selected β Dor for this week’s fixed-sky observing sequence; its permanent object identity ties the weekly entry to the same star used by the finder.\n\nHow to find it: Establish the preserved Dor constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.",
+      "url": "/stories/baseline/762.html"
     },
     {
       "fixed_object_id": 172,
       "collection": "baseline",
       "hed": "Crab Nebula",
-      "dek": "Crab Nebula is a charted deep-sky object selected by the Calendar as one of this week’s fixed-sky observing targets.",
-      "body": "Why it is here: Crab Nebula is a charted deep-sky object selected by the Calendar as one of this week’s fixed-sky observing targets.\n\nHow to find it: Use its charted position in Tau and the surrounding figure stars to identify the field.",
-      "url": "/stories/baseline/172.html",
-      "artwork": null
+      "dek": "Crab Nebula is an observing target in Tau carried by the weekly Calendar.",
+      "body": "Why it is here: The Calendar selected Crab Nebula as one of this week’s fixed-sky observing targets.\n\nHow to find it: Establish the preserved Tau constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.",
+      "url": "/stories/baseline/172.html"
     },
     {
       "fixed_object_id": 175,
       "collection": "baseline",
       "hed": "Great Nebula in Orion",
-      "dek": "Great Nebula in Orion is a charted deep-sky object selected by the Calendar as one of this week’s fixed-sky observing targets.",
-      "body": "Why it is here: Great Nebula in Orion is a charted deep-sky object selected by the Calendar as one of this week’s fixed-sky observing targets.\n\nHow to find it: Use its charted position in Ori and the surrounding figure stars to identify the field.",
-      "url": "/stories/baseline/175.html",
-      "artwork": null
+      "dek": "Great Nebula in Orion is an observing target in Ori carried by the weekly Calendar.",
+      "body": "Why it is here: The Calendar selected Great Nebula in Orion as one of this week’s fixed-sky observing targets.\n\nHow to find it: Establish the preserved Ori constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.",
+      "url": "/stories/baseline/175.html"
     },
     {
       "fixed_object_id": 176,
       "collection": "baseline",
       "hed": "De Mairan's Nebula",
-      "dek": "De Mairan's Nebula is a charted deep-sky object selected by the Calendar as one of this week’s fixed-sky observing targets.",
-      "body": "Why it is here: De Mairan's Nebula is a charted deep-sky object selected by the Calendar as one of this week’s fixed-sky observing targets.\n\nHow to find it: Use its charted position in Ori and the surrounding figure stars to identify the field.",
-      "url": "/stories/baseline/176.html",
-      "artwork": null
+      "dek": "De Mairan's Nebula is an observing target in Ori carried by the weekly Calendar.",
+      "body": "Why it is here: The Calendar selected De Mairan's Nebula as one of this week’s fixed-sky observing targets.\n\nHow to find it: Establish the preserved Ori constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.",
+      "url": "/stories/baseline/176.html"
     },
     {
       "fixed_object_id": 173,
       "collection": "baseline",
       "hed": "M36",
-      "dek": "M36 is a charted deep-sky object selected by the Calendar as one of this week’s fixed-sky observing targets.",
-      "body": "Why it is here: M36 is a charted deep-sky object selected by the Calendar as one of this week’s fixed-sky observing targets.\n\nHow to find it: Use its charted position in Aur and the surrounding figure stars to identify the field.",
-      "url": "/stories/baseline/173.html",
-      "artwork": null
+      "dek": "M36 is an observing target in Aur carried by the weekly Calendar.",
+      "body": "Why it is here: The Calendar selected M36 as one of this week’s fixed-sky observing targets.\n\nHow to find it: Establish the preserved Aur constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.",
+      "url": "/stories/baseline/173.html"
     },
     {
       "fixed_object_id": 32,
       "collection": "baseline",
       "hed": "Alnilam",
-      "dek": "Alnilam is a charted star in Ori selected by the Calendar as part of this week’s fixed-sky observing framework.",
-      "body": "Why it is here: Alnilam is a charted star in Ori selected by the Calendar as part of this week’s fixed-sky observing framework.\n\nHow to find it: Use its charted position in Ori and the surrounding figure stars to identify the field.",
-      "url": "/stories/baseline/32.html",
-      "artwork": null
+      "dek": "Alnilam is a stellar reference in Ori used by the weekly observing calendar.",
+      "body": "Why it is here: The Calendar selected Alnilam for this week’s fixed-sky observing sequence; its permanent object identity ties the weekly entry to the same star used by the finder.\n\nHow to find it: Establish the preserved Ori constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.",
+      "url": "/stories/baseline/32.html"
     },
     {
       "fixed_object_id": 765,
       "collection": "baseline",
       "hed": "Phact",
-      "dek": "Phact is a charted star in Col selected by the Calendar as part of this week’s fixed-sky observing framework.",
-      "body": "Why it is here: Phact is a charted star in Col selected by the Calendar as part of this week’s fixed-sky observing framework.\n\nHow to find it: Use its charted position in Col and the surrounding figure stars to identify the field.",
-      "url": "/stories/baseline/765.html",
-      "artwork": null
+      "dek": "Phact is a stellar reference in Col used by the weekly observing calendar.",
+      "body": "Why it is here: The Calendar selected Phact for this week’s fixed-sky observing sequence; its permanent object identity ties the weekly entry to the same star used by the finder.\n\nHow to find it: Establish the preserved Col constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.",
+      "url": "/stories/baseline/765.html"
     },
     {
       "fixed_object_id": 33,
       "collection": "baseline",
       "hed": "Alnitak",
-      "dek": "Alnitak is a charted star in Ori selected by the Calendar as part of this week’s fixed-sky observing framework.",
-      "body": "Why it is here: Alnitak is a charted star in Ori selected by the Calendar as part of this week’s fixed-sky observing framework.\n\nHow to find it: Use its charted position in Ori and the surrounding figure stars to identify the field.",
-      "url": "/stories/baseline/33.html",
-      "artwork": null
+      "dek": "Alnitak is a stellar reference in Ori used by the weekly observing calendar.",
+      "body": "Why it is here: The Calendar selected Alnitak for this week’s fixed-sky observing sequence; its permanent object identity ties the weekly entry to the same star used by the finder.\n\nHow to find it: Establish the preserved Ori constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.",
+      "url": "/stories/baseline/33.html"
     },
     {
       "fixed_object_id": 179,
       "collection": "baseline",
       "hed": "M78",
-      "dek": "M78 is a charted deep-sky object selected by the Calendar as one of this week’s fixed-sky observing targets.",
-      "body": "Why it is here: M78 is a charted deep-sky object selected by the Calendar as one of this week’s fixed-sky observing targets.\n\nHow to find it: Use its charted position in Ori and the surrounding figure stars to identify the field.",
-      "url": "/stories/baseline/179.html",
-      "artwork": null
+      "dek": "M78 is an observing target in Ori carried by the weekly Calendar.",
+      "body": "Why it is here: The Calendar selected M78 as one of this week’s fixed-sky observing targets.\n\nHow to find it: Establish the preserved Ori constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.",
+      "url": "/stories/baseline/179.html"
     },
     {
       "fixed_object_id": 769,
       "collection": "baseline",
       "hed": "β Pic",
-      "dek": "β Pic is a charted star in Pic selected by the Calendar as part of this week’s fixed-sky observing framework.",
-      "body": "Why it is here: β Pic is a charted star in Pic selected by the Calendar as part of this week’s fixed-sky observing framework.\n\nHow to find it: Use its charted position in Pic and the surrounding figure stars to identify the field.",
-      "url": "/stories/baseline/769.html",
-      "artwork": null
+      "dek": "β Pic is a stellar reference in Pic used by the weekly observing calendar.",
+      "body": "Why it is here: The Calendar selected β Pic for this week’s fixed-sky observing sequence; its permanent object identity ties the weekly entry to the same star used by the finder.\n\nHow to find it: Establish the preserved Pic constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.",
+      "url": "/stories/baseline/769.html"
     },
     {
       "fixed_object_id": 770,
       "collection": "baseline",
       "hed": "Saiph",
-      "dek": "Saiph is a charted star in Ori selected by the Calendar as part of this week’s fixed-sky observing framework.",
-      "body": "Why it is here: Saiph is a charted star in Ori selected by the Calendar as part of this week’s fixed-sky observing framework.\n\nHow to find it: Use its charted position in Ori and the surrounding figure stars to identify the field.",
-      "url": "/stories/baseline/770.html",
-      "artwork": null
+      "dek": "Saiph is a stellar reference in Ori used by the weekly observing calendar.",
+      "body": "Why it is here: The Calendar selected Saiph for this week’s fixed-sky observing sequence; its permanent object identity ties the weekly entry to the same star used by the finder.\n\nHow to find it: Establish the preserved Ori constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.",
+      "url": "/stories/baseline/770.html"
     },
     {
       "fixed_object_id": 772,
       "collection": "baseline",
       "hed": "Wazn",
-      "dek": "Wazn is a charted star in Col selected by the Calendar as part of this week’s fixed-sky observing framework.",
-      "body": "Why it is here: Wazn is a charted star in Col selected by the Calendar as part of this week’s fixed-sky observing framework.\n\nHow to find it: Use its charted position in Col and the surrounding figure stars to identify the field.",
-      "url": "/stories/baseline/772.html",
-      "artwork": null
+      "dek": "Wazn is a stellar reference in Col used by the weekly observing calendar.",
+      "body": "Why it is here: The Calendar selected Wazn for this week’s fixed-sky observing sequence; its permanent object identity ties the weekly entry to the same star used by the finder.\n\nHow to find it: Establish the preserved Col constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.",
+      "url": "/stories/baseline/772.html"
     },
     {
       "fixed_object_id": 181,
       "collection": "baseline",
       "hed": "M37",
-      "dek": "M37 is a charted deep-sky object selected by the Calendar as one of this week’s fixed-sky observing targets.",
-      "body": "Why it is here: M37 is a charted deep-sky object selected by the Calendar as one of this week’s fixed-sky observing targets.\n\nHow to find it: Use its charted position in Aur and the surrounding figure stars to identify the field.",
-      "url": "/stories/baseline/181.html",
-      "artwork": null
+      "dek": "M37 is an observing target in Aur carried by the weekly Calendar.",
+      "body": "Why it is here: The Calendar selected M37 as one of this week’s fixed-sky observing targets.\n\nHow to find it: Establish the preserved Aur constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.",
+      "url": "/stories/baseline/181.html"
     },
     {
       "fixed_object_id": 34,
       "collection": "baseline",
       "hed": "Betelgeuse",
-      "dek": "Betelgeuse is a charted star in Ori selected by the Calendar as part of this week’s fixed-sky observing framework.",
-      "body": "Why it is here: Betelgeuse is a charted star in Ori selected by the Calendar as part of this week’s fixed-sky observing framework.\n\nHow to find it: Use its charted position in Ori and the surrounding figure stars to identify the field.",
-      "url": "/stories/baseline/34.html",
-      "artwork": null
+      "dek": "Betelgeuse is a stellar reference in Ori used by the weekly observing calendar.",
+      "body": "Why it is here: The Calendar selected Betelgeuse for this week’s fixed-sky observing sequence; its permanent object identity ties the weekly entry to the same star used by the finder.\n\nHow to find it: Establish the preserved Ori constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.",
+      "url": "/stories/baseline/34.html"
     },
     {
       "fixed_object_id": 779,
       "collection": "baseline",
       "hed": "Menkalinan",
-      "dek": "Menkalinan is a charted star in Aur selected by the Calendar as part of this week’s fixed-sky observing framework.",
-      "body": "Why it is here: Menkalinan is a charted star in Aur selected by the Calendar as part of this week’s fixed-sky observing framework.\n\nHow to find it: Use its charted position in Aur and the surrounding figure stars to identify the field.",
-      "url": "/stories/baseline/779.html",
-      "artwork": null
+      "dek": "Menkalinan is a stellar reference in Aur used by the weekly observing calendar.",
+      "body": "Why it is here: The Calendar selected Menkalinan for this week’s fixed-sky observing sequence; its permanent object identity ties the weekly entry to the same star used by the finder.\n\nHow to find it: Establish the preserved Aur constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.",
+      "url": "/stories/baseline/779.html"
+    }
+  ],
+  "planet_finder_artworks": [
+    {
+      "schema_version": 1,
+      "id": "2026-W05-1250",
+      "object_id": 1250,
+      "week": "2026-W05",
+      "kind": "stellar-finder",
+      "geometry": {
+        "constellation_system": "Martz/MacRobert",
+        "constellation_abbreviation": "Cap",
+        "on_missing_geometry": "fail",
+        "invent_geometry": false
+      },
+      "style": {
+        "background": "night-sky",
+        "constellation": {
+          "stroke": "#5c8fe8",
+          "role": "ordinary constellation figure"
+        },
+        "asterism": {
+          "stroke": "#59c86d",
+          "role": "orienting asterism"
+        },
+        "target": {
+          "stroke": "#ffd84d",
+          "fill": "none",
+          "role": "open target circle"
+        },
+        "target_arrows": false
+      },
+      "constellation": "Capricorn",
+      "asterism": null,
+      "targets": [
+        {
+          "type": "solar-system-object",
+          "name": "Mercury"
+        },
+        {
+          "type": "reference-star",
+          "name": "Dabih"
+        }
+      ],
+      "landmark_policy": {
+        "retain_named_field_stars": true,
+        "primary_reference_star": "Dabih",
+        "magnitude_limit": 2.99
+      },
+      "finder_route": {
+        "sequence": [
+          "Capricorn",
+          "Dabih",
+          "Mercury"
+        ],
+        "orientation": "constellation-stick-figure",
+        "reference_star": "Dabih",
+        "planet": "Mercury",
+        "finder_note": null,
+        "sky_separation_deg": 8.1
+      },
+      "planetary_context": [
+        {
+          "kind": "planet-star-longitude",
+          "planet": "Moon",
+          "planet_longitude_deg": 33.433,
+          "star": "Sheratan",
+          "constellation": "Ari",
+          "star_ecliptic_longitude_deg": 33.97,
+          "star_ecliptic_latitude_deg": 8.487,
+          "longitude_separation_deg": 0.5,
+          "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+          "finder_only": true,
+          "planet_ra_deg": 29.357098,
+          "planet_dec_deg": 16.492302,
+          "sky_separation_deg": 4.4
+        },
+        {
+          "kind": "planet-star-longitude",
+          "planet": "Mercury",
+          "planet_longitude_deg": 309.0,
+          "star": "Dabih",
+          "constellation": "Cap",
+          "star_ecliptic_longitude_deg": 304.047,
+          "star_ecliptic_latitude_deg": 4.589,
+          "longitude_separation_deg": 5.0,
+          "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+          "finder_only": true,
+          "planet_ra_deg": 311.636574,
+          "planet_dec_deg": -20.110768,
+          "sky_separation_deg": 8.1
+        }
+      ],
+      "planet_position": {
+        "ra_deg": 311.636574,
+        "dec_deg": -20.110768
+      },
+      "solar_system_field": [
+        {
+          "name": "Moon",
+          "ra_deg": 29.357098,
+          "dec_deg": 16.492302
+        },
+        {
+          "name": "Mercury",
+          "ra_deg": 311.636574,
+          "dec_deg": -20.110768
+        },
+        {
+          "name": "Venus",
+          "ra_deg": 313.084457,
+          "dec_deg": -18.872308
+        },
+        {
+          "name": "Mars",
+          "ra_deg": 304.159608,
+          "dec_deg": -20.779754
+        },
+        {
+          "name": "Ceres",
+          "ra_deg": 14.920354,
+          "dec_deg": -1.630621
+        },
+        {
+          "name": "Jupiter",
+          "ra_deg": 109.218214,
+          "dec_deg": 22.557387
+        },
+        {
+          "name": "Saturn",
+          "ra_deg": 358.762178,
+          "dec_deg": -2.920351
+        },
+        {
+          "name": "Uranus",
+          "ra_deg": 54.889375,
+          "dec_deg": 19.329396
+        },
+        {
+          "name": "Neptune",
+          "ra_deg": 0.171679,
+          "dec_deg": -1.36251
+        },
+        {
+          "name": "Pluto",
+          "ra_deg": 306.385946,
+          "dec_deg": -23.144454
+        }
+      ],
+      "planet_plot_policy": "plot all preserved 2-D Star Almanack Solar-System positions that fall inside the Pathfinder field; the Moon is a normal plotted body, with apparent-disk occultation handled only by rendering/collision logic",
+      "reference_standard": "docs/finder-standard.md"
+    },
+    {
+      "schema_version": 1,
+      "id": "2026-W05-1251",
+      "object_id": 1251,
+      "week": "2026-W05",
+      "kind": "stellar-finder",
+      "geometry": {
+        "constellation_system": "Martz/MacRobert",
+        "constellation_abbreviation": "Cap",
+        "on_missing_geometry": "fail",
+        "invent_geometry": false
+      },
+      "style": {
+        "background": "night-sky",
+        "constellation": {
+          "stroke": "#5c8fe8",
+          "role": "ordinary constellation figure"
+        },
+        "asterism": {
+          "stroke": "#59c86d",
+          "role": "orienting asterism"
+        },
+        "target": {
+          "stroke": "#ffd84d",
+          "fill": "none",
+          "role": "open target circle"
+        },
+        "target_arrows": false
+      },
+      "constellation": "Capricorn",
+      "asterism": null,
+      "targets": [
+        {
+          "type": "solar-system-object",
+          "name": "Venus"
+        },
+        {
+          "type": "reference-star",
+          "name": "Dabih"
+        }
+      ],
+      "landmark_policy": {
+        "retain_named_field_stars": true,
+        "primary_reference_star": "Dabih",
+        "magnitude_limit": 2.99
+      },
+      "finder_route": {
+        "sequence": [
+          "Capricorn",
+          "Dabih",
+          "Venus"
+        ],
+        "orientation": "constellation-stick-figure",
+        "reference_star": "Dabih",
+        "planet": "Venus",
+        "finder_note": null,
+        "sky_separation_deg": 8.5
+      },
+      "planetary_context": [
+        {
+          "kind": "planet-star-longitude",
+          "planet": "Moon",
+          "planet_longitude_deg": 33.433,
+          "star": "Sheratan",
+          "constellation": "Ari",
+          "star_ecliptic_longitude_deg": 33.97,
+          "star_ecliptic_latitude_deg": 8.487,
+          "longitude_separation_deg": 0.5,
+          "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+          "finder_only": true,
+          "planet_ra_deg": 29.357098,
+          "planet_dec_deg": 16.492302,
+          "sky_separation_deg": 4.4
+        },
+        {
+          "kind": "planet-star-longitude",
+          "planet": "Mercury",
+          "planet_longitude_deg": 309.0,
+          "star": "Dabih",
+          "constellation": "Cap",
+          "star_ecliptic_longitude_deg": 304.047,
+          "star_ecliptic_latitude_deg": 4.589,
+          "longitude_separation_deg": 5.0,
+          "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+          "finder_only": true,
+          "planet_ra_deg": 311.636574,
+          "planet_dec_deg": -20.110768,
+          "sky_separation_deg": 8.1
+        }
+      ],
+      "planet_position": {
+        "ra_deg": 313.084457,
+        "dec_deg": -18.872308
+      },
+      "solar_system_field": [
+        {
+          "name": "Moon",
+          "ra_deg": 29.357098,
+          "dec_deg": 16.492302
+        },
+        {
+          "name": "Mercury",
+          "ra_deg": 311.636574,
+          "dec_deg": -20.110768
+        },
+        {
+          "name": "Venus",
+          "ra_deg": 313.084457,
+          "dec_deg": -18.872308
+        },
+        {
+          "name": "Mars",
+          "ra_deg": 304.159608,
+          "dec_deg": -20.779754
+        },
+        {
+          "name": "Ceres",
+          "ra_deg": 14.920354,
+          "dec_deg": -1.630621
+        },
+        {
+          "name": "Jupiter",
+          "ra_deg": 109.218214,
+          "dec_deg": 22.557387
+        },
+        {
+          "name": "Saturn",
+          "ra_deg": 358.762178,
+          "dec_deg": -2.920351
+        },
+        {
+          "name": "Uranus",
+          "ra_deg": 54.889375,
+          "dec_deg": 19.329396
+        },
+        {
+          "name": "Neptune",
+          "ra_deg": 0.171679,
+          "dec_deg": -1.36251
+        },
+        {
+          "name": "Pluto",
+          "ra_deg": 306.385946,
+          "dec_deg": -23.144454
+        }
+      ],
+      "planet_plot_policy": "plot all preserved 2-D Star Almanack Solar-System positions that fall inside the Pathfinder field; the Moon is a normal plotted body, with apparent-disk occultation handled only by rendering/collision logic",
+      "reference_standard": "docs/finder-standard.md"
+    },
+    {
+      "schema_version": 1,
+      "id": "2026-W05-1253",
+      "object_id": 1253,
+      "week": "2026-W05",
+      "kind": "stellar-finder",
+      "geometry": {
+        "constellation_system": "Martz/MacRobert",
+        "constellation_abbreviation": "Ari",
+        "on_missing_geometry": "fail",
+        "invent_geometry": false
+      },
+      "style": {
+        "background": "night-sky",
+        "constellation": {
+          "stroke": "#5c8fe8",
+          "role": "ordinary constellation figure"
+        },
+        "asterism": {
+          "stroke": "#59c86d",
+          "role": "orienting asterism"
+        },
+        "target": {
+          "stroke": "#ffd84d",
+          "fill": "none",
+          "role": "open target circle"
+        },
+        "target_arrows": false
+      },
+      "constellation": "Aries",
+      "asterism": null,
+      "targets": [
+        {
+          "type": "solar-system-object",
+          "name": "Moon"
+        },
+        {
+          "type": "reference-star",
+          "name": "Sheratan"
+        }
+      ],
+      "landmark_policy": {
+        "retain_named_field_stars": true,
+        "primary_reference_star": "Sheratan",
+        "magnitude_limit": 2.99
+      },
+      "finder_route": {
+        "sequence": [
+          "Aries",
+          "Sheratan",
+          "Moon"
+        ],
+        "orientation": "constellation-stick-figure",
+        "reference_star": "Sheratan",
+        "planet": "Moon",
+        "finder_note": null,
+        "sky_separation_deg": 4.4
+      },
+      "planetary_context": [
+        {
+          "kind": "planet-star-longitude",
+          "planet": "Moon",
+          "planet_longitude_deg": 33.433,
+          "star": "Sheratan",
+          "constellation": "Ari",
+          "star_ecliptic_longitude_deg": 33.97,
+          "star_ecliptic_latitude_deg": 8.487,
+          "longitude_separation_deg": 0.5,
+          "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+          "finder_only": true,
+          "planet_ra_deg": 29.357098,
+          "planet_dec_deg": 16.492302,
+          "sky_separation_deg": 4.4
+        },
+        {
+          "kind": "planet-star-longitude",
+          "planet": "Mercury",
+          "planet_longitude_deg": 309.0,
+          "star": "Dabih",
+          "constellation": "Cap",
+          "star_ecliptic_longitude_deg": 304.047,
+          "star_ecliptic_latitude_deg": 4.589,
+          "longitude_separation_deg": 5.0,
+          "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+          "finder_only": true,
+          "planet_ra_deg": 311.636574,
+          "planet_dec_deg": -20.110768,
+          "sky_separation_deg": 8.1
+        }
+      ],
+      "planet_position": {
+        "ra_deg": 29.357098,
+        "dec_deg": 16.492302
+      },
+      "solar_system_field": [
+        {
+          "name": "Moon",
+          "ra_deg": 29.357098,
+          "dec_deg": 16.492302
+        },
+        {
+          "name": "Mercury",
+          "ra_deg": 311.636574,
+          "dec_deg": -20.110768
+        },
+        {
+          "name": "Venus",
+          "ra_deg": 313.084457,
+          "dec_deg": -18.872308
+        },
+        {
+          "name": "Mars",
+          "ra_deg": 304.159608,
+          "dec_deg": -20.779754
+        },
+        {
+          "name": "Ceres",
+          "ra_deg": 14.920354,
+          "dec_deg": -1.630621
+        },
+        {
+          "name": "Jupiter",
+          "ra_deg": 109.218214,
+          "dec_deg": 22.557387
+        },
+        {
+          "name": "Saturn",
+          "ra_deg": 358.762178,
+          "dec_deg": -2.920351
+        },
+        {
+          "name": "Uranus",
+          "ra_deg": 54.889375,
+          "dec_deg": 19.329396
+        },
+        {
+          "name": "Neptune",
+          "ra_deg": 0.171679,
+          "dec_deg": -1.36251
+        },
+        {
+          "name": "Pluto",
+          "ra_deg": 306.385946,
+          "dec_deg": -23.144454
+        }
+      ],
+      "planet_plot_policy": "plot all preserved 2-D Star Almanack Solar-System positions that fall inside the Pathfinder field; the Moon is a normal plotted body, with apparent-disk occultation handled only by rendering/collision logic",
+      "reference_standard": "docs/finder-standard.md"
+    },
+    {
+      "schema_version": 1,
+      "id": "2026-W05-1254",
+      "object_id": 1254,
+      "week": "2026-W05",
+      "kind": "stellar-finder",
+      "geometry": {
+        "constellation_system": "Martz/MacRobert",
+        "constellation_abbreviation": "Cap",
+        "on_missing_geometry": "fail",
+        "invent_geometry": false
+      },
+      "style": {
+        "background": "night-sky",
+        "constellation": {
+          "stroke": "#5c8fe8",
+          "role": "ordinary constellation figure"
+        },
+        "asterism": {
+          "stroke": "#59c86d",
+          "role": "orienting asterism"
+        },
+        "target": {
+          "stroke": "#ffd84d",
+          "fill": "none",
+          "role": "open target circle"
+        },
+        "target_arrows": false
+      },
+      "constellation": "Capricorn",
+      "asterism": null,
+      "targets": [
+        {
+          "type": "solar-system-object",
+          "name": "Mars"
+        },
+        {
+          "type": "reference-star",
+          "name": "Dabih"
+        }
+      ],
+      "landmark_policy": {
+        "retain_named_field_stars": true,
+        "primary_reference_star": "Dabih",
+        "magnitude_limit": 2.99
+      },
+      "finder_route": {
+        "sequence": [
+          "Capricorn",
+          "Dabih",
+          "Mars"
+        ],
+        "orientation": "constellation-stick-figure",
+        "reference_star": "Dabih",
+        "planet": "Mars",
+        "finder_note": null,
+        "sky_separation_deg": 6.1
+      },
+      "planetary_context": [
+        {
+          "kind": "planet-star-longitude",
+          "planet": "Moon",
+          "planet_longitude_deg": 33.433,
+          "star": "Sheratan",
+          "constellation": "Ari",
+          "star_ecliptic_longitude_deg": 33.97,
+          "star_ecliptic_latitude_deg": 8.487,
+          "longitude_separation_deg": 0.5,
+          "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+          "finder_only": true,
+          "planet_ra_deg": 29.357098,
+          "planet_dec_deg": 16.492302,
+          "sky_separation_deg": 4.4
+        },
+        {
+          "kind": "planet-star-longitude",
+          "planet": "Mercury",
+          "planet_longitude_deg": 309.0,
+          "star": "Dabih",
+          "constellation": "Cap",
+          "star_ecliptic_longitude_deg": 304.047,
+          "star_ecliptic_latitude_deg": 4.589,
+          "longitude_separation_deg": 5.0,
+          "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+          "finder_only": true,
+          "planet_ra_deg": 311.636574,
+          "planet_dec_deg": -20.110768,
+          "sky_separation_deg": 8.1
+        }
+      ],
+      "planet_position": {
+        "ra_deg": 304.159608,
+        "dec_deg": -20.779754
+      },
+      "solar_system_field": [
+        {
+          "name": "Moon",
+          "ra_deg": 29.357098,
+          "dec_deg": 16.492302
+        },
+        {
+          "name": "Mercury",
+          "ra_deg": 311.636574,
+          "dec_deg": -20.110768
+        },
+        {
+          "name": "Venus",
+          "ra_deg": 313.084457,
+          "dec_deg": -18.872308
+        },
+        {
+          "name": "Mars",
+          "ra_deg": 304.159608,
+          "dec_deg": -20.779754
+        },
+        {
+          "name": "Ceres",
+          "ra_deg": 14.920354,
+          "dec_deg": -1.630621
+        },
+        {
+          "name": "Jupiter",
+          "ra_deg": 109.218214,
+          "dec_deg": 22.557387
+        },
+        {
+          "name": "Saturn",
+          "ra_deg": 358.762178,
+          "dec_deg": -2.920351
+        },
+        {
+          "name": "Uranus",
+          "ra_deg": 54.889375,
+          "dec_deg": 19.329396
+        },
+        {
+          "name": "Neptune",
+          "ra_deg": 0.171679,
+          "dec_deg": -1.36251
+        },
+        {
+          "name": "Pluto",
+          "ra_deg": 306.385946,
+          "dec_deg": -23.144454
+        }
+      ],
+      "planet_plot_policy": "plot all preserved 2-D Star Almanack Solar-System positions that fall inside the Pathfinder field; the Moon is a normal plotted body, with apparent-disk occultation handled only by rendering/collision logic",
+      "reference_standard": "docs/finder-standard.md"
+    },
+    {
+      "schema_version": 1,
+      "id": "2026-W05-1256",
+      "object_id": 1256,
+      "week": "2026-W05",
+      "kind": "stellar-finder",
+      "geometry": {
+        "constellation_system": "Martz/MacRobert",
+        "constellation_abbreviation": "Gem",
+        "on_missing_geometry": "fail",
+        "invent_geometry": false
+      },
+      "style": {
+        "background": "night-sky",
+        "constellation": {
+          "stroke": "#5c8fe8",
+          "role": "ordinary constellation figure"
+        },
+        "asterism": {
+          "stroke": "#59c86d",
+          "role": "orienting asterism"
+        },
+        "target": {
+          "stroke": "#ffd84d",
+          "fill": "none",
+          "role": "open target circle"
+        },
+        "target_arrows": false
+      },
+      "constellation": "Gemini",
+      "asterism": null,
+      "targets": [
+        {
+          "type": "solar-system-object",
+          "name": "Jupiter"
+        },
+        {
+          "type": "reference-star",
+          "name": "Pollux"
+        }
+      ],
+      "landmark_policy": {
+        "retain_named_field_stars": true,
+        "primary_reference_star": "Pollux",
+        "magnitude_limit": 2.99
+      },
+      "finder_route": {
+        "sequence": [
+          "Gemini",
+          "Pollux",
+          "Jupiter"
+        ],
+        "orientation": "constellation-stick-figure",
+        "reference_star": "Pollux",
+        "planet": "Jupiter",
+        "finder_note": null,
+        "sky_separation_deg": 8.4
+      },
+      "planetary_context": [
+        {
+          "kind": "planet-star-longitude",
+          "planet": "Moon",
+          "planet_longitude_deg": 33.433,
+          "star": "Sheratan",
+          "constellation": "Ari",
+          "star_ecliptic_longitude_deg": 33.97,
+          "star_ecliptic_latitude_deg": 8.487,
+          "longitude_separation_deg": 0.5,
+          "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+          "finder_only": true,
+          "planet_ra_deg": 29.357098,
+          "planet_dec_deg": 16.492302,
+          "sky_separation_deg": 4.4
+        },
+        {
+          "kind": "planet-star-longitude",
+          "planet": "Mercury",
+          "planet_longitude_deg": 309.0,
+          "star": "Dabih",
+          "constellation": "Cap",
+          "star_ecliptic_longitude_deg": 304.047,
+          "star_ecliptic_latitude_deg": 4.589,
+          "longitude_separation_deg": 5.0,
+          "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+          "finder_only": true,
+          "planet_ra_deg": 311.636574,
+          "planet_dec_deg": -20.110768,
+          "sky_separation_deg": 8.1
+        }
+      ],
+      "planet_position": {
+        "ra_deg": 109.218214,
+        "dec_deg": 22.557387
+      },
+      "solar_system_field": [
+        {
+          "name": "Moon",
+          "ra_deg": 29.357098,
+          "dec_deg": 16.492302
+        },
+        {
+          "name": "Mercury",
+          "ra_deg": 311.636574,
+          "dec_deg": -20.110768
+        },
+        {
+          "name": "Venus",
+          "ra_deg": 313.084457,
+          "dec_deg": -18.872308
+        },
+        {
+          "name": "Mars",
+          "ra_deg": 304.159608,
+          "dec_deg": -20.779754
+        },
+        {
+          "name": "Ceres",
+          "ra_deg": 14.920354,
+          "dec_deg": -1.630621
+        },
+        {
+          "name": "Jupiter",
+          "ra_deg": 109.218214,
+          "dec_deg": 22.557387
+        },
+        {
+          "name": "Saturn",
+          "ra_deg": 358.762178,
+          "dec_deg": -2.920351
+        },
+        {
+          "name": "Uranus",
+          "ra_deg": 54.889375,
+          "dec_deg": 19.329396
+        },
+        {
+          "name": "Neptune",
+          "ra_deg": 0.171679,
+          "dec_deg": -1.36251
+        },
+        {
+          "name": "Pluto",
+          "ra_deg": 306.385946,
+          "dec_deg": -23.144454
+        }
+      ],
+      "planet_plot_policy": "plot all preserved 2-D Star Almanack Solar-System positions that fall inside the Pathfinder field; the Moon is a normal plotted body, with apparent-disk occultation handled only by rendering/collision logic",
+      "reference_standard": "docs/finder-standard.md"
+    },
+    {
+      "schema_version": 1,
+      "id": "2026-W05-1257",
+      "object_id": 1257,
+      "week": "2026-W05",
+      "kind": "stellar-finder",
+      "geometry": {
+        "constellation_system": "Martz/MacRobert",
+        "constellation_abbreviation": "Psc",
+        "on_missing_geometry": "fail",
+        "invent_geometry": false
+      },
+      "style": {
+        "background": "night-sky",
+        "constellation": {
+          "stroke": "#5c8fe8",
+          "role": "ordinary constellation figure"
+        },
+        "asterism": {
+          "stroke": "#59c86d",
+          "role": "orienting asterism"
+        },
+        "target": {
+          "stroke": "#ffd84d",
+          "fill": "none",
+          "role": "open target circle"
+        },
+        "target_arrows": false
+      },
+      "constellation": "Pisces",
+      "asterism": null,
+      "targets": [
+        {
+          "type": "solar-system-object",
+          "name": "Saturn"
+        },
+        {
+          "type": "reference-star",
+          "name": "Fumalsamakah"
+        }
+      ],
+      "landmark_policy": {
+        "retain_named_field_stars": true,
+        "primary_reference_star": "Fumalsamakah",
+        "magnitude_limit": 2.99
+      },
+      "finder_route": {
+        "sequence": [
+          "Pisces",
+          "Fumalsamakah",
+          "Saturn"
+        ],
+        "orientation": "constellation-stick-figure",
+        "reference_star": "Fumalsamakah",
+        "planet": "Saturn",
+        "finder_note": "Saturn is not easy to find this week.",
+        "sky_separation_deg": 14.5
+      },
+      "planetary_context": [
+        {
+          "kind": "planet-star-longitude",
+          "planet": "Moon",
+          "planet_longitude_deg": 33.433,
+          "star": "Sheratan",
+          "constellation": "Ari",
+          "star_ecliptic_longitude_deg": 33.97,
+          "star_ecliptic_latitude_deg": 8.487,
+          "longitude_separation_deg": 0.5,
+          "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+          "finder_only": true,
+          "planet_ra_deg": 29.357098,
+          "planet_dec_deg": 16.492302,
+          "sky_separation_deg": 4.4
+        },
+        {
+          "kind": "planet-star-longitude",
+          "planet": "Mercury",
+          "planet_longitude_deg": 309.0,
+          "star": "Dabih",
+          "constellation": "Cap",
+          "star_ecliptic_longitude_deg": 304.047,
+          "star_ecliptic_latitude_deg": 4.589,
+          "longitude_separation_deg": 5.0,
+          "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+          "finder_only": true,
+          "planet_ra_deg": 311.636574,
+          "planet_dec_deg": -20.110768,
+          "sky_separation_deg": 8.1
+        }
+      ],
+      "planet_position": {
+        "ra_deg": 358.762178,
+        "dec_deg": -2.920351
+      },
+      "solar_system_field": [
+        {
+          "name": "Moon",
+          "ra_deg": 29.357098,
+          "dec_deg": 16.492302
+        },
+        {
+          "name": "Mercury",
+          "ra_deg": 311.636574,
+          "dec_deg": -20.110768
+        },
+        {
+          "name": "Venus",
+          "ra_deg": 313.084457,
+          "dec_deg": -18.872308
+        },
+        {
+          "name": "Mars",
+          "ra_deg": 304.159608,
+          "dec_deg": -20.779754
+        },
+        {
+          "name": "Ceres",
+          "ra_deg": 14.920354,
+          "dec_deg": -1.630621
+        },
+        {
+          "name": "Jupiter",
+          "ra_deg": 109.218214,
+          "dec_deg": 22.557387
+        },
+        {
+          "name": "Saturn",
+          "ra_deg": 358.762178,
+          "dec_deg": -2.920351
+        },
+        {
+          "name": "Uranus",
+          "ra_deg": 54.889375,
+          "dec_deg": 19.329396
+        },
+        {
+          "name": "Neptune",
+          "ra_deg": 0.171679,
+          "dec_deg": -1.36251
+        },
+        {
+          "name": "Pluto",
+          "ra_deg": 306.385946,
+          "dec_deg": -23.144454
+        }
+      ],
+      "planet_plot_policy": "plot all preserved 2-D Star Almanack Solar-System positions that fall inside the Pathfinder field; the Moon is a normal plotted body, with apparent-disk occultation handled only by rendering/collision logic",
+      "reference_standard": "docs/finder-standard.md"
+    },
+    {
+      "schema_version": 1,
+      "id": "2026-W05-1258",
+      "object_id": 1258,
+      "week": "2026-W05",
+      "kind": "stellar-finder",
+      "geometry": {
+        "constellation_system": "Martz/MacRobert",
+        "constellation_abbreviation": "Tau",
+        "on_missing_geometry": "fail",
+        "invent_geometry": false
+      },
+      "style": {
+        "background": "night-sky",
+        "constellation": {
+          "stroke": "#5c8fe8",
+          "role": "ordinary constellation figure"
+        },
+        "asterism": {
+          "stroke": "#59c86d",
+          "role": "orienting asterism"
+        },
+        "target": {
+          "stroke": "#ffd84d",
+          "fill": "none",
+          "role": "open target circle"
+        },
+        "target_arrows": false
+      },
+      "constellation": "Taurus",
+      "asterism": null,
+      "targets": [
+        {
+          "type": "solar-system-object",
+          "name": "Uranus"
+        },
+        {
+          "type": "reference-star",
+          "name": "Aldebaran"
+        }
+      ],
+      "landmark_policy": {
+        "retain_named_field_stars": true,
+        "primary_reference_star": "Aldebaran",
+        "magnitude_limit": 2.99
+      },
+      "finder_route": {
+        "sequence": [
+          "Taurus",
+          "Aldebaran",
+          "Uranus"
+        ],
+        "orientation": "constellation-stick-figure",
+        "reference_star": "Aldebaran",
+        "planet": "Uranus",
+        "finder_note": "Uranus is not easy to find this week.",
+        "sky_separation_deg": 13.7
+      },
+      "planetary_context": [
+        {
+          "kind": "planet-star-longitude",
+          "planet": "Moon",
+          "planet_longitude_deg": 33.433,
+          "star": "Sheratan",
+          "constellation": "Ari",
+          "star_ecliptic_longitude_deg": 33.97,
+          "star_ecliptic_latitude_deg": 8.487,
+          "longitude_separation_deg": 0.5,
+          "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+          "finder_only": true,
+          "planet_ra_deg": 29.357098,
+          "planet_dec_deg": 16.492302,
+          "sky_separation_deg": 4.4
+        },
+        {
+          "kind": "planet-star-longitude",
+          "planet": "Mercury",
+          "planet_longitude_deg": 309.0,
+          "star": "Dabih",
+          "constellation": "Cap",
+          "star_ecliptic_longitude_deg": 304.047,
+          "star_ecliptic_latitude_deg": 4.589,
+          "longitude_separation_deg": 5.0,
+          "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+          "finder_only": true,
+          "planet_ra_deg": 311.636574,
+          "planet_dec_deg": -20.110768,
+          "sky_separation_deg": 8.1
+        }
+      ],
+      "planet_position": {
+        "ra_deg": 54.889375,
+        "dec_deg": 19.329396
+      },
+      "solar_system_field": [
+        {
+          "name": "Moon",
+          "ra_deg": 29.357098,
+          "dec_deg": 16.492302
+        },
+        {
+          "name": "Mercury",
+          "ra_deg": 311.636574,
+          "dec_deg": -20.110768
+        },
+        {
+          "name": "Venus",
+          "ra_deg": 313.084457,
+          "dec_deg": -18.872308
+        },
+        {
+          "name": "Mars",
+          "ra_deg": 304.159608,
+          "dec_deg": -20.779754
+        },
+        {
+          "name": "Ceres",
+          "ra_deg": 14.920354,
+          "dec_deg": -1.630621
+        },
+        {
+          "name": "Jupiter",
+          "ra_deg": 109.218214,
+          "dec_deg": 22.557387
+        },
+        {
+          "name": "Saturn",
+          "ra_deg": 358.762178,
+          "dec_deg": -2.920351
+        },
+        {
+          "name": "Uranus",
+          "ra_deg": 54.889375,
+          "dec_deg": 19.329396
+        },
+        {
+          "name": "Neptune",
+          "ra_deg": 0.171679,
+          "dec_deg": -1.36251
+        },
+        {
+          "name": "Pluto",
+          "ra_deg": 306.385946,
+          "dec_deg": -23.144454
+        }
+      ],
+      "planet_plot_policy": "plot all preserved 2-D Star Almanack Solar-System positions that fall inside the Pathfinder field; the Moon is a normal plotted body, with apparent-disk occultation handled only by rendering/collision logic",
+      "reference_standard": "docs/finder-standard.md"
+    },
+    {
+      "schema_version": 1,
+      "id": "2026-W05-1259",
+      "object_id": 1259,
+      "week": "2026-W05",
+      "kind": "stellar-finder",
+      "geometry": {
+        "constellation_system": "Martz/MacRobert",
+        "constellation_abbreviation": "Psc",
+        "on_missing_geometry": "fail",
+        "invent_geometry": false
+      },
+      "style": {
+        "background": "night-sky",
+        "constellation": {
+          "stroke": "#5c8fe8",
+          "role": "ordinary constellation figure"
+        },
+        "asterism": {
+          "stroke": "#59c86d",
+          "role": "orienting asterism"
+        },
+        "target": {
+          "stroke": "#ffd84d",
+          "fill": "none",
+          "role": "open target circle"
+        },
+        "target_arrows": false
+      },
+      "constellation": "Pisces",
+      "asterism": null,
+      "targets": [
+        {
+          "type": "solar-system-object",
+          "name": "Neptune"
+        },
+        {
+          "type": "reference-star",
+          "name": "Fumalsamakah"
+        }
+      ],
+      "landmark_policy": {
+        "retain_named_field_stars": true,
+        "primary_reference_star": "Fumalsamakah",
+        "magnitude_limit": 2.99
+      },
+      "finder_route": {
+        "sequence": [
+          "Pisces",
+          "Fumalsamakah",
+          "Neptune"
+        ],
+        "orientation": "constellation-stick-figure",
+        "reference_star": "Fumalsamakah",
+        "planet": "Neptune",
+        "finder_note": "Neptune is not easy to find this week.",
+        "sky_separation_deg": 15.1
+      },
+      "planetary_context": [
+        {
+          "kind": "planet-star-longitude",
+          "planet": "Moon",
+          "planet_longitude_deg": 33.433,
+          "star": "Sheratan",
+          "constellation": "Ari",
+          "star_ecliptic_longitude_deg": 33.97,
+          "star_ecliptic_latitude_deg": 8.487,
+          "longitude_separation_deg": 0.5,
+          "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+          "finder_only": true,
+          "planet_ra_deg": 29.357098,
+          "planet_dec_deg": 16.492302,
+          "sky_separation_deg": 4.4
+        },
+        {
+          "kind": "planet-star-longitude",
+          "planet": "Mercury",
+          "planet_longitude_deg": 309.0,
+          "star": "Dabih",
+          "constellation": "Cap",
+          "star_ecliptic_longitude_deg": 304.047,
+          "star_ecliptic_latitude_deg": 4.589,
+          "longitude_separation_deg": 5.0,
+          "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+          "finder_only": true,
+          "planet_ra_deg": 311.636574,
+          "planet_dec_deg": -20.110768,
+          "sky_separation_deg": 8.1
+        }
+      ],
+      "planet_position": {
+        "ra_deg": 0.171679,
+        "dec_deg": -1.36251
+      },
+      "solar_system_field": [
+        {
+          "name": "Moon",
+          "ra_deg": 29.357098,
+          "dec_deg": 16.492302
+        },
+        {
+          "name": "Mercury",
+          "ra_deg": 311.636574,
+          "dec_deg": -20.110768
+        },
+        {
+          "name": "Venus",
+          "ra_deg": 313.084457,
+          "dec_deg": -18.872308
+        },
+        {
+          "name": "Mars",
+          "ra_deg": 304.159608,
+          "dec_deg": -20.779754
+        },
+        {
+          "name": "Ceres",
+          "ra_deg": 14.920354,
+          "dec_deg": -1.630621
+        },
+        {
+          "name": "Jupiter",
+          "ra_deg": 109.218214,
+          "dec_deg": 22.557387
+        },
+        {
+          "name": "Saturn",
+          "ra_deg": 358.762178,
+          "dec_deg": -2.920351
+        },
+        {
+          "name": "Uranus",
+          "ra_deg": 54.889375,
+          "dec_deg": 19.329396
+        },
+        {
+          "name": "Neptune",
+          "ra_deg": 0.171679,
+          "dec_deg": -1.36251
+        },
+        {
+          "name": "Pluto",
+          "ra_deg": 306.385946,
+          "dec_deg": -23.144454
+        }
+      ],
+      "planet_plot_policy": "plot all preserved 2-D Star Almanack Solar-System positions that fall inside the Pathfinder field; the Moon is a normal plotted body, with apparent-disk occultation handled only by rendering/collision logic",
+      "reference_standard": "docs/finder-standard.md"
+    },
+    {
+      "schema_version": 1,
+      "id": "2026-W05-1255",
+      "object_id": 1255,
+      "week": "2026-W05",
+      "kind": "stellar-finder",
+      "geometry": {
+        "constellation_system": "Martz/MacRobert",
+        "constellation_abbreviation": "Psc",
+        "on_missing_geometry": "fail",
+        "invent_geometry": false
+      },
+      "style": {
+        "background": "night-sky",
+        "constellation": {
+          "stroke": "#5c8fe8",
+          "role": "ordinary constellation figure"
+        },
+        "asterism": {
+          "stroke": "#59c86d",
+          "role": "orienting asterism"
+        },
+        "target": {
+          "stroke": "#ffd84d",
+          "fill": "none",
+          "role": "open target circle"
+        },
+        "target_arrows": false
+      },
+      "constellation": "Pisces",
+      "asterism": null,
+      "targets": [
+        {
+          "type": "solar-system-object",
+          "name": "Ceres"
+        },
+        {
+          "type": "reference-star",
+          "name": "Alrescha"
+        }
+      ],
+      "landmark_policy": {
+        "retain_named_field_stars": true,
+        "primary_reference_star": "Alrescha",
+        "magnitude_limit": 2.99
+      },
+      "finder_route": {
+        "sequence": [
+          "Pisces",
+          "Alrescha",
+          "Ceres"
+        ],
+        "orientation": "constellation-stick-figure",
+        "reference_star": "Alrescha",
+        "planet": "Ceres",
+        "finder_note": "Ceres is not easy to find this week.",
+        "sky_separation_deg": 16.2
+      },
+      "planetary_context": [
+        {
+          "kind": "planet-star-longitude",
+          "planet": "Moon",
+          "planet_longitude_deg": 33.433,
+          "star": "Sheratan",
+          "constellation": "Ari",
+          "star_ecliptic_longitude_deg": 33.97,
+          "star_ecliptic_latitude_deg": 8.487,
+          "longitude_separation_deg": 0.5,
+          "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+          "finder_only": true,
+          "planet_ra_deg": 29.357098,
+          "planet_dec_deg": 16.492302,
+          "sky_separation_deg": 4.4
+        },
+        {
+          "kind": "planet-star-longitude",
+          "planet": "Mercury",
+          "planet_longitude_deg": 309.0,
+          "star": "Dabih",
+          "constellation": "Cap",
+          "star_ecliptic_longitude_deg": 304.047,
+          "star_ecliptic_latitude_deg": 4.589,
+          "longitude_separation_deg": 5.0,
+          "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+          "finder_only": true,
+          "planet_ra_deg": 311.636574,
+          "planet_dec_deg": -20.110768,
+          "sky_separation_deg": 8.1
+        }
+      ],
+      "planet_position": {
+        "ra_deg": 14.920354,
+        "dec_deg": -1.630621
+      },
+      "solar_system_field": [
+        {
+          "name": "Moon",
+          "ra_deg": 29.357098,
+          "dec_deg": 16.492302
+        },
+        {
+          "name": "Mercury",
+          "ra_deg": 311.636574,
+          "dec_deg": -20.110768
+        },
+        {
+          "name": "Venus",
+          "ra_deg": 313.084457,
+          "dec_deg": -18.872308
+        },
+        {
+          "name": "Mars",
+          "ra_deg": 304.159608,
+          "dec_deg": -20.779754
+        },
+        {
+          "name": "Ceres",
+          "ra_deg": 14.920354,
+          "dec_deg": -1.630621
+        },
+        {
+          "name": "Jupiter",
+          "ra_deg": 109.218214,
+          "dec_deg": 22.557387
+        },
+        {
+          "name": "Saturn",
+          "ra_deg": 358.762178,
+          "dec_deg": -2.920351
+        },
+        {
+          "name": "Uranus",
+          "ra_deg": 54.889375,
+          "dec_deg": 19.329396
+        },
+        {
+          "name": "Neptune",
+          "ra_deg": 0.171679,
+          "dec_deg": -1.36251
+        },
+        {
+          "name": "Pluto",
+          "ra_deg": 306.385946,
+          "dec_deg": -23.144454
+        }
+      ],
+      "planet_plot_policy": "plot all preserved 2-D Star Almanack Solar-System positions that fall inside the Pathfinder field; the Moon is a normal plotted body, with apparent-disk occultation handled only by rendering/collision logic",
+      "reference_standard": "docs/finder-standard.md"
+    },
+    {
+      "schema_version": 1,
+      "id": "2026-W05-1260",
+      "object_id": 1260,
+      "week": "2026-W05",
+      "kind": "stellar-finder",
+      "geometry": {
+        "constellation_system": "Martz/MacRobert",
+        "constellation_abbreviation": "Cap",
+        "on_missing_geometry": "fail",
+        "invent_geometry": false
+      },
+      "style": {
+        "background": "night-sky",
+        "constellation": {
+          "stroke": "#5c8fe8",
+          "role": "ordinary constellation figure"
+        },
+        "asterism": {
+          "stroke": "#59c86d",
+          "role": "orienting asterism"
+        },
+        "target": {
+          "stroke": "#ffd84d",
+          "fill": "none",
+          "role": "open target circle"
+        },
+        "target_arrows": false
+      },
+      "constellation": "Capricorn",
+      "asterism": null,
+      "targets": [
+        {
+          "type": "solar-system-object",
+          "name": "Pluto"
+        },
+        {
+          "type": "reference-star",
+          "name": "Dabih"
+        }
+      ],
+      "landmark_policy": {
+        "retain_named_field_stars": true,
+        "primary_reference_star": "Dabih",
+        "magnitude_limit": 2.99
+      },
+      "finder_route": {
+        "sequence": [
+          "Capricorn",
+          "Dabih",
+          "Pluto"
+        ],
+        "orientation": "constellation-stick-figure",
+        "reference_star": "Dabih",
+        "planet": "Pluto",
+        "finder_note": null,
+        "sky_separation_deg": 8.4
+      },
+      "planetary_context": [
+        {
+          "kind": "planet-star-longitude",
+          "planet": "Moon",
+          "planet_longitude_deg": 33.433,
+          "star": "Sheratan",
+          "constellation": "Ari",
+          "star_ecliptic_longitude_deg": 33.97,
+          "star_ecliptic_latitude_deg": 8.487,
+          "longitude_separation_deg": 0.5,
+          "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+          "finder_only": true,
+          "planet_ra_deg": 29.357098,
+          "planet_dec_deg": 16.492302,
+          "sky_separation_deg": 4.4
+        },
+        {
+          "kind": "planet-star-longitude",
+          "planet": "Mercury",
+          "planet_longitude_deg": 309.0,
+          "star": "Dabih",
+          "constellation": "Cap",
+          "star_ecliptic_longitude_deg": 304.047,
+          "star_ecliptic_latitude_deg": 4.589,
+          "longitude_separation_deg": 5.0,
+          "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+          "finder_only": true,
+          "planet_ra_deg": 311.636574,
+          "planet_dec_deg": -20.110768,
+          "sky_separation_deg": 8.1
+        }
+      ],
+      "planet_position": {
+        "ra_deg": 306.385946,
+        "dec_deg": -23.144454
+      },
+      "solar_system_field": [
+        {
+          "name": "Moon",
+          "ra_deg": 29.357098,
+          "dec_deg": 16.492302
+        },
+        {
+          "name": "Mercury",
+          "ra_deg": 311.636574,
+          "dec_deg": -20.110768
+        },
+        {
+          "name": "Venus",
+          "ra_deg": 313.084457,
+          "dec_deg": -18.872308
+        },
+        {
+          "name": "Mars",
+          "ra_deg": 304.159608,
+          "dec_deg": -20.779754
+        },
+        {
+          "name": "Ceres",
+          "ra_deg": 14.920354,
+          "dec_deg": -1.630621
+        },
+        {
+          "name": "Jupiter",
+          "ra_deg": 109.218214,
+          "dec_deg": 22.557387
+        },
+        {
+          "name": "Saturn",
+          "ra_deg": 358.762178,
+          "dec_deg": -2.920351
+        },
+        {
+          "name": "Uranus",
+          "ra_deg": 54.889375,
+          "dec_deg": 19.329396
+        },
+        {
+          "name": "Neptune",
+          "ra_deg": 0.171679,
+          "dec_deg": -1.36251
+        },
+        {
+          "name": "Pluto",
+          "ra_deg": 306.385946,
+          "dec_deg": -23.144454
+        }
+      ],
+      "planet_plot_policy": "plot all preserved 2-D Star Almanack Solar-System positions that fall inside the Pathfinder field; the Moon is a normal plotted body, with apparent-disk occultation handled only by rendering/collision logic",
+      "reference_standard": "docs/finder-standard.md"
     }
   ],
   "descriptor_policy": {
@@ -1025,10 +2676,8 @@
     "candidate_pool": "complete; presentation never limits discovery",
     "presentation": "Wordy",
     "story_limit": null,
-    "wordy_policy": "rich weekly observing prose; link to complete object stories rather than embedding them",
-    "future_presentations": [
-      "Highlights"
-    ],
+    "wordy_policy": "repeat canonical hed and dek in reader links, then elaborate with canonical story body",
+    "future_presentations": [],
     "link_target": "/almanack/descriptors/<fixed_object_id>.json for fixed-object descriptors",
     "artwork_descriptor_is_separate": true,
     "artwork_source": "explicit story front matter only",
@@ -1036,7 +2685,7 @@
     "story_identity_source": "Calendar data-fixed-object-id only",
     "story_source": "stories/<collection>/<fixed_object_id>.md",
     "inline_story_content": "hed + dek + body",
-    "linked_story_content": "reserved for Highlights presentation",
+    "linked_story_content": "reader-facing links to every available canonical object story",
     "annual_note_is_separate_from_evergreen_story": true
   }
 }
