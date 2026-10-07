@@ -725,6 +725,11 @@ def render(spec: dict, stars, output: Path) -> None:
     xs = [point[0] for point in projected_geometry]
     ys = [point[1] for point in projected_geometry]
     compact_guide = "framing_paths" in spec and not has_planet
+    pattern_target = compact_guide and any(
+        str(item.get("name") or "").strip().casefold()
+        == str(target_meta.get("proper_name") or target_identity.get("name") or "").strip().casefold()
+        for item in asterisms
+    )
     span = max(max(xs) - min(xs), max(ys) - min(ys), 2.0 if compact_guide else 8.0)
     pad = max(0.5 if compact_guide else 2.5, span * 0.18)
     if has_planet and not asterisms:
@@ -777,6 +782,15 @@ def render(spec: dict, stars, output: Path) -> None:
     # displayed field.  Messier/Caldwell aliases for one physical object share
     # a marker and label; no constellation- or week-specific exceptions.
     deep_sky = visible_deep_sky_objects(center, xmin, xmax, ymin, ymax)
+    if pattern_target:
+        # The pattern is the target, rather than a point at its catalog center.
+        # Suppress its catalog alias marker as well as the yellow target ring.
+        target_catalog_labels = {
+            record.get("source_key")
+            for record in fixed_object_database_record(target_id).get("source_records") or []
+        }
+        deep_sky = [item for item in deep_sky
+                    if not target_catalog_labels.intersection(item["labels"])]
     if deep_sky:
         ax.scatter(
             [item["point"][0] for item in deep_sky],
@@ -981,8 +995,9 @@ def render(spec: dict, stars, output: Path) -> None:
             )
     if target_point is None:
         raise RuntimeError(f"Target fixed_object_id {target_id} is outside the projection")
-    ax.scatter([target_point[0]], [target_point[1]], s=210, facecolors="none",
-               edgecolors=TARGET_YELLOW, linewidths=2.6, zorder=8)
+    if not pattern_target:
+        ax.scatter([target_point[0]], [target_point[1]], s=210, facecolors="none",
+                   edgecolors=TARGET_YELLOW, linewidths=2.6, zorder=8)
     target_name = str(target_meta.get("proper_name") or target_identity.get("name") or "").strip()
     target_greek = ""
     if target_star_identity and target_star is not None:
@@ -1000,7 +1015,7 @@ def render(spec: dict, stars, output: Path) -> None:
     place_target_label(
         ax, target_chart_label, target_point, occupied_labels,
         obstacle_segments=figure_segments + asterism_segments + boundary_segments,
-        marker_radius_points=math.sqrt(210) / 2 + 2.6 / 2,
+        marker_radius_points=0 if pattern_target else math.sqrt(210) / 2 + 2.6 / 2,
     )
     if has_planet:
         if planet_point is None:
