@@ -20,7 +20,8 @@
   "representative_visual_magnitude": 0.87,
   "guiding_asterisms": [
     {
-      "id": "asterism-hyades-v-of-taurus",
+      "id": "1376",
+      "geometry_key": "asterism-hyades-v-of-taurus",
       "name": "Hyades / V of Taurus",
       "relationship": "visual-member",
       "provenance": {
@@ -31,7 +32,8 @@
       }
     },
     {
-      "id": "asterism-winter-hexagon-winter-circle",
+      "id": "1380",
+      "geometry_key": "asterism-winter-hexagon-winter-circle",
       "name": "Winter Hexagon / Winter Circle",
       "relationship": "visual-member",
       "provenance": {
@@ -42,7 +44,8 @@
       }
     },
     {
-      "id": "asterism-orion-s-belt",
+      "id": "1365",
+      "geometry_key": "asterism-orion-s-belt",
       "name": "Orion's Belt",
       "relationship": "star-hop-anchor",
       "relationship_route_ids": [
@@ -73,7 +76,22 @@
         "source_url": "https://science.nasa.gov/solar-system/skywatching/night-sky-network/spot-the-young-stars-of-the-hyades-and-pleiades/",
         "source_role": "verification",
         "supports": "star-hop-method"
-      }
+      },
+      "target_fixed_object_id": 25,
+      "step_identities": [
+        {
+          "type": "asterism",
+          "id": 1365
+        },
+        {
+          "type": "fixed-object",
+          "id": 25
+        },
+        {
+          "type": "asterism",
+          "id": 1376
+        }
+      ]
     }
   ]
 }
