@@ -88,14 +88,80 @@ jobs:
           total_stages=$((${#WEEKS[@]} * 7))
           completed_stages=0
 
+
+          # Append history across runs; refresh first because child workflows also commit.
+          publish_log() {
+            local entry="$1" attempt
+            for attempt in 1 2 3 4 5; do
+              git fetch origin main
+              git reset --hard origin/main
+              printf '%s\n' "$entry" >> build-log.txt
+              printf '%s\n' "$entry" > build-status.txt
+              git add build-log.txt build-status.txt
+              git -c user.name='github-actions[bot]' \
+                  -c user.email='41898282+github-actions[bot]@users.noreply.github.com' \
+                  commit -m "Build All log: $week_label [skip ci]"
+              if git push origin HEAD:main; then
+                return 0
+              fi
+              # Replay this entry on the new tip without losing child commits.
+            done
+            echo "::error::Unable to save Build All log after five attempts."
+            return 1
+          }
+
+          run_stage() {
+            local workflow="$1" output child_pid child_rc run_id detail elapsed active_steps
+            shift
+            output="$(mktemp)"
+            stage_started_at="$(date -u '+%Y-%m-%dT%H:%M:%SZ')"
+            stage_started_seconds="$SECONDS"
+            bash tools/run-workflow-and-wait.sh "$workflow" "$@" > "$output" 2>&1 &
+            child_pid=$!
+            while kill -0 "$child_pid" 2>/dev/null; do
+              sleep 60
+              if ! kill -0 "$child_pid" 2>/dev/null; then
+                break
+              fi
+              run_id="$(sed -nE 's/^Found dispatched .* run ([0-9]+) .*/\1/p' "$output" | tail -n 1)"
+              detail="$(tail -n 1 "$output")"
+              if [[ -n "$run_id" ]]; then
+                detail="https://github.com/$GITHUB_REPOSITORY/actions/runs/$run_id — $detail"
+                # Best effort: an API failure must not hide the ongoing wait.
+                active_steps="$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$run_id/jobs" \
+                  --jq '[.jobs[] | .name as $job | .steps[]? | select(.status == "in_progress") | ($job + ": " + .name)] | join("; ")' 2>/dev/null || true)"
+                if [[ -n "$active_steps" ]]; then
+                  detail="$detail — $active_steps"
+                fi
+              fi
+              elapsed=$((SECONDS - stage_started_seconds))
+              report_progress WAITING "$current_stage" "$elapsed seconds elapsed — $detail"
+            done
+            if wait "$child_pid"; then
+              child_rc=0
+            else
+              child_rc=$?
+            fi
+            cat "$output"
+            detail="$(tail -n 1 "$output")"
+            rm -f "$output"
+            elapsed=$((SECONDS - stage_started_seconds))
+            if [[ "$child_rc" -ne 0 ]]; then
+              report_progress FAILED "$current_stage" "$elapsed seconds elapsed — $detail"
+              return "$child_rc"
+            fi
+            completed_stages=$((completed_stages + 1))
+            report_progress FINISHED "$current_stage" "$elapsed seconds elapsed — $detail"
+          }
+
           report_progress() {
-            local state="$1" stage="$2" percent updated_at
+            local state="$1" stage="$2" detail="${3:-}" percent updated_at entry
+            current_stage="$stage"
             percent=$((completed_stages * 100 / total_stages))
             updated_at="$(date -u '+%Y-%m-%dT%H:%M:%SZ')"
-            printf '%s %s — %s%% complete (%s/%s stages) — %s — STARTED %s UPDATED %s\n' \
-              "$state" "$week_label" "$percent" "$completed_stages" "$total_stages" \
-              "$stage" "$week_started_at" "$updated_at" > build-status.txt
-            cat build-status.txt
+            entry="$updated_at — RUN $GITHUB_RUN_ID/$GITHUB_RUN_ATTEMPT — $state $week_label — $percent% complete ($completed_stages/$total_stages stages) — $stage — WEEK STARTED $week_started_at${detail:+ — $detail}"
+            printf '%s\n' "$entry"
+            publish_log "$entry"
             {
               printf '### Build All: %s%% complete\n\n' "$percent"
               printf '%s of %s stages completed.\n\n' "$completed_stages" "$total_stages"
@@ -103,13 +169,6 @@ jobs:
               printf 'Week started: %s · Updated: %s\n\n' "$week_started_at" "$updated_at"
               printf 'Percentage counts completed stages; stages take different amounts of time.\n'
             } > "$GITHUB_STEP_SUMMARY"
-            git add build-status.txt
-            if ! git diff --cached --quiet; then
-              git -c user.name='github-actions[bot]' \
-                  -c user.email='41898282+github-actions[bot]@users.noreply.github.com' \
-                  commit -m "Build All: $week_label $percent% ($stage)"
-              git push origin HEAD:main
-            fi
           }
 
           for week in "${WEEKS[@]}"; do
@@ -122,31 +181,28 @@ jobs:
             week_started_at="$(date -u '+%Y-%m-%dT%H:%M:%SZ')"
             report_progress BUILDING "Scaffold"
 
-            bash tools/run-workflow-and-wait.sh scaffold-almanack-weeks.yml \
+            run_stage scaffold-almanack-weeks.yml \
               -f start_year="$year" -f start_week="$iso_week" \
               -f end_year="$year" -f end_week="$iso_week"
             git fetch origin main
             git reset --hard origin/main
-            completed_stages=$((completed_stages + 1))
             report_progress BUILDING "Calendar"
 
-            bash tools/run-workflow-and-wait.sh calendar-generator.yml \
+            run_stage calendar-generator.yml \
               -f start_year="$year" -f start_week="$iso_week" \
               -f end_year="$year" -f end_week="$iso_week"
             git fetch origin main
             git reset --hard origin/main
-            completed_stages=$((completed_stages + 1))
             report_progress BUILDING "Ephemeris"
 
-            bash tools/run-workflow-and-wait.sh ephemeris-generator-by-date.yml \
+            run_stage ephemeris-generator-by-date.yml \
               -f start_year="$year" -f start_week="$iso_week" \
               -f end_year="$year" -f end_week="$iso_week"
             git fetch origin main
             git reset --hard origin/main
-            completed_stages=$((completed_stages + 1))
             report_progress BUILDING "Planet Finder"
 
-            bash tools/run-workflow-and-wait.sh populate-ephemeris-planet-finder-by-date.yml \
+            run_stage populate-ephemeris-planet-finder-by-date.yml \
               -f start_year="$year" -f start_week="$iso_week" \
               -f end_year="$year" -f end_week="$iso_week" \
               -f candidate_layouts='${{ inputs.candidate_layouts }}' \
@@ -155,32 +211,28 @@ jobs:
               -f diagnostic_level='${{ inputs.diagnostic_level }}'
             git fetch origin main
             git reset --hard origin/main
-            completed_stages=$((completed_stages + 1))
             report_progress BUILDING "Sky Notes"
 
-            bash tools/run-workflow-and-wait.sh populate-sky-notes-by-date.yml \
+            run_stage populate-sky-notes-by-date.yml \
               -f start_year="$year" -f start_week="$iso_week" \
               -f end_year="$year" -f end_week="$iso_week"
             git fetch origin main
             git reset --hard origin/main
-            completed_stages=$((completed_stages + 1))
             report_progress BUILDING "Artwork"
 
-            bash tools/run-workflow-and-wait.sh populate-sky-notes-artwork-by-date.yml \
+            run_stage populate-sky-notes-artwork-by-date.yml \
               -f start_year="$year" -f start_week="$iso_week" \
               -f end_year="$year" -f end_week="$iso_week"
             git fetch origin main
             git reset --hard origin/main
-            completed_stages=$((completed_stages + 1))
             report_progress BUILDING "Legend"
 
-            bash tools/run-workflow-and-wait.sh wire-almanack-legend.yml \
+            run_stage wire-almanack-legend.yml \
               -f start_year="$year" -f start_week="$iso_week" \
               -f end_year="$year" -f end_week="$iso_week"
             git fetch origin main
             git reset --hard origin/main
 
-            completed_stages=$((completed_stages + 1))
             report_progress COMPLETE "All seven stages finished"
 
             echo "::endgroup::"
