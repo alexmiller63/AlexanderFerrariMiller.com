@@ -7,7 +7,7 @@ import json
 import re
 from pathlib import Path
 
-from finder_geometry_adapter import asterism_spec, constellation_paths
+from finder_geometry_adapter import asterism_spec, constellation_paths, all_asterism_specs, all_constellation_specs
 from iso_date_range import parse_range_args
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -265,6 +265,8 @@ def build_renderer_spec(descriptor: dict, registry: dict, owner_identity: dict) 
             "planet_position": descriptor.get("planet_position"),
             "figure_paths": constellation_paths(registry, abbreviation),
             "asterisms": [], "deep_sky_objects": [],
+            "candidate_constellations": all_constellation_specs(registry),
+            "candidate_asterisms": all_asterism_specs(registry),
             "artwork_owner_identity": owner_identity,
             "guide_objects": guides}
     requested = descriptor.get("asterism")
@@ -288,6 +290,8 @@ def build_weekly_planet_renderer_spec(descriptor: dict, registry: dict) -> dict:
         "target": guides[0]["name"],
         "figure_paths": constellation_paths(registry, abbreviation),
         "asterisms": [],
+        "candidate_constellations": all_constellation_specs(registry),
+        "candidate_asterisms": all_asterism_specs(registry),
         "deep_sky_objects": [],
         "finder_relation": descriptor.get("finder_route") or {},
         "planet_position": descriptor.get("planet_position"),
