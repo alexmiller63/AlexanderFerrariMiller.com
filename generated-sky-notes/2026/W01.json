@@ -24,11 +24,13 @@
       "planet_longitude_deg": 280.4,
       "star": "Nunki",
       "constellation": "Sgr",
+      "star_fixed_object_id": 94,
       "star_ecliptic_longitude_deg": 282.385,
       "star_ecliptic_latitude_deg": -3.45,
       "longitude_separation_deg": 2.0,
       "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
       "asterism": "Teapot of Sagittarius",
+      "asterism_id": 1372,
       "planet_ra_deg": 280.980227,
       "planet_dec_deg": -23.926617
     },
@@ -53,6 +55,7 @@
       "planet_longitude_deg": 22.933,
       "star": "Sheratan",
       "constellation": "Ari",
+      "star_fixed_object_id": 651,
       "star_ecliptic_longitude_deg": 33.97,
       "star_ecliptic_latitude_deg": 8.487,
       "longitude_separation_deg": 11.0,
@@ -70,6 +73,7 @@
       "planet_longitude_deg": 264.1,
       "star": "Sabik",
       "constellation": "Oph",
+      "star_fixed_object_id": 1072,
       "star_ecliptic_longitude_deg": 257.97,
       "star_ecliptic_latitude_deg": 7.198,
       "longitude_separation_deg": 6.1,
@@ -85,6 +89,7 @@
       "planet_longitude_deg": 275.433,
       "star": "Nunki",
       "constellation": "Sgr",
+      "star_fixed_object_id": 94,
       "star_ecliptic_longitude_deg": 282.385,
       "star_ecliptic_latitude_deg": -3.45,
       "longitude_separation_deg": 7.0,
@@ -93,7 +98,8 @@
       "planet_ra_deg": 275.535989,
       "planet_dec_deg": -23.73001,
       "sky_separation_deg": 7.9,
-      "asterism": "Teapot of Sagittarius"
+      "asterism": "Teapot of Sagittarius",
+      "asterism_id": 1372
     },
     {
       "kind": "planet-star-longitude",
@@ -101,6 +107,7 @@
       "planet_longitude_deg": 280.4,
       "star": "Nunki",
       "constellation": "Sgr",
+      "star_fixed_object_id": 94,
       "star_ecliptic_longitude_deg": 282.385,
       "star_ecliptic_latitude_deg": -3.45,
       "longitude_separation_deg": 2.0,
@@ -109,7 +116,8 @@
       "planet_ra_deg": 280.980227,
       "planet_dec_deg": -23.926617,
       "sky_separation_deg": 3.5,
-      "asterism": "Teapot of Sagittarius"
+      "asterism": "Teapot of Sagittarius",
+      "asterism_id": 1372
     },
     {
       "kind": "planet-star-longitude",
@@ -117,6 +125,7 @@
       "planet_longitude_deg": 6.45,
       "star": "Diphda",
       "constellation": "Cet",
+      "star_fixed_object_id": 620,
       "star_ecliptic_longitude_deg": 2.583,
       "star_ecliptic_latitude_deg": -20.784,
       "longitude_separation_deg": 3.9,
@@ -134,6 +143,7 @@
       "planet_longitude_deg": 111.75,
       "star": "Pollux",
       "constellation": "Gem",
+      "star_fixed_object_id": 37,
       "star_ecliptic_longitude_deg": 113.216,
       "star_ecliptic_latitude_deg": 6.684,
       "longitude_separation_deg": 1.5,
@@ -149,6 +159,7 @@
       "planet_longitude_deg": 356.0,
       "star": "Fumalsamakah",
       "constellation": "Psc",
+      "star_fixed_object_id": 573,
       "star_ecliptic_longitude_deg": 348.585,
       "star_ecliptic_latitude_deg": 9.053,
       "longitude_separation_deg": 7.4,
@@ -166,6 +177,7 @@
       "planet_longitude_deg": 58.033,
       "star": "Aldebaran",
       "constellation": "Tau",
+      "star_fixed_object_id": 25,
       "star_ecliptic_longitude_deg": 69.789,
       "star_ecliptic_latitude_deg": -5.467,
       "longitude_separation_deg": 11.8,
@@ -183,6 +195,7 @@
       "planet_longitude_deg": 359.467,
       "star": "Fumalsamakah",
       "constellation": "Psc",
+      "star_fixed_object_id": 573,
       "star_ecliptic_longitude_deg": 348.585,
       "star_ecliptic_latitude_deg": 9.053,
       "longitude_separation_deg": 10.9,
@@ -200,6 +213,7 @@
       "planet_longitude_deg": 302.633,
       "star": "Dabih",
       "constellation": "Cap",
+      "star_fixed_object_id": 1152,
       "star_ecliptic_longitude_deg": 304.047,
       "star_ecliptic_latitude_deg": 4.589,
       "longitude_separation_deg": 1.4,
@@ -407,7 +421,8 @@
       "representative_visual_magnitude": 2.05,
       "guiding_asterisms": [
         {
-          "id": "asterism-teapot-of-sagittarius",
+          "id": "1372",
+          "geometry_key": "asterism-teapot-of-sagittarius",
           "name": "Teapot of Sagittarius",
           "relationship": "visual-member",
           "provenance": {
@@ -433,22 +448,173 @@
     },
     {
       "schema_version": 1,
-      "id": "asterism-asterism-teapot-of-sagittarius",
+      "id": "1372",
       "type": "asterism",
       "name": "Teapot of Sagittarius",
       "summary": "observer-facing star pattern in Sagittarius",
       "representation": {
-        "machine": "./asterism-asterism-teapot-of-sagittarius.json",
+        "machine": "./1372.json",
         "human_source": "summary"
       },
+      "geometry_key": "asterism-teapot-of-sagittarius",
       "constellation_abbreviation": "Sgr",
+      "member_fixed_object_ids": [
+        89,
+        90,
+        95,
+        93,
+        91,
+        88,
+        94,
+        96
+      ],
       "members": [
-        "Kaus Australis",
         "Kaus Media",
+        "Kaus Australis",
+        "Ascella",
+        "Phi Sagittarii",
         "Kaus Borealis",
+        "Alnasl",
         "Nunki",
-        "Ascella"
-      ]
+        "Tau Sagittarii"
+      ],
+      "geometry": {
+        "system": "Star Almanack observer-facing asterism",
+        "paths": [
+          [
+            {
+              "fixed_object_id": 91,
+              "member": "Lambda Sagittarii",
+              "catalog": "HIP",
+              "id": 90496,
+              "ra_h": 18.466179,
+              "dec_deg": -25.4217,
+              "magnitude": 2.82
+            },
+            {
+              "fixed_object_id": 93,
+              "member": "Phi Sagittarii",
+              "catalog": "HIP",
+              "id": 92041,
+              "ra_h": 18.76094,
+              "dec_deg": -26.990778,
+              "magnitude": 3.17
+            },
+            {
+              "fixed_object_id": 95,
+              "member": "Zeta Sagittarii",
+              "catalog": "HIP",
+              "id": 93506,
+              "ra_h": 19.043532,
+              "dec_deg": -29.880105,
+              "magnitude": 2.6
+            },
+            {
+              "fixed_object_id": 90,
+              "member": "Epsilon Sagittarii",
+              "catalog": "HIP",
+              "id": 90185,
+              "ra_h": 18.402868,
+              "dec_deg": -34.384616,
+              "magnitude": 1.79
+            },
+            {
+              "fixed_object_id": 89,
+              "member": "Delta Sagittarii",
+              "catalog": "HIP",
+              "id": 89931,
+              "ra_h": 18.3499,
+              "dec_deg": -29.828103,
+              "magnitude": 2.72
+            },
+            {
+              "fixed_object_id": 91,
+              "member": "Lambda Sagittarii",
+              "catalog": "HIP",
+              "id": 90496,
+              "ra_h": 18.466179,
+              "dec_deg": -25.4217,
+              "magnitude": 2.82
+            }
+          ],
+          [
+            {
+              "fixed_object_id": 93,
+              "member": "Phi Sagittarii",
+              "catalog": "HIP",
+              "id": 92041,
+              "ra_h": 18.76094,
+              "dec_deg": -26.990778,
+              "magnitude": 3.17
+            },
+            {
+              "fixed_object_id": 96,
+              "member": "Tau Sagittarii",
+              "catalog": "HIP",
+              "id": 93864,
+              "ra_h": 19.11567,
+              "dec_deg": -27.670423,
+              "magnitude": 3.32
+            },
+            {
+              "fixed_object_id": 94,
+              "member": "Sigma Sagittarii",
+              "catalog": "HIP",
+              "id": 92855,
+              "ra_h": 18.92109,
+              "dec_deg": -26.296722,
+              "magnitude": 2.05
+            },
+            {
+              "fixed_object_id": 95,
+              "member": "Zeta Sagittarii",
+              "catalog": "HIP",
+              "id": 93506,
+              "ra_h": 19.043532,
+              "dec_deg": -29.880105,
+              "magnitude": 2.6
+            }
+          ],
+          [
+            {
+              "fixed_object_id": 91,
+              "member": "Lambda Sagittarii",
+              "catalog": "HIP",
+              "id": 90496,
+              "ra_h": 18.466179,
+              "dec_deg": -25.4217,
+              "magnitude": 2.82
+            },
+            {
+              "fixed_object_id": 89,
+              "member": "Delta Sagittarii",
+              "catalog": "HIP",
+              "id": 89931,
+              "ra_h": 18.3499,
+              "dec_deg": -29.828103,
+              "magnitude": 2.72
+            },
+            {
+              "fixed_object_id": 88,
+              "member": "Gamma Sagittarii",
+              "catalog": "HIP",
+              "id": 88635,
+              "ra_h": 18.096803,
+              "dec_deg": -30.424091,
+              "magnitude": 2.98
+            },
+            {
+              "fixed_object_id": 90,
+              "member": "Epsilon Sagittarii",
+              "catalog": "HIP",
+              "id": 90185,
+              "ra_h": 18.402868,
+              "dec_deg": -34.384616,
+              "magnitude": 1.79
+            }
+          ]
+        ]
+      }
     },
     {
       "schema_version": 1,
@@ -578,7 +744,8 @@
         },
         {
           "type": "reference-star",
-          "name": "Sabik"
+          "name": "Sabik",
+          "fixed_object_id": 1072
         }
       ],
       "landmark_policy": {
@@ -605,6 +772,7 @@
           "planet_longitude_deg": 22.933,
           "star": "Sheratan",
           "constellation": "Ari",
+          "star_fixed_object_id": 651,
           "star_ecliptic_longitude_deg": 33.97,
           "star_ecliptic_latitude_deg": 8.487,
           "longitude_separation_deg": 11.0,
@@ -622,6 +790,7 @@
           "planet_longitude_deg": 264.1,
           "star": "Sabik",
           "constellation": "Oph",
+          "star_fixed_object_id": 1072,
           "star_ecliptic_longitude_deg": 257.97,
           "star_ecliptic_latitude_deg": 7.198,
           "longitude_separation_deg": 6.1,
@@ -722,7 +891,8 @@
       },
       "constellation": "Sagittarius",
       "asterism": {
-        "id": "asterism-teapot-of-sagittarius",
+        "id": 1372,
+        "geometry_key": "asterism-teapot-of-sagittarius",
         "name": "Teapot of Sagittarius",
         "members": [
           "Kaus Media",
@@ -742,7 +912,8 @@
         },
         {
           "type": "reference-star",
-          "name": "Nunki"
+          "name": "Nunki",
+          "fixed_object_id": 94
         }
       ],
       "landmark_policy": {
@@ -770,6 +941,7 @@
           "planet_longitude_deg": 22.933,
           "star": "Sheratan",
           "constellation": "Ari",
+          "star_fixed_object_id": 651,
           "star_ecliptic_longitude_deg": 33.97,
           "star_ecliptic_latitude_deg": 8.487,
           "longitude_separation_deg": 11.0,
@@ -787,6 +959,7 @@
           "planet_longitude_deg": 264.1,
           "star": "Sabik",
           "constellation": "Oph",
+          "star_fixed_object_id": 1072,
           "star_ecliptic_longitude_deg": 257.97,
           "star_ecliptic_latitude_deg": 7.198,
           "longitude_separation_deg": 6.1,
@@ -894,7 +1067,8 @@
         },
         {
           "type": "reference-star",
-          "name": "Sheratan"
+          "name": "Sheratan",
+          "fixed_object_id": 651
         }
       ],
       "landmark_policy": {
@@ -921,6 +1095,7 @@
           "planet_longitude_deg": 22.933,
           "star": "Sheratan",
           "constellation": "Ari",
+          "star_fixed_object_id": 651,
           "star_ecliptic_longitude_deg": 33.97,
           "star_ecliptic_latitude_deg": 8.487,
           "longitude_separation_deg": 11.0,
@@ -938,6 +1113,7 @@
           "planet_longitude_deg": 264.1,
           "star": "Sabik",
           "constellation": "Oph",
+          "star_fixed_object_id": 1072,
           "star_ecliptic_longitude_deg": 257.97,
           "star_ecliptic_latitude_deg": 7.198,
           "longitude_separation_deg": 6.1,
@@ -1038,7 +1214,8 @@
       },
       "constellation": "Sagittarius",
       "asterism": {
-        "id": "asterism-teapot-of-sagittarius",
+        "id": 1372,
+        "geometry_key": "asterism-teapot-of-sagittarius",
         "name": "Teapot of Sagittarius",
         "members": [
           "Kaus Media",
@@ -1058,7 +1235,8 @@
         },
         {
           "type": "reference-star",
-          "name": "Nunki"
+          "name": "Nunki",
+          "fixed_object_id": 94
         }
       ],
       "landmark_policy": {
@@ -1086,6 +1264,7 @@
           "planet_longitude_deg": 22.933,
           "star": "Sheratan",
           "constellation": "Ari",
+          "star_fixed_object_id": 651,
           "star_ecliptic_longitude_deg": 33.97,
           "star_ecliptic_latitude_deg": 8.487,
           "longitude_separation_deg": 11.0,
@@ -1103,6 +1282,7 @@
           "planet_longitude_deg": 264.1,
           "star": "Sabik",
           "constellation": "Oph",
+          "star_fixed_object_id": 1072,
           "star_ecliptic_longitude_deg": 257.97,
           "star_ecliptic_latitude_deg": 7.198,
           "longitude_separation_deg": 6.1,
@@ -1210,7 +1390,8 @@
         },
         {
           "type": "reference-star",
-          "name": "Pollux"
+          "name": "Pollux",
+          "fixed_object_id": 37
         }
       ],
       "landmark_policy": {
@@ -1237,6 +1418,7 @@
           "planet_longitude_deg": 22.933,
           "star": "Sheratan",
           "constellation": "Ari",
+          "star_fixed_object_id": 651,
           "star_ecliptic_longitude_deg": 33.97,
           "star_ecliptic_latitude_deg": 8.487,
           "longitude_separation_deg": 11.0,
@@ -1254,6 +1436,7 @@
           "planet_longitude_deg": 264.1,
           "star": "Sabik",
           "constellation": "Oph",
+          "star_fixed_object_id": 1072,
           "star_ecliptic_longitude_deg": 257.97,
           "star_ecliptic_latitude_deg": 7.198,
           "longitude_separation_deg": 6.1,
@@ -1361,7 +1544,8 @@
         },
         {
           "type": "reference-star",
-          "name": "Fumalsamakah"
+          "name": "Fumalsamakah",
+          "fixed_object_id": 573
         }
       ],
       "landmark_policy": {
@@ -1388,6 +1572,7 @@
           "planet_longitude_deg": 22.933,
           "star": "Sheratan",
           "constellation": "Ari",
+          "star_fixed_object_id": 651,
           "star_ecliptic_longitude_deg": 33.97,
           "star_ecliptic_latitude_deg": 8.487,
           "longitude_separation_deg": 11.0,
@@ -1405,6 +1590,7 @@
           "planet_longitude_deg": 264.1,
           "star": "Sabik",
           "constellation": "Oph",
+          "star_fixed_object_id": 1072,
           "star_ecliptic_longitude_deg": 257.97,
           "star_ecliptic_latitude_deg": 7.198,
           "longitude_separation_deg": 6.1,
@@ -1512,7 +1698,8 @@
         },
         {
           "type": "reference-star",
-          "name": "Aldebaran"
+          "name": "Aldebaran",
+          "fixed_object_id": 25
         }
       ],
       "landmark_policy": {
@@ -1539,6 +1726,7 @@
           "planet_longitude_deg": 22.933,
           "star": "Sheratan",
           "constellation": "Ari",
+          "star_fixed_object_id": 651,
           "star_ecliptic_longitude_deg": 33.97,
           "star_ecliptic_latitude_deg": 8.487,
           "longitude_separation_deg": 11.0,
@@ -1556,6 +1744,7 @@
           "planet_longitude_deg": 264.1,
           "star": "Sabik",
           "constellation": "Oph",
+          "star_fixed_object_id": 1072,
           "star_ecliptic_longitude_deg": 257.97,
           "star_ecliptic_latitude_deg": 7.198,
           "longitude_separation_deg": 6.1,
@@ -1663,7 +1852,8 @@
         },
         {
           "type": "reference-star",
-          "name": "Fumalsamakah"
+          "name": "Fumalsamakah",
+          "fixed_object_id": 573
         }
       ],
       "landmark_policy": {
@@ -1690,6 +1880,7 @@
           "planet_longitude_deg": 22.933,
           "star": "Sheratan",
           "constellation": "Ari",
+          "star_fixed_object_id": 651,
           "star_ecliptic_longitude_deg": 33.97,
           "star_ecliptic_latitude_deg": 8.487,
           "longitude_separation_deg": 11.0,
@@ -1707,6 +1898,7 @@
           "planet_longitude_deg": 264.1,
           "star": "Sabik",
           "constellation": "Oph",
+          "star_fixed_object_id": 1072,
           "star_ecliptic_longitude_deg": 257.97,
           "star_ecliptic_latitude_deg": 7.198,
           "longitude_separation_deg": 6.1,
@@ -1814,7 +2006,8 @@
         },
         {
           "type": "reference-star",
-          "name": "Diphda"
+          "name": "Diphda",
+          "fixed_object_id": 620
         }
       ],
       "landmark_policy": {
@@ -1841,6 +2034,7 @@
           "planet_longitude_deg": 22.933,
           "star": "Sheratan",
           "constellation": "Ari",
+          "star_fixed_object_id": 651,
           "star_ecliptic_longitude_deg": 33.97,
           "star_ecliptic_latitude_deg": 8.487,
           "longitude_separation_deg": 11.0,
@@ -1858,6 +2052,7 @@
           "planet_longitude_deg": 264.1,
           "star": "Sabik",
           "constellation": "Oph",
+          "star_fixed_object_id": 1072,
           "star_ecliptic_longitude_deg": 257.97,
           "star_ecliptic_latitude_deg": 7.198,
           "longitude_separation_deg": 6.1,
@@ -1965,7 +2160,8 @@
         },
         {
           "type": "reference-star",
-          "name": "Dabih"
+          "name": "Dabih",
+          "fixed_object_id": 1152
         }
       ],
       "landmark_policy": {
@@ -1992,6 +2188,7 @@
           "planet_longitude_deg": 22.933,
           "star": "Sheratan",
           "constellation": "Ari",
+          "star_fixed_object_id": 651,
           "star_ecliptic_longitude_deg": 33.97,
           "star_ecliptic_latitude_deg": 8.487,
           "longitude_separation_deg": 11.0,
@@ -2009,6 +2206,7 @@
           "planet_longitude_deg": 264.1,
           "star": "Sabik",
           "constellation": "Oph",
+          "star_fixed_object_id": 1072,
           "star_ecliptic_longitude_deg": 257.97,
           "star_ecliptic_latitude_deg": 7.198,
           "longitude_separation_deg": 6.1,
