@@ -764,7 +764,8 @@ def render(spec: dict, stars, output: Path) -> None:
     ax.set_aspect("equal")
     if visible:
         ax.scatter([item[0] for item in visible], [item[1] for item in visible],
-                   s=[marker_area(item[2].mag, 7) for item in visible], color=STAR, zorder=1)
+                   s=[marker_area(item[2].mag, 7) for item in visible], color=STAR,
+                   linewidths=0, zorder=3)
     for path in figure_paths:
         draw_path(ax, path, idx, center, FIGURE_BLUE, 2.7)
     for path in guide_paths:

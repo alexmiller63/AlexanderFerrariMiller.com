@@ -109,9 +109,10 @@ def asterism_refs(a):
     for p in a.get("paths",[]):r.update(p)
     return r
 def marker_area(m, lim):
-    """Strong, immediately readable magnitude hierarchy for finder stars."""
+    """Return square-point area with a clear diameter step per magnitude."""
     bright_reference = max(-1.5, min(float(m), float(lim)))
-    return max(2.0, 72.0 * (0.62 ** (bright_reference + 1.0)))
+    diameter = max(0.75, 12.0 * (0.70 ** bright_reference))
+    return diameter ** 2
 def draw_path(ax,path,index,center,lw,color):
     pts=[project(index[r].ra_deg,index[r].dec_deg,*center) for r in path];pts=[p for p in pts if p]
     if len(pts)>=2:ax.plot([p[0] for p in pts],[p[1] for p in pts],lw=lw,color=color,alpha=.95,zorder=2)
@@ -149,7 +150,7 @@ def render_asterism_inset(spec,a,stars,idx,out_dir):
     proj=[(*project(s.ra_deg,s.dec_deg,*center),s) for s in vis]
     fig,ax=plt.subplots(figsize=(7.2,5.8),facecolor=NIGHT);ax.set_facecolor(NIGHT)
     ax.set_xlim(xmax,xmin);ax.set_ylim(ymin,ymax);ax.set_aspect("equal")
-    if proj:ax.scatter([p[0] for p in proj],[p[1] for p in proj],s=[marker_area(p[2].mag,7) for p in proj],color=STAR,zorder=3)
+    if proj:ax.scatter([p[0] for p in proj],[p[1] for p in proj],s=[marker_area(p[2].mag,7) for p in proj],color=STAR,linewidths=0,zorder=3)
     for p in a.get("paths",[]):draw_path(ax,p,idx,center,4.0,ASTERISM_GREEN)
     label_offsets=a.get("inset_label_offsets",{})
     for r in refs:
@@ -180,7 +181,7 @@ def draw_embedded_asterism_inset(ax,a,stars,idx):
     proj=[(*project(s.ra_deg,s.dec_deg,*center),s) for s in vis]
     iax=ax.inset_axes([.655,.105,.31,.33],transform=ax.transAxes,zorder=20)
     iax.set_facecolor(NIGHT);iax.set_xlim(xmax,xmin);iax.set_ylim(ymin,ymax);iax.set_aspect("equal")
-    if proj:iax.scatter([p[0] for p in proj],[p[1] for p in proj],s=[marker_area(p[2].mag,7)*.65 for p in proj],color=STAR,zorder=3)
+    if proj:iax.scatter([p[0] for p in proj],[p[1] for p in proj],s=[marker_area(p[2].mag,7)*.65 for p in proj],color=STAR,linewidths=0,zorder=3)
     for p in a.get("paths",[]):draw_path(iax,p,idx,center,2.4,ASTERISM_GREEN)
     label_offsets=a.get("inset_label_offsets",{})
     for r in refs:
@@ -214,7 +215,7 @@ def render_figure(name,spec,stars,out_dir):
     proj=[(*p,s) for s in vis if (p:=project(s.ra_deg,s.dec_deg,*center))]
     fig,ax=plt.subplots(figsize=(9.0,6.8) if tight_aqr else (8.2,8.2),facecolor=NIGHT);ax.set_facecolor(NIGHT)
     ax.set_xlim(xmax,xmin);ax.set_ylim(ymin,ymax);ax.set_aspect("equal");draw_boundary(ax,spec["constellation"],center)
-    if proj:ax.scatter([p[0] for p in proj],[p[1] for p in proj],s=[marker_area(p[2].mag,7) for p in proj],color=STAR,zorder=3)
+    if proj:ax.scatter([p[0] for p in proj],[p[1] for p in proj],s=[marker_area(p[2].mag,7) for p in proj],color=STAR,linewidths=0,zorder=3)
     for p in spec.get("figure_paths",[]):draw_path(ax,p,idx,center,2.7,FIGURE_BLUE)
     hidden_component_labels=set()
     for a in spec.get("asterisms",[]):
