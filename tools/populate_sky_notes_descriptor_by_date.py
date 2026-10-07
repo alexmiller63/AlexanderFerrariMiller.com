@@ -326,13 +326,13 @@ def render_inline_stories(stories: list[dict]) -> str:
             f'<h4><a href="{url}">{hed}</a></h4>'
             f'<p class="sky-note-story-dek">{dek}</p>'
             f'{body_html}'
-            f'<p><a href="{url}">Read the story.</a></p>'
+            f'<p><a href="{url}">{hed} — {dek}</a></p>'
             '</article>'
         )
     return "\n".join(blocks)
 
 
-def render_linked_stories(stories: list[dict]) -> str:
+def render_linked_stories(stories: list[dict], elaborate: bool = False) -> str:
     if not stories:
         return ""
     items = []
@@ -340,10 +340,17 @@ def render_linked_stories(stories: list[dict]) -> str:
         hed = html.escape(story["hed"])
         dek = html.escape(story["dek"])
         url = html.escape(reader_story_url(story["url"]), quote=True)
+        body_html = ""
+        if elaborate:
+            body_html = "".join(
+                f'<p>{html.escape(" ".join(part.splitlines()))}</p>'
+                for part in re.split(r"\n\s*\n", story["body"].strip()) if part.strip()
+            )
         items.append(
             f'<li data-fixed-object-id="{story["fixed_object_id"]}" '
             f'data-story-collection="{html.escape(story["collection"], quote=True)}">'
-            f'<a href="{url}">{hed}</a> — {dek}</li>'
+            f'<a href="{url}"><strong class="sky-note-story-hed">{hed}</strong> — '
+            f'<span class="sky-note-story-dek">{dek}</span></a>{body_html}</li>'
         )
     return '<div class="sky-note-more-stories"><h4>More Sky Notes</h4><ul>' + "".join(items) + '</ul></div>'
 
@@ -354,7 +361,7 @@ def descriptor_policy() -> dict:
         "candidate_pool": "complete; presentation never limits discovery",
         "presentation": "Wordy",
         "story_limit": None,
-        "wordy_policy": "rich weekly observing prose; link to complete object stories rather than embedding them",
+        "wordy_policy": "repeat canonical hed and dek in reader links, then elaborate with canonical story body",
         "future_presentations": [],
         "link_target": "/almanack/descriptors/<fixed_object_id>.json for fixed-object descriptors",
         "artwork_descriptor_is_separate": True,
@@ -453,10 +460,10 @@ def patch_page(path, payload: dict) -> bool:
         if finder_href:
             record["finder_href"] = finder_href
     rendered = decorate_note_html(rendered, payload["descriptors"], payload.get("calendar_fixed_object_ids", []))
-    # Object-story prose is not embedded in weekly pages.  The observing guide
-    # links to canonical story pages, which own the prose and artwork.
+    # Canonical stories own the hed, dek and body. Wordy repeats that body
+    # after the same linked hed/dek shown in Highlights.
     inline = render_inline_stories(payload.get("inline_stories", []))
-    linked = render_linked_stories(payload.get("linked_stories", []))
+    linked = render_linked_stories(payload.get("linked_stories", []), elaborate=True)
     # Legacy week-owned artwork is deliberately removed. Fixed-object artwork
     # belongs on the object story/package and is published independently.
     artwork_slot = ""
