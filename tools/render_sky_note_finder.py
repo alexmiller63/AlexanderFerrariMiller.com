@@ -686,7 +686,7 @@ def render(spec: dict, stars, output: Path) -> None:
     # entire parent constellation.  The full figure remains available to draw,
     # but an unrelated distant arm of that figure must not force a needlessly
     # wide field.  A named asterism is the preferred recognition context.
-    framing_paths = figure_paths + guide_paths
+    framing_paths = spec.get("framing_paths", figure_paths + guide_paths)
     if has_planet:
         # A moving-body finder is framed by the navigation route, never by the
         # full extent of a constellation.  If a genuinely local asterism was
@@ -724,8 +724,9 @@ def render(spec: dict, stars, output: Path) -> None:
         raise RuntimeError("Accepted geometry produced no visible projected points")
     xs = [point[0] for point in projected_geometry]
     ys = [point[1] for point in projected_geometry]
-    span = max(max(xs) - min(xs), max(ys) - min(ys), 8.0)
-    pad = max(2.5, span * 0.18)
+    compact_guide = "framing_paths" in spec and not has_planet
+    span = max(max(xs) - min(xs), max(ys) - min(ys), 2.0 if compact_guide else 8.0)
+    pad = max(0.5 if compact_guide else 2.5, span * 0.18)
     if has_planet and not asterisms:
         # Give the local constellation context and edge labels a little more room.
         pad = max(3.5, span * 0.24)
@@ -841,13 +842,14 @@ def render(spec: dict, stars, output: Path) -> None:
         if fixed_id in labeled_star_ids:
             continue
         point = project(star.ra_deg, star.dec_deg, *center)
-        if point is None:
+        if point is None or (compact_guide and not (xmin <= point[0] <= xmax and ymin <= point[1] <= ymax)):
             continue
         if identity.get("fixed_object_id") == target_id:
             continue
         label = chart_bayer_label(identity, star, figure_abbreviation)
         if label:
-            place_label(ax, label, point, occupied_labels, obstacle_segments=figure_segments + asterism_segments)
+            place_label(ax, label, point, occupied_labels, obstacle_segments=figure_segments + asterism_segments,
+                        require_clear=compact_guide)
             labeled_star_ids.add(fixed_id)
     for item in deep_sky:
         place_label(
@@ -959,7 +961,7 @@ def render(spec: dict, stars, output: Path) -> None:
                                 ax, proper, point, occupied_labels,
                                 color=ASTERISM_GREEN, fontsize=9, zorder=7,
                                 obstacle_segments=figure_segments + asterism_segments + boundary_segments,
-                                require_clear=False,
+                                require_clear=compact_guide,
                             )
                             labeled_asterism_refs.add(ref)
         name = str(asterism.get("name") or "")
@@ -972,7 +974,7 @@ def render(spec: dict, stars, output: Path) -> None:
                 ax, name, label_point, occupied_labels,
                 color=ASTERISM_GREEN, fontsize=9, zorder=7,
                 obstacle_segments=figure_segments + asterism_segments + boundary_segments,
-                require_clear=False,
+                require_clear=compact_guide,
             )
     if target_point is None:
         raise RuntimeError(f"Target fixed_object_id {target_id} is outside the projection")
@@ -1049,6 +1051,9 @@ def render(spec: dict, stars, output: Path) -> None:
     for ref in figure_refs:
         identity = identities_by_ref[ref]
         star = idx[ref]
+        point = project(star.ra_deg, star.dec_deg, *center)
+        if compact_guide and (point is None or not (xmin <= point[0] <= xmax and ymin <= point[1] <= ymax)):
+            continue
         if bayer_label(identity, star):
             legend_entries.append((identity, star))
     legend_entries.sort(key=lambda pair: greek_sort_key(pair[0], pair[1]))

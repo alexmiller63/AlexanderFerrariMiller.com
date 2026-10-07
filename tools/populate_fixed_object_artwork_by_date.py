@@ -84,9 +84,9 @@ def make_spec(item: dict, registry: dict, by_hip: dict[str, int], metadata: dict
     candidate_asterisms = all_asterism_specs(registry)
     # Object-owned finders may promote the observer landmarks required by their
     # canonical finding route.  Keep this in the spec so the renderer remains generic.
-    guide_names = {"Pleiades": {"Orion's Belt", "Hyades / V of Taurus", "Pleiades"}}.get(str(item.get("name") or ""), set())
+    guide_names = {"Pleiades": {"Pleiades"}}.get(str(item.get("name") or ""), set())
     guiding_asterisms = [a for a in candidate_asterisms if a.get("name") in guide_names]
-    guide_constellation_abbreviations = {"Pleiades": {"Ori"}}.get(str(item.get("name") or ""), set())
+    guide_constellation_abbreviations = set()
     guiding_constellations = [
         candidate for candidate in all_constellation_specs(registry)
         if candidate.get("abbreviation") in guide_constellation_abbreviations
@@ -118,7 +118,7 @@ def make_spec(item: dict, registry: dict, by_hip: dict[str, int], metadata: dict
                 identity.update({k: v for k, v in metadata.get(fid, {}).items() if k != "fixed_object_id" and v})
                 identities.append(identity)
                 identity_refs.add(ref)
-    return {
+    spec = {
         "name": full_name,
         "constellation_abbreviation": con,
         "figure_paths": paths,
@@ -131,6 +131,15 @@ def make_spec(item: dict, registry: dict, by_hip: dict[str, int], metadata: dict
         "artwork_owner_identity": owner,
         "guide_objects": [],
     }
+    if guide_names:
+        if not guiding_asterisms:
+            raise RuntimeError(f"fixed object {fixed_id}: accepted target asterism is missing")
+        # The target pattern supplies its own simple guide. Surrounding
+        # constellation figures remain available only as clipped context.
+        spec["framing_paths"] = [
+            path for asterism in guiding_asterisms for path in asterism["paths"]
+        ]
+    return spec
 
 
 def main() -> None:
