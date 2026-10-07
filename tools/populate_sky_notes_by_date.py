@@ -31,6 +31,7 @@ ROOT = Path(__file__).resolve().parents[1]
 SOURCE_ROOT = ROOT
 PAGE_ROOTS = (ROOT / "almanack",)
 BRIGHT_STARS = SOURCE_ROOT / "bright-stars-2mag.csv"
+FINDER_STARS = SOURCE_ROOT / "expanded-bayer-stars.csv"
 GEOMETRY_REGISTRY = ROOT / "finder-geometry" / "martz-macrobert.json"
 
 PLANET_DISPLAY = {
@@ -184,6 +185,34 @@ def load_bright_stars() -> list[dict]:
     return stars
 
 
+def load_finder_stars(bright_stars: list[dict]) -> list[dict]:
+    """Include named Bayer landmarks beyond the two-magnitude story catalog."""
+    by_name = {star["name"]: star for star in bright_stars}
+    with FINDER_STARS.open(encoding="utf-8", newline="") as handle:
+        for row in csv.DictReader(handle):
+            name = (row.get("proper") or "").strip()
+            if not name or name in by_name:
+                continue
+            ra_deg = float(row["ra_h"]) * 15.0
+            dec_deg = float(row["dec_deg"])
+            lon_deg, lat_deg = equatorial_to_ecliptic(ra_deg, dec_deg)
+            by_name[name] = {
+                "name": name, "bayer": row["bayer"], "con": row["con"],
+                "ra_deg": ra_deg, "dec_deg": dec_deg,
+                "ecliptic_lon_deg": lon_deg, "ecliptic_lat_deg": lat_deg,
+                "mag": float(row["mag"]),
+            }
+    return list(by_name.values())
+
+
+def angular_distance(ra1: float, dec1: float, ra2: float, dec2: float) -> float:
+    """Great-circle distance in degrees, including right-ascension wrap."""
+    ra1, dec1, ra2, dec2 = map(math.radians, (ra1, dec1, ra2, dec2))
+    cosine = (math.sin(dec1) * math.sin(dec2)
+              + math.cos(dec1) * math.cos(dec2) * math.cos(ra1 - ra2))
+    return math.degrees(math.acos(max(-1.0, min(1.0, cosine))))
+
+
 def longitude_distance(a: float, b: float) -> float:
     return abs((a - b + 180.0) % 360.0 - 180.0)
 
@@ -261,6 +290,32 @@ def planetary_finder_relations(week: int, yearly: dict[int, dict[str, float]], s
         relations.append(relation)
     attach_planet_positions(relations, page_path)
 
+    # Longitude is useful for the weekly prose, but a finder needs a real
+    # two-dimensional sky hop. Rechoose its guide from the named Bayer catalog
+    # after the ephemeris' equatorial position is available.
+    finder_stars = [star for star in load_finder_stars(stars)
+                    if star["con"] and star["mag"] <= 4.5]
+    for relation in relations:
+        pra, pdec = relation.get("planet_ra_deg"), relation.get("planet_dec_deg")
+        if pra is None or pdec is None:
+            raise RuntimeError(f"Missing equatorial finder position for {relation['planet']}")
+        star = min(finder_stars, key=lambda item: (
+            angular_distance(float(pra), float(pdec), item["ra_deg"], item["dec_deg"]),
+            item["mag"], item["name"],
+        ))
+        relation["star"] = star["name"]
+        relation["constellation"] = star["con"]
+        relation["star_ecliptic_longitude_deg"] = round(star["ecliptic_lon_deg"], 3)
+        relation["star_ecliptic_latitude_deg"] = round(star["ecliptic_lat_deg"], 3)
+        relation["longitude_separation_deg"] = round(
+            longitude_distance(relation["planet_longitude_deg"], star["ecliptic_lon_deg"]), 1)
+        relation["sky_separation_deg"] = round(
+            angular_distance(float(pra), float(pdec), star["ra_deg"], star["dec_deg"]), 1)
+        relation.pop("asterism", None)
+        asterism = ASTERISMS.get(star["con"])
+        if asterism and star["name"] in asterism["members"]:
+            relation["asterism"] = asterism["name"]
+
     # A famous landmark is useful only when it is genuinely local to the
     # moving body.  Longitude alone can select a star that is far away on the
     # sky and force an enormous, overcrowded finder.  Measure the real
@@ -274,18 +329,8 @@ def planetary_finder_relations(week: int, yearly: dict[int, dict[str, float]], s
         pdec = relation.get("planet_dec_deg")
         if pra is None or pdec is None:
             continue
-        star = next((item for item in stars if item["name"] == relation["star"]), None)
-        if star is None:
-            continue
-        ra1, dec1 = math.radians(float(pra)), math.radians(float(pdec))
-        ra2, dec2 = math.radians(star["ra_deg"]), math.radians(star["dec_deg"])
-        cosine = (
-            math.sin(dec1) * math.sin(dec2)
-            + math.cos(dec1) * math.cos(dec2) * math.cos(ra1 - ra2)
-        )
-        hop = math.degrees(math.acos(max(-1.0, min(1.0, cosine))))
-        relation["sky_separation_deg"] = round(hop, 1)
-        if relation.get("asterism") and hop > max_asterism_hop_deg:
+        hop = relation["sky_separation_deg"]
+        if hop > max_asterism_hop_deg:
             relation.pop("asterism", None)
             relation["finder_difficulty"] = "difficult"
             relation["finder_note"] = f"{relation['planet']} is not easy to find this week."
@@ -495,6 +540,7 @@ def artwork_descriptor(year: int, week: int, fixed: list[dict], relations: list[
                 "reference_star": finder_relation["star"],
                 "planet": finder_relation["planet"],
                 "finder_note": finder_relation.get("finder_note"),
+                "sky_separation_deg": finder_relation.get("sky_separation_deg"),
             }
             if finder_relation is not None else None
         ),
