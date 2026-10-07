@@ -213,7 +213,8 @@ def place_label(ax, label, point, occupied_labels, color=TEXT, fontsize=9, zorde
     return annotation
 
 
-def place_target_label(ax, label, point, occupied_labels, obstacle_segments=()):
+def place_target_label(ax, label, point, occupied_labels, obstacle_segments=(),
+                       marker_radius_points=0):
     """Place the target label in the nearest genuinely clear area."""
     style = dict(
         ha="left", va="center", fontsize=10, color=TARGET_YELLOW,
@@ -223,8 +224,10 @@ def place_target_label(ax, label, point, occupied_labels, obstacle_segments=()):
     ax.figure.canvas.draw()
     renderer = ax.figure.canvas.get_renderer()
     probe_bbox = probe.get_window_extent(renderer=renderer)
-    width = probe_bbox.width
-    height = probe_bbox.height
+    # Annotation offsets use points; renderer bounds use display pixels.
+    points_per_pixel = 72 / ax.figure.dpi
+    width = probe_bbox.width * points_per_pixel
+    height = probe_bbox.height * points_per_pixel
     probe.remove()
 
     # Search a genuine two-dimensional expanding perimeter around the target.
@@ -232,7 +235,9 @@ def place_target_label(ax, label, point, occupied_labels, obstacle_segments=()):
     # could miss clear positions that were farther vertically but still close
     # horizontally (or vice versa).  Keep nearest-clear semantics, but explore
     # every perimeter combination before moving farther out.
-    gap = 4
+    # Clearance includes the marker's outer stroke and the label background.
+    marker_clearance_points = marker_radius_points + 3 if marker_radius_points else 0
+    gap = max(4, marker_clearance_points + 1)
     x_step = max(width * 0.0625, 2)
     y_step = max(height * 0.25, 3)
     max_ring = 32
@@ -263,7 +268,12 @@ def place_target_label(ax, label, point, occupied_labels, obstacle_segments=()):
             label_hits = sum(bbox.overlaps(other) for other in occupied_labels)
             geometry_hits = sum(segment_hits_display_bbox(ax, start, end, bbox)
                                 for start, end in obstacle_segments)
-            score = label_hits + geometry_hits
+            marker_bbox = annotation.get_bbox_patch().get_window_extent(renderer=renderer)
+            marker_x = min(max(anchor_x, marker_bbox.x0), marker_bbox.x1)
+            marker_y = min(max(anchor_y, marker_bbox.y0), marker_bbox.y1)
+            marker_distance = math.hypot(marker_x - anchor_x, marker_y - anchor_y)
+            marker_hits = marker_distance < marker_clearance_points * ax.figure.dpi / 72
+            score = label_hits + geometry_hits + marker_hits
             nearest_x = min(max(anchor_x, bbox.x0), bbox.x1)
             nearest_y = min(max(anchor_y, bbox.y0), bbox.y1)
             anchor_distance = math.hypot(nearest_x - anchor_x, nearest_y - anchor_y)
@@ -621,6 +631,9 @@ def render(spec: dict, stars, output: Path) -> None:
     ys = [point[1] for point in projected_geometry]
     span = max(max(xs) - min(xs), max(ys) - min(ys), 8.0)
     pad = max(2.5, span * 0.18)
+    if has_planet and not asterisms:
+        # Give the local constellation context and edge labels a little more room.
+        pad = max(3.5, span * 0.24)
     xmin, xmax = min(xs) - pad, max(xs) + pad
     ymin, ymax = min(ys) - pad, max(ys) + pad
     visible = []
@@ -832,6 +845,7 @@ def render(spec: dict, stars, output: Path) -> None:
     place_target_label(
         ax, target_chart_label, target_point, occupied_labels,
         obstacle_segments=figure_segments + asterism_segments + boundary_segments,
+        marker_radius_points=math.sqrt(210) / 2 + 2.6 / 2,
     )
     if has_planet:
         if planet_point is None:
@@ -841,6 +855,7 @@ def render(spec: dict, stars, output: Path) -> None:
         place_target_label(
             ax, planet_name, planet_point, occupied_labels,
             obstacle_segments=figure_segments + asterism_segments + boundary_segments,
+            marker_radius_points=math.sqrt(115) / 2 + 1.6 / 2,
         )
         # Add every other preserved weekly planet that genuinely lies in this
         # Pathfinder's displayed field. These are context objects, not finder
