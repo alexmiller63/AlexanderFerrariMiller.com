@@ -829,10 +829,10 @@ def render(spec: dict, stars, output: Path) -> None:
         if point and xmin <= point[0] <= xmax and ymin <= point[1] <= ymax:
             visible.append((point[0], point[1], star))
     if spec.get("overview"):
-        fig, (overview_ax, ax) = plt.subplots(2, 1, figsize=(8.2, 13.2), facecolor=NIGHT,
-                                            gridspec_kw={"height_ratios": [1, 1.5]})
+        fig, overview_ax = plt.subplots(figsize=(8.2, 8.2), facecolor=NIGHT)
         draw_finder_overview(overview_ax, spec, stars, idx, target_ra, target_dec,
                              str(target_meta.get("proper_name") or target_identity.get("name") or ""))
+        ax = overview_ax.inset_axes([0.03, 0.54, 0.48, 0.43], zorder=20)
     else:
         fig, ax = plt.subplots(figsize=(8.2, 8.2), facecolor=NIGHT)
     ax.set_facecolor(NIGHT)
@@ -1133,14 +1133,20 @@ def render(spec: dict, stars, output: Path) -> None:
     if not title:
         title = spec.get("chart_title") or "Stellar Finder"
     if spec.get("overview"):
-        fig.suptitle(title, color=TEXT, fontsize=14)
-        ax.set_title("Low-power telescope inset", color=TEXT, fontsize=12, pad=12)
+        overview_ax.set_title(title + " — Aldebaran guide", color=TEXT, fontsize=14, pad=12)
+        ax.text(0.5, 0.98, "Low-power telescope inset", transform=ax.transAxes,
+                ha="center", va="top", fontsize=8, color=TEXT)
     else:
         ax.set_title(title, color=TEXT, fontsize=14, pad=12)
     kilroy = datetime.now(timezone.utc).strftime("Kilroy: Artwork · %Y-%m-%d %H:%M:%S UTC")
-    ax.text(0.995, 1.015, kilroy, transform=ax.transAxes, ha="right", va="bottom", fontsize=6, color=TEXT)
-    ax.text(0.5, -0.035, "East ←                                      → West",
-            transform=ax.transAxes, ha="center", va="top", fontsize=8, color=TEXT)
+    stamp_ax = overview_ax if spec.get("overview") else ax
+    stamp_ax.text(0.995, 1.015, kilroy, transform=stamp_ax.transAxes, ha="right", va="bottom", fontsize=6, color=TEXT)
+    if spec.get("overview"):
+        ax.text(0.5, 0.02, "North up · East ←   → West", transform=ax.transAxes,
+                ha="center", va="bottom", fontsize=6, color=TEXT)
+    else:
+        ax.text(0.5, -0.035, "East ←                                      → West",
+                transform=ax.transAxes, ha="center", va="top", fontsize=8, color=TEXT)
     legend_entries = []
     for ref in figure_refs:
         identity = identities_by_ref[ref]
@@ -1176,7 +1182,10 @@ def render(spec: dict, stars, output: Path) -> None:
     ax.set_yticks([])
     ax.grid(False)
     for spine in ax.spines.values():
-        spine.set_visible(False)
+        spine.set_visible(bool(spec.get("overview")))
+        if spec.get("overview"):
+            spine.set_edgecolor(TEXT)
+            spine.set_linewidth(1.2)
     output.parent.mkdir(parents=True, exist_ok=True)
     fig.tight_layout(rect=(0, 0.08, 1, 0.96), h_pad=3.0 if spec.get("overview") else 1.08)
     fig.savefig(output, format="svg", bbox_inches="tight", facecolor=fig.get_facecolor())
