@@ -832,7 +832,7 @@ def render(spec: dict, stars, output: Path) -> None:
         fig, overview_ax = plt.subplots(figsize=(8.2, 8.2), facecolor=NIGHT)
         draw_finder_overview(overview_ax, spec, stars, idx, target_ra, target_dec,
                              str(target_meta.get("proper_name") or target_identity.get("name") or ""))
-        ax = overview_ax.inset_axes([0.03, 0.54, 0.48, 0.43], zorder=20)
+        ax = overview_ax.inset_axes([0.54, 0.18, 0.43, 0.43], zorder=20)
     else:
         fig, ax = plt.subplots(figsize=(8.2, 8.2), facecolor=NIGHT)
     ax.set_facecolor(NIGHT)
