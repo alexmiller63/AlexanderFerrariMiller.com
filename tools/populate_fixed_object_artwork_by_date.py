@@ -139,6 +139,13 @@ def make_spec(item: dict, registry: dict, by_hip: dict[str, int], metadata: dict
         spec["framing_paths"] = [
             path for asterism in guiding_asterisms for path in asterism["paths"]
         ]
+        guide_identity = next(
+            (identity for identity in identities if identity.get("proper_name") == "Aldebaran"), None,
+        )
+        overview_asterisms = [a for a in candidate_asterisms if a.get("name") == "Hyades / V of Taurus"]
+        if guide_identity is None or not overview_asterisms:
+            raise RuntimeError(f"fixed object {fixed_id}: overview guide or accepted Hyades geometry is missing")
+        spec["overview"] = {"guide_identity": guide_identity, "asterisms": overview_asterisms}
     return spec
 
 

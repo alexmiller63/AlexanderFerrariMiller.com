@@ -636,6 +636,72 @@ def draw_path(ax, path, idx, center, color, linewidth):
                 color=color, linewidth=linewidth, alpha=0.95, zorder=2)
 
 
+def draw_finder_overview(ax, spec, stars, idx, target_ra, target_dec, target_name):
+    """Show the supplied guide and target pattern without widening the close-up."""
+    overview = spec["overview"]
+    guide = overview["guide_identity"]
+    guide_star = idx[guide["renderer_ref"]]
+    patterns = list(overview.get("asterisms") or []) + list(spec.get("asterisms") or [])
+    paths = [path for pattern in patterns for path in pattern.get("paths") or []]
+    refs = refs_from_paths(paths) | {guide["renderer_ref"]}
+    center = spherical_center([idx[ref] for ref in refs])
+    points = [project(idx[ref].ra_deg, idx[ref].dec_deg, *center) for ref in refs]
+    points = [point for point in points if point is not None]
+    xs, ys = zip(*points)
+    pad = max(1.0, max(max(xs) - min(xs), max(ys) - min(ys)) * 0.12)
+    xmin, xmax, ymin, ymax = min(xs) - pad, max(xs) + pad, min(ys) - pad, max(ys) + pad
+    ax.set_facecolor(NIGHT)
+    ax.set_xlim(xmax, xmin)
+    ax.set_ylim(ymin, ymax)
+    ax.set_aspect("equal")
+    field = []
+    for star in stars:
+        point = project(star.ra_deg, star.dec_deg, *center)
+        if star.mag <= 6 and point is not None and xmin <= point[0] <= xmax and ymin <= point[1] <= ymax:
+            field.append((point, star))
+    if field:
+        ax.scatter([point[0] for point, _ in field], [point[1] for point, _ in field],
+                   s=[marker_area(star.mag, 6) for _, star in field], color=STAR, linewidths=0, zorder=3)
+    # Context is selected only after the route establishes this panel's bounds.
+    for record in visible_context(spec.get("candidate_constellations") or [], idx, center,
+                                  xmin, xmax, ymin, ymax):
+        for path in record["paths"]:
+            draw_path(ax, path, idx, center, FIGURE_BLUE, 1.4)
+    selected = {pattern.get("id") for pattern in patterns}
+    for record in visible_context(spec.get("candidate_asterisms") or [], idx, center,
+                                  xmin, xmax, ymin, ymax):
+        if record.get("id") not in selected:
+            for path in record["paths"]:
+                draw_path(ax, path, idx, center, ASTERISM_GREEN, 1.2)
+    segments = []
+    for path in paths:
+        draw_path(ax, path, idx, center, ASTERISM_GREEN, 2.0)
+        projected = [project(idx[ref].ra_deg, idx[ref].dec_deg, *center) for ref in path]
+        segments.extend((a, b) for a, b in zip(projected, projected[1:]) if a is not None and b is not None)
+    occupied = []
+    guide_point = project(guide_star.ra_deg, guide_star.dec_deg, *center)
+    place_target_label(ax, guide.get("proper_name") or guide_star.proper, guide_point, occupied,
+                       obstacle_segments=segments,
+                       marker_radius_points=math.sqrt(marker_area(guide_star.mag, 6)) / 2)
+    target_point = project(target_ra, target_dec, *center)
+    place_target_label(ax, target_name, target_point, occupied, obstacle_segments=segments)
+    for pattern in overview.get("asterisms") or []:
+        pattern_points = [project(idx[ref].ra_deg, idx[ref].dec_deg, *center)
+                          for ref in refs_from_paths(pattern["paths"])]
+        pattern_points = [point for point in pattern_points if point is not None]
+        point = tuple(sum(p[i] for p in pattern_points) / len(pattern_points) for i in (0, 1))
+        place_label(ax, pattern["name"], point, occupied, color=ASTERISM_GREEN,
+                    obstacle_segments=segments, require_clear=True)
+    ax.set_title(f"{guide.get('proper_name') or guide_star.proper} to {target_name} — overview",
+                 color=TEXT, fontsize=12, pad=10)
+    ax.text(0.02, 0.02, "North up · East ←   → West", transform=ax.transAxes,
+            ha="left", va="bottom", color=TEXT, fontsize=8)
+    ax.set_xticks([])
+    ax.set_yticks([])
+    for spine in ax.spines.values():
+        spine.set_visible(False)
+
+
 def render(spec: dict, stars, output: Path) -> None:
     idx = complete_index(stars)
     identities_by_ref, identities_by_id = identity_index(spec)
@@ -762,7 +828,13 @@ def render(spec: dict, stars, output: Path) -> None:
         point = project(star.ra_deg, star.dec_deg, *center)
         if point and xmin <= point[0] <= xmax and ymin <= point[1] <= ymax:
             visible.append((point[0], point[1], star))
-    fig, ax = plt.subplots(figsize=(8.2, 8.2), facecolor=NIGHT)
+    if spec.get("overview"):
+        fig, (overview_ax, ax) = plt.subplots(2, 1, figsize=(8.2, 13.2), facecolor=NIGHT,
+                                            gridspec_kw={"height_ratios": [1, 1.5]})
+        draw_finder_overview(overview_ax, spec, stars, idx, target_ra, target_dec,
+                             str(target_meta.get("proper_name") or target_identity.get("name") or ""))
+    else:
+        fig, ax = plt.subplots(figsize=(8.2, 8.2), facecolor=NIGHT)
     ax.set_facecolor(NIGHT)
     ax.set_xlim(xmax, xmin)
     ax.set_ylim(ymin, ymax)
@@ -1060,7 +1132,11 @@ def render(spec: dict, stars, output: Path) -> None:
         title = f"{target_name} in {figure_constellation}" if target_name and figure_constellation else (target_name or figure_constellation)
     if not title:
         title = spec.get("chart_title") or "Stellar Finder"
-    ax.set_title(title, color=TEXT, fontsize=14, pad=12)
+    if spec.get("overview"):
+        fig.suptitle(title, color=TEXT, fontsize=14)
+        ax.set_title("Low-power telescope inset", color=TEXT, fontsize=12, pad=12)
+    else:
+        ax.set_title(title, color=TEXT, fontsize=14, pad=12)
     kilroy = datetime.now(timezone.utc).strftime("Kilroy: Artwork · %Y-%m-%d %H:%M:%S UTC")
     ax.text(0.995, 1.015, kilroy, transform=ax.transAxes, ha="right", va="bottom", fontsize=6, color=TEXT)
     ax.text(0.5, -0.035, "East ←                                      → West",
@@ -1102,7 +1178,7 @@ def render(spec: dict, stars, output: Path) -> None:
     for spine in ax.spines.values():
         spine.set_visible(False)
     output.parent.mkdir(parents=True, exist_ok=True)
-    fig.tight_layout(rect=(0, 0.08, 1, 0.96))
+    fig.tight_layout(rect=(0, 0.08, 1, 0.96), h_pad=3.0 if spec.get("overview") else 1.08)
     fig.savefig(output, format="svg", bbox_inches="tight", facecolor=fig.get_facecolor())
     plt.close(fig)
 
