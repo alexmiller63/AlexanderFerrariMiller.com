@@ -966,7 +966,9 @@ def render(spec: dict, stars, output: Path) -> None:
                             )
                             labeled_asterism_refs.add(ref)
         name = str(asterism.get("name") or "")
-        if name in labeled_asterism_names and asterism_points:
+        target_pattern_name = str(target_meta.get("proper_name") or target_identity.get("name") or "").strip()
+        if (name in labeled_asterism_names and asterism_points
+                and name.casefold() != target_pattern_name.casefold()):
             label_point = (
                 sum(point[0] for point in asterism_points) / len(asterism_points),
                 sum(point[1] for point in asterism_points) / len(asterism_points),
