@@ -6,6 +6,7 @@ import csv
 import html
 import json
 import re
+from datetime import datetime, timezone
 
 from almanack_sections import replace_section_inner
 from almanack_paths import week_index
@@ -507,7 +508,11 @@ function setMode(mode){
 buttons.forEach(b=>b.addEventListener('click',()=>setMode(b.dataset.skyNoteMode)));
 setMode('wordy');
 })();</script>'''
-    section_html = '<h3>Sky Notes</h3>' + mode_toggle + '<div class="sky-note">\n' + '<div class="sky-note-wordy">' + body + '</div>\n' + '<div class="sky-note-highlights" hidden><h4>Highlights</h4>' + highlights + '</div>\n' + script + '</div>'
+    kilroy = (\n        '<p class="sky-note-kilroy" data-kilroy="sky-notes" '
+        'style="font-family:system-ui,sans-serif;font-size:.75rem;opacity:.72">'
+        'Kilroy: Sky Notes · generated ' + datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S UTC') + '</p>'
+    )
+    section_html = '<h3>Sky Notes</h3>' + kilroy + mode_toggle + '<div class="sky-note">\n' + '<div class="sky-note-wordy">' + body + '</div>\n' + '<div class="sky-note-highlights" hidden><h4>Highlights</h4>' + highlights + '</div>\n' + script + '</div>'
     new = replace_section_inner(text, 5, section_html, path)
     if new == text:
         return False
