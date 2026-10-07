@@ -820,11 +820,20 @@ def render(spec: dict, stars, output: Path) -> None:
                     if point is not None:
                         points.append(point)
         if guide_name and points:
-            guide_point = (sum(x for x, _ in points) / len(points), sum(y for _, y in points) / len(points))
-            place_constellation_label(
-                ax, guide_name, guide_point, occupied_labels,
-                obstacle_segments=figure_segments + asterism_segments + boundary_segments,
+            guide_region = visible_figure_region(
+                guide.get("paths") or [], idx, center, xmin, xmax, ymin, ymax,
             )
+            label_points = guide_region[:-1] if guide_region else [
+                p for p in points if xmin <= p[0] <= xmax and ymin <= p[1] <= ymax
+            ]
+            if label_points:
+                guide_point = (sum(x for x, _ in label_points) / len(label_points),
+                               sum(y for _, y in label_points) / len(label_points))
+                place_constellation_label(
+                    ax, guide_name, guide_point, occupied_labels,
+                    obstacle_segments=figure_segments + asterism_segments + boundary_segments,
+                    boundary_points=guide_region,
+                )
     home_abbreviation = str(spec.get("constellation_abbreviation") or figure_abbreviation).strip()
     neighbor_points = {}
     for boundary_name, boundary_abbreviation, boundary_points in projected_boundaries:
