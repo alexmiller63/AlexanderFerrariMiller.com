@@ -26,7 +26,12 @@ jobs:
           username: ${{ secrets.AWS_USER }}
           key: ${{ secrets.AWS_SSH_KEY }}
           script: |
+            set -e
             cd /var/www/AlexanderFerrariMiller
             git fetch origin main
             git reset --hard origin/main
-            # Remove untracked files left by older deployments before rebuilding.\n            # Without this, obsolete Almanack subpages (for example W01/sky-notes/)\n            # can survive indefinitely even after they are removed from the repository.\n            git clean -fd\n            ~/build-alex.sh
+            # Remove untracked files left by older deployments before rebuilding.
+            # Without this, obsolete Almanack subpages (for example W01/sky-notes/)
+            # can survive indefinitely even after they are removed from the repository.
+            git clean -fd
+            ~/build-alex.sh
