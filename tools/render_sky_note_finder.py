@@ -55,6 +55,48 @@ def load_iau_boundaries():
     return result
 
 
+def constellation_for_position(ra_deg, dec_deg, boundaries):
+    """Resolve a body's constellation from the same IAU snapshot drawn on the chart."""
+    from compute_constellation_observance_2026 import point_in_polygon, unwrap_ra
+    for name, abbreviation, points in boundaries:
+        polygon = unwrap_ra(points)
+        ra = ra_deg
+        while ra - polygon[0][0] > 180:
+            ra -= 360
+        while ra - polygon[0][0] < -180:
+            ra += 360
+        if point_in_polygon(ra, dec_deg, polygon):
+            return name, abbreviation
+    raise RuntimeError(f"No IAU constellation boundary contains ({ra_deg}, {dec_deg})")
+
+
+def planet_finder_title(planet, planet_constellation, reference, reference_constellation):
+    if planet_constellation != reference_constellation:
+        return f"{planet} in {planet_constellation}, near {reference} in {reference_constellation}"
+    return f"{planet} near {reference} in {reference_constellation}"
+
+
+def visible_figure_region(paths, idx, center, xmin, xmax, ymin, ymax):
+    """Find the largest complete, visible loop in the constellation stick figure."""
+    regions = []
+    for path in paths:
+        for end, ref in enumerate(path):
+            if ref not in path[:end]:
+                continue
+            start = max(i for i in range(end) if path[i] == ref)
+            loop = path[start:end + 1]
+            if len(set(loop)) < 3:
+                continue
+            points = [project(idx[item].ra_deg, idx[item].dec_deg, *center) for item in loop]
+            if any(p is None or not (xmin <= p[0] <= xmax and ymin <= p[1] <= ymax)
+                   for p in points):
+                continue
+            area = abs(sum(a[0] * b[1] - b[0] * a[1]
+                           for a, b in zip(points, points[1:])))
+            regions.append((area, points))
+    return max(regions, key=lambda item: item[0])[1] if regions else None
+
+
 def projected_path(points, center):
     return [p for p in (project(ra, dec, *center) for ra, dec in points) if p is not None]
 
@@ -297,14 +339,15 @@ def place_target_label(ax, label, point, occupied_labels, obstacle_segments=(),
     return annotation
 
 
-def place_constellation_label(ax, label, point, occupied_labels, obstacle_segments=()):
+def place_constellation_label(ax, label, point, occupied_labels, obstacle_segments=(),
+                              boundary_points=None):
     """Place a constellation name by searching outward until a genuinely clear area is found."""
     probe = ax.annotate(label, point, xytext=(0, 0), textcoords="offset points",
                         fontsize=16, color=FIGURE_BLUE, zorder=5)
     ax.figure.canvas.draw()
     renderer = ax.figure.canvas.get_renderer()
-    width = probe.get_window_extent(renderer=renderer).width
-    height = probe.get_window_extent(renderer=renderer).height
+    width = probe.get_window_extent(renderer=renderer).width * 72 / ax.figure.dpi
+    height = probe.get_window_extent(renderer=renderer).height * 72 / ax.figure.dpi
     probe.remove()
 
     # Search in expanding rings. The first collision-free position wins;
@@ -327,6 +370,10 @@ def place_constellation_label(ax, label, point, occupied_labels, obstacle_segmen
         renderer = ax.figure.canvas.get_renderer()
         bbox = annotation.get_window_extent(renderer=renderer).expanded(1.08, 1.16)
         label_hits = sum(bbox.overlaps(other) for other in occupied_labels)
+        if not (ax.bbox.contains(bbox.x0, bbox.y0) and ax.bbox.contains(bbox.x1, bbox.y1)):
+            label_hits += 1
+        if boundary_points is not None and not boundary_bbox_contains(ax, bbox, boundary_points):
+            label_hits += 1
         geometry_hits = sum(segment_hits_display_bbox(ax, start, end, bbox)
                             for start, end in obstacle_segments)
         annotation.remove()
@@ -666,8 +713,13 @@ def render(spec: dict, stars, output: Path) -> None:
             [item["point"][1] for item in deep_sky],
             s=42, facecolors="none", edgecolors=TEXT, linewidths=1.1, zorder=4,
         )
+    boundaries = load_iau_boundaries()
+    planet_constellation, planet_abbreviation = (
+        constellation_for_position(float(planet_ra), float(planet_dec), boundaries)
+        if has_planet else ("", "")
+    )
     projected_boundaries = []
-    for boundary_name, boundary_abbreviation, boundary in load_iau_boundaries():
+    for boundary_name, boundary_abbreviation, boundary in boundaries:
         boundary_points = projected_path(boundary, center)
         if len(boundary_points) >= 2:
             projected_boundaries.append((boundary_name, boundary_abbreviation, boundary_points))
@@ -744,12 +796,20 @@ def render(spec: dict, stars, output: Path) -> None:
             require_clear=True,
         )
     if figure_constellation and figure_points:
-        constellation_point = (sum(x for x, _ in figure_points) / len(figure_points),
-                               sum(y for _, y in figure_points) / len(figure_points))
-        place_constellation_label(
-            ax, figure_constellation, constellation_point, occupied_labels,
-            obstacle_segments=figure_segments + asterism_segments + boundary_segments,
+        figure_region = visible_figure_region(
+            figure_paths, idx, center, xmin, xmax, ymin, ymax,
         )
+        label_points = figure_region[:-1] if figure_region else [
+            p for p in figure_points if xmin <= p[0] <= xmax and ymin <= p[1] <= ymax
+        ]
+        if label_points:
+            constellation_point = (sum(x for x, _ in label_points) / len(label_points),
+                                   sum(y for _, y in label_points) / len(label_points))
+            place_constellation_label(
+                ax, figure_constellation, constellation_point, occupied_labels,
+                obstacle_segments=figure_segments + asterism_segments + boundary_segments,
+                boundary_points=figure_region,
+            )
     for guide in guide_constellations:
         guide_name = str(guide.get("name") or guide.get("abbreviation") or "").strip()
         points = []
@@ -765,7 +825,7 @@ def render(spec: dict, stars, output: Path) -> None:
                 ax, guide_name, guide_point, occupied_labels,
                 obstacle_segments=figure_segments + asterism_segments + boundary_segments,
             )
-    home_abbreviation = str(spec.get("constellation_abbreviation") or "").strip()
+    home_abbreviation = str(spec.get("constellation_abbreviation") or figure_abbreviation).strip()
     neighbor_points = {}
     for boundary_name, boundary_abbreviation, boundary_points in projected_boundaries:
         points = boundary_points
@@ -775,7 +835,7 @@ def render(spec: dict, stars, output: Path) -> None:
                 color=BOUNDARY_WHITE, linewidth=0.8, alpha=0.8,
                 linestyle="--", zorder=3)
         visible_points = [p for p in points if xmin <= p[0] <= xmax and ymin <= p[1] <= ymax]
-        if visible_points and boundary_abbreviation != home_abbreviation:
+        if visible_points and boundary_abbreviation not in (home_abbreviation, planet_abbreviation):
             neighbor_points.setdefault(boundary_abbreviation, (boundary_name, points))
     for neighbor_abbreviation, (neighbor_name, points) in neighbor_points.items():
         visible_points = [p for p in points if xmin <= p[0] <= xmax and ymin <= p[1] <= ymax]
@@ -787,6 +847,17 @@ def render(spec: dict, stars, output: Path) -> None:
             ax, CONSTELLATION_DISPLAY_NAMES.get(neighbor_name, neighbor_name), neighbor_abbreviation, point, occupied_labels,
             points, obstacle_segments=boundary_segments,
             color=BOUNDARY_WHITE, fontsize=10, zorder=5,
+        )
+    if has_planet and planet_abbreviation != home_abbreviation:
+        planet_boundary = next(
+            points for _, abbreviation, points in projected_boundaries
+            if abbreviation == planet_abbreviation and MplPath(points).contains_point(planet_point)
+        )
+        place_constellation_label(
+            ax, planet_constellation, planet_point, occupied_labels,
+            obstacle_segments=figure_segments + asterism_segments + boundary_segments
+            + [(planet_point, planet_point)],
+            boundary_points=planet_boundary,
         )
     labeled_asterism_refs = set()
     for asterism in asterisms:
@@ -881,11 +952,9 @@ def render(spec: dict, stars, output: Path) -> None:
         # A moving-body finder is named for the route the reader actually uses:
         # body + useful landmark + full constellation.
         reference_name = str((spec.get("finder_relation") or {}).get("reference_star") or target_name).strip()
-        title = " ".join(part for part in (
-            planet_name,
-            f"near {reference_name}" if reference_name else "",
-            f"in {figure_constellation}" if figure_constellation else "",
-        ) if part)
+        title = planet_finder_title(
+            planet_name, planet_constellation, reference_name, figure_constellation,
+        )
     elif target_star is not None and target_bayer and target_name and figure_constellation:
         title = f"{target_bayer}, {target_name} in {figure_constellation}"
     else:
