@@ -16,6 +16,8 @@ import unicodedata
 from collections import defaultdict
 from pathlib import Path
 
+from object_identity import identity_registry, require_fixed_object_id
+
 
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_CONSTELLATIONS = ROOT / "constellation-observance-2026.csv"
@@ -30,11 +32,6 @@ SOURCE_URL = (
 )
 SOURCE_COMMIT = "75d29c207bbd752023c447ddd1f9f4ff0eb47538"
 
-EXPECTED_ASTERISM_COUNT = 25
-FIGURELESS_ASTERISMS = {"Orion's Sword"}
-EXPECTED_ASTERISM_FIGURE_COUNT = (
-    EXPECTED_ASTERISM_COUNT - len(FIGURELESS_ASTERISMS)
-)
 
 
 def normalized(value: str) -> str:
@@ -317,7 +314,7 @@ def apply_named_subfigures(
 
 def read_asterism_paths(
     path: Path,
-) -> dict[str, list[list[str]]]:
+) -> dict[int, list[list[str]]]:
     payload = json.loads(path.read_text(encoding="utf-8"))
 
     if payload.get("schema_version") != 1:
@@ -327,29 +324,26 @@ def read_asterism_paths(
 
     raw_records = payload.get("asterisms")
 
-    if (
-        not isinstance(raw_records, dict)
-        or len(raw_records) != EXPECTED_ASTERISM_FIGURE_COUNT
-    ):
-        count = len(raw_records) if isinstance(raw_records, dict) else 0
-        raise RuntimeError(
-            f"Expected {EXPECTED_ASTERISM_FIGURE_COUNT} "
-            f"accepted asterism figures, found {count}"
-        )
-
-    records: dict[str, list[list[str]]] = {}
+    if not isinstance(raw_records, dict):
+        raise RuntimeError("Asterism path source must contain an identity-keyed record catalog")
+    expected = {record["id"] for record in identity_registry()["asterisms"]}
+    records: dict[int, list[list[str]]] = {}
 
     for name, record in raw_records.items():
-        raw_paths = (
-            record.get("paths")
-            if isinstance(record, dict)
-            else None
-        )
-
-        if not isinstance(raw_paths, list) or not raw_paths:
-            raise RuntimeError(
-                f"{name}: accepted figure has no paths"
-            )
+        if not isinstance(record, dict) or type(record.get("id")) is not int:
+            raise RuntimeError(f"{name}: missing permanent numeric asterism ID")
+        identifier = record["id"]
+        if identifier not in expected or identifier in records:
+            raise RuntimeError(f"{name}: unknown or duplicate permanent asterism ID {identifier}")
+        raw_paths = record.get("paths")
+        status = record.get("geometry_status")
+        if status == "no-figure":
+            if raw_paths != [] or not record.get("reason"):
+                raise RuntimeError(f"{name}: no-figure must have empty paths and an explicit reason")
+            records[identifier] = []
+            continue
+        if status != "accepted-paths" or not isinstance(raw_paths, list) or not raw_paths:
+            raise RuntimeError(f"{name}: accepted figure has no paths or explicit drawing status")
 
         paths: list[list[str]] = []
 
@@ -371,8 +365,10 @@ def read_asterism_paths(
                 [vertex.strip() for vertex in raw_path]
             )
 
-        records[name] = paths
+        records[identifier] = paths
 
+    if set(records) != expected:
+        raise RuntimeError(f"Asterism figure identities differ from registry: missing={sorted(expected - set(records))}, extra={sorted(set(records) - expected)}")
     return records
 
 
@@ -386,35 +382,25 @@ def asterism_records(
     ) as handle:
         rows = list(csv.DictReader(handle))
 
-    grouped: dict[str, list[dict[str, str]]] = defaultdict(list)
-
+    identities = identity_registry()["asterisms"]
+    by_name = {record["name"]: record for record in identities}
+    by_id = {record["id"]: record for record in identities}
+    grouped: dict[int, list[dict[str, str]]] = defaultdict(list)
     for row in rows:
         name = (row.get("asterism") or "").strip()
-        if name:
-            grouped[name].append(row)
-
-    if len(grouped) != EXPECTED_ASTERISM_COUNT:
-        raise RuntimeError(
-            f"Expected {EXPECTED_ASTERISM_COUNT} resolved asterisms, "
-            f"found {len(grouped)}"
-        )
-
+        if name not in by_name:
+            raise RuntimeError(f"Unknown asterism source label {name!r}")
+        grouped[by_name[name]["id"]].append(row)
+    if set(grouped) != set(by_id):
+        raise RuntimeError(f"Asterism member identities differ from registry: missing={sorted(set(by_id) - set(grouped))}, extra={sorted(set(grouped) - set(by_id))}")
     accepted_paths = read_asterism_paths(figure_path)
-
-    figureless = set(grouped) - set(accepted_paths)
-    extra = set(accepted_paths) - set(grouped)
-
-    if figureless != FIGURELESS_ASTERISMS or extra:
-        raise RuntimeError(
-            "Asterism figure/member mismatch: "
-            f"figureless={sorted(figureless)}, "
-            f"extra={sorted(extra)}"
-        )
 
     records: dict[str, dict[str, object]] = {}
 
-    for name, members in sorted(grouped.items()):
-        identifier = f"asterism-{slug(name)}"
+    for asterism_id, members in sorted(grouped.items()):
+        identity = by_id[asterism_id]
+        name = identity["name"]
+        identifier = identity["geometry_key"]
         vertices = []
 
         for row in members:
@@ -432,6 +418,7 @@ def asterism_records(
 
             vertices.append(
                 {
+                    "fixed_object_id": require_fixed_object_id(int(row["fixed_object_id"])),
                     "member": (
                         row.get("member") or ""
                     ).strip(),
@@ -446,8 +433,10 @@ def asterism_records(
                 }
             )
 
-        if name in FIGURELESS_ASTERISMS:
+        if not accepted_paths[asterism_id]:
             records[identifier] = {
+                "id": asterism_id,
+                "geometry_key": identifier,
                 "name": name,
                 "geometry_status": "no-figure",
                 "draw_policy": (
@@ -468,7 +457,7 @@ def asterism_records(
         paths = []
 
         for path_index, accepted_path in enumerate(
-            accepted_paths[name],
+            accepted_paths[asterism_id],
             1,
         ):
             resolved_path = []
@@ -486,6 +475,7 @@ def asterism_records(
 
                 resolved_path.append(
                     {
+                        "fixed_object_id": vertex["fixed_object_id"],
                         "member": member,
                         "catalog": vertex["catalog"],
                         "id": vertex["id"],
@@ -505,6 +495,8 @@ def asterism_records(
             )
 
         records[identifier] = {
+            "id": asterism_id,
+            "geometry_key": identifier,
             "name": name,
             "geometry_status": "accepted-paths",
             "draw_policy": (

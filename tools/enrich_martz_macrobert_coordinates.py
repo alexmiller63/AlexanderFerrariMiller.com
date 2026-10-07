@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Enrich accepted Martz/MacRobert HIP vertices with pinned HYG v4.1 coordinates.
+"""Enrich accepted HIP vertices from pinned HYG and preserved Hipparcos data.
 
 This stage adds only catalog facts (RA, Dec, magnitude) to already-accepted
 vertices. It never changes, adds, removes, or infers figure edges.
@@ -13,6 +13,7 @@ from pathlib import Path
 
 
 HYG_COMMIT = "3bf37f4b2d5460e1278286320d1d62fab9b493c1"
+HIPPARCOS_CACHE = Path(__file__).resolve().parents[1] / "reference-data/hipparcos/figure-stars.csv"
 HYG_URL = (
     "https://raw.githubusercontent.com/astronexus/HYG-Database/"
     f"{HYG_COMMIT}/hyg/CURRENT/hygdata_v41.csv"
@@ -41,6 +42,27 @@ def load_hyg(path: Path) -> dict[int, dict[str, float]]:
             stars[hip] = record
     if not stars:
         raise RuntimeError("No Hipparcos stars loaded from HYG catalog")
+    return stars
+
+
+def load_coordinates(hyg: Path, hipparcos_cache: Path) -> dict[int, dict]:
+    """Keep HYG facts; fill missing HIP identities from the preserved subset."""
+    stars = load_hyg(hyg)
+    if not hipparcos_cache.is_file():
+        return stars
+    seen = set()
+    with hipparcos_cache.open(newline="", encoding="utf-8") as handle:
+        for row in csv.DictReader(handle):
+            hip = int(row["hip"])
+            if hip in seen:
+                raise RuntimeError(f"Duplicate cached HIP identity {hip}")
+            seen.add(hip)
+            if hip not in stars:
+                stars[hip] = {
+                    "ra_h": float(row["ra_h"]),
+                    "dec_deg": float(row["dec_deg"]),
+                    "coordinate_source": "reference-data/hipparcos/figure-stars.csv",
+                }
     return stars
 
 
@@ -76,10 +98,17 @@ def enrich(payload: dict, stars: dict[int, dict[str, float]]) -> dict:
                         f"{abbr}/{subfigure.get('id')} path {path_index} vertex {vertex_index}",
                     )
 
+    for key, record in (payload.get("asterisms") or {}).items():
+        for path_index, path in enumerate(record.get("paths") or [], 1):
+            for vertex_index, vertex in enumerate(path, 1):
+                enrich_vertex(vertex, stars, f"{key} path {path_index} vertex {vertex_index}")
+
     provenance = payload.setdefault("provenance", {})
     provenance["stellar_coordinate_source"] = HYG_URL
     provenance["stellar_coordinate_source_commit"] = HYG_COMMIT
     provenance["stellar_coordinate_frame"] = "HYG v4.1 catalog RA/Dec (J2000-era catalog coordinates)"
+    if any(facts.get("coordinate_source") for facts in stars.values()):
+        provenance["stellar_coordinate_fallback_source"] = "reference-data/hipparcos/figure-stars.csv"
     return payload
 
 
@@ -87,11 +116,12 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--registry", type=Path, required=True)
     parser.add_argument("--hyg", type=Path, required=True)
+    parser.add_argument("--hipparcos-cache", type=Path, default=HIPPARCOS_CACHE)
     parser.add_argument("--check", action="store_true")
     args = parser.parse_args()
 
     payload = json.loads(args.registry.read_text(encoding="utf-8"))
-    stars = load_hyg(args.hyg)
+    stars = load_coordinates(args.hyg, args.hipparcos_cache)
     rendered = json.dumps(enrich(payload, stars), indent=2, ensure_ascii=False) + "\n"
 
     if args.check:

@@ -9,6 +9,10 @@ on:
       - 'constellation-observance-2026.csv'
       - 'asterism-member-coordinates.csv'
       - 'asterism-figure-paths.json'
+      - 'descriptor-identities.json'
+      - 'reference-data/hipparcos/figure-stars.csv'
+      - 'tools/object_identity.py'
+      - 'tools/test_asterism_geometry.py'
       - 'constellation-named-subfigures.json'
       - '.github/workflows/build-martz-macrobert-registry.yml'
 
@@ -38,6 +42,9 @@ jobs:
           curl -fL \
             https://raw.githubusercontent.com/astronexus/HYG-Database/3bf37f4b2d5460e1278286320d1d62fab9b493c1/hyg/CURRENT/hygdata_v41.csv \
             -o /tmp/hygdata_v41.csv
+
+      - name: Verify permanent asterism identities and accepted paths
+        run: python tools/test_asterism_geometry.py
 
       - name: Build accepted geometry registry
         run: python tools/build_martz_macrobert_registry.py --source /tmp/constellation_lines_iau.dat
