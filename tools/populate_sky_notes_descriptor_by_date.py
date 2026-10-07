@@ -508,7 +508,8 @@ function setMode(mode){
 buttons.forEach(b=>b.addEventListener('click',()=>setMode(b.dataset.skyNoteMode)));
 setMode('wordy');
 })();</script>'''
-    kilroy = (\n        '<p class="sky-note-kilroy" data-kilroy="sky-notes" '
+    kilroy = (
+        '<p class="sky-note-kilroy" data-kilroy="sky-notes" '
         'style="font-family:system-ui,sans-serif;font-size:.75rem;opacity:.72">'
         'Kilroy: Sky Notes · generated ' + datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S UTC') + '</p>'
     )
