@@ -296,6 +296,13 @@ def place_label(ax, label, point, occupied_labels, color=TEXT, fontsize=9, zorde
     return annotation
 
 
+def marker_obstacle_bbox(ax, point, area, linewidth, clearance_points=4):
+    """Reserve a scatter circle's outer stroke plus readable space in display pixels."""
+    x, y = ax.transData.transform(point)
+    radius = (math.sqrt(area) / 2 + linewidth / 2 + clearance_points) * ax.figure.dpi / 72
+    return Bbox.from_extents(x - radius, y - radius, x + radius, y + radius)
+
+
 def place_target_label(ax, label, point, occupied_labels, obstacle_segments=(),
                        marker_radius_points=0):
     """Place the target label in the nearest genuinely clear area."""
@@ -796,7 +803,11 @@ def render(spec: dict, stars, output: Path) -> None:
                 figure_refs.append(ref)
     figure_constellation = spec.get("name") or ""
     figure_abbreviation = str(target_meta.get("constellation_abbreviation") or "").strip()
-    occupied_labels = []
+    # Reserve every visible deep-sky circle before placing any text.  A label
+    # must clear its own marker and neighboring catalog objects alike.
+    fig.canvas.draw()
+    occupied_labels = [marker_obstacle_bbox(ax, item["point"], 42, 1.1)
+                       for item in deep_sky]
     figure_points = []
     figure_segments = []
     for path in figure_paths + guide_paths + ambient_paths:
@@ -822,9 +833,13 @@ def render(spec: dict, stars, output: Path) -> None:
             if ref not in seen_guides:
                 seen_guides.add(ref)
                 guide_refs.append(ref)
+    labeled_star_ids = set()
     for ref in figure_refs + guide_refs:
         star = idx[ref]
         identity = identities_by_ref[ref]
+        fixed_id = identity["fixed_object_id"]
+        if fixed_id in labeled_star_ids:
+            continue
         point = project(star.ra_deg, star.dec_deg, *center)
         if point is None:
             continue
@@ -833,6 +848,7 @@ def render(spec: dict, stars, output: Path) -> None:
         label = chart_bayer_label(identity, star, figure_abbreviation)
         if label:
             place_label(ax, label, point, occupied_labels, obstacle_segments=figure_segments + asterism_segments)
+            labeled_star_ids.add(fixed_id)
     for item in deep_sky:
         place_label(
             ax, " / ".join(item["labels"]), item["point"], occupied_labels,
