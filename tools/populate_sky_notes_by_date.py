@@ -69,13 +69,13 @@ CONSTELLATION_NAMES = {
     "Vir": "Virgo", "Vol": "Volans", "Vul": "Vulpecula",
 }
 ASTERISMS = {
-    "Ori": {"name": "Orion’s Belt", "members": ("Mintaka", "Alnilam", "Alnitak")},
-    "Peg": {"name": "Great Square of Pegasus", "members": ("Markab", "Scheat", "Algenib", "Alpheratz")},
-    "UMa": {"name": "Big Dipper", "members": ("Dubhe", "Merak", "Phecda", "Megrez", "Alioth", "Mizar", "Alkaid")},
-    "Cyg": {"name": "Northern Cross", "members": ("Deneb", "Sadr", "Gienah", "Albireo")},
+    "Ori": {"id": "asterism-orion-s-belt", "name": "Orion’s Belt", "members": ("Mintaka", "Alnilam", "Alnitak")},
+    "Peg": {"id": "asterism-great-square-of-pegasus", "name": "Great Square of Pegasus", "members": ("Markab", "Scheat", "Algenib", "Alpheratz")},
+    "UMa": {"id": "asterism-big-dipper", "name": "Big Dipper", "members": ("Dubhe", "Merak", "Phecda", "Megrez", "Alioth", "Mizar", "Alkaid")},
+    "Cyg": {"id": "asterism-northern-cross", "name": "Northern Cross", "members": ("Deneb", "Sadr", "Gienah", "Albireo")},
     "Sgr": {"id": "asterism-teapot-of-sagittarius", "name": "Teapot of Sagittarius", "members": ("Kaus Australis", "Kaus Media", "Kaus Borealis", "Nunki", "Ascella")},
-    "Leo": {"name": "Sickle", "members": ("Regulus", "Algieba", "Adhafera")},
-    "Aqr": {"name": "Water Jar", "members": ("Sadalmelik", "Sadalsuud", "Sadachbia", "Skat")},
+    "Leo": {"id": "asterism-sickle-of-leo", "name": "Sickle", "members": ("Regulus", "Algieba", "Adhafera")},
+    "Aqr": {"id": "asterism-water-jar", "name": "Water Jar", "members": ("Sadalmelik", "Sadalsuud", "Sadachbia", "Skat")},
 }
 
 # Observer-facing constellation shape cues are data used by the generator, not
