@@ -104,21 +104,57 @@ def projected_path(points, center):
     return [p for p in (project(ra, dec, *center) for ra, dec in points) if p is not None]
 
 
+def ecliptic_coordinates():
+    """J2000 mean ecliptic in the coordinate catalog's equatorial frame."""
+    obliquity = math.radians(23.439291111)
+    for degree in range(721):
+        longitude = math.radians(degree / 2)
+        yield (math.degrees(math.atan2(math.cos(obliquity) * math.sin(longitude),
+                                      math.cos(longitude))) % 360,
+               math.degrees(math.asin(math.sin(obliquity) * math.sin(longitude))))
+
+
+def include_nearby_ecliptic(center, planet_point, xmin, xmax, ymin, ymax):
+    """Include useful nearby ecliptic context with at most 25% linear growth."""
+    original = (xmin, xmax, ymin, ymax)
+    if planet_point is None:
+        return original
+    # No growth is needed when the ecliptic already crosses the frame.
+    if sky_reference_segments(center, *original)[1][3]:
+        return original
+    points = projected_path(ecliptic_coordinates(), center)
+    if not points:
+        return original
+    base_span = max(xmax - xmin, ymax - ymin)
+    margin = base_span * 0.04
+    # Prefer the smallest extension that reveals the ecliptic in this field;
+    # use proximity to the body to break ties, rather than pulling in a distant
+    # point along the same great circle.
+    def framing_cost(point):
+        width = max(xmax, point[0] + margin) - min(xmin, point[0] - margin)
+        height = max(ymax, point[1] + margin) - min(ymin, point[1] - margin)
+        return (max(width, height), math.hypot(point[0] - planet_point[0],
+                                             point[1] - planet_point[1]))
+    nearest = min(points, key=framing_cost)
+    left, right = min(xmin, nearest[0] - margin), max(xmax, nearest[0] + margin)
+    bottom, top = min(ymin, nearest[1] - margin), max(ymax, nearest[1] + margin)
+    span = max(right - left, top - bottom)
+    if span > base_span * 1.25:
+        return original
+    xmid, ymid = (left + right) / 2, (bottom + top) / 2
+    return (xmid - span / 2, xmid + span / 2,
+            ymid - span / 2, ymid + span / 2)
+
+
 def sky_reference_segments(center, xmin, xmax, ymin, ymax):
     """Clip J2000 equator/ecliptic to the existing finder frame."""
-    obliquity = math.radians(23.439291111)
     result = []
     for name, color, style in (("Celestial equator", "#71cbd1", "--"),
                                ("Ecliptic", "#e6a36b", "-.")):
         points = []
-        for degree in range(721):
-            longitude = math.radians(degree / 2)
-            if name == "Ecliptic":
-                ra = math.degrees(math.atan2(math.cos(obliquity) * math.sin(longitude),
-                                            math.cos(longitude))) % 360
-                dec = math.degrees(math.asin(math.sin(obliquity) * math.sin(longitude)))
-            else:
-                ra, dec = degree / 2, 0.0
+        coordinates = (ecliptic_coordinates() if name == "Ecliptic"
+                       else ((degree / 2, 0.0) for degree in range(721)))
+        for ra, dec in coordinates:
             points.append(project(ra, dec, *center))
         segments = []
         for start, end in zip(points, points[1:]):
@@ -985,6 +1021,10 @@ def render(spec: dict, stars, output: Path) -> None:
         xmid, ymid = (xmin + xmax) / 2, (ymin + ymax) / 2
         xmin, xmax = xmid - field_span / 2, xmid + field_span / 2
         ymin, ymax = ymid - field_span / 2, ymid + field_span / 2
+        if has_planet:
+            xmin, xmax, ymin, ymax = include_nearby_ecliptic(
+                center, planet_point, xmin, xmax, ymin, ymax,
+            )
     # Ambient figures and asterisms enter only after framing. They supply
     # clipped context for every finder, including moving bodies, without
     # changing the navigation route, projection center, padding or bounds.
