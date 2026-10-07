@@ -823,6 +823,10 @@ def render(spec: dict, stars, output: Path) -> None:
     target_const = str(target_meta.get("constellation_abbreviation") or "").strip()
     target_bayer = " ".join(part for part in (target_greek, target_const) if part)
     target_chart_label = ", ".join(part for part in (target_bayer, target_name) if part)
+    # Split long guide-star names so their labels can sit next to the ring
+    # without moving across the field to find room for one wide line.
+    if has_planet and target_bayer and len(target_name) >= 12:
+        target_chart_label = f"{target_bayer}\n{target_name}"
     if not target_chart_label:
         target_chart_label = str(target_identity.get("name") or "Target")
     place_target_label(
