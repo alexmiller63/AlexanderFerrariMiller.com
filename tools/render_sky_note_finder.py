@@ -103,7 +103,47 @@ def projected_path(points, center):
 
 
 def path_hits_view(points, xmin, xmax, ymin, ymax):
-    return any(xmin <= x <= xmax and ymin <= y <= ymax for x, y in points)
+    if any(p is not None and xmin <= p[0] <= xmax and ymin <= p[1] <= ymax for p in points):
+        return True
+    return any(clip_view_segment(a, b, xmin, xmax, ymin, ymax) is not None
+               for a, b in zip(points, points[1:]) if a is not None and b is not None)
+
+
+def clip_view_segment(start, end, xmin, xmax, ymin, ymax):
+    """Clip a segment to the fixed frame, including crossings with both ends outside."""
+    dx, dy = end[0] - start[0], end[1] - start[1]
+    low, high = 0.0, 1.0
+    for direction, distance in ((-dx, start[0] - xmin), (dx, xmax - start[0]),
+                                (-dy, start[1] - ymin), (dy, ymax - start[1])):
+        if direction == 0:
+            if distance < 0:
+                return None
+            continue
+        ratio = distance / direction
+        if direction < 0:
+            low = max(low, ratio)
+        else:
+            high = min(high, ratio)
+        if low > high:
+            return None
+    return ((start[0] + low * dx, start[1] + low * dy),
+            (start[0] + high * dx, start[1] + high * dy))
+
+
+def visible_context(records, idx, center, xmin, xmax, ymin, ymax):
+    """Select supplied geometry only after the route has fixed the chart bounds."""
+    visible = []
+    for record in records:
+        paths = []
+        for path in record.get("paths") or []:
+            if any(ref not in idx for ref in path):
+                continue
+            points = [project(idx[ref].ra_deg, idx[ref].dec_deg, *center) for ref in path]
+            if path_hits_view(points, xmin, xmax, ymin, ymax):
+                paths.append(path)
+        if paths:
+            visible.append(dict(record, paths=paths))
+    return visible
 
 
 def point_segment_distance(point, start, end):
@@ -684,6 +724,24 @@ def render(spec: dict, stars, output: Path) -> None:
         pad = max(3.5, span * 0.24)
     xmin, xmax = min(xs) - pad, max(xs) + pad
     ymin, ymax = min(ys) - pad, max(ys) + pad
+    # Ambient figures and asterisms enter only after framing. They supply
+    # clipped context for every finder, including moving bodies, without
+    # changing the navigation route, projection center, padding or bounds.
+    drawn_names = {spec.get("name"), *(guide.get("name") for guide in guide_constellations)}
+    ambient_figures = [
+        item for item in visible_context(spec.get("candidate_constellations") or [], idx, center,
+                                        xmin, xmax, ymin, ymax)
+        if item.get("name") not in drawn_names
+    ]
+    ambient_paths = [path for item in ambient_figures for path in item["paths"]]
+    asterism_keys = {item.get("id") or item.get("name") for item in asterisms}
+    for item in visible_context(spec.get("candidate_asterisms") or [], idx, center,
+                                xmin, xmax, ymin, ymax):
+        key = item.get("id") or item.get("name")
+        if key not in asterism_keys:
+            asterisms.append(item)
+            asterism_keys.add(key)
+            labeled_asterism_names.add(str(item.get("name") or ""))
     visible = []
     for star in stars:
         if star.mag > 7:
@@ -702,6 +760,8 @@ def render(spec: dict, stars, output: Path) -> None:
     for path in figure_paths:
         draw_path(ax, path, idx, center, FIGURE_BLUE, 2.7)
     for path in guide_paths:
+        draw_path(ax, path, idx, center, FIGURE_BLUE, 2.2)
+    for path in ambient_paths:
         draw_path(ax, path, idx, center, FIGURE_BLUE, 2.2)
 
     # Deep-sky catalog objects are selected geometrically from the actual
@@ -739,7 +799,7 @@ def render(spec: dict, stars, output: Path) -> None:
     occupied_labels = []
     figure_points = []
     figure_segments = []
-    for path in figure_paths:
+    for path in figure_paths + guide_paths + ambient_paths:
         path_points = [project(idx[ref].ra_deg, idx[ref].dec_deg, *center) for ref in path]
         path_points = [point for point in path_points if point is not None]
         figure_segments.extend(zip(path_points, path_points[1:]))
@@ -748,22 +808,6 @@ def render(spec: dict, stars, output: Path) -> None:
         point = project(star.ra_deg, star.dec_deg, *center)
         if point is not None:
             figure_points.append(point)
-    # Candidate asterisms are ambient context for fixed-object finders only.
-    # A moving-body finder must obey its selected finder route exactly: when
-    # upstream chose constellation-stick-figure, do not reintroduce a nearby
-    # asterism merely because some of its geometry intersects the field.
-    if not has_planet:
-        for candidate in spec.get("candidate_asterisms") or []:
-            visible_paths = []
-            for path in candidate.get("paths") or []:
-                if any(ref not in idx for ref in path):
-                    continue
-                points = [project(idx[ref].ra_deg, idx[ref].dec_deg, *center) for ref in path]
-                points = [point for point in points if point is not None]
-                if path_hits_view(points, xmin, xmax, ymin, ymax):
-                    visible_paths.append(path)
-            if visible_paths:
-                asterisms.append(dict(candidate, paths=visible_paths))
     asterism_segments = []
     for asterism in asterisms:
         for path in asterism.get("paths") or []:
@@ -811,7 +855,7 @@ def render(spec: dict, stars, output: Path) -> None:
                 obstacle_segments=figure_segments + asterism_segments + boundary_segments,
                 boundary_points=figure_region,
             )
-    for guide in guide_constellations:
+    for guide in guide_constellations + ambient_figures:
         guide_name = str(guide.get("name") or guide.get("abbreviation") or "").strip()
         points = []
         for path in guide.get("paths") or []:
@@ -858,7 +902,9 @@ def render(spec: dict, stars, output: Path) -> None:
             points, obstacle_segments=boundary_segments,
             color=BOUNDARY_WHITE, fontsize=10, zorder=5,
         )
-    if has_planet and planet_abbreviation != home_abbreviation:
+    drawn_abbreviations = {str(item.get("abbreviation") or "")
+                           for item in guide_constellations + ambient_figures}
+    if has_planet and planet_abbreviation != home_abbreviation and planet_abbreviation not in drawn_abbreviations:
         planet_boundary = next(
             points for _, abbreviation, points in projected_boundaries
             if abbreviation == planet_abbreviation and MplPath(points).contains_point(planet_point)
@@ -884,7 +930,7 @@ def render(spec: dict, stars, output: Path) -> None:
             for ref in path:
                 if ref in idx:
                     point = project(idx[ref].ra_deg, idx[ref].dec_deg, *center)
-                    if point is not None:
+                    if point is not None and xmin <= point[0] <= xmax and ymin <= point[1] <= ymax:
                         asterism_points.append(point)
                         # Asterisms are recognition landmarks, so their named
                         # member stars must remain recognizable too.  This is a
