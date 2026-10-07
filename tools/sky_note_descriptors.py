@@ -671,7 +671,8 @@ def decorate_note_html(rendered_html: str, records: list[dict], weekly_fixed_ids
     # This is prose enrichment only; it is not a cap on object linking above.
     if inline_count < 4:
         paragraph_labels = ("<strong>Planets:</strong>", "<strong>Binoculars:</strong>", "<strong>Small telescope:</strong>", "<strong>Naked eye:</strong>")
-        remaining = [record for record in ordered if record["id"] not in used_ids]
+        remaining = [record for record in ordered if record["id"] not in used_ids
+                     and record.get("type") not in {"planet", "solar-system-object"}]
         for label in paragraph_labels:
             if inline_count >= 4 or not remaining:
                 break

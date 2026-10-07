@@ -45,6 +45,19 @@ jobs:
         with:
           python-version: '3.12'
 
+      - uses: actions/cache@v4
+        with:
+          path: |
+            .cache/skyfield/de440s.bsp
+            .cache/skyfield/ceres_1900_2100.bsp
+          key: star-almanack-source-kernels-v1
+
+      - name: Install calculation dependency
+        run: python -m pip install --disable-pip-version-check 'skyfield==1.55'
+
+      - name: Prepare cached ephemeris kernels
+        run: python tools/ensure_ephemeris_kernels.py --ceres
+
       - name: Resolve ISO week range
         id: range
         run: |
@@ -64,9 +77,11 @@ jobs:
             tools/populate_sky_notes_by_date.py \
             tools/fixed_object_stories.py \
             tools/sky_note_descriptors.py \
-            tools/object_identity.py
+            tools/object_identity.py \
+            tools/planet_weekly_facts.py
           echo "Sky Notes generator sources compile cleanly."
           python tools/test_sky_note_identities.py
+          python tools/test_planet_weekly_facts.py
 
       - name: Generate descriptor-first Sky Notes
         run: python tools/populate_sky_notes_descriptor_by_date.py "${{ steps.range.outputs.start_date }}" "${{ steps.range.outputs.end_date }}"

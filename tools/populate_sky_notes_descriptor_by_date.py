@@ -13,6 +13,7 @@ from almanack_paths import week_index
 from iso_date_range import group_by_year, parse_range_args
 from star_almanack_planets import load_weekly_longitudes
 import populate_sky_notes_by_date as base
+from planet_weekly_facts import build_weekly_facts
 from fixed_object_stories import available_stories, reader_story_url
 from sky_note_descriptors import build_descriptors, decorate_note_html, lunar_highlight_descriptors, write_descriptor_records
 
@@ -402,27 +403,29 @@ def generated_note(year: int, week: int, page_path, yearly, stars: list[dict]) -
     payload.pop("planet_finder_artwork", None)
     payload.pop("artwork", None)
     payload["descriptor_policy"] = descriptor_policy()
+    facts = build_weekly_facts(year, week, page_path, payload["planet_finder_relations"], base.PLANET_OBJECT_IDS)
+    payload["planet_weekly_facts"] = facts
+    planet_summary = " ".join(f"{item['name']}: {item['dek']}" for item in facts.values())
+    payload["note"] = re.sub(r"\*\*Planets:\*\*[^\n]*", "**Planets:** " + planet_summary, payload["note"])
     return payload
 
 
 
-def render_planet_treatments(payload: dict) -> str:
+def render_planet_treatments(payload: dict, *, highlights: bool = False) -> str:
     """Render reader-facing prose destinations owned by permanent numeric object identity."""
     blocks = []
-    relations = payload.get("planet_relations") or []
     for descriptor in payload.get("planet_finder_artworks") or []:
         object_id = descriptor.get("object_id")
         route = descriptor.get("finder_route") or {}
         planet = str(route.get("planet") or "").strip()
         if not isinstance(object_id, int) or not planet:
             continue
-        related = [item for item in relations if item.get("planet") == planet]
-        prose = " ".join(base.relation_sentence(item) for item in related)
-        if not prose:
-            prose = (
-                f"No weekly orbital-condition narrative has been generated for {planet} yet. "
-                "This is missing reader content, not a substitute observing description."
-            )
+        facts = (payload.get("planet_weekly_facts") or {}).get(object_id)
+        if facts is None:
+            facts = (payload.get("planet_weekly_facts") or {}).get(str(object_id))
+        if not facts:
+            raise RuntimeError(f"Missing weekly observing facts for permanent object {object_id}")
+        prose = facts["dek"] if highlights else facts["body"]
         rendering_id = str(descriptor.get("id") or "")
         week_key = str(descriptor.get("week") or "")
         match = re.fullmatch(r"(\d{4})-(W\d{2})", week_key)
@@ -433,11 +436,11 @@ def render_planet_treatments(payload: dict) -> str:
             f"{match.group(2)}/{object_id}.svg"
         )
         blocks.append(
-            f'<section class="sky-note-object-treatment" id="sky-note-object-{object_id}" '
+            f'<section class="sky-note-object-treatment" id="sky-note-object-{object_id}{'-highlight' if highlights else ''}" '
             f'data-object-id="{object_id}" data-rendering-id="{html.escape(rendering_id, quote=True)}">'
             f'<h4>{html.escape(planet)}</h4>'
             f'<p>{html.escape(prose)} '
-            f'<a class="planet-pathfinder-link" href="{finder_href}">Find {html.escape(planet)} with the Pathfinder.</a></p>'
+            f'<a class="planet-pathfinder-link planet-weekly-facts-link" href="{finder_href}">{html.escape(planet)}: {facts["guide_separation_deg"]:.1f}° from {html.escape(facts["guide_star"])} in the Pathfinder.</a></p>'
             '</section>'
         )
     return "\n".join(blocks)
@@ -489,7 +492,7 @@ def patch_page(path, payload: dict) -> bool:
         'style="border:0;border-left:1px solid currentColor;border-radius:0 999px 999px 0;padding:.35rem .7rem">Wordy</button>'
         '</div>'
     )
-    highlights = render_linked_stories(payload.get("linked_stories", []))
+    highlights = render_planet_treatments(payload, highlights=True) + render_linked_stories(payload.get("linked_stories", []))
     if not highlights:
         highlights = '<p class="sky-note-highlights-empty">No linked Sky Note stories are available for this week.</p>'
     script = '''<script id="sky-note-mode-script">(function(){
@@ -531,7 +534,6 @@ setMode('wordy');
 def main() -> None:
     start, end, weeks = parse_range_args("Create descriptor-first Star Almanack Sky Notes by inclusive ISO date range")
     stars = base.load_bright_stars()
-    metadata = fixed_object_metadata()
     grouped = group_by_year(weeks)
     yearly = {year: load_weekly_longitudes(year) for year in grouped}
     changed = 0
@@ -542,31 +544,8 @@ def main() -> None:
         if not public_page.exists():
             raise RuntimeError(f"Missing weekly page: {public_page.relative_to(base.ROOT)}")
 
-        payload = base.generated_note(item.year, item.week, public_page, yearly[item.year], stars)
-        fixed_ids = calendar_fixed_object_ids(public_page)
-        fixed = fixed_sky_from_ids(fixed_ids, metadata)
-        payload["fixed_sky"] = fixed
-        payload["note"] = observer_note(item.year, item.week, public_page, fixed, payload["planet_relations"])
-        payload["descriptors"] = build_descriptors(
-            fixed, payload["planet_relations"], stars, base.CONSTELLATION_NAMES, base.ASTERISMS
-        )
-        payload["descriptors"].extend(lunar_highlight_descriptors(public_page))
-        candidates = story_candidates(fixed_ids)
-        inline, linked = story_presentations(candidates)
-        linked = suppress_already_mentioned_stories(public_page, linked)
-        payload["calendar_fixed_object_ids"] = fixed_ids
-        payload["story_candidates"] = candidates
-        payload["inline_stories"] = inline
-        payload["linked_stories"] = linked
-        payload["stories"] = candidates
-        # Fixed-object artwork remains immutable/object-owned. Planet finder
-        # artwork is generated explicitly because base.generated_note() intentionally
-        # does not emit legacy week-owned artwork.
-        weekly_artworks = base.planetary_artwork_descriptors(item.year, item.week, fixed, payload["planet_finder_relations"])
-        payload["planet_finder_artworks"] = weekly_artworks
-        payload.pop("planet_finder_artwork", None)
-        payload.pop("artwork", None)
-        payload["descriptor_policy"] = descriptor_policy()
+        payload = generated_note(item.year, item.week, public_page, yearly[item.year], stars)
+        fixed_ids = payload["calendar_fixed_object_ids"]
         descriptor_ids = {str(record["id"]) for record in payload["descriptors"]}
         missing_descriptor_ids = [str(fixed_id) for fixed_id in fixed_ids if str(fixed_id) not in descriptor_ids]
         if missing_descriptor_ids:
