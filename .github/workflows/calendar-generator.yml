@@ -105,5 +105,15 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add almanack/ database/fixed-sky-annual-coverage.json generated/calendar-*.json generated/expanded-bayer-visibility-*.csv generated/bright-star-visibility-*.csv generated/messier-visibility-*.csv
           git commit -m "Populate Almanack calendar ${{ inputs.start_year }}-W${{ inputs.start_week }}"
-          git pull --rebase origin main
-          git push
+          # Minute-log updates can advance main between pull and push.
+          # Preserve generated changes by rebasing and retrying without force.
+          for attempt in 1 2 3 4 5; do
+            git pull --rebase origin main
+            if git push origin HEAD:main; then
+              exit 0
+            fi
+            echo "main moved during push; retrying ($attempt/5)..."
+            sleep $((attempt * 2))
+          done
+          echo "::error::Could not save generated changes after 5 rebase/retry attempts."
+          exit 1
