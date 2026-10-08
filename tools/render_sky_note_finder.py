@@ -910,6 +910,10 @@ def star_notation_labels(identity, star, figure_abbreviation, target=False):
     mixed = f"{symbol} — {latin}" if symbol and latin else (symbol or latin)
     if target and symbol and len(latin) >= 12:
         mixed = f"{symbol}\n{latin}"
+    constellation = str(identity.get("constellation_abbreviation") or star.con or "").strip()
+    if constellation == "Psc" and bayer_label(identity, star).split()[0:1] == ["β"]:
+        separator = "\n" if target else " — "
+        mixed = "Beta Piscium" + (separator + proper if proper else "")
     return {"greek": symbol or latin, "latin": latin, "mixed": mixed}
 
 
@@ -1732,4 +1736,5 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+
 

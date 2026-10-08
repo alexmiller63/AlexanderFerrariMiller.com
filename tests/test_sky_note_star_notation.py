@@ -9,6 +9,7 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from matplotlib.transforms import Bbox
+from tools.constellation_names import constellation_names
 
 from tools.render_sky_note_finder import (
     add_constellation_notation, marker_obstacle_bbox, place_star_notation, place_body_notation, place_ecliptic_notation,
@@ -63,8 +64,17 @@ class StarNotationTests(unittest.TestCase):
         labels = star_notation_labels(self.identity, self.star, "Psc", target=True)
         self.assertEqual(labels["greek"], "β")
         self.assertEqual(labels["latin"], "Fumalsamakah")
-        self.assertIn("β", labels["mixed"])
-        self.assertIn("Fumalsamakah", labels["mixed"])
+        self.assertEqual(labels["mixed"], "Beta Piscium\nFumalsamakah")
+
+    def test_pisces_keeps_its_name_in_mixed_mode(self):
+        identity, names = constellation_names("Pisces", "Psc")
+        self.assertEqual(identity, "Psc")
+        self.assertEqual(names["mixed"], "Pisces")
+
+    def test_beta_piscium_mixed_label_retains_designation_without_proper_name(self):
+        identity = dict(self.identity, proper_name="")
+        star = SimpleNamespace(proper="", bayer="Bet", con="Psc")
+        self.assertEqual(star_notation_labels(identity, star, "Psc")["mixed"], "Beta Piscium")
 
     def test_each_variant_clears_ring_and_reserved_text(self):
         point = (0.5, 0.5)
@@ -153,3 +163,4 @@ class StarNotationTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
