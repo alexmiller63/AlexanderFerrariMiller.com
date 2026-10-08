@@ -57,5 +57,5 @@ def constellation_names(name, abbreviation=""):
     if abbr is None:
         raise ValueError(f"Unknown constellation identity: {name!r}, {abbreviation!r}")
     return abbr, {"greek": ENGLISH[abbr], "latin": ENGLISH[abbr],
-                  "mixed": ENGLISH[abbr] if abbr == "Psc" else GREEK_GENITIVE[abbr]}
+                  "mixed": ENGLISH[abbr]}
 

@@ -66,10 +66,19 @@ class StarNotationTests(unittest.TestCase):
         self.assertEqual(labels["latin"], "Fumalsamakah")
         self.assertEqual(labels["mixed"], "Beta Piscium\nFumalsamakah")
 
-    def test_pisces_keeps_its_name_in_mixed_mode(self):
-        identity, names = constellation_names("Pisces", "Psc")
-        self.assertEqual(identity, "Psc")
-        self.assertEqual(names["mixed"], "Pisces")
+    def test_constellations_use_english_names_in_mixed_mode(self):
+        for name, abbreviation, expected in (
+            ("Pisces", "Psc", "Pisces"),
+            ("Pegasus", "Peg", "Pegasus"),
+            ("Cetus", "Cet", "Cetus"),
+            ("Aquarius", "Aqr", "Aquarius"),
+            ("Capricornus", "Cap", "Capricorn"),
+            ("Delphinus", "Del", "Dolphin"),
+        ):
+            with self.subTest(constellation=abbreviation):
+                identity, names = constellation_names(name, abbreviation)
+                self.assertEqual(identity, abbreviation)
+                self.assertEqual(names["mixed"], expected)
 
     def test_beta_piscium_mixed_label_retains_designation_without_proper_name(self):
         identity = dict(self.identity, proper_name="")
