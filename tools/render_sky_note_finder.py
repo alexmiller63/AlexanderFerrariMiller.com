@@ -29,6 +29,7 @@ if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
 from render_stellar_finders import greek_bayer_symbol, load_hyg, marker_area, project, spherical_center, star_index
+from tools.constellation_names import constellation_names
 
 NIGHT = "#071423"
 STAR = "#f7f7f2"
@@ -233,6 +234,102 @@ def make_svg_responsive(output):
         return root[:-1] + ' style="display:block;width:100%;height:auto" preserveAspectRatio="xMidYMid meet">'
     text = re.sub(r'<svg\b[^>]*>', resize, text, count=1)
     output.write_text(text, encoding="utf-8")
+
+
+def add_constellation_notation(output):
+    """Keep all naming modes in one standalone SVG with no extra render pass."""
+    import xml.etree.ElementTree as ET
+    ns = "http://www.w3.org/2000/svg"
+    ET.register_namespace("", ns)
+    ET.register_namespace("xlink", "http://www.w3.org/1999/xlink")
+    tree = ET.parse(output)
+    root = tree.getroot()
+    root.set("data-notation-mode", "greek")
+    style = ET.SubElement(root, f"{{{ns}}}style")
+    style.text = '''
+    [id^="constellation-"][id$="-latin"],
+    [id^="constellation-"][id$="-mixed"] { display:none }
+    svg[data-notation-mode="latin"] [id^="constellation-"][id$="-greek"],
+    svg[data-notation-mode="mixed"] [id^="constellation-"][id$="-greek"] { display:none }
+    svg[data-notation-mode="latin"] [id^="constellation-"][id$="-latin"],
+    svg[data-notation-mode="mixed"] [id^="constellation-"][id$="-mixed"] { display:inline }
+    [data-notation-choice] { cursor:pointer; fill:#f3f5f7 }
+    [data-notation-choice][aria-pressed="true"] { fill:#ffd84d; text-decoration:underline }
+    '''
+    x, y, width, height = map(float, root.get("viewBox").split())
+    root.set("viewBox", f"{x} {y} {width} {height + 30}")
+    ET.SubElement(root, f"{{{ns}}}rect", {
+        "x": str(x), "y": str(y + height), "width": str(width),
+        "height": "30", "fill": NIGHT,
+    })
+    for fraction, mode, label in ((.2, "greek", "Greek / Symbols"),
+                                   (.5, "latin", "Latin"), (.8, "mixed", "Mixed")):
+        button = ET.SubElement(root, f"{{{ns}}}text", {
+            "x": str(x + width * fraction), "y": str(y + height + 19),
+            "text-anchor": "middle", "font-size": "11", "font-family": "sans-serif",
+            "role": "button", "tabindex": "0", "data-notation-choice": mode,
+            "aria-pressed": "true" if mode == "greek" else "false",
+        })
+        button.text = label
+    script = ET.SubElement(root, f"{{{ns}}}script", {"type": "application/ecmascript"})
+    script.text = '''
+    (function () {
+      const root = document.documentElement;
+      const choices = root.querySelectorAll('[data-notation-choice]');
+      function update() {
+        const candidate = location.hash.slice(1);
+        const mode = ['greek','latin','mixed'].includes(candidate) ? candidate : 'greek';
+        root.setAttribute('data-notation-mode', mode);
+        choices.forEach(button => button.setAttribute('aria-pressed',
+          String(button.getAttribute('data-notation-choice') === mode)));
+      }
+      choices.forEach(button => {
+        function select() { location.hash = button.getAttribute('data-notation-choice'); update(); }
+        button.addEventListener('click', select);
+        button.addEventListener('keydown', event => {
+          if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); select(); }
+        });
+      });
+      window.addEventListener('hashchange', update);
+      update();
+    })();
+    '''
+    tree.write(output, encoding="utf-8", xml_declaration=True)
+
+
+def place_named_constellation(ax, name, abbreviation, point, occupied_labels,
+                              obstacle_segments=(), boundary_points=None, neighbor=False):
+    """Reserve the widest name so switching mode cannot introduce collisions."""
+    identity, names = constellation_names(name, abbreviation)
+    fontsize = 10 if neighbor else 16
+    measurements = {}
+    for label in set(names.values()):
+        probe = ax.annotate(label, point, fontsize=fontsize, annotation_clip=False)
+        ax.figure.canvas.draw()
+        measurements[label] = probe.get_window_extent(ax.figure.canvas.get_renderer()).width
+        probe.remove()
+    widest = max(measurements, key=measurements.get)
+    if neighbor:
+        annotation = place_boundary_label(
+            ax, widest, widest, point, occupied_labels, boundary_points,
+            obstacle_segments=obstacle_segments,
+        )
+    else:
+        annotation = place_constellation_label(
+            ax, widest, point, occupied_labels, obstacle_segments=obstacle_segments,
+            boundary_points=boundary_points,
+        )
+    if annotation is None:
+        return None
+    for mode, label in names.items():
+        text = ax.annotate(
+            label, point, xytext=annotation.get_position(), textcoords="offset points",
+            fontsize=fontsize, color=annotation.get_color(), zorder=annotation.get_zorder(),
+            annotation_clip=False,
+        )
+        text.set_gid(f"constellation-name-{identity}-{mode}")
+    annotation.remove()
+    return identity
 
 
 def path_hits_view(points, xmin, xmax, ymin, ymax):
@@ -524,7 +621,7 @@ def place_constellation_label(ax, label, point, occupied_labels, obstacle_segmen
                               boundary_points=None):
     """Place a constellation name by searching outward until a genuinely clear area is found."""
     probe = ax.annotate(label, point, xytext=(0, 0), textcoords="offset points",
-                        fontsize=16, color=FIGURE_BLUE, zorder=5)
+                        fontsize=16, color=FIGURE_BLUE, zorder=5, annotation_clip=False)
     ax.figure.canvas.draw()
     renderer = ax.figure.canvas.get_renderer()
     width = probe.get_window_extent(renderer=renderer).width * 72 / ax.figure.dpi
@@ -544,9 +641,21 @@ def place_constellation_label(ax, label, point, occupied_labels, obstacle_segmen
             (distance_x, -distance_y), (distance_x, distance_y),
         ))
 
+    if boundary_points is not None:
+        xmin, xmax = ax.get_xlim()
+        ymin, ymax = ax.get_ylim()
+        anchor_display = ax.transData.transform(point)
+        for iy in range(1, 10):
+            for ix in range(1, 10):
+                candidate = (xmin + (xmax - xmin) * ix / 10,
+                             ymin + (ymax - ymin) * iy / 10)
+                if MplPath(boundary_points).contains_point(candidate):
+                    display = ax.transData.transform(candidate)
+                    offsets.append(tuple((display - anchor_display) * 72 / ax.figure.dpi))
+
     for dx, dy in offsets:
         annotation = ax.annotate(label, point, xytext=(dx, dy), textcoords="offset points",
-                                 fontsize=16, color=FIGURE_BLUE, zorder=5)
+                                 fontsize=16, color=FIGURE_BLUE, zorder=5, annotation_clip=False)
         ax.figure.canvas.draw()
         renderer = ax.figure.canvas.get_renderer()
         bbox = annotation.get_window_extent(renderer=renderer).expanded(1.08, 1.16)
@@ -560,7 +669,7 @@ def place_constellation_label(ax, label, point, occupied_labels, obstacle_segmen
         annotation.remove()
         if label_hits + geometry_hits == 0:
             annotation = ax.annotate(label, point, xytext=(dx, dy), textcoords="offset points",
-                                     fontsize=16, color=FIGURE_BLUE, zorder=5)
+                                     fontsize=16, color=FIGURE_BLUE, zorder=5, annotation_clip=False)
             ax.figure.canvas.draw()
             renderer = ax.figure.canvas.get_renderer()
             occupied_labels.append(
@@ -1106,6 +1215,7 @@ def render(spec: dict, stars, output: Path) -> None:
         constellation_for_position(float(planet_ra), float(planet_dec), boundaries)
         if has_planet else ("", "")
     )
+    planet_constellation = CONSTELLATION_DISPLAY_NAMES.get(planet_constellation, planet_constellation)
     projected_boundaries = []
     for boundary_name, boundary_abbreviation, boundary in boundaries:
         boundary_points = projected_path(boundary, center)
@@ -1122,7 +1232,7 @@ def render(spec: dict, stars, output: Path) -> None:
             if ref not in seen:
                 seen.add(ref)
                 figure_refs.append(ref)
-    figure_constellation = spec.get("name") or ""
+    figure_constellation = CONSTELLATION_DISPLAY_NAMES.get(spec.get("name"), spec.get("name") or "")
     figure_abbreviation = str(target_meta.get("constellation_abbreviation") or "").strip()
     # Reserve every visible deep-sky circle before placing any text.  A label
     # must clear its own marker and neighboring catalog objects alike.
@@ -1190,6 +1300,7 @@ def render(spec: dict, stars, output: Path) -> None:
             obstacle_segments=figure_segments + asterism_segments,
             require_clear=True,
         )
+    labeled_constellations = set()
     if figure_constellation and figure_points:
         figure_region = visible_figure_region(
             figure_paths, idx, center, xmin, xmax, ymin, ymax,
@@ -1200,13 +1311,19 @@ def render(spec: dict, stars, output: Path) -> None:
         if label_points:
             constellation_point = (sum(x for x, _ in label_points) / len(label_points),
                                    sum(y for _, y in label_points) / len(label_points))
-            place_constellation_label(
-                ax, figure_constellation, constellation_point, occupied_labels,
+            annotation = place_named_constellation(
+                ax, figure_constellation, figure_abbreviation, constellation_point, occupied_labels,
                 obstacle_segments=figure_segments + asterism_segments + boundary_segments,
                 boundary_points=figure_region,
             )
+            if annotation is not None:
+                labeled_constellations.add(annotation)
     for guide in guide_constellations + ambient_figures:
-        guide_name = str(guide.get("name") or guide.get("abbreviation") or "").strip()
+        guide_abbreviation = str(guide.get("abbreviation") or "").strip()
+        if guide_abbreviation in labeled_constellations:
+            continue
+        guide_name = str(guide.get("name") or guide_abbreviation).strip()
+        guide_name = CONSTELLATION_DISPLAY_NAMES.get(guide_name, guide_name)
         points = []
         for path in guide.get("paths") or []:
             for ref in path:
@@ -1224,12 +1341,13 @@ def render(spec: dict, stars, output: Path) -> None:
             if label_points:
                 guide_point = (sum(x for x, _ in label_points) / len(label_points),
                                sum(y for _, y in label_points) / len(label_points))
-                place_constellation_label(
-                    ax, guide_name, guide_point, occupied_labels,
+                annotation = place_named_constellation(
+                    ax, guide_name, guide_abbreviation, guide_point, occupied_labels,
                     obstacle_segments=figure_segments + asterism_segments + boundary_segments,
                     boundary_points=guide_region,
                 )
-    home_abbreviation = str(spec.get("constellation_abbreviation") or figure_abbreviation).strip()
+                if annotation is not None:
+                    labeled_constellations.add(annotation)
     neighbor_points = {}
     for boundary_name, boundary_abbreviation, boundary_points in projected_boundaries:
         points = boundary_points
@@ -1239,7 +1357,7 @@ def render(spec: dict, stars, output: Path) -> None:
                 color=BOUNDARY_WHITE, linewidth=0.8, alpha=0.8,
                 linestyle="--", zorder=3)
         visible_points = [p for p in points if xmin <= p[0] <= xmax and ymin <= p[1] <= ymax]
-        if visible_points and boundary_abbreviation not in (home_abbreviation, planet_abbreviation):
+        if visible_points and boundary_abbreviation not in labeled_constellations and boundary_abbreviation != planet_abbreviation:
             neighbor_points.setdefault(boundary_abbreviation, (boundary_name, points))
     for neighbor_abbreviation, (neighbor_name, points) in neighbor_points.items():
         visible_points = [p for p in points if xmin <= p[0] <= xmax and ymin <= p[1] <= ymax]
@@ -1247,14 +1365,11 @@ def render(spec: dict, stars, output: Path) -> None:
             continue
         point = (sum(x for x, _ in visible_points) / len(visible_points),
                  sum(y for _, y in visible_points) / len(visible_points))
-        place_boundary_label(
-            ax, CONSTELLATION_DISPLAY_NAMES.get(neighbor_name, neighbor_name), neighbor_abbreviation, point, occupied_labels,
-            points, obstacle_segments=boundary_segments,
-            color=BOUNDARY_WHITE, fontsize=10, zorder=5,
+        place_named_constellation(
+            ax, neighbor_name, neighbor_abbreviation, point, occupied_labels,
+            boundary_points=points, obstacle_segments=boundary_segments, neighbor=True,
         )
-    drawn_abbreviations = {str(item.get("abbreviation") or "")
-                           for item in guide_constellations + ambient_figures}
-    if has_planet and planet_abbreviation != home_abbreviation and planet_abbreviation not in drawn_abbreviations:
+    if has_planet and planet_abbreviation not in labeled_constellations:
         planet_boundary = next(
             points for _, abbreviation, points in projected_boundaries
             if abbreviation == planet_abbreviation and MplPath(points).contains_point(planet_point)
@@ -1266,8 +1381,8 @@ def render(spec: dict, stars, output: Path) -> None:
             px - marker_radius, py - marker_radius,
             px + marker_radius, py + marker_radius,
         ))
-        place_constellation_label(
-            ax, planet_constellation, planet_point, occupied_labels,
+        place_named_constellation(
+            ax, planet_constellation, planet_abbreviation, planet_point, occupied_labels,
             obstacle_segments=figure_segments + asterism_segments + boundary_segments
             + [(planet_point, planet_point)],
             boundary_points=planet_boundary,
@@ -1394,6 +1509,24 @@ def render(spec: dict, stars, output: Path) -> None:
                 ha="center", va="top", fontsize=8, color=TEXT)
     else:
         ax.set_title(title, color=TEXT, fontsize=14, pad=12)
+    title_ax = overview_ax if spec.get("overview") else ax
+    mixed_title = title_ax.title.get_text()
+    replacements = {}
+    for name, abbreviation in ((figure_constellation, figure_abbreviation),
+                               (planet_constellation, planet_abbreviation)):
+        if name:
+            _, names = constellation_names(name, abbreviation)
+            replacements[name] = names["mixed"]
+    if replacements:
+        pattern = "|".join(re.escape(name) for name in sorted(replacements, key=len, reverse=True))
+        mixed_title = re.sub(pattern, lambda match: replacements[match.group(0)], mixed_title)
+        title_ax.title.set_gid("constellation-title-greek")
+        for mode, text in (("latin", title_ax.title.get_text()), ("mixed", mixed_title)):
+            alternative = title_ax.text(
+                *title_ax.title.get_position(), text, transform=title_ax.title.get_transform(),
+                color=TEXT, fontsize=14, ha="center", va="baseline",
+            )
+            alternative.set_gid(f"constellation-title-{mode}")
     kilroy = datetime.now(timezone.utc).strftime("Kilroy: Artwork · %Y-%m-%d %H:%M:%S UTC")
     stamp_ax = overview_ax if spec.get("overview") else ax
     stamp_ax.text(0.995, 1.015, kilroy, transform=stamp_ax.transAxes, ha="right", va="bottom", fontsize=6, color=TEXT)
@@ -1449,6 +1582,7 @@ def render(spec: dict, stars, output: Path) -> None:
                           figure_segments + asterism_segments + boundary_segments)
     fig.savefig(output, format="svg", bbox_inches="tight", facecolor=fig.get_facecolor())
     plt.close(fig)
+    add_constellation_notation(output)
     make_svg_responsive(output)
 
 
