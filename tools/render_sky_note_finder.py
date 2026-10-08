@@ -39,6 +39,16 @@ FIGURE_BLUE = "#5c8fe8"
 ASTERISM_GREEN = "#59c86d"
 TARGET_YELLOW = "#ffd84d"
 BOUNDARY_WHITE = "#ffffff"
+BODY_SYMBOLS = {
+    "Sun": "☉", "Moon": "☽", "Mercury": "☿", "Venus": "♀", "Mars": "♂",
+    "Jupiter": "♃", "Saturn": "♄", "Ceres": "⚳", "Uranus": "♅",
+    "Neptune": "♆", "Pluto": "♇",
+}
+ZODIAC_SIGNS = (
+    ("♈", "Aries"), ("♉", "Taurus"), ("♊", "Gemini"), ("♋", "Cancer"),
+    ("♌", "Leo"), ("♍", "Virgo"), ("♎", "Libra"), ("♏", "Scorpio"),
+    ("♐", "Sagittarius"), ("♑", "Capricorn"), ("♒", "Aquarius"), ("♓", "Pisces"),
+)
 BOUNDARY_ROOT = REPO_ROOT / "reference-data" / "iau-constellation-boundaries"
 
 CONSTELLATION_DISPLAY_NAMES = {
@@ -114,6 +124,24 @@ def ecliptic_coordinates():
         yield (math.degrees(math.atan2(math.cos(obliquity) * math.sin(longitude),
                                       math.cos(longitude))) % 360,
                math.degrees(math.asin(math.sin(obliquity) * math.sin(longitude))))
+
+
+def visible_ecliptic_signs(center, xmin, xmax, ymin, ymax):
+    """Locate the visible part of each 30-degree zodiac sector on the ecliptic."""
+    points = [project(ra, dec, *center) for ra, dec in ecliptic_coordinates()]
+    result = []
+    for index, (symbol, name) in enumerate(ZODIAC_SIGNS):
+        sector = points[index * 60:index * 60 + 61]
+        visible = []
+        for start, end in zip(sector, sector[1:]):
+            if start is not None and end is not None:
+                clipped = clip_view_segment(start, end, xmin, xmax, ymin, ymax)
+                if clipped is not None:
+                    visible.append(clipped)
+        if visible:
+            start, end = visible[len(visible) // 2]
+            result.append((symbol, name, ((start[0] + end[0]) / 2, (start[1] + end[1]) / 2)))
+    return result
 
 
 def include_nearby_ecliptic(center, planet_point, xmin, xmax, ymin, ymax):
@@ -262,6 +290,17 @@ def add_constellation_notation(output):
     [data-notation-choice] { cursor:pointer; fill:#f3f5f7 }
     [data-notation-choice][aria-pressed="true"] { fill:#ffd84d; text-decoration:underline }
     '''
+    # Body names switch with the stars, including their displaced leaders.
+    style.text += '''
+    [id^="body-label-"][id$="-latin"], [id^="body-label-"][id$="-mixed"] { display:none }
+    svg[data-notation-mode="2"] [id^="body-label-"][id$="-greek"],
+    svg[data-notation-mode="3"] [id^="body-label-"][id$="-greek"] { display:none }
+    svg[data-notation-mode="2"] [id^="body-label-"][id$="-latin"],
+    svg[data-notation-mode="3"] [id^="body-label-"][id$="-mixed"] { display:inline }
+    '''
+    style.text += style.text[style.text.index('    [id^="body-label-"]'):].replace(
+        'body-label-', 'ecliptic-label-',
+    )
     x, y, width, height = map(float, root.get("viewBox").split())
     root.set("viewBox", f"{x} {y} {width} {height + 30}")
     ET.SubElement(root, f"{{{ns}}}rect", {
@@ -280,7 +319,9 @@ def add_constellation_notation(output):
     script = ET.SubElement(root, f"{{{ns}}}script", {"type": "application/ecmascript"})
     script.text = SVG_MODE_SCRIPT
     tree.write(output, encoding="utf-8", xml_declaration=True)
-    output.write_text(refresh_document(output.read_text(encoding="utf-8")), encoding="utf-8")
+    # Matplotlib leaves indentation-only lines in newly generated groups.
+    document = refresh_document(output.read_text(encoding="utf-8"))
+    output.write_text("\n".join(line.rstrip() for line in document.splitlines()), encoding="utf-8")
 
 
 def place_named_constellation(ax, name, abbreviation, point, occupied_labels,
@@ -872,9 +913,28 @@ def star_notation_labels(identity, star, figure_abbreviation, target=False):
     return {"greek": symbol or latin, "latin": latin, "mixed": mixed}
 
 
+def place_ecliptic_notation(ax, symbol, name, point, occupied_labels, **kwargs):
+    return place_star_notation(
+        ax, {}, {"greek": symbol, "latin": f"Sign of {name}",
+                 "mixed": f"{symbol} Sign of {name}"},
+        point, occupied_labels, label_id=f"ecliptic-label-{name.lower()}",
+        color="#e6a36b", fontsize=10, **kwargs,
+    )
+
+
+def place_body_notation(ax, name, point, occupied_labels, **kwargs):
+    symbol = BODY_SYMBOLS[name]
+    return place_star_notation(
+        ax, {}, {"greek": symbol, "latin": name, "mixed": f"{symbol} {name}"},
+        point, occupied_labels, label_id=f"body-label-{name.lower()}", **kwargs,
+    )
+
+
 def place_star_notation(ax, identity, labels, point, occupied_labels,
-                        obstacle_segments=(), target=False, color=TEXT, fontsize=9):
+                        obstacle_segments=(), target=False, color=TEXT, fontsize=9,
+                        label_id=None, marker_radius_points=None):
     """Place each mode near its star and reserve all variants for later labels."""
+    label_id = label_id or f"star-label-{identity['fixed_object_id']}"
     prior = list(occupied_labels)
     reservations = []
     placed = {}
@@ -884,7 +944,8 @@ def place_star_notation(ax, identity, labels, point, occupied_labels,
         if target:
             annotation = place_target_label(
                 ax, label, point, occupied_labels, obstacle_segments=obstacle_segments,
-                marker_radius_points=math.sqrt(210) / 2 + 2.6 / 2,
+                marker_radius_points=(math.sqrt(210) / 2 + 2.6 / 2
+                                      if marker_radius_points is None else marker_radius_points),
             )
         else:
             annotation = place_label(
@@ -892,12 +953,12 @@ def place_star_notation(ax, identity, labels, point, occupied_labels,
                 obstacle_segments=obstacle_segments, require_clear=True,
             )
         if annotation is not None:
-            annotation.set_gid(f"star-label-{identity['fixed_object_id']}-{mode}")
+            annotation.set_gid(f"{label_id}-{mode}")
             for artist in list(ax.texts)[before:]:
                 if artist is not annotation:
-                    artist.set_gid(f"star-label-{identity['fixed_object_id']}-leader-{mode}")
+                    artist.set_gid(f"{label_id}-leader-{mode}")
                     if artist.arrow_patch is not None:
-                        artist.arrow_patch.set_gid(f"star-label-{identity['fixed_object_id']}-leader-path-{mode}")
+                        artist.arrow_patch.set_gid(f"{label_id}-leader-path-{mode}")
             reservations.extend(occupied_labels[len(prior):])
             placed[mode] = annotation
     occupied_labels[:] = prior + reservations
@@ -1524,8 +1585,8 @@ def render(spec: dict, stars, output: Path) -> None:
         if planet_name != "Moon" or moon_bbox is None:
             ax.scatter([planet_point[0]], [planet_point[1]], s=115, marker="o",
                        facecolors=TARGET_YELLOW, edgecolors=TARGET_YELLOW, linewidths=1.6, zorder=10)
-        place_target_label(
-            ax, planet_name, planet_point, occupied_labels,
+        place_body_notation(
+            ax, planet_name, planet_point, occupied_labels, target=True,
             obstacle_segments=figure_segments + asterism_segments + boundary_segments,
             marker_radius_points=0 if planet_name == "Moon" and moon_bbox is not None else math.sqrt(115) / 2 + 1.6 / 2,
         )
@@ -1546,11 +1607,15 @@ def render(spec: dict, stars, output: Path) -> None:
                 ax.scatter([point[0]], [point[1]], s=58, marker="o",
                            facecolors="none", edgecolors=TEXT, linewidths=1.2, zorder=8)
                 occupied_labels.append(marker_obstacle_bbox(ax, point, 58, 1.2))
-            place_label(
-                ax, body_name, point, occupied_labels, color=TEXT, fontsize=9, zorder=8,
+            place_body_notation(
+                ax, body_name, point, occupied_labels, color=TEXT, fontsize=9,
                 obstacle_segments=figure_segments + asterism_segments + boundary_segments,
-                require_clear=True,
             )
+    for symbol, name, point in visible_ecliptic_signs(center, xmin, xmax, ymin, ymax):
+        place_ecliptic_notation(
+            ax, symbol, name, point, occupied_labels,
+            obstacle_segments=figure_segments + asterism_segments,
+        )
     label_coordinate_grid(ax, coordinate_grid, occupied_labels)
     for name, color, _, segments in reference_lines:
         if segments:

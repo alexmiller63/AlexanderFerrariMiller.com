@@ -11,8 +11,8 @@ import matplotlib.pyplot as plt
 from matplotlib.transforms import Bbox
 
 from tools.render_sky_note_finder import (
-    add_constellation_notation, marker_obstacle_bbox, place_star_notation,
-    segment_hits_display_bbox, star_notation_labels,
+    add_constellation_notation, marker_obstacle_bbox, place_star_notation, place_body_notation, place_ecliptic_notation,
+    segment_hits_display_bbox, star_notation_labels, visible_ecliptic_signs,
 )
 
 
@@ -28,6 +28,36 @@ class StarNotationTests(unittest.TestCase):
 
     def tearDown(self):
         plt.close(self.fig)
+
+    def test_zodiac_sectors_wrap_at_aries_and_stay_inside_chart(self):
+        signs = visible_ecliptic_signs((0, 0), -5, 5, -5, 5)
+        self.assertEqual({name for _, name, _ in signs}, {"Aries", "Pisces"})
+        self.assertEqual({symbol for symbol, _, _ in signs}, {"♈", "♓"})
+        for _, _, (x, y) in signs:
+            self.assertTrue(-5 <= x <= 5 and -5 <= y <= 5)
+        opposite = visible_ecliptic_signs((180, 0), -5, 5, -5, 5)
+        self.assertEqual({name for _, name, _ in opposite}, {"Virgo", "Libra"})
+
+    def test_ecliptic_names_the_sign_rather_than_the_constellation(self):
+        placed = place_ecliptic_notation(self.ax, "♈", "Aries", (0.5, 0.5), [])
+        self.assertEqual({mode: label.get_text() for mode, label in placed.items()},
+                         {"greek": "♈", "latin": "Sign of Aries", "mixed": "♈ Sign of Aries"})
+
+    def test_mercury_body_label_switches_with_notation(self):
+        placed = place_body_notation(self.ax, "Mercury", (0.5, 0.5), [], target=True)
+        self.assertEqual({mode: label.get_text() for mode, label in placed.items()},
+                         {"greek": "☿", "latin": "Mercury", "mixed": "☿ Mercury"})
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "finder.svg"
+            self.fig.savefig(path)
+            add_constellation_notation(path)
+            root = ET.parse(path).getroot()
+            ids = {node.get("id") for node in root.iter()}
+            for mode in ("greek", "latin", "mixed"):
+                self.assertIn(f"body-label-mercury-{mode}", ids)
+            style = root.find("{http://www.w3.org/2000/svg}style").text
+            self.assertIn('svg[data-notation-mode="2"] [id^="body-label-"][id$="-latin"]', style)
+            self.assertIn('svg[data-notation-mode="3"] [id^="body-label-"][id$="-mixed"]', style)
 
     def test_greek_star_symbol_and_named_variants(self):
         labels = star_notation_labels(self.identity, self.star, "Psc", target=True)
