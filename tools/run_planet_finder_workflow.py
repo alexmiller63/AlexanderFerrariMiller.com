@@ -4,10 +4,59 @@ from __future__ import annotations
 from collections import deque
 from datetime import date
 import os
+import re
 import subprocess
 import sys
+import threading
+import time
 
 TRACE_LINES = 400
+
+
+class Progress:
+    """Track explicit publication events and the latest solver diagnostics."""
+
+    def __init__(self, total_charts: int):
+        self.started = time.monotonic()
+        self.total_charts = total_charts
+        self.completed = 0
+        self.week = "pending"
+        self.mode = "calculating"
+        self.nodes = {}
+        self.lock = threading.Lock()
+
+    def observe(self, line: str) -> None:
+        with self.lock:
+            if line.startswith("PLANET_FINDER_PROGRESS "):
+                fields = dict(re.findall(r"(\w+)=([^\s]+)", line))
+                self.week = fields["iso"]
+                self.mode = fields["mode"]
+                if fields["event"] == "start":
+                    self.nodes = {}
+                elif fields["event"] == "complete":
+                    self.completed += 1
+                return
+            match = re.match(r"Planet Finder (?:FinderMode\.)?(greek|latin|mixed):", line, re.IGNORECASE)
+            if match:
+                # Counts belong to the current notation; never carry them into
+                # the next mode. These are latest reported counts, not totals.
+                notation = match[1].lower()
+                if notation != self.mode:
+                    self.mode = notation
+                    self.nodes = {}
+                for key, value in re.findall(r"(?<![\w-])(ordinary-dfs-nodes|nodes)=([\d,]+)", line):
+                    category = "ordinary" if key == "ordinary-dfs-nodes" else "solver"
+                    self.nodes[category] = value.replace(",", "")
+
+    def report(self, status: str = "running") -> None:
+        with self.lock:
+            counts = ",".join(f"{key}:{value}" for key, value in sorted(self.nodes.items())) or "not-yet-reported"
+            print(
+                f"PLANET FINDER PROGRESS status={status} week={self.week} "
+                f"notation={self.mode} elapsed={time.monotonic() - self.started:.0f}s "
+                f"charts={self.completed}/{self.total_charts} latest-reported-nodes={counts}",
+                flush=True,
+            )
 
 
 def required(name: str) -> str:
@@ -48,9 +97,12 @@ def iso_week_date(year_name: str, week_name: str) -> date:
         raise SystemExit(f"Invalid ISO week: {year}-W{week:02d}: {exc}") from None
 
 
-def run_with_failure_trace(command: list[str], env: dict[str, str]) -> None:
+def run_with_failure_trace(command: list[str], env: dict[str, str], total_charts: int = 0, heartbeat_seconds: float = 60) -> None:
     """Keep a bounded child-process trace and emit it only when the child fails."""
     trace = deque(maxlen=TRACE_LINES)
+    progress = Progress(total_charts)
+    stopped = threading.Event()
+    env = dict(env, PYTHONUNBUFFERED="1")
     process = subprocess.Popen(
         command,
         env=env,
@@ -60,14 +112,28 @@ def run_with_failure_trace(command: list[str], env: dict[str, str]) -> None:
         bufsize=1,
     )
     assert process.stdout is not None
-    for line in process.stdout:
-        clean = line.rstrip("\n")
-        trace.append(clean)
-        # Preserve the bounded failure trace, but do not hide successful
-        # generator diagnostics.  In particular, PLANET_FINDER_DIAGNOSTIC_LEVEL
-        # controls detailed [MAKEUP] output that must remain visible in Actions.
-        print(clean, flush=True)
-    returncode = process.wait()
+    def heartbeat():
+        while not stopped.wait(heartbeat_seconds):
+            progress.report()
+
+    reporter = threading.Thread(target=heartbeat, daemon=True)
+    progress.report()
+    reporter.start()
+    try:
+        for line in process.stdout:
+            clean = line.rstrip("\n")
+            trace.append(clean)
+            progress.observe(clean)
+            print(clean, flush=True)
+        returncode = process.wait()
+    finally:
+        stopped.set()
+        reporter.join()
+        process.stdout.close()
+        if process.poll() is None:
+            process.terminate()
+            process.wait()
+    progress.report("complete" if returncode == 0 else "failed")
     if returncode == 0:
         return
 
@@ -92,6 +158,7 @@ def main() -> None:
         [sys.executable, "tools/populate_ephemeris_planet_finder_by_date.py",
          start.isoformat(), end.isoformat()],
         env,
+        total_charts=((end - start).days // 7 + 1) * 3,
     )
 
 
