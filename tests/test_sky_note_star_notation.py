@@ -12,7 +12,7 @@ from matplotlib.transforms import Bbox
 
 from tools.render_sky_note_finder import (
     add_constellation_notation, marker_obstacle_bbox, place_star_notation,
-    star_notation_labels,
+    segment_hits_display_bbox, star_notation_labels,
 )
 
 
@@ -106,6 +106,19 @@ class StarNotationTests(unittest.TestCase):
         leaders = [text for text in self.ax.texts if text.arrow_patch is not None]
         self.assertEqual(len(leaders), 1)
         self.assertEqual(leaders[0].arrow_patch.get_gid(), "star-label-42-leader-path-latin")
+
+    def test_segment_measurements_follow_changed_axes_geometry(self):
+        x, y = self.ax.transData.transform((0.5, 0.5))
+        box = Bbox.from_extents(x - 10, y - 10, x + 10, y + 10)
+        start, end = (0.4, 0.5), (0.6, 0.5)
+        self.assertTrue(segment_hits_display_bbox(self.ax, start, end, box))
+        self.ax.set_xlim(0, 10)
+        self.assertFalse(segment_hits_display_bbox(self.ax, start, end, box))
+        self.ax.set_xlim(0, 1)
+        self.assertTrue(segment_hits_display_bbox(self.ax, start, end, box))
+        self.ax.set_xscale("log")
+        self.ax.set_xlim(0.1, 10)
+        self.assertFalse(segment_hits_display_bbox(self.ax, start, end, box))
 
 
 if __name__ == "__main__":

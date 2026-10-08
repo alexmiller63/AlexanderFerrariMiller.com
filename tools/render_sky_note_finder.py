@@ -213,7 +213,6 @@ def label_coordinate_grid(ax, grid, occupied_labels):
             }[side]
             annotation = ax.annotate(label, point, xytext=(dx, dy), textcoords="offset points",
                                      ha=ha, va=va, fontsize=7, color="#9aa9b8", zorder=5)
-            ax.figure.canvas.draw()
             bbox = annotation.get_window_extent(ax.figure.canvas.get_renderer()).expanded(1.1, 1.1)
             if (not ax.bbox.contains(bbox.x0, bbox.y0)
                     or not ax.bbox.contains(bbox.x1, bbox.y1)
@@ -311,7 +310,6 @@ def place_named_constellation(ax, name, abbreviation, point, occupied_labels,
     measurements = {}
     for label in set(names.values()):
         probe = ax.annotate(label, point, fontsize=fontsize, annotation_clip=False)
-        ax.figure.canvas.draw()
         measurements[label] = probe.get_window_extent(ax.figure.canvas.get_renderer()).width
         probe.remove()
     widest = max(measurements, key=measurements.get)
@@ -396,8 +394,23 @@ def point_segment_distance(point, start, end):
 
 def segment_hits_display_bbox(ax, start, end, bbox):
     """Test a data-coordinate segment against a rendered display-coordinate box."""
-    x1, y1 = ax.transData.transform(start)
-    x2, y2 = ax.transData.transform(end)
+    # Label searches reuse thousands of segments at fixed axes geometry.
+    # Cache their exact transformed endpoints, invalidating on any affine
+    # change. Nonlinear axes keep the direct transformation path.
+    if ax.get_xscale() == ax.get_yscale() == "linear":
+        signature = ax.transData.get_affine().to_values()
+        state = getattr(ax, "_finder_segment_display_cache", None)
+        if state is None or state[0] != signature:
+            state = (signature, {})
+            ax._finder_segment_display_cache = state
+        key = (tuple(start), tuple(end))
+        endpoints = state[1].get(key)
+        if endpoints is None:
+            endpoints = (ax.transData.transform(start), ax.transData.transform(end))
+            state[1][key] = endpoints
+    else:
+        endpoints = (ax.transData.transform(start), ax.transData.transform(end))
+    (x1, y1), (x2, y2) = endpoints
     left, bottom, right, top = bbox.x0, bbox.y0, bbox.x1, bbox.y1
 
     def inside(x, y):
@@ -466,7 +479,6 @@ def place_boundary_label(ax, full_label, abbreviation, point, occupied_labels,
                 label, point, xytext=(dx, dy), textcoords="offset points",
                 fontsize=fontsize, color=color, zorder=zorder,
             )
-            ax.figure.canvas.draw()
             renderer = ax.figure.canvas.get_renderer()
             bbox = annotation.get_window_extent(renderer=renderer).expanded(1.08, 1.16)
             label_hits = sum(bbox.overlaps(other) for other in occupied_labels)
@@ -485,7 +497,6 @@ def place_boundary_label(ax, full_label, abbreviation, point, occupied_labels,
                     label, point, xytext=(dx, dy), textcoords="offset points",
                     fontsize=fontsize, color=color, zorder=zorder,
                 )
-                ax.figure.canvas.draw()
                 renderer = ax.figure.canvas.get_renderer()
                 occupied_labels.append(
                     annotation.get_window_extent(renderer=renderer).expanded(1.08, 1.16)
@@ -530,7 +541,6 @@ def place_label(ax, label, point, occupied_labels, color=TEXT, fontsize=9, zorde
     _, _, dx, dy = best
     annotation = ax.annotate(label, point, xytext=(dx, dy), textcoords="offset points",
                              fontsize=fontsize, color=color, zorder=zorder)
-    ax.figure.canvas.draw()
     renderer = ax.figure.canvas.get_renderer()
     occupied_labels.append(annotation.get_window_extent(renderer=renderer).expanded(1.08, 1.16))
     return annotation
@@ -623,9 +633,9 @@ def place_target_label(ax, label, point, occupied_labels, obstacle_segments=(),
         raise RuntimeError(f"No collision-free target-label position found for {label!r}")
     _, _, dx, dy = best
     annotation = ax.annotate(label, point, xytext=(dx, dy), textcoords="offset points", **style)
-    ax.figure.canvas.draw()
     renderer = ax.figure.canvas.get_renderer()
     occupied_labels.append(annotation.get_window_extent(renderer=renderer).expanded(1.08, 1.16))
+    annotation.update_bbox_position_size(renderer)
     # A displaced label needs a visible connection to its protected marker.
     text_bbox = annotation.get_bbox_patch().get_window_extent(renderer=renderer)
     endpoint = (min(max(anchor_x, text_bbox.x0), text_bbox.x1),
@@ -643,7 +653,6 @@ def place_constellation_label(ax, label, point, occupied_labels, obstacle_segmen
     """Place a constellation name by searching outward until a genuinely clear area is found."""
     probe = ax.annotate(label, point, xytext=(0, 0), textcoords="offset points",
                         fontsize=16, color=FIGURE_BLUE, zorder=5, annotation_clip=False)
-    ax.figure.canvas.draw()
     renderer = ax.figure.canvas.get_renderer()
     width = probe.get_window_extent(renderer=renderer).width * 72 / ax.figure.dpi
     height = probe.get_window_extent(renderer=renderer).height * 72 / ax.figure.dpi
@@ -677,7 +686,6 @@ def place_constellation_label(ax, label, point, occupied_labels, obstacle_segmen
     for dx, dy in offsets:
         annotation = ax.annotate(label, point, xytext=(dx, dy), textcoords="offset points",
                                  fontsize=16, color=FIGURE_BLUE, zorder=5, annotation_clip=False)
-        ax.figure.canvas.draw()
         renderer = ax.figure.canvas.get_renderer()
         bbox = annotation.get_window_extent(renderer=renderer).expanded(1.08, 1.16)
         label_hits = sum(bbox.overlaps(other) for other in occupied_labels)
@@ -691,7 +699,6 @@ def place_constellation_label(ax, label, point, occupied_labels, obstacle_segmen
         if label_hits + geometry_hits == 0:
             annotation = ax.annotate(label, point, xytext=(dx, dy), textcoords="offset points",
                                      fontsize=16, color=FIGURE_BLUE, zorder=5, annotation_clip=False)
-            ax.figure.canvas.draw()
             renderer = ax.figure.canvas.get_renderer()
             occupied_labels.append(
                 annotation.get_window_extent(renderer=renderer).expanded(1.08, 1.16)
