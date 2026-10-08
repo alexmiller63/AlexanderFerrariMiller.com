@@ -1,18 +1,53 @@
 {
-  "name": "Vela",
-  "constellation_abbreviation": "Vel",
+  "name": "Leo",
+  "target": "Regulus",
   "figure_paths": [
     [
-      "HIP 39953",
-      "HIP 44816",
-      "HIP 46651",
-      "HIP 50191",
-      "HIP 52727",
-      "HIP 48774",
-      "HIP 45941",
-      "HIP 42913",
-      "HIP 39953"
+      "HIP 55434",
+      "HIP 55642",
+      "HIP 54879",
+      "HIP 54872",
+      "HIP 57632",
+      "HIP 54879",
+      "HIP 49583",
+      "HIP 50583",
+      "HIP 53954",
+      "HIP 54872"
+    ],
+    [
+      "HIP 49669",
+      "HIP 49583"
+    ],
+    [
+      "HIP 49583",
+      "HIP 47908",
+      "HIP 46750",
+      "HIP 46146",
+      "HIP 48455",
+      "HIP 50335",
+      "HIP 50583"
+    ],
+    [
+      "HIP 48455",
+      "HIP 47908"
     ]
+  ],
+  "asterisms": [
+    {
+      "id": 1369,
+      "geometry_key": "asterism-sickle-of-leo",
+      "name": "Sickle of Leo",
+      "paths": [
+        [
+          "HIP 49669",
+          "HIP 49583",
+          "HIP 50583",
+          "HIP 50335",
+          "HIP 48455",
+          "HIP 47908"
+        ]
+      ]
+    }
   ],
   "candidate_constellations": [
     {
@@ -1771,7 +1806,6 @@
       ]
     }
   ],
-  "guide_constellations": [],
   "candidate_asterisms": [
     {
       "id": 1362,
@@ -2213,83 +2247,229 @@
       ]
     }
   ],
-  "asterisms": [],
   "deep_sky_objects": [],
-  "fixed_object_identities": [
+  "finder_relation": {
+    "sequence": [
+      "Leo",
+      "Sickle",
+      "Regulus",
+      "Moon"
+    ],
+    "orientation": "asterism",
+    "reference_star": "Regulus",
+    "planet": "Moon",
+    "finder_note": null,
+    "sky_separation_deg": 7.4
+  },
+  "planet_position": {
+    "ra_deg": 145.362645,
+    "dec_deg": 15.395324
+  },
+  "guide_objects": [
     {
-      "fixed_object_id": 843,
-      "renderer_ref": "HIP 39953",
-      "identifiers": {
-        "hip": "39953"
-      },
-      "constellation_abbreviation": "Vel",
-      "bayer": "Gam-2"
-    },
-    {
-      "fixed_object_id": 867,
-      "renderer_ref": "HIP 44816",
-      "identifiers": {
-        "hip": "44816"
-      },
-      "proper_name": "Suhail",
-      "constellation_abbreviation": "Vel",
-      "bayer": "Lam"
-    },
-    {
-      "fixed_object_id": 875,
-      "renderer_ref": "HIP 46651",
-      "identifiers": {
-        "hip": "46651"
-      }
-    },
-    {
-      "fixed_object_id": 890,
-      "renderer_ref": "HIP 50191",
-      "identifiers": {
-        "hip": "50191"
-      }
-    },
-    {
-      "fixed_object_id": 904,
-      "renderer_ref": "HIP 52727",
-      "identifiers": {
-        "hip": "52727"
-      }
-    },
-    {
-      "fixed_object_id": 884,
-      "renderer_ref": "HIP 48774",
-      "identifiers": {
-        "hip": "48774"
-      }
-    },
-    {
-      "fixed_object_id": 41,
-      "renderer_ref": "HIP 45941",
-      "identifiers": {
-        "hip": "45941"
-      },
-      "proper_name": "Markeb",
-      "constellation_abbreviation": "Vel",
-      "bayer": "Kap"
-    },
-    {
-      "fixed_object_id": 39,
-      "renderer_ref": "HIP 42913",
-      "identifiers": {
-        "hip": "42913"
-      },
-      "proper_name": "Alsephina",
-      "constellation_abbreviation": "Vel",
-      "bayer": "Del"
+      "type": "reference-star",
+      "name": "Regulus",
+      "fixed_object_id": 45
     }
   ],
-  "artwork_owner_identity": {
-    "fixed_object_id": 843,
-    "name": "Gamma-2 Vel",
-    "constellation_abbreviation": "Vel",
-    "bayer": "Gam-2",
-    "renderer_ref": "HIP 39953"
+  "fixed_object_identities": [
+    {
+      "fixed_object_id": 921,
+      "renderer_ref": "HIP 55434",
+      "identifiers": {
+        "hip": "55434"
+      }
+    },
+    {
+      "fixed_object_id": 922,
+      "renderer_ref": "HIP 55642",
+      "identifiers": {
+        "hip": "55642"
+      }
+    },
+    {
+      "fixed_object_id": 917,
+      "renderer_ref": "HIP 54879",
+      "identifiers": {
+        "hip": "54879"
+      }
+    },
+    {
+      "fixed_object_id": 916,
+      "renderer_ref": "HIP 54872",
+      "identifiers": {
+        "hip": "54872"
+      }
+    },
+    {
+      "fixed_object_id": 50,
+      "renderer_ref": "HIP 57632",
+      "identifiers": {
+        "hip": "57632"
+      },
+      "proper_name": "Denebola",
+      "constellation_abbreviation": "Leo",
+      "bayer": "Bet"
+    },
+    {
+      "fixed_object_id": 44,
+      "renderer_ref": "HIP 49583",
+      "identifiers": {
+        "hip": "49583"
+      },
+      "proper_name": "Eta Leonis"
+    },
+    {
+      "fixed_object_id": 47,
+      "renderer_ref": "HIP 50583",
+      "identifiers": {
+        "hip": "50583"
+      },
+      "proper_name": "Algieba",
+      "constellation_abbreviation": "Leo",
+      "bayer": "Gam-1"
+    },
+    {
+      "fixed_object_id": 910,
+      "renderer_ref": "HIP 53954",
+      "identifiers": {
+        "hip": "53954"
+      }
+    },
+    {
+      "fixed_object_id": 45,
+      "renderer_ref": "HIP 49669",
+      "identifiers": {
+        "hip": "49669"
+      },
+      "proper_name": "Regulus",
+      "constellation_abbreviation": "Leo",
+      "bayer": "Alp"
+    },
+    {
+      "fixed_object_id": 42,
+      "renderer_ref": "HIP 47908",
+      "identifiers": {
+        "hip": "47908"
+      },
+      "proper_name": "Ras Elased Australis"
+    },
+    {
+      "fixed_object_id": 877,
+      "renderer_ref": "HIP 46750",
+      "identifiers": {
+        "hip": "46750"
+      }
+    },
+    {
+      "fixed_object_id": 872,
+      "renderer_ref": "HIP 46146",
+      "identifiers": {
+        "hip": "46146"
+      }
+    },
+    {
+      "fixed_object_id": 43,
+      "renderer_ref": "HIP 48455",
+      "identifiers": {
+        "hip": "48455"
+      },
+      "proper_name": "Rasalas"
+    },
+    {
+      "fixed_object_id": 46,
+      "renderer_ref": "HIP 50335",
+      "identifiers": {
+        "hip": "50335"
+      },
+      "proper_name": "Adhafera"
+    }
+  ],
+  "guide_anchor_identity": {
+    "fixed_object_id": 45,
+    "renderer_ref": "HIP 49669",
+    "identifiers": {
+      "hip": "49669"
+    },
+    "proper_name": "Regulus",
+    "constellation_abbreviation": "Leo",
+    "bayer": "Alp"
   },
-  "guide_objects": []
+  "target_identity": {
+    "fixed_object_id": 45,
+    "renderer_ref": "HIP 49669",
+    "identifiers": {
+      "hip": "49669"
+    },
+    "proper_name": "Regulus",
+    "constellation_abbreviation": "Leo",
+    "bayer": "Alp"
+  },
+  "solar_system_field": [
+    {
+      "name": "Moon",
+      "ra_deg": 145.362645,
+      "dec_deg": 15.395324
+    },
+    {
+      "name": "Mercury",
+      "ra_deg": 350.477697,
+      "dec_deg": -0.366186
+    },
+    {
+      "name": "Venus",
+      "ra_deg": 355.110369,
+      "dec_deg": -3.579103
+    },
+    {
+      "name": "Mars",
+      "ra_deg": 331.681194,
+      "dec_deg": -12.788943
+    },
+    {
+      "name": "Ceres",
+      "ra_deg": 25.026318,
+      "dec_deg": 4.198335
+    },
+    {
+      "name": "Jupiter",
+      "ra_deg": 106.167015,
+      "dec_deg": 22.951745
+    },
+    {
+      "name": "Saturn",
+      "ra_deg": 2.201347,
+      "dec_deg": -1.367639
+    },
+    {
+      "name": "Uranus",
+      "ra_deg": 55.152065,
+      "dec_deg": 19.398608
+    },
+    {
+      "name": "Neptune",
+      "ra_deg": 1.173527,
+      "dec_deg": -0.915747
+    },
+    {
+      "name": "Pluto",
+      "ra_deg": 307.512555,
+      "dec_deg": -22.957933
+    }
+  ],
+  "moon_disk": {
+    "snapshot_utc": "2026-03-02T00:00:00Z",
+    "angular_diameter_deg": 0.5275446936410033,
+    "phase_angle_deg": 18.543155402434284,
+    "illuminated_fraction": 0.9740421955681983,
+    "bright_limb_position_angle_deg": 293.48010320818685,
+    "distance_km": 377393.7645687266
+  },
+  "landmark_policy": {
+    "retain_named_field_stars": true,
+    "primary_reference_star": "Regulus",
+    "magnitude_limit": 2.99
+  },
+  "object_id": 1253,
+  "rendering_id": "2026-W10-1253"
 }
