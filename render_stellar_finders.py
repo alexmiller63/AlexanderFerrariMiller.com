@@ -34,6 +34,9 @@ def load_hyg(path):
     out=[]
     with path.open("r",encoding="utf-8-sig",newline="") as h:
         for r in csv.DictReader(h):
+            # HYG's record 0 is Sol at placeholder coordinates (0, 0), not a
+            # fixed field star. Solar-System bodies use the weekly ephemeris.
+            if (r.get("id") or "").strip() == "0":continue
             if not all((r.get(k) or "").strip() for k in ("ra","dec","mag")):continue
             out.append(Star(float(r["ra"])*15,float(r["dec"]),float(r["mag"]),(r.get("proper") or "").strip(),(r.get("bayer") or "").strip(),(r.get("con") or "").strip(),(r.get("id") or "").strip(),(r.get("hip") or "").strip()))
     return out
