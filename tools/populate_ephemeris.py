@@ -49,7 +49,7 @@ VISIBILITY_GLYPHS = {
     "daylight": '<span class="text-symbol" role="img" aria-label="Daylight" title="Daylight">☉︎</span>',
     "solar_glare": '<span class="text-symbol" role="img" aria-label="Solar Glare" title="Solar Glare">☉︎</span>',
     "visible": '<span class="text-symbol" role="img" aria-label="Visible" title="Visible">☉︎</span>',
-    "night": '<span class="text-symbol" role="img" aria-label="Night" title="Night">☉︎</span>',
+    "night": f'<img class="visibility-glyph" src="{VISIBILITY_GLYPH_ROOT}night.svg" alt="Night" aria-label="Night" title="Night — Sun more than 18° below the horizon">',
 }
 
 EPHEMERIS_STYLE = """<style id="ephemeris-css">

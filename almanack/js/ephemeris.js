@@ -101,7 +101,9 @@
   }
 
   function specialHtml(label, mode) {
-    const symbol = '<span class="text-symbol" role="img" aria-label="' + label + '" title="' + label + '">☉︎</span>';
+    const symbol = label === 'Night'
+      ? '<img class="visibility-glyph" src="../../../assets/almanack/visibility-glyphs/masters/night.svg" alt="Night" aria-label="Night" title="Night — Sun more than 18° below the horizon">'
+      : '<span class="text-symbol" role="img" aria-label="' + label + '" title="' + label + '">☉︎</span>';
     if (mode === 'greek') return symbol;
     if (mode === 'latin') return label;
     return symbol + ' ' + label;
