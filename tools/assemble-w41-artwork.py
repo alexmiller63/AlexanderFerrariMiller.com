@@ -29,8 +29,9 @@ def label_svg(x,y,text,fs,boxw):
     return f'<rect x="{x-boxw/2:.1f}" y="{y-24:.1f}" width="{boxw:.1f}" height="48" rx="10" fill="white" stroke="#111" stroke-width="1.4"/><text x="{x:.1f}" y="{y+7:.1f}" text-anchor="middle" font-size="{fs}">{text}</text>'
 
 def chart(mode):
+    title = "English" if mode == "Latin" else mode
     s=['<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 1400">','<rect width="1400" height="1400" fill="white"/>','<style>text{font-family:Georgia,"Times New Roman",serif;fill:#111}.sans{font-family:Arial,Helvetica,sans-serif}.z{fill:#111!important;color:#111!important;-webkit-text-fill-color:#111!important}</style>']
-    s += [f'<text x="700" y="72" text-anchor="middle" font-size="38" font-weight="700">ISO 2026-W41 Planet Finder</text>',f'<text x="700" y="110" text-anchor="middle" font-size="23">{mode} · Monday, October 5, 2026 · 00:00 UTC</text>',f'<circle cx="700" cy="700" r="560" fill="none" stroke="#111" stroke-width="4"/>',f'<circle cx="700" cy="700" r="430" fill="none" stroke="#111" stroke-width="2"/>']
+    s += [f'<text x="700" y="72" text-anchor="middle" font-size="38" font-weight="700">ISO 2026-W41 Planet Finder</text>',f'<text x="700" y="110" text-anchor="middle" font-size="23">{title} · Monday, October 5, 2026 · 00:00 UTC</text>',f'<circle cx="700" cy="700" r="560" fill="none" stroke="#111" stroke-width="4"/>',f'<circle cx="700" cy="700" r="430" fill="none" stroke="#111" stroke-width="2"/>']
     for i in range(12):
         x1,y1=xy(i*30,RI); x2,y2=xy(i*30,RO); s.append(f'<line x1="{x1:.1f}" y1="{y1:.1f}" x2="{x2:.1f}" y2="{y2:.1f}" stroke="#111" stroke-width="2"/>')
     for i,(sym,name) in enumerate(SIGNS):
@@ -69,7 +70,7 @@ def main():
     page=week_index(2026, 41); text=page.read_text(encoding='utf-8')
     css='''<style>.w41-finder-strip{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem;margin:1.25rem 0 2rem}.w41-finder-strip figure,.w41-star-finder{margin:0}.w41-finder-strip img,.w41-star-finder img{display:block;width:100%;height:auto}.w41-finder-strip figcaption,.w41-star-finder figcaption{text-align:center;font-family:system-ui,sans-serif;font-size:.82rem;color:var(--muted);margin-top:.35rem}.w41-star-finder{max-width:820px;margin:1.1rem auto 1.6rem}.w41-star-finder img{border:1px solid var(--rule);border-radius:.4rem}@media(max-width:760px){.w41-finder-strip{grid-template-columns:1fr}.w41-star-finder{max-width:none}}</style>'''
     text=text.replace('</head>',css+'</head>',1)
-    strip='''<div class="w41-finder-strip"><figure><img src="finders/planet-finder-greek-symbols.svg" alt="Planet Finder — Greek / Symbols"><figcaption>Greek / Symbols</figcaption></figure><figure><img src="finders/planet-finder-latin.svg" alt="Planet Finder — Latin"><figcaption>Latin</figcaption></figure><figure><img src="finders/planet-finder-mixed-learner.svg" alt="Planet Finder — Mixed / Learner"><figcaption>Mixed / Learner</figcaption></figure></div>'''
+    strip='''<div class="w41-finder-strip"><figure><img src="finders/planet-finder-greek-symbols.svg" alt="Planet Finder — Greek / Symbols"><figcaption>Greek / Symbols</figcaption></figure><figure><img src="finders/planet-finder-latin.svg" alt="Planet Finder — English"><figcaption>English</figcaption></figure><figure><img src="finders/planet-finder-mixed-learner.svg" alt="Planet Finder — Mixed / Learner"><figcaption>Mixed / Learner</figcaption></figure></div>'''
     # Section 4 is the Planet Finder; section 5 is Sky Notes. Their visible
     # headings are presentation only and are never used for placement.
     start4, end4 = section_bounds(text, 4, page)

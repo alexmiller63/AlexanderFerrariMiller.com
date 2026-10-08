@@ -67,7 +67,7 @@ def verify_page(page, rel: str):
         )
 
     toggle = '.section-notation-toggle[data-notation-target="calendar"]'
-    for mode in ('greek', 'latin', 'mixed'):
+    for mode in ('1', '2', '3'):
         button = page.locator(f'{toggle} button[data-bayer-mode="{mode}"]')
         if button.count() != 1:
             raise SystemExit(f'Calendar notation button missing in {rel}: {mode}')

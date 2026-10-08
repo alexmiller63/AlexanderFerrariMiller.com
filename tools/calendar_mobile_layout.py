@@ -30,9 +30,9 @@ STYLE = f'''<style id="{STYLE_ID}">
   table.calendar .observing-notation-item {{ display:inline-block; max-width:100%; }}
   /* Latin zodiac names must fit the compact Zodiac-day column without
      wrapping; keep the Greek glyph size unchanged in Greek mode. */
-  main:has(.section-notation-toggle[data-notation-target="calendar"] button[data-bayer-mode="latin"][aria-pressed="true"])
+  main:has(.section-notation-toggle[data-notation-target="calendar"] button[data-bayer-mode="2"][aria-pressed="true"])
     table.calendar .zodiac-day .notation-item,
-  main:has(.section-notation-toggle[data-notation-target="calendar"] button[data-bayer-mode="latin"][aria-pressed="true"])
+  main:has(.section-notation-toggle[data-notation-target="calendar"] button[data-bayer-mode="2"][aria-pressed="true"])
     table.calendar .zodiac-day .notation-rendered {{ font-size:.76rem; line-height:1.05; }}
   .visibility {{ white-space:normal; }}
 }}

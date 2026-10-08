@@ -36,7 +36,7 @@ class Progress:
                 elif fields["event"] == "complete":
                     self.completed += 1
                 return
-            match = re.match(r"Planet Finder (?:FinderMode\.)?(greek|latin|mixed):", line, re.IGNORECASE)
+            match = re.match(r"Planet Finder (?:FinderMode\.)?([123]|greek|latin|mixed):", line, re.IGNORECASE)
             if match:
                 # Counts belong to the current notation; never carry them into
                 # the next mode. These are latest reported counts, not totals.

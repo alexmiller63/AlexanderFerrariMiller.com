@@ -94,7 +94,7 @@ class StarNotationTests(unittest.TestCase):
                 self.assertIn(f"star-label-42-{mode}", ids)
             style = root.find("{http://www.w3.org/2000/svg}style").text
             self.assertIn('[id^="star-label-"][id$="-latin"]', style)
-            self.assertIn('svg[data-notation-mode="mixed"] [id^="star-label-"]', style)
+            self.assertIn('svg[data-notation-mode="3"] [id^="star-label-"]', style)
 
     def test_displaced_leader_path_switches_with_its_label(self):
         x, y = self.ax.transData.transform((0.5, 0.5))

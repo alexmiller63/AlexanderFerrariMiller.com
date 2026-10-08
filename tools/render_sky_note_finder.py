@@ -30,6 +30,7 @@ if str(REPO_ROOT) not in sys.path:
 
 from render_stellar_finders import greek_bayer_symbol, load_hyg, marker_area, project, spherical_center, star_index
 from tools.constellation_names import constellation_names
+from tools.notation_modes import refresh_document, SVG_MODE_SCRIPT
 
 NIGHT = "#071423"
 STAR = "#f7f7f2"
@@ -243,21 +244,21 @@ def add_constellation_notation(output):
     ET.register_namespace("xlink", "http://www.w3.org/1999/xlink")
     tree = ET.parse(output)
     root = tree.getroot()
-    root.set("data-notation-mode", "greek")
+    root.set("data-notation-mode", "1")
     style = ET.SubElement(root, f"{{{ns}}}style")
     style.text = '''
     [id^="constellation-"][id$="-latin"],
     [id^="constellation-"][id$="-mixed"],
     [id^="star-label-"][id$="-latin"],
     [id^="star-label-"][id$="-mixed"] { display:none }
-    svg[data-notation-mode="latin"] [id^="constellation-"][id$="-greek"],
-    svg[data-notation-mode="mixed"] [id^="constellation-"][id$="-greek"],
-    svg[data-notation-mode="latin"] [id^="star-label-"][id$="-greek"],
-    svg[data-notation-mode="mixed"] [id^="star-label-"][id$="-greek"] { display:none }
-    svg[data-notation-mode="latin"] [id^="constellation-"][id$="-latin"],
-    svg[data-notation-mode="mixed"] [id^="constellation-"][id$="-mixed"],
-    svg[data-notation-mode="latin"] [id^="star-label-"][id$="-latin"],
-    svg[data-notation-mode="mixed"] [id^="star-label-"][id$="-mixed"] { display:inline }
+    svg[data-notation-mode="2"] [id^="constellation-"][id$="-greek"],
+    svg[data-notation-mode="3"] [id^="constellation-"][id$="-greek"],
+    svg[data-notation-mode="2"] [id^="star-label-"][id$="-greek"],
+    svg[data-notation-mode="3"] [id^="star-label-"][id$="-greek"] { display:none }
+    svg[data-notation-mode="2"] [id^="constellation-"][id$="-latin"],
+    svg[data-notation-mode="3"] [id^="constellation-"][id$="-mixed"],
+    svg[data-notation-mode="2"] [id^="star-label-"][id$="-latin"],
+    svg[data-notation-mode="3"] [id^="star-label-"][id$="-mixed"] { display:inline }
     [data-notation-choice] { cursor:pointer; fill:#f3f5f7 }
     [data-notation-choice][aria-pressed="true"] { fill:#ffd84d; text-decoration:underline }
     '''
@@ -267,39 +268,19 @@ def add_constellation_notation(output):
         "x": str(x), "y": str(y + height), "width": str(width),
         "height": "30", "fill": NIGHT,
     })
-    for fraction, mode, label in ((.2, "greek", "Greek / Symbols"),
-                                   (.5, "latin", "Latin"), (.8, "mixed", "Mixed")):
+    for fraction, mode, label in ((.2, "1", "Greek / Symbols"),
+                                   (.5, "2", "English"), (.8, "3", "Mixed")):
         button = ET.SubElement(root, f"{{{ns}}}text", {
             "x": str(x + width * fraction), "y": str(y + height + 19),
             "text-anchor": "middle", "font-size": "11", "font-family": "sans-serif",
             "role": "button", "tabindex": "0", "data-notation-choice": mode,
-            "aria-pressed": "true" if mode == "greek" else "false",
+            "aria-pressed": "true" if mode == "1" else "false",
         })
         button.text = label
     script = ET.SubElement(root, f"{{{ns}}}script", {"type": "application/ecmascript"})
-    script.text = '''
-    (function () {
-      const root = document.documentElement;
-      const choices = root.querySelectorAll('[data-notation-choice]');
-      function update() {
-        const candidate = location.hash.slice(1);
-        const mode = ['greek','latin','mixed'].includes(candidate) ? candidate : 'greek';
-        root.setAttribute('data-notation-mode', mode);
-        choices.forEach(button => button.setAttribute('aria-pressed',
-          String(button.getAttribute('data-notation-choice') === mode)));
-      }
-      choices.forEach(button => {
-        function select() { location.hash = button.getAttribute('data-notation-choice'); update(); }
-        button.addEventListener('click', select);
-        button.addEventListener('keydown', event => {
-          if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); select(); }
-        });
-      });
-      window.addEventListener('hashchange', update);
-      update();
-    })();
-    '''
+    script.text = SVG_MODE_SCRIPT
     tree.write(output, encoding="utf-8", xml_declaration=True)
+    output.write_text(refresh_document(output.read_text(encoding="utf-8")), encoding="utf-8")
 
 
 def place_named_constellation(ax, name, abbreviation, point, occupied_labels,

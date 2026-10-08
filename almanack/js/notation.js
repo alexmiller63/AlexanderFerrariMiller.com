@@ -1,4 +1,21 @@
 (function () {
+  const modeIds = {1:'1',2:'2',3:'3',greek:'1',symbols:'1',latin:'2',english:'2',mixed:'3'};
+  const modeKeys = {'1':'greek','2':'latin','3':'mixed'};
+  function modeId(value) { return modeIds[value] || '1'; }
+  // Upgrade existing generated pages without changing their notation payloads.
+  document.querySelectorAll('[data-bayer-mode]').forEach(function(button){
+    button.dataset.bayerMode = modeId(button.dataset.bayerMode);
+    if(button.dataset.bayerMode === '2') button.textContent = 'English';
+  });
+  document.querySelectorAll('[data-finder-mode], [data-finder-image]').forEach(function(figure){
+    if(figure.dataset.finderMode) figure.dataset.finderMode = modeId(figure.dataset.finderMode);
+    if(figure.dataset.finderImage) figure.dataset.finderImage = modeId(figure.dataset.finderImage);
+    if((figure.dataset.finderMode || figure.dataset.finderImage) === '2') {
+      const caption = figure.querySelector('figcaption');
+      if(caption) caption.textContent = 'English';
+      figure.querySelectorAll('img').forEach(function(image){image.alt = image.alt.replace('Latin', 'English');});
+    }
+  });
   const greekNames = {
     'α':'Alpha','β':'Beta','γ':'Gamma','δ':'Delta','ε':'Epsilon','ζ':'Zeta','η':'Eta','θ':'Theta',
     'ι':'Iota','κ':'Kappa','λ':'Lambda','μ':'Mu','ν':'Nu','ξ':'Xi','ο':'Omicron','π':'Pi',
@@ -55,11 +72,11 @@
   function toggleScope(button){const wrapper=button.closest('.section-notation-toggle');if(wrapper&&wrapper.dataset.notationTarget)return wrapper.dataset.notationTarget;if(!wrapper)return'page';let next=wrapper.nextElementSibling;if(next&&next.matches('h3')){if(next.textContent.trim()==='Calendar')return'calendar';if(next.textContent.trim()==='Planet Finder')return'finder';if(next.textContent.trim()==='Weekly Solar-System Ephemeris')return'ephemeris';}let previous=wrapper.previousElementSibling;while(previous){if(previous.matches('h3')){if(previous.textContent.trim()==='Weekly Solar-System Ephemeris')return'ephemeris';break;}previous=previous.previousElementSibling;}return'page';}
   function scopeRoot(scope){if(scope==='calendar')return document.querySelector('table.calendar');if(scope==='ephemeris')return document.querySelector('table.ephemeris')?document.querySelector('main'):null;if(scope==='finder')return document.querySelector('.planet-finder-strip, .w15-finder-strip');return document;}
   function itemBelongsToScope(item,scope){if(scope==='calendar')return!!item.closest('table.calendar');if(scope==='ephemeris')return!!item.closest('table.ephemeris')||!!item.closest('.ephemeris-note');if(scope==='page')return true;return false;}
-  function updateTarget(scope,mode){const root=scopeRoot(scope);if(!root)return;root.querySelectorAll('.notation-item, .notation-rendered').forEach(function(item){if(!itemBelongsToScope(item,scope))return;renderNotation(item,item.dataset[mode]||item.dataset.greek||item.textContent);});if(scope==='calendar'||scope==='page'){root.querySelectorAll('.observing-aid-notation').forEach(function(item){const symbol=item.querySelector('.observing-aid-symbol'),word=item.querySelector('.observing-aid-word');if(!symbol||!word)return;symbol.hidden=mode==='latin';word.hidden=mode==='greek';item.classList.toggle('is-mixed',mode==='mixed');});}if(scope==='finder'||scope==='page'){root.querySelectorAll('[data-finder-mode], [data-finder-image]').forEach(function(figure){const figureMode=figure.dataset.finderMode||figure.dataset.finderImage,active=figureMode===mode;figure.hidden=!active;figure.style.display=active?'':'none';figure.classList.toggle('is-active',active);});}}
+  function updateTarget(scope,mode){const root=scopeRoot(scope);if(!root)return;root.querySelectorAll('.notation-item, .notation-rendered').forEach(function(item){if(!itemBelongsToScope(item,scope))return;renderNotation(item,item.dataset[modeKeys[mode]]||item.dataset.greek||item.textContent);});if(scope==='calendar'||scope==='page'){root.querySelectorAll('.observing-aid-notation').forEach(function(item){const symbol=item.querySelector('.observing-aid-symbol'),word=item.querySelector('.observing-aid-word');if(!symbol||!word)return;symbol.hidden=mode==='2';word.hidden=mode==='1';item.classList.toggle('is-mixed',mode==='3');});}if(scope==='finder'||scope==='page'){root.querySelectorAll('[data-finder-mode], [data-finder-image]').forEach(function(figure){const figureMode=figure.dataset.finderMode||figure.dataset.finderImage,active=figureMode===mode;figure.hidden=!active;figure.style.display=active?'':'none';figure.classList.toggle('is-active',active);});}}
   function syncButtons(mode){document.querySelectorAll('[data-bayer-mode]').forEach(function(button){button.setAttribute('aria-pressed',button.dataset.bayerMode===mode?'true':'false');});}
-  function applyMode(mode){const scopes=new Set();document.querySelectorAll('.bayer-toggle [data-bayer-mode]').forEach(function(button){scopes.add(toggleScope(button));});scopes.forEach(function(scope){updateTarget(scope,mode);});syncButtons(mode);try{localStorage.setItem('star-almanack-bayer-mode',mode);}catch(_){}}
+  function applyMode(mode){mode=modeId(mode);const scopes=new Set();document.querySelectorAll('.bayer-toggle [data-bayer-mode]').forEach(function(button){scopes.add(toggleScope(button));});scopes.forEach(function(scope){updateTarget(scope,mode);});syncButtons(mode);try{localStorage.setItem('star-almanack-bayer-mode',mode);}catch(_){}}
   document.querySelectorAll('[data-bayer-mode]').forEach(function(button){button.addEventListener('click',function(){applyMode(button.dataset.bayerMode);});});
-  let initial='greek';try{const saved=localStorage.getItem('star-almanack-bayer-mode');if(saved==='greek'||saved==='latin'||saved==='mixed')initial=saved;}catch(_){}applyMode(initial);
+  let initial='1';try{initial=modeId(localStorage.getItem('star-almanack-bayer-mode'));}catch(_){}applyMode(initial);
 
   /* Detail is independent of notation. Standard uses whole magnitudes and marks
      only variables spanning at least 1.0 V magnitude. All uses one-decimal

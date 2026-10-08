@@ -27,7 +27,7 @@ def render(
     mode = FinderMode(mode)
     labels = {
         FinderMode.GREEK: "Greek / Symbols",
-        FinderMode.LATIN: "Latin",
+        FinderMode.ENGLISH: "English",
         FinderMode.MIXED: "Mixed / Learner",
     }
     title = labels[mode]
@@ -47,9 +47,9 @@ def render(
         out.append(f'<line x1="{x1:.1f}" y1="{y1:.1f}" x2="{x2:.1f}" y2="{y2:.1f}" stroke="#111" stroke-width="2"/>')
     for i, (symbol, name) in enumerate(SIGNS):
         x, y = xy(i * 30 + 15, (RI + RO) / 2)
-        if mode == "greek":
+        if mode == FinderMode.GREEK:
             text, fs = symbol + "\ufe0e", 48
-        elif mode == "latin":
+        elif mode == FinderMode.ENGLISH:
             text, fs = name, 24
         else:
             text, fs = f'{symbol}\ufe0e {name}', 22
@@ -75,11 +75,11 @@ def render(
             )
         # Search returns the authoritative drawable leader geometry.
         out.append(polyline(path))
-        if mode == "greek":
+        if mode == FinderMode.GREEK:
             out.append(f'<circle cx="{box.x:.1f}" cy="{box.y:.1f}" r="29" fill="white" stroke="#111"/>')
             out.append(f'<text x="{box.x:.1f}" y="{box.y+13:.1f}" text-anchor="middle" font-size="44">{html.escape(symbol)}\ufe0e</text>')
         else:
-            text = name if mode == "latin" else f"{symbol}\ufe0e {name}"
+            text = name if mode == FinderMode.ENGLISH else f"{symbol}\ufe0e {name}"
             out.append(f'<rect x="{box.left:.1f}" y="{box.top:.1f}" width="{box.w:.1f}" height="{box.h:.1f}" rx="10" fill="white" stroke="#111"/>')
             out.append(f'<text x="{box.x:.1f}" y="{box.y+7:.1f}" text-anchor="middle" font-size="18">{html.escape(text)}</text>')
 

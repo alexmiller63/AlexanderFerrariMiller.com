@@ -244,7 +244,7 @@ def route_leader(anchor,target_box,L,mode,obstacles,other_anchors=()):
     raise RuntimeError('No collision-free leader route after visibility-graph search')
 
 def build(mode,year,week,monday,rows):
-    title={'symbols':'Greek / Symbols','latin':'Latin','mixed':'Mixed / Learner'}[mode]
+    title={'symbols':'Greek / Symbols','latin':'English','mixed':'Mixed / Learner'}[mode]
     date=dt.date.fromisoformat(monday); date_label=f"{date.strftime('%A, %B')} {date.day}, {date.year}"
     s=['<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="1400" viewBox="0 0 1400 1400">','<rect width="100%" height="100%" fill="white"/>','<style>text{font-family:Georgia,"Times New Roman",serif;fill:#111}.sans{font-family:Arial,Helvetica,sans-serif}.symbol{font-family:"Arial Unicode MS","Segoe UI Symbol","Noto Sans Symbols 2","Apple Symbols",serif;font-variant-emoji:text;fill:#111}</style>',f'<text x="700" y="72" text-anchor="middle" font-size="38" font-weight="700">ISO {year}-W{week:02d} Planet Finder</text>',f'<text x="700" y="110" text-anchor="middle" font-size="23">{title} · {date_label} · 00:00 UTC</text>','<circle cx="700" cy="700" r="560" fill="none" stroke="#111" stroke-width="4"/>','<circle cx="700" cy="700" r="430" fill="none" stroke="#111" stroke-width="2"/>']
     for i in range(12):

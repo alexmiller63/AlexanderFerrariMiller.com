@@ -73,7 +73,7 @@ table.ephemeris small { white-space:nowrap; }
 
 
 def notation_toggle(target):
-    return (f'<div class="bayer-toggle-wrap section-notation-toggle" data-notation-target="{target}"><div class="bayer-toggle" role="group" aria-label="Astronomical notation"><span class="bayer-toggle-label">Notation:</span><button type="button" data-bayer-mode="greek" aria-pressed="true">Greek/Symbols</button><button type="button" data-bayer-mode="latin" aria-pressed="false">Latin</button><button type="button" data-bayer-mode="mixed" data-legacy-label="Mixed · Learner" aria-pressed="false">Mixed Learner</button></div></div>')
+    return (f'<div class="bayer-toggle-wrap section-notation-toggle" data-notation-target="{target}"><div class="bayer-toggle" role="group" aria-label="Astronomical notation"><span class="bayer-toggle-label">Notation:</span><button type="button" data-bayer-mode="1" aria-pressed="true">Greek/Symbols</button><button type="button" data-bayer-mode="2" aria-pressed="false">English</button><button type="button" data-bayer-mode="3" data-legacy-label="Mixed · Learner" aria-pressed="false">Mixed Learner</button></div></div>')
 
 
 def week_count(year): return date(year, 12, 28).isocalendar().week
@@ -178,7 +178,7 @@ def render_observing_status(key, sample_values):
 
 def planet_finder(year, week):
     base = "finders"
-    return ('<div class="planet-finder-strip w15-finder-strip">' f'<figure data-finder-mode="greek" class="is-active"><img src="{base}/planet-finder-greek-symbols.svg" alt="Planet Finder — Greek / Symbols"><figcaption>Greek / Symbols</figcaption></figure>' f'<figure data-finder-mode="latin"><img src="{base}/planet-finder-latin.svg" alt="Planet Finder — Latin"><figcaption>Latin</figcaption></figure>' f'<figure data-finder-mode="mixed"><img src="{base}/planet-finder-mixed-learner.svg" alt="Planet Finder — Mixed Learner"><figcaption>Mixed Learner</figcaption></figure>' '</div>')
+    return ('<div class="planet-finder-strip w15-finder-strip">' f'<figure data-finder-mode="1" class="is-active"><img src="{base}/planet-finder-greek-symbols.svg" alt="Planet Finder — Greek / Symbols"><figcaption>Greek / Symbols</figcaption></figure>' f'<figure data-finder-mode="2"><img src="{base}/planet-finder-latin.svg" alt="Planet Finder — English"><figcaption>English</figcaption></figure>' f'<figure data-finder-mode="3"><img src="{base}/planet-finder-mixed-learner.svg" alt="Planet Finder — Mixed Learner"><figcaption>Mixed Learner</figcaption></figure>' '</div>')
 
 
 def render_sections(monday, values):

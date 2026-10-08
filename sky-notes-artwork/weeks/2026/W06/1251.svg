@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:ns2="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:xlink="http://www.w3.org/1999/xlink" width="100%" viewBox="0.0 0.0 445.848694 537.888819" version="1.1" data-notation-mode="greek" style="display:block;width:100%;height:auto" preserveAspectRatio="xMidYMid meet">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:ns2="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:xlink="http://www.w3.org/1999/xlink" width="100%" viewBox="0.0 0.0 445.848694 537.888819" version="1.1" data-notation-mode="1" style="display:block;width:100%;height:auto" preserveAspectRatio="xMidYMid meet">
  <metadata>
   <rdf:RDF>
    <ns2:Work>
@@ -1180,31 +1180,31 @@
 <style>
     [id^="constellation-"][id$="-latin"],
     [id^="constellation-"][id$="-mixed"] { display:none }
-    svg[data-notation-mode="latin"] [id^="constellation-"][id$="-greek"],
-    svg[data-notation-mode="mixed"] [id^="constellation-"][id$="-greek"] { display:none }
-    svg[data-notation-mode="latin"] [id^="constellation-"][id$="-latin"],
-    svg[data-notation-mode="mixed"] [id^="constellation-"][id$="-mixed"] { display:inline }
+    svg[data-notation-mode="2"] [id^="constellation-"][id$="-greek"],
+    svg[data-notation-mode="3"] [id^="constellation-"][id$="-greek"] { display:none }
+    svg[data-notation-mode="2"] [id^="constellation-"][id$="-latin"],
+    svg[data-notation-mode="3"] [id^="constellation-"][id$="-mixed"] { display:inline }
     [data-notation-choice] { cursor:pointer; fill:#f3f5f7 }
     [data-notation-choice][aria-pressed="true"] { fill:#ffd84d; text-decoration:underline }
-    </style><rect x="0.0" y="507.888819" width="445.848694" height="30" fill="#071423" /><text x="89.1697388" y="526.888819" text-anchor="middle" font-size="11" font-family="sans-serif" role="button" tabindex="0" data-notation-choice="greek" aria-pressed="true">Greek / Symbols</text><text x="222.924347" y="526.888819" text-anchor="middle" font-size="11" font-family="sans-serif" role="button" tabindex="0" data-notation-choice="latin" aria-pressed="false">Latin</text><text x="356.6789552" y="526.888819" text-anchor="middle" font-size="11" font-family="sans-serif" role="button" tabindex="0" data-notation-choice="mixed" aria-pressed="false">Mixed</text><script type="application/ecmascript">
-    (function () {
-      const root = document.documentElement;
-      const choices = root.querySelectorAll('[data-notation-choice]');
-      function update() {
-        const candidate = location.hash.slice(1);
-        const mode = ['greek','latin','mixed'].includes(candidate) ? candidate : 'greek';
-        root.setAttribute('data-notation-mode', mode);
-        choices.forEach(button =&gt; button.setAttribute('aria-pressed',
-          String(button.getAttribute('data-notation-choice') === mode)));
-      }
-      choices.forEach(button =&gt; {
-        function select() { location.hash = button.getAttribute('data-notation-choice'); update(); }
-        button.addEventListener('click', select);
-        button.addEventListener('keydown', event =&gt; {
-          if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); select(); }
-        });
-      });
-      window.addEventListener('hashchange', update);
-      update();
-    })();
-    </script></svg>
+    </style><rect x="0.0" y="507.888819" width="445.848694" height="30" fill="#071423" /><text x="89.1697388" y="526.888819" text-anchor="middle" font-size="11" font-family="sans-serif" role="button" tabindex="0" data-notation-choice="1" aria-pressed="true">Greek / Symbols</text><text x="222.924347" y="526.888819" text-anchor="middle" font-size="11" font-family="sans-serif" role="button" tabindex="0" data-notation-choice="2" aria-pressed="false">English</text><text x="356.6789552" y="526.888819" text-anchor="middle" font-size="11" font-family="sans-serif" role="button" tabindex="0" data-notation-choice="3" aria-pressed="false">Mixed</text><script type="application/ecmascript">
+(function () {
+  const root = document.documentElement;
+  const aliases = {1:'1',2:'2',3:'3',greek:'1',symbols:'1',latin:'2',english:'2',mixed:'3'};
+  const choices = root.querySelectorAll('[data-notation-choice]');
+  function update() {
+    const mode = aliases[location.hash.slice(1)] || '1';
+    root.setAttribute('data-notation-mode', mode);
+    choices.forEach(button => button.setAttribute('aria-pressed',
+      String(button.getAttribute('data-notation-choice') === mode)));
+  }
+  choices.forEach(button => {
+    function select() { location.hash = button.getAttribute('data-notation-choice'); update(); }
+    button.addEventListener('click', select);
+    button.addEventListener('keydown', event => {
+      if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); select(); }
+    });
+  });
+  window.addEventListener('hashchange', update);
+  update();
+})();
+</script></svg>

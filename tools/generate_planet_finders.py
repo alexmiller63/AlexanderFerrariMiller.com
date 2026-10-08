@@ -38,7 +38,7 @@ def generate_week(year: int, week: int):
     outdir.mkdir(parents=True, exist_ok=True)
     filenames = {
         FinderMode.GREEK: "planet-finder-greek-symbols.svg",
-        FinderMode.LATIN: "planet-finder-latin.svg",
+        FinderMode.ENGLISH: "planet-finder-latin.svg",
         FinderMode.MIXED: "planet-finder-mixed-learner.svg",
     }
     # Generate the complete 3-mode set in memory first. A failure in any mode

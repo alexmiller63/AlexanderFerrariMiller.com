@@ -139,7 +139,7 @@ def first_level_forward_audit(mode,bodies,displacement_scale=2.0,first_limit=12)
 
 
 def main():
-    p=argparse.ArgumentParser(); p.add_argument("--mode",choices=[m.value for m in FinderMode],default="greek"); p.add_argument("--center",type=float,default=15.0); p.add_argument("--span",type=float,default=6.0); p.add_argument("--candidates",type=int,default=1); p.add_argument("--body-cap",type=int,default=200); p.add_argument("--seconds",type=float,default=180.0); p.add_argument("--diagnostic",type=int,default=3); a=p.parse_args()
+    p=argparse.ArgumentParser(); p.add_argument("--mode",type=int,choices=[m.value for m in FinderMode],default=1); p.add_argument("--center",type=float,default=15.0); p.add_argument("--span",type=float,default=6.0); p.add_argument("--candidates",type=int,default=1); p.add_argument("--body-cap",type=int,default=200); p.add_argument("--seconds",type=float,default=180.0); p.add_argument("--diagnostic",type=int,default=3); a=p.parse_args()
     os.environ["PLANET_FINDER_DIAGNOSTIC_LEVEL"]=str(a.diagnostic); os.environ["PLANET_FINDER_MAX_NODE_CANDIDATES"]=str(a.body_cap); os.environ["PLANET_FINDER_MAX_SECONDS"]=str(a.seconds)
     mode=FinderMode(a.mode); bodies=crowded_bodies(a.center,a.span)
     print("WHITE BOX: all bodies deliberately crowded into one zodiac sign"); print(f"mode={a.mode} center={a.center:g} span={a.span:g} candidates={a.candidates}")

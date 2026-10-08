@@ -57,9 +57,9 @@ def notation_toggle(target):
         f'<div class="bayer-toggle-wrap section-notation-toggle" data-notation-target="{target}">'
         '<div class="bayer-toggle" role="group" aria-label="Astronomical notation">'
         '<span class="bayer-toggle-label">Notation:</span>'
-        '<button type="button" data-bayer-mode="greek" aria-pressed="true">Greek/Symbols</button>'
-        '<button type="button" data-bayer-mode="latin" aria-pressed="false">Latin</button>'
-        '<button type="button" data-bayer-mode="mixed" data-legacy-label="Mixed · Learner" aria-pressed="false">Mixed Learner</button>'
+        '<button type="button" data-bayer-mode="1" aria-pressed="true">Greek/Symbols</button>'
+        '<button type="button" data-bayer-mode="2" aria-pressed="false">English</button>'
+        '<button type="button" data-bayer-mode="3" data-legacy-label="Mixed · Learner" aria-pressed="false">Mixed Learner</button>'
         '</div></div>'
     )
 

@@ -11,6 +11,7 @@ from dataclasses import dataclass
 from enum import Enum, auto
 
 from populate_ephemeris import TARGETS
+from notation_modes import NotationMode as FinderMode
 
 W = H = 1400
 CX = CY = 700
@@ -113,16 +114,6 @@ def alignment_groups(bodies, threshold: float = ALIGNMENT_DEGREES):
     from the complete body population at the alignment threshold.
     """
     return conjunction_groups(bodies, threshold=threshold)
-
-
-class FinderMode(str, Enum):
-    """Presentation modes for Planet Finder charts."""
-    GREEK = "greek"
-    LATIN = "latin"
-    MIXED = "mixed"
-
-    def __str__(self) -> str:
-        return self.value
 
 
 class Body(Enum):
@@ -326,10 +317,11 @@ def leader_hits_zodiac_rim(path, clearance: float = LEADER_RIM_CLEARANCE) -> boo
     return False
 
 
-def label_size(mode: str, name: str) -> tuple[float, float]:
-    if mode == "greek":
+def label_size(mode: FinderMode, name: str) -> tuple[float, float]:
+    mode = FinderMode(mode)
+    if mode == FinderMode.GREEK:
         return 64, 64
-    if mode == "latin":
+    if mode == FinderMode.ENGLISH:
         return max(104, 13 * len(name) + 28), 50
     return max(132, 13 * len(name) + 68), 50
 
@@ -341,12 +333,13 @@ def reserved_boxes(mode: str) -> list[Box]:
     can enter the DFS candidate set.  Keep them deliberately conservative:
     rendered text must fit *inside* its obstacle, never merely approximate it.
     """
+    mode = FinderMode(mode)
     boxes = [Box(CX, 682, 520, 40), Box(CX, 722, 690, 34), Box(CX, 757, 440, 34)]
     for i, (_, name) in enumerate(SIGNS):
         x, y = xy(i * 30 + 15, (RI + RO) / 2)
-        if mode == "greek":
+        if mode == FinderMode.GREEK:
             boxes.append(Box(x, y, 76, 76))
-        elif mode == "latin":
+        elif mode == FinderMode.ENGLISH:
             boxes.append(Box(x, y, max(62, 13 * len(name) + 12), 36))
         else:
             boxes.append(Box(x, y, max(78, 12 * len(name) + 38), 34))

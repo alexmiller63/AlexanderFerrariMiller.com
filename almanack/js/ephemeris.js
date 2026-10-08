@@ -89,15 +89,11 @@
   }
 
   function currentNotationMode() {
+    const aliases = {1:'1',2:'2',3:'3',greek:'1',latin:'2',english:'2',mixed:'3'};
     const pressed = document.querySelector('[data-bayer-mode][aria-pressed="true"]');
-    if (pressed && (pressed.dataset.bayerMode === 'greek' || pressed.dataset.bayerMode === 'latin' || pressed.dataset.bayerMode === 'mixed')) {
-      return pressed.dataset.bayerMode;
-    }
-    try {
-      const saved = localStorage.getItem('star-almanack-bayer-mode');
-      if (saved === 'greek' || saved === 'latin' || saved === 'mixed') return saved;
-    } catch (_) {}
-    return 'greek';
+    if (pressed && aliases[pressed.dataset.bayerMode]) return aliases[pressed.dataset.bayerMode];
+    try { return aliases[localStorage.getItem('star-almanack-bayer-mode')] || '1'; }
+    catch (_) { return '1'; }
   }
 
   function specialHtml(label, mode) {
@@ -111,8 +107,8 @@
     const symbol = glyph
       ? '<img class="visibility-glyph" src="../../../assets/almanack/visibility-glyphs/masters/' + glyph[0] + '.svg" alt="' + label + '" aria-label="' + label + '" title="' + label + ' — ' + glyph[1] + '">'
       : '<span class="text-symbol" role="img" aria-label="' + label + '" title="' + label + '">☉︎</span>';
-    if (mode === 'greek') return symbol;
-    if (mode === 'latin') return label;
+    if (mode === '1') return symbol;
+    if (mode === '2') return label;
     return symbol + ' ' + label;
   }
 
@@ -126,9 +122,9 @@
     const greek = item.dataset.greek;
     const latin = item.dataset.latin;
     const mixed = item.dataset.mixed;
-    if (mode === 'greek' && greek) item.innerHTML = greek;
-    else if (mode === 'latin' && latin) item.textContent = latin;
-    else if (mode === 'mixed' && mixed) item.innerHTML = mixed;
+    if (mode === '1' && greek) item.innerHTML = greek;
+    else if (mode === '2' && latin) item.textContent = latin;
+    else if (mode === '3' && mixed) item.innerHTML = mixed;
   }
 
   function update(root) {
