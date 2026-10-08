@@ -1046,7 +1046,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         for group in alignment_groups(alignment_source)
     ]
 
-    def plan_alignment_layer(groups=None):
+    def plan_alignment_layer(groups=None, *, stagger=False):
         """Preplace groups as one ordered, route-compatible layer.
 
         This is the shared coordinated-placement algorithm for both ordinary
@@ -1198,6 +1198,24 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                     2.0 * math.asin(min(1.0, tangential_px / (2.0 * radius)))
                 )
             gap_deg = math.degrees(14.0 / radius)
+            # Interleave crowded labels on two radial lanes. Their lane
+            # separation must accommodate the rendered boxes, rather than
+            # simply taking the next preferred radius (often only 45px away).
+            # These are planning preferences; exact boxes and routes below
+            # still decide whether the joint placement is legal.
+            radial_lanes = tuple(PREFERRED_LABEL_RADII) + tuple(EXPANDED_LABEL_RADII)
+            outer_radius = float(PREFERRED_LABEL_RADII[0])
+            if stagger and len(names) >= 3:
+                radial_clearance = max(max(label_size(mode, member)) for member in names)
+                inner_limit = outer_radius - radial_clearance - LABEL_COLLISION_PADDING
+                inner_radius = next((float(r) for r in radial_lanes if r <= inner_limit), None)
+                if inner_radius is not None:
+                    radial_lanes = (outer_radius, inner_radius)
+                    # Each lane holds alternating members, so begin with half
+                    # the single-ring angular footprint. Keep the normal gaps
+                    # and all candidates: a tight preference never relaxes a
+                    # collision check or freezes the plan during backtracking.
+                    widths_deg = {member: width / 2.0 for member, width in widths_deg.items()}
             packed_deg = sum(widths_deg.values()) + gap_deg * (len(names) - 1)
             natural_angles = []
             for member in names:
@@ -1218,7 +1236,6 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             # of forcing every label onto one ring.  These are real legal
             # candidates from the expanded +/-3-label-length planner lattice;
             # the complete compatible selection is staged before ordinary DFS.
-            radial_lanes = tuple(PREFERRED_LABEL_RADII) + tuple(EXPANDED_LABEL_RADII)
             if not radial_lanes:
                 radial_lanes = (RI - 90.0,)
             lane_targets = {}
@@ -1234,10 +1251,16 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             for member in names:
                 target = targets[member]
                 target_radius = lane_targets[member]
+                target_x, target_y = xy(target + reference, target_radius)
                 pools[member].sort(
                     key=lambda row: (
-                        angular_distance(label_angle(row, reference), target),
-                        abs(math.hypot(row[0] - CX, row[1] - CY) - target_radius),
+                        # Rank against the actual staggered slot. Lexically
+                        # preferring angle before radius effectively discards
+                        # the radial lane whenever angles differ slightly.
+                        (math.hypot(row[0] - target_x, row[1] - target_y)
+                         if stagger else angular_distance(label_angle(row, reference), target)),
+                        (0.0 if stagger else
+                         abs(math.hypot(row[0] - CX, row[1] - CY) - target_radius)),
                         -math.hypot(
                             row[0] - xy(longitudes[member], PREFERRED_LABEL_RADII[0])[0],
                             row[1] - xy(longitudes[member], PREFERRED_LABEL_RADII[0])[1],
@@ -1245,7 +1268,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                     )
                 )
             diagnostic_print(
-                f"Planet Finder {mode}: ALIGNMENT WIDE STAGGER PREPLAN "
+                f"Planet Finder {mode}: ALIGNMENT WIDE STAGGER PREPLAN variant={'spatial' if stagger else 'angular'} "
                 f"members={names} packed={packed_deg:.2f}deg "
                 f"targets={{{', '.join(f'{member}:{targets[member]:.2f}@r{lane_targets[member]:.1f}' for member in names)}}}",
                 level=1, flush=True,
@@ -3740,6 +3763,14 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         # Plan the crowded layer as a whole.  The planner now reserves wide
         # tangential slots for all members before any one member is committed.
         alignment_preplacement = plan_alignment_layer()
+        if alignment_preplacement is None and alignment_group_items:
+            check_deadline()
+            diagnostic_print(
+                f"Planet Finder {mode}: ALIGNMENT SPATIAL STAGGER RETRY "
+                "planning labels and routes before recursive fallback",
+                level=1, flush=True,
+            )
+            alignment_preplacement = plan_alignment_layer(stagger=True)
         diagnostic_print(
             f"Planet Finder {mode}: PRE-DFS TIMING alignment-plan END "
             f"elapsed={time.monotonic() - phase_started:.3f}s "
