@@ -30,6 +30,7 @@ TELESCOPE_MAX_MAGNITUDE = 12.0
 SUN_HORIZON_DEG = -0.8333
 STANDARD_HORIZON_DEG = -0.5667
 SIGNS = "♈♉♊♋♌♍♎♏♐♑♒♓"
+SIGN_NAMES = ("Aries", "Taurus", "Gemini", "Cancer", "Leo", "Virgo", "Libra", "Scorpio", "Sagittarius", "Capricorn", "Aquarius", "Pisces")
 
 TARGETS = [
     ("☉ Sun", "sun", "sun"), ("☽ Moon", "moon", "moon"), ("☿ Mercury", "mercury", "mercury"),
@@ -110,14 +111,16 @@ def zodiac_text(longitude):
 def zodiac(longitude):
     position = zodiac_text(longitude)
     glyph, value = position.split(" ", 1)
-    return f"{symbol_html(glyph)} {value}"
+    return f'{target_heading(f"{glyph} {SIGN_NAMES[SIGNS.index(glyph)]}")} {value}'
 
 
 def beta(latitude):
     sign = "+" if latitude >= 0 else "−"
     minutes = int(round(abs(latitude) * 60))
     degree, minute = divmod(minutes, 60)
-    return f"β {sign}{degree}°{minute:02d}′"
+    return ('<span class="notation-item ephemeris-notation-item" '
+            'data-greek="β" data-latin="Beta" data-mixed="β Beta">β</span> '
+            f"{sign}{degree}°{minute:02d}′")
 
 
 def current_visibility(key, magnitude, elongation, daylight=False):

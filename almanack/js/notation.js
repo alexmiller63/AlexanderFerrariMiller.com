@@ -21,7 +21,21 @@
     symbol.style.display='inline-block'; symbol.style.fontFamily="'Apple Symbols','Arial Unicode MS','Segoe UI Symbol','Noto Sans Symbols 2',serif"; symbol.style.fontVariantEmoji='text'; symbol.style.fontSize=item.closest('table.ephemeris')?'1.5em':'2em'; symbol.style.lineHeight='.75'; symbol.style.verticalAlign='-.12em'; item.append(symbol,document.createTextNode(value.slice(consumed)));
   }
 
-  document.querySelectorAll('.zodiac-glyph').forEach(function(item){const glyph=item.textContent.charAt(0);if(!zodiacNames[glyph])return;if(item.closest('table.calendar tbody td:nth-child(2)')){item.classList.remove('zodiac-glyph');item.style.display='block';item.style.whiteSpace='pre-line';}item.classList.add('notation-item');item.dataset.greek=glyph+VS;item.dataset.latin=zodiacNames[glyph];item.dataset.mixed=glyph+VS+'\n'+zodiacNames[glyph];});
+  document.querySelectorAll('.zodiac-glyph, table.ephemeris .ephemeris-symbol').forEach(function(item){if(item.closest('.notation-item,.notation-rendered'))return;const glyph=item.textContent.charAt(0);if(!zodiacNames[glyph])return;if(item.closest('table.ephemeris')){item.classList.remove('ephemeris-symbol');item.classList.add('ephemeris-notation-item');}if(item.closest('table.calendar tbody td:nth-child(2)')){item.classList.remove('zodiac-glyph');item.style.display='block';item.style.whiteSpace='pre-line';}item.classList.add('notation-item');item.dataset.greek=glyph+VS;item.dataset.latin=zodiacNames[glyph];item.dataset.mixed=glyph+VS+'\n'+zodiacNames[glyph];});
+
+  document.querySelectorAll('table.ephemeris .greek-letter').forEach(function(item){if(item.closest('.notation-item,.notation-rendered'))return;const letter=item.textContent.replace(/\ufe0e/g,'').trim();if(!greekNames[letter])return;item.replaceWith(notationSpan(letter,greekNames[letter],letter+' '+greekNames[letter]));});
+
+  document.querySelectorAll('table.ephemeris small').forEach(function(cell){
+    const nodes=[],walker=document.createTreeWalker(cell,NodeFilter.SHOW_TEXT);
+    while(walker.nextNode()){
+      if(!walker.currentNode.parentElement.closest('.notation-item,.notation-rendered')&&walker.currentNode.nodeValue.includes('β'))nodes.push(walker.currentNode);
+    }
+    nodes.forEach(function(node){
+      const parts=node.nodeValue.split('β'),fragment=document.createDocumentFragment();
+      parts.forEach(function(part,index){if(index)fragment.append(notationSpan('β','Beta','β Beta'));fragment.append(document.createTextNode(part));});
+      node.replaceWith(fragment);
+    });
+  });
 
   const main=document.querySelector('main');
   if(main){
