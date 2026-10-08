@@ -58,7 +58,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Build each week through all 7 stages
+      - name: Build and publish each week through all 8 stages
         env:
           GH_TOKEN: ${{ github.token }}
           START_YEAR: ${{ inputs.start_year }}
@@ -85,7 +85,7 @@ jobs:
 
           echo "Resolved ${#WEEKS[@]} ISO week(s): ${WEEKS[*]}"
 
-          total_stages=$((${#WEEKS[@]} * 7))
+          total_stages=$((${#WEEKS[@]} * 8))
           completed_stages=0
 
 
@@ -233,7 +233,10 @@ jobs:
             git fetch origin main
             git reset --hard origin/main
 
-            report_progress COMPLETE "All seven stages finished"
+            report_progress BUILDING "Deployment"
+            run_stage deploy.yml
+
+            report_progress COMPLETE "All seven generator stages and deployment finished"
 
             echo "::endgroup::"
           done
