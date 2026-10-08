@@ -1,16 +1,29 @@
 {
-  "name": "Chamaeleon",
-  "constellation_abbreviation": "Cha",
+  "name": "Taurus",
+  "target": "Aldebaran",
   "figure_paths": [
     [
-      "HIP 51839",
-      "HIP 52633",
-      "HIP 60000",
-      "HIP 58484",
-      "HIP 51839",
-      "HIP 40702"
+      "HIP 18907",
+      "HIP 16083",
+      "HIP 18724",
+      "HIP 20205",
+      "HIP 20894",
+      "HIP 21421",
+      "HIP 26451"
+    ],
+    [
+      "HIP 20205",
+      "HIP 20455",
+      "HIP 20889",
+      "HIP 21881",
+      "HIP 25428"
+    ],
+    [
+      "HIP 15900",
+      "HIP 16852"
     ]
   ],
+  "asterisms": [],
   "candidate_constellations": [
     {
       "abbreviation": "And",
@@ -1768,7 +1781,6 @@
       ]
     }
   ],
-  "guide_constellations": [],
   "candidate_asterisms": [
     {
       "id": 1362,
@@ -2210,58 +2222,218 @@
       ]
     }
   ],
-  "asterisms": [],
   "deep_sky_objects": [],
-  "fixed_object_identities": [
+  "finder_relation": {
+    "sequence": [
+      "Taurus",
+      "Aldebaran",
+      "Uranus"
+    ],
+    "orientation": "constellation-stick-figure",
+    "reference_star": "Aldebaran",
+    "planet": "Uranus",
+    "finder_note": "Uranus is not easy to find this week.",
+    "sky_separation_deg": 13.3
+  },
+  "planet_position": {
+    "ra_deg": 55.333471,
+    "dec_deg": 19.440556
+  },
+  "guide_objects": [
     {
-      "fixed_object_id": 900,
-      "renderer_ref": "HIP 51839",
-      "identifiers": {
-        "hip": "51839"
-      }
-    },
-    {
-      "fixed_object_id": 903,
-      "renderer_ref": "HIP 52633",
-      "identifiers": {
-        "hip": "52633"
-      }
-    },
-    {
-      "fixed_object_id": 945,
-      "renderer_ref": "HIP 60000",
-      "identifiers": {
-        "hip": "60000"
-      },
-      "proper_name": "β Cha",
-      "constellation_abbreviation": "Cha",
-      "bayer": "β"
-    },
-    {
-      "fixed_object_id": 937,
-      "renderer_ref": "HIP 58484",
-      "identifiers": {
-        "hip": "58484"
-      }
-    },
-    {
-      "fixed_object_id": 845,
-      "renderer_ref": "HIP 40702",
-      "identifiers": {
-        "hip": "40702"
-      },
-      "proper_name": "α Cha",
-      "constellation_abbreviation": "Cha",
-      "bayer": "α"
+      "type": "reference-star",
+      "name": "Aldebaran",
+      "fixed_object_id": 25
     }
   ],
-  "artwork_owner_identity": {
-    "fixed_object_id": 845,
-    "name": "α Cha",
-    "proper_name": "α Cha",
-    "constellation_abbreviation": "Cha",
-    "bayer": "α",
-    "renderer_ref": "HIP 40702"
+  "fixed_object_identities": [
+    {
+      "fixed_object_id": 713,
+      "renderer_ref": "HIP 18907",
+      "identifiers": {
+        "hip": "18907"
+      }
+    },
+    {
+      "fixed_object_id": 690,
+      "renderer_ref": "HIP 16083",
+      "identifiers": {
+        "hip": "16083"
+      }
+    },
+    {
+      "fixed_object_id": 712,
+      "renderer_ref": "HIP 18724",
+      "identifiers": {
+        "hip": "18724"
+      }
+    },
+    {
+      "fixed_object_id": 21,
+      "renderer_ref": "HIP 20205",
+      "identifiers": {
+        "hip": "20205"
+      },
+      "proper_name": "Prima Hyadum"
+    },
+    {
+      "fixed_object_id": 24,
+      "renderer_ref": "HIP 20894",
+      "identifiers": {
+        "hip": "20894"
+      },
+      "proper_name": "Chamukuy"
+    },
+    {
+      "fixed_object_id": 25,
+      "renderer_ref": "HIP 21421",
+      "identifiers": {
+        "hip": "21421"
+      },
+      "proper_name": "Aldebaran",
+      "constellation_abbreviation": "Tau",
+      "bayer": "Alp"
+    },
+    {
+      "fixed_object_id": 764,
+      "renderer_ref": "HIP 26451",
+      "identifiers": {
+        "hip": "26451"
+      }
+    },
+    {
+      "fixed_object_id": 22,
+      "renderer_ref": "HIP 20455",
+      "identifiers": {
+        "hip": "20455"
+      },
+      "proper_name": "Secunda Hyadum"
+    },
+    {
+      "fixed_object_id": 23,
+      "renderer_ref": "HIP 20889",
+      "identifiers": {
+        "hip": "20889"
+      },
+      "proper_name": "Ain"
+    },
+    {
+      "fixed_object_id": 732,
+      "renderer_ref": "HIP 21881",
+      "identifiers": {
+        "hip": "21881"
+      }
+    },
+    {
+      "fixed_object_id": 758,
+      "renderer_ref": "HIP 25428",
+      "identifiers": {
+        "hip": "25428"
+      },
+      "proper_name": "Elnath",
+      "constellation_abbreviation": "Tau",
+      "bayer": "Bet"
+    },
+    {
+      "fixed_object_id": 689,
+      "renderer_ref": "HIP 15900",
+      "identifiers": {
+        "hip": "15900"
+      }
+    },
+    {
+      "fixed_object_id": 694,
+      "renderer_ref": "HIP 16852",
+      "identifiers": {
+        "hip": "16852"
+      }
+    }
+  ],
+  "guide_anchor_identity": {
+    "fixed_object_id": 25,
+    "renderer_ref": "HIP 21421",
+    "identifiers": {
+      "hip": "21421"
+    },
+    "proper_name": "Aldebaran",
+    "constellation_abbreviation": "Tau",
+    "bayer": "Alp"
   },
-  "guide_objects": []
+  "target_identity": {
+    "fixed_object_id": 25,
+    "renderer_ref": "HIP 21421",
+    "identifiers": {
+      "hip": "21421"
+    },
+    "proper_name": "Aldebaran",
+    "constellation_abbreviation": "Tau",
+    "bayer": "Alp"
+  },
+  "solar_system_field": [
+    {
+      "name": "Moon",
+      "ra_deg": 228.025321,
+      "dec_deg": -23.102656
+    },
+    {
+      "name": "Mercury",
+      "ra_deg": 344.788646,
+      "dec_deg": -2.691881
+    },
+    {
+      "name": "Venus",
+      "ra_deg": 3.053318,
+      "dec_deg": 0.010232
+    },
+    {
+      "name": "Mars",
+      "ra_deg": 336.939689,
+      "dec_deg": -10.811042
+    },
+    {
+      "name": "Ceres",
+      "ra_deg": 27.326103,
+      "dec_deg": 5.365115
+    },
+    {
+      "name": "Jupiter",
+      "ra_deg": 106.028235,
+      "dec_deg": 22.972986
+    },
+    {
+      "name": "Saturn",
+      "ra_deg": 2.976405,
+      "dec_deg": -1.027137
+    },
+    {
+      "name": "Uranus",
+      "ra_deg": 55.333471,
+      "dec_deg": 19.440556
+    },
+    {
+      "name": "Neptune",
+      "ra_deg": 1.408404,
+      "dec_deg": -0.813189
+    },
+    {
+      "name": "Pluto",
+      "ra_deg": 307.706576,
+      "dec_deg": -22.931235
+    }
+  ],
+  "moon_disk": {
+    "snapshot_utc": "2026-03-09T00:00:00Z",
+    "angular_diameter_deg": 0.4942784317532999,
+    "phase_angle_deg": 63.77414781598258,
+    "illuminated_fraction": 0.7209553279766493,
+    "bright_limb_position_angle_deg": 107.9679095066948,
+    "distance_km": 402793.20161366975
+  },
+  "landmark_policy": {
+    "retain_named_field_stars": true,
+    "primary_reference_star": "Aldebaran",
+    "magnitude_limit": 2.99
+  },
+  "object_id": 1258,
+  "rendering_id": "2026-W11-1258"
 }

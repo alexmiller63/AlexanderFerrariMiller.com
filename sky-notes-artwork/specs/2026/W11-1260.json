@@ -1,16 +1,20 @@
 {
-  "name": "Chamaeleon",
-  "constellation_abbreviation": "Cha",
+  "name": "Capricorn",
+  "target": "Dabih",
   "figure_paths": [
     [
-      "HIP 51839",
-      "HIP 52633",
-      "HIP 60000",
-      "HIP 58484",
-      "HIP 51839",
-      "HIP 40702"
+      "HIP 107556",
+      "HIP 106985",
+      "HIP 104139",
+      "HIP 100064",
+      "HIP 100345",
+      "HIP 102485",
+      "HIP 102978",
+      "HIP 105881",
+      "HIP 107556"
     ]
   ],
+  "asterisms": [],
   "candidate_constellations": [
     {
       "abbreviation": "And",
@@ -1768,7 +1772,6 @@
       ]
     }
   ],
-  "guide_constellations": [],
   "candidate_asterisms": [
     {
       "id": 1362,
@@ -2210,58 +2213,178 @@
       ]
     }
   ],
-  "asterisms": [],
   "deep_sky_objects": [],
+  "finder_relation": {
+    "sequence": [
+      "Capricorn",
+      "Dabih",
+      "Pluto"
+    ],
+    "orientation": "constellation-stick-figure",
+    "reference_star": "Dabih",
+    "planet": "Pluto",
+    "finder_note": null,
+    "sky_separation_deg": 8.5
+  },
+  "planet_position": {
+    "ra_deg": 307.706576,
+    "dec_deg": -22.931235
+  },
+  "guide_objects": [
+    {
+      "type": "reference-star",
+      "name": "Dabih",
+      "fixed_object_id": 1152
+    }
+  ],
   "fixed_object_identities": [
     {
-      "fixed_object_id": 900,
-      "renderer_ref": "HIP 51839",
+      "fixed_object_id": 1185,
+      "renderer_ref": "HIP 107556",
       "identifiers": {
-        "hip": "51839"
+        "hip": "107556"
       }
     },
     {
-      "fixed_object_id": 903,
-      "renderer_ref": "HIP 52633",
+      "fixed_object_id": 1179,
+      "renderer_ref": "HIP 106985",
       "identifiers": {
-        "hip": "52633"
+        "hip": "106985"
       }
     },
     {
-      "fixed_object_id": 945,
-      "renderer_ref": "HIP 60000",
+      "fixed_object_id": 1169,
+      "renderer_ref": "HIP 104139",
       "identifiers": {
-        "hip": "60000"
+        "hip": "104139"
+      }
+    },
+    {
+      "fixed_object_id": 608,
+      "renderer_ref": "HIP 100064",
+      "identifiers": {
+        "hip": "100064"
       },
-      "proper_name": "β Cha",
-      "constellation_abbreviation": "Cha",
+      "proper_name": "Algedi",
+      "constellation_abbreviation": "Cap"
+    },
+    {
+      "fixed_object_id": 1152,
+      "renderer_ref": "HIP 100345",
+      "identifiers": {
+        "hip": "100345"
+      },
+      "proper_name": "Dabih",
+      "constellation_abbreviation": "Cap",
       "bayer": "β"
     },
     {
-      "fixed_object_id": 937,
-      "renderer_ref": "HIP 58484",
+      "fixed_object_id": 1163,
+      "renderer_ref": "HIP 102485",
       "identifiers": {
-        "hip": "58484"
+        "hip": "102485"
       }
     },
     {
-      "fixed_object_id": 845,
-      "renderer_ref": "HIP 40702",
+      "fixed_object_id": 1166,
+      "renderer_ref": "HIP 102978",
       "identifiers": {
-        "hip": "40702"
-      },
-      "proper_name": "α Cha",
-      "constellation_abbreviation": "Cha",
-      "bayer": "α"
+        "hip": "102978"
+      }
+    },
+    {
+      "fixed_object_id": 1176,
+      "renderer_ref": "HIP 105881",
+      "identifiers": {
+        "hip": "105881"
+      }
     }
   ],
-  "artwork_owner_identity": {
-    "fixed_object_id": 845,
-    "name": "α Cha",
-    "proper_name": "α Cha",
-    "constellation_abbreviation": "Cha",
-    "bayer": "α",
-    "renderer_ref": "HIP 40702"
+  "guide_anchor_identity": {
+    "fixed_object_id": 1152,
+    "renderer_ref": "HIP 100345",
+    "identifiers": {
+      "hip": "100345"
+    },
+    "proper_name": "Dabih",
+    "constellation_abbreviation": "Cap",
+    "bayer": "β"
   },
-  "guide_objects": []
+  "target_identity": {
+    "fixed_object_id": 1152,
+    "renderer_ref": "HIP 100345",
+    "identifiers": {
+      "hip": "100345"
+    },
+    "proper_name": "Dabih",
+    "constellation_abbreviation": "Cap",
+    "bayer": "β"
+  },
+  "solar_system_field": [
+    {
+      "name": "Moon",
+      "ra_deg": 228.025321,
+      "dec_deg": -23.102656
+    },
+    {
+      "name": "Mercury",
+      "ra_deg": 344.788646,
+      "dec_deg": -2.691881
+    },
+    {
+      "name": "Venus",
+      "ra_deg": 3.053318,
+      "dec_deg": 0.010232
+    },
+    {
+      "name": "Mars",
+      "ra_deg": 336.939689,
+      "dec_deg": -10.811042
+    },
+    {
+      "name": "Ceres",
+      "ra_deg": 27.326103,
+      "dec_deg": 5.365115
+    },
+    {
+      "name": "Jupiter",
+      "ra_deg": 106.028235,
+      "dec_deg": 22.972986
+    },
+    {
+      "name": "Saturn",
+      "ra_deg": 2.976405,
+      "dec_deg": -1.027137
+    },
+    {
+      "name": "Uranus",
+      "ra_deg": 55.333471,
+      "dec_deg": 19.440556
+    },
+    {
+      "name": "Neptune",
+      "ra_deg": 1.408404,
+      "dec_deg": -0.813189
+    },
+    {
+      "name": "Pluto",
+      "ra_deg": 307.706576,
+      "dec_deg": -22.931235
+    }
+  ],
+  "moon_disk": {
+    "snapshot_utc": "2026-03-09T00:00:00Z",
+    "angular_diameter_deg": 0.4942784317532999,
+    "phase_angle_deg": 63.77414781598258,
+    "illuminated_fraction": 0.7209553279766493,
+    "bright_limb_position_angle_deg": 107.9679095066948,
+    "distance_km": 402793.20161366975
+  },
+  "landmark_policy": {
+    "retain_named_field_stars": true,
+    "primary_reference_star": "Dabih",
+    "magnitude_limit": 2.99
+  },
+  "object_id": 1260,
+  "rendering_id": "2026-W11-1260"
 }
