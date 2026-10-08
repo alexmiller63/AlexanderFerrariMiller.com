@@ -21,7 +21,7 @@
     symbol.style.display='inline-block'; symbol.style.fontFamily="'Apple Symbols','Arial Unicode MS','Segoe UI Symbol','Noto Sans Symbols 2',serif"; symbol.style.fontVariantEmoji='text'; symbol.style.fontSize=item.closest('table.ephemeris')?'1.5em':'2em'; symbol.style.lineHeight='.75'; symbol.style.verticalAlign='-.12em'; item.append(symbol,document.createTextNode(value.slice(consumed)));
   }
 
-  document.querySelectorAll('.zodiac-glyph').forEach(function(item){const glyph=item.textContent.charAt(0);if(!zodiacNames[glyph])return;if(item.closest('table.calendar tbody td:nth-child(2)')){item.textContent=glyph+VS;return;}item.classList.add('notation-item');item.dataset.greek=glyph+VS;item.dataset.latin=zodiacNames[glyph];item.dataset.mixed=glyph+VS+'\n'+zodiacNames[glyph];});
+  document.querySelectorAll('.zodiac-glyph').forEach(function(item){const glyph=item.textContent.charAt(0);if(!zodiacNames[glyph])return;if(item.closest('table.calendar tbody td:nth-child(2)')){item.classList.remove('zodiac-glyph');item.style.display='block';item.style.whiteSpace='pre-line';}item.classList.add('notation-item');item.dataset.greek=glyph+VS;item.dataset.latin=zodiacNames[glyph];item.dataset.mixed=glyph+VS+'\n'+zodiacNames[glyph];});
 
   const main=document.querySelector('main');
   if(main){
