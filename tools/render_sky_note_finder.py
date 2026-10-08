@@ -248,11 +248,17 @@ def add_constellation_notation(output):
     style = ET.SubElement(root, f"{{{ns}}}style")
     style.text = '''
     [id^="constellation-"][id$="-latin"],
-    [id^="constellation-"][id$="-mixed"] { display:none }
+    [id^="constellation-"][id$="-mixed"],
+    [id^="star-label-"][id$="-latin"],
+    [id^="star-label-"][id$="-mixed"] { display:none }
     svg[data-notation-mode="latin"] [id^="constellation-"][id$="-greek"],
-    svg[data-notation-mode="mixed"] [id^="constellation-"][id$="-greek"] { display:none }
+    svg[data-notation-mode="mixed"] [id^="constellation-"][id$="-greek"],
+    svg[data-notation-mode="latin"] [id^="star-label-"][id$="-greek"],
+    svg[data-notation-mode="mixed"] [id^="star-label-"][id$="-greek"] { display:none }
     svg[data-notation-mode="latin"] [id^="constellation-"][id$="-latin"],
-    svg[data-notation-mode="mixed"] [id^="constellation-"][id$="-mixed"] { display:inline }
+    svg[data-notation-mode="mixed"] [id^="constellation-"][id$="-mixed"],
+    svg[data-notation-mode="latin"] [id^="star-label-"][id$="-latin"],
+    svg[data-notation-mode="mixed"] [id^="star-label-"][id$="-mixed"] { display:inline }
     [data-notation-choice] { cursor:pointer; fill:#f3f5f7 }
     [data-notation-choice][aria-pressed="true"] { fill:#ffd84d; text-decoration:underline }
     '''
@@ -502,13 +508,17 @@ def place_label(ax, label, point, occupied_labels, color=TEXT, fontsize=9, zorde
     for rank, (dx, dy) in enumerate(offsets):
         annotation = ax.annotate(label, point, xytext=(dx, dy), textcoords="offset points",
                                  fontsize=fontsize, color=color, zorder=zorder)
-        ax.figure.canvas.draw()
+        # Axes are fixed before placement; measure the candidate without
+        # repainting all three notation variants for every search position.
         renderer = ax.figure.canvas.get_renderer()
         bbox = annotation.get_window_extent(renderer=renderer).expanded(1.08, 1.16)
         label_hits = sum(bbox.overlaps(other) for other in occupied_labels)
         geometry_hits = sum(segment_hits_display_bbox(ax, start, end, bbox)
                             for start, end in obstacle_segments)
         score = label_hits + geometry_hits
+        if require_clear and not (ax.bbox.contains(bbox.x0, bbox.y0)
+                                  and ax.bbox.contains(bbox.x1, bbox.y1)):
+            score += 1
         annotation.remove()
         candidate = (score, rank, dx, dy)
         if best is None or candidate < best:
@@ -582,9 +592,9 @@ def place_target_label(ax, label, point, occupied_labels, obstacle_segments=(),
         ring_best = None
         for dx, dy in offsets:
             annotation = ax.annotate(label, point, xytext=(dx, dy), textcoords="offset points", **style)
-            ax.figure.canvas.draw()
             renderer = ax.figure.canvas.get_renderer()
             bbox = annotation.get_window_extent(renderer=renderer).expanded(1.08, 1.16)
+            annotation.update_bbox_position_size(renderer)
             label_hits = sum(bbox.overlaps(other) for other in occupied_labels)
             geometry_hits = sum(segment_hits_display_bbox(ax, start, end, bbox)
                                 for start, end in obstacle_segments)
@@ -594,6 +604,8 @@ def place_target_label(ax, label, point, occupied_labels, obstacle_segments=(),
             marker_distance = math.hypot(marker_x - anchor_x, marker_y - anchor_y)
             marker_hits = marker_distance < marker_clearance_points * ax.figure.dpi / 72
             score = label_hits + geometry_hits + marker_hits
+            if not (ax.bbox.contains(bbox.x0, bbox.y0) and ax.bbox.contains(bbox.x1, bbox.y1)):
+                score += 1
             nearest_x = min(max(anchor_x, bbox.x0), bbox.x1)
             nearest_y = min(max(anchor_y, bbox.y0), bbox.y1)
             anchor_distance = math.hypot(nearest_x - anchor_x, nearest_y - anchor_y)
@@ -614,6 +626,15 @@ def place_target_label(ax, label, point, occupied_labels, obstacle_segments=(),
     ax.figure.canvas.draw()
     renderer = ax.figure.canvas.get_renderer()
     occupied_labels.append(annotation.get_window_extent(renderer=renderer).expanded(1.08, 1.16))
+    # A displaced label needs a visible connection to its protected marker.
+    text_bbox = annotation.get_bbox_patch().get_window_extent(renderer=renderer)
+    endpoint = (min(max(anchor_x, text_bbox.x0), text_bbox.x1),
+                min(max(anchor_y, text_bbox.y0), text_bbox.y1))
+    distance_points = math.hypot(endpoint[0] - anchor_x, endpoint[1] - anchor_y) * points_per_pixel
+    if distance_points > marker_radius_points + 10:
+        ax.annotate("", point, xytext=ax.transData.inverted().transform(endpoint),
+                    arrowprops=dict(arrowstyle="-", color=TARGET_YELLOW, linewidth=0.8,
+                                    shrinkA=3, shrinkB=marker_radius_points + 2), zorder=8)
     return annotation
 
 
@@ -848,6 +869,51 @@ def chart_bayer_label(identity, star, figure_abbreviation):
     if constellation and figure_abbreviation and constellation != figure_abbreviation:
         return f"{greek} {constellation}"
     return greek
+
+
+def star_notation_labels(identity, star, figure_abbreviation, target=False):
+    symbol = chart_bayer_label(identity, star, figure_abbreviation)
+    proper = str(identity.get("proper_name") or star.proper or "").strip()
+    greek_names = ("Alpha Beta Gamma Delta Epsilon Zeta Eta Theta Iota Kappa Lambda Mu Nu "
+                   "Xi Omicron Pi Rho Sigma Tau Upsilon Phi Chi Psi Omega").split()
+    latin = proper or " ".join(dict(zip(GREEK_SYMBOL_ORDER, greek_names)).get(c, c)
+                               for c in symbol.split())
+    mixed = f"{symbol} — {latin}" if symbol and latin else (symbol or latin)
+    if target and symbol and len(latin) >= 12:
+        mixed = f"{symbol}\n{latin}"
+    return {"greek": symbol or latin, "latin": latin, "mixed": mixed}
+
+
+def place_star_notation(ax, identity, labels, point, occupied_labels,
+                        obstacle_segments=(), target=False, color=TEXT, fontsize=9):
+    """Place each mode near its star and reserve all variants for later labels."""
+    prior = list(occupied_labels)
+    reservations = []
+    placed = {}
+    for mode, label in labels.items():
+        occupied_labels[:] = prior
+        before = len(ax.texts)
+        if target:
+            annotation = place_target_label(
+                ax, label, point, occupied_labels, obstacle_segments=obstacle_segments,
+                marker_radius_points=math.sqrt(210) / 2 + 2.6 / 2,
+            )
+        else:
+            annotation = place_label(
+                ax, label, point, occupied_labels, color=color, fontsize=fontsize,
+                obstacle_segments=obstacle_segments, require_clear=True,
+            )
+        if annotation is not None:
+            annotation.set_gid(f"star-label-{identity['fixed_object_id']}-{mode}")
+            for artist in list(ax.texts)[before:]:
+                if artist is not annotation:
+                    artist.set_gid(f"star-label-{identity['fixed_object_id']}-leader-{mode}")
+                    if artist.arrow_patch is not None:
+                        artist.arrow_patch.set_gid(f"star-label-{identity['fixed_object_id']}-leader-path-{mode}")
+            reservations.extend(occupied_labels[len(prior):])
+            placed[mode] = annotation
+    occupied_labels[:] = prior + reservations
+    return placed
 
 
 def legend_label(identity, star=None):
@@ -1159,6 +1225,8 @@ def render(spec: dict, stars, output: Path) -> None:
         point = project(star.ra_deg, star.dec_deg, *center)
         if point and xmin <= point[0] <= xmax and ymin <= point[1] <= ymax:
             visible.append((point[0], point[1], star))
+    # Keep these axes positions through saving: resizing after label checks
+    # would invalidate the reserved text and marker boxes.
     if spec.get("overview"):
         fig, overview_ax = plt.subplots(figsize=(8.2, 8.2), facecolor=NIGHT)
         draw_finder_overview(overview_ax, spec, stars, idx, target_ra, target_dec,
@@ -1239,6 +1307,18 @@ def render(spec: dict, stars, output: Path) -> None:
     fig.canvas.draw()
     occupied_labels = [marker_obstacle_bbox(ax, item["point"], 42, 1.1)
                        for item in deep_sky]
+    if has_planet:
+        for body in [dict(planet_position, name=planet_name)] + list(spec.get("solar_system_field") or []):
+            if body.get("ra_deg") is None or body.get("dec_deg") is None:
+                continue
+            body_point = project(float(body["ra_deg"]), float(body["dec_deg"]), *center)
+            if body_point and xmin <= body_point[0] <= xmax and ymin <= body_point[1] <= ymax:
+                is_target = body.get("name") == planet_name
+                occupied_labels.append(marker_obstacle_bbox(
+                    ax, body_point, 115 if is_target else 58, 1.6 if is_target else 1.2,
+                ))
+    if target_point is not None and not pattern_target:
+        occupied_labels.append(marker_obstacle_bbox(ax, target_point, 210, 2.6))
     moon_bbox = None
     moon_snapshot = spec.get("moon_disk")
     if has_planet and moon_snapshot:
@@ -1269,6 +1349,40 @@ def render(spec: dict, stars, output: Path) -> None:
             path_points = [point for point in path_points if point is not None]
             asterism_segments.extend(zip(path_points, path_points[1:]))
 
+    if target_point is None:
+        raise RuntimeError(f"Target fixed_object_id {target_id} is outside the projection")
+    if not pattern_target:
+        ax.scatter([target_point[0]], [target_point[1]], s=210, facecolors="none",
+                   edgecolors=TARGET_YELLOW, linewidths=2.6, zorder=8)
+    target_name = str(target_meta.get("proper_name") or target_identity.get("name") or "").strip()
+    target_greek = ""
+    if target_star_identity and target_star is not None:
+        full = bayer_label(target_star_identity, target_star)
+        target_greek = full.split()[0] if full else ""
+    target_const = str(target_meta.get("constellation_abbreviation") or "").strip()
+    target_bayer = " ".join(part for part in (target_greek, target_const) if part) if target_greek else ""
+    target_chart_label = ", ".join(part for part in (target_bayer, target_name) if part)
+    # Split long guide-star names so their labels can sit next to the ring
+    # without moving across the field to find room for one wide line.
+    if has_planet and target_bayer and len(target_name) >= 12:
+        target_chart_label = f"{target_bayer}\n{target_name}"
+    if not target_chart_label:
+        target_chart_label = str(target_identity.get("name") or "Target")
+    if target_star_identity and target_star is not None:
+        place_star_notation(
+            ax, target_star_identity,
+            star_notation_labels(target_star_identity, target_star, figure_abbreviation, target=True),
+            target_point, occupied_labels,
+            obstacle_segments=figure_segments + asterism_segments + boundary_segments,
+            target=True,
+        )
+    else:
+        place_target_label(
+            ax, target_chart_label, target_point, occupied_labels,
+            obstacle_segments=figure_segments + asterism_segments + boundary_segments,
+            marker_radius_points=0 if pattern_target else math.sqrt(210) / 2 + 2.6 / 2,
+        )
+
     guide_refs = []
     seen_guides = set()
     for path in guide_paths:
@@ -1276,30 +1390,6 @@ def render(spec: dict, stars, output: Path) -> None:
             if ref not in seen_guides:
                 seen_guides.add(ref)
                 guide_refs.append(ref)
-    labeled_star_ids = set()
-    for ref in figure_refs + guide_refs:
-        star = idx[ref]
-        identity = identities_by_ref[ref]
-        fixed_id = identity["fixed_object_id"]
-        if fixed_id in labeled_star_ids:
-            continue
-        point = project(star.ra_deg, star.dec_deg, *center)
-        if point is None or (compact_guide and not (xmin <= point[0] <= xmax and ymin <= point[1] <= ymax)):
-            continue
-        if identity.get("fixed_object_id") == target_id:
-            continue
-        label = chart_bayer_label(identity, star, figure_abbreviation)
-        if label:
-            place_label(ax, label, point, occupied_labels, obstacle_segments=figure_segments + asterism_segments,
-                        require_clear=compact_guide)
-            labeled_star_ids.add(fixed_id)
-    for item in deep_sky:
-        place_label(
-            ax, " / ".join(item["labels"]), item["point"], occupied_labels,
-            color=TEXT, fontsize=8, zorder=6,
-            obstacle_segments=figure_segments + asterism_segments,
-            require_clear=True,
-        )
     labeled_constellations = set()
     if figure_constellation and figure_points:
         figure_region = visible_figure_region(
@@ -1387,7 +1477,6 @@ def render(spec: dict, stars, output: Path) -> None:
             + [(planet_point, planet_point)],
             boundary_points=planet_boundary,
         )
-    labeled_asterism_refs = set()
     for asterism in asterisms:
         asterism_points = []
         for path in asterism.get("paths") or []:
@@ -1397,20 +1486,6 @@ def render(spec: dict, stars, output: Path) -> None:
                     point = project(idx[ref].ra_deg, idx[ref].dec_deg, *center)
                     if point is not None and xmin <= point[0] <= xmax and ymin <= point[1] <= ymax:
                         asterism_points.append(point)
-                        # Asterisms are recognition landmarks, so their named
-                        # member stars must remain recognizable too.  This is a
-                        # general rule (for example Kaus Australis in the
-                        # Teapot), never a star-specific exception.
-                        identity = identities_by_ref.get(ref) or {}
-                        proper = str(identity.get("proper_name") or idx[ref].proper or "").strip()
-                        if proper and ref not in labeled_asterism_refs and identity.get("fixed_object_id") != target_id:
-                            place_label(
-                                ax, proper, point, occupied_labels,
-                                color=ASTERISM_GREEN, fontsize=9, zorder=7,
-                                obstacle_segments=figure_segments + asterism_segments + boundary_segments,
-                                require_clear=compact_guide,
-                            )
-                            labeled_asterism_refs.add(ref)
         name = str(asterism.get("name") or "")
         target_pattern_name = str(target_meta.get("proper_name") or target_identity.get("name") or "").strip()
         if (name in labeled_asterism_names and asterism_points
@@ -1423,32 +1498,38 @@ def render(spec: dict, stars, output: Path) -> None:
                 ax, name, label_point, occupied_labels,
                 color=ASTERISM_GREEN, fontsize=9, zorder=7,
                 obstacle_segments=figure_segments + asterism_segments + boundary_segments,
-                require_clear=compact_guide,
+                require_clear=True,
             )
-    if target_point is None:
-        raise RuntimeError(f"Target fixed_object_id {target_id} is outside the projection")
-    if not pattern_target:
-        ax.scatter([target_point[0]], [target_point[1]], s=210, facecolors="none",
-                   edgecolors=TARGET_YELLOW, linewidths=2.6, zorder=8)
-    target_name = str(target_meta.get("proper_name") or target_identity.get("name") or "").strip()
-    target_greek = ""
-    if target_star_identity and target_star is not None:
-        full = bayer_label(target_star_identity, target_star)
-        target_greek = full.split()[0] if full else ""
-    target_const = str(target_meta.get("constellation_abbreviation") or "").strip()
-    target_bayer = " ".join(part for part in (target_greek, target_const) if part) if target_greek else ""
-    target_chart_label = ", ".join(part for part in (target_bayer, target_name) if part)
-    # Split long guide-star names so their labels can sit next to the ring
-    # without moving across the field to find room for one wide line.
-    if has_planet and target_bayer and len(target_name) >= 12:
-        target_chart_label = f"{target_bayer}\n{target_name}"
-    if not target_chart_label:
-        target_chart_label = str(target_identity.get("name") or "Target")
-    place_target_label(
-        ax, target_chart_label, target_point, occupied_labels,
-        obstacle_segments=figure_segments + asterism_segments + boundary_segments,
-        marker_radius_points=0 if pattern_target else math.sqrt(210) / 2 + 2.6 / 2,
-    )
+    labeled_star_ids = set()
+    asterism_refs = refs_from_paths([path for item in asterisms for path in item.get("paths") or []])
+    for ref in dict.fromkeys(figure_refs + guide_refs + sorted(asterism_refs)):
+        star = idx[ref]
+        identity = identities_by_ref.get(ref)
+        if identity is None:
+            continue
+        fixed_id = identity["fixed_object_id"]
+        if fixed_id in labeled_star_ids:
+            continue
+        point = project(star.ra_deg, star.dec_deg, *center)
+        if point is None or not (xmin <= point[0] <= xmax and ymin <= point[1] <= ymax):
+            continue
+        if identity.get("fixed_object_id") == target_id:
+            continue
+        labels = star_notation_labels(identity, star, figure_abbreviation)
+        if labels["greek"]:
+            place_star_notation(
+                ax, identity, labels, point, occupied_labels,
+                color=ASTERISM_GREEN if ref in asterism_refs else TEXT,
+                obstacle_segments=figure_segments + asterism_segments + boundary_segments,
+            )
+            labeled_star_ids.add(fixed_id)
+    for item in deep_sky:
+        place_label(
+            ax, " / ".join(item["labels"]), item["point"], occupied_labels,
+            color=TEXT, fontsize=8, zorder=6,
+            obstacle_segments=figure_segments + asterism_segments,
+            require_clear=True,
+        )
     if has_planet:
         if planet_point is None:
             raise RuntimeError(f"Planet {planet_name} is outside the finder projection")
@@ -1537,7 +1618,7 @@ def render(spec: dict, stars, output: Path) -> None:
         ax.text(0.5, -0.035, "East ←                                      → West",
                 transform=ax.transAxes, ha="center", va="top", fontsize=8, color=TEXT)
     legend_entries = []
-    for ref in figure_refs:
+    for ref in dict.fromkeys(figure_refs + ([target_ref] if target_ref else [])):
         identity = identities_by_ref[ref]
         star = idx[ref]
         point = project(star.ra_deg, star.dec_deg, *center)
@@ -1576,7 +1657,6 @@ def render(spec: dict, stars, output: Path) -> None:
             spine.set_edgecolor(TEXT)
             spine.set_linewidth(1.2)
     output.parent.mkdir(parents=True, exist_ok=True)
-    fig.tight_layout(rect=(0, 0.08, 1, 0.96), h_pad=3.0 if spec.get("overview") else 1.08)
     if has_planet and planet_name == "Moon" and moon_snapshot:
         draw_moon_closeup(ax, moon_snapshot,
                           figure_segments + asterism_segments + boundary_segments)
