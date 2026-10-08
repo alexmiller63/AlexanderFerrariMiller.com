@@ -109,6 +109,7 @@ def populate_week(
         outdir.mkdir(parents=True, exist_ok=True)
 
     for mode, filename in FINDER_FILENAMES.items():
+        print(f"PLANET_FINDER_PROGRESS event=start iso={year}-W{week:02d} mode={mode}", flush=True)
         # Each independently searched layout gets its own complete safety
         # envelope. The per-body candidate cap and the wall-clock ceiling
         # therefore apply independently to Greek, Latin, and Mixed.
@@ -120,6 +121,7 @@ def populate_week(
         )
         for outdir in outdirs:
             (outdir / filename).write_text(svg, encoding="utf-8")
+        print(f"PLANET_FINDER_PROGRESS event=complete iso={year}-W{week:02d} mode={mode}", flush=True)
 
     for outdir in outdirs:
         missing = [filename for filename in FINDER_FILENAMES.values() if not (outdir / filename).is_file()]
