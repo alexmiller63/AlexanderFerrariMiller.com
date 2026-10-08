@@ -101,8 +101,15 @@
   }
 
   function specialHtml(label, mode) {
-    const symbol = label === 'Night'
-      ? '<img class="visibility-glyph" src="../../../assets/almanack/visibility-glyphs/masters/night.svg" alt="Night" aria-label="Night" title="Night — Sun more than 18° below the horizon">'
+    const skyGlyphs = {
+      'Civil twilight': ['civil-twilight', 'Sun between sunset/sunrise and 6° below the horizon'],
+      'Nautical twilight': ['nautical-twilight', 'Sun 6° to 12° below the horizon'],
+      'Astronomical twilight': ['astronomical-twilight', 'Sun 12° to 18° below the horizon'],
+      'Night': ['night', 'Sun more than 18° below the horizon']
+    };
+    const glyph = skyGlyphs[label];
+    const symbol = glyph
+      ? '<img class="visibility-glyph" src="../../../assets/almanack/visibility-glyphs/masters/' + glyph[0] + '.svg" alt="' + label + '" aria-label="' + label + '" title="' + label + ' — ' + glyph[1] + '">'
       : '<span class="text-symbol" role="img" aria-label="' + label + '" title="' + label + '">☉︎</span>';
     if (mode === 'greek') return symbol;
     if (mode === 'latin') return label;
