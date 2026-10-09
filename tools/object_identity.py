@@ -56,6 +56,42 @@ def fixed_id_for_hip(hip: str) -> int:
     return require_fixed_object_id(identifier)
 
 
+def catalog_object_metadata() -> dict[int, dict]:
+    """Join catalog display fields through explicit, permanent identifiers."""
+    registry = json.loads((ROOT / "database/fixed-object-registry.json").read_text())
+    aliases = {}
+    for obj in registry["fixed_objects"]:
+        if obj.get("status") != "active":
+            continue
+        for ident in obj.get("identifiers", []):
+            key = (ident["namespace"].lower(), str(ident["value"]).lower())
+            if key in aliases and aliases[key] != obj["fixed_object_id"]:
+                raise RuntimeError(f"Ambiguous catalog identity {key}")
+            aliases[key] = obj["fixed_object_id"]
+    result = {}
+    for filename, namespace, field in (
+        ("caldwell-catalog.csv", "caldwell", "caldwell"),
+        ("finest-ngc-catalog.csv", "finest_ngc", "finest_ngc"),
+        ("special-star-catalog.csv", "hip", "hip"),
+    ):
+        with (ROOT / filename).open(newline="", encoding="utf-8") as handle:
+            for row in csv.DictReader(handle):
+                key = (namespace, str(row.get(field) or "").strip().lower())
+                fid = aliases.get(key)
+                if fid is None:
+                    continue
+                designation = str(row.get("catalog") or row.get("caldwell") or row.get("finest_ngc") or "").strip()
+                name = str(row.get("name") or "").strip() or designation
+                record = result.setdefault(fid, {})
+                if name:
+                    record.setdefault("name", name)
+                if row.get("con"):
+                    record.setdefault("constellation", row["con"])
+                if namespace == "hip":
+                    record["object_type_family"] = "star"
+    return result
+
+
 @lru_cache(maxsize=None)
 def resolve_source_name(name: str, constellation: str | None = None) -> int:
     """Resolve legacy source labels once; never invent an identity from a name."""

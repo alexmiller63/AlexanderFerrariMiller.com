@@ -9,7 +9,7 @@ from pathlib import Path
 
 from finder_geometry_adapter import asterism_spec, constellation_paths, all_asterism_specs, all_constellation_specs
 from iso_date_range import parse_range_args
-from object_identity import asterism_identity, require_fixed_object_id
+from object_identity import asterism_identity, require_fixed_object_id, catalog_object_metadata
 
 ROOT = Path(__file__).resolve().parents[1]
 DESCRIPTOR_ROOT = ROOT / "generated-sky-notes"
@@ -142,6 +142,12 @@ def fixed_object_metadata() -> tuple[dict[int, dict], dict[str, list[int]]]:
                 by_name.setdefault(proper.casefold(), [])
                 if fid not in by_name[proper.casefold()]:
                     by_name[proper.casefold()].append(fid)
+    for fixed_id, fields in catalog_object_metadata().items():
+        if fixed_id not in by_id:
+            continue
+        for source, target in (("name", "proper_name"), ("constellation", "constellation_abbreviation")):
+            if fields.get(source) and not by_id[fixed_id].get(target):
+                by_id[fixed_id][target] = fields[source]
     return by_id, by_name
 
 

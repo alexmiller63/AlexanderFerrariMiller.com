@@ -108,6 +108,12 @@ def special_fixed_object_id(row):
         return direct
     if row["id"] == "sirius-b":
         return None
+    hip = str(row.get("hip") or "").strip()
+    if hip:
+        fixed_id = FIXED_OBJECT_IDS.get(("hip", hip))
+        if fixed_id is None:
+            raise RuntimeError(f"Unknown explicit HIP {hip} for special star {row['id']}")
+        return fixed_id
     from object_identity import resolve_source_name
     try:
         return resolve_source_name(row["name"])

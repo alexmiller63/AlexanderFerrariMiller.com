@@ -16,6 +16,7 @@ import populate_sky_notes_by_date as base
 from planet_weekly_facts import build_weekly_facts
 from fixed_object_stories import available_stories, reader_story_url
 from story_completion import completion_report, print_report
+from object_identity import catalog_object_metadata
 from sky_note_descriptors import build_descriptors, decorate_note_html, lunar_highlight_descriptors, write_descriptor_records
 
 FIXED_OBJECT_DATABASE = base.ROOT / "database" / "fixed-objects.json"
@@ -121,6 +122,11 @@ def fixed_object_metadata() -> dict[int, dict]:
                 result[fixed_id]["name"] = _bayer_display_name(bayer, constellation)
             if bayer:
                 result[fixed_id]["object_type_family"] = "star"
+    for fixed_id, fields in catalog_object_metadata().items():
+        if fixed_id in result:
+            for key, value in fields.items():
+                if not result[fixed_id].get(key):
+                    result[fixed_id][key] = value
     return result
 
 

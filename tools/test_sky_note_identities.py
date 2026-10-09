@@ -53,6 +53,21 @@ class IdentityTests(unittest.TestCase):
         self.assertEqual(result["guide_anchor_identity"]["fixed_object_id"], 60)
         self.assertEqual(result["guide_anchor_identity"]["renderer_ref"], "HIP 65474")
 
+    def test_unnamed_catalog_objects_keep_descriptors(self):
+        from populate_sky_notes_descriptor_by_date import fixed_object_metadata, fixed_sky_from_ids
+        metadata = fixed_object_metadata()
+        objects = fixed_sky_from_ids([414, 185, 692], metadata)
+        self.assertEqual({obj['fixed_object_id'] for obj in objects}, {414, 185, 692})
+        self.assertEqual(metadata[414]['name'], 'IC 342')
+        self.assertEqual(metadata[185]['name'], 'NGC 2244')
+        self.assertEqual(metadata[692]['constellation'], 'Eri')
+
+    def test_special_star_explicit_hip_identity(self):
+        from populate_fixed_sky import special_fixed_object_id
+        self.assertEqual(special_fixed_object_id({'id': 'epsilon-eridani', 'hip': '16537'}), 692)
+        with self.assertRaises(RuntimeError):
+            special_fixed_object_id({'id': 'unknown', 'hip': '999999999'})
+
     def test_unknown_objects_cannot_create_name_derived_identity(self):
         with self.assertRaises(RuntimeError):
             _deep_sky_descriptor("Invented catalog object")
