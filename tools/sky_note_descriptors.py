@@ -364,7 +364,7 @@ def build_descriptors(
         add_constellation(con)
 
     def add_planet(name: str) -> None:
-        descriptor_id = str(SOLAR_SYSTEM_OBJECT_IDS[name])
+        # Solar-System identities occupy their own descriptor namespace.\n        # Numeric fixed-object IDs must never be overwritten (e.g. Pluto 1260\n        # and 40 Eridani B 1260 are distinct physical objects).\n        descriptor_id = f"solar-{SOLAR_SYSTEM_OBJECT_IDS[name]}"
         kind = "planet" if name in {"Mercury", "Venus", "Earth", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune"} else "solar-system-object"
         summary = "Solar-System object tracked by the Star Almanack weekly ephemeris and Planet Finder"
         add(_base(descriptor_id, kind, name, summary))
