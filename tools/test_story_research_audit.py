@@ -21,7 +21,7 @@ class ResearchAuditTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             page = Path(directory) / "index.html"
             page.write_text('<div data-fixed-object-id="698"></div>'
-                            '<div data-fixed-object-id="758"></div>'
+                            '<div data-fixed-object-id="28"></div>'
                             '<div data-fixed-object-id="698"></div>')
             result = coverage([("2026-W01", page), ("2026-W02", page)])
             self.assertEqual(result["ready"], 1)
