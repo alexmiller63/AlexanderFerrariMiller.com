@@ -1,0 +1,30 @@
+name: Story Audit
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'stories/**'
+      - 'tools/story_audit.py'
+      - '.github/workflows/story-audit.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Audit all saved stories
+        run: python tools/story_audit.py --output generated/story-audit.json
+      - name: Upload detailed report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: story-audit-report
+          path: generated/story-audit.json
+          if-no-files-found: warn
