@@ -127,20 +127,15 @@ def ecliptic_coordinates():
 
 
 def visible_ecliptic_signs(center, xmin, xmax, ymin, ymax):
-    """Locate the visible part of each 30-degree zodiac sector on the ecliptic."""
+    """Label full 30-degree sectors only when their exact midpoints are visible."""
     points = [project(ra, dec, *center) for ra, dec in ecliptic_coordinates()]
     result = []
     for index, (symbol, name) in enumerate(ZODIAC_SIGNS):
-        sector = points[index * 60:index * 60 + 61]
-        visible = []
-        for start, end in zip(sector, sector[1:]):
-            if start is not None and end is not None:
-                clipped = clip_view_segment(start, end, xmin, xmax, ymin, ymax)
-                if clipped is not None:
-                    visible.append(clipped)
-        if visible:
-            start, end = visible[len(visible) // 2]
-            result.append((symbol, name, ((start[0] + end[0]) / 2, (start[1] + end[1]) / 2)))
+        # Half-degree samples put each sector's center at 15° + 30° * index.
+        # Clipping a sector must never relocate its label toward a boundary.
+        point = points[index * 60 + 30]
+        if point is not None and xmin <= point[0] <= xmax and ymin <= point[1] <= ymax:
+            result.append((symbol, name, point))
     return result
 
 

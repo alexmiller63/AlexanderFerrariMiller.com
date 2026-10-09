@@ -1,5 +1,6 @@
 """Reader-facing notation and guide-star placement regressions."""
 import tempfile
+import math
 import unittest
 from pathlib import Path
 from types import SimpleNamespace
@@ -30,13 +31,20 @@ class StarNotationTests(unittest.TestCase):
     def tearDown(self):
         plt.close(self.fig)
 
-    def test_zodiac_sectors_wrap_at_aries_and_stay_inside_chart(self):
-        signs = visible_ecliptic_signs((0, 0), -5, 5, -5, 5)
+    def test_zodiac_labels_use_full_sector_midpoints(self):
+        # A frame showing only a boundary must not pull either label to it.
+        self.assertEqual(visible_ecliptic_signs((0, 0), -5, 5, -5, 5), [])
+        self.assertEqual(visible_ecliptic_signs((180, 0), -5, 5, -5, 5), [])
+        signs = visible_ecliptic_signs((0, 0), -20, 20, -20, 20)
         self.assertEqual({name for _, name, _ in signs}, {"Aries", "Pisces"})
         self.assertEqual({symbol for symbol, _, _ in signs}, {"♈", "♓"})
         for _, _, (x, y) in signs:
-            self.assertTrue(-5 <= x <= 5 and -5 <= y <= 5)
-        opposite = visible_ecliptic_signs((180, 0), -5, 5, -5, 5)
+            self.assertTrue(-20 <= x <= 20 and -20 <= y <= 20)
+            # The sector centers are 15 degrees from the equinox.
+            separation = math.degrees(math.atan(math.hypot(
+                math.tan(math.radians(x)), math.tan(math.radians(y)))))
+            self.assertAlmostEqual(separation, 15, places=6)
+        opposite = visible_ecliptic_signs((180, 0), -20, 20, -20, 20)
         self.assertEqual({name for _, name, _ in opposite}, {"Virgo", "Libra"})
 
     def test_ecliptic_names_the_sign_rather_than_the_constellation(self):
