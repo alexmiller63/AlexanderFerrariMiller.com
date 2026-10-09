@@ -1256,7 +1256,10 @@ def render(spec: dict, stars, output: Path) -> None:
     # Fixed binocular-like field: tangent-plane projection of a 15° x 10°
     # angular window centered on the target. This stays well-defined at both
     # celestial poles; raw right-ascension spans do not.
-    center = (float(target_ra), float(target_dec))
+    # Moving-body charts are centered on the planet, not its guide star.
+    # Otherwise the planet may lie outside the fixed angular field.
+    center = ((float(planet_ra), float(planet_dec)) if has_planet
+              else (float(target_ra), float(target_dec)))
     target_point = project(target_ra, target_dec, *center)
     planet_point = project(float(planet_ra), float(planet_dec), *center) if has_planet else None
     compact_guide = "framing_paths" in spec and not has_planet
