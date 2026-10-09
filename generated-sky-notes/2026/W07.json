@@ -12,10 +12,25 @@
       "constellation": "Mon"
     },
     {
+      "fixed_object_id": 184,
+      "type": "deep-sky",
+      "name": "Rosette"
+    },
+    {
+      "fixed_object_id": 185,
+      "type": "deep-sky",
+      "name": "NGC 2244"
+    },
+    {
       "fixed_object_id": 800,
       "type": "star",
       "name": "Alhena",
       "constellation": "Gem"
+    },
+    {
+      "fixed_object_id": 186,
+      "type": "deep-sky",
+      "name": "Hubble's Variable Nebula"
     },
     {
       "fixed_object_id": 35,
@@ -218,7 +233,7 @@
       "sky_separation_deg": 8.4
     }
   ],
-  "note": "ISO 2026-W07 runs from February 9 through February 15. Saturn and Neptune are separated by about 0.9° in geocentric ecliptic longitude at the Monday 00:00 UTC snapshot.\n\n**Naked eye:** 🌗 Last Quarter — 12:43:07 UTC. Moderate moonlight makes timing and local sky position important for faint targets. Use Alhena, Sirius, α Pic as the week’s fixed-sky framework.\n\n**Planets:** Moon: Naked eye; magnitude -10.3; direct motion; 55.2% illuminated. Below the horizon at 21:00 local apparent solar time, 45°N. Monday 00:00 UTC snapshot. Conjunction with Pluto in ecliptic longitude Feb 15 14:09 UTC. Mercury: In solar glare; magnitude -1.2; direct motion; 86.9% illuminated. Monday 00:00 UTC snapshot. Venus: In solar glare; magnitude -3.9; direct motion; 99.1% illuminated. Monday 00:00 UTC snapshot. Mars: In solar glare; magnitude 1.1; direct motion; 99.8% illuminated. Monday 00:00 UTC snapshot. Ceres: Telescope; magnitude 9.1; direct motion; 97.8% illuminated. Monday 00:00 UTC snapshot. Jupiter: Naked eye; magnitude -2.6; retrograde motion; 99.7% illuminated. Monday 00:00 UTC snapshot. Saturn: Naked eye; magnitude 1.0; direct motion; 99.9% illuminated. Below the horizon at 21:00 local apparent solar time, 45°N. Monday 00:00 UTC snapshot. Uranus: Binoculars; magnitude 5.7; direct motion; 99.9% illuminated. Monday 00:00 UTC snapshot. Neptune: Telescope; magnitude 7.8; direct motion; 100.0% illuminated. Below the horizon at 21:00 local apparent solar time, 45°N. Monday 00:00 UTC snapshot. Pluto: In solar glare; magnitude 14.6; direct motion; 100.0% illuminated. Monday 00:00 UTC snapshot. Conjunction with Moon in ecliptic longitude Feb 15 14:09 UTC.\n\n**Binoculars:** Trace Monoceros’s charted figure in the finder, then identify β Mon at its charted position.\n\n**Small telescope:** Concentrate on M41. Increase magnification only after the target and surrounding pattern are secure.\n\n**Substantial telescope:** No fixed-sky Calendar object is classified as requiring a substantial telescope this week.\n\n",
+  "note": "ISO 2026-W07 runs from February 9 through February 15. Saturn and Neptune are separated by about 0.9° in geocentric ecliptic longitude at the Monday 00:00 UTC snapshot.\n\n**Naked eye:** 🌗 Last Quarter — 12:43:07 UTC. Moderate moonlight makes timing and local sky position important for faint targets. Use Alhena, Sirius, α Pic as the week’s fixed-sky framework.\n\n**Planets:** Moon: Naked eye; magnitude -10.3; direct motion; 55.2% illuminated. Below the horizon at 21:00 local apparent solar time, 45°N. Monday 00:00 UTC snapshot. Conjunction with Pluto in ecliptic longitude Feb 15 14:09 UTC. Mercury: In solar glare; magnitude -1.2; direct motion; 86.9% illuminated. Monday 00:00 UTC snapshot. Venus: In solar glare; magnitude -3.9; direct motion; 99.1% illuminated. Monday 00:00 UTC snapshot. Mars: In solar glare; magnitude 1.1; direct motion; 99.8% illuminated. Monday 00:00 UTC snapshot. Ceres: Telescope; magnitude 9.1; direct motion; 97.8% illuminated. Monday 00:00 UTC snapshot. Jupiter: Naked eye; magnitude -2.6; retrograde motion; 99.7% illuminated. Monday 00:00 UTC snapshot. Saturn: Naked eye; magnitude 1.0; direct motion; 99.9% illuminated. Below the horizon at 21:00 local apparent solar time, 45°N. Monday 00:00 UTC snapshot. Uranus: Binoculars; magnitude 5.7; direct motion; 99.9% illuminated. Monday 00:00 UTC snapshot. Neptune: Telescope; magnitude 7.8; direct motion; 100.0% illuminated. Below the horizon at 21:00 local apparent solar time, 45°N. Monday 00:00 UTC snapshot. Pluto: In solar glare; magnitude 14.6; direct motion; 100.0% illuminated. Monday 00:00 UTC snapshot. Conjunction with Moon in ecliptic longitude Feb 15 14:09 UTC.\n\n**Binoculars:** Trace Monoceros’s charted figure in the finder, then identify β Mon at its charted position.\n\n**Small telescope:** Concentrate on Rosette, NGC 2244, Hubble's Variable Nebula, M41. Increase magnification only after the target and surrounding pattern are secure.\n\n**Substantial telescope:** No fixed-sky Calendar object is classified as requiring a substantial telescope this week.\n\n",
   "descriptors": [
     {
       "schema_version": 1,
@@ -380,6 +395,36 @@
     },
     {
       "schema_version": 1,
+      "id": "184",
+      "type": "deep-sky-object",
+      "name": "Rosette",
+      "summary": "deep-sky object selected as a weekly fixed-sky observing target",
+      "representation": {
+        "machine": "./184.json",
+        "human_source": "summary",
+        "human": "/stories/baseline/184.html"
+      },
+      "catalog_name": "Rosette",
+      "object_type": "deep-sky object",
+      "source_label": "Rosette"
+    },
+    {
+      "schema_version": 1,
+      "id": "185",
+      "type": "deep-sky-object",
+      "name": "NGC 2244",
+      "summary": "deep-sky object selected as a weekly fixed-sky observing target",
+      "representation": {
+        "machine": "./185.json",
+        "human_source": "summary",
+        "human": "/stories/baseline/185.html"
+      },
+      "catalog_name": "NGC 2244",
+      "object_type": "deep-sky object",
+      "source_label": "NGC 2244"
+    },
+    {
+      "schema_version": 1,
       "id": "800",
       "type": "star",
       "name": "Alhena",
@@ -410,6 +455,21 @@
         "human_source": "summary"
       },
       "abbreviation": "Gem"
+    },
+    {
+      "schema_version": 1,
+      "id": "186",
+      "type": "deep-sky-object",
+      "name": "Hubble's Variable Nebula",
+      "summary": "deep-sky object selected as a weekly fixed-sky observing target",
+      "representation": {
+        "machine": "./186.json",
+        "human_source": "summary",
+        "human": "/stories/baseline/186.html"
+      },
+      "catalog_name": "Hubble's Variable Nebula",
+      "object_type": "deep-sky object",
+      "source_label": "Hubble's Variable Nebula"
     },
     {
       "schema_version": 1,
@@ -536,7 +596,10 @@
   ],
   "calendar_fixed_object_ids": [
     796,
+    184,
+    185,
     800,
+    186,
     35,
     187,
     806
@@ -546,25 +609,55 @@
       "fixed_object_id": 796,
       "collection": "baseline",
       "hed": "β Mon",
-      "dek": "β Mon is a stellar reference in Mon used by the weekly observing calendar.",
-      "body": "Why it is here: The Calendar selected β Mon for this week’s fixed-sky observing sequence; its permanent object identity ties the weekly entry to the same star used by the finder.\n\nHow to find it: Establish the preserved Mon constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.",
-      "url": "/stories/baseline/796.html"
+      "dek": "β Mon is a star in Mon of catalogue visual magnitude 3.76; its declination determines which latitudes can observe it.",
+      "body": "The stored catalogue gives a visual magnitude of 3.76. This is a catalogue value, not a prediction of its brightness this week. Lower magnitudes mean brighter objects; sky brightness and altitude affect whether you can see the star.\n\nIts catalogue position is approximately right ascension 6h 28m and declination -7.0°. These reference coordinates describe its sky location; they are not an observing time or a current altitude.\n\nAt the almanac’s default latitude of 45° N, this star rises and sets, reaching approximately 38° altitude at upper culmination. These are geometric calculations from declination, excluding refraction and local obstructions. Darkness and the time of culmination must still be checked for the observing date and your location.\n\nHow to find it: Establish the preserved Mon constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.\n\nSources: Star Almanack’s stored fixed-object and expanded Bayer catalogues; accepted constellation figures and guiding-star routes. Visibility limits are original geometric calculations from catalogue declination, not weekly predictions.",
+      "url": "/stories/baseline/796.html",
+      "status": "pending"
+    },
+    {
+      "fixed_object_id": 184,
+      "collection": "baseline",
+      "hed": "Rosette",
+      "dek": "Rosette is an observing target in Mon carried by the weekly Calendar.",
+      "body": "Why it is here: The Calendar selected Rosette as one of this week’s fixed-sky observing targets.\n\nHow to find it: Establish the preserved Mon constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.",
+      "url": "/stories/baseline/184.html",
+      "status": "pending"
+    },
+    {
+      "fixed_object_id": 185,
+      "collection": "baseline",
+      "hed": "Fixed object 185",
+      "dek": "Fixed object 185 is an observing target in Mon carried by the weekly Calendar.",
+      "body": "Why it is here: The Calendar selected Fixed object 185 as one of this week’s fixed-sky observing targets.\n\nHow to find it: Establish the preserved Mon constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.",
+      "url": "/stories/baseline/185.html",
+      "status": "pending"
     },
     {
       "fixed_object_id": 800,
       "collection": "baseline",
       "hed": "Alhena",
-      "dek": "Alhena is a stellar reference in Gem used by the weekly observing calendar.",
-      "body": "Why it is here: The Calendar selected Alhena for this week’s fixed-sky observing sequence; its permanent object identity ties the weekly entry to the same star used by the finder.\n\nHow to find it: Establish the preserved Gem constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.",
-      "url": "/stories/baseline/800.html"
+      "dek": "Alhena is a star in Gem; its declination determines which latitudes can observe it.",
+      "body": "Its catalogue position is approximately right ascension 6h 37m and declination +16.4°. These reference coordinates describe its sky location; they are not an observing time or a current altitude.\n\nAt the almanac’s default latitude of 45° N, this star rises and sets, reaching approximately 61° altitude at upper culmination. These are geometric calculations from declination, excluding refraction and local obstructions. Darkness and the time of culmination must still be checked for the observing date and your location.\n\nHow to find it: Establish the preserved Gem constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.\n\nSources: Star Almanack’s stored fixed-object and expanded Bayer catalogues; accepted constellation figures and guiding-star routes. Visibility limits are original geometric calculations from catalogue declination, not weekly predictions.",
+      "url": "/stories/baseline/800.html",
+      "status": "pending"
+    },
+    {
+      "fixed_object_id": 186,
+      "collection": "baseline",
+      "hed": "Hubble's Variable Nebula",
+      "dek": "Hubble's Variable Nebula is an observing target in Mon carried by the weekly Calendar.",
+      "body": "Why it is here: The Calendar selected Hubble's Variable Nebula as one of this week’s fixed-sky observing targets.\n\nHow to find it: Establish the preserved Mon constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.",
+      "url": "/stories/baseline/186.html",
+      "status": "pending"
     },
     {
       "fixed_object_id": 35,
       "collection": "baseline",
       "hed": "Sirius",
-      "dek": "Sirius is a stellar reference in CMa used by the weekly observing calendar.",
-      "body": "Why it is here: The Calendar selected Sirius for this week’s fixed-sky observing sequence; its permanent object identity ties the weekly entry to the same star used by the finder.\n\nHow to find it: Establish the preserved CMa constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.",
-      "url": "/stories/baseline/35.html"
+      "dek": "Sirius is a star in CMa of catalogue visual magnitude -1.44; its declination determines which latitudes can observe it.",
+      "body": "The stored catalogue gives a visual magnitude of -1.44. This is a catalogue value, not a prediction of its brightness this week. Lower magnitudes mean brighter objects; sky brightness and altitude affect whether you can see the star.\n\nIts catalogue position is approximately right ascension 6h 45m and declination -16.7°. These reference coordinates describe its sky location; they are not an observing time or a current altitude.\n\nAt the almanac’s default latitude of 45° N, this star rises and sets, reaching approximately 28° altitude at upper culmination. These are geometric calculations from declination, excluding refraction and local obstructions. Darkness and the time of culmination must still be checked for the observing date and your location.\n\nHow to find it: Establish the preserved CMa constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.\n\nSources: Star Almanack’s stored fixed-object and expanded Bayer catalogues; accepted constellation figures and guiding-star routes. Visibility limits are original geometric calculations from catalogue declination, not weekly predictions.",
+      "url": "/stories/baseline/35.html",
+      "status": "pending"
     },
     {
       "fixed_object_id": 187,
@@ -572,15 +665,17 @@
       "hed": "M41",
       "dek": "M41 is an observing target in CMa carried by the weekly Calendar.",
       "body": "Why it is here: The Calendar selected M41 as one of this week’s fixed-sky observing targets.\n\nHow to find it: Establish the preserved CMa constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.",
-      "url": "/stories/baseline/187.html"
+      "url": "/stories/baseline/187.html",
+      "status": "pending"
     },
     {
       "fixed_object_id": 806,
       "collection": "baseline",
       "hed": "α Pic",
-      "dek": "α Pic is a stellar reference in Pic used by the weekly observing calendar.",
-      "body": "Why it is here: The Calendar selected α Pic for this week’s fixed-sky observing sequence; its permanent object identity ties the weekly entry to the same star used by the finder.\n\nHow to find it: Establish the preserved Pic constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.",
-      "url": "/stories/baseline/806.html"
+      "dek": "α Pic is a star in Pic of catalogue visual magnitude 3.24; its declination determines which latitudes can observe it.",
+      "body": "The stored catalogue gives a visual magnitude of 3.24. This is a catalogue value, not a prediction of its brightness this week. Lower magnitudes mean brighter objects; sky brightness and altitude affect whether you can see the star.\n\nIts catalogue position is approximately right ascension 6h 48m and declination -61.9°. These reference coordinates describe its sky location; they are not an observing time or a current altitude.\n\nAt the almanac’s default latitude of 45° N, this star does not rise above the geometric horizon. These are geometric calculations from declination, excluding refraction and local obstructions. Darkness and the time of culmination must still be checked for the observing date and your location.\n\nHow to find it: Establish the preserved Pic constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.\n\nSources: Star Almanack’s stored fixed-object and expanded Bayer catalogues; accepted constellation figures and guiding-star routes. Visibility limits are original geometric calculations from catalogue declination, not weekly predictions.",
+      "url": "/stories/baseline/806.html",
+      "status": "pending"
     }
   ],
   "inline_stories": [],
@@ -590,25 +685,55 @@
       "fixed_object_id": 796,
       "collection": "baseline",
       "hed": "β Mon",
-      "dek": "β Mon is a stellar reference in Mon used by the weekly observing calendar.",
-      "body": "Why it is here: The Calendar selected β Mon for this week’s fixed-sky observing sequence; its permanent object identity ties the weekly entry to the same star used by the finder.\n\nHow to find it: Establish the preserved Mon constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.",
-      "url": "/stories/baseline/796.html"
+      "dek": "β Mon is a star in Mon of catalogue visual magnitude 3.76; its declination determines which latitudes can observe it.",
+      "body": "The stored catalogue gives a visual magnitude of 3.76. This is a catalogue value, not a prediction of its brightness this week. Lower magnitudes mean brighter objects; sky brightness and altitude affect whether you can see the star.\n\nIts catalogue position is approximately right ascension 6h 28m and declination -7.0°. These reference coordinates describe its sky location; they are not an observing time or a current altitude.\n\nAt the almanac’s default latitude of 45° N, this star rises and sets, reaching approximately 38° altitude at upper culmination. These are geometric calculations from declination, excluding refraction and local obstructions. Darkness and the time of culmination must still be checked for the observing date and your location.\n\nHow to find it: Establish the preserved Mon constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.\n\nSources: Star Almanack’s stored fixed-object and expanded Bayer catalogues; accepted constellation figures and guiding-star routes. Visibility limits are original geometric calculations from catalogue declination, not weekly predictions.",
+      "url": "/stories/baseline/796.html",
+      "status": "pending"
+    },
+    {
+      "fixed_object_id": 184,
+      "collection": "baseline",
+      "hed": "Rosette",
+      "dek": "Rosette is an observing target in Mon carried by the weekly Calendar.",
+      "body": "Why it is here: The Calendar selected Rosette as one of this week’s fixed-sky observing targets.\n\nHow to find it: Establish the preserved Mon constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.",
+      "url": "/stories/baseline/184.html",
+      "status": "pending"
+    },
+    {
+      "fixed_object_id": 185,
+      "collection": "baseline",
+      "hed": "Fixed object 185",
+      "dek": "Fixed object 185 is an observing target in Mon carried by the weekly Calendar.",
+      "body": "Why it is here: The Calendar selected Fixed object 185 as one of this week’s fixed-sky observing targets.\n\nHow to find it: Establish the preserved Mon constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.",
+      "url": "/stories/baseline/185.html",
+      "status": "pending"
     },
     {
       "fixed_object_id": 800,
       "collection": "baseline",
       "hed": "Alhena",
-      "dek": "Alhena is a stellar reference in Gem used by the weekly observing calendar.",
-      "body": "Why it is here: The Calendar selected Alhena for this week’s fixed-sky observing sequence; its permanent object identity ties the weekly entry to the same star used by the finder.\n\nHow to find it: Establish the preserved Gem constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.",
-      "url": "/stories/baseline/800.html"
+      "dek": "Alhena is a star in Gem; its declination determines which latitudes can observe it.",
+      "body": "Its catalogue position is approximately right ascension 6h 37m and declination +16.4°. These reference coordinates describe its sky location; they are not an observing time or a current altitude.\n\nAt the almanac’s default latitude of 45° N, this star rises and sets, reaching approximately 61° altitude at upper culmination. These are geometric calculations from declination, excluding refraction and local obstructions. Darkness and the time of culmination must still be checked for the observing date and your location.\n\nHow to find it: Establish the preserved Gem constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.\n\nSources: Star Almanack’s stored fixed-object and expanded Bayer catalogues; accepted constellation figures and guiding-star routes. Visibility limits are original geometric calculations from catalogue declination, not weekly predictions.",
+      "url": "/stories/baseline/800.html",
+      "status": "pending"
+    },
+    {
+      "fixed_object_id": 186,
+      "collection": "baseline",
+      "hed": "Hubble's Variable Nebula",
+      "dek": "Hubble's Variable Nebula is an observing target in Mon carried by the weekly Calendar.",
+      "body": "Why it is here: The Calendar selected Hubble's Variable Nebula as one of this week’s fixed-sky observing targets.\n\nHow to find it: Establish the preserved Mon constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.",
+      "url": "/stories/baseline/186.html",
+      "status": "pending"
     },
     {
       "fixed_object_id": 35,
       "collection": "baseline",
       "hed": "Sirius",
-      "dek": "Sirius is a stellar reference in CMa used by the weekly observing calendar.",
-      "body": "Why it is here: The Calendar selected Sirius for this week’s fixed-sky observing sequence; its permanent object identity ties the weekly entry to the same star used by the finder.\n\nHow to find it: Establish the preserved CMa constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.",
-      "url": "/stories/baseline/35.html"
+      "dek": "Sirius is a star in CMa of catalogue visual magnitude -1.44; its declination determines which latitudes can observe it.",
+      "body": "The stored catalogue gives a visual magnitude of -1.44. This is a catalogue value, not a prediction of its brightness this week. Lower magnitudes mean brighter objects; sky brightness and altitude affect whether you can see the star.\n\nIts catalogue position is approximately right ascension 6h 45m and declination -16.7°. These reference coordinates describe its sky location; they are not an observing time or a current altitude.\n\nAt the almanac’s default latitude of 45° N, this star rises and sets, reaching approximately 28° altitude at upper culmination. These are geometric calculations from declination, excluding refraction and local obstructions. Darkness and the time of culmination must still be checked for the observing date and your location.\n\nHow to find it: Establish the preserved CMa constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.\n\nSources: Star Almanack’s stored fixed-object and expanded Bayer catalogues; accepted constellation figures and guiding-star routes. Visibility limits are original geometric calculations from catalogue declination, not weekly predictions.",
+      "url": "/stories/baseline/35.html",
+      "status": "pending"
     },
     {
       "fixed_object_id": 187,
@@ -616,17 +741,172 @@
       "hed": "M41",
       "dek": "M41 is an observing target in CMa carried by the weekly Calendar.",
       "body": "Why it is here: The Calendar selected M41 as one of this week’s fixed-sky observing targets.\n\nHow to find it: Establish the preserved CMa constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.",
-      "url": "/stories/baseline/187.html"
+      "url": "/stories/baseline/187.html",
+      "status": "pending"
     },
     {
       "fixed_object_id": 806,
       "collection": "baseline",
       "hed": "α Pic",
-      "dek": "α Pic is a stellar reference in Pic used by the weekly observing calendar.",
-      "body": "Why it is here: The Calendar selected α Pic for this week’s fixed-sky observing sequence; its permanent object identity ties the weekly entry to the same star used by the finder.\n\nHow to find it: Establish the preserved Pic constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.",
-      "url": "/stories/baseline/806.html"
+      "dek": "α Pic is a star in Pic of catalogue visual magnitude 3.24; its declination determines which latitudes can observe it.",
+      "body": "The stored catalogue gives a visual magnitude of 3.24. This is a catalogue value, not a prediction of its brightness this week. Lower magnitudes mean brighter objects; sky brightness and altitude affect whether you can see the star.\n\nIts catalogue position is approximately right ascension 6h 48m and declination -61.9°. These reference coordinates describe its sky location; they are not an observing time or a current altitude.\n\nAt the almanac’s default latitude of 45° N, this star does not rise above the geometric horizon. These are geometric calculations from declination, excluding refraction and local obstructions. Darkness and the time of culmination must still be checked for the observing date and your location.\n\nHow to find it: Establish the preserved Pic constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.\n\nSources: Star Almanack’s stored fixed-object and expanded Bayer catalogues; accepted constellation figures and guiding-star routes. Visibility limits are original geometric calculations from catalogue declination, not weekly predictions.",
+      "url": "/stories/baseline/806.html",
+      "status": "pending"
     }
   ],
+  "story_completion": {
+    "week": "2026-W07",
+    "total": 9,
+    "complete": 0,
+    "pending": [
+      {
+        "fixed_object_id": 796,
+        "catalog_target_key": null,
+        "label": "β Mon",
+        "status": "pending",
+        "stories": [],
+        "reason": "researched story needed"
+      },
+      {
+        "fixed_object_id": 184,
+        "catalog_target_key": null,
+        "label": "Finest NGC 32 / NGC 2237 · Rosette / C49 / NGC 2237-2239 · Rosette Nebula",
+        "status": "pending",
+        "stories": [],
+        "reason": "researched story needed"
+      },
+      {
+        "fixed_object_id": 185,
+        "catalog_target_key": null,
+        "label": "C50 / NGC 2244",
+        "status": "pending",
+        "stories": [],
+        "reason": "researched story needed"
+      },
+      {
+        "fixed_object_id": 800,
+        "catalog_target_key": null,
+        "label": "Alhena (γ Gem)",
+        "status": "pending",
+        "stories": [],
+        "reason": "researched story needed"
+      },
+      {
+        "fixed_object_id": 186,
+        "catalog_target_key": null,
+        "label": "Finest NGC 33 / NGC 2261 · Hubble's Variable Nebula / C46 / NGC 2261 · Hubble's Variable Nebula",
+        "status": "pending",
+        "stories": [],
+        "reason": "researched story needed"
+      },
+      {
+        "fixed_object_id": 35,
+        "catalog_target_key": null,
+        "label": "Sirius (α CMa)",
+        "status": "pending",
+        "stories": [],
+        "reason": "researched story needed"
+      },
+      {
+        "fixed_object_id": null,
+        "catalog_target_key": "special-star:sirius-b",
+        "label": "Sirius and Sirius B (α Canis Majoris)",
+        "status": "pending",
+        "stories": [],
+        "reason": "permanent identity and researched story needed"
+      },
+      {
+        "fixed_object_id": 187,
+        "catalog_target_key": null,
+        "label": "M41",
+        "status": "pending",
+        "stories": [],
+        "reason": "researched story needed"
+      },
+      {
+        "fixed_object_id": 806,
+        "catalog_target_key": null,
+        "label": "α Pic",
+        "status": "pending",
+        "stories": [],
+        "reason": "researched story needed"
+      }
+    ],
+    "objects": [
+      {
+        "fixed_object_id": 796,
+        "catalog_target_key": null,
+        "label": "β Mon",
+        "status": "pending",
+        "stories": [],
+        "reason": "researched story needed"
+      },
+      {
+        "fixed_object_id": 184,
+        "catalog_target_key": null,
+        "label": "Finest NGC 32 / NGC 2237 · Rosette / C49 / NGC 2237-2239 · Rosette Nebula",
+        "status": "pending",
+        "stories": [],
+        "reason": "researched story needed"
+      },
+      {
+        "fixed_object_id": 185,
+        "catalog_target_key": null,
+        "label": "C50 / NGC 2244",
+        "status": "pending",
+        "stories": [],
+        "reason": "researched story needed"
+      },
+      {
+        "fixed_object_id": 800,
+        "catalog_target_key": null,
+        "label": "Alhena (γ Gem)",
+        "status": "pending",
+        "stories": [],
+        "reason": "researched story needed"
+      },
+      {
+        "fixed_object_id": 186,
+        "catalog_target_key": null,
+        "label": "Finest NGC 33 / NGC 2261 · Hubble's Variable Nebula / C46 / NGC 2261 · Hubble's Variable Nebula",
+        "status": "pending",
+        "stories": [],
+        "reason": "researched story needed"
+      },
+      {
+        "fixed_object_id": 35,
+        "catalog_target_key": null,
+        "label": "Sirius (α CMa)",
+        "status": "pending",
+        "stories": [],
+        "reason": "researched story needed"
+      },
+      {
+        "fixed_object_id": null,
+        "catalog_target_key": "special-star:sirius-b",
+        "label": "Sirius and Sirius B (α Canis Majoris)",
+        "status": "pending",
+        "stories": [],
+        "reason": "permanent identity and researched story needed"
+      },
+      {
+        "fixed_object_id": 187,
+        "catalog_target_key": null,
+        "label": "M41",
+        "status": "pending",
+        "stories": [],
+        "reason": "researched story needed"
+      },
+      {
+        "fixed_object_id": 806,
+        "catalog_target_key": null,
+        "label": "α Pic",
+        "status": "pending",
+        "stories": [],
+        "reason": "researched story needed"
+      }
+    ]
+  },
   "planet_finder_artworks": [
     {
       "schema_version": 1,
