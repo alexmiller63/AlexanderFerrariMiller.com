@@ -45,19 +45,20 @@ CONSTELLATION_GENITIVES = {
 }
 
 SOLAR_SYSTEM_OBJECT_IDS = {
-    # Canonical Star Almanack order. These IDs are permanent database keys.
+    # IDs for physical objects already present in database/fixed-object-registry.json.
+    # The Moon is intentionally omitted until it has a permanent registry record;
+    # never assign it a number by shifting the other objects.
     "Sun": 1249,
     "Mercury": 1250,
     "Venus": 1251,
     "Earth": 1252,
-    "Moon": 1253,
-    "Mars": 1254,
-    "Ceres": 1255,
-    "Jupiter": 1256,
-    "Saturn": 1257,
-    "Uranus": 1258,
-    "Neptune": 1259,
-    "Pluto": 1260,
+    "Mars": 1253,
+    "Jupiter": 1254,
+    "Saturn": 1255,
+    "Uranus": 1256,
+    "Neptune": 1257,
+    "Ceres": 1258,
+    "Pluto": 1259,
 }
 
 OBSERVING_CONCEPTS = {
@@ -364,7 +365,7 @@ def build_descriptors(
         add_constellation(con)
 
     def add_planet(name: str) -> None:
-        # Solar-System identities occupy their own descriptor namespace.\n        # Numeric fixed-object IDs must never be overwritten (e.g. Pluto 1260\n        # and 40 Eridani B 1260 are distinct physical objects).\n        descriptor_id = f"solar-{SOLAR_SYSTEM_OBJECT_IDS[name]}"
+        # Solar-System objects use the same globally unique permanent IDs as\n        # the central physical-object registry.\n        descriptor_id = str(SOLAR_SYSTEM_OBJECT_IDS[name])
         kind = "planet" if name in {"Mercury", "Venus", "Earth", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune"} else "solar-system-object"
         summary = "Solar-System object tracked by the Star Almanack weekly ephemeris and Planet Finder"
         add(_base(descriptor_id, kind, name, summary))
