@@ -144,6 +144,34 @@ def visible_ecliptic_signs(center, xmin, xmax, ymin, ymax):
     return result
 
 
+def ecliptic_sign_boundary_segments(center, xmin, xmax, ymin, ymax):
+    """Short perpendicular ticks at exact 30-degree ecliptic longitudes."""
+    points = [project(ra, dec, *center) for ra, dec in ecliptic_coordinates()]
+    half_length = min(xmax - xmin, ymax - ymin) * 0.009
+    result = []
+    for longitude in range(0, 360, 30):
+        index = longitude * 2
+        point = points[index]
+        before, after = points[(index - 1) % 720], points[(index + 1) % 720]
+        if point is None or before is None or after is None:
+            continue
+        if not (xmin <= point[0] <= xmax and ymin <= point[1] <= ymax):
+            continue
+        dx, dy = after[0] - before[0], after[1] - before[1]
+        length = math.hypot(dx, dy)
+        if not length:
+            continue
+        size = half_length * (1.5 if longitude == 0 else 1.0)
+        nx, ny = -dy / length * size, dx / length * size
+        segment = clip_view_segment(
+            (point[0] - nx, point[1] - ny), (point[0] + nx, point[1] + ny),
+            xmin, xmax, ymin, ymax,
+        )
+        if segment is not None:
+            result.append((longitude, segment))
+    return result
+
+
 def include_nearby_ecliptic(center, planet_point, xmin, xmax, ymin, ymax):
     """Include useful nearby ecliptic context with at most 25% linear growth."""
     original = (xmin, xmax, ymin, ymax)
@@ -1301,6 +1329,12 @@ def render(spec: dict, stars, output: Path) -> None:
         for start, end in segments:
             ax.plot([start[0], end[0]], [start[1], end[1]], color=color,
                     linestyle=style, linewidth=0.9, alpha=0.8, zorder=1)
+    sign_boundaries = ecliptic_sign_boundary_segments(center, xmin, xmax, ymin, ymax)
+    for longitude, (start, end) in sign_boundaries:
+        tick, = ax.plot([start[0], end[0]], [start[1], end[1]],
+                       color="#e6a36b", linewidth=1.8 if longitude == 0 else 1.1,
+                       zorder=2)
+        tick.set_gid(f"ecliptic-sign-boundary-{longitude}")
     if visible:
         ax.scatter([item[0] for item in visible], [item[1] for item in visible],
                    s=[marker_area(item[2].mag, 7) for item in visible], color=STAR,
@@ -1342,7 +1376,7 @@ def render(spec: dict, stars, output: Path) -> None:
         boundary_points = projected_path(boundary, center)
         if len(boundary_points) >= 2:
             projected_boundaries.append((boundary_name, boundary_abbreviation, boundary_points))
-    boundary_segments = []
+    boundary_segments = [segment for _, segment in sign_boundaries]
     boundary_segments.extend(segment for _, _, _, segments in reference_lines for segment in segments)
     for _, _, boundary_points in projected_boundaries:
         boundary_segments.extend(zip(boundary_points, boundary_points[1:]))
@@ -1686,10 +1720,11 @@ def render(spec: dict, stars, output: Path) -> None:
     legend_entries.sort(key=lambda pair: greek_sort_key(pair[0], pair[1]))
     legend = [legend_label(identity, star) for identity, star in legend_entries]
     legend = [item for item in legend if item]
+    legend_lines = []
     if legend:
         # SVG text does not automatically wrap long Matplotlib legend strings.
         # Keep complete entries together and bound the saved SVG's canvas.
-        legend_lines, current = [], ""
+        current = ""
         for entry in legend:
             candidate = f"{current}   ·   {entry}" if current else entry
             if current and len(candidate) > 70:
@@ -1699,6 +1734,12 @@ def render(spec: dict, stars, output: Path) -> None:
                 current = candidate
         if current:
             legend_lines.append(current)
+    if any(name == "Ecliptic" and segments for name, _, _, segments in reference_lines):
+        legend_lines.extend((
+            "Ecliptic ticks: 30° sign boundaries; longer tick: 0° Aries.",
+            "Sign boundaries differ from constellation boundaries.",
+        ))
+    if legend_lines:
         legend_text = "\n".join(legend_lines)
         # Finder legends belong only in the bottom legend area.  A prior
         # renderer emitted the same legend at the top and bottom, which made
