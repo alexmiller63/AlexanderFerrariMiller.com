@@ -46,12 +46,12 @@ CONSTELLATION_GENITIVES = {
 
 SOLAR_SYSTEM_OBJECT_IDS = {
     # IDs for physical objects already present in database/fixed-object-registry.json.
-    # The Moon is intentionally omitted until it has a permanent registry record;
-    # never assign it a number by shifting the other objects.
     "Sun": 1249,
     "Mercury": 1250,
     "Venus": 1251,
     "Earth": 1252,
+    # Reserved next ID; add the Moon to the central registry before publication.
+    "Moon": 1261,
     "Mars": 1253,
     "Jupiter": 1254,
     "Saturn": 1255,
