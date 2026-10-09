@@ -914,7 +914,9 @@ def bayer_label(identity, star=None):
 def chart_bayer_label(identity, star, figure_abbreviation):
     full = bayer_label(identity, star)
     if not full:
-        return ""
+        flam = str(identity.get("flamsteed") or identity.get("flam") or getattr(star, "flam", "") or "").strip()
+        constellation = str(identity.get("constellation_abbreviation") or star.con or "").strip()
+        return f"{flam} {constellation}" if flam and constellation else flam
     parts = full.split()
     greek = parts[0]
     constellation = str(identity.get("constellation_abbreviation") or star.con or "").strip()
@@ -994,6 +996,8 @@ def place_star_notation(ax, identity, labels, point, occupied_labels,
 
 def legend_label(identity, star=None):
     full = bayer_label(identity, star)
+    if not full:
+        full = chart_bayer_label(identity, star, "")
     if not full:
         return ""
     greek = full.split()[0]
