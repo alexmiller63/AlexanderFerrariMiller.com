@@ -77,7 +77,13 @@ def catalog_object_metadata() -> dict[int, dict]:
         with (ROOT / filename).open(newline="", encoding="utf-8") as handle:
             for row in csv.DictReader(handle):
                 key = (namespace, str(row.get(field) or "").strip().lower())
-                fid = aliases.get(key)
+                fid = aliases.get(key) if key[1] else None
+                if fid is None and filename == "special-star-catalog.csv":
+                    # Gaia DR3 can identify a specific component without
+                    # borrowing the primary star's HIP identifier.
+                    gaia = str(row.get("gaia_dr3") or "").strip().lower()
+                    if gaia:
+                        fid = aliases.get(("gaia_dr3", gaia))
                 if fid is None:
                     continue
                 designation = str(row.get("catalog") or row.get("caldwell") or row.get("finest_ngc") or "").strip()
