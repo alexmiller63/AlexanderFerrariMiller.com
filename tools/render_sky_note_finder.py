@@ -306,10 +306,10 @@ def add_constellation_notation(output):
     svg[data-notation-mode="3"] [id^="constellation-"][id$="-greek"],
     svg[data-notation-mode="2"] [id^="star-label-"][id$="-greek"],
     svg[data-notation-mode="3"] [id^="star-label-"][id$="-greek"] { display:none }
-    svg[data-notation-mode="2"] [id^="constellation-"][id$="-latin"],
-    svg[data-notation-mode="3"] [id^="constellation-"][id$="-mixed"],
-    svg[data-notation-mode="2"] [id^="star-label-"][id$="-latin"],
-    svg[data-notation-mode="3"] [id^="star-label-"][id$="-mixed"] { display:inline }
+    svg[data-notation-mode="2"] [id^="constellation-"][id$="-mixed"],
+    svg[data-notation-mode="3"] [id^="constellation-"][id$="-latin"],
+    svg[data-notation-mode="2"] [id^="star-label-"][id$="-mixed"],
+    svg[data-notation-mode="3"] [id^="star-label-"][id$="-latin"] { display:inline }
     [data-notation-choice] { cursor:pointer; fill:#f3f5f7 }
     [data-notation-choice][aria-pressed="true"] { fill:#ffd84d; text-decoration:underline }
     '''
@@ -318,8 +318,8 @@ def add_constellation_notation(output):
     [id^="body-label-"][id$="-latin"], [id^="body-label-"][id$="-mixed"] { display:none }
     svg[data-notation-mode="2"] [id^="body-label-"][id$="-greek"],
     svg[data-notation-mode="3"] [id^="body-label-"][id$="-greek"] { display:none }
-    svg[data-notation-mode="2"] [id^="body-label-"][id$="-latin"],
-    svg[data-notation-mode="3"] [id^="body-label-"][id$="-mixed"] { display:inline }
+    svg[data-notation-mode="2"] [id^="body-label-"][id$="-mixed"],
+    svg[data-notation-mode="3"] [id^="body-label-"][id$="-latin"] { display:inline }
     '''
     style.text += style.text[style.text.index('    [id^="body-label-"]'):].replace(
         'body-label-', 'ecliptic-label-',
@@ -330,8 +330,8 @@ def add_constellation_notation(output):
         "x": str(x), "y": str(y + height), "width": str(width),
         "height": "30", "fill": NIGHT,
     })
-    for fraction, mode, label in ((.2, "1", "Greek / Symbols"),
-                                   (.5, "2", "English"), (.8, "3", "Mixed")):
+    for fraction, mode, label in ((.2, "1", "Greek"),
+                                   (.5, "2", "Mixed"), (.8, "3", "English")):
         button = ET.SubElement(root, f"{{{ns}}}text", {
             "x": str(x + width * fraction), "y": str(y + height + 19),
             "text-anchor": "middle", "font-size": "11", "font-family": "sans-serif",
