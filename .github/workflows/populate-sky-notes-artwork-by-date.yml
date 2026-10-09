@@ -155,6 +155,55 @@ jobs:
           print(f"Rebuilt {len(seen)} fixed-object story package(s) after Artwork rendering")
           PY
 
+      - name: Verify every scheduled fixed-object finder and story page
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          from datetime import date
+          from pathlib import Path
+          from tools.fixed_object_stories import available_stories
+          from tools.iso_date_range import weeks_in_range
+
+          failures = []
+          checked = set()
+          for iso_week in weeks_in_range(
+              date.fromisoformat("${{ steps.range.outputs.start_date }}"),
+              date.fromisoformat("${{ steps.range.outputs.end_date }}"),
+          ):
+              source = Path("generated-sky-notes") / str(iso_week.year) / f"W{iso_week.week:02d}.json"
+              if not source.exists():
+                  failures.append(f"{iso_week.year}-W{iso_week.week:02d}: missing Sky Notes source")
+                  continue
+              payload = json.loads(source.read_text(encoding="utf-8"))
+              for item in payload.get("fixed_sky") or []:
+                  fid = item.get("fixed_object_id")
+                  if not isinstance(fid, int):
+                      failures.append(f"{iso_week.year}-W{iso_week.week:02d}: object missing permanent ID")
+                      continue
+                  checked.add(fid)
+                  svg = Path("sky-notes-artwork/objects") / str(fid) / "finder.svg"
+                  if not svg.is_file() or "<svg" not in svg.read_text(encoding="utf-8"):
+                      failures.append(f"{fid}: missing or invalid rendered finder {svg}")
+                  stories = available_stories(fid)
+                  if not stories:
+                      failures.append(f"{fid}: no story source")
+                  for story in stories:
+                      url = story.get("url") if isinstance(story, dict) else getattr(story, "url", None)
+                      if not url:
+                          failures.append(f"{fid}: story lacks public URL")
+                          continue
+                      page = Path(str(url).lstrip("/"))
+                      if not page.is_file():
+                          failures.append(f"{fid}: missing public story page {page}")
+                      elif f"/sky-notes-artwork/objects/{fid}/finder.svg" not in page.read_text(encoding="utf-8"):
+                          failures.append(f"{fid}: story page does not link its object-owned finder")
+          print(f"Verified {len(checked)} fixed-object finder packages")
+          if failures:
+              raise SystemExit("\\n".join(failures))
+          PY
+
       - name: Publish weekly planet finder Artwork into weekly pages
         run: python tools/publish_sky_note_artwork.py "${{ steps.range.outputs.start_date }}" "${{ steps.range.outputs.end_date }}"
 
