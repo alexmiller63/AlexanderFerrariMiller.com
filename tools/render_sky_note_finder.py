@@ -1303,7 +1303,23 @@ def render(spec: dict, stars, output: Path) -> None:
         fig, overview_ax = plt.subplots(figsize=(8.2, 8.2), facecolor=NIGHT)
         draw_finder_overview(overview_ax, spec, stars, idx, target_ra, target_dec,
                              str(target_meta.get("proper_name") or target_identity.get("name") or ""))
-        ax = overview_ax.inset_axes([0.54, 0.18, 0.43, 0.43], zorder=20)
+        # The Pleiades detail inset fits the cluster, not the full binocular
+        # finder window. Include breathing room for star-name annotations.
+        ax = overview_ax.inset_axes([0.65, 0.20, 0.31, 0.32], zorder=20)
+        cluster_refs = refs_from_paths([
+            path for item in (spec.get("asterisms") or [])
+            for path in (item.get("paths") or [])
+        ])
+        cluster_points = [project(idx[ref].ra_deg, idx[ref].dec_deg, *center)
+                          for ref in cluster_refs if ref in idx]
+        cluster_points = [point for point in cluster_points if point is not None]
+        if cluster_points:
+            cluster_x = [point[0] for point in cluster_points]
+            cluster_y = [point[1] for point in cluster_points]
+            label_margin = max(0.8, (max(cluster_x) - min(cluster_x)) * 0.30)
+            vertical_margin = max(0.8, (max(cluster_y) - min(cluster_y)) * 0.35)
+            xmin, xmax = min(cluster_x) - label_margin, max(cluster_x) + label_margin
+            ymin, ymax = min(cluster_y) - vertical_margin, max(cluster_y) + vertical_margin
     else:
         fig, ax = plt.subplots(figsize=(8.2, 8.2), facecolor=NIGHT)
     ax.set_facecolor(NIGHT)
