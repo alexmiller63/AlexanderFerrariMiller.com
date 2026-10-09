@@ -13,7 +13,7 @@ import re
 import sys
 from pathlib import Path
 
-from almanack_paths import calendar_pages as canonical_calendar_pages
+from almanack_paths import weekly_pages as canonical_calendar_pages
 
 ROOT = Path(__file__).resolve().parents[1]
 OBJECTS = ROOT / "database" / "fixed-objects.json"
