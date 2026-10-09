@@ -6,16 +6,41 @@
   "planetary_coordinate": "geocentric tropical ecliptic longitude; Monday 00:00 UTC",
   "fixed_sky": [
     {
+      "fixed_object_id": 163,
+      "type": "deep-sky",
+      "name": "Sh 2-206"
+    },
+    {
+      "fixed_object_id": 164,
+      "type": "deep-sky",
+      "name": "PN G144.5+06.5"
+    },
+    {
+      "fixed_object_id": 165,
+      "type": "deep-sky",
+      "name": "Crystal Ball Nebula"
+    },
+    {
       "fixed_object_id": 717,
       "type": "star",
       "name": "α Hor",
       "constellation": "Hor"
     },
     {
+      "fixed_object_id": 166,
+      "type": "deep-sky",
+      "name": "Cleopatra's Eye"
+    },
+    {
       "fixed_object_id": 718,
       "type": "star",
       "name": "α Ret",
       "constellation": "Ret"
+    },
+    {
+      "fixed_object_id": 595,
+      "type": "deep-sky",
+      "name": "Hyades"
     }
   ],
   "planet_relations": [
@@ -254,7 +279,7 @@
       "sky_separation_deg": 8.5
     }
   ],
-  "note": "ISO 2026-W02 runs from January 5 through January 11. Venus and Mars are separated by about 1.5° in geocentric ecliptic longitude at the Monday 00:00 UTC snapshot. To find Venus, first identify Sagittarius, trace the Teapot of Sagittarius, and locate Nunki in that pattern. Venus lies about 1.8° away in ecliptic longitude at the Monday 00:00 UTC snapshot; use the finder to transfer from Nunki to the planet.\n\n**Naked eye:** 🌗 Last Quarter — 15:48:24 UTC. Moderate moonlight makes timing and local sky position important for faint targets. Use α Ret as the week’s fixed-sky framework.\n\n**Planets:** Moon: Naked eye; magnitude -12.3; direct motion; 96.5% illuminated. Monday 00:00 UTC snapshot. Mercury: In solar glare; magnitude -0.6; direct motion; 96.6% illuminated. Monday 00:00 UTC snapshot. Venus: In solar glare; magnitude -3.9; direct motion; 100.0% illuminated. Monday 00:00 UTC snapshot. Solar conjunction in ecliptic longitude Jan 06 16:36 UTC. Conjunction with Mars in ecliptic longitude Jan 08 02:43 UTC. Mars: In solar glare; magnitude 1.1; direct motion; 100.0% illuminated. Monday 00:00 UTC snapshot. Solar conjunction in ecliptic longitude Jan 09 11:41 UTC. Conjunction with Venus in ecliptic longitude Jan 08 02:43 UTC. Ceres: Telescope; magnitude 8.9; direct motion; 97.0% illuminated. Monday 00:00 UTC snapshot. Jupiter: Naked eye; magnitude -2.7; retrograde motion; 100.0% illuminated. Monday 00:00 UTC snapshot. Opposition in ecliptic longitude Jan 10 08:42 UTC. Saturn: Naked eye; magnitude 1.0; direct motion; 99.8% illuminated. Monday 00:00 UTC snapshot. Uranus: Binoculars; magnitude 5.7; retrograde motion; 100.0% illuminated. Monday 00:00 UTC snapshot. Neptune: Telescope; magnitude 7.8; direct motion; 100.0% illuminated. Monday 00:00 UTC snapshot. Pluto: In solar glare; magnitude 14.6; direct motion; 100.0% illuminated. Monday 00:00 UTC snapshot.\n\n**Binoculars:** Trace Horologium’s charted figure in the finder, then identify α Hor at its charted position.\n\n**Small telescope:** No fixed-sky Calendar object is classified for telescope observing this week.\n\n**Substantial telescope:** No fixed-sky Calendar object is classified as requiring a substantial telescope this week.\n\nNo deep-sky objects are featured this week.",
+  "note": "ISO 2026-W02 runs from January 5 through January 11. Venus and Mars are separated by about 1.5° in geocentric ecliptic longitude at the Monday 00:00 UTC snapshot. To find Venus, first identify Sagittarius, trace the Teapot of Sagittarius, and locate Nunki in that pattern. Venus lies about 1.8° away in ecliptic longitude at the Monday 00:00 UTC snapshot; use the finder to transfer from Nunki to the planet.\n\n**Naked eye:** 🌗 Last Quarter — 15:48:24 UTC. Moderate moonlight makes timing and local sky position important for faint targets. Use α Ret as the week’s fixed-sky framework.\n\n**Planets:** Moon: Naked eye; magnitude -12.3; direct motion; 96.5% illuminated. Monday 00:00 UTC snapshot. Mercury: In solar glare; magnitude -0.6; direct motion; 96.6% illuminated. Monday 00:00 UTC snapshot. Venus: In solar glare; magnitude -3.9; direct motion; 100.0% illuminated. Monday 00:00 UTC snapshot. Solar conjunction in ecliptic longitude Jan 06 16:36 UTC. Conjunction with Mars in ecliptic longitude Jan 08 02:43 UTC. Mars: In solar glare; magnitude 1.1; direct motion; 100.0% illuminated. Monday 00:00 UTC snapshot. Solar conjunction in ecliptic longitude Jan 09 11:41 UTC. Conjunction with Venus in ecliptic longitude Jan 08 02:43 UTC. Ceres: Telescope; magnitude 8.9; direct motion; 97.0% illuminated. Monday 00:00 UTC snapshot. Jupiter: Naked eye; magnitude -2.7; retrograde motion; 100.0% illuminated. Monday 00:00 UTC snapshot. Opposition in ecliptic longitude Jan 10 08:42 UTC. Saturn: Naked eye; magnitude 1.0; direct motion; 99.8% illuminated. Monday 00:00 UTC snapshot. Uranus: Binoculars; magnitude 5.7; retrograde motion; 100.0% illuminated. Monday 00:00 UTC snapshot. Neptune: Telescope; magnitude 7.8; direct motion; 100.0% illuminated. Monday 00:00 UTC snapshot. Pluto: In solar glare; magnitude 14.6; direct motion; 100.0% illuminated. Monday 00:00 UTC snapshot.\n\n**Binoculars:** Trace Horologium’s charted figure in the finder, then identify α Hor at its charted position.\n\n**Small telescope:** Concentrate on Sh 2-206, PN G144.5+06.5, Crystal Ball Nebula, Cleopatra's Eye, Hyades. Increase magnification only after the target and surrounding pattern are secure.\n\n**Substantial telescope:** No fixed-sky Calendar object is classified as requiring a substantial telescope this week.\n\n",
   "descriptors": [
     {
       "schema_version": 1,
@@ -390,6 +415,51 @@
     },
     {
       "schema_version": 1,
+      "id": "163",
+      "type": "deep-sky-object",
+      "name": "Sh 2-206",
+      "summary": "deep-sky object selected as a weekly fixed-sky observing target",
+      "representation": {
+        "machine": "./163.json",
+        "human_source": "summary",
+        "human": "/stories/finest/163.html"
+      },
+      "catalog_name": "Sh 2-206",
+      "object_type": "deep-sky object",
+      "source_label": "Sh 2-206"
+    },
+    {
+      "schema_version": 1,
+      "id": "164",
+      "type": "deep-sky-object",
+      "name": "PN G144.5+06.5",
+      "summary": "deep-sky object selected as a weekly fixed-sky observing target",
+      "representation": {
+        "machine": "./164.json",
+        "human_source": "summary",
+        "human": "/stories/finest/164.html"
+      },
+      "catalog_name": "PN G144.5+06.5",
+      "object_type": "deep-sky object",
+      "source_label": "PN G144.5+06.5"
+    },
+    {
+      "schema_version": 1,
+      "id": "165",
+      "type": "deep-sky-object",
+      "name": "Crystal Ball Nebula",
+      "summary": "deep-sky object selected as a weekly fixed-sky observing target",
+      "representation": {
+        "machine": "./165.json",
+        "human_source": "summary",
+        "human": "/stories/finest/165.html"
+      },
+      "catalog_name": "Crystal Ball Nebula",
+      "object_type": "deep-sky object",
+      "source_label": "Crystal Ball Nebula"
+    },
+    {
+      "schema_version": 1,
       "id": "717",
       "type": "star",
       "name": "α Hor",
@@ -397,7 +467,7 @@
       "representation": {
         "machine": "./717.json",
         "human_source": "summary",
-        "human": "/stories/baseline/717.html"
+        "human": "/stories/alpha-stars/717.html"
       },
       "constellation_abbreviation": "Hor",
       "constellation": "Horologium"
@@ -416,6 +486,21 @@
     },
     {
       "schema_version": 1,
+      "id": "166",
+      "type": "deep-sky-object",
+      "name": "Cleopatra's Eye",
+      "summary": "deep-sky object selected as a weekly fixed-sky observing target",
+      "representation": {
+        "machine": "./166.json",
+        "human_source": "summary",
+        "human": "/stories/finest/166.html"
+      },
+      "catalog_name": "Cleopatra's Eye",
+      "object_type": "deep-sky object",
+      "source_label": "Cleopatra's Eye"
+    },
+    {
+      "schema_version": 1,
       "id": "718",
       "type": "star",
       "name": "α Ret",
@@ -423,7 +508,7 @@
       "representation": {
         "machine": "./718.json",
         "human_source": "summary",
-        "human": "/stories/baseline/718.html"
+        "human": "/stories/alpha-stars/718.html"
       },
       "constellation_abbreviation": "Ret",
       "constellation": "Reticulum"
@@ -439,6 +524,21 @@
         "human_source": "summary"
       },
       "abbreviation": "Ret"
+    },
+    {
+      "schema_version": 1,
+      "id": "595",
+      "type": "deep-sky-object",
+      "name": "Hyades",
+      "summary": "deep-sky object selected as a weekly fixed-sky observing target",
+      "representation": {
+        "machine": "./595.json",
+        "human_source": "summary",
+        "human": "/stories/caldwell/595.html"
+      },
+      "catalog_name": "Hyades",
+      "object_type": "deep-sky object",
+      "source_label": "Hyades"
     },
     {
       "schema_version": 1,
@@ -681,47 +781,371 @@
     }
   ],
   "calendar_fixed_object_ids": [
+    163,
+    164,
+    165,
     717,
-    718
+    166,
+    718,
+    595
   ],
   "story_candidates": [
     {
+      "fixed_object_id": 163,
+      "collection": "finest",
+      "hed": "NGC 1491 — a nursery with a different kind of glow",
+      "dek": "In Perseus, ultraviolet light from hot stars turns a cloud into a visible nebula; infrared observations reveal the dust and the depth hidden behind its faint appearance.",
+      "body": "NGC 1491, also recorded as Sh 2-206, is an emission nebula in Perseus. NASA's WISE account places it about 10,700 light-years away, in the Milky Way's Perseus arm. That is an approximate distance reported by that account, not a direct measurement made by this almanac. The nebula belongs to the class called H II regions, where hot stars ionize surrounding gas. Their radiation also heats dust, which radiates in the infrared. These are environments associated with star formation. Source: NASA/JPL, https://www.jpl.nasa.gov/images/pia14092-nebulae-not-as-close-as-they-appear/.\n\nThe same WISE image provides a useful lesson in depth. NGC 1491 and BFS 34 belong to one cloud complex, whereas Sh 2-209, appearing nearby on the sky, lies farther away. The image therefore combines objects that share a physical environment with another that shares only their direction. WISE's displayed colours represent selected infrared wavelengths. They should not be interpreted as the colours of the scene through an eyepiece. Source: NASA/JPL, above.\n\nThe phrase emission nebula asks us to think about the origin of the light. A nebula can occupy the same field as stars without being a collection of unresolved stars. For this target, the interesting observation is extended light between and around the points. A visual sketch should distinguish the stellar positions from the boundaries of the faint patch. This is an observing question suggested by the object's catalogued nature, not a promise that every photographically recorded structure will be visible.\n\nIts two designations serve different practical purposes. NGC 1491 is the New General Catalogue identity used by the stored observing list; Sh 2-206 is the alternative recorded in the normalized object facts. The almanac associates both with permanent object 163, so the account should be reused wherever this object returns. A number in the Finest NGC list describes the list entry, not another nebula. Naming consistency matters especially when comparing a chart, a photographic caption and an observing log.\n\nThe stored position is approximately right ascension 4h 03m and declination +51° 19′. At latitude 45° N, its geometric upper culmination is about 84°, calculated as 90° minus the difference between latitude and declination. Its declination also makes it circumpolar there. At latitude 35° S, the maximum altitude is only about 4°, making the same object a much poorer practical prospect. These calculations ignore refraction, terrain and buildings. Position source: the preserved Finest NGC catalogue and normalized object record 163.\n\nFor a search, establish the Perseus field at low magnification, then match the surrounding stars at the recorded coordinates before looking for diffuse light. Do not substitute the appearance of the much larger California Nebula for this smaller, separately identified target. A detailed finder still needs to be checked against the almanac's accepted geometry; this account does not yet certify a particular star-hop. Once the field is secure, compare the patch with nearby blank sky and record what is consistently seen rather than tracing a remembered photograph.\n\nAn observing log can separate three outcomes: the field was identified, extended nebulosity was detected, or internal structure was detected. That distinction makes a modest observation useful without overstating it. Repeat the comparison when transparency changes, using a similar field and magnification. The enduring story explains what the target is; the weekly almanac supplies Moon interference, darkness and observing times. A circumpolar position alone settles none of those conditions.",
+      "url": "/stories/finest/163.html",
+      "status": "pending"
+    },
+    {
+      "fixed_object_id": 164,
+      "collection": "finest",
+      "hed": "NGC 1501 — the Oyster hides a chemical puzzle",
+      "dek": "A glowing shell in the Giraffe surrounds a pulsating stellar core, while different kinds of spectral lines give astronomers surprisingly different answers about its gas.",
+      "body": "NGC 1501 is a planetary nebula in Camelopardalis, the Giraffe. William Herschel discovered it in 1787. ESA's Hubble account gives a distance of roughly 5,000 light-years and describes its shape as an irregular ellipsoid with uneven, bubbly structure. Its Oyster nickname pairs the shell with the bright central star, imagined as a pearl. The comparison is a visual metaphor, not a claim that the nebula has a solid surface. Source: ESA/Hubble, https://esahubble.org/images/potw1444a/.\n\nThe central star adds another kind of motion to the picture. ESA describes brightness changes on a characteristic timescale of about half an hour. The star remains very hot and luminous after losing its outer shell, but it can be difficult to see through modest telescopes. The ease of identifying it in the Hubble image is therefore a poor guide to the ease of a visual detection. The image's assigned colours also require care when comparing them with an eyepiece view. Source: ESA/Hubble, above.\n\nErcolano and colleagues investigated a less visible puzzle in a 2004 study. For doubly ionized oxygen, optical recombination lines implied an abundance about 32 times the value inferred from collisionally excited lines. Their temperature diagnostics also disagreed. A uniform gas model did not explain the observations; they argued for an additional component rich in heavier elements and deficient in hydrogen. These are the findings and interpretation of that study, not a claim that an amateur observer can distinguish the proposed components directly. Source: Ercolano et al., https://discovery.ucl.ac.uk/id/eprint/10095990/; doi:10.1111/j.1365-2966.2004.08218.x.\n\nTheir three-dimensional photoionization modelling used a central-star atmosphere with an effective temperature around 110,000 kelvin. This is a fitted model parameter. It is different from the electron temperatures inferred for the nebular gas. The authors found that ordinary temperature fluctuations alone could not account for the large abundance discrepancies in their spectra. Source: Ercolano et al., above. Keeping star and gas temperatures separate is essential when comparing numerical descriptions of this one system.\n\nThe observing opportunity is to connect a simple apparent shell with a problem that requires spectroscopy and modelling. A sketch can describe an outline and a central point. It cannot by itself supply a chemical abundance. Conversely, a spectral model needs a geometrical picture of the gas that produces its lines. Neither measurement replaces the other. This is an interpretation of the different evidence described above, rather than an additional observational result.\n\nThe almanac's stored position is approximately 4h 07m, +60° 55′. At 45° N, the calculated upper culmination is about 74°, and the object is circumpolar. At 35° S, its upper culmination lies below the geometric horizon. These are calculations from the preserved Finest NGC coordinates for permanent object 164, without atmospheric refraction. They explain why a northern observer and a southern observer need different expectations even when they consult the same photograph.\n\nCamelopardalis offers few conspicuous naked-eye landmarks. Begin by identifying the charted field, then compare the local arrangement of stars around the target rather than trying to recognize a literal oyster. Use a wide field to establish the position before increasing magnification to test whether the object looks extended. A target-specific finder has not yet been verified, so no particular connecting line between guide stars is certified here.\n\nRecord the nebula and the central-star detection separately. A shell without a secure central point is a valid observation, especially given the difficulty noted by ESA. Check any impression of a central star against the same field on another occasion rather than promoting a momentary glimpse into a firm result. Weekly darkness and Moon conditions belong to the changing observing report. The chemical puzzle remains part of the permanent story even when those conditions make the shell inaccessible.",
+      "url": "/stories/finest/164.html",
+      "status": "pending"
+    },
+    {
+      "fixed_object_id": 165,
+      "collection": "finest",
+      "hed": "NGC 1514 — the Crystal Ball keeps its rings out of sight",
+      "dek": "Herschel's puzzling haze became a laboratory for stellar mass loss, with infrared rings that even a detailed visible-light view cannot reveal.",
+      "body": "NGC 1514 is the Crystal Ball Nebula in Taurus. Its physical class is planetary nebula: material expelled by an evolved star, illuminated by the hot remnant. The name describes an apparent form, not a planet. In 1790 William Herschel encountered this object while investigating fuzzy celestial targets. Its haze around a star helped persuade him that some nebulous objects were not simply unresolved groups of stars. Source: NASA/JPL's WISE account, https://science.nasa.gov/photojournal/cosmic-ocean-dweller/.\n\nWISE later revealed two unusual dust rings. NASA's 2010 account used a provisional binary interpretation and discussed ways ejected material might produce the rings. That historical explanation belongs to the evidence available at the time. It should not be treated as though every detail was established merely by the image. The value of preserving the earlier account is to see a scientific explanation being tested and refined, rather than to freeze it as a final description. Source: NASA/JPL, above.\n\nNASA's April 2025 Webb account reports a central binary with an elongated orbit lasting roughly nine years. Webb's mid-infrared observations resolve tangled dust structure in rings detected only in infrared light. One evolved star expelled its outer layers, leaving a hot compact remnant. The system has been developing for at least several thousand years. The interaction of the two stars offers a possible explanation for the non-spherical form, rather than a completely settled reconstruction of its history. Source: NASA, https://science.nasa.gov/missions/webb/with-nasas-webb-dying-stars-energetic-display-comes-into-full-focus/.\n\nThe shape is probably closer to an hourglass with its ends cut off than to a simple cylinder. Its apparent outline depends on the viewing angle. NASA also describes holes near the central region where faster material has passed through. These observations encourage a three-dimensional reading of the image: a bright edge may represent a longer path through emitting material rather than a thick, solid wall. Source for the observed structure: NASA's Webb account, above; the distinction between projected outline and physical boundary is explanatory interpretation.\n\nFor the observer, the critical separation is between an optical target and an infrared result. Enlarging a visible-light view does not change it into an infrared observation. Neither a bigger eyepiece image nor familiarity with the Webb photograph makes the dust rings a visual observing goal. A successful optical observation can be the central stellar light and surrounding nebulosity without the characteristic infrared pattern.\n\nThe preserved catalogue position is approximately 4h 09m, +30° 47′. From 45° N its geometric upper culmination is about 76° above the horizon; from 35° S it is about 24°. These are calculations from the Finest NGC record for permanent object 165, not promises of darkness or transparency. Right ascension locates the target east to west on the celestial grid. It is not the civil-clock time at which it should be observed.\n\nEstablish the northern Taurus field at low magnification and match the surrounding stars near the stored position. Then distinguish the stellar centre from any larger patch of light. The central point alone does not demonstrate that the nebular envelope has been seen. A detailed almanac finder remains to be verified; this draft therefore provides a coordinate-based search rather than an invented chain of guide stars.\n\nA useful log notes field identification, centre detection and envelope detection separately, along with the conditions and magnification. That record can be compared across nights without requiring a particular photographic appearance. The Crystal Ball offers a rewarding historical question even when the visible patch is subtle: what evidence tells us that a haze is gas rather than many unresolved stars? Herschel's observation, WISE's rings and Webb's finer structures answer successive parts of that question with different instruments. Weekly Moon interference and observing times should be read from the current almanac, not embedded permanently in this account.",
+      "url": "/stories/finest/165.html",
+      "status": "pending"
+    },
+    {
       "fixed_object_id": 717,
-      "collection": "baseline",
-      "hed": "α Hor",
-      "dek": "α Hor is a stellar reference in Hor used by the weekly observing calendar.",
-      "body": "Why it is here: The Calendar selected α Hor for this week’s fixed-sky observing sequence; its permanent object identity ties the weekly entry to the same star used by the finder.\n\nHow to find it: Establish the preserved Hor constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.",
-      "url": "/stories/baseline/717.html"
+      "collection": "alpha-stars",
+      "hed": "Alpha Horologii — a giant at the head of the Clock",
+      "dek": "Horologium’s brightest star introduces a southern constellation named for precision timekeeping, and shows how latitude can matter more than brightness.",
+      "body": "Alpha Horologii (α Hor) is a K-type giant with visual magnitude about 3.85. Its catalogue identity includes HIP 19747 and HD 26967. SIMBAD lists spectral classification K2 III: K describes the spectrum, while luminosity class III identifies a giant. These are different pieces of information. The word giant does not mean the star must look large in an eyepiece; it describes its physical nature. For an ordinary visual observer, Alpha remains a point of light. Source: SIMBAD, https://simbad.u-strasbg.fr/simbad/sim-id?Ident=alf+Hor&protocol=html.\n\nThe catalogue parallax is about 27.72 milliarcseconds. Parallax is the apparent shift in a nearby star’s position as Earth changes its viewpoint around the Sun. A milliarcsecond is one thousandth of an arcsecond, itself one 3,600th of a degree. Taking the inverse of this parallax in arcseconds gives an approximate distance of 36 parsecs, or 118 light-years. That is an original calculation from the catalogue measurement, rather than a separately measured distance. Source for the parallax: SIMBAD, above.\n\nIt is useful to distinguish a measured quantity from a model interpretation. Spectra can reveal motion and atmospheric properties, while estimates of a star’s mass and age generally require comparisons with stellar evolution calculations. The AMBRE-HARPS study by Gomes da Silva and colleagues illustrates that distinction: its catalogue combines spectral measurements with masses, radii and ages obtained through isochrone fitting. An isochrone represents stars of one age across a range of masses. A precise-looking age in a table therefore needs its uncertainty and method beside it. Source: Gomes da Silva et al. (2021), https://arxiv.org/pdf/2012.10199.\n\nHorologium means the Clock; Horologii means “of Horologium.” Lacaille introduced the constellation in the eighteenth century, depicting a pendulum clock. Its story belongs to scientific instruments rather than a classical hero. Historical researchers caution that the exact reason for choosing this particular clock remains uncertain: proposed connections with an observatory clock or marine timekeeping should not be presented as settled facts. The secure connection is the constellation’s depiction of a precision timekeeping instrument. Sources: Hoffmann and Azkarrula, https://ase.exopla.net/index.php/Horologium; IAU constellation names, https://iauarchive.eso.org/public/themes/constellations/.\n\nThat theme offers a useful observing exercise. A chart supplies the pattern, but a star’s passage across the local meridian also supplies a repeatable event. The meridian is the great circle passing through the celestial poles and the point directly overhead. At upper culmination, a star reaches its highest altitude for that daily circuit. The weekly almanac can give the time of that event; this enduring story explains what the event means.\n\nAlpha’s reference declination is about −42° 18′. From the almanac’s default latitude of 45° N, its calculated maximum altitude is only about 2.7°. A low ridge, buildings or haze can hide it even though its catalogue brightness would otherwise make it an easy naked-eye star. Geometrically it never rises north of about 47.7° N. From 35° S, by contrast, it culminates near 82.7°, almost overhead. These calculations use the catalogue declination and ignore refraction and local obstructions.\n\nIn the accepted finder figure, Alpha is the bright northern endpoint of Horologium’s long, bent chain. Begin with that endpoint, then trace the succession of fainter stars southward, checking the bends against the chart. The outline represents a viewing pattern, not a claim that its stars form one physical family. If only Alpha is obvious at first, binoculars may help recover the fainter links. Use the full chain to confirm the field rather than trying to imagine a literal clock face.\n\nAlpha Reticuli lies at almost the same right ascension, but roughly twenty degrees farther south. This makes a helpful chart comparison: similar east–west placement does not mean similar visibility from your latitude. Keep those identities distinct as you move between the Clock and the Reticle. Finder descriptions and horizon calculations here are original Star Almanack work based on its accepted geometry and catalogue coordinates. Consult the current week for darkness, altitude at your chosen time and Moon interference.",
+      "url": "/stories/alpha-stars/717.html",
+      "status": "pending",
+      "artwork": "stellar-finder"
+    },
+    {
+      "fixed_object_id": 166,
+      "collection": "finest",
+      "hed": "NGC 1535 — Cleopatra's Eye has a wind behind its gaze",
+      "dek": "A bright inner nebula and a fainter outer region frame a hot stellar core whose ultraviolet spectrum reveals material moving away from it.",
+      "body": "Cleopatra's Eye is the popular name of NGC 1535, a planetary nebula in Eridanus. NASA describes a brighter inner region within an outer envelope. A planetary nebula forms as an evolved star loses outer material and leaves a compact hot core on the path toward a white dwarf. The old class name reflects the planet-like appearance of some examples through early telescopes; it does not connect this object with an actual planet. Source: NASA, https://science.nasa.gov/missions/hubble/hubble-spies-eye-in-the-sky/.\n\nHubble observed NGC 1535 in a survey of more than a hundred planetary nebulae with nearby stars. The purpose was to investigate whether proximity on the sky could represent a gravitational connection. NASA reports that the observed separation of this nebula's central star and a possible companion suggests a bound binary. The word suggests matters: a nearby point on an image is not, by itself, proof of companionship. Source: NASA, above.\n\nAn ultraviolet spectrum supplies evidence that the visual picture cannot. The Space Telescope Science Institute's archive presents an Astro-1 Hopkins Ultraviolet Telescope spectrum of the central star. Absorption features are attributed to atomic and molecular hydrogen in surrounding material. A strong dip with an adjacent emission peak is attributed to a fast stellar wind. This is evidence based on the distribution of light by wavelength, not motion that could be watched directly through an eyepiece. Source: STScI/MAST, https://archive.stsci.edu/hut/science/pneb.html, identifying Bowers et al. (1995), Astrophysical Journal 444, 748.\n\nA spectrum and a photograph preserve different information. The photograph locates features in an apparent shape; the spectrum tests how light varies with wavelength. For the archived wind feature, the absorption dip and neighbouring emission peak must be interpreted together. An isolated dark notch would be a much less informative description of the observation. Source for this particular feature: STScI/MAST, above. Reading the pair as evidence for an outflow gives the quiet-looking central point a physical story without requiring visible motion across the sky.\n\nThe Eye nickname can suggest a helpful visual comparison, but it is an unreliable finding method. An observer should first establish the field, then ask whether an inner concentration and a more diffuse surround are distinguishable. Selecting a convenient circular-looking patch without checking the surrounding stars reverses that process. The resemblance belongs to interpretation after identification.\n\nIts stored position is about 4h 14m, −12° 44′. At latitude 45° N, the geometric maximum altitude is roughly 32°; at 35° S it is about 68°. These original calculations use the preserved Finest NGC coordinates for permanent object 166 and ignore atmospheric refraction and local obstructions. The moderate northern altitude makes a clear southern horizon useful. The numbers describe the best daily geometry, not the altitude at a particular civil time.\n\nBegin with the charted Eridanus field and confirm several adjacent stellar positions around the coordinate marker. Use low magnification for orientation before testing whether the target is extended. No particular almanac guide-star route is certified yet: the detailed finder remains a separate check. Record the central-point detection separately from the nebula and from any claimed inner or outer structure.\n\nThe most interesting comparison is between what can be seen and what can be inferred. A steady apparent point can have an outflow revealed spectroscopically; two points close together can require further evidence before they count as a physical pair. These distinctions make an ordinary visual observation compatible with a much richer scientific account. Keep the observation modest and explicit, then use the cited research to understand the processes it cannot directly resolve. Consult the current weekly report for darkness, Moon interference and useful times rather than treating the permanent story as an observing forecast.",
+      "url": "/stories/finest/166.html",
+      "status": "pending"
     },
     {
       "fixed_object_id": 718,
-      "collection": "baseline",
-      "hed": "α Ret",
-      "dek": "α Ret is a stellar reference in Ret used by the weekly observing calendar.",
-      "body": "Why it is here: The Calendar selected α Ret for this week’s fixed-sky observing sequence; its permanent object identity ties the weekly entry to the same star used by the finder.\n\nHow to find it: Establish the preserved Ret constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.",
-      "url": "/stories/baseline/718.html"
+      "collection": "alpha-stars",
+      "hed": "Alpha Reticuli — measuring Rhombus",
+      "dek": "Named for a vanished constellation, the Reticle’s brightest star reveals its giant proportions when astronomers combine light from separated telescopes.",
+      "body": "Alpha Reticuli (α Ret), also catalogued as HIP 19780 and HD 27256, shines at visual magnitude about 3.3. SIMBAD lists it as a late-G giant, with classification G8 IIIa. Some research uses G8 II–III, illustrating that detailed luminosity classifications can differ. Its catalogue parallax is about 20.34 milliarcseconds. Inverting that angle in arcseconds gives an approximate distance of 49 parsecs, or 160 light-years. This distance is an original calculation from the catalogue parallax. Source: SIMBAD, https://simbad.u-strasbg.fr/simbad/sim-basic?Ident=alf+Ret.\n\nIts approved proper name is Rhombus. The IAU adopted that name on 19 September 2024; the announcement published in February 2026 lists it among names approved during 2024 and 2025. The approval applies to the primary component. Alpha Reticuli remains a useful designation because it connects the star to its constellation and to charts that use Greek letters. A proper name does not replace its permanent catalogue identity. Source: IAU, New Star Names 2026, https://www.iau.org/IAU/News/Ann2026/New-Star-Names-2026.aspx.\n\nRhombus recalls an earlier constellation in this part of the southern sky, associated with Habrecht and later Royer. Lacaille’s eighteenth-century figure became the reticle: historians trace his French name Réticule Rhomboïde and its later Latin form. A rhombus is a quadrilateral with four equal sides; it need not have right angles. The name preserves a geometric and chartmaking history, rather than suggesting that the star itself has that shape. Source: Hoffmann, Azkarrula and Ridpath, https://ase.exopla.net/index.php/Rhombus.\n\nA reticle is a pattern of fine reference lines, such as crosshairs or a grid, in an instrument’s eyepiece. It helps an observer aim or compare positions. Reticulum commemorates that measuring tool, while Reticuli means “of Reticulum.” The constellation name therefore invites a question about measurement: how can astronomers measure a star that appears to us as a point? Source for the official constellation name and genitive: IAU, https://iauarchive.eso.org/public/themes/constellations/.\n\nFor this star, one answer came from interferometry. Cusano and colleagues observed HD 27256 with AMBER at the Very Large Telescope Interferometer in December 2008. Combining telescope signals allowed them to measure an apparent diameter of roughly 2.63 milliarcseconds. Their analysis reported a radius near fourteen times the Sun’s, luminosity about ninety-two times the Sun’s, and effective temperature near 4,800 kelvin. These are the study’s results with uncertainties, rather than exact or timeless numbers. Source: Cusano et al., “AMBER/VLTI observations of 5 giant stars,” https://arxiv.org/pdf/1112.5043.\n\nThe method links different kinds of evidence. The apparent diameter provides an angular size; a distance lets researchers convert that angle into a physical radius. Light received at Earth helps constrain luminosity and temperature. A revision to the distance can therefore change inferred physical properties without making the angular observation wrong. The interferometer’s ability to measure such a small disk should not be confused with what an ordinary eyepiece resolves. This paragraph explains the measurement relationships in original Star Almanack wording.\n\nAlpha’s reference declination is approximately −62° 28′. Geometrically, it never rises north of about 27.5° N, placing it below the horizon at the almanac’s default 45° N. South of about 27.5° S it is circumpolar: it does not set below a level geometric horizon. At 35° S it reaches about 62.5° altitude at upper culmination. Circumpolar does not mean continuously observable; daylight, weather and obstructions still matter. These limits are original calculations from the catalogue coordinates, ignoring refraction.\n\nFind Alpha within Reticulum’s four-star outline. In the accepted chart, it is the vertex joining the sides toward Epsilon and Beta. Trace both neighbours, then continue around through Delta to confirm the whole figure. Alpha is the brightest of these four stars, but brightness alone is a less reliable identification than the arrangement. Greek-letter labels on the finder and the name Rhombus in the notes refer to the same target. These instructions use the almanac’s preserved finder geometry; the current week supplies changing darkness, Moon conditions and observing times.",
+      "url": "/stories/alpha-stars/718.html",
+      "status": "pending",
+      "artwork": "stellar-finder"
+    },
+    {
+      "fixed_object_id": 595,
+      "collection": "caldwell",
+      "hed": "Hyades — the Bull's face is slowly leaving home",
+      "dek": "The familiar V contains a nearby stellar family, but its bright orange landmark is a foreground visitor and its escaped members spread far beyond the binocular view.",
+      "body": "The Hyades are an open star cluster in Taurus and the target called Caldwell 41. NASA describes open clusters as stars formed together and loosely associated through gravity. The conspicuous Hyades stars form much of the Bull's face. Orange Aldebaran helps identify the field, but it lies in front of the cluster rather than belonging to it. A familiar outline can therefore mix a physical stellar family with an unrelated star along our line of sight. Source: NASA/JPL, https://www.jpl.nasa.gov/videos/whats-up-march-2022/.\n\nNASA's guide recommends extending Orion's Belt toward Aldebaran and looking for the surrounding V. This is a practical route from an obvious landmark to a broad target. The Hyades are spread out enough that a wide field is valuable. Their appearance differs from the more compact-looking Pleiades, another cluster in Taurus; apparent compactness by itself does not reveal the physical size or distance of a group. Source: NASA/JPL, above. The route is enduring guidance; that video's March 2022 planetary events are not carried into this reusable story.\n\nESA's 2021 Gaia account places the Hyades just over 153 light-years away and gives its history as roughly 600–700 million years. Gravitational encounters within a cluster can alter stellar motions and let stars escape. Galactic forces then organize some of the escaped population into leading and trailing tidal tails. By combining Gaia measurements with simulations, researchers traced thousands of former members beyond the familiar cluster. Source: ESA, https://www.esa.int/Science_Exploration/Space_Science/Gaia/Is_the_nearest_star_cluster_to_the_Sun_being_destroyed.\n\nThat work also found an apparent deficit in the trailing tail. A simulated encounter with a massive concentration of matter could reproduce the discrepancy; an unseen dark-matter structure was proposed as one possible explanation. This was a hypothesis, not a detected dark-matter object beside the binocular cluster. The distinction between an observed mismatch and a possible cause is central to reading the story accurately. Source: ESA's 2021 account, above.\n\nESA's later synthesis describes further progress in identifying tidal features and testing whether candidate tail stars really escaped from a cluster. Measurements of motion and position can be supplemented by stellar rotation as an age clue. The wider lesson is that an open cluster is an evolving population, not a permanent set of points inside a fixed outline. Source: ESA, https://www.esa.int/Science_Exploration/Space_Science/Gaia/Gaia_proves_our_skies_are_filled_with_chains_of_starry_gatherings. The familiar V is a convenient starting view of that population rather than a boundary enclosing every related star.\n\nThe almanac stores a representative centre near right ascension 4h 27m and declination +16°. A cluster covers an area, so this coordinate marks a reference position rather than one stellar component. Using that declination, upper culmination is about 61° at 45° N and 39° at 35° S. These original geometrical calculations ignore refraction and do not supply the civil-clock time of transit. Position source: the preserved Caldwell 41 catalogue record, permanent object 595.\n\nFor observing, identify Aldebaran and compare the arrangement of stars around it with the whole V. Try a field wide enough to retain both arms, then examine smaller groups without losing your orientation. A telescope that excludes most of the pattern may show more individual stars while making recognition harder. Count only what you actually detect and label Aldebaran separately when making a sketch. The line-of-sight landmark is useful even though it is not a member.\n\nAn observing log can distinguish the familiar pattern, individual resolved stars and scientifically identified membership. Looking similar or occupying the same patch is not enough for the last category. Gaia's much wider family should not be imagined as a visible tail sweeping out from a backyard binocular field. The story joins an accessible naked-eye landmark to a population whose history is reconstructed through measurement. Current darkness, lunar interference and nearby planets remain the job of the weekly almanac. A detailed almanac finder and the published story page still need their separate checks.",
+      "url": "/stories/caldwell/595.html",
+      "status": "pending"
     }
   ],
   "inline_stories": [],
   "linked_stories": [],
   "stories": [
     {
+      "fixed_object_id": 163,
+      "collection": "finest",
+      "hed": "NGC 1491 — a nursery with a different kind of glow",
+      "dek": "In Perseus, ultraviolet light from hot stars turns a cloud into a visible nebula; infrared observations reveal the dust and the depth hidden behind its faint appearance.",
+      "body": "NGC 1491, also recorded as Sh 2-206, is an emission nebula in Perseus. NASA's WISE account places it about 10,700 light-years away, in the Milky Way's Perseus arm. That is an approximate distance reported by that account, not a direct measurement made by this almanac. The nebula belongs to the class called H II regions, where hot stars ionize surrounding gas. Their radiation also heats dust, which radiates in the infrared. These are environments associated with star formation. Source: NASA/JPL, https://www.jpl.nasa.gov/images/pia14092-nebulae-not-as-close-as-they-appear/.\n\nThe same WISE image provides a useful lesson in depth. NGC 1491 and BFS 34 belong to one cloud complex, whereas Sh 2-209, appearing nearby on the sky, lies farther away. The image therefore combines objects that share a physical environment with another that shares only their direction. WISE's displayed colours represent selected infrared wavelengths. They should not be interpreted as the colours of the scene through an eyepiece. Source: NASA/JPL, above.\n\nThe phrase emission nebula asks us to think about the origin of the light. A nebula can occupy the same field as stars without being a collection of unresolved stars. For this target, the interesting observation is extended light between and around the points. A visual sketch should distinguish the stellar positions from the boundaries of the faint patch. This is an observing question suggested by the object's catalogued nature, not a promise that every photographically recorded structure will be visible.\n\nIts two designations serve different practical purposes. NGC 1491 is the New General Catalogue identity used by the stored observing list; Sh 2-206 is the alternative recorded in the normalized object facts. The almanac associates both with permanent object 163, so the account should be reused wherever this object returns. A number in the Finest NGC list describes the list entry, not another nebula. Naming consistency matters especially when comparing a chart, a photographic caption and an observing log.\n\nThe stored position is approximately right ascension 4h 03m and declination +51° 19′. At latitude 45° N, its geometric upper culmination is about 84°, calculated as 90° minus the difference between latitude and declination. Its declination also makes it circumpolar there. At latitude 35° S, the maximum altitude is only about 4°, making the same object a much poorer practical prospect. These calculations ignore refraction, terrain and buildings. Position source: the preserved Finest NGC catalogue and normalized object record 163.\n\nFor a search, establish the Perseus field at low magnification, then match the surrounding stars at the recorded coordinates before looking for diffuse light. Do not substitute the appearance of the much larger California Nebula for this smaller, separately identified target. A detailed finder still needs to be checked against the almanac's accepted geometry; this account does not yet certify a particular star-hop. Once the field is secure, compare the patch with nearby blank sky and record what is consistently seen rather than tracing a remembered photograph.\n\nAn observing log can separate three outcomes: the field was identified, extended nebulosity was detected, or internal structure was detected. That distinction makes a modest observation useful without overstating it. Repeat the comparison when transparency changes, using a similar field and magnification. The enduring story explains what the target is; the weekly almanac supplies Moon interference, darkness and observing times. A circumpolar position alone settles none of those conditions.",
+      "url": "/stories/finest/163.html",
+      "status": "pending"
+    },
+    {
+      "fixed_object_id": 164,
+      "collection": "finest",
+      "hed": "NGC 1501 — the Oyster hides a chemical puzzle",
+      "dek": "A glowing shell in the Giraffe surrounds a pulsating stellar core, while different kinds of spectral lines give astronomers surprisingly different answers about its gas.",
+      "body": "NGC 1501 is a planetary nebula in Camelopardalis, the Giraffe. William Herschel discovered it in 1787. ESA's Hubble account gives a distance of roughly 5,000 light-years and describes its shape as an irregular ellipsoid with uneven, bubbly structure. Its Oyster nickname pairs the shell with the bright central star, imagined as a pearl. The comparison is a visual metaphor, not a claim that the nebula has a solid surface. Source: ESA/Hubble, https://esahubble.org/images/potw1444a/.\n\nThe central star adds another kind of motion to the picture. ESA describes brightness changes on a characteristic timescale of about half an hour. The star remains very hot and luminous after losing its outer shell, but it can be difficult to see through modest telescopes. The ease of identifying it in the Hubble image is therefore a poor guide to the ease of a visual detection. The image's assigned colours also require care when comparing them with an eyepiece view. Source: ESA/Hubble, above.\n\nErcolano and colleagues investigated a less visible puzzle in a 2004 study. For doubly ionized oxygen, optical recombination lines implied an abundance about 32 times the value inferred from collisionally excited lines. Their temperature diagnostics also disagreed. A uniform gas model did not explain the observations; they argued for an additional component rich in heavier elements and deficient in hydrogen. These are the findings and interpretation of that study, not a claim that an amateur observer can distinguish the proposed components directly. Source: Ercolano et al., https://discovery.ucl.ac.uk/id/eprint/10095990/; doi:10.1111/j.1365-2966.2004.08218.x.\n\nTheir three-dimensional photoionization modelling used a central-star atmosphere with an effective temperature around 110,000 kelvin. This is a fitted model parameter. It is different from the electron temperatures inferred for the nebular gas. The authors found that ordinary temperature fluctuations alone could not account for the large abundance discrepancies in their spectra. Source: Ercolano et al., above. Keeping star and gas temperatures separate is essential when comparing numerical descriptions of this one system.\n\nThe observing opportunity is to connect a simple apparent shell with a problem that requires spectroscopy and modelling. A sketch can describe an outline and a central point. It cannot by itself supply a chemical abundance. Conversely, a spectral model needs a geometrical picture of the gas that produces its lines. Neither measurement replaces the other. This is an interpretation of the different evidence described above, rather than an additional observational result.\n\nThe almanac's stored position is approximately 4h 07m, +60° 55′. At 45° N, the calculated upper culmination is about 74°, and the object is circumpolar. At 35° S, its upper culmination lies below the geometric horizon. These are calculations from the preserved Finest NGC coordinates for permanent object 164, without atmospheric refraction. They explain why a northern observer and a southern observer need different expectations even when they consult the same photograph.\n\nCamelopardalis offers few conspicuous naked-eye landmarks. Begin by identifying the charted field, then compare the local arrangement of stars around the target rather than trying to recognize a literal oyster. Use a wide field to establish the position before increasing magnification to test whether the object looks extended. A target-specific finder has not yet been verified, so no particular connecting line between guide stars is certified here.\n\nRecord the nebula and the central-star detection separately. A shell without a secure central point is a valid observation, especially given the difficulty noted by ESA. Check any impression of a central star against the same field on another occasion rather than promoting a momentary glimpse into a firm result. Weekly darkness and Moon conditions belong to the changing observing report. The chemical puzzle remains part of the permanent story even when those conditions make the shell inaccessible.",
+      "url": "/stories/finest/164.html",
+      "status": "pending"
+    },
+    {
+      "fixed_object_id": 165,
+      "collection": "finest",
+      "hed": "NGC 1514 — the Crystal Ball keeps its rings out of sight",
+      "dek": "Herschel's puzzling haze became a laboratory for stellar mass loss, with infrared rings that even a detailed visible-light view cannot reveal.",
+      "body": "NGC 1514 is the Crystal Ball Nebula in Taurus. Its physical class is planetary nebula: material expelled by an evolved star, illuminated by the hot remnant. The name describes an apparent form, not a planet. In 1790 William Herschel encountered this object while investigating fuzzy celestial targets. Its haze around a star helped persuade him that some nebulous objects were not simply unresolved groups of stars. Source: NASA/JPL's WISE account, https://science.nasa.gov/photojournal/cosmic-ocean-dweller/.\n\nWISE later revealed two unusual dust rings. NASA's 2010 account used a provisional binary interpretation and discussed ways ejected material might produce the rings. That historical explanation belongs to the evidence available at the time. It should not be treated as though every detail was established merely by the image. The value of preserving the earlier account is to see a scientific explanation being tested and refined, rather than to freeze it as a final description. Source: NASA/JPL, above.\n\nNASA's April 2025 Webb account reports a central binary with an elongated orbit lasting roughly nine years. Webb's mid-infrared observations resolve tangled dust structure in rings detected only in infrared light. One evolved star expelled its outer layers, leaving a hot compact remnant. The system has been developing for at least several thousand years. The interaction of the two stars offers a possible explanation for the non-spherical form, rather than a completely settled reconstruction of its history. Source: NASA, https://science.nasa.gov/missions/webb/with-nasas-webb-dying-stars-energetic-display-comes-into-full-focus/.\n\nThe shape is probably closer to an hourglass with its ends cut off than to a simple cylinder. Its apparent outline depends on the viewing angle. NASA also describes holes near the central region where faster material has passed through. These observations encourage a three-dimensional reading of the image: a bright edge may represent a longer path through emitting material rather than a thick, solid wall. Source for the observed structure: NASA's Webb account, above; the distinction between projected outline and physical boundary is explanatory interpretation.\n\nFor the observer, the critical separation is between an optical target and an infrared result. Enlarging a visible-light view does not change it into an infrared observation. Neither a bigger eyepiece image nor familiarity with the Webb photograph makes the dust rings a visual observing goal. A successful optical observation can be the central stellar light and surrounding nebulosity without the characteristic infrared pattern.\n\nThe preserved catalogue position is approximately 4h 09m, +30° 47′. From 45° N its geometric upper culmination is about 76° above the horizon; from 35° S it is about 24°. These are calculations from the Finest NGC record for permanent object 165, not promises of darkness or transparency. Right ascension locates the target east to west on the celestial grid. It is not the civil-clock time at which it should be observed.\n\nEstablish the northern Taurus field at low magnification and match the surrounding stars near the stored position. Then distinguish the stellar centre from any larger patch of light. The central point alone does not demonstrate that the nebular envelope has been seen. A detailed almanac finder remains to be verified; this draft therefore provides a coordinate-based search rather than an invented chain of guide stars.\n\nA useful log notes field identification, centre detection and envelope detection separately, along with the conditions and magnification. That record can be compared across nights without requiring a particular photographic appearance. The Crystal Ball offers a rewarding historical question even when the visible patch is subtle: what evidence tells us that a haze is gas rather than many unresolved stars? Herschel's observation, WISE's rings and Webb's finer structures answer successive parts of that question with different instruments. Weekly Moon interference and observing times should be read from the current almanac, not embedded permanently in this account.",
+      "url": "/stories/finest/165.html",
+      "status": "pending"
+    },
+    {
       "fixed_object_id": 717,
-      "collection": "baseline",
-      "hed": "α Hor",
-      "dek": "α Hor is a stellar reference in Hor used by the weekly observing calendar.",
-      "body": "Why it is here: The Calendar selected α Hor for this week’s fixed-sky observing sequence; its permanent object identity ties the weekly entry to the same star used by the finder.\n\nHow to find it: Establish the preserved Hor constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.",
-      "url": "/stories/baseline/717.html"
+      "collection": "alpha-stars",
+      "hed": "Alpha Horologii — a giant at the head of the Clock",
+      "dek": "Horologium’s brightest star introduces a southern constellation named for precision timekeeping, and shows how latitude can matter more than brightness.",
+      "body": "Alpha Horologii (α Hor) is a K-type giant with visual magnitude about 3.85. Its catalogue identity includes HIP 19747 and HD 26967. SIMBAD lists spectral classification K2 III: K describes the spectrum, while luminosity class III identifies a giant. These are different pieces of information. The word giant does not mean the star must look large in an eyepiece; it describes its physical nature. For an ordinary visual observer, Alpha remains a point of light. Source: SIMBAD, https://simbad.u-strasbg.fr/simbad/sim-id?Ident=alf+Hor&protocol=html.\n\nThe catalogue parallax is about 27.72 milliarcseconds. Parallax is the apparent shift in a nearby star’s position as Earth changes its viewpoint around the Sun. A milliarcsecond is one thousandth of an arcsecond, itself one 3,600th of a degree. Taking the inverse of this parallax in arcseconds gives an approximate distance of 36 parsecs, or 118 light-years. That is an original calculation from the catalogue measurement, rather than a separately measured distance. Source for the parallax: SIMBAD, above.\n\nIt is useful to distinguish a measured quantity from a model interpretation. Spectra can reveal motion and atmospheric properties, while estimates of a star’s mass and age generally require comparisons with stellar evolution calculations. The AMBRE-HARPS study by Gomes da Silva and colleagues illustrates that distinction: its catalogue combines spectral measurements with masses, radii and ages obtained through isochrone fitting. An isochrone represents stars of one age across a range of masses. A precise-looking age in a table therefore needs its uncertainty and method beside it. Source: Gomes da Silva et al. (2021), https://arxiv.org/pdf/2012.10199.\n\nHorologium means the Clock; Horologii means “of Horologium.” Lacaille introduced the constellation in the eighteenth century, depicting a pendulum clock. Its story belongs to scientific instruments rather than a classical hero. Historical researchers caution that the exact reason for choosing this particular clock remains uncertain: proposed connections with an observatory clock or marine timekeeping should not be presented as settled facts. The secure connection is the constellation’s depiction of a precision timekeeping instrument. Sources: Hoffmann and Azkarrula, https://ase.exopla.net/index.php/Horologium; IAU constellation names, https://iauarchive.eso.org/public/themes/constellations/.\n\nThat theme offers a useful observing exercise. A chart supplies the pattern, but a star’s passage across the local meridian also supplies a repeatable event. The meridian is the great circle passing through the celestial poles and the point directly overhead. At upper culmination, a star reaches its highest altitude for that daily circuit. The weekly almanac can give the time of that event; this enduring story explains what the event means.\n\nAlpha’s reference declination is about −42° 18′. From the almanac’s default latitude of 45° N, its calculated maximum altitude is only about 2.7°. A low ridge, buildings or haze can hide it even though its catalogue brightness would otherwise make it an easy naked-eye star. Geometrically it never rises north of about 47.7° N. From 35° S, by contrast, it culminates near 82.7°, almost overhead. These calculations use the catalogue declination and ignore refraction and local obstructions.\n\nIn the accepted finder figure, Alpha is the bright northern endpoint of Horologium’s long, bent chain. Begin with that endpoint, then trace the succession of fainter stars southward, checking the bends against the chart. The outline represents a viewing pattern, not a claim that its stars form one physical family. If only Alpha is obvious at first, binoculars may help recover the fainter links. Use the full chain to confirm the field rather than trying to imagine a literal clock face.\n\nAlpha Reticuli lies at almost the same right ascension, but roughly twenty degrees farther south. This makes a helpful chart comparison: similar east–west placement does not mean similar visibility from your latitude. Keep those identities distinct as you move between the Clock and the Reticle. Finder descriptions and horizon calculations here are original Star Almanack work based on its accepted geometry and catalogue coordinates. Consult the current week for darkness, altitude at your chosen time and Moon interference.",
+      "url": "/stories/alpha-stars/717.html",
+      "status": "pending",
+      "artwork": "stellar-finder"
+    },
+    {
+      "fixed_object_id": 166,
+      "collection": "finest",
+      "hed": "NGC 1535 — Cleopatra's Eye has a wind behind its gaze",
+      "dek": "A bright inner nebula and a fainter outer region frame a hot stellar core whose ultraviolet spectrum reveals material moving away from it.",
+      "body": "Cleopatra's Eye is the popular name of NGC 1535, a planetary nebula in Eridanus. NASA describes a brighter inner region within an outer envelope. A planetary nebula forms as an evolved star loses outer material and leaves a compact hot core on the path toward a white dwarf. The old class name reflects the planet-like appearance of some examples through early telescopes; it does not connect this object with an actual planet. Source: NASA, https://science.nasa.gov/missions/hubble/hubble-spies-eye-in-the-sky/.\n\nHubble observed NGC 1535 in a survey of more than a hundred planetary nebulae with nearby stars. The purpose was to investigate whether proximity on the sky could represent a gravitational connection. NASA reports that the observed separation of this nebula's central star and a possible companion suggests a bound binary. The word suggests matters: a nearby point on an image is not, by itself, proof of companionship. Source: NASA, above.\n\nAn ultraviolet spectrum supplies evidence that the visual picture cannot. The Space Telescope Science Institute's archive presents an Astro-1 Hopkins Ultraviolet Telescope spectrum of the central star. Absorption features are attributed to atomic and molecular hydrogen in surrounding material. A strong dip with an adjacent emission peak is attributed to a fast stellar wind. This is evidence based on the distribution of light by wavelength, not motion that could be watched directly through an eyepiece. Source: STScI/MAST, https://archive.stsci.edu/hut/science/pneb.html, identifying Bowers et al. (1995), Astrophysical Journal 444, 748.\n\nA spectrum and a photograph preserve different information. The photograph locates features in an apparent shape; the spectrum tests how light varies with wavelength. For the archived wind feature, the absorption dip and neighbouring emission peak must be interpreted together. An isolated dark notch would be a much less informative description of the observation. Source for this particular feature: STScI/MAST, above. Reading the pair as evidence for an outflow gives the quiet-looking central point a physical story without requiring visible motion across the sky.\n\nThe Eye nickname can suggest a helpful visual comparison, but it is an unreliable finding method. An observer should first establish the field, then ask whether an inner concentration and a more diffuse surround are distinguishable. Selecting a convenient circular-looking patch without checking the surrounding stars reverses that process. The resemblance belongs to interpretation after identification.\n\nIts stored position is about 4h 14m, −12° 44′. At latitude 45° N, the geometric maximum altitude is roughly 32°; at 35° S it is about 68°. These original calculations use the preserved Finest NGC coordinates for permanent object 166 and ignore atmospheric refraction and local obstructions. The moderate northern altitude makes a clear southern horizon useful. The numbers describe the best daily geometry, not the altitude at a particular civil time.\n\nBegin with the charted Eridanus field and confirm several adjacent stellar positions around the coordinate marker. Use low magnification for orientation before testing whether the target is extended. No particular almanac guide-star route is certified yet: the detailed finder remains a separate check. Record the central-point detection separately from the nebula and from any claimed inner or outer structure.\n\nThe most interesting comparison is between what can be seen and what can be inferred. A steady apparent point can have an outflow revealed spectroscopically; two points close together can require further evidence before they count as a physical pair. These distinctions make an ordinary visual observation compatible with a much richer scientific account. Keep the observation modest and explicit, then use the cited research to understand the processes it cannot directly resolve. Consult the current weekly report for darkness, Moon interference and useful times rather than treating the permanent story as an observing forecast.",
+      "url": "/stories/finest/166.html",
+      "status": "pending"
     },
     {
       "fixed_object_id": 718,
-      "collection": "baseline",
-      "hed": "α Ret",
-      "dek": "α Ret is a stellar reference in Ret used by the weekly observing calendar.",
-      "body": "Why it is here: The Calendar selected α Ret for this week’s fixed-sky observing sequence; its permanent object identity ties the weekly entry to the same star used by the finder.\n\nHow to find it: Establish the preserved Ret constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.",
-      "url": "/stories/baseline/718.html"
+      "collection": "alpha-stars",
+      "hed": "Alpha Reticuli — measuring Rhombus",
+      "dek": "Named for a vanished constellation, the Reticle’s brightest star reveals its giant proportions when astronomers combine light from separated telescopes.",
+      "body": "Alpha Reticuli (α Ret), also catalogued as HIP 19780 and HD 27256, shines at visual magnitude about 3.3. SIMBAD lists it as a late-G giant, with classification G8 IIIa. Some research uses G8 II–III, illustrating that detailed luminosity classifications can differ. Its catalogue parallax is about 20.34 milliarcseconds. Inverting that angle in arcseconds gives an approximate distance of 49 parsecs, or 160 light-years. This distance is an original calculation from the catalogue parallax. Source: SIMBAD, https://simbad.u-strasbg.fr/simbad/sim-basic?Ident=alf+Ret.\n\nIts approved proper name is Rhombus. The IAU adopted that name on 19 September 2024; the announcement published in February 2026 lists it among names approved during 2024 and 2025. The approval applies to the primary component. Alpha Reticuli remains a useful designation because it connects the star to its constellation and to charts that use Greek letters. A proper name does not replace its permanent catalogue identity. Source: IAU, New Star Names 2026, https://www.iau.org/IAU/News/Ann2026/New-Star-Names-2026.aspx.\n\nRhombus recalls an earlier constellation in this part of the southern sky, associated with Habrecht and later Royer. Lacaille’s eighteenth-century figure became the reticle: historians trace his French name Réticule Rhomboïde and its later Latin form. A rhombus is a quadrilateral with four equal sides; it need not have right angles. The name preserves a geometric and chartmaking history, rather than suggesting that the star itself has that shape. Source: Hoffmann, Azkarrula and Ridpath, https://ase.exopla.net/index.php/Rhombus.\n\nA reticle is a pattern of fine reference lines, such as crosshairs or a grid, in an instrument’s eyepiece. It helps an observer aim or compare positions. Reticulum commemorates that measuring tool, while Reticuli means “of Reticulum.” The constellation name therefore invites a question about measurement: how can astronomers measure a star that appears to us as a point? Source for the official constellation name and genitive: IAU, https://iauarchive.eso.org/public/themes/constellations/.\n\nFor this star, one answer came from interferometry. Cusano and colleagues observed HD 27256 with AMBER at the Very Large Telescope Interferometer in December 2008. Combining telescope signals allowed them to measure an apparent diameter of roughly 2.63 milliarcseconds. Their analysis reported a radius near fourteen times the Sun’s, luminosity about ninety-two times the Sun’s, and effective temperature near 4,800 kelvin. These are the study’s results with uncertainties, rather than exact or timeless numbers. Source: Cusano et al., “AMBER/VLTI observations of 5 giant stars,” https://arxiv.org/pdf/1112.5043.\n\nThe method links different kinds of evidence. The apparent diameter provides an angular size; a distance lets researchers convert that angle into a physical radius. Light received at Earth helps constrain luminosity and temperature. A revision to the distance can therefore change inferred physical properties without making the angular observation wrong. The interferometer’s ability to measure such a small disk should not be confused with what an ordinary eyepiece resolves. This paragraph explains the measurement relationships in original Star Almanack wording.\n\nAlpha’s reference declination is approximately −62° 28′. Geometrically, it never rises north of about 27.5° N, placing it below the horizon at the almanac’s default 45° N. South of about 27.5° S it is circumpolar: it does not set below a level geometric horizon. At 35° S it reaches about 62.5° altitude at upper culmination. Circumpolar does not mean continuously observable; daylight, weather and obstructions still matter. These limits are original calculations from the catalogue coordinates, ignoring refraction.\n\nFind Alpha within Reticulum’s four-star outline. In the accepted chart, it is the vertex joining the sides toward Epsilon and Beta. Trace both neighbours, then continue around through Delta to confirm the whole figure. Alpha is the brightest of these four stars, but brightness alone is a less reliable identification than the arrangement. Greek-letter labels on the finder and the name Rhombus in the notes refer to the same target. These instructions use the almanac’s preserved finder geometry; the current week supplies changing darkness, Moon conditions and observing times.",
+      "url": "/stories/alpha-stars/718.html",
+      "status": "pending",
+      "artwork": "stellar-finder"
+    },
+    {
+      "fixed_object_id": 595,
+      "collection": "caldwell",
+      "hed": "Hyades — the Bull's face is slowly leaving home",
+      "dek": "The familiar V contains a nearby stellar family, but its bright orange landmark is a foreground visitor and its escaped members spread far beyond the binocular view.",
+      "body": "The Hyades are an open star cluster in Taurus and the target called Caldwell 41. NASA describes open clusters as stars formed together and loosely associated through gravity. The conspicuous Hyades stars form much of the Bull's face. Orange Aldebaran helps identify the field, but it lies in front of the cluster rather than belonging to it. A familiar outline can therefore mix a physical stellar family with an unrelated star along our line of sight. Source: NASA/JPL, https://www.jpl.nasa.gov/videos/whats-up-march-2022/.\n\nNASA's guide recommends extending Orion's Belt toward Aldebaran and looking for the surrounding V. This is a practical route from an obvious landmark to a broad target. The Hyades are spread out enough that a wide field is valuable. Their appearance differs from the more compact-looking Pleiades, another cluster in Taurus; apparent compactness by itself does not reveal the physical size or distance of a group. Source: NASA/JPL, above. The route is enduring guidance; that video's March 2022 planetary events are not carried into this reusable story.\n\nESA's 2021 Gaia account places the Hyades just over 153 light-years away and gives its history as roughly 600–700 million years. Gravitational encounters within a cluster can alter stellar motions and let stars escape. Galactic forces then organize some of the escaped population into leading and trailing tidal tails. By combining Gaia measurements with simulations, researchers traced thousands of former members beyond the familiar cluster. Source: ESA, https://www.esa.int/Science_Exploration/Space_Science/Gaia/Is_the_nearest_star_cluster_to_the_Sun_being_destroyed.\n\nThat work also found an apparent deficit in the trailing tail. A simulated encounter with a massive concentration of matter could reproduce the discrepancy; an unseen dark-matter structure was proposed as one possible explanation. This was a hypothesis, not a detected dark-matter object beside the binocular cluster. The distinction between an observed mismatch and a possible cause is central to reading the story accurately. Source: ESA's 2021 account, above.\n\nESA's later synthesis describes further progress in identifying tidal features and testing whether candidate tail stars really escaped from a cluster. Measurements of motion and position can be supplemented by stellar rotation as an age clue. The wider lesson is that an open cluster is an evolving population, not a permanent set of points inside a fixed outline. Source: ESA, https://www.esa.int/Science_Exploration/Space_Science/Gaia/Gaia_proves_our_skies_are_filled_with_chains_of_starry_gatherings. The familiar V is a convenient starting view of that population rather than a boundary enclosing every related star.\n\nThe almanac stores a representative centre near right ascension 4h 27m and declination +16°. A cluster covers an area, so this coordinate marks a reference position rather than one stellar component. Using that declination, upper culmination is about 61° at 45° N and 39° at 35° S. These original geometrical calculations ignore refraction and do not supply the civil-clock time of transit. Position source: the preserved Caldwell 41 catalogue record, permanent object 595.\n\nFor observing, identify Aldebaran and compare the arrangement of stars around it with the whole V. Try a field wide enough to retain both arms, then examine smaller groups without losing your orientation. A telescope that excludes most of the pattern may show more individual stars while making recognition harder. Count only what you actually detect and label Aldebaran separately when making a sketch. The line-of-sight landmark is useful even though it is not a member.\n\nAn observing log can distinguish the familiar pattern, individual resolved stars and scientifically identified membership. Looking similar or occupying the same patch is not enough for the last category. Gaia's much wider family should not be imagined as a visible tail sweeping out from a backyard binocular field. The story joins an accessible naked-eye landmark to a population whose history is reconstructed through measurement. Current darkness, lunar interference and nearby planets remain the job of the weekly almanac. A detailed almanac finder and the published story page still need their separate checks.",
+      "url": "/stories/caldwell/595.html",
+      "status": "pending"
     }
   ],
+  "story_completion": {
+    "week": "2026-W02",
+    "total": 8,
+    "complete": 0,
+    "pending": [
+      {
+        "fixed_object_id": 163,
+        "catalog_target_key": null,
+        "label": "Finest NGC 19 / NGC 1491 · Sh 2-206",
+        "status": "pending",
+        "stories": [
+          {
+            "collection": "finest",
+            "status": "pending",
+            "url": "/stories/finest/163.html"
+          }
+        ],
+        "reason": "research written; completion review pending"
+      },
+      {
+        "fixed_object_id": 164,
+        "catalog_target_key": null,
+        "label": "Finest NGC 20 / NGC 1501 · PN G144.5+06.5",
+        "status": "pending",
+        "stories": [
+          {
+            "collection": "finest",
+            "status": "pending",
+            "url": "/stories/finest/164.html"
+          }
+        ],
+        "reason": "research written; completion review pending"
+      },
+      {
+        "fixed_object_id": 165,
+        "catalog_target_key": null,
+        "label": "Finest NGC 23 / NGC 1514 · Crystal Ball Nebula",
+        "status": "pending",
+        "stories": [
+          {
+            "collection": "finest",
+            "status": "pending",
+            "url": "/stories/finest/165.html"
+          }
+        ],
+        "reason": "research written; completion review pending"
+      },
+      {
+        "fixed_object_id": 717,
+        "catalog_target_key": null,
+        "label": "α Hor",
+        "status": "pending",
+        "stories": [
+          {
+            "collection": "alpha-stars",
+            "status": "pending",
+            "url": "/stories/alpha-stars/717.html"
+          }
+        ],
+        "reason": "research written; completion review pending"
+      },
+      {
+        "fixed_object_id": 166,
+        "catalog_target_key": null,
+        "label": "Finest NGC 22 / NGC 1535 · Cleopatra's Eye",
+        "status": "pending",
+        "stories": [
+          {
+            "collection": "finest",
+            "status": "pending",
+            "url": "/stories/finest/166.html"
+          }
+        ],
+        "reason": "research written; completion review pending"
+      },
+      {
+        "fixed_object_id": 718,
+        "catalog_target_key": null,
+        "label": "α Ret",
+        "status": "pending",
+        "stories": [
+          {
+            "collection": "alpha-stars",
+            "status": "pending",
+            "url": "/stories/alpha-stars/718.html"
+          }
+        ],
+        "reason": "research written; completion review pending"
+      },
+      {
+        "fixed_object_id": null,
+        "catalog_target_key": "special-star:40-eridani-b",
+        "label": "40 Eridani B (ο² Eridani B)",
+        "status": "pending",
+        "stories": [],
+        "reason": "permanent identity and researched story needed"
+      },
+      {
+        "fixed_object_id": 595,
+        "catalog_target_key": null,
+        "label": "C41 / Hyades · Hyades",
+        "status": "pending",
+        "stories": [
+          {
+            "collection": "caldwell",
+            "status": "pending",
+            "url": "/stories/caldwell/595.html"
+          }
+        ],
+        "reason": "research written; completion review pending"
+      }
+    ],
+    "objects": [
+      {
+        "fixed_object_id": 163,
+        "catalog_target_key": null,
+        "label": "Finest NGC 19 / NGC 1491 · Sh 2-206",
+        "status": "pending",
+        "stories": [
+          {
+            "collection": "finest",
+            "status": "pending",
+            "url": "/stories/finest/163.html"
+          }
+        ],
+        "reason": "research written; completion review pending"
+      },
+      {
+        "fixed_object_id": 164,
+        "catalog_target_key": null,
+        "label": "Finest NGC 20 / NGC 1501 · PN G144.5+06.5",
+        "status": "pending",
+        "stories": [
+          {
+            "collection": "finest",
+            "status": "pending",
+            "url": "/stories/finest/164.html"
+          }
+        ],
+        "reason": "research written; completion review pending"
+      },
+      {
+        "fixed_object_id": 165,
+        "catalog_target_key": null,
+        "label": "Finest NGC 23 / NGC 1514 · Crystal Ball Nebula",
+        "status": "pending",
+        "stories": [
+          {
+            "collection": "finest",
+            "status": "pending",
+            "url": "/stories/finest/165.html"
+          }
+        ],
+        "reason": "research written; completion review pending"
+      },
+      {
+        "fixed_object_id": 717,
+        "catalog_target_key": null,
+        "label": "α Hor",
+        "status": "pending",
+        "stories": [
+          {
+            "collection": "alpha-stars",
+            "status": "pending",
+            "url": "/stories/alpha-stars/717.html"
+          }
+        ],
+        "reason": "research written; completion review pending"
+      },
+      {
+        "fixed_object_id": 166,
+        "catalog_target_key": null,
+        "label": "Finest NGC 22 / NGC 1535 · Cleopatra's Eye",
+        "status": "pending",
+        "stories": [
+          {
+            "collection": "finest",
+            "status": "pending",
+            "url": "/stories/finest/166.html"
+          }
+        ],
+        "reason": "research written; completion review pending"
+      },
+      {
+        "fixed_object_id": 718,
+        "catalog_target_key": null,
+        "label": "α Ret",
+        "status": "pending",
+        "stories": [
+          {
+            "collection": "alpha-stars",
+            "status": "pending",
+            "url": "/stories/alpha-stars/718.html"
+          }
+        ],
+        "reason": "research written; completion review pending"
+      },
+      {
+        "fixed_object_id": null,
+        "catalog_target_key": "special-star:40-eridani-b",
+        "label": "40 Eridani B (ο² Eridani B)",
+        "status": "pending",
+        "stories": [],
+        "reason": "permanent identity and researched story needed"
+      },
+      {
+        "fixed_object_id": 595,
+        "catalog_target_key": null,
+        "label": "C41 / Hyades · Hyades",
+        "status": "pending",
+        "stories": [
+          {
+            "collection": "caldwell",
+            "status": "pending",
+            "url": "/stories/caldwell/595.html"
+          }
+        ],
+        "reason": "research written; completion review pending"
+      }
+    ]
+  },
   "planet_finder_artworks": [
     {
       "schema_version": 1,
@@ -2371,7 +2795,7 @@
       "guide_separation_deg": 8.3,
       "events": [],
       "close_pairs": [],
-      "magnitude": -0.6333220860026039,
+      "magnitude": -0.6333220860026036,
       "illuminated_percent": 96.6,
       "elongation_deg": 9.9,
       "solar_side": "west",
