@@ -53,7 +53,7 @@ jobs:
           key: star-almanack-source-kernels-v1
 
       - name: Install calculation dependency
-        run: python -m pip install --disable-pip-version-check 'skyfield==1.55'
+        run: python -m pip install --disable-pip-version-check 'skyfield==1.55' 'PyYAML>=6,<7'
 
       - name: Prepare cached ephemeris kernels
         run: python tools/ensure_ephemeris_kernels.py --ceres
