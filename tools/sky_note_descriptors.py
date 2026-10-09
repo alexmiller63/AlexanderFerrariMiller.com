@@ -45,20 +45,19 @@ CONSTELLATION_GENITIVES = {
 }
 
 SOLAR_SYSTEM_OBJECT_IDS = {
-    # IDs for physical objects already present in database/fixed-object-registry.json.
+    # Canonical order; IDs mirror database/fixed-object-registry.json.
     "Sun": 1249,
     "Mercury": 1250,
     "Venus": 1251,
     "Earth": 1252,
-    # Reserved next ID; add the Moon to the central registry before publication.
-    "Moon": 1261,
-    "Mars": 1253,
-    "Jupiter": 1254,
-    "Saturn": 1255,
-    "Uranus": 1256,
-    "Neptune": 1257,
-    "Ceres": 1258,
-    "Pluto": 1259,
+    "Moon": 1253,
+    "Mars": 1254,
+    "Ceres": 1255,
+    "Jupiter": 1256,
+    "Saturn": 1257,
+    "Uranus": 1258,
+    "Neptune": 1259,
+    "Pluto": 1260,
 }
 
 OBSERVING_CONCEPTS = {
