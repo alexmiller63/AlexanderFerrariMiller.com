@@ -55,20 +55,22 @@ if [[ "$workflow_state" != "active" ]]; then
   exit 1
 fi
 
-dispatch_time="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
 before="$(gh run list --repo "$repo" --workflow "$workflow" --event workflow_dispatch --limit 1 --json databaseId --jq '.[0].databaseId // 0')"
 before="${before:-0}"
 
 dispatch_ref="${GITHUB_REF_NAME:?GITHUB_REF_NAME is required}"
+dispatch_time="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
 echo "Dispatching $workflow_path on ref: $dispatch_ref"
 gh workflow run "$workflow" --repo "$repo" --ref "$dispatch_ref" "$@"
 
-dispatch_sha="$(api_with_retry "repos/$repo/commits/$dispatch_ref" --jq '.sha')"
+# main may advance immediately after dispatch (generator and progress commits).
+# Identify the new run by workflow, ref, baseline ID, and dispatch time, never
+# by re-reading the moving branch tip. Refuse concurrent ambiguous matches.
 
 run_id=""
 for attempt in $(seq 1 "$MAX_DISCOVERY_ATTEMPTS"); do
   set +e
-  run_id="$(gh run list --repo "$repo" --workflow "$workflow" --event workflow_dispatch --limit "$RUN_LIST_LIMIT" --json databaseId,createdAt,headSha,status --jq "map(select(.databaseId > $before and .createdAt >= \"$dispatch_time\" and .headSha == \"$dispatch_sha\")) | sort_by(.createdAt) | last | .databaseId // empty" 2>/tmp/gh-run-list.err)"
+  candidates="$(gh run list --repo "$repo" --workflow "$workflow" --event workflow_dispatch --limit "$RUN_LIST_LIMIT" --json databaseId,createdAt,headBranch,status --jq "map(select(.databaseId > $before and .createdAt >= \"$dispatch_time\" and .headBranch == \"$dispatch_ref\"))" 2>/tmp/gh-run-list.err)"
   rc=$?
   set -e
   if [[ $rc -ne 0 ]]; then
@@ -80,6 +82,12 @@ for attempt in $(seq 1 "$MAX_DISCOVERY_ATTEMPTS"); do
     cat /tmp/gh-run-list.err >&2
     exit "$rc"
   fi
+  candidate_count="$(jq 'length' <<<"$candidates")"
+  if [[ "$candidate_count" -gt 1 ]]; then
+    echo "ERROR: multiple new $workflow runs match this dispatch; refusing to guess" >&2
+    exit 1
+  fi
+  run_id="$(jq -r '.[0].databaseId // empty' <<<"$candidates")"
   if [[ -n "$run_id" ]]; then
     echo "Found dispatched $workflow run $run_id (created at/after $dispatch_time)"
     break
