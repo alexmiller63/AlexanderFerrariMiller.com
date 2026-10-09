@@ -1,0 +1,123 @@
+{
+  "schema_version": 1,
+  "updated_at": "2026-10-09T04:18:42.543092+00:00",
+  "year": 2026,
+  "weeks": {
+    "W02": {
+      "new_drafts": 5,
+      "reused_drafts": 2,
+      "complete": 0,
+      "scheduled_targets": 8,
+      "objects": {
+        "163": {
+          "collection": "finest",
+          "source": "stories/finest/163.md",
+          "hed": "NGC 1491 — a nursery with a different kind of glow",
+          "body_words": 549,
+          "stage": "researched-draft",
+          "research_checked": true,
+          "finder_checked": false,
+          "publication_checked": false,
+          "remaining": [
+            "Verify target-specific accepted finder geometry and reader links",
+            "Generate and verify published story page before marking complete"
+          ]
+        },
+        "164": {
+          "collection": "finest",
+          "source": "stories/finest/164.md",
+          "hed": "NGC 1501 — the Oyster hides a chemical puzzle",
+          "body_words": 606,
+          "stage": "researched-draft",
+          "research_checked": true,
+          "finder_checked": false,
+          "publication_checked": false,
+          "remaining": [
+            "Verify target-specific accepted finder geometry and reader links",
+            "Generate and verify published story page before marking complete"
+          ]
+        },
+        "165": {
+          "collection": "finest",
+          "source": "stories/finest/165.md",
+          "hed": "NGC 1514 — the Crystal Ball keeps its rings out of sight",
+          "body_words": 613,
+          "stage": "researched-draft",
+          "research_checked": true,
+          "finder_checked": false,
+          "publication_checked": false,
+          "remaining": [
+            "Verify target-specific accepted finder geometry and reader links",
+            "Generate and verify published story page before marking complete"
+          ]
+        },
+        "166": {
+          "collection": "finest",
+          "source": "stories/finest/166.md",
+          "hed": "NGC 1535 — Cleopatra's Eye has a wind behind its gaze",
+          "body_words": 599,
+          "stage": "researched-draft",
+          "research_checked": true,
+          "finder_checked": false,
+          "publication_checked": false,
+          "remaining": [
+            "Verify target-specific accepted finder geometry and reader links",
+            "Generate and verify published story page before marking complete"
+          ]
+        },
+        "595": {
+          "collection": "caldwell",
+          "source": "stories/caldwell/595.md",
+          "hed": "Hyades — the Bull's face is slowly leaving home",
+          "body_words": 624,
+          "stage": "researched-draft",
+          "research_checked": true,
+          "finder_checked": false,
+          "publication_checked": false,
+          "remaining": [
+            "Verify target-specific accepted finder geometry and reader links",
+            "Generate and verify published story page before marking complete"
+          ]
+        },
+        "717": {
+          "collection": "alpha-stars",
+          "source": "stories/alpha-stars/717.md",
+          "hed": "Alpha Horologii — a giant at the head of the Clock",
+          "body_words": 640,
+          "stage": "existing-draft-reused",
+          "remaining": [
+            "Recheck recorded research sources",
+            "Verify finder and published story page",
+            "Add completion attestations only after checks"
+          ]
+        },
+        "718": {
+          "collection": "alpha-stars",
+          "source": "stories/alpha-stars/718.md",
+          "hed": "Alpha Reticuli — measuring Rhombus",
+          "body_words": 628,
+          "stage": "existing-draft-reused",
+          "remaining": [
+            "Recheck recorded research sources",
+            "Verify finder and published story page",
+            "Add completion attestations only after checks"
+          ]
+        }
+      },
+      "blocked": [
+        {
+          "catalog_target_key": "special-star:40-eridani-b",
+          "name": "40 Eridani B",
+          "stage": "identity-required",
+          "reason": "special-star-catalog.csv has no HIP mapping for this component; the calendar carries a catalog key, not a permanent fixed_object_id. The existing registry has no matching HIP 19849/19859/19855 record. Do not associate the white dwarf with another component or invent an ID.",
+          "remaining": [
+            "Verify component-specific authoritative catalog identity",
+            "Resolve through the repository identity generator before writing an ID-owned story"
+          ]
+        }
+      ]
+    }
+  },
+  "next_research_week": "2026-W03",
+  "resume_guidance": "All currently mapped Week 2 objects now have substantial drafts. Preserve them; handle review/publication checks separately. 40 Eridani B remains blocked on permanent identity. Continue new research at Week 3 while retaining that blocker; do not repeatedly rewrite Week 2."
+}
