@@ -3,7 +3,7 @@
   "purpose": "Normalized astronomical source records for physical fixed objects, keyed by immutable fixed_object_id.",
   "identity_registry": "database/fixed-object-registry.json",
   "source_audit": "generated/fixed-object-identity-audit.json",
-  "fixed_object_count": 1100,
+  "fixed_object_count": 1101,
   "fixed_objects": [
     {
       "fixed_object_id": 1,
@@ -40796,6 +40796,35 @@
             "supplemental_source": "Star Almanack",
             "supplemental_source_record": "Quadrans Muralis"
           }
+        },
+        {
+          "source": "finder-geometry/martz-macrobert.json",
+          "source_key": "HIP 75043",
+          "facts": {
+            "name": null,
+            "constellation": null,
+            "ra_h": null,
+            "dec_deg": null,
+            "object_type": "figure star",
+            "object_type_family": "star",
+            "notes": "Accepted Martz/MacRobert constellation or Star Almanack asterism figure star",
+            "identity_role": "physical_object_candidate",
+            "fixed_object_category": "figure star"
+          }
+        },
+        {
+          "source": "reference-data/hipparcos/figure-stars.csv",
+          "source_key": "HIP 75043",
+          "facts": {
+            "name": null,
+            "constellation": null,
+            "ra_h": "15.3347614460",
+            "dec_deg": "51.9584875600",
+            "object_type": "star",
+            "object_type_family": "star",
+            "notes": "Hipparcos I/239 position for accepted figure-star identity",
+            "identity_role": "physical_object_candidate"
+          }
         }
       ]
     },
@@ -40831,6 +40860,35 @@
             "supplemental_source": "Star Almanack",
             "supplemental_source_record": "Quadrans Muralis"
           }
+        },
+        {
+          "source": "finder-geometry/martz-macrobert.json",
+          "source_key": "HIP 77738",
+          "facts": {
+            "name": null,
+            "constellation": null,
+            "ra_h": null,
+            "dec_deg": null,
+            "object_type": "figure star",
+            "object_type_family": "star",
+            "notes": "Accepted Martz/MacRobert constellation or Star Almanack asterism figure star",
+            "identity_role": "physical_object_candidate",
+            "fixed_object_category": "figure star"
+          }
+        },
+        {
+          "source": "reference-data/hipparcos/figure-stars.csv",
+          "source_key": "HIP 77738",
+          "facts": {
+            "name": null,
+            "constellation": null,
+            "ra_h": "15.8712727033",
+            "dec_deg": "55.8265816700",
+            "object_type": "star",
+            "object_type_family": "star",
+            "notes": "Hipparcos I/239 position for accepted figure-star identity",
+            "identity_role": "physical_object_candidate"
+          }
         }
       ]
     },
@@ -40865,6 +40923,54 @@
             "identity_role": "physical_object_candidate",
             "supplemental_source": "Star Almanack",
             "supplemental_source_record": "Quadrans Muralis"
+          }
+        },
+        {
+          "source": "finder-geometry/martz-macrobert.json",
+          "source_key": "HIP 78180",
+          "facts": {
+            "name": null,
+            "constellation": null,
+            "ra_h": null,
+            "dec_deg": null,
+            "object_type": "figure star",
+            "object_type_family": "star",
+            "notes": "Accepted Martz/MacRobert constellation or Star Almanack asterism figure star",
+            "identity_role": "physical_object_candidate",
+            "fixed_object_category": "figure star"
+          }
+        },
+        {
+          "source": "reference-data/hipparcos/figure-stars.csv",
+          "source_key": "HIP 78180",
+          "facts": {
+            "name": null,
+            "constellation": null,
+            "ra_h": "15.9632202587",
+            "dec_deg": "54.7495035900",
+            "object_type": "star",
+            "object_type_family": "star",
+            "notes": "Hipparcos I/239 position for accepted figure-star identity",
+            "identity_role": "physical_object_candidate"
+          }
+        }
+      ]
+    },
+    {
+      "fixed_object_id": 1260,
+      "source_records": [
+        {
+          "source": "special-star-catalog.csv",
+          "source_key": "40-eridani-b",
+          "facts": {
+            "name": "40 Eridani B",
+            "constellation": null,
+            "ra_h": "4.256054366",
+            "dec_deg": "-7.658112219",
+            "object_type": "star",
+            "object_type_family": "star",
+            "notes": "component-specific Gaia DR3 identity",
+            "identity_role": "physical_object_candidate"
           }
         }
       ]

@@ -11,10 +11,10 @@
   "source_audit": "generated/fixed-object-identity-audit.json",
   "source_audit_schema_version": 12,
   "build_mode": "preserve_and_append",
-  "physical_object_count": 1259,
-  "active_object_count": 1100,
+  "physical_object_count": 1260,
+  "active_object_count": 1101,
   "preserved_id_count": 1100,
-  "appended_id_count": 0,
+  "appended_id_count": 1,
   "fixed_objects": [
     {
       "fixed_object_id": 1,
@@ -34137,6 +34137,14 @@
         {
           "source": "database/supplemental-physical-objects.json",
           "source_key": "hip:75043:asterism"
+        },
+        {
+          "source": "finder-geometry/martz-macrobert.json",
+          "source_key": "HIP 75043"
+        },
+        {
+          "source": "reference-data/hipparcos/figure-stars.csv",
+          "source_key": "HIP 75043"
         }
       ]
     },
@@ -34165,6 +34173,14 @@
         {
           "source": "database/supplemental-physical-objects.json",
           "source_key": "hip:77738:asterism"
+        },
+        {
+          "source": "finder-geometry/martz-macrobert.json",
+          "source_key": "HIP 77738"
+        },
+        {
+          "source": "reference-data/hipparcos/figure-stars.csv",
+          "source_key": "HIP 77738"
         }
       ]
     },
@@ -34193,6 +34209,14 @@
         {
           "source": "database/supplemental-physical-objects.json",
           "source_key": "hip:78180:asterism"
+        },
+        {
+          "source": "finder-geometry/martz-macrobert.json",
+          "source_key": "HIP 78180"
+        },
+        {
+          "source": "reference-data/hipparcos/figure-stars.csv",
+          "source_key": "HIP 78180"
         }
       ]
     },
@@ -34360,6 +34384,30 @@
         }
       ],
       "source_refs": []
+    },
+    {
+      "fixed_object_id": 1260,
+      "status": "active",
+      "canonical_identity": {
+        "namespace": "gaia_dr3",
+        "value": "3195919254111315712"
+      },
+      "identifiers": [
+        {
+          "namespace": "gaia_dr3",
+          "value": "3195919254111315712"
+        },
+        {
+          "namespace": "special",
+          "value": "40-eridani-b"
+        }
+      ],
+      "source_refs": [
+        {
+          "source": "special-star-catalog.csv",
+          "source_key": "40-eridani-b"
+        }
+      ]
     }
   ]
 }

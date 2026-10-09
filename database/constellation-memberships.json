@@ -5,7 +5,7 @@
   "membership_authority": "reference-data/roman-vi42/data.dat (CDS VI/42, Roman 1987)",
   "coordinate_method": "Reference J2000 FK5 position precessed to B1875 FK5, then first matching VI/42 ordered range.",
   "membership_is_identity_defining": false,
-  "membership_count": 1100,
+  "membership_count": 1101,
   "objects_without_usable_position_count": 0,
   "objects_without_usable_position": [],
   "constellation_memberships": [
@@ -22115,6 +22115,22 @@
       "lookup_position_b1875": {
         "ra_h": 15.913173255508726,
         "dec_deg": 55.10750647762274
+      },
+      "evidence": []
+    },
+    {
+      "fixed_object_id": 1260,
+      "constellation": "Eri",
+      "derivation": "j2000_to_b1875_roman_vi42",
+      "reference_position_j2000": {
+        "source": "special-star-catalog.csv",
+        "source_key": "40-eridani-b",
+        "ra_h": 4.256054366,
+        "dec_deg": -7.658112219
+      },
+      "lookup_position_b1875": {
+        "ra_h": 4.1550110310970245,
+        "dec_deg": -7.973213421455352
       },
       "evidence": []
     }
