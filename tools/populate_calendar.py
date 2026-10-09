@@ -26,7 +26,7 @@ from pathlib import Path
 
 from almanack_calendar import (
     ensure_calendar_metadata,
-    get_events,
+    get_event_records,
     page_dates,
     set_events,
     set_zodiac,
@@ -305,21 +305,21 @@ def patch_page(path, ingresses, events):
     text = ensure_calendar_metadata(text, path)
     calendar_prefixes = ("🌑 New Moon", "🌓 First Quarter", "🌕 Full Moon", "🌗 Last Quarter")
     for d in page_dates(path):
-        existing_html = get_events(text, d)
-        if existing_html is None:
+        existing = get_event_records(text, d)
+        if existing is None:
             raise RuntimeError(f"Missing machine-readable calendar row for {d} in {path}")
-        existing = [x for x in existing_html.split("<br>") if x and x != "—"]
         generated = events.get(d, [])
         keep = [
             x for x in existing
-            if " ingress (" not in x
-            and "Sun enters " not in x
-            and not x.startswith("Wheel of the Year:")
-            and not x.startswith(calendar_prefixes)
-            and not any(name in x for _, name, _ in WHEEL_STATIONS)
+            if " ingress (" not in x.html
+            and "Sun enters " not in x.html
+            and not x.html.startswith("Wheel of the Year:")
+            and not x.html.startswith(calendar_prefixes)
+            and not any(name in x.html for _, name, _ in WHEEL_STATIONS)
         ]
-        merged = keep + generated
-        text, found = set_events(text, d, "<br>".join(merged) if merged else "—")
+        from almanack_calendar import CalendarEvent
+        merged = keep + [CalendarEvent(value) for value in generated]
+        text, found = set_events(text, d, merged)
         if not found:
             raise RuntimeError(f"Could not update Events for {d} in {path}")
         idx, n = zodiac_for_day(d, ingresses)

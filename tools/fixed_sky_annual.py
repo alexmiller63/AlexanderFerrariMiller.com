@@ -155,6 +155,13 @@ def _source_records():
             fixed_id = fixed.catalog_target_fixed_object_id("messier", identity)
             records.append(("messier", identity, float(row["ra_h"]), fixed_id))
 
+    for source, filename, field in fixed.ADDITIONAL_CATALOGS:
+        for row in _read_csv(filename):
+            key = row[field].strip()
+            fixed_id = (fixed.special_fixed_object_id(row) if source == "special-star"
+                        else fixed.catalog_target_fixed_object_id(source, key))
+            records.append((source, key, float(row["ra_h"]), fixed_id))
+
     return records
 
 
@@ -176,39 +183,24 @@ def _write_table(data):
 
 
 def ensure_coverage(start_year: int, eph: StarAlmanackEphemeris | None = None) -> dict:
-    eph = eph or StarAlmanackEphemeris()
     data = _load_table()
     existing = {
         int(row["coverage_year"]): row
         for row in data.get("coverage", [])
     }
-    if start_year in existing:
-        interval = existing[start_year]
-        source_ids = {
-            (source, key): fixed_id
-            for source, key, _ra_h, fixed_id in _source_records()
-        }
-        changed = False
-        for obj in interval.get("objects", []):
-            expected_id = source_ids.get((obj.get("source"), obj.get("key")))
-            # Some catalog entries intentionally model regions/composites rather
-            # than a single fixed object (for example M24, the Sagittarius Star
-            # Cloud).  Preserve their null fixed-object ID; the catalog-target
-            # relationship is their canonical identity.
-            if expected_id is None:
-                continue
-            if obj.get("fixed_object_id") != expected_id:
-                obj["fixed_object_id"] = expected_id
-                changed = True
-        if changed:
-            existing[start_year] = interval
-            data["coverage"] = [existing[key] for key in sorted(existing)]
-            _write_table(data)
-        return interval
-
-    interval = coverage_interval(eph, start_year)
+    sources = _source_records()
+    interval = existing.get(start_year)
+    if interval is None:
+        eph = eph or StarAlmanackEphemeris()
+        interval = coverage_interval(eph, start_year)
+    cached = {(obj["source"], obj["key"]): obj for obj in interval.get("objects", [])}
     objects = []
-    for source, key, ra_h, fixed_id in _source_records():
+    for source, key, ra_h, fixed_id in sources:
+        previous = cached.get((source, key))
+        if previous is not None and previous.get("ra_h") == ra_h:
+            objects.append({**previous, "fixed_object_id": fixed_id})
+            continue
+        eph = eph or StarAlmanackEphemeris()
         instant = _best_visibility(eph, 
             AstroInstant(
                 interval["start_jd_tdb"],

@@ -142,6 +142,11 @@ def patch_text(text: str) -> tuple[str, int]:
         # Preserve semantic identity already supplied by the generator. Visible
         # Calendar wording is presentation and must not erase a canonical ID.
         existing = re.search(r'\bdata-fixed-object-id="(\d+)"', attrs)
+        # A canonical catalog target can describe a region or a composite
+        # observing target. Its visible component names must not convert it
+        # into a single physical star (e.g. Sirius and Sirius B -> Sirius A).
+        if not existing and 'data-catalog-target-key="' in attrs:
+            return match.group(0)
         fixed_id = (
             canonical_fixed_object_id(int(existing.group(1)), merge_map())
             if existing

@@ -6,12 +6,13 @@ import re
 import datetime as dt
 import json
 import sys
+from html import escape
 from collections import defaultdict
 from pathlib import Path
 
 import yaml
 
-from almanack_calendar import CalendarEvent, ensure_calendar_metadata, get_events, set_events
+from almanack_calendar import CalendarEvent, ensure_calendar_metadata, get_event_records, set_events
 from almanack_paths import ALMANACK_ROOT, weekly_pages
 from star_almanack_astronomy import apparent_sun_ra_hours,best_visibility_occurrences_for_iso_year,solar_ra_occurrences_for_iso_year
 from star_almanack_objects import AlmanackObject,ObservingAid,observing_aid_for_magnitude,render_html
@@ -91,6 +92,73 @@ def load_fixed_object_ids():
     return by_identifier
 FIXED_OBJECT_IDS=load_fixed_object_ids()
 
+ADDITIONAL_CATALOGS = (
+    ("caldwell", "caldwell-catalog.csv", "caldwell"),
+    ("finest_ngc", "finest-ngc-catalog.csv", "finest_ngc"),
+    ("special-star", "special-star-catalog.csv", "id"),
+)
+
+def special_fixed_object_id(row):
+    """Resolve source identities; unregistered targets retain their catalog key.
+
+    Sirius and Sirius B is a system observing target, not a synonym for Sirius A.
+    """
+    direct = FIXED_OBJECT_IDS.get(("special", row["id"].lower()))
+    if direct is not None:
+        return direct
+    if row["id"] == "sirius-b":
+        return None
+    from object_identity import resolve_source_name
+    try:
+        return resolve_source_name(row["name"])
+    except RuntimeError as exc:
+        if "resolves to []" not in str(exc):
+            raise
+    return None
+
+def catalog_event(source, row, day, fixed_id):
+    if source == "special-star":
+        label = escape(row["name"])
+        if row.get("designation"):
+            label += f' ({escape(row["designation"])})'
+        aid = {"👁": ObservingAid.NAKED_EYE, "B": ObservingAid.BINOCULARS,
+               "🔭": ObservingAid.TELESCOPE}.get(row["observing_aid"])
+        if aid is None:
+            label += " (variable brightness)"
+        key = row["id"]
+        kind = "fixed_star"
+    else:
+        key = row[source]
+        designation = key if source == "caldwell" else f'Finest NGC {key}'
+        label = escape(f'{designation} / {row["catalog"]}')
+        if row.get("name"):
+            label += f' · {escape(row["name"])}'
+        aid, kind = ObservingAid.TELESCOPE, "deep_sky"
+    record = AlmanackObject(label=label, object_type=kind, dec_deg=row["dec_deg"],
+        best_date=day, observing_aid=aid, magnitude=row.get("mag", ""),
+        magnitude_display="whole")
+    return CalendarEvent(render_html(record), fixed_id, aid.value if aid else None,
+                         None if fixed_id is not None else f"{source}:{key}")
+
+def merge_same_targets(events):
+    """One event per physical target per date, preserving catalog aliases."""
+    merged = {}
+    for index, event in enumerate(events):
+        identity = (("fixed", event.fixed_object_id) if event.fixed_object_id is not None
+                    else (("target", event.catalog_target_key) if event.catalog_target_key
+                          else ("other", index)))
+        if identity not in merged:
+            merged[identity] = event
+            continue
+        old = merged[identity]
+        alias = event.html.split(" — ", 1)[0]
+        label, separator, details = old.html.partition(" — ")
+        if alias not in label:
+            label += " / " + alias
+        merged[identity] = CalendarEvent(label + separator + details,
+            old.fixed_object_id, old.observing_aid, old.catalog_target_key)
+    return list(merged.values())
+
 def fixed_object_id(namespace,value):
     key=(namespace.strip().lower(),str(value or "").strip().lower()); fixed_id=FIXED_OBJECT_IDS.get(key)
     if fixed_id is None:raise RuntimeError(f"Permanent fixed-object ID not found for {namespace}:{value}")
@@ -114,7 +182,8 @@ def redated_preserving_2026_phase(rows,iso_year):
 def write_csv(path,rows):
     path.parent.mkdir(parents=True,exist_ok=True)
     if not rows:raise RuntimeError(f"No visibility rows generated for {path.name}")
-    with path.open("w",newline="",encoding="utf-8") as f:w=csv.DictWriter(f,fieldnames=list(rows[0])); w.writeheader(); w.writerows(rows)
+    ending = "\r\n" if path.exists() and b"\r\n" in path.read_bytes() else "\n"
+    with path.open("w",newline="",encoding="utf-8") as f:w=csv.DictWriter(f,fieldnames=list(rows[0]),lineterminator=ending); w.writeheader(); w.writerows(rows)
 def display_bayer(r):
     bayer=r.get("bayer","").strip()
     if bayer in GREEK_BAYER:
@@ -138,9 +207,22 @@ def page_date_map(year):
     for row in bright_rows:
         if row.get("new_non_alpha_beta","").lower()!="yes":continue
         key=(row.get("proper") or "").strip() or f"{row.get('bayer','').strip()}:{row.get('con','').strip()}"; bright_by_key[key]=row
-    events=defaultdict(list); generated={"expanded-bayer":[],"bright-star":[],"messier":[]}
+    additional = {source: {row[field]: row for row in read_csv(filename)}
+                  for source, filename, field in ADDITIONAL_CATALOGS}
+    events=defaultdict(list); generated={"expanded-bayer":[],"bright-star":[],"messier":[],
+                                       **{source: [] for source in additional}}
+    # Use the first existing source's occurrence for overlapping physical targets.
+    # Keep every source occurrence in the cache for audit and catalog coverage.
+    canonical_days = {}
+    for occurrence in occurrences:
+        if occurrence.get("fixed_object_id") is not None:
+            day = dt.date.fromisoformat(occurrence["best_date"])
+            # Distinct civil years can legitimately fall in one ISO year.
+            canonical_days.setdefault((occurrence["fixed_object_id"], day.year), day)
     for occurrence in sorted(occurrences,key=lambda item:item["best_jd_tdb"]):
         source=occurrence["source"]; key=occurrence["key"]; day=dt.date.fromisoformat(occurrence["best_date"])
+        if occurrence.get("fixed_object_id") is not None:
+            day = canonical_days[(occurrence["fixed_object_id"], day.year)]
         if source=="expanded-bayer":
             row=dict(bayer_by_key[key]); row["best_instant_utc"]=occurrence["best_utc"].replace("Z","")[:16]; row["best_date"]=occurrence["best_date"]; row["iso"]=occurrence["iso"]; generated["expanded-bayer"].append(row); events[day].append(star_event(row,occurrence["fixed_object_id"]))
         elif source=="bright-star":
@@ -152,9 +234,18 @@ def page_date_map(year):
             generated["messier"].append({**dict(catalog),"best_instant_utc":occurrence["best_utc"].replace("Z","")[:16],"best_date":occurrence["best_date"],"iso":occurrence["iso"]})
             messier_mag=str(catalog.get("mag") or "").strip()
             fixed_id=(int(occurrence["fixed_object_id"]) if occurrence.get("fixed_object_id") is not None else None); target_key=None if fixed_id is not None else f"messier:{identity}"; events[day].append(CalendarEvent(render_html(AlmanackObject(label=identity,object_type="deep_sky",dec_deg=catalog["dec_deg"],best_date=day,observing_aid=ObservingAid.TELESCOPE,magnitude=messier_mag,magnitude_display="whole")),fixed_id,ObservingAid.TELESCOPE.value,target_key))
+        elif source in additional:
+            row = dict(additional[source][key])
+            row.update(best_instant_utc=occurrence["best_utc"].replace("Z", "").replace("T", " ")[:16],
+                       best_date=day.isoformat(), iso=iso_label(day))
+            generated[source].append(row)
+            events[day].append(catalog_event(source, row, day, occurrence.get("fixed_object_id")))
         else:raise RuntimeError(f"Unknown annual fixed-sky source: {source}")
     if not occurrences:raise RuntimeError(f"No annual fixed-sky records found for ISO {year}")
-    write_csv(SRC/"generated"/f"expanded-bayer-visibility-{year}.csv",generated["expanded-bayer"]); write_csv(SRC/"generated"/f"bright-star-visibility-{year}.csv",generated["bright-star"]); write_csv(SRC/"generated"/f"messier-visibility-{year}.csv",generated["messier"]); return events
+    for source, rows in generated.items():
+        filename = source.replace("_", "-")
+        write_csv(SRC/"generated"/f"{filename}-visibility-{year}.csv", rows)
+    return {day: merge_same_targets(values) for day, values in events.items()}
 
 def pages_for_events(root,events):
     pages=[]
@@ -167,12 +258,14 @@ def inject(root,year,events):
     for page in pages_for_events(root,events):
         original=page.read_text(encoding="utf-8"); text=ensure_calendar_metadata(original,page)
         for d,vals in events.items():
-            cell=get_events(text,d)
-            if cell is None:continue
-            keep=[] if cell=="—" else [x for x in cell.split("<br>") if x]; semantic=[]
-            for v in vals:
-                identity=_event_identity(v.html); keep=[x for x in keep if _event_identity(x)!=identity]; semantic.append(v)
-            records=[CalendarEvent(x) for x in keep]+semantic; text,found=set_events(text,d,records)
+            keep=get_event_records(text,d)
+            if keep is None:continue
+            ids={v.fixed_object_id for v in vals if v.fixed_object_id is not None}
+            keys={v.catalog_target_key for v in vals if v.catalog_target_key is not None}
+            labels={_event_identity(v.html) for v in vals}
+            keep=[x for x in keep if x.fixed_object_id not in ids
+                  and x.catalog_target_key not in keys and _event_identity(x.html) not in labels]
+            records=merge_same_targets(keep+list(vals)); text,found=set_events(text,d,records)
             if not found:raise RuntimeError(f"Could not update {d} in {page}")
         if text!=original:page.write_text(text,encoding="utf-8"); changed+=1
     return changed

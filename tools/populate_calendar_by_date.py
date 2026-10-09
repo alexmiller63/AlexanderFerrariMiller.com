@@ -36,7 +36,16 @@ def populate_selected_year(year: int, selected_weeks: list[int]) -> int:
         if not path.exists():
             raise RuntimeError(f"Missing weekly page: {path.relative_to(calendar.ROOT)}")
         before = path.read_text(encoding="utf-8")
-        require_section(before, 2, path)
+        # Older published weeks have a Calendar table without numbered section
+        # wrappers. Validate that table through the canonical row interface;
+        # rebuilding their scaffold would discard other populated sections.
+        if 'data-almanack-section="2"' in before:
+            require_section(before, 2, path)
+        else:
+            fixed_sky.ensure_calendar_metadata(before, path)
+        # Resolve legacy cells before merging so physical duplicates can be
+        # recognized by their permanent identity rather than their wording.
+        patch_fixed_object_ids(path)
         calendar.patch_page(path, ingresses, events)
 
         # Merge canonical fixed-sky events without touching other event types.
@@ -53,6 +62,8 @@ def populate_selected_year(year: int, selected_weeks: list[int]) -> int:
             # is metadata, not presentation text, and must never be rediscovered
             # from HTML during normal generation.
             fixed_identities = {fixed_sky._event_identity(value.html) for value in vals}
+            semantic_ids = {value.fixed_object_id for value in vals if value.fixed_object_id is not None}
+            target_keys = {value.catalog_target_key for value in vals if value.catalog_target_key is not None}
             for value in vals:
                 if value.fixed_object_id is None and value.catalog_target_key is None:
                     raise RuntimeError(
@@ -68,7 +79,10 @@ def populate_selected_year(year: int, selected_weeks: list[int]) -> int:
             records = [
                 event for event in records
                 if fixed_sky._event_identity(event.html) not in fixed_identities
+                and event.fixed_object_id not in semantic_ids
+                and event.catalog_target_key not in target_keys
             ] + list(vals)
+            records = fixed_sky.merge_same_targets(records)
             text, found = fixed_sky.set_events(text, day, records if records else "—")
             if not found:
                 raise RuntimeError(f"Could not update Calendar row {day} in {path}")
