@@ -7,10 +7,12 @@ whether an object can participate in Sky Notes.
 """
 from __future__ import annotations
 
+import csv
 import html
 import json
 import re
 from dataclasses import dataclass
+from functools import lru_cache
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -115,6 +117,12 @@ def _fixed_object_meta(fixed_object_id: int) -> dict:
         meta = {"fixed_object_id": fixed_object_id}
         for record in obj.get("source_records") or []:
             facts = record.get("facts") or {}
+            for field in ("ra_h", "dec_deg"):
+                if facts.get(field) is not None and field not in meta:
+                    meta[field] = float(facts[field])
+            hip = re.search(r"\bHIP (\d+)\b", str(record.get("source_key") or ""))
+            if hip and "hip" not in meta:
+                meta["hip"] = hip.group(1)
             if facts.get("name") and not meta.get("name"):
                 meta["name"] = facts["name"]
             if facts.get("constellation") and not meta.get("constellation"):
@@ -128,6 +136,63 @@ def _fixed_object_meta(fixed_object_id: int) -> dict:
                     meta["constellation"] = facts["constellation"]
         return meta
     raise RuntimeError(f"Unknown fixed_object_id {fixed_object_id}")
+
+
+@lru_cache(maxsize=1)
+def _catalogue_magnitudes() -> dict[str, float]:
+    """Use the existing downloaded catalogue, joining stars by HIP identity."""
+    result = {}
+    path = ROOT / "expanded-bayer-stars.csv"
+    if path.exists():
+        with path.open(encoding="utf-8", newline="") as handle:
+            for row in csv.DictReader(handle):
+                if row.get("hip") and row.get("mag"):
+                    result[row["hip"]] = float(row["mag"])
+    return result
+
+
+def _stellar_observing_facts(meta: dict) -> list[str]:
+    """Evergreen catalogue facts and explicit geometric limits, never weekly conditions."""
+    paragraphs = []
+    magnitude = _catalogue_magnitudes().get(meta.get("hip"))
+    if magnitude is not None:
+        paragraphs.append(
+            f"The stored catalogue gives a visual magnitude of {magnitude:.2f}. "
+            "This is a catalogue value, not a prediction of its brightness this week. "
+            "Lower magnitudes mean brighter objects; sky brightness and altitude affect "
+            "whether you can see the star."
+        )
+    dec = meta.get("dec_deg")
+    ra = meta.get("ra_h")
+    if dec is not None and ra is not None:
+        hours = int(ra)
+        minutes = int((ra - hours) * 60)
+        paragraphs.append(
+            f"Its catalogue position is approximately right ascension {hours}h {minutes:02d}m "
+            f"and declination {dec:+.1f}°. These reference coordinates describe its sky "
+            "location; they are not an observing time or a current altitude."
+        )
+    if dec is not None:
+        altitude = 90 - abs(45 - dec)
+        if altitude <= 0:
+            visibility = "At the almanac’s default latitude of 45° N, this star does not rise above the geometric horizon."
+        elif dec >= 45:
+            visibility = (
+                "At the almanac’s default latitude of 45° N, this star is circumpolar "
+                "(at 45° declination it touches the geometric horizon at lower culmination). "
+                f"It reaches approximately {altitude:.0f}° altitude at upper culmination."
+            )
+        else:
+            visibility = (
+                "At the almanac’s default latitude of 45° N, this star rises and sets, "
+                f"reaching approximately {altitude:.0f}° altitude at upper culmination."
+            )
+        paragraphs.append(
+            visibility + " These are geometric calculations from declination, excluding "
+            "refraction and local obstructions. Darkness and the time of culmination "
+            "must still be checked for the observing date and your location."
+        )
+    return paragraphs
 
 
 def _routes_for(fixed_object_id: int) -> list[dict]:
@@ -271,11 +336,10 @@ def baseline_story(fixed_object_id: int) -> Story:
         )
     elif family == "star":
         where = f" in {constellation_name}" if constellation_name else ""
-        dek = f"{name} is a stellar reference{where} used by the weekly observing calendar."
-        reason = (
-            f"Why it is here: The Calendar selected {name} for this week’s fixed-sky observing sequence; "
-            "its permanent object identity ties the weekly entry to the same star used by the finder."
-        )
+        magnitude = _catalogue_magnitudes().get(meta.get("hip"))
+        brightness = f" of catalogue visual magnitude {magnitude:.2f}" if magnitude is not None else ""
+        dek = f"{name} is a star{where}{brightness}; its declination determines which latitudes can observe it."
+        reason = "\n\n".join(_stellar_observing_facts(meta))
     else:
         where = f" in {constellation_name}" if constellation_name else ""
         dek = f"{name} is an observing target{where} carried by the weekly Calendar."
@@ -313,7 +377,13 @@ def baseline_story(fixed_object_id: int) -> Story:
                 "before increasing magnification."
             )
 
-    body = f"{reason}\n\nHow to find it: {context}"
+    body = f"{reason}\n\nHow to find it: {context}".strip()
+    if family == "star" and name not in {"Nunki", "Pleiades"}:
+        body += (
+            "\n\nSources: Star Almanack’s stored fixed-object and expanded Bayer catalogues; "
+            "accepted constellation figures and guiding-star routes. Visibility limits are "
+            "original geometric calculations from catalogue declination, not weekly predictions."
+        )
     return Story(
         "baseline", fixed_object_id, FIXED_OBJECT_DATABASE, hed, dek, body,
         url_override=f"/stories/baseline/{fixed_object_id}.html"

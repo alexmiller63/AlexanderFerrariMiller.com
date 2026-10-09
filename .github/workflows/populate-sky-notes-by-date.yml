@@ -81,6 +81,7 @@ jobs:
             tools/planet_weekly_facts.py
           echo "Sky Notes generator sources compile cleanly."
           python tools/test_sky_note_identities.py
+          python tools/test_fixed_object_stories.py
           python tools/test_planet_weekly_facts.py
 
       - name: Generate descriptor-first Sky Notes
