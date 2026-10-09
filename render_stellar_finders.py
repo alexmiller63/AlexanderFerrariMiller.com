@@ -12,7 +12,7 @@ NIGHT="#071423"; STAR="#f7f7f2"; FIGURE_BLUE="#5c8fe8"; ASTERISM_GREEN="#59c86d"
 
 @dataclass(frozen=True)
 class Star:
-    ra_deg:float; dec_deg:float; mag:float; proper:str; bayer:str; con:str; hyg_id:str; hip:str
+    ra_deg:float; dec_deg:float; mag:float; proper:str; bayer:str; con:str; hyg_id:str; hip:str; flam:str = ""
     @property
     def ref(self): return f"{self.bayer} {self.con}".strip()
     @property
@@ -38,7 +38,7 @@ def load_hyg(path):
             # fixed field star. Solar-System bodies use the weekly ephemeris.
             if (r.get("id") or "").strip() == "0":continue
             if not all((r.get(k) or "").strip() for k in ("ra","dec","mag")):continue
-            out.append(Star(float(r["ra"])*15,float(r["dec"]),float(r["mag"]),(r.get("proper") or "").strip(),(r.get("bayer") or "").strip(),(r.get("con") or "").strip(),(r.get("id") or "").strip(),(r.get("hip") or "").strip()))
+            out.append(Star(float(r["ra"])*15,float(r["dec"]),float(r["mag"]),(r.get("proper") or "").strip(),(r.get("bayer") or "").strip(),(r.get("con") or "").strip(),(r.get("id") or "").strip(),(r.get("hip") or "").strip(),(r.get("flam") or "").strip()))
     return out
 
 def star_index(stars):
