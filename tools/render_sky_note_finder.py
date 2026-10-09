@@ -1429,7 +1429,8 @@ def render(spec: dict, stars, output: Path) -> None:
 
     if target_point is None:
         raise RuntimeError(f"Target fixed_object_id {target_id} is outside the projection")
-    if not pattern_target:
+    target_in_field = xmin <= target_point[0] <= xmax and ymin <= target_point[1] <= ymax
+    if target_in_field and not pattern_target:
         ax.scatter([target_point[0]], [target_point[1]], s=210, facecolors="none",
                    edgecolors=TARGET_YELLOW, linewidths=2.6, zorder=8)
     target_name = str(target_meta.get("proper_name") or target_identity.get("name") or "").strip()
@@ -1446,7 +1447,11 @@ def render(spec: dict, stars, output: Path) -> None:
         target_chart_label = f"{target_bayer}\n{target_name}"
     if not target_chart_label:
         target_chart_label = str(target_identity.get("name") or "Target")
-    if target_star_identity and target_star is not None:
+    if not target_in_field:
+        # A distant navigation star cannot be labeled inside a fixed field.
+        # Keep the planet-centered angular window; never expand it to fit.
+        pass
+    elif target_star_identity and target_star is not None:
         place_star_notation(
             ax, target_star_identity,
             star_notation_labels(target_star_identity, target_star, figure_abbreviation, target=True),
