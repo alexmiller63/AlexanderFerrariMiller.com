@@ -146,6 +146,15 @@ def patch_text(text: str) -> tuple[str, int]:
         # observing target. Its visible component names must not convert it
         # into a single physical star (e.g. Sirius and Sirius B -> Sirius A).
         if not existing and 'data-catalog-target-key="' in attrs:
+            target = re.search(r'data-catalog-target-key="([^"]+)"', attrs)
+            # A special-star key identifies one physical component, unlike
+            # composite catalog targets, which must remain unresolved here.
+            if target and target.group(1).startswith("special-star:"):
+                key = target.group(1).split(":", 1)[1].casefold()
+                fixed_id = names.get(key)
+                if fixed_id is not None:
+                    attrs = attrs[:-1] + f' data-fixed-object-id="{fixed_id}">'
+                    return match.group(1) + attrs + body + "</div>"
             return match.group(0)
         fixed_id = (
             canonical_fixed_object_id(int(existing.group(1)), merge_map())
