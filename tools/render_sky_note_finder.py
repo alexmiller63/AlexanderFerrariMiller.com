@@ -918,9 +918,9 @@ def chart_bayer_label(identity, star, figure_abbreviation):
     parts = full.split()
     greek = parts[0]
     constellation = str(identity.get("constellation_abbreviation") or star.con or "").strip()
-    if constellation and figure_abbreviation and constellation != figure_abbreviation:
-        return f"{greek} {constellation}"
-    return greek
+    # Mixed notation always includes the three-letter constellation abbreviation,
+    # including stars belonging to the chart's principal constellation.
+    return f"{greek} {constellation}" if constellation else greek
 
 
 def star_notation_labels(identity, star, figure_abbreviation, target=False):
