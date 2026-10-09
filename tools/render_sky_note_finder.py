@@ -1309,7 +1309,9 @@ def render(spec: dict, stars, output: Path) -> None:
                              str(target_meta.get("proper_name") or target_identity.get("name") or ""))
         # The Pleiades detail inset fits the cluster, not the full binocular
         # finder window. Include breathing room for star-name annotations.
-        ax = overview_ax.inset_axes([0.65, 0.20, 0.31, 0.32], zorder=20)
+        # Give dense cluster labels enough physical pixels for collision checks.
+        # Keep the inset square so equal angular distances remain equal.
+        ax = overview_ax.inset_axes([0.56, 0.10, 0.42, 0.42], zorder=20)
         cluster_refs = refs_from_paths([
             path for item in (spec.get("asterisms") or [])
             for path in (item.get("paths") or [])
@@ -1320,8 +1322,10 @@ def render(spec: dict, stars, output: Path) -> None:
         if cluster_points:
             cluster_x = [point[0] for point in cluster_points]
             cluster_y = [point[1] for point in cluster_points]
-            label_margin = max(0.8, (max(cluster_x) - min(cluster_x)) * 0.30)
-            vertical_margin = max(0.8, (max(cluster_y) - min(cluster_y)) * 0.35)
+            # A minimum margin in projected degrees prevents label clipping;
+            # proportional padding alone is insufficient for tight clusters.
+            label_margin = max(1.2, (max(cluster_x) - min(cluster_x)) * 0.45)
+            vertical_margin = max(1.2, (max(cluster_y) - min(cluster_y)) * 0.45)
             xmin, xmax = min(cluster_x) - label_margin, max(cluster_x) + label_margin
             ymin, ymax = min(cluster_y) - vertical_margin, max(cluster_y) + vertical_margin
     else:
@@ -1693,8 +1697,8 @@ def render(spec: dict, stars, output: Path) -> None:
         title = spec.get("chart_title") or "Stellar Finder"
     if spec.get("overview"):
         overview_ax.set_title(title + " — Aldebaran guide", color=TEXT, fontsize=14, pad=12)
-        ax.text(0.5, 0.98, "Low-power telescope inset", transform=ax.transAxes,
-                ha="center", va="top", fontsize=8, color=TEXT)
+        # The overview title identifies the inset; text inside the inset
+        # competes with star names and can cover the northernmost members.
     else:
         ax.set_title(title, color=TEXT, fontsize=14, pad=12)
     title_ax = overview_ax if spec.get("overview") else ax
