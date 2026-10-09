@@ -1227,6 +1227,23 @@ def render(spec: dict, stars, output: Path) -> None:
                 path for asterism in asterisms for path in (asterism.get("paths") or [])
             ]
     framing_refs = refs_from_paths(framing_paths)
+    if not has_planet and "framing_paths" not in spec and not spec.get("overview"):
+        # An entire constellation can span most of the sky.  For an object
+        # finder, select a local hop around the target instead of allowing
+        # distant figure vertices to dictate the field of view.  The complete
+        # figure is still drawn below, clipped to these local bounds.
+        def angular_distance(ref):
+            star = idx[ref]
+            ra1, dec1 = math.radians(target_ra), math.radians(target_dec)
+            ra2, dec2 = math.radians(star.ra_deg), math.radians(star.dec_deg)
+            cosine = (math.sin(dec1) * math.sin(dec2)
+                      + math.cos(dec1) * math.cos(dec2) * math.cos(ra1 - ra2))
+            return math.degrees(math.acos(max(-1.0, min(1.0, cosine))))
+
+        nearby = sorted(framing_refs, key=lambda ref: (angular_distance(ref), ref))
+        # Two landmarks give a useful locating route without expanding to
+        # the farthest corners of a sprawling constellation.
+        framing_refs = set(nearby[:2])
     if target_ref:
         framing_refs.add(target_ref)
     center_stars = [idx[ref] for ref in framing_refs]
