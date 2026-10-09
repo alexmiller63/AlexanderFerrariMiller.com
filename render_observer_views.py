@@ -68,7 +68,7 @@ class ViewPreset:
     @property
     def caption(self) -> str:
         if self.key == "finder":
-            return f"Finder chart · {self.field_deg:g}° field"
+            return "Finder chart · 10° × 7° field"
         if self.key == "binoculars":
             return (
                 f"Binocular view · {self.aperture} · {self.magnification} · "
@@ -84,7 +84,7 @@ PRESETS = {
     "finder": ViewPreset(
         key="finder",
         title="Finder chart",
-        field_deg=30.0,
+        field_deg=10.0,
         limiting_mag=7.0,
     ),
     "binoculars": ViewPreset(
@@ -318,7 +318,7 @@ def view_center(
 def visible_stars(
     stars: Iterable[Star], center: tuple[float, float], preset: ViewPreset
 ) -> list[Star]:
-    radius = preset.field_deg / 2.0
+    radius = math.hypot(5.0, 3.5) if preset.key == "finder" else preset.field_deg / 2.0
     center_ra, center_dec = center
     return [
         star
@@ -353,12 +353,19 @@ def render_view(
         if xy is not None:
             projected.append((xy[0], xy[1], star))
 
-    fig, ax = plt.subplots(figsize=(7.2, 7.2))
+    fig, ax = plt.subplots(figsize=(8.0, 6.0) if preset.key == "finder" else (7.2, 7.2))
     radius = preset.field_deg / 2.0
 
     # Astronomical charts conventionally put east to the left.
-    ax.set_xlim(radius, -radius)
-    ax.set_ylim(-radius, radius)
+    if preset.key == "finder":
+        # Fixed angular window in the target-centered gnomonic projection.
+        half_x = math.degrees(math.tan(math.radians(5.0)))
+        half_y = math.degrees(math.tan(math.radians(3.5)))
+        ax.set_xlim(half_x, -half_x)
+        ax.set_ylim(-half_y, half_y)
+    else:
+        ax.set_xlim(radius, -radius)
+        ax.set_ylim(-radius, radius)
     ax.set_aspect("equal", adjustable="box")
 
     if projected:
