@@ -162,6 +162,23 @@ def load_source_candidates():
         ids=[("caldwell",row.get("caldwell"))]; ident=catalog_identifier(row.get("catalog")); ids += [ident] if ident else []; add_candidate(cs,"caldwell-catalog.csv",row.get("caldwell",""),ids,row.get("name"),row.get("con"),row.get("ra_h"),row.get("dec_deg"),row.get("type"))
     for row in read_csv(SRC/"finest-ngc-catalog.csv"):
         ids=[("finest_ngc",row.get("finest_ngc"))]; ident=catalog_identifier(row.get("catalog")); ids += [ident] if ident else []; add_candidate(cs,"finest-ngc-catalog.csv",row.get("finest_ngc",""),ids,row.get("name"),row.get("con"),row.get("ra_h"),row.get("dec_deg"),row.get("type"))
+    # Component-specific special stars enter the same physical identity audit
+    # as every other source. A Gaia identifier belongs to the component,
+    # never to its primary star or the unresolved system.
+    for row in read_csv(SRC/"special-star-catalog.csv"):
+        gaia = str(row.get("gaia_dr3") or "").strip()
+        if not gaia:
+            continue
+        if not gaia.isdecimal():
+            raise ValueError(f"Invalid Gaia DR3 source ID for {row.get('id')}: {gaia!r}")
+        ids = [("special", row.get("id")), ("gaia_dr3", gaia)]
+        hip = str(row.get("hip") or "").strip()
+        if hip:
+            ids.append(("hip", hip))
+        add_candidate(cs, "special-star-catalog.csv", row.get("id"), ids,
+                      row.get("name"), row.get("con"), row.get("ra_h"),
+                      row.get("dec_deg"), "star",
+                      "component-specific Gaia DR3 identity")
     for n,row in enumerate(read_csv(SRC/"asterism-member-coordinates.csv"),1):
         ids=[]; hip=HIP_RE.match((row.get("coordinate_source_id") or "").strip()); ids += [("hip",str(int(hip.group(1))))] if hip else []; ids.append(("asterism_member_label",row.get("member"))); add_candidate(cs,"asterism-member-coordinates.csv",f"row:{n}",ids,row.get("resolved_object"),None,row.get("ra_h"),row.get("dec_deg"),"star",f"asterism={row.get('asterism','')}")
     append_bayer_cross_id_candidates(cs); append_bright_star_cross_id_candidates(cs); return cs
