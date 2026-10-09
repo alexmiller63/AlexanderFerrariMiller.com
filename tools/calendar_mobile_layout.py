@@ -18,7 +18,9 @@ STYLE = f'''<style id="{STYLE_ID}">
   table.calendar td.calendar-events-region,
   .calendar-events,
   .calendar-events .event-cell {{ min-width:0; max-width:100%; }}
-  .calendar-events .event-cell {{ overflow-wrap:normal; word-break:normal; }}
+  .calendar-events {{ grid-template-columns:minmax(0,1fr); }}
+  .calendar-events .event-cell {{ min-width:0; width:100%; box-sizing:border-box; overflow-wrap:anywhere; word-break:normal; }}
+  .calendar-events .event-cell * {{ max-width:100%; }}
   table.calendar .notation-item,
   table.calendar .notation-rendered,
   table.calendar .visibility-magnitude,
