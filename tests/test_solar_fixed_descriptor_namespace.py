@@ -18,6 +18,6 @@ records = build_descriptors(
 by_id = {str(record["id"]): record for record in records}
 assert len(by_id) == len(records), "duplicate descriptor ID"
 assert by_id["1260"]["name"] == "40 Eridani B"
-assert by_id[f"solar-{SOLAR_SYSTEM_OBJECT_IDS['Pluto']}"]["name"] == "Pluto"
+assert by_id[str(SOLAR_SYSTEM_OBJECT_IDS["Pluto"])]["name"] == "Pluto"
 assert by_id["1260"]["type"] == "star"
-print("PASS: Pluto and 40 Eridani B retain distinct descriptor identities")
+print("PASS: Pluto (1259) and 40 Eridani B (1260) retain distinct global IDs")
