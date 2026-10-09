@@ -190,7 +190,7 @@ jobs:
                   if not stories:
                       failures.append(f"{fid}: no story source")
                   for story in stories:
-                      url = story.get("url") if isinstance(story, dict) else getattr(story, "url", None)
+                      url = story.public_url
                       if not url:
                           failures.append(f"{fid}: story lacks public URL")
                           continue
