@@ -15,6 +15,7 @@ from star_almanack_planets import load_weekly_longitudes
 import populate_sky_notes_by_date as base
 from planet_weekly_facts import build_weekly_facts
 from fixed_object_stories import available_stories, reader_story_url
+from story_completion import completion_report, print_report
 from sky_note_descriptors import build_descriptors, decorate_note_html, lunar_highlight_descriptors, write_descriptor_records
 
 FIXED_OBJECT_DATABASE = base.ROOT / "database" / "fixed-objects.json"
@@ -162,6 +163,7 @@ def story_candidates(fixed_ids: list[int]) -> list[dict]:
                 "dek": story.dek,
                 "body": story.body,
                 "url": story.public_url,
+                "status": story.status,
             }
             # Absence of artwork is represented by absence of the field, not a
             # public null placeholder.  Curated stories add the field only
@@ -395,6 +397,7 @@ def generated_note(year: int, week: int, page_path, yearly, stars: list[dict]) -
     payload["inline_stories"] = inline
     payload["linked_stories"] = linked
     payload["stories"] = candidates
+    payload["story_completion"] = completion_report(page_path, year, week)
     # Fixed-object artwork remains immutable/object-owned. Planet finder
     # artwork is generated explicitly because base.generated_note() intentionally
     # does not emit legacy week-owned artwork.
@@ -554,6 +557,7 @@ def main() -> None:
             )
         write_descriptor_records(payload["descriptors"])
         source = base.write_generated_source(item.year, item.week, payload)
+        print_report(payload["story_completion"])
 
         path = week_index(item.year, item.week)
         if not path.exists():

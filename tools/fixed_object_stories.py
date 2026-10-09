@@ -47,6 +47,7 @@ class Story:
     body: str
     artwork: str | None = None
     url_override: str | None = None
+    status: str = "pending"
 
     @property
     def public_url(self) -> str:
@@ -106,7 +107,23 @@ def read_story(collection: str, fixed_object_id: int) -> Story | None:
     body = parts[1].strip() if len(parts) == 2 else ""
     if not dek:
         raise RuntimeError(f"Story must contain a dek after its H1: {path.relative_to(ROOT)}")
-    return Story(collection, fixed_object_id, path, hed, dek, body, artwork)
+    status = metadata.get("status", "pending")
+    if status not in {"pending", "complete"}:
+        raise RuntimeError(f"Invalid story status {status!r}: {path}")
+    if status == "complete":
+        missing = []
+        if metadata.get("fixed_object_id") != str(fixed_object_id):
+            missing.append("matching fixed_object_id")
+        if not body:
+            missing.append("body")
+        if not re.search(r"https?://\S+", body):
+            missing.append("recorded source URL")
+        for check in ("research_checked", "finder_checked", "publication_checked"):
+            if metadata.get(check) != "true":
+                missing.append(check)
+        if missing:
+            raise RuntimeError(f"Incomplete completion record for {path}: {', '.join(missing)}")
+    return Story(collection, fixed_object_id, path, hed, dek, body, artwork, status=status)
 
 
 def _fixed_object_meta(fixed_object_id: int) -> dict:
