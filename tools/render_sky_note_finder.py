@@ -1253,46 +1253,22 @@ def render(spec: dict, stars, output: Path) -> None:
         center_stars.append(SimpleNamespace(ra_deg=target_ra, dec_deg=target_dec))
     if has_planet:
         center_stars.append(SimpleNamespace(ra_deg=float(planet_ra), dec_deg=float(planet_dec)))
-    center = spherical_center(center_stars)
-    projected_geometry = [
-        project(idx[ref].ra_deg, idx[ref].dec_deg, *center)
-        for ref in framing_refs
-    ]
+    # Fixed binocular-like field: tangent-plane projection of a 15° x 10°
+    # angular window centered on the target. This stays well-defined at both
+    # celestial poles; raw right-ascension spans do not.
+    center = (float(target_ra), float(target_dec))
     target_point = project(target_ra, target_dec, *center)
     planet_point = project(float(planet_ra), float(planet_dec), *center) if has_planet else None
-    if target_point is not None:
-        projected_geometry.append(target_point)
-    if planet_point is not None:
-        projected_geometry.append(planet_point)
-    projected_geometry = [point for point in projected_geometry if point is not None]
-    if not projected_geometry:
-        raise RuntimeError("Accepted geometry produced no visible projected points")
-    xs = [point[0] for point in projected_geometry]
-    ys = [point[1] for point in projected_geometry]
     compact_guide = "framing_paths" in spec and not has_planet
     pattern_target = compact_guide and any(
         str(item.get("name") or "").strip().casefold()
         == str(target_meta.get("proper_name") or target_identity.get("name") or "").strip().casefold()
         for item in asterisms
     )
-    span = max(max(xs) - min(xs), max(ys) - min(ys), 2.0 if compact_guide else 8.0)
-    pad = max(0.5 if compact_guide else 2.5, span * 0.18)
-    if has_planet and not asterisms:
-        # Give the local constellation context and edge labels a little more room.
-        pad = max(3.5, span * 0.24)
-    xmin, xmax = min(xs) - pad, max(xs) + pad
-    ymin, ymax = min(ys) - pad, max(ys) + pad
-    # Keep equal angular scale without squeezing a north/south route into a
-    # narrow strip. Expand only the shorter field dimension around its center.
-    if not spec.get("overview"):
-        field_span = max(xmax - xmin, ymax - ymin)
-        xmid, ymid = (xmin + xmax) / 2, (ymin + ymax) / 2
-        xmin, xmax = xmid - field_span / 2, xmid + field_span / 2
-        ymin, ymax = ymid - field_span / 2, ymid + field_span / 2
-        if has_planet:
-            xmin, xmax, ymin, ymax = include_nearby_ecliptic(
-                center, planet_point, xmin, xmax, ymin, ymax,
-            )
+    half_width = math.degrees(math.tan(math.radians(7.5)))
+    half_height = math.degrees(math.tan(math.radians(5.0)))
+    xmin, xmax = -half_width, half_width
+    ymin, ymax = -half_height, half_height
     # Ambient figures and asterisms enter only after framing. They supply
     # clipped context for every finder, including moving bodies, without
     # changing the navigation route, projection center, padding or bounds.
