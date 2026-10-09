@@ -62,7 +62,7 @@ EVENT_STYLE_ID = "calendar-event-cells-css"
 EVENT_STYLE = f'''<style id="{EVENT_STYLE_ID}">
 .calendar td.calendar-events-region{{padding:.45rem;vertical-align:stretch}}
 .calendar-events{{display:grid;grid-template-columns:repeat(auto-fit,minmax(10rem,1fr));gap:.35rem;width:100%;align-items:stretch}}
-.calendar-events .event-cell{{min-width:0;padding:.52rem .6rem;border:1px solid var(--rule);border-radius:.35rem;background:var(--paper);line-height:1.45;overflow-wrap:anywhere}}\n.calendar-events .visibility-glyph{{height:1.15em;max-width:1.4em;width:auto;vertical-align:-.18em}}
+.calendar-events .event-cell{{min-width:0;padding:.52rem .6rem;border:1px solid var(--rule);border-radius:.35rem;background:var(--paper);line-height:1.45;overflow-wrap:anywhere}}\n.calendar-events .visibility-glyph{{height:.8em;max-height:.8em;max-width:1em;width:auto;vertical-align:-.08em}}
 .calendar-events:empty{{min-height:1.8rem}}
 @media(max-width:760px){{.calendar-events{{grid-template-columns:1fr}}}}
 </style>'''
