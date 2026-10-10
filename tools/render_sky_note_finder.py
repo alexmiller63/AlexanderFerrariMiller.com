@@ -554,7 +554,10 @@ def place_label(ax, label, point, occupied_labels, color=TEXT, fontsize=9, zorde
                 obstacle_segments=(), require_clear=False):
     """Place a label using its true rendered bounds for collision rejection."""
     offsets = []
-    for radius in range(5, 46, 5):
+    # Dense inset labels need finer nearby candidates before any long leader.
+    # Preserve the ordinary search for other finder charts.
+    radii = range(5, 46, 3) if getattr(ax, "_compact_cluster_labels", False) else range(5, 46, 5)
+    for radius in radii:
         offsets.extend(((radius, 0), (-radius, 0), (0, radius), (0, -radius),
                         (radius, radius), (radius, -radius),
                         (-radius, radius), (-radius, -radius)))
@@ -1347,6 +1350,7 @@ def render(spec: dict, stars, output: Path) -> None:
             ymin, ymax = min(cluster_y) - vertical_margin, max(cluster_y) + vertical_margin
     else:
         fig, ax = plt.subplots(figsize=(8.2, 8.2), facecolor=NIGHT)
+    ax._compact_cluster_labels = bool(spec.get("overview"))
     ax.set_facecolor(NIGHT)
     ax.set_xlim(xmax, xmin)
     ax.set_ylim(ymin, ymax)
