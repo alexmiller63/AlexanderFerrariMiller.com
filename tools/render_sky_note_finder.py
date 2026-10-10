@@ -1454,45 +1454,6 @@ def render(spec: dict, stars, output: Path) -> None:
             path_points = [point for point in path_points if point is not None]
             asterism_segments.extend(zip(path_points, path_points[1:]))
 
-    if target_point is None:
-        raise RuntimeError(f"Target fixed_object_id {target_id} is outside the projection")
-    target_in_field = xmin <= target_point[0] <= xmax and ymin <= target_point[1] <= ymax
-    if target_in_field and not pattern_target:
-        ax.scatter([target_point[0]], [target_point[1]], s=210, facecolors="none",
-                   edgecolors=TARGET_YELLOW, linewidths=2.6, zorder=8)
-    target_name = str(target_meta.get("proper_name") or target_identity.get("name") or "").strip()
-    target_greek = ""
-    if target_star_identity and target_star is not None:
-        full = bayer_label(target_star_identity, target_star)
-        target_greek = full.split()[0] if full else ""
-    target_const = str(target_meta.get("constellation_abbreviation") or "").strip()
-    target_bayer = " ".join(part for part in (target_greek, target_const) if part) if target_greek else ""
-    target_chart_label = ", ".join(part for part in (target_bayer, target_name) if part)
-    # Split long guide-star names so their labels can sit next to the ring
-    # without moving across the field to find room for one wide line.
-    if has_planet and target_bayer and len(target_name) >= 12:
-        target_chart_label = f"{target_bayer}\n{target_name}"
-    if not target_chart_label:
-        target_chart_label = str(target_identity.get("name") or "Target")
-    if not target_in_field:
-        # A distant navigation star cannot be labeled inside a fixed field.
-        # Keep the planet-centered angular window; never expand it to fit.
-        pass
-    elif target_star_identity and target_star is not None:
-        place_star_notation(
-            ax, target_star_identity,
-            star_notation_labels(target_star_identity, target_star, figure_abbreviation, target=True),
-            target_point, occupied_labels,
-            obstacle_segments=figure_segments + asterism_segments + boundary_segments,
-            target=True,
-        )
-    else:
-        place_target_label(
-            ax, target_chart_label, target_point, occupied_labels,
-            obstacle_segments=figure_segments + asterism_segments + boundary_segments,
-            marker_radius_points=0 if pattern_target else math.sqrt(210) / 2 + 2.6 / 2,
-        )
-
     guide_refs = []
     seen_guides = set()
     for path in guide_paths:
@@ -1633,6 +1594,47 @@ def render(spec: dict, stars, output: Path) -> None:
                 obstacle_segments=figure_segments + asterism_segments + boundary_segments,
             )
             labeled_star_ids.add(fixed_id)
+    # Place individual stellar identities first. The cluster/target label
+    # must yield to their anchored positions, especially central Alcyone.
+    if target_point is None:
+        raise RuntimeError(f"Target fixed_object_id {target_id} is outside the projection")
+    target_in_field = xmin <= target_point[0] <= xmax and ymin <= target_point[1] <= ymax
+    if target_in_field and not pattern_target:
+        ax.scatter([target_point[0]], [target_point[1]], s=210, facecolors="none",
+                   edgecolors=TARGET_YELLOW, linewidths=2.6, zorder=8)
+    target_name = str(target_meta.get("proper_name") or target_identity.get("name") or "").strip()
+    target_greek = ""
+    if target_star_identity and target_star is not None:
+        full = bayer_label(target_star_identity, target_star)
+        target_greek = full.split()[0] if full else ""
+    target_const = str(target_meta.get("constellation_abbreviation") or "").strip()
+    target_bayer = " ".join(part for part in (target_greek, target_const) if part) if target_greek else ""
+    target_chart_label = ", ".join(part for part in (target_bayer, target_name) if part)
+    # Split long guide-star names so their labels can sit next to the ring
+    # without moving across the field to find room for one wide line.
+    if has_planet and target_bayer and len(target_name) >= 12:
+        target_chart_label = f"{target_bayer}\n{target_name}"
+    if not target_chart_label:
+        target_chart_label = str(target_identity.get("name") or "Target")
+    if not target_in_field:
+        # A distant navigation star cannot be labeled inside a fixed field.
+        # Keep the planet-centered angular window; never expand it to fit.
+        pass
+    elif target_star_identity and target_star is not None:
+        place_star_notation(
+            ax, target_star_identity,
+            star_notation_labels(target_star_identity, target_star, figure_abbreviation, target=True),
+            target_point, occupied_labels,
+            obstacle_segments=figure_segments + asterism_segments + boundary_segments,
+            target=True,
+        )
+    else:
+        place_target_label(
+            ax, target_chart_label, target_point, occupied_labels,
+            obstacle_segments=figure_segments + asterism_segments + boundary_segments,
+            marker_radius_points=0 if pattern_target else math.sqrt(210) / 2 + 2.6 / 2,
+        )
+
     for item in deep_sky:
         place_label(
             ax, " / ".join(item["labels"]), item["point"], occupied_labels,
