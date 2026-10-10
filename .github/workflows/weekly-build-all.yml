@@ -58,7 +58,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Build and publish each week through all 8 stages
+      - name: Build, deploy, and structurally audit each week
         env:
           GH_TOKEN: ${{ github.token }}
           START_YEAR: ${{ inputs.start_year }}
@@ -85,7 +85,7 @@ jobs:
 
           echo "Resolved ${#WEEKS[@]} ISO week(s): ${WEEKS[*]}"
 
-          total_stages=$((${#WEEKS[@]} * 8))
+          total_stages=$((${#WEEKS[@]} * 9))
           completed_stages=0
 
 
@@ -116,7 +116,14 @@ jobs:
             output="$(mktemp)"
             stage_started_at="$(date -u '+%Y-%m-%dT%H:%M:%SZ')"
             stage_started_seconds="$SECONDS"
-            bash tools/run-workflow-and-wait.sh "$workflow" "$@" > "$output" 2>&1 &
+            (
+              for attempt in 1 2; do
+                echo "Attempt $attempt/2 for $workflow"
+                if bash tools/run-workflow-and-wait.sh "$workflow" "$@"; then exit 0; fi
+                if [ "$attempt" -eq 2 ]; then exit 1; fi
+                sleep 30
+              done
+            ) > "$output" 2>&1 &
             child_pid=$!
             while kill -0 "$child_pid" 2>/dev/null; do
               sleep 60
@@ -236,7 +243,13 @@ jobs:
             report_progress BUILDING "Deployment"
             run_stage deploy.yml
 
-            report_progress COMPLETE "All seven generator stages and deployment finished"
+            git fetch origin main
+            git reset --hard origin/main
+            report_progress BUILDING "Story structural audit"
+            python tools/story_audit.py --output generated/story-audit.json --strict
+            completed_stages=$((completed_stages + 1))
+            report_progress FINISHED "Story structural audit" "Automated structural checks passed; editorial approval remains separate"
+            report_progress COMPLETE "Seven generator stages, deployment, and structural audit finished; editorial approval not implied"
 
             echo "::endgroup::"
           done
