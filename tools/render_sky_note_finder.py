@@ -587,7 +587,20 @@ def place_label(ax, label, point, occupied_labels, color=TEXT, fontsize=9, zorde
     annotation = ax.annotate(label, point, xytext=(dx, dy), textcoords="offset points",
                              fontsize=fontsize, color=color, zorder=zorder)
     renderer = ax.figure.canvas.get_renderer()
-    occupied_labels.append(annotation.get_window_extent(renderer=renderer).expanded(1.08, 1.16))
+    bbox = annotation.get_window_extent(renderer=renderer).expanded(1.08, 1.16)
+    occupied_labels.append(bbox)
+    # Dense clusters can require a displaced label. Connect its actual star
+    # anchor to the nearest edge of the text, never to another star.
+    if getattr(ax, "_compact_cluster_labels", False):
+        anchor_x, anchor_y = ax.transData.transform(point)
+        end_x = min(max(anchor_x, bbox.x0), bbox.x1)
+        end_y = min(max(anchor_y, bbox.y0), bbox.y1)
+        distance_pt = math.hypot(end_x - anchor_x, end_y - anchor_y) * 72 / ax.figure.dpi
+        if distance_pt > 9:
+            leader = ax.annotate("", point,
+                xytext=ax.transData.inverted().transform((end_x, end_y)),
+                arrowprops=dict(arrowstyle="-", color=color, linewidth=0.65,
+                                shrinkA=2, shrinkB=2), zorder=zorder - 0.5)
     return annotation
 
 
@@ -1120,6 +1133,7 @@ def draw_finder_overview(ax, spec, stars, idx, target_ra, target_dec, target_nam
     pad = max(1.0, max(max(xs) - min(xs), max(ys) - min(ys)) * 0.12)
     xmin, xmax, ymin, ymax = min(xs) - pad, max(xs) + pad, min(ys) - pad, max(ys) + pad
     ax.set_facecolor(NIGHT)
+    ax._compact_cluster_labels = bool(spec.get("overview"))
     ax.set_xlim(xmax, xmin)
     ax.set_ylim(ymin, ymax)
     ax.set_aspect("equal")
