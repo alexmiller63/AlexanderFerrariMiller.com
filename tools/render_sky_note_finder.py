@@ -1573,7 +1573,26 @@ def render(spec: dict, stars, output: Path) -> None:
             )
     labeled_star_ids = set()
     asterism_refs = refs_from_paths([path for item in asterisms for path in item.get("paths") or []])
-    for ref in dict.fromkeys(figure_refs + guide_refs + sorted(asterism_refs)):
+    # Prioritize the brightest asterism members so central guide stars such as
+    # Alcyone are labeled before surrounding stars consume nearby space.
+    # Keep figure and guide stars in their established order otherwise.
+    ordered_refs = list(dict.fromkeys(figure_refs + guide_refs))
+    remaining_asterism_refs = sorted(
+        (ref for ref in asterism_refs if ref not in ordered_refs),
+        key=lambda ref: (float(idx[ref].mag) if idx[ref].mag is not None else 99.0, ref),
+    )
+    # The cluster's brightest member must win even when it also belongs
+    # to a figure or guide list.
+    if pattern_target:
+        ordered_refs = sorted(
+            dict.fromkeys(ordered_refs + remaining_asterism_refs),
+            key=lambda ref: (0 if ref in asterism_refs else 1,
+                             float(idx[ref].mag) if idx[ref].mag is not None else 99.0,
+                             ref),
+        )
+    else:
+        ordered_refs.extend(remaining_asterism_refs)
+    for ref in ordered_refs:
         star = idx[ref]
         identity = identities_by_ref.get(ref)
         if identity is None:
