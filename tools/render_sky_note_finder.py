@@ -983,11 +983,16 @@ def place_star_notation(ax, identity, labels, point, occupied_labels,
                         label_id=None, marker_radius_points=None):
     """Place each mode near its star and reserve all variants for later labels."""
     label_id = label_id or f"star-label-{identity['fixed_object_id']}"
-    prior = list(occupied_labels)
-    reservations = []
+    # Each notation variant is mutually exclusive in the rendered chart.
+    # Reserve only labels from the active mode while placing this star;
+    # otherwise invisible variants push neighboring labels far away.
+    mode_reservations = getattr(ax, "_star_label_mode_reservations", None)
+    if mode_reservations is None:
+        mode_reservations = {mode: list(occupied_labels) for mode in labels}
+        ax._star_label_mode_reservations = mode_reservations
     placed = {}
     for mode, label in labels.items():
-        occupied_labels[:] = prior
+        occupied_labels[:] = list(mode_reservations.get(mode, []))
         before = len(ax.texts)
         if target:
             annotation = place_target_label(
@@ -1007,9 +1012,11 @@ def place_star_notation(ax, identity, labels, point, occupied_labels,
                     artist.set_gid(f"{label_id}-leader-{mode}")
                     if artist.arrow_patch is not None:
                         artist.arrow_patch.set_gid(f"{label_id}-leader-path-{mode}")
-            reservations.extend(occupied_labels[len(prior):])
+            mode_reservations[mode] = list(occupied_labels)
             placed[mode] = annotation
-    occupied_labels[:] = prior + reservations
+    # Keep the shared obstacle set unchanged; per-mode reservations above
+    # prevent invisible text variants from obstructing visible labels.
+    occupied_labels[:] = mode_reservations.get("greek", list(occupied_labels))
     return placed
 
 
