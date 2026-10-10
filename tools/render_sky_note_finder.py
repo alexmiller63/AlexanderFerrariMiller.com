@@ -939,7 +939,10 @@ def star_notation_labels(identity, star, figure_abbreviation, target=False):
     if constellation == "Psc" and bayer_label(identity, star).split()[0:1] == ["β"]:
         separator = "\n" if target else " — "
         mixed = "Beta Piscium" + (separator + proper if proper else "")
-    return {"greek": symbol or latin, "latin": latin, "mixed": mixed}
+    # Greek mode uses bare Flamsteed numbers when no Bayer designation exists.
+    flamsteed = str(identity.get("flamsteed") or identity.get("flam") or getattr(star, "flam", "") or "").strip()
+    greek_label = flamsteed if flamsteed and not bayer_label(identity, star) else (symbol or latin)
+    return {"greek": greek_label, "latin": latin, "mixed": mixed}
 
 
 def place_ecliptic_notation(ax, symbol, name, point, occupied_labels, **kwargs):
