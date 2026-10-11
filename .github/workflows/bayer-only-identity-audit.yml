@@ -1,0 +1,26 @@
+name: Bayer-only identity audit
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'tools/audit_bayer_only_identity.py'
+      - 'database/fixed-object-registry.json'
+      - '.github/workflows/bayer-only-identity-audit.yml'
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Audit and print records
+        run: python tools/audit_bayer_only_identity.py
+      - name: Preserve report as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: bayer-only-identity-audit
+          path: generated/bayer-only-identity-audit.json
+          retention-days: 90
