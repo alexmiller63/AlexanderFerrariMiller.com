@@ -1843,12 +1843,42 @@ def render(spec: dict, stars, output: Path) -> None:
             "Ecliptic ticks: 30° sign boundaries; longer tick: 0° Aries.",
             "Sign boundaries differ from constellation boundaries.",
         ))
+    # Observing directions are separate from the fixed-scale finder field.
+    # An external reference is described with a true spherical separation
+    # and position angle, rather than plotted at a false chart position.
+    if has_planet and planet_name in {"Saturn", "Neptune"} and not target_in_field and target_star is not None:
+        ra1, dec1 = map(math.radians, (target_star.ra_deg, target_star.dec_deg))
+        ra2, dec2 = map(math.radians, (float(planet_ra), float(planet_dec)))
+        delta_ra = ra2 - ra1
+        cos_sep = (math.sin(dec1) * math.sin(dec2)
+                   + math.cos(dec1) * math.cos(dec2) * math.cos(delta_ra))
+        separation = math.degrees(math.acos(max(-1.0, min(1.0, cos_sep))))
+        angle = math.degrees(math.atan2(
+            math.sin(delta_ra) * math.cos(dec2),
+            math.cos(dec1) * math.sin(dec2)
+            - math.sin(dec1) * math.cos(dec2) * math.cos(delta_ra),
+        )) % 360
+        compass = ("north", "northeast", "east", "southeast", "south",
+                   "southwest", "west", "northwest")
+        direction = compass[int((angle + 22.5) // 45) % 8]
+        external_guide = str(target_meta.get("proper_name") or target_star.proper or target_name).strip()
+        if external_guide and separation > 0:
+            instructions = (f"Observing directions: From {external_guide}, look "
+                            f"{separation:.1f}° {direction} toward {planet_name}. "
+                            "The reference star is outside this fixed-scale chart.")
+            ax.text(0.5, -0.075, instructions, transform=ax.transAxes,
+                    ha="center", va="top", fontsize=7, color=TEXT, wrap=True)
+            legend_offset = -0.125
+        else:
+            legend_offset = -0.075
+    else:
+        legend_offset = -0.075
     if legend_lines:
         legend_text = "\n".join(legend_lines)
         # Finder legends belong only in the bottom legend area.  A prior
         # renderer emitted the same legend at the top and bottom, which made
         # descriptor artwork appear to have a duplicated legend.
-        ax.text(0.5, -0.075, legend_text, transform=ax.transAxes,
+        ax.text(0.5, legend_offset, legend_text, transform=ax.transAxes,
                 ha="center", va="top", fontsize=7, color=TEXT, wrap=True)
     ax.set_xticks([])
     ax.set_yticks([])
