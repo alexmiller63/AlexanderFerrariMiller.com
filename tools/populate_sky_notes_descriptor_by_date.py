@@ -272,11 +272,16 @@ def observer_note(year: int, week: int, page_path, fixed: list[dict], relations:
         if binocular_items else
         "No fixed-sky Calendar object is classified for binocular observing this week."
     )
-    telescope_guidance = (
-        f"Concentrate on {', '.join(telescope)}. Increase magnification only after the target and surrounding pattern are secure."
-        if telescope else
-        "No fixed-sky Calendar object is classified for telescope observing this week."
-    )
+    # Treat wide-field clusters and diffuse galaxies individually, even when
+    # the Calendar assigns them the same observing-aid category.
+    telescope_guidance = "; ".join(
+        f"{name}: binoculars or a low-power wide field show the cluster together"
+        if name in {"Pleiades", "M45"} else
+        f"{name}: this diffuse galaxy is challenging; seek a very dark, transparent sky and use a telescope"
+        if name == "IC 342" else
+        f"{name}: consult its dedicated finder and observing story for equipment guidance"
+        for name in telescope
+    ) if telescope else "No fixed-sky Calendar object is classified for telescope observing this week."
     substantial_guidance = (
         f"These targets call for a substantial telescope: {', '.join(substantial)}."
         if substantial else
