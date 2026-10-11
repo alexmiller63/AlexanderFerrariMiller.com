@@ -1588,6 +1588,7 @@ def render(spec: dict, stars, output: Path) -> None:
             + [(planet_point, planet_point)],
             boundary_points=planet_boundary,
         )
+    titled_asterisms = []
     for asterism in asterisms:
         asterism_points = []
         for path in asterism.get("paths") or []:
@@ -1605,12 +1606,15 @@ def render(spec: dict, stars, output: Path) -> None:
                 sum(point[0] for point in asterism_points) / len(asterism_points),
                 sum(point[1] for point in asterism_points) / len(asterism_points),
             )
-            place_label(
+            annotation = place_label(
                 ax, name, label_point, occupied_labels,
                 color=ASTERISM_GREEN, fontsize=9, zorder=7,
                 obstacle_segments=figure_segments + asterism_segments + boundary_segments,
                 require_clear=True,
             )
+            if annotation is not None:
+                titled_asterisms.append(name)
+    titled_named_stars = []
     labeled_star_ids = set()
     asterism_refs = refs_from_paths([path for item in asterisms for path in item.get("paths") or []])
     # Prioritize the brightest asterism members so central guide stars such as
@@ -1647,11 +1651,15 @@ def render(spec: dict, stars, output: Path) -> None:
             continue
         labels = star_notation_labels(identity, star, figure_abbreviation)
         if labels["greek"]:
-            place_star_notation(
+            placed = place_star_notation(
                 ax, identity, labels, point, occupied_labels,
                 color=ASTERISM_GREEN if ref in asterism_refs else TEXT,
                 obstacle_segments=figure_segments + asterism_segments + boundary_segments,
             )
+            if placed and identity.get('proper_name'):
+                titled_named_stars.append((float(star.mag) if star.mag is not None else 99.0,
+                                          str(identity['proper_name']),
+                                          str(identity.get('constellation') or figure_constellation)))
             labeled_star_ids.add(fixed_id)
     # Place individual stellar identities first. The cluster/target label
     # must yield to their anchored positions, especially central Alcyone.
@@ -1747,22 +1755,23 @@ def render(spec: dict, stars, output: Path) -> None:
                         obstacle_segments=figure_segments + asterism_segments,
                         require_clear=True)
     if has_planet:
-        # The fixed angular field must never be widened to accommodate a distant
-        # navigation landmark. Only name a reference star in the chart title
-        # when its actual position falls inside the rendered field.
-        reference_name = str((spec.get("finder_relation") or {}).get("reference_star") or target_name).strip()
-        # Position alone is not sufficient: the guide must have an identity
-        # that the chart can label, and must have been sent to its labeler.
-        guide_labeled = bool(
-            target_in_field and (
-                (target_star_identity is not None and target_star is not None)
-                or target_chart_label
-            )
-        )
-        title = verified_planet_finder_title(
-            planet_name, planet_constellation, reference_name,
-            figure_constellation, target_in_field, guide_labeled,
-        )
+        # Prefer a labeled asterism, then the brightest actually labeled named star.
+        # The fixed angular field is never expanded for an external landmark.
+        if titled_asterisms:
+            title = f"{planet_name} near {titled_asterisms[0]} in {planet_constellation}"
+        else:
+            if target_in_field and target_name and target_star_identity is not None:
+                target_label_id = f"star-label-{target_star_identity['fixed_object_id']}"
+                if any((artist.get_gid() or "").startswith(target_label_id + "-")
+                       and "-leader-" not in (artist.get_gid() or "") for artist in ax.texts):
+                    titled_named_stars.append((float(target_star.mag) if target_star.mag is not None else 99.0,
+                                              target_name, figure_constellation))
+            if titled_named_stars:
+                _, guide_name, guide_constellation = min(titled_named_stars)
+                title = planet_finder_title(planet_name, planet_constellation,
+                                            guide_name, guide_constellation or planet_constellation)
+            else:
+                title = f"{planet_name} in {planet_constellation or figure_constellation}"
     elif target_star is not None and target_bayer and target_name and figure_constellation:
         title = f"{target_bayer}, {target_name} in {figure_constellation}"
     else:
