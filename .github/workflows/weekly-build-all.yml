@@ -253,3 +253,12 @@ jobs:
 
             echo "::endgroup::"
           done
+
+      - name: Preserve story audit report
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: story-audit-${{ github.run_id }}-${{ github.run_attempt }}
+          path: generated/story-audit.json
+          if-no-files-found: warn
+          retention-days: 30
