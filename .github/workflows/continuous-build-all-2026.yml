@@ -1,0 +1,791 @@
+name: Continuous Build All 2026
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: write
+
+# Each week is a separate reusable workflow job with its own 6-hour limit.
+# Jobs are chained so a failed week stops the series; completed weeks stay saved.
+jobs:
+  week_02:
+    name: 2026 Week 02
+    uses: ./.github/workflows/weekly-build-all.yml
+    with:
+      start_year: '2026'
+      start_week: '2'
+      end_year: '2026'
+      end_week: '2'
+      resume_stage: Scaffold
+      resume_completed_weeks: true
+      candidate_layouts: '5'
+      max_node_candidates: '200'
+      max_search_seconds: '360'
+      diagnostic_level: '1'
+  week_03:
+    name: 2026 Week 03
+    needs: week_02
+    uses: ./.github/workflows/weekly-build-all.yml
+    with:
+      start_year: '2026'
+      start_week: '3'
+      end_year: '2026'
+      end_week: '3'
+      resume_stage: Scaffold
+      resume_completed_weeks: true
+      candidate_layouts: '5'
+      max_node_candidates: '200'
+      max_search_seconds: '360'
+      diagnostic_level: '1'
+  week_04:
+    name: 2026 Week 04
+    needs: week_03
+    uses: ./.github/workflows/weekly-build-all.yml
+    with:
+      start_year: '2026'
+      start_week: '4'
+      end_year: '2026'
+      end_week: '4'
+      resume_stage: Scaffold
+      resume_completed_weeks: true
+      candidate_layouts: '5'
+      max_node_candidates: '200'
+      max_search_seconds: '360'
+      diagnostic_level: '1'
+  week_05:
+    name: 2026 Week 05
+    needs: week_04
+    uses: ./.github/workflows/weekly-build-all.yml
+    with:
+      start_year: '2026'
+      start_week: '5'
+      end_year: '2026'
+      end_week: '5'
+      resume_stage: Scaffold
+      resume_completed_weeks: true
+      candidate_layouts: '5'
+      max_node_candidates: '200'
+      max_search_seconds: '360'
+      diagnostic_level: '1'
+  week_06:
+    name: 2026 Week 06
+    needs: week_05
+    uses: ./.github/workflows/weekly-build-all.yml
+    with:
+      start_year: '2026'
+      start_week: '6'
+      end_year: '2026'
+      end_week: '6'
+      resume_stage: Scaffold
+      resume_completed_weeks: true
+      candidate_layouts: '5'
+      max_node_candidates: '200'
+      max_search_seconds: '360'
+      diagnostic_level: '1'
+  week_07:
+    name: 2026 Week 07
+    needs: week_06
+    uses: ./.github/workflows/weekly-build-all.yml
+    with:
+      start_year: '2026'
+      start_week: '7'
+      end_year: '2026'
+      end_week: '7'
+      resume_stage: Scaffold
+      resume_completed_weeks: true
+      candidate_layouts: '5'
+      max_node_candidates: '200'
+      max_search_seconds: '360'
+      diagnostic_level: '1'
+  week_08:
+    name: 2026 Week 08
+    needs: week_07
+    uses: ./.github/workflows/weekly-build-all.yml
+    with:
+      start_year: '2026'
+      start_week: '8'
+      end_year: '2026'
+      end_week: '8'
+      resume_stage: Scaffold
+      resume_completed_weeks: true
+      candidate_layouts: '5'
+      max_node_candidates: '200'
+      max_search_seconds: '360'
+      diagnostic_level: '1'
+  week_09:
+    name: 2026 Week 09
+    needs: week_08
+    uses: ./.github/workflows/weekly-build-all.yml
+    with:
+      start_year: '2026'
+      start_week: '9'
+      end_year: '2026'
+      end_week: '9'
+      resume_stage: Scaffold
+      resume_completed_weeks: true
+      candidate_layouts: '5'
+      max_node_candidates: '200'
+      max_search_seconds: '360'
+      diagnostic_level: '1'
+  week_10:
+    name: 2026 Week 10
+    needs: week_09
+    uses: ./.github/workflows/weekly-build-all.yml
+    with:
+      start_year: '2026'
+      start_week: '10'
+      end_year: '2026'
+      end_week: '10'
+      resume_stage: Scaffold
+      resume_completed_weeks: true
+      candidate_layouts: '5'
+      max_node_candidates: '200'
+      max_search_seconds: '360'
+      diagnostic_level: '1'
+  week_11:
+    name: 2026 Week 11
+    needs: week_10
+    uses: ./.github/workflows/weekly-build-all.yml
+    with:
+      start_year: '2026'
+      start_week: '11'
+      end_year: '2026'
+      end_week: '11'
+      resume_stage: Scaffold
+      resume_completed_weeks: true
+      candidate_layouts: '5'
+      max_node_candidates: '200'
+      max_search_seconds: '360'
+      diagnostic_level: '1'
+  week_12:
+    name: 2026 Week 12
+    needs: week_11
+    uses: ./.github/workflows/weekly-build-all.yml
+    with:
+      start_year: '2026'
+      start_week: '12'
+      end_year: '2026'
+      end_week: '12'
+      resume_stage: Scaffold
+      resume_completed_weeks: true
+      candidate_layouts: '5'
+      max_node_candidates: '200'
+      max_search_seconds: '360'
+      diagnostic_level: '1'
+  week_13:
+    name: 2026 Week 13
+    needs: week_12
+    uses: ./.github/workflows/weekly-build-all.yml
+    with:
+      start_year: '2026'
+      start_week: '13'
+      end_year: '2026'
+      end_week: '13'
+      resume_stage: Scaffold
+      resume_completed_weeks: true
+      candidate_layouts: '5'
+      max_node_candidates: '200'
+      max_search_seconds: '360'
+      diagnostic_level: '1'
+  week_14:
+    name: 2026 Week 14
+    needs: week_13
+    uses: ./.github/workflows/weekly-build-all.yml
+    with:
+      start_year: '2026'
+      start_week: '14'
+      end_year: '2026'
+      end_week: '14'
+      resume_stage: Scaffold
+      resume_completed_weeks: true
+      candidate_layouts: '5'
+      max_node_candidates: '200'
+      max_search_seconds: '360'
+      diagnostic_level: '1'
+  week_15:
+    name: 2026 Week 15
+    needs: week_14
+    uses: ./.github/workflows/weekly-build-all.yml
+    with:
+      start_year: '2026'
+      start_week: '15'
+      end_year: '2026'
+      end_week: '15'
+      resume_stage: Scaffold
+      resume_completed_weeks: true
+      candidate_layouts: '5'
+      max_node_candidates: '200'
+      max_search_seconds: '360'
+      diagnostic_level: '1'
+  week_16:
+    name: 2026 Week 16
+    needs: week_15
+    uses: ./.github/workflows/weekly-build-all.yml
+    with:
+      start_year: '2026'
+      start_week: '16'
+      end_year: '2026'
+      end_week: '16'
+      resume_stage: Scaffold
+      resume_completed_weeks: true
+      candidate_layouts: '5'
+      max_node_candidates: '200'
+      max_search_seconds: '360'
+      diagnostic_level: '1'
+  week_17:
+    name: 2026 Week 17
+    needs: week_16
+    uses: ./.github/workflows/weekly-build-all.yml
+    with:
+      start_year: '2026'
+      start_week: '17'
+      end_year: '2026'
+      end_week: '17'
+      resume_stage: Scaffold
+      resume_completed_weeks: true
+      candidate_layouts: '5'
+      max_node_candidates: '200'
+      max_search_seconds: '360'
+      diagnostic_level: '1'
+  week_18:
+    name: 2026 Week 18
+    needs: week_17
+    uses: ./.github/workflows/weekly-build-all.yml
+    with:
+      start_year: '2026'
+      start_week: '18'
+      end_year: '2026'
+      end_week: '18'
+      resume_stage: Scaffold
+      resume_completed_weeks: true
+      candidate_layouts: '5'
+      max_node_candidates: '200'
+      max_search_seconds: '360'
+      diagnostic_level: '1'
+  week_19:
+    name: 2026 Week 19
+    needs: week_18
+    uses: ./.github/workflows/weekly-build-all.yml
+    with:
+      start_year: '2026'
+      start_week: '19'
+      end_year: '2026'
+      end_week: '19'
+      resume_stage: Scaffold
+      resume_completed_weeks: true
+      candidate_layouts: '5'
+      max_node_candidates: '200'
+      max_search_seconds: '360'
+      diagnostic_level: '1'
+  week_20:
+    name: 2026 Week 20
+    needs: week_19
+    uses: ./.github/workflows/weekly-build-all.yml
+    with:
+      start_year: '2026'
+      start_week: '20'
+      end_year: '2026'
+      end_week: '20'
+      resume_stage: Scaffold
+      resume_completed_weeks: true
+      candidate_layouts: '5'
+      max_node_candidates: '200'
+      max_search_seconds: '360'
+      diagnostic_level: '1'
+  week_21:
+    name: 2026 Week 21
+    needs: week_20
+    uses: ./.github/workflows/weekly-build-all.yml
+    with:
+      start_year: '2026'
+      start_week: '21'
+      end_year: '2026'
+      end_week: '21'
+      resume_stage: Scaffold
+      resume_completed_weeks: true
+      candidate_layouts: '5'
+      max_node_candidates: '200'
+      max_search_seconds: '360'
+      diagnostic_level: '1'
+  week_22:
+    name: 2026 Week 22
+    needs: week_21
+    uses: ./.github/workflows/weekly-build-all.yml
+    with:
+      start_year: '2026'
+      start_week: '22'
+      end_year: '2026'
+      end_week: '22'
+      resume_stage: Scaffold
+      resume_completed_weeks: true
+      candidate_layouts: '5'
+      max_node_candidates: '200'
+      max_search_seconds: '360'
+      diagnostic_level: '1'
+  week_23:
+    name: 2026 Week 23
+    needs: week_22
+    uses: ./.github/workflows/weekly-build-all.yml
+    with:
+      start_year: '2026'
+      start_week: '23'
+      end_year: '2026'
+      end_week: '23'
+      resume_stage: Scaffold
+      resume_completed_weeks: true
+      candidate_layouts: '5'
+      max_node_candidates: '200'
+      max_search_seconds: '360'
+      diagnostic_level: '1'
+  week_24:
+    name: 2026 Week 24
+    needs: week_23
+    uses: ./.github/workflows/weekly-build-all.yml
+    with:
+      start_year: '2026'
+      start_week: '24'
+      end_year: '2026'
+      end_week: '24'
+      resume_stage: Scaffold
+      resume_completed_weeks: true
+      candidate_layouts: '5'
+      max_node_candidates: '200'
+      max_search_seconds: '360'
+      diagnostic_level: '1'
+  week_25:
+    name: 2026 Week 25
+    needs: week_24
+    uses: ./.github/workflows/weekly-build-all.yml
+    with:
+      start_year: '2026'
+      start_week: '25'
+      end_year: '2026'
+      end_week: '25'
+      resume_stage: Scaffold
+      resume_completed_weeks: true
+      candidate_layouts: '5'
+      max_node_candidates: '200'
+      max_search_seconds: '360'
+      diagnostic_level: '1'
+  week_26:
+    name: 2026 Week 26
+    needs: week_25
+    uses: ./.github/workflows/weekly-build-all.yml
+    with:
+      start_year: '2026'
+      start_week: '26'
+      end_year: '2026'
+      end_week: '26'
+      resume_stage: Scaffold
+      resume_completed_weeks: true
+      candidate_layouts: '5'
+      max_node_candidates: '200'
+      max_search_seconds: '360'
+      diagnostic_level: '1'
+  week_27:
+    name: 2026 Week 27
+    needs: week_26
+    uses: ./.github/workflows/weekly-build-all.yml
+    with:
+      start_year: '2026'
+      start_week: '27'
+      end_year: '2026'
+      end_week: '27'
+      resume_stage: Scaffold
+      resume_completed_weeks: true
+      candidate_layouts: '5'
+      max_node_candidates: '200'
+      max_search_seconds: '360'
+      diagnostic_level: '1'
+  week_28:
+    name: 2026 Week 28
+    needs: week_27
+    uses: ./.github/workflows/weekly-build-all.yml
+    with:
+      start_year: '2026'
+      start_week: '28'
+      end_year: '2026'
+      end_week: '28'
+      resume_stage: Scaffold
+      resume_completed_weeks: true
+      candidate_layouts: '5'
+      max_node_candidates: '200'
+      max_search_seconds: '360'
+      diagnostic_level: '1'
+  week_29:
+    name: 2026 Week 29
+    needs: week_28
+    uses: ./.github/workflows/weekly-build-all.yml
+    with:
+      start_year: '2026'
+      start_week: '29'
+      end_year: '2026'
+      end_week: '29'
+      resume_stage: Scaffold
+      resume_completed_weeks: true
+      candidate_layouts: '5'
+      max_node_candidates: '200'
+      max_search_seconds: '360'
+      diagnostic_level: '1'
+  week_30:
+    name: 2026 Week 30
+    needs: week_29
+    uses: ./.github/workflows/weekly-build-all.yml
+    with:
+      start_year: '2026'
+      start_week: '30'
+      end_year: '2026'
+      end_week: '30'
+      resume_stage: Scaffold
+      resume_completed_weeks: true
+      candidate_layouts: '5'
+      max_node_candidates: '200'
+      max_search_seconds: '360'
+      diagnostic_level: '1'
+  week_31:
+    name: 2026 Week 31
+    needs: week_30
+    uses: ./.github/workflows/weekly-build-all.yml
+    with:
+      start_year: '2026'
+      start_week: '31'
+      end_year: '2026'
+      end_week: '31'
+      resume_stage: Scaffold
+      resume_completed_weeks: true
+      candidate_layouts: '5'
+      max_node_candidates: '200'
+      max_search_seconds: '360'
+      diagnostic_level: '1'
+  week_32:
+    name: 2026 Week 32
+    needs: week_31
+    uses: ./.github/workflows/weekly-build-all.yml
+    with:
+      start_year: '2026'
+      start_week: '32'
+      end_year: '2026'
+      end_week: '32'
+      resume_stage: Scaffold
+      resume_completed_weeks: true
+      candidate_layouts: '5'
+      max_node_candidates: '200'
+      max_search_seconds: '360'
+      diagnostic_level: '1'
+  week_33:
+    name: 2026 Week 33
+    needs: week_32
+    uses: ./.github/workflows/weekly-build-all.yml
+    with:
+      start_year: '2026'
+      start_week: '33'
+      end_year: '2026'
+      end_week: '33'
+      resume_stage: Scaffold
+      resume_completed_weeks: true
+      candidate_layouts: '5'
+      max_node_candidates: '200'
+      max_search_seconds: '360'
+      diagnostic_level: '1'
+  week_34:
+    name: 2026 Week 34
+    needs: week_33
+    uses: ./.github/workflows/weekly-build-all.yml
+    with:
+      start_year: '2026'
+      start_week: '34'
+      end_year: '2026'
+      end_week: '34'
+      resume_stage: Scaffold
+      resume_completed_weeks: true
+      candidate_layouts: '5'
+      max_node_candidates: '200'
+      max_search_seconds: '360'
+      diagnostic_level: '1'
+  week_35:
+    name: 2026 Week 35
+    needs: week_34
+    uses: ./.github/workflows/weekly-build-all.yml
+    with:
+      start_year: '2026'
+      start_week: '35'
+      end_year: '2026'
+      end_week: '35'
+      resume_stage: Scaffold
+      resume_completed_weeks: true
+      candidate_layouts: '5'
+      max_node_candidates: '200'
+      max_search_seconds: '360'
+      diagnostic_level: '1'
+  week_36:
+    name: 2026 Week 36
+    needs: week_35
+    uses: ./.github/workflows/weekly-build-all.yml
+    with:
+      start_year: '2026'
+      start_week: '36'
+      end_year: '2026'
+      end_week: '36'
+      resume_stage: Scaffold
+      resume_completed_weeks: true
+      candidate_layouts: '5'
+      max_node_candidates: '200'
+      max_search_seconds: '360'
+      diagnostic_level: '1'
+  week_37:
+    name: 2026 Week 37
+    needs: week_36
+    uses: ./.github/workflows/weekly-build-all.yml
+    with:
+      start_year: '2026'
+      start_week: '37'
+      end_year: '2026'
+      end_week: '37'
+      resume_stage: Scaffold
+      resume_completed_weeks: true
+      candidate_layouts: '5'
+      max_node_candidates: '200'
+      max_search_seconds: '360'
+      diagnostic_level: '1'
+  week_38:
+    name: 2026 Week 38
+    needs: week_37
+    uses: ./.github/workflows/weekly-build-all.yml
+    with:
+      start_year: '2026'
+      start_week: '38'
+      end_year: '2026'
+      end_week: '38'
+      resume_stage: Scaffold
+      resume_completed_weeks: true
+      candidate_layouts: '5'
+      max_node_candidates: '200'
+      max_search_seconds: '360'
+      diagnostic_level: '1'
+  week_39:
+    name: 2026 Week 39
+    needs: week_38
+    uses: ./.github/workflows/weekly-build-all.yml
+    with:
+      start_year: '2026'
+      start_week: '39'
+      end_year: '2026'
+      end_week: '39'
+      resume_stage: Scaffold
+      resume_completed_weeks: true
+      candidate_layouts: '5'
+      max_node_candidates: '200'
+      max_search_seconds: '360'
+      diagnostic_level: '1'
+  week_40:
+    name: 2026 Week 40
+    needs: week_39
+    uses: ./.github/workflows/weekly-build-all.yml
+    with:
+      start_year: '2026'
+      start_week: '40'
+      end_year: '2026'
+      end_week: '40'
+      resume_stage: Scaffold
+      resume_completed_weeks: true
+      candidate_layouts: '5'
+      max_node_candidates: '200'
+      max_search_seconds: '360'
+      diagnostic_level: '1'
+  week_41:
+    name: 2026 Week 41
+    needs: week_40
+    uses: ./.github/workflows/weekly-build-all.yml
+    with:
+      start_year: '2026'
+      start_week: '41'
+      end_year: '2026'
+      end_week: '41'
+      resume_stage: Scaffold
+      resume_completed_weeks: true
+      candidate_layouts: '5'
+      max_node_candidates: '200'
+      max_search_seconds: '360'
+      diagnostic_level: '1'
+  week_42:
+    name: 2026 Week 42
+    needs: week_41
+    uses: ./.github/workflows/weekly-build-all.yml
+    with:
+      start_year: '2026'
+      start_week: '42'
+      end_year: '2026'
+      end_week: '42'
+      resume_stage: Scaffold
+      resume_completed_weeks: true
+      candidate_layouts: '5'
+      max_node_candidates: '200'
+      max_search_seconds: '360'
+      diagnostic_level: '1'
+  week_43:
+    name: 2026 Week 43
+    needs: week_42
+    uses: ./.github/workflows/weekly-build-all.yml
+    with:
+      start_year: '2026'
+      start_week: '43'
+      end_year: '2026'
+      end_week: '43'
+      resume_stage: Scaffold
+      resume_completed_weeks: true
+      candidate_layouts: '5'
+      max_node_candidates: '200'
+      max_search_seconds: '360'
+      diagnostic_level: '1'
+  week_44:
+    name: 2026 Week 44
+    needs: week_43
+    uses: ./.github/workflows/weekly-build-all.yml
+    with:
+      start_year: '2026'
+      start_week: '44'
+      end_year: '2026'
+      end_week: '44'
+      resume_stage: Scaffold
+      resume_completed_weeks: true
+      candidate_layouts: '5'
+      max_node_candidates: '200'
+      max_search_seconds: '360'
+      diagnostic_level: '1'
+  week_45:
+    name: 2026 Week 45
+    needs: week_44
+    uses: ./.github/workflows/weekly-build-all.yml
+    with:
+      start_year: '2026'
+      start_week: '45'
+      end_year: '2026'
+      end_week: '45'
+      resume_stage: Scaffold
+      resume_completed_weeks: true
+      candidate_layouts: '5'
+      max_node_candidates: '200'
+      max_search_seconds: '360'
+      diagnostic_level: '1'
+  week_46:
+    name: 2026 Week 46
+    needs: week_45
+    uses: ./.github/workflows/weekly-build-all.yml
+    with:
+      start_year: '2026'
+      start_week: '46'
+      end_year: '2026'
+      end_week: '46'
+      resume_stage: Scaffold
+      resume_completed_weeks: true
+      candidate_layouts: '5'
+      max_node_candidates: '200'
+      max_search_seconds: '360'
+      diagnostic_level: '1'
+  week_47:
+    name: 2026 Week 47
+    needs: week_46
+    uses: ./.github/workflows/weekly-build-all.yml
+    with:
+      start_year: '2026'
+      start_week: '47'
+      end_year: '2026'
+      end_week: '47'
+      resume_stage: Scaffold
+      resume_completed_weeks: true
+      candidate_layouts: '5'
+      max_node_candidates: '200'
+      max_search_seconds: '360'
+      diagnostic_level: '1'
+  week_48:
+    name: 2026 Week 48
+    needs: week_47
+    uses: ./.github/workflows/weekly-build-all.yml
+    with:
+      start_year: '2026'
+      start_week: '48'
+      end_year: '2026'
+      end_week: '48'
+      resume_stage: Scaffold
+      resume_completed_weeks: true
+      candidate_layouts: '5'
+      max_node_candidates: '200'
+      max_search_seconds: '360'
+      diagnostic_level: '1'
+  week_49:
+    name: 2026 Week 49
+    needs: week_48
+    uses: ./.github/workflows/weekly-build-all.yml
+    with:
+      start_year: '2026'
+      start_week: '49'
+      end_year: '2026'
+      end_week: '49'
+      resume_stage: Scaffold
+      resume_completed_weeks: true
+      candidate_layouts: '5'
+      max_node_candidates: '200'
+      max_search_seconds: '360'
+      diagnostic_level: '1'
+  week_50:
+    name: 2026 Week 50
+    needs: week_49
+    uses: ./.github/workflows/weekly-build-all.yml
+    with:
+      start_year: '2026'
+      start_week: '50'
+      end_year: '2026'
+      end_week: '50'
+      resume_stage: Scaffold
+      resume_completed_weeks: true
+      candidate_layouts: '5'
+      max_node_candidates: '200'
+      max_search_seconds: '360'
+      diagnostic_level: '1'
+  week_51:
+    name: 2026 Week 51
+    needs: week_50
+    uses: ./.github/workflows/weekly-build-all.yml
+    with:
+      start_year: '2026'
+      start_week: '51'
+      end_year: '2026'
+      end_week: '51'
+      resume_stage: Scaffold
+      resume_completed_weeks: true
+      candidate_layouts: '5'
+      max_node_candidates: '200'
+      max_search_seconds: '360'
+      diagnostic_level: '1'
+  week_52:
+    name: 2026 Week 52
+    needs: week_51
+    uses: ./.github/workflows/weekly-build-all.yml
+    with:
+      start_year: '2026'
+      start_week: '52'
+      end_year: '2026'
+      end_week: '52'
+      resume_stage: Scaffold
+      resume_completed_weeks: true
+      candidate_layouts: '5'
+      max_node_candidates: '200'
+      max_search_seconds: '360'
+      diagnostic_level: '1'
+  week_53:
+    name: 2026 Week 53
+    needs: week_52
+    uses: ./.github/workflows/weekly-build-all.yml
+    with:
+      start_year: '2026'
+      start_week: '53'
+      end_year: '2026'
+      end_week: '53'
+      resume_stage: Scaffold
+      resume_completed_weeks: true
+      candidate_layouts: '5'
+      max_node_candidates: '200'
+      max_search_seconds: '360'
+      diagnostic_level: '1'
