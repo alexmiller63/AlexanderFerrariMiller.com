@@ -249,6 +249,18 @@ def main():
         new_groups = []
         identity_collisions = []
         split_collisions = []
+        # Resolve groups with a survivor's own identifier before groups
+        # containing only aliases of a retired historical ID.
+        prepared = sorted(prepared, key=lambda item: (
+            0 if any(
+                alias_key(a) == alias_key(by_id[alias_index[alias_key(a)]]["canonical_identity"])
+                for a in item[1]
+                if a["namespace"] in MATCH_NAMESPACES
+                and alias_key(a) in alias_index
+                and by_id[alias_index[alias_key(a)]].get("canonical_identity")
+            ) else 1,
+            item[0]["provisional_group_id"],
+        ))
         for group, aliases in prepared:
             matches = {
                 alias_index[alias_key(alias)]
@@ -264,6 +276,18 @@ def main():
             if matches:
                 fixed_id = next(iter(matches))
                 if fixed_id in used_existing_ids:
+                    # A retired Bayer-only alias is not an additional star.
+                    # Accept this exception only for an explicitly reviewed
+                    # merge redirect and an otherwise identifier-free group.
+                    keys = {alias_key(a) for a in aliases}
+                    retired_aliases = {
+                        alias_key(a)
+                        for retired_id, survivor_id in redirects.items()
+                        if survivor_id == fixed_id
+                        for a in by_id[retired_id].get("identifiers") or []
+                    }
+                    if keys and keys <= retired_aliases:
+                        continue
                     split_collisions.append((fixed_id, group["provisional_group_id"]))
                     continue
                 used_existing_ids.add(fixed_id)
