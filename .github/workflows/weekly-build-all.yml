@@ -58,6 +58,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Preflight saved story structure
+        run: python tools/story_audit.py --output generated/story-audit.json --strict
+
       - name: Build, deploy, and structurally audit each week
         env:
           GH_TOKEN: ${{ github.token }}
