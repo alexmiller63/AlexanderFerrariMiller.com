@@ -58,8 +58,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Preflight saved story structure
-        run: python tools/story_audit.py --output generated/story-audit.json --strict
+      - name: Inventory saved story structure (informational)
+        run: python tools/story_audit.py --output generated/story-audit.json
 
       - name: Build, deploy, and structurally audit each week
         env:
@@ -203,6 +203,8 @@ jobs:
               -f end_year="$year" -f end_week="$iso_week"
             git fetch origin main
             git reset --hard origin/main
+            echo "Strict story preflight for $week_label after Calendar generation"
+            python tools/story_audit.py --year "$year" --week "$iso_week" --output generated/story-audit.json --strict
             report_progress BUILDING "Ephemeris"
 
             run_stage ephemeris-generator-by-date.yml \
@@ -249,7 +251,7 @@ jobs:
             git fetch origin main
             git reset --hard origin/main
             report_progress BUILDING "Story structural audit"
-            python tools/story_audit.py --output generated/story-audit.json --strict
+            python tools/story_audit.py --year "$year" --week "$iso_week" --output generated/story-audit.json --strict
             completed_stages=$((completed_stages + 1))
             report_progress FINISHED "Story structural audit" "Automated structural checks passed; editorial approval remains separate"
             report_progress COMPLETE "Seven generator stages, deployment, and structural audit finished; editorial approval not implied"
