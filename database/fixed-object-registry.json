@@ -12,7 +12,7 @@
   "source_audit_schema_version": 12,
   "build_mode": "preserve_and_append",
   "physical_object_count": 1261,
-  "active_object_count": 1091,
+  "active_object_count": 1088,
   "preserved_id_count": 1101,
   "appended_id_count": 0,
   "fixed_objects": [
@@ -14178,7 +14178,7 @@
     },
     {
       "fixed_object_id": 509,
-      "status": "active",
+      "status": "merged_historical_duplicate",
       "canonical_identity": {
         "namespace": "bayer",
         "value": "β Ant"
@@ -14194,7 +14194,8 @@
           "source": "fixed-objects.yaml:bayer",
           "source_key": "β Ant"
         }
-      ]
+      ],
+      "merged_into_fixed_object_id": 874
     },
     {
       "fixed_object_id": 510,
@@ -15220,7 +15221,7 @@
     },
     {
       "fixed_object_id": 558,
-      "status": "active",
+      "status": "merged_historical_duplicate",
       "canonical_identity": {
         "namespace": "bayer",
         "value": "β Lyn"
@@ -15236,7 +15237,8 @@
           "source": "fixed-objects.yaml:bayer",
           "source_key": "β Lyn"
         }
-      ]
+      ],
+      "merged_into_fixed_object_id": 870
     },
     {
       "fixed_object_id": 559,
@@ -15804,7 +15806,7 @@
     },
     {
       "fixed_object_id": 584,
-      "status": "active",
+      "status": "merged_historical_duplicate",
       "canonical_identity": {
         "namespace": "bayer",
         "value": "β Tel"
@@ -15820,7 +15822,8 @@
           "source": "fixed-objects.yaml:bayer",
           "source_key": "β Tel"
         }
-      ]
+      ],
+      "merged_into_fixed_object_id": 1108
     },
     {
       "fixed_object_id": 585,
@@ -23776,6 +23779,10 @@
         {
           "namespace": "hip",
           "value": "45688"
+        },
+        {
+          "namespace": "bayer",
+          "value": "β Lyn"
         }
       ],
       "source_refs": [
@@ -23908,6 +23915,10 @@
         {
           "namespace": "hip",
           "value": "46515"
+        },
+        {
+          "namespace": "bayer",
+          "value": "β Ant"
         }
       ],
       "source_refs": [
@@ -30288,6 +30299,10 @@
         {
           "namespace": "hip",
           "value": "90568"
+        },
+        {
+          "namespace": "bayer",
+          "value": "β Tel"
         }
       ],
       "source_refs": [
