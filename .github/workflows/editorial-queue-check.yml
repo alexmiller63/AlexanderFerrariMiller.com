@@ -1,0 +1,38 @@
+name: Editorial Queue Check
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'tools/editorial_queue.py'
+      - 'research/story-progress-2026.json'
+      - '.github/workflows/editorial-queue-check.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  check-week-2:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Generate Week 2 editorial queue
+        run: python3 tools/editorial_queue.py --week 2 --output generated/editorial-queue.json
+      - name: Validate queue
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          q = json.loads(Path('generated/editorial-queue.json').read_text())
+          assert q['week'] == 'W02', q
+          assert q['total'] == len(q['tasks']), q
+          assert q['complete'] + q['pending'] == q['total'], q
+          assert len({str(t['target']) for t in q['tasks']}) == q['total'], q
+          assert all(not t['editorial_complete'] or not t['remaining'] for t in q['tasks']), q
+          print(f"PASS: {q['week']}: {q['complete']} complete, {q['pending']} pending")
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: editorial-queue-week-2
+          path: generated/editorial-queue.json
