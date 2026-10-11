@@ -601,7 +601,18 @@ def generated_note(year: int, week: int, page_path: Path, yearly: dict[int, dict
     star_names = [item["name"] for item in fixed if item["type"] == "star"]
     deep_names = [item["name"] for item in fixed if item["type"] == "deep-sky"]
     naked_targets = ", ".join(star_names[:3]) if star_names else "the brightest seasonal stars and the zodiac"
-    telescope_targets = ", ".join(deep_names[:2]) if deep_names else "the compact fixed-sky targets selected for the week"
+    # Give each deep-sky object its own observing guidance. In particular,
+    # the Pleiades are a wide-field binocular target, whereas IC 342 is a
+    # diffuse, low-surface-brightness galaxy requiring dark skies.
+    deep_guidance = []
+    for name in deep_names:
+        if name == "Pleiades" or name == "M45":
+            deep_guidance.append(f"{name}: use binoculars or a low-power wide field to see the cluster together")
+        elif name == "IC 342":
+            deep_guidance.append(f"{name}: this diffuse galaxy is challenging; seek a very dark, transparent sky and use a telescope")
+        else:
+            deep_guidance.append(f"{name}: consult its dedicated finder and observing story for suitable equipment")
+    deep_guidance_text = "; ".join(deep_guidance) if deep_guidance else "Consult the week's fixed-object finder charts for observing targets"
     binocular_guidance = binocular_finder_sentence(fixed)
     planet_paragraph = " ".join(relation_sentence(item) for item in relations) if relations else "No close longitude relationship passes the conservative weekly selection threshold; use the Planet Finder for the broader Solar-System pattern."
     note = "\n\n".join((
@@ -609,7 +620,7 @@ def generated_note(year: int, week: int, page_path: Path, yearly: dict[int, dict
         f"**Naked eye:** {moon_text}. {condition} Use {naked_targets} as the week’s fixed-sky framework.",
         f"**Planets:** {planet_paragraph}",
         f"**Binoculars:** {binocular_guidance}",
-        f"**Small telescope:** Concentrate on {telescope_targets}. Increase magnification only after the target and surrounding pattern are secure.",
+        f"**Deep-sky objects:** {deep_guidance_text}.",
     ))
     return {
         "week": f"W{week:02d}", "title": f"Observer’s guide for ISO {year}-W{week:02d}", "status": "generated",
