@@ -23,6 +23,21 @@ on:
         required: true
         default: '40'
         type: string
+      resume_stage:
+        description: Start at this stage for a partially completed week (manual verification required)
+        required: true
+        default: 'Scaffold'
+        type: choice
+        options:
+          - Scaffold
+          - Calendar
+          - Ephemeris
+          - Planet Finder
+          - Sky Notes
+          - Artwork
+          - Legend
+          - Story structural audit
+          - Deployment
       resume_completed_weeks:
         description: Skip weeks previously marked COMPLETE (use only when prior outputs remain valid)
         required: true
@@ -204,6 +219,28 @@ jobs:
             } > "$GITHUB_STEP_SUMMARY"
           }
 
+          # Stage resume is deliberately explicit: a previous successful job
+          # does not prove that its output remains valid after source changes.
+          case "${{ inputs.resume_stage }}" in
+              "Scaffold") resume_index=0 ;;
+              "Calendar") resume_index=1 ;;
+              "Ephemeris") resume_index=2 ;;
+              "Planet Finder") resume_index=3 ;;
+              "Sky Notes") resume_index=4 ;;
+              "Artwork") resume_index=5 ;;
+              "Legend") resume_index=6 ;;
+              "Story structural audit") resume_index=7 ;;
+              "Deployment") resume_index=8 ;;
+              *) echo "::error::Unknown resume stage"; exit 1 ;;
+          esac
+          if (( resume_index > 0 && ${#WEEKS[@]} != 1 )); then
+            echo "::error::Partial-week resume requires a single-week range."
+            exit 1
+          fi
+          if (( resume_index > 0 )); then
+            echo "::warning::Manual stage resume selected. Verify earlier outputs and source compatibility before using this option."
+          fi
+
           for week in "${WEEKS[@]}"; do
             read -r year iso_week <<< "$week"
             week_label="${year}-W$(printf '%02d' "$iso_week")"
@@ -220,29 +257,45 @@ jobs:
             week_started_at="$(date -u '+%Y-%m-%dT%H:%M:%SZ')"
             report_progress BUILDING "Scaffold"
 
+            if (( resume_index <= 0 )); then
             run_stage scaffold-almanack-weeks.yml \
               -f start_year="$year" -f start_week="$iso_week" \
               -f end_year="$year" -f end_week="$iso_week"
+            else
+              completed_stages=$((completed_stages + 1))
+              echo "Skipping previously verified stage: Scaffold"
+            fi
             git fetch origin main
             git reset --hard origin/main
             report_progress BUILDING "Calendar"
 
+            if (( resume_index <= 1 )); then
             run_stage calendar-generator.yml \
               -f start_year="$year" -f start_week="$iso_week" \
               -f end_year="$year" -f end_week="$iso_week"
+            else
+              completed_stages=$((completed_stages + 1))
+              echo "Skipping previously verified stage: Calendar"
+            fi
             git fetch origin main
             git reset --hard origin/main
             echo "Strict story preflight for $week_label after Calendar generation"
             python tools/story_audit.py --year "$year" --week "$iso_week" --output generated/story-audit.json --strict
             report_progress BUILDING "Ephemeris"
 
+            if (( resume_index <= 2 )); then
             run_stage ephemeris-generator-by-date.yml \
               -f start_year="$year" -f start_week="$iso_week" \
               -f end_year="$year" -f end_week="$iso_week"
+            else
+              completed_stages=$((completed_stages + 1))
+              echo "Skipping previously verified stage: Ephemeris"
+            fi
             git fetch origin main
             git reset --hard origin/main
             report_progress BUILDING "Planet Finder"
 
+            if (( resume_index <= 3 )); then
             run_stage populate-ephemeris-planet-finder-by-date.yml \
               -f start_year="$year" -f start_week="$iso_week" \
               -f end_year="$year" -f end_week="$iso_week" \
@@ -250,32 +303,52 @@ jobs:
               -f max_node_candidates='${{ inputs.max_node_candidates }}' \
               -f max_search_seconds='${{ inputs.max_search_seconds }}' \
               -f diagnostic_level='${{ inputs.diagnostic_level }}'
+            else
+              completed_stages=$((completed_stages + 1))
+              echo "Skipping previously verified stage: Planet Finder"
+            fi
             git fetch origin main
             git reset --hard origin/main
             report_progress BUILDING "Sky Notes"
 
+            if (( resume_index <= 4 )); then
             run_stage populate-sky-notes-by-date.yml \
               -f start_year="$year" -f start_week="$iso_week" \
               -f end_year="$year" -f end_week="$iso_week"
+            else
+              completed_stages=$((completed_stages + 1))
+              echo "Skipping previously verified stage: Sky Notes"
+            fi
             git fetch origin main
             git reset --hard origin/main
             report_progress BUILDING "Artwork"
 
+            if (( resume_index <= 5 )); then
             run_stage populate-sky-notes-artwork-by-date.yml \
               -f start_year="$year" -f start_week="$iso_week" \
               -f end_year="$year" -f end_week="$iso_week"
+            else
+              completed_stages=$((completed_stages + 1))
+              echo "Skipping previously verified stage: Artwork"
+            fi
             git fetch origin main
             git reset --hard origin/main
             report_progress BUILDING "Legend"
 
+            if (( resume_index <= 6 )); then
             run_stage wire-almanack-legend.yml \
               -f start_year="$year" -f start_week="$iso_week" \
               -f end_year="$year" -f end_week="$iso_week"
+            else
+              completed_stages=$((completed_stages + 1))
+              echo "Skipping previously verified stage: Legend"
+            fi
             git fetch origin main
             git reset --hard origin/main
 
             # Quality gate: never deploy a week that fails its structural audit.
             report_progress BUILDING "Story structural audit"
+            # Re-run the audit even on resumed builds: never trust an old pass.
             python tools/story_audit.py --year "$year" --week "$iso_week" --output generated/story-audit.json --strict
             completed_stages=$((completed_stages + 1))
             report_progress FINISHED "Story structural audit" "Automated structural checks passed; editorial approval remains separate"
