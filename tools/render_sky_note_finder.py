@@ -91,6 +91,21 @@ def planet_finder_title(planet, planet_constellation, reference, reference_const
     return f"{planet} near {reference} in {reference_constellation}"
 
 
+def verified_planet_finder_title(planet, planet_constellation, reference,
+                                 reference_constellation, guide_in_field,
+                                 guide_labeled):
+    """Never promise a guide in a title unless it is both visible and labeled.
+
+    A distant reference remains useful in observing directions, but must not
+    change the fixed angular field or be advertised as plotted on the chart.
+    """
+    if reference and guide_in_field and guide_labeled:
+        return planet_finder_title(
+            planet, planet_constellation, reference, reference_constellation
+        )
+    return f"{planet} in {planet_constellation or reference_constellation}"
+
+
 def visible_figure_region(paths, idx, center, xmin, xmax, ymin, ymax):
     """Find the largest complete, visible loop in the constellation stick figure."""
     regions = []
@@ -1736,16 +1751,18 @@ def render(spec: dict, stars, output: Path) -> None:
         # navigation landmark. Only name a reference star in the chart title
         # when its actual position falls inside the rendered field.
         reference_name = str((spec.get("finder_relation") or {}).get("reference_star") or target_name).strip()
-        reference_visible = bool(target_in_field)
-        if reference_visible:
-            title = planet_finder_title(
-                planet_name, planet_constellation, reference_name, figure_constellation,
+        # Position alone is not sufficient: the guide must have an identity
+        # that the chart can label, and must have been sent to its labeler.
+        guide_labeled = bool(
+            target_in_field and (
+                (target_star_identity is not None and target_star is not None)
+                or target_chart_label
             )
-        else:
-            title = f"{planet_name} in {planet_constellation or figure_constellation}"
-            # Preserve the distant reference as route metadata for accompanying
-            # directions; do not imply it is plotted on this close-up.
-            ax.set_gid("external-guide-" + re.sub(r"[^a-z0-9-]+", "-", reference_name.casefold()).strip("-"))
+        )
+        title = verified_planet_finder_title(
+            planet_name, planet_constellation, reference_name,
+            figure_constellation, target_in_field, guide_labeled,
+        )
     elif target_star is not None and target_bayer and target_name and figure_constellation:
         title = f"{target_bayer}, {target_name} in {figure_constellation}"
     else:
