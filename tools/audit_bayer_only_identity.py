@@ -42,6 +42,20 @@ if review_path.exists():
             row["review_status"] = decision.get("status", "unreviewed")
             if decision.get("evidence"):
                 row["review_evidence"] = decision["evidence"]
+# Report identifier collisions across active objects; a Bayer-only count alone
+# cannot establish catalog identity integrity.
+alias_owners = {}
+for obj in active:
+    for ident in obj.get("identifiers") or []:
+        namespace = ident.get("namespace")
+        value = ident.get("value")
+        if namespace in {"hip", "hd", "gaia_dr3", "bayer"} and value:
+            alias_owners.setdefault((namespace, value), set()).add(obj["fixed_object_id"])
+duplicate_identifiers = [
+    {"namespace": ns, "value": value, "fixed_object_ids": sorted(owners)}
+    for (ns, value), owners in sorted(alias_owners.items())
+    if len(owners) > 1
+]
 matches.sort(key=lambda o: o["fixed_object_id"])
 result = {
     "schema_version": 1,
@@ -51,11 +65,13 @@ result = {
     "active_count": len(active),
     "bayer_only_count": len(matches),
     "records": matches,
+    "duplicate_identifier_count": len(duplicate_identifiers),
+    "duplicate_identifiers": duplicate_identifiers,
     "note": "A Bayer-only record is not proof of an unidentified star. Review coordinates, multiple systems and catalog crossmatches before changing identities."
 }
 destination.parent.mkdir(parents=True, exist_ok=True)
 destination.write_text(json.dumps(result, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
-print(f"Active: {len(active)}; Bayer-only: {len(matches)}")
+print(f"Active: {len(active)}; Bayer-only: {len(matches)}; duplicate identifiers: {len(duplicate_identifiers)}")
 for row in matches:
     print(row["fixed_object_id"], ", ".join(i["value"] for i in row["identifiers"] if i.get("namespace") == "bayer"))
 print("Saved:", destination.relative_to(ROOT))
