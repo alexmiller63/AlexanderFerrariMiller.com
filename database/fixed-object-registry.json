@@ -12,9 +12,9 @@
   "source_audit_schema_version": 12,
   "build_mode": "preserve_and_append",
   "physical_object_count": 1262,
-  "active_object_count": 1088,
+  "active_object_count": 1087,
   "preserved_id_count": 1096,
-  "appended_id_count": 1,
+  "appended_id_count": 0,
   "fixed_objects": [
     {
       "fixed_object_id": 1,
@@ -34478,7 +34478,7 @@
     },
     {
       "fixed_object_id": 1262,
-      "status": "active",
+      "status": "merged_historical_duplicate",
       "canonical_identity": {
         "namespace": "bayer",
         "value": "46 LMi"
@@ -34494,7 +34494,8 @@
           "source": "fixed-objects.yaml:bayer",
           "source_key": "46 LMi"
         }
-      ]
+      ],
+      "merged_into_fixed_object_id": 906
     }
   ]
 }
