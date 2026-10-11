@@ -1656,9 +1656,10 @@ def render(spec: dict, stars, output: Path) -> None:
                 color=ASTERISM_GREEN if ref in asterism_refs else TEXT,
                 obstacle_segments=figure_segments + asterism_segments + boundary_segments,
             )
-            if placed and identity.get('proper_name'):
+            proper_name = str(identity.get('proper_name') or star.proper or '').strip()
+            if placed and proper_name:
                 titled_named_stars.append((float(star.mag) if star.mag is not None else 99.0,
-                                          str(identity['proper_name']),
+                                          proper_name,
                                           str(identity.get('constellation') or figure_constellation)))
             labeled_star_ids.add(fixed_id)
     # Place individual stellar identities first. The cluster/target label
