@@ -65,6 +65,8 @@ result = {
     "active_count": len(active),
     "bayer_only_count": len(matches),
     "records": matches,
+    "review_status_counts": dict(Counter(row.get("review_status", "unreviewed") for row in matches)),
+    "unreviewed_count": sum(row.get("review_status") == "unreviewed" for row in matches),
     "duplicate_identifier_count": len(duplicate_identifiers),
     "duplicate_identifiers": duplicate_identifiers,
     "note": "A Bayer-only record is not proof of an unidentified star. Review coordinates, multiple systems and catalog crossmatches before changing identities."
