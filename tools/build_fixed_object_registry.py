@@ -22,6 +22,8 @@ REGISTRY_PATH = SRC / "database" / "fixed-object-registry.json"
 MERGES_PATH = SRC / "database" / "fixed-object-id-merges.json"
 COLLISION_REPORT_PATH = SRC / "generated" / "fixed-object-identity-collisions.json"
 
+LEGACY_HISTORICAL_DESIGNATIONS = {("bayer", "α LMi"), ("bayer", "β Vul")}
+
 MATCH_NAMESPACES = {
     "ngc", "ic", "hip", "hd", "gaia_dr3", "wds", "bayer", "sh2",
     "variable_star", "messier", "caldwell", "finest_ngc", "special", "component",
@@ -322,7 +324,16 @@ def main():
                 # Their component_fixed_object_ids refer to separately identified stars.
                 continue
             elif fixed_id not in used_existing_ids and fixed_id <= historical_max:
-                record["status"] = "missing_from_current_audit"
+                identity = record.get("canonical_identity") or {}
+                key = (identity.get("namespace"), identity.get("value"))
+                if key[0] == "solar_system":
+                    # Solar-system bodies are intentionally outside the fixed-object audit.
+                    record["status"] = "solar_system"
+                elif key in LEGACY_HISTORICAL_DESIGNATIONS:
+                    # Retain immutable IDs for obsolete/misapplied Bayer labels.
+                    record["status"] = "historical_designation"
+                else:
+                    record["status"] = "missing_from_current_audit"
                 record.pop("merged_into_fixed_object_id", None)
 
         records.sort(key=lambda r: r["fixed_object_id"])
