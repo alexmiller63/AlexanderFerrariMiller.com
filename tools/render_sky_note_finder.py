@@ -1732,12 +1732,20 @@ def render(spec: dict, stars, output: Path) -> None:
                         obstacle_segments=figure_segments + asterism_segments,
                         require_clear=True)
     if has_planet:
-        # A moving-body finder is named for the route the reader actually uses:
-        # body + useful landmark + full constellation.
+        # The fixed angular field must never be widened to accommodate a distant
+        # navigation landmark. Only name a reference star in the chart title
+        # when its actual position falls inside the rendered field.
         reference_name = str((spec.get("finder_relation") or {}).get("reference_star") or target_name).strip()
-        title = planet_finder_title(
-            planet_name, planet_constellation, reference_name, figure_constellation,
-        )
+        reference_visible = bool(target_in_field)
+        if reference_visible:
+            title = planet_finder_title(
+                planet_name, planet_constellation, reference_name, figure_constellation,
+            )
+        else:
+            title = f"{planet_name} in {planet_constellation or figure_constellation}"
+            # Preserve the distant reference as route metadata for accompanying
+            # directions; do not imply it is plotted on this close-up.
+            ax.set_gid("external-guide-" + re.sub(r"[^a-z0-9-]+", "-", reference_name.casefold()).strip("-"))
     elif target_star is not None and target_bayer and target_name and figure_constellation:
         title = f"{target_bayer}, {target_name} in {figure_constellation}"
     else:
