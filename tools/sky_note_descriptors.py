@@ -364,7 +364,9 @@ def build_descriptors(
         add_constellation(con)
 
     def add_planet(name: str) -> None:
-        # Solar-System objects use the same globally unique permanent IDs as\n        # the central physical-object registry.\n        descriptor_id = str(SOLAR_SYSTEM_OBJECT_IDS[name])
+        # Solar-System objects use the same globally unique permanent IDs as
+        # the central physical-object registry.
+        descriptor_id = str(SOLAR_SYSTEM_OBJECT_IDS[name])
         kind = "planet" if name in {"Mercury", "Venus", "Earth", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune"} else "solar-system-object"
         summary = "Solar-System object tracked by the Star Almanack weekly ephemeris and Planet Finder"
         add(_base(descriptor_id, kind, name, summary))
