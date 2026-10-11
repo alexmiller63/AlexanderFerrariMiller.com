@@ -27,6 +27,21 @@ for obj in active:
             "source_refs": obj.get("source_refs", []),
             "status": obj.get("status")
         })
+# Attach durable review classifications without changing permanent identities.
+review_path = ROOT / "database/bayer-only-identity-review-2026-10-11.json"
+if review_path.exists():
+    review = json.loads(review_path.read_text(encoding="utf-8"))
+    by_id = {row["fixed_object_id"]: row for row in review.get("records", [])}
+    for row in matches:
+        decision = by_id.get(row["fixed_object_id"])
+        if decision is None:
+            row["review_status"] = "unreviewed"
+        elif decision.get("bayer") != row["canonical_identity"].get("value"):
+            raise SystemExit(f"Review identity mismatch for fixed_object_id {row['fixed_object_id']}")
+        else:
+            row["review_status"] = decision.get("status", "unreviewed")
+            if decision.get("evidence"):
+                row["review_evidence"] = decision["evidence"]
 matches.sort(key=lambda o: o["fixed_object_id"])
 result = {
     "schema_version": 1,
