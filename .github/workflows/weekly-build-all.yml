@@ -23,6 +23,11 @@ on:
         required: true
         default: '40'
         type: string
+      resume_completed_weeks:
+        description: Skip weeks previously marked COMPLETE (use only when prior outputs remain valid)
+        required: true
+        default: false
+        type: boolean
       candidate_layouts:
         description: Planet Finder complete layouts to score per mode
         required: true
@@ -91,6 +96,15 @@ jobs:
           total_stages=$((${#WEEKS[@]} * 9))
           completed_stages=0
 
+          # A checkpoint is written only after every stage, including deployment,
+          # succeeds. Resume is opt-in because generator changes can invalidate
+          # previously generated outputs.
+          is_week_complete() {
+            local target="$1"
+            git fetch origin main
+            git show origin/main:build-log.txt 2>/dev/null |
+              grep -F " — COMPLETE $target — " >/dev/null
+          }
 
           # Append history across runs; refresh first because child workflows also commit.
           publish_log() {
@@ -185,6 +199,12 @@ jobs:
             read -r year iso_week <<< "$week"
             week_label="${year}-W$(printf '%02d' "$iso_week")"
             echo "::group::ISO ${week_label}"
+            if [[ "${{ inputs.resume_completed_weeks }}" == "true" ]] && is_week_complete "$week_label"; then
+              echo "Skipping previously completed $week_label (opt-in checkpoint resume)."
+              completed_stages=$((completed_stages + 9))
+              echo "::endgroup::"
+              continue
+            fi
 
             git fetch origin main
             git reset --hard origin/main
