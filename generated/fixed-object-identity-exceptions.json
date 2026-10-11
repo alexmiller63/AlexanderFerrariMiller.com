@@ -2,7 +2,7 @@
   "schema_version": 1,
   "purpose": "Compact exception report for pre-migration fixed-object identity audit.",
   "source_audit": "generated/fixed-object-identity-audit.json",
-  "exception_count": 10,
+  "exception_count": 11,
   "exceptions": [
     {
       "candidate_id": 24,
@@ -74,7 +74,7 @@
       "database_guidance": "Pleiades target/asterism; preserve target identity and member relationships."
     },
     {
-      "candidate_id": 295,
+      "candidate_id": 294,
       "source": "caldwell-catalog.csv",
       "source_key": "C14",
       "identifiers": [
@@ -94,14 +94,12 @@
       "object_type": "OC",
       "object_type_family": "open_cluster",
       "notes": null,
-      "identity_role": "catalog_target_only",
-      "catalog_entry_key": "caldwell:C14",
-      "catalog_target_model": "composite_physical_objects",
+      "identity_role": "physical_object_candidate",
       "review_class": "no_cross_source_identifier",
       "database_guidance": "Double Cluster target; one catalog target relates to NGC 869 and NGC 884."
     },
     {
-      "candidate_id": 314,
+      "candidate_id": 313,
       "source": "caldwell-catalog.csv",
       "source_key": "C33",
       "identifiers": [
@@ -121,14 +119,12 @@
       "object_type": "SN",
       "object_type_family": "supernova_remnant",
       "notes": null,
-      "identity_role": "catalog_target_only",
-      "catalog_entry_key": "caldwell:C33",
-      "catalog_target_model": "composite_physical_objects",
+      "identity_role": "physical_object_candidate",
       "review_class": "no_cross_source_identifier",
       "database_guidance": "Eastern Veil target; Caldwell entry encompasses NGC 6992/6995."
     },
     {
-      "candidate_id": 322,
+      "candidate_id": 321,
       "source": "caldwell-catalog.csv",
       "source_key": "C41",
       "identifiers": [
@@ -149,13 +145,11 @@
       "object_type_family": "open_cluster",
       "notes": null,
       "identity_role": "physical_object_candidate",
-      "catalog_entry_key": "caldwell:C41",
-      "catalog_target_model": "physical_object_with_asterism",
       "review_class": "no_cross_source_identifier",
       "database_guidance": "Hyades target/asterism; preserve cluster/asterism relationship."
     },
     {
-      "candidate_id": 330,
+      "candidate_id": 329,
       "source": "caldwell-catalog.csv",
       "source_key": "C49",
       "identifiers": [
@@ -175,14 +169,12 @@
       "object_type": "BN",
       "object_type_family": "emission_nebula",
       "notes": null,
-      "identity_role": "catalog_target_only",
-      "catalog_entry_key": "caldwell:C49",
-      "catalog_target_model": "nebular_complex",
+      "identity_role": "physical_object_candidate",
       "review_class": "no_cross_source_identifier",
       "database_guidance": "Rosette complex target; preserve the complex relationship to its component NGC entries."
     },
     {
-      "candidate_id": 380,
+      "candidate_id": 379,
       "source": "caldwell-catalog.csv",
       "source_key": "C99",
       "identifiers": [
@@ -202,14 +194,37 @@
       "object_type": "DN",
       "object_type_family": "dark_nebula",
       "notes": null,
-      "identity_role": "catalog_target_only",
-      "catalog_entry_key": "caldwell:C99",
-      "catalog_target_model": "region",
+      "identity_role": "physical_object_candidate",
       "review_class": "no_cross_source_identifier",
       "database_guidance": "Coalsack dark-nebula region; preserve region semantics rather than treating it as an ordinary compact object."
     },
     {
-      "candidate_id": 843,
+      "candidate_id": 502,
+      "source": "special-star-catalog.csv",
+      "source_key": "40-eridani-b",
+      "identifiers": [
+        {
+          "namespace": "special",
+          "value": "40-eridani-b"
+        },
+        {
+          "namespace": "gaia_dr3",
+          "value": "3195919254111315712"
+        }
+      ],
+      "name": "40 Eridani B",
+      "constellation": null,
+      "ra_h": "4.256054366",
+      "dec_deg": "-7.658112219",
+      "object_type": "star",
+      "object_type_family": "star",
+      "notes": "component-specific Gaia DR3 identity",
+      "identity_role": "physical_object_candidate",
+      "review_class": "no_cross_source_identifier",
+      "database_guidance": "Review catalog/target semantics before permanent identity assignment."
+    },
+    {
+      "candidate_id": 935,
       "source": "database/supplemental-physical-objects.json",
       "source_key": "hd:238107",
       "identifiers": [
@@ -240,7 +255,7 @@
       "database_guidance": "Review catalog/target semantics before permanent identity assignment."
     },
     {
-      "candidate_id": 844,
+      "candidate_id": 936,
       "source": "database/supplemental-physical-objects.json",
       "source_key": "hd:238108",
       "identifiers": [
