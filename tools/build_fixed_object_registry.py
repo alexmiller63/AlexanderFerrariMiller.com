@@ -316,6 +316,10 @@ def main():
             if fixed_id in redirects:
                 record["status"] = "merged_historical_duplicate"
                 record["merged_into_fixed_object_id"] = redirects[fixed_id]
+            elif record.get("status") == "system_designation":
+                # Preserve reviewed aggregate labels: they are not individual stars.
+                # Their component_fixed_object_ids refer to separately identified stars.
+                continue
             elif fixed_id not in used_existing_ids and fixed_id <= historical_max:
                 record["status"] = "missing_from_current_audit"
                 record.pop("merged_into_fixed_object_id", None)
