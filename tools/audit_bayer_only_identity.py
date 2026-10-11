@@ -56,6 +56,24 @@ duplicate_identifiers = [
     for (ns, value), owners in sorted(alias_owners.items())
     if len(owners) > 1
 ]
+# Distinguish stale registry entries from unresolved source identities.
+# The source YAML uses row arrays; match only the Bayer section, not
+# incidental appearances in Messier or component records.
+source_path = ROOT / "fixed-objects.yaml"
+source_bayer = set()
+section = None
+import csv
+for raw in source_path.read_text(encoding="utf-8").splitlines():
+    if raw and not raw.startswith(" ") and raw.rstrip().endswith(":"):
+        section = raw.strip()[:-1]
+    if section == "bayer" and raw.strip().startswith("- [") and raw.strip().endswith("]"):
+        fields = next(csv.reader([raw.strip()[3:-1]], skipinitialspace=True))
+        if len(fields) >= 2:
+            source_bayer.add(f"{fields[0].strip()} {fields[1].strip()}")
+for row in matches:
+    identity = row.get("canonical_identity") or {}
+    if identity.get("namespace") == "bayer":
+        row["present_in_current_fixed_objects_yaml"] = identity.get("value") in source_bayer
 matches.sort(key=lambda o: o["fixed_object_id"])
 result = {
     "schema_version": 1,
@@ -67,6 +85,7 @@ result = {
     "records": matches,
     "review_status_counts": dict(Counter(row.get("review_status", "unreviewed") for row in matches)),
     "unreviewed_count": sum(row.get("review_status") == "unreviewed" for row in matches),
+    "missing_from_current_yaml_count": sum(row.get("present_in_current_fixed_objects_yaml") is False for row in matches),
     "duplicate_identifier_count": len(duplicate_identifiers),
     "duplicate_identifiers": duplicate_identifiers,
     "note": "A Bayer-only record is not proof of an unidentified star. Review coordinates, multiple systems and catalog crossmatches before changing identities."
