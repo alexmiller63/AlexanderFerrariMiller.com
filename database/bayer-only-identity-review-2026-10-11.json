@@ -11,72 +11,91 @@
     {
       "fixed_object_id": 434,
       "bayer": "α Cap",
-      "status": "needs_review"
+      "status": "ambiguous_system",
+      "evidence": "bayer-supplement.csv: α1 Cap; α2 Cap"
     },
     {
       "fixed_object_id": 450,
       "bayer": "α Cru",
-      "status": "needs_review"
+      "status": "ambiguous_system",
+      "evidence": "bayer-supplement.csv: α1 Cru; α2 Cru"
     },
     {
       "fixed_object_id": 452,
       "bayer": "α CVn",
-      "status": "needs_review"
+      "status": "ambiguous_system",
+      "evidence": "bayer-supplement.csv: α1 CVn; α2 CVn"
     },
     {
       "fixed_object_id": 462,
       "bayer": "α Her",
-      "status": "needs_review"
+      "status": "ambiguous_system",
+      "evidence": "bayer-supplement.csv: α1 Her; α2 Her"
     },
     {
       "fixed_object_id": 470,
       "bayer": "α Lib",
-      "status": "needs_review"
+      "status": "ambiguous_system",
+      "evidence": "bayer-supplement.csv: α1 Lib; α2 Lib"
     },
     {
       "fixed_object_id": 471,
       "bayer": "α LMi",
-      "status": "needs_review"
+      "status": "suspected_invalid_bayer",
+      "evidence": "α LMi requires source validation; do not substitute β LMi"
     },
     {
       "fixed_object_id": 509,
       "bayer": "β Ant",
-      "status": "needs_review"
+      "status": "requires_crossmatch",
+      "evidence": "No unqualified entry in expanded-bayer-stars.csv or bayer-supplement.csv"
     },
     {
       "fixed_object_id": 538,
       "bayer": "β Cyg",
-      "status": "needs_review"
+      "status": "requires_crossmatch",
+      "evidence": "No unqualified entry in expanded-bayer-stars.csv or bayer-supplement.csv"
     },
     {
       "fixed_object_id": 558,
       "bayer": "β Lyn",
-      "status": "needs_review"
+      "status": "requires_crossmatch",
+      "evidence": "No unqualified entry in expanded-bayer-stars.csv or bayer-supplement.csv"
     },
     {
       "fixed_object_id": 577,
       "bayer": "β Sco",
-      "status": "needs_review"
+      "status": "ambiguous_system",
+      "evidence": "bayer-supplement.csv: β1 Sco; β2 Sco"
     },
     {
       "fixed_object_id": 582,
       "bayer": "β Sgr",
-      "status": "needs_review"
+      "status": "ambiguous_system",
+      "evidence": "bayer-supplement.csv: β1 Sgr; β2 Sgr"
     },
     {
       "fixed_object_id": 584,
       "bayer": "β Tel",
-      "status": "needs_review"
+      "status": "requires_crossmatch",
+      "evidence": "No unqualified entry in expanded-bayer-stars.csv or bayer-supplement.csv"
     },
     {
       "fixed_object_id": 587,
       "bayer": "β Tuc",
-      "status": "needs_review"
+      "status": "ambiguous_system",
+      "evidence": "bayer-supplement.csv: β1 Tuc; β2 Tuc; β3 Tuc"
     },
     {
       "fixed_object_id": 592,
       "bayer": "β Vul",
-      "status": "needs_review"
+      "status": "requires_crossmatch",
+      "evidence": "No unqualified entry in expanded-bayer-stars.csv or bayer-supplement.csv"
     }
-  ]
+  ],
+  "review_summary": {
+    "ambiguous_system": 8,
+    "suspected_invalid_bayer": 1,
+    "requires_crossmatch": 5
+  }
 }
