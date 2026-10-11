@@ -11,10 +11,10 @@
   "source_audit": "generated/fixed-object-identity-audit.json",
   "source_audit_schema_version": 12,
   "build_mode": "preserve_and_append",
-  "physical_object_count": 1261,
-  "active_object_count": 1087,
-  "preserved_id_count": 1101,
-  "appended_id_count": 0,
+  "physical_object_count": 1262,
+  "active_object_count": 1088,
+  "preserved_id_count": 1096,
+  "appended_id_count": 1,
   "fixed_objects": [
     {
       "fixed_object_id": 1,
@@ -13337,7 +13337,7 @@
     },
     {
       "fixed_object_id": 471,
-      "status": "missing_from_current_audit",
+      "status": "historical_designation",
       "canonical_identity": {
         "namespace": "bayer",
         "value": "α LMi"
@@ -15978,7 +15978,7 @@
     },
     {
       "fixed_object_id": 592,
-      "status": "missing_from_current_audit",
+      "status": "historical_designation",
       "canonical_identity": {
         "namespace": "bayer",
         "value": "β Vul"
@@ -34274,7 +34274,7 @@
     },
     {
       "fixed_object_id": 1249,
-      "status": "missing_from_current_audit",
+      "status": "solar_system",
       "canonical_identity": {
         "namespace": "solar_system",
         "value": "sun"
@@ -34289,7 +34289,7 @@
     },
     {
       "fixed_object_id": 1250,
-      "status": "missing_from_current_audit",
+      "status": "solar_system",
       "canonical_identity": {
         "namespace": "solar_system",
         "value": "mercury"
@@ -34304,7 +34304,7 @@
     },
     {
       "fixed_object_id": 1251,
-      "status": "missing_from_current_audit",
+      "status": "solar_system",
       "canonical_identity": {
         "namespace": "solar_system",
         "value": "venus"
@@ -34319,7 +34319,7 @@
     },
     {
       "fixed_object_id": 1252,
-      "status": "missing_from_current_audit",
+      "status": "solar_system",
       "canonical_identity": {
         "namespace": "solar_system",
         "value": "earth"
@@ -34334,7 +34334,7 @@
     },
     {
       "fixed_object_id": 1253,
-      "status": "missing_from_current_audit",
+      "status": "solar_system",
       "canonical_identity": {
         "namespace": "solar_system",
         "value": "moon"
@@ -34349,7 +34349,7 @@
     },
     {
       "fixed_object_id": 1254,
-      "status": "missing_from_current_audit",
+      "status": "solar_system",
       "canonical_identity": {
         "namespace": "solar_system",
         "value": "mars"
@@ -34364,7 +34364,7 @@
     },
     {
       "fixed_object_id": 1255,
-      "status": "missing_from_current_audit",
+      "status": "solar_system",
       "canonical_identity": {
         "namespace": "solar_system",
         "value": "ceres"
@@ -34379,7 +34379,7 @@
     },
     {
       "fixed_object_id": 1256,
-      "status": "missing_from_current_audit",
+      "status": "solar_system",
       "canonical_identity": {
         "namespace": "solar_system",
         "value": "jupiter"
@@ -34394,7 +34394,7 @@
     },
     {
       "fixed_object_id": 1257,
-      "status": "missing_from_current_audit",
+      "status": "solar_system",
       "canonical_identity": {
         "namespace": "solar_system",
         "value": "saturn"
@@ -34409,7 +34409,7 @@
     },
     {
       "fixed_object_id": 1258,
-      "status": "missing_from_current_audit",
+      "status": "solar_system",
       "canonical_identity": {
         "namespace": "solar_system",
         "value": "uranus"
@@ -34424,7 +34424,7 @@
     },
     {
       "fixed_object_id": 1259,
-      "status": "missing_from_current_audit",
+      "status": "solar_system",
       "canonical_identity": {
         "namespace": "solar_system",
         "value": "neptune"
@@ -34439,7 +34439,7 @@
     },
     {
       "fixed_object_id": 1260,
-      "status": "missing_from_current_audit",
+      "status": "solar_system",
       "canonical_identity": {
         "namespace": "solar_system",
         "value": "pluto"
@@ -34473,6 +34473,26 @@
         {
           "source": "special-star-catalog.csv",
           "source_key": "40-eridani-b"
+        }
+      ]
+    },
+    {
+      "fixed_object_id": 1262,
+      "status": "active",
+      "canonical_identity": {
+        "namespace": "bayer",
+        "value": "46 LMi"
+      },
+      "identifiers": [
+        {
+          "namespace": "bayer",
+          "value": "46 LMi"
+        }
+      ],
+      "source_refs": [
+        {
+          "source": "fixed-objects.yaml:bayer",
+          "source_key": "46 LMi"
         }
       ]
     }
