@@ -99,11 +99,20 @@ jobs:
           # A checkpoint is written only after every stage, including deployment,
           # succeeds. Resume is opt-in because generator changes can invalidate
           # previously generated outputs.
+          # Generator/workflow changes invalidate completed-week checkpoints.
+          # Generated content and log commits do not change this fingerprint.
+          source_fingerprint() {
+            git ls-tree -r origin/main -- tools .github/workflows |
+              sha256sum | cut -d' ' -f1
+          }
+
           is_week_complete() {
-            local target="$1"
+            local target="$1" fingerprint
             git fetch origin main
+            fingerprint="$(source_fingerprint)"
             git show origin/main:build-log.txt 2>/dev/null |
-              grep -F " — COMPLETE $target — " >/dev/null
+              grep -F " — COMPLETE $target — " |
+              grep -F " — SOURCE_SHA256=$fingerprint" >/dev/null
           }
 
           # Append history across runs; refresh first because child workflows also commit.
@@ -273,7 +282,8 @@ jobs:
 
             report_progress BUILDING "Deployment"
             run_stage deploy.yml
-            report_progress COMPLETE "Seven generator stages, structural audit, and deployment finished; editorial approval not implied"
+            git fetch origin main
+            report_progress COMPLETE "Seven generator stages, structural audit, and deployment finished; editorial approval not implied — SOURCE_SHA256=$(source_fingerprint)"
 
             echo "::endgroup::"
           done
