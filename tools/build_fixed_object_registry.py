@@ -293,7 +293,8 @@ def main():
             merged_aliases = {alias_key(alias): alias for alias in (record.get("identifiers") or [])}
             for alias in aliases:
                 merged_aliases[alias_key(alias)] = alias
-            record["status"] = "active"
+            if record.get("status") != "system_designation":
+                record["status"] = "active"
             record.pop("merged_into_fixed_object_id", None)
             record["identifiers"] = sorted(merged_aliases.values(), key=alias_sort_key)
             record["source_refs"] = source_refs(group, candidate_map)
