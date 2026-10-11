@@ -1,6 +1,48 @@
 name: Weekly Build All
 
 on:
+  workflow_call:
+    inputs:
+      start_year:
+        type: string
+        required: false
+        default: '2026'
+      start_week:
+        type: string
+        required: false
+        default: '36'
+      end_year:
+        type: string
+        required: false
+        default: '2026'
+      end_week:
+        type: string
+        required: false
+        default: '40'
+      resume_stage:
+        type: string
+        required: false
+        default: Scaffold
+      resume_completed_weeks:
+        type: boolean
+        required: false
+        default: false
+      candidate_layouts:
+        type: string
+        required: false
+        default: '5'
+      max_node_candidates:
+        type: string
+        required: false
+        default: '200'
+      max_search_seconds:
+        type: string
+        required: false
+        default: '360'
+      diagnostic_level:
+        type: string
+        required: false
+        default: '1'
   workflow_dispatch:
     inputs:
       start_year:
