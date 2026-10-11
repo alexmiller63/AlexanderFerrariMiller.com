@@ -27,6 +27,14 @@ OUT = ROOT / "sky-notes-artwork" / "specs" / "objects"
 def constellation_for(fixed_id: int, item: dict, metadata: dict[int, dict]) -> str:
     con = str(item.get("constellation") or metadata.get(fixed_id, {}).get("constellation_abbreviation") or "").strip()
     if not con:
+        # Resolve immutable special-object identity from its authoritative catalogue.
+        registry = json.loads((ROOT / "database" / "fixed-object-registry.json").read_text(encoding="utf-8"))
+        record = next((obj for obj in registry.get("fixed_objects", []) if obj.get("fixed_object_id") == fixed_id), None)
+        if record:
+            special_keys = [i.get("value") for i in record.get("identifiers", []) if i.get("namespace") == "special"]
+            if "40-eridani-b" in special_keys:
+                con = "Eri"
+    if not con:
         raise RuntimeError(f"fixed object {fixed_id} has no authoritative constellation")
     return con
 
