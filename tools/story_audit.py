@@ -56,9 +56,24 @@ def main():
     p = argparse.ArgumentParser()
     p.add_argument("--output", default="generated/story-audit.json")
     p.add_argument("--strict", action="store_true", help="Fail on structural errors or invalid completion attestations")
+    p.add_argument("--year", type=int, help="ISO year for scoped audit")
+    p.add_argument("--week", type=int, help="ISO week for scoped audit")
     args = p.parse_args()
     paths = sorted(path for collection in COLLECTIONS
                    for path in (ROOT / "stories" / collection).glob("*.md"))
+    if (args.year is None) != (args.week is None):
+        p.error("--year and --week must be supplied together")
+    scope = "all saved story files"
+    if args.year is not None:
+        from almanack_paths import week_index
+        page = week_index(args.year, args.week)
+        if not page.exists():
+            p.error(f"Cannot audit week without its calendar: {page}")
+        ids = set(re.findall(r'data-fixed-object-id="(\\d+)"', page.read_text(encoding="utf-8")))
+        if not ids:
+            p.error(f"Calendar has no fixed-object IDs: {page}")
+        paths = [path for path in paths if path.stem in ids]
+        scope = f"{args.year}-W{args.week:02d} saved stories"
     records = [audit_file(path) for path in paths]
     summary = {"files": len(records),
                "complete": sum(r["status"] == "complete" and not r["structural_issues"] for r in records),
@@ -66,7 +81,7 @@ def main():
                "structural_failures": sum(bool(r["structural_issues"]) for r in records),
                "finder_checks_pending": sum(r["finder_review_required"] for r in records),
                "publication_checks_pending": sum(r["publication_review_required"] for r in records)}
-    result = {"schema_version": 1, "scope": "all saved story files", "summary": summary,
+    result = {"schema_version": 1, "scope": scope, "summary": summary,
               "limitations": ["URLs are extracted but not fetched", "Science is not fact-checked",
                               "Finder geometry and live publication are not tested",
                               "Completion attestations are read, never issued"], "stories": records}
