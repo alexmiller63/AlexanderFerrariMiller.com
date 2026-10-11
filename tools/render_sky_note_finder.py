@@ -1881,7 +1881,7 @@ def render(spec: dict, stars, output: Path) -> None:
         if external_guide and separation > 0:
             instructions = (f"Observing directions: From {external_guide}, look "
                             f"{separation:.1f}° {direction} toward {planet_name}. "
-                            ("The reference star is visible in this chart." if direction_guide_name
+                            + ("The reference star is visible in this chart." if direction_guide_name
                              else "The reference star is outside this fixed-scale chart."))
             ax.text(0.5, -0.075, instructions, transform=ax.transAxes,
                     ha="center", va="top", fontsize=7, color=TEXT, wrap=True)
