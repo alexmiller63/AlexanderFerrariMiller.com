@@ -152,6 +152,14 @@ jobs:
 
           total_stages=$((${#WEEKS[@]} * 9))
           completed_stages=0
+          # Year-wide progress across the 52 chained weekly jobs (W02-W53).
+          if [[ "$GITHUB_WORKFLOW" == "Continuous Build All 2026" && "$START_YEAR" == "2026" && "$END_YEAR" == "2026" ]]; then
+            overall_total_stages=$((52 * 9))
+            overall_base_stages=$(((10#$START_WEEK - 2) * 9))
+          else
+            overall_total_stages=$total_stages
+            overall_base_stages=0
+          fi
 
           # A checkpoint is written only after every stage, including deployment,
           # succeeds. Resume is opt-in because generator changes can invalidate
@@ -247,14 +255,14 @@ jobs:
           report_progress() {
             local state="$1" stage="$2" detail="${3:-}" percent updated_at entry
             current_stage="$stage"
-            percent=$((completed_stages * 100 / total_stages))
+            percent=$(((overall_base_stages + completed_stages) * 100 / overall_total_stages))
             updated_at="$(date -u '+%Y-%m-%dT%H:%M:%SZ')"
-            entry="$updated_at — RUN $GITHUB_RUN_ID/$GITHUB_RUN_ATTEMPT — $state $week_label — $percent% complete ($completed_stages/$total_stages stages) — $stage — WEEK STARTED $week_started_at${detail:+ — $detail}"
+            entry="$updated_at — RUN $GITHUB_RUN_ID/$GITHUB_RUN_ATTEMPT — $state $week_label — $percent% complete ($((overall_base_stages + completed_stages))/$overall_total_stages overall stages; $completed_stages/$total_stages this week) — $stage — WEEK STARTED $week_started_at${detail:+ — $detail}"
             printf '%s\n' "$entry"
             publish_log "$entry"
             {
               printf '### Build All: %s%% complete\n\n' "$percent"
-              printf '%s of %s stages completed.\n\n' "$completed_stages" "$total_stages"
+              printf '%s of %s overall stages; %s of %s this week.\n\n' "$((overall_base_stages + completed_stages))" "$overall_total_stages" "$completed_stages" "$total_stages"
               printf '**%s — %s:** %s\n\n' "$week_label" "$state" "$stage"
               printf 'Week started: %s · Updated: %s\n\n' "$week_started_at" "$updated_at"
               printf 'Percentage counts completed stages; stages take different amounts of time.\n'
