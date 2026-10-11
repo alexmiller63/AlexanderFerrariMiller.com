@@ -69,7 +69,7 @@ def main():
         page = week_index(args.year, args.week)
         if not page.exists():
             p.error(f"Cannot audit week without its calendar: {page}")
-        ids = set(re.findall(r'data-fixed-object-id="(\\d+)"', page.read_text(encoding="utf-8")))
+        ids = set(re.findall(r'data-fixed-object-id="(\d+)"', page.read_text(encoding="utf-8")))
         if not ids:
             p.error(f"Calendar has no fixed-object IDs: {page}")
         paths = [path for path in paths if path.stem in ids]
