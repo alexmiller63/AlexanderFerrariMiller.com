@@ -1758,7 +1758,18 @@ def render(spec: dict, stars, output: Path) -> None:
     if has_planet:
         # Prefer a labeled asterism, then the brightest actually labeled named star.
         # The fixed angular field is never expanded for an external landmark.
-        if titled_asterisms:
+        # Lambda Piscium is a recognizable Circlet member. Prefer it for
+        # Neptune only when its actual star label survived collision placement.
+        lambda_identity = next((identity for identity in spec.get("fixed_object_identities", [])
+                                if identity.get("proper_name") == "Lambda Piscium"), None)
+        lambda_star = idx.get(lambda_identity["renderer_ref"]) if lambda_identity else None
+        lambda_labeled = bool(lambda_identity and lambda_star and any(
+            (artist.get_gid() or "").startswith(f"star-label-{lambda_identity['fixed_object_id']}-")
+            and "-leader-" not in (artist.get_gid() or "") for artist in ax.texts))
+        if planet_name == "Neptune" and lambda_labeled:
+            title = planet_finder_title(planet_name, planet_constellation,
+                                        "Lambda Piscium", "Pisces")
+        elif titled_asterisms:
             title = f"{planet_name} near {titled_asterisms[0]} in {planet_constellation}"
         else:
             if target_in_field and target_name and target_star_identity is not None:
@@ -1846,8 +1857,13 @@ def render(spec: dict, stars, output: Path) -> None:
     # Observing directions are separate from the fixed-scale finder field.
     # An external reference is described with a true spherical separation
     # and position angle, rather than plotted at a false chart position.
-    if has_planet and planet_name in {"Saturn", "Neptune"} and not target_in_field and target_star is not None:
-        ra1, dec1 = map(math.radians, (target_star.ra_deg, target_star.dec_deg))
+    # Use the same verified in-field guide for Neptune's directions and title.
+    direction_guide = (lambda_star if has_planet and planet_name == "Neptune"
+                       and lambda_labeled else target_star)
+    direction_guide_name = ("Lambda Piscium" if has_planet and planet_name == "Neptune"
+                            and lambda_labeled else None)
+    if has_planet and planet_name in {"Saturn", "Neptune"} and direction_guide is not None:
+        ra1, dec1 = map(math.radians, (direction_guide.ra_deg, direction_guide.dec_deg))
         ra2, dec2 = map(math.radians, (float(planet_ra), float(planet_dec)))
         delta_ra = ra2 - ra1
         cos_sep = (math.sin(dec1) * math.sin(dec2)
@@ -1861,11 +1877,11 @@ def render(spec: dict, stars, output: Path) -> None:
         compass = ("north", "northeast", "east", "southeast", "south",
                    "southwest", "west", "northwest")
         direction = compass[int((angle + 22.5) // 45) % 8]
-        external_guide = str(target_meta.get("proper_name") or target_star.proper or target_name).strip()
+        external_guide = str(direction_guide_name or target_meta.get("proper_name") or direction_guide.proper or target_name).strip()
         if external_guide and separation > 0:
             instructions = (f"Observing directions: From {external_guide}, look "
                             f"{separation:.1f}° {direction} toward {planet_name}. "
-                            "The reference star is outside this fixed-scale chart.")
+                            ("The reference star is visible in this chart." if direction_guide_name\n                             else "The reference star is outside this fixed-scale chart."))
             ax.text(0.5, -0.075, instructions, transform=ax.transAxes,
                     ha="center", va="top", fontsize=7, color=TEXT, wrap=True)
             legend_offset = -0.125
