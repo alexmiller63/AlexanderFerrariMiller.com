@@ -1862,7 +1862,7 @@ def render(spec: dict, stars, output: Path) -> None:
                        and lambda_labeled else target_star)
     direction_guide_name = ("Lambda Piscium" if has_planet and planet_name == "Neptune"
                             and lambda_labeled else None)
-    if has_planet and planet_name in {"Saturn", "Neptune"} and direction_guide is not None:
+    if has_planet and direction_guide is not None:
         ra1, dec1 = map(math.radians, (direction_guide.ra_deg, direction_guide.dec_deg))
         ra2, dec2 = map(math.radians, (float(planet_ra), float(planet_dec)))
         delta_ra = ra2 - ra1
@@ -1878,11 +1878,15 @@ def render(spec: dict, stars, output: Path) -> None:
                    "southwest", "west", "northwest")
         direction = compass[int((angle + 22.5) // 45) % 8]
         external_guide = str(direction_guide_name or target_meta.get("proper_name") or direction_guide.proper or target_name).strip()
+        guide_point = project(direction_guide.ra_deg, direction_guide.dec_deg, *center)
+        guide_in_field = (guide_point is not None and xmin <= guide_point[0] <= xmax
+                          and ymin <= guide_point[1] <= ymax)
         if external_guide and separation > 0:
             instructions = (f"Observing directions: From {external_guide}, look "
                             f"{separation:.1f}° {direction} toward {planet_name}. "
-                            + ("The reference star is visible in this chart." if direction_guide_name
-                             else "The reference star is outside this fixed-scale chart."))
+                            + ("The reference star is inside this fixed-scale chart."
+                               if guide_in_field else
+                               "The reference star is outside this fixed-scale chart."))
             ax.text(0.5, -0.075, instructions, transform=ax.transAxes,
                     ha="center", va="top", fontsize=7, color=TEXT, wrap=True)
             legend_offset = -0.125
