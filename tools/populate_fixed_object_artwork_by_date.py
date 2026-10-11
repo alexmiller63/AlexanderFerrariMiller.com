@@ -48,12 +48,29 @@ def owner_identity(fixed_id: int, item: dict, by_hip: dict[str, int], metadata: 
         # aliases in the renderer catalog as long as this fixed_object_id owns
         # exactly one HIP identifier.
         owned_hips = [hip for hip, fid in by_hip.items() if fid == fixed_id]
-        if len(owned_hips) != 1:
-            raise RuntimeError(
-                f"fixed object {fixed_id} {item.get('name')!r} owns HIP identifiers "
-                f"{owned_hips}; expected exactly one"
+        if len(owned_hips) == 1:
+            owner["renderer_ref"] = f"HIP {owned_hips[0]}"
+        elif not owned_hips:
+            # Preserve the authoritative Gaia identity of stars without HIP IDs.
+            catalogue = json.loads(
+                (ROOT / "database" / "fixed-object-registry.json").read_text(encoding="utf-8")
             )
-        owner["renderer_ref"] = f"HIP {owned_hips[0]}"
+            record = next(
+                (obj for obj in catalogue.get("fixed_objects", [])
+                 if obj.get("fixed_object_id") == fixed_id), None,
+            )
+            canonical = (record or {}).get("canonical_identity") or {}
+            if canonical.get("namespace") != "gaia_dr3" or not canonical.get("value"):
+                raise RuntimeError(
+                    f"fixed object {fixed_id} {item.get('name')!r} has no "
+                    "unique HIP or authoritative Gaia DR3 identity"
+                )
+            owner["identifiers"] = {"gaia_dr3": str(canonical["value"])}
+        else:
+            raise RuntimeError(
+                f"fixed object {fixed_id} {item.get('name')!r} owns multiple "
+                f"HIP identifiers {owned_hips}"
+            )
     return owner
 
 
