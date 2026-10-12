@@ -120,6 +120,16 @@ jobs:
           done
           echo "Save did not reach the repository after eight attempts; uploaded artifact remains the recovery copy."
           exit 1
+      - name: Publish already-reviewed stories
+        if: success()
+        run: |
+          python3 tools/publish_stories.py
+          git add stories/
+          if ! git diff --cached --quiet; then
+            git -c user.name=github-actions -c user.email=actions@users.noreply.github.com commit -m "Render reviewed stories"
+            git pull --rebase origin "${GITHUB_REF_NAME}"
+            git push origin "HEAD:${GITHUB_REF_NAME}"
+          fi
       - uses: actions/upload-artifact@v4
         if: always()
         with:
