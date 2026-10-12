@@ -1,0 +1,56 @@
+name: Luna Publication Readiness (Free)
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'tools/luna_story_pipeline.py'
+      - 'tools/publish_stories.py'
+      - '.github/workflows/luna-story-pipeline.yml'
+      - '.github/workflows/publish-reviewed-stories.yml'
+      - '.github/workflows/luna-publication-readiness.yml'
+permissions:
+  contents: read
+jobs:
+  readiness:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Verify generator and publisher contracts without paid calls
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m py_compile tools/luna_story_pipeline.py tools/publish_stories.py tools/fixed_object_stories.py tools/story_audit.py
+          python3 tools/publish_stories.py --dry-run
+          python3 - <<'PY'
+          import ast, json
+          from pathlib import Path
+          source = Path('tools/luna_story_pipeline.py').read_text()
+          tree = ast.parse(source)
+          assert 'publication_approved": False' in source, "Generator approval gate changed: manual review required"
+          assert 'if dest.exists():' in source, "Existing output protection missing"
+          assert 'if list((ROOT / "stories").glob' in source, "Existing published story protection missing"
+          tasks = json.loads(Path('research/luna-pilot-candidates.json').read_text())
+          assert len(tasks) == 10 and len({str(t['id']) for t in tasks}) == 10
+          output = Path('generated/luna-pilot')
+          drafts = sorted(output.glob('*.md')) if output.exists() else []
+          pending = []
+          for draft in drafts:
+              stem = draft.stem
+              companions = [draft.with_suffix('.research.txt'),draft.with_suffix('.audit.txt'),draft.with_suffix('.gate.json')]
+              missing = [p.name for p in companions if not p.exists()]
+              gate = json.loads(companions[-1].read_text()) if companions[-1].exists() else {}
+              pending.append({'id':stem,'missing':missing,'screen_passed':gate.get('screen_passed',False),'publication_approved':gate.get('publication_approved',False)})
+          report = {'paid_calls':0,'drafts_found':len(drafts),'drafts':pending,'ready_for_automatic_publication':False,'reason':'Generator outputs require independent editorial and source review before importing into reviewed story collection.'}
+          Path('luna-publication-readiness.json').write_text(json.dumps(report,indent=2)+'\n')
+          print(json.dumps(report,indent=2))
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: luna-publication-readiness
+          path: luna-publication-readiness.json
+          if-no-files-found: warn
