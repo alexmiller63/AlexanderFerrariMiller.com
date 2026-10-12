@@ -127,6 +127,21 @@ def main():
         if not output.strip():
             raise RuntimeError("Empty model output at " + stage)
         return output.strip()
+    def stage(ident, name, instruction, source):
+        """Resume a completed paid stage without calling the API again."""
+        path = OUT / (ident + "." + name + ".stage.txt")
+        if path.exists():
+            saved = path.read_text(encoding="utf-8").strip()
+            if not saved:
+                raise RuntimeError("Empty stage checkpoint: " + str(path))
+            print("RESUME", ident, name, flush=True)
+            return saved
+        output = ask(ident + ":" + name, instruction, source)
+        with path.open("x", encoding="utf-8") as handle:
+            handle.write(output + chr(10))
+        print("CHECKPOINT", ident, name, flush=True)
+        return output
+
     for task in tasks:
         ident = resolved[str(task["id"])]
         if list((ROOT / "stories").glob("*/" + ident + ".md")):
@@ -138,7 +153,7 @@ def main():
         if dest.exists():
             print("SKIP: already generated", ident)
             continue
-        if ledger["estimated_usd"] + reserve * 3 > CAP:
+        if ledger["estimated_usd"] + reserve * sum(not (OUT / (ident + "." + name + ".stage.txt")).exists() for name in ("research", "draft", "audit")) > CAP:
             print("STOP: cannot reserve 3 stages within budget")
             break
         # No search tool is implied: retrieve provided sources and require evidence.
@@ -159,28 +174,28 @@ def main():
             print("SKIP: no retrievable research evidence", ident)
             continue
         basis = json.dumps({"task": task, "retrieved_sources": evidence}, ensure_ascii=False)
-        research = ask(ident + ":research",
+        research = stage(ident, "research",
                        "Extract only supported, attributable astronomy facts. Cite exact URLs. "
                        "Flag uncertain or missing claims. Do not invent facts.", basis)
-        draft = ask(ident + ":draft",
+        draft = stage(ident, "draft",
                     "Write an original 450-650 word Star Almanack story with hed, dek, "
                     "scientific context and observing guidance. The exact subject name "
                     f"{task['title']!r} must appear in the hed or opening paragraph. "
                     "Cite source URLs. Do not invent sources or assert publication review.", research)
-        audit = ask(ident + ":audit",
+        audit = stage(ident, "audit",
                     "Audit the draft against the research. Identify unsupported facts, "
                     "missing citations, and ambiguities. Return a concise checklist; "
                     "do not declare verified publication.", research + "\n\nDRAFT:\n" + draft)
         # One bounded correction pass, only if deterministic screening fails.
         initial_gate = editorial_gate(task, research, draft, audit)
-        if not initial_gate["screen_passed"] and ledger["estimated_usd"] + reserve * 2 <= CAP:
-            revised = ask(ident + ":correction",
+        if not initial_gate["screen_passed"] and (ledger["estimated_usd"] + reserve * 2 <= CAP or (OUT / (ident + ".correction.stage.txt")).exists()):
+            revised = stage(ident, "correction",
                           "Revise this draft to address the listed structural issues. "
                           "Use only facts supported by the research. Preserve accurate citations. "
                           "Return the complete 450-650 word story, without commentary.",
                           json.dumps(initial_gate["checks"]) + "\\nRESEARCH:\\n" +
                           research + "\\nDRAFT:\\n" + draft)
-            revised_audit = ask(ident + ":reaudit",
+            revised_audit = stage(ident, "reaudit",
                                 "Independently audit this revised story against the supplied research. "
                                 "Identify unsupported claims and missing citations.",
                                 research + "\\nDRAFT:\\n" + revised)
