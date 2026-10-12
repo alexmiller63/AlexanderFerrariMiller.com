@@ -59,7 +59,11 @@ def parse_pilot(text):
     lines = text.strip().splitlines()
     barrier = next((i for i, line in enumerate(lines) if line.strip() == "---"), None)
     if barrier is None:
-        raise ValueError("missing draft separator")
+        title = next((s.strip(" *") for s in lines if s.strip()), "")
+        body = "\n".join(lines[1:]).strip()
+        if not title or not body:
+            raise ValueError("draft missing title or body")
+        return title, "Recovered Luna pilot manuscript; editorial review required.", body
     header, body = "\n".join(lines[:barrier]), "\n".join(lines[barrier + 1:]).strip()
     if not body:
         raise ValueError("empty draft body")
