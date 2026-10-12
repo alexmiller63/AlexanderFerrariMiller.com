@@ -92,6 +92,21 @@ def verify_source_evidence(task, research, draft, evidence):
             "factual_claims_verified": False,
             "reason": "URL provenance does not verify individual astronomical claims"}
 
+def claim_evidence_review(research, draft, evidence):
+    """Require human-readable claim/evidence mapping, without self-certifying truth."""
+    urls = {entry["url"] for entry in evidence if len(entry.get("excerpt", "").strip()) >= 200}
+    sentences = [s.strip() for s in re.split(r"(?<=[.!?])\\s+", draft)
+                 if len(s.strip().split()) >= 7 and not s.strip().startswith("https://")]
+    citations = [s for s in sentences if any(url in s for url in urls)]
+    return {
+        "substantive_sentences": len(sentences),
+        "sentences_with_retrieved_source_url": len(citations),
+        "source_urls": sorted(urls),
+        "claims_independently_verified": False,
+        "publication_ready": False,
+        "reason": "Source attribution alone cannot prove each claim is supported by source text",
+    }
+
 def persist_checkpoint(path, ledger_file):
     """Commit and push each completed paid stage before spending on the next."""
     if os.environ.get("GITHUB_ACTIONS") != "true":
@@ -248,6 +263,7 @@ def main():
         (OUT / (ident + ".research.txt")).write_text(research + "\n")
         gate = editorial_gate(task, research, draft, audit)
         gate["source_verification"] = verify_source_evidence(task, research, draft, evidence)
+        gate["claim_evidence_review"] = claim_evidence_review(research, draft, evidence)
         (OUT / (ident + ".gate.json")).write_text(json.dumps(gate, indent=2) + "\n")
         print("DRAFT", ident, "screen_passed", gate["screen_passed"],
               "publication_approved", gate["publication_approved"],
