@@ -20,7 +20,8 @@
   "representative_visual_magnitude": 0.98,
   "guiding_asterisms": [
     {
-      "id": "asterism-spring-triangle",
+      "id": "1381",
+      "geometry_key": "asterism-spring-triangle",
       "name": "Spring Triangle",
       "relationship": "visual-member",
       "provenance": {
@@ -31,7 +32,8 @@
       }
     },
     {
-      "id": "asterism-great-diamond",
+      "id": "1382",
+      "geometry_key": "asterism-great-diamond",
       "name": "Great Diamond",
       "relationship": "visual-member",
       "provenance": {
@@ -42,7 +44,8 @@
       }
     },
     {
-      "id": "asterism-big-dipper",
+      "id": "1362",
+      "geometry_key": "asterism-big-dipper",
       "name": "Big Dipper",
       "relationship": "star-hop-anchor",
       "relationship_route_ids": [
@@ -73,7 +76,22 @@
         "source_url": "https://www.jpl.nasa.gov/videos/whats-up-for-april-2011/",
         "source_role": "verification",
         "supports": "star-hop-method"
-      }
+      },
+      "target_fixed_object_id": 60,
+      "step_identities": [
+        {
+          "type": "asterism",
+          "id": 1362
+        },
+        {
+          "type": "fixed-object",
+          "id": 63
+        },
+        {
+          "type": "fixed-object",
+          "id": 60
+        }
+      ]
     }
   ]
 }
