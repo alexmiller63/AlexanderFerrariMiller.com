@@ -24,6 +24,11 @@ on:
         type: boolean
 permissions:
   contents: write
+
+# Prevent overlapping pilot runs from racing to save the same output directory.
+concurrency:
+  group: luna-story-pilot-${{ github.ref }}
+  cancel-in-progress: false
 # Publication intentionally disabled until deterministic editorial validation is implemented.
 # A model-produced audit checklist is not publication approval.
 jobs:
@@ -71,31 +76,40 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          branch="${GITHUB_REF_NAME}"
+          snapshot="$RUNNER_TEMP/luna-pilot-save"
+          mkdir -p "$snapshot"
+          if [[ -d generated/luna-pilot ]]; then
+            cp -a generated/luna-pilot/. "$snapshot/"
+          else
+            echo "No pilot output directory exists; nothing to save."
+            exit 0
+          fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add generated/luna-pilot/
-          if git diff --cached --quiet; then
-            echo "No new pilot outputs to save."
-          else
+          # Rebase is intentionally avoided: concurrent site builds frequently advance main.
+          # Preserve this run's files outside the checkout, reset to the newest remote head,
+          # reapply the snapshot, and retry the fast-forward push with increasing backoff.
+          for attempt in 1 2 3 4 5 6 7 8; do
+            git fetch origin "$branch"
+            git reset --hard "origin/$branch"
+            mkdir -p generated/luna-pilot
+            cp -a "$snapshot"/. generated/luna-pilot/
+            git add generated/luna-pilot/
+            if git diff --cached --quiet; then
+              echo "All pilot outputs are already saved on $branch."
+              exit 0
+            fi
             git commit -m "Save completed Luna pilot outputs"
-            branch="${GITHUB_REF_NAME}"
-            for attempt in 1 2 3; do
-              git fetch origin "$branch"
-              if ! git rebase "origin/$branch"; then
-                git rebase --abort || true
-                echo "Could not safely rebase pilot outputs; artifact upload will preserve this run."
-                exit 1
-              fi
-              if git push origin "HEAD:$branch"; then
-                echo "Completed stories, research, audits, and ledger committed to the repository."
-                exit 0
-              fi
-              echo "Push raced with another update (attempt $attempt/3); retrying."
-              sleep 2
-            done
-            echo "Could not push after three attempts; artifact upload will preserve this run."
-            exit 1
-          fi
+            if git push origin "HEAD:$branch"; then
+              echo "All completed pilot outputs are committed to $branch."
+              exit 0
+            fi
+            echo "Save push raced with another repository update (attempt $attempt/8)."
+            sleep "$((attempt * 3))"
+          done
+          echo "Save did not reach the repository after eight attempts; the uploaded artifact remains the recovery copy."
+          exit 1
       - uses: actions/upload-artifact@v4
         if: always()
         with:
