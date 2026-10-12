@@ -10,7 +10,6 @@ from urllib.request import Request, urlopen
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "generated" / "luna-pilot"
 CAP = 1.00
-TARGET = .10
 MAX_INPUT = 6000
 MAX_OUTPUT = 1200
 
@@ -87,13 +86,16 @@ def main():
             raise RuntimeError("Empty model output at " + stage)
         return output.strip()
     for task in tasks:
-        ident = str(task["id"])
-        if not re.fullmatch(r"[0-9]+", ident):
-            raise RuntimeError("Unsafe fixed-object ID")
-        # Any story with this permanent ID, in any collection, is protected.
-        if list((ROOT / "stories").glob("*/" + ident + ".md")):
-            print("SKIP: existing story", ident)
-            continue
+        # Pilot IDs are task numbers, never permanent fixed-object IDs.
+        pilot_id = str(task["id"])
+        if not re.fullmatch(r"[0-9]+", pilot_id):
+            raise RuntimeError("Unsafe pilot task ID")
+        match = re.search(r"Registry identity:\\s*HIP\\s+(\\d+)", task.get("facts", ""))
+        if not match:
+            raise RuntimeError("Missing HIP identity for pilot task " + pilot_id)
+        ident = "HIP-" + match.group(1)
+        # Keep drafts separate from the permanent story collection until the
+        # registry mapping and independent publication checks are complete.
         dest = OUT / (ident + ".md")
         if dest.exists():
             print("SKIP: already generated", ident)
@@ -153,9 +155,6 @@ def main():
         print("DRAFT", ident, "screen_passed", gate["screen_passed"],
               "publication_approved", gate["publication_approved"],
               "estimated USD", round(ledger["estimated_usd"], 6))
-        if ledger["estimated_usd"] >= TARGET:
-            print("PAUSE: $0.10 target reached")
-            break
 
 if __name__ == "__main__":
     main()
