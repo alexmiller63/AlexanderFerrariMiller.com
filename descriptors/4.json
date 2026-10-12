@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "id": "4",
+  "type": "star",
+  "name": "Schedar",
+  "summary": "bright star in Cassiopeia used as a fixed-sky reference",
+  "representation": {
+    "machine": "./4.json",
+    "human_source": "summary",
+    "human": "/stories/baseline/4.html"
+  },
+  "constellation_abbreviation": "Cas",
+  "constellation": "Cassiopeia",
+  "position": {
+    "ra_deg": 10.12674,
+    "dec_deg": 56.537331,
+    "ecliptic_longitude_deg": 37.783619,
+    "ecliptic_latitude_deg": 46.622197
+  },
+  "representative_visual_magnitude": 2.24,
+  "guiding_asterisms": [
+    {
+      "id": "1364",
+      "geometry_key": "asterism-cassiopeia-s-w",
+      "name": "Cassiopeia's W",
+      "relationship": "visual-member",
+      "provenance": {
+        "source": "Astronomical League",
+        "source_url": "https://www.astroleague.org/wp-content/uploads/2025/12/Asterism_List_20251223.pdf",
+        "source_role": "verification",
+        "supports": "visual-membership"
+      }
+    }
+  ]
+}
