@@ -21,6 +21,22 @@ def request_json(url, data=None, headers=None):
     with urlopen(req, timeout=90) as response:
         return response.read().decode("utf-8", errors="replace")
 
+def editorial_gate(task, research, draft, audit):
+    """Conservative deterministic screening; never equates an AI audit with fact-checking."""
+    sources = task.get("sources", [])
+    checks = {
+        "research_present": len(research.strip()) >= 150,
+        "draft_length": 450 <= len(draft.split()) <= 650,
+        "title_present": task["title"].lower() in draft.lower(),
+        "source_citation": any(url in draft for url in sources),
+        "audit_present": len(audit.strip()) >= 40,
+        "no_placeholder": not re.search(r"\\b(TODO|TBD|PLACEHOLDER)\\b", draft, re.I),
+    }
+    # This screen can reject drafts but cannot establish factual accuracy.
+    return {"screen_passed": all(checks.values()), "checks": checks,
+            "publication_approved": False,
+            "reason": "Independent source verification and editorial approval still required"}
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--manifest", default="research/luna-pilot-candidates.json")
@@ -117,7 +133,11 @@ def main():
             f.write(draft + "\n")
         (OUT / (ident + ".audit.txt")).write_text(audit + "\n")
         (OUT / (ident + ".research.txt")).write_text(research + "\n")
-        print("DRAFT", ident, "estimated USD", round(ledger["estimated_usd"], 6))
+        gate = editorial_gate(task, research, draft, audit)
+        (OUT / (ident + ".gate.json")).write_text(json.dumps(gate, indent=2) + "\\n")
+        print("DRAFT", ident, "screen_passed", gate["screen_passed"],
+              "publication_approved", gate["publication_approved"],
+              "estimated USD", round(ledger["estimated_usd"], 6))
         if ledger["estimated_usd"] >= TARGET:
             print("PAUSE: $0.10 target reached")
             break
