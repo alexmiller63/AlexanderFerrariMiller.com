@@ -37,13 +37,13 @@ def resolve(catalogue, key):
         records = obj.get("source_records") or []
         if key.startswith("HIP "):
             match = any(str(r.get("source_key", "")).strip() == key or
-                        re.search(r"(?<!\\d)" + re.escape(key) + r"(?!\\d)", str(r.get("source_key", "")))
+                        re.search(r"(?<!\d)" + re.escape(key) + r"(?!\d)", str(r.get("source_key", "")))
                         for r in records)
         else:
             code, constellation = BAYER[key]
             match = any(
                 (r.get("source") == "fixed-objects.yaml:bayer") and
-                (re.search(r"(?:^|;)\\s*bayer_code=" + re.escape(code) + r"(?:;|$)",
+                (re.search(r"(?:^|;)\s*bayer_code=" + re.escape(code) + r"(?:;|$)",
                            str((r.get("facts") or {}).get("notes", ""))) is not None) and
                 str((r.get("facts") or {}).get("constellation", "")).strip().lower() in
                 {constellation.lower(), key.split(" ", 1)[1].lower()}
@@ -60,22 +60,22 @@ def parse_pilot(text):
     barrier = next((i for i, line in enumerate(lines) if line.strip() == "---"), None)
     if barrier is None:
         raise ValueError("missing draft separator")
-    header, body = "\\n".join(lines[:barrier]), "\\n".join(lines[barrier + 1:]).strip()
+    header, body = "\n".join(lines[:barrier]), "\n".join(lines[barrier + 1:]).strip()
     if not body:
         raise ValueError("empty draft body")
-    hed = re.search(r"(?im)^\\*{0,2}(?:Hed:|\\*\\*Hed:\\*\\*)\\s*(.+)$", header)
-    dek = re.search(r"(?im)^\\*{0,2}(?:Dek:|Dec:|\\*\\*Dek:\\*\\*|\\*\\*Dec:\\*\\*)\\s*(.+)$", header)
+    hed = re.search(r"(?im)^\*{0,2}(?:Hed:|\*\*Hed:\*\*)\s*(.+)$", header)
+    dek = re.search(r"(?im)^\*{0,2}(?:Dek:|Dec:|\*\*Dek:\*\*|\*\*Dec:\*\*)\s*(.+)$", header)
     if hed:
         title = hed.group(1).strip(" *") or next((s.strip(" *") for s in header.splitlines()[1:] if s.strip()), "")
     else:
         title = next((s.strip(" *") for s in header.splitlines() if s.strip()), "")
     if dek:
-        description = dek.group(1).strip(" *") or next((s.strip(" *") for s in header.splitlines()[header[:dek.start()].count("\\n")+1:] if s.strip()), "")
+        description = dek.group(1).strip(" *") or next((s.strip(" *") for s in header.splitlines()[header[:dek.start()].count("\n")+1:] if s.strip()), "")
     else:
         description = "Recovered Luna pilot manuscript; editorial review required."
     if not title:
         raise ValueError("missing title")
-    return title, description, body.replace("\\n", "\\n")
+    return title, description, body
 
 def main():
     parser = argparse.ArgumentParser()
@@ -101,10 +101,10 @@ def main():
                 hed, dek, body = parse_pilot(path.read_text(encoding="utf-8"))
                 target.parent.mkdir(parents=True, exist_ok=True)
                 target.write_text(
-                    f"---\\nfixed_object_id: {object_id}\\nstatus: pending\\n"
-                    "research_checked: false\\nfinder_checked: false\\n"
-                    "publication_checked: false\\n---\\n"
-                    f"# {hed}\\n\\n{dek}\\n\\n{body}\\n", encoding="utf-8"
+                    f"---\nfixed_object_id: {object_id}\nstatus: pending\n"
+                    "research_checked: false\nfinder_checked: false\n"
+                    "publication_checked: false\n---\n"
+                    f"# {hed}\n\n{dek}\n\n{body}\n", encoding="utf-8"
                 )
                 state = "CREATED pending draft"
             else:
