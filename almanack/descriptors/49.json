@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "id": "49",
+  "type": "star",
+  "name": "Dubhe",
+  "summary": "bright star in Ursa Major used as a fixed-sky reference",
+  "representation": {
+    "machine": "./49.json",
+    "human_source": "summary",
+    "human": "/stories/baseline/49.html"
+  },
+  "constellation_abbreviation": "UMa",
+  "constellation": "Ursa Major",
+  "position": {
+    "ra_deg": 165.932325,
+    "dec_deg": 61.751033,
+    "ecliptic_longitude_deg": 135.197599,
+    "ecliptic_latitude_deg": 49.680401
+  },
+  "representative_visual_magnitude": 1.81,
+  "guiding_asterisms": [
+    {
+      "id": "1362",
+      "geometry_key": "asterism-big-dipper",
+      "name": "Big Dipper",
+      "relationship": "visual-member",
+      "provenance": {
+        "source": "Astronomical League",
+        "source_url": "https://www.astroleague.org/wp-content/uploads/2025/12/Asterism_List_20251223.pdf",
+        "source_role": "verification",
+        "supports": "visual-membership"
+      }
+    }
+  ]
+}
