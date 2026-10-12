@@ -71,5 +71,25 @@ class GlobalPreplacementTests(unittest.TestCase):
         self.assertEqual(set(result.assignment), set(domains))
 
 
+    def test_real_geometry_domains_cover_all_canonical_bodies(self):
+        from planet_finder_geometry import CANONICAL, FinderMode
+        from planet_finder_preplacement_geometry import label_domains
+        bodies = [(name.lower(), name, index * 360.0 / len(CANONICAL))
+                  for index, name in enumerate(CANONICAL)]
+        for mode in FinderMode:
+            with self.subTest(mode=mode):
+                domains = label_domains(mode, bodies, per_body_limit=8)
+                self.assertEqual(set(domains), set(CANONICAL))
+                self.assertTrue(all(len(values) <= 8 for values in domains.values()))
+                self.assertTrue(all(values for values in domains.values()))
+
+    def test_global_preflight_is_opt_in(self):
+        import pathlib
+        source = (pathlib.Path(__file__).resolve().parents[1] /
+                  "tools" / "planet_finder_search.py").read_text()
+        self.assertIn('PLANET_FINDER_GLOBAL_PREFLIGHT', source)
+        self.assertIn('preplace_labels(', source)
+
+
 if __name__ == "__main__":
     unittest.main()
