@@ -4,6 +4,7 @@ import argparse
 import json
 import os
 import re
+import subprocess
 from pathlib import Path
 from html import unescape
 from html.parser import HTMLParser
@@ -76,6 +77,30 @@ def editorial_gate(task, research, draft, audit):
             "publication_approved": False,
             "reason": "Independent source verification and editorial approval still required"}
 
+def persist_checkpoint(path, ledger_file):
+    """Commit and push each completed paid stage before spending on the next."""
+    if os.environ.get("GITHUB_ACTIONS") != "true":
+        return
+    branch = os.environ.get("GITHUB_REF_NAME", "")
+    if not re.fullmatch(r"[A-Za-z0-9._/-]+", branch):
+        raise RuntimeError("Unsafe or missing GitHub branch for checkpoint persistence")
+    def git(*args):
+        return subprocess.run(["git", *args], cwd=ROOT, check=True,
+                              capture_output=True, text=True)
+    git("config", "user.name", "github-actions[bot]")
+    git("config", "user.email", "41898282+github-actions[bot]@users.noreply.github.com")
+    git("add", "--", str(path.relative_to(ROOT)), str(ledger_file.relative_to(ROOT)))
+    git("commit", "-m", "Checkpoint Luna paid stage " + path.name)
+    for attempt in range(4):
+        try:
+            git("push", "origin", "HEAD:" + branch)
+            print("PERSISTED", path.name, flush=True)
+            return
+        except subprocess.CalledProcessError:
+            git("fetch", "origin", branch)
+            git("rebase", "origin/" + branch)
+    raise RuntimeError("Could not push paid-stage checkpoint; stopping before next API call")
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--manifest", default="research/luna-pilot-candidates.json")
@@ -140,6 +165,7 @@ def main():
         with path.open("x", encoding="utf-8") as handle:
             handle.write(output + chr(10))
         print("CHECKPOINT", ident, name, flush=True)
+        persist_checkpoint(path, ledger_file)
         return output
 
     for task in tasks:
