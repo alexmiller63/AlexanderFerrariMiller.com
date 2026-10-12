@@ -404,11 +404,25 @@ jobs:
             report_progress FINISHED "Story structural audit" "Automated structural checks passed; editorial approval remains separate"
 
             report_progress BUILDING "Deployment"
-            run_stage deploy.yml
-            git fetch origin main
-            report_progress COMPLETE "Seven generator stages, structural audit, and deployment finished; editorial approval not implied — SOURCE_SHA256=$(source_fingerprint)"
+            # Deployment is best-effort: site deployment failures must never discard
+            # a successfully generated/audited week or stop the continuous series.
+            if run_stage deploy.yml; then
+              deployment_state="deployment succeeded"
+              git fetch origin main
+              report_progress COMPLETE "Seven generator stages and structural audit finished; deployment succeeded; editorial approval not implied — SOURCE_SHA256=$(source_fingerprint)"
+            else
+              deployment_state="deployment failed after retries; continuing build series"
+              report_progress DEPLOYMENT_DEFERRED "Deployment" "$deployment_state — generated outputs and structural audit are preserved; deployment can be retried separately"
+              echo "::warning::Deployment failed for $week_label after retries. Continuing to the next week."
+            fi
 
             echo "::endgroup::"
+            # Give the deployment queue a chance to settle before the next week's
+            # generator commits. This pause is not a deployment success condition.
+            if [[ "$week" != "${WEEKS[-1]}" ]]; then
+              report_progress PAUSED "Between-week cooldown" "Waiting 90 seconds before the next week; $deployment_state"
+              sleep 90
+            fi
           done
 
       - name: Preserve story audit report
