@@ -30,8 +30,8 @@ def main():
             "source_urls": task.get("sources", []),
             "pilot_audit": audit.read_text(encoding="utf-8")[:12000] if audit.exists() else "",
             "pilot_research": research.read_text(encoding="utf-8")[:12000] if research.exists() else "",
-            "claims_to_check": [s.strip() for s in re.split(r"(?<=[.!?])\\s+", manuscript)
-                                if re.search(r"\\b(?:light.years?|spectral|magnitude|temperature|distance|variable|binary|giant|main.sequence)\\b", s, re.I)][:30],
+            "claims_to_check": [s.strip() for s in re.split(r"(?<=[.!?])\s+", manuscript)
+                                if re.search(r"\b(?:light.years?|spectral|magnitude|temperature|distance|variable|binary|giant|main.sequence)\b", s, re.I)][:30],
             "research_checked": False, "finder_checked": False, "publication_checked": False,
             "next_action": "Verify claims against authoritative sources, revise, check finder, and attest independently"
         })
