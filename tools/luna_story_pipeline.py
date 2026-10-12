@@ -77,6 +77,21 @@ def editorial_gate(task, research, draft, audit):
             "publication_approved": False,
             "reason": "Independent source verification and editorial approval still required"}
 
+def verify_source_evidence(task, research, draft, evidence):
+    """Independently check citation provenance against retrieved source pages."""
+    retrieved = {entry["url"]: entry.get("excerpt", "") for entry in evidence}
+    cited = [url for url in task.get("sources", []) if url in draft]
+    checks = {
+        "source_retrieved": bool(retrieved),
+        "cited_source_retrieved": bool(cited) and all(
+            url in retrieved and len(retrieved[url].strip()) >= 200 for url in cited),
+        "research_cites_retrieved_source": any(url in research for url in retrieved),
+        "draft_cites_retrieved_source": any(url in draft for url in retrieved),
+    }
+    return {"provenance_passed": all(checks.values()), "checks": checks,
+            "factual_claims_verified": False,
+            "reason": "URL provenance does not verify individual astronomical claims"}
+
 def persist_checkpoint(path, ledger_file):
     """Commit and push each completed paid stage before spending on the next."""
     if os.environ.get("GITHUB_ACTIONS") != "true":
@@ -232,6 +247,7 @@ def main():
         (OUT / (ident + ".audit.txt")).write_text(audit + "\n")
         (OUT / (ident + ".research.txt")).write_text(research + "\n")
         gate = editorial_gate(task, research, draft, audit)
+        gate["source_verification"] = verify_source_evidence(task, research, draft, evidence)
         (OUT / (ident + ".gate.json")).write_text(json.dumps(gate, indent=2) + "\n")
         print("DRAFT", ident, "screen_passed", gate["screen_passed"],
               "publication_approved", gate["publication_approved"],
