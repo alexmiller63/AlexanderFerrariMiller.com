@@ -30,7 +30,7 @@ def editorial_gate(task, research, draft, audit):
         "title_present": task["title"].lower() in draft.lower(),
         "source_citation": any(url in draft for url in sources),
         "audit_present": len(audit.strip()) >= 40,
-        "no_placeholder": not re.search(r"\\b(TODO|TBD|PLACEHOLDER)\\b", draft, re.I),
+        "no_placeholder": not re.search(r"\b(TODO|TBD|PLACEHOLDER)\b", draft, re.I),
     }
     # This screen can reject drafts but cannot establish factual accuracy.
     return {"screen_passed": all(checks.values()), "checks": checks,
@@ -109,7 +109,7 @@ def main():
             try:
                 page = request_json(url)
                 clean = re.sub(r"<[^>]+>", " ", page)
-                clean = re.sub(r"\\s+", " ", clean)
+                clean = re.sub(r"\s+", " ", clean)
                 evidence.append({"url": url, "excerpt": clean[:7000]})
             except Exception as exc:
                 print("Source unavailable:", url, type(exc).__name__)
@@ -148,7 +148,7 @@ def main():
         (OUT / (ident + ".audit.txt")).write_text(audit + "\n")
         (OUT / (ident + ".research.txt")).write_text(research + "\n")
         gate = editorial_gate(task, research, draft, audit)
-        (OUT / (ident + ".gate.json")).write_text(json.dumps(gate, indent=2) + "\\n")
+        (OUT / (ident + ".gate.json")).write_text(json.dumps(gate, indent=2) + "\n")
         print("DRAFT", ident, "screen_passed", gate["screen_passed"],
               "publication_approved", gate["publication_approved"],
               "estimated USD", round(ledger["estimated_usd"], 6))
