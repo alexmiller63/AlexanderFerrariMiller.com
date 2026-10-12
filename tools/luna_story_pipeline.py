@@ -5,6 +5,8 @@ import json
 import os
 import re
 from pathlib import Path
+from html import unescape
+from html.parser import HTMLParser
 from urllib.request import Request, urlopen
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -19,6 +21,44 @@ def request_json(url, data=None, headers=None):
                   method="POST" if data is not None else "GET")
     with urlopen(req, timeout=90) as response:
         return response.read().decode("utf-8", errors="replace")
+
+class PageText(HTMLParser):
+    def __init__(self):
+        super().__init__()
+        self.parts = []
+        self.hidden = 0
+    def handle_starttag(self, tag, attrs):
+        if tag in ("script", "style", "noscript"):
+            self.hidden += 1
+    def handle_endtag(self, tag):
+        if tag in ("script", "style", "noscript"):
+            self.hidden = max(0, self.hidden - 1)
+    def handle_data(self, data):
+        if not self.hidden:
+            self.parts.append(data)
+
+def resolve_objects(tasks):
+    """Preflight all catalogue identities before paid calls."""
+    objects = json.loads((ROOT / "database/fixed-objects.json").read_text())["fixed_objects"]
+    resolved = {}
+    for task in tasks:
+        pilot_id = str(task["id"])
+        if not re.fullmatch(r"[0-9]+", pilot_id):
+            raise RuntimeError("Unsafe pilot task ID: " + pilot_id)
+        match = re.search(r"Registry identity:\s*HIP\s+(\d+)", task.get("facts", ""))
+        if not match:
+            raise RuntimeError("Missing HIP identity for pilot task " + pilot_id)
+        hip = match.group(1)
+        matches = [obj["fixed_object_id"] for obj in objects if any(
+            re.search(r"\bHIP\s+" + re.escape(hip) + r"\b",
+                      str(source.get("source_key", "")), re.I)
+            for source in obj.get("source_records", []))]
+        if len(matches) != 1:
+            raise RuntimeError(f"Expected one permanent object ID for task {pilot_id} (HIP {hip}); found {len(matches)}")
+        resolved[pilot_id] = str(matches[0])
+    if len(set(resolved.values())) != len(resolved):
+        raise RuntimeError("Duplicate permanent object IDs in pilot manifest")
+    return resolved
 
 def editorial_gate(task, research, draft, audit):
     """Conservative deterministic screening; never equates an AI audit with fact-checking."""
@@ -49,6 +89,8 @@ def main():
     tasks = json.loads((ROOT / args.manifest).read_text())
     if len(tasks) != 10 or len({t["id"] for t in tasks}) != 10:
         ap.error("Expected 10 distinct tasks")
+    resolved = resolve_objects(tasks)
+    print("Catalogue preflight:", len(resolved), "unique permanent object IDs")
     OUT.mkdir(parents=True, exist_ok=True)
     ledger_file = OUT / "ledger.json"
     ledger = json.loads(ledger_file.read_text()) if ledger_file.exists() else {"estimated_usd": 0.0, "calls": []}
@@ -86,22 +128,7 @@ def main():
             raise RuntimeError("Empty model output at " + stage)
         return output.strip()
     for task in tasks:
-        # Pilot IDs are task numbers, never permanent fixed-object IDs.
-        pilot_id = str(task["id"])
-        if not re.fullmatch(r"[0-9]+", pilot_id):
-            raise RuntimeError("Unsafe pilot task ID")
-        match = re.search(r"Registry identity:\\s*HIP\\s+(\\d+)", task.get("facts", ""))
-        if not match:
-            raise RuntimeError("Missing HIP identity for pilot task " + pilot_id)
-        # Resolve HIP only as a catalogue cross-reference, not as the story ID.
-        objects = json.loads((ROOT / "database/fixed-objects.json").read_text())["fixed_objects"]
-        matches = [obj["fixed_object_id"] for obj in objects if any(
-            re.search(r"\\bHIP\\s+" + re.escape(match.group(1)) + r"\\b",
-                      str(source.get("source_key", "")))
-            for source in obj.get("source_records", []))]
-        if len(matches) != 1:
-            raise RuntimeError("Expected one permanent object ID for task " + pilot_id)
-        ident = str(matches[0])
+        ident = resolved[str(task["id"])]
         if list((ROOT / "stories").glob("*/" + ident + ".md")):
             print("SKIP: existing story", ident)
             continue
@@ -121,7 +148,9 @@ def main():
                 raise RuntimeError("Non-HTTPS source")
             try:
                 page = request_json(url)
-                clean = re.sub(r"<[^>]+>", " ", page)
+                parser = PageText()
+                parser.feed(page)
+                clean = unescape(" ".join(parser.parts))
                 clean = re.sub(r"\s+", " ", clean)
                 evidence.append({"url": url, "excerpt": clean[:7000]})
             except Exception as exc:
