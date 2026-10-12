@@ -50,6 +50,32 @@ jobs:
           for task in tasks:
               print(f"Task {task['id']}: {task['title']} -> permanent object {resolved[str(task['id'])]}")
           PY
+      - name: Test checkpoint persistence and recovery (free)
+        run: |
+          python3 - <<'PY'
+          import ast
+          import tempfile
+          from pathlib import Path
+          from tools import luna_story_pipeline as p
+          source = Path("tools/luna_story_pipeline.py").read_text()
+          tree = ast.parse(source)
+          main = next(n for n in tree.body if isinstance(n, ast.FunctionDef) and n.name == "main")
+          stage = next(n for n in main.body if isinstance(n, ast.FunctionDef) and n.name == "stage")
+          code = compile(ast.Module(body=[stage], type_ignores=[]), "<checkpoint-test>", "exec")
+          with tempfile.TemporaryDirectory() as directory:
+              calls = []
+              def ask(name, instruction, source):
+                  calls.append(name)
+                  return "verified checkpoint content"
+              namespace = {"OUT": Path(directory), "ask": ask}
+              exec(code, namespace)
+              saved = namespace["stage"]("123", "research", "instruction", "source")
+              recovered = namespace["stage"]("123", "research", "instruction", "source")
+              assert saved == recovered == "verified checkpoint content"
+              assert calls == ["123:research"], "Recovery unexpectedly repeated a paid call"
+              assert (Path(directory) / "123.research.stage.txt").exists()
+              print("PASS: stage persisted; resume reused saved output without API call")
+          PY
       - name: Run pilot (dry-run by default)
         shell: bash
         env:
