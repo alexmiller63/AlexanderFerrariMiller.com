@@ -17,14 +17,14 @@ STORIES = ROOT / "stories"
 PILOT = {
     1: ("alpha-stars", "HIP 677"),
     2: ("beta-stars", "HIP 746"),
-    3: ("alpha-stars", "Gamma Pegasi"),
-    4: ("alpha-stars", "Alpha Cassiopeiae"),
-    5: ("alpha-stars", "Gamma Cassiopeiae"),
-    6: ("alpha-stars", "HIP 6686"),
-    7: ("alpha-stars", "HIP 8886"),
+    3: ("special-stars", "HIP 1067"),
+    4: ("alpha-stars", "HIP 3179"),
+    5: ("special-stars", "HIP 4427"),
+    6: ("special-stars", "HIP 6686"),
+    7: ("special-stars", "HIP 8886"),
     8: ("special-stars", "HIP 11484"),
     9: ("alpha-stars", "Alpha Ursae Minoris"),
-    10: ("alpha-stars", "Gamma Ceti"),
+    10: ("special-stars", "Gamma Ceti"),
 }
 # The category for a pilot is checked against the catalogue below, not blindly trusted.
 BAYER = {"Gamma Pegasi": ("Gam", "Peg"), "Alpha Cassiopeiae": ("Alp", "Cas"),
