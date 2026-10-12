@@ -98,6 +98,17 @@ jobs:
               assert json.loads(target.read_text()) == original
               print("PASS: saved evidence remains identical after restart; no second push")
           PY
+      - name: Verify recovery code and ledger initialization (free)
+        run: |
+          python3 -m py_compile tools/luna_story_pipeline.py
+          python3 - <<'PY'
+          from pathlib import Path
+          source = Path("tools/luna_story_pipeline.py").read_text()
+          assert 'if evidence_path.exists():' in source
+          assert source.index('if evidence_path.exists():') < source.index('for url in task["sources"][:3]:')
+          assert 'if not ledger_file.exists():' in source
+          print("PASS: evidence recovery precedes source retrieval; ledger initialized")
+          PY
       - name: Test real Git checkpoint push (free)
         if: ${{ !inputs.paid_execute }}
         shell: bash
