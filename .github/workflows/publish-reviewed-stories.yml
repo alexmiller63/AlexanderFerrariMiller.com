@@ -1,0 +1,58 @@
+name: Publish Reviewed Star Almanack Stories
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'stories/**/*.md'
+      - 'tools/publish_stories.py'
+      - 'tools/fixed_object_stories.py'
+      - 'tools/story_audit.py'
+      - '.github/workflows/publish-reviewed-stories.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: publish-reviewed-stories-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Validate publisher
+        run: |
+          python3 -m py_compile tools/publish_stories.py tools/fixed_object_stories.py tools/story_audit.py
+          python3 tools/publish_stories.py --dry-run
+      - name: Render and save reviewed story pages
+        shell: bash
+        run: |
+          set -euo pipefail
+          branch="${GITHUB_REF_NAME}"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          for attempt in 1 2 3 4 5 6 7 8; do
+            git fetch origin "$branch"
+            git reset --hard "origin/$branch"
+            python3 tools/publish_stories.py
+            git add stories/
+            if git diff --cached --quiet; then
+              echo "No new rendered story pages to commit."
+              exit 0
+            fi
+            git commit -m "Publish reviewed Star Almanack story pages"
+            if git push origin "HEAD:$branch"; then
+              echo "Reviewed story pages committed successfully."
+              exit 0
+            fi
+            echo "Push raced with another update (attempt $attempt/8)."
+            sleep "$((attempt * 3))"
+          done
+          echo "Unable to save rendered pages after eight attempts."
+          exit 1
