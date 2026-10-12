@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - 'tools/luna_editorial_triage.py'
+      - 'tools/luna_prepare_editorial.py'
       - '.github/workflows/luna-unattended-editorial.yml'
       - 'research/luna-pilot-recovered/**'
 permissions:
@@ -26,6 +27,7 @@ jobs:
           python3 -m py_compile tools/luna_editorial_triage.py
           python3 tools/luna_publication_bridge.py
           python3 tools/luna_editorial_triage.py
+          python3 tools/luna_prepare_editorial.py
       - name: Preserve progress reports even on failure
         if: always()
         uses: actions/upload-artifact@v4
@@ -34,4 +36,5 @@ jobs:
           path: |
             generated/luna-editorial-triage.json
             generated/luna-publication-bridge.json
+            generated/luna-editorial/
           if-no-files-found: warn
