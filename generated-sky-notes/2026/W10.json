@@ -6,6 +6,21 @@
   "planetary_coordinate": "geocentric tropical ecliptic longitude; Monday 00:00 UTC",
   "fixed_sky": [
     {
+      "fixed_object_id": 200,
+      "type": "deep-sky",
+      "name": "NGC 2477"
+    },
+    {
+      "fixed_object_id": 202,
+      "type": "deep-sky",
+      "name": "NGC 2516"
+    },
+    {
+      "fixed_object_id": 201,
+      "type": "deep-sky",
+      "name": "NGC 2506"
+    },
+    {
       "fixed_object_id": 839,
       "type": "star",
       "name": "Naos",
@@ -16,6 +31,11 @@
       "type": "star",
       "name": "Gamma-2 Vel",
       "constellation": "Vel"
+    },
+    {
+      "fixed_object_id": 203,
+      "type": "deep-sky",
+      "name": "Collinder 176"
     },
     {
       "fixed_object_id": 204,
@@ -221,7 +241,7 @@
       "sky_separation_deg": 8.5
     }
   ],
-  "note": "ISO 2026-W10 runs from March 2 through March 8. Saturn and Neptune are separated by about 0.8° in geocentric ecliptic longitude at the Monday 00:00 UTC snapshot. Mercury and Venus are separated by about 3.0° in geocentric ecliptic longitude at the Monday 00:00 UTC snapshot.\n\n**Naked eye:** 🌕 Full Moon · Sap Moon — 11:37:54 UTC. Bright moonlight favors prominent stars and planets while reducing contrast on faint deep-sky objects. Use Naos, Gamma-2 Vel as the week’s fixed-sky framework.\n\n**Planets:** Moon: Naked eye; magnitude -12.3; direct motion; 97.4% illuminated. Monday 00:00 UTC snapshot. Opposition in ecliptic longitude Mar 03 11:38 UTC. Mercury: In solar glare; magnitude 2.6; retrograde motion; 7.9% illuminated. Monday 00:00 UTC snapshot. Solar conjunction in ecliptic longitude Mar 07 11:01 UTC. Venus: In solar glare; magnitude -3.9; direct motion; 97.5% illuminated. Monday 00:00 UTC snapshot. Conjunction with Saturn in ecliptic longitude Mar 08 13:39 UTC. Conjunction with Neptune in ecliptic longitude Mar 07 11:27 UTC. Mars: In solar glare; magnitude 1.1; direct motion; 99.5% illuminated. Monday 00:00 UTC snapshot. Ceres: Telescope; magnitude 9.1; direct motion; 98.5% illuminated. Monday 00:00 UTC snapshot. Jupiter: Naked eye; magnitude -2.4; retrograde motion; 99.4% illuminated. Monday 00:00 UTC snapshot. Saturn: Naked eye; magnitude 1.0; direct motion; 100.0% illuminated. Below the horizon at 21:00 local apparent solar time, 45°N. Monday 00:00 UTC snapshot. Conjunction with Venus in ecliptic longitude Mar 08 13:39 UTC. Uranus: Binoculars; magnitude 5.7; direct motion; 99.9% illuminated. Monday 00:00 UTC snapshot. Neptune: In solar glare; magnitude 7.8; direct motion; 100.0% illuminated. Monday 00:00 UTC snapshot. Conjunction with Venus in ecliptic longitude Mar 07 11:27 UTC. Pluto: Substantial telescope; magnitude 14.6; direct motion; 100.0% illuminated. Below the horizon at 21:00 local apparent solar time, 45°N. Monday 00:00 UTC snapshot.\n\n**Binoculars:** No fixed-sky Calendar object is classified for binocular observing this week.\n\n**Small telescope:** Concentrate on M48. Increase magnification only after the target and surrounding pattern are secure.\n\n**Substantial telescope:** No fixed-sky Calendar object is classified as requiring a substantial telescope this week.\n\n",
+  "note": "ISO 2026-W10 runs from March 2 through March 8. Saturn and Neptune are separated by about 0.8° in geocentric ecliptic longitude at the Monday 00:00 UTC snapshot. Mercury and Venus are separated by about 3.0° in geocentric ecliptic longitude at the Monday 00:00 UTC snapshot.\n\n**Naked eye:** 🌕 Full Moon · Sap Moon — 11:37:54 UTC. Bright moonlight favors prominent stars and planets while reducing contrast on faint deep-sky objects. Use Naos, Gamma-2 Vel as the week’s fixed-sky framework.\n\n**Planets:** Moon: Naked eye; magnitude -12.3; direct motion; 97.4% illuminated. Monday 00:00 UTC snapshot. Opposition in ecliptic longitude Mar 03 11:38 UTC. Mercury: In solar glare; magnitude 2.6; retrograde motion; 7.9% illuminated. Monday 00:00 UTC snapshot. Solar conjunction in ecliptic longitude Mar 07 11:01 UTC. Venus: In solar glare; magnitude -3.9; direct motion; 97.5% illuminated. Monday 00:00 UTC snapshot. Conjunction with Saturn in ecliptic longitude Mar 08 13:39 UTC. Conjunction with Neptune in ecliptic longitude Mar 07 11:27 UTC. Mars: In solar glare; magnitude 1.1; direct motion; 99.5% illuminated. Monday 00:00 UTC snapshot. Ceres: Telescope; magnitude 9.1; direct motion; 98.5% illuminated. Monday 00:00 UTC snapshot. Jupiter: Naked eye; magnitude -2.4; retrograde motion; 99.4% illuminated. Monday 00:00 UTC snapshot. Saturn: Naked eye; magnitude 1.0; direct motion; 100.0% illuminated. Below the horizon at 21:00 local apparent solar time, 45°N. Monday 00:00 UTC snapshot. Conjunction with Venus in ecliptic longitude Mar 08 13:39 UTC. Uranus: Binoculars; magnitude 5.7; direct motion; 99.9% illuminated. Monday 00:00 UTC snapshot. Neptune: In solar glare; magnitude 7.8; direct motion; 100.0% illuminated. Monday 00:00 UTC snapshot. Conjunction with Venus in ecliptic longitude Mar 07 11:27 UTC. Pluto: Substantial telescope; magnitude 14.6; direct motion; 100.0% illuminated. Below the horizon at 21:00 local apparent solar time, 45°N. Monday 00:00 UTC snapshot.\n\n**Binoculars:** No fixed-sky Calendar object is classified for binocular observing this week.\n\n**Small telescope:** NGC 2477: consult its dedicated finder and observing story for equipment guidance; NGC 2516: consult its dedicated finder and observing story for equipment guidance; NGC 2506: consult its dedicated finder and observing story for equipment guidance; Collinder 176: consult its dedicated finder and observing story for equipment guidance; M48: consult its dedicated finder and observing story for equipment guidance\n\n**Substantial telescope:** No fixed-sky Calendar object is classified as requiring a substantial telescope this week.\n\n",
   "descriptors": [
     {
       "schema_version": 1,
@@ -357,6 +377,51 @@
     },
     {
       "schema_version": 1,
+      "id": "200",
+      "type": "deep-sky-object",
+      "name": "NGC 2477",
+      "summary": "deep-sky object selected as a weekly fixed-sky observing target",
+      "representation": {
+        "machine": "./200.json",
+        "human_source": "summary",
+        "human": "/stories/baseline/200.html"
+      },
+      "catalog_name": "NGC 2477",
+      "object_type": "deep-sky object",
+      "source_label": "NGC 2477"
+    },
+    {
+      "schema_version": 1,
+      "id": "202",
+      "type": "deep-sky-object",
+      "name": "NGC 2516",
+      "summary": "deep-sky object selected as a weekly fixed-sky observing target",
+      "representation": {
+        "machine": "./202.json",
+        "human_source": "summary",
+        "human": "/stories/baseline/202.html"
+      },
+      "catalog_name": "NGC 2516",
+      "object_type": "deep-sky object",
+      "source_label": "NGC 2516"
+    },
+    {
+      "schema_version": 1,
+      "id": "201",
+      "type": "deep-sky-object",
+      "name": "NGC 2506",
+      "summary": "deep-sky object selected as a weekly fixed-sky observing target",
+      "representation": {
+        "machine": "./201.json",
+        "human_source": "summary",
+        "human": "/stories/baseline/201.html"
+      },
+      "catalog_name": "NGC 2506",
+      "object_type": "deep-sky object",
+      "source_label": "NGC 2506"
+    },
+    {
+      "schema_version": 1,
       "id": "839",
       "type": "star",
       "name": "Naos",
@@ -416,6 +481,21 @@
     },
     {
       "schema_version": 1,
+      "id": "203",
+      "type": "deep-sky-object",
+      "name": "Collinder 176",
+      "summary": "deep-sky object selected as a weekly fixed-sky observing target",
+      "representation": {
+        "machine": "./203.json",
+        "human_source": "summary",
+        "human": "/stories/baseline/203.html"
+      },
+      "catalog_name": "Collinder 176",
+      "object_type": "deep-sky object",
+      "source_label": "Collinder 176"
+    },
+    {
+      "schema_version": 1,
       "id": "204",
       "type": "deep-sky-object",
       "name": "M48",
@@ -465,26 +545,68 @@
     }
   ],
   "calendar_fixed_object_ids": [
+    200,
+    202,
+    201,
     839,
     843,
+    203,
     204
   ],
   "story_candidates": [
     {
+      "fixed_object_id": 200,
+      "collection": "baseline",
+      "hed": "Fixed object 200",
+      "dek": "Fixed object 200 is an observing target in Pup carried by the weekly Calendar.",
+      "body": "Why it is here: The Calendar selected Fixed object 200 as one of this week’s fixed-sky observing targets.\n\nHow to find it: Establish the preserved Pup constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.",
+      "url": "/stories/baseline/200.html",
+      "status": "pending"
+    },
+    {
+      "fixed_object_id": 202,
+      "collection": "baseline",
+      "hed": "Fixed object 202",
+      "dek": "Fixed object 202 is an observing target in Car carried by the weekly Calendar.",
+      "body": "Why it is here: The Calendar selected Fixed object 202 as one of this week’s fixed-sky observing targets.\n\nHow to find it: Establish the preserved Car constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.",
+      "url": "/stories/baseline/202.html",
+      "status": "pending"
+    },
+    {
+      "fixed_object_id": 201,
+      "collection": "baseline",
+      "hed": "Fixed object 201",
+      "dek": "Fixed object 201 is an observing target in Mon carried by the weekly Calendar.",
+      "body": "Why it is here: The Calendar selected Fixed object 201 as one of this week’s fixed-sky observing targets.\n\nHow to find it: Establish the preserved Mon constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.",
+      "url": "/stories/baseline/201.html",
+      "status": "pending"
+    },
+    {
       "fixed_object_id": 839,
       "collection": "baseline",
       "hed": "Naos",
-      "dek": "Naos is a stellar reference in Pup used by the weekly observing calendar.",
-      "body": "Why it is here: The Calendar selected Naos for this week’s fixed-sky observing sequence; its permanent object identity ties the weekly entry to the same star used by the finder.\n\nHow to find it: Establish the preserved Pup constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.",
-      "url": "/stories/baseline/839.html"
+      "dek": "Naos is a star in Pup; its declination determines which latitudes can observe it.",
+      "body": "Its catalogue position is approximately right ascension 8h 03m and declination -40.0°. These reference coordinates describe its sky location; they are not an observing time or a current altitude.\n\nAt the almanac’s default latitude of 45° N, this star rises and sets, reaching approximately 5° altitude at upper culmination. These are geometric calculations from declination, excluding refraction and local obstructions. Darkness and the time of culmination must still be checked for the observing date and your location.\n\nHow to find it: Establish the preserved Pup constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.\n\nSources: Star Almanack’s stored fixed-object and expanded Bayer catalogues; accepted constellation figures and guiding-star routes. Visibility limits are original geometric calculations from catalogue declination, not weekly predictions.",
+      "url": "/stories/baseline/839.html",
+      "status": "pending"
     },
     {
       "fixed_object_id": 843,
       "collection": "baseline",
       "hed": "Fixed object 843",
-      "dek": "Fixed object 843 is a stellar reference in Vel used by the weekly observing calendar.",
-      "body": "Why it is here: The Calendar selected Fixed object 843 for this week’s fixed-sky observing sequence; its permanent object identity ties the weekly entry to the same star used by the finder.\n\nHow to find it: Establish the preserved Vel constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.",
-      "url": "/stories/baseline/843.html"
+      "dek": "Fixed object 843 is a star in Vel; its declination determines which latitudes can observe it.",
+      "body": "Its catalogue position is approximately right ascension 8h 09m and declination -47.3°. These reference coordinates describe its sky location; they are not an observing time or a current altitude.\n\nAt the almanac’s default latitude of 45° N, this star does not rise above the geometric horizon. These are geometric calculations from declination, excluding refraction and local obstructions. Darkness and the time of culmination must still be checked for the observing date and your location.\n\nHow to find it: Establish the preserved Vel constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.\n\nSources: Star Almanack’s stored fixed-object and expanded Bayer catalogues; accepted constellation figures and guiding-star routes. Visibility limits are original geometric calculations from catalogue declination, not weekly predictions.",
+      "url": "/stories/baseline/843.html",
+      "status": "pending"
+    },
+    {
+      "fixed_object_id": 203,
+      "collection": "baseline",
+      "hed": "Collinder 176",
+      "dek": "Collinder 176 is an observing target in Pup carried by the weekly Calendar.",
+      "body": "Why it is here: The Calendar selected Collinder 176 as one of this week’s fixed-sky observing targets.\n\nHow to find it: Establish the preserved Pup constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.",
+      "url": "/stories/baseline/203.html",
+      "status": "pending"
     },
     {
       "fixed_object_id": 204,
@@ -492,27 +614,66 @@
       "hed": "M48",
       "dek": "M48 is an observing target in Hya carried by the weekly Calendar.",
       "body": "Why it is here: The Calendar selected M48 as one of this week’s fixed-sky observing targets.\n\nHow to find it: Establish the preserved Hya constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.",
-      "url": "/stories/baseline/204.html"
+      "url": "/stories/baseline/204.html",
+      "status": "pending"
     }
   ],
   "inline_stories": [],
   "linked_stories": [],
   "stories": [
     {
+      "fixed_object_id": 200,
+      "collection": "baseline",
+      "hed": "Fixed object 200",
+      "dek": "Fixed object 200 is an observing target in Pup carried by the weekly Calendar.",
+      "body": "Why it is here: The Calendar selected Fixed object 200 as one of this week’s fixed-sky observing targets.\n\nHow to find it: Establish the preserved Pup constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.",
+      "url": "/stories/baseline/200.html",
+      "status": "pending"
+    },
+    {
+      "fixed_object_id": 202,
+      "collection": "baseline",
+      "hed": "Fixed object 202",
+      "dek": "Fixed object 202 is an observing target in Car carried by the weekly Calendar.",
+      "body": "Why it is here: The Calendar selected Fixed object 202 as one of this week’s fixed-sky observing targets.\n\nHow to find it: Establish the preserved Car constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.",
+      "url": "/stories/baseline/202.html",
+      "status": "pending"
+    },
+    {
+      "fixed_object_id": 201,
+      "collection": "baseline",
+      "hed": "Fixed object 201",
+      "dek": "Fixed object 201 is an observing target in Mon carried by the weekly Calendar.",
+      "body": "Why it is here: The Calendar selected Fixed object 201 as one of this week’s fixed-sky observing targets.\n\nHow to find it: Establish the preserved Mon constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.",
+      "url": "/stories/baseline/201.html",
+      "status": "pending"
+    },
+    {
       "fixed_object_id": 839,
       "collection": "baseline",
       "hed": "Naos",
-      "dek": "Naos is a stellar reference in Pup used by the weekly observing calendar.",
-      "body": "Why it is here: The Calendar selected Naos for this week’s fixed-sky observing sequence; its permanent object identity ties the weekly entry to the same star used by the finder.\n\nHow to find it: Establish the preserved Pup constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.",
-      "url": "/stories/baseline/839.html"
+      "dek": "Naos is a star in Pup; its declination determines which latitudes can observe it.",
+      "body": "Its catalogue position is approximately right ascension 8h 03m and declination -40.0°. These reference coordinates describe its sky location; they are not an observing time or a current altitude.\n\nAt the almanac’s default latitude of 45° N, this star rises and sets, reaching approximately 5° altitude at upper culmination. These are geometric calculations from declination, excluding refraction and local obstructions. Darkness and the time of culmination must still be checked for the observing date and your location.\n\nHow to find it: Establish the preserved Pup constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.\n\nSources: Star Almanack’s stored fixed-object and expanded Bayer catalogues; accepted constellation figures and guiding-star routes. Visibility limits are original geometric calculations from catalogue declination, not weekly predictions.",
+      "url": "/stories/baseline/839.html",
+      "status": "pending"
     },
     {
       "fixed_object_id": 843,
       "collection": "baseline",
       "hed": "Fixed object 843",
-      "dek": "Fixed object 843 is a stellar reference in Vel used by the weekly observing calendar.",
-      "body": "Why it is here: The Calendar selected Fixed object 843 for this week’s fixed-sky observing sequence; its permanent object identity ties the weekly entry to the same star used by the finder.\n\nHow to find it: Establish the preserved Vel constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.",
-      "url": "/stories/baseline/843.html"
+      "dek": "Fixed object 843 is a star in Vel; its declination determines which latitudes can observe it.",
+      "body": "Its catalogue position is approximately right ascension 8h 09m and declination -47.3°. These reference coordinates describe its sky location; they are not an observing time or a current altitude.\n\nAt the almanac’s default latitude of 45° N, this star does not rise above the geometric horizon. These are geometric calculations from declination, excluding refraction and local obstructions. Darkness and the time of culmination must still be checked for the observing date and your location.\n\nHow to find it: Establish the preserved Vel constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.\n\nSources: Star Almanack’s stored fixed-object and expanded Bayer catalogues; accepted constellation figures and guiding-star routes. Visibility limits are original geometric calculations from catalogue declination, not weekly predictions.",
+      "url": "/stories/baseline/843.html",
+      "status": "pending"
+    },
+    {
+      "fixed_object_id": 203,
+      "collection": "baseline",
+      "hed": "Collinder 176",
+      "dek": "Collinder 176 is an observing target in Pup carried by the weekly Calendar.",
+      "body": "Why it is here: The Calendar selected Collinder 176 as one of this week’s fixed-sky observing targets.\n\nHow to find it: Establish the preserved Pup constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.",
+      "url": "/stories/baseline/203.html",
+      "status": "pending"
     },
     {
       "fixed_object_id": 204,
@@ -520,9 +681,131 @@
       "hed": "M48",
       "dek": "M48 is an observing target in Hya carried by the weekly Calendar.",
       "body": "Why it is here: The Calendar selected M48 as one of this week’s fixed-sky observing targets.\n\nHow to find it: Establish the preserved Hya constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.",
-      "url": "/stories/baseline/204.html"
+      "url": "/stories/baseline/204.html",
+      "status": "pending"
     }
   ],
+  "story_completion": {
+    "week": "2026-W10",
+    "total": 7,
+    "complete": 0,
+    "pending": [
+      {
+        "fixed_object_id": 200,
+        "catalog_target_key": null,
+        "label": "C71 / NGC 2477",
+        "status": "pending",
+        "stories": [],
+        "reason": "researched story needed"
+      },
+      {
+        "fixed_object_id": 202,
+        "catalog_target_key": null,
+        "label": "C96 / NGC 2516",
+        "status": "pending",
+        "stories": [],
+        "reason": "researched story needed"
+      },
+      {
+        "fixed_object_id": 201,
+        "catalog_target_key": null,
+        "label": "C54 / NGC 2506",
+        "status": "pending",
+        "stories": [],
+        "reason": "researched story needed"
+      },
+      {
+        "fixed_object_id": 839,
+        "catalog_target_key": null,
+        "label": "Naos (ζ Pup)",
+        "status": "pending",
+        "stories": [],
+        "reason": "researched story needed"
+      },
+      {
+        "fixed_object_id": 843,
+        "catalog_target_key": null,
+        "label": "Gam-2",
+        "status": "pending",
+        "stories": [],
+        "reason": "researched story needed"
+      },
+      {
+        "fixed_object_id": 203,
+        "catalog_target_key": null,
+        "label": "Finest NGC 36 / NGC 2539 · Collinder 176",
+        "status": "pending",
+        "stories": [],
+        "reason": "researched story needed"
+      },
+      {
+        "fixed_object_id": 204,
+        "catalog_target_key": null,
+        "label": "M48",
+        "status": "pending",
+        "stories": [],
+        "reason": "researched story needed"
+      }
+    ],
+    "objects": [
+      {
+        "fixed_object_id": 200,
+        "catalog_target_key": null,
+        "label": "C71 / NGC 2477",
+        "status": "pending",
+        "stories": [],
+        "reason": "researched story needed"
+      },
+      {
+        "fixed_object_id": 202,
+        "catalog_target_key": null,
+        "label": "C96 / NGC 2516",
+        "status": "pending",
+        "stories": [],
+        "reason": "researched story needed"
+      },
+      {
+        "fixed_object_id": 201,
+        "catalog_target_key": null,
+        "label": "C54 / NGC 2506",
+        "status": "pending",
+        "stories": [],
+        "reason": "researched story needed"
+      },
+      {
+        "fixed_object_id": 839,
+        "catalog_target_key": null,
+        "label": "Naos (ζ Pup)",
+        "status": "pending",
+        "stories": [],
+        "reason": "researched story needed"
+      },
+      {
+        "fixed_object_id": 843,
+        "catalog_target_key": null,
+        "label": "Gam-2",
+        "status": "pending",
+        "stories": [],
+        "reason": "researched story needed"
+      },
+      {
+        "fixed_object_id": 203,
+        "catalog_target_key": null,
+        "label": "Finest NGC 36 / NGC 2539 · Collinder 176",
+        "status": "pending",
+        "stories": [],
+        "reason": "researched story needed"
+      },
+      {
+        "fixed_object_id": 204,
+        "catalog_target_key": null,
+        "label": "M48",
+        "status": "pending",
+        "stories": [],
+        "reason": "researched story needed"
+      }
+    ]
+  },
   "planet_finder_artworks": [
     {
       "schema_version": 1,
