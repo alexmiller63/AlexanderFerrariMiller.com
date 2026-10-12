@@ -76,6 +76,28 @@ jobs:
               assert (Path(directory) / "123.research.stage.txt").exists()
               print("PASS: stage persisted; resume reused saved output without API call")
           PY
+      - name: Test evidence preservation and recovery (free)
+        run: |
+          python3 - <<'PY'
+          import json
+          import tempfile
+          from pathlib import Path
+          from tools.luna_story_pipeline import save_or_recover_evidence
+          with tempfile.TemporaryDirectory() as folder:
+              target = Path(folder) / "sample.evidence.json"
+              ledger = Path(folder) / "ledger.json"
+              calls = []
+              original = [{"url": "https://example.org/star", "excerpt": "Original observed evidence"}]
+              changed = [{"url": "https://example.org/star", "excerpt": "Changed upstream page"}]
+              def persist(path, ledger_file):
+                  calls.append(path.read_bytes())
+              first = save_or_recover_evidence(target, original, ledger, persist)
+              second = save_or_recover_evidence(target, changed, ledger, persist)
+              assert first == second == original
+              assert len(calls) == 1
+              assert json.loads(target.read_text()) == original
+              print("PASS: saved evidence remains identical after restart; no second push")
+          PY
       - name: Test real Git checkpoint push (free)
         if: ${{ !inputs.paid_execute }}
         shell: bash
