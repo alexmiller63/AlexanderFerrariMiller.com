@@ -105,7 +105,10 @@ jobs:
               mkdir -p "$(dirname "$dest")"
               cp "$source" "$dest"
             done < <(find "$snapshot" -type f -print0)
-            git add generated/luna-pilot/ generated/luna-pilot-recovery/
+            git add -A -- generated/luna-pilot/
+            if [[ -d generated/luna-pilot-recovery ]]; then
+              git add -A -- generated/luna-pilot-recovery/
+            fi
             if git diff --cached --quiet; then
               echo "All pilot outputs are already saved; no changes needed."
               exit 0
