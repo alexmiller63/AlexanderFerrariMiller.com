@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "id": "92",
+  "type": "star",
+  "name": "Vega",
+  "summary": "bright star in Lyra used as a fixed-sky reference",
+  "representation": {
+    "machine": "./92.json",
+    "human_source": "summary",
+    "human": "/stories/baseline/92.html"
+  },
+  "constellation_abbreviation": "Lyr",
+  "constellation": "Lyra",
+  "position": {
+    "ra_deg": 279.2346,
+    "dec_deg": 38.783692,
+    "ecliptic_longitude_deg": 285.316169,
+    "ecliptic_latitude_deg": 61.732882
+  },
+  "representative_visual_magnitude": 0.03,
+  "guiding_asterisms": [
+    {
+      "id": "1378",
+      "geometry_key": "asterism-summer-triangle",
+      "name": "Summer Triangle",
+      "relationship": "visual-member",
+      "provenance": {
+        "source": "NASA",
+        "source_url": "https://science.nasa.gov/solar-system/what-are-asterisms/",
+        "source_role": "verification",
+        "supports": "visual-membership"
+      }
+    }
+  ]
+}
