@@ -7,785 +7,1364 @@ permissions:
   contents: write
   actions: write
 
-# Each week is a separate reusable workflow job with its own 6-hour limit.
-# Jobs are chained so a failed week stops the series; completed weeks stay saved.
+# Each week has a separate orchestration job. Each job dispatches the current
+# main-branch Weekly Build All workflow rather than pinning a reusable workflow
+# to the SHA of the original continuous run.
+# The child must finish before the next week starts. Review and edit
+# weekly-build-all.yml on main to change the NEXT dispatched week's behavior.
+concurrency:
+  group: continuous-build-all-2026
+  cancel-in-progress: false
+
 jobs:
   week_02:
     name: 2026 Week 02
-    uses: ./.github/workflows/weekly-build-all.yml
-    with:
-      start_year: '2026'
-      start_week: '2'
-      end_year: '2026'
-      end_week: '2'
-      resume_stage: Scaffold
-      resume_completed_weeks: true
-      candidate_layouts: '5'
-      max_node_candidates: '200'
-      max_search_seconds: '360'
-      diagnostic_level: '1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch current approved weekly workflow and wait
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "Starting week 02 using current main-branch weekly-build-all.yml."
+          echo "The orchestration job does not pin the reusable workflow to its original SHA."
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
+            -f start_year=2026 -f start_week=2 \
+            -f end_year=2026 -f end_week=2 \
+            -f resume_stage=Scaffold \
+            -f resume_completed_weeks=true \
+            -f candidate_layouts=5 \
+            -f max_node_candidates=200 \
+            -f max_search_seconds=360 \
+            -f diagnostic_level=1
+          echo "Week 02 finished. Cooldown for independent deployment activity."
+          sleep 90
   week_03:
     name: 2026 Week 03
     needs: week_02
-    uses: ./.github/workflows/weekly-build-all.yml
-    with:
-      start_year: '2026'
-      start_week: '3'
-      end_year: '2026'
-      end_week: '3'
-      resume_stage: Scaffold
-      resume_completed_weeks: true
-      candidate_layouts: '5'
-      max_node_candidates: '200'
-      max_search_seconds: '360'
-      diagnostic_level: '1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch current approved weekly workflow and wait
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "Starting week 03 using current main-branch weekly-build-all.yml."
+          echo "The orchestration job does not pin the reusable workflow to its original SHA."
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
+            -f start_year=2026 -f start_week=3 \
+            -f end_year=2026 -f end_week=3 \
+            -f resume_stage=Scaffold \
+            -f resume_completed_weeks=true \
+            -f candidate_layouts=5 \
+            -f max_node_candidates=200 \
+            -f max_search_seconds=360 \
+            -f diagnostic_level=1
+          echo "Week 03 finished. Cooldown for independent deployment activity."
+          sleep 90
   week_04:
     name: 2026 Week 04
     needs: week_03
-    uses: ./.github/workflows/weekly-build-all.yml
-    with:
-      start_year: '2026'
-      start_week: '4'
-      end_year: '2026'
-      end_week: '4'
-      resume_stage: Scaffold
-      resume_completed_weeks: true
-      candidate_layouts: '5'
-      max_node_candidates: '200'
-      max_search_seconds: '360'
-      diagnostic_level: '1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch current approved weekly workflow and wait
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "Starting week 04 using current main-branch weekly-build-all.yml."
+          echo "The orchestration job does not pin the reusable workflow to its original SHA."
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
+            -f start_year=2026 -f start_week=4 \
+            -f end_year=2026 -f end_week=4 \
+            -f resume_stage=Scaffold \
+            -f resume_completed_weeks=true \
+            -f candidate_layouts=5 \
+            -f max_node_candidates=200 \
+            -f max_search_seconds=360 \
+            -f diagnostic_level=1
+          echo "Week 04 finished. Cooldown for independent deployment activity."
+          sleep 90
   week_05:
     name: 2026 Week 05
     needs: week_04
-    uses: ./.github/workflows/weekly-build-all.yml
-    with:
-      start_year: '2026'
-      start_week: '5'
-      end_year: '2026'
-      end_week: '5'
-      resume_stage: Scaffold
-      resume_completed_weeks: true
-      candidate_layouts: '5'
-      max_node_candidates: '200'
-      max_search_seconds: '360'
-      diagnostic_level: '1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch current approved weekly workflow and wait
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "Starting week 05 using current main-branch weekly-build-all.yml."
+          echo "The orchestration job does not pin the reusable workflow to its original SHA."
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
+            -f start_year=2026 -f start_week=5 \
+            -f end_year=2026 -f end_week=5 \
+            -f resume_stage=Scaffold \
+            -f resume_completed_weeks=true \
+            -f candidate_layouts=5 \
+            -f max_node_candidates=200 \
+            -f max_search_seconds=360 \
+            -f diagnostic_level=1
+          echo "Week 05 finished. Cooldown for independent deployment activity."
+          sleep 90
   week_06:
     name: 2026 Week 06
     needs: week_05
-    uses: ./.github/workflows/weekly-build-all.yml
-    with:
-      start_year: '2026'
-      start_week: '6'
-      end_year: '2026'
-      end_week: '6'
-      resume_stage: Scaffold
-      resume_completed_weeks: true
-      candidate_layouts: '5'
-      max_node_candidates: '200'
-      max_search_seconds: '360'
-      diagnostic_level: '1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch current approved weekly workflow and wait
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "Starting week 06 using current main-branch weekly-build-all.yml."
+          echo "The orchestration job does not pin the reusable workflow to its original SHA."
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
+            -f start_year=2026 -f start_week=6 \
+            -f end_year=2026 -f end_week=6 \
+            -f resume_stage=Scaffold \
+            -f resume_completed_weeks=true \
+            -f candidate_layouts=5 \
+            -f max_node_candidates=200 \
+            -f max_search_seconds=360 \
+            -f diagnostic_level=1
+          echo "Week 06 finished. Cooldown for independent deployment activity."
+          sleep 90
   week_07:
     name: 2026 Week 07
     needs: week_06
-    uses: ./.github/workflows/weekly-build-all.yml
-    with:
-      start_year: '2026'
-      start_week: '7'
-      end_year: '2026'
-      end_week: '7'
-      resume_stage: Scaffold
-      resume_completed_weeks: true
-      candidate_layouts: '5'
-      max_node_candidates: '200'
-      max_search_seconds: '360'
-      diagnostic_level: '1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch current approved weekly workflow and wait
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "Starting week 07 using current main-branch weekly-build-all.yml."
+          echo "The orchestration job does not pin the reusable workflow to its original SHA."
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
+            -f start_year=2026 -f start_week=7 \
+            -f end_year=2026 -f end_week=7 \
+            -f resume_stage=Scaffold \
+            -f resume_completed_weeks=true \
+            -f candidate_layouts=5 \
+            -f max_node_candidates=200 \
+            -f max_search_seconds=360 \
+            -f diagnostic_level=1
+          echo "Week 07 finished. Cooldown for independent deployment activity."
+          sleep 90
   week_08:
     name: 2026 Week 08
     needs: week_07
-    uses: ./.github/workflows/weekly-build-all.yml
-    with:
-      start_year: '2026'
-      start_week: '8'
-      end_year: '2026'
-      end_week: '8'
-      resume_stage: Scaffold
-      resume_completed_weeks: true
-      candidate_layouts: '5'
-      max_node_candidates: '200'
-      max_search_seconds: '360'
-      diagnostic_level: '1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch current approved weekly workflow and wait
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "Starting week 08 using current main-branch weekly-build-all.yml."
+          echo "The orchestration job does not pin the reusable workflow to its original SHA."
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
+            -f start_year=2026 -f start_week=8 \
+            -f end_year=2026 -f end_week=8 \
+            -f resume_stage=Scaffold \
+            -f resume_completed_weeks=true \
+            -f candidate_layouts=5 \
+            -f max_node_candidates=200 \
+            -f max_search_seconds=360 \
+            -f diagnostic_level=1
+          echo "Week 08 finished. Cooldown for independent deployment activity."
+          sleep 90
   week_09:
     name: 2026 Week 09
     needs: week_08
-    uses: ./.github/workflows/weekly-build-all.yml
-    with:
-      start_year: '2026'
-      start_week: '9'
-      end_year: '2026'
-      end_week: '9'
-      resume_stage: Scaffold
-      resume_completed_weeks: true
-      candidate_layouts: '5'
-      max_node_candidates: '200'
-      max_search_seconds: '360'
-      diagnostic_level: '1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch current approved weekly workflow and wait
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "Starting week 09 using current main-branch weekly-build-all.yml."
+          echo "The orchestration job does not pin the reusable workflow to its original SHA."
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
+            -f start_year=2026 -f start_week=9 \
+            -f end_year=2026 -f end_week=9 \
+            -f resume_stage=Scaffold \
+            -f resume_completed_weeks=true \
+            -f candidate_layouts=5 \
+            -f max_node_candidates=200 \
+            -f max_search_seconds=360 \
+            -f diagnostic_level=1
+          echo "Week 09 finished. Cooldown for independent deployment activity."
+          sleep 90
   week_10:
     name: 2026 Week 10
     needs: week_09
-    uses: ./.github/workflows/weekly-build-all.yml
-    with:
-      start_year: '2026'
-      start_week: '10'
-      end_year: '2026'
-      end_week: '10'
-      resume_stage: Scaffold
-      resume_completed_weeks: true
-      candidate_layouts: '5'
-      max_node_candidates: '200'
-      max_search_seconds: '360'
-      diagnostic_level: '1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch current approved weekly workflow and wait
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "Starting week 10 using current main-branch weekly-build-all.yml."
+          echo "The orchestration job does not pin the reusable workflow to its original SHA."
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
+            -f start_year=2026 -f start_week=10 \
+            -f end_year=2026 -f end_week=10 \
+            -f resume_stage=Scaffold \
+            -f resume_completed_weeks=true \
+            -f candidate_layouts=5 \
+            -f max_node_candidates=200 \
+            -f max_search_seconds=360 \
+            -f diagnostic_level=1
+          echo "Week 10 finished. Cooldown for independent deployment activity."
+          sleep 90
   week_11:
     name: 2026 Week 11
     needs: week_10
-    uses: ./.github/workflows/weekly-build-all.yml
-    with:
-      start_year: '2026'
-      start_week: '11'
-      end_year: '2026'
-      end_week: '11'
-      resume_stage: Scaffold
-      resume_completed_weeks: true
-      candidate_layouts: '5'
-      max_node_candidates: '200'
-      max_search_seconds: '360'
-      diagnostic_level: '1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch current approved weekly workflow and wait
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "Starting week 11 using current main-branch weekly-build-all.yml."
+          echo "The orchestration job does not pin the reusable workflow to its original SHA."
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
+            -f start_year=2026 -f start_week=11 \
+            -f end_year=2026 -f end_week=11 \
+            -f resume_stage=Scaffold \
+            -f resume_completed_weeks=true \
+            -f candidate_layouts=5 \
+            -f max_node_candidates=200 \
+            -f max_search_seconds=360 \
+            -f diagnostic_level=1
+          echo "Week 11 finished. Cooldown for independent deployment activity."
+          sleep 90
   week_12:
     name: 2026 Week 12
     needs: week_11
-    uses: ./.github/workflows/weekly-build-all.yml
-    with:
-      start_year: '2026'
-      start_week: '12'
-      end_year: '2026'
-      end_week: '12'
-      resume_stage: Scaffold
-      resume_completed_weeks: true
-      candidate_layouts: '5'
-      max_node_candidates: '200'
-      max_search_seconds: '360'
-      diagnostic_level: '1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch current approved weekly workflow and wait
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "Starting week 12 using current main-branch weekly-build-all.yml."
+          echo "The orchestration job does not pin the reusable workflow to its original SHA."
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
+            -f start_year=2026 -f start_week=12 \
+            -f end_year=2026 -f end_week=12 \
+            -f resume_stage=Scaffold \
+            -f resume_completed_weeks=true \
+            -f candidate_layouts=5 \
+            -f max_node_candidates=200 \
+            -f max_search_seconds=360 \
+            -f diagnostic_level=1
+          echo "Week 12 finished. Cooldown for independent deployment activity."
+          sleep 90
   week_13:
     name: 2026 Week 13
     needs: week_12
-    uses: ./.github/workflows/weekly-build-all.yml
-    with:
-      start_year: '2026'
-      start_week: '13'
-      end_year: '2026'
-      end_week: '13'
-      resume_stage: Scaffold
-      resume_completed_weeks: true
-      candidate_layouts: '5'
-      max_node_candidates: '200'
-      max_search_seconds: '360'
-      diagnostic_level: '1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch current approved weekly workflow and wait
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "Starting week 13 using current main-branch weekly-build-all.yml."
+          echo "The orchestration job does not pin the reusable workflow to its original SHA."
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
+            -f start_year=2026 -f start_week=13 \
+            -f end_year=2026 -f end_week=13 \
+            -f resume_stage=Scaffold \
+            -f resume_completed_weeks=true \
+            -f candidate_layouts=5 \
+            -f max_node_candidates=200 \
+            -f max_search_seconds=360 \
+            -f diagnostic_level=1
+          echo "Week 13 finished. Cooldown for independent deployment activity."
+          sleep 90
   week_14:
     name: 2026 Week 14
     needs: week_13
-    uses: ./.github/workflows/weekly-build-all.yml
-    with:
-      start_year: '2026'
-      start_week: '14'
-      end_year: '2026'
-      end_week: '14'
-      resume_stage: Scaffold
-      resume_completed_weeks: true
-      candidate_layouts: '5'
-      max_node_candidates: '200'
-      max_search_seconds: '360'
-      diagnostic_level: '1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch current approved weekly workflow and wait
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "Starting week 14 using current main-branch weekly-build-all.yml."
+          echo "The orchestration job does not pin the reusable workflow to its original SHA."
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
+            -f start_year=2026 -f start_week=14 \
+            -f end_year=2026 -f end_week=14 \
+            -f resume_stage=Scaffold \
+            -f resume_completed_weeks=true \
+            -f candidate_layouts=5 \
+            -f max_node_candidates=200 \
+            -f max_search_seconds=360 \
+            -f diagnostic_level=1
+          echo "Week 14 finished. Cooldown for independent deployment activity."
+          sleep 90
   week_15:
     name: 2026 Week 15
     needs: week_14
-    uses: ./.github/workflows/weekly-build-all.yml
-    with:
-      start_year: '2026'
-      start_week: '15'
-      end_year: '2026'
-      end_week: '15'
-      resume_stage: Scaffold
-      resume_completed_weeks: true
-      candidate_layouts: '5'
-      max_node_candidates: '200'
-      max_search_seconds: '360'
-      diagnostic_level: '1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch current approved weekly workflow and wait
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "Starting week 15 using current main-branch weekly-build-all.yml."
+          echo "The orchestration job does not pin the reusable workflow to its original SHA."
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
+            -f start_year=2026 -f start_week=15 \
+            -f end_year=2026 -f end_week=15 \
+            -f resume_stage=Scaffold \
+            -f resume_completed_weeks=true \
+            -f candidate_layouts=5 \
+            -f max_node_candidates=200 \
+            -f max_search_seconds=360 \
+            -f diagnostic_level=1
+          echo "Week 15 finished. Cooldown for independent deployment activity."
+          sleep 90
   week_16:
     name: 2026 Week 16
     needs: week_15
-    uses: ./.github/workflows/weekly-build-all.yml
-    with:
-      start_year: '2026'
-      start_week: '16'
-      end_year: '2026'
-      end_week: '16'
-      resume_stage: Scaffold
-      resume_completed_weeks: true
-      candidate_layouts: '5'
-      max_node_candidates: '200'
-      max_search_seconds: '360'
-      diagnostic_level: '1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch current approved weekly workflow and wait
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "Starting week 16 using current main-branch weekly-build-all.yml."
+          echo "The orchestration job does not pin the reusable workflow to its original SHA."
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
+            -f start_year=2026 -f start_week=16 \
+            -f end_year=2026 -f end_week=16 \
+            -f resume_stage=Scaffold \
+            -f resume_completed_weeks=true \
+            -f candidate_layouts=5 \
+            -f max_node_candidates=200 \
+            -f max_search_seconds=360 \
+            -f diagnostic_level=1
+          echo "Week 16 finished. Cooldown for independent deployment activity."
+          sleep 90
   week_17:
     name: 2026 Week 17
     needs: week_16
-    uses: ./.github/workflows/weekly-build-all.yml
-    with:
-      start_year: '2026'
-      start_week: '17'
-      end_year: '2026'
-      end_week: '17'
-      resume_stage: Scaffold
-      resume_completed_weeks: true
-      candidate_layouts: '5'
-      max_node_candidates: '200'
-      max_search_seconds: '360'
-      diagnostic_level: '1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch current approved weekly workflow and wait
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "Starting week 17 using current main-branch weekly-build-all.yml."
+          echo "The orchestration job does not pin the reusable workflow to its original SHA."
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
+            -f start_year=2026 -f start_week=17 \
+            -f end_year=2026 -f end_week=17 \
+            -f resume_stage=Scaffold \
+            -f resume_completed_weeks=true \
+            -f candidate_layouts=5 \
+            -f max_node_candidates=200 \
+            -f max_search_seconds=360 \
+            -f diagnostic_level=1
+          echo "Week 17 finished. Cooldown for independent deployment activity."
+          sleep 90
   week_18:
     name: 2026 Week 18
     needs: week_17
-    uses: ./.github/workflows/weekly-build-all.yml
-    with:
-      start_year: '2026'
-      start_week: '18'
-      end_year: '2026'
-      end_week: '18'
-      resume_stage: Scaffold
-      resume_completed_weeks: true
-      candidate_layouts: '5'
-      max_node_candidates: '200'
-      max_search_seconds: '360'
-      diagnostic_level: '1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch current approved weekly workflow and wait
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "Starting week 18 using current main-branch weekly-build-all.yml."
+          echo "The orchestration job does not pin the reusable workflow to its original SHA."
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
+            -f start_year=2026 -f start_week=18 \
+            -f end_year=2026 -f end_week=18 \
+            -f resume_stage=Scaffold \
+            -f resume_completed_weeks=true \
+            -f candidate_layouts=5 \
+            -f max_node_candidates=200 \
+            -f max_search_seconds=360 \
+            -f diagnostic_level=1
+          echo "Week 18 finished. Cooldown for independent deployment activity."
+          sleep 90
   week_19:
     name: 2026 Week 19
     needs: week_18
-    uses: ./.github/workflows/weekly-build-all.yml
-    with:
-      start_year: '2026'
-      start_week: '19'
-      end_year: '2026'
-      end_week: '19'
-      resume_stage: Scaffold
-      resume_completed_weeks: true
-      candidate_layouts: '5'
-      max_node_candidates: '200'
-      max_search_seconds: '360'
-      diagnostic_level: '1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch current approved weekly workflow and wait
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "Starting week 19 using current main-branch weekly-build-all.yml."
+          echo "The orchestration job does not pin the reusable workflow to its original SHA."
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
+            -f start_year=2026 -f start_week=19 \
+            -f end_year=2026 -f end_week=19 \
+            -f resume_stage=Scaffold \
+            -f resume_completed_weeks=true \
+            -f candidate_layouts=5 \
+            -f max_node_candidates=200 \
+            -f max_search_seconds=360 \
+            -f diagnostic_level=1
+          echo "Week 19 finished. Cooldown for independent deployment activity."
+          sleep 90
   week_20:
     name: 2026 Week 20
     needs: week_19
-    uses: ./.github/workflows/weekly-build-all.yml
-    with:
-      start_year: '2026'
-      start_week: '20'
-      end_year: '2026'
-      end_week: '20'
-      resume_stage: Scaffold
-      resume_completed_weeks: true
-      candidate_layouts: '5'
-      max_node_candidates: '200'
-      max_search_seconds: '360'
-      diagnostic_level: '1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch current approved weekly workflow and wait
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "Starting week 20 using current main-branch weekly-build-all.yml."
+          echo "The orchestration job does not pin the reusable workflow to its original SHA."
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
+            -f start_year=2026 -f start_week=20 \
+            -f end_year=2026 -f end_week=20 \
+            -f resume_stage=Scaffold \
+            -f resume_completed_weeks=true \
+            -f candidate_layouts=5 \
+            -f max_node_candidates=200 \
+            -f max_search_seconds=360 \
+            -f diagnostic_level=1
+          echo "Week 20 finished. Cooldown for independent deployment activity."
+          sleep 90
   week_21:
     name: 2026 Week 21
     needs: week_20
-    uses: ./.github/workflows/weekly-build-all.yml
-    with:
-      start_year: '2026'
-      start_week: '21'
-      end_year: '2026'
-      end_week: '21'
-      resume_stage: Scaffold
-      resume_completed_weeks: true
-      candidate_layouts: '5'
-      max_node_candidates: '200'
-      max_search_seconds: '360'
-      diagnostic_level: '1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch current approved weekly workflow and wait
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "Starting week 21 using current main-branch weekly-build-all.yml."
+          echo "The orchestration job does not pin the reusable workflow to its original SHA."
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
+            -f start_year=2026 -f start_week=21 \
+            -f end_year=2026 -f end_week=21 \
+            -f resume_stage=Scaffold \
+            -f resume_completed_weeks=true \
+            -f candidate_layouts=5 \
+            -f max_node_candidates=200 \
+            -f max_search_seconds=360 \
+            -f diagnostic_level=1
+          echo "Week 21 finished. Cooldown for independent deployment activity."
+          sleep 90
   week_22:
     name: 2026 Week 22
     needs: week_21
-    uses: ./.github/workflows/weekly-build-all.yml
-    with:
-      start_year: '2026'
-      start_week: '22'
-      end_year: '2026'
-      end_week: '22'
-      resume_stage: Scaffold
-      resume_completed_weeks: true
-      candidate_layouts: '5'
-      max_node_candidates: '200'
-      max_search_seconds: '360'
-      diagnostic_level: '1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch current approved weekly workflow and wait
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "Starting week 22 using current main-branch weekly-build-all.yml."
+          echo "The orchestration job does not pin the reusable workflow to its original SHA."
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
+            -f start_year=2026 -f start_week=22 \
+            -f end_year=2026 -f end_week=22 \
+            -f resume_stage=Scaffold \
+            -f resume_completed_weeks=true \
+            -f candidate_layouts=5 \
+            -f max_node_candidates=200 \
+            -f max_search_seconds=360 \
+            -f diagnostic_level=1
+          echo "Week 22 finished. Cooldown for independent deployment activity."
+          sleep 90
   week_23:
     name: 2026 Week 23
     needs: week_22
-    uses: ./.github/workflows/weekly-build-all.yml
-    with:
-      start_year: '2026'
-      start_week: '23'
-      end_year: '2026'
-      end_week: '23'
-      resume_stage: Scaffold
-      resume_completed_weeks: true
-      candidate_layouts: '5'
-      max_node_candidates: '200'
-      max_search_seconds: '360'
-      diagnostic_level: '1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch current approved weekly workflow and wait
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "Starting week 23 using current main-branch weekly-build-all.yml."
+          echo "The orchestration job does not pin the reusable workflow to its original SHA."
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
+            -f start_year=2026 -f start_week=23 \
+            -f end_year=2026 -f end_week=23 \
+            -f resume_stage=Scaffold \
+            -f resume_completed_weeks=true \
+            -f candidate_layouts=5 \
+            -f max_node_candidates=200 \
+            -f max_search_seconds=360 \
+            -f diagnostic_level=1
+          echo "Week 23 finished. Cooldown for independent deployment activity."
+          sleep 90
   week_24:
     name: 2026 Week 24
     needs: week_23
-    uses: ./.github/workflows/weekly-build-all.yml
-    with:
-      start_year: '2026'
-      start_week: '24'
-      end_year: '2026'
-      end_week: '24'
-      resume_stage: Scaffold
-      resume_completed_weeks: true
-      candidate_layouts: '5'
-      max_node_candidates: '200'
-      max_search_seconds: '360'
-      diagnostic_level: '1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch current approved weekly workflow and wait
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "Starting week 24 using current main-branch weekly-build-all.yml."
+          echo "The orchestration job does not pin the reusable workflow to its original SHA."
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
+            -f start_year=2026 -f start_week=24 \
+            -f end_year=2026 -f end_week=24 \
+            -f resume_stage=Scaffold \
+            -f resume_completed_weeks=true \
+            -f candidate_layouts=5 \
+            -f max_node_candidates=200 \
+            -f max_search_seconds=360 \
+            -f diagnostic_level=1
+          echo "Week 24 finished. Cooldown for independent deployment activity."
+          sleep 90
   week_25:
     name: 2026 Week 25
     needs: week_24
-    uses: ./.github/workflows/weekly-build-all.yml
-    with:
-      start_year: '2026'
-      start_week: '25'
-      end_year: '2026'
-      end_week: '25'
-      resume_stage: Scaffold
-      resume_completed_weeks: true
-      candidate_layouts: '5'
-      max_node_candidates: '200'
-      max_search_seconds: '360'
-      diagnostic_level: '1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch current approved weekly workflow and wait
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "Starting week 25 using current main-branch weekly-build-all.yml."
+          echo "The orchestration job does not pin the reusable workflow to its original SHA."
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
+            -f start_year=2026 -f start_week=25 \
+            -f end_year=2026 -f end_week=25 \
+            -f resume_stage=Scaffold \
+            -f resume_completed_weeks=true \
+            -f candidate_layouts=5 \
+            -f max_node_candidates=200 \
+            -f max_search_seconds=360 \
+            -f diagnostic_level=1
+          echo "Week 25 finished. Cooldown for independent deployment activity."
+          sleep 90
   week_26:
     name: 2026 Week 26
     needs: week_25
-    uses: ./.github/workflows/weekly-build-all.yml
-    with:
-      start_year: '2026'
-      start_week: '26'
-      end_year: '2026'
-      end_week: '26'
-      resume_stage: Scaffold
-      resume_completed_weeks: true
-      candidate_layouts: '5'
-      max_node_candidates: '200'
-      max_search_seconds: '360'
-      diagnostic_level: '1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch current approved weekly workflow and wait
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "Starting week 26 using current main-branch weekly-build-all.yml."
+          echo "The orchestration job does not pin the reusable workflow to its original SHA."
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
+            -f start_year=2026 -f start_week=26 \
+            -f end_year=2026 -f end_week=26 \
+            -f resume_stage=Scaffold \
+            -f resume_completed_weeks=true \
+            -f candidate_layouts=5 \
+            -f max_node_candidates=200 \
+            -f max_search_seconds=360 \
+            -f diagnostic_level=1
+          echo "Week 26 finished. Cooldown for independent deployment activity."
+          sleep 90
   week_27:
     name: 2026 Week 27
     needs: week_26
-    uses: ./.github/workflows/weekly-build-all.yml
-    with:
-      start_year: '2026'
-      start_week: '27'
-      end_year: '2026'
-      end_week: '27'
-      resume_stage: Scaffold
-      resume_completed_weeks: true
-      candidate_layouts: '5'
-      max_node_candidates: '200'
-      max_search_seconds: '360'
-      diagnostic_level: '1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch current approved weekly workflow and wait
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "Starting week 27 using current main-branch weekly-build-all.yml."
+          echo "The orchestration job does not pin the reusable workflow to its original SHA."
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
+            -f start_year=2026 -f start_week=27 \
+            -f end_year=2026 -f end_week=27 \
+            -f resume_stage=Scaffold \
+            -f resume_completed_weeks=true \
+            -f candidate_layouts=5 \
+            -f max_node_candidates=200 \
+            -f max_search_seconds=360 \
+            -f diagnostic_level=1
+          echo "Week 27 finished. Cooldown for independent deployment activity."
+          sleep 90
   week_28:
     name: 2026 Week 28
     needs: week_27
-    uses: ./.github/workflows/weekly-build-all.yml
-    with:
-      start_year: '2026'
-      start_week: '28'
-      end_year: '2026'
-      end_week: '28'
-      resume_stage: Scaffold
-      resume_completed_weeks: true
-      candidate_layouts: '5'
-      max_node_candidates: '200'
-      max_search_seconds: '360'
-      diagnostic_level: '1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch current approved weekly workflow and wait
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "Starting week 28 using current main-branch weekly-build-all.yml."
+          echo "The orchestration job does not pin the reusable workflow to its original SHA."
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
+            -f start_year=2026 -f start_week=28 \
+            -f end_year=2026 -f end_week=28 \
+            -f resume_stage=Scaffold \
+            -f resume_completed_weeks=true \
+            -f candidate_layouts=5 \
+            -f max_node_candidates=200 \
+            -f max_search_seconds=360 \
+            -f diagnostic_level=1
+          echo "Week 28 finished. Cooldown for independent deployment activity."
+          sleep 90
   week_29:
     name: 2026 Week 29
     needs: week_28
-    uses: ./.github/workflows/weekly-build-all.yml
-    with:
-      start_year: '2026'
-      start_week: '29'
-      end_year: '2026'
-      end_week: '29'
-      resume_stage: Scaffold
-      resume_completed_weeks: true
-      candidate_layouts: '5'
-      max_node_candidates: '200'
-      max_search_seconds: '360'
-      diagnostic_level: '1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch current approved weekly workflow and wait
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "Starting week 29 using current main-branch weekly-build-all.yml."
+          echo "The orchestration job does not pin the reusable workflow to its original SHA."
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
+            -f start_year=2026 -f start_week=29 \
+            -f end_year=2026 -f end_week=29 \
+            -f resume_stage=Scaffold \
+            -f resume_completed_weeks=true \
+            -f candidate_layouts=5 \
+            -f max_node_candidates=200 \
+            -f max_search_seconds=360 \
+            -f diagnostic_level=1
+          echo "Week 29 finished. Cooldown for independent deployment activity."
+          sleep 90
   week_30:
     name: 2026 Week 30
     needs: week_29
-    uses: ./.github/workflows/weekly-build-all.yml
-    with:
-      start_year: '2026'
-      start_week: '30'
-      end_year: '2026'
-      end_week: '30'
-      resume_stage: Scaffold
-      resume_completed_weeks: true
-      candidate_layouts: '5'
-      max_node_candidates: '200'
-      max_search_seconds: '360'
-      diagnostic_level: '1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch current approved weekly workflow and wait
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "Starting week 30 using current main-branch weekly-build-all.yml."
+          echo "The orchestration job does not pin the reusable workflow to its original SHA."
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
+            -f start_year=2026 -f start_week=30 \
+            -f end_year=2026 -f end_week=30 \
+            -f resume_stage=Scaffold \
+            -f resume_completed_weeks=true \
+            -f candidate_layouts=5 \
+            -f max_node_candidates=200 \
+            -f max_search_seconds=360 \
+            -f diagnostic_level=1
+          echo "Week 30 finished. Cooldown for independent deployment activity."
+          sleep 90
   week_31:
     name: 2026 Week 31
     needs: week_30
-    uses: ./.github/workflows/weekly-build-all.yml
-    with:
-      start_year: '2026'
-      start_week: '31'
-      end_year: '2026'
-      end_week: '31'
-      resume_stage: Scaffold
-      resume_completed_weeks: true
-      candidate_layouts: '5'
-      max_node_candidates: '200'
-      max_search_seconds: '360'
-      diagnostic_level: '1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch current approved weekly workflow and wait
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "Starting week 31 using current main-branch weekly-build-all.yml."
+          echo "The orchestration job does not pin the reusable workflow to its original SHA."
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
+            -f start_year=2026 -f start_week=31 \
+            -f end_year=2026 -f end_week=31 \
+            -f resume_stage=Scaffold \
+            -f resume_completed_weeks=true \
+            -f candidate_layouts=5 \
+            -f max_node_candidates=200 \
+            -f max_search_seconds=360 \
+            -f diagnostic_level=1
+          echo "Week 31 finished. Cooldown for independent deployment activity."
+          sleep 90
   week_32:
     name: 2026 Week 32
     needs: week_31
-    uses: ./.github/workflows/weekly-build-all.yml
-    with:
-      start_year: '2026'
-      start_week: '32'
-      end_year: '2026'
-      end_week: '32'
-      resume_stage: Scaffold
-      resume_completed_weeks: true
-      candidate_layouts: '5'
-      max_node_candidates: '200'
-      max_search_seconds: '360'
-      diagnostic_level: '1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch current approved weekly workflow and wait
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "Starting week 32 using current main-branch weekly-build-all.yml."
+          echo "The orchestration job does not pin the reusable workflow to its original SHA."
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
+            -f start_year=2026 -f start_week=32 \
+            -f end_year=2026 -f end_week=32 \
+            -f resume_stage=Scaffold \
+            -f resume_completed_weeks=true \
+            -f candidate_layouts=5 \
+            -f max_node_candidates=200 \
+            -f max_search_seconds=360 \
+            -f diagnostic_level=1
+          echo "Week 32 finished. Cooldown for independent deployment activity."
+          sleep 90
   week_33:
     name: 2026 Week 33
     needs: week_32
-    uses: ./.github/workflows/weekly-build-all.yml
-    with:
-      start_year: '2026'
-      start_week: '33'
-      end_year: '2026'
-      end_week: '33'
-      resume_stage: Scaffold
-      resume_completed_weeks: true
-      candidate_layouts: '5'
-      max_node_candidates: '200'
-      max_search_seconds: '360'
-      diagnostic_level: '1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch current approved weekly workflow and wait
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "Starting week 33 using current main-branch weekly-build-all.yml."
+          echo "The orchestration job does not pin the reusable workflow to its original SHA."
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
+            -f start_year=2026 -f start_week=33 \
+            -f end_year=2026 -f end_week=33 \
+            -f resume_stage=Scaffold \
+            -f resume_completed_weeks=true \
+            -f candidate_layouts=5 \
+            -f max_node_candidates=200 \
+            -f max_search_seconds=360 \
+            -f diagnostic_level=1
+          echo "Week 33 finished. Cooldown for independent deployment activity."
+          sleep 90
   week_34:
     name: 2026 Week 34
     needs: week_33
-    uses: ./.github/workflows/weekly-build-all.yml
-    with:
-      start_year: '2026'
-      start_week: '34'
-      end_year: '2026'
-      end_week: '34'
-      resume_stage: Scaffold
-      resume_completed_weeks: true
-      candidate_layouts: '5'
-      max_node_candidates: '200'
-      max_search_seconds: '360'
-      diagnostic_level: '1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch current approved weekly workflow and wait
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "Starting week 34 using current main-branch weekly-build-all.yml."
+          echo "The orchestration job does not pin the reusable workflow to its original SHA."
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
+            -f start_year=2026 -f start_week=34 \
+            -f end_year=2026 -f end_week=34 \
+            -f resume_stage=Scaffold \
+            -f resume_completed_weeks=true \
+            -f candidate_layouts=5 \
+            -f max_node_candidates=200 \
+            -f max_search_seconds=360 \
+            -f diagnostic_level=1
+          echo "Week 34 finished. Cooldown for independent deployment activity."
+          sleep 90
   week_35:
     name: 2026 Week 35
     needs: week_34
-    uses: ./.github/workflows/weekly-build-all.yml
-    with:
-      start_year: '2026'
-      start_week: '35'
-      end_year: '2026'
-      end_week: '35'
-      resume_stage: Scaffold
-      resume_completed_weeks: true
-      candidate_layouts: '5'
-      max_node_candidates: '200'
-      max_search_seconds: '360'
-      diagnostic_level: '1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch current approved weekly workflow and wait
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "Starting week 35 using current main-branch weekly-build-all.yml."
+          echo "The orchestration job does not pin the reusable workflow to its original SHA."
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
+            -f start_year=2026 -f start_week=35 \
+            -f end_year=2026 -f end_week=35 \
+            -f resume_stage=Scaffold \
+            -f resume_completed_weeks=true \
+            -f candidate_layouts=5 \
+            -f max_node_candidates=200 \
+            -f max_search_seconds=360 \
+            -f diagnostic_level=1
+          echo "Week 35 finished. Cooldown for independent deployment activity."
+          sleep 90
   week_36:
     name: 2026 Week 36
     needs: week_35
-    uses: ./.github/workflows/weekly-build-all.yml
-    with:
-      start_year: '2026'
-      start_week: '36'
-      end_year: '2026'
-      end_week: '36'
-      resume_stage: Scaffold
-      resume_completed_weeks: true
-      candidate_layouts: '5'
-      max_node_candidates: '200'
-      max_search_seconds: '360'
-      diagnostic_level: '1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch current approved weekly workflow and wait
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "Starting week 36 using current main-branch weekly-build-all.yml."
+          echo "The orchestration job does not pin the reusable workflow to its original SHA."
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
+            -f start_year=2026 -f start_week=36 \
+            -f end_year=2026 -f end_week=36 \
+            -f resume_stage=Scaffold \
+            -f resume_completed_weeks=true \
+            -f candidate_layouts=5 \
+            -f max_node_candidates=200 \
+            -f max_search_seconds=360 \
+            -f diagnostic_level=1
+          echo "Week 36 finished. Cooldown for independent deployment activity."
+          sleep 90
   week_37:
     name: 2026 Week 37
     needs: week_36
-    uses: ./.github/workflows/weekly-build-all.yml
-    with:
-      start_year: '2026'
-      start_week: '37'
-      end_year: '2026'
-      end_week: '37'
-      resume_stage: Scaffold
-      resume_completed_weeks: true
-      candidate_layouts: '5'
-      max_node_candidates: '200'
-      max_search_seconds: '360'
-      diagnostic_level: '1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch current approved weekly workflow and wait
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "Starting week 37 using current main-branch weekly-build-all.yml."
+          echo "The orchestration job does not pin the reusable workflow to its original SHA."
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
+            -f start_year=2026 -f start_week=37 \
+            -f end_year=2026 -f end_week=37 \
+            -f resume_stage=Scaffold \
+            -f resume_completed_weeks=true \
+            -f candidate_layouts=5 \
+            -f max_node_candidates=200 \
+            -f max_search_seconds=360 \
+            -f diagnostic_level=1
+          echo "Week 37 finished. Cooldown for independent deployment activity."
+          sleep 90
   week_38:
     name: 2026 Week 38
     needs: week_37
-    uses: ./.github/workflows/weekly-build-all.yml
-    with:
-      start_year: '2026'
-      start_week: '38'
-      end_year: '2026'
-      end_week: '38'
-      resume_stage: Scaffold
-      resume_completed_weeks: true
-      candidate_layouts: '5'
-      max_node_candidates: '200'
-      max_search_seconds: '360'
-      diagnostic_level: '1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch current approved weekly workflow and wait
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "Starting week 38 using current main-branch weekly-build-all.yml."
+          echo "The orchestration job does not pin the reusable workflow to its original SHA."
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
+            -f start_year=2026 -f start_week=38 \
+            -f end_year=2026 -f end_week=38 \
+            -f resume_stage=Scaffold \
+            -f resume_completed_weeks=true \
+            -f candidate_layouts=5 \
+            -f max_node_candidates=200 \
+            -f max_search_seconds=360 \
+            -f diagnostic_level=1
+          echo "Week 38 finished. Cooldown for independent deployment activity."
+          sleep 90
   week_39:
     name: 2026 Week 39
     needs: week_38
-    uses: ./.github/workflows/weekly-build-all.yml
-    with:
-      start_year: '2026'
-      start_week: '39'
-      end_year: '2026'
-      end_week: '39'
-      resume_stage: Scaffold
-      resume_completed_weeks: true
-      candidate_layouts: '5'
-      max_node_candidates: '200'
-      max_search_seconds: '360'
-      diagnostic_level: '1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch current approved weekly workflow and wait
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "Starting week 39 using current main-branch weekly-build-all.yml."
+          echo "The orchestration job does not pin the reusable workflow to its original SHA."
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
+            -f start_year=2026 -f start_week=39 \
+            -f end_year=2026 -f end_week=39 \
+            -f resume_stage=Scaffold \
+            -f resume_completed_weeks=true \
+            -f candidate_layouts=5 \
+            -f max_node_candidates=200 \
+            -f max_search_seconds=360 \
+            -f diagnostic_level=1
+          echo "Week 39 finished. Cooldown for independent deployment activity."
+          sleep 90
   week_40:
     name: 2026 Week 40
     needs: week_39
-    uses: ./.github/workflows/weekly-build-all.yml
-    with:
-      start_year: '2026'
-      start_week: '40'
-      end_year: '2026'
-      end_week: '40'
-      resume_stage: Scaffold
-      resume_completed_weeks: true
-      candidate_layouts: '5'
-      max_node_candidates: '200'
-      max_search_seconds: '360'
-      diagnostic_level: '1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch current approved weekly workflow and wait
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "Starting week 40 using current main-branch weekly-build-all.yml."
+          echo "The orchestration job does not pin the reusable workflow to its original SHA."
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
+            -f start_year=2026 -f start_week=40 \
+            -f end_year=2026 -f end_week=40 \
+            -f resume_stage=Scaffold \
+            -f resume_completed_weeks=true \
+            -f candidate_layouts=5 \
+            -f max_node_candidates=200 \
+            -f max_search_seconds=360 \
+            -f diagnostic_level=1
+          echo "Week 40 finished. Cooldown for independent deployment activity."
+          sleep 90
   week_41:
     name: 2026 Week 41
     needs: week_40
-    uses: ./.github/workflows/weekly-build-all.yml
-    with:
-      start_year: '2026'
-      start_week: '41'
-      end_year: '2026'
-      end_week: '41'
-      resume_stage: Scaffold
-      resume_completed_weeks: true
-      candidate_layouts: '5'
-      max_node_candidates: '200'
-      max_search_seconds: '360'
-      diagnostic_level: '1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch current approved weekly workflow and wait
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "Starting week 41 using current main-branch weekly-build-all.yml."
+          echo "The orchestration job does not pin the reusable workflow to its original SHA."
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
+            -f start_year=2026 -f start_week=41 \
+            -f end_year=2026 -f end_week=41 \
+            -f resume_stage=Scaffold \
+            -f resume_completed_weeks=true \
+            -f candidate_layouts=5 \
+            -f max_node_candidates=200 \
+            -f max_search_seconds=360 \
+            -f diagnostic_level=1
+          echo "Week 41 finished. Cooldown for independent deployment activity."
+          sleep 90
   week_42:
     name: 2026 Week 42
     needs: week_41
-    uses: ./.github/workflows/weekly-build-all.yml
-    with:
-      start_year: '2026'
-      start_week: '42'
-      end_year: '2026'
-      end_week: '42'
-      resume_stage: Scaffold
-      resume_completed_weeks: true
-      candidate_layouts: '5'
-      max_node_candidates: '200'
-      max_search_seconds: '360'
-      diagnostic_level: '1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch current approved weekly workflow and wait
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "Starting week 42 using current main-branch weekly-build-all.yml."
+          echo "The orchestration job does not pin the reusable workflow to its original SHA."
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
+            -f start_year=2026 -f start_week=42 \
+            -f end_year=2026 -f end_week=42 \
+            -f resume_stage=Scaffold \
+            -f resume_completed_weeks=true \
+            -f candidate_layouts=5 \
+            -f max_node_candidates=200 \
+            -f max_search_seconds=360 \
+            -f diagnostic_level=1
+          echo "Week 42 finished. Cooldown for independent deployment activity."
+          sleep 90
   week_43:
     name: 2026 Week 43
     needs: week_42
-    uses: ./.github/workflows/weekly-build-all.yml
-    with:
-      start_year: '2026'
-      start_week: '43'
-      end_year: '2026'
-      end_week: '43'
-      resume_stage: Scaffold
-      resume_completed_weeks: true
-      candidate_layouts: '5'
-      max_node_candidates: '200'
-      max_search_seconds: '360'
-      diagnostic_level: '1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch current approved weekly workflow and wait
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "Starting week 43 using current main-branch weekly-build-all.yml."
+          echo "The orchestration job does not pin the reusable workflow to its original SHA."
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
+            -f start_year=2026 -f start_week=43 \
+            -f end_year=2026 -f end_week=43 \
+            -f resume_stage=Scaffold \
+            -f resume_completed_weeks=true \
+            -f candidate_layouts=5 \
+            -f max_node_candidates=200 \
+            -f max_search_seconds=360 \
+            -f diagnostic_level=1
+          echo "Week 43 finished. Cooldown for independent deployment activity."
+          sleep 90
   week_44:
     name: 2026 Week 44
     needs: week_43
-    uses: ./.github/workflows/weekly-build-all.yml
-    with:
-      start_year: '2026'
-      start_week: '44'
-      end_year: '2026'
-      end_week: '44'
-      resume_stage: Scaffold
-      resume_completed_weeks: true
-      candidate_layouts: '5'
-      max_node_candidates: '200'
-      max_search_seconds: '360'
-      diagnostic_level: '1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch current approved weekly workflow and wait
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "Starting week 44 using current main-branch weekly-build-all.yml."
+          echo "The orchestration job does not pin the reusable workflow to its original SHA."
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
+            -f start_year=2026 -f start_week=44 \
+            -f end_year=2026 -f end_week=44 \
+            -f resume_stage=Scaffold \
+            -f resume_completed_weeks=true \
+            -f candidate_layouts=5 \
+            -f max_node_candidates=200 \
+            -f max_search_seconds=360 \
+            -f diagnostic_level=1
+          echo "Week 44 finished. Cooldown for independent deployment activity."
+          sleep 90
   week_45:
     name: 2026 Week 45
     needs: week_44
-    uses: ./.github/workflows/weekly-build-all.yml
-    with:
-      start_year: '2026'
-      start_week: '45'
-      end_year: '2026'
-      end_week: '45'
-      resume_stage: Scaffold
-      resume_completed_weeks: true
-      candidate_layouts: '5'
-      max_node_candidates: '200'
-      max_search_seconds: '360'
-      diagnostic_level: '1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch current approved weekly workflow and wait
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "Starting week 45 using current main-branch weekly-build-all.yml."
+          echo "The orchestration job does not pin the reusable workflow to its original SHA."
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
+            -f start_year=2026 -f start_week=45 \
+            -f end_year=2026 -f end_week=45 \
+            -f resume_stage=Scaffold \
+            -f resume_completed_weeks=true \
+            -f candidate_layouts=5 \
+            -f max_node_candidates=200 \
+            -f max_search_seconds=360 \
+            -f diagnostic_level=1
+          echo "Week 45 finished. Cooldown for independent deployment activity."
+          sleep 90
   week_46:
     name: 2026 Week 46
     needs: week_45
-    uses: ./.github/workflows/weekly-build-all.yml
-    with:
-      start_year: '2026'
-      start_week: '46'
-      end_year: '2026'
-      end_week: '46'
-      resume_stage: Scaffold
-      resume_completed_weeks: true
-      candidate_layouts: '5'
-      max_node_candidates: '200'
-      max_search_seconds: '360'
-      diagnostic_level: '1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch current approved weekly workflow and wait
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "Starting week 46 using current main-branch weekly-build-all.yml."
+          echo "The orchestration job does not pin the reusable workflow to its original SHA."
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
+            -f start_year=2026 -f start_week=46 \
+            -f end_year=2026 -f end_week=46 \
+            -f resume_stage=Scaffold \
+            -f resume_completed_weeks=true \
+            -f candidate_layouts=5 \
+            -f max_node_candidates=200 \
+            -f max_search_seconds=360 \
+            -f diagnostic_level=1
+          echo "Week 46 finished. Cooldown for independent deployment activity."
+          sleep 90
   week_47:
     name: 2026 Week 47
     needs: week_46
-    uses: ./.github/workflows/weekly-build-all.yml
-    with:
-      start_year: '2026'
-      start_week: '47'
-      end_year: '2026'
-      end_week: '47'
-      resume_stage: Scaffold
-      resume_completed_weeks: true
-      candidate_layouts: '5'
-      max_node_candidates: '200'
-      max_search_seconds: '360'
-      diagnostic_level: '1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch current approved weekly workflow and wait
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "Starting week 47 using current main-branch weekly-build-all.yml."
+          echo "The orchestration job does not pin the reusable workflow to its original SHA."
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
+            -f start_year=2026 -f start_week=47 \
+            -f end_year=2026 -f end_week=47 \
+            -f resume_stage=Scaffold \
+            -f resume_completed_weeks=true \
+            -f candidate_layouts=5 \
+            -f max_node_candidates=200 \
+            -f max_search_seconds=360 \
+            -f diagnostic_level=1
+          echo "Week 47 finished. Cooldown for independent deployment activity."
+          sleep 90
   week_48:
     name: 2026 Week 48
     needs: week_47
-    uses: ./.github/workflows/weekly-build-all.yml
-    with:
-      start_year: '2026'
-      start_week: '48'
-      end_year: '2026'
-      end_week: '48'
-      resume_stage: Scaffold
-      resume_completed_weeks: true
-      candidate_layouts: '5'
-      max_node_candidates: '200'
-      max_search_seconds: '360'
-      diagnostic_level: '1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch current approved weekly workflow and wait
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "Starting week 48 using current main-branch weekly-build-all.yml."
+          echo "The orchestration job does not pin the reusable workflow to its original SHA."
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
+            -f start_year=2026 -f start_week=48 \
+            -f end_year=2026 -f end_week=48 \
+            -f resume_stage=Scaffold \
+            -f resume_completed_weeks=true \
+            -f candidate_layouts=5 \
+            -f max_node_candidates=200 \
+            -f max_search_seconds=360 \
+            -f diagnostic_level=1
+          echo "Week 48 finished. Cooldown for independent deployment activity."
+          sleep 90
   week_49:
     name: 2026 Week 49
     needs: week_48
-    uses: ./.github/workflows/weekly-build-all.yml
-    with:
-      start_year: '2026'
-      start_week: '49'
-      end_year: '2026'
-      end_week: '49'
-      resume_stage: Scaffold
-      resume_completed_weeks: true
-      candidate_layouts: '5'
-      max_node_candidates: '200'
-      max_search_seconds: '360'
-      diagnostic_level: '1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch current approved weekly workflow and wait
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "Starting week 49 using current main-branch weekly-build-all.yml."
+          echo "The orchestration job does not pin the reusable workflow to its original SHA."
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
+            -f start_year=2026 -f start_week=49 \
+            -f end_year=2026 -f end_week=49 \
+            -f resume_stage=Scaffold \
+            -f resume_completed_weeks=true \
+            -f candidate_layouts=5 \
+            -f max_node_candidates=200 \
+            -f max_search_seconds=360 \
+            -f diagnostic_level=1
+          echo "Week 49 finished. Cooldown for independent deployment activity."
+          sleep 90
   week_50:
     name: 2026 Week 50
     needs: week_49
-    uses: ./.github/workflows/weekly-build-all.yml
-    with:
-      start_year: '2026'
-      start_week: '50'
-      end_year: '2026'
-      end_week: '50'
-      resume_stage: Scaffold
-      resume_completed_weeks: true
-      candidate_layouts: '5'
-      max_node_candidates: '200'
-      max_search_seconds: '360'
-      diagnostic_level: '1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch current approved weekly workflow and wait
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "Starting week 50 using current main-branch weekly-build-all.yml."
+          echo "The orchestration job does not pin the reusable workflow to its original SHA."
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
+            -f start_year=2026 -f start_week=50 \
+            -f end_year=2026 -f end_week=50 \
+            -f resume_stage=Scaffold \
+            -f resume_completed_weeks=true \
+            -f candidate_layouts=5 \
+            -f max_node_candidates=200 \
+            -f max_search_seconds=360 \
+            -f diagnostic_level=1
+          echo "Week 50 finished. Cooldown for independent deployment activity."
+          sleep 90
   week_51:
     name: 2026 Week 51
     needs: week_50
-    uses: ./.github/workflows/weekly-build-all.yml
-    with:
-      start_year: '2026'
-      start_week: '51'
-      end_year: '2026'
-      end_week: '51'
-      resume_stage: Scaffold
-      resume_completed_weeks: true
-      candidate_layouts: '5'
-      max_node_candidates: '200'
-      max_search_seconds: '360'
-      diagnostic_level: '1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch current approved weekly workflow and wait
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "Starting week 51 using current main-branch weekly-build-all.yml."
+          echo "The orchestration job does not pin the reusable workflow to its original SHA."
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
+            -f start_year=2026 -f start_week=51 \
+            -f end_year=2026 -f end_week=51 \
+            -f resume_stage=Scaffold \
+            -f resume_completed_weeks=true \
+            -f candidate_layouts=5 \
+            -f max_node_candidates=200 \
+            -f max_search_seconds=360 \
+            -f diagnostic_level=1
+          echo "Week 51 finished. Cooldown for independent deployment activity."
+          sleep 90
   week_52:
     name: 2026 Week 52
     needs: week_51
-    uses: ./.github/workflows/weekly-build-all.yml
-    with:
-      start_year: '2026'
-      start_week: '52'
-      end_year: '2026'
-      end_week: '52'
-      resume_stage: Scaffold
-      resume_completed_weeks: true
-      candidate_layouts: '5'
-      max_node_candidates: '200'
-      max_search_seconds: '360'
-      diagnostic_level: '1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch current approved weekly workflow and wait
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "Starting week 52 using current main-branch weekly-build-all.yml."
+          echo "The orchestration job does not pin the reusable workflow to its original SHA."
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
+            -f start_year=2026 -f start_week=52 \
+            -f end_year=2026 -f end_week=52 \
+            -f resume_stage=Scaffold \
+            -f resume_completed_weeks=true \
+            -f candidate_layouts=5 \
+            -f max_node_candidates=200 \
+            -f max_search_seconds=360 \
+            -f diagnostic_level=1
+          echo "Week 52 finished. Cooldown for independent deployment activity."
+          sleep 90
   week_53:
     name: 2026 Week 53
     needs: week_52
-    uses: ./.github/workflows/weekly-build-all.yml
-    with:
-      start_year: '2026'
-      start_week: '53'
-      end_year: '2026'
-      end_week: '53'
-      resume_stage: Scaffold
-      resume_completed_weeks: true
-      candidate_layouts: '5'
-      max_node_candidates: '200'
-      max_search_seconds: '360'
-      diagnostic_level: '1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch current approved weekly workflow and wait
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "Starting week 53 using current main-branch weekly-build-all.yml."
+          echo "The orchestration job does not pin the reusable workflow to its original SHA."
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
+            -f start_year=2026 -f start_week=53 \
+            -f end_year=2026 -f end_week=53 \
+            -f resume_stage=Scaffold \
+            -f resume_completed_weeks=true \
+            -f candidate_layouts=5 \
+            -f max_node_candidates=200 \
+            -f max_search_seconds=360 \
+            -f diagnostic_level=1
+          echo "Week 53 finished. Cooldown for independent deployment activity."
+          sleep 90
