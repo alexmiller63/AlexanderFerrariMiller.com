@@ -17,6 +17,11 @@
       "constellation": "Men"
     },
     {
+      "fixed_object_id": 183,
+      "type": "deep-sky",
+      "name": "Collinder 87"
+    },
+    {
       "fixed_object_id": 792,
       "type": "star",
       "name": "Mirzam",
@@ -240,7 +245,7 @@
       "sky_separation_deg": 8.4
     }
   ],
-  "note": "ISO 2026-W06 runs from February 2 through February 8. Saturn and Neptune are separated by about 1.4° in geocentric ecliptic longitude at the Monday 00:00 UTC snapshot. Mercury and Venus are separated by about 1.8° in geocentric ecliptic longitude at the Monday 00:00 UTC snapshot.\n\n**Naked eye:** No principal lunar phase is listed this week. Check the Moon's position each night and favor darker hours for low-contrast targets. Use Mirzam, Canopus as the week’s fixed-sky framework.\n\n**Planets:** Moon: Naked eye; magnitude -12.8; direct motion; 100.0% illuminated. Monday 00:00 UTC snapshot. Mercury: In solar glare; magnitude -1.3; direct motion; 96.3% illuminated. Monday 00:00 UTC snapshot. Venus: In solar glare; magnitude -3.9; direct motion; 99.4% illuminated. Monday 00:00 UTC snapshot. Mars: In solar glare; magnitude 1.1; direct motion; 99.9% illuminated. Monday 00:00 UTC snapshot. Ceres: Telescope; magnitude 9.1; direct motion; 97.6% illuminated. Monday 00:00 UTC snapshot. Jupiter: Naked eye; magnitude -2.6; retrograde motion; 99.8% illuminated. Monday 00:00 UTC snapshot. Saturn: Naked eye; magnitude 1.0; direct motion; 99.9% illuminated. Below the horizon at 21:00 local apparent solar time, 45°N. Monday 00:00 UTC snapshot. Uranus: Binoculars; magnitude 5.7; retrograde motion; 99.9% illuminated. Monday 00:00 UTC snapshot. Station Feb 04 02:33 UTC: turns direct. Neptune: Telescope; magnitude 7.8; direct motion; 100.0% illuminated. Below the horizon at 21:00 local apparent solar time, 45°N. Monday 00:00 UTC snapshot. Pluto: In solar glare; magnitude 14.6; direct motion; 100.0% illuminated. Monday 00:00 UTC snapshot.\n\n**Binoculars:** Trace Mensa’s charted figure in the finder, then identify α Men at its charted position.\n\n**Small telescope:** Concentrate on M35. Increase magnification only after the target and surrounding pattern are secure.\n\n**Substantial telescope:** No fixed-sky Calendar object is classified as requiring a substantial telescope this week.\n\n",
+  "note": "ISO 2026-W06 runs from February 2 through February 8. Saturn and Neptune are separated by about 1.4° in geocentric ecliptic longitude at the Monday 00:00 UTC snapshot. Mercury and Venus are separated by about 1.8° in geocentric ecliptic longitude at the Monday 00:00 UTC snapshot.\n\n**Naked eye:** No principal lunar phase is listed this week. Check the Moon's position each night and favor darker hours for low-contrast targets. Use Mirzam, Canopus as the week’s fixed-sky framework.\n\n**Planets:** Moon: Naked eye; magnitude -12.8; direct motion; 100.0% illuminated. Monday 00:00 UTC snapshot. Mercury: In solar glare; magnitude -1.3; direct motion; 96.3% illuminated. Monday 00:00 UTC snapshot. Venus: In solar glare; magnitude -3.9; direct motion; 99.4% illuminated. Monday 00:00 UTC snapshot. Mars: In solar glare; magnitude 1.1; direct motion; 99.9% illuminated. Monday 00:00 UTC snapshot. Ceres: Telescope; magnitude 9.1; direct motion; 97.6% illuminated. Monday 00:00 UTC snapshot. Jupiter: Naked eye; magnitude -2.6; retrograde motion; 99.8% illuminated. Monday 00:00 UTC snapshot. Saturn: Naked eye; magnitude 1.0; direct motion; 99.9% illuminated. Below the horizon at 21:00 local apparent solar time, 45°N. Monday 00:00 UTC snapshot. Uranus: Binoculars; magnitude 5.7; retrograde motion; 99.9% illuminated. Monday 00:00 UTC snapshot. Station Feb 04 02:33 UTC: turns direct. Neptune: Telescope; magnitude 7.8; direct motion; 100.0% illuminated. Below the horizon at 21:00 local apparent solar time, 45°N. Monday 00:00 UTC snapshot. Pluto: In solar glare; magnitude 14.6; direct motion; 100.0% illuminated. Monday 00:00 UTC snapshot.\n\n**Binoculars:** Trace Mensa’s charted figure in the finder, then identify α Men at its charted position.\n\n**Small telescope:** M35: consult its dedicated finder and observing story for equipment guidance; Collinder 87: consult its dedicated finder and observing story for equipment guidance\n\n**Substantial telescope:** No fixed-sky Calendar object is classified as requiring a substantial telescope this week.\n\n",
   "descriptors": [
     {
       "schema_version": 1,
@@ -417,6 +422,21 @@
     },
     {
       "schema_version": 1,
+      "id": "183",
+      "type": "deep-sky-object",
+      "name": "Collinder 87",
+      "summary": "deep-sky object selected as a weekly fixed-sky observing target",
+      "representation": {
+        "machine": "./183.json",
+        "human_source": "summary",
+        "human": "/stories/baseline/183.html"
+      },
+      "catalog_name": "Collinder 87",
+      "object_type": "deep-sky object",
+      "source_label": "Collinder 87"
+    },
+    {
+      "schema_version": 1,
       "id": "792",
       "type": "star",
       "name": "Mirzam",
@@ -507,6 +527,7 @@
   "calendar_fixed_object_ids": [
     182,
     475,
+    183,
     792,
     795
   ],
@@ -517,7 +538,8 @@
       "hed": "M35",
       "dek": "M35 is an observing target in Gem carried by the weekly Calendar.",
       "body": "Why it is here: The Calendar selected M35 as one of this week’s fixed-sky observing targets.\n\nHow to find it: Establish the preserved Gem constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.",
-      "url": "/stories/baseline/182.html"
+      "url": "/stories/baseline/182.html",
+      "status": "pending"
     },
     {
       "fixed_object_id": 475,
@@ -525,7 +547,17 @@
       "hed": "α Men",
       "dek": "α Men is a star in Men of catalogue visual magnitude 5.08; its declination determines which latitudes can observe it.",
       "body": "The stored catalogue gives a visual magnitude of 5.08. This is a catalogue value, not a prediction of its brightness this week. Lower magnitudes mean brighter objects; sky brightness and altitude affect whether you can see the star.\n\nIts catalogue position is approximately right ascension 6h 10m and declination -74.8°. These reference coordinates describe its sky location; they are not an observing time or a current altitude.\n\nAt the almanac’s default latitude of 45° N, this star does not rise above the geometric horizon. These are geometric calculations from declination, excluding refraction and local obstructions. Darkness and the time of culmination must still be checked for the observing date and your location.\n\nHow to find it: Establish the preserved Men constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.\n\nSources: Star Almanack’s stored fixed-object and expanded Bayer catalogues; accepted constellation figures and guiding-star routes. Visibility limits are original geometric calculations from catalogue declination, not weekly predictions.",
-      "url": "/stories/baseline/475.html"
+      "url": "/stories/baseline/475.html",
+      "status": "pending"
+    },
+    {
+      "fixed_object_id": 183,
+      "collection": "baseline",
+      "hed": "Collinder 87",
+      "dek": "Collinder 87 is an observing target in Ori carried by the weekly Calendar.",
+      "body": "Why it is here: The Calendar selected Collinder 87 as one of this week’s fixed-sky observing targets.\n\nHow to find it: Establish the preserved Ori constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.",
+      "url": "/stories/baseline/183.html",
+      "status": "pending"
     },
     {
       "fixed_object_id": 792,
@@ -533,7 +565,8 @@
       "hed": "Mirzam",
       "dek": "Mirzam is a star in CMa of catalogue visual magnitude 1.98; its declination determines which latitudes can observe it.",
       "body": "The stored catalogue gives a visual magnitude of 1.98. This is a catalogue value, not a prediction of its brightness this week. Lower magnitudes mean brighter objects; sky brightness and altitude affect whether you can see the star.\n\nIts catalogue position is approximately right ascension 6h 22m and declination -18.0°. These reference coordinates describe its sky location; they are not an observing time or a current altitude.\n\nAt the almanac’s default latitude of 45° N, this star rises and sets, reaching approximately 27° altitude at upper culmination. These are geometric calculations from declination, excluding refraction and local obstructions. Darkness and the time of culmination must still be checked for the observing date and your location.\n\nHow to find it: Establish the preserved CMa constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.\n\nSources: Star Almanack’s stored fixed-object and expanded Bayer catalogues; accepted constellation figures and guiding-star routes. Visibility limits are original geometric calculations from catalogue declination, not weekly predictions.",
-      "url": "/stories/baseline/792.html"
+      "url": "/stories/baseline/792.html",
+      "status": "pending"
     },
     {
       "fixed_object_id": 795,
@@ -541,7 +574,8 @@
       "hed": "Canopus",
       "dek": "Canopus is a star in Car of catalogue visual magnitude -0.62; its declination determines which latitudes can observe it.",
       "body": "The stored catalogue gives a visual magnitude of -0.62. This is a catalogue value, not a prediction of its brightness this week. Lower magnitudes mean brighter objects; sky brightness and altitude affect whether you can see the star.\n\nIts catalogue position is approximately right ascension 6h 23m and declination -52.7°. These reference coordinates describe its sky location; they are not an observing time or a current altitude.\n\nAt the almanac’s default latitude of 45° N, this star does not rise above the geometric horizon. These are geometric calculations from declination, excluding refraction and local obstructions. Darkness and the time of culmination must still be checked for the observing date and your location.\n\nHow to find it: Establish the preserved Car constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.\n\nSources: Star Almanack’s stored fixed-object and expanded Bayer catalogues; accepted constellation figures and guiding-star routes. Visibility limits are original geometric calculations from catalogue declination, not weekly predictions.",
-      "url": "/stories/baseline/795.html"
+      "url": "/stories/baseline/795.html",
+      "status": "pending"
     }
   ],
   "inline_stories": [],
@@ -553,7 +587,8 @@
       "hed": "M35",
       "dek": "M35 is an observing target in Gem carried by the weekly Calendar.",
       "body": "Why it is here: The Calendar selected M35 as one of this week’s fixed-sky observing targets.\n\nHow to find it: Establish the preserved Gem constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.",
-      "url": "/stories/baseline/182.html"
+      "url": "/stories/baseline/182.html",
+      "status": "pending"
     },
     {
       "fixed_object_id": 475,
@@ -561,7 +596,17 @@
       "hed": "α Men",
       "dek": "α Men is a star in Men of catalogue visual magnitude 5.08; its declination determines which latitudes can observe it.",
       "body": "The stored catalogue gives a visual magnitude of 5.08. This is a catalogue value, not a prediction of its brightness this week. Lower magnitudes mean brighter objects; sky brightness and altitude affect whether you can see the star.\n\nIts catalogue position is approximately right ascension 6h 10m and declination -74.8°. These reference coordinates describe its sky location; they are not an observing time or a current altitude.\n\nAt the almanac’s default latitude of 45° N, this star does not rise above the geometric horizon. These are geometric calculations from declination, excluding refraction and local obstructions. Darkness and the time of culmination must still be checked for the observing date and your location.\n\nHow to find it: Establish the preserved Men constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.\n\nSources: Star Almanack’s stored fixed-object and expanded Bayer catalogues; accepted constellation figures and guiding-star routes. Visibility limits are original geometric calculations from catalogue declination, not weekly predictions.",
-      "url": "/stories/baseline/475.html"
+      "url": "/stories/baseline/475.html",
+      "status": "pending"
+    },
+    {
+      "fixed_object_id": 183,
+      "collection": "baseline",
+      "hed": "Collinder 87",
+      "dek": "Collinder 87 is an observing target in Ori carried by the weekly Calendar.",
+      "body": "Why it is here: The Calendar selected Collinder 87 as one of this week’s fixed-sky observing targets.\n\nHow to find it: Establish the preserved Ori constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.",
+      "url": "/stories/baseline/183.html",
+      "status": "pending"
     },
     {
       "fixed_object_id": 792,
@@ -569,7 +614,8 @@
       "hed": "Mirzam",
       "dek": "Mirzam is a star in CMa of catalogue visual magnitude 1.98; its declination determines which latitudes can observe it.",
       "body": "The stored catalogue gives a visual magnitude of 1.98. This is a catalogue value, not a prediction of its brightness this week. Lower magnitudes mean brighter objects; sky brightness and altitude affect whether you can see the star.\n\nIts catalogue position is approximately right ascension 6h 22m and declination -18.0°. These reference coordinates describe its sky location; they are not an observing time or a current altitude.\n\nAt the almanac’s default latitude of 45° N, this star rises and sets, reaching approximately 27° altitude at upper culmination. These are geometric calculations from declination, excluding refraction and local obstructions. Darkness and the time of culmination must still be checked for the observing date and your location.\n\nHow to find it: Establish the preserved CMa constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.\n\nSources: Star Almanack’s stored fixed-object and expanded Bayer catalogues; accepted constellation figures and guiding-star routes. Visibility limits are original geometric calculations from catalogue declination, not weekly predictions.",
-      "url": "/stories/baseline/792.html"
+      "url": "/stories/baseline/792.html",
+      "status": "pending"
     },
     {
       "fixed_object_id": 795,
@@ -577,9 +623,99 @@
       "hed": "Canopus",
       "dek": "Canopus is a star in Car of catalogue visual magnitude -0.62; its declination determines which latitudes can observe it.",
       "body": "The stored catalogue gives a visual magnitude of -0.62. This is a catalogue value, not a prediction of its brightness this week. Lower magnitudes mean brighter objects; sky brightness and altitude affect whether you can see the star.\n\nIts catalogue position is approximately right ascension 6h 23m and declination -52.7°. These reference coordinates describe its sky location; they are not an observing time or a current altitude.\n\nAt the almanac’s default latitude of 45° N, this star does not rise above the geometric horizon. These are geometric calculations from declination, excluding refraction and local obstructions. Darkness and the time of culmination must still be checked for the observing date and your location.\n\nHow to find it: Establish the preserved Car constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.\n\nSources: Star Almanack’s stored fixed-object and expanded Bayer catalogues; accepted constellation figures and guiding-star routes. Visibility limits are original geometric calculations from catalogue declination, not weekly predictions.",
-      "url": "/stories/baseline/795.html"
+      "url": "/stories/baseline/795.html",
+      "status": "pending"
     }
   ],
+  "story_completion": {
+    "week": "2026-W06",
+    "total": 5,
+    "complete": 0,
+    "pending": [
+      {
+        "fixed_object_id": 182,
+        "catalog_target_key": null,
+        "label": "M35",
+        "status": "pending",
+        "stories": [],
+        "reason": "researched story needed"
+      },
+      {
+        "fixed_object_id": 475,
+        "catalog_target_key": null,
+        "label": "α Men",
+        "status": "pending",
+        "stories": [],
+        "reason": "researched story needed"
+      },
+      {
+        "fixed_object_id": 183,
+        "catalog_target_key": null,
+        "label": "Finest NGC 29 / NGC 2194 · Collinder 87",
+        "status": "pending",
+        "stories": [],
+        "reason": "researched story needed"
+      },
+      {
+        "fixed_object_id": 792,
+        "catalog_target_key": null,
+        "label": "Mirzam (β CMa)",
+        "status": "pending",
+        "stories": [],
+        "reason": "researched story needed"
+      },
+      {
+        "fixed_object_id": 795,
+        "catalog_target_key": null,
+        "label": "Canopus (α Car)",
+        "status": "pending",
+        "stories": [],
+        "reason": "researched story needed"
+      }
+    ],
+    "objects": [
+      {
+        "fixed_object_id": 182,
+        "catalog_target_key": null,
+        "label": "M35",
+        "status": "pending",
+        "stories": [],
+        "reason": "researched story needed"
+      },
+      {
+        "fixed_object_id": 475,
+        "catalog_target_key": null,
+        "label": "α Men",
+        "status": "pending",
+        "stories": [],
+        "reason": "researched story needed"
+      },
+      {
+        "fixed_object_id": 183,
+        "catalog_target_key": null,
+        "label": "Finest NGC 29 / NGC 2194 · Collinder 87",
+        "status": "pending",
+        "stories": [],
+        "reason": "researched story needed"
+      },
+      {
+        "fixed_object_id": 792,
+        "catalog_target_key": null,
+        "label": "Mirzam (β CMa)",
+        "status": "pending",
+        "stories": [],
+        "reason": "researched story needed"
+      },
+      {
+        "fixed_object_id": 795,
+        "catalog_target_key": null,
+        "label": "Canopus (α Car)",
+        "status": "pending",
+        "stories": [],
+        "reason": "researched story needed"
+      }
+    ]
+  },
   "planet_finder_artworks": [
     {
       "schema_version": 1,
