@@ -1,0 +1,61 @@
+name: Luna Story Reliability Check
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'tools/luna_story_pipeline.py'
+      - 'research/luna-pilot-candidates.json'
+      - '.github/workflows/luna-story-pipeline.yml'
+      - '.github/workflows/luna-story-reliability-check.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: luna-story-reliability-check-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Compile pipeline
+        run: python3 -m py_compile tools/luna_story_pipeline.py
+      - name: Run no-cost dry run
+        run: python3 tools/luna_story_pipeline.py --model validation-only --input-price 0.10 --output-price 0.40
+      - name: Validate candidate manifest and editorial gate
+        run: |
+          python3 - <<'PY'
+          import importlib.util, json
+          from pathlib import Path
+          manifest = json.loads(Path("research/luna-pilot-candidates.json").read_text())
+          assert len(manifest) == 10, f"Expected 10 candidates, got {len(manifest)}"
+          assert len({str(item["id"]) for item in manifest}) == 10, "Duplicate candidate IDs"
+          assert all(item.get("title") and item.get("sources") for item in manifest), "Incomplete candidate"
+          spec = importlib.util.spec_from_file_location("luna_story_pipeline", "tools/luna_story_pipeline.py")
+          module = importlib.util.module_from_spec(spec)
+          spec.loader.exec_module(module)
+          task = {"title": "Test Star", "sources": ["https://example.org/source"]}
+          gate = module.editorial_gate(task, "Sufficient research notes. " * 8,
+              "Test Star\n" + ("Astronomy story with source context. " * 90) + " https://example.org/source",
+              "Audit checklist with source review and unsupported claims checked.")
+          serialized = json.dumps(gate, indent=2) + "\n"
+          parsed = json.loads(serialized)
+          assert parsed["publication_approved"] is False, "Editorial gate must never self-approve publication"
+          assert parsed["checks"]["no_placeholder"], "Placeholder detector regression"
+          Path("luna-reliability-check.json").write_text(json.dumps({
+              "result": "PASS",
+              "candidate_count": len(manifest),
+              "candidate_ids_unique": True,
+              "publication_auto_approval": False,
+              "paid_api_calls": 0
+          }, indent=2) + "\n")
+          print("PASS: manifest, gate logic, valid JSON output, and no-cost safeguards")
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: luna-story-reliability-check
+          path: luna-reliability-check.json
