@@ -76,6 +76,29 @@ jobs:
               assert (Path(directory) / "123.research.stage.txt").exists()
               print("PASS: stage persisted; resume reused saved output without API call")
           PY
+      - name: Test real Git checkpoint push (free)
+        if: ${{ !inputs.paid_execute }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import os
+          import subprocess
+          from pathlib import Path
+          from tools.luna_story_pipeline import ROOT, OUT, persist_checkpoint
+          marker = OUT / ("checkpoint-push-test-" + os.environ["GITHUB_RUN_ID"] + ".stage.txt")
+          ledger = OUT / "ledger.json"
+          OUT.mkdir(parents=True, exist_ok=True)
+          if not ledger.exists():
+              ledger.write_text('{"estimated_usd": 0.0, "calls": []}\\n')
+          marker.write_text("free GitHub checkpoint persistence test\\n")
+          persist_checkpoint(marker, ledger)
+          remote = subprocess.check_output(
+              ["git", "show", "origin/" + os.environ["GITHUB_REF_NAME"] + ":" + str(marker.relative_to(ROOT))],
+              cwd=ROOT, text=True)
+          assert remote == marker.read_text(), "Remote checkpoint content mismatch"
+          print("PASS: real checkpoint pushed and verified on GitHub")
+          PY
       - name: Run pilot (dry-run by default)
         shell: bash
         env:
