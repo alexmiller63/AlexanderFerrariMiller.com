@@ -1,0 +1,30 @@
+name: Luna Identity Bridge Test
+on:
+  workflow_dispatch:
+  push:
+    branches: [luna-safe-publication-bridge]
+    paths:
+      - 'tools/luna_publication_bridge.py'
+      - '.github/workflows/luna-identity-bridge-test.yml'
+permissions:
+  contents: read
+jobs:
+  identity:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Test permanent ID mapping without paid calls
+        run: |
+          python3 -m py_compile tools/luna_publication_bridge.py
+          python3 tools/luna_publication_bridge.py
+      - name: Save mapping audit
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: luna-identity-bridge-audit
+          path: generated/luna-publication-bridge.json
+          if-no-files-found: warn
