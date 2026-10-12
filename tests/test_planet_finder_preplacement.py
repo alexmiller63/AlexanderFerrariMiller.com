@@ -39,5 +39,37 @@ class GlobalPreplacementTests(unittest.TestCase):
         self.assertEqual(runs[1], runs[2])
 
 
+    def test_geometry_adapter_label_conflict(self):
+        from planet_finder_geometry import Box
+        from planet_finder_preplacement_geometry import (
+            RoutedCandidate, routed_candidates_compatible,
+        )
+        left = RoutedCandidate(Box(100, 100, 40, 30), ((0, 0), (100, 100)))
+        overlap = RoutedCandidate(Box(110, 100, 40, 30), ((0, 200), (110, 100)))
+        self.assertFalse(routed_candidates_compatible(left, overlap))
+
+    def test_geometry_adapter_separated_routes(self):
+        from planet_finder_geometry import Box
+        from planet_finder_preplacement_geometry import (
+            RoutedCandidate, routed_candidates_compatible,
+        )
+        left = RoutedCandidate(Box(100, 100, 30, 30), ((100, 50), (100, 100)))
+        right = RoutedCandidate(Box(300, 300, 30, 30), ((300, 250), (300, 300)))
+        self.assertTrue(routed_candidates_compatible(left, right))
+
+    def test_global_routed_assignment(self):
+        from planet_finder_geometry import Box
+        from planet_finder_preplacement_geometry import (
+            RoutedCandidate, preplace_routed_candidates,
+        )
+        domains = {
+            "Sun": [RoutedCandidate(Box(100, 100, 30, 30), ((100, 50), (100, 100)))],
+            "Moon": [RoutedCandidate(Box(300, 300, 30, 30), ((300, 250), (300, 300)))],
+        }
+        result = preplace_routed_candidates(domains)
+        self.assertEqual(result.reason, "solved")
+        self.assertEqual(set(result.assignment), set(domains))
+
+
 if __name__ == "__main__":
     unittest.main()
