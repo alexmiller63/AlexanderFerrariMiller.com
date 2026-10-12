@@ -87,10 +87,10 @@ jobs:
           from pathlib import Path
           from tools.luna_story_pipeline import ROOT, OUT, persist_checkpoint
           marker = OUT / ("checkpoint-push-test-" + os.environ["GITHUB_RUN_ID"] + ".stage.txt")
-          ledger = OUT / "ledger.json"
+          ledger = OUT / ("checkpoint-push-test-" + os.environ["GITHUB_RUN_ID"] + ".ledger.json")
           OUT.mkdir(parents=True, exist_ok=True)
           if not ledger.exists():
-              ledger.write_text('{"estimated_usd": 0.0, "calls": []}\\n')
+              ledger.write_text('{"estimated_usd": 0.0, "calls": []}' + chr(10))
           marker.write_text("free GitHub checkpoint persistence test\\n")
           persist_checkpoint(marker, ledger)
           remote = subprocess.check_output(
