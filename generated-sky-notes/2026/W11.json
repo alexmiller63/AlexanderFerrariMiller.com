@@ -39,6 +39,11 @@
       "type": "star",
       "name": "β Pyx",
       "constellation": "Pyx"
+    },
+    {
+      "fixed_object_id": 417,
+      "type": "deep-sky",
+      "name": "Omicron Velorum Cluster"
     }
   ],
   "planet_relations": [
@@ -252,7 +257,7 @@
       "sky_separation_deg": 8.5
     }
   ],
-  "note": "ISO 2026-W11 runs from March 9 through March 15. Venus and Saturn are separated by about 0.5° in geocentric ecliptic longitude at the Monday 00:00 UTC snapshot. Saturn and Neptune are separated by about 1.3° in geocentric ecliptic longitude at the Monday 00:00 UTC snapshot.\n\n**Naked eye:** 🌗 Last Quarter — 09:38:31 UTC. Moderate moonlight makes timing and local sky position important for faint targets. Use Avior as the week’s fixed-sky framework.\n\n**Planets:** Moon: Naked eye; magnitude -10.9; direct motion; 72.1% illuminated. Below the horizon at 21:00 local apparent solar time, 45°N. Monday 00:00 UTC snapshot. Conjunction with Pluto in ecliptic longitude Mar 15 00:34 UTC. Mercury: In solar glare; magnitude 5.1; retrograde motion; 1.2% illuminated. Monday 00:00 UTC snapshot. Conjunction with Mars in ecliptic longitude Mar 15 08:08 UTC. Venus: In solar glare; magnitude -3.9; direct motion; 96.8% illuminated. Monday 00:00 UTC snapshot. Mars: In solar glare; magnitude 1.2; direct motion; 99.3% illuminated. Monday 00:00 UTC snapshot. Conjunction with Mercury in ecliptic longitude Mar 15 08:08 UTC. Ceres: Telescope; magnitude 9.1; direct motion; 98.7% illuminated. Below the horizon at 21:00 local apparent solar time, 45°N. Monday 00:00 UTC snapshot. Jupiter: Naked eye; magnitude -2.4; retrograde motion; 99.3% illuminated. Monday 00:00 UTC snapshot. Station Mar 11 03:30 UTC: turns direct. Saturn: In solar glare; magnitude 1.0; direct motion; 100.0% illuminated. Monday 00:00 UTC snapshot. Uranus: Binoculars; magnitude 5.8; direct motion; 99.9% illuminated. Monday 00:00 UTC snapshot. Neptune: In solar glare; magnitude 7.8; direct motion; 100.0% illuminated. Monday 00:00 UTC snapshot. Pluto: Substantial telescope; magnitude 14.6; direct motion; 100.0% illuminated. Below the horizon at 21:00 local apparent solar time, 45°N. Monday 00:00 UTC snapshot. Conjunction with Moon in ecliptic longitude Mar 15 00:34 UTC.\n\n**Binoculars:** Trace Cancer’s charted figure in the finder, then identify Tarf at its charted position. Trace Chamaeleon’s charted figure in the finder, then identify α Cha at its charted position. Trace Volans’s closed figure in the finder, then identify β Vol at its charted position. Trace Pyxis’s charted figure in the finder, then identify β Pyx at its charted position.\n\n**Small telescope:** Concentrate on Beehive Cluster. Increase magnification only after the target and surrounding pattern are secure.\n\n**Substantial telescope:** No fixed-sky Calendar object is classified as requiring a substantial telescope this week.\n\n",
+  "note": "ISO 2026-W11 runs from March 9 through March 15. Venus and Saturn are separated by about 0.5° in geocentric ecliptic longitude at the Monday 00:00 UTC snapshot. Saturn and Neptune are separated by about 1.3° in geocentric ecliptic longitude at the Monday 00:00 UTC snapshot.\n\n**Naked eye:** 🌗 Last Quarter — 09:38:31 UTC. Moderate moonlight makes timing and local sky position important for faint targets. Use Avior as the week’s fixed-sky framework.\n\n**Planets:** Moon: Naked eye; magnitude -10.9; direct motion; 72.1% illuminated. Below the horizon at 21:00 local apparent solar time, 45°N. Monday 00:00 UTC snapshot. Conjunction with Pluto in ecliptic longitude Mar 15 00:34 UTC. Mercury: In solar glare; magnitude 5.1; retrograde motion; 1.2% illuminated. Monday 00:00 UTC snapshot. Conjunction with Mars in ecliptic longitude Mar 15 08:08 UTC. Venus: In solar glare; magnitude -3.9; direct motion; 96.8% illuminated. Monday 00:00 UTC snapshot. Mars: In solar glare; magnitude 1.2; direct motion; 99.3% illuminated. Monday 00:00 UTC snapshot. Conjunction with Mercury in ecliptic longitude Mar 15 08:08 UTC. Ceres: Telescope; magnitude 9.1; direct motion; 98.7% illuminated. Below the horizon at 21:00 local apparent solar time, 45°N. Monday 00:00 UTC snapshot. Jupiter: Naked eye; magnitude -2.4; retrograde motion; 99.3% illuminated. Monday 00:00 UTC snapshot. Station Mar 11 03:30 UTC: turns direct. Saturn: In solar glare; magnitude 1.0; direct motion; 100.0% illuminated. Monday 00:00 UTC snapshot. Uranus: Binoculars; magnitude 5.8; direct motion; 99.9% illuminated. Monday 00:00 UTC snapshot. Neptune: In solar glare; magnitude 7.8; direct motion; 100.0% illuminated. Monday 00:00 UTC snapshot. Pluto: Substantial telescope; magnitude 14.6; direct motion; 100.0% illuminated. Below the horizon at 21:00 local apparent solar time, 45°N. Monday 00:00 UTC snapshot. Conjunction with Moon in ecliptic longitude Mar 15 00:34 UTC.\n\n**Binoculars:** Trace Cancer’s charted figure in the finder, then identify Tarf at its charted position. Trace Chamaeleon’s charted figure in the finder, then identify α Cha at its charted position. Trace Volans’s closed figure in the finder, then identify β Vol at its charted position. Trace Pyxis’s charted figure in the finder, then identify β Pyx at its charted position.\n\n**Small telescope:** Beehive Cluster: consult its dedicated finder and observing story for equipment guidance; Omicron Velorum Cluster: consult its dedicated finder and observing story for equipment guidance\n\n**Substantial telescope:** No fixed-sky Calendar object is classified as requiring a substantial telescope this week.\n\n",
   "descriptors": [
     {
       "schema_version": 1,
@@ -554,6 +559,21 @@
     },
     {
       "schema_version": 1,
+      "id": "417",
+      "type": "deep-sky-object",
+      "name": "Omicron Velorum Cluster",
+      "summary": "deep-sky object selected as a weekly fixed-sky observing target",
+      "representation": {
+        "machine": "./417.json",
+        "human_source": "summary",
+        "human": "/stories/baseline/417.html"
+      },
+      "catalog_name": "Omicron Velorum Cluster",
+      "object_type": "deep-sky object",
+      "source_label": "Omicron Velorum Cluster"
+    },
+    {
+      "schema_version": 1,
       "id": "ecliptic-longitude",
       "type": "observing-concept",
       "name": "ecliptic longitude",
@@ -581,40 +601,45 @@
     38,
     847,
     205,
-    851
+    851,
+    417
   ],
   "story_candidates": [
     {
       "fixed_object_id": 844,
       "collection": "baseline",
       "hed": "Tarf",
-      "dek": "Tarf is a stellar reference in Cnc used by the weekly observing calendar.",
-      "body": "Why it is here: The Calendar selected Tarf for this week’s fixed-sky observing sequence; its permanent object identity ties the weekly entry to the same star used by the finder.\n\nHow to find it: Establish the preserved Cnc constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.",
-      "url": "/stories/baseline/844.html"
+      "dek": "Tarf is a star in Cnc of catalogue visual magnitude 3.53; its declination determines which latitudes can observe it.",
+      "body": "The stored catalogue gives a visual magnitude of 3.53. This is a catalogue value, not a prediction of its brightness this week. Lower magnitudes mean brighter objects; sky brightness and altitude affect whether you can see the star.\n\nIts catalogue position is approximately right ascension 8h 16m and declination +9.2°. These reference coordinates describe its sky location; they are not an observing time or a current altitude.\n\nAt the almanac’s default latitude of 45° N, this star rises and sets, reaching approximately 54° altitude at upper culmination. These are geometric calculations from declination, excluding refraction and local obstructions. Darkness and the time of culmination must still be checked for the observing date and your location.\n\nHow to find it: Establish the preserved Cnc constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.\n\nSources: Star Almanack’s stored fixed-object and expanded Bayer catalogues; accepted constellation figures and guiding-star routes. Visibility limits are original geometric calculations from catalogue declination, not weekly predictions.",
+      "url": "/stories/baseline/844.html",
+      "status": "pending"
     },
     {
       "fixed_object_id": 845,
       "collection": "baseline",
       "hed": "α Cha",
-      "dek": "α Cha is a stellar reference in Cha used by the weekly observing calendar.",
-      "body": "Why it is here: The Calendar selected α Cha for this week’s fixed-sky observing sequence; its permanent object identity ties the weekly entry to the same star used by the finder.\n\nHow to find it: Establish the preserved Cha constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.",
-      "url": "/stories/baseline/845.html"
+      "dek": "α Cha is a star in Cha of catalogue visual magnitude 4.05; its declination determines which latitudes can observe it.",
+      "body": "The stored catalogue gives a visual magnitude of 4.05. This is a catalogue value, not a prediction of its brightness this week. Lower magnitudes mean brighter objects; sky brightness and altitude affect whether you can see the star.\n\nIts catalogue position is approximately right ascension 8h 18m and declination -76.9°. These reference coordinates describe its sky location; they are not an observing time or a current altitude.\n\nAt the almanac’s default latitude of 45° N, this star does not rise above the geometric horizon. These are geometric calculations from declination, excluding refraction and local obstructions. Darkness and the time of culmination must still be checked for the observing date and your location.\n\nHow to find it: Establish the preserved Cha constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.\n\nSources: Star Almanack’s stored fixed-object and expanded Bayer catalogues; accepted constellation figures and guiding-star routes. Visibility limits are original geometric calculations from catalogue declination, not weekly predictions.",
+      "url": "/stories/baseline/845.html",
+      "status": "pending"
     },
     {
       "fixed_object_id": 38,
       "collection": "baseline",
       "hed": "Avior",
-      "dek": "Avior is a stellar reference in Car used by the weekly observing calendar.",
-      "body": "Why it is here: The Calendar selected Avior for this week’s fixed-sky observing sequence; its permanent object identity ties the weekly entry to the same star used by the finder.\n\nHow to find it: Establish the preserved Car constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.",
-      "url": "/stories/baseline/38.html"
+      "dek": "Avior is a star in Car; its declination determines which latitudes can observe it.",
+      "body": "Its catalogue position is approximately right ascension 8h 22m and declination -59.5°. These reference coordinates describe its sky location; they are not an observing time or a current altitude.\n\nAt the almanac’s default latitude of 45° N, this star does not rise above the geometric horizon. These are geometric calculations from declination, excluding refraction and local obstructions. Darkness and the time of culmination must still be checked for the observing date and your location.\n\nHow to find it: Establish the preserved Car constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.\n\nSources: Star Almanack’s stored fixed-object and expanded Bayer catalogues; accepted constellation figures and guiding-star routes. Visibility limits are original geometric calculations from catalogue declination, not weekly predictions.",
+      "url": "/stories/baseline/38.html",
+      "status": "pending"
     },
     {
       "fixed_object_id": 847,
       "collection": "baseline",
       "hed": "β Vol",
-      "dek": "β Vol is a stellar reference in Vol used by the weekly observing calendar.",
-      "body": "Why it is here: The Calendar selected β Vol for this week’s fixed-sky observing sequence; its permanent object identity ties the weekly entry to the same star used by the finder.\n\nHow to find it: Establish the preserved Vol constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.",
-      "url": "/stories/baseline/847.html"
+      "dek": "β Vol is a star in Vol of catalogue visual magnitude 3.77; its declination determines which latitudes can observe it.",
+      "body": "The stored catalogue gives a visual magnitude of 3.77. This is a catalogue value, not a prediction of its brightness this week. Lower magnitudes mean brighter objects; sky brightness and altitude affect whether you can see the star.\n\nIts catalogue position is approximately right ascension 8h 25m and declination -66.1°. These reference coordinates describe its sky location; they are not an observing time or a current altitude.\n\nAt the almanac’s default latitude of 45° N, this star does not rise above the geometric horizon. These are geometric calculations from declination, excluding refraction and local obstructions. Darkness and the time of culmination must still be checked for the observing date and your location.\n\nHow to find it: Establish the preserved Vol constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.\n\nSources: Star Almanack’s stored fixed-object and expanded Bayer catalogues; accepted constellation figures and guiding-star routes. Visibility limits are original geometric calculations from catalogue declination, not weekly predictions.",
+      "url": "/stories/baseline/847.html",
+      "status": "pending"
     },
     {
       "fixed_object_id": 205,
@@ -622,15 +647,26 @@
       "hed": "Beehive Cluster",
       "dek": "Beehive Cluster is an observing target in Cnc carried by the weekly Calendar.",
       "body": "Why it is here: The Calendar selected Beehive Cluster as one of this week’s fixed-sky observing targets.\n\nHow to find it: Establish the preserved Cnc constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.",
-      "url": "/stories/baseline/205.html"
+      "url": "/stories/baseline/205.html",
+      "status": "pending"
     },
     {
       "fixed_object_id": 851,
       "collection": "baseline",
       "hed": "β Pyx",
-      "dek": "β Pyx is a stellar reference in Pyx used by the weekly observing calendar.",
-      "body": "Why it is here: The Calendar selected β Pyx for this week’s fixed-sky observing sequence; its permanent object identity ties the weekly entry to the same star used by the finder.\n\nHow to find it: Establish the preserved Pyx constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.",
-      "url": "/stories/baseline/851.html"
+      "dek": "β Pyx is a star in Pyx of catalogue visual magnitude 3.97; its declination determines which latitudes can observe it.",
+      "body": "The stored catalogue gives a visual magnitude of 3.97. This is a catalogue value, not a prediction of its brightness this week. Lower magnitudes mean brighter objects; sky brightness and altitude affect whether you can see the star.\n\nIts catalogue position is approximately right ascension 8h 40m and declination -35.3°. These reference coordinates describe its sky location; they are not an observing time or a current altitude.\n\nAt the almanac’s default latitude of 45° N, this star rises and sets, reaching approximately 10° altitude at upper culmination. These are geometric calculations from declination, excluding refraction and local obstructions. Darkness and the time of culmination must still be checked for the observing date and your location.\n\nHow to find it: Establish the preserved Pyx constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.\n\nSources: Star Almanack’s stored fixed-object and expanded Bayer catalogues; accepted constellation figures and guiding-star routes. Visibility limits are original geometric calculations from catalogue declination, not weekly predictions.",
+      "url": "/stories/baseline/851.html",
+      "status": "pending"
+    },
+    {
+      "fixed_object_id": 417,
+      "collection": "baseline",
+      "hed": "Omicron Velorum Cluster",
+      "dek": "Omicron Velorum Cluster is an observing target in Vel carried by the weekly Calendar.",
+      "body": "Why it is here: The Calendar selected Omicron Velorum Cluster as one of this week’s fixed-sky observing targets.\n\nHow to find it: Establish the preserved Vel constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.",
+      "url": "/stories/baseline/417.html",
+      "status": "pending"
     }
   ],
   "inline_stories": [],
@@ -640,33 +676,37 @@
       "fixed_object_id": 844,
       "collection": "baseline",
       "hed": "Tarf",
-      "dek": "Tarf is a stellar reference in Cnc used by the weekly observing calendar.",
-      "body": "Why it is here: The Calendar selected Tarf for this week’s fixed-sky observing sequence; its permanent object identity ties the weekly entry to the same star used by the finder.\n\nHow to find it: Establish the preserved Cnc constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.",
-      "url": "/stories/baseline/844.html"
+      "dek": "Tarf is a star in Cnc of catalogue visual magnitude 3.53; its declination determines which latitudes can observe it.",
+      "body": "The stored catalogue gives a visual magnitude of 3.53. This is a catalogue value, not a prediction of its brightness this week. Lower magnitudes mean brighter objects; sky brightness and altitude affect whether you can see the star.\n\nIts catalogue position is approximately right ascension 8h 16m and declination +9.2°. These reference coordinates describe its sky location; they are not an observing time or a current altitude.\n\nAt the almanac’s default latitude of 45° N, this star rises and sets, reaching approximately 54° altitude at upper culmination. These are geometric calculations from declination, excluding refraction and local obstructions. Darkness and the time of culmination must still be checked for the observing date and your location.\n\nHow to find it: Establish the preserved Cnc constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.\n\nSources: Star Almanack’s stored fixed-object and expanded Bayer catalogues; accepted constellation figures and guiding-star routes. Visibility limits are original geometric calculations from catalogue declination, not weekly predictions.",
+      "url": "/stories/baseline/844.html",
+      "status": "pending"
     },
     {
       "fixed_object_id": 845,
       "collection": "baseline",
       "hed": "α Cha",
-      "dek": "α Cha is a stellar reference in Cha used by the weekly observing calendar.",
-      "body": "Why it is here: The Calendar selected α Cha for this week’s fixed-sky observing sequence; its permanent object identity ties the weekly entry to the same star used by the finder.\n\nHow to find it: Establish the preserved Cha constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.",
-      "url": "/stories/baseline/845.html"
+      "dek": "α Cha is a star in Cha of catalogue visual magnitude 4.05; its declination determines which latitudes can observe it.",
+      "body": "The stored catalogue gives a visual magnitude of 4.05. This is a catalogue value, not a prediction of its brightness this week. Lower magnitudes mean brighter objects; sky brightness and altitude affect whether you can see the star.\n\nIts catalogue position is approximately right ascension 8h 18m and declination -76.9°. These reference coordinates describe its sky location; they are not an observing time or a current altitude.\n\nAt the almanac’s default latitude of 45° N, this star does not rise above the geometric horizon. These are geometric calculations from declination, excluding refraction and local obstructions. Darkness and the time of culmination must still be checked for the observing date and your location.\n\nHow to find it: Establish the preserved Cha constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.\n\nSources: Star Almanack’s stored fixed-object and expanded Bayer catalogues; accepted constellation figures and guiding-star routes. Visibility limits are original geometric calculations from catalogue declination, not weekly predictions.",
+      "url": "/stories/baseline/845.html",
+      "status": "pending"
     },
     {
       "fixed_object_id": 38,
       "collection": "baseline",
       "hed": "Avior",
-      "dek": "Avior is a stellar reference in Car used by the weekly observing calendar.",
-      "body": "Why it is here: The Calendar selected Avior for this week’s fixed-sky observing sequence; its permanent object identity ties the weekly entry to the same star used by the finder.\n\nHow to find it: Establish the preserved Car constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.",
-      "url": "/stories/baseline/38.html"
+      "dek": "Avior is a star in Car; its declination determines which latitudes can observe it.",
+      "body": "Its catalogue position is approximately right ascension 8h 22m and declination -59.5°. These reference coordinates describe its sky location; they are not an observing time or a current altitude.\n\nAt the almanac’s default latitude of 45° N, this star does not rise above the geometric horizon. These are geometric calculations from declination, excluding refraction and local obstructions. Darkness and the time of culmination must still be checked for the observing date and your location.\n\nHow to find it: Establish the preserved Car constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.\n\nSources: Star Almanack’s stored fixed-object and expanded Bayer catalogues; accepted constellation figures and guiding-star routes. Visibility limits are original geometric calculations from catalogue declination, not weekly predictions.",
+      "url": "/stories/baseline/38.html",
+      "status": "pending"
     },
     {
       "fixed_object_id": 847,
       "collection": "baseline",
       "hed": "β Vol",
-      "dek": "β Vol is a stellar reference in Vol used by the weekly observing calendar.",
-      "body": "Why it is here: The Calendar selected β Vol for this week’s fixed-sky observing sequence; its permanent object identity ties the weekly entry to the same star used by the finder.\n\nHow to find it: Establish the preserved Vol constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.",
-      "url": "/stories/baseline/847.html"
+      "dek": "β Vol is a star in Vol of catalogue visual magnitude 3.77; its declination determines which latitudes can observe it.",
+      "body": "The stored catalogue gives a visual magnitude of 3.77. This is a catalogue value, not a prediction of its brightness this week. Lower magnitudes mean brighter objects; sky brightness and altitude affect whether you can see the star.\n\nIts catalogue position is approximately right ascension 8h 25m and declination -66.1°. These reference coordinates describe its sky location; they are not an observing time or a current altitude.\n\nAt the almanac’s default latitude of 45° N, this star does not rise above the geometric horizon. These are geometric calculations from declination, excluding refraction and local obstructions. Darkness and the time of culmination must still be checked for the observing date and your location.\n\nHow to find it: Establish the preserved Vol constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.\n\nSources: Star Almanack’s stored fixed-object and expanded Bayer catalogues; accepted constellation figures and guiding-star routes. Visibility limits are original geometric calculations from catalogue declination, not weekly predictions.",
+      "url": "/stories/baseline/847.html",
+      "status": "pending"
     },
     {
       "fixed_object_id": 205,
@@ -674,17 +714,149 @@
       "hed": "Beehive Cluster",
       "dek": "Beehive Cluster is an observing target in Cnc carried by the weekly Calendar.",
       "body": "Why it is here: The Calendar selected Beehive Cluster as one of this week’s fixed-sky observing targets.\n\nHow to find it: Establish the preserved Cnc constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.",
-      "url": "/stories/baseline/205.html"
+      "url": "/stories/baseline/205.html",
+      "status": "pending"
     },
     {
       "fixed_object_id": 851,
       "collection": "baseline",
       "hed": "β Pyx",
-      "dek": "β Pyx is a stellar reference in Pyx used by the weekly observing calendar.",
-      "body": "Why it is here: The Calendar selected β Pyx for this week’s fixed-sky observing sequence; its permanent object identity ties the weekly entry to the same star used by the finder.\n\nHow to find it: Establish the preserved Pyx constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.",
-      "url": "/stories/baseline/851.html"
+      "dek": "β Pyx is a star in Pyx of catalogue visual magnitude 3.97; its declination determines which latitudes can observe it.",
+      "body": "The stored catalogue gives a visual magnitude of 3.97. This is a catalogue value, not a prediction of its brightness this week. Lower magnitudes mean brighter objects; sky brightness and altitude affect whether you can see the star.\n\nIts catalogue position is approximately right ascension 8h 40m and declination -35.3°. These reference coordinates describe its sky location; they are not an observing time or a current altitude.\n\nAt the almanac’s default latitude of 45° N, this star rises and sets, reaching approximately 10° altitude at upper culmination. These are geometric calculations from declination, excluding refraction and local obstructions. Darkness and the time of culmination must still be checked for the observing date and your location.\n\nHow to find it: Establish the preserved Pyx constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.\n\nSources: Star Almanack’s stored fixed-object and expanded Bayer catalogues; accepted constellation figures and guiding-star routes. Visibility limits are original geometric calculations from catalogue declination, not weekly predictions.",
+      "url": "/stories/baseline/851.html",
+      "status": "pending"
+    },
+    {
+      "fixed_object_id": 417,
+      "collection": "baseline",
+      "hed": "Omicron Velorum Cluster",
+      "dek": "Omicron Velorum Cluster is an observing target in Vel carried by the weekly Calendar.",
+      "body": "Why it is here: The Calendar selected Omicron Velorum Cluster as one of this week’s fixed-sky observing targets.\n\nHow to find it: Establish the preserved Vel constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.",
+      "url": "/stories/baseline/417.html",
+      "status": "pending"
     }
   ],
+  "story_completion": {
+    "week": "2026-W11",
+    "total": 7,
+    "complete": 0,
+    "pending": [
+      {
+        "fixed_object_id": 844,
+        "catalog_target_key": null,
+        "label": "Tarf (β Cnc)",
+        "status": "pending",
+        "stories": [],
+        "reason": "researched story needed"
+      },
+      {
+        "fixed_object_id": 845,
+        "catalog_target_key": null,
+        "label": "α Cha",
+        "status": "pending",
+        "stories": [],
+        "reason": "researched story needed"
+      },
+      {
+        "fixed_object_id": 38,
+        "catalog_target_key": null,
+        "label": "Avior (ε Car)",
+        "status": "pending",
+        "stories": [],
+        "reason": "researched story needed"
+      },
+      {
+        "fixed_object_id": 847,
+        "catalog_target_key": null,
+        "label": "β Vol",
+        "status": "pending",
+        "stories": [],
+        "reason": "researched story needed"
+      },
+      {
+        "fixed_object_id": 205,
+        "catalog_target_key": null,
+        "label": "M44",
+        "status": "pending",
+        "stories": [],
+        "reason": "researched story needed"
+      },
+      {
+        "fixed_object_id": 851,
+        "catalog_target_key": null,
+        "label": "β Pyx",
+        "status": "pending",
+        "stories": [],
+        "reason": "researched story needed"
+      },
+      {
+        "fixed_object_id": 417,
+        "catalog_target_key": null,
+        "label": "C85 / IC 2391 · Omicron Velorum Cluster",
+        "status": "pending",
+        "stories": [],
+        "reason": "researched story needed"
+      }
+    ],
+    "objects": [
+      {
+        "fixed_object_id": 844,
+        "catalog_target_key": null,
+        "label": "Tarf (β Cnc)",
+        "status": "pending",
+        "stories": [],
+        "reason": "researched story needed"
+      },
+      {
+        "fixed_object_id": 845,
+        "catalog_target_key": null,
+        "label": "α Cha",
+        "status": "pending",
+        "stories": [],
+        "reason": "researched story needed"
+      },
+      {
+        "fixed_object_id": 38,
+        "catalog_target_key": null,
+        "label": "Avior (ε Car)",
+        "status": "pending",
+        "stories": [],
+        "reason": "researched story needed"
+      },
+      {
+        "fixed_object_id": 847,
+        "catalog_target_key": null,
+        "label": "β Vol",
+        "status": "pending",
+        "stories": [],
+        "reason": "researched story needed"
+      },
+      {
+        "fixed_object_id": 205,
+        "catalog_target_key": null,
+        "label": "M44",
+        "status": "pending",
+        "stories": [],
+        "reason": "researched story needed"
+      },
+      {
+        "fixed_object_id": 851,
+        "catalog_target_key": null,
+        "label": "β Pyx",
+        "status": "pending",
+        "stories": [],
+        "reason": "researched story needed"
+      },
+      {
+        "fixed_object_id": 417,
+        "catalog_target_key": null,
+        "label": "C85 / IC 2391 · Omicron Velorum Cluster",
+        "status": "pending",
+        "stories": [],
+        "reason": "researched story needed"
+      }
+    ]
+  },
   "planet_finder_artworks": [
     {
       "schema_version": 1,
