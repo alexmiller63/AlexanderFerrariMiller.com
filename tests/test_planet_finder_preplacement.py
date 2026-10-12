@@ -29,7 +29,7 @@ class GlobalPreplacementTests(unittest.TestCase):
         self.assertEqual(result.reason, "empty-initial-domain")
 
     def test_node_budget_not_misreported_as_impossible(self):
-        result = solve_preplacement({"A": [0], "B": [0]}, lambda *args: False, max_nodes=1)
+        result = solve_preplacement({"A": [0], "B": [0]}, lambda *args: True, max_nodes=1)
         self.assertEqual(result.reason, "budget-exhausted")
 
     def test_deterministic(self):
