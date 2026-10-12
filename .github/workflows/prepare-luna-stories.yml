@@ -1,0 +1,54 @@
+name: Prepare Ten Recovered Luna Stories
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/prepare-luna-stories.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: prepare-ten-recovered-luna-stories
+  cancel-in-progress: false
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Validate source, permanent IDs and draft format without spending API credits
+        run: |
+          python -m py_compile tools/import_luna_pilot.py tools/story_audit.py tools/publish_stories.py
+          python tools/import_luna_pilot.py
+      - name: Safely import outstanding manuscripts as pending and save them
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          for attempt in 1 2 3 4 5 6 7 8; do
+            git fetch origin main
+            git reset --hard origin/main
+            python tools/import_luna_pilot.py --write
+            python tools/publish_stories.py --dry-run
+            git add stories/
+            if git diff --cached --quiet; then
+              echo "All ten manuscripts already exist. No changes."
+              exit 0
+            fi
+            git commit -m "Save ten recovered Luna manuscripts as pending editorial stories"
+            if git push origin HEAD:main; then
+              echo "Manuscripts preserved. The existing reviewed-story publisher handles approval-gated HTML."
+              exit 0
+            fi
+            echo "Concurrent main update; retrying ($attempt/8)."
+            sleep "$((attempt * 3))"
+          done
+          echo "Unable to save manuscripts after eight retries."
+          exit 1
