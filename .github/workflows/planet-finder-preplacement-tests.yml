@@ -20,5 +20,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+      - name: Install astronomy test dependency
+        run: python -m pip install skyfield
       - name: Run global preplacement unit tests
         run: python -m unittest discover -s tests -p test_planet_finder_preplacement.py -v
