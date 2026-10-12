@@ -78,8 +78,23 @@ jobs:
             echo "No new pilot outputs to save."
           else
             git commit -m "Save completed Luna pilot outputs"
-            git push
-            echo "Completed stories, research, audits, and ledger committed to the repository."
+            branch="${GITHUB_REF_NAME}"
+            for attempt in 1 2 3; do
+              git fetch origin "$branch"
+              if ! git rebase "origin/$branch"; then
+                git rebase --abort || true
+                echo "Could not safely rebase pilot outputs; artifact upload will preserve this run."
+                exit 1
+              fi
+              if git push origin "HEAD:$branch"; then
+                echo "Completed stories, research, audits, and ledger committed to the repository."
+                exit 0
+              fi
+              echo "Push raced with another update (attempt $attempt/3); retrying."
+              sleep 2
+            done
+            echo "Could not push after three attempts; artifact upload will preserve this run."
+            exit 1
           fi
       - uses: actions/upload-artifact@v4
         if: always()
