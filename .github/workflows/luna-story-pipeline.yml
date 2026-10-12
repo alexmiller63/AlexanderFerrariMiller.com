@@ -67,7 +67,7 @@ jobs:
               def ask(name, instruction, source):
                   calls.append(name)
                   return "verified checkpoint content"
-              namespace = {"OUT": Path(directory), "ask": ask}
+              namespace = {"OUT": Path(directory), "ask": ask, "ledger_file": Path(directory) / "ledger.json", "persist_checkpoint": lambda *a: None}
               exec(code, namespace)
               saved = namespace["stage"]("123", "research", "instruction", "source")
               recovered = namespace["stage"]("123", "research", "instruction", "source")
