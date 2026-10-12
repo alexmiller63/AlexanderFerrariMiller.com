@@ -79,25 +79,33 @@ jobs:
           branch="${GITHUB_REF_NAME}"
           snapshot="$RUNNER_TEMP/luna-pilot-save"
           mkdir -p "$snapshot"
-          if [[ -d generated/luna-pilot ]]; then
-            cp -a generated/luna-pilot/. "$snapshot/"
-          else
+          if [[ ! -d generated/luna-pilot ]]; then
             echo "No pilot output directory exists; nothing to save."
             exit 0
           fi
+          cp -a generated/luna-pilot/. "$snapshot/"
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          # Rebase is intentionally avoided: concurrent site builds frequently advance main.
-          # Preserve this run's files outside the checkout, reset to the newest remote head,
-          # reapply the snapshot, and retry the fast-forward push with increasing backoff.
+          # Preserve existing repository files. Conflicting run output is saved separately.
           for attempt in 1 2 3 4 5 6 7 8; do
             git fetch origin "$branch"
             git reset --hard "origin/$branch"
-            mkdir -p generated/luna-pilot
-            cp -a "$snapshot"/. generated/luna-pilot/
-            git add generated/luna-pilot/
+            while IFS= read -r -d '' source; do
+              rel="${source#"$snapshot"/}"
+              dest="generated/luna-pilot/$rel"
+              if [[ -f "$dest" ]]; then
+                if cmp -s "$source" "$dest"; then
+                  continue
+                fi
+                dest="generated/luna-pilot-recovery/${GITHUB_RUN_ID}/$rel"
+                echo "Preserving conflicting output separately: $dest"
+              fi
+              mkdir -p "$(dirname "$dest")"
+              cp "$source" "$dest"
+            done < <(find "$snapshot" -type f -print0)
+            git add generated/luna-pilot/ generated/luna-pilot-recovery/
             if git diff --cached --quiet; then
-              echo "All pilot outputs are already saved on $branch."
+              echo "All pilot outputs are already saved; no changes needed."
               exit 0
             fi
             git commit -m "Save completed Luna pilot outputs"
@@ -108,7 +116,7 @@ jobs:
             echo "Save push raced with another repository update (attempt $attempt/8)."
             sleep "$((attempt * 3))"
           done
-          echo "Save did not reach the repository after eight attempts; the uploaded artifact remains the recovery copy."
+          echo "Save did not reach the repository after eight attempts; uploaded artifact remains the recovery copy."
           exit 1
       - uses: actions/upload-artifact@v4
         if: always()
