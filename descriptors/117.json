@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "id": "117",
+  "type": "star",
+  "name": "Scheat",
+  "summary": "bright star in Pegasus used as a fixed-sky reference",
+  "representation": {
+    "machine": "./117.json",
+    "human_source": "summary",
+    "human": "/stories/baseline/117.html"
+  },
+  "constellation_abbreviation": "Peg",
+  "constellation": "Pegasus",
+  "position": {
+    "ra_deg": 345.943515,
+    "dec_deg": 28.082789,
+    "ecliptic_longitude_deg": 359.37413,
+    "ecliptic_latitude_deg": 31.140539
+  },
+  "representative_visual_magnitude": 2.44,
+  "guiding_asterisms": [
+    {
+      "id": "1368",
+      "geometry_key": "asterism-great-square-of-pegasus",
+      "name": "Great Square of Pegasus",
+      "relationship": "visual-member",
+      "provenance": {
+        "source": "NASA",
+        "source_url": "https://science.nasa.gov/solar-system/skywatching/night-sky-network/connecting-the-dots-with-asterisms/",
+        "source_role": "verification",
+        "supports": "visual-membership"
+      }
+    }
+  ]
+}

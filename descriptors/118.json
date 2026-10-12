@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "id": "118",
+  "type": "star",
+  "name": "Markab",
+  "summary": "bright star in Pegasus used as a fixed-sky reference",
+  "representation": {
+    "machine": "./118.json",
+    "human_source": "summary",
+    "human": "/stories/baseline/118.html"
+  },
+  "constellation_abbreviation": "Peg",
+  "constellation": "Pegasus",
+  "position": {
+    "ra_deg": 346.19022,
+    "dec_deg": 15.205264,
+    "ecliptic_longitude_deg": 353.485601,
+    "ecliptic_latitude_deg": 19.406028
+  },
+  "representative_visual_magnitude": 2.49,
+  "guiding_asterisms": [
+    {
+      "id": "1368",
+      "geometry_key": "asterism-great-square-of-pegasus",
+      "name": "Great Square of Pegasus",
+      "relationship": "visual-member",
+      "provenance": {
+        "source": "NASA",
+        "source_url": "https://science.nasa.gov/solar-system/skywatching/night-sky-network/connecting-the-dots-with-asterisms/",
+        "source_role": "verification",
+        "supports": "visual-membership"
+      }
+    }
+  ]
+}
