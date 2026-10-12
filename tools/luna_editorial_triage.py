@@ -26,7 +26,7 @@ def inspect(task):
         record["issues"].append("Missing: " + ", ".join(missing))
         return record
     raw = manuscript.read_text(encoding="utf-8")
-    gate = json.loads(gate_file.read_text(encoding="utf-8"))
+    gate = json.loads(gate_file.read_text(encoding="utf-8").rstrip().removesuffix("\\n"))
     audit = audit_file.read_text(encoding="utf-8").strip()
     if not re.search(r"(?m)^#\s+\S", raw):
         record["issues"].append("Publisher-compatible Markdown H1 missing")
