@@ -1,0 +1,50 @@
+name: Luna Story Pilot - Safety Preflight
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  preflight:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      STORY_LIMIT: "10"
+      TARGET_USD: "0.10"
+      CEILING_USD: "1.00"
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check pilot safeguards without API calls
+        run: |
+          python3 - <<'PY'
+          import json, os
+          from pathlib import Path
+          progress = json.loads(Path("research/story-progress-2026.json").read_text())
+          existing = []
+          for week, data in progress.get("weeks", {}).items():
+              for key, record in data.get("objects", {}).items():
+                  source = record.get("source")
+                  if source and Path(source).is_file():
+                      existing.append({"week": week, "id": key, "path": source})
+          assert int(os.environ["STORY_LIMIT"]) == 10
+          assert 0 < float(os.environ["TARGET_USD"]) < float(os.environ["CEILING_USD"])
+          report = {
+              "mode": "dry-run-only",
+              "paid_api_calls": 0,
+              "stories_written": 0,
+              "story_limit": 10,
+              "target_usd": 0.10,
+              "ceiling_usd": 1.00,
+              "existing_story_files_protected": len(existing),
+              "existing_story_examples": existing[:10],
+              "status": "preflight only; generator, model, pricing and billing controls not yet verified",
+          }
+          Path("luna-pilot-preflight.json").write_text(json.dumps(report, indent=2) + "\n")
+          print(json.dumps(report, indent=2))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: luna-pilot-preflight
+          path: luna-pilot-preflight.json
