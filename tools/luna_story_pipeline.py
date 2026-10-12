@@ -128,6 +128,20 @@ def main():
                     "Audit the draft against the research. Identify unsupported facts, "
                     "missing citations, and ambiguities. Return a concise checklist; "
                     "do not declare verified publication.", research + "\n\nDRAFT:\n" + draft)
+        # One bounded correction pass, only if deterministic screening fails.
+        initial_gate = editorial_gate(task, research, draft, audit)
+        if not initial_gate["screen_passed"] and ledger["estimated_usd"] + reserve * 2 <= CAP:
+            revised = ask(ident + ":correction",
+                          "Revise this draft to address the listed structural issues. "
+                          "Use only facts supported by the research. Preserve accurate citations. "
+                          "Return the complete 450-650 word story, without commentary.",
+                          json.dumps(initial_gate["checks"]) + "\\nRESEARCH:\\n" +
+                          research + "\\nDRAFT:\\n" + draft)
+            revised_audit = ask(ident + ":reaudit",
+                                "Independently audit this revised story against the supplied research. "
+                                "Identify unsupported claims and missing citations.",
+                                research + "\\nDRAFT:\\n" + revised)
+            draft, audit = revised, revised_audit
         # Exclusive create, never replace existing work. Audit is saved separately.
         with dest.open("x", encoding="utf-8") as f:
             f.write(draft + "\n")
