@@ -212,6 +212,8 @@ def main():
     key = os.environ.get("OPENAI_API_KEY")
     if not key:
         ap.error("OPENAI_API_KEY not configured")
+    if not ledger_file.exists():
+        ledger_file.write_text(json.dumps(ledger, indent=2) + chr(10))
     # Conservative per-call reserve: 25% margin. This is NOT an account-level billing cap.
     reserve = 1.25 * (MAX_INPUT * args.input_price + MAX_OUTPUT * args.output_price) / 1_000_000
     def ask(stage, instruction, source):
@@ -268,26 +270,28 @@ def main():
         if ledger["estimated_usd"] + reserve * sum(not (OUT / (ident + "." + name + ".stage.txt")).exists() for name in ("research", "draft", "audit")) > CAP:
             print("STOP: cannot reserve 3 stages within budget")
             break
-        # No search tool is implied: retrieve provided sources and require evidence.
-        evidence = []
-        for url in task["sources"][:3]:
-            if not url.startswith("https://"):
-                raise RuntimeError("Non-HTTPS source")
-            try:
-                page = request_json(url)
-                parser = PageText()
-                parser.feed(page)
-                clean = unescape(" ".join(parser.parts))
-                clean = re.sub(r"\s+", " ", clean)
-                evidence.append({"url": url, "excerpt": clean[:7000]})
-            except Exception as exc:
-                print("Source unavailable:", url, type(exc).__name__)
-        if not evidence:
-            print("SKIP: no retrievable research evidence", ident)
-            continue
-        # Preserve the exact retrieved excerpts used for factual review.
-        # Never silently replace evidence on a resumed run.
-        evidence = save_or_recover_evidence(OUT / (ident + ".evidence.json"), evidence, ledger_file)
+        evidence_path = OUT / (ident + ".evidence.json")
+        if evidence_path.exists():
+            evidence = save_or_recover_evidence(evidence_path, [], ledger_file)
+            print("RESUME", ident, "evidence", flush=True)
+        else:
+            evidence = []
+            for url in task["sources"][:3]:
+                if not url.startswith("https://"):
+                    raise RuntimeError("Non-HTTPS source")
+                try:
+                    page = request_json(url)
+                    parser = PageText()
+                    parser.feed(page)
+                    clean = unescape(" ".join(parser.parts))
+                    clean = re.sub(r"\s+", " ", clean)
+                    evidence.append({"url": url, "excerpt": clean[:7000]})
+                except Exception as exc:
+                    print("Source unavailable:", url, type(exc).__name__)
+            if not evidence:
+                print("SKIP: no retrievable research evidence", ident)
+                continue
+            evidence = save_or_recover_evidence(evidence_path, evidence, ledger_file)
         basis = json.dumps({"task": task, "retrieved_sources": evidence}, ensure_ascii=False)
         research = stage(ident, "research",
                        "Extract only supported, attributable astronomy facts. Cite exact URLs. "
