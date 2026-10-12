@@ -131,6 +131,23 @@ def evidence_support_matrix(draft, evidence):
     return {"claims": claims, "verified_claims": 0,
             "requires_independent_review": True}
 
+def exact_source_claim_check(draft, evidence):
+    """Deterministic quote validation; paraphrases require separate review."""
+    sources = {e["url"]: re.sub(r"\\s+", " ", e.get("excerpt", "")).strip()
+               for e in evidence}
+    quotes = re.findall(r'["“]([^"”]{12,240})["”]', draft)
+    results = []
+    for quote in quotes:
+        normalized = re.sub(r"\\s+", " ", quote).strip().casefold()
+        matching = [url for url, excerpt in sources.items()
+                    if normalized in excerpt.casefold()]
+        results.append({"quoted_text": quote, "source_matches": matching,
+                        "exact_text_confirmed": bool(matching)})
+    return {"quoted_passages": results,
+            "all_quoted_passages_confirmed": all(x["exact_text_confirmed"] for x in results),
+            "paraphrased_claims_verified": False,
+            "publication_approved": False}
+
 def persist_checkpoint(path, ledger_file):
     """Commit and push each completed paid stage before spending on the next."""
     if os.environ.get("GITHUB_ACTIONS") != "true":
@@ -289,6 +306,7 @@ def main():
         gate["source_verification"] = verify_source_evidence(task, research, draft, evidence)
         gate["claim_evidence_review"] = claim_evidence_review(research, draft, evidence)
         gate["evidence_support_matrix"] = evidence_support_matrix(draft, evidence)
+        gate["exact_source_claim_check"] = exact_source_claim_check(draft, evidence)
         (OUT / (ident + ".gate.json")).write_text(json.dumps(gate, indent=2) + "\n")
         print("DRAFT", ident, "screen_passed", gate["screen_passed"],
               "publication_approved", gate["publication_approved"],
