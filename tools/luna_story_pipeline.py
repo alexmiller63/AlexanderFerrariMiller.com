@@ -93,7 +93,18 @@ def main():
         match = re.search(r"Registry identity:\\s*HIP\\s+(\\d+)", task.get("facts", ""))
         if not match:
             raise RuntimeError("Missing HIP identity for pilot task " + pilot_id)
-        ident = "HIP-" + match.group(1)
+        # Resolve HIP only as a catalogue cross-reference, not as the story ID.
+        objects = json.loads((ROOT / "database/fixed-objects.json").read_text())["fixed_objects"]
+        matches = [obj["fixed_object_id"] for obj in objects if any(
+            re.search(r"\\bHIP\\s+" + re.escape(match.group(1)) + r"\\b",
+                      str(source.get("source_key", "")))
+            for source in obj.get("source_records", []))]
+        if len(matches) != 1:
+            raise RuntimeError("Expected one permanent object ID for task " + pilot_id)
+        ident = str(matches[0])
+        if list((ROOT / "stories").glob("*/" + ident + ".md")):
+            print("SKIP: existing story", ident)
+            continue
         # Keep drafts separate from the permanent story collection until the
         # registry mapping and independent publication checks are complete.
         dest = OUT / (ident + ".md")
