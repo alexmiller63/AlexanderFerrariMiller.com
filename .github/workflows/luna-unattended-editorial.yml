@@ -15,6 +15,7 @@ on:
       - 'tools/luna_conservative_corrections.py'
       - 'tools/luna_narrative_review.py'
       - 'tools/luna_finder_link_review.py'
+      - 'tools/luna_finder_svg_review.py'
       - '.github/workflows/luna-unattended-editorial.yml'
       - 'research/luna-pilot-recovered/**'
 permissions:
@@ -46,6 +47,7 @@ jobs:
           python3 tools/luna_conservative_corrections.py
           python3 tools/luna_narrative_review.py
           python3 tools/luna_finder_link_review.py
+          python3 tools/luna_finder_svg_review.py
       - name: Preserve progress reports even on failure
         if: always()
         uses: actions/upload-artifact@v4
