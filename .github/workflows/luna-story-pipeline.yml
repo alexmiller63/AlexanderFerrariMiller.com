@@ -39,6 +39,17 @@ jobs:
       OPENAI_API_KEY: ${{ inputs.paid_execute && secrets.OPENAI_API_KEY || '' }}
     steps:
       - uses: actions/checkout@v4
+      - name: Preflight all ten catalogue identities (free)
+        run: |
+          python3 - <<'PY'
+          import json
+          from tools.luna_story_pipeline import ROOT, resolve_objects
+          tasks = json.loads((ROOT / "research/luna-pilot-candidates.json").read_text())
+          resolved = resolve_objects(tasks)
+          assert len(resolved) == 10 and len(set(resolved.values())) == 10
+          for task in tasks:
+              print(f"Task {task['id']}: {task['title']} -> permanent object {resolved[str(task['id'])]}")
+          PY
       - name: Run pilot (dry-run by default)
         shell: bash
         env:
