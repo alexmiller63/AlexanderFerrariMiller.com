@@ -25,7 +25,10 @@ def main():
             results.append({"id":fid,"result":"already_exists"})
             continue
         try:
+            names={"Algenib":"Peg","Ruchbah":"Cas","Segin":"Cas","Xi Ceti":"Cet","Gamma Ceti":"Cet"}
             task={"fixed_object_id":fid,"name":item["title"],"type":"star"}
+            if item["title"] in names:
+                task["constellation"]=names[item["title"]]
             spec=artwork.make_spec(task,registry,by_hip,metadata)
             specpath.parent.mkdir(parents=True,exist_ok=True)
             specpath.write_text(json.dumps(spec,indent=2,ensure_ascii=False)+"\n",encoding="utf-8")
