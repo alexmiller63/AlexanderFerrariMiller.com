@@ -34,9 +34,12 @@ def main():
         raw = src.read_text(encoding="utf-8")
         hed = re.search(r"(?m)^Hed:\s*(.+)$", raw)
         dek = re.search(r"(?m)^Dek:\s*(.+)$", raw)
-        if not hed or not dek:
+        if not dek:
             status.append({"task_id": task["id"], "status": "blocked_structure"})
             continue
+        title = hed.group(1).strip() if hed else raw.splitlines()[0].strip()
+        if not title:
+            title = task["title"]
         body = re.sub(r"(?m)^Hed:.*\n|^Dek:.*\n", "", raw).strip()
         body = re.sub(r"^---\s*", "", body).strip()
         collection = "alpha-stars" if task["title"] in ("Alpheratz", "Schedar", "Polaris") else "beta-stars" if task["title"] == "Caph" else "special-stars"
@@ -45,7 +48,7 @@ def main():
         target.write_text(
             "---\nfixed_object_id: " + str(permanent_id) +
             "\nstatus: pending\nresearch_checked: false\nfinder_checked: false\npublication_checked: false\n---\n\n# " +
-            hed.group(1).strip() + "\n\n" + dek.group(1).strip() + "\n\n" + body + "\n",
+            title + "\n\n" + dek.group(1).strip() + "\n\n" + body + "\n",
             encoding="utf-8")
         status.append({"task_id": task["id"], "fixed_object_id": permanent_id,
                        "status": "prepared_pending_review", "path": str(target.relative_to(ROOT))})
