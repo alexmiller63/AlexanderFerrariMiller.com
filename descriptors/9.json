@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "id": "9",
+  "type": "star",
+  "name": "Polaris",
+  "summary": "bright star in Ursa Minor used as a fixed-sky reference",
+  "representation": {
+    "machine": "./9.json",
+    "human_source": "summary",
+    "human": "/stories/baseline/9.html"
+  },
+  "constellation_abbreviation": "UMi",
+  "constellation": "Ursa Minor",
+  "position": {
+    "ra_deg": 37.94625,
+    "dec_deg": 89.264109,
+    "ecliptic_longitude_deg": 88.567428,
+    "ecliptic_latitude_deg": 66.101545
+  },
+  "representative_visual_magnitude": 1.97,
+  "guiding_asterisms": [
+    {
+      "id": "1363",
+      "geometry_key": "asterism-little-dipper",
+      "name": "Little Dipper",
+      "relationship": "visual-member",
+      "provenance": {
+        "source": "Astronomical League",
+        "source_url": "https://www.astroleague.org/wp-content/uploads/2025/12/Asterism_List_20251223.pdf",
+        "source_role": "verification",
+        "supports": "visual-membership"
+      }
+    }
+  ]
+}
