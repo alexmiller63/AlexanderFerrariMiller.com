@@ -46,6 +46,8 @@ jobs:
           args=(--model "$MODEL" --input-price "$INPUT_PRICE" --output-price "$OUTPUT_PRICE")
           if [[ "$PAID_EXECUTE" == "true" ]]; then args+=(--execute); fi
           python3 tools/luna_story_pipeline.py "${args[@]}"
+      - name: Compile-check editorial pipeline
+        run: python3 -m py_compile tools/luna_story_pipeline.py
       - name: Validate pilot output structure
         if: always()
         shell: bash
