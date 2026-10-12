@@ -1,0 +1,37 @@
+name: Luna Unattended Editorial Triage
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'tools/luna_editorial_triage.py'
+      - '.github/workflows/luna-unattended-editorial.yml'
+      - 'research/luna-pilot-recovered/**'
+permissions:
+  contents: read
+concurrency:
+  group: luna-editorial-triage
+  cancel-in-progress: false
+jobs:
+  triage:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Check ten manuscripts without paid API calls
+        run: |
+          python3 -m py_compile tools/luna_editorial_triage.py
+          python3 tools/luna_publication_bridge.py
+          python3 tools/luna_editorial_triage.py
+      - name: Preserve progress reports even on failure
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: luna-editorial-progress
+          path: |
+            generated/luna-editorial-triage.json
+            generated/luna-publication-bridge.json
+          if-no-files-found: warn
