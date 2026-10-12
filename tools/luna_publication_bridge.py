@@ -20,11 +20,11 @@ def main():
         matches = [obj for obj in objects if hip and any(
             re.search(r"\bHIP\s+" + re.escape(hip) + r"\b", str(source.get("source_key", "")))
             for source in obj.get("source_records", []))]
-        draft = ROOT / "generated/luna-pilot" / (str(task["id"]) + ".md")
+        draft = ROOT / "research/luna-pilot-recovered/38194839310" / (str(task["id"]) + ".md")
         report.append({
             "pilot_task_id": str(task["id"]), "title": task["title"], "hip": hip,
             "permanent_ids": [obj["fixed_object_id"] for obj in matches],
-            "draft_saved": draft.is_file(), "identity_resolved": len(matches) == 1,
+            "draft_saved": draft.is_file(), "companions_saved": all(draft.with_suffix(ext).is_file() for ext in (".research.txt", ".audit.txt", ".gate.json")), "identity_resolved": len(matches) == 1,
             "publication_ready": False,
             "reason": "Independent research, finder and publication reviews required."
         })
@@ -33,7 +33,7 @@ def main():
     target.write_text(json.dumps({"stories": report, "paid_api_calls": 0,
         "automatic_publication": False}, indent=2) + "\n", encoding="utf-8")
     print(target.read_text(encoding="utf-8"))
-    if any(not item["identity_resolved"] for item in report):
+    if any(not item["identity_resolved"] or not item["draft_saved"] or not item["companions_saved"] for item in report):
         raise SystemExit("Unresolved catalogue identity; no publication attempted")
 
 if __name__ == "__main__":
