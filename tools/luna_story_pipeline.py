@@ -107,6 +107,30 @@ def claim_evidence_review(research, draft, evidence):
         "reason": "Source attribution alone cannot prove each claim is supported by source text",
     }
 
+def evidence_support_matrix(draft, evidence):
+    """Produce a review queue of factual sentences and their possible sources.
+
+    Candidate sources are NOT proof that a sentence is true.
+    """
+    sources = [(entry["url"], entry.get("excerpt", "")) for entry in evidence]
+    lines = re.split(r"(?<=[.!?])\\s+", draft)
+    claims = []
+    for sentence in lines:
+        sentence = sentence.strip()
+        if len(sentence.split()) < 7 or sentence.startswith("https://"):
+            continue
+        words = {w.lower() for w in re.findall(r"[A-Za-z]{5,}", sentence)}
+        candidates = []
+        for url, excerpt in sources:
+            content = excerpt.lower()
+            overlap = sorted(w for w in words if w in content)
+            if len(overlap) >= 3:
+                candidates.append({"url": url, "overlap_terms": overlap[:12]})
+        claims.append({"claim": sentence, "candidate_sources": candidates,
+                       "verified": False})
+    return {"claims": claims, "verified_claims": 0,
+            "requires_independent_review": True}
+
 def persist_checkpoint(path, ledger_file):
     """Commit and push each completed paid stage before spending on the next."""
     if os.environ.get("GITHUB_ACTIONS") != "true":
@@ -264,6 +288,7 @@ def main():
         gate = editorial_gate(task, research, draft, audit)
         gate["source_verification"] = verify_source_evidence(task, research, draft, evidence)
         gate["claim_evidence_review"] = claim_evidence_review(research, draft, evidence)
+        gate["evidence_support_matrix"] = evidence_support_matrix(draft, evidence)
         (OUT / (ident + ".gate.json")).write_text(json.dumps(gate, indent=2) + "\n")
         print("DRAFT", ident, "screen_passed", gate["screen_passed"],
               "publication_approved", gate["publication_approved"],
