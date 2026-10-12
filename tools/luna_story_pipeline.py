@@ -172,6 +172,21 @@ def persist_checkpoint(path, ledger_file):
             git("rebase", "origin/" + branch)
     raise RuntimeError("Could not push paid-stage checkpoint; stopping before next API call")
 
+def save_or_recover_evidence(path, retrieved, ledger_file, persist=persist_checkpoint):
+    """Persist source snapshots and reuse the original on restart."""
+    if path.exists():
+        saved = json.loads(path.read_text(encoding="utf-8"))
+        if not isinstance(saved, list) or not saved:
+            raise RuntimeError("Invalid saved source evidence: " + str(path))
+        return saved
+    if not retrieved:
+        raise RuntimeError("No source evidence to preserve")
+    with path.open("x", encoding="utf-8") as handle:
+        json.dump(retrieved, handle, ensure_ascii=False, indent=2)
+        handle.write(chr(10))
+    persist(path, ledger_file)
+    return retrieved
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--manifest", default="research/luna-pilot-candidates.json")
@@ -272,17 +287,7 @@ def main():
             continue
         # Preserve the exact retrieved excerpts used for factual review.
         # Never silently replace evidence on a resumed run.
-        evidence_path = OUT / (ident + ".evidence.json")
-        if evidence_path.exists():
-            saved_evidence = json.loads(evidence_path.read_text(encoding="utf-8"))
-            if not isinstance(saved_evidence, list) or not saved_evidence:
-                raise RuntimeError("Invalid saved source evidence: " + str(evidence_path))
-            evidence = saved_evidence
-        else:
-            with evidence_path.open("x", encoding="utf-8") as handle:
-                json.dump(evidence, handle, ensure_ascii=False, indent=2)
-                handle.write(chr(10))
-            persist_checkpoint(evidence_path, ledger_file)
+        evidence = save_or_recover_evidence(OUT / (ident + ".evidence.json"), evidence, ledger_file)
         basis = json.dumps({"task": task, "retrieved_sources": evidence}, ensure_ascii=False)
         research = stage(ident, "research",
                        "Extract only supported, attributable astronomy facts. Cite exact URLs. "
