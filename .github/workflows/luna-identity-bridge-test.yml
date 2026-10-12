@@ -2,9 +2,10 @@ name: Luna Identity Bridge Test
 on:
   workflow_dispatch:
   push:
-    branches: [luna-safe-publication-bridge]
+    branches: [main, luna-safe-publication-bridge]
     paths:
       - 'tools/luna_publication_bridge.py'
+      - 'research/luna-pilot-recovered/**'
       - '.github/workflows/luna-identity-bridge-test.yml'
 permissions:
   contents: read
