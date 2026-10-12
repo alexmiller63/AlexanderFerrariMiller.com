@@ -122,8 +122,9 @@ def main():
                        "Flag uncertain or missing claims. Do not invent facts.", basis)
         draft = ask(ident + ":draft",
                     "Write an original 450-650 word Star Almanack story with hed, dek, "
-                    "scientific context and observing guidance. Cite source URLs. "
-                    "Do not invent sources or assert publication review.", research)
+                    "scientific context and observing guidance. The exact subject name "
+                    f"{task['title']!r} must appear in the hed or opening paragraph. "
+                    "Cite source URLs. Do not invent sources or assert publication review.", research))
         audit = ask(ident + ":audit",
                     "Audit the draft against the research. Identify unsupported facts, "
                     "missing citations, and ambiguities. Return a concise checklist; "
