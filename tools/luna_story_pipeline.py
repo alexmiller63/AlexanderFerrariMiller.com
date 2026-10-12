@@ -270,6 +270,19 @@ def main():
         if not evidence:
             print("SKIP: no retrievable research evidence", ident)
             continue
+        # Preserve the exact retrieved excerpts used for factual review.
+        # Never silently replace evidence on a resumed run.
+        evidence_path = OUT / (ident + ".evidence.json")
+        if evidence_path.exists():
+            saved_evidence = json.loads(evidence_path.read_text(encoding="utf-8"))
+            if not isinstance(saved_evidence, list) or not saved_evidence:
+                raise RuntimeError("Invalid saved source evidence: " + str(evidence_path))
+            evidence = saved_evidence
+        else:
+            with evidence_path.open("x", encoding="utf-8") as handle:
+                json.dump(evidence, handle, ensure_ascii=False, indent=2)
+                handle.write("\\n")
+            persist_checkpoint(evidence_path, ledger_file)
         basis = json.dumps({"task": task, "retrieved_sources": evidence}, ensure_ascii=False)
         research = stage(ident, "research",
                        "Extract only supported, attributable astronomy facts. Cite exact URLs. "
