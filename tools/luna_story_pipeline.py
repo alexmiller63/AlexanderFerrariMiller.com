@@ -281,7 +281,7 @@ def main():
         else:
             with evidence_path.open("x", encoding="utf-8") as handle:
                 json.dump(evidence, handle, ensure_ascii=False, indent=2)
-                handle.write("\\n")
+                handle.write(chr(10))
             persist_checkpoint(evidence_path, ledger_file)
         basis = json.dumps({"task": task, "retrieved_sources": evidence}, ensure_ascii=False)
         research = stage(ident, "research",
