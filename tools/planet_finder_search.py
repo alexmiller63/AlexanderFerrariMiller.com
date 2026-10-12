@@ -156,6 +156,23 @@ def layout(
         flush=True,
     )
 
+    # Experimental global label-domain preflight. It is deliberately opt-in:
+    # a label-only feasibility result is not a routed, validated chart.
+    # Until routed candidates are wired into _solve_order, never allow this
+    # advisory stage to reject a chart or change its existing search order.
+    if os.environ.get("PLANET_FINDER_GLOBAL_PREFLIGHT", "0") == "1":
+        from planet_finder_preplacement_geometry import preplace_labels
+        preflight = preplace_labels(
+            mode, bodies, max_nodes=2000, deadline=mode_deadline,
+        )
+        diagnostic_print(
+            f"Planet Finder {mode}: GLOBAL LABEL PREFLIGHT "
+            f"result={preflight.reason} nodes={preflight.nodes} "
+            f"pruned={preflight.pruned} assigned="
+            f"{len(preflight.assignment or {})}/{len(CANONICAL)}",
+            flush=True,
+        )
+
     order = indexed
     all_solutions = []
     contest_keys = []
