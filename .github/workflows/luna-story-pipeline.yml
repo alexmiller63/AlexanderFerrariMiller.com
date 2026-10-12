@@ -23,7 +23,7 @@ on:
         default: false
         type: boolean
 permissions:
-  contents: read
+  contents: write
 # Publication intentionally disabled until deterministic editorial validation is implemented.
 # A model-produced audit checklist is not publication approval.
 jobs:
@@ -66,6 +66,21 @@ jobs:
                   assert story.with_suffix('.research.txt').exists(), f'Missing research: {story}'
           print('Pilot output structure validated; drafts remain unpublished.')
           PY
+      - name: Permanently save every completed pilot output
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add generated/luna-pilot/
+          if git diff --cached --quiet; then
+            echo "No new pilot outputs to save."
+          else
+            git commit -m "Save completed Luna pilot outputs"
+            git push
+            echo "Completed stories, research, audits, and ledger committed to the repository."
+          fi
       - uses: actions/upload-artifact@v4
         if: always()
         with:
