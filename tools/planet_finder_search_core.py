@@ -2734,6 +2734,18 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 )
                 return False
 
+            # Reject an alignment completion immediately when it leaves an
+            # ordinary body with no viable placement. This is a necessary
+            # condition only; the authoritative DFS still proves solutions.
+            # The forward probe treats exhausted probe budgets as unknown.
+            if order and not forward_check(0):
+                diagnostic_print(
+                    f"Planet Finder {mode}: ALIGNMENT HANDOFF FORWARD REJECT "
+                    f"preplaced={'|'.join(leader_names)}",
+                    level=1, flush=True,
+                )
+                return False
+
             forensic_uranus_venus_boundary()
             diagnostic_print(
                 f"Planet Finder {mode}: ALIGNMENT RECURSIVE HANDOFF "
