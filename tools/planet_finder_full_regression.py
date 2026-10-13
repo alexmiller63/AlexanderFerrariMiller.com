@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Read-only real-ephemeris Planet Finder regression for every ISO week of 2026."""
+import argparse
 import csv
 import json
 import sys
@@ -19,6 +20,12 @@ from planet_finder_validation import validate_layout
 MODES = (("greek", FinderMode.GREEK), ("english", FinderMode.ENGLISH), ("mixed", FinderMode.MIXED))
 
 def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--start-week", type=int, default=1)
+    parser.add_argument("--end-week", type=int, default=53)
+    args = parser.parse_args()
+    if not 1 <= args.start_week <= args.end_week <= 53:
+        parser.error("Expected 1 <= start-week <= end-week <= 53")
     output = ROOT / "generated" / "planet-finder-regression"
     output.mkdir(parents=True, exist_ok=True)
     results = []
@@ -28,7 +35,7 @@ def main():
         (output / "setup-error.txt").write_text(traceback.format_exc(), encoding="utf-8")
         raise
     total = date(2026, 12, 28).isocalendar().week
-    for week in range(1, total + 1):
+    for week in range(args.start_week, min(args.end_week, total) + 1):
         bodies = finder_bodies(generated, week)
         for label, mode in MODES:
             started = time.monotonic()
@@ -45,7 +52,7 @@ def main():
             finally:
                 row["seconds"] = round(time.monotonic() - started, 3)
                 results.append(row)
-                print(f'{len(results)}/{total*3} {row["week"]} {label} {row["status"]} {row["seconds"]}s {row["error"]}', flush=True)
+                print(f'{len(results)}/{(min(args.end_week, total)-args.start_week+1)*3} {row["week"]} {label} {row["status"]} {row["seconds"]}s {row["error"]}', flush=True)
                 with (output / "results.csv").open("w", newline="", encoding="utf-8") as file:
                     writer = csv.DictWriter(file, fieldnames=list(row))
                     writer.writeheader()
