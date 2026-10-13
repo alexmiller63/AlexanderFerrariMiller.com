@@ -1,0 +1,64 @@
+name: Planet Finder Full Regression 2026
+
+on:
+  workflow_dispatch:
+    inputs:
+      start_week:
+        description: 'First ISO week (1-53)'
+        required: true
+        default: '39'
+        type: string
+      end_week:
+        description: 'Last ISO week (1-53)'
+        required: true
+        default: '40'
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  regression:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    env:
+      PLANET_FINDER_CANDIDATES: '5'
+      PLANET_FINDER_MAX_NODE_CANDIDATES: '200'
+      PLANET_FINDER_MAX_SECONDS: '360'
+      PLANET_FINDER_DIAGNOSTIC_LEVEL: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/cache@v4
+        with:
+          path: .cache/skyfield
+          key: star-almanack-source-kernels-v1
+      - name: Validate week range
+        env:
+          START_WEEK: ${{ inputs.start_week }}
+          END_WEEK: ${{ inputs.end_week }}
+        run: |
+          python - <<'PY'
+          import os
+          a, b = os.environ['START_WEEK'], os.environ['END_WEEK']
+          if not (a.isdecimal() and b.isdecimal() and 1 <= int(a) <= int(b) <= 53):
+              raise SystemExit('Week range must be integers 1-53 with start <= end')
+          PY
+      - name: Install calculation dependency
+        run: python -m pip install --disable-pip-version-check 'skyfield==1.55'
+      - name: Ensure source kernels
+        run: python tools/ensure_ephemeris_kernels.py --ceres
+      - name: Test real weekly configurations without publishing
+        env:
+          START_WEEK: ${{ inputs.start_week }}
+          END_WEEK: ${{ inputs.end_week }}
+        run: python tools/planet_finder_full_regression.py --start-week "$START_WEEK" --end-week "$END_WEEK"
+      - name: Preserve reports even after failures
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: planet-finder-regression-selected-weeks
+          path: generated/planet-finder-regression/
+          if-no-files-found: warn
