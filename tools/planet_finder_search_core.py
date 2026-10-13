@@ -1339,9 +1339,35 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                             )
                         )
                     continue
-                if planned_paths(trial) is None:
+                trial_paths = planned_paths(trial)
+                if trial_paths is None:
                     assign_rejects["planned_path"] += 1
                     continue
+                # Reserve leader-route feasibility for the last two unplaced
+                # alignment members before committing another placement.
+                # A label-box witness alone can leave a body with no possible
+                # route past the already placed labels and leaders.
+                if len(others) <= 2:
+                    occupied = reserved + placed + [entry[2] for entry in trial.values()]
+                    existing = leaders + list(trial_paths.values())
+                    route_blocked = False
+                    for future in others:
+                        if not any(
+                            route(
+                                anchors[future], (option[0], option[1]),
+                                occupied + [entry[2] for entry in trial.values()
+                                            if entry[2] is not option[2]],
+                                allow_initial_escape_count=3,
+                                target_box=option[2],
+                                existing_paths=existing,
+                            ) is not None
+                            for option in next_available[future]
+                        ):
+                            route_blocked = True
+                            break
+                    if route_blocked:
+                        assign_rejects["empty_future"] += 1
+                        continue
                 result = assign(others, next_available, trial)
                 if result is not None:
                     return result
