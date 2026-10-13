@@ -3225,7 +3225,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         # Venus is the dominant W01 failure: discovering a dead Venus prefix
         # immediately avoids spending the shared look-ahead budget on easier
         # bodies before repeating the expensive Venus route search.
-        forward_priority = {"Venus": 0}
+        forward_priority = {"Uranus": 0, "Pluto": 1, "Venus": 2}
         future_items.sort(
             key=lambda row: (
                 forward_priority.get(row[1][1][1], 1),
