@@ -1,0 +1,57 @@
+name: Planet Finder Full Regression 2026
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'tools/planet_finder_full_regression.py'
+      - '.github/workflows/planet-finder-full-regression.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  regression:
+    name: W${{ matrix.start }}-W${{ matrix.end }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - {start: 1, end: 6}
+          - {start: 7, end: 12}
+          - {start: 13, end: 18}
+          - {start: 19, end: 24}
+          - {start: 25, end: 30}
+          - {start: 31, end: 36}
+          - {start: 37, end: 42}
+          - {start: 43, end: 48}
+          - {start: 49, end: 53}
+    env:
+      PLANET_FINDER_CANDIDATES: '5'
+      PLANET_FINDER_MAX_NODE_CANDIDATES: '200'
+      PLANET_FINDER_MAX_SECONDS: '360'
+      PLANET_FINDER_DIAGNOSTIC_LEVEL: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/cache@v4
+        with:
+          path: .cache/skyfield
+          key: star-almanack-source-kernels-v1
+      - name: Install calculation dependency
+        run: python -m pip install --disable-pip-version-check 'skyfield==1.55'
+      - name: Ensure source kernels
+        run: python tools/ensure_ephemeris_kernels.py --ceres
+      - name: Test real weekly configurations without publishing
+        run: python tools/planet_finder_full_regression.py --start-week ${{ matrix.start }} --end-week ${{ matrix.end }}
+      - name: Preserve reports even after failures
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: planet-finder-regression-W${{ matrix.start }}-W${{ matrix.end }}
+          path: generated/planet-finder-regression/
+          if-no-files-found: warn
