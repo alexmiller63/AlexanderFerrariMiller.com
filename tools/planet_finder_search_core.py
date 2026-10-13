@@ -3319,7 +3319,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 body_stat["dead"] += 1
                 forward_stats["pruned"] += 1
                 forward_blockers[future_name] = forward_blockers.get(future_name, 0) + 1
-                if forward_blockers[future_name] >= forward_blocker_promotion_threshold:
+                if (next_depth > 0 and forward_blockers[future_name] >= forward_blocker_promotion_threshold):
                     diagnostic_print(
                         f"Planet Finder {mode}: FORWARD SQUEAKY-WHEEL "
                         f"body={future_name} dead-prefixes={forward_blockers[future_name]:,}/"
