@@ -2,12 +2,12 @@
 
 **Dek:** In the wide constellation Cetus, Gamma Ceti offers an introduction to stars that share the same small patch of sky.
 
-Cetus, the sea monster of Greek mythology, stretches across a large part of the autumn sky. Its outline is less immediately recognizable than Pegasus's Great Square, so finding a particular star rewards patient chart work. One target is **Gamma Ceti** (γ Cet; HIP 12706).
+Cetus, the sea monster of Greek mythology, stretches across a large part of the autumn sky. Its outline is less immediately recognizable than Pegasus's Great Square, so finding a particular star rewards patient chart work. One target is **Gamma Ceti** (γ Cet; HIP 12706), also known as Kaffaljidhma.
 
-Gamma Ceti, also called **Kaffaljidhma**, is catalogued as a multiple-star system. Its close pair is known to double-star observers as **STF 299 AB**. In a telescope, the question is not simply whether a star has companions, but whether the components are separated enough on the sky—and differ little enough in brightness—to resolve with the available optics and atmospheric conditions.
+Gamma Ceti is a multiple-star system. Its close pair, STF 299 AB, is a challenge for observers: published observing logs describe a separation of roughly **two arcseconds** and a substantial difference in brightness. That means a telescope that can theoretically resolve two points at that separation may still struggle to show the faint companion beside the brighter star.
 
-An observing log reports the close pair at about **1.9 arcseconds separation in 2024**, with components around magnitudes 3.5 and 6.2. That combination makes it a **challenging double star**, not a guaranteed split with a 100 mm telescope. High magnification, steady air and good optical alignment help; observers have reported difficulty even with 100 mm instruments.
+A 100 mm telescope is therefore **not guaranteed** to split the pair. Steady atmospheric seeing, adequate magnification, optical quality and accurate focus matter. Consult a current double-star catalog for up-to-date separation and position angle before attempting it.
 
-Find the star's position in Cetus first. Then, if you have a telescope, consult current double-star data for the pair you intend to observe. A single bright point in binoculars does not rule out stellar companionship: angular resolution matters.
+First find Gamma Ceti's position on a chart. Then try the double star under steady conditions. If you see only one point, that does not mean the companion is absent: resolution and contrast are part of the observation.
 
-**Sources for final verification:** [SIMBAD HIP 12706](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2012706). Check current STF 299 AB measures before publication; 2024 observation gives separation about 1.9 arcseconds. See [2024 observation table](https://faint-fuzzies.de/en/observations-double-stars.php). **Status:** edited draft; scientific approval pending.
+**Sources:** [SIMBAD HIP 12706](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2012706); [double-star observing records](https://faint-fuzzies.de/en/observations-double-stars.php). **Status:** edited draft; precise current orbital measurements and finder geometry pending verification.
