@@ -2,7 +2,7 @@
 
 **Dek:** Find the star that links Pegasus to Andromeda, then discover how astronomers traced changing concentrations of mercury in its atmosphere.
 
-On a clear autumn evening, look for four bright stars outlining a broad square in the eastern or southern sky, depending on the hour and your latitude. This is the Great Square of Pegasus. Three corners belong to Pegasus. The fourth, at the northeastern corner on conventional north-up charts, is **Alpheratz**—Alpha Andromedae (α Andromedae), also catalogued as HIP 677.
+On a clear autumn evening, look for four bright stars outlining a broad square in the evening sky. This is the Great Square of Pegasus. Three corners belong to Pegasus. The fourth, at the northeastern corner on conventional north-up charts, is **Alpheratz**—Alpha Andromedae (α Andromedae), also catalogued as HIP 677.
 
 That shared corner makes Alpheratz an excellent starting point for exploring Andromeda. From the star, follow the chain of brighter stars extending away from the square toward Mirach and Almach. The constellation's name recalls the princess Andromeda of Greek mythology; the star pattern is a modern observing guide, not a physical grouping of neighboring stars.
 
