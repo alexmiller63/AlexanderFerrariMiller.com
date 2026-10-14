@@ -30,10 +30,18 @@ def main():
             blockers.append("Numeric claims require review")
         if corrections[key]["changes"]:
             blockers.append("Review surrounding prose after automated spectral correction")
-        blockers.append("Publication editor approval not recorded")
+        approvals_path = ROOT / "research/luna-publication-approvals.json"
+        approvals = json.loads(approvals_path.read_text(encoding="utf-8")) if approvals_path.exists() else {}
+        approval = approvals.get(key, {})
+        if approval.get("editor_approved") is not True:
+            blockers.append("Publication editor approval not recorded")
+        if approval.get("scientific_approved") is not True:
+            blockers.append("Independent scientific approval not recorded")
+        if approval.get("finder_approved") is not True:
+            blockers.append("Independent finder approval not recorded")
         rows.append({"task_id":key,"title":story["title"],"blockers":blockers,
-                     "approved":False,"published":False})
-    summary={"total":len(rows),"ready_to_publish":0,"published":0,
+                     "approved":not blockers,"published":False})
+    summary={"total":len(rows),"ready_to_publish":sum(not row["blockers"] for row in rows),"published":0,
              "missing_or_invalid_finders":sum(not charts[str(x["task_id"])]["svg_structurally_valid"] for x in queue),
              "contextual_review_passages":sum(narrative[str(x["task_id"])]["hold_count"] for x in queue),
              "paid_api_calls":0,"stories":rows}
