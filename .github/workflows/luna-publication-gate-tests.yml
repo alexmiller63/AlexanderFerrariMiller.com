@@ -1,0 +1,22 @@
+name: Luna Publication Gate Tests
+on:
+  push:
+    branches:
+      - luna-safe-approval-gate-20261013
+  pull_request:
+    paths:
+      - 'tools/luna_publication_decision.py'
+      - 'tests/test_luna_publication_gate.py'
+      - '.github/workflows/luna-publication-gate-tests.yml'
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Test publication approval gate
+        run: python3 -m unittest discover -s tests -p 'test_luna_publication_gate.py' -v
