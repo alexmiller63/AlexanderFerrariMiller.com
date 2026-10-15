@@ -1,0 +1,28 @@
+name: True-year parameterization audit
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'tools/audit_true_year_parameterization.py'
+      - 'tools/populate_fixed_sky.py'
+      - 'Star-Almanack-Repo/**'
+      - 'almanack/**'
+      - '.github/workflows/true-year-audit.yml'
+  workflow_dispatch:
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Run true-year parameterization audit
+        working-directory: tools
+        run: python audit_true_year_parameterization.py
