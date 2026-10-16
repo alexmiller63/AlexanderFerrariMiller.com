@@ -1,0 +1,28 @@
+name: Planet Finder Preplacement Tests
+
+on:
+  pull_request:
+    paths:
+      - 'tools/planet_finder_preplacement*.py'
+      - 'tests/test_planet_finder_preplacement.py'
+      - '.github/workflows/planet-finder-preplacement-tests.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  unit-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install astronomy test dependency
+        run: python -m pip install skyfield
+      - name: Compile integrated Planet Finder modules
+        run: python -m py_compile tools/planet_finder_search.py tools/planet_finder_search_core.py tools/planet_finder_preplacement.py tools/planet_finder_preplacement_geometry.py
+      - name: Run global preplacement unit tests
+        run: python -m unittest discover -s tests -p test_planet_finder_preplacement.py -v
