@@ -1805,6 +1805,38 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             )
             return on_complete()
 
+        # Necessary-condition propagation across the alignment/ordinary boundary.
+        # An ordinary label with no collision-free geometric position cannot
+        # acquire one by routing a leader.  This is deliberately one-sided:
+        # a surviving geometric position is UNKNOWN, not a valid placement.
+        # Check before costly routed MRV ranking, without consuming DFS caps.
+        for _, (_, ordinary_name, ordinary_longitude) in order:
+            if ordinary_name in leader_names:
+                continue
+            ordinary_w, ordinary_h = label_size(mode, ordinary_name)
+            has_geometry = False
+            for _, _, ordinary_box in legal_candidate_positions(
+                ordinary_longitude, ordinary_w, ordinary_h, reserved,
+                displacement_scale,
+            ):
+                if any(boxes_overlap(ordinary_box, existing, 14) for existing in placed):
+                    continue
+                if any(
+                    segment_hits_box(path[i], path[i + 1], ordinary_box, 10)
+                    for path in leaders for i in range(len(path) - 1)
+                ):
+                    continue
+                has_geometry = True
+                break
+            if not has_geometry:
+                diagnostic_print(
+                    f"Planet Finder {mode}: ALIGNMENT ORDINARY GEOMETRY ZERO "
+                    f"group={group_index + 1} depth={depth_in_blob}/{group_size} "
+                    f"body={ordinary_name}",
+                    level=1, flush=True,
+                )
+                return False
+
         # Inner DFS for an alignment: choose the remaining member with the
         # fewest currently viable placements, then recurse. Alignment members
         # are ordinary backtrackable DFS choices; the alignment is not atomic.
