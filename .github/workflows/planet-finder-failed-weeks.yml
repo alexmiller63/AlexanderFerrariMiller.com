@@ -1,0 +1,53 @@
+name: Planet Finder Failed Weeks Regression
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  regression:
+    name: Failed weeks 25,27,29,30,39,40,52
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    env:
+      PLANET_FINDER_CANDIDATES: '5'
+      PLANET_FINDER_MAX_NODE_CANDIDATES: '200'
+      PLANET_FINDER_MAX_SECONDS: '360'
+      PLANET_FINDER_DIAGNOSTIC_LEVEL: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/cache@v4
+        with:
+          path: .cache/skyfield
+          key: star-almanack-source-kernels-v1
+      - name: Install calculation dependency
+        run: python -m pip install --disable-pip-version-check 'skyfield==1.55'
+      - name: Ensure source kernels
+        run: python tools/ensure_ephemeris_kernels.py --ceres
+      - name: Test only previously failing weeks
+        shell: bash
+        run: |
+          failed=0
+          for week in 25 27 29 30 39 40 52; do
+            echo "::group::Week ${week}"
+            if python tools/planet_finder_full_regression.py --start-week "$week" --end-week "$week"; then
+              echo "Week ${week}: PASS"
+            else
+              echo "Week ${week}: FAIL"
+              failed=1
+            fi
+            echo "::endgroup::"
+          done
+          exit "$failed"
+      - name: Preserve reports even after failures
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: planet-finder-regression-failed-weeks
+          path: generated/planet-finder-regression/
+          if-no-files-found: warn
