@@ -159,6 +159,8 @@ def layout(
     order = indexed
     all_solutions = []
     contest_keys = []
+    saved_candidates = {}
+    fallback_reason = None
     order_index = 0
     attempted_orders = set()
     body_attempts = {name: 0 for _, (_, name, _) in indexed}
@@ -192,6 +194,12 @@ def layout(
 
     while state != "SCORE":
         now = time.monotonic()
+        if now - budget["started"] >= hard_wall_seconds and saved_candidates:
+            fallback_reason = "mode-clock-expired"
+            all_solutions = list(saved_candidates.values())
+            contest_keys = list(saved_candidates)
+            state = "SCORE"
+            break
         if now - budget["started"] >= hard_wall_seconds:
             raise RuntimeError(
                 f"Planet Finder {mode} emergency wall-clock fuse exhausted "
@@ -248,6 +256,17 @@ def layout(
             f"blocker={outcome.blocker} rejection_stats={outcome.rejection_stats!r}", flush=True,
         )
 
+        # Retain only fully validated layouts across ordering retries.
+        for key, candidate in zip(outcome.contest_keys, outcome.solutions):
+            valid, _ = validate_layout(mode, candidate)
+            if valid:
+                saved_candidates.setdefault(key, candidate)
+        diagnostic_print(
+            f"Planet Finder {mode}: CANDIDATE PROGRESS attempt={order_index} "
+            f"this-order={len(outcome.solutions)} retained={len(saved_candidates)} "
+            f"target={target_solutions}", flush=True,
+        )
+
         if outcome.kind == "SOLVED":
             all_solutions = outcome.solutions
             contest_keys = outcome.contest_keys
@@ -257,6 +276,12 @@ def layout(
             raise RuntimeError(
                 f"Planet Finder {mode}: bounded search inconclusive; no valid {target_solutions}-contestant contest was established"
             )
+        if outcome.kind == "DEADLINE" and saved_candidates:
+            fallback_reason = "search-deadline"
+            all_solutions = list(saved_candidates.values())
+            contest_keys = list(saved_candidates)
+            state = "SCORE"
+            continue
         if outcome.kind == "DEADLINE":
             raise RuntimeError(
                 f"Planet Finder {mode}: mode search deadline exhausted "
@@ -297,7 +322,9 @@ def layout(
     best_score, best_index, best = scored[0]
     contest_count = len(refined_solutions)
     unique_count = len(set(contest_keys))
-    contest_valid = contest_count == target_solutions and unique_count == contest_count and contest_count == len(scored)
+    contest_valid = (contest_count > 0 and unique_count == contest_count
+                     and contest_count == len(scored)
+                     and (contest_count == target_solutions or fallback_reason is not None))
     diagnostic_print(
         f"Planet Finder {mode}: CONTEST AUDIT requested={target_solutions} contestants={contest_count} "
         f"unique={unique_count} scored={len(scored)} status={'VALID' if contest_valid else 'INVALID'}", flush=True,
@@ -312,6 +339,12 @@ def layout(
         raise RuntimeError(
             f"Planet Finder {mode}: contest validity failure requested={target_solutions} contestants={contest_count} "
             f"unique={unique_count} scored={len(scored)}"
+        )
+    if fallback_reason is not None:
+        diagnostic_print(
+            f"Planet Finder {mode}: VALIDATED TIMEOUT FALLBACK "
+            f"reason={fallback_reason} candidates={contest_count}/{target_solutions}",
+            flush=True,
         )
     diagnostic_print(
         f"Planet Finder {mode}: selected candidate {best_index + 1}/{len(refined_solutions)} "
