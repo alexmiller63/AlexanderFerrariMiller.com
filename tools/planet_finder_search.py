@@ -165,6 +165,7 @@ def layout(
     search_history = []
     state = "SEARCH_ORDER"
     promote_body = None
+    deadline_fallback = False
 
     def terminal_search(reason):
         final_sequence = " > ".join(item[1][1] for item in order)
@@ -192,6 +193,10 @@ def layout(
 
     while state != "SCORE":
         now = time.monotonic()
+        if now - budget["started"] >= hard_wall_seconds and all_solutions:
+            deadline_fallback = True
+            state = "SCORE"
+            break
         if now - budget["started"] >= hard_wall_seconds:
             raise RuntimeError(
                 f"Planet Finder {mode} emergency wall-clock fuse exhausted "
@@ -257,6 +262,12 @@ def layout(
             raise RuntimeError(
                 f"Planet Finder {mode}: bounded search inconclusive; no valid {target_solutions}-contestant contest was established"
             )
+        if outcome.kind == "DEADLINE" and outcome.solutions:
+            all_solutions = outcome.solutions
+            contest_keys = outcome.contest_keys
+            deadline_fallback = True
+            state = "SCORE"
+            continue
         if outcome.kind == "DEADLINE":
             raise RuntimeError(
                 f"Planet Finder {mode}: mode search deadline exhausted "
@@ -297,7 +308,9 @@ def layout(
     best_score, best_index, best = scored[0]
     contest_count = len(refined_solutions)
     unique_count = len(set(contest_keys))
-    contest_valid = contest_count == target_solutions and unique_count == contest_count and contest_count == len(scored)
+    contest_valid = (0 < contest_count <= target_solutions and unique_count == contest_count
+                     and contest_count == len(scored)
+                     and (deadline_fallback or contest_count == target_solutions))
     diagnostic_print(
         f"Planet Finder {mode}: CONTEST AUDIT requested={target_solutions} contestants={contest_count} "
         f"unique={unique_count} scored={len(scored)} status={'VALID' if contest_valid else 'INVALID'}", flush=True,
@@ -312,6 +325,11 @@ def layout(
         raise RuntimeError(
             f"Planet Finder {mode}: contest validity failure requested={target_solutions} contestants={contest_count} "
             f"unique={unique_count} scored={len(scored)}"
+        )
+    if deadline_fallback:
+        diagnostic_print(
+            f"Planet Finder {mode}: DEADLINE FALLBACK accepted {contest_count} complete valid candidate(s) "
+            f"of requested {target_solutions}", flush=True,
         )
     diagnostic_print(
         f"Planet Finder {mode}: selected candidate {best_index + 1}/{len(refined_solutions)} "
