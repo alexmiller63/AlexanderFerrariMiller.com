@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from datetime import date
 import populate_ephemeris as ephemeris
-from almanack_sections import replace_section_inner
+from almanack_sections import replace_section_inner, section_bounds
 from almanack_paths import week_dir, week_index
 from iso_date_range import group_by_year, parse_range_args
 from planet_finder_geometry import BODY_NAMES, BODY_SYMBOLS, CANONICAL
@@ -81,6 +81,19 @@ def populate_week(
         if not path.exists():
             raise RuntimeError(f"Missing typed weekly page: {path.relative_to(ephemeris.ROOT)}")
         text = path.read_text(encoding="utf-8")
+        # Older published weeks predate numbered section wrappers. Do not
+        # rewrite their legacy HTML or prevent independent finder diagnostics.
+        try:
+            section_bounds(text, section, path)
+        except RuntimeError as exc:
+            if f"Missing Almanack section {section}" not in str(exc):
+                raise
+            print(
+                f"PLANET_FINDER_LEGACY_PAGE section={section} path={path} "
+                "action=preserve-existing-page-and-continue",
+                flush=True,
+            )
+            continue
         new = replace_section_inner(text, section, body, path)
         if new != text:
             path.write_text(new, encoding="utf-8")
