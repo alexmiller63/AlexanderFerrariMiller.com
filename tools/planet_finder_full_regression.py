@@ -13,7 +13,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tools"))
 from star_almanack_ephemeris import StarAlmanackEphemeris
 from populate_ephemeris_planet_finder_by_date import calculate_year, finder_bodies
-from planet_finder_geometry import FinderMode
+from planet_finder_geometry import FinderMode, label_size, CANONICAL
 from planet_finder_search import layout, new_search_budget
 from planet_finder_validation import validate_layout
 
@@ -28,6 +28,20 @@ def main():
         parser.error("Expected 1 <= start-week <= end-week <= 53")
     output = ROOT / "generated" / "planet-finder-regression"
     output.mkdir(parents=True, exist_ok=True)
+    # Measure a shared label envelope before executing any notation mode.
+    # Measurement alone does not guarantee a feasible placement.
+    reservations = {}
+    for name in CANONICAL:
+        sizes = {label: label_size(mode, name) for label, mode in MODES}
+        reservations[name] = {
+            "width": max(size[0] for size in sizes.values()),
+            "height": max(size[1] for size in sizes.values()),
+            "by_mode": sizes,
+        }
+    (output / "cross-mode-space-requirements.json").write_text(
+        json.dumps(reservations, indent=2) + "\n", encoding="utf-8"
+    )
+    print("Cross-mode space envelopes measured; placement feasibility not yet established.", flush=True)
     results = []
     try:
         generated = calculate_year(2026, StarAlmanackEphemeris())
