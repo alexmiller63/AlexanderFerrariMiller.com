@@ -37,6 +37,77 @@ def _trace(level, message):
         print(f"[MAKEUP] {message}", flush=True)
 
 
+def _paths_cross(first, second):
+    """Count proper intersections; shared anchor endpoints are not crossings."""
+    def orient(a, b, c):
+        return (b[0] - a[0]) * (c[1] - a[1]) - (b[1] - a[1]) * (c[0] - a[0])
+
+    return sum(
+        orient(a, b, c) * orient(a, b, d) < 0
+        and orient(c, d, a) * orient(c, d, b) < 0
+        for a, b in zip(first, first[1:])
+        for c, d in zip(second, second[1:])
+    )
+
+
+def uncross_labels(modes, result):
+    """Swap crossing labels only when the complete layout remains valid.
+
+    Close-anchor escape remains legal. This bounded cosmetic pass improves
+    an existing solution without tightening search feasibility constraints.
+    Each body keeps its identity, longitude, anchor, and label dimensions.
+    """
+    current = list(result)
+    if not all(validate_layout(mode, current)[0] for mode in modes):
+        return result
+
+    def crossings(rows):
+        return sum(_paths_cross(row[4], other[4])
+                   for i, row in enumerate(rows) for other in rows[:i])
+
+    remaining = crossings(current)
+    while remaining:
+        improved = False
+        for i, first in enumerate(current):
+            for j in range(i):
+                second = current[j]
+                if not _paths_cross(first[4], second[4]):
+                    continue
+                trial = list(current)
+                obstacles = []
+                escape_indices = set()
+                for mode in modes:
+                    offset = len(obstacles)
+                    obstacles.extend(reserved_boxes(mode))
+                    escape_indices.update(range(offset, offset + 3))
+                others = [row for k, row in enumerate(current) if k not in (i, j)]
+                obstacles.extend(row[3] for row in others)
+                paths = [row[4] for row in others]
+                for index, source, destination in ((i, first, second), (j, second, first)):
+                    box = Box(destination[3].x, destination[3].y, source[3].w, source[3].h)
+                    # Include the other swapped label as an obstacle too.
+                    other_box = Box(source[3].x, source[3].y, destination[3].w, destination[3].h)
+                    path = route(source[4][0], (box.x, box.y), obstacles + [other_box],
+                                 target_box=box, existing_paths=paths,
+                                 allow_initial_escape_indices=escape_indices)
+                    if path is None:
+                        break
+                    trial[index] = (*source[:3], box, path)
+                    paths.append(path)
+                else:
+                    count = crossings(trial)
+                    if count < remaining and all(validate_layout(mode, trial)[0] for mode in modes):
+                        _trace(1, f"UNCROSS {first[1]}/{second[1]} crossings={remaining}->{count}")
+                        current, remaining = trial, count
+                        improved = True
+                        break
+            if improved:
+                break
+        if not improved:
+            break
+    return current
+
+
 def aesthetic_score(result):
     """Prefer clean, attractively short leaders without crushing labels inward."""
     elbows = 0

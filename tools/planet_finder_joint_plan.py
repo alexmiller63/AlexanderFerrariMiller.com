@@ -20,6 +20,7 @@ from planet_finder_geometry import (
     segment_hits_box, universal_label_size, xy,
 )
 from planet_finder_validation import validate_layout
+from planet_finder_makeup import uncross_labels
 
 MODES = (FinderMode.GREEK, FinderMode.ENGLISH, FinderMode.MIXED)
 # Successful plans only. Store immutable paths and return fresh copies so
@@ -206,6 +207,7 @@ def plan_universal_layout(bodies, deadline):
         pair.cache_clear()
     if result is None:
         return None
+    result = uncross_labels(MODES, result)
     for mode in MODES:
         valid, errors = validate_layout(mode, result)
         if not valid:

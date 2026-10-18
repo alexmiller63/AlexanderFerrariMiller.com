@@ -29,7 +29,7 @@ def selected_bodies():
     selected = {17: [(name.lower(), name, W17[name]) for name in CANONICAL]}
     # Stored CSV positions have arcminute precision. This test checks the
     # placement solver; full-regression CI separately calculates exact kernels.
-    for week in (20, 25, 39):
+    for week in (4, 20, 25, 39):
         values = []
         for name in CANONICAL:
             match = re.fullmatch(r'(.) (\d+)°(\d+)′', rows[week][name.lower()])

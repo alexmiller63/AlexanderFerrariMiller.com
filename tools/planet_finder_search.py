@@ -10,7 +10,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 from planet_finder_validation import validate_layout
-from planet_finder_makeup import aesthetic_score, refine_candidate
+from planet_finder_makeup import aesthetic_score, refine_candidate, uncross_labels
 from planet_finder_geometry import (
     W, H, CX, CY, RO, RI,
     LABEL_RIM_CLEARANCE, LABEL_COLLISION_PADDING,
@@ -395,4 +395,4 @@ def layout(
         f"score[elbows={best_score[0]},length={best_score[1]:.1f},"
         f"displacement={best_score[2]:.1f},radial={best_score[3]:.1f}]", flush=True,
     )
-    return best
+    return uncross_labels((mode,), best)
