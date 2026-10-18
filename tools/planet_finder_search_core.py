@@ -3774,6 +3774,12 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         )
         # Plan the crowded layer as a whole.  The planner now reserves wide
         # tangential slots for all members before any one member is committed.
+        diagnostic_print(
+            f"Planet Finder {mode}: PLANNER DIAGNOSTIC context={context_label or '-'} "
+            f"alignment_groups={len(alignment_group_items)} "
+            f"ordinary_bodies={len(order)} staged_before={len(staged)}",
+            flush=True,
+        )
         alignment_preplacement = plan_alignment_layer()
         if alignment_preplacement is None and alignment_group_items:
             check_deadline()
@@ -3788,6 +3794,13 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             f"elapsed={time.monotonic() - phase_started:.3f}s "
             f"result={'planned' if alignment_preplacement else 'none'}",
             level=1, flush=True,
+        )
+        diagnostic_print(
+            f"Planet Finder {mode}: PLANNER DIAGNOSTIC context={context_label or '-'} "
+            f"plan_found={alignment_preplacement is not None} "
+            f"planned_members={len(alignment_preplacement[0]) if alignment_preplacement else 0} "
+            f"remaining_seconds={max(0.0, refinement_deadline - time.monotonic()) if refinement_deadline is not None else -1:.2f}",
+            flush=True,
         )
         report_predfs_phase("alignment-plan", before)
 
