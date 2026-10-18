@@ -678,7 +678,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             "blocked": None,
         })
         nonlocal candidates, rejected_overlap, rejected_leader, rejected_route
-        w, h = label_size(mode, name)
+        w, h = universal_label_size(name)
         anchor = xy(longitude, RI - 5)
         # This generator is created for one fixed DFS prefix. The placed
         # obstacles therefore remain stable for its lifetime, so anchor-side
@@ -1133,7 +1133,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             return paths
 
         for _, (_, name, longitude) in items:
-            w, h = label_size(mode, name)
+            w, h = universal_label_size(name)
             natural = xy(longitude, PREFERRED_LABEL_RADII[0])
             immutable_diag = {} if name == "Sun" and abs(longitude - 101.0) < 1e-9 else None
             options = [
@@ -1213,11 +1213,10 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 inner_radius = next((float(r) for r in radial_lanes if r <= inner_limit), None)
                 if inner_radius is not None:
                     radial_lanes = (outer_radius, inner_radius)
-                    # Each lane holds alternating members, so begin with half
-                    # the single-ring angular footprint. Keep the normal gaps
-                    # and all candidates: a tight preference never relaxes a
-                    # collision check or freezes the plan during backtracking.
-                    widths_deg = {member: width / 2.0 for member, width in widths_deg.items()}
+                    # Lane staggering changes radial position, not the
+                    # angular footprint required by a label. Keep each member's
+                    # full universal width; exact candidate geometry and
+                    # backtracking decide whether the staggered plan fits.
             packed_deg = sum(widths_deg.values()) + gap_deg * (len(names) - 1)
             natural_angles = []
             for member in names:
@@ -1496,7 +1495,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         cache_key = (name, max_label_lengths)
         cached = alignment_position_cache.get(cache_key)
         if cached is None:
-            w, h = label_size(mode, name)
+            w, h = universal_label_size(name)
             cached = tuple(
                 legal_candidate_positions(
                     longitude, w, h, reserved, displacement_scale,
