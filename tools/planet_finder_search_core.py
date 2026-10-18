@@ -3900,7 +3900,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             level=1, flush=True,
         )
         fallback_result = _search_alignment_fallback(
-            alignment_preplacement, full_plan_groups, placed, leaders,
+            alignment_preplacement, alignment_group_items, placed, leaders,
             leader_names, staged, search, solve_alignment_group,
         )
         diagnostic_print(
