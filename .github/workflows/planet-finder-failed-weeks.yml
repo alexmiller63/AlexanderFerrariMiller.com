@@ -2,6 +2,12 @@ name: Planet Finder Failed Weeks Regression
 
 on:
   workflow_dispatch:
+    inputs:
+      weeks:
+        description: 'Space-separated ISO week numbers (e.g. 39 or 29 39 40 52)'
+        required: false
+        default: '25 27 29 30 39 40 52'
+        type: string
 
 permissions:
   contents: read
@@ -33,7 +39,12 @@ jobs:
         shell: bash
         run: |
           failed=0
-          for week in 25 27 29 30 39 40 52; do
+          weeks="${{ inputs.weeks }}"
+          for week in $weeks; do
+            if ! [[ "$week" =~ ^[0-9]{1,2}$ ]] || (( 10#$week < 1 || 10#$week > 53 )); then
+              echo "Invalid ISO week: $week"
+              exit 2
+            fi
             echo "::group::Week ${week}"
             if python tools/planet_finder_full_regression.py --start-week "$week" --end-week "$week"; then
               echo "Week ${week}: PASS"
