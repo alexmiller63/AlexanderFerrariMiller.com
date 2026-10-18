@@ -1856,7 +1856,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         # mode clock before DFS visits a node. Geometry ranking is a safe
         # ordering heuristic here; the recursive DFS still performs the full
         # authoritative routed viability checks for both members.
-        final_pair_geometry_rank = len(remaining_items) == 2
+        final_pair_geometry_rank = (len(remaining_items) == 2 or os.environ.get("PLANET_FINDER_LABELS_FIRST") == "1")
 
         for _, candidate_item in geometry_ranked_items:
             check_deadline()
