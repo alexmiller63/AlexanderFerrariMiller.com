@@ -39,25 +39,16 @@ jobs:
           WEEKS: ${{ inputs.weeks }}
         shell: bash
         run: |
-          python - <<'PY'
-          import os, re, subprocess, sys
-          raw = os.environ['WEEKS']
-          if not re.fullmatch(r'\s*\d{1,2}(?:\s*,\s*\d{1,2})*\s*', raw):
-              sys.exit('Enter comma-separated week numbers, e.g. 17,20,25,39')
-          weeks = list(dict.fromkeys(int(s.strip()) for s in raw.split(',')))
-          if any(w < 1 or w > 53 for w in weeks):
-              sys.exit('Weeks must be 1 through 53')
-          failures = []
-          for week in weeks:
-              print(f'\n===== WEEK {week:02d} =====', flush=True)
-              code = subprocess.call([sys.executable, 'tools/planet_finder_full_regression.py', '--start-week', str(week), '--end-week', str(week)])
-              print(f'WEEK {week:02d}: {"PASS" if code == 0 else "FAIL"}', flush=True)
-              if code:
-                  failures.append(week)
-          print(f'\nSUMMARY: tested {weeks}; failed {failures}', flush=True)
-          if failures:
-              sys.exit(1)
-          PY
+          python tools/planet_finder_full_regression.py --weeks "$WEEKS"
+      - name: Show regression summary
+        if: always()
+        shell: bash
+        run: |
+          if [ -f generated/planet-finder-regression/summary.md ]; then
+            cat generated/planet-finder-regression/summary.md >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo 'Regression did not produce a report; check setup steps.' >> "$GITHUB_STEP_SUMMARY"
+          fi
       - name: Preserve reports even after failures
         if: always()
         uses: actions/upload-artifact@v4
