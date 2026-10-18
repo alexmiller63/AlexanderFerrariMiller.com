@@ -22,7 +22,7 @@ from planet_finder_geometry import (
     FinderMode, Body, Box,
     xy, boxes_overlap, segment_hits_box, point_segment_distance,
     segments_too_close, leaders_too_close, leader_hits_zodiac_rim, minimum_leader_separation,
-    label_size, reserved_boxes, candidate_positions,
+    label_size, universal_label_size, reserved_boxes, candidate_positions,
     legal_candidate_positions, route, alignment_groups, conjunction_groups,
 )
 
@@ -1192,7 +1192,9 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             radius = max(1.0, float(RI - 5))
             widths_deg = {}
             for member in names:
-                w, h = label_size(mode, member)
+                # Reserve the same conservative tangential slot in every mode.
+                # Candidate legality still uses the actual per-mode dimensions.
+                w, h = universal_label_size(member)
                 tangential_px = max(float(w), float(h))
                 widths_deg[member] = math.degrees(
                     2.0 * math.asin(min(1.0, tangential_px / (2.0 * radius)))
@@ -1206,7 +1208,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             radial_lanes = tuple(PREFERRED_LABEL_RADII) + tuple(EXPANDED_LABEL_RADII)
             outer_radius = float(PREFERRED_LABEL_RADII[0])
             if stagger and len(names) >= 3:
-                radial_clearance = max(max(label_size(mode, member)) for member in names)
+                radial_clearance = max(max(universal_label_size(member)) for member in names)
                 inner_limit = outer_radius - radial_clearance - LABEL_COLLISION_PADDING
                 inner_radius = next((float(r) for r in radial_lanes if r <= inner_limit), None)
                 if inner_radius is not None:
