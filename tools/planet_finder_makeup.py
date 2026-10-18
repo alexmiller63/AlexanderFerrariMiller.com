@@ -50,12 +50,51 @@ def _paths_cross(first, second):
     )
 
 
+def straighten_anchor_hairpins(modes, result):
+    """Shortcut a near-anchor reversal only when the full layout stays valid.
+
+    Keep feasibility and close-anchor escape unchanged. A blocked shortcut
+    leaves the original route intact; label positions and anchors never move.
+    """
+    current = list(result)
+    if not all(validate_layout(mode, current)[0] for mode in modes):
+        return result
+    for index, row in enumerate(current):
+        path = row[4]
+        if len(path) < 4:
+            continue
+        anchor, bend, returning = path[:3]
+        incoming = (bend[0] - anchor[0], bend[1] - anchor[1])
+        outgoing = (returning[0] - bend[0], returning[1] - bend[1])
+        scale = math.hypot(*incoming) * math.hypot(*outgoing)
+        if not scale or sum(a * b for a, b in zip(incoming, outgoing)) > math.cos(math.radians(150)) * scale:
+            continue
+        if not math.dist(anchor, returning) < math.dist(anchor, bend) <= 40:
+            continue
+        # Prefer removing both sides of the hairpin. Retain the returning
+        # point when it is needed for clearance from another label or leader.
+        for start in (3, 2):
+            replacement = [anchor, *path[start:]]
+            if _leader_length(replacement) >= _leader_length(path):
+                continue
+            if any(_paths_cross(replacement, other[4]) > _paths_cross(path, other[4])
+                   for other_index, other in enumerate(current) if other_index != index):
+                continue
+            trial = list(current)
+            trial[index] = (*row[:4], replacement)
+            if all(validate_layout(mode, trial)[0] for mode in modes):
+                current = trial
+                break
+    return current
+
+
 def uncross_labels(modes, result):
     """Swap crossing labels only when the complete layout remains valid.
 
     Close-anchor escape remains legal. This bounded cosmetic pass improves
     an existing solution without tightening search feasibility constraints.
     Each body keeps its identity, longitude, anchor, and label dimensions.
+    Finish with validated near-anchor hairpin shortcuts.
     """
     current = list(result)
     if not all(validate_layout(mode, current)[0] for mode in modes):
@@ -105,7 +144,7 @@ def uncross_labels(modes, result):
                 break
         if not improved:
             break
-    return current
+    return straighten_anchor_hairpins(modes, current)
 
 
 def aesthetic_score(result):
