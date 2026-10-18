@@ -1429,6 +1429,30 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         if not alignment_preplacement:
             return
         planned, paths = alignment_preplacement
+        # Validate the *entire* planned layer before committing any member.
+        # A partial or mutually overlapping preplan must never become the
+        # starting state for the expensive ordinary DFS fallback.
+        expected = {item[1][1] for group in alignment_group_items for item in group}
+        if set(planned) != expected or set(paths) != expected:
+            diagnostic_print(
+                f"Planet Finder {mode}: PREPLAN REJECT incomplete layer "
+                f"expected={len(expected)} labels={len(planned)} routes={len(paths)}",
+                flush=True,
+            )
+            return
+        planned_boxes = [(name, planned[name][2]) for name in sorted(expected)]
+        for index, (name, box) in enumerate(planned_boxes):
+            if any(boxes_overlap(box, other_box, LABEL_COLLISION_PADDING)
+                   for _, other_box in planned_boxes[index + 1:]):
+                diagnostic_print(
+                    f"Planet Finder {mode}: PREPLAN REJECT overlapping layer body={name}",
+                    flush=True,
+                )
+                return
+        diagnostic_print(
+            f"Planet Finder {mode}: PREPLAN VERIFIED complete-layer "
+            f"members={len(expected)} routes={len(paths)}", flush=True,
+        )
         for group in alignment_group_items:
             for original_index, (symbol, name, longitude) in group:
                 box = planned[name][2]
