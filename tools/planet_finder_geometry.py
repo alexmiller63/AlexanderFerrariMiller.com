@@ -1,3 +1,4 @@
+import os
 """Planet Finder geometry, labels, routing, and presentation support.
 
 Extracted mechanically from generate_planet_finders.py. Keep this module
@@ -317,13 +318,31 @@ def leader_hits_zodiac_rim(path, clearance: float = LEADER_RIM_CLEARANCE) -> boo
     return False
 
 
-def label_size(mode: FinderMode, name: str) -> tuple[float, float]:
+def native_label_size(mode: FinderMode, name: str) -> tuple[float, float]:
+    """Dimensions actually required by the selected notation."""
     mode = FinderMode(mode)
     if mode == FinderMode.GREEK:
         return 64, 64
     if mode == FinderMode.ENGLISH:
         return max(104, 13 * len(name) + 28), 50
     return max(132, 13 * len(name) + 68), 50
+
+
+def cross_mode_label_envelope(name: str) -> tuple[float, float]:
+    """Conservative common footprint, independent of notation order."""
+    sizes = [native_label_size(mode, name) for mode in FinderMode]
+    return max(size[0] for size in sizes), max(size[1] for size in sizes)
+
+
+def label_size(mode: FinderMode, name: str) -> tuple[float, float]:
+    """Return a collision footprint; optionally reserve space for every mode.
+
+    Opt-in while validating cross-mode feasibility. This affects candidate
+    collision geometry, not the selected mode's label text.
+    """
+    if os.environ.get("PLANET_FINDER_CROSS_MODE_RESERVATIONS") == "1":
+        return cross_mode_label_envelope(name)
+    return native_label_size(mode, name)
 
 
 def reserved_boxes(mode: str) -> list[Box]:
