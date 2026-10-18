@@ -167,6 +167,7 @@ def layout(
     search_history = []
     state = "SEARCH_ORDER"
     promote_body = None
+    expanded_node_budget = False
 
     def terminal_search(reason):
         final_sequence = " > ".join(item[1][1] for item in order)
@@ -209,7 +210,21 @@ def layout(
         if state == "PROMOTE":
             transition, promoted_order = next_promotion_order(order, promote_body)
             if transition == "AT_FRONT":
-                terminal_search(f"blocker {promote_body} already promoted to position 0")
+                # One bounded expansion for a blocker that cannot be promoted.
+                # Preserve the original wall-clock deadline and ordering.
+                if not expanded_node_budget and budget["max_node_candidates"] < 400:
+                    old_cap = budget["max_node_candidates"]
+                    budget["max_node_candidates"] = min(400, old_cap * 2)
+                    expanded_node_budget = True
+                    attempted_orders.discard(tuple(item[1][1] for item in order))
+                    diagnostic_print(
+                        f"Planet Finder {mode}: ADAPTIVE NODE EXPANSION "
+                        f"body={promote_body} cap={old_cap}->{budget['max_node_candidates']}; "
+                        "retrying same order within original mode deadline", flush=True,
+                    )
+                    state = "SEARCH_ORDER"
+                else:
+                    terminal_search(f"blocker {promote_body} already promoted to position 0")
             elif transition == "PROMOTE":
                 promoted_names = tuple(item[1][1] for item in promoted_order)
                 order = promoted_order
