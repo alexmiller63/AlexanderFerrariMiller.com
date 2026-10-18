@@ -3780,6 +3780,28 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             f"ordinary_bodies={len(order)} staged_before={len(staged)}",
             flush=True,
         )
+        # Global capacity audit: a necessary single-lane packing check, not a
+        # feasibility verdict. Radial staggering and leader routes can change
+        # what fits; retain the existing planner and all its legality checks.
+        audit_names = list(dict.fromkeys(
+            [item[1][1] for group in alignment_group_items for item in group]
+            + [item[1][1] for item in order]
+        ))
+        audit_widths = {name: max(map(float, label_size(mode, name)))
+                        for name in audit_names}
+        audit_radius = float(PREFERRED_LABEL_RADII[0])
+        audit_gap = 14.0
+        audit_required = sum(audit_widths.values()) + audit_gap * max(0, len(audit_names) - 1)
+        audit_available = 2.0 * math.pi * audit_radius
+        diagnostic_print(
+            f"Planet Finder {mode}: GLOBAL SPACE AUDIT "
+            f"bodies={len(audit_names)} radius={audit_radius:.1f}px "
+            f"required_single_lane={audit_required:.1f}px "
+            f"available_single_lane={audit_available:.1f}px "
+            f"headroom={audit_available - audit_required:.1f}px "
+            f"scope=necessary-capacity-only stagger-and-routes-unverified",
+            flush=True,
+        )
         alignment_preplacement = plan_alignment_layer()
         if alignment_preplacement is None and alignment_group_items:
             check_deadline()
