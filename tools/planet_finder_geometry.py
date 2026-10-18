@@ -1,4 +1,3 @@
-import os
 """Planet Finder geometry, labels, routing, and presentation support.
 
 Extracted mechanically from generate_planet_finders.py. Keep this module
@@ -6,6 +5,7 @@ behavior-preserving; the generator remains the orchestration entry point.
 """
 
 from __future__ import annotations
+import os
 
 import math
 from dataclasses import dataclass
