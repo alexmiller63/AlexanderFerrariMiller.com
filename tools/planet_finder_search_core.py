@@ -1060,12 +1060,13 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         # Ordinary recursive placement already handles broader alignments.
         # Reserve the group planner for the close pairs that make sequential
         # first-fit placement expensive in the wider text modes.
-        close_gap = min(
+        gaps = [
             (right[1][2] - left[1][2]) % 360.0
             for group in groups
             for left, right in zip(group, group[1:])
-        )
-        if close_gap >= 3.0:
+        ]
+        close_gap = min(gaps, default=360.0)
+        if close_gap >= 3.0 and groups is alignment_group_items:
             return None
         pools = {}
         order_names = [item[1][1] for item in items]
@@ -1425,14 +1426,15 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             level=1, flush=True,
         )
 
-    def stage_alignment_preplacement(alignment_preplacement):
+    def stage_alignment_preplacement(alignment_preplacement, groups=None):
         if not alignment_preplacement:
             return
         planned, paths = alignment_preplacement
+        groups = alignment_group_items if groups is None else groups
         # Validate the *entire* planned layer before committing any member.
         # A partial or mutually overlapping preplan must never become the
         # starting state for the expensive ordinary DFS fallback.
-        expected = {item[1][1] for group in alignment_group_items for item in group}
+        expected = {item[1][1] for group in groups for item in group}
         if set(planned) != expected or set(paths) != expected:
             diagnostic_print(
                 f"Planet Finder {mode}: PREPLAN REJECT incomplete layer "
@@ -1453,7 +1455,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             f"Planet Finder {mode}: PREPLAN VERIFIED complete-layer "
             f"members={len(expected)} routes={len(paths)}", flush=True,
         )
-        for group in alignment_group_items:
+        for group in groups:
             for original_index, (symbol, name, longitude) in group:
                 box = planned[name][2]
                 path = paths[name]
@@ -3838,7 +3840,24 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             f"scope=three-mode-universal-envelope capacity-only stagger-and-routes-unverified",
             flush=True,
         )
-        alignment_preplacement = plan_alignment_layer()
+        # First attempt a complete chart plan. Preserve the close-alignment
+        # grouping, but include every remaining body as a singleton so none
+        # (notably Uranus in W39) is left to a blocked late DFS handoff.
+        grouped_names = {item[1][1] for group in alignment_group_items for item in group}
+        full_plan_groups = list(alignment_group_items) + [
+            [by_name[name]] for name in audit_names if name not in grouped_names
+        ]
+        diagnostic_print(
+            f"Planet Finder {mode}: FULL-CHART PREPLAN "
+            f"bodies={sum(map(len, full_plan_groups))} "
+            f"previously-unplanned={','.join(name for name in audit_names if name not in grouped_names) or '-'}",
+            flush=True,
+        )
+        alignment_preplacement = plan_alignment_layer(groups=full_plan_groups)
+        if alignment_preplacement is None:
+            check_deadline()
+            alignment_preplacement = plan_alignment_layer(groups=full_plan_groups, stagger=True)
+        staged_groups = full_plan_groups if alignment_preplacement is not None else alignment_group_items
         if alignment_preplacement is None and alignment_group_items:
             check_deadline()
             diagnostic_print(
@@ -3864,7 +3883,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
 
         phase_started = time.monotonic()
         before = predfs_rejection_snapshot()
-        stage_alignment_preplacement(alignment_preplacement)
+        stage_alignment_preplacement(alignment_preplacement, staged_groups)
         diagnostic_print(
             f"Planet Finder {mode}: PRE-DFS TIMING alignment-stage END "
             f"elapsed={time.monotonic() - phase_started:.3f}s "
