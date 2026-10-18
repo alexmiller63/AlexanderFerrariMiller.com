@@ -156,6 +156,34 @@ def layout(
         flush=True,
     )
 
+    if target_solutions == 1:
+        from planet_finder_joint_plan import plan_universal_layout
+        joint_started = time.monotonic()
+        diagnostic_print(
+            f"Planet Finder {mode}: JOINT THREE-MODE PLAN START bodies={len(bodies)}",
+            flush=True,
+        )
+        try:
+            joint_plan = plan_universal_layout(
+                bodies, min(mode_deadline, joint_started + 45.0)
+            )
+        except TimeoutError:
+            joint_plan = None
+        if joint_plan is not None:
+            diagnostic_print(
+                f"Planet Finder {mode}: JOINT THREE-MODE PLAN VALID "
+                f"bodies={len(joint_plan)} elapsed={time.monotonic() - joint_started:.3f}s; "
+                "first complete layout; all three modes independently validated",
+                flush=True,
+            )
+            return joint_plan
+        diagnostic_print(
+            f"Planet Finder {mode}: JOINT THREE-MODE PLAN unresolved "
+            f"elapsed={time.monotonic() - joint_started:.3f}s; "
+            "continuing within original mode deadline",
+            flush=True,
+        )
+
     order = indexed
     all_solutions = []
     contest_keys = []
