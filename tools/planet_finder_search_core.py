@@ -1177,6 +1177,14 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             # available when the widest coordinated placements cannot finish.
             pools[name] = options
             if not pools[name]:
+                diagnostic_print(
+                    f"Planet Finder {mode}: ALIGNMENT PLAN BLOCKED "
+                    f"variant={'spatial' if stagger else 'angular'} "
+                    f"body={name} reason=no-legal-label-candidates "
+                    f"group={next((','.join(group) for group in group_names if name in group), '-')} "
+                    f"pool_sizes={','.join(f'{body}:{len(pool)}' for body, pool in pools.items())}",
+                    flush=True,
+                )
                 return None
 
         # Preplan the whole crowded layer before DFS commits any one member.
