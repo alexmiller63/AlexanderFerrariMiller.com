@@ -3857,15 +3857,16 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         if alignment_preplacement is None:
             check_deadline()
             alignment_preplacement = plan_alignment_layer(groups=full_plan_groups, stagger=True)
-        staged_groups = full_plan_groups if alignment_preplacement is not None else alignment_group_items
-        if alignment_preplacement is None and alignment_group_items:
-            check_deadline()
+        # Never accept a smaller alignment-only plan after the full-chart
+        # planner fails. Such a plan strands the remaining bodies (Uranus in
+        # W39), causing the repeated dead-end handoffs seen in the logs.
+        staged_groups = full_plan_groups
+        if alignment_preplacement is None:
             diagnostic_print(
-                f"Planet Finder {mode}: ALIGNMENT SPATIAL STAGGER RETRY "
-                "planning labels and routes before recursive fallback",
-                level=1, flush=True,
+                f"Planet Finder {mode}: FULL-CHART PLAN UNSOLVED "
+                "no partial layer will be committed; retrying all bodies together",
+                flush=True,
             )
-            alignment_preplacement = plan_alignment_layer(stagger=True)
         diagnostic_print(
             f"Planet Finder {mode}: PRE-DFS TIMING alignment-plan END "
             f"elapsed={time.monotonic() - phase_started:.3f}s "
@@ -3899,7 +3900,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             level=1, flush=True,
         )
         fallback_result = _search_alignment_fallback(
-            alignment_preplacement, alignment_group_items, placed, leaders,
+            alignment_preplacement, full_plan_groups, placed, leaders,
             leader_names, staged, search, solve_alignment_group,
         )
         diagnostic_print(
