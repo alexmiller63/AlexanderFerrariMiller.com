@@ -263,9 +263,20 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
     terminal_validation_errors = {}
     terminal_validation_sun_leaders = {}
 
+    # Once a complete layout has passed validation, do not spend the entire
+    # mode budget searching for additional contestants. The first layout is
+    # retained and the original recursive solver remains available.
+    first_valid_at = None
+    post_solution_seconds = max(
+        0.0, float(os.environ.get("PLANET_FINDER_POST_SOLUTION_SECONDS", "5"))
+    )
+
     def check_deadline():
-        """Interrupt any nested search work when the absolute mode clock expires."""
-        if refinement_deadline is not None and time.monotonic() >= refinement_deadline:
+        """Respect both the hard mode clock and the post-solution refinement clock."""
+        now = time.monotonic()
+        if refinement_deadline is not None and now >= refinement_deadline:
+            raise SearchDeadlineExhausted()
+        if first_valid_at is not None and now - first_valid_at >= post_solution_seconds:
             raise SearchDeadlineExhausted()
 
     def dump_diagnostics(reason):
@@ -3429,10 +3440,12 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
         """
         nonlocal nodes, deepest, candidates, backtracks, current_body
         nonlocal terminal_validation_checks, terminal_validation_rejections
-        nonlocal terminal_validation_sun_leaders, refinement_timed_out
+        nonlocal terminal_validation_sun_leaders, refinement_timed_out, first_valid_at
 
         now = time.monotonic()
-        if refinement_deadline is not None and now >= refinement_deadline:
+        if ((refinement_deadline is not None and now >= refinement_deadline)
+                or (first_valid_at is not None
+                    and now - first_valid_at >= post_solution_seconds)):
             refinement_timed_out = True
             diagnostic_print(
                 f"Planet Finder {mode}: DFS REFINEMENT DEADLINE order={order_index} "
@@ -3515,8 +3528,21 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
                 terminal_validation_checks += 1
                 valid, errors = validate_layout(mode, result)
                 if valid:
+                    if first_valid_at is None:
+                        first_valid_at = time.monotonic()
+                        diagnostic_print(
+                            f"Planet Finder {mode}: FIRST_VALID_SOLUTION "
+                            f"elapsed={first_valid_at - started:.3f}s "
+                            f"post_solution_budget={post_solution_seconds:.3f}s",
+                            flush=True,
+                        )
                     solutions.append(result)
                     contest_keys.append(key)
+                    diagnostic_print(
+                        f"Planet Finder {mode}: VALID_CANDIDATE "
+                        f"number={len(solutions)} elapsed={time.monotonic() - started:.3f}s",
+                        flush=True,
+                    )
                     diagnostic_print(
                         f"Planet Finder {mode}: complete valid candidate "
                         f"{len(solutions)}/{target_solutions} "
