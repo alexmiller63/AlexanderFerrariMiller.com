@@ -1,0 +1,67 @@
+name: Planet Finder Selected Weeks 2026
+
+on:
+  workflow_dispatch:
+    inputs:
+      weeks:
+        description: 'Comma-separated ISO weeks to test'
+        required: true
+        default: '17,20,25,39'
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  regression:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    env:
+      PLANET_FINDER_CANDIDATES: '5'
+      PLANET_FINDER_MAX_NODE_CANDIDATES: '200'
+      PLANET_FINDER_MAX_SECONDS: '360'
+      PLANET_FINDER_DIAGNOSTIC_LEVEL: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/cache@v4
+        with:
+          path: .cache/skyfield
+          key: star-almanack-source-kernels-v1
+      - name: Install calculation dependency
+        run: python -m pip install --disable-pip-version-check 'skyfield==1.55'
+      - name: Ensure source kernels
+        run: python tools/ensure_ephemeris_kernels.py --ceres
+      - name: Test selected weeks in all modes
+        env:
+          WEEKS: ${{ inputs.weeks }}
+        shell: bash
+        run: |
+          python - <<'PY'
+          import os, re, subprocess, sys
+          raw = os.environ['WEEKS']
+          if not re.fullmatch(r'\s*\d{1,2}(?:\s*,\s*\d{1,2})*\s*', raw):
+              sys.exit('Enter comma-separated week numbers, e.g. 17,20,25,39')
+          weeks = list(dict.fromkeys(int(s.strip()) for s in raw.split(',')))
+          if any(w < 1 or w > 53 for w in weeks):
+              sys.exit('Weeks must be 1 through 53')
+          failures = []
+          for week in weeks:
+              print(f'\n===== WEEK {week:02d} =====', flush=True)
+              code = subprocess.call([sys.executable, 'tools/planet_finder_full_regression.py', '--start-week', str(week), '--end-week', str(week)])
+              print(f'WEEK {week:02d}: {"PASS" if code == 0 else "FAIL"}', flush=True)
+              if code:
+                  failures.append(week)
+          print(f'\nSUMMARY: tested {weeks}; failed {failures}', flush=True)
+          if failures:
+              sys.exit(1)
+          PY
+      - name: Preserve reports even after failures
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: planet-finder-regression-selected-weeks
+          path: generated/planet-finder-regression/
+          if-no-files-found: warn
