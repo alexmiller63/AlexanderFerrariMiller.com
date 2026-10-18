@@ -13,6 +13,16 @@ on:
         required: true
         default: false
         type: boolean
+      cross_mode_reservations:
+        description: 'Use largest label footprint across all notation modes'
+        required: true
+        default: false
+        type: boolean
+      candidate_count:
+        description: 'Candidate layouts per mode (1 for diagnostic smoke test)'
+        required: true
+        default: '5'
+        type: string
       end_week:
         description: 'Last ISO week (1-53)'
         required: true
@@ -27,7 +37,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 360
     env:
-      PLANET_FINDER_CANDIDATES: '5'
+      PLANET_FINDER_CANDIDATES: ${{ inputs.candidate_count }}
+      PLANET_FINDER_CROSS_MODE_RESERVATIONS: ${{ inputs.cross_mode_reservations && '1' || '0' }}
       PLANET_FINDER_MAX_NODE_CANDIDATES: '200'
       PLANET_FINDER_MAX_SECONDS: '360'
       PLANET_FINDER_DIAGNOSTIC_LEVEL: '1'
@@ -51,6 +62,16 @@ jobs:
           a, b = os.environ['START_WEEK'], os.environ['END_WEEK']
           if not (a.isdecimal() and b.isdecimal() and 1 <= int(a) <= int(b) <= 53):
               raise SystemExit('Week range must be integers 1-53 with start <= end')
+          PY
+      - name: Validate candidate count
+        env:
+          CANDIDATE_COUNT: ${{ inputs.candidate_count }}
+        run: |
+          python - <<'PY'
+          import os
+          value = os.environ['CANDIDATE_COUNT']
+          if not value.isdecimal() or not 1 <= int(value) <= 10:
+              raise SystemExit('Candidate count must be an integer between 1 and 10')
           PY
       - name: Install calculation dependency
         run: python -m pip install --disable-pip-version-check 'skyfield==1.55'
