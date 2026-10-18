@@ -3796,7 +3796,10 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             [item[1][1] for group in alignment_group_items for item in group]
             + [item[1][1] for item in order]
         ))
-        audit_widths = {name: max(map(float, label_size(mode, name)))
+        # Capacity must be assessed against the shared three-mode envelope,
+        # not the current mode's smaller label. This remains diagnostic only:
+        # circumference alone cannot prove a collision-free routed layout.
+        audit_widths = {name: max(map(float, universal_label_size(name)))
                         for name in audit_names}
         audit_radius = float(PREFERRED_LABEL_RADII[0])
         audit_gap = 14.0
@@ -3808,7 +3811,7 @@ def _solve_order(mode: str, bodies, order, budget, target_solutions=5, order_ind
             f"required_single_lane={audit_required:.1f}px "
             f"available_single_lane={audit_available:.1f}px "
             f"headroom={audit_available - audit_required:.1f}px "
-            f"scope=necessary-capacity-only stagger-and-routes-unverified",
+            f"scope=three-mode-universal-envelope capacity-only stagger-and-routes-unverified",
             flush=True,
         )
         alignment_preplacement = plan_alignment_layer()
