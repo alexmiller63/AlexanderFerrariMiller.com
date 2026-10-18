@@ -318,12 +318,26 @@ def leader_hits_zodiac_rim(path, clearance: float = LEADER_RIM_CLEARANCE) -> boo
 
 
 def label_size(mode: FinderMode, name: str) -> tuple[float, float]:
+    """Estimated rendered dimensions for a label in one notation mode."""
     mode = FinderMode(mode)
     if mode == FinderMode.GREEK:
         return 64, 64
     if mode == FinderMode.ENGLISH:
         return max(104, 13 * len(name) + 28), 50
     return max(132, 13 * len(name) + 68), 50
+
+
+def universal_label_size(name: str) -> tuple[float, float]:
+    """Conservative cross-mode rectangle; maximize each axis independently.
+
+    This is a preplanning envelope, not the per-mode rendering footprint.
+    It deliberately leaves label_size unchanged so existing valid English
+    placements are not rejected by a larger box during ordinary search.
+    """
+    sizes = [label_size(mode, name) for mode in (
+        FinderMode.GREEK, FinderMode.ENGLISH, FinderMode.MIXED
+    )]
+    return max(width for width, _ in sizes), max(height for _, height in sizes)
 
 
 def reserved_boxes(mode: str) -> list[Box]:
