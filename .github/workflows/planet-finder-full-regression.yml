@@ -6,7 +6,7 @@ on:
       start_week:
         description: 'First ISO week (1-53)'
         required: true
-        default: '39'
+        default: '1'
         type: string
       labels_first:
         description: 'Experimental labels-first alignment ranking'
@@ -16,7 +16,7 @@ on:
       end_week:
         description: 'Last ISO week (1-53)'
         required: true
-        default: '40'
+        default: '53'
         type: string
 
 permissions:
@@ -27,7 +27,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 360
     env:
-      PLANET_FINDER_CANDIDATES: '5'
+      PLANET_FINDER_CANDIDATES: '1'
       PLANET_FINDER_MAX_NODE_CANDIDATES: '200'
       PLANET_FINDER_MAX_SECONDS: '360'
       PLANET_FINDER_DIAGNOSTIC_LEVEL: '1'
@@ -61,6 +61,15 @@ jobs:
           START_WEEK: ${{ inputs.start_week }}
           END_WEEK: ${{ inputs.end_week }}
         run: python tools/planet_finder_full_regression.py --start-week "$START_WEEK" --end-week "$END_WEEK"
+      - name: Show regression summary
+        if: always()
+        shell: bash
+        run: |
+          if [ -f generated/planet-finder-regression/summary.md ]; then
+            cat generated/planet-finder-regression/summary.md >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo 'Regression did not produce a report; check setup steps.' >> "$GITHUB_STEP_SUMMARY"
+          fi
       - name: Preserve reports even after failures
         if: always()
         uses: actions/upload-artifact@v4
