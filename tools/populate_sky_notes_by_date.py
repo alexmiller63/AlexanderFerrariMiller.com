@@ -706,7 +706,7 @@ def render_featured_stories(payload: dict) -> str:
         )
     if not pieces:
         return ""
-    return '<section class="sky-note-featured-stories"><h3>Featured stories</h3>\\n' + "\\n".join(pieces) + '</section>\\n'
+    return '<section class="sky-note-featured-stories"><h3>Featured stories</h3>\n' + "\n".join(pieces) + '</section>\n'
 
 
 def patch_page(path: Path, payload: dict) -> bool:
