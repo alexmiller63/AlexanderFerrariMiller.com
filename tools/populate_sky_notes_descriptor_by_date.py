@@ -181,8 +181,8 @@ def story_candidates(fixed_ids: list[int]) -> list[dict]:
 
 
 def story_presentations(candidates: list[dict]) -> tuple[list[dict], list[dict]]:
-    """Show each Calendar-selected story inline with its canonical hed, dek and body."""
-    return list(candidates), []
+    """Repeat hed and dek in weekly links; keep body on canonical story pages."""
+    return [], list(candidates)
 
 
 def suppress_already_mentioned_stories(page_path, stories: list[dict]) -> list[dict]:
@@ -402,7 +402,6 @@ def generated_note(year: int, week: int, page_path, yearly, stars: list[dict]) -
     payload["descriptors"].extend(lunar_highlight_descriptors(page_path))
     candidates = story_candidates(fixed_ids)
     inline, linked = story_presentations(candidates)
-    linked = suppress_already_mentioned_stories(page_path, linked)
     payload["calendar_fixed_object_ids"] = fixed_ids
     payload["story_candidates"] = candidates
     payload["inline_stories"] = inline
@@ -477,10 +476,9 @@ def patch_page(path, payload: dict) -> bool:
         if finder_href:
             record["finder_href"] = finder_href
     rendered = decorate_note_html(rendered, payload["descriptors"], payload.get("calendar_fixed_object_ids", []))
-    # Canonical stories own the hed, dek and body. Wordy repeats that body
-    # after the same linked hed/dek shown in Highlights.
+    # Weekly Sky Notes repeat canonical hed and dek as links; bodies remain on story pages.
     inline = render_inline_stories(payload.get("inline_stories", []))
-    linked = render_linked_stories(payload.get("linked_stories", []), elaborate=True)
+    linked = render_linked_stories(payload.get("linked_stories", []), elaborate=False)
     # Legacy week-owned artwork is deliberately removed. Fixed-object artwork
     # belongs on the object story/package and is published independently.
     artwork_slot = ""
