@@ -483,7 +483,7 @@ def weave_story_headlines(rendered: str, stories: list[dict], page_path) -> str:
     for heading, paragraphs in grouped.items():
         pattern = rf'(<p><strong>{re.escape(heading)}:</strong>.*?</p>)'
         rendered, count = re.subn(
-            pattern, lambda m: m.group(1) + "\\n" + "\\n".join(paragraphs),
+            pattern, lambda m: m.group(1) + "\n" + "\n".join(paragraphs),
             rendered, count=1, flags=re.S,
         )
         if count != 1:
