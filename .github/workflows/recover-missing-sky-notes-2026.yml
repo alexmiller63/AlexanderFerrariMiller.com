@@ -1,0 +1,87 @@
+name: Recover missing 2026 Sky Notes and audit
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: almanack-generator-main-writer
+  cancel-in-progress: false
+
+jobs:
+  recover:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/cache@v4
+        with:
+          path: |
+            .cache/skyfield/de440s.bsp
+            .cache/skyfield/ceres_1900_2100.bsp
+          key: star-almanack-source-kernels-v1
+      - name: Install generator dependencies
+        run: python -m pip install --disable-pip-version-check 'skyfield==1.55' 'PyYAML>=6,<7'
+      - name: Prepare kernels
+        run: python tools/ensure_ephemeris_kernels.py --ceres
+      - name: Generate only absent weekly JSON
+        shell: bash
+        run: |
+          set -euo pipefail
+          for week in 21 24 25 27 28 29 30 48 49 50 52; do
+            key=$(printf 'W%02d' "$week")
+            if [[ -e "generated-sky-notes/2026/${key}.json" ]]; then
+              echo "Already present: ${key}; skipping"
+              continue
+            fi
+            monday=$(python -c 'from datetime import date; import sys; print(date.fromisocalendar(2026,int(sys.argv[1]),1))' "$week")
+            echo "Recovering ${key} (${monday})"
+            python tools/populate_sky_notes_descriptor_by_date.py "$monday" "$monday"
+            test -s "generated-sky-notes/2026/${key}.json"
+          done
+      - name: Ensure canonical stories remain unchanged
+        run: |
+          set -euo pipefail
+          if [[ -n "$(git status --porcelain -- stories/)" ]]; then
+            echo "::error::Generator modified canonical stories; refusing to publish"
+            exit 1
+          fi
+      - name: Commit recovered weeks only
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          for week in 21 24 25 27 28 29 30 48 49 50 52; do
+            key=$(printf 'W%02d' "$week")
+            git add -- "generated-sky-notes/2026/${key}.json" "almanack/2026/${key}/index.html"
+          done
+          if git diff --cached --quiet; then
+            echo "No missing weeks required recovery."
+          else
+            git commit -m "Recover eleven missing 2026 Sky Notes weeks"
+            for attempt in 1 2 3 4 5; do
+              git pull --rebase --autostash origin main
+              if git push origin HEAD:main; then break; fi
+              if [[ "$attempt" == 5 ]]; then exit 1; fi
+              sleep $((attempt * 2))
+            done
+          fi
+      - name: Audit all 53 weeks
+        shell: bash
+        run: |
+          set -euo pipefail
+          python tools/audit_finder_stars.py --year 2026 --output audit-output/finder-stars
+      - name: Upload finder-star audit
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: finder-star-audit-2026-after-recovery
+          path: audit-output/finder-stars/
+          if-no-files-found: warn
