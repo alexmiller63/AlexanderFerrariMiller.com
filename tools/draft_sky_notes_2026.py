@@ -95,8 +95,9 @@ def main():
                 continue
             if not all(isinstance(story.get(k),str) and story[k].strip() for k in ("hed","dek","body")):
                 print("INVALID STORY",ident,"attempt",attempt+1,flush=True)
-            continue
-                break
+                story=None
+                continue
+            break
         if story is None or not all(isinstance(story.get(k),str) and story[k].strip() for k in ("hed","dek","body")):
             failures.append(ident)
             print("SKIPPED AFTER RETRIES",ident,flush=True)
