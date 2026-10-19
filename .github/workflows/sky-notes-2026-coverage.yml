@@ -30,8 +30,33 @@ jobs:
           print("Missing:", ", ".join(report["missing_calendar_pages"]) or "none")
           print("Structural readiness does not imply scientific verification.")
           PY
+      - name: Build reusable fixed-object drafting queue
+        run: |
+          python - <<'PY'
+          import csv, json
+          from pathlib import Path
+          source=Path("generated/story-research-queue-2026.json")
+          report=json.loads(source.read_text(encoding="utf-8"))
+          items=[item for item in report["objects"] if item["status"] == "needs-research"]
+          items.sort(key=lambda item:(min(item["weeks"]) if item["weeks"] else "9999-W99", -len(item["weeks"]), item["fixed_object_id"]))
+          out=Path("generated/sky-notes-2026-drafting-queue.csv")
+          fields=["priority","fixed_object_id","name","first_week","week_count","existing_source","issues"]
+          with out.open("w",newline="",encoding="utf-8") as stream:
+              writer=csv.DictWriter(stream,fieldnames=fields)
+              writer.writeheader()
+              for priority,item in enumerate(items,1):
+                  writer.writerow(dict(priority=priority,fixed_object_id=item["fixed_object_id"],
+                      name=item.get("name") or "",first_week=min(item["weeks"]) if item["weeks"] else "",
+                      week_count=len(item["weeks"]),existing_source=item["existing_source"],
+                      issues="; ".join(item["issues"])))
+          print(f"Draft queue: {len(items)} unique fixed-object IDs.")
+          print("First 15 entries:")
+          for item in items[:15]:
+              print(item["fixed_object_id"], item.get("name"), min(item["weeks"]) if item["weeks"] else "no week")
+          print("Drafting priority is editorial only, not astronomical verification.")
+          PY
       - uses: actions/upload-artifact@v4
         with:
           name: sky-notes-2026-coverage
-          path: generated/story-research-queue-2026.json
+          path: |\n            generated/story-research-queue-2026.json\n            generated/sky-notes-2026-drafting-queue.csv
           retention-days: 30
