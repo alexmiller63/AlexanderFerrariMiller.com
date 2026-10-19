@@ -41,6 +41,7 @@ def main():
     ledger=json.loads(ledger_path.read_text()) if ledger_path.exists() else {"estimated_usd":0,"calls":[]}
     git("config","user.name","github-actions[bot]")
     git("config","user.email","41898282+github-actions[bot]@users.noreply.github.com")
+    failures=[]
     for item in todo:
         ident=str(item["fixed_object_id"])
         if not re.fullmatch(r"[0-9]+",ident):
@@ -62,33 +63,49 @@ def main():
                 "magnitudes and invented history. When identity or facts are uncertain, write conservatively. "
                 "No fake citations. This is an UNVERIFIED editorial draft, not publication-ready. "
                 "Registry metadata: "+json.dumps(facts,ensure_ascii=False)[:7500])
-        payload=json.dumps({"model":"gpt-4.1-nano","input":prompt,"max_output_tokens":MAX_OUTPUT,
-            "text":{"format":{"type":"json_schema","name":"story","strict":True,
-            "schema":{"type":"object","properties":{"hed":{"type":"string"},"dek":{"type":"string"},"body":{"type":"string"}},"required":["hed","dek","body"],"additionalProperties":False}}}}).encode()
-        req=urllib.request.Request("https://api.openai.com/v1/responses",data=payload,
-            headers={"Authorization":"Bearer "+key,"Content-Type":"application/json"},method="POST")
-        try:
-            with urllib.request.urlopen(req,timeout=120) as response:
-                result=json.load(response)
-        except urllib.error.HTTPError as err:
-            raise RuntimeError("API returned HTTP "+str(err.code)) from err
-        usage=result.get("usage",{})
-        # Charge against conservative rates; reserve full call even if usage missing.
-        cost=max((usage.get("input_tokens",MAX_INPUT)*INPUT_RATE+
-                  usage.get("output_tokens",MAX_OUTPUT)*OUTPUT_RATE)/1e6,0)
-        ledger["estimated_usd"]+=cost
-        ledger["calls"].append({"id":ident,"reserved_estimate_usd":cost})
-        # Persist ledger before next paid call, including if output malformed.
-        ledger_path.write_text(json.dumps(ledger,indent=2)+"\n")
-        save(ledger_path)
-        raw="".join(c.get("text","") for o in result.get("output",[]) for c in o.get("content",[]) if c.get("type")=="output_text")
-        story=json.loads(raw)
-        if not all(isinstance(story.get(k),str) and story[k].strip() for k in ("hed","dek","body")):
-            raise RuntimeError("Malformed story for "+ident)
+        story=None
+        for attempt in range(3):
+            if ledger["estimated_usd"]+RESERVE>BUDGET:
+                print("BUDGET STOP",ledger["estimated_usd"],flush=True)
+                break
+            payload=json.dumps({"model":"gpt-4.1-nano","input":prompt,"max_output_tokens":MAX_OUTPUT,
+                "text":{"format":{"type":"json_schema","name":"story","strict":True,
+                "schema":{"type":"object","properties":{"hed":{"type":"string"},"dek":{"type":"string"},"body":{"type":"string"}},"required":["hed","dek","body"],"additionalProperties":False}}}}).encode()
+            req=urllib.request.Request("https://api.openai.com/v1/responses",data=payload,
+                headers={"Authorization":"Bearer "+key,"Content-Type":"application/json"},method="POST")
+            try:
+                with urllib.request.urlopen(req,timeout=120) as response:
+                    result=json.load(response)
+            except urllib.error.HTTPError as err:
+                raise RuntimeError("API returned HTTP "+str(err.code)) from err
+            usage=result.get("usage",{})
+            # Charge against conservative rates; reserve full call even if usage missing.
+            cost=max((usage.get("input_tokens",MAX_INPUT)*INPUT_RATE+
+                      usage.get("output_tokens",MAX_OUTPUT)*OUTPUT_RATE)/1e6,0)
+            ledger["estimated_usd"]+=cost
+            ledger["calls"].append({"id":ident,"reserved_estimate_usd":cost})
+            # Persist ledger before next paid call, including if output malformed.
+            ledger_path.write_text(json.dumps(ledger,indent=2)+"\n")
+            save(ledger_path)
+            raw="".join(c.get("text","") for o in result.get("output",[]) for c in o.get("content",[]) if c.get("type")=="output_text")
+            try:
+                story=json.loads(raw)
+            except (ValueError, TypeError):
+                print("INVALID JSON",ident,"attempt",attempt+1,flush=True)
+                continue
+            if not all(isinstance(story.get(k),str) and story[k].strip() for k in ("hed","dek","body")):
+                print("INVALID STORY",ident,"attempt",attempt+1,flush=True)
+            continue
+                break
+        if story is None or not all(isinstance(story.get(k),str) and story[k].strip() for k in ("hed","dek","body")):
+            failures.append(ident)
+            print("SKIPPED AFTER RETRIES",ident,flush=True)
+            continue
         target.write_text(json.dumps({"fixed_object_id":ident,"status":"draft_unverified",
             "weeks":item["weeks"],"hed":story["hed"],"dek":story["dek"],"body":story["body"]},
             ensure_ascii=False,indent=2)+"\n")
         save(target)
         print("SAVED",ident,"ESTIMATED RESERVED USD",round(ledger["estimated_usd"],4),flush=True)
+    print("DRAFT RUN FINISHED; FAILED IDS:",",".join(failures) if failures else "none",flush=True)
 if __name__=="__main__":
     main()
