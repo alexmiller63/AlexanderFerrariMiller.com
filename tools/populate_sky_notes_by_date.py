@@ -288,10 +288,17 @@ def planetary_finder_relations(week: int, yearly: dict[int, dict[str, float]], s
     # after the ephemeris' equatorial position is available.
     finder_stars = [star for star in load_finder_stars(stars)
                     if star["con"] and star["mag"] <= 4.5]
+    # Some preserved weekly pages have no embedded equatorial ephemeris.
+    # A longitude-only relation is not a valid two-dimensional finder route.
+    # Keep only relations backed by real RA/Dec; never fabricate coordinates.
+    missing = [r["planet"] for r in relations
+               if r.get("planet_ra_deg") is None or r.get("planet_dec_deg") is None]
+    if missing:
+        print(f"WARNING: {page_path}: omitted finder routes without equatorial positions: {', '.join(missing)}")
+    relations = [r for r in relations
+                 if r.get("planet_ra_deg") is not None and r.get("planet_dec_deg") is not None]
     for relation in relations:
-        pra, pdec = relation.get("planet_ra_deg"), relation.get("planet_dec_deg")
-        if pra is None or pdec is None:
-            raise RuntimeError(f"Missing equatorial finder position for {relation['planet']}")
+        pra, pdec = relation["planet_ra_deg"], relation["planet_dec_deg"]
         star = min(finder_stars, key=lambda item: (
             angular_distance(float(pra), float(pdec), item["ra_deg"], item["dec_deg"]),
             item["mag"], item["name"],
