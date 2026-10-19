@@ -181,8 +181,8 @@ def story_candidates(fixed_ids: list[int]) -> list[dict]:
 
 
 def story_presentations(candidates: list[dict]) -> tuple[list[dict], list[dict]]:
-    """Keep prose on canonical story pages; expose candidate stories as weekly reader links."""
-    return [], list(candidates)
+    """Show each Calendar-selected story inline with its canonical hed, dek and body."""
+    return list(candidates), []
 
 
 def suppress_already_mentioned_stories(page_path, stories: list[dict]) -> list[dict]:
