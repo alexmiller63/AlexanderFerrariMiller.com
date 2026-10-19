@@ -366,7 +366,7 @@ def render_linked_stories(stories: list[dict], elaborate: bool = False) -> str:
             f'<a href="{url}"><strong class="sky-note-story-hed">{hed}</strong> — '
             f'<span class="sky-note-story-dek">{dek}</span></a>{body_html}</li>'
         )
-    return '<div class="sky-note-more-stories"><h4>More Sky Notes</h4><ul>' + "".join(items) + '</ul></div>'
+    return '<div class="sky-note-more-stories"><h4>Featured stories</h4><ul>' + "".join(items) + '</ul></div>'
 
 
 def descriptor_policy() -> dict:
@@ -483,13 +483,14 @@ def patch_page(path, payload: dict) -> bool:
     # belongs on the object story/package and is published independently.
     artwork_slot = ""
     body = rendered + "\n"
+    # Put story headlines immediately after the observing introduction, before planet details.
+    if linked:
+        body += linked + "\n"
+    if inline:
+        body += inline + "\n"
     planet_treatments = render_planet_treatments(payload)
     if planet_treatments:
         body += planet_treatments + "\n"
-    if inline:
-        body += inline + "\n"
-    if linked:
-        body += linked + "\n"
     if artwork_slot:
         body += artwork_slot + "\n"
     # Highlights and Wordy are two views of the same structured Sky Note.
