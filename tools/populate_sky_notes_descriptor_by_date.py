@@ -402,7 +402,7 @@ def generated_note(year: int, week: int, page_path, yearly, stars: list[dict]) -
     payload["descriptors"].extend(lunar_highlight_descriptors(page_path))
     candidates = story_candidates(fixed_ids)
     inline, linked = story_presentations(candidates)
-    linked = suppress_already_mentioned_stories(page_path, linked)
+    # Calendar mentions do not replace a story: keep all permanent-ID stories\n    # visible in Highlights and Wordy, including objects named by Calendar.
     payload["calendar_fixed_object_ids"] = fixed_ids
     payload["story_candidates"] = candidates
     payload["inline_stories"] = inline
