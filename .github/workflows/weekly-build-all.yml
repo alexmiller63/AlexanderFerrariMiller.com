@@ -30,7 +30,7 @@ on:
       candidate_layouts:
         type: string
         required: false
-        default: '5'
+        default: '1'
       max_node_candidates:
         type: string
         required: false
@@ -88,7 +88,7 @@ on:
       candidate_layouts:
         description: Planet Finder complete layouts to score per mode
         required: true
-        default: '5'
+        default: '1'
         type: string
       max_node_candidates:
         description: Planet Finder maximum DFS node visits per body depth
@@ -349,7 +349,7 @@ jobs:
             run_stage populate-ephemeris-planet-finder-by-date.yml \
               -f start_year="$year" -f start_week="$iso_week" \
               -f end_year="$year" -f end_week="$iso_week" \
-              -f candidate_layouts='${{ inputs.candidate_layouts }}' \
+              -f candidate_layouts='1' \
               -f max_node_candidates='${{ inputs.max_node_candidates }}' \
               -f max_search_seconds='${{ inputs.max_search_seconds }}' \
               -f diagnostic_level='${{ inputs.diagnostic_level }}'
