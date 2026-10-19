@@ -1,0 +1,37 @@
+name: Draft 2026 Sky Notes - $5 Guardrail
+on:
+  push:
+    paths:
+      - '.github/workflows/draft-sky-notes-2026.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: sky-notes-2026-draft-main
+  cancel-in-progress: false
+jobs:
+  draft:
+    runs-on: ubuntu-latest
+    timeout-minutes: 330
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Prepare structural queue without paid calls
+        run: |
+          mkdir -p generated
+          python tools/audit_story_research.py 2026 1 53 --output generated/story-research-queue-2026.json
+      - name: Draft unverified stories with conservative $5 reservation guardrail
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: python tools/draft_sky_notes_2026.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: sky-notes-2026-drafts
+          path: generated/sky-notes-2026-drafts/
+          if-no-files-found: warn
