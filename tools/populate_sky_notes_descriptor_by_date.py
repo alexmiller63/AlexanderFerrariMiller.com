@@ -458,6 +458,39 @@ def render_planet_treatments(payload: dict, *, highlights: bool = False) -> str:
         )
     return "\n".join(blocks)
 
+def weave_story_headlines(rendered: str, stories: list[dict], page_path) -> str:
+    """Place linked hed/dek in their observing-aid paragraphs, not a separate list."""
+    aids = calendar_observing_aids(page_path)
+    category = {
+        "naked eye": "Naked eye",
+        "binoculars": "Binoculars",
+        "telescope": "Small telescope",
+        "substantial telescope": "Substantial telescope",
+    }
+    grouped = {}
+    for story in stories:
+        heading = category.get(aids.get(story["fixed_object_id"]))
+        if heading is None:
+            continue
+        url = html.escape(reader_story_url(story["url"]), quote=True)
+        hed = html.escape(story["hed"])
+        dek = html.escape(story["dek"])
+        grouped.setdefault(heading, []).append(
+            f'<p class="sky-note-story-reference" data-fixed-object-id="{story["fixed_object_id"]}">'
+            f'<a href="{url}"><strong class="sky-note-story-hed">{hed}</strong> — '
+            f'<span class="sky-note-story-dek">{dek}</span></a></p>'
+        )
+    for heading, paragraphs in grouped.items():
+        pattern = rf'(<p><strong>{re.escape(heading)}:</strong>.*?</p>)'
+        rendered, count = re.subn(
+            pattern, lambda m: m.group(1) + "\\n" + "\\n".join(paragraphs),
+            rendered, count=1, flags=re.S,
+        )
+        if count != 1:
+            raise RuntimeError(f"Cannot locate Sky Notes observing paragraph: {heading}")
+    return rendered
+
+
 def patch_page(path, payload: dict) -> bool:
     text = path.read_text(encoding="utf-8")
     rendered = base.render_note(payload["note"])
@@ -476,6 +509,7 @@ def patch_page(path, payload: dict) -> bool:
         if finder_href:
             record["finder_href"] = finder_href
     rendered = decorate_note_html(rendered, payload["descriptors"], payload.get("calendar_fixed_object_ids", []))
+    rendered = weave_story_headlines(rendered, payload.get("linked_stories", []), path)
     # Weekly Sky Notes repeat canonical hed and dek as links; bodies remain on story pages.
     inline = render_inline_stories(payload.get("inline_stories", []))
     linked = render_linked_stories(payload.get("linked_stories", []), elaborate=False)
@@ -484,8 +518,6 @@ def patch_page(path, payload: dict) -> bool:
     artwork_slot = ""
     body = rendered + "\n"
     # Put story headlines immediately after the observing introduction, before planet details.
-    if linked:
-        body += linked + "\n"
     if inline:
         body += inline + "\n"
     planet_treatments = render_planet_treatments(payload)
