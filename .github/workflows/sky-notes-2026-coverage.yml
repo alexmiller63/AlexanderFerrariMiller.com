@@ -1,0 +1,37 @@
+name: Sky Notes 2026 Coverage Inventory
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  inventory:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Audit existing 2026 weekly pages and evergreen stories
+        run: |
+          mkdir -p generated
+          python tools/audit_story_research.py 2026 1 53 --output generated/story-research-queue-2026.json
+      - name: Summarize audit without declaring scientific verification
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          report=json.loads(Path("generated/story-research-queue-2026.json").read_text())
+          print("Existing ready by structural checks:", report["ready"])
+          print("Need research by structural checks:", report["needs_research"])
+          print("Missing weekly pages:", len(report["missing_calendar_pages"]))
+          print("Missing:", ", ".join(report["missing_calendar_pages"]) or "none")
+          print("Structural readiness does not imply scientific verification.")
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: sky-notes-2026-coverage
+          path: generated/story-research-queue-2026.json
+          retention-days: 30
