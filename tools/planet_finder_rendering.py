@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import html
+import math
 from datetime import date
 
 from planet_finder_geometry import (
@@ -13,6 +14,22 @@ from planet_finder_search import layout
 def polyline(points):
     pts = " ".join(f"{x:.1f},{y:.1f}" for x, y in points)
     return f'<polyline points="{pts}" fill="none" stroke="#777" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/>'
+
+
+def circle_landing(path, box):
+    """Extend the terminal approach from its planning box to the visible circle.
+
+    Shared plans reserve the widest label in any mode. Keep that envelope
+    and every earlier route point intact; only the Greek drawable endpoint
+    belongs on the smaller circle. Copy so cached shared paths stay unchanged.
+    """
+    x, y = path[-1]
+    dx, dy = x - box.x, y - box.y
+    distance = math.hypot(dx, dy)
+    if distance <= 29:
+        return list(path)
+    return [*path[:-1], (box.x + 29 * dx / distance,
+                         box.y + 29 * dy / distance)]
 
 
 def render(
@@ -73,8 +90,10 @@ def render(
                 f"box=center({box.x:.6f},{box.y:.6f}) size({box.w:.6f},{box.h:.6f}) "
                 f"path={path!r}"
             )
-        # Search returns the authoritative drawable leader geometry.
-        out.append(polyline(path))
+        # Text modes use the planned rectangle. Greek uses a smaller circle
+        # inside that reserved envelope, so finish its terminal approach.
+        drawable = circle_landing(path, box) if mode == FinderMode.GREEK else path
+        out.append(polyline(drawable))
         if mode == FinderMode.GREEK:
             out.append(f'<circle cx="{box.x:.1f}" cy="{box.y:.1f}" r="29" fill="white" stroke="#111"/>')
             out.append(f'<text x="{box.x:.1f}" y="{box.y+13:.1f}" text-anchor="middle" font-size="44">{html.escape(symbol)}\ufe0e</text>')
