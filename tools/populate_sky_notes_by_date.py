@@ -671,6 +671,44 @@ def render_artwork_placeholder(descriptor: dict | None) -> str:
     )
 
 
+
+def render_featured_stories(payload: dict) -> str:
+    """Reuse existing editorial stories by permanent object ID; never generate prose here."""
+    import re
+    pieces = []
+    for item in payload.get("fixed_sky", []):
+        object_id = item.get("fixed_object_id")
+        if object_id is None:
+            continue
+        candidates = list((ROOT / "stories").glob(f"*/{object_id}.html"))
+        if not candidates:
+            continue
+        # Prefer an editorial story over the short baseline when both exist.
+        candidates.sort(key=lambda p: (p.parent.name == "baseline", str(p)))
+        source = candidates[0]
+        story = source.read_text(encoding="utf-8")
+        def field(tag, name):
+            match = re.search(
+                rf'<{tag}\\b[^>]*data-story-field="{name}"[^>]*>(.*?)</{tag}>',
+                story, re.S,
+            )
+            return match.group(1) if match else None
+        hed, dek, body = field("h1", "hed"), field("p", "dek"), field("section", "body")
+        if not (hed and dek and body):
+            continue
+        href = "../../../" + source.relative_to(ROOT).as_posix()
+        pieces.append(
+            f'<article class="sky-note-featured-story" data-fixed-object-id="{object_id}">'
+            f'<h4>{hed}</h4><p class="sky-note-story-dek">{dek}</p>'
+            f'<div class="sky-note-story-body">{body}</div>'
+            f'<p><a href="{html.escape(href, quote=True)}">Read the original story</a></p>'
+            '</article>'
+        )
+    if not pieces:
+        return ""
+    return '<section class="sky-note-featured-stories"><h3>Featured stories</h3>\\n' + "\\n".join(pieces) + '</section>\\n'
+
+
 def patch_page(path: Path, payload: dict) -> bool:
     text = path.read_text(encoding="utf-8")
     placeholder = render_artwork_placeholder(payload["artwork"])
@@ -678,6 +716,7 @@ def patch_page(path: Path, payload: dict) -> bool:
     new_body = "<h3>Sky Notes</h3>\n" + f'<p class="kilroy-build-stamp"><small>{html.escape(kilroy)}</small></p>\n' + render_note(payload["note"]) + "\n"
     if placeholder:
         new_body += placeholder + "\n"
+    new_body += render_featured_stories(payload)
     new = replace_section_inner(text, 5, new_body, path)
     if new == text:
         return False
