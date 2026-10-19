@@ -1,20 +1,31 @@
-# 2026 Sky Notes — preserved draft workspace
+# 2026 Sky Notes — draft preservation policy
 
-Status: DRAFT. Astronomical verification and proofreading are deferred.
+Status: planning and draft only. No astronomical verification or proofreading is implied.
 
-## Scope
-53 ISO weeks (W01–W53), target six stories per week, 318 planned stories. Every story has a hed, dek, and body. Do not claim an unverified event is confirmed.
+## Existing architecture (authoritative)
+- Permanent identities are numeric `fixed_object_id` values in `database/fixed-objects.json`.
+- Evergreen source stories already live at `stories/<collection>/<fixed_object_id>.md` and are read by `tools/fixed_object_stories.py`.
+- Existing collections: alpha-stars, beta-stars, special-stars, messier, caldwell, finest.
+- Example: Pleiades = fixed_object_id **594**, existing curated story `stories/special-stars/594.md`. M45 is a catalogue designation, **not** the internal ID.
+- The weekly Sky Notes generator links evergreen stories; week-specific positions and conditions belong in the weekly calculation layer.
+- Preserve all existing completed stories and status flags. Do not downgrade or replace them.
 
-## Preservation contract
-- Existing generated Sky Notes and Week 1 material are untouched on main.
-- Keep each story in a separate UTF-8 Markdown file under `drafts/sky-notes/2026/W##/story-01.md` through `story-06.md`.
-- Before creating a story, check whether the path exists. If present, preserve it; never overwrite automatically.
-- Commit each story as soon as drafted, then fetch it back and verify exact contents before counting it complete.
-- Resume by checking repository files, not chat history or an in-memory counter.
-- Keep any progress manifest derived from committed story files; never trust a manifest over the actual files.
-- Each file begins with `status: draft-unverified` and includes `hed:`, `dek:`, and a prose body.
-- Do not publish unverified stories as verified; integration into live Sky Notes is a separate review step.
-- For additional protection, periodically export an independent repository backup.
+## Draft policy
+- There is **no fixed six-stories-per-week quota**. Choose coverage from existing calendar objects and editorial merit.
+- First inventory existing story coverage and identify missing/thin entries using `tools/audit_story_research.py` before creating new prose.
+- Draft only for an existing registry ID and valid existing collection. Store an unpublished draft in `drafts/sky-notes/objects/<collection>/<fixed_object_id>.md` until editorial integration, with explicit `fixed_object_id`, hed, dek, body and `status: draft-unverified`.
+- Do not overwrite any existing draft or published source automatically. If a story exists, preserve it and report the collision for editorial review.
+- Do not set `research_checked`, `finder_checked`, `publication_checked`, or `status: complete` without the corresponding checks.
+- Keep evergreen prose independent of 2026 and 2027. Weekly notes reference the fixed ID, rather than copying prose.
+- Commit each new draft separately; fetch it back and compare its content. Resume from repository files, not conversation history.
+- Derive any progress report from actual source/draft files, not an assumed 318-story target.
+- Avoid modifying `main`, the live pages, the existing story loader or the published story sources during setup.
+- Periodically make an independent backup in addition to Git history.
 
-## Next checkpoint
-Inventory the four previously drafted Week 1 stories from their authoritative source before copying or recreating them. No Week 1 draft has been imported by this setup.
+## Recovery and integration
+1. Locate a draft by numeric fixed ID and collection; confirm it exists in the registry.
+2. Review and verify it separately when ready.
+3. Integrate into the existing `stories/<collection>/<fixed_object_id>.md` contract only after explicit editorial review, without silently replacing an existing story.
+4. Run existing tests and rendering checks before publishing.
+
+The earlier week-based `W##/story-##.md` proposal was superseded before any such files were created. Week 1 previously discussed stories have not been imported by this setup.
