@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "id": "5",
+  "type": "star",
+  "name": "Cih",
+  "summary": "bright star in Cassiopeia used as a fixed-sky reference",
+  "representation": {
+    "machine": "./5.json",
+    "human_source": "summary",
+    "human": "/stories/baseline/5.html"
+  },
+  "constellation_abbreviation": "Cas",
+  "constellation": "Cassiopeia",
+  "position": {
+    "ra_deg": 14.177145,
+    "dec_deg": 60.71674,
+    "ecliptic_longitude_deg": 43.931101,
+    "ecliptic_latitude_deg": 48.814917
+  },
+  "representative_visual_magnitude": 2.15,
+  "guiding_asterisms": [
+    {
+      "id": "1364",
+      "geometry_key": "asterism-cassiopeia-s-w",
+      "name": "Cassiopeia's W",
+      "relationship": "visual-member",
+      "provenance": {
+        "source": "Astronomical League",
+        "source_url": "https://www.astroleague.org/wp-content/uploads/2025/12/Asterism_List_20251223.pdf",
+        "source_role": "verification",
+        "supports": "visual-membership"
+      }
+    }
+  ]
+}
