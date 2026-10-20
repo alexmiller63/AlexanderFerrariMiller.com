@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "id": "63",
+  "type": "star",
+  "name": "Arcturus",
+  "summary": "bright star in Boötes used as a fixed-sky reference",
+  "representation": {
+    "machine": "./63.json",
+    "human_source": "summary",
+    "human": "/stories/baseline/63.html"
+  },
+  "constellation_abbreviation": "Boo",
+  "constellation": "Boötes",
+  "position": {
+    "ra_deg": 213.91545,
+    "dec_deg": 19.18241,
+    "ecliptic_longitude_deg": 204.233767,
+    "ecliptic_latitude_deg": 30.736288
+  },
+  "representative_visual_magnitude": -0.05,
+  "guiding_asterisms": [
+    {
+      "id": "1381",
+      "geometry_key": "asterism-spring-triangle",
+      "name": "Spring Triangle",
+      "relationship": "visual-member",
+      "provenance": {
+        "source": "Sky & Telescope",
+        "source_url": "https://skyandtelescope.org/astronomy-news/observing-news/this-weeks-sky-at-a-glance-may-1-9-3/",
+        "source_role": "verification",
+        "supports": "visual-membership"
+      }
+    },
+    {
+      "id": "1382",
+      "geometry_key": "asterism-great-diamond",
+      "name": "Great Diamond",
+      "relationship": "visual-member",
+      "provenance": {
+        "source": "NASA",
+        "source_url": "https://science.nasa.gov/solar-system/skywatching/night-sky-network/connecting-the-dots-with-asterisms/",
+        "source_role": "verification",
+        "supports": "visual-membership"
+      }
+    }
+  ]
+}

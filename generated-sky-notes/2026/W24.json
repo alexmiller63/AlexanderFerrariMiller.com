@@ -1,0 +1,2779 @@
+{
+  "week": "W24",
+  "title": "Observer’s guide for ISO 2026-W24",
+  "status": "generated",
+  "planetary_source": "weekly-ephemeris-2026.csv",
+  "planetary_coordinate": "geocentric tropical ecliptic longitude; Monday 00:00 UTC",
+  "fixed_sky": [
+    {
+      "fixed_object_id": 313,
+      "type": "deep-sky",
+      "name": "Pinwheel Galaxy"
+    },
+    {
+      "fixed_object_id": 62,
+      "type": "star",
+      "name": "Hadar",
+      "constellation": "Cen"
+    },
+    {
+      "fixed_object_id": 978,
+      "type": "star",
+      "name": "Thuban",
+      "constellation": "Dra"
+    },
+    {
+      "fixed_object_id": 314,
+      "type": "deep-sky",
+      "name": "NGC 5466"
+    },
+    {
+      "fixed_object_id": 981,
+      "type": "star",
+      "name": "Menkent",
+      "constellation": "Cen"
+    },
+    {
+      "fixed_object_id": 63,
+      "type": "star",
+      "name": "Arcturus",
+      "constellation": "Boo"
+    },
+    {
+      "fixed_object_id": 593,
+      "type": "star",
+      "name": "Proxima Centauri",
+      "constellation": "Cen"
+    }
+  ],
+  "planet_relations": [
+    {
+      "kind": "planet-planet-longitude",
+      "planet": "Ceres",
+      "other_planet": "Uranus",
+      "planet_longitude_deg": 64.1,
+      "other_longitude_deg": 62.467,
+      "longitude_separation_deg": 1.6,
+      "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+      "planet_ra_deg": 62.291138,
+      "planet_dec_deg": 18.076621,
+      "other_ra_deg": 60.04038,
+      "other_dec_deg": 20.422284
+    },
+    {
+      "kind": "planet-planet-longitude",
+      "planet": "Venus",
+      "other_planet": "Jupiter",
+      "planet_longitude_deg": 113.633,
+      "other_longitude_deg": 115.417,
+      "longitude_separation_deg": 1.8,
+      "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+      "planet_ra_deg": 115.473599,
+      "planet_dec_deg": 23.417747,
+      "other_ra_deg": 117.069836,
+      "other_dec_deg": 21.531082
+    }
+  ],
+  "planet_finder_relations": [
+    {
+      "kind": "planet-star-longitude",
+      "planet": "Moon",
+      "planet_longitude_deg": 342.267,
+      "star": "Fumalsamakah",
+      "constellation": "Psc",
+      "star_fixed_object_id": 573,
+      "star_ecliptic_longitude_deg": 348.585,
+      "star_ecliptic_latitude_deg": 9.053,
+      "longitude_separation_deg": 6.3,
+      "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+      "finder_only": true,
+      "planet_ra_deg": 342.987636,
+      "planet_dec_deg": -6.339309,
+      "sky_separation_deg": 10.6
+    },
+    {
+      "kind": "planet-star-longitude",
+      "planet": "Mercury",
+      "planet_longitude_deg": 100.017,
+      "star": "Alhena",
+      "constellation": "Gem",
+      "star_fixed_object_id": 800,
+      "star_ecliptic_longitude_deg": 99.105,
+      "star_ecliptic_latitude_deg": -6.743,
+      "longitude_separation_deg": 0.9,
+      "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+      "finder_only": true,
+      "planet_ra_deg": 100.646918,
+      "planet_dec_deg": 25.036967,
+      "sky_separation_deg": 8.7
+    },
+    {
+      "kind": "planet-star-longitude",
+      "planet": "Venus",
+      "planet_longitude_deg": 113.633,
+      "star": "Pollux",
+      "constellation": "Gem",
+      "star_fixed_object_id": 37,
+      "star_ecliptic_longitude_deg": 113.216,
+      "star_ecliptic_latitude_deg": 6.684,
+      "longitude_separation_deg": 0.4,
+      "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+      "finder_only": true,
+      "planet_ra_deg": 115.473599,
+      "planet_dec_deg": 23.417747,
+      "sky_separation_deg": 4.7
+    },
+    {
+      "kind": "planet-star-longitude",
+      "planet": "Mars",
+      "planet_longitude_deg": 44.933,
+      "star": "Menkar",
+      "constellation": "Cet",
+      "star_fixed_object_id": 13,
+      "star_ecliptic_longitude_deg": 44.32,
+      "star_ecliptic_latitude_deg": -12.586,
+      "longitude_separation_deg": 0.6,
+      "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+      "finder_only": true,
+      "planet_ra_deg": 42.26311,
+      "planet_dec_deg": 15.671539,
+      "sky_separation_deg": 12.0
+    },
+    {
+      "kind": "planet-star-longitude",
+      "planet": "Ceres",
+      "planet_longitude_deg": 64.1,
+      "star": "Aldebaran",
+      "constellation": "Tau",
+      "star_fixed_object_id": 25,
+      "star_ecliptic_longitude_deg": 69.789,
+      "star_ecliptic_latitude_deg": -5.467,
+      "longitude_separation_deg": 5.7,
+      "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+      "finder_only": true,
+      "planet_ra_deg": 62.291138,
+      "planet_dec_deg": 18.076621,
+      "sky_separation_deg": 6.6
+    },
+    {
+      "kind": "planet-star-longitude",
+      "planet": "Jupiter",
+      "planet_longitude_deg": 115.417,
+      "star": "Pollux",
+      "constellation": "Gem",
+      "star_fixed_object_id": 37,
+      "star_ecliptic_longitude_deg": 113.216,
+      "star_ecliptic_latitude_deg": 6.684,
+      "longitude_separation_deg": 2.2,
+      "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+      "finder_only": true,
+      "planet_ra_deg": 117.069836,
+      "planet_dec_deg": 21.531082,
+      "sky_separation_deg": 6.5
+    },
+    {
+      "kind": "planet-star-longitude",
+      "planet": "Saturn",
+      "planet_longitude_deg": 12.8,
+      "star": "Alrescha",
+      "constellation": "Psc",
+      "star_fixed_object_id": 654,
+      "star_ecliptic_longitude_deg": 29.379,
+      "star_ecliptic_latitude_deg": -9.061,
+      "longitude_separation_deg": 16.6,
+      "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+      "finder_only": true,
+      "planet_ra_deg": 12.329834,
+      "planet_dec_deg": 2.806528,
+      "sky_separation_deg": 18.2,
+      "finder_difficulty": "difficult",
+      "finder_note": "Saturn is not easy to find this week."
+    },
+    {
+      "kind": "planet-star-longitude",
+      "planet": "Uranus",
+      "planet_longitude_deg": 62.467,
+      "star": "Aldebaran",
+      "constellation": "Tau",
+      "star_fixed_object_id": 25,
+      "star_ecliptic_longitude_deg": 69.789,
+      "star_ecliptic_latitude_deg": -5.467,
+      "longitude_separation_deg": 7.3,
+      "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+      "finder_only": true,
+      "planet_ra_deg": 60.04038,
+      "planet_dec_deg": 20.422284,
+      "sky_separation_deg": 9.3
+    },
+    {
+      "kind": "planet-star-longitude",
+      "planet": "Neptune",
+      "planet_longitude_deg": 4.183,
+      "star": "Fumalsamakah",
+      "constellation": "Psc",
+      "star_fixed_object_id": 573,
+      "star_ecliptic_longitude_deg": 348.585,
+      "star_ecliptic_latitude_deg": 9.053,
+      "longitude_separation_deg": 15.6,
+      "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+      "finder_only": true,
+      "planet_ra_deg": 4.03279,
+      "planet_dec_deg": 0.279091,
+      "sky_separation_deg": 18.4,
+      "finder_difficulty": "difficult",
+      "finder_note": "Neptune is not easy to find this week."
+    },
+    {
+      "kind": "planet-star-longitude",
+      "planet": "Pluto",
+      "planet_longitude_deg": 305.283,
+      "star": "Dabih",
+      "constellation": "Cap",
+      "star_fixed_object_id": 1152,
+      "star_ecliptic_longitude_deg": 304.047,
+      "star_ecliptic_latitude_deg": 4.589,
+      "longitude_separation_deg": 1.2,
+      "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+      "finder_only": true,
+      "planet_ra_deg": 308.341775,
+      "planet_dec_deg": -23.074559,
+      "sky_separation_deg": 8.8
+    }
+  ],
+  "note": "ISO 2026-W24 runs from June 8 through June 14. Ceres and Uranus are separated by about 1.6° in geocentric ecliptic longitude at the Monday 00:00 UTC snapshot. Venus and Jupiter are separated by about 1.8° in geocentric ecliptic longitude at the Monday 00:00 UTC snapshot.\n\n**Naked eye:** 🌗 Last Quarter — 10:00:31 UTC. Moderate moonlight makes timing and local sky position important for faint targets. Use Hadar, Menkent, Arcturus as the week’s fixed-sky framework.\n\n**Planets:** Moon: Naked eye; magnitude -10.3; direct motion; 54.5% illuminated. Below the horizon at 21:00 local apparent solar time, 45°N. Monday 00:00 UTC snapshot. Conjunction with Mars in ecliptic longitude Jun 12 18:37 UTC. Conjunction with Ceres in ecliptic longitude Jun 13 23:26 UTC. Conjunction with Saturn in ecliptic longitude Jun 10 07:29 UTC. Conjunction with Uranus in ecliptic longitude Jun 13 17:30 UTC. Conjunction with Neptune in ecliptic longitude Jun 09 16:04 UTC. Mercury: Naked eye; magnitude 0.1; direct motion; 53.9% illuminated. Monday 00:00 UTC snapshot. Venus: Naked eye; magnitude -4.0; direct motion; 77.3% illuminated. Monday 00:00 UTC snapshot. Conjunction with Jupiter in ecliptic longitude Jun 09 19:59 UTC. Mars: Naked eye; magnitude 1.3; direct motion; 96.2% illuminated. Below the horizon at 21:00 local apparent solar time, 45°N. Monday 00:00 UTC snapshot. Conjunction with Moon in ecliptic longitude Jun 12 18:37 UTC. Ceres: In solar glare; magnitude 8.8; direct motion; 99.8% illuminated. Monday 00:00 UTC snapshot. Conjunction with Moon in ecliptic longitude Jun 13 23:26 UTC. Jupiter: Naked eye; magnitude -1.9; direct motion; 99.6% illuminated. Monday 00:00 UTC snapshot. Conjunction with Venus in ecliptic longitude Jun 09 19:59 UTC. Saturn: Naked eye; magnitude 0.9; direct motion; 99.8% illuminated. Below the horizon at 21:00 local apparent solar time, 45°N. Monday 00:00 UTC snapshot. Conjunction with Moon in ecliptic longitude Jun 10 07:29 UTC. Uranus: In solar glare; magnitude 5.8; direct motion; 100.0% illuminated. Monday 00:00 UTC snapshot. Conjunction with Moon in ecliptic longitude Jun 13 17:30 UTC. Neptune: Telescope; magnitude 7.8; direct motion; 100.0% illuminated. Below the horizon at 21:00 local apparent solar time, 45°N. Monday 00:00 UTC snapshot. Conjunction with Moon in ecliptic longitude Jun 09 16:04 UTC. Pluto: Substantial telescope; magnitude 14.5; retrograde motion; 100.0% illuminated. Below the horizon at 21:00 local apparent solar time, 45°N. Monday 00:00 UTC snapshot.\n\n**Binoculars:** Trace the charted figure of Dra, then identify Thuban at its plotted position.\n\n**Small telescope:** Pinwheel Galaxy: consult its dedicated finder and observing story for equipment guidance; NGC 5466: consult its dedicated finder and observing story for equipment guidance; Proxima Centauri: consult its dedicated finder and observing story for equipment guidance\n\n**Substantial telescope:** No fixed-sky Calendar object is classified as requiring a substantial telescope this week.\n\n",
+  "descriptors": [
+    {
+      "schema_version": 1,
+      "id": "1249",
+      "type": "solar-system-object",
+      "name": "Sun",
+      "summary": "Solar-System object tracked by the Star Almanack weekly ephemeris and Planet Finder",
+      "representation": {
+        "machine": "./1249.json",
+        "human_source": "summary"
+      }
+    },
+    {
+      "schema_version": 1,
+      "id": "1250",
+      "type": "planet",
+      "name": "Mercury",
+      "summary": "Solar-System object tracked by the Star Almanack weekly ephemeris and Planet Finder",
+      "representation": {
+        "machine": "./1250.json",
+        "human_source": "summary"
+      }
+    },
+    {
+      "schema_version": 1,
+      "id": "1251",
+      "type": "planet",
+      "name": "Venus",
+      "summary": "Solar-System object tracked by the Star Almanack weekly ephemeris and Planet Finder",
+      "representation": {
+        "machine": "./1251.json",
+        "human_source": "summary"
+      }
+    },
+    {
+      "schema_version": 1,
+      "id": "1252",
+      "type": "planet",
+      "name": "Earth",
+      "summary": "Solar-System object tracked by the Star Almanack weekly ephemeris and Planet Finder",
+      "representation": {
+        "machine": "./1252.json",
+        "human_source": "summary"
+      }
+    },
+    {
+      "schema_version": 1,
+      "id": "1253",
+      "type": "solar-system-object",
+      "name": "Moon",
+      "summary": "Solar-System object tracked by the Star Almanack weekly ephemeris and Planet Finder",
+      "representation": {
+        "machine": "./1253.json",
+        "human_source": "summary"
+      }
+    },
+    {
+      "schema_version": 1,
+      "id": "1254",
+      "type": "planet",
+      "name": "Mars",
+      "summary": "Solar-System object tracked by the Star Almanack weekly ephemeris and Planet Finder",
+      "representation": {
+        "machine": "./1254.json",
+        "human_source": "summary"
+      }
+    },
+    {
+      "schema_version": 1,
+      "id": "1255",
+      "type": "solar-system-object",
+      "name": "Ceres",
+      "summary": "Solar-System object tracked by the Star Almanack weekly ephemeris and Planet Finder",
+      "representation": {
+        "machine": "./1255.json",
+        "human_source": "summary"
+      }
+    },
+    {
+      "schema_version": 1,
+      "id": "1256",
+      "type": "planet",
+      "name": "Jupiter",
+      "summary": "Solar-System object tracked by the Star Almanack weekly ephemeris and Planet Finder",
+      "representation": {
+        "machine": "./1256.json",
+        "human_source": "summary"
+      }
+    },
+    {
+      "schema_version": 1,
+      "id": "1257",
+      "type": "planet",
+      "name": "Saturn",
+      "summary": "Solar-System object tracked by the Star Almanack weekly ephemeris and Planet Finder",
+      "representation": {
+        "machine": "./1257.json",
+        "human_source": "summary"
+      }
+    },
+    {
+      "schema_version": 1,
+      "id": "1258",
+      "type": "planet",
+      "name": "Uranus",
+      "summary": "Solar-System object tracked by the Star Almanack weekly ephemeris and Planet Finder",
+      "representation": {
+        "machine": "./1258.json",
+        "human_source": "summary"
+      }
+    },
+    {
+      "schema_version": 1,
+      "id": "1259",
+      "type": "planet",
+      "name": "Neptune",
+      "summary": "Solar-System object tracked by the Star Almanack weekly ephemeris and Planet Finder",
+      "representation": {
+        "machine": "./1259.json",
+        "human_source": "summary"
+      }
+    },
+    {
+      "schema_version": 1,
+      "id": "1260",
+      "type": "solar-system-object",
+      "name": "Pluto",
+      "summary": "Solar-System object tracked by the Star Almanack weekly ephemeris and Planet Finder",
+      "representation": {
+        "machine": "./1260.json",
+        "human_source": "summary"
+      }
+    },
+    {
+      "schema_version": 1,
+      "id": "313",
+      "type": "deep-sky-object",
+      "name": "Pinwheel Galaxy",
+      "summary": "deep-sky object selected as a weekly fixed-sky observing target",
+      "representation": {
+        "machine": "./313.json",
+        "human_source": "summary",
+        "human": "/stories/baseline/313.html"
+      },
+      "catalog_name": "Pinwheel Galaxy",
+      "object_type": "deep-sky object",
+      "source_label": "Pinwheel Galaxy"
+    },
+    {
+      "schema_version": 1,
+      "id": "62",
+      "type": "star",
+      "name": "Hadar",
+      "summary": "bright star in Centaurus used as a fixed-sky reference",
+      "representation": {
+        "machine": "./62.json",
+        "human_source": "summary",
+        "human": "/stories/baseline/62.html"
+      },
+      "constellation_abbreviation": "Cen",
+      "constellation": "Centaurus",
+      "position": {
+        "ra_deg": 210.955935,
+        "dec_deg": -60.373039,
+        "ecliptic_longitude_deg": 233.792299,
+        "ecliptic_latitude_deg": -44.137643
+      },
+      "representative_visual_magnitude": 0.61,
+      "guiding_asterisms": [
+        {
+          "id": "1385",
+          "geometry_key": "asterism-southern-pointers",
+          "name": "Southern Pointers",
+          "relationship": "visual-member",
+          "provenance": {
+            "source": "ESO",
+            "source_url": "https://www.eso.org/public/blog/navigating-the-stars/",
+            "source_role": "verification",
+            "supports": "visual-membership"
+          }
+        }
+      ]
+    },
+    {
+      "schema_version": 1,
+      "id": "1291",
+      "type": "constellation",
+      "name": "Centaurus",
+      "summary": "constellation used by Star Almanack to organize fixed-sky objects and finder geometry",
+      "representation": {
+        "machine": "./1291.json",
+        "human_source": "summary"
+      },
+      "abbreviation": "Cen"
+    },
+    {
+      "schema_version": 1,
+      "id": "978",
+      "type": "star",
+      "name": "Thuban",
+      "summary": "bright star in Draco used as a fixed-sky reference",
+      "representation": {
+        "machine": "./978.json",
+        "human_source": "summary",
+        "human": "/stories/baseline/978.html"
+      },
+      "constellation_abbreviation": "Dra",
+      "constellation": "Draco"
+    },
+    {
+      "schema_version": 1,
+      "id": "1306",
+      "type": "constellation",
+      "name": "Draco",
+      "summary": "constellation used by Star Almanack to organize fixed-sky objects and finder geometry",
+      "representation": {
+        "machine": "./1306.json",
+        "human_source": "summary"
+      },
+      "abbreviation": "Dra"
+    },
+    {
+      "schema_version": 1,
+      "id": "314",
+      "type": "deep-sky-object",
+      "name": "NGC 5466",
+      "summary": "deep-sky object selected as a weekly fixed-sky observing target",
+      "representation": {
+        "machine": "./314.json",
+        "human_source": "summary",
+        "human": "/stories/baseline/314.html"
+      },
+      "catalog_name": "NGC 5466",
+      "object_type": "deep-sky object",
+      "source_label": "NGC 5466"
+    },
+    {
+      "schema_version": 1,
+      "id": "981",
+      "type": "star",
+      "name": "Menkent",
+      "summary": "bright star in Centaurus used as a fixed-sky reference",
+      "representation": {
+        "machine": "./981.json",
+        "human_source": "summary",
+        "human": "/stories/baseline/981.html"
+      },
+      "constellation_abbreviation": "Cen",
+      "constellation": "Centaurus",
+      "position": {
+        "ra_deg": 211.670925,
+        "dec_deg": -36.369954,
+        "ecliptic_longitude_deg": 222.308775,
+        "ecliptic_latitude_deg": -22.079809
+      },
+      "representative_visual_magnitude": 2.06
+    },
+    {
+      "schema_version": 1,
+      "id": "63",
+      "type": "star",
+      "name": "Arcturus",
+      "summary": "bright star in Boötes used as a fixed-sky reference",
+      "representation": {
+        "machine": "./63.json",
+        "human_source": "summary",
+        "human": "/stories/baseline/63.html"
+      },
+      "constellation_abbreviation": "Boo",
+      "constellation": "Boötes",
+      "position": {
+        "ra_deg": 213.91545,
+        "dec_deg": 19.18241,
+        "ecliptic_longitude_deg": 204.233767,
+        "ecliptic_latitude_deg": 30.736288
+      },
+      "representative_visual_magnitude": -0.05,
+      "guiding_asterisms": [
+        {
+          "id": "1381",
+          "geometry_key": "asterism-spring-triangle",
+          "name": "Spring Triangle",
+          "relationship": "visual-member",
+          "provenance": {
+            "source": "Sky & Telescope",
+            "source_url": "https://skyandtelescope.org/astronomy-news/observing-news/this-weeks-sky-at-a-glance-may-1-9-3/",
+            "source_role": "verification",
+            "supports": "visual-membership"
+          }
+        },
+        {
+          "id": "1382",
+          "geometry_key": "asterism-great-diamond",
+          "name": "Great Diamond",
+          "relationship": "visual-member",
+          "provenance": {
+            "source": "NASA",
+            "source_url": "https://science.nasa.gov/solar-system/skywatching/night-sky-network/connecting-the-dots-with-asterisms/",
+            "source_role": "verification",
+            "supports": "visual-membership"
+          }
+        }
+      ]
+    },
+    {
+      "schema_version": 1,
+      "id": "1281",
+      "type": "constellation",
+      "name": "Boötes",
+      "summary": "constellation used by Star Almanack to organize fixed-sky objects and finder geometry",
+      "representation": {
+        "machine": "./1281.json",
+        "human_source": "summary"
+      },
+      "abbreviation": "Boo"
+    },
+    {
+      "schema_version": 1,
+      "id": "593",
+      "type": "star",
+      "name": "Proxima Centauri",
+      "summary": "bright star in Centaurus used as a fixed-sky reference",
+      "representation": {
+        "machine": "./593.json",
+        "human_source": "summary",
+        "human": "/stories/baseline/593.html"
+      },
+      "constellation_abbreviation": "Cen",
+      "constellation": "Centaurus"
+    },
+    {
+      "schema_version": 1,
+      "id": "ecliptic-longitude",
+      "type": "observing-concept",
+      "name": "ecliptic longitude",
+      "summary": "angular position measured along the ecliptic, used here for conservative weekly Solar-System comparisons",
+      "representation": {
+        "machine": "./ecliptic-longitude.json",
+        "human_source": "summary"
+      }
+    },
+    {
+      "schema_version": 1,
+      "id": "zodiac",
+      "type": "observing-concept",
+      "name": "zodiac",
+      "summary": "the band of constellations along the ecliptic used to orient Solar-System objects",
+      "representation": {
+        "machine": "./zodiac.json",
+        "human_source": "summary"
+      }
+    }
+  ],
+  "calendar_fixed_object_ids": [
+    313,
+    62,
+    978,
+    314,
+    981,
+    63,
+    593
+  ],
+  "story_candidates": [
+    {
+      "fixed_object_id": 313,
+      "collection": "baseline",
+      "hed": "Pinwheel Galaxy",
+      "dek": "Pinwheel Galaxy is an observing target in UMa carried by the weekly Calendar.",
+      "body": "Why it is here: The Calendar selected Pinwheel Galaxy as one of this week’s fixed-sky observing targets.\n\nHow to find it: Establish the preserved UMa constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.",
+      "url": "/stories/baseline/313.html",
+      "status": "pending"
+    },
+    {
+      "fixed_object_id": 62,
+      "collection": "baseline",
+      "hed": "Hadar",
+      "dek": "Hadar is a star in Cen of catalogue visual magnitude 0.61; its declination determines which latitudes can observe it.",
+      "body": "The stored catalogue gives a visual magnitude of 0.61. This is a catalogue value, not a prediction of its brightness this week. Lower magnitudes mean brighter objects; sky brightness and altitude affect whether you can see the star.\n\nIts catalogue position is approximately right ascension 14h 03m and declination -60.4°. These reference coordinates describe its sky location; they are not an observing time or a current altitude.\n\nAt the almanac’s default latitude of 45° N, this star does not rise above the geometric horizon. These are geometric calculations from declination, excluding refraction and local obstructions. Darkness and the time of culmination must still be checked for the observing date and your location.\n\nHow to find it: Establish the preserved Cen constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.\n\nSources: Star Almanack’s stored fixed-object and expanded Bayer catalogues; accepted constellation figures and guiding-star routes. Visibility limits are original geometric calculations from catalogue declination, not weekly predictions.",
+      "url": "/stories/baseline/62.html",
+      "status": "pending"
+    },
+    {
+      "fixed_object_id": 978,
+      "collection": "baseline",
+      "hed": "Thuban",
+      "dek": "Thuban is a star in Dra of catalogue visual magnitude 3.67; its declination determines which latitudes can observe it.",
+      "body": "The stored catalogue gives a visual magnitude of 3.67. This is a catalogue value, not a prediction of its brightness this week. Lower magnitudes mean brighter objects; sky brightness and altitude affect whether you can see the star.\n\nIts catalogue position is approximately right ascension 14h 04m and declination +64.4°. These reference coordinates describe its sky location; they are not an observing time or a current altitude.\n\nAt the almanac’s default latitude of 45° N, this star is circumpolar (at 45° declination it touches the geometric horizon at lower culmination). It reaches approximately 71° altitude at upper culmination. These are geometric calculations from declination, excluding refraction and local obstructions. Darkness and the time of culmination must still be checked for the observing date and your location.\n\nHow to find it: Establish the preserved Dra constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.\n\nSources: Star Almanack’s stored fixed-object and expanded Bayer catalogues; accepted constellation figures and guiding-star routes. Visibility limits are original geometric calculations from catalogue declination, not weekly predictions.",
+      "url": "/stories/baseline/978.html",
+      "status": "pending"
+    },
+    {
+      "fixed_object_id": 314,
+      "collection": "baseline",
+      "hed": "Fixed object 314",
+      "dek": "Fixed object 314 is an observing target in Boo carried by the weekly Calendar.",
+      "body": "Why it is here: The Calendar selected Fixed object 314 as one of this week’s fixed-sky observing targets.\n\nHow to find it: Establish the preserved Boo constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.",
+      "url": "/stories/baseline/314.html",
+      "status": "pending"
+    },
+    {
+      "fixed_object_id": 981,
+      "collection": "baseline",
+      "hed": "Menkent",
+      "dek": "Menkent is a star in Cen; its declination determines which latitudes can observe it.",
+      "body": "Its catalogue position is approximately right ascension 14h 06m and declination -36.4°. These reference coordinates describe its sky location; they are not an observing time or a current altitude.\n\nAt the almanac’s default latitude of 45° N, this star rises and sets, reaching approximately 9° altitude at upper culmination. These are geometric calculations from declination, excluding refraction and local obstructions. Darkness and the time of culmination must still be checked for the observing date and your location.\n\nHow to find it: Establish the preserved Cen constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.\n\nSources: Star Almanack’s stored fixed-object and expanded Bayer catalogues; accepted constellation figures and guiding-star routes. Visibility limits are original geometric calculations from catalogue declination, not weekly predictions.",
+      "url": "/stories/baseline/981.html",
+      "status": "pending"
+    },
+    {
+      "fixed_object_id": 63,
+      "collection": "baseline",
+      "hed": "Arcturus",
+      "dek": "Arcturus is a star in Boo of catalogue visual magnitude -0.05; its declination determines which latitudes can observe it.",
+      "body": "The stored catalogue gives a visual magnitude of -0.05. This is a catalogue value, not a prediction of its brightness this week. Lower magnitudes mean brighter objects; sky brightness and altitude affect whether you can see the star.\n\nIts catalogue position is approximately right ascension 14h 15m and declination +19.2°. These reference coordinates describe its sky location; they are not an observing time or a current altitude.\n\nAt the almanac’s default latitude of 45° N, this star rises and sets, reaching approximately 64° altitude at upper culmination. These are geometric calculations from declination, excluding refraction and local obstructions. Darkness and the time of culmination must still be checked for the observing date and your location.\n\nHow to find it: Establish the preserved Boo constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.\n\nSources: Star Almanack’s stored fixed-object and expanded Bayer catalogues; accepted constellation figures and guiding-star routes. Visibility limits are original geometric calculations from catalogue declination, not weekly predictions.",
+      "url": "/stories/baseline/63.html",
+      "status": "pending"
+    },
+    {
+      "fixed_object_id": 593,
+      "collection": "baseline",
+      "hed": "Proxima Centauri",
+      "dek": "Proxima Centauri is an observing target in Cen carried by the weekly Calendar.",
+      "body": "Why it is here: The Calendar selected Proxima Centauri as one of this week’s fixed-sky observing targets.\n\nHow to find it: Establish the preserved Cen constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.",
+      "url": "/stories/baseline/593.html",
+      "status": "pending"
+    }
+  ],
+  "inline_stories": [],
+  "linked_stories": [
+    {
+      "fixed_object_id": 313,
+      "collection": "baseline",
+      "hed": "Pinwheel Galaxy",
+      "dek": "Pinwheel Galaxy is an observing target in UMa carried by the weekly Calendar.",
+      "body": "Why it is here: The Calendar selected Pinwheel Galaxy as one of this week’s fixed-sky observing targets.\n\nHow to find it: Establish the preserved UMa constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.",
+      "url": "/stories/baseline/313.html",
+      "status": "pending"
+    },
+    {
+      "fixed_object_id": 62,
+      "collection": "baseline",
+      "hed": "Hadar",
+      "dek": "Hadar is a star in Cen of catalogue visual magnitude 0.61; its declination determines which latitudes can observe it.",
+      "body": "The stored catalogue gives a visual magnitude of 0.61. This is a catalogue value, not a prediction of its brightness this week. Lower magnitudes mean brighter objects; sky brightness and altitude affect whether you can see the star.\n\nIts catalogue position is approximately right ascension 14h 03m and declination -60.4°. These reference coordinates describe its sky location; they are not an observing time or a current altitude.\n\nAt the almanac’s default latitude of 45° N, this star does not rise above the geometric horizon. These are geometric calculations from declination, excluding refraction and local obstructions. Darkness and the time of culmination must still be checked for the observing date and your location.\n\nHow to find it: Establish the preserved Cen constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.\n\nSources: Star Almanack’s stored fixed-object and expanded Bayer catalogues; accepted constellation figures and guiding-star routes. Visibility limits are original geometric calculations from catalogue declination, not weekly predictions.",
+      "url": "/stories/baseline/62.html",
+      "status": "pending"
+    },
+    {
+      "fixed_object_id": 978,
+      "collection": "baseline",
+      "hed": "Thuban",
+      "dek": "Thuban is a star in Dra of catalogue visual magnitude 3.67; its declination determines which latitudes can observe it.",
+      "body": "The stored catalogue gives a visual magnitude of 3.67. This is a catalogue value, not a prediction of its brightness this week. Lower magnitudes mean brighter objects; sky brightness and altitude affect whether you can see the star.\n\nIts catalogue position is approximately right ascension 14h 04m and declination +64.4°. These reference coordinates describe its sky location; they are not an observing time or a current altitude.\n\nAt the almanac’s default latitude of 45° N, this star is circumpolar (at 45° declination it touches the geometric horizon at lower culmination). It reaches approximately 71° altitude at upper culmination. These are geometric calculations from declination, excluding refraction and local obstructions. Darkness and the time of culmination must still be checked for the observing date and your location.\n\nHow to find it: Establish the preserved Dra constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.\n\nSources: Star Almanack’s stored fixed-object and expanded Bayer catalogues; accepted constellation figures and guiding-star routes. Visibility limits are original geometric calculations from catalogue declination, not weekly predictions.",
+      "url": "/stories/baseline/978.html",
+      "status": "pending"
+    },
+    {
+      "fixed_object_id": 314,
+      "collection": "baseline",
+      "hed": "Fixed object 314",
+      "dek": "Fixed object 314 is an observing target in Boo carried by the weekly Calendar.",
+      "body": "Why it is here: The Calendar selected Fixed object 314 as one of this week’s fixed-sky observing targets.\n\nHow to find it: Establish the preserved Boo constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.",
+      "url": "/stories/baseline/314.html",
+      "status": "pending"
+    },
+    {
+      "fixed_object_id": 981,
+      "collection": "baseline",
+      "hed": "Menkent",
+      "dek": "Menkent is a star in Cen; its declination determines which latitudes can observe it.",
+      "body": "Its catalogue position is approximately right ascension 14h 06m and declination -36.4°. These reference coordinates describe its sky location; they are not an observing time or a current altitude.\n\nAt the almanac’s default latitude of 45° N, this star rises and sets, reaching approximately 9° altitude at upper culmination. These are geometric calculations from declination, excluding refraction and local obstructions. Darkness and the time of culmination must still be checked for the observing date and your location.\n\nHow to find it: Establish the preserved Cen constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.\n\nSources: Star Almanack’s stored fixed-object and expanded Bayer catalogues; accepted constellation figures and guiding-star routes. Visibility limits are original geometric calculations from catalogue declination, not weekly predictions.",
+      "url": "/stories/baseline/981.html",
+      "status": "pending"
+    },
+    {
+      "fixed_object_id": 63,
+      "collection": "baseline",
+      "hed": "Arcturus",
+      "dek": "Arcturus is a star in Boo of catalogue visual magnitude -0.05; its declination determines which latitudes can observe it.",
+      "body": "The stored catalogue gives a visual magnitude of -0.05. This is a catalogue value, not a prediction of its brightness this week. Lower magnitudes mean brighter objects; sky brightness and altitude affect whether you can see the star.\n\nIts catalogue position is approximately right ascension 14h 15m and declination +19.2°. These reference coordinates describe its sky location; they are not an observing time or a current altitude.\n\nAt the almanac’s default latitude of 45° N, this star rises and sets, reaching approximately 64° altitude at upper culmination. These are geometric calculations from declination, excluding refraction and local obstructions. Darkness and the time of culmination must still be checked for the observing date and your location.\n\nHow to find it: Establish the preserved Boo constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.\n\nSources: Star Almanack’s stored fixed-object and expanded Bayer catalogues; accepted constellation figures and guiding-star routes. Visibility limits are original geometric calculations from catalogue declination, not weekly predictions.",
+      "url": "/stories/baseline/63.html",
+      "status": "pending"
+    },
+    {
+      "fixed_object_id": 593,
+      "collection": "baseline",
+      "hed": "Proxima Centauri",
+      "dek": "Proxima Centauri is an observing target in Cen carried by the weekly Calendar.",
+      "body": "Why it is here: The Calendar selected Proxima Centauri as one of this week’s fixed-sky observing targets.\n\nHow to find it: Establish the preserved Cen constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.",
+      "url": "/stories/baseline/593.html",
+      "status": "pending"
+    }
+  ],
+  "stories": [
+    {
+      "fixed_object_id": 313,
+      "collection": "baseline",
+      "hed": "Pinwheel Galaxy",
+      "dek": "Pinwheel Galaxy is an observing target in UMa carried by the weekly Calendar.",
+      "body": "Why it is here: The Calendar selected Pinwheel Galaxy as one of this week’s fixed-sky observing targets.\n\nHow to find it: Establish the preserved UMa constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.",
+      "url": "/stories/baseline/313.html",
+      "status": "pending"
+    },
+    {
+      "fixed_object_id": 62,
+      "collection": "baseline",
+      "hed": "Hadar",
+      "dek": "Hadar is a star in Cen of catalogue visual magnitude 0.61; its declination determines which latitudes can observe it.",
+      "body": "The stored catalogue gives a visual magnitude of 0.61. This is a catalogue value, not a prediction of its brightness this week. Lower magnitudes mean brighter objects; sky brightness and altitude affect whether you can see the star.\n\nIts catalogue position is approximately right ascension 14h 03m and declination -60.4°. These reference coordinates describe its sky location; they are not an observing time or a current altitude.\n\nAt the almanac’s default latitude of 45° N, this star does not rise above the geometric horizon. These are geometric calculations from declination, excluding refraction and local obstructions. Darkness and the time of culmination must still be checked for the observing date and your location.\n\nHow to find it: Establish the preserved Cen constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.\n\nSources: Star Almanack’s stored fixed-object and expanded Bayer catalogues; accepted constellation figures and guiding-star routes. Visibility limits are original geometric calculations from catalogue declination, not weekly predictions.",
+      "url": "/stories/baseline/62.html",
+      "status": "pending"
+    },
+    {
+      "fixed_object_id": 978,
+      "collection": "baseline",
+      "hed": "Thuban",
+      "dek": "Thuban is a star in Dra of catalogue visual magnitude 3.67; its declination determines which latitudes can observe it.",
+      "body": "The stored catalogue gives a visual magnitude of 3.67. This is a catalogue value, not a prediction of its brightness this week. Lower magnitudes mean brighter objects; sky brightness and altitude affect whether you can see the star.\n\nIts catalogue position is approximately right ascension 14h 04m and declination +64.4°. These reference coordinates describe its sky location; they are not an observing time or a current altitude.\n\nAt the almanac’s default latitude of 45° N, this star is circumpolar (at 45° declination it touches the geometric horizon at lower culmination). It reaches approximately 71° altitude at upper culmination. These are geometric calculations from declination, excluding refraction and local obstructions. Darkness and the time of culmination must still be checked for the observing date and your location.\n\nHow to find it: Establish the preserved Dra constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.\n\nSources: Star Almanack’s stored fixed-object and expanded Bayer catalogues; accepted constellation figures and guiding-star routes. Visibility limits are original geometric calculations from catalogue declination, not weekly predictions.",
+      "url": "/stories/baseline/978.html",
+      "status": "pending"
+    },
+    {
+      "fixed_object_id": 314,
+      "collection": "baseline",
+      "hed": "Fixed object 314",
+      "dek": "Fixed object 314 is an observing target in Boo carried by the weekly Calendar.",
+      "body": "Why it is here: The Calendar selected Fixed object 314 as one of this week’s fixed-sky observing targets.\n\nHow to find it: Establish the preserved Boo constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.",
+      "url": "/stories/baseline/314.html",
+      "status": "pending"
+    },
+    {
+      "fixed_object_id": 981,
+      "collection": "baseline",
+      "hed": "Menkent",
+      "dek": "Menkent is a star in Cen; its declination determines which latitudes can observe it.",
+      "body": "Its catalogue position is approximately right ascension 14h 06m and declination -36.4°. These reference coordinates describe its sky location; they are not an observing time or a current altitude.\n\nAt the almanac’s default latitude of 45° N, this star rises and sets, reaching approximately 9° altitude at upper culmination. These are geometric calculations from declination, excluding refraction and local obstructions. Darkness and the time of culmination must still be checked for the observing date and your location.\n\nHow to find it: Establish the preserved Cen constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.\n\nSources: Star Almanack’s stored fixed-object and expanded Bayer catalogues; accepted constellation figures and guiding-star routes. Visibility limits are original geometric calculations from catalogue declination, not weekly predictions.",
+      "url": "/stories/baseline/981.html",
+      "status": "pending"
+    },
+    {
+      "fixed_object_id": 63,
+      "collection": "baseline",
+      "hed": "Arcturus",
+      "dek": "Arcturus is a star in Boo of catalogue visual magnitude -0.05; its declination determines which latitudes can observe it.",
+      "body": "The stored catalogue gives a visual magnitude of -0.05. This is a catalogue value, not a prediction of its brightness this week. Lower magnitudes mean brighter objects; sky brightness and altitude affect whether you can see the star.\n\nIts catalogue position is approximately right ascension 14h 15m and declination +19.2°. These reference coordinates describe its sky location; they are not an observing time or a current altitude.\n\nAt the almanac’s default latitude of 45° N, this star rises and sets, reaching approximately 64° altitude at upper culmination. These are geometric calculations from declination, excluding refraction and local obstructions. Darkness and the time of culmination must still be checked for the observing date and your location.\n\nHow to find it: Establish the preserved Boo constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.\n\nSources: Star Almanack’s stored fixed-object and expanded Bayer catalogues; accepted constellation figures and guiding-star routes. Visibility limits are original geometric calculations from catalogue declination, not weekly predictions.",
+      "url": "/stories/baseline/63.html",
+      "status": "pending"
+    },
+    {
+      "fixed_object_id": 593,
+      "collection": "baseline",
+      "hed": "Proxima Centauri",
+      "dek": "Proxima Centauri is an observing target in Cen carried by the weekly Calendar.",
+      "body": "Why it is here: The Calendar selected Proxima Centauri as one of this week’s fixed-sky observing targets.\n\nHow to find it: Establish the preserved Cen constellation figure from its labeled reference stars, then use the target’s plotted position rather than searching for an isolated star.",
+      "url": "/stories/baseline/593.html",
+      "status": "pending"
+    }
+  ],
+  "story_completion": {
+    "week": "2026-W24",
+    "total": 7,
+    "complete": 0,
+    "pending": [
+      {
+        "fixed_object_id": 313,
+        "catalog_target_key": null,
+        "label": "M101",
+        "status": "pending",
+        "stories": [],
+        "reason": "researched story needed"
+      },
+      {
+        "fixed_object_id": 62,
+        "catalog_target_key": null,
+        "label": "Hadar (β Cen)",
+        "status": "pending",
+        "stories": [],
+        "reason": "researched story needed"
+      },
+      {
+        "fixed_object_id": 978,
+        "catalog_target_key": null,
+        "label": "Thuban (α Dra) / Thuban (α Draconis)",
+        "status": "pending",
+        "stories": [],
+        "reason": "researched story needed"
+      },
+      {
+        "fixed_object_id": 314,
+        "catalog_target_key": null,
+        "label": "Finest NGC 86 / NGC 5466",
+        "status": "pending",
+        "stories": [],
+        "reason": "researched story needed"
+      },
+      {
+        "fixed_object_id": 981,
+        "catalog_target_key": null,
+        "label": "Menkent (θ Cen)",
+        "status": "pending",
+        "stories": [],
+        "reason": "researched story needed"
+      },
+      {
+        "fixed_object_id": 63,
+        "catalog_target_key": null,
+        "label": "Arcturus (α Boo) / Arcturus (α Boötis)",
+        "status": "pending",
+        "stories": [],
+        "reason": "researched story needed"
+      },
+      {
+        "fixed_object_id": 593,
+        "catalog_target_key": null,
+        "label": "Proxima Centauri (V645 Centauri)",
+        "status": "pending",
+        "stories": [],
+        "reason": "researched story needed"
+      }
+    ],
+    "objects": [
+      {
+        "fixed_object_id": 313,
+        "catalog_target_key": null,
+        "label": "M101",
+        "status": "pending",
+        "stories": [],
+        "reason": "researched story needed"
+      },
+      {
+        "fixed_object_id": 62,
+        "catalog_target_key": null,
+        "label": "Hadar (β Cen)",
+        "status": "pending",
+        "stories": [],
+        "reason": "researched story needed"
+      },
+      {
+        "fixed_object_id": 978,
+        "catalog_target_key": null,
+        "label": "Thuban (α Dra) / Thuban (α Draconis)",
+        "status": "pending",
+        "stories": [],
+        "reason": "researched story needed"
+      },
+      {
+        "fixed_object_id": 314,
+        "catalog_target_key": null,
+        "label": "Finest NGC 86 / NGC 5466",
+        "status": "pending",
+        "stories": [],
+        "reason": "researched story needed"
+      },
+      {
+        "fixed_object_id": 981,
+        "catalog_target_key": null,
+        "label": "Menkent (θ Cen)",
+        "status": "pending",
+        "stories": [],
+        "reason": "researched story needed"
+      },
+      {
+        "fixed_object_id": 63,
+        "catalog_target_key": null,
+        "label": "Arcturus (α Boo) / Arcturus (α Boötis)",
+        "status": "pending",
+        "stories": [],
+        "reason": "researched story needed"
+      },
+      {
+        "fixed_object_id": 593,
+        "catalog_target_key": null,
+        "label": "Proxima Centauri (V645 Centauri)",
+        "status": "pending",
+        "stories": [],
+        "reason": "researched story needed"
+      }
+    ]
+  },
+  "planet_finder_artworks": [
+    {
+      "schema_version": 1,
+      "id": "2026-W24-1250",
+      "object_id": 1250,
+      "week": "2026-W24",
+      "kind": "stellar-finder",
+      "geometry": {
+        "constellation_system": "Martz/MacRobert",
+        "constellation_abbreviation": "Gem",
+        "on_missing_geometry": "fail",
+        "invent_geometry": false
+      },
+      "style": {
+        "background": "night-sky",
+        "constellation": {
+          "stroke": "#5c8fe8",
+          "role": "ordinary constellation figure"
+        },
+        "asterism": {
+          "stroke": "#59c86d",
+          "role": "orienting asterism"
+        },
+        "target": {
+          "stroke": "#ffd84d",
+          "fill": "none",
+          "role": "open target circle"
+        },
+        "target_arrows": false
+      },
+      "constellation": "Gemini",
+      "asterism": null,
+      "targets": [
+        {
+          "type": "solar-system-object",
+          "name": "Mercury"
+        },
+        {
+          "type": "reference-star",
+          "name": "Alhena",
+          "fixed_object_id": 800
+        }
+      ],
+      "landmark_policy": {
+        "retain_named_field_stars": true,
+        "primary_reference_star": "Alhena",
+        "magnitude_limit": 2.99
+      },
+      "finder_route": {
+        "sequence": [
+          "Gemini",
+          "Alhena",
+          "Mercury"
+        ],
+        "orientation": "constellation-stick-figure",
+        "reference_star": "Alhena",
+        "planet": "Mercury",
+        "finder_note": null,
+        "sky_separation_deg": 8.7
+      },
+      "planetary_context": [
+        {
+          "kind": "planet-star-longitude",
+          "planet": "Moon",
+          "planet_longitude_deg": 342.267,
+          "star": "Fumalsamakah",
+          "constellation": "Psc",
+          "star_fixed_object_id": 573,
+          "star_ecliptic_longitude_deg": 348.585,
+          "star_ecliptic_latitude_deg": 9.053,
+          "longitude_separation_deg": 6.3,
+          "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+          "finder_only": true,
+          "planet_ra_deg": 342.987636,
+          "planet_dec_deg": -6.339309,
+          "sky_separation_deg": 10.6
+        },
+        {
+          "kind": "planet-star-longitude",
+          "planet": "Mercury",
+          "planet_longitude_deg": 100.017,
+          "star": "Alhena",
+          "constellation": "Gem",
+          "star_fixed_object_id": 800,
+          "star_ecliptic_longitude_deg": 99.105,
+          "star_ecliptic_latitude_deg": -6.743,
+          "longitude_separation_deg": 0.9,
+          "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+          "finder_only": true,
+          "planet_ra_deg": 100.646918,
+          "planet_dec_deg": 25.036967,
+          "sky_separation_deg": 8.7
+        }
+      ],
+      "planet_position": {
+        "ra_deg": 100.646918,
+        "dec_deg": 25.036967
+      },
+      "solar_system_field": [
+        {
+          "name": "Moon",
+          "ra_deg": 342.987636,
+          "dec_deg": -6.339309
+        },
+        {
+          "name": "Mercury",
+          "ra_deg": 100.646918,
+          "dec_deg": 25.036967
+        },
+        {
+          "name": "Venus",
+          "ra_deg": 115.473599,
+          "dec_deg": 23.417747
+        },
+        {
+          "name": "Mars",
+          "ra_deg": 42.26311,
+          "dec_deg": 15.671539
+        },
+        {
+          "name": "Ceres",
+          "ra_deg": 62.291138,
+          "dec_deg": 18.076621
+        },
+        {
+          "name": "Jupiter",
+          "ra_deg": 117.069836,
+          "dec_deg": 21.531082
+        },
+        {
+          "name": "Saturn",
+          "ra_deg": 12.329834,
+          "dec_deg": 2.806528
+        },
+        {
+          "name": "Uranus",
+          "ra_deg": 60.04038,
+          "dec_deg": 20.422284
+        },
+        {
+          "name": "Neptune",
+          "ra_deg": 4.03279,
+          "dec_deg": 0.279091
+        },
+        {
+          "name": "Pluto",
+          "ra_deg": 308.341775,
+          "dec_deg": -23.074559
+        }
+      ],
+      "planet_plot_policy": "plot all preserved 2-D Star Almanack Solar-System positions that fall inside the Pathfinder field; the Moon is a normal plotted body, with apparent-disk occultation handled only by rendering/collision logic",
+      "reference_standard": "docs/finder-standard.md"
+    },
+    {
+      "schema_version": 1,
+      "id": "2026-W24-1251",
+      "object_id": 1251,
+      "week": "2026-W24",
+      "kind": "stellar-finder",
+      "geometry": {
+        "constellation_system": "Martz/MacRobert",
+        "constellation_abbreviation": "Gem",
+        "on_missing_geometry": "fail",
+        "invent_geometry": false
+      },
+      "style": {
+        "background": "night-sky",
+        "constellation": {
+          "stroke": "#5c8fe8",
+          "role": "ordinary constellation figure"
+        },
+        "asterism": {
+          "stroke": "#59c86d",
+          "role": "orienting asterism"
+        },
+        "target": {
+          "stroke": "#ffd84d",
+          "fill": "none",
+          "role": "open target circle"
+        },
+        "target_arrows": false
+      },
+      "constellation": "Gemini",
+      "asterism": null,
+      "targets": [
+        {
+          "type": "solar-system-object",
+          "name": "Venus"
+        },
+        {
+          "type": "reference-star",
+          "name": "Pollux",
+          "fixed_object_id": 37
+        }
+      ],
+      "landmark_policy": {
+        "retain_named_field_stars": true,
+        "primary_reference_star": "Pollux",
+        "magnitude_limit": 2.99
+      },
+      "finder_route": {
+        "sequence": [
+          "Gemini",
+          "Pollux",
+          "Venus"
+        ],
+        "orientation": "constellation-stick-figure",
+        "reference_star": "Pollux",
+        "planet": "Venus",
+        "finder_note": null,
+        "sky_separation_deg": 4.7
+      },
+      "planetary_context": [
+        {
+          "kind": "planet-star-longitude",
+          "planet": "Moon",
+          "planet_longitude_deg": 342.267,
+          "star": "Fumalsamakah",
+          "constellation": "Psc",
+          "star_fixed_object_id": 573,
+          "star_ecliptic_longitude_deg": 348.585,
+          "star_ecliptic_latitude_deg": 9.053,
+          "longitude_separation_deg": 6.3,
+          "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+          "finder_only": true,
+          "planet_ra_deg": 342.987636,
+          "planet_dec_deg": -6.339309,
+          "sky_separation_deg": 10.6
+        },
+        {
+          "kind": "planet-star-longitude",
+          "planet": "Mercury",
+          "planet_longitude_deg": 100.017,
+          "star": "Alhena",
+          "constellation": "Gem",
+          "star_fixed_object_id": 800,
+          "star_ecliptic_longitude_deg": 99.105,
+          "star_ecliptic_latitude_deg": -6.743,
+          "longitude_separation_deg": 0.9,
+          "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+          "finder_only": true,
+          "planet_ra_deg": 100.646918,
+          "planet_dec_deg": 25.036967,
+          "sky_separation_deg": 8.7
+        }
+      ],
+      "planet_position": {
+        "ra_deg": 115.473599,
+        "dec_deg": 23.417747
+      },
+      "solar_system_field": [
+        {
+          "name": "Moon",
+          "ra_deg": 342.987636,
+          "dec_deg": -6.339309
+        },
+        {
+          "name": "Mercury",
+          "ra_deg": 100.646918,
+          "dec_deg": 25.036967
+        },
+        {
+          "name": "Venus",
+          "ra_deg": 115.473599,
+          "dec_deg": 23.417747
+        },
+        {
+          "name": "Mars",
+          "ra_deg": 42.26311,
+          "dec_deg": 15.671539
+        },
+        {
+          "name": "Ceres",
+          "ra_deg": 62.291138,
+          "dec_deg": 18.076621
+        },
+        {
+          "name": "Jupiter",
+          "ra_deg": 117.069836,
+          "dec_deg": 21.531082
+        },
+        {
+          "name": "Saturn",
+          "ra_deg": 12.329834,
+          "dec_deg": 2.806528
+        },
+        {
+          "name": "Uranus",
+          "ra_deg": 60.04038,
+          "dec_deg": 20.422284
+        },
+        {
+          "name": "Neptune",
+          "ra_deg": 4.03279,
+          "dec_deg": 0.279091
+        },
+        {
+          "name": "Pluto",
+          "ra_deg": 308.341775,
+          "dec_deg": -23.074559
+        }
+      ],
+      "planet_plot_policy": "plot all preserved 2-D Star Almanack Solar-System positions that fall inside the Pathfinder field; the Moon is a normal plotted body, with apparent-disk occultation handled only by rendering/collision logic",
+      "reference_standard": "docs/finder-standard.md"
+    },
+    {
+      "schema_version": 1,
+      "id": "2026-W24-1253",
+      "object_id": 1253,
+      "week": "2026-W24",
+      "kind": "stellar-finder",
+      "geometry": {
+        "constellation_system": "Martz/MacRobert",
+        "constellation_abbreviation": "Psc",
+        "on_missing_geometry": "fail",
+        "invent_geometry": false
+      },
+      "style": {
+        "background": "night-sky",
+        "constellation": {
+          "stroke": "#5c8fe8",
+          "role": "ordinary constellation figure"
+        },
+        "asterism": {
+          "stroke": "#59c86d",
+          "role": "orienting asterism"
+        },
+        "target": {
+          "stroke": "#ffd84d",
+          "fill": "none",
+          "role": "open target circle"
+        },
+        "target_arrows": false
+      },
+      "constellation": "Pisces",
+      "asterism": null,
+      "targets": [
+        {
+          "type": "solar-system-object",
+          "name": "Moon"
+        },
+        {
+          "type": "reference-star",
+          "name": "Fumalsamakah",
+          "fixed_object_id": 573
+        }
+      ],
+      "landmark_policy": {
+        "retain_named_field_stars": true,
+        "primary_reference_star": "Fumalsamakah",
+        "magnitude_limit": 2.99
+      },
+      "finder_route": {
+        "sequence": [
+          "Pisces",
+          "Fumalsamakah",
+          "Moon"
+        ],
+        "orientation": "constellation-stick-figure",
+        "reference_star": "Fumalsamakah",
+        "planet": "Moon",
+        "finder_note": null,
+        "sky_separation_deg": 10.6
+      },
+      "planetary_context": [
+        {
+          "kind": "planet-star-longitude",
+          "planet": "Moon",
+          "planet_longitude_deg": 342.267,
+          "star": "Fumalsamakah",
+          "constellation": "Psc",
+          "star_fixed_object_id": 573,
+          "star_ecliptic_longitude_deg": 348.585,
+          "star_ecliptic_latitude_deg": 9.053,
+          "longitude_separation_deg": 6.3,
+          "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+          "finder_only": true,
+          "planet_ra_deg": 342.987636,
+          "planet_dec_deg": -6.339309,
+          "sky_separation_deg": 10.6
+        },
+        {
+          "kind": "planet-star-longitude",
+          "planet": "Mercury",
+          "planet_longitude_deg": 100.017,
+          "star": "Alhena",
+          "constellation": "Gem",
+          "star_fixed_object_id": 800,
+          "star_ecliptic_longitude_deg": 99.105,
+          "star_ecliptic_latitude_deg": -6.743,
+          "longitude_separation_deg": 0.9,
+          "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+          "finder_only": true,
+          "planet_ra_deg": 100.646918,
+          "planet_dec_deg": 25.036967,
+          "sky_separation_deg": 8.7
+        }
+      ],
+      "planet_position": {
+        "ra_deg": 342.987636,
+        "dec_deg": -6.339309
+      },
+      "solar_system_field": [
+        {
+          "name": "Moon",
+          "ra_deg": 342.987636,
+          "dec_deg": -6.339309
+        },
+        {
+          "name": "Mercury",
+          "ra_deg": 100.646918,
+          "dec_deg": 25.036967
+        },
+        {
+          "name": "Venus",
+          "ra_deg": 115.473599,
+          "dec_deg": 23.417747
+        },
+        {
+          "name": "Mars",
+          "ra_deg": 42.26311,
+          "dec_deg": 15.671539
+        },
+        {
+          "name": "Ceres",
+          "ra_deg": 62.291138,
+          "dec_deg": 18.076621
+        },
+        {
+          "name": "Jupiter",
+          "ra_deg": 117.069836,
+          "dec_deg": 21.531082
+        },
+        {
+          "name": "Saturn",
+          "ra_deg": 12.329834,
+          "dec_deg": 2.806528
+        },
+        {
+          "name": "Uranus",
+          "ra_deg": 60.04038,
+          "dec_deg": 20.422284
+        },
+        {
+          "name": "Neptune",
+          "ra_deg": 4.03279,
+          "dec_deg": 0.279091
+        },
+        {
+          "name": "Pluto",
+          "ra_deg": 308.341775,
+          "dec_deg": -23.074559
+        }
+      ],
+      "planet_plot_policy": "plot all preserved 2-D Star Almanack Solar-System positions that fall inside the Pathfinder field; the Moon is a normal plotted body, with apparent-disk occultation handled only by rendering/collision logic",
+      "reference_standard": "docs/finder-standard.md"
+    },
+    {
+      "schema_version": 1,
+      "id": "2026-W24-1254",
+      "object_id": 1254,
+      "week": "2026-W24",
+      "kind": "stellar-finder",
+      "geometry": {
+        "constellation_system": "Martz/MacRobert",
+        "constellation_abbreviation": "Cet",
+        "on_missing_geometry": "fail",
+        "invent_geometry": false
+      },
+      "style": {
+        "background": "night-sky",
+        "constellation": {
+          "stroke": "#5c8fe8",
+          "role": "ordinary constellation figure"
+        },
+        "asterism": {
+          "stroke": "#59c86d",
+          "role": "orienting asterism"
+        },
+        "target": {
+          "stroke": "#ffd84d",
+          "fill": "none",
+          "role": "open target circle"
+        },
+        "target_arrows": false
+      },
+      "constellation": "Cetus",
+      "asterism": null,
+      "targets": [
+        {
+          "type": "solar-system-object",
+          "name": "Mars"
+        },
+        {
+          "type": "reference-star",
+          "name": "Menkar",
+          "fixed_object_id": 13
+        }
+      ],
+      "landmark_policy": {
+        "retain_named_field_stars": true,
+        "primary_reference_star": "Menkar",
+        "magnitude_limit": 2.99
+      },
+      "finder_route": {
+        "sequence": [
+          "Cetus",
+          "Menkar",
+          "Mars"
+        ],
+        "orientation": "constellation-stick-figure",
+        "reference_star": "Menkar",
+        "planet": "Mars",
+        "finder_note": null,
+        "sky_separation_deg": 12.0
+      },
+      "planetary_context": [
+        {
+          "kind": "planet-star-longitude",
+          "planet": "Moon",
+          "planet_longitude_deg": 342.267,
+          "star": "Fumalsamakah",
+          "constellation": "Psc",
+          "star_fixed_object_id": 573,
+          "star_ecliptic_longitude_deg": 348.585,
+          "star_ecliptic_latitude_deg": 9.053,
+          "longitude_separation_deg": 6.3,
+          "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+          "finder_only": true,
+          "planet_ra_deg": 342.987636,
+          "planet_dec_deg": -6.339309,
+          "sky_separation_deg": 10.6
+        },
+        {
+          "kind": "planet-star-longitude",
+          "planet": "Mercury",
+          "planet_longitude_deg": 100.017,
+          "star": "Alhena",
+          "constellation": "Gem",
+          "star_fixed_object_id": 800,
+          "star_ecliptic_longitude_deg": 99.105,
+          "star_ecliptic_latitude_deg": -6.743,
+          "longitude_separation_deg": 0.9,
+          "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+          "finder_only": true,
+          "planet_ra_deg": 100.646918,
+          "planet_dec_deg": 25.036967,
+          "sky_separation_deg": 8.7
+        }
+      ],
+      "planet_position": {
+        "ra_deg": 42.26311,
+        "dec_deg": 15.671539
+      },
+      "solar_system_field": [
+        {
+          "name": "Moon",
+          "ra_deg": 342.987636,
+          "dec_deg": -6.339309
+        },
+        {
+          "name": "Mercury",
+          "ra_deg": 100.646918,
+          "dec_deg": 25.036967
+        },
+        {
+          "name": "Venus",
+          "ra_deg": 115.473599,
+          "dec_deg": 23.417747
+        },
+        {
+          "name": "Mars",
+          "ra_deg": 42.26311,
+          "dec_deg": 15.671539
+        },
+        {
+          "name": "Ceres",
+          "ra_deg": 62.291138,
+          "dec_deg": 18.076621
+        },
+        {
+          "name": "Jupiter",
+          "ra_deg": 117.069836,
+          "dec_deg": 21.531082
+        },
+        {
+          "name": "Saturn",
+          "ra_deg": 12.329834,
+          "dec_deg": 2.806528
+        },
+        {
+          "name": "Uranus",
+          "ra_deg": 60.04038,
+          "dec_deg": 20.422284
+        },
+        {
+          "name": "Neptune",
+          "ra_deg": 4.03279,
+          "dec_deg": 0.279091
+        },
+        {
+          "name": "Pluto",
+          "ra_deg": 308.341775,
+          "dec_deg": -23.074559
+        }
+      ],
+      "planet_plot_policy": "plot all preserved 2-D Star Almanack Solar-System positions that fall inside the Pathfinder field; the Moon is a normal plotted body, with apparent-disk occultation handled only by rendering/collision logic",
+      "reference_standard": "docs/finder-standard.md"
+    },
+    {
+      "schema_version": 1,
+      "id": "2026-W24-1256",
+      "object_id": 1256,
+      "week": "2026-W24",
+      "kind": "stellar-finder",
+      "geometry": {
+        "constellation_system": "Martz/MacRobert",
+        "constellation_abbreviation": "Gem",
+        "on_missing_geometry": "fail",
+        "invent_geometry": false
+      },
+      "style": {
+        "background": "night-sky",
+        "constellation": {
+          "stroke": "#5c8fe8",
+          "role": "ordinary constellation figure"
+        },
+        "asterism": {
+          "stroke": "#59c86d",
+          "role": "orienting asterism"
+        },
+        "target": {
+          "stroke": "#ffd84d",
+          "fill": "none",
+          "role": "open target circle"
+        },
+        "target_arrows": false
+      },
+      "constellation": "Gemini",
+      "asterism": null,
+      "targets": [
+        {
+          "type": "solar-system-object",
+          "name": "Jupiter"
+        },
+        {
+          "type": "reference-star",
+          "name": "Pollux",
+          "fixed_object_id": 37
+        }
+      ],
+      "landmark_policy": {
+        "retain_named_field_stars": true,
+        "primary_reference_star": "Pollux",
+        "magnitude_limit": 2.99
+      },
+      "finder_route": {
+        "sequence": [
+          "Gemini",
+          "Pollux",
+          "Jupiter"
+        ],
+        "orientation": "constellation-stick-figure",
+        "reference_star": "Pollux",
+        "planet": "Jupiter",
+        "finder_note": null,
+        "sky_separation_deg": 6.5
+      },
+      "planetary_context": [
+        {
+          "kind": "planet-star-longitude",
+          "planet": "Moon",
+          "planet_longitude_deg": 342.267,
+          "star": "Fumalsamakah",
+          "constellation": "Psc",
+          "star_fixed_object_id": 573,
+          "star_ecliptic_longitude_deg": 348.585,
+          "star_ecliptic_latitude_deg": 9.053,
+          "longitude_separation_deg": 6.3,
+          "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+          "finder_only": true,
+          "planet_ra_deg": 342.987636,
+          "planet_dec_deg": -6.339309,
+          "sky_separation_deg": 10.6
+        },
+        {
+          "kind": "planet-star-longitude",
+          "planet": "Mercury",
+          "planet_longitude_deg": 100.017,
+          "star": "Alhena",
+          "constellation": "Gem",
+          "star_fixed_object_id": 800,
+          "star_ecliptic_longitude_deg": 99.105,
+          "star_ecliptic_latitude_deg": -6.743,
+          "longitude_separation_deg": 0.9,
+          "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+          "finder_only": true,
+          "planet_ra_deg": 100.646918,
+          "planet_dec_deg": 25.036967,
+          "sky_separation_deg": 8.7
+        }
+      ],
+      "planet_position": {
+        "ra_deg": 117.069836,
+        "dec_deg": 21.531082
+      },
+      "solar_system_field": [
+        {
+          "name": "Moon",
+          "ra_deg": 342.987636,
+          "dec_deg": -6.339309
+        },
+        {
+          "name": "Mercury",
+          "ra_deg": 100.646918,
+          "dec_deg": 25.036967
+        },
+        {
+          "name": "Venus",
+          "ra_deg": 115.473599,
+          "dec_deg": 23.417747
+        },
+        {
+          "name": "Mars",
+          "ra_deg": 42.26311,
+          "dec_deg": 15.671539
+        },
+        {
+          "name": "Ceres",
+          "ra_deg": 62.291138,
+          "dec_deg": 18.076621
+        },
+        {
+          "name": "Jupiter",
+          "ra_deg": 117.069836,
+          "dec_deg": 21.531082
+        },
+        {
+          "name": "Saturn",
+          "ra_deg": 12.329834,
+          "dec_deg": 2.806528
+        },
+        {
+          "name": "Uranus",
+          "ra_deg": 60.04038,
+          "dec_deg": 20.422284
+        },
+        {
+          "name": "Neptune",
+          "ra_deg": 4.03279,
+          "dec_deg": 0.279091
+        },
+        {
+          "name": "Pluto",
+          "ra_deg": 308.341775,
+          "dec_deg": -23.074559
+        }
+      ],
+      "planet_plot_policy": "plot all preserved 2-D Star Almanack Solar-System positions that fall inside the Pathfinder field; the Moon is a normal plotted body, with apparent-disk occultation handled only by rendering/collision logic",
+      "reference_standard": "docs/finder-standard.md"
+    },
+    {
+      "schema_version": 1,
+      "id": "2026-W24-1257",
+      "object_id": 1257,
+      "week": "2026-W24",
+      "kind": "stellar-finder",
+      "geometry": {
+        "constellation_system": "Martz/MacRobert",
+        "constellation_abbreviation": "Psc",
+        "on_missing_geometry": "fail",
+        "invent_geometry": false
+      },
+      "style": {
+        "background": "night-sky",
+        "constellation": {
+          "stroke": "#5c8fe8",
+          "role": "ordinary constellation figure"
+        },
+        "asterism": {
+          "stroke": "#59c86d",
+          "role": "orienting asterism"
+        },
+        "target": {
+          "stroke": "#ffd84d",
+          "fill": "none",
+          "role": "open target circle"
+        },
+        "target_arrows": false
+      },
+      "constellation": "Pisces",
+      "asterism": null,
+      "targets": [
+        {
+          "type": "solar-system-object",
+          "name": "Saturn"
+        },
+        {
+          "type": "reference-star",
+          "name": "Alrescha",
+          "fixed_object_id": 654
+        }
+      ],
+      "landmark_policy": {
+        "retain_named_field_stars": true,
+        "primary_reference_star": "Alrescha",
+        "magnitude_limit": 2.99
+      },
+      "finder_route": {
+        "sequence": [
+          "Pisces",
+          "Alrescha",
+          "Saturn"
+        ],
+        "orientation": "constellation-stick-figure",
+        "reference_star": "Alrescha",
+        "planet": "Saturn",
+        "finder_note": "Saturn is not easy to find this week.",
+        "sky_separation_deg": 18.2
+      },
+      "planetary_context": [
+        {
+          "kind": "planet-star-longitude",
+          "planet": "Moon",
+          "planet_longitude_deg": 342.267,
+          "star": "Fumalsamakah",
+          "constellation": "Psc",
+          "star_fixed_object_id": 573,
+          "star_ecliptic_longitude_deg": 348.585,
+          "star_ecliptic_latitude_deg": 9.053,
+          "longitude_separation_deg": 6.3,
+          "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+          "finder_only": true,
+          "planet_ra_deg": 342.987636,
+          "planet_dec_deg": -6.339309,
+          "sky_separation_deg": 10.6
+        },
+        {
+          "kind": "planet-star-longitude",
+          "planet": "Mercury",
+          "planet_longitude_deg": 100.017,
+          "star": "Alhena",
+          "constellation": "Gem",
+          "star_fixed_object_id": 800,
+          "star_ecliptic_longitude_deg": 99.105,
+          "star_ecliptic_latitude_deg": -6.743,
+          "longitude_separation_deg": 0.9,
+          "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+          "finder_only": true,
+          "planet_ra_deg": 100.646918,
+          "planet_dec_deg": 25.036967,
+          "sky_separation_deg": 8.7
+        }
+      ],
+      "planet_position": {
+        "ra_deg": 12.329834,
+        "dec_deg": 2.806528
+      },
+      "solar_system_field": [
+        {
+          "name": "Moon",
+          "ra_deg": 342.987636,
+          "dec_deg": -6.339309
+        },
+        {
+          "name": "Mercury",
+          "ra_deg": 100.646918,
+          "dec_deg": 25.036967
+        },
+        {
+          "name": "Venus",
+          "ra_deg": 115.473599,
+          "dec_deg": 23.417747
+        },
+        {
+          "name": "Mars",
+          "ra_deg": 42.26311,
+          "dec_deg": 15.671539
+        },
+        {
+          "name": "Ceres",
+          "ra_deg": 62.291138,
+          "dec_deg": 18.076621
+        },
+        {
+          "name": "Jupiter",
+          "ra_deg": 117.069836,
+          "dec_deg": 21.531082
+        },
+        {
+          "name": "Saturn",
+          "ra_deg": 12.329834,
+          "dec_deg": 2.806528
+        },
+        {
+          "name": "Uranus",
+          "ra_deg": 60.04038,
+          "dec_deg": 20.422284
+        },
+        {
+          "name": "Neptune",
+          "ra_deg": 4.03279,
+          "dec_deg": 0.279091
+        },
+        {
+          "name": "Pluto",
+          "ra_deg": 308.341775,
+          "dec_deg": -23.074559
+        }
+      ],
+      "planet_plot_policy": "plot all preserved 2-D Star Almanack Solar-System positions that fall inside the Pathfinder field; the Moon is a normal plotted body, with apparent-disk occultation handled only by rendering/collision logic",
+      "reference_standard": "docs/finder-standard.md"
+    },
+    {
+      "schema_version": 1,
+      "id": "2026-W24-1258",
+      "object_id": 1258,
+      "week": "2026-W24",
+      "kind": "stellar-finder",
+      "geometry": {
+        "constellation_system": "Martz/MacRobert",
+        "constellation_abbreviation": "Tau",
+        "on_missing_geometry": "fail",
+        "invent_geometry": false
+      },
+      "style": {
+        "background": "night-sky",
+        "constellation": {
+          "stroke": "#5c8fe8",
+          "role": "ordinary constellation figure"
+        },
+        "asterism": {
+          "stroke": "#59c86d",
+          "role": "orienting asterism"
+        },
+        "target": {
+          "stroke": "#ffd84d",
+          "fill": "none",
+          "role": "open target circle"
+        },
+        "target_arrows": false
+      },
+      "constellation": "Taurus",
+      "asterism": null,
+      "targets": [
+        {
+          "type": "solar-system-object",
+          "name": "Uranus"
+        },
+        {
+          "type": "reference-star",
+          "name": "Aldebaran",
+          "fixed_object_id": 25
+        }
+      ],
+      "landmark_policy": {
+        "retain_named_field_stars": true,
+        "primary_reference_star": "Aldebaran",
+        "magnitude_limit": 2.99
+      },
+      "finder_route": {
+        "sequence": [
+          "Taurus",
+          "Aldebaran",
+          "Uranus"
+        ],
+        "orientation": "constellation-stick-figure",
+        "reference_star": "Aldebaran",
+        "planet": "Uranus",
+        "finder_note": null,
+        "sky_separation_deg": 9.3
+      },
+      "planetary_context": [
+        {
+          "kind": "planet-star-longitude",
+          "planet": "Moon",
+          "planet_longitude_deg": 342.267,
+          "star": "Fumalsamakah",
+          "constellation": "Psc",
+          "star_fixed_object_id": 573,
+          "star_ecliptic_longitude_deg": 348.585,
+          "star_ecliptic_latitude_deg": 9.053,
+          "longitude_separation_deg": 6.3,
+          "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+          "finder_only": true,
+          "planet_ra_deg": 342.987636,
+          "planet_dec_deg": -6.339309,
+          "sky_separation_deg": 10.6
+        },
+        {
+          "kind": "planet-star-longitude",
+          "planet": "Mercury",
+          "planet_longitude_deg": 100.017,
+          "star": "Alhena",
+          "constellation": "Gem",
+          "star_fixed_object_id": 800,
+          "star_ecliptic_longitude_deg": 99.105,
+          "star_ecliptic_latitude_deg": -6.743,
+          "longitude_separation_deg": 0.9,
+          "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+          "finder_only": true,
+          "planet_ra_deg": 100.646918,
+          "planet_dec_deg": 25.036967,
+          "sky_separation_deg": 8.7
+        }
+      ],
+      "planet_position": {
+        "ra_deg": 60.04038,
+        "dec_deg": 20.422284
+      },
+      "solar_system_field": [
+        {
+          "name": "Moon",
+          "ra_deg": 342.987636,
+          "dec_deg": -6.339309
+        },
+        {
+          "name": "Mercury",
+          "ra_deg": 100.646918,
+          "dec_deg": 25.036967
+        },
+        {
+          "name": "Venus",
+          "ra_deg": 115.473599,
+          "dec_deg": 23.417747
+        },
+        {
+          "name": "Mars",
+          "ra_deg": 42.26311,
+          "dec_deg": 15.671539
+        },
+        {
+          "name": "Ceres",
+          "ra_deg": 62.291138,
+          "dec_deg": 18.076621
+        },
+        {
+          "name": "Jupiter",
+          "ra_deg": 117.069836,
+          "dec_deg": 21.531082
+        },
+        {
+          "name": "Saturn",
+          "ra_deg": 12.329834,
+          "dec_deg": 2.806528
+        },
+        {
+          "name": "Uranus",
+          "ra_deg": 60.04038,
+          "dec_deg": 20.422284
+        },
+        {
+          "name": "Neptune",
+          "ra_deg": 4.03279,
+          "dec_deg": 0.279091
+        },
+        {
+          "name": "Pluto",
+          "ra_deg": 308.341775,
+          "dec_deg": -23.074559
+        }
+      ],
+      "planet_plot_policy": "plot all preserved 2-D Star Almanack Solar-System positions that fall inside the Pathfinder field; the Moon is a normal plotted body, with apparent-disk occultation handled only by rendering/collision logic",
+      "reference_standard": "docs/finder-standard.md"
+    },
+    {
+      "schema_version": 1,
+      "id": "2026-W24-1259",
+      "object_id": 1259,
+      "week": "2026-W24",
+      "kind": "stellar-finder",
+      "geometry": {
+        "constellation_system": "Martz/MacRobert",
+        "constellation_abbreviation": "Psc",
+        "on_missing_geometry": "fail",
+        "invent_geometry": false
+      },
+      "style": {
+        "background": "night-sky",
+        "constellation": {
+          "stroke": "#5c8fe8",
+          "role": "ordinary constellation figure"
+        },
+        "asterism": {
+          "stroke": "#59c86d",
+          "role": "orienting asterism"
+        },
+        "target": {
+          "stroke": "#ffd84d",
+          "fill": "none",
+          "role": "open target circle"
+        },
+        "target_arrows": false
+      },
+      "constellation": "Pisces",
+      "asterism": null,
+      "targets": [
+        {
+          "type": "solar-system-object",
+          "name": "Neptune"
+        },
+        {
+          "type": "reference-star",
+          "name": "Fumalsamakah",
+          "fixed_object_id": 573
+        }
+      ],
+      "landmark_policy": {
+        "retain_named_field_stars": true,
+        "primary_reference_star": "Fumalsamakah",
+        "magnitude_limit": 2.99
+      },
+      "finder_route": {
+        "sequence": [
+          "Pisces",
+          "Fumalsamakah",
+          "Neptune"
+        ],
+        "orientation": "constellation-stick-figure",
+        "reference_star": "Fumalsamakah",
+        "planet": "Neptune",
+        "finder_note": "Neptune is not easy to find this week.",
+        "sky_separation_deg": 18.4
+      },
+      "planetary_context": [
+        {
+          "kind": "planet-star-longitude",
+          "planet": "Moon",
+          "planet_longitude_deg": 342.267,
+          "star": "Fumalsamakah",
+          "constellation": "Psc",
+          "star_fixed_object_id": 573,
+          "star_ecliptic_longitude_deg": 348.585,
+          "star_ecliptic_latitude_deg": 9.053,
+          "longitude_separation_deg": 6.3,
+          "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+          "finder_only": true,
+          "planet_ra_deg": 342.987636,
+          "planet_dec_deg": -6.339309,
+          "sky_separation_deg": 10.6
+        },
+        {
+          "kind": "planet-star-longitude",
+          "planet": "Mercury",
+          "planet_longitude_deg": 100.017,
+          "star": "Alhena",
+          "constellation": "Gem",
+          "star_fixed_object_id": 800,
+          "star_ecliptic_longitude_deg": 99.105,
+          "star_ecliptic_latitude_deg": -6.743,
+          "longitude_separation_deg": 0.9,
+          "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+          "finder_only": true,
+          "planet_ra_deg": 100.646918,
+          "planet_dec_deg": 25.036967,
+          "sky_separation_deg": 8.7
+        }
+      ],
+      "planet_position": {
+        "ra_deg": 4.03279,
+        "dec_deg": 0.279091
+      },
+      "solar_system_field": [
+        {
+          "name": "Moon",
+          "ra_deg": 342.987636,
+          "dec_deg": -6.339309
+        },
+        {
+          "name": "Mercury",
+          "ra_deg": 100.646918,
+          "dec_deg": 25.036967
+        },
+        {
+          "name": "Venus",
+          "ra_deg": 115.473599,
+          "dec_deg": 23.417747
+        },
+        {
+          "name": "Mars",
+          "ra_deg": 42.26311,
+          "dec_deg": 15.671539
+        },
+        {
+          "name": "Ceres",
+          "ra_deg": 62.291138,
+          "dec_deg": 18.076621
+        },
+        {
+          "name": "Jupiter",
+          "ra_deg": 117.069836,
+          "dec_deg": 21.531082
+        },
+        {
+          "name": "Saturn",
+          "ra_deg": 12.329834,
+          "dec_deg": 2.806528
+        },
+        {
+          "name": "Uranus",
+          "ra_deg": 60.04038,
+          "dec_deg": 20.422284
+        },
+        {
+          "name": "Neptune",
+          "ra_deg": 4.03279,
+          "dec_deg": 0.279091
+        },
+        {
+          "name": "Pluto",
+          "ra_deg": 308.341775,
+          "dec_deg": -23.074559
+        }
+      ],
+      "planet_plot_policy": "plot all preserved 2-D Star Almanack Solar-System positions that fall inside the Pathfinder field; the Moon is a normal plotted body, with apparent-disk occultation handled only by rendering/collision logic",
+      "reference_standard": "docs/finder-standard.md"
+    },
+    {
+      "schema_version": 1,
+      "id": "2026-W24-1255",
+      "object_id": 1255,
+      "week": "2026-W24",
+      "kind": "stellar-finder",
+      "geometry": {
+        "constellation_system": "Martz/MacRobert",
+        "constellation_abbreviation": "Tau",
+        "on_missing_geometry": "fail",
+        "invent_geometry": false
+      },
+      "style": {
+        "background": "night-sky",
+        "constellation": {
+          "stroke": "#5c8fe8",
+          "role": "ordinary constellation figure"
+        },
+        "asterism": {
+          "stroke": "#59c86d",
+          "role": "orienting asterism"
+        },
+        "target": {
+          "stroke": "#ffd84d",
+          "fill": "none",
+          "role": "open target circle"
+        },
+        "target_arrows": false
+      },
+      "constellation": "Taurus",
+      "asterism": null,
+      "targets": [
+        {
+          "type": "solar-system-object",
+          "name": "Ceres"
+        },
+        {
+          "type": "reference-star",
+          "name": "Aldebaran",
+          "fixed_object_id": 25
+        }
+      ],
+      "landmark_policy": {
+        "retain_named_field_stars": true,
+        "primary_reference_star": "Aldebaran",
+        "magnitude_limit": 2.99
+      },
+      "finder_route": {
+        "sequence": [
+          "Taurus",
+          "Aldebaran",
+          "Ceres"
+        ],
+        "orientation": "constellation-stick-figure",
+        "reference_star": "Aldebaran",
+        "planet": "Ceres",
+        "finder_note": null,
+        "sky_separation_deg": 6.6
+      },
+      "planetary_context": [
+        {
+          "kind": "planet-star-longitude",
+          "planet": "Moon",
+          "planet_longitude_deg": 342.267,
+          "star": "Fumalsamakah",
+          "constellation": "Psc",
+          "star_fixed_object_id": 573,
+          "star_ecliptic_longitude_deg": 348.585,
+          "star_ecliptic_latitude_deg": 9.053,
+          "longitude_separation_deg": 6.3,
+          "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+          "finder_only": true,
+          "planet_ra_deg": 342.987636,
+          "planet_dec_deg": -6.339309,
+          "sky_separation_deg": 10.6
+        },
+        {
+          "kind": "planet-star-longitude",
+          "planet": "Mercury",
+          "planet_longitude_deg": 100.017,
+          "star": "Alhena",
+          "constellation": "Gem",
+          "star_fixed_object_id": 800,
+          "star_ecliptic_longitude_deg": 99.105,
+          "star_ecliptic_latitude_deg": -6.743,
+          "longitude_separation_deg": 0.9,
+          "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+          "finder_only": true,
+          "planet_ra_deg": 100.646918,
+          "planet_dec_deg": 25.036967,
+          "sky_separation_deg": 8.7
+        }
+      ],
+      "planet_position": {
+        "ra_deg": 62.291138,
+        "dec_deg": 18.076621
+      },
+      "solar_system_field": [
+        {
+          "name": "Moon",
+          "ra_deg": 342.987636,
+          "dec_deg": -6.339309
+        },
+        {
+          "name": "Mercury",
+          "ra_deg": 100.646918,
+          "dec_deg": 25.036967
+        },
+        {
+          "name": "Venus",
+          "ra_deg": 115.473599,
+          "dec_deg": 23.417747
+        },
+        {
+          "name": "Mars",
+          "ra_deg": 42.26311,
+          "dec_deg": 15.671539
+        },
+        {
+          "name": "Ceres",
+          "ra_deg": 62.291138,
+          "dec_deg": 18.076621
+        },
+        {
+          "name": "Jupiter",
+          "ra_deg": 117.069836,
+          "dec_deg": 21.531082
+        },
+        {
+          "name": "Saturn",
+          "ra_deg": 12.329834,
+          "dec_deg": 2.806528
+        },
+        {
+          "name": "Uranus",
+          "ra_deg": 60.04038,
+          "dec_deg": 20.422284
+        },
+        {
+          "name": "Neptune",
+          "ra_deg": 4.03279,
+          "dec_deg": 0.279091
+        },
+        {
+          "name": "Pluto",
+          "ra_deg": 308.341775,
+          "dec_deg": -23.074559
+        }
+      ],
+      "planet_plot_policy": "plot all preserved 2-D Star Almanack Solar-System positions that fall inside the Pathfinder field; the Moon is a normal plotted body, with apparent-disk occultation handled only by rendering/collision logic",
+      "reference_standard": "docs/finder-standard.md"
+    },
+    {
+      "schema_version": 1,
+      "id": "2026-W24-1260",
+      "object_id": 1260,
+      "week": "2026-W24",
+      "kind": "stellar-finder",
+      "geometry": {
+        "constellation_system": "Martz/MacRobert",
+        "constellation_abbreviation": "Cap",
+        "on_missing_geometry": "fail",
+        "invent_geometry": false
+      },
+      "style": {
+        "background": "night-sky",
+        "constellation": {
+          "stroke": "#5c8fe8",
+          "role": "ordinary constellation figure"
+        },
+        "asterism": {
+          "stroke": "#59c86d",
+          "role": "orienting asterism"
+        },
+        "target": {
+          "stroke": "#ffd84d",
+          "fill": "none",
+          "role": "open target circle"
+        },
+        "target_arrows": false
+      },
+      "constellation": "Capricorn",
+      "asterism": null,
+      "targets": [
+        {
+          "type": "solar-system-object",
+          "name": "Pluto"
+        },
+        {
+          "type": "reference-star",
+          "name": "Dabih",
+          "fixed_object_id": 1152
+        }
+      ],
+      "landmark_policy": {
+        "retain_named_field_stars": true,
+        "primary_reference_star": "Dabih",
+        "magnitude_limit": 2.99
+      },
+      "finder_route": {
+        "sequence": [
+          "Capricorn",
+          "Dabih",
+          "Pluto"
+        ],
+        "orientation": "constellation-stick-figure",
+        "reference_star": "Dabih",
+        "planet": "Pluto",
+        "finder_note": null,
+        "sky_separation_deg": 8.8
+      },
+      "planetary_context": [
+        {
+          "kind": "planet-star-longitude",
+          "planet": "Moon",
+          "planet_longitude_deg": 342.267,
+          "star": "Fumalsamakah",
+          "constellation": "Psc",
+          "star_fixed_object_id": 573,
+          "star_ecliptic_longitude_deg": 348.585,
+          "star_ecliptic_latitude_deg": 9.053,
+          "longitude_separation_deg": 6.3,
+          "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+          "finder_only": true,
+          "planet_ra_deg": 342.987636,
+          "planet_dec_deg": -6.339309,
+          "sky_separation_deg": 10.6
+        },
+        {
+          "kind": "planet-star-longitude",
+          "planet": "Mercury",
+          "planet_longitude_deg": 100.017,
+          "star": "Alhena",
+          "constellation": "Gem",
+          "star_fixed_object_id": 800,
+          "star_ecliptic_longitude_deg": 99.105,
+          "star_ecliptic_latitude_deg": -6.743,
+          "longitude_separation_deg": 0.9,
+          "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+          "finder_only": true,
+          "planet_ra_deg": 100.646918,
+          "planet_dec_deg": 25.036967,
+          "sky_separation_deg": 8.7
+        }
+      ],
+      "planet_position": {
+        "ra_deg": 308.341775,
+        "dec_deg": -23.074559
+      },
+      "solar_system_field": [
+        {
+          "name": "Moon",
+          "ra_deg": 342.987636,
+          "dec_deg": -6.339309
+        },
+        {
+          "name": "Mercury",
+          "ra_deg": 100.646918,
+          "dec_deg": 25.036967
+        },
+        {
+          "name": "Venus",
+          "ra_deg": 115.473599,
+          "dec_deg": 23.417747
+        },
+        {
+          "name": "Mars",
+          "ra_deg": 42.26311,
+          "dec_deg": 15.671539
+        },
+        {
+          "name": "Ceres",
+          "ra_deg": 62.291138,
+          "dec_deg": 18.076621
+        },
+        {
+          "name": "Jupiter",
+          "ra_deg": 117.069836,
+          "dec_deg": 21.531082
+        },
+        {
+          "name": "Saturn",
+          "ra_deg": 12.329834,
+          "dec_deg": 2.806528
+        },
+        {
+          "name": "Uranus",
+          "ra_deg": 60.04038,
+          "dec_deg": 20.422284
+        },
+        {
+          "name": "Neptune",
+          "ra_deg": 4.03279,
+          "dec_deg": 0.279091
+        },
+        {
+          "name": "Pluto",
+          "ra_deg": 308.341775,
+          "dec_deg": -23.074559
+        }
+      ],
+      "planet_plot_policy": "plot all preserved 2-D Star Almanack Solar-System positions that fall inside the Pathfinder field; the Moon is a normal plotted body, with apparent-disk occultation handled only by rendering/collision logic",
+      "reference_standard": "docs/finder-standard.md"
+    }
+  ],
+  "descriptor_policy": {
+    "source_of_truth": "machine-readable JSON",
+    "candidate_pool": "complete; presentation never limits discovery",
+    "presentation": "Wordy",
+    "story_limit": null,
+    "wordy_policy": "repeat canonical hed and dek in reader links, then elaborate with canonical story body",
+    "future_presentations": [],
+    "link_target": "/almanack/descriptors/<fixed_object_id>.json for fixed-object descriptors",
+    "artwork_descriptor_is_separate": true,
+    "artwork_source": "explicit story front matter only",
+    "fixed_sky_identity_source": "Calendar data-fixed-object-id + data-observing-aid + database/fixed-objects.json",
+    "story_identity_source": "Calendar data-fixed-object-id only",
+    "story_source": "stories/<collection>/<fixed_object_id>.md",
+    "inline_story_content": "hed + dek + body",
+    "linked_story_content": "reader-facing links to every available canonical object story",
+    "annual_note_is_separate_from_evergreen_story": true
+  },
+  "planet_weekly_facts": {
+    "1253": {
+      "observing": "Naked eye",
+      "solar_glare": false,
+      "ra_hours": 22.865842418,
+      "dec_deg": -6.339308769,
+      "sun_ra_hours": 5.049014542,
+      "rise": "00:11",
+      "set": "11:27",
+      "object_id": 1253,
+      "name": "Moon",
+      "snapshot_utc": "2026-06-08T00:00:00+00:00",
+      "guide_star": "Fumalsamakah",
+      "guide_star_fixed_object_id": 573,
+      "guide_separation_deg": 10.6,
+      "events": [
+        "Conjunction with Mars in ecliptic longitude Jun 12 18:37 UTC.",
+        "Conjunction with Ceres in ecliptic longitude Jun 13 23:26 UTC.",
+        "Conjunction with Saturn in ecliptic longitude Jun 10 07:29 UTC.",
+        "Conjunction with Uranus in ecliptic longitude Jun 13 17:30 UTC.",
+        "Conjunction with Neptune in ecliptic longitude Jun 09 16:04 UTC."
+      ],
+      "close_pairs": [],
+      "magnitude": -10.26298274036485,
+      "illuminated_percent": 54.5,
+      "elongation_deg": 95.0,
+      "solar_side": "west",
+      "phase_trend": "waning",
+      "motion_deg_per_day": 12.8059,
+      "motion": "direct",
+      "altitude_21_last_45n_deg": -33.4,
+      "source": "Preserved weekly ephemeris; cached JPL/NAIF kernels through StarAlmanackEphemeris",
+      "dek": "Naked eye; magnitude -10.3; direct motion; 54.5% illuminated. Below the horizon at 21:00 local apparent solar time, 45°N. Monday 00:00 UTC snapshot. Conjunction with Mars in ecliptic longitude Jun 12 18:37 UTC. Conjunction with Ceres in ecliptic longitude Jun 13 23:26 UTC. Conjunction with Saturn in ecliptic longitude Jun 10 07:29 UTC. Conjunction with Uranus in ecliptic longitude Jun 13 17:30 UTC. Conjunction with Neptune in ecliptic longitude Jun 09 16:04 UTC.",
+      "body": "Moon: naked eye at the Monday 00:00 UTC snapshot. At 45°N and 21:00 local apparent solar time, it is 33.4° below the horizon. Rises 00:11; sets 11:27 (45°N, local apparent solar time). Visual magnitude -10.3. The disk is 54.5% illuminated (waning gibbous). It is 95.0° from the Sun, on its west side. Motion is direct at 12.806° per day in ecliptic longitude at the snapshot. Position reference: Fumalsamakah, 10.6° away. Conjunction with Mars in ecliptic longitude Jun 12 18:37 UTC. Conjunction with Ceres in ecliptic longitude Jun 13 23:26 UTC. Conjunction with Saturn in ecliptic longitude Jun 10 07:29 UTC. Conjunction with Uranus in ecliptic longitude Jun 13 17:30 UTC. Conjunction with Neptune in ecliptic longitude Jun 09 16:04 UTC."
+    },
+    "1250": {
+      "observing": "Naked eye",
+      "solar_glare": false,
+      "ra_hours": 6.70979454,
+      "dec_deg": 25.036967032,
+      "sun_ra_hours": 5.049014542,
+      "rise": "05:44",
+      "set": "21:35",
+      "object_id": 1250,
+      "name": "Mercury",
+      "snapshot_utc": "2026-06-08T00:00:00+00:00",
+      "guide_star": "Alhena",
+      "guide_star_fixed_object_id": 800,
+      "guide_separation_deg": 8.7,
+      "events": [],
+      "close_pairs": [],
+      "magnitude": 0.05539884765069836,
+      "illuminated_percent": 53.9,
+      "elongation_deg": 22.9,
+      "solar_side": "east",
+      "motion_deg_per_day": 1.3805,
+      "motion": "direct",
+      "altitude_21_last_45n_deg": 4.5,
+      "source": "Preserved weekly ephemeris; cached JPL/NAIF kernels through StarAlmanackEphemeris",
+      "dek": "Naked eye; magnitude 0.1; direct motion; 53.9% illuminated. Monday 00:00 UTC snapshot.",
+      "body": "Mercury: naked eye at the Monday 00:00 UTC snapshot. At 45°N and 21:00 local apparent solar time, it is 4.5° above the horizon. Rises 05:44; sets 21:35 (45°N, local apparent solar time). Visual magnitude 0.1. The disk is 53.9% illuminated (gibbous). It is 22.9° from the Sun, on its east side. Motion is direct at 1.381° per day in ecliptic longitude at the snapshot. Position reference: Alhena, 8.7° away."
+    },
+    "1251": {
+      "observing": "Naked eye",
+      "solar_glare": false,
+      "ra_hours": 7.698239965,
+      "dec_deg": 23.417747243,
+      "sun_ra_hours": 5.049014542,
+      "rise": "06:52",
+      "set": "22:26",
+      "object_id": 1251,
+      "name": "Venus",
+      "snapshot_utc": "2026-06-08T00:00:00+00:00",
+      "guide_star": "Pollux",
+      "guide_star_fixed_object_id": 37,
+      "guide_separation_deg": 4.7,
+      "events": [
+        "Conjunction with Jupiter in ecliptic longitude Jun 09 19:59 UTC."
+      ],
+      "close_pairs": [
+        {
+          "object_id": 1256,
+          "name": "Jupiter",
+          "separation_deg": 2.4
+        }
+      ],
+      "magnitude": -3.964417122374233,
+      "illuminated_percent": 77.3,
+      "elongation_deg": 36.4,
+      "solar_side": "east",
+      "motion_deg_per_day": 1.1722,
+      "motion": "direct",
+      "altitude_21_last_45n_deg": 12.8,
+      "source": "Preserved weekly ephemeris; cached JPL/NAIF kernels through StarAlmanackEphemeris",
+      "dek": "Naked eye; magnitude -4.0; direct motion; 77.3% illuminated. Monday 00:00 UTC snapshot. Conjunction with Jupiter in ecliptic longitude Jun 09 19:59 UTC.",
+      "body": "Venus: naked eye at the Monday 00:00 UTC snapshot. At 45°N and 21:00 local apparent solar time, it is 12.8° above the horizon. Rises 06:52; sets 22:26 (45°N, local apparent solar time). Visual magnitude -4.0. The disk is 77.3% illuminated (gibbous). It is 36.4° from the Sun, on its east side. Motion is direct at 1.172° per day in ecliptic longitude at the snapshot. Position reference: Pollux, 4.7° away. Jupiter is 2.4° away at the snapshot. Conjunction with Jupiter in ecliptic longitude Jun 09 19:59 UTC."
+    },
+    "1254": {
+      "observing": "Naked eye",
+      "solar_glare": false,
+      "ra_hours": 2.817540696,
+      "dec_deg": 15.671538794,
+      "sun_ra_hours": 5.049014542,
+      "rise": "02:37",
+      "set": "16:55",
+      "object_id": 1254,
+      "name": "Mars",
+      "snapshot_utc": "2026-06-08T00:00:00+00:00",
+      "guide_star": "Menkar",
+      "guide_star_fixed_object_id": 13,
+      "guide_separation_deg": 12.0,
+      "events": [
+        "Conjunction with Moon in ecliptic longitude Jun 12 18:37 UTC."
+      ],
+      "close_pairs": [],
+      "magnitude": 1.2791400189055993,
+      "illuminated_percent": 96.2,
+      "elongation_deg": 32.3,
+      "solar_side": "west",
+      "motion_deg_per_day": 0.7347,
+      "motion": "direct",
+      "altitude_21_last_45n_deg": -28.4,
+      "source": "Preserved weekly ephemeris; cached JPL/NAIF kernels through StarAlmanackEphemeris",
+      "dek": "Naked eye; magnitude 1.3; direct motion; 96.2% illuminated. Below the horizon at 21:00 local apparent solar time, 45°N. Monday 00:00 UTC snapshot. Conjunction with Moon in ecliptic longitude Jun 12 18:37 UTC.",
+      "body": "Mars: naked eye at the Monday 00:00 UTC snapshot. At 45°N and 21:00 local apparent solar time, it is 28.4° below the horizon. Rises 02:37; sets 16:55 (45°N, local apparent solar time). Visual magnitude 1.3. The disk is 96.2% illuminated (gibbous). It is 32.3° from the Sun, on its west side. Motion is direct at 0.735° per day in ecliptic longitude at the snapshot. Position reference: Menkar, 12.0° away. Conjunction with Moon in ecliptic longitude Jun 12 18:37 UTC."
+    },
+    "1255": {
+      "observing": "Solar Glare",
+      "solar_glare": true,
+      "ra_hours": 4.152742502,
+      "dec_deg": 18.076620937,
+      "sun_ra_hours": 5.049014542,
+      "rise": "03:46",
+      "set": "18:26",
+      "object_id": 1255,
+      "name": "Ceres",
+      "snapshot_utc": "2026-06-08T00:00:00+00:00",
+      "guide_star": "Aldebaran",
+      "guide_star_fixed_object_id": 25,
+      "guide_separation_deg": 6.6,
+      "events": [
+        "Conjunction with Moon in ecliptic longitude Jun 13 23:26 UTC."
+      ],
+      "close_pairs": [
+        {
+          "object_id": 1258,
+          "name": "Uranus",
+          "separation_deg": 3.2
+        }
+      ],
+      "magnitude": 8.847147973947667,
+      "illuminated_percent": 99.8,
+      "elongation_deg": 13.4,
+      "solar_side": "west",
+      "motion_deg_per_day": 0.4093,
+      "motion": "direct",
+      "altitude_21_last_45n_deg": -20.7,
+      "source": "Preserved weekly ephemeris; cached JPL/NAIF kernels through StarAlmanackEphemeris",
+      "dek": "In solar glare; magnitude 8.8; direct motion; 99.8% illuminated. Monday 00:00 UTC snapshot. Conjunction with Moon in ecliptic longitude Jun 13 23:26 UTC.",
+      "body": "Ceres: in solar glare at the Monday 00:00 UTC snapshot. Rises 03:46; sets 18:26 (45°N, local apparent solar time). Visual magnitude 8.8. The disk is 99.8% illuminated (nearly full). It is 13.4° from the Sun, on its west side. Motion is direct at 0.409° per day in ecliptic longitude at the snapshot. Position reference: Aldebaran, 6.6° away. Uranus is 3.2° away at the snapshot. Conjunction with Moon in ecliptic longitude Jun 13 23:26 UTC."
+    },
+    "1256": {
+      "observing": "Naked eye",
+      "solar_glare": false,
+      "ra_hours": 7.804655701,
+      "dec_deg": 21.531082348,
+      "sun_ra_hours": 5.049014542,
+      "rise": "07:09",
+      "set": "22:22",
+      "object_id": 1256,
+      "name": "Jupiter",
+      "snapshot_utc": "2026-06-08T00:00:00+00:00",
+      "guide_star": "Pollux",
+      "guide_star_fixed_object_id": 37,
+      "guide_separation_deg": 6.5,
+      "events": [
+        "Conjunction with Venus in ecliptic longitude Jun 09 19:59 UTC."
+      ],
+      "close_pairs": [
+        {
+          "object_id": 1251,
+          "name": "Venus",
+          "separation_deg": 2.4
+        }
+      ],
+      "magnitude": -1.8604072091974393,
+      "illuminated_percent": 99.6,
+      "elongation_deg": 38.2,
+      "solar_side": "east",
+      "motion_deg_per_day": 0.1964,
+      "motion": "direct",
+      "altitude_21_last_45n_deg": 12.6,
+      "source": "Preserved weekly ephemeris; cached JPL/NAIF kernels through StarAlmanackEphemeris",
+      "dek": "Naked eye; magnitude -1.9; direct motion; 99.6% illuminated. Monday 00:00 UTC snapshot. Conjunction with Venus in ecliptic longitude Jun 09 19:59 UTC.",
+      "body": "Jupiter: naked eye at the Monday 00:00 UTC snapshot. At 45°N and 21:00 local apparent solar time, it is 12.6° above the horizon. Rises 07:09; sets 22:22 (45°N, local apparent solar time). Visual magnitude -1.9. The disk is 99.6% illuminated (nearly full). It is 38.2° from the Sun, on its east side. Motion is direct at 0.196° per day in ecliptic longitude at the snapshot. Position reference: Pollux, 6.5° away. Venus is 2.4° away at the snapshot. Conjunction with Venus in ecliptic longitude Jun 09 19:59 UTC."
+    },
+    "1257": {
+      "observing": "Naked eye",
+      "solar_glare": false,
+      "ra_hours": 0.821988949,
+      "dec_deg": 2.80652826,
+      "sun_ra_hours": 5.049014542,
+      "rise": "01:32",
+      "set": "14:01",
+      "object_id": 1257,
+      "name": "Saturn",
+      "snapshot_utc": "2026-06-08T00:00:00+00:00",
+      "guide_star": "Alrescha",
+      "guide_star_fixed_object_id": 654,
+      "guide_separation_deg": 18.2,
+      "events": [
+        "Conjunction with Moon in ecliptic longitude Jun 10 07:29 UTC."
+      ],
+      "close_pairs": [],
+      "magnitude": 0.8569008559134268,
+      "illuminated_percent": 99.8,
+      "elongation_deg": 64.5,
+      "solar_side": "west",
+      "motion_deg_per_day": 0.0759,
+      "motion": "direct",
+      "altitude_21_last_45n_deg": -39.5,
+      "source": "Preserved weekly ephemeris; cached JPL/NAIF kernels through StarAlmanackEphemeris",
+      "dek": "Naked eye; magnitude 0.9; direct motion; 99.8% illuminated. Below the horizon at 21:00 local apparent solar time, 45°N. Monday 00:00 UTC snapshot. Conjunction with Moon in ecliptic longitude Jun 10 07:29 UTC.",
+      "body": "Saturn: naked eye at the Monday 00:00 UTC snapshot. At 45°N and 21:00 local apparent solar time, it is 39.5° below the horizon. Rises 01:32; sets 14:01 (45°N, local apparent solar time). Visual magnitude 0.9. The disk is 99.8% illuminated (nearly full). It is 64.5° from the Sun, on its west side. Motion is direct at 0.076° per day in ecliptic longitude at the snapshot. Position reference: Alrescha, 18.2° away. Conjunction with Moon in ecliptic longitude Jun 10 07:29 UTC."
+    },
+    "1258": {
+      "observing": "Solar Glare",
+      "solar_glare": true,
+      "ra_hours": 4.002692007,
+      "dec_deg": 20.422284097,
+      "sun_ra_hours": 5.049014542,
+      "rise": "03:26",
+      "set": "18:28",
+      "object_id": 1258,
+      "name": "Uranus",
+      "snapshot_utc": "2026-06-08T00:00:00+00:00",
+      "guide_star": "Aldebaran",
+      "guide_star_fixed_object_id": 25,
+      "guide_separation_deg": 9.3,
+      "events": [
+        "Conjunction with Moon in ecliptic longitude Jun 13 17:30 UTC."
+      ],
+      "close_pairs": [
+        {
+          "object_id": 1255,
+          "name": "Ceres",
+          "separation_deg": 3.2
+        }
+      ],
+      "magnitude": 5.827065578966161,
+      "illuminated_percent": 100.0,
+      "elongation_deg": 14.8,
+      "solar_side": "west",
+      "motion_deg_per_day": 0.0569,
+      "motion": "direct",
+      "altitude_21_last_45n_deg": -19.3,
+      "source": "Preserved weekly ephemeris; cached JPL/NAIF kernels through StarAlmanackEphemeris",
+      "dek": "In solar glare; magnitude 5.8; direct motion; 100.0% illuminated. Monday 00:00 UTC snapshot. Conjunction with Moon in ecliptic longitude Jun 13 17:30 UTC.",
+      "body": "Uranus: in solar glare at the Monday 00:00 UTC snapshot. Rises 03:26; sets 18:28 (45°N, local apparent solar time). Visual magnitude 5.8. The disk is 100.0% illuminated (nearly full). It is 14.8° from the Sun, on its west side. Motion is direct at 0.057° per day in ecliptic longitude at the snapshot. Position reference: Aldebaran, 9.3° away. Ceres is 3.2° away at the snapshot. Conjunction with Moon in ecliptic longitude Jun 13 17:30 UTC."
+    },
+    "1259": {
+      "observing": "Telescope",
+      "solar_glare": false,
+      "ra_hours": 0.268852698,
+      "dec_deg": 0.279091256,
+      "sun_ra_hours": 5.049014542,
+      "rise": "01:09",
+      "set": "13:18",
+      "object_id": 1259,
+      "name": "Neptune",
+      "snapshot_utc": "2026-06-08T00:00:00+00:00",
+      "guide_star": "Fumalsamakah",
+      "guide_star_fixed_object_id": 573,
+      "guide_separation_deg": 18.4,
+      "events": [
+        "Conjunction with Moon in ecliptic longitude Jun 09 16:04 UTC."
+      ],
+      "close_pairs": [],
+      "magnitude": 7.774014599680239,
+      "illuminated_percent": 100.0,
+      "elongation_deg": 73.1,
+      "solar_side": "west",
+      "motion_deg_per_day": 0.0157,
+      "motion": "direct",
+      "altitude_21_last_45n_deg": -38.9,
+      "source": "Preserved weekly ephemeris; cached JPL/NAIF kernels through StarAlmanackEphemeris",
+      "dek": "Telescope; magnitude 7.8; direct motion; 100.0% illuminated. Below the horizon at 21:00 local apparent solar time, 45°N. Monday 00:00 UTC snapshot. Conjunction with Moon in ecliptic longitude Jun 09 16:04 UTC.",
+      "body": "Neptune: telescope at the Monday 00:00 UTC snapshot. At 45°N and 21:00 local apparent solar time, it is 38.9° below the horizon. Rises 01:09; sets 13:18 (45°N, local apparent solar time). Visual magnitude 7.8. The disk is 100.0% illuminated (nearly full). It is 73.1° from the Sun, on its west side. Motion is direct at 0.016° per day in ecliptic longitude at the snapshot. Position reference: Fumalsamakah, 18.4° away. Conjunction with Moon in ecliptic longitude Jun 09 16:04 UTC."
+    },
+    "1260": {
+      "observing": "Substantial telescope",
+      "solar_glare": false,
+      "ra_hours": 20.556118311,
+      "dec_deg": -23.074558677,
+      "sun_ra_hours": 5.049014542,
+      "rise": "23:07",
+      "set": "07:53",
+      "object_id": 1260,
+      "name": "Pluto",
+      "snapshot_utc": "2026-06-08T00:00:00+00:00",
+      "guide_star": "Dabih",
+      "guide_star_fixed_object_id": 1152,
+      "guide_separation_deg": 8.8,
+      "events": [],
+      "close_pairs": [],
+      "magnitude": 14.503743095249462,
+      "illuminated_percent": 100.0,
+      "elongation_deg": 131.8,
+      "solar_side": "west",
+      "motion_deg_per_day": -0.0138,
+      "motion": "retrograde",
+      "altitude_21_last_45n_deg": -21.3,
+      "source": "Preserved weekly ephemeris; cached JPL/NAIF kernels through StarAlmanackEphemeris",
+      "dek": "Substantial telescope; magnitude 14.5; retrograde motion; 100.0% illuminated. Below the horizon at 21:00 local apparent solar time, 45°N. Monday 00:00 UTC snapshot.",
+      "body": "Pluto: substantial telescope at the Monday 00:00 UTC snapshot. At 45°N and 21:00 local apparent solar time, it is 21.3° below the horizon. Rises 23:07; sets 07:53 (45°N, local apparent solar time). Visual magnitude 14.5. The disk is 100.0% illuminated (nearly full). It is 131.8° from the Sun, on its west side. Motion is retrograde at 0.014° per day in ecliptic longitude at the snapshot. Position reference: Dabih, 8.8° away."
+    }
+  }
+}

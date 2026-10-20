@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "id": "62",
+  "type": "star",
+  "name": "Hadar",
+  "summary": "bright star in Centaurus used as a fixed-sky reference",
+  "representation": {
+    "machine": "./62.json",
+    "human_source": "summary",
+    "human": "/stories/baseline/62.html"
+  },
+  "constellation_abbreviation": "Cen",
+  "constellation": "Centaurus",
+  "position": {
+    "ra_deg": 210.955935,
+    "dec_deg": -60.373039,
+    "ecliptic_longitude_deg": 233.792299,
+    "ecliptic_latitude_deg": -44.137643
+  },
+  "representative_visual_magnitude": 0.61,
+  "guiding_asterisms": [
+    {
+      "id": "1385",
+      "geometry_key": "asterism-southern-pointers",
+      "name": "Southern Pointers",
+      "relationship": "visual-member",
+      "provenance": {
+        "source": "ESO",
+        "source_url": "https://www.eso.org/public/blog/navigating-the-stars/",
+        "source_role": "verification",
+        "supports": "visual-membership"
+      }
+    }
+  ]
+}
