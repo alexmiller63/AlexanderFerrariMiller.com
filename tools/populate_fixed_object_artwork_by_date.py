@@ -60,12 +60,24 @@ def owner_identity(fixed_id: int, item: dict, by_hip: dict[str, int], metadata: 
                  if obj.get("fixed_object_id") == fixed_id), None,
             )
             canonical = (record or {}).get("canonical_identity") or {}
-            if canonical.get("namespace") != "gaia_dr3" or not canonical.get("value"):
+            namespace = canonical.get("namespace")
+            value = canonical.get("value")
+            if namespace not in {"gaia_dr3", "hd"} or not value:
                 raise RuntimeError(
                     f"fixed object {fixed_id} {item.get('name')!r} has no "
-                    "unique HIP or authoritative Gaia DR3 identity"
+                    "unique HIP or authoritative Gaia DR3/HD identity"
                 )
-            owner["identifiers"] = {"gaia_dr3": str(canonical["value"])}
+            matches = [
+                obj for obj in catalogue.get("fixed_objects", [])
+                if obj.get("status") == "active"
+                and (obj.get("canonical_identity") or {}).get("namespace") == namespace
+                and str((obj.get("canonical_identity") or {}).get("value")) == str(value)
+            ]
+            if len(matches) != 1:
+                raise RuntimeError(
+                    f"fixed object {fixed_id}: ambiguous {namespace} identity {value}"
+                )
+            owner["identifiers"] = {namespace: str(value)}
         else:
             raise RuntimeError(
                 f"fixed object {fixed_id} {item.get('name')!r} owns multiple "
