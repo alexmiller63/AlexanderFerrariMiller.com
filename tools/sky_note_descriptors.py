@@ -309,26 +309,33 @@ def build_descriptors(
         if not abbreviation:
             return
         name = constellation_names.get(abbreviation, abbreviation)
-        descriptor_id = _constellation_identity(name, abbreviation)
-        record = _base(
-            descriptor_id,
-            "constellation",
-            name,
-            "constellation used by Star Almanack to organize fixed-sky objects and finder geometry",
+        # Serpens is one IAU constellation represented by two distinct
+        # preserved figure/descriptor identities: Caput and Cauda.
+        identities = (
+            [("Serpens Caput", "1348"), ("Serpens Cauda", "1349")]
+            if abbreviation == "Ser"
+            else [(name, _constellation_identity(name, abbreviation))]
         )
-        record["abbreviation"] = abbreviation
         figure_name, figure = _figure_for_abbreviation(abbreviation, figures)
-        if figure:
-            record["figure"] = {
-                "system": "Martz/MacRobert",
-                "source_name": figure_name,
-                "figure_paths": figure.get("figure_paths", []),
-                "magnitude_cutoff": figure.get("figure_cutoff"),
-                "exceptions": figure.get("exceptions", []),
-            }
-            if figure.get("asterisms"):
-                record["asterisms"] = figure["asterisms"]
-        add(record)
+        for identity_name, descriptor_id in identities:
+            record = _base(
+                descriptor_id,
+                "constellation",
+                identity_name,
+                "constellation used by Star Almanack to organize fixed-sky objects and finder geometry",
+            )
+            record["abbreviation"] = abbreviation
+            if figure:
+                record["figure"] = {
+                    "system": "Martz/MacRobert",
+                    "source_name": figure_name,
+                    "figure_paths": figure.get("figure_paths", []),
+                    "magnitude_cutoff": figure.get("figure_cutoff"),
+                    "exceptions": figure.get("exceptions", []),
+                }
+                if figure.get("asterisms"):
+                    record["asterisms"] = figure["asterisms"]
+            add(record)
 
     def add_star(name: str, abbreviation: str | None = None, fixed_object_id: int | None = None) -> None:
         if fixed_object_id is None:
