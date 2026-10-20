@@ -133,6 +133,7 @@ def fixed_object_metadata() -> dict[int, dict]:
 def fixed_sky_from_ids(fixed_ids: list[int], metadata: dict[int, dict]) -> list[dict]:
     """Build fixed-sky objects from identity records, never from Calendar display text."""
     result = []
+    registry_objects = json.loads(FIXED_OBJECT_REGISTRY.read_text(encoding="utf-8")).get("fixed_objects", [])
     for fixed_id in fixed_ids:
         meta = metadata.get(fixed_id)
         if meta is None:
@@ -140,7 +141,31 @@ def fixed_sky_from_ids(fixed_ids: list[int], metadata: dict[int, dict]) -> list[
         name = meta.get("name")
         family = meta.get("object_type_family")
         if not name or not family:
-            continue
+            # Do not silently drop permanent Calendar identities.  Special
+            # stars (e.g. Proxima Centauri) may lack normalized presentation
+            # metadata even though their registry identity is preserved.
+            registry_record = next(
+                (record for record in registry_objects
+                 if record.get("fixed_object_id") == fixed_id), None
+            )
+            if registry_record is None:
+                raise RuntimeError(f"Missing registry identity for fixed object {fixed_id}")
+            identifiers = registry_record.get("identifiers") or []
+            if not name:
+                name = next(
+                    (str(entry["value"]) for entry in identifiers
+                     if entry.get("namespace") in ("special", "variable_star", "bayer", "hd")),
+                    None,
+                )
+            if not family and any(
+                entry.get("namespace") in ("variable_star", "bayer", "hip", "hd")
+                for entry in identifiers
+            ):
+                family = "star"
+            if not name or not family:
+                raise RuntimeError(
+                    f"Fixed object {fixed_id} lacks a usable name or object family"
+                )
         item = {
             "fixed_object_id": fixed_id,
             "type": "star" if family == "star" else "deep-sky",
