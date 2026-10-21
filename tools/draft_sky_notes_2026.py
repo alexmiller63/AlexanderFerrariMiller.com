@@ -4,7 +4,10 @@ import json, os, re, subprocess, time, urllib.request, urllib.error
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
 OUT=ROOT/"generated/sky-notes-2026-drafts"
-BUDGET=5.0
+BUDGET=float(os.environ.get('STORY_BUDGET_USD', '3.0'))
+START_WEEK=int(os.environ.get('STORY_START_WEEK', '43'))
+END_WEEK=int(os.environ.get('STORY_END_WEEK', '53'))
+assert 1 <= START_WEEK <= END_WEEK <= 53
 # Deliberately conservative reservation rates, not an OpenAI account billing cap.
 INPUT_RATE=2.0
 OUTPUT_RATE=8.0
@@ -34,11 +37,12 @@ def main():
     report=json.loads((ROOT/"generated/story-research-queue-2026.json").read_text())
     registry=json.loads((ROOT/"database/fixed-objects.json").read_text())["fixed_objects"]
     byid={str(o["fixed_object_id"]):o for o in registry}
-    todo=[x for x in report["objects"] if x["status"]=="needs-research"]
+    todo=[x for x in report["objects"] if x["status"]=="needs-research" and any(START_WEEK <= int(str(w).split("W")[-1]) <= END_WEEK for w in x.get("weeks",[]) if str(w).split("W")[-1].isdigit())]
     todo.sort(key=lambda x:(min(x["weeks"]) if x["weeks"] else "9999",str(x["fixed_object_id"])))
     OUT.mkdir(parents=True,exist_ok=True)
-    ledger_path=OUT/"ledger.json"
+    ledger_path=OUT/f"ledger-W{START_WEEK:02d}-W{END_WEEK:02d}.json"
     ledger=json.loads(ledger_path.read_text()) if ledger_path.exists() else {"estimated_usd":0,"calls":[]}
+    # The ledger may contain earlier batches: use a dedicated per-scope ledger for this run.
     git("config","user.name","github-actions[bot]")
     git("config","user.email","41898282+github-actions[bot]@users.noreply.github.com")
     failures=[]
