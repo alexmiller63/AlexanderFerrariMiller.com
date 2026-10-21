@@ -46,12 +46,14 @@ def main():
     git("config","user.name","github-actions[bot]")
     git("config","user.email","41898282+github-actions[bot]@users.noreply.github.com")
     failures=[]
+    skipped_existing=0
     for item in todo:
         ident=str(item["fixed_object_id"])
         if not re.fullmatch(r"[0-9]+",ident):
             raise RuntimeError("Unsafe fixed object ID")
         target=OUT/(ident+".json")
         if target.exists() or list((ROOT/"stories").glob("*/"+ident+".md")):
+            skipped_existing+=1
             continue
         if ledger["estimated_usd"]+RESERVE>BUDGET:
             print("BUDGET STOP",ledger["estimated_usd"],flush=True)
@@ -111,6 +113,7 @@ def main():
             ensure_ascii=False,indent=2)+"\n")
         save(target)
         print("SAVED",ident,"ESTIMATED RESERVED USD",round(ledger["estimated_usd"],4),flush=True)
+    print(f"QUEUE {len(todo)}; REUSED EXISTING {skipped_existing}; NEWLY GENERATED {len(todo)-skipped_existing-len(failures)} (subject to budget stop)",flush=True)
     print("DRAFT RUN FINISHED; FAILED IDS:",",".join(failures) if failures else "none",flush=True)
 if __name__=="__main__":
     main()
