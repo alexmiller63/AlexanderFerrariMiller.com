@@ -4,15 +4,15 @@ on:
   workflow_dispatch:
     inputs:
       weeks:
-        description: 'Optional space-separated weeks, e.g. 24 27 30 (overrides start_week)'
+        description: 'OPTIONAL: Specific weeks separated by spaces (e.g. 24 27 30). Leave BLANK to run from Start week through 53.'
         type: string
         required: false
         default: ''
       start_week:
-        description: 'First unfinished ISO week (2 through 53); previous weeks remain untouched'
+        description: 'START WEEK: Enter 31 to build weeks 31–53. Ignored if specific weeks are entered above.'
         type: number
         required: true
-        default: 2
+        default: 31
 
 permissions:
   contents: write
