@@ -1,4 +1,4 @@
-name: Draft 2026 Sky Notes - $5 Guardrail
+name: Draft 2026 Sky Notes W43-W53 - $3 Guardrail
 # Resume after JSON retry fix; previously committed drafts are retained.
 on:
   push:
@@ -25,10 +25,13 @@ jobs:
       - name: Prepare structural queue without paid calls
         run: |
           mkdir -p generated
-          python tools/audit_story_research.py 2026 1 53 --output generated/story-research-queue-2026.json
-      - name: Draft unverified stories with conservative $5 reservation guardrail
+          python tools/audit_story_research.py 2026 43 53 --output generated/story-research-queue-2026.json
+      - name: Draft W43-W53 unverified stories with $3 reservation guardrail
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          STORY_BUDGET_USD: '3.0'
+          STORY_START_WEEK: '43'
+          STORY_END_WEEK: '53'
         run: python tools/draft_sky_notes_2026.py
       - uses: actions/upload-artifact@v4
         if: always()
