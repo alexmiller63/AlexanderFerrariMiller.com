@@ -454,6 +454,19 @@ def available_stories(fixed_object_id: int) -> list[Story]:
         for story in stories:
             write_public_story(story)
         return stories
+    # Saved AI drafts are readable but remain unverified; curated stories win.
+    draft_path = ROOT / "generated" / "sky-notes-2026-drafts" / f"{fixed_object_id}.json"
+    if draft_path.exists():
+        payload = json.loads(draft_path.read_text(encoding="utf-8"))
+        if (str(payload.get("fixed_object_id")) == str(fixed_object_id)
+                and payload.get("status") == "draft_unverified"
+                and all(isinstance(payload.get(k), str) and payload[k].strip()
+                        for k in ("hed", "dek", "body"))):
+            draft = Story("drafts", fixed_object_id, draft_path,
+                          payload["hed"], payload["dek"], payload["body"],
+                          status="pending")
+            write_public_story(draft)
+            return [draft]
     baseline = baseline_story(fixed_object_id)
     write_public_story(baseline)
     return [baseline]
