@@ -13,7 +13,8 @@
   "object_type": "deep-sky object",
   "guiding_asterisms": [
     {
-      "id": "asterism-northern-cross",
+      "id": "1371",
+      "geometry_key": "asterism-northern-cross",
       "name": "Northern Cross",
       "relationship": "star-hop-anchor",
       "relationship_route_ids": [
@@ -44,7 +45,22 @@
         "source_url": "https://www.astronomy.com/science/open-cluster-m29-spiral-galaxy-ngc-6951-and-the-egg-nebula/",
         "source_role": "verification",
         "supports": "star-hop-method"
-      }
+      },
+      "target_fixed_object_id": 384,
+      "step_identities": [
+        {
+          "type": "asterism",
+          "id": 1371
+        },
+        {
+          "type": "fixed-object",
+          "id": 110
+        },
+        {
+          "type": "fixed-object",
+          "id": 384
+        }
+      ]
     }
   ],
   "source_label": "M29"
