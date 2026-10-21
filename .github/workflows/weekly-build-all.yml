@@ -329,8 +329,8 @@ jobs:
             fi
             git fetch origin main
             git reset --hard origin/main
-            echo "Strict story preflight for $week_label after Calendar generation"
-            python tools/story_audit.py --year "$year" --week "$iso_week" --output generated/story-audit.json --strict
+            echo "Informational story inventory for $week_label after Calendar generation"
+            python tools/story_audit.py --year "$year" --week "$iso_week" --output generated/story-audit.json
             report_progress BUILDING "Ephemeris"
 
             if (( resume_index <= 2 )); then
@@ -396,12 +396,12 @@ jobs:
             git fetch origin main
             git reset --hard origin/main
 
-            # Quality gate: never deploy a week that fails its structural audit.
+            # Pending stories must not block chart generation or deployment. Publication retains its strict quality gate.
             report_progress BUILDING "Story structural audit"
-            # Re-run the audit even on resumed builds: never trust an old pass.
-            python tools/story_audit.py --year "$year" --week "$iso_week" --output generated/story-audit.json --strict
+            # Re-run the audit even on resumed builds to report outstanding story work.
+            python tools/story_audit.py --year "$year" --week "$iso_week" --output generated/story-audit.json
             completed_stages=$((completed_stages + 1))
-            report_progress FINISHED "Story structural audit" "Automated structural checks passed; editorial approval remains separate"
+            report_progress FINISHED "Story structural audit" "Story structure inventoried; pending editorial work remains separate"
 
             report_progress BUILDING "Deployment"
             # Deployment is best-effort: site deployment failures must never discard
@@ -409,7 +409,7 @@ jobs:
             if run_stage deploy.yml; then
               deployment_state="deployment succeeded"
               git fetch origin main
-              report_progress COMPLETE "Seven generator stages and structural audit finished; deployment succeeded; editorial approval not implied — SOURCE_SHA256=$(source_fingerprint)"
+              report_progress COMPLETE "Seven generator stages and story inventory finished; deployment succeeded; editorial approval not implied — SOURCE_SHA256=$(source_fingerprint)"
             else
               deployment_state="deployment failed after retries; continuing build series"
               report_progress DEPLOYMENT_DEFERRED "Deployment" "$deployment_state — generated outputs and structural audit are preserved; deployment can be retried separately"
