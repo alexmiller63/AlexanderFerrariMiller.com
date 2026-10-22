@@ -61,6 +61,13 @@ layout: null
 
 
 def build() -> None:
+    front_matter = (ROOT / 'front-matter.md').read_text(encoding='utf-8')
+    if '{%' in front_matter or '{{' in front_matter:
+        raise ValueError('Unexpected Liquid syntax in front-matter.md')
+    front_contents = ('{% capture manuscript %}\n' + front_matter
+                      + '\n{% endcapture %}\n<article class="prose manuscript">\n'
+                      + '{{ manuscript | markdownify }}\n</article>')
+    (OUT / 'front-matter.html').write_text(shell('Front Matter', front_contents), encoding='utf-8')
     cards = []
     manuscripts = [entry for _, entries in SECTIONS for entry in entries]
     for index, (slug, title, description) in enumerate(manuscripts):
@@ -92,6 +99,7 @@ def build() -> None:
         cards.append(group + '</div></section>')
     intro = '''<section class="hero"><p class="eyebrow">Alexander Ferrari Miller</p><h1>Text and Stories</h1><p class="tagline">The ideas, experiences, and questions behind the Star Almanack.</p></section>
 <p class="reading-intro">Read the existing manuscripts in sequence, or choose a piece below. These texts retain their original wording, including earlier descriptions of features and working calculation notes.</p>
+<p class="reading-intro"><a href="front-matter.html">Open the reconstructed Front Matter</a> for the collected opening material, symbol key, conventions, and recovery notes.</p>
 '''
     (OUT / 'reading.html').write_text(shell('Text and Stories', intro + '\n'.join(cards)), encoding='utf-8')
     print(f'Published {len(manuscripts)} manuscripts and the reading index.')
