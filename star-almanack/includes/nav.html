@@ -1,7 +1,7 @@
 {% assign star_url = page.url %}
 <nav class="star-nav" aria-label="Star Almanack navigation">
   <a class="star-site-mark" href="index.html">Star Almanack</a>
-  <details class="star-menu">
+  <details class="star-menu" open>
     <summary>Menu</summary>
     <div class="star-menu-links">
   <a href="index.html" {% if star_url == "/star-almanack/" or star_url == "/star-almanack/index.html" %}aria-current="page"{% endif %}>Star Almanack Home</a>
@@ -14,3 +14,12 @@
     </div>
   </details>
 </nav>
+<script>
+(() => {
+  const menu = document.querySelector('.star-menu');
+  const mobile = window.matchMedia('(max-width: 700px)');
+  const updateMenu = () => { menu.open = !mobile.matches; };
+  updateMenu();
+  mobile.addEventListener('change', updateMenu);
+})();
+</script>
