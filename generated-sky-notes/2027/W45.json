@@ -1,0 +1,2953 @@
+{
+  "week": "W45",
+  "title": "Observer’s guide for ISO 2027-W45",
+  "status": "generated",
+  "planetary_source": "weekly-ephemeris-2027.csv",
+  "planetary_coordinate": "geocentric tropical ecliptic longitude; Monday 00:00 UTC",
+  "fixed_sky": [
+    {
+      "fixed_object_id": 411,
+      "type": "deep-sky",
+      "name": "OCL 269"
+    },
+    {
+      "fixed_object_id": 412,
+      "type": "deep-sky",
+      "name": "NGC 7814"
+    },
+    {
+      "fixed_object_id": 1,
+      "type": "star",
+      "name": "Alpheratz",
+      "constellation": "And"
+    },
+    {
+      "fixed_object_id": 2,
+      "type": "star",
+      "name": "Caph",
+      "constellation": "Cas"
+    },
+    {
+      "fixed_object_id": 128,
+      "type": "deep-sky",
+      "name": "Bowtie Nebula"
+    },
+    {
+      "fixed_object_id": 129,
+      "type": "deep-sky",
+      "name": "NGC 55"
+    }
+  ],
+  "planet_relations": [
+    {
+      "kind": "planet-star-longitude",
+      "planet": "Uranus",
+      "planet_longitude_deg": 68.833,
+      "star": "Aldebaran",
+      "constellation": "Tau",
+      "star_fixed_object_id": 25,
+      "star_ecliptic_longitude_deg": 69.789,
+      "star_ecliptic_latitude_deg": -5.467,
+      "longitude_separation_deg": 1.0,
+      "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+      "planet_ra_deg": 66.724973,
+      "planet_dec_deg": 21.619677
+    },
+    {
+      "kind": "planet-star-longitude",
+      "planet": "Venus",
+      "planet_longitude_deg": 248.3,
+      "star": "Antares",
+      "constellation": "Sco",
+      "star_fixed_object_id": 73,
+      "star_ecliptic_longitude_deg": 249.762,
+      "star_ecliptic_latitude_deg": -4.57,
+      "longitude_separation_deg": 1.5,
+      "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+      "planet_ra_deg": 246.022944,
+      "planet_dec_deg": -22.259428
+    },
+    {
+      "kind": "planet-star-longitude",
+      "planet": "Mercury",
+      "planet_longitude_deg": 207.283,
+      "star": "Spica",
+      "constellation": "Vir",
+      "star_fixed_object_id": 60,
+      "star_ecliptic_longitude_deg": 203.841,
+      "star_ecliptic_latitude_deg": -2.054,
+      "longitude_separation_deg": 3.4,
+      "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+      "planet_ra_deg": 205.751598,
+      "planet_dec_deg": -8.317031
+    }
+  ],
+  "planet_finder_relations": [
+    {
+      "kind": "planet-star-longitude",
+      "planet": "Moon",
+      "planet_longitude_deg": 333.4,
+      "star": "Sadalmelik",
+      "constellation": "Aqr",
+      "star_fixed_object_id": 1189,
+      "star_ecliptic_longitude_deg": 333.352,
+      "star_ecliptic_latitude_deg": 10.662,
+      "longitude_separation_deg": 0.0,
+      "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+      "finder_only": true,
+      "planet_ra_deg": 334.104123,
+      "planet_dec_deg": -8.24548,
+      "sky_separation_deg": 8.4
+    },
+    {
+      "kind": "planet-star-longitude",
+      "planet": "Mercury",
+      "planet_longitude_deg": 207.283,
+      "star": "Spica",
+      "constellation": "Vir",
+      "star_fixed_object_id": 60,
+      "star_ecliptic_longitude_deg": 203.841,
+      "star_ecliptic_latitude_deg": -2.054,
+      "longitude_separation_deg": 3.4,
+      "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+      "finder_only": true,
+      "planet_ra_deg": 205.751598,
+      "planet_dec_deg": -8.317031,
+      "sky_separation_deg": 5.2
+    },
+    {
+      "kind": "planet-star-longitude",
+      "planet": "Venus",
+      "planet_longitude_deg": 248.3,
+      "star": "Antares",
+      "constellation": "Sco",
+      "star_fixed_object_id": 73,
+      "star_ecliptic_longitude_deg": 249.762,
+      "star_ecliptic_latitude_deg": -4.57,
+      "longitude_separation_deg": 1.5,
+      "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+      "finder_only": true,
+      "planet_ra_deg": 246.022944,
+      "planet_dec_deg": -22.259428,
+      "sky_separation_deg": 4.3
+    },
+    {
+      "kind": "planet-star-longitude",
+      "planet": "Mars",
+      "planet_longitude_deg": 256.717,
+      "star": "Antares",
+      "constellation": "Sco",
+      "star_fixed_object_id": 73,
+      "star_ecliptic_longitude_deg": 249.762,
+      "star_ecliptic_latitude_deg": -4.57,
+      "longitude_separation_deg": 7.0,
+      "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+      "finder_only": true,
+      "planet_ra_deg": 255.041264,
+      "planet_dec_deg": -23.630835,
+      "sky_separation_deg": 7.5
+    },
+    {
+      "kind": "planet-star-longitude",
+      "planet": "Ceres",
+      "planet_longitude_deg": 195.017,
+      "star": "Spica",
+      "constellation": "Vir",
+      "star_fixed_object_id": 60,
+      "star_ecliptic_longitude_deg": 203.841,
+      "star_ecliptic_latitude_deg": -2.054,
+      "longitude_separation_deg": 8.8,
+      "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+      "finder_only": true,
+      "planet_ra_deg": 196.499423,
+      "planet_dec_deg": 1.489139,
+      "sky_separation_deg": 13.5,
+      "finder_difficulty": "difficult",
+      "finder_note": "Ceres is not easy to find this week."
+    },
+    {
+      "kind": "planet-star-longitude",
+      "planet": "Jupiter",
+      "planet_longitude_deg": 171.483,
+      "star": "Zavijava",
+      "constellation": "Vir",
+      "star_fixed_object_id": 934,
+      "star_ecliptic_longitude_deg": 177.164,
+      "star_ecliptic_latitude_deg": 0.694,
+      "longitude_separation_deg": 5.7,
+      "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+      "finder_only": true,
+      "planet_ra_deg": 172.229578,
+      "planet_dec_deg": 4.497694,
+      "sky_separation_deg": 6.1
+    },
+    {
+      "kind": "planet-star-longitude",
+      "planet": "Saturn",
+      "planet_longitude_deg": 22.8,
+      "star": "Alrescha",
+      "constellation": "Psc",
+      "star_fixed_object_id": 654,
+      "star_ecliptic_longitude_deg": 29.379,
+      "star_ecliptic_latitude_deg": -9.061,
+      "longitude_separation_deg": 6.6,
+      "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+      "finder_only": true,
+      "planet_ra_deg": 21.761084,
+      "planet_dec_deg": 6.16033,
+      "sky_separation_deg": 9.4
+    },
+    {
+      "kind": "planet-star-longitude",
+      "planet": "Uranus",
+      "planet_longitude_deg": 68.833,
+      "star": "Aldebaran",
+      "constellation": "Tau",
+      "star_fixed_object_id": 25,
+      "star_ecliptic_longitude_deg": 69.789,
+      "star_ecliptic_latitude_deg": -5.467,
+      "longitude_separation_deg": 1.0,
+      "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+      "finder_only": true,
+      "planet_ra_deg": 66.724973,
+      "planet_dec_deg": 21.619677,
+      "sky_separation_deg": 5.5
+    },
+    {
+      "kind": "planet-star-longitude",
+      "planet": "Neptune",
+      "planet_longitude_deg": 4.233,
+      "star": "Fumalsamakah",
+      "constellation": "Psc",
+      "star_fixed_object_id": 573,
+      "star_ecliptic_longitude_deg": 348.585,
+      "star_ecliptic_latitude_deg": 9.053,
+      "longitude_separation_deg": 15.6,
+      "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+      "finder_only": true,
+      "planet_ra_deg": 4.102671,
+      "planet_dec_deg": 0.190096,
+      "sky_separation_deg": 18.5,
+      "finder_difficulty": "difficult",
+      "finder_note": "Neptune is not easy to find this week."
+    },
+    {
+      "kind": "planet-star-longitude",
+      "planet": "Pluto",
+      "planet_longitude_deg": 304.85,
+      "star": "Dabih",
+      "constellation": "Cap",
+      "star_fixed_object_id": 1152,
+      "star_ecliptic_longitude_deg": 304.047,
+      "star_ecliptic_latitude_deg": 4.589,
+      "longitude_separation_deg": 0.8,
+      "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+      "finder_only": true,
+      "planet_ra_deg": 308.030324,
+      "planet_dec_deg": -23.759637,
+      "sky_separation_deg": 9.4
+    }
+  ],
+  "note": "ISO 2027-W45 runs from November 8 through November 14. Uranus is about 1.0° in ecliptic longitude from Aldebaran in Taurus. Venus is about 1.5° in ecliptic longitude from Antares in Scorpius.\n\n**Naked eye:** 🌕 Full Moon · Frost Moon — 03:25:56 UTC. Bright moonlight favors prominent stars and planets while reducing contrast on faint deep-sky objects. Use Alpheratz, Caph as the week’s fixed-sky framework.\n\n**Planets:** Moon: Naked eye; magnitude -10.7; direct motion; 65.6% illuminated. Monday 00:00 UTC snapshot. Opposition in ecliptic longitude Nov 14 03:25 UTC. Conjunction with Saturn in ecliptic longitude Nov 11 23:16 UTC. Conjunction with Neptune in ecliptic longitude Nov 10 12:42 UTC. Mercury: In solar glare; magnitude -0.7; direct motion; 70.7% illuminated. Monday 00:00 UTC snapshot. Venus: Naked eye; magnitude -3.9; direct motion; 92.4% illuminated. Below the horizon at 21:00 local apparent solar time, 45°N. Monday 00:00 UTC snapshot. Mars: Naked eye; magnitude 1.3; direct motion; 96.7% illuminated. Below the horizon at 21:00 local apparent solar time, 45°N. Monday 00:00 UTC snapshot. Ceres: Telescope; magnitude 8.8; direct motion; 99.0% illuminated. Below the horizon at 21:00 local apparent solar time, 45°N. Monday 00:00 UTC snapshot. Jupiter: Naked eye; magnitude -1.8; direct motion; 99.5% illuminated. Below the horizon at 21:00 local apparent solar time, 45°N. Monday 00:00 UTC snapshot. Saturn: Naked eye; magnitude 0.2; retrograde motion; 100.0% illuminated. Monday 00:00 UTC snapshot. Conjunction with Moon in ecliptic longitude Nov 11 23:16 UTC. Uranus: Binoculars; magnitude 5.6; retrograde motion; 100.0% illuminated. Monday 00:00 UTC snapshot. Neptune: Telescope; magnitude 7.7; retrograde motion; 100.0% illuminated. Monday 00:00 UTC snapshot. Conjunction with Moon in ecliptic longitude Nov 10 12:42 UTC. Pluto: Substantial telescope; magnitude 14.6; direct motion; 100.0% illuminated. Monday 00:00 UTC snapshot.\n\n**Binoculars:** No fixed-sky Calendar object is classified for binocular observing this week.\n\n**Small telescope:** OCL 269: consult its dedicated finder and observing story for equipment guidance; NGC 7814: consult its dedicated finder and observing story for equipment guidance; Bowtie Nebula: consult its dedicated finder and observing story for equipment guidance; NGC 55: consult its dedicated finder and observing story for equipment guidance\n\n**Substantial telescope:** No fixed-sky Calendar object is classified as requiring a substantial telescope this week.\n\n",
+  "descriptors": [
+    {
+      "schema_version": 1,
+      "id": "1249",
+      "type": "solar-system-object",
+      "name": "Sun",
+      "summary": "Solar-System object tracked by the Star Almanack weekly ephemeris and Planet Finder",
+      "representation": {
+        "machine": "./1249.json",
+        "human_source": "summary"
+      }
+    },
+    {
+      "schema_version": 1,
+      "id": "1250",
+      "type": "planet",
+      "name": "Mercury",
+      "summary": "Solar-System object tracked by the Star Almanack weekly ephemeris and Planet Finder",
+      "representation": {
+        "machine": "./1250.json",
+        "human_source": "summary"
+      }
+    },
+    {
+      "schema_version": 1,
+      "id": "1251",
+      "type": "planet",
+      "name": "Venus",
+      "summary": "Solar-System object tracked by the Star Almanack weekly ephemeris and Planet Finder",
+      "representation": {
+        "machine": "./1251.json",
+        "human_source": "summary"
+      }
+    },
+    {
+      "schema_version": 1,
+      "id": "1252",
+      "type": "planet",
+      "name": "Earth",
+      "summary": "Solar-System object tracked by the Star Almanack weekly ephemeris and Planet Finder",
+      "representation": {
+        "machine": "./1252.json",
+        "human_source": "summary"
+      }
+    },
+    {
+      "schema_version": 1,
+      "id": "1253",
+      "type": "solar-system-object",
+      "name": "Moon",
+      "summary": "Solar-System object tracked by the Star Almanack weekly ephemeris and Planet Finder",
+      "representation": {
+        "machine": "./1253.json",
+        "human_source": "summary"
+      }
+    },
+    {
+      "schema_version": 1,
+      "id": "1254",
+      "type": "planet",
+      "name": "Mars",
+      "summary": "Solar-System object tracked by the Star Almanack weekly ephemeris and Planet Finder",
+      "representation": {
+        "machine": "./1254.json",
+        "human_source": "summary"
+      }
+    },
+    {
+      "schema_version": 1,
+      "id": "1255",
+      "type": "solar-system-object",
+      "name": "Ceres",
+      "summary": "Solar-System object tracked by the Star Almanack weekly ephemeris and Planet Finder",
+      "representation": {
+        "machine": "./1255.json",
+        "human_source": "summary"
+      }
+    },
+    {
+      "schema_version": 1,
+      "id": "1256",
+      "type": "planet",
+      "name": "Jupiter",
+      "summary": "Solar-System object tracked by the Star Almanack weekly ephemeris and Planet Finder",
+      "representation": {
+        "machine": "./1256.json",
+        "human_source": "summary"
+      }
+    },
+    {
+      "schema_version": 1,
+      "id": "1257",
+      "type": "planet",
+      "name": "Saturn",
+      "summary": "Solar-System object tracked by the Star Almanack weekly ephemeris and Planet Finder",
+      "representation": {
+        "machine": "./1257.json",
+        "human_source": "summary"
+      }
+    },
+    {
+      "schema_version": 1,
+      "id": "1258",
+      "type": "planet",
+      "name": "Uranus",
+      "summary": "Solar-System object tracked by the Star Almanack weekly ephemeris and Planet Finder",
+      "representation": {
+        "machine": "./1258.json",
+        "human_source": "summary"
+      }
+    },
+    {
+      "schema_version": 1,
+      "id": "1259",
+      "type": "planet",
+      "name": "Neptune",
+      "summary": "Solar-System object tracked by the Star Almanack weekly ephemeris and Planet Finder",
+      "representation": {
+        "machine": "./1259.json",
+        "human_source": "summary"
+      }
+    },
+    {
+      "schema_version": 1,
+      "id": "1260",
+      "type": "solar-system-object",
+      "name": "Pluto",
+      "summary": "Solar-System object tracked by the Star Almanack weekly ephemeris and Planet Finder",
+      "representation": {
+        "machine": "./1260.json",
+        "human_source": "summary"
+      }
+    },
+    {
+      "schema_version": 1,
+      "id": "411",
+      "type": "deep-sky-object",
+      "name": "OCL 269",
+      "summary": "deep-sky object selected as a weekly fixed-sky observing target",
+      "representation": {
+        "machine": "./411.json",
+        "human_source": "summary",
+        "human": "/stories/drafts/411.html"
+      },
+      "catalog_name": "OCL 269",
+      "object_type": "deep-sky object",
+      "source_label": "OCL 269"
+    },
+    {
+      "schema_version": 1,
+      "id": "412",
+      "type": "deep-sky-object",
+      "name": "NGC 7814",
+      "summary": "deep-sky object selected as a weekly fixed-sky observing target",
+      "representation": {
+        "machine": "./412.json",
+        "human_source": "summary",
+        "human": "/stories/drafts/412.html"
+      },
+      "catalog_name": "NGC 7814",
+      "object_type": "deep-sky object",
+      "source_label": "NGC 7814"
+    },
+    {
+      "schema_version": 1,
+      "id": "1",
+      "type": "star",
+      "name": "Alpheratz",
+      "summary": "bright star in Andromeda used as a fixed-sky reference",
+      "representation": {
+        "machine": "./1.json",
+        "human_source": "summary",
+        "human": "/stories/alpha-stars/1.html"
+      },
+      "constellation_abbreviation": "And",
+      "constellation": "Andromeda",
+      "position": {
+        "ra_deg": 2.096865,
+        "dec_deg": 29.090432,
+        "ecliptic_longitude_deg": 14.308429,
+        "ecliptic_latitude_deg": 25.680463
+      },
+      "representative_visual_magnitude": 2.07,
+      "guiding_asterisms": [
+        {
+          "id": "1368",
+          "geometry_key": "asterism-great-square-of-pegasus",
+          "name": "Great Square of Pegasus",
+          "relationship": "visual-member",
+          "provenance": {
+            "source": "NASA",
+            "source_url": "https://science.nasa.gov/solar-system/skywatching/night-sky-network/connecting-the-dots-with-asterisms/",
+            "source_role": "verification",
+            "supports": "visual-membership"
+          }
+        }
+      ]
+    },
+    {
+      "schema_version": 1,
+      "id": "1273",
+      "type": "constellation",
+      "name": "Andromeda",
+      "summary": "constellation used by Star Almanack to organize fixed-sky objects and finder geometry",
+      "representation": {
+        "machine": "./1273.json",
+        "human_source": "summary"
+      },
+      "abbreviation": "And"
+    },
+    {
+      "schema_version": 1,
+      "id": "2",
+      "type": "star",
+      "name": "Caph",
+      "summary": "bright star in Cassiopeia used as a fixed-sky reference",
+      "representation": {
+        "machine": "./2.json",
+        "human_source": "summary",
+        "human": "/stories/drafts/2.html"
+      },
+      "constellation_abbreviation": "Cas",
+      "constellation": "Cassiopeia",
+      "position": {
+        "ra_deg": 2.293305,
+        "dec_deg": 59.14978,
+        "ecliptic_longitude_deg": 35.115878,
+        "ecliptic_latitude_deg": 51.215369
+      },
+      "representative_visual_magnitude": 2.28,
+      "guiding_asterisms": [
+        {
+          "id": "1364",
+          "geometry_key": "asterism-cassiopeia-s-w",
+          "name": "Cassiopeia's W",
+          "relationship": "visual-member",
+          "provenance": {
+            "source": "Astronomical League",
+            "source_url": "https://www.astroleague.org/wp-content/uploads/2025/12/Asterism_List_20251223.pdf",
+            "source_role": "verification",
+            "supports": "visual-membership"
+          }
+        }
+      ]
+    },
+    {
+      "schema_version": 1,
+      "id": "1290",
+      "type": "constellation",
+      "name": "Cassiopeia",
+      "summary": "constellation used by Star Almanack to organize fixed-sky objects and finder geometry",
+      "representation": {
+        "machine": "./1290.json",
+        "human_source": "summary"
+      },
+      "abbreviation": "Cas"
+    },
+    {
+      "schema_version": 1,
+      "id": "128",
+      "type": "deep-sky-object",
+      "name": "Bowtie Nebula",
+      "summary": "deep-sky object selected as a weekly fixed-sky observing target",
+      "representation": {
+        "machine": "./128.json",
+        "human_source": "summary",
+        "human": "/stories/drafts/128.html"
+      },
+      "catalog_name": "Bowtie Nebula",
+      "object_type": "deep-sky object",
+      "source_label": "Bowtie Nebula"
+    },
+    {
+      "schema_version": 1,
+      "id": "129",
+      "type": "deep-sky-object",
+      "name": "NGC 55",
+      "summary": "deep-sky object selected as a weekly fixed-sky observing target",
+      "representation": {
+        "machine": "./129.json",
+        "human_source": "summary",
+        "human": "/stories/drafts/129.html"
+      },
+      "catalog_name": "NGC 55",
+      "object_type": "deep-sky object",
+      "source_label": "NGC 55"
+    },
+    {
+      "schema_version": 1,
+      "id": "25",
+      "type": "star",
+      "name": "Aldebaran",
+      "summary": "bright star in Taurus used as a fixed-sky reference",
+      "representation": {
+        "machine": "./25.json",
+        "human_source": "summary",
+        "human": "/stories/alpha-stars/25.html"
+      },
+      "constellation_abbreviation": "Tau",
+      "constellation": "Taurus",
+      "position": {
+        "ra_deg": 68.980155,
+        "dec_deg": 16.509301,
+        "ecliptic_longitude_deg": 69.789181,
+        "ecliptic_latitude_deg": -5.467327
+      },
+      "representative_visual_magnitude": 0.87,
+      "guiding_asterisms": [
+        {
+          "id": "1376",
+          "geometry_key": "asterism-hyades-v-of-taurus",
+          "name": "Hyades / V of Taurus",
+          "relationship": "visual-member",
+          "provenance": {
+            "source": "Astronomy Magazine",
+            "source_url": "https://www.astronomy.com/astronomy-for-beginners/asterisms-hunt-the-night-skys-faux-constellations/",
+            "source_role": "verification",
+            "supports": "visual-membership"
+          }
+        },
+        {
+          "id": "1380",
+          "geometry_key": "asterism-winter-hexagon-winter-circle",
+          "name": "Winter Hexagon / Winter Circle",
+          "relationship": "visual-member",
+          "provenance": {
+            "source": "NASA",
+            "source_url": "https://science.nasa.gov/solar-system/skywatching/night-sky-network/connecting-the-dots-with-asterisms/",
+            "source_role": "verification",
+            "supports": "visual-membership"
+          }
+        },
+        {
+          "id": "1365",
+          "geometry_key": "asterism-orion-s-belt",
+          "name": "Orion's Belt",
+          "relationship": "star-hop-anchor",
+          "relationship_route_ids": [
+            "orions-belt-aldebaran"
+          ],
+          "provenance": {
+            "source": "NASA",
+            "source_url": "https://science.nasa.gov/image-article/apod-2025-november-20-alnitak-alnilam-mintaka/",
+            "source_role": "verification",
+            "supports": "asterism-definition"
+          }
+        }
+      ],
+      "star_hops": [
+        {
+          "id": "orions-belt-aldebaran",
+          "target_type": "star",
+          "target": "Aldebaran",
+          "steps": [
+            "Orion's Belt",
+            "Aldebaran",
+            "Hyades / V of Taurus"
+          ],
+          "instruction": "Use Orion's three Belt stars as a pointer westward toward orange Aldebaran and the Hyades V.",
+          "instruction_authorship": "Star Almanack original wording",
+          "provenance": {
+            "source": "NASA Night Sky Network",
+            "source_url": "https://science.nasa.gov/solar-system/skywatching/night-sky-network/spot-the-young-stars-of-the-hyades-and-pleiades/",
+            "source_role": "verification",
+            "supports": "star-hop-method"
+          },
+          "target_fixed_object_id": 25,
+          "step_identities": [
+            {
+              "type": "asterism",
+              "id": 1365
+            },
+            {
+              "type": "fixed-object",
+              "id": 25
+            },
+            {
+              "type": "asterism",
+              "id": 1376
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "schema_version": 1,
+      "id": "1351",
+      "type": "constellation",
+      "name": "Taurus",
+      "summary": "constellation used by Star Almanack to organize fixed-sky objects and finder geometry",
+      "representation": {
+        "machine": "./1351.json",
+        "human_source": "summary"
+      },
+      "abbreviation": "Tau"
+    },
+    {
+      "schema_version": 1,
+      "id": "73",
+      "type": "star",
+      "name": "Antares",
+      "summary": "bright star in Scorpius used as a fixed-sky reference",
+      "representation": {
+        "machine": "./73.json",
+        "human_source": "summary",
+        "human": "/stories/drafts/73.html"
+      },
+      "constellation_abbreviation": "Sco",
+      "constellation": "Scorpius",
+      "position": {
+        "ra_deg": 247.35192,
+        "dec_deg": -26.432002,
+        "ecliptic_longitude_deg": 249.762297,
+        "ecliptic_latitude_deg": -4.569943
+      },
+      "representative_visual_magnitude": 1.06,
+      "guiding_asterisms": [
+        {
+          "id": "1373",
+          "geometry_key": "asterism-scorpius-s-fishhook",
+          "name": "Scorpius's Fishhook",
+          "relationship": "visual-member",
+          "provenance": {
+            "source": "Astronomical League",
+            "source_url": "https://www.astroleague.org/wp-content/uploads/2025/12/Asterism_List_20251223.pdf",
+            "source_role": "verification",
+            "supports": "visual-membership"
+          }
+        }
+      ]
+    },
+    {
+      "schema_version": 1,
+      "id": "1345",
+      "type": "constellation",
+      "name": "Scorpius",
+      "summary": "constellation used by Star Almanack to organize fixed-sky objects and finder geometry",
+      "representation": {
+        "machine": "./1345.json",
+        "human_source": "summary"
+      },
+      "abbreviation": "Sco"
+    },
+    {
+      "schema_version": 1,
+      "id": "60",
+      "type": "star",
+      "name": "Spica",
+      "summary": "bright star in Virgo used as a fixed-sky reference",
+      "representation": {
+        "machine": "./60.json",
+        "human_source": "summary",
+        "human": "/stories/drafts/60.html"
+      },
+      "constellation_abbreviation": "Vir",
+      "constellation": "Virgo",
+      "position": {
+        "ra_deg": 201.298245,
+        "dec_deg": -11.161322,
+        "ecliptic_longitude_deg": 203.841357,
+        "ecliptic_latitude_deg": -2.054492
+      },
+      "representative_visual_magnitude": 0.98,
+      "guiding_asterisms": [
+        {
+          "id": "1381",
+          "geometry_key": "asterism-spring-triangle",
+          "name": "Spring Triangle",
+          "relationship": "visual-member",
+          "provenance": {
+            "source": "Sky & Telescope",
+            "source_url": "https://skyandtelescope.org/astronomy-news/observing-news/this-weeks-sky-at-a-glance-may-1-9-3/",
+            "source_role": "verification",
+            "supports": "visual-membership"
+          }
+        },
+        {
+          "id": "1382",
+          "geometry_key": "asterism-great-diamond",
+          "name": "Great Diamond",
+          "relationship": "visual-member",
+          "provenance": {
+            "source": "NASA",
+            "source_url": "https://science.nasa.gov/solar-system/skywatching/night-sky-network/connecting-the-dots-with-asterisms/",
+            "source_role": "verification",
+            "supports": "visual-membership"
+          }
+        },
+        {
+          "id": "1362",
+          "geometry_key": "asterism-big-dipper",
+          "name": "Big Dipper",
+          "relationship": "star-hop-anchor",
+          "relationship_route_ids": [
+            "big-dipper-arcturus-spica"
+          ],
+          "provenance": {
+            "source": "Astronomical League",
+            "source_url": "https://www.astroleague.org/wp-content/uploads/2025/12/Asterism_List_20251223.pdf",
+            "source_role": "verification",
+            "supports": "asterism-definition"
+          }
+        }
+      ],
+      "star_hops": [
+        {
+          "id": "big-dipper-arcturus-spica",
+          "target_type": "star",
+          "target": "Spica",
+          "steps": [
+            "Big Dipper",
+            "Arcturus",
+            "Spica"
+          ],
+          "instruction": "Trace the curve of the Big Dipper's handle to Arcturus, then continue the same sweep to Spica.",
+          "instruction_authorship": "Star Almanack original wording",
+          "provenance": {
+            "source": "NASA Jet Propulsion Laboratory",
+            "source_url": "https://www.jpl.nasa.gov/videos/whats-up-for-april-2011/",
+            "source_role": "verification",
+            "supports": "star-hop-method"
+          },
+          "target_fixed_object_id": 60,
+          "step_identities": [
+            {
+              "type": "asterism",
+              "id": 1362
+            },
+            {
+              "type": "fixed-object",
+              "id": 63
+            },
+            {
+              "type": "fixed-object",
+              "id": 60
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "schema_version": 1,
+      "id": "1359",
+      "type": "constellation",
+      "name": "Virgo",
+      "summary": "constellation used by Star Almanack to organize fixed-sky objects and finder geometry",
+      "representation": {
+        "machine": "./1359.json",
+        "human_source": "summary"
+      },
+      "abbreviation": "Vir"
+    },
+    {
+      "schema_version": 1,
+      "id": "ecliptic-longitude",
+      "type": "observing-concept",
+      "name": "ecliptic longitude",
+      "summary": "angular position measured along the ecliptic, used here for conservative weekly Solar-System comparisons",
+      "representation": {
+        "machine": "./ecliptic-longitude.json",
+        "human_source": "summary"
+      }
+    },
+    {
+      "schema_version": 1,
+      "id": "zodiac",
+      "type": "observing-concept",
+      "name": "zodiac",
+      "summary": "the band of constellations along the ecliptic used to orient Solar-System objects",
+      "representation": {
+        "machine": "./zodiac.json",
+        "human_source": "summary"
+      }
+    },
+    {
+      "schema_version": 1,
+      "id": "lunar-full-moon",
+      "type": "lunar-highlight",
+      "name": "Full Moon",
+      "summary": "Astronomical lunar phase near opposition to the Sun.",
+      "representation": {
+        "machine": "./lunar-full-moon.json",
+        "human_source": "summary"
+      },
+      "body": "Full Moon is the lunar phase in which the Moon and Sun are approximately opposite in geocentric ecliptic longitude, so the lunar disk is fully illuminated as seen from Earth."
+    }
+  ],
+  "calendar_fixed_object_ids": [
+    411,
+    412,
+    1,
+    2,
+    128,
+    129
+  ],
+  "story_candidates": [
+    {
+      "fixed_object_id": 411,
+      "collection": "drafts",
+      "hed": "OCL 269: A Distinguished Open Cluster in Cassiopeia",
+      "dek": "An overview of the notable open cluster located within the constellation Cassiopeia, highlighting its significance and observable features.",
+      "body": "OCL 269 is a prominent open cluster situated in the constellation Cassiopeia, a region renowned for its rich stellar populations and distinctive W-shaped pattern. This cluster, catalogued within the modifications of the New General Catalogue (NGC), presents an intriguing astrophysical subject due to its position and structural composition. Its coordinates place it at approximately 23.96 hours of right ascension and a declination of about 56.71 degrees north, making it accessible to observers in the northern hemisphere with medium to large telescopes.\n\nAs an open cluster, OCL 269 consists of a loosely bound group of stars that share a common origin, having formed from the same molecular cloud. Such clusters are key to understanding stellar evolution and the dynamics within our galaxy. While detailed studies are limited, the cluster's identification as a physical object candidate suggests that it exhibits characteristics consistent with gravitationally bound stellar groupings.\n\nWithin the context of Cassiopeia’s rich stellar environment, OCL 269 contributes to the galaxy's diverse tapestry of stellar populations. Observers equipped with appropriate instrumentation may distinguish its members against the backdrop of the Milky Way’s dense star fields. The cluster's apparent magnitude, spatial extent, and stellar composition make it an interesting target for both amateur and professional astronomers alike.\n\nStudying this cluster helps astronomers refine models of star formation, cluster dispersal, and the dynamic processes governing stellar groupings over cosmic timescales. Its location in the northern sky offers ample opportunity for year-round observation, serving as a celestial fixture that beckons astronomers to explore the ongoing story of our galaxy's stellar nurseries.",
+      "url": "/stories/drafts/411.html",
+      "status": "pending"
+    },
+    {
+      "fixed_object_id": 412,
+      "collection": "drafts",
+      "hed": "Exploring the Galaxy in Pegasus: Caldwell 43",
+      "dek": "An overview of Caldwell 43, a notable galaxy in the constellation Pegasus, highlighting its significance and basic characteristics.",
+      "body": "Caldwell 43, also designated as C43 in the Caldwell catalog, is a galaxy nestled within the constellation Pegasus. Its position, approximately right ascension 0.055 hours and declination +16.15 degrees, places it among the numerous celestial objects that astronomers and stargazers study to understand the universe's vast and varied nature. Classified as an SbG galaxy, it belongs to the spiral galaxy family, characterized by its distinct spiral arms emanating from a central bulge, although specific details about its morphology are limited due to observational constraints.\n\nGalaxies like Caldwell 43 serve as essential laboratories for understanding the processes of galactic formation and evolution. Spanning a significant part of the sky in Pegasus, it offers insights into the structural components and stellar populations that populate spiral galaxies. Observations, whether through amateur telescopes or professional instruments, contribute to a broader understanding of its physical characteristics, such as its size, stellar content, and possible interactions with other cosmic structures.\n\nAs a fixed astronomical object, Caldwell 43 remains a constant in the night sky, providing a steady point of reference for astronomers. The study of such objects enhances our knowledge of the local universe, helping refine models of galaxy dynamics and composition. While many details about Caldwell 43 remain under active investigation, its presence exemplifies the richness of the cosmos and the ongoing quest for discovery in the field of astronomy.",
+      "url": "/stories/drafts/412.html",
+      "status": "pending"
+    },
+    {
+      "fixed_object_id": 1,
+      "collection": "alpha-stars",
+      "hed": "Alpheratz — the Andromeda corner of the Great Square",
+      "dek": "Find the star anchoring the Andromeda corner of the Great Square—and discover the extraordinary mercury patterns hidden in its light.",
+      "body": "Throughout human history, people have gazed upward to find patterns among the stars, often attributing stories and meaning to their shimmering points of light. Among these celestial objects, some stars stand out due to their brightness, serving as landmarks guiding observers through the night sky. One such prominent star is HIP 677, more widely known as Alpha Andromedae, which resides in the constellation Andromeda.\n\n\n## The Nature and Position of Alpha Andromedae (HIP 677)\n\nAlpha Andromedae is located within the constellation Andromeda, a figure rooted in Greek mythology. It is positioned near the \"bright corner\" of the Great Square of Pegasus, an asterism composed of four bright stars that form a large square shape across the sky. This prominent pattern is easily recognizable and serves as a useful pointer for locating neighboring constellations and celestial objects.\n\nSIMBAD identifies HIP 677 with Alpha Andromedae, also called Alpheratz. Rather than an ordinary star of a generic spectral type, its primary belongs to the chemically peculiar mercury–manganese (HgMn) class. Spectra reveal chemical abundances in the visible atmosphere, not a view of the stellar surface. Astronomers have used those spectra to map regions unusually rich in mercury. [Research: Kochukhov and colleagues, *Nature Physics* (2007)](https://doi.org/10.1038/nphys648).\n\n\n## How to Observe Alpha Andromedae\n\nFor amateur astronomers eager to spot Alpha Andromedae, the star's location provides a straightforward target:\n\n- **Locate the Great Square of Pegasus**: This prominent asterism is visible during autumn in the Northern Hemisphere. It appears as a large, nearly square formation of bright stars overhead or slightly eastward in the evening sky.\n\n- **Identify the Bright Corner**: Alpha Andromedae can be found near one of the square's corners, which is notable for its brightness.\n\n- **Use Star Charts or Apps**: Star maps, astronomy software, or smartphone apps can assist in confirming the star's precise position relative to other stars in the area.\n\n- **Optimal Viewing Conditions**: Under dark skies away from light pollution, Alpha Andromedae is visible to the naked eye, but binoculars or a small telescope can enhance the viewing experience.\n\nThe best time to observe this star is during the months of September through November when Andromeda reaches its highest point in the evening sky, making it most accessible.\n\n\n## Scientific and Cultural Significance\n\nAlpheratz offers an unusual example of stellar atmospheric changes. In a 2007 study, Oleg Kochukhov and collaborators reported seven years of observations of the mercury absorption lines in Alpha Andromedae. By tracking how those lines varied as the star rotated, they reconstructed maps showing that mercury-rich regions changed over the years. The researchers argued that heavy-element diffusion and atmospheric dynamics could produce evolving chemical structures without the magnetic mechanism familiar from sunspots. These are not literal drops of liquid mercury floating above the star: the word *clouds* describes concentrations inferred from stellar spectra. [Source: Kochukhov et al., *Nature Physics* **3**, 526–529 (2007)](https://www.nature.com/articles/nphys648).\n\nFrom a cultural standpoint, recognizing the star's position in relation to the Great Square of Pegasus not only assists in navigation but also deepens appreciation for how ancient civilizations and modern stargazers alike use these patterns to explore the universe.\n\n\n## Exploring Beyond Alpha Andromedae\n\nBy identifying Alpha Andromedae, amateur astronomers can navigate toward other remarkable targets, such as the Andromeda Galaxy (M31)—a giant spiral galaxy and our nearest galactic neighbor. Recognizing the stars of the Great Square as a starting point transforms a simple observation into a gateway for broader cosmic exploration.\n\n\n## Resources for Enthusiasts\n\nFor those interested in further research, the SIMBAD Astronomical Database offers detailed data on HIP 677. Additionally, planetarium software and star charts tailored to your viewing location can enhance your stargazing experience.\n\n**Sources:**\n\n- SIMBAD Astronomical Database: [HIP 677](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%20677)\n\nEmbark on your night sky adventure today by locating Alpha Andromedae near the bright corner of Pegasus. Each time you find such stars, you join a long tradition of human curiosity and discovery—ever reaching toward the universe's infinite mysteries.",
+      "url": "/stories/alpha-stars/1.html",
+      "status": "pending"
+    },
+    {
+      "fixed_object_id": 2,
+      "collection": "drafts",
+      "hed": "Caph: A Bright Star in Cassiopeia's W",
+      "dek": "Illuminating insights into one of the prominent stars of the northern sky.",
+      "body": "Caph, also designated as Beta Cassiopeiae, is a notable star situated in the constellation Cassiopeia. It is a bright star that captures the attention of astronomers and stargazers alike, primarily due to its position and distinctive brightness. With a right ascension of approximately 0.15 hours and a declination near 59.15 degrees, Caph shines prominently in the northern celestial hemisphere.\n\nThis star is part of the well-known asterism, Cassiopeia's W, a recognizable pattern of five bright stars that form a distinctive W shape across the sky. Caph occupies a key role within this shape, contributing to its symmetry and making it easier for observers to locate the constellation in the night sky. As a star that belongs to the Bayer designation system, Caph is identified by the Greek letter Beta, signifying its brightness rank within the constellation.\n\nCaph's significance extends beyond its brightness. It serves as a physical object candidate in astronomical records, meaning it is considered a real, observable star rather than a mythical or obscure feature. Its position has been precisely measured and recorded by various astronomical sources, including the Hipparcos satellite, which provides accurate data for star positions and movements.\n\nAs a luminous star, Caph offers insights into stellar evolution and the characteristics of stellar types visible in our local celestial neighborhood. Its brightness and position make it a useful reference point for both amateur and professional astronomers, aiding in navigation and observational planning.\n\nAlthough detailed information about its spectral type, distance, and size is not specified here, it remains a subject of interest due to its role in the prominent Cassiopeia constellation. This star illustrates the beauty and utility of celestial navigation and highlights the enduring intrigue of the night sky's fixed celestial objects. As such, Caph continues to be a fixture in our ongoing exploration of the cosmos, anchoring the familiar pattern of Cassiopeia in the tapestry of the heavens.",
+      "url": "/stories/drafts/2.html",
+      "status": "pending"
+    },
+    {
+      "fixed_object_id": 128,
+      "collection": "drafts",
+      "hed": "The Bowtie Nebula: A Portrait of Celestial Art in Cepheus",
+      "dek": "An enduring object of intrigue, the Bowtie Nebula exemplifies the beauty and mystery of planetary nebulae.",
+      "body": "Nestled in the constellation Cepheus, the Bowtie Nebula is a striking planetary nebula that captivates both amateur and professional astronomers alike. Its distinctive appearance, reminiscent of a butterfly or bowtie, makes it one of the most recognizable objects in the field of deep-sky observation. The nebula is categorized as a planetary nebula, a remnant of a dying star that has shed its outer layers into space, creating an expanding shell of ionized gas illuminated by the remnant core of the progenitor star. Located at a position approximately near right ascension 00h13m and declination +72°30', the Bowtie Nebula offers a beautiful sight through telescopes, revealing intricate structures and filamentary details. Its surface brightness and unique shape serve as an excellent example of the processes of stellar evolution, illustrating the final stages of a Sun-like star's life cycle. Although precise distances and magnitudes are subject to ongoing studies, the nebula’s prominent appearance in the night sky makes it a favored target for astrophotography and observational astronomy. The nebula's physical emptiness juxtaposed with its complex internal structure symbolizes the transient yet transformative nature of stellar death and rebirth. As part of the broader family of planetary nebulae, which number in the hundreds within our galaxy, the Bowtie Nebula continues to be an object of scientific interest and aesthetic admiration. Its place within the rich tapestry of the cosmos underscores the enduring allure of celestial phenomena that tell the stories of stellar life cycles, offering both a window into the past and a little wonder amidst the vastness of space.",
+      "url": "/stories/drafts/128.html",
+      "status": "pending"
+    },
+    {
+      "fixed_object_id": 129,
+      "collection": "drafts",
+      "hed": "Exploring Caldwell 72: A Subtle Marvel in Sculptor",
+      "dek": "An overview of Caldwell 72, a spiral galaxy candidate situated in the constellation Sculptor, highlighting its significance and observational characteristics.",
+      "body": "Caldwell 72, designated as a small spiral galaxy candidate in the Caldwell Catalog, resides in the constellation Sculptor. Its celestial coordinates place it at a right ascension of approximately 0.2483 hours and a declination of about -39.1833 degrees, positioning it in the southern celestial hemisphere. As a galaxy classified within the spiral bar group, it exhibits features that invite curiosity and detailed observation. However, precise data regarding its distance and magnitude remain limited or unconfirmed, reflecting the challenges inherent in identifying and cataloging faint, diffuse objects in the vast cosmos.\n\nThis galaxy candidate is part of a broader family of objects that astronomers study to understand the structure and evolution of galaxies. Its relatively modest apparent brightness and small angular size make it a subtle, yet intriguing target for dedicated amateur and professional astronomers alike. The potential presence of a central bulge and spiral arms—common traits among barred spirals—could offer insights into galactic dynamics and star formation processes.\n\nObservationally, Caldwell 72 presents a task worthy of keen-eyed astronomers equipped with sufficiently powerful telescopes. Its position in Sculptor allows it to be more accessible from southern latitudes, where clearer views of the constellation facilitate detailed study. As with many such objects cataloged in the Caldwell list, it serves as a reminder of the countless celestial gems that await exploration, each contributing to our broader understanding of the universe.\n\nWhile confirmed details about this galaxy candidate remain sparse, ongoing observations and advancements in instrumentation continue to enhance our ability to investigate these faint cosmic structures. Caldwell 72 epitomizes the enduring allure of the universe's lesser-known constituents, encouraging both amateur stargazers and professional astronomers to look beyond the brightest stars and delve into the subtle complexities that the cosmos presents.",
+      "url": "/stories/drafts/129.html",
+      "status": "pending"
+    }
+  ],
+  "inline_stories": [],
+  "linked_stories": [
+    {
+      "fixed_object_id": 411,
+      "collection": "drafts",
+      "hed": "OCL 269: A Distinguished Open Cluster in Cassiopeia",
+      "dek": "An overview of the notable open cluster located within the constellation Cassiopeia, highlighting its significance and observable features.",
+      "body": "OCL 269 is a prominent open cluster situated in the constellation Cassiopeia, a region renowned for its rich stellar populations and distinctive W-shaped pattern. This cluster, catalogued within the modifications of the New General Catalogue (NGC), presents an intriguing astrophysical subject due to its position and structural composition. Its coordinates place it at approximately 23.96 hours of right ascension and a declination of about 56.71 degrees north, making it accessible to observers in the northern hemisphere with medium to large telescopes.\n\nAs an open cluster, OCL 269 consists of a loosely bound group of stars that share a common origin, having formed from the same molecular cloud. Such clusters are key to understanding stellar evolution and the dynamics within our galaxy. While detailed studies are limited, the cluster's identification as a physical object candidate suggests that it exhibits characteristics consistent with gravitationally bound stellar groupings.\n\nWithin the context of Cassiopeia’s rich stellar environment, OCL 269 contributes to the galaxy's diverse tapestry of stellar populations. Observers equipped with appropriate instrumentation may distinguish its members against the backdrop of the Milky Way’s dense star fields. The cluster's apparent magnitude, spatial extent, and stellar composition make it an interesting target for both amateur and professional astronomers alike.\n\nStudying this cluster helps astronomers refine models of star formation, cluster dispersal, and the dynamic processes governing stellar groupings over cosmic timescales. Its location in the northern sky offers ample opportunity for year-round observation, serving as a celestial fixture that beckons astronomers to explore the ongoing story of our galaxy's stellar nurseries.",
+      "url": "/stories/drafts/411.html",
+      "status": "pending"
+    },
+    {
+      "fixed_object_id": 412,
+      "collection": "drafts",
+      "hed": "Exploring the Galaxy in Pegasus: Caldwell 43",
+      "dek": "An overview of Caldwell 43, a notable galaxy in the constellation Pegasus, highlighting its significance and basic characteristics.",
+      "body": "Caldwell 43, also designated as C43 in the Caldwell catalog, is a galaxy nestled within the constellation Pegasus. Its position, approximately right ascension 0.055 hours and declination +16.15 degrees, places it among the numerous celestial objects that astronomers and stargazers study to understand the universe's vast and varied nature. Classified as an SbG galaxy, it belongs to the spiral galaxy family, characterized by its distinct spiral arms emanating from a central bulge, although specific details about its morphology are limited due to observational constraints.\n\nGalaxies like Caldwell 43 serve as essential laboratories for understanding the processes of galactic formation and evolution. Spanning a significant part of the sky in Pegasus, it offers insights into the structural components and stellar populations that populate spiral galaxies. Observations, whether through amateur telescopes or professional instruments, contribute to a broader understanding of its physical characteristics, such as its size, stellar content, and possible interactions with other cosmic structures.\n\nAs a fixed astronomical object, Caldwell 43 remains a constant in the night sky, providing a steady point of reference for astronomers. The study of such objects enhances our knowledge of the local universe, helping refine models of galaxy dynamics and composition. While many details about Caldwell 43 remain under active investigation, its presence exemplifies the richness of the cosmos and the ongoing quest for discovery in the field of astronomy.",
+      "url": "/stories/drafts/412.html",
+      "status": "pending"
+    },
+    {
+      "fixed_object_id": 1,
+      "collection": "alpha-stars",
+      "hed": "Alpheratz — the Andromeda corner of the Great Square",
+      "dek": "Find the star anchoring the Andromeda corner of the Great Square—and discover the extraordinary mercury patterns hidden in its light.",
+      "body": "Throughout human history, people have gazed upward to find patterns among the stars, often attributing stories and meaning to their shimmering points of light. Among these celestial objects, some stars stand out due to their brightness, serving as landmarks guiding observers through the night sky. One such prominent star is HIP 677, more widely known as Alpha Andromedae, which resides in the constellation Andromeda.\n\n\n## The Nature and Position of Alpha Andromedae (HIP 677)\n\nAlpha Andromedae is located within the constellation Andromeda, a figure rooted in Greek mythology. It is positioned near the \"bright corner\" of the Great Square of Pegasus, an asterism composed of four bright stars that form a large square shape across the sky. This prominent pattern is easily recognizable and serves as a useful pointer for locating neighboring constellations and celestial objects.\n\nSIMBAD identifies HIP 677 with Alpha Andromedae, also called Alpheratz. Rather than an ordinary star of a generic spectral type, its primary belongs to the chemically peculiar mercury–manganese (HgMn) class. Spectra reveal chemical abundances in the visible atmosphere, not a view of the stellar surface. Astronomers have used those spectra to map regions unusually rich in mercury. [Research: Kochukhov and colleagues, *Nature Physics* (2007)](https://doi.org/10.1038/nphys648).\n\n\n## How to Observe Alpha Andromedae\n\nFor amateur astronomers eager to spot Alpha Andromedae, the star's location provides a straightforward target:\n\n- **Locate the Great Square of Pegasus**: This prominent asterism is visible during autumn in the Northern Hemisphere. It appears as a large, nearly square formation of bright stars overhead or slightly eastward in the evening sky.\n\n- **Identify the Bright Corner**: Alpha Andromedae can be found near one of the square's corners, which is notable for its brightness.\n\n- **Use Star Charts or Apps**: Star maps, astronomy software, or smartphone apps can assist in confirming the star's precise position relative to other stars in the area.\n\n- **Optimal Viewing Conditions**: Under dark skies away from light pollution, Alpha Andromedae is visible to the naked eye, but binoculars or a small telescope can enhance the viewing experience.\n\nThe best time to observe this star is during the months of September through November when Andromeda reaches its highest point in the evening sky, making it most accessible.\n\n\n## Scientific and Cultural Significance\n\nAlpheratz offers an unusual example of stellar atmospheric changes. In a 2007 study, Oleg Kochukhov and collaborators reported seven years of observations of the mercury absorption lines in Alpha Andromedae. By tracking how those lines varied as the star rotated, they reconstructed maps showing that mercury-rich regions changed over the years. The researchers argued that heavy-element diffusion and atmospheric dynamics could produce evolving chemical structures without the magnetic mechanism familiar from sunspots. These are not literal drops of liquid mercury floating above the star: the word *clouds* describes concentrations inferred from stellar spectra. [Source: Kochukhov et al., *Nature Physics* **3**, 526–529 (2007)](https://www.nature.com/articles/nphys648).\n\nFrom a cultural standpoint, recognizing the star's position in relation to the Great Square of Pegasus not only assists in navigation but also deepens appreciation for how ancient civilizations and modern stargazers alike use these patterns to explore the universe.\n\n\n## Exploring Beyond Alpha Andromedae\n\nBy identifying Alpha Andromedae, amateur astronomers can navigate toward other remarkable targets, such as the Andromeda Galaxy (M31)—a giant spiral galaxy and our nearest galactic neighbor. Recognizing the stars of the Great Square as a starting point transforms a simple observation into a gateway for broader cosmic exploration.\n\n\n## Resources for Enthusiasts\n\nFor those interested in further research, the SIMBAD Astronomical Database offers detailed data on HIP 677. Additionally, planetarium software and star charts tailored to your viewing location can enhance your stargazing experience.\n\n**Sources:**\n\n- SIMBAD Astronomical Database: [HIP 677](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%20677)\n\nEmbark on your night sky adventure today by locating Alpha Andromedae near the bright corner of Pegasus. Each time you find such stars, you join a long tradition of human curiosity and discovery—ever reaching toward the universe's infinite mysteries.",
+      "url": "/stories/alpha-stars/1.html",
+      "status": "pending"
+    },
+    {
+      "fixed_object_id": 2,
+      "collection": "drafts",
+      "hed": "Caph: A Bright Star in Cassiopeia's W",
+      "dek": "Illuminating insights into one of the prominent stars of the northern sky.",
+      "body": "Caph, also designated as Beta Cassiopeiae, is a notable star situated in the constellation Cassiopeia. It is a bright star that captures the attention of astronomers and stargazers alike, primarily due to its position and distinctive brightness. With a right ascension of approximately 0.15 hours and a declination near 59.15 degrees, Caph shines prominently in the northern celestial hemisphere.\n\nThis star is part of the well-known asterism, Cassiopeia's W, a recognizable pattern of five bright stars that form a distinctive W shape across the sky. Caph occupies a key role within this shape, contributing to its symmetry and making it easier for observers to locate the constellation in the night sky. As a star that belongs to the Bayer designation system, Caph is identified by the Greek letter Beta, signifying its brightness rank within the constellation.\n\nCaph's significance extends beyond its brightness. It serves as a physical object candidate in astronomical records, meaning it is considered a real, observable star rather than a mythical or obscure feature. Its position has been precisely measured and recorded by various astronomical sources, including the Hipparcos satellite, which provides accurate data for star positions and movements.\n\nAs a luminous star, Caph offers insights into stellar evolution and the characteristics of stellar types visible in our local celestial neighborhood. Its brightness and position make it a useful reference point for both amateur and professional astronomers, aiding in navigation and observational planning.\n\nAlthough detailed information about its spectral type, distance, and size is not specified here, it remains a subject of interest due to its role in the prominent Cassiopeia constellation. This star illustrates the beauty and utility of celestial navigation and highlights the enduring intrigue of the night sky's fixed celestial objects. As such, Caph continues to be a fixture in our ongoing exploration of the cosmos, anchoring the familiar pattern of Cassiopeia in the tapestry of the heavens.",
+      "url": "/stories/drafts/2.html",
+      "status": "pending"
+    },
+    {
+      "fixed_object_id": 128,
+      "collection": "drafts",
+      "hed": "The Bowtie Nebula: A Portrait of Celestial Art in Cepheus",
+      "dek": "An enduring object of intrigue, the Bowtie Nebula exemplifies the beauty and mystery of planetary nebulae.",
+      "body": "Nestled in the constellation Cepheus, the Bowtie Nebula is a striking planetary nebula that captivates both amateur and professional astronomers alike. Its distinctive appearance, reminiscent of a butterfly or bowtie, makes it one of the most recognizable objects in the field of deep-sky observation. The nebula is categorized as a planetary nebula, a remnant of a dying star that has shed its outer layers into space, creating an expanding shell of ionized gas illuminated by the remnant core of the progenitor star. Located at a position approximately near right ascension 00h13m and declination +72°30', the Bowtie Nebula offers a beautiful sight through telescopes, revealing intricate structures and filamentary details. Its surface brightness and unique shape serve as an excellent example of the processes of stellar evolution, illustrating the final stages of a Sun-like star's life cycle. Although precise distances and magnitudes are subject to ongoing studies, the nebula’s prominent appearance in the night sky makes it a favored target for astrophotography and observational astronomy. The nebula's physical emptiness juxtaposed with its complex internal structure symbolizes the transient yet transformative nature of stellar death and rebirth. As part of the broader family of planetary nebulae, which number in the hundreds within our galaxy, the Bowtie Nebula continues to be an object of scientific interest and aesthetic admiration. Its place within the rich tapestry of the cosmos underscores the enduring allure of celestial phenomena that tell the stories of stellar life cycles, offering both a window into the past and a little wonder amidst the vastness of space.",
+      "url": "/stories/drafts/128.html",
+      "status": "pending"
+    },
+    {
+      "fixed_object_id": 129,
+      "collection": "drafts",
+      "hed": "Exploring Caldwell 72: A Subtle Marvel in Sculptor",
+      "dek": "An overview of Caldwell 72, a spiral galaxy candidate situated in the constellation Sculptor, highlighting its significance and observational characteristics.",
+      "body": "Caldwell 72, designated as a small spiral galaxy candidate in the Caldwell Catalog, resides in the constellation Sculptor. Its celestial coordinates place it at a right ascension of approximately 0.2483 hours and a declination of about -39.1833 degrees, positioning it in the southern celestial hemisphere. As a galaxy classified within the spiral bar group, it exhibits features that invite curiosity and detailed observation. However, precise data regarding its distance and magnitude remain limited or unconfirmed, reflecting the challenges inherent in identifying and cataloging faint, diffuse objects in the vast cosmos.\n\nThis galaxy candidate is part of a broader family of objects that astronomers study to understand the structure and evolution of galaxies. Its relatively modest apparent brightness and small angular size make it a subtle, yet intriguing target for dedicated amateur and professional astronomers alike. The potential presence of a central bulge and spiral arms—common traits among barred spirals—could offer insights into galactic dynamics and star formation processes.\n\nObservationally, Caldwell 72 presents a task worthy of keen-eyed astronomers equipped with sufficiently powerful telescopes. Its position in Sculptor allows it to be more accessible from southern latitudes, where clearer views of the constellation facilitate detailed study. As with many such objects cataloged in the Caldwell list, it serves as a reminder of the countless celestial gems that await exploration, each contributing to our broader understanding of the universe.\n\nWhile confirmed details about this galaxy candidate remain sparse, ongoing observations and advancements in instrumentation continue to enhance our ability to investigate these faint cosmic structures. Caldwell 72 epitomizes the enduring allure of the universe's lesser-known constituents, encouraging both amateur stargazers and professional astronomers to look beyond the brightest stars and delve into the subtle complexities that the cosmos presents.",
+      "url": "/stories/drafts/129.html",
+      "status": "pending"
+    }
+  ],
+  "stories": [
+    {
+      "fixed_object_id": 411,
+      "collection": "drafts",
+      "hed": "OCL 269: A Distinguished Open Cluster in Cassiopeia",
+      "dek": "An overview of the notable open cluster located within the constellation Cassiopeia, highlighting its significance and observable features.",
+      "body": "OCL 269 is a prominent open cluster situated in the constellation Cassiopeia, a region renowned for its rich stellar populations and distinctive W-shaped pattern. This cluster, catalogued within the modifications of the New General Catalogue (NGC), presents an intriguing astrophysical subject due to its position and structural composition. Its coordinates place it at approximately 23.96 hours of right ascension and a declination of about 56.71 degrees north, making it accessible to observers in the northern hemisphere with medium to large telescopes.\n\nAs an open cluster, OCL 269 consists of a loosely bound group of stars that share a common origin, having formed from the same molecular cloud. Such clusters are key to understanding stellar evolution and the dynamics within our galaxy. While detailed studies are limited, the cluster's identification as a physical object candidate suggests that it exhibits characteristics consistent with gravitationally bound stellar groupings.\n\nWithin the context of Cassiopeia’s rich stellar environment, OCL 269 contributes to the galaxy's diverse tapestry of stellar populations. Observers equipped with appropriate instrumentation may distinguish its members against the backdrop of the Milky Way’s dense star fields. The cluster's apparent magnitude, spatial extent, and stellar composition make it an interesting target for both amateur and professional astronomers alike.\n\nStudying this cluster helps astronomers refine models of star formation, cluster dispersal, and the dynamic processes governing stellar groupings over cosmic timescales. Its location in the northern sky offers ample opportunity for year-round observation, serving as a celestial fixture that beckons astronomers to explore the ongoing story of our galaxy's stellar nurseries.",
+      "url": "/stories/drafts/411.html",
+      "status": "pending"
+    },
+    {
+      "fixed_object_id": 412,
+      "collection": "drafts",
+      "hed": "Exploring the Galaxy in Pegasus: Caldwell 43",
+      "dek": "An overview of Caldwell 43, a notable galaxy in the constellation Pegasus, highlighting its significance and basic characteristics.",
+      "body": "Caldwell 43, also designated as C43 in the Caldwell catalog, is a galaxy nestled within the constellation Pegasus. Its position, approximately right ascension 0.055 hours and declination +16.15 degrees, places it among the numerous celestial objects that astronomers and stargazers study to understand the universe's vast and varied nature. Classified as an SbG galaxy, it belongs to the spiral galaxy family, characterized by its distinct spiral arms emanating from a central bulge, although specific details about its morphology are limited due to observational constraints.\n\nGalaxies like Caldwell 43 serve as essential laboratories for understanding the processes of galactic formation and evolution. Spanning a significant part of the sky in Pegasus, it offers insights into the structural components and stellar populations that populate spiral galaxies. Observations, whether through amateur telescopes or professional instruments, contribute to a broader understanding of its physical characteristics, such as its size, stellar content, and possible interactions with other cosmic structures.\n\nAs a fixed astronomical object, Caldwell 43 remains a constant in the night sky, providing a steady point of reference for astronomers. The study of such objects enhances our knowledge of the local universe, helping refine models of galaxy dynamics and composition. While many details about Caldwell 43 remain under active investigation, its presence exemplifies the richness of the cosmos and the ongoing quest for discovery in the field of astronomy.",
+      "url": "/stories/drafts/412.html",
+      "status": "pending"
+    },
+    {
+      "fixed_object_id": 1,
+      "collection": "alpha-stars",
+      "hed": "Alpheratz — the Andromeda corner of the Great Square",
+      "dek": "Find the star anchoring the Andromeda corner of the Great Square—and discover the extraordinary mercury patterns hidden in its light.",
+      "body": "Throughout human history, people have gazed upward to find patterns among the stars, often attributing stories and meaning to their shimmering points of light. Among these celestial objects, some stars stand out due to their brightness, serving as landmarks guiding observers through the night sky. One such prominent star is HIP 677, more widely known as Alpha Andromedae, which resides in the constellation Andromeda.\n\n\n## The Nature and Position of Alpha Andromedae (HIP 677)\n\nAlpha Andromedae is located within the constellation Andromeda, a figure rooted in Greek mythology. It is positioned near the \"bright corner\" of the Great Square of Pegasus, an asterism composed of four bright stars that form a large square shape across the sky. This prominent pattern is easily recognizable and serves as a useful pointer for locating neighboring constellations and celestial objects.\n\nSIMBAD identifies HIP 677 with Alpha Andromedae, also called Alpheratz. Rather than an ordinary star of a generic spectral type, its primary belongs to the chemically peculiar mercury–manganese (HgMn) class. Spectra reveal chemical abundances in the visible atmosphere, not a view of the stellar surface. Astronomers have used those spectra to map regions unusually rich in mercury. [Research: Kochukhov and colleagues, *Nature Physics* (2007)](https://doi.org/10.1038/nphys648).\n\n\n## How to Observe Alpha Andromedae\n\nFor amateur astronomers eager to spot Alpha Andromedae, the star's location provides a straightforward target:\n\n- **Locate the Great Square of Pegasus**: This prominent asterism is visible during autumn in the Northern Hemisphere. It appears as a large, nearly square formation of bright stars overhead or slightly eastward in the evening sky.\n\n- **Identify the Bright Corner**: Alpha Andromedae can be found near one of the square's corners, which is notable for its brightness.\n\n- **Use Star Charts or Apps**: Star maps, astronomy software, or smartphone apps can assist in confirming the star's precise position relative to other stars in the area.\n\n- **Optimal Viewing Conditions**: Under dark skies away from light pollution, Alpha Andromedae is visible to the naked eye, but binoculars or a small telescope can enhance the viewing experience.\n\nThe best time to observe this star is during the months of September through November when Andromeda reaches its highest point in the evening sky, making it most accessible.\n\n\n## Scientific and Cultural Significance\n\nAlpheratz offers an unusual example of stellar atmospheric changes. In a 2007 study, Oleg Kochukhov and collaborators reported seven years of observations of the mercury absorption lines in Alpha Andromedae. By tracking how those lines varied as the star rotated, they reconstructed maps showing that mercury-rich regions changed over the years. The researchers argued that heavy-element diffusion and atmospheric dynamics could produce evolving chemical structures without the magnetic mechanism familiar from sunspots. These are not literal drops of liquid mercury floating above the star: the word *clouds* describes concentrations inferred from stellar spectra. [Source: Kochukhov et al., *Nature Physics* **3**, 526–529 (2007)](https://www.nature.com/articles/nphys648).\n\nFrom a cultural standpoint, recognizing the star's position in relation to the Great Square of Pegasus not only assists in navigation but also deepens appreciation for how ancient civilizations and modern stargazers alike use these patterns to explore the universe.\n\n\n## Exploring Beyond Alpha Andromedae\n\nBy identifying Alpha Andromedae, amateur astronomers can navigate toward other remarkable targets, such as the Andromeda Galaxy (M31)—a giant spiral galaxy and our nearest galactic neighbor. Recognizing the stars of the Great Square as a starting point transforms a simple observation into a gateway for broader cosmic exploration.\n\n\n## Resources for Enthusiasts\n\nFor those interested in further research, the SIMBAD Astronomical Database offers detailed data on HIP 677. Additionally, planetarium software and star charts tailored to your viewing location can enhance your stargazing experience.\n\n**Sources:**\n\n- SIMBAD Astronomical Database: [HIP 677](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%20677)\n\nEmbark on your night sky adventure today by locating Alpha Andromedae near the bright corner of Pegasus. Each time you find such stars, you join a long tradition of human curiosity and discovery—ever reaching toward the universe's infinite mysteries.",
+      "url": "/stories/alpha-stars/1.html",
+      "status": "pending"
+    },
+    {
+      "fixed_object_id": 2,
+      "collection": "drafts",
+      "hed": "Caph: A Bright Star in Cassiopeia's W",
+      "dek": "Illuminating insights into one of the prominent stars of the northern sky.",
+      "body": "Caph, also designated as Beta Cassiopeiae, is a notable star situated in the constellation Cassiopeia. It is a bright star that captures the attention of astronomers and stargazers alike, primarily due to its position and distinctive brightness. With a right ascension of approximately 0.15 hours and a declination near 59.15 degrees, Caph shines prominently in the northern celestial hemisphere.\n\nThis star is part of the well-known asterism, Cassiopeia's W, a recognizable pattern of five bright stars that form a distinctive W shape across the sky. Caph occupies a key role within this shape, contributing to its symmetry and making it easier for observers to locate the constellation in the night sky. As a star that belongs to the Bayer designation system, Caph is identified by the Greek letter Beta, signifying its brightness rank within the constellation.\n\nCaph's significance extends beyond its brightness. It serves as a physical object candidate in astronomical records, meaning it is considered a real, observable star rather than a mythical or obscure feature. Its position has been precisely measured and recorded by various astronomical sources, including the Hipparcos satellite, which provides accurate data for star positions and movements.\n\nAs a luminous star, Caph offers insights into stellar evolution and the characteristics of stellar types visible in our local celestial neighborhood. Its brightness and position make it a useful reference point for both amateur and professional astronomers, aiding in navigation and observational planning.\n\nAlthough detailed information about its spectral type, distance, and size is not specified here, it remains a subject of interest due to its role in the prominent Cassiopeia constellation. This star illustrates the beauty and utility of celestial navigation and highlights the enduring intrigue of the night sky's fixed celestial objects. As such, Caph continues to be a fixture in our ongoing exploration of the cosmos, anchoring the familiar pattern of Cassiopeia in the tapestry of the heavens.",
+      "url": "/stories/drafts/2.html",
+      "status": "pending"
+    },
+    {
+      "fixed_object_id": 128,
+      "collection": "drafts",
+      "hed": "The Bowtie Nebula: A Portrait of Celestial Art in Cepheus",
+      "dek": "An enduring object of intrigue, the Bowtie Nebula exemplifies the beauty and mystery of planetary nebulae.",
+      "body": "Nestled in the constellation Cepheus, the Bowtie Nebula is a striking planetary nebula that captivates both amateur and professional astronomers alike. Its distinctive appearance, reminiscent of a butterfly or bowtie, makes it one of the most recognizable objects in the field of deep-sky observation. The nebula is categorized as a planetary nebula, a remnant of a dying star that has shed its outer layers into space, creating an expanding shell of ionized gas illuminated by the remnant core of the progenitor star. Located at a position approximately near right ascension 00h13m and declination +72°30', the Bowtie Nebula offers a beautiful sight through telescopes, revealing intricate structures and filamentary details. Its surface brightness and unique shape serve as an excellent example of the processes of stellar evolution, illustrating the final stages of a Sun-like star's life cycle. Although precise distances and magnitudes are subject to ongoing studies, the nebula’s prominent appearance in the night sky makes it a favored target for astrophotography and observational astronomy. The nebula's physical emptiness juxtaposed with its complex internal structure symbolizes the transient yet transformative nature of stellar death and rebirth. As part of the broader family of planetary nebulae, which number in the hundreds within our galaxy, the Bowtie Nebula continues to be an object of scientific interest and aesthetic admiration. Its place within the rich tapestry of the cosmos underscores the enduring allure of celestial phenomena that tell the stories of stellar life cycles, offering both a window into the past and a little wonder amidst the vastness of space.",
+      "url": "/stories/drafts/128.html",
+      "status": "pending"
+    },
+    {
+      "fixed_object_id": 129,
+      "collection": "drafts",
+      "hed": "Exploring Caldwell 72: A Subtle Marvel in Sculptor",
+      "dek": "An overview of Caldwell 72, a spiral galaxy candidate situated in the constellation Sculptor, highlighting its significance and observational characteristics.",
+      "body": "Caldwell 72, designated as a small spiral galaxy candidate in the Caldwell Catalog, resides in the constellation Sculptor. Its celestial coordinates place it at a right ascension of approximately 0.2483 hours and a declination of about -39.1833 degrees, positioning it in the southern celestial hemisphere. As a galaxy classified within the spiral bar group, it exhibits features that invite curiosity and detailed observation. However, precise data regarding its distance and magnitude remain limited or unconfirmed, reflecting the challenges inherent in identifying and cataloging faint, diffuse objects in the vast cosmos.\n\nThis galaxy candidate is part of a broader family of objects that astronomers study to understand the structure and evolution of galaxies. Its relatively modest apparent brightness and small angular size make it a subtle, yet intriguing target for dedicated amateur and professional astronomers alike. The potential presence of a central bulge and spiral arms—common traits among barred spirals—could offer insights into galactic dynamics and star formation processes.\n\nObservationally, Caldwell 72 presents a task worthy of keen-eyed astronomers equipped with sufficiently powerful telescopes. Its position in Sculptor allows it to be more accessible from southern latitudes, where clearer views of the constellation facilitate detailed study. As with many such objects cataloged in the Caldwell list, it serves as a reminder of the countless celestial gems that await exploration, each contributing to our broader understanding of the universe.\n\nWhile confirmed details about this galaxy candidate remain sparse, ongoing observations and advancements in instrumentation continue to enhance our ability to investigate these faint cosmic structures. Caldwell 72 epitomizes the enduring allure of the universe's lesser-known constituents, encouraging both amateur stargazers and professional astronomers to look beyond the brightest stars and delve into the subtle complexities that the cosmos presents.",
+      "url": "/stories/drafts/129.html",
+      "status": "pending"
+    }
+  ],
+  "story_completion": {
+    "week": "2027-W45",
+    "total": 6,
+    "complete": 0,
+    "pending": [
+      {
+        "fixed_object_id": 411,
+        "catalog_target_key": null,
+        "label": "Finest NGC 5 / NGC 7789 · OCL 269",
+        "status": "pending",
+        "stories": [],
+        "reason": "researched story needed"
+      },
+      {
+        "fixed_object_id": 412,
+        "catalog_target_key": null,
+        "label": "C43 / NGC 7814",
+        "status": "pending",
+        "stories": [],
+        "reason": "researched story needed"
+      },
+      {
+        "fixed_object_id": 1,
+        "catalog_target_key": null,
+        "label": "Alpheratz (α And)",
+        "status": "pending",
+        "stories": [
+          {
+            "collection": "alpha-stars",
+            "status": "pending",
+            "url": "/stories/alpha-stars/1.html"
+          }
+        ],
+        "reason": "research written; completion review pending"
+      },
+      {
+        "fixed_object_id": 2,
+        "catalog_target_key": null,
+        "label": "Caph (β Cas)",
+        "status": "pending",
+        "stories": [],
+        "reason": "researched story needed"
+      },
+      {
+        "fixed_object_id": 128,
+        "catalog_target_key": null,
+        "label": "C2 / NGC 40 / Finest NGC 110 / NGC 40 · Bowtie Nebula",
+        "status": "pending",
+        "stories": [],
+        "reason": "researched story needed"
+      },
+      {
+        "fixed_object_id": 129,
+        "catalog_target_key": null,
+        "label": "C72 / NGC 55",
+        "status": "pending",
+        "stories": [],
+        "reason": "researched story needed"
+      }
+    ],
+    "objects": [
+      {
+        "fixed_object_id": 411,
+        "catalog_target_key": null,
+        "label": "Finest NGC 5 / NGC 7789 · OCL 269",
+        "status": "pending",
+        "stories": [],
+        "reason": "researched story needed"
+      },
+      {
+        "fixed_object_id": 412,
+        "catalog_target_key": null,
+        "label": "C43 / NGC 7814",
+        "status": "pending",
+        "stories": [],
+        "reason": "researched story needed"
+      },
+      {
+        "fixed_object_id": 1,
+        "catalog_target_key": null,
+        "label": "Alpheratz (α And)",
+        "status": "pending",
+        "stories": [
+          {
+            "collection": "alpha-stars",
+            "status": "pending",
+            "url": "/stories/alpha-stars/1.html"
+          }
+        ],
+        "reason": "research written; completion review pending"
+      },
+      {
+        "fixed_object_id": 2,
+        "catalog_target_key": null,
+        "label": "Caph (β Cas)",
+        "status": "pending",
+        "stories": [],
+        "reason": "researched story needed"
+      },
+      {
+        "fixed_object_id": 128,
+        "catalog_target_key": null,
+        "label": "C2 / NGC 40 / Finest NGC 110 / NGC 40 · Bowtie Nebula",
+        "status": "pending",
+        "stories": [],
+        "reason": "researched story needed"
+      },
+      {
+        "fixed_object_id": 129,
+        "catalog_target_key": null,
+        "label": "C72 / NGC 55",
+        "status": "pending",
+        "stories": [],
+        "reason": "researched story needed"
+      }
+    ]
+  },
+  "planet_finder_artworks": [
+    {
+      "schema_version": 1,
+      "id": "2027-W45-1250",
+      "object_id": 1250,
+      "week": "2027-W45",
+      "kind": "stellar-finder",
+      "geometry": {
+        "constellation_system": "Martz/MacRobert",
+        "constellation_abbreviation": "Vir",
+        "on_missing_geometry": "fail",
+        "invent_geometry": false
+      },
+      "style": {
+        "background": "night-sky",
+        "constellation": {
+          "stroke": "#5c8fe8",
+          "role": "ordinary constellation figure"
+        },
+        "asterism": {
+          "stroke": "#59c86d",
+          "role": "orienting asterism"
+        },
+        "target": {
+          "stroke": "#ffd84d",
+          "fill": "none",
+          "role": "open target circle"
+        },
+        "target_arrows": false
+      },
+      "constellation": "Virgo",
+      "asterism": null,
+      "targets": [
+        {
+          "type": "solar-system-object",
+          "name": "Mercury"
+        },
+        {
+          "type": "reference-star",
+          "name": "Spica",
+          "fixed_object_id": 60
+        }
+      ],
+      "landmark_policy": {
+        "retain_named_field_stars": true,
+        "primary_reference_star": "Spica",
+        "magnitude_limit": 2.99
+      },
+      "finder_route": {
+        "sequence": [
+          "Virgo",
+          "Spica",
+          "Mercury"
+        ],
+        "orientation": "constellation-stick-figure",
+        "reference_star": "Spica",
+        "planet": "Mercury",
+        "finder_note": null,
+        "sky_separation_deg": 5.2
+      },
+      "planetary_context": [
+        {
+          "kind": "planet-star-longitude",
+          "planet": "Moon",
+          "planet_longitude_deg": 333.4,
+          "star": "Sadalmelik",
+          "constellation": "Aqr",
+          "star_fixed_object_id": 1189,
+          "star_ecliptic_longitude_deg": 333.352,
+          "star_ecliptic_latitude_deg": 10.662,
+          "longitude_separation_deg": 0.0,
+          "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+          "finder_only": true,
+          "planet_ra_deg": 334.104123,
+          "planet_dec_deg": -8.24548,
+          "sky_separation_deg": 8.4
+        },
+        {
+          "kind": "planet-star-longitude",
+          "planet": "Mercury",
+          "planet_longitude_deg": 207.283,
+          "star": "Spica",
+          "constellation": "Vir",
+          "star_fixed_object_id": 60,
+          "star_ecliptic_longitude_deg": 203.841,
+          "star_ecliptic_latitude_deg": -2.054,
+          "longitude_separation_deg": 3.4,
+          "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+          "finder_only": true,
+          "planet_ra_deg": 205.751598,
+          "planet_dec_deg": -8.317031,
+          "sky_separation_deg": 5.2
+        }
+      ],
+      "planet_position": {
+        "ra_deg": 205.751598,
+        "dec_deg": -8.317031
+      },
+      "solar_system_field": [
+        {
+          "name": "Moon",
+          "ra_deg": 334.104123,
+          "dec_deg": -8.24548
+        },
+        {
+          "name": "Mercury",
+          "ra_deg": 205.751598,
+          "dec_deg": -8.317031
+        },
+        {
+          "name": "Venus",
+          "ra_deg": 246.022944,
+          "dec_deg": -22.259428
+        },
+        {
+          "name": "Mars",
+          "ra_deg": 255.041264,
+          "dec_deg": -23.630835
+        },
+        {
+          "name": "Ceres",
+          "ra_deg": 196.499423,
+          "dec_deg": 1.489139
+        },
+        {
+          "name": "Jupiter",
+          "ra_deg": 172.229578,
+          "dec_deg": 4.497694
+        },
+        {
+          "name": "Saturn",
+          "ra_deg": 21.761084,
+          "dec_deg": 6.16033
+        },
+        {
+          "name": "Uranus",
+          "ra_deg": 66.724973,
+          "dec_deg": 21.619677
+        },
+        {
+          "name": "Neptune",
+          "ra_deg": 4.102671,
+          "dec_deg": 0.190096
+        },
+        {
+          "name": "Pluto",
+          "ra_deg": 308.030324,
+          "dec_deg": -23.759637
+        }
+      ],
+      "planet_plot_policy": "plot all preserved 2-D Star Almanack Solar-System positions that fall inside the Pathfinder field; the Moon is a normal plotted body, with apparent-disk occultation handled only by rendering/collision logic",
+      "reference_standard": "docs/finder-standard.md"
+    },
+    {
+      "schema_version": 1,
+      "id": "2027-W45-1251",
+      "object_id": 1251,
+      "week": "2027-W45",
+      "kind": "stellar-finder",
+      "geometry": {
+        "constellation_system": "Martz/MacRobert",
+        "constellation_abbreviation": "Sco",
+        "on_missing_geometry": "fail",
+        "invent_geometry": false
+      },
+      "style": {
+        "background": "night-sky",
+        "constellation": {
+          "stroke": "#5c8fe8",
+          "role": "ordinary constellation figure"
+        },
+        "asterism": {
+          "stroke": "#59c86d",
+          "role": "orienting asterism"
+        },
+        "target": {
+          "stroke": "#ffd84d",
+          "fill": "none",
+          "role": "open target circle"
+        },
+        "target_arrows": false
+      },
+      "constellation": "Scorpius",
+      "asterism": null,
+      "targets": [
+        {
+          "type": "solar-system-object",
+          "name": "Venus"
+        },
+        {
+          "type": "reference-star",
+          "name": "Antares",
+          "fixed_object_id": 73
+        }
+      ],
+      "landmark_policy": {
+        "retain_named_field_stars": true,
+        "primary_reference_star": "Antares",
+        "magnitude_limit": 2.99
+      },
+      "finder_route": {
+        "sequence": [
+          "Scorpius",
+          "Antares",
+          "Venus"
+        ],
+        "orientation": "constellation-stick-figure",
+        "reference_star": "Antares",
+        "planet": "Venus",
+        "finder_note": null,
+        "sky_separation_deg": 4.3
+      },
+      "planetary_context": [
+        {
+          "kind": "planet-star-longitude",
+          "planet": "Moon",
+          "planet_longitude_deg": 333.4,
+          "star": "Sadalmelik",
+          "constellation": "Aqr",
+          "star_fixed_object_id": 1189,
+          "star_ecliptic_longitude_deg": 333.352,
+          "star_ecliptic_latitude_deg": 10.662,
+          "longitude_separation_deg": 0.0,
+          "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+          "finder_only": true,
+          "planet_ra_deg": 334.104123,
+          "planet_dec_deg": -8.24548,
+          "sky_separation_deg": 8.4
+        },
+        {
+          "kind": "planet-star-longitude",
+          "planet": "Mercury",
+          "planet_longitude_deg": 207.283,
+          "star": "Spica",
+          "constellation": "Vir",
+          "star_fixed_object_id": 60,
+          "star_ecliptic_longitude_deg": 203.841,
+          "star_ecliptic_latitude_deg": -2.054,
+          "longitude_separation_deg": 3.4,
+          "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+          "finder_only": true,
+          "planet_ra_deg": 205.751598,
+          "planet_dec_deg": -8.317031,
+          "sky_separation_deg": 5.2
+        }
+      ],
+      "planet_position": {
+        "ra_deg": 246.022944,
+        "dec_deg": -22.259428
+      },
+      "solar_system_field": [
+        {
+          "name": "Moon",
+          "ra_deg": 334.104123,
+          "dec_deg": -8.24548
+        },
+        {
+          "name": "Mercury",
+          "ra_deg": 205.751598,
+          "dec_deg": -8.317031
+        },
+        {
+          "name": "Venus",
+          "ra_deg": 246.022944,
+          "dec_deg": -22.259428
+        },
+        {
+          "name": "Mars",
+          "ra_deg": 255.041264,
+          "dec_deg": -23.630835
+        },
+        {
+          "name": "Ceres",
+          "ra_deg": 196.499423,
+          "dec_deg": 1.489139
+        },
+        {
+          "name": "Jupiter",
+          "ra_deg": 172.229578,
+          "dec_deg": 4.497694
+        },
+        {
+          "name": "Saturn",
+          "ra_deg": 21.761084,
+          "dec_deg": 6.16033
+        },
+        {
+          "name": "Uranus",
+          "ra_deg": 66.724973,
+          "dec_deg": 21.619677
+        },
+        {
+          "name": "Neptune",
+          "ra_deg": 4.102671,
+          "dec_deg": 0.190096
+        },
+        {
+          "name": "Pluto",
+          "ra_deg": 308.030324,
+          "dec_deg": -23.759637
+        }
+      ],
+      "planet_plot_policy": "plot all preserved 2-D Star Almanack Solar-System positions that fall inside the Pathfinder field; the Moon is a normal plotted body, with apparent-disk occultation handled only by rendering/collision logic",
+      "reference_standard": "docs/finder-standard.md"
+    },
+    {
+      "schema_version": 1,
+      "id": "2027-W45-1253",
+      "object_id": 1253,
+      "week": "2027-W45",
+      "kind": "stellar-finder",
+      "geometry": {
+        "constellation_system": "Martz/MacRobert",
+        "constellation_abbreviation": "Aqr",
+        "on_missing_geometry": "fail",
+        "invent_geometry": false
+      },
+      "style": {
+        "background": "night-sky",
+        "constellation": {
+          "stroke": "#5c8fe8",
+          "role": "ordinary constellation figure"
+        },
+        "asterism": {
+          "stroke": "#59c86d",
+          "role": "orienting asterism"
+        },
+        "target": {
+          "stroke": "#ffd84d",
+          "fill": "none",
+          "role": "open target circle"
+        },
+        "target_arrows": false
+      },
+      "constellation": "Aquarius",
+      "asterism": null,
+      "targets": [
+        {
+          "type": "solar-system-object",
+          "name": "Moon"
+        },
+        {
+          "type": "reference-star",
+          "name": "Sadalmelik",
+          "fixed_object_id": 1189
+        }
+      ],
+      "landmark_policy": {
+        "retain_named_field_stars": true,
+        "primary_reference_star": "Sadalmelik",
+        "magnitude_limit": 2.99
+      },
+      "finder_route": {
+        "sequence": [
+          "Aquarius",
+          "Sadalmelik",
+          "Moon"
+        ],
+        "orientation": "constellation-stick-figure",
+        "reference_star": "Sadalmelik",
+        "planet": "Moon",
+        "finder_note": null,
+        "sky_separation_deg": 8.4
+      },
+      "planetary_context": [
+        {
+          "kind": "planet-star-longitude",
+          "planet": "Moon",
+          "planet_longitude_deg": 333.4,
+          "star": "Sadalmelik",
+          "constellation": "Aqr",
+          "star_fixed_object_id": 1189,
+          "star_ecliptic_longitude_deg": 333.352,
+          "star_ecliptic_latitude_deg": 10.662,
+          "longitude_separation_deg": 0.0,
+          "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+          "finder_only": true,
+          "planet_ra_deg": 334.104123,
+          "planet_dec_deg": -8.24548,
+          "sky_separation_deg": 8.4
+        },
+        {
+          "kind": "planet-star-longitude",
+          "planet": "Mercury",
+          "planet_longitude_deg": 207.283,
+          "star": "Spica",
+          "constellation": "Vir",
+          "star_fixed_object_id": 60,
+          "star_ecliptic_longitude_deg": 203.841,
+          "star_ecliptic_latitude_deg": -2.054,
+          "longitude_separation_deg": 3.4,
+          "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+          "finder_only": true,
+          "planet_ra_deg": 205.751598,
+          "planet_dec_deg": -8.317031,
+          "sky_separation_deg": 5.2
+        }
+      ],
+      "planet_position": {
+        "ra_deg": 334.104123,
+        "dec_deg": -8.24548
+      },
+      "solar_system_field": [
+        {
+          "name": "Moon",
+          "ra_deg": 334.104123,
+          "dec_deg": -8.24548
+        },
+        {
+          "name": "Mercury",
+          "ra_deg": 205.751598,
+          "dec_deg": -8.317031
+        },
+        {
+          "name": "Venus",
+          "ra_deg": 246.022944,
+          "dec_deg": -22.259428
+        },
+        {
+          "name": "Mars",
+          "ra_deg": 255.041264,
+          "dec_deg": -23.630835
+        },
+        {
+          "name": "Ceres",
+          "ra_deg": 196.499423,
+          "dec_deg": 1.489139
+        },
+        {
+          "name": "Jupiter",
+          "ra_deg": 172.229578,
+          "dec_deg": 4.497694
+        },
+        {
+          "name": "Saturn",
+          "ra_deg": 21.761084,
+          "dec_deg": 6.16033
+        },
+        {
+          "name": "Uranus",
+          "ra_deg": 66.724973,
+          "dec_deg": 21.619677
+        },
+        {
+          "name": "Neptune",
+          "ra_deg": 4.102671,
+          "dec_deg": 0.190096
+        },
+        {
+          "name": "Pluto",
+          "ra_deg": 308.030324,
+          "dec_deg": -23.759637
+        }
+      ],
+      "planet_plot_policy": "plot all preserved 2-D Star Almanack Solar-System positions that fall inside the Pathfinder field; the Moon is a normal plotted body, with apparent-disk occultation handled only by rendering/collision logic",
+      "reference_standard": "docs/finder-standard.md"
+    },
+    {
+      "schema_version": 1,
+      "id": "2027-W45-1254",
+      "object_id": 1254,
+      "week": "2027-W45",
+      "kind": "stellar-finder",
+      "geometry": {
+        "constellation_system": "Martz/MacRobert",
+        "constellation_abbreviation": "Sco",
+        "on_missing_geometry": "fail",
+        "invent_geometry": false
+      },
+      "style": {
+        "background": "night-sky",
+        "constellation": {
+          "stroke": "#5c8fe8",
+          "role": "ordinary constellation figure"
+        },
+        "asterism": {
+          "stroke": "#59c86d",
+          "role": "orienting asterism"
+        },
+        "target": {
+          "stroke": "#ffd84d",
+          "fill": "none",
+          "role": "open target circle"
+        },
+        "target_arrows": false
+      },
+      "constellation": "Scorpius",
+      "asterism": null,
+      "targets": [
+        {
+          "type": "solar-system-object",
+          "name": "Mars"
+        },
+        {
+          "type": "reference-star",
+          "name": "Antares",
+          "fixed_object_id": 73
+        }
+      ],
+      "landmark_policy": {
+        "retain_named_field_stars": true,
+        "primary_reference_star": "Antares",
+        "magnitude_limit": 2.99
+      },
+      "finder_route": {
+        "sequence": [
+          "Scorpius",
+          "Antares",
+          "Mars"
+        ],
+        "orientation": "constellation-stick-figure",
+        "reference_star": "Antares",
+        "planet": "Mars",
+        "finder_note": null,
+        "sky_separation_deg": 7.5
+      },
+      "planetary_context": [
+        {
+          "kind": "planet-star-longitude",
+          "planet": "Moon",
+          "planet_longitude_deg": 333.4,
+          "star": "Sadalmelik",
+          "constellation": "Aqr",
+          "star_fixed_object_id": 1189,
+          "star_ecliptic_longitude_deg": 333.352,
+          "star_ecliptic_latitude_deg": 10.662,
+          "longitude_separation_deg": 0.0,
+          "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+          "finder_only": true,
+          "planet_ra_deg": 334.104123,
+          "planet_dec_deg": -8.24548,
+          "sky_separation_deg": 8.4
+        },
+        {
+          "kind": "planet-star-longitude",
+          "planet": "Mercury",
+          "planet_longitude_deg": 207.283,
+          "star": "Spica",
+          "constellation": "Vir",
+          "star_fixed_object_id": 60,
+          "star_ecliptic_longitude_deg": 203.841,
+          "star_ecliptic_latitude_deg": -2.054,
+          "longitude_separation_deg": 3.4,
+          "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+          "finder_only": true,
+          "planet_ra_deg": 205.751598,
+          "planet_dec_deg": -8.317031,
+          "sky_separation_deg": 5.2
+        }
+      ],
+      "planet_position": {
+        "ra_deg": 255.041264,
+        "dec_deg": -23.630835
+      },
+      "solar_system_field": [
+        {
+          "name": "Moon",
+          "ra_deg": 334.104123,
+          "dec_deg": -8.24548
+        },
+        {
+          "name": "Mercury",
+          "ra_deg": 205.751598,
+          "dec_deg": -8.317031
+        },
+        {
+          "name": "Venus",
+          "ra_deg": 246.022944,
+          "dec_deg": -22.259428
+        },
+        {
+          "name": "Mars",
+          "ra_deg": 255.041264,
+          "dec_deg": -23.630835
+        },
+        {
+          "name": "Ceres",
+          "ra_deg": 196.499423,
+          "dec_deg": 1.489139
+        },
+        {
+          "name": "Jupiter",
+          "ra_deg": 172.229578,
+          "dec_deg": 4.497694
+        },
+        {
+          "name": "Saturn",
+          "ra_deg": 21.761084,
+          "dec_deg": 6.16033
+        },
+        {
+          "name": "Uranus",
+          "ra_deg": 66.724973,
+          "dec_deg": 21.619677
+        },
+        {
+          "name": "Neptune",
+          "ra_deg": 4.102671,
+          "dec_deg": 0.190096
+        },
+        {
+          "name": "Pluto",
+          "ra_deg": 308.030324,
+          "dec_deg": -23.759637
+        }
+      ],
+      "planet_plot_policy": "plot all preserved 2-D Star Almanack Solar-System positions that fall inside the Pathfinder field; the Moon is a normal plotted body, with apparent-disk occultation handled only by rendering/collision logic",
+      "reference_standard": "docs/finder-standard.md"
+    },
+    {
+      "schema_version": 1,
+      "id": "2027-W45-1256",
+      "object_id": 1256,
+      "week": "2027-W45",
+      "kind": "stellar-finder",
+      "geometry": {
+        "constellation_system": "Martz/MacRobert",
+        "constellation_abbreviation": "Vir",
+        "on_missing_geometry": "fail",
+        "invent_geometry": false
+      },
+      "style": {
+        "background": "night-sky",
+        "constellation": {
+          "stroke": "#5c8fe8",
+          "role": "ordinary constellation figure"
+        },
+        "asterism": {
+          "stroke": "#59c86d",
+          "role": "orienting asterism"
+        },
+        "target": {
+          "stroke": "#ffd84d",
+          "fill": "none",
+          "role": "open target circle"
+        },
+        "target_arrows": false
+      },
+      "constellation": "Virgo",
+      "asterism": null,
+      "targets": [
+        {
+          "type": "solar-system-object",
+          "name": "Jupiter"
+        },
+        {
+          "type": "reference-star",
+          "name": "Zavijava",
+          "fixed_object_id": 934
+        }
+      ],
+      "landmark_policy": {
+        "retain_named_field_stars": true,
+        "primary_reference_star": "Zavijava",
+        "magnitude_limit": 2.99
+      },
+      "finder_route": {
+        "sequence": [
+          "Virgo",
+          "Zavijava",
+          "Jupiter"
+        ],
+        "orientation": "constellation-stick-figure",
+        "reference_star": "Zavijava",
+        "planet": "Jupiter",
+        "finder_note": null,
+        "sky_separation_deg": 6.1
+      },
+      "planetary_context": [
+        {
+          "kind": "planet-star-longitude",
+          "planet": "Moon",
+          "planet_longitude_deg": 333.4,
+          "star": "Sadalmelik",
+          "constellation": "Aqr",
+          "star_fixed_object_id": 1189,
+          "star_ecliptic_longitude_deg": 333.352,
+          "star_ecliptic_latitude_deg": 10.662,
+          "longitude_separation_deg": 0.0,
+          "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+          "finder_only": true,
+          "planet_ra_deg": 334.104123,
+          "planet_dec_deg": -8.24548,
+          "sky_separation_deg": 8.4
+        },
+        {
+          "kind": "planet-star-longitude",
+          "planet": "Mercury",
+          "planet_longitude_deg": 207.283,
+          "star": "Spica",
+          "constellation": "Vir",
+          "star_fixed_object_id": 60,
+          "star_ecliptic_longitude_deg": 203.841,
+          "star_ecliptic_latitude_deg": -2.054,
+          "longitude_separation_deg": 3.4,
+          "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+          "finder_only": true,
+          "planet_ra_deg": 205.751598,
+          "planet_dec_deg": -8.317031,
+          "sky_separation_deg": 5.2
+        }
+      ],
+      "planet_position": {
+        "ra_deg": 172.229578,
+        "dec_deg": 4.497694
+      },
+      "solar_system_field": [
+        {
+          "name": "Moon",
+          "ra_deg": 334.104123,
+          "dec_deg": -8.24548
+        },
+        {
+          "name": "Mercury",
+          "ra_deg": 205.751598,
+          "dec_deg": -8.317031
+        },
+        {
+          "name": "Venus",
+          "ra_deg": 246.022944,
+          "dec_deg": -22.259428
+        },
+        {
+          "name": "Mars",
+          "ra_deg": 255.041264,
+          "dec_deg": -23.630835
+        },
+        {
+          "name": "Ceres",
+          "ra_deg": 196.499423,
+          "dec_deg": 1.489139
+        },
+        {
+          "name": "Jupiter",
+          "ra_deg": 172.229578,
+          "dec_deg": 4.497694
+        },
+        {
+          "name": "Saturn",
+          "ra_deg": 21.761084,
+          "dec_deg": 6.16033
+        },
+        {
+          "name": "Uranus",
+          "ra_deg": 66.724973,
+          "dec_deg": 21.619677
+        },
+        {
+          "name": "Neptune",
+          "ra_deg": 4.102671,
+          "dec_deg": 0.190096
+        },
+        {
+          "name": "Pluto",
+          "ra_deg": 308.030324,
+          "dec_deg": -23.759637
+        }
+      ],
+      "planet_plot_policy": "plot all preserved 2-D Star Almanack Solar-System positions that fall inside the Pathfinder field; the Moon is a normal plotted body, with apparent-disk occultation handled only by rendering/collision logic",
+      "reference_standard": "docs/finder-standard.md"
+    },
+    {
+      "schema_version": 1,
+      "id": "2027-W45-1257",
+      "object_id": 1257,
+      "week": "2027-W45",
+      "kind": "stellar-finder",
+      "geometry": {
+        "constellation_system": "Martz/MacRobert",
+        "constellation_abbreviation": "Psc",
+        "on_missing_geometry": "fail",
+        "invent_geometry": false
+      },
+      "style": {
+        "background": "night-sky",
+        "constellation": {
+          "stroke": "#5c8fe8",
+          "role": "ordinary constellation figure"
+        },
+        "asterism": {
+          "stroke": "#59c86d",
+          "role": "orienting asterism"
+        },
+        "target": {
+          "stroke": "#ffd84d",
+          "fill": "none",
+          "role": "open target circle"
+        },
+        "target_arrows": false
+      },
+      "constellation": "Pisces",
+      "asterism": null,
+      "targets": [
+        {
+          "type": "solar-system-object",
+          "name": "Saturn"
+        },
+        {
+          "type": "reference-star",
+          "name": "Alrescha",
+          "fixed_object_id": 654
+        }
+      ],
+      "landmark_policy": {
+        "retain_named_field_stars": true,
+        "primary_reference_star": "Alrescha",
+        "magnitude_limit": 2.99
+      },
+      "finder_route": {
+        "sequence": [
+          "Pisces",
+          "Alrescha",
+          "Saturn"
+        ],
+        "orientation": "constellation-stick-figure",
+        "reference_star": "Alrescha",
+        "planet": "Saturn",
+        "finder_note": null,
+        "sky_separation_deg": 9.4
+      },
+      "planetary_context": [
+        {
+          "kind": "planet-star-longitude",
+          "planet": "Moon",
+          "planet_longitude_deg": 333.4,
+          "star": "Sadalmelik",
+          "constellation": "Aqr",
+          "star_fixed_object_id": 1189,
+          "star_ecliptic_longitude_deg": 333.352,
+          "star_ecliptic_latitude_deg": 10.662,
+          "longitude_separation_deg": 0.0,
+          "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+          "finder_only": true,
+          "planet_ra_deg": 334.104123,
+          "planet_dec_deg": -8.24548,
+          "sky_separation_deg": 8.4
+        },
+        {
+          "kind": "planet-star-longitude",
+          "planet": "Mercury",
+          "planet_longitude_deg": 207.283,
+          "star": "Spica",
+          "constellation": "Vir",
+          "star_fixed_object_id": 60,
+          "star_ecliptic_longitude_deg": 203.841,
+          "star_ecliptic_latitude_deg": -2.054,
+          "longitude_separation_deg": 3.4,
+          "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+          "finder_only": true,
+          "planet_ra_deg": 205.751598,
+          "planet_dec_deg": -8.317031,
+          "sky_separation_deg": 5.2
+        }
+      ],
+      "planet_position": {
+        "ra_deg": 21.761084,
+        "dec_deg": 6.16033
+      },
+      "solar_system_field": [
+        {
+          "name": "Moon",
+          "ra_deg": 334.104123,
+          "dec_deg": -8.24548
+        },
+        {
+          "name": "Mercury",
+          "ra_deg": 205.751598,
+          "dec_deg": -8.317031
+        },
+        {
+          "name": "Venus",
+          "ra_deg": 246.022944,
+          "dec_deg": -22.259428
+        },
+        {
+          "name": "Mars",
+          "ra_deg": 255.041264,
+          "dec_deg": -23.630835
+        },
+        {
+          "name": "Ceres",
+          "ra_deg": 196.499423,
+          "dec_deg": 1.489139
+        },
+        {
+          "name": "Jupiter",
+          "ra_deg": 172.229578,
+          "dec_deg": 4.497694
+        },
+        {
+          "name": "Saturn",
+          "ra_deg": 21.761084,
+          "dec_deg": 6.16033
+        },
+        {
+          "name": "Uranus",
+          "ra_deg": 66.724973,
+          "dec_deg": 21.619677
+        },
+        {
+          "name": "Neptune",
+          "ra_deg": 4.102671,
+          "dec_deg": 0.190096
+        },
+        {
+          "name": "Pluto",
+          "ra_deg": 308.030324,
+          "dec_deg": -23.759637
+        }
+      ],
+      "planet_plot_policy": "plot all preserved 2-D Star Almanack Solar-System positions that fall inside the Pathfinder field; the Moon is a normal plotted body, with apparent-disk occultation handled only by rendering/collision logic",
+      "reference_standard": "docs/finder-standard.md"
+    },
+    {
+      "schema_version": 1,
+      "id": "2027-W45-1258",
+      "object_id": 1258,
+      "week": "2027-W45",
+      "kind": "stellar-finder",
+      "geometry": {
+        "constellation_system": "Martz/MacRobert",
+        "constellation_abbreviation": "Tau",
+        "on_missing_geometry": "fail",
+        "invent_geometry": false
+      },
+      "style": {
+        "background": "night-sky",
+        "constellation": {
+          "stroke": "#5c8fe8",
+          "role": "ordinary constellation figure"
+        },
+        "asterism": {
+          "stroke": "#59c86d",
+          "role": "orienting asterism"
+        },
+        "target": {
+          "stroke": "#ffd84d",
+          "fill": "none",
+          "role": "open target circle"
+        },
+        "target_arrows": false
+      },
+      "constellation": "Taurus",
+      "asterism": null,
+      "targets": [
+        {
+          "type": "solar-system-object",
+          "name": "Uranus"
+        },
+        {
+          "type": "reference-star",
+          "name": "Aldebaran",
+          "fixed_object_id": 25
+        }
+      ],
+      "landmark_policy": {
+        "retain_named_field_stars": true,
+        "primary_reference_star": "Aldebaran",
+        "magnitude_limit": 2.99
+      },
+      "finder_route": {
+        "sequence": [
+          "Taurus",
+          "Aldebaran",
+          "Uranus"
+        ],
+        "orientation": "constellation-stick-figure",
+        "reference_star": "Aldebaran",
+        "planet": "Uranus",
+        "finder_note": null,
+        "sky_separation_deg": 5.5
+      },
+      "planetary_context": [
+        {
+          "kind": "planet-star-longitude",
+          "planet": "Moon",
+          "planet_longitude_deg": 333.4,
+          "star": "Sadalmelik",
+          "constellation": "Aqr",
+          "star_fixed_object_id": 1189,
+          "star_ecliptic_longitude_deg": 333.352,
+          "star_ecliptic_latitude_deg": 10.662,
+          "longitude_separation_deg": 0.0,
+          "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+          "finder_only": true,
+          "planet_ra_deg": 334.104123,
+          "planet_dec_deg": -8.24548,
+          "sky_separation_deg": 8.4
+        },
+        {
+          "kind": "planet-star-longitude",
+          "planet": "Mercury",
+          "planet_longitude_deg": 207.283,
+          "star": "Spica",
+          "constellation": "Vir",
+          "star_fixed_object_id": 60,
+          "star_ecliptic_longitude_deg": 203.841,
+          "star_ecliptic_latitude_deg": -2.054,
+          "longitude_separation_deg": 3.4,
+          "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+          "finder_only": true,
+          "planet_ra_deg": 205.751598,
+          "planet_dec_deg": -8.317031,
+          "sky_separation_deg": 5.2
+        }
+      ],
+      "planet_position": {
+        "ra_deg": 66.724973,
+        "dec_deg": 21.619677
+      },
+      "solar_system_field": [
+        {
+          "name": "Moon",
+          "ra_deg": 334.104123,
+          "dec_deg": -8.24548
+        },
+        {
+          "name": "Mercury",
+          "ra_deg": 205.751598,
+          "dec_deg": -8.317031
+        },
+        {
+          "name": "Venus",
+          "ra_deg": 246.022944,
+          "dec_deg": -22.259428
+        },
+        {
+          "name": "Mars",
+          "ra_deg": 255.041264,
+          "dec_deg": -23.630835
+        },
+        {
+          "name": "Ceres",
+          "ra_deg": 196.499423,
+          "dec_deg": 1.489139
+        },
+        {
+          "name": "Jupiter",
+          "ra_deg": 172.229578,
+          "dec_deg": 4.497694
+        },
+        {
+          "name": "Saturn",
+          "ra_deg": 21.761084,
+          "dec_deg": 6.16033
+        },
+        {
+          "name": "Uranus",
+          "ra_deg": 66.724973,
+          "dec_deg": 21.619677
+        },
+        {
+          "name": "Neptune",
+          "ra_deg": 4.102671,
+          "dec_deg": 0.190096
+        },
+        {
+          "name": "Pluto",
+          "ra_deg": 308.030324,
+          "dec_deg": -23.759637
+        }
+      ],
+      "planet_plot_policy": "plot all preserved 2-D Star Almanack Solar-System positions that fall inside the Pathfinder field; the Moon is a normal plotted body, with apparent-disk occultation handled only by rendering/collision logic",
+      "reference_standard": "docs/finder-standard.md"
+    },
+    {
+      "schema_version": 1,
+      "id": "2027-W45-1259",
+      "object_id": 1259,
+      "week": "2027-W45",
+      "kind": "stellar-finder",
+      "geometry": {
+        "constellation_system": "Martz/MacRobert",
+        "constellation_abbreviation": "Psc",
+        "on_missing_geometry": "fail",
+        "invent_geometry": false
+      },
+      "style": {
+        "background": "night-sky",
+        "constellation": {
+          "stroke": "#5c8fe8",
+          "role": "ordinary constellation figure"
+        },
+        "asterism": {
+          "stroke": "#59c86d",
+          "role": "orienting asterism"
+        },
+        "target": {
+          "stroke": "#ffd84d",
+          "fill": "none",
+          "role": "open target circle"
+        },
+        "target_arrows": false
+      },
+      "constellation": "Pisces",
+      "asterism": null,
+      "targets": [
+        {
+          "type": "solar-system-object",
+          "name": "Neptune"
+        },
+        {
+          "type": "reference-star",
+          "name": "Fumalsamakah",
+          "fixed_object_id": 573
+        }
+      ],
+      "landmark_policy": {
+        "retain_named_field_stars": true,
+        "primary_reference_star": "Fumalsamakah",
+        "magnitude_limit": 2.99
+      },
+      "finder_route": {
+        "sequence": [
+          "Pisces",
+          "Fumalsamakah",
+          "Neptune"
+        ],
+        "orientation": "constellation-stick-figure",
+        "reference_star": "Fumalsamakah",
+        "planet": "Neptune",
+        "finder_note": "Neptune is not easy to find this week.",
+        "sky_separation_deg": 18.5
+      },
+      "planetary_context": [
+        {
+          "kind": "planet-star-longitude",
+          "planet": "Moon",
+          "planet_longitude_deg": 333.4,
+          "star": "Sadalmelik",
+          "constellation": "Aqr",
+          "star_fixed_object_id": 1189,
+          "star_ecliptic_longitude_deg": 333.352,
+          "star_ecliptic_latitude_deg": 10.662,
+          "longitude_separation_deg": 0.0,
+          "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+          "finder_only": true,
+          "planet_ra_deg": 334.104123,
+          "planet_dec_deg": -8.24548,
+          "sky_separation_deg": 8.4
+        },
+        {
+          "kind": "planet-star-longitude",
+          "planet": "Mercury",
+          "planet_longitude_deg": 207.283,
+          "star": "Spica",
+          "constellation": "Vir",
+          "star_fixed_object_id": 60,
+          "star_ecliptic_longitude_deg": 203.841,
+          "star_ecliptic_latitude_deg": -2.054,
+          "longitude_separation_deg": 3.4,
+          "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+          "finder_only": true,
+          "planet_ra_deg": 205.751598,
+          "planet_dec_deg": -8.317031,
+          "sky_separation_deg": 5.2
+        }
+      ],
+      "planet_position": {
+        "ra_deg": 4.102671,
+        "dec_deg": 0.190096
+      },
+      "solar_system_field": [
+        {
+          "name": "Moon",
+          "ra_deg": 334.104123,
+          "dec_deg": -8.24548
+        },
+        {
+          "name": "Mercury",
+          "ra_deg": 205.751598,
+          "dec_deg": -8.317031
+        },
+        {
+          "name": "Venus",
+          "ra_deg": 246.022944,
+          "dec_deg": -22.259428
+        },
+        {
+          "name": "Mars",
+          "ra_deg": 255.041264,
+          "dec_deg": -23.630835
+        },
+        {
+          "name": "Ceres",
+          "ra_deg": 196.499423,
+          "dec_deg": 1.489139
+        },
+        {
+          "name": "Jupiter",
+          "ra_deg": 172.229578,
+          "dec_deg": 4.497694
+        },
+        {
+          "name": "Saturn",
+          "ra_deg": 21.761084,
+          "dec_deg": 6.16033
+        },
+        {
+          "name": "Uranus",
+          "ra_deg": 66.724973,
+          "dec_deg": 21.619677
+        },
+        {
+          "name": "Neptune",
+          "ra_deg": 4.102671,
+          "dec_deg": 0.190096
+        },
+        {
+          "name": "Pluto",
+          "ra_deg": 308.030324,
+          "dec_deg": -23.759637
+        }
+      ],
+      "planet_plot_policy": "plot all preserved 2-D Star Almanack Solar-System positions that fall inside the Pathfinder field; the Moon is a normal plotted body, with apparent-disk occultation handled only by rendering/collision logic",
+      "reference_standard": "docs/finder-standard.md"
+    },
+    {
+      "schema_version": 1,
+      "id": "2027-W45-1255",
+      "object_id": 1255,
+      "week": "2027-W45",
+      "kind": "stellar-finder",
+      "geometry": {
+        "constellation_system": "Martz/MacRobert",
+        "constellation_abbreviation": "Vir",
+        "on_missing_geometry": "fail",
+        "invent_geometry": false
+      },
+      "style": {
+        "background": "night-sky",
+        "constellation": {
+          "stroke": "#5c8fe8",
+          "role": "ordinary constellation figure"
+        },
+        "asterism": {
+          "stroke": "#59c86d",
+          "role": "orienting asterism"
+        },
+        "target": {
+          "stroke": "#ffd84d",
+          "fill": "none",
+          "role": "open target circle"
+        },
+        "target_arrows": false
+      },
+      "constellation": "Virgo",
+      "asterism": null,
+      "targets": [
+        {
+          "type": "solar-system-object",
+          "name": "Ceres"
+        },
+        {
+          "type": "reference-star",
+          "name": "Spica",
+          "fixed_object_id": 60
+        }
+      ],
+      "landmark_policy": {
+        "retain_named_field_stars": true,
+        "primary_reference_star": "Spica",
+        "magnitude_limit": 2.99
+      },
+      "finder_route": {
+        "sequence": [
+          "Virgo",
+          "Spica",
+          "Ceres"
+        ],
+        "orientation": "constellation-stick-figure",
+        "reference_star": "Spica",
+        "planet": "Ceres",
+        "finder_note": "Ceres is not easy to find this week.",
+        "sky_separation_deg": 13.5
+      },
+      "planetary_context": [
+        {
+          "kind": "planet-star-longitude",
+          "planet": "Moon",
+          "planet_longitude_deg": 333.4,
+          "star": "Sadalmelik",
+          "constellation": "Aqr",
+          "star_fixed_object_id": 1189,
+          "star_ecliptic_longitude_deg": 333.352,
+          "star_ecliptic_latitude_deg": 10.662,
+          "longitude_separation_deg": 0.0,
+          "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+          "finder_only": true,
+          "planet_ra_deg": 334.104123,
+          "planet_dec_deg": -8.24548,
+          "sky_separation_deg": 8.4
+        },
+        {
+          "kind": "planet-star-longitude",
+          "planet": "Mercury",
+          "planet_longitude_deg": 207.283,
+          "star": "Spica",
+          "constellation": "Vir",
+          "star_fixed_object_id": 60,
+          "star_ecliptic_longitude_deg": 203.841,
+          "star_ecliptic_latitude_deg": -2.054,
+          "longitude_separation_deg": 3.4,
+          "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+          "finder_only": true,
+          "planet_ra_deg": 205.751598,
+          "planet_dec_deg": -8.317031,
+          "sky_separation_deg": 5.2
+        }
+      ],
+      "planet_position": {
+        "ra_deg": 196.499423,
+        "dec_deg": 1.489139
+      },
+      "solar_system_field": [
+        {
+          "name": "Moon",
+          "ra_deg": 334.104123,
+          "dec_deg": -8.24548
+        },
+        {
+          "name": "Mercury",
+          "ra_deg": 205.751598,
+          "dec_deg": -8.317031
+        },
+        {
+          "name": "Venus",
+          "ra_deg": 246.022944,
+          "dec_deg": -22.259428
+        },
+        {
+          "name": "Mars",
+          "ra_deg": 255.041264,
+          "dec_deg": -23.630835
+        },
+        {
+          "name": "Ceres",
+          "ra_deg": 196.499423,
+          "dec_deg": 1.489139
+        },
+        {
+          "name": "Jupiter",
+          "ra_deg": 172.229578,
+          "dec_deg": 4.497694
+        },
+        {
+          "name": "Saturn",
+          "ra_deg": 21.761084,
+          "dec_deg": 6.16033
+        },
+        {
+          "name": "Uranus",
+          "ra_deg": 66.724973,
+          "dec_deg": 21.619677
+        },
+        {
+          "name": "Neptune",
+          "ra_deg": 4.102671,
+          "dec_deg": 0.190096
+        },
+        {
+          "name": "Pluto",
+          "ra_deg": 308.030324,
+          "dec_deg": -23.759637
+        }
+      ],
+      "planet_plot_policy": "plot all preserved 2-D Star Almanack Solar-System positions that fall inside the Pathfinder field; the Moon is a normal plotted body, with apparent-disk occultation handled only by rendering/collision logic",
+      "reference_standard": "docs/finder-standard.md"
+    },
+    {
+      "schema_version": 1,
+      "id": "2027-W45-1260",
+      "object_id": 1260,
+      "week": "2027-W45",
+      "kind": "stellar-finder",
+      "geometry": {
+        "constellation_system": "Martz/MacRobert",
+        "constellation_abbreviation": "Cap",
+        "on_missing_geometry": "fail",
+        "invent_geometry": false
+      },
+      "style": {
+        "background": "night-sky",
+        "constellation": {
+          "stroke": "#5c8fe8",
+          "role": "ordinary constellation figure"
+        },
+        "asterism": {
+          "stroke": "#59c86d",
+          "role": "orienting asterism"
+        },
+        "target": {
+          "stroke": "#ffd84d",
+          "fill": "none",
+          "role": "open target circle"
+        },
+        "target_arrows": false
+      },
+      "constellation": "Capricorn",
+      "asterism": null,
+      "targets": [
+        {
+          "type": "solar-system-object",
+          "name": "Pluto"
+        },
+        {
+          "type": "reference-star",
+          "name": "Dabih",
+          "fixed_object_id": 1152
+        }
+      ],
+      "landmark_policy": {
+        "retain_named_field_stars": true,
+        "primary_reference_star": "Dabih",
+        "magnitude_limit": 2.99
+      },
+      "finder_route": {
+        "sequence": [
+          "Capricorn",
+          "Dabih",
+          "Pluto"
+        ],
+        "orientation": "constellation-stick-figure",
+        "reference_star": "Dabih",
+        "planet": "Pluto",
+        "finder_note": null,
+        "sky_separation_deg": 9.4
+      },
+      "planetary_context": [
+        {
+          "kind": "planet-star-longitude",
+          "planet": "Moon",
+          "planet_longitude_deg": 333.4,
+          "star": "Sadalmelik",
+          "constellation": "Aqr",
+          "star_fixed_object_id": 1189,
+          "star_ecliptic_longitude_deg": 333.352,
+          "star_ecliptic_latitude_deg": 10.662,
+          "longitude_separation_deg": 0.0,
+          "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+          "finder_only": true,
+          "planet_ra_deg": 334.104123,
+          "planet_dec_deg": -8.24548,
+          "sky_separation_deg": 8.4
+        },
+        {
+          "kind": "planet-star-longitude",
+          "planet": "Mercury",
+          "planet_longitude_deg": 207.283,
+          "star": "Spica",
+          "constellation": "Vir",
+          "star_fixed_object_id": 60,
+          "star_ecliptic_longitude_deg": 203.841,
+          "star_ecliptic_latitude_deg": -2.054,
+          "longitude_separation_deg": 3.4,
+          "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+          "finder_only": true,
+          "planet_ra_deg": 205.751598,
+          "planet_dec_deg": -8.317031,
+          "sky_separation_deg": 5.2
+        }
+      ],
+      "planet_position": {
+        "ra_deg": 308.030324,
+        "dec_deg": -23.759637
+      },
+      "solar_system_field": [
+        {
+          "name": "Moon",
+          "ra_deg": 334.104123,
+          "dec_deg": -8.24548
+        },
+        {
+          "name": "Mercury",
+          "ra_deg": 205.751598,
+          "dec_deg": -8.317031
+        },
+        {
+          "name": "Venus",
+          "ra_deg": 246.022944,
+          "dec_deg": -22.259428
+        },
+        {
+          "name": "Mars",
+          "ra_deg": 255.041264,
+          "dec_deg": -23.630835
+        },
+        {
+          "name": "Ceres",
+          "ra_deg": 196.499423,
+          "dec_deg": 1.489139
+        },
+        {
+          "name": "Jupiter",
+          "ra_deg": 172.229578,
+          "dec_deg": 4.497694
+        },
+        {
+          "name": "Saturn",
+          "ra_deg": 21.761084,
+          "dec_deg": 6.16033
+        },
+        {
+          "name": "Uranus",
+          "ra_deg": 66.724973,
+          "dec_deg": 21.619677
+        },
+        {
+          "name": "Neptune",
+          "ra_deg": 4.102671,
+          "dec_deg": 0.190096
+        },
+        {
+          "name": "Pluto",
+          "ra_deg": 308.030324,
+          "dec_deg": -23.759637
+        }
+      ],
+      "planet_plot_policy": "plot all preserved 2-D Star Almanack Solar-System positions that fall inside the Pathfinder field; the Moon is a normal plotted body, with apparent-disk occultation handled only by rendering/collision logic",
+      "reference_standard": "docs/finder-standard.md"
+    }
+  ],
+  "descriptor_policy": {
+    "source_of_truth": "machine-readable JSON",
+    "candidate_pool": "complete; presentation never limits discovery",
+    "presentation": "Wordy",
+    "story_limit": null,
+    "wordy_policy": "repeat canonical hed and dek in reader links, then elaborate with canonical story body",
+    "future_presentations": [],
+    "link_target": "/almanack/descriptors/<fixed_object_id>.json for fixed-object descriptors",
+    "artwork_descriptor_is_separate": true,
+    "artwork_source": "explicit story front matter only",
+    "fixed_sky_identity_source": "Calendar data-fixed-object-id + data-observing-aid + database/fixed-objects.json",
+    "story_identity_source": "Calendar data-fixed-object-id only",
+    "story_source": "stories/<collection>/<fixed_object_id>.md",
+    "inline_story_content": "hed + dek + body",
+    "linked_story_content": "reader-facing links to every available canonical object story",
+    "annual_note_is_separate_from_evergreen_story": true
+  },
+  "planet_weekly_facts": {
+    "1253": {
+      "observing": "Naked eye",
+      "solar_glare": false,
+      "ra_hours": 22.273608172,
+      "dec_deg": -8.245480018,
+      "sun_ra_hours": 14.832916866,
+      "rise": "13:56",
+      "set": "00:56",
+      "object_id": 1253,
+      "name": "Moon",
+      "snapshot_utc": "2027-11-08T00:00:00+00:00",
+      "guide_star": "Sadalmelik",
+      "guide_star_fixed_object_id": 1189,
+      "guide_separation_deg": 8.4,
+      "events": [
+        "Opposition in ecliptic longitude Nov 14 03:25 UTC.",
+        "Conjunction with Saturn in ecliptic longitude Nov 11 23:16 UTC.",
+        "Conjunction with Neptune in ecliptic longitude Nov 10 12:42 UTC."
+      ],
+      "close_pairs": [],
+      "magnitude": -10.67287668467833,
+      "illuminated_percent": 65.6,
+      "elongation_deg": 108.0,
+      "solar_side": "east",
+      "phase_trend": "waxing",
+      "motion_deg_per_day": 11.9093,
+      "motion": "direct",
+      "altitude_21_last_45n_deg": 32.7,
+      "source": "Preserved weekly ephemeris; cached JPL/NAIF kernels through StarAlmanackEphemeris",
+      "dek": "Naked eye; magnitude -10.7; direct motion; 65.6% illuminated. Monday 00:00 UTC snapshot. Opposition in ecliptic longitude Nov 14 03:25 UTC. Conjunction with Saturn in ecliptic longitude Nov 11 23:16 UTC. Conjunction with Neptune in ecliptic longitude Nov 10 12:42 UTC.",
+      "body": "Moon: naked eye at the Monday 00:00 UTC snapshot. At 45°N and 21:00 local apparent solar time, it is 32.7° above the horizon. Rises 13:56; sets 00:56 (45°N, local apparent solar time). Visual magnitude -10.7. The disk is 65.6% illuminated (waxing gibbous). It is 108.0° from the Sun, on its east side. Motion is direct at 11.909° per day in ecliptic longitude at the snapshot. Position reference: Sadalmelik, 8.4° away. Opposition in ecliptic longitude Nov 14 03:25 UTC. Conjunction with Saturn in ecliptic longitude Nov 11 23:16 UTC. Conjunction with Neptune in ecliptic longitude Nov 10 12:42 UTC."
+    },
+    "1250": {
+      "observing": "Solar Glare",
+      "solar_glare": true,
+      "ra_hours": 13.716773219,
+      "dec_deg": -8.317031452,
+      "sun_ra_hours": 14.832916866,
+      "rise": "05:23",
+      "set": "16:23",
+      "object_id": 1250,
+      "name": "Mercury",
+      "snapshot_utc": "2027-11-08T00:00:00+00:00",
+      "guide_star": "Spica",
+      "guide_star_fixed_object_id": 60,
+      "guide_separation_deg": 5.2,
+      "events": [],
+      "close_pairs": [],
+      "magnitude": -0.7316627939720584,
+      "illuminated_percent": 70.7,
+      "elongation_deg": 18.2,
+      "solar_side": "west",
+      "motion_deg_per_day": 1.2925,
+      "motion": "direct",
+      "altitude_21_last_45n_deg": -45.9,
+      "source": "Preserved weekly ephemeris; cached JPL/NAIF kernels through StarAlmanackEphemeris",
+      "dek": "In solar glare; magnitude -0.7; direct motion; 70.7% illuminated. Monday 00:00 UTC snapshot.",
+      "body": "Mercury: in solar glare at the Monday 00:00 UTC snapshot. Rises 05:23; sets 16:23 (45°N, local apparent solar time). Visual magnitude -0.7. The disk is 70.7% illuminated (gibbous). It is 18.2° from the Sun, on its west side. Motion is direct at 1.292° per day in ecliptic longitude at the snapshot. Position reference: Spica, 5.2° away."
+    },
+    "1251": {
+      "observing": "Naked eye",
+      "solar_glare": false,
+      "ra_hours": 16.401529592,
+      "dec_deg": -22.25942791,
+      "sun_ra_hours": 14.832916866,
+      "rise": "09:07",
+      "set": "18:01",
+      "object_id": 1251,
+      "name": "Venus",
+      "snapshot_utc": "2027-11-08T00:00:00+00:00",
+      "guide_star": "Antares",
+      "guide_star_fixed_object_id": 73,
+      "guide_separation_deg": 4.3,
+      "events": [],
+      "close_pairs": [],
+      "magnitude": -3.879960401979098,
+      "illuminated_percent": 92.4,
+      "elongation_deg": 23.0,
+      "solar_side": "east",
+      "motion_deg_per_day": 1.2412,
+      "motion": "direct",
+      "altitude_21_last_45n_deg": -30.5,
+      "source": "Preserved weekly ephemeris; cached JPL/NAIF kernels through StarAlmanackEphemeris",
+      "dek": "Naked eye; magnitude -3.9; direct motion; 92.4% illuminated. Below the horizon at 21:00 local apparent solar time, 45°N. Monday 00:00 UTC snapshot.",
+      "body": "Venus: naked eye at the Monday 00:00 UTC snapshot. At 45°N and 21:00 local apparent solar time, it is 30.5° below the horizon. Rises 09:07; sets 18:01 (45°N, local apparent solar time). Visual magnitude -3.9. The disk is 92.4% illuminated (gibbous). It is 23.0° from the Sun, on its east side. Motion is direct at 1.241° per day in ecliptic longitude at the snapshot. Position reference: Antares, 4.3° away."
+    },
+    "1254": {
+      "observing": "Naked eye",
+      "solar_glare": false,
+      "ra_hours": 17.002750964,
+      "dec_deg": -23.630834506,
+      "sun_ra_hours": 14.832916866,
+      "rise": "09:50",
+      "set": "18:30",
+      "object_id": 1254,
+      "name": "Mars",
+      "snapshot_utc": "2027-11-08T00:00:00+00:00",
+      "guide_star": "Antares",
+      "guide_star_fixed_object_id": 73,
+      "guide_separation_deg": 7.5,
+      "events": [],
+      "close_pairs": [],
+      "magnitude": 1.319234824425,
+      "illuminated_percent": 96.7,
+      "elongation_deg": 31.4,
+      "solar_side": "east",
+      "motion_deg_per_day": 0.7385,
+      "motion": "direct",
+      "altitude_21_last_45n_deg": -25.0,
+      "source": "Preserved weekly ephemeris; cached JPL/NAIF kernels through StarAlmanackEphemeris",
+      "dek": "Naked eye; magnitude 1.3; direct motion; 96.7% illuminated. Below the horizon at 21:00 local apparent solar time, 45°N. Monday 00:00 UTC snapshot.",
+      "body": "Mars: naked eye at the Monday 00:00 UTC snapshot. At 45°N and 21:00 local apparent solar time, it is 25.0° below the horizon. Rises 09:50; sets 18:30 (45°N, local apparent solar time). Visual magnitude 1.3. The disk is 96.7% illuminated (gibbous). It is 31.4° from the Sun, on its east side. Motion is direct at 0.739° per day in ecliptic longitude at the snapshot. Position reference: Antares, 7.5° away."
+    },
+    "1255": {
+      "observing": "Telescope",
+      "solar_glare": false,
+      "ra_hours": 13.09996154,
+      "dec_deg": 1.489138861,
+      "sun_ra_hours": 14.832916866,
+      "rise": "04:07",
+      "set": "16:25",
+      "object_id": 1255,
+      "name": "Ceres",
+      "snapshot_utc": "2027-11-08T00:00:00+00:00",
+      "guide_star": "Spica",
+      "guide_star_fixed_object_id": 60,
+      "guide_separation_deg": 13.5,
+      "events": [],
+      "close_pairs": [],
+      "magnitude": 8.761827672358546,
+      "illuminated_percent": 99.0,
+      "elongation_deg": 31.2,
+      "solar_side": "west",
+      "motion_deg_per_day": 0.4401,
+      "motion": "direct",
+      "altitude_21_last_45n_deg": -40.5,
+      "source": "Preserved weekly ephemeris; cached JPL/NAIF kernels through StarAlmanackEphemeris",
+      "dek": "Telescope; magnitude 8.8; direct motion; 99.0% illuminated. Below the horizon at 21:00 local apparent solar time, 45°N. Monday 00:00 UTC snapshot.",
+      "body": "Ceres: telescope at the Monday 00:00 UTC snapshot. At 45°N and 21:00 local apparent solar time, it is 40.5° below the horizon. Rises 04:07; sets 16:25 (45°N, local apparent solar time). Visual magnitude 8.8. The disk is 99.0% illuminated (nearly full). It is 31.2° from the Sun, on its west side. Motion is direct at 0.440° per day in ecliptic longitude at the snapshot. Position reference: Spica, 13.5° away."
+    },
+    "1256": {
+      "observing": "Naked eye",
+      "solar_glare": false,
+      "ra_hours": 11.481971851,
+      "dec_deg": 4.497693816,
+      "sun_ra_hours": 14.832916866,
+      "rise": "02:18",
+      "set": "15:00",
+      "object_id": 1256,
+      "name": "Jupiter",
+      "snapshot_utc": "2027-11-08T00:00:00+00:00",
+      "guide_star": "Zavijava",
+      "guide_star_fixed_object_id": 934,
+      "guide_separation_deg": 6.1,
+      "events": [],
+      "close_pairs": [],
+      "magnitude": -1.8191138377551188,
+      "illuminated_percent": 99.5,
+      "elongation_deg": 53.9,
+      "solar_side": "west",
+      "motion_deg_per_day": 0.1658,
+      "motion": "direct",
+      "altitude_21_last_45n_deg": -40.3,
+      "source": "Preserved weekly ephemeris; cached JPL/NAIF kernels through StarAlmanackEphemeris",
+      "dek": "Naked eye; magnitude -1.8; direct motion; 99.5% illuminated. Below the horizon at 21:00 local apparent solar time, 45°N. Monday 00:00 UTC snapshot.",
+      "body": "Jupiter: naked eye at the Monday 00:00 UTC snapshot. At 45°N and 21:00 local apparent solar time, it is 40.3° below the horizon. Rises 02:18; sets 15:00 (45°N, local apparent solar time). Visual magnitude -1.8. The disk is 99.5% illuminated (nearly full). It is 53.9° from the Sun, on its west side. Motion is direct at 0.166° per day in ecliptic longitude at the snapshot. Position reference: Zavijava, 6.1° away."
+    },
+    "1257": {
+      "observing": "Naked eye",
+      "solar_glare": false,
+      "ra_hours": 1.450738901,
+      "dec_deg": 6.160330017,
+      "sun_ra_hours": 14.832916866,
+      "rise": "16:09",
+      "set": "05:05",
+      "object_id": 1257,
+      "name": "Saturn",
+      "snapshot_utc": "2027-11-08T00:00:00+00:00",
+      "guide_star": "Alrescha",
+      "guide_star_fixed_object_id": 654,
+      "guide_separation_deg": 9.4,
+      "events": [
+        "Conjunction with Moon in ecliptic longitude Nov 11 23:16 UTC."
+      ],
+      "close_pairs": [],
+      "magnitude": 0.20596202766546767,
+      "illuminated_percent": 100.0,
+      "elongation_deg": 157.3,
+      "solar_side": "east",
+      "motion_deg_per_day": -0.0701,
+      "motion": "retrograde",
+      "altitude_21_last_45n_deg": 45.8,
+      "source": "Preserved weekly ephemeris; cached JPL/NAIF kernels through StarAlmanackEphemeris",
+      "dek": "Naked eye; magnitude 0.2; retrograde motion; 100.0% illuminated. Monday 00:00 UTC snapshot. Conjunction with Moon in ecliptic longitude Nov 11 23:16 UTC.",
+      "body": "Saturn: naked eye at the Monday 00:00 UTC snapshot. At 45°N and 21:00 local apparent solar time, it is 45.8° above the horizon. Rises 16:09; sets 05:05 (45°N, local apparent solar time). Visual magnitude 0.2. The disk is 100.0% illuminated (nearly full). It is 157.3° from the Sun, on its east side. Motion is retrograde at 0.070° per day in ecliptic longitude at the snapshot. Position reference: Alrescha, 9.4° away. Conjunction with Moon in ecliptic longitude Nov 11 23:16 UTC."
+    },
+    "1258": {
+      "observing": "Binoculars",
+      "solar_glare": false,
+      "ra_hours": 4.4483315,
+      "dec_deg": 21.619676774,
+      "sun_ra_hours": 14.832916866,
+      "rise": "18:00",
+      "set": "09:14",
+      "object_id": 1258,
+      "name": "Uranus",
+      "snapshot_utc": "2027-11-08T00:00:00+00:00",
+      "guide_star": "Aldebaran",
+      "guide_star_fixed_object_id": 25,
+      "guide_separation_deg": 5.5,
+      "events": [],
+      "close_pairs": [],
+      "magnitude": 5.590303584881594,
+      "illuminated_percent": 100.0,
+      "elongation_deg": 156.5,
+      "solar_side": "west",
+      "motion_deg_per_day": -0.0376,
+      "motion": "retrograde",
+      "altitude_21_last_45n_deg": 29.6,
+      "source": "Preserved weekly ephemeris; cached JPL/NAIF kernels through StarAlmanackEphemeris",
+      "dek": "Binoculars; magnitude 5.6; retrograde motion; 100.0% illuminated. Monday 00:00 UTC snapshot.",
+      "body": "Uranus: binoculars at the Monday 00:00 UTC snapshot. At 45°N and 21:00 local apparent solar time, it is 29.6° above the horizon. Rises 18:00; sets 09:14 (45°N, local apparent solar time). Visual magnitude 5.6. The disk is 100.0% illuminated (nearly full). It is 156.5° from the Sun, on its west side. Motion is retrograde at 0.038° per day in ecliptic longitude at the snapshot. Position reference: Aldebaran, 5.5° away."
+    },
+    "1259": {
+      "observing": "Telescope",
+      "solar_glare": false,
+      "ra_hours": 0.273511398,
+      "dec_deg": 0.190096295,
+      "sun_ra_hours": 14.832916866,
+      "rise": "15:22",
+      "set": "03:30",
+      "object_id": 1259,
+      "name": "Neptune",
+      "snapshot_utc": "2027-11-08T00:00:00+00:00",
+      "guide_star": "Fumalsamakah",
+      "guide_star_fixed_object_id": 573,
+      "guide_separation_deg": 18.5,
+      "events": [
+        "Conjunction with Moon in ecliptic longitude Nov 10 12:42 UTC."
+      ],
+      "close_pairs": [],
+      "magnitude": 7.696771583572428,
+      "illuminated_percent": 100.0,
+      "elongation_deg": 138.9,
+      "solar_side": "east",
+      "motion_deg_per_day": -0.0193,
+      "motion": "retrograde",
+      "altitude_21_last_45n_deg": 44.8,
+      "source": "Preserved weekly ephemeris; cached JPL/NAIF kernels through StarAlmanackEphemeris",
+      "dek": "Telescope; magnitude 7.7; retrograde motion; 100.0% illuminated. Monday 00:00 UTC snapshot. Conjunction with Moon in ecliptic longitude Nov 10 12:42 UTC.",
+      "body": "Neptune: telescope at the Monday 00:00 UTC snapshot. At 45°N and 21:00 local apparent solar time, it is 44.8° above the horizon. Rises 15:22; sets 03:30 (45°N, local apparent solar time). Visual magnitude 7.7. The disk is 100.0% illuminated (nearly full). It is 138.9° from the Sun, on its east side. Motion is retrograde at 0.019° per day in ecliptic longitude at the snapshot. Position reference: Fumalsamakah, 18.5° away. Conjunction with Moon in ecliptic longitude Nov 10 12:42 UTC."
+    },
+    "1260": {
+      "observing": "Substantial telescope",
+      "solar_glare": false,
+      "ra_hours": 20.535354918,
+      "dec_deg": -23.759636687,
+      "sun_ra_hours": 14.832916866,
+      "rise": "13:23",
+      "set": "22:02",
+      "object_id": 1260,
+      "name": "Pluto",
+      "snapshot_utc": "2027-11-08T00:00:00+00:00",
+      "guide_star": "Dabih",
+      "guide_star_fixed_object_id": 1152,
+      "guide_separation_deg": 9.4,
+      "events": [],
+      "close_pairs": [],
+      "magnitude": 14.613756032612374,
+      "illuminated_percent": 100.0,
+      "elongation_deg": 79.5,
+      "solar_side": "east",
+      "motion_deg_per_day": 0.0098,
+      "motion": "direct",
+      "altitude_21_last_45n_deg": 7.8,
+      "source": "Preserved weekly ephemeris; cached JPL/NAIF kernels through StarAlmanackEphemeris",
+      "dek": "Substantial telescope; magnitude 14.6; direct motion; 100.0% illuminated. Monday 00:00 UTC snapshot.",
+      "body": "Pluto: substantial telescope at the Monday 00:00 UTC snapshot. At 45°N and 21:00 local apparent solar time, it is 7.8° above the horizon. Rises 13:23; sets 22:02 (45°N, local apparent solar time). Visual magnitude 14.6. The disk is 100.0% illuminated (nearly full). It is 79.5° from the Sun, on its east side. Motion is direct at 0.010° per day in ecliptic longitude at the snapshot. Position reference: Dabih, 9.4° away."
+    }
+  }
+}
