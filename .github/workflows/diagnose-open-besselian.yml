@@ -56,7 +56,6 @@ jobs:
           PY
 
       - name: Compare production backend with frozen NASA targets
-        working-directory: Historical
         run: |
           python - <<'PY'
           from datetime import datetime
