@@ -1,6 +1,9 @@
 name: Ten-Year Solar and Lunar Eclipses
 on:
   workflow_dispatch:
+  push:
+    paths:
+      - .github/workflows/ten-year-solar-lunar-eclipses.yml
 permissions:
   contents: read
 jobs:
