@@ -451,3 +451,19 @@ This entry preserves the known fixes and architectural decisions accumulated dur
 **Verification:** Pending.
 
 **Resolution:** Pending.
+
+
+### 2026-10-21 — BUG-ECLIPSE-TT-REFERENCE — Besselian audits compare UT references with UTC
+
+**State:** Resolved
+**Component:** Independent Besselian control and production Besselian timing audit
+
+**Observed:** Nine eclipse cases showed residuals from -21.617 to +7.361 seconds even with the independent DE440s calculation.
+
+**Diagnosis:** NASA SEsearch publishes both TD/TDT and UT. The legacy *_utc catalog fields actually retain NASA's UT labels. Comparing those with calculated civil UTC introduces epoch-dependent clock offsets, including Skyfield's proleptic UTC convention before 1972.
+
+**Fix:** Added NASA's published TD labels for all historical cases; use existing future TD labels. Both Besselian audits now construct TT references and compare computed TT directly, without UT/UTC conversion. Keep original UT-valued legacy fields for older diagnostics. Add a separate 1-second Besselian tolerance for all nine cases and correct the production audit kernel path to match its download/cache step.
+
+**Verification:** Executed both revised workflow comparison scripts locally with complete DE440s, Skyfield 1.55, and eclipse-calc pinned at 23853a8f9e0d1a25e026203207aca16de1d7bb31. All nine cases passed in each audit. Independent control max absolute residual 0.455 s; production backend max 0.454 s. YAML and embedded Python parsed and compiled successfully.
+
+**Resolution:** Besselian timing comparisons use matching dynamical timescales. Earlier compact/ELP engine diagnostics remain separate; this does not establish their correctness.

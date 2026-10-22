@@ -5,6 +5,7 @@ on:
   push:
     paths:
       - '.github/workflows/diagnose-besselian-control.yml'
+      - 'eclipse-validation-cases.yaml'
 
 jobs:
   compare-besselian:
@@ -55,15 +56,20 @@ jobs:
           data = yaml.safe_load(CASES.read_text())
           cases = []
           for case in data['historical']:
-              cases.append((case['label'], case['expected_greatest_utc']))
+              cases.append((case['label'], case['nasa_greatest_td']))
           for case in data['future_jello']['cases']:
-              cases.append((case['label'], case['nasa_greatest_utc']))
+              cases.append((case['label'], case['nasa_greatest_td']))
 
           ts = load.timescale()
           eph = load(str(KERNEL))
 
           def parse_iso(s):
-              return datetime.fromisoformat(s.replace('Z', '+00:00'))
+              if s.endswith('Z'):
+                  raise ValueError('TD reference must not carry a UTC Z suffix')
+              dt = datetime.fromisoformat(s)
+              if dt.tzinfo is not None:
+                  raise ValueError('TD reference must be a timezone-free TT calendar label')
+              return dt
 
           def fmt(dt):
               return dt.astimezone(timezone.utc).strftime('%Y-%m-%dT%H:%M:%S.%fZ')
@@ -71,15 +77,17 @@ jobs:
           print('STAR ALMANACK — INDEPENDENT BESSELIAN CONTROL')
           print('Implementation: lkangas/eclipse-calc (MIT), ephemeris-direct Besselian elements')
           print('Ephemeris: complete DE440s (Jupiter and Saturn barycenters included)')
+          print('Residual: calculated TT minus published NASA TD; no UT/UTC conversion')
           print('Greatest eclipse criterion: minimum x^2 + y^2 in the Bessel fundamental plane')
           print()
-          print(f"{'Case':38s} {'NASA':>11s} {'Bessel':>11s} {'Residual':>10s}")
+          print(f"{'Case':38s} {'NASA TD':>11s} {'Bessel TT':>11s} {'Residual':>10s}")
           print('-' * 76)
 
           residuals = []
           for label, ref_iso in cases:
               ref_dt = parse_iso(ref_iso)
-              t0 = ts.from_datetime(ref_dt)
+              t0 = ts.tt(ref_dt.year, ref_dt.month, ref_dt.day,
+                         ref_dt.hour, ref_dt.minute, ref_dt.second + ref_dt.microsecond / 1e6)
               eclipse = BesselianEclipse(t0, eph)
 
               def objective(seconds):
@@ -93,16 +101,17 @@ jobs:
                   method='bounded',
                   options={'xatol': 1e-5},
               )
+              if not result.success:
+                  raise RuntimeError(result.message)
               seconds = float(result.x)
               calc = ts.tt_jd(t0.tt + seconds / 86400.0)
-              calc_dt = calc.utc_datetime().replace(tzinfo=timezone.utc)
-              residual = (calc_dt - ref_dt).total_seconds()
+              residual = float((calc.tt - t0.tt) * 86400.0)
               residuals.append(residual)
 
               print(
                   f"{label:38.38s} "
                   f"{ref_dt.strftime('%H:%M:%S'):>11s} "
-                  f"{calc_dt.strftime('%H:%M:%S.%f')[:11]:>11s} "
+                  f"{calc.tt_strftime('%H:%M:%S'):>11s} "
                   f"{residual:+9.3f}s"
               )
 
@@ -117,4 +126,7 @@ jobs:
           print(f'mean signed residual = {mean_signed:+.3f} s')
           print(f'mean absolute residual = {mean_abs:.3f} s')
           print(f'max absolute residual = {max_abs:.3f} s')
+          tolerance = float(data['tolerances']['besselian_greatest_time_seconds'])
+          if max_abs > tolerance:
+              raise SystemExit(f'Besselian TT regression: {max_abs:.3f}s > {tolerance:.3f}s')
           PY
