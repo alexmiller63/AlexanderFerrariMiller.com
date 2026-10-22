@@ -140,4 +140,28 @@ document.addEventListener('click', function (e) {
   const caption = wrap.querySelector('figcaption');
   caption.textContent = button.textContent;
 });
+</script><script id="current-week-highlight">
+(() => {
+  function refreshCurrentWeek() {
+    const parts = new Intl.DateTimeFormat('en-US', {
+      timeZone: 'America/Los_Angeles', year: 'numeric', month: 'numeric', day: 'numeric'
+    }).formatToParts(new Date());
+    const value = type => Number(parts.find(part => part.type === type).value);
+    const thursday = new Date(Date.UTC(value('year'), value('month') - 1, value('day')));
+    thursday.setUTCDate(thursday.getUTCDate() + 4 - (thursday.getUTCDay() || 7));
+    const year = thursday.getUTCFullYear();
+    const start = new Date(Date.UTC(year, 0, 1));
+    const week = Math.ceil(((thursday - start) / 86400000 + 1) / 7);
+    const label = `ISO ${year}-W${String(week).padStart(2, '0')}`;
+    document.querySelectorAll('.weekgrid a').forEach(link => {
+      const current = link.textContent.trim() === label;
+      link.classList.toggle('current-week', current);
+      if (current) link.setAttribute('aria-current', 'date');
+      else if (link.getAttribute('aria-current') === 'date') link.removeAttribute('aria-current');
+    });
+  }
+  refreshCurrentWeek();
+  setInterval(refreshCurrentWeek, 60000);
+  document.addEventListener('visibilitychange', refreshCurrentWeek);
+})();
 </script></body></html>

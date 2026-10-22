@@ -76,6 +76,41 @@ BOTTOM_WRAP_RE = re.compile(r'<div class="almanack-bottom-nav-wrap" id="almanack
 EMPTY_BOTTOM_RE = re.compile(r'<div id="almanack-bottom-nav"></div>')
 STYLE_RE = re.compile(r'<style id="week-position-nav-css">.*?</style>', re.S)
 
+CURRENT_WEEK_SCRIPT = r'''<script id="current-week-highlight">
+(() => {
+  function refreshCurrentWeek() {
+    const parts = new Intl.DateTimeFormat('en-US', {
+      timeZone: 'America/Los_Angeles', year: 'numeric', month: 'numeric', day: 'numeric'
+    }).formatToParts(new Date());
+    const value = type => Number(parts.find(part => part.type === type).value);
+    const thursday = new Date(Date.UTC(value('year'), value('month') - 1, value('day')));
+    thursday.setUTCDate(thursday.getUTCDate() + 4 - (thursday.getUTCDay() || 7));
+    const year = thursday.getUTCFullYear();
+    const start = new Date(Date.UTC(year, 0, 1));
+    const week = Math.ceil(((thursday - start) / 86400000 + 1) / 7);
+    const label = `ISO ${year}-W${String(week).padStart(2, '0')}`;
+    document.querySelectorAll('.weekgrid a').forEach(link => {
+      const current = link.textContent.trim() === label;
+      link.classList.toggle('current-week', current);
+      if (current) link.setAttribute('aria-current', 'date');
+      else if (link.getAttribute('aria-current') === 'date') link.removeAttribute('aria-current');
+    });
+  }
+  refreshCurrentWeek();
+  setInterval(refreshCurrentWeek, 60000);
+  document.addEventListener('visibilitychange', refreshCurrentWeek);
+})();
+</script>'''
+CURRENT_WEEK_SCRIPT_RE = re.compile(r'<script id="current-week-highlight">.*?</script>', re.S)
+
+
+def ensure_current_week_script(text: str) -> str:
+    if CURRENT_WEEK_SCRIPT_RE.search(text):
+        return CURRENT_WEEK_SCRIPT_RE.sub(lambda _: CURRENT_WEEK_SCRIPT, text, count=1)
+    if '</body>' not in text:
+        raise RuntimeError('closing body tag not found')
+    return text.replace('</body>', CURRENT_WEEK_SCRIPT + '</body>', 1)
+
 
 def published_years() -> tuple[int, ...]:
     discovered: set[int] = set()
@@ -247,7 +282,7 @@ def highlight_current_week_on_index(text: str, year: int, week: int) -> str:
     if target not in text:
         raise RuntimeError(f"current week W{week:02d} not found on {year} index")
     text = text.replace(target, f'class="current-week" aria-current="date" {target}', 1)
-    return ensure_style(text)
+    return ensure_current_week_script(ensure_style(text))
 
 
 def main() -> None:
@@ -274,6 +309,7 @@ def main() -> None:
                 original = index_path.read_text(encoding='utf-8')
                 updated = ensure_style(rewrite_year_nav(original, year, weekly_page=False))
                 updated = ensure_year_bottom_target(updated, year)
+                updated = ensure_current_week_script(updated)
                 if updated != original:
                     index_path.write_text(updated, encoding='utf-8')
                     changed += 1
@@ -295,3 +331,4 @@ def main() -> None:
 
 if __name__ == '__main__':
     main()
+
