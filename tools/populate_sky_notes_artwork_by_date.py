@@ -82,8 +82,27 @@ def fixed_object_id_by_hip() -> dict[str, int]:
         if obj.get("status") != "active":
             continue
         for identifier in obj.get("identifiers") or []:
-            if str(identifier.get("namespace", "")).lower() == "hip":
-                result[str(identifier.get("value"))] = obj["fixed_object_id"]
+            if str(identifier.get("namespace", "")).lower() != "hip":
+                continue
+            hip = str(identifier.get("value") or "").strip()
+            if ";" in hip:
+                # Bright-star sources retain component lists for unresolved
+                # systems. They are not individual HIP numbers, nor permission
+                # to assign every component to the system's permanent ID.
+                components = hip.split(";")
+                canonical = obj.get("canonical_identity") or {}
+                anchor = str(canonical.get("value") or "")
+                if (not all(re.fullmatch(r"[0-9]+", part) for part in components)
+                        or canonical.get("namespace") != "hip"
+                        or anchor not in components):
+                    raise RuntimeError(f"fixed object {obj['fixed_object_id']}: ambiguous HIP system identity {hip!r}")
+                hip = anchor
+            if not re.fullmatch(r"[0-9]+", hip):
+                raise RuntimeError(f"fixed object {obj['fixed_object_id']}: invalid HIP identifier {hip!r}")
+            prior = result.get(hip)
+            if prior is not None and prior != obj["fixed_object_id"]:
+                raise RuntimeError(f"HIP {hip} belongs to multiple fixed objects: {prior}, {obj['fixed_object_id']}")
+            result[hip] = obj["fixed_object_id"]
     return result
 
 

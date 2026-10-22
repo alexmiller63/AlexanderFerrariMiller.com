@@ -9,6 +9,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Verify Centauri component identities across years
+        run: python -m unittest discover -s tests -p test_centauri_identity.py
+
       - name: Reject week-owned artwork
         shell: bash
         run: |
