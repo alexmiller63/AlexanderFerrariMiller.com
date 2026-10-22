@@ -159,3 +159,46 @@ h2 { color: #fff4c4; }
   .star-nav { align-items: flex-start; }
   .page-shell { padding-top: 2rem; }
 }
+
+/* Responsive minisite navigation: keep links contained at every width. */
+.star-nav {
+  display: block;
+  padding: 0.85rem 1.25rem;
+  background: rgba(4, 8, 16, 0.92);
+  border-bottom: 1px solid rgba(246, 215, 123, 0.45);
+}
+.star-menu summary { display: none; }
+.star-menu-links {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.45rem 0.8rem;
+}
+.star-menu-links a { display: inline-block; overflow-wrap: anywhere; }
+@media (max-width: 700px) {
+  .star-nav { padding: 0.7rem 1rem; }
+  .star-menu summary {
+    display: block;
+    cursor: pointer;
+    padding: 0.5rem 0.8rem;
+    border: 1px solid #f6d77b;
+    border-radius: 8px;
+    width: fit-content;
+    color: #f6d77b;
+    font-size: 1rem;
+  }
+  .star-menu:not([open]) .star-menu-links { display: none; }
+  .star-menu-links {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.25rem;
+    padding-top: 0.75rem;
+  }
+  .star-menu-links a { width: 100%; padding: 0.65rem 0.75rem; }
+  .star-site-mark { width: auto; margin-right: 0; }
+  .page-shell { width: min(100% - 2rem, 1080px); }
+  .hero { padding: 1.25rem 0 2rem; }
+  h1 { font-size: clamp(2.2rem, 10vw, 3.7rem); }
+  .tagline { font-size: 1.05rem; line-height: 1.5; }
+}
