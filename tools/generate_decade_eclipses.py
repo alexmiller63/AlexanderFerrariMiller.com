@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Provisional 2026–2035 solar eclipse catalog from the local eclipse engine.
+"""Provisional 2026–2035 solar and lunar eclipses from local geometry.
 
 No published eclipse dates or external ephemeris service is consulted.
 A synodic-month grid proposes candidate dates; the engine searches geometry.
@@ -12,11 +12,12 @@ from datetime import date, timedelta
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-from eclipse_engine import EclipseEngine
+from eclipse_engine import EclipseEngine, gregorian_to_jd, jd_to_iso_utc
+from lunar_eclipse_engine import find_lunar_eclipse
 
 SEED = date(2026, 8, 12)  # lunation search anchor, not a reference prediction
 SYNODIC_DAYS = 29.530588853
-FIELDS = ["date_utc", "greatest_utc", "type", "axis_distance_km",
+FIELDS = ["kind", "contacts_utc", "date_utc", "greatest_utc", "type", "axis_distance_km",
           "penumbra_margin_km", "central_margin_km", "core_radius_km",
           "status"]
 
@@ -37,6 +38,7 @@ def generate(start_year, end_year):
             continue
         g = event.geometry
         results[event.greatest_utc[:16]] = {
+            "kind": "solar", "contacts_utc": "",
             "date_utc": event_day.isoformat(),
             "greatest_utc": event.greatest_utc,
             "type": event.eclipse_type,
@@ -44,6 +46,32 @@ def generate(start_year, end_year):
             "penumbra_margin_km": round(g.eclipse_margin_km, 3),
             "central_margin_km": round(g.central_margin_km, 3),
             "core_radius_km": round(g.core_radius_km, 3),
+            "status": "PROVISIONAL — geometry and times not independently validated",
+        }
+    # Full moons lie approximately half a synodic month from each new moon.
+    # Search each independent candidate against Earth's actual shadow.
+    for k in range(-180, 180):
+        candidate = SEED + timedelta(days=round((k + 0.5) * SYNODIC_DAYS))
+        if not start - timedelta(days=3) <= candidate < end + timedelta(days=3):
+            continue
+        jd = gregorian_to_jd(candidate.year, candidate.month, candidate.day, 12.0)
+        event = find_lunar_eclipse(engine, jd)
+        if event is None:
+            continue
+        greatest = jd_to_iso_utc(event["greatest_jd_utc"])
+        event_day = date.fromisoformat(greatest[:10])
+        if not start <= event_day < end:
+            continue
+        g = event["geometry"]
+        results["lunar:"+greatest[:16]] = {
+            "kind": "lunar", "date_utc": event_day.isoformat(),
+            "greatest_utc": greatest, "type": event["type"],
+            "axis_distance_km": round(g.axis_distance_km, 3),
+            "penumbra_margin_km": round(g.penumbral_margin_km, 3),
+            "central_margin_km": round(g.umbral_margin_km, 3),
+            "core_radius_km": round(g.umbra_radius_km, 3),
+            "contacts_utc": json.dumps({key: jd_to_iso_utc(val)
+                                         for key, val in sorted(event["contacts_jd_utc"].items())}),
             "status": "PROVISIONAL — geometry and times not independently validated",
         }
     return sorted(results.values(), key=lambda r: r["greatest_utc"])
@@ -58,15 +86,15 @@ def main():
         parser.error("end-year must not precede start-year")
     rows = generate(args.start_year, args.end_year)
     args.output_dir.mkdir(parents=True, exist_ok=True)
-    csv_path = args.output_dir / f"solar-eclipses-{args.start_year}-{args.end_year}.csv"
+    csv_path = args.output_dir / f"eclipses-{args.start_year}-{args.end_year}.csv"
     json_path = args.output_dir / f"solar-eclipses-{args.start_year}-{args.end_year}.json"
     with csv_path.open("w", newline="") as f:
         writer = csv.DictWriter(f, fieldnames=FIELDS)
         writer.writeheader()
         writer.writerows(rows)
     json_path.write_text(json.dumps({"status": "provisional", "start_year": args.start_year,
-        "end_year": args.end_year, "solar_eclipses": rows}, indent=2) + "\n")
-    print(f"Wrote {len(rows)} provisional solar eclipses: {csv_path}, {json_path}")
+        "end_year": args.end_year, "eclipses": rows}, indent=2) + "\n")
+    print(f"Wrote {len(rows)} provisional solar and lunar eclipses: {csv_path}, {json_path}")
 
 if __name__ == "__main__":
     main()
