@@ -41,6 +41,11 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          week="${{ strategy.job-index }}"
+          echo "### 2027 build — ${{ github.job }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Started: $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> "$GITHUB_STEP_SUMMARY"
+          trap 'rc=$?; if [ "$rc" -eq 0 ]; then echo "✅ Weekly build succeeded" >> "$GITHUB_STEP_SUMMARY"; else echo "❌ Weekly build failed (exit $rc)" >> "$GITHUB_STEP_SUMMARY"; echo "::error::2027 ${{ github.job }} failed (exit $rc)"; fi; echo "Finished: $(date -u +\x27%Y-%m-%d %H:%M:%S UTC\x27)" >> "$GITHUB_STEP_SUMMARY"' EXIT
+          echo "::notice::Starting 2027 ${{ github.job }}"
           bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
             -f start_year=2027 -f start_week=1 \
             -f end_year=2027 -f end_week=1 \
@@ -65,6 +70,11 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          week="${{ strategy.job-index }}"
+          echo "### 2027 build — ${{ github.job }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Started: $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> "$GITHUB_STEP_SUMMARY"
+          trap 'rc=$?; if [ "$rc" -eq 0 ]; then echo "✅ Weekly build succeeded" >> "$GITHUB_STEP_SUMMARY"; else echo "❌ Weekly build failed (exit $rc)" >> "$GITHUB_STEP_SUMMARY"; echo "::error::2027 ${{ github.job }} failed (exit $rc)"; fi; echo "Finished: $(date -u +\x27%Y-%m-%d %H:%M:%S UTC\x27)" >> "$GITHUB_STEP_SUMMARY"' EXIT
+          echo "::notice::Starting 2027 ${{ github.job }}"
           bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
             -f start_year=2027 -f start_week=2 \
             -f end_year=2027 -f end_week=2 \
@@ -89,6 +99,11 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          week="${{ strategy.job-index }}"
+          echo "### 2027 build — ${{ github.job }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Started: $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> "$GITHUB_STEP_SUMMARY"
+          trap 'rc=$?; if [ "$rc" -eq 0 ]; then echo "✅ Weekly build succeeded" >> "$GITHUB_STEP_SUMMARY"; else echo "❌ Weekly build failed (exit $rc)" >> "$GITHUB_STEP_SUMMARY"; echo "::error::2027 ${{ github.job }} failed (exit $rc)"; fi; echo "Finished: $(date -u +\x27%Y-%m-%d %H:%M:%S UTC\x27)" >> "$GITHUB_STEP_SUMMARY"' EXIT
+          echo "::notice::Starting 2027 ${{ github.job }}"
           bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
             -f start_year=2027 -f start_week=3 \
             -f end_year=2027 -f end_week=3 \
@@ -113,6 +128,11 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          week="${{ strategy.job-index }}"
+          echo "### 2027 build — ${{ github.job }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Started: $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> "$GITHUB_STEP_SUMMARY"
+          trap 'rc=$?; if [ "$rc" -eq 0 ]; then echo "✅ Weekly build succeeded" >> "$GITHUB_STEP_SUMMARY"; else echo "❌ Weekly build failed (exit $rc)" >> "$GITHUB_STEP_SUMMARY"; echo "::error::2027 ${{ github.job }} failed (exit $rc)"; fi; echo "Finished: $(date -u +\x27%Y-%m-%d %H:%M:%S UTC\x27)" >> "$GITHUB_STEP_SUMMARY"' EXIT
+          echo "::notice::Starting 2027 ${{ github.job }}"
           bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
             -f start_year=2027 -f start_week=4 \
             -f end_year=2027 -f end_week=4 \
@@ -137,6 +157,11 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          week="${{ strategy.job-index }}"
+          echo "### 2027 build — ${{ github.job }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Started: $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> "$GITHUB_STEP_SUMMARY"
+          trap 'rc=$?; if [ "$rc" -eq 0 ]; then echo "✅ Weekly build succeeded" >> "$GITHUB_STEP_SUMMARY"; else echo "❌ Weekly build failed (exit $rc)" >> "$GITHUB_STEP_SUMMARY"; echo "::error::2027 ${{ github.job }} failed (exit $rc)"; fi; echo "Finished: $(date -u +\x27%Y-%m-%d %H:%M:%S UTC\x27)" >> "$GITHUB_STEP_SUMMARY"' EXIT
+          echo "::notice::Starting 2027 ${{ github.job }}"
           bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
             -f start_year=2027 -f start_week=5 \
             -f end_year=2027 -f end_week=5 \
@@ -161,6 +186,11 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          week="${{ strategy.job-index }}"
+          echo "### 2027 build — ${{ github.job }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Started: $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> "$GITHUB_STEP_SUMMARY"
+          trap 'rc=$?; if [ "$rc" -eq 0 ]; then echo "✅ Weekly build succeeded" >> "$GITHUB_STEP_SUMMARY"; else echo "❌ Weekly build failed (exit $rc)" >> "$GITHUB_STEP_SUMMARY"; echo "::error::2027 ${{ github.job }} failed (exit $rc)"; fi; echo "Finished: $(date -u +\x27%Y-%m-%d %H:%M:%S UTC\x27)" >> "$GITHUB_STEP_SUMMARY"' EXIT
+          echo "::notice::Starting 2027 ${{ github.job }}"
           bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
             -f start_year=2027 -f start_week=6 \
             -f end_year=2027 -f end_week=6 \
@@ -185,6 +215,11 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          week="${{ strategy.job-index }}"
+          echo "### 2027 build — ${{ github.job }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Started: $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> "$GITHUB_STEP_SUMMARY"
+          trap 'rc=$?; if [ "$rc" -eq 0 ]; then echo "✅ Weekly build succeeded" >> "$GITHUB_STEP_SUMMARY"; else echo "❌ Weekly build failed (exit $rc)" >> "$GITHUB_STEP_SUMMARY"; echo "::error::2027 ${{ github.job }} failed (exit $rc)"; fi; echo "Finished: $(date -u +\x27%Y-%m-%d %H:%M:%S UTC\x27)" >> "$GITHUB_STEP_SUMMARY"' EXIT
+          echo "::notice::Starting 2027 ${{ github.job }}"
           bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
             -f start_year=2027 -f start_week=7 \
             -f end_year=2027 -f end_week=7 \
@@ -209,6 +244,11 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          week="${{ strategy.job-index }}"
+          echo "### 2027 build — ${{ github.job }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Started: $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> "$GITHUB_STEP_SUMMARY"
+          trap 'rc=$?; if [ "$rc" -eq 0 ]; then echo "✅ Weekly build succeeded" >> "$GITHUB_STEP_SUMMARY"; else echo "❌ Weekly build failed (exit $rc)" >> "$GITHUB_STEP_SUMMARY"; echo "::error::2027 ${{ github.job }} failed (exit $rc)"; fi; echo "Finished: $(date -u +\x27%Y-%m-%d %H:%M:%S UTC\x27)" >> "$GITHUB_STEP_SUMMARY"' EXIT
+          echo "::notice::Starting 2027 ${{ github.job }}"
           bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
             -f start_year=2027 -f start_week=8 \
             -f end_year=2027 -f end_week=8 \
@@ -233,6 +273,11 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          week="${{ strategy.job-index }}"
+          echo "### 2027 build — ${{ github.job }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Started: $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> "$GITHUB_STEP_SUMMARY"
+          trap 'rc=$?; if [ "$rc" -eq 0 ]; then echo "✅ Weekly build succeeded" >> "$GITHUB_STEP_SUMMARY"; else echo "❌ Weekly build failed (exit $rc)" >> "$GITHUB_STEP_SUMMARY"; echo "::error::2027 ${{ github.job }} failed (exit $rc)"; fi; echo "Finished: $(date -u +\x27%Y-%m-%d %H:%M:%S UTC\x27)" >> "$GITHUB_STEP_SUMMARY"' EXIT
+          echo "::notice::Starting 2027 ${{ github.job }}"
           bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
             -f start_year=2027 -f start_week=9 \
             -f end_year=2027 -f end_week=9 \
@@ -257,6 +302,11 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          week="${{ strategy.job-index }}"
+          echo "### 2027 build — ${{ github.job }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Started: $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> "$GITHUB_STEP_SUMMARY"
+          trap 'rc=$?; if [ "$rc" -eq 0 ]; then echo "✅ Weekly build succeeded" >> "$GITHUB_STEP_SUMMARY"; else echo "❌ Weekly build failed (exit $rc)" >> "$GITHUB_STEP_SUMMARY"; echo "::error::2027 ${{ github.job }} failed (exit $rc)"; fi; echo "Finished: $(date -u +\x27%Y-%m-%d %H:%M:%S UTC\x27)" >> "$GITHUB_STEP_SUMMARY"' EXIT
+          echo "::notice::Starting 2027 ${{ github.job }}"
           bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
             -f start_year=2027 -f start_week=10 \
             -f end_year=2027 -f end_week=10 \
@@ -281,6 +331,11 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          week="${{ strategy.job-index }}"
+          echo "### 2027 build — ${{ github.job }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Started: $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> "$GITHUB_STEP_SUMMARY"
+          trap 'rc=$?; if [ "$rc" -eq 0 ]; then echo "✅ Weekly build succeeded" >> "$GITHUB_STEP_SUMMARY"; else echo "❌ Weekly build failed (exit $rc)" >> "$GITHUB_STEP_SUMMARY"; echo "::error::2027 ${{ github.job }} failed (exit $rc)"; fi; echo "Finished: $(date -u +\x27%Y-%m-%d %H:%M:%S UTC\x27)" >> "$GITHUB_STEP_SUMMARY"' EXIT
+          echo "::notice::Starting 2027 ${{ github.job }}"
           bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
             -f start_year=2027 -f start_week=11 \
             -f end_year=2027 -f end_week=11 \
@@ -305,6 +360,11 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          week="${{ strategy.job-index }}"
+          echo "### 2027 build — ${{ github.job }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Started: $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> "$GITHUB_STEP_SUMMARY"
+          trap 'rc=$?; if [ "$rc" -eq 0 ]; then echo "✅ Weekly build succeeded" >> "$GITHUB_STEP_SUMMARY"; else echo "❌ Weekly build failed (exit $rc)" >> "$GITHUB_STEP_SUMMARY"; echo "::error::2027 ${{ github.job }} failed (exit $rc)"; fi; echo "Finished: $(date -u +\x27%Y-%m-%d %H:%M:%S UTC\x27)" >> "$GITHUB_STEP_SUMMARY"' EXIT
+          echo "::notice::Starting 2027 ${{ github.job }}"
           bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
             -f start_year=2027 -f start_week=12 \
             -f end_year=2027 -f end_week=12 \
@@ -329,6 +389,11 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          week="${{ strategy.job-index }}"
+          echo "### 2027 build — ${{ github.job }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Started: $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> "$GITHUB_STEP_SUMMARY"
+          trap 'rc=$?; if [ "$rc" -eq 0 ]; then echo "✅ Weekly build succeeded" >> "$GITHUB_STEP_SUMMARY"; else echo "❌ Weekly build failed (exit $rc)" >> "$GITHUB_STEP_SUMMARY"; echo "::error::2027 ${{ github.job }} failed (exit $rc)"; fi; echo "Finished: $(date -u +\x27%Y-%m-%d %H:%M:%S UTC\x27)" >> "$GITHUB_STEP_SUMMARY"' EXIT
+          echo "::notice::Starting 2027 ${{ github.job }}"
           bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
             -f start_year=2027 -f start_week=13 \
             -f end_year=2027 -f end_week=13 \
@@ -353,6 +418,11 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          week="${{ strategy.job-index }}"
+          echo "### 2027 build — ${{ github.job }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Started: $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> "$GITHUB_STEP_SUMMARY"
+          trap 'rc=$?; if [ "$rc" -eq 0 ]; then echo "✅ Weekly build succeeded" >> "$GITHUB_STEP_SUMMARY"; else echo "❌ Weekly build failed (exit $rc)" >> "$GITHUB_STEP_SUMMARY"; echo "::error::2027 ${{ github.job }} failed (exit $rc)"; fi; echo "Finished: $(date -u +\x27%Y-%m-%d %H:%M:%S UTC\x27)" >> "$GITHUB_STEP_SUMMARY"' EXIT
+          echo "::notice::Starting 2027 ${{ github.job }}"
           bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
             -f start_year=2027 -f start_week=14 \
             -f end_year=2027 -f end_week=14 \
@@ -377,6 +447,11 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          week="${{ strategy.job-index }}"
+          echo "### 2027 build — ${{ github.job }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Started: $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> "$GITHUB_STEP_SUMMARY"
+          trap 'rc=$?; if [ "$rc" -eq 0 ]; then echo "✅ Weekly build succeeded" >> "$GITHUB_STEP_SUMMARY"; else echo "❌ Weekly build failed (exit $rc)" >> "$GITHUB_STEP_SUMMARY"; echo "::error::2027 ${{ github.job }} failed (exit $rc)"; fi; echo "Finished: $(date -u +\x27%Y-%m-%d %H:%M:%S UTC\x27)" >> "$GITHUB_STEP_SUMMARY"' EXIT
+          echo "::notice::Starting 2027 ${{ github.job }}"
           bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
             -f start_year=2027 -f start_week=15 \
             -f end_year=2027 -f end_week=15 \
@@ -401,6 +476,11 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          week="${{ strategy.job-index }}"
+          echo "### 2027 build — ${{ github.job }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Started: $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> "$GITHUB_STEP_SUMMARY"
+          trap 'rc=$?; if [ "$rc" -eq 0 ]; then echo "✅ Weekly build succeeded" >> "$GITHUB_STEP_SUMMARY"; else echo "❌ Weekly build failed (exit $rc)" >> "$GITHUB_STEP_SUMMARY"; echo "::error::2027 ${{ github.job }} failed (exit $rc)"; fi; echo "Finished: $(date -u +\x27%Y-%m-%d %H:%M:%S UTC\x27)" >> "$GITHUB_STEP_SUMMARY"' EXIT
+          echo "::notice::Starting 2027 ${{ github.job }}"
           bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
             -f start_year=2027 -f start_week=16 \
             -f end_year=2027 -f end_week=16 \
@@ -425,6 +505,11 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          week="${{ strategy.job-index }}"
+          echo "### 2027 build — ${{ github.job }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Started: $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> "$GITHUB_STEP_SUMMARY"
+          trap 'rc=$?; if [ "$rc" -eq 0 ]; then echo "✅ Weekly build succeeded" >> "$GITHUB_STEP_SUMMARY"; else echo "❌ Weekly build failed (exit $rc)" >> "$GITHUB_STEP_SUMMARY"; echo "::error::2027 ${{ github.job }} failed (exit $rc)"; fi; echo "Finished: $(date -u +\x27%Y-%m-%d %H:%M:%S UTC\x27)" >> "$GITHUB_STEP_SUMMARY"' EXIT
+          echo "::notice::Starting 2027 ${{ github.job }}"
           bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
             -f start_year=2027 -f start_week=17 \
             -f end_year=2027 -f end_week=17 \
@@ -449,6 +534,11 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          week="${{ strategy.job-index }}"
+          echo "### 2027 build — ${{ github.job }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Started: $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> "$GITHUB_STEP_SUMMARY"
+          trap 'rc=$?; if [ "$rc" -eq 0 ]; then echo "✅ Weekly build succeeded" >> "$GITHUB_STEP_SUMMARY"; else echo "❌ Weekly build failed (exit $rc)" >> "$GITHUB_STEP_SUMMARY"; echo "::error::2027 ${{ github.job }} failed (exit $rc)"; fi; echo "Finished: $(date -u +\x27%Y-%m-%d %H:%M:%S UTC\x27)" >> "$GITHUB_STEP_SUMMARY"' EXIT
+          echo "::notice::Starting 2027 ${{ github.job }}"
           bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
             -f start_year=2027 -f start_week=18 \
             -f end_year=2027 -f end_week=18 \
@@ -473,6 +563,11 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          week="${{ strategy.job-index }}"
+          echo "### 2027 build — ${{ github.job }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Started: $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> "$GITHUB_STEP_SUMMARY"
+          trap 'rc=$?; if [ "$rc" -eq 0 ]; then echo "✅ Weekly build succeeded" >> "$GITHUB_STEP_SUMMARY"; else echo "❌ Weekly build failed (exit $rc)" >> "$GITHUB_STEP_SUMMARY"; echo "::error::2027 ${{ github.job }} failed (exit $rc)"; fi; echo "Finished: $(date -u +\x27%Y-%m-%d %H:%M:%S UTC\x27)" >> "$GITHUB_STEP_SUMMARY"' EXIT
+          echo "::notice::Starting 2027 ${{ github.job }}"
           bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
             -f start_year=2027 -f start_week=19 \
             -f end_year=2027 -f end_week=19 \
@@ -497,6 +592,11 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          week="${{ strategy.job-index }}"
+          echo "### 2027 build — ${{ github.job }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Started: $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> "$GITHUB_STEP_SUMMARY"
+          trap 'rc=$?; if [ "$rc" -eq 0 ]; then echo "✅ Weekly build succeeded" >> "$GITHUB_STEP_SUMMARY"; else echo "❌ Weekly build failed (exit $rc)" >> "$GITHUB_STEP_SUMMARY"; echo "::error::2027 ${{ github.job }} failed (exit $rc)"; fi; echo "Finished: $(date -u +\x27%Y-%m-%d %H:%M:%S UTC\x27)" >> "$GITHUB_STEP_SUMMARY"' EXIT
+          echo "::notice::Starting 2027 ${{ github.job }}"
           bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
             -f start_year=2027 -f start_week=20 \
             -f end_year=2027 -f end_week=20 \
@@ -521,6 +621,11 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          week="${{ strategy.job-index }}"
+          echo "### 2027 build — ${{ github.job }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Started: $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> "$GITHUB_STEP_SUMMARY"
+          trap 'rc=$?; if [ "$rc" -eq 0 ]; then echo "✅ Weekly build succeeded" >> "$GITHUB_STEP_SUMMARY"; else echo "❌ Weekly build failed (exit $rc)" >> "$GITHUB_STEP_SUMMARY"; echo "::error::2027 ${{ github.job }} failed (exit $rc)"; fi; echo "Finished: $(date -u +\x27%Y-%m-%d %H:%M:%S UTC\x27)" >> "$GITHUB_STEP_SUMMARY"' EXIT
+          echo "::notice::Starting 2027 ${{ github.job }}"
           bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
             -f start_year=2027 -f start_week=21 \
             -f end_year=2027 -f end_week=21 \
@@ -545,6 +650,11 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          week="${{ strategy.job-index }}"
+          echo "### 2027 build — ${{ github.job }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Started: $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> "$GITHUB_STEP_SUMMARY"
+          trap 'rc=$?; if [ "$rc" -eq 0 ]; then echo "✅ Weekly build succeeded" >> "$GITHUB_STEP_SUMMARY"; else echo "❌ Weekly build failed (exit $rc)" >> "$GITHUB_STEP_SUMMARY"; echo "::error::2027 ${{ github.job }} failed (exit $rc)"; fi; echo "Finished: $(date -u +\x27%Y-%m-%d %H:%M:%S UTC\x27)" >> "$GITHUB_STEP_SUMMARY"' EXIT
+          echo "::notice::Starting 2027 ${{ github.job }}"
           bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
             -f start_year=2027 -f start_week=22 \
             -f end_year=2027 -f end_week=22 \
@@ -569,6 +679,11 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          week="${{ strategy.job-index }}"
+          echo "### 2027 build — ${{ github.job }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Started: $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> "$GITHUB_STEP_SUMMARY"
+          trap 'rc=$?; if [ "$rc" -eq 0 ]; then echo "✅ Weekly build succeeded" >> "$GITHUB_STEP_SUMMARY"; else echo "❌ Weekly build failed (exit $rc)" >> "$GITHUB_STEP_SUMMARY"; echo "::error::2027 ${{ github.job }} failed (exit $rc)"; fi; echo "Finished: $(date -u +\x27%Y-%m-%d %H:%M:%S UTC\x27)" >> "$GITHUB_STEP_SUMMARY"' EXIT
+          echo "::notice::Starting 2027 ${{ github.job }}"
           bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
             -f start_year=2027 -f start_week=23 \
             -f end_year=2027 -f end_week=23 \
@@ -593,6 +708,11 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          week="${{ strategy.job-index }}"
+          echo "### 2027 build — ${{ github.job }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Started: $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> "$GITHUB_STEP_SUMMARY"
+          trap 'rc=$?; if [ "$rc" -eq 0 ]; then echo "✅ Weekly build succeeded" >> "$GITHUB_STEP_SUMMARY"; else echo "❌ Weekly build failed (exit $rc)" >> "$GITHUB_STEP_SUMMARY"; echo "::error::2027 ${{ github.job }} failed (exit $rc)"; fi; echo "Finished: $(date -u +\x27%Y-%m-%d %H:%M:%S UTC\x27)" >> "$GITHUB_STEP_SUMMARY"' EXIT
+          echo "::notice::Starting 2027 ${{ github.job }}"
           bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
             -f start_year=2027 -f start_week=24 \
             -f end_year=2027 -f end_week=24 \
@@ -617,6 +737,11 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          week="${{ strategy.job-index }}"
+          echo "### 2027 build — ${{ github.job }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Started: $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> "$GITHUB_STEP_SUMMARY"
+          trap 'rc=$?; if [ "$rc" -eq 0 ]; then echo "✅ Weekly build succeeded" >> "$GITHUB_STEP_SUMMARY"; else echo "❌ Weekly build failed (exit $rc)" >> "$GITHUB_STEP_SUMMARY"; echo "::error::2027 ${{ github.job }} failed (exit $rc)"; fi; echo "Finished: $(date -u +\x27%Y-%m-%d %H:%M:%S UTC\x27)" >> "$GITHUB_STEP_SUMMARY"' EXIT
+          echo "::notice::Starting 2027 ${{ github.job }}"
           bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
             -f start_year=2027 -f start_week=25 \
             -f end_year=2027 -f end_week=25 \
@@ -641,6 +766,11 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          week="${{ strategy.job-index }}"
+          echo "### 2027 build — ${{ github.job }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Started: $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> "$GITHUB_STEP_SUMMARY"
+          trap 'rc=$?; if [ "$rc" -eq 0 ]; then echo "✅ Weekly build succeeded" >> "$GITHUB_STEP_SUMMARY"; else echo "❌ Weekly build failed (exit $rc)" >> "$GITHUB_STEP_SUMMARY"; echo "::error::2027 ${{ github.job }} failed (exit $rc)"; fi; echo "Finished: $(date -u +\x27%Y-%m-%d %H:%M:%S UTC\x27)" >> "$GITHUB_STEP_SUMMARY"' EXIT
+          echo "::notice::Starting 2027 ${{ github.job }}"
           bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
             -f start_year=2027 -f start_week=26 \
             -f end_year=2027 -f end_week=26 \
@@ -665,6 +795,11 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          week="${{ strategy.job-index }}"
+          echo "### 2027 build — ${{ github.job }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Started: $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> "$GITHUB_STEP_SUMMARY"
+          trap 'rc=$?; if [ "$rc" -eq 0 ]; then echo "✅ Weekly build succeeded" >> "$GITHUB_STEP_SUMMARY"; else echo "❌ Weekly build failed (exit $rc)" >> "$GITHUB_STEP_SUMMARY"; echo "::error::2027 ${{ github.job }} failed (exit $rc)"; fi; echo "Finished: $(date -u +\x27%Y-%m-%d %H:%M:%S UTC\x27)" >> "$GITHUB_STEP_SUMMARY"' EXIT
+          echo "::notice::Starting 2027 ${{ github.job }}"
           bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
             -f start_year=2027 -f start_week=27 \
             -f end_year=2027 -f end_week=27 \
@@ -689,6 +824,11 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          week="${{ strategy.job-index }}"
+          echo "### 2027 build — ${{ github.job }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Started: $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> "$GITHUB_STEP_SUMMARY"
+          trap 'rc=$?; if [ "$rc" -eq 0 ]; then echo "✅ Weekly build succeeded" >> "$GITHUB_STEP_SUMMARY"; else echo "❌ Weekly build failed (exit $rc)" >> "$GITHUB_STEP_SUMMARY"; echo "::error::2027 ${{ github.job }} failed (exit $rc)"; fi; echo "Finished: $(date -u +\x27%Y-%m-%d %H:%M:%S UTC\x27)" >> "$GITHUB_STEP_SUMMARY"' EXIT
+          echo "::notice::Starting 2027 ${{ github.job }}"
           bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
             -f start_year=2027 -f start_week=28 \
             -f end_year=2027 -f end_week=28 \
@@ -713,6 +853,11 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          week="${{ strategy.job-index }}"
+          echo "### 2027 build — ${{ github.job }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Started: $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> "$GITHUB_STEP_SUMMARY"
+          trap 'rc=$?; if [ "$rc" -eq 0 ]; then echo "✅ Weekly build succeeded" >> "$GITHUB_STEP_SUMMARY"; else echo "❌ Weekly build failed (exit $rc)" >> "$GITHUB_STEP_SUMMARY"; echo "::error::2027 ${{ github.job }} failed (exit $rc)"; fi; echo "Finished: $(date -u +\x27%Y-%m-%d %H:%M:%S UTC\x27)" >> "$GITHUB_STEP_SUMMARY"' EXIT
+          echo "::notice::Starting 2027 ${{ github.job }}"
           bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
             -f start_year=2027 -f start_week=29 \
             -f end_year=2027 -f end_week=29 \
@@ -737,6 +882,11 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          week="${{ strategy.job-index }}"
+          echo "### 2027 build — ${{ github.job }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Started: $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> "$GITHUB_STEP_SUMMARY"
+          trap 'rc=$?; if [ "$rc" -eq 0 ]; then echo "✅ Weekly build succeeded" >> "$GITHUB_STEP_SUMMARY"; else echo "❌ Weekly build failed (exit $rc)" >> "$GITHUB_STEP_SUMMARY"; echo "::error::2027 ${{ github.job }} failed (exit $rc)"; fi; echo "Finished: $(date -u +\x27%Y-%m-%d %H:%M:%S UTC\x27)" >> "$GITHUB_STEP_SUMMARY"' EXIT
+          echo "::notice::Starting 2027 ${{ github.job }}"
           bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
             -f start_year=2027 -f start_week=30 \
             -f end_year=2027 -f end_week=30 \
@@ -761,6 +911,11 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          week="${{ strategy.job-index }}"
+          echo "### 2027 build — ${{ github.job }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Started: $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> "$GITHUB_STEP_SUMMARY"
+          trap 'rc=$?; if [ "$rc" -eq 0 ]; then echo "✅ Weekly build succeeded" >> "$GITHUB_STEP_SUMMARY"; else echo "❌ Weekly build failed (exit $rc)" >> "$GITHUB_STEP_SUMMARY"; echo "::error::2027 ${{ github.job }} failed (exit $rc)"; fi; echo "Finished: $(date -u +\x27%Y-%m-%d %H:%M:%S UTC\x27)" >> "$GITHUB_STEP_SUMMARY"' EXIT
+          echo "::notice::Starting 2027 ${{ github.job }}"
           bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
             -f start_year=2027 -f start_week=31 \
             -f end_year=2027 -f end_week=31 \
@@ -785,6 +940,11 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          week="${{ strategy.job-index }}"
+          echo "### 2027 build — ${{ github.job }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Started: $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> "$GITHUB_STEP_SUMMARY"
+          trap 'rc=$?; if [ "$rc" -eq 0 ]; then echo "✅ Weekly build succeeded" >> "$GITHUB_STEP_SUMMARY"; else echo "❌ Weekly build failed (exit $rc)" >> "$GITHUB_STEP_SUMMARY"; echo "::error::2027 ${{ github.job }} failed (exit $rc)"; fi; echo "Finished: $(date -u +\x27%Y-%m-%d %H:%M:%S UTC\x27)" >> "$GITHUB_STEP_SUMMARY"' EXIT
+          echo "::notice::Starting 2027 ${{ github.job }}"
           bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
             -f start_year=2027 -f start_week=32 \
             -f end_year=2027 -f end_week=32 \
@@ -809,6 +969,11 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          week="${{ strategy.job-index }}"
+          echo "### 2027 build — ${{ github.job }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Started: $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> "$GITHUB_STEP_SUMMARY"
+          trap 'rc=$?; if [ "$rc" -eq 0 ]; then echo "✅ Weekly build succeeded" >> "$GITHUB_STEP_SUMMARY"; else echo "❌ Weekly build failed (exit $rc)" >> "$GITHUB_STEP_SUMMARY"; echo "::error::2027 ${{ github.job }} failed (exit $rc)"; fi; echo "Finished: $(date -u +\x27%Y-%m-%d %H:%M:%S UTC\x27)" >> "$GITHUB_STEP_SUMMARY"' EXIT
+          echo "::notice::Starting 2027 ${{ github.job }}"
           bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
             -f start_year=2027 -f start_week=33 \
             -f end_year=2027 -f end_week=33 \
@@ -833,6 +998,11 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          week="${{ strategy.job-index }}"
+          echo "### 2027 build — ${{ github.job }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Started: $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> "$GITHUB_STEP_SUMMARY"
+          trap 'rc=$?; if [ "$rc" -eq 0 ]; then echo "✅ Weekly build succeeded" >> "$GITHUB_STEP_SUMMARY"; else echo "❌ Weekly build failed (exit $rc)" >> "$GITHUB_STEP_SUMMARY"; echo "::error::2027 ${{ github.job }} failed (exit $rc)"; fi; echo "Finished: $(date -u +\x27%Y-%m-%d %H:%M:%S UTC\x27)" >> "$GITHUB_STEP_SUMMARY"' EXIT
+          echo "::notice::Starting 2027 ${{ github.job }}"
           bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
             -f start_year=2027 -f start_week=34 \
             -f end_year=2027 -f end_week=34 \
@@ -857,6 +1027,11 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          week="${{ strategy.job-index }}"
+          echo "### 2027 build — ${{ github.job }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Started: $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> "$GITHUB_STEP_SUMMARY"
+          trap 'rc=$?; if [ "$rc" -eq 0 ]; then echo "✅ Weekly build succeeded" >> "$GITHUB_STEP_SUMMARY"; else echo "❌ Weekly build failed (exit $rc)" >> "$GITHUB_STEP_SUMMARY"; echo "::error::2027 ${{ github.job }} failed (exit $rc)"; fi; echo "Finished: $(date -u +\x27%Y-%m-%d %H:%M:%S UTC\x27)" >> "$GITHUB_STEP_SUMMARY"' EXIT
+          echo "::notice::Starting 2027 ${{ github.job }}"
           bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
             -f start_year=2027 -f start_week=35 \
             -f end_year=2027 -f end_week=35 \
@@ -881,6 +1056,11 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          week="${{ strategy.job-index }}"
+          echo "### 2027 build — ${{ github.job }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Started: $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> "$GITHUB_STEP_SUMMARY"
+          trap 'rc=$?; if [ "$rc" -eq 0 ]; then echo "✅ Weekly build succeeded" >> "$GITHUB_STEP_SUMMARY"; else echo "❌ Weekly build failed (exit $rc)" >> "$GITHUB_STEP_SUMMARY"; echo "::error::2027 ${{ github.job }} failed (exit $rc)"; fi; echo "Finished: $(date -u +\x27%Y-%m-%d %H:%M:%S UTC\x27)" >> "$GITHUB_STEP_SUMMARY"' EXIT
+          echo "::notice::Starting 2027 ${{ github.job }}"
           bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
             -f start_year=2027 -f start_week=36 \
             -f end_year=2027 -f end_week=36 \
@@ -905,6 +1085,11 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          week="${{ strategy.job-index }}"
+          echo "### 2027 build — ${{ github.job }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Started: $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> "$GITHUB_STEP_SUMMARY"
+          trap 'rc=$?; if [ "$rc" -eq 0 ]; then echo "✅ Weekly build succeeded" >> "$GITHUB_STEP_SUMMARY"; else echo "❌ Weekly build failed (exit $rc)" >> "$GITHUB_STEP_SUMMARY"; echo "::error::2027 ${{ github.job }} failed (exit $rc)"; fi; echo "Finished: $(date -u +\x27%Y-%m-%d %H:%M:%S UTC\x27)" >> "$GITHUB_STEP_SUMMARY"' EXIT
+          echo "::notice::Starting 2027 ${{ github.job }}"
           bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
             -f start_year=2027 -f start_week=37 \
             -f end_year=2027 -f end_week=37 \
@@ -929,6 +1114,11 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          week="${{ strategy.job-index }}"
+          echo "### 2027 build — ${{ github.job }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Started: $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> "$GITHUB_STEP_SUMMARY"
+          trap 'rc=$?; if [ "$rc" -eq 0 ]; then echo "✅ Weekly build succeeded" >> "$GITHUB_STEP_SUMMARY"; else echo "❌ Weekly build failed (exit $rc)" >> "$GITHUB_STEP_SUMMARY"; echo "::error::2027 ${{ github.job }} failed (exit $rc)"; fi; echo "Finished: $(date -u +\x27%Y-%m-%d %H:%M:%S UTC\x27)" >> "$GITHUB_STEP_SUMMARY"' EXIT
+          echo "::notice::Starting 2027 ${{ github.job }}"
           bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
             -f start_year=2027 -f start_week=38 \
             -f end_year=2027 -f end_week=38 \
@@ -953,6 +1143,11 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          week="${{ strategy.job-index }}"
+          echo "### 2027 build — ${{ github.job }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Started: $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> "$GITHUB_STEP_SUMMARY"
+          trap 'rc=$?; if [ "$rc" -eq 0 ]; then echo "✅ Weekly build succeeded" >> "$GITHUB_STEP_SUMMARY"; else echo "❌ Weekly build failed (exit $rc)" >> "$GITHUB_STEP_SUMMARY"; echo "::error::2027 ${{ github.job }} failed (exit $rc)"; fi; echo "Finished: $(date -u +\x27%Y-%m-%d %H:%M:%S UTC\x27)" >> "$GITHUB_STEP_SUMMARY"' EXIT
+          echo "::notice::Starting 2027 ${{ github.job }}"
           bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
             -f start_year=2027 -f start_week=39 \
             -f end_year=2027 -f end_week=39 \
@@ -977,6 +1172,11 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          week="${{ strategy.job-index }}"
+          echo "### 2027 build — ${{ github.job }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Started: $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> "$GITHUB_STEP_SUMMARY"
+          trap 'rc=$?; if [ "$rc" -eq 0 ]; then echo "✅ Weekly build succeeded" >> "$GITHUB_STEP_SUMMARY"; else echo "❌ Weekly build failed (exit $rc)" >> "$GITHUB_STEP_SUMMARY"; echo "::error::2027 ${{ github.job }} failed (exit $rc)"; fi; echo "Finished: $(date -u +\x27%Y-%m-%d %H:%M:%S UTC\x27)" >> "$GITHUB_STEP_SUMMARY"' EXIT
+          echo "::notice::Starting 2027 ${{ github.job }}"
           bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
             -f start_year=2027 -f start_week=40 \
             -f end_year=2027 -f end_week=40 \
@@ -1001,6 +1201,11 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          week="${{ strategy.job-index }}"
+          echo "### 2027 build — ${{ github.job }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Started: $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> "$GITHUB_STEP_SUMMARY"
+          trap 'rc=$?; if [ "$rc" -eq 0 ]; then echo "✅ Weekly build succeeded" >> "$GITHUB_STEP_SUMMARY"; else echo "❌ Weekly build failed (exit $rc)" >> "$GITHUB_STEP_SUMMARY"; echo "::error::2027 ${{ github.job }} failed (exit $rc)"; fi; echo "Finished: $(date -u +\x27%Y-%m-%d %H:%M:%S UTC\x27)" >> "$GITHUB_STEP_SUMMARY"' EXIT
+          echo "::notice::Starting 2027 ${{ github.job }}"
           bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
             -f start_year=2027 -f start_week=41 \
             -f end_year=2027 -f end_week=41 \
@@ -1025,6 +1230,11 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          week="${{ strategy.job-index }}"
+          echo "### 2027 build — ${{ github.job }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Started: $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> "$GITHUB_STEP_SUMMARY"
+          trap 'rc=$?; if [ "$rc" -eq 0 ]; then echo "✅ Weekly build succeeded" >> "$GITHUB_STEP_SUMMARY"; else echo "❌ Weekly build failed (exit $rc)" >> "$GITHUB_STEP_SUMMARY"; echo "::error::2027 ${{ github.job }} failed (exit $rc)"; fi; echo "Finished: $(date -u +\x27%Y-%m-%d %H:%M:%S UTC\x27)" >> "$GITHUB_STEP_SUMMARY"' EXIT
+          echo "::notice::Starting 2027 ${{ github.job }}"
           bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
             -f start_year=2027 -f start_week=42 \
             -f end_year=2027 -f end_week=42 \
@@ -1049,6 +1259,11 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          week="${{ strategy.job-index }}"
+          echo "### 2027 build — ${{ github.job }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Started: $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> "$GITHUB_STEP_SUMMARY"
+          trap 'rc=$?; if [ "$rc" -eq 0 ]; then echo "✅ Weekly build succeeded" >> "$GITHUB_STEP_SUMMARY"; else echo "❌ Weekly build failed (exit $rc)" >> "$GITHUB_STEP_SUMMARY"; echo "::error::2027 ${{ github.job }} failed (exit $rc)"; fi; echo "Finished: $(date -u +\x27%Y-%m-%d %H:%M:%S UTC\x27)" >> "$GITHUB_STEP_SUMMARY"' EXIT
+          echo "::notice::Starting 2027 ${{ github.job }}"
           bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
             -f start_year=2027 -f start_week=43 \
             -f end_year=2027 -f end_week=43 \
@@ -1073,6 +1288,11 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          week="${{ strategy.job-index }}"
+          echo "### 2027 build — ${{ github.job }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Started: $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> "$GITHUB_STEP_SUMMARY"
+          trap 'rc=$?; if [ "$rc" -eq 0 ]; then echo "✅ Weekly build succeeded" >> "$GITHUB_STEP_SUMMARY"; else echo "❌ Weekly build failed (exit $rc)" >> "$GITHUB_STEP_SUMMARY"; echo "::error::2027 ${{ github.job }} failed (exit $rc)"; fi; echo "Finished: $(date -u +\x27%Y-%m-%d %H:%M:%S UTC\x27)" >> "$GITHUB_STEP_SUMMARY"' EXIT
+          echo "::notice::Starting 2027 ${{ github.job }}"
           bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
             -f start_year=2027 -f start_week=44 \
             -f end_year=2027 -f end_week=44 \
@@ -1097,6 +1317,11 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          week="${{ strategy.job-index }}"
+          echo "### 2027 build — ${{ github.job }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Started: $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> "$GITHUB_STEP_SUMMARY"
+          trap 'rc=$?; if [ "$rc" -eq 0 ]; then echo "✅ Weekly build succeeded" >> "$GITHUB_STEP_SUMMARY"; else echo "❌ Weekly build failed (exit $rc)" >> "$GITHUB_STEP_SUMMARY"; echo "::error::2027 ${{ github.job }} failed (exit $rc)"; fi; echo "Finished: $(date -u +\x27%Y-%m-%d %H:%M:%S UTC\x27)" >> "$GITHUB_STEP_SUMMARY"' EXIT
+          echo "::notice::Starting 2027 ${{ github.job }}"
           bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
             -f start_year=2027 -f start_week=45 \
             -f end_year=2027 -f end_week=45 \
@@ -1121,6 +1346,11 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          week="${{ strategy.job-index }}"
+          echo "### 2027 build — ${{ github.job }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Started: $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> "$GITHUB_STEP_SUMMARY"
+          trap 'rc=$?; if [ "$rc" -eq 0 ]; then echo "✅ Weekly build succeeded" >> "$GITHUB_STEP_SUMMARY"; else echo "❌ Weekly build failed (exit $rc)" >> "$GITHUB_STEP_SUMMARY"; echo "::error::2027 ${{ github.job }} failed (exit $rc)"; fi; echo "Finished: $(date -u +\x27%Y-%m-%d %H:%M:%S UTC\x27)" >> "$GITHUB_STEP_SUMMARY"' EXIT
+          echo "::notice::Starting 2027 ${{ github.job }}"
           bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
             -f start_year=2027 -f start_week=46 \
             -f end_year=2027 -f end_week=46 \
@@ -1145,6 +1375,11 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          week="${{ strategy.job-index }}"
+          echo "### 2027 build — ${{ github.job }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Started: $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> "$GITHUB_STEP_SUMMARY"
+          trap 'rc=$?; if [ "$rc" -eq 0 ]; then echo "✅ Weekly build succeeded" >> "$GITHUB_STEP_SUMMARY"; else echo "❌ Weekly build failed (exit $rc)" >> "$GITHUB_STEP_SUMMARY"; echo "::error::2027 ${{ github.job }} failed (exit $rc)"; fi; echo "Finished: $(date -u +\x27%Y-%m-%d %H:%M:%S UTC\x27)" >> "$GITHUB_STEP_SUMMARY"' EXIT
+          echo "::notice::Starting 2027 ${{ github.job }}"
           bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
             -f start_year=2027 -f start_week=47 \
             -f end_year=2027 -f end_week=47 \
@@ -1169,6 +1404,11 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          week="${{ strategy.job-index }}"
+          echo "### 2027 build — ${{ github.job }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Started: $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> "$GITHUB_STEP_SUMMARY"
+          trap 'rc=$?; if [ "$rc" -eq 0 ]; then echo "✅ Weekly build succeeded" >> "$GITHUB_STEP_SUMMARY"; else echo "❌ Weekly build failed (exit $rc)" >> "$GITHUB_STEP_SUMMARY"; echo "::error::2027 ${{ github.job }} failed (exit $rc)"; fi; echo "Finished: $(date -u +\x27%Y-%m-%d %H:%M:%S UTC\x27)" >> "$GITHUB_STEP_SUMMARY"' EXIT
+          echo "::notice::Starting 2027 ${{ github.job }}"
           bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
             -f start_year=2027 -f start_week=48 \
             -f end_year=2027 -f end_week=48 \
@@ -1193,6 +1433,11 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          week="${{ strategy.job-index }}"
+          echo "### 2027 build — ${{ github.job }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Started: $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> "$GITHUB_STEP_SUMMARY"
+          trap 'rc=$?; if [ "$rc" -eq 0 ]; then echo "✅ Weekly build succeeded" >> "$GITHUB_STEP_SUMMARY"; else echo "❌ Weekly build failed (exit $rc)" >> "$GITHUB_STEP_SUMMARY"; echo "::error::2027 ${{ github.job }} failed (exit $rc)"; fi; echo "Finished: $(date -u +\x27%Y-%m-%d %H:%M:%S UTC\x27)" >> "$GITHUB_STEP_SUMMARY"' EXIT
+          echo "::notice::Starting 2027 ${{ github.job }}"
           bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
             -f start_year=2027 -f start_week=49 \
             -f end_year=2027 -f end_week=49 \
@@ -1217,6 +1462,11 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          week="${{ strategy.job-index }}"
+          echo "### 2027 build — ${{ github.job }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Started: $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> "$GITHUB_STEP_SUMMARY"
+          trap 'rc=$?; if [ "$rc" -eq 0 ]; then echo "✅ Weekly build succeeded" >> "$GITHUB_STEP_SUMMARY"; else echo "❌ Weekly build failed (exit $rc)" >> "$GITHUB_STEP_SUMMARY"; echo "::error::2027 ${{ github.job }} failed (exit $rc)"; fi; echo "Finished: $(date -u +\x27%Y-%m-%d %H:%M:%S UTC\x27)" >> "$GITHUB_STEP_SUMMARY"' EXIT
+          echo "::notice::Starting 2027 ${{ github.job }}"
           bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
             -f start_year=2027 -f start_week=50 \
             -f end_year=2027 -f end_week=50 \
@@ -1241,6 +1491,11 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          week="${{ strategy.job-index }}"
+          echo "### 2027 build — ${{ github.job }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Started: $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> "$GITHUB_STEP_SUMMARY"
+          trap 'rc=$?; if [ "$rc" -eq 0 ]; then echo "✅ Weekly build succeeded" >> "$GITHUB_STEP_SUMMARY"; else echo "❌ Weekly build failed (exit $rc)" >> "$GITHUB_STEP_SUMMARY"; echo "::error::2027 ${{ github.job }} failed (exit $rc)"; fi; echo "Finished: $(date -u +\x27%Y-%m-%d %H:%M:%S UTC\x27)" >> "$GITHUB_STEP_SUMMARY"' EXIT
+          echo "::notice::Starting 2027 ${{ github.job }}"
           bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
             -f start_year=2027 -f start_week=51 \
             -f end_year=2027 -f end_week=51 \
@@ -1265,6 +1520,11 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          week="${{ strategy.job-index }}"
+          echo "### 2027 build — ${{ github.job }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Started: $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> "$GITHUB_STEP_SUMMARY"
+          trap 'rc=$?; if [ "$rc" -eq 0 ]; then echo "✅ Weekly build succeeded" >> "$GITHUB_STEP_SUMMARY"; else echo "❌ Weekly build failed (exit $rc)" >> "$GITHUB_STEP_SUMMARY"; echo "::error::2027 ${{ github.job }} failed (exit $rc)"; fi; echo "Finished: $(date -u +\x27%Y-%m-%d %H:%M:%S UTC\x27)" >> "$GITHUB_STEP_SUMMARY"' EXIT
+          echo "::notice::Starting 2027 ${{ github.job }}"
           bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
             -f start_year=2027 -f start_week=52 \
             -f end_year=2027 -f end_week=52 \
