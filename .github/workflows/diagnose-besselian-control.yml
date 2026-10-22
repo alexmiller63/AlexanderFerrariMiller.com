@@ -22,7 +22,17 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           python -m pip install pyyaml scipy skyfield pandas numpy
-          python -m pip install 'git+https://github.com/lkangas/eclipse-calc.git@master'
+          python -m pip install 'git+https://github.com/lkangas/eclipse-calc.git@23853a8f9e0d1a25e026203207aca16de1d7bb31'
+
+      - name: Download complete DE440s ephemeris for apparent-position deflection
+        run: |
+          python - <<'PY'
+          from skyfield.api import load
+          eph = load('de440s.bsp')
+          for body in (0, 3, 5, 6, 10, 301, 399):
+              eph[body]
+          print('DE440s ephemeris includes Jupiter and Saturn barycenters')
+          PY
 
       - name: Run independent Besselian greatest-eclipse comparison
         run: |
@@ -35,9 +45,9 @@ jobs:
           from skyfield.api import load
           from eclipse_calc import BesselianEclipse
 
-          ROOT = Path('.')
+          ROOT = Path('Historical')
           CASES = ROOT / 'eclipse-validation-cases.yaml'
-          KERNEL = ROOT / 'star-almanack-microkernel.bsp'
+          KERNEL = Path('de440s.bsp')
 
           if not KERNEL.exists():
               raise SystemExit(f'missing preserved ephemeris kernel: {KERNEL}')
@@ -60,7 +70,7 @@ jobs:
 
           print('STAR ALMANACK — INDEPENDENT BESSELIAN CONTROL')
           print('Implementation: lkangas/eclipse-calc (MIT), ephemeris-direct Besselian elements')
-          print('Ephemeris: preserved Star Almanack DE441 microkernel')
+          print('Ephemeris: complete DE440s (Jupiter and Saturn barycenters included)')
           print('Greatest eclipse criterion: minimum x^2 + y^2 in the Bessel fundamental plane')
           print()
           print(f"{'Case':38s} {'NASA':>11s} {'Bessel':>11s} {'Residual':>10s}")
