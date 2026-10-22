@@ -1,0 +1,59 @@
+name: Eclipse Offline Kernel Gate
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - star-almanack-microkernel.bsp
+      - kernels/naif0012.tls
+      - eclipse-validation-cases.yaml
+      - .github/workflows/eclipse-offline-kernel-gate.yml
+
+permissions:
+  contents: read
+
+jobs:
+  kernel-gate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install test libraries (not ephemerides)
+        run: python -m pip install --disable-pip-version-check spiceypy pyyaml
+      - name: Check committed kernel, coverage and validation catalog
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import hashlib
+          from pathlib import Path
+          import spiceypy as sp
+          import yaml
+
+          kernel = Path("star-almanack-microkernel.bsp")
+          lsk = Path("kernels/naif0012.tls")
+          assert kernel.is_file() and kernel.stat().st_size > 0, "Missing committed microkernel"
+          assert lsk.is_file() and lsk.stat().st_size > 0, "Missing committed leap-seconds kernel"
+          print("Kernel bytes:", kernel.stat().st_size)
+          print("Kernel SHA-256:", hashlib.sha256(kernel.read_bytes()).hexdigest())
+          spec = yaml.safe_load(Path("eclipse-validation-cases.yaml").read_text())
+          cases = spec["historical"] + spec["future_jello"]["cases"]
+          assert len(cases) >= 9, "Validation catalog unexpectedly incomplete"
+          print("Reference cases:", len(cases))
+          print("Catalog required_now:", spec.get("required_now"))
+          sp.furnsh(str(lsk))
+          sp.furnsh(str(kernel))
+          try:
+              ids = set(sp.spkobj(str(kernel)))
+              required = {3, 10, 301, 399}
+              assert required <= ids, f"Missing SPK IDs: {required - ids}"
+              for iso in ("2026-01-01T00:00:00", "2030-06-01T00:00:00", "2035-12-31T00:00:00"):
+                  et = sp.str2et(iso)
+                  for target in ("SUN", "MOON"):
+                      pos, _ = sp.spkpos(target, et, "J2000", "NONE", "EARTH")
+                      assert all(abs(float(x)) < 1e12 for x in pos)
+                  print("PASS:", iso, "Sun/Moon relative to Earth")
+          finally:
+              sp.kclear()
+          print("PASS: committed kernel and reference catalog gate")
+          print("NOTE: eclipse contact-time accuracy is NOT tested by this gate.")
+          PY
