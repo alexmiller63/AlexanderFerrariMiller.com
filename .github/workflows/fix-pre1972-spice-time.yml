@@ -52,7 +52,7 @@ jobs:
           PY
 
       - name: Verify conversion invariants
-        working-directory: Historical
+        working-directory: .
         run: |
           python3 - <<'PY'
           import eclipse_engine
@@ -79,7 +79,7 @@ jobs:
           PY
 
       - name: Verify against NAIF SPICE
-        working-directory: Historical
+        working-directory: .
         shell: bash
         run: |
           set -euo pipefail

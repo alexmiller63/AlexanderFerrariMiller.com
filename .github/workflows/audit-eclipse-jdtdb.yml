@@ -49,7 +49,7 @@ jobs:
           PY
 
       - name: Compare pre-JDTDB and current eclipse timing
-        working-directory: Historical
+        working-directory: .
         env:
           PRE_JDTDB_COMMIT: 0c64439dc222f2be35bc616da0fc4f5ce0bc5a00
         run: |
@@ -70,7 +70,7 @@ jobs:
           spec.loader.exec_module(before_module)
           BeforeEngine = before_module.BesselianEclipseEngine
 
-          kernel = Path('..') / '.cache' / 'skyfield' / 'de440s.bsp'
+          kernel = Path('.cache') / 'skyfield' / 'de440s.bsp'
           before = BeforeEngine(kernel)
           current = CurrentEngine(kernel)
 
@@ -140,4 +140,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: eclipse-jdtdb-audit
-          path: Historical/eclipse-jdtdb-audit.txt
+          path: eclipse-jdtdb-audit.txt

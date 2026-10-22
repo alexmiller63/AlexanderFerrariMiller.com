@@ -131,7 +131,7 @@ jobs:
         run: |
           set -euo pipefail
           echo '=== Active source references only ==='
-          grep -RInE --exclude='finder.svg' --exclude-dir='.git' --exclude-dir='Historical' \
+          grep -RInE --exclude='finder.svg' --exclude-dir='.git' \
             '(Altair|fixed_object_id.{0,20}109|target.*label|label.*target)' \
             generators scripts tools sky-notes-artwork database descriptors .github/workflows 2>/dev/null \
             | head -n 800 || true

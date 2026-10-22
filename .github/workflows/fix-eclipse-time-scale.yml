@@ -45,7 +45,7 @@ jobs:
           PY
 
       - name: Verify conversion invariants
-        working-directory: Historical
+        working-directory: .
         run: |
           python3 - <<'PY'
           import eclipse_engine
