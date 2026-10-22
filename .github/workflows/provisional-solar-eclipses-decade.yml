@@ -9,10 +9,15 @@ jobs:
     timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
-      - name: Verify local lunar data
+      - name: Install local lunar evaluator dependencies
+        run: python -m pip install --disable-pip-version-check pyyaml
+      - name: Prepare locally committed lunar coefficients
+        working-directory: star-almanack-elp82b
         run: |
-          test -f star-almanack-elp82b/elp82b-manifest.json
-          python star-almanack-elp82b/lunar_elp.py verify star-almanack-elp82b/data/elp82b
+          set -euo pipefail
+          python lunar_elp.py bootstrap data/elp82b
+          python lunar_elp.py verify data/elp82b
+          python normalize_elp82b.py data/elp82b elp82b-manifest.json
       - name: Generate provisional decade catalog
         run: python tools/generate_decade_eclipses.py --start-year 2026 --end-year 2035
       - uses: actions/upload-artifact@v4
