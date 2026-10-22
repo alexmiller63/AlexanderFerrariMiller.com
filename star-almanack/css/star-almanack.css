@@ -202,3 +202,21 @@ h2 { color: #fff4c4; }
   h1 { font-size: clamp(2.2rem, 10vw, 3.7rem); }
   .tagline { font-size: 1.05rem; line-height: 1.5; }
 }
+
+/* Compact masthead with a collapsed mobile navigation. */
+.star-nav { display: flex; align-items: center; gap: 1rem; }
+.star-nav > .star-site-mark { flex: 0 0 auto; margin: 0; font-size: 0.9rem; letter-spacing: 0.035em; white-space: nowrap; }
+.star-menu { flex: 1; min-width: 0; }
+@media (max-width: 700px) {
+  .star-nav { justify-content: space-between; padding: 0.6rem 1rem; }
+  .star-nav > .star-site-mark { width: auto; font-size: 0.95rem; }
+  .star-menu { flex: 0 0 auto; position: relative; }
+  .star-menu summary { font-size: 0.9rem; }
+  .star-menu[open] .star-menu-links {
+    position: absolute; right: 0; top: 100%; z-index: 20;
+    width: min(85vw, 280px); padding: 0.5rem;
+    background: #08111f; border: 1px solid rgba(246,215,123,.5);
+    border-radius: 10px; box-shadow: 0 12px 24px rgba(0,0,0,.4);
+  }
+  .star-menu-links a { font-size: 1rem; overflow-wrap: normal; }
+}
