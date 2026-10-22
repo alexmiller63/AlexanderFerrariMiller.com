@@ -39,7 +39,7 @@ jobs:
               print(f'Reusing cached {p} ({p.stat().st_size:,} bytes)')
           PY
       - name: Compare apparent and geometric Besselian minima
-        working-directory: Historical
+        working-directory: .
         run: |
           python - <<'PY'
           from datetime import datetime, timezone
@@ -52,7 +52,7 @@ jobs:
 
           DAY = 86400.0
           ts = load.timescale(builtin=True)
-          eph = load_file(str(Path('..') / '.cache/skyfield/de440s.bsp'))
+          eph = load_file(str(Path('.cache/skyfield/de440s.bsp')))
           earth, moon, sun = eph['earth'], eph['moon'], eph['sun']
 
           def xy(t, apparent):
