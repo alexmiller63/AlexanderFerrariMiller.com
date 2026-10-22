@@ -1,0 +1,60 @@
+name: Eclipse Regression Diagnostics
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - eclipse_engine.py
+      - validate_star_almanack.py
+      - eclipse-validation-cases.yaml
+      - star-almanack-elp82b/**
+      - .github/workflows/eclipse-regression-diagnostics.yml
+
+permissions:
+  contents: read
+
+jobs:
+  eclipse-regression:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Python libraries
+        run: python -m pip install --disable-pip-version-check pyyaml
+      - name: Prepare locally committed lunar coefficients
+        working-directory: star-almanack-elp82b
+        run: |
+          set -euo pipefail
+          python lunar_elp.py bootstrap data/elp82b
+          python lunar_elp.py verify data/elp82b
+          python normalize_elp82b.py data/elp82b elp82b-manifest.json
+      - name: Run existing regression harness and retain full diagnostic log
+        shell: bash
+        run: |
+          set -o pipefail
+          python validate_star_almanack.py 2>&1 | tee eclipse-regression.log
+      - name: Extract eclipse case summary
+        if: always()
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+          p = Path("eclipse-regression.log")
+          text = p.read_text(errors="replace") if p.exists() else "Validation did not start"
+          patterns = ["LUNAR SECTION:", "UTC BOUNDARY SECTION:", "ECLIPSE SECTION:", "STAR ALMANACK VALIDATION:"]
+          lines = [line.strip() for line in text.splitlines() if any(k in line for k in patterns)]
+          lines += ["NOTE: eclipse comparisons remain diagnostic until required_now is enabled.",
+                    "NOTE: this workflow does not certify 2026-2035 completeness or lunar eclipse contact times."]
+          summary = "## Eclipse regression diagnostics\n\n" + "\n".join("- " + x + "\n" for x in lines)
+          Path("eclipse-regression-summary.md").write_text(summary)
+          with open(__import__("os").environ["GITHUB_STEP_SUMMARY"], "a") as f:
+              f.write(summary)
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: eclipse-regression-diagnostics
+          path: |
+            eclipse-regression.log
+            eclipse-regression-summary.md
+          if-no-files-found: warn
