@@ -1,0 +1,20 @@
+.reading-shell { min-width: 0; }
+.reading-intro { max-width: 70ch; margin: 0 auto 2rem; line-height: 1.65; }
+.reading-group { margin: 2rem 0; }
+.reading-group h3 { margin-top: 0; line-height: 1.35; }
+.reading-links { display: flex; flex-wrap: wrap; gap: 0.75rem 1.5rem; margin: 0 0 1.5rem; line-height: 1.5; }
+.manuscript + .reading-links { margin-top: 1.5rem; }
+.manuscript { max-width: 76ch; margin: 0 auto; font-size: 1.08rem; overflow-wrap: break-word; }
+.manuscript h1 { font-size: clamp(1.85rem, 5vw, 3rem); line-height: 1.2; margin: 0.5rem 0 1.5rem; }
+.manuscript h1:not(:first-child) { font-size: 1.8rem; margin-top: 2rem; }
+.manuscript h2 { margin-top: 2rem; line-height: 1.3; }
+.manuscript h3 { line-height: 1.35; }
+.manuscript blockquote { margin: 1.5rem 0; padding: 0 1.25rem; border-left: 3px solid #d9c990; }
+.manuscript pre { max-width: 100%; overflow-x: auto; }
+.manuscript table { display: block; max-width: 100%; overflow-x: auto; border-collapse: collapse; }
+.manuscript th, .manuscript td { border: 1px solid rgba(246,215,123,.4); padding: 0.6rem; }
+@media (max-width: 700px) {
+  .reading-shell { padding-top: 1.5rem; }
+  .manuscript { padding: 1rem; font-size: 1rem; }
+  .manuscript h2 { font-size: 1.35rem; }
+}
