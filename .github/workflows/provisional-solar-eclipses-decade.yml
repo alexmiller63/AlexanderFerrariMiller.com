@@ -1,4 +1,4 @@
-name: Provisional Solar Eclipses 2026–2035
+name: Provisional Solar and Lunar Eclipses 2026–2035
 on:
   workflow_dispatch:
 permissions:
@@ -19,8 +19,8 @@ jobs:
           python lunar_elp.py verify data/elp82b
           python normalize_elp82b.py data/elp82b elp82b-manifest.json
       - name: Generate provisional decade catalog
-        run: python tools/generate_decade_eclipses.py --start-year 2026 --end-year 2035
+        run: python -u tools/generate_decade_eclipses.py --start-year 2026 --end-year 2035
       - uses: actions/upload-artifact@v4
         with:
-          name: provisional-solar-eclipses-2026-2035
+          name: provisional-solar-lunar-eclipses-2026-2035
           path: generated/eclipse-catalog/
