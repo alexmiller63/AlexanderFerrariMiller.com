@@ -1,0 +1,32 @@
+name: Eclipse Intermediate Values Audit
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - tools/eclipse_intermediate_audit.py
+      - .github/workflows/eclipse-intermediate-audit.yml
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install local lunar evaluator dependencies
+        run: python -m pip install --disable-pip-version-check pyyaml
+      - name: Prepare locally committed lunar coefficients
+        working-directory: star-almanack-elp82b
+        run: |
+          set -euo pipefail
+          python lunar_elp.py bootstrap data/elp82b
+          python lunar_elp.py verify data/elp82b
+          python normalize_elp82b.py data/elp82b elp82b-manifest.json
+      - name: Generate read-only intermediate value audit
+        run: python tools/eclipse_intermediate_audit.py --out eclipse-intermediate-audit.csv
+      - uses: actions/upload-artifact@v4
+        with:
+          name: eclipse-intermediate-values
+          path: eclipse-intermediate-audit.csv
