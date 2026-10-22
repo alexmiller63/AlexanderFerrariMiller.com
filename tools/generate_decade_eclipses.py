@@ -25,6 +25,7 @@ def generate(start_year, end_year):
     engine = EclipseEngine()
     start, end = date(start_year, 1, 1), date(end_year + 1, 1, 1)
     results = {}
+    print(f'Starting eclipse search {start_year}–{end_year}', flush=True)
     # Expand the lunation grid past both ends to cover date rounding.
     for k in range(-180, 180):
         candidate = SEED + timedelta(days=round(k * SYNODIC_DAYS))
@@ -37,6 +38,7 @@ def generate(start_year, end_year):
         if not start <= event_day < end:
             continue
         g = event.geometry
+        print(f'FOUND SOLAR {event.greatest_utc} {event.eclipse_type}', flush=True)
         results[event.greatest_utc[:16]] = {
             "kind": "solar", "contacts_utc": "",
             "date_utc": event_day.isoformat(),
@@ -63,6 +65,7 @@ def generate(start_year, end_year):
         if not start <= event_day < end:
             continue
         g = event["geometry"]
+        print(f"FOUND LUNAR {greatest} {event['type']} contacts={len(event['contacts_jd_utc'])}", flush=True)
         results["lunar:"+greatest[:16]] = {
             "kind": "lunar", "date_utc": event_day.isoformat(),
             "greatest_utc": greatest, "type": event["type"],
@@ -74,6 +77,7 @@ def generate(start_year, end_year):
                                          for key, val in sorted(event["contacts_jd_utc"].items())}),
             "status": "PROVISIONAL — geometry and times not independently validated",
         }
+    print(f'Search complete: {len(results)} eclipses', flush=True)
     return sorted(results.values(), key=lambda r: r["greatest_utc"])
 
 def main():
@@ -87,7 +91,7 @@ def main():
     rows = generate(args.start_year, args.end_year)
     args.output_dir.mkdir(parents=True, exist_ok=True)
     csv_path = args.output_dir / f"eclipses-{args.start_year}-{args.end_year}.csv"
-    json_path = args.output_dir / f"solar-eclipses-{args.start_year}-{args.end_year}.json"
+    json_path = args.output_dir / f"eclipses-{args.start_year}-{args.end_year}.json"
     with csv_path.open("w", newline="") as f:
         writer = csv.DictWriter(f, fieldnames=FIELDS)
         writer.writeheader()
