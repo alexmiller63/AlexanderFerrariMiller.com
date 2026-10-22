@@ -1,0 +1,22 @@
+name: Lunar eclipse geometry tests
+
+on:
+  push:
+    branches:
+      - feature/unified-eclipse-foundation
+    paths:
+      - lunar_eclipse_geometry.py
+      - test_lunar_eclipse_geometry.py
+      - .github/workflows/lunar-eclipse-tests.yml
+  workflow_dispatch:
+
+jobs:
+  unit-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Run lunar geometry tests
+        run: python -m unittest -v test_lunar_eclipse_geometry
