@@ -59,7 +59,7 @@ def update_eclipse_page(text,year,eclipses):
  for match in re.finditer(r'<h2>(\d{4}) eclipses</h2>(.*?)(?=\s*<h2>|\s*</section>|\Z)',text,re.S):
   years[int(match.group(1))]=match.group(2).strip()
  years[year]=page_table(eclipses)
- template=(ROOT/"star-almanack"/"templates"/"eclipses.html").read_text(encoding="utf-8")
+ template=(ROOT/"star-almanack"/"_templates"/"eclipses.html").read_text(encoding="utf-8")
  marker="<!-- ECLIPSE_YEARS -->"
  if template.count(marker)!=1:raise SystemExit("Eclipse guide template requires exactly one year marker")
  blocks=[f"      <h2>{y} eclipses</h2>\n      {years[y]}" for y in sorted(years)]
