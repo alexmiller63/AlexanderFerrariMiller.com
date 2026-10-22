@@ -1,0 +1,50 @@
+name: Verify committed DE441 microkernel
+
+on:
+  push:
+    paths:
+      - '.github/workflows/verify-committed-microkernel.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify-microkernel:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install SPICE Python bindings
+        run: python -m pip install --disable-pip-version-check spiceypy
+      - name: Inspect SPK segment coverage and test vectors
+        run: |
+          python - <<'PY'
+          import os
+          import spiceypy as spice
+          from spiceypy.utils.support_types import SPICEINT_CELL, SPICEDOUBLE_CELL
+
+          kernel = "star-almanack-microkernel.bsp"
+          tls = "kernels/naif0012.tls"
+          assert os.path.getsize(kernel) > 1000000, "Missing or unexpectedly small microkernel"
+          spice.furnsh(tls)
+          spice.furnsh(kernel)
+          ids = spice.spkobj(kernel)
+          required = {3, 10, 301, 399}
+          print("Kernel size (bytes):", os.path.getsize(kernel))
+          print("SPK body IDs:", sorted(int(x) for x in ids))
+          assert required.issubset(set(int(x) for x in ids)), "Required bodies missing"
+          start = spice.str2et("2026 JAN 01 00:00:00 TDB")
+          end = spice.str2et("2036 JAN 01 00:00:00 TDB")
+          for body in sorted(required):
+              windows = spice.spkcov(kernel, body)
+              intervals = [(float(windows[i]), float(windows[i+1])) for i in range(0, len(windows), 2)]
+              print("Body", body, "coverage:", [(spice.et2utc(a,"ISOC",0), spice.et2utc(b,"ISOC",0)) for a,b in intervals])
+              assert any(a <= start and b >= end for a,b in intervals), f"Insufficient 2026–2035 coverage for body {body}"
+          for when in ("2026 JAN 01 00:00:00 TDB", "2030 JUN 01 00:00:00 TDB", "2035 DEC 31 00:00:00 TDB"):
+              et = spice.str2et(when)
+              for target in ("SUN", "MOON"):
+                  vector, lt = spice.spkpos(target, et, "J2000", "NONE", "EARTH")
+                  print(when, target, "relative to Earth km:", vector, "light-time s:", lt)
+                  assert all(abs(float(v)) < 1e10 for v in vector)
+          print("PASS: DE441 microkernel contains all required bodies and 2026–2035 coverage")
+          PY
