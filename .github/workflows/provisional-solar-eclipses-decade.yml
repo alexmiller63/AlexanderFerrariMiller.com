@@ -1,0 +1,21 @@
+name: Provisional Solar Eclipses 2026–2035
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify local lunar data
+        run: |
+          test -f star-almanack-elp82b/elp82b-manifest.json
+          python star-almanack-elp82b/lunar_elp.py verify star-almanack-elp82b/data/elp82b
+      - name: Generate provisional decade catalog
+        run: python tools/generate_decade_eclipses.py --start-year 2026 --end-year 2035
+      - uses: actions/upload-artifact@v4
+        with:
+          name: provisional-solar-eclipses-2026-2035
+          path: generated/eclipse-catalog/
