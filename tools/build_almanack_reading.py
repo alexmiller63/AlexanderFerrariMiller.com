@@ -8,6 +8,7 @@ Markdown; this builder needs only the Python standard library.
 from __future__ import annotations
 
 import html
+import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -32,6 +33,10 @@ SECTIONS = (
 
 
 def shell(title: str, contents: str, mathematics: bool = False) -> str:
+    # Zodiac characters default to colored emoji on some devices. Request
+    # Unicode text presentation in generated pages, including code examples,
+    # while leaving the authoritative Markdown manuscripts untouched.
+    contents = re.sub(r'([\u2648-\u2653])[\ufe0e\ufe0f]?', lambda match: match[1] + '\ufe0e', contents)
     math_head = '''
   <script defer src="js/reading-math-20261022.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg.js"></script>
