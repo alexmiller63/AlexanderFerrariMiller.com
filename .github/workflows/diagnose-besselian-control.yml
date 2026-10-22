@@ -45,7 +45,7 @@ jobs:
           from skyfield.api import load
           from eclipse_calc import BesselianEclipse
 
-          ROOT = Path('Historical')
+          ROOT = Path('.')
           CASES = ROOT / 'eclipse-validation-cases.yaml'
           KERNEL = Path('de440s.bsp')
 
