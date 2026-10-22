@@ -50,7 +50,7 @@ The distinction between 88 constellations, 86 constellations with figures, and 8
 1. No final combined table of contents or finished single front-matter manuscript has been located. Absence from the searches is not proof that no further copy exists.
 2. The front-matter assignment for Keplerian ephemera survives, but this reconstruction does not substitute implementation code for a missing educational chapter.
 3. Earlier book descriptions mention astronomical symbols and pronunciation (IPA). No complete pronunciation manuscript was found in the current repository search. This is a recovery lead, not a finished chapter.
-4. The recovered symbol key reproduces the typography source. It is not claimed to cover every symbol now used; Ceres and other additions require an edition-specific inventory.
+4. The recovered symbol key originally reproduced the typography source, which omitted Ceres. On 2026-10-22 Alexander identified that omission. Ceres (⚳) was added to both the front-matter key and the typography source between Mars and Jupiter; Earth is explicitly identified as a reference symbol rather than a geocentric observing target. A complete inventory of other glyphs in the current edition remains open.
 5. The reader’s guide and typography manuscript describe an earlier seven-body weekly wheel and earlier presentation choices. Original prose is preserved; a separate editorial pass must reconcile these descriptions with the present edition.
 6. Moon Names and technical mathematics may ultimately belong in reference chapters or appendices rather than front matter. The reconstruction links them without inventing a final placement.
 7. No dedication, acknowledgments, foreword, or additional personal family history has been invented.

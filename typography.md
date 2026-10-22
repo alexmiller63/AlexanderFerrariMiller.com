@@ -110,6 +110,8 @@ Traditional astronomical symbols should also be used for the Sun, Moon, and plan
 
 | Mars | ♂ |
 
+| Ceres | ⚳ |
+
 | Jupiter | ♃ |
 
 | Saturn | ♄ |

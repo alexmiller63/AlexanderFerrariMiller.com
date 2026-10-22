@@ -59,13 +59,14 @@ These signs are twelve equal 30° divisions of tropical ecliptic longitude. They
 | ♀ | Venus |
 | ♁ | Earth |
 | ♂ | Mars |
+| ⚳ | Ceres |
 | ♃ | Jupiter |
 | ♄ | Saturn |
 | ♅ | Uranus |
 | ♆ | Neptune |
 | ♇ | Pluto |
 
-This table recovers the symbols listed in the typography manuscript. It is not yet an exhaustive inventory of every glyph in the current edition; additional symbols, including Ceres where used, still need to be checked against the published pages.
+This key includes Ceres alongside the symbols recovered from the typography manuscript. Earth is included as a reference symbol, not as an observing target in a geocentric ephemeris. A full inventory of additional glyphs used in the current edition remains to be checked.
 
 ### Moon phases and observing equipment
 
