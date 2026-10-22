@@ -8,8 +8,12 @@ import argparse
 import csv
 import json
 import math
+import sys
 from datetime import datetime, timezone
 from pathlib import Path
+
+# Allow direct execution from tools/ while importing the root-level engine.
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from eclipse_engine import EclipseEngine, gregorian_to_jd, tai_minus_utc_seconds
 
