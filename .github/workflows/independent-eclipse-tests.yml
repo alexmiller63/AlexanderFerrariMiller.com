@@ -1,0 +1,26 @@
+name: Independent eclipse geometry tests
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - eclipses-independent-2026-2035
+    paths:
+      - independent_shadow_geometry.py
+      - tests/test_independent_shadow_geometry.py
+      - .github/workflows/independent-eclipse-tests.yml
+
+permissions:
+  contents: read
+
+jobs:
+  geometry:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Run offline geometry tests
+        run: python -m unittest discover -s tests -p 'test_independent_shadow_geometry.py' -v
