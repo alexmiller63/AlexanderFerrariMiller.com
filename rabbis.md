@@ -6,7 +6,7 @@ Both were learned men. Both had studied the movements of the heavens, and neithe
 
 One day their travels took them away from home in opposite directions. Rabbi Ezra traveled east. Rabbi Nathan traveled west.
 
-Their journeys were long. They traveled by land where roads permitted it and by sea where oceans required it. They passed through kingdoms whose languages they did not understand, ate unfamiliar foods, and slept beneath the stars far from home.
+Their journeys were long. They traveled by land where roads permitted it and by sea where oceans required it. They passed through kingdoms whose languages they did not understand, ate unfamiliar foods, and slept beneath the same stars far from home.
 
 But wherever they went, they never lost track of the days.
 
