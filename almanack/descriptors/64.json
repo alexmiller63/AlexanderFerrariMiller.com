@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "id": "64",
+  "type": "star",
+  "name": "Alpha Centauri",
+  "summary": "bright star in Centaurus used as a fixed-sky reference",
+  "representation": {
+    "machine": "./64.json",
+    "human_source": "summary",
+    "human": "/stories/drafts/64.html"
+  },
+  "constellation_abbreviation": "Cen",
+  "constellation": "Centaurus",
+  "position": {
+    "ra_deg": 219.911475,
+    "dec_deg": -60.833976,
+    "ecliptic_longitude_deg": 239.484988,
+    "ecliptic_latitude_deg": -42.592421
+  },
+  "representative_visual_magnitude": -0.28,
+  "guiding_asterisms": [
+    {
+      "id": "1385",
+      "geometry_key": "asterism-southern-pointers",
+      "name": "Southern Pointers",
+      "relationship": "visual-member",
+      "provenance": {
+        "source": "ESO",
+        "source_url": "https://www.eso.org/public/blog/navigating-the-stars/",
+        "source_role": "verification",
+        "supports": "visual-membership"
+      }
+    }
+  ]
+}

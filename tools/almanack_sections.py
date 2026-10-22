@@ -41,6 +41,21 @@ def section_bounds(text: str, number: int, path: Path | None = None) -> tuple[in
 
 
 def replace_section_inner(text: str, number: int, replacement: str, path: Path | None = None) -> str:
+    if f'id="{SECTION_ID_PREFIX}{number}"' not in text:
+        # Preserved weeks can predate numbered sections. Upgrade only the
+        # requested legacy block, retaining Calendar, finders and navigation.
+        legacy = {
+            3: (r'<h3>Weekly Solar-System Ephemeris</h3>',
+                r'<div class="bayer-toggle-wrap section-notation-toggle" data-notation-target="finder">'),
+            5: (r'<h3>Sky Notes?</h3>', r'<h3>Chart</h3>'),
+        }
+        if number in legacy:
+            opening, closing = legacy[number]
+            starts = list(re.finditer(opening, text))
+            ends = list(re.finditer(closing, text))
+            if len(starts) == len(ends) == 1 and starts[0].end() <= ends[0].start():
+                return (text[:starts[0].start()] + section_open(number) + replacement
+                        + '</div>\n' + text[ends[0].start():])
     start, end = section_bounds(text, number, path)
     return text[:start] + replacement + text[end:]
 
