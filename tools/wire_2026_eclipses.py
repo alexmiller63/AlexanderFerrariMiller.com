@@ -5,7 +5,7 @@ import html,re,sys
 from datetime import date
 from pathlib import Path
 from almanack_calendar import ensure_calendar_metadata,get_events,set_events
-from almanack_paths import VISIBILITY_GLYPH_ROOT, calendar_page
+from almanack_paths import VISIBILITY_GLYPH_ROOT, week_index as calendar_page
 ROOT=Path(__file__).resolve().parents[1]; DEFAULT_ECLIPSE_SOURCE=ROOT/"eclipse.yaml"; ALMANACK_SOURCE=ROOT/"almanack-expanded.md"; ECLIPSE_PAGE=ROOT/"star-almanack"/"eclipses.html"
 GLYPHS={"solar":f'<img class="visibility-glyph" src="{VISIBILITY_GLYPH_ROOT}/solar-eclipse.svg" alt="Solar eclipse" aria-label="Solar eclipse">', "lunar":f'<img class="visibility-glyph" src="{VISIBILITY_GLYPH_ROOT}/lunar-eclipse.svg" alt="Lunar eclipse" aria-label="Lunar eclipse">'}
 def parse_year(text):
@@ -51,15 +51,19 @@ def page_table(eclipses):
  rows=[]
  for e in eclipses:
   d=date.fromisoformat(e["date"]); visibility=html.escape(e.get("visibility", "")) or "—"; magnitude=html.escape(e.get("magnitude", "")) or "—"; observing=html.escape(e.get("observing_note", "")) or "—"; rows.append(f"<tr><td>{d.strftime('%B')} {d.day}, {d.year}</td><td>{e['type'].title()} {e['kind']}</td><td>{e['maximum'][:5]} UTC</td><td>{magnitude}</td><td>{visibility}</td><td>{observing}</td></tr>")
- return '<table class="eclipse-table"><thead><tr><th>Date</th><th>Eclipse</th><th>Greatest eclipse</th><th>Magnitude</th><th>Visibility</th><th>Observing note</th></tr></thead><tbody>'+''.join(rows)+'</tbody></table>'
+ return '<div class="eclipse-table-scroll" role="region" aria-label="Eclipse table; scroll horizontally on narrow screens" tabindex="0"><table class="eclipse-table"><caption>Global greatest-eclipse times in UTC; local circumstances vary.</caption><thead><tr><th scope="col">Date</th><th scope="col">Eclipse</th><th scope="col">Greatest eclipse</th><th scope="col">Magnitude</th><th scope="col">Visibility</th><th scope="col">Observing note</th></tr></thead><tbody>'+''.join(rows)+'</tbody></table></div>'
 def update_eclipse_page(text,year,eclipses):
- table=page_table(eclipses); start=f"      <h2>{year} eclipses</h2>"; block=start+"\n      "+table
- if start in text:return re.sub(rf"      <h2>{year} eclipses</h2>.*?(?=\n\s*<h2>|\n\s*</section>)",block,text,count=1,flags=re.S)
- for h in re.finditer(r"      <h2>(\d{4}) eclipses</h2>",text):
-  if int(h.group(1))>year:return text[:h.start()]+block+"\n\n"+text[h.start():]
- marker="      <h2>Publication and research remain separate</h2>"
- if marker not in text:raise SystemExit("Expected eclipse-page insertion marker not found")
- return text.replace(marker,block+"\n\n"+marker,1)
+ # Retain already published years while rebuilding the guide from its template.
+ # Both the original single-section page and this template use h2 year headings.
+ years={}
+ for match in re.finditer(r'<h2>(\d{4}) eclipses</h2>(.*?)(?=\s*<h2>|\s*</section>|\Z)',text,re.S):
+  years[int(match.group(1))]=match.group(2).strip()
+ years[year]=page_table(eclipses)
+ template=(ROOT/"star-almanack"/"templates"/"eclipses.html").read_text(encoding="utf-8")
+ marker="<!-- ECLIPSE_YEARS -->"
+ if template.count(marker)!=1:raise SystemExit("Eclipse guide template requires exactly one year marker")
+ blocks=[f"      <h2>{y} eclipses</h2>\n      {years[y]}" for y in sorted(years)]
+ return template.replace(marker,"\n\n".join(blocks))
 def publish(source_path):
  source_text=source_path.read_text(encoding="utf-8"); year=parse_year(source_text); eclipses=parse_eclipses(source_text,year)
  if year==2026:
