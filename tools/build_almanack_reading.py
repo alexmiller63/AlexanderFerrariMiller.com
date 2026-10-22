@@ -25,12 +25,18 @@ SECTIONS = (
         ('most-ordinary', 'The Most Ordinary Day Throughout the World', 'One deliberately ordinary instant, expressed by many clocks and dates.'),
     )),
     ('Reference text', (
+        ('mathematics', 'The Mathematics of the Star Almanack: A Bowl of Jell-O', 'How best visibility was discovered and tested, and why Earth’s rotation complicates eclipse predictions.'),
         ('moon-names', 'Moon Names', 'The retained seasonal naming rules and calculation notes.'),
     )),
 )
 
 
-def shell(title: str, contents: str) -> str:
+def shell(title: str, contents: str, mathematics: bool = False) -> str:
+    math_head = '''
+  <script defer src="js/reading-math-20261022.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg.js"></script>
+  <style>.manuscript mjx-container[display="true"] { overflow-x:auto; overflow-y:hidden; max-width:100%; padding:0.3rem 0; }</style>
+''' if mathematics else ''
     return '''---
 layout: null
 ---
@@ -42,7 +48,7 @@ layout: null
   <title>''' + html.escape(title) + ''' · Star Almanack</title>
   <link rel="stylesheet" href="css/star-almanack-nav-20261022.css">
   <link rel="stylesheet" href="css/reading-20261022.css">
-</head>
+''' + math_head + '''</head>
 <body>
   {% include_relative includes/nav.html %}
   <main class="page-shell reading-shell">
@@ -76,8 +82,9 @@ def build() -> None:
         if following:
             links.append(f'<a href="read-{following[0]}.html">{html.escape(following[1])} →</a>')
         navigation = '<nav class="reading-links" aria-label="Reading navigation">' + ''.join(links) + '</nav>'
-        contents = navigation + '\n{% capture manuscript %}\n' + manuscript + '\n{% endcapture %}\n<article class="prose manuscript">\n{{ manuscript | markdownify }}\n</article>\n' + navigation
-        (OUT / f'read-{slug}.html').write_text(shell(title, contents), encoding='utf-8')
+        technical_link = ('<p><a href="https://github.com/alexmiller63/AlexanderFerrariMiller.com/blob/main/math.md">Read the separate technical mathematical reference</a></p>\n' if slug == 'mathematics' else '')
+        contents = navigation + '\n{% capture manuscript %}\n' + manuscript + '\n{% endcapture %}\n<article class="prose manuscript">\n{{ manuscript | markdownify }}\n' + technical_link + '</article>\n' + navigation
+        (OUT / f'read-{slug}.html').write_text(shell(title, contents, mathematics=slug == 'mathematics'), encoding='utf-8')
     for label, entries in SECTIONS:
         group = '<section class="reading-group"><h2>' + html.escape(label) + '</h2><div class="cards">'
         for slug, title, description in entries:
