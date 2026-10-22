@@ -96,6 +96,56 @@ There is a particularly elegant consequence:
 
 We do not need to select New York, London, Sydney, San Bernardino, or any other arbitrary place on Earth. Because we are using local apparent time, the Sun and the object themselves provide the clocks.
 
+## Constellation Seasons Used as the Reference
+
+For the seasonal checks described below, the expected season must be written down independently of the calculated date. Here is the reference for every host constellation represented in the original 15-star test and the later 20-object test.
+
+Unless a row explicitly says **Southern Hemisphere**, the season names use the **Northern Hemisphere calendar**. They describe a constellation’s familiar evening appearance, not a season inferred from the Almanack’s calculated date. “Winter constellation” does not mean that every star in that region is invisible in autumn or spring.
+
+The main reference is the University of Northern Iowa’s constellation visibility table [1], written for evening observers in Iowa. Its low-southern-horizon qualifications are retained. The same university’s teaching guide [1a] places some constellations in overlapping seasonal groups. The two southern additions use separately identified observing references.
+
+| Constellation | Published evening-season reference | Objects in the tests |
+|---|---|---|
+| Andromeda | Autumn | M31 Andromeda Galaxy |
+| Aquila | Summer | Altair |
+| Auriga | Winter | Capella |
+| Boötes | Spring | Arcturus |
+| Cancer | Spring; also taught with the winter sky | M44 Beehive Cluster |
+| Canes Venatici | Spring | M51 Whirlpool Galaxy |
+| Canis Major | Winter | Sirius |
+| Canis Minor | Winter | Procyon |
+| Carina | Southern Hemisphere autumn into early–mid winter [2] | Canopus |
+| Centaurus | Spring; low on Iowa’s southern horizon | Alpha Centauri |
+| Crux | Southern Hemisphere autumn; circumpolar at sufficiently southern latitudes [3] | Acrux |
+| Cygnus | Summer | Albireo; Deneb |
+| Eridanus | Winter | Achernar |
+| Gemini | Winter | Pollux; Castor |
+| Hercules | Summer | M13 Hercules Cluster |
+| Leo | Spring | Regulus |
+| Lyra | Summer | Vega; M57 Ring Nebula |
+| Orion | Winter | Rigel; Betelgeuse; Bellatrix; M42 Orion Nebula |
+| Piscis Austrinus | Autumn; low on Iowa’s southern horizon | Fomalhaut |
+| Sagittarius | Summer | M8 Lagoon Nebula; M20 Trifid Nebula |
+| Scorpius | Summer | Antares |
+| Taurus | Winter | Aldebaran; M45 Pleiades |
+| Ursa Major | Year round; also taught with the spring sky | Alkaid; Dubhe |
+| Ursa Minor | Year round | Polaris |
+| Virgo | Spring | Spica |
+| Vulpecula | Summer | M27 Dumbbell Nebula |
+
+For the same months of the year, the seasonal names reverse between hemispheres: northern winter is southern summer, and northern spring is southern autumn. A constellation’s position north or south of the celestial equator does not, by itself, choose which hemisphere’s season names to use. For example, the Eridanus row uses the northern-calendar name even though Achernar lies far south and cannot be seen from Iowa.
+
+**Circumpolar is an observer-dependent condition, not a fifth season.** A star can remain above the horizon throughout the day at one latitude and rise and set at another. The reference therefore keeps the year-round cases explicit. Polaris cannot provide a meaningful winter-only seasonal validation merely because its calculated transit date falls in December.
+
+These are broad observing associations, not exact equinox-to-solstice acceptance intervals. They provide a useful plausibility check, but do not independently establish the exact best-visibility day, guarantee visibility at a particular latitude, or justify a blanket pass for all objects in the expanded test. In particular, a regional guide to a whole constellation is a weaker check on an individual star near the edge of that constellation.
+
+### Sources for the seasonal reference
+
+1. University of Northern Iowa, [Constellations — visibility table](https://sites.uni.edu/morgans/astro/course/Notes/section1/constellations.html). The source defines its visibility column for the evening sky as seen from Iowa; parenthesized seasons identify low southern constellations. Its spelling “Pisces Austrinus” is normalized here to **Piscis Austrinus**.
+1a. University of Northern Iowa, [Constellation Quizzes — seasonal groups](https://sites.uni.edu/morgans/astro/course/constellations/java/index.html). Used for Cancer’s overlapping winter/spring teaching placement and Ursa Major’s inclusion with the spring sky.
+2. Astronomical Society of Southern Africa, Bloemfontein Centre, [Observing Carina from Southern Africa](https://www.assabfn.co.za/spacetides/constellations/carina.htm). Its observing convention is evening visibility near latitude 29° south.
+3. IAU Office of Astronomy for Education, [Crux Constellation Map](https://www.astro4edu.org/resources/diagram/Hj32Ua273O7/). Its caption distinguishes southern-autumn evening prominence from circumpolar visibility farther south. Caption credit: IAU OAE.
+
 ## Does It Actually Work?
 
 An elegant equation is not enough. The calculation has to survive contact with the sky.
@@ -159,7 +209,7 @@ For 2026, the calculated best-visibility dates were:
 - M27 Dumbbell Nebula — Sep 6
 - M51 Whirlpool Galaxy — May 31
 
-The same validation principle applies. Each object belongs to a constellation. The constellation has an independently established observing season. The calculated date can therefore be checked against that seasonal description.
+The same validation principle applies. Each object belongs to a constellation. Where that constellation has an independently established observing season, the calculated date can be checked against that seasonal description. The reference above identifies the year-round and latitude-dependent cases separately.
 
 Objects associated with Orion fall in the Northern Hemisphere winter. The Sagittarius nebulae fall in summer. M13 in Hercules falls in summer. M31 in Andromeda falls in late autumn. Familiar stars of the Big Dipper fall in the spring and early-summer portion of the calendar.
 
