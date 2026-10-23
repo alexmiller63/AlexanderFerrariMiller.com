@@ -5,6 +5,9 @@
   const status = document.getElementById('ephemera-status');
   const results = document.getElementById('ephemera-results');
   const calculate = document.getElementById('ephemera-calculate');
+  const progressPanel = document.getElementById('ephemera-progress');
+  const progressBar = document.getElementById('ephemera-progress-bar');
+  const progressLabel = document.getElementById('ephemera-progress-label');
   const cancel = document.getElementById('ephemera-cancel');
   const cityInput = document.getElementById('ephemera-city');
   const cityOptions = document.getElementById('ephemera-cities');
@@ -180,6 +183,13 @@
     document.getElementById('ephemera-now').disabled = value;
     for (const button of cityOptions.querySelectorAll('button')) button.disabled = value;
   }
+  function showProgress(message, completed) {
+    progressPanel.hidden = false;
+    progressLabel.textContent = Number.isFinite(completed) ?
+      `${completed === 11 ? 'Complete — ' : ''}${completed} of 11 bodies calculated.` : 'Loading…';
+    if (Number.isFinite(completed)) progressBar.value = completed;
+    else progressBar.removeAttribute('value');
+  }
   function render(data) {
     const localTime = new Intl.DateTimeFormat('en-US', {
       timeZone: data.timezone, hour: 'numeric', minute: '2-digit',
@@ -218,12 +228,14 @@
     document.getElementById('ephemera-download').href = downloadURL;
     results.hidden = false;
     status.textContent = 'Calculation complete. All 11 bodies are shown below. Values remain provisional; see Method and limitations.';
+    showProgress('Complete — 11 of 11 bodies calculated.', 11);
     document.getElementById('results-heading').focus();
   }
   function stop() {
     if (worker) worker.terminate();
     worker = null;
     setBusy(false);
+    progressPanel.hidden = true;
   }
   form.addEventListener('submit', event => {
     event.preventDefault();
@@ -233,10 +245,14 @@
       results.hidden = true;
       setBusy(true);
       status.textContent = 'Starting the calculation engine…';
+      showProgress('Preparing calculation…');
       if (!worker) {
-        worker = new Worker('js/ephemera-worker.js');
+        worker = new Worker('js/ephemera-worker.js?v=20261022-progress');
         worker.onmessage = ({data}) => {
-          if (data.type === 'progress') status.textContent = data.message;
+          if (data.type === 'progress') {
+            status.textContent = data.message;
+            showProgress(data.message, data.completed);
+          }
           if (data.type === 'result') { setBusy(false); render(data.data); }
           if (data.type === 'error') {
             console.error(data.message);
