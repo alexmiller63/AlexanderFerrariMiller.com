@@ -8,28 +8,7 @@ layout: null
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Ephemera | Star Almanack</title>
   <link rel="stylesheet" href="css/star-almanack-nav-20261022.css">
-  <style>
-    .ephemera-panel{max-width:850px;margin:2rem auto;padding:1.5rem;border:1px solid #8292a7;border-radius:12px;line-height:1.65}
-    .ephemera-panel .form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem;margin:1.2rem 0}
-    .ephemera-panel label{display:block;font-weight:650}
-    .ephemera-panel input,.ephemera-panel select{box-sizing:border-box;display:block;width:100%;padding:.7rem;margin-top:.35rem;border:1px solid #8292a7;border-radius:7px;background:#fff;color:#17243b;font-size:1rem}
-    .ephemera-panel button,.ephemera-panel a.ephemera-button{display:inline-block;background:#233c67;color:#fff;border:1px solid #718db4;border-radius:8px;padding:.7rem 1rem;font:inherit;cursor:pointer;text-decoration:none;margin:.35rem .35rem .35rem 0}
-    .ephemera-panel button:focus-visible,.ephemera-panel a:focus-visible{outline:3px solid #f5ce7a;outline-offset:3px}
-    .ephemera-panel .notice{border-left:4px solid #a6bddf;padding:.7rem 1rem;margin:1rem 0}
-    .ephemera-panel pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#132440;color:#fff;border:1px solid #74889f;border-radius:8px;padding:1rem}
-    .ephemera-panel code{overflow-wrap:anywhere}
-    .ephemera-panel [hidden]{display:none!important}
-    .ephemera-panel button:disabled{opacity:.6;cursor:wait}
-    .ephemera-panel .table-scroll{overflow-x:auto;margin-top:1rem}
-    .ephemera-panel table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
-    .ephemera-panel td,.ephemera-panel th{border:1px solid #8292a7;padding:.55rem;text-align:left;white-space:nowrap}
-    .ephemera-panel caption{text-align:left;margin-bottom:.7rem}
-    .ephemera-panel .city-options{display:grid;gap:.3rem;margin:.5rem 0}
-    .ephemera-panel .city-options button{text-align:left;margin:0}
-    .ephemera-panel summary{cursor:pointer;font-weight:650}
-    .ephemera-panel progress{display:block;width:100%;height:1.3rem;accent-color:#233c67}
-    .ephemera-panel .progress-label{margin:.5rem 0;font-variant-numeric:tabular-nums}
-  </style>
+  {% include ephemera-style.html %}
 </head>
 <body>
   {% include_relative includes/nav.html %}
@@ -39,69 +18,7 @@ layout: null
       <h1>Ephemera</h1>
       <p class="tagline">Positions and rise/set times at a date, time and observing location.</p>
     </section>
-    <section class="ephemera-panel">
-      <h2>Ephemeris generator</h2>
-      <p>Choose a city or enter coordinates, then choose an instant. Your device calculates the positions and rise/set times here, using astronomy data stored with this site.</p>
-      <label for="ephemera-city">Find a city</label>
-      <input id="ephemera-city" type="search" autocomplete="off" placeholder="Type a city name, e.g. San Bernardino" aria-describedby="city-note" aria-controls="ephemera-cities">
-      <p id="city-note"><small>Choose a match to fill coordinates, estimated elevation and timezone. Smaller places can be entered by coordinates.</small></p>
-      <div id="ephemera-cities" class="city-options" aria-label="City matches"></div>
-      <form id="ephemera-form">
-        <div class="form-grid">
-          <label>Local date
-            <input type="date" name="local_date" min="1900-01-01" max="2099-12-31" required aria-describedby="time-note">
-          </label>
-          <label>Local time
-            <input type="time" name="local_time" step="60" required aria-describedby="time-note">
-          </label>
-          <label>Time zone
-            <input type="text" name="timezone" required value="America/Los_Angeles" list="ephemera-zones" autocomplete="off" aria-describedby="zone-note">
-          </label>
-          <label>Latitude (north positive)
-            <input type="number" name="latitude" min="-90" max="90" step="any" required value="34.1083">
-          </label>
-          <label>Longitude (east positive)
-            <input type="number" name="longitude" min="-180" max="180" step="any" required value="-117.2898">
-          </label>
-          <label>Elevation (metres)
-            <input type="number" name="elevation_m" min="-500" max="10000" step="any" required value="0">
-          </label>
-        </div>
-        <datalist id="ephemera-zones"></datalist>
-        <p id="time-note"><small>Choose a date and time in the selected time zone. Current date range: 1900–2099; dates at the source-data boundaries may be unavailable.</small></p>
-        <label id="ephemera-repeat-label" hidden>This time occurs twice when the clocks go back. Choose which occurrence:
-          <select name="time_occurrence" id="ephemera-repeat"></select>
-        </label>
-        <p id="zone-note"><small>Rise/set cover the local calendar date containing this instant in the selected timezone. Daylight-saving changes are included. Coordinate edits do not change the timezone; check it when moving to a different location.</small></p>
-        <button type="button" id="ephemera-location">Use my location (optional)</button>
-        <button type="button" id="ephemera-now">Now</button>
-        <button type="submit" id="ephemera-calculate">Calculate</button>
-        <button type="button" id="ephemera-cancel" hidden>Cancel</button>
-      </form>
-      <p id="ephemera-status" class="notice" role="status" aria-live="polite">Ready. The first calculation downloads the engine and astronomy data (about 60 MB). No account or Python installation is needed.</p>
-      <div id="ephemera-progress" hidden>
-        <progress id="ephemera-progress-bar" max="11" aria-label="Calculation progress" aria-describedby="ephemera-progress-label"></progress>
-        <p id="ephemera-progress-label" class="progress-label">Preparing calculation…</p>
-      </div>
-      <section id="ephemera-results" hidden aria-labelledby="results-heading" aria-busy="false">
-        <h2 id="results-heading" tabindex="-1">Your ephemeris</h2>
-        <p id="ephemera-summary"></p>
-        <div class="table-scroll" role="region" aria-label="Ephemeris results" tabindex="0">
-          <table><caption>Positions at the chosen instant; rise and set during the selected local day.</caption>
-            <thead><tr><th scope="col">Body</th><th scope="col">RA (h)</th><th scope="col">Dec (°)</th><th scope="col">Ecliptic λ (°)</th><th scope="col">Ecliptic β (°)</th><th scope="col">Distance (AU)</th><th scope="col">Altitude (°)</th><th scope="col">Azimuth (°)</th><th scope="col">Rise / set (local)</th></tr></thead>
-            <tbody id="ephemera-rows"></tbody>
-          </table>
-        </div>
-        <a id="ephemera-download" class="ephemera-button" download="ephemera.json">Download JSON report</a>
-      </section>
-      <noscript><p>Enable JavaScript to calculate in this page.</p></noscript>
-      <h2>What the report contains</h2>
-      <p>Sun, Moon, Mercury, Venus, Mars, Ceres, Jupiter, Saturn, Uranus, Neptune and Pluto. Earth is the observer's origin, not an output row. The HTML and JSON reports include right ascension, declination, ecliptic coordinates, altitude, azimuth, and rise/set events.</p>
-      <h2>Method and limitations</h2>
-      <p>Positions are recalculated as time advances; rise/set times are not estimated from the weekly 9 PM snapshot. Coordinates use topocentric apparent positions; RA/Dec use ICRF axes. Values are provisional pending validation. The model uses standard atmospheric refraction and the Sun’s and Moon’s apparent radii, without local terrain, horizon dip or weather corrections, and the time scan may miss grazing events.</p>
-      <p>Calculations run on your device. City search and astronomy files come from this site; your chosen coordinates are not sent to a calculation service. The browser may cache downloaded files for later visits.</p>
-      <p><small>City locations adapted from <a href="https://www.geonames.org/">GeoNames</a>, <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>. City elevation is an estimate. <a href="assets/ephemera/NOTICE.txt">Calculation software and data credits</a>.</small></p>
-    </section>
+    {% include ephemera-panel.html %}
   </main>
   {% include_relative includes/footer.html %}
   <script src="js/ephemera-form.js?v=20261022-progress"></script>

@@ -1,0 +1,26 @@
+---
+layout: null
+---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Ephemera | Nativitas</title>
+  <link rel="stylesheet" href="{{ '/nativitas/nativitas.css' | relative_url }}">
+  {% include ephemera-style.html %}
+</head>
+<body>
+  {% include nativitas-nav.html %}
+  <main class="page-shell">
+    <section class="hero">
+      <p class="eyebrow">Nativitas · Calculation tools</p>
+      <h1>Ephemera</h1>
+      <p class="tagline">Positions and rise/set times at a date, time and observing location.</p>
+    </section>
+    {% include ephemera-panel.html %}
+  </main>
+  {% include nativitas-footer.html %}
+  <script src="{{ '/star-almanack/js/ephemera-form.js' | relative_url }}?v=20261022-nativitas"></script>
+</body>
+</html>
