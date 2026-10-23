@@ -21,8 +21,10 @@ calculator: natal
       <p class="tagline">The planets at your chosen date, time and place.</p>
     </section>
     {% include ephemera-panel.html %}
+    <section id="natal-interpretations" aria-live="polite"></section>
   </main>
   {% include nativitas-footer.html %}
+  <script src="{{ '/nativitas/interpretations.js' | relative_url }}?v=20261023-interpretations-1"></script>
   <script src="{{ '/star-almanack/js/ephemera-form.js' | relative_url }}?v=20261023-natal-1"></script>
 </body>
 </html>
