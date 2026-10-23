@@ -1,0 +1,2520 @@
+{
+  "week": "W14",
+  "title": "Observer’s guide for ISO 2025-W14",
+  "status": "generated",
+  "planetary_source": "weekly-ephemeris-2025.csv",
+  "planetary_coordinate": "geocentric tropical ecliptic longitude; Monday 00:00 UTC",
+  "fixed_sky": [
+    {
+      "fixed_object_id": 213,
+      "type": "deep-sky",
+      "name": "MCG 6-22-13"
+    },
+    {
+      "fixed_object_id": 214,
+      "type": "deep-sky",
+      "name": "Bode's Galaxy"
+    },
+    {
+      "fixed_object_id": 215,
+      "type": "deep-sky",
+      "name": "Cigar Galaxy"
+    },
+    {
+      "fixed_object_id": 216,
+      "type": "deep-sky",
+      "name": "MCG 9-17-10"
+    }
+  ],
+  "planet_relations": [
+    {
+      "kind": "planet-planet-longitude",
+      "planet": "Mercury",
+      "other_planet": "Neptune",
+      "planet_longitude_deg": 359.367,
+      "other_longitude_deg": 0.017,
+      "longitude_separation_deg": 0.6,
+      "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+      "planet_ra_deg": 358.353927,
+      "planet_dec_deg": 1.328888,
+      "other_ra_deg": 0.196605,
+      "other_dec_deg": -1.293057
+    },
+    {
+      "kind": "planet-planet-longitude",
+      "planet": "Mercury",
+      "other_planet": "Venus",
+      "planet_longitude_deg": 359.367,
+      "other_longitude_deg": 358.017,
+      "longitude_separation_deg": 1.4,
+      "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+      "planet_ra_deg": 358.353927,
+      "planet_dec_deg": 1.328888,
+      "other_ra_deg": 354.898957,
+      "other_dec_deg": 5.867895
+    },
+    {
+      "kind": "planet-planet-longitude",
+      "planet": "Venus",
+      "other_planet": "Neptune",
+      "planet_longitude_deg": 358.017,
+      "other_longitude_deg": 0.017,
+      "longitude_separation_deg": 2.0,
+      "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+      "planet_ra_deg": 354.898957,
+      "planet_dec_deg": 5.867895,
+      "other_ra_deg": 0.196605,
+      "other_dec_deg": -1.293057
+    },
+    {
+      "kind": "planet-planet-longitude",
+      "planet": "Venus",
+      "other_planet": "Saturn",
+      "planet_longitude_deg": 358.017,
+      "other_longitude_deg": 354.367,
+      "longitude_separation_deg": 3.6,
+      "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+      "planet_ra_deg": 354.898957,
+      "planet_dec_deg": 5.867895,
+      "other_ra_deg": 355.274906,
+      "other_dec_deg": -4.152582
+    }
+  ],
+  "planet_finder_relations": [
+    {
+      "kind": "planet-star-longitude",
+      "planet": "Moon",
+      "planet_longitude_deg": 32.35,
+      "star": "Sheratan",
+      "constellation": "Ari",
+      "star_fixed_object_id": 651,
+      "star_ecliptic_longitude_deg": 33.97,
+      "star_ecliptic_latitude_deg": 8.487,
+      "longitude_separation_deg": 1.6,
+      "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+      "finder_only": true,
+      "planet_ra_deg": 28.747466,
+      "planet_dec_deg": 15.007415,
+      "sky_separation_deg": 5.8
+    },
+    {
+      "kind": "planet-star-longitude",
+      "planet": "Mercury",
+      "planet_longitude_deg": 359.367,
+      "star": "Fumalsamakah",
+      "constellation": "Psc",
+      "star_fixed_object_id": 573,
+      "star_ecliptic_longitude_deg": 348.585,
+      "star_ecliptic_latitude_deg": 9.053,
+      "longitude_separation_deg": 10.8,
+      "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+      "finder_only": true,
+      "planet_ra_deg": 358.353927,
+      "planet_dec_deg": 1.328888,
+      "sky_separation_deg": 12.6,
+      "finder_difficulty": "difficult",
+      "finder_note": "Mercury is not easy to find this week."
+    },
+    {
+      "kind": "planet-star-longitude",
+      "planet": "Venus",
+      "planet_longitude_deg": 358.017,
+      "star": "Fumalsamakah",
+      "constellation": "Psc",
+      "star_fixed_object_id": 573,
+      "star_ecliptic_longitude_deg": 348.585,
+      "star_ecliptic_latitude_deg": 9.053,
+      "longitude_separation_deg": 9.4,
+      "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+      "finder_only": true,
+      "planet_ra_deg": 354.898957,
+      "planet_dec_deg": 5.867895,
+      "sky_separation_deg": 9.1
+    },
+    {
+      "kind": "planet-star-longitude",
+      "planet": "Mars",
+      "planet_longitude_deg": 113.283,
+      "star": "Pollux",
+      "constellation": "Gem",
+      "star_fixed_object_id": 37,
+      "star_ecliptic_longitude_deg": 113.216,
+      "star_ecliptic_latitude_deg": 6.684,
+      "longitude_separation_deg": 0.1,
+      "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+      "finder_only": true,
+      "planet_ra_deg": 115.23732,
+      "planet_dec_deg": 24.140328,
+      "sky_separation_deg": 4.0
+    },
+    {
+      "kind": "planet-star-longitude",
+      "planet": "Ceres",
+      "planet_longitude_deg": 343.517,
+      "star": "Fomalhaut",
+      "constellation": "PsA",
+      "star_fixed_object_id": 1229,
+      "star_ecliptic_longitude_deg": 333.86,
+      "star_ecliptic_latitude_deg": -21.136,
+      "longitude_separation_deg": 9.7,
+      "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+      "finder_only": true,
+      "planet_ra_deg": 347.60901,
+      "planet_dec_deg": -13.921469,
+      "sky_separation_deg": 16.0,
+      "finder_difficulty": "difficult",
+      "finder_note": "Ceres is not easy to find this week."
+    },
+    {
+      "kind": "planet-star-longitude",
+      "planet": "Jupiter",
+      "planet_longitude_deg": 75.817,
+      "star": "Aldebaran",
+      "constellation": "Tau",
+      "star_fixed_object_id": 25,
+      "star_ecliptic_longitude_deg": 69.789,
+      "star_ecliptic_latitude_deg": -5.467,
+      "longitude_separation_deg": 6.0,
+      "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+      "finder_only": true,
+      "planet_ra_deg": 74.263624,
+      "planet_dec_deg": 22.33602,
+      "sky_separation_deg": 7.7
+    },
+    {
+      "kind": "planet-star-longitude",
+      "planet": "Saturn",
+      "planet_longitude_deg": 354.367,
+      "star": "Fumalsamakah",
+      "constellation": "Psc",
+      "star_fixed_object_id": 573,
+      "star_ecliptic_longitude_deg": 348.585,
+      "star_ecliptic_latitude_deg": 9.053,
+      "longitude_separation_deg": 5.8,
+      "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+      "finder_only": true,
+      "planet_ra_deg": 355.274906,
+      "planet_dec_deg": -4.152582,
+      "sky_separation_deg": 12.2,
+      "finder_difficulty": "difficult",
+      "finder_note": "Saturn is not easy to find this week."
+    },
+    {
+      "kind": "planet-star-longitude",
+      "planet": "Uranus",
+      "planet_longitude_deg": 54.717,
+      "star": "Menkar",
+      "constellation": "Cet",
+      "star_fixed_object_id": 13,
+      "star_ecliptic_longitude_deg": 44.32,
+      "star_ecliptic_latitude_deg": -12.586,
+      "longitude_separation_deg": 10.4,
+      "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+      "finder_only": true,
+      "planet_ra_deg": 52.049958,
+      "planet_dec_deg": 18.641554,
+      "sky_separation_deg": 15.9,
+      "finder_difficulty": "difficult",
+      "finder_note": "Uranus is not easy to find this week."
+    },
+    {
+      "kind": "planet-star-longitude",
+      "planet": "Neptune",
+      "planet_longitude_deg": 0.017,
+      "star": "Fumalsamakah",
+      "constellation": "Psc",
+      "star_fixed_object_id": 573,
+      "star_ecliptic_longitude_deg": 348.585,
+      "star_ecliptic_latitude_deg": 9.053,
+      "longitude_separation_deg": 11.4,
+      "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+      "finder_only": true,
+      "planet_ra_deg": 0.196605,
+      "planet_dec_deg": -1.293057,
+      "sky_separation_deg": 15.1,
+      "finder_difficulty": "difficult",
+      "finder_note": "Neptune is not easy to find this week."
+    },
+    {
+      "kind": "planet-star-longitude",
+      "planet": "Pluto",
+      "planet_longitude_deg": 303.533,
+      "star": "Dabih",
+      "constellation": "Cap",
+      "star_fixed_object_id": 1152,
+      "star_ecliptic_longitude_deg": 304.047,
+      "star_ecliptic_latitude_deg": 4.589,
+      "longitude_separation_deg": 0.5,
+      "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+      "finder_only": true,
+      "planet_ra_deg": 306.344541,
+      "planet_dec_deg": -22.794492,
+      "sky_separation_deg": 8.1
+    }
+  ],
+  "note": "ISO 2025-W14 runs from March 31 through April 6. Mercury and Neptune are separated by about 0.6° in geocentric ecliptic longitude at the Monday 00:00 UTC snapshot. Mercury and Venus are separated by about 1.4° in geocentric ecliptic longitude at the Monday 00:00 UTC snapshot.\n\n**Naked eye:** 🌓 First Quarter — 02:14:42 UTC. Moderate moonlight makes timing and local sky position important for faint targets. No fixed-sky Calendar object is classified for naked-eye observing this week.\n\n**Planets:** Moon: Naked eye; magnitude -6.3; direct motion; 3.7% illuminated. Below the horizon at 21:00 local apparent solar time, 45°N. Monday 00:00 UTC snapshot. Conjunction with Mars in ecliptic longitude Apr 05 19:49 UTC. Conjunction with Jupiter in ecliptic longitude Apr 02 23:25 UTC. Conjunction with Uranus in ecliptic longitude Apr 01 11:55 UTC. Mercury: In solar glare; magnitude 3.3; retrograde motion; 5.6% illuminated. Monday 00:00 UTC snapshot. Venus: In solar glare; magnitude -4.2; retrograde motion; 3.1% illuminated. Monday 00:00 UTC snapshot. Mars: Naked eye; magnitude 0.4; direct motion; 90.5% illuminated. Monday 00:00 UTC snapshot. Conjunction with Moon in ecliptic longitude Apr 05 19:49 UTC. Ceres: Telescope; magnitude 9.3; direct motion; 99.4% illuminated. Below the horizon at 21:00 local apparent solar time, 45°N. Monday 00:00 UTC snapshot. Jupiter: Naked eye; magnitude -2.1; direct motion; 99.2% illuminated. Monday 00:00 UTC snapshot. Conjunction with Moon in ecliptic longitude Apr 02 23:25 UTC. Saturn: In solar glare; magnitude 1.2; direct motion; 100.0% illuminated. Monday 00:00 UTC snapshot. Uranus: Binoculars; magnitude 5.8; direct motion; 100.0% illuminated. Monday 00:00 UTC snapshot. Conjunction with Moon in ecliptic longitude Apr 01 11:55 UTC. Neptune: In solar glare; magnitude 7.8; direct motion; 100.0% illuminated. Monday 00:00 UTC snapshot. Pluto: Substantial telescope; magnitude 14.5; direct motion; 100.0% illuminated. Below the horizon at 21:00 local apparent solar time, 45°N. Monday 00:00 UTC snapshot.\n\n**Binoculars:** No fixed-sky Calendar object is classified for binocular observing this week.\n\n**Small telescope:** MCG 6-22-13: consult its dedicated finder and observing story for equipment guidance; Bode's Galaxy: consult its dedicated finder and observing story for equipment guidance; Cigar Galaxy: consult its dedicated finder and observing story for equipment guidance; MCG 9-17-10: consult its dedicated finder and observing story for equipment guidance\n\n**Substantial telescope:** No fixed-sky Calendar object is classified as requiring a substantial telescope this week.\n\n",
+  "descriptors": [
+    {
+      "schema_version": 1,
+      "id": "1249",
+      "type": "solar-system-object",
+      "name": "Sun",
+      "summary": "Solar-System object tracked by the Star Almanack weekly ephemeris and Planet Finder",
+      "representation": {
+        "machine": "./1249.json",
+        "human_source": "summary"
+      }
+    },
+    {
+      "schema_version": 1,
+      "id": "1250",
+      "type": "planet",
+      "name": "Mercury",
+      "summary": "Solar-System object tracked by the Star Almanack weekly ephemeris and Planet Finder",
+      "representation": {
+        "machine": "./1250.json",
+        "human_source": "summary"
+      }
+    },
+    {
+      "schema_version": 1,
+      "id": "1251",
+      "type": "planet",
+      "name": "Venus",
+      "summary": "Solar-System object tracked by the Star Almanack weekly ephemeris and Planet Finder",
+      "representation": {
+        "machine": "./1251.json",
+        "human_source": "summary"
+      }
+    },
+    {
+      "schema_version": 1,
+      "id": "1252",
+      "type": "planet",
+      "name": "Earth",
+      "summary": "Solar-System object tracked by the Star Almanack weekly ephemeris and Planet Finder",
+      "representation": {
+        "machine": "./1252.json",
+        "human_source": "summary"
+      }
+    },
+    {
+      "schema_version": 1,
+      "id": "1253",
+      "type": "solar-system-object",
+      "name": "Moon",
+      "summary": "Solar-System object tracked by the Star Almanack weekly ephemeris and Planet Finder",
+      "representation": {
+        "machine": "./1253.json",
+        "human_source": "summary"
+      }
+    },
+    {
+      "schema_version": 1,
+      "id": "1254",
+      "type": "planet",
+      "name": "Mars",
+      "summary": "Solar-System object tracked by the Star Almanack weekly ephemeris and Planet Finder",
+      "representation": {
+        "machine": "./1254.json",
+        "human_source": "summary"
+      }
+    },
+    {
+      "schema_version": 1,
+      "id": "1255",
+      "type": "solar-system-object",
+      "name": "Ceres",
+      "summary": "Solar-System object tracked by the Star Almanack weekly ephemeris and Planet Finder",
+      "representation": {
+        "machine": "./1255.json",
+        "human_source": "summary"
+      }
+    },
+    {
+      "schema_version": 1,
+      "id": "1256",
+      "type": "planet",
+      "name": "Jupiter",
+      "summary": "Solar-System object tracked by the Star Almanack weekly ephemeris and Planet Finder",
+      "representation": {
+        "machine": "./1256.json",
+        "human_source": "summary"
+      }
+    },
+    {
+      "schema_version": 1,
+      "id": "1257",
+      "type": "planet",
+      "name": "Saturn",
+      "summary": "Solar-System object tracked by the Star Almanack weekly ephemeris and Planet Finder",
+      "representation": {
+        "machine": "./1257.json",
+        "human_source": "summary"
+      }
+    },
+    {
+      "schema_version": 1,
+      "id": "1258",
+      "type": "planet",
+      "name": "Uranus",
+      "summary": "Solar-System object tracked by the Star Almanack weekly ephemeris and Planet Finder",
+      "representation": {
+        "machine": "./1258.json",
+        "human_source": "summary"
+      }
+    },
+    {
+      "schema_version": 1,
+      "id": "1259",
+      "type": "planet",
+      "name": "Neptune",
+      "summary": "Solar-System object tracked by the Star Almanack weekly ephemeris and Planet Finder",
+      "representation": {
+        "machine": "./1259.json",
+        "human_source": "summary"
+      }
+    },
+    {
+      "schema_version": 1,
+      "id": "1260",
+      "type": "solar-system-object",
+      "name": "Pluto",
+      "summary": "Solar-System object tracked by the Star Almanack weekly ephemeris and Planet Finder",
+      "representation": {
+        "machine": "./1260.json",
+        "human_source": "summary"
+      }
+    },
+    {
+      "schema_version": 1,
+      "id": "213",
+      "type": "deep-sky-object",
+      "name": "MCG 6-22-13",
+      "summary": "deep-sky object selected as a weekly fixed-sky observing target",
+      "representation": {
+        "machine": "./213.json",
+        "human_source": "summary",
+        "human": "/stories/drafts/213.html"
+      },
+      "catalog_name": "MCG 6-22-13",
+      "object_type": "deep-sky object",
+      "source_label": "MCG 6-22-13"
+    },
+    {
+      "schema_version": 1,
+      "id": "214",
+      "type": "deep-sky-object",
+      "name": "Bode's Galaxy",
+      "summary": "deep-sky object selected as a weekly fixed-sky observing target",
+      "representation": {
+        "machine": "./214.json",
+        "human_source": "summary",
+        "human": "/stories/drafts/214.html"
+      },
+      "catalog_name": "Bode's Galaxy",
+      "object_type": "deep-sky object",
+      "source_label": "Bode's Galaxy"
+    },
+    {
+      "schema_version": 1,
+      "id": "215",
+      "type": "deep-sky-object",
+      "name": "Cigar Galaxy",
+      "summary": "deep-sky object selected as a weekly fixed-sky observing target",
+      "representation": {
+        "machine": "./215.json",
+        "human_source": "summary",
+        "human": "/stories/drafts/215.html"
+      },
+      "catalog_name": "Cigar Galaxy",
+      "object_type": "deep-sky object",
+      "source_label": "Cigar Galaxy"
+    },
+    {
+      "schema_version": 1,
+      "id": "216",
+      "type": "deep-sky-object",
+      "name": "MCG 9-17-10",
+      "summary": "deep-sky object selected as a weekly fixed-sky observing target",
+      "representation": {
+        "machine": "./216.json",
+        "human_source": "summary",
+        "human": "/stories/drafts/216.html"
+      },
+      "catalog_name": "MCG 9-17-10",
+      "object_type": "deep-sky object",
+      "source_label": "MCG 9-17-10"
+    },
+    {
+      "schema_version": 1,
+      "id": "ecliptic-longitude",
+      "type": "observing-concept",
+      "name": "ecliptic longitude",
+      "summary": "angular position measured along the ecliptic, used here for conservative weekly Solar-System comparisons",
+      "representation": {
+        "machine": "./ecliptic-longitude.json",
+        "human_source": "summary"
+      }
+    },
+    {
+      "schema_version": 1,
+      "id": "zodiac",
+      "type": "observing-concept",
+      "name": "zodiac",
+      "summary": "the band of constellations along the ecliptic used to orient Solar-System objects",
+      "representation": {
+        "machine": "./zodiac.json",
+        "human_source": "summary"
+      }
+    }
+  ],
+  "calendar_fixed_object_ids": [
+    213,
+    214,
+    215,
+    216
+  ],
+  "story_candidates": [
+    {
+      "fixed_object_id": 213,
+      "collection": "drafts",
+      "hed": "Unveiling MCG 6-22-13: A Distant Galaxy in Leo Minor",
+      "dek": "Exploring the characteristics and significance of the galaxy MCG 6-22-13 situated in Leo Minor.",
+      "body": "MCG 6-22-13 is a celestial galaxy positioned within the constellation Leo Minor, offering astronomers a fascinating glimpse into the universe's distant past. Its coordinates, approximately right ascension 9.81 hours and declination +33.42 degrees, place it well in the northern celestial hemisphere, making it accessible to many professional and amateur observers under favorable conditions.\n\nAs a member of the galaxy family, MCG 6-22-13 exemplifies the vast diversity of galactic structures that populate the cosmos. While specific details about its size, luminosity, and structure remain unconfirmed, its classification as a galaxy indicates it comprises billions of stars, interstellar gas, dust, and dark matter, all bound together by gravity. Such galaxies can range from majestic spirals to diffuse ellipticals, each offering unique insights into galaxy formation and evolution.\n\nThe galaxy’s precise distance from Earth is not definitively known, but objects like MCG 6-22-13 are key targets for ongoing research. Studying its light helps astronomers understand the processes that govern galaxy development, including star formation, galactic interactions, and the role of dark matter. Additionally, investigations into galaxies like MCG 6-22-13 contribute to broader cosmological models, aiding scientists in mapping the universe's large-scale structure.\n\nAs an isolated celestial body within the vast universe, MCG 6-22-13 remains a subject of interest primarily for professionals engaged in deep-sky observations and research. While its specific features and distance are not firmly established, its position and classification highlight its importance as part of the cosmic mosaic. Observing it can serve as a window into the universe’s history, revealing the complex and dynamic processes that shape galaxies over cosmic time.",
+      "url": "/stories/drafts/213.html",
+      "status": "pending"
+    },
+    {
+      "fixed_object_id": 214,
+      "collection": "drafts",
+      "hed": "Bode’s Galaxy: A Spiral Wonder in Ursa Major",
+      "dek": "An enduring celestial marvel that offers a glimpse into the grand structure of the universe.",
+      "body": "Bode’s Galaxy, also known as M81, is a prominent spiral galaxy located in the constellation Ursa Major. Situated approximately 12 million light-years from Earth, it is a prime example of a grand design spiral galaxy, characterized by its well-defined arms and bright central core. Discovered by Johann Elert Bode in 1774, this galaxy has long captivated astronomers and stargazers alike, offering insights into galactic formation and evolution.\n\nThe galaxy’s bright nucleus and sweeping spiral arms make it an impressive object even with moderate amateur telescopes. Its striking appearance is due to a high concentration of stars, gas, and dust in the central regions, which together generate substantial luminosity. The spiral arms are rich in star-forming regions, making M81 a locus of ongoing stellar creation.\n\nM81 is part of the M81 Group, a collection of galaxies that also includes the well-known galaxy M82, or the Cigar Galaxy. The gravitational interactions within this group have played a significant role in shaping the morphology of these galaxies, particularly in triggering star-forming activity.\n\nAstronomers study Bode’s Galaxy not only for its aesthetic appeal but also for its role in understanding galactic dynamics. As a relatively near, bright galaxy, it serves as a key reference point in the study of spiral structures and galactic nuclei. Its proximity relative to other spiral galaxies makes it an ideal target for detailed observations, including investigations into supermassive black holes and the distribution of dark matter.\n\nThroughout the year, Bode’s Galaxy remains a fixture in the night sky, offering consistent opportunities for observation and study. Its position in Ursa Major, a well-known constellation, ensures it remains a captivating subject for astronomers aiming to explore the majestic complexity of the universe.",
+      "url": "/stories/drafts/214.html",
+      "status": "pending"
+    },
+    {
+      "fixed_object_id": 215,
+      "collection": "drafts",
+      "hed": "The Cigar Galaxy: A Stellar Nexus in Ursa Major",
+      "dek": "An exploration into one of the most intriguing galaxies visible from Earth, highlighting its structure and significance within the cosmic panorama.",
+      "body": "Nestled within the sprawling constellation of Ursa Major, the Cigar Galaxy, officially designated as M82, stands out as a prominent example of a starburst galaxy. Its nickname derives from its elongated, cigar-like appearance, which becomes evident when viewed through telescopes. Situated approximately 12 million light-years away from Earth, M82 is a member of the Coma Cluster and is often observed in conjunction with its nearby neighbor, the starburst galaxy M81.\n\nM82 is classified as an irregular galaxy, a designation that underscores its peculiar and dynamic structure. Unlike more orderly spiral or elliptical galaxies, its form has been significantly influenced by gravitational interactions, particularly with M81. This interaction has triggered intense periods of star formation, making M82 one of the most active stellar nurseries in the local universe. Observations reveal a galaxy teeming with young, massive stars and copious amounts of dust and gas that fuel ongoing stellar births.\n\nThis galaxy's energetic core and remarkable star-forming activity have made it a focal point for astronomers seeking to understand the processes of galactic evolution. Emissions from supernovae and stellar winds in M82 contribute to its distinctive outflows, which are observable in various wavelengths, including X-ray and infrared. Such features provide insights into the lifecycle of stars and the dynamic effects of starburst activity.\n\nDespite its relative proximity, M82 remains a challenging but rewarding object for amateur astronomers. Its approximately 8th magnitude brightness can be glimpsed with modest telescopes, especially under dark skies. For professional astronomers, M82 continues to serve as an invaluable laboratory for studying cosmic phenomena related to star formation and galactic interaction.\n\nAs part of the broader universe, M82 exemplifies the complex and ever-changing nature of galaxies. Its ongoing evolution, shaped by gravitational forces and stellar processes, offers a captivating glimpse into the mechanisms that have crafted our universe's diverse tapestry of galaxies.",
+      "url": "/stories/drafts/215.html",
+      "status": "pending"
+    },
+    {
+      "fixed_object_id": 216,
+      "collection": "drafts",
+      "hed": "Unveiling MCG 9-17-10: A Distant Galaxy in Ursa Major",
+      "dek": "An exploration of one of the intriguing extragalactic objects cataloged in modern astronomy.",
+      "body": "Nestled within the sweeping constellation of Ursa Major, MCG 9-17-10 stands as a testament to the universe's vast and complex architecture. Classified as a galaxy, this celestial object contributes to the rich tapestry of the cosmos observed by astronomers seeking to understand the universe's grand design. Its precise coordinates, right ascension approximately 10.03 hours and declination about 55.68 degrees, place it firmly within the northern celestial sphere, offering a tantalizing glimpse for both amateur and professional observers. \n\nAs a galaxy, MCG 9-17-10 is part of an immense cosmic web, composed of countless stars, nebulae, and dark matter. Though specific details about its size, composition, or distance remain to be conclusively established, its inclusion in the galaxy catalog underscores its recognition as a significant physical object candidate. Such objects are focal points for ongoing research, aiming to elucidate their nature and role within the larger structure of the universe.\n\nThe study of galaxies like MCG 9-17-10 sheds light on fundamental astrophysical processes. These include galaxy formation and evolution, the behavior of interstellar matter, and the role of dark matter in shaping galactic structures. Observations across various wavelengths—though not specified here—potentially reveal phenomena such as star formation regions, central supermassive black holes, or active galactic nuclei, each contributing invaluable insights.\n\nAstronomers continue to catalog and research objects like MCG 9-17-10, driven by the quest to piece together the cosmic puzzle. With advancements in telescopic technology and data analysis, our understanding of such distant galaxies is poised to deepen, unveiling new layers of cosmic history. While many mysteries remain, each discovery brings us closer to comprehending the universe's origin, evolution, and ultimate destiny.",
+      "url": "/stories/drafts/216.html",
+      "status": "pending"
+    }
+  ],
+  "inline_stories": [],
+  "linked_stories": [
+    {
+      "fixed_object_id": 213,
+      "collection": "drafts",
+      "hed": "Unveiling MCG 6-22-13: A Distant Galaxy in Leo Minor",
+      "dek": "Exploring the characteristics and significance of the galaxy MCG 6-22-13 situated in Leo Minor.",
+      "body": "MCG 6-22-13 is a celestial galaxy positioned within the constellation Leo Minor, offering astronomers a fascinating glimpse into the universe's distant past. Its coordinates, approximately right ascension 9.81 hours and declination +33.42 degrees, place it well in the northern celestial hemisphere, making it accessible to many professional and amateur observers under favorable conditions.\n\nAs a member of the galaxy family, MCG 6-22-13 exemplifies the vast diversity of galactic structures that populate the cosmos. While specific details about its size, luminosity, and structure remain unconfirmed, its classification as a galaxy indicates it comprises billions of stars, interstellar gas, dust, and dark matter, all bound together by gravity. Such galaxies can range from majestic spirals to diffuse ellipticals, each offering unique insights into galaxy formation and evolution.\n\nThe galaxy’s precise distance from Earth is not definitively known, but objects like MCG 6-22-13 are key targets for ongoing research. Studying its light helps astronomers understand the processes that govern galaxy development, including star formation, galactic interactions, and the role of dark matter. Additionally, investigations into galaxies like MCG 6-22-13 contribute to broader cosmological models, aiding scientists in mapping the universe's large-scale structure.\n\nAs an isolated celestial body within the vast universe, MCG 6-22-13 remains a subject of interest primarily for professionals engaged in deep-sky observations and research. While its specific features and distance are not firmly established, its position and classification highlight its importance as part of the cosmic mosaic. Observing it can serve as a window into the universe’s history, revealing the complex and dynamic processes that shape galaxies over cosmic time.",
+      "url": "/stories/drafts/213.html",
+      "status": "pending"
+    },
+    {
+      "fixed_object_id": 214,
+      "collection": "drafts",
+      "hed": "Bode’s Galaxy: A Spiral Wonder in Ursa Major",
+      "dek": "An enduring celestial marvel that offers a glimpse into the grand structure of the universe.",
+      "body": "Bode’s Galaxy, also known as M81, is a prominent spiral galaxy located in the constellation Ursa Major. Situated approximately 12 million light-years from Earth, it is a prime example of a grand design spiral galaxy, characterized by its well-defined arms and bright central core. Discovered by Johann Elert Bode in 1774, this galaxy has long captivated astronomers and stargazers alike, offering insights into galactic formation and evolution.\n\nThe galaxy’s bright nucleus and sweeping spiral arms make it an impressive object even with moderate amateur telescopes. Its striking appearance is due to a high concentration of stars, gas, and dust in the central regions, which together generate substantial luminosity. The spiral arms are rich in star-forming regions, making M81 a locus of ongoing stellar creation.\n\nM81 is part of the M81 Group, a collection of galaxies that also includes the well-known galaxy M82, or the Cigar Galaxy. The gravitational interactions within this group have played a significant role in shaping the morphology of these galaxies, particularly in triggering star-forming activity.\n\nAstronomers study Bode’s Galaxy not only for its aesthetic appeal but also for its role in understanding galactic dynamics. As a relatively near, bright galaxy, it serves as a key reference point in the study of spiral structures and galactic nuclei. Its proximity relative to other spiral galaxies makes it an ideal target for detailed observations, including investigations into supermassive black holes and the distribution of dark matter.\n\nThroughout the year, Bode’s Galaxy remains a fixture in the night sky, offering consistent opportunities for observation and study. Its position in Ursa Major, a well-known constellation, ensures it remains a captivating subject for astronomers aiming to explore the majestic complexity of the universe.",
+      "url": "/stories/drafts/214.html",
+      "status": "pending"
+    },
+    {
+      "fixed_object_id": 215,
+      "collection": "drafts",
+      "hed": "The Cigar Galaxy: A Stellar Nexus in Ursa Major",
+      "dek": "An exploration into one of the most intriguing galaxies visible from Earth, highlighting its structure and significance within the cosmic panorama.",
+      "body": "Nestled within the sprawling constellation of Ursa Major, the Cigar Galaxy, officially designated as M82, stands out as a prominent example of a starburst galaxy. Its nickname derives from its elongated, cigar-like appearance, which becomes evident when viewed through telescopes. Situated approximately 12 million light-years away from Earth, M82 is a member of the Coma Cluster and is often observed in conjunction with its nearby neighbor, the starburst galaxy M81.\n\nM82 is classified as an irregular galaxy, a designation that underscores its peculiar and dynamic structure. Unlike more orderly spiral or elliptical galaxies, its form has been significantly influenced by gravitational interactions, particularly with M81. This interaction has triggered intense periods of star formation, making M82 one of the most active stellar nurseries in the local universe. Observations reveal a galaxy teeming with young, massive stars and copious amounts of dust and gas that fuel ongoing stellar births.\n\nThis galaxy's energetic core and remarkable star-forming activity have made it a focal point for astronomers seeking to understand the processes of galactic evolution. Emissions from supernovae and stellar winds in M82 contribute to its distinctive outflows, which are observable in various wavelengths, including X-ray and infrared. Such features provide insights into the lifecycle of stars and the dynamic effects of starburst activity.\n\nDespite its relative proximity, M82 remains a challenging but rewarding object for amateur astronomers. Its approximately 8th magnitude brightness can be glimpsed with modest telescopes, especially under dark skies. For professional astronomers, M82 continues to serve as an invaluable laboratory for studying cosmic phenomena related to star formation and galactic interaction.\n\nAs part of the broader universe, M82 exemplifies the complex and ever-changing nature of galaxies. Its ongoing evolution, shaped by gravitational forces and stellar processes, offers a captivating glimpse into the mechanisms that have crafted our universe's diverse tapestry of galaxies.",
+      "url": "/stories/drafts/215.html",
+      "status": "pending"
+    },
+    {
+      "fixed_object_id": 216,
+      "collection": "drafts",
+      "hed": "Unveiling MCG 9-17-10: A Distant Galaxy in Ursa Major",
+      "dek": "An exploration of one of the intriguing extragalactic objects cataloged in modern astronomy.",
+      "body": "Nestled within the sweeping constellation of Ursa Major, MCG 9-17-10 stands as a testament to the universe's vast and complex architecture. Classified as a galaxy, this celestial object contributes to the rich tapestry of the cosmos observed by astronomers seeking to understand the universe's grand design. Its precise coordinates, right ascension approximately 10.03 hours and declination about 55.68 degrees, place it firmly within the northern celestial sphere, offering a tantalizing glimpse for both amateur and professional observers. \n\nAs a galaxy, MCG 9-17-10 is part of an immense cosmic web, composed of countless stars, nebulae, and dark matter. Though specific details about its size, composition, or distance remain to be conclusively established, its inclusion in the galaxy catalog underscores its recognition as a significant physical object candidate. Such objects are focal points for ongoing research, aiming to elucidate their nature and role within the larger structure of the universe.\n\nThe study of galaxies like MCG 9-17-10 sheds light on fundamental astrophysical processes. These include galaxy formation and evolution, the behavior of interstellar matter, and the role of dark matter in shaping galactic structures. Observations across various wavelengths—though not specified here—potentially reveal phenomena such as star formation regions, central supermassive black holes, or active galactic nuclei, each contributing invaluable insights.\n\nAstronomers continue to catalog and research objects like MCG 9-17-10, driven by the quest to piece together the cosmic puzzle. With advancements in telescopic technology and data analysis, our understanding of such distant galaxies is poised to deepen, unveiling new layers of cosmic history. While many mysteries remain, each discovery brings us closer to comprehending the universe's origin, evolution, and ultimate destiny.",
+      "url": "/stories/drafts/216.html",
+      "status": "pending"
+    }
+  ],
+  "stories": [
+    {
+      "fixed_object_id": 213,
+      "collection": "drafts",
+      "hed": "Unveiling MCG 6-22-13: A Distant Galaxy in Leo Minor",
+      "dek": "Exploring the characteristics and significance of the galaxy MCG 6-22-13 situated in Leo Minor.",
+      "body": "MCG 6-22-13 is a celestial galaxy positioned within the constellation Leo Minor, offering astronomers a fascinating glimpse into the universe's distant past. Its coordinates, approximately right ascension 9.81 hours and declination +33.42 degrees, place it well in the northern celestial hemisphere, making it accessible to many professional and amateur observers under favorable conditions.\n\nAs a member of the galaxy family, MCG 6-22-13 exemplifies the vast diversity of galactic structures that populate the cosmos. While specific details about its size, luminosity, and structure remain unconfirmed, its classification as a galaxy indicates it comprises billions of stars, interstellar gas, dust, and dark matter, all bound together by gravity. Such galaxies can range from majestic spirals to diffuse ellipticals, each offering unique insights into galaxy formation and evolution.\n\nThe galaxy’s precise distance from Earth is not definitively known, but objects like MCG 6-22-13 are key targets for ongoing research. Studying its light helps astronomers understand the processes that govern galaxy development, including star formation, galactic interactions, and the role of dark matter. Additionally, investigations into galaxies like MCG 6-22-13 contribute to broader cosmological models, aiding scientists in mapping the universe's large-scale structure.\n\nAs an isolated celestial body within the vast universe, MCG 6-22-13 remains a subject of interest primarily for professionals engaged in deep-sky observations and research. While its specific features and distance are not firmly established, its position and classification highlight its importance as part of the cosmic mosaic. Observing it can serve as a window into the universe’s history, revealing the complex and dynamic processes that shape galaxies over cosmic time.",
+      "url": "/stories/drafts/213.html",
+      "status": "pending"
+    },
+    {
+      "fixed_object_id": 214,
+      "collection": "drafts",
+      "hed": "Bode’s Galaxy: A Spiral Wonder in Ursa Major",
+      "dek": "An enduring celestial marvel that offers a glimpse into the grand structure of the universe.",
+      "body": "Bode’s Galaxy, also known as M81, is a prominent spiral galaxy located in the constellation Ursa Major. Situated approximately 12 million light-years from Earth, it is a prime example of a grand design spiral galaxy, characterized by its well-defined arms and bright central core. Discovered by Johann Elert Bode in 1774, this galaxy has long captivated astronomers and stargazers alike, offering insights into galactic formation and evolution.\n\nThe galaxy’s bright nucleus and sweeping spiral arms make it an impressive object even with moderate amateur telescopes. Its striking appearance is due to a high concentration of stars, gas, and dust in the central regions, which together generate substantial luminosity. The spiral arms are rich in star-forming regions, making M81 a locus of ongoing stellar creation.\n\nM81 is part of the M81 Group, a collection of galaxies that also includes the well-known galaxy M82, or the Cigar Galaxy. The gravitational interactions within this group have played a significant role in shaping the morphology of these galaxies, particularly in triggering star-forming activity.\n\nAstronomers study Bode’s Galaxy not only for its aesthetic appeal but also for its role in understanding galactic dynamics. As a relatively near, bright galaxy, it serves as a key reference point in the study of spiral structures and galactic nuclei. Its proximity relative to other spiral galaxies makes it an ideal target for detailed observations, including investigations into supermassive black holes and the distribution of dark matter.\n\nThroughout the year, Bode’s Galaxy remains a fixture in the night sky, offering consistent opportunities for observation and study. Its position in Ursa Major, a well-known constellation, ensures it remains a captivating subject for astronomers aiming to explore the majestic complexity of the universe.",
+      "url": "/stories/drafts/214.html",
+      "status": "pending"
+    },
+    {
+      "fixed_object_id": 215,
+      "collection": "drafts",
+      "hed": "The Cigar Galaxy: A Stellar Nexus in Ursa Major",
+      "dek": "An exploration into one of the most intriguing galaxies visible from Earth, highlighting its structure and significance within the cosmic panorama.",
+      "body": "Nestled within the sprawling constellation of Ursa Major, the Cigar Galaxy, officially designated as M82, stands out as a prominent example of a starburst galaxy. Its nickname derives from its elongated, cigar-like appearance, which becomes evident when viewed through telescopes. Situated approximately 12 million light-years away from Earth, M82 is a member of the Coma Cluster and is often observed in conjunction with its nearby neighbor, the starburst galaxy M81.\n\nM82 is classified as an irregular galaxy, a designation that underscores its peculiar and dynamic structure. Unlike more orderly spiral or elliptical galaxies, its form has been significantly influenced by gravitational interactions, particularly with M81. This interaction has triggered intense periods of star formation, making M82 one of the most active stellar nurseries in the local universe. Observations reveal a galaxy teeming with young, massive stars and copious amounts of dust and gas that fuel ongoing stellar births.\n\nThis galaxy's energetic core and remarkable star-forming activity have made it a focal point for astronomers seeking to understand the processes of galactic evolution. Emissions from supernovae and stellar winds in M82 contribute to its distinctive outflows, which are observable in various wavelengths, including X-ray and infrared. Such features provide insights into the lifecycle of stars and the dynamic effects of starburst activity.\n\nDespite its relative proximity, M82 remains a challenging but rewarding object for amateur astronomers. Its approximately 8th magnitude brightness can be glimpsed with modest telescopes, especially under dark skies. For professional astronomers, M82 continues to serve as an invaluable laboratory for studying cosmic phenomena related to star formation and galactic interaction.\n\nAs part of the broader universe, M82 exemplifies the complex and ever-changing nature of galaxies. Its ongoing evolution, shaped by gravitational forces and stellar processes, offers a captivating glimpse into the mechanisms that have crafted our universe's diverse tapestry of galaxies.",
+      "url": "/stories/drafts/215.html",
+      "status": "pending"
+    },
+    {
+      "fixed_object_id": 216,
+      "collection": "drafts",
+      "hed": "Unveiling MCG 9-17-10: A Distant Galaxy in Ursa Major",
+      "dek": "An exploration of one of the intriguing extragalactic objects cataloged in modern astronomy.",
+      "body": "Nestled within the sweeping constellation of Ursa Major, MCG 9-17-10 stands as a testament to the universe's vast and complex architecture. Classified as a galaxy, this celestial object contributes to the rich tapestry of the cosmos observed by astronomers seeking to understand the universe's grand design. Its precise coordinates, right ascension approximately 10.03 hours and declination about 55.68 degrees, place it firmly within the northern celestial sphere, offering a tantalizing glimpse for both amateur and professional observers. \n\nAs a galaxy, MCG 9-17-10 is part of an immense cosmic web, composed of countless stars, nebulae, and dark matter. Though specific details about its size, composition, or distance remain to be conclusively established, its inclusion in the galaxy catalog underscores its recognition as a significant physical object candidate. Such objects are focal points for ongoing research, aiming to elucidate their nature and role within the larger structure of the universe.\n\nThe study of galaxies like MCG 9-17-10 sheds light on fundamental astrophysical processes. These include galaxy formation and evolution, the behavior of interstellar matter, and the role of dark matter in shaping galactic structures. Observations across various wavelengths—though not specified here—potentially reveal phenomena such as star formation regions, central supermassive black holes, or active galactic nuclei, each contributing invaluable insights.\n\nAstronomers continue to catalog and research objects like MCG 9-17-10, driven by the quest to piece together the cosmic puzzle. With advancements in telescopic technology and data analysis, our understanding of such distant galaxies is poised to deepen, unveiling new layers of cosmic history. While many mysteries remain, each discovery brings us closer to comprehending the universe's origin, evolution, and ultimate destiny.",
+      "url": "/stories/drafts/216.html",
+      "status": "pending"
+    }
+  ],
+  "story_completion": {
+    "week": "2025-W14",
+    "total": 4,
+    "complete": 0,
+    "pending": [
+      {
+        "fixed_object_id": 213,
+        "catalog_target_key": null,
+        "label": "Finest NGC 51 / NGC 3003 · MCG 6-22-13",
+        "status": "pending",
+        "stories": [],
+        "reason": "researched story needed"
+      },
+      {
+        "fixed_object_id": 214,
+        "catalog_target_key": null,
+        "label": "M81",
+        "status": "pending",
+        "stories": [],
+        "reason": "researched story needed"
+      },
+      {
+        "fixed_object_id": 215,
+        "catalog_target_key": null,
+        "label": "M82",
+        "status": "pending",
+        "stories": [],
+        "reason": "researched story needed"
+      },
+      {
+        "fixed_object_id": 216,
+        "catalog_target_key": null,
+        "label": "Finest NGC 41 / NGC 3079 · MCG 9-17-10",
+        "status": "pending",
+        "stories": [],
+        "reason": "researched story needed"
+      }
+    ],
+    "objects": [
+      {
+        "fixed_object_id": 213,
+        "catalog_target_key": null,
+        "label": "Finest NGC 51 / NGC 3003 · MCG 6-22-13",
+        "status": "pending",
+        "stories": [],
+        "reason": "researched story needed"
+      },
+      {
+        "fixed_object_id": 214,
+        "catalog_target_key": null,
+        "label": "M81",
+        "status": "pending",
+        "stories": [],
+        "reason": "researched story needed"
+      },
+      {
+        "fixed_object_id": 215,
+        "catalog_target_key": null,
+        "label": "M82",
+        "status": "pending",
+        "stories": [],
+        "reason": "researched story needed"
+      },
+      {
+        "fixed_object_id": 216,
+        "catalog_target_key": null,
+        "label": "Finest NGC 41 / NGC 3079 · MCG 9-17-10",
+        "status": "pending",
+        "stories": [],
+        "reason": "researched story needed"
+      }
+    ]
+  },
+  "planet_finder_artworks": [
+    {
+      "schema_version": 1,
+      "id": "2025-W14-1250",
+      "object_id": 1250,
+      "week": "2025-W14",
+      "kind": "stellar-finder",
+      "geometry": {
+        "constellation_system": "Martz/MacRobert",
+        "constellation_abbreviation": "Psc",
+        "on_missing_geometry": "fail",
+        "invent_geometry": false
+      },
+      "style": {
+        "background": "night-sky",
+        "constellation": {
+          "stroke": "#5c8fe8",
+          "role": "ordinary constellation figure"
+        },
+        "asterism": {
+          "stroke": "#59c86d",
+          "role": "orienting asterism"
+        },
+        "target": {
+          "stroke": "#ffd84d",
+          "fill": "none",
+          "role": "open target circle"
+        },
+        "target_arrows": false
+      },
+      "constellation": "Pisces",
+      "asterism": null,
+      "targets": [
+        {
+          "type": "solar-system-object",
+          "name": "Mercury"
+        },
+        {
+          "type": "reference-star",
+          "name": "Fumalsamakah",
+          "fixed_object_id": 573
+        }
+      ],
+      "landmark_policy": {
+        "retain_named_field_stars": true,
+        "primary_reference_star": "Fumalsamakah",
+        "magnitude_limit": 2.99
+      },
+      "finder_route": {
+        "sequence": [
+          "Pisces",
+          "Fumalsamakah",
+          "Mercury"
+        ],
+        "orientation": "constellation-stick-figure",
+        "reference_star": "Fumalsamakah",
+        "planet": "Mercury",
+        "finder_note": "Mercury is not easy to find this week.",
+        "sky_separation_deg": 12.6
+      },
+      "planetary_context": [
+        {
+          "kind": "planet-star-longitude",
+          "planet": "Moon",
+          "planet_longitude_deg": 32.35,
+          "star": "Sheratan",
+          "constellation": "Ari",
+          "star_fixed_object_id": 651,
+          "star_ecliptic_longitude_deg": 33.97,
+          "star_ecliptic_latitude_deg": 8.487,
+          "longitude_separation_deg": 1.6,
+          "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+          "finder_only": true,
+          "planet_ra_deg": 28.747466,
+          "planet_dec_deg": 15.007415,
+          "sky_separation_deg": 5.8
+        },
+        {
+          "kind": "planet-star-longitude",
+          "planet": "Mercury",
+          "planet_longitude_deg": 359.367,
+          "star": "Fumalsamakah",
+          "constellation": "Psc",
+          "star_fixed_object_id": 573,
+          "star_ecliptic_longitude_deg": 348.585,
+          "star_ecliptic_latitude_deg": 9.053,
+          "longitude_separation_deg": 10.8,
+          "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+          "finder_only": true,
+          "planet_ra_deg": 358.353927,
+          "planet_dec_deg": 1.328888,
+          "sky_separation_deg": 12.6,
+          "finder_difficulty": "difficult",
+          "finder_note": "Mercury is not easy to find this week."
+        }
+      ],
+      "planet_position": {
+        "ra_deg": 358.353927,
+        "dec_deg": 1.328888
+      },
+      "solar_system_field": [
+        {
+          "name": "Moon",
+          "ra_deg": 28.747466,
+          "dec_deg": 15.007415
+        },
+        {
+          "name": "Mercury",
+          "ra_deg": 358.353927,
+          "dec_deg": 1.328888
+        },
+        {
+          "name": "Venus",
+          "ra_deg": 354.898957,
+          "dec_deg": 5.867895
+        },
+        {
+          "name": "Mars",
+          "ra_deg": 115.23732,
+          "dec_deg": 24.140328
+        },
+        {
+          "name": "Ceres",
+          "ra_deg": 347.60901,
+          "dec_deg": -13.921469
+        },
+        {
+          "name": "Jupiter",
+          "ra_deg": 74.263624,
+          "dec_deg": 22.33602
+        },
+        {
+          "name": "Saturn",
+          "ra_deg": 355.274906,
+          "dec_deg": -4.152582
+        },
+        {
+          "name": "Uranus",
+          "ra_deg": 52.049958,
+          "dec_deg": 18.641554
+        },
+        {
+          "name": "Neptune",
+          "ra_deg": 0.196605,
+          "dec_deg": -1.293057
+        },
+        {
+          "name": "Pluto",
+          "ra_deg": 306.344541,
+          "dec_deg": -22.794492
+        }
+      ],
+      "planet_plot_policy": "plot all preserved 2-D Star Almanack Solar-System positions that fall inside the Pathfinder field; the Moon is a normal plotted body, with apparent-disk occultation handled only by rendering/collision logic",
+      "reference_standard": "docs/finder-standard.md"
+    },
+    {
+      "schema_version": 1,
+      "id": "2025-W14-1251",
+      "object_id": 1251,
+      "week": "2025-W14",
+      "kind": "stellar-finder",
+      "geometry": {
+        "constellation_system": "Martz/MacRobert",
+        "constellation_abbreviation": "Psc",
+        "on_missing_geometry": "fail",
+        "invent_geometry": false
+      },
+      "style": {
+        "background": "night-sky",
+        "constellation": {
+          "stroke": "#5c8fe8",
+          "role": "ordinary constellation figure"
+        },
+        "asterism": {
+          "stroke": "#59c86d",
+          "role": "orienting asterism"
+        },
+        "target": {
+          "stroke": "#ffd84d",
+          "fill": "none",
+          "role": "open target circle"
+        },
+        "target_arrows": false
+      },
+      "constellation": "Pisces",
+      "asterism": null,
+      "targets": [
+        {
+          "type": "solar-system-object",
+          "name": "Venus"
+        },
+        {
+          "type": "reference-star",
+          "name": "Fumalsamakah",
+          "fixed_object_id": 573
+        }
+      ],
+      "landmark_policy": {
+        "retain_named_field_stars": true,
+        "primary_reference_star": "Fumalsamakah",
+        "magnitude_limit": 2.99
+      },
+      "finder_route": {
+        "sequence": [
+          "Pisces",
+          "Fumalsamakah",
+          "Venus"
+        ],
+        "orientation": "constellation-stick-figure",
+        "reference_star": "Fumalsamakah",
+        "planet": "Venus",
+        "finder_note": null,
+        "sky_separation_deg": 9.1
+      },
+      "planetary_context": [
+        {
+          "kind": "planet-star-longitude",
+          "planet": "Moon",
+          "planet_longitude_deg": 32.35,
+          "star": "Sheratan",
+          "constellation": "Ari",
+          "star_fixed_object_id": 651,
+          "star_ecliptic_longitude_deg": 33.97,
+          "star_ecliptic_latitude_deg": 8.487,
+          "longitude_separation_deg": 1.6,
+          "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+          "finder_only": true,
+          "planet_ra_deg": 28.747466,
+          "planet_dec_deg": 15.007415,
+          "sky_separation_deg": 5.8
+        },
+        {
+          "kind": "planet-star-longitude",
+          "planet": "Mercury",
+          "planet_longitude_deg": 359.367,
+          "star": "Fumalsamakah",
+          "constellation": "Psc",
+          "star_fixed_object_id": 573,
+          "star_ecliptic_longitude_deg": 348.585,
+          "star_ecliptic_latitude_deg": 9.053,
+          "longitude_separation_deg": 10.8,
+          "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+          "finder_only": true,
+          "planet_ra_deg": 358.353927,
+          "planet_dec_deg": 1.328888,
+          "sky_separation_deg": 12.6,
+          "finder_difficulty": "difficult",
+          "finder_note": "Mercury is not easy to find this week."
+        }
+      ],
+      "planet_position": {
+        "ra_deg": 354.898957,
+        "dec_deg": 5.867895
+      },
+      "solar_system_field": [
+        {
+          "name": "Moon",
+          "ra_deg": 28.747466,
+          "dec_deg": 15.007415
+        },
+        {
+          "name": "Mercury",
+          "ra_deg": 358.353927,
+          "dec_deg": 1.328888
+        },
+        {
+          "name": "Venus",
+          "ra_deg": 354.898957,
+          "dec_deg": 5.867895
+        },
+        {
+          "name": "Mars",
+          "ra_deg": 115.23732,
+          "dec_deg": 24.140328
+        },
+        {
+          "name": "Ceres",
+          "ra_deg": 347.60901,
+          "dec_deg": -13.921469
+        },
+        {
+          "name": "Jupiter",
+          "ra_deg": 74.263624,
+          "dec_deg": 22.33602
+        },
+        {
+          "name": "Saturn",
+          "ra_deg": 355.274906,
+          "dec_deg": -4.152582
+        },
+        {
+          "name": "Uranus",
+          "ra_deg": 52.049958,
+          "dec_deg": 18.641554
+        },
+        {
+          "name": "Neptune",
+          "ra_deg": 0.196605,
+          "dec_deg": -1.293057
+        },
+        {
+          "name": "Pluto",
+          "ra_deg": 306.344541,
+          "dec_deg": -22.794492
+        }
+      ],
+      "planet_plot_policy": "plot all preserved 2-D Star Almanack Solar-System positions that fall inside the Pathfinder field; the Moon is a normal plotted body, with apparent-disk occultation handled only by rendering/collision logic",
+      "reference_standard": "docs/finder-standard.md"
+    },
+    {
+      "schema_version": 1,
+      "id": "2025-W14-1253",
+      "object_id": 1253,
+      "week": "2025-W14",
+      "kind": "stellar-finder",
+      "geometry": {
+        "constellation_system": "Martz/MacRobert",
+        "constellation_abbreviation": "Ari",
+        "on_missing_geometry": "fail",
+        "invent_geometry": false
+      },
+      "style": {
+        "background": "night-sky",
+        "constellation": {
+          "stroke": "#5c8fe8",
+          "role": "ordinary constellation figure"
+        },
+        "asterism": {
+          "stroke": "#59c86d",
+          "role": "orienting asterism"
+        },
+        "target": {
+          "stroke": "#ffd84d",
+          "fill": "none",
+          "role": "open target circle"
+        },
+        "target_arrows": false
+      },
+      "constellation": "Aries",
+      "asterism": null,
+      "targets": [
+        {
+          "type": "solar-system-object",
+          "name": "Moon"
+        },
+        {
+          "type": "reference-star",
+          "name": "Sheratan",
+          "fixed_object_id": 651
+        }
+      ],
+      "landmark_policy": {
+        "retain_named_field_stars": true,
+        "primary_reference_star": "Sheratan",
+        "magnitude_limit": 2.99
+      },
+      "finder_route": {
+        "sequence": [
+          "Aries",
+          "Sheratan",
+          "Moon"
+        ],
+        "orientation": "constellation-stick-figure",
+        "reference_star": "Sheratan",
+        "planet": "Moon",
+        "finder_note": null,
+        "sky_separation_deg": 5.8
+      },
+      "planetary_context": [
+        {
+          "kind": "planet-star-longitude",
+          "planet": "Moon",
+          "planet_longitude_deg": 32.35,
+          "star": "Sheratan",
+          "constellation": "Ari",
+          "star_fixed_object_id": 651,
+          "star_ecliptic_longitude_deg": 33.97,
+          "star_ecliptic_latitude_deg": 8.487,
+          "longitude_separation_deg": 1.6,
+          "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+          "finder_only": true,
+          "planet_ra_deg": 28.747466,
+          "planet_dec_deg": 15.007415,
+          "sky_separation_deg": 5.8
+        },
+        {
+          "kind": "planet-star-longitude",
+          "planet": "Mercury",
+          "planet_longitude_deg": 359.367,
+          "star": "Fumalsamakah",
+          "constellation": "Psc",
+          "star_fixed_object_id": 573,
+          "star_ecliptic_longitude_deg": 348.585,
+          "star_ecliptic_latitude_deg": 9.053,
+          "longitude_separation_deg": 10.8,
+          "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+          "finder_only": true,
+          "planet_ra_deg": 358.353927,
+          "planet_dec_deg": 1.328888,
+          "sky_separation_deg": 12.6,
+          "finder_difficulty": "difficult",
+          "finder_note": "Mercury is not easy to find this week."
+        }
+      ],
+      "planet_position": {
+        "ra_deg": 28.747466,
+        "dec_deg": 15.007415
+      },
+      "solar_system_field": [
+        {
+          "name": "Moon",
+          "ra_deg": 28.747466,
+          "dec_deg": 15.007415
+        },
+        {
+          "name": "Mercury",
+          "ra_deg": 358.353927,
+          "dec_deg": 1.328888
+        },
+        {
+          "name": "Venus",
+          "ra_deg": 354.898957,
+          "dec_deg": 5.867895
+        },
+        {
+          "name": "Mars",
+          "ra_deg": 115.23732,
+          "dec_deg": 24.140328
+        },
+        {
+          "name": "Ceres",
+          "ra_deg": 347.60901,
+          "dec_deg": -13.921469
+        },
+        {
+          "name": "Jupiter",
+          "ra_deg": 74.263624,
+          "dec_deg": 22.33602
+        },
+        {
+          "name": "Saturn",
+          "ra_deg": 355.274906,
+          "dec_deg": -4.152582
+        },
+        {
+          "name": "Uranus",
+          "ra_deg": 52.049958,
+          "dec_deg": 18.641554
+        },
+        {
+          "name": "Neptune",
+          "ra_deg": 0.196605,
+          "dec_deg": -1.293057
+        },
+        {
+          "name": "Pluto",
+          "ra_deg": 306.344541,
+          "dec_deg": -22.794492
+        }
+      ],
+      "planet_plot_policy": "plot all preserved 2-D Star Almanack Solar-System positions that fall inside the Pathfinder field; the Moon is a normal plotted body, with apparent-disk occultation handled only by rendering/collision logic",
+      "reference_standard": "docs/finder-standard.md"
+    },
+    {
+      "schema_version": 1,
+      "id": "2025-W14-1254",
+      "object_id": 1254,
+      "week": "2025-W14",
+      "kind": "stellar-finder",
+      "geometry": {
+        "constellation_system": "Martz/MacRobert",
+        "constellation_abbreviation": "Gem",
+        "on_missing_geometry": "fail",
+        "invent_geometry": false
+      },
+      "style": {
+        "background": "night-sky",
+        "constellation": {
+          "stroke": "#5c8fe8",
+          "role": "ordinary constellation figure"
+        },
+        "asterism": {
+          "stroke": "#59c86d",
+          "role": "orienting asterism"
+        },
+        "target": {
+          "stroke": "#ffd84d",
+          "fill": "none",
+          "role": "open target circle"
+        },
+        "target_arrows": false
+      },
+      "constellation": "Gemini",
+      "asterism": null,
+      "targets": [
+        {
+          "type": "solar-system-object",
+          "name": "Mars"
+        },
+        {
+          "type": "reference-star",
+          "name": "Pollux",
+          "fixed_object_id": 37
+        }
+      ],
+      "landmark_policy": {
+        "retain_named_field_stars": true,
+        "primary_reference_star": "Pollux",
+        "magnitude_limit": 2.99
+      },
+      "finder_route": {
+        "sequence": [
+          "Gemini",
+          "Pollux",
+          "Mars"
+        ],
+        "orientation": "constellation-stick-figure",
+        "reference_star": "Pollux",
+        "planet": "Mars",
+        "finder_note": null,
+        "sky_separation_deg": 4.0
+      },
+      "planetary_context": [
+        {
+          "kind": "planet-star-longitude",
+          "planet": "Moon",
+          "planet_longitude_deg": 32.35,
+          "star": "Sheratan",
+          "constellation": "Ari",
+          "star_fixed_object_id": 651,
+          "star_ecliptic_longitude_deg": 33.97,
+          "star_ecliptic_latitude_deg": 8.487,
+          "longitude_separation_deg": 1.6,
+          "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+          "finder_only": true,
+          "planet_ra_deg": 28.747466,
+          "planet_dec_deg": 15.007415,
+          "sky_separation_deg": 5.8
+        },
+        {
+          "kind": "planet-star-longitude",
+          "planet": "Mercury",
+          "planet_longitude_deg": 359.367,
+          "star": "Fumalsamakah",
+          "constellation": "Psc",
+          "star_fixed_object_id": 573,
+          "star_ecliptic_longitude_deg": 348.585,
+          "star_ecliptic_latitude_deg": 9.053,
+          "longitude_separation_deg": 10.8,
+          "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+          "finder_only": true,
+          "planet_ra_deg": 358.353927,
+          "planet_dec_deg": 1.328888,
+          "sky_separation_deg": 12.6,
+          "finder_difficulty": "difficult",
+          "finder_note": "Mercury is not easy to find this week."
+        }
+      ],
+      "planet_position": {
+        "ra_deg": 115.23732,
+        "dec_deg": 24.140328
+      },
+      "solar_system_field": [
+        {
+          "name": "Moon",
+          "ra_deg": 28.747466,
+          "dec_deg": 15.007415
+        },
+        {
+          "name": "Mercury",
+          "ra_deg": 358.353927,
+          "dec_deg": 1.328888
+        },
+        {
+          "name": "Venus",
+          "ra_deg": 354.898957,
+          "dec_deg": 5.867895
+        },
+        {
+          "name": "Mars",
+          "ra_deg": 115.23732,
+          "dec_deg": 24.140328
+        },
+        {
+          "name": "Ceres",
+          "ra_deg": 347.60901,
+          "dec_deg": -13.921469
+        },
+        {
+          "name": "Jupiter",
+          "ra_deg": 74.263624,
+          "dec_deg": 22.33602
+        },
+        {
+          "name": "Saturn",
+          "ra_deg": 355.274906,
+          "dec_deg": -4.152582
+        },
+        {
+          "name": "Uranus",
+          "ra_deg": 52.049958,
+          "dec_deg": 18.641554
+        },
+        {
+          "name": "Neptune",
+          "ra_deg": 0.196605,
+          "dec_deg": -1.293057
+        },
+        {
+          "name": "Pluto",
+          "ra_deg": 306.344541,
+          "dec_deg": -22.794492
+        }
+      ],
+      "planet_plot_policy": "plot all preserved 2-D Star Almanack Solar-System positions that fall inside the Pathfinder field; the Moon is a normal plotted body, with apparent-disk occultation handled only by rendering/collision logic",
+      "reference_standard": "docs/finder-standard.md"
+    },
+    {
+      "schema_version": 1,
+      "id": "2025-W14-1256",
+      "object_id": 1256,
+      "week": "2025-W14",
+      "kind": "stellar-finder",
+      "geometry": {
+        "constellation_system": "Martz/MacRobert",
+        "constellation_abbreviation": "Tau",
+        "on_missing_geometry": "fail",
+        "invent_geometry": false
+      },
+      "style": {
+        "background": "night-sky",
+        "constellation": {
+          "stroke": "#5c8fe8",
+          "role": "ordinary constellation figure"
+        },
+        "asterism": {
+          "stroke": "#59c86d",
+          "role": "orienting asterism"
+        },
+        "target": {
+          "stroke": "#ffd84d",
+          "fill": "none",
+          "role": "open target circle"
+        },
+        "target_arrows": false
+      },
+      "constellation": "Taurus",
+      "asterism": null,
+      "targets": [
+        {
+          "type": "solar-system-object",
+          "name": "Jupiter"
+        },
+        {
+          "type": "reference-star",
+          "name": "Aldebaran",
+          "fixed_object_id": 25
+        }
+      ],
+      "landmark_policy": {
+        "retain_named_field_stars": true,
+        "primary_reference_star": "Aldebaran",
+        "magnitude_limit": 2.99
+      },
+      "finder_route": {
+        "sequence": [
+          "Taurus",
+          "Aldebaran",
+          "Jupiter"
+        ],
+        "orientation": "constellation-stick-figure",
+        "reference_star": "Aldebaran",
+        "planet": "Jupiter",
+        "finder_note": null,
+        "sky_separation_deg": 7.7
+      },
+      "planetary_context": [
+        {
+          "kind": "planet-star-longitude",
+          "planet": "Moon",
+          "planet_longitude_deg": 32.35,
+          "star": "Sheratan",
+          "constellation": "Ari",
+          "star_fixed_object_id": 651,
+          "star_ecliptic_longitude_deg": 33.97,
+          "star_ecliptic_latitude_deg": 8.487,
+          "longitude_separation_deg": 1.6,
+          "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+          "finder_only": true,
+          "planet_ra_deg": 28.747466,
+          "planet_dec_deg": 15.007415,
+          "sky_separation_deg": 5.8
+        },
+        {
+          "kind": "planet-star-longitude",
+          "planet": "Mercury",
+          "planet_longitude_deg": 359.367,
+          "star": "Fumalsamakah",
+          "constellation": "Psc",
+          "star_fixed_object_id": 573,
+          "star_ecliptic_longitude_deg": 348.585,
+          "star_ecliptic_latitude_deg": 9.053,
+          "longitude_separation_deg": 10.8,
+          "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+          "finder_only": true,
+          "planet_ra_deg": 358.353927,
+          "planet_dec_deg": 1.328888,
+          "sky_separation_deg": 12.6,
+          "finder_difficulty": "difficult",
+          "finder_note": "Mercury is not easy to find this week."
+        }
+      ],
+      "planet_position": {
+        "ra_deg": 74.263624,
+        "dec_deg": 22.33602
+      },
+      "solar_system_field": [
+        {
+          "name": "Moon",
+          "ra_deg": 28.747466,
+          "dec_deg": 15.007415
+        },
+        {
+          "name": "Mercury",
+          "ra_deg": 358.353927,
+          "dec_deg": 1.328888
+        },
+        {
+          "name": "Venus",
+          "ra_deg": 354.898957,
+          "dec_deg": 5.867895
+        },
+        {
+          "name": "Mars",
+          "ra_deg": 115.23732,
+          "dec_deg": 24.140328
+        },
+        {
+          "name": "Ceres",
+          "ra_deg": 347.60901,
+          "dec_deg": -13.921469
+        },
+        {
+          "name": "Jupiter",
+          "ra_deg": 74.263624,
+          "dec_deg": 22.33602
+        },
+        {
+          "name": "Saturn",
+          "ra_deg": 355.274906,
+          "dec_deg": -4.152582
+        },
+        {
+          "name": "Uranus",
+          "ra_deg": 52.049958,
+          "dec_deg": 18.641554
+        },
+        {
+          "name": "Neptune",
+          "ra_deg": 0.196605,
+          "dec_deg": -1.293057
+        },
+        {
+          "name": "Pluto",
+          "ra_deg": 306.344541,
+          "dec_deg": -22.794492
+        }
+      ],
+      "planet_plot_policy": "plot all preserved 2-D Star Almanack Solar-System positions that fall inside the Pathfinder field; the Moon is a normal plotted body, with apparent-disk occultation handled only by rendering/collision logic",
+      "reference_standard": "docs/finder-standard.md"
+    },
+    {
+      "schema_version": 1,
+      "id": "2025-W14-1257",
+      "object_id": 1257,
+      "week": "2025-W14",
+      "kind": "stellar-finder",
+      "geometry": {
+        "constellation_system": "Martz/MacRobert",
+        "constellation_abbreviation": "Psc",
+        "on_missing_geometry": "fail",
+        "invent_geometry": false
+      },
+      "style": {
+        "background": "night-sky",
+        "constellation": {
+          "stroke": "#5c8fe8",
+          "role": "ordinary constellation figure"
+        },
+        "asterism": {
+          "stroke": "#59c86d",
+          "role": "orienting asterism"
+        },
+        "target": {
+          "stroke": "#ffd84d",
+          "fill": "none",
+          "role": "open target circle"
+        },
+        "target_arrows": false
+      },
+      "constellation": "Pisces",
+      "asterism": null,
+      "targets": [
+        {
+          "type": "solar-system-object",
+          "name": "Saturn"
+        },
+        {
+          "type": "reference-star",
+          "name": "Fumalsamakah",
+          "fixed_object_id": 573
+        }
+      ],
+      "landmark_policy": {
+        "retain_named_field_stars": true,
+        "primary_reference_star": "Fumalsamakah",
+        "magnitude_limit": 2.99
+      },
+      "finder_route": {
+        "sequence": [
+          "Pisces",
+          "Fumalsamakah",
+          "Saturn"
+        ],
+        "orientation": "constellation-stick-figure",
+        "reference_star": "Fumalsamakah",
+        "planet": "Saturn",
+        "finder_note": "Saturn is not easy to find this week.",
+        "sky_separation_deg": 12.2
+      },
+      "planetary_context": [
+        {
+          "kind": "planet-star-longitude",
+          "planet": "Moon",
+          "planet_longitude_deg": 32.35,
+          "star": "Sheratan",
+          "constellation": "Ari",
+          "star_fixed_object_id": 651,
+          "star_ecliptic_longitude_deg": 33.97,
+          "star_ecliptic_latitude_deg": 8.487,
+          "longitude_separation_deg": 1.6,
+          "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+          "finder_only": true,
+          "planet_ra_deg": 28.747466,
+          "planet_dec_deg": 15.007415,
+          "sky_separation_deg": 5.8
+        },
+        {
+          "kind": "planet-star-longitude",
+          "planet": "Mercury",
+          "planet_longitude_deg": 359.367,
+          "star": "Fumalsamakah",
+          "constellation": "Psc",
+          "star_fixed_object_id": 573,
+          "star_ecliptic_longitude_deg": 348.585,
+          "star_ecliptic_latitude_deg": 9.053,
+          "longitude_separation_deg": 10.8,
+          "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+          "finder_only": true,
+          "planet_ra_deg": 358.353927,
+          "planet_dec_deg": 1.328888,
+          "sky_separation_deg": 12.6,
+          "finder_difficulty": "difficult",
+          "finder_note": "Mercury is not easy to find this week."
+        }
+      ],
+      "planet_position": {
+        "ra_deg": 355.274906,
+        "dec_deg": -4.152582
+      },
+      "solar_system_field": [
+        {
+          "name": "Moon",
+          "ra_deg": 28.747466,
+          "dec_deg": 15.007415
+        },
+        {
+          "name": "Mercury",
+          "ra_deg": 358.353927,
+          "dec_deg": 1.328888
+        },
+        {
+          "name": "Venus",
+          "ra_deg": 354.898957,
+          "dec_deg": 5.867895
+        },
+        {
+          "name": "Mars",
+          "ra_deg": 115.23732,
+          "dec_deg": 24.140328
+        },
+        {
+          "name": "Ceres",
+          "ra_deg": 347.60901,
+          "dec_deg": -13.921469
+        },
+        {
+          "name": "Jupiter",
+          "ra_deg": 74.263624,
+          "dec_deg": 22.33602
+        },
+        {
+          "name": "Saturn",
+          "ra_deg": 355.274906,
+          "dec_deg": -4.152582
+        },
+        {
+          "name": "Uranus",
+          "ra_deg": 52.049958,
+          "dec_deg": 18.641554
+        },
+        {
+          "name": "Neptune",
+          "ra_deg": 0.196605,
+          "dec_deg": -1.293057
+        },
+        {
+          "name": "Pluto",
+          "ra_deg": 306.344541,
+          "dec_deg": -22.794492
+        }
+      ],
+      "planet_plot_policy": "plot all preserved 2-D Star Almanack Solar-System positions that fall inside the Pathfinder field; the Moon is a normal plotted body, with apparent-disk occultation handled only by rendering/collision logic",
+      "reference_standard": "docs/finder-standard.md"
+    },
+    {
+      "schema_version": 1,
+      "id": "2025-W14-1258",
+      "object_id": 1258,
+      "week": "2025-W14",
+      "kind": "stellar-finder",
+      "geometry": {
+        "constellation_system": "Martz/MacRobert",
+        "constellation_abbreviation": "Cet",
+        "on_missing_geometry": "fail",
+        "invent_geometry": false
+      },
+      "style": {
+        "background": "night-sky",
+        "constellation": {
+          "stroke": "#5c8fe8",
+          "role": "ordinary constellation figure"
+        },
+        "asterism": {
+          "stroke": "#59c86d",
+          "role": "orienting asterism"
+        },
+        "target": {
+          "stroke": "#ffd84d",
+          "fill": "none",
+          "role": "open target circle"
+        },
+        "target_arrows": false
+      },
+      "constellation": "Cetus",
+      "asterism": null,
+      "targets": [
+        {
+          "type": "solar-system-object",
+          "name": "Uranus"
+        },
+        {
+          "type": "reference-star",
+          "name": "Menkar",
+          "fixed_object_id": 13
+        }
+      ],
+      "landmark_policy": {
+        "retain_named_field_stars": true,
+        "primary_reference_star": "Menkar",
+        "magnitude_limit": 2.99
+      },
+      "finder_route": {
+        "sequence": [
+          "Cetus",
+          "Menkar",
+          "Uranus"
+        ],
+        "orientation": "constellation-stick-figure",
+        "reference_star": "Menkar",
+        "planet": "Uranus",
+        "finder_note": "Uranus is not easy to find this week.",
+        "sky_separation_deg": 15.9
+      },
+      "planetary_context": [
+        {
+          "kind": "planet-star-longitude",
+          "planet": "Moon",
+          "planet_longitude_deg": 32.35,
+          "star": "Sheratan",
+          "constellation": "Ari",
+          "star_fixed_object_id": 651,
+          "star_ecliptic_longitude_deg": 33.97,
+          "star_ecliptic_latitude_deg": 8.487,
+          "longitude_separation_deg": 1.6,
+          "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+          "finder_only": true,
+          "planet_ra_deg": 28.747466,
+          "planet_dec_deg": 15.007415,
+          "sky_separation_deg": 5.8
+        },
+        {
+          "kind": "planet-star-longitude",
+          "planet": "Mercury",
+          "planet_longitude_deg": 359.367,
+          "star": "Fumalsamakah",
+          "constellation": "Psc",
+          "star_fixed_object_id": 573,
+          "star_ecliptic_longitude_deg": 348.585,
+          "star_ecliptic_latitude_deg": 9.053,
+          "longitude_separation_deg": 10.8,
+          "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+          "finder_only": true,
+          "planet_ra_deg": 358.353927,
+          "planet_dec_deg": 1.328888,
+          "sky_separation_deg": 12.6,
+          "finder_difficulty": "difficult",
+          "finder_note": "Mercury is not easy to find this week."
+        }
+      ],
+      "planet_position": {
+        "ra_deg": 52.049958,
+        "dec_deg": 18.641554
+      },
+      "solar_system_field": [
+        {
+          "name": "Moon",
+          "ra_deg": 28.747466,
+          "dec_deg": 15.007415
+        },
+        {
+          "name": "Mercury",
+          "ra_deg": 358.353927,
+          "dec_deg": 1.328888
+        },
+        {
+          "name": "Venus",
+          "ra_deg": 354.898957,
+          "dec_deg": 5.867895
+        },
+        {
+          "name": "Mars",
+          "ra_deg": 115.23732,
+          "dec_deg": 24.140328
+        },
+        {
+          "name": "Ceres",
+          "ra_deg": 347.60901,
+          "dec_deg": -13.921469
+        },
+        {
+          "name": "Jupiter",
+          "ra_deg": 74.263624,
+          "dec_deg": 22.33602
+        },
+        {
+          "name": "Saturn",
+          "ra_deg": 355.274906,
+          "dec_deg": -4.152582
+        },
+        {
+          "name": "Uranus",
+          "ra_deg": 52.049958,
+          "dec_deg": 18.641554
+        },
+        {
+          "name": "Neptune",
+          "ra_deg": 0.196605,
+          "dec_deg": -1.293057
+        },
+        {
+          "name": "Pluto",
+          "ra_deg": 306.344541,
+          "dec_deg": -22.794492
+        }
+      ],
+      "planet_plot_policy": "plot all preserved 2-D Star Almanack Solar-System positions that fall inside the Pathfinder field; the Moon is a normal plotted body, with apparent-disk occultation handled only by rendering/collision logic",
+      "reference_standard": "docs/finder-standard.md"
+    },
+    {
+      "schema_version": 1,
+      "id": "2025-W14-1259",
+      "object_id": 1259,
+      "week": "2025-W14",
+      "kind": "stellar-finder",
+      "geometry": {
+        "constellation_system": "Martz/MacRobert",
+        "constellation_abbreviation": "Psc",
+        "on_missing_geometry": "fail",
+        "invent_geometry": false
+      },
+      "style": {
+        "background": "night-sky",
+        "constellation": {
+          "stroke": "#5c8fe8",
+          "role": "ordinary constellation figure"
+        },
+        "asterism": {
+          "stroke": "#59c86d",
+          "role": "orienting asterism"
+        },
+        "target": {
+          "stroke": "#ffd84d",
+          "fill": "none",
+          "role": "open target circle"
+        },
+        "target_arrows": false
+      },
+      "constellation": "Pisces",
+      "asterism": null,
+      "targets": [
+        {
+          "type": "solar-system-object",
+          "name": "Neptune"
+        },
+        {
+          "type": "reference-star",
+          "name": "Fumalsamakah",
+          "fixed_object_id": 573
+        }
+      ],
+      "landmark_policy": {
+        "retain_named_field_stars": true,
+        "primary_reference_star": "Fumalsamakah",
+        "magnitude_limit": 2.99
+      },
+      "finder_route": {
+        "sequence": [
+          "Pisces",
+          "Fumalsamakah",
+          "Neptune"
+        ],
+        "orientation": "constellation-stick-figure",
+        "reference_star": "Fumalsamakah",
+        "planet": "Neptune",
+        "finder_note": "Neptune is not easy to find this week.",
+        "sky_separation_deg": 15.1
+      },
+      "planetary_context": [
+        {
+          "kind": "planet-star-longitude",
+          "planet": "Moon",
+          "planet_longitude_deg": 32.35,
+          "star": "Sheratan",
+          "constellation": "Ari",
+          "star_fixed_object_id": 651,
+          "star_ecliptic_longitude_deg": 33.97,
+          "star_ecliptic_latitude_deg": 8.487,
+          "longitude_separation_deg": 1.6,
+          "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+          "finder_only": true,
+          "planet_ra_deg": 28.747466,
+          "planet_dec_deg": 15.007415,
+          "sky_separation_deg": 5.8
+        },
+        {
+          "kind": "planet-star-longitude",
+          "planet": "Mercury",
+          "planet_longitude_deg": 359.367,
+          "star": "Fumalsamakah",
+          "constellation": "Psc",
+          "star_fixed_object_id": 573,
+          "star_ecliptic_longitude_deg": 348.585,
+          "star_ecliptic_latitude_deg": 9.053,
+          "longitude_separation_deg": 10.8,
+          "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+          "finder_only": true,
+          "planet_ra_deg": 358.353927,
+          "planet_dec_deg": 1.328888,
+          "sky_separation_deg": 12.6,
+          "finder_difficulty": "difficult",
+          "finder_note": "Mercury is not easy to find this week."
+        }
+      ],
+      "planet_position": {
+        "ra_deg": 0.196605,
+        "dec_deg": -1.293057
+      },
+      "solar_system_field": [
+        {
+          "name": "Moon",
+          "ra_deg": 28.747466,
+          "dec_deg": 15.007415
+        },
+        {
+          "name": "Mercury",
+          "ra_deg": 358.353927,
+          "dec_deg": 1.328888
+        },
+        {
+          "name": "Venus",
+          "ra_deg": 354.898957,
+          "dec_deg": 5.867895
+        },
+        {
+          "name": "Mars",
+          "ra_deg": 115.23732,
+          "dec_deg": 24.140328
+        },
+        {
+          "name": "Ceres",
+          "ra_deg": 347.60901,
+          "dec_deg": -13.921469
+        },
+        {
+          "name": "Jupiter",
+          "ra_deg": 74.263624,
+          "dec_deg": 22.33602
+        },
+        {
+          "name": "Saturn",
+          "ra_deg": 355.274906,
+          "dec_deg": -4.152582
+        },
+        {
+          "name": "Uranus",
+          "ra_deg": 52.049958,
+          "dec_deg": 18.641554
+        },
+        {
+          "name": "Neptune",
+          "ra_deg": 0.196605,
+          "dec_deg": -1.293057
+        },
+        {
+          "name": "Pluto",
+          "ra_deg": 306.344541,
+          "dec_deg": -22.794492
+        }
+      ],
+      "planet_plot_policy": "plot all preserved 2-D Star Almanack Solar-System positions that fall inside the Pathfinder field; the Moon is a normal plotted body, with apparent-disk occultation handled only by rendering/collision logic",
+      "reference_standard": "docs/finder-standard.md"
+    },
+    {
+      "schema_version": 1,
+      "id": "2025-W14-1255",
+      "object_id": 1255,
+      "week": "2025-W14",
+      "kind": "stellar-finder",
+      "geometry": {
+        "constellation_system": "Martz/MacRobert",
+        "constellation_abbreviation": "PsA",
+        "on_missing_geometry": "fail",
+        "invent_geometry": false
+      },
+      "style": {
+        "background": "night-sky",
+        "constellation": {
+          "stroke": "#5c8fe8",
+          "role": "ordinary constellation figure"
+        },
+        "asterism": {
+          "stroke": "#59c86d",
+          "role": "orienting asterism"
+        },
+        "target": {
+          "stroke": "#ffd84d",
+          "fill": "none",
+          "role": "open target circle"
+        },
+        "target_arrows": false
+      },
+      "constellation": "Piscis Austrinus",
+      "asterism": null,
+      "targets": [
+        {
+          "type": "solar-system-object",
+          "name": "Ceres"
+        },
+        {
+          "type": "reference-star",
+          "name": "Fomalhaut",
+          "fixed_object_id": 1229
+        }
+      ],
+      "landmark_policy": {
+        "retain_named_field_stars": true,
+        "primary_reference_star": "Fomalhaut",
+        "magnitude_limit": 2.99
+      },
+      "finder_route": {
+        "sequence": [
+          "Piscis Austrinus",
+          "Fomalhaut",
+          "Ceres"
+        ],
+        "orientation": "constellation-stick-figure",
+        "reference_star": "Fomalhaut",
+        "planet": "Ceres",
+        "finder_note": "Ceres is not easy to find this week.",
+        "sky_separation_deg": 16.0
+      },
+      "planetary_context": [
+        {
+          "kind": "planet-star-longitude",
+          "planet": "Moon",
+          "planet_longitude_deg": 32.35,
+          "star": "Sheratan",
+          "constellation": "Ari",
+          "star_fixed_object_id": 651,
+          "star_ecliptic_longitude_deg": 33.97,
+          "star_ecliptic_latitude_deg": 8.487,
+          "longitude_separation_deg": 1.6,
+          "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+          "finder_only": true,
+          "planet_ra_deg": 28.747466,
+          "planet_dec_deg": 15.007415,
+          "sky_separation_deg": 5.8
+        },
+        {
+          "kind": "planet-star-longitude",
+          "planet": "Mercury",
+          "planet_longitude_deg": 359.367,
+          "star": "Fumalsamakah",
+          "constellation": "Psc",
+          "star_fixed_object_id": 573,
+          "star_ecliptic_longitude_deg": 348.585,
+          "star_ecliptic_latitude_deg": 9.053,
+          "longitude_separation_deg": 10.8,
+          "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+          "finder_only": true,
+          "planet_ra_deg": 358.353927,
+          "planet_dec_deg": 1.328888,
+          "sky_separation_deg": 12.6,
+          "finder_difficulty": "difficult",
+          "finder_note": "Mercury is not easy to find this week."
+        }
+      ],
+      "planet_position": {
+        "ra_deg": 347.60901,
+        "dec_deg": -13.921469
+      },
+      "solar_system_field": [
+        {
+          "name": "Moon",
+          "ra_deg": 28.747466,
+          "dec_deg": 15.007415
+        },
+        {
+          "name": "Mercury",
+          "ra_deg": 358.353927,
+          "dec_deg": 1.328888
+        },
+        {
+          "name": "Venus",
+          "ra_deg": 354.898957,
+          "dec_deg": 5.867895
+        },
+        {
+          "name": "Mars",
+          "ra_deg": 115.23732,
+          "dec_deg": 24.140328
+        },
+        {
+          "name": "Ceres",
+          "ra_deg": 347.60901,
+          "dec_deg": -13.921469
+        },
+        {
+          "name": "Jupiter",
+          "ra_deg": 74.263624,
+          "dec_deg": 22.33602
+        },
+        {
+          "name": "Saturn",
+          "ra_deg": 355.274906,
+          "dec_deg": -4.152582
+        },
+        {
+          "name": "Uranus",
+          "ra_deg": 52.049958,
+          "dec_deg": 18.641554
+        },
+        {
+          "name": "Neptune",
+          "ra_deg": 0.196605,
+          "dec_deg": -1.293057
+        },
+        {
+          "name": "Pluto",
+          "ra_deg": 306.344541,
+          "dec_deg": -22.794492
+        }
+      ],
+      "planet_plot_policy": "plot all preserved 2-D Star Almanack Solar-System positions that fall inside the Pathfinder field; the Moon is a normal plotted body, with apparent-disk occultation handled only by rendering/collision logic",
+      "reference_standard": "docs/finder-standard.md"
+    },
+    {
+      "schema_version": 1,
+      "id": "2025-W14-1260",
+      "object_id": 1260,
+      "week": "2025-W14",
+      "kind": "stellar-finder",
+      "geometry": {
+        "constellation_system": "Martz/MacRobert",
+        "constellation_abbreviation": "Cap",
+        "on_missing_geometry": "fail",
+        "invent_geometry": false
+      },
+      "style": {
+        "background": "night-sky",
+        "constellation": {
+          "stroke": "#5c8fe8",
+          "role": "ordinary constellation figure"
+        },
+        "asterism": {
+          "stroke": "#59c86d",
+          "role": "orienting asterism"
+        },
+        "target": {
+          "stroke": "#ffd84d",
+          "fill": "none",
+          "role": "open target circle"
+        },
+        "target_arrows": false
+      },
+      "constellation": "Capricorn",
+      "asterism": null,
+      "targets": [
+        {
+          "type": "solar-system-object",
+          "name": "Pluto"
+        },
+        {
+          "type": "reference-star",
+          "name": "Dabih",
+          "fixed_object_id": 1152
+        }
+      ],
+      "landmark_policy": {
+        "retain_named_field_stars": true,
+        "primary_reference_star": "Dabih",
+        "magnitude_limit": 2.99
+      },
+      "finder_route": {
+        "sequence": [
+          "Capricorn",
+          "Dabih",
+          "Pluto"
+        ],
+        "orientation": "constellation-stick-figure",
+        "reference_star": "Dabih",
+        "planet": "Pluto",
+        "finder_note": null,
+        "sky_separation_deg": 8.1
+      },
+      "planetary_context": [
+        {
+          "kind": "planet-star-longitude",
+          "planet": "Moon",
+          "planet_longitude_deg": 32.35,
+          "star": "Sheratan",
+          "constellation": "Ari",
+          "star_fixed_object_id": 651,
+          "star_ecliptic_longitude_deg": 33.97,
+          "star_ecliptic_latitude_deg": 8.487,
+          "longitude_separation_deg": 1.6,
+          "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+          "finder_only": true,
+          "planet_ra_deg": 28.747466,
+          "planet_dec_deg": 15.007415,
+          "sky_separation_deg": 5.8
+        },
+        {
+          "kind": "planet-star-longitude",
+          "planet": "Mercury",
+          "planet_longitude_deg": 359.367,
+          "star": "Fumalsamakah",
+          "constellation": "Psc",
+          "star_fixed_object_id": 573,
+          "star_ecliptic_longitude_deg": 348.585,
+          "star_ecliptic_latitude_deg": 9.053,
+          "longitude_separation_deg": 10.8,
+          "basis": "Star Almanack preserved geocentric tropical ecliptic longitude",
+          "finder_only": true,
+          "planet_ra_deg": 358.353927,
+          "planet_dec_deg": 1.328888,
+          "sky_separation_deg": 12.6,
+          "finder_difficulty": "difficult",
+          "finder_note": "Mercury is not easy to find this week."
+        }
+      ],
+      "planet_position": {
+        "ra_deg": 306.344541,
+        "dec_deg": -22.794492
+      },
+      "solar_system_field": [
+        {
+          "name": "Moon",
+          "ra_deg": 28.747466,
+          "dec_deg": 15.007415
+        },
+        {
+          "name": "Mercury",
+          "ra_deg": 358.353927,
+          "dec_deg": 1.328888
+        },
+        {
+          "name": "Venus",
+          "ra_deg": 354.898957,
+          "dec_deg": 5.867895
+        },
+        {
+          "name": "Mars",
+          "ra_deg": 115.23732,
+          "dec_deg": 24.140328
+        },
+        {
+          "name": "Ceres",
+          "ra_deg": 347.60901,
+          "dec_deg": -13.921469
+        },
+        {
+          "name": "Jupiter",
+          "ra_deg": 74.263624,
+          "dec_deg": 22.33602
+        },
+        {
+          "name": "Saturn",
+          "ra_deg": 355.274906,
+          "dec_deg": -4.152582
+        },
+        {
+          "name": "Uranus",
+          "ra_deg": 52.049958,
+          "dec_deg": 18.641554
+        },
+        {
+          "name": "Neptune",
+          "ra_deg": 0.196605,
+          "dec_deg": -1.293057
+        },
+        {
+          "name": "Pluto",
+          "ra_deg": 306.344541,
+          "dec_deg": -22.794492
+        }
+      ],
+      "planet_plot_policy": "plot all preserved 2-D Star Almanack Solar-System positions that fall inside the Pathfinder field; the Moon is a normal plotted body, with apparent-disk occultation handled only by rendering/collision logic",
+      "reference_standard": "docs/finder-standard.md"
+    }
+  ],
+  "descriptor_policy": {
+    "source_of_truth": "machine-readable JSON",
+    "candidate_pool": "complete; presentation never limits discovery",
+    "presentation": "Wordy",
+    "story_limit": null,
+    "wordy_policy": "repeat canonical hed and dek in reader links, then elaborate with canonical story body",
+    "future_presentations": [],
+    "link_target": "/almanack/descriptors/<fixed_object_id>.json for fixed-object descriptors",
+    "artwork_descriptor_is_separate": true,
+    "artwork_source": "explicit story front matter only",
+    "fixed_sky_identity_source": "Calendar data-fixed-object-id + data-observing-aid + database/fixed-objects.json",
+    "story_identity_source": "Calendar data-fixed-object-id only",
+    "story_source": "stories/<collection>/<fixed_object_id>.md",
+    "inline_story_content": "hed + dek + body",
+    "linked_story_content": "reader-facing links to every available canonical object story",
+    "annual_note_is_separate_from_evergreen_story": true
+  },
+  "planet_weekly_facts": {
+    "1253": {
+      "observing": "Naked eye",
+      "solar_glare": false,
+      "ra_hours": 1.916497707,
+      "dec_deg": 15.007414759,
+      "sun_ra_hours": 0.623357765,
+      "rise": "06:12",
+      "set": "20:23",
+      "object_id": 1253,
+      "name": "Moon",
+      "snapshot_utc": "2025-03-31T00:00:00+00:00",
+      "guide_star": "Sheratan",
+      "guide_star_fixed_object_id": 651,
+      "guide_separation_deg": 5.8,
+      "events": [
+        "Conjunction with Mars in ecliptic longitude Apr 05 19:49 UTC.",
+        "Conjunction with Jupiter in ecliptic longitude Apr 02 23:25 UTC.",
+        "Conjunction with Uranus in ecliptic longitude Apr 01 11:55 UTC."
+      ],
+      "close_pairs": [],
+      "magnitude": -6.2931760225959215,
+      "illuminated_percent": 3.7,
+      "elongation_deg": 22.0,
+      "solar_side": "east",
+      "phase_trend": "waxing",
+      "motion_deg_per_day": 15.1134,
+      "motion": "direct",
+      "altitude_21_last_45n_deg": -6.4,
+      "source": "Preserved weekly ephemeris; cached JPL/NAIF kernels through StarAlmanackEphemeris",
+      "dek": "Naked eye; magnitude -6.3; direct motion; 3.7% illuminated. Below the horizon at 21:00 local apparent solar time, 45°N. Monday 00:00 UTC snapshot. Conjunction with Mars in ecliptic longitude Apr 05 19:49 UTC. Conjunction with Jupiter in ecliptic longitude Apr 02 23:25 UTC. Conjunction with Uranus in ecliptic longitude Apr 01 11:55 UTC.",
+      "body": "Moon: naked eye at the Monday 00:00 UTC snapshot. At 45°N and 21:00 local apparent solar time, it is 6.4° below the horizon. Rises 06:12; sets 20:23 (45°N, local apparent solar time). Visual magnitude -6.3. The disk is 3.7% illuminated (waxing crescent). It is 22.0° from the Sun, on its east side. Motion is direct at 15.113° per day in ecliptic longitude at the snapshot. Position reference: Sheratan, 5.8° away. Conjunction with Mars in ecliptic longitude Apr 05 19:49 UTC. Conjunction with Jupiter in ecliptic longitude Apr 02 23:25 UTC. Conjunction with Uranus in ecliptic longitude Apr 01 11:55 UTC."
+    },
+    "1250": {
+      "observing": "Solar Glare",
+      "solar_glare": true,
+      "ra_hours": 23.890261816,
+      "dec_deg": 1.328888325,
+      "sun_ra_hours": 0.623357765,
+      "rise": "05:07",
+      "set": "17:25",
+      "object_id": 1250,
+      "name": "Mercury",
+      "snapshot_utc": "2025-03-31T00:00:00+00:00",
+      "guide_star": "Fumalsamakah",
+      "guide_star_fixed_object_id": 573,
+      "guide_separation_deg": 12.6,
+      "events": [],
+      "close_pairs": [
+        {
+          "object_id": 1259,
+          "name": "Neptune",
+          "separation_deg": 3.2
+        }
+      ],
+      "magnitude": 3.266774616091541,
+      "illuminated_percent": 5.6,
+      "elongation_deg": 11.3,
+      "solar_side": "west",
+      "motion_deg_per_day": -0.6634,
+      "motion": "retrograde",
+      "altitude_21_last_45n_deg": -34.7,
+      "source": "Preserved weekly ephemeris; cached JPL/NAIF kernels through StarAlmanackEphemeris",
+      "dek": "In solar glare; magnitude 3.3; retrograde motion; 5.6% illuminated. Monday 00:00 UTC snapshot.",
+      "body": "Mercury: in solar glare at the Monday 00:00 UTC snapshot. Rises 05:07; sets 17:25 (45°N, local apparent solar time). Visual magnitude 3.3. The disk is 5.6% illuminated (crescent). It is 11.3° from the Sun, on its west side. Motion is retrograde at 0.663° per day in ecliptic longitude at the snapshot. Position reference: Fumalsamakah, 12.6° away. Neptune is 3.2° away at the snapshot."
+    },
+    "1251": {
+      "observing": "Solar Glare",
+      "solar_glare": true,
+      "ra_hours": 23.659930458,
+      "dec_deg": 5.867895438,
+      "sun_ra_hours": 0.623357765,
+      "rise": "04:35",
+      "set": "17:29",
+      "object_id": 1251,
+      "name": "Venus",
+      "snapshot_utc": "2025-03-31T00:00:00+00:00",
+      "guide_star": "Fumalsamakah",
+      "guide_star_fixed_object_id": 573,
+      "guide_separation_deg": 9.1,
+      "events": [],
+      "close_pairs": [],
+      "magnitude": -4.180612941548284,
+      "illuminated_percent": 3.1,
+      "elongation_deg": 14.5,
+      "solar_side": "west",
+      "motion_deg_per_day": -0.4986,
+      "motion": "retrograde",
+      "altitude_21_last_45n_deg": -32.2,
+      "source": "Preserved weekly ephemeris; cached JPL/NAIF kernels through StarAlmanackEphemeris",
+      "dek": "In solar glare; magnitude -4.2; retrograde motion; 3.1% illuminated. Monday 00:00 UTC snapshot.",
+      "body": "Venus: in solar glare at the Monday 00:00 UTC snapshot. Rises 04:35; sets 17:29 (45°N, local apparent solar time). Visual magnitude -4.2. The disk is 3.1% illuminated (crescent). It is 14.5° from the Sun, on its west side. Motion is retrograde at 0.499° per day in ecliptic longitude at the snapshot. Position reference: Fumalsamakah, 9.1° away."
+    },
+    "1254": {
+      "observing": "Naked eye",
+      "solar_glare": false,
+      "ra_hours": 7.682488009,
+      "dec_deg": 24.140327687,
+      "sun_ra_hours": 0.623357765,
+      "rise": "11:13",
+      "set": "02:54",
+      "object_id": 1254,
+      "name": "Mars",
+      "snapshot_utc": "2025-03-31T00:00:00+00:00",
+      "guide_star": "Pollux",
+      "guide_star_fixed_object_id": 37,
+      "guide_separation_deg": 4.0,
+      "events": [
+        "Conjunction with Moon in ecliptic longitude Apr 05 19:49 UTC."
+      ],
+      "close_pairs": [],
+      "magnitude": 0.4206513278997619,
+      "illuminated_percent": 90.5,
+      "elongation_deg": 102.7,
+      "solar_side": "east",
+      "motion_deg_per_day": 0.3207,
+      "motion": "direct",
+      "altitude_21_last_45n_deg": 58.5,
+      "source": "Preserved weekly ephemeris; cached JPL/NAIF kernels through StarAlmanackEphemeris",
+      "dek": "Naked eye; magnitude 0.4; direct motion; 90.5% illuminated. Monday 00:00 UTC snapshot. Conjunction with Moon in ecliptic longitude Apr 05 19:49 UTC.",
+      "body": "Mars: naked eye at the Monday 00:00 UTC snapshot. At 45°N and 21:00 local apparent solar time, it is 58.5° above the horizon. Rises 11:13; sets 02:54 (45°N, local apparent solar time). Visual magnitude 0.4. The disk is 90.5% illuminated (gibbous). It is 102.7° from the Sun, on its east side. Motion is direct at 0.321° per day in ecliptic longitude at the snapshot. Position reference: Pollux, 4.0° away. Conjunction with Moon in ecliptic longitude Apr 05 19:49 UTC."
+    },
+    "1255": {
+      "observing": "Telescope",
+      "solar_glare": false,
+      "ra_hours": 23.173933991,
+      "dec_deg": -13.921468513,
+      "sun_ra_hours": 0.623357765,
+      "rise": "05:27",
+      "set": "15:39",
+      "object_id": 1255,
+      "name": "Ceres",
+      "snapshot_utc": "2025-03-31T00:00:00+00:00",
+      "guide_star": "Fomalhaut",
+      "guide_star_fixed_object_id": 1229,
+      "guide_separation_deg": 16.0,
+      "events": [],
+      "close_pairs": [],
+      "magnitude": 9.26299740398282,
+      "illuminated_percent": 99.4,
+      "elongation_deg": 28.1,
+      "solar_side": "west",
+      "motion_deg_per_day": 0.3764,
+      "motion": "direct",
+      "altitude_21_last_45n_deg": -53.2,
+      "source": "Preserved weekly ephemeris; cached JPL/NAIF kernels through StarAlmanackEphemeris",
+      "dek": "Telescope; magnitude 9.3; direct motion; 99.4% illuminated. Below the horizon at 21:00 local apparent solar time, 45°N. Monday 00:00 UTC snapshot.",
+      "body": "Ceres: telescope at the Monday 00:00 UTC snapshot. At 45°N and 21:00 local apparent solar time, it is 53.2° below the horizon. Rises 05:27; sets 15:39 (45°N, local apparent solar time). Visual magnitude 9.3. The disk is 99.4% illuminated (nearly full). It is 28.1° from the Sun, on its west side. Motion is direct at 0.376° per day in ecliptic longitude at the snapshot. Position reference: Fomalhaut, 16.0° away."
+    },
+    "1256": {
+      "observing": "Naked eye",
+      "solar_glare": false,
+      "ra_hours": 4.950908273,
+      "dec_deg": 22.33601952,
+      "sun_ra_hours": 0.623357765,
+      "rise": "08:39",
+      "set": "00:01",
+      "object_id": 1256,
+      "name": "Jupiter",
+      "snapshot_utc": "2025-03-31T00:00:00+00:00",
+      "guide_star": "Aldebaran",
+      "guide_star_fixed_object_id": 25,
+      "guide_separation_deg": 7.7,
+      "events": [
+        "Conjunction with Moon in ecliptic longitude Apr 02 23:25 UTC."
+      ],
+      "close_pairs": [],
+      "magnitude": -2.1113636070671613,
+      "illuminated_percent": 99.2,
+      "elongation_deg": 65.3,
+      "solar_side": "east",
+      "motion_deg_per_day": 0.1529,
+      "motion": "direct",
+      "altitude_21_last_45n_deg": 29.4,
+      "source": "Preserved weekly ephemeris; cached JPL/NAIF kernels through StarAlmanackEphemeris",
+      "dek": "Naked eye; magnitude -2.1; direct motion; 99.2% illuminated. Monday 00:00 UTC snapshot. Conjunction with Moon in ecliptic longitude Apr 02 23:25 UTC.",
+      "body": "Jupiter: naked eye at the Monday 00:00 UTC snapshot. At 45°N and 21:00 local apparent solar time, it is 29.4° above the horizon. Rises 08:39; sets 00:01 (45°N, local apparent solar time). Visual magnitude -2.1. The disk is 99.2% illuminated (nearly full). It is 65.3° from the Sun, on its east side. Motion is direct at 0.153° per day in ecliptic longitude at the snapshot. Position reference: Aldebaran, 7.7° away. Conjunction with Moon in ecliptic longitude Apr 02 23:25 UTC."
+    },
+    "1257": {
+      "observing": "Solar Glare",
+      "solar_glare": true,
+      "ra_hours": 23.684993748,
+      "dec_deg": -4.152582377,
+      "sun_ra_hours": 0.623357765,
+      "rise": "05:17",
+      "set": "16:50",
+      "object_id": 1257,
+      "name": "Saturn",
+      "snapshot_utc": "2025-03-31T00:00:00+00:00",
+      "guide_star": "Fumalsamakah",
+      "guide_star_fixed_object_id": 573,
+      "guide_separation_deg": 12.2,
+      "events": [],
+      "close_pairs": [],
+      "magnitude": 1.159450304916879,
+      "illuminated_percent": 100.0,
+      "elongation_deg": 16.3,
+      "solar_side": "west",
+      "motion_deg_per_day": 0.1204,
+      "motion": "direct",
+      "altitude_21_last_45n_deg": -41.0,
+      "source": "Preserved weekly ephemeris; cached JPL/NAIF kernels through StarAlmanackEphemeris",
+      "dek": "In solar glare; magnitude 1.2; direct motion; 100.0% illuminated. Monday 00:00 UTC snapshot.",
+      "body": "Saturn: in solar glare at the Monday 00:00 UTC snapshot. Rises 05:17; sets 16:50 (45°N, local apparent solar time). Visual magnitude 1.2. The disk is 100.0% illuminated (nearly full). It is 16.3° from the Sun, on its west side. Motion is direct at 0.120° per day in ecliptic longitude at the snapshot. Position reference: Fumalsamakah, 12.2° away."
+    },
+    "1258": {
+      "observing": "Binoculars",
+      "solar_glare": false,
+      "ra_hours": 3.469997198,
+      "dec_deg": 18.641554417,
+      "sun_ra_hours": 0.623357765,
+      "rise": "07:28",
+      "set": "22:13",
+      "object_id": 1258,
+      "name": "Uranus",
+      "snapshot_utc": "2025-03-31T00:00:00+00:00",
+      "guide_star": "Menkar",
+      "guide_star_fixed_object_id": 13,
+      "guide_separation_deg": 15.9,
+      "events": [
+        "Conjunction with Moon in ecliptic longitude Apr 01 11:55 UTC."
+      ],
+      "close_pairs": [],
+      "magnitude": 5.818976277638597,
+      "illuminated_percent": 100.0,
+      "elongation_deg": 44.2,
+      "solar_side": "east",
+      "motion_deg_per_day": 0.0453,
+      "motion": "direct",
+      "altitude_21_last_45n_deg": 11.5,
+      "source": "Preserved weekly ephemeris; cached JPL/NAIF kernels through StarAlmanackEphemeris",
+      "dek": "Binoculars; magnitude 5.8; direct motion; 100.0% illuminated. Monday 00:00 UTC snapshot. Conjunction with Moon in ecliptic longitude Apr 01 11:55 UTC.",
+      "body": "Uranus: binoculars at the Monday 00:00 UTC snapshot. At 45°N and 21:00 local apparent solar time, it is 11.5° above the horizon. Rises 07:28; sets 22:13 (45°N, local apparent solar time). Visual magnitude 5.8. The disk is 100.0% illuminated (nearly full). It is 44.2° from the Sun, on its east side. Motion is direct at 0.045° per day in ecliptic longitude at the snapshot. Position reference: Menkar, 15.9° away. Conjunction with Moon in ecliptic longitude Apr 01 11:55 UTC."
+    },
+    "1259": {
+      "observing": "Solar Glare",
+      "solar_glare": true,
+      "ra_hours": 0.013106986,
+      "dec_deg": -1.293056564,
+      "sun_ra_hours": 0.623357765,
+      "rise": "05:25",
+      "set": "17:21",
+      "object_id": 1259,
+      "name": "Neptune",
+      "snapshot_utc": "2025-03-31T00:00:00+00:00",
+      "guide_star": "Fumalsamakah",
+      "guide_star_fixed_object_id": 573,
+      "guide_separation_deg": 15.1,
+      "events": [],
+      "close_pairs": [
+        {
+          "object_id": 1250,
+          "name": "Mercury",
+          "separation_deg": 3.2
+        }
+      ],
+      "magnitude": 7.825325833267765,
+      "illuminated_percent": 100.0,
+      "elongation_deg": 10.6,
+      "solar_side": "west",
+      "motion_deg_per_day": 0.0374,
+      "motion": "direct",
+      "altitude_21_last_45n_deg": -36.1,
+      "source": "Preserved weekly ephemeris; cached JPL/NAIF kernels through StarAlmanackEphemeris",
+      "dek": "In solar glare; magnitude 7.8; direct motion; 100.0% illuminated. Monday 00:00 UTC snapshot.",
+      "body": "Neptune: in solar glare at the Monday 00:00 UTC snapshot. Rises 05:25; sets 17:21 (45°N, local apparent solar time). Visual magnitude 7.8. The disk is 100.0% illuminated (nearly full). It is 10.6° from the Sun, on its west side. Motion is direct at 0.037° per day in ecliptic longitude at the snapshot. Position reference: Fumalsamakah, 15.1° away. Mercury is 3.2° away at the snapshot."
+    },
+    "1260": {
+      "observing": "Substantial telescope",
+      "solar_glare": false,
+      "ra_hours": 20.422969383,
+      "dec_deg": -22.79449166,
+      "sun_ra_hours": 0.623357765,
+      "rise": "03:24",
+      "set": "12:12",
+      "object_id": 1260,
+      "name": "Pluto",
+      "snapshot_utc": "2025-03-31T00:00:00+00:00",
+      "guide_star": "Dabih",
+      "guide_star_fixed_object_id": 1152,
+      "guide_separation_deg": 8.1,
+      "events": [],
+      "close_pairs": [],
+      "magnitude": 14.54386069629844,
+      "illuminated_percent": 100.0,
+      "elongation_deg": 67.0,
+      "solar_side": "west",
+      "motion_deg_per_day": 0.0159,
+      "motion": "direct",
+      "altitude_21_last_45n_deg": -63.4,
+      "source": "Preserved weekly ephemeris; cached JPL/NAIF kernels through StarAlmanackEphemeris",
+      "dek": "Substantial telescope; magnitude 14.5; direct motion; 100.0% illuminated. Below the horizon at 21:00 local apparent solar time, 45°N. Monday 00:00 UTC snapshot.",
+      "body": "Pluto: substantial telescope at the Monday 00:00 UTC snapshot. At 45°N and 21:00 local apparent solar time, it is 63.4° below the horizon. Rises 03:24; sets 12:12 (45°N, local apparent solar time). Visual magnitude 14.5. The disk is 100.0% illuminated (nearly full). It is 67.0° from the Sun, on its west side. Motion is direct at 0.016° per day in ecliptic longitude at the snapshot. Position reference: Dabih, 8.1° away."
+    }
+  }
+}
