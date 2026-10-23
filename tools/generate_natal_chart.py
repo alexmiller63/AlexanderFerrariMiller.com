@@ -12,6 +12,30 @@ from skyfield.framelib import ecliptic_frame
 BODIES = [('sun','☉'),('moon','☽'),('mercury','☿'),('venus','♀'),('mars','♂'),
           ('ceres','⚳'),('jupiter','♃'),('saturn','♄'),('uranus','♅'),('neptune','♆'),('pluto','♇')]
 SIGNS = '♈♉♊♋♌♍♎♏♐♑♒♓'
+# Explicit Astrodienst-style major-aspect orbs chosen for this chart.
+ASPECTS = [('conjunction','☌',0,10), ('sextile','⚹',60,6),
+           ('square','□',90,10), ('trine','△',120,10), ('opposition','☍',180,10)]
+
+
+def major_aspects(rows):
+    """Each unordered pair appears once; orb is departure from the exact angle."""
+    results = []
+    for i, first in enumerate(rows):
+        for second in rows[i+1:]:
+            difference = abs((first['longitude'] - second['longitude']) % 360)
+            separation = min(difference, 360-difference)
+            for name, symbol, angle, limit in ASPECTS:
+                orb = abs(separation-angle)
+                if orb <= limit + 1e-10:
+                    results.append(dict(first=first, second=second, name=name,
+                                        symbol=symbol, separation=separation, orb=orb))
+                    break
+    return results
+
+
+def orb_position(orb):
+    degree, minute = divmod(int(math.floor(orb*60+0.5)),60)
+    return f'{degree}°{minute:02d}′'
 
 
 def point(angle, radius):
@@ -72,9 +96,10 @@ def render(rows, instant, zone, houses, latitude, longitude):
     def xy(angle, radius):
         return point(angle - houses[0], radius)
 
+    aspects = major_aspects(rows)
     svg = ['<svg xmlns="http://www.w3.org/2000/svg" viewBox="-32 -32 704 704" role="img" aria-labelledby="chart-title chart-desc">',
            '<title id="chart-title">Tonight’s planetary positions</title>',
-           '<desc id="chart-desc">Tropical zodiac, geocentric apparent planet positions, and twelve Placidus houses. The Ascendant is at the left. AS, DS, MC and IC mark the four angles. Aspect lines are not yet included.</desc>',
+           '<desc id="chart-desc">Tropical zodiac, geocentric apparent planet positions, twelve Placidus houses, and major aspect lines in the center. Blue lines show trines and dashed sextiles; red lines show squares and oppositions. Conjunctions are listed in the aspect table. The Ascendant is at the left. AS, DS, MC and IC mark the four angles.</desc>',
            '<circle cx="320" cy="320" r="310" fill="#101a2c" stroke="#f0c987"/>',
            '<circle cx="320" cy="320" r="270" fill="none" stroke="#64768c"/>']
     for degree in range(360):
@@ -86,6 +111,15 @@ def render(rows, instant, zone, houses, latitude, longitude):
         svg.append(f'<path d="M{a[0]:.4f},{a[1]:.4f} L{b[0]:.4f},{b[1]:.4f}" stroke="#64768c"/>')
         svg.append(f'<text x="{x:.4f}" y="{y:.4f}" fill="#f0c987" font-size="27">{symbol}&#xfe0e;</text>')
     svg.append('<circle cx="320" cy="320" r="80" fill="none" stroke="#64768c"/>')
+    for aspect in aspects:
+        if aspect['name'] == 'conjunction':
+            continue  # Nearly coincident points do not need an interior chord.
+        a = xy(aspect['first']['longitude'],78)
+        b = xy(aspect['second']['longitude'],78)
+        color = '#75b9f4' if aspect['name'] in ('sextile','trine') else '#ef7e83'
+        dash = ' stroke-dasharray="3 3"' if aspect['name'] == 'sextile' else ''
+        title = f"{aspect['first']['body'].title()} {aspect['symbol']} {aspect['second']['body'].title()} · {aspect['name']} · orb {orb_position(aspect['orb'])}"
+        svg.append(f'<line data-aspect="{aspect["name"]}" data-first="{aspect["first"]["body"]}" data-second="{aspect["second"]["body"]}" x1="{a[0]:.4f}" y1="{a[1]:.4f}" x2="{b[0]:.4f}" y2="{b[1]:.4f}" stroke="{color}" stroke-width="1.5"{dash}><title>{title}</title></line>')
     for i, cusp in enumerate(houses):
         a, b = xy(cusp,80), xy(cusp,270)
         color = '#f0c987' if i in (0,3,6,9) else '#64768c'
@@ -114,6 +148,7 @@ def render(rows, instant, zone, houses, latitude, longitude):
     label=local.strftime('%B %d, %Y · %-I:%M %p %Z')
     wheel='\n'.join(svg)
     cusp_rows = ''.join(f'<tr><th scope="row">{i+1}</th><td>{sign_position(cusp)}</td></tr>' for i,cusp in enumerate(houses))
+    aspect_rows = ''.join(f'<tr><td><span title="{a["first"]["body"].title()} and {a["second"]["body"].title()}">{a["first"]["symbol"]}&#xfe0e; {a["second"]["symbol"]}&#xfe0e;</span></td><td>{a["symbol"]} {a["name"].title()}</td><td>{orb_position(a["orb"])}</td></tr>' for a in aspects)
     return '''---
 layout: null
 ---
@@ -138,14 +173,16 @@ table{border-collapse:collapse;max-width:28rem;width:100%}th,td{border:1px solid
 <p class="tagline">Tonight’s sky · San Bernardino</p>
 <p class="chart-intro">LABEL<br><time datetime="STAMP">UTCSTAMP</time></p>
 <figure class="wheel">WHEEL</figure>
-<p class="chart-note">Tropical zodiac with twelve Placidus houses. AS is the Ascendant, DS the Descendant, MC the Midheaven, and IC the lower meridian. The Ascendant sits at the left. Aspect lines are next.</p>
+<p class="chart-note">Tropical zodiac with twelve Placidus houses. AS is the Ascendant, DS the Descendant, MC the Midheaven, and IC the lower meridian. The Ascendant sits at the left.</p>
+<p class="chart-note"><span style="color:#75b9f4">Blue: △ trine, dashed ⚹ sextile.</span> <span style="color:#ef7e83">Red: □ square, ☍ opposition.</span> Conjunctions ☌ are listed below without a line.</p>
+<details><summary>Major aspects (ASPECTCOUNT)</summary><table><caption>Planet pairs and departure from an exact aspect</caption><thead><tr><th>Planets</th><th>Aspect</th><th>Orb</th></tr></thead><tbody>ASPECTROWS</tbody></table><p class="chart-note">Orbs: 10° for conjunctions, squares, trines and oppositions; 6° for sextiles. All eleven displayed bodies are included; aspects to house cusps and chart angles are omitted. Orb choices are astrological conventions.</p></details>
 <details><summary>House cusp positions</summary><table><caption>Placidus · COORDINATES</caption><thead><tr><th>House</th><th>Position</th></tr></thead><tbody>CUSPS</tbody></table></details>
 <p class="chart-note">Geocentric apparent ecliptic longitudes of date, calculated with our stored DE440s and Ceres source kernels through Skyfield. Houses use San Bernardino’s coordinates and local apparent sidereal time. Planet positions remain provisional pending independent validation.</p>
 </main>
 {% include nativitas-footer.html %}
 </body>
 </html>
-'''.replace('LABEL',html.escape(label)).replace('UTCSTAMP',instant.strftime('%Y-%m-%d %H:%M UTC')).replace('STAMP',instant.isoformat()).replace('WHEEL',wheel).replace('CUSPS',cusp_rows).replace('COORDINATES',f'{latitude:.4f}°, {longitude:.4f}°')
+'''.replace('LABEL',html.escape(label)).replace('UTCSTAMP',instant.strftime('%Y-%m-%d %H:%M UTC')).replace('STAMP',instant.isoformat()).replace('WHEEL',wheel).replace('CUSPS',cusp_rows).replace('COORDINATES',f'{latitude:.4f}°, {longitude:.4f}°').replace('ASPECTROWS',aspect_rows).replace('ASPECTCOUNT',str(len(aspects)))
 
 
 def main():
