@@ -1,0 +1,47 @@
+---
+layout: null
+---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Ephemera | Star Almanack</title>
+  <link rel="stylesheet" href="css/star-almanack-nav-20261022.css">
+  <style>
+    .ephemera-panel{max-width:850px;margin:2rem auto;padding:1.5rem;border:1px solid #8292a7;border-radius:12px;line-height:1.65}
+    .ephemera-panel a.button{display:inline-block;margin:1rem 0;padding:.6rem 1rem;border:1px solid currentColor;border-radius:8px}
+    .ephemera-panel code{overflow-wrap:anywhere}
+  </style>
+</head>
+<body>
+  {% include_relative includes/nav.html %}
+  <main class="page-shell">
+    <section class="hero"><p class="eyebrow">Star Almanack · Calculation tools</p>
+      <h1>Ephemera</h1>
+      <p class="tagline">Observer-specific positions and rise/set times for the Solar System.</p>
+    </section>
+    <section class="ephemera-panel">
+      <h2>Generate an ephemeris</h2>
+      <p>The first working version runs through GitHub Actions. Choose <strong>Run workflow</strong>
+      and enter a date/time with UTC offset, latitude, longitude and optional elevation.
+      When the run finishes, download the <strong>observer-ephemera</strong> artifact
+      to read its HTML report or machine-readable JSON.</p>
+      <a class="button" href="https://github.com/alexmiller63/AlexanderFerrariMiller.com/actions/workflows/observer-ephemera.yml">Open the Ephemera Generator</a>
+      <h2>Calculation conventions</h2>
+      <p>Geographic latitude north and longitude east are positive. Use a UTC date/time such as
+      <code>2026-10-22T21:00:00Z</code>. The positions correspond to that instant; the rise/set
+      events are computed for its <strong>UTC calendar date</strong>, and may fall on a different
+      local calendar date.</p>
+      <p>Included: Sun, Moon, Mercury, Venus, Mars, Ceres, Jupiter, Saturn, Uranus, Neptune and Pluto.
+      Earth supplies the observing origin and is excluded from the output.</p>
+      <p>The engine recomputes the apparent altitude at successive times and bisects each detected
+      horizon crossing. It does not use the weekly 9 PM snapshot to estimate rise and set.</p>
+      <p><strong>Current limitations:</strong> 1900–2100 kernel range; standard-horizon approximations;
+      no terrain or local atmospheric correction; near-grazing events require further validation.
+      A direct in-browser form and city selector are planned but are not available yet.</p>
+    </section>
+  </main>
+  {% include_relative includes/footer.html %}
+</body>
+</html>
