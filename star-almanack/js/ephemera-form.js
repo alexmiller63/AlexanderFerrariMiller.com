@@ -110,6 +110,10 @@
     for (const button of cityOptions.querySelectorAll('button')) button.disabled = value;
   }
   function render(data) {
+    const localTime = new Intl.DateTimeFormat('en-US', {
+      timeZone: data.timezone, hour: 'numeric', minute: '2-digit',
+      hour12: true, timeZoneName: 'short'
+    });
     const rows = document.getElementById('ephemera-rows');
     rows.replaceChildren();
     for (const body of data.bodies) {
@@ -127,8 +131,8 @@
       if (body.rise_set.events.length) {
         for (const event of body.rise_set.events) {
           const line = document.createElement('div');
-          line.textContent = `${event.type === 'rise' ? 'Rise' : 'Set'} ${event.local.slice(11).replace('T', ' ')}`;
-          line.title = `UTC: ${event.utc}`;
+          line.textContent = `${event.type === 'rise' ? 'Rise' : 'Set'} ${localTime.format(new Date(event.utc))}`;
+          line.title = `Local: ${event.local}; UTC: ${event.utc}`;
           events.append(line);
         }
       } else events.textContent = body.rise_set.state;
@@ -137,7 +141,7 @@
     }
     const observer = data.observer;
     document.getElementById('ephemera-summary').textContent =
-      `Positions: ${data.instant_utc}. Observer: ${observer.latitude}°, ${observer.longitude}°, ${observer.elevation_m} m. Rise/set: ${data.rise_set_local_date} in ${data.timezone}. Times include their UTC offsets.`;
+      `Positions: ${data.instant_utc}. Observer: ${observer.latitude}°, ${observer.longitude}°, ${observer.elevation_m} m. Rise/set: ${data.rise_set_local_date} in ${data.timezone}. Times are local, with the timezone shown beside each event.`;
     if (downloadURL) URL.revokeObjectURL(downloadURL);
     downloadURL = URL.createObjectURL(new Blob([JSON.stringify(data, null, 2) + '\n'], {type: 'application/json'}));
     document.getElementById('ephemera-download').href = downloadURL;
