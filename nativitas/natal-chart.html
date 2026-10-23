@@ -1,0 +1,71 @@
+---
+layout: null
+---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Natal Chart | Nativitas</title>
+  <link rel="stylesheet" href="nativitas.css">
+  <style>
+    .chart-intro{max-width:42rem;color:var(--muted)}
+    .wheel{max-width:46rem;margin:2rem auto}
+    .wheel svg{display:block;width:100%;height:auto;font-family:"DejaVu Sans","Segoe UI Symbol","Apple Symbols",sans-serif}
+    .sample-note{max-width:42rem;margin:1.5rem auto;color:var(--muted);text-align:center}
+  </style>
+</head>
+<body>
+  {% include nativitas-nav.html %}
+  <main class="page-shell">
+    <h1>Natal Chart</h1>
+    <p class="chart-intro">Our first design sample: zodiac and planet symbols only.</p>
+    <figure class="wheel">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" role="img" aria-labelledby="wheel-title wheel-desc">
+<title id="wheel-title">Simple natal chart design sample</title>
+<desc id="wheel-desc">Illustrative positions, not a calculated birth chart. Twelve zodiac symbols surround eleven solar-system symbols. Nearby planet symbols use different radii, preserving their angles. No houses or aspect lines.</desc>
+<circle cx="320" cy="320" r="300" fill="#101a2c" stroke="#f0c987" stroke-width="1.5"/>
+<circle cx="320" cy="320" r="245" fill="none" stroke="#64768c"/>
+<path d="M75.000 320.000 L20.000 320.000" stroke="#64768c"/>
+<text x="56.302" y="390.658" fill="#f0c987" font-size="30" text-anchor="middle" dominant-baseline="central">♈&#xfe0e;</text>
+<path d="M107.824 442.500 L60.192 470.000" stroke="#64768c"/>
+<text x="126.960" y="513.040" fill="#f0c987" font-size="30" text-anchor="middle" dominant-baseline="central">♉&#xfe0e;</text>
+<path d="M197.500 532.176 L170.000 579.808" stroke="#64768c"/>
+<text x="249.342" y="583.698" fill="#f0c987" font-size="30" text-anchor="middle" dominant-baseline="central">♊&#xfe0e;</text>
+<path d="M320.000 565.000 L320.000 620.000" stroke="#64768c"/>
+<text x="390.658" y="583.698" fill="#f0c987" font-size="30" text-anchor="middle" dominant-baseline="central">♋&#xfe0e;</text>
+<path d="M442.500 532.176 L470.000 579.808" stroke="#64768c"/>
+<text x="513.040" y="513.040" fill="#f0c987" font-size="30" text-anchor="middle" dominant-baseline="central">♌&#xfe0e;</text>
+<path d="M532.176 442.500 L579.808 470.000" stroke="#64768c"/>
+<text x="583.698" y="390.658" fill="#f0c987" font-size="30" text-anchor="middle" dominant-baseline="central">♍&#xfe0e;</text>
+<path d="M565.000 320.000 L620.000 320.000" stroke="#64768c"/>
+<text x="583.698" y="249.342" fill="#f0c987" font-size="30" text-anchor="middle" dominant-baseline="central">♎&#xfe0e;</text>
+<path d="M532.176 197.500 L579.808 170.000" stroke="#64768c"/>
+<text x="513.040" y="126.960" fill="#f0c987" font-size="30" text-anchor="middle" dominant-baseline="central">♏&#xfe0e;</text>
+<path d="M442.500 107.824 L470.000 60.192" stroke="#64768c"/>
+<text x="390.658" y="56.302" fill="#f0c987" font-size="30" text-anchor="middle" dominant-baseline="central">♐&#xfe0e;</text>
+<path d="M320.000 75.000 L320.000 20.000" stroke="#64768c"/>
+<text x="249.342" y="56.302" fill="#f0c987" font-size="30" text-anchor="middle" dominant-baseline="central">♑&#xfe0e;</text>
+<path d="M197.500 107.824 L170.000 60.192" stroke="#64768c"/>
+<text x="126.960" y="126.960" fill="#f0c987" font-size="30" text-anchor="middle" dominant-baseline="central">♒&#xfe0e;</text>
+<path d="M107.824 197.500 L60.192 170.000" stroke="#64768c"/>
+<text x="56.302" y="249.342" fill="#f0c987" font-size="30" text-anchor="middle" dominant-baseline="central">♓&#xfe0e;</text>
+<text x="312.392" y="102.133" fill="#f7f2e9" font-size="32" text-anchor="middle" dominant-baseline="central" aria-label="Sun">☉&#xfe0e;</text>
+<text x="301.185" y="140.986" fill="#f7f2e9" font-size="32" text-anchor="middle" dominant-baseline="central" aria-label="Moon">☽&#xfe0e;</text>
+<text x="300.237" y="179.382" fill="#f7f2e9" font-size="32" text-anchor="middle" dominant-baseline="central" aria-label="Mercury">☿&#xfe0e;</text>
+<text x="298.377" y="218.273" fill="#f7f2e9" font-size="32" text-anchor="middle" dominant-baseline="central" aria-label="Venus">♀&#xfe0e;</text>
+<text x="135.126" y="435.522" fill="#f7f2e9" font-size="32" text-anchor="middle" dominant-baseline="central" aria-label="Mars">♂&#xfe0e;</text>
+<text x="231.331" y="519.153" fill="#f7f2e9" font-size="32" text-anchor="middle" dominant-baseline="central" aria-label="Ceres">⚳&#xfe0e;</text>
+<text x="432.278" y="506.862" fill="#f7f2e9" font-size="32" text-anchor="middle" dominant-baseline="central" aria-label="Jupiter">♃&#xfe0e;</text>
+<text x="537.170" y="301.000" fill="#f7f2e9" font-size="32" text-anchor="middle" dominant-baseline="central" aria-label="Saturn">♄&#xfe0e;</text>
+<text x="500.730" y="198.096" fill="#f7f2e9" font-size="32" text-anchor="middle" dominant-baseline="central" aria-label="Uranus">♅&#xfe0e;</text>
+<text x="133.138" y="207.722" fill="#f7f2e9" font-size="32" text-anchor="middle" dominant-baseline="central" aria-label="Neptune">♆&#xfe0e;</text>
+<text x="211.000" y="131.206" fill="#f7f2e9" font-size="32" text-anchor="middle" dominant-baseline="central" aria-label="Pluto">♇&#xfe0e;</text>
+</svg>
+      <figcaption class="sample-note">Illustrative positions for a layout test, not a calculated birth chart. Nearby symbols sit at different distances from the center to keep them separate.</figcaption>
+    </figure>
+    <p class="sample-note">Birth-date calculations will come after we settle the design.</p>
+  </main>
+  {% include nativitas-footer.html %}
+</body>
+</html>
