@@ -6,33 +6,40 @@ layout: null
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Nativitas: discover the astronomical sky at the moment of your birth.">
-  <title>Nativitas | Your Sky. Your Moment. Your Story.</title>
-  <style>
-    :root{color-scheme:dark;--bg:#101a2c;--card:#1a2940;--text:#f7f2e9;--muted:#bdc9d6;--accent:#f0c987}
-    *{box-sizing:border-box}body{margin:0;font:1rem/1.65 system-ui,-apple-system,sans-serif;background:radial-gradient(ellipse at top,#263e61,var(--bg) 65%);color:var(--text);min-height:100vh}
-    a{color:var(--accent)}header,footer{padding:1.2rem max(1.5rem,calc((100% - 1050px)/2))}header a{text-decoration:none;font-weight:600}main{max-width:1050px;margin:auto;padding:5rem 1.5rem 6rem}
-    .eyebrow{text-transform:uppercase;letter-spacing:.17em;color:var(--accent);font-size:.8rem}h1{font-family:Georgia,serif;font-size:clamp(3.5rem,10vw,7rem);line-height:1.05;margin:.5rem 0}h2{font-family:Georgia,serif;font-size:1.5rem;margin-top:0}
-    .tagline{font-size:clamp(1.25rem,3vw,1.7rem);color:var(--accent)}.intro{max-width:730px;font-size:1.1rem;color:var(--muted)}
-    .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1.2rem;margin-top:3rem}.card{background:var(--card);border:1px solid #39506d;border-radius:14px;padding:1.6rem}.card p{color:var(--muted);margin-bottom:0}
-    .note{margin-top:3rem;padding:1rem 1.3rem;border-left:3px solid var(--accent);color:var(--muted)}footer{border-top:1px solid #39506d;color:var(--muted)}
-  </style>
+  <meta name="description" content="Nativitas begins with Ephemera: explore the Sun, Moon and planets at a place and moment of your choosing.">
+  <title>Nativitas | Your sky. Your moment. Your story.</title>
+  <link rel="stylesheet" href="css/nativitas.css?v=20261022">
 </head>
 <body>
-  <header><a href="../">Alexander Ferrari Miller</a> &nbsp; / &nbsp; <a href="../projects.html">Projects</a></header>
-  <main>
-    <p class="eyebrow">A new project by Alexander Ferrari Miller</p>
-    <h1>Nativitas</h1>
-    <p class="tagline">Your sky. Your moment. Your story.</p>
-    <p class="intro">What did the heavens look like when you were born? Nativitas is being developed to reconstruct the celestial positions at a particular place and moment in time, using astronomy as its foundation and exploring astrology as a historical and cultural tradition.</p>
-    <section class="cards" aria-label="Planned features">
-      <article class="card"><h2>Your Birth Sky</h2><p>Explore the Sun, Moon, planets, and constellations at your birth date, time, and location.</p></article>
-      <article class="card"><h2>Accurate Astronomy</h2><p>Computed celestial positions, with transparent methods and clear distinctions between measured facts and interpretations.</p></article>
-      <article class="card"><h2>Traditions &amp; History</h2><p>Learn how people, including historical astronomers, interpreted celestial configurations across centuries.</p></article>
-      <article class="card"><h2>Accessible by Design</h2><p>A useful free experience is the goal, with optional enhancements planned at a simple one-time price.</p></article>
+  {% include_relative includes/nav.html %}
+  <main id="main-content" class="site-main">
+    <section class="home-hero">
+      <p class="eyebrow">Your sky. Your moment. Your story.</p>
+      <h1>Nativitas</h1>
+      <p class="hero-copy">Every story begins with a moment.<br>Begin by exploring the sky at yours.</p>
+      <p class="intro">Choose a date, time and place. Ephemera calculates where the Sun, Moon and planets were, and when they rose and set. This is the astronomical foundation of Nativitas.</p>
+      <a class="button" href="ephemera.html">Open Ephemera <span aria-hidden="true">→</span></a>
+      <p class="small-note">Free to use. No account required.</p>
     </section>
-    <p class="note"><strong>Under development.</strong> This is the project home, not yet a working chart generator. Astrology's claims about personality and future events have not been scientifically validated.</p>
+    <section class="tool-feature" aria-labelledby="first-tool">
+      <div>
+        <p class="eyebrow">The first tool</p>
+        <h2 id="first-tool">A place. A time.<br>A sky to discover.</h2>
+      </div>
+      <div>
+        <p>Start with the sky right now, a birthday, or another moment you want to explore. Choose a city or use your location, then pick a local date and time.</p>
+        <p>Your report includes the Sun, Moon, Mercury, Venus, Mars, Ceres, Jupiter, Saturn, Uranus, Neptune and Pluto. See their positions, altitude and direction, with rise/set times in your selected time zone.</p>
+        <a class="text-link" href="ephemera.html">Calculate your ephemeris <span aria-hidden="true">→</span></a>
+      </div>
+    </section>
+    <section class="foundation" aria-labelledby="foundation-heading">
+      <p class="eyebrow">Built from astronomy</p>
+      <h2 id="foundation-heading">The calculation comes first.</h2>
+      <p>Nativitas begins with Ephemera, sharing the calculation engine used by <a href="../star-almanack/">Star Almanack</a>. Calculations run on your device, with a progress indicator and a downloadable report.</p>
+      <p>A natal-chart view is the next step. Ephemera is available now; astrological interpretations are not part of this first tool.</p>
+      <p class="small-note">Astrology’s claims about personality and future events have not been scientifically validated.</p>
+    </section>
   </main>
-  <footer>© Alexander Ferrari Miller · <a href="../star-almanack/">Explore Star Almanack</a></footer>
+  {% include_relative includes/footer.html %}
 </body>
 </html>

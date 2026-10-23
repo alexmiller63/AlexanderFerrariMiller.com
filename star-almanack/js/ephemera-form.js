@@ -1,5 +1,6 @@
 (() => {
   'use strict';
+  const scriptURL = document.currentScript.src;
   const form = document.getElementById('ephemera-form');
   if (!form) return;
   const status = document.getElementById('ephemera-status');
@@ -25,7 +26,7 @@
     document.getElementById('ephemera-zones').append(option);
   }
   async function loadCities() {
-    if (!loadingCities) loadingCities = fetch('assets/ephemera/cities.json').then(response => {
+    if (!loadingCities) loadingCities = fetch(new URL('../assets/ephemera/cities.json', scriptURL)).then(response => {
       if (!response.ok) throw Error('City search could not load. You can still enter coordinates and a timezone.');
       return response.json();
     }).then(rows => {
@@ -247,7 +248,7 @@
       status.textContent = 'Starting the calculation engine…';
       showProgress('Preparing calculation…');
       if (!worker) {
-        worker = new Worker('js/ephemera-worker.js?v=20261022-progress');
+        worker = new Worker(new URL('ephemera-worker.js?v=20261022-progress', scriptURL));
         worker.onmessage = ({data}) => {
           if (data.type === 'progress') {
             status.textContent = data.message;

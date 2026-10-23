@@ -1,0 +1,27 @@
+---
+layout: null
+---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Calculate Solar System positions and local rise/set times with Nativitas Ephemera.">
+  <title>Ephemera | Nativitas</title>
+  <link rel="stylesheet" href="css/nativitas.css?v=20261022">
+  {% include observer-ephemera-styles.html %}
+</head>
+<body>
+  {% include_relative includes/nav.html %}
+  <main id="main-content" class="site-main calculator-main">
+    <section class="tool-hero">
+      <p class="eyebrow">Nativitas · The first tool</p>
+      <h1>Ephemera</h1>
+      <p class="intro">Choose your place and moment. Explore the Sun, Moon and planets.</p>
+    </section>
+    {% include observer-ephemera.html %}
+  </main>
+  {% include_relative includes/footer.html %}
+  <script src="../star-almanack/js/ephemera-form.js?v=20261022-shared"></script>
+</body>
+</html>
