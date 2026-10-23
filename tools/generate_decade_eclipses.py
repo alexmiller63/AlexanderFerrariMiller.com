@@ -78,9 +78,15 @@ def generate(start_year, end_year):
         if not start <= event_day < end:
             continue
         g = event.geometry
-        print(f'FOUND SOLAR {event.greatest_utc} {event.eclipse_type}', flush=True)
+        solar_contacts = global_solar_boundaries(engine, event.greatest_jd_utc)
+        print(
+            f"FOUND SOLAR {event.greatest_utc} {event.eclipse_type} "
+            f"global_begin={solar_contacts['global_begin']} "
+            f"global_end={solar_contacts['global_end']}",
+            flush=True,
+        )
         results[event.greatest_utc[:16]] = {
-            "kind": "solar", "contacts_utc": json.dumps(global_solar_boundaries(engine, event.greatest_jd_utc)),
+            "kind": "solar", "contacts_utc": json.dumps(solar_contacts),
             "date_utc": event_day.isoformat(),
             "greatest_utc": event.greatest_utc,
             "type": event.eclipse_type,
