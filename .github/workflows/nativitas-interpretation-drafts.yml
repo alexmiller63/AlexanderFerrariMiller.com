@@ -3,9 +3,9 @@ on:
   workflow_dispatch:
     inputs:
       batch_size:
-        description: Number of new placement drafts per run (max 120)
+        description: Number of placement drafts to catalog per run (up to 120)
         required: false
-        default: '20'
+        default: '120'
 permissions:
   contents: write
 concurrency:
