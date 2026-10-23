@@ -147,7 +147,7 @@ def render(rows, instant, zone, houses, latitude, longitude):
     local=instant.astimezone(ZoneInfo(zone))
     label=local.strftime('%B %d, %Y · %-I:%M %p %Z')
     wheel='\n'.join(svg)
-    cusp_rows = ''.join(f'<tr><th scope="row">{i+1}</th><td>{sign_position(cusp)}</td></tr>' for i,cusp in enumerate(houses))
+    cusp_rows = ''.join(f'<tr><th scope="row">{i+1}</th><td>{sign_position(cusp)}&#xfe0e;</td></tr>' for i,cusp in enumerate(houses))
     aspect_rows = ''.join(f'<tr><td><span title="{a["first"]["body"].title()} and {a["second"]["body"].title()}">{a["first"]["symbol"]}&#xfe0e; {a["second"]["symbol"]}&#xfe0e;</span></td><td>{a["symbol"]} {a["name"].title()}</td><td>{orb_position(a["orb"])}</td></tr>' for a in aspects)
     return '''---
 layout: null
