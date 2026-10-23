@@ -46,10 +46,13 @@ layout: null
       <div id="ephemera-cities" class="city-options" aria-label="City matches"></div>
       <form id="ephemera-form">
         <div class="form-grid">
-          <label>Date and time (UTC or explicit offset)
-            <input type="text" name="instant_utc" required value="2026-10-22T21:00:00Z" autocomplete="off" aria-describedby="time-note">
+          <label>Local date
+            <input type="date" name="local_date" min="1900-01-01" max="2099-12-31" required aria-describedby="time-note">
           </label>
-          <label>Rise/set timezone (IANA name)
+          <label>Local time
+            <input type="time" name="local_time" step="60" required aria-describedby="time-note">
+          </label>
+          <label>Time zone
             <input type="text" name="timezone" required value="America/Los_Angeles" list="ephemera-zones" autocomplete="off" aria-describedby="zone-note">
           </label>
           <label>Latitude (north positive)
@@ -63,9 +66,13 @@ layout: null
           </label>
         </div>
         <datalist id="ephemera-zones"></datalist>
-        <p id="time-note"><small>Example: <code>2026-10-22T21:00:00Z</code> or <code>2026-10-22T14:00:00-07:00</code>. Current date range: 1900–2099; dates at the source-data boundaries may be unavailable.</small></p>
+        <p id="time-note"><small>Choose a date and time in the selected time zone. Current date range: 1900–2099; dates at the source-data boundaries may be unavailable.</small></p>
+        <label id="ephemera-repeat-label" hidden>This time occurs twice when the clocks go back. Choose which occurrence:
+          <select name="time_occurrence" id="ephemera-repeat"></select>
+        </label>
         <p id="zone-note"><small>Rise/set cover the local calendar date containing this instant in the selected timezone. Daylight-saving changes are included. Coordinate edits do not change the timezone; check it when moving to a different location.</small></p>
         <button type="button" id="ephemera-location">Use my location (optional)</button>
+        <button type="button" id="ephemera-now">Now</button>
         <button type="submit" id="ephemera-calculate">Calculate</button>
         <button type="button" id="ephemera-cancel" hidden>Cancel</button>
       </form>
