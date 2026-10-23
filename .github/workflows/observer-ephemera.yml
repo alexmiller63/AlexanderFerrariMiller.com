@@ -1,0 +1,64 @@
+name: Observer Ephemera Generator
+
+on:
+  workflow_dispatch:
+    inputs:
+      instant_utc:
+        description: 'ISO date/time with UTC offset, e.g. 2026-10-22T21:00:00Z'
+        required: true
+        type: string
+        default: '2026-10-22T21:00:00Z'
+      latitude:
+        description: 'Observer latitude (-90 to 90)'
+        required: true
+        type: string
+        default: '34.1083'
+      longitude:
+        description: 'Observer longitude (-180 to 180; east positive)'
+        required: true
+        type: string
+        default: '-117.2898'
+      elevation_m:
+        description: 'Elevation in meters'
+        required: true
+        type: string
+        default: '0'
+
+permissions:
+  contents: read
+
+jobs:
+  generate:
+    name: Compute observer ephemera
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/cache@v4
+        with:
+          path: |
+            .cache/skyfield/de440s.bsp
+            .cache/skyfield/ceres_1900_2100.bsp
+          key: star-almanack-source-kernels-v1
+      - name: Install Skyfield
+        run: python -m pip install --disable-pip-version-check 'skyfield==1.55'
+      - name: Prepare local source kernels
+        run: python tools/ensure_ephemeris_kernels.py --ceres
+      - name: Generate observer ephemera with live log
+        env:
+          INSTANT: ${{ inputs.instant_utc }}
+          LAT: ${{ inputs.latitude }}
+          LON: ${{ inputs.longitude }}
+          ELEV: ${{ inputs.elevation_m }}
+        run: |
+          python -u tools/generate_observer_ephemera.py --instant "$INSTANT" --latitude "$LAT" --longitude "$LON" --elevation-m "$ELEV"
+      - name: Upload JSON and HTML reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: observer-ephemera
+          path: generated/ephemera/
+          if-no-files-found: warn
