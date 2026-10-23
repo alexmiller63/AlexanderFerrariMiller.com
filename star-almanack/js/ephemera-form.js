@@ -13,7 +13,6 @@
   let cities;
   let loadingCities;
   let busy = false;
-  form.elements.instant_utc.value = new Date().toISOString().replace(/\.\d{3}Z$/, 'Z');
   const format = name => form.elements[name].value.trim();
   const fold = value => value.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
   const zones = typeof Intl.supportedValuesOf === 'function' ? Intl.supportedValuesOf('timeZone') : [];
@@ -56,7 +55,8 @@
           form.elements.timezone.value = row[6];
           cityOptions.replaceChildren();
           status.textContent = `Selected ${row[1]}. Rise/set use ${row[6]}.`;
-          form.elements.instant_utc.focus();
+          refreshOccurrences();
+          form.elements.local_date.focus();
         });
         cityOptions.append(button);
       }
@@ -71,24 +71,94 @@
   cityInput.addEventListener('focus', () => { loadCities().catch(error => {
     document.getElementById('city-note').textContent = error.message;
   }); });
+  function clockParts(instant, zone) {
+    const formatter = new Intl.DateTimeFormat('en-GB', {
+      timeZone: zone, year: 'numeric', month: '2-digit', day: '2-digit',
+      hour: '2-digit', minute: '2-digit', second: '2-digit', hourCycle: 'h23'
+    });
+    return Object.fromEntries(formatter.formatToParts(instant).map(part => [part.type, part.value]));
+  }
+  function localInstants() {
+    const zone = format('timezone');
+    try { new Intl.DateTimeFormat('en', {timeZone: zone}); }
+    catch { throw Error('Choose a valid time zone, e.g. America/Los_Angeles or UTC.'); }
+    const date = format('local_date'), time = format('local_time');
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(date) || !/^\d{2}:\d{2}$/.test(time)) {
+      throw Error('Choose a valid local date and time.');
+    }
+    const wall = Date.parse(`${date}T${time}:00Z`);
+    if (!Number.isFinite(wall) || new Date(wall).toISOString().slice(0, 16) !== `${date}T${time}`) {
+      throw Error('Choose a valid local date and time.');
+    }
+    if (date < '1900-01-01' || date > '2099-12-31') throw Error('Choose a date from 1900 through 2099.');
+    // Collect offsets on both sides of a possible clock change. Verify every
+    // candidate against the chosen wall clock, independent of the device zone.
+    const offsets = new Set();
+    for (let hours = -36; hours <= 36; hours += 6) {
+      const probe = wall + hours * 3600000;
+      const p = clockParts(probe, zone);
+      offsets.add(Date.parse(`${p.year}-${p.month}-${p.day}T${p.hour}:${p.minute}:${p.second}Z`) - probe);
+    }
+    return [...offsets].map(offset => wall - offset).filter(instant => {
+      const p = clockParts(instant, zone);
+      return `${p.year}-${p.month}-${p.day}T${p.hour}:${p.minute}:${p.second}` === `${date}T${time}:00`;
+    }).sort((a, b) => a - b);
+  }
+  function refreshOccurrences() {
+    const select = form.elements.time_occurrence;
+    const previous = select.value;
+    select.replaceChildren();
+    document.getElementById('ephemera-repeat-label').hidden = true;
+    let matches;
+    try { matches = localInstants(); } catch { return []; }
+    if (matches.length > 1) {
+      document.getElementById('ephemera-repeat-label').hidden = false;
+      const placeholder = document.createElement('option');
+      placeholder.value = '';
+      placeholder.textContent = 'Choose first or second occurrence';
+      select.append(placeholder);
+      const formatter = new Intl.DateTimeFormat('en-US', {
+        timeZone: format('timezone'), hour: 'numeric', minute: '2-digit',
+        hour12: true, timeZoneName: 'short'
+      });
+      matches.forEach((instant, index) => {
+        const option = document.createElement('option');
+        option.value = String(instant);
+        option.textContent = `${index === 0 ? 'First' : 'Second'}: ${formatter.format(instant)} (${new Date(instant).toISOString().slice(11, 16)} UTC)`;
+        select.append(option);
+      });
+      if (matches.some(instant => String(instant) === previous)) select.value = previous;
+    }
+    return matches;
+  }
+  function setNow() {
+    try {
+      const now = new Date();
+      const p = clockParts(now, format('timezone'));
+      form.elements.local_date.value = `${p.year}-${p.month}-${p.day}`;
+      form.elements.local_time.value = `${p.hour}:${p.minute}`;
+      const matches = refreshOccurrences();
+      if (matches.length > 1) {
+        form.elements.time_occurrence.value = String(matches.reduce((a, b) => Math.abs(b - now) < Math.abs(a - now) ? b : a));
+      }
+    } catch { status.textContent = 'Choose a valid time zone before using Now.'; }
+  }
+  for (const name of ['local_date', 'local_time', 'timezone']) {
+    form.elements[name].addEventListener('input', refreshOccurrences);
+    form.elements[name].addEventListener('change', refreshOccurrences);
+  }
+  document.getElementById('ephemera-now').addEventListener('click', setNow);
+  setNow();
   function validate() {
-    const instant = format('instant_utc');
-    const match = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})(?::(\d{2})(?:\.\d+)?)?(Z|[+-]\d{2}:\d{2})$/.exec(instant);
-    if (!match || !Number.isFinite(Date.parse(instant))) {
-      throw Error('Enter a date/time with Z or an offset, e.g. 2026-10-22T21:00:00Z.');
-    }
-    const [, year, month, day, hour, minute, second = '0', offset] = match;
-    if (+month < 1 || +month > 12 || +day < 1 ||
-        +day > new Date(Date.UTC(+year, +month, 0)).getUTCDate() ||
-        +hour > 23 || +minute > 59 || +second > 59 ||
-        (offset !== 'Z' && (+offset.slice(1, 3) > 23 || +offset.slice(4) > 59))) {
-      throw Error('Enter a valid calendar date and time.');
-    }
-    const utcYear = new Date(instant).getUTCFullYear();
-    if (utcYear < 1900 || utcYear > 2099) throw Error('Current source kernels support years 1900–2099 (boundary dates depend on source coverage).');
+    const matches = localInstants();
+    refreshOccurrences();
+    if (!matches.length) throw Error('That local time does not exist because the clocks change. Choose another time.');
+    const chosen = matches.length === 1 ? matches[0] : Number(form.elements.time_occurrence.value);
+    if (!matches.includes(chosen)) throw Error('This local time occurs twice. Choose the first or second occurrence below the date and time.');
+    const instant = new Date(chosen).toISOString();
+    const utcYear = new Date(chosen).getUTCFullYear();
+    if (utcYear < 1900 || utcYear > 2099) throw Error('This instant is outside the source-data coverage. Choose another date or time.');
     const values = {instant_utc: instant, timezone: format('timezone')};
-    try { new Intl.DateTimeFormat('en', {timeZone: values.timezone}); }
-    catch { throw Error('Choose a valid IANA timezone, e.g. America/Los_Angeles or UTC.'); }
     for (const [name, min, max] of [['latitude', -90, 90], ['longitude', -180, 180], ['elevation_m', -500, 10000]]) {
       const number = Number(format(name));
       if (!format(name) || !Number.isFinite(number) || number < min || number > max) {
@@ -104,9 +174,10 @@
     cancel.hidden = !value;
     results.setAttribute('aria-busy', String(value));
     // Keep the submitted parameters visible and unchanged until the result arrives.
-    for (const element of form.elements) if (element.tagName === 'INPUT') element.disabled = value;
+    for (const element of form.elements) if (['INPUT', 'SELECT'].includes(element.tagName)) element.disabled = value;
     cityInput.disabled = value;
     document.getElementById('ephemera-location').disabled = value;
+    document.getElementById('ephemera-now').disabled = value;
     for (const button of cityOptions.querySelectorAll('button')) button.disabled = value;
   }
   function render(data) {
@@ -193,6 +264,7 @@
       cityOptions.replaceChildren();
       const zone = Intl.DateTimeFormat().resolvedOptions().timeZone;
       form.elements.timezone.value = zone;
+      refreshOccurrences();
       status.textContent = `Coordinates filled. Timezone is your device's setting (${zone}); verify it for this location. Your coordinates stay on your device.`;
     }, () => { status.textContent = 'Location not available or permission not granted. Choose a city or enter coordinates.'; },
     {enableHighAccuracy: false, timeout: 12000, maximumAge: 300000});
