@@ -21,6 +21,46 @@ FIELDS = ["kind", "contacts_utc", "date_utc", "greatest_utc", "type", "axis_dist
           "penumbra_margin_km", "central_margin_km", "core_radius_km",
           "status"]
 
+
+def global_solar_boundaries(engine, greatest_jd, *, hours=12.0):
+    """Approximate global first/last penumbral intersection with Earth.
+
+    These are NOT observer-specific C1/C4 contacts. Search for sign changes
+    in the existing eclipse-margin geometry and bisect each crossing.
+    """
+    def margin(jd):
+        g = engine.geometry_at_utc_jd(jd)
+        return g.eclipse_margin_km if g.q_min_km > 0 else float("inf")
+
+    def crossing(left, right):
+        fl = margin(left)
+        for _ in range(55):
+            mid = (left + right) / 2
+            fm = margin(mid)
+            if (fm <= 0) == (fl <= 0):
+                left, fl = mid, fm
+            else:
+                right = mid
+            if (right - left) * 86400 < 0.1:
+                break
+        return (left + right) / 2
+
+    if margin(greatest_jd) > 0:
+        raise ValueError("No penumbral intersection at greatest alignment")
+    out = {}
+    step = 10.0 / 1440.0
+    for label, direction in (("global_begin", -1), ("global_end", 1)):
+        inside = greatest_jd
+        for n in range(1, int(hours * 6) + 1):
+            outside = greatest_jd + direction * n * step
+            if margin(outside) > 0:
+                out[label] = jd_to_iso_utc(crossing(min(inside, outside), max(inside, outside)))
+                break
+            inside = outside
+        else:
+            raise RuntimeError(f"Unable to bracket {label} within {hours} hours")
+    return out
+
 def generate(start_year, end_year):
     engine = EclipseEngine()
     start, end = date(start_year, 1, 1), date(end_year + 1, 1, 1)
@@ -40,7 +80,7 @@ def generate(start_year, end_year):
         g = event.geometry
         print(f'FOUND SOLAR {event.greatest_utc} {event.eclipse_type}', flush=True)
         results[event.greatest_utc[:16]] = {
-            "kind": "solar", "contacts_utc": "",
+            "kind": "solar", "contacts_utc": json.dumps(global_solar_boundaries(engine, event.greatest_jd_utc)),
             "date_utc": event_day.isoformat(),
             "greatest_utc": event.greatest_utc,
             "type": event.eclipse_type,
