@@ -1,0 +1,43 @@
+name: Nativitas Interpretation Library Build
+
+on:
+  workflow_dispatch:
+    inputs:
+      batch_size:
+        description: Number of pending entries to queue for editorial review
+        required: false
+        default: '20'
+  push:
+    paths:
+      - 'nativitas/tools/build_interpretation_library.py'
+      - 'nativitas/data/aspect-interpretations.json'
+      - 'nativitas/data/placement-interpretations.json'
+      - '.github/workflows/nativitas-interpretation-library.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Compile approved interpretations and review queue
+        env:
+          BATCH_SIZE: ${{ github.event.inputs.batch_size || '20' }}
+        run: python nativitas/tools/build_interpretation_library.py --batch-size "$BATCH_SIZE"
+      - name: Summarize progress
+        if: always()
+        run: |
+          if [ -f nativitas-library/progress.json ]; then
+            cat nativitas-library/progress.json >> "$GITHUB_STEP_SUMMARY"
+          fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: nativitas-interpretation-library
+          path: nativitas-library/
+          if-no-files-found: error
