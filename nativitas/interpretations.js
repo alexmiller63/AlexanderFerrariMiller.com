@@ -25,11 +25,11 @@
     ceres:'nurturing and cycles of care'
   };
   const aspectMeaning = {
-    conjunction:'A blending or intensification of the two planetary principles; not automatically beneficial or difficult.',
-    sextile:'An opportunity for cooperation or ease between the planetary principles.',
-    square:'Friction, tension or the need for effort between the planetary principles.',
-    trine:'Ease and a natural flow between the planetary principles.',
-    opposition:'Polarity, contrast or the need for balance between the planetary principles.'
+    conjunction:'The two planets reinforce one another, bringing their themes into sharper focus; the result can be constructive or challenging.',
+    sextile:'The two planets work together readily, suggesting opportunities that benefit from deliberate action.',
+    square:'The planets pull in different directions, creating tension that may motivate change or require compromise.',
+    trine:'The planets support each other with relatively little friction, making their combined strengths easier to express.',
+    opposition:'The planets face one another across a divide, highlighting contrasts that call for awareness and balance.'
   };
   const title = s => s[0].toUpperCase()+s.slice(1);
   function render(data) {
