@@ -27,6 +27,8 @@ layout: null
     .ephemera-panel .city-options{display:grid;gap:.3rem;margin:.5rem 0}
     .ephemera-panel .city-options button{text-align:left;margin:0}
     .ephemera-panel summary{cursor:pointer;font-weight:650}
+    .ephemera-panel progress{display:block;width:100%;height:1.3rem;accent-color:#233c67}
+    .ephemera-panel .progress-label{margin:.5rem 0;font-variant-numeric:tabular-nums}
   </style>
 </head>
 <body>
@@ -77,6 +79,10 @@ layout: null
         <button type="button" id="ephemera-cancel" hidden>Cancel</button>
       </form>
       <p id="ephemera-status" class="notice" role="status" aria-live="polite">Ready. The first calculation downloads the engine and astronomy data (about 60 MB). No account or Python installation is needed.</p>
+      <div id="ephemera-progress" hidden>
+        <progress id="ephemera-progress-bar" max="11" aria-label="Calculation progress" aria-describedby="ephemera-progress-label"></progress>
+        <p id="ephemera-progress-label" class="progress-label">Preparing calculation…</p>
+      </div>
       <section id="ephemera-results" hidden aria-labelledby="results-heading" aria-busy="false">
         <h2 id="results-heading" tabindex="-1">Your ephemeris</h2>
         <p id="ephemera-summary"></p>
@@ -98,6 +104,6 @@ layout: null
     </section>
   </main>
   {% include_relative includes/footer.html %}
-  <script src="js/ephemera-form.js?v=20261022-local-picker"></script>
+  <script src="js/ephemera-form.js?v=20261022-progress"></script>
 </body>
 </html>

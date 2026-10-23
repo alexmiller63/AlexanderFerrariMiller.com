@@ -2,7 +2,8 @@
 'use strict';
 const assets = new URL('../assets/ephemera/', self.location.href).href;
 let ready;
-const progress = message => self.postMessage({type: 'progress', message});
+let completed = 0;
+const progress = (message, completed) => self.postMessage({type: 'progress', message, completed});
 async function bytes(name) {
   const response = await fetch(new URL(name, assets));
   if (!response.ok) throw Error(`Could not load ${name} (${response.status}). Please retry.`);
@@ -13,7 +14,12 @@ async function initialize() {
   importScripts(assets + 'pyodide/pyodide.js');
   const python = await loadPyodide({indexURL: assets + 'pyodide/',
     stdout: message => {
-      if (message.startsWith('COMPUTED ')) progress(message.replace('COMPUTED ', 'Calculated '));
+      if (message.startsWith('COMPUTED ')) {
+        completed += 1;
+        const body = message.split(' ')[1];
+        const name = body[0].toUpperCase() + body.slice(1);
+        progress(`${name} complete — ${completed} of 11 bodies calculated.`, completed);
+      }
     }});
   await python.loadPackage('numpy');
   progress('Loading the local astronomy data…');
@@ -38,7 +44,8 @@ self.onmessage = async event => {
   try {
     ready = ready || initialize().catch(error => { ready = null; throw error; });
     const python = await ready;
-    progress('Calculating positions and local-day rise/set times…');
+    completed = 0;
+    progress('Calculating positions and local-day rise/set times — 0 of 11 bodies.', 0);
     python.globals.set('request_json', JSON.stringify(event.data));
     const result = await python.runPythonAsync(`
 request = json.loads(request_json)
