@@ -6,6 +6,7 @@ This script does NOT claim to verify astrological sources or write interpretatio
 import argparse
 import collections
 import json
+import time
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -26,6 +27,7 @@ def main():
                 for b in planets[i+1:] for aspect in aspects}
     found, errors, queue = set(), [], []
     counts = collections.Counter()
+    print(f"[START] Auditing {len(data['entries'])} interpretations", flush=True)
     for i, entry in enumerate(data["entries"]):
         key = (*entry.get("pair", []), entry.get("aspect"))
         if key in found:
@@ -35,6 +37,7 @@ def main():
             errors.append(f"Unexpected combination at index {i}: {key}")
         status = entry.get("status", "unspecified")
         counts[status] += 1
+        print(f"[{i+1:03d}/{len(data['entries'])}] {' + '.join(entry.get('pair', []))} / {entry.get('aspect')} -> {status}", flush=True)
         if status in REVIEWED:
             if not entry.get("sources"):
                 errors.append(f"Reviewed without sources: {key}")
@@ -45,6 +48,7 @@ def main():
                           "status": status, "source_count": len(entry.get("sources", []))})
     for missing in sorted(expected - found):
         errors.append(f"Missing: {missing}")
+    print(f"[SUMMARY] Reviewed: {sum(counts[k] for k in REVIEWED)} | Excluded: {sum(counts[k] for k in EXCLUDED)} | Awaiting review: {len(queue)} | Errors: {len(errors)}", flush=True)
     args.out.mkdir(parents=True, exist_ok=True)
     summary = {"total": len(data["entries"]), "status_counts": dict(sorted(counts.items())),
                "remaining_for_review": len(queue), "errors": errors,
