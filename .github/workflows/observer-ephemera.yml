@@ -18,6 +18,11 @@ on:
         required: true
         type: string
         default: '-117.2898'
+      timezone:
+        description: 'IANA timezone for the rise/set civil date'
+        required: true
+        type: string
+        default: 'UTC'
       elevation_m:
         description: 'Elevation in meters'
         required: true
@@ -47,14 +52,17 @@ jobs:
         run: python -m pip install --disable-pip-version-check 'skyfield==1.55'
       - name: Prepare local source kernels
         run: python tools/ensure_ephemeris_kernels.py --ceres
+      - name: Verify observer calculations
+        run: PYTHONPATH=tools python -m unittest tools/test_observer_ephemera.py -v
       - name: Generate observer ephemera with live log
         env:
           INSTANT: ${{ inputs.instant_utc }}
           LAT: ${{ inputs.latitude }}
           LON: ${{ inputs.longitude }}
           ELEV: ${{ inputs.elevation_m }}
+          OBSERVER_ZONE: ${{ inputs.timezone }}
         run: |
-          python -u tools/generate_observer_ephemera.py --instant "$INSTANT" --latitude "$LAT" --longitude "$LON" --elevation-m "$ELEV"
+          python -u tools/generate_observer_ephemera.py --instant "$INSTANT" --latitude "$LAT" --longitude "$LON" --elevation-m "$ELEV" --timezone "$OBSERVER_ZONE"
       - name: Upload JSON and HTML reports
         if: always()
         uses: actions/upload-artifact@v4
