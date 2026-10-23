@@ -75,7 +75,7 @@ def build():
             for entry in wheel.namelist():
                 if not entry.endswith('/'):
                     members['site-packages/' + entry] = wheel.read(entry)
-    for name in ['almanack_time.py', 'star_almanack_ephemeris.py', 'generate_observer_ephemera.py']:
+    for name in ['almanack_time.py', 'star_almanack_ephemeris.py', 'generate_observer_ephemera.py', 'generate_natal_chart.py']:
         members['tools/' + name] = (ROOT / 'tools' / name).read_bytes()
     with zipfile.ZipFile(OUTPUT / 'application.zip', 'w', zipfile.ZIP_DEFLATED) as archive:
         for name, content in sorted(members.items()):

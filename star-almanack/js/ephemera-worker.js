@@ -25,7 +25,7 @@ async function initialize() {
   progress('Loading the local astronomy data…');
   python.FS.mkdirTree('/app/.cache/skyfield');
   for (const name of ['application.zip', 'de440s.bsp', 'ceres_1900_2100.bsp']) {
-    const data = await bytes(name);
+    const data = await bytes(name === 'application.zip' ? 'application.zip?v=20261023-natal-1' : name);
     python.FS.writeFile(name.endsWith('.bsp') ? '/app/.cache/skyfield/' + name : '/app/' + name, data);
   }
   await python.runPythonAsync(`
@@ -45,12 +45,19 @@ self.onmessage = async event => {
     ready = ready || initialize().catch(error => { ready = null; throw error; });
     const python = await ready;
     completed = 0;
-    progress('Calculating positions and local-day rise/set times — 0 of 11 bodies.', 0);
+    progress(event.data.calculator === 'natal' ? 'Calculating natal positions and houses — 0 of 11 bodies.' : 'Calculating positions and local-day rise/set times — 0 of 11 bodies.', 0);
     python.globals.set('request_json', JSON.stringify(event.data));
     const result = await python.runPythonAsync(`
 request = json.loads(request_json)
-json.dumps(calculate(datetime.fromisoformat(request['instant_utc'].replace('Z', '+00:00')),
-    request['latitude'], request['longitude'], request['elevation_m'], request['timezone'], engine=engine))
+instant = datetime.fromisoformat(request['instant_utc'].replace('Z', '+00:00'))
+if request.get('calculator') == 'natal':
+    from generate_natal_chart import calculate_natal
+    report = calculate_natal(instant, request['latitude'], request['longitude'],
+        request['timezone'], unknown_time=request.get('unknown_time', False), engine=engine)
+else:
+    report = calculate(instant, request['latitude'], request['longitude'],
+        request['elevation_m'], request['timezone'], engine=engine)
+json.dumps(report)
 `);
     self.postMessage({type: 'result', data: JSON.parse(result)});
   } catch (error) {

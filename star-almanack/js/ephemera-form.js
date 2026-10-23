@@ -3,6 +3,8 @@
   const calculatorBase = new URL('../', document.currentScript.src);
   const form = document.getElementById('ephemera-form');
   if (!form) return;
+  const natal = form.dataset.calculator === 'natal';
+  const unknownTime = () => natal && form.elements.unknown_time.checked;
   const status = document.getElementById('ephemera-status');
   const results = document.getElementById('ephemera-results');
   const calculate = document.getElementById('ephemera-calculate');
@@ -58,7 +60,7 @@
           form.elements.elevation_m.value = row[5];
           form.elements.timezone.value = row[6];
           cityOptions.replaceChildren();
-          status.textContent = `Selected ${row[1]}. Rise/set use ${row[6]}.`;
+          status.textContent = `Selected ${row[1]}. Time zone: ${row[6]}.`;
           refreshOccurrences();
           form.elements.local_date.focus();
         });
@@ -86,7 +88,7 @@
     const zone = format('timezone');
     try { new Intl.DateTimeFormat('en', {timeZone: zone}); }
     catch { throw Error('Choose a valid time zone, e.g. America/Los_Angeles or UTC.'); }
-    const date = format('local_date'), time = format('local_time');
+    const date = format('local_date'), time = unknownTime() ? '12:00' : format('local_time');
     if (!/^\d{4}-\d{2}-\d{2}$/.test(date) || !/^\d{2}:\d{2}$/.test(time)) {
       throw Error('Choose a valid local date and time.');
     }
@@ -153,6 +155,14 @@
   }
   document.getElementById('ephemera-now').addEventListener('click', setNow);
   setNow();
+  function updateUnknownTime() {
+    if (!natal) return;
+    form.elements.local_time.disabled = unknownTime();
+    form.elements.local_time.required = !unknownTime();
+    document.getElementById('unknown-time-note').hidden = !unknownTime();
+    refreshOccurrences();
+  }
+  if (natal) form.elements.unknown_time.addEventListener('change', updateUnknownTime);
   function validate() {
     const matches = localInstants();
     refreshOccurrences();
@@ -163,6 +173,7 @@
     const utcYear = new Date(chosen).getUTCFullYear();
     if (utcYear < 1900 || utcYear > 2099) throw Error('This instant is outside the source-data coverage. Choose another date or time.');
     const values = {instant_utc: instant, timezone: format('timezone')};
+    if (natal) Object.assign(values, {calculator: 'natal', unknown_time: unknownTime()});
     for (const [name, min, max] of [['latitude', -90, 90], ['longitude', -180, 180], ['elevation_m', -500, 10000]]) {
       const number = Number(format(name));
       if (!format(name) || !Number.isFinite(number) || number < min || number > max) {
@@ -179,6 +190,7 @@
     results.setAttribute('aria-busy', String(value));
     // Keep the submitted parameters visible and unchanged until the result arrives.
     for (const element of form.elements) if (['INPUT', 'SELECT'].includes(element.tagName)) element.disabled = value;
+    if (!value) updateUnknownTime();
     cityInput.disabled = value;
     document.getElementById('ephemera-location').disabled = value;
     document.getElementById('ephemera-now').disabled = value;
@@ -192,6 +204,20 @@
     else progressBar.removeAttribute('value');
   }
   function render(data) {
+    if (natal) {
+      document.getElementById('natal-chart-output').innerHTML = data.chart_html;
+      document.getElementById('ephemera-summary').textContent =
+        `Location: ${data.observer.latitude}°, ${data.observer.longitude}°. Time zone: ${data.timezone}. ${data.unknown_time ? 'Birth time unknown — noon snapshot; houses omitted.' : 'House system: Placidus.'}`;
+      if (downloadURL) URL.revokeObjectURL(downloadURL);
+      const {chart_html, ...report} = data;
+      downloadURL = URL.createObjectURL(new Blob([JSON.stringify(report, null, 2) + '\n'], {type: 'application/json'}));
+      document.getElementById('ephemera-download').href = downloadURL;
+      results.hidden = false;
+      status.textContent = 'Chart complete. Planet positions, aspects and chart details appear below.';
+      showProgress('Complete', 11);
+      document.getElementById('results-heading').focus();
+      return;
+    }
     const localTime = new Intl.DateTimeFormat('en-US', {
       timeZone: data.timezone, hour: 'numeric', minute: '2-digit',
       hour12: true, timeZoneName: 'short'
@@ -248,13 +274,16 @@
       status.textContent = 'Starting the calculation engine…';
       showProgress('Preparing calculation…');
       if (!worker) {
-        worker = new Worker(new URL('js/ephemera-worker.js?v=20261022-progress', calculatorBase));
+        worker = new Worker(new URL('js/ephemera-worker.js?v=20261023-natal-1', calculatorBase));
         worker.onmessage = ({data}) => {
           if (data.type === 'progress') {
             status.textContent = data.message;
             showProgress(data.message, data.completed);
           }
-          if (data.type === 'result') { setBusy(false); render(data.data); }
+          if (data.type === 'result') {
+            try { render(data.data); setBusy(false); }
+            catch (error) { stop(); status.textContent = `Could not display the result: ${error.message}`; }
+          }
           if (data.type === 'error') {
             console.error(data.message);
             stop();
