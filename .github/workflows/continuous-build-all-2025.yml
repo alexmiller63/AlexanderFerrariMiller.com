@@ -1,0 +1,1485 @@
+name: Continuous Build All 2025
+
+on:
+  workflow_dispatch:
+    inputs:
+      weeks:
+        description: 'Optional specific ISO weeks separated by spaces; blank builds start_week through end_week'
+        type: string
+        required: false
+        default: ''
+      start_week:
+        description: 'First ISO week to build when weeks is blank'
+        type: number
+        required: true
+        default: 1
+      end_week:
+        description: 'Last ISO week to build when weeks is blank (1–52)'
+        type: number
+        required: true
+        default: 52
+
+permissions:
+  contents: write
+  actions: write
+
+concurrency:
+  group: continuous-build-all-2025
+  cancel-in-progress: false
+
+jobs:
+  week_01:
+    name: 2025 Week 01
+    if: ${{ always() && !cancelled() && ((inputs.weeks == '' && inputs.start_week <= 1 && inputs.end_week >= 1) || contains(format(' {0} ', inputs.weeks), ' 1 ')) }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch current weekly build and wait
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "### 2025 build — ${{ github.job }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Started: $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> "$GITHUB_STEP_SUMMARY"
+          trap 'rc=$?; if [ "$rc" -eq 0 ]; then echo "✅ Weekly build succeeded" >> "$GITHUB_STEP_SUMMARY"; else echo "❌ Weekly build failed (exit $rc)" >> "$GITHUB_STEP_SUMMARY"; echo "::error::2025 ${{ github.job }} failed (exit $rc)"; fi; echo "Finished: $(date -u +%FT%TZ)" >> "$GITHUB_STEP_SUMMARY"' EXIT
+          echo "::notice::Starting 2025 ${{ github.job }}"
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
+            -f start_year=2025 -f start_week=1 \
+            -f end_year=2025 -f end_week=1 \
+            -f resume_stage=Scaffold \
+            -f resume_completed_weeks=true \
+            -f candidate_layouts=1 \
+            -f max_node_candidates=200 \
+            -f max_search_seconds=360 \
+            -f diagnostic_level=1
+          sleep 90
+  week_02:
+    name: 2025 Week 02
+    needs: week_01
+    if: ${{ always() && !cancelled() && ((inputs.weeks == '' && inputs.start_week <= 2 && inputs.end_week >= 2) || contains(format(' {0} ', inputs.weeks), ' 2 ')) }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch current weekly build and wait
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "### 2025 build — ${{ github.job }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Started: $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> "$GITHUB_STEP_SUMMARY"
+          trap 'rc=$?; if [ "$rc" -eq 0 ]; then echo "✅ Weekly build succeeded" >> "$GITHUB_STEP_SUMMARY"; else echo "❌ Weekly build failed (exit $rc)" >> "$GITHUB_STEP_SUMMARY"; echo "::error::2025 ${{ github.job }} failed (exit $rc)"; fi; echo "Finished: $(date -u +%FT%TZ)" >> "$GITHUB_STEP_SUMMARY"' EXIT
+          echo "::notice::Starting 2025 ${{ github.job }}"
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
+            -f start_year=2025 -f start_week=2 \
+            -f end_year=2025 -f end_week=2 \
+            -f resume_stage=Scaffold \
+            -f resume_completed_weeks=true \
+            -f candidate_layouts=1 \
+            -f max_node_candidates=200 \
+            -f max_search_seconds=360 \
+            -f diagnostic_level=1
+          sleep 90
+  week_03:
+    name: 2025 Week 03
+    needs: week_02
+    if: ${{ always() && !cancelled() && ((inputs.weeks == '' && inputs.start_week <= 3 && inputs.end_week >= 3) || contains(format(' {0} ', inputs.weeks), ' 3 ')) }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch current weekly build and wait
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "### 2025 build — ${{ github.job }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Started: $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> "$GITHUB_STEP_SUMMARY"
+          trap 'rc=$?; if [ "$rc" -eq 0 ]; then echo "✅ Weekly build succeeded" >> "$GITHUB_STEP_SUMMARY"; else echo "❌ Weekly build failed (exit $rc)" >> "$GITHUB_STEP_SUMMARY"; echo "::error::2025 ${{ github.job }} failed (exit $rc)"; fi; echo "Finished: $(date -u +%FT%TZ)" >> "$GITHUB_STEP_SUMMARY"' EXIT
+          echo "::notice::Starting 2025 ${{ github.job }}"
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
+            -f start_year=2025 -f start_week=3 \
+            -f end_year=2025 -f end_week=3 \
+            -f resume_stage=Scaffold \
+            -f resume_completed_weeks=true \
+            -f candidate_layouts=1 \
+            -f max_node_candidates=200 \
+            -f max_search_seconds=360 \
+            -f diagnostic_level=1
+          sleep 90
+  week_04:
+    name: 2025 Week 04
+    needs: week_03
+    if: ${{ always() && !cancelled() && ((inputs.weeks == '' && inputs.start_week <= 4 && inputs.end_week >= 4) || contains(format(' {0} ', inputs.weeks), ' 4 ')) }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch current weekly build and wait
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "### 2025 build — ${{ github.job }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Started: $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> "$GITHUB_STEP_SUMMARY"
+          trap 'rc=$?; if [ "$rc" -eq 0 ]; then echo "✅ Weekly build succeeded" >> "$GITHUB_STEP_SUMMARY"; else echo "❌ Weekly build failed (exit $rc)" >> "$GITHUB_STEP_SUMMARY"; echo "::error::2025 ${{ github.job }} failed (exit $rc)"; fi; echo "Finished: $(date -u +%FT%TZ)" >> "$GITHUB_STEP_SUMMARY"' EXIT
+          echo "::notice::Starting 2025 ${{ github.job }}"
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
+            -f start_year=2025 -f start_week=4 \
+            -f end_year=2025 -f end_week=4 \
+            -f resume_stage=Scaffold \
+            -f resume_completed_weeks=true \
+            -f candidate_layouts=1 \
+            -f max_node_candidates=200 \
+            -f max_search_seconds=360 \
+            -f diagnostic_level=1
+          sleep 90
+  week_05:
+    name: 2025 Week 05
+    needs: week_04
+    if: ${{ always() && !cancelled() && ((inputs.weeks == '' && inputs.start_week <= 5 && inputs.end_week >= 5) || contains(format(' {0} ', inputs.weeks), ' 5 ')) }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch current weekly build and wait
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "### 2025 build — ${{ github.job }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Started: $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> "$GITHUB_STEP_SUMMARY"
+          trap 'rc=$?; if [ "$rc" -eq 0 ]; then echo "✅ Weekly build succeeded" >> "$GITHUB_STEP_SUMMARY"; else echo "❌ Weekly build failed (exit $rc)" >> "$GITHUB_STEP_SUMMARY"; echo "::error::2025 ${{ github.job }} failed (exit $rc)"; fi; echo "Finished: $(date -u +%FT%TZ)" >> "$GITHUB_STEP_SUMMARY"' EXIT
+          echo "::notice::Starting 2025 ${{ github.job }}"
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
+            -f start_year=2025 -f start_week=5 \
+            -f end_year=2025 -f end_week=5 \
+            -f resume_stage=Scaffold \
+            -f resume_completed_weeks=true \
+            -f candidate_layouts=1 \
+            -f max_node_candidates=200 \
+            -f max_search_seconds=360 \
+            -f diagnostic_level=1
+          sleep 90
+  week_06:
+    name: 2025 Week 06
+    needs: week_05
+    if: ${{ always() && !cancelled() && ((inputs.weeks == '' && inputs.start_week <= 6 && inputs.end_week >= 6) || contains(format(' {0} ', inputs.weeks), ' 6 ')) }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch current weekly build and wait
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "### 2025 build — ${{ github.job }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Started: $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> "$GITHUB_STEP_SUMMARY"
+          trap 'rc=$?; if [ "$rc" -eq 0 ]; then echo "✅ Weekly build succeeded" >> "$GITHUB_STEP_SUMMARY"; else echo "❌ Weekly build failed (exit $rc)" >> "$GITHUB_STEP_SUMMARY"; echo "::error::2025 ${{ github.job }} failed (exit $rc)"; fi; echo "Finished: $(date -u +%FT%TZ)" >> "$GITHUB_STEP_SUMMARY"' EXIT
+          echo "::notice::Starting 2025 ${{ github.job }}"
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
+            -f start_year=2025 -f start_week=6 \
+            -f end_year=2025 -f end_week=6 \
+            -f resume_stage=Scaffold \
+            -f resume_completed_weeks=true \
+            -f candidate_layouts=1 \
+            -f max_node_candidates=200 \
+            -f max_search_seconds=360 \
+            -f diagnostic_level=1
+          sleep 90
+  week_07:
+    name: 2025 Week 07
+    needs: week_06
+    if: ${{ always() && !cancelled() && ((inputs.weeks == '' && inputs.start_week <= 7 && inputs.end_week >= 7) || contains(format(' {0} ', inputs.weeks), ' 7 ')) }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch current weekly build and wait
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "### 2025 build — ${{ github.job }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Started: $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> "$GITHUB_STEP_SUMMARY"
+          trap 'rc=$?; if [ "$rc" -eq 0 ]; then echo "✅ Weekly build succeeded" >> "$GITHUB_STEP_SUMMARY"; else echo "❌ Weekly build failed (exit $rc)" >> "$GITHUB_STEP_SUMMARY"; echo "::error::2025 ${{ github.job }} failed (exit $rc)"; fi; echo "Finished: $(date -u +%FT%TZ)" >> "$GITHUB_STEP_SUMMARY"' EXIT
+          echo "::notice::Starting 2025 ${{ github.job }}"
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
+            -f start_year=2025 -f start_week=7 \
+            -f end_year=2025 -f end_week=7 \
+            -f resume_stage=Scaffold \
+            -f resume_completed_weeks=true \
+            -f candidate_layouts=1 \
+            -f max_node_candidates=200 \
+            -f max_search_seconds=360 \
+            -f diagnostic_level=1
+          sleep 90
+  week_08:
+    name: 2025 Week 08
+    needs: week_07
+    if: ${{ always() && !cancelled() && ((inputs.weeks == '' && inputs.start_week <= 8 && inputs.end_week >= 8) || contains(format(' {0} ', inputs.weeks), ' 8 ')) }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch current weekly build and wait
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "### 2025 build — ${{ github.job }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Started: $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> "$GITHUB_STEP_SUMMARY"
+          trap 'rc=$?; if [ "$rc" -eq 0 ]; then echo "✅ Weekly build succeeded" >> "$GITHUB_STEP_SUMMARY"; else echo "❌ Weekly build failed (exit $rc)" >> "$GITHUB_STEP_SUMMARY"; echo "::error::2025 ${{ github.job }} failed (exit $rc)"; fi; echo "Finished: $(date -u +%FT%TZ)" >> "$GITHUB_STEP_SUMMARY"' EXIT
+          echo "::notice::Starting 2025 ${{ github.job }}"
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
+            -f start_year=2025 -f start_week=8 \
+            -f end_year=2025 -f end_week=8 \
+            -f resume_stage=Scaffold \
+            -f resume_completed_weeks=true \
+            -f candidate_layouts=1 \
+            -f max_node_candidates=200 \
+            -f max_search_seconds=360 \
+            -f diagnostic_level=1
+          sleep 90
+  week_09:
+    name: 2025 Week 09
+    needs: week_08
+    if: ${{ always() && !cancelled() && ((inputs.weeks == '' && inputs.start_week <= 9 && inputs.end_week >= 9) || contains(format(' {0} ', inputs.weeks), ' 9 ')) }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch current weekly build and wait
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "### 2025 build — ${{ github.job }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Started: $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> "$GITHUB_STEP_SUMMARY"
+          trap 'rc=$?; if [ "$rc" -eq 0 ]; then echo "✅ Weekly build succeeded" >> "$GITHUB_STEP_SUMMARY"; else echo "❌ Weekly build failed (exit $rc)" >> "$GITHUB_STEP_SUMMARY"; echo "::error::2025 ${{ github.job }} failed (exit $rc)"; fi; echo "Finished: $(date -u +%FT%TZ)" >> "$GITHUB_STEP_SUMMARY"' EXIT
+          echo "::notice::Starting 2025 ${{ github.job }}"
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
+            -f start_year=2025 -f start_week=9 \
+            -f end_year=2025 -f end_week=9 \
+            -f resume_stage=Scaffold \
+            -f resume_completed_weeks=true \
+            -f candidate_layouts=1 \
+            -f max_node_candidates=200 \
+            -f max_search_seconds=360 \
+            -f diagnostic_level=1
+          sleep 90
+  week_10:
+    name: 2025 Week 10
+    needs: week_09
+    if: ${{ always() && !cancelled() && ((inputs.weeks == '' && inputs.start_week <= 10 && inputs.end_week >= 10) || contains(format(' {0} ', inputs.weeks), ' 10 ')) }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch current weekly build and wait
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "### 2025 build — ${{ github.job }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Started: $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> "$GITHUB_STEP_SUMMARY"
+          trap 'rc=$?; if [ "$rc" -eq 0 ]; then echo "✅ Weekly build succeeded" >> "$GITHUB_STEP_SUMMARY"; else echo "❌ Weekly build failed (exit $rc)" >> "$GITHUB_STEP_SUMMARY"; echo "::error::2025 ${{ github.job }} failed (exit $rc)"; fi; echo "Finished: $(date -u +%FT%TZ)" >> "$GITHUB_STEP_SUMMARY"' EXIT
+          echo "::notice::Starting 2025 ${{ github.job }}"
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
+            -f start_year=2025 -f start_week=10 \
+            -f end_year=2025 -f end_week=10 \
+            -f resume_stage=Scaffold \
+            -f resume_completed_weeks=true \
+            -f candidate_layouts=1 \
+            -f max_node_candidates=200 \
+            -f max_search_seconds=360 \
+            -f diagnostic_level=1
+          sleep 90
+  week_11:
+    name: 2025 Week 11
+    needs: week_10
+    if: ${{ always() && !cancelled() && ((inputs.weeks == '' && inputs.start_week <= 11 && inputs.end_week >= 11) || contains(format(' {0} ', inputs.weeks), ' 11 ')) }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch current weekly build and wait
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "### 2025 build — ${{ github.job }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Started: $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> "$GITHUB_STEP_SUMMARY"
+          trap 'rc=$?; if [ "$rc" -eq 0 ]; then echo "✅ Weekly build succeeded" >> "$GITHUB_STEP_SUMMARY"; else echo "❌ Weekly build failed (exit $rc)" >> "$GITHUB_STEP_SUMMARY"; echo "::error::2025 ${{ github.job }} failed (exit $rc)"; fi; echo "Finished: $(date -u +%FT%TZ)" >> "$GITHUB_STEP_SUMMARY"' EXIT
+          echo "::notice::Starting 2025 ${{ github.job }}"
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
+            -f start_year=2025 -f start_week=11 \
+            -f end_year=2025 -f end_week=11 \
+            -f resume_stage=Scaffold \
+            -f resume_completed_weeks=true \
+            -f candidate_layouts=1 \
+            -f max_node_candidates=200 \
+            -f max_search_seconds=360 \
+            -f diagnostic_level=1
+          sleep 90
+  week_12:
+    name: 2025 Week 12
+    needs: week_11
+    if: ${{ always() && !cancelled() && ((inputs.weeks == '' && inputs.start_week <= 12 && inputs.end_week >= 12) || contains(format(' {0} ', inputs.weeks), ' 12 ')) }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch current weekly build and wait
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "### 2025 build — ${{ github.job }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Started: $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> "$GITHUB_STEP_SUMMARY"
+          trap 'rc=$?; if [ "$rc" -eq 0 ]; then echo "✅ Weekly build succeeded" >> "$GITHUB_STEP_SUMMARY"; else echo "❌ Weekly build failed (exit $rc)" >> "$GITHUB_STEP_SUMMARY"; echo "::error::2025 ${{ github.job }} failed (exit $rc)"; fi; echo "Finished: $(date -u +%FT%TZ)" >> "$GITHUB_STEP_SUMMARY"' EXIT
+          echo "::notice::Starting 2025 ${{ github.job }}"
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
+            -f start_year=2025 -f start_week=12 \
+            -f end_year=2025 -f end_week=12 \
+            -f resume_stage=Scaffold \
+            -f resume_completed_weeks=true \
+            -f candidate_layouts=1 \
+            -f max_node_candidates=200 \
+            -f max_search_seconds=360 \
+            -f diagnostic_level=1
+          sleep 90
+  week_13:
+    name: 2025 Week 13
+    needs: week_12
+    if: ${{ always() && !cancelled() && ((inputs.weeks == '' && inputs.start_week <= 13 && inputs.end_week >= 13) || contains(format(' {0} ', inputs.weeks), ' 13 ')) }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch current weekly build and wait
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "### 2025 build — ${{ github.job }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Started: $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> "$GITHUB_STEP_SUMMARY"
+          trap 'rc=$?; if [ "$rc" -eq 0 ]; then echo "✅ Weekly build succeeded" >> "$GITHUB_STEP_SUMMARY"; else echo "❌ Weekly build failed (exit $rc)" >> "$GITHUB_STEP_SUMMARY"; echo "::error::2025 ${{ github.job }} failed (exit $rc)"; fi; echo "Finished: $(date -u +%FT%TZ)" >> "$GITHUB_STEP_SUMMARY"' EXIT
+          echo "::notice::Starting 2025 ${{ github.job }}"
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
+            -f start_year=2025 -f start_week=13 \
+            -f end_year=2025 -f end_week=13 \
+            -f resume_stage=Scaffold \
+            -f resume_completed_weeks=true \
+            -f candidate_layouts=1 \
+            -f max_node_candidates=200 \
+            -f max_search_seconds=360 \
+            -f diagnostic_level=1
+          sleep 90
+  week_14:
+    name: 2025 Week 14
+    needs: week_13
+    if: ${{ always() && !cancelled() && ((inputs.weeks == '' && inputs.start_week <= 14 && inputs.end_week >= 14) || contains(format(' {0} ', inputs.weeks), ' 14 ')) }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch current weekly build and wait
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "### 2025 build — ${{ github.job }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Started: $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> "$GITHUB_STEP_SUMMARY"
+          trap 'rc=$?; if [ "$rc" -eq 0 ]; then echo "✅ Weekly build succeeded" >> "$GITHUB_STEP_SUMMARY"; else echo "❌ Weekly build failed (exit $rc)" >> "$GITHUB_STEP_SUMMARY"; echo "::error::2025 ${{ github.job }} failed (exit $rc)"; fi; echo "Finished: $(date -u +%FT%TZ)" >> "$GITHUB_STEP_SUMMARY"' EXIT
+          echo "::notice::Starting 2025 ${{ github.job }}"
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
+            -f start_year=2025 -f start_week=14 \
+            -f end_year=2025 -f end_week=14 \
+            -f resume_stage=Scaffold \
+            -f resume_completed_weeks=true \
+            -f candidate_layouts=1 \
+            -f max_node_candidates=200 \
+            -f max_search_seconds=360 \
+            -f diagnostic_level=1
+          sleep 90
+  week_15:
+    name: 2025 Week 15
+    needs: week_14
+    if: ${{ always() && !cancelled() && ((inputs.weeks == '' && inputs.start_week <= 15 && inputs.end_week >= 15) || contains(format(' {0} ', inputs.weeks), ' 15 ')) }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch current weekly build and wait
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "### 2025 build — ${{ github.job }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Started: $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> "$GITHUB_STEP_SUMMARY"
+          trap 'rc=$?; if [ "$rc" -eq 0 ]; then echo "✅ Weekly build succeeded" >> "$GITHUB_STEP_SUMMARY"; else echo "❌ Weekly build failed (exit $rc)" >> "$GITHUB_STEP_SUMMARY"; echo "::error::2025 ${{ github.job }} failed (exit $rc)"; fi; echo "Finished: $(date -u +%FT%TZ)" >> "$GITHUB_STEP_SUMMARY"' EXIT
+          echo "::notice::Starting 2025 ${{ github.job }}"
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
+            -f start_year=2025 -f start_week=15 \
+            -f end_year=2025 -f end_week=15 \
+            -f resume_stage=Scaffold \
+            -f resume_completed_weeks=true \
+            -f candidate_layouts=1 \
+            -f max_node_candidates=200 \
+            -f max_search_seconds=360 \
+            -f diagnostic_level=1
+          sleep 90
+  week_16:
+    name: 2025 Week 16
+    needs: week_15
+    if: ${{ always() && !cancelled() && ((inputs.weeks == '' && inputs.start_week <= 16 && inputs.end_week >= 16) || contains(format(' {0} ', inputs.weeks), ' 16 ')) }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch current weekly build and wait
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "### 2025 build — ${{ github.job }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Started: $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> "$GITHUB_STEP_SUMMARY"
+          trap 'rc=$?; if [ "$rc" -eq 0 ]; then echo "✅ Weekly build succeeded" >> "$GITHUB_STEP_SUMMARY"; else echo "❌ Weekly build failed (exit $rc)" >> "$GITHUB_STEP_SUMMARY"; echo "::error::2025 ${{ github.job }} failed (exit $rc)"; fi; echo "Finished: $(date -u +%FT%TZ)" >> "$GITHUB_STEP_SUMMARY"' EXIT
+          echo "::notice::Starting 2025 ${{ github.job }}"
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
+            -f start_year=2025 -f start_week=16 \
+            -f end_year=2025 -f end_week=16 \
+            -f resume_stage=Scaffold \
+            -f resume_completed_weeks=true \
+            -f candidate_layouts=1 \
+            -f max_node_candidates=200 \
+            -f max_search_seconds=360 \
+            -f diagnostic_level=1
+          sleep 90
+  week_17:
+    name: 2025 Week 17
+    needs: week_16
+    if: ${{ always() && !cancelled() && ((inputs.weeks == '' && inputs.start_week <= 17 && inputs.end_week >= 17) || contains(format(' {0} ', inputs.weeks), ' 17 ')) }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch current weekly build and wait
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "### 2025 build — ${{ github.job }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Started: $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> "$GITHUB_STEP_SUMMARY"
+          trap 'rc=$?; if [ "$rc" -eq 0 ]; then echo "✅ Weekly build succeeded" >> "$GITHUB_STEP_SUMMARY"; else echo "❌ Weekly build failed (exit $rc)" >> "$GITHUB_STEP_SUMMARY"; echo "::error::2025 ${{ github.job }} failed (exit $rc)"; fi; echo "Finished: $(date -u +%FT%TZ)" >> "$GITHUB_STEP_SUMMARY"' EXIT
+          echo "::notice::Starting 2025 ${{ github.job }}"
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
+            -f start_year=2025 -f start_week=17 \
+            -f end_year=2025 -f end_week=17 \
+            -f resume_stage=Scaffold \
+            -f resume_completed_weeks=true \
+            -f candidate_layouts=1 \
+            -f max_node_candidates=200 \
+            -f max_search_seconds=360 \
+            -f diagnostic_level=1
+          sleep 90
+  week_18:
+    name: 2025 Week 18
+    needs: week_17
+    if: ${{ always() && !cancelled() && ((inputs.weeks == '' && inputs.start_week <= 18 && inputs.end_week >= 18) || contains(format(' {0} ', inputs.weeks), ' 18 ')) }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch current weekly build and wait
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "### 2025 build — ${{ github.job }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Started: $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> "$GITHUB_STEP_SUMMARY"
+          trap 'rc=$?; if [ "$rc" -eq 0 ]; then echo "✅ Weekly build succeeded" >> "$GITHUB_STEP_SUMMARY"; else echo "❌ Weekly build failed (exit $rc)" >> "$GITHUB_STEP_SUMMARY"; echo "::error::2025 ${{ github.job }} failed (exit $rc)"; fi; echo "Finished: $(date -u +%FT%TZ)" >> "$GITHUB_STEP_SUMMARY"' EXIT
+          echo "::notice::Starting 2025 ${{ github.job }}"
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
+            -f start_year=2025 -f start_week=18 \
+            -f end_year=2025 -f end_week=18 \
+            -f resume_stage=Scaffold \
+            -f resume_completed_weeks=true \
+            -f candidate_layouts=1 \
+            -f max_node_candidates=200 \
+            -f max_search_seconds=360 \
+            -f diagnostic_level=1
+          sleep 90
+  week_19:
+    name: 2025 Week 19
+    needs: week_18
+    if: ${{ always() && !cancelled() && ((inputs.weeks == '' && inputs.start_week <= 19 && inputs.end_week >= 19) || contains(format(' {0} ', inputs.weeks), ' 19 ')) }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch current weekly build and wait
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "### 2025 build — ${{ github.job }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Started: $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> "$GITHUB_STEP_SUMMARY"
+          trap 'rc=$?; if [ "$rc" -eq 0 ]; then echo "✅ Weekly build succeeded" >> "$GITHUB_STEP_SUMMARY"; else echo "❌ Weekly build failed (exit $rc)" >> "$GITHUB_STEP_SUMMARY"; echo "::error::2025 ${{ github.job }} failed (exit $rc)"; fi; echo "Finished: $(date -u +%FT%TZ)" >> "$GITHUB_STEP_SUMMARY"' EXIT
+          echo "::notice::Starting 2025 ${{ github.job }}"
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
+            -f start_year=2025 -f start_week=19 \
+            -f end_year=2025 -f end_week=19 \
+            -f resume_stage=Scaffold \
+            -f resume_completed_weeks=true \
+            -f candidate_layouts=1 \
+            -f max_node_candidates=200 \
+            -f max_search_seconds=360 \
+            -f diagnostic_level=1
+          sleep 90
+  week_20:
+    name: 2025 Week 20
+    needs: week_19
+    if: ${{ always() && !cancelled() && ((inputs.weeks == '' && inputs.start_week <= 20 && inputs.end_week >= 20) || contains(format(' {0} ', inputs.weeks), ' 20 ')) }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch current weekly build and wait
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "### 2025 build — ${{ github.job }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Started: $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> "$GITHUB_STEP_SUMMARY"
+          trap 'rc=$?; if [ "$rc" -eq 0 ]; then echo "✅ Weekly build succeeded" >> "$GITHUB_STEP_SUMMARY"; else echo "❌ Weekly build failed (exit $rc)" >> "$GITHUB_STEP_SUMMARY"; echo "::error::2025 ${{ github.job }} failed (exit $rc)"; fi; echo "Finished: $(date -u +%FT%TZ)" >> "$GITHUB_STEP_SUMMARY"' EXIT
+          echo "::notice::Starting 2025 ${{ github.job }}"
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
+            -f start_year=2025 -f start_week=20 \
+            -f end_year=2025 -f end_week=20 \
+            -f resume_stage=Scaffold \
+            -f resume_completed_weeks=true \
+            -f candidate_layouts=1 \
+            -f max_node_candidates=200 \
+            -f max_search_seconds=360 \
+            -f diagnostic_level=1
+          sleep 90
+  week_21:
+    name: 2025 Week 21
+    needs: week_20
+    if: ${{ always() && !cancelled() && ((inputs.weeks == '' && inputs.start_week <= 21 && inputs.end_week >= 21) || contains(format(' {0} ', inputs.weeks), ' 21 ')) }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch current weekly build and wait
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "### 2025 build — ${{ github.job }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Started: $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> "$GITHUB_STEP_SUMMARY"
+          trap 'rc=$?; if [ "$rc" -eq 0 ]; then echo "✅ Weekly build succeeded" >> "$GITHUB_STEP_SUMMARY"; else echo "❌ Weekly build failed (exit $rc)" >> "$GITHUB_STEP_SUMMARY"; echo "::error::2025 ${{ github.job }} failed (exit $rc)"; fi; echo "Finished: $(date -u +%FT%TZ)" >> "$GITHUB_STEP_SUMMARY"' EXIT
+          echo "::notice::Starting 2025 ${{ github.job }}"
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
+            -f start_year=2025 -f start_week=21 \
+            -f end_year=2025 -f end_week=21 \
+            -f resume_stage=Scaffold \
+            -f resume_completed_weeks=true \
+            -f candidate_layouts=1 \
+            -f max_node_candidates=200 \
+            -f max_search_seconds=360 \
+            -f diagnostic_level=1
+          sleep 90
+  week_22:
+    name: 2025 Week 22
+    needs: week_21
+    if: ${{ always() && !cancelled() && ((inputs.weeks == '' && inputs.start_week <= 22 && inputs.end_week >= 22) || contains(format(' {0} ', inputs.weeks), ' 22 ')) }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch current weekly build and wait
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "### 2025 build — ${{ github.job }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Started: $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> "$GITHUB_STEP_SUMMARY"
+          trap 'rc=$?; if [ "$rc" -eq 0 ]; then echo "✅ Weekly build succeeded" >> "$GITHUB_STEP_SUMMARY"; else echo "❌ Weekly build failed (exit $rc)" >> "$GITHUB_STEP_SUMMARY"; echo "::error::2025 ${{ github.job }} failed (exit $rc)"; fi; echo "Finished: $(date -u +%FT%TZ)" >> "$GITHUB_STEP_SUMMARY"' EXIT
+          echo "::notice::Starting 2025 ${{ github.job }}"
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
+            -f start_year=2025 -f start_week=22 \
+            -f end_year=2025 -f end_week=22 \
+            -f resume_stage=Scaffold \
+            -f resume_completed_weeks=true \
+            -f candidate_layouts=1 \
+            -f max_node_candidates=200 \
+            -f max_search_seconds=360 \
+            -f diagnostic_level=1
+          sleep 90
+  week_23:
+    name: 2025 Week 23
+    needs: week_22
+    if: ${{ always() && !cancelled() && ((inputs.weeks == '' && inputs.start_week <= 23 && inputs.end_week >= 23) || contains(format(' {0} ', inputs.weeks), ' 23 ')) }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch current weekly build and wait
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "### 2025 build — ${{ github.job }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Started: $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> "$GITHUB_STEP_SUMMARY"
+          trap 'rc=$?; if [ "$rc" -eq 0 ]; then echo "✅ Weekly build succeeded" >> "$GITHUB_STEP_SUMMARY"; else echo "❌ Weekly build failed (exit $rc)" >> "$GITHUB_STEP_SUMMARY"; echo "::error::2025 ${{ github.job }} failed (exit $rc)"; fi; echo "Finished: $(date -u +%FT%TZ)" >> "$GITHUB_STEP_SUMMARY"' EXIT
+          echo "::notice::Starting 2025 ${{ github.job }}"
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
+            -f start_year=2025 -f start_week=23 \
+            -f end_year=2025 -f end_week=23 \
+            -f resume_stage=Scaffold \
+            -f resume_completed_weeks=true \
+            -f candidate_layouts=1 \
+            -f max_node_candidates=200 \
+            -f max_search_seconds=360 \
+            -f diagnostic_level=1
+          sleep 90
+  week_24:
+    name: 2025 Week 24
+    needs: week_23
+    if: ${{ always() && !cancelled() && ((inputs.weeks == '' && inputs.start_week <= 24 && inputs.end_week >= 24) || contains(format(' {0} ', inputs.weeks), ' 24 ')) }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch current weekly build and wait
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "### 2025 build — ${{ github.job }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Started: $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> "$GITHUB_STEP_SUMMARY"
+          trap 'rc=$?; if [ "$rc" -eq 0 ]; then echo "✅ Weekly build succeeded" >> "$GITHUB_STEP_SUMMARY"; else echo "❌ Weekly build failed (exit $rc)" >> "$GITHUB_STEP_SUMMARY"; echo "::error::2025 ${{ github.job }} failed (exit $rc)"; fi; echo "Finished: $(date -u +%FT%TZ)" >> "$GITHUB_STEP_SUMMARY"' EXIT
+          echo "::notice::Starting 2025 ${{ github.job }}"
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
+            -f start_year=2025 -f start_week=24 \
+            -f end_year=2025 -f end_week=24 \
+            -f resume_stage=Scaffold \
+            -f resume_completed_weeks=true \
+            -f candidate_layouts=1 \
+            -f max_node_candidates=200 \
+            -f max_search_seconds=360 \
+            -f diagnostic_level=1
+          sleep 90
+  week_25:
+    name: 2025 Week 25
+    needs: week_24
+    if: ${{ always() && !cancelled() && ((inputs.weeks == '' && inputs.start_week <= 25 && inputs.end_week >= 25) || contains(format(' {0} ', inputs.weeks), ' 25 ')) }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch current weekly build and wait
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "### 2025 build — ${{ github.job }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Started: $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> "$GITHUB_STEP_SUMMARY"
+          trap 'rc=$?; if [ "$rc" -eq 0 ]; then echo "✅ Weekly build succeeded" >> "$GITHUB_STEP_SUMMARY"; else echo "❌ Weekly build failed (exit $rc)" >> "$GITHUB_STEP_SUMMARY"; echo "::error::2025 ${{ github.job }} failed (exit $rc)"; fi; echo "Finished: $(date -u +%FT%TZ)" >> "$GITHUB_STEP_SUMMARY"' EXIT
+          echo "::notice::Starting 2025 ${{ github.job }}"
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
+            -f start_year=2025 -f start_week=25 \
+            -f end_year=2025 -f end_week=25 \
+            -f resume_stage=Scaffold \
+            -f resume_completed_weeks=true \
+            -f candidate_layouts=1 \
+            -f max_node_candidates=200 \
+            -f max_search_seconds=360 \
+            -f diagnostic_level=1
+          sleep 90
+  week_26:
+    name: 2025 Week 26
+    needs: week_25
+    if: ${{ always() && !cancelled() && ((inputs.weeks == '' && inputs.start_week <= 26 && inputs.end_week >= 26) || contains(format(' {0} ', inputs.weeks), ' 26 ')) }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch current weekly build and wait
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "### 2025 build — ${{ github.job }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Started: $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> "$GITHUB_STEP_SUMMARY"
+          trap 'rc=$?; if [ "$rc" -eq 0 ]; then echo "✅ Weekly build succeeded" >> "$GITHUB_STEP_SUMMARY"; else echo "❌ Weekly build failed (exit $rc)" >> "$GITHUB_STEP_SUMMARY"; echo "::error::2025 ${{ github.job }} failed (exit $rc)"; fi; echo "Finished: $(date -u +%FT%TZ)" >> "$GITHUB_STEP_SUMMARY"' EXIT
+          echo "::notice::Starting 2025 ${{ github.job }}"
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
+            -f start_year=2025 -f start_week=26 \
+            -f end_year=2025 -f end_week=26 \
+            -f resume_stage=Scaffold \
+            -f resume_completed_weeks=true \
+            -f candidate_layouts=1 \
+            -f max_node_candidates=200 \
+            -f max_search_seconds=360 \
+            -f diagnostic_level=1
+          sleep 90
+  week_27:
+    name: 2025 Week 27
+    needs: week_26
+    if: ${{ always() && !cancelled() && ((inputs.weeks == '' && inputs.start_week <= 27 && inputs.end_week >= 27) || contains(format(' {0} ', inputs.weeks), ' 27 ')) }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch current weekly build and wait
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "### 2025 build — ${{ github.job }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Started: $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> "$GITHUB_STEP_SUMMARY"
+          trap 'rc=$?; if [ "$rc" -eq 0 ]; then echo "✅ Weekly build succeeded" >> "$GITHUB_STEP_SUMMARY"; else echo "❌ Weekly build failed (exit $rc)" >> "$GITHUB_STEP_SUMMARY"; echo "::error::2025 ${{ github.job }} failed (exit $rc)"; fi; echo "Finished: $(date -u +%FT%TZ)" >> "$GITHUB_STEP_SUMMARY"' EXIT
+          echo "::notice::Starting 2025 ${{ github.job }}"
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
+            -f start_year=2025 -f start_week=27 \
+            -f end_year=2025 -f end_week=27 \
+            -f resume_stage=Scaffold \
+            -f resume_completed_weeks=true \
+            -f candidate_layouts=1 \
+            -f max_node_candidates=200 \
+            -f max_search_seconds=360 \
+            -f diagnostic_level=1
+          sleep 90
+  week_28:
+    name: 2025 Week 28
+    needs: week_27
+    if: ${{ always() && !cancelled() && ((inputs.weeks == '' && inputs.start_week <= 28 && inputs.end_week >= 28) || contains(format(' {0} ', inputs.weeks), ' 28 ')) }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch current weekly build and wait
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "### 2025 build — ${{ github.job }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Started: $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> "$GITHUB_STEP_SUMMARY"
+          trap 'rc=$?; if [ "$rc" -eq 0 ]; then echo "✅ Weekly build succeeded" >> "$GITHUB_STEP_SUMMARY"; else echo "❌ Weekly build failed (exit $rc)" >> "$GITHUB_STEP_SUMMARY"; echo "::error::2025 ${{ github.job }} failed (exit $rc)"; fi; echo "Finished: $(date -u +%FT%TZ)" >> "$GITHUB_STEP_SUMMARY"' EXIT
+          echo "::notice::Starting 2025 ${{ github.job }}"
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
+            -f start_year=2025 -f start_week=28 \
+            -f end_year=2025 -f end_week=28 \
+            -f resume_stage=Scaffold \
+            -f resume_completed_weeks=true \
+            -f candidate_layouts=1 \
+            -f max_node_candidates=200 \
+            -f max_search_seconds=360 \
+            -f diagnostic_level=1
+          sleep 90
+  week_29:
+    name: 2025 Week 29
+    needs: week_28
+    if: ${{ always() && !cancelled() && ((inputs.weeks == '' && inputs.start_week <= 29 && inputs.end_week >= 29) || contains(format(' {0} ', inputs.weeks), ' 29 ')) }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch current weekly build and wait
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "### 2025 build — ${{ github.job }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Started: $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> "$GITHUB_STEP_SUMMARY"
+          trap 'rc=$?; if [ "$rc" -eq 0 ]; then echo "✅ Weekly build succeeded" >> "$GITHUB_STEP_SUMMARY"; else echo "❌ Weekly build failed (exit $rc)" >> "$GITHUB_STEP_SUMMARY"; echo "::error::2025 ${{ github.job }} failed (exit $rc)"; fi; echo "Finished: $(date -u +%FT%TZ)" >> "$GITHUB_STEP_SUMMARY"' EXIT
+          echo "::notice::Starting 2025 ${{ github.job }}"
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
+            -f start_year=2025 -f start_week=29 \
+            -f end_year=2025 -f end_week=29 \
+            -f resume_stage=Scaffold \
+            -f resume_completed_weeks=true \
+            -f candidate_layouts=1 \
+            -f max_node_candidates=200 \
+            -f max_search_seconds=360 \
+            -f diagnostic_level=1
+          sleep 90
+  week_30:
+    name: 2025 Week 30
+    needs: week_29
+    if: ${{ always() && !cancelled() && ((inputs.weeks == '' && inputs.start_week <= 30 && inputs.end_week >= 30) || contains(format(' {0} ', inputs.weeks), ' 30 ')) }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch current weekly build and wait
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "### 2025 build — ${{ github.job }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Started: $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> "$GITHUB_STEP_SUMMARY"
+          trap 'rc=$?; if [ "$rc" -eq 0 ]; then echo "✅ Weekly build succeeded" >> "$GITHUB_STEP_SUMMARY"; else echo "❌ Weekly build failed (exit $rc)" >> "$GITHUB_STEP_SUMMARY"; echo "::error::2025 ${{ github.job }} failed (exit $rc)"; fi; echo "Finished: $(date -u +%FT%TZ)" >> "$GITHUB_STEP_SUMMARY"' EXIT
+          echo "::notice::Starting 2025 ${{ github.job }}"
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
+            -f start_year=2025 -f start_week=30 \
+            -f end_year=2025 -f end_week=30 \
+            -f resume_stage=Scaffold \
+            -f resume_completed_weeks=true \
+            -f candidate_layouts=1 \
+            -f max_node_candidates=200 \
+            -f max_search_seconds=360 \
+            -f diagnostic_level=1
+          sleep 90
+  week_31:
+    name: 2025 Week 31
+    needs: week_30
+    if: ${{ always() && !cancelled() && ((inputs.weeks == '' && inputs.start_week <= 31 && inputs.end_week >= 31) || contains(format(' {0} ', inputs.weeks), ' 31 ')) }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch current weekly build and wait
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "### 2025 build — ${{ github.job }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Started: $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> "$GITHUB_STEP_SUMMARY"
+          trap 'rc=$?; if [ "$rc" -eq 0 ]; then echo "✅ Weekly build succeeded" >> "$GITHUB_STEP_SUMMARY"; else echo "❌ Weekly build failed (exit $rc)" >> "$GITHUB_STEP_SUMMARY"; echo "::error::2025 ${{ github.job }} failed (exit $rc)"; fi; echo "Finished: $(date -u +%FT%TZ)" >> "$GITHUB_STEP_SUMMARY"' EXIT
+          echo "::notice::Starting 2025 ${{ github.job }}"
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
+            -f start_year=2025 -f start_week=31 \
+            -f end_year=2025 -f end_week=31 \
+            -f resume_stage=Scaffold \
+            -f resume_completed_weeks=true \
+            -f candidate_layouts=1 \
+            -f max_node_candidates=200 \
+            -f max_search_seconds=360 \
+            -f diagnostic_level=1
+          sleep 90
+  week_32:
+    name: 2025 Week 32
+    needs: week_31
+    if: ${{ always() && !cancelled() && ((inputs.weeks == '' && inputs.start_week <= 32 && inputs.end_week >= 32) || contains(format(' {0} ', inputs.weeks), ' 32 ')) }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch current weekly build and wait
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "### 2025 build — ${{ github.job }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Started: $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> "$GITHUB_STEP_SUMMARY"
+          trap 'rc=$?; if [ "$rc" -eq 0 ]; then echo "✅ Weekly build succeeded" >> "$GITHUB_STEP_SUMMARY"; else echo "❌ Weekly build failed (exit $rc)" >> "$GITHUB_STEP_SUMMARY"; echo "::error::2025 ${{ github.job }} failed (exit $rc)"; fi; echo "Finished: $(date -u +%FT%TZ)" >> "$GITHUB_STEP_SUMMARY"' EXIT
+          echo "::notice::Starting 2025 ${{ github.job }}"
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
+            -f start_year=2025 -f start_week=32 \
+            -f end_year=2025 -f end_week=32 \
+            -f resume_stage=Scaffold \
+            -f resume_completed_weeks=true \
+            -f candidate_layouts=1 \
+            -f max_node_candidates=200 \
+            -f max_search_seconds=360 \
+            -f diagnostic_level=1
+          sleep 90
+  week_33:
+    name: 2025 Week 33
+    needs: week_32
+    if: ${{ always() && !cancelled() && ((inputs.weeks == '' && inputs.start_week <= 33 && inputs.end_week >= 33) || contains(format(' {0} ', inputs.weeks), ' 33 ')) }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch current weekly build and wait
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "### 2025 build — ${{ github.job }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Started: $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> "$GITHUB_STEP_SUMMARY"
+          trap 'rc=$?; if [ "$rc" -eq 0 ]; then echo "✅ Weekly build succeeded" >> "$GITHUB_STEP_SUMMARY"; else echo "❌ Weekly build failed (exit $rc)" >> "$GITHUB_STEP_SUMMARY"; echo "::error::2025 ${{ github.job }} failed (exit $rc)"; fi; echo "Finished: $(date -u +%FT%TZ)" >> "$GITHUB_STEP_SUMMARY"' EXIT
+          echo "::notice::Starting 2025 ${{ github.job }}"
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
+            -f start_year=2025 -f start_week=33 \
+            -f end_year=2025 -f end_week=33 \
+            -f resume_stage=Scaffold \
+            -f resume_completed_weeks=true \
+            -f candidate_layouts=1 \
+            -f max_node_candidates=200 \
+            -f max_search_seconds=360 \
+            -f diagnostic_level=1
+          sleep 90
+  week_34:
+    name: 2025 Week 34
+    needs: week_33
+    if: ${{ always() && !cancelled() && ((inputs.weeks == '' && inputs.start_week <= 34 && inputs.end_week >= 34) || contains(format(' {0} ', inputs.weeks), ' 34 ')) }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch current weekly build and wait
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "### 2025 build — ${{ github.job }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Started: $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> "$GITHUB_STEP_SUMMARY"
+          trap 'rc=$?; if [ "$rc" -eq 0 ]; then echo "✅ Weekly build succeeded" >> "$GITHUB_STEP_SUMMARY"; else echo "❌ Weekly build failed (exit $rc)" >> "$GITHUB_STEP_SUMMARY"; echo "::error::2025 ${{ github.job }} failed (exit $rc)"; fi; echo "Finished: $(date -u +%FT%TZ)" >> "$GITHUB_STEP_SUMMARY"' EXIT
+          echo "::notice::Starting 2025 ${{ github.job }}"
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
+            -f start_year=2025 -f start_week=34 \
+            -f end_year=2025 -f end_week=34 \
+            -f resume_stage=Scaffold \
+            -f resume_completed_weeks=true \
+            -f candidate_layouts=1 \
+            -f max_node_candidates=200 \
+            -f max_search_seconds=360 \
+            -f diagnostic_level=1
+          sleep 90
+  week_35:
+    name: 2025 Week 35
+    needs: week_34
+    if: ${{ always() && !cancelled() && ((inputs.weeks == '' && inputs.start_week <= 35 && inputs.end_week >= 35) || contains(format(' {0} ', inputs.weeks), ' 35 ')) }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch current weekly build and wait
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "### 2025 build — ${{ github.job }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Started: $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> "$GITHUB_STEP_SUMMARY"
+          trap 'rc=$?; if [ "$rc" -eq 0 ]; then echo "✅ Weekly build succeeded" >> "$GITHUB_STEP_SUMMARY"; else echo "❌ Weekly build failed (exit $rc)" >> "$GITHUB_STEP_SUMMARY"; echo "::error::2025 ${{ github.job }} failed (exit $rc)"; fi; echo "Finished: $(date -u +%FT%TZ)" >> "$GITHUB_STEP_SUMMARY"' EXIT
+          echo "::notice::Starting 2025 ${{ github.job }}"
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
+            -f start_year=2025 -f start_week=35 \
+            -f end_year=2025 -f end_week=35 \
+            -f resume_stage=Scaffold \
+            -f resume_completed_weeks=true \
+            -f candidate_layouts=1 \
+            -f max_node_candidates=200 \
+            -f max_search_seconds=360 \
+            -f diagnostic_level=1
+          sleep 90
+  week_36:
+    name: 2025 Week 36
+    needs: week_35
+    if: ${{ always() && !cancelled() && ((inputs.weeks == '' && inputs.start_week <= 36 && inputs.end_week >= 36) || contains(format(' {0} ', inputs.weeks), ' 36 ')) }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch current weekly build and wait
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "### 2025 build — ${{ github.job }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Started: $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> "$GITHUB_STEP_SUMMARY"
+          trap 'rc=$?; if [ "$rc" -eq 0 ]; then echo "✅ Weekly build succeeded" >> "$GITHUB_STEP_SUMMARY"; else echo "❌ Weekly build failed (exit $rc)" >> "$GITHUB_STEP_SUMMARY"; echo "::error::2025 ${{ github.job }} failed (exit $rc)"; fi; echo "Finished: $(date -u +%FT%TZ)" >> "$GITHUB_STEP_SUMMARY"' EXIT
+          echo "::notice::Starting 2025 ${{ github.job }}"
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
+            -f start_year=2025 -f start_week=36 \
+            -f end_year=2025 -f end_week=36 \
+            -f resume_stage=Scaffold \
+            -f resume_completed_weeks=true \
+            -f candidate_layouts=1 \
+            -f max_node_candidates=200 \
+            -f max_search_seconds=360 \
+            -f diagnostic_level=1
+          sleep 90
+  week_37:
+    name: 2025 Week 37
+    needs: week_36
+    if: ${{ always() && !cancelled() && ((inputs.weeks == '' && inputs.start_week <= 37 && inputs.end_week >= 37) || contains(format(' {0} ', inputs.weeks), ' 37 ')) }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch current weekly build and wait
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "### 2025 build — ${{ github.job }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Started: $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> "$GITHUB_STEP_SUMMARY"
+          trap 'rc=$?; if [ "$rc" -eq 0 ]; then echo "✅ Weekly build succeeded" >> "$GITHUB_STEP_SUMMARY"; else echo "❌ Weekly build failed (exit $rc)" >> "$GITHUB_STEP_SUMMARY"; echo "::error::2025 ${{ github.job }} failed (exit $rc)"; fi; echo "Finished: $(date -u +%FT%TZ)" >> "$GITHUB_STEP_SUMMARY"' EXIT
+          echo "::notice::Starting 2025 ${{ github.job }}"
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
+            -f start_year=2025 -f start_week=37 \
+            -f end_year=2025 -f end_week=37 \
+            -f resume_stage=Scaffold \
+            -f resume_completed_weeks=true \
+            -f candidate_layouts=1 \
+            -f max_node_candidates=200 \
+            -f max_search_seconds=360 \
+            -f diagnostic_level=1
+          sleep 90
+  week_38:
+    name: 2025 Week 38
+    needs: week_37
+    if: ${{ always() && !cancelled() && ((inputs.weeks == '' && inputs.start_week <= 38 && inputs.end_week >= 38) || contains(format(' {0} ', inputs.weeks), ' 38 ')) }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch current weekly build and wait
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "### 2025 build — ${{ github.job }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Started: $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> "$GITHUB_STEP_SUMMARY"
+          trap 'rc=$?; if [ "$rc" -eq 0 ]; then echo "✅ Weekly build succeeded" >> "$GITHUB_STEP_SUMMARY"; else echo "❌ Weekly build failed (exit $rc)" >> "$GITHUB_STEP_SUMMARY"; echo "::error::2025 ${{ github.job }} failed (exit $rc)"; fi; echo "Finished: $(date -u +%FT%TZ)" >> "$GITHUB_STEP_SUMMARY"' EXIT
+          echo "::notice::Starting 2025 ${{ github.job }}"
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
+            -f start_year=2025 -f start_week=38 \
+            -f end_year=2025 -f end_week=38 \
+            -f resume_stage=Scaffold \
+            -f resume_completed_weeks=true \
+            -f candidate_layouts=1 \
+            -f max_node_candidates=200 \
+            -f max_search_seconds=360 \
+            -f diagnostic_level=1
+          sleep 90
+  week_39:
+    name: 2025 Week 39
+    needs: week_38
+    if: ${{ always() && !cancelled() && ((inputs.weeks == '' && inputs.start_week <= 39 && inputs.end_week >= 39) || contains(format(' {0} ', inputs.weeks), ' 39 ')) }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch current weekly build and wait
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "### 2025 build — ${{ github.job }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Started: $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> "$GITHUB_STEP_SUMMARY"
+          trap 'rc=$?; if [ "$rc" -eq 0 ]; then echo "✅ Weekly build succeeded" >> "$GITHUB_STEP_SUMMARY"; else echo "❌ Weekly build failed (exit $rc)" >> "$GITHUB_STEP_SUMMARY"; echo "::error::2025 ${{ github.job }} failed (exit $rc)"; fi; echo "Finished: $(date -u +%FT%TZ)" >> "$GITHUB_STEP_SUMMARY"' EXIT
+          echo "::notice::Starting 2025 ${{ github.job }}"
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
+            -f start_year=2025 -f start_week=39 \
+            -f end_year=2025 -f end_week=39 \
+            -f resume_stage=Scaffold \
+            -f resume_completed_weeks=true \
+            -f candidate_layouts=1 \
+            -f max_node_candidates=200 \
+            -f max_search_seconds=360 \
+            -f diagnostic_level=1
+          sleep 90
+  week_40:
+    name: 2025 Week 40
+    needs: week_39
+    if: ${{ always() && !cancelled() && ((inputs.weeks == '' && inputs.start_week <= 40 && inputs.end_week >= 40) || contains(format(' {0} ', inputs.weeks), ' 40 ')) }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch current weekly build and wait
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "### 2025 build — ${{ github.job }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Started: $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> "$GITHUB_STEP_SUMMARY"
+          trap 'rc=$?; if [ "$rc" -eq 0 ]; then echo "✅ Weekly build succeeded" >> "$GITHUB_STEP_SUMMARY"; else echo "❌ Weekly build failed (exit $rc)" >> "$GITHUB_STEP_SUMMARY"; echo "::error::2025 ${{ github.job }} failed (exit $rc)"; fi; echo "Finished: $(date -u +%FT%TZ)" >> "$GITHUB_STEP_SUMMARY"' EXIT
+          echo "::notice::Starting 2025 ${{ github.job }}"
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
+            -f start_year=2025 -f start_week=40 \
+            -f end_year=2025 -f end_week=40 \
+            -f resume_stage=Scaffold \
+            -f resume_completed_weeks=true \
+            -f candidate_layouts=1 \
+            -f max_node_candidates=200 \
+            -f max_search_seconds=360 \
+            -f diagnostic_level=1
+          sleep 90
+  week_41:
+    name: 2025 Week 41
+    needs: week_40
+    if: ${{ always() && !cancelled() && ((inputs.weeks == '' && inputs.start_week <= 41 && inputs.end_week >= 41) || contains(format(' {0} ', inputs.weeks), ' 41 ')) }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch current weekly build and wait
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "### 2025 build — ${{ github.job }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Started: $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> "$GITHUB_STEP_SUMMARY"
+          trap 'rc=$?; if [ "$rc" -eq 0 ]; then echo "✅ Weekly build succeeded" >> "$GITHUB_STEP_SUMMARY"; else echo "❌ Weekly build failed (exit $rc)" >> "$GITHUB_STEP_SUMMARY"; echo "::error::2025 ${{ github.job }} failed (exit $rc)"; fi; echo "Finished: $(date -u +%FT%TZ)" >> "$GITHUB_STEP_SUMMARY"' EXIT
+          echo "::notice::Starting 2025 ${{ github.job }}"
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
+            -f start_year=2025 -f start_week=41 \
+            -f end_year=2025 -f end_week=41 \
+            -f resume_stage=Scaffold \
+            -f resume_completed_weeks=true \
+            -f candidate_layouts=1 \
+            -f max_node_candidates=200 \
+            -f max_search_seconds=360 \
+            -f diagnostic_level=1
+          sleep 90
+  week_42:
+    name: 2025 Week 42
+    needs: week_41
+    if: ${{ always() && !cancelled() && ((inputs.weeks == '' && inputs.start_week <= 42 && inputs.end_week >= 42) || contains(format(' {0} ', inputs.weeks), ' 42 ')) }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch current weekly build and wait
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "### 2025 build — ${{ github.job }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Started: $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> "$GITHUB_STEP_SUMMARY"
+          trap 'rc=$?; if [ "$rc" -eq 0 ]; then echo "✅ Weekly build succeeded" >> "$GITHUB_STEP_SUMMARY"; else echo "❌ Weekly build failed (exit $rc)" >> "$GITHUB_STEP_SUMMARY"; echo "::error::2025 ${{ github.job }} failed (exit $rc)"; fi; echo "Finished: $(date -u +%FT%TZ)" >> "$GITHUB_STEP_SUMMARY"' EXIT
+          echo "::notice::Starting 2025 ${{ github.job }}"
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
+            -f start_year=2025 -f start_week=42 \
+            -f end_year=2025 -f end_week=42 \
+            -f resume_stage=Scaffold \
+            -f resume_completed_weeks=true \
+            -f candidate_layouts=1 \
+            -f max_node_candidates=200 \
+            -f max_search_seconds=360 \
+            -f diagnostic_level=1
+          sleep 90
+  week_43:
+    name: 2025 Week 43
+    needs: week_42
+    if: ${{ always() && !cancelled() && ((inputs.weeks == '' && inputs.start_week <= 43 && inputs.end_week >= 43) || contains(format(' {0} ', inputs.weeks), ' 43 ')) }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch current weekly build and wait
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "### 2025 build — ${{ github.job }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Started: $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> "$GITHUB_STEP_SUMMARY"
+          trap 'rc=$?; if [ "$rc" -eq 0 ]; then echo "✅ Weekly build succeeded" >> "$GITHUB_STEP_SUMMARY"; else echo "❌ Weekly build failed (exit $rc)" >> "$GITHUB_STEP_SUMMARY"; echo "::error::2025 ${{ github.job }} failed (exit $rc)"; fi; echo "Finished: $(date -u +%FT%TZ)" >> "$GITHUB_STEP_SUMMARY"' EXIT
+          echo "::notice::Starting 2025 ${{ github.job }}"
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
+            -f start_year=2025 -f start_week=43 \
+            -f end_year=2025 -f end_week=43 \
+            -f resume_stage=Scaffold \
+            -f resume_completed_weeks=true \
+            -f candidate_layouts=1 \
+            -f max_node_candidates=200 \
+            -f max_search_seconds=360 \
+            -f diagnostic_level=1
+          sleep 90
+  week_44:
+    name: 2025 Week 44
+    needs: week_43
+    if: ${{ always() && !cancelled() && ((inputs.weeks == '' && inputs.start_week <= 44 && inputs.end_week >= 44) || contains(format(' {0} ', inputs.weeks), ' 44 ')) }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch current weekly build and wait
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "### 2025 build — ${{ github.job }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Started: $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> "$GITHUB_STEP_SUMMARY"
+          trap 'rc=$?; if [ "$rc" -eq 0 ]; then echo "✅ Weekly build succeeded" >> "$GITHUB_STEP_SUMMARY"; else echo "❌ Weekly build failed (exit $rc)" >> "$GITHUB_STEP_SUMMARY"; echo "::error::2025 ${{ github.job }} failed (exit $rc)"; fi; echo "Finished: $(date -u +%FT%TZ)" >> "$GITHUB_STEP_SUMMARY"' EXIT
+          echo "::notice::Starting 2025 ${{ github.job }}"
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
+            -f start_year=2025 -f start_week=44 \
+            -f end_year=2025 -f end_week=44 \
+            -f resume_stage=Scaffold \
+            -f resume_completed_weeks=true \
+            -f candidate_layouts=1 \
+            -f max_node_candidates=200 \
+            -f max_search_seconds=360 \
+            -f diagnostic_level=1
+          sleep 90
+  week_45:
+    name: 2025 Week 45
+    needs: week_44
+    if: ${{ always() && !cancelled() && ((inputs.weeks == '' && inputs.start_week <= 45 && inputs.end_week >= 45) || contains(format(' {0} ', inputs.weeks), ' 45 ')) }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch current weekly build and wait
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "### 2025 build — ${{ github.job }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Started: $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> "$GITHUB_STEP_SUMMARY"
+          trap 'rc=$?; if [ "$rc" -eq 0 ]; then echo "✅ Weekly build succeeded" >> "$GITHUB_STEP_SUMMARY"; else echo "❌ Weekly build failed (exit $rc)" >> "$GITHUB_STEP_SUMMARY"; echo "::error::2025 ${{ github.job }} failed (exit $rc)"; fi; echo "Finished: $(date -u +%FT%TZ)" >> "$GITHUB_STEP_SUMMARY"' EXIT
+          echo "::notice::Starting 2025 ${{ github.job }}"
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
+            -f start_year=2025 -f start_week=45 \
+            -f end_year=2025 -f end_week=45 \
+            -f resume_stage=Scaffold \
+            -f resume_completed_weeks=true \
+            -f candidate_layouts=1 \
+            -f max_node_candidates=200 \
+            -f max_search_seconds=360 \
+            -f diagnostic_level=1
+          sleep 90
+  week_46:
+    name: 2025 Week 46
+    needs: week_45
+    if: ${{ always() && !cancelled() && ((inputs.weeks == '' && inputs.start_week <= 46 && inputs.end_week >= 46) || contains(format(' {0} ', inputs.weeks), ' 46 ')) }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch current weekly build and wait
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "### 2025 build — ${{ github.job }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Started: $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> "$GITHUB_STEP_SUMMARY"
+          trap 'rc=$?; if [ "$rc" -eq 0 ]; then echo "✅ Weekly build succeeded" >> "$GITHUB_STEP_SUMMARY"; else echo "❌ Weekly build failed (exit $rc)" >> "$GITHUB_STEP_SUMMARY"; echo "::error::2025 ${{ github.job }} failed (exit $rc)"; fi; echo "Finished: $(date -u +%FT%TZ)" >> "$GITHUB_STEP_SUMMARY"' EXIT
+          echo "::notice::Starting 2025 ${{ github.job }}"
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
+            -f start_year=2025 -f start_week=46 \
+            -f end_year=2025 -f end_week=46 \
+            -f resume_stage=Scaffold \
+            -f resume_completed_weeks=true \
+            -f candidate_layouts=1 \
+            -f max_node_candidates=200 \
+            -f max_search_seconds=360 \
+            -f diagnostic_level=1
+          sleep 90
+  week_47:
+    name: 2025 Week 47
+    needs: week_46
+    if: ${{ always() && !cancelled() && ((inputs.weeks == '' && inputs.start_week <= 47 && inputs.end_week >= 47) || contains(format(' {0} ', inputs.weeks), ' 47 ')) }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch current weekly build and wait
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "### 2025 build — ${{ github.job }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Started: $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> "$GITHUB_STEP_SUMMARY"
+          trap 'rc=$?; if [ "$rc" -eq 0 ]; then echo "✅ Weekly build succeeded" >> "$GITHUB_STEP_SUMMARY"; else echo "❌ Weekly build failed (exit $rc)" >> "$GITHUB_STEP_SUMMARY"; echo "::error::2025 ${{ github.job }} failed (exit $rc)"; fi; echo "Finished: $(date -u +%FT%TZ)" >> "$GITHUB_STEP_SUMMARY"' EXIT
+          echo "::notice::Starting 2025 ${{ github.job }}"
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
+            -f start_year=2025 -f start_week=47 \
+            -f end_year=2025 -f end_week=47 \
+            -f resume_stage=Scaffold \
+            -f resume_completed_weeks=true \
+            -f candidate_layouts=1 \
+            -f max_node_candidates=200 \
+            -f max_search_seconds=360 \
+            -f diagnostic_level=1
+          sleep 90
+  week_48:
+    name: 2025 Week 48
+    needs: week_47
+    if: ${{ always() && !cancelled() && ((inputs.weeks == '' && inputs.start_week <= 48 && inputs.end_week >= 48) || contains(format(' {0} ', inputs.weeks), ' 48 ')) }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch current weekly build and wait
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "### 2025 build — ${{ github.job }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Started: $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> "$GITHUB_STEP_SUMMARY"
+          trap 'rc=$?; if [ "$rc" -eq 0 ]; then echo "✅ Weekly build succeeded" >> "$GITHUB_STEP_SUMMARY"; else echo "❌ Weekly build failed (exit $rc)" >> "$GITHUB_STEP_SUMMARY"; echo "::error::2025 ${{ github.job }} failed (exit $rc)"; fi; echo "Finished: $(date -u +%FT%TZ)" >> "$GITHUB_STEP_SUMMARY"' EXIT
+          echo "::notice::Starting 2025 ${{ github.job }}"
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
+            -f start_year=2025 -f start_week=48 \
+            -f end_year=2025 -f end_week=48 \
+            -f resume_stage=Scaffold \
+            -f resume_completed_weeks=true \
+            -f candidate_layouts=1 \
+            -f max_node_candidates=200 \
+            -f max_search_seconds=360 \
+            -f diagnostic_level=1
+          sleep 90
+  week_49:
+    name: 2025 Week 49
+    needs: week_48
+    if: ${{ always() && !cancelled() && ((inputs.weeks == '' && inputs.start_week <= 49 && inputs.end_week >= 49) || contains(format(' {0} ', inputs.weeks), ' 49 ')) }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch current weekly build and wait
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "### 2025 build — ${{ github.job }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Started: $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> "$GITHUB_STEP_SUMMARY"
+          trap 'rc=$?; if [ "$rc" -eq 0 ]; then echo "✅ Weekly build succeeded" >> "$GITHUB_STEP_SUMMARY"; else echo "❌ Weekly build failed (exit $rc)" >> "$GITHUB_STEP_SUMMARY"; echo "::error::2025 ${{ github.job }} failed (exit $rc)"; fi; echo "Finished: $(date -u +%FT%TZ)" >> "$GITHUB_STEP_SUMMARY"' EXIT
+          echo "::notice::Starting 2025 ${{ github.job }}"
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
+            -f start_year=2025 -f start_week=49 \
+            -f end_year=2025 -f end_week=49 \
+            -f resume_stage=Scaffold \
+            -f resume_completed_weeks=true \
+            -f candidate_layouts=1 \
+            -f max_node_candidates=200 \
+            -f max_search_seconds=360 \
+            -f diagnostic_level=1
+          sleep 90
+  week_50:
+    name: 2025 Week 50
+    needs: week_49
+    if: ${{ always() && !cancelled() && ((inputs.weeks == '' && inputs.start_week <= 50 && inputs.end_week >= 50) || contains(format(' {0} ', inputs.weeks), ' 50 ')) }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch current weekly build and wait
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "### 2025 build — ${{ github.job }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Started: $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> "$GITHUB_STEP_SUMMARY"
+          trap 'rc=$?; if [ "$rc" -eq 0 ]; then echo "✅ Weekly build succeeded" >> "$GITHUB_STEP_SUMMARY"; else echo "❌ Weekly build failed (exit $rc)" >> "$GITHUB_STEP_SUMMARY"; echo "::error::2025 ${{ github.job }} failed (exit $rc)"; fi; echo "Finished: $(date -u +%FT%TZ)" >> "$GITHUB_STEP_SUMMARY"' EXIT
+          echo "::notice::Starting 2025 ${{ github.job }}"
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
+            -f start_year=2025 -f start_week=50 \
+            -f end_year=2025 -f end_week=50 \
+            -f resume_stage=Scaffold \
+            -f resume_completed_weeks=true \
+            -f candidate_layouts=1 \
+            -f max_node_candidates=200 \
+            -f max_search_seconds=360 \
+            -f diagnostic_level=1
+          sleep 90
+  week_51:
+    name: 2025 Week 51
+    needs: week_50
+    if: ${{ always() && !cancelled() && ((inputs.weeks == '' && inputs.start_week <= 51 && inputs.end_week >= 51) || contains(format(' {0} ', inputs.weeks), ' 51 ')) }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch current weekly build and wait
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "### 2025 build — ${{ github.job }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Started: $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> "$GITHUB_STEP_SUMMARY"
+          trap 'rc=$?; if [ "$rc" -eq 0 ]; then echo "✅ Weekly build succeeded" >> "$GITHUB_STEP_SUMMARY"; else echo "❌ Weekly build failed (exit $rc)" >> "$GITHUB_STEP_SUMMARY"; echo "::error::2025 ${{ github.job }} failed (exit $rc)"; fi; echo "Finished: $(date -u +%FT%TZ)" >> "$GITHUB_STEP_SUMMARY"' EXIT
+          echo "::notice::Starting 2025 ${{ github.job }}"
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
+            -f start_year=2025 -f start_week=51 \
+            -f end_year=2025 -f end_week=51 \
+            -f resume_stage=Scaffold \
+            -f resume_completed_weeks=true \
+            -f candidate_layouts=1 \
+            -f max_node_candidates=200 \
+            -f max_search_seconds=360 \
+            -f diagnostic_level=1
+          sleep 90
+  week_52:
+    name: 2025 Week 52
+    needs: week_51
+    if: ${{ always() && !cancelled() && ((inputs.weeks == '' && inputs.start_week <= 52 && inputs.end_week >= 52) || contains(format(' {0} ', inputs.weeks), ' 52 ')) }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch current weekly build and wait
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "### 2025 build — ${{ github.job }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Started: $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> "$GITHUB_STEP_SUMMARY"
+          trap 'rc=$?; if [ "$rc" -eq 0 ]; then echo "✅ Weekly build succeeded" >> "$GITHUB_STEP_SUMMARY"; else echo "❌ Weekly build failed (exit $rc)" >> "$GITHUB_STEP_SUMMARY"; echo "::error::2025 ${{ github.job }} failed (exit $rc)"; fi; echo "Finished: $(date -u +%FT%TZ)" >> "$GITHUB_STEP_SUMMARY"' EXIT
+          echo "::notice::Starting 2025 ${{ github.job }}"
+          bash tools/run-workflow-and-wait.sh weekly-build-all.yml \
+            -f start_year=2025 -f start_week=52 \
+            -f end_year=2025 -f end_week=52 \
+            -f resume_stage=Scaffold \
+            -f resume_completed_weeks=true \
+            -f candidate_layouts=1 \
+            -f max_node_candidates=200 \
+            -f max_search_seconds=360 \
+            -f diagnostic_level=1
+          sleep 90
