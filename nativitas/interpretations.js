@@ -80,5 +80,29 @@
       target.append(note);
     }
   }
+  // The shared ephemera renderer publishes a JSON report as a Blob URL.
+  // Observe completed chart rendering so the interpretation module stays separate.
+  const chart = document.getElementById('natal-chart-output');
+  const download = document.getElementById('ephemera-download');
+  if (chart && download) {
+    let revision = 0;
+    const observer = new MutationObserver(async () => {
+      const current = ++revision;
+      // The form finishes setting the download URL in the same JS task.
+      await new Promise(resolve => setTimeout(resolve, 0));
+      if (current !== revision || !download.href.startsWith('blob:')) return;
+      try {
+        const response = await fetch(download.href);
+        const report = await response.json();
+        if (current === revision && report.calculator !== 'ephemera' && Array.isArray(report.bodies) && Array.isArray(report.aspects)) {
+          render(report);
+        }
+      } catch (error) {
+        const target = document.getElementById('natal-interpretations');
+        if (target) target.textContent = 'Interpretations are unavailable for this chart.';
+      }
+    });
+    observer.observe(chart, {childList: true});
+  }
   window.NativitasInterpretations = {render};
 })();
