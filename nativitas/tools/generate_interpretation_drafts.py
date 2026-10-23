@@ -26,8 +26,8 @@ def main():
  todo=[(p,s) for p in PLANETS for s in SIGNS if (p,s) not in existing]
  if len(aspects["entries"])!=225: raise ValueError("Expected 225 aspect slots")
  def report(status,current=None):
-  approved_placements=sum(e.get("status") in APPROVED and e.get("sources") for e in placements["entries"])
-  approved_aspects=sum(e.get("status") in APPROVED and e.get("sources") for e in aspects["entries"])
+  approved_placements=sum(bool(e.get("status") in APPROVED and e.get("sources")) for e in placements["entries"])
+  approved_aspects=sum(bool(e.get("status") in APPROVED and e.get("sources")) for e in aspects["entries"])
   excluded=sum(e.get("status")=="astronomically-unavailable" for e in aspects["entries"])
   filled=len(placements["entries"])+len(aspects["entries"])
   review_pending=filled-approved_placements-approved_aspects-excluded
