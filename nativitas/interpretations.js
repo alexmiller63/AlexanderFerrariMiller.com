@@ -25,11 +25,11 @@
     ceres:'nurturing and cycles of care'
   };
   const aspectMeaning = {
-    conjunction:'Traditionally read as a blending or intensification of the two planetary principles; not automatically beneficial or difficult.',
-    sextile:'Traditionally considered an opportunity for cooperation or ease between the planetary principles.',
-    square:'Traditionally associated with friction, tension or the need for effort between the planetary principles.',
-    trine:'Traditionally associated with ease and a natural flow between the planetary principles.',
-    opposition:'Traditionally associated with polarity, contrast or the need for balance between the planetary principles.'
+    conjunction:'A blending or intensification of the two planetary principles; not automatically beneficial or difficult.',
+    sextile:'An opportunity for cooperation or ease between the planetary principles.',
+    square:'Friction, tension or the need for effort between the planetary principles.',
+    trine:'Ease and a natural flow between the planetary principles.',
+    opposition:'Polarity, contrast or the need for balance between the planetary principles.'
   };
   const title = s => s[0].toUpperCase()+s.slice(1);
   function render(data) {
@@ -53,7 +53,7 @@
       const p = document.createElement('p');
       const strong = document.createElement('strong');
       strong.textContent = title(row.body)+' in '+signs[sign]+': ';
-      p.append(strong, document.createTextNode('In traditional symbolism, '+title(row.body)+' concerns '+(planets[row.body] || 'its associated themes')+'; '+signs[sign]+' is associated with '+qualities[sign]+'.'));
+      p.append(strong, document.createTextNode(''+title(row.body)+' highlights '+(planets[row.body] || 'its associated themes')+' through '+qualities[sign]+'.'));
       list.append(p);
     }
     placements.append(list);
