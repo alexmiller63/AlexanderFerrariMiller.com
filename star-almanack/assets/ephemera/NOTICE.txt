@@ -1,0 +1,20 @@
+Star Almanack browser ephemeris
+
+Calculations: the site's Python engine using Skyfield 1.55 (MIT),
+jplephem 2.24 (MIT), sgp4 2.27 (MIT), NumPy 2.0.2 (BSD-3-Clause),
+Pyodide 0.27.7 (MPL-2.0) and Python 3.12 (PSF license).
+certifi 2026.2.25: MPL-2.0. tzdata 2025.2: Apache-2.0; IANA data
+is public domain. Package distributions include their license files.
+Pyodide source and license: https://github.com/pyodide/pyodide/tree/0.27.7
+NumPy source and license: https://github.com/numpy/numpy/tree/v2.0.2
+Python license: https://docs.python.org/3.12/license.html
+
+Source coefficients: JPL DE440s and NAIF-distributed Ceres 1900-2100
+SPK. These files are reused locally, without a remote ephemeris API.
+NAIF rules: https://naif.jpl.nasa.gov/naif/rules.html
+See the repository's EPHEMERIS-PROVENANCE.md for calculation provenance.
+
+City locations: adapted from GeoNames cities15000, CC BY 4.0.
+https://www.geonames.org/ ; https://creativecommons.org/licenses/by/4.0/
+Columns are selected, elevation is clamped to the supported input range,
+and records are sorted. GeoNames does not endorse this application.
