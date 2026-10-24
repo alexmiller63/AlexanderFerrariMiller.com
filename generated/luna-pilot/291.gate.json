@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204656"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Hockey Stick or Crowbar: A Galaxy with a Crooked Silhouette\n\n*NGC 4656 is a vast, tilted island of stars whose catalog numbers tell one story\u2014and whose shape invites another.*\n\nSome galaxies announce themselves with symmetry: a bright center, graceful spiral arms, a pleasing oval. NGC 4656 is less obliging. Its long, uneven body seems to bend at one end, like a hockey stick\u2014or, depending on the observer\u2019s eye, a crowbar. The nickname is a playful description, not a separate astronomical object: the catalog name is NGC 4656.\n\nSeen from Earth, this galaxy is stretched across nearly 9.7 arcminutes, with a width of about 2.1 arcminutes, according to the SIMBAD astronomical database. That makes its apparent length roughly a third of the Moon\u2019s diameter. But the Moon is bright; a galaxy spreads its light thinly across the sky. NGC 4656\u2019s cataloged visual magnitude is 10.52, yet its extended glow can be much harder to see than a star of the same magnitude.\n\nThat faintness is part of the encounter. In a telescope, the galaxy may arrive not as a crisp outline but as a gradual, elusive brightening against the background. Spend time at the eyepiece. Averted vision\u2014looking slightly to one side of the target\u2014can help the eye detect dimmer detail. On a dark night, the crooked form may emerge more clearly, though the precise impression depends on the telescope, sky conditions and observer.\n\nThe object\u2019s scientific identity is more orderly than its silhouette. SIMBAD classifies NGC 4656 as a galaxy in a pair of galaxies and lists its morphology as \u201cSB,\u201d a barred-spiral classification. Its measured radial velocity is about 650 kilometers per second. That figure describes motion along our line of sight; it is not, by itself, a complete account of the galaxy\u2019s motion through space. The database gives its position as right ascension 12 hours 43 minutes 57.7 seconds and declination +32 degrees 10 minutes 13 seconds (J2000).\n\nThose coordinates offer a reliable way to find the target with a star atlas or a telescope\u2019s coordinate system. For a visual search, begin with a detailed sky chart and work outward from nearby guide stars; a broad-field eyepiece can help frame the galaxy before you switch to higher magnification. Because NGC 4656 is a large, low-contrast object, a dark site and a night without bright moonlight are especially helpful. Let your eyes adapt to the dark, and avoid shining a phone screen directly into them.\n\nThere is a small pleasure in not deciding too quickly what the galaxy resembles. The \u201cstick\u201d may appear bent, the \u201ccrowbar\u201d may seem to have a hooked end\u2014or the shape may refuse both comparisons. Either way, the name gives the eye a starting point, not a verdict. Beyond the nickname is a distant galaxy, its light spread across a long patch of sky, waiting patiently for a dark night and a careful look.\n\n**Source:** SIMBAD, NGC 4656: https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204656",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204656",
+            "overlap_terms": [
+              "according",
+              "ascension",
+              "before",
+              "catalog",
+              "coordinate",
+              "coordinates",
+              "database",
+              "declination",
+              "degrees",
+              "frame",
+              "galaxies",
+              "galaxy"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
