@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2084345"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Rasalgethi: A Red Beacon with Company\n\n*In Hercules, one point of starlight carries the signatures of several stars\u2014and an invitation to look more closely.*\n\nOn a summer evening, Rasalgethi offers a small mystery: a single star-name for a system that is anything but simple. Its light reaches us as one point in the constellation Hercules, but astronomers classify the object as a double or multiple star. In its spectrum, they find the signatures of stars with very different characters.\n\nThe catalogue entry for Rasalgethi\u2014also known as Alpha Herculis\u2014lists a composite spectral type: M5 Ib\u2013II + G5 III + F2 V. That notation is a compact portrait. The M-type component is cool and reddish; the \u201cIb\u2013II\u201d luminosity class places it among bright giants or supergiants. The G5 III component is a giant, while F2 V denotes a hotter star on the main sequence, the long, steady phase of stellar life that our Sun occupies. The combined classification tells us that more than one stellar spectrum contributes to the light we receive.\n\nThis is a system best approached with patience. From Earth, its components are not simply a set of colored beads waiting to be counted: what an observer can distinguish depends on the equipment and observing conditions. Start with the whole scene. Find Hercules on a star chart, then locate Rasalgethi, whose position is listed by SIMBAD as right ascension 17h 14m 38.9s and declination +14\u00b0 23\u2032 25\u2033 (J2000). A planetarium app or telescope GoTo system can use those coordinates to guide you.\n\nGive your eyes time to adjust to darkness, and begin with the unaided eye. Then try binoculars or a small telescope, keeping the magnification modest at first. Look carefully for any separation or color contrast, but don\u2019t treat either as guaranteed: atmospheric turbulence, sky brightness, optics and eyesight all shape the view. If the image shimmers, wait for steadier air. A sketch can help you record what you actually see rather than what you expect to see.\n\nThere is another measure of Rasalgethi\u2019s distance, though it comes with uncertainty. SIMBAD lists a parallax of 9.07 milliarcseconds, with an uncertainty of 1.32 milliarcseconds. Inverting that value gives a rough distance of about 110 parsecs, or 360 light-years. The uncertainty is significant, so the result is best taken as an estimate, not a precise cosmic address. Even at that distance, the system\u2019s light has crossed an immense gulf before meeting a backyard telescope\u2014or an eye looking up from a dark field.\n\nThe reward is not necessarily a dramatic split or a perfect impression of color. It is the knowledge that a quiet point of light holds several stellar lives in one view: a cool, luminous star, a giant, and a main-sequence companion. Rasalgethi asks you to observe twice: first for what appears in the eyepiece, then for the larger story hidden in the starlight.\n\n**Scientific data:** [SIMBAD entry for HIP 84345 (Alpha Herculis)](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2084345).",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2084345",
+            "overlap_terms": [
+              "ascension",
+              "before",
+              "catalogue",
+              "class",
+              "coordinates",
+              "declination",
+              "depends",
+              "double",
+              "field",
+              "ident",
+              "image",
+              "known"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
