@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%207479"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# NGC 7479: A Barred Spiral With a Busy Heart\n\n*In Pegasus, this faint galaxy offers a quiet reminder that a spiral\u2019s central bar can help channel activity toward its core.*\n\nOn an autumn evening, Pegasus climbs into view carrying a galaxy that is easy to overlook. NGC 7479 lies beyond the familiar pattern of the constellation\u2019s Great Square, a dim target whose catalogued coordinates are 23h 04m 56.6s, +12\u00b0 19\u2032 22\u2033. Its light gathers in a broad, faint oval; the more intricate story is written in the structure of its spiral.\n\nAstronomers classify NGC 7479 as a barred spiral galaxy. In this kind of system, stars and gas form an elongated bar across the central region, with spiral arms extending outward. The bar is more than a striking shape: it can help move gas inward, toward the galaxy\u2019s center. SIMBAD also lists NGC 7479 as a Seyfert 2 galaxy, a category of active galaxy whose nucleus emits strongly and whose central regions are partly obscured from our line of sight. The catalog records a visual magnitude of 10.85 and an apparent size of about 5.6 by 2.6 arcminutes\u2014useful clues to the challenge, but not a guarantee of what an eyepiece will show. [SIMBAD\u2019s NGC 7479 entry](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%207479)\n\nFor an observer, the galaxy\u2019s catalogued size sounds generous. In practice, its light is spread across that area, so it can appear fainter than a star of similar total brightness. Under a dark sky, a medium-sized telescope may reveal a soft, elongated patch. The bar and arms are harder prizes; dark skies, patient viewing and averted vision can help, while a photograph or a long-exposure image will show far more structure than the eye usually can.\n\nBegin with Pegasus and a detailed star chart or a telescope\u2019s coordinate display. Center the field near the coordinates above, then use a low-power eyepiece to search before increasing magnification. If the galaxy doesn\u2019t appear at once, give your eyes time to adjust and sweep slowly around the target. Avoid judging the view against images made with long exposures: those collect light over minutes or hours, while your eye is working in real time.\n\nNGC 7479 is especially rewarding as a contrast between appearance and activity. At the eyepiece, it may be little more than a pale smudge. Yet its classification points to a structured galaxy with a central bar and an energetic nucleus. The faint patch is not an empty blur but a distant system of stars, gas and dust, seen at an angle and under the limits of the night sky.\n\nLook for it when Pegasus is well placed on autumn evenings. Even if the arms stay hidden, finding NGC 7479 is a satisfying act of astronomical scale: locating a specific galaxy among the stars, then recognizing that its quiet glow hints at a much more dynamic interior.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%207479",
+            "overlap_terms": [
+              "angle",
+              "around",
+              "before",
+              "catalog",
+              "coordinate",
+              "coordinates",
+              "display",
+              "galaxy",
+              "ident",
+              "increasing",
+              "magnitude",
+              "minutes"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
