@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206940"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Collinder 424: A Cluster in the Fox\n\n*At the edge of summer\u2019s star fields, this broad open cluster rewards a patient look\u2014and a wide view.*\n\nSome deep-sky objects ask you to peer into darkness for a faint smudge. Collinder 424 makes a different invitation: give it room. Also catalogued as NGC 6940, this open cluster spreads across roughly 30 arcminutes of sky\u2014about the apparent width of the full Moon. Its stars lie in the constellation Vulpecula, the Fox, in a part of the Milky Way rich with background stars. The view is less a single glittering jewel than a patch of sky that gradually resolves into company.\n\nAn open cluster is a group of stars born together and still moving through the galaxy as a loose association. The stars are not necessarily equally bright, and the field around them can make it tricky to decide where the cluster begins and ends. In Collinder 424, that broad extent is part of the pleasure: a telescope at high power can crop the scene, while binoculars or a low-power eyepiece preserve its context.\n\nThe measured position of NGC 6940 is right ascension 20h 34m 30s, declination +28\u00b0 16\u2032 41\u2033 (J2000). SIMBAD lists a parallax of 0.947 milliarcseconds. Taking the reciprocal gives a rough distance of about 1,060 parsecs, or 3,450 light-years; the conversion is approximate, since a measured parallax has uncertainty and distance estimates can depend on how that uncertainty is handled. SIMBAD also lists a radial velocity of 7.7 kilometres per second. That is the object\u2019s motion along our line of sight, not its full motion through space.\n\nFor observers, the coordinates make a useful starting point, but a chart or planetarium app will make the hunt easier. Look in Vulpecula, near the Milky Way\u2019s bright summer-to-autumn star fields. From northern latitudes, the cluster is best placed in the evening during the warmer months and into early autumn. Choose a clear, moonless night if you can. Let your eyes adapt to the dark, then sweep the region with binoculars: the cluster\u2019s generous size makes a wide field especially satisfying. In a telescope, begin with the lowest-power eyepiece and increase magnification only if the view still frames the whole group.\n\nDon\u2019t expect every star in the field to announce itself as a cluster member. The Milky Way\u2019s crowded backdrop complicates the view, and a catalogue\u2019s linked objects are not the same thing as a simple count of confirmed members. Instead, take time to compare the denser patch with the surrounding star field. With steady viewing, the pattern can emerge gradually: a gathering of points against a deeper sprinkling, like a small neighborhood revealed by turning on one porch light after another.\n\nCollinder 424\u2019s appeal lies in that slow recognition. It is broad enough to invite a sweeping glance, yet rich enough to reward lingering. Find it once, and you may find yourself returning\u2014not to solve a puzzle, but to watch the familiar field come into focus.\n\n**Sources:** SIMBAD\u2019s entry for NGC 6940, including coordinates, object classification, parallax, radial velocity, and angular size: https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206940. SIMBAD identifier search for Collinder 424: https://simbad.cds.unistra.fr/simbad/sim-id?Ident=Collinder%20424",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206940",
+            "overlap_terms": [
+              "angular",
+              "around",
+              "ascension",
+              "catalogue",
+              "cluster",
+              "coordinates",
+              "count",
+              "crowded",
+              "declination",
+              "depend",
+              "different",
+              "extent"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
