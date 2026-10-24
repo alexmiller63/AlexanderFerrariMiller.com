@@ -1,0 +1,75 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204192"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# M98: The Thin Light of a Faraway Spiral\n\n*In Coma Berenices, a slanted island of stars rewards patient searching\u2014and offers a reminder that even familiar-looking galaxies can have unsettled centers.*\n\nM98 is easy to mistake for a faint smudge and hard to forget once you have found it. Its light arrives from a spiral galaxy catalogued as NGC 4192, stretched across the sky like a narrow brushstroke. The astronomical database SIMBAD lists its apparent dimensions as about 10.9 by 2.9 arcminutes, and its form as an intermediate spiral, type SAB. Those measurements hint at the view: not a round glow, but a long, delicate shape whose detail depends on darkness, aperture and careful attention.\n\nThe galaxy lies in Coma Berenices, at right ascension 12 hours 13 minutes and declination +14\u00b0 54\u2032 (J2000). That position makes M98 a springtime target for many northern observers, though its moderate northern declination also brings it within reach farther south. It is not a showpiece that leaps out of a bright city sky. SIMBAD gives its visual magnitude as about 10.1\u2014a useful measure of its total apparent brightness, not a promise that the light will be easy to see. A galaxy spreads that light over an area, so its surface can look much fainter than a star of similar magnitude.\n\nThere is more than a spiral\u2019s quiet appearance in its catalogue entry. SIMBAD classifies M98\u2019s nucleus as a LINER-type active galactic nucleus. LINER is short for \u201clow-ionization nuclear emission-line region\u201d: a description of the kinds of emission seen in a galaxy\u2019s central region, rather than a claim that the nucleus blazes like a brilliant quasar. M98\u2019s center is therefore a reminder that galaxies are not just static arrangements of stars. Their cores can contain energetic processes that reveal themselves through the light emitted by gas.\n\nThe catalogue also reports a heliocentric radial velocity of about \u2212107 kilometers per second. The negative sign means that, in this measurement, M98\u2019s motion along our line of sight is toward the Sun. It does not describe the galaxy\u2019s full motion across space; nor should it be read as a simple measure of its distance. The number is one component of a much larger cosmic story.\n\nTo look for M98, start with a current star chart or planetarium app and use its coordinates to locate the surrounding field. Give your eyes time to adapt to darkness, and try observing on a moonless night away from direct lights. A small telescope may show only a faint, elongated haze; moderate magnification and averted vision\u2014looking slightly beside the object rather than straight at it\u2014can help. Let the image settle before deciding you see nothing. Under darker skies, the galaxy\u2019s long axis may become more apparent, though its subtle structure should not be expected to resemble a photograph.\n\nM98 asks for a different kind of observing than a bright planet or a sharp double star. It asks you to notice a thinness, a tilt, a patch of ancient light that barely separates itself from the background. With the right sky and a little patience, that faint mark becomes a galaxy: not merely a destination on a chart, but a place with a spiral form and an active center, sending its modest signal across the dark.\n\n**Source:** [SIMBAD astronomical database: M98 / NGC 4192](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204192)",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204192",
+            "overlap_terms": [
+              "active",
+              "ascension",
+              "before",
+              "catalogue",
+              "coordinates",
+              "current",
+              "database",
+              "declination",
+              "depends",
+              "emission",
+              "galaxy",
+              "heliocentric"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [
+      {
+        "quoted_text": "low-ionization nuclear emission-line region",
+        "source_matches": [],
+        "exact_text_confirmed": false
+      }
+    ],
+    "all_quoted_passages_confirmed": false,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
