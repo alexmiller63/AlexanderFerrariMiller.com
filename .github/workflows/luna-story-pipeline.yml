@@ -39,7 +39,7 @@ concurrency:
 jobs:
   pilot:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 360
     env:
       OPENAI_API_KEY: ${{ inputs.paid_execute && secrets.OPENAI_API_KEY || '' }}
     steps:
