@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%205248"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# NGC 5248: A Spiral in Virgo\u2019s Spring Sky\n\n*At the eyepiece, this distant galaxy is a quiet smudge. Its coordinates, measured light and spiral classification tell a much richer story.*\n\nSpring is a good time to explore Virgo, where galaxies gather across the sky. Among them is **NGC 5248**, a spiral galaxy whose light reaches us as a soft patch rather than a portrait. Its catalogued position is right ascension 13h 37m 32s, declination +08\u00b0 53\u2032 (J2000)\u2014a useful address to enter into a planetarium app or telescope mount.\n\nThe numbers give the object a scale, even when the view is subtle. SIMBAD lists its optical extent as about 4.6 by 3.1 arcminutes, with a position angle of 124 degrees. That is several times the apparent width of the full Moon, though the galaxy\u2019s light is spread thinly across that area. Its listed B-band magnitude is 11.4; that figure describes brightness in a particular blue-light filter, not a promise that the galaxy will look equally bright to the eye.\n\nNGC 5248 is classified SAB, a spiral type associated with an intermediate or weak bar. The label hints at structure within the galaxy, but a small telescope may not reveal that structure directly. For an observer, the first success may simply be detecting the glow: a pale oval against the dark, with the central region more apparent than the outskirts. Averted vision\u2014looking just to the side of the target\u2014can help the eye register faint light.\n\nThere is another measure of NGC 5248\u2019s distance: its reported redshift is 0.003843, and its radial velocity is about 1,150 kilometers per second. Redshift records the stretching of light as an object recedes, while radial velocity describes motion along our line of sight. These figures place the galaxy far beyond the stars that form familiar patterns in Virgo. The stars are foreground markers; NGC 5248 is a whole separate system, reduced by distance to a quiet blur.\n\nFor a practical search, use the coordinates rather than relying on a naked-eye constellation outline. Choose a clear, moonless night if possible, let your eyes adapt to darkness, and use a low or medium magnification to locate the field before increasing power. A larger aperture and a dark observing site generally improve the chance of seeing a faint galaxy, but expectations should stay flexible: sky transparency, light pollution and the observer\u2019s eyesight all affect what appears. If the object seems to vanish when you stare straight at it, shift your gaze slightly and give the view time.\n\nThe pleasure of NGC 5248 is partly in the contrast between the modest view and the information behind it. A small telescope may offer no crisp arms or dramatic detail. Yet the catalog gives a position precise enough to find, a measured extent across the sky, a spiral classification and a trace of motion encoded in its spectrum. The smudge is not a blank spot. It is a distant galaxy, holding its place in Virgo\u2019s spring darkness while its light crosses the gulf to your eyepiece.\n\n**Source:** SIMBAD Astronomical Database, NGC 5248: https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%205248",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%205248",
+            "overlap_terms": [
+              "angle",
+              "ascension",
+              "before",
+              "catalog",
+              "coordinates",
+              "database",
+              "declination",
+              "degrees",
+              "extent",
+              "field",
+              "filter",
+              "galaxy"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
