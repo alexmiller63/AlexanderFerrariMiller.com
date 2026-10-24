@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206025"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# NGC 6025: A Southern Cluster in the Starfield\n\n*An open cluster with a Moon-wide catalogued span rewards a wide-field view\u2014and a little patience at the eyepiece.*\n\nSome celestial objects announce themselves with a bright blaze. NGC 6025 offers a quieter invitation: find its patch of southern sky, give your eyes time to adjust, and let a group of stars emerge from the background.\n\nThe object is catalogued as an open cluster, a grouping of stars that formed together and travel through space as a loose family. Its position is in the far-southern sky: the SIMBAD database lists its J2000 coordinates as right ascension 16h 03m 07s and declination \u221260\u00b0 25\u2032 48\u2033. That makes it a rewarding target for observers in the Southern Hemisphere, where it can climb well above the horizon. (SIMBAD: [NGC 6025](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206025))\n\nThe catalogue gives the cluster an apparent diameter of 35 arcminutes\u2014slightly wider than the full Moon\u2019s roughly 30-arcminute span. That is a useful observing clue, but not a sharp boundary: a cluster\u2019s listed size describes its apparent extent on the sky, not an edge drawn around every member. At this scale, high magnification is not the first tool to reach for. A wide field can help show the cluster in context, while binoculars or a low-power telescope can make it easier to pick out individual stars. If you have both, compare the views.\n\nThere is another way to get a sense of its scale. SIMBAD lists a parallax of 1.2646 milliarcseconds. Parallax is the tiny apparent shift in an object\u2019s position as Earth moves around the Sun; converting that value into a distance gives roughly 790 parsecs, or about 2,600 light-years. This is an approximate conversion from the catalogue value, not a claim that every star in the cluster sits at precisely the same distance. If the catalogued 35-arcminute span is treated as an approximate angle at that distance, it corresponds to several parsecs across. The apparent circle overhead is therefore a window onto a genuinely extended stellar grouping.\n\nFor a practical search, start with a sky chart or planetarium app and enter the coordinates rather than relying on a nearby bright star alone. NGC 6025 lies at declination \u221260\u00b0, so observers much farther north may find it low or out of reach; local obstructions and atmospheric haze can make a low target harder still. From southern latitudes, choose a clear view toward the south and observe when the cluster is high. Begin with the lowest magnification available, then increase it only if the stars remain well framed. Give your eyes several minutes to adapt, and avoid bright screens while you look.\n\nThe cluster is a reminder that \u201cdeep sky\u201d does not always mean faint nebulae or distant galaxies. Sometimes the spectacle is a population of stars sharing a small patch of sky, close enough in appearance to suggest a family, yet spread across a vast volume of space. With NGC 6025, the best view may be the one that leaves room around the stars.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206025",
+            "overlap_terms": [
+              "angle",
+              "around",
+              "ascension",
+              "catalogue",
+              "celestial",
+              "cluster",
+              "coordinates",
+              "database",
+              "declination",
+              "extent",
+              "field",
+              "galaxies"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
