@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%203432"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Arp 206: A Galaxy Drawn in a Single Stroke\n\n*In Leo Minor, this slender barred spiral rewards patient observers with a glimpse of a galaxy seen nearly edge-on.*\n\nSome galaxies announce themselves with sweeping spiral arms. Arp 206 is subtler: a long, narrow streak of light, as if the sky had been marked with a fine brush. The object is also catalogued as NGC 3432, in the small northern constellation Leo Minor. Its elongated shape is the first clue to its structure\u2014and the reason it makes a satisfying target for a dark-sky observing session.\n\nNGC 3432\u2019s listed optical dimensions are about 7.8 by 1.4 arcminutes, making it more than five times longer than it is wide. Its catalogued morphology, SB C, identifies it as a barred spiral. Seen almost edge-on, the galaxy\u2019s disk is compressed into a thin profile; its inner bar and spiral pattern are difficult to make out visually. In photographs, uneven knots and texture can give the streak a less polished appearance than the familiar, face-on pinwheel. The galaxy\u2019s measured radial velocity is about 618 kilometres per second relative to the Sun. That figure is a motion measurement, not by itself a precise distance estimate. [SIMBAD: NGC 3432](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%203432)\n\nFor observers in the Northern Hemisphere, spring is a natural time to look. The galaxy\u2019s J2000 position is right ascension 10h 52m 31s, declination +36\u00b0 37\u2032. Find Leo Minor on a star chart and use those coordinates with a setting circle or a digital finder to pinpoint the field; the constellation\u2019s modest stars make an exact chart more useful than a casual sweep. Check that your chart or app is set to the correct epoch and coordinate format.\n\nThis is a telescopic challenge rather than a naked-eye object. Under a dark, transparent sky, an 8-inch telescope may show a faint, narrow smudge with averted vision; a larger aperture can make the outline easier to hold and may reveal a brighter central region. Start at low or moderate power to locate the galaxy, then increase magnification gradually if the image remains steady and bright. High magnification is not automatically an advantage: spreading a faint object over more of the view can make it harder to see.\n\nGive your eyes time to adapt, shield them from nearby lights, and try looking slightly to one side of the galaxy rather than directly at it. If the view seems blank at first, pause and return to the field. Averted vision often brings out a delicate streak that disappears when stared at directly. Transparent skies matter more than exceptional magnification.\n\nArp 206 is a reminder that a galaxy need not display a dramatic spiral to hold attention. Its narrow silhouette is a view of a vast stellar disk from an unfavorable angle for seeing its full pattern\u2014but an excellent one for appreciating its scale and shape. Find the faint line, keep it in view, and let the eye assemble the light.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%203432",
+            "overlap_terms": [
+              "angle",
+              "ascension",
+              "coordinate",
+              "coordinates",
+              "declination",
+              "display",
+              "epoch",
+              "field",
+              "format",
+              "galaxy",
+              "ident",
+              "image"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
