@@ -1,0 +1,75 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204762"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# MCG 2-33-33: Following the Catalog Trail\n\n*An observing note about a name that leads to a useful question\u2014and a galaxy measured in more than one way.*\n\nA galaxy can have several names, but a catalog trail needs to be followed carefully. The designation for this Star Almanack story is **MCG 2-33-33**. The supplied SIMBAD link, however, opens a record for **NGC 4762**; the excerpt available here does not show whether the two names refer to the same object. Rather than assume they do, let\u2019s use the record as a guide to what an observer can learn\u2014and what still needs checking.\n\nSIMBAD lists NGC 4762 as a galaxy with a LINER-type active galactic nucleus. LINER stands for \u201clow-ionization nuclear emission-line region,\u201d a description of the kind of emission seen in a galaxy\u2019s central region. It is a classification, not a complete explanation of what powers the nucleus. The record also gives a measured redshift of 0.00287, corresponding to a heliocentric radial velocity of about 860 kilometres per second. That small redshift places the galaxy in the nearby-universe category, though redshift alone is not a precise distance measurement for an individual nearby galaxy.\n\nFor finding the recorded object, SIMBAD gives J2000 coordinates of **12h 52m 56.049s, +11\u00b0 13\u2032 50.88\u2033**. Its listed optical dimensions are about **9.17 by 1.38 arcminutes**: a long, narrow patch on the sky rather than a point of light. The same entry reports a B-band magnitude of 11.1. That is a blue-light measurement, not a promise of how bright the galaxy will look through your eyepiece; visibility depends on the sky, optics and observer.\n\n**Observing guidance:** Use the coordinates to locate the field on a planetarium app or a detailed star chart, and confirm the catalog identity before setting out specifically for MCG 2-33-33. The coordinates are for NGC 4762 in the supplied record. Under a dark sky, try a telescope at low or moderate power first, then increase magnification if the galaxy\u2019s extended shape remains visible. Give your eyes time to adapt, and use averted vision: looking slightly to one side of a faint object can make it easier to detect. The listed dimensions suggest why a wide field can help with acquisition, while the modest B-band brightness is a reminder not to expect a bright, high-contrast spectacle.\n\nThe careful observer\u2019s first task, then, is not simply to find a faint oval. It is to make sure the name on the observing plan matches the object in the field. Catalogs are maps made of measurements and cross-references; sometimes the route between two labels deserves as much attention as the destination. For this target, the coordinates and observing clues are useful\u2014but the supplied record leaves the MCG-to-NGC identification unconfirmed.\n\n**Source:** [SIMBAD record for NGC 4762](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204762) \u2014 coordinates, object classification, redshift, angular size and photometry.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204762",
+            "overlap_terms": [
+              "active",
+              "angular",
+              "before",
+              "catalog",
+              "catalogs",
+              "coordinates",
+              "corresponding",
+              "depends",
+              "field",
+              "galaxy",
+              "heliocentric",
+              "ident"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [
+      {
+        "quoted_text": "low-ionization nuclear emission-line region,",
+        "source_matches": [],
+        "exact_text_confirmed": false
+      }
+    ],
+    "all_quoted_passages_confirmed": false,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
