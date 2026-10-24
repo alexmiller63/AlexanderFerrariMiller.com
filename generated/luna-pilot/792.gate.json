@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2030324"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Mirzam, the Quiet Herald of the Dog\n\n*Find this bright blue star near Sirius on winter evenings, and you\u2019ll meet a giant whose steady-looking light is subtly changing.*\n\nOn a clear evening, Sirius grabs the eye first: brilliant, white, and low in the southern sky. Look a little to its west and slightly south, and you\u2019ll find Mirzam, a blue-white point in the constellation Canis Major. Its name suits its role in the sky\u2019s familiar pattern: it seems to announce the arrival of the Dog Star.\n\nMirzam is bright enough to see without optical aid, even from many suburban locations. It is catalogued as Beta Canis Majoris, and its visual magnitude is about 2.0. Yet the apparently calm point of light belongs to a restless star. SIMBAD classifies it as a Beta Cephei variable\u2014a type of star whose brightness changes as it pulsates. The change is too subtle for the unaided eye to follow, so Mirzam looks steady while its light quietly rises and falls.\n\nIts stellar classification offers another clue to its nature. SIMBAD lists Mirzam as B1 II\u2013III, placing it among hot, blue stars between the giant and bright-giant luminosity classes. The same database gives a parallax of 6.62 milliarcseconds, corresponding to a distance of roughly 490 light-years. That means the light reaching your eyes tonight began its journey long before the first human-made satellites crossed the sky.\n\nFor a simple way to find it, locate Sirius\u2014the brightest star in the night sky\u2014and look about five degrees to its west and a little south. That\u2019s roughly half a fist-width at arm\u2019s length. Mirzam is a useful marker in the constellation\u2019s outline, though the view will depend on your horizon and surroundings. From northern latitudes, Canis Major is a winter constellation; from southern latitudes, it is best placed during summer evenings.\n\nChoose a clear night when the constellation has climbed above rooftops, trees, or hills. You don\u2019t need a telescope: binoculars can help you trace the surrounding star pattern, but Mirzam itself is easy to spot with the naked eye. Compare its light with Sirius and nearby stars, keeping in mind that stars low in the sky can appear to flicker or change color as their light passes through Earth\u2019s turbulent atmosphere. That atmospheric twinkling is not Mirzam\u2019s pulsation.\n\nIf you return to the same patch of sky on another evening, Mirzam will still be there, a reliable waypoint beside Sirius. The deeper story is less still: a hot giant, hundreds of light-years away, gently pulsing beyond the reach of unaided sight. A steady star, at first glance\u2014and a changing one, once you know what to look for.\n\n**Source:** [SIMBAD astronomical database entry for HIP 30324 (Beta Canis Majoris)](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2030324)",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2030324",
+            "overlap_terms": [
+              "before",
+              "corresponding",
+              "database",
+              "degrees",
+              "depend",
+              "ident",
+              "length",
+              "luminosity",
+              "magnitude",
+              "major",
+              "optical",
+              "parallax"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
