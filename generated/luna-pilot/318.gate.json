@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%205866"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Spindle Galaxy: A Thin Silhouette in the Northern Sky\n\n*NGC 5866\u2019s stretched outline invites a patient look\u2014and rewards observers who know where to point.*\n\nSome galaxies announce themselves with bright spiral arms. The Spindle Galaxy offers a quieter spectacle: a narrow, luminous shape set against the dark. Its catalog name is NGC 5866, and SIMBAD also lists it as Messier 102. In optical measurements, it spans about 6.3 by 2.7 arcminutes\u2014an elongated patch, not a point of light. [SIMBAD: NGC 5866](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%205866)\n\nThat stretched profile is the clue to its appeal. A galaxy\u2019s apparent shape depends partly on how it is oriented to us. Seen at a slant, a disk can look broad; viewed closer to edge-on, it becomes a slim streak. The Spindle Galaxy\u2019s dimensions make that long axis central to the observing experience. But the view through an eyepiece is not a photograph: faint structure can disappear under bright skies, and the galaxy may first look like a small, soft smudge.\n\nThere is science in that modest impression. A galaxy is a vast system of stars, gas and dust, and its visible outline is only the light that reaches our eyes. NGC 5866\u2019s measured optical size describes its apparent extent on the sky, not its physical diameter. SIMBAD also gives a radial velocity of about 758 kilometers per second, with a stated uncertainty of 125 kilometers per second. That measurement describes motion along our line of sight; it is not, by itself, a precise distance estimate. [SIMBAD: NGC 5866 data](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%205866)\n\nFor a first attempt, use the coordinates rather than relying on a broad constellation description: right ascension 15h 06m 29.6s, declination +55\u00b0 45\u2032 48\u2033 (J2000). A planetarium app or telescope\u2019s go-to system can turn those numbers into a finder-chart position. The galaxy\u2019s listed visual magnitude is 9.89, but that number does not guarantee an easy view: light is spread across an extended area, so sky darkness and telescope aperture matter.\n\nChoose a moonless night away from nearby lights, and give your eyes time to adapt. Start with a low-power eyepiece to locate the field, then increase magnification gradually if the image remains steady and clear. Look for a narrow glow rather than a crisp, bright disk. Averted vision\u2014looking slightly to one side of the target\u2014can help reveal faint light. If the galaxy seems to vanish, check focus and your chart, then try again after a few minutes in darkness.\n\nThe pleasure of the Spindle Galaxy is partly in learning how to see it. At first, it may be only a faint slash. Stay with it, and that slash becomes a form: a distant system whose apparent thinness is a matter of perspective. The telescope does not bring the galaxy close, but it makes the geometry of looking across the universe feel unexpectedly immediate.\n\n**Source:** [SIMBAD Astronomical Database \u2014 NGC 5866](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%205866)",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%205866",
+            "overlap_terms": [
+              "ascension",
+              "catalog",
+              "coordinates",
+              "database",
+              "declination",
+              "depends",
+              "extent",
+              "field",
+              "galaxy",
+              "ident",
+              "image",
+              "listed"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
