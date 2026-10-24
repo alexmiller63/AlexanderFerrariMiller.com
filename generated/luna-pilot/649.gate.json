@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%208796"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Mothallah, the Quiet Corner of the Triangle\n\n*At the southwestern point of Triangulum, this modest naked-eye star offers a lesson in how astronomers find companions too close to see.*\n\nOn an autumn night, look between the brighter constellations Andromeda and Aries for a small outline that can be easy to overlook. Triangulum is just what its name promises: three stars making a slender triangle. At its southwestern corner shines Mothallah, also catalogued as Alpha Trianguli.\n\nIt isn\u2019t the brightest star in the pattern, and it doesn\u2019t blaze with the drama of a planet or a brilliant winter star. Its appeal is subtler: Mothallah looks like a single point, but astronomers classify it as a *spectroscopic binary*. The two stars are too close together to be distinguished as separate points in ordinary views. Instead, their partnership is inferred from changes in the light recorded in their spectra, as orbital motion shifts the stars\u2019 spectral lines. A star can look solitary to the eye and still be a system.\n\nThe catalog entry for HIP 8796 identifies Alpha Trianguli as a spectroscopic binary and lists a spectral type of F5III. That classification describes a star in the F temperature class, with \u201cIII\u201d indicating a giant luminosity class. The same entry gives a visual magnitude of 3.42: under a dark sky, Mothallah is within naked-eye reach, though city glare may erase it. Its recorded parallax, 51.331 milliarcseconds, places it about 63 light-years away. Parallax is the tiny apparent shift in a nearby star\u2019s position as Earth travels around the Sun; the smaller the measured angle, the farther away the star. (SIMBAD: https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%208796)\n\n## How to observe\n\nChoose a clear, moonless evening in the Northern Hemisphere\u2019s autumn, when Triangulum is well placed for evening viewing. First find the more conspicuous pattern of Andromeda, then scan the neighboring sky toward Aries for the small three-star figure. Mothallah marks the triangle\u2019s southwestern corner. Give your eyes time to adapt to the dark, and try to trace all three sides without using a phone screen; a bright display can make the fainter pattern harder to see. Binoculars can help from a light-polluted location, but they are not required under a dark sky.\n\nA small telescope may sharpen the view of Mothallah, but don\u2019t expect to split the binary just by magnifying it. The important evidence for its companion comes from spectral measurements, not from a dramatic visual separation. That contrast is part of the pleasure of observing: the naked eye supplies a quiet point of light, while instruments and careful analysis reveal a more complicated story.\n\nFor a moment, let the triangle be only a triangle. Then remember that one of its corners is a stellar system, measured by a wobble too delicate to see directly. Mothallah rewards both kinds of looking\u2014the patient search for a faint outline, and the scientific imagination that asks what a steady point of light may contain.\n\n**Scientific context:** SIMBAD identifies HIP 8796 as Alpha Trianguli and a spectroscopic binary; its cataloged parallax and visual magnitude are the basis for the distance and visibility notes above.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%208796",
+            "overlap_terms": [
+              "angle",
+              "around",
+              "binary",
+              "catalog",
+              "class",
+              "display",
+              "ident",
+              "luminosity",
+              "magnitude",
+              "motion",
+              "parallax",
+              "point"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
