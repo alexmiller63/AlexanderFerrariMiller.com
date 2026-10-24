@@ -1,4 +1,4 @@
-name: Luna Story Pilot - Research Write Audit
+name: Luna Story Pilot - $1 Writing Only
 on:
   workflow_dispatch:
     inputs:
@@ -97,6 +97,18 @@ jobs:
               assert len(calls) == 1
               assert json.loads(target.read_text()) == original
               print("PASS: saved evidence remains identical after restart; no second push")
+          PY
+      - name: Verify paid calls restricted to writing (free)
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          source = Path('tools/luna_story_pipeline.py').read_text()
+          assert 'research = stage(' not in source
+          assert 'audit = stage(' not in source
+          assert 'revised_audit = stage(' not in source
+          assert 'stage(ident, "draft"' in source
+          assert 'stage(ident, "correction"' in source
+          print('PASS: paid stages limited to draft and correction')
           PY
       - name: Verify recovery code and ledger initialization (free)
         run: |
