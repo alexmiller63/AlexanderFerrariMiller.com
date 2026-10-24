@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%205904"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# M5: A Globe of Ancient Light\n\n*In Serpens, a compact swarm of stars turns a dark-sky search into a journey across the Milky Way\u2019s deep past.*\n\nSomewhere between the familiar patterns of spring and the summer constellations, M5 waits in Serpens Caput. At first glance, it may be no more than a faint smudge. Look again through binoculars or a telescope, and that blur begins to resolve into a dense gathering of stars: not a single sun, but a globular cluster, held together by gravity.\n\nM5 is also catalogued as NGC 5904. SIMBAD lists its position as right ascension 15h 18m 33s and declination +02\u00b0 04\u2032 52\u2033, placing it in Serpens, and identifies it as a globular cluster. The same catalogue gives an apparent visual magnitude of 5.95 and an angular diameter of 17.4 arcminutes\u2014more than half the apparent width of the full Moon, though its light is spread across the cluster rather than concentrated in a bright disk. [SIMBAD: M5 / NGC 5904](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%205904)\n\nA globular cluster is a tightly packed, roughly spherical collection of stars orbiting within a galaxy. Its crowded appearance hints at a very different stellar neighborhood from our own: stars gathered in a stellar city, with the cluster\u2019s gravity keeping the whole assembly together. M5\u2019s soft glow is the combined light of countless individual suns. In a small telescope, the outer edges may begin to break into pinpoints; with a larger aperture and steady skies, more stars emerge around its bright central region. The view changes with the instrument, but the sense of depth remains: this is not a cloud, but a vast family of stars seen from afar.\n\nTo find it, choose a clear, moonless night and give your eyes time to adjust. In the Northern Hemisphere, M5 is well placed on spring evenings and remains an inviting target into summer. Start with the outline of Serpens Caput, the western part of the constellation Serpens. A star chart or planetarium app can guide you to the cluster\u2019s coordinates: RA 15h 18m, Dec +2\u00b0. (Coordinates are a map reference, not a direction to turn your telescope by eye; use them with a chart or a mount\u2019s setting circles.)\n\nUnder a very dark sky, an experienced observer may glimpse M5 without optical aid, but binoculars make the search easier. Expect a small, pale patch rather than a sharply defined cluster. A telescope at low power will frame its overall glow; increase the magnification only if the image stays crisp. If the center remains unresolved, that is not a failure. The stars crowd together most tightly there, and sky brightness, aperture and atmospheric steadiness all shape what you can see.\n\nM5 rewards patience more than spectacle. Let your gaze move from its bright core toward its softer outskirts, and consider the contrast between the cluster\u2019s compact appearance and the immense distances implied by that small patch of sky. Each point you tease from the haze is a reminder that the night is not empty. It is layered: nearby stars, distant systems, and this ancient congregation, quietly shining in Serpens.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%205904",
+            "overlap_terms": [
+              "angular",
+              "around",
+              "ascension",
+              "catalogue",
+              "cluster",
+              "coordinates",
+              "crowd",
+              "crowded",
+              "declination",
+              "defined",
+              "frame",
+              "globular"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
