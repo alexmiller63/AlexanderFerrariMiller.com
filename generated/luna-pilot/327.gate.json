@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206171"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# M107: The Soft Glow in Ophiuchus\n\n*An old star cluster hides in plain sight among summer\u2019s constellations. Give it a dark sky, a steady gaze and a little patience.*\n\nSome deep-sky objects announce themselves with a dramatic shape. M107 is quieter: a rounded haze, a small pale knot against the dark. Yet that faintness is part of its appeal. In a telescope, the blur begins to break into individual stars, and the eye senses a gathering far denser than any ordinary patch of sky.\n\nM107 is a globular cluster, also catalogued as NGC 6171. Globular clusters are compact, gravity-bound communities of stars, generally containing many thousands or more. They are among the Milky Way\u2019s long-lived stellar populations. M107\u2019s position is given as right ascension 16h 32m 31.9s and declination \u221213\u00b0 03\u2032 14\u2033 (J2000); SIMBAD lists its apparent angular size as about 10 arcminutes. That figure describes its extent on the sky, not a crisp edge you should expect to see through an eyepiece. (SIMBAD: https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206171)\n\nTo find it, start with Ophiuchus, the broad constellation that crosses the summer sky. An astronomy app or a telescope\u2019s setting circles can guide you to M107\u2019s coordinates. For a more traditional search, use a detailed star chart of the region: the cluster is subtle, and in a bright suburban sky it can be easy to pass over. Allow your eyes time to adjust to the darkness, and use averted vision\u2014look slightly to one side of the object rather than straight at it. The eye\u2019s more light-sensitive vision works better away from the center of your gaze.\n\nBinoculars may show M107 as a faint, unresolved glow under dark skies. A small telescope should make the haze easier to distinguish from the surrounding stars. With a larger aperture and steady conditions, look for pinpoints appearing around the cluster\u2019s outer parts. Don\u2019t expect the whole object to snap into view at once: brief moments of clearer seeing can reveal detail that seems to disappear when you stare directly at it.\n\nM107 is best placed for evening observing in the Northern Hemisphere during the summer months, when Ophiuchus climbs high enough for a comfortable view. Its declination is \u221213\u00b0, so its height above the southern horizon depends on your latitude; from mid-northern locations it will not pass overhead, but it can still rise well above the horizon. Observe when it is highest in your sky, and choose a site with an unobstructed southern view. A low target viewed through trees, rooftops or turbulent air will lose contrast.\n\nThere is no need to rush the encounter. First find the field, then pause. Notice how the cluster\u2019s faint glow sits among sharper foreground stars\u2014suns much nearer to us, scattered along the same line of sight. M107\u2019s light arrives as a single soft impression until the telescope helps separate the crowd. What began as an indistinct patch becomes a reminder that the Milky Way is not only a river of stars, but also a home to ancient, tightly gathered stellar cities.\n\n**Source:** SIMBAD, NGC 6171 / M107: https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206171",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206171",
+            "overlap_terms": [
+              "allow",
+              "angular",
+              "around",
+              "ascension",
+              "cluster",
+              "coordinates",
+              "crowd",
+              "declination",
+              "depends",
+              "extent",
+              "field",
+              "given"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
