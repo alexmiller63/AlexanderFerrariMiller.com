@@ -1,0 +1,42 @@
+---
+layout: null
+---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Synastry Generator | Nativitas</title>
+  <link rel="stylesheet" href="{{ '/nativitas/nativitas.css' | relative_url }}">
+  <link rel="stylesheet" href="{{ '/nativitas/synastry.css' | relative_url }}?v=20261024-1">
+</head>
+<body>
+  {% include nativitas-nav.html %}
+  <main class="page-shell">
+    <p class="eyebrow">Nativitas · Two birth skies</p>
+    <h1>Synastry</h1>
+    <p class="tagline">Compare two natal charts in one bi-wheel.</p>
+    <p>Enter each person’s birth details. The planets are calculated on your device; birth details are not sent to a calculation service.</p>
+    <noscript><p>JavaScript is required for this calculator.</p></noscript>
+    <form id="synastry-form">
+      <div id="synastry-people" class="people-grid"></div>
+      <datalist id="synastry-zones"></datalist>
+      <p>If a birth time is unknown, select that option. Local noon will be used; that person’s houses and angles are omitted, and their positions are approximate, especially the Moon.</p>
+      <div class="actions"><button type="submit" id="synastry-calculate">Compare charts</button><button type="button" id="synastry-cancel" hidden>Cancel</button></div>
+    </form>
+    <section aria-label="Calculation progress" id="synastry-progress" hidden><progress max="22" value="0"></progress></section>
+    <p id="synastry-status" role="status" aria-live="polite"></p>
+    <section id="synastry-results" aria-label="Synastry results"></section>
+    <section class="method"><h2>Method and limits</h2>
+      <p>Eleven bodies, five major cross-chart aspects, and house overlays where birth times are known. The chart with a known time goes inside when only one time is known; otherwise the entered order is retained.</p>
+      <p>Placidus houses require a known time and are unavailable at or beyond the polar circles. Choose “Birth time unknown” only when the time is actually unknown; no alternative house system is silently substituted.</p>
+      <p>Aspect orbs: 5° for conjunction, square, trine and opposition; 3° for sextile. These follow the <a href="https://www.astro.com/faq/fq_fh_partner_e.htm">Astrodienst convention</a> of halving our natal orbs. Orb sizes vary between astrologers.</p>
+      <p>The first calculation downloads approximately 60 MB of astronomy files. Later calculations reuse the loaded engine. Positions remain provisional pending independent validation. Astrological interpretations are not scientifically validated; no compatibility score is assigned.</p>
+      <p><small>City data: <a href="https://www.geonames.org/">GeoNames</a>, <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>. <a href="{{ '/star-almanack/assets/ephemera/NOTICE.txt' | relative_url }}">Software and data credits</a>.</small></p>
+    </section>
+  </main>
+  {% include nativitas-footer.html %}
+  <script src="{{ '/nativitas/synastry-core.js' | relative_url }}?v=20261024-1"></script>
+  <script src="{{ '/nativitas/synastry.js' | relative_url }}?v=20261024-1"></script>
+</body>
+</html>
