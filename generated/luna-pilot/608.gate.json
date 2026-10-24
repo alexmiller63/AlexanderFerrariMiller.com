@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%20100064"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Algedi: The Goat That Keeps Its Own Time\n\n*An autumn star in Capricornus offers a quiet lesson in stellar aging\u2014and a reason to linger over the southern sky.*\n\nAlgedi is a small, bright pause in the great sweep of the night. Look toward Capricornus, low in the southern half of the sky for many northern observers, and you\u2019ll find a star whose catalog numbers tell a story of motion and age. Its light has traveled more than a century to reach us; its place in the sky is changing, too, though far too slowly for the eye to notice.\n\nThe Algedi featured here is Alpha\u00b2 Capricorni, identified in SIMBAD as HIP 100064. The database lists its apparent visual magnitude as 3.58 and its spectral type as G9III. That classification places it among giant stars: stars that have evolved beyond the main sequence, where they spent most of their lives generating energy by fusing hydrogen in their cores. \u201cG9\u201d indicates a relatively cool star compared with hotter stellar classes; \u201cIII\u201d denotes the giant luminosity class. [SIMBAD\u2019s entry for HIP 100064](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%20100064)\n\nSIMBAD also gives Algedi a parallax of 29.914 milliarcseconds. Parallax is the apparent shift of a nearby star against more distant background stars as Earth moves around the Sun. Turn that measurement into distance\u2014roughly one parsec for each arcsecond of parallax\u2014and Algedi lies about 33 parsecs away, or 109 light-years. That\u2019s close enough for its motion across the sky to be measured. The same entry lists a proper motion of about 61 milliarcseconds per year in right ascension and 2 in declination. The change is real, but minute: no backyard observer will see it happening from night to night.\n\nFor a useful first view, choose a clear evening in late summer or autumn. Capricornus lies south of the celestial equator, so its stars appear lower for observers in much of the Northern Hemisphere. Start with a sky chart or planetarium app and search for Alpha\u00b2 Capricorni; SIMBAD\u2019s listed J2000 coordinates are right ascension 20h 18m and declination \u221212\u00b0 33\u2032. A compass can help you face south, but the star\u2019s low altitude means that buildings, trees and haze near the horizon may hide it. From farther south, it will climb higher.\n\nAt magnitude 3.58, Algedi is a naked-eye target under a reasonably dark sky, though binoculars can help you pick it out amid a washed-out urban background. Give your eyes time to adapt, and scan gently rather than staring directly at the star. If you use binoculars, steady them against a railing or chair back. The goal isn\u2019t magnification; it\u2019s to make the surrounding pattern easier to recognize.\n\nThen take a moment to consider the scale behind that steady point. The coordinates and distance are modern measurements; the star\u2019s light is an older dispatch, crossing the dark since long before the first telescopes. Its catalog designation, its subtle drift and its giant-star classification all describe different aspects of the same object. Yet at the eyepiece, Algedi remains wonderfully simple: one point of light, held in view for a few quiet minutes.\n\n**Scientific reference:** [SIMBAD Astronomical Database \u2014 HIP 100064](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%20100064).",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%20100064",
+            "overlap_terms": [
+              "around",
+              "ascension",
+              "before",
+              "catalog",
+              "celestial",
+              "class",
+              "coordinates",
+              "database",
+              "declination",
+              "ident",
+              "listed",
+              "luminosity"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
