@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%203384"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# MCG 2-28-12: A Quiet Disk in Leo\n\n*This lenticular galaxy offers a springtime target for observers with modest telescopes\u2014and a reminder that galaxies need not display sweeping spiral arms to have structure.*\n\nA small telescope may show MCG 2-28-12 as little more than a faint oval glow. That subdued appearance fits its catalog classification: the galaxy is listed as type SAB0, a lenticular system with a weak bar. Its light comes from a vast collection of stars, but its form is less showy than the grand pinwheels that often come to mind when we picture a galaxy.\n\nMCG 2-28-12 is also cataloged as NGC 3384. SIMBAD lists its position as right ascension 10 hours 48 minutes 16.9 seconds and declination +12\u00b0 37\u2032 45\u2033, for the J2000 reference epoch. Its listed optical dimensions are about 5.5 by 3.2 arcminutes. The database gives a heliocentric radial velocity of roughly 731 kilometers per second and describes the object as a galaxy toward a group of galaxies. These measurements place it firmly in the realm of galaxies beyond our own, not among the stars that form the Milky Way\u2019s foreground. [SIMBAD: NGC 3384](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%203384)\n\nThe \u201cSAB0\u201d label is a compact description of structure. \u201cS\u201d denotes a disk-shaped galaxy; \u201c0\u201d marks the lenticular class, which has a prominent central bulge and disk but lacks the conspicuous spiral arms of a spiral galaxy. \u201cAB\u201d indicates a weak bar. A classification is not a complete history: it tells us how the galaxy looks, not exactly how it formed or changed over time. Still, it gives observers a useful expectation. Look for a smooth glow, rather than sharply traced arms or bright knots of star formation.\n\nThe cataloged size also helps set expectations. At more than five arcminutes along its long axis, NGC 3384 spans a patch of sky wider than the full Moon, though its light is spread thinly across that area. A galaxy can be large in apparent extent and still look faint, because its light is diffuse. Under a dark sky, that broad, low-contrast glow may be easier to detect with averted vision\u2014looking slightly to one side of the object, where the eye is more sensitive to dim light.\n\nFor an observing session, search the coordinates in a planetarium app or use a detailed finder chart; the position is more reliable than trying to identify a faint galaxy by eye. The target lies in Leo, a constellation well placed in Northern Hemisphere evening skies during spring. Begin with a low-power eyepiece to make the field easier to navigate, then increase magnification if the sky is steady and dark. Keep nearby bright stars out of the field when possible, and give your eyes time to adapt.\n\nA small telescope may reveal only a pale, elongated smudge. That is enough. The soft oval is the visible signature of a structured galaxy, with a disk and weak bar recorded in the catalog and a much larger stellar system lying beyond the Milky Way. For a beginner, MCG 2-28-12 is a patient target: not a spectacle, but a quiet lesson in how much the universe can hide in a faint patch of light.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%203384",
+            "overlap_terms": [
+              "ascension",
+              "catalog",
+              "class",
+              "coordinates",
+              "database",
+              "declination",
+              "display",
+              "epoch",
+              "formation",
+              "galaxies",
+              "galaxy",
+              "group"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
