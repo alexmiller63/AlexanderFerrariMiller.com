@@ -39,6 +39,11 @@ class CandidateSelectionTests(unittest.TestCase):
             with patch.object(selector, "ROOT", root):
                 resumed = selector.candidates(10, resume_interrupted=True)
             self.assertEqual([int(t["id"]) for t in resumed], [4, 8, 9, 10, 11])
+            (saved / "repairs").mkdir()
+            (saved / "repairs/4.md").write_text("Completed replacement")
+            with patch.object(selector, "ROOT", root):
+                after_repair = selector.candidates(10, resume_interrupted=True)
+            self.assertEqual([int(t["id"]) for t in after_repair], [8, 9, 10, 11])
 
 
 if __name__ == "__main__":
