@@ -1,0 +1,77 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206210"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Turtle Nebula: A Small Shell in Hercules\n\n*NGC 6210 is a compact planetary nebula\u2014an old star\u2019s cast-off atmosphere, glowing in the summer sky.*\n\nSomewhere in Hercules, a star has shed its outer layers and left them hanging in space like a luminous shell. We call the object the Turtle Nebula. Its catalogue name is NGC 6210, and astronomical databases classify it as a planetary nebula\u2014not a planet, but a cloud of gas illuminated by the remnant of a dying star. [SIMBAD](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206210) places it at right ascension 16h 44m 29.5s and declination +23\u00b0 47\u2032 59\u2033 (J2000).\n\nThe nickname invites you to look for a little animal adrift among the stars. In a telescope, though, the first impression may be less turtle than bead: a small, concentrated patch that can resemble a star until magnification or careful comparison gives it away. The nebula\u2019s catalogued near-infrared dimensions are about 0.44 by 0.41 arcminutes\u2014less than half the apparent width of the full Moon. That measurement describes its recorded extent in near-infrared light; the visible outline can depend on wavelength and observing conditions. [SIMBAD](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206210)\n\n\u201cPlanetary nebula\u201d is a historical name, born when early telescopes showed some of these objects as small, planet-like disks. Their real story is stellar. A star nearing the end of its life can lose its outer atmosphere, spreading gas into space. Radiation from the hot stellar remnant energizes that material, making it glow. The nebula is therefore both an ending and a transition: a star\u2019s former outer layers becoming a temporary, expanding portrait of its final act.\n\n**Observing guidance:** Look for NGC 6210 in Hercules, a constellation well placed for northern observers on summer evenings. A star chart or telescope\u2019s setting circles can take you to its SIMBAD coordinates; a GoTo mount can use the catalogue designation NGC 6210. Because this is a compact target, begin at low power to establish the surrounding field, then increase magnification to see whether the \u201cstar\u201d resolves into a tiny disk. A steady, transparent night helps. An oxygen-III or UHC nebula filter may improve contrast under some skies, though results vary with telescope, magnification and conditions. If the object remains point-like, try averted vision\u2014looking slightly to one side of it\u2014and compare its appearance with nearby stars.\n\nDo not expect a photograph\u2019s dramatic colors or sculpted edges at the eyepiece. The eye is less sensitive to color in dim light, and small angular size can keep detail elusive. The pleasure is in the recognition: a speck that refuses to behave like a star, a distant cloud held in a patch of sky that otherwise looks quiet. Give it time, and let the name do what good names do\u2014not dictate what you must see, but invite you to look again.\n\n**Source:** [SIMBAD Astronomical Database: NGC 6210](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206210)",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206210",
+            "overlap_terms": [
+              "angular",
+              "ascension",
+              "catalogue",
+              "coordinates",
+              "database",
+              "declination",
+              "filter",
+              "first",
+              "ident",
+              "measurement",
+              "nebula",
+              "object"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [
+      {
+        "quoted_text": "Planetary nebula",
+        "source_matches": [
+          "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206210"
+        ],
+        "exact_text_confirmed": true
+      }
+    ],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
