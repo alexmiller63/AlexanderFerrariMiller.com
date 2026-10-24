@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204406"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# M86, the Galaxy That Seems to Come Toward Us\n\n*In Virgo\u2019s crowded spring sky, this bright elliptical galaxy offers a quiet visual reward\u2014and a surprising motion measured across the stars.*\n\nA galaxy can look still and distant, yet carry a startling velocity. M86, in the constellation Virgo, has a measured heliocentric radial velocity of about **\u2212306 kilometers per second**: its motion along our line of sight is toward us. That number doesn\u2019t mean the galaxy is rushing straight at Earth through empty space. M86 belongs to the rich Virgo galaxy region, where galaxies move in many directions under one another\u2019s gravity. Its measured approach is one part of that larger, restless scene.\n\nM86 is classified as an **E\u2013E/S0 galaxy**, a description placing it among elliptical and lenticular forms. Rather than the conspicuous spiral arms of galaxies like the Milky Way, it presents a smooth, rounded glow. In a catalogue, that glow spans roughly **9.3 by 6.6 arcminutes**\u2014a little over a quarter of the Moon\u2019s apparent width along its longest axis. Its apparent visual magnitude is listed at **8.90**, bright enough to make it a rewarding target for modest equipment under a dark sky. [SIMBAD\u2019s M86 entry](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204406) gives its classification, apparent size, brightness and radial velocity.\n\nThe telescope view is not a close-up. Even a good backyard instrument shows the galaxy as a soft oval of light, with its central region brighter than its outer haze. The wonder is partly in the contrast: a faint blur in the eyepiece is an immense stellar system, and the light arriving now began its journey long before anyone could point a telescope at it.\n\n## How to find it\n\nM86\u2019s J2000 coordinates are **right ascension 12h 26m 11.8s, declination +12\u00b0 56\u2032 45\u2033**. Those numbers can guide a GoTo mount or a digital chart. For star-hoppers, begin with Virgo on a clear spring evening and use a detailed star atlas to work into the constellation\u2019s rich galaxy fields. M86 lies close to M84, and a low-power eyepiece may show both galaxies in the same field, depending on the telescope and eyepiece. A chart is especially helpful here: the surrounding sky contains many faint galaxies, and the eye can easily mistake one smudge for another.\n\nStart with the lowest useful magnification to locate the field, then increase the power to study the galaxies\u2019 shapes. Let your eyes adjust to the darkness, shield nearby lights, and use averted vision\u2014looking slightly to one side of a faint object rather than directly at it. Under suburban skies, M86 may be subtle; darker skies make its diffuse outer light easier to detect. Binoculars can help sweep the region, but a small telescope is a better choice for distinguishing the galaxy from the background.\n\nThere is a particular pleasure in finding M86 among the Virgo galaxies: the view is modest, but the setting is immense. The eyepiece offers a pale oval. The catalogue offers coordinates, dimensions and a negative velocity. Between the two lies the astronomer\u2019s invitation\u2014to look carefully, and to remember that the apparently settled sky is still in motion.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204406",
+            "overlap_terms": [
+              "ascension",
+              "before",
+              "catalogue",
+              "coordinates",
+              "crowded",
+              "declination",
+              "elliptical",
+              "field",
+              "galaxies",
+              "galaxy",
+              "heliocentric",
+              "ident"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
