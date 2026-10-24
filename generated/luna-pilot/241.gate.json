@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%203941"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# MCG 6-26-51: A Quiet Light in Ursa Major\n\n*An understated barred spiral, NGC 3941 rewards patient searching\u2014and offers a glimpse of the galaxy\u2019s active, hidden center.*\n\nSome galaxies announce themselves with bright arms and brilliant star-forming knots. NGC 3941 is subtler: a barred spiral in Ursa Major, its light spread thinly across a patch of sky a little more than three arcminutes wide. In SIMBAD, it is classified as a Seyfert 2 galaxy\u2014an ordinary-looking description with an extraordinary implication: its central region is an active galactic nucleus, though much of that activity is concealed from our direct view. [SIMBAD: NGC 3941](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%203941)\n\nA galaxy\u2019s nucleus can outshine the stars around it when matter falls toward a central supermassive black hole. In a Seyfert 2, gas and dust around the nucleus block our view of some of the most energetic inner regions. That does not mean the galaxy will look dramatically different in an eyepiece. At the telescope, its story is mostly one of gentle contrast: a faint oval glow, perhaps with a brighter center, against a dark background. The engine is there, but it is not a visible flame.\n\nThe catalog places NGC 3941 at right ascension 11 hours 52 minutes 55 seconds and declination +36\u00b0 59\u2032 11\u2033 (J2000), with an optical size of about 3.48 by 2.37 arcminutes. Its listed B magnitude is 11.45; that number describes the galaxy\u2019s total light, not how bright each part appears. Because the light is spread out, a diffuse galaxy can be more challenging than a star of similar magnitude. SIMBAD gives its morphological type as SB_a, a barred spiral classification, and records a spectroscopic redshift of about 0.0031. [SIMBAD: NGC 3941](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%203941)\n\nFor observers at northern latitudes, spring is a natural season to look for it, when Ursa Major rides high in the evening sky. Use a detailed star chart or planetarium app to locate the galaxy from its coordinates; it is a telescopic target, not an obvious naked-eye object. An 8-inch telescope under a dark sky gives a good starting point, though smaller instruments may reveal it under excellent conditions. Let your eyes adapt for at least 20 minutes, keep stray light away, and use averted vision: look just to the side of the suspected position rather than straight at it. A low or medium magnification can make the faint glow easier to detect by keeping the surrounding field broad.\n\nGive the view time. At first, you may see only a slight brightening that seems to vanish when you stare directly at it. Return to the field, relax your gaze, and note the shape and orientation of the smudge. The goal is not to resolve the galaxy\u2019s spiral arms or its hidden nucleus; it is to recognize the extended light of a distant system. That quiet patch is enough. Behind it lies a barred spiral, and at its center, an active engine whose most energetic details remain veiled.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%203941",
+            "overlap_terms": [
+              "ascension",
+              "catalog",
+              "coordinates",
+              "declination",
+              "galaxy",
+              "ident",
+              "listed",
+              "magnitude",
+              "major",
+              "minutes",
+              "morphological",
+              "object"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
