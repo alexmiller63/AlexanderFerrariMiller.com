@@ -1,0 +1,75 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204605"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# MCG 10-18-74: A Quiet Island in the Northern Sky\n\n*An extended galaxy with a modest catalog number rewards patient searching\u2014and reminds us that a redshift is not always a simple yardstick.*\n\nSome galaxies announce themselves in photographs; others ask you to slow down. MCG 10-18-74 is a good target for the second kind of encounter. In the SIMBAD catalog, the corresponding entry for NGC 4605 describes a galaxy \u201ctowards a Group of Galaxies.\u201d Its listed position places it in a richly populated northern sky, but the galaxy itself is the prize: a broad, faint patch of light spread across several arcminutes. [SIMBAD: NGC 4605](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204605)\n\nThe catalog gives its position as right ascension 12h 39m 59s and declination +61\u00b0 36\u2032 33\u2033 (J2000). That far-northern declination is useful at northern latitudes: from 40\u00b0 north, the galaxy passes nearly overhead. Its listed optical dimensions\u2014about 5.8 by 2.3 arcminutes\u2014are larger than many observers expect from a small catalog entry. Those measurements describe its extent in images, though; they don\u2019t promise a sharply edged shape in the eyepiece.\n\nSIMBAD lists the galaxy\u2019s morphology as \u201cS/Ix,\u201d a classification that suggests a spiral or irregular appearance rather than a tidy, certain label. Such shorthand is a reminder that galaxies can resist neat categories. Their forms are shaped by stars, gas, dust and gravity, while our view depends on the wavelength and detail of the observations. A photograph may show structure that a visual observer sees only as a subtle brightening against the background.\n\nThere is another reason to treat the catalog numbers thoughtfully. The listed heliocentric radial velocity is about 145 kilometers per second, corresponding to a very small redshift, roughly 0.00048. Redshift is often used to estimate how far away a galaxy is, but at such a low velocity the expansion of the universe is not the only motion involved. A galaxy\u2019s motion within its local cosmic neighborhood can matter substantially. So this figure is useful scientific context, not a dependable stand-alone distance estimate.\n\nFor the observing session, start with the coordinates rather than a visual guess. Use a current chart or planetarium app set to the J2000 position, then identify nearby stars in a low-power eyepiece. Give your eyes time to adapt to darkness; avoid white phone screens, and use averted vision\u2014looking just to the side of the target\u2014to catch faint, diffuse light. A dark, transparent sky will help more than magnification alone. A small telescope may reveal only a soft oval glow, while a larger aperture and careful observing may bring out a brighter central region or uneven texture. Don\u2019t mistake a subdued view for a disappointing one: the galaxy\u2019s cataloged span is several times the apparent width of Jupiter.\n\nThe best moment may come when you stop expecting a dramatic spiral and recognize what the faint patch represents: a galaxy whose light has crossed space to meet your eye. MCG 10-18-74 is not a spectacle on demand. It is an invitation to look steadily, compare what you see with the chart, and let a distant island in the northern sky emerge at its own quiet pace.\n\n**Source:** [SIMBAD astronomical database entry for NGC 4605](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204605)",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204605",
+            "overlap_terms": [
+              "ascension",
+              "catalog",
+              "certain",
+              "coordinates",
+              "corresponding",
+              "database",
+              "declination",
+              "galaxies",
+              "galaxy",
+              "group",
+              "heliocentric",
+              "ident"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [
+      {
+        "quoted_text": "towards a Group of Galaxies.",
+        "source_matches": [],
+        "exact_text_confirmed": false
+      }
+    ],
+    "all_quoted_passages_confirmed": false,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
