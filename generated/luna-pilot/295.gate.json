@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204736"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# M94: A Small Island with a Powerful Name\n\n*At the eyepiece, a distant galaxy becomes a lesson in scale, classification and the quiet art of finding things.*\n\nSomewhere among the stars, a faint patch of light waits for a patient observer. M94 is also catalogued as NGC 4736, and SIMBAD classifies it as a Seyfert galaxy. That label belongs to the language of astronomy: a way of sorting galaxies by observed properties, not a description of what an eye will see through a backyard telescope. To the observer, M94 begins more simply\u2014as a target to locate, and a soft glow to bring into focus.\n\nThe coordinates listed for M94 are right ascension 12h 50m 53s and declination +41\u00b0 07\u2032 13\u2033 (J2000). Its recorded optical dimensions are about 7.0 by 5.9 arcminutes: only a small fraction of the apparent width of the full Moon. SIMBAD also lists a visual magnitude of 8.24. These numbers offer a practical portrait: a compact, faint object, best approached with a careful chart and a dark, steady sky. The database identifies its morphological type as S_AB, a classification astronomers use to describe galaxy structure. (SIMBAD: https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204736)\n\nA magnitude is not a promise of easy visibility. It is a measure that helps compare brightness, while the galaxy\u2019s extended light is spread across an area of sky. A star\u2019s light is concentrated in a point; a galaxy\u2019s is not. So even an object with a published magnitude can be elusive when the sky is bright, the air unsteady or the observer\u2019s eyes not yet adapted to darkness.\n\nBegin with a star chart or a planetarium app, and use M94\u2019s coordinates to confirm the field rather than relying on a guess. If your mount has setting circles or a digital coordinate readout, enter the J2000 position; otherwise, work from nearby stars on a chart, moving in small steps and checking the field often. Start at low magnification, which makes it easier to sweep and identify the surrounding star pattern. Once you have the target, try a moderate increase. Look slightly to one side of the faint patch: averted vision can make dim details easier to detect.\n\nGive your eyes time to adjust, and shield them from phone screens and nearby lights. If the first attempt yields no galaxy, pause. Check focus, let the telescope settle, and try again. Averted vision is not a trick so much as a quiet collaboration with the eye: the center of vision is excellent for detail, but less sensitive to very faint light.\n\nThe scientific record is precise in its own way: a name, coordinates, measured dimensions, brightness and classification. The view at the eyepiece is less tidy. It may be a subtle smudge, appearing and fading as your gaze shifts. That contrast is part of the pleasure. M94 is catalogued as a galaxy with a particular type and measured position; for the observer, it is also a small encounter with light arriving from beyond the stars in the foreground.\n\nTonight\u2019s goal need not be a dramatic view. Find the field, let the faint glow emerge, and stay with it long enough to recognize that you are looking at another galaxy. That is a fine result for one clear patch of sky.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204736",
+            "overlap_terms": [
+              "ascension",
+              "coordinate",
+              "coordinates",
+              "database",
+              "declination",
+              "galaxy",
+              "ident",
+              "listed",
+              "magnitude",
+              "measure",
+              "morphological",
+              "object"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
