@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204552"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# M89: A Subtle Light in Virgo\n\n*An understated galaxy, catalogued under two names and two classifications, rewards patient spring observing.*\n\nOn a clear spring night, Virgo offers a field rich in galaxies. M89 is easy to overlook: not a bright star or a showpiece nebula, but a small, softly glowing oval. Its understated appearance is only part of its story. The galaxy is also known as NGC 4552, and SIMBAD classifies it as both an S0 galaxy and a Seyfert 2 galaxy. [SIMBAD](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204552)\n\nS0, or lenticular, is a morphological classification. In the eyepiece, M89 may appear as a smooth patch rather than an object with obvious detail. The second label, Seyfert 2, comes from a different kind of classification: it describes the galaxy\u2019s catalogued type, not what an observer can expect to see through a small telescope. The contrast is striking. A restrained-looking oval carries a name associated with activity in its classification.\n\nSIMBAD lists M89\u2019s apparent visual magnitude as 9.75 and its optical dimensions as about 4.36 by 3.91 arcminutes. Those numbers offer useful context, but they do not turn the galaxy into a crisp target. It covers a modest area of sky, and its light is spread across that area rather than concentrated in a point. Expect a faint, diffuse patch, not a sharply defined disk. [SIMBAD](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204552)\n\n**Finding the faint oval**\n\nA star chart or planetarium app can guide you to the right field. SIMBAD gives M89\u2019s J2000 position as right ascension 12h 35m 39.8s and declination +12\u00b0 33\u2032 23\u2033. Treat these coordinates as a map address: match them to the chart, then use the stars in your finder or eyepiece to work toward the target. The coordinates help identify where to look; they cannot guarantee that local conditions will make the galaxy visible. [SIMBAD](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204552)\n\nGive your eyes time to adjust to darkness, and avoid white light while observing. Begin with a broad enough field to orient yourself, then increase magnification only if the view remains steady and the galaxy stays visible. If M89 does not appear immediately, move slowly around the charted position. Looking slightly to one side of the suspected spot\u2014rather than directly at it\u2014may help you notice a faint patch.\n\nThe reward is not a burst of detail. It is the gradual recognition that a pale smudge is holding its place among the stars. The catalogue gives the smudge a measured size, a brightness, precise coordinates and two different classifications. The eyepiece gives something quieter: the experience of finding an extended object whose appearance is understated, even as its identity is more complicated than that first glimpse suggests. M89 asks for patience, not spectacle\u2014and makes that patience part of the observing.\n\n**Source:** [SIMBAD entry for NGC 4552 (M89)](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204552)",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204552",
+            "overlap_terms": [
+              "around",
+              "ascension",
+              "catalogue",
+              "coordinates",
+              "declination",
+              "defined",
+              "galaxy",
+              "ident",
+              "known",
+              "magnitude",
+              "morphological",
+              "object"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
