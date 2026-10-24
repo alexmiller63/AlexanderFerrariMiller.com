@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%203419"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Diphda Keeps the Southern Edge of Autumn\n\n*At the bright end of Cetus, a nearby giant star rewards a simple look south\u2014and a little patience with the horizon.*\n\nAs autumn deepens, the sky\u2019s familiar northern landmarks make room for a quieter figure: Cetus, the whale, spread across the southern sky. Its brightest star, Diphda, does not leap out like a beacon overhead. It waits lower down, a steady point of light that asks observers to look beyond the easy, familiar patterns.\n\nDiphda is also catalogued as Beta Ceti. SIMBAD lists it as a G9.5 III star: a late-G-type giant, larger and more evolved than the Sun. Its measured parallax puts it roughly 96 light-years away. At about magnitude 2, it is bright enough to see without binoculars, though city glow and a bright Moon can soften its presence.\u00b9\n\nThat light has been travelling longer than most human stories. Still, the view from Earth is immediate: a single star against the dark, bright enough to find once you know where to look. Through binoculars, Diphda remains a point, but the surrounding field gains texture. The instrument is not needed to split the star or reveal a hidden spectacle. Its gift is scale\u2014the sense that even a small patch of sky is crowded with distant suns.\n\nFor a practical search, use the coordinates as a map pin: right ascension 00h 43m 35s, declination \u221218\u00b0 00\u2032, for the J2000 position listed by SIMBAD.\u00b9 In the Northern Hemisphere, Diphda appears in the southern part of the sky during autumn evenings. From around 40\u00b0 north latitude, it reaches only about 32\u00b0 above the southern horizon at its highest point. Give it a clear southern view; trees, buildings and haze can hide a star that would be easy to see higher overhead.\n\nLook when Cetus is well placed, rather than straining for it as soon as darkness falls. A rotating sky chart or planetarium app can help: search for \u201cDiphda\u201d or \u201cBeta Ceti,\u201d then follow the chart to the star\u2019s position. Once you have found it, pause before reaching for optics. Let your eyes settle, and notice how a bright point can feel both precise and far away.\n\nThe catalog records another kind of motion, too. Diphda\u2019s listed proper motion is about 0.23 arcseconds per year\u2014not something the eye can follow from one night to the next, but a measurable drift across the background over long spans.\u00b9 The stars seem fixed because our lives are brief beside their journeys.\n\nThat is part of the pleasure of an autumn observing session. You do not need a telescope, a dark-sky expedition or a long list of targets. Find a safe spot with a view south; check the forecast for cloud and haze; let your eyes adjust; and pick out Diphda. If the horizon is murky, try again on another clear night. Some stars reward effort with spectacle. Diphda offers a quieter reward: a point of light, a place in the sky, and the knowledge that its light began its journey toward you about a century ago.\n\n**Source**\n\n1. SIMBAD Astronomical Database, Beta Ceti (HIP 3419): https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%203419",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%203419",
+            "overlap_terms": [
+              "around",
+              "ascension",
+              "before",
+              "catalog",
+              "coordinates",
+              "database",
+              "declination",
+              "ident",
+              "listed",
+              "magnitude",
+              "motion",
+              "north"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
