@@ -1,0 +1,77 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2062322"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Beta Mus, a Southern Pair in the Fly\n\n*This blue-white star\u2019s catalog entry hints at more than one sun\u2014but \u201cmultiple\u201d does not necessarily mean an easy split in a backyard telescope.*\n\nOn a dark March night, look south and let the sky\u2019s slow turning bring Beta Mus toward the meridian. Its name is compact; its setting is not. Musca, the Fly, is a small southern constellation, and Beta Mus lies deep in the southern sky. At declination \u221268\u00b0, it is best placed for observers south of the tropics. From far-northern latitudes, it never rises; from near the equator, it skims low above the southern horizon.\n\nThe star is marked by catalog coordinates of right ascension 12 hours 46 minutes and declination \u221268 degrees 06 minutes (J2000). Those numbers are a useful way to find it with a planetarium app or a detailed star chart. Around March, it crosses the local meridian near midnight; the exact time shifts with date and location. Choose a clear view south, away from buildings and trees, and give your eyes time to adapt to the dark.\n\nThere is a scientific reason to linger over this modest patch of sky. SIMBAD lists Beta Mus as a \u201cdouble or multiple star\u201d and gives its spectral type as B2V+B3V. The B classifications indicate hot stars; the \u201cV\u201d denotes main-sequence stars, still fusing hydrogen in their cores. The paired spectral classification signals two stellar components in the system, but it does not tell an observer how far apart they appear in the sky. A catalog description is not a promise that the pair will be separable through a small telescope\u2014or at all with the naked eye.\n\nThat distinction offers a useful observing lesson. Start with binoculars or the unaided eye to locate the field, then consult a chart that marks nearby stars. If you have a telescope, try a range of magnifications only if you have a reliable source for the pair\u2019s angular separation; do not assume that increasing power will reveal two points. Atmospheric turbulence, poor focus and a low target can all blur fine detail. The southern horizon is especially unforgiving: observe when Beta Mus is highest, and avoid nights when haze or city glow washes out the view.\n\nA second clue to the system\u2019s scale comes from parallax\u2014the tiny apparent shift in a star\u2019s position as Earth moves around the Sun. SIMBAD lists a parallax of 9.55 milliarcseconds. Inverting that value gives a distance of roughly 105 parsecs, or about 342 light-years. The figure is an estimate, not a direct journey through space, and the catalog also reports an uncertainty in the parallax measurement.\n\nFor a field note, record what you can actually see: the date, observing site, sky conditions and equipment. Note whether Beta Mus looked single or showed any distinct companion, without treating a failed split as a failure of the night. Some stars reward a close inspection; others make the more important impression by reminding us how much a name and a catalog can tell us\u2014and how much remains hidden at the eyepiece.\n\n**Source:** SIMBAD, Beta Mus (HIP 62322): https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2062322",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2062322",
+            "overlap_terms": [
+              "around",
+              "ascension",
+              "catalog",
+              "coordinates",
+              "declination",
+              "degrees",
+              "double",
+              "field",
+              "ident",
+              "increasing",
+              "measurement",
+              "multiple"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [
+      {
+        "quoted_text": "double or multiple star",
+        "source_matches": [
+          "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2062322"
+        ],
+        "exact_text_confirmed": true
+      }
+    ],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
