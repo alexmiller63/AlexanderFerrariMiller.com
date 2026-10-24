@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204697"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# NGC 4697: A Quiet Island in Virgo\n\n*An elliptical galaxy with a broad, soft glow offers a springtime test of patience\u2014and a reminder that galaxies need not have spiral arms to hold a skyful of stars.*\n\nSome galaxies announce themselves with curling arms. NGC 4697 makes a quieter entrance. In the constellation Virgo, its light gathers into an elongated haze: a faraway island of stars whose shape is easier to notice when you stop expecting a dramatic spiral.\n\nThe catalogues describe NGC 4697 as an elliptical galaxy, with an optical size of about 7.6 by 5.0 arcminutes. That is several times the apparent width of the full Moon, though the galaxy\u2019s light is spread thinly across the sky. SIMBAD lists a B-band magnitude of 10.97; that is a measurement in blue light, not a promise of how bright it will look through your telescope. The view depends on the instrument, sky darkness and your eyes\u2019 adjustment to the dark.\n\nAn elliptical classification describes the galaxy\u2019s overall form, not a lack of complexity. Unlike a spiral galaxy, whose disk and arms can make its structure immediately recognizable, an elliptical galaxy generally appears as a smooth, rounded or stretched glow. Its stars blend together at a distance. For an observer, the challenge\u2014and pleasure\u2014is to tease the galaxy\u2019s outline from the background, then notice how the light seems to grow brighter toward the center.\n\nNGC 4697 also has a measured heliocentric radial velocity of about 1,210 kilometers per second in SIMBAD. That figure describes motion along our line of sight relative to the Sun; it is not a simple measure of the galaxy\u2019s full motion through space. It is one more clue that the soft patch in the eyepiece is not a cloud within the Milky Way, but a separate galaxy.\n\nFor a first search, use the published J2000 coordinates: right ascension 12h 48m 35.9s, declination \u221205\u00b0 48\u2032 02\u2033. A planetarium app or telescope setting circles can guide you to the field. NGC 4697 is best placed for evening observing in northern spring, when Virgo climbs high in the sky. Choose a dark night away from streetlights, and give your eyes time to adapt.\n\nA small telescope may reveal only a faint blur. An 8-inch telescope or larger, under a dark sky, gives you a better chance of tracing the galaxy\u2019s elongated shape; use a low or medium magnification to begin, then increase it if the view remains clear. Look slightly to one side of the target as well as directly at it: averted vision can make a faint glow easier to detect. Don\u2019t be discouraged if the first glance seems empty. Hold the field steady, let your eyes settle, and watch for the subtle oval to emerge.\n\nThat is the almanac\u2019s small invitation: not every deep-sky object rewards a quick look. Some ask for stillness. In Virgo, NGC 4697 waits as a pale, extended light\u2014less a portrait than a whisper, but one sent across an immense gulf.\n\n**Source:** [SIMBAD: NGC 4697](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204697)",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204697",
+            "overlap_terms": [
+              "ascension",
+              "catalogues",
+              "coordinates",
+              "declination",
+              "depends",
+              "elliptical",
+              "field",
+              "galaxies",
+              "galaxy",
+              "heliocentric",
+              "ident",
+              "magnitude"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
