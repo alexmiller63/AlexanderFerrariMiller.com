@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2061359"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Kraz, the Crow\u2019s Quiet Beacon\n\n*An unhurried yellow giant marks one corner of Corvus\u2014and rewards a closer look at what a star\u2019s light can tell us.*\n\nThe crow in the spring sky is small, but its outline is easy to remember: four bright points make a crooked quadrilateral below and west of Spica. At one corner shines Kraz, also catalogued as Beta Corvi. It is not the sky\u2019s brightest star, nor does it need to be. On a clear evening, its steady light is enough to anchor the pattern.\n\nKraz has the useful distinction of being both familiar and physically unusual. SIMBAD lists its visual magnitude as 2.64, bright enough to see without optical aid from a reasonably dark site. Its spectral classification is G5 II Ba0.3: \u201cG5\u201d places it among G-type stars, \u201cII\u201d identifies it as a bright giant, and the Ba notation records a mild barium spectral peculiarity. That chemistry is not apparent to the unaided eye; it is read from the star\u2019s spectrum, where light is separated into its component wavelengths. The same database gives a parallax of 22.0049 milliarcseconds. Turning that angle into distance puts Kraz roughly 148 light-years away. [SIMBAD: Kraz / HIP 61359](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2061359)\n\nThe numbers offer one kind of intimacy. Kraz\u2019s measured proper motion\u2014its slow drift against more distant stars\u2014is about 56.7 milliarcseconds per year, mostly southward. That works out to less than three arcseconds over fifty years: far too little for a casual observer to notice, but enough for careful astrometry to measure. The star seems fixed in the crow\u2019s corner because the sky\u2019s great motions unfold on timescales longer than a human glance.\n\nFor an observing night, begin with Spica, Virgo\u2019s brightest star. In Northern Hemisphere spring, look below and a little west of it for Corvus\u2019s compact four-star shape. Kraz is one of the pattern\u2019s corner stars; give your eyes a moment to adapt, and the outline should emerge even when the surrounding sky is not perfectly dark. Binoculars can help you pick out the field, but Kraz itself is bright enough to find unaided. From far northern locations, it sits low in the southern sky; from farther south, it climbs higher. A clear southern horizon helps.\n\nTry a simple comparison: look at Kraz, then sweep your gaze across the other three main stars of the crow. The figure is not a literal bird, of course, but the old constellation gives the points a shared story. Kraz\u2019s catalogue name and classification give it another\u2014one written in coordinates, parallax, and spectral lines. Both ways of looking belong beneath the same night sky.\n\nOn your next spring evening, find Spica, trace the little quadrilateral, and pause at Kraz. Its light began its journey around 148 years ago. The point you see is quiet, but its spectrum and measured motion tell a history that the eye alone cannot read.\n\n**Source:** [SIMBAD Astronomical Database, HIP 61359](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2061359)",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2061359",
+            "overlap_terms": [
+              "angle",
+              "around",
+              "catalogue",
+              "coordinates",
+              "database",
+              "ident",
+              "magnitude",
+              "measure",
+              "mostly",
+              "motion",
+              "motions",
+              "optical"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
