@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%207293"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Helix Nebula: The Star That Left Its Light Behind\n\n*An enormous, ghostly shell in Aquarius marks the brief, beautiful aftermath of a star\u2019s long life.*\n\nThe Helix Nebula is less a jewel than a whisper. On a dark night, through a telescope, it may appear as a pale ring suspended among the stars\u2014a shape easy to miss if you expect the brilliant colors of photographs. Yet this faintness is part of its story: the nebula is a vast veil of gas, thrown off by a dying star and now lit by the hot stellar remnant at its center.\n\nCatalogued as NGC 7293, the Helix is a planetary nebula. Despite the name, it has nothing to do with planets. The label dates to an era when these round, hazy objects could resemble planets in small telescopes. In this case, the glowing shell records a late stage in a star\u2019s evolution: after swelling and shedding its outer layers, the star leaves behind a compact, hot core. Its radiation makes the surrounding gas shine. SIMBAD lists the nebula\u2019s central star with spectral type DAO.5.\n\nThe distance offers a sense of scale. SIMBAD gives the star a parallax of 5.0124 milliarcseconds; taking the reciprocal gives roughly 200 parsecs, or about 650 light-years. The catalog also lists an angular size of 13.4 arcminutes in radio data. That is a broad patch of sky\u2014nearly half the apparent width of the full Moon\u2014though a nebula\u2019s measured size can vary with the wavelength and method used.\n\nFor observers, the Helix rewards patience more than magnification. Its coordinates are right ascension 22h 29m and declination \u221220\u00b0 50\u2032 (J2000), placing it in Aquarius. From mid-northern latitudes it stays fairly low: at 40\u00b0 north, it reaches only about 29\u00b0 above the southern horizon. Choose a night when it culminates, and seek a clear, dark southern view, away from streetlights and haze.\n\nStart with a low-power eyepiece to take in the nebula\u2019s full extent. A narrowband nebula filter may make its faint outline easier to distinguish, while averted vision\u2014looking slightly beside the object rather than directly at it\u2014can reveal more than a steady stare. Give your eyes time to adapt, and don\u2019t be discouraged if the first view seems like little more than a dim patch. The ring is subtle; photographs gather light over long exposures and often use color to represent different wavelengths, so the eyepiece view will not match their vividness.\n\nThere is a quiet intimacy to finding it. You are looking at material cast outward by a star, illuminated as the remnant at its center moves into a new phase. The Helix is not a preview of Earth\u2019s fate on any human timescale, but it does offer a glimpse of one possible stellar ending\u2014and of how an ending can become a structure in the sky.\n\n### Observing notes\n\nUse a dark site, a clear southern horizon and a low-power view. At mid-northern latitudes, observe when the Helix is highest; a nebula filter and averted vision may help.\n\n**Source:** SIMBAD Astronomical Database, NGC 7293: https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%207293",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%207293",
+            "overlap_terms": [
+              "angular",
+              "ascension",
+              "catalog",
+              "coordinates",
+              "database",
+              "declination",
+              "filter",
+              "ident",
+              "nebula",
+              "north",
+              "object",
+              "objects"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
