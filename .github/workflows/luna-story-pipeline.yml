@@ -49,6 +49,9 @@ jobs:
       OPENAI_API_KEY: ${{ inputs.paid_execute && secrets.OPENAI_API_KEY || '' }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          # Resolve the branch after the concurrency queue releases this job.
+          ref: ${{ github.ref }}
       - name: Select new candidates and preflight identities (free)
         env:
           REPAIR_TRUNCATED: ${{ inputs.repair_truncated }}
