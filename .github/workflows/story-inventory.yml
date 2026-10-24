@@ -1,0 +1,25 @@
+name: Story Inventory - Free
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  inventory:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Reconcile permanent IDs without paid API calls
+        run: python tools/story_inventory.py
+      - name: Save complete inventory
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: story-inventory
+          path: generated/story-inventory.json
+          if-no-files-found: warn
