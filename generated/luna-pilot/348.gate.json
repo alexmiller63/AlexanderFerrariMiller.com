@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206514"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# The Trifid Nebula: A Patch of Sky with More Than One Story\n\n*Catalogs, clouds and a patient night outdoors reveal why this familiar Sagittarius target rewards a closer look.*\n\nThe Trifid Nebula is a good reminder that the sky\u2019s familiar names can gather several kinds of objects into one small patch. In a telescope, it is a destination; in a catalog, it is also a set of coordinates, measurements and labels. And under a dark sky, it begins as something wonderfully simple: a faint smudge you found for yourself.\n\nThe catalog entry for NGC 6514 gives the position as right ascension 18h 02m 42s and declination \u221222\u00b0 58\u2032 18\u2033. It lists an angular size of about 28 arcminutes\u2014nearly the width of the full Moon. SIMBAD\u2019s basic-data line identifies M20 as an open cluster, and its notes say the cluster C 1759-230 lies at the center of the Trifid Nebula. Those details offer a useful scientific perspective: the view is not just a picturesque cloud, but a crowded celestial neighborhood with a cluster at its heart. ([SIMBAD: NGC 6514](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206514))\n\nNebulae are clouds of material between stars; open clusters are groups of stars loosely bound by gravity. They are different things, but here the catalog places them together in the same field. That distinction matters at the eyepiece. The catalog\u2019s neat labels describe objects astronomers identify and measure; the view through a small instrument may not separate them so clearly. Light from the region is subtle, and what you see depends on your sky, your equipment and the time you give your eyes.\n\nFor observers in the Northern Hemisphere, the Trifid is a summer target in Sagittarius, low toward the southern horizon. That low altitude is part of the challenge: atmospheric haze and nearby buildings or trees can take a toll on contrast. Choose a night when Sagittarius is as high as it gets from your location, find an open southern view, and wait until the Moon is absent or well away. Give your eyes at least 20 minutes to adapt to the dark, and avoid checking a bright phone screen.\n\nA star chart or sky app can help you star-hop through Sagittarius; the SIMBAD coordinates are useful if your mount or software accepts them. Begin with binoculars or a low-power eyepiece, then increase magnification only if the image stays steady and clear. From a dark site, binoculars may reveal a soft patch rather than detail. A telescope may bring out structure, but don\u2019t expect a photograph\u2019s vivid contrast: the eye gathers light differently, and faint features can take time to emerge. If the nebula seems elusive, pause, look slightly to one side of it, and try again.\n\nThere is pleasure in both versions of the target: the scientific entry, with its coordinates and cluster note, and the live view, delicate and dependent on the night. The first tells you where to look. The second asks you to slow down, settle in, and let a patch of sky become a place.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206514",
+            "overlap_terms": [
+              "about",
+              "angular",
+              "ascension",
+              "basic",
+              "catalog",
+              "catalogs",
+              "celestial",
+              "center",
+              "cluster",
+              "coordinates",
+              "crowded",
+              "declination"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
