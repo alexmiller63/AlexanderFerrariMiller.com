@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2061932"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# HIP 61932: A Southern Beacon with More Than One Story\n\n*Bright enough to find without a telescope, Gamma Centauri rewards a closer look at the quiet distinctions between what we see and what the catalogues reveal.*\n\nOn a clear southern evening, HIP 61932 is not hard to find: it shines as Gamma Centauri, a bright point in the constellation Centaurus. To the unaided eye, it looks like a single star. Astronomical catalogues tell a more layered story. SIMBAD identifies it as a double or multiple star and lists the combined spectral classification A1IV+A0IV. The designation marks two A-type components, each classified in the subgiant luminosity class\u2014but the catalogue entry alone does not tell an observer whether they can be separated with a particular telescope. [SIMBAD\u2019s HIP 61932 entry](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2061932)\n\nIts brightness is the first invitation. SIMBAD lists a visual magnitude of 2.17, making Gamma Centauri an easy naked-eye target under ordinary dark-sky conditions. Its coordinates\u2014right ascension 12h 41m 31s, declination \u221248\u00b0 57\u2032 36\u2033 (J2000)\u2014place it deep in the southern sky. If you live in the Southern Hemisphere, look for Centaurus high in the evening sky during the season when the constellation is prominent; from far northern latitudes, the star may never rise above the horizon.\n\nBegin with your eyes, not an instrument. Find the Southern Cross, then use a current sky chart or astronomy app to trace the surrounding pattern of Centaurus and identify Gamma Centauri. A pair of binoculars can help distinguish it from nearby field stars, but don\u2019t expect them to reveal a double: HIP 61932\u2019s catalogue classification describes the system, not a guaranteed view of separated components. For a telescope, consult a current double-star observing source for separation and position angle before trying to split it. Those details are not given in the SIMBAD information cited here.\n\nThe measured parallax offers another way to appreciate the star. SIMBAD lists 25.06 milliarcseconds. Parallax is the apparent shift of a nearby star against more distant background stars as Earth moves around the Sun. Taking the reciprocal of that value gives an approximate distance of 40 parsecs, or about 130 light-years. That calculation turns a tiny angle into a sense of scale: the light entering your eye tonight began its journey well before the modern era.\n\nThe entry also records a radial velocity of \u22125.50 kilometres per second. In the usual heliocentric convention, the negative sign indicates motion toward the Sun. The value is modest on a cosmic scale, but it adds motion to the portrait: Gamma Centauri is not fixed against the blackness, even if its change in position is far too subtle to watch over a single night.\n\nThere is a pleasing mismatch between the view and the knowledge. At the eyepiece, HIP 61932 may remain a steady point of light. In the catalogue, that point becomes a multiple-star designation, a pair of spectral classifications, a distance inferred from parallax, and a measured velocity. Spend a few minutes with it anyway. Sometimes the reward of observing is not seeing every component, but knowing what a small, bright point contains\u2014and how much evidence it takes to say so.\n\n**Source:** [SIMBAD Astronomical Database: HIP 61932](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2061932)",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2061932",
+            "overlap_terms": [
+              "angle",
+              "around",
+              "ascension",
+              "before",
+              "catalogue",
+              "catalogues",
+              "class",
+              "coordinates",
+              "current",
+              "database",
+              "declination",
+              "double"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
