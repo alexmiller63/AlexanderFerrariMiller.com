@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%204577"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Alpha Scl: A Blue Pinprick in the Sculptor\u2019s Workshop\n\n*This fourth-magnitude southern star is easy to overlook\u2014but its light carries the signature of a hot, evolved, spectrally peculiar giant.*\n\nIn the dim southern constellation Sculptor, Alpha Scl offers a small but satisfying act of celestial discovery: finding a star whose importance is not measured by how loudly it shines. At visual magnitude 4.27, it is bright enough to see without optical aid under a dark sky, yet Sculptor\u2019s sparse star patterns can make it easy to pass over. Give it a moment, and the solitary point becomes a useful marker in a part of the heavens with few familiar landmarks.\n\nThe catalogue name is a clue to its position: Alpha Sculptoris, abbreviated Alpha Scl. SIMBAD lists its coordinates as right ascension 00h 58m 36s and declination \u221229\u00b0 21\u2032 27\u2033 (J2000), placing it deep in the southern sky. The same database gives a parallax of 4.6224 milliarcseconds. Turning that tiny apparent shift into distance puts the star roughly 216 parsecs away\u2014about 705 light-years, with the usual uncertainty that comes with distance estimates. [SIMBAD: Alpha Sculptoris](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%204577)\n\nIts spectrum supplies the more vivid portrait. SIMBAD classifies Alpha Scl as B7IIIp: \u201cB7\u201d identifies a hot, blue-white star; \u201cIII\u201d indicates a giant luminosity class; and \u201cp\u201d flags peculiarities in its spectrum. In other words, the light reaching your eye is not just a point in a pattern. It is the visible trace of a star hotter and more evolved than the Sun, with spectral features that set it apart from an ordinary member of its class. The catalogue\u2019s measured visual brightness, V = 4.27, makes it a good example of how a star can be both modest to the eye and scientifically distinctive. [SIMBAD data](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%204577)\n\nFor a practical search, start with a star chart or planetarium app set to Sculptor and look south of the celestial equator. Alpha Scl\u2019s coordinates make it a reliable anchor once you have the constellation in view, but Sculptor itself is not a bold, easy-to-recognize figure. Under suburban skies, binoculars can help pick out its surrounding pattern; under dark skies, try first with the unaided eye, then use binoculars to confirm the field. A small telescope is not needed to appreciate this target: its appeal is the contrast between its unassuming appearance and its physical character.\n\nTiming and location matter. Because Alpha Scl lies at declination \u221229\u00b0, it culminates only about 21\u00b0 above the southern horizon for an observer at latitude 40\u00b0 north. From farther south it climbs higher; from the Southern Hemisphere it is much more comfortably placed. For mid-northern observers, late autumn evenings are a useful window, though local horizons and light pollution can make a real difference. Choose a clear night, face south, and give your eyes time to adapt. Then look for the star\u2019s steady point of light\u2014not spectacular, perhaps, but carrying a story written in its spectrum.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%204577",
+            "overlap_terms": [
+              "ascension",
+              "catalogue",
+              "celestial",
+              "class",
+              "coordinates",
+              "database",
+              "declination",
+              "flags",
+              "ident",
+              "luminosity",
+              "magnitude",
+              "north"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
