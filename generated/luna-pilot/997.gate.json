@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2072370"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Alpha Aps: A Warm Light in the Far South\n\n*At the edge of Apus, a golden giant offers southern observers a bright, easy target\u2014and a reminder that the sky\u2019s landmarks depend on where you stand.*\n\nSome stars announce themselves by belonging to a familiar shape. Alpha Aps is quieter: a steady point in the southern constellation Apus, the Bird of Paradise, shining far below the celestial equator. Its name is a chart label\u2014Alpha Apodis, shortened to Alpha Aps\u2014not a promise that it will be easy to find from every backyard. For observers in the south, though, this third-magnitude star is a fine destination for a clear evening.\n\nThe catalogue numbers give it a more intimate portrait. SIMBAD lists Alpha Aps at visual magnitude 3.798 and classifies it as K3 III: a cool, orange-toned giant star. Its measured parallax, 6.5509 milliarcseconds, places it roughly 153 parsecs away, or about 500 light-years. That distance is inferred from the tiny apparent shift in its position as Earth circles the Sun. The \u201cgiant\u201d in its classification describes its stellar stage, not its brilliance in our sky: Alpha Aps is conspicuous under dark conditions, but it does not rival the brightest stars. [SIMBAD: Alpha Apodis (HIP 72370)](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2072370)\n\nIts address is especially striking. Alpha Aps lies at right ascension 14 hours 47 minutes and declination 79 degrees south. That puts it only about 11 degrees from the south celestial pole\u2014the point around which the southern sky appears to turn. There is no bright southern counterpart to Polaris marking the pole itself, but Alpha Aps is one of the stars in that circumpolar neighborhood. From many southern locations it never sets, circling the pole through the night and seasons.\n\nTo observe it, begin with a sky chart or planetarium app set for your location and search for Apus. Alpha Aps is a useful anchor in this relatively faint constellation, but the surrounding pattern may take a little patience under suburban skies. Once you have its position, look for a single warm-looking point of light. At magnitude 3.8 it can be seen with the unaided eye from a reasonably dark site; binoculars will make it easier to pick out and give the star field more depth. A small telescope will show the star as a point, not a disk\u2014its great distance keeps even a giant\u2019s visible surface far too small to resolve with ordinary backyard instruments.\n\nFor observers around latitude 30 degrees south, Alpha Aps reaches about 41 degrees above the southern horizon at its highest. Farther south, it climbs higher; near the equator, it stays low in the south. It is circumpolar for observers south of roughly 11 degrees south latitude, while north of roughly 11 degrees north it never rises. These limits make location an essential part of the observing plan. In southern autumn and winter, look for it in the evening sky; allow time for your eyes to adapt, and choose a spot with an unobstructed southern horizon if the star appears low.\n\nAlpha Aps does not need a dramatic story attached to it. Its appeal is the encounter itself: a modest point of amber light, close in appearance to the southern pole, yet hundreds of light-years away. Find it once, and the turning sky becomes easier to read.\n\n**Source:** [SIMBAD database entry for HIP 72370 / Alpha Apodis](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2072370)",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2072370",
+            "overlap_terms": [
+              "allow",
+              "around",
+              "ascension",
+              "catalogue",
+              "celestial",
+              "database",
+              "declination",
+              "degrees",
+              "depend",
+              "field",
+              "ident",
+              "magnitude"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
