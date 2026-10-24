@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%203992"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# M109: A Barred Island in the Great Bear\n\n*In Ursa Major, a faint oval of light marks a galaxy whose measured outline spans several minutes of arc\u2014and whose true scale is far beyond the reach of any eyepiece.*\n\nM109 is easy to overlook. Its address is in the familiar northern sky of the Great Bear, but the galaxy itself is no bright beacon: it waits as a dim, extended smudge, asking for a dark sky and a patient look. At its center, a bar of stars crosses the galaxy\u2019s inner regions. Beyond that, spiral arms sweep outward\u2014structures better appreciated in photographs than through a small telescope.\n\nThe object is also catalogued as NGC 3992. SIMBAD classifies it as a barred spiral galaxy and records its position as right ascension 11h 57m 35.96s, declination +53\u00b0 22\u2032 29.0\u2033, for the J2000 epoch. Its listed optical dimensions are about 8.2 by 4.6 arcminutes. That is a substantial patch of sky by galaxy standards, though its light is spread thinly across the oval. A listed B-band magnitude of 10.94 describes its brightness in a particular blue filter; it is not a promise that the galaxy will look bright to the eye. [SIMBAD: NGC 3992 / M109](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%203992)\n\nThe catalogue also gives a radial velocity of roughly 1,050 kilometres per second. That figure comes from the galaxy\u2019s motion along our line of sight, measured through its spectrum. It is a reminder that M109 is not a nearby cloud inside the Milky Way: it belongs to the realm of other galaxies, where individual stars and nebulae blur together into a single faint glow.\n\nFor observers, the challenge is not simply finding the right patch of sky. It is giving the eye the conditions to detect a low-contrast object. Choose a moonless night, let your eyes adapt to darkness, and keep bright screens and lamps out of view. A finder chart or digital setting circles can help: use M109\u2019s coordinates as a precise destination rather than relying on a vague impression of where it lies among the Great Bear\u2019s stars.\n\nBegin with a low-power eyepiece, which shows more surrounding sky and makes the search easier. Once you have located the galaxy, try averted vision: look slightly to one side of the faint glow rather than staring straight at it. The galaxy may first appear as a soft oval, its light fading gradually into the background. A larger telescope and a truly dark site can help reveal more, but even then, expect subtle detail rather than a bright, sharply outlined spiral.\n\nTake time to notice the contrast between the experience and the fact. The eyepiece offers only a delicate patch of light; the catalogue gives an orientation, dimensions and a spectral measurement. Neither replaces the other. Together they make M109 more than a faint smudge in the Bear: a distant barred spiral, carefully placed on the celestial map, and waiting for a dark-adapted eye.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%203992",
+            "overlap_terms": [
+              "ascension",
+              "catalogue",
+              "celestial",
+              "coordinates",
+              "declination",
+              "epoch",
+              "filter",
+              "galaxies",
+              "galaxy",
+              "ident",
+              "inside",
+              "listed"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
