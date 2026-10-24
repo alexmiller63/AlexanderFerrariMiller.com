@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206818"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# The Little Gem in Sagittarius\n\n*This compact planetary nebula is easy to overlook in a star field\u2014and a rewarding target when you know where to look.*\n\nA dying star has left a small, bright signature in Sagittarius. NGC 6818, better known as the Little Gem Nebula, is listed as a planetary nebula in the SIMBAD astronomical database. Its J2000 coordinates are right ascension 19h 43m 57.8s and declination \u221214\u00b0 09\u2032 13\u2033. The name sounds delicate; the scene is anything but. A planetary nebula is a shell of gas cast off by an aging star, lit by the hot stellar remnant at its center. It is a brief chapter in stellar evolution, not a planet in the making.\n\nThe Little Gem\u2019s apparent size is part of its appeal\u2014and its challenge. SIMBAD lists a radio angular diameter of about 0.44 arcminute, less than half the apparent width of the full Moon. That measurement is specifically listed at radio wavelengths, so it should not be mistaken for a precise visual outline. Still, it gives a sense of why the object can appear starlike at low magnification. SIMBAD also lists a V-band magnitude of 9.3: far beyond naked-eye visibility, but within reach of many telescopes under suitable conditions.\n\nTo find it, start with Sagittarius, the teapot-shaped constellation that stands low in the southern sky from many northern locations during summer evenings. Use a current star chart or planetarium app to plot the coordinates; the field is crowded, and a chart makes the final approach much easier than guessing from the constellation outline. Coordinates are given for the J2000 reference system, so a modern app or atlas should place the target accurately. From farther south, Sagittarius climbs higher and the view may be more comfortable.\n\nChoose a night when the nebula is well above the horizon and the sky is transparent. Begin with a low-power eyepiece to locate the field, then increase magnification to distinguish the nebula from nearby stars. At low power, it may look almost pointlike; that is no failure of the telescope, but a consequence of its compact appearance. If you have a nebula filter, try viewing both with and without it. Filters can improve contrast for some planetary nebulae, though results depend on the instrument, sky and filter. Give your eyes time to adapt, and use averted vision: looking slightly to one side of a faint target can make it easier to detect.\n\nA useful observing habit is to compare impressions rather than chase a single promised view. Under a dark sky, does the object look extended? Does a filter make its edge more apparent, or simply dim the surrounding stars? Record the eyepiece and conditions. A small planetary nebula rewards patience: the first glance may register only a tiny glow, while repeated looks can reveal a distinct shape.\n\nThe Little Gem is a reminder that the night sky\u2019s small points are not all suns. Some are the luminous remains of stars changing form. Find this one in Sagittarius, steady your view, and let a speck of light become a stellar farewell.\n\n**Sources and observing tool:** SIMBAD\u2019s NGC 6818 record: https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206818. Stellarium Web sky map: https://stellarium-web.org/",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206818",
+            "overlap_terms": [
+              "about",
+              "angular",
+              "ascension",
+              "coordinates",
+              "crowded",
+              "current",
+              "database",
+              "declination",
+              "depend",
+              "field",
+              "filter",
+              "given"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
