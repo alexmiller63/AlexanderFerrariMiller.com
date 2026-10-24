@@ -219,8 +219,10 @@ def persist_checkpoint(path, ledger_file):
             git("rebase", "origin/" + branch)
     raise RuntimeError("Could not push paid-stage checkpoint; stopping before next API call")
 
-def save_or_recover_evidence(path, retrieved, ledger_file, persist=persist_checkpoint):
+def save_or_recover_evidence(path, retrieved, ledger_file, persist=None):
     """Persist source snapshots and reuse the original on restart."""
+    if persist is None:
+        persist = persist_checkpoint
     if path.exists():
         saved = json.loads(path.read_text(encoding="utf-8"))
         if not isinstance(saved, list) or not saved:
