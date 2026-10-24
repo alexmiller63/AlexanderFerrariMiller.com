@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204258"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# M106: A Spiral Beyond the Spring Sky\n\n*An active galaxy in Canes Venatici rewards patient viewing\u2014and reminds us that a faint smudge can contain a restless center.*\n\nOn a clear spring evening, turn your attention north of the celestial equator, where the constellation Canes Venatici follows the familiar stars of the Big Dipper across the sky. There, at right ascension 12h 18m and declination +47\u00b0 18\u2032, lies M106: a galaxy whose modest glow disguises a remarkable engine. The SIMBAD astronomical database identifies it as a Seyfert 2 galaxy and classifies its spiral form as SAB, an intermediate type between barred and unbarred spirals. [SIMBAD: NGC 4258 / M106](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204258)\n\nThe word \u201cgalaxy\u201d can suggest a static island of stars. M106 is more dynamic. A Seyfert classification marks a galaxy with an active nucleus: its central region is unusually energetic, powered by material falling toward a supermassive black hole. \u201cSeyfert 2\u201d is a category based on the light astronomers observe from that nucleus. The designation does not mean the whole galaxy is blazing brightly to the eye; M106 remains a distant, diffuse target, its light spread across a broad patch of sky.\n\nThat breadth is part of the observing challenge. SIMBAD lists an optical size of about 17.8 by 6.9 arcminutes\u2014an elongated oval, much larger than a pinpoint star. Its cataloged visual magnitude is 8.41, but a galaxy\u2019s light is smeared across its apparent area. A star of the same total magnitude would concentrate its light into a tiny point and appear more obvious. For M106, a dark, transparent sky and time spent looking matter as much as magnification.\n\nBegin with a finder chart or a planetarium app set to the J2000 coordinates above. The galaxy is best placed for evening viewing in spring from northern latitudes. Under a dark sky, binoculars may reveal a faint haze; a small telescope should make the central glow easier to hold in view. Start at low power, which gives a generous field and helps locate the galaxy. Then increase magnification gradually, keeping the image comfortable and steady. Use averted vision\u2014look slightly to one side of the target rather than directly at it\u2014and give your eyes several minutes to adapt.\n\nExpect a soft oval, brighter toward the center, not a high-contrast portrait of spiral arms. Larger telescopes and excellent skies can bring out more structure, but even a subtle glimpse is a connection to a system of stars far beyond our own. If the galaxy seems to fade when you stare straight at it, that is normal: the eye\u2019s more sensitive peripheral vision can be better at detecting faint, extended light.\n\nM106\u2019s coordinates and catalog measurements make it easy to enter into a digital chart; the view through an eyepiece asks for something less technical: patience. Let the field settle. Notice the faint smudge, then the concentrated center. A small patch of light becomes a whole galaxy\u2014and, at its heart, a source of activity that has been unfolding long before the photons reached your telescope.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204258",
+            "overlap_terms": [
+              "ascension",
+              "before",
+              "catalog",
+              "celestial",
+              "coordinates",
+              "database",
+              "declination",
+              "field",
+              "galaxy",
+              "ident",
+              "image",
+              "magnitude"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
