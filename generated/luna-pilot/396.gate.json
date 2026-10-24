@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%207009"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Saturn Nebula: A Ringed World That Isn\u2019t\n\n*NGC 7009 turns a dying star\u2019s cast-off gas into a tiny autumn target\u2014and a reminder that the sky\u2019s names can be delightfully misleading.*\n\nThe Saturn Nebula is no planet. It is a planetary nebula: a shell of gas cast off by a star late in its life, lit from within by the hot stellar remnant at its center. Seen from Earth, that gas can suggest a little globe with rings or handles. The resemblance is only an illusion of shape, but it gave this compact object its memorable name.\n\nThe nebula\u2019s catalogue designation is NGC 7009. The SIMBAD astronomical database classifies it as a planetary nebula and lists its J2000 coordinates as right ascension 21h 04m 10.8s, declination \u221211\u00b0 21\u2032 49\u2033. A near-infrared measurement in the database gives its apparent dimensions as about 0.71 by 0.52 arcminutes\u2014small enough that it can look starlike at low magnification. (SIMBAD: https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%207009)\n\nThat compactness is part of the appeal. A planetary nebula is a brief, luminous chapter in stellar evolution: the central star\u2019s outer layers expand into space, while energetic radiation from the remnant makes the gas glow. The process is unrelated to planets; the name arose because some of these objects look like small, disk-shaped worlds through early telescopes. In the Saturn Nebula, a telescope gathers the light from a distant, delicate structure and compresses it into a small patch against the blackness.\n\n**How to find it:** Look in Aquarius, a large but relatively faint constellation in the autumn sky for observers in the Northern Hemisphere. Because its stars are not especially bright, use a current star chart or planetarium app to locate NGC 7009 rather than relying on a casual sweep of the sky. Enter its catalogue name or coordinates, and make sure your chart accounts for the current observing date; the coordinates above are given for the J2000 reference system.\n\nA telescope is the practical tool for this target. Start at low power and examine the star field carefully: the nebula may initially resemble a star that seems just a little different from its neighbors. Then increase magnification to bring its small disk into view. Steady air and patient focusing matter more than a spectacularly dark sky, though darker surroundings make it easier to keep faint field stars from distracting the eye. An O III filter, designed to pass light from oxygen emissions common in planetary nebulae, may help some observers distinguish the nebula from the background; compare the view with and without it.\n\nDon\u2019t expect a broad, high-contrast spectacle. The Saturn Nebula rewards a slower kind of looking: center it, let your eye adjust, and return to it after a few minutes. The apparent \u201crings\u201d may be subtle or elusive, especially in a small telescope, but the thought behind the view is striking. That tiny oval is not a miniature planet. It is a vast, expanding envelope of stellar material, seen across the gulf of space as one fading star reshapes its corner of the galaxy.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%207009",
+            "overlap_terms": [
+              "ascension",
+              "catalogue",
+              "coordinates",
+              "current",
+              "database",
+              "declination",
+              "filter",
+              "given",
+              "ident",
+              "measurement",
+              "minutes",
+              "nebula"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
