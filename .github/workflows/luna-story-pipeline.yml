@@ -151,6 +151,43 @@ jobs:
           assert remote == marker.read_text(), "Remote checkpoint content mismatch"
           print("PASS: real checkpoint pushed and verified on GitHub")
           PY
+      - name: Paid API preflight (minimal request)
+        if: ${{ inputs.paid_execute }}
+        shell: bash
+        env:
+          MODEL: ${{ inputs.model }}
+        run: |
+          python3 - <<'PY'
+          import json, os, urllib.request, urllib.error
+          key = os.environ.get("OPENAI_API_KEY")
+          if not key:
+              raise SystemExit("PREFLIGHT FAILED: OPENAI_API_KEY is missing")
+          model = os.environ["MODEL"]
+          headers = {"Authorization": "Bearer " + key, "Content-Type": "application/json"}
+          def call(url, payload=None):
+              req = urllib.request.Request(url, data=json.dumps(payload).encode() if payload is not None else None,
+                                           headers=headers, method="POST" if payload is not None else "GET")
+              try:
+                  with urllib.request.urlopen(req, timeout=45) as response:
+                      return json.load(response)
+              except urllib.error.HTTPError as exc:
+                  body = exc.read(2048).decode("utf-8", "replace")
+                  try:
+                      error = json.loads(body).get("error", {})
+                      detail = f"type={error.get('type')}, code={error.get('code')}, message={error.get('message')}"
+                  except ValueError:
+                      detail = "non-JSON error body"
+                  raise SystemExit(f"PREFLIGHT FAILED: HTTP {exc.code} at {url}: {detail}")
+          models = call("https://api.openai.com/v1/models")
+          if model not in {entry.get("id") for entry in models.get("data", [])}:
+              raise SystemExit(f"PREFLIGHT FAILED: model {model!r} not listed for this API key")
+          print("PREFLIGHT: API key authenticated; requested model listed", flush=True)
+          response = call("https://api.openai.com/v1/responses",
+                          {"model": model, "input": "Reply with OK.", "max_output_tokens": 32})
+          if not response.get("id") or not response.get("output"):
+              raise SystemExit("PREFLIGHT FAILED: missing response id or output")
+          print("PREFLIGHT PASSED: paid Responses API request succeeded", flush=True)
+          PY
       - name: Run pilot (dry-run by default)
         shell: bash
         env:
