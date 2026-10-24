@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%203079"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# MCG 9-17-10: A Galaxy on the Northern Spring Sky\n\n*An elongated spiral in Ursa Major offers a small-telescope glimpse of a galaxy with an active nucleus.*\n\nMCG 9-17-10 is a rewarding target for patient observers: not a bright beacon, but a faint, stretched glow that asks you to look carefully. Listed in SIMBAD as NGC 3079, it lies at J2000 coordinates 10h 01m 58s, +55\u00b0 40\u2032 47\u2033\u2014a northern-sky position that makes it well placed for observers in northern latitudes. [SIMBAD\u2019s NGC 3079 entry](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%203079) classifies the galaxy as a Seyfert 2 and gives it a spiral morphological type.\n\nThat classification adds a deeper story to the smudge in the eyepiece. A Seyfert galaxy belongs to the family of galaxies whose central regions emit unusually strong radiation; \u201cType 2\u201d is a category of active galactic nucleus. The galaxy\u2019s cataloged redshift is about 0.0035, corresponding to a heliocentric radial velocity of roughly 1,050 kilometers per second. That number describes its motion relative to the Sun; it is not, by itself, a precise distance measurement.\n\nNGC 3079 is broad on the sky but its light is spread thinly. SIMBAD lists an optical size of about 10.8 by 2.7 arcminutes and a V-band magnitude of 10.86. The dimensions suggest an elongated form, while the modest integrated magnitude can be misleading: light dispersed across a large area is harder to detect than the same light concentrated in a point. Under a dark sky, the challenge is less about finding a brilliant object than about allowing a faint shape to emerge.\n\nFor a spring-evening search, begin with a planetarium app or printed chart centered on the coordinates above. A low-power eyepiece gives a wider field for locating the galaxy; once you have it, try higher magnification to darken the background and inspect the central region. An 8-inch telescope under dark skies is a sensible starting point, though visibility depends strongly on transparency, light pollution and the observer\u2019s experience. Use averted vision\u2014look just to one side of the target\u2014and give your eyes time to adapt. Avoid observing near a bright Moon if you can.\n\nThe first view may be subtle: a narrow haze against the stars, perhaps with a brighter central area. Don\u2019t expect a photograph\u2019s contrast or detail. Galaxies are extended objects, and the atmosphere, telescope and sky all shape what reaches your eye. If the target seems to vanish when you stare straight at it, shift your gaze slightly and hold still. Averted vision can make faint structure easier to notice.\n\nA useful observing note records the date, sky conditions, telescope and eyepiece, along with what you actually saw. Even a simple sketch can help distinguish a real impression from an expectation on a later night. MCG 9-17-10 is a reminder that observing is not always about spectacle. Sometimes the reward is recognizing, in a slim patch of light, another vast galaxy\u2014and knowing that its quiet appearance comes with an active heart.\n\n**Source:** [SIMBAD: NGC 3079](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%203079)",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%203079",
+            "overlap_terms": [
+              "coordinates",
+              "corresponding",
+              "depends",
+              "galaxy",
+              "heliocentric",
+              "ident",
+              "listed",
+              "magnitude",
+              "major",
+              "measurement",
+              "morphological",
+              "motion"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
