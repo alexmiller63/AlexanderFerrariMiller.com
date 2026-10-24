@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%203344"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# MCG 4-25-46: A Spiral Between the Stars\n\n*This spring galaxy is a quiet study in structure and scale\u2014and a rewarding challenge for a small telescope under dark skies.*\n\nMCG 4-25-46 is a galaxy, not a star, though its catalog name can sound like one. It is also cataloged as NGC 3344. In SIMBAD, the galaxy is classified as an emission-line galaxy and a SABbc spiral: a spiral with a modest central bar, between the \u201cb\u201d and \u201cc\u201d stages of the familiar galaxy classification scheme. That compact code hints at a system with a central structure and sweeping spiral form, even when the view through an eyepiece is far subtler than a photograph.\n\nThe catalog gives it an apparent size of about 5.0 by 4.4 arcminutes\u2014roughly one-sixth the Moon\u2019s diameter across its longer axis. Its listed visual magnitude is 9.86. That number describes the galaxy\u2019s total light, not how brightly it shines from each patch of sky. Because its light is spread across a broad area, the galaxy can be harder to see than a point-like object of similar total brightness. A dark, transparent sky makes a real difference.\n\nThere is also a useful clue to its immense distance in the galaxy\u2019s spectrum. SIMBAD lists a redshift of 0.001963 and a radial velocity of about 588 kilometers per second. Redshift measures how much the light\u2019s spectral features are shifted toward longer wavelengths; for a galaxy, that shift is associated with its motion relative to us. It is not a simple yardstick for distance in every case, so the velocity alone should not be turned into a precise mileage. Still, the numbers place this object firmly beyond the stars of our own Milky Way.\n\nTo find it, use the coordinates listed by SIMBAD: right ascension 10 hours 43 minutes 31 seconds, declination +24 degrees 55 minutes 20 seconds (J2000). The position makes spring evenings a natural time to look from northern latitudes, when this part of the sky is well placed after dusk. A printed or digital star chart can guide you to the field; the galaxy itself is not a naked-eye target.\n\nTry a telescope of 6 inches or more under a dark sky, beginning at low to medium magnification. Keep the view wide enough to recognize the surrounding star pattern, then increase the power gently if the sky is steady. Look for a faint, softly defined patch rather than a crisp disk. Averted vision\u2014looking slightly to one side of the target\u2014can help the eye register its low-contrast light. If the galaxy does not appear at once, pause and let your eyes adapt; transparency and patience may matter more than magnification.\n\nThe reward is not necessarily a dramatic spiral display. For many observers, MCG 4-25-46 first appears as a faint glow, with its cataloged shape more readily understood through its classification than through a small eyepiece. That glow is enough to mark a distant system of stars and gas, carrying a measurable spectral signature across the space between galaxies and Earth.\n\n**Source:** [SIMBAD entry for NGC 3344](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%203344).",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%203344",
+            "overlap_terms": [
+              "ascension",
+              "catalog",
+              "coordinates",
+              "declination",
+              "defined",
+              "degrees",
+              "display",
+              "emission",
+              "field",
+              "galaxy",
+              "ident",
+              "listed"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
