@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%205128"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Centaurus A: A Galaxy with More Than One Voice\n\n*At the southern edge of the sky, NGC 5128 looks like a softly glowing oval\u2014but its catalogue record reaches from visible light to radio waves and X-rays.*\n\nSome galaxies seem to have a single identity. Centaurus A refuses to settle on one. Also catalogued as NGC 5128, it appears in astronomical records under several classifications, including an active galactic nucleus, a radio source and an X-ray source. Those labels describe different ways astronomers have studied the same object, not separate objects in the sky. [SIMBAD\u2019s NGC 5128 entry](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%205128) gathers the names and classifications together.\n\nThe visible galaxy has an unusual shape. SIMBAD lists its morphology as \u201cS0pec\u201d\u2014a peculiar lenticular type\u2014and gives an optical extent of about 25.7 by 17.8 arcminutes. That is a broad patch of sky: nearly as wide as the full Moon, though much fainter and less sharply defined. A dark band of dust cuts across its glow, making Centaurus A especially recognizable in photographs. The catalogue\u2019s measurements put its position at right ascension 13h 25m and declination \u221243\u00b0 01\u2032 (J2000). [SIMBAD](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%205128)\n\nIts many labels point to the value of observing beyond visible light. Radio and X-ray telescopes can reveal activity that optical views alone do not show; the SIMBAD entry lists detections and classifications across several wavelength ranges. Centaurus A is therefore not just a striking silhouette, but a nearby cosmic laboratory for studying energetic galaxy activity. The catalogue also records an optical magnitude of about 6.8, but that light is spread over a large area. A galaxy\u2019s total brightness can sound impressive on paper while its diffuse glow remains difficult to pick out against a bright sky.\n\n**For observers:** Look in the constellation Centaurus, best placed for evening viewing around May. Its far-southern declination gives observers in southern latitudes a high, favorable view; from much of the north, it stays low and atmospheric haze can dim it. Choose a dark site and wait until the galaxy is well above the horizon. Binoculars may reveal a faint oval haze. A small telescope at low magnification can frame the whole glow; under dark skies, a larger telescope may show the dark dust lane more clearly. Give your eyes time to adapt, and use averted vision\u2014looking just beside the galaxy can make its faint light easier to notice.\n\nThe search itself is part of the pleasure. Centaurus A does not announce its complexity to the unaided eye. First comes a smudge, then an oval, then\u2014if conditions cooperate\u2014a dark slash across the light. That modest view is a reminder that the object is larger than its appearance suggests, and more active than its quiet glow implies. One name, several wavelengths, and a place in the sky worth returning to.\n\n**Source:** [SIMBAD \u2014 NGC 5128 / Centaurus A](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%205128)",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%205128",
+            "overlap_terms": [
+              "around",
+              "ascension",
+              "catalogue",
+              "centaurus",
+              "declination",
+              "defined",
+              "extent",
+              "frame",
+              "ident",
+              "magnitude",
+              "north",
+              "object"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
