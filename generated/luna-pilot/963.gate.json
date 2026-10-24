@@ -1,0 +1,77 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2064241"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Alpha Com: One Point of Light, Two Stars\n\n*In Coma Berenices, a modest springtime star rewards a closer look\u2014and offers a lesson in what a catalogue can tell us, and what it cannot.*\n\nAlpha Com is easy to overlook. At magnitude 4.32 in visible light, it is not among the sky\u2019s showiest beacons; to the unaided eye it is a single point in the constellation Coma Berenices. Yet the SIMBAD astronomical database classifies it as a double or multiple star. That quiet mismatch\u2014one point to the eye, more than one star in the catalogue\u2014is the start of its story. ([SIMBAD: HIP 64241](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2064241))\n\nThe database places Alpha Com at right ascension 13 hours 09 minutes 59 seconds and declination +17\u00b0 31\u2032 46\u2033 (J2000). Its listed parallax is 56.10 milliarcseconds. Parallax is the apparent shift of a nearby star as Earth moves around the Sun; converting that value gives a distance of roughly 58 light-years. SIMBAD also lists a combined spectral classification of F5V+F6V: two main-sequence stars of the F type. The \u201cplus\u201d is a compact hint that the light associated with Alpha Com comes from a pair, rather than a solitary sun. These are catalogue measurements and classifications, not details visible in a casual glance.\n\nFor an observer, the first task is simply to find the field. Coma Berenices is a northern-sky constellation, well placed on spring evenings. Use a current star chart or planetarium app to locate Alpha Com by its constellation and position; the coordinates are useful if you are searching with a telescope or setting circles. Under a dark sky, a magnitude-4 star may be visible without optical aid. In a bright suburban sky, binoculars can help pick it out from the surrounding stars.\n\nThe second task is to decide what you hope to see. Binoculars should show Alpha Com as a point of light, not as two neatly separated stars. A catalogue\u2019s \u201cdouble or multiple\u201d label does not, by itself, say how far apart the components appear at a given time. That matters because a telescope\u2019s ability to split a pair depends on their apparent separation, as well as aperture, focus, atmospheric steadiness and the observer\u2019s experience. If resolving the stars is your goal, check a current double-star observing reference before planning the attempt; do not assume that a small telescope will separate them on any given night.\n\nEven if the pair remains merged, Alpha Com is a useful observing exercise. Look first with the naked eye, then with binoculars, and finally through a telescope at low power. Notice how the view changes while the star itself remains in the same place in the field. The instruments do not merely magnify: they gather more light and reveal finer detail, while the atmosphere can blur that detail again.\n\nThere is a small pleasure in that progression. The sky offers Alpha Com as one point; measurement and classification invite us to think of it as a system. A careful observer can meet both versions\u2014first the modest star among the spring constellations, then the more complicated object that catalogues describe. The distance, spectral types and double-star designation deepen the view, even when the eyepiece does not visibly divide the light.\n\n**Source:** [SIMBAD database entry for HIP 64241 / Alpha Com](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2064241).",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2064241",
+            "overlap_terms": [
+              "around",
+              "ascension",
+              "before",
+              "catalogue",
+              "catalogues",
+              "coordinates",
+              "current",
+              "database",
+              "declination",
+              "depends",
+              "double",
+              "given"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [
+      {
+        "quoted_text": "double or multiple",
+        "source_matches": [
+          "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2064241"
+        ],
+        "exact_text_confirmed": true
+      }
+    ],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
