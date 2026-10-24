@@ -1,0 +1,69 @@
+{
+  "screen_passed": false,
+  "checks": {
+    "research_present": true,
+    "draft_length": false,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%201261"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# NGC 1261: Reading a Southern-Sky Catalog Entry\n\n*Its catalog record offers a precise position, an apparent size and brightness, and several measurements that help describe this globular cluster.*\n\nNGC 1261 is identified in SIMBAD as a globular cluster. The entry does not present it as a dramatic naked-eye landmark; instead, it gives observers and researchers a set of coordinates and measurements for locating and describing the object. Taken together, those numbers make a useful portrait of a target far south in the sky. [SIMBAD\u2019s NGC 1261 entry](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%201261)\n\nThe listed J2000 position is right ascension 03h 12m 16.21s and declination \u221255\u00b0 12\u2032 58.4\u2033. Right ascension and declination are the celestial equivalents of longitude and latitude: the first locates an object around the sky, while the second gives its position north or south of the celestial equator. NGC 1261\u2019s strongly negative declination places it in the far southern sky. As a result, it can rise above the horizon for observers south of roughly 35\u00b0 north latitude; farther north, it remains below the horizon.\n\nThat coordinate is more useful than a verbal direction when planning an observation. A sky map or telescope setting can be matched to the position, while the declination gives a quick sense of whether the cluster is accessible from a given location. SIMBAD labels the coordinate as optical and gives it a quality flag of D, which the database defines as a positional uncertainty of 1 to 10 arcseconds. The listed coordinate is tied to a 2010 reference.\n\nThe same entry lists a visual magnitude of 8.63 and an angular size of 6.9 by 6.9 arcminutes. Magnitude is a measure of apparent brightness, while arcminutes describe an angle on the sky: 60 arcminutes make one degree. These are catalog values, not a promise that the cluster will look equally bright or sharply bounded in every observation. They provide a baseline for comparing it with other objects and for setting expectations about its apparent scale.\n\nSIMBAD\u2019s classification supplies the central description: NGC 1261 is a globular cluster. The database\u2019s measurements add detail without, by themselves, telling the whole story of what an observer will see. Its listed apparent size, for example, is an angular measurement, not a physical diameter. The entry identifies the angular-size measurement as optical and links it to a 1989 reference.\n\nThe record also includes motion and distance-related measurements. It gives a proper motion of 1.61 milliarcseconds per year in right ascension and \u22122.05 milliarcseconds per year in declination, with a 2019 reference",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%201261",
+            "overlap_terms": [
+              "angle",
+              "angular",
+              "around",
+              "ascension",
+              "catalog",
+              "celestial",
+              "cluster",
+              "coordinate",
+              "coordinates",
+              "database",
+              "declination",
+              "degree"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}

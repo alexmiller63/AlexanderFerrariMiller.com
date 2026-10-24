@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%202168"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# M35: A Winter Meadow in Gemini\n\n*An open cluster spreads across more than half a degree of sky. Give it dark skies, binoculars and a little time, and its stars begin to separate into a field of their own.*\n\nOn a clear winter evening, Gemini offers a quiet destination for binoculars: M35, an open cluster catalogued as NGC 2168. It lies at right ascension 6h 09m and declination +24\u00b0 20\u2032, according to SIMBAD. Those coordinates put it in Gemini\u2019s star-rich territory, where a finder chart can help guide the hop from familiar bright stars to a patch of sky that may first look like a faint blur. [SIMBAD\u2019s NGC 2168 entry](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%202168) classifies it as an open cluster.\n\nThe blur is a useful first impression. Open clusters are groups of stars associated by their shared origin, though their members gradually disperse over time. M35\u2019s listed parallax is 1.1301 milliarcseconds. Taking the reciprocal gives a distance of roughly 885 parsecs, or about 2,900 light-years. That number is an estimate derived from the catalogue value, not a distance you can sense directly at the eyepiece. What you *can* notice is the cluster\u2019s apparent breadth: SIMBAD lists an angular size of 38.3 arcminutes, a little wider than the Moon looks from Earth.\n\nStart with binoculars under a dark sky. Give your eyes several minutes to adjust, then sweep slowly through Gemini rather than staring at one spot. M35 may resolve into a gathering of tiny points, especially when you steady your elbows against a wall or rest the binoculars on a support. In a small telescope, begin with the lowest-power eyepiece. The wider view helps keep the cluster together as a single scene; increase magnification only after you have taken in its overall shape.\n\nThat order matters. A cluster is not just a count of stars. It is a pattern the eye assembles: bright points, fainter companions and dark gaps that lend the whole field texture. At higher power, the view becomes a closer inspection of individuals, but the cluster\u2019s broad sweep can slip beyond the frame. If the Moon is bright or the sky is washed out by nearby lights, the fainter stars may disappear. Try another night, or choose a darker site; patience is part of the instrument.\n\nFor a practical session, dress for standing still, let your telescope cool outdoors if you are using one, and avoid rushing between eyepieces. A simple sketch can make the view memorable: mark the brightest stars first, then add the smaller points you notice with averted vision\u2014looking slightly to the side of the target. Return to the sketch after a few minutes. Often, more stars seem to emerge as your eyes settle into the dark.\n\nM35 rewards that unhurried approach. Its catalogue numbers describe position, scale and motion; the eyepiece offers something less numerical\u2014a field that gradually resolves from haze into a multitude. Find the cluster, take in the wide view, and let the night do the revealing.\n\n**Source:** [SIMBAD: NGC 2168](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%202168).",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%202168",
+            "overlap_terms": [
+              "according",
+              "angular",
+              "ascension",
+              "catalogue",
+              "cluster",
+              "coordinates",
+              "count",
+              "declination",
+              "degree",
+              "field",
+              "frame",
+              "ident"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}

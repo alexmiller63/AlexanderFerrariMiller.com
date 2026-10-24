@@ -1,0 +1,77 @@
+{
+  "screen_passed": false,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": false,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%203003"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# NGC 3003: Reading a Galaxy by Its Measurements\n\n*Catalog data reveal a broad, narrow-looking galaxy\u2014but also show why a few numbers cannot tell the whole story.*\n\nNGC 3003 is not introduced by a dramatic portrait here, but by a compact set of catalog measurements. SIMBAD identifies it as an emission-line galaxy and places it at right ascension 9h 48m 35.6s and declination +33\u00b0 25\u2032 17.8\u2033. Those coordinates provide a precise starting point for finding the object on a chart or in a planetarium program. [SIMBAD: NGC 3003](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%203003)\n\nThe same record gives its optical angular size as about 6.0 by 1.6 arcminutes, with a listed orientation angle of 80 degrees. Those are measurements of how large the galaxy appears from Earth, not its physical dimensions. The contrast between the two axes captures its elongated appearance in the catalog, but the figures alone do not explain the galaxy\u2019s structure or how it would look through a particular telescope.\n\nSIMBAD lists the galaxy\u2019s morphological type as **S_AB**. That classification places it in a spiral-galaxy category with an intermediate bar designation. It is a compact label, not a detailed description of every visible feature: the catalog entry does not provide an image or a visual account of the galaxy\u2019s arms, central region, or surrounding field.\n\nThe \u201cemission-line\u201d classification offers another kind of information. It refers to the galaxy\u2019s recorded spectral properties; it does not mean that emission lines would appear as distinct colored marks to an observer looking through an eyepiece. The database also lists a radial velocity of 1,488 kilometers per second, with an uncertainty of 3 kilometers per second, and an emission redshift of 0.004976, with an uncertainty of 0.000010. These values describe measurements of its light. They should not be treated as a direct distance measurement: the SIMBAD record cited here supplies no distance.\n\nPhotometry adds another layer. The entry lists a B-band magnitude of 12.3, alongside measurements in other bands, including J, H and K, and several optical filters. The values are recorded in different filter systems, so they should not be casually compared as if they were all the same measurement. Nor does a single magnitude tell an observer exactly how easy the galaxy will be to see: the catalog\u2019s figure is not a description of its appearance in a given sky or instrument.\n\nFor anyone trying to locate NGC 3003, the most dependable guide in this record is its coordinate position, supported by its measured angular extent. The coordinates are reported in the optical, and the size comes from an optical catalog measurement. A chart or software can turn the position into a field to inspect, while the listed dimensions offer a sense of the object\u2019s apparent scale.\n\nNGC 3003 is therefore best approached as a set of distinct clues rather than a complete observing portrait. Its coordinates identify where to look; its angular size describes its apparent span; its morphological code classifies its form; and its spectrum and velocity supply information about its light. Taken together, those entries make the galaxy more than a name\u2014but they also mark the boundary between",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%203003",
+            "overlap_terms": [
+              "angle",
+              "angular",
+              "ascension",
+              "catalog",
+              "coordinate",
+              "coordinates",
+              "database",
+              "declination",
+              "degrees",
+              "emission",
+              "extent",
+              "field"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [
+      {
+        "quoted_text": "emission-line",
+        "source_matches": [
+          "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%203003"
+        ],
+        "exact_text_confirmed": true
+      }
+    ],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}

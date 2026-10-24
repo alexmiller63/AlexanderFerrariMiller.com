@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%202024"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Flame Nebula: A Fireline in Orion\n\n*Beside a brilliant Belt star, a cloud of gas, dust and young stars offers a quieter spectacle\u2014and a test of patience at the eyepiece.*\n\nOn winter nights, Orion seems designed for easy navigation. Three stars make the Belt; the hunter\u2019s outline follows. But just east of the Belt\u2019s easternmost star, Alnitak, lies a subtler landmark: the Flame Nebula, also cataloged as NGC 2024. In a photograph, dark lanes cut through glowing gas like branching cracks in a blaze. To the eye, the nebula is far less obliging. Its drama depends on darkness, careful viewing and a little imagination.\n\nNGC 2024 belongs to the Orion B region, a busy neighborhood of gas and stars. SIMBAD lists it as a cluster of stars and gives its position as right ascension 5 hours 41 minutes 43 seconds, declination \u22121 degree 50 minutes 30 seconds (J2000). The catalog also links the object with Orion B. Those details point observers to the same patch of sky that photographs turn into a luminous, ember-colored scene. [SIMBAD: NGC 2024](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%202024)\n\nThe nebula\u2019s familiar appearance comes from a combination of light and obscuration. Energetic light from nearby young stars makes hydrogen gas glow; intervening dust blocks some of that light, drawing dark shapes across the bright background. The result is less a single flame than a layered landscape: glowing material behind a screen of shadow, with stars forming in the larger complex. Long-exposure images gather light over time and emphasize the contrast. An observer looking through an eyepiece sees no camera\u2019s accumulated color, and should not expect a photograph in miniature.\n\nThat contrast is also the main observing challenge. Alnitak is conspicuously bright, while the Flame is comparatively faint and close by. From a light-polluted site, glare and sky brightness can overwhelm the nebula. Choose a clear, moonless night if possible, let your eyes adapt to the dark for at least 20 minutes, and avoid white phone screens. A hood or other simple shield can help block stray light.\n\nStart with binoculars or a low-power telescope to locate Alnitak at the eastern end of Orion\u2019s Belt. The nebula lies immediately east of the star. In a telescope, try placing Alnitak just outside the edge of the field: this reduces its glare while keeping the target nearby. Use averted vision\u2014look slightly to one side of the nebula rather than directly at it\u2014and give your eyes time to notice faint differences in brightness. A nebula filter may improve contrast under a dark sky, but no filter can replace one.\n\nIf the view seems blank at first, that does not mean you have failed. The Flame is a rewarding object precisely because it asks for a different kind of attention than Orion\u2019s brightest showpieces. Let the Belt guide you, move the bright star out of the way, and wait. The \u201cfire\u201d",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%202024",
+            "overlap_terms": [
+              "ascension",
+              "bright",
+              "catalog",
+              "cluster",
+              "declination",
+              "degree",
+              "depends",
+              "different",
+              "ember",
+              "field",
+              "ident",
+              "images"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}

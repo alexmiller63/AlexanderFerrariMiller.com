@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%202392"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# The Clown Face Nebula: a small, bright mask in Gemini\n\n*NGC 2392 is a compact planetary nebula whose delicate-looking face marks a dramatic stellar ending\u2014and rewards patient, well-focused observing.*\n\nA face seems to look back from the dark: a bright central point ringed by a hazy oval, with delicate wisps that suggest a hood or a pair of watchful eyes. The Clown Face Nebula, also known as NGC 2392, is not a face, of course. It is a shell of gas illuminated by a dying star\u2014and one of the sky\u2019s most engaging small targets.\n\nThe name *planetary nebula* is a historical misdirection. These objects have nothing to do with planets; through early telescopes, some appeared like the small disks of distant worlds. In a star\u2019s final stages, it can shed surrounding gas. Radiation from the exposed, extremely hot stellar core energizes that material, making it glow. The nebula\u2019s apparent layers are therefore not a solid structure, but light from gas seen across a complex shell.\n\nNGC 2392 lies in Gemini. SIMBAD lists its J2000 position as right ascension 7h 29m 10.8s and declination +20\u00b0 54\u2032 42\u2033, and gives an angular size of about 0.335 arcminute\u2014roughly 20 arcseconds across. Its catalogued visual magnitude is about 9.7, though the database flags that measurement as lower quality. At that size, it can look star-like at low power, even when a telescope gathers enough light to show its disk. [SIMBAD: NGC 2392](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%202392)\n\nTo find it, start with Gemini on a clear evening and use a star chart or astronomy app to guide your telescope to those coordinates. A low-power eyepiece helps you locate the field; once you have the target, increase magnification. Try around 100\u00d7, then higher if the air is steady and the image remains sharp. A small planetary nebula can withstand more magnification than a sprawling galaxy, but turbulent air will blur its edges. Give your eyes time at the eyepiece, and look for a tiny, softly glowing disk rather than expecting the detailed face seen in long-exposure photographs.\n\nA medium-sized telescope under a dark sky should make the nebula easier to distinguish from a star. An O III filter may improve contrast by emphasizing light from ionized oxygen, though the view depends on your telescope and sky conditions. Compare filtered and unfiltered views rather than assuming one will be best. The central star and fine structure can be challenging visually; photographs gather light over time and often reveal detail that the eye cannot.\n\nThat difference is part of the pleasure. A telescope view may offer only a small, luminous blur, but it is still a direct encounter with a star\u2019s expelled outer layers. NGC 2392\u2019s catalogued spectral type is O6f, a reminder that the central star is intensely hot. The gas around it turns a stellar ending into a visible, changing shape\u2014one that asks the observer to bring both careful focus and a little imagination.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%202392",
+            "overlap_terms": [
+              "angular",
+              "ascension",
+              "coordinates",
+              "database",
+              "declination",
+              "filter",
+              "flags",
+              "ident",
+              "known",
+              "magnitude",
+              "measurement",
+              "nebula"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}

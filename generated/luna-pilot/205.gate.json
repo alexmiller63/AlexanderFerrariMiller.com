@@ -1,0 +1,69 @@
+{
+  "screen_passed": false,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": false,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%202632"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# NGC 2632: A wide field of stars\n\n*Its nearly two-degree apparent span makes this open cluster a reminder that, in astronomy, a grand view is not always a tightly packed one.*\n\nSome celestial objects draw the eye with a sharp point. NGC 2632 offers a different kind of invitation: a broad patch of sky whose scale matters as much as its individual stars. The catalog classifies it as an open cluster, and its listed apparent size is about 118 arcminutes\u2014just under two degrees across. That is a generous field, better suited to a sweeping view than to an attempt to magnify one compact feature.\n\nThe numbers come from SIMBAD, which identifies NGC 2632 by its position in the sky: right ascension 8 hours, 40 minutes, 13 seconds; declination +19 degrees, 37 minutes, 16 seconds. The database gives the coordinates in the J2000 reference frame and lists an angular size of 118.2 by 118.2 arcminutes. The measurement is a guide to the object\u2019s apparent extent, not a promise that its edges will appear sharply drawn. [SIMBAD: NGC 2632](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%202632)\n\nThat distinction can shape an observing session. When an object spans nearly two degrees, increasing magnification may make it harder to take in as a whole. Binoculars or a telescope set to low power can be useful choices, especially if they provide a wide field of view. If the cluster does not fit comfortably into the view, sweeping slowly across the surrounding sky can be more rewarding than trying to force the entire scene into a narrow eyepiece.\n\nThe coordinates offer a dependable starting point. Right ascension and declination work like a celestial address: one gives a position around the sky, the other its distance north or south of the celestial equator. A star chart or planetarium app can use those coordinates to help locate NGC 2632. Once pointed in the right direction, pause and let your eyes adjust to the view rather than expecting the cluster to resemble a bright, sharply bounded object.\n\nSIMBAD\u2019s other entries show that astronomers describe NGC 2632 in more than one way. The database lists a parallax of 5.371 milliarcseconds, proper motion of \u221236.047 and \u221212.917 milliarcseconds per year, and a radial velocity of 34.94 kilometers per second. These measurements are not visual features to look for through binoculars. They are part of the cluster\u2019s catalog record, quantities used to describe position and motion.\n\nFor an observer, though, the angular size is the most immediate figure. It hints at the kind of view to seek: not a tiny jewel isolated against black, but a broad arrangement that benefits from space around it. Start with a wide view, then take time to notice how the stars occupy it. NGC 2632 rewards that patient approach\u2014not with a single dramatic point, but with the experience of a cluster spread across the field.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%202632",
+            "overlap_terms": [
+              "angular",
+              "around",
+              "ascension",
+              "catalog",
+              "celestial",
+              "cluster",
+              "coordinates",
+              "database",
+              "declination",
+              "degree",
+              "degrees",
+              "different"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}

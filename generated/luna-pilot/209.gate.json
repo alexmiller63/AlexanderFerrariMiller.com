@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%202775"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# NGC 2775: A Quiet Spiral in the Spring Sky\n\n*An oval smudge in Cancer offers a chance to look beyond the Milky Way\u2014and to see how a galaxy\u2019s measured shape, motion and brightness tell different parts of its story.*\n\nIn the constellation Cancer, NGC 2775 is easy to pass over: no bright star marks it, and even a telescope shows it as a subtle patch rather than a showpiece. But this galaxy rewards patient observing. Its light comes from a broad, nearly round-looking spiral system, catalogued as type SA\u2014an unbarred spiral\u2014and its apparent size spans about 4.9 by 3.9 arcminutes in optical measurements. Those are dimensions on our sky, not the galaxy\u2019s true physical size. [SIMBAD\u2019s NGC 2775 entry](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%202775) lists the morphology and angular extent.\n\nThe same entry gives a heliocentric radial velocity of about 1,375 kilometers per second and a redshift of 0.004597. Redshift describes how much the galaxy\u2019s spectral lines are shifted toward longer wavelengths. For distant galaxies, that shift is mainly associated with cosmic expansion, but a measured velocity is not a simple, precise distance gauge for a relatively nearby object: local motions also matter. The numbers are useful context, not a reason to imagine the galaxy racing away like a projectile.\n\nNGC 2775 is also listed as an active-galaxy-nucleus candidate. That wording matters: it flags a possibility, not a settled verdict. A galaxy\u2019s central region can be studied across many wavelengths, from visible light to radio and X-rays, and different surveys may reveal different clues. The designation is a reminder that a familiar-looking spiral can have questions hidden in its core.\n\nFor observers, the challenge is modest but real. SIMBAD gives an optical V magnitude of about 10.5, but that is the galaxy\u2019s light gathered across its whole visible area. Spread over several arcminutes, it can look fainter to the eye than a compact star of the same magnitude. A dark, transparent sky and careful use of averted vision will help; moonlight, haze and nearby lights can make the target disappear.\n\nUse a star chart or planetarium app to reach Cancer, then center a finder chart on NGC 2775\u2019s J2000 coordinates: right ascension 09h 10m 20.1s, declination +07\u00b0 02\u2032 17\u2033. Start with a low-power eyepiece to locate the field, then increase magnification gradually if the sky supports it. A telescope of roughly 6 inches or more under dark skies gives a reasonable chance of detecting the galaxy, though visibility depends greatly on conditions and experience. Look for a soft oval glow, perhaps with a brighter central region; don\u2019t expect spiral arms to leap out. Sketching the field can help distinguish a faint blur from scattered stars.\n\nCancer is well placed for evening observing in late winter and spring from northern mid-latitudes. Give your eyes time to adapt, shield them from white light, and pause before deciding the galaxy isn\u2019t there. NGC 2775 asks for a slower kind of looking: first a patch, then a sense of structure, and finally the realization that this faint oval is an entire galaxy beyond our own.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%202775",
+            "overlap_terms": [
+              "active",
+              "angular",
+              "ascension",
+              "before",
+              "candidate",
+              "coordinates",
+              "declination",
+              "depends",
+              "extent",
+              "flags",
+              "galaxy",
+              "heliocentric"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}

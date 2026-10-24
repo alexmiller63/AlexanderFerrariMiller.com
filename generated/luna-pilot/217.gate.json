@@ -1,0 +1,77 @@
+{
+  "screen_passed": false,
+  "checks": {
+    "research_present": true,
+    "draft_length": false,
+    "title_present": false,
+    "source_citation": false,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": false,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": false,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": false
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 0,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%203115"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# NGC 3115: What a Catalog Can Tell Us\n\n*NGC 3115 appears in astronomical records not as a complete portrait, but as a set of measured coordinates, brightnesses and classifications.*\n\nA galaxy can be described in many ways, and the record for NGC 3115 gathers several of them in one place. The SIMBAD astronomical database identifies it as \u201cGalaxy towards a Group of Galaxies\u201d and lists a morphological type of \u22121. Those entries are useful labels, but they are not a full account of the galaxy\u2019s appearance or history. The record does not, by itself, explain what those classifications mean or establish further details about its surroundings. [SIMBAD]\n\nThe position is given precisely: right ascension 10 hours, 5 minutes and 13.927 seconds, and declination \u22127 degrees, 43 minutes and 6.983 seconds, for the J2000 reference frame. These coordinates locate the object on the sky. They do not tell us its distance from Earth, which is not provided in this record.\n\nSIMBAD lists an angular size of about 13.3 by 5.3 arcminutes, with an orientation angle of 44 degrees. These are apparent dimensions: measurements of how large the object looks in the sky, not its physical size. The listing attributes this measurement to a 2023 catalogue, identified by the bibliographic code 2023ApJS..269....3M. Without a distance, the angular measurement cannot be converted into a physical span using the information on this page.\n\nThe brightness entries offer another set of clues, but they depend on the filter used. The database lists values of 11 in B and 9.37 in R, as well as measurements in other bands, including G, J, H and K. It also gives Sloan g, r and z magnitudes on the AB system: 9.3350, 8.5261 and 7.9351, respectively. The entries come from different catalogues and carry different quality flags, so they should not be treated as a single uniform measurement. The J, H and K values, for example, are cited to 2006AJ....131.1163S, while the Sloan measurements are linked to 2023ApJS..269....3M. [SIMBAD]\n\nMotion is represented by a listed radial velocity of 665 kilometres per second, with an uncertainty of 39 kilometres per second. SIMBAD also reports a redshift of 0.002222, with an uncertainty of 0.000130, and gives the source as 2002LEDA.........0P. These are database values with a cited origin, not a substitute for examining the underlying study.\n\nEven the morphology entry",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%203115",
+            "overlap_terms": [
+              "about",
+              "angle",
+              "angular",
+              "ascension",
+              "catalog",
+              "catalogue",
+              "catalogues",
+              "coordinates",
+              "database",
+              "declination",
+              "degrees",
+              "depend"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [
+      {
+        "quoted_text": "Galaxy towards a Group of Galaxies",
+        "source_matches": [
+          "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%203115"
+        ],
+        "exact_text_confirmed": true
+      }
+    ],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}

@@ -1,0 +1,69 @@
+{
+  "screen_passed": false,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": false,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%203079"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# NGC 3079: Reading a Galaxy in the Catalog\n\n*Its catalog entry offers a precise position, a narrow outline and a Seyfert 2 classification\u2014but each number describes a different part of the story.*\n\nNGC 3079 does not need a dramatic description to be intriguing. Its entry in SIMBAD identifies it as a Seyfert 2 galaxy and records a sky position, an apparent shape and a redshift. Taken together, those details make a compact portrait of the object\u2014and a reminder of how much a catalog can say without telling us everything.\n\nThe listed J2000 coordinates are right ascension 10h 01m 57.879s and declination +55\u00b0 40\u2032 47.45\u2033. These numbers locate the galaxy on the sky; they are not a measure of its size or distance. SIMBAD also gives an optical angular size of about 10.79 by 2.72 arcminutes, with a position angle of 169 degrees. In other words, as measured in that catalog, the galaxy\u2019s apparent outline is much longer than it is wide. The dimensions describe how large it looks from Earth, not its physical diameter. [SIMBAD](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%203079)\n\nThat distinction matters. A long, narrow shape on the sky may invite the eye to imagine a thin object, but angular dimensions alone cannot establish the galaxy\u2019s true size. The catalog provides a morphological classification of \u201cS,\u201d indicating a spiral type, alongside the measured outline. These are related ways of describing the galaxy, but they are not interchangeable: one is a classification, the other an apparent angular measurement.\n\nThe entry lists an emission redshift of 0.00350451, with an uncertainty of 0.0005. Redshift is a measurement of how light from an object is shifted; it is not itself a distance. Turning it into a distance would require additional assumptions and information not supplied by this single catalog entry. SIMBAD also lists a radial velocity of 1,049 kilometers per second, with an uncertainty of 150 kilometers per second. These values belong to the same general picture of motion, but neither should be mistaken for a direct measurement of the galaxy\u2019s physical scale.\n\nThe label \u201cSeyfert 2\u201d adds another kind of information. It identifies the galaxy\u2019s active-galaxy classification, not an appearance that the catalog promises an observer will see. SIMBAD\u2019s entry gives the category, but does not, by itself, describe the detailed processes in the galaxy\u2019s center or predict how conspicuous that activity would be in a telescope. The classification is a scientific clue, not a visual description.\n\nBrightness figures, too, depend on how they are measured. SIMBAD lists a visual V magnitude of 10.86, as well as values in other bands: for example, B magnitude 11.54 and near-infrared J, H and K magnitudes of 8.439, 7.636 and 7.262. The numbers should not be read as competing estimates of one universal brightness. Each belongs to a different filter or wavelength range, and the catalog records them separately.\n\nNGC 3079\u2019s entry is therefore less a single portrait than a set of carefully labeled views. Coordinates say where to point; angular dimensions describe an apparent outline; morphology and Seyfert classification place the galaxy in cataloged categories; and redshift and velocity report measurements of motion. The facts are specific,",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%203079",
+            "overlap_terms": [
+              "angle",
+              "angular",
+              "ascension",
+              "catalog",
+              "coordinates",
+              "declination",
+              "degrees",
+              "depend",
+              "emission",
+              "filter",
+              "galaxy",
+              "ident"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}

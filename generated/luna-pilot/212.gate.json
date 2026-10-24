@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%202903"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# NGC 2903: The Bar at the Lion\u2019s Heart\n\n*In Leo, a nearby spiral galaxy offers patient observers a study in shape, scale and the difference between a bright object and an easy one.*\n\nLeo is a constellation of grand gestures: a sickle-shaped mane, a bright star for an eye, and\u2014less dramatically, but no less wonderfully\u2014a barred spiral galaxy. NGC 2903 lies at right ascension 9h 32m and declination +21\u00b0 30\u2032, in the lion\u2019s territory. Its cataloged form, SBbc, describes a spiral with a central bar and arms between the \u201cb\u201d and \u201cc\u201d varieties of spiral structure. [SIMBAD\u2019s entry for NGC 2903](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%202903) also lists it as an active galaxy nucleus.\n\nThat classification turns a small patch of sky into a lesson in galactic architecture. A bar is a stretched concentration of stars crossing a galaxy\u2019s central region. In barred spirals, the bar and the galaxy\u2019s overall rotation shape the paths of gas and stars; the arms wind outward beyond the center. NGC 2903\u2019s cataloged optical dimensions\u2014about 8.9 by 4.6 arcminutes\u2014make it a substantial target in apparent size. But \u201csubstantial\u201d is not the same as obvious. Its light is spread across an extended haze, so a dark, transparent sky and averted vision matter more than a glance at a star chart.\n\nThe database gives a heliocentric radial velocity of about 536 kilometers per second and an emission redshift of 0.00179. These figures describe motion measured along our line of sight, not a simple speedometer reading for the galaxy\u2019s entire journey through space. Nor should that velocity alone be treated as a precise distance: galaxies also have local motions, and the expansion of the universe is not the only influence on a nearby object\u2019s measured velocity.\n\nFor observers in the Northern Hemisphere, Leo is a rewarding spring constellation. Find its familiar sickle and use a detailed chart or planetarium app to locate NGC 2903 at its listed coordinates. A small telescope under a dark sky may reveal an elongated, softly glowing patch; increase magnification only if the image remains steady and bright enough. With more aperture and careful viewing, look for unevenness in the glow and a brighter central region. Don\u2019t expect a photograph\u2019s crisp arms: the eye gathers light differently, and faint structure may emerge only after several minutes of relaxed observing.\n\nGive your eyes time to adapt to the dark, shield them from nearby lights, and try looking slightly to one side of the galaxy rather than straight at it. If the view seems blank at first, pause, breathe, and look again. The target is not a pinpoint but a broad, low-contrast smudge\u2014exactly the kind of object that rewards averted vision.\n\nA useful comparison is the star field itself. Stars remain sharp points; NGC 2903 stays diffuse and extended. That contrast is the quiet pleasure of galaxy hunting: recognizing that the faint blur is not a cloud in our atmosphere, but a vast stellar system beyond the Milky Way. The coordinates and classifications are catalog data; the glimpse at the eyepiece is yours.\n\n**Source:** [SIMBAD: NGC 2903](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%202903)",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%202903",
+            "overlap_terms": [
+              "active",
+              "ascension",
+              "catalog",
+              "coordinates",
+              "database",
+              "declination",
+              "emission",
+              "field",
+              "galaxy",
+              "heliocentric",
+              "ident",
+              "image"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}

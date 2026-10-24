@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%202447"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# M93: A Small Island in Puppis\n\n*An open cluster near the southern horizon turns a winter observing session into a lesson in distance, scale and patience.*\n\nOn a clear winter night, M93 is easy to overlook. It sits low in the southern sky for many northern observers, among the stars of Puppis, and its light arrives as a compact patch rather than a grand, sprawling display. But this modest cluster rewards a careful look: each point of light belongs to a gathering of stars seen across a gulf of space.\n\nM93 is also catalogued as NGC 2447. SIMBAD classifies it as an open cluster and places its center at right ascension 7 hours 44 minutes 34 seconds and declination \u221223 degrees 51 minutes 11 seconds. That southerly declination matters at the eyepiece. From mid-northern latitudes, the cluster climbs only a little above the southern horizon, where haze and atmospheric turbulence can soften its stars. Observers farther south get a higher, steadier view.\n\nThe distance offers another way to picture what you are seeing. SIMBAD lists a parallax of 0.9603 milliarcseconds. Taking the inverse gives a distance of about 1,040 parsecs, or roughly 3,400 light-years. The same database lists an apparent diameter of 24.2 arcminutes\u2014about four-fifths the Moon\u2019s apparent width. At that distance, this angle corresponds to a projected span of roughly 7 parsecs, or 24 light-years. These are useful scale estimates, not a claim that every star in the cluster lies neatly inside a hard-edged boundary.\n\nThat\u2019s part of the appeal of an open cluster. Its stars appear grouped in the sky, but the view compresses three dimensions into two. A telescope gathers them into a shared scene; the measurements help restore the depth behind it. SIMBAD also reports a radial velocity of 21.7 kilometres per second, a measurement of motion along our line of sight. M93 is not a fixed ornament: it is part of a moving, changing Galaxy.\n\nFor a first search, use the coordinates above in a planetarium app or star chart, then look in Puppis, south of Canis Major. Give yourself a wide, unobstructed view of the southern horizon. If you\u2019re observing from a northern location, choose the cluster\u2019s passage across the meridian, when it reaches its highest point, and avoid nights when haze or nearby lights wash out low-altitude stars.\n\nStart with binoculars or the lowest-power eyepiece in a telescope. A wide field makes it easier to recognize the cluster as a whole; increase magnification only if the view remains sharp and the sky is steady. Let your eyes adapt to the dark, and give the scene a few minutes rather than judging it at first glance. If the cluster seems faint or indistinct, the atmosphere may be the culprit, not your equipment.\n\nM93 won\u2019t overwhelm the sky. Its quieter gift is perspective: a small pattern of stars, gathered across light-years and carried into view from thousands of light-years away.\n\n**Source:** SIMBAD, NGC 2447 (M93): https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%202447",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%202447",
+            "overlap_terms": [
+              "about",
+              "angle",
+              "ascension",
+              "cluster",
+              "coordinates",
+              "database",
+              "declination",
+              "degrees",
+              "display",
+              "field",
+              "ident",
+              "inside"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}

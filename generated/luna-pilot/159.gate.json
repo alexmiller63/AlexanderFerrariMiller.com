@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%201097"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# NGC 1097: A Barred Spiral in the Southern Sky\n\n*This Fornax galaxy offers a patient observer a lesson in scale: a soft oval of light, cataloged across more than ten arcminutes, belongs to a system whose center is anything but quiet.*\n\nSome galaxies announce themselves with brilliant spiral arms. NGC 1097 asks for a darker sky and a little time. In the southern constellation Fornax, its coordinates are about 2 hours 46 minutes right ascension and 30 degrees south declination. Those numbers point to a galaxy that lies low for many northern observers, but is better placed from southern latitudes.\n\nCatalogs classify NGC 1097 as an SB(s)b galaxy: a spiral with a central bar, an intermediate spiral form, and no ring indicated by the \u201c(s)\u201d notation. Its listed optical dimensions are about 10.6 by 5.7 arcminutes. That broad footprint is a reminder that a galaxy\u2019s cataloged size does not mean its light will look equally bright from edge to edge. Much of the visible glow may be faint, especially under suburban skies.\n\nAt the center is another story. SIMBAD identifies NGC 1097 as a LINER-type active galaxy nucleus. \u201cLINER\u201d describes a spectrum marked by emission from relatively low-ionization atoms; it is a classification of the nucleus, not a promise that the core will look conspicuously bright through an eyepiece. The galaxy\u2019s cataloged redshift is about 0.0042, corresponding to a recession speed near 1,260 kilometers per second. That measured shift is useful scientific context, but it is not, on its own, a precise distance marker: a galaxy\u2019s motion can include effects beyond the smooth expansion of the universe.\n\nFor observers, the practical challenge is contrast. NGC 1097 is listed at roughly magnitude 9.5 in the V band, but that integrated brightness is spread across an extended object. A telescope under a dark sky is a more promising starting point than a quick glance from a bright yard. Use a low-power eyepiece first, giving the galaxy room in the field; then increase magnification if the view supports it. Let your eyes adapt to darkness, shield the eyepiece from stray light, and use averted vision\u2014looking slightly away from the galaxy can make a faint haze easier to detect. Do not be discouraged if the first impression is subtle.\n\nThe coordinates also guide the calendar. With a right ascension near 2 hours 46 minutes, NGC 1097 is an evening target during the northern late-autumn and winter observing season; from farther south, it is better placed in the southern spring. In northern locations it remains low above the southern horizon, where haze and light pollution can soften the view. Choose a night when it culminates as high as your location allows, and give the telescope time to settle to the outdoor temperature.\n\nThe reward need not be a dramatic portrait. A small, elongated patch of light is already a sightline to another stellar system, with a barred-spiral structure and an active nucleus recorded in the data. At the eyepiece, patience turns that catalog entry into a place.\n\n**Sources**\n\n- SIMBAD, NGC 1097: https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%201097",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%201097",
+            "overlap_terms": [
+              "active",
+              "allows",
+              "ascension",
+              "catalog",
+              "catalogs",
+              "coordinates",
+              "corresponding",
+              "declination",
+              "degrees",
+              "emission",
+              "field",
+              "galaxy"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}

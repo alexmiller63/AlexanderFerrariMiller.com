@@ -1,0 +1,69 @@
+{
+  "screen_passed": false,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": false,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%202371"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# NGC 2371: A Small Target, a Catalog with Caveats\n\n*The catalog gives this planetary nebula a precise position and a compact apparent size. It also leaves plenty for an observer to verify at the eyepiece.*\n\nA question mark can make a good headline, but it should not turn into a claim. The object discussed here is **NGC 2371**. SIMBAD classifies it as a planetary nebula and lists its J2000 position as 7h 25m 34.688s, +29\u00b0 29\u2032 26.43\u2033. The linked entry does not establish \u201c2372\u201d as an alternate name, so the reliable starting point is the cataloged designation, not the question in a title. [SIMBAD: NGC 2371](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%202371)\n\nFor anyone planning an observation, the coordinates offer a more useful guide than a disputed label. SIMBAD\u2019s position is precise to fractions of an arcsecond in the displayed data. That precision helps identify the catalog entry; it should not be confused with a promise that the object itself will be easy to see. The page identifies the object, but it does not describe what it looks like through a particular telescope or under a particular sky.\n\nThe catalog lists an angular size of 0.727 by 0.727 arcminutes. It labels the measurement as radio and assigns it quality D. That is a compact apparent size in the catalog\u2019s listed measurement, but the wavelength label matters: it is not a universal description of how large the nebula will appear in every kind of observation. Nor does the entry\u2019s single size value tell an observer what details will be visible. [SIMBAD: NGC 2371](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%202371)\n\nBrightness entries also need context. SIMBAD gives a V magnitude of 13.5, with quality D. It lists a B magnitude of 14.48 with quality E, alongside a G-band value of 14.778178 with a quoted uncertainty of 0.003226 and quality C. These are catalog measurements in different filters, with different quality flags; they are not interchangeable promises of visibility. The page does not say how NGC 2371 will look through a given aperture, at a chosen magnification, or beneath a particular level of light pollution.\n\nThat distinction is useful for observers: a number can help set expectations, but it cannot replace conditions at the observing site. The SIMBAD entry supplies data, not an observing report. Its listed size is specifically marked radio, and its visual entry carries a D quality flag. Read together, those details argue for caution rather than a confident prediction about what the eyepiece will reveal.\n\nThere is another reason to treat the catalog as a guide rather than a complete portrait. SIMBAD includes additional measurements\u2014among them a parallax of 0.5812 milliarcseconds and a proper motion of \u22121.256 and \u22127.078 milliarcseconds per year\u2014but those entries do not describe the nebula\u2019s visual appearance. Their presence makes the record richer; it does not answer every practical question an observer might bring to it. [SIMBAD: NGC 2371](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%202371)\n\nSo NGC 2371 is best approached without the extra certainty implied by an unverified alternate designation or a bare magnitude. Begin with the cataloged name and position. Treat the angular size and brightness as measurements with their stated bands and quality flags. Then let the sky\u2014and the instrument\u2014supply the part the database cannot: what this compact catalog entry looks like when you actually find it.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%202371",
+            "overlap_terms": [
+              "angular",
+              "catalog",
+              "certainty",
+              "coordinates",
+              "database",
+              "displayed",
+              "flags",
+              "given",
+              "ident",
+              "linked",
+              "listed",
+              "magnitude"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}

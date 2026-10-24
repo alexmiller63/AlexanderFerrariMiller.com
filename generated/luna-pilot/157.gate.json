@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%201039"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# M34: A Loose Knot in Perseus\n\n*An autumn cluster with room between its stars rewards binoculars, a dark sky and a little patience.*\n\nAs the evening sky turns toward winter, Perseus climbs into view carrying a small, scattered company of stars: M34. It is an open cluster\u2014a gathering of stars that formed together and remain near one another in space, though their pattern looks more like a delicate sprinkle than a solid knot. Find it on a clear autumn or winter evening, and the contrast between its loose appearance and its shared origin becomes part of the pleasure.\n\nM34 lies in Perseus, at coordinates around right ascension 2 hours 42 minutes and declination +42\u00b0 43\u2032. SIMBAD classifies it as an open cluster and lists its apparent extent as about 48 arcminutes\u2014roughly one and a half times the Moon\u2019s apparent diameter. The same database gives a parallax of 1.9536 milliarcseconds. Inverting that measurement places the cluster roughly 510 parsecs away, or about 1,700 light-years. These figures are catalogue measurements, not a promise that every observer will see the same boundary: the faintest outer stars can blend into the background. [SIMBAD: NGC 1039](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%201039)\n\nThat broad footprint is a clue to how to observe M34. A telescope at high magnification may crop the cluster into pieces, while binoculars or a finder scope can keep more of the pattern together. Under a dark sky, binoculars should reveal a small, uneven scattering of stars against the Milky Way\u2019s richer background. In a telescope, start with a low-power eyepiece; increase magnification only if you want to examine individual stars rather than take in the whole group.\n\nFor a simple route, locate Perseus and look for Algol, the constellation\u2019s familiar variable star. M34 sits roughly between Algol and Gamma Andromedae, the star marking the northern end of Andromeda\u2019s chain. A chart or planetarium app can help confirm the field, especially if city lights wash out the surrounding stars. Center your binoculars on the midpoint between those landmarks, then sweep slowly: the cluster is not a bright, isolated beacon, and a hurried glance can pass over it.\n\nChoose a moonless night if possible, and give your eyes time to adjust to the dark. Keep averted vision\u2014looking slightly to the side of the target\u2014in reserve for the fainter members. If the sky is hazy, or if M34 seems to disappear when you look straight at it, try again after a pause rather than increasing magnification. A steady, wide view is often the better tool.\n\nThe catalogue also records a radial velocity of about \u20139.8 kilometres per second, meaning M34\u2019s measured motion along our line of sight is toward us. That number is invisible at the eyepiece, of course. What you see is a patch of starlight spread across nearly a degree of sky, each pinpoint too distant for the eye to sort by depth. The cluster\u2019s story lies in the shared motion and distance behind that apparent scattering. On a crisp night, let the whole pattern settle into view before you begin picking out its separate stars.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%201039",
+            "overlap_terms": [
+              "around",
+              "ascension",
+              "before",
+              "catalogue",
+              "cluster",
+              "coordinates",
+              "database",
+              "declination",
+              "degree",
+              "extent",
+              "field",
+              "ident"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}

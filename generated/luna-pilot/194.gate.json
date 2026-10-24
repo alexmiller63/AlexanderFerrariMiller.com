@@ -1,0 +1,69 @@
+{
+  "screen_passed": false,
+  "checks": {
+    "research_present": true,
+    "draft_length": false,
+    "title_present": false,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%202403"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# NGC 2403: Reading a Galaxy in the Catalog\n\n*An astronomical record can offer more than a name: it gives a position, a measured outline and a set of clues about how the object has been studied.*\n\nNGC 2403 is identified in SIMBAD as a galaxy with a spiral morphological classification, SAcd. Its catalog entry is a compact guide to the object, but the numbers need to be read carefully: some describe where it appears in the sky, others how large it looks from Earth, and still others report its motion. Together, they give a precise portrait without pretending to tell the whole story. [SIMBAD: NGC 2403](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%202403)\n\nThe coordinates provide the first point of reference. SIMBAD lists the J2000 position as right ascension 7 hours, 36 minutes and 51.338 seconds, and declination +65 degrees, 36 minutes and 9.65 seconds. Right ascension and declination are the celestial coordinate system\u2019s counterparts to longitude and latitude. The catalog\u2019s many decimal places make the position precise; they do not, by themselves, describe the galaxy\u2019s appearance.\n\nFor that, the entry gives an optical angular size of 10.154 by 5.932 arcminutes, with an orientation angle of 123 degrees. These are apparent dimensions on the sky, not a physical measurement in kilometers or light-years. The two unequal axes describe an elongated outline in the catalog\u2019s measurement. That distinction matters: an angular size tells us how much of the sky an object covers as seen from Earth, while its actual dimensions would require information not supplied by this measurement alone. [SIMBAD: NGC 2403](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%202403)\n\nThe morphological label, SAcd, adds a different kind of information. It places NGC 2403 in a spiral category, rather than giving another measurement of its position or extent. A classification is a way of organizing what astronomers observe; it is not a complete description of every feature in the galaxy. The entry also attaches a reference to that classification, as it does to its size and coordinates. Those citations are part of the record: they indicate that different",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%202403",
+            "overlap_terms": [
+              "angle",
+              "angular",
+              "ascension",
+              "catalog",
+              "celestial",
+              "coordinate",
+              "coordinates",
+              "declination",
+              "degrees",
+              "galaxy",
+              "ident",
+              "measurement"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}

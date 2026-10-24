@@ -1,0 +1,85 @@
+{
+  "screen_passed": false,
+  "checks": {
+    "research_present": true,
+    "draft_length": false,
+    "title_present": false,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%202261"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Hubble\u2019s Variable Nebula: Reading the Record\n\nSome astronomical names sound like descriptions, and some like invitations. \u201cHubble\u2019s Variable Nebula\u201d does both: it names an object and suggests change. In SIMBAD, the object is catalogued as NGC 2261. The database also lists \u201cHubble\u2019s Var Neb\u201d and \u201cHubble\u2019s Nebula\u201d among its identifiers, linking those names to the same entry. [SIMBAD: NGC 2261](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%202261)\n\nThat entry gives a precise place to begin: right ascension 6 hours, 39 minutes, 9.95 seconds; declination +8 degrees, 44 minutes, 9.5 seconds, in the J2000 reference frame. These coordinates do not describe what the nebula looks like. They do something more basic: turn a name into a position on the sky, one that can be entered into a chart or observing tool.\n\nSIMBAD\u2019s basic data identify NGC 2261 with V* R Mon, or R Monocerotis, and classify the star as a Herbig Ae/Be star. The same page gives its spectral type as B8IIIe. These labels are pieces of a record",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%202261",
+            "overlap_terms": [
+              "ascension",
+              "basic",
+              "coordinates",
+              "database",
+              "declination",
+              "degrees",
+              "frame",
+              "herbig",
+              "hubble",
+              "ident",
+              "identifiers",
+              "nebula"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [
+      {
+        "quoted_text": "Hubble\u2019s Variable Nebula",
+        "source_matches": [],
+        "exact_text_confirmed": false
+      },
+      {
+        "quoted_text": "Hubble\u2019s Var Neb",
+        "source_matches": [],
+        "exact_text_confirmed": false
+      },
+      {
+        "quoted_text": "Hubble\u2019s Nebula",
+        "source_matches": [],
+        "exact_text_confirmed": false
+      }
+    ],
+    "all_quoted_passages_confirmed": false,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}

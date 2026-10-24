@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%202516"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# NGC 2516: A Southern Cluster in a Wide Field\n\n*At nearly a degree across, this open cluster rewards binoculars and a dark, patient look.*\n\nA star cluster is a kind of family portrait: its members appear together on the sky, gathered from a shared patch of the Milky Way. NGC 2516, in the southern constellation Carina, offers a particularly generous frame. The SIMBAD astronomical database classifies it as an open cluster and lists its position as right ascension 7h 58m 06.5s, declination \u221260\u00b0 48\u2032. Its cataloged angular size is about 59.5 arcminutes\u2014close to a degree across. [SIMBAD: NGC 2516](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%202516)\n\nThat size is a hint about how to meet it. At high magnification, a telescope can turn a broad gathering into a crowded patch. Start instead with binoculars, or use a telescope at low power, and give the cluster room to spread across the view. A field about a degree wide or wider should help. The cataloged boundary is a guide, not a fence: star fields do not end as neatly as circles on a chart.\n\nNGC 2516 is also a lesson in measuring a gathering that looks still. SIMBAD lists a parallax of 2.4118 milliarcseconds. Parallax is the tiny apparent shift in an object\u2019s position as Earth travels around the Sun. Taking the inverse of that measurement gives a distance of roughly 415 parsecs, or about 1,350 light-years. The database also gives a proper motion\u2014its apparent drift across the sky\u2014and a radial velocity of 23.82 kilometres per second. Proper motion tracks sideways movement; radial velocity measures movement along our line of sight. These numbers turn a sprinkle of stars into a place with measurable depth and motion.\n\nFor observers, the cluster\u2019s far-southern declination matters as much as its distance. From southern latitudes it climbs high enough for a comfortable view; farther north it stays low, where haze and buildings can swallow the detail. Its coordinates place it in the evening sky around the late southern summer and autumn\u2014roughly February through April\u2014though the best hour depends on where you live. Check a current sky chart, then look toward the southern horizon and let the target rise clear of it.\n\nChoose a moonless night if you can. First find the field with binoculars, moving slowly and giving your eyes time to adjust. If you switch to a telescope, keep the magnification modest. The pleasure is not in separating every star at once, but in seeing the pattern gather: individual points set against a deeper background, the whole field holding together as one object.\n\nThere is a quiet contrast here. NGC 2516 is cataloged with precise coordinates, a measured parallax and a velocity to the hundredth of a kilometre per second. Yet at the eyepiece it arrives without labels, as a wide, shining company in Carina. Let the view linger. The numbers tell you where the cluster is; the wide",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%202516",
+            "overlap_terms": [
+              "angular",
+              "around",
+              "ascension",
+              "cluster",
+              "coordinates",
+              "crowded",
+              "current",
+              "database",
+              "declination",
+              "degree",
+              "depends",
+              "field"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}

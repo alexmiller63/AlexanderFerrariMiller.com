@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%202022"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# PN G196.6-10.9: A Small, Fading Fire in Orion\n\n*Catalogued as NGC 2022, this planetary nebula is a compact target whose true nature takes patience\u2014and a careful look\u2014to reveal.*\n\nIn Orion, where bright stars and famous nebulae can dominate an observer\u2019s attention, PN G196.6-10.9 offers a quieter reward. Listed in SIMBAD as the planetary nebula NGC 2022, it lies at right ascension 5h 42m 06s and declination +9\u00b0 05\u2032 11\u2033 (J2000). Its catalogued apparent diameter is about 0.31 arcminute\u2014roughly 18 arcseconds\u2014small enough to look almost stellar at low magnification. [SIMBAD: NGC 2022](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%202022)\n\nThe word \u201cplanetary\u201d is a historical misdirection. These objects are not planets, but shells of gas cast off by aging stars. The exposed stellar remnant heats the surrounding material, making it glow. In a telescope, the result can be a tiny, softly edged disk: a distant star\u2019s discarded outer layers, briefly visible as a separate structure before they disperse into space.\n\nThat compactness shapes the observing experience. NGC 2022 is not a broad, showy cloud like the Orion Nebula. At a glance, it may resemble a faint star, and its listed visual magnitude is 14.2, though SIMBAD marks that measurement as uncertain. The catalog\u2019s reported size and brightness are useful guides, not a promise of what any particular telescope or sky will show.\n\nFor a practical search, start with Orion on a clear evening and use a detailed star chart or planetarium app set to the J2000 coordinates above. The nebula sits in the constellation\u2019s northern region, well away from the bright sword-and-belt landmarks that first draw the eye. A finder chart is especially helpful: at this scale, sweeping around without a precise reference can make the target easy to pass over.\n\nUse a telescope and begin at low power to establish the field, then increase magnification if the image remains steady and the nebula is located. A nebula filter may improve contrast under some conditions, but it cannot replace dark skies, good transparency or careful focusing. Give your eyes time to adapt, and try averted vision\u2014looking slightly to one side of the target rather than directly at it. If the object seems star-like, compare its appearance at different magnifications: a nebula may hold a small disk-like form where a star remains a point.\n\nThe challenge is part of the pleasure. The eye does not receive a dramatic portrait; it gathers a subtle hint. Yet the catalog coordinates point to a real, compact object with a measured position and angular size, not merely a smudge in a chart. When that faint spot finally looks less like a star and more like a tiny patch of light, the scale of the scene changes. What seems almost pinprick-small is a shell of stellar material viewed across interstellar distance.\n\nNGC 2022 asks for a quiet kind of attention. Find the field, steady the view, and look again. In a constellation crowded with celebrated sights, this modest planetary nebula rewards the observer who makes room for the nearly invisible.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%202022",
+            "overlap_terms": [
+              "angular",
+              "ascension",
+              "before",
+              "catalog",
+              "coordinates",
+              "declination",
+              "filter",
+              "ident",
+              "listed",
+              "magnitude",
+              "measurement",
+              "nebula"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}

@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%202841"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# MCG 9-16-5: A Spiral in the Great Bear\n\n*An April-evening target for patient eyes and a steady telescope*\n\nIn the bowl of the Great Bear, far beyond the familiar pattern of the Big Dipper, MCG 9-16-5 turns its broad spiral arms toward us. Catalogued also as NGC 2841, it lies at about right ascension 9h 22m, declination +50\u00b0 59\u2032. Its light reaches us as a soft, elongated glow\u2014not a showpiece for the unaided eye, but a rewarding destination for a clear, dark night.\n\nThe galaxy\u2019s catalogued visual magnitude is about 9.2, and its apparent extent is roughly 7.8 by 4.1 arcminutes. That is several times the apparent width of Jupiter, though a galaxy spreads its light across a much larger area and therefore looks far fainter than a point-like star of the same magnitude. SIMBAD classifies NGC 2841 as a spiral galaxy and lists its nucleus as a LINER-type active galactic nucleus. A LINER is a galaxy core whose spectrum shows particular emission from low-ionization atoms; the label describes the light, not a bright beacon likely to stand out in an amateur eyepiece. [SIMBAD: NGC 2841](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%202841)\n\nThere is a useful contrast here: the compact name MCG 9-16-5 sounds like a single point on a chart, while the object itself is a sprawling stellar system. Its catalogued redshift is about 0.0021. That small number signals a modest recession in cosmological terms, but a galaxy\u2019s measured motion can also be affected by its local gravitational neighborhood. A redshift alone is not a simple yardstick for its distance.\n\nFor observers at northern latitudes, NGC 2841 is well placed on spring evenings, when Ursa Major rides high. Use a detailed star chart or a planetarium app to locate the field: the galaxy is about two and a half degrees west and a little south of the third-magnitude star Theta Ursae Majoris. The coordinates above are given for the standard J2000 chart grid, so a modern app may show a slight difference in its displayed position.\n\nA pair of binoculars may reveal the field under dark skies, but a telescope is the better tool. Start at low power to identify the star pattern, then increase the magnification enough to darken the sky background without shrinking the galaxy out of view. An aperture of around 150 mm or more is a helpful starting point, especially away from city lights. Look for a small, oval haze rather than crisp spiral structure. Give your eyes time to adapt, use averted vision, and shield the eyepiece from stray light. Under excellent conditions, patient observers may glimpse a brighter central region and a faint extension along the galaxy\u2019s long axis.\n\nThe best view may come not from a dramatic reveal, but from noticing the object grow more certain with each return to the eyepiece. In the same spring sky that carries the Dipper\u2019s familiar stars, this dim patch offers a quieter kind of scale: a vast spiral, catalogued under more than one name, reduced to a whisper of light in the telescope.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%202841",
+            "overlap_terms": [
+              "active",
+              "around",
+              "ascension",
+              "certain",
+              "coordinates",
+              "declination",
+              "degrees",
+              "displayed",
+              "extent",
+              "galaxy",
+              "given",
+              "ident"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}

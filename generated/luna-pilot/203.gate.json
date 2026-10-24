@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%202539"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Collinder 176: A Cluster in the Puppis Starfields\n\n*An open cluster catalogued as NGC 2539 offers a measured patch of the southern sky\u2014and a rewarding target for patient, low-power observing.*\n\nOn a clear evening, a star cluster can seem less like an object than a small change in the texture of the sky: a gathering where the background grows suddenly more deliberate. Collinder 176 lies in Puppis, amid the rich starfields of the southern Milky Way. Its catalogue identity leads to NGC 2539, which SIMBAD classifies as an open cluster. The database places it at right ascension 8h 10m 37.9s and declination \u221212\u00b0 50\u2032 02\u2033 (J2000). [SIMBAD: NGC 2539](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%202539)\n\nThose coordinates are a useful starting point, not a picture of what the eye will see. SIMBAD lists an apparent diameter of about 22.4 arcminutes\u2014roughly three-quarters the width of the full Moon\u2014and a parallax of 0.754 milliarcseconds. Inverting that parallax gives a rough distance of 1,300 parsecs, or about 4,300 light-years. That estimate is a translation of the catalogue value, not a ruler-straight measurement of the cluster\u2019s edges: an apparent boundary on the sky need not mark a sharp physical border.\n\nAn open cluster is a family of stars born from the same cloud of gas and dust. Over time, gravitational encounters and the broader pull of the Galaxy can loosen the family\u2019s ties. The stars visible in a cluster\u2019s direction, then, are not automatically all members. Determining which belong together takes measurements of motion and distance, not just a glance through an eyepiece. SIMBAD\u2019s NGC 2539 entry lists a radial velocity of 29.3 kilometres per second and a parallax value, while also identifying the object as an open cluster. These figures give the target a scientific frame; they do not turn it into a motionless ornament.\n\nFor observers at mid-northern latitudes, Puppis is a low southern constellation. Choose a night when the constellation is well above the horizon from your location, and seek a site with an unobstructed southern view. Atmospheric haze and city glow both matter: a low target\u2019s light travels through more air, and faint stars can disappear before the sky looks especially bright.\n\nStart with a planetarium app or star atlas set to the J2000 position above, then use nearby bright stars on your chart to hop into the field. Because Collinder 176 is an extended cluster, begin with binoculars or a telescope at low power. A wide field helps show the surrounding star pattern rather than cropping it into a tight knot. Let your eyes adapt to darkness, avoid bright screens, and scan gently; if the cluster seems sparse, try averted vision\u2014looking just to one side of the faintest stars.\n\nSIMBAD gives magnitudes of about 6.5 in V and 7.05 in B",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%202539",
+            "overlap_terms": [
+              "ascension",
+              "before",
+              "catalogue",
+              "cluster",
+              "coordinates",
+              "database",
+              "declination",
+              "field",
+              "frame",
+              "ident",
+              "magnitudes",
+              "measurement"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}

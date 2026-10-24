@@ -1,0 +1,69 @@
+{
+  "screen_passed": false,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": false,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%203031"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# M81: Reading a Galaxy by Its Coordinates\n\nA galaxy can be easy to name in a catalog and harder to recognize in the sky. M81, also known as NGC 3031, is a useful example: its database entry gives a precise position and measured dimensions, while an observer at the eyepiece must find and interpret a faint patch of light.\n\nSIMBAD identifies NGC 3031 as M81 and classifies it as a Seyfert 2 galaxy. The database lists its optical size as 21.38 by 10.23 arcminutes, with an orientation angle of 157 degrees. Those figures describe its apparent dimensions in the sky, not its physical size. They offer a way to picture the target as an extended object rather than a point, but they do not say how prominent it will look through a particular instrument or under a particular sky. (SIMBAD: https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%203031)\n\nThe same entry gives M81\u2019s J2000 coordinates as right ascension 9 hours, 55 minutes, 33 seconds and declination +69 degrees, 3 minutes, 55 seconds. If a telescope mount accepts coordinates, these values can help point it toward the target. They are also a reminder that finding a galaxy does not have to depend on recognizing a familiar star pattern: a chart or planetarium app can use the position to guide the search.\n\nFor a visual attempt, begin with a chart and take time to orient yourself before aiming the telescope. If using binoculars, sweep the indicated area slowly. In a telescope, start at low magnification so the surrounding field remains visible; then adjust only if the target is still comfortably framed. These are practical starting points, not guarantees. Equipment, sky conditions and the observer\u2019s own eyesight all affect what can be made out.\n\nAllow time for careful looking. Averted vision\u2014looking slightly to one side of a suspected faint object\u2014may be worth trying. Rather than expecting a crisp outline, compare what you see with the broad dimensions in the catalog. If a subdued glow appears, note its extent and whether any central region seems more apparent than the edges. If nothing is clear, record that too: an observation is useful even when it leaves questions for another night.\n\nSIMBAD lists M81\u2019s V magnitude as 6.94 and its B magnitude as 7.89. These are catalog measurements, not a complete forecast of what the galaxy will look like from your observing site. They cannot, by themselves, tell you whether it will be visible to the unaided eye, binoculars or a particular telescope. Treat them as reference values, and let the view through your equipment be the test.\n\nThe \u201cSeyfert 2\u201d classification is another catalog description, but it is not a detail an ordinary visual observation is expected to reveal. The entry also records a morphological type of SA. These labels help identify how the object is categorized in astronomical databases; they do not substitute for the experience of locating it or describe every feature an observer might see.\n\nA simple sketch can make that experience more deliberate. Mark the field, outline any glow you detect and write down the instrument and conditions. On a later attempt, you can compare your notes with the same coordinates and catalog dimensions. M81\u2019s position and measurements are fixed reference points; the view you record is your own careful encounter with a distant galaxy.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%203031",
+            "overlap_terms": [
+              "angle",
+              "ascension",
+              "before",
+              "catalog",
+              "coordinates",
+              "database",
+              "declination",
+              "degrees",
+              "galaxy",
+              "ident",
+              "known",
+              "magnitude"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}

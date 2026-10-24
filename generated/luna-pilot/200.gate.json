@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%202477"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# NGC 2477: A Southern-Sky Gathering\n\n*An open cluster in Puppis offers a wide-field view of stellar company\u2014and a useful lesson in reading the sky.*\n\nAs evening deepens, look south for Puppis, the stern of the old ship Argo. There, at right ascension 7h 52m and declination \u221238\u00b0 32\u2032, lies **NGC 2477**, a broad gathering of stars catalogued as an open cluster. Its listed extent is about 18 arcminutes\u2014roughly three-fifths the apparent width of the full Moon. [SIMBAD\u2019s NGC 2477 entry](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%202477) gives the coordinates and classifies the object as an open cluster.\n\nThat size is an invitation to take in the whole scene, not just chase the faintest point of light. Start with binoculars or a telescope at low power, under a dark sky if possible. A field of view wider than the cluster will help set its stars against the surrounding sky. Then increase magnification to explore the pattern. The cluster\u2019s catalogued integrated visual magnitude is about 5.8, but the entry flags that photometry as low quality; treat it as a rough guide, not a promise of naked-eye visibility. [SIMBAD](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%202477)\n\nThe best approach is to use the coordinates in a planetarium app or a telescope\u2019s setting circle, then confirm the field with a chart. NGC 2477 sits far enough south that it rises highest from southern latitudes. From places north of about 51\u00b0 north latitude, it never clears the horizon; farther north, the view is impossible. For observers who can see Puppis, choose a night when the constellation is high and the air is steady. The cluster\u2019s position puts it in the evening sky during the late-winter season in the Northern Hemisphere, and late summer in the Southern Hemisphere.\n\nNGC 2477 also offers a way to think about distance. SIMBAD lists a parallax of 0.665 milliarcseconds. Parallax is the apparent shift of a nearby object against more distant stars as Earth moves around the Sun. Simply taking the reciprocal of that value gives a rough distance of about 1,500 parsecs, or close to 5,000 light-years. That estimate is only a convenient conversion: a measured parallax has uncertainty, and a careful distance determination requires more than taking its reciprocal. [SIMBAD](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%202477)\n\nAn open cluster is a family of stars associated by their shared origin. Compared with the tightly packed globular clusters that orbit the Milky Way\u2019s outskirts, open clusters are generally looser and found in the galaxy\u2019s disk. Their stars offer astronomers a natural laboratory: because cluster members formed in the same general environment, researchers can compare stars at different stages of stellar evolution. The SIMBAD listing identifies NGC 2477 as an open cluster, though the catalogue details alone do not tell us its age or membership count.\n\nAt the eyepiece, that scientific description becomes a simple pleasure: many points of light gathered into one patch of sky. Give your eyes time to adapt, keep the view wide, and look for how the stars\u2019 spacing changes across the field. A chart can get you there; patient looking is what makes the cluster yours.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%202477",
+            "overlap_terms": [
+              "around",
+              "ascension",
+              "catalogue",
+              "cluster",
+              "coordinates",
+              "declination",
+              "extent",
+              "field",
+              "flags",
+              "ident",
+              "listed",
+              "magnitude"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}

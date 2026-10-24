@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%202422"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# M47: A Half-Degree of Starlight\n\n*An open cluster in Puppis offers a compact observing target\u2014and a reminder that the stars we see together may share a much deeper connection.*\n\nSomewhere in the southern sky, a small patch of stars gathers under the catalogue name M47. It is also NGC 2422, classified by SIMBAD as an open cluster: a collection of stars that appear in the same region of the sky. A clear view of it is an invitation to look past that flat arrangement and consider the cluster in three dimensions.\n\nSIMBAD places M47 at right ascension 7h 36m 35.3s and declination \u221214\u00b0 29\u2032 20\u2033 (J2000). Its listed parallax is 2.069 milliarcseconds. Taking the inverse of that value gives a distance of about 480 parsecs, or roughly 1,600 light-years. These measurements turn a sky position into a place: M47 is not merely a sprinkle of points against the dark, but a stellar gathering at a measurable remove from Earth.\n\nThe database lists the cluster\u2019s angular size as 31.1 arcminutes\u2014just over half a degree, close to the apparent width of the full Moon. That apparent span is useful at the eyepiece. A telescope\u2019s highest magnification is not necessarily the best choice for an object that covers so much sky; a wide field can keep the cluster together as a single scene. Binoculars may also be a good way to begin, especially under a dark sky.\n\nTo find M47, use its coordinates in a planetarium app or a sky chart, making sure the chart is set to the correct date and location. The declination, south of the celestial equator, means the cluster will appear toward the southern part of the sky for many observers in the Northern Hemisphere. How high it rises depends on where you are: from farther north, it will sit lower above the southern horizon. Choose a spot with an unobstructed view in that direction, and give your eyes time to adapt to the dark.\n\nA low-power eyepiece can help frame a field about a degree wide, leaving room around M47\u2019s listed half-degree extent. If you are using binoculars, steady them against a support or rest your elbows; small movements can make faint points seem to jump. On a bright, moonlit night, the view may lose contrast, so try again when the Moon is down or less prominent. The goal is not to force detail, but to let the cluster\u2019s stars resolve into a pattern.\n\nThe measurements supply a kind of quiet drama. The coordinates tell you where to look; the parallax hints at how far the light has travelled; the angular size describes how broadly the cluster is spread across our view. At the eyepiece, those facts become a personal encounter: a field of stars gathered in one small patch of sky, with the space between Earth and M47 folded into every point of light.\n\n**Source:** [SIMBAD: NGC 2422 (M47)](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%202422)",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%202422",
+            "overlap_terms": [
+              "angular",
+              "around",
+              "ascension",
+              "catalogue",
+              "celestial",
+              "cluster",
+              "coordinates",
+              "database",
+              "declination",
+              "degree",
+              "depends",
+              "extent"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}

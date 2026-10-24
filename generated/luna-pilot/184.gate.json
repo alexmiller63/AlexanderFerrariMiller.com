@@ -1,0 +1,77 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%202237"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Rosette: A Flower in the Winter Sky\n\n*The name points to a rich patch of Monoceros\u2014but catalog entries can make the view more complicated than the nickname.*\n\nRosette sounds like a promise of symmetry: petals opening in the dark. At the eyepiece, the first challenge is simply finding the right patch of sky. The name belongs to a region in Monoceros, the faint constellation tucked between brighter winter landmarks. A catalog search adds a twist: SIMBAD lists NGC 2237 as a \u201cCluster of Stars\u201d and gives \u201cRosette\u201d as one of its identifiers. It also links the entry with NGC 2244 and notes a satellite cluster west of it. The Rosette, then, is not just one neat label for one neat object. [SIMBAD: NGC 2237](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%202237)\n\nThat distinction is useful at the telescope. Popular sky names, formal catalog numbers and astronomical object types do not always line up as simply as a map might suggest. SIMBAD\u2019s listing gives NGC 2237\u2019s infrared position as right ascension 6 hours 30 minutes 36.10 seconds and declination +4 degrees 58 minutes 50.6 seconds, for epoch J2000. These coordinates are a precise address, not a promise that the object will look like a sharply bounded cluster through every instrument.\n\nThe Rosette is best approached as a field to explore, rather than a single target to snap into focus. In winter, use Orion as a starting landmark, then turn toward Monoceros and consult a current sky chart or planetarium app to locate the region. The Rosette\u2019s position is east of Orion; a chart will help distinguish the relevant star field from the many faint stars around it. Give your eyes time to adapt to the dark, and try observing away from streetlights and bright Moon glow.\n\nBinoculars can help you sweep the area and identify its broad pattern of stars. A telescope at low power and with a wide field of view is a good first choice: higher magnification narrows the view and may make a large, diffuse target harder to take in. If you are hoping to see surrounding nebulosity, choose a dark, transparent night. Light pollution and haze can wash out faint detail, and what appears in an eyepiece can differ markedly from the long-exposure images commonly associated with the Rosette. A nebula filter may improve contrast for some observers, but it cannot replace a dark sky.\n\nThere is pleasure in the naming puzzle as well as the stargazing. SIMBAD\u2019s entry records a web of identifiers and associations: NGC 2237, Rosette, NGC 2244 Satellite Cluster, and other catalogue labels. Treat those names as signposts that help locate and compare objects\u2014not as a guarantee that every source draws the boundaries in precisely the same way. The coordinates offer a dependable starting point; the view through your own instrument supplies the rest.\n\nOn a clear winter evening",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%202237",
+            "overlap_terms": [
+              "around",
+              "ascension",
+              "associations",
+              "astronomical",
+              "between",
+              "bright",
+              "catalog",
+              "catalogue",
+              "cluster",
+              "coordinates",
+              "current",
+              "declination"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [
+      {
+        "quoted_text": "Cluster of Stars",
+        "source_matches": [
+          "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%202237"
+        ],
+        "exact_text_confirmed": true
+      }
+    ],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}

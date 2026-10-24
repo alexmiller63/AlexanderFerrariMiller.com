@@ -1,0 +1,69 @@
+{
+  "screen_passed": false,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": false,
+    "source_citation": false,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": false,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": false,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": false
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 0,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%202362"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# NGC 2362: Reading a Cluster in the Southern Sky\n\n*An open cluster can be more than a pretty arrangement of stars. Its coordinates and measurements show how astronomers turn a patch of sky into a defined object.*\n\nA star cluster begins, for an observer, as a pattern: points of light gathered in one part of the sky. In a database, that pattern becomes an object with a name, a position and measurements. NGC 2362 offers a useful example of how those two ways of seeing fit together.\n\nSIMBAD classifies NGC 2362 as an open cluster. Its listed J2000 position is right ascension 7 hours 18 minutes 41 seconds and declination \u221224 degrees 57 minutes 14 seconds. The negative declination places it south of the celestial equator. Those coordinates are a precise address in the sky, useful for finding the object on a chart or entering it into a planetarium app.\n\nThe numbers also suggest a practical approach to observing. Because NGC 2362 is south of the celestial equator, how high it appears depends on the observer\u2019s location. From places where it remains low in the sky, an unobstructed southern view matters: the horizon, trees or buildings can block the sightline. Use the coordinates to identify the target, then allow for local conditions rather than expecting it to sit at the same height for every observer.\n\n## From coordinates to motion\n\nA position is only one part of an object\u2019s record. SIMBAD lists NGC 2362\u2019s parallax as 0.742 milliarcseconds, with a quoted uncertainty of 0.006 milliarcseconds. Parallax is the apparent shift in an object\u2019s position when viewed from different points in Earth\u2019s orbit; astronomers use such measurements to investigate distance. The catalog entry supplies the measurement, not a simple visual impression of how far away the cluster appears.\n\nSIMBAD also gives a proper motion of \u22122.791 milliarcseconds per year in right ascension and +2.953 milliarcseconds per year in declination. Proper motion describes an object\u2019s apparent movement across the sky. These small values are not something to watch unfold during an observing session. They are part of the longer-term record that helps astronomers describe where an object is and how its position changes.\n\nA separate listing gives a radial velocity of 37.509 kilometers per second. Radial velocity describes motion along the line of sight, toward or away from the observer. Together, position, proper motion and radial velocity provide different pieces of information; none alone conveys the whole story.\n\n## What the catalog does\u2014and does not\u2014say\n\nSIMBAD lists an angular size of 104 by 104 arcminutes for NGC 2362. Angular size is a measure of how large an object appears on the sky, not its physical diameter. The figure is a cataloged value, not a promise that the entire listed area will look like a distinct cluster through every instrument or under every sky.\n\nThe database also reports 725 linked objects. That figure needs care: SIMBAD describes it as the number of linked child objects, regardless of membership probability. It should not be read as a confirmed count of cluster members. A catalog link records an association in the database, not necessarily a conclusion that every linked star belongs to the cluster.\n\nFor a skywatcher, a chart and a clear view help turn NGC 2362\u2019s coordinates into a target. For the reader of astronomical data, the measurements offer another view: a named open cluster represented by position",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%202362",
+            "overlap_terms": [
+              "allow",
+              "angular",
+              "ascension",
+              "catalog",
+              "celestial",
+              "child",
+              "cluster",
+              "coordinates",
+              "count",
+              "database",
+              "declination",
+              "defined"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}

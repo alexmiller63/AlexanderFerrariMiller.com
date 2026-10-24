@@ -1,0 +1,69 @@
+{
+  "screen_passed": false,
+  "checks": {
+    "research_present": true,
+    "draft_length": false,
+    "title_present": false,
+    "source_citation": false,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": false,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": false,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": false
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 0,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%201023"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# NGC 1023: Reading a Galaxy\u2019s Catalog Record\n\n*Coordinates, brightness measurements and classification labels offer a measured portrait of NGC 1023\u2014and a reminder that a catalog entry is not the same as a complete account.*\n\nNGC 1023 comes with several kinds of description. SIMBAD identifies it as an active-galaxy-nucleus candidate and records a morphological type of SB(rs)0\u2212. The first label points to a possible property of its nucleus; the second is its cataloged morphological classification. Neither label, on its own, tells the whole story of the object. Together, they show how a database can assemble distinct observations and classifications under one name.\n\nThe word \u201ccandidate\u201d is important. SIMBAD\u2019s basic data list NGC 1023 as an active galaxy nucleus candidate\u2014not simply as a confirmed active nucleus. The record therefore preserves the qualification rather than presenting the label as definitive. Its morphological entry, SB(rs)0\u2212, is listed separately, with a citation to the classification reference. Keeping those entries distinct makes the catalog easier to read: one describes a possible nuclear classification, the other records a morphological type.\n\nThe position gives a precise way to identify the object. SIMBAD lists NGC 1023 at right ascension 02h 40m 24.013s and declination +39\u00b0 03\u2032 47.66\u2033, in the J2000 ICRS coordinate system. The database also supplies galactic coordinates: longitude 145.023\u00b0 and latitude \u221219.089\u00b0. These are alternative coordinate descriptions of the same listed position, not separate locations.\n\nBrightness is recorded in several filters. The SIMBAD entry gives a V magnitude of 9.35, a B magnitude of 10.35 and a U magnitude of 10.91. Those numbers are catalog measurements in named bands; they are not three different estimates of a single unspecified quantity. The entry attributes the U and B values to one reference and the V value to another. It also lists measurements in other bands, including J, H and K, illustrating that the record brings together observations reported in different catalog sources.\n\nA further pair of numbers describes motion away from or toward the observer. SIMBAD lists a radial velocity of 637 kilometers per second and a spectroscopic redshift of 0.002127, citing the same reference for both. The record also gives cz as 637.68 kilometers per second. These are related entries in the database, but they are displayed as separate forms of the measurement. Their presence adds another kind of information to the record without changing the object\u2019s listed position or morphological type.\n\nThe sources matter because SIMBAD is an aggregator: the NGC 1023 page brings together identifiers, classifications and measurements with references to the underlying work. The morphological",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%201023",
+            "overlap_terms": [
+              "active",
+              "ascension",
+              "basic",
+              "candidate",
+              "catalog",
+              "coordinate",
+              "coordinates",
+              "database",
+              "declination",
+              "displayed",
+              "galaxy",
+              "listed"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}

@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%202682"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# M67: A Small Lantern in Cancer\n\n*In the spring sky, this open cluster rewards patient looking: a soft patch to the unaided eye becomes a gathering of stars through binoculars or a telescope.*\n\nCancer is not the showiest constellation. Its faint stars can seem to dissolve into the background, and that is part of M67\u2019s appeal: the cluster asks you to slow down and let your eyes adjust. On a clear evening, find Cancer between Gemini and Leo, then look near Acubens, the constellation\u2019s bright claw. M67 lies about a degree and a half west of that star, close enough to make a useful starting point.\n\nM67 is also catalogued as NGC 2682. SIMBAD classifies it as an open cluster and gives its position as right ascension 8h 51m 23s, declination +11\u00b0 48\u2032 50\u2033 (J2000). Its listed angular size is about 25 arcminutes\u2014slightly less than the Moon\u2019s apparent width. Those coordinates and dimensions help explain why the cluster can be easy to miss: it is not a bright, sharply defined object, but a broad, subtle concentration of stars. [SIMBAD: NGC 2682](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%202682)\n\nBegin with binoculars under a reasonably dark sky. Sweep slowly around Acubens rather than expecting a crisp point; M67 may first appear as a faint glow, with individual stars emerging as you hold your gaze. A small telescope at low power can bring out more of the cluster. If the view seems empty, try looking slightly to one side of the object: the eye often detects a dim patch more readily away from the exact center of vision. Give yourself time in the dark, and avoid bright phone screens while observing.\n\nThe cluster\u2019s apparent spread is only one part of its story. SIMBAD lists a parallax of 1.1325 milliarcseconds. Converting that measurement gives a distance of roughly 880 parsecs, or about 2,900 light-years. At that distance, a 25-arcminute span corresponds to a region tens of light-years across. What looks like a modest smudge in the eyepiece is therefore a sizeable stellar neighborhood, seen from far beyond its borders.\n\nAn open cluster is a group of stars associated in space, rather than a distant galaxy or a cloud of glowing gas. M67\u2019s stars appear together because our line of sight catches that gathering against the more scattered background of the Milky Way. The view is a reminder that a telescope does not simply magnify: it helps sort patterns. A faint blur becomes a collection, and the collection becomes a place.\n\nFor northern observers, M67 is best placed in the evening sky during the late-winter and spring months, when Cancer climbs into a convenient part of the sky. Choose a night when the Moon is absent or out of the way, and give the cluster a few minutes before deciding what you can see. The first impression may be quiet. Stay with it. In the dim field near Acubens, that quietness is the invitation.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%202682",
+            "overlap_terms": [
+              "angular",
+              "around",
+              "ascension",
+              "before",
+              "cluster",
+              "coordinates",
+              "declination",
+              "defined",
+              "degree",
+              "field",
+              "ident",
+              "listed"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}

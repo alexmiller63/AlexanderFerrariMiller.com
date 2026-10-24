@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%202506"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# NGC 2506: A quiet gathering in Monoceros\n\n*An open cluster offers a glimpse of stars sharing a neighborhood\u2014and a practical target for a winter-night telescope.*\n\nSome celestial sights announce themselves with a bright splash. NGC 2506 asks for a slower approach: find its patch of sky, give your eyes time to adjust, and let a telescope gather the faint points into a pattern. This open cluster lies in Monoceros, the faint constellation between brighter winter landmarks. Its appeal is less a single dramatic star than the impression of many suns gathered in one small region.\n\nThe SIMBAD astronomical database gives NGC 2506\u2019s J2000 coordinates as right ascension 08h 00m 02.4s and declination \u221210\u00b0 46\u2032 23\u2033. It lists an optical angular size of about 10.6 arcminutes\u2014roughly one-third the apparent width of the full Moon. SIMBAD also classifies it as an open cluster, a collection of stars associated by their shared origin rather than a chance alignment alone. Such groupings are useful to astronomers: comparing the stars\u2019 properties can help reveal how stars change over time. The database lists a parallax of 0.292 milliarcseconds, but that catalog value should be treated as a measurement, not a simple picture of the cluster\u2019s three-dimensional extent. [SIMBAD: NGC 2506](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%202506)\n\nFor observers, the coordinates are a reliable starting point for a planetarium app or star chart. Because the cluster\u2019s declination is about 11 degrees south of the celestial equator, its height at its highest point depends on your location. At latitude 40\u00b0 north, it culminates roughly 39 degrees above the southern horizon. From farther north it stays lower; from the Southern Hemisphere it can climb higher. Its right ascension also gives a useful timing clue: it crosses the meridian when local sidereal time is near eight hours. In northern mid-latitudes, that makes winter evenings a practical time to seek it.\n\nStart with binoculars or a telescope at low power, using a chart to guide you from familiar winter stars. NGC 2506 is not an unaided-eye landmark, so don\u2019t worry if you can\u2019t pick it out before looking through an instrument. A low-power eyepiece gives context and helps you identify the field; a higher power may make individual stars easier to distinguish. The cataloged diameter of about 10.6 arcminutes means the cluster should fit comfortably within many telescopic fields of view.\n\nChoose a night when the target is well above the horizon and the air is steady. Monoceros does not have the bright, obvious guide stars of Orion, so a finder chart or digital setting circle can save time. If the view seems empty at first, check focus, let your eyes adapt, and sweep slowly around the charted position. In a rich field, the cluster\u2019s shape may emerge",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%202506",
+            "overlap_terms": [
+              "angular",
+              "around",
+              "ascension",
+              "before",
+              "catalog",
+              "celestial",
+              "cluster",
+              "coordinates",
+              "database",
+              "declination",
+              "degrees",
+              "depends"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}

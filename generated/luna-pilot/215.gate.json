@@ -1,0 +1,77 @@
+{
+  "screen_passed": false,
+  "checks": {
+    "research_present": true,
+    "draft_length": false,
+    "title_present": false,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%203034"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# NGC 3034: A Name in the Dark\n\nThe story of NGC 3034 begins with a set of coordinates: right ascension 09h 55m 52.430s, declination +69\u00b0 40\u2032 46.93\u2033. In SIMBAD, those infrared coordinates are listed for the J2000 epoch. They locate the object on the celestial map, but they do not tell us what it is like to look for it\u2014or what it might mean to find it.\n\nFor that, imagine an observer tracing the numbers across a chart. The sky is not labeled like a page in a book. Its patterns must be searched, and an object\u2019s catalog name is a starting point rather than a description. NGC 3034 has another familiar designation: M82. SIMBAD classifies it as an active galaxy nucleus. That label gives the observer a clue, but it is still a compact entry for an object too complex to be summed up by a name. ([SIMBAD: NGC 3034](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%203034))\n\nThe database offers measurements as well as names. It lists a heliocentric radial velocity of 219 kilometers per second, with an uncertainty of 27 kilometers per second. It also reports a spectroscopic redshift of 0.00073, with an uncertainty of 0.00009. These numbers are not directions on a chart; they are recorded measurements associated with the object. Their precision makes them useful, while the stated uncertainties remind us that a measurement is not the same thing as absolute certainty. ([SIMBAD: NGC 3034](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%203034))\n\nThere is another entry that invites the imagination beyond a single point of light. SIMBAD notes that NGC 3034 may be a companion of NGC 3031, also known as M81 or Bode\u2019s Galaxy. The wording matters: \u201cpossible companion\u201d does not turn a suggestion into a certainty. It gives the observer a connection to consider, while preserving the uncertainty in the catalog. One designation points to another; a line of inquiry opens, but it does not close. ([SIMBAD: NGC 3034](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%203034))\n\nSIMBAD also lists a V-band magnitude of 8.41, with an uncertainty of 0.09. It is one measurement among the database\u2019s entries for the object, alongside values in other filters. A number like this can make an astronomical object feel briefly graspable: a brightness rendered as digits. But the number is not the object. It is a particular recorded value, attached to a filter and a reference,",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%203034",
+            "overlap_terms": [
+              "active",
+              "ascension",
+              "catalog",
+              "celestial",
+              "certainty",
+              "companion",
+              "coordinates",
+              "database",
+              "declination",
+              "description",
+              "epoch",
+              "filter"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [
+      {
+        "quoted_text": "possible companion",
+        "source_matches": [
+          "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%203034"
+        ],
+        "exact_text_confirmed": true
+      }
+    ],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}

@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%202360"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# NGC 2360: A quiet gathering in Canis Major\n\n*At the edge of the Milky Way\u2019s winter hunting grounds, this open cluster rewards a patient sweep\u2014and a low-power view.*\n\nSome star clusters announce themselves with a bright, unmistakable knot. NGC 2360 is more of a discovery: a small patch of sky that becomes a gathering of stars when you slow down and look carefully. It lies in Canis Major, among the winter constellations, and makes a fine target for an evening when you want to explore beyond the sky\u2019s brightest landmarks.\n\nThe catalogue position places NGC 2360 at right ascension 7 hours 17 minutes 46 seconds and declination \u221215 degrees 38 minutes (J2000). That puts it roughly 8 degrees east and a little north of Sirius, the brilliant star marking the dog\u2019s face. From mid-northern latitudes, the cluster stays fairly low as it crosses the southern sky, so try to observe when it is highest and choose a site with a clear southern horizon. It is better placed on winter evenings; observers farther south will see it climb higher.\n\nNGC 2360 is an open cluster: a collection of stars associated by their formation and held together by gravity, though such groupings can gradually disperse over time. SIMBAD lists its apparent diameter as about 18.5 arcminutes\u2014just under one-third of a degree\u2014and gives a parallax of 0.9018 milliarcseconds. A simple conversion of that parallax suggests a distance of roughly 1,100 parsecs, or about 3,600 light-years. These measurements give the cluster a useful double character: compact in the eyepiece, yet a far-flung stellar family in space. [SIMBAD: NGC 2360](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%202360)\n\nTo find it, first locate Sirius. Let your eyes adjust to the dark, then sweep eastward with binoculars or a low-power telescope, using a star chart or planetarium app to pinpoint the field. The cluster\u2019s modest apparent size makes a wide field helpful. Binoculars can introduce the target as a subtle concentration; a small telescope at low magnification can make its clustered pattern easier to pick out. If the view seems sparse at first, give it time. Averted vision\u2014looking just to one side of the object\u2014can help reveal fainter stars.\n\nDark skies and a Moon that is below the horizon or near its dim phase will improve the view. So will patience: let the telescope settle, keep the magnification modest, and resist the urge to rush from one bright object to another. NGC 2360 is not a blaze of light. Its pleasure lies in noticing that the apparently ordinary star field has a center, and that the center holds together.\n\nThat small transformation is part of the appeal of open clusters. Through an eyepiece, their stars appear close enough to share one patch of sky; distance measurements remind us that the view is a projection, and that the stars occupy real depth in the galaxy. Find NGC 2360 on a clear winter night, and you can move from a familiar beacon\u2014Sirius\u2014to a quieter destination, one careful sweep at a time.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%202360",
+            "overlap_terms": [
+              "ascension",
+              "catalogue",
+              "cluster",
+              "declination",
+              "degree",
+              "degrees",
+              "field",
+              "formation",
+              "ident",
+              "major",
+              "minutes",
+              "north"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
