@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2040526"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Tarf: A Quiet Beacon in Cancer\n\n*An orange giant with a measured motion across the sky, Beta Cancri rewards the patient observer\u2014not with spectacle, but with a steady point of light and a sense of scale.*\n\nCancer is easy to overlook. Set between the brighter patterns of Gemini and Leo, it can seem more like a gap in the sky than a constellation. But on a clear spring evening, look into that gap and find Tarf, the star catalogued as Beta Cancri. Its light has crossed a great distance to arrive as a modest, warm-colored point: bright enough for the unaided eye under a dark sky, yet gentle beside the showier stars nearby.\n\nThat modesty is part of the appeal. Tarf shines at visual magnitude 3.52, according to SIMBAD, the astronomical database maintained by the Centre de Donn\u00e9es astronomiques de Strasbourg. The same entry gives its spectral classification as K4III Ba0.5: a K-type giant, cooler in surface temperature than the Sun, with a noted barium-star spectral peculiarity. The classification is a compact scientific description, but at the eyepiece the star becomes something simpler\u2014a steady amber glimmer against the dark. [SIMBAD: HIP 40526 / Beta Cancri](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2040526)\n\nTarf is not merely far away; it is far enough for its distance to be measured by parallax, the tiny apparent shift in a star\u2019s position as Earth travels around the Sun. SIMBAD lists a parallax of about 10.1 milliarcseconds. Inverting that value gives a distance of roughly 99 parsecs, or about 323 light-years. The light you see tonight began its journey when the first decades of the seventeenth century were unfolding on Earth. That is not a dramatic cosmic timescale, but it gives an ordinary act of looking a quiet depth: the star is both present in the sky and seen as it was centuries ago.\n\nThe star also moves. SIMBAD\u2019s listed proper-motion components\u2014about 46 milliarcseconds per year westward and 50 southward\u2014describe a slow drift against the distant background. No observer will notice it over a night, or even a lifetime without comparing precise measurements. But the figures remind us that a star chart is a snapshot, not a permanent map. Tarf, like the Sun and every other star, travels through the Milky Way.\n\n**How to observe:** Choose a moonless or moon-faint evening and give your eyes time to adapt to the dark. Find Cancer between Gemini and Leo using a printed chart or a planetarium app; the constellation\u2019s faint outline can be difficult to trace from a brightly lit location. Then look for Beta Cancri, or center on it with binoculars. Its listed J2000 coordinates are right ascension 8h 16m and declination +9\u00b0 11\u2032, useful for a chart or telescope mount. At magnitude 3.52, Tarf should be visible without optical aid from a reasonably dark site, though urban glare may wash it out. [SIMBAD coordinates and photometry](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2040526)\n\nA telescope will not turn Tarf into a planet-sized disk; stars remain points even in many amateur instruments. Instead, take a moment to notice its color, then let the numbers do their work. That small orange point is a giant, chemically distinctive, moving star hundreds of light-years away\u2014and tonight, for a few minutes, it is yours to find.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2040526",
+            "overlap_terms": [
+              "according",
+              "around",
+              "ascension",
+              "coordinates",
+              "database",
+              "declination",
+              "ident",
+              "listed",
+              "magnitude",
+              "motion",
+              "optical",
+              "other"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
