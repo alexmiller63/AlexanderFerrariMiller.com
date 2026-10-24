@@ -1,0 +1,75 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206744"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# NGC 6744: A grand spiral in the Peacock\n\n*This far-flung galaxy offers southern observers a chance to picture a familiar kind of star city from the outside.*\n\nFrom the Southern Hemisphere, the constellation Pavo\u2014the Peacock\u2014holds a galaxy with a striking resemblance to our own: NGC 6744. That likeness is a useful starting point, not a claim that the two galaxies are identical. Seen from Earth, NGC 6744 is a broad, tilted spiral, its light spread across a patch of sky more than half the apparent width of the full Moon.\n\nThe resemblance becomes easier to imagine when you consider our predicament: we live inside the Milky Way\u2019s disk, so dust and stars obscure our view of its overall form. NGC 6744 gives astronomers a view from afar. NASA\u2019s Astronomy Picture of the Day describes it as a nearby Milky Way look-alike, around 30 million light-years away. Its spiral structure makes it a useful comparison, while its distance reminds us that even a bright-looking galaxy is a remote island of stars. ([NASA APOD](https://apod.nasa.gov/apod/ap090714.html))\n\nCatalogues classify NGC 6744 as SAB(r)bc: a spiral with a modest bar, a ring-like feature, and arms that fall between tightly wound and loosely wound. That shorthand is a map of structure, not a full account of the galaxy\u2019s history. The bar and arms are places to look for patterns in the disk; the classification alone does not tell us exactly how those patterns formed. SIMBAD lists its apparent dimensions as about 17.4 by 11 arcminutes and its coordinates as right ascension 19 hours 9 minutes, declination \u221263 degrees 51 minutes (J2000). ([SIMBAD](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206744))\n\nThose dimensions also explain why the challenge is not simply finding a bright point. Galaxy light is spread thinly across an extended area, so a dark, transparent sky matters. Under light-polluted skies, NGC 6744 may be difficult to distinguish; under better conditions, a telescope can reveal its soft oval glow. Don\u2019t expect the dramatic spiral arms of long-exposure photographs in a small eyepiece. Cameras gather light over time, while the eye gets only the light arriving in each moment.\n\n**How to observe:** Start with a star chart or planetarium app and search for Pavo, then use the coordinates above to locate the galaxy. It is a southern-sky target, best placed for evening observing during the Southern Hemisphere\u2019s winter months. From mid-southern latitudes, it climbs high enough for a comfortable look; farther north, it stays lower and atmospheric haze can make the view harder. Under a dark sky, binoculars can be a worthwhile test, but a telescope at low power is a better bet. Begin with a wide field, let your eyes adapt to the darkness, and use averted vision\u2014looking slightly to one side of the target\u2014to catch faint detail.\n\nThe reward may be subtle: a pale patch, broader than a star and brighter toward its center. Hold that view for a moment. The haze is not a cloud in our atmosphere, but the combined glow of a galaxy whose full spiral form is easier to see in images than through an eyepiece. Even so, NGC 6744 offers a rare perspective: a distant spiral that helps us imagine the shape of home.\n\n**Sources:** [SIMBAD: NGC 6744](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206744); [NASA Astronomy Picture of the Day: \u201cNGC 6744: A Nearby Milky Way\u201d](https://apod.nasa.gov/apod/ap090714.html).",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206744",
+            "overlap_terms": [
+              "around",
+              "ascension",
+              "catalogues",
+              "coordinates",
+              "declination",
+              "degrees",
+              "galaxies",
+              "galaxy",
+              "ident",
+              "inside",
+              "minutes",
+              "north"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [
+      {
+        "quoted_text": "NGC 6744: A Nearby Milky Way",
+        "source_matches": [],
+        "exact_text_confirmed": false
+      }
+    ],
+    "all_quoted_passages_confirmed": false,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
