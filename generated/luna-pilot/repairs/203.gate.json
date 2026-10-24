@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%202539"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Collinder 176: A broad gathering in Puppis\n\n*An open cluster catalogued as NGC 2539 offers a generous target for binoculars\u2014and a useful reminder that a star cluster can be larger on the sky than it first appears.*\n\nSome deep-sky objects announce themselves with a bright, compact glow. Collinder 176 is better approached as a field to explore: the open cluster is listed in SIMBAD as NGC 2539, at a position in the southern constellation Puppis. Its catalogued apparent diameter is about 22.4 arcminutes\u2014roughly three-quarters the width of the full Moon. That breadth makes a wide view more rewarding than high magnification. [SIMBAD: NGC 2539](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%202539)\n\nSIMBAD classifies NGC 2539 as an open cluster and gives its J2000 coordinates as right ascension 8 hours 10 minutes 37.9 seconds, declination \u221212\u00b0 50\u2032 02\u2033. In broad terms, open clusters are groups of stars associated with a common origin in the Milky Way. They are not globular clusters: rather than appearing as dense, spherical balls, open clusters are typically observed against the richer star fields of the Galactic disk.\n\nThe catalog entry gives a parallax of 0.754 milliarcseconds. Taking the simple inverse of that value suggests a distance of about 1.33 kiloparsecs, or roughly 4,300 light-years. That is a useful scale, not a complete distance analysis: a parallax measures how a star\u2019s apparent position shifts as Earth orbits the Sun, and a cluster\u2019s distance is best assessed by considering its member stars together. SIMBAD also lists a radial velocity of 29.3 kilometres per second. That value is a line-of-sight measurement for the catalogued object, not a description of how each star moves across the sky.\n\nFor observers, the coordinates offer a practical starting point. At right ascension 8h 10m, the cluster reaches its highest point around midnight in early February, then shifts into convenient evening viewing as winter turns to spring in the Northern Hemisphere. Puppis lies south of the celestial equator, so the cluster climbs higher for observers farther south. From latitude 40\u00b0 north, its maximum altitude is only about 37\u00b0; look for a clear southern horizon and choose a site away from haze and light pollution.\n\nStart with binoculars or a telescope at low power. The cluster\u2019s listed span\u2014more than 20 arcminutes\u2014can be cramped by a narrow field of view, while binoculars provide context and make it easier to pick out stars against the surrounding sky. If using a telescope, begin with the lowest magnification that gives a sharp, comfortable view. Increase the power only if you want to examine a smaller part of the field.\n\nThe SIMBAD entry lists a V magnitude of 6.5, but that number should not be mistaken for the brightness of one star: it is catalogued photometry for the object, and a cluster spreads its light across many points. A dark-adapted eye may help reveal the surrounding star field, but binoculars are the more dependable way to begin. Give your eyes time to adjust, keep the cluster centered, and let the broad field do the work. Collinder 176 is not a tiny jewel to pin down; it is a patch of the Milky Way to linger over.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%202539",
+            "overlap_terms": [
+              "around",
+              "ascension",
+              "catalog",
+              "celestial",
+              "cluster",
+              "coordinates",
+              "declination",
+              "field",
+              "ident",
+              "listed",
+              "magnitude",
+              "maximum"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
