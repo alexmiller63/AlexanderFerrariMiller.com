@@ -15,7 +15,7 @@ from urllib.error import HTTPError, URLError
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "generated" / "luna-pilot"
-CAP = 1.50  # Only draft and optional correction invoke the paid API.
+CAP = 2.00  # Only draft and optional correction invoke the paid API.
 MAX_INPUT = 6000
 MAX_OUTPUT = 4000
 MAX_RETRY_OUTPUT = 8000
@@ -243,7 +243,7 @@ def paid_story_response(stage, instruction, source, model, key, input_price,
     for attempt in range(1, MAX_ATTEMPTS + 1):
         reserve = 1.25 * (MAX_INPUT * input_price + limit * output_price) / 1_000_000
         if ledger["estimated_usd"] + reserve > CAP:
-            raise BudgetExceeded("Application spending reservation exceeds $1.50 ceiling")
+            raise BudgetExceeded("Application spending reservation exceeds $2.00 ceiling")
         diagnostic_path = OUT / (stage.replace(":", ".") + "." + uuid.uuid4().hex + ".response.json")
         diagnostic = {"stage": stage, "model": model, "attempt": attempt,
                       "max_output_tokens": limit, "run_id": os.environ.get("GITHUB_RUN_ID")}
@@ -420,7 +420,7 @@ def main():
             print("SKIP: response retries exhausted", ident, str(exc), flush=True)
             continue
         except BudgetExceeded:
-            print("STOP: application spending reservation exceeds $1.50 ceiling", flush=True)
+            print("STOP: application spending reservation exceeds $2.00 ceiling", flush=True)
             break
         # Exclusive create, never replace existing work. Audit is saved separately.
         with dest.open("x", encoding="utf-8") as f:
