@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206864"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# M75: A Small Light in Sagittarius\n\n*In the crowded country of the Milky Way, a globular cluster rewards patience, a clear southern horizon and a steady look.*\n\nThe night sky does not give up every treasure at a glance. M75, a globular cluster in Sagittarius, is a compact, old gathering of stars whose light reaches us as a close-set glow. In a telescope, that glow hints at a much larger story: globular clusters are dense, roughly spherical communities of stars, bound together by gravity and moving through the Milky Way\u2019s halo. Their crowded centers can make them look like a single object until magnification and dark-adapted eyes begin to separate the impression into points.\n\nM75\u2019s catalogue coordinates are right ascension 20h 06m 04.8s and declination \u221221\u00b0 55\u2032 20\u2033 (J2000), placing it low in the southern part of the sky for many observers in the Northern Hemisphere. SIMBAD lists it as a globular cluster and records a visual magnitude of 8.26. Its listed infrared angular dimensions are about 2.4 by 2.1 arcminutes\u2014small enough that it can seem understated beside the broad, bright clouds of the Milky Way around it. These figures describe the object in catalogues; what you see at the eyepiece will depend on your sky, equipment and experience. [SIMBAD: NGC 6864 / M75](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206864)\n\nThe best time to look is when Sagittarius is well placed in your evening sky, typically during summer in the Northern Hemisphere. From northern latitudes, the constellation never climbs especially high, so choose a site with an unobstructed southern horizon. Farther south, M75 rises higher and is more favorably placed. The lower it sits, the more its light must pass through the atmosphere, where haze and turbulence can soften the view. A transparent night matters more than a powerful instrument.\n\nBegin with binoculars or a low-power telescope, sweeping slowly through Sagittarius rather than expecting the cluster to announce itself. A star chart or planetarium app can guide you to the coordinates; use the chart\u2019s epoch and coordinate settings if they are available. Once you have the field, look for a small, faint patch that does not sharpen into a single star as you focus. Under a dark sky, binoculars may show the glow; a telescope will give you a better chance of recognizing its concentrated shape. Try moderate magnification after locating it, but return to a wider view if the cluster fades into the background.\n\nGive your eyes time. Avoid white lights, let your vision adjust, and pause between looks. M75 is not the sort of object that overwhelms the field. Its appeal is in the contrast between its quiet appearance and its nature: many stars held together in a compact system, glimpsed from across the enormous spaces of the Galaxy.\n\nWhen the view is faint, patience is part of the instrument. Let Sagittarius settle above the horizon, keep the telescope still, and look again. A little knot of light may resolve\u2014or remain a soft blur\u2014but either way, you have found a distant stellar gathering by the small patch of sky it occupies.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206864",
+            "overlap_terms": [
+              "angular",
+              "around",
+              "ascension",
+              "catalogue",
+              "catalogues",
+              "cluster",
+              "coordinate",
+              "coordinates",
+              "declination",
+              "depend",
+              "epoch",
+              "globular"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
