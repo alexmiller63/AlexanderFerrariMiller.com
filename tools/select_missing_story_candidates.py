@@ -72,6 +72,8 @@ def candidates(limit=10, resume_interrupted=False):
                 if match and int(match.group(1)) not in resumable:
                     existing.add(int(match.group(1)))
     existing.update(int(p.stem) for p in saved.glob("*.md") if p.stem.isdigit())
+    # Completed replacement drafts reserve the same permanent object identity.
+    existing.update(int(p.stem) for p in (saved / "repairs").glob("*.md") if p.stem.isdigit())
     # Do not repeat any previous pilot candidate until its status has been reconciled.
     previous = ROOT / "research/luna-pilot-candidates.json"
     if previous.exists():
