@@ -1,0 +1,75 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%203351"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# M95: A Barred Spiral in Leo\u2019s Quiet Country\n\n*An evening with a distant galaxy offers a reminder that the sky\u2019s faintest sights can reward the most patient looking.*\n\nM95 is easy to overlook. It has no bright, familiar name to call across the backyard, and through a telescope it may first appear as little more than a pale smudge. But that small blur is a barred spiral galaxy, catalogued as part of a pair of galaxies\u2014a vast system whose light has traveled across space to meet your eye. [SIMBAD identifies M95 as an SBb galaxy and gives its position and apparent size.](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%203351)\n\nThe galaxy lies in Leo, the constellation that strides across the spring sky. Its catalogued coordinates are about right ascension 10 hours 43 minutes 58 seconds and declination +11 degrees 42 minutes. Those numbers are the sky\u2019s version of an address: right ascension measures position around the celestial sphere, while declination marks distance north or south of its equator. For a telescope with setting circles or a computerized mount, they can help guide the search. For a manual search, start with Leo on a star chart or sky app and work slowly toward the galaxy\u2019s position.\n\nM95\u2019s \u201cbarred spiral\u201d classification describes its broad design. A bar crosses the central region, with spiral structure extending outward. It is a reminder that galaxies are not just scattered stars, but immense systems with shapes astronomers classify and compare. In the eyepiece, though, the fine structure may stay hidden. SIMBAD lists an optical angular size of roughly 5.6 by 5.0 arcminutes\u2014small enough that a modest telescope under bright skies may show only a soft oval or glow. A photograph and a visual view are different encounters: the eye gathers light moment by moment, while a camera can build an image over time.\n\nChoose a clear, moonless evening if possible, and give your eyes time to adjust to the dark. A telescope is the practical choice; begin at low magnification to find the field, then try a little more once the galaxy is centered. Look slightly away from the faint patch rather than staring directly at it\u2014peripheral vision can be more sensitive to dim light. If M95 doesn\u2019t appear at once, pause and let the view settle. Averted vision, careful focusing and averted expectations are all part of the search.\n\nThere is a small pleasure in finding a galaxy that does not announce itself. You locate Leo, consult the chart, nudge the telescope, and wait for the faint oval to emerge. The view may remain subtle, but the coordinates connect that patch of light to a real place in the sky, and the classification hints at its immense structure. M95 asks for no grand equipment or dramatic revelation\u2014only a steady view and a little patience.\n\n**Sources**  \n- [SIMBAD: M95 / NGC 3351](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%203351)",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%203351",
+            "overlap_terms": [
+              "angular",
+              "around",
+              "ascension",
+              "celestial",
+              "coordinates",
+              "declination",
+              "degrees",
+              "galaxies",
+              "galaxy",
+              "ident",
+              "image",
+              "minutes"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [
+      {
+        "quoted_text": "barred spiral",
+        "source_matches": [],
+        "exact_text_confirmed": false
+      }
+    ],
+    "all_quoted_passages_confirmed": false,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
