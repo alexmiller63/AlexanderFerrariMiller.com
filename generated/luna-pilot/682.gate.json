@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2014576"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Algol: The Star That Winks\n\n*In Perseus, a familiar point of light offers a patient observer a glimpse of stellar motion.*\n\nAlgol looks like a steady star\u2014until you watch it closely. High in the northern sky on autumn and winter evenings, this bright point in Perseus changes its light as one star passes in front of another. The effect is subtle to the casual glance, but over several nights the \u201cwinking\u201d becomes a small, satisfying experiment in astronomy.\n\nThe name in the catalog is \u03b2 Persei, or Algol. SIMBAD identifies it as a spectroscopic binary and lists its spectral type as B8V. Its record gives a visual-band magnitude of 2.12, placing it among the brighter stars visible to the unaided eye under a dark sky. That number is a catalog measurement, not a promise that Algol will look exactly the same every time you check: its changing brightness is the point of the show.\n\nAn eclipsing binary is a pair of stars orbiting one another in a plane that, from Earth, lets one cross in front of the other. We do not see the stars\u2019 surfaces in detail. Instead, we detect the changing sum of their light: when one star blocks part of its companion\u2019s light, the system appears dimmer. Algol\u2019s dip is temporary, and the system brightens again as the stars continue along their orbits. The star itself has not switched off; our viewpoint is what makes the eclipse visible.\n\nFor a simple observing project, begin by finding Perseus with a printed star chart or a planetarium app. Algol lies among the constellation\u2019s recognizable stars; a chart makes the identification easier, especially if you are observing from a light-polluted location. Give your eyes time to adjust to the dark, then compare Algol\u2019s brightness with nearby stars that appear steady. You do not need a telescope. In fact, the unaided eye is useful here because you can compare the whole pattern of stars at once.\n\nMake a brief note each time: date, time, sky conditions, and whether Algol seems brighter or fainter than your comparison stars. Return on later evenings and look for a repeating change. A single look can\u2019t tell you much\u2014haze, moonlight, or a nearby streetlamp can fool the eye\u2014but a run of observations can reveal the rhythm. Binoculars may help you pick out the surrounding star pattern, though they are not essential.\n\nThe best almanac entry is not a perfect measurement. It is the moment when a point of light stops seeming fixed and starts seeming alive: a pair of distant suns, moving through an orbit, briefly changing what reaches your eye. Algol turns a patch of sky into a lesson in geometry, patience, and the difference between a star changing and a star merely appearing to.\n\n**Sources:** [SIMBAD: Algol (HIP 14576)](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2014576); [American Association of Variable Star Observers](https://www.aavso.org/).",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2014576",
+            "overlap_terms": [
+              "aavso",
+              "binary",
+              "catalog",
+              "ident",
+              "magnitude",
+              "measurement",
+              "motion",
+              "number",
+              "other",
+              "point",
+              "simbad",
+              "spectral"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
