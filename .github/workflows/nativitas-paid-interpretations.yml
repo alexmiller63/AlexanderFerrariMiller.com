@@ -1,0 +1,47 @@
+name: Nativitas Paid Interpretation Drafts
+on:
+  workflow_dispatch:
+    inputs:
+      batch_size:
+        description: "Maximum drafts this run"
+        default: '25'
+        required: true
+      budget_usd:
+        description: "Cumulative API budget ceiling (maximum $1)"
+        default: '1.00'
+        required: true
+permissions:
+  contents: write
+concurrency:
+  group: nativitas-paid-interpretations
+  cancel-in-progress: false
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Generate checkpointed unpublished drafts
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          BATCH: ${{ inputs.batch_size }}
+          BUDGET: ${{ inputs.budget_usd }}
+        run: python nativitas/tools/generate_paid_interpretations.py --batch-size "$BATCH" --budget "$BUDGET"
+      - name: Save draft and cost checkpoints
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -f nativitas/data/paid-interpretation-drafts.json nativitas/paid-interpretation-progress.json 2>/dev/null || true
+          if ! git diff --cached --quiet; then
+            git commit -m "Checkpoint paid Nativitas interpretation drafts [skip ci]"
+            git push
+          fi
+      - name: Summary
+        if: always()
+        run: cat nativitas/paid-interpretation-progress.json >> "$GITHUB_STEP_SUMMARY" || true
