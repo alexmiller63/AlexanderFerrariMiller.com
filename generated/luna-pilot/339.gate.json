@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206352"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# NGC 6352: A Southern Gathering of Stars\n\n*In the constellation Ara, this globular cluster rewards a patient look from southern skies\u2014and a careful plan from farther north.*\n\nSome deep-sky objects announce themselves with sweeping arcs or bright nebular clouds. NGC 6352 is quieter: a compact, rounded gathering in the southern constellation Ara, more readily appreciated as a delicate concentration of stars than as a showpiece that leaps out of the eyepiece.\n\nThe catalogued position is right ascension 17h 25m 29s, declination \u221248\u00b0 25\u2032 20\u2033 (J2000). SIMBAD classifies NGC 6352 as a globular cluster and lists its apparent diameter as about 7.1 arcminutes\u2014roughly one-quarter the Moon\u2019s apparent width. That modest size is a reminder to look closely: the cluster is not a broad smear across the sky, but a concentrated target whose appearance can change with magnification, sky darkness and steadiness of the air. [SIMBAD](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206352)\n\nGlobular clusters are dense, gravitationally bound systems containing many stars. From Earth, their crowded cores can blend into a soft glow, especially in small instruments or under light-polluted skies. A telescope may reveal a grainy edge or individual points around the outskirts while the center remains unresolved. That gradual transition\u2014from haze to a sprinkling of stars\u2014is part of the pleasure of observing one.\n\nNGC 6352\u2019s far-southern declination makes location important. Observers in the Southern Hemisphere have the clearest view; from northern latitudes it climbs only a little above the southern horizon, and north of about 42\u00b0 it never rises. Even where it is visible, trees, buildings and atmospheric haze near the horizon can swallow contrast. Choose a site with an unobstructed southern view, and let the cluster rise as high as it can before observing.\n\nAround June and July, its right ascension places it well for evening-to-night observing. Use a current star chart or planetarium app to locate Ara and guide the telescope to the catalogued coordinates; precise coordinates are more dependable than a verbal star-hop when working in unfamiliar southern constellations. Begin with a low-power eyepiece to identify the small, round glow and establish the surrounding star field. Then try moderate magnification. If the view grows dim or soft, return to lower power: a darker, steadier image can show more than enlargement alone.\n\nGive your eyes time. Shield the eyepiece from stray light, avoid bright phone screens, and look slightly to one side of the cluster\u2019s faintest features rather than staring directly at them. On a transparent night, try again after the target has climbed higher; on a hazy one, even a familiar position may seem to vanish.\n\nThe reward is not spectacle but scale. Those few arcminutes hold a far larger system than the eyepiece suggests: stars gathered into a single gravitational community, seen from a small planet beneath a southern sky. **NGC 6352** asks for patience\u2014and repays it with the subtle pleasure of finding a quiet island among the stars.\n\n**Source:** [SIMBAD entry for NGC 6352](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206352)",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206352",
+            "overlap_terms": [
+              "around",
+              "ascension",
+              "before",
+              "cluster",
+              "coordinates",
+              "crowded",
+              "current",
+              "declination",
+              "field",
+              "globular",
+              "ident",
+              "image"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
