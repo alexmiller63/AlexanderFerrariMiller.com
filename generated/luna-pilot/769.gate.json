@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2027321"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Beta Pic: The Southern Star That Keeps Moving\n\n*An ordinary point of light in Pictor carries a precise address, a measurable drift and a reminder that the night sky is not quite still.*\n\nBeta Pic does not announce itself with a flash. On a clear southern night, it is simply a steady point in the constellation Pictor, near the bright beacon of Canopus. Yet the star\u2019s catalogued name carries a small invitation: look closely, and even a seemingly fixed point becomes a world with measurable properties.\n\nSIMBAD identifies Beta Pic as an A6V star. The \u201cA\u201d places it among stars hotter than the Sun; \u201cV\u201d indicates a main-sequence star, one that shines by fusing hydrogen in its core. SIMBAD lists its visual magnitude as 3.86, bright enough to see with the unaided eye under a reasonably dark sky, though city glare can make the hunt harder. Its coordinates put it deep in the southern sky, at declination \u221251 degrees. [SIMBAD\u2019s entry for HIP 27321](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2027321)\n\nDistance is not read directly from a star\u2019s glow. It can be inferred from parallax: the tiny apparent shift in a nearby star\u2019s position as Earth travels around the Sun. SIMBAD gives Beta Pic a parallax of 50.9307 milliarcseconds. That angle corresponds to a distance of about 20 parsecs, or roughly 64 light-years. The number is an astronomical translation of a delicate geometry: a star\u2019s apparent position compared across opposite sides of Earth\u2019s orbit.\n\nBeta Pic also has proper motion\u2014a measured change in its position across the sky over time. It is not racing visibly from one constellation to another; the shift is subtle, tracked through careful comparison of astrometric measurements. But it means the sky is a moving map, and Beta Pic is one of its travelers. Coordinates are not eternal labels. They describe where a star was measured, in a specified reference frame and at a specified epoch.\n\nFor observers, the practical route is simpler. Find Canopus, one of the brightest stars in the sky, and look a short distance north and west for Beta Pic. Pictor lies in the southern celestial hemisphere, so the view is best from southern latitudes; farther north, it sinks low or disappears below the horizon. Give your eyes time to adjust, then scan with binoculars if the star is hard to pick out. Binoculars won\u2019t reveal the star\u2019s surface or its motion, but they can steady the search and help separate it from a bright, cluttered horizon.\n\nA small telescope is not essential. Beta Pic\u2019s story is not a spectacle that grows larger in the eyepiece; it is a lesson in how astronomy works. A point of light becomes a spectral class, a measured brightness, a distance inferred from parallax and a motion assembled from observations over time. Each step adds context without changing the quiet appearance of the star.\n\nSo when Beta Pic appears above the southern horizon, let it remain what it is to the eye: a pinprick in Pictor. Then remember what measurement has made of that pinprick\u2014not a symbol painted on an unchanging ceiling, but a hot main-sequence star about 64 light-years away, carrying its own address through a sky that slowly shifts.\n\n**Source:** [SIMBAD: HIP 27321 / Beta Pic](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2027321)",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2027321",
+            "overlap_terms": [
+              "angle",
+              "around",
+              "celestial",
+              "class",
+              "coordinates",
+              "declination",
+              "degrees",
+              "epoch",
+              "frame",
+              "ident",
+              "magnitude",
+              "measurement"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
