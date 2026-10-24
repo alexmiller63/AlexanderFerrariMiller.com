@@ -1,0 +1,77 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%202484"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Beta1 Tuc: A Southern Pinprick with Company\n\n*At magnitude 4.3, this blue-white star is an easy naked-eye target under dark skies. Its catalogued multiplicity invites a closer look\u2014but not a promise of a split.*\n\nIn the far-southern constellation Tucana, Beta1 Tuc is a modest point of light with a more complex identity than the unaided eye can reveal. SIMBAD lists it as a double or multiple star, yet to an observer standing beneath a dark sky, it appears as one steady spark. That contrast\u2014between the simple view and the layered catalog entry\u2014is part of the pleasure of meeting a star by eye, then asking what lies behind its name. [SIMBAD: HIP 2484](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%202484)\n\nThe entry gives Beta1 Tuc a visual magnitude of 4.289. That is bright enough for naked-eye viewing away from strong artificial light, though it will not compete with Tucana\u2019s brightest stars. Its position, for the J2000 reference epoch, is right ascension 00h 31m 32.7s and declination \u221262\u00b0 57\u2032 30\u2033. The strongly southern declination makes this a rewarding target for southern-sky observers; from much of the Northern Hemisphere it remains below the horizon. [SIMBAD](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%202484)\n\nThe star\u2019s listed spectral type is B9.5 V. The \u201cB\u201d classification places it among hot stars, while luminosity class V identifies it as a main-sequence star: one that shines through the sustained fusion of hydrogen in its core. The catalogued classification gives a useful physical portrait, even though the star\u2019s color may be subtle or difficult to judge by eye. In a telescope, its light is likely to read more as a point than as a richly colored disk. [SIMBAD](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%202484)\n\nDistance gives another scale to the view. SIMBAD reports a parallax of 22.8384 milliarcseconds. Parallax is the apparent shift of a nearby star against more distant background stars as Earth moves around the Sun. Inverting that measurement gives a distance of about 44 parsecs, or roughly 143 light-years. In other words, the light reaching your eye tonight began its journey long before the present observing season. [SIMBAD](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%202484)\n\nTo find Beta1 Tuc, begin with a current sky chart or planetarium app set for your location and time, then trace the outline of Tucana. Because the star lies so far south, observers in the Southern Hemisphere have the best view; let the constellation climb well above the horizon for a steadier, clearer look. Under a dark sky, try first with the unaided eye. Binoculars can help confirm the surrounding star pattern, while a small telescope offers a more deliberate view of the field.\n\nKeep expectations measured when you turn to the catalogued \u201cdouble or multiple\u201d designation. SIMBAD\u2019s entry establishes that classification, but the data shown there do not give a separation or say whether the components can be resolved visually. So don\u2019t assume a telescope will split the system into distinct stars. Instead, treat the single point as an invitation: the catalog tells us there is more to investigate, while the eyepiece shows what this particular night and instrument can actually reveal.\n\n**Source:** [SIMBAD entry for HIP 2484 / Beta1 Tuc](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%202484)",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%202484",
+            "overlap_terms": [
+              "around",
+              "ascension",
+              "before",
+              "catalog",
+              "class",
+              "current",
+              "declination",
+              "double",
+              "epoch",
+              "field",
+              "ident",
+              "listed"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [
+      {
+        "quoted_text": "double or multiple",
+        "source_matches": [
+          "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%202484"
+        ],
+        "exact_text_confirmed": true
+      }
+    ],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
