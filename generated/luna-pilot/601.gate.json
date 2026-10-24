@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2078820"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Acrab: A Quiet Pulse in the Scorpion\n\n*One of Scorpius\u2019s bright northern stars is catalogued as a Beta Cephei variable\u2014a reminder that even a steady-looking point of light can be changing.*\n\nOn a summer evening, look south for Scorpius: Antares glows like a reddish ember, while the constellation\u2019s curving tail sweeps toward the horizon. At the other end, among the stars that mark the scorpion\u2019s head, Acrab holds its place as a bright, pale point. It does not announce itself with a flare or a sudden change. Its interest is subtler: catalogues identify the star as a Beta Cephei variable.\n\nThe name Acrab is commonly used for Beta Scorpii. SIMBAD\u2019s entry for HIP 78820 identifies the object as **Beta\u00b9 Scorpii**, gives it a B1V spectral classification, and lists it as a Beta Cephei variable. The entry also reports a visual magnitude of about 2.62 and coordinates of right ascension 16h 05m 26s, declination \u221219\u00b0 48\u2032 (J2000). [SIMBAD: HIP 78820](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2078820)\n\nA B1V star is a hot, blue-white main-sequence star. \u201cVariable\u201d means its measured light changes, but the label does not promise an obvious spectacle at the eyepiece. Beta Cephei stars are massive, hot stars that undergo small, regular pulsations. Their outer layers expand and contract, producing changes in brightness and motion that astronomers can measure. Acrab\u2019s classification therefore points to a rhythm beneath its calm appearance. It is not a heartbeat a casual observer should expect to see by eye; the changes are subtle, and careful measurements are the way to follow them.\n\nFor a visual observer, the first challenge is simply catching Scorpius well above the southern horizon. In the Northern Hemisphere, the constellation is best placed on summer evenings, though it remains low for many observers at mid-northern latitudes. Find Antares first, then trace the compact pattern of stars northward to Scorpius\u2019s head. Acrab sits in that region. From farther south, Scorpius climbs higher and its outline is easier to appreciate.\n\nTry it unaided first, then use binoculars to explore the surrounding star field. Acrab is bright enough to locate without optical aid under a reasonably dark sky, but binoculars make the neighboring points of light stand out. A small telescope is not necessary to appreciate the star\u2019s color and setting; higher magnification also cannot reveal the subtle pulsation directly. For that, a series of carefully timed brightness measurements\u2014and comparison stars\u2014would be more useful than a single glance.\n\nGive your eyes a few minutes to adjust, and observe when Acrab is clear of rooftops, trees, and the thicker, hazier air near the horizon. If the star seems to flicker, atmospheric turbulence is the likely culprit: twinkling is an effect of Earth\u2019s atmosphere, not a quick display of the star\u2019s own variability.\n\nAcrab rewards two kinds of attention. In the sky, it is a guidepost in the head of a familiar summer constellation. In the catalogue, it is a hot star whose small pulsations place it in a class of variables. The first view is immediate; the second asks for patience, instruments, and repeated observations. Both begin with the same quiet point of light.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2078820",
+            "overlap_terms": [
+              "ascension",
+              "catalogue",
+              "catalogues",
+              "class",
+              "coordinates",
+              "declination",
+              "display",
+              "ident",
+              "magnitude",
+              "measure",
+              "motion",
+              "object"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
