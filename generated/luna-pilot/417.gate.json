@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=IC%202391"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Omicron Velorum Cluster: A Wide Window on Vela\n\n*Nearly two degrees across in the catalogues, IC 2391 rewards a low-power view\u2014and a little patience beneath southern skies.*\n\nSome deep-sky objects ask you to hunt for a faint smudge. The Omicron Velorum Cluster offers a different pleasure: a broad scatter of stars, best appreciated not as a single pinpoint but as a gathering spread across the field. It is also catalogued as IC 2391, an open cluster in the southern constellation Vela.\n\nThe SIMBAD astronomical database places IC 2391 at right ascension 8h 41m and declination \u221252\u00b0 59\u2032 (J2000). Its listed angular size is about 97.7 arcminutes\u2014more than three times the apparent width of the full Moon. That makes framing important: high magnification can crop away the very thing that gives the cluster its character. (SIMBAD: [IC 2391](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=IC%202391))\n\nAn open cluster is a group of stars associated by their shared origin, rather than a dense, spherical swarm like a globular cluster. Its members can appear loosely arranged against the surrounding Milky Way. From Earth, that mixture of cluster stars and unrelated background stars gives the eye a pleasant puzzle: which points belong together, and which merely happen to lie along the same line of sight?\n\nOne clue comes from motion. SIMBAD lists IC 2391\u2019s proper motion\u2014the apparent drift of its position across the sky\u2014as about \u221224.9 milliarcseconds per year in right ascension and +23.3 in declination. Astronomers can compare the motions and distances of stars to assess whether they travel together. The database also gives a parallax of 6.597 milliarcseconds. Taking the inverse of that angle gives a distance of roughly 152 parsecs, or about 500 light-years. These measurements provide a sense of the cluster\u2019s place in space, even though a telescope shows only its projected pattern on the sky.\n\nFor a first look, find Vela on a chart or planetarium app and aim for the listed coordinates. The cluster is far south, so it is best placed for observers with a clear southern horizon; its visibility and best viewing hours depend on your location and the season. Let it rise well above rooftops, trees and haze. A pair of binoculars or a small telescope at low power makes a sensible starting point. Use the widest field available, then sweep slowly across the region rather than fixing on one bright star.\n\nGive your eyes time to adapt, but don\u2019t insist on complete darkness: a little ambient light can help you keep your bearings while you map the star pattern. If the field looks sparse at first, pause and look slightly to one side. Gentle averted vision often makes fainter points easier to notice. Try drawing the stars you see, then compare your sketch with a chart. The aim isn\u2019t to force every point into a perfect cluster shape; it\u2019s to notice the loose, spacious arrangement that a narrow, high-power view might hide.\n\nThe Omicron Velorum Cluster is a reminder that \u201cdeep sky\u201d need not mean dim or distant-looking. Sometimes the most satisfying target is a generous patch of sky, best explored slowly, one star at a time.\n\n**Source:** [SIMBAD \u2014 IC 2391](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=IC%202391)",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=IC%202391",
+            "overlap_terms": [
+              "angle",
+              "angular",
+              "ascension",
+              "catalogues",
+              "cluster",
+              "coordinates",
+              "database",
+              "declination",
+              "degrees",
+              "depend",
+              "different",
+              "field"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
