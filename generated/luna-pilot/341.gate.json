@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206397"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# NGC 6397: A Southern Cluster Comes Into Focus\n\n*In Ara, a wide-spreading globular cluster rewards dark skies, steady seeing and a little patience at the eyepiece.*\n\nOn a winter night in the Southern Hemisphere, look toward Ara, the Altar, and seek a faint glow at the coordinates 17h 40m, \u221253\u00b0 40\u2032. There lies NGC 6397: a globular cluster whose light gathers from a multitude of stars into a soft patch against the dark. The SIMBAD astronomical database classifies it as a globular cluster and lists its apparent visual magnitude as 5.17 and its angular diameter as about 25.7 arcminutes\u2014nearly as wide as the full Moon. [SIMBAD](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206397)\n\nThat breadth is part of the observing challenge. A magnitude describes the combined light of the cluster, not the brightness of a single point. Spread across a wide area, that light can look subtle, especially under city glow or when the object sits low in the sky. Don\u2019t expect a brilliant star-like beacon. Under a dark sky, binoculars may show a misty patch; a telescope can bring individual stars into view, particularly around the cluster\u2019s outer regions. A larger aperture and steady air help tease out finer detail.\n\nGlobular clusters are dense, roughly spherical gatherings of stars held together by gravity. Their stars share a common home and move through the Milky Way as a group. In a telescope, the most striking impression is often the contrast between a concentrated center and a more delicate fringe: a crowded stellar city fading outward into the black. NGC 6397\u2019s listed size makes it a rewarding target for taking time at the eyepiece rather than relying on a quick glance.\n\nThe coordinates also explain who gets the best view. NGC 6397 lies far south, at declination \u221253.7\u00b0. From much of the Southern Hemisphere it climbs well above the horizon; from northern latitudes it stays low, and for observers north of about 36\u00b0 it never rises. Even where it is visible, a low target is viewed through more of Earth\u2019s atmosphere, which can blur the image and dim the cluster. Choose a clear southern horizon, and observe when the object is highest.\n\nFor observers in the south, the middle months of the year offer a useful evening window: the cluster\u2019s right ascension places it high around local midnight in June, with favorable hours shifting through the surrounding weeks. Give your eyes time to adapt to darkness, use averted vision\u2014looking slightly beside the target\u2014and sweep slowly through the eyepiece. If the cluster seems to vanish, first check the horizon and nearby lights, then try a lower magnification to gather its broad glow.\n\nThere is a quiet pleasure in finding a target that does not announce itself. NGC 6397 begins as a small haze, then resolves into a field of stars, each point part of a vast collective. Stay with it for a few minutes. The view becomes less a smudge and more a gathering.\n\n**Source:** SIMBAD astronomical database entry for NGC 6397: https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206397",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206397",
+            "overlap_terms": [
+              "angular",
+              "around",
+              "ascension",
+              "cluster",
+              "coordinates",
+              "crowded",
+              "database",
+              "declination",
+              "field",
+              "globular",
+              "ident",
+              "image"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
