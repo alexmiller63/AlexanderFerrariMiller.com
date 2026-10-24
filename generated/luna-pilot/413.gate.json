@@ -1,0 +1,77 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=IC%20289"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# PN G138.8+02.8: A Small Nebula in the Northern Sky\n\n*This planetary nebula is easier to pin down on a chart than to judge by its catalogue name. Use precise coordinates, a dark sky and modest expectations at the eyepiece.*\n\nSome celestial objects arrive with a name that sounds like a location. PN G138.8+02.8 is one: its designation gives its position in the Milky Way\u2019s coordinate system, at galactic longitude 138.8\u00b0 and latitude +2.8\u00b0. It is also catalogued as IC 289, and SIMBAD identifies it as a planetary nebula. Its J2000 position is right ascension 03h 10m 19.3s, declination +61\u00b0 19\u2032 01\u2033\u2014a useful address for a star chart or telescope controller. ([SIMBAD: IC 289](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=IC%20289))\n\n\u201cPlanetary nebula\u201d is a historical label, not a description of a planet. Such nebulae form late in the lives of some stars, when a star sheds surrounding gas that is then energized by the hot stellar remnant. The glowing gas can make a compact, detailed target, though the label alone cannot tell an observer how bright or easy a particular nebula will look. For IC 289, SIMBAD lists a radio angular size of about 0.765 arcminutes\u2014roughly 46 arcseconds across. That is a catalogue measurement in radio data, not a promise that the nebula\u2019s visible outline will match it. ([SIMBAD: IC 289](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=IC%20289))\n\nThe position places IC 289 in the northern sky, among the rich star fields of Cassiopeia. A go-to mount can take you straight to the coordinates; otherwise, begin with a detailed chart and work from nearby stars, checking the field carefully. At this small apparent size, the nebula may look like a faint, slightly fuzzy point rather than an obvious disk. Don\u2019t mistake every soft-looking star for the target: compare the field at different magnifications and, if possible, confirm the position against a chart or image.\n\nChoose a clear, moonless night and give your eyes time to adapt. Start at low power to identify the field, then increase magnification gradually. A narrowband nebula filter may improve contrast, but results vary; compare the filtered view with the unfiltered one rather than assuming the filter will help. If the nebula remains elusive, that is useful information, not a failure. The catalogue gives a precise position and a compact radio size, but it does not guarantee a visual show in any particular telescope.\n\nFor imaging, the same coordinates provide a reliable starting point for a careful field check. Take a short test exposure, inspect the stars and framing, and then build up the integration time if the target is where expected. A recorded observation can be satisfying even when the eyepiece view is subtle: you have found a stellar remnant whose name encodes its place in the Galaxy, and whose faint gas carries the story of a star\u2019s final act.\n\n**Source:** [SIMBAD entry for IC 289 / PN G138.8+02.8](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=IC%20289)",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=IC%20289",
+            "overlap_terms": [
+              "about",
+              "angular",
+              "ascension",
+              "catalogue",
+              "celestial",
+              "coordinate",
+              "coordinates",
+              "declination",
+              "field",
+              "filter",
+              "ident",
+              "image"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [
+      {
+        "quoted_text": "Planetary nebula",
+        "source_matches": [
+          "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=IC%20289"
+        ],
+        "exact_text_confirmed": true
+      }
+    ],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
