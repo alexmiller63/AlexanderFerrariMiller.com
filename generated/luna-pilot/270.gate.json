@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204490"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Cocoon Galaxy: A Quiet Oval in the Spring Sky\n\n*NGC 4490\u2019s catalog numbers tell one story; its soft, elongated glow tells another.*\n\nSome galaxies announce themselves with bright arms or a crisp central core. The Cocoon Galaxy, catalogued as NGC 4490, asks for a slower look. In the eyepiece it may be a faint, stretched patch of light; in a catalog, it is a nearby spiral galaxy with measurable dimensions, a recorded radial velocity and a position precise enough to find again.\n\nThe SIMBAD astronomical database gives its coordinates as right ascension 12 hours 30 minutes 34.5 seconds and declination +41 degrees 38 minutes 26 seconds. It classifies the galaxy as type SAB and lists an optical apparent size of about 6.76 by 2.14 arcminutes. That long, narrow outline is a reminder that a galaxy\u2019s shape on the sky depends partly on our viewing angle: we see a broad disk projected into a smaller patch, not a picture of its full three-dimensional form. ([SIMBAD: NGC 4490](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204490))\n\nSIMBAD also lists a heliocentric radial velocity of about 588 kilometres per second and a redshift near 0.00196. These figures describe the galaxy\u2019s motion along our line of sight, measured through shifts in its light. They are useful clues, but not a simple tape measure: for a relatively nearby galaxy, motion within its surrounding region can complicate distance estimates based on redshift alone.\n\nThe catalog\u2019s optical magnitude is about 9.8. That number can make the target sound easy, but a galaxy\u2019s light is spread over an extended area rather than concentrated into a star-like point. Under a bright or hazy sky, the Cocoon can fade into the background. The reward is subtle: not a sharply edged object, but a pale, elongated presence that becomes more apparent when you stop staring directly at it.\n\nFor a practical search, enter the SIMBAD coordinates into a GoTo mount or planetarium app, then use a low-power eyepiece to locate the surrounding field. NGC 4490 lies in the northern sky, and its right ascension makes spring evenings a useful season to try. If you are star-hopping, begin with a detailed chart rather than relying on a small finder alone; a galaxy this faint is not a naked-eye marker.\n\nChoose a dark site and give your eyes time to adapt. Keep stray light away, and try averted vision\u2014looking just to one side of the target can make a dim patch easier to detect. Once you have found it, pause before increasing magnification. A wider field can help establish the galaxy\u2019s orientation and keep the view steady; experiment with higher power only if the sky is dark and the image remains clear. Under less favorable conditions, the object may be elusive, and that is part of the lesson: \u201cmagnitude\u201d is not a promise of visibility.\n\nThe Cocoon Galaxy rewards patience more than spectacle. Its catalog entry reduces it to coordinates, a classification and a few numbers. At the telescope, those numbers lead to a quiet smudge whose light has crossed space to reach your eye\u2014a small, real encounter with another galaxy.\n\n**Source:** [SIMBAD database entry for NGC 4490](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204490).",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204490",
+            "overlap_terms": [
+              "angle",
+              "ascension",
+              "before",
+              "catalog",
+              "coordinates",
+              "database",
+              "declination",
+              "degrees",
+              "depends",
+              "field",
+              "galaxies",
+              "galaxy"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
