@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%202081"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Ankaa: A Phoenix Star with a Hidden Partner\n\n*One bright point in the southern sky is a giant star\u2014and, in its changing spectrum, a record of a companion circling out of sight.*\n\nOn a clear evening in the Southern Hemisphere, Ankaa offers a simple pleasure: a bright, steady point of light in a constellation that can otherwise be easy to overlook. Its formal designation is Alpha Phoenicis, the leading star of Phoenix. The name suggests a grand apparition, but the view is modest and lovely: just one star to the unaided eye, shining against the dark.\n\nThat single point is not the whole story. SIMBAD classifies Ankaa as a spectroscopic binary: two stars orbit one another, though they are not ordinarily seen as a pair in the sky. Astronomers infer the companion by studying the light. As the stars move in their orbit, their motion shifts features in the system\u2019s spectrum. The shifts reveal a dance that a backyard observer cannot resolve\u2014but can contemplate while looking at the light that reaches us. [SIMBAD: Ankaa / HIP 2081](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%202081)\n\nThe visible star is catalogued as K0.5IIIb. In stellar shorthand, \u201cK\u201d identifies its spectral class, while \u201cIII\u201d marks it as a giant. Its measured visual magnitude is 2.38, bright enough to pick out with the naked eye under reasonably dark skies. SIMBAD lists a parallax of 38.50 milliarcseconds; that measurement places the system roughly 85 light-years away. The number is small, but it is the key: as Earth moves around the Sun, the nearby star appears to shift slightly against more distant background stars. Measuring that apparent shift gives astronomers a way to estimate distance.\n\nFor observers, the main challenge is not Ankaa\u2019s brightness but its address. Phoenix lies in the far-southern sky, and Ankaa\u2019s coordinates\u2014about right ascension 00h 26m, declination 42 degrees south\u2014explain why. From southern latitudes, look toward the southern sky; from northern mid-latitudes, the star stays low above the southern horizon, if it rises at all. It is best placed for evening viewing in the months around October and November.\n\nBegin with your unaided eyes, away from bright streetlights, and give them time to adjust to the dark. Use a current sky chart or astronomy app to find Phoenix, then look for its brightest star. Binoculars can help you trace the surrounding pattern, but they will not split Ankaa\u2019s spectroscopic companion into a separate point. A small telescope is not required: the reward is the star itself, and the knowledge that its apparent solitude is misleading.\n\nTake a moment before moving on. In the eyepiece\u2014or simply in the open sky\u2014Ankaa is a point of light. In a spectrum, it is a system in motion. That contrast is part of the pleasure of stargazing: the sky offers a view, while careful measurements disclose the story hidden inside it.\n\n**Source:** [SIMBAD Astronomical Database: HIP 2081 (Alpha Phoenicis)](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%202081)",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%202081",
+            "overlap_terms": [
+              "around",
+              "ascension",
+              "before",
+              "binary",
+              "class",
+              "coordinates",
+              "current",
+              "database",
+              "declination",
+              "degrees",
+              "ident",
+              "inside"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
