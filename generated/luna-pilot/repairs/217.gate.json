@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%203115"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# The Spindle Galaxy: A Disk Seen on Its Edge\n\n*NGC 3115 turns a distant galaxy into a lesson in perspective\u2014and a slender target for a clear spring night.*\n\nA galaxy can look like a streak simply because we are seeing it from the side. In Sextans, the Spindle Galaxy\u2014NGC 3115\u2014offers a striking example: its long, narrow outline suggests a broad disk tipped almost edge-on to Earth. The view is not a diagram of the galaxy\u2019s full structure, but a projection of it across our sky.\n\nThat perspective helps explain the name. A face-on disk galaxy might show a rounded shape, perhaps with spiral arms. Seen edge-on, the same general structure is compressed into a slim profile, with a brighter central region marking the concentration of stars toward the middle. NGC 3115 is classified as a lenticular galaxy, a type with a disk and central bulge but without the conspicuous spiral arms of a classic spiral galaxy. Its shape invites the eye to imagine the disk extending far beyond the bright core.\n\nThe galaxy\u2019s catalogued dimensions tell the same story in numbers. SIMBAD lists its optical extent as about 13.3 by 5.3 arcminutes\u2014an apparent length roughly two and a half times its width. Those measurements describe how large it looks from Earth, not its actual size. The same database gives its position as right ascension 10 hours 05 minutes and declination \u22127 degrees 43 minutes (J2000), useful coordinates for a telescope\u2019s setting circles or a digital sky chart. [SIMBAD: NGC 3115](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%203115)\n\nFor observers, the Spindle Galaxy rewards patient searching more than magnification. Look for it in Sextans, the faint constellation between brighter patterns in the spring sky. Because Sextans has few prominent guide stars, use a current chart or an astronomy app to locate the target from nearby bright stars; its coordinates can help confirm the field. A small telescope under a dark sky may show a faint, elongated patch. The central area can appear brighter than the ends, but the fine structure in photographs is much harder to see visually: cameras collect light over time, while the eye does not.\n\nGive your eyes time to adjust to darkness, and keep bright phone screens dim. Start at low power to make the field easier to navigate, then increase magnification if the galaxy remains clear and steady. If the view seems featureless at first, look slightly away from the galaxy rather than staring straight at it; peripheral vision can be more sensitive to faint light. Transparency matters, too: haze and light pollution can wash out a diffuse object even when the sky looks otherwise clear.\n\nA slender glow in an eyepiece can seem modest beside a photograph. Yet the shape is a real clue, translated by distance and perspective into a small patch of light. The Spindle Galaxy is both an observing target and a reminder that the sky\u2019s apparent forms depend on where we stand\u2014and the angle from which we look.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%203115",
+            "overlap_terms": [
+              "about",
+              "angle",
+              "ascension",
+              "coordinates",
+              "current",
+              "database",
+              "declination",
+              "degrees",
+              "depend",
+              "extent",
+              "field",
+              "galaxy"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
