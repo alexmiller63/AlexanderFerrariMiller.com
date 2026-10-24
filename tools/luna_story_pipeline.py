@@ -5,6 +5,7 @@ import json
 import os
 import re
 import subprocess
+import uuid
 from pathlib import Path
 from html import unescape
 from html.parser import HTMLParser
@@ -250,9 +251,28 @@ def main():
         if len(prompt) > 18000:
             prompt = prompt[:18000]
         payload = {"model": args.model, "input": prompt, "max_output_tokens": MAX_OUTPUT}
-        raw = request_json("https://api.openai.com/v1/responses", payload,
-                           {"Authorization": "Bearer " + key, "Content-Type": "application/json"})
-        result = json.loads(raw)
+        # Preserve every attempt before interpreting the response; never save headers.
+        diagnostic_path = OUT / (stage.replace(":", ".") + "." + uuid.uuid4().hex + ".response.json")
+        diagnostic = {"stage": stage, "model": args.model,
+                      "max_output_tokens": MAX_OUTPUT,
+                      "run_id": os.environ.get("GITHUB_RUN_ID")}
+        try:
+            raw = request_json("https://api.openai.com/v1/responses", payload,
+                               {"Authorization": "Bearer " + key, "Content-Type": "application/json"})
+        except Exception as exc:
+            diagnostic.update(error_type=type(exc).__name__, error=str(exc).replace(key, "[REDACTED]"))
+            diagnostic_path.write_text(json.dumps(diagnostic, indent=2) + "\n", encoding="utf-8")
+            persist_checkpoint(diagnostic_path, ledger_file)
+            raise
+        diagnostic["response_body"] = raw.replace(key, "[REDACTED]")
+        diagnostic_path.write_text(json.dumps(diagnostic, indent=2) + "\n", encoding="utf-8")
+        try:
+            result = json.loads(raw)
+            if not isinstance(result, dict):
+                raise ValueError("Expected a JSON response object")
+        except ValueError:
+            persist_checkpoint(diagnostic_path, ledger_file)
+            raise
         usage = result.get("usage", {})
         cost = (usage.get("input_tokens", MAX_INPUT) * args.input_price +
                 usage.get("output_tokens", MAX_OUTPUT) * args.output_price) / 1_000_000
@@ -261,11 +281,12 @@ def main():
                                 "input_tokens": usage.get("input_tokens"),
                                 "output_tokens": usage.get("output_tokens")})
         ledger_file.write_text(json.dumps(ledger, indent=2) + "\n")
+        persist_checkpoint(diagnostic_path, ledger_file)
         output = result.get("output_text") or "\n".join(
             part.get("text", "") for item in result.get("output", [])
             for part in item.get("content", []) if part.get("type") == "output_text")
         if not output.strip():
-            raise RuntimeError("Empty model output at " + stage)
+            raise RuntimeError("Empty model output at " + stage + "; saved details: " + diagnostic_path.name)
         return output.strip()
     def stage(ident, name, instruction, source):
         """Resume a completed paid stage without calling the API again."""
