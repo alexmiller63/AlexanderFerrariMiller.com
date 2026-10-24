@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204565"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# The Needle Galaxy: A Long, Thin Beacon in Coma Berenices\n\n*Seen almost edge-on, NGC 4565 turns a spiral galaxy into a delicate streak\u2014and invites patient looking under a dark spring sky.*\n\nSome galaxies show their spiral arms in full, face-on splendor. The Needle Galaxy offers another perspective: a long, narrow view across the disk of NGC 4565, as if the galaxy has been pressed into a line against the darkness. Its shape is no illusion. The galaxy\u2019s cataloged optical dimensions\u2014about 13.8 by 2.2 arcminutes\u2014make it more than six times longer than it is wide. SIMBAD classifies it as an Sab galaxy and a Seyfert 2 galaxy. [SIMBAD: NGC 4565](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204565)\n\nFrom our viewpoint, the disk is tipped nearly edge-on. That angle hides much of the galaxy\u2019s face and puts its structure on display in profile: a central bulge surrounded by a thin, sprawling disk. In images, a dark dust lane cuts along the disk, silhouetted against the combined light of countless stars. Dust absorbs and scatters visible light, but it is also part of a galaxy\u2019s working landscape, mixed with the gas from which new stars can form.\n\nThe Needle\u2019s catalog classification adds a second, less visible distinction. \u201cSeyfert 2\u201d identifies NGC 4565 as a galaxy with an active nucleus: a compact central region whose emission is powered by material energized near a supermassive black hole. The classification is a clue to activity at the galaxy\u2019s heart, not a promise that the nucleus will stand out through an eyepiece. At the telescope, the challenge\u2014and reward\u2014is the extended disk.\n\n**How to find it**\n\nNGC 4565 lies in Coma Berenices, a constellation best placed for evening observing in Northern Hemisphere spring. Its J2000 coordinates are right ascension 12h 36m and declination +26\u00b0 (more precisely, 12h 36m 20.8s, +25\u00b0 59\u2032 14.6\u2033). Use a current star chart or planetarium app to hop from familiar stars in Coma Berenices; the galaxy is not a naked-eye object.\n\nChoose a dark site, away from direct lights, and give your eyes time to adapt. A moderate telescope should show a faint, elongated patch under good conditions, though the view depends on aperture, sky transparency and experience. Start at low or medium magnification to locate the galaxy, then increase it if the image remains sharp. Averted vision\u2014looking slightly to one side of the target\u2014can help reveal faint detail. The central bulge may appear brighter than the narrow extensions, but the dust lane is a demanding visual feature and may require a larger telescope and exceptionally dark skies.\n\nTry averted vision, then look directly at the target again. The change in what you perceive is part of the pleasure: a galaxy nearly 14 arcminutes long may first appear only as a vague smudge, then resolve into a fine slash of light. Give it time. The Needle does not shout across the sky; it rewards the observer who learns to see a little more.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204565",
+            "overlap_terms": [
+              "angle",
+              "ascension",
+              "catalog",
+              "coordinates",
+              "current",
+              "declination",
+              "depends",
+              "display",
+              "emission",
+              "galaxy",
+              "ident",
+              "image"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
