@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204388"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# MCG 2-32-41: A narrow beacon in Virgo\n\n*An elongated galaxy with a restless nucleus rewards patient spring observing\u2014and a precise chart.*\n\nThe first impression of MCG 2-32-41 is not drama but direction: a slender smudge, tipped across the eyepiece field, light arriving from a galaxy far beyond the Milky Way. Catalogued as NGC 4388, it sits in Virgo at approximately right ascension 12h 25m 47s and declination +12\u00b0 39\u2032 43\u2033 (J2000). SIMBAD classifies it as a Seyfert 2 galaxy, a system whose bright, energetic central region marks it as an active galaxy. [SIMBAD: NGC 4388](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204388)\n\nThe word \u201cactive\u201d points to the galaxy\u2019s core, not to a sudden change in the view through a backyard telescope. In a Seyfert galaxy, the central engine produces unusually strong emission compared with the rest of the system. The \u201c2\u201d designation identifies a particular observed class; it does not mean the galaxy is a second-stage object. The glow we see is a combined, distant portrait: the extended galaxy and its compact, energetic center arriving together in one small patch of sky.\n\nThe catalog gives NGC 4388 a redshift of about 0.00834 and a corresponding listed recession velocity near 2,500 kilometers per second. Those figures describe its motion along our line of sight; they are not a direct tape measure to the galaxy. The same database records an apparent optical size of roughly 8 by 2 arcminutes\u2014an elongated shape that hints at a disk seen at a steep angle. Its visual magnitude is listed as about 11, so this is a telescopic target, not a naked-eye one. [SIMBAD: NGC 4388](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204388)\n\nFor observers in the Northern Hemisphere, Virgo\u2019s galaxies are best placed in the evening sky during spring. NGC 4388\u2019s coordinates put it in the constellation, but its modest brightness makes a good chart or a GoTo mount a practical ally. Enter the J2000 position above, and check that your charting app is displaying the correct epoch or transforming coordinates automatically. If you are star-hopping, work from a detailed atlas rather than expecting the galaxy to stand out in a wide field.\n\nChoose a moonless night and give your eyes time to settle into the dark. Begin at low power to locate the field, then try a moderate magnification to make the galaxy\u2019s narrow profile easier to distinguish from the background. Averted vision\u2014looking slightly to one side of the target\u2014can help reveal a faint glow. Under suburban skies, the nucleus or central region may be easier to detect than the full extent of the disk; under darker skies, look for a longer, more even streak. Averted vision and careful, unhurried viewing are more useful here than pushing magnification high.\n\nThe catalog\u2019s classifications turn that faint streak into a layered object: a barred-spiral morphology, a Seyfert 2 nucleus, and measurable motion across the expanding universe. Yet the observing act remains beautifully simple. Find the coordinates, let the field sharpen, and wait for the galaxy to emerge\u2014not as a photograph\u2019s bright, polished spiral, but as a thin trace of distant light in Virgo.\n\n**Source:** [SIMBAD \u2014 NGC 4388](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204388)",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204388",
+            "overlap_terms": [
+              "angle",
+              "ascension",
+              "catalog",
+              "class",
+              "coordinates",
+              "corresponding",
+              "database",
+              "declination",
+              "emission",
+              "epoch",
+              "extent",
+              "galaxy"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
