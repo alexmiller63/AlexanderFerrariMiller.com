@@ -1,0 +1,75 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%205005"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# MCG 6-29-52: A Quiet Signal in Canes Venatici\n\n*The spiral galaxy NGC 5005 is no naked-eye spectacle. Its subtle glow rewards patient observers\u2014and its modest-looking core has a more energetic story to tell.*\n\nOn a dark spring evening, turn a telescope toward Canes Venatici and you can find a galaxy whose catalogue names sound more like coordinates than invitations: MCG 6-29-52, also known as NGC 5005. At first glance, it may be only a pale oval against the black. Stay with it, though, and that small blur becomes a distant island of stars, gas and dust, with a restless nucleus at its heart.\n\nThe galaxy lies at right ascension 13h 10m 56s and declination +37\u00b0 03\u2032 32\u2033 (J2000), according to SIMBAD. Its listed optical dimensions are about 7.1 by 3.2 arcminutes, and its apparent V magnitude is 13.67. That brightness is spread across the galaxy\u2019s face, so the view depends as much on sky darkness and patient observing as on the telescope\u2019s aperture. A recorded redshift of 0.003161 corresponds to a heliocentric recession speed of about 947 kilometres per second; at such a relatively small redshift, that number is not a simple, precise distance marker, since local galactic motions matter.\n\nNGC 5005 is classified as a spiral galaxy and as having a LINER-type active galactic nucleus. LINER stands for \u201clow-ionization nuclear emission-line region\u201d: the name describes the particular fingerprints of light from gas near the galaxy\u2019s centre. It signals activity in the nucleus, but not necessarily the dazzling output associated with a quasar. In this distant system, the classification is a reminder that a galaxy can look quiet in an eyepiece while its central region gives astronomers a more nuanced story in the light it emits.\n\nFor an observing plan, use the coordinates rather than relying on a vague sweep through the star field. Canes Venatici is well placed on spring evenings for observers in the Northern Hemisphere, and a finder chart or mount GoTo can put you in the right patch of sky. Start with a low-power eyepiece to locate the galaxy, then increase magnification gradually. Under a dark sky, an 8-inch telescope may show an elongated, diffuse glow; smaller instruments can be challenged by the galaxy\u2019s low surface brightness, especially under light pollution. Use averted vision\u2014looking slightly to one side of the target\u2014and give your eyes time to adapt to the dark. Don\u2019t expect the crisp spiral arms of a photograph: visual observing is a quieter encounter, shaped by contrast, steadiness and the observer\u2019s eye.\n\nIf the view seems modest, remember what the eyepiece is actually collecting: photons that began their journey in another galaxy, travelling across space before reaching your retina. MCG 6-29-52 offers no sudden spectacle. Its reward is subtler: the recognition that a faint oval is a vast spiral, and that its calm appearance does not tell the whole story of its core.\n\n**Sources:** [SIMBAD: MCG 6-29-52](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=MCG%206-29-52) \u00b7 [SIMBAD: NGC 5005](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%205005)",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%205005",
+            "overlap_terms": [
+              "according",
+              "active",
+              "ascension",
+              "before",
+              "catalogue",
+              "coordinates",
+              "declination",
+              "depends",
+              "field",
+              "galaxy",
+              "heliocentric",
+              "ident"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [
+      {
+        "quoted_text": "low-ionization nuclear emission-line region",
+        "source_matches": [],
+        "exact_text_confirmed": false
+      }
+    ],
+    "all_quoted_passages_confirmed": false,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
