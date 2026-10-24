@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%203368"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# M96: A Quiet Spiral in Leo\n\n*An island of stars beyond the Milky Way, M96 rewards patient eyes\u2014and a careful star-hop.*\n\nOn a clear spring evening, Leo climbs into view carrying a faint smudge that can seem almost too modest for its name. M96 is no star at all, but a galaxy: a vast system of stars whose light arrives as a soft, pale patch in the eyepiece. Its catalogue designation is NGC 3368. SIMBAD classifies it as an SBa galaxy and lists its apparent size at about 6.6 by 4.9 arcminutes\u2014roughly a fifth of the Moon\u2019s width at its longest axis. [SIMBAD: M96 / NGC 3368](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%203368)\n\nThat angular measure is a hint about how to look. M96 is extended, not a pinprick; its light is spread across the sky, so it may appear subtler than a star of similar total brightness. In a small telescope, expect a soft oval glow, perhaps with a brighter middle. Under dark skies and with a larger instrument, averted vision\u2014looking just to one side of the galaxy rather than straight at it\u2014may help tease out the outer haze. The galaxy\u2019s catalogued visual magnitude is 9.25, but the view depends on sky darkness, optics and your eyes.\n\nThere is more to M96 than its first impression. SIMBAD records a central coordinate of right ascension 10h 46m 45.7s and declination +11\u00b0 49\u2032 12\u2033 (J2000), and a measured redshift of 0.002946. Redshift is a small shift in the galaxy\u2019s spectral lines; it is one way astronomers study motion on cosmic scales. Here, the database also gives a corresponding radial velocity of about 882 kilometres per second. Those numbers are not visible in the eyepiece. They are another kind of observation: a way to read the galaxy\u2019s light as evidence.\n\nFor the observer, the route begins with Leo. Find the Sickle, the curved pattern that marks the Lion\u2019s head, and then consult a current sky chart or planetarium app to hop to M96\u2019s listed coordinates. A low-power eyepiece gives a generous field for locating the target; once you have it, try moderate magnification and let your vision settle. Binoculars may show it under a very dark sky, but a telescope usually makes the search more satisfying. Give your eyes time to adapt, and avoid nearby white lights.\n\nThe first glimpse may be only a small haze, easily mistaken for a flaw on the lens or a wisp of cloud. Check the focus, look away slightly, and return. The patch should hold its place against the stars. That steadiness is part of the pleasure: the sky is full of things that twinkle, while a galaxy announces itself by refusing to.\n\nM96 does not need to display spiral arms in every backyard telescope to make the night worthwhile. Its catalogue type tells us it belongs to the barred-spiral family; the eyepiece gives us something simpler and more immediate\u2014a distant island of starlight, caught in the dark for a moment by patient looking.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%203368",
+            "overlap_terms": [
+              "angular",
+              "ascension",
+              "catalogue",
+              "coordinate",
+              "coordinates",
+              "corresponding",
+              "current",
+              "database",
+              "declination",
+              "depends",
+              "display",
+              "field"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
