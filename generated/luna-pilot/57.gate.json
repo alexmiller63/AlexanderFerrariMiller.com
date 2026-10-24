@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2062956"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Alioth, the Handle\u2019s Quiet Beacon\n\n*Follow the curve of the Big Dipper\u2019s handle to a bright star whose light has crossed roughly 83 years of space to reach us.*\n\nOn a clear evening, the Big Dipper can seem less like a pattern of stars than a drawing someone has left unfinished in the sky. Its bowl tilts; its handle bends away. At the join between them shines Alioth, a steady-looking point in Ursa Major. It is a useful star to find\u2014not only because it is bright, but because a familiar shape can make the sky feel close enough to read.\n\nAlioth is catalogued as Epsilon Ursae Majoris, or HIP 62956. Its measured parallax is 39.51 milliarcseconds. Parallax is the apparent shift of a nearby star against more distant background stars as Earth moves around the Sun; converting that measurement gives a distance of about 25 parsecs, or 83 light-years. The light arriving tonight began its journey before many of the things we take for granted were built. That is not a reason to see the star as ancient or remote in the moment. It is a reason to pause over what \u201cnow\u201d means when we look up.\n\nThe SIMBAD database lists Alioth\u2019s visual magnitude as about 1.77, bright enough to stand out under ordinary dark skies, and gives a spectral classification of A1III-IVpkB9. In broad terms, the A designation places it among hot, pale stars; the more detailed notation records a more particular classification. Its catalogue position also lets astronomers track its slow movement across the sky: its measured proper motion is about 112 milliarcseconds per year in right ascension and \u22128 in declination. To the unaided eye, that motion is imperceptible from one night to the next. Across generations, it is part of the changing geometry of the heavens.\n\nTo find Alioth, look north on a spring evening from mid-northern latitudes and pick out the Big Dipper. Follow the four stars that make the bowl to the three that form the handle. Alioth is the first handle star beyond the bowl, before Mizar and Alkaid. If clouds or city glow wash out the fainter stars, give your eyes time to adjust and use the bowl\u2019s outline as a guide. Binoculars are not needed: start with your unaided eyes, then try binoculars if you want to explore the surrounding star field.\n\nThe Dipper\u2019s handle changes orientation as the hours pass and as the seasons turn. That movement is an effect of Earth\u2019s rotation and orbit, not the stars wheeling around Alioth. If you return on another night, the figure will seem to have turned while its individual points keep their place relative to one another. The sky offers both scales at once: a dependable pattern for finding your way, and a reminder that every star has its own distance and motion.\n\nFor a moment, let the handle be more than a pointer. Alioth\u2019s light is an old message, but the act of seeing it belongs to this evening\u2014to your particular patch of dark, your view past rooftops or trees, and the quiet minutes spent looking up.\n\n**Sources**\n\n- [SIMBAD: HIP 62956 / Epsilon Ursae Majoris](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2062956)",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2062956",
+            "overlap_terms": [
+              "around",
+              "ascension",
+              "before",
+              "catalogue",
+              "database",
+              "declination",
+              "ident",
+              "ivpkb",
+              "magnitude",
+              "major",
+              "measurement",
+              "motion"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}

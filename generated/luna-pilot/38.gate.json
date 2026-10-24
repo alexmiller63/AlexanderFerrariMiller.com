@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2041037"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Avior: A Bright Point with Two Stellar Histories\n\n*In Carina, a brilliant naked-eye star carries the signatures of a cool giant and a hot companion.*\n\nAvior does not announce its complexity to the unaided eye. It appears as one bright point in the southern constellation Carina, shining at about magnitude 1.9. But astronomical catalogues classify it as a double or multiple star and list its components as a K3 giant and a B2 main-sequence star: one evolved, relatively cool star paired with a much hotter one. The light we see is a single beacon; the stellar system behind it is more intricate. (SIMBAD: https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2041037)\n\nThat contrast makes Avior a fine target for a night when you want to look beyond a star\u2019s surface appearance. A K-type giant has a lower surface temperature than a B-type star, whose spectrum signals a hotter, bluer stellar atmosphere. Their combined glow reaches us as Avior\u2019s bright point of light. The catalogue\u2019s classification is a useful reminder that \u201cone star\u201d in the sky can mean one unresolved sighting, not necessarily one star in space.\n\nSIMBAD gives Avior\u2019s position as right ascension 8 hours 22 minutes 30.8 seconds and declination 59 degrees 30 minutes south. Its listed parallax is 5.39 milliarcseconds. Turning that parallax upside down gives a rough distance of about 185 parsecs, or roughly 600 light-years; this is an estimate from the catalogue value, not a direct measurement in light-years. At that distance, the bright point overhead is a view across a substantial stretch of the Milky Way.\n\n**Finding and observing Avior**\n\nAvior is far south in the sky. Its declination means it climbs high for observers in the Southern Hemisphere, while from much of the Northern Hemisphere it stays low or never rises at all. In practical terms, observers north of about 31 degrees latitude cannot see it: even at its highest, it remains below the horizon. For locations farther south, an unobstructed southern horizon is helpful.\n\nLook for Avior in Carina on clear evenings when the constellation is well placed. Its brightness makes it a naked-eye target under ordinary dark skies, though haze and city glow near the horizon can dim it. Start with unaided eyes, then use binoculars to explore the surrounding star field. A small telescope will offer a closer view of the region, but don\u2019t expect the catalogue\u2019s multiple-star classification alone to guarantee a visually separated pair: the supplied entry does not give a separation.\n\nFor a precise starting point, use the SIMBAD coordinates above with a planetarium app or star chart set to your location and date. Give your eyes time to adapt to the dark, and choose a site with a clear view toward the south. Avior is worth finding not because its hidden structure is obvious, but because it isn\u2019t. One bright point can hold a cooler giant, a hot companion, and a distance measured from the subtle shift of the star\u2019s apparent position across Earth\u2019s orbit.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2041037",
+            "overlap_terms": [
+              "ascension",
+              "catalogue",
+              "catalogues",
+              "coordinates",
+              "declination",
+              "degrees",
+              "double",
+              "ident",
+              "listed",
+              "magnitude",
+              "measurement",
+              "multiple"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}

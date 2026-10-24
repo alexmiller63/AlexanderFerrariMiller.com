@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2017847"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Atlas, the Pleiades\u2019 Quiet Double\n\n*Among the Seven Sisters, one bright point carries a secret that ordinary stargazing can\u2019t reveal.*\n\nAtlas is easy to meet and hard to know. On a clear evening, it shines as one of the bright stars in the Pleiades, the compact cluster in Taurus. To the unaided eye, it is a single, steady-looking point. But the astronomical database SIMBAD identifies Atlas as 27 Tau and classifies it as a **spectroscopic binary**: a system whose stellar companions are detected through their changing light, not by seeing them separately.\n\nThat hidden doubleness makes Atlas a fine reminder of what astronomy can\u2014and cannot\u2014show. A backyard observer can find the star, take in its blue-white light and notice its place in the Pleiades. But even a telescope won\u2019t necessarily turn it into two visible dots. \u201cBinary\u201d describes a relationship between stars; it does not promise that they are far enough apart on the sky for our eyes, or a small telescope, to distinguish them.\n\n## The science in the starlight\n\nSIMBAD lists Atlas\u2019s spectral type as B8III. The \u201cB\u201d marks a hot, blue-white class of star; \u201cIII\u201d is the luminosity class for a giant. Its listed visual magnitude is 3.63, bright enough to see without optical aid under a reasonably dark sky. The database also gives Atlas\u2019s position as right ascension 3h 49m and declination +24\u00b0 03\u2032 (J2000), placing it among the familiar stars of Taurus.\n\nHow do astronomers find a companion they cannot see directly? In a spectroscopic binary, the stars\u2019 motion around one another can make their spectral lines shift back and forth over time. Those changes in the light provide evidence of orbital motion even when the stars appear as one point. The discovery is less like spotting a second lamp beside the first and more like detecting a subtle rhythm in the light arriving from a single lamp.\n\nSIMBAD\u2019s entry is a useful starting point, not a full account of the system: it supplies Atlas\u2019s designation, classification and catalogue measurements, but the naked-eye view cannot confirm the binary nature. That contrast is part of the pleasure. The familiar view is real, and so is the more intricate system revealed by careful measurement.\n\n## How to find Atlas\n\nLook for the Pleiades on autumn and winter evenings in the Northern Hemisphere. The cluster is a small, close-looking knot of stars in Taurus, visible to the naked eye away from bright city lights. If you\u2019re unsure, binoculars make the group easier to recognize while keeping several stars in the same field of view. Then use a star chart or planetarium app to identify Atlas among the cluster\u2019s brighter members.\n\nGive your eyes a few minutes to adapt to the dark, and try looking slightly to the side of the faintest stars: indirect vision can help them stand out. In a telescope, use a low-power eyepiece first to enjoy the cluster rather than narrowing your view to one star. Atlas itself will still appear as a point. That is no failure of equipment. Its companion\u2019s signature lives in changes measured over time, not in a split that an observer can expect to see.\n\nSo tonight, let Atlas be both simple and complicated: one bright point in a celebrated star cluster, and a reminder that the sky\u2019s apparent stillness can conceal motion.\n\n**Source:** SIMBAD, entry for HIP 17847 / 27 Tau: https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2017847",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2017847",
+            "overlap_terms": [
+              "around",
+              "ascension",
+              "binary",
+              "catalogue",
+              "class",
+              "database",
+              "declination",
+              "ident",
+              "listed",
+              "luminosity",
+              "magnitude",
+              "measurement"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}

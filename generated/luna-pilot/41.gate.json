@@ -1,0 +1,69 @@
+{
+  "screen_passed": false,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": false,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2045941"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Kappa Velorum: A Companion Hidden in Starlight\n\n*In the southern constellation Vela, a bright star\u2019s catalog entry points to a companion that cannot ordinarily be seen as a separate dot.*\n\nKappa Velorum appears in the sky as a single point of light. But its listing in the SIMBAD astronomical database identifies it as a spectroscopic binary: a system whose paired stars are recognized through their motion, rather than by seeing two distinct points. The entry gives the star\u2019s visual magnitude as 2.473, making it bright enough to look for with the unaided eye under suitable conditions.\n\nThe word *spectroscopic* describes the clue. When a star moves toward or away from Earth, features in its spectrum shift. Repeated observations can reveal this changing motion and, in turn, a companion. Kappa Velorum\u2019s classification tells us that this method identifies it as a binary. The SIMBAD entry does not give an orbital period or describe the stars\u2019 individual properties, so the specific details of their dance remain beyond what this listing establishes.\n\nThe same record gives Kappa Velorum a spectral type of B2IV. The B2 designation places it among B-type stars; IV is its luminosity classification. These compact labels offer a way to describe a star using light and other measurements, even when the object looks like a simple point to the naked eye.\n\nSIMBAD also lists a parallax of 5.70 milliarcseconds, with an uncertainty of 0.30 milliarcseconds. Parallax is the apparent shift of a nearby star against more distant background stars as Earth moves around the Sun. Using the listed value gives an approximate distance of 175 parsecs, or about 570 light-years. That conversion is an estimate based on the reported parallax, not a separate distance measurement in the listing.\n\nThe coordinates place Kappa Velorum at a declination of about 55 degrees south. That position makes it a target for southern skies: how high it appears depends on the observer\u2019s latitude, and it stays below the horizon for many far-northern observers. Its SIMBAD identifier is HIP 45941, and the database also records its position in the constellation\u2019s region under the name Kappa Velorum.\n\nTo find it, start with a star chart or planetarium app set to your location, then search for Kappa Velorum or HIP 45941. Its magnitude makes it a reasonable naked-eye target where the sky is dark and clear. Binoculars can help steady the view and reveal the surrounding field, but they should not be expected to split the spectroscopic pair into two visible stars. The evidence for its companion comes from spectral measurements, not an ordinary visual separation.\n\nThat is the appeal of this system: one point of light carries more information than the eye alone can see. A brightness measurement, a spectral classification, a parallax, and the signature of orbital motion each reveal a different part of the story. Kappa Velorum may look like a solitary star, but its catalog record shows how careful observations can uncover company hidden in the light.\n\n**Source:** [SIMBAD entry for HIP 45941 (Kappa Velorum)](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2045941)",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2045941",
+            "overlap_terms": [
+              "around",
+              "binary",
+              "catalog",
+              "coordinates",
+              "database",
+              "declination",
+              "degrees",
+              "depends",
+              "field",
+              "ident",
+              "identifier",
+              "listed"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}

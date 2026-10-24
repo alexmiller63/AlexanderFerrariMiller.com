@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2027989"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Betelgeuse: The Ember on Orion\u2019s Shoulder\n\n*An old, enormous star gives winter\u2019s hunter a red glow\u2014and offers a rewarding target even without a telescope.*\n\nOn a clear winter evening, find Orion\u2019s Belt: three bright stars in a short, slanted row. Look above and to the left of the Belt, and there is Betelgeuse, a warm-colored beacon marking the hunter\u2019s shoulder. It may look steady and simple to the unaided eye. In reality, this is a red supergiant: a star in a late stage of its life, swollen and cool at its surface compared with hotter, bluer stars.\n\nThe SIMBAD astronomical database classifies Betelgeuse as spectral type M1\u2013M2 Ia\u2013Iab, a designation that identifies it as a red supergiant. Its listed position is right ascension 5 hours 55 minutes and declination +7 degrees 24 minutes (J2000), placing it in Orion. [SIMBAD: Betelgeuse (HIP 27989)](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2027989)\n\nThat classification is a compact scientific portrait. The \u201cM\u201d describes a relatively cool stellar surface, whose light gives Betelgeuse its orange-red hue. The \u201cIa\u2013Iab\u201d marks a highly luminous supergiant. Its color is easiest to appreciate by comparing it with blue-white Rigel, across the constellation, or with the stars of Orion\u2019s Belt. Give your eyes a few minutes to adapt to the dark; the contrast becomes more apparent.\n\nBetelgeuse also reminds us that the familiar constellations are patterns, not flat pictures. The stars of Orion appear together from Earth\u2019s viewpoint, but they lie at different distances and have different lives. Betelgeuse\u2019s apparent place on the hunter\u2019s shoulder is a line-of-sight coincidence, while its supergiant nature sets it apart from the smaller-looking points around it.\n\nFor a first look, no equipment is needed. In the Northern Hemisphere, Orion is prominent in the evening sky during winter, though the exact time it rises and sets depends on your location and the date. In the Southern Hemisphere, Orion is visible during the corresponding summer season, appearing differently oriented. Let the constellation clear buildings and trees, then use the Belt as your signpost. Betelgeuse is the reddish star at one shoulder; Rigel, bright and blue-white, marks the opposite foot.\n\nBinoculars can make the surrounding star field richer, but they will not reveal a disk or surface detail: Betelgeuse remains a point of light to ordinary backyard instruments. Try looking first with the naked eye, then through binoculars, and finally return to the unaided view. The color often seems strongest after the comparison.\n\nFor a simple observing record, note the date, time, location, and sky conditions. Sketch Orion\u2019s Belt and mark Betelgeuse. On another clear night, find it again. You may notice that its brightness does not always seem identical; the star is known to vary. Don\u2019t expect a dramatic change from one evening to the next. The pleasure is in returning to a recognizable landmark and remembering that its quiet point of light belongs to a star far larger and more evolved than the Sun.\n\nOrion\u2019s outline has served skywatchers for generations. Betelgeuse makes that outline feel less like a drawing and more like a place: a red supergiant glowing at the edge of a winter constellation, visible to anyone who can find three stars in a row.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2027989",
+            "overlap_terms": [
+              "around",
+              "ascension",
+              "corresponding",
+              "database",
+              "declination",
+              "degrees",
+              "depends",
+              "ident",
+              "known",
+              "listed",
+              "point",
+              "points"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}

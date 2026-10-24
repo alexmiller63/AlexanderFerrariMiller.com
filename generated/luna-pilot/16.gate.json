@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2017573"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Maia, the Blue Thread in the Seven Sisters\n\n*In the Pleiades, one bright star offers a quiet lesson in how astronomers measure distance\u2014and how to find a familiar cluster again.*\n\nOn a clear winter evening, look for a little knot of stars in Taurus. The Pleiades are compact enough to seem like a single glimmer at first, but give your eyes a moment and the knot begins to separate. Maia is one of its bright points: not a whole constellation, but a star with its own identity and measurable place in space.\n\nAstronomers catalogue Maia as 20 Tauri, or HIP 17573. SIMBAD lists it as spectral type B7III, with a parallax of 7.6713 milliarcseconds and a visual magnitude of about 3.87. Those measurements put numbers to what the eye hints at: Maia is a blue-white star bright enough to see without optical aid under a reasonably dark sky. The \u201cIII\u201d in its spectral classification is the luminosity class, indicating a giant star; B7 describes its spectral type. [SIMBAD: HIP 17573](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2017573)\n\nParallax is a deceptively small angle with an enormous reach. As Earth travels around the Sun, a nearby star appears to shift slightly against the far more distant background. Measure that shift, and astronomers can estimate the star\u2019s distance. Inverting Maia\u2019s listed parallax gives roughly 130 parsecs\u2014about 425 light-years. That estimate is a conversion of the catalogue value, not a distance you can sense by looking up. To the unaided eye, Maia is simply a steady point; to measurement, it is a sun at a calculable remove.\n\nThat contrast is part of the pleasure of observing. The Pleiades invite a broad view, not a hunt for a single target. On a crisp night, start with your eyes alone and let the cluster\u2019s close-packed pattern come into focus. Maia is among the brighter stars in the group, but the scene is richer when you resist the urge to isolate it. Each visible point belongs to a larger pattern, and the cluster\u2019s familiar shape is the map that brings you back.\n\nFor guidance, look east after dusk in autumn, then higher in the evening sky as winter advances in the Northern Hemisphere. Taurus\u2019s bright star Aldebaran and the V-shaped Hyades can help orient you; the Pleiades lie nearby as a small, tight group. Binoculars are ideal: they gather enough light to reveal many more stars while keeping the cluster comfortably in view. A low-power telescope can show additional members, but high magnification may make the group harder to take in all at once. If the Moon is bright or haze softens the sky, return on a darker, clearer night.\n\nTry this small observing experiment: find Maia first with the naked eye, then switch to binoculars. Notice how the star remains an anchor even as the surrounding field fills with points too faint to see unaided. The view changes; the star does not. Its catalogue position\u2014right ascension 3h 45m 49.6s, declination +24\u00b0 22\u2032 04\u2033 for the J2000 reference frame\u2014makes it precise on a chart, while the Pleiades\u2019 pattern makes it approachable",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2017573",
+            "overlap_terms": [
+              "angle",
+              "around",
+              "ascension",
+              "catalogue",
+              "class",
+              "declination",
+              "frame",
+              "ident",
+              "listed",
+              "luminosity",
+              "magnitude",
+              "measure"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}

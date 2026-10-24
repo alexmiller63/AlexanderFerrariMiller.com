@@ -1,0 +1,75 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2058001"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Phecda, the Dipper\u2019s Quiet Corner\n\n*At the bowl\u2019s far corner, a blue-white star offers an easy naked-eye target\u2014and a reminder that a familiar pattern is made of distant suns.*\n\nOn a clear evening, find the Big Dipper and let your eye travel around its bowl. Phecda marks the corner opposite the place where the handle joins. The Dipper may look like a single, familiar sign, but each point of light is its own star, at its own distance. Phecda is the bowl\u2019s steady landmark: easy to pick out, even when the sky offers little else.\n\nPhecda is also cataloged as Gamma Ursae Majoris, or HIP 58001. Its listed visual magnitude is about 2.44\u2014bright enough to see without optical aid under a reasonably dark sky, though city lights can wash out fainter stars around it. SIMBAD gives its spectral type as A0V, a classification for a hot, blue-white main-sequence star. The same database identifies it as an emission-line star, a catalog description of light observed in particular spectral lines; the label by itself does not tell a skywatcher what to expect through the eyepiece. To the unaided eye, Phecda remains a point of light. ([SIMBAD](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2058001))\n\nA small bit of geometry makes that point feel less remote. SIMBAD lists a parallax of 39.21 milliarcseconds. Parallax is the apparent shift in a nearby star\u2019s position as Earth moves around the Sun. Inverting that measurement gives a distance of roughly 25.5 parsecs, or about 83 light-years. The number is a useful scale, not a route: the light arriving tonight began its journey long before it reached your eyes.\n\nFor a simple observing session, start with the Dipper\u2019s four-star bowl rather than trying to identify Phecda from coordinates. Trace the outline, then look to the bowl\u2019s corner opposite the handle attachment. If you have binoculars, you can use them to explore the surrounding star field, but they are not needed to see Phecda itself. On a bright urban night, first locate the two stars at the bowl\u2019s outer edge, then follow the bowl\u2019s outline inward. Give your eyes a few minutes to adjust if you can; avoid looking at a phone screen between glances.\n\nThe shape\u2019s orientation changes as the hours pass and the seasons turn, so \u201clower corner\u201d is only a guide on a chart. The handle-side clue is more dependable: Phecda is at the bowl\u2019s far end, away from the handle\u2019s attachment. For a coordinate-based check, SIMBAD lists its J2000 position as right ascension 11h 53m 49.8s and declination +53\u00b0 41\u2032 41\u2033. These coordinates can help confirm the star in a planetarium app or sky chart.\n\nThere is a quiet pleasure in finding Phecda without magnification. It asks for no equipment, only a moment to recognize the pattern and then notice one point within it. You can return to the whole Dipper at a glance\u2014or stay with that single star and remember that its modest pinprick is sunlight from another system, traveling across the dark to meet you.\n\n**Source:** [SIMBAD entry for HIP 58001 / Gamma",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2058001",
+            "overlap_terms": [
+              "around",
+              "ascension",
+              "before",
+              "catalog",
+              "coordinate",
+              "coordinates",
+              "database",
+              "declination",
+              "emission",
+              "ident",
+              "listed",
+              "magnitude"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [
+      {
+        "quoted_text": "lower corner",
+        "source_matches": [],
+        "exact_text_confirmed": false
+      }
+    ],
+    "all_quoted_passages_confirmed": false,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}

@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2049583"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Eta Leonis: A Quiet Beacon in the Lion\u2019s Head\n\n*Its modest naked-eye appearance is only part of the story: catalogues identify Eta Leonis as an evolved supergiant, far beyond the nearby stars that make up the familiar patterns of the sky.*\n\nEta Leonis is easy to overlook. Its listed visual magnitude is 3.41, bright enough to be seen without a telescope under suitable conditions, yet not so striking that it announces itself among the sky\u2019s brightest stars. It offers a reminder that a star\u2019s appearance from Earth does not, by itself, tell us what kind of object it is\u2014or how far away it lies.\n\nThe [SIMBAD astronomical database](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2049583) identifies the star as Eta Leonis and classifies it as an evolved supergiant. Its listed spectral type is A0Ib. Those compact letters and numbers are a catalogue description, not something an observer can read from the star\u2019s apparent brightness alone. To learn more, astronomers combine observations such as a star\u2019s spectrum and parallax.\n\nSIMBAD gives Eta Leonis a parallax of 1.7965 milliarcseconds, with a reported uncertainty of 0.3051 milliarcseconds. Parallax is the tiny apparent shift in a nearby object\u2019s position when viewed from different points in Earth\u2019s orbit around the Sun. The smaller the parallax, the farther away the object generally is. Inverting Eta Leonis\u2019s listed value gives a rough distance of about 560 parsecs, or roughly 1,800 light-years.\n\nThat figure is an estimate rather than a precise distance reading. The parallax itself has a notable uncertainty, and converting it into distance carries that uncertainty along. The number is useful for conveying scale, but it should not be treated as an exact measurement.\n\nThe catalogue also lists coordinates for locating the star: right ascension 10 hours, 7 minutes, 19.95 seconds, and declination +16 degrees, 45 minutes, 45.6 seconds, in the J2000 system. A sky map or astronomy app can use those coordinates to place Eta Leonis in Leo. Coordinates are especially helpful when a constellation\u2019s familiar outline is hard to recognize, or when haze, light pollution or an unfamiliar observing location makes star-hopping difficult.\n\nOnce found, Eta Leonis appears as a point of light. Its magnitude of 3.41 describes how bright it looks from Earth; it does not directly measure the star\u2019s size or intrinsic output. Distance affects the light that reaches us, while the supergiant classification describes the star itself. Keeping those ideas separate helps explain why an object that looks modest in the sky can still be noteworthy.\n\nThere is no need to turn the observation into a test of eyesight. Under a dark, clear sky, try to spot the star unaided; if it is difficult to distinguish, binoculars can help you examine the surrounding field. Use the coordinates to confirm the identification rather than relying on brightness alone. The view will remain a simple point, but the catalogue gives that point context: Eta Leonis is a distant, evolved supergiant whose understated appearance conceals a far more expansive story.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2049583",
+            "overlap_terms": [
+              "around",
+              "ascension",
+              "catalogue",
+              "catalogues",
+              "coordinates",
+              "database",
+              "declination",
+              "degrees",
+              "evolved",
+              "ident",
+              "listed",
+              "magnitude"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}

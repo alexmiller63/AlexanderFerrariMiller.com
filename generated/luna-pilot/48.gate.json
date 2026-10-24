@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2053910"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Merak: The Dipper\u2019s Quiet Guide\n\n*An easy-to-spot star in Ursa Major does more than mark a corner of the Big Dipper. It helps point the way north\u2014and offers a glimpse of a star in a later stage of life than our Sun.*\n\nOn a clear night, the Big Dipper can feel less like a constellation than a familiar tool: seven bright stars sketched into a ladle, ready to be lifted from the northern sky. Merak marks one corner of its bowl. Find it, and you have a way to navigate\u2014not only around the pattern, but toward the North Star.\n\nMerak is the traditional name of Beta Ursae Majoris. Look to the two stars forming the bowl\u2019s outer edge: Merak is the lower one, with Dubhe above it. Trace a line from Merak through Dubhe and continue the same distance onward; the line leads to Polaris, the end star in the handle of the Little Dipper. Merak itself is bright enough to see without optical aid under ordinary dark skies, though nearby lights and haze can make the fainter stars of the Dipper harder to pick out.\n\nThe pattern changes its orientation through the night as Earth turns. Depending on your latitude and the time you observe, the Dipper may stand upright, tilt, or hang low. In much of the Northern Hemisphere, Ursa Major circles the pole and remains visible through the year, though its position shifts with the seasons. Give your eyes a few minutes to adjust, then use the bowl\u2019s outline rather than trying to identify a star in isolation.\n\nMerak is about 84 light-years away, estimated from its measured parallax: SIMBAD lists a parallax of 38.6031 milliarcseconds, corresponding to roughly 26 parsecs. Its listed visual magnitude is 2.37, a handy measure of why it stands out to the unaided eye. SIMBAD gives its spectral type as A1IVps. The A1 classification indicates a hot, blue-white star; the IV luminosity class identifies it as a subgiant, a star that has moved beyond the main-sequence stage in which it spends most of its life steadily fusing hydrogen in its core. The \u201cps\u201d denotes a spectral peculiarity, rather than a change in the simple observing impression: to the eye, Merak remains a point of light in a familiar pattern.\n\nThere is another, slower motion hidden in that point. Merak\u2019s measured proper motion is about 80 milliarcseconds per year in right ascension and 32 in declination. That motion is too small to notice from one evening to the next. Over long spans, however, stars shift against the more distant background, and the shapes we inherit from ancient sky-watchers gradually alter.\n\nFor a simple observing exercise, first locate Polaris, then follow the pointer line back through Dubhe to Merak. Next, take in the whole bowl and handle before returning to Merak alone. Binoculars can sharpen the surrounding star field, but they are not needed to see the star or use it as a guide. If you are observing from a city, start with the two pointer stars; their brightness makes the route easier even when the Little Dipper\u2019s fainter stars disappear.\n\nMerak\u2019s gift is modest and practical: a bright marker in a moving sky. Yet that small point also holds a stellar story\u2014one that becomes clearer when you look up, find the Dipper, and take the time to follow its line.\n\n**Sources:** SIMBAD entry for HIP 53910 / Beta Ursae Majoris: https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2053910",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2053910",
+            "overlap_terms": [
+              "around",
+              "ascension",
+              "before",
+              "class",
+              "corresponding",
+              "declination",
+              "ident",
+              "listed",
+              "luminosity",
+              "magnitude",
+              "major",
+              "measure"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}

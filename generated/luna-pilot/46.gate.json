@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2050335"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Adhafera, a Steady Light in Leo\n\n*The lion\u2019s curved mane holds a modestly bright star whose catalog numbers tell a story of temperature, distance and motion.*\n\nOn a clear spring evening, Leo climbs into view like a question mark turned sideways. Follow the curve of its \u201csickle,\u201d the pattern that outlines the lion\u2019s head and mane, and pause at Adhafera. It is not the brightest star in the constellation, but it rewards a closer look: a warm, steady point of light whose measured properties place it well beyond the neighborhood of the Sun.\n\nAstronomical catalogs identify Adhafera as Zeta Leonis, or \u03b6 Leo. SIMBAD\u2019s entry for HIP 50335 gives its position as right ascension 10 hours 16 minutes and declination +23 degrees 25 minutes, and lists a visual magnitude of 3.41. That brightness makes it visible to the unaided eye under a reasonably dark sky, though city lights can wash it out. The same entry classifies it as F0IIIa and gives a parallax of 14.0377 milliarcseconds. [SIMBAD: HIP 50335](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2050335)\n\nThose compact labels are a small scientific portrait. F0 describes the star\u2019s spectral type\u2014its classification by the features in its light\u2014while III is the luminosity class for a giant star. The \u201ca\u201d adds a more specific classification. Its parallax, the tiny apparent shift measured as Earth moves around the Sun, offers a way to estimate distance: the listed value works out to roughly 71 parsecs, or about 232 light-years. That is a calculated estimate, not a direct trip through space; the catalog also reports an uncertainty in the parallax measurement.\n\nDistance changes the feeling of the view. Adhafera\u2019s light has crossed hundreds of light-years before reaching your eyes, yet from Earth it appears as a single, uncomplicated point. Its listed visual magnitude helps explain why it is a good naked-eye target, while its stellar classification reminds us that the visible pinprick is the surface of a distant star, not a nearby lamp.\n\n**How to find it:** Look for Leo in the evening sky during spring, when the constellation is well placed for observers in the Northern Hemisphere. Its sickle is a backward-curving line of stars; use a star chart or a sky app to pick out Adhafera within that pattern. A clear view away from bright streetlights will help, but binoculars are optional\u2014the star is bright enough to seek without optical aid. If you use a chart, search for \u201cZeta Leonis\u201d as well as \u201cAdhafera,\u201d and match the position near 10h 16m, +23\u00b0 25\u2032.\n\nGive your eyes several minutes to adapt to darkness before searching. Then look again without a screen: the point you find is both a destination in a familiar constellation and a measurement written across the sky. Its brightness, spectrum and parallax turn a simple act of looking into a way of asking how stars are classified and how far away they are. Tonight, the answer begins with one small light in the lion\u2019s mane.\n\n**Source:** [SIMBAD entry for HIP 50335 / \u03b6 Leonis](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2050335).",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2050335",
+            "overlap_terms": [
+              "around",
+              "ascension",
+              "before",
+              "catalog",
+              "catalogs",
+              "class",
+              "declination",
+              "degrees",
+              "ident",
+              "listed",
+              "luminosity",
+              "magnitude"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}

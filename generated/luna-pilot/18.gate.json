@@ -1,0 +1,69 @@
+{
+  "screen_passed": false,
+  "checks": {
+    "research_present": true,
+    "draft_length": false,
+    "title_present": false,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2017702"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Eta Tauri: A Star in the Catalogue\n\n*One star can be described in several ways: by its name, its position, its motion and the measurements recorded in different bands of light. Eta Tauri\u2019s catalogue entry offers a compact tour of that vocabulary.*\n\nSIMBAD resolves the identifier HIP 17702 to **eta Tau** and lists the object type as a Be star. Its spectral type is given as **B7III**. Those labels are not interchangeable: one is the object type recorded in the database, while the other is the spectral classification. Together, they are the opening lines of a portrait written not in images, but in astronomical data. [SIMBAD: Eta Tauri / HIP 17702](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2017702)\n\nThe record places eta Tauri at right ascension 03h 47m 29.0765529s and declination +24\u00b0 06\u2032 18.488347\u2033, in coordinates for the J2000 reference frame. SIMBAD also gives an uncertainty for that position. These coordinates serve as a precise address in the sky; they are more informative than a name alone when the task is to identify an object in a database or compare records.\n\nThe listing includes motion as well as position. Its proper motion is 19.34 milliarcseconds per year in right ascension, with the cosine-of-declination factor included, and \u221243.67 milliarcseconds per year in declination. The figures make clear that the catalogue is not simply pinning the star to a fixed point: it records a measured change in its apparent position over time. SIMBAD attaches a reference to the measurement, as it does to several other values in the entry.\n\nOne of those values is a parallax of 8.09 milliarcseconds, with a listed uncertainty of 0.42 milliarcseconds. A simple inverse-parallax calculation gives a distance of about 124",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2017702",
+            "overlap_terms": [
+              "ascension",
+              "catalogue",
+              "coordinates",
+              "database",
+              "declination",
+              "frame",
+              "given",
+              "ident",
+              "identifier",
+              "images",
+              "listed",
+              "measurement"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}

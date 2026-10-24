@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2062434"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Mimosa Keeps Time in the Southern Cross\n\n*Find this bright blue-white star in Crux, then look past its steady appearance: catalogs classify Mimosa as a subtly variable star.*\n\nAt dusk in the Southern Hemisphere, the Southern Cross rises like a small signpost against the dark. Four bright stars mark its arms. Mimosa, also known as Beta Crucis, is one of them: a brilliant point you can spot without optical aid, even when the rest of the sky is still deepening from blue to black.\n\nStart with the cross itself. Mimosa is catalogued at about magnitude 1.25 in visible light, bright enough to stand out in a city sky, though nearby lights can wash out the fainter stars that complete the pattern. Give your eyes a few minutes to adjust, and trace the four-star shape. Binoculars are not needed to find Mimosa; they can help bring out the surrounding star field. For a telescope, use the star\u2019s coordinates as a guide: right ascension 12h 47m, declination \u221259\u00b0 41\u2032 (J2000). [SIMBAD: HIP 62434 / Beta Crucis](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2062434)\n\nThe name suits a star that seems made for the Southern Cross\u2019s quiet drama. Mimosa shines blue-white, consistent with its catalogued spectral type, B1IV. The \u201cB1\u201d indicates a hot star; \u201cIV\u201d is its luminosity class. But the view from Earth is a point of light, not a portrait. Even a telescope cannot readily reveal the star\u2019s surface as a disk. What it can offer is a more intimate sense of the contrast: this distant sun appears steady, while its light carries clues to a much more energetic world.\n\nMimosa is listed as a Beta Cephei variable\u2014a star whose brightness changes slightly over time. The shifts are subtle, not a sudden flicker to watch for in a casual glance. To follow them, observers make repeated brightness measurements and compare the star with nearby stars of known or stable brightness. For a first encounter, simply return to Mimosa on another clear night. Its apparent constancy is part of the pleasure; the variation belongs to patient observation.\n\nThere is another way to measure the distance between the familiar pattern and the star itself. SIMBAD lists Mimosa\u2019s parallax as 11.71 milliarcseconds. Parallax is the tiny apparent shift of a nearby star against more distant background stars as Earth moves around the Sun. Turning that listed value into a rough distance gives about 85 parsecs, or 280 light-years. In other words, the light arriving tonight began its journey long before today\u2019s skywatcher was born. [SIMBAD data](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2062434)\n\nFor the best view, head outside when Crux is well clear of the horizon, and choose a spot with an unobstructed southern sky. The constellation is especially familiar to observers in southern latitudes; how high it appears depends on your location. Let the cross settle into view, identify its bright points, and pause at Mimosa. You may not see it change. Yet the catalog\u2019s record says that change is there, small enough to ask for care, and large enough to remind us that even the brightest landmarks have their own rhythms.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2062434",
+            "overlap_terms": [
+              "around",
+              "ascension",
+              "before",
+              "catalog",
+              "catalogs",
+              "class",
+              "coordinates",
+              "declination",
+              "depends",
+              "ident",
+              "known",
+              "listed"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}

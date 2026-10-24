@@ -1,0 +1,75 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2065474"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Spica: Virgo\u2019s Bright Blue Beacon\n\n*Follow the curve of the Big Dipper\u2019s handle to Arcturus, then continue to a spring star whose light carries clues to its stellar nature.*\n\nOn a clear spring evening, the Big Dipper can serve as a guide across the sky. Trace the curve of its handle to the orange star Arcturus, then continue along the arc to Spica, a bright point in the constellation Virgo. The familiar sky-path ends at a star with a less familiar story: a hot, blue-white object whose catalog entry also marks it as variable.\n\nSpica is also known as Alpha Virginis. The SIMBAD astronomical database lists it as spectral type B1V, an indication that it is a hot, hydrogen-fusing star on the main sequence. Its listed visual magnitude is 0.97\u2014bright enough to stand out without optical aid, even from many urban locations. SIMBAD also classifies it as a beta Cephei variable, a type of star associated with small changes in brightness. Those changes are subtle; to the unaided eye, Spica appears steady. [SIMBAD: Spica / HIP 65474](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2065474)\n\nThe catalog gives Spica\u2019s parallax as 13.06 milliarcseconds. Parallax is the apparent shift of a nearby star against more distant background stars as Earth travels around the Sun. Inverting that measurement gives a distance of roughly 77 parsecs, or about 250 light-years. The number is an estimate derived from the listed parallax, not a direct measurement in light-years.\n\nSpica\u2019s position also makes it a useful seasonal marker. Its coordinates place it in the southern part of the sky for observers in much of the Northern Hemisphere, though it climbs higher for viewers farther south. In spring, Virgo rises into the evening sky; as the night goes on, Spica becomes easier to see above the horizon. The star\u2019s brightness helps, but a clear view toward the southeast is useful, especially where buildings or trees block the lower sky.\n\nTo find it, begin with the Big Dipper, which is part of Ursa Major. Follow the handle\u2019s curve to Arcturus, then extend that same curve onward to Spica. The mnemonic \u201carc to Arcturus, then speed on to Spica\u201d captures the route. If you are unsure which point is Spica, give your eyes a few minutes to adjust and compare the star\u2019s position with a sky map or planetarium app set to your location and time.\n\nNo telescope is needed. Binoculars can help you scan the region, but Spica itself will remain a point of light in ordinary binoculars. A small telescope is not essential for appreciating the view; its more practical value here is helping you explore nearby stars and the broader pattern of Virgo.\n\nFor a simple observing note, record the time, location, and whether Spica looked bluish or white to you. Color impressions depend on eyesight, sky conditions, and how high the star sits above the horizon. The useful lesson is not that every observer will see the same hue, but that a bright point of light can connect an evening\u2019s skywatching to measurable facts: a cataloged position, a stellar classification, and a distance inferred from parallax.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2065474",
+            "overlap_terms": [
+              "around",
+              "catalog",
+              "coordinates",
+              "database",
+              "depend",
+              "ident",
+              "known",
+              "listed",
+              "magnitude",
+              "major",
+              "measurement",
+              "number"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [
+      {
+        "quoted_text": "arc to Arcturus, then speed on to Spica",
+        "source_matches": [],
+        "exact_text_confirmed": false
+      }
+    ],
+    "all_quoted_passages_confirmed": false,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}

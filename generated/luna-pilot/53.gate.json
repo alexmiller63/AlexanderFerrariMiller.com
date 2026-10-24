@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2059774"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Megrez, the Quiet Hinge of the Dipper\n\n*At the join between bowl and handle, a modest star marks a useful way into Ursa Major\u2014and carries a motion of its own.*\n\nOn a clear spring evening, the Big Dipper can seem less like a constellation than a familiar tool left hanging in the sky. Its bowl catches the eye first; its curved handle follows. At the point where the two meet, look for Megrez, the star that makes the dipper\u2019s outline whole.\n\nIt is not the brightest point in the pattern. That is part of its charm. Megrez rewards the second look: the moment when a bright, easy shape becomes a collection of individual suns. Find the bowl\u2019s four stars, trace the handle outward, then return to the corner where handle and bowl connect. There is Megrez, quietly keeping the pattern together.\n\nThe name belongs to Delta Ursae Majoris, also catalogued as HIP 59774. SIMBAD lists it as a type A2Vn star, with a visual magnitude of about 3.32. In that classification, \u201cA2\u201d places it among hot, blue-white stars; \u201cV\u201d identifies it as a main-sequence star, still in the long, steady stage of fusing hydrogen in its core. The \u201cn\u201d indicates unusually broad spectral lines. Its measured parallax\u2014about 40.3 milliarcseconds\u2014puts it roughly 81 light-years away. (SIMBAD: https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2059774)\n\nThat distance makes Megrez a neighbor by stellar standards, though its light has been travelling longer than any human observer has been alive. The star is not fixed against the background, either. SIMBAD gives it a proper motion of about 104 milliarcseconds per year across the sky. That shift is far too small to notice in a single night, but over centuries it accumulates. The constellation is a drawing we inherit, not a permanent celestial engraving.\n\nFor an observing session, begin with your eyes alone. From a location with a reasonably dark sky, let your gaze settle on the familiar dipper shape and identify the bowl-to-handle junction. If the outline is hard to pick out, binoculars can help distinguish its stars from the surrounding field\u2014but use them after you have found the pattern unaided. Megrez is bright enough to seek without a telescope; magnification is not necessary to appreciate its place in the figure.\n\nGive your eyes several minutes to adapt to the dark, and avoid staring at a bright phone screen while you search. A dim red light can preserve night vision if you need a chart. The Big Dipper is a useful guide in the northern sky, especially on spring evenings, when it stands high for many northern observers. From farther south, it may sit low or be partly hidden by the horizon.\n\nOnce you have found Megrez, compare it with the brighter stars nearby. The dipper\u2019s familiar geometry comes from stars at very different distances, aligned by chance from our viewpoint. Megrez is one point in that perspective drawing\u2014and, through its slow proper motion, a reminder that the picture changes.\n\nThe next clear night, find the hinge again. It will look almost exactly where you left it. Almost is the interesting part.\n\n**Source:** SIMBAD, Delta Ursae Majoris / HIP 59774: https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2059774",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2059774",
+            "overlap_terms": [
+              "celestial",
+              "ident",
+              "magnitude",
+              "major",
+              "motion",
+              "parallax",
+              "point",
+              "proper",
+              "search",
+              "shift",
+              "simbad",
+              "spectral"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}

@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2017851"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Pleione: A Flicker in the Pleiades\n\n*One of the cluster\u2019s faintest naked-eye stars is also a restless B-type star, wrapped in gas that leaves its mark on the light.*\n\nOn a clear autumn evening, the Pleiades rise like a small handful of stars spilled across the sky. Look closely at the cluster\u2019s tight gathering, and you\u2019ll find Pleione, the dimmer companion to Atlas in the close pair at one edge of the famous Seven Sisters. It is not the brightest point in the group. Its appeal is subtler: this modest-looking star is a Be star, a hot, fast-spinning object whose surroundings can change.\n\nCatalogued as 28 Tauri, Pleione has the spectral classification B8Vne. In that notation, \u201cB8\u201d identifies a hot, blue-white star, \u201cV\u201d indicates a main-sequence star, and \u201ce\u201d marks emission features in its spectrum. The \u201cn\u201d signals broadened spectral lines, often associated with rapid rotation. SIMBAD also lists Pleione as a Be star. Be stars are understood to have gas around them, forming a disk that can produce emission lines and vary over time. The catalogue gives Pleione a visual magnitude near 5.1 and a parallax of 7.24 milliarcseconds\u2014values that place it at roughly 450 light-years away. [SIMBAD: Pleione (HIP 17851)](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2017851)\n\nThat variability gives Pleione a second life beyond the familiar outline of the Pleiades. The cluster is a reliable winter landmark for observers in the Northern Hemisphere; Pleione is a reminder that stars are not always fixed, unchanging pinpricks. Its changing gaseous environment can affect the light we receive, though the shifts are not something a casual glance will reveal. Watching Pleione is less about catching a dramatic flicker in real time than about learning to recognize a star whose physical story is still being written.\n\nFor a first look, find the Pleiades in the east on autumn evenings, or high overhead later in the season. From a dark site, the cluster is visible to the unaided eye as a compact knot. Pleione is near Atlas, and the two can appear almost blended without optical aid. Give your eyes several minutes to adapt to the dark, then scan the group with averted vision: looking slightly to the side of a faint star can make it easier to see.\n\nBinoculars offer the best balance of brightness and context. They separate the cluster\u2019s stars while keeping the Pleiades\u2019 distinctive pattern in view. A low-power telescope can show more stars, but avoid high magnification if you want to appreciate the cluster as a whole. Pleione is bright enough for small instruments, yet its close visual neighborhood makes it more rewarding to observe as part of the group than as an isolated target.\n\nIf you sketch or photograph the Pleiades, note Pleione\u2019s position and return to it on another night. The changes in its surrounding gas unfold on timescales and in wavelengths that require careful measurement, not just backyard eyesight. Still, every time you find that faint point beside Atlas, you\u2019re looking at a star with an active environment\u2014a quiet reminder that even the most familiar",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2017851",
+            "overlap_terms": [
+              "around",
+              "catalogue",
+              "ident",
+              "magnitude",
+              "measurement",
+              "object",
+              "optical",
+              "parallax",
+              "point",
+              "position",
+              "simbad",
+              "spectral"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}

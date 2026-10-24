@@ -1,0 +1,75 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2037279"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Procyon, the Winter Star That Won\u2019t Sit Still\n\n*Look for the bright beacon beside Orion, and you\u2019ll find a nearby star whose motion and spectrum reveal a more complicated story than the naked eye can see.*\n\nOn a clear winter evening, Procyon rises with the familiar company of Orion and Sirius. Its name means \u201cbefore the dog,\u201d a reference to its rising ahead of Sirius, the Dog Star. To the unaided eye, Procyon is a steady, pale point of light. In the measurements gathered by astronomers, though, it is a nearby star moving across the sky and a system whose spectrum gives away its binary nature.\n\nProcyon lies in Canis Minor, the Little Dog. Its position\u2014right ascension 7 hours 39 minutes, declination about 5 degrees north\u2014places it not far from Orion\u2019s bright stars. A parallax measured at 284.56 milliarcseconds puts it roughly 11.5 light-years from Earth. Parallax is the apparent shift of a nearby star against the more distant background as Earth travels around the Sun; the larger the shift, the closer the star. The SIMBAD astronomical database lists both Procyon\u2019s coordinates and parallax. [SIMBAD: Procyon (HIP 37279)](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2037279)\n\nThat nearness makes Procyon a useful reminder that the sky is not a fixed pattern. Its catalogued proper motion\u2014its slow drift against the background stars\u2014is substantial: about 715 milliarcseconds a year in right ascension and 1,037 in declination, with the signs indicating its direction. The change is far too small to notice during a night of observing, but it accumulates over generations. The constellations are patterns we inherit, not permanent arrangements.\n\nThe same database classifies Procyon as a spectroscopic binary: two stars whose orbital motion is detected through changes in their spectra. It lists the visible star\u2019s classification as F5 IV\u2013V, a type associated with a yellow-white star between the main-sequence and subgiant luminosity classes. A telescope may sharpen the view, but it cannot turn this system into two widely separated points; the binary clue comes from careful measurement of starlight, not from a casual glance.\n\nFor a simple winter observing session, start with Orion. Find the three stars of its belt, then look around the nearby bright stars to trace the broad Winter Triangle: Betelgeuse in Orion, Sirius below, and Procyon completing the shape. From northern mid-latitudes, Procyon is well placed on winter evenings; it appears in the southeast and climbs higher as the night goes on. Its apparent visual magnitude, listed by SIMBAD as 0.37, makes it easy to pick out from a moderately dark site, though city lights can wash out fainter stars nearby.\n\nGive your eyes a few minutes to adapt, then compare Procyon\u2019s color with the other bright stars in the triangle. Colors can be subtle and affected by the atmosphere, especially when a star is low. Binoculars will show the surrounding star field, while the naked-eye view is enough to locate the star and appreciate its brightness. If you\u2019re using a phone app, check that it is set to your location",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2037279",
+            "overlap_terms": [
+              "around",
+              "ascension",
+              "before",
+              "binary",
+              "coordinates",
+              "database",
+              "declination",
+              "degrees",
+              "ident",
+              "listed",
+              "luminosity",
+              "magnitude"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [
+      {
+        "quoted_text": "before the dog,",
+        "source_matches": [],
+        "exact_text_confirmed": false
+      }
+    ],
+    "all_quoted_passages_confirmed": false,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}

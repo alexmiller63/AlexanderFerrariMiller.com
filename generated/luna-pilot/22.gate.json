@@ -1,0 +1,75 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2020455"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Secunda Hyadum: A Quiet Light in the Bull\n\n*In Taurus\u2019s familiar V, this modest-looking star carries a giant\u2019s scale\u2014and a companion revealed not by sight, but by the changing pattern of its light.*\n\nOn a clear evening, Secunda Hyadum waits in the V-shaped face of Taurus, a steady point among the stars of the Hyades. Its name means \u201csecond of the Hyades,\u201d but the star does not announce itself with the brilliance of nearby Aldebaran. Instead, it rewards a slower look: first at the shape of the Bull\u2019s face, then at the modest star tucked into its pattern.\n\nThe catalogue designation is Delta Tauri. SIMBAD identifies it as a spectroscopic binary: a system whose two stars are detected through the way their motions shift the lines in the combined starlight, not as a pair readily split by the eye. The catalogue gives the visible star a spectral classification of G9.5 III, a giant star, and a visual magnitude of 3.76. That magnitude makes it an easy naked-eye target under reasonably dark skies, though moonlight or urban glare can thin out the fainter members of the Hyades. [SIMBAD: HIP 20455](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2020455)\n\nA giant star has moved beyond the long, stable phase in which it fuses hydrogen in its core. Its outer layers have expanded, making the star larger and more luminous than a main-sequence star with a similar surface temperature. The \u201cG9.5\u201d part of the classification places it near the cool end of the G-star range; \u201cIII\u201d marks its giant luminosity class. The catalogue\u2019s classification is a compact description, not a portrait of the system\u2019s entire history.\n\nDistance offers another way to imagine its scale. SIMBAD reports a parallax of 20.3092 milliarcseconds. Parallax is the apparent shift of a nearby star against the distant background as Earth changes position in its orbit. Turning that value around gives a distance of roughly 49 parsecs, or about 160 light-years. The light arriving tonight began its journey when, on Earth, the first years of the 19th century were unfolding. That is a calculated estimate from the catalogue\u2019s parallax, not a direct measurement in light-years.\n\nFor observing, start with the broad outline of Taurus. Find Orion\u2019s bright belt and follow its line toward the orange glow of Aldebaran; nearby, the Hyades form a loose, open V. Binoculars are especially satisfying here, because they gather many of the cluster\u2019s stars into one view while preserving the pattern. Secunda Hyadum is one of the brighter points in that region. A small telescope can sharpen its color and the surrounding star field, but it will not ordinarily reveal the spectroscopic companion as a separate dot: its presence is inferred from spectral changes over time.\n\nGive your eyes several minutes to adapt, and try the view first without magnification. Then sweep the Hyades with binoculars, moving slowly so the star group has room to emerge. The cluster\u2019s informal shape is the attraction; Secunda Hyadum is a useful anchor within it. Its light looks calm, but its spectrum tells a more active story\u2014a giant star in a binary system, measured through tiny shifts that the unaided eye cannot see.\n\n**Source:** [SIMBAD Astronomical Database, HIP 20455](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2020455)",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2020455",
+            "overlap_terms": [
+              "around",
+              "binary",
+              "catalogue",
+              "class",
+              "database",
+              "ident",
+              "luminosity",
+              "magnitude",
+              "measurement",
+              "motions",
+              "parallax",
+              "point"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [
+      {
+        "quoted_text": "second of the Hyades,",
+        "source_matches": [],
+        "exact_text_confirmed": false
+      }
+    ],
+    "all_quoted_passages_confirmed": false,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}

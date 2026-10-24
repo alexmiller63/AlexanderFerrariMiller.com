@@ -1,0 +1,75 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2026221"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Theta Orionis: The Spark Inside Orion\u2019s Sword\n\n*At the heart of the Orion Nebula, one blue-white star hints at a system too tight for backyard telescopes to split.*\n\nOn a winter evening, Orion rises like a familiar signpost: three stars in a row for the Belt, and below them a short, hazy line for the Sword. Aim binoculars toward the blur at the Sword\u2019s center. It is not a single star but the bright heart of the Orion Nebula, a cloud of gas and dust where stars are forming. In a small telescope, the cloud\u2019s center breaks into a close knot of starlight.\n\nThere, among the Trapezium\u2019s bright points, is Theta\u00b9 Orionis C\u2014the star most often meant when observers speak of Theta Orionis. Its catalog identity is less poetic: SIMBAD lists HIP 26221 as \u201ctet01 Ori C,\u201d a spectroscopic binary, and gives it the spectral type O7Vp and a visual magnitude of 5.13. [SIMBAD\u2019s record](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2026221) places it at the nebula\u2019s coordinates.\n\nThe \u201cO\u201d in O7 marks an exceptionally hot kind of star. Theta\u00b9 Orionis C pours out energetic ultraviolet light, helping make the surrounding gas glow. The visible nebula is therefore both a stellar nursery and a scene lit by young stars already powerful enough to shape their surroundings. C is itself a binary: its paired stars orbit so closely that their motion is detected through changes in the spectrum of their light, not by separating them in an ordinary backyard view.\n\nThat contrast makes the Trapezium a rewarding target. Through binoculars, the nebula appears as a soft glow; a telescope reveals the central stars as tiny, steady sparks set against a faint wash of light. The eye may pick out several members of the Trapezium, depending on aperture, sky darkness, and steadiness of the air. Theta\u00b9 Orionis C, however, is not a pair to tease apart with typical amateur equipment. Its close companionship is a fact learned from careful measurement, not a visual split waiting for higher magnification.\n\nTo find the scene, look for Orion after dusk during the Northern Hemisphere\u2019s winter months. Follow the Belt downward to the Sword, then sweep slowly across its middle. A star chart or astronomy app can help distinguish the Trapezium from the surrounding field. Start at low magnification: the nebula is large and delicate, and too much power can make it harder to take in. If the sky is bright with moonlight or city glow, the stars should still be findable, though the nebula\u2019s faint outer haze will be subdued. Give your eyes time to adjust, and let the view settle before increasing magnification.\n\nTheta Orionis rewards more than a quick glance. The small star at the nebula\u2019s center is simultaneously a point of light, a member of a multiple-star gathering, and a source of energy for the cloud around it. Its hidden companion leaves no obvious mark in the eyepiece. Yet knowing it is there changes the view: the Trapezium is not merely a pattern of stars, but a dynamic system whose most brilliant spark carries a close orbit in its light.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2026221",
+            "overlap_terms": [
+              "around",
+              "before",
+              "binary",
+              "catalog",
+              "coordinates",
+              "ident",
+              "increasing",
+              "inside",
+              "magnitude",
+              "measurement",
+              "motion",
+              "point"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [
+      {
+        "quoted_text": "tet01 Ori C,",
+        "source_matches": [],
+        "exact_text_confirmed": false
+      }
+    ],
+    "all_quoted_passages_confirmed": false,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}

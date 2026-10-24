@@ -1,0 +1,69 @@
+{
+  "screen_passed": false,
+  "checks": {
+    "research_present": true,
+    "draft_length": false,
+    "title_present": true,
+    "source_citation": false,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": false,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": false,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": false
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 0,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2077055"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Zeta Ursae Minoris: A Quiet Marker in the Little Dipper\n\n*An unassuming point of light offers a reminder that a star catalogue is both a guide to measurement and a record of what remains unknown.*\n\nA star can be familiar by name and still be little more than a point of light to the eye. Zeta Ursae Minoris is identified in the SIMBAD database by the shortened designation \u201czet UMi\u201d and classified there as a variable star. The entry offers numbers and labels that sharpen its identity\u2014but also shows how much a brief catalogue description leaves unsaid.\n\nSIMBAD lists a V-band magnitude of 4.274, with an uncertainty of 0.009. It also gives a B-band magnitude of 4.316 and a Gaia G-band magnitude of 4.267973. These are measurements in different photometric bands, not three different stars or three descriptions of how the star changes over time. The entry does not specify the range or timing of any variability. Its classification tells us that variability is associated with the star; it does not tell us what an observer should expect to see.\n\nThe same distinction applies to distance. SIMBAD reports a parallax of 9.0827 milliarcseconds, with an uncertainty of 0.1422 milliarcseconds. Parallax is the apparent shift of a nearby star against more distant background stars as Earth moves around the Sun. Taking the reciprocal of the listed parallax, with the appropriate unit conversion, gives an estimated distance of about 110 parsecs, or roughly 360 light-years. That is a calculation from the catalogue measurement, not a direct measurement of the journey from Earth to the star.\n\nThe entry also records a spectral type, A3Vn. It is a compact classification, but the letters alone do not provide a full account of the star\u2019s physical properties. SIMBAD supplies the code; the database extract does not explain what the star\u2019s light does over time or provide a detailed interpretation of the classification.\n\nInstead, the record is precise in other ways. It lists the star\u2019s J2000 coordinates as right ascension 15 hours, 44 minutes, 3.519 seconds and declination +77 degrees, 47 minutes, 40.175 seconds. It gives a proper motion of 19.906 milliarcseconds per year in right ascension, adjusted by the cosine of declination, and \u22122.072 milliarcseconds per year in declination. The radial velocity is listed as \u221213.10 kilometres per second, with an uncertainty of 4.1 kilometres per second. Each value describes a different aspect of the star\u2019s position or motion; none, by itself, is a complete portrait.\n\nThat makes Zeta Ursae Minoris a useful example of how to read a catalogue. A designation identifies a target. A magnitude records measured brightness in a named band",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2077055",
+            "overlap_terms": [
+              "around",
+              "ascension",
+              "catalogue",
+              "coordinates",
+              "database",
+              "declination",
+              "degrees",
+              "extract",
+              "listed",
+              "magnitude",
+              "measurement",
+              "motion"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}

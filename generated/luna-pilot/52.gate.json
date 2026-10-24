@@ -1,0 +1,75 @@
+{
+  "screen_passed": false,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": false,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2059747"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Delta Crucis: A Pulsating Variable in the Catalogues\n\nDelta Crucis, also identified as del Cru and HIP 59747, has a concise but intriguing catalogue description: \u201cPulsating Variable.\u201d The label points to a kind of stellar variability, but the basic entry from SIMBAD does not give a pulsation period or a range of changing brightness. It identifies the star; it does not, by itself, tell an observer how its light changes over time.\n\nThat distinction matters. A variability classification is not a promise that a star will visibly flicker during a night of watching. For Delta Crucis, the available SIMBAD record offers no schedule for changes or estimate of how large they are. Its listed visual magnitude is 2.752, a measurement of its apparent brightness from Earth. That single value is useful for identifying how bright the star appears in the catalogue, but it cannot show whether, or by how much, the brightness varies.\n\nSIMBAD also records a spectral type of B2IV. In that system, \u201cB2\u201d is the spectral classification, while \u201cIV\u201d denotes the luminosity class. The entry provides a classification, not a detailed account of the star\u2019s physical structure. Its listed spectral-type reference dates to 1975, a reminder that catalogue pages bring together measurements and classifications drawn from different sources rather than one simultaneous observing campaign.\n\nDistance is another quantity that can be estimated from the record. SIMBAD lists a parallax of 7.1681 milliarcseconds, with a stated uncertainty of 0.7145 milliarcseconds. Parallax is the apparent shift in a nearby star\u2019s position used to estimate its distance. Taking the listed value at face value gives a distance of about 140 parsecs, or roughly 455 light-years. That is an estimate, not an exact address: the catalogue also reports uncertainty in the parallax, which carries through to the distance.\n\nThe entry supplies a position as well as measurements of motion. Its J2000 coordinates are right ascension 12 hours, 15 minutes and 8.718 seconds, and declination minus 58 degrees, 44 minutes and 56.127 seconds. SIMBAD lists proper motion of about 36.951 milliarcseconds per year westward in right ascension and 11.296 milliarcseconds per year southward in declination. It also gives a radial velocity of 22.2 kilometres per second. Proper motion describes a star\u2019s change of position across the sky; radial velocity records motion along the line of sight. Together, these figures describe different components of motion, not a simple prediction of where the star will appear on a particular date.\n\nThe catalogue\u2019s photometry includes a visual-band entry of 2.752, with an uncertainty of 0.009, as well as measurements in other bands. Such entries help build a fuller record than a single brightness number, but they do not replace a time series showing how brightness changes. For that, the pulsation label is a starting point, not a complete account.\n\nDelta Crucis is therefore more than a name attached to a point of light, but the catalogue leaves important questions open. It identifies the star as a pulsating variable and gathers its position, brightness, classification, distance indicator and motion. To learn the rhythm or visible extent of its pulsations, one would need measurements that follow its light over time.\n\n*Source: [SIMBAD entry for HIP 59747](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2059747).*",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2059747",
+            "overlap_terms": [
+              "ascension",
+              "basic",
+              "catalogue",
+              "catalogues",
+              "class",
+              "coordinates",
+              "declination",
+              "degrees",
+              "ident",
+              "listed",
+              "luminosity",
+              "magnitude"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [
+      {
+        "quoted_text": "Pulsating Variable.",
+        "source_matches": [],
+        "exact_text_confirmed": false
+      }
+    ],
+    "all_quoted_passages_confirmed": false,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}

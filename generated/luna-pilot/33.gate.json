@@ -1,0 +1,75 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2026727"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Alnitak: Orion\u2019s Belt, with More Than One Star\n\n*At the eastern end of the Hunter\u2019s famous three-star line, a brilliant point of light hides a complicated system\u2014and offers an easy winter target.*\n\nOn a clear evening, Orion\u2019s Belt seems almost too orderly: three bright stars, evenly spaced, crossing the hunter\u2019s waist. At the eastern end is Alnitak, a blue-white beacon whose name belongs to a system of stars, not just the single point your eyes can see.\n\nThe catalogue entry for Alnitak, also known as Zeta Orionis, classifies it as a \u201cdouble or multiple star.\u201d Its listed spectral type, O9.7Ib+B0III, hints at the system\u2019s contrasting stellar characters: an extremely hot O-type star and a B-type companion. The Roman numerals describe luminosity classes\u2014Ib for a luminous supergiant, III for a giant. These stars are far more massive and energetic than the Sun. Their light blends together at ordinary viewing distance, making Alnitak appear to the unaided eye as one brilliant star. [SIMBAD\u2019s Alnitak entry](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2026727) gives a visual magnitude of 1.77 and identifies the system as multiple.\n\nThat blend is part of the star\u2019s appeal. A familiar pattern in the sky becomes a reminder that what looks like a single point may contain more than one stellar source. Alnitak\u2019s catalogue coordinates place it in Orion, among the winter sky\u2019s most recognizable stars. The belt is a convenient starting line: trace its three bright points and find Alnitak at one end. (The belt\u2019s orientation changes as Orion moves across the sky.)\n\n**How to observe:** From mid-northern latitudes, look for Orion on winter evenings. The constellation is prominent in the southern sky; from the Southern Hemisphere, Orion is a summer constellation. Give your eyes a few minutes to adjust, then locate the belt before picking out Alnitak. It is bright enough to see without optical aid, even from many suburban locations. Binoculars will frame the star and its surroundings, but they won\u2019t necessarily reveal the system\u2019s individual members. A telescope can make the view more intimate; whether it separates components depends on the instrument, conditions and the particular pair being observed. Don\u2019t be disappointed if Alnitak remains a single point.\n\nFor a simple observing exercise, compare Alnitak\u2019s color with the other two belt stars. Color judgments can be subtle and affected by eyesight, atmosphere and nearby bright lights, but the contrast offers a way to slow down and look carefully. Try again on a different night, when the star is higher above the horizon and the air is steadier.\n\nThe next time you find Orion, let the belt be more than a signpost. At its eastern end, Alnitak carries a small lesson in scale: even a familiar point of light can be a crowded stellar address.\n\n**Source:** [SIMBAD: Alnitak / HIP 26727](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2026727)",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2026727",
+            "overlap_terms": [
+              "before",
+              "catalogue",
+              "coordinates",
+              "depends",
+              "double",
+              "frame",
+              "ident",
+              "known",
+              "listed",
+              "luminosity",
+              "magnitude",
+              "multiple"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [
+      {
+        "quoted_text": "double or multiple star.",
+        "source_matches": [],
+        "exact_text_confirmed": false
+      }
+    ],
+    "all_quoted_passages_confirmed": false,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}

@@ -1,0 +1,77 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2054061"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Dubhe: The Dipper\u2019s Bright Watcher\n\n*At the edge of the Big Dipper\u2019s bowl, a golden giant shines as a single point of light\u2014though its spectrum tells a more complicated story.*\n\nOn a clear evening, the Big Dipper may seem less like a constellation than a familiar tool: a bowl with a long handle, lifted against the dark. At one outer corner of that bowl shines Dubhe, its brightest star. The name is easy to miss in the familiar pattern, but the star itself is not. It is a steady, bright marker in the northern sky\u2014and, to astronomers, a system more intricate than the naked eye can reveal.\n\nDubhe is catalogued as Alpha Ursae Majoris and identified as a spectroscopic binary. SIMBAD lists its combined visual magnitude as 1.79, bright enough to see without binoculars under ordinary dark-sky conditions. Its measured parallax is 26.54 milliarcseconds, corresponding to a distance of about 123 light-years. The same database gives the system\u2019s spectral classification as G9III+A7.5: a G-type giant paired with a hotter A-type star. [SIMBAD: Dubhe / HIP 54061](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2054061)\n\n\u201cSpectroscopic\u201d describes how the partnership is detected. The stars are too close together to appear as separate points in ordinary viewing, but their motion leaves evidence in the light they emit. As the stars orbit, spectral lines shift, revealing a companion hidden inside what looks like one bright star. Through binoculars or a small telescope, you should still expect to see a single point\u2014not a neatly split pair.\n\nThat single point has a useful place in the sky. Find the Big Dipper, part of Ursa Major, and look at the two stars on the side of the bowl opposite the handle. Dubhe is the one farther from the handle; its neighbor, Merak, completes the famous pair that points toward Polaris. Follow the line from Merak through Dubhe and continue roughly five times the distance between them to find the North Star.\n\nFor northern observers, the Dipper\u2019s position changes through the night and across the seasons, circling Polaris like a slowly turning signpost. In spring evenings it rides high; in autumn it tends to sit lower in the north. The exact view depends on your latitude, horizon and local light pollution. Give your eyes several minutes to adjust, then look for the bowl\u2019s outline before tracing the pointer stars. Binoculars can help pick out the surrounding star field, but Dubhe is bright enough to locate with the unaided eye.\n\nA good observing challenge is to compare what you see with what instruments have found. The eye reports one golden-white spark. The catalogue reports a giant star, a stellar companion, a measured distance and a classification encoded in letters and numerals. Neither view cancels the other. One gives you the pattern that generations of skywatchers have used to navigate; the other uncovers a hidden orbit inside the pattern.\n\nLet the Dipper turn overhead, and Dubhe keeps its place at the bowl\u2019s rim. Its light reaches us as a point, but the story carried in that light is a system in motion.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2054061",
+            "overlap_terms": [
+              "before",
+              "binary",
+              "catalogue",
+              "corresponding",
+              "database",
+              "depends",
+              "ident",
+              "inside",
+              "magnitude",
+              "major",
+              "motion",
+              "north"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [
+      {
+        "quoted_text": "Spectroscopic",
+        "source_matches": [
+          "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2054061"
+        ],
+        "exact_text_confirmed": true
+      }
+    ],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}

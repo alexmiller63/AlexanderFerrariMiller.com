@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2071683"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Rigil Kentaurus: A Nearby Sun with a Long Reach\n\n*The bright southern star barely shifts from night to night\u2014but against the distant background, it is racing across the sky.*\n\nOn a clear autumn evening in the Southern Hemisphere, Rigil Kentaurus burns in Centaurus like a steady pinprick. To the unaided eye it is a single bright star. Yet its light has crossed a modest cosmic gulf, and the star itself is moving fast enough that patient measurements reveal its progress across the sky.\n\nAstronomers catalog the star as Alpha Centauri A, or HIP 71683. SIMBAD lists it as a G2V star: a main-sequence star whose spectral type is similar to the Sun\u2019s. Its visual magnitude is about 0.01, making it one of the sky\u2019s brightest stars. The database gives a parallax of 742.12 milliarcseconds. Turning that angle into distance places it roughly 4.4 light-years away. (The distance is calculated from the listed parallax.) [SIMBAD: HIP 71683](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2071683)\n\nThe star\u2019s apparent stillness is a trick of scale. SIMBAD records its proper motion\u2014the change in its position against the background sky\u2014as about 3.68 arcseconds per year in right ascension and 0.47 arcseconds per year in declination. Together, those components amount to roughly 3.7 arcseconds yearly. That is far too small to notice over a casual observing session, but over centuries it adds up. Rigil Kentaurus is not fixed to a celestial sphere; it is a nearby star moving through space, and its proximity makes that motion easier to measure.\n\nIts spectrum and brightness offer another point of connection. The G2V classification places Alpha Centauri A in the same broad stellar category as the Sun, but it does not make the two stars identical. A spectral type is a useful description of a star\u2019s light and temperature class, not a promise that its surface or surroundings match our own star\u2019s. Through a backyard telescope, the observer still sees a brilliant point, not a resolved stellar disk.\n\nFor a good look, start with the sky rather than the equipment. Rigil Kentaurus lies at declination \u221260\u00b050\u2032, so it is best placed for observers south of the equator. From many southern locations, Centaurus is prominent on May evenings; choose a dark site and let your eyes adjust before tracing the constellation. The star is bright enough to find without optical aid. Binoculars can help pick it out among nearby stars, but a clear horizon matters more than magnification.\n\nObservers in the Northern Hemisphere face a geometric limit: with that far-southern declination, Alpha Centauri A rises above the horizon only south of about 29\u00b0 north latitude. Even there, it stays low for much of the night, where haze, buildings and trees can steal its light. Find an unobstructed southern horizon and watch when the star is highest.\n\nThen consider the contrast: a light arriving from just over four light-years away, and a star whose tiny annual displacement records its journey. The sky offers no visible motion in the moment. The almanac\u2014and the patient observer\u2014make the motion legible.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2071683",
+            "overlap_terms": [
+              "angle",
+              "ascension",
+              "before",
+              "catalog",
+              "celestial",
+              "class",
+              "database",
+              "declination",
+              "ident",
+              "limit",
+              "listed",
+              "magnitude"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}

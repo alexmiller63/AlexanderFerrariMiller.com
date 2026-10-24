@@ -1,0 +1,69 @@
+{
+  "screen_passed": false,
+  "checks": {
+    "research_present": true,
+    "draft_length": false,
+    "title_present": false,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2045556"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Iota Carinae: A Measured Light in the Southern Sky\n\n*Catalogued as Iota Carinae, this bright star can be described through a handful of measurements: its position, apparent brightness, spectrum and motion.*\n\nA star does not need a long story in its catalogue to be worth finding. Iota Carinae\u2014listed by SIMBAD as \u201ciot Car\u201d\u2014is a star in the southern sky, at a declination of about 59 degrees south. Its listed visual magnitude is 2.26, bright enough to make it a naked-eye object under suitable viewing conditions. The number describes how bright it appears from Earth; it does not, on its own, tell us how much light the star produces intrinsically. [SIMBAD: Iota Carinae](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2045556)\n\nFor locating it on a chart, SIMBAD gives its J2000 position as right ascension 9 hours, 17 minutes, 5.4 seconds and declination \u221259 degrees, 16 minutes, 31 seconds. These coordinates are a precise address in the sky, rather than a description of the star\u2019s appearance. The catalogue also lists a parallax of 4.26 milliarcseconds, with an uncertainty of 0.10 milliarcseconds. Converting that parallax into a distance gives an estimate of roughly 235 parsecs, or about 765 light-years. The distance is therefore an inference from the measured parallax, not a direct measurement in light-years.\n\nSIMBAD records the star\u2019s spectral type as A7 Ib. This compact classification carries more information than a simple color label: \u201cA7\u201d is the spectral subclass, while \u201cIb\u201d is the luminosity class. The designation places the star among the bright supergiants. It is a catalogue classification, not a complete account of the star\u2019s structure or history, and the entry does not provide a narrative of how it formed or how it will change.\n\nThe brightness figures vary with the filter used to observe the star. SIMBAD lists magnitudes of 2.60 in U, 2.44 in B, 2.26 in V and 2.02 in R, as well as values in other bands. These measurements are not competing answers to one question: each records the",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2045556",
+            "overlap_terms": [
+              "ascension",
+              "catalogue",
+              "class",
+              "coordinates",
+              "declination",
+              "degrees",
+              "filter",
+              "ident",
+              "listed",
+              "luminosity",
+              "magnitude",
+              "magnitudes"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}

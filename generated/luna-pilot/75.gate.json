@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2081833"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Eta Herculis: A Steady Light in the Keystone\n\n*An unassuming naked-eye star marks a corner of Hercules\u2014and rewards a closer look at the constellations we think we know.*\n\nThe first thing to find is not Eta Herculis, but a shape: the Keystone, Hercules\u2019 broad, lopsided quadrilateral. On a clear summer evening, give your eyes a few minutes to adjust and trace its four corners. At the northwest corner, a modest star waits. That is Eta Herculis: no blazing beacon, no showpiece, just a steady point of light that has been part of the sky\u2019s familiar pattern for generations.\n\nThe star\u2019s quietness is part of its appeal. SIMBAD lists Eta Herculis at visual magnitude 3.50, bright enough to see without optical aid under a reasonably dark sky, though city lights can make it harder to pick out. The same database gives it a spectral type of G7 III. The \u201cIII\u201d identifies a giant star, a different stage of stellar life from our Sun\u2019s current main-sequence phase. Its measured parallax, 29.2595 milliarcseconds, puts it about 34 parsecs away\u2014roughly 112 light-years, using the simple distance relationship between parallax and distance. These are catalog numbers, but they lend the point of light a kind of scale: the star you see tonight sent its light on its way long before it reached your eyes.\n\nThere is another kind of patience in the data. Eta Herculis has a measured proper motion: its position shifts gradually against the more distant background of stars. The change is far too small to notice over a single observing session, or even over a human lifetime by eye. But compare careful measurements separated by years, and the sky\u2019s seeming stillness gives way to motion. A constellation is a useful map, not a permanent arrangement.\n\nFor a simple observing session, start with Hercules\u2019 Keystone and look for its northwest corner. If you are unsure of the pattern, use a printed sky chart or a planetarium app set to your location and the current time; the constellation\u2019s orientation changes as it crosses the sky. Find Eta first with unaided eyes, then turn binoculars toward it. The star should remain easy to locate, while the wider field gives you the pleasure of seeing its surroundings in context. A small telescope is not required to appreciate this target: its story is in recognizing where it sits and knowing what kind of star it is.\n\nChoose a place with as much open sky as possible, and avoid looking at bright phone screens while your eyes adapt. If the Keystone is difficult to see, begin from a darker site or wait for a clearer night. No special filter or elaborate equipment is needed. The best instrument here is time: a few quiet minutes to learn the shape, identify the corner, and notice how a familiar pattern can hold a less familiar life.\n\nEta Herculis does not demand attention. It offers something gentler: a way into Hercules, a practical first target for an evening under the stars, and a reminder that even an ordinary-looking point of light can be a distant giant moving through space.\n\n**Scientific source:** SIMBAD, HIP 81833 / Eta Herculis: https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2081833",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2081833",
+            "overlap_terms": [
+              "before",
+              "catalog",
+              "current",
+              "database",
+              "filter",
+              "ident",
+              "magnitude",
+              "motion",
+              "optical",
+              "orientation",
+              "parallax",
+              "point"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}

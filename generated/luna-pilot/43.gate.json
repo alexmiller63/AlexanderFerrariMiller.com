@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2048455"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Rasalas: A Lion\u2019s Head in Motion\n\n*An unassuming springtime star, Rasalas offers a bright point to find\u2014and a reminder that the sky is never quite still.*\n\nIn the dark, the lion\u2019s head is a question mark written in stars. Follow the curve of Leo\u2019s Sickle on a clear spring evening and you\u2019ll find Rasalas among the points outlining that celestial face. It doesn\u2019t blaze like Regulus, the lion\u2019s bright heart. Instead, it waits with a steadier, quieter light: a modest star with a surprisingly swift passage across the sky.\n\nRasalas is also known as Mu Leonis. Its position, at right ascension 9h 52m and declination +26\u00b0, places it in Leo, and its visual magnitude\u2014about 3.9\u2014makes it visible to the unaided eye from a reasonably dark site. The star\u2019s measured parallax, 26.1 milliarcseconds, puts it roughly 125 light-years away. These figures come from the SIMBAD astronomical database, which also classifies it as a K2 giant. (SIMBAD: https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2048455)\n\nThat classification is a clue to Rasalas\u2019s life story. K-type stars are cooler than the Sun\u2019s surface, giving them a warmer, yellow-orange hue. The \u201cIII\u201d in its spectral class marks it as a giant: a star that has moved beyond the long, stable phase of fusing hydrogen in its core. Its expanded atmosphere and evolved state are invisible to the naked eye. What we see is a single, sharp point, light that began its journey before the first telescopes were built.\n\nBut Rasalas is not fixed against the background stars. SIMBAD lists its proper motion as about 216 milliarcseconds per year in right ascension and 55 milliarcseconds per year in declination, in the directions given by the catalogue\u2019s coordinate convention. That motion is far too small to notice during an evening\u2019s observing. Over generations, however, it shifts the star\u2019s position against more distant stars\u2014a reminder that constellations are patterns, not permanent arrangements.\n\n**How to find it:** Look east in the evening during the Northern Hemisphere\u2019s spring, when Leo climbs high in the sky. First identify the Sickle, a backward-question-mark shape that forms the lion\u2019s head and mane. Rasalas is one of the stars in that head pattern. Give your eyes time to adjust, and scan from a location with an unobstructed view and little artificial light. If you\u2019re unsure of the pattern, use a planetarium app or a printed star chart; a pair of binoculars can help pick out the surrounding field, though Rasalas itself is bright enough to see without them.\n\nTry this small observing exercise: look at Rasalas, then shift your gaze to a nearby star in the Sickle. The two points may seem like neighbors, but the constellation only links them from our viewpoint. They lie at different distances and move through space on their own paths. The lion is a picture we draw across the depth of the galaxy; Rasalas is a real, aging star within it.\n\nThe next clear spring night, let the familiar outline become a little less familiar. A bright point in the lion\u2019s head can be both a wayfinder and a clock\u2014one that measures change not in minutes, but in centuries.\n\n**Sources:** SIMBAD, Mu Leonis (HIP 48455): https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2048455  \nStellarium Web sky map: https://stellarium-web.org/",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2048455",
+            "overlap_terms": [
+              "ascension",
+              "before",
+              "catalogue",
+              "celestial",
+              "class",
+              "coordinate",
+              "database",
+              "declination",
+              "given",
+              "ident",
+              "known",
+              "magnitude"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}

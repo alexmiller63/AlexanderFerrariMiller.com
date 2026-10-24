@@ -1,0 +1,80 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2069673"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Arcturus: Follow the Big Dipper\u2019s Handle to a Distant Giant\n\n*One of spring\u2019s brightest stars is a nearby red giant\u2014and it is slowly shifting its place in the sky.*\n\nOn a clear spring evening, let the curve of the Big Dipper\u2019s handle lead your eye outward. \u201cArc to Arcturus,\u201d the familiar guide goes: follow that long sweep and you\u2019ll arrive at a bright, warm-colored point in Bo\u00f6tes. Arcturus is easy to find, but its steady shine belongs to a star with a very different life from our Sun\u2019s.\n\nArcturus is classified as a K1.5 giant star, and the SIMBAD astronomical database identifies it as a red giant branch star. Its measured apparent visual magnitude is about \u20130.05, making it conspicuous to the unaided eye. SIMBAD lists its parallax as 88.83 milliarcseconds. Parallax is the apparent shift of a nearby star against more distant background stars as Earth travels around the Sun; converting that measurement gives a distance of roughly 37 light-years. [SIMBAD: Arcturus (HIP 69673)](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2069673)\n\n\u201cGiant\u201d describes a stage, not a sudden event. As a star like the Sun uses up the hydrogen fuel in its core, its structure changes and its outer layers expand. Arcturus\u2019s K-type classification indicates a cooler surface than the Sun\u2019s, which helps give the star its golden-orange impression. It is not a glowing ember in the ordinary sense: its color comes from the light it emits, filtered through the sensitivity of human vision and the atmosphere.\n\nThe star also has a quiet way of reminding us that the sky is not fixed. SIMBAD records Arcturus\u2019s proper motion\u2014the apparent drift across the sky\u2014as about 1,093 milliarcseconds per year in right ascension and 2,000 in declination. Together, that is a little over two arcseconds annually. The shift is far too small to notice in a night\u2019s observing, but over centuries it changes Arcturus\u2019s position relative to the more distant stars around it. The database also lists a heliocentric radial velocity of about \u20135.2 kilometres per second: motion along our line of sight, distinct from its sideways drift. [SIMBAD data](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2069673)\n\n**How to observe:** In the Northern Hemisphere, look for Arcturus on spring evenings, when Bo\u00f6tes climbs into view. First find the Big Dipper high in the northern sky. Trace the handle\u2019s curve away from the bowl until you reach the bright star at the end of the arc. That\u2019s Arcturus. Continue the curve onward and you can use the traditional \u201cspeed on to Spica\u201d guide to locate another bright star. If you\u2019re unsure, a planisphere or a sky-map app can help confirm the pattern for your date and location.\n\nNo telescope is needed. From a reasonably dark spot, Arcturus is bright enough to stand out even when city lights wash out fainter stars. Give your eyes a few minutes to adjust, then compare its hue with nearby stars: color judgments can be subtle, especially when a star is low and its light passes through more atmosphere. A steady view and a clear horizon help.\n\nThe reward is a simple one: a familiar point of light, easy to find, with a measurable motion and a history written in its spectrum. Follow the Dipper\u2019s handle, and you\u2019re not just locating a star. You\u2019re finding a nearby giant whose slow journey continues whether or not anyone is watching.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2069673",
+            "overlap_terms": [
+              "around",
+              "ascension",
+              "branch",
+              "database",
+              "declination",
+              "event",
+              "giant",
+              "heliocentric",
+              "ident",
+              "magnitude",
+              "measurement",
+              "motion"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [
+      {
+        "quoted_text": "Arc to Arcturus,",
+        "source_matches": [],
+        "exact_text_confirmed": false
+      },
+      {
+        "quoted_text": "speed on to Spica",
+        "source_matches": [],
+        "exact_text_confirmed": false
+      }
+    ],
+    "all_quoted_passages_confirmed": false,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}

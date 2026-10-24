@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2037826"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Pollux: The Steady Light of the Twin\n\n*An easy winter-evening target, Gemini\u2019s bright star is also a giant with a quiet, measurable journey across the sky.*\n\nOn a clear winter evening, look for two bright stars standing together in Gemini. Pollux is the brighter of the pair, with Castor nearby; their names recall the twin brothers of Greek myth. The star\u2019s familiar appearance is a point of warm light, but its catalog record tells a story of scale, age and motion. SIMBAD identifies Pollux as HIP 37826, or Beta Geminorum, and lists it at visual magnitude 1.14\u2014bright enough to find without binoculars. ([SIMBAD](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2037826))\n\nPollux is classified K0IIIb. The \u201cK\u201d marks a relatively cool, orange-toned star compared with the Sun; \u201cIII\u201d identifies it as a giant, while the \u201cb\u201d is a refinement of that luminosity class. In other words, Pollux is not a youthful star just beginning its life. It has expanded into a giant, a later stage in stellar evolution. The classification is a scientific shorthand, but it also helps explain the star\u2019s distinctive color: to many observers it appears golden or orange, especially when low in the sky, where Earth\u2019s atmosphere can tint bright stars.\n\nIts distance can be estimated from parallax\u2014the tiny apparent shift in a star\u2019s position as Earth moves around the Sun. SIMBAD gives Pollux a parallax of 96.54 milliarcseconds. Inverting that measurement puts the star about 10.4 parsecs away, or roughly 34 light-years. That is close enough, by stellar standards, for Pollux to shine prominently in our night sky. ([SIMBAD](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2037826))\n\nPollux is not fixed against the background stars, either. Its listed proper motion is about 627 milliarcseconds per year in right ascension and 46 milliarcseconds per year in declination. The change is too small to notice from one night to the next, but over centuries it adds up. The star\u2019s light may seem like a pin holding Gemini in place; careful measurements show that the pin is moving.\n\n**When and how to look:** In the Northern Hemisphere, Gemini is a rewarding target on winter evenings. Find Orion\u2019s three-star belt first, then look higher and to the left (toward the northeast) for Gemini; the exact direction depends on your location and the time of night. Castor and Pollux form the constellation\u2019s conspicuous twin-star pair. Pollux is the brighter member, and its golden hue is easier to judge when it is high above the horizon, where atmospheric distortion is reduced.\n\nNo telescope is needed. Give your eyes a few minutes to adjust to the dark, then compare Pollux with Castor. Binoculars can bring out fainter stars nearby, but Pollux itself remains a single brilliant point to the unaided eye. If you return to it months or years later, the view will look much the same. The measurements behind that calm appearance\u2014its giant-star classification, distance and motion\u2014make the simple act of looking upward a small encounter with stellar physics. ([SIMBAD: Pollux / HIP 37826](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2037826))",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2037826",
+            "overlap_terms": [
+              "around",
+              "ascension",
+              "catalog",
+              "class",
+              "declination",
+              "depends",
+              "ident",
+              "listed",
+              "luminosity",
+              "magnitude",
+              "measurement",
+              "motion"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}

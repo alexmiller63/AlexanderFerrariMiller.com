@@ -1,0 +1,77 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2020205"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Prima Hyadum: A Giant in the Winter Bull\n\n*The Hyades\u2019 familiar V-shaped pattern offers an easy route to this modestly bright star\u2014and a chance to look beyond its quiet point of light.*\n\nOn a clear winter evening, Taurus rises with the patience of an old story. Its stars gather into the broad V of the Hyades, and among them shines Prima Hyadum: Gamma Tauri, a star whose name makes it sound like a leading character. To the unaided eye it is a steady, unassuming point. Through a telescope, it remains a point\u2014but the numbers behind that light tell a richer tale.\n\nThe SIMBAD astronomical database identifies Prima Hyadum as HIP 20205, or Gamma Tauri, and classifies it as a double or multiple star. Its listed visual magnitude is 3.65, bright enough to see without optical aid under reasonably dark skies. SIMBAD gives its spectral type as G9.5 IIIab CN0.5: the G9.5 designation places it toward the cooler end of the G-star range, while luminosity class III identifies it as a giant. (The classification\u2019s additional \u201cCN0.5\u201d notation is part of the catalog entry; it need not be decoded to enjoy the view.) [SIMBAD: HIP 20205](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2020205)\n\nA star\u2019s apparent brightness is not the same as its intrinsic brightness. What we see depends on both how luminous the star is and how far away it lies. SIMBAD lists Prima Hyadum\u2019s parallax as 21.6645 milliarcseconds. Turning that angle into a distance gives roughly 46 parsecs, or about 151 light-years. The catalog also lists its coordinates for the J2000 sky: right ascension 4 hours 19 minutes 47.6 seconds, declination +15 degrees 37 minutes 39.5 seconds. These are useful fixed coordinates for a chart or planetarium app, even though Earth\u2019s changing position makes the star rise and set at different times through the year.\n\nThere is a small but important distinction between a catalog description and an observing promise. \u201cDouble or multiple\u201d means the object has been classified as such in astronomical records; it does not mean a backyard telescope will necessarily split it into separate stars. Start with the unaided-eye view, then sweep the Hyades with binoculars. Their wider field makes the surrounding pattern easier to appreciate. A telescope can show a tighter patch of sky, but don\u2019t expect the catalog label alone to guarantee a visible companion.\n\n**How to find it:** In the Northern Hemisphere, Taurus is a rewarding evening constellation in winter. Let your eyes adjust to the dark, find the Hyades\u2019 V-shaped grouping, and consult a current sky chart or planetarium app to pick out Gamma Tauri within it. On a bright, moonlit night or from a city, binoculars can help distinguish the surrounding stars. If you use a telescope, begin at low magnification; the goal is to keep the star and its neighborhood in view, not to chase a close-up that may leave the constellation\u2019s pattern behind.\n\nThen pause. A star listed at magnitude 3.65 can seem almost ordinary, especially beside brighter points nearby. But its measured parallax turns that tiny light into a distant giant, and its catalog entry connects a familiar winter shape to the careful work of stellar classification and measurement. Prima Hyadum asks for no dramatic equipment\u2014only a dark moment, a patient look, and the willingness to see a point of light as a place in space.\n\n**Source:** [SIMBAD entry for HIP 20205 / Gamma Tauri](https://simbad.cds.unistra.fr/simbad/sim-id",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2020205",
+            "overlap_terms": [
+              "angle",
+              "ascension",
+              "catalog",
+              "class",
+              "coordinates",
+              "current",
+              "database",
+              "declination",
+              "degrees",
+              "depends",
+              "double",
+              "ident"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [
+      {
+        "quoted_text": "Double or multiple",
+        "source_matches": [
+          "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2020205"
+        ],
+        "exact_text_confirmed": true
+      }
+    ],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}

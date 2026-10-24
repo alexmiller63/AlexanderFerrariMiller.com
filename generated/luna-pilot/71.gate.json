@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2079822"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Eta Ursae Minoris: A Quiet Wanderer in the Little Bear\n\n*Beyond the familiar shape of Ursa Minor, a modest point of light offers a reminder that even stars that look still are moving.*\n\nThe Little Dipper is easy to recognize in a dark sky, but not every star in the pattern draws the eye. Eta Ursae Minoris is one of its quieter members. In the SIMBAD astronomical database, it is also identified by its catalogue number, HIP 79822, and listed with a Gaia G-band magnitude of 4.847. That measurement is in Gaia\u2019s broad optical band, rather than a direct measure of how bright the star appears to every observer.\n\nSIMBAD classifies Eta Ursae Minoris as F5V. The label gives the star\u2019s spectral type and luminosity class; \u201cV\u201d denotes the main-sequence category. The database also reports a parallax of 33.419 milliarcseconds, with a stated uncertainty of 0.1103 milliarcseconds. Parallax is the tiny apparent shift in a nearby star\u2019s position as Earth changes location in its orbit. Taking the inverse of the reported parallax gives a distance of about 29.9 parsecs\u2014roughly 98 light-years. That distance is a calculation from the catalogue measurement, not a separate value listed in the entry.\n\nThe star\u2019s position changes, too. SIMBAD gives its proper motion as \u221277.647 milliarcseconds per year in right ascension, after accounting for declination, and +245.726 milliarcseconds per year in declination. Together, those components amount to about 0.258 arcseconds of apparent movement each year against more distant background stars. If that rate continued unchanged, the shift would add up to about 26 arcseconds over a century. That is a small angle in the sky, but it is measurable\u2014and a striking contrast with the fixed-looking points that make up familiar constellation patterns.\n\nThe signs of the two components indicate motion toward decreasing right ascension and increasing declination: broadly, westward and northward across the sky. This is motion as seen from Earth, not a complete map of the star\u2019s path through space. The catalogue separately lists a radial velocity of \u221211.00 kilometres per second, with an uncertainty of 0.9 kilometres per second. In the convention used for this measurement, the negative value indicates motion toward the Sun along the line of sight. Proper motion and radial velocity describe different components of movement; together they offer a more complete account than either one alone.\n\nThese figures come from measurements gathered and compiled for astronomical catalogues, not from a visible change an observer could notice during a single night. SIMBAD\u2019s entry associates the parallax and proper-motion values with the Gaia catalogue reference 2020yCat.1350....0G, and the radial-velocity value with 2018MNRAS.479.1332M. The [SIMBAD entry for HIP 79822](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2079822) provides the identifying data and linked references.\n\nEta Ursae Minoris may not demand attention in the way Polaris does. Its interest lies elsewhere: a measured distance, a catalogue classification, and a steady drift that becomes meaningful only across years. The constellation stays recognizable to us, but its stars are not pinned to the sky. Eta Ursae Minoris is a reminder that the familiar pattern is a view of moving objects, caught at one moment in their long",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2079822",
+            "overlap_terms": [
+              "angle",
+              "ascension",
+              "catalogue",
+              "catalogues",
+              "class",
+              "database",
+              "declination",
+              "ident",
+              "increasing",
+              "linked",
+              "listed",
+              "luminosity"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}

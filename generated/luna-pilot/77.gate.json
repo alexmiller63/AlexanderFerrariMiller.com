@@ -1,0 +1,68 @@
+{
+  "screen_passed": false,
+  "checks": {
+    "research_present": true,
+    "draft_length": false,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2082396"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Larawag: A Nearby K-Type Giant\n\nA star can look like a single point of light while carrying a surprisingly detailed record of its position, motion and physical classification. SIMBAD identifies HIP 82396 as Epsilon Scorpii, or \u201ceps Sco,\u201d and records it as a high-proper-motion star. Its catalogue measurements place it among the Sun\u2019s relatively close stellar neighbors: its parallax implies a distance of about 64 light-years. [SIMBAD: HIP 82396](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2082396)\n\nThe parallax is 51.19 milliarcseconds, with a reported uncertainty of 0.22 milliarcseconds. Parallax is the apparent change in a star\u2019s position against more distant background objects as Earth travels around the Sun. Taking the reciprocal of the measured parallax gives a distance of about 19.5 parsecs, or roughly",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2082396",
+            "overlap_terms": [
+              "around",
+              "catalogue",
+              "ident",
+              "motion",
+              "objects",
+              "parallax",
+              "point",
+              "position",
+              "proper",
+              "simbad",
+              "uncertainty"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}

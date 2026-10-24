@@ -1,0 +1,69 @@
+{
+  "screen_passed": false,
+  "checks": {
+    "research_present": true,
+    "draft_length": false,
+    "title_present": false,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2078401"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Delta Scorpii: A Binary Star in the Catalog\n\n*SIMBAD identifies the star as a spectroscopic binary. Its catalog entry also records a spectral type, brightness and measurements of its motion.*\n\nA star\u2019s catalog entry can say more than where to find it. SIMBAD, an astronomical database, identifies HIP 78401 as Delta Scorpii, or \u201cdel Sco,\u201d and classifies it as a spectroscopic binary. That phrase describes a system recognized through its spectrum: the light from the stars carries evidence of a pair, even when an observer sees only one point. [SIMBAD: HIP 78401 / Delta Scorpii](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2078401)\n\nThe distinction matters. \u201cBinary\u201d does not necessarily mean two stars can be picked out separately through a telescope. In a spectroscopic binary, astronomers use changes in the spectrum\u2014the pattern of light\u2014to study the system. SIMBAD\u2019s classification tells us what kind of object the database identifies Delta Scorpii as; it does not, by itself, provide a visual portrait of two distinct stars.\n\nThe entry gives Delta Scorpii a spectral type of B0.3IV. In that notation, \u201cB0.3\u201d is the spectral classification, while \u201cIV\u201d is the luminosity class. The database reports the type with a quality flag of B and cites a 1973 reference. These compact labels are not decorative: they let astronomers summarize and compare stellar classifications without relying on a name alone.\n\nSIMBAD also lists a V-band magnitude of 2.32. That is a cataloged measurement, not a guarantee of how bright the star will appear from every location or on every observing night. The entry includes measurements in other filters, too: U, B, R, I, J, H and K. Each filter records brightness in a different part of the spectrum, giving astronomers more information than a single visible-light value can provide.\n\nThe catalog records motion as well as light. Its listed radial velocity is \u22126.00 kilometers per second, with an uncertainty of 0.5 kilometers per second. The parallax is 6.64 milliarcseconds, with an uncertainty of 0.89. SIMBAD also gives proper-motion components of \u221210.21 and \u221235.41 milliarcseconds per year. These are measurements reported in the database, each with its own reference; they are not a complete account of the star\u2019s motion or a direct view of its orbiting companion.\n\nEven the position is presented with precision. SIMBAD gives Delta Scorpii\u2019s J2000 right ascension and declination as 16 hours, 00 minutes, 20.00528 seconds and \u221222 degrees, 37 minutes, 18.1431 seconds. The coordinates locate the catalog entry",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2078401",
+            "overlap_terms": [
+              "ascension",
+              "binary",
+              "catalog",
+              "class",
+              "coordinates",
+              "database",
+              "declination",
+              "degrees",
+              "filter",
+              "ident",
+              "listed",
+              "luminosity"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}

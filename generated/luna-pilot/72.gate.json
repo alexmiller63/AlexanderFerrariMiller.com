@@ -1,0 +1,69 @@
+{
+  "screen_passed": false,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": false,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2080112"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Sigma Scorpii: Reading a Star\u2019s Catalog\n\n*SIMBAD classifies Sigma Scorpii as a Beta Cephei variable. Its catalog entry offers a compact portrait of the star\u2014and a reminder that astronomical labels and measurements answer different questions.*\n\nA star can look like a point of light and still carry a surprisingly detailed record. In SIMBAD, the object identified as HIP 80112 is listed as \u201csig Sco\u201d and classified as a Beta Cephei variable. The entry gives its position, a parallax measurement, a spectral classification and brightness measurements. Together, these facts offer several ways to describe the same object, but they are not interchangeable: some identify it, while others report measurements or classifications. ([SIMBAD](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2080112))\n\nThe position is given for the J2000 coordinate system as right ascension 16 hours, 21 minutes and 11.3157 seconds, and declination \u221225 degrees, 35 minutes and 34.051 seconds. These coordinates are a precise address on the sky. They can help distinguish Sigma Scorpii from other stars, even when a familiar name or a pattern in the sky is not enough. The catalog also lists the object\u2019s proper motion: \u221210.60 milliarcseconds per year in right ascension, and \u221216.28 milliarcseconds per year in declination. Those figures describe measured changes in its position across the sky over time.\n\nDistance is approached differently. SIMBAD reports a parallax of 4.68 milliarcseconds, with an uncertainty of 0.60 milliarcseconds. Inverting the reported value gives a rough distance of about 214 parsecs, or about 700 light-years. That is an estimate, not a precise yardstick: the parallax has a stated uncertainty, and the calculation turns a small angular measurement into a much larger distance.\n\nThe entry\u2019s classification is B1III+B1:V. That is the spectral type recorded for the object; the plus sign and two designations are part of the catalog\u2019s notation, not a distance or brightness measurement. SIMBAD separately labels Sigma Scorpii a Beta Cephei variable. The classification says what kind of variable the catalog identifies it as, but this entry does not supply a light curve or measurements of changes over time. It therefore cannot, by itself, tell an observer how much the star\u2019s brightness changes or when.\n\nFor brightness, the listing includes a V-band magnitude of 2.89. It also reports values in other bands, including U, B, R, I, J, H and K. These are measurements in different filters, rather than different names for the star. The catalog\u2019s V value is a useful point of reference, while the variety of filters shows that the record includes more than a single brightness figure.\n\nFor an observer, the coordinates offer a practical starting point: enter them into a sky map or telescope system to locate the cataloged object. The magnitude provides another useful piece of information, though it is not a guarantee of what any particular observer will see. Conditions and equipment matter, and the classification is not a substitute for a sequence of brightness observations.\n\nThat distinction is what makes this small record worth reading carefully. HIP 80112, Sigma Scorpii in SIMBAD, is not represented by one number. Its entry combines an identifying label, a sky position, measurements with stated uncertainties, and a variable-star classification.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2080112",
+            "overlap_terms": [
+              "ascension",
+              "catalog",
+              "coordinate",
+              "coordinates",
+              "declination",
+              "degrees",
+              "given",
+              "ident",
+              "listed",
+              "magnitude",
+              "measurement",
+              "motion"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}

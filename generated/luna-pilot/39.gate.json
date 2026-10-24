@@ -1,0 +1,89 @@
+{
+  "screen_passed": false,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": false,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2042913"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Delta Velorum: One Point of Light, More Than One Star\n\n*Its coordinates place it in the far southern sky. Its catalog entry describes a system more complex than a single star.*\n\nLook up Delta Velorum in a sky chart and you will find a point in the constellation Vela. To the unaided eye, a star is simply a point of light; a catalog can add detail that sight alone cannot reveal. SIMBAD identifies Delta Velorum as a \u201cdouble or multiple star\u201d and also lists it as an eclipsing binary. Those labels make the star worth a closer look\u2014not because they promise a visible change on any particular night, but because they hint at the complexity behind its appearance.\n\n## A measured distance\n\nSIMBAD gives Delta Velorum\u2019s position as right ascension 8 hours, 44 minutes, 42 seconds and declination \u221254 degrees, 42 minutes. The strongly negative declination places it far south of the celestial equator. These coordinates can help locate it in a planetarium app or star chart, though how high it appears in the sky depends on the observer\u2019s location.\n\nThe catalog lists a parallax of 40.49 milliarcseconds, with a reported uncertainty of 0.39 milliarcseconds. Parallax is the apparent shift in a nearby star\u2019s position as Earth moves around the Sun. Inverting the parallax, expressed in arcseconds, gives an estimated distance of about 24.7 parsecs. That is a measurement-based estimate, not a direct view of the star\u2019s surroundings.\n\nSIMBAD also records a spectral classification of A2IV+A4V. The two joined classifications indicate that the entry describes more than one stellar component: one is classified A2IV, the other A4V. The catalog\u2019s notation thus offers another clue to the system\u2019s complexity. It does not, by itself, provide a full account of the components\u2019 arrangement or their individual properties.\n\nThe eclipsing-binary designation adds a further layer. In an eclipsing binary, the observed light changes as one component passes in front of another from our viewpoint. But the SIMBAD entry cited here gives no eclipse schedule or predicted change for a particular date. It is best to treat the classification as a reason for curiosity, not as a guarantee that an eclipse will be apparent during an observing session.\n\n## How to find and observe it\n\nBegin with Vela on a current sky chart, then use Delta Velorum\u2019s coordinates to confirm the identification. A chart or planetarium app can account for your location and the date, and can show where the star lies in the local sky. Its southern declination makes the observer\u2019s latitude especially relevant: the same target may be well placed for one observer and low or unavailable to another.\n\nStart with the view you have. If the star is visible from your location, take time to identify it before reaching for equipment. Binoculars or a telescope may help you examine the field, but the catalog\u2019s \u201cdouble or multiple\u201d and \u201ceclipsing binary\u201d labels do not establish what a particular instrument will resolve. Nor does the entry specify when a brightness change might occur.\n\nThat distinction between what a catalog establishes and what an observer can see is part of the appeal. Delta Velorum\u2019s coordinates fix its place on the celestial map; its parallax gives a way to estimate its distance; and its classifications point beyond the simple image of a lone star. The view may remain a single point, but the information behind it invites a more careful kind of looking.\n\n*Source: SIMBAD Astronomical Database, HIP 42913 / Delta Velorum, https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2042913*",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2042913",
+            "overlap_terms": [
+              "around",
+              "ascension",
+              "before",
+              "catalog",
+              "celestial",
+              "coordinates",
+              "current",
+              "database",
+              "declination",
+              "degrees",
+              "depends",
+              "double"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [
+      {
+        "quoted_text": "double or multiple star",
+        "source_matches": [
+          "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2042913"
+        ],
+        "exact_text_confirmed": true
+      },
+      {
+        "quoted_text": "double or multiple",
+        "source_matches": [
+          "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2042913"
+        ],
+        "exact_text_confirmed": true
+      },
+      {
+        "quoted_text": "eclipsing binary",
+        "source_matches": [],
+        "exact_text_confirmed": false
+      }
+    ],
+    "all_quoted_passages_confirmed": false,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}

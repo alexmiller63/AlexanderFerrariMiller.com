@@ -1,0 +1,67 @@
+{
+  "screen_passed": false,
+  "checks": {
+    "research_present": true,
+    "draft_length": false,
+    "title_present": false,
+    "source_citation": false,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": false,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": false,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": false
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 0,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2072607"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Reading Beta Ursae Minoris\n\n*One star\u2019s catalog entry turns a point of light into a set of measurable quantities: position, motion, distance and brightness.*\n\nA star can be familiar in the sky and still be described most precisely by a catalog number. SIMBAD\u2019s entry for HIP 72607 identifies it as \u201cbet UMi,\u201d or Beta Ursae Minoris, and provides a compact portrait in measurements. The record gives coordinates, motion, parallax, a spectral classification and brightness values",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2072607",
+            "overlap_terms": [
+              "catalog",
+              "coordinates",
+              "motion",
+              "number",
+              "parallax",
+              "point",
+              "position",
+              "simbad",
+              "spectral",
+              "values"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}

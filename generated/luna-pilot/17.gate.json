@@ -1,0 +1,66 @@
+{
+  "screen_passed": false,
+  "checks": {
+    "research_present": true,
+    "draft_length": false,
+    "title_present": true,
+    "source_citation": false,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": false,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": false,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": false
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 0,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2017608"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Merope: A Blue Flame in the Pleiades\n\n*Its catalog entries offer a precise starting point for finding the blue-white star\u2014and a reminder that a star\u2019s brightness, color and distance are different kinds of information.*\n\nMerope is one of the Pleiades\u2019 bright stars, also cataloged as 23 Tauri and HIP 17608. Its familiar name may be the one skywatchers use, but the catalog labels help pin down exactly which object is meant. SIMBAD lists its visual magnitude as 4.18 and its spectral classification as B6IV(e). Those figures describe different properties: one records how bright the star appears in visible light, while the other classifies its spectrum. [SIMBAD: Merope / 23 Tau](https://",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2017608",
+            "overlap_terms": [
+              "catalog",
+              "magnitude",
+              "object",
+              "other",
+              "point",
+              "simbad",
+              "spectral",
+              "visual",
+              "which"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}

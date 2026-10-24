@@ -1,0 +1,69 @@
+{
+  "screen_passed": false,
+  "checks": {
+    "research_present": true,
+    "draft_length": false,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2020889"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Epsilon Tauri: A Star in the Numbers\n\n*SIMBAD\u2019s entry for Epsilon Tauri brings together a position, measurements of motion and light, and a classification\u2014each a different way to describe the same point in the sky.*\n\nA star\u2019s catalogue entry can look like a collection of abbreviations and decimals. For Epsilon Tauri, also listed under the identifier HIP 20889, those details offer a compact account of how astronomers record an object\u2019s position and properties. SIMBAD classifies it as a double or multiple star and gives its coordinates, parallax, proper motion, radial velocity, spectral type and brightness. [SIMBAD: Epsilon Tauri](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2020889)\n\nIts J2000 coordinates are 4 hours, 28 minutes and 37 seconds in right ascension, and about +19 degrees, 10 minutes in declination. In simpler terms, the coordinates specify where to locate the object on the celestial grid. SIMBAD reports the position with high-quality astrometric data, and also lists a proper motion: 107.526 milliarcseconds per year in right ascension, with the declination component at \u221236.200 milliarcseconds per year. Proper motion describes a star\u2019s measured movement across the sky over time.\n\nThe entry also gives a parallax of 22.3654 milliarcseconds, with a listed uncertainty of 0.1721 milliarcseconds. Parallax is the apparent shift of a nearby object against more distant background objects as the observer\u2019s position changes. Converting the listed value gives a distance of roughly 44.7 parsecs, or about 146 light-years. That distance is an estimate derived from the parallax measurement, rather than a separate number quoted in the entry.\n\nSIMBAD records Epsilon Tauri\u2019s radial velocity as 38.420 kilometers per second, with a listed uncertainty of 0.0004 kilometers per second. The database identifies the value as an optical measurement and gives it in the heliocentric frame. Together, the proper-motion and radial-velocity figures describe two different components of motion: one across our line of sight and one along it.\n\nThe spectral type in the entry is G9.5IIICN0.5. It is a compact classification, not a complete description of the object. SIMBAD\u2019s record attributes it to a published reference and gives the classification a quality flag of B. The entry\u2019s object-type field separately identifies Epsilon Tauri as a double or multiple star. Those labels summarize different kinds of information: one records a classification based on the star\u2019s spectrum, while the other records the database\u2019s object",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2020889",
+            "overlap_terms": [
+              "ascension",
+              "catalogue",
+              "celestial",
+              "coordinates",
+              "database",
+              "declination",
+              "degrees",
+              "double",
+              "frame",
+              "heliocentric",
+              "ident",
+              "identifier"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}

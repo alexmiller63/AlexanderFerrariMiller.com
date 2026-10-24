@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2032349"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Sirius, the Winter Beacon With a Measurable Wander\n\n*Bright enough to catch the eye, this nearby star also carries clues to distance, motion and the limits of looking through Earth\u2019s restless air.*\n\nOn a clear winter evening, Sirius can seem less like a point of light than a small, steady promise: there it is, shining below Orion. Yet watch it near the horizon and that promise flickers\u2014white, blue, perhaps red\u2014while the star itself remains far beyond the reach of any change we can see from one moment to the next.\n\nThat restless sparkle is mostly our atmosphere at work. Starlight bends as it passes through shifting layers of air, making a bright star appear to change color and position rapidly. Sirius is particularly striking because it is so bright and often appears low in the sky. The lower it sits, the more atmosphere its light must cross before reaching you.\n\nSirius is the brightest star in Earth\u2019s night sky and marks the constellation Canis Major, the Greater Dog. In astronomical catalogs it is identified as **Alpha Canis Majoris**, or \u03b1 CMa. SIMBAD lists it as a spectroscopic binary and gives it the spectral classification A0mA1Va. That designation places it among A-type stars; the \u201cV\u201d indicates a main-sequence star. [SIMBAD\u2019s entry for Sirius](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2032349)\n\nThe same catalog reports a parallax of 379.21 milliarcseconds. Parallax is the tiny apparent shift in a star\u2019s position as Earth travels around the Sun. Turning that measurement into distance puts Sirius about 8.6 light-years away\u2014a close neighbor by stellar standards, though still far beyond any journey a human could make in a lifetime.\n\nSirius is moving across the sky, too. SIMBAD lists its motion relative to more distant background objects as about 546 milliarcseconds westward and 1,223 milliarcseconds southward each year. That movement is invisible in a single night, but accumulated over generations it changes the star\u2019s position against the constellations. The sky is not a fixed backdrop; it only appears so because most stellar changes unfold slowly.\n\n**How to find it:** From mid-northern latitudes, look toward the southeast on winter evenings for Orion\u2019s three evenly spaced Belt stars. Follow the Belt\u2019s line down toward the horizon to find Sirius, the brilliant point in Canis Major. Give yourself an open view in that direction; rooftops, trees and haze can hide a low star. The precise time Sirius appears depends on your location and date, but it climbs higher as the evening progresses.\n\nFor the steadiest view, wait until Sirius is well above the horizon and choose a clear night. A pair of binoculars can help you pick it out among nearby stars, though the naked eye is enough to appreciate its brilliance. If it flashes colors near the horizon, you are seeing the atmosphere\u2019s shifting effects\u2014not the star changing before you.\n\nThere is a quiet pleasure in knowing that the bright winter marker is also a measured point in space: a nearby star with a cataloged spectrum, distance and motion. Look up, find Orion, trace the Belt, and let Sirius be both a guidepost and a reminder that even the most familiar lights are on the move.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2032349",
+            "overlap_terms": [
+              "around",
+              "before",
+              "binary",
+              "catalog",
+              "catalogs",
+              "depends",
+              "ident",
+              "major",
+              "measurement",
+              "mostly",
+              "motion",
+              "objects"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}

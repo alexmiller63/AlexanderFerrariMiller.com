@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2057632"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Denebola, Leo\u2019s Quietly Changing Tail\n\n*An easy springtime landmark, this bright star is also a reminder that the night sky can vary on timescales too subtle for the unaided eye.*\n\nLeo seems to be striding across the spring sky, its familiar Sickle marking the head and mane. At the other end of the lion, Denebola holds the tail: a bright, steady-looking point that asks little of an observer. Yet catalogues tell a more interesting story. Denebola is the star also known as Beta Leonis, and SIMBAD classifies it as a Delta Scuti variable\u2014a star whose light changes as it pulsates. [SIMBAD](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2057632)\n\nThat change isn\u2019t a theatrical flicker. A star can look unwavering while its brightness shifts by a small amount, a distinction best measured with instruments or careful comparisons over time. Delta Scuti stars pulsate as their outer layers expand and contract. Their changing light offers astronomers clues to the conditions inside them: stellar vibrations can reveal properties that a simple point of light might otherwise keep hidden.\n\nDenebola is close by stellar standards. SIMBAD lists a parallax of 90.91 milliarcseconds. Parallax is the apparent shift of a nearby star against more distant background stars as Earth travels around the Sun; converting that measurement gives a distance of roughly 11 light-years. The same database lists Denebola\u2019s spectral type as A3Va, a classification for a hot, main-sequence star. Its apparent visual magnitude is listed as 2.13, making it readily visible to the unaided eye from a reasonably dark site. [SIMBAD](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2057632)\n\nTo find it, look for Leo on a clear evening in spring. The Sickle is a backward question mark made of stars; Denebola lies across the constellation, marking the tip of the tail. From mid-northern latitudes, Leo climbs high in the evening sky during spring, a comfortable season to search before summer\u2019s shorter nights arrive. Begin with your eyes alone. Denebola is bright enough that binoculars aren\u2019t needed, though they can help you pick out nearby stars and frame the constellation.\n\nFor a more attentive observation, note the date, time, and conditions, then return on another clear night. The star\u2019s catalogued variability is not a promise of a visible, night-to-night transformation: human vision is not a precision photometer, and changes may be too small to notice by eye. If you want to pursue the variation scientifically, use a telescope and compare Denebola\u2019s brightness with nearby comparison stars, or consult a variable-star observing program for suitable charts and methods. Don\u2019t judge a star\u2019s changing light by how it looks through different layers of haze or at different heights above the horizon; the atmosphere can alter its apparent brightness.\n\nEven without a measurement, the act of returning changes the experience. Denebola becomes more than a marker at the edge of a constellation. It is a nearby star with a measurable distance, a classified stellar type and a rhythm of its own\u2014one that may be quiet to the eye but not to careful observation.\n\n**Source**\n\n- SIMBAD Astronomical Database, Beta Leonis / HIP 57632: https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2057632",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2057632",
+            "overlap_terms": [
+              "around",
+              "before",
+              "catalogues",
+              "database",
+              "delta",
+              "frame",
+              "ident",
+              "inside",
+              "known",
+              "listed",
+              "magnitude",
+              "measurement"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}

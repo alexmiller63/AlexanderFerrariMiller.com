@@ -1,0 +1,75 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2049669"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Regulus: The Lion\u2019s Bright Heart\n\n*An early-evening beacon in Leo, Regulus rewards a simple look upward\u2014and a closer look at the measurements behind its light.*\n\nOn a clear spring evening, find the Big Dipper high in the north and follow the curve of its handle away from the bowl. The arc leads to Arcturus; turn your gaze onward and you reach Spica. But before that familiar sweep, look for a bright blue-white point in the constellation Leo. That is Regulus, the Lion\u2019s heart\u2014and one of the sky\u2019s easiest stars to recognize.\n\nRegulus is bright enough to see without optical aid, even from many places where city lights wash out fainter stars. Its apparent visual magnitude is about 1.4, according to the SIMBAD astronomical database. The same listing gives its position as right ascension 10 hours 08 minutes and declination +11 degrees 58 minutes, coordinates astronomers use to pinpoint it on the celestial sphere. In the Northern Hemisphere, Leo is a comfortable evening target in spring; in other seasons, check a sky chart or astronomy app to see when it is above your horizon.\n\nThe star\u2019s name carries a royal note: \u201cRegulus\u201d is Latin for \u201clittle king.\u201d It sits at the base of the backward question mark, or Sickle, that outlines Leo\u2019s head. The Sickle\u2019s curve makes a useful guide: trace it down to the bright star at its lower end. Binoculars can help you pick out the surrounding pattern, but Regulus itself needs no magnification. A small telescope will show more stars in the same field, though it won\u2019t make Regulus look like a disk. Even powerful telescopes see stars as points, unless special techniques are used.\n\nThat point of light is a star with a substantial distance between it and the Sun. SIMBAD lists a parallax of 41.13 milliarcseconds. Parallax is the tiny apparent shift in a nearby star\u2019s position as Earth moves around the Sun. Converting that measurement gives a distance of about 24 parsecs, or roughly 79 light-years. The light reaching your eye tonight began its journey when the first radio broadcasts were still decades away.\n\nRegulus is classified as B8 IVn in the database. The \u201cB\u201d places it among hot, blue-white stars; \u201cIV\u201d indicates a subgiant luminosity class, between main-sequence stars and giants. The \u201cn\u201d is a spectral notation associated with broadened absorption lines. These letters are a compact way to turn starlight into clues about a star\u2019s physical nature: astronomers spread the light into a spectrum and study the pattern of dark lines.\n\nFor a low-effort observing session, give your eyes several minutes to adjust, then identify Leo\u2019s Sickle and compare Regulus with nearby stars. If you have a clear southern view, notice how the constellation\u2019s body extends eastward from the Sickle. A steady point of light is a star; a planet often shines with a steadier, less twinkling appearance, though the atmosphere can blur the distinction. The sky changes with the seasons, but Regulus returns to the evening scene each year: a small king, holding the Lion\u2019s place in the dark.\n\n**Sources**\n\n- SIMBAD Astronomical Database, Regulus (HIP 49669): https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2049669",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2049669",
+            "overlap_terms": [
+              "according",
+              "around",
+              "ascension",
+              "before",
+              "celestial",
+              "class",
+              "coordinates",
+              "database",
+              "declination",
+              "degrees",
+              "ident",
+              "luminosity"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [
+      {
+        "quoted_text": "little king.",
+        "source_matches": [],
+        "exact_text_confirmed": false
+      }
+    ],
+    "all_quoted_passages_confirmed": false,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}

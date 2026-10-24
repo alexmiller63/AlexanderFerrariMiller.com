@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2060718"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Acrux: The Southern Cross\u2019s Quiet Double Life\n\n*At the foot of a familiar constellation, a blue-white point of light carries the signature of two stars.*\n\nOn a clear southern night, the Southern Cross can seem almost too neat: four bright points set against the dark, a small pattern with the authority of a signpost. At its foot shines Acrux, the constellation\u2019s brightest star. To the unaided eye, it is a single gleam. Its catalogued identity tells a more intricate story: Acrux is a spectroscopic binary, a system whose paired nature is revealed through the changing lines in its light.\n\nThe name is a compact one, made from \u201cAlpha\u201d and \u201cCrux.\u201d In the sky, Acrux sits far south. SIMBAD lists its J2000 coordinates as right ascension 12h 26m 35.9s and declination \u221263\u00b0 05\u2032 57\u2033\u2014a useful address for a planetarium app or telescope\u2019s setting circles. The same database gives a parallax of 10.13 milliarcseconds. Turning that angle into a distance puts Acrux at roughly 320 light-years away; the figure is an estimate, not a direct measurement in miles. ([SIMBAD: Acrux / HIP 60718](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2060718))\n\nA parallax is the tiny apparent shift of a nearby star against more distant background stars as Earth moves around the Sun. The smaller the shift, the farther away the star. For Acrux, the measured angle is small enough that the distance feels immense, but the method is wonderfully grounded: a star\u2019s position is compared from different points in Earth\u2019s orbit.\n\nSIMBAD lists Acrux\u2019s spectral classification as B0.5IV+B1V. The notation describes two hot, blue-white stars: one classified as a subgiant, the other as a main-sequence star. Their light reaches us blended together. Astronomers identify a spectroscopic binary by tracking changes in the stars\u2019 spectral lines as orbital motion shifts them toward and away from us. The stars need not separate into two visible dots for their motion to leave a telltale pattern in the spectrum.\n\nThat hidden motion gives Acrux a second kind of presence. The cross is a shape our eyes make from points; the binary is a relationship disclosed by measurement. One view is immediate, the other accumulated through careful observation and analysis. Both belong to the same star system.\n\n**How to look:** Acrux lies at the southern end of Crux, the Southern Cross. Find a site with an unobstructed view toward the south, then use the cross\u2019s four-star pattern to locate its foot. A sky map or planetarium app can help confirm the identification; search for \u201cAcrux\u201d or enter its coordinates. From the Southern Hemisphere it is well placed for observation. Farther north, it appears low, and from latitudes north of about 27\u00b0 it never rises above the horizon. Give your eyes time to adjust, and start with unaided vision: the close-set point of light is the spectacle. A telescope is not required to appreciate the pattern, and the binary\u2019s defining evidence is spectral\u2014not simply a pair of dots to pick out by eye.\n\nAcrux rewards both kinds of attention: the quick recognition of a constellation and the slower wonder of learning what one point of light contains. Look south, find the Cross, and let its foot hold your gaze a little longer",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2060718",
+            "overlap_terms": [
+              "angle",
+              "around",
+              "ascension",
+              "binary",
+              "coordinates",
+              "database",
+              "declination",
+              "ident",
+              "measurement",
+              "motion",
+              "north",
+              "other"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}

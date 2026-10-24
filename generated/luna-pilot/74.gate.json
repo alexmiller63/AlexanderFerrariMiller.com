@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2081693"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Zeta Herculis: A Quiet Beacon with a Hidden Rhythm\n\n*This bright star in Hercules looks like a single point of light. Its spectrum tells a more intricate story.*\n\nOn a clear summer evening, Hercules can seem less like a constellation than a puzzle: a broad, faint figure between brighter neighbors. But one of its stars needs no elaborate pattern-finding. Zeta Herculis shines plainly to the unaided eye, a small steady beacon whose apparent simplicity conceals a stellar partnership.\n\nCatalogued as a spectroscopic binary, Zeta Herculis is recognized as a two-star system through changes in its spectrum\u2014the fingerprint of motion along our line of sight. As the stars orbit, their movement shifts spectral lines slightly toward red or blue. A telescope or binoculars won\u2019t necessarily show two separate points; the binary designation describes what measurements reveal, not what an ordinary backyard view can resolve.\n\nThe SIMBAD astronomical database lists Zeta Herculis as spectral type G0IV, a classification indicating a star with a temperature and color broadly like the Sun\u2019s, but in the subgiant luminosity class. It gives a parallax of 93.32 milliarcseconds. Parallax is the apparent shift of a nearby star against more distant background stars as Earth circles the Sun. Turning that measurement around gives a distance of about 10.7 parsecs, or roughly 35 light-years. SIMBAD also lists a visual magnitude of 2.8: bright enough to pick out without optical aid under ordinary dark-sky conditions. [SIMBAD: Zeta Herculis / HIP 81693](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2081693)\n\nThat relative closeness makes the star\u2019s motion across the sky measurable, too. Its listed proper motion\u2014how its position shifts over time against the distant background\u2014is substantial. The figure is a reminder that the stars are not fixed decorations: each follows its own path through the galaxy, even when the change is too gradual for the eye to notice from one night to the next.\n\n**How to find it:** Look for Hercules on a clear, dark night and use a current sky chart or astronomy app to trace the constellation to Zeta Herculis. The catalog\u2019s J2000 coordinates are right ascension 16 hours 41 minutes and declination +31\u00b0 36\u2032; those numbers can help you locate it in a planetarium program or telescope setting circle. Once you\u2019ve found the field, give your eyes time to adapt to the darkness, then see whether you can pick out the star without binoculars. Its listed brightness suggests that you should be able to do so away from heavy light pollution.\n\nBinoculars can make the surrounding star field more rewarding, but the system\u2019s hidden rhythm is a subtler target. To appreciate the binary, think of the spectrum as a kind of motion detector: not a picture of two stars, but evidence that light is being shifted by orbital movement. That distinction is part of the pleasure of observing. The eye sees a single point; instruments and careful measurements disclose a system in motion.\n\nZeta Herculis offers two kinds of encounter in one small patch of sky. First comes the direct one: a bright star in a constellation that asks you to slow down and connect the pattern. Then comes the deeper one: the knowledge that the point is nearby, changing its place in the galaxy, and carrying a companion whose presence is read in the starlight. Look up, find the beacon, and let the invisible orbit come into view in your imagination.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2081693",
+            "overlap_terms": [
+              "around",
+              "ascension",
+              "binary",
+              "catalog",
+              "class",
+              "coordinates",
+              "current",
+              "database",
+              "declination",
+              "ident",
+              "listed",
+              "luminosity"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}

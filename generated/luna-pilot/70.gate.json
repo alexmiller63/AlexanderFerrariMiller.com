@@ -1,0 +1,75 @@
+{
+  "screen_passed": false,
+  "checks": {
+    "research_present": true,
+    "draft_length": false,
+    "title_present": false,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2079374"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Nu Scorpii: A Multiple Star in the Catalogs\n\nNu Scorpii\u2019s catalog entry gives it two identities at once: a star with measured properties, and a system classified as \u201cdouble or multiple.\u201d The first identity can be summarized with numbers. The second points to complexity the entry does not fully describe.\n\nSIMBAD identifies Nu Scorpii, also listed as HIP 79374, as a double or multiple star. Its recorded visual magnitude is 4.00, and its spectral type is B2V. These labels offer a compact portrait: the magnitude records how bright it appears in visible light, while the spectral classification places it in the B category and gives it luminosity class V. But the catalog\u2019s multiple-star designation is broader than a detailed account of the system. This entry alone does not specify how many components there are or describe their arrangement. [SIMBAD: HIP 79374 / Nu Scorpii](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2079374)\n\nThe same record lists a parallax of 6.88 milliarcseconds, with an uncertainty of 0.76 milliarcseconds. Parallax is the apparent shift in a star\u2019s position as Earth moves around the Sun. Taking the listed value at face value and converting it gives a distance of roughly 145 parsecs, or about 470 light-years. That is an estimate, not a perfectly precise distance: the parallax measurement includes a stated uncertainty.\n\nSIMBAD also gives Nu Scorpii\u2019s coordinates in the International Celestial Reference System for epoch J2000: right ascension 16 hours, 11 minutes, 59.73568 seconds, and declination minus 19 degrees, 27 minutes, 38.5361 seconds. Coordinates make the entry more than a name in a list; they specify a position on the sky. The record includes a proper motion of \u22127.65 milliarcseconds per year in right ascension and \u221223.71 in declination. Those values describe measured changes in apparent position over time.\n\nOther measurements in the entry carry their own uncertainties and references. The listed radial velocity is 2.4 kilometers per second, with an uncertainty of 5 kilometers per second. SIMBAD gives a spectral-type reference and separate references for the position, parallax and motion measurements. The numbers are therefore not all one seamless observation: they are cataloged results tied to cited sources.\n\nThe photometry section shows how measurements can vary by wavelength. It lists magnitudes of 3.42 in U, 4.05 in B and 4.00 in V, alongside values in other bands, including 3.81 in J and 3.77 in K. These are recorded measurements in different filters, not interchangeable versions of a single brightness value. The V entry is the one that corresponds to the visual magnitude of about 4.\n\nNu Scorpii\u2019s appeal, then, lies partly in the contrast between a compact record and the questions it leaves open",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2079374",
+            "overlap_terms": [
+              "around",
+              "ascension",
+              "catalog",
+              "catalogs",
+              "celestial",
+              "class",
+              "coordinates",
+              "declination",
+              "degrees",
+              "double",
+              "epoch",
+              "ident"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [
+      {
+        "quoted_text": "double or multiple.",
+        "source_matches": [],
+        "exact_text_confirmed": false
+      }
+    ],
+    "all_quoted_passages_confirmed": false,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}

@@ -1,0 +1,69 @@
+{
+  "screen_passed": false,
+  "checks": {
+    "research_present": true,
+    "draft_length": false,
+    "title_present": false,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2026237"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# c Ori: A Star in the Catalog\n\n*One entry for HIP 26237 offers several ways to describe the same object\u2014and a reminder that a catalog label is not a complete account.*\n\nA star\u2019s catalog record can look like a tidy identity card. For HIP 26237, it is more like a set of clues. SIMBAD lists the object as \u201cc Ori\u201d and classifies it as a young stellar object. In the same entry, it gives a spectral type of B1V+? and records measurements of its brightness, position, motion and parallax. These details describe different aspects of the star; they do not all answer the same question. [SIMBAD: HIP 26237](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2026237)\n\nThe spectral-type entry is particularly suggestive\u2014and carefully qualified. SIMBAD gives it as **B1V+?**. The question mark is part of the listed classification, so it is worth preserving rather than smoothing away. The catalog also identifies the object as a young stellar object. Read together, those labels make HIP 26237 an intriguing entry, but they do not, by themselves, explain how the classifications relate or settle the star\u2019s full nature.\n\nThe record\u2019s brightness measurements offer a more direct numerical portrait. SIMBAD lists a visual magnitude of **4.59**. It also includes measurements in other filters, including U, B, R, I and G, along with infrared J, H and K values. Those numbers are not interchangeable: each belongs to a named filter, and the entry reports them as separate observations. The visual value is a useful place to begin, while the wider set shows how much more a catalog can hold than a single brightness figure.\n\nPosition is another piece of the identity. SIMBAD gives HIP 26237\u2019s J2000 coordinates as right ascension **05h 35m 23.164653s** and declination **\u221204\u00b0 50\u2032 18.059785\u2033**. The record marks the coordinate quality as A. A coordinate is not a description of what the star is; it is a way to specify where to look and to distinguish this object from others.\n\nThe entry also reports a parallax of **6.5163 milliarcseconds**, with an uncertainty of **1.5234 milliarcseconds**. Parallax is one of the measurements astronomers use to investigate distance, but the uncertainty matters: the catalog does not present the value as exact. SIMBAD lists proper motion as **\u22124.124 milliarcseconds per year** in right ascension (with the declination correction included) and **\u22121.974 milliarcseconds per year** in declination. These figures describe apparent motion across the sky, not the star\u2019s brightness or classification.\n\nA radial velocity appears in the entry too: **47.10 \u00b1 3 kilometers per second**, with a 1970 reference. That measurement adds another dimension to the record, but its age and source are part of its context.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2026237",
+            "overlap_terms": [
+              "ascension",
+              "catalog",
+              "coordinate",
+              "coordinates",
+              "declination",
+              "filter",
+              "ident",
+              "listed",
+              "magnitude",
+              "measurement",
+              "motion",
+              "object"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}

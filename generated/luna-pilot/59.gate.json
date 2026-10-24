@@ -1,0 +1,84 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2065378"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Mizar in the Catalogue: One Star, Several Measurements\n\n*SIMBAD identifies Mizar as a double or multiple star. Its entry also shows how a single catalogue record can gather names, positions and measurements from different astronomical sources.*\n\nA familiar name can make a star seem like a simple point of light. In an astronomical database, that point may have several names and a collection of measurements, each describing a different aspect of its record. Mizar is a good example: SIMBAD lists it as a \u201cDouble or Multiple Star\u201d and associates it with the designation Zeta Ursae Majoris, written \u03b6 UMa.\n\nThe entry gathers identifiers from multiple catalogues. Alongside Mizar and \u03b6 UMa are HIP 65378 and HIC 65378, catalogue designations, and 79 UMa, another listed name. SIMBAD also includes WDS J13239+5456AB and STF 1744AB among its identifiers. These labels are not different objects merely because they look different; they are ways of locating or referring to the entry in astronomical catalogues.\n\nSIMBAD\u2019s hierarchy section reports two linked child objects. That number is a database relationship count, not a complete description of what an observer would see. The service cautions that linked-object counts depend on the references and links in its records. Its classification\u2014\u201cDouble or Multiple Star\u201d\u2014offers a broader description, but the entry alone does not tell the reader how the system appears through a particular telescope.\n\nThe record also gives Mizar\u2019s position. In the International Celestial Reference System for epoch J2000, its coordinates are right ascension 13 hours, 23 minutes, 55.54048 seconds, and declination +54 degrees, 55 minutes, 31.2671 seconds. Coordinates are a map address in the sky: the first measures position around the celestial sphere, and the second measures it north or south of the celestial equator. SIMBAD associates this coordinate record with the reference code 2007A&A...474..653V.\n\nOther entries describe motion. SIMBAD lists proper motion of 119.01 milliarcseconds per year in right ascension, with the cosine-of-declination convention, and \u221225.97 milliarcseconds per year in declination. These are angular changes in position across the sky, not a direct statement of how quickly the star is moving through space. The database separately lists a heliocentric radial velocity of \u22126.31 kilometers per second, with an uncertainty of 0.38 kilometers per second.\n\nA further measurement is parallax: 38.01 milliarcseconds, with an uncertainty of 1.71. Parallax is the apparent shift in a star\u2019s position used to estimate its distance. Taking the reciprocal of 0.03801 arcseconds gives a rough distance of about 26 parsecs, or 86 light-years. That conversion is an estimate based on the listed parallax, not a separate distance value displayed in the entry.\n\nEach figure answers a different question. Coordinates say where to point; proper motion describes a measured change in sky position; radial velocity records motion along the line of sight; and parallax provides a distance estimate. None, alone, tells the whole story of a multiple star. Together, the catalogue\u2019s names and measurements show how much information can sit behind a short label: Mizar, or \u03b6 UMa.\n\n**Source:** [SIMBAD entry for HIP 65378 / \u03b6 UMa](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2065378).",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2065378",
+            "overlap_terms": [
+              "around",
+              "ascension",
+              "catalogue",
+              "catalogues",
+              "celestial",
+              "child",
+              "coordinate",
+              "coordinates",
+              "count",
+              "database",
+              "declination",
+              "degrees"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [
+      {
+        "quoted_text": "Double or Multiple Star",
+        "source_matches": [
+          "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2065378"
+        ],
+        "exact_text_confirmed": true
+      },
+      {
+        "quoted_text": "Double or Multiple Star",
+        "source_matches": [
+          "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2065378"
+        ],
+        "exact_text_confirmed": true
+      }
+    ],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}

@@ -1,0 +1,69 @@
+{
+  "screen_passed": false,
+  "checks": {
+    "research_present": true,
+    "draft_length": false,
+    "title_present": false,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2073714"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Sigma Librae: a star worth revisiting\n\n*Cataloged as a Mira variable, this star in Libra offers a simple observing project: find it, note its appearance and return to compare.*\n\nA star can be a useful target even when a catalog cannot tell you exactly what you will see tonight. Sigma Librae\u2014listed in SIMBAD as \u201csig Lib\u201d and identified there as a Mira variable\u2014invites repeated observation. Its classification marks it as variable, but the catalog record supplied here gives no current brightness forecast or cycle length. The best approach is to treat each sighting as one point in a longer record. [SIMBAD: HIP 73714](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2073714)\n\nSIMBAD gives the star\u2019s position as right ascension 15 hours, 04 minutes, 04.2 seconds and declination 25 degrees, 16 minutes, 55 seconds south, in coordinates for epoch J2000. These numbers are a precise way to confirm a target: enter them into a planetarium app or compare them with a chart of Libra. The same record lists a parallax of 12.5387 milliarcseconds. Parallax is the apparent shift of a star\u2019s position as Earth moves around the Sun; using the catalog value gives a distance of roughly 80 parsecs, or about 260 light-years. [SIMBAD](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2073714)\n\nThe catalog also gives a spectral type of M2.5 III. The \u201cM\u201d identifies its spectral class, while \u201cIII\u201d is its luminosity class, indicating a giant star. Those labels describe the star; the Mira-variable designation points to why an observer might return to it. A single observation can establish what it looks like on one night, but only repeated estimates can show whether its apparent brightness has changed.\n\nSIMBAD lists a visual magnitude of 3.21, along with measurements in other bands, including B at 4.91 and R at 1.60. These are catalog entries, not a promise of what the star will look like during your next observing session. The supplied record does not attach an observing date or variability phase to those values, so they are best treated as reference data rather than a live brightness report. [SIMBAD](https://s",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2073714",
+            "overlap_terms": [
+              "around",
+              "ascension",
+              "catalog",
+              "class",
+              "coordinates",
+              "current",
+              "declination",
+              "degrees",
+              "epoch",
+              "ident",
+              "length",
+              "listed"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}

@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2026241"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Hatysa: Orion\u2019s sword-point star\n\n*An easy naked-eye target with a more complicated identity: Hatysa is a hot, massive star whose companionship is revealed not by a telescope, but by its spectrum.*\n\nAt the southern end of Orion\u2019s sword, a bright star marks a point of light that looks simple to the unaided eye. Its name is **Hatysa**; in astronomical catalogues it is Iota Orionis, or HIP 26241. The contrast between its familiar appearance and its hidden complexity makes it a rewarding object to seek out on a clear night.\n\nHatysa shines at about magnitude 2.77 in visible light\u2014bright enough to pick out without optical aid under ordinary conditions. Look for Orion\u2019s three-star belt, then follow the short line of stars hanging below it: the sword. Hatysa is at the sword\u2019s southern end. In the Northern Hemisphere, Orion is a prominent evening constellation during winter; observers south of the equator can look for it during their summer months. A pair of binoculars will help distinguish the sword\u2019s starry surroundings, though Hatysa itself remains a single point in ordinary binoculars and small telescopes.\n\nThat point conceals a **spectroscopic binary**. The two stars are too close together to be separated as individual dots in a typical backyard telescope. Instead, astronomers identify the pairing by studying the star\u2019s light: as the stars orbit, their motions leave changing patterns in the spectrum. The SIMBAD astronomical database lists Hatysa as a spectroscopic binary and gives its spectral type as O9IIIvar. In that classification, \u201cO\u201d denotes an exceptionally hot class of star, \u201cIII\u201d indicates giant luminosity class, and \u201cvar\u201d signals variability in the spectral classification. These labels describe a star very different from the Sun, whose spectral type is G2V. [SIMBAD: HIP 26241](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2026241)\n\nSIMBAD also lists a parallax of about 2 milliarcseconds. Parallax is the apparent shift in a nearby star\u2019s position as Earth travels around the Sun; smaller shifts generally mean greater distance. A straightforward conversion of the catalogued value suggests a distance of roughly 1,600 light-years. That estimate should be treated as approximate: the listed parallax uncertainty is substantial compared with the measurement. Even so, the calculation hints at the scale separating this brilliant point from our local neighborhood.\n\nFor an observing session, give your eyes time to adapt to the dark, and begin with the unaided view. The belt is an easy landmark; from there, trace the sword downward until you reach Hatysa. Use binoculars to explore the surrounding field, then try a telescope at low power. The instrument will not necessarily split the binary, but it can sharpen the view of the star against its setting. If you want to compare your observation with a chart or catalogue, Hatysa\u2019s J2000 coordinates are right ascension 05h 35m 25.99s and declination \u221205\u00b0 54\u2032 35.6\u2033, as listed by SIMBAD.\n\nThe most satisfying part of observing Hatysa may be knowing what the eye cannot show. Its steady-looking pinprick is a massive, hot star, catalogued as a giant and accompanied by a partner detected through the changing signature of light. Orion\u2019s sword is easy to find; Hatysa offers a reminder that even a familiar star can hold a hidden system within it.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2026241",
+            "overlap_terms": [
+              "around",
+              "ascension",
+              "binary",
+              "catalogue",
+              "catalogues",
+              "class",
+              "coordinates",
+              "database",
+              "declination",
+              "ident",
+              "iiivar",
+              "listed"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
