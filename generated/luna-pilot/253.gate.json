@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204244"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Silver Needle: a galaxy on its edge\n\n*In Canes Venatici, NGC 4244 presents a narrow profile that rewards patient viewing\u2014and a dark sky.*\n\nA galaxy can be easy to miss not because it is small, but because its light is spread thinly across the sky. NGC 4244, often called the Silver Needle, is a fine example: a spiral galaxy seen nearly edge-on, its disk drawn out into a slim streak. Under dark skies, that elongated shape makes it one of spring\u2019s quietly satisfying targets.\n\nThe galaxy lies in Canes Venatici, the Hunting Dogs, at coordinates of right ascension 12 hours 17 minutes 29.7 seconds and declination +37 degrees 48 minutes 26 seconds. The SIMBAD astronomical database lists its optical dimensions as about 19.1 by 2.7 arcminutes, and classifies it as a spiral. In other words, its apparent length is nearly seven times its width. SIMBAD also gives a heliocentric radial velocity of about 245 kilometres per second. These measurements describe a distant system whose light reaches us after a long journey; the velocity is measured along our line of sight, not across the sky. [SIMBAD: NGC 4244](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204244)\n\nThe edge-on view is the key to the galaxy\u2019s distinctive appearance. Instead of seeing its spiral arms spread across a face-on disk, we see the disk\u2019s narrow side. Starlight from many parts of the galaxy blends together into a faint, stretched-out glow. Dust in a spiral galaxy can also absorb and scatter light, sometimes marking a dark lane along the disk\u2014but whether that detail is visible depends on the telescope, sky conditions and observer\u2019s experience. The Silver Needle\u2019s long axis gives the eye a helpful clue: look for a fine smudge, not a bright, rounded spot.\n\nFor a spring observing session, start with Canes Venatici and use a current star chart or planetarium app to locate NGC 4244 from its coordinates. The galaxy is far too faint to see with the unaided eye. Binoculars may show little or nothing unless the sky is exceptionally dark; a telescope provides a better chance. A medium-sized instrument under a rural sky can reveal its elongated glow, while larger apertures may help bring out more structure. These are realistic expectations, not guarantees: transparency, light pollution and the observer\u2019s dark adaptation make a substantial difference.\n\nUse low or moderate magnification first. A wide field makes it easier to identify the target and appreciate its length; then increase the power if the image remains clear. Give your eyes time to adjust to darkness, and try averted vision\u2014looking just beside the galaxy rather than directly at it. Avoid observing near a bright Moon if possible, and shield your eyes from nearby lights. If the galaxy seems to disappear when you look straight at it, pause and let your gaze relax.\n\nThe Silver Needle may not announce itself with a brilliant core. Its appeal is subtler: a long, delicate trace of another stellar system, suspended in the Hunting Dogs. With a dark sky, steady viewing and a little patience, that faint line can become a memorable one.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204244",
+            "overlap_terms": [
+              "ascension",
+              "coordinates",
+              "current",
+              "database",
+              "declination",
+              "degrees",
+              "depends",
+              "field",
+              "galaxy",
+              "heliocentric",
+              "ident",
+              "image"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
