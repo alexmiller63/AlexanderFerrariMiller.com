@@ -23,8 +23,8 @@ PILOT = {
     6: ("special-stars", "HIP 6686"),
     7: ("special-stars", "HIP 8886"),
     8: ("special-stars", "HIP 11484"),
-    9: ("alpha-stars", "Alpha Ursae Minoris"),
-    10: ("special-stars", "Gamma Ceti"),
+    9: ("alpha-stars", "HIP 11767"),
+    10: ("special-stars", "HIP 12706"),
 }
 # The category for a pilot is checked against the catalogue below, not blindly trusted.
 BAYER = {"Gamma Pegasi": ("Gam", "Peg"), "Alpha Cassiopeiae": ("Alp", "Cas"),
