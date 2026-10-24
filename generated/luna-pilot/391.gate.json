@@ -1,0 +1,77 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206992"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Veil Nebula (East): A luminous trace of a vanished star\n\n*In Cygnus, a delicate arc of gas marks the meeting place of a stellar explosion and the surrounding interstellar medium.*\n\nThe Veil Nebula (East) is a fragment of a much larger celestial wreck. Catalogued as NGC 6992, it forms part of the Veil Nebula in the constellation Cygnus. On a dark night, its long, curved filaments seem almost too fine to belong to the sky: a faint, folded ribbon against the rich star fields of the Milky Way.\n\nThe filaments are not clouds of glowing gas simply drifting through space. The Veil is a supernova remnant\u2014the expanding aftermath of a star\u2019s explosion. As the blast wave moves into surrounding interstellar material, it heats and disturbs the gas, making parts of the expanding shell visible. NGC 6992 is identified in SIMBAD as an \u201cinterstellar shell\u201d; the database places it at right ascension 20h 56m 19s and declination +31\u00b0 44\u2032. [SIMBAD: NGC 6992](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206992) For an overview of the Veil as a supernova remnant, see [Chandra\u2019s Veil Nebula page](https://chandra.harvard.edu/photo/2007/veil/).\n\nThat shell is enormous, but the East Veil rewards a patient observer more than a quick glance. Its light is spread thinly across the sky, so the challenge is not to find a bright nebular knot but to notice a subtle edge. In a telescope, the most recognizable feature is a curved, threadlike sweep, with brighter sections and fainter wisps that seem to fade into the background. The view can feel less like looking at an object and more like discovering a boundary.\n\nFor northern observers, Cygnus is well placed on summer and autumn evenings. Start with a star chart or a telescope\u2019s coordinate setting and aim for NGC 6992\u2019s position, rather than expecting the nebula to announce itself in a finder. A low-power eyepiece gives a wider field and helps reveal the arc in context. The nebula is large enough that a wide-field view is an advantage; a small field may show only one section at a time.\n\nGive your eyes time to adjust to darkness, and observe from as dark a location as you can manage. A nebula filter that passes oxygen-III light, or a broader UHC-style filter, can improve contrast by dimming much of the surrounding sky glow. Try the view both with and without the filter: the filtered image may bring out the shell, while the unfiltered field can make it easier to orient yourself among the stars. Move the telescope slowly and use averted vision\u2014looking just to the side of the target can make faint structure easier to detect.\n\nThe East Veil does not look the same to every observer, or through every instrument. Under bright skies it may remain elusive; under dark skies, its filamentary outline can emerge gradually, like a brushstroke revealed by dim light. That faintness is part of the encounter. The arc is a remnant of violence on a stellar scale, but what reaches the eyepiece is quiet: a delicate contour, still expanding through the darkness.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206992",
+            "overlap_terms": [
+              "ascension",
+              "bright",
+              "celestial",
+              "coordinate",
+              "database",
+              "declination",
+              "field",
+              "ident",
+              "image",
+              "interstellar",
+              "nebula",
+              "object"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [
+      {
+        "quoted_text": "interstellar shell",
+        "source_matches": [
+          "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206992"
+        ],
+        "exact_text_confirmed": true
+      }
+    ],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
