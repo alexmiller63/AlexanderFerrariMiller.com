@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%203201"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# NGC 3201: A Southern Cluster in the Starlight\n\n*An 18-arcminute gathering of stars waits below the celestial equator\u2014a rewarding target for a small telescope and a patient look.*\n\nSome deep-sky objects announce themselves with a striking shape. NGC 3201 is subtler: a globular cluster, a compact-looking swarm of stars that asks you to slow down and let the view build. Its cataloged position is right ascension 10h 17m 36.82s, declination \u221246\u00b0 24\u2032 44.9\u2033, placing it in southern skies. From a dark site in the Southern Hemisphere, it is a fine reason to spend time with a telescope rather than hurry on to the next target. [SIMBAD identifies NGC 3201 as a globular cluster and lists its coordinates.](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%203201)\n\nGlobular clusters are dense, roughly spherical communities of stars bound by gravity. Their members share a common home, but the cluster is not a single point of light: with enough aperture and steady skies, a soft glow can begin to break into individual stars. SIMBAD gives NGC 3201 an angular size of 18.2 arcminutes\u2014about three-fifths the apparent width of the full Moon. That figure describes its extent on the sky, not its physical diameter. The cluster\u2019s apparent reach makes it a useful reminder that \u201csmall\u201d in a telescope can still mean a broad patch of sky.\n\nThe catalog also records a heliocentric radial velocity of about 494 kilometers per second. In astronomy, radial velocity describes motion toward or away from us along our line of sight; a positive value indicates recession in this convention. It does not tell the whole story of a cluster\u2019s journey through the Milky Way, but it gives a sense of how measurements turn a quiet-looking blur into an object with measurable motion. [SIMBAD\u2019s NGC 3201 entry includes the velocity and angular-size data.](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%203201)\n\n**How to find and observe it:** Start with the listed coordinates and a current star chart or planetarium app, then use a finder scope to guide the telescope into the field. NGC 3201 lies well south of the celestial equator, so it is best placed for observers at southern latitudes; from farther north it will sit very low, or be out of view. Choose a night when it is well above the horizon from your location, and look for a dark, transparent sky. Haze and city glow can erase the delicate outer light of a cluster.\n\nBegin at low magnification. This gives you a wider field to locate the object and appreciate its overall glow. Once centered, try a moderate increase in power and give your eyes time to adapt. Averted vision\u2014looking slightly to one side of the cluster\u2014can make faint stars easier to notice. If the view remains a misty patch, that is still a valid observation: atmospheric steadiness, telescope size and sky darkness all affect how much detail becomes visible.\n\nRecord what you actually see: the apparent brightness toward the center, whether the edges seem grainy, and how the view changes with magnification. Then compare your notes on another night. NGC 3201 rewards that kind of return visit. Its light is not a showy flash but a gathering of points, gradually separating from the dark as attention\u2014and the sky\u2014allows.\n\n**Source:** [SIMBAD Astronomical Database: NGC 3201](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%203201)",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%203201",
+            "overlap_terms": [
+              "allows",
+              "angular",
+              "ascension",
+              "catalog",
+              "celestial",
+              "cluster",
+              "coordinates",
+              "current",
+              "database",
+              "declination",
+              "extent",
+              "field"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
