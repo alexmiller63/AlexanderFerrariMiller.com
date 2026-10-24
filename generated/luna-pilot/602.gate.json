@@ -1,0 +1,77 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2078821"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Beta2 Sco: A Quiet Light in the Scorpion\u2019s Head\n\n*Too faint to dominate the summer sky, this blue-white star rewards a closer look\u2014and a reminder that some companions reveal themselves only in starlight\u2019s changing lines.*\n\nThe Scorpion announces itself with Antares, its ruddy heart, and a long, curling tail. At the other end, in the constellation\u2019s head, Beta2 Sco offers a more modest beacon. To the unaided eye it is a small point among its neighbors. Yet the catalogue entry for HIP 78821 carries a clue to a hidden story: SIMBAD identifies it as a **spectroscopic binary**. (SIMBAD: https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2078821)\n\n\u201cSpectroscopic\u201d is the key. Some binary stars can be separated into two points through a telescope. In a spectroscopic binary, the stars are too close to distinguish that way; astronomers instead infer their motion from changes in the star\u2019s spectrum. As the stars orbit, their light\u2019s spectral lines shift back and forth. The record identifies Beta2 Sco as a binary, but the entry cited here does not provide an orbital period or a visual separation. The system\u2019s secret is one for careful measurement, not a backyard telescope to pry apart.\n\nThe same record lists a spectral type of B2V: a hot, blue-white main-sequence star. Its visual magnitude is about 4.89, making it a naked-eye target under a reasonably dark sky, though city lights can wash it away. SIMBAD gives a parallax of 8.2368 milliarcseconds. Taking the inverse of that value gives a rough distance of about 120 parsecs, or roughly 390 light-years; the measured parallax has an uncertainty, so treat the distance as an estimate, not a precise address.\n\nThere is a pleasing contrast here. The star\u2019s visible light has crossed hundreds of light-years to reach us, but the binary clue is subtler still: not a shape in the eyepiece, but a pattern in the light that changes over time. For most observers, Beta2 Sco will remain a point. Knowing what astronomers have learned from that point adds another dimension to looking.\n\n**How to observe:** Look for Scorpius when it is well placed in your evening sky, typically during the warmer months in the Northern Hemisphere. Find Antares first, then consult a printed chart or a planetarium app to trace the constellation\u2019s head and identify Beta2 Sco. Its J2000 coordinates are approximately right ascension 16h 05m and declination \u221219\u00b0 48\u2032; an app can translate that position to your local sky. (SIMBAD coordinates: https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2078821)\n\nTry first with the naked eye from a dark location. Give your eyes time to adjust, and use averted vision\u2014looking slightly to one side of the star\u2014to help it stand out. Binoculars can help you pick out the surrounding star pattern, but they will not disclose the binary orbit. For that, astronomers need spectra gathered and compared over time.\n\nOn a clear night, take a moment before moving on to Antares or the tail. Beta2 Sco does not need to look dramatic to be worth finding. Its light is both an old arrival and a quiet measurement: a point of starlight whose changing spectrum tells us that it is not alone.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2078821",
+            "overlap_terms": [
+              "ascension",
+              "before",
+              "binary",
+              "catalogue",
+              "coordinates",
+              "declination",
+              "ident",
+              "magnitude",
+              "measurement",
+              "motion",
+              "other",
+              "parallax"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [
+      {
+        "quoted_text": "Spectroscopic",
+        "source_matches": [
+          "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2078821"
+        ],
+        "exact_text_confirmed": true
+      }
+    ],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
