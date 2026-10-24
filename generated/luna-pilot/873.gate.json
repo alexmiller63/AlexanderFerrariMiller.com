@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2046390"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Alphard: The Orange Beacon in Hydra\n\n*As spring advances, the brightest star of the Water Snake offers a steady guide\u2014and a glimpse of a giant star far beyond the Solar System.*\n\nAt the edge of the spring sky, where Leo\u2019s familiar stars give way to the long, faint sweep of Hydra, Alphard holds its own. It does not belong to a tight cluster or conspicuous pattern. Instead, this orange-tinted point of light stands apart, an easy destination once you know where to look.\n\nAlphard is Alpha Hydrae, the brightest star in Hydra. In the SIMBAD astronomical database, it is listed as a K3 IIIa star, with a visual magnitude of 1.97. The K classification indicates a cooler surface than the Sun\u2019s; the \u201cIII\u201d marks it as a giant star. It shines with a warm hue that can be especially noticeable when compared with bluer stars nearby, though a star\u2019s apparent color can vary with observing conditions and eyesight.\n\nThe distance is measured through parallax: the tiny apparent shift of a nearby star against more distant background stars as Earth travels around the Sun. SIMBAD lists Alphard\u2019s parallax as 18.09 milliarcseconds. Converting that value gives a distance of roughly 55 parsecs, or about 180 light-years. Its position in the sky\u2014right ascension 9 hours 27 minutes, declination about 9 degrees south\u2014helps explain why it climbs only modestly above the southern horizon for many Northern Hemisphere observers. These measurements and classifications are available in [SIMBAD\u2019s Alphard entry](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2046390).\n\nFor a spring-evening search, begin with Leo. Its curved \u201cSickle,\u201d a backward question mark of stars, is a recognizable landmark; Regulus marks its lower end. From there, look south for Alphard, allowing for the fact that the star\u2019s height depends on your location and the time of night. In the Northern Hemisphere, it is best seen when it crosses the southern sky in the evening during spring. From far-northern locations, it stays low, where haze, trees, or buildings can hide it. Choose a site with an open southern horizon.\n\nYou do not need a telescope. Alphard is bright enough to find with the unaided eye under a reasonably dark sky, and binoculars can help pick it out if the horizon is washed with city glow. Let your eyes adjust, then sweep slowly below Leo. A star chart or planetarium app can confirm the field, but give yourself a moment to locate it without a screen: the pleasure is in recognizing a bright point that seems to have no close companion.\n\nHydra\u2019s full outline is difficult to trace, and much of it is made of dim stars. Alphard makes a practical starting point for exploring the constellation with binoculars, even if the snake\u2019s long body remains more an imagined path than a crisp figure. On a clear night, watch the star as it approaches its highest point in the south. It will not flash or change its position against the constellation over a single evening. Its light has been traveling for generations before reaching you; the view is quiet, but the distance gives it scale.\n\n**Source:** [SIMBAD: HIP 46390 / Alpha Hydrae](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2046390).",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2046390",
+            "overlap_terms": [
+              "around",
+              "ascension",
+              "before",
+              "database",
+              "declination",
+              "degrees",
+              "depends",
+              "ident",
+              "listed",
+              "magnitude",
+              "parallax",
+              "point"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
