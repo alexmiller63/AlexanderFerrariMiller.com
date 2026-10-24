@@ -17,7 +17,7 @@ from lunar_eclipse_engine import find_lunar_eclipse
 
 SEED = date(2026, 8, 12)  # lunation search anchor, not a reference prediction
 SYNODIC_DAYS = 29.530588853
-FIELDS = ["kind", "contacts_utc", "date_utc", "greatest_utc", "type", "axis_distance_km",
+FIELDS = ["id", "detail_path", "kind", "contacts_utc", "date_utc", "greatest_utc", "type", "axis_distance_km",
           "penumbra_margin_km", "central_margin_km", "core_radius_km",
           "status"]
 
@@ -128,13 +128,17 @@ def generate(start_year, end_year):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--start-year", type=int, default=2026)
+    parser.add_argument("--start-year", type=int, default=2025)
     parser.add_argument("--end-year", type=int, default=2035)
     parser.add_argument("--output-dir", type=Path, default=Path("generated/eclipse-catalog"))
     args = parser.parse_args()
     if args.end_year < args.start_year:
         parser.error("end-year must not precede start-year")
     rows = generate(args.start_year, args.end_year)
+    # Stable page identifiers shared by the Calendar, Sky Notes, and eclipse guide.
+    for row in rows:
+        row["id"] = f"{row['date_utc']}-{row['kind']}"
+        row["detail_path"] = f"eclipses/{row['id']}.html"
     args.output_dir.mkdir(parents=True, exist_ok=True)
     csv_path = args.output_dir / f"eclipses-{args.start_year}-{args.end_year}.csv"
     json_path = args.output_dir / f"eclipses-{args.start_year}-{args.end_year}.json"
