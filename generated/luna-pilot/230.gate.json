@@ -1,0 +1,77 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%203521"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# MCG 0-28-30: A Spiral in the Spring Sky\n\n*This broad galaxy in Leo rewards patient viewing: let your eyes adjust, keep the magnification modest, and give its faint light time to emerge.*\n\nMCG 0-28-30 is a galaxy to approach slowly. In a telescope, it may first appear as a pale, stretched glow rather than a sharply drawn spiral. That impression is part of the experience: the light comes from an immense system beyond our own, gathered into a soft patch against the dark.\n\nThe galaxy is also catalogued as NGC 3521. SIMBAD lists it as an emission-line galaxy, with an SA spiral classification and an apparent optical size of about 6.9 by 4.7 arcminutes. Its listed visual magnitude is 9.02. Those figures suggest a target large enough to spread across the eyepiece, but faint enough that dark skies and careful looking matter. ([SIMBAD: NGC 3521](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%203521))\n\n\u201cEmission-line\u201d describes light from particular wavelengths produced by atoms and ions, rather than a feature visible to the eye at the telescope. Such lines help astronomers investigate the galaxy\u2019s gas and its energetic processes. SIMBAD also gives a heliocentric radial velocity of about 797 kilometers per second and a redshift of 0.002663. These values describe the galaxy\u2019s motion relative to us; they are not, by themselves, a simple distance measurement, since a galaxy\u2019s motion can also reflect local gravitational influences.\n\nFor observers, the useful landmarks are more immediate. MCG 0-28-30 lies in Leo, a constellation well placed for evening viewing in spring. Its J2000 coordinates are right ascension 11h 05m 49s and declination \u221200\u00b0 02\u2032. A go-to mount can use those coordinates directly; with a manual telescope, a detailed star chart is the better companion than a guess at the field. ([SIMBAD coordinates](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%203521))\n\nChoose a moonless night if possible, and give your eyes 20 minutes or more to adapt to the dark. Begin with a low-power eyepiece and a wide field. A 6-inch telescope or larger under a dark sky is a practical starting point; smaller instruments may show the galaxy as a faint smudge, especially under light-polluted skies. Look slightly to one side of the target\u2014averted vision can reveal dim detail more readily than staring straight at it. If the galaxy appears, resist the urge to crank up the magnification immediately. Its broad, low-contrast glow is often easier to hold at modest power.\n\nThe catalog\u2019s measurement of nearly seven arcminutes across gives a sense of its apparent span, not its physical dimensions. At the eyepiece, the outer light may fade gradually into the background, while the brighter central region offers a more definite anchor. The view can change with transparency, equipment and experience. Averted vision, steady patience and averted expectations all help.\n\nThe reward is not a snapshot of every spiral arm. It is the moment a dim oval settles into view, and the realization that this small patch of light belongs to a galaxy of stars. MCG 0-28-30 asks for attention rather than spectacle\u2014and gives the attentive observer a quiet connection to the larger sky.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%203521",
+            "overlap_terms": [
+              "ascension",
+              "catalog",
+              "coordinates",
+              "declination",
+              "emission",
+              "field",
+              "galaxy",
+              "heliocentric",
+              "ident",
+              "listed",
+              "magnitude",
+              "measurement"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [
+      {
+        "quoted_text": "Emission-line",
+        "source_matches": [
+          "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%203521"
+        ],
+        "exact_text_confirmed": true
+      }
+    ],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
