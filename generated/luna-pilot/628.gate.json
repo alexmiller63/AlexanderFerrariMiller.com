@@ -1,0 +1,75 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%205165"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Beta Phe: A Steady Light in the Phoenix\n\n*An orange-tinged giant anchors a quiet corner of the southern sky\u2014and rewards observers who give it time to rise.*\n\nOn a clear spring evening in the Southern Hemisphere, look south for Phoenix, a constellation shaped less like a bird than a scattered trail of modest stars. Beta Phe is one of its brighter markers: a point of light that can be picked out with the unaided eye, but becomes more interesting when you pause over it. In SIMBAD\u2019s catalogue, the star is listed at visual magnitude 3.30 and classified as spectral type G8III\u2014a giant star. [SIMBAD: Beta Phe](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%205165)\n\nThe \u201cIII\u201d in that classification is the clue to its life stage. Beta Phe is not a Sun-like star simply shining from a familiar, steady middle age: it has evolved into a giant. Its G8 classification places it in the cooler part of the G-star range, though a star\u2019s apparent color can be subtle to the eye. Compare it with nearby stars, then look away and back; sometimes the impression of warmth emerges only after a few moments.\n\nThe catalogue also calls Beta Phe a \u201cdouble or multiple star.\u201d That description is an invitation to investigate, not a promise that two points will be obvious in a small telescope. The entry supplied here does not give a component separation, so don\u2019t assume the system can be split visually. Begin with binoculars or the naked eye, and enjoy the star as a bright point set against Phoenix\u2019s comparatively sparse field. A telescope at low power can help you explore the surrounding stars, even if Beta itself remains unresolved.\n\nThere is a useful caution in the numbers. SIMBAD lists a parallax of 0.12 milliarcseconds with an uncertainty of 14.62 milliarcseconds. Because the uncertainty is vastly larger than the measured value, that entry does not provide a dependable distance. It is a reminder that catalogues collect measurements of very different quality: a number printed to two decimal places is not automatically a precise answer. The database also gives Beta Phe\u2019s J2000 coordinates as right ascension 1 hour 6 minutes and declination 46 degrees 43 minutes south, which helps explain its strong southern-sky character. [SIMBAD: Beta Phe](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%205165)\n\nFor observing, choose a night when Phoenix is high above the southern horizon, rather than trying to catch it through haze or rooftops. From southern locations, Beta Phe is well placed during the evening season when Phoenix is prominent in the spring sky; from farther north it stays low, and eventually lies below the horizon. Let your eyes adapt to the dark, but don\u2019t expect a dramatic color or a spectacular telescope view. The pleasure is subtler: identifying a real giant star, following its place among the constellation\u2019s faint companions, and knowing that its apparent simplicity conceals a more complex system.\n\nIf you are observing with a group, invite everyone to find it first without optical aid. Then compare impressions through binoculars. Beta Phe\u2019s brightness makes it an approachable target, while its uncertain distance and multiple-star classification offer a good reason to keep the observing honest: admire what you can see, and leave room for what the catalogue alone cannot settle.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%205165",
+            "overlap_terms": [
+              "ascension",
+              "catalogue",
+              "catalogues",
+              "coordinates",
+              "database",
+              "declination",
+              "degrees",
+              "double",
+              "eventually",
+              "ident",
+              "listed",
+              "magnitude"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [
+      {
+        "quoted_text": "double or multiple star.",
+        "source_matches": [],
+        "exact_text_confirmed": false
+      }
+    ],
+    "all_quoted_passages_confirmed": false,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
