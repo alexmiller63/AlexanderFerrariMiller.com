@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2037447"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Alpha Mon, the Quiet Beacon in Monoceros\n\n*In a constellation of faint stars, one modestly bright giant offers a simple late-winter target\u2014and a reminder that the sky\u2019s landmarks need not be dazzling.*\n\nSome stars announce themselves with brilliance. Alpha Mon makes a quieter offer: find the faint outline of Monoceros, the Unicorn, and look for its brightest named star. To the unaided eye, Alpha Mon is a modest point of light, but in a dark sky it can serve as a welcoming stop between more familiar winter patterns.\n\nThe star lies at right ascension 7 hours 41 minutes and declination about 9.5 degrees south. Those coordinates put it in Monoceros, the dim constellation east of Orion. SIMBAD lists its visual magnitude as 3.93\u2014bright enough for naked-eye viewing under reasonably dark skies, though city lights or a bright Moon may wash it out. Its cataloged spectral type, G9.5 III-IIIb, identifies it as a giant star of roughly late-G classification. [SIMBAD\u2019s entry for Alpha Mon](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2037447) gives a parallax of 22.3839 milliarcseconds. Turn that measurement around and Alpha Mon comes out about 145 light-years away.\n\nThat distance is not something the eye can sense. The star appears as a steady pinprick, much as it would if it were far nearer. Parallax is subtler: astronomers measure a star\u2019s slight apparent shift as Earth moves around the Sun, then use the geometry to estimate its distance. Alpha Mon\u2019s measured shift is small, but precise enough to place it among the stars of our local galactic neighborhood.\n\nFor a late-winter observing session from mid-northern latitudes, begin with Orion. Find its three-star belt, then look eastward toward bright Procyon. Alpha Mon lies nearly due south of Procyon, in the less conspicuous stretch of sky between Orion and the stars of Canis Major. Monoceros has no showy outline to rival Orion; give your eyes a few minutes to adjust, and use a star chart or planetarium app to pick out its pattern. The contrast is part of the pleasure: a familiar landmark helps you locate a quieter patch of sky.\n\nOnce you have found Alpha Mon, try binoculars. They will not turn the star into a disk\u2014stars remain unresolved points in ordinary binoculars\u2014but they can make the surrounding field easier to explore. Compare the view with your unaided-eye impression, then look away from the instrument and see whether the star remains visible without help. A clear, moonless night away from streetlights gives the best chance.\n\nSIMBAD also classifies Alpha Mon as a high-proper-motion star. Its listed motion across the sky is roughly 75 milliarcseconds per year westward and 20 milliarcseconds per year southward. That drift is far too slight to notice during an evening outside. Over generations, though, careful measurements reveal that stars are not fixed decorations: each follows its own path through the Milky Way.\n\nAlpha Mon is no rival to the winter sky\u2019s brightest beacons. Its reward is smaller and more personal: the satisfaction of finding a quiet star in a faint constellation, then knowing that its apparently still point is both a distant giant and a traveler.\n\n**Source:** [SIMBAD Astronomical Database: HIP 37447 / Alpha Mon](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2037447)",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2037447",
+            "overlap_terms": [
+              "around",
+              "ascension",
+              "coordinates",
+              "database",
+              "declination",
+              "degrees",
+              "ident",
+              "listed",
+              "magnitude",
+              "major",
+              "measure",
+              "measurement"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
