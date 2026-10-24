@@ -114,20 +114,20 @@
       }
       layouts.push(slots);baseRadius=Math.max(...slots.map(s=>s.radius))+95;
     }
-    const rim=baseRadius-45,edge=rim+90,colors=['#75b9f4','#f0bd7d'];
-    let out=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="${-edge} ${-edge} ${edge*2} ${edge*2}" role="img" aria-labelledby="syn-wheel-title syn-wheel-desc"><title id="syn-wheel-title">Synastry bi-wheel</title><desc id="syn-wheel-desc">${escape(people[0].label)} inside in blue; ${escape(people[1].label)} outside in amber. Symbols retain exact longitudes. Cross-chart lines are projected to the inner circle.</desc><circle r="${rim+35}" fill="#101a2c" stroke="#64768c"/>`;
+    const rim=baseRadius-45,edge=rim+90,colors=['#a9dcff','#ffd09b'];
+    let out=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="${-edge} ${-edge} ${edge*2} ${edge*2}" role="img" aria-labelledby="syn-wheel-title syn-wheel-desc"><title id="syn-wheel-title">Synastry bi-wheel</title><desc id="syn-wheel-desc">${escape(people[0].label)} inside in blue; ${escape(people[1].label)} outside in amber. Symbols retain exact longitudes. Cross-chart lines are projected to the inner circle.</desc><circle r="${rim+35}" fill="#22344d" stroke="#b6c6d9"/>`;
     for(let d=0;d<360;d++){
-      const [x,y]=xy(d,rim),[u,v]=xy(d,rim-(d%30===0?16:d%5===0?8:3));out+=`<path d="M${x},${y}L${u},${v}" stroke="#78889b" stroke-width="${d%30===0?1.3:.6}"/>`;
-      if(d%30===0){const [a,b]=xy(d+15,rim+20);out+=`<text x="${a}" y="${b}" fill="#f0c987" font-size="18" text-anchor="middle" dominant-baseline="central">${signs[d/30]}</text>`;}
+      const [x,y]=xy(d,rim),[u,v]=xy(d,rim-(d%30===0?16:d%5===0?8:3));out+=`<path d="M${x},${y}L${u},${v}" stroke="#b0bfd0" stroke-width="${d%30===0?1.3:.6}"/>`;
+      if(d%30===0){const [a,b]=xy(d+15,rim+20);out+=`<text x="${a}" y="${b}" fill="#ffe0a1" font-size="22" text-anchor="middle" dominant-baseline="central">${signs[d/30]}</text>`;}
     }
-    if(people[0].houses)people[0].houses.forEach((cusp,i)=>{const [x,y]=xy(cusp,213),[u,v]=xy(cusp,236),[a,b]=xy(cusp+3,225);out+=`<path d="M${x},${y}L${u},${v}" stroke="#7e8d9f"/><text x="${a}" y="${b}" fill="#c2cbd8" font-size="9">${i+1}</text>`;});
+    if(people[0].houses)people[0].houses.forEach((cusp,i)=>{const [x,y]=xy(cusp,213),[u,v]=xy(cusp,236),[a,b]=xy(cusp+3,225);out+=`<path d="M${x},${y}L${u},${v}" stroke="#b8c8dc"/><text x="${a}" y="${b}" fill="#ffffff" font-size="12">${i+1}</text>`;});
     for(const match of report.aspects){if(!enabled.has(match.aspect)||match.aspect==='conjunction')continue;
       const a=people[0].bodies.find(p=>p.body===match.first_body),b=people[1].bodies.find(p=>p.body===match.second_body);
       const [x,y]=xy(a.longitude,212),[u,v]=xy(b.longitude,212),color=['trine','sextile'].includes(match.aspect)?'#75b9f4':'#ef7e83';
-      out+=`<path d="M${x},${y}L${u},${v}" fill="none" stroke="${color}" opacity=".55" stroke-width="1" ${match.aspect==='sextile'?'stroke-dasharray="4 3"':''}/>`;
+      out+=`<path d="M${x},${y}L${u},${v}" fill="none" stroke="${color}" opacity=".85" stroke-width="1.7" ${match.aspect==='sextile'?'stroke-dasharray="4 3"':''}/>`;
     }
-    layouts.forEach((rows,i)=>{out+=`<circle r="${Math.min(...rows.map(s=>s.radius))-23}" fill="none" stroke="${colors[i]}" opacity=".5"/>`;
-      rows.forEach(row=>{out+=`<text x="${row.x}" y="${row.y}" fill="${colors[i]}" text-anchor="middle" dominant-baseline="central" font-size="${row.body==='ceres'?13:22}" font-family="DejaVu Sans,Segoe UI Symbol,Apple Symbols,sans-serif">${symbols[row.body]}</text>`;const [a,b]=xy(row.longitude,row.radius-18);out+=`<text x="${a}" y="${b}" fill="${colors[i]}" text-anchor="middle" dominant-baseline="central" font-size="8">${Math.floor(row.longitude%30)}°</text>`;});
+    layouts.forEach((rows,i)=>{out+=`<circle r="${Math.min(...rows.map(s=>s.radius))-23}" fill="none" stroke="${colors[i]}" opacity=".85"/>`;
+      rows.forEach(row=>{out+=`<text x="${row.x}" y="${row.y}" fill="${colors[i]}" text-anchor="middle" dominant-baseline="central" font-size="${row.body==='ceres'?13:22}" font-family="DejaVu Sans,Segoe UI Symbol,Apple Symbols,sans-serif">${symbols[row.body]}</text>`;const [a,b]=xy(row.longitude,row.radius-18);out+=`<text x="${a}" y="${b}" fill="${colors[i]}" text-anchor="middle" dominant-baseline="central" font-size="12">${Math.floor(row.longitude%30)}°</text>`;});
     });
     return out+'</svg>';
   }
