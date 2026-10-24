@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206405"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Butterfly Cluster: A Wingbeat in the Southern Sky\n\n*NGC 6405 gathers a field of stars into a shape that invites a second look\u2014and rewards a slow, wide-field search.*\n\nSome star patterns announce themselves at once. Others emerge only after the eye has settled in. The Butterfly Cluster belongs to the second kind: a bright gathering in the southern sky whose familiar name hints at wings, but whose stars are scattered across a patch of darkness rather than drawn in a tidy outline. Astronomers catalog it as the open cluster NGC 6405. ([SIMBAD](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206405))\n\nAn open cluster is a family of stars held together by gravity, usually born from the same cloud of gas and dust. Its members can look like a chance sprinkling through binoculars; careful measurements reveal a more connected story. SIMBAD lists a parallax of 2.1626 milliarcseconds for NGC 6405. Parallax is the apparent shift of a nearby object against more distant stars as Earth moves around the Sun. Taking the reciprocal gives a rough distance of 460 parsecs\u2014about 1,500 light-years. That is a useful estimate, not a claim that every star in the cluster sits at precisely the same distance. ([SIMBAD](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206405))\n\nThe catalog places the cluster at right ascension 17 hours 40 minutes and declination 32 degrees south, and gives it an angular size of about 20 arcminutes. That span is roughly two-thirds the apparent width of the full Moon. The measurement offers a practical clue: this is a target to take in as a whole, not just a handful of stars to inspect at high magnification. SIMBAD also records a small shared proper motion\u2014the gradual movement of the cluster across the sky\u2014which astronomers can compare with the motions of individual stars when assessing membership. ([SIMBAD](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206405))\n\nFor a first look, find a dark site and give your eyes time to adjust. The cluster lies in Scorpius, where its southern declination makes it easier to see from southern latitudes; from farther north, it can remain low above the southern horizon. Choose a night when Scorpius is well placed, and observe when the cluster is highest in your local sky. Haze and buildings along the horizon can soften or hide its fainter stars.\n\nStart with binoculars, sweeping slowly through the surrounding star field rather than fixing on one bright point. A telescope at low power can frame the cluster\u2019s broad spread; higher magnification may crop the view and make it harder to appreciate the pattern. Let the scene sit in your vision for a minute. The \u201cwings\u201d may not appear as a crisp diagram, but the name can serve as an invitation to notice how the stars balance around the center.\n\nThere is pleasure in that small act of translation: catalog coordinates become a patch of sky, an angular measurement becomes a field of view, and a measured parallax becomes a sense of depth. The Butterfly Cluster is both a celestial object and a seeing exercise\u2014an opportunity to look carefully, then decide what shape the stars make for you.\n\n**Source:** [SIMBAD: NGC 6405](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206405)",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206405",
+            "overlap_terms": [
+              "angular",
+              "around",
+              "ascension",
+              "catalog",
+              "celestial",
+              "cluster",
+              "coordinates",
+              "declination",
+              "degrees",
+              "field",
+              "frame",
+              "ident"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
