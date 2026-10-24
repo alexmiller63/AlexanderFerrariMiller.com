@@ -176,7 +176,7 @@ jobs:
           from pathlib import Path
           manifest = json.loads(Path('research/luna-pilot-candidates.json').read_text())
           assert len(manifest) > 0
-          assert len({str(t['id']) for t in manifest}) == 10
+          assert len({str(t['id']) for t in manifest}) == len(manifest)
           output = Path('generated/luna-pilot')
           if output.exists():
               for story in output.glob('*.md'):
