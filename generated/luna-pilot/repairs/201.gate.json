@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%202506"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# NGC 2506: A Quiet Gathering in the Winter Sky\n\n*This distant open cluster rewards patience: its modest glow is only the sum of many suns, scattered across a patch of sky wider than the full Moon.*\n\nSome celestial sights announce themselves at once. NGC 2506 asks you to slow down. At roughly 8 hours right ascension and 10\u00b046\u2032 south declination, this open cluster sits in the southern part of the sky for observers in the Northern Hemisphere. Its light arrives as a subtle concentration of stars, not a bright, compact jewel.\n\nAn open cluster is a collection of stars formed from the same cloud of gas and dust. Its members travel through space together, though gravity does not hold such groups as tightly as it binds stars in a globular cluster. Over time, encounters with other stars and the Milky Way\u2019s gravitational field can scatter a cluster\u2019s members into the wider galaxy. Looking at NGC 2506 is therefore a glimpse of a stellar family still gathered in one place.\n\nThe distance is substantial. SIMBAD lists a parallax of 0.292 milliarcseconds. Taking the reciprocal gives a rough distance of about 3,400 parsecs, or 11,000 light-years. That conversion is a useful scale, not a claim of a precision distance: the parallax is a measurement, and interpreting it involves uncertainties. SIMBAD also lists an apparent angular size of about 10.6 arcminutes. At the rough distance above, that corresponds to a span of roughly 10 light-years. The cluster\u2019s apparent smallness is largely a matter of perspective.\n\nThe database gives a visual magnitude of 7.6, but marks that measurement with a low-quality flag. In any case, a cluster\u2019s total brightness can be misleading: its light is spread across many stars and a broad area, rather than concentrated in one point. NGC 2506 is not a naked-eye showpiece. Its appeal is the gradual emergence of its star field as your eyes settle and the view sharpens.\n\nFor Northern Hemisphere observers, winter evenings are a good time to try. The cluster reaches its highest point around midnight in late January, and is well placed during the surrounding months. Its southerly declination means it stands lower from northern locations than from southern ones; a clear southern horizon helps. Use the coordinates\u2014right ascension 08h00m, declination \u221210\u00b046\u2032\u2014to locate it on a star chart or in a planetarium app, then follow the chart\u2019s nearby-star pattern through a finder scope.\n\nChoose a dark site if you can. Begin with low magnification to take in the surrounding field, then increase it if the stars remain sharp. A small telescope may show a faint sprinkling, while a larger aperture and steady, transparent skies can make more of the cluster\u2019s individual stars apparent. Give your eyes time to adapt, and look slightly to the side of the faintest light: averted vision can help reveal details that direct staring misses.\n\nThe observation is less about a dramatic flash than a change in perception. First the field seems ordinary; then, with careful attention, a group begins to stand apart. NGC 2506 is a reminder that the night sky\u2019s quiet patches can hold entire communities of stars.\n\n**Source:** [SIMBAD: NGC 2506](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%202506) \u2014 coordinates, object classification, parallax, angular size and listed photometry.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%202506",
+            "overlap_terms": [
+              "angular",
+              "around",
+              "ascension",
+              "celestial",
+              "cluster",
+              "coordinates",
+              "database",
+              "declination",
+              "field",
+              "ident",
+              "listed",
+              "magnitude"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
