@@ -1,0 +1,77 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2036850"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Castor: Gemini\u2019s Quiet Pairing\n\n*An apparently single winter beacon becomes a lesson in stellar multiplicity\u2014and in the patience of looking closely.*\n\nOn a clear evening, Castor looks like one bright point in Gemini. The eye gathers its light and moves on. A telescope asks a different question: is that point really one star?\n\nAstronomers classify Castor as a double or multiple star. SIMBAD lists its spectral type as A1V+A2Vm, describing two A-type stars on the main sequence, where stars spend most of their lives fusing hydrogen in their cores. The catalogue gives the system a visual magnitude of 1.58\u2014bright enough to stand out without optical aid\u2014and a parallax of 64.12 milliarcseconds. That parallax corresponds to a distance of roughly 51 light-years. [SIMBAD: Castor](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2036850)\n\nFor the observer, the first task is finding Gemini. Castor marks one of the constellation\u2019s two bright \u201ctwin\u201d stars, with Pollux nearby. The pair makes a useful naked-eye starting point: look for the two beacons, then turn your attention back to Castor. Under dark skies, it shines readily; from a light-polluted yard, it is still an easy target.\n\nThe contrast between what the eye sees and what a telescope can reveal is part of the pleasure. A steady telescope view can show Castor\u2019s close visual pair as two points rather than one. Begin at low magnification, centre the star, and increase power gradually. Atmospheric turbulence can blur or distort the view, so wait for moments when the image settles. If the stars seem to merge, try again when Castor is higher in the sky, where its light passes through less atmosphere.\n\nThat small split is only the beginning of the system\u2019s complexity. \u201cMultiple star\u201d is not just a poetic label: stars can be bound together by gravity, orbiting a shared centre of mass. Some pairs are separated enough to distinguish through a telescope; others are so close that their motion is detected by spectroscopy or changes in brightness. Castor\u2019s catalogue classification signals that more than one stellar component is involved, even though a telescope\u2019s view cannot reveal every orbit or companion.\n\nFor a simple observing record, note the date, sky conditions, instrument and magnification. Sketch what you see, including the apparent spacing and brightness contrast between the points. Repeat the observation on another night. The stars will not visibly swing around one another over a few days, but the practice of returning to the same target connects a fleeting view to the longer timescales astronomers study.\n\nCastor also offers a reminder about measurement. SIMBAD lists its position for the J2000 coordinate system as right ascension 07h 34m 35.87s and declination +31\u00b0 53\u2032 17.8\u2033\u2014a precise address for a light that has crossed interstellar space before reaching your eye. The catalogue reports a proper motion of about 191 milliarcseconds per year westward and 145 milliarcseconds per year southward. Those shifts are imperceptible in a single observing session, but they register the star\u2019s movement across the sky over time. [SIMBAD: Castor](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2036850)\n\nSo start with the naked-eye beacon, then let a telescope complicate the picture. Castor rewards both kinds of attention: the quick glance that finds a familiar constellation, and the patient look that discovers the point of light is a system.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2036850",
+            "overlap_terms": [
+              "around",
+              "ascension",
+              "before",
+              "catalogue",
+              "coordinate",
+              "declination",
+              "double",
+              "ident",
+              "magnitude",
+              "measurement",
+              "motion",
+              "multiple"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [
+      {
+        "quoted_text": "Multiple star",
+        "source_matches": [
+          "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2036850"
+        ],
+        "exact_text_confirmed": true
+      }
+    ],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
