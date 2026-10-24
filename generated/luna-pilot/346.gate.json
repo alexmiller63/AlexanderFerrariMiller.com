@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206494"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# M23: A Summer Crowd in the Archer\n\n*An open cluster gathers its stars in one generous patch of sky. Find Sagittarius, then give the eyepiece time to sort the crowd.*\n\nSomewhere in Sagittarius, a small city of stars hangs together in the dark. M23 is an open cluster: a grouping of stars that share a region of the Milky Way, rather than a distant galaxy beyond it. Its name in the astronomical catalogue is NGC 6494. SIMBAD lists its apparent diameter as about 35 arcminutes\u2014slightly wider than the full Moon appears in the sky. [SIMBAD: M23 / NGC 6494](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206494)\n\nThat apparent size is a useful invitation. M23 is not a pinprick to be chased with extreme magnification; it is a field to explore. Start with binoculars or a telescope at low power, where a wider view can hold the cluster together. Let your eyes settle. The first impression may be a sprinkling; with patience, individual points resolve into a richer pattern, like lights appearing across a hillside at dusk.\n\nThe cluster\u2019s position gives you a precise starting point: right ascension 17 hours 56 minutes 56.9 seconds, declination 18 degrees 59 minutes south, for the J2000 coordinates listed by SIMBAD. That places it in Sagittarius, the Archer, a constellation best placed for evening observing during the Northern Hemisphere\u2019s summer. From northern locations it can sit low in the southern sky, so an unobstructed horizon matters. From farther south, it climbs higher. Wait until it has cleared rooftops, trees and the thickest haze near the horizon.\n\nTo find the Archer, look for the familiar shape often called the Teapot. A star chart or planetarium app can guide you from that landmark to M23; the constellation\u2019s crowded Milky Way fields make a chart especially helpful. If you are using a telescope, begin with the finder and a wide-field eyepiece. Centre the cluster, then sweep gently around it rather than increasing magnification straight away. A wider view helps preserve the sense of a group set within the surrounding star field.\n\nThere is science in that quiet act of looking, too. SIMBAD classifies M23 as an open cluster and reports a parallax of 1.354 milliarcseconds. Parallax is the apparent shift of a nearby object against more distant stars as Earth moves around the Sun. Turning that measurement upside down gives a distance of roughly 740 parsecs, or about 2,400 light-years. The conversion is an approximation, but it gives the scene a scale: the light entering your eye tonight began its journey long before the present moment.\n\nTake a few minutes before deciding what you see. Averted vision\u2014looking slightly to one side of the cluster\u2014can make faint stars easier to notice. If the sky is bright or the Moon is nearby, individual stars may be harder to pick out; try again on a darker night. Sketching the pattern, even roughly, can also slow the eye down enough to reveal more.\n\nM23 asks for no grand equipment or dramatic spectacle. It offers a broad patch of stars, a reliable place in the Archer, and a reminder that the sky\u2019s apparent stillness conceals motion, distance and shared beginnings. Start wide. Look patiently. Let the crowd come into focus.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206494",
+            "overlap_terms": [
+              "around",
+              "ascension",
+              "before",
+              "catalogue",
+              "cluster",
+              "coordinates",
+              "crowd",
+              "crowded",
+              "declination",
+              "degrees",
+              "field",
+              "ident"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
