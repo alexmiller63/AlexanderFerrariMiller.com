@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204321"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# M100: A Spiral Written in Faint Light\n\n*In the spring sky, this distant galaxy asks observers to trade naked-eye certainty for patience\u2014and a carefully aimed telescope.*\n\nThe first thing to know about M100 is that you probably won\u2019t see it by looking directly at it. This is a galaxy-sized story arriving as a soft smudge, faint enough that averted vision\u2014looking just to one side of the target\u2014can make it easier to notice. But the light has crossed an enormous stretch of space to reach your telescope. Even a modest view offers a reminder that the night sky is not a painted ceiling: it is depth, distance and time.\n\nM100 is also catalogued as NGC 4321. SIMBAD gives its position as right ascension 12h 22m 54.93s and declination +15\u00b0 49\u2032 20.3\u2033 (J2000), and classifies its morphology as SAB\u2014a spiral type with a bar between the strongly barred and unbarred classes. Its listed optical dimensions are about 6.3 by 5.3 arcminutes. Those numbers describe an extended galaxy, not a point of light, though its low surface brightness means the full span can be hard to discern through a small telescope. SIMBAD also lists a redshift of 0.005237. That small shift in the galaxy\u2019s spectral lines is one measure of its motion away from us; it is a subtle clue to a universe in which galaxies are not fixed decorations but moving systems. [SIMBAD: NGC 4321 / M100](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204321)\n\nFor an observing night, think of M100 as a destination that rewards preparation more than magnification. The coordinates put it in the springtime sky, in the region of Coma Berenices. Use a current star chart or planetarium app to work from bright, identifiable stars toward the target; the listed coordinates are a precise endpoint, not a naked-eye landmark. Choose a night when the Moon is absent or well away, and give your eyes time to adapt to darkness. Shield a phone screen, use a red light if you need one, and let your gaze rest slightly off the galaxy\u2019s position.\n\nIn binoculars, M100 may be difficult or invisible under ordinary skies. A telescope makes a better invitation: begin at low power to establish the surrounding star field, then increase magnification only if the view remains bright and steady. Under dark skies, look for a faint oval glow with a more concentrated center. Don\u2019t expect a long-exposure photograph\u2019s vivid, curled arms in the eyepiece. Those images gather light over time and process contrast; your eye is working in real time, with a tiny pupil and a moving atmosphere. Averted vision can help, but patience matters just as much.\n\nIf the galaxy doesn\u2019t appear immediately, that is not a failed observation. Check the field, pause, and try again. Sometimes the reward is not a crisp spiral but the recognition of a small, persistent haze\u2014light from a whole galaxy registering at the threshold of sight. M100\u2019s catalogued size and spiral classification give that haze structure on paper. At the eyepiece, the structure is a question: how much can the eye make of light that has travelled so far?\n\n**Source:** [SIMBAD Astronomical Database: NGC 4321 (M100)](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204321)",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204321",
+            "overlap_terms": [
+              "ascension",
+              "certainty",
+              "coordinates",
+              "database",
+              "declination",
+              "galaxy",
+              "ident",
+              "listed",
+              "measure",
+              "motion",
+              "optical",
+              "point"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
