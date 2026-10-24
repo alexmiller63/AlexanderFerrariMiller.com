@@ -45,7 +45,7 @@ def registry_identity(obj):
                 return dict(namespace=namespace, value=value), query
     raise RuntimeError(f"No supported research identifier for object {obj['fixed_object_id']}")
 
-def candidates(limit=10):
+def candidates(limit=10, resume_interrupted=False):
     objects = json.loads((ROOT / "database/fixed-objects.json").read_text())["fixed_objects"]
     curated_ids, _ = curated_scope()
     registry = json.loads((ROOT / "database/fixed-object-registry.json").read_text())["fixed_objects"]
@@ -56,11 +56,20 @@ def candidates(limit=10):
     saved = ROOT / "generated/luna-pilot"
     # Any saved work or checkpoint reserves its permanent object ID.
     # Do not reselect interrupted research, evidence, audit or paid stages.
+    resumable = set()
+    if resume_interrupted and saved.exists():
+        for evidence in saved.glob("*.evidence.json"):
+            ident = evidence.name.split(".")[0]
+            if (ident.isdigit() and not (saved / (ident + ".md")).exists()
+                    and not (saved / (ident + ".failure.json")).exists()
+                    and (list(saved.glob(ident + ".*.stage.txt"))
+                         or list(saved.glob(ident + ".*.response.json")))):
+                resumable.add(int(ident))
     if saved.exists():
         for p in saved.iterdir():
             if p.is_file():
                 match = re.match(r"^(\d+)(?:\.|$)", p.name)
-                if match:
+                if match and int(match.group(1)) not in resumable:
                     existing.add(int(match.group(1)))
     existing.update(int(p.stem) for p in saved.glob("*.md") if p.stem.isdigit())
     # Do not repeat any previous pilot candidate until its status has been reconciled.
@@ -73,7 +82,7 @@ def candidates(limit=10):
                     if any(re.search(r"\bHIP\s+" + hip.group(1) + r"\b", str(rec.get("source_key", "")), re.I) for rec in obj.get("source_records", [])):
                         existing.add(int(obj["fixed_object_id"]))
     selected = []
-    for obj in sorted(objects, key=lambda o: int(o["fixed_object_id"])):
+    for obj in sorted(objects, key=lambda o: (int(o["fixed_object_id"]) not in resumable, int(o["fixed_object_id"]))):
         ident = int(obj["fixed_object_id"])
         if ident in existing:
             continue
@@ -94,10 +103,12 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--limit", type=int, default=10)
     parser.add_argument("--output", default="generated/luna-pilot-selected.json")
+    parser.add_argument("--resume-interrupted", action="store_true",
+                        help="Resume saved paid stages before selecting new objects")
     args = parser.parse_args()
     if not 1 <= args.limit <= 1000:
         parser.error("limit must be 1..1000")
-    selected = candidates(args.limit)
+    selected = candidates(args.limit, resume_interrupted=args.resume_interrupted)
     scope, unresolved = curated_scope()
     report = {"identified_curated_objects": len(scope), "selected_count": len(selected),
               "unresolved_catalog_entries": unresolved}

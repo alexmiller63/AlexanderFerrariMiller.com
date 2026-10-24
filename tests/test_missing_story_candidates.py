@@ -31,6 +31,14 @@ class CandidateSelectionTests(unittest.TestCase):
             with patch.object(selector, "ROOT", root):
                 result = selector.candidates(10)
             self.assertEqual([int(t["id"]) for t in result], [8, 9, 10, 11])
+            # Explicit resume requires both evidence and a paid-stage/response record.
+            saved = root / "generated/luna-pilot"
+            (saved / "4.evidence.json").write_text("[]")
+            (saved / "5.evidence.json").write_text("[]")
+            (saved / "5.failure.json").write_text('{}')
+            with patch.object(selector, "ROOT", root):
+                resumed = selector.candidates(10, resume_interrupted=True)
+            self.assertEqual([int(t["id"]) for t in resumed], [4, 8, 9, 10, 11])
 
 
 if __name__ == "__main__":

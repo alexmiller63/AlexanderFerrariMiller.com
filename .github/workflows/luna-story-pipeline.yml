@@ -45,7 +45,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Select new candidates and preflight identities (free)
-        run: python3 tools/select_missing_story_candidates.py --limit "${{ inputs.count }}"
+        run: python3 tools/select_missing_story_candidates.py --resume-interrupted --limit "${{ inputs.count }}"
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -69,6 +69,8 @@ jobs:
           for task in tasks:
               print(f"Task {task['id']}: {task['title']} -> permanent object {resolved[str(task['id'])]}")
           PY
+      - name: Test response retries, budget and restart recovery (free)
+        run: python3 -m unittest discover -s tests -p test_luna_response_recovery.py
       - name: Test checkpoint persistence and recovery (free)
         run: |
           python3 - <<'PY'

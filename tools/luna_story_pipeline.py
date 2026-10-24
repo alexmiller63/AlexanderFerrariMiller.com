@@ -5,18 +5,34 @@ import json
 import os
 import re
 import subprocess
+import time
 import uuid
 from pathlib import Path
 from html import unescape
 from html.parser import HTMLParser
 from urllib.request import Request, urlopen
-from urllib.error import HTTPError
+from urllib.error import HTTPError, URLError
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "generated" / "luna-pilot"
 CAP = 1.50  # Only draft and optional correction invoke the paid API.
 MAX_INPUT = 6000
-MAX_OUTPUT = 1600
+MAX_OUTPUT = 4000
+MAX_RETRY_OUTPUT = 8000
+MAX_ATTEMPTS = 3
+
+class StoryResponseError(RuntimeError):
+    """This story could not produce a complete response after bounded retries."""
+
+class BudgetExceeded(RuntimeError):
+    """Stop the batch before spending beyond its application budget."""
+
+class APIRequestError(RuntimeError):
+    def __init__(self, message, status, code):
+        super().__init__(message)
+        self.retryable = status in (408, 409, 429) or status >= 500
+        if code in ("insufficient_quota", "billing_hard_limit_reached"):
+            self.retryable = False
 
 def request_json(url, data=None, headers=None):
     req = Request(url, data=json.dumps(data).encode() if data is not None else None,
@@ -35,8 +51,8 @@ def request_json(url, data=None, headers=None):
             error_type = detail.get("type", "unknown")
         except (ValueError, AttributeError):
             message, code, error_type = "Non-JSON error response", "unknown", "unknown"
-        raise RuntimeError(f"HTTP {exc.code} from {req.full_url.split('?')[0]}: "
-                           f"type={error_type}, code={code}, message={message}") from None
+        raise APIRequestError(f"HTTP {exc.code} from {req.full_url.split('?')[0]}: "
+                           f"type={error_type}, code={code}, message={message}", exc.code, code) from None
 
 class PageText(HTMLParser):
     def __init__(self):
@@ -189,6 +205,9 @@ def persist_checkpoint(path, ledger_file):
     git("config", "user.name", "github-actions[bot]")
     git("config", "user.email", "41898282+github-actions[bot]@users.noreply.github.com")
     git("add", "--", str(path.relative_to(ROOT)), str(ledger_file.relative_to(ROOT)))
+    changed = git("diff", "--cached", "--name-only").stdout.strip()
+    if not changed:
+        return
     git("commit", "-m", "Checkpoint Luna paid stage " + path.name)
     for attempt in range(4):
         try:
@@ -214,6 +233,77 @@ def save_or_recover_evidence(path, retrieved, ledger_file, persist=persist_check
         handle.write(chr(10))
     persist(path, ledger_file)
     return retrieved
+
+def paid_story_response(stage, instruction, source, model, key, input_price,
+                        output_price, ledger, ledger_file):
+    """Retry only recoverable request/output failures; account and persist every attempt."""
+    prompt = (instruction + "\n\n" + source)[:18000]
+    limit = MAX_OUTPUT
+    last_error = "No response"
+    for attempt in range(1, MAX_ATTEMPTS + 1):
+        reserve = 1.25 * (MAX_INPUT * input_price + limit * output_price) / 1_000_000
+        if ledger["estimated_usd"] + reserve > CAP:
+            raise BudgetExceeded("Application spending reservation exceeds $1.50 ceiling")
+        diagnostic_path = OUT / (stage.replace(":", ".") + "." + uuid.uuid4().hex + ".response.json")
+        diagnostic = {"stage": stage, "model": model, "attempt": attempt,
+                      "max_output_tokens": limit, "run_id": os.environ.get("GITHUB_RUN_ID")}
+        result = None
+        output = ""
+        retryable = False
+        fatal = None
+        cost = reserve  # Unknown usage is charged conservatively, including timeouts.
+        try:
+            raw = request_json("https://api.openai.com/v1/responses",
+                               {"model": model, "input": prompt, "max_output_tokens": limit},
+                               {"Authorization": "Bearer " + key, "Content-Type": "application/json"})
+            diagnostic["response_body"] = raw.replace(key, "[REDACTED]")
+            parsed = json.loads(raw)
+            if not isinstance(parsed, dict):
+                raise ValueError("Expected a JSON response object")
+            result = parsed
+            usage = result.get("usage") or {}
+            if "input_tokens" in usage and "output_tokens" in usage:
+                cost = (usage["input_tokens"] * input_price + usage["output_tokens"] * output_price) / 1_000_000
+            output = result.get("output_text") or "\n".join(
+                part.get("text", "") for item in result.get("output", [])
+                for part in item.get("content", []) if part.get("type") == "output_text")
+            if result.get("status") != "completed" or not output.strip():
+                last_error = ("Incomplete response" if result.get("status") != "completed"
+                              else "Empty model output")
+                retryable = True
+                if (result.get("incomplete_details") or {}).get("reason") == "max_output_tokens":
+                    limit = min(limit * 2, MAX_RETRY_OUTPUT)
+        except APIRequestError as exc:
+            retryable = exc.retryable
+            last_error = str(exc).replace(key, "[REDACTED]")
+            if not retryable:
+                fatal = exc
+        except (TimeoutError, URLError, ValueError) as exc:
+            retryable = True
+            last_error = str(exc).replace(key, "[REDACTED]")
+        except Exception as exc:
+            fatal = exc
+            last_error = str(exc).replace(key, "[REDACTED]")
+        if retryable or fatal:
+            diagnostic["error"] = last_error
+        ledger["estimated_usd"] += cost
+        ledger["calls"].append({"stage": stage, "attempt": attempt, "estimated_usd": cost,
+                                "usage_estimated": not bool(result and all(k in (result.get("usage") or {}) for k in ("input_tokens", "output_tokens"))),
+                                "input_tokens": (result.get("usage") or {}).get("input_tokens") if result else None,
+                                "output_tokens": (result.get("usage") or {}).get("output_tokens") if result else None,
+                                "max_output_tokens": diagnostic["max_output_tokens"],
+                                "status": result.get("status") if result else "request_error"})
+        diagnostic_path.write_text(json.dumps(diagnostic, indent=2) + "\n", encoding="utf-8")
+        ledger_file.write_text(json.dumps(ledger, indent=2) + "\n", encoding="utf-8")
+        persist_checkpoint(diagnostic_path, ledger_file)
+        if fatal:
+            raise fatal
+        if not retryable:
+            return output.strip()
+        if attempt < MAX_ATTEMPTS:
+            print("RETRY", stage, attempt, last_error, flush=True)
+            time.sleep(2 ** (attempt - 1))
+    raise StoryResponseError(f"{stage}: {last_error}; {MAX_ATTEMPTS} attempts saved")
 
 def main():
     ap = argparse.ArgumentParser()
@@ -245,49 +335,8 @@ def main():
     # Conservative per-call reserve: 25% margin. This is NOT an account-level billing cap.
     reserve = 1.25 * (MAX_INPUT * args.input_price + MAX_OUTPUT * args.output_price) / 1_000_000
     def ask(stage, instruction, source):
-        if ledger["estimated_usd"] + reserve > CAP:
-            raise RuntimeError("Application spending reservation exceeds $1.50 ceiling; stopping")
-        prompt = instruction + "\n\n" + source
-        if len(prompt) > 18000:
-            prompt = prompt[:18000]
-        payload = {"model": args.model, "input": prompt, "max_output_tokens": MAX_OUTPUT}
-        # Preserve every attempt before interpreting the response; never save headers.
-        diagnostic_path = OUT / (stage.replace(":", ".") + "." + uuid.uuid4().hex + ".response.json")
-        diagnostic = {"stage": stage, "model": args.model,
-                      "max_output_tokens": MAX_OUTPUT,
-                      "run_id": os.environ.get("GITHUB_RUN_ID")}
-        try:
-            raw = request_json("https://api.openai.com/v1/responses", payload,
-                               {"Authorization": "Bearer " + key, "Content-Type": "application/json"})
-        except Exception as exc:
-            diagnostic.update(error_type=type(exc).__name__, error=str(exc).replace(key, "[REDACTED]"))
-            diagnostic_path.write_text(json.dumps(diagnostic, indent=2) + "\n", encoding="utf-8")
-            persist_checkpoint(diagnostic_path, ledger_file)
-            raise
-        diagnostic["response_body"] = raw.replace(key, "[REDACTED]")
-        diagnostic_path.write_text(json.dumps(diagnostic, indent=2) + "\n", encoding="utf-8")
-        try:
-            result = json.loads(raw)
-            if not isinstance(result, dict):
-                raise ValueError("Expected a JSON response object")
-        except ValueError:
-            persist_checkpoint(diagnostic_path, ledger_file)
-            raise
-        usage = result.get("usage", {})
-        cost = (usage.get("input_tokens", MAX_INPUT) * args.input_price +
-                usage.get("output_tokens", MAX_OUTPUT) * args.output_price) / 1_000_000
-        ledger["estimated_usd"] += cost
-        ledger["calls"].append({"stage": stage, "estimated_usd": cost,
-                                "input_tokens": usage.get("input_tokens"),
-                                "output_tokens": usage.get("output_tokens")})
-        ledger_file.write_text(json.dumps(ledger, indent=2) + "\n")
-        persist_checkpoint(diagnostic_path, ledger_file)
-        output = result.get("output_text") or "\n".join(
-            part.get("text", "") for item in result.get("output", [])
-            for part in item.get("content", []) if part.get("type") == "output_text")
-        if not output.strip():
-            raise RuntimeError("Empty model output at " + stage + "; saved details: " + diagnostic_path.name)
-        return output.strip()
+        return paid_story_response(stage, instruction, source, args.model, key,
+                                   args.input_price, args.output_price, ledger, ledger_file)
     def stage(ident, name, instruction, source):
         """Resume a completed paid stage without calling the API again."""
         path = OUT / (ident + "." + name + ".stage.txt")
@@ -342,23 +391,37 @@ def main():
             evidence = save_or_recover_evidence(evidence_path, evidence, ledger_file)
         basis = json.dumps({"task": task, "retrieved_sources": evidence}, ensure_ascii=False)
         research = "Source evidence (automatically retrieved; not independently fact-checked):\n" + "\n".join(e["url"] + "\n" + e.get("excerpt", "") for e in evidence)
-        draft = stage(ident, "draft",
-                    "Write an original 450-650 word Star Almanack story with hed, dek, "
-                    "scientific context and observing guidance. The exact subject name "
-                    f"{task['title']!r} must appear in the hed or opening paragraph. "
-                    "Cite source URLs. Do not invent sources or assert publication review.", research)
-        audit = "Free deterministic review only; factual claims require independent editorial verification."
-        # One bounded correction pass, only if deterministic screening fails.
-        initial_gate = editorial_gate(task, research, draft, audit)
-        if not initial_gate["screen_passed"] and (ledger["estimated_usd"] + reserve <= CAP or (OUT / (ident + ".correction.stage.txt")).exists()):
-            revised = stage(ident, "correction",
-                          "Revise this draft to address the listed structural issues. "
-                          "Use only facts supported by the research. Preserve accurate citations. "
-                          "Return the complete 450-650 word story, without commentary.",
-                          json.dumps(initial_gate["checks"]) + "\\nRESEARCH:\\n" +
-                          research + "\\nDRAFT:\\n" + draft)
-            draft = revised
+        try:
+            draft = stage(ident, "draft",
+                        "Write an original 450-650 word Star Almanack story with hed, dek, "
+                        "scientific context and observing guidance. The exact subject name "
+                        f"{task['title']!r} must appear in the hed or opening paragraph. "
+                        "Cite source URLs. Do not invent sources or assert publication review.", research)
             audit = "Free deterministic review only; factual claims require independent editorial verification."
+            # One bounded correction pass, only if deterministic screening fails.
+            initial_gate = editorial_gate(task, research, draft, audit)
+            if not initial_gate["screen_passed"] and (ledger["estimated_usd"] + reserve <= CAP or (OUT / (ident + ".correction.stage.txt")).exists()):
+                revised = stage(ident, "correction",
+                              "Revise this draft to address the listed structural issues. "
+                              "Use only facts supported by the research. Preserve accurate citations. "
+                              "Return the complete 450-650 word story, without commentary.",
+                              json.dumps(initial_gate["checks"]) + "\\nRESEARCH:\\n" +
+                              research + "\\nDRAFT:\\n" + draft)
+                draft = revised
+                audit = "Free deterministic review only; factual claims require independent editorial verification."
+        except StoryResponseError as exc:
+            failure_path = OUT / (ident + ".failure.json")
+            failure_path.write_text(json.dumps({
+                "object_id": ident, "reason": str(exc),
+                "run_id": os.environ.get("GITHUB_RUN_ID"),
+                "status": "retry_exhausted", "publication_approved": False,
+            }, indent=2) + "\n", encoding="utf-8")
+            persist_checkpoint(failure_path, ledger_file)
+            print("SKIP: response retries exhausted", ident, str(exc), flush=True)
+            continue
+        except BudgetExceeded:
+            print("STOP: application spending reservation exceeds $1.50 ceiling", flush=True)
+            break
         # Exclusive create, never replace existing work. Audit is saved separately.
         with dest.open("x", encoding="utf-8") as f:
             f.write(draft + "\n")
@@ -370,6 +433,9 @@ def main():
         gate["evidence_support_matrix"] = evidence_support_matrix(draft, evidence)
         gate["exact_source_claim_check"] = exact_source_claim_check(draft, evidence)
         (OUT / (ident + ".gate.json")).write_text(json.dumps(gate, indent=2) + "\n")
+        for completed in (dest.with_suffix(".audit.txt"), dest.with_suffix(".research.txt"),
+                          dest.with_suffix(".gate.json"), dest):
+            persist_checkpoint(completed, ledger_file)
         print("DRAFT", ident, "screen_passed", gate["screen_passed"],
               "publication_approved", gate["publication_approved"],
               "estimated USD", round(ledger["estimated_usd"], 6))
