@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%202323"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# M50: A Small City in the Winter Sky\n\n*On a clear night in Monoceros, this open cluster offers a quiet reminder that stars can travel together\u2014and that a telescope isn\u2019t required to begin looking.*\n\nThe winter sky has its bright landmarks: Orion\u2019s belt, the gleam of Sirius, the familiar sweep of the Milky Way. Between them, in the faint constellation Monoceros, M50 waits less like a beacon than a gathering you might almost walk past. Find it, though, and a modest patch of light opens into a community of stars.\n\nM50 is also catalogued as NGC 2323. SIMBAD identifies it as an open cluster and gives its position as right ascension 7 hours 2 minutes 44 seconds, declination 8 degrees 21 minutes south. Its listed optical diameter is about 31.6 arcminutes\u2014roughly the apparent width of the full Moon. That\u2019s a useful reminder: a deep-sky object can cover plenty of sky and still be hard to see when its light is spread thinly across it. [SIMBAD: NGC 2323](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%202323)\n\nAn open cluster is a group of stars born from the same cloud of gas and dust. Unlike a constellation, whose stars merely appear close together from Earth, a cluster is a physical family. Its members share an origin, though gravity does not hold an open cluster together forever; over time, such groups can disperse into the larger population of the Milky Way.\n\nThe distance offers another way to imagine M50\u2019s scale. SIMBAD lists a parallax of 1.0012 milliarcseconds. Taking the reciprocal gives a distance of roughly 1,000 parsecs, or about 3,300 light-years. That is an approximate conversion, not a claim that every member sits at precisely the same distance. From here, the cluster\u2019s broad, moon-sized outline arrives as a small, delicate glow.\n\nTo find it, start with Sirius, the brilliant star in Canis Major. M50 lies about nine degrees to its northeast, in the direction of Monoceros. A simple star chart or planetarium app can help with the hop; the coordinates above provide a precise target. Look on a clear winter evening, when Monoceros is well placed. From northern mid-latitudes it stays relatively low in the southern sky, so choose a spot with an unobstructed horizon.\n\nGive your eyes time to adjust, and begin with binoculars or a telescope at low power. Binoculars may show the cluster as a soft, grainy patch; a telescope can separate more of its stars. Use a wide field rather than magnification for its own sake. If the view seems blank, sweep slowly around the target and look slightly to the side of where you expect it\u2014faint objects can be easier to notice away from direct vision. Dark skies help, but patience helps too.\n\nThere is a pleasing contrast in M50\u2019s observing lesson. Its catalog coordinates are precise to the second of time, and its parallax is recorded to a fraction of a milliarcsecond. Yet the first encounter may be a subtle smudge, found by moving a little northeast of a star already bright enough to cast its own unmistakable mark across the night. The numbers guide you to the gathering; your eyes complete the journey.\n\n**Source:** [SIMBAD Astronomical Database \u2014 NGC 2323](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%202323)",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%202323",
+            "overlap_terms": [
+              "around",
+              "ascension",
+              "catalog",
+              "cluster",
+              "coordinates",
+              "database",
+              "declination",
+              "degrees",
+              "field",
+              "ident",
+              "larger",
+              "listed"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
