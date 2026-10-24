@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204157"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# MCG 9-20-106: A Long, Quiet Line of Light\n\n*An inclined spiral galaxy in the spring sky, best approached with a dark night, a chart and patient vision.*\n\nSome galaxies announce themselves with brilliant cores or showy spiral arms. MCG 9-20-106 offers a subtler invitation: find its position, give your eyes time to adapt, and look for a thin trace of another stellar system. The galaxy is cataloged as NGC 4157 in SIMBAD, which places it at right ascension 12h 11m 04s and declination +50\u00b0 29\u2032. Its coordinates put it high in the northern sky for many observers when the spring constellations are on parade.\n\nThe catalog numbers sketch the object\u2019s shape. SIMBAD lists an optical extent of about 10 by 1.8 arcminutes\u2014an elongated patch, nearly six times longer than it is wide\u2014and classifies the galaxy as type S, or spiral. Seen at such an angle, a spiral\u2019s broad disk is foreshortened into a narrow profile. The appearance hints at a galaxy viewed close to edge-on, though a telescope may show little more than a soft streak under ordinary skies.\n\nThat apparent sliver is a vast disk of stars, gas and dust. In spiral galaxies, gravity organizes material into a rotating structure; dust in the disk can absorb and scatter starlight, especially when the disk is viewed from the side. MCG 9-20-106\u2019s cataloged dimensions describe its apparent size on the sky, not its physical width. To translate angular size into a true diameter, astronomers need a distance estimate.\n\nSIMBAD gives a radial velocity of about 765 kilometers per second and a redshift of 0.002552. Redshift measures how much a galaxy\u2019s light has been stretched toward longer wavelengths. At large distances, it can help estimate how quickly the universe\u2019s expansion carries a galaxy away. But this is a nearby object by cosmic standards, so its measured motion can include local gravitational movements as well as expansion. Treat any simple distance inferred from its velocity as approximate, not a precise mileage marker.\n\nFor observers, the coordinates are the most dependable starting point. In April and May, right ascension near 12 hours comes into a favorable position during the evening; from mid-northern latitudes, declination +50\u00b0 places the target high when it crosses the meridian. Use a current star chart or planetarium app to hop from familiar stars to the exact field\u2014galaxies are easy to confuse with faint background smudges.\n\nChoose a moonless night away from bright lights. A telescope of roughly 6 inches or more under dark skies gives a useful starting point, though results depend strongly on conditions. Begin at low or moderate power to locate the field, then increase magnification if the view remains steady. Averted vision\u2014looking slightly to one side of the target\u2014can help reveal faint detail. Don\u2019t expect a colorful photograph: the reward may be a delicate, narrow glow, with the knowledge that this quiet line is the visible edge of a distant spiral disk.\n\n**Source:** SIMBAD Astronomical Database, NGC 4157: https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204157",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204157",
+            "overlap_terms": [
+              "angle",
+              "angular",
+              "ascension",
+              "catalog",
+              "coordinates",
+              "current",
+              "database",
+              "declination",
+              "depend",
+              "extent",
+              "field",
+              "galaxies"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
