@@ -1,0 +1,75 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206779"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# M56: A Quiet Knot Between the Harp and the Swan\n\n*This globular cluster in Lyra gathers ancient starlight into a small, subtle target. Here\u2019s the science behind it\u2014and how to find it.*\n\nA globular cluster can look, at first, like a smudge caught on the dark. M56 is just such a small, soft glow: a densely packed gathering of stars in the constellation Lyra, the Harp. Its light has crossed a vast stretch of space to reach us, but the cluster\u2019s appeal is close at hand: find it yourself, and a faint blur becomes a destination.\n\nM56 is also catalogued as NGC 6779. SIMBAD identifies it as a globular cluster and lists its position as right ascension 19h 16m 35.57s, declination +30\u00b0 11\u2032 00.5\u2033. The database gives its apparent diameter as about 7.1 arcminutes\u2014roughly a quarter of the Moon\u2019s apparent width. That compact scale helps explain why M56 is easy to overlook in a busy field, even though it is a substantial gathering of stars. (SIMBAD: https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206779)\n\nGlobular clusters are roughly spherical collections of stars held together by gravity. In an eyepiece, their combined light can resemble a small, nearly featureless cloud. The stars don\u2019t resolve into separate points all at once: how much detail appears depends on the telescope, the sky\u2019s darkness and steadiness, and how well your eyes adapt. Let the view settle. A hazy patch may gradually acquire a brighter center or a grainier edge.\n\nTo find M56, begin with Lyra on a clear summer evening in the Northern Hemisphere. The constellation\u2019s bright star Vega is an easy landmark. Then look toward the nearby constellation Cygnus and its star Albireo, a colorful double star often admired in binoculars. M56 lies in the stretch of sky between Albireo and Gamma Lyrae, another bright star in Lyra. A finder chart or planetarium app will help turn that broad route into a precise hop; the cluster itself is too faint to stand out like a bright star.\n\nBinoculars may show M56 as a tiny, faint blur under a dark sky, but a telescope makes the search easier. Start at low power to locate the field, then increase magnification if the image remains sharp. Use averted vision\u2014look just to the side of the target rather than directly at it. This can help faint objects register because the edges of the retina are more sensitive in low light. Give your eyes time away from white screens and bright lamps, too.\n\nThe joy of observing M56 is not necessarily a dramatic explosion of detail. It\u2019s the small shift from \u201cthere\u2019s nothing there\u201d to \u201cthere it is\u201d: a compact glow occupying only a few minutes of arc, yet marking a whole cluster of stars. SIMBAD also reports a radial velocity of about \u2212122 kilometres per second, a reminder that this is an astronomical object in motion, not a fixed ornament on the sky. For one observing session, though, the task is beautifully simple: find the faint knot, hold it in view, and let the darkness do the rest.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206779",
+            "overlap_terms": [
+              "ascension",
+              "cluster",
+              "database",
+              "declination",
+              "depends",
+              "field",
+              "globular",
+              "ident",
+              "image",
+              "minutes",
+              "motion",
+              "object"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [
+      {
+        "quoted_text": "there\u2019s nothing there",
+        "source_matches": [],
+        "exact_text_confirmed": false
+      }
+    ],
+    "all_quoted_passages_confirmed": false,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
