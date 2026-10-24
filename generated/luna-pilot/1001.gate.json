@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2073555"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Nekkar, the Quiet Beacon of Bo\u00f6tes\n\n*Look beyond the familiar arc of Arcturus and you\u2019ll find a golden giant whose measured motion and distance turn a modest point of light into a world of its own.*\n\nOn a clear spring evening, the Big Dipper\u2019s handle seems to swing across the northern sky and point toward Arcturus, the bright heart of Bo\u00f6tes. Follow the constellation farther north, and Nekkar waits\u2014not nearly as brilliant, but easy to overlook only until you know where to look. Its light has crossed a great stretch of space to arrive as a steady, third-magnitude spark.\n\nNekkar is Beta Bo\u00f6tis, also catalogued as HIP 73555. In the SIMBAD astronomical database, its listed visual magnitude is 3.52, bright enough to see without optical aid from a reasonably dark site. The same record gives a parallax of 13.878 milliarcseconds, which puts the star roughly 235 light-years away. Its spectral classification, G8IIIaFe-0.5, identifies it as a giant star\u2014not a twin of the Sun, but a star in a later stage of stellar life. (The \u201cG8\u201d describes its spectral type; \u201cIII\u201d is its luminosity class.) [SIMBAD: HIP 73555](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2073555)\n\nThat distance gives Nekkar\u2019s apparent brightness a different meaning. Its light looks modest from Earth, but the star is intrinsically more luminous than a nearby star of similar apparent brightness would be. Its G-type classification also places it on the cooler side of the familiar yellow-white stars like the Sun; to the eye, it may look faintly golden, though atmospheric conditions and individual perception affect star color.\n\nThe catalog\u2019s measurements reveal motion, too. SIMBAD lists a proper motion of about 51 milliarcseconds per year across the sky, as well as a radial velocity of \u221218.40 kilometers per second relative to the Sun. These figures describe a star in motion, not a fixed pin in a celestial picture. But the change in its position from one year to the next is far too small to notice by eye; the constellations shift only over long spans of human history.\n\n**Finding Nekkar:** Start with the Big Dipper\u2019s curved handle and follow its arc to Arcturus, the bright orange star in Bo\u00f6tes. Use Arcturus as a landmark, then look northward within the kite-shaped outline of Bo\u00f6tes for Nekkar. The constellation is well placed in northern-hemisphere evening skies during spring and summer. Nekkar is visible to the unaided eye under dark skies; binoculars can help pick it out in light pollution, but they\u2019ll also crowd the view with many more stars.\n\nFor a precise chart search, Nekkar\u2019s J2000 coordinates are about right ascension 15h 01m 57s and declination +40\u00b0 23\u2032 26\u2033. Coordinates are useful when using a planetarium app or star atlas, while the Big Dipper\u2019s arc is often the more satisfying route outdoors.\n\nGive your eyes a few minutes to adapt to the dark, then pause on Nekkar. It may seem like a small destination after the sweep to Arcturus. Yet its measured distance, temperature class, and motion all belong to a real, evolving star\u2014one whose quiet light makes the northern spring sky feel a little deeper.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2073555",
+            "overlap_terms": [
+              "ascension",
+              "catalog",
+              "celestial",
+              "class",
+              "coordinates",
+              "database",
+              "declination",
+              "ident",
+              "iiiafe",
+              "listed",
+              "luminosity",
+              "magnitude"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
