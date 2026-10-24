@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206445"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# He 2-290: A Small Cloud in the Archer\n\n*In Sagittarius, a planetary nebula marks the slow transformation of a star. Finding it takes more than a glance\u2014but a telescope and a careful star chart can bring this distant object within reach.*\n\nThe sky\u2019s grander landmarks announce themselves. He 2-290 asks for a quieter kind of attention: a search through Sagittarius, where the crowded star fields of the Milky Way can make a faint target easy to overlook.\n\nCatalogued as NGC 6445, He 2-290 is classified as a planetary nebula. SIMBAD gives its position as right ascension 17h 49m 15s and declination \u221220\u00b0 00\u2032 34\u2033 (J2000)\u2014a useful celestial address for a telescope\u2019s setting circles or a computerized mount. [SIMBAD: NGC 6445](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206445)\n\nDespite the name, a planetary nebula has nothing to do with planets. It is a shell of gas cast off by a star late in its life. The exposed stellar remnant can heat that gas, causing it to glow. In this brief phase of stellar evolution, material once belonging to a star becomes a luminous structure in its own right. The details of any individual nebula\u2014its shape, chemistry and history\u2014require observations; the broad category alone does not tell the whole story.\n\nThe record also reminds us that astronomical identity is built from many measurements. SIMBAD lists an optical position and a parallax of 0.6174 milliarcseconds, with an uncertainty of 0.2382 milliarcseconds. That uncertainty is substantial relative to the measurement, so it is better not to turn the number into a confident distance estimate. Here, the coordinate is the more immediately useful figure: it tells an observer where to point.\n\n**Observing guidance:** He 2-290 lies in Sagittarius, a constellation best placed for evening viewing during northern summer. From mid-northern latitudes it stays relatively low in the southern sky; observers farther south see it higher. Choose a night when Sagittarius is well above the horizon, and seek a dark location with a clear southern view. Haze and city glow can make a faint nebula especially hard to pick out.\n\nA telescope is the sensible starting point. Use a detailed chart or a reliable digital finder to approach the listed coordinates; in a rich star field, a narrow search based only on memory can be frustrating. Begin at low power to establish the surrounding pattern, then increase magnification as conditions allow. An O III filter may improve contrast for some planetary nebulae, but compare the view with and without it rather than assuming the filter will help. Keep expectations measured: a catalogue designation does not guarantee a dramatic view through a small instrument.\n\nGive your eyes time to adapt to the dark, shield your observing area from stray light, and make small, deliberate sweeps around the target position. If the field seems empty, return to the chart and check the star pattern before concluding that the nebula is out of reach. Patience is part of the observation.\n\nThe reward may be subtle: not a brilliant spectacle, but the recognition that a faint point or haze belongs to a stellar ending. Somewhere in this region of Sagittarius, a star has shed its outer layers. The light arriving at your telescope is a reminder that the quietest objects can mark profound change.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206445",
+            "overlap_terms": [
+              "allow",
+              "around",
+              "ascension",
+              "before",
+              "catalogue",
+              "celestial",
+              "coordinate",
+              "coordinates",
+              "crowded",
+              "declination",
+              "field",
+              "filter"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
