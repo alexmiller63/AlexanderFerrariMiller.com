@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2063121"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Alpha1 CVn: A Quiet Star on the Move\n\n*At the edge of naked-eye visibility, this northern star rewards a dark sky\u2014and a closer look at what careful measurements can reveal.*\n\nSome stars announce themselves with color, brilliance or a dramatic change in brightness. Alpha1 CVn offers a subtler invitation: find a modest point of light, then consider how astronomers measure its place and motion across the sky.\n\nThe SIMBAD astronomical database identifies Alpha1 CVn as HIP 63121 and lists its spectral type as F2V. Its visual magnitude is 5.60\u2014faint enough that whether you can see it without optical aid depends on your eyesight, the darkness of your sky and the transparency of the night. Under a light-polluted sky, it may disappear into the background. From a dark location, it becomes a rewarding target for patient, unaided viewing or binoculars. [SIMBAD: HIP 63121](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2063121)\n\nThe star\u2019s position gives observers a reliable way to find it. SIMBAD lists coordinates of right ascension 12 hours 56 minutes and declination +38 degrees 19 minutes, for the J2000 reference frame. Use a current sky chart or planetarium app to locate Canes Venatici, then search the chart for Alpha1 CVn. A chart is especially helpful because the star is not a showpiece that leaps out of a bright constellation pattern. In northern spring, when this region is well placed for evening observing, try first from a dark site with your eyes adapted to the night; binoculars can help you confirm the field.\n\nThere is another reason to linger over this small point of light: it is not fixed in the absolute sense. SIMBAD reports a proper motion of about 234 milliarcseconds per year westward in right ascension and 62 milliarcseconds per year northward in declination. Proper motion is a star\u2019s apparent drift across the sky, measured over time against more distant background objects. The change is far too small to watch from one evening to the next. It becomes meaningful through precise astrometry and comparisons spanning years.\n\nDistance, too, emerges from measurement rather than appearance. The database gives Alpha1 CVn a parallax of 30.6121 milliarcseconds. Parallax is the apparent shift of a nearby star as Earth moves around the Sun. Taking the inverse of that value, expressed in arcseconds, gives an estimated distance of roughly 33 parsecs\u2014or about 107 light-years. That estimate turns a dot on a chart into a star with a place in three-dimensional space.\n\nFor a satisfying observing session, give your eyes at least 20 minutes to adapt to darkness, shield yourself from nearby lights, and use averted vision: look slightly to one side of the star rather than directly at it. If you use binoculars, steady them against a support and compare the view with your chart. The goal is not to force a spectacular sight from a faint star. It is to recognize it, hold it in view, and connect the quiet point you see with the precise measurements that reveal its distance and motion.\n\nAlpha1 CVn is a reminder that observing can begin with a simple act of recognition. The star\u2019s light arrives steadily; the story comes from noticing that even a seemingly still point has a measurable place, distance and direction of travel.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2063121",
+            "overlap_terms": [
+              "around",
+              "ascension",
+              "coordinates",
+              "current",
+              "database",
+              "declination",
+              "degrees",
+              "depends",
+              "expressed",
+              "frame",
+              "ident",
+              "magnitude"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
