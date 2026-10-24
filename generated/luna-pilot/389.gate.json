@@ -1,0 +1,77 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206960"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Western Veil Nebula: A Ghost Drawn Across Cygnus\n\n*In a dark summer sky, a telescope and a narrowband filter can turn a faint catalogue entry into a sweep of luminous threads.*\n\nThe first thing to find is not a nebula but a star. In Cygnus, the Northern Cross, 52 Cygni shines plainly to the unaided eye. Nearby, a delicate arc of light threads the darkness: the Western Veil Nebula, catalogued as NGC 6960. Its pale strands seem almost to brush the star, though the star is a foreground landmark, not a lamp illuminating the cloud.\n\nThe Western Veil is part of the larger Veil Nebula, also known as the Cirrus Nebula. SIMBAD lists NGC 6960 as an interstellar-medium object and records \u201cVeil Nebula\u201d and \u201cFilamentary Nebula\u201d among its identifiers. Those catalogue terms point toward its character: not a compact ball like a planet, but a broad, broken structure of glowing material. The Veil is understood as the aftermath of a stellar explosion. As expanding debris encounters gas in its surroundings, shock waves heat and excite that material, making the delicate filaments visible. What looks like a cosmic curtain is a vast structure seen from the side.\n\nThat contrast\u2014between immense scale and fine detail\u2014is part of the pleasure of observing it. A photograph may show vivid reds and blues, but the eye at the eyepiece is less sensitive to color in dim light. Expect a subtle, ghostly trace rather than a bright splash. Under a truly dark sky, the nebula can reward patient, indirect looking: glance slightly away from the target, then let the faint line emerge in peripheral vision.\n\nFor a starting point, locate Cygnus and identify 52 Cygni. From a dark site, sweep slowly around it with binoculars or a telescope at low power. Binoculars may reveal the star field, but the nebula itself is a more demanding target. A wide-field eyepiece helps because NGC 6960 is extended; high magnification can make it harder to hold the whole sweep in view. Give your eyes time to adapt to darkness, and shield nearby lights if possible.\n\nA nebula filter can make a dramatic difference. An O III filter, or a suitable UHC filter, suppresses much of the background sky while allowing important nebular wavelengths through. Try viewing both with and without the filter: the unfiltered view preserves the surrounding stars, while the filtered one may sharpen the filament\u2019s outline. Averted vision and a slow, gentle sweep can bring out sections that disappear when stared at directly.\n\nSIMBAD gives NGC 6960\u2019s J2000 position as right ascension 20h 45m 38s and declination +30\u00b0 42\u2032 30\u2033. In the Northern Hemisphere, Cygnus rides high on summer evenings and remains a rewarding target into autumn; exact observing hours depend on location. The constellation\u2019s bright cross makes a useful guide, but the Western Veil asks for something more than a quick glance: a dark sky, a steady view, and a little time.\n\n**Source:** SIMBAD, NGC 6960\u2014catalogue classification, identifiers and coordinates: https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206960",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206960",
+            "overlap_terms": [
+              "around",
+              "ascension",
+              "between",
+              "bright",
+              "catalogue",
+              "cirrus",
+              "coordinates",
+              "declination",
+              "depend",
+              "field",
+              "filament",
+              "filamentary"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [
+      {
+        "quoted_text": "Filamentary Nebula",
+        "source_matches": [
+          "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206960"
+        ],
+        "exact_text_confirmed": true
+      }
+    ],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
