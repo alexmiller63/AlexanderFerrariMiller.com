@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%20102831"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Alpha Mic: A Southern Lantern in Microscopium\n\n*An understated golden giant rewards patient observers beneath dark southern skies.*\n\nSome stars announce themselves at a glance. Alpha Mic asks for a little more attention. In the faint southern constellation Microscopium, it shines at magnitude 4.89\u2014bright enough for the unaided eye under dark, clear skies, but easy to lose in city glow or moonlight. Find it, and you\u2019ve picked out a star whose quiet point of light comes from a giant hundreds of light-years away.\n\nSIMBAD identifies Alpha Mic as a G8III star: a G-type star with luminosity class III, the classification for a giant. Its listed visual magnitude is 4.89. The same database gives a parallax of 8.2508 milliarcseconds. Parallax is the tiny apparent shift in a star\u2019s position as Earth moves around the Sun; turning that measurement around gives a distance of about 121 parsecs, or roughly 395 light-years. These are catalogue measurements, not something visible through an eyepiece. What the observer sees is a steady-looking point, with any warm tint subtle and dependent on eyesight and conditions. [SIMBAD: Alpha Mic / HIP 102831](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%20102831)\n\nAlpha Mic\u2019s coordinates\u2014right ascension 20 hours 49 minutes 58 seconds, declination \u221233\u00b0 46\u2032 47\u2033\u2014place it deep in the southern sky. Right ascension is the celestial equivalent of longitude; declination measures distance north or south of the sky\u2019s equator. The negative declination explains why the star rises high for observers in the Southern Hemisphere but stays low for many northern observers. From northern mid-latitudes, look toward the southern horizon and choose a site with an unobstructed view.\n\nFor a seasonal outing, try August or September, when this part of the sky is well placed in the evening. Start with a star chart or planetarium app set to your location: Microscopium is a subtle constellation, and Alpha Mic is not a showpiece star that leaps out from a bright pattern. Once you\u2019ve identified the field, give your eyes time to adjust to the dark. Avoid looking at phone screens at full brightness; a red screen or dimmed display helps preserve night vision.\n\nA pair of binoculars can make the search easier, especially beneath light-polluted skies, though Alpha Mic does not require magnification. With binoculars, steady your elbows against a surface and sweep slowly through the marked area rather than expecting a dramatic close-up. In a small telescope, the star remains a point of light. The pleasure is in recognizing it: a distant giant held in place, for a few minutes, by your own careful attention.\n\nIf you\u2019re observing from the north, Alpha Mic\u2019s low altitude makes timing and transparency important. Atmospheric haze near the horizon can dim stars and blur their light, so wait for the clearest stretch of sky and avoid rooftops, trees, or hills that block the south. If it disappears from view, that may be a reminder of geometry, not a failure of eyesight: the star\u2019s far-southern declination limits how high it can climb.\n\nAlpha Mic is a modest destination, not a cosmic spectacle. Its reward is the scale hidden inside an ordinary-looking point: a measured stellar distance, a giant-star classification, and a place in a constellation few observers learn by heart. The next time the southern sky opens, pause long enough to find it.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%20102831",
+            "overlap_terms": [
+              "around",
+              "ascension",
+              "catalogue",
+              "celestial",
+              "class",
+              "coordinates",
+              "database",
+              "declination",
+              "display",
+              "ident",
+              "inside",
+              "listed"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
