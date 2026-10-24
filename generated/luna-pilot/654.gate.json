@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%209487"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Alrescha: The Knot at the End of the Fish\n\n*At Pisces\u2019 celestial junction, a modest point of light offers a lesson in distance, starlight and finding your way around the autumn sky.*\n\nTwo fish swim through Pisces, joined by a cord that meets at a star called Alrescha. The name means \u201cthe cord\u201d or \u201cthe knot\u201d: a fitting marker for the constellation\u2019s meeting point, and a useful one for skywatchers tracing its faint, sprawling shape. Alrescha is not the brightest star in the sky, but it rewards the effort of finding it with a reminder that even a steady-looking speck is a physical sun, measured by its light and motion.\n\nAlrescha is Alpha Piscium. In the SIMBAD astronomical database, the entry for HIP 9487 is identified as \u201calf Psc.\u201d Its listed J2000 position is right ascension 2 hours, 2 minutes and declination +2 degrees, 46 minutes\u2014coordinates that place it in Pisces, just north of the celestial equator. The same entry gives a parallax of 21.66 milliarcseconds. Parallax is the tiny apparent shift in a star\u2019s position as Earth moves around the Sun; turning that shift around gives a distance of about 46 parsecs, or roughly 150 light-years. [SIMBAD: HIP 9487](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%209487)\n\nThat distance helps make sense of the star\u2019s place in the night sky. Alrescha looks like a single point to the unaided eye, but its light has traveled for generations before reaching us. The SIMBAD record also lists a chemically peculiar spectral classification and identifies the object as a variable star. Such classifications come from studying starlight: its spectrum can reveal temperature and the chemical fingerprints in a star\u2019s atmosphere, while repeated brightness measurements can disclose change too subtle for casual watching. A star may look unwavering to us even when astronomers detect variation through careful measurement.\n\nTo find Alrescha, begin with the more familiar autumn constellations. From the Great Square of Pegasus, follow the starry line that leads into Pisces; the constellation is a broad, dim V-shape rather than a sharply outlined figure. Alrescha sits where the two fish\u2019s cords meet. Because most of Pisces\u2019 stars are relatively faint, a dark site and a clear, moonless night make a real difference. Give your eyes 15 to 20 minutes to adapt, and try binoculars if the pattern is hard to pick out. They will bring out nearby stars while keeping enough sky in view to follow the constellation\u2019s shape.\n\nThe best time to look is on autumn evenings, when Pisces climbs high in the sky for observers in the Northern Hemisphere. A simple plan: find the Great Square, sweep eastward into Pisces, then pause at the knot. Check the position against a current star chart or planetarium app, since the constellation\u2019s faint outline can be difficult under urban lights. You do not need a telescope to appreciate Alrescha; its role as a guidepost is part of the attraction.\n\nThere is a quiet pleasure in locating a star by the pattern it anchors, then considering what measurement says lies behind that point of light. Alrescha ties together two fish in an old sky picture. Its parallax ties our view of the sky to Earth\u2019s yearly journey\u2014and gives that bright knot a place in three-dimensional space.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%209487",
+            "overlap_terms": [
+              "alpha",
+              "around",
+              "ascension",
+              "before",
+              "celestial",
+              "coordinates",
+              "current",
+              "database",
+              "declination",
+              "degrees",
+              "ident",
+              "joined"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
