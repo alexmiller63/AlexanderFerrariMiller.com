@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%209884"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Hamal, the Ram\u2019s Steady Beacon\n\n*An autumn waypoint in Aries, this bright orange-toned giant offers a naked-eye invitation\u2014and a chance to see how a star\u2019s position and motion become measurable.*\n\nOn a clear autumn evening, Hamal can seem almost modest: one bright point in a wide, dark field. But the leading star of Aries, the Ram, has a quiet distinction. Its light began its journey roughly 66 years ago, and careful measurements show that the star is moving across our sky.\n\nHamal is also catalogued as Alpha Arietis, or HIP 9884. SIMBAD lists it as a K2 giant star, with a visual magnitude of 2.01\u2014bright enough to see without optical aid under ordinary dark-sky conditions. Its measured parallax is 49.56 milliarcseconds. Parallax is the apparent shift in a nearby star\u2019s position against more distant background stars as Earth moves around the Sun. Converting that small angle gives a distance of about 66 light-years. [SIMBAD\u2019s entry for Hamal](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%209884)\n\nThat distance gives the star a useful human scale. The light arriving tonight left Hamal around the time when a child born in the late 1950s might have been learning to read. It has crossed the space between star and Earth without needing to hurry in any way we can perceive. And yet Hamal is not fixed in the sky. SIMBAD reports its proper motion\u2014the star\u2019s gradual drift against the background\u2014as about 189 milliarcseconds per year in right ascension and 148 milliarcseconds per year southward in declination. The motion is far too small to notice from one night to the next, but it adds up over centuries.\n\nFor observers, Hamal is a friendly starting point in a constellation that can otherwise be easy to overlook. Look eastward on autumn evenings in the Northern Hemisphere, and first find the familiar V-shaped face of Taurus or the compact sparkle of the Pleiades. Hamal lies to their west, in Aries. It is the brightest star in the constellation; two fainter stars nearby help suggest the Ram\u2019s short, bent line of horns. The pattern is not grand, but that is part of its appeal: a small asterism in a broad stretch of sky.\n\nTry the observation with unaided eyes before reaching for binoculars. Give your vision time to adjust to the dark, and avoid looking at a phone screen. If the sky is bright with moonlight or city glow, Hamal should still be easier to pick out than the surrounding stars. Binoculars can help reveal the sparse field around it, but they are not needed to find the star itself.\n\nA practical note: the constellation\u2019s position changes with the hour and season, so the eastern-sky description is a guide for autumn evenings, not a fixed address. Hamal\u2019s recorded coordinates\u2014right ascension 2 hours, 7 minutes, and declination about 23 degrees north\u2014are the precise celestial version of that address. They let astronomers return to the same target, compare measurements, and track its slow movement.\n\nTonight, the task is simpler. Find the bright point, notice the quietness of the field around it, and remember that a star can look still while steadily changing its place in the galaxy.\n\n**Source:** [SIMBAD: HIP 9884 / Alpha Arietis](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%209884)",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%209884",
+            "overlap_terms": [
+              "angle",
+              "around",
+              "ascension",
+              "before",
+              "celestial",
+              "coordinates",
+              "declination",
+              "degrees",
+              "ident",
+              "magnitude",
+              "motion",
+              "north"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
