@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%207654"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# M52: A Small Island of Stars in Cassiopeia\n\n*Dek: Find this open cluster in the northern sky, then trade a faint blur for a field of separate suns.*\n\nCassiopeia\u2019s familiar W is easy to spot on a clear autumn evening. Less obvious is the compact gathering of stars called **M52**, waiting nearby. Look for it and you\u2019re not seeing a single bright star, but an open cluster: a group of stars that appears as one object from Earth. Its other catalogue name is NGC 7654.\n\nThe coordinates listed by SIMBAD place M52 at right ascension 23h 24m 46.8s and declination +61\u00b0 35\u2032 24\u2033. That high northern declination helps make it a rewarding target for observers at mid-northern latitudes: from north of about 29\u00b0N, it stays above the horizon all night. Its listed apparent diameter is about 16 arcminutes\u2014just over half the Moon\u2019s apparent width. The cluster\u2019s measured parallax, 0.596 milliarcseconds, corresponds to a distance of roughly 5,500 light-years if simply inverted. That estimate is a conversion of the catalogue figure, not a direct measurement in light-years.\n\nThere\u2019s a quiet pleasure in finding such a small smudge in a sky crowded with stars. Start with Cassiopeia\u2019s W, then use a sky chart or planetarium app to pinpoint the coordinates. M52 lies in the same region of sky; a chart will help distinguish the cluster from the many unrelated stars around it. Let your eyes adjust to darkness before searching. Streetlights and bright screens can make a faint target disappear.\n\nBinoculars are a good first instrument. Sweep slowly through the mapped area and look for a compact patch that seems slightly misty against the sharper points of background stars. If you don\u2019t see it at once, try looking a little to one side of the target: peripheral vision can be more sensitive to faint light. Under a dark sky, a small telescope may begin to separate the cluster into individual stars. Use low magnification first; a wider field makes it easier to locate the target and see it in context. Increase the power only if the view remains sharp and steady.\n\nM52 is a useful reminder of what \u201ccluster\u201d means in astronomy. SIMBAD classifies it as an open cluster and lists a radial velocity of about \u201332 kilometres per second. That figure describes its motion along our line of sight, toward us in the usual sign convention. The catalogue also lists 1,277 linked objects; that count is not a promise that every listed object is a confirmed member. It\u2019s a hint of the complexity behind a view that, through binoculars, may look like a single faint haze.\n\nGive your eyes time, and give the sky a chance: a transparent, moonless night makes faint clusters easier to pick out. Once you\u2019ve found M52, pause before moving on. The little blur is a distant congregation of stars, gathered in the same patch of sky and visible from your backyard.\n\n**Sources:** SIMBAD entry for M52 (NGC 7654), including coordinates, object type, parallax, radial velocity and angular size: https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%207654. The approximate distance and visibility threshold above are calculated from the listed parallax and declination.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%207654",
+            "overlap_terms": [
+              "angular",
+              "around",
+              "ascension",
+              "before",
+              "catalogue",
+              "cluster",
+              "coordinates",
+              "count",
+              "crowded",
+              "declination",
+              "field",
+              "ident"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
