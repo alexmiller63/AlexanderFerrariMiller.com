@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2015863"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Mirfak, the Beacon at Perseus\u2019s Shoulder\n\n*An easy naked-eye landmark, this bright star is also a distant supergiant\u2014and a reminder that a steady point of light can have a changing story.*\n\nOn an autumn evening, look up toward Perseus: Mirfak marks the constellation\u2019s brightest star, a pale beacon among the northern sky\u2019s winding patterns. Its name is often printed beside the more technical designation Alpha Persei. From a dark location, your eyes can take in the whole constellation; from a city, Mirfak is bright enough to serve as a useful starting point.\n\nTry finding it by tracing upward from the familiar W of Cassiopeia. Perseus lies nearby, and Mirfak stands in its broad central region. In the Northern Hemisphere, autumn and winter evenings are good times to look, though the exact hour it rises and where it sits depend on your location and the date. A free sky-map app or a printed chart can help orient you. Once you\u2019ve spotted the star, give your eyes a few minutes to adjust; binoculars can make the surrounding field easier to explore, but Mirfak itself needs no optical aid.\n\nThere is more to this bright point than its role as a guide. SIMBAD lists Mirfak as a variable star and gives its spectral type as F5 Ib. In stellar classification, \u201cF\u201d describes a star\u2019s spectral class, while \u201cIb\u201d identifies a luminous supergiant. That makes Mirfak very different from the Sun, even though both appear to us as tiny points of light. Its recorded visual magnitude is about 1.79, which helps explain why it stands out to the unaided eye. [SIMBAD](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2015863)\n\nSIMBAD also lists a parallax of 6.44 milliarcseconds. Parallax is the apparent shift of a nearby star against more distant background stars as Earth moves around the Sun. Turning that measurement into a distance gives roughly 155 parsecs, or about 500 light-years. That estimate is a calculation from the listed parallax, not a distance you can judge by how bright the star looks: a star\u2019s apparent brightness depends both on its intrinsic light and on how far away it is.\n\nThe catalogue\u2019s variable-star designation adds another layer to the view. It means astronomers classify Mirfak as varying in brightness, but a single look through binoculars\u2014or even a telescope\u2014won\u2019t tell you how it changes. Don\u2019t confuse any apparent flicker with stellar variability: Earth\u2019s moving atmosphere makes stars shimmer, especially when they\u2019re low above the horizon. For a real observing project, note the date and time, compare Mirfak\u2019s brightness with nearby stars, and repeat the observation on later nights. A star chart or observing log can help you keep those comparisons consistent.\n\nFor tonight, though, the simplest observation is enough. Find Perseus, pick out its brightest star, and let the name Mirfak become a marker in your own sky. The light arriving now began its journey roughly five centuries ago. What looks like a fixed point is both a distant stellar giant and a beacon you can return to whenever the season brings Perseus back overhead.\n\n**Source:** [SIMBAD entry for HIP 15863 / Alpha Persei](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2015863)",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2015863",
+            "overlap_terms": [
+              "around",
+              "catalogue",
+              "class",
+              "depend",
+              "depends",
+              "field",
+              "ident",
+              "listed",
+              "magnitude",
+              "measurement",
+              "optical",
+              "orient"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
