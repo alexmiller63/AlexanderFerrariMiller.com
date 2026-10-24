@@ -1,0 +1,77 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206572"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Blue Racquetball: A Small Nebula with a Big Exit\n\n*NGC 6572 is compact enough to resemble a colored bead in a telescope\u2014and it marks a star\u2019s bright, brief transition toward its final form.*\n\nSomewhere in Ophiuchus, a dying star has let go of its outer layers. The expanding gas glows around the hot stellar remnant at its center, making NGC 6572 one of the sky\u2019s compact planetary nebulae. Its nickname, **Blue Racquetball**, suits an object that can look less like a sprawling cloud than a tiny, vivid ball of light.\n\nThe name \u201cplanetary nebula\u201d is a historical misdirection: these objects are not planets. They are shells of gas cast off by stars nearing the end of their lives. Radiation from the exposed, extremely hot central star energizes the gas, causing it to shine. The shell will continue to expand and fade; the star left behind will eventually become a white dwarf. NGC 6572 offers a glimpse of that short-lived, luminous stage.\n\nThe catalog numbers help explain the racquetball comparison. SIMBAD lists NGC 6572 at right ascension 18h 12m 06.3s and declination +06\u00b0 51\u2032 13\u2033, with an infrared angular size of about 0.597 by 0.406 arcminutes\u2014roughly 36 by 24 arcseconds. That is tiny beside the Moon, which spans about 30 arcminutes. Its listed visual magnitude is 10.8, though the nebula\u2019s compactness means that brightness is concentrated into a small patch of sky. [SIMBAD\u2019s NGC 6572 entry](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206572)\n\nTo find it, look in Ophiuchus, the large constellation between Hercules and Scorpius. The coordinates above are a useful starting point for a planetarium app or star chart; use a current chart to star-hop from nearby bright stars rather than sweeping blindly. From mid-northern latitudes, Ophiuchus is well placed on summer evenings, and NGC 6572 climbs high enough to observe around its passage across the southern sky. The target is also accessible to observers farther south.\n\nA small telescope can show that something is there under a dark sky, but the nebula\u2019s small apparent size rewards magnification. Start at low power to locate the field, then try roughly 100\u00d7 or more if the air is steady. At low power, it may resemble a slightly out-of-focus star. Increasing magnification can help reveal its tiny disk. A nebula filter, especially an O III filter, may improve contrast against the background; compare the view with and without it, since filters dim stars as well as the sky.\n\nExpect color to be elusive. The \u201cblue\u201d in the nickname is a useful hint, not a promise of a saturated jewel in every eyepiece. Visual color depends on aperture, sky conditions, magnification and the observer\u2019s eyes; photographs can collect light for much longer than a human observer can. Even without obvious color or detail, spotting this small disk is a satisfying catch: a distant star\u2019s expelled atmosphere, briefly shining before it disperses into space.\n\n**Source:** [SIMBAD Astronomical Database: NGC 6572](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206572)",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206572",
+            "overlap_terms": [
+              "angular",
+              "ascension",
+              "before",
+              "catalog",
+              "coordinates",
+              "database",
+              "declination",
+              "eventually",
+              "filter",
+              "ident",
+              "increasing",
+              "listed"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [
+      {
+        "quoted_text": "planetary nebula",
+        "source_matches": [
+          "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206572"
+        ],
+        "exact_text_confirmed": true
+      }
+    ],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
