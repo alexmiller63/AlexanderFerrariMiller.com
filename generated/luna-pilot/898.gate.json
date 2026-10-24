@@ -1,0 +1,75 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2051437"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Beta Sex: A Quiet Beacon in the Sea of Sextans\n\n*An easily overlooked, near-equatorial star offers a lesson in how stellar catalogs\u2014and patient observers\u2014notice change.*\n\nBeta Sex doesn\u2019t dominate the night. At about magnitude 5.1 in visible light, it is a modest point, near the threshold of naked-eye visibility under dark skies. Yet its catalog entry gives it a second identity: an \u201calpha2 CVn variable,\u201d a designation for a class of variable stars. That makes this faint beacon a useful reminder that some stellar stories unfold too subtly for a casual glance. ([SIMBAD](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2051437))\n\nThe same entry classifies Beta Sex as a B6V star: a hot, blue-white star on the main sequence, the long-lived phase in which stars spend most of their lives producing energy in their cores. Its measured parallax\u2014about 8.89 milliarcseconds\u2014places it roughly 112 light-years away. That is close enough, astronomically speaking, for its light to arrive from a star in our own stellar neighborhood, though its true scale is far beyond what the naked eye can reveal. ([SIMBAD](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2051437))\n\nThe \u201cvariable\u201d label deserves care. The catalog identifies Beta Sex with a recognized variability class, but the listing cited here does not provide a period or a range of brightness. Don\u2019t expect to watch it visibly swell and fade during a single observing session. Detecting small changes calls for repeated, careful estimates\u2014or photometry\u2014with comparison stars and consistent observing conditions. Its value for a skywatcher may be as much in the question it raises as in any change readily seen: how do astronomers learn that a star is variable in the first place?\n\nFinding it is a different sort of exercise. Sextans is a faint constellation tucked below Leo and above Hydra, without the bright, unmistakable pattern of a famous asterism. Beta Sex lies close to the celestial equator. SIMBAD lists its J2000 coordinates as right ascension 10 hours 30 minutes and declination about 0.6 degrees south. A planetarium app or star chart can guide you to the field; use those coordinates to distinguish the star from nearby points of similar brightness. ([SIMBAD](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2051437))\n\nFor observers in the Northern Hemisphere, spring evenings are a good time to look for Sextans. Start with Leo, then sweep south toward the dimmer stars of Sextans. From a dark site, try first without optical aid; if the star eludes you, binoculars should make the field easier to navigate. Let your eyes adapt to the dark, shield them from nearby lights, and consult a chart before you begin. A telescope is not necessary to find Beta Sex, though a low-power view can help place it among its neighbors.\n\nIf you want to explore its variability, keep a simple observing log: date, time, sky conditions, instrument, and your brightness estimate relative to nearby comparison stars. Repeat the process on later nights rather than drawing conclusions from one look. The catalog entry supplies the invitation, not a promise of a spectacle.\n\nBeta Sex is easy to pass over. But a small, steady-looking point can still carry a scientific story\u2014one that begins with looking closely, and looking again.\n\n**Sources:** [SIMBAD entry for HIP 51437 / Beta Sex](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2051437).",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2051437",
+            "overlap_terms": [
+              "alpha",
+              "ascension",
+              "before",
+              "catalog",
+              "catalogs",
+              "celestial",
+              "class",
+              "coordinates",
+              "declination",
+              "degrees",
+              "ident",
+              "magnitude"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [
+      {
+        "quoted_text": "alpha2 CVn variable,",
+        "source_matches": [],
+        "exact_text_confirmed": false
+      }
+    ],
+    "all_quoted_passages_confirmed": false,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
