@@ -1,0 +1,77 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206531"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# M21: A Small Company in Sagittarius\n\n*Under the Milky Way\u2019s bright summer sweep, this open cluster rewards a careful look\u2014and a little patience.*\n\nSome sky objects announce themselves. M21 is quieter: a gathering of stars in Sagittarius, close on the sky to the glowing Trifid Nebula, M20. Find the pair on a clear summer night and you have two very different sights in one field: nebular haze nearby, and a compact cluster whose stars come into focus as you look more closely.\n\nM21 is catalogued as an open cluster. Its position is about 18 hours 04 minutes right ascension and 22 degrees 30 minutes south declination, placing it in the rich star fields of Sagittarius. SIMBAD lists a parallax of 0.798 milliarcseconds; simply inverting that value gives a rough distance of about 1,250 parsecs, or 4,100 light-years. That estimate is a guide to scale, not a precise ruler: astronomical distance measurements have uncertainties, and a catalog value should be read in context. [SIMBAD: M21 / NGC 6531](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206531)\n\n\u201cOpen cluster\u201d describes a family of stars gathered in the same region of space, rather than a fuzzy cloud. Through binoculars, M21 may look like a small, misty knot against the Milky Way. A telescope separates that glow into individual points. The change is part of the pleasure: what first seems like a single object becomes a small company of suns, set against a much larger background of unrelated stars.\n\nThe nearby Trifid is a useful guidepost, but don\u2019t expect the two objects to look alike. M20\u2019s nebula can be subtle, especially under light-polluted skies; M21 is a stellar target. Their closeness on the sky makes it easy to sweep from one to the other, but they are distinct objects, not two parts of one structure. SIMBAD separately identifies M20 as the Trifid Nebula and M21 as an open cluster. [SIMBAD: M20 / NGC 6514](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206514)\n\n**How to observe:** Look for Sagittarius during the Northern Hemisphere summer, when it is best placed in the evening sky. From farther north, the constellation stays low above the southern horizon, so choose a site with an unobstructed view and observe when Sagittarius is highest. Start with binoculars or a finder scope and sweep the Milky Way around M20; then use a low-power eyepiece to keep M21\u2019s surrounding star field in view. Increase magnification only if the sky is steady and the cluster remains comfortably framed. Give your eyes time to adapt to the dark, and avoid staring at a bright phone screen while you search.\n\nM21 is not a spectacle that needs dramatic magnification. Its reward is the moment the faint patch resolves: first a few stars, then more, each pinprick holding its place in the cluster\u2019s small pattern. In a season crowded with bright celestial landmarks, this modest gathering offers a reminder that the Milky Way\u2019s richness is often best discovered one careful look at a time.\n\n**Source:** [SIMBAD astronomical database entry for M21](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206531); [SIMBAD astronomical database entry for M20](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206514).",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206531",
+            "overlap_terms": [
+              "around",
+              "ascension",
+              "catalog",
+              "celestial",
+              "cluster",
+              "crowded",
+              "database",
+              "declination",
+              "degrees",
+              "different",
+              "distinct",
+              "field"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [
+      {
+        "quoted_text": "Open cluster",
+        "source_matches": [
+          "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206531"
+        ],
+        "exact_text_confirmed": true
+      }
+    ],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
