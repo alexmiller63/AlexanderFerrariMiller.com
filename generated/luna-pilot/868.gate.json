@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2045238"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Miaplacidus: A Bright Beacon in Carina\n\n*An easy naked-eye star for southern skies, Miaplacidus pairs a familiar glimmer with a measurable place in the stellar neighborhood.*\n\nOn a clear winter evening in the Southern Hemisphere, turn toward Carina and look for a bright point that needs no telescope to announce itself. Miaplacidus is the star\u2019s proper name; catalogues also identify it as Beta Carinae, or HIP 45238. Its brightness makes it a rewarding naked-eye target, while its position and distance give observers a chance to connect the view overhead with the measurements astronomers make on Earth.\n\nSIMBAD lists Miaplacidus at visual magnitude 1.69, with coordinates of right ascension 9 hours 13 minutes and declination 69 degrees 43 minutes south. The database gives its spectral type as A1III: \u201cA1\u201d describes its spectral class, while \u201cIII\u201d identifies it as a giant star. It also lists a parallax of 28.82 milliarcseconds. Parallax is the tiny apparent shift of a nearby star against more distant background stars as Earth travels around the Sun. Taking the reciprocal of that angle gives a distance of about 35 parsecs, or roughly 113 light-years. These figures are catalogued by [SIMBAD](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2045238).\n\nThat distance puts Miaplacidus in our stellar neighborhood by galactic standards, though its light still takes more than a century to reach us. Its apparent brightness is not a direct measure of how luminous it is: what we see depends both on the star\u2019s intrinsic output and on its distance. The designation \u201cgiant\u201d supplies a clue to its stellar character, but the naked-eye view remains simple\u2014a steady point of light among the stars of Carina.\n\n**How to find it:** Miaplacidus lies far south on the celestial sphere, so it is best placed for observers in the Southern Hemisphere. From mid-southern latitudes it climbs well above the horizon; from the tropics it sits lower. North of about 21 degrees latitude, its declination means it does not rise at all. For a practical search, use a sky chart or astronomy app set to Carina and enter the coordinates above. A clear, unobstructed southern horizon helps if you are observing from near the tropics. From the south, look toward the southern sky as the star reaches its highest point. Binoculars are not needed to see it, though they can help distinguish nearby stars in the surrounding field.\n\nMiaplacidus is particularly well placed in the evening during the Southern Hemisphere\u2019s winter months. Give your eyes a few minutes to adjust to the dark, then compare the star\u2019s position with a chart; bright stars can look deceptively alike when viewed alone. If you return to the same spot over time, the star will seem fixed in its pattern for ordinary observing. Yet SIMBAD also records its proper motion: the slow drift of Miaplacidus across the sky relative to more distant stars.\n\nThat is the quiet pleasure of an almanac target. Miaplacidus is immediately visible, but it is not merely a point to tick off. Its light, its measured distance and its gradual motion each tell a different part of the story\u2014one that begins with a glance southward and continues in the numbers astronomers attach to the stars.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2045238",
+            "overlap_terms": [
+              "angle",
+              "around",
+              "ascension",
+              "catalogues",
+              "celestial",
+              "class",
+              "coordinates",
+              "database",
+              "declination",
+              "degrees",
+              "depends",
+              "field"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
