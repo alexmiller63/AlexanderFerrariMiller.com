@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%202194"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Collinder 87: A Small Gathering in Orion\n\n*At the position catalogued as NGC 2194, a modest telescope can turn a faint patch into a gathering of stars\u2014and a lesson in how astronomers map the sky.*\n\nSome deep-sky objects announce themselves. Collinder 87 asks you to come closer.\n\nIn Orion, at right ascension 6 hours 13 minutes 45.6 seconds and declination +12\u00b0 48\u2032 47\u2033, this open cluster is listed in SIMBAD as NGC 2194. Its recorded apparent visual magnitude is 8.5, and its apparent diameter is about 9 arcminutes\u2014roughly a third of the Moon\u2019s width. Those figures describe the cluster\u2019s combined light and its broad outline, not the brightness of each star. Through a telescope, the challenge is to tease apart that faint concentration from the surrounding sky.\n\nThe numbers also hint at scale. SIMBAD lists a parallax of 0.263 milliarcseconds. Turning that into a distance by simply taking its reciprocal gives a rough estimate of 3,800 parsecs, or about 12,400 light-years. That is a useful sense of the cluster\u2019s remoteness, not a precise distance measurement: interpreting parallax as distance requires care, and the catalogue reports a measurement with uncertainty.\n\nAn open cluster is a loose family of stars, often understood as having formed from the same cloud of gas and dust. Its members travel through the Galaxy together, though over time gravity and the Milky Way\u2019s tides can disperse a cluster. SIMBAD also lists NGC 2194\u2019s proper motion: a tiny change in its apparent position over time, measured in fractions of a milliarcsecond per year. On a single observing night, that motion is invisible. Across careful measurements made years apart, it becomes part of the cluster\u2019s identity.\n\n## Finding and viewing it\n\nLook for Collinder 87 on a clear, dark evening when Orion is well placed. The coordinates are a reliable starting point for a planetarium app, go-to mount or detailed star atlas. In the eyepiece, begin at low power to survey the surrounding field, then increase the magnification gradually. A telescope in the 4- to 6-inch range is a sensible starting point; averted vision\u2014looking slightly to one side of the target\u2014may help reveal fainter stars. Under a bright Moon or city glow, the cluster\u2019s more subtle members can disappear, so choose the darkest available sky and give your eyes time to adapt.\n\nDon\u2019t expect a brilliant, compact jewel. At nine arcminutes across, it occupies a small but not pinprick-sized patch of sky. The pleasure is in noticing the difference between a hazy impression and individual points, and in letting the field settle until more of its pattern emerges. Try more than one magnification: a wide view shows the cluster in context, while a closer one may make its faint stars easier to distinguish.\n\nThe catalogue coordinates are a destination, but they are also a reminder of what observing means. The light arriving at the eyepiece has crossed an immense distance; the cluster\u2019s measured motion is too slight for us to watch directly; and yet, with patient looking, a distant population of stars becomes a place in the sky.\n\n**Scientific reference:** SIMBAD, NGC 2194: https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%202194",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%202194",
+            "overlap_terms": [
+              "about",
+              "ascension",
+              "catalogue",
+              "cluster",
+              "coordinates",
+              "declination",
+              "field",
+              "ident",
+              "listed",
+              "magnitude",
+              "measurement",
+              "minutes"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
