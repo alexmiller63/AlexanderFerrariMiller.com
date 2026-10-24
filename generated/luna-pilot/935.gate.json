@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2057936"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Beta Hya: A Subtle Signal in Hydra\n\n*An unassuming fourth-magnitude star carries the signature of a magnetic, chemically peculiar stellar class\u2014and rewards patient observers with a glimpse into the changing faces of stars.*\n\nHydra is a constellation best followed as a long, faint trail across the spring sky. Beta Hya, at about magnitude 4.3, is one of its modest waypoints: not a showpiece, but a star with a more complicated story than its steady-looking point of light suggests. Its name in the astronomical database SIMBAD is listed as an \u201calpha2 CVn\u201d variable, a class associated with slow, subtle changes in brightness. [SIMBAD\u2019s entry for HIP 57936](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2057936) places it in Hydra at right ascension 11h 52m 54.5s and declination \u221233\u00b0 54\u2032 29\u2033.\n\nThe catalogue also gives Beta Hya a visual magnitude of 4.28 and a parallax of 10.53 milliarcseconds. Turning that parallax upside down gives a rough distance of 95 parsecs\u2014about 310 light-years. The listed spectral classification, kB8hB8HeA0VSi, marks it as a B-type star with unusual spectral features, including silicon. That matters because stars in the alpha2 Canum Venaticorum (\u03b12 CVn) variable class are generally understood to have strong magnetic fields and uneven distributions of certain chemical elements across their surfaces.\n\nAs such a star rotates, different patches turn into view. Those patches can absorb and emit light differently, producing small, repeating changes in brightness and sometimes in spectral lines. The star need not swell or explode to vary; the pattern on its surface is enough. SIMBAD supplies the variability classification, but not a period or a prediction of when Beta Hya should brighten or fade. It is best to think of its variation as a quiet stellar rhythm, not a dramatic naked-eye flicker.\n\nFor observers, the first challenge is simply finding Hydra. Look for the constellation\u2019s long, winding form in the spring sky, below the brighter regions around Leo and Virgo. Beta Hya lies well south of the celestial equator. Its coordinates\u2014roughly 11h 53m, \u221234\u00b0\u2014are useful for a planetarium app or a detailed star chart, especially because the surrounding field is not crowded with brilliant guide stars.\n\nFrom mid-northern latitudes, Beta Hya stays low. At 40\u00b0 north, it reaches only about 16\u00b0 above the southern horizon at its highest point; from 30\u00b0 north, it climbs to roughly 26\u00b0. Buildings, trees, haze and atmospheric turbulence can therefore make a big difference. Choose a site with a clear southern horizon and observe when Hydra is highest, on spring evenings. Farther south, the star rises higher and is easier to follow.\n\nUnder a dark sky, magnitude 4.3 puts Beta Hya within unaided-eye reach for many observers. Binoculars make the search easier, but a telescope is not necessary. If you want to explore its variability, record the date, time and estimated brightness, then compare the star with nearby stars of known magnitudes. A single glance will not reveal a change; repeated estimates over many nights are the point. Beta Hya asks for the almanac\u2019s kind of attention: look up, note what you see, and return. **Sources:** [SIMBAD object record](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2057936); [SIMBAD overview](https://simbad.cds.unistra.fr/).",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2057936",
+            "overlap_terms": [
+              "alpha",
+              "around",
+              "ascension",
+              "catalogue",
+              "celestial",
+              "certain",
+              "class",
+              "coordinates",
+              "database",
+              "declination",
+              "ident",
+              "known"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
