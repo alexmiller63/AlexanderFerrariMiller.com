@@ -33,6 +33,11 @@
   };
   const title = s => s[0].toUpperCase()+s.slice(1);
   function render(data) {
+    if (window.NativitasDraftLibrary) {
+      const target = document.getElementById('natal-interpretations');
+      if (target) window.NativitasDraftLibrary.natal(data, target).catch(e => { target.textContent = e.message; });
+      return;
+    }
     const target = document.getElementById('natal-interpretations');
     if (!target) return;
     target.replaceChildren();
