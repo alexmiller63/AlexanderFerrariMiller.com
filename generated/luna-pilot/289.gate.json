@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204631"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Whale Galaxy: A Long, Pale Mark in the Spring Sky\n\n*NGC 4631\u2019s stretched profile gives it a memorable name\u2014and makes it a rewarding target for a patient night under dark skies.*\n\nSome galaxies announce themselves with brilliant arms or a bright central bulge. The Whale Galaxy offers a different kind of drama: a long, narrow glow, set against the dark. It is catalogued as NGC 4631, and its measured optical span is about 16.6 by 3.1 arcminutes\u2014more than five times longer than it is wide. That slender outline helps explain the nickname. [SIMBAD\u2019s NGC 4631 entry](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204631) lists it as a galaxy and gives its position and angular size.\n\nThat shape is an invitation to look closely. NGC 4631 is classified as a spiral galaxy, but from our viewpoint its broad disk presents a narrow profile. The galaxy is not a little streak of light in space; it is an immense system of stars, gas and dust, seen from an angle that compresses its appearance on the sky. In a telescope, the challenge is to tease that faint smudge from the background\u2014not to expect the crisp, high-contrast detail familiar from long-exposure photographs.\n\nThere is also a useful clue to its motion. SIMBAD reports a heliocentric radial velocity of about 601 kilometers per second and a redshift of 0.002007. In broad terms, redshift is the stretching of light toward longer wavelengths as an object recedes. A galaxy\u2019s measured motion is not, by itself, a simple yardstick for its distance: nearby galaxies can have motions shaped by local gravitational influences as well as the expansion of the universe.\n\n**Finding the Whale**\n\nThe catalogued J2000 coordinates are right ascension 12 hours 42 minutes 8 seconds and declination +32 degrees 32 minutes 29 seconds. Use those coordinates in a planetarium app or star chart to locate NGC 4631, then wait until it climbs high in your sky. Its northern declination makes it a practical target for many observers in the Northern Hemisphere; the best viewing season and hour depend on your location and the date.\n\nFor a first attempt, choose a moonless night away from bright streetlights. Let your eyes adapt to the darkness, and use a low-power eyepiece to take in a wider field before increasing magnification. With binoculars, the galaxy may be difficult or invisible from a bright site; a telescope and a dark sky improve the odds. Look slightly to one side of the suspected glow rather than staring directly at it\u2014averted vision can help reveal faint detail. Give the view time. The first impression may be only a dim dash, but patient observation can make its length more apparent.\n\nA sketch can sharpen that experience. Note the direction of the galaxy\u2019s long axis, compare its apparent length with nearby stars, and return to it after a few minutes. The goal is not to reproduce a glossy image, but to notice what your own sky allows: a distant spiral reduced to a delicate, whale-like trace. Its measured dimensions are numbers in a database; at the eyepiece, they become a shape you have found for yourself.\n\n**Source:** [SIMBAD Astronomical Database: NGC 4631](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204631)",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204631",
+            "overlap_terms": [
+              "allows",
+              "angle",
+              "angular",
+              "ascension",
+              "before",
+              "coordinates",
+              "database",
+              "declination",
+              "degrees",
+              "depend",
+              "field",
+              "galaxies"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
