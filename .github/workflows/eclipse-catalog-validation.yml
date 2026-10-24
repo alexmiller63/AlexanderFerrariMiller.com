@@ -16,6 +16,19 @@ jobs:
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
+      - name: Bootstrap and normalize ELP2000 lunar data
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ ! -s star-almanack-elp82b/elp82b-manifest.json ]; then
+            (
+              cd star-almanack-elp82b
+              python lunar_elp.py bootstrap data/elp82b
+              python lunar_elp.py verify data/elp82b
+              python normalize_elp82b.py data/elp82b elp82b-manifest.json
+            )
+          fi
+          test -s star-almanack-elp82b/elp82b-manifest.json
       - name: Generate provisional eclipse catalog
         run: python tools/generate_decade_eclipses.py --start-year 2025 --end-year 2036
       - name: Validate registry and catalog
