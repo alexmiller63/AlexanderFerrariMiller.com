@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%202403"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# MCG 11-10-7: A Spiral Beyond the Northern Stars\n\n*Look past the familiar patterns of the northern sky and a soft, elongated glow opens onto a vast system of stars.*\n\nOn a clear night, the first impression of MCG 11-10-7 may be modest: a pale smudge in a rich, starry field. But this faint patch is no cloud in our atmosphere. It is the galaxy catalogued as NGC 2403, a sprawling spiral whose light comes from far beyond the Milky Way.\n\nNGC 2403 lies in Camelopardalis, a constellation of faint stars between better-known northern sky landmarks. Its position\u2014right ascension 7h 36m 51s, declination +65\u00b0 36\u2032 10\u2033\u2014puts it high in the sky for many northern observers. SIMBAD classifies its shape as SAcd, a late-type spiral, and lists its apparent dimensions as about 10 by 6 arcminutes. That is roughly a third of the Moon\u2019s apparent width along its longer axis, though the galaxy\u2019s low surface brightness makes its visible outline much less obvious. [SIMBAD: NGC 2403](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%202403)\n\nThe classification hints at what makes the galaxy interesting. Its stars and gas are arranged in a spiral system, while the \u201ccd\u201d indicates a relatively open, loosely wound form. In a telescope, however, an observer should not expect a crisp portrait. The light is spread over a large area, so the galaxy may appear as an elongated haze, with its brighter central region easier to detect than its outer reaches. Details that photographs reveal can remain subtle to the eye.\n\nThat difference is a reminder of how observing works: the telescope gathers light, but the eye also needs time to adapt and learn what to look for. Give your vision 20 minutes or so to adjust to darkness, and avoid looking at a bright phone screen. Under a dark, transparent sky, binoculars may show the galaxy as a faint oval; a small telescope can make its shape more apparent. Try low or medium magnification first. Increasing magnification too much can spread the light across a larger field and make the galaxy harder to see.\n\nFor a practical search, use the coordinates as a guide in a planetarium app or a star chart, then move to the location with a finder scope or binoculars. At declination +65\u00b0, NGC 2403 is well placed for observers in much of the Northern Hemisphere and stays above the horizon for many mid-northern locations. It is best sought when Camelopardalis is high in the sky, away from the glow of the horizon. Choose a moonless night if possible, and give your eyes time at the eyepiece: averted vision\u2014looking slightly to the side of the faint glow\u2014can make it easier to detect.\n\nThe galaxy\u2019s broad outline is a worthwhile observation in itself. Pause over that quiet patch and imagine its scattered light arriving from a separate stellar system, while the nearby foreground stars belong to our own. MCG 11-10-7 is not a single star to pin down, but an immense structure that rewards patience. The view may be understated; the scale behind it is anything but.\n\n**Source:** [SIMBAD \u2014 NGC 2403](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%202403)",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%202403",
+            "overlap_terms": [
+              "ascension",
+              "coordinates",
+              "declination",
+              "galaxy",
+              "ident",
+              "increasing",
+              "known",
+              "minutes",
+              "position",
+              "right",
+              "simbad",
+              "spiral"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
