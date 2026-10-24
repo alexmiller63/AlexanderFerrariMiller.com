@@ -1,0 +1,77 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2060000"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Beta Cha: A Southern Star with a Subtle Pulse\n\n*This fourth-magnitude blue-white star sits deep in Chamaeleon, where its quiet appearance conceals a catalogued identity as a pulsating variable.*\n\nSome stars announce themselves with a dramatic flare or a conspicuous change in brightness. Beta Cha offers a more understated invitation: find it in the far-southern sky, then consider what its classification suggests may be happening beyond the reach of the unaided eye.\n\nThe SIMBAD astronomical database lists Beta Cha as a pulsating variable and gives it the spectral type B4V. In that classification, \u201cB\u201d indicates a hot, blue-white star, while \u201cV\u201d identifies a main-sequence star\u2014the broad, stable stage in which a star spends much of its life fusing hydrogen in its core. SIMBAD reports a visual magnitude of about 4.23, bright enough to be seen without optical aid under a reasonably dark sky. Its blue-white character is reflected in its B-type classification; the magnitude, rather than color, is what chiefly determines how easily it stands out to the eye.\n\n\u201cPulsating variable\u201d points to changes in a star\u2019s light associated with stellar oscillations. A star\u2019s outer layers can move inward and outward, affecting the light we receive. But a catalog label alone is not a light curve: the SIMBAD entry cited here does not provide a period or the size of Beta Cha\u2019s brightness changes. Don\u2019t expect to watch it visibly swell and shrink through a telescope. The observing challenge is subtler\u2014identifying the star and, for those interested in variable-star work, comparing its brightness carefully over time with suitable comparison stars.\n\nThe same database gives a parallax of 10.7116 milliarcseconds. Taking the reciprocal of that value yields a rough distance of about 93 parsecs, or roughly 300 light-years. This is a calculation from the listed parallax, not a separate quoted distance. SIMBAD\u2019s J2000 coordinates place the star at right ascension 12 hours 18 minutes and declination 79 degrees 19 minutes south\u2014an important clue for planning a sighting. The star lies very far south on the celestial sphere, so it is best placed for observers in the Southern Hemisphere.\n\nFor a simple observation, choose a clear, dark night and begin with a sky chart or planetarium app set to your location. Search for Chamaeleon and use Beta Cha\u2019s coordinates to confirm the field; at magnitude 4.2, it should be visible to the naked eye when the sky is dark enough and the star is well above your horizon. Binoculars can help if haze, light pollution, or a low altitude makes the field difficult. At southern latitudes, Beta Cha remains high enough to be a practical target; near the equator it appears low, while from much of the Northern Hemisphere it will not rise above the horizon.\n\nIf you do monitor it, record the date, time, observing conditions, and your brightness estimate, and avoid drawing conclusions from a single night. A suspected change needs repeated, consistent comparisons. Beta Cha\u2019s appeal is that it joins two scales of skywatching: an easily described point of light for a casual observer, and a stellar classification that hints at motion too small and distant to see directly.\n\n**Sources**\n\n- SIMBAD entry for HIP 60000 / Beta Cha: https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2060000\n- SIMBAD\u2019s listed parallax and coordinates are also in that entry.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2060000",
+            "overlap_terms": [
+              "ascension",
+              "catalog",
+              "celestial",
+              "coordinates",
+              "database",
+              "declination",
+              "degrees",
+              "ident",
+              "listed",
+              "magnitude",
+              "motion",
+              "optical"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [
+      {
+        "quoted_text": "Pulsating variable",
+        "source_matches": [
+          "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2060000"
+        ],
+        "exact_text_confirmed": true
+      }
+    ],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
