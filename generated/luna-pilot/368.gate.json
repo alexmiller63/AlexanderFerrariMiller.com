@@ -1,0 +1,77 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206729"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# R Coronae Australis Nebula: A Faint Cloud in the Southern Crown\n\n*Dek: At the edge of Corona Australis, NGC 6729 offers a meeting place between the dark sky and the restless material from which stars form.*\n\nSome deep-sky sights announce themselves. The R Coronae Australis Nebula asks for patience. It lies in the small southern constellation Corona Australis, the Southern Crown, where faint clouds of gas and dust mingle with young stars. In a dark sky, the region rewards careful looking; in a photograph, long exposures can draw out a more intricate patchwork.\n\nAstronomers also know the nebula as NGC 6729. SIMBAD classifies that object as interstellar medium and gives its J2000 position as right ascension 19h 01m 46.4s, declination \u221236\u00b0 57\u2032 40\u2033. Those coordinates are a useful way to find the field with a chart or computerized mount\u2014not a promise that the nebula will be easy to see. [SIMBAD: NGC 6729](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206729)\n\n\u201cInterstellar medium\u201d is the broad name for the matter between stars: gas, dust, and other material spread through a galaxy. Nebulae make that matter visible in different ways. Some glow with their own light; others appear when dust scatters light from nearby stars. Either way, a nebula is not a solid cloud with a sharp border. Its apparent shape depends on the material, the light passing through it, and the sensitivity of the observer\u2019s instruments.\n\nThat makes this southern field an invitation to look twice. A bright star can catch the eye immediately, while the surrounding haze may take longer to register. Give your vision time to adapt to the dark, and try looking slightly to one side of the suspected patch: peripheral vision can be more sensitive to faint detail. If the glow remains elusive, that is part of the lesson. The sky\u2019s dimmest structures do not always yield to a direct stare.\n\n**Observing guidance:** Corona Australis is best placed for observers in the Southern Hemisphere. From northern latitudes it stays low in the southern sky, and from locations north of roughly 53\u00b0 latitude it does not rise above the horizon. For observers who can see it, late southern winter and northern summer evenings bring the region into view. Choose a site with a clear southern horizon, away from bright lights, and use a star chart or planetarium app to navigate to NGC 6729\u2019s coordinates. A telescope can help locate the field, but a wide-field view may be more satisfying than high magnification. For imaging, take multiple exposures and avoid judging the result from a single short frame; faint nebulosity needs accumulated signal.\n\nThe R Coronae Australis Nebula belongs to a sky that is both beautiful and unfinished. Its soft light marks material in the space between stars, while the nearby stellar neighborhood hints at a larger story of formation and change. You do not need to resolve every wisp to appreciate the view. Sometimes the reward is simply finding the right place in the Southern Crown\u2014and realizing that the darkness there is not empty.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206729",
+            "overlap_terms": [
+              "ascension",
+              "between",
+              "bright",
+              "coordinates",
+              "declination",
+              "depends",
+              "field",
+              "formation",
+              "frame",
+              "ident",
+              "interstellar",
+              "medium"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [
+      {
+        "quoted_text": "Interstellar medium",
+        "source_matches": [
+          "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206729"
+        ],
+        "exact_text_confirmed": true
+      }
+    ],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
