@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2095951"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Albireo B: The Blue Spark at the Swan\u2019s Beak\n\n*On summer nights, a small telescope turns one bright star into a color contrast\u2014and reveals a hot, emission-line star hiding in plain sight.*\n\nAt the beak of Cygnus, the Swan, Albireo looks like a single point to the unaided eye. Aim a telescope at it, though, and the point becomes a pair: one star warm gold, the other a cooler-looking blue. Albireo B is the blue member, a star with its own story beneath the familiar color contrast.\n\nCatalogued as HIP 95951 and \u03b2\u00b2 Cygni, Albireo B is classified B8Ve. The \u201cB\u201d indicates a hot, blue-white kind of star; \u201ce\u201d denotes emission lines in its spectrum, a clue that glowing gas around the star contributes light at particular wavelengths. SIMBAD lists its visible-light magnitude as 5.11 and its parallax as 8.1896 milliarcseconds. That parallax places it roughly 122 parsecs\u2014about 400 light-years\u2014away. These are catalog measurements, not details a backyard observer can see directly: through an eyepiece, the star\u2019s most immediate calling card is its color. **[1]**\n\nThe pair\u2019s visual effect is a lesson in contrast. Color perception at the eyepiece is subjective, and it depends on the observer, the telescope and the conditions. But when Albireo\u2019s two points are held together in view, the difference can seem striking: a golden companion beside Albireo B\u2019s blue-white light. The stars are close together from our viewpoint, but a view through a telescope does not, by itself, tell us whether two stars are physically bound. \u201cDouble star\u201d describes what we see; it is not proof of a shared orbit.\n\nFinding the pair is easier than resolving it. In the Northern Hemisphere, Cygnus is a prominent summer constellation, and Albireo marks the Swan\u2019s head, at the end opposite bright Deneb. Look for the Northern Cross asterism within the Swan, then follow its long axis away from Deneb toward Albireo. SIMBAD gives Albireo B\u2019s position as right ascension 19 hours 30 minutes 45 seconds and declination +27 degrees 57 minutes 55 seconds\u2014useful coordinates if you\u2019re searching with a sky app or telescope. **[1]**\n\nUnder a dark sky, Albireo is visible to the naked eye as a single star. Binoculars can help you locate it, but a small telescope at low magnification is the better tool for seeing the two components distinctly. Start with a wide field and give your eyes time to settle. If the colors seem muted, try looking slightly to one side of the stars; averted vision can help with faint detail, though color perception varies. A steady atmosphere and a telescope focused carefully will do more than high magnification.\n\nAlbireo B\u2019s catalog designation may sound like a label on a chart, but it points to a real physical difference: a hot B-type star whose spectrum carries the signature of emitting gas. Its light has crossed hundreds of light-years to reach us, where it joins Albireo\u2019s familiar double-star scene. The next time Cygnus climbs into the evening sky, take a moment at the Swan\u2019s beak. One point of light is enough for the unaided eye. A telescope reveals the pair\u2014and a little more about the blue star.\n\n**Source**\n\n[1] SIMBAD Astronomical Database, HIP 95951: https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2095951",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2095951",
+            "overlap_terms": [
+              "around",
+              "ascension",
+              "catalog",
+              "coordinates",
+              "database",
+              "declination",
+              "degrees",
+              "depends",
+              "ident",
+              "magnitude",
+              "other",
+              "parallax"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
