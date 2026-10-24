@@ -1,0 +1,82 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%202487"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Beta2 Tuc: A Southern Star with More Than One Story\n\n*An A-type subgiant in Tucana, this modest naked-eye star rewards careful identification\u2014and a little restraint about what \u201cmultiple\u201d means.*\n\nSome stars announce themselves with brilliance. **Beta2 Tuc** asks instead for a dark sky and a good chart. In the southern constellation Tucana, it shines at about magnitude 4.5: visible to the unaided eye under favorable conditions, but easily lost to moonlight, haze or city glow.\n\nThe catalog trail helps pin it down. SIMBAD identifies the star as HIP 2487 and classifies it as a \u201cdouble or multiple star.\u201d Its listed position for epoch J2000 is right ascension 00h 31m 33s, declination \u221262\u00b0 57\u2032 56\u2033\u2014a distinctly southern address. The database gives a spectral type of A3IV, a parallax of 19.59 milliarcseconds and a radial velocity of about 9.8 kilometers per second. [SIMBAD: HIP 2487](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%202487)\n\nThat A3IV label offers a glimpse of the star\u2019s physical character. \u201cA3\u201d places it among A-type stars, which are hotter than the Sun; \u201cIV\u201d denotes a subgiant, a star moving beyond its main-sequence phase. The parallax\u2014an apparent shift measured as Earth orbits the Sun\u2014implies a distance of roughly 51 parsecs, or 166 light-years. At that distance, the light reaching your eye tonight began its journey long before the first modern star charts.\n\nThe \u201cdouble or multiple\u201d designation is intriguing, but it is not a promise of a dramatic split in a small telescope. Catalog classifications can gather together different kinds of evidence, and the SIMBAD entry cited here does not give a companion\u2019s separation or say that the components are easy to distinguish visually. Treat the multiplicity as a reason to investigate, not a guarantee of a particular view.\n\nFor an observing session, choose a night when Tucana is well above the horizon. With right ascension near zero hours, Beta2 Tuc is best placed in evening skies during the Southern Hemisphere\u2019s late-year spring and early summer; it climbs highest around local midnight near the November part of the year. Its declination makes it a southern-sky object: observers well south of the equator can look high, while from northern latitudes it appears low or never rises at all.\n\nStart with a star atlas or planetarium app set to the coordinates above, then use binoculars to confirm the surrounding field. A magnitude near 4.5 makes the star a plausible naked-eye target from a dark site, but don\u2019t be surprised if it vanishes in urban skies. Once found, center it in a telescope at low power. The pleasure here may be less a spectacular view than the act of locating a quiet point of light and knowing that its catalog identity carries both a stellar-evolution clue and an unresolved question about companions.\n\nIf you observe it, note the date, instrument and magnification. That simple record can help distinguish what the sky actually shows from what a catalog label suggests. Beta2 Tuc is a small target, but a useful reminder: even a faint star can open several lines of inquiry.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%202487",
+            "overlap_terms": [
+              "around",
+              "ascension",
+              "before",
+              "catalog",
+              "coordinates",
+              "database",
+              "declination",
+              "double",
+              "epoch",
+              "field",
+              "ident",
+              "listed"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [
+      {
+        "quoted_text": "double or multiple star.",
+        "source_matches": [],
+        "exact_text_confirmed": false
+      },
+      {
+        "quoted_text": "double or multiple",
+        "source_matches": [
+          "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%202487"
+        ],
+        "exact_text_confirmed": true
+      }
+    ],
+    "all_quoted_passages_confirmed": false,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
