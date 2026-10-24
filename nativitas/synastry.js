@@ -10,7 +10,7 @@
   const escape=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const title=s=>s[0].toUpperCase()+s.slice(1);
   const symbols={sun:'☉',moon:'☽',mercury:'☿',venus:'♀',mars:'♂',ceres:'Ce',jupiter:'♃',saturn:'♄',uranus:'♅',neptune:'♆',pluto:'♇'};
-  const signs=['♈','♉','♊','♋','♌','♍','♎','♏','♐','♑','♒','♓'];
+  const signs=['♈','♉','♊','♋','♌','♍','♎','♏','♐','♑','♒','♓'].map(glyph=>glyph+'\uFE0E');
   const position=x=>{const n=Math.round(core.angle(x)*60)%21600;return `${signs[Math.floor(n/1800)]} ${Math.floor(n%1800/60)}°${String(n%60).padStart(2,'0')}′`;};
   const people=document.getElementById('synastry-people');
   for(let i=0;i<2;i++){
