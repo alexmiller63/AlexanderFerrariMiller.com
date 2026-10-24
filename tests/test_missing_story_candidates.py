@@ -19,6 +19,13 @@ class CandidateSelectionTests(unittest.TestCase):
                 objects.append({"fixed_object_id": ident, "source_records": [
                     {"source_key": f"HIP {10000 + ident}", "facts": {"name": f"Star {ident}"}}]})
             (root / "database/fixed-objects.json").write_text(json.dumps({"fixed_objects": objects}))
+            (root / "database/fixed-object-registry.json").write_text(json.dumps({"fixed_objects": [
+                {"fixed_object_id": i, "status": "active", "identifiers": [
+                    {"namespace": "hip", "value": str(10000 + i)}]} for i in range(1, 12)]}))
+            (root / "database/fixed-sky-annual-coverage.json").write_text(json.dumps({"coverage": [
+                {"coverage_year": year, "objects": [{"fixed_object_id": i,
+                    "source": "expanded-bayer", "key": str(i)} for i in range(1, 12)]}
+                for year in (2025, 2026, 2027)]}))
             for suffix in ("evidence.json", "research.txt", "audit.txt", "draft.stage.txt", "correction.stage.txt", "reaudit.stage.txt", "md"):
                 (root / "generated/luna-pilot" / f"{len(list((root / 'generated/luna-pilot').iterdir())) + 1}.{suffix}").write_text("checkpoint")
             with patch.object(selector, "ROOT", root):

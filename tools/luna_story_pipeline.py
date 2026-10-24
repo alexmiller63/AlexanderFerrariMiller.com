@@ -58,18 +58,31 @@ def resolve_objects(tasks):
     resolved = {}
     for task in tasks:
         pilot_id = str(task["id"])
+        if pilot_id in resolved:
+            raise RuntimeError("Duplicate task ID: " + pilot_id)
         if not re.fullmatch(r"[0-9]+", pilot_id):
             raise RuntimeError("Unsafe pilot task ID: " + pilot_id)
-        match = re.search(r"Registry identity:\s*HIP\s+(\d+)", task.get("facts", ""))
-        if not match:
-            raise RuntimeError("Missing HIP identity for pilot task " + pilot_id)
-        hip = match.group(1)
-        matches = [obj["fixed_object_id"] for obj in objects if any(
-            re.search(r"\bHIP\s+" + re.escape(hip) + r"\b",
-                      str(source.get("source_key", "")), re.I)
-            for source in obj.get("source_records", []))]
-        if len(matches) != 1:
-            raise RuntimeError(f"Expected one permanent object ID for task {pilot_id} (HIP {hip}); found {len(matches)}")
+        if "identity" in task:
+            identity = task["identity"]
+            registry = json.loads((ROOT / "database/fixed-object-registry.json").read_text())["fixed_objects"]
+            matches = [obj["fixed_object_id"] for obj in registry
+                       if obj.get("status") == "active" and any(
+                           ident.get("namespace") == identity.get("namespace") and
+                           str(ident.get("value")) == str(identity.get("value"))
+                           for ident in obj.get("identifiers", []))]
+            if len(matches) != 1 or str(matches[0]) != pilot_id or task.get("fixed_object_id") != matches[0]:
+                raise RuntimeError(f"Catalogue identity does not uniquely match permanent task {pilot_id}: {matches}")
+        else:
+            match = re.search(r"Registry identity:\s*HIP\s+(\d+)", task.get("facts", ""))
+            if not match:
+                raise RuntimeError("Missing HIP identity for pilot task " + pilot_id)
+            hip = match.group(1)
+            matches = [obj["fixed_object_id"] for obj in objects if any(
+                re.search(r"\bHIP\s+" + re.escape(hip) + r"\b",
+                          str(source.get("source_key", "")), re.I)
+                for source in obj.get("source_records", []))]
+            if len(matches) != 1:
+                raise RuntimeError(f"Expected one permanent object ID for task {pilot_id} (HIP {hip}); found {len(matches)}")
         resolved[pilot_id] = str(matches[0])
     if len(set(resolved.values())) != len(resolved):
         raise RuntimeError("Duplicate permanent object IDs in pilot manifest")

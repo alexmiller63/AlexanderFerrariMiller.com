@@ -46,6 +46,18 @@ jobs:
       - uses: actions/checkout@v4
       - name: Select new candidates and preflight identities (free)
         run: python3 tools/select_missing_story_candidates.py --limit "${{ inputs.count }}"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: story-selection-preflight
+          path: |
+            generated/luna-pilot-selected.json
+            generated/story-selection-preflight.json
+          if-no-files-found: warn
+      - name: Test curated selection and catalogue identities (free)
+        run: |
+          python3 -m unittest discover -s tests -p test_curated_story_preflight.py
+          python3 -m unittest discover -s tests -p test_missing_story_candidates.py
       - name: Preflight selected catalogue identities (free)
         run: |
           python3 - <<'PY'

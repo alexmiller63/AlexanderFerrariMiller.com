@@ -4,12 +4,54 @@ import argparse
 import json
 import re
 from pathlib import Path
+from urllib.parse import quote
 
 ROOT = Path(__file__).resolve().parents[1]
 STORY_DIRS = ("alpha-stars", "beta-stars", "special-stars", "messier", "caldwell", "finest")
 
+
+def curated_scope():
+    """Use the persisted six-collection coverage, never the entire star registry."""
+    coverage = json.loads((ROOT / "database/fixed-sky-annual-coverage.json").read_text())
+    allowed = {"expanded-bayer", "bright-star", "special-star", "messier", "caldwell", "finest_ngc"}
+    ids, unresolved = set(), {}
+    for year in (2025, 2026, 2027):
+        rows = [row for row in coverage["coverage"] if row["coverage_year"] == year]
+        if len(rows) != 1:
+            raise RuntimeError(f"Missing or duplicate curated coverage for {year}")
+        for item in rows[0]["objects"]:
+            if item["source"] not in allowed:
+                raise RuntimeError(f"Unexpected collection: {item['source']}")
+            ident = item.get("fixed_object_id")
+            if ident is None:
+                unresolved[(item["source"], item["key"])] = {
+                    "collection": item["source"], "key": item["key"],
+                    "reason": "No single permanent object identity in annual coverage"}
+            else:
+                ids.add(int(ident))
+    return ids, list(unresolved.values())
+
+
+def registry_identity(obj):
+    # Use an astronomical identifier, never a display name or CSV row number.
+    for namespace in ("hip", "ngc", "ic", "messier", "hd", "gaia_dr3", "bayer", "sh2"):
+        for ident in obj.get("identifiers", []):
+            if ident["namespace"] == namespace:
+                value = str(ident["value"])
+                query = ({"messier": "M " + value.lstrip("Mm"),
+                          "gaia_dr3": "Gaia DR3 " + value,
+                          "bayer": value, "sh2": "Sh 2-" + value}.get(namespace)
+                         or namespace.upper() + " " + value)
+                return dict(namespace=namespace, value=value), query
+    raise RuntimeError(f"No supported research identifier for object {obj['fixed_object_id']}")
+
 def candidates(limit=10):
     objects = json.loads((ROOT / "database/fixed-objects.json").read_text())["fixed_objects"]
+    curated_ids, _ = curated_scope()
+    registry = json.loads((ROOT / "database/fixed-object-registry.json").read_text())["fixed_objects"]
+    active = {int(o["fixed_object_id"]): o for o in registry if o.get("status") == "active"}
+    if curated_ids - set(active):
+        raise RuntimeError("Curated coverage contains inactive or unknown object IDs")
     existing = {int(p.stem) for folder in STORY_DIRS for p in (ROOT / "stories" / folder).glob("*.md") if p.stem.isdigit()}
     saved = ROOT / "generated/luna-pilot"
     # Any saved work or checkpoint reserves its permanent object ID.
@@ -35,17 +77,15 @@ def candidates(limit=10):
         ident = int(obj["fixed_object_id"])
         if ident in existing:
             continue
-        hip = None
-        name = None
-        for record in obj.get("source_records", []):
-            m = re.search(r"\bHIP\s+(\d+)\b", str(record.get("source_key", "")), re.I)
-            if m:
-                hip = m.group(1)
-            facts = record.get("facts") or {}
-            name = name or facts.get("name")
-        if not hip or not name:
+        if ident not in curated_ids:
             continue
-        selected.append({"id": str(ident), "title": str(name), "facts": "Registry identity: HIP " + hip + ". Source catalog identity only; all other claims require verification.", "sources": ["https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%20" + hip]})
+        identity, query = registry_identity(active[ident])
+        name = next(((r.get("facts") or {}).get("name") for r in obj.get("source_records", [])
+                     if (r.get("facts") or {}).get("name")), query)
+        selected.append({"id": str(ident), "fixed_object_id": ident,
+                         "identity": identity, "title": str(name),
+                         "facts": "Registry identity: " + query + ". Source catalog identity only; all other claims require verification.",
+                         "sources": ["https://simbad.cds.unistra.fr/simbad/sim-id?Ident=" + quote(query)]})
         if len(selected) >= limit:
             break
     return selected
@@ -58,6 +98,13 @@ if __name__ == "__main__":
     if not 1 <= args.limit <= 1000:
         parser.error("limit must be 1..1000")
     selected = candidates(args.limit)
+    scope, unresolved = curated_scope()
+    report = {"identified_curated_objects": len(scope), "selected_count": len(selected),
+              "unresolved_catalog_entries": unresolved}
+    report_path = ROOT / "generated/story-selection-preflight.json"
+    report_path.parent.mkdir(parents=True, exist_ok=True)
+    report_path.write_text(json.dumps(report, indent=2) + "\n")
+    print("UNRESOLVED CATALOG ENTRIES (excluded):", len(unresolved))
     if not selected:
         raise SystemExit("No new eligible objects found; no paid calls allowed")
     path = ROOT / args.output
