@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204361"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# NGC 4361: A star\u2019s last light in Corvus\n\n*This planetary nebula marks a brief, glowing passage between a star\u2019s long life and the cooling of its exposed core.*\n\nIn the constellation Corvus, NGC 4361 is easy to mistake for a distant galaxy in a catalogue\u2014or for a mere coordinate on a star chart. But it is something more intimate: a shell of gas cast off by a dying star, lit from within by the hot stellar remnant. SIMBAD classifies it as a planetary nebula, a term that describes its appearance to early observers, not a connection to planets. [SIMBAD: NGC 4361](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204361)\n\nThe name belongs to a stage of stellar evolution shared by stars like the Sun. After using up much of its nuclear fuel, a star expands and sheds its outer layers. Its remaining core becomes intensely hot; ultraviolet light from that remnant energizes the expelled gas, making it glow. The display is temporary on cosmic timescales. As the gas disperses and the core cools, the nebula fades.\n\nNGC 4361\u2019s position places it in Corvus, the Crow, in the southern spring sky. Its listed J2000 coordinates are right ascension 12 hours 24 minutes 30.8 seconds, declination \u221218 degrees 47 minutes 6 seconds. SIMBAD gives an angular size of about 1.35 arcminutes, based on a radio measurement. That is small enough that a careful search matters, but broad enough to reward a steady look at moderate magnification. [SIMBAD data](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204361)\n\nFor an observing session, start with Corvus\u2019s familiar quadrilateral of stars and consult a planetarium app or detailed chart to locate the target. One useful route is from Gamma Corvi: NGC 4361 lies a little to the east and south. Use a low-power eyepiece to identify the surrounding star field, then increase magnification if the view is steady. Under a dark sky, an emission-nebula filter may improve contrast; compare filtered and unfiltered views rather than expecting the filter to reveal every detail. Averted vision\u2014looking slightly to one side of the target\u2014can help with faint objects.\n\nDon\u2019t expect a telescope view to resemble a richly colored photograph. At the eyepiece, color is often subtle, and the visible impression depends on aperture, magnification, sky darkness and the observer\u2019s eyesight. SIMBAD lists B- and V-band magnitudes, but marks those entries with low-quality flags, so they are not a dependable promise of how bright the nebula will look. Give your eyes time to adapt, and let the view settle before deciding what you can see.\n\nThe appeal of NGC 4361 is not just its appearance. It is a small, local reminder of a star\u2019s transformation: a remnant core illuminating material once held close, now spreading into space. Find it in the crowded richness of Corvus, and the catalogue entry becomes a scene in progress\u2014one that will not last forever.\n\n**Source:** [SIMBAD entry for NGC 4361](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204361)",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204361",
+            "overlap_terms": [
+              "angular",
+              "ascension",
+              "before",
+              "catalogue",
+              "coordinate",
+              "coordinates",
+              "declination",
+              "degrees",
+              "display",
+              "filter",
+              "flags",
+              "ident"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
