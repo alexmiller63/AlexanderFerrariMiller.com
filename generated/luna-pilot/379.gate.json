@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206838"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# M71: A Lantern in the Arrow\n\n*In the compact constellation Sagitta, a globular cluster rewards patient looking more than dramatic first impressions.*\n\nM71 is easy to mistake for a faint smudge\u2014and that is part of its appeal. In the small constellation Sagitta, the Arrow, this star cluster sits among the rich fields of the summer Milky Way. It does not announce itself with a brilliant core. Instead, it invites the eye to linger, as if a handful of stars were just beginning to emerge from the dark.\n\nCatalogues also identify M71 as NGC 6838. SIMBAD classifies it as a globular cluster and gives its J2000 position as right ascension 19h 53m 46.49s, declination +18\u00b0 46\u2032 45.1\u2033. Its listed optical diameter is 7.2 arcminutes\u2014about one quarter the apparent width of the full Moon. [SIMBAD: NGC 6838 / M71](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206838)\n\nA globular cluster is a gravitationally bound gathering of stars. Seen from Earth, its members overlap into a compact patch; through a telescope, the patch can begin to break apart into individual points. The catalogue classification gives M71 its scientific company, but the view is personal: what resolves depends on the instrument, the steadiness of the sky and the observer\u2019s patience. A cluster\u2019s apparent haziness is not a cloud in space. It is the combined light of many distant stars, arriving together in a small area of the eyepiece.\n\nFor a first visit, find Sagitta on a clear summer evening in the Northern Hemisphere. It lies close to the brighter constellation Aquila, whose star Altair is a useful landmark. Then look for gamma Sagittae, the arrow\u2019s brightest star: M71 is nearby. A star chart or planetarium app can make this short hop straightforward. The cluster\u2019s position is also useful for a telescope\u2019s setting circles or a go-to system.\n\nStart with binoculars or a telescope at low magnification. Under a dark sky, binoculars may reveal M71 as a soft, compact haze; in a small telescope, expect a misty glow rather than a swarm of sharply separated stars. Give your eyes time to adapt to darkness, and use averted vision\u2014looking slightly to the side of the object\u2014to catch faint detail. A larger telescope and higher magnification may help resolve more of the cluster into pinpoints. If the view seems washed out, try again when the Moon is below the horizon, or choose a darker observing site.\n\nThere is no need to rush to the highest power. Begin wide enough to keep nearby stars in the field, then increase magnification gradually and notice how the view changes. On a steady night, the edge of the glow may seem to acquire a grainy texture. That moment\u2014when an indistinct patch starts to look like stars\u2014is the quiet reward of observing M71.\n\nThe catalogue gives the cluster a precise address and a measured outline. At the eyepiece, those numbers become a direction in the sky and a small, changing encounter with starlight. Sagitta may be a modest arrow, but it points to a destination worth finding.\n\n**Source:** [SIMBAD Astronomical Database \u2014 NGC 6838 (M71)](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206838)",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206838",
+            "overlap_terms": [
+              "ascension",
+              "catalogue",
+              "catalogues",
+              "cluster",
+              "database",
+              "declination",
+              "depends",
+              "field",
+              "globular",
+              "ident",
+              "listed",
+              "object"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
