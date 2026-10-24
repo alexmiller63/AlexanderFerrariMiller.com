@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%207588"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Achernar, the River\u2019s Southern Beacon\n\n*At the far end of Eridanus, a bright blue-white star marks the edge of the northern sky\u2014and opens a window onto the physics of hot, restless stars.*\n\nIn the southern sky, Eridanus winds like a river of faint stars toward a brilliant point near the horizon. That point is **Achernar**, a star whose name and position make it a natural finishing mark for the celestial stream. For observers south of the equator, it can shine high and clear; from much of the Northern Hemisphere, it never rises at all.\n\nCatalogued as Alpha Eridani, Achernar sits at right ascension 1 hour 37 minutes and declination 57 degrees 14 minutes south. Its apparent visual magnitude is about 0.46, bright enough to see without optical aid under ordinary conditions. SIMBAD identifies it as a B6Vpe star and a Be star; its listed parallax of 23.39 milliarcseconds corresponds to a distance of roughly 140 light-years. [SIMBAD: Achernar / HIP 7588](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%207588)\n\nThat classification hints at a more turbulent life than the steady point of light suggests. \u201cB\u201d marks a hot, blue-white star; \u201cV\u201d indicates a main-sequence star, still shining through the fusion of hydrogen in its core. The \u201ce\u201d denotes emission features in its spectrum. Achernar belongs to the Be-star family: hot stars whose spectra show emission from surrounding gas. Its light carries clues about both the star itself and material in its immediate environment.\n\nThe distance estimate is a reminder that astronomy often turns angles into scale. Parallax measures a star\u2019s tiny apparent shift as Earth moves around the Sun. A parallax of about 23 milliarcseconds means Achernar is dozens of parsecs away\u2014not a neighbor in any everyday sense, but close enough that its position can be measured with precision. Its brightness to us comes from the star\u2019s intrinsic luminosity as well as that comparatively modest cosmic distance.\n\n**For observers:** Look for Achernar during Southern Hemisphere spring evenings, when it is well placed for viewing. Find Eridanus and follow its winding line southward to the conspicuous star at its end. The star is easily visible to the naked eye; binoculars can help trace the river\u2019s fainter stretches, but are not needed to pick out its beacon. Give your eyes time to adapt to the dark, and choose a site with a clear southern horizon if you are observing from farther north.\n\nAchernar\u2019s declination gives a useful rule of thumb: it reaches the horizon, at best, only for observers south of about 33 degrees north latitude. Near that limit it will skim low, where haze and atmospheric turbulence can dim or blur it. Farther south, it climbs higher; at southern latitudes, its steep arc makes it a striking guidepost in the night sky.\n\nA bright star can look like a simple pinprick. Achernar rewards a second look\u2014not because its surface details are visible to the unaided eye, but because its spectrum, distance and position each tell a different part of its story. At the river\u2019s end, the light is both a navigational landmark and a signal from a hot, active star.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%207588",
+            "overlap_terms": [
+              "around",
+              "ascension",
+              "celestial",
+              "declination",
+              "degrees",
+              "ident",
+              "limit",
+              "listed",
+              "luminosity",
+              "magnitude",
+              "north",
+              "optical"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
