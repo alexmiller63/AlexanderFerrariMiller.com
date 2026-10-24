@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204569"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# M90: A Galaxy Coming Toward Us\n\n*In Virgo, a faint spiral offers a reminder that a galaxy\u2019s motion across the universe can tell a more complicated story than distance alone.*\n\nOn a clear spring evening, point a telescope into Virgo and you are looking toward a realm of galaxies. One of them, M90, is a broad, faint spiral whose measured motion seems to run against the cosmic current: its radial velocity is about 199 kilometers per second toward us.\n\nThat figure can sound surprising. On the largest scales, space expands, and distant galaxies generally recede. But a galaxy\u2019s measured motion also includes its own movement through its surroundings. M90\u2019s approach is a useful reminder that the universe is not a set of objects simply carried outward in lockstep. The Sun\u2019s motion and the galaxy\u2019s local motion matter too.\n\nThe astronomical database SIMBAD identifies M90 with NGC 4569 and lists it as a Seyfert 2 galaxy, a spiral-type system, and an object with a heliocentric radial velocity of \u2212199 km/s. It gives the galaxy\u2019s position as right ascension 12h 36m 49.8s and declination +13\u00b0 09\u2032 47\u2033, and its apparent dimensions as roughly 9.6 by 3.9 arcminutes. [SIMBAD: NGC 4569 / M90](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204569)\n\nA Seyfert 2 classification points to an active galactic nucleus: a compact, energetic central region whose surroundings affect how we see it. But M90\u2019s appeal at the eyepiece is not a bright point of light. Its listed visual magnitude is about 9.5, and that light is spread across a substantial patch of sky. In practice, a galaxy\u2019s diffuse glow can be harder to pick out than a star of similar total brightness.\n\n**How to find it:** M90 is in Virgo, at the coordinates above. A planetarium app or a detailed star chart can guide a telescope to the field; entering the coordinates is often the simplest route. Choose a moonless night away from streetlights, let your eyes adapt to the dark, and begin with a low-power eyepiece to make the surrounding star field easier to recognize. If the galaxy does not appear immediately, look slightly to one side of the target rather than staring straight at it\u2014averted vision can help reveal faint, low-contrast objects.\n\nA small telescope may show M90 as a soft, elongated haze rather than a sharply edged disk. Larger apertures and darker skies improve the chance of tracing its shape, but patience matters at any size. Try averted vision, pause, and return to the field after your eyes have settled. Avoid expecting the dramatic detail of a long-exposure photograph: the eye gathers far less light than a camera can collect over time.\n\nThe galaxy\u2019s negative radial velocity belongs to another kind of observing. It is not something an eyepiece reveals. Astronomers infer motion from shifts in a galaxy\u2019s light, while the telescope lets us see the faint smudge itself. Both views are worth holding together: one gives M90 a place in the sky; the other gives it a direction through space. For a quiet spring-night target, that is a remarkable combination\u2014an elusive glow with a story of motion written into its light.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204569",
+            "overlap_terms": [
+              "ascension",
+              "coordinates",
+              "database",
+              "declination",
+              "galaxy",
+              "heliocentric",
+              "ident",
+              "listed",
+              "magnitude",
+              "motion",
+              "object",
+              "objects"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
