@@ -1,0 +1,69 @@
+{
+  "screen_passed": false,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": false,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%202683"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# NGC 2683: A Galaxy in the Catalog\n\nNGC 2683 can be described in a few numbers: an optical outline 8.71 by 2.57 arcminutes, a position angle of 44 degrees, and coordinates in the northern sky. Those measurements make it possible to locate and characterize the object, but they also show what a catalog can\u2014and cannot\u2014tell us about a galaxy.\n\nThe figures come from [NGC 2683\u2019s entry in SIMBAD](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%202683), an astronomical database that gathers classifications and measurements. Its listed angular dimensions describe the object\u2019s apparent extent on the sky, not its physical size. The longer measurement is about 3.4 times the shorter one, so NGC 2683 appears distinctly elongated in this cataloged optical measurement. That alone does not establish the galaxy\u2019s exact orientation in space.\n\nSIMBAD records the measurement\u2019s position angle as 44 degrees and marks its quality as D. In the database\u2019s notation, D indicates a measurement uncertainty of 1 to 10 arcseconds. These details are useful reminders that catalog values are measurements with specified precision, not perfectly exact descriptions.\n\nThe same entry gives the galaxy\u2019s J2000 coordinates as right ascension 8 hours, 52 minutes, 41.3 seconds and declination +33 degrees, 25 minutes, 18.6 seconds. Coordinates offer a more precise way to identify the target than its name alone. They are not a forecast of when it will be visible from a particular location; observing circumstances depend on where and when an observer looks.\n\nClassification adds another layer of information. SIMBAD lists NGC 2683 as an active galaxy nucleus, with an object-type entry associated with a 2011 *Astronomy & Astrophysics* reference. Separately, its morphological type is recorded as SA, with the catalog citing a 2019 *Monthly Notices of the Royal Astronomical Society* paper. These labels describe different catalog categories. The entry itself does not explain the galaxy\u2019s central activity or provide a detailed account of its structure.\n\nThe database also lists a radial velocity of about 411 kilometers per second and a spectroscopic redshift of 0.001372, drawing on a 2020 *Astrophysical Journal* reference. Those are distinct ways of reporting information about the galaxy\u2019s motion and observed spectrum. They should not be confused with its sky coordinates or apparent angular size; each value answers a different kind of question.\n\nPhotometric measurements provide still another view. SIMBAD lists U, B, V and R magnitudes of 11.57, 10.68, 9.79 and 9.38, respectively, in the AB system. It also includes measurements in other filters, including J, H and K. These entries show that NGC 2683 has been measured across multiple wavelength bands, but the numbers are not a portrait of the galaxy by themselves. Their meaning depends on the filter and magnitude system specified in the catalog.\n\nTaken together, the entry presents NGC 2683 not as a single striking image, but as an object described through coordinates, classifications, angular measurements, motion and light recorded in different bands. The elongated outline is one clear clue, while the other catalog fields supply separate pieces of context. Keeping those measurements distinct is the best way to read the record: a compact set of evidence about a distant galaxy, with each number telling only the part it measures.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%202683",
+            "overlap_terms": [
+              "active",
+              "angle",
+              "angular",
+              "ascension",
+              "catalog",
+              "coordinates",
+              "database",
+              "declination",
+              "degrees",
+              "depend",
+              "depends",
+              "extent"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
