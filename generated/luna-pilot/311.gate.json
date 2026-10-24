@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%205272"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "**Hed: M3, a City of Stars in the Spring Sky**\n\n**Dek:** A small, misty patch in binoculars becomes a glittering globular cluster in a telescope\u2014and a reminder that the night sky is crowded with stellar neighborhoods.\n\nM3 does not announce itself with a bright point or a dramatic shape. At first, it may seem like a faint smudge between two familiar stars. But look a little longer, and the smudge becomes a gathering: a dense, rounded swarm of stars, packed together in one of the sky\u2019s classic globular clusters.\n\nThe catalogues give this object two names: M3 and NGC 5272. SIMBAD classifies it as a globular cluster and places it at right ascension 13h 42m and declination +28\u00b0 22\u2032 (J2000). Its listed visual magnitude is 6.39, and its measured angular size is 16.2 arcminutes\u2014about half the apparent width of the full Moon. [SIMBAD: NGC 5272](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%205272)\n\nA globular cluster is a compact stellar system, held together by gravity. M3\u2019s apparent concentration is striking: through a telescope, the center can look almost luminous with stars. Yet the view depends on the instrument and the sky. In binoculars, expect a soft, unresolved glow; a telescope under dark skies can begin to separate stars around the edges. The core may remain stubbornly blended, like a city seen from far away whose individual windows only emerge as you move closer.\n\nThere is a pleasing contrast between the cluster\u2019s stillness in an eyepiece and its motion through space. SIMBAD lists a radial velocity of about \u2212147 kilometres per second, meaning M3 is approaching the Solar System along our line of sight. That figure is not something an observer can see directly. It is a measurement made from the shift of the cluster\u2019s light\u2014a reminder that even a quiet-looking object carries a story in its spectrum. [SIMBAD: NGC 5272](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%205272)\n\n**Finding M3:** Spring is a rewarding season to look for it from northern latitudes. Start with Arcturus, the bright orange star in Bo\u00f6tes, and Cor Caroli, the brightest star in Canes Venatici. M3 lies roughly between them; use a sky chart or planetarium app to bridge the gap, rather than expecting the cluster to stand out against the surrounding stars. Its coordinates\u2014about 13h 42m, +28\u00b0\u2014can help confirm the target.\n\nGive your eyes time to adjust to the dark, and scan slowly with binoculars. Averted vision\u2014looking slightly to one side of the object\u2014can make a faint glow easier to detect. If you have a telescope, begin at low power to center the cluster, then increase magnification gradually. A steady mount and a dark, transparent sky will help more than pushing to the highest possible power.\n\nM3 rewards patience. At first it is simply a pale blur; then, with averted vision or a little more aperture, its edges begin to break into points of light. The transformation is modest but memorable: a faraway cluster becomes a field of suns, each one part of a structure visible from Earth as a single, quietly radiant patch.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%205272",
+            "overlap_terms": [
+              "angular",
+              "around",
+              "ascension",
+              "catalogues",
+              "cluster",
+              "coordinates",
+              "declination",
+              "depends",
+              "globular",
+              "ident",
+              "listed",
+              "magnitude"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
