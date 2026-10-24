@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206888"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Crescent Nebula: A Star\u2019s Wind, Written in Gas\n\n*In Cygnus, a massive star\u2019s outflow has shaped a faint arc of glowing material. Finding it takes patience; seeing what made it takes a little imagination.*\n\nOn a clear summer night, Cygnus crosses the northern sky like a great-winged bird. Within it, the Crescent Nebula waits\u2014not as a bright, unmistakable curl, but as a delicate trace that asks the eye to slow down. Its catalogue name is NGC 6888, and at its heart is the Wolf\u2013Rayet star HD 192163, a hot, evolved star whose powerful outflow has helped sculpt the surrounding nebula. SIMBAD lists the star\u2019s position near right ascension 20h 12m and declination +38\u00b0 21\u2032, and identifies it as a Wolf\u2013Rayet object of spectral type WN6(h)-s. ([SIMBAD: NGC 6888](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206888))\n\nThat position is a useful starting point, but the Crescent is larger than a pinpoint on a chart. In a planetarium app or a telescope\u2019s setting circle, enter the coordinates and look for the nebula\u2019s broad field rather than expecting the central star alone to reveal it. The star is the engine; the nebula is the story the engine has written across the surrounding gas.\n\nWolf\u2013Rayet stars are massive stars in a late stage of evolution, shedding material through strong stellar winds. Around NGC 6888, the star\u2019s outflow has interacted with gas nearby, shaping a shell that shines as energized gas emits light. The result is not a solid crescent, but a complex, uneven structure. Its familiar name captures one impression of that structure, not a promise that the full outline will leap out in an eyepiece.\n\nFor observers, the Crescent is a lesson in matching expectations to the sky. Its low surface brightness can make it difficult under light pollution or a bright Moon. From mid-northern latitudes, Cygnus is well placed on summer and early-autumn evenings. Choose a dark site, let your eyes adapt for at least 20 minutes, and use averted vision: look slightly to one side of the nebula rather than staring directly at it. A narrowband nebula filter, especially one designed to pass emission from glowing gas, may help improve contrast. Try a low-power eyepiece first, then adjust magnification to suit your telescope and sky.\n\nIf the nebula remains elusive, that is no failure. Make a careful chart-based approach, confirm the field, and give your eyes time. Astrophotography can reveal far more structure than most people see visually, but even a subtle impression\u2014a soft patch, a brighter edge, a suggestion of an arc\u2014connects the observer to a real process unfolding across space.\n\nThe Crescent is a meeting of timescales: a star changing, its wind pushing outward, and a faint shell becoming visible to anyone patient enough to seek it. On a dark night in Cygnus, the view may be modest. The physics behind it is anything but.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206888",
+            "overlap_terms": [
+              "around",
+              "ascension",
+              "catalogue",
+              "coordinates",
+              "declination",
+              "filter",
+              "ident",
+              "object",
+              "point",
+              "position",
+              "rayet",
+              "right"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
