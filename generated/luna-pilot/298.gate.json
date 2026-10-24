@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204826"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# A Dark Eye in the Spring Sky\n\n*The Black Eye Galaxy is a distant spiral whose striking shadow can turn a small telescope into a window on cosmic dust.*\n\nIn the constellation Coma Berenices, the Black Eye Galaxy waits quietly among the spring stars. Its catalog name is Messier 64, or NGC 4826. The nickname comes from the dark band that seems to sweep across its bright central region: a celestial bruise, or an eye outlined in shadow. But the dark patch is no void. It is dust lying in front of starlight, dimming the glow from behind it.\n\nThat contrast is the galaxy\u2019s quiet drama. In images, the bright center and sweeping lane can look almost theatrical; at the eyepiece, the view is subtler. The galaxy is a soft oval of light, and the famous \u201ceye\u201d may take patience\u2014and a dark sky\u2014to emerge. Even when the lane stays hidden, the sight is remarkable: a whole other galaxy, its light gathered into a faint smudge.\n\nThe Black Eye is a spiral galaxy, classified as SABa, and SIMBAD also lists it as a Seyfert galaxy, a classification associated with activity in a galaxy\u2019s nucleus. SIMBAD gives its position as right ascension 12 hours 56 minutes 43.7 seconds and declination +21 degrees 40 minutes 58 seconds, and lists its optical span as about 11 by 6 arcminutes. Its listed visual magnitude is 8.52\u2014too faint for most unaided eyes, but within reach of binoculars under excellent conditions as a small haze, and a rewarding telescopic target. These catalog figures describe a galaxy whose light occupies a patch of sky several times wider than a pointlike star. [SIMBAD: NGC 4826](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204826)\n\nLook for it on a clear spring evening, when Coma Berenices is well placed for northern observers. A star chart or planetarium app can guide you to its coordinates; don\u2019t expect the galaxy to announce itself like a bright star. Start with low power, which gives a wider field for locating the faint glow, then increase magnification if the image remains steady and sharp. Let your eyes adapt to the dark, shield them from nearby lights, and use averted vision: look slightly to one side of the galaxy rather than straight at it. That often makes a dim object easier to detect.\n\nUnder a suburban sky, a modest telescope may show a brighter center surrounded by a diffuse oval. With darker skies and more aperture, look for an uneven edge or a dark notch crossing the inner glow. The dust lane is a demanding detail, not a guaranteed prize. Give the view time; subtle features may become clearer as your eyes settle and the galaxy\u2019s orientation reveals itself.\n\nThere is something fitting about the Black Eye\u2019s name. From far away, dust becomes a shadow; with careful looking, the shadow becomes a structure, a veil against the combined light of stars. The telescope does not bring the galaxy close in any ordinary sense. Instead, it teaches the eye to gather faint light\u2014and to notice what that light passes through.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204826",
+            "overlap_terms": [
+              "about",
+              "ascension",
+              "catalog",
+              "celestial",
+              "coordinates",
+              "declination",
+              "degrees",
+              "field",
+              "galaxy",
+              "ident",
+              "image",
+              "images"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
