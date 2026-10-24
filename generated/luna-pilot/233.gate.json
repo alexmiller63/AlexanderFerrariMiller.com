@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%203587"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# The Owl Nebula: a pair of shadows in a dying star\u2019s shroud\n\n*In Ursa Major, M97 offers a small telescope a delicate planetary nebula\u2014and a reminder that familiar shapes in the sky are made of light, gas and our own pattern-seeking eyes.*\n\nThe Owl Nebula does not announce itself like a bright planet or a glittering cluster. It is a faint, round glow in the bowl of Ursa Major, easy to pass over while scanning a spring sky. Give it time, though, and the dim disk begins to suggest two dark \u201ceyes.\u201d The resemblance gave the object its name; the shadows are features in the nebula, not a creature looking back.\n\nCataloged as NGC 3587 and Messier 97, the Owl is a planetary nebula. Despite the name, planetary nebulae have nothing to do with planets. They form when a star sheds its outer layers late in life. The hot stellar remnant left behind energizes the expelled gas, making it glow. The result is a brief, intricate afterimage of a star\u2019s transformation\u2014a shell expanding into space.\n\nSIMBAD identifies NGC 3587 as a planetary nebula and gives its J2000 position as right ascension 11h 14m 47.7s, declination +55\u00b0 01\u2032 08.5\u2033. Its listing includes an angular size of about 3.33 arcminutes, measured in radio data; that figure is a useful guide to scale, not a promise of how large or detailed the nebula will look through your eyepiece. [SIMBAD: NGC 3587](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%203587)\n\nFor a first hunt, use a sky chart or planetarium app to locate those coordinates in Ursa Major. The Owl lies in the same broad region of sky as the Big Dipper, but a chart is more dependable than trying to pick it out by eye. Start with low magnification to search a wider field, then increase the power once you have the faint patch centered. Under a dark, moonless sky, let your eyes adapt for at least 20 minutes. Shield a nearby flashlight and avoid checking a bright phone screen.\n\nA small telescope may show a soft disk; larger instruments and steady, dark conditions can make its structure easier to notice. Try looking slightly to one side of the nebula rather than staring straight at it: peripheral vision can help with faint objects. An OIII filter may improve contrast, though the view depends on the telescope, sky and observer. If the Owl\u2019s \u201ceyes\u201d don\u2019t appear, you haven\u2019t failed. At low brightness, subtle detail can come and go with tiny changes in focus and vision.\n\nThat uncertainty is part of the pleasure. The nebula is not a crisp emblem pasted onto the sky. It is light reaching us from a shell of stellar material, gathered by a mirror and interpreted by a human eye. One glance may reveal only a pale smudge; another may bring out the two darker patches and the suggestion of a face. Stay with it. In the quiet bowl of the Great Bear, a dying star has left a shape for us to discover.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%203587",
+            "overlap_terms": [
+              "angular",
+              "ascension",
+              "coordinates",
+              "declination",
+              "filter",
+              "ident",
+              "major",
+              "minutes",
+              "nebula",
+              "object",
+              "objects",
+              "planet"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
