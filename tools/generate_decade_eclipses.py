@@ -162,7 +162,7 @@ def main():
                                       detail_path=r["detail_path"]) for r in rows]
     registry_path.parent.mkdir(parents=True, exist_ok=True)
     registry_path.write_text(json.dumps({"schema_version": 1, "events": sorted(registry_events,
-        key=lambda item: (item["date_utc"], item["kind"]))}, indent=2) + "\\n", encoding="utf-8")
+        key=lambda item: (item["date_utc"], item["kind"]))}, indent=2) + "\n", encoding="utf-8")
     args.output_dir.mkdir(parents=True, exist_ok=True)
     csv_path = args.output_dir / f"eclipses-{args.start_year}-{args.end_year}.csv"
     json_path = args.output_dir / f"eclipses-{args.start_year}-{args.end_year}.json"
