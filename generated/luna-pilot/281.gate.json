@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204568"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# The Siamese Twins: A Close Encounter in Virgo\n\n*Two spiral galaxies share a patch of spring sky. Their apparent embrace offers a rewarding challenge for observers\u2014and a reminder that a galaxy\u2019s shape can tell only part of its story.*\n\nIn the constellation Virgo, a pair of galaxies known as the Siamese Twins makes a quiet spectacle of proximity. NGC 4567 and NGC 4568 sit so close together in our view that their outlines seem to meet. They are not stars joined in a constellation, but vast systems of stars, gas and dust. Through a telescope, the pair is a subtle sight; in a long-exposure image, it becomes a striking study in galactic form.\n\nThe name can suggest a neat, symmetrical double. The reality is less tidy: two spiral galaxies overlap in the sky, and their close apparent pairing is associated with gravitational interaction. The view is a reminder that galaxies are not rigid disks. Gravity can distort their shapes and influence how their gas and stars evolve. From Earth, however, a two-dimensional image cannot by itself reveal every detail of their three-dimensional arrangement.\n\nFor a useful guide to one member, consult SIMBAD\u2019s entry for NGC 4568. It gives an infrared position of right ascension 12h 36m 34.292s and declination +11\u00b0 14\u2032 19.07\u2033 (J2000). The catalogue lists an optical size of about 6.4 by 2.7 arcminutes and a redshift of 0.00744. That redshift corresponds to a measured recession speed of roughly 2,230 kilometres per second in the entry. It is a clue to the galaxy\u2019s motion, not a simple ruler: nearby galaxies can have motions influenced by their surroundings as well as by the expansion of the universe.\n\n**To find the Twins**, look toward Virgo on a clear spring evening, when the constellation is well placed in the evening sky for many northern observers. Use a current star chart or planetarium app to hop from a familiar Virgo landmark to the galaxies; a go-to mount can help, but accurate alignment matters. SIMBAD\u2019s coordinates are a useful reference for NGC 4568, and its companion NGC 4567 can be looked up separately.\n\nChoose a dark site and give your eyes time to adapt. These are extended galaxies, so their light is spread across an area rather than concentrated into a sharp point. A small telescope may show only faint smudges; a larger instrument, steady skies and averted vision can help bring out their shapes. Begin with a low-power eyepiece to locate the field, then increase the magnification if the view remains steady. Keep expectations measured: the famous \u201ctwin\u201d appearance is often more evident in photographs than at the eyepiece.\n\nThe reward is not a bright showpiece, but the chance to locate two distant galaxies sharing one small field. Pause on them long enough to notice the contrast between the catalogue\u2019s precise coordinates and the soft, uncertain-looking light in the eyepiece. The Siamese Twins are a reminder that the sky can turn immense structures into a delicate meeting of forms.\n\n**Sources:** SIMBAD entries for [NGC 4568](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204568) and [NGC 4567](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204567).",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204568",
+            "overlap_terms": [
+              "about",
+              "ascension",
+              "catalogue",
+              "coordinates",
+              "current",
+              "declination",
+              "field",
+              "galaxy",
+              "ident",
+              "image",
+              "infrared",
+              "joined"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
