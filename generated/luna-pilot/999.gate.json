@@ -1,0 +1,77 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2073273"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Beta Lup: A Blue Beacon in the Wolf\n\n*Bright enough to find without a telescope, this southern star rewards a closer look at the sky around it.*\n\nOn a clear winter evening in the south, the constellation Lupus rises below Scorpius like a small procession of stars. Among them, Beta Lup catches the eye: a blue-white point with a name that sounds like a catalogue entry and a light that has travelled a long way to reach us.\n\nSIMBAD identifies Beta Lup (HIP 73273) as a double or multiple star and gives it a visual magnitude of 2.68\u2014bright enough to see with the unaided eye under reasonably dark skies. Its listed spectral type is B2IV: the B2 classification indicates a hot, blue-white star, while IV is the luminosity class called \u201csubgiant.\u201d SIMBAD lists a parallax of 8.52 milliarcseconds. Turning that measurement into a rough distance puts the star about 117 parsecs away, or roughly 380 light-years. [SIMBAD: Beta Lup](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2073273)\n\nThe catalogue\u2019s \u201cdouble or multiple\u201d label is a reminder that a star\u2019s appearance to the eye is not the whole story. Beta Lup looks like a single point without optical aid; the database classification tells us that the system is more complex, not that its components will necessarily be easy to split in a backyard telescope. No need to make resolution the goal of the night. The wider pleasure is locating this bright star in its southern setting and noticing how it helps give Lupus a shape.\n\nTo find it, first locate Scorpius, with its distinctive curving line of stars. Lupus lies just south of it, though the constellation\u2019s pattern can be less immediately familiar. Use a current star chart or planetarium app to pick out Beta Lup by name. SIMBAD lists its J2000 coordinates as right ascension 14h 58m 31.9s and declination \u221243\u00b0 08\u2032 02\u2033\u2014useful figures if you\u2019re entering the target into a mount or planning a search with binoculars.\n\nBeta Lup is best placed for evening observing around June, when it passes high in the sky at a convenient hour for many observers in the Southern Hemisphere. From far northern latitudes it stays very low, or may not rise at all; from southern locations it climbs much higher. If you\u2019re observing from the north, choose a site with a clear southern horizon and don\u2019t be surprised if buildings, trees or haze interfere.\n\nStart with your eyes alone. Give them time to adapt to the darkness, then compare Beta Lup\u2019s steady point of light with the stars around it. Binoculars can help you trace the constellation and frame the star with its neighbours, but they aren\u2019t essential. A telescope is optional too: try a low-power view first, and treat any close companion you might glimpse as a bonus rather than a promise. The available catalogue entry establishes the multiple-star classification, not a guaranteed visual separation.\n\nThere is a quiet satisfaction in that modest plan: find a bright star, learn what its light tells us, and look up knowing that the apparent pinprick is a hot B-type star in a multiple system. Beta Lup doesn\u2019t need magnification to make a good observing target. Sometimes the best instrument is simply a dark sky, a clear southern view and a little time.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2073273",
+            "overlap_terms": [
+              "around",
+              "ascension",
+              "catalogue",
+              "class",
+              "coordinates",
+              "current",
+              "database",
+              "declination",
+              "double",
+              "frame",
+              "ident",
+              "listed"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [
+      {
+        "quoted_text": "double or multiple",
+        "source_matches": [
+          "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2073273"
+        ],
+        "exact_text_confirmed": true
+      }
+    ],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
