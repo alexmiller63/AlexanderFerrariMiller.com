@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2042828"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Alpha Pyx: A blue beacon in the southern sky\n\n*This third-magnitude star is easy to overlook among the southern constellations. Its position, distance and stellar classification make it a useful destination for a modest observing session.*\n\nThe night sky has its landmarks and its quiet corners. Alpha Pyx belongs to the latter: a bright, blue-white star in Pyxis, the Compass, that rewards observers who take the time to find it. At visual magnitude 3.68, it is within naked-eye reach under a reasonably dark sky, though it may not stand out from a light-polluted city.\n\nThe star\u2019s catalogued position is right ascension 8 hours 43 minutes 35.5 seconds and declination \u221233\u00b0 11\u2032 11\u2033. Those coordinates place it far south of the celestial equator, a fact that shapes the observing experience. From southern latitudes it climbs higher; from mid-northern latitudes it remains low above the southern horizon. North of about 57\u00b0 latitude, it does not rise at all.\n\nAlpha Pyx is classified as B1.5 III, according to the SIMBAD astronomical database. The \u201cB\u201d class identifies a hot, blue-white star; \u201cIII\u201d denotes a giant luminosity class. It is a different kind of sun from our own: massive, hot stars such as this shine strongly in blue and ultraviolet light, even though the eye sees Alpha Pyx as a point of light rather than a disk. Its brightness in our sky does not mean it is nearby.\n\nSIMBAD lists a parallax of 4.1089 milliarcseconds. Parallax is the apparent shift of a nearby star against more distant background stars as Earth moves around the Sun. Taking the inverse of that value gives a distance of roughly 243 parsecs, or about 790 light-years. That is an estimate derived from the catalogued parallax, not a direct measure with no uncertainty; SIMBAD lists an uncertainty of 0.2147 milliarcseconds.\n\nFor observers, the practical challenge is not the star\u2019s intrinsic brightness but its low altitude for many people. Looking through a thick layer of atmosphere dims and blurs stars near the horizon, while buildings, trees and haze can hide them entirely. Choose a site with a clear southern view. Give your eyes time to adapt to the dark, and scan with binoculars if you are unsure where to look. A planetarium app or star chart can help you identify Pyxis and then match the field to Alpha Pyx\u2019s coordinates.\n\nThe star is best placed for evening viewing around March, when its right ascension brings it across the southern sky during the night. Exact timing varies with date and location, so check a current sky chart before heading out. Once you have found it, take a moment to consider what the simple point of light represents: a hot giant, hundreds of light-years away, whose position and motion astronomers can measure with remarkable precision.\n\nAlpha Pyx may not dominate the sky, but that is part of its appeal. It offers a small, direct connection between naked-eye observing and modern stellar astronomy: find the light, then let the measurements tell the deeper story.\n\n**Source:** [SIMBAD: Alpha Pyx (HIP 42828)](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2042828)",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2042828",
+            "overlap_terms": [
+              "according",
+              "around",
+              "ascension",
+              "before",
+              "celestial",
+              "class",
+              "coordinates",
+              "current",
+              "database",
+              "declination",
+              "ident",
+              "luminosity"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
