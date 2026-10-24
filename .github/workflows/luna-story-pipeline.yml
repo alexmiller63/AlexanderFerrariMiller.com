@@ -7,6 +7,11 @@ on:
         required: true
         default: "200"
         type: string
+      repair_truncated:
+        description: "Repair only token-limited drafts, preserving originals"
+        required: true
+        default: false
+        type: boolean
       model:
         description: "Verified OpenAI API model ID"
         required: true
@@ -45,7 +50,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Select new candidates and preflight identities (free)
-        run: python3 tools/select_missing_story_candidates.py --resume-interrupted --limit "${{ inputs.count }}"
+        env:
+          REPAIR_TRUNCATED: ${{ inputs.repair_truncated }}
+          STORY_COUNT: ${{ inputs.count }}
+        run: |
+          if [[ "$REPAIR_TRUNCATED" == "true" ]]; then
+            python3 tools/select_truncated_story_repairs.py --limit "$STORY_COUNT"
+          else
+            python3 tools/select_missing_story_candidates.py --resume-interrupted --limit "$STORY_COUNT"
+          fi
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -70,7 +83,9 @@ jobs:
               print(f"Task {task['id']}: {task['title']} -> permanent object {resolved[str(task['id'])]}")
           PY
       - name: Test response retries, budget and restart recovery (free)
-        run: python3 -m unittest discover -s tests -p test_luna_response_recovery.py
+        run: |
+          python3 -m unittest discover -s tests -p test_luna_response_recovery.py
+          python3 -m unittest discover -s tests -p test_luna_truncated_repairs.py
       - name: Test checkpoint persistence and recovery (free)
         run: |
           python3 - <<'PY'
@@ -88,7 +103,7 @@ jobs:
               def ask(name, instruction, source):
                   calls.append(name)
                   return "verified checkpoint content"
-              namespace = {"OUT": Path(directory), "ask": ask, "ledger_file": Path(directory) / "ledger.json", "persist_checkpoint": lambda *a: None}
+              namespace = {"OUT": Path(directory), "work_out": Path(directory), "ask": ask, "ledger_file": Path(directory) / "ledger.json", "persist_checkpoint": lambda *a: None}
               exec(code, namespace)
               saved = namespace["stage"]("123", "research", "instruction", "source")
               recovered = namespace["stage"]("123", "research", "instruction", "source")
@@ -209,10 +224,12 @@ jobs:
           INPUT_PRICE: ${{ inputs.input_price }}
           OUTPUT_PRICE: ${{ inputs.output_price }}
           PAID_EXECUTE: ${{ inputs.paid_execute }}
+          REPAIR_TRUNCATED: ${{ inputs.repair_truncated }}
         run: |
           set -euo pipefail
           args=(--manifest generated/luna-pilot-selected.json --model "$MODEL" --input-price "$INPUT_PRICE" --output-price "$OUTPUT_PRICE")
           if [[ "$PAID_EXECUTE" == "true" ]]; then args+=(--execute); fi
+          if [[ "$REPAIR_TRUNCATED" == "true" ]]; then args+=(--repair-truncated); fi
           python3 tools/luna_story_pipeline.py "${args[@]}"
       - name: Check reviewed story publication eligibility
         run: python3 tools/publish_stories.py --dry-run
@@ -230,7 +247,7 @@ jobs:
           assert len({str(t['id']) for t in manifest}) == len(manifest)
           output = Path('generated/luna-pilot')
           if output.exists():
-              for story in output.glob('*.md'):
+              for story in output.rglob('*.md'):
                   assert story.stat().st_size > 0, f'Empty draft: {story}'
                   assert story.with_suffix('.audit.txt').exists(), f'Missing audit: {story}'
                   assert story.with_suffix('.research.txt').exists(), f'Missing research: {story}'

@@ -235,7 +235,7 @@ def save_or_recover_evidence(path, retrieved, ledger_file, persist=persist_check
     return retrieved
 
 def paid_story_response(stage, instruction, source, model, key, input_price,
-                        output_price, ledger, ledger_file):
+                        output_price, ledger, ledger_file, output_dir=None):
     """Retry only recoverable request/output failures; account and persist every attempt."""
     prompt = (instruction + "\n\n" + source)[:18000]
     limit = MAX_OUTPUT
@@ -244,7 +244,7 @@ def paid_story_response(stage, instruction, source, model, key, input_price,
         reserve = 1.25 * (MAX_INPUT * input_price + limit * output_price) / 1_000_000
         if ledger["estimated_usd"] + reserve > CAP:
             raise BudgetExceeded("Application spending reservation exceeds $2.00 ceiling")
-        diagnostic_path = OUT / (stage.replace(":", ".") + "." + uuid.uuid4().hex + ".response.json")
+        diagnostic_path = (output_dir or OUT) / (stage.replace(":", ".") + "." + uuid.uuid4().hex + ".response.json")
         diagnostic = {"stage": stage, "model": model, "attempt": attempt,
                       "max_output_tokens": limit, "run_id": os.environ.get("GITHUB_RUN_ID")}
         result = None
@@ -312,6 +312,8 @@ def main():
     ap.add_argument("--input-price", type=float, required=True, help="Verified USD per 1M input tokens")
     ap.add_argument("--output-price", type=float, required=True, help="Verified USD per 1M output tokens")
     ap.add_argument("--execute", action="store_true")
+    ap.add_argument("--repair-truncated", action="store_true",
+                    help="Write replacement drafts separately; preserve originals and share the spending ledger")
     args = ap.parse_args()
     if args.input_price <= 0 or args.output_price <= 0:
         ap.error("Verify positive pricing first")
@@ -332,14 +334,16 @@ def main():
         ap.error("OPENAI_API_KEY not configured")
     if not ledger_file.exists():
         ledger_file.write_text(json.dumps(ledger, indent=2) + chr(10))
+    work_out = OUT / "repairs" if args.repair_truncated else OUT
+    work_out.mkdir(parents=True, exist_ok=True)
     # Conservative per-call reserve: 25% margin. This is NOT an account-level billing cap.
     reserve = 1.25 * (MAX_INPUT * args.input_price + MAX_OUTPUT * args.output_price) / 1_000_000
     def ask(stage, instruction, source):
         return paid_story_response(stage, instruction, source, args.model, key,
-                                   args.input_price, args.output_price, ledger, ledger_file)
+                                   args.input_price, args.output_price, ledger, ledger_file, output_dir=work_out)
     def stage(ident, name, instruction, source):
         """Resume a completed paid stage without calling the API again."""
-        path = OUT / (ident + "." + name + ".stage.txt")
+        path = work_out / (ident + "." + name + ".stage.txt")
         if path.exists():
             saved = path.read_text(encoding="utf-8").strip()
             if not saved:
@@ -360,15 +364,21 @@ def main():
             continue
         # Keep drafts separate from the permanent story collection until the
         # registry mapping and independent publication checks are complete.
-        dest = OUT / (ident + ".md")
+        dest = work_out / (ident + ".md")
         if dest.exists():
             print("SKIP: already generated", ident)
             continue
-        if ledger["estimated_usd"] + reserve * sum(not (OUT / (ident + "." + name + ".stage.txt")).exists() for name in ("draft", "correction")) > CAP:
+        if ledger["estimated_usd"] + reserve * sum(not (work_out / (ident + "." + name + ".stage.txt")).exists() for name in ("draft", "correction")) > CAP:
             print("STOP: cannot reserve paid writing stages within budget")
             break
-        evidence_path = OUT / (ident + ".evidence.json")
-        if evidence_path.exists():
+        evidence_path = work_out / (ident + ".evidence.json")
+        original_evidence = OUT / (ident + ".evidence.json")
+        if args.repair_truncated and not evidence_path.exists():
+            # Fail closed if the evidence behind the original attempt is missing.
+            evidence = json.loads(original_evidence.read_text(encoding="utf-8"))
+            evidence = save_or_recover_evidence(evidence_path, evidence, ledger_file)
+            print("REUSE original evidence", ident, flush=True)
+        elif evidence_path.exists():
             evidence = save_or_recover_evidence(evidence_path, [], ledger_file)
             print("RESUME", ident, "evidence", flush=True)
         else:
@@ -400,7 +410,7 @@ def main():
             audit = "Free deterministic review only; factual claims require independent editorial verification."
             # One bounded correction pass, only if deterministic screening fails.
             initial_gate = editorial_gate(task, research, draft, audit)
-            if not initial_gate["screen_passed"] and (ledger["estimated_usd"] + reserve <= CAP or (OUT / (ident + ".correction.stage.txt")).exists()):
+            if not initial_gate["screen_passed"] and (ledger["estimated_usd"] + reserve <= CAP or (work_out / (ident + ".correction.stage.txt")).exists()):
                 revised = stage(ident, "correction",
                               "Revise this draft to address the listed structural issues. "
                               "Use only facts supported by the research. Preserve accurate citations. "
@@ -410,7 +420,7 @@ def main():
                 draft = revised
                 audit = "Free deterministic review only; factual claims require independent editorial verification."
         except StoryResponseError as exc:
-            failure_path = OUT / (ident + ".failure.json")
+            failure_path = work_out / (ident + ".failure.json")
             failure_path.write_text(json.dumps({
                 "object_id": ident, "reason": str(exc),
                 "run_id": os.environ.get("GITHUB_RUN_ID"),
@@ -425,14 +435,14 @@ def main():
         # Exclusive create, never replace existing work. Audit is saved separately.
         with dest.open("x", encoding="utf-8") as f:
             f.write(draft + "\n")
-        (OUT / (ident + ".audit.txt")).write_text(audit + "\n")
-        (OUT / (ident + ".research.txt")).write_text(research + "\n")
+        (work_out / (ident + ".audit.txt")).write_text(audit + "\n")
+        (work_out / (ident + ".research.txt")).write_text(research + "\n")
         gate = editorial_gate(task, research, draft, audit)
         gate["source_verification"] = verify_source_evidence(task, research, draft, evidence)
         gate["claim_evidence_review"] = claim_evidence_review(research, draft, evidence)
         gate["evidence_support_matrix"] = evidence_support_matrix(draft, evidence)
         gate["exact_source_claim_check"] = exact_source_claim_check(draft, evidence)
-        (OUT / (ident + ".gate.json")).write_text(json.dumps(gate, indent=2) + "\n")
+        (work_out / (ident + ".gate.json")).write_text(json.dumps(gate, indent=2) + "\n")
         for completed in (dest.with_suffix(".audit.txt"), dest.with_suffix(".research.txt"),
                           dest.with_suffix(".gate.json"), dest):
             persist_checkpoint(completed, ledger_file)
