@@ -12,9 +12,9 @@ from urllib.request import Request, urlopen
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "generated" / "luna-pilot"
-CAP = 1.00
+CAP = 1.00  # Only draft and optional correction invoke the paid API.
 MAX_INPUT = 6000
-MAX_OUTPUT = 1200
+MAX_OUTPUT = 1600
 
 def request_json(url, data=None, headers=None):
     req = Request(url, data=json.dumps(data).encode() if data is not None else None,
@@ -267,7 +267,7 @@ def main():
         if dest.exists():
             print("SKIP: already generated", ident)
             continue
-        if ledger["estimated_usd"] + reserve * sum(not (OUT / (ident + "." + name + ".stage.txt")).exists() for name in ("research", "draft", "audit")) > CAP:
+        if ledger["estimated_usd"] + reserve * sum(not (OUT / (ident + "." + name + ".stage.txt")).exists() for name in ("draft", "correction")) > CAP:
             print("STOP: cannot reserve 3 stages within budget")
             break
         evidence_path = OUT / (ident + ".evidence.json")
@@ -293,21 +293,16 @@ def main():
                 continue
             evidence = save_or_recover_evidence(evidence_path, evidence, ledger_file)
         basis = json.dumps({"task": task, "retrieved_sources": evidence}, ensure_ascii=False)
-        research = stage(ident, "research",
-                       "Extract only supported, attributable astronomy facts. Cite exact URLs. "
-                       "Flag uncertain or missing claims. Do not invent facts.", basis)
+        research = "Source evidence (automatically retrieved; not independently fact-checked):\n" + "\n".join(e["url"] + "\n" + e.get("excerpt", "") for e in evidence)
         draft = stage(ident, "draft",
                     "Write an original 450-650 word Star Almanack story with hed, dek, "
                     "scientific context and observing guidance. The exact subject name "
                     f"{task['title']!r} must appear in the hed or opening paragraph. "
                     "Cite source URLs. Do not invent sources or assert publication review.", research)
-        audit = stage(ident, "audit",
-                    "Audit the draft against the research. Identify unsupported facts, "
-                    "missing citations, and ambiguities. Return a concise checklist; "
-                    "do not declare verified publication.", research + "\n\nDRAFT:\n" + draft)
+        audit = "Free deterministic review only; factual claims require independent editorial verification."
         # One bounded correction pass, only if deterministic screening fails.
         initial_gate = editorial_gate(task, research, draft, audit)
-        if not initial_gate["screen_passed"] and (ledger["estimated_usd"] + reserve * 2 <= CAP or (OUT / (ident + ".correction.stage.txt")).exists()):
+        if not initial_gate["screen_passed"] and (ledger["estimated_usd"] + reserve <= CAP or (OUT / (ident + ".correction.stage.txt")).exists()):
             revised = stage(ident, "correction",
                           "Revise this draft to address the listed structural issues. "
                           "Use only facts supported by the research. Preserve accurate citations. "
