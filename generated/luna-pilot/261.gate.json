@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204374"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# M84: A Quiet Beacon in Virgo\n\n*In the spring sky, this compact-looking galaxy rewards patient viewing\u2014and hints at a restless engine hidden in its heart.*\n\nThe galaxy M84 does not announce itself with a dramatic spiral or a sweeping dust lane. It is more like a soft thumbprint on the dark: a pale oval, steady among the stars of Virgo. Yet this subdued glow comes from a vast system of stars, and its catalogued identity carries a surprise. M84, also known as NGC 4374, is classified as a Seyfert 2 galaxy\u2014a type whose center is unusually energetic.\n\nThe designation is a reminder that a galaxy\u2019s serene appearance can conceal activity. Seyfert galaxies are identified by the energetic emission from their compact central regions; in a Seyfert 2, the view of that region is obscured or oriented so that its broad emission features are not seen directly. M84\u2019s catalogue record also describes it as elliptical to lenticular in form, placing it among galaxies without the prominent, open spiral arms familiar in photographs of many showpiece targets. [SIMBAD lists its classification, coordinates and measured properties.](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204374)\n\nFor observers, M84\u2019s address is precise: right ascension 12h 25m, declination +12\u00b0 53\u2032 (J2000). Its apparent dimensions are about 6.5 by 5.8 arcminutes\u2014small beside the full Moon, but large enough to show as a soft oval in a telescope. SIMBAD gives its visual magnitude as 10.49, a useful reminder that a galaxy\u2019s light is spread across an area, not gathered into a point like a star.\n\nSpring is a good season to seek it. Virgo climbs into the evening sky, and M84\u2019s position makes it a rewarding target for a dark, transparent night. Start with a current sky chart or planetarium app; from Vindemiatrix, the eastern star of Virgo, sweep west-southwest toward the galaxy fields. The distance is several degrees, so a finder scope or low-power eyepiece can help. A telescope with an aperture of roughly six inches or more is a practical starting point, though the view depends strongly on sky darkness and experience.\n\nLet your eyes adapt for at least 20 minutes, shield them from nearby lights, and use averted vision: look just to one side of the galaxy rather than straight at it. Begin at low power to locate the field, then increase magnification modestly. M84 will usually show as a small, brighter center fading into a hazy envelope. Don\u2019t expect dramatic detail; the pleasure is in holding that faint oval steadily and recognizing that it is not a cloud in our atmosphere, but a remote island of stars.\n\nM84 is a fine lesson in astronomical scale and restraint. The telescope gathers its light, but the eye must do the rest\u2014patiently distinguishing a faint smudge from the black around it. And once found, the galaxy offers two impressions at once: a calm, smooth glow in the eyepiece and, in its Seyfert classification, evidence of a far more active center. On a clear spring evening, that contrast is reason enough to linger.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204374",
+            "overlap_terms": [
+              "ascension",
+              "catalogue",
+              "coordinates",
+              "declination",
+              "degrees",
+              "elliptical",
+              "galaxy",
+              "ident",
+              "known",
+              "magnitude",
+              "minutes",
+              "point"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
