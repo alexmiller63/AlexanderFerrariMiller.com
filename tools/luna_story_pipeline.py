@@ -198,8 +198,8 @@ def main():
     if args.input_price <= 0 or args.output_price <= 0:
         ap.error("Verify positive pricing first")
     tasks = json.loads((ROOT / args.manifest).read_text())
-    if len(tasks) != 10 or len({t["id"] for t in tasks}) != 10:
-        ap.error("Expected 10 distinct tasks")
+    if not tasks or len({str(t["id"]) for t in tasks}) != len(tasks):
+        ap.error("Expected a nonempty manifest of distinct tasks")
     resolved = resolve_objects(tasks)
     print("Catalogue preflight:", len(resolved), "unique permanent object IDs")
     OUT.mkdir(parents=True, exist_ok=True)
