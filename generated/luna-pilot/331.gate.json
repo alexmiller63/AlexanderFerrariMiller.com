@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206218"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# M12: A Compact Globular Cluster in the Catalogue\n\n*Its catalogue entry gives M12 a name, a position and an apparent size. Those numbers offer a way to locate the object\u2014and a reminder that a point of light in a database can represent something larger than a single star.*\n\nM12 is also known as NGC 6218. SIMBAD classifies it as a globular cluster, and lists its position for the J2000 sky as right ascension 16h 47m 14.18s and declination \u22121\u00b0 56\u2032 54.7\u2033. These coordinates act like an address on the celestial sphere: a precise way to identify the object, even when its appearance depends on the observing conditions and equipment. [SIMBAD: M12 / NGC 6218](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206218)\n\nA second number describes how broadly the cluster appears on the sky. SIMBAD lists an angular size of 14.5 by 14.5 arcminutes. This is an apparent measurement: it describes the span seen from Earth, not a physical diameter in kilometres or light-years. Nor does it mean the cluster has a sharp circular edge. The catalogue value gives an observer a useful sense of scale, while leaving the detailed view to the instrument and the sky.\n\nFor a practical search, enter the listed coordinates into a star chart or planetarium app and use them to guide the telescope. Begin at low magnification, then adjust as needed to find a view that is comfortable and clear. Binoculars or a telescope can be used to explore the region around the target; a patient observer can take time to compare what is visible with the chart. These are observing suggestions, not extra measurements of M12: the catalogue identifies the object, but it cannot promise what any particular sky or instrument will show.\n\nSIMBAD also records several brightness measurements. Its entry lists a V magnitude of 6.07, a K magnitude of 4.26, and values in the g and z bands of 7.691 and 6.653, respectively. These are measurements in different filters, so they should not be treated as a single set of directly interchangeable brightness readings. Their value is in documenting how M12 is represented in different parts of the catalogue\u2019s photometric record.\n\nOther entries describe motion and distance-related measurements. SIMBAD lists a radial velocity of \u221241.2 kilometres per second, with an uncertainty of 0.2 kilometres per second, and a parallax of 0.208 milliarcseconds, with an uncertainty of 0.011. The database also gives proper-motion components of \u22120.15 and \u22126.77 milliarcseconds per year. Each number is tied to a measurement and its reference; together they make the entry more than a name on a chart.\n\nThe catalogue\u2019s many values do not replace the experience of finding M12. They give that experience a framework. A position helps point the way; an angular size describes its apparent extent; brightness and motion measurements add other ways of studying it. At the eyepiece, an observer may see more or less detail than expected, but the identity remains fixed: M12, NGC 6218, classified as a globular cluster. Its modest catalogue entry opens onto a larger task\u2014looking carefully, comparing views and discovering what the sky will reveal that night.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206218",
+            "overlap_terms": [
+              "angular",
+              "around",
+              "ascension",
+              "catalogue",
+              "celestial",
+              "cluster",
+              "coordinates",
+              "database",
+              "declination",
+              "depends",
+              "extent",
+              "extra"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
