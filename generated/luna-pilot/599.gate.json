@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2072603"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Alpha1 Lib: A Quiet Star With a Hidden Dance\n\n*This fifth-magnitude Libra star looks like a point of light. Its spectrum tells a more complicated story.*\n\nOn a clear, dark evening, Alpha1 Lib may seem like an unremarkable pinprick. But its light carries a clue that the eye cannot see: astronomers classify it as a **spectroscopic binary**. The stars are not visibly separated in the supplied catalogue data. Instead, their paired nature is inferred from changes in the light they emit, as motion shifts their spectral lines.\n\nThat distinction makes Alpha1 Lib a useful reminder of astronomy\u2019s reach. A telescope does not always need to make two stars look separate to reveal that there are two. In a spectroscopic binary, orbital motion can alternately shift the stars\u2019 spectral fingerprints toward shorter or longer wavelengths through the Doppler effect. Those shifts can disclose a companion even when the system appears as a single point. The available SIMBAD entry identifies Alpha1 Lib as a spectroscopic binary, but does not give an orbital period or other details of its orbit; those should not be guessed.\n\nSIMBAD lists the star\u2019s visual magnitude as 5.16 and its spectral type as F3V. The catalogue also reports a parallax of 41.7742 milliarcseconds. Parallax is the tiny apparent shift in a star\u2019s position as Earth moves around the Sun. Converting that value gives a distance of roughly 24 parsecs, or **78 light-years**. The F3V classification describes a main-sequence star; it is a useful shorthand for the star\u2019s measured spectral character, not a view of its surface.\n\nThe system\u2019s everyday appearance and its scientific identity therefore diverge. To an observer, Alpha1 Lib is a faint point. To a spectrograph, it is a source of changing evidence. The catalogue\u2019s radial-velocity entry is about \u221223.5 kilometres per second, a measurement of motion along our line of sight. That single figure is not, by itself, a record of the binary\u2019s orbit: interpreting the system\u2019s changing motion requires observations over time.\n\n**How to find it:** Look for Alpha1 Lib in Libra, using a star chart or planetarium app to guide you to its position. SIMBAD gives J2000 coordinates of right ascension 14h 50m 41s and declination \u221215\u00b0 59\u2032 50\u2033. At magnitude 5.16, it may be glimpsed with the unaided eye from a dark site by observers with good conditions, but binoculars make the search easier. Light pollution, haze, and moonlight can hide a star this faint. Let your eyes adapt to the dark, and use a chart rather than expecting a bright beacon.\n\nA small telescope can help place the star in the field, but don\u2019t expect to split the spectroscopic pair into two visible points. The rewarding observation is subtler: finding the star whose light, carefully analyzed, reveals a hidden dance. For most stargazers, that dance is not something to watch unfold in a single session. It is a reminder that the sky offers more than the eye alone can resolve.\n\n**Source:** [SIMBAD entry for HIP 72603 / Alpha1 Lib](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2072603). The catalogue reports the identification, coordinates, parallax, spectral type, magnitude, and radial velocity cited above.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2072603",
+            "overlap_terms": [
+              "around",
+              "ascension",
+              "binary",
+              "catalogue",
+              "coordinates",
+              "declination",
+              "ident",
+              "magnitude",
+              "measurement",
+              "motion",
+              "other",
+              "parallax"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
