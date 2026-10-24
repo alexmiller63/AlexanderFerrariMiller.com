@@ -1,0 +1,80 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206611"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Eagle Nebula: A stellar nursery under summer\u2019s wing\n\n*In Serpens, a young star cluster lights a vast cloud of gas and dust. A dark-sky evening\u2014and a little patience\u2014can bring this celebrated deep-sky target within reach.*\n\nThe Eagle Nebula is not a bird in flight, but a region of gas and dust whose dark shapes can suggest wings and talons. Catalogued as Messier 16, it lies in Serpens, near the rich star fields of Sagittarius. At its heart is the young open cluster NGC 6611: the bright stars are easy to recognize in photographs, while the glowing nebula around them asks more of the observer.\n\nThat glow has a physical source. Energetic light from hot young stars excites hydrogen gas, which then emits light of its own. Meanwhile, denser clouds of dust and gas resist the stars\u2019 radiation, casting dark silhouettes against the brighter nebula. The famous \u201cPillars of Creation,\u201d captured in striking detail by the Hubble Space Telescope, are part of this intricate landscape\u2014not objects that most backyard telescopes will reveal in photographic detail.\n\nThe cluster is more than a convenient landmark. NGC 6611 gives the Eagle its stellar heart, and the surrounding gas and dust make M16 a vivid example of the close relationship between stars and their birthplace. The stars illuminate and shape the cloud; the cloud, in turn, provides material from which stars can form. The view through an eyepiece is subtler than a long-exposure image, but it offers its own reward: seeing the real patch of sky that telescopes have studied across many wavelengths.\n\nFor a starting point, SIMBAD lists NGC 6611\u2019s J2000 position as right ascension 18h 18m 45.1s, declination \u221213\u00b0 47\u2032 31\u2033, and identifies it as an open cluster. Use those coordinates in a planetarium app or mount, then look for M16 in Serpens, north of Sagittarius\u2019s familiar Teapot. It is a summertime target for many Northern Hemisphere observers, though its low altitude from more northerly locations means waiting until it has climbed above the horizon can make a noticeable difference.\n\nBegin with binoculars or a low-power telescope to pick out the cluster. Under a dark, transparent sky, a larger telescope may show a faint haze around the stars. Give your eyes time to adjust to the dark, shield them from nearby lights, and try averted vision: looking slightly to one side of a dim patch can make it easier to detect. A nebula filter may improve contrast, though the view depends on your sky and equipment. Don\u2019t expect the vivid colors or sharply defined pillars of a processed image. Instead, look for the delicate contrast between a concentrated sprinkling of stars and a soft, uncertain glow.\n\nThe Eagle rewards careful looking rather than a hurried glance. Even when the nebula itself remains elusive, the cluster offers a clear foothold in the field. Stay with it for a few minutes, and a famous celestial landmark becomes something more immediate: a real gathering of young stars, shining through the cloud that surrounds them.\n\n**Sources**\n\n- SIMBAD, NGC 6611: https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206611\n- ESA/Hubble, \u201cThe Pillars of Creation\u201d: https://esahubble.org/images/heic1501a/",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206611",
+            "overlap_terms": [
+              "around",
+              "ascension",
+              "celestial",
+              "cluster",
+              "coordinates",
+              "declination",
+              "defined",
+              "depends",
+              "field",
+              "ident",
+              "image",
+              "images"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [
+      {
+        "quoted_text": "Pillars of Creation,",
+        "source_matches": [],
+        "exact_text_confirmed": false
+      },
+      {
+        "quoted_text": "The Pillars of Creation",
+        "source_matches": [],
+        "exact_text_confirmed": false
+      }
+    ],
+    "all_quoted_passages_confirmed": false,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
