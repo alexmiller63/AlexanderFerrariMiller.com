@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206333"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# M9: A Dense Lantern in Ophiuchus\n\n*In the summer sky, this globular cluster offers a small telescope a view into one of the Milky Way\u2019s great stellar gatherings.*\n\nM9 is easy to overlook. It doesn\u2019t blaze like a planet or announce itself with a bright star\u2019s sharp point. Instead, this globular cluster waits in Ophiuchus as a compact, quiet glow\u2014one more lantern in a sky crowded with the Milky Way\u2019s riches.\n\nThe catalog name is NGC 6333. SIMBAD classifies it as a globular cluster and places it at right ascension 17h 19m 11.78s and declination \u221218\u00b0 30\u2032 58.5\u2033 (J2000). Its listed angular size is 8.7 arcminutes: a little less than a third of the Moon\u2019s apparent width. That figure describes its apparent extent on the sky, not a sharply defined edge. A cluster\u2019s outer stars can fade gradually into the background. [SIMBAD](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206333)\n\nGlobular clusters are dense, roughly spherical assemblies of stars held together by gravity. In a telescope, their combined light can look like a small patch of mist. The view is a reminder that the eye is gathering light from many stars at once, even when it cannot pick out each one. The challenge\u2014and pleasure\u2014is letting the scene sharpen slowly as your observing conditions and instrument allow.\n\nFor observers in the Northern Hemisphere, M9 is a summer target, but its southerly declination means it won\u2019t climb especially high from many northern locations. At latitude 40\u00b0 north, for example, it reaches about 32\u00b0 above the southern horizon at its highest point. Look for it when Ophiuchus is well placed, and choose a night when the cluster\u2019s line of sight is clear of rooftops, trees and haze. Observers farther south will see it higher.\n\nTo find M9, start with a chart or planetarium app set to your location and date. Search for M9 or NGC 6333, then use nearby stars in Ophiuchus to guide your telescope; the cluster itself may not be obvious in a finder. The catalog coordinates can also help you check that your chart has the right object. Because the field is crowded with stars, take your time and confirm the view rather than assuming every small smudge is your target.\n\nBegin at low magnification, which gives a wider field and makes locating the cluster easier. Once it is centered, try a higher power if the image remains steady. Under a dark sky, a small telescope may show a concentrated, grainy glow; a larger telescope and good conditions can reveal more texture. Don\u2019t be discouraged if the first view looks soft. Give your eyes time to adapt, avoid shining a phone screen in your face, and let the telescope settle after each adjustment.\n\nM9\u2019s appeal is partly its restraint. It won\u2019t fill the eyepiece, and it won\u2019t offer the easy drama of a bright nebula. But when that faint patch comes into view, it turns a set of coordinates into a destination: a compact gathering of stars, suspended in the summer darkness. **Source:** [SIMBAD entry for NGC 6333 (M9)](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206333)",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206333",
+            "overlap_terms": [
+              "allow",
+              "angular",
+              "ascension",
+              "catalog",
+              "cluster",
+              "coordinates",
+              "crowded",
+              "declination",
+              "defined",
+              "extent",
+              "field",
+              "globular"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
