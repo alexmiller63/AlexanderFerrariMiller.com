@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204945"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# NGC 4945: A Narrow Window into a Hidden Engine\n\n*An edge-on spiral in Centaurus offers a lesson in how much a galaxy can conceal\u2014and how carefully observers must choose their skies.*\n\nSome galaxies announce themselves with a bright, rounded glow. NGC 4945 is more like a thin slash of light: a large spiral seen nearly edge-on, its disk stretched across the southern constellation Centaurus. Catalogued as a Seyfert 2 galaxy, it also hosts an active galactic nucleus\u2014a compact, energetic region around a central supermassive black hole. The galaxy\u2019s classification hints at a useful astronomical puzzle: the view of an active nucleus can depend on what lies between it and us. ([SIMBAD](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204945))\n\nThe galaxy\u2019s position, for the standard J2000 coordinate epoch, is right ascension 13 hours 05 minutes 27 seconds and declination \u221249 degrees 28 minutes. Its southern declination makes it a rewarding target for observers south of the equator, but a difficult one from much of the Northern Hemisphere. At latitude 40 degrees north, for example, it would culminate only about one degree above the southern horizon\u2014where atmospheric haze and obstructions can swallow a faint object. From the Southern Hemisphere it climbs higher, though local terrain and sky conditions still matter.\n\nNGC 4945\u2019s catalogued optical dimensions are about 20 by 4 arcminutes, a long, narrow shape. SIMBAD lists its V-band magnitude as 14.4, a reminder that apparent size and apparent brightness are not the same thing: this is not a naked-eye sight, and its light is spread across a considerable patch of sky. A dark site, a clear southern horizon and a telescope are important. Begin with a low-power eyepiece to locate the field, then try a little more magnification if the galaxy appears. Averted vision\u2014looking slightly to one side of the target\u2014can help reveal faint, extended light. Give your eyes time to adapt, and avoid observing when the galaxy is low in murky air.\n\nThe edge-on view also gives the galaxy its distinctive character. Rather than seeing the spiral pattern face-on, we look across the disk, where dust and stars overlap along our line of sight. In a Seyfert 2 galaxy, the active nucleus is classified as one whose central region is obscured from our direct view; astronomers infer its nature from the radiation it does emit and from observations across different wavelengths. The visible sliver, then, is only one part of the story. NGC 4945\u2019s infrared position is separately recorded in SIMBAD, one indication of how astronomers assemble a fuller picture using more than visible light.\n\nFor a finder chart, search the coordinates rather than relying on a single nearby-star hop: the best route depends on your location, equipment and chart scale. Center the telescope carefully, use averted vision, and keep expectations measured. NGC 4945 may appear as a faint elongated haze rather than a sharply defined spiral. That subdued view is no failure. It is a glimpse across a tilted galactic disk, from a world whose most energetic central region remains hidden from ordinary sight.\n\n**Source:** [SIMBAD: NGC 4945](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204945)",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204945",
+            "overlap_terms": [
+              "about",
+              "around",
+              "ascension",
+              "coordinate",
+              "coordinates",
+              "declination",
+              "defined",
+              "degree",
+              "degrees",
+              "depend",
+              "depends",
+              "epoch"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
