@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206752"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# NGC 6752: A Southern Swarm of Stars\n\n*At the edge of Pavo, a globular cluster turns a small telescope into a window on one of the Milky Way\u2019s great stellar gatherings.*\n\nThe first thing to know about NGC 6752 is where to look: far south. Its J2000 coordinates are right ascension 19h 10m 52.11s and declination \u221259\u00b0 59\u2032 04.4\u2033, placing it in the southern constellation Pavo. SIMBAD classifies it as a globular cluster and lists its apparent diameter as about 20.4 arcminutes\u2014roughly two-thirds the Moon\u2019s apparent width. ([SIMBAD](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206752))\n\nFor observers beneath southern skies, that address is an invitation. On a clear winter evening, Pavo climbs high enough to reward a patient look. Farther north, the cluster remains low or may never rise at all; the horizon can swallow detail before the telescope has a chance to gather it. Choose a dark site with a clear southern view, and give your eyes time to adapt.\n\nA globular cluster is not a loose sprinkling of unrelated suns. It is a dense, roughly spherical gathering of stars held together by gravity, with many members packed toward the center. At first glance, NGC 6752 may look like a pale knot against the black. Stay with it. The eye gradually picks out a graininess around the edges, and the impression changes from a smudge to a multitude.\n\nBegin with binoculars or a telescope at low power, using a star chart or a planetarium app to confirm the field. The cluster\u2019s listed diameter makes a wide view useful for finding it and seeing its context. Once centered, increase magnification gradually. A steady atmosphere and patient viewing can help reveal more individual points, especially around the outer regions; the dense core may remain a bright, unresolved glow in smaller instruments. Avoid pushing magnification so high that the image dims or wavers.\n\nThe numbers in the catalog offer another way to imagine the object. SIMBAD reports a heliocentric radial velocity of \u221226.2 kilometers per second: in the usual convention, the negative sign indicates motion toward us along our line of sight. The same entry gives a parallax of 0.254 milliarcseconds, a tiny apparent shift against more distant stars. These measurements belong to different ways of describing the cluster\u2014its motion and its position\u2014while the eyepiece offers a view of its concentrated light.\n\nThat light has traveled across a gulf too vast to cross in a lifetime, yet the observing ritual is immediate: find the southern horizon, settle the mount, focus on a nearby star, and return to the cluster. Each minute at the eyepiece lets more of its shape emerge. The brighter center holds the gaze; the outlying stars loosen the boundary, as if the swarm were dissolving into the surrounding sky.\n\nNGC 6752 asks for no elaborate equipment\u2014only a view of the south, a little patience, and a willingness to look again. In a dark sky, the faint patch becomes a gathering, and the gathering becomes a reminder that the Milky Way is not merely a band of light. It is also a home to immense, ancient communities of stars.\n\n**Source:** [SIMBAD entry for NGC 6752](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206752)",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206752",
+            "overlap_terms": [
+              "around",
+              "ascension",
+              "before",
+              "catalog",
+              "cluster",
+              "coordinates",
+              "declination",
+              "different",
+              "field",
+              "globular",
+              "heliocentric",
+              "ident"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
