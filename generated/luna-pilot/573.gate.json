@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%20113889"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Fumalsamakah: A Small Flame in the Fish\n\n*This modest fourth-magnitude star carries the signature of a hot, emission-line star\u2014and rewards a patient search beneath the Great Square of Pegasus.*\n\nPisces is easy to pass over. Its stars trace two faint fish joined by a long, loose cord, a pattern more like a suggestion than a picture. But at one end of that celestial thread shines Fumalsamakah, also catalogued as Beta Piscium: a star bright enough to find under a dark sky, yet subtle enough to make the search part of the pleasure.\n\nThe name can be found in modern star charts, but the catalog gives a more technical portrait. SIMBAD lists Fumalsamakah as spectral type B6Ve, with a visual magnitude of about 4.52. The \u201cB\u201d identifies a hot, blue-white class of star; the \u201ce\u201d marks emission features in its spectrum. In Be stars, such emission is commonly associated with gas around the star. That hidden activity contrasts with the quiet point of light seen from Earth: no naked-eye observer can make out the star\u2019s surroundings, but its spectrum carries clues to them.\n\nIts measured parallax is about 8.05 milliarcseconds. Turning that into distance puts Fumalsamakah roughly 124 parsecs away\u2014about 400 light-years. The number gives the light you see tonight a long journey: it began its trip before the first modern observatories, crossing interstellar space to arrive as a small glint in Pisces.\n\nFor the star\u2019s coordinates, look near right ascension 23 hours 03 minutes and declination +3 degrees 49 minutes (J2000). These numbers are a precise address, but a finder chart makes the route friendlier. Start with the Great Square of Pegasus, the prominent four-star figure high in the autumn sky. From its lower part, look south toward Pisces and search for the faint, irregular line of stars. Fumalsamakah lies among the western reaches of the constellation, not in a conspicuous knot but along the pattern\u2019s delicate outline.\n\nThe best time to try is on autumn evenings, when Pisces is well placed for observers in the Northern Hemisphere. From a dark site, give your eyes time to adapt and scan with averted vision: looking just to one side of a faint star can make it easier to detect. At magnitude 4.5, Fumalsamakah may disappear in bright urban skies, while binoculars can help pick it out and reveal nearby stars that clarify the pattern. A small telescope will show it as a point, not a disk; the star is far too distant for its surface to be resolved in ordinary amateur instruments.\n\nThat limitation is also an invitation. Fumalsamakah is not a showpiece that overwhelms the eyepiece. It asks you to learn the shape of Pisces, to pause over a modest point of light, and to remember that a star\u2019s apparent quiet can conceal a more active story. In the fish\u2019s faint outline, this one offers a meeting place between the sky\u2019s simplest view and the richer physics carried in starlight.\n\n**Source:** [SIMBAD: HIP 113889 / Beta Piscium](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%20113889) (coordinates, parallax, spectral type and photometry).",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%20113889",
+            "overlap_terms": [
+              "around",
+              "ascension",
+              "before",
+              "catalog",
+              "celestial",
+              "class",
+              "coordinates",
+              "declination",
+              "degrees",
+              "ident",
+              "joined",
+              "magnitude"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
