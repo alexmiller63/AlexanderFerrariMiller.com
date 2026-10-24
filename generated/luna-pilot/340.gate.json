@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206369"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# The Little Ghost Nebula: A Star\u2019s Last Exhalation\n\n*NGC 6369 is a compact planetary nebula in Ophiuchus. Find it with a chart, give your eyes time to adjust, and a small cloud of ancient starlight may emerge from the summer sky.*\n\nThe name sounds like a bedtime whisper, but the Little Ghost Nebula marks a dramatic transition. Catalogued as NGC 6369, it is a planetary nebula: not a world, but a shell of gas cast off by a star near the end of its life. The star\u2019s hot, exposed core floods that expanding gas with ultraviolet light, causing it to glow. What looks like a quiet smudge through an eyepiece is, in reality, the aftermath of a stellar shedding.\n\nThe nebula lies in Ophiuchus, among the constellations that climb the evening sky during northern summer. Its position\u2014right ascension 17h 29m, declination \u221223\u00b0 46\u2032\u2014puts it well south of the celestial equator. That makes it a more comfortable target for observers in the Southern Hemisphere; from mid-northern latitudes, it stays relatively low. Choose a night when it crosses the meridian, the imaginary north\u2013south line overhead, and seek a site with a clear southern horizon. Low altitude means more atmosphere to look through, so patience and steady conditions help.\n\nA chart or planetarium app is essential: this is not a naked-eye object. SIMBAD classifies NGC 6369 as a planetary nebula and lists its apparent size at roughly 0.59 arcminutes in a radio measurement. That is small\u2014about a third the apparent width of the Moon\u2014so at low power it can resemble a star. Begin with a wide field to locate the right patch, then increase magnification. A nebula filter, such as an O III filter, may improve contrast against the background sky. If the object seems stubborn, try averted vision: look slightly to one side of it rather than straight at it.\n\nA useful trick is to compare the view with and without the filter. Stars generally dim through an O III filter, while light from many planetary nebulae can stand out more clearly. If you are unsure which point is the nebula, gently moving the filter in and out of the eyepiece\u2019s line of sight can help identify the candidate that changes least. Keep expectations realistic: visual views depend on aperture, sky darkness, altitude and eyesight. Images can reveal far more color and detail than the eye sees at the telescope.\n\nThe \u201cghost\u201d nickname suits an object that asks for careful looking. Planetary nebulae are fleeting on cosmic timescales: the expelled gas disperses, and the central remnant gradually cools. NGC 6369 lets us catch one such brief chapter, a star\u2019s outer layers becoming a luminous veil. Find it on a transparent night, and stay with the eyepiece for a few minutes. Sometimes the reward is not a bright apparition, but the quiet certainty that a faint patch is no star at all.\n\n**Source:** SIMBAD entry for NGC 6369 (object type, coordinates and listed angular size): https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206369",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206369",
+            "overlap_terms": [
+              "angular",
+              "ascension",
+              "celestial",
+              "certainty",
+              "coordinates",
+              "declination",
+              "filter",
+              "ident",
+              "listed",
+              "measurement",
+              "minutes",
+              "nebula"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
