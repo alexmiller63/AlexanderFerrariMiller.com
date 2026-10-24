@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%202021"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Beta Hyi: A Bright Beacon on the Far-Southern Map\n\n*In Hydrus, a second-magnitude star is easy to spot\u2014and its measured motion offers a reminder that even the fixed stars are travelling.*\n\nThe southern sky has its own landmarks, and Beta Hyi is one of the easiest to recognize. In the small constellation Hydrus, the Water Snake, it shines at visual magnitude 2.79: bright enough to see with the unaided eye under a reasonably dark sky. Its name sounds like a ranking, but for an observer it\u2019s more useful as an invitation: find Hydrus, and you\u2019ve found a star with a measurable story.\n\nSIMBAD lists Beta Hyi at right ascension 00h 25m 45s and declination \u221277\u00b0 15\u2032 (coordinates for epoch J2000), placing it deep in the southern celestial hemisphere. The database gives its visual magnitude as 2.79 and its spectral type as G0V. These are catalog measurements and classifications, not a promise that every observer will see the star equally well: haze, light pollution and the height of the star above your horizon all matter. ([SIMBAD](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%202021))\n\nThere\u2019s a second, less obvious reason Beta Hyi rewards attention: it moves against the distant background of stars. SIMBAD reports a parallax of 134.07 milliarcseconds. Parallax is the tiny apparent shift in a nearby star\u2019s position as Earth travels around the Sun. Using the simple relation distance in parsecs = 1 \u00f7 parallax in arcseconds, that value corresponds to about 7.46 parsecs, or roughly 24 light-years.\n\nThe same record gives Beta Hyi a proper motion of 2,219.54 milliarcseconds per year in right ascension (with the usual cosine-of-declination factor included) and 324.09 milliarcseconds per year in declination. Together, those components amount to about 2.24 arcseconds each year. That shift is far too small to notice by watching the star from night to night, but it adds up: plotted on a sufficiently long-baseline star chart, its position changes. The stars are not pinned to a celestial sphere; they only look that way because their distances are so immense.\n\n**Observing guidance:** Beta Hyi is best sought from the Southern Hemisphere, where it rides high enough to stand out. Its declination also means it is circumpolar\u2014remaining above the horizon throughout the night\u2014in locations south of roughly 13\u00b0 south latitude. From farther north it can still be visible, but it sits low, and atmospheric haze near the horizon may dim it. Observers north of about 13\u00b0 north latitude cannot see it.\n\nFor a practical search, choose a clear, dark location and consult a southern-sky chart or planetarium app set to your location and observing time. Hydrus lies in the far-southern sky; use the chart to identify the constellation before looking for Beta Hyi\u2019s bright point. Binoculars can help pick it out if the sky is washed out, but the star itself is bright enough for naked-eye viewing under good conditions. A small telescope won\u2019t make it look like a disk\u2014stars remain unresolved points in ordinary amateur instruments\u2014but it can help you compare the field with a chart.\n\nLook up, then look again months or years later. Beta Hyi won\u2019t visibly wander during an observing session, yet the numbers tell us it is moving through space and sits close enough for Earth\u2019s orbit to reveal its distance. That combination makes this bright southern star more than a point to check off: it\u2019s a nearby world whose place in the sky can be measured.\n\n**Source:** [SIMBAD entry for HIP 2021 / Beta Hyi](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%202021)",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%202021",
+            "overlap_terms": [
+              "around",
+              "ascension",
+              "before",
+              "catalog",
+              "celestial",
+              "coordinates",
+              "database",
+              "declination",
+              "epoch",
+              "ident",
+              "magnitude",
+              "motion"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
