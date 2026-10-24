@@ -129,16 +129,40 @@ def generate(start_year, end_year):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--start-year", type=int, default=2025)
-    parser.add_argument("--end-year", type=int, default=2035)
+    parser.add_argument("--end-year", type=int, default=2036)
     parser.add_argument("--output-dir", type=Path, default=Path("generated/eclipse-catalog"))
     args = parser.parse_args()
     if args.end_year < args.start_year:
         parser.error("end-year must not precede start-year")
     rows = generate(args.start_year, args.end_year)
-    # Stable page identifiers shared by the Calendar, Sky Notes, and eclipse guide.
+    # Registry identity is persistent across recalculations. Never derive a new
+    # identifier solely because an improved ephemeris shifts the UTC date.
+    registry_path = args.output_dir / "eclipse-registry.json"
+    previous = json.loads(registry_path.read_text(encoding="utf-8")) if registry_path.exists() else {"events": []}
+    old_events = previous.get("events", [])
+    assigned = set()
     for row in rows:
-        row["id"] = f"{row['date_utc']}-{row['kind']}"
-        row["detail_path"] = f"eclipses/{row['id']}.html"
+        day = date.fromisoformat(row["date_utc"])
+        matches = [item for item in old_events
+                   if item["kind"] == row["kind"]
+                   and abs((date.fromisoformat(item["date_utc"]) - day).days) <= 3
+                   and item["id"] not in assigned]
+        if len(matches) > 1:
+            raise RuntimeError(f"Ambiguous permanent eclipse identity: {row['date_utc']}")
+        event_id = matches[0]["id"] if matches else f"ECL-{day:%Y-%m-%d}-{'S' if row['kind'] == 'solar' else 'L'}"
+        if event_id in assigned:
+            raise RuntimeError(f"Duplicate eclipse identity: {event_id}")
+        assigned.add(event_id)
+        row["id"] = event_id
+        row["detail_path"] = f"eclipses/{event_id}.html"
+    # Preserve entries outside the requested build window.
+    retained = [item for item in old_events
+                if not args.start_year <= date.fromisoformat(item["date_utc"]).year <= args.end_year]
+    registry_events = retained + [dict(id=r["id"], kind=r["kind"], date_utc=r["date_utc"],
+                                      detail_path=r["detail_path"]) for r in rows]
+    registry_path.parent.mkdir(parents=True, exist_ok=True)
+    registry_path.write_text(json.dumps({"schema_version": 1, "events": sorted(registry_events,
+        key=lambda item: (item["date_utc"], item["kind"]))}, indent=2) + "\\n", encoding="utf-8")
     args.output_dir.mkdir(parents=True, exist_ok=True)
     csv_path = args.output_dir / f"eclipses-{args.start_year}-{args.end_year}.csv"
     json_path = args.output_dir / f"eclipses-{args.start_year}-{args.end_year}.json"
