@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204889"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# NGC 4889: A Quiet Giant at the Heart of Coma\n\n*In the spring sky, a telescope can reveal one galaxy\u2019s soft glow\u2014and hint at the immense black hole hidden within it.*\n\nThe first thing to know about **NGC 4889** is that it will not look like a spiral galaxy in a photograph. There are no sweeping arms to catch the eye, just a broad, softly fading oval of light. But look long enough, and that glow becomes a marker for a place of extremes: a giant elliptical galaxy in the Coma Cluster, hundreds of millions of light-years away.\n\nNGC 4889 lies in Coma Berenices, near the cluster\u2019s crowded center. Its measured redshift is 0.0215, according to the SIMBAD astronomical database. The light now entering your telescope began its journey when Earth\u2019s continents, climates and life were very different. The galaxy itself is classified as an E3 elliptical, a shape that is noticeably stretched rather than perfectly round. ([SIMBAD: NGC 4889](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204889))\n\nThe galaxy\u2019s calm appearance conceals a remarkable central object. Astronomers studying the motions of stars in NGC 4889 estimated that its central black hole contains about 21 billion times the mass of the Sun. That number is an estimate, not a direct photograph of the black hole: its gravity is inferred from the way nearby stars move. The galaxy\u2019s bright, extended body gives no obvious visual clue to the darkness at its center. ([McConnell et al., *Nature*, 2011](https://doi.org/10.1038/nature10634))\n\nFinding NGC 4889 is easier if you think of it as part of a pair. Its neighboring giant, NGC 4874, also dominates the Coma Cluster\u2019s core. They are close enough to share the same telescope field at low power, though neither is a showpiece like a bright nebula. The reward is subtler: two concentrated patches of light surrounded by a much larger, fainter realm of galaxies.\n\nFor a spring observing session, start with Coma Berenices when it is high in the evening sky. NGC 4889\u2019s listed position is right ascension 13 hours, 00 minutes, 08 seconds and declination +27 degrees, 58 minutes (J2000). A chart or GoTo mount can help you land in the dense cluster field. Under a dark sky, an 8-inch telescope is a useful starting point; a larger aperture can make the galaxy\u2019s diffuse outline easier to distinguish. Use low power to locate the region, then try moderate magnification and look slightly away from the galaxy\u2019s center. Averted vision\u2014looking just to one side of the target\u2014can help reveal faint light.\n\nSIMBAD lists NGC 4889 at visual magnitude 11.3, but a galaxy spreads its light over an area, so that number does not mean it will appear like a pinpoint star. Let your eyes adapt to the dark, avoid bright screens, and give the view time. On a clear night, the galaxy may appear as little more than a dim oval. That is enough. You are looking at the combined light of countless stars, with a black hole\u2019s immense gravity hidden in their midst.\n\n**Sources:** [SIMBAD: NGC 4889](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204889); [McConnell et al., *Nature* (2011)](https://doi.org/10.1038/nature10634).",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204889",
+            "overlap_terms": [
+              "according",
+              "ascension",
+              "crowded",
+              "database",
+              "declination",
+              "degrees",
+              "elliptical",
+              "field",
+              "galaxy",
+              "ident",
+              "listed",
+              "magnitude"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
