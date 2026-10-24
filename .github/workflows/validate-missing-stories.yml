@@ -1,0 +1,32 @@
+name: Validate Missing Story Candidates
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'tools/select_missing_story_candidates.py'
+      - '.github/workflows/validate-missing-stories.yml'
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Select ten unwritten objects without API calls
+        run: |
+          python3 tools/select_missing_story_candidates.py --limit 10
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          from tools.luna_story_pipeline import resolve_objects
+          p=Path('generated/luna-pilot-selected.json')
+          tasks=json.loads(p.read_text())
+          assert len(tasks)==10, f'Expected 10, got {len(tasks)}'
+          ids=resolve_objects(tasks)
+          assert len(set(ids.values()))==10
+          print('PASS: ten unique previously unselected permanent objects')
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: missing-story-candidates
+          path: generated/luna-pilot-selected.json
