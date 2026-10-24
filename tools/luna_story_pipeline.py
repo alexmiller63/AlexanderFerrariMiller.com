@@ -9,6 +9,7 @@ from pathlib import Path
 from html import unescape
 from html.parser import HTMLParser
 from urllib.request import Request, urlopen
+from urllib.error import HTTPError
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "generated" / "luna-pilot"
@@ -20,8 +21,21 @@ def request_json(url, data=None, headers=None):
     req = Request(url, data=json.dumps(data).encode() if data is not None else None,
                   headers=headers or {"User-Agent": "StarAlmanackResearchPilot/1.0"},
                   method="POST" if data is not None else "GET")
-    with urlopen(req, timeout=90) as response:
-        return response.read().decode("utf-8", errors="replace")
+    try:
+        with urlopen(req, timeout=90) as response:
+            return response.read().decode("utf-8", errors="replace")
+    except HTTPError as exc:
+        # API errors can explain a 404; never print request headers or credentials.
+        body = exc.read(4096).decode("utf-8", errors="replace")
+        try:
+            detail = json.loads(body).get("error", {})
+            message = detail.get("message", "No API error message")
+            code = detail.get("code", "unknown")
+            error_type = detail.get("type", "unknown")
+        except (ValueError, AttributeError):
+            message, code, error_type = "Non-JSON error response", "unknown", "unknown"
+        raise RuntimeError(f"HTTP {exc.code} from {req.full_url.split('?')[0]}: "
+                           f"type={error_type}, code={code}, message={message}") from None
 
 class PageText(HTMLParser):
     def __init__(self):
