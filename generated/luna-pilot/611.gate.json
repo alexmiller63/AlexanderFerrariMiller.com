@@ -1,0 +1,77 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%202578"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Beta3 Tuc: A Southern Star at the Edge of Sight\n\n*An almost fifth-magnitude point in Tucana carries a multiple-star designation\u2014and an invitation to look carefully.*\n\nSome stars announce themselves with brilliance. Beta3 Tuc asks for a darker sky.\n\nIn the constellation Tucana, the Toucan, this modest point of light sits far south of the celestial equator. The SIMBAD database identifies it as a double or multiple star and gives its J2000 position as right ascension 00h 32m 43.9s, declination \u221263\u00b0 01\u2032 53\u2033. Its listed visual magnitude is 5.09: near the usual naked-eye limit, though that limit shifts with eyesight, sky darkness and observing conditions. ([SIMBAD: HIP 2578 / Beta3 Tuc](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%202578))\n\nThat faintness changes the experience. Under a bright suburban sky, Beta3 Tuc may disappear into the background. Far from direct lights, give your eyes time to adapt, then sweep the region with your gaze rather than staring straight at the star. Averted vision\u2014looking slightly to one side\u2014can help reveal faint points of light. Binoculars make the surrounding star field easier to explore, even if the aim is simply to find the star, not to split its components.\n\nThe catalog\u2019s \u201cdouble or multiple\u201d classification is a clue, not a promise of a showpiece pair. The SIMBAD entry supplied here does not give the separation or relative brightness of the components, so it cannot tell an observer whether they can be distinguished in binoculars or a telescope. Think of the designation as evidence that the catalog treats the object as a system, while the view through an eyepiece remains an open question.\n\nSIMBAD also lists a parallax of 21.6794 milliarcseconds. Parallax is the apparent shift of a nearby star against more distant background stars as Earth moves around the Sun. Converting that measurement gives a distance of roughly 46 parsecs, or about 150 light-years. The database lists a spectral type of A0V, with a C-quality flag: a cataloged classification, but one to treat with appropriate caution. In broad terms, A-type stars are hotter than the Sun; the \u201cV\u201d denotes the main-sequence luminosity class.\n\nFor an observing plan, start with location. At declination \u221263\u00b0, Beta3 Tuc is best placed for observers in the Southern Hemisphere. From latitudes north of about 27\u00b0N, it does not rise above the horizon. If you are south of that line, check a current sky chart for when Tucana is high enough to clear local obstructions. The coordinates are useful in a planetarium app or setting circle; a wide-field view can then help you match the star pattern.\n\nTry first with the unaided eye on a moonless night, away from city glare. If the star remains elusive, use binoculars to locate the field, then look again without them. That small return to naked-eye observing is part of the pleasure: a faint point becomes a destination you can recognize. Beta3 Tuc may not dominate the southern sky, but its quiet light rewards the patient observer\u2014and its multiple-star label leaves a little room for curiosity.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%202578",
+            "overlap_terms": [
+              "around",
+              "ascension",
+              "catalog",
+              "celestial",
+              "class",
+              "coordinates",
+              "current",
+              "database",
+              "declination",
+              "double",
+              "ident",
+              "limit"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [
+      {
+        "quoted_text": "double or multiple",
+        "source_matches": [
+          "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%202578"
+        ],
+        "exact_text_confirmed": true
+      }
+    ],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
