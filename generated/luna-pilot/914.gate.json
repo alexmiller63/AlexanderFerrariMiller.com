@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2054682"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Beta Crt: A Bright Star with a Hidden Companion\n\n*In the bowl of Crater, this fourth-magnitude star looks solitary. Its spectrum tells a more complicated story.*\n\nOn a clear spring evening, look south for the faint outline of Crater, the Cup, tucked beside the long constellation Hydra. Beta Crt is one of the bowl\u2019s brighter stars, though at magnitude 4.45 it is best picked out from a reasonably dark site. To the eye, it appears as a single point. Astronomers classify it as a spectroscopic binary: a system whose paired stars are identified through changes in their spectra, not by seeing two separate dots.\n\nThat distinction is the star\u2019s quiet surprise. In a spectroscopic binary, the stars\u2019 orbital motion shifts the wavelengths of spectral lines through the Doppler effect. The shifting pattern can reveal that a star is moving toward and away from us, even when its companion is too close or too faint to distinguish in a telescope. SIMBAD lists Beta Crt (also catalogued as HIP 54682) as a spectroscopic binary, but the listing alone does not provide the system\u2019s orbital details. The observation to make is therefore a contrast: a seemingly single star to the eye, with evidence of company in its light.\n\nSIMBAD gives Beta Crt a spectral type of A1V. The \u201cA\u201d marks a hot, blue-white class of star; \u201cV\u201d identifies it as a main-sequence star, one that generates energy by fusing hydrogen in its core. Its listed visual magnitude is 4.449, placing it within naked-eye range under dark skies, though city glare, haze and moonlight can easily wash it out.\n\nThe star\u2019s parallax\u2014the slight apparent shift against more distant stars as Earth moves around the Sun\u2014is listed as 10.3043 milliarcseconds. Taking the reciprocal gives a distance of about 97 parsecs, or roughly 317 light-years. That figure turns Beta Crt\u2019s bright-looking point into a more distant beacon: its apparent brightness is not a measure of how close it is, but of the light reaching us across space.\n\nFor a practical search, begin with Hydra, which stretches across much of the southern sky. Crater sits along its back, west of Corvus, the Crow. A chart or planetarium app set to your location can help identify the cup\u2019s small, dim pattern; then use binoculars to confirm its brighter stars. Beta Crt\u2019s catalogued coordinates are right ascension 11h 11m and declination \u221222\u00b0 49\u2032. Its southerly position means it stands higher for observers in the Southern Hemisphere and lower toward the southern horizon for many northern observers.\n\nThe season is favorable in northern spring: the region climbs into the evening sky, though local viewing times and altitude depend on latitude. Choose a spot with an open southern horizon, let your eyes adjust to the dark, and try first without optical aid. Binoculars can make the surrounding pattern easier to trace, but they will not split this spectroscopic pair. That takes careful measurement of starlight over time.\n\n**Sources:** SIMBAD entry for HIP 54682, including coordinates, parallax, spectral type, magnitude and object classification: https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2054682",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2054682",
+            "overlap_terms": [
+              "around",
+              "ascension",
+              "binary",
+              "class",
+              "coordinates",
+              "declination",
+              "depend",
+              "ident",
+              "listed",
+              "magnitude",
+              "measure",
+              "measurement"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
