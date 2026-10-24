@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%20104043"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Alpha Oct: A Southern Beacon with a Hidden Companion\n\n*Near the south celestial pole, this modest fifth-magnitude star looks like a single point. Its spectrum tells a more intimate story.*\n\nIn the southern sky, where familiar northern constellations give way to unfamiliar patterns, Alpha Oct offers a quiet destination for a clear, dark night. It is not a dazzling star, nor one that reveals its secrets in a telescope\u2019s eyepiece. To the eye, it is a small, steady point. Yet measurements identify it as a **spectroscopic binary**: two stars whose orbital motion is detected through changes in their combined light.\n\nThat distinction matters. A visual binary can be seen as two separate points when viewed through a telescope. In a spectroscopic binary, the stars are too close together to distinguish that way; astronomers infer their partnership by analyzing the shifting lines in the system\u2019s spectrum. Alpha Oct\u2019s companion is therefore a hidden presence, known through careful measurement rather than a dramatic split in the eyepiece.\n\nThe star lies at a distance of roughly 45 parsecs\u2014about 147 light-years\u2014estimated by inverting its measured parallax of 22.18 milliarcseconds. Its catalogued visual magnitude is about 5.15, near the traditional naked-eye limit under dark skies. The database also lists a spectral type of F6(m)pec, but gives that classification a low quality grade, so it is best treated as a tentative catalog description rather than a firm portrait of the star.\n\nFor observers, Alpha Oct\u2019s position is part of its appeal. Its coordinates place it at declination \u221277\u00b0 01\u2032, deep in the southern sky and relatively close to the south celestial pole. From southern mid-latitudes, it stays above the horizon for much or all of the night, while appearing high enough to observe comfortably. Around the southern autumn and winter, it is well placed in the evening sky.\n\nStart with the constellation Octans and a star chart or planetarium app; Alpha Oct may be difficult to pick out without help, especially under light-polluted skies. Once you have located the field, allow your eyes time to adapt to the dark. Under a rural sky, try to see the star without optical aid. In brighter surroundings, binoculars can help identify the region, though they will not resolve the binary components. A small telescope is useful for following the star\u2019s position among the surrounding points of light, not for separating its companion.\n\nThere is something satisfying about observing a star whose most important feature is invisible. The view remains unchanged whether you know the secret or not: one point of light, suspended over a southern horizon. But the spectrum transforms that apparent solitude. Alpha Oct is not alone; its companion circles close by, leaving a subtle rhythm in the starlight that only instruments can read.\n\n**Source:** [SIMBAD entry for HIP 104043 (Alpha Oct)](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%20104043) \u2014 coordinates, parallax, magnitude, spectral-type listing, and spectroscopic-binary classification.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%20104043",
+            "overlap_terms": [
+              "allow",
+              "around",
+              "binary",
+              "catalog",
+              "celestial",
+              "coordinates",
+              "database",
+              "declination",
+              "ident",
+              "known",
+              "limit",
+              "magnitude"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
