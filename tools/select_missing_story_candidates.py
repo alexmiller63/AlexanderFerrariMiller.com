@@ -12,9 +12,15 @@ def candidates(limit=10):
     objects = json.loads((ROOT / "database/fixed-objects.json").read_text())["fixed_objects"]
     existing = {int(p.stem) for folder in STORY_DIRS for p in (ROOT / "stories" / folder).glob("*.md") if p.stem.isdigit()}
     saved = ROOT / "generated/luna-pilot"
+    # Any saved work or checkpoint reserves its permanent object ID.
+    # Do not reselect interrupted research, evidence, audit or paid stages.
+    if saved.exists():
+        for p in saved.iterdir():
+            if p.is_file():
+                match = re.match(r"^(\d+)(?:\.|$)", p.name)
+                if match:
+                    existing.add(int(match.group(1)))
     existing.update(int(p.stem) for p in saved.glob("*.md") if p.stem.isdigit())
-    # A paid draft stage counts as existing work even if final assembly was interrupted.
-    existing.update(int(p.name.split(".")[0]) for p in saved.glob("*.draft.stage.txt") if p.name.split(".")[0].isdigit())
     # Do not repeat any previous pilot candidate until its status has been reconciled.
     previous = ROOT / "research/luna-pilot-candidates.json"
     if previous.exists():
