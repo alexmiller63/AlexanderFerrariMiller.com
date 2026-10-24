@@ -1,0 +1,77 @@
+{
+  "screen_passed": false,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": false,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%207129"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# NGC 7129: A Cluster and Nebula in the Catalogue\n\nNGC 7129 is listed by SIMBAD as an open cluster, with additional object types that include an H II region and a reflection nebula. Those labels place the object in more than one category: the entry identifies a cluster of stars and also associates the name with nebular classifications. It is a reminder that a catalogue entry is a starting point for understanding a target, not a full description of everything an observer might see.\n\nSIMBAD gives the cluster\u2019s position as right ascension 21 hours 42 minutes 58 seconds and declination +66 degrees 06 minutes 48 seconds, in the J2000 coordinate system. These coordinates are the practical key to finding it. Enter \u201cNGC 7129\u201d or the coordinates into a planetarium app or star atlas, then use the map to identify the field. The high positive declination places it far north on the celestial sphere; the coordinates, rather than a name alone, let observers check when and where it is positioned from their own location.\n\nThe entry also reports a parallax of 1.086 milliarcseconds, with an uncertainty of 0.011 milliarcseconds. Parallax is an angular measurement, not a distance stated directly. Taking the reciprocal of 0.001086 arcseconds gives an approximate distance of 920 parsecs, or about 3,000 light-years. This is a calculation from the listed value, not a separate distance measurement quoted in the entry. The uncertainty in the parallax means the converted distance should be treated as approximate.\n\nThe catalogue\u2019s classifications need similar care. \u201cOpen cluster\u201d is the primary object type shown in SIMBAD. The entry also lists \u201cHII\u201d and \u201cRNe,\u201d abbreviations for an H II region and a reflection nebula, among its other object types. These labels describe different kinds of astronomical objects, but the database listing alone does not explain their appearance or establish how much of each feature is visible through a particular telescope. It does, however, show why NGC 7129 is not represented by just one simple category in the record.\n\nFor an observing session, start with the coordinates and a chart rather than relying on a printed description of what the view should look like. Use a low-power eyepiece to take in a wider field, and give your eyes time to adjust to the dark. If the surrounding nebulosity is difficult to distinguish, that does not invalidate the observation: the catalogue\u2019s classification does not promise a particular visual impression or guarantee that every feature will be apparent in every instrument or sky condition.\n\nA useful approach is to separate what the catalogue establishes from what an observer can test. SIMBAD identifies NGC 7129 as an open cluster, supplies its coordinates and parallax, and lists additional nebular types. The distance estimate follows from the parallax; the view at the eyepiece depends on observing circumstances that the entry does not specify.\n\nThat makes NGC 7129 a measured and mapped destination, as well as a reminder to keep expectations grounded. Locate the field, compare the view with a chart, and decide what is visible for yourself. The catalogue gives a firm address in the sky and several classifications; the observation begins when you turn to the eyepiece.\n\n**Source:** SIMBAD entry for NGC 7129: https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%207129",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%207129",
+            "overlap_terms": [
+              "angular",
+              "ascension",
+              "catalogue",
+              "celestial",
+              "cluster",
+              "coordinate",
+              "coordinates",
+              "database",
+              "declination",
+              "degrees",
+              "depends",
+              "field"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [
+      {
+        "quoted_text": "Open cluster",
+        "source_matches": [
+          "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%207129"
+        ],
+        "exact_text_confirmed": true
+      }
+    ],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
