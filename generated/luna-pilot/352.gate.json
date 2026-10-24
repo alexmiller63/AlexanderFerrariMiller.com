@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206541"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# NGC 6541: A Southern Sky Full of Old Stars\n\n*In Corona Australis, a compact globe of stars offers a glimpse of the Milky Way\u2019s ancient population\u2014and a rewarding target for southern-sky observers.*\n\nSomewhere in the southern constellation Corona Australis, a faint glow gathers into a crowded sphere. It is NGC 6541, a globular cluster: not a loose scatter of neighboring suns, but a gravitationally bound community of stars. Globular clusters are among the Milky Way\u2019s oldest stellar populations. Their stars formed early in the galaxy\u2019s history, and the cluster\u2019s close-packed appearance is a reminder that the night sky\u2019s quiet patches can contain thousands of distant lights.\n\nNGC 6541 sits at right ascension 18h 08m and declination \u221243\u00b0 42\u2032 (J2000), according to SIMBAD. The database lists its apparent diameter as about 13.1 arcminutes\u2014less than half the Moon\u2019s apparent width. That small angular footprint helps explain why the cluster can appear modest at first glance. Its light is spread across a compact patch, and its stars blend together when viewed from Earth. [SIMBAD\u2019s NGC 6541 listing](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206541)\n\nThe cluster is also moving relative to us. SIMBAD reports a heliocentric radial velocity of about \u2212164 kilometres per second. That measurement describes motion along our line of sight: a negative value means the cluster is approaching. It is one small piece of a larger story, as astronomers use stellar motions and positions to trace how globular clusters travel through the Milky Way.\n\n**How to find it:** Start with Corona Australis, the small southern crown tucked below Sagittarius. Use a current star chart or planetarium app to locate the cluster\u2019s coordinates; its low declination makes it difficult or impossible to see from much of the far northern hemisphere. From southern locations, it climbs higher and is easier to observe. Around June through August, it is well placed in evening skies for observers in the Southern Hemisphere.\n\nChoose a dark site, allow your eyes time to adapt, and look for a compact, hazy patch rather than a sharply defined object. Binoculars can help you sweep the region and identify its star patterns. A telescope at moderate magnification will give the cluster a more concentrated appearance; under steady, dark skies, try increasing the power gradually to see whether the outer haze begins to break into individual points. If the center remains unresolved, that is no failure of the observation. The light of many stars can merge into a single soft glow.\n\nKeep the cluster in view for a few minutes. Nearby stars may seem crisp and separate, while NGC 6541 stays bundled in its little ball of light. The contrast is part of the pleasure: one object is a foreground pattern, the other a distant stellar city. In that small, faint smudge, the Milky Way preserves a population born long before the constellations acquired their names.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206541",
+            "overlap_terms": [
+              "according",
+              "allow",
+              "angular",
+              "around",
+              "ascension",
+              "before",
+              "cluster",
+              "coordinates",
+              "crowded",
+              "current",
+              "database",
+              "declination"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
