@@ -19,10 +19,10 @@ def candidates(limit=10):
     previous = ROOT / "research/luna-pilot-candidates.json"
     if previous.exists():
         for task in json.loads(previous.read_text()):
-            hip = re.search(r"Registry identity:\\s*HIP\\s+(\\d+)", task.get("facts", ""))
+            hip = re.search(r"Registry identity:\s*HIP\s+(\d+)", task.get("facts", ""))
             if hip:
                 for obj in objects:
-                    if any(re.search(r"\\bHIP\\s+" + hip.group(1) + r"\\b", str(rec.get("source_key", "")), re.I) for rec in obj.get("source_records", [])):
+                    if any(re.search(r"\bHIP\s+" + hip.group(1) + r"\b", str(rec.get("source_key", "")), re.I) for rec in obj.get("source_records", [])):
                         existing.add(int(obj["fixed_object_id"]))
     selected = []
     for obj in sorted(objects, key=lambda o: int(o["fixed_object_id"])):
@@ -32,7 +32,7 @@ def candidates(limit=10):
         hip = None
         name = None
         for record in obj.get("source_records", []):
-            m = re.search(r"\\bHIP\\s+(\\d+)\\b", str(record.get("source_key", "")), re.I)
+            m = re.search(r"\bHIP\s+(\d+)\b", str(record.get("source_key", "")), re.I)
             if m:
                 hip = m.group(1)
             facts = record.get("facts") or {}
