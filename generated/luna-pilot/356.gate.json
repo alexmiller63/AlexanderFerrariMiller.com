@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206613"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# M18: A Small Gathering in Sagittarius\n\n*In the Milky Way\u2019s crowded southern lanes, this open cluster rewards a careful look\u2014and a little patience.*\n\nSome deep-sky objects announce themselves with a grand sweep of light. M18 is quieter: a compact cluster of stars set against the busy star fields of Sagittarius. Find it on a clear summer night, and the pleasure lies not in spectacle but in noticing a small, distinct gathering amid the Milky Way\u2019s richer background.\n\nM18 is catalogued as an open cluster, also known as NGC 6613. Its position is about 18h 19m 57s right ascension and \u221217\u00b0 05\u2032 declination (J2000), placing it in Sagittarius. SIMBAD lists its apparent size as about five arcminutes across\u2014roughly one-sixth the Moon\u2019s apparent width. The database also gives a parallax of 0.640 milliarcseconds. A simple inverse of that value puts M18 at about 1,560 parsecs, or 5,100 light-years away; that is an approximate distance derived from the catalogued parallax, not a direct measure of the cluster\u2019s visible span. [SIMBAD: M18 / NGC 6613](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206613)\n\nAn open cluster is a group of stars associated by their shared origin. Unlike a globular cluster\u2019s dense, rounded swarm, an open cluster can be modest and loosely arranged. Its stars are still bound together by gravity, though such groups can disperse over time. M18 offers a useful reminder that \u201ccluster\u201d need not mean a brilliant, unmistakable ball: the view depends on the stars, the background, the sky, and the instrument brought to bear.\n\nFor northern-hemisphere observers, Sagittarius stays relatively low in the southern sky, so choose a night when it has climbed as high as it will from your location. A clear southern horizon matters. Haze, buildings, trees, or distant light domes can make a small target harder to pick out. The constellation is a familiar summer landmark, but M18 itself is easier to find with a chart or planetarium app than by sweeping the sky at random. Set the chart to the current date and location, then use its position to guide your search.\n\nStart with binoculars if you have them. They show a wide enough field to help you orient yourself among the dense stars of the Milky Way, while still gathering more light than the unaided eye. A small telescope at low magnification can help separate the cluster\u2019s stars from the surrounding field. Avoid beginning with a very high power: M18\u2019s listed five-arcminute size is compact, and a wide, steady view makes it easier to recognise the whole pattern. Give your eyes time to adapt to darkness, and look slightly away from the cluster if its faintest stars seem to slip from direct vision.\n\nThe best observing moment may be a modest one: the instant the starry background stops being a blur and M18 begins to register as a distinct patch. Take a few minutes with the view. In a region as crowded as Sagittarius, a small cluster can be its own kind of landmark\u2014a little island of related stars in the Galaxy\u2019s luminous tide.\n\n**Source:** [SIMBAD Astronomical Database \u2014 NGC 6613 (M18)](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206613)",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206613",
+            "overlap_terms": [
+              "ascension",
+              "cluster",
+              "crowded",
+              "current",
+              "database",
+              "declination",
+              "depends",
+              "distinct",
+              "field",
+              "ident",
+              "known",
+              "listed"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
