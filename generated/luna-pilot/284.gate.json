@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204590"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# M68: A Quiet Sphere in Hydra\n\n*At 12 arcminutes across, this globular cluster is a modest target in the eyepiece\u2014and a reminder that a dense gathering of stars can outlast the patterns we draw around it.*\n\nA globular cluster does not announce itself with the bright, sprawling shape of a nebula. M68 is subtler: a compact gathering of stars in the southern constellation Hydra, recorded in the astronomical catalogue as NGC 4590. Its measured position is right ascension 12h 39m 27.98s, declination \u221226\u00b0 44\u2032 38.6\u2033. SIMBAD lists it as a globular cluster, with an angular size of about 12 arcminutes and a visual magnitude of 7.96. Those numbers describe a target that asks for patience rather than spectacle: small against the sky, and too faint for most people to see without optical aid. ([SIMBAD: NGC 4590](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204590))\n\nThe word *globular* gives a useful first picture. These clusters are dense, roughly spherical collections of stars held together by gravity. Through a telescope, their concentrated light can look like a tiny, soft-edged cloud. The eye may register one glowing patch before it begins to distinguish individual stars. That impression is not a failure of the observation. It is a view of many points of light blended together by distance, atmosphere and the limits of the instrument.\n\nM68 also carries a motion that is easy to miss while standing still beneath it. SIMBAD reports a heliocentric radial velocity of \u221293.2 kilometres per second: measured along our line of sight, the cluster is approaching. The value turns a pinprick of light into a moving object, though no motion is visible in a night\u2019s observing. The sky offers both kinds of time at once: a still scene for the observer, and a wider story of motion measured across immense distances.\n\nFor a practical search, use the coordinates rather than trying to identify the cluster by appearance alone. Its position near 12h 39m in right ascension makes it a good target when that region of sky is well placed in the evening; from mid-northern latitudes, that generally means spring evenings. At declination \u221226\u00b0 45\u2032, M68 stays low for many northern observers. From latitude 40\u00b0 north, for example, it culminates only about 23\u00b0 above the southern horizon. A clear, unobstructed view south matters: haze and city glow have more atmosphere to work through when a target sits low.\n\nBegin with binoculars under a dark sky, using a current star chart or planetarium app to guide you to the coordinates. At magnitude 7.96, M68 is a challenging naked-eye target; in binoculars, expect a faint, compact smudge rather than a crisp ball of stars. A small telescope at low power can help center it. Once found, try increasing the magnification gradually. Under steady, dark conditions, a larger telescope may show stars around the cluster\u2019s edge, while its center remains a blended glow. Give your eyes time at the eyepiece, and shield them from nearby white lights.\n\nThe best view may be brief, interrupted by a roofline or softened by the low horizon. Even so, M68 rewards the search. Its light arrives as a small blur, but the blur has structure: a gravitational gathering, a measurable size, a measured motion, and a position you can return to on another clear night. In the eyepiece, it is a quiet spot in Hydra. In the catalogue, it is a particular object with a place and a velocity. Both views belong to the same act of looking.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204590",
+            "overlap_terms": [
+              "angular",
+              "around",
+              "ascension",
+              "before",
+              "catalogue",
+              "cluster",
+              "coordinates",
+              "current",
+              "declination",
+              "globular",
+              "heliocentric",
+              "ident"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
