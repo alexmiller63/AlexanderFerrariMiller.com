@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206101"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# NGC 6101: A quiet swarm in the southern sky\n\n*Far below the celestial equator, this globular cluster offers a small, concentrated destination for southern observers\u2014and a glimpse of stars gathered by gravity.*\n\nThe sky\u2019s southern reaches can feel like a country with its own landmarks. NGC 6101 is one of them: a globular cluster at right ascension 16h 25m 48s and declination \u221272\u00b0 12\u2032, listed in SIMBAD as a globular cluster. Its position places it deep in the southern sky, where it rewards patient observers with a target far removed from the familiar northern constellations. [SIMBAD: NGC 6101](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206101)\n\nA globular cluster is a dense, roughly spherical gathering of stars held together by gravity. Rather than appearing as a scattering of separate suns across a wide field, a cluster like this is a compact community: stars crowd toward a central region, with the surrounding glow made from many points of light blending together. A telescope does more than bring the target closer. It helps the eye pick apart that glow, revealing the impression of individual stars against the darkness.\n\nSIMBAD gives NGC 6101 an angular size of about 10.7 arcminutes\u2014roughly a third of the Moon\u2019s apparent width. That figure describes its span across our sky, not its actual physical diameter. To a backyard observer, the cluster may occupy a modest patch of view, but its location is a reminder of the vast scale behind the eyepiece: a remote stellar gathering reduced to a small, steady smudge.\n\nFor a first look, choose a clear, dark night and let your eyes adapt before searching. Use the published coordinates to find the field with a star chart or a telescope\u2019s setting circles; the cluster\u2019s far-southern declination makes it inaccessible from many northern locations and low above the horizon from others. Observers in the Southern Hemisphere have the best prospects, though local viewing depends on latitude, season and obstructions. A low-power eyepiece can help you locate the field, while a moderate increase in magnification may make the central glow more apparent. If the cluster looks unresolved at first, try averted vision\u2014looking just to one side of it\u2014and give your eyes time. Transparency matters: haze and light pollution can wash out a faint, concentrated target.\n\nIt is worth resisting the urge to hurry from one landmark to the next. At the eyepiece, NGC 6101 may not announce itself with a dramatic shape. Instead, it asks for a quieter kind of attention: a pause, a careful focus, a second look. The central patch begins to separate from the background, and the mind supplies what the eye cannot quite resolve\u2014the sense of many stars held in a single gravitational embrace.\n\nThe coordinates are precise enough to bring you to the right neighborhood. The rest is an observing exercise in patience: let the field settle, shift your gaze slightly, and stay with the dim glow. Some destinations in the night sky reveal themselves all at once. NGC 6101 is the kind that becomes more real the longer you look.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206101",
+            "overlap_terms": [
+              "angular",
+              "ascension",
+              "before",
+              "celestial",
+              "cluster",
+              "coordinates",
+              "crowd",
+              "declination",
+              "depends",
+              "field",
+              "globular",
+              "ident"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
