@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%20884"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Double Cluster with 869: A Pair of Fires in Perseus\n\n*In a dark autumn sky, two neighboring star clusters reward a slow look\u2014from a naked-eye haze to a field of glittering suns.*\n\nSome celestial sights announce themselves quietly. Between Perseus and Cassiopeia, the Double Cluster can first look like a small, misty patch in the Milky Way. Give your eyes time to adjust, though, and the haze divides into two close gatherings of stars. Binoculars make the transformation especially satisfying: where the unaided eye saw a smudge, the glass reveals a crowded field.\n\nThe pair\u2019s familiar name joins two catalog entries, NGC 869 and NGC 884. The supplied SIMBAD entry identifies NGC 884 as an open cluster and gives its J2000 position as right ascension 2h 22m 20.2s, declination +57\u00b0 08\u2032 56\u2033. It lists an angular size of 15 arcminutes\u2014half the apparent width of the full Moon. That measurement describes NGC 884, not the full span of both clusters together. [SIMBAD: NGC 884](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%20884)\n\nAn open cluster is a family of stars formed from the same broad cloud of gas and dust. Its members are bound by gravity, though such groups can gradually disperse over time. Through binoculars, the clusters\u2019 apparent closeness is the first impression; a telescope reveals a deeper, denser sprinkle of points. The view is not a frozen photograph but light arriving from distant stars, gathered into a pattern our eyes can explore one small region at a time.\n\n**Find it under a dark sky.** Start with Cassiopeia, the bright W-shaped constellation, and look toward neighboring Perseus. The Double Cluster lies between them in a rich stretch of the Milky Way. On a clear, moonless night away from bright streetlights, look first for a faint, elongated glow with your unaided eyes. If you cannot see it immediately, sweep slowly with binoculars around the area between the constellations rather than staring at one exact spot.\n\n**Then change the view.** Hold binoculars steadily, bracing your elbows against your body or a support. At low magnification, both clusters can appear together, with the surrounding star field adding to the sense of depth. A small telescope at low power is also a good choice; begin with an eyepiece that gives a broad field, then compare the two groupings. Higher magnification may show more individual stars, but can make it harder to keep both clusters in view at once.\n\nFor a little observing discipline, sketch what you see: note which cluster looks more concentrated, where the brightest stars seem to fall, and how the surrounding Milky Way frames the pair. The sketch need not be polished. Its purpose is to slow the gaze and make the details easier to remember.\n\nThe Double Cluster is generous to newcomers and still rewarding to experienced observers. You can find it without elaborate equipment, yet return to it with better optics, darker skies, or simply more patience. On a crisp night, that modest",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%20884",
+            "overlap_terms": [
+              "angular",
+              "around",
+              "ascension",
+              "catalog",
+              "celestial",
+              "cluster",
+              "crowded",
+              "declination",
+              "field",
+              "ident",
+              "measurement",
+              "members"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}

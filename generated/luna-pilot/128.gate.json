@@ -1,0 +1,69 @@
+{
+  "screen_passed": false,
+  "checks": {
+    "research_present": true,
+    "draft_length": false,
+    "title_present": false,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%2040"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# NGC 40: Reading a Planetary Nebula in the Catalog\n\nNGC 40 is identified by SIMBAD as a planetary nebula. The database places it at right ascension 00h 13m 01.017s and declination +72\u00b0 31\u2032 19.03\u2033 for the J2000 coordinate system\u2014a precise address that can be entered into a sky chart or telescope computer. Those coordinates put the object far north of the celestial equator, but a coordinate alone does not describe what an observer will see. [SIMBAD: NGC 40](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%2040)\n\nThe database offers a compact portrait in numbers. It lists NGC 40\u2019s V-band magnitude as 11.46, alongside measurements in other bands, including B, G, J, H and K. A magnitude is a brightness measure, not a description of the object\u2019s appearance. The V value is useful for comparing catalog entries, but it cannot, by itself, promise how conspicuous NGC 40 will look through a particular telescope or under a particular sky.\n\nSIMBAD also records a parallax of 0.5612 milliarcseconds, with a listed uncertainty of 0.0172 milliarcseconds. It gives the object\u2019s proper motion as \u22127.260 milliarcseconds per year in right ascension and \u22121.848 in declination. These measurements describe apparent changes in position as recorded in the database; they are not a drawing of the nebula or a direct account of its visible details. The figures let the catalog describe NGC 40 in ways that a name and a sky position cannot.\n\nThere is another notable entry: SIMBAD lists the spectral type as [WC8]. The bracketed label is part of the database\u2019s spectral classification for NGC 40. It sits alongside the object type, position and motion as a separate kind of information. Taken together, these entries show how different observations can contribute different pieces to an astronomical record. The classification says how the source is categorized; the coordinates tell where it is; the magnitude and motion values add measured quantities.\n\nA catalog is not an observing report. SIMBAD\u2019s data do not, in the listed entries, supply a verbal description of NGC 40\u2019s appearance at the eyepiece, nor do they establish what equipment an observer needs. For someone planning to look, the coordinates provide a starting point: set a chart to J2000 and search for NGC 40. The magnitude gives another point of reference, but it should not be mistaken for a guarantee of visibility. Actual views depend on observing conditions and equipment, details not specified by the",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%2040",
+            "overlap_terms": [
+              "ascension",
+              "catalog",
+              "celestial",
+              "coordinate",
+              "coordinates",
+              "database",
+              "declination",
+              "ident",
+              "listed",
+              "magnitude",
+              "measure",
+              "motion"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}

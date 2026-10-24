@@ -1,0 +1,69 @@
+{
+  "screen_passed": false,
+  "checks": {
+    "research_present": true,
+    "draft_length": false,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2085927"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Shaula, the Scorpion\u2019s Bright Stitch\n\n*At the end of Scorpius, a bright star marks a point far south of the celestial equator.*\n\nShaula is identified in astronomical catalogs as Lambda Scorpii, or HIP 85927. Its position\u2014right ascension 17 hours 33 minutes 36.5 seconds and declination about 37 degrees south\u2014places it deep in the southern part of the sky. Those coordinates are more than an address: they tell an observer where to begin looking on a chart, and why the star\u2019s view depends so much on latitude. From farther north, a star so far south appears lower above the horizon; from farther south, it can climb higher. [SIMBAD](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2085927)\n\nOn a chart of Scorpius, Shaula is a point in a recognizable pattern, but the catalog\u2019s measurements offer a different way to find it: by its brightness and position. SIMBAD lists its V magnitude as 1.63, making it a prominent naked-eye star. The number is a measurement, not a description of how it will look in every setting. Haze, nearby lights and the height of the star above the horizon can all affect what an observer sees. Still, Shaula\u2019s catalog brightness gives a useful expectation: it should stand out against fainter stars when the sky is clear and the view is unobstructed. [SIMBAD](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2085927)\n\nThe catalog also classifies Shaula as a Beta Cephei variable. That designation records variability, a reminder that a star\u2019s light is not necessarily captured fully by a single brightness reading. To the unaided eye, however, a catalog classification is not a promise of a conspicuous change during one evening\u2019s observing. The measured V magnitude and the variable-star label describe different aspects of the same object: one gives a recorded brightness, the other its classification. [SIMBAD](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2085927)\n\nIts spectral type adds another layer. SIMBAD gives the classification as B2IV+DA7.9 and labels it composite. The code is far less familiar than a point of light in a constellation, but it shows how much information can sit behind a simple-looking star. An observer sees one bright mark; spectroscopy and cataloging provide a more detailed description, expressed in a compact notation rather than in anything visible to the eye. [SIMBAD](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2085927)\n\nDistance is another quantity hidden from sight. SIMBAD lists Shaula\u2019s parallax as 5.71 milliarcseconds, with an uncertainty of 0.75 milliarcseconds. Inverting the measured parallax gives an approximate distance of 175 parsecs, or about",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2085927",
+            "overlap_terms": [
+              "ascension",
+              "catalog",
+              "catalogs",
+              "celestial",
+              "coordinates",
+              "declination",
+              "degrees",
+              "depends",
+              "expressed",
+              "ident",
+              "magnitude",
+              "measurement"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}

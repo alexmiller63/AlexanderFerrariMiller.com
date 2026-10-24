@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%20300"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# NGC 300: Reading a Spiral Galaxy\u2019s Catalog Record\n\n*Coordinates, classification and measurements offer a precise\u2014but limited\u2014portrait of a galaxy in the southern sky.*\n\nSome objects announce themselves with brilliance. A catalog entry for NGC 300 makes a different kind of introduction: a position, a type, an apparent size and a measured brightness. Together, these details describe how the galaxy is recorded and observed, while leaving important questions\u2014such as its physical dimensions\u2014unanswered by the figures alone.\n\nNGC 300 is listed as a galaxy with morphological type Sc. Its coordinates for the J2000 epoch are right ascension 00h 54m 53.4466s and declination \u221237\u00b0 41\u2032 03.168\u2033. The negative declination places it south of the celestial equator. The coordinates provide a precise point for locating the object, but they do not describe its visible outline. For that, the catalog gives an optical angular size of 20.89 by 13.49 arcminutes, with an orientation angle of 114 degrees. These are apparent dimensions on the sky, not a measurement of the galaxy\u2019s width in space. ([SIMBAD\u2019s NGC 300 entry](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%20300).)\n\nThe Sc classification is a compact label for its recorded morphological type. It is useful for identifying the galaxy within a scheme of galaxy forms, but it is not a detailed account of every feature in NGC 300. The catalog lists the classification with a 2012 astronomical reference; the angular dimensions come from a different, 2003 reference. Those dates matter: a catalog page brings together measurements and descriptions drawn from separate sources, rather than presenting one single observation made at one time.\n\nBrightness is another entry, and one that needs to be read with care. SIMBAD lists a V-band magnitude of 8.13, alongside values in several other filters, including U, B, R, J, H and K. These are measurements in different parts of the spectrum, not competing estimates of one identical quantity. The V value is an apparent magnitude: it records how bright NGC 300 appears in that band from Earth. On its own, it is not a measurement of the galaxy\u2019s total energy output or physical size.\n\nThe entry also lists a heliocentric radial velocity of 146 kilometres per second, with an uncertainty of 2 kilometres per second, and a spectroscopic redshift of 0.000487. These figures describe measured motion and spectral shift, not a direct distance measurement. Keeping the quantities distinct helps prevent a catalog\u2019s concise numbers from being asked to say more than they do.\n\nNGC 300\u2019s record is therefore less a complete portrait than a set of carefully labeled clues. Its coordinates identify where to point; its optical dimensions describe the apparent span; its Sc type supplies a broad morphological classification; and its magnitudes and velocity report other measured properties. Each figure is useful, but each belongs to a particular category and source. Read together, they give a structured account of the galaxy without turning a handful of catalog values into a full description of its physical nature.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%20300",
+            "overlap_terms": [
+              "angle",
+              "angular",
+              "ascension",
+              "catalog",
+              "celestial",
+              "coordinates",
+              "declination",
+              "degrees",
+              "epoch",
+              "galaxy",
+              "heliocentric",
+              "ident"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}

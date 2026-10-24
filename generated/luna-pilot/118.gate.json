@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%20113963"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Markab: The Square\u2019s Western Corner\n\n*An A-type subgiant anchors one of autumn\u2019s most recognizable star patterns\u2014and gives skywatchers an easy place to begin.*\n\nOn an autumn evening, look high in the southern sky for a large, spare outline: the Great Square of Pegasus. Markab marks one of its corners, a steady-looking point of light that helps turn a patch of stars into a constellation. It is not the brightest star in the sky, nor does it need to be. Its gift is position: find Markab, and you have found your way into Pegasus.\n\nThe name belongs to Alpha Pegasi, cataloged in SIMBAD as an A0IV star. The \u201cA0\u201d describes its spectral type: a hot star whose light is strongest in the blue-white part of the spectrum. \u201cIV\u201d is its luminosity class, identifying it as a subgiant\u2014an evolved star that has moved beyond the main sequence, the long phase when stars like the Sun fuse hydrogen in their cores. That classification is a scientific description, not something the unaided eye can read from Markab\u2019s light. To the eye, it appears nearly white.\n\nSIMBAD lists Markab\u2019s apparent visual magnitude as about 2.48, bright enough to see without optical aid under a reasonably dark sky. Its measured parallax is 24.46 milliarcseconds. Parallax is the apparent shift of a nearby star against more distant background stars as Earth travels around the Sun. Converting that measurement gives a distance of roughly 41 parsecs, or about 133 light-years. The light arriving tonight began its journey when the first decades of the 19th century were underway.\n\nFor a simple observing session, start about an hour after full darkness. Face south if you are in the Northern Hemisphere and look for the Great Square: four stars outlining a broad, slightly tilted quadrilateral. Markab is one of its corners; the exact orientation depends on the hour and your location, so use the whole pattern rather than expecting a particular corner to be \u201cdown.\u201d If the Square is hard to pick out, give your eyes several minutes to adapt and move away from bright lamps. Binoculars are not necessary, but they can help reveal fainter stars around the pattern.\n\nPegasus is especially well placed on Northern Hemisphere evenings in autumn. The constellation\u2019s broad outline can look surprisingly empty at first, which is part of its appeal: it offers a clean frame against which to notice the sky\u2019s subtler lights. From southern latitudes, the Square can also be seen when it is above the horizon, though it will appear differently oriented.\n\nOnce you have Markab, pause before moving on. Its apparent calm is a matter of distance and scale: a distant, hot star can look like a pinprick, while its spectrum and measured parallax tell a far richer story. The Great Square is a practical guide to the night sky, but it is also a reminder that familiar patterns are assembled from stars at different distances and stages of life. Markab is one bright point in that larger, changing universe.\n\n**Source:** [SIMBAD: Alpha Pegasi (HIP 113963)](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%20113963)",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%20113963",
+            "overlap_terms": [
+              "around",
+              "before",
+              "class",
+              "depends",
+              "frame",
+              "ident",
+              "luminosity",
+              "magnitude",
+              "measurement",
+              "optical",
+              "orientation",
+              "parallax"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}

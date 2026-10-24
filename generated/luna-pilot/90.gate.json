@@ -1,0 +1,69 @@
+{
+  "screen_passed": false,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": false,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2090185"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Epsilon Sagittarii: A Star in the Catalogue and in Motion\n\n*Measurements of brightness, distance and movement turn a point of light into a more precise celestial address.*\n\nA star can appear fixed in the sky and still have a measurable place, distance and motion. Epsilon Sagittarii\u2014identified in SIMBAD as \u201ceps Sgr\u201d\u2014offers a compact example. Its catalogue entry records a bright object in Sagittarius, gives coordinates for locating it, and tracks small changes in its position over time. Each figure answers a different question: how bright it appears, how far away it may be, and how its position shifts against the sky.\n\nSIMBAD lists the star\u2019s V-band magnitude as 1.81. That number describes its recorded brightness in visible light; it is a measurement, rather than a description of how the star will look from every location or under every sky condition. The catalogue also gives coordinates for the J2000 reference frame: right ascension 18 hours, 24 minutes and 10.318 seconds, and declination \u221234 degrees, 23 minutes and 4.619 seconds. Put more simply, the coordinates specify a position on the celestial grid, with the negative declination placing the star south of the celestial equator. [SIMBAD: HIP 90185 / Epsilon Sagittarii](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2090185)\n\nDistance is not stated directly in the entry, but SIMBAD lists a parallax of 22.76 milliarcseconds, with an uncertainty of 0.24 milliarcseconds. Parallax is the angular shift used to estimate a star\u2019s distance; taking the reciprocal of the listed value gives approximately 44 parsecs, or about 143 light-years. That is an estimate derived from the catalogue measurement, not a direct journey through space. The reported uncertainty also matters: the parallax is not an infinitely exact number, and a distance calculated from it should be treated as approximate.\n\nThe same record describes Epsilon Sagittarii as a high-proper-motion star. Its listed proper motion is \u221239.42 milliarcseconds per year in right ascension, adjusted by the cosine of declination, and \u2212124.20 milliarcseconds per year in declination. Both components are measured on the sky. The negative declination value indicates a southward shift; the negative right-ascension component indicates a shift toward decreasing right ascension. These are small annual changes, but they are measurable and give the catalogue a way to describe a sky that is not perfectly static.\n\nThe entry also gives a spectral type: B9IVp_lB?, with a quality rating of C and a reference dating to 1975. The notation is part of the catalogue\u2019s record, including its question mark; it should not be mistaken for a complete explanation of the star. Its presence alongside coordinates, brightness, parallax and motion shows how different kinds of observations accumulate into a concise astronomical profile.\n\nFor anyone trying to identify the star, the coordinates provide a more reliable guide than a name alone: right ascension 18h 24m and declination about 34 degrees south. A sky chart or planetarium app can use that position to show where to look. The catalogue\u2019s numbers do not replace the experience of seeing the star. They add context: the bright point is Epsilon Sagittarii, its distance is estimated from parallax, and its position shifts gradually over time.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2090185",
+            "overlap_terms": [
+              "angular",
+              "ascension",
+              "catalogue",
+              "celestial",
+              "coordinates",
+              "declination",
+              "degrees",
+              "frame",
+              "ident",
+              "listed",
+              "magnitude",
+              "measurement"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}

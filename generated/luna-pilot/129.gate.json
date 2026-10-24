@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%2055"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# NGC 55: A long, faint island in the southern sky\n\n*This sprawling irregular galaxy stretches roughly half a degree across. Its modest total brightness is spread over a much larger patch than a star\u2019s, making dark skies and a careful look worthwhile.*\n\nSome galaxies announce themselves with a bright core and graceful spiral arms. NGC 55 offers a different kind of encounter: a long, narrow smudge, stretched across the southern sky like a brushstroke. Its listed optical dimensions are about 32 by 4 arcminutes\u2014roughly the apparent length of the full Moon, but far slimmer. The galaxy is classified as irregular, a description for systems without the orderly overall structure of a classic spiral or elliptical galaxy. [SIMBAD\u2019s NGC 55 entry](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%2055) gives its coordinates as right ascension 00h 14m 54s and declination \u221239\u00b0 11\u2032 48\u2033 (J2000).\n\nThat broad outline is part of the challenge. SIMBAD lists NGC 55 at magnitude 7.87 in the V band, but that is the brightness of the whole object combined. The light is spread across a large area, so it won\u2019t look like a magnitude-8 star. Under a dark sky, a small telescope may reveal an elongated haze; larger instruments and patient viewing can help bring out its shape. Don\u2019t expect a sharply edged portrait: the galaxy\u2019s diffuse light fades gradually into the background.\n\nNGC 55\u2019s measured radial velocity is about 129 kilometres per second, according to SIMBAD. That number describes motion along our line of sight, measured relative to the Sun. It is not, by itself, a distance: a galaxy\u2019s observed motion reflects both its motion through space and the expansion of the universe, among other effects. The entry also lists the galaxy\u2019s classification as irregular. Together, those figures offer a reminder that even a soft blur in an eyepiece is a vast system with its own structure and motion.\n\nFor observers, the declination is the key to planning. NGC 55 lies far south of the celestial equator, so it climbs high for observers in the Southern Hemisphere and stays low\u2014or below the horizon\u2014for many farther north. At latitude 30\u00b0 south, it reaches about 81\u00b0 above the horizon at transit; at latitude 40\u00b0 north, it reaches only about 11\u00b0. These approximate heights follow from its listed declination and the observer\u2019s latitude. If it is low from your location, haze and atmospheric turbulence can blur the view; choose a night when it crosses the meridian and has the clearest path above the horizon.\n\nTo find it, use the coordinates rather than expecting a bright naked-eye marker. Enter 00h 14m 54s, \u221239\u00b0 11\u2032 48\u2033 into a planetarium app or computerized mount, then sweep slowly around the field. Give your eyes time to adapt to the dark, and try averted vision\u2014looking just beside the faint patch rather than straight at it. A low-power eyepiece can help frame its unusually long form; if the sky is bright, increase magnification only if the background darkens without making the galaxy disappear.\n\nThe first view may seem understated. Stay with it. NGC 55 is not a pinpoint prize but an extended one: a galaxy whose scale becomes apparent in the time it takes your eye to follow that pale streak across the field. The figures and classifications here are from the [SIMBAD database entry for NGC 55](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%2055).",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%2055",
+            "overlap_terms": [
+              "about",
+              "according",
+              "around",
+              "ascension",
+              "celestial",
+              "coordinates",
+              "database",
+              "declination",
+              "degree",
+              "elliptical",
+              "field",
+              "frame"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}

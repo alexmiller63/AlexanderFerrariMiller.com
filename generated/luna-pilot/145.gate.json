@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%20581"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# M103: A Small Gathering in Cassiopeia\n\n*In the Queen\u2019s familiar W, a modest telescope reveals a cluster whose quiet glow is made of many distant suns.*\n\nOn autumn evenings, Cassiopeia wheels high across the northern sky, its five bright stars sketching a crooked W. Near one point of that familiar pattern lies **M103**, a compact open cluster catalogued also as NGC 581. At first glance, it may seem like little more than a faint patch. Give it time, and the patch begins to resolve into a gathering of stars.\n\nAn open cluster is a loose family of stars associated with a common birthplace. Unlike the tightly bound, densely packed globular clusters, open clusters tend to be scattered across the plane of the Milky Way. Their stars stand out against the crowded background of our galaxy, making them rewarding targets for binoculars and small telescopes. SIMBAD classifies NGC 581 as an open cluster and lists its apparent angular size as about 7.4 arcminutes\u2014roughly one quarter the apparent width of the Moon. [SIMBAD: NGC 581 / M103](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%20581)\n\nM103\u2019s listed visual magnitude is 7.4, but that figure describes the cluster\u2019s combined light, not the brightness of each individual star. To the unaided eye, it is generally too faint to pick out. Under a dark sky, binoculars may show it as a small, misty knot. A telescope at low magnification can begin to separate that glow into pinpoints, with more stars emerging as the view steadies and the sky darkens.\n\nTo find it, first locate Cassiopeia\u2019s W. Look for Ruchbah, the star that marks the W\u2019s second point from the right when the letter is upright. M103 lies roughly a degree to its east-northeast\u2014close enough to search for in the same general area of the sky. Sweep slowly with binoculars, or use a low-power eyepiece in a telescope to take in a wider field. If you have a finder chart or a computerized mount, M103\u2019s catalog designation, NGC 581, can help confirm the target.\n\nA useful observing trick is to let your eyes adapt to the dark for 15 to 20 minutes before searching. Shield a phone or flashlight, and use a dim red light if you need to consult a chart. If the cluster looks faint at first, try looking just to one side of it rather than staring directly at the center; this can make dim stars easier to notice. On a steady night, increase magnification after you have located the cluster, but return to a wider view if the stars seem to disappear into the background.\n\nM103 rewards patience more than spectacle. Its beauty is not a single blazing star or a dramatic cloud, but the moment when a dim smudge breaks into separate lights. In Cassiopeia\u2019s sweeping pattern, the cluster offers a small reminder that the sky\u2019s familiar shapes are only signposts: beyond them, whole stellar families wait to be found.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%20581",
+            "overlap_terms": [
+              "angular",
+              "before",
+              "catalog",
+              "cluster",
+              "crowded",
+              "degree",
+              "field",
+              "ident",
+              "listed",
+              "magnitude",
+              "minutes",
+              "point"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}

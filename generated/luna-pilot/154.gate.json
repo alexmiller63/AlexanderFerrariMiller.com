@@ -1,0 +1,75 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%20891"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Silver Needle: A Galaxy Seen Edge-On\n\n*In Andromeda, NGC 891 stretches like a fine shard of light\u2014an immense spiral presented almost edge-on to our view.*\n\nThe first challenge is finding it. The second is seeing what its narrowness conceals.\n\nNGC 891 lies in Andromeda, at roughly right ascension 2h 22m and declination +42\u00b0 21\u2032. Its cataloged optical dimensions\u2014about 12.3 by 2.45 arcminutes\u2014describe a long, slim oval. From Earth, we look nearly along the plane of its disk, so the galaxy\u2019s vast spiral structure is compressed into a streak. \u201cSilver Needle\u201d is an observing name, not a formal catalog designation: SIMBAD lists the object as NGC 891 and classifies it as a galaxy with H II regions, where gas is ionized around young, hot stars.\n\nThat thin profile is a lesson in perspective. A spiral galaxy may be broad and richly structured, yet its appearance changes dramatically with our viewing angle. Seen face-on, its disk can spread across the sky; seen edge-on, the same disk becomes a narrow band. In NGC 891, the contrast between its extended length and small apparent width makes that geometry especially striking. A dark lane of dust is often associated with this galaxy\u2019s edge-on appearance, though under ordinary observing conditions the first impression may simply be a delicate, elongated glow.\n\nThe catalog gives NGC 891 an apparent visual magnitude of about 9.9. That number describes its total brightness, not how readily its light is concentrated for the eye. The glow is spread over a sizable patch of sky, so a dark site and patient viewing matter. SIMBAD also records a heliocentric radial velocity of about 528 kilometers per second. This is the measured line-of-sight velocity relative to the Sun; it is a physical clue, not something visible at the eyepiece.\n\n**Finding the needle**\n\nChoose a moonless night in autumn or winter, when Andromeda is well placed in the Northern Hemisphere evening sky. Begin with the familiar Great Square of Pegasus and trace the starry chain that marks Andromeda. A chart or planetarium app can guide you from the brighter stars to NGC 891\u2019s position; at magnitude 9.9, it is not a naked-eye target.\n\nUse a telescope under a dark, transparent sky. A modest instrument may reveal a faint smudge, but aperture helps, and a medium-power eyepiece can make the elongated shape easier to recognize without spreading the light too thinly. Keep the magnification moderate at first. Look slightly to one side of the object rather than staring directly at it: averted vision often makes faint, diffuse detail more apparent. Let your eyes adapt to darkness, and shield your observing area from nearby lights.\n\nIf the galaxy seems to vanish when you look straight at it, don\u2019t assume it is gone. Give your vision time, then sweep your gaze gently around the field. The Silver Needle rewards patience more than spectacle: first a ghostly line, then a sense of a whole stellar city turned sideways.\n\n**Sources:** SIMBAD\u2019s NGC 891 entry, including coordinates, angular size, classification, photometry and radial velocity: https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%20891",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%20891",
+            "overlap_terms": [
+              "about",
+              "angle",
+              "angular",
+              "around",
+              "ascension",
+              "catalog",
+              "coordinates",
+              "declination",
+              "field",
+              "galaxy",
+              "heliocentric",
+              "ident"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [
+      {
+        "quoted_text": "Silver Needle",
+        "source_matches": [],
+        "exact_text_confirmed": false
+      }
+    ],
+    "all_quoted_passages_confirmed": false,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}

@@ -1,0 +1,69 @@
+{
+  "screen_passed": false,
+  "checks": {
+    "research_present": true,
+    "draft_length": false,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%20102488"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Aljanah, the Swan\u2019s Quiet Wing\n\n*Epsilon Cygni\u2019s catalog record offers a portrait built from a name, a classification and a handful of precise measurements.*\n\nThe star at the center of this portrait is Epsilon Cygni, listed in SIMBAD as HIP 102488. SIMBAD classifies it as a double or multiple star and records its spectral type as K0III. Those compact labels are a starting point, not a complete description: they tell us how the star is cataloged, while leaving many details about the system unanswered. [SIMBAD: HIP 102488](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%20102488)\n\nK0III is the recorded spectral classification. In the standard notation, \u201cK0\u201d identifies a spectral subclass and \u201cIII\u201d a luminosity class; here, the important point is what the source actually reports: Epsilon Cygni is classified as a K-type giant. The entry does not give a fuller account of the star\u2019s history or internal structure, so the classification is best treated as a concise description rather than a whole biography.\n\nThe distance can be estimated from the catalog\u2019s parallax: 43.1769 milliarcseconds, with a listed uncertainty of 0.9384 milliarcseconds. Parallax measures the apparent shift of a nearby star against more distant background objects as Earth changes position in its orbit. Inverting the listed value gives a distance of about 23 parsecs, or roughly 75 light-years. That conversion is approximate; it does not make the measurement more precise than the parallax and its uncertainty allow. [SIMBAD: HIP 102488](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%20102488)\n\nBrightness provides another useful measure. SIMBAD lists a visual magnitude of 2.480, with an uncertainty of 0.009. Magnitudes run in the opposite direction from ordinary brightness rankings: smaller numbers indicate brighter apparent objects. The value describes how bright the star appears from Earth in the visual band, not how much light it would emit if viewed from the same distance as another star",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%20102488",
+            "overlap_terms": [
+              "allow",
+              "catalog",
+              "class",
+              "double",
+              "ident",
+              "listed",
+              "luminosity",
+              "magnitude",
+              "magnitudes",
+              "measure",
+              "measurement",
+              "multiple"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}

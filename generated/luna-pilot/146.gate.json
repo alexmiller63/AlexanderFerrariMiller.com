@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%20598"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Triangulum Galaxy: A Ghost in the Triangle\n\n*Find M33 on a dark autumn night, and a faint patch of light becomes a neighboring spiral galaxy\u2014vast in the eyepiece, yet remarkably easy to overlook.*\n\nSome galaxies announce themselves with a bright core. The Triangulum Galaxy prefers subtlety. It lies in the small northern constellation Triangulum, and under a dark, clear sky it may appear to the unaided eye as a dim smudge. More often, it rewards binoculars or a telescope\u2014and patient looking.\n\nCatalogued as Messier 33 and NGC 598, this galaxy is classified as a spiral of type SA(s)cd. Its apparent extent is striking: about 60 by 35 arcminutes, roughly twice the Moon\u2019s apparent diameter along its long axis. Yet its light is spread across that large area. Its listed visual magnitude is 5.72, but that combined brightness can mislead: a broad, diffuse glow is harder to spot than a compact object of the same total magnitude. [SIMBAD\u2019s NGC 598 entry](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%20598) lists the galaxy\u2019s classification, angular size and photometry.\n\nThat contrast is the observing lesson. Don\u2019t expect a brilliant pinprick. Look for a soft oval haze, with the central region a little more concentrated than the outskirts. In a telescope, keep the magnification low enough to fit a generous field around it. A wide-field eyepiece can help preserve the galaxy\u2019s shape; high magnification may simply spread its already faint light across too much of your view.\n\nFor a starting point, SIMBAD gives M33\u2019s J2000 coordinates as right ascension 1 hour 33 minutes 50.9 seconds and declination +30 degrees 39 minutes 37 seconds. In practice, use a current star chart or astronomy app to locate Triangulum, then star-hop into the constellation rather than trying to aim at those coordinates by eye. The galaxy is best placed for northern observers during autumn and early winter evenings.\n\nChoose a moonless night, get away from bright lights, and give your eyes time to adapt to the darkness. Scan slowly with binoculars; if the galaxy doesn\u2019t appear immediately, try looking slightly to one side of the suspected spot. This indirect viewing can make faint light easier to detect. In a telescope, take a moment to distinguish the galaxy\u2019s broad glow from the sharper points of foreground stars.\n\nM33\u2019s measured radial velocity is about \u2212179 kilometres per second in the heliocentric frame, meaning its motion along our line of sight is toward us. That number is not something an eyepiece reveals; it comes from studying the galaxy\u2019s light. But it adds another dimension to the view. The faint patch in Triangulum is not a cloud or a flaw in the sky: it is a separate galaxy, with its own stars and structure, glowing too softly for its scale to be obvious at first glance.\n\nThe best view may arrive when you stop searching for a dramatic picture. Let the field settle. Notice the faint oval, then the way its light thins toward the edge. M33 is a test of darkness, patience and expectation\u2014and a reminder that a quiet view can still open onto an immense place.\n\n**Source:** [SIMBAD: NGC 598 / M33](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%20598)",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%20598",
+            "overlap_terms": [
+              "angular",
+              "around",
+              "ascension",
+              "coordinates",
+              "current",
+              "declination",
+              "degrees",
+              "frame",
+              "galaxies",
+              "galaxy",
+              "heliocentric",
+              "ident"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}

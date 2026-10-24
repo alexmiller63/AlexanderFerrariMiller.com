@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%20246"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Skull Nebula: A stellar shell with a shadowy name\n\n*In Cetus, NGC 246 offers patient observers a glimpse of a star\u2019s final, luminous act.*\n\nThe Skull Nebula sounds like something that belongs in a ghost story. Its catalog name, NGC 246, is less dramatic\u2014but the object itself is a real celestial remnant: a planetary nebula, a glowing shell of gas around a star nearing the end of its life. It lies in Cetus, the Whale, at coordinates 00h 47m 03s, \u221211\u00b0 52\u2032 (J2000). The SIMBAD astronomical database lists it as a planetary nebula and gives its apparent visual magnitude as 11.76. [SIMBAD: NGC 246](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%20246)\n\nThe nickname comes from the nebula\u2019s ghostly, irregular appearance in deep images. But no skull is hanging in space. The name is a human impression laid over a structure made by stellar evolution: gas cast off by a dying star, lit up by the hot stellar remnant at its center. That \u201cplanetary\u201d label is historical, not a sign that the nebula has anything to do with planets. Through a telescope, planetary nebulae often look like small, rounded disks\u2014rather like planets did to early observers.\n\n## Scientific context\n\nNGC 246 spans several arcminutes across. SIMBAD lists an angular size of about 3.7 arcminutes in radio observations, a useful reminder that measured size can depend on the wavelength used. Its central star is classified as PG1159, a type of hot, evolved star. The nebula and its star provide a snapshot of a brief transition: the star\u2019s outer material spreads into space while the exposed stellar remnant radiates energy into the surrounding gas.\n\nThat glow is not uniform. Differences in the gas, its density and the way it is energized can create a mottled outline rather than a clean ring. The object\u2019s popular name helps give that complexity a face, though the view at the eyepiece is subtler than many processed photographs suggest. [SIMBAD\u2019s catalog entry](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%20246) includes the nebula\u2019s classification, position and measured properties.\n\n## How to observe it\n\nLook for NGC 246 on a clear, dark evening when Cetus is well placed\u2014typically during autumn and winter evenings for many observers in the Northern Hemisphere. At the telescope, use the coordinates above or a reliable star chart to locate the field; the nebula is faint enough that star-hopping is more dependable than searching by eye. A telescope with an aperture of about 6 inches or larger is a helpful starting point, though results depend strongly on sky darkness, transparency and experience.\n\nBegin at low or moderate magnification to identify the surrounding star pattern and keep the nebula in view. Then increase the power gradually and give your eyes time to adapt. A narrowband or O III filter may improve contrast under a dark sky, but compare filtered and unfiltered views: filters can dim stars and alter the overall impression. Shield your observing position from nearby lights, use averted vision, and avoid expecting the crisp detail of a long-exposure image.\n\nThe Skull Nebula rewards a quiet kind of attention. First it may register as a pale patch among the stars. With patience, its uneven boundary begins to separate from the background\u2014a small, ancient cloud marking the end of one star\u2019s familiar life and the beginning of its long dispersal.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%20246",
+            "overlap_terms": [
+              "angular",
+              "catalog",
+              "celestial",
+              "coordinates",
+              "database",
+              "filter",
+              "ident",
+              "magnitude",
+              "nebula",
+              "object",
+              "planetary",
+              "position"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}

@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2091262"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Vega: The Lyre\u2019s Brightest Note\n\n*An unmistakable summer beacon, Vega looks steady to the eye\u2014but catalogues identify it as a subtly pulsating star.*\n\nOn a clear evening, Vega seems less like a point of light than a pinprick holding the sky in place. It rises bright and blue-white in the constellation Lyra, the Lyre, and is easy to pick out even before the fainter stars around it appear. Yet this apparent steadiness is only the view from Earth: catalogues classify Vega as a Delta Scuti variable, a star whose light changes as it pulsates. The changes are too slight to notice by eye, but they give this familiar landmark a hidden rhythm. [SIMBAD identifies Vega as a Delta Scuti variable.](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2091262)\n\nVega is about 25 light-years away. That estimate follows from its measured parallax of 130.23 milliarcseconds: the apparent annual shift of a nearby star against the distant background, which astronomers use to calculate distance. SIMBAD lists Vega\u2019s spectral type as A0V. In this classification, \u201cA0\u201d describes a hot, blue-white star, while \u201cV\u201d means it belongs to the main sequence\u2014the long-lived stage in which a star generates energy by fusing hydrogen in its core. Its listed visual magnitude, about 0.03, helps explain why it stands out so strongly in the night sky.\n\nVega\u2019s pulsations are a reminder that stars are not perfectly still lamps. A Delta Scuti variable subtly changes brightness as its outer layers expand and contract. The shift is small: Vega can look unwavering to an unaided observer while its light varies on a scale that careful measurements can reveal. The star\u2019s catalogue entry therefore holds two truths at once\u2014a reliable guidepost for skywatchers, and a changing physical object.\n\nTo find it, look high in the northern sky on summer evenings in the Northern Hemisphere. Vega is the brightest star in Lyra and one corner of the Summer Triangle, an especially useful pattern formed with Deneb and Altair. From Vega, search nearby for Lyra\u2019s compact parallelogram of four dimmer stars; a clear, dark sky makes the pattern easier to trace. Binoculars can help pick out those surrounding stars, but Vega itself needs no optical aid. Give your eyes several minutes to adjust, then look slightly away from the brightest point if you are trying to glimpse fainter stars nearby.\n\nFor a simple observing session, note Vega\u2019s position above the horizon and return to it later in the evening. It will have shifted westward as Earth turns. That motion belongs to our planet, not the star\u2019s nightly journey across the sky. Vega does move through space, too: SIMBAD records its proper motion, the slow apparent drift against more distant stars, measured over years rather than hours.\n\nA bright star can seem like a fixed mark, but Vega offers several clocks to contemplate: Earth\u2019s rotation, the star\u2019s slow movement across the sky, and its subtle pulsation. You may see only a steady spark. Knowing what lies behind it makes that spark feel less like a pin in the dark\u2014and more like a living, distant world.\n\n**Source:** [SIMBAD entry for Vega (HIP 91262)](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2091262)",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2091262",
+            "overlap_terms": [
+              "around",
+              "before",
+              "catalogue",
+              "catalogues",
+              "delta",
+              "ident",
+              "listed",
+              "magnitude",
+              "motion",
+              "object",
+              "optical",
+              "parallax"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}

@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2092855"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Nunki, the Blue Lantern in Sagittarius\n\n*Look south for a bright blue-white star that turns a familiar teapot into a guide to the scale of the Galaxy.*\n\nOn a clear summer evening, find the Teapot of Sagittarius low in the southern sky. Its spout points toward the Milky Way\u2019s bright central regions; its handle curves away on the other side. At the handle\u2019s upper end shines Nunki, a steady point of light with a name as memorable as its color. It is bright enough to pick out without optical aid, even when the constellation sits low above the horizon.\n\nNunki is the traditional name of Sigma Sagittarii. In SIMBAD, the star is listed as a B2.5 V object: a hot, blue-white star on the main sequence, the long-lived stage in which stars spend most of their lives fusing hydrogen in their cores. Its recorded visual magnitude is about 2.07. SIMBAD gives a parallax of 14.32 milliarcseconds; turning that angle into a distance puts Nunki roughly 228 light-years away. The measurements give the light a second dimension: what looks like a small spark against the dark is a sun seen across a vast reach of space. [SIMBAD: HIP 92855](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2092855)\n\nTo find it, start with the Teapot rather than trying to pick Nunki out of the star field alone. The shape is especially helpful from darker locations, where the Milky Way\u2019s crowded glow can make individual stars harder to distinguish. Once you have the outline, trace the handle and look for its bright star. Binoculars are optional; they can make the surrounding stars easier to separate, but Nunki itself is readily visible to the unaided eye. A small telescope will show a tighter field of neighboring stars, not a larger-looking Nunki.\n\nYour view depends on where you stand. In the Northern Hemisphere, Sagittarius appears low in the southern sky, so choose a site with an unobstructed southern horizon. Buildings, trees and haze near the horizon can dim or blur the view. In the Southern Hemisphere, the constellation climbs higher and can be more comfortably placed. The Teapot is a useful seasonal evening landmark, but the best time to look varies with date and location; check a current sky chart for when Sagittarius is above your horizon.\n\nTry this: find Nunki, then let your gaze drift toward the hazy band of the Milky Way. The star is a practical marker in a rich part of the sky, but its true distance is a reminder that the whole scene is layered. The nearby-looking points of a constellation are patterns from our viewpoint, not necessarily a group of stars at the same distance. Nunki\u2019s parallax lets astronomers estimate how far away it is by tracking its tiny apparent shift as Earth moves around the Sun.\n\nThe name is one more reason to pause at the handle. But the star\u2019s quiet visual appeal needs no legend: identify the Teapot, follow its line of stars, and let one clear point of light anchor your gaze in Sagittarius.\n\n**Scientific source:** [SIMBAD database entry for HIP 92855 / Sigma Sagittarii](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2092855)",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2092855",
+            "overlap_terms": [
+              "angle",
+              "around",
+              "crowded",
+              "current",
+              "database",
+              "depends",
+              "field",
+              "ident",
+              "listed",
+              "magnitude",
+              "object",
+              "optical"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}

@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%20628"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# M74: The Faint Pinwheel in Pisces\n\n*Under dark autumn skies, this broad spiral rewards patient looking more than magnification.*\n\nM74 does not announce itself. In Pisces, far from the Milky Way\u2019s crowded star fields, it waits as a pale, elusive patch of light\u2014one that can vanish when you look straight at it, then return when your eye turns slightly aside. Its quietness is part of the appeal: this is a galaxy to discover, not simply to point at.\n\nAlso catalogued as NGC 628, M74 is classified as an Sc spiral. Its catalogued position is right ascension 1h 36m 41.7s, declination +15\u00b0 47\u2032 01\u2033 (J2000). SIMBAD lists its apparent dimensions at about 6.7 by 6.7 arcminutes\u2014roughly a fifth of the Moon\u2019s apparent width. That nearly round outline reflects our view of the galaxy\u2019s broad disk, rather than an edge-on profile. [SIMBAD: NGC 628 / M74](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%20628)\n\nA spiral galaxy is not a rigid pinwheel. Its arms are regions where gas and stars gather more densely as material moves through the disk. In such regions, clouds of gas can collapse and form new stars. Seen from our vantage point, M74\u2019s open, nearly face-on presentation makes it a useful target for thinking about spiral structure: the galaxy\u2019s shape is spread across the sky, though its dim outer light can be difficult to separate from the background.\n\nThat is the observing challenge. A galaxy\u2019s total light may sound impressive in a catalog, yet the light is distributed over a broad area. The result is low surface brightness: M74 can be harder to spot than a compact object of similar total brightness. Moonlight, haze, nearby lamps, and high magnification all work against it.\n\n**How to find it:** Look in the eastern sky on autumn evenings, when Pisces is well placed for observers in the Northern Hemisphere. M74 lies near Eta Piscium, a useful starting star. A finder chart or planetarium app can guide you from there to the galaxy\u2019s listed coordinates; a small change in position can matter when the target is so faint.\n\nChoose a moonless night and give your eyes time to adapt to darkness. Start with binoculars or a telescope at low power, which keeps the galaxy\u2019s light spread over a generous field. Sweep slowly around the indicated position. Once you suspect a faint glow, use averted vision: look just to one side of it rather than directly at it. The more sensitive parts of your retina can make dim, diffuse light easier to detect. Avoid checking a bright phone screen, or use a dim red display.\n\nIn modest equipment, expect a soft oval or haze, not the crisp photographic spiral arms familiar from observatory images. A larger telescope and a very dark sky may reveal unevenness in the glow, but patience matters more than chasing magnification. If M74 refuses to appear, try again after the sky darkens further\u2014or on another night. Its faintness is no failure of observation; it is a reminder that a vast galaxy can reach us as only a whisper of light.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%20628",
+            "overlap_terms": [
+              "ascension",
+              "catalog",
+              "coordinates",
+              "declination",
+              "display",
+              "galaxy",
+              "ident",
+              "listed",
+              "object",
+              "point",
+              "position",
+              "right"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}

@@ -1,0 +1,75 @@
+{
+  "screen_passed": false,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": false,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%20185"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# NGC 185: One Galaxy, Several Catalog Labels\n\n*NGC 185 is identified in astronomical records as a companion of NGC 147. Its measurements describe a broad, faint patch of light, while its catalog classifications show why a galaxy\u2019s identity can be more complicated than a single label.*\n\nA galaxy need not have brilliant arms or a sharply defined core to draw attention. NGC 185 is described in SIMBAD as a Seyfert 2 galaxy, but the same entry gathers other classifications from different references\u2014including galaxy, active-galaxy, and quasar labels. The range is a reminder that catalog entries preserve the history of how an object has been described, rather than offering a single, final verdict. [SIMBAD: NGC 185](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%20185)\n\nThe name itself is straightforward: the object discussed here is NGC 185. SIMBAD\u2019s entry also notes that it is a companion of NGC 147. That relationship gives the galaxy a place in a wider neighborhood, though the database note alone does not specify the details of their interaction or how the pair formed.\n\nNumbers help make NGC 185\u2019s appearance more concrete. SIMBAD lists its apparent visual magnitude as 9.2, with an uncertainty of 0.1, citing a 2012 *Astronomical Journal* measurement. Its listed optical dimensions are about 11.48 by 9.55 arcminutes, from a 2003 *Astronomy & Astrophysics* reference. Together, those figures describe an object that covers a substantial area of sky while appearing relatively faint. They are measurements of how it appears from Earth, not a measure of its intrinsic size or luminosity. ([2012AJ....144....4M](https://ui.adsabs.harvard.edu/abs/2012AJ....144....4M); [2003A&A...412...45P](https://ui.adsabs.harvard.edu/abs/2003A%26A...412...45P))\n\nThe classification details call for more care. SIMBAD\u2019s basic-data heading calls NGC 185 a \u201cSeyfert 2 Galaxy,\u201d while its list of other object types includes \u201cG,\u201d \u201cAGN,\u201d \u201cQSO,\u201d and additional labels tied to different references. Its morphology field gives the code \u201cdGspD,\u201d with a D-quality flag. Without treating these entries as interchangeable or equally authoritative, one can see why a galaxy may appear under more than one description in databases: different studies and catalogs classify objects for different purposes. The labels are evidence of that record, not a reason to combine them into a more specific claim than the sources support.\n\nThe entry also provides coordinates, placing NGC 185 at right ascension 00h 38m 57.94s and declination +48\u00b0 20\u2032 15.04\u2033 in the J2000 frame. SIMBAD lists a heliocentric radial velocity of \u2212181 kilometers per second, with a redshift of \u22120.000605, citing a 2016 *Astrophysical Journal Supplement Series* catalog. Those values add another layer to the object\u2019s recorded identity: position on the sky, apparent extent, brightness, and measured motion. ([2016ApJS..226...11S](https://ui.adsabs.harvard.edu/abs/2016ApJS..226...11S))\n\nNGC 185 is therefore more than a name attached to a smudge of light. It is a cataloged galaxy with measured properties, a recorded association with NGC 147, and classifications that vary across references. Read carefully, those records tell a modest but useful story: astronomical knowledge accumulates through observations and labels, and the most accurate account sometimes begins by keeping those labels distinct.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%20185",
+            "overlap_terms": [
+              "about",
+              "ascension",
+              "association",
+              "basic",
+              "catalog",
+              "catalogs",
+              "companion",
+              "coordinates",
+              "database",
+              "declination",
+              "defined",
+              "dgspd"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [
+      {
+        "quoted_text": "Seyfert 2 Galaxy,",
+        "source_matches": [],
+        "exact_text_confirmed": false
+      }
+    ],
+    "all_quoted_passages_confirmed": false,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}

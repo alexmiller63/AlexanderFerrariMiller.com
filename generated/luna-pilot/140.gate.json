@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%20281"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# PacMan Nebula: A Mouthful of Starlight\n\n*An autumn sky, a patient telescope and one small notch in a cloud of glowing gas.*\n\nThe first time Mara found the PacMan Nebula, she almost passed it by. Her telescope showed a faint patch, not a cartoon face: a soft oval of light with a bite-shaped gap at one edge. She nudged the focus, waited for her eyes to settle into the dark, and there it was\u2014not a character in space, but a cloud whose silhouette had earned it a familiar nickname.\n\nOn the chart, it was NGC 281. SIMBAD classifies it as an H II region and lists the coordinates as right ascension 00h 52m 25.1s, declination +56\u00b0 33\u2032 54\u2033 (J2000). Its other identifiers include Sh 2-184 and Ced 3; the database also notes an association of cluster and nebula. Those catalogue labels are useful signposts, but none quite captures the moment of recognition: a faint, ragged shape suspended among the stars of Cassiopeia. [SIMBAD: NGC 281](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%20281)\n\nAn H II region is a volume of hydrogen gas whose atoms have been ionized\u2014stripped of electrons by energetic radiation. When electrons recombine with protons, the gas can emit light, including the characteristic red glow of hydrogen-alpha. The nebula\u2019s associated cluster makes the scene more than a patch of brightness: stars and gas share the same neighborhood, and the stars\u2019 radiation can illuminate and reshape the surrounding material. The familiar \u201cPacMan\u201d outline is a useful visual cue, not a literal mouth cut into space.\n\nMara had expected the telescope to deliver a picture. Instead, it offered a lesson in looking. Under a suburban sky the nebula was subtle, the nickname doing more work than the eyepiece. She switched to averted vision\u2014looking slightly to the side of the target\u2014and the dim edges became easier to hold. The view did not sharpen into a photograph. It grew, slowly, into a place.\n\n## Scientific context\n\nNGC 281\u2019s catalogue position puts it in the northern sky, in the direction of Cassiopeia. Its H II classification identifies it as ionized gas; SIMBAD\u2019s \u201ccluster+neb\u201d note records its association with a star cluster and nebula. These facts describe the kind of object and its recorded position, not how bright or detailed it will look through a particular telescope. Under light pollution, a nebula may appear very faint even when its coordinates are exact.\n\n## Observing guidance\n\nLook for Cassiopeia on a clear, dark night and use a star chart or planetarium app to navigate to NGC 281\u2019s coordinates. Let your eyes adapt for at least 20 minutes, shield nearby lights, and start with a low-power eyepiece to find the field. A nebula filter designed for emission nebulae may improve contrast, though it cannot replace a dark sky. Try averted vision and give the view time; the PacMan shape may be easier to appreciate in a long-exposure photograph than at the eyepiece. Binoculars can help you learn the surrounding star field, while a telescope gives you a better chance of detecting the nebula itself.\n\nMara wrote the coordinates in her observing notebook, then drew a small crescent with a missing bite. The sketch was rough, but the place was real: gas, stars, and light crossing the dark. Next time, she thought, she would bring a larger telescope. For now, she had found the PacMan\u2014and learned that seeing faint things is partly a matter of staying still long enough.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%20281",
+            "overlap_terms": [
+              "ascension",
+              "association",
+              "bright",
+              "catalogue",
+              "cluster",
+              "coordinates",
+              "database",
+              "declination",
+              "field",
+              "ident",
+              "identifiers",
+              "larger"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}

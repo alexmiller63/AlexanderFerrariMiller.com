@@ -1,0 +1,69 @@
+{
+  "screen_passed": false,
+  "checks": {
+    "research_present": true,
+    "draft_length": false,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2095947"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Albireo: A Pair of Stars, a Study in Classification\n\n*SIMBAD\u2019s record for Albireo offers something quieter than a telescopic view: a set of measurements and classifications, each describing a different aspect of the star system.*\n\nAlbireo is listed in the astronomical database SIMBAD as \u201cbet01 Cyg,\u201d or Beta\u00b9 Cygni, and classified as a double or multiple star. That description gives a useful starting point, but it does not tell the whole story. A catalog entry is not a picture of a pair in the sky; it is a collection of observations, measurements and labels assembled from different sources over time. ([SIMBAD entry for HIP 95947](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2095947))\n\nOne of the entry\u2019s most striking details is its spectral classification: K3II+B9.5V. The plus sign separates two classifications. In this notation, the letters and numbers specify spectral types, while the Roman numerals indicate luminosity classes. So the entry does not treat Albireo as a single, uniform object. It records two stars with markedly different classifications: K3II and B9.5V. SIMBAD attributes this classification to a 1969 doctoral thesis and assigns it a quality grade of C. The grade is a reminder that catalog data comes with qualifications, not just answers.\n\nOther measurements add different pieces to the portrait. SIMBAD gives the object a visual magnitude of 3.08, based on a photometry reference from 2014. It also lists a parallax of 8.9816 milliarcseconds, with an uncertainty of 0.4474 milliarcseconds, from the 2020 Gaia catalog. These numbers describe brightness as measured in a particular band and apparent motion against the background, respectively; they are not interchangeable, and neither is a direct description of what a viewer sees through a telescope.\n\nThe position is recorded with high precision, too: right ascension 19 hours, 30 minutes and",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2095947",
+            "overlap_terms": [
+              "ascension",
+              "catalog",
+              "database",
+              "double",
+              "ident",
+              "listed",
+              "luminosity",
+              "magnitude",
+              "motion",
+              "multiple",
+              "object",
+              "other"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}

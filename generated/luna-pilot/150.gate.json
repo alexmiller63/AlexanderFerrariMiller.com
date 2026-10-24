@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%20752"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# NGC 752: A Cluster That Rewards a Wider View\n\n*In Andromeda, this open cluster spreads across nearly a degree of sky. Give it room in the eyepiece, and its quiet scatter of stars becomes the show.*\n\nThe first mistake with NGC 752 is to hurry. A telescope pointed at its coordinates can make the cluster seem like just another patch of stars. But this is a gathering best approached slowly, with a wide view and a little patience. Find it in Andromeda on a dark evening, let your eyes adjust, and scan the field rather than trying to pin the whole sight on one bright point.\n\nThe numbers give a sense of its scale. SIMBAD identifies NGC 752 as an open cluster and lists its position as right ascension 1 hour 56 minutes 53.5 seconds, declination +37 degrees 47 minutes 38 seconds (J2000). Its cataloged angular size is 58.2 arcminutes\u2014nearly twice the apparent width of the full Moon. That broad span is a clue to how to observe it: begin with binoculars or a low-power, wide-field telescope, not high magnification. The cluster may not fit comfortably into a narrow eyepiece view.\n\nIts distance offers another perspective. SIMBAD lists a parallax of 2.2304 milliarcseconds. Taking the inverse gives an approximate distance of 448 parsecs, or about 1,460 light-years. That calculation is an estimate from the listed parallax, not a claim that every star in the field lies at precisely the same distance. Still, it turns the scattered points of light into something more than a pattern: a star cluster seen across a stretch of space that light has taken centuries to cross.\n\nAt the eyepiece, the best approach is to let the field settle. A bright star may catch your attention first; then smaller points emerge around it. Shift your gaze gently and look for the sense of a group rather than a single centerpiece. There is no need to count stars or force a shape. NGC 752\u2019s appeal is its open, spacious appearance\u2014the feeling that the stars have room to breathe.\n\nFor a comfortable search, use a finder chart or a planetarium app to locate the cluster in Andromeda. Start from the broad constellation pattern rather than sweeping blindly with a telescope. Choose a night when the sky is clear and, if possible, observe away from bright streetlights and a bright Moon. Give your eyes time to adapt to the dark; use a dim red light if you need to check a chart. Once you find the field, keep magnification low at first. You can always increase it later, but a tighter view may crop away the cluster\u2019s defining breadth.\n\nA dark sky helps, but the experience does not require elaborate equipment. Even a first look through binoculars can make the cluster\u2019s scale apparent. Then try looking away from the eyepiece for a moment and returning. The change is subtle: more stars appear, and the field becomes less like a destination and more like a neighborhood in the Milky Way.\n\nNGC 752 does not demand a dramatic reveal. Its reward is the quiet pleasure of recognizing a wide, star-filled patch as a real stellar grouping\u2014and then lingering long enough to see it clearly.\n\n**Source:** SIMBAD database entry for NGC 752: https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%20752",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%20752",
+            "overlap_terms": [
+              "angular",
+              "around",
+              "ascension",
+              "cluster",
+              "coordinates",
+              "count",
+              "database",
+              "declination",
+              "degree",
+              "degrees",
+              "field",
+              "ident"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}

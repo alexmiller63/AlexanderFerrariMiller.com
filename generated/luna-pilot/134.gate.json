@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%20205"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# M110: The Quiet Neighbor in Andromeda\n\n*Beside the famous spiral galaxy, a subtler companion offers a lesson in how much the eye can miss.*\n\nOn a clear autumn evening, M31\u2014the Andromeda Galaxy\u2014can seem to announce itself. M110 makes no such entrance. It is a quieter presence nearby: a diffuse glow that asks for patience, a dark sky and a little help from optics.\n\nM110 is also catalogued as NGC 205. SIMBAD lists it as a galaxy and gives its morphological type as E5pec, a classification for a peculiar elliptical galaxy. Its recorded visual magnitude is 8.07, but that number can mislead at the eyepiece. A galaxy\u2019s light is spread over an area of sky; it does not look like a star of the same magnitude. M110\u2019s glow is faint and soft-edged, and urban light pollution can erase it. (SIMBAD: https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%20205)\n\nThat dimness is part of its appeal. M110 is a companion in Andromeda\u2019s galactic neighborhood, not an isolated island of stars. Its elliptical form tells us something about how galaxies can differ: unlike Andromeda\u2019s conspicuous spiral, M110 has no prominent spiral pattern to catch the eye. Through a small telescope, the reward is not a detailed portrait but the recognition of another galaxy\u2014an immense stellar system reduced to a pale patch in the night.\n\nTo find it, first locate Andromeda. In the Northern Hemisphere, autumn evenings are a good time to look, when the constellation Andromeda is well placed. From a dark site, begin with binoculars or a wide-field telescope to pick out M31\u2019s elongated glow. Then consult a chart or a planetarium app to identify M110 close by, to the northwest of M31. The coordinates listed by SIMBAD for M110 are right ascension 00h 40m 22s and declination +41\u00b0 41\u2032 (J2000); they can help confirm the field in a charting tool. (SIMBAD: https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%20205)\n\nUse low magnification at first, and let your eyes adapt to the dark. Look slightly away from the spot where you expect the galaxy: peripheral vision is often more sensitive to faint light. Don\u2019t expect a sharply outlined object. Try averted vision, steady your gaze, and give the view a few minutes. If M110 does not appear, move away from bright lights or try again on a clearer, darker night. A telescope with a wide field can make it easier to keep the Andromeda region in view, while a larger aperture may help reveal the faint glow.\n\nThe first glimpse may be uncertain: a smudge, perhaps, or a trick of the eye. Return to the chart, check the neighboring stars, and look again. The point is not to force detail out of a distant galaxy, but to notice what is there. Near Andromeda\u2019s bold sweep, M110 keeps a lower profile. Find it, and the familiar showpiece becomes a neighborhood\u2014with more than one galaxy in the frame.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%20205",
+            "overlap_terms": [
+              "ascension",
+              "coordinates",
+              "declination",
+              "elliptical",
+              "frame",
+              "galaxies",
+              "galaxy",
+              "ident",
+              "listed",
+              "magnitude",
+              "minutes",
+              "morphological"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}

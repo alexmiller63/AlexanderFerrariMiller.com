@@ -1,0 +1,69 @@
+{
+  "screen_passed": false,
+  "checks": {
+    "research_present": true,
+    "draft_length": false,
+    "title_present": false,
+    "source_citation": false,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": false,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": false,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": false
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 0,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2086228"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# A Star in the Record: HIP 86228\n\n*The catalog entry for Theta Scorpii is a compact portrait in numbers: a position, a measured motion, a spectrum and several estimates of brightness and distance.*\n\nSIMBAD identifies HIP 86228 as \u201ctet Sco,\u201d a star. Those short labels are the first clues to how astronomers keep track of a particular object among the many stars in the sky. Its recorded position gives a more precise address: right ascension 17 hours, 37 minutes and 19.12985 seconds; declination 42 degrees, 59 minutes and 52.1808 seconds south. The coordinates are given for the J2000 reference system.\n\nThe negative declination places the star south of the celestial equator. But coordinates do more than indicate a general direction: they let observers and databases distinguish one target from another. SIMBAD also lists a galactic position, along with an older coordinate entry in the FK4 system. Different coordinate systems and reference dates are ways of describing positions; the catalog\u2019s J2000 ICRS entry offers the most detailed current address shown in this record.\n\nA star\u2019s address is not entirely fixed. SIMBAD reports HIP 86228\u2019s proper motion as 5.54 milliarcseconds per year in right ascension, adjusted by the cosine of declination, and \u22123.12 milliarcseconds per year in declination. The listed uncertainties are 2.01 and 1.42 milliarcseconds per year. These small values describe the star\u2019s apparent change of position across the sky over time. They are not a measure of how fast it moves through space in every direction.\n\nThe catalog also gives a parallax of 10.86 milliarcseconds, with an uncertainty of 1.49. Parallax is the apparent shift used to estimate distance: a smaller parallax generally indicates a more distant object. Taking the reciprocal of this measurement gives a rough distance of about 300 light",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2086228",
+            "overlap_terms": [
+              "ascension",
+              "catalog",
+              "celestial",
+              "coordinate",
+              "coordinates",
+              "current",
+              "declination",
+              "degrees",
+              "given",
+              "listed",
+              "measure",
+              "measurement"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}

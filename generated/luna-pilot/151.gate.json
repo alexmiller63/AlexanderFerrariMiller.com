@@ -1,0 +1,69 @@
+{
+  "screen_passed": false,
+  "checks": {
+    "research_present": true,
+    "draft_length": false,
+    "title_present": false,
+    "source_citation": false,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": false,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": false,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": false
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 0,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%20772"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# NGC 772: A Galaxy in Company\n\n*In the constellation Aries, a galaxy\u2019s catalogue entry offers a compact portrait: its measured size, position, brightness and a notable detail about its surroundings.*\n\nNGC 772 is listed by SIMBAD as a galaxy in a pair of galaxies. That classification makes its setting part of the story, while also setting a limit on what can be concluded: the label identifies it as part of a pair, but does not by itself describe the relationship or any particular encounter. For a distant object, even a brief catalogue entry can offer a useful starting point\u2014provided its measurements are kept distinct from what they do and do not explain.\n\nSIMBAD records NGC 772\u2019s morphological type as SA. Its optical angular size is about 4.99 by 3.58 arcminutes, with a listed orientation angle of 125 degrees. These figures describe how large the galaxy appears in the sky and the direction of its measured major axis. They are not a physical diameter: the entry\u2019s angular measurement alone does not tell a reader how many light-years across the galaxy is.\n\nThe catalogue also gives a V-band visual magnitude of 10.31. That value is one measurement of its brightness, not a complete description of how the galaxy would look through a particular telescope or camera. SIMBAD\u2019s entry includes measurements in several other bands too, including ultraviolet, infrared and optical filters. The variety is a reminder that a catalogue can present an object through multiple kinds of observation, each recorded in its own terms.\n\nTo identify the field, the entry provides J2000 coordinates: right ascension 1 hour, 59 minutes, 19.56 seconds and declination +19 degrees, 00 minutes, 27.48 seconds. These coordinates act as a precise address on the sky. They are more useful for locating the target than a broad constellation name, especially when comparing observations or searching a star chart. SIMBAD also lists the position\u2019s measurement quality as A, its highest category in the site\u2019s stated coordinate-quality scale.\n\nThere is another numerical clue in the record: an emission redshift of 0.008327, with a listed uncertainty of 0.000010. The entry also reports a radial velocity of 2,486 kilometres per second. These are catalogue measurements, not a narrative of the galaxy\u2019s past. In particular, neither the redshift nor the pair classification tells us, on its own, what has happened between NGC 772 and another galaxy.\n\nThat distinction is what makes the entry useful. It gives observers and researchers a shared set of identifiers and measurements: a location, an apparent extent, a brightness, a morphological code and a pair classification. The data sketch NGC 772 without resolving every question about it. Its",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%20772",
+            "overlap_terms": [
+              "angle",
+              "angular",
+              "ascension",
+              "catalogue",
+              "coordinate",
+              "coordinates",
+              "declination",
+              "degrees",
+              "emission",
+              "galaxies",
+              "galaxy",
+              "listed"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}

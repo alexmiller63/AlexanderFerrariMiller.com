@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%20147"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# NGC 147: A faint companion in Cassiopeia\n\n*This low-surface-brightness galaxy asks for patience, dark skies and averted vision\u2014and rewards the observer with a glimpse of the Andromeda galaxy\u2019s wider neighborhood.*\n\nNot every galaxy announces itself with a bright core or elegant spiral arms. NGC 147 is subtler: a diffuse dwarf spheroidal in Cassiopeia, its light spread across a patch of sky wider than the full Moon. Cataloged at roughly 12.6 by 7.1 arcminutes, it may be listed at magnitude 9.5, but that number can mislead. The galaxy\u2019s light is thinly distributed, making it much harder to see than a compact object of the same total brightness. SIMBAD records its classification, apparent dimensions and position. [SIMBAD: NGC 147](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%20147)\n\nThe coordinates are a useful starting point: right ascension 00h 33m 12.12s, declination +48\u00b0 30\u2032 31.5\u2033 (J2000). A computerized mount can go straight there; with a chart, search in Cassiopeia\u2019s rich star fields and confirm the surrounding pattern at low power. NGC 147 is noted as a companion of NGC 185, another faint galaxy in the same part of the sky. They make a rewarding paired target, though each deserves its own careful look. [SIMBAD: NGC 147](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%20147)\n\nFor the best chance, choose a moonless night with transparent skies, get well away from local lights, and give your eyes at least 20 minutes to adapt. Use a wide-field eyepiece and start at low magnification. If the galaxy doesn\u2019t appear immediately, try averted vision: look just to one side of the expected position, where the eye is more sensitive to faint light. A larger telescope can help, but dark skies and patience matter more than chasing high magnification. Avoid bright white screens while observing; a dim red light preserves night vision.\n\nWhat you are looking for is not a sharp-edged object. Expect a faint, elongated haze, perhaps with a brighter middle, set against a background peppered with stars. Move the telescope gently or shift your gaze. A subtle patch can become easier to notice when you stop staring directly at it. If the field seems empty, take a moment before moving on: diffuse galaxies often reveal themselves gradually.\n\nNGC 147 belongs to the family of dwarf spheroidal galaxies\u2014small, rounded or elongated systems whose light is spread out rather than gathered into conspicuous spiral arms. Its cataloged radial velocity is about \u2212193 kilometers per second, measured relative to the Sun. That figure is one clue to its motion, not a direct measure of its distance. [SIMBAD: NGC 147](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%20147)\n\nThe pleasure of observing this galaxy lies partly in the contrast between its modest appearance and its immense scale. Through the eyepiece, it may be only a soft smudge. Yet that smudge is another stellar system, sharing a celestial neighborhood with NGC 185 and embedded in the broader group of galaxies around Andromeda. Take a sketch, note the sky conditions, and return on another night. A faint target can change with transparency, experience and the simple act of knowing where to look.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%20147",
+            "overlap_terms": [
+              "about",
+              "around",
+              "ascension",
+              "before",
+              "celestial",
+              "companion",
+              "coordinates",
+              "declination",
+              "field",
+              "galaxies",
+              "galaxy",
+              "group"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}

@@ -1,0 +1,77 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%20650"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# The Little Dumbbell Nebula: A Small Shape with a Long Story\n\n*In Perseus, a faint, two-lobed glow marks the brief, luminous aftermath of a star like the Sun.*\n\nThe Little Dumbbell Nebula is easy to underestimate. Through a small telescope it may appear as a dim patch, not a grand celestial sculpture. Yet its familiar shape is a sign of change: a star has cast off its outer layers, and the exposed stellar core is lighting the departing gas.\n\nThe object is also cataloged as M76 and NGC 650. SIMBAD classifies NGC 650 as a planetary nebula and gives its position as right ascension 1 hour 42 minutes, declination +51 degrees 34 minutes (J2000). Its listed angular size is about 2.3 arcminutes\u2014small enough to be overlooked among the stars, but broad enough to show structure under good conditions. [SIMBAD: NGC 650](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%20650)\n\n\u201cPlanetary nebula\u201d is a historical name, not a description of a planet. These nebulae form late in the lives of many stars: after a star has exhausted the fuel that sustained its earlier evolution, it sheds gas into space. The remaining hot core floods that gas with energetic light, causing it to glow. Over time, the expanding shell disperses. The process is a stage in stellar evolution, not a stellar explosion that destroys the entire star.\n\nThe Little Dumbbell\u2019s paired appearance gives it its popular name. In photographs, its bright regions seem to spread out from a narrower waist. That shape invites the eye to imagine a dumbbell suspended in blackness, but the object is a vast, three-dimensional cloud viewed from far away. Its apparent outline is all we can see directly; the telescope turns its faint light into a clue about the gas\u2019s form.\n\nTo find it, look in Perseus, using a star chart or astronomy app set for the current sky. Search for M76 or NGC 650, then use the cataloged coordinates\u2014RA 1h 42m, Dec +51\u00b0 34\u2032\u2014to confirm the target. The position is given for epoch J2000, the standard reference used by many charts. The nebula is a Northern Hemisphere target, best placed for evening observing in the cooler months.\n\nGive your eyes time to adjust to darkness, and begin with a low-power eyepiece to locate the field. Then increase magnification if the view remains steady. A nebula filter designed to pass emission lines, such as an O III or UHC filter, may improve contrast against the background sky; results vary with the telescope, filter and observing conditions. Dark skies matter, too. City light can erase the subtle edges that make this small nebula distinctive.\n\nExpect a modest view, not the saturated colors of a processed photograph. At the eyepiece, the Little Dumbbell may show as a soft, uneven smudge, with its shape becoming clearer as you look patiently and use averted vision\u2014looking slightly to one side of it rather than straight at it. That faintness is part of the encounter. The light reaching you comes from gas released by a star, briefly made visible before it thins into the wider space around it.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%20650",
+            "overlap_terms": [
+              "angular",
+              "around",
+              "ascension",
+              "before",
+              "celestial",
+              "coordinates",
+              "declination",
+              "degrees",
+              "epoch",
+              "filter",
+              "given",
+              "ident"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [
+      {
+        "quoted_text": "Planetary nebula",
+        "source_matches": [
+          "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%20650"
+        ],
+        "exact_text_confirmed": true
+      }
+    ],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}

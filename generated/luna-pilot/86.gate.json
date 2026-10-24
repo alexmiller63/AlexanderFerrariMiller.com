@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2086670"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Kappa Scorpii: A Quiet Pulse in the Scorpion\u2019s Tail\n\n*Its light looks steady to the eye, but astronomical catalogues classify this southern star as variable. A chart and a little patience can make it the focus of a simple observing session.*\n\nKappa Scorpii is not the first star most people notice in Scorpius. At a visual magnitude of about 2.39, it is bright enough to see without a telescope under suitable conditions, but it does not dominate the constellation. Its appeal is subtler: SIMBAD classifies it as a Beta Cephei variable, a star whose brightness changes. That makes Kappa a reminder that a point of light can seem still while its measured behavior tells a more complicated story.\n\nSIMBAD lists Kappa\u2019s spectral type as B1.5 III. The classification identifies it as a B-type giant, a star quite unlike the Sun. The database gives its parallax as 6.75 milliarcseconds. Turning that measurement into a rough distance estimate puts Kappa about 148 parsecs away\u2014roughly 480 light-years. The distance is an estimate derived from the parallax, not a direct measurement in light-years. At that remove, the star appears to us as a point, even though its classification marks it as a giant. [SIMBAD: Kappa Scorpii](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2086670)\n\nTo find it, begin with a chart of Scorpius and use Kappa\u2019s position to distinguish it from the other stars in the constellation. SIMBAD gives its J2000 coordinates as right ascension 17 hours, 42 minutes, 29.275 seconds and declination \u221239 degrees, 1 minute, 47.9 seconds. A printed star chart or planetarium app can translate those coordinates into a location in the sky. Because Kappa lies well south of the celestial equator, a clear view toward the southern sky is useful.\n\nThe star\u2019s catalogue brightness offers a practical guide, but it is not a guarantee of easy viewing. Haze, nearby lights, and a low position above the horizon can make a star harder to see. Choose a dark location with an open view in the direction shown by your chart, and allow your eyes time to adjust. Binoculars can help reveal the surrounding star pattern; Kappa itself may be visible without optical aid when conditions are good.\n\nFor a modest observing project, look for Kappa on several nights and compare its apparent brightness with nearby stars. The point is not to expect a dramatic change from one evening to the next. SIMBAD\u2019s classification tells us that Kappa is variable, but the catalogue information alone does not promise that its changing light will be obvious to the unaided eye over a short observing session. A careful record\u2014or simply returning to the star with its classification in mind\u2014can make the observation more meaningful.\n\nThe numbers add another layer to the view. SIMBAD records Kappa\u2019s visual magnitude as 2.386 and its distance estimate begins with a parallax of only a few thousandths of an arcsecond. One is a measure of how bright the star appears from Earth; the other helps establish how far away it is. Together with the variable-star classification, they turn an ordinary-looking point in Scorpius into a useful target for noticing how much information astronomy can draw from starlight.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2086670",
+            "overlap_terms": [
+              "allow",
+              "ascension",
+              "catalogue",
+              "catalogues",
+              "celestial",
+              "coordinates",
+              "database",
+              "declination",
+              "degrees",
+              "ident",
+              "magnitude",
+              "measure"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
