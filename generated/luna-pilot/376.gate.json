@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206819"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Collinder 403: A compact gathering in Cygnus\n\n*An 11-arcminute open cluster, NGC 6819 rewards a careful look\u2014and a chart set to its exact coordinates.*\n\nThe first challenge with Collinder 403 is finding it. In a wide field of the Milky Way, the open cluster can seem less like a destination than a small patch of sky waiting to be noticed. Catalogued as NGC 6819, it lies in Cygnus, at right ascension 19h 41m 18.5s and declination +40\u00b0 11\u2032 24\u2033 (J2000). Those coordinates offer a reliable route in; the constellation\u2019s bright stars are useful landmarks, but a detailed finder chart will help you reach the cluster itself. [SIMBAD: NGC 6819](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206819)\n\nThe numbers sketch a distant stellar neighborhood. SIMBAD classifies NGC 6819 as an open cluster and lists an angular diameter of about 11.4 arcminutes\u2014roughly a third of the Moon\u2019s apparent width. Its listed parallax is 0.356 milliarcseconds. Turning that into a distance by simply taking the reciprocal gives a rough estimate of 2,800 parsecs, or about 9,200 light-years; that conversion is a useful scale, not a full distance analysis. The same record gives a radial velocity of 2.8 kilometers per second and proper motion of about \u22122.9 milliarcseconds per year in right ascension and \u22123.9 in declination. These measurements describe motion through space, even though the cluster appears fixed among the constellations on a single night.\n\nAn open cluster is a group of stars associated by their shared origin and gravitational history. On the sky, its members appear close together; physically, they are spread across space. At NGC 6819\u2019s distance, the 11.4-arcminute span corresponds to roughly 30 light-years across if treated as a simple diameter. The stars are therefore not packed into a tiny ball like a globular cluster. They make a loose family whose members can be harder to distinguish from the Milky Way\u2019s crowded background.\n\nFor an observer in the Northern Hemisphere, late summer evenings are a good time to look, when Cygnus rides high. Give your eyes time to adapt to the dark, then use a star chart or planetarium app set to Collinder 403\u2019s coordinates. The catalogued visual magnitude is 7.3, but that is the combined light of the cluster, not the brightness of an individual star. Don\u2019t expect an obvious naked-eye beacon. Binoculars may help identify the patch; a small telescope at low or moderate power should give a better view of the cluster against the surrounding star field. If the view seems crowded, increase magnification only enough to separate the cluster from its backdrop without losing the wider context.\n\nThe pleasure of Collinder 403 is in that shift of scale: a modest-looking patch in the eyepiece resolves into a distant stellar grouping, while the catalogue measurements turn a still image into a moving one. Its stars may look momentarily at rest, but their shared position and measurable motion tell a deeper story than any single glance can show.\n\n**Source:** [SIMBAD Astronomical Database, NGC 6819](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206819)",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206819",
+            "overlap_terms": [
+              "angular",
+              "ascension",
+              "catalogue",
+              "cluster",
+              "coordinates",
+              "crowded",
+              "database",
+              "declination",
+              "field",
+              "ident",
+              "image",
+              "listed"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
