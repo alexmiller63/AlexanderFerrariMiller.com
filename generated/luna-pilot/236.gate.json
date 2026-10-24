@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%203626"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# NGC 3626: A Quiet Spiral in the Spring Sky\n\n*An early-type spiral, NGC 3626 rewards patient viewing: its catalogued dimensions span about three arcminutes, but its soft glow can be easy to overlook.*\n\nA galaxy does not need a dramatic silhouette to hold a night\u2019s attention. NGC 3626, catalogued as an SAa galaxy, is a spiral whose light reaches us as a small, subdued patch. Its classification gives a clue to its structure: \u201cSA\u201d denotes an unbarred spiral, while \u201ca\u201d places it among the earlier spiral types, generally with more tightly wound arms than later types. That label is a broad description, not a promise that the arms will stand out in an eyepiece. [SIMBAD lists its type as SAa.](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%203626)\n\nThe catalog also gives NGC 3626 an apparent size of roughly 3.0 by 1.9 arcminutes, with its long axis angled about 162 degrees. That is a modest patch of sky\u2014far smaller than the Moon\u2019s apparent width\u2014and a reminder that a galaxy\u2019s catalogued outline does not guarantee a sharply defined edge. Its light thins gradually into the background. The recorded B-band magnitude is 11.2, a measurement in blue light rather than a direct prediction of how bright it will look to your eye. [The coordinates, size and photometry are available through SIMBAD.](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%203626)\n\nThere is another number to contemplate. SIMBAD reports a redshift of 0.004902 and a radial velocity of about 1,466 kilometres per second. The redshift means that light from the galaxy is observed at slightly longer wavelengths than it would be at rest: the shift is about 0.49 percent. It is a small fraction, but one that astronomers can measure from the galaxy\u2019s spectrum. The number offers a different kind of view from the eyepiece\u2014not a visible feature, but evidence encoded in the light itself. [SIMBAD\u2019s entry gives the redshift and velocity, with their cited catalog reference.](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%203626)\n\n**Observing NGC 3626**\n\nFor a finder chart or GoTo mount, use the J2000 coordinates listed by SIMBAD: right ascension 11h 20m 03.8s, declination +18\u00b0 21\u2032 24.5\u2033. Coordinates are a precise starting point; a planetarium app or current star chart can help you locate the field and account for the sky\u2019s changing orientation over time.\n\nChoose a dark, transparent night and let your eyes adapt before searching. At the eyepiece, use low or moderate magnification first, then increase it if the field remains steady and the galaxy is found. Averted vision\u2014looking slightly to one side of the target\u2014can help reveal faint, diffuse light. Don\u2019t expect a photograph-like spiral: begin by looking for a small, even glow, and note whether its shape seems elongated. If it remains elusive, return to the chart and confirm the surrounding star pattern rather than sweeping widely.\n\nNGC 3626 is a useful lesson in astronomical patience. The catalog gives us its position, broad form, apparent dimensions and measured motion. The observer\u2019s task is quieter: find the faint patch, hold the view, and let a little light become a place.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%203626",
+            "overlap_terms": [
+              "ascension",
+              "before",
+              "catalog",
+              "coordinates",
+              "current",
+              "declination",
+              "defined",
+              "degrees",
+              "field",
+              "galaxy",
+              "ident",
+              "listed"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
