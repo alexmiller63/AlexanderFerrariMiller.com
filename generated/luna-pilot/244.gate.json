@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204038"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Antennae Galaxies: A Collision in Corvus\n\n*Two galaxies are reshaping one another in a slow cosmic encounter. Spot their compact glow, then imagine the vast tidal streams revealed by deep images.*\n\nIn the constellation Corvus, the Antennae Galaxies offer a glimpse of a cosmic collision in progress. Their name comes from the long, curved streamers of stars and gas that arc away from the pair like antennae. Those faint extensions are difficult visual targets, but the galaxies\u2019 brighter central regions can be sought with a telescope under a dark sky.\n\nThe pair is catalogued as NGC 4038 and NGC 4039. The SIMBAD astronomical database lists NGC 4038 at right ascension 12h 01m 53s and declination \u221218\u00b0 52\u2032, and gives its optical extent as about 5.2 by 3.1 arcminutes. SIMBAD classifies it as a peculiar barred spiral galaxy\u2014an indication that its structure is far from the tidy, undisturbed form of a textbook spiral. [SIMBAD: NGC 4038](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204038)\n\nThe Antennae are not simply passing close by. Their mutual gravity has distorted their shapes and drawn out the long tails. As gas clouds are compressed and disturbed, some regions can form new stars. The encounter offers astronomers a nearby example of how galaxy interactions can rearrange matter and help transform galaxies over time. The dramatic tails are much more apparent in long-exposure photographs than through an eyepiece; visually, the pair is a subtler sight.\n\nThat subtlety is part of the pleasure. Under a truly dark sky, look for two small, hazy patches close together, not a crisp portrait of spirals or antennae. A larger telescope and patient observing may reveal unevenness or a faint connection between the brighter regions, but the view depends heavily on sky darkness, aperture and experience. Give your eyes time to adapt, use averted vision\u2014looking slightly to one side of the target\u2014and avoid judging the view against a long-exposure image.\n\nFor a starting point, find Corvus, the compact four-star constellation below and to the west of Virgo for many northern observers. A star chart or planetarium app can guide you from its stars to the galaxies; at declination \u221219\u00b0, the Antennae are best placed when they rise well above the horizon. From mid-northern latitudes, they culminate low in the south, so choose a location with a clear southern view. Their right ascension puts them near the meridian around midnight in March, with convenient evening observing as spring advances. From farther south, they climb higher and are easier to observe.\n\nTry the target first at low power, which gives a brighter view and helps locate the close pair. Once found, increase magnification gently and pause between looks. The Antennae may appear as little more than a faint smudge\u2014but that glow comes from two galaxies whose encounter has thrown matter across immense distances. The telescope shows only the central hint; the imagination, and deeper images, supply the sweeping wings.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204038",
+            "overlap_terms": [
+              "about",
+              "around",
+              "ascension",
+              "database",
+              "declination",
+              "depends",
+              "extent",
+              "galaxy",
+              "ident",
+              "image",
+              "images",
+              "larger"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
