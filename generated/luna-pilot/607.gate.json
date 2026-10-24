@@ -1,0 +1,75 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%20100027"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Alpha1 Cap: A Golden Beacon in the Sea-Goat\n\n**Dek:** A modest naked-eye star in Capricornus carries the light of a G-type supergiant\u2014and a catalogued identity as a double or multiple star.\n\nOn an autumn evening, Capricornus can seem less like a constellation than a faint outline sketched across the southern sky. Its stars are not especially brilliant, so the pattern rewards patient looking. Alpha1 Cap is one of its quieter lights: at visual magnitude 4.27, it may be visible to the unaided eye from a dark site, but it can disappear in city glow or haze.\n\nThe star\u2019s name hints at a puzzle. SIMBAD classifies **alf01 Cap** as a \u201cDouble or Multiple Star,\u201d a reminder that a point of light can represent more than one stellar object. That label does not, by itself, tell an observer whether the components can be separated with a backyard telescope. Without a reliable separation and brightness contrast, it is best to treat Alpha1 Cap as a catalogued multiple\u2014not promise a dramatic split at the eyepiece.\n\nThere is another reason this faint-looking star merits a closer look. SIMBAD lists its spectral type as G3Ib. The \u201cG\u201d places it among yellow stars, while \u201cIb\u201d denotes a luminous supergiant class. Its apparent brightness is therefore no guide to its intrinsic scale: distance dims the light before it reaches us. The catalogued parallax, about 4.02 milliarcseconds, gives a rough distance of 250 parsecs, or about 810 light-years, when converted using the simple inverse-parallax relation. At that remove, the star\u2019s modest appearance is understandable.\n\nFor a practical search, look south on a clear evening in late summer or autumn in the Northern Hemisphere, when Capricornus is better placed after dusk. The constellation stays relatively low from many northern locations, so a southern horizon free of buildings, trees and atmospheric murk helps. In the Southern Hemisphere, it climbs higher. A current star chart or planetarium app can guide you to Capricornus and identify Alpha1 Cap by name; its coordinates are approximately right ascension 20 hours 17 minutes, declination 12 degrees 30 minutes south.\n\nBegin with the unaided eye, allowing a few minutes for your vision to adapt. If the star is hard to pick out, binoculars will make the field easier to explore, though they will not necessarily reveal separate components. A small telescope can sharpen the view and offer a steadier sense of the surrounding star field. Try observing on a moonless night, and give the instrument time to adjust to outdoor temperatures. If the image shimmers, wait for calmer air rather than immediately blaming the telescope.\n\nAlpha1 Cap is a useful lesson in astronomical scale: a star can look subdued yet belong to a luminous class, and a single catalog entry can conceal a more complicated system. Its appeal is not spectacle but the act of noticing. Find the small point, check its identity, and remember that the steady light crossing those hundreds of light-years began its journey long before it reached your eye.\n\n**Source:** SIMBAD entry for HIP 100027 / alf01 Cap: https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%20100027",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%20100027",
+            "overlap_terms": [
+              "ascension",
+              "before",
+              "catalog",
+              "class",
+              "coordinates",
+              "current",
+              "declination",
+              "degrees",
+              "double",
+              "ident",
+              "image",
+              "magnitude"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [
+      {
+        "quoted_text": "Double or Multiple Star,",
+        "source_matches": [],
+        "exact_text_confirmed": false
+      }
+    ],
+    "all_quoted_passages_confirmed": false,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
