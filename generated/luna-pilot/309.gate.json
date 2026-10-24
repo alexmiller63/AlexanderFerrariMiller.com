@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%205236"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Southern Pinwheel: A galaxy worth waiting for\n\n*In Hydra, M83 turns its broad spiral toward Earth\u2014and rewards observers who can catch it high above the horizon.*\n\nThere is a particular pleasure in finding a galaxy that looks less like a point of light than a thought taking shape. M83, the Southern Pinwheel, is one of those: a neighboring spiral whose face-on aspect gives its arms room to unfurl. In a dark sky, the first view may be a faint, rounded glow. Stay with it, and the idea of a great turning structure begins to emerge.\n\nThe catalogue entry is less poetic but more precise. SIMBAD identifies NGC 5236 as M83 and classifies it as a starburst galaxy, with a spiral type of SAB(s)c. Its listed optical dimensions are about 13.8 by 12.9 arcminutes\u2014large enough that, in a telescope, it can appear more like a softly lit patch than a pinprick. The catalogue gives its position as right ascension 13h 37m and declination \u221229\u00b0 52\u2032. [SIMBAD: NGC 5236](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%205236)\n\n\u201cStarburst\u201d describes unusually vigorous star formation. In a spiral galaxy, gas and dust provide the raw material for new stars; as clouds collapse, young hot stars light up their surroundings. Those regions can contribute a mottled brightness along the arms, though an eyepiece cannot resolve the galaxy into its individual stars. What we see is the combined glow of an immense system, softened by distance and by our own atmosphere.\n\nThat atmosphere is the practical challenge for many observers. At declination nearly 30 degrees south, M83 climbs high for southern observers but stays low for much of the northern hemisphere. From latitude 40\u00b0 north, it reaches only about 20 degrees above the southern horizon. Look for it in late spring or early summer, when its region of sky is well placed during evening hours; choose a site with an unobstructed southern view. Haze, rooftops and trees can swallow the contrast before the galaxy even has a chance.\n\nFor the best view, wait for a moonless night and let your eyes adapt to the dark. A finder or a reliable chart helps: the galaxy is in Hydra, and its coordinates are a useful confirmation when nearby stars are more obvious than the prize. Begin with low magnification, which keeps the whole faint glow in view. Use averted vision\u2014looking slightly to one side of the target\u2014to make subtle light easier to detect. Under a dark sky, a telescope may reveal a brighter central region and a broad oval haze; larger instruments and patient viewing can bring out uneven texture and hints of the spiral pattern. Don\u2019t be discouraged if the arms don\u2019t announce themselves at once. Galaxies are generous with scale, not always with contrast.\n\nM83\u2019s nickname can set an ambitious expectation: a crisp pinwheel, spinning in high relief. The eyepiece offers something quieter and perhaps more affecting. That dim oval is not a nearby cloud or a cluster of local stars, but a whole galaxy whose light has crossed space to reach you. The Southern Pinwheel asks for a clear southern horizon, dark-adapted eyes and a little imagination\u2014and gives back the pleasure of recognizing a spiral in the faintest of sketches.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%205236",
+            "overlap_terms": [
+              "about",
+              "ascension",
+              "before",
+              "catalogue",
+              "coordinates",
+              "declination",
+              "degrees",
+              "formation",
+              "galaxy",
+              "ident",
+              "listed",
+              "north"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
