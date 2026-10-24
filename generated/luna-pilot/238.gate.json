@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%203628"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Arp 317: Three Galaxies, One Springtime Field\n\n*In Leo, a trio of spiral galaxies offers a lesson in cosmic perspective: neighboring in the eyepiece, immense and evolving in space.*\n\nA galaxy can look like a quiet smudge until you learn to read its shape. Arp 317, better known as the Leo Triplet, puts three galaxies close together in the sky: M65, M66 and NGC 3628. Their apparent closeness makes a striking observing target\u2014and a reminder that galaxies are not isolated islands. Gravity can tug at their stars and gas over enormous stretches of time.\n\nThe group\u2019s most dramatic profile belongs to NGC 3628. We see it nearly edge-on, its long disk crossing the sky as a narrow streak. A band of dust runs along its middle, obscuring light from the galaxy\u2019s central regions. Catalog data classify it as a spiral galaxy and give its apparent dimensions as about 24 by 5 arcminutes\u2014roughly four-fifths the Moon\u2019s width at its longest. Its position is near right ascension 11h 20m and declination +13\u00b0 35\u2032. Those figures are useful for finding the field, though a chart or planetarium app will make the search easier. [SIMBAD: NGC 3628](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%203628)\n\nM65 and M66 complete the trio. Together, the three galaxies fit within a modest patch of sky in Leo, but they are separated by vast distances. Their forms invite comparison: one slim and edge-on, others broader and more face-on. Astronomers study such groups to understand how gravity shapes galaxies. Close encounters can distort disks and redistribute gas; the galaxies\u2019 appearance offers clues to those processes, though the full story unfolds across millions of years.\n\n**Try finding them on a clear spring evening.** Leo is recognizable by the curved \u201cSickle\u201d of stars marking its head. From there, sweep toward the constellation\u2019s hindquarters with binoculars or a low-power eyepiece. A wide field is helpful because it can frame all three galaxies together. Under a dark sky, binoculars may reveal the group as faint patches; a telescope of moderate aperture will make the individual forms easier to distinguish. Start with M65 and M66, then look for NGC 3628\u2019s thinner, more elusive streak nearby. Dark adaptation matters: give your eyes time away from bright screens, and try averted vision by looking just to one side of the faintest glow.\n\nThe galaxies are not bright showpieces, and the view will not resemble a long-exposure photograph. That is part of the pleasure. At the eyepiece, you are gathering a whisper of light that has crossed intergalactic space. Three small marks emerge from the darkness, each a vast system of stars, gas and dust. The field is compact; the scale behind it is not.\n\nFor a telescope, use a low-power eyepiece first to take in the full group, then increase magnification to examine NGC 3628\u2019s narrow shape. If the sky is hazy or the Moon is bright, save the search for another night. A patient look in dark conditions rewards you with one of spring\u2019s most memorable galaxy fields.\n\n**Sources**\n\n- [SIMBAD: NGC 3628](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%203628)\n- [SIMBAD: NGC 3623 (M65)](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%203623)\n- [SIMBAD: NGC 3627 (M66)](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%203627)",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%203628",
+            "overlap_terms": [
+              "ascension",
+              "catalog",
+              "declination",
+              "field",
+              "frame",
+              "galaxy",
+              "ident",
+              "known",
+              "others",
+              "position",
+              "right",
+              "search"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
