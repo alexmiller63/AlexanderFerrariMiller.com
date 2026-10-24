@@ -39,12 +39,14 @@ jobs:
       OPENAI_API_KEY: ${{ inputs.paid_execute && secrets.OPENAI_API_KEY || '' }}
     steps:
       - uses: actions/checkout@v4
-      - name: Preflight all ten catalogue identities (free)
+      - name: Select new candidates and preflight identities (free)
+        run: python3 tools/select_missing_story_candidates.py --limit 10
+      - name: Preflight selected catalogue identities (free)
         run: |
           python3 - <<'PY'
           import json
           from tools.luna_story_pipeline import ROOT, resolve_objects
-          tasks = json.loads((ROOT / "research/luna-pilot-candidates.json").read_text())
+          tasks = json.loads((ROOT / "generated/luna-pilot-selected.json").read_text())
           resolved = resolve_objects(tasks)
           assert len(resolved) == 10 and len(set(resolved.values())) == 10
           for task in tasks:
@@ -153,7 +155,7 @@ jobs:
           PAID_EXECUTE: ${{ inputs.paid_execute }}
         run: |
           set -euo pipefail
-          args=(--model "$MODEL" --input-price "$INPUT_PRICE" --output-price "$OUTPUT_PRICE")
+          args=(--manifest generated/luna-pilot-selected.json --model "$MODEL" --input-price "$INPUT_PRICE" --output-price "$OUTPUT_PRICE")
           if [[ "$PAID_EXECUTE" == "true" ]]; then args+=(--execute); fi
           python3 tools/luna_story_pipeline.py "${args[@]}"
       - name: Check reviewed story publication eligibility
