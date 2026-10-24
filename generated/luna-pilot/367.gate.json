@@ -1,0 +1,77 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206720"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Ring Nebula: A Small Window on a Star\u2019s Afterlife\n\n*In Lyra, a faint oval of light marks the moment when a dying star\u2019s cast-off atmosphere begins to glow.*\n\nAt first glance, the Ring Nebula is easy to mistake for a tiny, unfocused star. Look longer, though, and the point softens into a little smoke-grey oval: a delicate loop suspended in the dark. Its catalogue name is M57, or NGC 6720, and it lies in the constellation Lyra. The SIMBAD astronomical database lists it as a planetary nebula and gives its position as right ascension 18h 53m 35s, declination +33\u00b0 01\u2032 45\u2033. Its catalogued angular size is about 1.15 arcminutes\u2014small enough to reward careful attention.\n\nThe name \u201cplanetary nebula\u201d is a historical one. These objects are not planets. They are the glowing remains of a star\u2019s outer atmosphere, released as the star approaches the end of its life. The exposed stellar remnant at the centre is extremely hot; its radiation energizes the surrounding gas, making the material shine. What looks from Earth like a neat ring is a view through that luminous shell. It is a reminder that celestial shapes can depend on perspective: a vast, complicated structure can appear as a simple oval when seen across the gulf of space.\n\nThere is a quiet drama in that transformation. For much of its life, a star holds itself together through a balance between gravity and the energy produced within it. Near the end, that balance changes. The outer layers drift away, while the compact core remains. In the Ring Nebula, the cast-off material catches the light of that remnant and becomes visible to us. A telescope does not bring the nebula close, exactly; it gathers enough light to make this distant aftermath perceptible.\n\nTo find it, start with Vega, Lyra\u2019s bright blue-white beacon. M57 sits between the constellation\u2019s two nearby parallelogram stars, Beta and Gamma Lyrae. A star chart or a telescope\u2019s finder will help with the hop: the nebula is too small and faint to stand out like Vega. In binoculars it can be difficult to distinguish from a star, especially under a bright sky. A small telescope may reveal a soft, slightly out-of-focus spot; a larger aperture and a dark, steady night can make the oval shape easier to recognize.\n\nGive your eyes time to adjust to the dark, and try looking just to one side of the nebula rather than straight at it. This averted vision can help faint details register. Increase magnification gradually if the view is stable. A nebula filter, such as an O III or UHC filter, may improve contrast by suppressing some background light, though it cannot replace a dark observing site. Don\u2019t expect a colourful photograph: through an eyepiece, the Ring is often subtle, a small pale mark that becomes more certain the longer you look.\n\nThat modest view is part of the pleasure. The Ring Nebula asks for patience, not spectacle. Find the faint oval, hold it in view, and remember what it represents: a star\u2019s outer layers illuminated in their final passage, leaving a bright remnant at the centre of a slowly changing shell.\n\n**Source:** SIMBAD, NGC 6720 (M57): https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206720",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206720",
+            "overlap_terms": [
+              "angular",
+              "ascension",
+              "catalogue",
+              "celestial",
+              "certain",
+              "database",
+              "declination",
+              "filter",
+              "ident",
+              "nebula",
+              "objects",
+              "planetary"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [
+      {
+        "quoted_text": "planetary nebula",
+        "source_matches": [
+          "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206720"
+        ],
+        "exact_text_confirmed": true
+      }
+    ],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
