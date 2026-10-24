@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206523"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Lagoon Nebula: A quiet glow in Sagittarius\n\n*In the Milky Way\u2019s crowded summer fields, a luminous cloud offers a glimpse of stars shaping the space around them.*\n\nThe Lagoon Nebula is less a lagoon than a meeting place: a bright patch of sky where stars and glowing gas share the view. Its catalogue name, NGC 6523, carries the crispness of a database entry; its familiar name suggests something softer, a pale pool set among the starry lanes of Sagittarius.\n\nThat contrast is part of its appeal. A nebula is not a solid object with a sharply defined edge, but an immense cloud of gas and dust, made visible in part by the stars within it. One of the notable stars associated with the Lagoon is Herschel 36, an O-type star. Such stars are exceptionally hot and luminous; their radiation can energize surrounding gas, helping make a nebula shine. The SIMBAD astronomical database describes NGC 6523 as a cluster of stars and notes its association with Herschel 36 within M8, the Lagoon Nebula. [SIMBAD: NGC 6523](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206523)\n\nSeen through a telescope, the Lagoon is not a frozen photograph. The eye gathers its light in real time, and the view changes with the instrument, the sky and the observer\u2019s experience. Under dark skies, binoculars can help locate the region; a telescope at low magnification gives a wider field in which the nebula\u2019s glow and the surrounding stars can be appreciated together. Averted vision\u2014looking slightly to one side of the target\u2014can make faint detail easier to notice. Don\u2019t expect a camera\u2019s colors: the eye is much less sensitive to color in dim light, so a visual view may look subtle or gray.\n\nFor a first attempt, look toward Sagittarius when it is above your horizon. SIMBAD lists NGC 6523 at about right ascension 18 hours 03 minutes and declination \u221224 degrees 23 minutes. That southerly declination matters: observers in northern mid-latitudes will find the target low in the southern sky, where haze and buildings can interfere. Choose a clear, unobstructed southern view, and try near the time the object crosses your local meridian, when it reaches its highest point for the night. Give your eyes at least 20 minutes to adapt to darkness, and avoid looking at bright phone screens while you observe.\n\nA modest instrument is enough to begin; patience is the more important accessory. First sweep the star field with binoculars, then center the hazy patch in a telescope. If the view seems unremarkable at first, stay with it. The Lagoon\u2019s story is not only the light that reaches the eyepiece, but the process behind it: young stars inhabiting a cloud, and a particularly powerful one helping illuminate its surroundings.\n\nThe name invites a still-water image, but the scene is anything but still. Gas glows, stars shine, and the Milky Way carries the whole spectacle across the night. For an observer on Earth, the result is a small, steady invitation: find Sagittarius, let the dark settle in, and look into the Lagoon.\n\n**Source:** [SIMBAD \u2014 NGC 6523](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206523)",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206523",
+            "overlap_terms": [
+              "about",
+              "around",
+              "ascension",
+              "associated",
+              "association",
+              "astronomical",
+              "bright",
+              "catalogue",
+              "cluster",
+              "crowded",
+              "database",
+              "declination"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
