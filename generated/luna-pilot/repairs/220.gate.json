@@ -1,0 +1,77 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%203195"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# NGC 3195: A Small Shell in the Deep South\n\n*This planetary nebula rewards patient searching: its compact catalogued size and far-southern position make a chart, steady skies and a well-aimed telescope useful companions.*\n\nThe first challenge of finding NGC 3195 is not its faintness but its address. SIMBAD places it at right ascension 10h 09m 20.9s, declination \u221280\u00b0 51\u2032 31\u2033 (J2000)\u2014deep in the southern sky. From a mid-southern latitude it circles the celestial pole and stays above the horizon, while observers much north of the equator cannot see it at all. The database classifies it as a planetary nebula and lists an angular extent of about 0.67 arcminute, or roughly 40 arcseconds, in a radio measurement. That catalogued size is a useful scale, not a promise of what the nebula will look like through an eyepiece. [SIMBAD: NGC 3195](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%203195)\n\n\u201cPlanetary nebula\u201d is a historical name, not a description of a planet. The objects are glowing shells of gas expelled by aging stars. As the star\u2019s outer layers drift away, its hot central remnant can energize the gas, making it shine. That general stellar life cycle gives the class its drama: a brief, delicate display marking a transition toward a compact stellar remnant. The supplied catalog entry confirms NGC 3195\u2019s classification, but does not by itself establish details such as its distance, age or the appearance of its central star.\n\nFor an observing session, start with location rather than magnification. Set a mount using the J2000 coordinates above, or use a reliable chart to work in from a nearby reference star. At declination \u221281\u00b0, small pointing errors matter: the field is far from the familiar star-rich northern sky, and a finder view may not make the target immediately obvious. A low-power eyepiece helps establish the field; once centered, increase magnification gradually. The nebula\u2019s listed scale is small enough that a little extra power may help distinguish it from a star, though atmospheric steadiness and the telescope will shape the view.\n\nGive your eyes time to adapt to darkness, and avoid bright phone screens while searching. If you use a nebula filter, treat it as an experiment rather than a guarantee; filters can change contrast, but the best view depends on the sky, instrument and observer. Try the target both with and without one. Averted vision\u2014looking just to the side of the object\u2014can sometimes make faint detail easier to notice.\n\nNGC 3195 is a reminder that a catalog entry can be both a destination and a set of limits. Its coordinates tell you where to look; its classification suggests the broad physical story; its radio size offers a scale. The eyepiece supplies the rest, under a southern sky dark enough and steady enough for the search. If the first view seems modest, pause before moving on. A compact nebula is not always an obvious one, but finding it turns a pair of coordinates into a real place among the stars.\n\n**Source:** [SIMBAD Astronomical Database \u2014 NGC 3195](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%203195)",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%203195",
+            "overlap_terms": [
+              "angular",
+              "ascension",
+              "astronomical",
+              "before",
+              "bright",
+              "catalog",
+              "celestial",
+              "class",
+              "coordinates",
+              "database",
+              "declination",
+              "depends"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [
+      {
+        "quoted_text": "Planetary nebula",
+        "source_matches": [
+          "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%203195"
+        ],
+        "exact_text_confirmed": true
+      }
+    ],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
