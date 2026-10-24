@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206809"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# M55: A Quiet Crowd Beneath the Teapot\n\n*In Sagittarius, a low-slung globular cluster rewards patient eyes\u2014and a clear view toward the southern horizon.*\n\nThe night\u2019s first lesson is patience. M55 does not leap out of the eyepiece like a bright planet or a sharply edged nebula. It is a broad, pale gathering of stars, low in the southern sky for many observers, asking instead for time: time to find it, time for the eye to adapt, and time to notice that the haze is made of countless suns.\n\nCataloged as NGC 6809, M55 is a globular cluster\u2014a compact, gravitationally bound community of stars. Its catalog position is right ascension 19h 39m 59.71s and declination \u221230\u00b0 57\u2032 53.1\u2033 (J2000). SIMBAD lists a visual magnitude of 6.49 and an apparent diameter of 19 arcminutes, a little under two-thirds the Moon\u2019s apparent width. Those numbers give a useful preview: M55 is sizable, but its light is spread across a wide patch of sky. [SIMBAD: M55 / NGC 6809](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206809)\n\nFor an observer in the Northern Hemisphere, that southern declination is part of the challenge. At 40 degrees north, M55 reaches only about 19 degrees above the horizon at its highest point. Trees, rooftops, and haze can easily get in the way. Choose a night when Sagittarius is well placed, and look for a site with an unobstructed southern view. Farther south, the cluster climbs higher and is easier to observe.\n\nA star chart or planetarium app can guide you to the target; enter the coordinates rather than relying on a remembered star-hop. Let M55 cross the meridian\u2014the imaginary line running due south through the zenith\u2014before you observe, if that makes it as high as your location allows. Avoid nights with a bright Moon, and give your eyes a while to adjust to the dark.\n\nUnder a very dark sky, observers with excellent eyesight may glimpse M55 without optical aid, but binoculars make a more dependable starting point. At first it may look like a soft, round smudge, not a pinprick. That is expected: a cluster spanning 19 arcminutes is extended, and its combined glow can be easier to see with averted vision\u2014looking slightly to one side of it rather than staring straight at it.\n\nA small telescope at low or moderate power can frame the cluster comfortably. Increase magnification only if the view stays sharp; turbulent air near the horizon can blur fine detail. With a larger telescope and steady conditions, individual stars may begin to emerge across the glow. Give the view a few minutes. What seemed at first like a single cloud gradually takes on texture, the crowded light resolving into a multitude.\n\nThere is a pleasing contrast in that experience. The catalog offers coordinates, magnitude, and angular size: precise handles for finding a distant object. The eyepiece offers something less tidy\u2014the slow transition from blur to stars, shaped by the night\u2019s darkness and the observer\u2019s patience. M55 is low, broad, and easy to underestimate. But once found, it turns a small patch of southern sky into a quiet, glittering crowd.\n\n**Source:** [SIMBAD entry for M55 (NGC 6809)](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206809)",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206809",
+            "overlap_terms": [
+              "allows",
+              "angular",
+              "ascension",
+              "before",
+              "catalog",
+              "cluster",
+              "coordinates",
+              "crowd",
+              "crowded",
+              "declination",
+              "degrees",
+              "frame"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
