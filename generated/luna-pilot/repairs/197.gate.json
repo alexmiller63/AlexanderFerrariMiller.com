@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%202437"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# M46: A Cluster with a Second Story\n\n*In Puppis, a spray of stars shares the eyepiece with a ghostly-looking nebula\u2014and the view offers a lesson in cosmic perspective.*\n\nOn a clear late-winter evening, turn south and find M46, the open cluster catalogued as NGC 2437. Its stars are gathered in Puppis, the ship\u2019s stern, but the scene has a curious extra: a faint, round glow apparently tucked among them. That glow is the planetary nebula NGC 2438. The pairing looks intimate. The sky, however, is a stage where objects at different distances can appear to share the same patch of scenery.\n\nM46 is an open cluster: a grouping of stars whose members are associated with one another, rather than a chance scattering across the whole sky. SIMBAD lists NGC 2437 as an open cluster, gives its J2000 position as right ascension 7h 41m 46.8s and declination \u221214\u00b0 50\u2032 38\u2033, and records an apparent diameter of about 25 arcminutes\u2014roughly the width of a little less than the full Moon. Those coordinates put the cluster well south of the celestial equator, a useful reminder that its best view depends on where you live. [SIMBAD: NGC 2437](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%202437)\n\nThe smaller-looking interloper is a planetary nebula, not a planet. The name is a historical one: through early telescopes, some of these rounded nebulae resembled planetary disks. In fact, a planetary nebula is an expanding envelope of gas shed by a star late in its life. NGC 2438\u2019s position against M46 makes a striking picture, but apparent overlap alone does not establish that two objects are physically connected. Astronomers can test such relationships using measurements including distance and motion. The object\u2019s catalog entry is available from [SIMBAD: NGC 2438](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%202438).\n\nThe contrast is part of the pleasure. A cluster is a crowd of stellar points; a planetary nebula is a soft-edged patch of light. In a small telescope, M46\u2019s stars begin to separate into a fine sprinkling. The nebula may be much more elusive: look for a small, pale disk rather than expecting a colorful photograph. Its faintness and apparent size mean that sky darkness, transparency, and magnification can all affect whether it shows.\n\n**How to find it:** M46 is a late-winter target for many Northern Hemisphere observers, though it lies low in the southern sky from mid-northern latitudes. Wait until it has climbed as high as your local horizon allows, and choose a spot with an unobstructed southern view. M46 lies close to M47, another open cluster in Puppis; a star chart or planetarium app can help distinguish the pair. Binoculars may show M46 as a hazy patch, while a telescope will bring out its stars. For the nebula, use averted vision\u2014look slightly to one side of the suspected spot\u2014and try more than one eyepiece. A nebula filter may help some observers, but it is no substitute for dark skies or patience.\n\nGive the view a few minutes. At first, the nebula may seem to be just another blur among the stars. Then the eye begins to separate the two: a field of suns, and a little shell of gas on the same line of sight. M46 is a reminder that the night sky offers not only patterns to trace, but distances and histories to wonder about.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%202437",
+            "overlap_terms": [
+              "allows",
+              "ascension",
+              "catalog",
+              "celestial",
+              "cluster",
+              "coordinates",
+              "crowd",
+              "declination",
+              "depends",
+              "different",
+              "extra",
+              "field"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
